@@ -397,6 +397,19 @@ class FormatterNumberTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
     }
 
+    public function testGetCurrencyCode()
+    {
+        $this->formatter->locale = 'de-DE';
+        $this->assertSame('€', $this->formatter->getCurrencySymbol('EUR'));
+        $this->formatter->currencyCode = 'EUR';
+        $this->assertSame('€', $this->formatter->getCurrencySymbol());
+
+        $this->formatter->locale = 'ru-RU';
+        $this->assertSame('р.', $this->formatter->getCurrencySymbol('RUR'));
+        $this->formatter->currencyCode = 'RUR';
+        $this->assertSame('р.', $this->formatter->getCurrencySymbol());
+    }
+
     public function testIntlAsScientific()
     {
         $value = '123';
