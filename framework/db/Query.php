@@ -327,7 +327,7 @@ class Query extends Component implements QueryInterface
             return 0;
         }
 
-        return $this->queryScalar("COUNT($q)", $db);
+        return $this->toInt($this->queryScalar("COUNT($q)", $db));
     }
 
     /**
@@ -344,7 +344,7 @@ class Query extends Component implements QueryInterface
             return 0;
         }
 
-        return $this->queryScalar("SUM($q)", $db);
+        return $this->toInt($this->queryScalar("SUM($q)", $db));
     }
 
     /**
@@ -361,7 +361,7 @@ class Query extends Component implements QueryInterface
             return 0;
         }
 
-        return $this->queryScalar("AVG($q)", $db);
+        return $this->toInt($this->queryScalar("AVG($q)", $db));
     }
 
     /**
@@ -374,7 +374,7 @@ class Query extends Component implements QueryInterface
      */
     public function min($q, $db = null)
     {
-        return $this->queryScalar("MIN($q)", $db);
+        return $this->toInt($this->queryScalar("MIN($q)", $db));
     }
 
     /**
@@ -387,7 +387,19 @@ class Query extends Component implements QueryInterface
      */
     public function max($q, $db = null)
     {
-        return $this->queryScalar("MAX($q)", $db);
+        return $this->toInt($this->queryScalar("MAX($q)", $db));
+    }
+
+    /**
+     * Converts string value to int if possible.
+     *
+     * @param string $value
+     * @return int
+     */
+    private function toInt($value)
+    {
+        $int = (int) $value;
+        return (string) $int === $value ? $int : $value;
     }
 
     /**
