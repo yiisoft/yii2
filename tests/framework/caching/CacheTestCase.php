@@ -181,7 +181,7 @@ abstract class CacheTestCase extends TestCase
         $this->assertSame(['string_test' => 'string_test', 'number_test' => 42], $cache->multiGet(['string_test', 'number_test']));
         // ensure that order does not matter
         $this->assertSame(['number_test' => 42, 'string_test' => 'string_test'], $cache->multiGet(['number_test', 'string_test']));
-        $this->assertSame(['number_test' => 42, 'non_existent_key' => null], $cache->multiGet(['number_test', 'non_existent_key']));
+        $this->assertSame(['number_test' => 42, 'non_existent_key' => false], $cache->multiGet(['number_test', 'non_existent_key']));
     }
 
     public function testDefaultTtl()
@@ -265,7 +265,7 @@ abstract class CacheTestCase extends TestCase
         $expected = $this->getOrSetCallable($cache);
         $callable = [$this, 'getOrSetCallable'];
 
-        $this->assertSame(null, $cache->get('something'));
+        $this->assertFalse($cache->get('something'));
         $this->assertSame($expected, $cache->getOrSet('something', $callable));
         $this->assertSame($expected, $cache->get('something'));
     }
