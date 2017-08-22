@@ -159,6 +159,7 @@ class UserTest extends TestCase
         ]);
         Yii::$app->user->setReturnUrl(null);
     }
+
     public function testLoginRequired()
     {
         $appConfig = [
@@ -184,7 +185,6 @@ class UserTest extends TestCase
         $user->loginRequired();
         $this->assertEquals('normal', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
-
 
         $this->reset();
         Yii::$app->request->setUrl('ajax');

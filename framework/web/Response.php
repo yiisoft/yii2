@@ -867,7 +867,7 @@ class Response extends \yii\base\Response implements ResponseInterface
 
         if ($checkAjax) {
             if (Yii::$app->getRequest()->getIsAjax()) {
-                if (Yii::$app->getRequest()->hasHeader('X-Ie-Redirect-Compatibility') !== null && $statusCode === 302) {
+                if (Yii::$app->getRequest()->hasHeader('X-Ie-Redirect-Compatibility') && $statusCode === 302) {
                     // Ajax 302 redirect in IE does not work. Change status code to 200. See https://github.com/yiisoft/yii2/issues/9670
                     $statusCode = 200;
                 }
