@@ -80,7 +80,7 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     protected function formatJson($response)
     {
-        $response->getHeaders()->set('Content-Type', 'application/json; charset=UTF-8');
+        $response->withHeader('Content-Type', 'application/json; charset=UTF-8');
         if ($response->data !== null) {
             $options = $this->encodeOptions;
             if ($this->prettyPrint) {

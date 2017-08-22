@@ -55,7 +55,7 @@ class ResponseTest extends \yiiunit\TestCase
 
         $this->assertEquals($expectedContent, $content);
         $this->assertEquals(206, $this->response->statusCode);
-        $headers = $this->response->headers;
+        $headers = $this->response->getHeaderCollection();
         $this->assertEquals('bytes', $headers->get('Accept-Ranges'));
         $this->assertEquals('bytes ' . $expectedHeader . '/' . StringHelper::byteLength($fullContent), $headers->get('Content-Range'));
         $this->assertEquals('text/plain', $headers->get('Content-Type'));
@@ -104,7 +104,7 @@ class ResponseTest extends \yiiunit\TestCase
 
         static::assertEquals('test', $content);
         static::assertEquals(200, $this->response->statusCode);
-        $headers = $this->response->headers;
+        $headers = $this->response->getHeaderCollection();
         static::assertEquals('application/octet-stream', $headers->get('Content-Type'));
         static::assertEquals('attachment; filename="test.txt"', $headers->get('Content-Disposition'));
         static::assertEquals(4, $headers->get('Content-Length'));
@@ -113,18 +113,18 @@ class ResponseTest extends \yiiunit\TestCase
     public function testRedirect()
     {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
-        $this->assertEquals($this->response->redirect('')->headers->get('location'), '/');
-        $this->assertEquals($this->response->redirect('http://some-external-domain.com')->headers->get('location'), 'http://some-external-domain.com');
-        $this->assertEquals($this->response->redirect('/')->headers->get('location'), '/');
-        $this->assertEquals($this->response->redirect('/something-relative')->headers->get('location'), '/something-relative');
-        $this->assertEquals($this->response->redirect(['/'])->headers->get('location'), '/index.php?r=');
-        $this->assertEquals($this->response->redirect(['view'])->headers->get('location'), '/index.php?r=view');
-        $this->assertEquals($this->response->redirect(['/controller'])->headers->get('location'), '/index.php?r=controller');
-        $this->assertEquals($this->response->redirect(['/controller/index'])->headers->get('location'), '/index.php?r=controller%2Findex');
-        $this->assertEquals($this->response->redirect(['//controller/index'])->headers->get('location'), '/index.php?r=controller%2Findex');
-        $this->assertEquals($this->response->redirect(['//controller/index', 'id' => 3])->headers->get('location'), '/index.php?r=controller%2Findex&id=3');
-        $this->assertEquals($this->response->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->headers->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
-        $this->assertEquals($this->response->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
+        $this->assertEquals($this->response->redirect('')->getHeaderCollection()->get('location'), '/');
+        $this->assertEquals($this->response->redirect('http://some-external-domain.com')->getHeaderCollection()->get('location'), 'http://some-external-domain.com');
+        $this->assertEquals($this->response->redirect('/')->getHeaderCollection()->get('location'), '/');
+        $this->assertEquals($this->response->redirect('/something-relative')->getHeaderCollection()->get('location'), '/something-relative');
+        $this->assertEquals($this->response->redirect(['/'])->getHeaderCollection()->get('location'), '/index.php?r=');
+        $this->assertEquals($this->response->redirect(['view'])->getHeaderCollection()->get('location'), '/index.php?r=view');
+        $this->assertEquals($this->response->redirect(['/controller'])->getHeaderCollection()->get('location'), '/index.php?r=controller');
+        $this->assertEquals($this->response->redirect(['/controller/index'])->getHeaderCollection()->get('location'), '/index.php?r=controller%2Findex');
+        $this->assertEquals($this->response->redirect(['//controller/index'])->getHeaderCollection()->get('location'), '/index.php?r=controller%2Findex');
+        $this->assertEquals($this->response->redirect(['//controller/index', 'id' => 3])->getHeaderCollection()->get('location'), '/index.php?r=controller%2Findex&id=3');
+        $this->assertEquals($this->response->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->getHeaderCollection()->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
+        $this->assertEquals($this->response->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->getHeaderCollection()->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
     }
 
     /**

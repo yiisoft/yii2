@@ -192,7 +192,7 @@ class PageCacheTest extends TestCase
             'format' => Yii::$app->response->format,
             'version' => Yii::$app->response->version,
             'statusCode' => Yii::$app->response->statusCode,
-            'statusText' => Yii::$app->response->statusText,
+            'statusText' => Yii::$app->response->reasonPhrase,
         ];
         if ($testCase['cacheable']) {
             $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache, '_cache'), $testCase['name']);
@@ -220,7 +220,7 @@ class PageCacheTest extends TestCase
         $this->assertSame($metadata['format'], Yii::$app->response->format, $testCase['name']);
         $this->assertSame($metadata['version'], Yii::$app->response->version, $testCase['name']);
         $this->assertSame($metadata['statusCode'], Yii::$app->response->statusCode, $testCase['name']);
-        $this->assertSame($metadata['statusText'], Yii::$app->response->statusText, $testCase['name']);
+        $this->assertSame($metadata['statusText'], Yii::$app->response->reasonPhrase, $testCase['name']);
         // Cookies
         if (isset($testCase['cookies'])) {
             foreach ($testCase['cookies'] as $name => $expected) {

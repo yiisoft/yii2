@@ -17,6 +17,11 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
+    /**
+     * @var FakeController
+     */
+    protected $controller;
+
     public function testBindActionParams()
     {
         $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
@@ -61,18 +66,18 @@ class ControllerTest extends TestCase
     public function testRedirect()
     {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
-        $this->assertEquals($this->controller->redirect('')->headers->get('location'), '/');
-        $this->assertEquals($this->controller->redirect('http://some-external-domain.com')->headers->get('location'), 'http://some-external-domain.com');
-        $this->assertEquals($this->controller->redirect('/')->headers->get('location'), '/');
-        $this->assertEquals($this->controller->redirect('/something-relative')->headers->get('location'), '/something-relative');
-        $this->assertEquals($this->controller->redirect(['/'])->headers->get('location'), '/index.php?r=');
-        $this->assertEquals($this->controller->redirect(['view'])->headers->get('location'), '/index.php?r=fake%2Fview');
-        $this->assertEquals($this->controller->redirect(['/controller'])->headers->get('location'), '/index.php?r=controller');
-        $this->assertEquals($this->controller->redirect(['/controller/index'])->headers->get('location'), '/index.php?r=controller%2Findex');
-        $this->assertEquals($this->controller->redirect(['//controller/index'])->headers->get('location'), '/index.php?r=controller%2Findex');
-        $this->assertEquals($this->controller->redirect(['//controller/index', 'id' => 3])->headers->get('location'), '/index.php?r=controller%2Findex&id=3');
-        $this->assertEquals($this->controller->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->headers->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
-        $this->assertEquals($this->controller->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
+        $this->assertEquals($this->controller->redirect('')->getHeaderCollection()->get('location'), '/');
+        $this->assertEquals($this->controller->redirect('http://some-external-domain.com')->getHeaderCollection()->get('location'), 'http://some-external-domain.com');
+        $this->assertEquals($this->controller->redirect('/')->getHeaderCollection()->get('location'), '/');
+        $this->assertEquals($this->controller->redirect('/something-relative')->getHeaderCollection()->get('location'), '/something-relative');
+        $this->assertEquals($this->controller->redirect(['/'])->getHeaderCollection()->get('location'), '/index.php?r=');
+        $this->assertEquals($this->controller->redirect(['view'])->getHeaderCollection()->get('location'), '/index.php?r=fake%2Fview');
+        $this->assertEquals($this->controller->redirect(['/controller'])->getHeaderCollection()->get('location'), '/index.php?r=controller');
+        $this->assertEquals($this->controller->redirect(['/controller/index'])->getHeaderCollection()->get('location'), '/index.php?r=controller%2Findex');
+        $this->assertEquals($this->controller->redirect(['//controller/index'])->getHeaderCollection()->get('location'), '/index.php?r=controller%2Findex');
+        $this->assertEquals($this->controller->redirect(['//controller/index', 'id' => 3])->getHeaderCollection()->get('location'), '/index.php?r=controller%2Findex&id=3');
+        $this->assertEquals($this->controller->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->getHeaderCollection()->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
+        $this->assertEquals($this->controller->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->getHeaderCollection()->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
     }
 
     protected function setUp()

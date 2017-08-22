@@ -82,9 +82,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
             // reset parameters of response to avoid interference with partially created response data
             // in case the error occurred while sending the response.
             $response->isSent = false;
-            $response->stream = null;
+            $response->bodyRange = null;
             $response->data = null;
-            $response->content = null;
+            $response->setBody(null);
         } else {
             $response = new Response();
         }
