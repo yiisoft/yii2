@@ -16,7 +16,9 @@ use yii\di\Instance;
  * This trait should be applied to descendant of [[\yii\base\BaseObject]] implementing [[\Psr\Http\Message\MessageInterface]].
  *
  * @property string $protocolVersion HTTP protocol version as a string.
+ * @property string[][] $headers the message's headers.
  * @property StreamInterface $body the body of the message.
+ * @property HeaderCollection $headerCollection The header collection. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0
@@ -28,9 +30,9 @@ trait MessageTrait
      */
     private $_protocolVersion;
     /**
-     * @var HeaderCollection
+     * @var HeaderCollection header collection, which is used for headers storage.
      */
-    private $_headers;
+    private $_headerCollection;
     /**
      * @var StreamInterface the body of the message.
      */
@@ -83,6 +85,41 @@ trait MessageTrait
     }
 
     /**
+     * Returns the header collection.
+     * The header collection contains the currently registered HTTP headers.
+     * @return HeaderCollection the header collection
+     */
+    public function getHeaderCollection()
+    {
+        if ($this->_headerCollection === null) {
+            $headerCollection = new HeaderCollection();
+            $headerCollection->fromArray($this->defaultHeaders());
+            $this->_headerCollection = $headerCollection;
+        }
+        return $this->_headerCollection;
+    }
+
+    /**
+     * Returns default message's headers, which should be present once [[headerCollection]] is instantiated.
+     * @return string[][] an associative array of the message's headers.
+     */
+    protected function defaultHeaders()
+    {
+        return [];
+    }
+
+    /**
+     * Sets up message's headers at batch, removing any previously existing ones.
+     * @param string[][] $headers an associative array of the message's headers.
+     */
+    public function setHeaders($headers)
+    {
+        $headerCollection = $this->getHeaderCollection();
+        $headerCollection->removeAll();
+        $headerCollection->fromArray($headers);
+    }
+
+    /**
      * Retrieves all message header values.
      *
      * The keys represent the header name as it will be sent over the wire, and
@@ -109,7 +146,7 @@ trait MessageTrait
      */
     public function getHeaders()
     {
-        ;
+        return $this->getHeaderCollection()->toArray();
     }
 
     /**
@@ -122,7 +159,7 @@ trait MessageTrait
      */
     public function hasHeader($name)
     {
-        ;
+        return $this->getHeaderCollection()->has($name);
     }
 
     /**
@@ -131,7 +168,7 @@ trait MessageTrait
      * This method returns an array of all the header values of the given
      * case-insensitive header name.
      *
-     * If the header does not appear in the message, this method MUST return an
+     * If the header does not appear in the message, this method will return an
      * empty array.
      *
      * @param string $name Case-insensitive header field name.
@@ -141,7 +178,7 @@ trait MessageTrait
      */
     public function getHeader($name)
     {
-        ;
+        return $this->getHeaderCollection()->get($name, [], false);
     }
 
     /**
@@ -165,18 +202,11 @@ trait MessageTrait
      */
     public function getHeaderLine($name)
     {
-        ;
+        return implode(',', $this->getHeader($name));
     }
 
     /**
      * Return an instance with the provided value replacing the specified header.
-     *
-     * While header names are case-insensitive, the casing of the header will
-     * be preserved by this function, and returned from getHeaders().
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * new and/or updated header and value.
      *
      * @param string $name Case-insensitive header field name.
      * @param string|string[] $value Header value(s).
@@ -185,7 +215,8 @@ trait MessageTrait
      */
     public function withHeader($name, $value)
     {
-        ;
+        $this->getHeaderCollection()->set($name, $value);
+        return $this;
     }
 
     /**
@@ -195,10 +226,6 @@ trait MessageTrait
      * value(s) will be appended to the existing list. If the header did not
      * exist previously, it will be added.
      *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that has the
-     * new header and/or value.
-     *
      * @param string $name Case-insensitive header field name to add.
      * @param string|string[] $value Header value(s).
      * @return static
@@ -206,24 +233,20 @@ trait MessageTrait
      */
     public function withAddedHeader($name, $value)
     {
-        ;
+        $this->getHeaderCollection()->add($name, $value);
+        return $this;
     }
 
     /**
      * Return an instance without the specified header.
-     *
-     * Header resolution MUST be done without case-sensitivity.
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return an instance that removes
-     * the named header.
-     *
+     * Header resolution performed without case-sensitivity.
      * @param string $name Case-insensitive header field name to remove.
      * @return static
      */
     public function withoutHeader($name)
     {
-        ;
+        $this->getHeaderCollection()->remove($name);
+        return $this;
     }
 
     /**
