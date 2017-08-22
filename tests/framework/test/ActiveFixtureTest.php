@@ -77,11 +77,11 @@ class ActiveFixtureTest extends DatabaseTestCase
 
         $this->assertSame(CustomerFixture::className(), get_class($fixture));
         $this->assertCount(2, $fixture);
-        $this->assertSame(1, $fixture['customer1']['id']);
+        $this->assertSame('1', $fixture['customer1']['id']);
         $this->assertSame('customer1@example.com', $fixture['customer1']['email']);
         $this->assertSame(1, $fixture['customer1']['profile_id']);
 
-        $this->assertSame(2, $fixture['customer2']['id']);
+        $this->assertSame('2', $fixture['customer2']['id']);
         $this->assertSame('customer2@example.com', $fixture['customer2']['email']);
         $this->assertSame(2, $fixture['customer2']['profile_id']);
 
