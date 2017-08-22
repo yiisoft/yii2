@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Enh #14184: Module service locator now falls back to its parent module service locator in case component isn't found (SamMousa)
 - Bug #14248: `yii\console\controllers\MessageController` no longer outputs colorized filenames when console does not support text colorization (PowerGamer1)
 - Bug #14264: Fixed a bug where `yii\log\Logger::calculateTimings()` was not accepting messages with array tokens (bizley)
 - Bug #14307: Fixed PHP warning when `yii\console\UnknownCommandException` is thrown for empty command (rob006)
