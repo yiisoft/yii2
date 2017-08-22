@@ -44,6 +44,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidateValue($timezone)
     {
@@ -83,6 +84,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidateValue($timezone)
     {
@@ -125,6 +127,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidateAttributePHPFormat($timezone)
     {
@@ -133,6 +136,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidateAttributePHPFormat($timezone)
     {
@@ -169,6 +173,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidateAttributeICUFormat($timezone)
     {
@@ -177,6 +182,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidateAttributeICUFormat($timezone)
     {
@@ -252,11 +258,17 @@ class DateValidatorTest extends TestCase
                 $return[] = [null, '2013-09-13', 1379030400, $tz[0], $appTz[0]];
             }
         }
+
         return $return;
     }
 
     /**
      * @dataProvider timestampFormatProvider
+     * @param string|null $format
+     * @param string $date
+     * @param string|int $expectedDate
+     * @param string $timezone
+     * @param string $appTimezone
      */
     public function testIntlTimestampAttributeFormat($format, $date, $expectedDate, $timezone, $appTimezone)
     {
@@ -265,6 +277,11 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider timestampFormatProvider
+     * @param string|null $format
+     * @param string $date
+     * @param string|int $expectedDate
+     * @param string $timezone
+     * @param string $appTimezone
      */
     public function testTimestampAttributeFormat($format, $date, $expectedDate, $timezone, $appTimezone)
     {
@@ -282,6 +299,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidationWithTime($timezone)
     {
@@ -321,6 +339,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidationWithTime($timezone)
     {
@@ -383,6 +402,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidationWithTimeAndOutputTimeZone($timezone)
     {
@@ -391,6 +411,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidationWithTimeAndOutputTimeZone($timezone)
     {
@@ -559,9 +580,9 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * returns true if the version of ICU is old and has a bug that makes it
+     * Returns true if the version of ICU is old and has a bug that makes it
      * impossible to parse two digit years properly.
-     * see http://bugs.icu-project.org/trac/ticket/9836
+     * @see http://bugs.icu-project.org/trac/ticket/9836
      * @return bool
      */
     private function checkOldIcuBug()

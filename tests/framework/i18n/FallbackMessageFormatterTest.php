@@ -178,6 +178,9 @@ _MSG_
 
     /**
      * @dataProvider patterns
+     * @param string $pattern
+     * @param string $expected
+     * @param array $args
      */
     public function testNamedArguments($pattern, $expected, $args)
     {

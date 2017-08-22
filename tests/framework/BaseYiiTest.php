@@ -15,7 +15,7 @@ use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 
 /**
- * BaseYiiTest
+ * BaseYiiTest.
  * @group base
  */
 class BaseYiiTest extends TestCase

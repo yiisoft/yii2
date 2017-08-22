@@ -282,6 +282,7 @@ class CustomSort extends Sort
         foreach ($params as $item) {
             $attributes[] = ($item['dir'] == 'desc') ? '-' . $item['field'] : $item['field'];
         }
+
         return $attributes;
     }
 }

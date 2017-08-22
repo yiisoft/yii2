@@ -63,7 +63,7 @@ class BaseMessageTest extends TestCase
 }
 
 /**
- * Test Mailer class
+ * Test Mailer class.
  */
 class TestMailer extends BaseMailer
 {
@@ -77,7 +77,7 @@ class TestMailer extends BaseMailer
 }
 
 /**
- * Test Message class
+ * Test Message class.
  */
 class TestMessage extends BaseMessage
 {

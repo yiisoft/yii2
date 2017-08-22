@@ -229,6 +229,7 @@ EOD;
 
     /**
      * Generates a batch INSERT SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -333,6 +334,7 @@ EOD;
              */
             $this->likeEscapingReplacements['\\'] = substr($this->db->quoteValue('\\'), 1, -1);
         }
+
         return parent::buildLikeCondition($operator, $operands, $params);
     }
 

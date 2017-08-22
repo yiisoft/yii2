@@ -29,7 +29,7 @@ class LinkPagerTest extends \yiiunit\TestCase
     }
 
     /**
-     * Get pagination
+     * Get pagination.
      * @param int $page
      * @return Pagination
      */

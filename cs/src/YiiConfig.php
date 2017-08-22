@@ -125,9 +125,7 @@ class YiiConfig extends Config
             'php_unit_dedicate_assert' => true,
             'php_unit_fqcn_annotation' => true,
             'php_unit_strict' => true, // needs more attention
-//            'phpdoc_add_missing_param_annotation' => [ // needs more attention
-//                'only_untyped' => false,
-//            ],
+            'phpdoc_add_missing_param_annotation' => true,
             'phpdoc_indent' => true,
 //            'phpdoc_inline_tag' => true, // see https://github.com/yiisoft/yii2/issues/11635
             'phpdoc_no_access' => true,
@@ -138,7 +136,7 @@ class YiiConfig extends Config
             'phpdoc_return_self_reference' => true,
             'phpdoc_scalar' => true,
             'phpdoc_single_line_var_spacing' => true,
-//            'phpdoc_summary' => true, // needs more attention (summary should be separated by blank line from description)
+            'phpdoc_summary' => true,
 //            'phpdoc_to_comment' => true, // breaks phpdoc for define('CONSTANT', $value);
             'phpdoc_trim' => true,
             'phpdoc_types' => true,

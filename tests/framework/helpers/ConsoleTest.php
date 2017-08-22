@@ -137,6 +137,8 @@ class ConsoleTest extends TestCase
 
     /**
      * @dataProvider ansiFormats
+     * @param string $ansi
+     * @param string $html
      */
     public function testAnsi2Html($ansi, $html)
     {

@@ -141,6 +141,8 @@ class TimestampBehaviorTest extends TestCase
 
     /**
      * @dataProvider expressionProvider
+     * @param mixed $expression
+     * @param mixed $expected
      */
     public function testNewRecordExpression($expression, $expected)
     {

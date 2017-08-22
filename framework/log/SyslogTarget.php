@@ -60,7 +60,7 @@ class SyslogTarget extends Target
     }
 
     /**
-     * Writes log messages to syslog
+     * Writes log messages to syslog.
      */
     public function export()
     {

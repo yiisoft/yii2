@@ -571,7 +571,7 @@ EOL;
     }
 
     /**
-     * Data provider for [[testFindRealPath()]]
+     * Data provider for [[testFindRealPath()]].
      * @return array test data
      */
     public function findRealPathDataProvider()
@@ -752,7 +752,7 @@ EOL;
 }
 
 /**
- * Mock class for [[\yii\console\controllers\AssetController]]
+ * Mock class for [[\yii\console\controllers\AssetController]].
  */
 class AssetControllerMock extends AssetController
 {

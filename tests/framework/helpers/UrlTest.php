@@ -18,7 +18,7 @@ use yiiunit\framework\filters\stubs\UserIdentity;
 use yiiunit\TestCase;
 
 /**
- * UrlTest
+ * UrlTest.
  * @group helpers
  */
 class UrlTest extends TestCase
@@ -54,7 +54,7 @@ class UrlTest extends TestCase
     }
 
     /**
-     * Mocks controller action with parameters
+     * Mocks controller action with parameters.
      *
      * @param string $controllerId
      * @param string $actionID
@@ -228,7 +228,7 @@ class UrlTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/11925
+     * @see https://github.com/yiisoft/yii2/issues/11925
      */
     public function testToWithSuffix()
     {

@@ -10,7 +10,7 @@ namespace yiiunit\framework\caching;
 use yii\caching\MemCache;
 
 /**
- * Class for testing memcached cache backend
+ * Class for testing memcached cache backend.
  * @group memcached
  * @group caching
  */

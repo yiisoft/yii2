@@ -11,7 +11,7 @@ use yii\helpers\StringHelper;
 use yiiunit\TestCase;
 
 /**
- * StringHelperTest
+ * StringHelperTest.
  * @group helpers
  */
 class StringHelperTest extends TestCase
@@ -149,6 +149,9 @@ class StringHelperTest extends TestCase
 
     /**
      * @dataProvider providerStartsWith
+     * @param bool $result
+     * @param string $string
+     * @param string|null $with
      */
     public function testStartsWith($result, $string, $with)
     {
@@ -159,7 +162,7 @@ class StringHelperTest extends TestCase
     }
 
     /**
-     * Rules that should work the same for case-sensitive and case-insensitive `startsWith()`
+     * Rules that should work the same for case-sensitive and case-insensitive `startsWith()`.
      */
     public function providerStartsWith()
     {
@@ -202,6 +205,9 @@ class StringHelperTest extends TestCase
 
     /**
      * @dataProvider providerEndsWith
+     * @param bool $result
+     * @param string $string
+     * @param string|null $with
      */
     public function testEndsWith($result, $string, $with)
     {
@@ -212,7 +218,7 @@ class StringHelperTest extends TestCase
     }
 
     /**
-     * Rules that should work the same for case-sensitive and case-insensitive `endsWith()`
+     * Rules that should work the same for case-sensitive and case-insensitive `endsWith()`.
      */
     public function providerEndsWith()
     {

@@ -268,7 +268,7 @@ class LoggerTest extends TestCase
     }
 
     /**
-     * See https://github.com/yiisoft/yii2/issues/14133
+     * @see https://github.com/yiisoft/yii2/issues/14133
      *
      * @covers \yii\log\Logger::calculateTimings()
      */

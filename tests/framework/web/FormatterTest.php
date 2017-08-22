@@ -34,7 +34,7 @@ abstract class FormatterTest extends \yiiunit\TestCase
     abstract protected function getFormatterInstance();
 
     /**
-     * Formatter should not format null
+     * Formatter should not format null.
      */
     public function testFormatNull()
     {

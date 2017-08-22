@@ -16,7 +16,7 @@ use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Profile;
 
 /**
- * Class ActiveQueryTest the base class for testing ActiveQuery
+ * Class ActiveQueryTest the base class for testing ActiveQuery.
  */
 abstract class ActiveQueryTest extends DatabaseTestCase
 {

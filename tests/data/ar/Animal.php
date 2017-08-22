@@ -9,7 +9,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * Class Animal
+ * Class Animal.
  *
  * @author Jose Lorente <jose.lorente.martin@gmail.com>
  * @property int $id
