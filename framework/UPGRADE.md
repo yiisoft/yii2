@@ -69,6 +69,17 @@ Upgrade from Yii 2.0.x
   Mail view rendering is now encapsulated into `yii\mail\Template` class.
 * Properties `view`, `viewPath`, `htmlLayout` and `textLayout` have been moved from `yii\mail\BaseMailer` to `yii\mail\Composer` class,
   which now encapsulates message composition.
+* Classes `yii\web\Request` and `yii\web\Response` have been updated to match interfaces `Psr\Http\Message\RequestInterface`
+  and `Psr\Http\Message\ResponseInterface` accordingly. Make sure you use their methods and properties correctly.
+  In particular: method `getHeaders()` and corresponding virtual property `$headers` are no longer return `HeaderCollection`
+  instance, you can use `getHeaderCollection()` in order to use old headers setup syntax; `Request|Response::$version` renamed
+  to `Request|Response::$protocolVersion`; `Response::$statusText` renamed `Response::$reasonPhrase`;
+* `yii\web\Response::$stream` is no longer available, use `yii\web\Response::withBody()` to setup stream response.
+  You can use `Response::$bodyRange` to setup stream content range.
+* Classes `yii\web\CookieCollection`, `yii\web\HeaderCollection` and `yii\web\UploadedFile` have been moved under
+  namespace `yii\http\*`. Make sure to refer to those classes using correct fully qualified name.
+* Public interface of `UploadedFile` class has been changed according to `Psr\Http\Message\UploadedFileInterface`.
+  Make sure you refer to its properties and methods with correct names.
 
 Upgrade from Yii 2.0.12
 -----------------------
