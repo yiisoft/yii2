@@ -208,10 +208,15 @@ class PageCache extends ActionFilter
      */
     protected function restoreResponse($response, $data)
     {
-        foreach (['format', 'version', 'statusCode', 'statusText', 'content'] as $name) {
+        foreach (['format', 'protocolVersion', 'statusCode', 'reasonPhrase', 'content'] as $name) {
             $response->{$name} = $data[$name];
         }
-        foreach (['headers', 'cookies'] as $name) {
+
+        if (isset($data['headers'])) {
+            $response->setHeaders($data['headers']);
+        }
+
+        foreach (['cookies'] as $name) {
             if (isset($data[$name]) && is_array($data[$name])) {
                 $response->{$name}->fromArray(array_merge($data[$name], $response->{$name}->toArray()));
             }
@@ -256,9 +261,14 @@ class PageCache extends ActionFilter
         }
 
         $data['dynamicPlaceholders'] = $this->dynamicPlaceholders;
-        foreach (['format', 'version', 'statusCode', 'statusText'] as $name) {
-            $data[$name] = $response->{$name};
-        }
+
+        $data = array_merge($data, [
+            'format' => $response->format,
+            'protocolVersion' => $response->getProtocolVersion(),
+            'statusCode' => $response->getStatusCode(),
+            'reasonPhrase' => $response->getReasonPhrase(),
+        ]);
+
         $this->insertResponseCollectionIntoData($response, 'headers', $data);
         $this->insertResponseCollectionIntoData($response, 'cookies', $data);
         $this->cache->set($this->calculateCacheKey(), $data, $this->duration, $this->dependency);
@@ -281,7 +291,8 @@ class PageCache extends ActionFilter
             return;
         }
 
-        $all = $response->{$collectionName}->toArray();
+        $collection = $response->{$collectionName};
+        $all = is_array($collection) ? $collection : $collection->toArray();
         if (is_array($this->{$property})) {
             $filtered = [];
             foreach ($this->{$property} as $name) {

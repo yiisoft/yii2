@@ -41,8 +41,7 @@ class HttpCacheTest extends \yiiunit\TestCase
         };
         $httpCache->beforeAction(null);
         $response = Yii::$app->getResponse();
-        $this->assertFalse($response->getHeaders()->offsetExists('Pragma'));
-        $this->assertNotSame($response->getHeaders()->get('Pragma'), '');
+        $this->assertFalse($response->hasHeader('Pragma'));
     }
 
     /**
@@ -88,7 +87,7 @@ class HttpCacheTest extends \yiiunit\TestCase
         };
         $httpCache->beforeAction(null);
         $response = Yii::$app->getResponse();
-        $this->assertFalse($response->getHeaders()->offsetExists('ETag'));
+        $this->assertFalse($response->hasHeader('ETag'));
 
         $httpCache->etagSeed = function ($action, $params) {
             return '';
@@ -96,9 +95,9 @@ class HttpCacheTest extends \yiiunit\TestCase
         $httpCache->beforeAction(null);
         $response = Yii::$app->getResponse();
 
-        $this->assertTrue($response->getHeaders()->offsetExists('ETag'));
+        $this->assertTrue($response->hasHeader('ETag'));
 
-        $etag = $response->getHeaders()->get('ETag');
+        $etag = $response->getHeaderLine('ETag');
         $this->assertStringStartsWith('"', $etag);
         $this->assertStringEndsWith('"', $etag);
 
@@ -107,9 +106,9 @@ class HttpCacheTest extends \yiiunit\TestCase
         $httpCache->beforeAction(null);
         $response = Yii::$app->getResponse();
 
-        $this->assertTrue($response->getHeaders()->offsetExists('ETag'));
+        $this->assertTrue($response->hasHeader('ETag'));
 
-        $etag = $response->getHeaders()->get('ETag');
+        $etag = $response->getHeaderLine('ETag');
         $this->assertStringStartsWith('W/"', $etag);
         $this->assertStringEndsWith('"', $etag);
     }
