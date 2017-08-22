@@ -82,7 +82,7 @@ class RequestTest extends TestCase
                     'params' => [
                         'param1',
                         '-12345',
-                        'option1' => '1',
+                        'option1' => true,
                         'option2' => 'testValue',
                         '_aliases' => [
                             'alias1' => true,
