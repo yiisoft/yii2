@@ -13,6 +13,7 @@ use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use Psr\Http\Message\StreamInterface;
 use yii\helpers\Url;
 
 /**
@@ -134,8 +135,8 @@ class Response extends \yii\base\Response
      */
     public $content;
     /**
-     * @var resource|array the stream to be sent. This can be a stream handle or an array of stream handle,
-     * the begin position and the end position. Note that when this property is set, the [[data]] and [[content]]
+     * @var resource|array|StreamInterface the stream to be sent. This can be a stream handle, an array of stream handle,
+     * the begin position and the end position or [[\Psr\Http\Message\StreamInterface]]. Note that when this property is set, the [[data]] and [[content]]
      * properties will be ignored by [[send()]].
      */
     public $stream;
@@ -418,10 +419,27 @@ class Response extends \yii\base\Response
         }
 
         set_time_limit(0); // Reset time limit for big files
+
+        if ($this->stream instanceof StreamInterface && $this->stream->isReadable()) {
+            $this->sendPsrStream($this->stream);
+
+            return;
+        }
+
+        $this->sendFileStream($this->stream);
+    }
+
+    /**
+     * Sends a file stream, either
+     *
+     * @param resource|array  $stream  The stream descriptive array or resource
+     */
+    protected function sendFileStream($stream)
+    {
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
-        if (is_array($this->stream)) {
-            list($handle, $begin, $end) = $this->stream;
+        if (is_array($stream)) {
+            list($handle, $begin, $end) = $stream;
             fseek($handle, $begin);
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
                 if ($pos + $chunkSize > $end) {
@@ -431,12 +449,28 @@ class Response extends \yii\base\Response
                 flush(); // Free up memory. Otherwise large files will trigger PHP's memory limit.
             }
             fclose($handle);
-        } else {
-            while (!feof($this->stream)) {
-                echo fread($this->stream, $chunkSize);
-                flush();
-            }
-            fclose($this->stream);
+
+            return;
+        }
+        while (!feof($stream)) {
+            echo fread($stream, $chunkSize);
+            flush();
+        }
+        fclose($stream);
+    }
+
+    /**
+     * Sends a psr stream.
+     *
+     * @param      \Psr\Http\Message\StreamInterface  $stream  The stream
+     */
+    public function sendPsrStream(StreamInterface $stream)
+    {
+        $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
+
+        while (($chunk = $stream->read($chunkSize)) !== '') {
+            echo $chunk;
+            flush();
         }
     }
 
