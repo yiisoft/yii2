@@ -216,6 +216,7 @@ EXPECTED;
 ╟───────┼───────┼───────╢
 ║       │       │       ║
 ╚═══════╧═══════╧═══════╝
+
 EXPECTED;
 
         $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
