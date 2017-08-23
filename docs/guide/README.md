@@ -175,6 +175,7 @@ Special Topics
 * [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
 * [Working with Third-Party Code](tutorial-yii-integration.md)
+* [Using Yii as a micro framework](tutorial-yii-as-micro-framework.md)
 
 
 Widgets
