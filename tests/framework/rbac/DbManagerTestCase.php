@@ -295,6 +295,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      */
     public function testCheckAccessCache()
     {
+        $this->mockApplication();
         $this->prepareData();
 
         // warm up item cache, so only assignment queries are sent to DB
