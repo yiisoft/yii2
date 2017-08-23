@@ -6,7 +6,7 @@ use yii\base\Exception;
 use yii\log\Target;
 
 /**
- * A log target used to track logged data
+ * ArrayTarget logs messages into an array, useful for tracking data in tests.
  */
 class ArrayTarget extends Target
 {
