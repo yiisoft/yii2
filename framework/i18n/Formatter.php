@@ -680,7 +680,7 @@ class Formatter extends Component
      * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
      *
      * @param string $format the format used to convert the value into a date string.
-     * If null, [[dateFormat]] will be used.
+     * If null, [[datetimeFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
