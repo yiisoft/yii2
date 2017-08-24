@@ -59,6 +59,16 @@ Upgrade from Yii 2.0.12
   With 2.0.13 Yii adds support for configuring trusted proxies. If your application runs behind a reverse proxy and relies on
   `getIsSecureConnection()` to return the value form the `X-Forwarded-Proto` header you need to explicitly allow
   this in the Request configuration. See the [guide](http://www.yiiframework.com/doc-2.0/guide-runtime-requests.html#trusted-proxies) for more information.
+
+  This setting also affects you when Yii is running on IIS webserver, which sets the `X-Rewrite-Url` header.
+  This header is now filtered by default and must be listed in trusted hosts to be detected by Yii:
+
+  ```php
+  [   // accept X-Rewrite-Url from all hosts, as it will be set by IIS
+      '/.*/' => ['X-Rewrite-Url'],
+  ]
+  ```
+
 * For compatibiliy with [PHP 7.2 which does not allow classes to be named `Object` anymore](https://wiki.php.net/rfc/object-typehint),
   we needed to rename `yii\base\Object` to `yii\base\BaseObject`.
   
