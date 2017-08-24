@@ -157,9 +157,47 @@ class UriTest extends TestCase
     {
         $uri = new Uri(['string' => 'http://example.com?foo=some']);
 
-        $uri->withHost('another.com')
-            ->withPort(9090);
+        $uri->setHost('another.com');
+        $uri->setPort(9090);
 
         $this->assertSame('http://another.com:9090?foo=some', $uri->getString());
+    }
+
+    /**
+     * @depends testPsrSyntax
+     */
+    public function testImmutability()
+    {
+        $uri = new Uri([
+            'scheme' => 'http',
+            'user' => 'username',
+            'password' => 'password',
+            'host' => 'example.com',
+            'port' => 9090,
+            'path' => '/content/path',
+            'query' => 'foo=some',
+            'fragment' => 'anchor',
+        ]);
+
+        $this->assertSame($uri, $uri->withScheme('http'));
+        $this->assertNotSame($uri, $uri->withScheme('https'));
+
+        $this->assertSame($uri, $uri->withHost('example.com'));
+        $this->assertNotSame($uri, $uri->withHost('another.com'));
+
+        $this->assertSame($uri, $uri->withPort(9090));
+        $this->assertNotSame($uri, $uri->withPort(33));
+
+        $this->assertSame($uri, $uri->withPath('/content/path'));
+        $this->assertNotSame($uri, $uri->withPath('/another/path'));
+
+        $this->assertSame($uri, $uri->withQuery('foo=some'));
+        $this->assertNotSame($uri, $uri->withQuery('foo=another'));
+
+        $this->assertSame($uri, $uri->withFragment('anchor'));
+        $this->assertNotSame($uri, $uri->withFragment('another'));
+
+        $this->assertSame($uri, $uri->withUserInfo('username', 'password'));
+        $this->assertNotSame($uri, $uri->withUserInfo('username', 'another'));
     }
 }

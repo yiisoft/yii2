@@ -13,7 +13,7 @@ use yii\base\ErrorHandler;
 use yii\base\InvalidArgumentException;
 
 /**
- * Uri
+ * Uri represents a URI.
  *
  * Create from components example:
  *
@@ -136,8 +136,13 @@ class Uri extends BaseObject implements UriInterface
      */
     public function withScheme($scheme)
     {
-        $this->setScheme($scheme);
-        return $this;
+        if ($this->getScheme() === $scheme) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setScheme($scheme);
+        return $newInstance;
     }
 
     /**
@@ -178,8 +183,13 @@ class Uri extends BaseObject implements UriInterface
      */
     public function withHost($host)
     {
-        $this->setHost($host);
-        return $this;
+        if ($this->getHost() === $host) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setHost($host);
+        return $newInstance;
     }
 
     /**
@@ -209,8 +219,13 @@ class Uri extends BaseObject implements UriInterface
      */
     public function withPort($port)
     {
-        $this->setPort($port);
-        return $this;
+        if ($this->getPort() === $port) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setPort($port);
+        return $newInstance;
     }
 
     /**
@@ -235,8 +250,13 @@ class Uri extends BaseObject implements UriInterface
      */
     public function withPath($path)
     {
-        $this->setPath($path);
-        return $this;
+        if ($this->getPath() === $path) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setPath($path);
+        return $newInstance;
     }
 
     /**
@@ -264,8 +284,13 @@ class Uri extends BaseObject implements UriInterface
      */
     public function withQuery($query)
     {
-        $this->setQuery($query);
-        return $this;
+        if ($this->getQuery() === $query) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setQuery($query);
+        return $newInstance;
     }
 
     /**
@@ -290,8 +315,13 @@ class Uri extends BaseObject implements UriInterface
      */
     public function withFragment($fragment)
     {
-        $this->setFragment($fragment);
-        return $this;
+        if ($this->getFragment() === $fragment) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setFragment($fragment);
+        return $newInstance;
     }
 
     /**
@@ -331,9 +361,19 @@ class Uri extends BaseObject implements UriInterface
      */
     public function withUserInfo($user, $password = null)
     {
-        $this->setUser($user);
-        $this->setPassword($password);
-        return $this;
+        $userInfo = $user;
+        if ($password != '') {
+            $userInfo .= ':' . $password;
+        }
+
+        if ($userInfo === $this->composeUserInfo($this->getComponents())) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setUser($user);
+        $newInstance->setPassword($password);
+        return $newInstance;
     }
 
     /**
