@@ -298,4 +298,26 @@ trait MessageTrait
     {
         return new MemoryStream();
     }
+
+    /**
+     * This method is called after the object is created by cloning an existing one.
+     */
+    public function __clone()
+    {
+        $this->cloneHttpMessageInternals();
+    }
+
+    /**
+     * Ensures any internal object-type fields related to `MessageTrait` are cloned from their origins.
+     * In case actual trait owner implementing method [[__clone()]], it must invoke this method within it.
+     */
+    private function cloneHttpMessageInternals()
+    {
+        if (is_object($this->_headerCollection)) {
+            $this->_headerCollection = clone $this->_headerCollection;
+        }
+        if (is_object($this->_body)) {
+            $this->_body = clone $this->_body;
+        }
+    }
 }

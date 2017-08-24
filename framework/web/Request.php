@@ -1588,4 +1588,13 @@ class Request extends \yii\base\Request implements RequestInterface
 
         return $security->unmaskToken($clientSuppliedToken) === $security->unmaskToken($trueToken);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __clone()
+    {
+        parent::__clone();
+        $this->cloneHttpMessageInternals();
+    }
 }

@@ -332,7 +332,7 @@ class Response extends \yii\base\Response implements ResponseInterface
     {
         $body = new MemoryStream();
         $body->write($content);
-        $this->withBody($body);
+        $this->setBody($body);
     }
 
     /**
@@ -553,7 +553,8 @@ class Response extends \yii\base\Response implements ResponseInterface
         $this->setDownloadHeaders($attachmentName, $mimeType, !empty($options['inline']), $end - $begin + 1);
 
         $this->format = self::FORMAT_RAW;
-        return $this->withBody($body);
+        $this->setBody($body);
+        return $this;
     }
 
     /**
@@ -610,7 +611,8 @@ class Response extends \yii\base\Response implements ResponseInterface
         $body = new ResourceStream();
         $body->resource = $handle;
 
-        return $this->withBody($body);
+        $this->setBody($body);
+        return $this;
     }
 
     /**
@@ -872,18 +874,18 @@ class Response extends \yii\base\Response implements ResponseInterface
                     $statusCode = 200;
                 }
                 if (Yii::$app->getRequest()->getIsPjax()) {
-                    $this->withHeader('X-Pjax-Url', $url);
+                    $this->getHeaderCollection()->set('X-Pjax-Url', $url);
                 } else {
-                    $this->withHeader('X-Redirect', $url);
+                    $this->getHeaderCollection()->set('X-Redirect', $url);
                 }
             } else {
-                $this->withHeader('Location', $url);
+                $this->getHeaderCollection()->set('Location', $url);
             }
         } else {
-            $this->withHeader('Location', $url);
+            $this->getHeaderCollection()->set('Location', $url);
         }
 
-        $this->withStatus($statusCode);
+        $this->setStatusCode($statusCode);
 
         return $this;
     }
@@ -1080,7 +1082,16 @@ class Response extends \yii\base\Response implements ResponseInterface
 
             $body = new MemoryStream();
             $body->write($content);
-            $this->withBody($body);
+            $this->setBody($body);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __clone()
+    {
+        parent::__clone();
+        $this->cloneHttpMessageInternals();
     }
 }

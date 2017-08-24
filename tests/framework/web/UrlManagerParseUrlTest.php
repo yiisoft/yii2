@@ -308,22 +308,22 @@ class UrlManagerParseUrlTest extends TestCase
             ],
         ]);
         // matching pathinfo GET request
-        $request->withMethod('GET');
+        $request->setMethod('GET');
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         // matching pathinfo PUT/POST request
-        $request->withMethod('PUT');
+        $request->setMethod('PUT');
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
-        $request->withMethod('POST');
+        $request->setMethod('POST');
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
 
         // no wrong matching
-        $request->withMethod('POST');
+        $request->setMethod('POST');
         $request->pathInfo = 'POST/GET';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/get', []], $result);
