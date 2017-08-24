@@ -1258,7 +1258,7 @@ class QueryBuilder extends \yii\base\BaseObject
             }
         }
         if (!empty($parts)) {
-            return '(' . implode(") $operator (", $parts) . ')';
+            return '(' . implode(" $operator ", $parts) . ')';
         }
 
         return '';
