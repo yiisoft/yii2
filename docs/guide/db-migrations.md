@@ -704,8 +704,17 @@ Below is the list of all these database accessing methods:
 * [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]]: dropping comment from table
 
 > Info: [[yii\db\Migration]] does not provide a database query method. This is because you normally do not need
-  to display extra message about retrieving data from a database. It is also because you can use the powerful
-  [Query Builder](db-query-builder.md) to build and run complex queries.
+> to display extra message about retrieving data from a database. It is also because you can use the powerful
+> [Query Builder](db-query-builder.md) to build and run complex queries.
+> Using Query Builder in a migration may look like this:
+>
+> ```php
+> // update status field for all users
+> foreach((new Query)->from('users')->each() as $user) {
+>     $this->update('users', ['status' => 1], ['id' => $user['id']);
+> }
+> ```
+
 
 > Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
 > for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
