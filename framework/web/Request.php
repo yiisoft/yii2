@@ -271,8 +271,13 @@ class Request extends \yii\base\Request implements RequestInterface
      */
     public function withRequestTarget($requestTarget)
     {
-        $this->setRequestTarget($requestTarget);
-        return $this;
+        if ($this->getRequestTarget() === $requestTarget) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setRequestTarget($requestTarget);
+        return $newInstance;
     }
 
     /**
@@ -310,8 +315,13 @@ class Request extends \yii\base\Request implements RequestInterface
      */
     public function withMethod($method)
     {
-        $this->setMethod($method);
-        return $this;
+        if ($this->getMethod() === $method) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setMethod($method);
+        return $newInstance;
     }
 
     /**

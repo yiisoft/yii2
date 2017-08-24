@@ -282,8 +282,13 @@ class Response extends \yii\base\Response implements ResponseInterface
      */
     public function withStatus($code, $reasonPhrase = '')
     {
-        $this->setStatusCode($code, $reasonPhrase);
-        return $this;
+        if ($this->getStatusCode() === $code && $this->reasonPhrase === $reasonPhrase) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setStatusCode($code, $reasonPhrase);
+        return $newInstance;
     }
 
     /**
