@@ -488,7 +488,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Builds and execute a SQL statement for adding comment to column
+     * Builds and execute a SQL statement for adding comment to column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -503,7 +503,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Builds a SQL statement for adding comment to table
+     * Builds a SQL statement for adding comment to table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
@@ -517,7 +517,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Builds and execute a SQL statement for dropping comment from column
+     * Builds and execute a SQL statement for dropping comment from column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -531,7 +531,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Builds a SQL statement for dropping comment from table
+     * Builds a SQL statement for dropping comment from table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @since 2.0.8

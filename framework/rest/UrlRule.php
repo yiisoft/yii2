@@ -264,6 +264,7 @@ class UrlRule extends CompositeUrlRule
             // create status was not changed - there is no rules configured
             $this->createStatus = WebUrlRule::CREATE_STATUS_PARSING_ONLY;
         }
+
         return false;
     }
 }

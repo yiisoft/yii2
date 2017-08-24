@@ -258,6 +258,8 @@ EOT;
 
     /**
      * @dataProvider hintDataProvider
+     * @param mixed $hint
+     * @param string $expectedHtml
      */
     public function testHint($hint, $expectedHtml)
     {
@@ -526,7 +528,7 @@ EOD;
     }
 
     /**
-     * Helper methods
+     * Helper methods.
      */
     protected function getView()
     {
@@ -551,7 +553,7 @@ class ActiveFieldTestModel extends DynamicModel
 }
 
 /**
- * Helper Classes
+ * Helper Classes.
  */
 class ActiveFieldExtend extends ActiveField
 {

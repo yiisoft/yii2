@@ -10,7 +10,7 @@ namespace yiiunit\framework\db\pgsql;
 use yii\db\ColumnSchemaBuilder;
 
 /**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle
+ * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle.
  * @group db
  * @group pgsql
  */

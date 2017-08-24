@@ -60,6 +60,8 @@ abstract class Dependency extends \yii\base\BaseObject
     /**
      * Returns a value indicating whether the dependency has changed.
      * @deprecated since version 2.0.11. Will be removed in version 2.1. Use [[isChanged()]] instead.
+     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
+     * @return bool whether the dependency has changed.
      */
     public function getHasChanged($cache)
     {
@@ -67,7 +69,7 @@ abstract class Dependency extends \yii\base\BaseObject
     }
 
     /**
-     * Checks whether the dependency is changed
+     * Checks whether the dependency is changed.
      * @param CacheInterface $cache the cache component that is currently evaluating this dependency
      * @return bool whether the dependency has changed.
      * @since 2.0.11
@@ -83,6 +85,7 @@ abstract class Dependency extends \yii\base\BaseObject
         } else {
             $data = $this->generateDependencyData($cache);
         }
+
         return $data !== $this->data;
     }
 

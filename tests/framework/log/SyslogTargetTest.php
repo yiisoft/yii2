@@ -31,14 +31,14 @@ namespace yiiunit\framework\log {
     use yiiunit\TestCase;
 
     /**
-     * Class SyslogTargetTest
+     * Class SyslogTargetTest.
      *
      * @group log
      */
     class SyslogTargetTest extends TestCase
     {
         /**
-         * Array of static functions
+         * Array of static functions.
          *
          * @var array
          */
@@ -50,7 +50,7 @@ namespace yiiunit\framework\log {
         protected $syslogTarget;
 
         /**
-         * Set up syslogTarget as the mock object
+         * Set up syslogTarget as the mock object.
          */
         protected function setUp()
         {

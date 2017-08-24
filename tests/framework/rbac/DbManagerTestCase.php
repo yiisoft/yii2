@@ -19,7 +19,7 @@ use yiiunit\data\rbac\UserID;
 use yiiunit\framework\console\controllers\EchoMigrateController;
 
 /**
- * DbManagerTestCase
+ * DbManagerTestCase.
  * @group db
  * @group rbac
  * @group mysql
@@ -111,6 +111,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         if ($this->db === null) {
             $this->db = static::createConnection();
         }
+
         return $this->db;
     }
 
@@ -128,6 +129,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         if (!$db->isActive) {
             $db->open();
         }
+
         return $db;
     }
 
@@ -161,12 +163,15 @@ abstract class DbManagerTestCase extends ManagerTestCase
         return [
             [0, 0, true],
             [0, new UserID(0), true],
-            ['', '', false]
+            ['', '', false],
         ];
     }
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testGetPermissionsByUserWithEmptyValue($userId, $searchUserId, $isValid)
     {
@@ -184,6 +189,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testGetRolesByUserWithEmptyValue($userId, $searchUserId, $isValid)
     {
@@ -201,6 +209,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testGetAssignmentWithEmptyValue($userId, $searchUserId, $isValid)
     {
@@ -218,6 +229,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testGetAssignmentsWithEmptyValue($userId, $searchUserId, $isValid)
     {
@@ -236,6 +250,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testRevokeWithEmptyValue($userId, $searchUserId, $isValid)
     {
@@ -253,6 +270,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testRevokeAllWithEmptyValue($userId, $searchUserId, $isValid)
     {
