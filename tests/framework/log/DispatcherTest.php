@@ -75,7 +75,7 @@ namespace yiiunit\framework\log {
                 'logger' => 'yii\log\Logger',
             ]);
             $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
-            $this->assertEquals(0, $dispatcher->getLogger()->traceLevel);
+            $this->assertSame(0, $dispatcher->getLogger()->traceLevel);
 
 
             $dispatcher = new Dispatcher([
@@ -85,7 +85,7 @@ namespace yiiunit\framework\log {
                 ],
             ]);
             $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
-            $this->assertEquals(42, $dispatcher->getLogger()->traceLevel);
+            $this->assertSame(42, $dispatcher->getLogger()->traceLevel);
         }
 
         /**
@@ -98,14 +98,14 @@ namespace yiiunit\framework\log {
 
             $this->dispatcher->setLogger('yii\log\Logger');
             $this->assertInstanceOf('yii\log\Logger', $this->dispatcher->getLogger());
-            $this->assertEquals(0, $this->dispatcher->getLogger()->traceLevel);
+            $this->assertSame(0, $this->dispatcher->getLogger()->traceLevel);
 
             $this->dispatcher->setLogger([
                 'class' => 'yii\log\Logger',
                 'traceLevel' => 42,
             ]);
             $this->assertInstanceOf('yii\log\Logger', $this->dispatcher->getLogger());
-            $this->assertEquals(42, $this->dispatcher->getLogger()->traceLevel);
+            $this->assertSame(42, $this->dispatcher->getLogger()->traceLevel);
         }
 
         /**
@@ -115,7 +115,7 @@ namespace yiiunit\framework\log {
         {
             $this->logger->traceLevel = 123;
             $this->dispatcher->setLogger($this->logger);
-            $this->assertEquals(123, $this->dispatcher->getTraceLevel());
+            $this->assertSame(123, $this->dispatcher->getTraceLevel());
         }
 
         /**
@@ -125,7 +125,7 @@ namespace yiiunit\framework\log {
         {
             $this->dispatcher->setLogger($this->logger);
             $this->dispatcher->setTraceLevel(123);
-            $this->assertEquals(123, $this->logger->traceLevel);
+            $this->assertSame(123, $this->logger->traceLevel);
         }
 
         /**
@@ -135,7 +135,7 @@ namespace yiiunit\framework\log {
         {
             $this->logger->flushInterval = 99;
             $this->dispatcher->setLogger($this->logger);
-            $this->assertEquals(99, $this->dispatcher->getFlushInterval());
+            $this->assertSame(99, $this->dispatcher->getFlushInterval());
         }
 
         /**
@@ -145,7 +145,7 @@ namespace yiiunit\framework\log {
         {
             $this->dispatcher->setLogger($this->logger);
             $this->dispatcher->setFlushInterval(99);
-            $this->assertEquals(99, $this->logger->flushInterval);
+            $this->assertSame(99, $this->logger->flushInterval);
         }
 
         /**
@@ -224,7 +224,7 @@ namespace yiiunit\framework\log {
             $dispatcher = new Dispatcher(['targets' => ['fakeTarget1' => $target1, 'fakeTarget2' => $target2]]);
 
             static::$functions['microtime'] = function ($arguments) {
-                $this->assertEquals([true], $arguments);
+                $this->assertSame([true], $arguments);
                 return 'time data';
             };
 
@@ -246,7 +246,7 @@ namespace yiiunit\framework\log {
                 ]
             );
 
-            $this->assertEquals($dispatcher->targets['syslog'], Yii::createObject('yii\log\SyslogTarget'));
+            $this->assertSame($dispatcher->targets['syslog'], Yii::createObject('yii\log\SyslogTarget'));
         }
 
         /**

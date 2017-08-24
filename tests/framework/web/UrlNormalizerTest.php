@@ -30,28 +30,28 @@ class UrlNormalizerTest extends TestCase
     public function testNormalizePathInfo()
     {
         $normalizer = new UrlNormalizer();
-        $this->assertEquals('post/123/', $normalizer->normalizePathInfo('post//123//', '/a/'));
-        $this->assertEquals('post/123', $normalizer->normalizePathInfo('post//123//', '/a'));
-        $this->assertEquals('post/123/', $normalizer->normalizePathInfo('post//123//', '/'));
-        $this->assertEquals('post/123', $normalizer->normalizePathInfo('post//123//', ''));
+        $this->assertSame('post/123/', $normalizer->normalizePathInfo('post//123//', '/a/'));
+        $this->assertSame('post/123', $normalizer->normalizePathInfo('post//123//', '/a'));
+        $this->assertSame('post/123/', $normalizer->normalizePathInfo('post//123//', '/'));
+        $this->assertSame('post/123', $normalizer->normalizePathInfo('post//123//', ''));
 
         $normalizer->collapseSlashes = false;
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo('post//123//', '/a/'));
-        $this->assertEquals('post//123', $normalizer->normalizePathInfo('post//123//', '/a'));
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo('post//123//', '/'));
-        $this->assertEquals('post//123', $normalizer->normalizePathInfo('post//123//', ''));
+        $this->assertSame('post//123//', $normalizer->normalizePathInfo('post//123//', '/a/'));
+        $this->assertSame('post//123', $normalizer->normalizePathInfo('post//123//', '/a'));
+        $this->assertSame('post//123//', $normalizer->normalizePathInfo('post//123//', '/'));
+        $this->assertSame('post//123', $normalizer->normalizePathInfo('post//123//', ''));
 
         $normalizer->normalizeTrailingSlash = false;
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo('post//123//', '/a/'));
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo('post//123//', '/a'));
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo('post//123//', '/'));
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo('post//123//', ''));
+        $this->assertSame('post//123//', $normalizer->normalizePathInfo('post//123//', '/a/'));
+        $this->assertSame('post//123//', $normalizer->normalizePathInfo('post//123//', '/a'));
+        $this->assertSame('post//123//', $normalizer->normalizePathInfo('post//123//', '/'));
+        $this->assertSame('post//123//', $normalizer->normalizePathInfo('post//123//', ''));
 
         $normalizer->collapseSlashes = true;
-        $this->assertEquals('post/123/', $normalizer->normalizePathInfo('post//123//', '/a/'));
-        $this->assertEquals('post/123/', $normalizer->normalizePathInfo('post//123//', '/a'));
-        $this->assertEquals('post/123/', $normalizer->normalizePathInfo('post//123//', '/'));
-        $this->assertEquals('post/123/', $normalizer->normalizePathInfo('post//123//', ''));
+        $this->assertSame('post/123/', $normalizer->normalizePathInfo('post//123//', '/a/'));
+        $this->assertSame('post/123/', $normalizer->normalizePathInfo('post//123//', '/a'));
+        $this->assertSame('post/123/', $normalizer->normalizePathInfo('post//123//', '/'));
+        $this->assertSame('post/123/', $normalizer->normalizePathInfo('post//123//', ''));
     }
 
     public function testNormalizeRoute()
@@ -66,7 +66,7 @@ class UrlNormalizerTest extends TestCase
             $result = $normalizer->normalizeRoute($route);
             $this->fail('Expected throwing NotFoundHttpException');
         } catch (NotFoundHttpException $exc) {
-            $this->assertEquals($expected, $exc);
+            $this->assertSame($expected, $exc);
         }
 
         // 301 redirect as default action
@@ -76,7 +76,7 @@ class UrlNormalizerTest extends TestCase
             $result = $normalizer->normalizeRoute($route);
             $this->fail('Expected throwing UrlNormalizerRedirectException');
         } catch (UrlNormalizerRedirectException $exc) {
-            $this->assertEquals($expected, $exc);
+            $this->assertSame($expected, $exc);
         }
 
         // 302 redirect as default action
@@ -86,12 +86,12 @@ class UrlNormalizerTest extends TestCase
             $result = $normalizer->normalizeRoute($route);
             $this->fail('Expected throwing UrlNormalizerRedirectException');
         } catch (UrlNormalizerRedirectException $exc) {
-            $this->assertEquals($expected, $exc);
+            $this->assertSame($expected, $exc);
         }
 
         // no action
         $normalizer->action = null;
-        $this->assertEquals($route, $normalizer->normalizeRoute($route));
+        $this->assertSame($route, $normalizer->normalizeRoute($route));
 
         // custom callback which modifies the route
         $normalizer->action = function ($route, $normalizer) {
@@ -102,7 +102,7 @@ class UrlNormalizerTest extends TestCase
         $expected = $route;
         $expected[0] = 'site/redirect';
         $expected['normalizeTrailingSlash'] = $normalizer->normalizeTrailingSlash;
-        $this->assertEquals($expected, $normalizer->normalizeRoute($route));
+        $this->assertSame($expected, $normalizer->normalizeRoute($route));
 
         // custom callback which throw custom 404 error
         $normalizer->action = function ($route, $normalizer) {
@@ -113,7 +113,7 @@ class UrlNormalizerTest extends TestCase
             $result = $normalizer->normalizeRoute($route);
             $this->fail('Expected throwing NotFoundHttpException');
         } catch (NotFoundHttpException $exc) {
-            $this->assertEquals($expected, $exc);
+            $this->assertSame($expected, $exc);
         }
     }
 
@@ -139,7 +139,7 @@ class UrlNormalizerTest extends TestCase
         $manager = new UrlManager($config);
         $request->pathInfo = '/module/site/index/';
         $result = $manager->parseRequest($request);
-        $this->assertEquals(['module/site/index', []], $result);
+        $this->assertSame(['module/site/index', []], $result);
 
         // pretty URL with rules
         $config['rules'] = [
@@ -151,6 +151,6 @@ class UrlNormalizerTest extends TestCase
         $manager = new UrlManager($config);
         $request->pathInfo = 'post/123/this+is+sample/';
         $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
+        $this->assertSame(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
     }
 }

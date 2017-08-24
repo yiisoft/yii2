@@ -278,7 +278,7 @@ class AccessRuleTest extends \yiiunit\TestCase
 
         $user = $this->mockUser($userid);
         $user->accessChecker = $auth;
-        $this->assertEquals($expected, $rule->allows($action, $user, $request));
+        $this->assertSame($expected, $rule->allows($action, $user, $request));
     }
 
     /**

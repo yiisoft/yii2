@@ -120,7 +120,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                 . ($logContent ? ". Shared children log:\n$logContent" : '')
             );
         }
-        $this->assertEquals(1, $deadlockHitCount, "exactly one child must hit deadlock; shared children log:\n" . $logContent);
+        $this->assertSame(1, $deadlockHitCount, "exactly one child must hit deadlock; shared children log:\n" . $logContent);
     }
 
     /**

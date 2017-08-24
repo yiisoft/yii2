@@ -73,7 +73,7 @@ class GridViewTest extends \yiiunit\TestCase
         }
         $expectedHtml = "<div id=\"grid\"><table><tbody>{$emptyRowHtml}</tbody></table></div>";
 
-        $this->assertEquals($expectedHtml, $html);
+        $this->assertSame($expectedHtml, $html);
     }
 
     public function testGuessColumns()
@@ -117,8 +117,8 @@ class GridViewTest extends \yiiunit\TestCase
         foreach ($columns as $index => $column) {
             $this->assertInstanceOf(DataColumn::className(), $column);
             $this->assertArrayHasKey($column->attribute, $row);
-            $this->assertNotEquals('relation', $column->attribute);
-            $this->assertNotEquals('otherRelation', $column->attribute);
+            $this->assertNotSame('relation', $column->attribute);
+            $this->assertNotSame('otherRelation', $column->attribute);
         }
     }
 }

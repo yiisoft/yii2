@@ -65,7 +65,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema = $connection->schema;
 
         $tables = $schema->getTableSchemas();
-        $this->assertEquals(count($schema->getTableNames()), count($tables));
+        $this->assertSame(count($schema->getTableNames()), count($tables));
         foreach ($tables as $table) {
             $this->assertInstanceOf('yii\db\TableSchema', $table);
         }
@@ -75,10 +75,10 @@ abstract class SchemaTest extends DatabaseTestCase
     {
         $db = $this->getConnection(false);
         $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
-        $this->assertEquals(count($db->schema->getTableNames()), count($db->schema->getTableSchemas()));
+        $this->assertSame(count($db->schema->getTableNames()), count($db->schema->getTableSchemas()));
 
         $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
-        $this->assertEquals(count($db->schema->getTableNames()), count($db->schema->getTableSchemas()));
+        $this->assertSame(count($db->schema->getTableNames()), count($db->schema->getTableSchemas()));
     }
 
     public function testGetNonExistingTableSchema()
@@ -95,7 +95,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema->db->schemaCache = new FileCache();
         $noCacheTable = $schema->getTableSchema('type', true);
         $cachedTable = $schema->getTableSchema('type', false);
-        $this->assertEquals($noCacheTable, $cachedTable);
+        $this->assertSame($noCacheTable, $cachedTable);
     }
 
     /**
@@ -124,9 +124,9 @@ abstract class SchemaTest extends DatabaseTestCase
 
         $this->assertCount(1, $table->foreignKeys);
         $this->assertTrue(isset($table->foreignKeys['FK_composite_fk_order_item']));
-        $this->assertEquals('order_item', $table->foreignKeys['FK_composite_fk_order_item'][0]);
-        $this->assertEquals('order_id', $table->foreignKeys['FK_composite_fk_order_item']['order_id']);
-        $this->assertEquals('item_id', $table->foreignKeys['FK_composite_fk_order_item']['item_id']);
+        $this->assertSame('order_item', $table->foreignKeys['FK_composite_fk_order_item'][0]);
+        $this->assertSame('order_id', $table->foreignKeys['FK_composite_fk_order_item']['order_id']);
+        $this->assertSame('item_id', $table->foreignKeys['FK_composite_fk_order_item']['item_id']);
     }
 
     public function testGetPDOType()
@@ -147,7 +147,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema = $this->getConnection()->schema;
 
         foreach ($values as $value) {
-            $this->assertEquals($value[1], $schema->getPdoType($value[0]), 'type for value ' . print_r($value[0], true) . ' does not match.');
+            $this->assertSame($value[1], $schema->getPdoType($value[0]), 'type for value ' . print_r($value[0], true) . ' does not match.');
         }
         fclose($fp);
     }
@@ -356,11 +356,11 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('negative_default_values');
-        $this->assertEquals(-123, $table->getColumn('smallint_col')->defaultValue);
-        $this->assertEquals(-123, $table->getColumn('int_col')->defaultValue);
-        $this->assertEquals(-123, $table->getColumn('bigint_col')->defaultValue);
-        $this->assertEquals(-12345.6789, $table->getColumn('float_col')->defaultValue);
-        $this->assertEquals(-33.22, $table->getColumn('numeric_col')->defaultValue);
+        $this->assertSame(-123, $table->getColumn('smallint_col')->defaultValue);
+        $this->assertSame(-123, $table->getColumn('int_col')->defaultValue);
+        $this->assertSame(-123, $table->getColumn('bigint_col')->defaultValue);
+        $this->assertSame(-12345.6789, $table->getColumn('float_col')->defaultValue);
+        $this->assertSame(-33.22, $table->getColumn('numeric_col')->defaultValue);
     }
 
     public function testColumnSchema()
@@ -373,7 +373,7 @@ abstract class SchemaTest extends DatabaseTestCase
         sort($expectedColNames);
         $colNames = $table->columnNames;
         sort($colNames);
-        $this->assertEquals($expectedColNames, $colNames);
+        $this->assertSame($expectedColNames, $colNames);
 
         foreach ($table->columns as $name => $column) {
             $expected = $columns[$name];
@@ -388,7 +388,7 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->assertSame($expected['scale'], $column->scale, "scale of column $name does not match.");
             if (is_object($expected['defaultValue'])) {
                 $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
-                $this->assertEquals((string) $expected['defaultValue'], (string) $column->defaultValue, "defaultValue of column $name does not match.");
+                $this->assertSame((string) $expected['defaultValue'], (string) $column->defaultValue, "defaultValue of column $name does not match.");
             } else {
                 $this->assertSame($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
             }
@@ -418,12 +418,12 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema = $db->schema;
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-        $this->assertEquals([], $uniqueIndexes);
+        $this->assertSame([], $uniqueIndexes);
 
         $db->createCommand()->createIndex('somecolUnique', 'uniqueIndex', 'somecol', true)->execute();
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-        $this->assertEquals([
+        $this->assertSame([
             'somecolUnique' => ['somecol'],
         ], $uniqueIndexes);
 
@@ -432,7 +432,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $db->createCommand()->createIndex('someCol2Unique', 'uniqueIndex', 'someCol2', true)->execute();
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-        $this->assertEquals([
+        $this->assertSame([
             'somecolUnique' => ['somecol'],
             'someCol2Unique' => ['someCol2'],
         ], $uniqueIndexes);
@@ -634,7 +634,7 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->normalizeArrayKeys($expected, true);
             $this->normalizeArrayKeys($actual, true);
         }
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     private function normalizeArrayKeys(array &$array, $caseSensitive)

@@ -22,7 +22,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
         $db = $this->getConnection();
 
         $result = (new Query())->from('customer')->where(['[[status]]' => 2])->one($db);
-        $this->assertEquals('user3', $result['name']);
+        $this->assertSame('user3', $result['name']);
 
         $result = (new Query())->from('customer')->where(['[[status]]' => 3])->one($db);
         $this->assertFalse($result);

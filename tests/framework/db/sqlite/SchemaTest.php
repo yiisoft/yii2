@@ -44,9 +44,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $this->assertCount(1, $table->foreignKeys);
         $this->assertTrue(isset($table->foreignKeys[0]));
-        $this->assertEquals('order_item', $table->foreignKeys[0][0]);
-        $this->assertEquals('order_id', $table->foreignKeys[0]['order_id']);
-        $this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
+        $this->assertSame('order_item', $table->foreignKeys[0][0]);
+        $this->assertSame('order_id', $table->foreignKeys[0]['order_id']);
+        $this->assertSame('item_id', $table->foreignKeys[0]['item_id']);
     }
 
     public function constraintsProvider()

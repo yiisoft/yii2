@@ -86,8 +86,8 @@ class BlameableBehaviorTest extends TestCase
         $model->name = __METHOD__;
         $model->beforeSave(true);
 
-        $this->assertEquals(10, $model->created_by);
-        $this->assertEquals(10, $model->updated_by);
+        $this->assertSame(10, $model->created_by);
+        $this->assertSame(10, $model->updated_by);
     }
 
     public function testUpdateUserIsNotGuest()
@@ -101,8 +101,8 @@ class BlameableBehaviorTest extends TestCase
         $model->name = __CLASS__;
         $model->save();
 
-        $this->assertEquals(10, $model->created_by);
-        $this->assertEquals(20, $model->updated_by);
+        $this->assertSame(10, $model->created_by);
+        $this->assertSame(20, $model->updated_by);
     }
 
     public function testInsertCustomValue()
@@ -112,8 +112,8 @@ class BlameableBehaviorTest extends TestCase
         $model->getBlameable()->value = 42;
         $model->beforeSave(true);
 
-        $this->assertEquals(42, $model->created_by);
-        $this->assertEquals(42, $model->updated_by);
+        $this->assertSame(42, $model->created_by);
+        $this->assertSame(42, $model->updated_by);
     }
 
     public function testInsertClosure()
@@ -125,8 +125,8 @@ class BlameableBehaviorTest extends TestCase
         };
         $model->beforeSave(true);
 
-        $this->assertEquals(strlen($model->name), $model->created_by);
-        $this->assertEquals(strlen($model->name), $model->updated_by);
+        $this->assertSame(strlen($model->name), $model->created_by);
+        $this->assertSame(strlen($model->name), $model->updated_by);
     }
 
     public function testCustomAttributesAndEvents()
@@ -146,13 +146,13 @@ class BlameableBehaviorTest extends TestCase
         $this->assertNull($model->updated_by);
 
         $model->beforeValidate();
-        $this->assertEquals(10, $model->created_by);
+        $this->assertSame(10, $model->created_by);
         $this->assertNull($model->updated_by);
 
         $this->getUser()->login(20);
         $model->beforeSave(true);
-        $this->assertEquals(20, $model->created_by);
-        $this->assertEquals(20, $model->updated_by);
+        $this->assertSame(20, $model->created_by);
+        $this->assertSame(20, $model->updated_by);
     }
 }
 

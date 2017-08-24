@@ -55,9 +55,9 @@ class DbSessionTest extends TestCase
         $session = new DbSession();
 
         $session->writeSession('test', 'session data');
-        $this->assertEquals('session data', $session->readSession('test'));
+        $this->assertSame('session data', $session->readSession('test'));
         $session->destroySession('test');
-        $this->assertEquals('', $session->readSession('test'));
+        $this->assertSame('', $session->readSession('test'));
     }
 
     /**
@@ -77,8 +77,8 @@ class DbSessionTest extends TestCase
             ->execute();
         $session->gcSession(1);
 
-        $this->assertEquals('', $session->readSession('expire'));
-        $this->assertEquals('new data', $session->readSession('new'));
+        $this->assertSame('', $session->readSession('expire'));
+        $this->assertSame('new data', $session->readSession('new'));
     }
 
     /**
@@ -102,8 +102,8 @@ class DbSessionTest extends TestCase
             ->where(['id' => 'test'])
             ->one();
 
-        $this->assertEquals('session data', $sessionRow['data']);
-        $this->assertEquals(15, $sessionRow['user_id']);
+        $this->assertSame('session data', $sessionRow['data']);
+        $this->assertSame(15, $sessionRow['user_id']);
     }
 
     protected function runMigrate($action, $params = [])
@@ -135,12 +135,12 @@ class DbSessionTest extends TestCase
         ]);
 
         $history = $this->runMigrate('history');
-        $this->assertEquals(['base'], $history);
+        $this->assertSame(['base'], $history);
 
         $history = $this->runMigrate('up');
-        $this->assertEquals(['base', 'session_init'], $history);
+        $this->assertSame(['base', 'session_init'], $history);
 
         $history = $this->runMigrate('down');
-        $this->assertEquals(['base'], $history);
+        $this->assertSame(['base'], $history);
     }
 }

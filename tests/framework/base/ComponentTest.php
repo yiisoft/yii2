@@ -112,7 +112,7 @@ class ComponentTest extends TestCase
     {
         $value = 'new value';
         $this->component->Text = $value;
-        $this->assertEquals($value, $this->component->Text);
+        $this->assertSame($value, $this->component->Text);
         $this->expectException('yii\base\UnknownPropertyException');
         $this->component->NewMember = $value;
     }
@@ -150,7 +150,7 @@ class ComponentTest extends TestCase
 
         $this->component->attachBehavior('a', new NewBehavior());
         $this->component->setP2('test');
-        $this->assertEquals('test', $this->component->getP2());
+        $this->assertSame('test', $this->component->getP2());
 
         unset($this->component->p2);
         $this->assertNull($this->component->getP2());
@@ -199,8 +199,8 @@ class ComponentTest extends TestCase
         $this->assertNull($this->component->event);
         $this->component->raiseEvent();
         $this->assertTrue($this->component->eventHandled);
-        $this->assertEquals('click', $this->component->event->name);
-        $this->assertEquals($this->component, $this->component->event->sender);
+        $this->assertSame('click', $this->component->event->name);
+        $this->assertSame($this->component, $this->component->event->sender);
         $this->assertFalse($this->component->event->handled);
 
         $eventRaised = false;

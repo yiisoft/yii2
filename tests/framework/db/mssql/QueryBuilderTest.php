@@ -35,8 +35,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
 
-        $this->assertEquals($expectedQuerySql, $actualQuerySql);
-        $this->assertEquals($expectedQueryParams, $actualQueryParams);
+        $this->assertSame($expectedQuerySql, $actualQuerySql);
+        $this->assertSame($expectedQueryParams, $actualQueryParams);
     }
 
     public function testLimit()
@@ -49,8 +49,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
 
-        $this->assertEquals($expectedQuerySql, $actualQuerySql);
-        $this->assertEquals($expectedQueryParams, $actualQueryParams);
+        $this->assertSame($expectedQuerySql, $actualQuerySql);
+        $this->assertSame($expectedQueryParams, $actualQueryParams);
     }
 
     public function testOffset()
@@ -63,8 +63,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
 
-        $this->assertEquals($expectedQuerySql, $actualQuerySql);
-        $this->assertEquals($expectedQueryParams, $actualQueryParams);
+        $this->assertSame($expectedQuerySql, $actualQuerySql);
+        $this->assertSame($expectedQueryParams, $actualQueryParams);
     }
 
     public function testCommentColumn()
@@ -73,11 +73,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "sp_updateextendedproperty @name = N'MS_Description', @value = 'This is my column.', @level1type = N'Table',  @level1name = comment, @level2type = N'Column', @level2name = text";
         $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
 
         $expected = "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = comment, @level2type = N'Column', @level2name = text";
         $sql = $qb->dropCommentFromColumn('comment', 'text');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
     }
 
     public function testCommentTable()
@@ -86,11 +86,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "sp_updateextendedproperty @name = N'MS_Description', @value = 'This is my table.', @level1type = N'Table',  @level1name = comment";
         $sql = $qb->addCommentOnTable('comment', 'This is my table.');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
 
         $expected = "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = comment";
         $sql = $qb->dropCommentFromTable('comment');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
     }
 
     /**
@@ -119,10 +119,10 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "DBCC CHECKIDENT ('[item]', RESEED, (SELECT COALESCE(MAX([id]),0) FROM [item])+1)";
         $sql = $qb->resetSequence('item');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
 
         $expected = "DBCC CHECKIDENT ('[item], RESEED, 4)";
         $sql = $qb->resetSequence('item', 4);
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
     }
 }

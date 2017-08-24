@@ -35,8 +35,8 @@ class ArrayFixtureTest extends TestCase
         $this->_fixture->load();
 
         $this->assertCount(2, $this->_fixture->data, 'fixture data should match needed total count');
-        $this->assertEquals('customer1', $this->_fixture['customer1']['name'], 'first fixture data should match');
-        $this->assertEquals('customer2@example.com', $this->_fixture['customer2']['email'], 'second fixture data should match');
+        $this->assertSame('customer1', $this->_fixture['customer1']['name'], 'first fixture data should match');
+        $this->assertSame('customer2@example.com', $this->_fixture['customer2']['email'], 'second fixture data should match');
     }
 
     public function testNothingToLoad()

@@ -144,14 +144,14 @@ class DbMessageSourceTest extends I18NTest
 
     public function testMissingTranslationEvent()
     {
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
-        $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
 
         Event::on(DbMessageSource::className(), DbMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {});
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
-        $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         Event::off(DbMessageSource::className(), DbMessageSource::EVENT_MISSING_TRANSLATION);
 
         Event::on(DbMessageSource::className(), DbMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {
@@ -159,11 +159,11 @@ class DbMessageSourceTest extends I18NTest
                 $event->translatedMessage = 'TRANSLATION MISSING HERE!';
             }
         });
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
-        $this->assertEquals('Another missing translation message.', $this->i18n->translate('test', 'Another missing translation message.', [], 'de-DE'));
-        $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
-        $this->assertEquals('TRANSLATION MISSING HERE!', $this->i18n->translate('test', 'New missing translation message.', [], 'de-DE'));
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Another missing translation message.', $this->i18n->translate('test', 'Another missing translation message.', [], 'de-DE'));
+        $this->assertSame('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
+        $this->assertSame('TRANSLATION MISSING HERE!', $this->i18n->translate('test', 'New missing translation message.', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         Event::off(DbMessageSource::className(), DbMessageSource::EVENT_MISSING_TRANSLATION);
     }
 

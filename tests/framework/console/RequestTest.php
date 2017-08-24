@@ -82,7 +82,7 @@ class RequestTest extends TestCase
                     'params' => [
                         'param1',
                         '-12345',
-                        'option1' => '1',
+                        'option1' => true,
                         'option2' => 'testValue',
                         '_aliases' => [
                             'alias1' => true,
@@ -156,7 +156,7 @@ class RequestTest extends TestCase
 
         $request->setParams($params);
         list($route, $params) = $request->resolve();
-        $this->assertEquals($expected['route'], $route);
-        $this->assertEquals($expected['params'], $params);
+        $this->assertSame($expected['route'], $route);
+        $this->assertSame($expected['params'], $params);
     }
 }

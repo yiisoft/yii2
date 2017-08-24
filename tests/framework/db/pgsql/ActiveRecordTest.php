@@ -56,7 +56,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
         // asArray
         $customer = $customerClass::find()->where(['id' => 2])->asArray()->one();
-        $this->assertEquals([
+        $this->assertSame([
             'id' => 2,
             'email' => 'user2@example.com',
             'name' => 'user2',
@@ -100,16 +100,16 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
             ]
         )->execute();
 
-        $this->assertEquals(1, BoolAR::find()->where('bool_col = TRUE')->count('*', $db));
-        $this->assertEquals(1, BoolAR::find()->where('bool_col = FALSE')->count('*', $db));
-        $this->assertEquals(2, BoolAR::find()->where('bool_col IN (TRUE, FALSE)')->count('*', $db));
+        $this->assertSame(1, BoolAR::find()->where('bool_col = TRUE')->count('*', $db));
+        $this->assertSame(1, BoolAR::find()->where('bool_col = FALSE')->count('*', $db));
+        $this->assertSame(2, BoolAR::find()->where('bool_col IN (TRUE, FALSE)')->count('*', $db));
 
-        $this->assertEquals(1, BoolAR::find()->where(['bool_col' => true])->count('*', $db));
-        $this->assertEquals(1, BoolAR::find()->where(['bool_col' => false])->count('*', $db));
-        $this->assertEquals(2, BoolAR::find()->where(['bool_col' => [true, false]])->count('*', $db));
+        $this->assertSame(1, BoolAR::find()->where(['bool_col' => true])->count('*', $db));
+        $this->assertSame(1, BoolAR::find()->where(['bool_col' => false])->count('*', $db));
+        $this->assertSame(2, BoolAR::find()->where(['bool_col' => [true, false]])->count('*', $db));
 
-        $this->assertEquals(1, BoolAR::find()->where('bool_col = :bool_col', ['bool_col' => true])->count('*', $db));
-        $this->assertEquals(1, BoolAR::find()->where('bool_col = :bool_col', ['bool_col' => false])->count('*', $db));
+        $this->assertSame(1, BoolAR::find()->where('bool_col = :bool_col', ['bool_col' => true])->count('*', $db));
+        $this->assertSame(1, BoolAR::find()->where('bool_col = :bool_col', ['bool_col' => false])->count('*', $db));
 
         $this->assertTrue(BoolAR::find()->where(['bool_col' => true])->one($db)->bool_col);
         $this->assertFalse(BoolAR::find()->where(['bool_col' => false])->one($db)->bool_col);
@@ -170,7 +170,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $record = new DefaultPk();
         $record->type = 'type';
         $record->save(false);
-        $this->assertEquals(5, $record->primaryKey);
+        $this->assertSame(5, $record->primaryKey);
     }
 }
 

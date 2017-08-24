@@ -31,7 +31,7 @@ class ActionFilterTest extends TestCase
         $controller = new FakeController('fake', Yii::$app);
         $this->assertNull($controller->result);
         $result = $controller->runAction('test');
-        $this->assertEquals('x', $result);
+        $this->assertSame('x', $result);
         $this->assertNull($controller->result);
 
         // all filters pass
@@ -43,8 +43,8 @@ class ActionFilterTest extends TestCase
         ]);
         $this->assertNull($controller->result);
         $result = $controller->runAction('test');
-        $this->assertEquals('x-3-1', $result);
-        $this->assertEquals([1, 3], $controller->result);
+        $this->assertSame('x-3-1', $result);
+        $this->assertSame([1, 3], $controller->result);
 
         // a filter stops in the middle
         $controller = new FakeController('fake', Yii::$app, [
@@ -57,7 +57,7 @@ class ActionFilterTest extends TestCase
         $this->assertNull($controller->result);
         $result = $controller->runAction('test');
         $this->assertNull($result);
-        $this->assertEquals([1, 2], $controller->result);
+        $this->assertSame([1, 2], $controller->result);
 
         // the first filter stops
         $controller = new FakeController('fake', Yii::$app, [
@@ -70,7 +70,7 @@ class ActionFilterTest extends TestCase
         $this->assertNull($controller->result);
         $result = $controller->runAction('test');
         $this->assertNull($result);
-        $this->assertEquals([2], $controller->result);
+        $this->assertSame([2], $controller->result);
 
         // the last filter stops
         $controller = new FakeController('fake', Yii::$app, [
@@ -83,7 +83,7 @@ class ActionFilterTest extends TestCase
         $this->assertNull($controller->result);
         $result = $controller->runAction('test');
         $this->assertNull($result);
-        $this->assertEquals([1, 3, 2], $controller->result);
+        $this->assertSame([1, 3, 2], $controller->result);
     }
 
 
@@ -116,23 +116,23 @@ class ActionFilterTest extends TestCase
         $controller = new \yii\web\Controller('test', Yii::$app);
 
         // active by default
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertSame(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertSame(true, $method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index'];
         $filter->except = [];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertSame(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertSame(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index', 'view'];
         $filter->except = ['view'];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertSame(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertSame(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only;
         $filter->except = ['view'];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertSame(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertSame(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
     }
 
     /**

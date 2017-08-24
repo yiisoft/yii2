@@ -25,15 +25,15 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $connection = $this->getConnection(false);
         $params = $this->database;
 
-        $this->assertEquals($params['dsn'], $connection->dsn);
+        $this->assertSame($params['dsn'], $connection->dsn);
     }
 
     public function testQuoteValue()
     {
         $connection = $this->getConnection(false);
-        $this->assertEquals(123, $connection->quoteValue(123));
-        $this->assertEquals("'string'", $connection->quoteValue('string'));
-        $this->assertEquals("'It''s interesting'", $connection->quoteValue("It's interesting"));
+        $this->assertSame(123, $connection->quoteValue(123));
+        $this->assertSame("'string'", $connection->quoteValue('string'));
+        $this->assertSame("'It''s interesting'", $connection->quoteValue("It's interesting"));
     }
 
     public function testTransactionIsolation()
@@ -61,7 +61,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $this->assertFalse($db->isActive);
 
             // test SELECT uses slave
-            $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM profile')->queryScalar());
+            $this->assertSame(2, $db->createCommand('SELECT COUNT(*) FROM profile')->queryScalar());
             $this->assertFalse($db->isActive);
 
             // test UPDATE uses master
@@ -73,11 +73,11 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             } else {
                 $this->assertNull($db->getMaster());
             }
-            $this->assertNotEquals('test', $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar());
+            $this->assertNotSame('test', $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar());
             $result = $db->useMaster(function (Connection $db) {
                 return $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar();
             });
-            $this->assertEquals('test', $result);
+            $this->assertSame('test', $result);
 
             // test ActiveRecord read/write split
             ActiveRecord::$db = $db = $this->prepareMasterSlave($masterCount, $slaveCount);
@@ -85,7 +85,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
             $customer = Customer::findOne(1);
             $this->assertInstanceOf(Customer::className(), $customer);
-            $this->assertEquals('user1', $customer->name);
+            $this->assertSame('user1', $customer->name);
             $this->assertFalse($db->isActive);
 
             $customer->name = 'test';
@@ -93,11 +93,11 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $this->assertTrue($db->isActive);
             $customer = Customer::findOne(1);
             $this->assertInstanceOf(Customer::className(), $customer);
-            $this->assertEquals('user1', $customer->name);
+            $this->assertSame('user1', $customer->name);
             $result = $db->useMaster(function () {
                 return Customer::findOne(1)->name;
             });
-            $this->assertEquals('test', $result);
+            $this->assertSame('test', $result);
         }
     }
 
@@ -203,7 +203,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $connection = new Connection($config);
         $connection->open();
         $this->assertTrue($connection->isActive);
-        $this->assertEquals($config['dsn'], $connection->dsn);
+        $this->assertSame($config['dsn'], $connection->dsn);
 
         $connection->close();
     }

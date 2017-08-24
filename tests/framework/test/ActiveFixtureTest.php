@@ -75,15 +75,15 @@ class ActiveFixtureTest extends DatabaseTestCase
         $test->setUp();
         $fixture = $test->getFixture('customers');
 
-        $this->assertEquals(CustomerFixture::className(), get_class($fixture));
+        $this->assertSame(CustomerFixture::className(), get_class($fixture));
         $this->assertCount(2, $fixture);
-        $this->assertEquals(1, $fixture['customer1']['id']);
-        $this->assertEquals('customer1@example.com', $fixture['customer1']['email']);
-        $this->assertEquals(1, $fixture['customer1']['profile_id']);
+        $this->assertSame('1', $fixture['customer1']['id']);
+        $this->assertSame('customer1@example.com', $fixture['customer1']['email']);
+        $this->assertSame(1, $fixture['customer1']['profile_id']);
 
-        $this->assertEquals(2, $fixture['customer2']['id']);
-        $this->assertEquals('customer2@example.com', $fixture['customer2']['email']);
-        $this->assertEquals(2, $fixture['customer2']['profile_id']);
+        $this->assertSame('2', $fixture['customer2']['id']);
+        $this->assertSame('customer2@example.com', $fixture['customer2']['email']);
+        $this->assertSame(2, $fixture['customer2']['profile_id']);
 
         $test->tearDown();
     }
@@ -94,14 +94,14 @@ class ActiveFixtureTest extends DatabaseTestCase
         $test->setUp();
         $fixture = $test->getFixture('customers');
 
-        $this->assertEquals(Customer::className(), get_class($fixture->getModel('customer1')));
-        $this->assertEquals(1, $fixture->getModel('customer1')->id);
-        $this->assertEquals('customer1@example.com', $fixture->getModel('customer1')->email);
-        $this->assertEquals(1, $fixture['customer1']['profile_id']);
+        $this->assertSame(Customer::className(), get_class($fixture->getModel('customer1')));
+        $this->assertSame(1, $fixture->getModel('customer1')->id);
+        $this->assertSame('customer1@example.com', $fixture->getModel('customer1')->email);
+        $this->assertSame(1, $fixture['customer1']['profile_id']);
 
-        $this->assertEquals(2, $fixture->getModel('customer2')->id);
-        $this->assertEquals('customer2@example.com', $fixture->getModel('customer2')->email);
-        $this->assertEquals(2, $fixture['customer2']['profile_id']);
+        $this->assertSame(2, $fixture->getModel('customer2')->id);
+        $this->assertSame('customer2@example.com', $fixture->getModel('customer2')->email);
+        $this->assertSame(2, $fixture['customer2']['profile_id']);
 
         $test->tearDown();
     }

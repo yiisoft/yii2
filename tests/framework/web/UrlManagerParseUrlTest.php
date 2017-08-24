@@ -75,16 +75,16 @@ class UrlManagerParseUrlTest extends TestCase
 
         // empty pathinfo
         $result = $manager->parseRequest($this->getRequest(''));
-        $this->assertEquals(['', []], $result);
+        $this->assertSame(['', []], $result);
         // normal pathinfo
         $result = $manager->parseRequest($this->getRequest('site/index'));
-        $this->assertEquals(['site/index', []], $result);
+        $this->assertSame(['site/index', []], $result);
         // pathinfo with module
         $result = $manager->parseRequest($this->getRequest('module/site/index'));
-        $this->assertEquals(['module/site/index', []], $result);
+        $this->assertSame(['module/site/index', []], $result);
         // pathinfo with trailing slashes
         $result = $manager->parseRequest($this->getRequest('module/site/index/'));
-        $this->assertEquals(['module/site/index/', []], $result);
+        $this->assertSame(['module/site/index/', []], $result);
     }
 
     public function testWithoutRulesStrict()
@@ -120,24 +120,24 @@ class UrlManagerParseUrlTest extends TestCase
 
         // empty pathinfo
         $result = $manager->parseRequest($this->getRequest(''));
-        $this->assertEquals(['', []], $result);
+        $this->assertSame(['', []], $result);
         // normal pathinfo
         $result = $manager->parseRequest($this->getRequest('site/index'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("site/index$suffix"));
-        $this->assertEquals(['site/index', []], $result);
+        $this->assertSame(['site/index', []], $result);
         // pathinfo with module
         $result = $manager->parseRequest($this->getRequest('module/site/index'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("module/site/index$suffix"));
-        $this->assertEquals(['module/site/index', []], $result);
+        $this->assertSame(['module/site/index', []], $result);
         // pathinfo with trailing slashes
         if ($suffix !== '/') {
             $result = $manager->parseRequest($this->getRequest('module/site/index/'));
             $this->assertFalse($result);
         }
         $result = $manager->parseRequest($this->getRequest("module/site/index/$suffix"));
-        $this->assertEquals(['module/site/index/', []], $result);
+        $this->assertSame(['module/site/index/', []], $result);
     }
 
     public function testSimpleRules()
@@ -153,19 +153,19 @@ class UrlManagerParseUrlTest extends TestCase
 
         // matching pathinfo
         $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample'));
-        $this->assertEquals(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
+        $this->assertSame(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         // trailing slash is significant, no match
         $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample/'));
-        $this->assertEquals(['book/123/this+is+sample/', []], $result);
+        $this->assertSame(['book/123/this+is+sample/', []], $result);
         // empty pathinfo
         $result = $manager->parseRequest($this->getRequest(''));
-        $this->assertEquals(['', []], $result);
+        $this->assertSame(['', []], $result);
         // normal pathinfo
         $result = $manager->parseRequest($this->getRequest('site/index'));
-        $this->assertEquals(['site/index', []], $result);
+        $this->assertSame(['site/index', []], $result);
         // pathinfo with module
         $result = $manager->parseRequest($this->getRequest('module/site/index'));
-        $this->assertEquals(['module/site/index', []], $result);
+        $this->assertSame(['module/site/index', []], $result);
     }
 
     public function testSimpleRulesStrict()
@@ -182,7 +182,7 @@ class UrlManagerParseUrlTest extends TestCase
 
         // matching pathinfo
         $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample'));
-        $this->assertEquals(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
+        $this->assertSame(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         // trailing slash is significant, no match
         $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample/'));
         $this->assertFalse($result);
@@ -217,29 +217,29 @@ class UrlManagerParseUrlTest extends TestCase
         $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("book/123/this+is+sample$suffix"));
-        $this->assertEquals(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
+        $this->assertSame(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         // trailing slash is significant, no match
         $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample/'));
         if ($suffix === '/') {
-            $this->assertEquals(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
+            $this->assertSame(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         } else {
             $this->assertFalse($result);
         }
         $result = $manager->parseRequest($this->getRequest("book/123/this+is+sample/$suffix"));
-        $this->assertEquals(['book/123/this+is+sample/', []], $result);
+        $this->assertSame(['book/123/this+is+sample/', []], $result);
         // empty pathinfo
         $result = $manager->parseRequest($this->getRequest(''));
-        $this->assertEquals(['', []], $result);
+        $this->assertSame(['', []], $result);
         // normal pathinfo
         $result = $manager->parseRequest($this->getRequest('site/index'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("site/index$suffix"));
-        $this->assertEquals(['site/index', []], $result);
+        $this->assertSame(['site/index', []], $result);
         // pathinfo with module
         $result = $manager->parseRequest($this->getRequest('module/site/index'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("module/site/index$suffix"));
-        $this->assertEquals(['module/site/index', []], $result);
+        $this->assertSame(['module/site/index', []], $result);
     }
 
     /**
@@ -263,11 +263,11 @@ class UrlManagerParseUrlTest extends TestCase
         $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("book/123/this+is+sample$suffix"));
-        $this->assertEquals(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
+        $this->assertSame(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         // trailing slash is significant, no match
         $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample/'));
         if ($suffix === '/') {
-            $this->assertEquals(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
+            $this->assertSame(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         } else {
             $this->assertFalse($result);
         }
@@ -314,22 +314,22 @@ class UrlManagerParseUrlTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
+        $this->assertSame(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         // matching pathinfo PUT/POST request
         $_SERVER['REQUEST_METHOD'] = 'PUT';
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
+        $this->assertSame(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
+        $this->assertSame(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
 
         // no wrong matching
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $request->pathInfo = 'POST/GET';
         $result = $manager->parseRequest($request);
-        $this->assertEquals(['post/get', []], $result);
+        $this->assertSame(['post/get', []], $result);
 
         // createUrl should ignore REST rules
         $this->mockApplication([
@@ -340,7 +340,7 @@ class UrlManagerParseUrlTest extends TestCase
                 ],
             ],
         ], \yii\web\Application::className());
-        $this->assertEquals('/app/post/delete?id=123', $manager->createUrl(['post/delete', 'id' => 123]));
+        $this->assertSame('/app/post/delete?id=123', $manager->createUrl(['post/delete', 'id' => 123]));
         $this->destroyApplication();
 
         unset($_SERVER['REQUEST_METHOD']);

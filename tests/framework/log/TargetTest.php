@@ -73,10 +73,10 @@ class TargetTest extends TestCase
         $logger->log('testG', Logger::LEVEL_ERROR, 'yii.db.Command');
         $logger->log('testH', Logger::LEVEL_ERROR, 'yii.db.Command.whatever');
 
-        $this->assertEquals(count($expected), count(static::$messages));
+        $this->assertSame(count($expected), count(static::$messages));
         $i = 0;
         foreach ($expected as $e) {
-            $this->assertEquals('test' . $e, static::$messages[$i++][0]);
+            $this->assertSame('test' . $e, static::$messages[$i++][0]);
         }
     }
 
@@ -137,10 +137,10 @@ class TargetTest extends TestCase
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
         $target->setLevels(['info', 'error']);
-        $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_ERROR, $target->getLevels());
+        $this->assertSame(Logger::LEVEL_INFO | Logger::LEVEL_ERROR, $target->getLevels());
 
         $target->setLevels(['trace']);
-        $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
+        $this->assertSame(Logger::LEVEL_TRACE, $target->getLevels());
 
         $this->expectException('yii\\base\\InvalidConfigException');
         $this->expectExceptionMessage('Unrecognized level: unknown level');
@@ -156,10 +156,10 @@ class TargetTest extends TestCase
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
         $target->setLevels(Logger::LEVEL_INFO | Logger::LEVEL_WARNING);
-        $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_WARNING, $target->getLevels());
+        $this->assertSame(Logger::LEVEL_INFO | Logger::LEVEL_WARNING, $target->getLevels());
 
         $target->setLevels(Logger::LEVEL_TRACE);
-        $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
+        $this->assertSame(Logger::LEVEL_TRACE, $target->getLevels());
 
         $this->expectException('yii\\base\\InvalidConfigException');
         $this->expectExceptionMessage('Incorrect 128 value');

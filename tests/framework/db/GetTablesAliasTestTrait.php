@@ -28,7 +28,7 @@ trait GetTablesAliasTestTrait
 
         $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals([
+        $this->assertSame([
             '{{prf}}' => '{{profile}}',
             '{{usr}}' => '{{user}}',
             '{{a b}}' => '{{c d}}',
@@ -42,7 +42,7 @@ trait GetTablesAliasTestTrait
 
         $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals([
+        $this->assertSame([
             '{{prf}}' => '{{profile}}',
             '{{usr}}' => '{{user}}',
             '{{order}}' => '{{order}}',
@@ -68,7 +68,7 @@ trait GetTablesAliasTestTrait
 
         $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals([
+        $this->assertSame([
             '{{prf}}' => '{{profile}}',
             '{{usr}}' => '{{user}}',
             '{{srv}}' => '{{service}}',
@@ -88,7 +88,7 @@ trait GetTablesAliasTestTrait
 
         $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals([
+        $this->assertSame([
             '{{%order_item}}' => '{{%order_item}}',
         ], $tables);
     }
@@ -103,7 +103,7 @@ trait GetTablesAliasTestTrait
 
         $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals([
+        $this->assertSame([
             '{{tickets.workflows}}' => '{{tickets.workflows}}',
         ], $tables);
     }

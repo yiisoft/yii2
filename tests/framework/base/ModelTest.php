@@ -28,9 +28,9 @@ class ModelTest extends TestCase
     public function testGetAttributeLabel()
     {
         $speaker = new Speaker();
-        $this->assertEquals('First Name', $speaker->getAttributeLabel('firstName'));
-        $this->assertEquals('This is the custom label', $speaker->getAttributeLabel('customLabel'));
-        $this->assertEquals('Underscore Style', $speaker->getAttributeLabel('underscore_style'));
+        $this->assertSame('First Name', $speaker->getAttributeLabel('firstName'));
+        $this->assertSame('This is the custom label', $speaker->getAttributeLabel('customLabel'));
+        $this->assertSame('Underscore Style', $speaker->getAttributeLabel('underscore_style'));
     }
 
     public function testGetAttributes()
@@ -39,24 +39,24 @@ class ModelTest extends TestCase
         $speaker->firstName = 'Qiang';
         $speaker->lastName = 'Xue';
 
-        $this->assertEquals([
+        $this->assertSame([
             'firstName' => 'Qiang',
             'lastName' => 'Xue',
             'customLabel' => null,
             'underscore_style' => null,
         ], $speaker->getAttributes());
 
-        $this->assertEquals([
+        $this->assertSame([
             'firstName' => 'Qiang',
             'lastName' => 'Xue',
         ], $speaker->getAttributes(['firstName', 'lastName']));
 
-        $this->assertEquals([
+        $this->assertSame([
             'firstName' => 'Qiang',
             'lastName' => 'Xue',
         ], $speaker->getAttributes(null, ['customLabel', 'underscore_style']));
 
-        $this->assertEquals([
+        $this->assertSame([
             'firstName' => 'Qiang',
         ], $speaker->getAttributes(['firstName', 'lastName'], ['lastName', 'customLabel', 'underscore_style']));
     }
@@ -74,17 +74,17 @@ class ModelTest extends TestCase
         $speaker->setScenario('test');
         $speaker->setAttributes(['firstName' => 'Qiang', 'underscore_style' => 'test']);
         $this->assertNull($speaker->underscore_style);
-        $this->assertEquals('Qiang', $speaker->firstName);
+        $this->assertSame('Qiang', $speaker->firstName);
 
         $speaker->setAttributes(['firstName' => 'Qiang', 'underscore_style' => 'test'], false);
-        $this->assertEquals('test', $speaker->underscore_style);
-        $this->assertEquals('Qiang', $speaker->firstName);
+        $this->assertSame('test', $speaker->underscore_style);
+        $this->assertSame('Qiang', $speaker->firstName);
     }
 
     public function testLoad()
     {
         $singer = new Singer();
-        $this->assertEquals('Singer', $singer->formName());
+        $this->assertSame('Singer', $singer->formName());
 
         $post = ['firstName' => 'Qiang'];
 
@@ -92,19 +92,19 @@ class ModelTest extends TestCase
         $model = new Speaker();
         $model->setScenario('test');
         $this->assertTrue($model->load($post));
-        $this->assertEquals('Qiang', $model->firstName);
+        $this->assertSame('Qiang', $model->firstName);
 
         Speaker::$formName = 'Speaker';
         $model = new Speaker();
         $model->setScenario('test');
         $this->assertTrue($model->load(['Speaker' => $post]));
-        $this->assertEquals('Qiang', $model->firstName);
+        $this->assertSame('Qiang', $model->firstName);
 
         Speaker::$formName = 'Speaker';
         $model = new Speaker();
         $model->setScenario('test');
         $this->assertFalse($model->load(['Example' => []]));
-        $this->assertEquals('', $model->firstName);
+        $this->assertNull($model->firstName);
     }
 
     public function testLoadMultiple()
@@ -120,8 +120,8 @@ class ModelTest extends TestCase
         $smith = new Speaker();
         $smith->setScenario('test');
         $this->assertTrue(Speaker::loadMultiple([$neo, $smith], $data));
-        $this->assertEquals('Thomas', $neo->firstName);
-        $this->assertEquals('Smith', $smith->lastName);
+        $this->assertSame('Thomas', $neo->firstName);
+        $this->assertSame('Smith', $smith->lastName);
 
         Speaker::$formName = 'Speaker';
         $neo = new Speaker();
@@ -129,8 +129,8 @@ class ModelTest extends TestCase
         $smith = new Speaker();
         $smith->setScenario('test');
         $this->assertTrue(Speaker::loadMultiple([$neo, $smith], ['Speaker' => $data], 'Speaker'));
-        $this->assertEquals('Thomas', $neo->firstName);
-        $this->assertEquals('Smith', $smith->lastName);
+        $this->assertSame('Thomas', $neo->firstName);
+        $this->assertSame('Smith', $smith->lastName);
 
         Speaker::$formName = 'Speaker';
         $neo = new Speaker();
@@ -138,8 +138,8 @@ class ModelTest extends TestCase
         $smith = new Speaker();
         $smith->setScenario('test');
         $this->assertFalse(Speaker::loadMultiple([$neo, $smith], ['Speaker' => $data], 'Morpheus'));
-        $this->assertEquals('', $neo->firstName);
-        $this->assertEquals('', $smith->lastName);
+        $this->assertNull($neo->firstName);
+        $this->assertNull($smith->lastName);
     }
 
     public function testActiveAttributes()
@@ -150,7 +150,7 @@ class ModelTest extends TestCase
 
         $speaker = new Speaker();
         $speaker->setScenario('test');
-        $this->assertEquals(['firstName', 'lastName', 'underscore_style'], $speaker->activeAttributes());
+        $this->assertSame(['firstName', 'lastName', 'underscore_style'], $speaker->activeAttributes());
     }
 
     public function testIsAttributeSafe()
@@ -172,11 +172,11 @@ class ModelTest extends TestCase
             [['account_id', 'user_id'], 'required'],
         ];
         $model->scenario = Model::SCENARIO_DEFAULT;
-        $this->assertEquals(['account_id', 'user_id'], $model->safeAttributes());
-        $this->assertEquals(['account_id', 'user_id'], $model->activeAttributes());
+        $this->assertSame(['account_id', 'user_id'], $model->safeAttributes());
+        $this->assertSame(['account_id', 'user_id'], $model->activeAttributes());
         $model->scenario = 'update'; // not existing scenario
-        $this->assertEquals([], $model->safeAttributes());
-        $this->assertEquals([], $model->activeAttributes());
+        $this->assertSame([], $model->safeAttributes());
+        $this->assertSame([], $model->activeAttributes());
 
         $model = new RulesModel();
         $model->rules = [
@@ -187,14 +187,14 @@ class ModelTest extends TestCase
             [['email', 'name'], 'required', 'on' => 'create'],
         ];
         $model->scenario = Model::SCENARIO_DEFAULT;
-        $this->assertEquals(['account_id', 'user_id'], $model->safeAttributes());
-        $this->assertEquals(['account_id', 'user_id'], $model->activeAttributes());
+        $this->assertSame(['account_id', 'user_id'], $model->safeAttributes());
+        $this->assertSame(['account_id', 'user_id'], $model->activeAttributes());
         $model->scenario = 'update';
-        $this->assertEquals(['account_id', 'user_id'], $model->safeAttributes());
-        $this->assertEquals(['account_id', 'user_id'], $model->activeAttributes());
+        $this->assertSame(['account_id', 'user_id'], $model->safeAttributes());
+        $this->assertSame(['account_id', 'user_id'], $model->activeAttributes());
         $model->scenario = 'create';
-        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->safeAttributes());
-        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
+        $this->assertSame(['account_id', 'user_id', 'email', 'name'], $model->safeAttributes());
+        $this->assertSame(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
 
         $model = new RulesModel();
         $model->rules = [
@@ -206,14 +206,14 @@ class ModelTest extends TestCase
             [['email', 'name'], 'required', 'on' => 'update'],
         ];
         $model->scenario = Model::SCENARIO_DEFAULT;
-        $this->assertEquals(['account_id', 'user_id'], $model->safeAttributes());
-        $this->assertEquals(['account_id', 'user_id'], $model->activeAttributes());
+        $this->assertSame(['account_id', 'user_id'], $model->safeAttributes());
+        $this->assertSame(['account_id', 'user_id'], $model->activeAttributes());
         $model->scenario = 'update';
-        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->safeAttributes());
-        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
+        $this->assertSame(['account_id', 'user_id', 'email', 'name'], $model->safeAttributes());
+        $this->assertSame(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
         $model->scenario = 'create';
-        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->safeAttributes());
-        $this->assertEquals(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
+        $this->assertSame(['account_id', 'user_id', 'email', 'name'], $model->safeAttributes());
+        $this->assertSame(['account_id', 'user_id', 'email', 'name'], $model->activeAttributes());
     }
 
     public function testUnsafeAttributes()
@@ -222,8 +222,8 @@ class ModelTest extends TestCase
         $model->rules = [
             [['name', '!email'], 'required'], // Name is safe to set, but email is not. Both are required
         ];
-        $this->assertEquals(['name'], $model->safeAttributes());
-        $this->assertEquals(['name', 'email'], $model->activeAttributes());
+        $this->assertSame(['name'], $model->safeAttributes());
+        $this->assertSame(['name', 'email'], $model->activeAttributes());
         $model->attributes = ['name' => 'mdmunir', 'email' => 'mdm@mun.com'];
         $this->assertNull($model->email);
         $this->assertFalse($model->validate());
@@ -235,14 +235,14 @@ class ModelTest extends TestCase
         ];
         $model->attributes = ['name' => 'mdmunir', 'user_id' => '62792684'];
         $this->assertTrue($model->validate());
-        $this->assertEquals('3426', $model->user_id);
+        $this->assertSame('3426', $model->user_id);
 
         $model = new RulesModel();
         $model->rules = [
             [['name', 'email'], 'required'],
             [['!email'], 'safe'],
         ];
-        $this->assertEquals(['name'], $model->safeAttributes());
+        $this->assertSame(['name'], $model->safeAttributes());
         $model->attributes = ['name' => 'mdmunir', 'email' => 'm2792684@mdm.com'];
         $this->assertFalse($model->validate());
 
@@ -253,14 +253,14 @@ class ModelTest extends TestCase
             [['!email'], 'safe', 'on' => 'update'],
         ];
         $model->setScenario(RulesModel::SCENARIO_DEFAULT);
-        $this->assertEquals(['name', 'email'], $model->safeAttributes());
+        $this->assertSame(['name', 'email'], $model->safeAttributes());
         $model->attributes = ['name' => 'mdmunir', 'email' => 'm2792684@mdm.com'];
         $this->assertTrue($model->validate());
 
         $model->setScenario('update');
-        $this->assertEquals(['name'], $model->safeAttributes());
+        $this->assertSame(['name'], $model->safeAttributes());
         $model->attributes = ['name' => 'D426', 'email' => 'd426@mdm.com'];
-        $this->assertNotEquals('d426@mdm.com', $model->email);
+        $this->assertNotSame('d426@mdm.com', $model->email);
     }
 
     public function testErrors()
@@ -275,23 +275,23 @@ class ModelTest extends TestCase
         $this->assertFalse($speaker->hasErrors('firstName'));
 
         $speaker->addError('firstName', 'Something is wrong!');
-        $this->assertEquals(['firstName' => ['Something is wrong!']], $speaker->getErrors());
-        $this->assertEquals(['Something is wrong!'], $speaker->getErrors('firstName'));
+        $this->assertSame(['firstName' => ['Something is wrong!']], $speaker->getErrors());
+        $this->assertSame(['Something is wrong!'], $speaker->getErrors('firstName'));
 
         $speaker->addError('firstName', 'Totally wrong!');
-        $this->assertEquals(['firstName' => ['Something is wrong!', 'Totally wrong!']], $speaker->getErrors());
-        $this->assertEquals(['Something is wrong!', 'Totally wrong!'], $speaker->getErrors('firstName'));
+        $this->assertSame(['firstName' => ['Something is wrong!', 'Totally wrong!']], $speaker->getErrors());
+        $this->assertSame(['Something is wrong!', 'Totally wrong!'], $speaker->getErrors('firstName'));
 
         $this->assertTrue($speaker->hasErrors());
         $this->assertTrue($speaker->hasErrors('firstName'));
         $this->assertFalse($speaker->hasErrors('lastName'));
 
-        $this->assertEquals(['firstName' => 'Something is wrong!'], $speaker->getFirstErrors());
-        $this->assertEquals('Something is wrong!', $speaker->getFirstError('firstName'));
+        $this->assertSame(['firstName' => 'Something is wrong!'], $speaker->getFirstErrors());
+        $this->assertSame('Something is wrong!', $speaker->getFirstError('firstName'));
         $this->assertNull($speaker->getFirstError('lastName'));
 
         $speaker->addError('lastName', 'Another one!');
-        $this->assertEquals([
+        $this->assertSame([
             'firstName' => [
                 'Something is wrong!',
                 'Totally wrong!',
@@ -300,7 +300,7 @@ class ModelTest extends TestCase
         ], $speaker->getErrors());
 
         $speaker->clearErrors('firstName');
-        $this->assertEquals([
+        $this->assertSame([
             'lastName' => ['Another one!'],
         ], $speaker->getErrors());
 
@@ -315,16 +315,16 @@ class ModelTest extends TestCase
 
         $errors = ['firstName' => ['Something is wrong!']];
         $singer->addErrors($errors);
-        $this->assertEquals($singer->getErrors(), $errors);
+        $this->assertSame($singer->getErrors(), $errors);
 
         $singer->clearErrors();
         $singer->addErrors(['firstName' => 'Something is wrong!']);
-        $this->assertEquals($singer->getErrors(), ['firstName' => ['Something is wrong!']]);
+        $this->assertSame($singer->getErrors(), ['firstName' => ['Something is wrong!']]);
 
         $singer->clearErrors();
         $errors = ['firstName' => ['Something is wrong!', 'Totally wrong!']];
         $singer->addErrors($errors);
-        $this->assertEquals($singer->getErrors(), $errors);
+        $this->assertSame($singer->getErrors(), $errors);
 
         $singer->clearErrors();
         $errors = [
@@ -332,7 +332,7 @@ class ModelTest extends TestCase
             'lastName' => ['Another one!'],
         ];
         $singer->addErrors($errors);
-        $this->assertEquals($singer->getErrors(), $errors);
+        $this->assertSame($singer->getErrors(), $errors);
 
         $singer->clearErrors();
         $errors = [
@@ -340,7 +340,7 @@ class ModelTest extends TestCase
             'lastName' => ['Another one!'],
         ];
         $singer->addErrors($errors);
-        $this->assertEquals($singer->getErrors(), $errors);
+        $this->assertSame($singer->getErrors(), $errors);
 
         $singer->clearErrors();
         $errors = [
@@ -348,7 +348,7 @@ class ModelTest extends TestCase
             'lastName' => ['Another one!', 'Totally wrong!'],
         ];
         $singer->addErrors($errors);
-        $this->assertEquals($singer->getErrors(), $errors);
+        $this->assertSame($singer->getErrors(), $errors);
     }
 
     public function testArraySyntax()
@@ -365,7 +365,7 @@ class ModelTest extends TestCase
         // set
         $speaker['firstName'] = 'Qiang';
 
-        $this->assertEquals('Qiang', $speaker['firstName']);
+        $this->assertSame('Qiang', $speaker['firstName']);
         $this->assertTrue(isset($speaker['firstName']));
 
         // iteration
@@ -373,7 +373,7 @@ class ModelTest extends TestCase
         foreach ($speaker as $key => $attribute) {
             $attributes[$key] = $attribute;
         }
-        $this->assertEquals([
+        $this->assertSame([
             'firstName' => 'Qiang',
             'lastName' => null,
             'customLabel' => null,
@@ -391,28 +391,28 @@ class ModelTest extends TestCase
     public function testDefaults()
     {
         $singer = new Model();
-        $this->assertEquals([], $singer->rules());
-        $this->assertEquals([], $singer->attributeLabels());
+        $this->assertSame([], $singer->rules());
+        $this->assertSame([], $singer->attributeLabels());
     }
 
     public function testDefaultScenarios()
     {
         $singer = new Singer();
-        $this->assertEquals(['default' => ['lastName', 'underscore_style', 'test']], $singer->scenarios());
+        $this->assertSame(['default' => ['lastName', 'underscore_style', 'test']], $singer->scenarios());
 
         $scenarios = [
             'default' => ['id', 'name', 'description'],
             'administration' => ['name', 'description', 'is_disabled'],
         ];
         $model = new ComplexModel1();
-        $this->assertEquals($scenarios, $model->scenarios());
+        $this->assertSame($scenarios, $model->scenarios());
         $scenarios = [
             'default' => ['id', 'name', 'description'],
             'suddenlyUnexpectedScenario' => ['name', 'description'],
             'administration' => ['id', 'name', 'description', 'is_disabled'],
         ];
         $model = new ComplexModel2();
-        $this->assertEquals($scenarios, $model->scenarios());
+        $this->assertSame($scenarios, $model->scenarios());
     }
 
     public function testIsAttributeRequired()
@@ -447,7 +447,7 @@ class ModelTest extends TestCase
         $model = new WriteOnlyModel();
 
         $model->setAttributes(['password' => 'test'], true);
-        $this->assertEquals('test', $model->passwordHash);
+        $this->assertSame('test', $model->passwordHash);
 
         $this->assertTrue($model->validate());
     }

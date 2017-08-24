@@ -60,13 +60,13 @@ class UnknownCommandExceptionTest extends TestCase
     public function testSuggestCommand($command, $expectedSuggestion)
     {
         $exception = new UnknownCommandException($command, Yii::$app);
-        $this->assertEquals($expectedSuggestion, $exception->getSuggestedAlternatives());
+        $this->assertSame($expectedSuggestion, $exception->getSuggestedAlternatives());
     }
 
     public function testNameAndConstructor()
     {
         $exception = new UnknownCommandException('test', Yii::$app);
-        $this->assertEquals('Unknown command', $exception->getName());
-        $this->assertEquals('test', $exception->command);
+        $this->assertSame('Unknown command', $exception->getName());
+        $this->assertSame('test', $exception->command);
     }
 }

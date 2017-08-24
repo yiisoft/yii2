@@ -34,14 +34,14 @@ class DefaultValueValidatorTest extends TestCase
         // original values to chek which attritubes where modified
         $objB = clone $obj;
         $val->validateAttribute($obj, 'attrB');
-        $this->assertEquals($val->value, $obj->attrB);
-        $this->assertEquals($objB->attrA, $obj->attrA);
+        $this->assertSame($val->value, $obj->attrB);
+        $this->assertSame($objB->attrA, $obj->attrA);
         $val->value = 'new_test_value';
         $obj = clone $objB; // get clean object
         $val->validateAttribute($obj, 'attrC');
-        $this->assertEquals('new_test_value', $obj->attrC);
-        $this->assertEquals($objB->attrA, $obj->attrA);
+        $this->assertSame('new_test_value', $obj->attrC);
+        $this->assertSame($objB->attrA, $obj->attrA);
         $val->validateAttribute($obj, 'attrA');
-        $this->assertEquals($objB->attrA, $obj->attrA);
+        $this->assertSame($objB->attrA, $obj->attrA);
     }
 }

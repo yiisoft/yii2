@@ -211,7 +211,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $expected = <<<'EOF'
 123<script src="/js/jquery.js"></script>4
 EOF;
-        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+        $this->assertSame($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
     public function testSimpleDependency()
@@ -277,11 +277,11 @@ EOF;
         $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
 
         $this->assertArrayHasKey('position', $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']->jsOptions);
-        $this->assertEquals($pos, $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']->jsOptions['position']);
+        $this->assertSame($pos, $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']->jsOptions['position']);
         $this->assertArrayHasKey('position', $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']->jsOptions);
-        $this->assertEquals($pos, $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']->jsOptions['position']);
+        $this->assertSame($pos, $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']->jsOptions['position']);
         $this->assertArrayHasKey('position', $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']->jsOptions);
-        $this->assertEquals($pos, $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']->jsOptions['position']);
+        $this->assertSame($pos, $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']->jsOptions['position']);
 
         switch ($pos) {
             case View::POS_HEAD:
@@ -367,7 +367,7 @@ EOF;
         $expected = <<<'EOF'
 123<script src="/js/jquery.js"></script>4
 EOF;
-        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+        $this->assertSame($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
     public function testPerFileOptions()
@@ -383,7 +383,7 @@ EOF;
 <link href="/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/normal.js" charset="utf-8"></script>
 <script src="/defered.js" charset="utf-8" defer></script>4
 EOF;
-        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+        $this->assertSame($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
     public function registerFileDataProvider()
@@ -509,7 +509,7 @@ EOF;
         $view = $this->getView(['appendTimestamp' => $appendTimestamp]);
         $method = 'register' . ucfirst($type) . 'File';
         $view->$method($path);
-        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+        $this->assertSame($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
 
         Yii::setAlias('@web', $originalAlias);
     }

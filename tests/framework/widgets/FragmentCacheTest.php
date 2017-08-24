@@ -40,10 +40,10 @@ class FragmentCacheTest extends \yiiunit\TestCase
         ob_start();
         ob_implicit_flush(false);
         $this->assertFalse($view->beginCache('test'));
-        $this->assertEquals('cached fragment', ob_get_clean());
+        $this->assertSame('cached fragment', ob_get_clean());
 
         ob_end_clean();
-        $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
+        $this->assertSame($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
     }
 
     public function testCacheDisabled1()
@@ -62,10 +62,10 @@ class FragmentCacheTest extends \yiiunit\TestCase
         $this->assertTrue($view->beginCache('test', ['enabled' => false]));
         echo 'cached fragment';
         $view->endCache();
-        $this->assertEquals('cached fragment', ob_get_clean());
+        $this->assertSame('cached fragment', ob_get_clean());
 
         ob_end_clean();
-        $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
+        $this->assertSame($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
     }
 
     public function testCacheDisabled2()
@@ -84,10 +84,10 @@ class FragmentCacheTest extends \yiiunit\TestCase
         $this->assertTrue($view->beginCache('test', ['enabled' => false]));
         echo 'cached fragment other';
         $view->endCache();
-        $this->assertEquals('cached fragment other', ob_get_clean());
+        $this->assertSame('cached fragment other', ob_get_clean());
 
         ob_end_clean();
-        $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
+        $this->assertSame($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
     }
 
     public function testSingleDynamicFragment()
@@ -117,7 +117,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
             $expectedContent = vsprintf('single dynamic cached fragment: %d', [
                 $counter,
             ]);
-            $this->assertEquals($expectedContent, ob_get_clean());
+            $this->assertSame($expectedContent, ob_get_clean());
         }
     }
 
@@ -150,7 +150,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
                 md5($counter),
                 $counter,
             ]);
-            $this->assertEquals($expectedContent, ob_get_clean());
+            $this->assertSame($expectedContent, ob_get_clean());
         }
     }
 
@@ -190,7 +190,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
                 sha1($counter),
                 $counter,
             ]);
-            $this->assertEquals($expectedContent, ob_get_clean());
+            $this->assertSame($expectedContent, ob_get_clean());
         }
     }
 

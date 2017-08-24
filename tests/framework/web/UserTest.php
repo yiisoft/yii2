@@ -180,17 +180,17 @@ class UserTest extends TestCase
         $cookie->value = 'junk';
         $cookiesMock->add($cookie);
         Yii::$app->user->getIdentity();
-        $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
+        $this->assertSame(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
 
         Yii::$app->user->login(UserIdentity::findIdentity('user1'), 3600);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user1');
-        $this->assertNotEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
+        $this->assertNotSame(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
 
         Yii::$app->user->login(UserIdentity::findIdentity('user2'), 0);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user2');
-        $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
+        $this->assertSame(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
     }
 
     /**
@@ -237,7 +237,7 @@ class UserTest extends TestCase
         $this->reset();
         Yii::$app->request->setUrl('normal');
         $user->loginRequired();
-        $this->assertEquals('normal', $user->getReturnUrl());
+        $this->assertSame('normal', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
 
 
@@ -246,33 +246,33 @@ class UserTest extends TestCase
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
 
         $user->loginRequired();
-        $this->assertEquals(Yii::$app->getHomeUrl(), $user->getReturnUrl());
+        $this->assertSame(Yii::$app->getHomeUrl(), $user->getReturnUrl());
         // AJAX requests don't update returnUrl but they do cause redirection.
         $this->assertTrue(Yii::$app->response->getIsRedirection());
 
         $user->loginRequired(false);
-        $this->assertEquals('ajax', $user->getReturnUrl());
+        $this->assertSame('ajax', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
 
         $this->reset();
         Yii::$app->request->setUrl('json-only');
         $_SERVER['HTTP_ACCEPT'] = 'Accept:  text/json, q=0.1';
         $user->loginRequired(true, false);
-        $this->assertEquals('json-only', $user->getReturnUrl());
+        $this->assertSame('json-only', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
 
         $this->reset();
         Yii::$app->request->setUrl('json-only');
         $_SERVER['HTTP_ACCEPT'] = 'text/json,q=0.1';
         $user->loginRequired(true, false);
-        $this->assertEquals('json-only', $user->getReturnUrl());
+        $this->assertSame('json-only', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
 
         $this->reset();
         Yii::$app->request->setUrl('accept-all');
         $_SERVER['HTTP_ACCEPT'] = '*/*;q=0.1';
         $user->loginRequired();
-        $this->assertEquals('accept-all', $user->getReturnUrl());
+        $this->assertSame('accept-all', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
 
         $this->reset();
@@ -288,14 +288,14 @@ class UserTest extends TestCase
         Yii::$app->request->setUrl('accept-html-json');
         $_SERVER['HTTP_ACCEPT'] = 'text/json; q=1, text/html; q=0.1';
         $user->loginRequired();
-        $this->assertEquals('accept-html-json', $user->getReturnUrl());
+        $this->assertSame('accept-html-json', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
 
         $this->reset();
         Yii::$app->request->setUrl('accept-html-json');
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=1,application/xhtml+xml;q=0.1';
         $user->loginRequired();
-        $this->assertEquals('accept-html-json', $user->getReturnUrl());
+        $this->assertSame('accept-html-json', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
 
         $this->reset();
@@ -310,7 +310,7 @@ class UserTest extends TestCase
         Yii::$app->request->setUrl('set-return-url-on-get-request');
         Yii::$app->getSession()->set($user->returnUrlParam, null);
         $user->loginRequired();
-        $this->assertEquals('set-return-url-on-get-request', Yii::$app->getSession()->get($user->returnUrlParam));
+        $this->assertSame('set-return-url-on-get-request', Yii::$app->getSession()->get($user->returnUrlParam));
 
         // Confirm that returnUrl is not set.
         $this->reset();
@@ -320,7 +320,7 @@ class UserTest extends TestCase
             $user->loginRequired();
         } catch (ForbiddenHttpException $e) {
         }
-        $this->assertNotEquals('json-only', $user->getReturnUrl());
+        $this->assertNotSame('json-only', $user->getReturnUrl());
 
         $this->reset();
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';

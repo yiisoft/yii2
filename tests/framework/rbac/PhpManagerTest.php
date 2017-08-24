@@ -111,10 +111,10 @@ class PhpManagerTest extends ManagerTestCase
         $this->auth = $this->createManager();
         $this->auth->load();
 
-        $this->assertEquals($items, $this->auth->items);
-        $this->assertEquals($children, $this->auth->children);
-        $this->assertEquals($assignments, $this->auth->assignments);
-        $this->assertEquals($rules, $this->auth->rules);
+        $this->assertSame($items, $this->auth->items);
+        $this->assertSame($children, $this->auth->children);
+        $this->assertSame($assignments, $this->auth->assignments);
+        $this->assertSame($rules, $this->auth->rules);
     }
 
     public function testUpdateItemName()

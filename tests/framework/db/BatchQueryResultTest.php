@@ -30,7 +30,7 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
         $query->from('customer')->orderBy('id');
         $result = $query->batch(2, $db);
         $this->assertInstanceOf(BatchQueryResult::className(), $result);
-        $this->assertEquals(2, $result->batchSize);
+        $this->assertSame(2, $result->batchSize);
         $this->assertSame($result->query, $query);
 
         // normal query
@@ -42,9 +42,9 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
             $allRows = array_merge($allRows, $rows);
         }
         $this->assertCount(3, $allRows);
-        $this->assertEquals('user1', $allRows[0]['name']);
-        $this->assertEquals('user2', $allRows[1]['name']);
-        $this->assertEquals('user3', $allRows[2]['name']);
+        $this->assertSame('user1', $allRows[0]['name']);
+        $this->assertSame('user2', $allRows[1]['name']);
+        $this->assertSame('user3', $allRows[2]['name']);
         // rewind
         $allRows = [];
         foreach ($batch as $rows) {
@@ -72,9 +72,9 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
             $allRows = array_merge($allRows, $rows);
         }
         $this->assertCount(3, $allRows);
-        $this->assertEquals('address1', $allRows['user1']['address']);
-        $this->assertEquals('address2', $allRows['user2']['address']);
-        $this->assertEquals('address3', $allRows['user3']['address']);
+        $this->assertSame('address1', $allRows['user1']['address']);
+        $this->assertSame('address2', $allRows['user2']['address']);
+        $this->assertSame('address3', $allRows['user3']['address']);
 
         // each
         $query = new Query();
@@ -84,9 +84,9 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
             $allRows[] = $rows;
         }
         $this->assertCount(3, $allRows);
-        $this->assertEquals('user1', $allRows[0]['name']);
-        $this->assertEquals('user2', $allRows[1]['name']);
-        $this->assertEquals('user3', $allRows[2]['name']);
+        $this->assertSame('user1', $allRows[0]['name']);
+        $this->assertSame('user2', $allRows[1]['name']);
+        $this->assertSame('user3', $allRows[2]['name']);
 
         // each with key
         $query = new Query();
@@ -96,9 +96,9 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
             $allRows[$key] = $row;
         }
         $this->assertCount(3, $allRows);
-        $this->assertEquals('address1', $allRows['user1']['address']);
-        $this->assertEquals('address2', $allRows['user2']['address']);
-        $this->assertEquals('address3', $allRows['user3']['address']);
+        $this->assertSame('address1', $allRows['user1']['address']);
+        $this->assertSame('address2', $allRows['user2']['address']);
+        $this->assertSame('address3', $allRows['user3']['address']);
     }
 
     public function testActiveQuery()
@@ -111,9 +111,9 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
             $customers = array_merge($customers, $models);
         }
         $this->assertCount(3, $customers);
-        $this->assertEquals('user1', $customers[0]->name);
-        $this->assertEquals('user2', $customers[1]->name);
-        $this->assertEquals('user3', $customers[2]->name);
+        $this->assertSame('user1', $customers[0]->name);
+        $this->assertSame('user2', $customers[1]->name);
+        $this->assertSame('user3', $customers[2]->name);
 
         // batch with eager loading
         $query = Customer::find()->with('orders')->orderBy('id');

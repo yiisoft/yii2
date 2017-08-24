@@ -8,6 +8,7 @@
 namespace yii\cs;
 
 use PhpCsFixer\Config;
+use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -113,17 +114,17 @@ class YiiConfig extends Config
 //                ],
 //            ],
             'ordered_imports' => [
-                'sortAlgorithm' => 'alpha',
+                'sortAlgorithm' => OrderedImportsFixer::SORT_ALPHA,
                 'importsOrder' => [
-                    'const',
-                    'function',
-                    'class',
+                    OrderedImportsFixer::IMPORT_TYPE_CONST,
+                    OrderedImportsFixer::IMPORT_TYPE_CLASS,
+                    OrderedImportsFixer::IMPORT_TYPE_FUNCTION,
                 ],
             ],
             'php_unit_construct' => true,
             'php_unit_dedicate_assert' => true,
             'php_unit_fqcn_annotation' => true,
-//            'php_unit_strict' => true, // needs more attention
+            'php_unit_strict' => true, // needs more attention
             'phpdoc_add_missing_param_annotation' => true,
             'phpdoc_indent' => true,
 //            'phpdoc_inline_tag' => true, // see https://github.com/yiisoft/yii2/issues/11635

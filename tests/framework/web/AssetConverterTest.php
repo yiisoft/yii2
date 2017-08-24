@@ -53,7 +53,7 @@ EOF
 
         $converter = new AssetConverter();
         $converter->commands['php'] = ['txt', 'php {from} > {to}'];
-        $this->assertEquals('test.txt', $converter->convert('test.php', $tmpPath));
+        $this->assertSame('test.txt', $converter->convert('test.php', $tmpPath));
 
         $this->assertFileExists($tmpPath . '/test.txt', 'Failed asserting that asset output file exists.');
         $this->assertStringEqualsFile($tmpPath . '/test.txt', "Hello World!\nHello Yii!");
@@ -84,6 +84,6 @@ EOF
 
         $converter->forceConvert = true;
         $converter->convert('test.php', $tmpPath);
-        $this->assertNotEquals($initialConvertTime, file_get_contents($tmpPath . '/test.txt'));
+        $this->assertNotSame($initialConvertTime, file_get_contents($tmpPath . '/test.txt'));
     }
 }

@@ -94,18 +94,18 @@ class BehaviorTest extends TestCase
         $bar = new BarClass();
         $behavior = new BarBehavior();
         $bar->attachBehavior('bar', $behavior);
-        $this->assertEquals(1, BarBehavior::$attachCount);
-        $this->assertEquals(0, BarBehavior::$detachCount);
-        $this->assertEquals('behavior property', $bar->behaviorProperty);
-        $this->assertEquals('behavior method', $bar->behaviorMethod());
-        $this->assertEquals('behavior property', $bar->getBehavior('bar')->behaviorProperty);
-        $this->assertEquals('behavior method', $bar->getBehavior('bar')->behaviorMethod());
+        $this->assertSame(1, BarBehavior::$attachCount);
+        $this->assertSame(0, BarBehavior::$detachCount);
+        $this->assertSame('behavior property', $bar->behaviorProperty);
+        $this->assertSame('behavior method', $bar->behaviorMethod());
+        $this->assertSame('behavior property', $bar->getBehavior('bar')->behaviorProperty);
+        $this->assertSame('behavior method', $bar->getBehavior('bar')->behaviorMethod());
 
         $behavior = new BarBehavior(['behaviorProperty' => 'reattached']);
         $bar->attachBehavior('bar', $behavior);
-        $this->assertEquals(2, BarBehavior::$attachCount);
-        $this->assertEquals(1, BarBehavior::$detachCount);
-        $this->assertEquals('reattached', $bar->behaviorProperty);
+        $this->assertSame(2, BarBehavior::$attachCount);
+        $this->assertSame(1, BarBehavior::$detachCount);
+        $this->assertSame('reattached', $bar->behaviorProperty);
     }
 
     public function testAttachAndAccessingAnonymous()
@@ -116,10 +116,10 @@ class BehaviorTest extends TestCase
         $bar = new BarClass();
         $behavior = new BarBehavior();
         $bar->attachBehaviors([$behavior]);
-        $this->assertEquals(1, BarBehavior::$attachCount);
-        $this->assertEquals(0, BarBehavior::$detachCount);
-        $this->assertEquals('behavior property', $bar->behaviorProperty);
-        $this->assertEquals('behavior method', $bar->behaviorMethod());
+        $this->assertSame(1, BarBehavior::$attachCount);
+        $this->assertSame(0, BarBehavior::$detachCount);
+        $this->assertSame('behavior property', $bar->behaviorProperty);
+        $this->assertSame('behavior method', $bar->behaviorMethod());
     }
 
     public function testAutomaticAttach()
@@ -128,12 +128,12 @@ class BehaviorTest extends TestCase
         BarBehavior::$detachCount = 0;
 
         $foo = new FooClass();
-        $this->assertEquals(0, BarBehavior::$attachCount);
-        $this->assertEquals(0, BarBehavior::$detachCount);
-        $this->assertEquals('behavior property', $foo->behaviorProperty);
-        $this->assertEquals('behavior method', $foo->behaviorMethod());
-        $this->assertEquals(1, BarBehavior::$attachCount);
-        $this->assertEquals(0, BarBehavior::$detachCount);
+        $this->assertSame(0, BarBehavior::$attachCount);
+        $this->assertSame(0, BarBehavior::$detachCount);
+        $this->assertSame('behavior property', $foo->behaviorProperty);
+        $this->assertSame('behavior method', $foo->behaviorMethod());
+        $this->assertSame(1, BarBehavior::$attachCount);
+        $this->assertSame(0, BarBehavior::$detachCount);
     }
 
     public function testMagicMethods()
@@ -146,7 +146,7 @@ class BehaviorTest extends TestCase
         $this->assertFalse($bar->hasMethod('magicBehaviorMethod', false));
         $this->assertTrue($bar->hasMethod('magicBehaviorMethod'));
 
-        $this->assertEquals('Magic Behavior Method Result!', $bar->magicBehaviorMethod());
+        $this->assertSame('Magic Behavior Method Result!', $bar->magicBehaviorMethod());
     }
 
     public function testCallUnknownMethod()

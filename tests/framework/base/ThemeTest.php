@@ -26,7 +26,7 @@ class ThemeTest extends TestCase
     {
         $expected = str_replace('\\', '/', $expected);
         $actual = str_replace('\\', '/', $actual);
-        $this->assertEquals($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
+        $this->assertSame($expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase);
     }
 
     public function testSetBaseUrl()
@@ -34,7 +34,7 @@ class ThemeTest extends TestCase
         $theme = new Theme(['baseUrl' => '@web/themes/basic']);
         $expected = Yii::getAlias('@web/themes/basic');
 
-        $this->assertEquals($expected, $theme->baseUrl);
+        $this->assertSame($expected, $theme->baseUrl);
     }
 
     public function testGetUrlFilledBaseUrl()
@@ -44,7 +44,7 @@ class ThemeTest extends TestCase
 
         $actual = $theme->getUrl('/js/test.js');
 
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function testGetUrlNotFilledBaseUrl()
@@ -61,7 +61,7 @@ class ThemeTest extends TestCase
         $theme = new Theme(['basePath' => '@app/framework/base/fixtures/themes/basic']);
         $expected = Yii::getAlias('@app/framework/base/fixtures/themes/basic');
 
-        $this->assertEquals($expected, $theme->basePath);
+        $this->assertSame($expected, $theme->basePath);
     }
 
     public function testGetPathFilledBasePath()

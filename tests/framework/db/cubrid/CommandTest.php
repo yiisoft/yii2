@@ -33,7 +33,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $sql = 'SELECT name FROM customer WHERE email=:email';
         $command = $db->createCommand($sql);
         $command->bindParam(':email', $email);
-        $this->assertEquals($name, $command->queryScalar());
+        $this->assertSame($name, $command->queryScalar());
 
         $sql = "INSERT INTO type (int_col, char_col, char_col2, enum_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, '', :char_col, :enum_col, :float_col, CHAR_TO_BLOB(:blob_col), :numeric_col, :bool_col)";
         $command = $db->createCommand($sql);
@@ -51,17 +51,17 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $command->bindParam(':blob_col', $blobCol);
         $command->bindParam(':numeric_col', $numericCol);
         $command->bindParam(':bool_col', $boolCol);
-        $this->assertEquals(1, $command->execute());
+        $this->assertSame(1, $command->execute());
 
         $sql = 'SELECT * FROM type';
         $row = $db->createCommand($sql)->queryOne();
-        $this->assertEquals($intCol, $row['int_col']);
-        $this->assertEquals($enumCol, $row['enum_col']);
-        $this->assertEquals($charCol, $row['char_col2']);
-        $this->assertEquals($floatCol, $row['float_col']);
-        $this->assertEquals($blobCol, fread($row['blob_col'], 3));
-        $this->assertEquals($numericCol, $row['numeric_col']);
-        $this->assertEquals($boolCol, $row['bool_col']);
+        $this->assertSame($intCol, $row['int_col']);
+        $this->assertSame($enumCol, $row['enum_col']);
+        $this->assertSame($charCol, $row['char_col2']);
+        $this->assertSame($floatCol, $row['float_col']);
+        $this->assertSame($blobCol, fread($row['blob_col'], 3));
+        $this->assertSame($numericCol, $row['numeric_col']);
+        $this->assertSame($boolCol, $row['bool_col']);
 
         // bindValue
         $sql = 'INSERT INTO customer(email, name, address) VALUES (:email, \'user5\', \'address5\')';
@@ -72,7 +72,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $sql = 'SELECT email FROM customer WHERE name=:name';
         $command = $db->createCommand($sql);
         $command->bindValue(':name', 'user5');
-        $this->assertEquals('user5@example.com', $command->queryScalar());
+        $this->assertSame('user5@example.com', $command->queryScalar());
     }
 
     public function testAutoQuoting()
@@ -81,7 +81,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
-        $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
+        $this->assertSame('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
 
     public function testAddDropCheck()

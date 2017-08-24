@@ -75,7 +75,7 @@ class BaseObjectTest extends TestCase
     {
         $value = 'new value';
         $this->object->Text = $value;
-        $this->assertEquals($value, $this->object->Text);
+        $this->assertSame($value, $this->object->Text);
         $this->expectException('yii\base\UnknownPropertyException');
         $this->object->NewMember = $value;
     }
@@ -125,7 +125,7 @@ class BaseObjectTest extends TestCase
 
     public function testArrayProperty()
     {
-        $this->assertEquals([], $this->object->items);
+        $this->assertSame([], $this->object->items);
         // the following won't work
         /*
         $this->object->items[] = 1;
@@ -136,15 +136,15 @@ class BaseObjectTest extends TestCase
     public function testObjectProperty()
     {
         $this->assertInstanceOf(NewObject::className(), $this->object->object);
-        $this->assertEquals('object text', $this->object->object->text);
+        $this->assertSame('object text', $this->object->object->text);
         $this->object->object->text = 'new text';
-        $this->assertEquals('new text', $this->object->object->text);
+        $this->assertSame('new text', $this->object->object->text);
     }
 
     public function testConstruct()
     {
         $object = new NewObject(['text' => 'test text']);
-        $this->assertEquals('test text', $object->getText());
+        $this->assertSame('test text', $object->getText());
     }
 
     public function testGetClassName()

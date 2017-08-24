@@ -156,7 +156,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
                 't1.id' => new \yii\db\Expression('[[t2.id]]'),
                 't1.category' => $category,
                 't2.language' => $this->language,
-            ])->all(static::$db), 'message', 'translation');
+            ])->all(static::$db), 'message', function ($data) {return (string) $data['translation'];});
     }
 
     // DbMessage tests variants:
@@ -184,6 +184,6 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         $messages = $this->loadMessages($category);
 
         $this->assertArrayHasKey($obsoleteMessage, $messages, "Obsolete message should not be removed. Command output:\n\n" . $out);
-        $this->assertEquals($obsoleteTranslation, $messages[$obsoleteMessage], "Obsolete message was not marked properly. Command output:\n\n" . $out);
+        $this->assertSame($obsoleteTranslation, $messages[$obsoleteMessage], "Obsolete message was not marked properly. Command output:\n\n" . $out);
     }
 }

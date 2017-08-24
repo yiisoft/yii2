@@ -19,14 +19,14 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
-        $this->assertEquals([], $request->parseAcceptHeader(' '));
+        $this->assertSame([], $request->parseAcceptHeader(' '));
 
-        $this->assertEquals([
+        $this->assertSame([
             'audio/basic' => ['q' => 1],
             'audio/*' => ['q' => 0.2],
         ], $request->parseAcceptHeader('audio/*; q=0.2, audio/basic'));
 
-        $this->assertEquals([
+        $this->assertSame([
             'application/json' => ['q' => 1, 'version' => '1.0'],
             'application/xml' => ['q' => 1, 'version' => '2.0', 'x'],
             'text/x-c' => ['q' => 1],
@@ -46,37 +46,37 @@ class RequestTest extends TestCase
 
         $request = new Request();
         $request->acceptableLanguages = [];
-        $this->assertEquals('en', $request->getPreferredLanguage());
+        $this->assertSame('en', $request->getPreferredLanguage());
 
         $request = new Request();
         $request->acceptableLanguages = ['de'];
-        $this->assertEquals('en', $request->getPreferredLanguage());
+        $this->assertSame('en', $request->getPreferredLanguage());
 
         $request = new Request();
         $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
-        $this->assertEquals('en', $request->getPreferredLanguage(['en']));
+        $this->assertSame('en', $request->getPreferredLanguage(['en']));
 
         $request = new Request();
         $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
-        $this->assertEquals('de', $request->getPreferredLanguage(['ru', 'de']));
-        $this->assertEquals('de-DE', $request->getPreferredLanguage(['ru', 'de-DE']));
+        $this->assertSame('de', $request->getPreferredLanguage(['ru', 'de']));
+        $this->assertSame('de-DE', $request->getPreferredLanguage(['ru', 'de-DE']));
 
         $request = new Request();
         $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
-        $this->assertEquals('de', $request->getPreferredLanguage(['de', 'ru']));
+        $this->assertSame('de', $request->getPreferredLanguage(['de', 'ru']));
 
         $request = new Request();
         $request->acceptableLanguages = ['en-us', 'de', 'ru-RU'];
-        $this->assertEquals('ru-ru', $request->getPreferredLanguage(['ru-ru']));
+        $this->assertSame('ru-ru', $request->getPreferredLanguage(['ru-ru']));
 
         $request = new Request();
         $request->acceptableLanguages = ['en-us', 'de'];
-        $this->assertEquals('ru-ru', $request->getPreferredLanguage(['ru-ru', 'pl']));
-        $this->assertEquals('ru-RU', $request->getPreferredLanguage(['ru-RU', 'pl']));
+        $this->assertSame('ru-ru', $request->getPreferredLanguage(['ru-ru', 'pl']));
+        $this->assertSame('ru-RU', $request->getPreferredLanguage(['ru-RU', 'pl']));
 
         $request = new Request();
         $request->acceptableLanguages = ['en-us', 'de'];
-        $this->assertEquals('pl', $request->getPreferredLanguage(['pl', 'ru-ru']));
+        $this->assertSame('pl', $request->getPreferredLanguage(['pl', 'ru-ru']));
     }
 
     /**
@@ -215,39 +215,39 @@ class RequestTest extends TestCase
 
         $_GET['page'] = 1;
         $result = $request->resolve();
-        $this->assertEquals(['post/list', ['page' => 1]], $result);
-        $this->assertEquals($_GET, ['page' => 1]);
+        $this->assertSame(['post/list', ['page' => 1]], $result);
+        $this->assertSame($_GET, ['page' => 1]);
 
         $request->setQueryParams(['page' => 5]);
         $result = $request->resolve();
-        $this->assertEquals(['post/list', ['page' => 5]], $result);
-        $this->assertEquals($_GET, ['page' => 1]);
+        $this->assertSame(['post/list', ['page' => 5]], $result);
+        $this->assertSame($_GET, ['page' => 1]);
 
         $request->setQueryParams(['custom-page' => 5]);
         $result = $request->resolve();
-        $this->assertEquals(['post/list', ['custom-page' => 5]], $result);
-        $this->assertEquals($_GET, ['page' => 1]);
+        $this->assertSame(['post/list', ['custom-page' => 5]], $result);
+        $this->assertSame($_GET, ['page' => 1]);
 
         unset($_GET['page']);
 
         $request = new Request();
         $request->pathInfo = 'post/21';
 
-        $this->assertEquals($_GET, []);
+        $this->assertSame($_GET, []);
         $result = $request->resolve();
-        $this->assertEquals(['post/view', ['id' => 21]], $result);
-        $this->assertEquals($_GET, ['id' => 21]);
+        $this->assertSame(['post/view', ['id' => 21]], $result);
+        $this->assertSame($_GET, ['id' => 21]);
 
         $_GET['id'] = 42;
         $result = $request->resolve();
-        $this->assertEquals(['post/view', ['id' => 21]], $result);
-        $this->assertEquals($_GET, ['id' => 21]);
+        $this->assertSame(['post/view', ['id' => 21]], $result);
+        $this->assertSame($_GET, ['id' => 21]);
 
         $_GET['id'] = 63;
         $request->setQueryParams(['token' => 'secret']);
         $result = $request->resolve();
-        $this->assertEquals(['post/view', ['id' => 21, 'token' => 'secret']], $result);
-        $this->assertEquals($_GET, ['id' => 63]);
+        $this->assertSame(['post/view', ['id' => 21, 'token' => 'secret']], $result);
+        $this->assertSame($_GET, ['id' => 63]);
     }
 
     public function testGetHostInfo()
@@ -290,10 +290,10 @@ class RequestTest extends TestCase
         $request = new Request();
 
         $_SERVER['SERVER_NAME'] = 'servername';
-        $this->assertEquals('servername', $request->getServerName());
+        $this->assertSame('servername', $request->getServerName());
 
         unset($_SERVER['SERVER_NAME']);
-        $this->assertEquals(null, $request->getServerName());
+        $this->assertSame(null, $request->getServerName());
     }
 
     public function testGetServerPort()
@@ -301,10 +301,10 @@ class RequestTest extends TestCase
         $request = new Request();
 
         $_SERVER['SERVER_PORT'] = 33;
-        $this->assertEquals(33, $request->getServerPort());
+        $this->assertSame(33, $request->getServerPort());
 
         unset($_SERVER['SERVER_PORT']);
-        $this->assertEquals(null, $request->getServerPort());
+        $this->assertSame(null, $request->getServerPort());
     }
 
     public function isSecureServerDataProvider()
@@ -370,7 +370,7 @@ class RequestTest extends TestCase
         ]);
         $_SERVER = $server;
 
-        $this->assertEquals($expected, $request->getIsSecureConnection());
+        $this->assertSame($expected, $request->getIsSecureConnection());
         $_SERVER = $original;
     }
 
@@ -430,7 +430,7 @@ class RequestTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals($expected, $request->getUserIP());
+        $this->assertSame($expected, $request->getUserIP());
         $_SERVER = $original;
     }
 
@@ -464,7 +464,7 @@ class RequestTest extends TestCase
         $_SERVER = $server;
         $request = new Request();
 
-        $this->assertEquals($expected, $request->getMethod());
+        $this->assertSame($expected, $request->getMethod());
         $_SERVER = $original;
     }
 
@@ -496,7 +496,7 @@ class RequestTest extends TestCase
         $_SERVER = $server;
         $request = new Request();
 
-        $this->assertEquals($expected, $request->getIsAjax());
+        $this->assertSame($expected, $request->getIsAjax());
         $_SERVER = $original;
     }
 
@@ -529,7 +529,7 @@ class RequestTest extends TestCase
         $_SERVER = $server;
         $request = new Request();
 
-        $this->assertEquals($expected, $request->getIsPjax());
+        $this->assertSame($expected, $request->getIsPjax());
         $_SERVER = $original;
     }
 
@@ -537,10 +537,10 @@ class RequestTest extends TestCase
     {
         $_SERVER['HTTP_ORIGIN'] = 'https://www.w3.org';
         $request = new Request();
-        $this->assertEquals('https://www.w3.org', $request->getOrigin());
+        $this->assertSame('https://www.w3.org', $request->getOrigin());
 
         unset($_SERVER['HTTP_ORIGIN']);
         $request = new Request();
-        $this->assertEquals(null, $request->getOrigin());
+        $this->assertSame(null, $request->getOrigin());
     }
 }

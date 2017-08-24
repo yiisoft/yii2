@@ -350,7 +350,7 @@ _MSG_
         }
         $formatter = new MessageFormatter();
         $result = $formatter->format($pattern, $args, 'en-US');
-        $this->assertEquals($expected, $result, $formatter->getErrorMessage());
+        $this->assertSame($expected, $result, $formatter->getErrorMessage());
     }
 
     /**
@@ -368,7 +368,7 @@ _MSG_
 
         $formatter = new MessageFormatter();
         $result = $formatter->parse($pattern, $expected, $locale);
-        $this->assertEquals($args, $result, $formatter->getErrorMessage() . ' Pattern: ' . $pattern);
+        $this->assertSame($args, $result, $formatter->getErrorMessage() . ' Pattern: ' . $pattern);
     }
 
     public function testInsufficientArguments()
@@ -380,7 +380,7 @@ _MSG_
             self::N => self::N_VALUE,
         ], 'en-US');
 
-        $this->assertEquals($expected, $result, $formatter->getErrorMessage());
+        $this->assertSame($expected, $result, $formatter->getErrorMessage());
     }
 
     public function testNoParams()
@@ -388,7 +388,7 @@ _MSG_
         $pattern = '{' . self::SUBJECT . '} is ' . self::N;
         $formatter = new MessageFormatter();
         $result = $formatter->format($pattern, [], 'en-US');
-        $this->assertEquals($pattern, $result, $formatter->getErrorMessage());
+        $this->assertSame($pattern, $result, $formatter->getErrorMessage());
     }
 
     public function testMalformedFormatter()

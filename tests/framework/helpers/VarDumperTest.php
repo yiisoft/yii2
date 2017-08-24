@@ -44,7 +44,7 @@ class VarDumperTest extends TestCase
     public function testDumpObject()
     {
         $obj = new \StdClass();
-        $this->assertEquals("stdClass#1\n(\n)", VarDumper::dumpAsString($obj));
+        $this->assertSame("stdClass#1\n(\n)", VarDumper::dumpAsString($obj));
 
         $obj = new \StdClass();
         $obj->name = 'test-name';

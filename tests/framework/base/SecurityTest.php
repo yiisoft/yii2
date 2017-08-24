@@ -104,7 +104,7 @@ class SecurityTest extends TestCase
         $key = 'secret';
         $hashedData = $this->security->hashData($data, $key);
         $this->assertNotSame($data, $hashedData);
-        $this->assertEquals($data, $this->security->validateData($hashedData, $key));
+        $this->assertSame($data, $this->security->validateData($hashedData, $key));
         $hashedData[strlen($hashedData) - 1] = 'A';
         $this->assertFalse($this->security->validateData($hashedData, $key));
     }
@@ -127,7 +127,7 @@ class SecurityTest extends TestCase
         $encryptedData = $this->security->encryptByPassword($data, $key);
         $this->assertNotSame($data, $encryptedData);
         $decryptedData = $this->security->decryptByPassword($encryptedData, $key);
-        $this->assertEquals($data, $decryptedData);
+        $this->assertSame($data, $decryptedData);
 
         $tampered = $encryptedData;
         $tampered[20] = ~$tampered[20];
@@ -143,11 +143,11 @@ class SecurityTest extends TestCase
         $encryptedData = $this->security->encryptByKey($data, $key);
         $this->assertNotSame($data, $encryptedData);
         $decryptedData = $this->security->decryptByKey($encryptedData, $key);
-        $this->assertEquals($data, $decryptedData);
+        $this->assertSame($data, $decryptedData);
 
         $encryptedData = $this->security->encryptByKey($data, $key, $key);
         $decryptedData = $this->security->decryptByKey($encryptedData, $key, $key);
-        $this->assertEquals($data, $decryptedData);
+        $this->assertSame($data, $decryptedData);
 
         $tampered = $encryptedData;
         $tampered[20] = ~$tampered[20];
@@ -239,8 +239,8 @@ TEXT;
                 $data2 = hex2bin(preg_replace('{\s+}', '', $dataHex));
                 $encrypted2 = hex2bin(preg_replace('{\s+}', '', $encryptedHex));
 
-                $this->assertEquals($data, $this->security->$decrypt($encrypted2, $key2));
-                $this->assertEquals($data2, $this->security->$decrypt($encrypted2, $key));
+                $this->assertSame($data, $this->security->$decrypt($encrypted2, $key2));
+                $this->assertSame($data2, $this->security->$decrypt($encrypted2, $key));
             }
         }
     }
@@ -553,7 +553,7 @@ TEXT;
         $data = hex2bin(preg_replace('{\s+}', '', $data));
         $encrypted = hex2bin(preg_replace('{\s+}', '', $encrypted));
 
-        $this->assertEquals($data, $this->security->decryptByKey($encrypted, $key));
+        $this->assertSame($data, $this->security->decryptByKey($encrypted, $key));
     }
 
     public function dataProviderEncryptByPasswordCompat()
@@ -863,7 +863,7 @@ TEXT;
         $data = hex2bin(preg_replace('{\s+}', '', $data));
         $encrypted = hex2bin(preg_replace('{\s+}', '', $encrypted));
 
-        $this->assertEquals($data, $this->security->decryptByPassword($encrypted, $password));
+        $this->assertSame($data, $this->security->decryptByPassword($encrypted, $password));
     }
 
 
@@ -958,12 +958,12 @@ TEXT;
         for ($length = 1; $length < 64; $length++) {
             $key1 = $this->security->generateRandomKey($length);
             $this->assertInternalType('string', $key1);
-            $this->assertEquals($length, strlen($key1));
+            $this->assertSame($length, strlen($key1));
             $key2 = $this->security->generateRandomKey($length);
             $this->assertInternalType('string', $key2);
-            $this->assertEquals($length, strlen($key2));
+            $this->assertSame($length, strlen($key2));
             if ($length >= 7) { // avoid random test failure, short strings are likely to collide
-                $this->assertNotEquals($key1, $key2);
+                $this->assertNotSame($key1, $key2);
             }
         }
 
@@ -971,11 +971,11 @@ TEXT;
         $length = 1024 * 1024;
         $key1 = $this->security->generateRandomKey($length);
         $this->assertInternalType('string', $key1);
-        $this->assertEquals($length, strlen($key1));
+        $this->assertSame($length, strlen($key1));
         $key2 = $this->security->generateRandomKey($length);
         $this->assertInternalType('string', $key2);
-        $this->assertEquals($length, strlen($key2));
-        $this->assertNotEquals($key1, $key2);
+        $this->assertSame($length, strlen($key2));
+        $this->assertNotSame($key1, $key2);
 
         // force /dev/urandom reading loop to deal with chunked data
         // the above test may have read everything in one run.
@@ -985,7 +985,7 @@ TEXT;
         $length = 1024 * 1024;
         $key1 = $this->security->generateRandomKey($length);
         $this->assertInternalType('string', $key1);
-        $this->assertEquals($length, strlen($key1));
+        $this->assertSame($length, strlen($key1));
     }
 
     protected function randTime(Security $security, $count, $length, $message)
@@ -1041,8 +1041,8 @@ TEXT;
     {
         $length = 21;
         $key = $this->security->generateRandomString($length);
-        $this->assertEquals($length, strlen($key));
-        $this->assertEquals(1, preg_match('/[A-Za-z0-9_-]+/', $key));
+        $this->assertSame($length, strlen($key));
+        $this->assertSame(1, preg_match('/[A-Za-z0-9_-]+/', $key));
     }
 
     public function dataProviderPbkdf2()
@@ -1137,7 +1137,7 @@ TEXT;
     {
         $this->security->derivationIterations = $iterations;
         $DK = $this->security->pbkdf2($hash, $password, $salt, $iterations, $length);
-        $this->assertEquals($okm, bin2hex($DK));
+        $this->assertSame($okm, bin2hex($DK));
     }
 
     public function dataProviderDeriveKey()
@@ -1224,7 +1224,7 @@ TEXT;
     public function testHkdf($hash, $ikm, $salt, $info, $l, $prk, $okm)
     {
         $dk = $this->security->hkdf($hash, hex2bin($ikm), hex2bin($salt), hex2bin($info), $l);
-        $this->assertEquals($okm, bin2hex($dk));
+        $this->assertSame($okm, bin2hex($dk));
     }
 
     public function dataProviderCompareStrings()
@@ -1261,7 +1261,7 @@ TEXT;
      */
     public function testCompareStrings($expected, $actual)
     {
-        $this->assertEquals(strcmp($expected, $actual) === 0, $this->security->compareString($expected, $actual));
+        $this->assertSame(strcmp($expected, $actual) === 0, $this->security->compareString($expected, $actual));
     }
 
     /**
@@ -1272,13 +1272,13 @@ TEXT;
     {
         $maskedToken = $this->security->maskToken($unmaskedToken);
         $this->assertGreaterThan(mb_strlen($unmaskedToken, '8bit') * 2, mb_strlen($maskedToken, '8bit'));
-        $this->assertEquals($unmaskedToken, $this->security->unmaskToken($maskedToken));
+        $this->assertSame($unmaskedToken, $this->security->unmaskToken($maskedToken));
     }
 
     public function testUnMaskingInvalidStrings()
     {
-        $this->assertEquals('', $this->security->unmaskToken(''));
-        $this->assertEquals('', $this->security->unmaskToken('1'));
+        $this->assertSame('', $this->security->unmaskToken(''));
+        $this->assertSame('', $this->security->unmaskToken('1'));
     }
 
     /**

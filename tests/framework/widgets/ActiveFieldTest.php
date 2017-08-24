@@ -129,7 +129,7 @@ EOD;
         $expectedValue = '<div class="form-group field-activefieldtestmodel-attributename has-error">';
         $actualValue = $this->activeField->begin();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
     }
 
     public function testBeginAttributeIsRequired()
@@ -139,7 +139,7 @@ EOD;
         $expectedValue = '<div class="form-group field-activefieldtestmodel-attributename required">';
         $actualValue = $this->activeField->begin();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
     }
 
     public function testBeginHasErrorAndRequired()
@@ -150,7 +150,7 @@ EOD;
         $expectedValue = '<div class="form-group field-activefieldtestmodel-attributename required has-error">';
         $actualValue = $this->activeField->begin();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
     }
 
     public function testBegin()
@@ -159,19 +159,19 @@ EOD;
         $this->activeField->options['tag'] = 'article';
         $actualValue = $this->activeField->begin();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
 
         $expectedValue = '';
         $this->activeField->options['tag'] = null;
         $actualValue = $this->activeField->begin();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
 
         $expectedValue = '';
         $this->activeField->options['tag'] = false;
         $actualValue = $this->activeField->begin();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
     }
 
     public function testEnd()
@@ -179,26 +179,26 @@ EOD;
         $expectedValue = '</div>';
         $actualValue = $this->activeField->end();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
 
         // other tag
         $expectedValue = '</article>';
         $this->activeField->options['tag'] = 'article';
         $actualValue = $this->activeField->end();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
 
         $expectedValue = '';
         $this->activeField->options['tag'] = false;
         $actualValue = $this->activeField->end();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
 
         $expectedValue = '';
         $this->activeField->options['tag'] = null;
         $actualValue = $this->activeField->end();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
     }
 
     public function testLabel()
@@ -206,13 +206,13 @@ EOD;
         $expectedValue = '<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>';
         $this->activeField->label();
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->assertSame($expectedValue, $this->activeField->parts['{label}']);
 
         // label = false
         $expectedValue = '';
         $this->activeField->label(false);
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->assertSame($expectedValue, $this->activeField->parts['{label}']);
 
         // $label = 'Label Name'
         $label = 'Label Name';
@@ -221,7 +221,7 @@ EOD;
 EOT;
         $this->activeField->label($label);
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->assertSame($expectedValue, $this->activeField->parts['{label}']);
     }
 
     public function testError()
@@ -229,13 +229,13 @@ EOT;
         $expectedValue = '<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>';
         $this->activeField->label();
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->assertSame($expectedValue, $this->activeField->parts['{label}']);
 
         // label = false
         $expectedValue = '';
         $this->activeField->label(false);
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->assertSame($expectedValue, $this->activeField->parts['{label}']);
 
         // $label = 'Label Name'
         $label = 'Label Name';
@@ -244,7 +244,7 @@ EOT;
 EOT;
         $this->activeField->label($label);
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->assertSame($expectedValue, $this->activeField->parts['{label}']);
     }
 
     public function hintDataProvider()
@@ -265,7 +265,7 @@ EOT;
     {
         $this->activeField->hint($hint);
 
-        $this->assertEquals($expectedHtml, $this->activeField->parts['{hint}']);
+        $this->assertSame($expectedHtml, $this->activeField->parts['{hint}']);
     }
 
     public function testInput()
@@ -275,7 +275,7 @@ EOT;
 EOD;
         $this->activeField->input('password');
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+        $this->assertSame($expectedValue, $this->activeField->parts['{input}']);
 
         // with options
         $expectedValue = <<<'EOD'
@@ -283,7 +283,7 @@ EOD;
 EOD;
         $this->activeField->input('password', ['weird' => 'value']);
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+        $this->assertSame($expectedValue, $this->activeField->parts['{input}']);
     }
 
     public function testTextInput()
@@ -292,7 +292,7 @@ EOD;
 <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
 EOD;
         $this->activeField->textInput();
-        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+        $this->assertSame($expectedValue, $this->activeField->parts['{input}']);
     }
 
     public function testHiddenInput()
@@ -301,7 +301,7 @@ EOD;
 <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
 EOD;
         $this->activeField->hiddenInput();
-        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+        $this->assertSame($expectedValue, $this->activeField->parts['{input}']);
     }
 
     public function testListBox()
@@ -372,7 +372,7 @@ EOD;
         $this->activeField->enableClientValidation = true;
         $actualValue = $this->activeField->getClientOptions();
         $expectedJsExpression = 'function (attribute, value, messages, deferred, $form) {return true;}';
-        $this->assertEquals($expectedJsExpression, $actualValue['validate']);
+        $this->assertSame($expectedJsExpression, $actualValue['validate']);
 
         $this->assertNotTrue(isset($actualValue['validateOnChange']));
         $this->assertNotTrue(isset($actualValue['validateOnBlur']));
@@ -409,7 +409,7 @@ EOD;
         $expectedJsExpression = 'function (attribute, value, messages, deferred, $form) {if ((function (attribute, value) '
             . "{ return 'yii2' == 'yii2'; })(attribute, value)) { return true; }}";
 
-        $this->assertEquals($expectedJsExpression, $actualValue['validate']->expression);
+        $this->assertSame($expectedJsExpression, $actualValue['validate']->expression);
     }
 
     /**
@@ -418,7 +418,7 @@ EOD;
     public function testEnctype()
     {
         $this->activeField->fileInput();
-        $this->assertEquals('multipart/form-data', $this->activeField->form->options['enctype']);
+        $this->assertSame('multipart/form-data', $this->activeField->form->options['enctype']);
     }
 
     /**
@@ -515,16 +515,16 @@ EOD;
     public function testWidget()
     {
         $this->activeField->widget(TestInputWidget::className());
-        $this->assertEquals('Render: ' . TestInputWidget::className(), $this->activeField->parts['{input}']);
+        $this->assertSame('Render: ' . TestInputWidget::className(), $this->activeField->parts['{input}']);
         $widget = TestInputWidget::$lastInstance;
 
         $this->assertSame($this->activeField->model, $widget->model);
-        $this->assertEquals($this->activeField->attribute, $widget->attribute);
+        $this->assertSame($this->activeField->attribute, $widget->attribute);
         $this->assertSame($this->activeField->form->view, $widget->view);
         $this->assertSame($this->activeField, $widget->field);
 
         $this->activeField->widget(TestInputWidget::className(), ['options' => ['id' => 'test-id']]);
-        $this->assertEquals('test-id', $this->activeField->labelOptions['for']);
+        $this->assertSame('test-id', $this->activeField->labelOptions['for']);
     }
 
     /**

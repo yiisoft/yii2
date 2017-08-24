@@ -33,30 +33,30 @@ class ControllerTest extends TestCase
 
         $params = ['from params'];
         list($fromParam, $other) = $controller->run('aksi1', $params);
-        $this->assertEquals('from params', $fromParam);
-        $this->assertEquals('default', $other);
+        $this->assertSame('from params', $fromParam);
+        $this->assertSame('default', $other);
 
         $params = ['from params', 'notdefault'];
         list($fromParam, $other) = $controller->run('aksi1', $params);
-        $this->assertEquals('from params', $fromParam);
-        $this->assertEquals('notdefault', $other);
+        $this->assertSame('from params', $fromParam);
+        $this->assertSame('notdefault', $other);
 
         $params = ['d426,mdmunir', 'single'];
         $result = $controller->runAction('aksi2', $params);
-        $this->assertEquals([['d426', 'mdmunir'], 'single'], $result);
+        $this->assertSame([['d426', 'mdmunir'], 'single'], $result);
 
         $params = ['_aliases' => ['t' => 'test']];
         $result = $controller->runAction('aksi4', $params);
-        $this->assertEquals('test', $result);
+        $this->assertSame('test', $result);
 
         $params = ['_aliases' => ['a' => 'testAlias']];
         $result = $controller->runAction('aksi5', $params);
-        $this->assertEquals('testAlias', $result);
+        $this->assertSame('testAlias', $result);
 
         $params = ['_aliases' => ['ta' => 'from params,notdefault']];
         list($fromParam, $other) = $controller->runAction('aksi6', $params);
-        $this->assertEquals('from params', $fromParam);
-        $this->assertEquals('notdefault', $other);
+        $this->assertSame('from params', $fromParam);
+        $this->assertSame('notdefault', $other);
 
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
@@ -117,7 +117,7 @@ class ControllerTest extends TestCase
         $controller->runAction('index');
 
         $this->assertFalse(FakeController::getWasActionIndexCalled());
-        $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['posts/index']);
+        $this->assertSame(FakeHelpController::getActionIndexLastCallParams(), ['posts/index']);
     }
 
     /**
@@ -130,7 +130,7 @@ class ControllerTest extends TestCase
         $controller->runAction('index');
 
         $this->assertFalse(FakeController::getWasActionIndexCalled());
-        $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['news/posts/index']);
+        $this->assertSame(FakeHelpController::getActionIndexLastCallParams(), ['news/posts/index']);
     }
 
 

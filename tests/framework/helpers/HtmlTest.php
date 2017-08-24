@@ -39,71 +39,71 @@ class HtmlTest extends TestCase
 
     public function testEncode()
     {
-        $this->assertEquals('a&lt;&gt;&amp;&quot;&#039;�', Html::encode("a<>&\"'\x80"));
-        $this->assertEquals('Sam &amp; Dark', Html::encode('Sam & Dark'));
+        $this->assertSame('a&lt;&gt;&amp;&quot;&#039;�', Html::encode("a<>&\"'\x80"));
+        $this->assertSame('Sam &amp; Dark', Html::encode('Sam & Dark'));
     }
 
     public function testDecode()
     {
-        $this->assertEquals("a<>&\"'", Html::decode('a&lt;&gt;&amp;&quot;&#039;'));
+        $this->assertSame("a<>&\"'", Html::decode('a&lt;&gt;&amp;&quot;&#039;'));
     }
 
     public function testTag()
     {
-        $this->assertEquals('<br>', Html::tag('br'));
-        $this->assertEquals('<span></span>', Html::tag('span'));
-        $this->assertEquals('<div>content</div>', Html::tag('div', 'content'));
-        $this->assertEquals('<input type="text" name="test" value="&lt;&gt;">', Html::tag('input', '', ['type' => 'text', 'name' => 'test', 'value' => '<>']));
-        $this->assertEquals('<span disabled></span>', Html::tag('span', '', ['disabled' => true]));
-        $this->assertEquals('test', Html::tag(false, 'test'));
-        $this->assertEquals('test', Html::tag(null, 'test'));
+        $this->assertSame('<br>', Html::tag('br'));
+        $this->assertSame('<span></span>', Html::tag('span'));
+        $this->assertSame('<div>content</div>', Html::tag('div', 'content'));
+        $this->assertSame('<input type="text" name="test" value="&lt;&gt;">', Html::tag('input', '', ['type' => 'text', 'name' => 'test', 'value' => '<>']));
+        $this->assertSame('<span disabled></span>', Html::tag('span', '', ['disabled' => true]));
+        $this->assertSame('test', Html::tag(false, 'test'));
+        $this->assertSame('test', Html::tag(null, 'test'));
     }
 
     public function testBeginTag()
     {
-        $this->assertEquals('<br>', Html::beginTag('br'));
-        $this->assertEquals('<span id="test" class="title">', Html::beginTag('span', ['id' => 'test', 'class' => 'title']));
-        $this->assertEquals('', Html::beginTag(null));
-        $this->assertEquals('', Html::beginTag(false));
+        $this->assertSame('<br>', Html::beginTag('br'));
+        $this->assertSame('<span id="test" class="title">', Html::beginTag('span', ['id' => 'test', 'class' => 'title']));
+        $this->assertSame('', Html::beginTag(null));
+        $this->assertSame('', Html::beginTag(false));
     }
 
     public function testEndTag()
     {
-        $this->assertEquals('</br>', Html::endTag('br'));
-        $this->assertEquals('</span>', Html::endTag('span'));
-        $this->assertEquals('', Html::endTag(null));
-        $this->assertEquals('', Html::endTag(false));
+        $this->assertSame('</br>', Html::endTag('br'));
+        $this->assertSame('</span>', Html::endTag('span'));
+        $this->assertSame('', Html::endTag(null));
+        $this->assertSame('', Html::endTag(false));
     }
 
     public function testStyle()
     {
         $content = 'a <>';
-        $this->assertEquals("<style>{$content}</style>", Html::style($content));
-        $this->assertEquals("<style type=\"text/less\">{$content}</style>", Html::style($content, ['type' => 'text/less']));
+        $this->assertSame("<style>{$content}</style>", Html::style($content));
+        $this->assertSame("<style type=\"text/less\">{$content}</style>", Html::style($content, ['type' => 'text/less']));
     }
 
     public function testScript()
     {
         $content = 'a <>';
-        $this->assertEquals("<script>{$content}</script>", Html::script($content));
-        $this->assertEquals("<script type=\"text/js\">{$content}</script>", Html::script($content, ['type' => 'text/js']));
+        $this->assertSame("<script>{$content}</script>", Html::script($content));
+        $this->assertSame("<script type=\"text/js\">{$content}</script>", Html::script($content, ['type' => 'text/js']));
     }
 
     public function testCssFile()
     {
-        $this->assertEquals('<link href="http://example.com" rel="stylesheet">', Html::cssFile('http://example.com'));
-        $this->assertEquals('<link href="/test" rel="stylesheet">', Html::cssFile(''));
-        $this->assertEquals("<!--[if IE 9]>\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<![endif]-->", Html::cssFile('http://example.com', ['condition' => 'IE 9']));
-        $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<!--<![endif]-->", Html::cssFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
-        $this->assertEquals('<noscript><link href="http://example.com" rel="stylesheet"></noscript>', Html::cssFile('http://example.com', ['noscript' => true]));
+        $this->assertSame('<link href="http://example.com" rel="stylesheet">', Html::cssFile('http://example.com'));
+        $this->assertSame('<link href="/test" rel="stylesheet">', Html::cssFile(''));
+        $this->assertSame("<!--[if IE 9]>\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<![endif]-->", Html::cssFile('http://example.com', ['condition' => 'IE 9']));
+        $this->assertSame("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<!--<![endif]-->", Html::cssFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
+        $this->assertSame('<noscript><link href="http://example.com" rel="stylesheet"></noscript>', Html::cssFile('http://example.com', ['noscript' => true]));
     }
 
     public function testJsFile()
     {
-        $this->assertEquals('<script src="http://example.com"></script>', Html::jsFile('http://example.com'));
-        $this->assertEquals('<script src="/test"></script>', Html::jsFile(''));
-        $this->assertEquals("<!--[if IE 9]>\n" . '<script src="http://example.com"></script>' . "\n<![endif]-->", Html::jsFile('http://example.com', ['condition' => 'IE 9']));
-        $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<script src="http://example.com"></script>' . "\n<!--<![endif]-->", Html::jsFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
+        $this->assertSame('<script src="http://example.com"></script>', Html::jsFile('http://example.com'));
+        $this->assertSame('<script src="/test"></script>', Html::jsFile(''));
+        $this->assertSame("<!--[if IE 9]>\n" . '<script src="http://example.com"></script>' . "\n<![endif]-->", Html::jsFile('http://example.com', ['condition' => 'IE 9']));
+        $this->assertSame("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<script src="http://example.com"></script>' . "\n<!--<![endif]-->", Html::jsFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
     }
 
     public function testCsrfMetaTagsDisableCsrfValidation()
@@ -116,7 +116,7 @@ class HtmlTest extends TestCase
                 ],
             ],
         ]);
-        $this->assertEquals('', Html::csrfMetaTags());
+        $this->assertSame('', Html::csrfMetaTags());
     }
 
     public function testCsrfMetaTagsEnableCsrfValidation()
@@ -178,13 +178,13 @@ class HtmlTest extends TestCase
 
     public function testBeginForm()
     {
-        $this->assertEquals('<form action="/test" method="post">', Html::beginForm());
-        $this->assertEquals('<form action="/example" method="get">', Html::beginForm('/example', 'get'));
+        $this->assertSame('<form action="/test" method="post">', Html::beginForm());
+        $this->assertSame('<form action="/example" method="get">', Html::beginForm('/example', 'get'));
         $hiddens = [
             '<input type="hidden" name="id" value="1">',
             '<input type="hidden" name="title" value="&lt;">',
         ];
-        $this->assertEquals('<form action="/example" method="get">' . "\n" . implode("\n", $hiddens), Html::beginForm('/example?id=1&title=%3C', 'get'));
+        $this->assertSame('<form action="/example" method="get">' . "\n" . implode("\n", $hiddens), Html::beginForm('/example?id=1&title=%3C', 'get'));
 
         $expected = '<form action="/foo" method="GET">%A<input type="hidden" name="p" value="">';
         $actual = Html::beginForm('/foo?p', 'GET');
@@ -193,22 +193,22 @@ class HtmlTest extends TestCase
 
     public function testEndForm()
     {
-        $this->assertEquals('</form>', Html::endForm());
+        $this->assertSame('</form>', Html::endForm());
     }
 
     public function testA()
     {
-        $this->assertEquals('<a>something<></a>', Html::a('something<>'));
-        $this->assertEquals('<a href="/example">something</a>', Html::a('something', '/example'));
-        $this->assertEquals('<a href="/test">something</a>', Html::a('something', ''));
-        $this->assertEquals('<a href="http://www.быстроном.рф">http://www.быстроном.рф</a>', Html::a('http://www.быстроном.рф', 'http://www.быстроном.рф'));
-        $this->assertEquals('<a href="https://www.example.com/index.php?r=site%2Ftest">Test page</a>', Html::a('Test page', Url::to(['/site/test'], 'https')));
+        $this->assertSame('<a>something<></a>', Html::a('something<>'));
+        $this->assertSame('<a href="/example">something</a>', Html::a('something', '/example'));
+        $this->assertSame('<a href="/test">something</a>', Html::a('something', ''));
+        $this->assertSame('<a href="http://www.быстроном.рф">http://www.быстроном.рф</a>', Html::a('http://www.быстроном.рф', 'http://www.быстроном.рф'));
+        $this->assertSame('<a href="https://www.example.com/index.php?r=site%2Ftest">Test page</a>', Html::a('Test page', Url::to(['/site/test'], 'https')));
     }
 
     public function testMailto()
     {
-        $this->assertEquals('<a href="mailto:test&lt;&gt;">test<></a>', Html::mailto('test<>'));
-        $this->assertEquals('<a href="mailto:test&gt;">test<></a>', Html::mailto('test<>', 'test>'));
+        $this->assertSame('<a href="mailto:test&lt;&gt;">test<></a>', Html::mailto('test<>'));
+        $this->assertSame('<a href="mailto:test&gt;">test<></a>', Html::mailto('test<>', 'test>'));
     }
 
     /**
@@ -305,81 +305,81 @@ class HtmlTest extends TestCase
      */
     public function testImg($expected, $src, $options)
     {
-        $this->assertEquals($expected, Html::img($src, $options));
+        $this->assertSame($expected, Html::img($src, $options));
     }
 
     public function testLabel()
     {
-        $this->assertEquals('<label>something<></label>', Html::label('something<>'));
-        $this->assertEquals('<label for="a">something<></label>', Html::label('something<>', 'a'));
-        $this->assertEquals('<label class="test" for="a">something<></label>', Html::label('something<>', 'a', ['class' => 'test']));
+        $this->assertSame('<label>something<></label>', Html::label('something<>'));
+        $this->assertSame('<label for="a">something<></label>', Html::label('something<>', 'a'));
+        $this->assertSame('<label class="test" for="a">something<></label>', Html::label('something<>', 'a', ['class' => 'test']));
     }
 
     public function testButton()
     {
-        $this->assertEquals('<button type="button">Button</button>', Html::button());
-        $this->assertEquals('<button type="button" name="test" value="value">content<></button>', Html::button('content<>', ['name' => 'test', 'value' => 'value']));
-        $this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::button('content<>', ['type' => 'submit', 'name' => 'test', 'value' => 'value', 'class' => 't']));
+        $this->assertSame('<button type="button">Button</button>', Html::button());
+        $this->assertSame('<button type="button" name="test" value="value">content<></button>', Html::button('content<>', ['name' => 'test', 'value' => 'value']));
+        $this->assertSame('<button type="submit" class="t" name="test" value="value">content<></button>', Html::button('content<>', ['type' => 'submit', 'name' => 'test', 'value' => 'value', 'class' => 't']));
     }
 
     public function testSubmitButton()
     {
-        $this->assertEquals('<button type="submit">Submit</button>', Html::submitButton());
-        $this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::submitButton('content<>', ['name' => 'test', 'value' => 'value', 'class' => 't']));
+        $this->assertSame('<button type="submit">Submit</button>', Html::submitButton());
+        $this->assertSame('<button type="submit" class="t" name="test" value="value">content<></button>', Html::submitButton('content<>', ['name' => 'test', 'value' => 'value', 'class' => 't']));
     }
 
     public function testResetButton()
     {
-        $this->assertEquals('<button type="reset">Reset</button>', Html::resetButton());
-        $this->assertEquals('<button type="reset" class="t" name="test" value="value">content<></button>', Html::resetButton('content<>', ['name' => 'test', 'value' => 'value', 'class' => 't']));
+        $this->assertSame('<button type="reset">Reset</button>', Html::resetButton());
+        $this->assertSame('<button type="reset" class="t" name="test" value="value">content<></button>', Html::resetButton('content<>', ['name' => 'test', 'value' => 'value', 'class' => 't']));
     }
 
     public function testInput()
     {
-        $this->assertEquals('<input type="text">', Html::input('text'));
-        $this->assertEquals('<input type="text" class="t" name="test" value="value">', Html::input('text', 'test', 'value', ['class' => 't']));
+        $this->assertSame('<input type="text">', Html::input('text'));
+        $this->assertSame('<input type="text" class="t" name="test" value="value">', Html::input('text', 'test', 'value', ['class' => 't']));
     }
 
     public function testButtonInput()
     {
-        $this->assertEquals('<input type="button" value="Button">', Html::buttonInput());
-        $this->assertEquals('<input type="button" class="a" name="test" value="text">', Html::buttonInput('text', ['name' => 'test', 'class' => 'a']));
+        $this->assertSame('<input type="button" value="Button">', Html::buttonInput());
+        $this->assertSame('<input type="button" class="a" name="test" value="text">', Html::buttonInput('text', ['name' => 'test', 'class' => 'a']));
     }
 
     public function testSubmitInput()
     {
-        $this->assertEquals('<input type="submit" value="Submit">', Html::submitInput());
-        $this->assertEquals('<input type="submit" class="a" name="test" value="text">', Html::submitInput('text', ['name' => 'test', 'class' => 'a']));
+        $this->assertSame('<input type="submit" value="Submit">', Html::submitInput());
+        $this->assertSame('<input type="submit" class="a" name="test" value="text">', Html::submitInput('text', ['name' => 'test', 'class' => 'a']));
     }
 
     public function testResetInput()
     {
-        $this->assertEquals('<input type="reset" value="Reset">', Html::resetInput());
-        $this->assertEquals('<input type="reset" class="a" name="test" value="text">', Html::resetInput('text', ['name' => 'test', 'class' => 'a']));
+        $this->assertSame('<input type="reset" value="Reset">', Html::resetInput());
+        $this->assertSame('<input type="reset" class="a" name="test" value="text">', Html::resetInput('text', ['name' => 'test', 'class' => 'a']));
     }
 
     public function testTextInput()
     {
-        $this->assertEquals('<input type="text" name="test">', Html::textInput('test'));
-        $this->assertEquals('<input type="text" class="t" name="test" value="value">', Html::textInput('test', 'value', ['class' => 't']));
+        $this->assertSame('<input type="text" name="test">', Html::textInput('test'));
+        $this->assertSame('<input type="text" class="t" name="test" value="value">', Html::textInput('test', 'value', ['class' => 't']));
     }
 
     public function testHiddenInput()
     {
-        $this->assertEquals('<input type="hidden" name="test">', Html::hiddenInput('test'));
-        $this->assertEquals('<input type="hidden" class="t" name="test" value="value">', Html::hiddenInput('test', 'value', ['class' => 't']));
+        $this->assertSame('<input type="hidden" name="test">', Html::hiddenInput('test'));
+        $this->assertSame('<input type="hidden" class="t" name="test" value="value">', Html::hiddenInput('test', 'value', ['class' => 't']));
     }
 
     public function testPasswordInput()
     {
-        $this->assertEquals('<input type="password" name="test">', Html::passwordInput('test'));
-        $this->assertEquals('<input type="password" class="t" name="test" value="value">', Html::passwordInput('test', 'value', ['class' => 't']));
+        $this->assertSame('<input type="password" name="test">', Html::passwordInput('test'));
+        $this->assertSame('<input type="password" class="t" name="test" value="value">', Html::passwordInput('test', 'value', ['class' => 't']));
     }
 
     public function testFileInput()
     {
-        $this->assertEquals('<input type="file" name="test">', Html::fileInput('test'));
-        $this->assertEquals('<input type="file" class="t" name="test" value="value">', Html::fileInput('test', 'value', ['class' => 't']));
+        $this->assertSame('<input type="file" name="test">', Html::fileInput('test'));
+        $this->assertSame('<input type="file" class="t" name="test" value="value">', Html::fileInput('test', 'value', ['class' => 't']));
     }
 
     /**
@@ -424,22 +424,22 @@ class HtmlTest extends TestCase
      */
     public function testTextarea($expected, $name, $value, $options)
     {
-        $this->assertEquals($expected, Html::textarea($name, $value, $options));
+        $this->assertSame($expected, Html::textarea($name, $value, $options));
     }
 
     public function testRadio()
     {
-        $this->assertEquals('<input type="radio" name="test" value="1">', Html::radio('test'));
-        $this->assertEquals('<input type="radio" class="a" name="test" checked>', Html::radio('test', true, ['class' => 'a', 'value' => null]));
-        $this->assertEquals('<input type="hidden" name="test" value="0"><input type="radio" class="a" name="test" value="2" checked>', Html::radio('test', true, ['class' => 'a', 'uncheck' => '0', 'value' => 2]));
+        $this->assertSame('<input type="radio" name="test" value="1">', Html::radio('test'));
+        $this->assertSame('<input type="radio" class="a" name="test" checked>', Html::radio('test', true, ['class' => 'a', 'value' => null]));
+        $this->assertSame('<input type="hidden" name="test" value="0"><input type="radio" class="a" name="test" value="2" checked>', Html::radio('test', true, ['class' => 'a', 'uncheck' => '0', 'value' => 2]));
 
-        $this->assertEquals('<label class="bbb"><input type="radio" class="a" name="test" checked> ccc</label>', Html::radio('test', true, [
+        $this->assertSame('<label class="bbb"><input type="radio" class="a" name="test" checked> ccc</label>', Html::radio('test', true, [
             'class' => 'a',
             'value' => null,
             'label' => 'ccc',
             'labelOptions' => ['class' => 'bbb'],
         ]));
-        $this->assertEquals('<input type="hidden" name="test" value="0"><label><input type="radio" class="a" name="test" value="2" checked> ccc</label>', Html::radio('test', true, [
+        $this->assertSame('<input type="hidden" name="test" value="0"><label><input type="radio" class="a" name="test" value="2" checked> ccc</label>', Html::radio('test', true, [
             'class' => 'a',
             'uncheck' => '0',
             'label' => 'ccc',
@@ -449,23 +449,23 @@ class HtmlTest extends TestCase
 
     public function testCheckbox()
     {
-        $this->assertEquals('<input type="checkbox" name="test" value="1">', Html::checkbox('test'));
-        $this->assertEquals('<input type="checkbox" class="a" name="test" checked>', Html::checkbox('test', true, ['class' => 'a', 'value' => null]));
-        $this->assertEquals('<input type="hidden" name="test" value="0"><input type="checkbox" class="a" name="test" value="2" checked>', Html::checkbox('test', true, ['class' => 'a', 'uncheck' => '0', 'value' => 2]));
+        $this->assertSame('<input type="checkbox" name="test" value="1">', Html::checkbox('test'));
+        $this->assertSame('<input type="checkbox" class="a" name="test" checked>', Html::checkbox('test', true, ['class' => 'a', 'value' => null]));
+        $this->assertSame('<input type="hidden" name="test" value="0"><input type="checkbox" class="a" name="test" value="2" checked>', Html::checkbox('test', true, ['class' => 'a', 'uncheck' => '0', 'value' => 2]));
 
-        $this->assertEquals('<label class="bbb"><input type="checkbox" class="a" name="test" checked> ccc</label>', Html::checkbox('test', true, [
+        $this->assertSame('<label class="bbb"><input type="checkbox" class="a" name="test" checked> ccc</label>', Html::checkbox('test', true, [
             'class' => 'a',
             'value' => null,
             'label' => 'ccc',
             'labelOptions' => ['class' => 'bbb'],
         ]));
-        $this->assertEquals('<input type="hidden" name="test" value="0"><label><input type="checkbox" class="a" name="test" value="2" checked> ccc</label>', Html::checkbox('test', true, [
+        $this->assertSame('<input type="hidden" name="test" value="0"><label><input type="checkbox" class="a" name="test" value="2" checked> ccc</label>', Html::checkbox('test', true, [
             'class' => 'a',
             'uncheck' => '0',
             'label' => 'ccc',
             'value' => 2,
         ]));
-        $this->assertEquals('<input type="hidden" name="test" value="0" form="test-form"><label><input type="checkbox" class="a" name="test" value="2" form="test-form" checked> ccc</label>', Html::checkbox('test', true, [
+        $this->assertSame('<input type="hidden" name="test" value="0" form="test-form"><label><input type="checkbox" class="a" name="test" value="2" form="test-form" checked> ccc</label>', Html::checkbox('test', true, [
             'class' => 'a',
             'uncheck' => '0',
             'label' => 'ccc',
@@ -601,7 +601,7 @@ EOD;
 
     public function testCheckboxList()
     {
-        $this->assertEquals('<div></div>', Html::checkboxList('test'));
+        $this->assertSame('<div></div>', Html::checkboxList('test'));
 
         $expected = <<<'EOD'
 <div><label><input type="checkbox" name="test[]" value="value1"> text1</label>
@@ -657,7 +657,7 @@ EOD;
 
     public function testRadioList()
     {
-        $this->assertEquals('<div></div>', Html::radioList('test'));
+        $this->assertSame('<div></div>', Html::radioList('test'));
 
         $expected = <<<'EOD'
 <div><label><input type="radio" name="test" value="value1"> text1</label>
@@ -736,7 +736,7 @@ EOD;
             },
         ]));
 
-        $this->assertEquals('<ul class="test"></ul>', Html::ul([], ['class' => 'test']));
+        $this->assertSame('<ul class="test"></ul>', Html::ul([], ['class' => 'test']));
 
         $this->assertStringMatchesFormat('<foo>%A</foo>', Html::ul([], ['tag' => 'foo']));
     }
@@ -770,7 +770,7 @@ EOD;
             },
         ]));
 
-        $this->assertEquals('<ol class="test"></ol>', Html::ol([], ['class' => 'test']));
+        $this->assertSame('<ol class="test"></ol>', Html::ol([], ['class' => 'test']));
     }
 
     public function testRenderOptions()
@@ -848,55 +848,55 @@ EOD;
 
     public function testRenderAttributes()
     {
-        $this->assertEquals('', Html::renderTagAttributes([]));
-        $this->assertEquals(' name="test" value="1&lt;&gt;"', Html::renderTagAttributes(['name' => 'test', 'empty' => null, 'value' => '1<>']));
-        $this->assertEquals(' checked disabled', Html::renderTagAttributes(['checked' => true, 'disabled' => true, 'hidden' => false]));
-        $this->assertEquals(' class="first second"', Html::renderTagAttributes(['class' => ['first', 'second']]));
-        $this->assertEquals('', Html::renderTagAttributes(['class' => []]));
-        $this->assertEquals(' style="width: 100px; height: 200px;"', Html::renderTagAttributes(['style' => ['width' => '100px', 'height' => '200px']]));
-        $this->assertEquals('', Html::renderTagAttributes(['style' => []]));
+        $this->assertSame('', Html::renderTagAttributes([]));
+        $this->assertSame(' name="test" value="1&lt;&gt;"', Html::renderTagAttributes(['name' => 'test', 'empty' => null, 'value' => '1<>']));
+        $this->assertSame(' checked disabled', Html::renderTagAttributes(['checked' => true, 'disabled' => true, 'hidden' => false]));
+        $this->assertSame(' class="first second"', Html::renderTagAttributes(['class' => ['first', 'second']]));
+        $this->assertSame('', Html::renderTagAttributes(['class' => []]));
+        $this->assertSame(' style="width: 100px; height: 200px;"', Html::renderTagAttributes(['style' => ['width' => '100px', 'height' => '200px']]));
+        $this->assertSame('', Html::renderTagAttributes(['style' => []]));
 
         $attributes = [
             'data' => [
                 'foo' => [],
             ],
         ];
-        $this->assertEquals(' data-foo=\'[]\'', Html::renderTagAttributes($attributes));
+        $this->assertSame(' data-foo=\'[]\'', Html::renderTagAttributes($attributes));
     }
 
     public function testAddCssClass()
     {
         $options = [];
         Html::addCssClass($options, 'test');
-        $this->assertEquals(['class' => 'test'], $options);
+        $this->assertSame(['class' => 'test'], $options);
         Html::addCssClass($options, 'test');
-        $this->assertEquals(['class' => 'test'], $options);
+        $this->assertSame(['class' => 'test'], $options);
         Html::addCssClass($options, 'test2');
-        $this->assertEquals(['class' => 'test test2'], $options);
+        $this->assertSame(['class' => 'test test2'], $options);
         Html::addCssClass($options, 'test');
-        $this->assertEquals(['class' => 'test test2'], $options);
+        $this->assertSame(['class' => 'test test2'], $options);
         Html::addCssClass($options, 'test2');
-        $this->assertEquals(['class' => 'test test2'], $options);
+        $this->assertSame(['class' => 'test test2'], $options);
         Html::addCssClass($options, 'test3');
-        $this->assertEquals(['class' => 'test test2 test3'], $options);
+        $this->assertSame(['class' => 'test test2 test3'], $options);
         Html::addCssClass($options, 'test2');
-        $this->assertEquals(['class' => 'test test2 test3'], $options);
+        $this->assertSame(['class' => 'test test2 test3'], $options);
 
         $options = [
             'class' => ['test'],
         ];
         Html::addCssClass($options, 'test2');
-        $this->assertEquals(['class' => ['test', 'test2']], $options);
+        $this->assertSame(['class' => ['test', 'test2']], $options);
         Html::addCssClass($options, 'test2');
-        $this->assertEquals(['class' => ['test', 'test2']], $options);
+        $this->assertSame(['class' => ['test', 'test2']], $options);
         Html::addCssClass($options, ['test3']);
-        $this->assertEquals(['class' => ['test', 'test2', 'test3']], $options);
+        $this->assertSame(['class' => ['test', 'test2', 'test3']], $options);
 
         $options = [
             'class' => 'test',
         ];
         Html::addCssClass($options, ['test1', 'test2']);
-        $this->assertEquals(['class' => 'test test1 test2'], $options);
+        $this->assertSame(['class' => 'test test1 test2'], $options);
     }
 
     /**
@@ -910,40 +910,40 @@ EOD;
             ],
         ];
         Html::addCssClass($options, ['persistent' => 'test2']);
-        $this->assertEquals(['persistent' => 'test1'], $options['class']);
+        $this->assertSame(['persistent' => 'test1'], $options['class']);
         Html::addCssClass($options, ['additional' => 'test2']);
-        $this->assertEquals(['persistent' => 'test1', 'additional' => 'test2'], $options['class']);
+        $this->assertSame(['persistent' => 'test1', 'additional' => 'test2'], $options['class']);
     }
 
     public function testRemoveCssClass()
     {
         $options = ['class' => 'test test2 test3'];
         Html::removeCssClass($options, 'test2');
-        $this->assertEquals(['class' => 'test test3'], $options);
+        $this->assertSame(['class' => 'test test3'], $options);
         Html::removeCssClass($options, 'test2');
-        $this->assertEquals(['class' => 'test test3'], $options);
+        $this->assertSame(['class' => 'test test3'], $options);
         Html::removeCssClass($options, 'test');
-        $this->assertEquals(['class' => 'test3'], $options);
+        $this->assertSame(['class' => 'test3'], $options);
         Html::removeCssClass($options, 'test3');
-        $this->assertEquals([], $options);
+        $this->assertSame([], $options);
 
         $options = ['class' => ['test', 'test2', 'test3']];
         Html::removeCssClass($options, 'test2');
-        $this->assertEquals(['class' => ['test', 2 => 'test3']], $options);
+        $this->assertSame(['class' => ['test', 2 => 'test3']], $options);
         Html::removeCssClass($options, 'test');
         Html::removeCssClass($options, 'test3');
-        $this->assertEquals([], $options);
+        $this->assertSame([], $options);
 
         $options = [
             'class' => 'test test1 test2',
         ];
         Html::removeCssClass($options, ['test1', 'test2']);
-        $this->assertEquals(['class' => 'test'], $options);
+        $this->assertSame(['class' => 'test'], $options);
     }
 
     public function testCssStyleFromArray()
     {
-        $this->assertEquals('width: 100px; height: 200px;', Html::cssStyleFromArray([
+        $this->assertSame('width: 100px; height: 200px;', Html::cssStyleFromArray([
             'width' => '100px',
             'height' => '200px',
         ]));
@@ -952,34 +952,34 @@ EOD;
 
     public function testCssStyleToArray()
     {
-        $this->assertEquals([
+        $this->assertSame([
             'width' => '100px',
             'height' => '200px',
         ], Html::cssStyleToArray('width: 100px; height: 200px;'));
-        $this->assertEquals([], Html::cssStyleToArray('  '));
+        $this->assertSame([], Html::cssStyleToArray('  '));
     }
 
     public function testAddCssStyle()
     {
         $options = ['style' => 'width: 100px; height: 200px;'];
         Html::addCssStyle($options, 'width: 110px; color: red;');
-        $this->assertEquals('width: 110px; height: 200px; color: red;', $options['style']);
+        $this->assertSame('width: 110px; height: 200px; color: red;', $options['style']);
 
         $options = ['style' => 'width: 100px; height: 200px;'];
         Html::addCssStyle($options, ['width' => '110px', 'color' => 'red']);
-        $this->assertEquals('width: 110px; height: 200px; color: red;', $options['style']);
+        $this->assertSame('width: 110px; height: 200px; color: red;', $options['style']);
 
         $options = ['style' => 'width: 100px; height: 200px;'];
         Html::addCssStyle($options, 'width: 110px; color: red;', false);
-        $this->assertEquals('width: 100px; height: 200px; color: red;', $options['style']);
+        $this->assertSame('width: 100px; height: 200px; color: red;', $options['style']);
 
         $options = [];
         Html::addCssStyle($options, 'width: 110px; color: red;');
-        $this->assertEquals('width: 110px; color: red;', $options['style']);
+        $this->assertSame('width: 110px; color: red;', $options['style']);
 
         $options = [];
         Html::addCssStyle($options, 'width: 110px; color: red;', false);
-        $this->assertEquals('width: 110px; color: red;', $options['style']);
+        $this->assertSame('width: 110px; color: red;', $options['style']);
 
         $options = [
             'style' => [
@@ -987,16 +987,16 @@ EOD;
             ],
         ];
         Html::addCssStyle($options, ['color' => 'red'], false);
-        $this->assertEquals('width: 100px; color: red;', $options['style']);
+        $this->assertSame('width: 100px; color: red;', $options['style']);
     }
 
     public function testRemoveCssStyle()
     {
         $options = ['style' => 'width: 110px; height: 200px; color: red;'];
         Html::removeCssStyle($options, 'width');
-        $this->assertEquals('height: 200px; color: red;', $options['style']);
+        $this->assertSame('height: 200px; color: red;', $options['style']);
         Html::removeCssStyle($options, ['height']);
-        $this->assertEquals('color: red;', $options['style']);
+        $this->assertSame('color: red;', $options['style']);
         Html::removeCssStyle($options, ['color', 'background']);
         $this->assertNull($options['style']);
 
@@ -1010,22 +1010,22 @@ EOD;
             ],
         ];
         Html::removeCssStyle($options, ['color']);
-        $this->assertEquals('width: 100px;', $options['style']);
+        $this->assertSame('width: 100px;', $options['style']);
     }
 
     public function testBooleanAttributes()
     {
-        $this->assertEquals('<input type="email" name="mail">', Html::input('email', 'mail', null, ['required' => false]));
-        $this->assertEquals('<input type="email" name="mail" required>', Html::input('email', 'mail', null, ['required' => true]));
-        $this->assertEquals('<input type="email" name="mail" required="hi">', Html::input('email', 'mail', null, ['required' => 'hi']));
+        $this->assertSame('<input type="email" name="mail">', Html::input('email', 'mail', null, ['required' => false]));
+        $this->assertSame('<input type="email" name="mail" required>', Html::input('email', 'mail', null, ['required' => true]));
+        $this->assertSame('<input type="email" name="mail" required="hi">', Html::input('email', 'mail', null, ['required' => 'hi']));
     }
 
     public function testDataAttributes()
     {
-        $this->assertEquals('<link src="xyz" data-a="1" data-b="c">', Html::tag('link', '', ['src' => 'xyz', 'data' => ['a' => 1, 'b' => 'c']]));
-        $this->assertEquals('<link src="xyz" ng-a="1" ng-b="c">', Html::tag('link', '', ['src' => 'xyz', 'ng' => ['a' => 1, 'b' => 'c']]));
-        $this->assertEquals('<link src="xyz" data-ng-a="1" data-ng-b="c">', Html::tag('link', '', ['src' => 'xyz', 'data-ng' => ['a' => 1, 'b' => 'c']]));
-        $this->assertEquals('<link src=\'{"a":1,"b":"It\\u0027s"}\'>', Html::tag('link', '', ['src' => ['a' => 1, 'b' => "It's"]]));
+        $this->assertSame('<link src="xyz" data-a="1" data-b="c">', Html::tag('link', '', ['src' => 'xyz', 'data' => ['a' => 1, 'b' => 'c']]));
+        $this->assertSame('<link src="xyz" ng-a="1" ng-b="c">', Html::tag('link', '', ['src' => 'xyz', 'ng' => ['a' => 1, 'b' => 'c']]));
+        $this->assertSame('<link src="xyz" data-ng-a="1" data-ng-b="c">', Html::tag('link', '', ['src' => 'xyz', 'data-ng' => ['a' => 1, 'b' => 'c']]));
+        $this->assertSame('<link src=\'{"a":1,"b":"It\\u0027s"}\'>', Html::tag('link', '', ['src' => ['a' => 1, 'b' => "It's"]]));
     }
 
     protected function getDataItems()
@@ -1084,7 +1084,7 @@ EOD;
     {
         $model = new HtmlTestModel();
         $model->name = $value;
-        $this->assertEquals($expectedHtml, Html::activeTextInput($model, 'name', $options));
+        $this->assertSame($expectedHtml, Html::activeTextInput($model, 'name', $options));
     }
 
     /**
@@ -1127,7 +1127,7 @@ EOD;
     {
         $model = new HtmlTestModel();
         $model->name = $value;
-        $this->assertEquals($expectedHtml, Html::activePasswordInput($model, 'name', $options));
+        $this->assertSame($expectedHtml, Html::activePasswordInput($model, 'name', $options));
     }
 
     public function errorSummaryDataProvider()
@@ -1206,7 +1206,7 @@ EOD;
         }
         $model->validate(null, false);
 
-        $this->assertEquals($expectedHtml, Html::errorSummary($model, $options));
+        $this->assertSame($expectedHtml, Html::errorSummary($model, $options));
     }
 
     /**
@@ -1256,7 +1256,7 @@ EOD;
     {
         $model = new HtmlTestModel();
         $model->description = $value;
-        $this->assertEquals($expectedHtml, Html::activeTextarea($model, 'description', $options));
+        $this->assertSame($expectedHtml, Html::activeTextarea($model, 'description', $options));
     }
 
     /**
@@ -1268,14 +1268,14 @@ EOD;
         Yii::$app->request->cookieValidationKey = 'foobar';
 
         $csrfForm = Html::beginForm('/index.php', 'post', ['id' => 'mycsrfform']);
-        $this->assertEquals(
+        $this->assertSame(
             '<form id="mycsrfform" action="/index.php" method="post">'
             . "\n" . '<input type="hidden" name="_csrf" value="' . Yii::$app->request->getCsrfToken() . '">',
             $csrfForm
         );
 
         $noCsrfForm = Html::beginForm('/index.php', 'post', ['csrf' => false, 'id' => 'myform']);
-        $this->assertEquals('<form id="myform" action="/index.php" method="post">', $noCsrfForm);
+        $this->assertSame('<form id="myform" action="/index.php" method="post">', $noCsrfForm);
     }
 
     /**
@@ -1319,7 +1319,7 @@ EOD;
     {
         $model = new HtmlTestModel();
         $model->radio = $value;
-        $this->assertEquals($expectedHtml, Html::activeRadio($model, 'radio', $options));
+        $this->assertSame($expectedHtml, Html::activeRadio($model, 'radio', $options));
     }
 
     /**
@@ -1363,7 +1363,7 @@ EOD;
     {
         $model = new HtmlTestModel();
         $model->checkbox = $value;
-        $this->assertEquals($expectedHtml, Html::activeCheckbox($model, 'checkbox', $options));
+        $this->assertSame($expectedHtml, Html::activeCheckbox($model, 'checkbox', $options));
     }
 
     /**
@@ -1417,7 +1417,7 @@ EOD;
             $this->expectException('yii\base\InvalidParamException');
             Html::getAttributeName($name);
         } else {
-            $this->assertEquals($expected, Html::getAttributeName($name));
+            $this->assertSame($expected, Html::getAttributeName($name));
         }
     }
 

@@ -117,6 +117,6 @@ class JsonResponseFormatterTest extends FormatterTest
         $this->response->data = $data;
         $this->formatter->prettyPrint = true;
         $this->formatter->format($this->response);
-        $this->assertEquals($prettyJson, $this->response->content);
+        $this->assertSame($prettyJson, $this->response->content);
     }
 }

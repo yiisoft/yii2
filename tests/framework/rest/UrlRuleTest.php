@@ -34,7 +34,7 @@ class UrlRuleTest extends TestCase
             foreach ($tests as $j => $test) {
                 list($config, $expected) = $test;
                 $rule = new UrlRule($config);
-                $this->assertEquals($expected, $rule->controller, "Test#$i-$j: $name");
+                $this->assertSame($expected, $rule->controller, "Test#$i-$j: $name");
             }
         }
     }
@@ -56,7 +56,7 @@ class UrlRuleTest extends TestCase
                 if ($route === false) {
                     $this->assertFalse($result, "Test#$i-$j: $name");
                 } else {
-                    $this->assertEquals([$route, $params], $result, "Test#$i-$j: $name");
+                    $this->assertSame([$route, $params], $result, "Test#$i-$j: $name");
                 }
             }
         }
@@ -363,7 +363,7 @@ class UrlRuleTest extends TestCase
                 'cache' => null,
             ]);
             $rule = new UrlRule($rule);
-            $this->assertEquals($expected, $rule->createUrl($manager, $route, $params));
+            $this->assertSame($expected, $rule->createUrl($manager, $route, $params));
         }
     }
 

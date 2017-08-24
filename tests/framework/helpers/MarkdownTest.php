@@ -36,11 +36,11 @@ new line 2
 TEXT;
 
         Markdown::$defaultFlavor = 'original';
-        $this->assertEquals(Markdown::process($text), Markdown::process($text, 'original'));
+        $this->assertSame(Markdown::process($text), Markdown::process($text, 'original'));
 
         Markdown::$defaultFlavor = 'gfm-comment';
-        $this->assertNotEquals(Markdown::process($text), Markdown::process($text, 'original'));
-        $this->assertEquals(Markdown::process($text), Markdown::process($text, 'gfm-comment'));
+        $this->assertNotSame(Markdown::process($text), Markdown::process($text, 'original'));
+        $this->assertSame(Markdown::process($text), Markdown::process($text, 'gfm-comment'));
     }
 
     /**
@@ -56,6 +56,6 @@ TEXT;
     {
         $actual = Markdown::processParagraph('foo');
         $expected = 'foo';
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 }

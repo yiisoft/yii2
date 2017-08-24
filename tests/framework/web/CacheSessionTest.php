@@ -28,9 +28,9 @@ class CacheSessionTest extends \yiiunit\TestCase
         $session = new CacheSession();
 
         $session->writeSession('test', 'sessionData');
-        $this->assertEquals('sessionData', $session->readSession('test'));
+        $this->assertSame('sessionData', $session->readSession('test'));
         $session->destroySession('test');
-        $this->assertEquals('', $session->readSession('test'));
+        $this->assertSame('', $session->readSession('test'));
     }
 
     public function testInvalidCache()
@@ -47,7 +47,7 @@ class CacheSessionTest extends \yiiunit\TestCase
         $session = new CacheSession();
 
         $session->set('foo', 'bar');
-        $this->assertEquals('bar', $session->get('foo'));
+        $this->assertSame('bar', $session->get('foo'));
 
         $this->assertTrue($session->destroySession($session->getId()));
     }

@@ -26,23 +26,23 @@ class ControllerTest extends TestCase
         $controller = new TestController('test-controller', Yii::$app);
         $this->assertNull($controller->action);
         $result = $controller->runAction('test1');
-        $this->assertEquals('test1', $result);
-        $this->assertEquals([
+        $this->assertSame('test1', $result);
+        $this->assertSame([
             'test-controller/test1',
         ], static::$actionRuns);
         $this->assertNotNull($controller->action);
-        $this->assertEquals('test1', $controller->action->id);
-        $this->assertEquals('test-controller/test1', $controller->action->uniqueId);
+        $this->assertSame('test1', $controller->action->id);
+        $this->assertSame('test-controller/test1', $controller->action->uniqueId);
 
         $result = $controller->runAction('test2');
-        $this->assertEquals('test2', $result);
-        $this->assertEquals([
+        $this->assertSame('test2', $result);
+        $this->assertSame([
             'test-controller/test1',
             'test-controller/test2',
         ], static::$actionRuns);
         $this->assertNotNull($controller->action);
-        $this->assertEquals('test1', $controller->action->id);
-        $this->assertEquals('test-controller/test1', $controller->action->uniqueId);
+        $this->assertSame('test1', $controller->action->id);
+        $this->assertSame('test-controller/test1', $controller->action->uniqueId);
     }
 }
 

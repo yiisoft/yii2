@@ -186,7 +186,7 @@ _MSG_
     {
         $formatter = new FallbackMessageFormatter();
         $result = $formatter->fallbackFormat($pattern, $args, 'en-US');
-        $this->assertEquals($expected, $result, $formatter->getErrorMessage());
+        $this->assertSame($expected, $result, $formatter->getErrorMessage());
     }
 
     public function testInsufficientArguments()
@@ -198,7 +198,7 @@ _MSG_
             self::N => self::N_VALUE,
         ], 'en-US');
 
-        $this->assertEquals($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
     public function testNoParams()
@@ -207,7 +207,7 @@ _MSG_
 
         $formatter = new FallbackMessageFormatter();
         $result = $formatter->fallbackFormat($pattern, [], 'en-US');
-        $this->assertEquals($pattern, $result, $formatter->getErrorMessage());
+        $this->assertSame($pattern, $result, $formatter->getErrorMessage());
     }
 
     public function testGridViewMessage()
@@ -215,7 +215,7 @@ _MSG_
         $pattern = 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.';
         $formatter = new FallbackMessageFormatter();
         $result = $formatter->fallbackFormat($pattern, ['begin' => 1, 'end' => 5, 'totalCount' => 10], 'en-US');
-        $this->assertEquals('Showing <b>1-5</b> of <b>10</b> items.', $result);
+        $this->assertSame('Showing <b>1-5</b> of <b>10</b> items.', $result);
     }
 
     public function testUnsupportedPercentException()

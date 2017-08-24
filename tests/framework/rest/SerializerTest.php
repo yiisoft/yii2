@@ -41,7 +41,7 @@ class SerializerTest extends TestCase
         $model->addError('field2', 'Multiple error 1');
         $model->addError('field2', 'Multiple error 2');
 
-        $this->assertEquals([
+        $this->assertSame([
             [
                 'field' => 'field1',
                 'message' => 'Test error',
@@ -271,7 +271,7 @@ class SerializerTest extends TestCase
         $serializer = new Serializer();
         $serializer->preserveKeys = $saveKeys;
 
-        $this->assertEquals($expectedResult, $serializer->serialize($dataProvider));
+        $this->assertSame($expectedResult, $serializer->serialize($dataProvider));
     }
 }
 

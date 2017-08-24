@@ -36,29 +36,29 @@ class BaseYiiTest extends TestCase
 
     public function testAlias()
     {
-        $this->assertEquals(YII2_PATH, Yii::getAlias('@yii'));
+        $this->assertSame(YII2_PATH, Yii::getAlias('@yii'));
 
         Yii::$aliases = [];
         $this->assertFalse(Yii::getAlias('@yii', false));
 
         Yii::setAlias('@yii', '/yii/framework');
-        $this->assertEquals('/yii/framework', Yii::getAlias('@yii'));
-        $this->assertEquals('/yii/framework/test/file', Yii::getAlias('@yii/test/file'));
+        $this->assertSame('/yii/framework', Yii::getAlias('@yii'));
+        $this->assertSame('/yii/framework/test/file', Yii::getAlias('@yii/test/file'));
         Yii::setAlias('@yii/gii', '/yii/gii');
-        $this->assertEquals('/yii/framework', Yii::getAlias('@yii'));
-        $this->assertEquals('/yii/framework/test/file', Yii::getAlias('@yii/test/file'));
-        $this->assertEquals('/yii/gii', Yii::getAlias('@yii/gii'));
-        $this->assertEquals('/yii/gii/file', Yii::getAlias('@yii/gii/file'));
+        $this->assertSame('/yii/framework', Yii::getAlias('@yii'));
+        $this->assertSame('/yii/framework/test/file', Yii::getAlias('@yii/test/file'));
+        $this->assertSame('/yii/gii', Yii::getAlias('@yii/gii'));
+        $this->assertSame('/yii/gii/file', Yii::getAlias('@yii/gii/file'));
 
         Yii::setAlias('@tii', '@yii/test');
-        $this->assertEquals('/yii/framework/test', Yii::getAlias('@tii'));
+        $this->assertSame('/yii/framework/test', Yii::getAlias('@tii'));
 
         Yii::setAlias('@yii', null);
         $this->assertFalse(Yii::getAlias('@yii', false));
-        $this->assertEquals('/yii/gii/file', Yii::getAlias('@yii/gii/file'));
+        $this->assertSame('/yii/gii/file', Yii::getAlias('@yii/gii/file'));
 
         Yii::setAlias('@some/alias', '/www');
-        $this->assertEquals('/www', Yii::getAlias('@some/alias'));
+        $this->assertSame('/www', Yii::getAlias('@some/alias'));
     }
 
     public function testGetVersion()

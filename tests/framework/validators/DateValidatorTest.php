@@ -160,7 +160,7 @@ class DateValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
         $this->assertFalse($model->hasErrors('attr_timestamp'));
-        $this->assertEquals(
+        $this->assertSame(
             1379030400, // 2013-09-13 00:00:00
             $model->attr_timestamp
         );

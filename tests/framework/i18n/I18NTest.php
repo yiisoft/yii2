@@ -54,16 +54,16 @@ class I18NTest extends TestCase
         $msg = 'The dog runs fast.';
 
         // source = target. Should be returned as is.
-        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', $msg, [], 'en-US'));
+        $this->assertSame('The dog runs fast.', $this->i18n->translate('test', $msg, [], 'en-US'));
 
         // exact match
-        $this->assertEquals('Der Hund rennt schnell.', $this->i18n->translate('test', $msg, [], 'de-DE'));
+        $this->assertSame('Der Hund rennt schnell.', $this->i18n->translate('test', $msg, [], 'de-DE'));
 
         // fallback to just language code with absent exact match
-        $this->assertEquals('Собака бегает быстро.', $this->i18n->translate('test', $msg, [], 'ru-RU'));
+        $this->assertSame('Собака бегает быстро.', $this->i18n->translate('test', $msg, [], 'ru-RU'));
 
         // fallback to just langauge code with present exact match
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
     }
 
     public function testDefaultSource()
@@ -84,18 +84,18 @@ class I18NTest extends TestCase
         $msg = 'The dog runs fast.';
 
         // source = target. Should be returned as is.
-        $this->assertEquals($msg, $i18n->translate('test', $msg, [], 'en-US'));
+        $this->assertSame($msg, $i18n->translate('test', $msg, [], 'en-US'));
 
         // exact match
-        $this->assertEquals('Der Hund rennt schnell.', $i18n->translate('test', $msg, [], 'de-DE'));
-        $this->assertEquals('Der Hund rennt schnell.', $i18n->translate('foo', $msg, [], 'de-DE'));
-        $this->assertEquals($msg, $i18n->translate('bar', $msg, [], 'de-DE'));
+        $this->assertSame('Der Hund rennt schnell.', $i18n->translate('test', $msg, [], 'de-DE'));
+        $this->assertSame('Der Hund rennt schnell.', $i18n->translate('foo', $msg, [], 'de-DE'));
+        $this->assertSame($msg, $i18n->translate('bar', $msg, [], 'de-DE'));
 
         // fallback to just language code with absent exact match
-        $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru-RU'));
+        $this->assertSame('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru-RU'));
 
         // fallback to just langauge code with present exact match
-        $this->assertEquals('Hallo Welt!', $i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $i18n->translate('test', 'Hello world!', [], 'de-DE'));
     }
 
     /**
@@ -120,23 +120,23 @@ class I18NTest extends TestCase
         $msg = 'The dog runs fast.';
 
         // source = target. Should be returned as is.
-        $this->assertEquals($msg, $i18n->translate('test', $msg, [], 'de-DE'));
+        $this->assertSame($msg, $i18n->translate('test', $msg, [], 'de-DE'));
 
         // target is less specific, than a source. Messages from sourceLanguage file should be loaded as a fallback
-        $this->assertEquals('Der Hund rennt schnell.', $i18n->translate('test', $msg, [], 'de'));
-        $this->assertEquals('Hallo Welt!', $i18n->translate('test', 'Hello world!', [], 'de'));
+        $this->assertSame('Der Hund rennt schnell.', $i18n->translate('test', $msg, [], 'de'));
+        $this->assertSame('Hallo Welt!', $i18n->translate('test', 'Hello world!', [], 'de'));
 
         // target is a different language than source
-        $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru-RU'));
-        $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru'));
+        $this->assertSame('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru-RU'));
+        $this->assertSame('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru'));
     }
 
     public function testTranslateParams()
     {
         $msg = 'His speed is about {n} km/h.';
         $params = ['n' => 42];
-        $this->assertEquals('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, $params, 'en-US'));
-        $this->assertEquals('Seine Geschwindigkeit beträgt 42 km/h.', $this->i18n->translate('test', $msg, $params, 'de-DE'));
+        $this->assertSame('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, $params, 'en-US'));
+        $this->assertSame('Seine Geschwindigkeit beträgt 42 km/h.', $this->i18n->translate('test', $msg, $params, 'de-DE'));
     }
 
     public function testTranslateParams2()
@@ -149,18 +149,18 @@ class I18NTest extends TestCase
             'n' => 42,
             'name' => 'DA VINCI', // http://petrix.com/dognames/d.html
         ];
-        $this->assertEquals('His name is DA VINCI and his speed is about 42 km/h.', $this->i18n->translate('test', $msg, $params, 'en-US'));
-        $this->assertEquals('Er heißt DA VINCI und ist 42 km/h schnell.', $this->i18n->translate('test', $msg, $params, 'de-DE'));
+        $this->assertSame('His name is DA VINCI and his speed is about 42 km/h.', $this->i18n->translate('test', $msg, $params, 'en-US'));
+        $this->assertSame('Er heißt DA VINCI und ist 42 km/h schnell.', $this->i18n->translate('test', $msg, $params, 'de-DE'));
     }
 
     public function testSpecialParams()
     {
         $msg = 'His speed is about {0} km/h.';
 
-        $this->assertEquals('His speed is about 0 km/h.', $this->i18n->translate('test', $msg, 0, 'en-US'));
-        $this->assertEquals('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, 42, 'en-US'));
-        $this->assertEquals('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, null, 'en-US'));
-        $this->assertEquals('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, [], 'en-US'));
+        $this->assertSame('His speed is about 0 km/h.', $this->i18n->translate('test', $msg, 0, 'en-US'));
+        $this->assertSame('His speed is about 42 km/h.', $this->i18n->translate('test', $msg, 42, 'en-US'));
+        $this->assertSame('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, null, 'en-US'));
+        $this->assertSame('His speed is about {0} km/h.', $this->i18n->translate('test', $msg, [], 'en-US'));
     }
 
     /**
@@ -170,7 +170,7 @@ class I18NTest extends TestCase
      */
     public function testMissingTranslationFormatting()
     {
-        $this->assertEquals('1 item', $this->i18n->translate('test', '{0, number} {0, plural, one{item} other{items}}', 1, 'hu'));
+        $this->assertSame('1 item', $this->i18n->translate('test', '{0, number} {0, plural, one{item} other{items}}', 1, 'hu'));
     }
 
     /**
@@ -178,7 +178,7 @@ class I18NTest extends TestCase
      */
     public function testRussianPlurals()
     {
-        $this->assertEquals('На диване лежит 6 кошек!', $this->i18n->translate('test', 'There {n, plural, =0{no cats} =1{one cat} other{are # cats}} on lying on the sofa!', ['n' => 6], 'ru'));
+        $this->assertSame('На диване лежит 6 кошек!', $this->i18n->translate('test', 'There {n, plural, =0{no cats} =1{one cat} other{are # cats}} on lying on the sofa!', ['n' => 6], 'ru'));
     }
 
     public function testUsingSourceLanguageForMissingTranslation()
@@ -187,11 +187,11 @@ class I18NTest extends TestCase
         Yii::$app->language = 'en';
 
         $msg = '{n, plural, =0{Нет комментариев} =1{# комментарий} one{# комментарий} few{# комментария} many{# комментариев} other{# комментария}}';
-        $this->assertEquals('5 комментариев', Yii::t('app', $msg, ['n' => 5]));
-        $this->assertEquals('3 комментария', Yii::t('app', $msg, ['n' => 3]));
-        $this->assertEquals('1 комментарий', Yii::t('app', $msg, ['n' => 1]));
-        $this->assertEquals('21 комментарий', Yii::t('app', $msg, ['n' => 21]));
-        $this->assertEquals('Нет комментариев', Yii::t('app', $msg, ['n' => 0]));
+        $this->assertSame('5 комментариев', Yii::t('app', $msg, ['n' => 5]));
+        $this->assertSame('3 комментария', Yii::t('app', $msg, ['n' => 3]));
+        $this->assertSame('1 комментарий', Yii::t('app', $msg, ['n' => 1]));
+        $this->assertSame('21 комментарий', Yii::t('app', $msg, ['n' => 21]));
+        $this->assertSame('Нет комментариев', Yii::t('app', $msg, ['n' => 0]));
     }
 
     /**
@@ -199,14 +199,14 @@ class I18NTest extends TestCase
      */
     public function testMissingTranslationEvent()
     {
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
-        $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
 
         Event::on(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {});
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
-        $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
 
         Event::on(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {
@@ -214,11 +214,11 @@ class I18NTest extends TestCase
                 $event->translatedMessage = 'TRANSLATION MISSING HERE!';
             }
         });
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
-        $this->assertEquals('Another missing translation message.', $this->i18n->translate('test', 'Another missing translation message.', [], 'de-DE'));
-        $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
-        $this->assertEquals('TRANSLATION MISSING HERE!', $this->i18n->translate('test', 'New missing translation message.', [], 'de-DE'));
-        $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
+        $this->assertSame('Another missing translation message.', $this->i18n->translate('test', 'Another missing translation message.', [], 'de-DE'));
+        $this->assertSame('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
+        $this->assertSame('TRANSLATION MISSING HERE!', $this->i18n->translate('test', 'New missing translation message.', [], 'de-DE'));
+        $this->assertSame('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         Event::off(PhpMessageSource::className(), PhpMessageSource::EVENT_MISSING_TRANSLATION);
     }
 
@@ -248,20 +248,20 @@ class I18NTest extends TestCase
             return substr_compare($array[2], $className, 0, strlen($className)) === 0;
         };
 
-        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en-GB'));
-        $this->assertEquals([], array_filter($logger->messages, $filter));
+        $this->assertSame('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en-GB'));
+        $this->assertSame([], array_filter($logger->messages, $filter));
 
-        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en'));
-        $this->assertEquals([], array_filter($logger->messages, $filter));
+        $this->assertSame('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en'));
+        $this->assertSame([], array_filter($logger->messages, $filter));
 
-        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en-CA'));
-        $this->assertEquals([], array_filter($logger->messages, $filter));
+        $this->assertSame('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en-CA'));
+        $this->assertSame([], array_filter($logger->messages, $filter));
 
-        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'hz-HZ'));
+        $this->assertSame('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'hz-HZ'));
         $this->assertCount(1, array_filter($logger->messages, $filter));
         $logger->messages = [];
 
-        $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'hz'));
+        $this->assertSame('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'hz'));
         $this->assertCount(1, array_filter($logger->messages, $filter));
         $logger->messages = [];
     }
@@ -273,6 +273,6 @@ class I18NTest extends TestCase
     public function testFormatMessageWithNoParam()
     {
         $message = 'Incorrect password (length must be from {min, number} to {max, number} symbols).';
-        $this->assertEquals($message, $this->i18n->format($message, ['attribute' => 'password'], 'en'));
+        $this->assertSame($message, $this->i18n->format($message, ['attribute' => 'password'], 'en'));
     }
 }

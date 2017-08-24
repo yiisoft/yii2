@@ -21,7 +21,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
-        $this->assertEquals('SELECT [id], [t].[name] FROM [customer] t', $command->sql);
+        $this->assertSame('SELECT [id], [t].[name] FROM [customer] t', $command->sql);
     }
 
     public function testPrepareCancel()
@@ -47,7 +47,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $sql = 'SELECT name FROM customer WHERE email=:email';
         $command = $db->createCommand($sql);
         $command->bindParam(':email', $email);
-        $this->assertEquals($name, $command->queryScalar());
+        $this->assertSame($name, $command->queryScalar());
 
         $sql = 'INSERT INTO type (int_col, char_col, float_col, blob_col, numeric_col, bool_col) VALUES (:int_col, :char_col, :float_col, CONVERT([varbinary], :blob_col), :numeric_col, :bool_col)';
         $command = $db->createCommand($sql);
@@ -63,15 +63,15 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $command->bindParam(':blob_col', $blobCol);
         $command->bindParam(':numeric_col', $numericCol);
         $command->bindParam(':bool_col', $boolCol);
-        $this->assertEquals(1, $command->execute());
+        $this->assertSame(1, $command->execute());
 
         $sql = 'SELECT int_col, char_col, float_col, CONVERT([nvarchar], blob_col) AS blob_col, numeric_col FROM type';
         $row = $db->createCommand($sql)->queryOne();
-        $this->assertEquals($intCol, $row['int_col']);
-        $this->assertEquals($charCol, trim($row['char_col']));
-        $this->assertEquals($floatCol, $row['float_col']);
-        $this->assertEquals($blobCol, $row['blob_col']);
-        $this->assertEquals($numericCol, $row['numeric_col']);
+        $this->assertSame($intCol, $row['int_col']);
+        $this->assertSame($charCol, trim($row['char_col']));
+        $this->assertSame($floatCol, $row['float_col']);
+        $this->assertSame($blobCol, $row['blob_col']);
+        $this->assertSame($numericCol, $row['numeric_col']);
 
         // bindValue
         $sql = 'INSERT INTO customer(email, name, address) VALUES (:email, \'user5\', \'address5\')';
@@ -82,7 +82,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $sql = 'SELECT email FROM customer WHERE name=:name';
         $command = $db->createCommand($sql);
         $command->bindValue(':name', 'user5');
-        $this->assertEquals('user5@example.com', $command->queryScalar());
+        $this->assertSame('user5@example.com', $command->queryScalar());
     }
 
     public function paramsNonWhereProvider()

@@ -26,7 +26,7 @@ abstract class CommandTest extends DatabaseTestCase
         // string
         $sql = 'SELECT * FROM customer';
         $command = $db->createCommand($sql);
-        $this->assertEquals($sql, $command->sql);
+        $this->assertSame($sql, $command->sql);
     }
 
     public function testGetSetSql()
@@ -35,11 +35,11 @@ abstract class CommandTest extends DatabaseTestCase
 
         $sql = 'SELECT * FROM customer';
         $command = $db->createCommand($sql);
-        $this->assertEquals($sql, $command->sql);
+        $this->assertSame($sql, $command->sql);
 
         $sql2 = 'SELECT * FROM order';
         $command->sql = $sql2;
-        $this->assertEquals($sql2, $command->sql);
+        $this->assertSame($sql2, $command->sql);
     }
 
     public function testAutoQuoting()
@@ -48,7 +48,7 @@ abstract class CommandTest extends DatabaseTestCase
 
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
-        $this->assertEquals('SELECT `id`, `t`.`name` FROM `customer` t', $command->sql);
+        $this->assertSame('SELECT `id`, `t`.`name` FROM `customer` t', $command->sql);
     }
 
     public function testPrepareCancel()
@@ -56,11 +56,11 @@ abstract class CommandTest extends DatabaseTestCase
         $db = $this->getConnection(false);
 
         $command = $db->createCommand('SELECT * FROM {{customer}}');
-        $this->assertEquals(null, $command->pdoStatement);
+        $this->assertSame(null, $command->pdoStatement);
         $command->prepare();
         $this->assertNotNull($command->pdoStatement);
         $command->cancel();
-        $this->assertEquals(null, $command->pdoStatement);
+        $this->assertSame(null, $command->pdoStatement);
     }
 
     public function testExecute()
@@ -69,11 +69,11 @@ abstract class CommandTest extends DatabaseTestCase
 
         $sql = 'INSERT INTO {{customer}}([[email]], [[name]], [[address]]) VALUES (\'user4@example.com\', \'user4\', \'address4\')';
         $command = $db->createCommand($sql);
-        $this->assertEquals(1, $command->execute());
+        $this->assertSame(1, $command->execute());
 
         $sql = 'SELECT COUNT(*) FROM {{customer}} WHERE [[name]] = \'user4\'';
         $command = $db->createCommand($sql);
-        $this->assertEquals(1, $command->queryScalar());
+        $this->assertSame(1, $command->queryScalar());
 
         $command = $db->createCommand('bad SQL');
         $this->expectException('\yii\db\Exception');
@@ -93,24 +93,24 @@ abstract class CommandTest extends DatabaseTestCase
         $rows = $db->createCommand('SELECT * FROM {{customer}}')->queryAll();
         $this->assertCount(3, $rows);
         $row = $rows[2];
-        $this->assertEquals(3, $row['id']);
-        $this->assertEquals('user3', $row['name']);
+        $this->assertSame(3, $row['id']);
+        $this->assertSame('user3', $row['name']);
 
         $rows = $db->createCommand('SELECT * FROM {{customer}} WHERE [[id]] = 10')->queryAll();
-        $this->assertEquals([], $rows);
+        $this->assertSame([], $rows);
 
         // queryOne
         $sql = 'SELECT * FROM {{customer}} ORDER BY [[id]]';
         $row = $db->createCommand($sql)->queryOne();
-        $this->assertEquals(1, $row['id']);
-        $this->assertEquals('user1', $row['name']);
+        $this->assertSame(1, $row['id']);
+        $this->assertSame('user1', $row['name']);
 
         $sql = 'SELECT * FROM {{customer}} ORDER BY [[id]]';
         $command = $db->createCommand($sql);
         $command->prepare();
         $row = $command->queryOne();
-        $this->assertEquals(1, $row['id']);
-        $this->assertEquals('user1', $row['name']);
+        $this->assertSame(1, $row['id']);
+        $this->assertSame('user1', $row['name']);
 
         $sql = 'SELECT * FROM {{customer}} WHERE [[id]] = 10';
         $command = $db->createCommand($sql);
@@ -119,19 +119,19 @@ abstract class CommandTest extends DatabaseTestCase
         // queryColumn
         $sql = 'SELECT * FROM {{customer}}';
         $column = $db->createCommand($sql)->queryColumn();
-        $this->assertEquals(range(1, 3), $column);
+        $this->assertSame(range(1, 3), $column);
 
         $command = $db->createCommand('SELECT [[id]] FROM {{customer}} WHERE [[id]] = 10');
-        $this->assertEquals([], $command->queryColumn());
+        $this->assertSame([], $command->queryColumn());
 
         // queryScalar
         $sql = 'SELECT * FROM {{customer}} ORDER BY [[id]]';
-        $this->assertEquals($db->createCommand($sql)->queryScalar(), 1);
+        $this->assertSame($db->createCommand($sql)->queryScalar(), 1);
 
         $sql = 'SELECT [[id]] FROM {{customer}} ORDER BY [[id]]';
         $command = $db->createCommand($sql);
         $command->prepare();
-        $this->assertEquals(1, $command->queryScalar());
+        $this->assertSame(1, $command->queryScalar());
 
         $command = $db->createCommand('SELECT [[id]] FROM {{customer}} WHERE [[id]] = 10');
         $this->assertFalse($command->queryScalar());
@@ -163,7 +163,7 @@ abstract class CommandTest extends DatabaseTestCase
         $sql = 'SELECT [[name]] FROM {{customer}} WHERE [[email]] = :email';
         $command = $db->createCommand($sql);
         $command->bindParam(':email', $email);
-        $this->assertEquals($name, $command->queryScalar());
+        $this->assertSame($name, $command->queryScalar());
 
         $sql = <<<'SQL'
 INSERT INTO {{type}} ([[int_col]], [[char_col]], [[float_col]], [[blob_col]], [[numeric_col]], [[bool_col]])
@@ -193,28 +193,28 @@ SQL;
             $command->bindParam(':numeric_col', $numericCol);
             $command->bindParam(':blob_col', $blobCol);
         }
-        $this->assertEquals(1, $command->execute());
+        $this->assertSame(1, $command->execute());
 
         $command = $db->createCommand('SELECT [[int_col]], [[char_col]], [[float_col]], [[blob_col]], [[numeric_col]], [[bool_col]] FROM {{type}}');
 //        $command->prepare();
 //        $command->pdoStatement->bindColumn('blob_col', $bc, \PDO::PARAM_LOB);
         $row = $command->queryOne();
-        $this->assertEquals($intCol, $row['int_col']);
-        $this->assertEquals($charCol, $row['char_col']);
-        $this->assertEquals($floatCol, $row['float_col']);
+        $this->assertSame($intCol, $row['int_col']);
+        $this->assertSame($charCol, $row['char_col']);
+        $this->assertSame($floatCol, $row['float_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'sqlite' || $this->driverName === 'oci') {
-            $this->assertEquals($blobCol, $row['blob_col']);
+            $this->assertSame($blobCol, $row['blob_col']);
         } elseif (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             // HHVMs pgsql implementation does not seem to support blob columns correctly.
         } else {
             $this->assertInternalType('resource', $row['blob_col']);
-            $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
+            $this->assertSame($blobCol, stream_get_contents($row['blob_col']));
         }
-        $this->assertEquals($numericCol, $row['numeric_col']);
+        $this->assertSame($numericCol, $row['numeric_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'oci' || (defined('HHVM_VERSION') && in_array($this->driverName, ['sqlite', 'pgsql']))) {
-            $this->assertEquals($boolCol, (int) $row['bool_col']);
+            $this->assertSame($boolCol, (int) $row['bool_col']);
         } else {
-            $this->assertEquals($boolCol, $row['bool_col']);
+            $this->assertSame($boolCol, $row['bool_col']);
         }
 
         // bindValue
@@ -226,7 +226,7 @@ SQL;
         $sql = 'SELECT [[email]] FROM {{customer}} WHERE [[name]] = :name';
         $command = $db->createCommand($sql);
         $command->bindValue(':name', 'user5');
-        $this->assertEquals('user5@example.com', $command->queryScalar());
+        $this->assertSame('user5@example.com', $command->queryScalar());
     }
 
     public function paramsNonWhereProvider()
@@ -254,7 +254,7 @@ SQL;
             ':len' => 5,
         ];
         $command = $db->createCommand($sql, $params);
-        $this->assertEquals('Params', $command->queryScalar());
+        $this->assertSame('Params', $command->queryScalar());
     }
 
     public function testFetchMode()
@@ -292,7 +292,7 @@ SQL;
                 ['t2@example.com', null, false],
             ]
         );
-        $this->assertEquals(2, $command->execute());
+        $this->assertSame(2, $command->execute());
 
         // @see https://github.com/yiisoft/yii2/issues/11693
         $command = $this->getConnection()->createCommand();
@@ -301,7 +301,7 @@ SQL;
             ['email', 'name', 'address'],
             []
         );
-        $this->assertEquals(0, $command->execute());
+        $this->assertSame(0, $command->execute());
     }
 
     public function testBatchInsertWithYield()
@@ -345,17 +345,17 @@ SQL;
             $db->createCommand()->batchInsert('type', $cols, $data)->execute();
 
             $data = $db->createCommand('SELECT int_col, char_col, float_col, bool_col FROM {{type}} WHERE [[int_col]] IN (1,2,3) ORDER BY [[int_col]];')->queryAll();
-            $this->assertEquals(3, count($data));
-            $this->assertEquals(1, $data[0]['int_col']);
-            $this->assertEquals(2, $data[1]['int_col']);
-            $this->assertEquals(3, $data[2]['int_col']);
-            $this->assertEquals('A', rtrim($data[0]['char_col'])); // rtrim because Postgres padds the column with whitespace
-            $this->assertEquals('B', rtrim($data[1]['char_col']));
-            $this->assertEquals('C', rtrim($data[2]['char_col']));
-            $this->assertEquals('9.735', $data[0]['float_col']);
-            $this->assertEquals('-2.123', $data[1]['float_col']);
-            $this->assertEquals('2.123', $data[2]['float_col']);
-            $this->assertEquals('1', $data[0]['bool_col']);
+            $this->assertSame(3, count($data));
+            $this->assertSame(1, $data[0]['int_col']);
+            $this->assertSame(2, $data[1]['int_col']);
+            $this->assertSame(3, $data[2]['int_col']);
+            $this->assertSame('A', rtrim($data[0]['char_col'])); // rtrim because Postgres padds the column with whitespace
+            $this->assertSame('B', rtrim($data[1]['char_col']));
+            $this->assertSame('C', rtrim($data[2]['char_col']));
+            $this->assertSame('9.735', $data[0]['float_col']);
+            $this->assertSame('-2.123', $data[1]['float_col']);
+            $this->assertSame('2.123', $data[2]['float_col']);
+            $this->assertSame('1', $data[0]['bool_col']);
             $this->assertIsOneOf($data[1]['bool_col'], ['0', false]);
             $this->assertIsOneOf($data[2]['bool_col'], ['0', false]);
         } catch (\Exception $e) {
@@ -382,9 +382,9 @@ SQL;
                 'address' => 'test address',
             ]
         )->execute();
-        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
+        $this->assertSame(1, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
         $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryOne();
-        $this->assertEquals([
+        $this->assertSame([
             'email' => 't1@example.com',
             'name' => 'test',
             'address' => 'test address',
@@ -408,8 +408,8 @@ SQL;
             ]
         )->execute();
         $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
-        $this->assertEquals('Some {{weird}} name', $customer['name']);
-        $this->assertEquals('Some {{%weird}} address', $customer['address']);
+        $this->assertSame('Some {{weird}} name', $customer['name']);
+        $this->assertSame('Some {{%weird}} address', $customer['address']);
 
         $db->createCommand()->update(
             '{{customer}}',
@@ -420,8 +420,8 @@ SQL;
             ['id' => 43]
         )->execute();
         $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
-        $this->assertEquals('Some {{updated}} name', $customer['name']);
-        $this->assertEquals('Some {{%updated}} address', $customer['address']);
+        $this->assertSame('Some {{updated}} name', $customer['name']);
+        $this->assertSame('Some {{%updated}} address', $customer['address']);
     }
 
     /**
@@ -462,9 +462,9 @@ SQL;
             $query
         )->execute();
 
-        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}}')->queryScalar());
+        $this->assertSame(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}}')->queryScalar());
         $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryAll();
-        $this->assertEquals([
+        $this->assertSame([
             [
                 'email' => 't1@example.com',
                 'name' => 'test',
@@ -516,9 +516,9 @@ SQL;
             $query
         )->execute();
 
-        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}}')->queryScalar());
+        $this->assertSame(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}}')->queryScalar());
         $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryAll();
-        $this->assertEquals([
+        $this->assertSame([
             [
                 'email' => 't1@example.com',
                 'name' => 'test',
@@ -594,9 +594,9 @@ SQL;
                 'total' => 1,
             ]
         )->execute();
-        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}}')->queryScalar());
+        $this->assertSame(1, $db->createCommand('SELECT COUNT(*) FROM {{order_with_null_fk}}')->queryScalar());
         $record = $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}}')->queryOne();
-        $this->assertEquals([
+        $this->assertSame([
             'created_at' => date('Y'),
         ], $record);
     }
@@ -629,7 +629,7 @@ SQL;
             ]
         )->execute();
 
-        $this->assertEquals($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = 42')->queryScalar());
+        $this->assertSame($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = 42')->queryScalar());
 
         $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
         $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = 42')->execute();
@@ -646,7 +646,7 @@ SQL;
         $db->createCommand()->createTable('testCreateTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
         $db->createCommand()->insert('testCreateTable', ['bar' => 1])->execute();
         $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testCreateTable}};')->queryAll();
-        $this->assertEquals([
+        $this->assertSame([
             ['id' => 1, 'bar' => 1],
         ], $records);
     }
@@ -670,7 +670,7 @@ SQL;
 
         $db->createCommand()->insert('testAlterTable', ['bar' => 'hello'])->execute();
         $records = $db->createCommand('SELECT [[id]], [[bar]] FROM {{testAlterTable}};')->queryAll();
-        $this->assertEquals([
+        $this->assertSame([
             ['id' => 1, 'bar' => 1],
             ['id' => 2, 'bar' => 'hello'],
         ], $records);
@@ -757,13 +757,13 @@ SQL;
 
         $this->assertNull($schema->getTablePrimaryKey($tableName, true));
         $db->createCommand()->addPrimaryKey($name, $tableName, ['int1'])->execute();
-        $this->assertEquals(['int1'], $schema->getTablePrimaryKey($tableName, true)->columnNames);
+        $this->assertSame(['int1'], $schema->getTablePrimaryKey($tableName, true)->columnNames);
 
         $db->createCommand()->dropPrimaryKey($name, $tableName)->execute();
         $this->assertNull($schema->getTablePrimaryKey($tableName, true));
 
         $db->createCommand()->addPrimaryKey($name, $tableName, ['int1', 'int2'])->execute();
-        $this->assertEquals(['int1', 'int2'], $schema->getTablePrimaryKey($tableName, true)->columnNames);
+        $this->assertSame(['int1', 'int2'], $schema->getTablePrimaryKey($tableName, true)->columnNames);
     }
 
     public function testAddDropForeignKey()
@@ -788,15 +788,15 @@ SQL;
 
         $this->assertEmpty($schema->getTableForeignKeys($tableName, true));
         $db->createCommand()->addForeignKey($name, $tableName, ['int1'], $tableName, ['int3'])->execute();
-        $this->assertEquals(['int1'], $schema->getTableForeignKeys($tableName, true)[0]->columnNames);
-        $this->assertEquals(['int3'], $schema->getTableForeignKeys($tableName, true)[0]->foreignColumnNames);
+        $this->assertSame(['int1'], $schema->getTableForeignKeys($tableName, true)[0]->columnNames);
+        $this->assertSame(['int3'], $schema->getTableForeignKeys($tableName, true)[0]->foreignColumnNames);
 
         $db->createCommand()->dropForeignKey($name, $tableName)->execute();
         $this->assertEmpty($schema->getTableForeignKeys($tableName, true));
 
         $db->createCommand()->addForeignKey($name, $tableName, ['int1', 'int2'], $tableName, ['int3', 'int4'])->execute();
-        $this->assertEquals(['int1', 'int2'], $schema->getTableForeignKeys($tableName, true)[0]->columnNames);
-        $this->assertEquals(['int3', 'int4'], $schema->getTableForeignKeys($tableName, true)[0]->foreignColumnNames);
+        $this->assertSame(['int1', 'int2'], $schema->getTableForeignKeys($tableName, true)[0]->columnNames);
+        $this->assertSame(['int3', 'int4'], $schema->getTableForeignKeys($tableName, true)[0]->foreignColumnNames);
     }
 
     public function testCreateDropIndex()
@@ -817,14 +817,14 @@ SQL;
 
         $this->assertEmpty($schema->getTableIndexes($tableName, true));
         $db->createCommand()->createIndex($name, $tableName, ['int1'])->execute();
-        $this->assertEquals(['int1'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
+        $this->assertSame(['int1'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
         $this->assertFalse($schema->getTableIndexes($tableName, true)[0]->isUnique);
 
         $db->createCommand()->dropIndex($name, $tableName)->execute();
         $this->assertEmpty($schema->getTableIndexes($tableName, true));
 
         $db->createCommand()->createIndex($name, $tableName, ['int1', 'int2'])->execute();
-        $this->assertEquals(['int1', 'int2'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
+        $this->assertSame(['int1', 'int2'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
         $this->assertFalse($schema->getTableIndexes($tableName, true)[0]->isUnique);
 
         $db->createCommand()->dropIndex($name, $tableName)->execute();
@@ -832,14 +832,14 @@ SQL;
 
         $this->assertEmpty($schema->getTableIndexes($tableName, true));
         $db->createCommand()->createIndex($name, $tableName, ['int1'], true)->execute();
-        $this->assertEquals(['int1'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
+        $this->assertSame(['int1'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
         $this->assertTrue($schema->getTableIndexes($tableName, true)[0]->isUnique);
 
         $db->createCommand()->dropIndex($name, $tableName)->execute();
         $this->assertEmpty($schema->getTableIndexes($tableName, true));
 
         $db->createCommand()->createIndex($name, $tableName, ['int1', 'int2'], true)->execute();
-        $this->assertEquals(['int1', 'int2'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
+        $this->assertSame(['int1', 'int2'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
         $this->assertTrue($schema->getTableIndexes($tableName, true)[0]->isUnique);
     }
 
@@ -861,13 +861,13 @@ SQL;
 
         $this->assertEmpty($schema->getTableUniques($tableName, true));
         $db->createCommand()->addUnique($name, $tableName, ['int1'])->execute();
-        $this->assertEquals(['int1'], $schema->getTableUniques($tableName, true)[0]->columnNames);
+        $this->assertSame(['int1'], $schema->getTableUniques($tableName, true)[0]->columnNames);
 
         $db->createCommand()->dropUnique($name, $tableName)->execute();
         $this->assertEmpty($schema->getTableUniques($tableName, true));
 
         $db->createCommand()->addUnique($name, $tableName, ['int1', 'int2'])->execute();
-        $this->assertEquals(['int1', 'int2'], $schema->getTableUniques($tableName, true)[0]->columnNames);
+        $this->assertSame(['int1', 'int2'], $schema->getTableUniques($tableName, true)[0]->columnNames);
     }
 
     public function testAddDropCheck()
@@ -917,7 +917,7 @@ SQL;
         $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
         $command = $db->createCommand($sql);
         $command->execute();
-        $this->assertEquals(3, $db->getSchema()->getLastInsertID());
+        $this->assertSame(3, $db->getSchema()->getLastInsertID());
     }
 
     public function testQueryCache()
@@ -927,48 +927,48 @@ SQL;
         $db->queryCache = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
         $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id');
 
-        $this->assertEquals('user1', $command->bindValue(':id', 1)->queryScalar());
+        $this->assertSame('user1', $command->bindValue(':id', 1)->queryScalar());
         $update = $db->createCommand('UPDATE {{customer}} SET [[name]] = :name WHERE [[id]] = :id');
         $update->bindValues([':id' => 1, ':name' => 'user11'])->execute();
-        $this->assertEquals('user11', $command->bindValue(':id', 1)->queryScalar());
+        $this->assertSame('user11', $command->bindValue(':id', 1)->queryScalar());
 
         $db->cache(function (Connection $db) use ($command, $update) {
-            $this->assertEquals('user2', $command->bindValue(':id', 2)->queryScalar());
+            $this->assertSame('user2', $command->bindValue(':id', 2)->queryScalar());
             $update->bindValues([':id' => 2, ':name' => 'user22'])->execute();
-            $this->assertEquals('user2', $command->bindValue(':id', 2)->queryScalar());
+            $this->assertSame('user2', $command->bindValue(':id', 2)->queryScalar());
 
             $db->noCache(function () use ($command) {
-                $this->assertEquals('user22', $command->bindValue(':id', 2)->queryScalar());
+                $this->assertSame('user22', $command->bindValue(':id', 2)->queryScalar());
             });
 
-            $this->assertEquals('user2', $command->bindValue(':id', 2)->queryScalar());
+            $this->assertSame('user2', $command->bindValue(':id', 2)->queryScalar());
         }, 10);
 
         $db->enableQueryCache = false;
         $db->cache(function ($db) use ($command, $update) {
-            $this->assertEquals('user22', $command->bindValue(':id', 2)->queryScalar());
+            $this->assertSame('user22', $command->bindValue(':id', 2)->queryScalar());
             $update->bindValues([':id' => 2, ':name' => 'user2'])->execute();
-            $this->assertEquals('user2', $command->bindValue(':id', 2)->queryScalar());
+            $this->assertSame('user2', $command->bindValue(':id', 2)->queryScalar());
         }, 10);
 
         $db->enableQueryCache = true;
         $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id')->cache();
-        $this->assertEquals('user11', $command->bindValue(':id', 1)->queryScalar());
+        $this->assertSame('user11', $command->bindValue(':id', 1)->queryScalar());
         $update->bindValues([':id' => 1, ':name' => 'user1'])->execute();
-        $this->assertEquals('user11', $command->bindValue(':id', 1)->queryScalar());
-        $this->assertEquals('user1', $command->noCache()->bindValue(':id', 1)->queryScalar());
+        $this->assertSame('user11', $command->bindValue(':id', 1)->queryScalar());
+        $this->assertSame('user1', $command->noCache()->bindValue(':id', 1)->queryScalar());
 
         $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id');
         $db->cache(function (Connection $db) use ($command, $update) {
-            $this->assertEquals('user11', $command->bindValue(':id', 1)->queryScalar());
-            $this->assertEquals('user1', $command->noCache()->bindValue(':id', 1)->queryScalar());
+            $this->assertSame('user11', $command->bindValue(':id', 1)->queryScalar());
+            $this->assertSame('user1', $command->noCache()->bindValue(':id', 1)->queryScalar());
         }, 10);
     }
 
     public function testColumnCase()
     {
         $db = $this->getConnection(false);
-        $this->assertEquals(\PDO::CASE_NATURAL, $db->slavePdo->getAttribute(\PDO::ATTR_CASE));
+        $this->assertSame(\PDO::CASE_NATURAL, $db->slavePdo->getAttribute(\PDO::ATTR_CASE));
 
         $sql = 'SELECT [[customer_id]], [[total]] FROM {{order}}';
         $rows = $db->createCommand($sql)->queryAll();
@@ -1041,7 +1041,7 @@ SQL;
     {
         $db = $this->getConnection(false);
         $command = $db->createCommand($sql, $params);
-        $this->assertEquals($expectedRawSql, $command->getRawSql());
+        $this->assertSame($expectedRawSql, $command->getRawSql());
     }
 
     public function testAutoRefreshTableSchema()
@@ -1066,7 +1066,7 @@ SQL;
 
         $db->createCommand()->addColumn($tableName, 'value', 'integer')->execute();
         $newSchema = $db->getSchema()->getTableSchema($tableName);
-        $this->assertNotEquals($initialSchema, $newSchema);
+        $this->assertNotSame($initialSchema, $newSchema);
 
         if ($this->driverName !== 'sqlite') {
             $db->createCommand()->addForeignKey($fkName, $tableName, 'fk', $tableName, 'id')->execute();

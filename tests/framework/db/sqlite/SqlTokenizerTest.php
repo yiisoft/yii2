@@ -1124,7 +1124,7 @@ SELECT*from/*foo*/`T_constraints_1`WHERE not`C_check`=\'foo\'\'bar\'--bar
     public function testTokenizer($sql, SqlToken $expectedToken)
     {
         $actualToken = (new SqlTokenizer($sql))->tokenize();
-        $this->assertEquals($expectedToken, $actualToken);
+        $this->assertSame($expectedToken, $actualToken);
     }
 
     /**

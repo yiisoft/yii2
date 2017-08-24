@@ -25,11 +25,11 @@ class DependencyTest extends TestCase
         $value = ['dummy'];
         $dependency = new MockDependency();
         $this->setInaccessibleProperty($dependency, '_reusableData', $value, false);
-        $this->assertEquals($value, $this->getInaccessibleProperty($dependency, '_reusableData'));
+        $this->assertSame($value, $this->getInaccessibleProperty($dependency, '_reusableData'));
 
         $dependency->resetReusableData();
 
-        $this->assertEquals([], $this->getInaccessibleProperty($dependency, '_reusableData'));
+        $this->assertSame([], $this->getInaccessibleProperty($dependency, '_reusableData'));
     }
 
     public function testGenerateReusableHash()
@@ -38,8 +38,8 @@ class DependencyTest extends TestCase
         $dependency->data = 'dummy';
 
         $result = $this->invokeMethod($dependency, 'generateReusableHash');
-        $this->assertEquals(5, strlen($dependency->data));
-        $this->assertEquals(40, strlen($result));
+        $this->assertSame(5, strlen($dependency->data));
+        $this->assertSame(40, strlen($result));
     }
 
     public function testIsChanged()
