@@ -1595,6 +1595,11 @@ class Request extends \yii\base\Request implements RequestInterface
     public function __clone()
     {
         parent::__clone();
+
         $this->cloneHttpMessageInternals();
+
+        if (is_object($this->cookies)) {
+            $this->cookies = clone $this->cookies;
+        }
     }
 }

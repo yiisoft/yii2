@@ -20,11 +20,12 @@ class MessageTraitTest extends TestCase
     {
         $message = new TestMessage();
 
-        $this->assertSame($message, $message->withProtocolVersion('2.0'));
+        $message->setProtocolVersion('2.0');
         $this->assertSame('2.0', $message->getProtocolVersion());
 
-        $message->setProtocolVersion('2.1');
-        $this->assertSame('2.1', $message->getProtocolVersion());
+        $newMessage = $message->withProtocolVersion('2.1');
+        $this->assertNotSame($newMessage, $message);
+        $this->assertSame('2.1', $newMessage->getProtocolVersion());
     }
 
     /**
@@ -45,14 +46,15 @@ class MessageTraitTest extends TestCase
     {
         $message = new TestMessage();
 
-        $body = new MemoryStream();
-        $this->assertSame($message, $message->withBody($body));
-        $this->assertSame($body, $message->getBody());
-
         $message->setBody([
             'class' => FileStream::class
         ]);
         $this->assertTrue($message->getBody() instanceof FileStream);
+
+        $body = new MemoryStream();
+        $newMessage = $message->withBody($body);
+        $this->assertNotSame($newMessage, $message);
+        $this->assertSame($body, $newMessage->getBody());
     }
 
     /**
@@ -69,21 +71,26 @@ class MessageTraitTest extends TestCase
         $message = new TestMessage();
 
         $this->assertFalse($message->hasHeader('some'));
-        $this->assertSame($message, $message->withHeader('some', 'foo'));
-        $this->assertTrue($message->hasHeader('some'));
-        $this->assertEquals(['some' => ['foo']], $message->getHeaders());
+        $headerMessage = $message->withHeader('some', 'foo');
+        $this->assertNotSame($headerMessage, $message);
+        $this->assertTrue($headerMessage->hasHeader('some'));
+        $this->assertEquals(['some' => ['foo']], $headerMessage->getHeaders());
 
-        $this->assertSame($message, $message->withAddedHeader('some', 'another'));
-        $this->assertEquals(['some' => ['foo', 'another']], $message->getHeaders());
-        $this->assertEquals(['foo', 'another'], $message->getHeader('some'));
-        $this->assertEquals('foo,another', $message->getHeaderLine('some'));
-        $this->assertSame($message, $message->withHeader('some', 'override'));
-        $this->assertEquals(['some' => ['override']], $message->getHeaders());
+        $headerAddedMessage = $headerMessage->withAddedHeader('some', 'another');
+        $this->assertNotSame($headerMessage, $headerAddedMessage);
+        $this->assertEquals(['some' => ['foo', 'another']], $headerAddedMessage->getHeaders());
+        $this->assertEquals(['foo', 'another'], $headerAddedMessage->getHeader('some'));
+        $this->assertEquals('foo,another', $headerAddedMessage->getHeaderLine('some'));
 
-        $this->assertSame($message, $message->withoutHeader('some'));
-        $this->assertFalse($message->hasHeader('some'));
-        $this->assertEquals([], $message->getHeader('some'));
-        $this->assertEquals('', $message->getHeaderLine('some'));
+        $overrideMessage = $headerAddedMessage->withHeader('some', 'override');
+        $this->assertNotSame($headerAddedMessage, $overrideMessage);
+        $this->assertEquals(['some' => ['override']], $overrideMessage->getHeaders());
+
+        $clearMessage = $headerMessage->withoutHeader('some');
+        $this->assertNotSame($headerMessage, $clearMessage);
+        $this->assertFalse($clearMessage->hasHeader('some'));
+        $this->assertEquals([], $clearMessage->getHeader('some'));
+        $this->assertEquals('', $clearMessage->getHeaderLine('some'));
 
         $message->setHeaders([
             'some' => ['line1', 'line2']

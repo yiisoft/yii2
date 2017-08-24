@@ -63,13 +63,21 @@ trait MessageTrait
     /**
      * Return an instance with the specified HTTP protocol version.
      *
+     * This method retains the immutability of the message and returns an instance that has the
+     * new protocol version.
+     *
      * @param string $version HTTP protocol version
      * @return static
      */
     public function withProtocolVersion($version)
     {
-        $this->setProtocolVersion($version);
-        return $this;
+        if ($this->getProtocolVersion() === $version) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setProtocolVersion($version);
+        return $newInstance;
     }
 
     /**
@@ -207,7 +215,8 @@ trait MessageTrait
 
     /**
      * Return an instance with the provided value replacing the specified header.
-     *
+     * This method retains the immutability of the message and returns an instance that has the
+     * new and/or updated header and value.
      * @param string $name Case-insensitive header field name.
      * @param string|string[] $value Header value(s).
      * @return static
@@ -215,8 +224,9 @@ trait MessageTrait
      */
     public function withHeader($name, $value)
     {
-        $this->getHeaderCollection()->set($name, $value);
-        return $this;
+        $newInstance = clone $this;
+        $newInstance->getHeaderCollection()->set($name, $value);
+        return $newInstance;
     }
 
     /**
@@ -226,6 +236,9 @@ trait MessageTrait
      * value(s) will be appended to the existing list. If the header did not
      * exist previously, it will be added.
      *
+     * This method retains the immutability of the message and returns an instance that has the
+     * new header and/or value.
+     *
      * @param string $name Case-insensitive header field name to add.
      * @param string|string[] $value Header value(s).
      * @return static
@@ -233,20 +246,24 @@ trait MessageTrait
      */
     public function withAddedHeader($name, $value)
     {
-        $this->getHeaderCollection()->add($name, $value);
-        return $this;
+        $newInstance = clone $this;
+        $newInstance->getHeaderCollection()->add($name, $value);
+        return $newInstance;
     }
 
     /**
      * Return an instance without the specified header.
      * Header resolution performed without case-sensitivity.
+     * This method retains the immutability of the message and returns an instance that removes
+     * the named header.
      * @param string $name Case-insensitive header field name to remove.
      * @return static
      */
     public function withoutHeader($name)
     {
-        $this->getHeaderCollection()->remove($name);
-        return $this;
+        $newInstance = clone $this;
+        $newInstance->getHeaderCollection()->remove($name);
+        return $newInstance;
     }
 
     /**
@@ -280,14 +297,21 @@ trait MessageTrait
 
     /**
      * Return an instance with the specified message body.
+     * This method retains the immutability of the message and returns an instance that has the
+     * new body stream.
      * @param StreamInterface $body Body.
      * @return static
      * @throws \InvalidArgumentException When the body is not valid.
      */
     public function withBody(StreamInterface $body)
     {
-        $this->setBody($body);
-        return $this;
+        if ($this->getBody() === $body) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setBody($body);
+        return $newInstance;
     }
 
     /**

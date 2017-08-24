@@ -231,10 +231,6 @@ class Response extends \yii\base\Response implements ResponseInterface
      * @var int the HTTP status code to send with the response.
      */
     private $_statusCode = 200;
-    /**
-     * @var HeaderCollection
-     */
-    private $_headers;
 
 
     /**
@@ -357,7 +353,7 @@ class Response extends \yii\base\Response implements ResponseInterface
      */
     public function clear()
     {
-        $this->_headers = null;
+        $this->_headerCollection = null;
         $this->_cookies = null;
         $this->_statusCode = 200;
         $this->reasonPhrase = 'OK';
@@ -375,7 +371,7 @@ class Response extends \yii\base\Response implements ResponseInterface
         if (headers_sent()) {
             return;
         }
-        if ($this->_headers) {
+        if ($this->_headerCollection) {
             $headers = $this->getHeaders();
             foreach ($headers as $name => $values) {
                 $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
@@ -1092,6 +1088,11 @@ class Response extends \yii\base\Response implements ResponseInterface
     public function __clone()
     {
         parent::__clone();
+
         $this->cloneHttpMessageInternals();
+
+        if (is_object($this->cookies)) {
+            $this->cookies = clone $this->cookies;
+        }
     }
 }
