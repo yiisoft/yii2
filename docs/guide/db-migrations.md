@@ -711,7 +711,7 @@ Below is the list of all these database accessing methods:
 > ```php
 > // update status field for all users
 > foreach((new Query)->from('users')->each() as $user) {
->     $this->update('users', ['status' => 1], ['id' => $user['id']);
+>     $this->update('users', ['status' => 1], ['id' => $user['id']]);
 > }
 > ```
 
