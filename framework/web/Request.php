@@ -350,11 +350,17 @@ class Request extends \yii\base\Request implements RequestInterface
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        $this->setUri($uri);
-        if (!$preserveHost) {
-            $this->withHeader('host', $uri->getHost());
+        if ($this->getUri() === $uri) {
+            return $this;
         }
-        return $this;
+
+        $newInstance = clone $this;
+
+        $newInstance->setUri($uri);
+        if (!$preserveHost) {
+            return $newInstance->withHeader('host', $uri->getHost());
+        }
+        return $newInstance;
     }
 
     /**
@@ -1598,8 +1604,8 @@ class Request extends \yii\base\Request implements RequestInterface
 
         $this->cloneHttpMessageInternals();
 
-        if (is_object($this->cookies)) {
-            $this->cookies = clone $this->cookies;
+        if (is_object($this->_cookies)) {
+            $this->_cookies = clone $this->_cookies;
         }
     }
 }

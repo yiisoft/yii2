@@ -1091,8 +1091,8 @@ class Response extends \yii\base\Response implements ResponseInterface
 
         $this->cloneHttpMessageInternals();
 
-        if (is_object($this->cookies)) {
-            $this->cookies = clone $this->cookies;
+        if (is_object($this->_cookies)) {
+            $this->_cookies = clone $this->_cookies;
         }
     }
 }
