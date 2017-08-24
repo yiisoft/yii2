@@ -154,7 +154,7 @@ class MigrateController extends BaseMigrateController
             't' => 'migrationTable',
             'F' => 'templateFile',
             'P' => 'useTablePrefix',
-            'q' => 'quiet',
+            'c' => 'compact',
         ]);
     }
 
@@ -185,7 +185,7 @@ class MigrateController extends BaseMigrateController
     protected function createMigration($class)
     {
         $this->includeMigrationFile($class);
-        return new $class(['db' => $this->db, 'quiet' => $this->quiet]);
+        return new $class(['db' => $this->db, 'compact' => $this->compact]);
     }
 
     /**

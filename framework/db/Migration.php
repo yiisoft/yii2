@@ -74,12 +74,12 @@ class Migration extends Component implements MigrationInterface
     public $maxSqlOutputLength;
 
     /**
-     * @var bool indicates whether the console output should be quieter.
+     * @var bool indicates whether the console output should be compacted.
      * If this is set to true, the individual commands ran within the migration will not be output to the console.
      * Default is false, in other words the output is fully verbose by default.
      * @since 2.0.13
      */
-    public $quiet = false;
+    public $compact = false;
 
     /**
      * Initializes the migration.
@@ -552,7 +552,7 @@ class Migration extends Component implements MigrationInterface
      */
     protected function beginCommand($description)
     {
-        if (!$this->quiet) {
+        if (!$this->compact) {
             echo "    > $description ...";
         }
         return microtime(true);
@@ -566,7 +566,7 @@ class Migration extends Component implements MigrationInterface
      */
     protected function endCommand($time)
     {
-        if (!$this->quiet) {
+        if (!$this->compact) {
             echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
         }
     }
