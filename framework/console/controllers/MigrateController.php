@@ -278,7 +278,7 @@ class MigrateController extends BaseMigrateController
      * @inheritdoc
      * @since 2.0.13
      */
-    protected function refreshDatabase()
+    protected function truncateDatabase()
     {
         $db = $this->db;
         $schemas = $db->schema->getTableSchemas();
@@ -298,9 +298,6 @@ class MigrateController extends BaseMigrateController
             $db->createCommand()->dropTable($schema->name)->execute();
             $this->stdout("Table {$schema->name} dropped.\n");
         }
-
-        // The database should be cleaned up. Start the migrations!
-        $this->actionUp();
     }
 
     /**
