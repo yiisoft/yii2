@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Enh #13853: Added `yii\db\Migration::$compact` as well as `yii\console\controllers\BaseMigrateController::$compact` to allow making the migration console output more compact (francislavoie)
 - Enh #14184: Module service locator now falls back to its parent module service locator in case component isn't found (SamMousa)
 - Bug #14596: Fix event call on init in `yii\widgets\BaseListView` (panchenkodv)
 - New #14151: Added `AttributesBehavior` that assigns values specified to one or multiple attributes of an AR object when certain events happen (bscheshirwork)
