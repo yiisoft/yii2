@@ -107,6 +107,7 @@ class ColumnSchema extends BaseObject
     /**
      * Converts the input value according to [[phpType]] after retrieval from the database.
      * If the value is null or an [[Expression]], it will not be converted.
+     * If the value is int and the dbType is int, bigint or smallint, it will not be converted
      * @param mixed $value input value
      * @return mixed converted value
      * @since 2.0.3
@@ -128,6 +129,9 @@ class ColumnSchema extends BaseObject
                 if (is_float($value)) {
                     // ensure type cast always has . as decimal separator in all locales
                     return str_replace(',', '.', (string) $value);
+                }
+                if (is_int($value) && in_array($this->type, [Schema::TYPE_SMALLINT, Schema::TYPE_INTEGER, Schema::TYPE_BIGINT])) {
+                    return $value;
                 }
 
                 return (string) $value;
