@@ -54,7 +54,7 @@ Upgrade from Yii 2.0.x
 ----------------------
 
 * PHP requirements were raised to 7.1. Make sure your code is updated accordingly.
-* memcache PECL extension support was dropped. Use memcached PECL extension instead.
+* memcache PECL extension support was dropped. Use memcached PECL extesion instead.
 * Following new methods have been added to `yii\i18n\MessageInterface` `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()`
   providing ability to setup custom mail headers. Make sure your provide implementation for those methods, while
   creating your own mailer solution.
@@ -69,6 +69,10 @@ Upgrade from Yii 2.0.x
   Mail view rendering is now encapsulated into `yii\mail\Template` class.
 * Properties `view`, `viewPath`, `htmlLayout` and `textLayout` have been moved from `yii\mail\BaseMailer` to `yii\mail\Composer` class,
   which now encapsulates message composition.
+* `yii\captcha\CaptchaAction` has been refactored. Rendering logic was extracted into `yii\captcha\DriverInterface`, which
+  instance is available via `yii\captcha\CaptchaAction::$driver` field. All image settings now should be passed to
+  the driver fields instead of action. Automatic detection of the rendering driver is no longer supported.
+* `yii\captcha\Captcha::checkRequirements()` method has been removed.
 * All cache related classes interface has been changed according to PSR-16 'Simple Cache' specification. Make sure you
   change your invocations for the cache methods accordingly. The most notable changes affects methods `get()` and `getMultiple()`
   as they now accept `$default` argument, which value will be returned in case there is no value in the cache. This makes
