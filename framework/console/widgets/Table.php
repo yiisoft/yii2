@@ -221,9 +221,10 @@ class Table extends Widget
 
         $buffer = '';
         $arrayPointer = [];
-        for ($i = 0, $max = $this->calculateRowHeight($row); $i < $max; $i++) {
+        for ($i = 0, ($max = $this->calculateRowHeight($row)) ?: $max = 1; $i < $max; $i++) {
             $buffer .= $spanLeft . ' ';
-            foreach ($row as $index => $cell) {
+            foreach ($size as $index => $cellSize) {
+                $cell = isset($row[$index]) ? $row[$index] : null;
                 $prefix = '';
                 if ($index !== 0) {
                     $buffer .= $spanMiddle . ' ';
@@ -239,17 +240,17 @@ class Table extends Widget
                     } else {
                         $start = mb_strwidth($finalChunk[$index], Yii::$app->charset);
                     }
-                    $chunk = mb_substr($cell[$arrayPointer[$index]], $start, $size[$index] - 4, Yii::$app->charset);
+                    $chunk = mb_substr($cell[$arrayPointer[$index]], $start, $cellSize - 4, Yii::$app->charset);
                     $finalChunk[$index] .= $chunk;
                     if (isset($cell[$arrayPointer[$index] + 1]) && $finalChunk[$index] === $cell[$arrayPointer[$index]]) {
                         $arrayPointer[$index]++;
                         $finalChunk[$index] = '';
                     }
                 } else {
-                    $chunk = mb_substr($cell, ($size[$index] * $i) - ($i * 2), $size[$index] - 2, Yii::$app->charset);
+                    $chunk = mb_substr($cell, ($cellSize * $i) - ($i * 2), $cellSize - 2, Yii::$app->charset);
                 }
                 $chunk = $prefix . $chunk;
-                $repeat = $size[$index] - mb_strwidth($chunk, Yii::$app->charset) - 1;
+                $repeat = $cellSize - mb_strwidth($chunk, Yii::$app->charset) - 1;
                 $buffer .= $chunk;
                 if ($repeat >= 0) {
                     $buffer .= str_repeat(' ', $repeat);
