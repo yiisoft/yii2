@@ -12,7 +12,7 @@ a [cache component](#cache-components):
 // try retrieving $data from cache
 $data = $cache->get($key);
 
-if ($data === false) {
+if ($data === null) {
     // $data is not found in cache, calculate it from scratch
     $data = $this->calculateSomething();
 
@@ -58,22 +58,25 @@ such as memory, files, databases.
 Cache components are usually registered as [application components](structure-application-components.md) so
 that they can be globally configurable
 and accessible. The following code shows how to configure the `cache` application component to use
-[memcached](http://memcached.org/) with two cache servers:
+[memcached](http://memcached.org/) handler with two cache servers:
 
 ```php
 'components' => [
     'cache' => [
-        'class' => 'yii\caching\MemCache',
-        'servers' => [
-            [
-                'host' => 'server1',
-                'port' => 11211,
-                'weight' => 100,
-            ],
-            [
-                'host' => 'server2',
-                'port' => 11211,
-                'weight' => 50,
+        'class' => yii\caching\Cache::class,
+        'handler' => [
+            'class' => yii\caching\MemCache::class,
+            'servers' => [
+                [
+                    'host' => 'server1',
+                    'port' => 11211,
+                    'weight' => 100,
+                ],
+                [
+                    'host' => 'server2',
+                    'port' => 11211,
+                    'weight' => 50,
+                ],
             ],
         ],
     ],
@@ -82,7 +85,7 @@ and accessible. The following code shows how to configure the `cache` applicatio
 
 You can then access the above cache component using the expression `Yii::$app->cache`.
 
-Because all cache components support the same set of APIs, you can swap the underlying cache component
+Because all cache handlers support the same set of APIs, you can swap the underlying cache component
 with a different one by reconfiguring it in the application configuration without modifying the code that uses the cache.
 For example, you can modify the above configuration to use [[yii\caching\ApcCache|APC cache]]:
 
@@ -90,7 +93,10 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 ```php
 'components' => [
     'cache' => [
-        'class' => 'yii\caching\ApcCache',
+        'class' => yii\caching\Cache::class,
+        'handler' => [
+            'class' => yii\caching\ApcCache::class,
+        ],
     ],
 ],
 ```
@@ -101,7 +107,7 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 
 ### Supported Cache Storage <span id="supported-cache-storage"></span>
 
-Yii supports a wide range of cache storage. The following is a summary:
+Yii supports a wide range of cache handlers. The following is a summary:
 
 * [[yii\caching\ApcCache]]: uses PHP [APC](http://php.net/manual/en/book.apc.php) extension. This option can be
   considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
@@ -117,10 +123,9 @@ Yii supports a wide range of cache storage. The following is a summary:
   `Yii::$app->cache` might be `null`.
 * [[yii\caching\FileCache]]: uses standard files to store cached data. This is particularly suitable
   to cache large chunk of data, such as page content.
-* [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
-  and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
-  the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
-  balancers, etc.)
+* [[yii\caching\MemCached]]: uses PHP [memcached](http://php.net/manual/en/book.memcached.php) extension.
+  This option can be considered as the fastest one when dealing with cache in a distributed applications
+  (e.g. with several servers, load balancers, etc.)
 * [[yii\redis\Cache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
   (redis version 2.6.12 or higher is required).
 * [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
@@ -136,27 +141,31 @@ Yii supports a wide range of cache storage. The following is a summary:
 
 All cache components have the same base class [[yii\caching\Cache]] and thus support the following APIs:
 
-* [[yii\caching\Cache::get()|get()]]: retrieves a data item from cache with a specified key. A `false`
-  value will be returned if the data item is not found in the cache or is expired/invalidated.
+* [[yii\caching\Cache::get()|get()]]: retrieves a data item from cache with a specified key. A `null`
+  value will be returned if the data item is not found in the cache or is expired/invalidated. Alternatively you can specify
+  default value to return by passing it as a second argument.
+* [[yii\caching\Cache::getMultiple()|getMultiple()]]: retrieves multiple data items from cache with the specified keys. For each
+  key if the data item is not found in the cache or is expired/invalidated, `null` is returned. Alternatively you can specify
+  default value to return by passing it as a second argument.
 * [[yii\caching\Cache::set()|set()]]: stores a data item identified by a key in cache.
+* [[yii\caching\Cache::setMultiple()|setMultiple()]]: stores multiple data items in cache. Each item is identified by a key.
 * [[yii\caching\Cache::add()|add()]]: stores a data item identified by a key in cache if the key is not found in the cache.
+* [[yii\caching\Cache::addMultiple()|addMultiple()]]: stores multiple data items in cache. Each item is identified by a key.
+  If a key already exists in the cache, the data item will be skipped.
 * [[yii\caching\Cache::getOrSet()|getOrSet()]]: retrieves a data item from cache with a specified key or executes passed
   callback, stores return of the callback in a cache by a key and returns that data.  
-* [[yii\caching\Cache::multiGet()|multiGet()]]: retrieves multiple data items from cache with the specified keys.
-* [[yii\caching\Cache::multiSet()|multiSet()]]: stores multiple data items in cache. Each item is identified by a key.
-* [[yii\caching\Cache::multiAdd()|multiAdd()]]: stores multiple data items in cache. Each item is identified by a key.
-  If a key already exists in the cache, the data item will be skipped.
-* [[yii\caching\Cache::exists()|exists()]]: returns a value indicating whether the specified key is found in the cache.
+* [[yii\caching\Cache::has()|has()]]: returns a value indicating whether the specified key is found in the cache.
 * [[yii\caching\Cache::delete()|delete()]]: removes a data item identified by a key from the cache.
-* [[yii\caching\Cache::flush()|flush()]]: removes all data items from the cache.
+* [[yii\caching\Cache::deleteMultiple()|deleteMultiple()]]: removes multiple data items identified by array of keys from cache.
+* [[yii\caching\Cache::clear()|clear()]]: removes all data items from the cache.
 
-> Note: Do not cache a `false` boolean value directly because the [[yii\caching\Cache::get()|get()]] method uses
-`false` return value to indicate the data item is not found in the cache. You may put `false` in an array and cache
+> Note: Do not cache a `null` value directly because the [[yii\caching\Cache::get()|get()]] method uses
+`null` return value to indicate the data item is not found in the cache. You may put `null` in an array and cache
 this array instead to avoid this problem. 
 
 Some cache storage, such as MemCache, APC, support retrieving multiple cached values in a batch mode,
-which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::multiGet()|multiGet()]]
-and [[yii\caching\Cache::multiAdd()|multiAdd()]] are provided to exploit this feature. In case the underlying cache storage
+which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::getMultiple()|getMultiple()]]
+and [[yii\caching\Cache::addMultiple()|addMultiple()]] are provided to exploit this feature. In case the underlying cache storage
 does not support this feature, it will be simulated.
 
 Because [[yii\caching\Cache]] implements `ArrayAccess`, a cache component can be used like an array. The following
@@ -191,19 +200,22 @@ For example, [[yii\db\Schema]] uses the following key to cache schema informatio
 
 As you can see, the key includes all necessary information needed to uniquely specify a database table.
 
-> Note: Values stored in cache via [[yii\caching\Cache::multiSet()|multiSet()]] or [[yii\caching\Cache::multiAdd()|multiAdd()]] can
+> Note: Values stored in cache via [[yii\caching\Cache::setMultiple()|setMultiple()]] or [[yii\caching\Cache::addMultiple()|addMultiple()]] can
 have only string or integer keys. If you need to set more complex key store the value separately via 
 [[yii\caching\Cache::set()|set()]] or [[yii\caching\Cache::add()|add()]].
 
 When the same cache storage is used by different applications, you should specify a unique cache key prefix
-for each application to avoid conflicts of cache keys. This can be done by configuring the [[yii\caching\Cache::keyPrefix]]
+for each application to avoid conflicts of cache keys. This can be done by configuring the [[yii\caching\SimpleCache::keyPrefix]]
 property. For example, in the application configuration you can write the following code:
 
 ```php
 'components' => [
     'cache' => [
-        'class' => 'yii\caching\ApcCache',
-        'keyPrefix' => 'myapp',       // a unique cache key prefix
+        'class' => 'yii\caching\Cache',
+        'handler' => [
+            'class' => 'yii\caching\ApcCache',
+            'keyPrefix' => 'myapp',       // a unique cache key prefix
+        ],
     ],
 ],
 ```
@@ -227,14 +239,13 @@ $cache->set($key, $data, 45);
 sleep(50);
 
 $data = $cache->get($key);
-if ($data === false) {
+if ($data === null) {
     // $data is expired or is not found in the cache
 }
 ```
 
-Since 2.0.11 you may set [[yii\caching\Cache::$defaultDuration|defaultDuration]] value in your cache component configuration if you prefer a custom cache duration
-over the default unlimited duration.
-This will allow you not to pass custom `duration` parameter to [[yii\caching\Cache::set()|set()]] each time.
+Since 2.0.11 you may set [[yii\caching\SimpleCache::$defaultTtl|defaultTtl]] value in your cache component handler configuration if you prefer a custom cache duration over the default unlimited duration.
+This will allow you not to pass custom `ttl` parameter to [[yii\caching\Cache::set()|set()]] each time.
 
 
 ### Cache Dependencies <span id="cache-dependencies"></span>
@@ -272,9 +283,9 @@ Below is a summary of the available cache dependencies:
 - [[yii\caching\TagDependency]]: associates a cached data item with one or multiple tags. You may invalidate
   the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
 
-> Note: Avoid using [[yii\caching\Cache::exists()|exists()]] method along with dependencies. It does not check whether
+> Note: Avoid using [[yii\caching\Cache::has()|has()]] method along with dependencies. It does not check whether
   the dependency associated with the cached data, if there is any, has changed. So a call to
-  [[yii\caching\Cache::get()|get()]] may return `false` while [[yii\caching\Cache::exists()|exists()]] returns `true`.
+  [[yii\caching\Cache::get()|get()]] may return `false` while [[yii\caching\Cache::has()|has()]] returns `true`.
 
 
 ## Query Caching <span id="query-caching"></span>
@@ -309,15 +320,15 @@ $result = Customer::getDb()->cache(function ($db) {
   and are potentially more efficient.
 
 
-### Cache Flushing <span id="cache-flushing">
+### Clearing Cache <span id="clearing-cache">
 
-When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
+When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::clear()]].
 
-You can flush the cache from the console by calling `yii cache/flush` as well.
+You can flush the cache from the console by calling `yii cache/clear` as well.
  - `yii cache`: lists the available caches in application
- - `yii cache/flush cache1 cache2`: flushes the cache components `cache1`, `cache2` (you can pass multiple component
+ - `yii cache/clear cache1 cache2`: clears the cache components `cache1`, `cache2` (you can pass multiple component
  names separated with space)
- - `yii cache/flush-all`: flushes all cache components in the application
+ - `yii cache/clear-all`: clears all cache components in the application
 
 > Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
 components in your web and console application configs to reach the proper effect.
