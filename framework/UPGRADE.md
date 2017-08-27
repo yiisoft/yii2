@@ -80,6 +80,10 @@ Upgrade from Yii 2.0.x
   namespace `yii\http\*`. Make sure to refer to those classes using correct fully qualified name.
 * Public interface of `UploadedFile` class has been changed according to `Psr\Http\Message\UploadedFileInterface`.
   Make sure you refer to its properties and methods with correct names.
+* `yii\captcha\CaptchaAction` has been refactored. Rendering logic was extracted into `yii\captcha\DriverInterface`, which
+  instance is available via `yii\captcha\CaptchaAction::$driver` field. All image settings now should be passed to
+  the driver fields instead of action. Automatic detection of the rendering driver is no longer supported.
+* `yii\captcha\Captcha::checkRequirements()` method has been removed.
 
 Upgrade from Yii 2.0.12
 -----------------------
