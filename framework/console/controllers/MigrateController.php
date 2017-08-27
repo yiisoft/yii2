@@ -154,6 +154,7 @@ class MigrateController extends BaseMigrateController
             't' => 'migrationTable',
             'F' => 'templateFile',
             'P' => 'useTablePrefix',
+            'c' => 'compact',
         ]);
     }
 
@@ -184,7 +185,7 @@ class MigrateController extends BaseMigrateController
     protected function createMigration($class)
     {
         $this->includeMigrationFile($class);
-        return new $class(['db' => $this->db]);
+        return new $class(['db' => $this->db, 'compact' => $this->compact]);
     }
 
     /**
@@ -278,7 +279,7 @@ class MigrateController extends BaseMigrateController
      * @inheritdoc
      * @since 2.0.13
      */
-    protected function refreshDatabase()
+    protected function truncateDatabase()
     {
         $db = $this->db;
         $schemas = $db->schema->getTableSchemas();
@@ -298,9 +299,6 @@ class MigrateController extends BaseMigrateController
             $db->createCommand()->dropTable($schema->name)->execute();
             $this->stdout("Table {$schema->name} dropped.\n");
         }
-
-        // The database should be cleaned up. Start the migrations!
-        $this->actionUp();
     }
 
     /**

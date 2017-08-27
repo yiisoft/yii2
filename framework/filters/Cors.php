@@ -170,7 +170,7 @@ class Cors extends ActionFilter
             $responseHeaders['Access-Control-Allow-Credentials'] = $this->cors['Access-Control-Allow-Credentials'] ? 'true' : 'false';
         }
 
-        if (isset($this->cors['Access-Control-Max-Age']) && Yii::$app->getRequest()->getIsOptions()) {
+        if (isset($this->cors['Access-Control-Max-Age']) && $this->request->getIsOptions()) {
             $responseHeaders['Access-Control-Max-Age'] = $this->cors['Access-Control-Max-Age'];
         }
 

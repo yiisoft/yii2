@@ -221,15 +221,14 @@ trait ActiveRelationTrait
 
         if (!$this->multiple && count($primaryModels) === 1) {
             $model = $this->one();
-            foreach ($primaryModels as $i => $primaryModel) {
-                if ($primaryModel instanceof ActiveRecordInterface) {
-                    $primaryModel->populateRelation($name, $model);
-                } else {
-                    $primaryModels[$i][$name] = $model;
-                }
-                if ($this->inverseOf !== null) {
-                    $this->populateInverseRelation($primaryModels, [$model], $name, $this->inverseOf);
-                }
+            $primaryModel = reset($primaryModels);
+            if ($primaryModel instanceof ActiveRecordInterface) {
+                $primaryModel->populateRelation($name, $model);
+            } else {
+                $primaryModels[key($primaryModels)][$name] = $model;
+            }
+            if ($this->inverseOf !== null) {
+                $this->populateInverseRelation($primaryModels, [$model], $name, $this->inverseOf);
             }
 
             return [$model];
