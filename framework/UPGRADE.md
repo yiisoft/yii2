@@ -82,6 +82,7 @@ Upgrade from Yii 2.0.x
   be configured there. Creating your own cache implementation you should implement `\Psr\SimpleCache\CacheInterface` or
   extend `yii\caching\SimpleCache` abstract class. Use `yii\caching\CacheInterface` only if you wish to replace `yii\caching\Cache`
   component providing your own solution for cache dependency handling.
+* Console command used to clear cache now calls related actions "clear" instead of "flush".
 
 
 Upgrade from Yii 2.0.12
