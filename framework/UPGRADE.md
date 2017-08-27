@@ -73,7 +73,7 @@ Upgrade from Yii 2.0.x
   instance is available via `yii\captcha\CaptchaAction::$driver` field. All image settings now should be passed to
   the driver fields instead of action. Automatic detection of the rendering driver is no longer supported.
 * `yii\captcha\Captcha::checkRequirements()` method has been removed.
-* All cache related classes interface has been changed according to PSR-16 'Simple Cache' specification. Make sure you
+* All cache related classes interface has been changed according to PSR-16 "Simple Cache" specification. Make sure you
   change your invocations for the cache methods accordingly. The most notable changes affects methods `get()` and `getMultiple()`
   as they now accept `$default` argument, which value will be returned in case there is no value in the cache. This makes
   the default return value to be `null` instead of `false`.
