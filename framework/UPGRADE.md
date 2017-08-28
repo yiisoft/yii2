@@ -80,6 +80,10 @@ Upgrade from Yii 2.0.x
 * Profiling related functionality has been extracted into a separated component under `yii\profile\ProfilerInterface`.
   Profiling messages should be collection using `yii\base\Application::$profiler`. In case you wish to
   continue storing profiling messages along with the log ones, you may use `yii\profile\LogTarget` profiling target.
+* `yii\captcha\CaptchaAction` has been refactored. Rendering logic was extracted into `yii\captcha\DriverInterface`, which
+  instance is available via `yii\captcha\CaptchaAction::$driver` field. All image settings now should be passed to
+  the driver fields instead of action. Automatic detection of the rendering driver is no longer supported.
+* `yii\captcha\Captcha::checkRequirements()` method has been removed.
 
 Upgrade from Yii 2.0.12
 -----------------------

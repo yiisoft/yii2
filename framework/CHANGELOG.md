@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.1.0 under development
 -----------------------
 
+- Enh #13799: CAPTCHA rendering logic extracted into `yii\captcha\DriverInterface`, which instance is available via `yii\captcha\CaptchaAction::$driver` field  (vladis84, klimov-paul)
 - Enh #9260: Mail view rendering encapsulated into `yii\mail\Template` class allowing rendering in isolation and access to `yii\mail\MessageInterface` instance via `$this->context->message` inside the view (klimov-paul)
 - Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)
 - Enh #12385: Methods `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()` have been added to `yii\i18n\MessageInterface` allowing setup of custom message headers (klimov-paul)
@@ -24,6 +25,7 @@ Yii Framework 2 Change Log
 - Chg #12089: Behavior of `yii\grid\DataColumn::$filterInputOptions` changed when default value is overwritten (bvanleeuwen, cebe)
 - Chg #13885: Removed APC support in ApcCache. APCu works as before (samdark) 
 - Chg #14178: Removed HHVM-specific code (samdark)
+- Enh #14671: use `random_int()` instead of `mt_rand()` to generate cryptographically secure pseudo-random integers (yyxx9988)
 
 2.0.13 under development
 ------------------------
