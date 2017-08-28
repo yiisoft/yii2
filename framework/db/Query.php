@@ -446,7 +446,7 @@ class Query extends Component implements QueryInterface
             return $command->queryScalar();
         }
 
-        return (new self())
+        return (new static())
             ->select([$selectExpression])
             ->from(['c' => $this])
             ->createCommand($db)
