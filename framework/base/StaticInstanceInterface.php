@@ -8,8 +8,8 @@
 namespace yii\base;
 
 /**
- * StaticInstanceInterface is the interface for classes, which provide their static instances,
- * which can be used to obtain class meta information, which can not be expressed in static methods.
+ * StaticInstanceInterface is the interface for providing static instances to classes,
+ * which can be used to obtain class meta information that can not be expressed in static methods.
  * For example: adjustments made by DI or behaviors reveal only at object level, but might be needed
  * at class (static) level as well.
  *
