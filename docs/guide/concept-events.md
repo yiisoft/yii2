@@ -212,7 +212,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' is inserted');
+    Yii::debug(get_class($event->sender) . ' is inserted');
 });
 ```
 
@@ -296,7 +296,7 @@ pass the interface class name as the first argument:
 
 ```php
 Event::on(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
+    Yii::debug(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
 });
 ```
 
