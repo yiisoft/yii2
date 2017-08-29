@@ -53,7 +53,7 @@ class CaptchaActionTest extends TestCase
         /* @var $response Response */
         $response = Yii::$app->response;
         $this->assertEquals(Response::FORMAT_RAW, $response->format);
-        $headerCollection = $response->getHeaders();
+        $headerCollection = $response->getHeaderCollection();
         $this->assertEquals($driver->getImageMimeType(), $headerCollection->get('Content-type'));
         $this->assertEquals('binary', $headerCollection->get('Content-Transfer-Encoding'));
         $this->assertEquals('public', $headerCollection->get('Pragma'));
