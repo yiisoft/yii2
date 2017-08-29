@@ -9,6 +9,7 @@ namespace yiiunit\framework\base;
 
 use Yii;
 use yii\base\View;
+use yii\caching\Cache;
 use yii\caching\FileCache;
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
@@ -71,14 +72,14 @@ PHP
 
     public function testRenderDynamic()
     {
-        Yii::$app->set('cache', new FileCache(['cachePath' => '@yiiunit/runtime/cache']));
+        Yii::$app->set('cache', new Cache(['handler' => new FileCache(['cachePath' => '@yiiunit/runtime/cache'])]));
         $view = new View();
         $this->assertEquals(1, $view->renderDynamic('return 1;'));
     }
 
     public function testRenderDynamic_DynamicPlaceholders()
     {
-        Yii::$app->set('cache', new FileCache(['cachePath' => '@yiiunit/runtime/cache']));
+        Yii::$app->set('cache', new Cache(['handler' => new FileCache(['cachePath' => '@yiiunit/runtime/cache'])]));
         $statement = "return 1;";
         $view = new View();
         if ($view->beginCache(__FUNCTION__, ['duration' => 3])) {

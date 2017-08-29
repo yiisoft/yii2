@@ -73,7 +73,7 @@ abstract class CacheTestCase extends TestCase
     {
         $cache = $this->getCacheInstance();
 
-        $cache->flush();
+        $cache->clear();
         $cache->set('string_test', 'string_test');
         $cache->set('number_test', 42);
         $cache->set('array_test', ['array_test' => 'array_test']);
@@ -107,20 +107,20 @@ abstract class CacheTestCase extends TestCase
     /**
      * @return array testing multiSet with and without expiry
      */
-    public function multiSetExpiry()
+    public function dataProviderSetMultiple()
     {
         return [[0], [2]];
     }
 
     /**
-     * @dataProvider multiSetExpiry
+     * @dataProvider dataProviderSetMultiple
      */
-    public function testMultiset($expiry)
+    public function testSetMultiple($expiry)
     {
         $cache = $this->getCacheInstance();
-        $cache->flush();
+        $cache->clear();
 
-        $cache->multiSet([
+        $cache->setMultiple([
             'string_test' => 'string_test',
             'number_test' => 42,
             'array_test' => ['array_test' => 'array_test'],
@@ -135,16 +135,16 @@ abstract class CacheTestCase extends TestCase
         $this->assertEquals('array_test', $array['array_test']);
     }
 
-    public function testExists()
+    public function testHas()
     {
         $cache = $this->prepare();
 
-        $this->assertTrue($cache->exists('string_test'));
+        $this->assertTrue($cache->has('string_test'));
         // check whether exists affects the value
         $this->assertEquals('string_test', $cache->get('string_test'));
 
-        $this->assertTrue($cache->exists('number_test'));
-        $this->assertFalse($cache->exists('not_exists'));
+        $this->assertTrue($cache->has('number_test'));
+        $this->assertFalse($cache->has('not_exists'));
     }
 
     public function testArrayAccess()
@@ -159,7 +159,7 @@ abstract class CacheTestCase extends TestCase
     {
         $cache = $this->getCacheInstance();
 
-        $this->assertFalse($cache->get('non_existent_key'));
+        $this->assertNull($cache->get('non_existent_key'));
     }
 
     public function testStoreSpecialValues()
@@ -173,21 +173,21 @@ abstract class CacheTestCase extends TestCase
         $this->assertTrue($cache->get('bool_value'));
     }
 
-    public function testMultiGet()
+    public function testGetMultiple()
     {
         $cache = $this->prepare();
 
-        $this->assertEquals(['string_test' => 'string_test', 'number_test' => 42], $cache->multiGet(['string_test', 'number_test']));
+        $this->assertEquals(['string_test' => 'string_test', 'number_test' => 42], $cache->getMultiple(['string_test', 'number_test']));
         // ensure that order does not matter
-        $this->assertEquals(['number_test' => 42, 'string_test' => 'string_test'], $cache->multiGet(['number_test', 'string_test']));
-        $this->assertEquals(['number_test' => 42, 'non_existent_key' => null], $cache->multiGet(['number_test', 'non_existent_key']));
+        $this->assertEquals(['number_test' => 42, 'string_test' => 'string_test'], $cache->getMultiple(['number_test', 'string_test']));
+        $this->assertEquals(['number_test' => 42, 'non_existent_key' => null], $cache->getMultiple(['number_test', 'non_existent_key']));
     }
 
     public function testDefaultTtl()
     {
         $cache = $this->getCacheInstance();
 
-        $this->assertSame(0, $cache->defaultDuration);
+        $this->assertSame(0, $cache->handler->defaultTtl);
     }
 
     public function testExpire()
@@ -198,7 +198,7 @@ abstract class CacheTestCase extends TestCase
         usleep(500000);
         $this->assertEquals('expire_test', $cache->get('expire_test'));
         usleep(2500000);
-        $this->assertFalse($cache->get('expire_test'));
+        $this->assertNull($cache->get('expire_test'));
     }
 
     public function testExpireAdd()
@@ -209,7 +209,7 @@ abstract class CacheTestCase extends TestCase
         usleep(500000);
         $this->assertEquals('expire_testa', $cache->get('expire_testa'));
         usleep(2500000);
-        $this->assertFalse($cache->get('expire_testa'));
+        $this->assertNull($cache->get('expire_testa'));
     }
 
     public function testAdd()
@@ -221,18 +221,18 @@ abstract class CacheTestCase extends TestCase
         $this->assertEquals(42, $cache->get('number_test'));
 
         // should store data if it's not there yet
-        $this->assertFalse($cache->get('add_test'));
+        $this->assertNull($cache->get('add_test'));
         $this->assertTrue($cache->add('add_test', 13));
         $this->assertEquals(13, $cache->get('add_test'));
     }
 
-    public function testMultiAdd()
+    public function testAddMultiple()
     {
         $cache = $this->prepare();
 
-        $this->assertFalse($cache->get('add_test'));
+        $this->assertNull($cache->get('add_test'));
 
-        $cache->multiAdd([
+        $cache->addMultiple([
             'number_test' => 13,
             'add_test' => 13,
         ]);
@@ -247,14 +247,14 @@ abstract class CacheTestCase extends TestCase
 
         $this->assertNotNull($cache->get('number_test'));
         $this->assertTrue($cache->delete('number_test'));
-        $this->assertFalse($cache->get('number_test'));
+        $this->assertNull($cache->get('number_test'));
     }
 
     public function testFlush()
     {
         $cache = $this->prepare();
-        $this->assertTrue($cache->flush());
-        $this->assertFalse($cache->get('number_test'));
+        $this->assertTrue($cache->clear());
+        $this->assertNull($cache->get('number_test'));
     }
 
     public function testGetOrSet()

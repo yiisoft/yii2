@@ -10,6 +10,7 @@ namespace yiiunit\framework\filters;
 use Yii;
 use yii\base\Action;
 use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\caching\ExpressionDependency;
 use yii\filters\PageCache;
 use yii\helpers\ArrayHelper;
@@ -153,7 +154,7 @@ class PageCacheTest extends TestCase
         $controller = new Controller('test', Yii::$app);
         $action = new Action('test', $controller);
         $filter = new PageCache(array_merge([
-            'cache' => $cache = new ArrayCache(),
+            'cache' => $cache = new Cache(['handler' => new ArrayCache()]),
             'view' => new View(),
         ], $testCase['properties']));
         $this->assertTrue($filter->beforeAction($action), $testCase['name']);
@@ -195,9 +196,9 @@ class PageCacheTest extends TestCase
             'statusText' => Yii::$app->response->statusText,
         ];
         if ($testCase['cacheable']) {
-            $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache, '_cache'), $testCase['name']);
+            $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache->handler, '_cache'), $testCase['name']);
         } else {
-            $this->assertEmpty($this->getInaccessibleProperty($filter->cache, '_cache'), $testCase['name']);
+            $this->assertEmpty($this->getInaccessibleProperty($filter->cache->handler, '_cache'), $testCase['name']);
             return;
         }
 
@@ -251,7 +252,7 @@ class PageCacheTest extends TestCase
         $controller = new Controller('test', Yii::$app);
         $action = new Action('test', $controller);
         $filter = new PageCache([
-            'cache' => $cache = new ArrayCache(),
+            'cache' => $cache = new Cache(['handler' => new ArrayCache()]),
             'view' => new View(),
             'duration' => 1,
         ]);
@@ -264,7 +265,7 @@ class PageCacheTest extends TestCase
         Yii::$app->response->send();
         ob_end_clean();
 
-        $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache, '_cache'));
+        $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache->handler, '_cache'));
 
         // mock sleep(2);
         CacheTestCase::$time += 2;
@@ -303,7 +304,7 @@ class PageCacheTest extends TestCase
             $action = new Action('test', $controller);
             Yii::$app->requestedRoute = $action->uniqueId;
             $filter = new PageCache([
-                'cache' => $cache = new ArrayCache(),
+                'cache' => $cache = new Cache(['handler' => new ArrayCache()]),
                 'view' => new View(),
                 'varyByRoute' => $enabled,
             ]);
@@ -316,7 +317,7 @@ class PageCacheTest extends TestCase
             Yii::$app->response->send();
             ob_end_clean();
 
-            $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache, '_cache'));
+            $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache->handler, '_cache'));
 
             // Verifies the cached response
             $this->destroyApplication();
@@ -356,7 +357,7 @@ class PageCacheTest extends TestCase
             $originalVariations = $testCases[0];
             array_shift($originalVariations);
             $filter = new PageCache([
-                'cache' => $cache = new ArrayCache(),
+                'cache' => $cache = new Cache(['handler' => new ArrayCache()]),
                 'view' => new View(),
                 'variations' => $originalVariations,
             ]);
@@ -369,7 +370,7 @@ class PageCacheTest extends TestCase
             Yii::$app->response->send();
             ob_end_clean();
 
-            $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache, '_cache'));
+            $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache->handler, '_cache'));
 
             // Verifies the cached response
             $this->destroyApplication();
@@ -405,7 +406,7 @@ class PageCacheTest extends TestCase
             $controller = new Controller('test', Yii::$app);
             $action = new Action('test', $controller);
             $filter = new PageCache([
-                'cache' => $cache = new ArrayCache(),
+                'cache' => $cache = new Cache(['handler' => new ArrayCache()]),
                 'view' => new View(),
                 'dependency' => [
                     'class' => ExpressionDependency::class,
@@ -422,7 +423,7 @@ class PageCacheTest extends TestCase
             Yii::$app->response->send();
             ob_end_clean();
 
-            $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache, '_cache'));
+            $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache->handler, '_cache'));
 
             // Verifies the cached response
             $this->destroyApplication();
