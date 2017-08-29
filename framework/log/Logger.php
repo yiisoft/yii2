@@ -22,7 +22,7 @@ use yii\base\ErrorHandler;
  * For convenience, a set of shortcut methods are provided for logging messages of various severity levels
  * via the [[Yii]] class:
  *
- * - [[Yii::trace()]]
+ * - [[Yii::debug()]]
  * - [[Yii::error()]]
  * - [[Yii::warning()]]
  * - [[Yii::info()]]
