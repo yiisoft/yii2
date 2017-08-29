@@ -145,12 +145,14 @@ class DataColumn extends Column
 
         if ($this->label === null) {
             if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
-                /* @var $model Model */
-                $model = new $provider->query->modelClass();
+                /* @var $modelClass Model */
+                $modelClass = $provider->query->modelClass;
+                $model = $modelClass::instance();
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
-                /* @var $model Model */
-                $model = new $provider->modelClass();
+                /* @var $modelClass Model */
+                $modelClass = $provider->modelClass;
+                $model = $modelClass::instance();
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
                 $label = $this->grid->filterModel->getAttributeLabel($this->attribute);

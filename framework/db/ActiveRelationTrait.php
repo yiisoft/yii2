@@ -178,7 +178,9 @@ trait ActiveRelationTrait
                 $relatedModel->populateRelation($this->inverseOf, $inverseRelation->multiple ? [$this->primaryModel] : $this->primaryModel);
             } else {
                 if (!isset($inverseRelation)) {
-                    $inverseRelation = (new $this->modelClass())->getRelation($this->inverseOf);
+                    /* @var $modelClass ActiveRecordInterface */
+                    $modelClass = $this->modelClass;
+                    $inverseRelation = $modelClass::instance()->getRelation($this->inverseOf);
                 }
                 $result[$i][$this->inverseOf] = $inverseRelation->multiple ? [$this->primaryModel] : $this->primaryModel;
             }
@@ -298,7 +300,13 @@ trait ActiveRelationTrait
         }
         $model = reset($models);
         /* @var $relation ActiveQueryInterface|ActiveQuery */
-        $relation = $model instanceof ActiveRecordInterface ? $model->getRelation($name) : (new $this->modelClass())->getRelation($name);
+        if ($model instanceof ActiveRecordInterface) {
+            $relation = $model->getRelation($name);
+        } else {
+            /* @var $modelClass ActiveRecordInterface */
+            $modelClass = $this->modelClass;
+            $relation = $modelClass::instance()->getRelation($name);
+        }
 
         if ($relation->multiple) {
             $buckets = $this->buildBuckets($primaryModels, $relation->link, null, null, false);
