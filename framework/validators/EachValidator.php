@@ -7,8 +7,8 @@
 
 namespace yii\validators;
 
-use yii\base\InvalidConfigException;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 
 /**
@@ -97,6 +97,7 @@ class EachValidator extends Validator
         if ($this->_validator === null) {
             $this->_validator = $this->createEmbeddedValidator($model);
         }
+
         return $this->_validator;
     }
 
@@ -115,10 +116,11 @@ class EachValidator extends Validator
             if (!is_object($model)) {
                 $model = new Model(); // mock up context model
             }
+
             return Validator::createValidator($rule[0], $model, $this->attributes, array_slice($rule, 1));
-        } else {
-            throw new InvalidConfigException('Invalid validation rule: a rule must be an array specifying validator type.');
         }
+
+        throw new InvalidConfigException('Invalid validation rule: a rule must be an array specifying validator type.');
     }
 
     /**
@@ -184,9 +186,9 @@ class EachValidator extends Validator
                 if ($this->allowMessageFromRule) {
                     $result[1]['value'] = $v;
                     return $result;
-                } else {
-                    return [$this->message, ['value' => $v]];
                 }
+
+                return [$this->message, ['value' => $v]];
             }
         }
 

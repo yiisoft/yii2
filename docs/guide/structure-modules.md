@@ -60,7 +60,7 @@ public function init()
 {
     parent::init();
     // initialize the module with the configuration loaded from config.php
-    \Yii::configure($this, require(__DIR__ . '/config.php'));
+    \Yii::configure($this, require __DIR__ . '/config.php');
 }
 ```
 
@@ -269,6 +269,34 @@ in the `admin` module which is a child module of the `forum` module.
 to its parent. The [[yii\base\Application::loadedModules]] property keeps a list of loaded modules, including both
 direct children and nested ones, indexed by their class names.
 
+## Accessing components from within modules
+
+Since version 2.0.13 modules support [tree traversal](concept-service-locator.md#tree-traversal). This allows module 
+developers to reference (application) components via the service locator that is their module.
+This means that it is preferable to use `$module->get('db')` over `Yii::$app->get('db')`.
+The user of a module is able to specify a specific component to be used for the module in case a different component
+(configuration) is required.
+
+For example consider this application configuration:
+
+```php
+'components' => [
+    'db' => [
+        'tablePrefix' => 'main_',
+    ],
+],
+'modules' => [
+    'mymodule' => [
+        'components' => [
+            'db' => [
+                'tablePrefix' => 'module_',
+            ],
+        ],
+    ],
+],
+```
+
+The application database tables will be prefixed with `main_`, while all module tables will be prefixed with `module_`.
 
 ## Best Practices <span id="best-practices"></span>
 

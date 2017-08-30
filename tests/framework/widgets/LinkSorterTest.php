@@ -1,13 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\widgets;
 
-use Yii;
 use yii\data\ActiveDataProvider;
-use yii\db\Connection;
-use yii\db\Query;
 use yii\widgets\Breadcrumbs;
-use yii\widgets\LinkSorter;
 use yii\widgets\ListView;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Order;
@@ -43,7 +44,7 @@ class LinkSorterTest extends DatabaseTestCase
         ob_start();
         echo ListView::widget([
             'dataProvider' => $dataProvider,
-            'layout' => "{sorter}",
+            'layout' => '{sorter}',
         ]);
         $actualHtml = ob_get_clean();
 
@@ -68,7 +69,7 @@ class LinkSorterTest extends DatabaseTestCase
         ob_start();
         echo ListView::widget([
             'dataProvider' => $dataProvider,
-            'layout' => "{sorter}",
+            'layout' => '{sorter}',
         ]);
         $actualHtml = ob_get_clean();
 
@@ -77,5 +78,4 @@ class LinkSorterTest extends DatabaseTestCase
         $this->assertNotFalse(strpos($actualHtml,
             '<a href="/index.php?r=site%2Findex&amp;sort=total" data-sort="total">Invoice Total</a>'));
     }
-
 }

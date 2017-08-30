@@ -1,9 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\console\controllers;
 
-use yii\helpers\Console;
-use yiiunit\framework\console\controllers\TestTrait;
 use yii\console\controllers\HelpController;
+use yii\helpers\Console;
 use yiiunit\TestCase;
 
 /**
@@ -27,14 +32,17 @@ class HelpControllerTest extends TestCase
      */
     protected function createController()
     {
-        $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
+        $module = $this->getMockBuilder('yii\\base\\Module')
+            ->setMethods(['fake'])
+            ->setConstructorArgs(['console'])
+            ->getMock();
         return new BufferedHelpController('help', $module);
     }
 
     /**
      * Emulates running controller action.
-     * @param  string $actionID id of action to be run.
-     * @param  array $args action arguments.
+     * @param string $actionID id of action to be run.
+     * @param array $actionParams action arguments.
      * @return string command output.
      */
     protected function runControllerAction($actionID, $actionParams = [])
@@ -55,7 +63,7 @@ class HelpControllerTest extends TestCase
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list'));
-        $this->assertEquals(<<<STRING
+        $this->assertEquals(<<<'STRING'
 cache
 cache/flush
 cache/flush-all
@@ -69,6 +77,7 @@ help/usage
 migrate
 migrate/create
 migrate/down
+migrate/fresh
 migrate/history
 migrate/mark
 migrate/new
@@ -90,7 +99,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list-action-options', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<STRING
+        $this->assertEquals(<<<'STRING'
 action:route to action
 
 --interactive: whether to run the command interactively.
@@ -111,7 +120,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('usage', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<STRING
+        $this->assertEquals(<<<'STRING'
 bootstrap.php help/list-action-options <action>
 
 STRING
@@ -153,8 +162,6 @@ STRING
         $this->assertContains('--port, -p: int (defaults to 8080)', $result);
         $this->assertContains('--router, -r: string', $result);
     }
-
-
 }
 
 

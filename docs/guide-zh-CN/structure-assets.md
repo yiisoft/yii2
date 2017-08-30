@@ -449,7 +449,7 @@ return [
 return [
     'components' => [
         'assetManager' => [
-            'bundles' => require(__DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php')),  
+            'bundles' => require __DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php'),  
         ],
     ],
 ];
@@ -524,13 +524,14 @@ yii asset assets.php config/assets-prod.php
 
 生成的配置文件可以在应用配置中包含，如最后一小节所描述的。
 
-
 > Info: 使用`asset` 命令并不是唯一一种自动合并和压缩过程的方法，可使用优秀的工具[grunt](http://gruntjs.com/)来完成这个过程。
 
 ### 资源包分组 <span id="grouping-asset-bundles"></span>
+
 上一小节，介绍了如何压缩所有的资源包到一个文件，减少对应用中引用资源文件的 http 请求数，但是在实践中很少这样做。比如，应用有一个“前端”和一个“后端”，每一个都用了一个不同js和css文件集合。在这种情况下，把所有的资源包压缩到一个文件毫无意义，“前端”不会用到“后端”的资源文件，当请求“前端”页面时，“后端”的资源文件也会被发送过来，浪费网络带宽。
 
 为了解决这个问题，可以吧资源包分成若干组，每个组里面有若干个资源包。下面的配置展示了如何对资源包分组：
+
 ```php
 return [
     ...
@@ -562,6 +563,7 @@ return [
     ...
 ];
 ```
+
 如上所示，资源包分成了三个组：`allShared`，`allBackEnd` 和 `allFrontEnd`
 
 他们分别依赖其他资源包，例如，`allBackEnd` 依赖（depends） `app\assets\AdminAsset`。当使用这个配置运行 `asset` 命令时，将会根据上面的指定组合资源包。

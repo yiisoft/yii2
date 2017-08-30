@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 use yii\console\Request;
 use yiiunit\TestCase;
@@ -128,7 +133,7 @@ class RequestTest extends TestCase
                 'expected' => [],
                 'exception' => [
                     '\yii\console\Exception',
-                    'Parameter "0" is not valid'
+                    'Parameter "0" is not valid',
                 ],
             ],
         ];
@@ -136,11 +141,15 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider provider
+     * @param array $params
+     * @param array $expected
+     * @param array|null $expectedException
      */
     public function testResolve($params, $expected, $expectedException = null)
     {
         if (isset($expectedException)) {
-            $this->setExpectedException($expectedException[0], $expectedException[1]);
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
         }
 
         $request = new Request();
