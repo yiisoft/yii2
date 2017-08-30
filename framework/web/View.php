@@ -342,19 +342,20 @@ class View extends \yii\base\View
     }
 
     /**
-     * Registers csrf meta tags.
-     * Csrf tags are rendered dynamically to retrieve a new csrf token for each request.
-     *
-     * For example, csrf meta tags can be added like the following:
+     * Registers CSRF meta tags.
+     * They are rendered dynamically to retrieve a new CSRF token for each request.
      *
      * ```php
      * $view->registerCsrfMetaTags();
      * ```
      *
-     * will result in the meta tags `<meta name="csrf-param" content="[yii\web\Request::$csrfParam]">`
-     * and `<meta name="csrf-token" content="tTNpWKpdy-bx8ZmIq9R72...K1y8IP3XGkzZA==">`
+     * The above code will result in `<meta name="csrf-param" content="[yii\web\Request::$csrfParam]">`
+     * and `<meta name="csrf-token" content="tTNpWKpdy-bx8ZmIq9R72...K1y8IP3XGkzZA==">` added to the page.
      *
-     * Note: Hidden csrf input of ActiveForm will be automatically refreshed by yii.js window.yii.refreshCsrfToken()
+     * Note: Hidden CSRF input of ActiveForm will be automatically refreshed by calling `window.yii.refreshCsrfToken()`
+     * from `yii.js`.
+     *
+     * @since 2.0.13
      */
     public function registerCsrfMetaTags()
     {
