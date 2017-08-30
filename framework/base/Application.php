@@ -531,7 +531,7 @@ abstract class Application extends Module
 
     /**
      * Sets up or configure the profiler instance.
-     * @param \yii\profile\ProfilerInterface |\Closure|array|null $profiler the profiler object or its DI compatible configuration.
+     * @param \yii\profile\ProfilerInterface|\Closure|array|null $profiler the profiler object or its DI compatible configuration.
      * @since 2.1.0
      */
     public function setProfiler($profiler)
