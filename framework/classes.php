@@ -202,7 +202,6 @@ return [
   'yii\i18n\MissingTranslationEvent' => YII2_PATH . '/i18n/MissingTranslationEvent.php',
   'yii\i18n\PhpMessageSource' => YII2_PATH . '/i18n/PhpMessageSource.php',
   'yii\log\DbTarget' => YII2_PATH . '/log/DbTarget.php',
-  'yii\log\Dispatcher' => YII2_PATH . '/log/Dispatcher.php',
   'yii\log\EmailTarget' => YII2_PATH . '/log/EmailTarget.php',
   'yii\log\FileTarget' => YII2_PATH . '/log/FileTarget.php',
   'yii\log\Logger' => YII2_PATH . '/log/Logger.php',

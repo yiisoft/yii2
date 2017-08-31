@@ -7,11 +7,17 @@
 
 namespace yii;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidArgumentException;
 use yii\base\UnknownClassException;
 use yii\di\Container;
+use yii\di\Instance;
+use yii\helpers\VarDumper;
 use yii\log\Logger;
+use yii\profile\Profiler;
+use yii\profile\ProfilerInterface;
 
 /**
  * Gets the application start timestamp.
@@ -355,10 +361,13 @@ class BaseYii
         throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
     }
 
+    /**
+     * @var LoggerInterface logger instance.
+     */
     private static $_logger;
 
     /**
-     * @return Logger message logger
+     * @return LoggerInterface message logger
      */
     public static function getLogger()
     {
@@ -366,30 +375,111 @@ class BaseYii
             return self::$_logger;
         }
 
-        return self::$_logger = static::createObject('yii\log\Logger');
+        return self::$_logger = Instance::ensure(['class' => Logger::class], LoggerInterface::class);
     }
 
     /**
      * Sets the logger object.
-     * @param Logger $logger the logger object.
+     * @param LoggerInterface|\Closure|array|null $logger the logger object or its DI compatible configuration.
      */
     public static function setLogger($logger)
     {
-        self::$_logger = $logger;
+        if ($logger === null) {
+            self::$_logger = null;
+            return;
+        }
+
+        if (is_array($logger)) {
+            if (!isset($logger['class']) && is_object(self::$_logger)) {
+                static::configure(self::$_logger, $logger);
+                return;
+            }
+            $logger = array_merge(['class' => Logger::class], $logger);
+        } elseif ($logger instanceof \Closure) {
+            $logger = call_user_func($logger);
+        }
+
+        self::$_logger = Instance::ensure($logger, LoggerInterface::class);
     }
 
     /**
-     * Logs a trace message.
+     * @var ProfilerInterface profiler instance.
+     * @since 2.1
+     */
+    private static $_profiler;
+
+    /**
+     * @return ProfilerInterface profiler instance.
+     * @since 2.1
+     */
+    public static function getProfiler()
+    {
+        if (self::$_profiler !== null) {
+            return self::$_profiler;
+        }
+        return self::$_profiler = Instance::ensure(['class' => Profiler::class], ProfilerInterface::class);
+    }
+
+    /**
+     * @param ProfilerInterface|\Closure|array|null $profiler profiler instance or its DI compatible configuration.
+     * @since 2.1
+     */
+    public static function setProfiler($profiler)
+    {
+        if ($profiler === null) {
+            self::$_profiler = null;
+            return;
+        }
+
+        if (is_array($profiler)) {
+            if (!isset($profiler['class']) && is_object(self::$_profiler)) {
+                static::configure(self::$_profiler, $profiler);
+                return;
+            }
+            $profiler = array_merge(['class' => Profiler::class], $profiler);
+        } elseif ($profiler instanceof \Closure) {
+            $profiler = call_user_func($profiler);
+        }
+
+        self::$_profiler = Instance::ensure($profiler, ProfilerInterface::class);
+    }
+
+    /**
+     * Logs a message with category.
+     * @param string $level log level.
+     * @param mixed $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
+     * @param string $category the category of the message.
+     * @since 2.1.0
+     */
+    public static function log($level, $message, $category = 'application')
+    {
+        $context = ['category' => $category];
+        if (!is_string($message)) {
+            if ($message instanceof \Throwable) {
+                // exceptions are string-convertable, thus should be passed as it is to the logger
+                // if exception instance is given to produce a stack trace, it MUST be in a key named "exception".
+                $context['exception'] = $message;
+            } else {
+                // exceptions may not be serializable if in the call stack somewhere is a Closure
+                $message = VarDumper::export($message);
+            }
+        }
+        static::getLogger()->log($level, $message, $context);
+    }
+
+    /**
+     * Logs a debug message.
      * Trace messages are logged mainly for development purpose to see
      * the execution work flow of some code.
      * @param string|array $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as array.
      * @param string $category the category of the message.
      */
-    public static function trace($message, $category = 'application')
+    public static function debug($message, $category = 'application')
     {
         if (YII_DEBUG) {
-            static::getLogger()->log($message, Logger::LEVEL_TRACE, $category);
+            static::log(LogLevel::DEBUG, $message, $category);
         }
     }
 
@@ -403,7 +493,7 @@ class BaseYii
      */
     public static function error($message, $category = 'application')
     {
-        static::getLogger()->log($message, Logger::LEVEL_ERROR, $category);
+        static::log(LogLevel::ERROR, $message, $category);
     }
 
     /**
@@ -416,7 +506,7 @@ class BaseYii
      */
     public static function warning($message, $category = 'application')
     {
-        static::getLogger()->log($message, Logger::LEVEL_WARNING, $category);
+        static::log(LogLevel::WARNING, $message, $category);
     }
 
     /**
@@ -429,7 +519,7 @@ class BaseYii
      */
     public static function info($message, $category = 'application')
     {
-        static::getLogger()->log($message, Logger::LEVEL_INFO, $category);
+        static::log(LogLevel::INFO, $message, $category);
     }
 
     /**
@@ -451,7 +541,7 @@ class BaseYii
      */
     public static function beginProfile($token, $category = 'application')
     {
-        static::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
+        static::getProfiler()->begin($token, ['category' => $category]);
     }
 
     /**
@@ -463,7 +553,7 @@ class BaseYii
      */
     public static function endProfile($token, $category = 'application')
     {
-        static::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
+        static::getProfiler()->end($token, ['category' => $category]);
     }
 
     /**

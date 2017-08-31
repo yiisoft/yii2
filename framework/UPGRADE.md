@@ -69,6 +69,17 @@ Upgrade from Yii 2.0.x
   Mail view rendering is now encapsulated into `yii\mail\Template` class.
 * Properties `view`, `viewPath`, `htmlLayout` and `textLayout` have been moved from `yii\mail\BaseMailer` to `yii\mail\Composer` class,
   which now encapsulates message composition.
+* Interface of `yii\log\Logger` has been changed according to PSR-3 `Psr\Log\LoggerInterface`.
+  Make sure you update your code accordingly in case you invoke `Logger` methods directly.
+* Constants `yii\log\Logger::LEVEL_ERROR`, `yii\log\Logger::LEVEL_WARNING` and so on have been removed.
+  Use constants from `Psr\Log\LogLevel` instead.
+* Method `yii\BaseYii::trace()` has been renamed to `debug()`. Make sure you use correct name for it.
+* Class `yii\log\Dispatcher` has been removed as well as application 'log' component. Log targets
+  now should be configured using `yii\base\Application::$logger` property. Neither 'log' or 'logger'
+  components should be present at `yii\base\Application::$bootstrap`
+* Profiling related functionality has been extracted into a separated component under `yii\profile\ProfilerInterface`.
+  Profiling messages should be collection using `yii\base\Application::$profiler`. In case you wish to
+  continue storing profiling messages along with the log ones, you may use `yii\profile\LogTarget` profiling target.
 * `yii\captcha\CaptchaAction` has been refactored. Rendering logic was extracted into `yii\captcha\DriverInterface`, which
   instance is available via `yii\captcha\CaptchaAction::$driver` field. All image settings now should be passed to
   the driver fields instead of action. Automatic detection of the rendering driver is no longer supported.

@@ -7,10 +7,12 @@
 
 namespace yiiunit\framework\log;
 
+use Psr\Log\LogLevel;
 use Yii;
+use yii\console\ExitCode;
 use yii\db\Connection;
 use yii\db\Query;
-use yii\log\Logger;
+use yii\log\DbTarget;
 use yiiunit\framework\console\controllers\EchoMigrateController;
 use yiiunit\TestCase;
 
@@ -39,17 +41,17 @@ abstract class DbTargetTest extends TestCase
                 'controllerMap' => [
                     'migrate' => EchoMigrateController::class,
                 ],
-                'components' => [
-                    'db' => static::getConnection(),
-                    'log' => [
-                        'targets' => [
-                            'db' => [
-                                'class' => 'yii\log\DbTarget',
-                                'levels' => ['warning'],
-                                'logTable' => self::$logTable,
-                            ],
+                'logger' => [
+                    'targets' => [
+                        'db' => [
+                            'class' => DbTarget::class,
+                            'levels' => [LogLevel::WARNING],
+                            'logTable' => self::$logTable,
                         ],
                     ],
+                ],
+                'components' => [
+                    'db' => static::getConnection(),
                 ],
             ]);
         }
@@ -57,7 +59,7 @@ abstract class DbTargetTest extends TestCase
         ob_start();
         $result = Yii::$app->runAction($route, $params);
         echo 'Result is ' . $result;
-        if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
+        if ($result !== ExitCode::OK) {
             ob_end_flush();
         } else {
             ob_end_clean();
@@ -126,11 +128,13 @@ abstract class DbTargetTest extends TestCase
 
         // forming message data manually in order to set time
         $messsageData = [
+            LogLevel::WARNING,
             'test',
-            Logger::LEVEL_WARNING,
-            'test',
-            $time,
-            [],
+            [
+                'category' => 'test',
+                'time' => $time,
+                'trace' => [],
+            ]
         ];
 
         $logger->messages[] = $messsageData;
@@ -138,7 +142,7 @@ abstract class DbTargetTest extends TestCase
 
         $query = (new Query())->select('log_time')->from(self::$logTable)->where(['category' => 'test']);
         $loggedTime = $query->createCommand(self::getConnection())->queryScalar();
-        static::assertEquals($time, $loggedTime);
+        $this->assertEquals($time, $loggedTime);
     }
 
     public function testTransactionRollBack()
@@ -149,11 +153,13 @@ abstract class DbTargetTest extends TestCase
         $tx = $db->beginTransaction();
 
         $messsageData = [
+            LogLevel::WARNING,
             'test',
-            Logger::LEVEL_WARNING,
-            'test',
-            time(),
-            [],
+            [
+                'category' => 'test',
+                'time' => time(),
+                'trace' => [],
+            ]
         ];
 
         $logger->messages[] = $messsageData;
@@ -162,12 +168,14 @@ abstract class DbTargetTest extends TestCase
         // current db connection should still have a transaction
         $this->assertNotNull($db->transaction);
         // log db connection should not have transaction
-        $this->assertNull(Yii::$app->log->targets['db']->db->transaction);
+        $this->assertNull(Yii::getLogger()->targets['db']->db->transaction);
 
         $tx->rollBack();
 
-        $query = (new Query())->select('COUNT(*)')->from(self::$logTable)->where(['category' => 'test', 'message' => 'test']);
-        $count = $query->createCommand($db)->queryScalar();
+        $count = (new Query())
+            ->from(self::$logTable)
+            ->where(['category' => 'test', 'message' => 'test'])
+            ->count();
         static::assertEquals(1, $count);
     }
 }

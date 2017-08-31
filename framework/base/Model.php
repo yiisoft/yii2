@@ -713,7 +713,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function onUnsafeAttribute($name, $value)
     {
         if (YII_DEBUG) {
-            Yii::trace("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
+            Yii::debug("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
         }
     }
 

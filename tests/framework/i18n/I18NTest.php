@@ -244,7 +244,7 @@ class I18NTest extends TestCase
         $filter = function ($array) {
             // Ensures that error message is related to PhpMessageSource
             $className = $this->getMessageSourceClass();
-            return substr_compare($array[2], $className, 0, strlen($className)) === 0;
+            return substr_compare($array[2]['category'], $className, 0, strlen($className)) === 0;
         };
 
         $this->assertEquals('The dog runs fast.', $this->i18n->translate('test', 'The dog runs fast.', [], 'en-GB'));
