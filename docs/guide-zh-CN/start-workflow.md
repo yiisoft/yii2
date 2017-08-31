@@ -51,7 +51,7 @@ Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-vie
 
 ![应用静态结构](images/application-structure.png)
 
-每个应用都有一个入口脚本 `web/index.php`，这是整个应用中唯一可以访问的 PHP 脚本。入口脚本接受一个 Web 请求并创建[应用](structure-application.md)实例去处理它。 [应用](structure-applications.md)在它的[组建](concept-components.md)辅助下解析请求，并分派请求至 MVC 元素。[视图](structure-views.md)使用[小部件](structure-widgets.md)去创建复杂和动态的用户界面。
+每个应用都有一个入口脚本 `web/index.php`，这是整个应用中唯一可以访问的 PHP 脚本。入口脚本接受一个 Web 请求并创建[应用](structure-application.md)实例去处理它。 [应用](structure-applications.md)在它的[组件](concept-components.md)辅助下解析请求，并分派请求至 MVC 元素。[视图](structure-views.md)使用[小部件](structure-widgets.md)去创建复杂和动态的用户界面。
 
 
 请求生命周期 <span id="request-lifecycle"></span>

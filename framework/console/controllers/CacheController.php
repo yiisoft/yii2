@@ -62,6 +62,7 @@ class CacheController extends Controller
 
     /**
      * Flushes given cache components.
+     *
      * For example,
      *
      * ```
@@ -287,7 +288,7 @@ class CacheController extends Controller
     }
 
     /**
-     * Checks if cache of a certain class can be flushed
+     * Checks if cache of a certain class can be flushed.
      * @param string $className class name.
      * @return bool
      */

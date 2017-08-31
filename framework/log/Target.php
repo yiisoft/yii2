@@ -137,6 +137,7 @@ abstract class Target extends Component
         foreach ($context as $key => $value) {
             $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
         }
+
         return implode("\n\n", $result);
     }
 
@@ -238,6 +239,7 @@ abstract class Target extends Component
                 unset($messages[$i]);
             }
         }
+
         return $messages;
     }
 

@@ -41,8 +41,8 @@ class HelpControllerTest extends TestCase
 
     /**
      * Emulates running controller action.
-     * @param  string $actionID id of action to be run.
-     * @param  array $args action arguments.
+     * @param string $actionID id of action to be run.
+     * @param array $actionParams action arguments.
      * @return string command output.
      */
     protected function runControllerAction($actionID, $actionParams = [])
@@ -77,6 +77,7 @@ help/usage
 migrate
 migrate/create
 migrate/down
+migrate/fresh
 migrate/history
 migrate/mark
 migrate/new

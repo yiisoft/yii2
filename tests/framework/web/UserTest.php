@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * Mock for the time() function for web classes
+ * Mock for the time() function for web classes.
  * @return int
  */
 function time()
@@ -98,7 +98,7 @@ class UserTest extends TestCase
     }
 
     /**
-     * Make sure autologin works more than once
+     * Make sure autologin works more than once.
      * @see https://github.com/yiisoft/yii2/issues/11825
      */
     public function testIssue11825()

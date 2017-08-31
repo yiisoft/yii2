@@ -7,14 +7,16 @@
 
 namespace yii\db;
 
+use yii\base\StaticInstanceInterface;
+
 /**
- * ActiveRecordInterface
+ * ActiveRecordInterface.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-interface ActiveRecordInterface
+interface ActiveRecordInterface extends StaticInstanceInterface
 {
     /**
      * Returns the primary key **name(s)** for this AR class.
@@ -87,7 +89,7 @@ interface ActiveRecordInterface
     public function getOldPrimaryKey($asArray = false);
 
     /**
-     * Returns a value indicating whether the given set of attributes represents the primary key for this model
+     * Returns a value indicating whether the given set of attributes represents the primary key for this model.
      * @param array $keys the set of attributes to check
      * @return bool whether the given set of attributes represents the primary key for this model
      */
@@ -245,6 +247,7 @@ interface ActiveRecordInterface
 
     /**
      * Updates records using the provided attribute values and conditions.
+     *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
      * ```php

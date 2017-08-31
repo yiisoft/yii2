@@ -10,7 +10,7 @@ namespace yiiunit\framework\caching;
 use yii\caching\DbCache;
 
 /**
- * Class for testing file cache backend
+ * Class for testing file cache backend.
  * @group db
  * @group caching
  */

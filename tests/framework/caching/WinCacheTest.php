@@ -10,7 +10,7 @@ namespace yiiunit\framework\caching;
 use yii\caching\WinCache;
 
 /**
- * Class for testing wincache backend
+ * Class for testing wincache backend.
  * @group wincache
  * @group caching
  */

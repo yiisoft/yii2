@@ -10,7 +10,7 @@ namespace yiiunit\data\base;
 use yii\base\Model;
 
 /**
- * Singer
+ * Singer.
  */
 class Singer extends Model
 {

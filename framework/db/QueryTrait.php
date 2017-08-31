@@ -85,7 +85,7 @@ trait QueryTrait
      *
      * See [[QueryInterface::where()]] for detailed documentation.
      *
-     * @param string|array $condition the conditions that should be put in the WHERE part.
+     * @param array $condition the conditions that should be put in the WHERE part.
      * @return $this the query object itself
      * @see andWhere()
      * @see orWhere()
@@ -99,7 +99,7 @@ trait QueryTrait
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return $this the query object itself
      * @see where()
@@ -112,13 +112,14 @@ trait QueryTrait
         } else {
             $this->where = ['and', $this->where, $condition];
         }
+
         return $this;
     }
 
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return $this the query object itself
      * @see where()
@@ -131,6 +132,7 @@ trait QueryTrait
         } else {
             $this->where = ['or', $this->where, $condition];
         }
+
         return $this;
     }
 
@@ -167,6 +169,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->where($condition);
         }
+
         return $this;
     }
 
@@ -190,6 +193,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->andWhere($condition);
         }
+
         return $this;
     }
 
@@ -213,6 +217,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->orWhere($condition);
         }
+
         return $this;
     }
 
@@ -236,6 +241,7 @@ trait QueryTrait
                     unset($condition[$name]);
                 }
             }
+
             return $condition;
         }
 
@@ -345,11 +351,12 @@ trait QueryTrait
         } else {
             $this->orderBy = array_merge($this->orderBy, $columns);
         }
+
         return $this;
     }
 
     /**
-     * Normalizes format of ORDER BY data
+     * Normalizes format of ORDER BY data.
      *
      * @param array|string|Expression $columns the columns value to normalize. See [[orderBy]] and [[addOrderBy]].
      * @return array

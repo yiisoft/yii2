@@ -11,7 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * The web Request class represents an HTTP request
+ * The web Request class represents an HTTP request.
  *
  * It encapsulates the $_SERVER variable and resolves its inconsistency among different Web servers.
  * Also it provides an interface to retrieve request parameters from $_POST, $_GET, $_COOKIES and REST
@@ -214,6 +214,7 @@ class Request extends \yii\base\Request
         'X-Forwarded-Host',
         'X-Forwarded-Proto',
         'Front-End-Https',
+        'X-Rewrite-Url',
     ];
     /**
      * @var string[] List of headers where proxies store the real client IP.
@@ -264,6 +265,7 @@ class Request extends \yii\base\Request
             } else {
                 $this->_queryParams = $params + $this->_queryParams;
             }
+
             return [$route, $this->getQueryParams()];
         }
 
@@ -291,7 +293,7 @@ class Request extends \yii\base\Request
                 }
                 if (preg_match($hostRegex, $host) || preg_match($hostRegex, $ip)) {
                     $trustedHeaders = $headers;
-                    continue;
+                    break;
                 }
             }
         }
@@ -436,7 +438,7 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Returns whether this is a PJAX request
+     * Returns whether this is a PJAX request.
      * @return bool whether this is a PJAX request
      */
     public function getIsPjax()
@@ -1000,6 +1002,7 @@ class Request extends \yii\base\Request
                 }
             }
         }
+
         return false;
     }
 
@@ -1071,6 +1074,7 @@ class Request extends \yii\base\Request
                 return trim(explode(',', $this->headers->get($ipHeader))[0]);
             }
         }
+
         return $this->getRemoteIP();
     }
 
@@ -1086,6 +1090,7 @@ class Request extends \yii\base\Request
                 return gethostbyaddr(trim(explode(',', $this->headers->get($ipHeader))[0]));
             }
         }
+
         return $this->getRemoteHost();
     }
 
@@ -1197,6 +1202,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the content types acceptable by the end user.
+     *
      * This is determined by the `Accept` HTTP header. For example,
      *
      * ```php
@@ -1430,6 +1436,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the cookie collection.
+     *
      * Through the returned cookie collection, you may access a cookie using the following syntax:
      *
      * ```php
@@ -1530,6 +1537,7 @@ class Request extends \yii\base\Request
         if ($this->enableCsrfCookie) {
             return $this->getCookies()->getValue($this->csrfParam);
         }
+
         return Yii::$app->getSession()->get($this->csrfParam);
     }
 
@@ -1546,6 +1554,7 @@ class Request extends \yii\base\Request
         } else {
             Yii::$app->getSession()->set($this->csrfParam, $token);
         }
+
         return $token;
     }
 
@@ -1605,7 +1614,7 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Validates CSRF token
+     * Validates CSRF token.
      *
      * @param string $clientSuppliedToken The masked client-supplied token.
      * @param string $trueToken The masked true token.

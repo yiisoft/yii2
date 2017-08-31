@@ -337,8 +337,9 @@ abstract class QueryTest extends DatabaseTestCase
 
 
     /**
-     * Ensure no ambiguous column error occurs on indexBy with JOIN
-     * https://github.com/yiisoft/yii2/issues/13859
+     * Ensure no ambiguous column error occurs on indexBy with JOIN.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/13859
      */
     public function testAmbiguousColumnIndexBy()
     {
@@ -525,6 +526,7 @@ abstract class QueryTest extends DatabaseTestCase
         if (is_numeric($result)) {
             $result = (int) $result;
         }
+
         return $result;
     }
 
