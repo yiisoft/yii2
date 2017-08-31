@@ -69,6 +69,17 @@ Upgrade from Yii 2.0.x
   Mail view rendering is now encapsulated into `yii\mail\Template` class.
 * Properties `view`, `viewPath`, `htmlLayout` and `textLayout` have been moved from `yii\mail\BaseMailer` to `yii\mail\Composer` class,
   which now encapsulates message composition.
+* Interface of `yii\log\Logger` has been changed according to PSR-3 `Psr\Log\LoggerInterface`.
+  Make sure you update your code accordingly in case you invoke `Logger` methods directly.
+* Constants `yii\log\Logger::LEVEL_ERROR`, `yii\log\Logger::LEVEL_WARNING` and so on have been removed.
+  Use constants from `Psr\Log\LogLevel` instead.
+* Method `yii\BaseYii::trace()` has been renamed to `debug()`. Make sure you use correct name for it.
+* Class `yii\log\Dispatcher` has been removed as well as application 'log' component. Log targets
+  now should be configured using `yii\base\Application::$logger` property. Neither 'log' or 'logger'
+  components should be present at `yii\base\Application::$bootstrap`
+* Profiling related functionality has been extracted into a separated component under `yii\profile\ProfilerInterface`.
+  Profiling messages should be collection using `yii\base\Application::$profiler`. In case you wish to
+  continue storing profiling messages along with the log ones, you may use `yii\profile\LogTarget` profiling target.
 * Classes `yii\web\Request` and `yii\web\Response` have been updated to match interfaces `Psr\Http\Message\RequestInterface`
   and `Psr\Http\Message\ResponseInterface` accordingly. Make sure you use their methods and properties correctly.
   In particular: method `getHeaders()` and corresponding virtual property `$headers` are no longer return `HeaderCollection`
@@ -84,6 +95,17 @@ Upgrade from Yii 2.0.x
   instance is available via `yii\captcha\CaptchaAction::$driver` field. All image settings now should be passed to
   the driver fields instead of action. Automatic detection of the rendering driver is no longer supported.
 * `yii\captcha\Captcha::checkRequirements()` method has been removed.
+* All cache related classes interface has been changed according to PSR-16 "Simple Cache" specification. Make sure you
+  change your invocations for the cache methods accordingly. The most notable changes affects methods `get()` and `getMultiple()`
+  as they now accept `$default` argument, which value will be returned in case there is no value in the cache. This makes
+  the default return value to be `null` instead of `false`.
+* Particular cache implementation should now be configured as `yii\caching\Cache::$handler` property instead of the
+  component itself. Properties `$defaultTtl`, `$serializer` and `$keyPrefix` has been moved to cache handler and should
+  be configured there. Creating your own cache implementation you should implement `\Psr\SimpleCache\CacheInterface` or
+  extend `yii\caching\SimpleCache` abstract class. Use `yii\caching\CacheInterface` only if you wish to replace `yii\caching\Cache`
+  component providing your own solution for cache dependency handling.
+* Console command used to clear cache now calls related actions "clear" instead of "flush".
+
 
 Upgrade from Yii 2.0.12
 -----------------------

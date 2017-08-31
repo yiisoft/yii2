@@ -11,7 +11,6 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\di\Instance;
-use yii\helpers\VarDumper;
 
 /**
  * DbTarget stores log messages in a database table.
@@ -71,19 +70,11 @@ class DbTarget extends Target
                 VALUES (:level, :category, :log_time, :prefix, :message)";
         $command = $this->db->createCommand($sql);
         foreach ($this->messages as $message) {
-            [$text, $level, $category, $timestamp] = $message;
-            if (!is_string($text)) {
-                // exceptions may not be serializable if in the call stack somewhere is a Closure
-                if ($text instanceof \Throwable || $text instanceof \Exception) {
-                    $text = (string) $text;
-                } else {
-                    $text = VarDumper::export($text);
-                }
-            }
+            [$level, $text, $context] = $message;
             $command->bindValues([
                 ':level' => $level,
-                ':category' => $category,
-                ':log_time' => $timestamp,
+                ':category' => $context['category'],
+                ':log_time' => $context['time'],
                 ':prefix' => $this->getMessagePrefix($message),
                 ':message' => $text,
             ])->execute();

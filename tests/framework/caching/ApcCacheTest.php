@@ -8,6 +8,7 @@
 namespace yiiunit\framework\caching;
 
 use yii\caching\ApcCache;
+use yii\caching\Cache;
 
 /**
  * Class for testing APC cache backend
@@ -19,7 +20,7 @@ class ApcCacheTest extends CacheTestCase
     private $_cacheInstance = null;
 
     /**
-     * @return ApcCache
+     * @return Cache
      */
     protected function getCacheInstance()
     {
@@ -32,7 +33,9 @@ class ApcCacheTest extends CacheTestCase
         }
 
         if ($this->_cacheInstance === null) {
-            $this->_cacheInstance = new ApcCache();
+            $this->_cacheInstance = new Cache([
+                'handler' => new ApcCache()
+            ]);
         }
 
         return $this->_cacheInstance;

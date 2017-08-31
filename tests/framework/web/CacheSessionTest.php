@@ -8,7 +8,8 @@
 namespace yiiunit\framework\web;
 
 use Yii;
-use yii\caching\FileCache;
+use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\web\CacheSession;
 
 /**
@@ -20,7 +21,7 @@ class CacheSessionTest extends \yiiunit\TestCase
     {
         parent::setUp();
         $this->mockApplication();
-        Yii::$app->set('cache', new FileCache());
+        Yii::$app->set('cache', new Cache(['handler' => new ArrayCache()]));
     }
 
     public function testCacheSession()

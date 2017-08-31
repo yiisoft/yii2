@@ -103,7 +103,8 @@ abstract class ErrorHandler extends Component
             }
             $this->renderException($exception);
             if (!YII_ENV_TEST) {
-                \Yii::getLogger()->flush(true);
+                Yii::getProfiler()->flush();
+                $this->flushLogger();
                 exit(1);
             }
         } catch (\Throwable $e) {
@@ -205,7 +206,8 @@ abstract class ErrorHandler extends Component
             $this->renderException($exception);
 
             // need to explicitly flush logs because exit() next will terminate the app immediately
-            Yii::getLogger()->flush(true);
+            Yii::getProfiler()->flush();
+            $this->flushLogger();
             exit(1);
         }
     }
@@ -281,5 +283,20 @@ abstract class ErrorHandler extends Component
             $message = 'Error: ' . $exception->getMessage();
         }
         return $message;
+    }
+
+    /**
+     * Attempts to flush logger messages.
+     * @since 2.1
+     */
+    protected function flushLogger()
+    {
+        $logger = Yii::getLogger();
+        if ($logger instanceof \yii\log\Logger) {
+            $logger->flush(true);
+        }
+        // attempt to invoke logger destructor:
+        unset($logger);
+        Yii::setLogger(null);
     }
 }

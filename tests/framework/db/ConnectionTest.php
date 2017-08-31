@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db;
 
+use Yii;
 use yii\db\Connection;
 use yii\db\Transaction;
 
@@ -235,51 +236,66 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection->enableLogging = true;
         $connection->enableProfiling = true;
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand()->createTable('qlog1', ['id' => 'pk'])->execute();
-        $this->assertCount(3, \Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getProfiler()->messages);
         $this->assertNotNull($connection->getTableSchema('qlog1', true));
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand('SELECT * FROM qlog1')->queryAll();
-        $this->assertCount(3, \Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getProfiler()->messages);
 
         // profiling only
         $connection->enableLogging = false;
         $connection->enableProfiling = true;
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand()->createTable('qlog2', ['id' => 'pk'])->execute();
-        $this->assertCount(2, \Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getProfiler()->messages);
         $this->assertNotNull($connection->getTableSchema('qlog2', true));
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand('SELECT * FROM qlog2')->queryAll();
-        $this->assertCount(2, \Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getProfiler()->messages);
 
         // logging only
         $connection->enableLogging = true;
         $connection->enableProfiling = false;
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand()->createTable('qlog3', ['id' => 'pk'])->execute();
-        $this->assertCount(1, \Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getProfiler()->messages);
         $this->assertNotNull($connection->getTableSchema('qlog3', true));
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand('SELECT * FROM qlog3')->queryAll();
-        $this->assertCount(1, \Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getProfiler()->messages);
 
         // disabled
         $connection->enableLogging = false;
         $connection->enableProfiling = false;
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand()->createTable('qlog4', ['id' => 'pk'])->execute();
         $this->assertNotNull($connection->getTableSchema('qlog4', true));
-        $this->assertCount(0, \Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getProfiler()->messages);
         $connection->createCommand('SELECT * FROM qlog4')->queryAll();
-        $this->assertCount(0, \Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getProfiler()->messages);
     }
 
     public function testExceptionContainsRawQuery()

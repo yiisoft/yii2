@@ -65,9 +65,9 @@ class HelpControllerTest extends TestCase
         $result = Console::stripAnsiFormat($this->runControllerAction('list'));
         $this->assertEqualsWithoutLE(<<<'STRING'
 cache
-cache/flush
-cache/flush-all
-cache/flush-schema
+cache/clear
+cache/clear-all
+cache/clear-schema
 cache/index
 help
 help/index

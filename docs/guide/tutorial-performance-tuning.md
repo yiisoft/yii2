@@ -209,16 +209,10 @@ In the push method, you would use a message queue (e.g. RabbitMQ, ActiveMQ, Amaz
 Whenever a new task is put on the queue, it will initiate or notify the task handling process to trigger the task processing.
 
 
-## Performance Profiling <span id="performance-profiling"></span>
-
-You should profile your code to find out the performance bottlenecks and take appropriate measures accordingly.
-The following profiling tools may be useful:
-
-- [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
-- [Blackfire](https://blackfire.io/)
-- [XHProf](http://www.php.net/manual/en/book.xhprof.php)
-- [XDebug profiler](http://xdebug.org/docs/profiler)
-
 ## Prepare application for scaling
 
 When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii 2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md). For further reading you may refer to [Web apps performance and scaling](http://thehighload.com/).
+
+## Additional reading
+
+- Guide on [Performance Profiling](runtime-profiling.md)
