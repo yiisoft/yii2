@@ -72,6 +72,7 @@
         "ext-mbstring": "*",
         "ext-ctype": "*",
         "lib-pcre": "*",
+        "psr/log": "~1.0.2",
         "yiisoft/yii2-composer": "~2.0.4",
         "psr/simple-cache": "~1.0.0",
         "ezyang/htmlpurifier": "~4.6",
