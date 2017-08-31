@@ -17,17 +17,17 @@ use yii\base\ErrorHandler;
  * Example:
  *
  * ```php
- * $stream = new FileSteam([
- *     'resource' => fopen('/path/to/file.txt', 'w+'),
+ * $stream = new ResourceStream([
+ *     'resource' => tmpfile(),
  * ]);
  *
  * $stream->write('some content...');
  * $stream->close();
  * ```
  *
- * Usage of this class make sense in case you already have an opened PHP stream from elsewhere and wish to wrap into `StreamInterface`.
+ * Usage of this class make sense in case you already have an opened PHP stream from elsewhere and wish to wrap it into `StreamInterface`.
  *
- * > Note: closing this stream will close the resource associated with it, wo it becomes invalid for usage elsewhere.
+ * > Note: closing this stream will close the resource associated with it, so it becomes invalid for usage elsewhere.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0
