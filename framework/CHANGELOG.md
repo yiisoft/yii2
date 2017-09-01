@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Enh #14749: Ensured garbage collections for the widgets with behaviors attached to them (klimov-paul)
 - Bug #14723: Fixed serialization of `yii\db\Connection` instance closes database connection (klimov-paul)
 - Bug #14697: Fixed `console\widgets\Table` rendering when there's no data supplied (bscheshirwork)
 - Enh #13853: Added `yii\db\Migration::$compact` as well as `yii\console\controllers\BaseMigrateController::$compact` to allow making the migration console output more compact (francislavoie)

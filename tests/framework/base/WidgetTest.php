@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\base;
 
+use yii\base\Behavior;
 use yii\base\Widget;
 use yii\base\WidgetEvent;
 use yiiunit\TestCase;
@@ -88,15 +89,57 @@ class WidgetTest extends TestCase
         ]);
         $this->assertSame('', $output);
     }
+
+    /**
+     * @depends testWidget
+     */
+    public function testGarbageCollection()
+    {
+        TestWidget::widget([
+            'id' => 'test',
+            'as test' => [
+                'class' => TestWidgetBehavior::className()
+            ],
+        ]);
+        $this->assertSame(0, TestWidget::$instanceCount);
+    }
 }
 
 class TestWidget extends Widget
 {
+    public static $instanceCount = 0;
+
+    public function __construct($config = [])
+    {
+        parent::__construct($config);
+        static::$instanceCount++;
+    }
+
+    public function __destruct()
+    {
+        static::$instanceCount--;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function run()
     {
         return '<run-' . $this->id . '>';
+    }
+}
+
+class TestWidgetBehavior extends Behavior
+{
+    public function events()
+    {
+        return [
+            Widget::EVENT_BEFORE_RUN => 'beforeRun'
+        ];
+    }
+
+    public function beforeRun(WidgetEvent $event)
+    {
+        // blank
     }
 }

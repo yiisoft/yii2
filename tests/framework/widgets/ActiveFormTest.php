@@ -7,9 +7,11 @@
 
 namespace yiiunit\framework\widgets;
 
+use yii\base\Behavior;
 use yii\base\DynamicModel;
 use yii\base\Widget;
 use yii\web\View;
+use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 
 /**
@@ -134,4 +136,58 @@ HTML
         $form::end();
         ob_get_clean();
     }
+
+    public function testGarbageCollection()
+    {
+        ob_start();
+
+        $model = new DynamicModel(['name']);
+
+        $form = ActiveForm::begin([
+            'fieldClass' => ActiveFieldWithCounter::className(),
+            'id' => 'someform',
+            'action' => '/someform',
+            'enableClientScript' => false
+        ]);
+
+        $field = $form->field($model, 'name', [
+            'as test' => [
+                'class' => ActiveFieldBehavior::className()
+            ]
+        ]);
+        $this->assertTrue($field instanceof ActiveFieldWithCounter);
+        $field->render();
+
+        $form->beginField($model, 'name');
+        $form->endField();
+
+        ActiveForm::end();
+
+        $content = ob_get_clean();
+        unset($form);
+        unset($field);
+
+        $this->assertSame(0, ActiveFieldWithCounter::$instanceCount);
+    }
+}
+
+class ActiveFieldWithCounter extends ActiveField
+{
+    public static $instanceCount = 0;
+
+    public function __construct($config = [])
+    {
+        parent::__construct($config);
+        static::$instanceCount++;
+    }
+
+    public function __destruct()
+    {
+        static::$instanceCount--;
+    }
+}
+
+class ActiveFieldBehavior extends Behavior
+{
+    // blank
 }
