@@ -310,8 +310,9 @@ abstract class Target extends Component
     }
 
     /**
-     * Sets the enable value
-     * @param bool|callable $value
+     * Sets a value indicating whether this log target is enabled.
+     * @param bool|callable $value a boolean value or a callable to obtain the value from.
+     * The callable value is available since version 2.0.13.
      */
     public function setEnabled($value)
     {
@@ -319,8 +320,9 @@ abstract class Target extends Component
     }
 
     /**
-     * Gets the enable value
-     * @return bool
+     * Check whether the log target is enabled.
+     * @property Indicates whether this log target is enabled. Defaults to true.
+     * @return bool A value indicating whether this log target is enabled.
      */
     public function getEnabled()
     {
