@@ -110,6 +110,7 @@ class Widget extends Component implements ViewContextInterface
                     $result = $widget->afterRun($result);
                     echo $result;
                 }
+                $widget->detachBehaviors(); // ensure garbage collection
 
                 return $widget;
             }
@@ -139,6 +140,7 @@ class Widget extends Component implements ViewContextInterface
             if ($widget->beforeRun()) {
                 $result = $widget->run();
                 $out = $widget->afterRun($result);
+                $widget->detachBehaviors(); // ensure garbage collection
             }
         } catch (\Exception $e) {
             // close the output buffer opened above if it has not been closed already

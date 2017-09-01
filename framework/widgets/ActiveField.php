@@ -256,6 +256,7 @@ class ActiveField extends Component
      */
     public function end()
     {
+        $this->detachBehaviors(); // ensure garbage collection
         return Html::endTag(ArrayHelper::keyExists('tag', $this->options) ? $this->options['tag'] : 'div');
     }
 
