@@ -246,7 +246,7 @@ abstract class CacheTestCase extends TestCase
     {
         $cache = $this->prepare();
 
-        $this->assertNotNull($cache->get('number_test'));
+        $this->assertEquals(42, $cache->get('number_test'));
         $this->assertTrue($cache->delete('number_test'));
         $this->assertFalse($cache->get('number_test'));
     }
