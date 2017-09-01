@@ -122,11 +122,11 @@ class DbManager extends BaseManager
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
-        if (isset($this->_checkAccessAssignments[$userId])) {
-            $assignments = $this->_checkAccessAssignments[$userId];
+        if (isset($this->_checkAccessAssignments[(string) $userId])) {
+            $assignments = $this->_checkAccessAssignments[(string) $userId];
         } else {
             $assignments = $this->getAssignments($userId);
-            $this->_checkAccessAssignments[$userId] = $assignments;
+            $this->_checkAccessAssignments[(string) $userId] = $assignments;
         }
 
         if ($this->hasNoAssignments($assignments)) {
@@ -857,7 +857,7 @@ class DbManager extends BaseManager
                 'created_at' => $assignment->createdAt,
             ])->execute();
 
-        unset($this->_checkAccessAssignments[$userId]);
+        unset($this->_checkAccessAssignments[(string) $userId]);
         return $assignment;
     }
 
@@ -870,7 +870,7 @@ class DbManager extends BaseManager
             return false;
         }
 
-        unset($this->_checkAccessAssignments[$userId]);
+        unset($this->_checkAccessAssignments[(string) $userId]);
         return $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
             ->execute() > 0;
@@ -885,7 +885,7 @@ class DbManager extends BaseManager
             return false;
         }
 
-        unset($this->_checkAccessAssignments[$userId]);
+        unset($this->_checkAccessAssignments[(string) $userId]);
         return $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId])
             ->execute() > 0;

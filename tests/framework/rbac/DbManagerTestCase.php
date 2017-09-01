@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\rbac;
 
+use app\models\User;
 use Yii;
 use yii\caching\ArrayCache;
 use yii\console\Application;
@@ -301,7 +302,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         // warm up item cache, so only assignment queries are sent to DB
         $this->auth->cache = new ArrayCache();
         $this->auth->checkAccess('author B', 'readPost');
-        $this->auth->checkAccess('author B', 'createPost');
+        $this->auth->checkAccess(new UserID('author B'), 'createPost');
 
         // track db queries
         Yii::$app->log->flushInterval = 1;
