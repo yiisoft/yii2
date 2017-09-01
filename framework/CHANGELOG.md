@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #14273: `yii\log\Target::$enabled` now supports callable value (dmirogin)
+- Bug #14723: Fixed serialization of `yii\db\Connection` instance closes database connection (klimov-paul)
 - Bug #14697: Fixed `console\widgets\Table` rendering when there's no data supplied (bscheshirwork)
 - Enh #13853: Added `yii\db\Migration::$compact` as well as `yii\console\controllers\BaseMigrateController::$compact` to allow making the migration console output more compact (francislavoie)
 - Enh #14184: Module service locator now falls back to its parent module service locator in case component isn't found (SamMousa)
@@ -66,6 +67,8 @@ Yii Framework 2 Change Log
 - Enh #14363: Added `yii\widgets\LinkPager::$linkContainerOptions` and possibility to override tag in `yii\widgets\LinkPager::$options` (dmirogin)
 - Bug #14202: Fixed current time in (UTC) `\Yii::$app->formatter` if time not set (bscheshirwork)
 - Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase, silverfire)
+- Bug #13969: Fixed a bug in a `yii\console\controllers\CacheController` when caches defined via a closure were not detected (Kolyunya)
+- Enh #14061: Added request scope assignments cache to `yii\rbac\DbManager::checkAccess()` to avoid duplicate queries for user assignments (leandrogehlen, cebe, nineinchnick, ryusoft)
 
 
 2.0.12 June 05, 2017
