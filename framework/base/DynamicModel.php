@@ -84,7 +84,7 @@ class DynamicModel extends Model
             return $this->_attributes[$name];
         }
 
-        return parent::__get($name);
+        return null;
     }
 
     /**
