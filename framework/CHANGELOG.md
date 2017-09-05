@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Enh #99999: add index on `auth_assignment.user_id` for performance reasons when a medium-tiny prermission/role hierarchy is used with a lot of users see `yii\rbac\DbManager::getInheritedPermissionsByUser` and `yii\rbac\DbManager::getAssignments` (bicf)  
 - Enh #14273: `yii\log\Target::$enabled` now supports callable value (dmirogin)
 - Bug #14723: Fixed serialization of `yii\db\Connection` instance closes database connection (klimov-paul)
 - Bug #14697: Fixed `console\widgets\Table` rendering when there's no data supplied (bscheshirwork)
