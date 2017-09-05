@@ -94,7 +94,6 @@ return [
     '{attribute} must be less than or equal to "{compareValueOrAttribute}".' => '{attribute} doit être inférieur ou égal à « {compareValueOrAttribute} ».',
     '{attribute} must be no greater than {max}.' => '{attribute} ne doit pas être supérieur à {max}.',
     '{attribute} must be no less than {min}.' => '{attribute} ne doit pas être inférieur à {min}.',
-    '{attribute} must be repeated exactly.' => '{attribute} doit être répété à l\'identique.',
     '{attribute} must not be a subnet.' => '{attribute} ne doit pas être un sous-réseau.',
     '{attribute} must not be an IPv4 address.' => '{attribute} ne doit pas être une adresse IPv4.',
     '{attribute} must not be an IPv6 address.' => '{attribute} ne doit pas être une adresse IPv6.',
