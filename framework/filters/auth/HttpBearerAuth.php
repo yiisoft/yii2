@@ -56,6 +56,6 @@ class HttpBearerAuth extends AuthMethod
      */
     public function challenge($response)
     {
-        $response->getHeaderCollection()->set('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
+        $response->setHeader('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
     }
 }

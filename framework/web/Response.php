@@ -529,13 +529,11 @@ class Response extends \yii\base\Response implements ResponseInterface
      */
     public function sendContentAsFile($content, $attachmentName, $options = [])
     {
-        $headers = $this->getHeaderCollection();
-
         $contentLength = StringHelper::byteLength($content);
         $range = $this->getHttpRange($contentLength);
 
         if ($range === false) {
-            $headers->set('Content-Range', "bytes */$contentLength");
+            $this->setHeader('Content-Range', "bytes */$contentLength");
             throw new RangeNotSatisfiableHttpException();
         }
 
@@ -543,7 +541,7 @@ class Response extends \yii\base\Response implements ResponseInterface
         $body = new MemoryStream();
         if ($begin != 0 || $end != $contentLength - 1) {
             $this->setStatusCode(206);
-            $headers->set('Content-Range', "bytes $begin-$end/$contentLength");
+            $this->setHeader('Content-Range', "bytes $begin-$end/$contentLength");
             $body->write(StringHelper::byteSubstr($content, $begin, $end - $begin + 1));
         } else {
             $this->setStatusCode(200);
@@ -581,7 +579,6 @@ class Response extends \yii\base\Response implements ResponseInterface
      */
     public function sendStreamAsFile($handle, $attachmentName, $options = [])
     {
-        $headers = $this->getHeaderCollection();
         if (isset($options['fileSize'])) {
             $fileSize = $options['fileSize'];
         } else {
@@ -591,14 +588,14 @@ class Response extends \yii\base\Response implements ResponseInterface
 
         $range = $this->getHttpRange($fileSize);
         if ($range === false) {
-            $headers->set('Content-Range', "bytes */$fileSize");
+            $this->setHeader('Content-Range', "bytes */$fileSize");
             throw new RangeNotSatisfiableHttpException();
         }
 
         [$begin, $end] = $range;
         if ($begin != 0 || $end != $fileSize - 1) {
             $this->setStatusCode(206);
-            $headers->set('Content-Range', "bytes $begin-$end/$fileSize");
+            $this->setHeader('Content-Range', "bytes $begin-$end/$fileSize");
         } else {
             $this->setStatusCode(200);
         }
@@ -627,21 +624,28 @@ class Response extends \yii\base\Response implements ResponseInterface
      */
     public function setDownloadHeaders($attachmentName, $mimeType = null, $inline = false, $contentLength = null)
     {
-        $headers = $this->getHeaderCollection();
-
         $disposition = $inline ? 'inline' : 'attachment';
-        $headers->setDefault('Pragma', 'public')
-            ->setDefault('Accept-Ranges', 'bytes')
-            ->setDefault('Expires', '0')
-            ->setDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->setDefault('Content-Disposition', $this->getDispositionHeaderValue($disposition, $attachmentName));
+
+        $headers = [
+            'Pragma' => 'public',
+            'Accept-Ranges' => 'bytes',
+            'Expires' => '0',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-Disposition' => $this->getDispositionHeaderValue($disposition, $attachmentName),
+        ];
 
         if ($mimeType !== null) {
-            $headers->setDefault('Content-Type', $mimeType);
+            $headers['Content-Type'] = $mimeType;
         }
 
         if ($contentLength !== null) {
-            $headers->setDefault('Content-Length', $contentLength);
+            $headers['Content-Length'] = $contentLength;
+        }
+
+        foreach ($headers as $name => $value) {
+            if (!$this->hasHeader($name)) {
+                $this->setHeader($name, $value);
+            }
         }
 
         return $this;
@@ -755,10 +759,18 @@ class Response extends \yii\base\Response implements ResponseInterface
         }
 
         $disposition = empty($options['inline']) ? 'attachment' : 'inline';
-        $this->getHeaderCollection()
-            ->setDefault($xHeader, $filePath)
-            ->setDefault('Content-Type', $mimeType)
-            ->setDefault('Content-Disposition', $this->getDispositionHeaderValue($disposition, $attachmentName));
+
+        $headers = [
+            $xHeader => $filePath,
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => $this->getDispositionHeaderValue($disposition, $attachmentName),
+        ];
+
+        foreach ($headers as $name => $value) {
+            if (!$this->hasHeader($name)) {
+                $this->setHeader($name, $value);
+            }
+        }
 
         $this->format = self::FORMAT_RAW;
 
@@ -875,15 +887,15 @@ class Response extends \yii\base\Response implements ResponseInterface
                     $statusCode = 200;
                 }
                 if (Yii::$app->getRequest()->getIsPjax()) {
-                    $this->getHeaderCollection()->set('X-Pjax-Url', $url);
+                    $this->setHeader('X-Pjax-Url', $url);
                 } else {
-                    $this->getHeaderCollection()->set('X-Redirect', $url);
+                    $this->setHeader('X-Redirect', $url);
                 }
             } else {
-                $this->getHeaderCollection()->set('Location', $url);
+                $this->setHeader('Location', $url);
             }
         } else {
-            $this->getHeaderCollection()->set('Location', $url);
+            $this->setHeader('Location', $url);
         }
 
         $this->setStatusCode($statusCode);

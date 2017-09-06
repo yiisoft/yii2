@@ -176,7 +176,7 @@ class PageCacheTest extends TestCase
         if (isset($testCase['headers'])) {
             foreach (array_keys($testCase['headers']) as $name) {
                 $value = Yii::$app->security->generateRandomString();
-                Yii::$app->response->getHeaderCollection()->add($name, $value);
+                Yii::$app->response->addHeader($name, $value);
                 $headers[$name] = $value;
             }
         }

@@ -173,10 +173,9 @@ class RequestTest extends TestCase
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $request->setMethod($method);
             $request->setBodyParams([]);
-            $request->getHeaderCollection()->remove(Request::CSRF_HEADER);
-            $this->assertFalse($request->validateCsrfToken());
-            $request->getHeaderCollection()->add(Request::CSRF_HEADER, $token);
-            $this->assertTrue($request->validateCsrfToken());
+
+            $this->assertFalse($request->withoutHeader(Request::CSRF_HEADER)->validateCsrfToken());
+            $this->assertTrue($request->withAddedHeader(Request::CSRF_HEADER, $token)->validateCsrfToken());
         }
     }
 

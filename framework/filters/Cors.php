@@ -213,7 +213,7 @@ class Cors extends ActionFilter
     {
         if (empty($headers) === false) {
             foreach ($headers as $field => $value) {
-                $response->getHeaderCollection()->set($field, $value);
+                $response->setHeader($field, $value);
             }
         }
     }

@@ -128,6 +128,29 @@ trait MessageTrait
     }
 
     /**
+     * Sets up a particular message's header, removing any its previously existing value.
+     * @param string $name Case-insensitive header field name.
+     * @param string|string[] $value Header value(s).
+     */
+    public function setHeader($name, $value)
+    {
+        $this->getHeaderCollection()->set($name, $value);
+    }
+
+    /**
+     * Appends the given value to the specified header.
+     * Existing values for the specified header will be maintained. The new
+     * value(s) will be appended to the existing list. If the header did not
+     * exist previously, it will be added.
+     * @param string $name Case-insensitive header field name to add.
+     * @param string|string[] $value Header value(s).
+     */
+    public function addHeader($name, $value)
+    {
+        $this->getHeaderCollection()->add($name, $value);
+    }
+
+    /**
      * Retrieves all message header values.
      *
      * The keys represent the header name as it will be sent over the wire, and
@@ -225,7 +248,7 @@ trait MessageTrait
     public function withHeader($name, $value)
     {
         $newInstance = clone $this;
-        $newInstance->getHeaderCollection()->set($name, $value);
+        $newInstance->setHeader($name, $value);
         return $newInstance;
     }
 
@@ -247,7 +270,7 @@ trait MessageTrait
     public function withAddedHeader($name, $value)
     {
         $newInstance = clone $this;
-        $newInstance->getHeaderCollection()->add($name, $value);
+        $newInstance->addHeader($name, $value);
         return $newInstance;
     }
 
