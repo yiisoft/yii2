@@ -102,7 +102,7 @@ class RequestTest extends TestCase
 
         // accept any value on GET request
         foreach (['GET', 'HEAD', 'OPTIONS'] as $method) {
-            $_POST[$request->methodParam] = $method;
+            $request->setMethod($method);
             $this->assertTrue($request->validateCsrfToken($token));
             $this->assertTrue($request->validateCsrfToken($token . 'a'));
             $this->assertTrue($request->validateCsrfToken([]));
@@ -113,7 +113,7 @@ class RequestTest extends TestCase
 
         // only accept valid token on POST
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
-            $_POST[$request->methodParam] = $method;
+            $request->setMethod($method);
             $this->assertTrue($request->validateCsrfToken($token));
             $this->assertFalse($request->validateCsrfToken($token . 'a'));
             $this->assertFalse($request->validateCsrfToken([]));
@@ -137,13 +137,13 @@ class RequestTest extends TestCase
 
         // accept no value on GET request
         foreach (['GET', 'HEAD', 'OPTIONS'] as $method) {
-            $_POST[$request->methodParam] = $method;
+            $request->setMethod($method);
             $this->assertTrue($request->validateCsrfToken());
         }
 
         // only accept valid token on POST
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
-            $_POST[$request->methodParam] = $method;
+            $request->setMethod($method);
             $request->setBodyParams([]);
             $this->assertFalse($request->validateCsrfToken());
             $request->setBodyParams([$request->csrfParam => $token]);
@@ -171,12 +171,11 @@ class RequestTest extends TestCase
 
         // only accept valid token on POST
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
-            $_POST[$request->methodParam] = $method;
+            $request->setMethod($method);
             $request->setBodyParams([]);
-            $request->headers->remove(Request::CSRF_HEADER);
-            $this->assertFalse($request->validateCsrfToken());
-            $request->headers->add(Request::CSRF_HEADER, $token);
-            $this->assertTrue($request->validateCsrfToken());
+
+            $this->assertFalse($request->withoutHeader(Request::CSRF_HEADER)->validateCsrfToken());
+            $this->assertTrue($request->withAddedHeader(Request::CSRF_HEADER, $token)->validateCsrfToken());
         }
     }
 

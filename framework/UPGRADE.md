@@ -80,6 +80,17 @@ Upgrade from Yii 2.0.x
 * Profiling related functionality has been extracted into a separated component under `yii\profile\ProfilerInterface`.
   Profiling messages should be collection using `yii\base\Application::$profiler`. In case you wish to
   continue storing profiling messages along with the log ones, you may use `yii\profile\LogTarget` profiling target.
+* Classes `yii\web\Request` and `yii\web\Response` have been updated to match interfaces `Psr\Http\Message\RequestInterface`
+  and `Psr\Http\Message\ResponseInterface` accordingly. Make sure you use their methods and properties correctly.
+  In particular: method `getHeaders()` and corresponding virtual property `$headers` are no longer return `HeaderCollection`
+  instance, you can use `getHeaderCollection()` in order to use old headers setup syntax; `Request|Response::$version` renamed
+  to `Request|Response::$protocolVersion`; `Response::$statusText` renamed `Response::$reasonPhrase`;
+* `yii\web\Response::$stream` is no longer available, use `yii\web\Response::withBody()` to setup stream response.
+  You can use `Response::$bodyRange` to setup stream content range.
+* Classes `yii\web\CookieCollection`, `yii\web\HeaderCollection` and `yii\web\UploadedFile` have been moved under
+  namespace `yii\http\*`. Make sure to refer to those classes using correct fully qualified name.
+* Public interface of `UploadedFile` class has been changed according to `Psr\Http\Message\UploadedFileInterface`.
+  Make sure you refer to its properties and methods with correct names.
 * `yii\captcha\CaptchaAction` has been refactored. Rendering logic was extracted into `yii\captcha\DriverInterface`, which
   instance is available via `yii\captcha\CaptchaAction::$driver` field. All image settings now should be passed to
   the driver fields instead of action. Automatic detection of the rendering driver is no longer supported.

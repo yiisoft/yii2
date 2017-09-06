@@ -7,8 +7,17 @@
 
 namespace yii\web;
 
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\di\Instance;
+use yii\http\Cookie;
+use yii\http\CookieCollection;
+use yii\http\FileStream;
+use yii\http\MessageTrait;
+use yii\http\Uri;
 
 /**
  * The web Request class represents an HTTP request
@@ -41,7 +50,6 @@ use yii\base\InvalidConfigException;
  * @property string $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned
  * if no such header is sent. This property is read-only.
  * @property array $eTags The entity tags. This property is read-only.
- * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property string|null $hostInfo Schema and hostname part (with port number if needed) of the request URL
  * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set. See
  * [[getHostInfo()]] for security related notes on this property.
@@ -60,7 +68,9 @@ use yii\base\InvalidConfigException;
  * @property bool $isSecureConnection If the request is sent via secure channel (https). This property is
  * read-only.
  * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
- * turned into upper case. This property is read-only.
+ * turned into upper case.
+ * @property UriInterface $uri the URI instance.
+ * @property mixed $requestTarget the message's request target.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property int $port Port number for insecure requests.
@@ -84,8 +94,10 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Request extends \yii\base\Request
+class Request extends \yii\base\Request implements RequestInterface
 {
+    use MessageTrait;
+
     /**
      * The name of the HTTP header for sending CSRF token.
      */
@@ -170,9 +182,17 @@ class Request extends \yii\base\Request
      */
     private $_cookies;
     /**
-     * @var HeaderCollection Collection of request headers.
+     * @var string the HTTP method of the request.
      */
-    private $_headers;
+    private $_method;
+    /**
+     * @var UriInterface the URI instance associated with request.
+     */
+    private $_uri;
+    /**
+     * @var mixed the message's request target.
+     */
+    private $_requestTarget;
 
 
     /**
@@ -197,56 +217,160 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Returns the header collection.
-     * The header collection contains incoming HTTP headers.
-     * @return HeaderCollection the header collection
+     * Returns default message's headers, which should be present once [[headerCollection]] is instantiated.
+     * @return string[][] an associative array of the message's headers.
      */
-    public function getHeaders()
+    protected function defaultHeaders()
     {
-        if ($this->_headers === null) {
-            $this->_headers = new HeaderCollection();
-            if (function_exists('getallheaders')) {
-                $headers = getallheaders();
-            } elseif (function_exists('http_get_request_headers')) {
-                $headers = http_get_request_headers();
-            } else {
-                foreach ($_SERVER as $name => $value) {
-                    if (strncmp($name, 'HTTP_', 5) === 0) {
-                        $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
-                        $this->_headers->add($name, $value);
-                    }
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+        } elseif (function_exists('http_get_request_headers')) {
+            $headers = http_get_request_headers();
+        } else {
+            $headers = [];
+            foreach ($_SERVER as $name => $value) {
+                if (strncmp($name, 'HTTP_', 5) === 0) {
+                    $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
+                    $headers[$name] = $value;
                 }
-
-                return $this->_headers;
-            }
-            foreach ($headers as $name => $value) {
-                $this->_headers->add($name, $value);
             }
         }
 
-        return $this->_headers;
+        foreach ($headers as $name => $value) {
+            $headers[strtolower($name)] = (array)$value;
+        }
+
+        return $headers;
     }
 
     /**
-     * Returns the method of the current request (e.g. GET, POST, HEAD, PUT, PATCH, DELETE).
-     * @return string request method, such as GET, POST, HEAD, PUT, PATCH, DELETE.
-     * The value returned is turned into upper case.
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function getRequestTarget()
+    {
+        if ($this->_requestTarget === null) {
+            $this->_requestTarget = $this->getUri()->__toString();
+        }
+        return $this->_requestTarget;
+    }
+
+    /**
+     * Specifies the message's request target
+     * @param mixed $requestTarget the message's request target.
+     * @since 2.1.0
+     */
+    public function setRequestTarget($requestTarget)
+    {
+        $this->_requestTarget = $requestTarget;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function withRequestTarget($requestTarget)
+    {
+        if ($this->getRequestTarget() === $requestTarget) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setRequestTarget($requestTarget);
+        return $newInstance;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getMethod()
     {
-        if (isset($_POST[$this->methodParam])) {
-            return strtoupper($_POST[$this->methodParam]);
+        if ($this->_method === null) {
+            if (isset($_POST[$this->methodParam])) {
+                $this->_method = $_POST[$this->methodParam];
+            } elseif (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
+                $this->_method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
+            } elseif (isset($_SERVER['REQUEST_METHOD'])) {
+                $this->_method = $_SERVER['REQUEST_METHOD'];
+            } else {
+                $this->_method = 'GET';
+            }
+        }
+        return $this->_method;
+    }
+
+    /**
+     * Specifies request HTTP method.
+     * @param string $method case-sensitive HTTP method.
+     * @since 2.1.0
+     */
+    public function setMethod($method)
+    {
+        $this->_method =  $method;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function withMethod($method)
+    {
+        if ($this->getMethod() === $method) {
+            return $this;
         }
 
-        if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
-            return strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
+        $newInstance = clone $this;
+        $newInstance->setMethod($method);
+        return $newInstance;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function getUri()
+    {
+        if (!$this->_uri instanceof UriInterface) {
+            if ($this->_uri === null) {
+                $uri = new Uri(['string' => $this->getAbsoluteUrl()]);
+            } elseif ($this->_uri instanceof \Closure) {
+                $uri = call_user_func($this->_uri, $this);
+            } else {
+                $uri = $this->_uri;
+            }
+
+            $this->_uri = Instance::ensure($uri, UriInterface::class);
+        }
+        return $this->_uri;
+    }
+
+    /**
+     * Specifies the URI instance.
+     * @param UriInterface|\Closure|array $uri URI instance or its DI compatible configuration.
+     * @since 2.1.0
+     */
+    public function setUri($uri)
+    {
+        $this->_uri = $uri;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function withUri(UriInterface $uri, $preserveHost = false)
+    {
+        if ($this->getUri() === $uri) {
+            return $this;
         }
 
-        if (isset($_SERVER['REQUEST_METHOD'])) {
-            return strtoupper($_SERVER['REQUEST_METHOD']);
-        }
+        $newInstance = clone $this;
 
-        return 'GET';
+        $newInstance->setUri($uri);
+        if (!$preserveHost) {
+            return $newInstance->withHeader('host', $uri->getHost());
+        }
+        return $newInstance;
     }
 
     /**
@@ -344,6 +468,18 @@ class Request extends \yii\base\Request
             (stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
     }
 
+    /**
+     * Returns default message body to be used in case it is not explicitly set.
+     * @return StreamInterface default body instance.
+     */
+    protected function defaultBody()
+    {
+        return new FileStream([
+            'filename' => 'php://input',
+            'mode' => 'r',
+        ]);
+    }
+
     private $_rawBody;
 
     /**
@@ -353,7 +489,7 @@ class Request extends \yii\base\Request
     public function getRawBody()
     {
         if ($this->_rawBody === null) {
-            $this->_rawBody = file_get_contents('php://input');
+            $this->_rawBody = $this->getBody()->__toString();
         }
 
         return $this->_rawBody;
@@ -925,7 +1061,7 @@ class Request extends \yii\base\Request
      */
     public function getOrigin()
     {
-        return $this->getHeaders()->get('origin');
+        return $this->getHeaderLine('origin');
     }
 
     /**
@@ -1400,7 +1536,7 @@ class Request extends \yii\base\Request
      */
     public function getCsrfTokenFromHeader()
     {
-        return $this->headers->get(static::CSRF_HEADER);
+        return $this->getHeaderLine(static::CSRF_HEADER);
     }
 
     /**
@@ -1440,6 +1576,7 @@ class Request extends \yii\base\Request
             return true;
         }
 
+
         $trueToken = $this->getCsrfToken();
 
         if ($clientSuppliedToken !== null) {
@@ -1466,5 +1603,19 @@ class Request extends \yii\base\Request
         $security = Yii::$app->security;
 
         return $security->unmaskToken($clientSuppliedToken) === $security->unmaskToken($trueToken);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __clone()
+    {
+        parent::__clone();
+
+        $this->cloneHttpMessageInternals();
+
+        if (is_object($this->_cookies)) {
+            $this->_cookies = clone $this->_cookies;
+        }
     }
 }

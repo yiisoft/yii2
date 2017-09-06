@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
+use yii\http\Cookie;
 use yii\rbac\CheckAccessInterface;
 
 /**

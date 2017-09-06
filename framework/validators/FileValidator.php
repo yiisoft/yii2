@@ -12,7 +12,7 @@ use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\JsExpression;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 /**
  * FileValidator verifies if an attribute is receiving a valid uploaded file.
@@ -224,7 +224,7 @@ class FileValidator extends Validator
      */
     protected function validateValue($value)
     {
-        if (!$value instanceof UploadedFile || $value->error == UPLOAD_ERR_NO_FILE) {
+        if (!$value instanceof UploadedFile || $value->getError() == UPLOAD_ERR_NO_FILE) {
             return [$this->uploadRequired, []];
         }
 
@@ -234,7 +234,7 @@ class FileValidator extends Validator
                     return [
                         $this->tooBig,
                         [
-                            'file' => $value->name,
+                            'file' => $value->getClientFilename(),
                             'limit' => $this->getSizeLimit(),
                             'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
                         ],
@@ -243,35 +243,35 @@ class FileValidator extends Validator
                     return [
                         $this->tooSmall,
                         [
-                            'file' => $value->name,
+                            'file' => $value->getClientFilename(),
                             'limit' => $this->minSize,
                             'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
                         ],
                     ];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($value)) {
-                    return [$this->wrongExtension, ['file' => $value->name, 'extensions' => implode(', ', $this->extensions)]];
+                    return [$this->wrongExtension, ['file' => $value->getClientFilename(), 'extensions' => implode(', ', $this->extensions)]];
                 } elseif (!empty($this->mimeTypes) && !$this->validateMimeType($value)) {
-                    return [$this->wrongMimeType, ['file' => $value->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
+                    return [$this->wrongMimeType, ['file' => $value->getClientFilename(), 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 }
                 return null;
             case UPLOAD_ERR_INI_SIZE:
             case UPLOAD_ERR_FORM_SIZE:
                 return [$this->tooBig, [
-                    'file' => $value->name,
+                    'file' => $value->getClientFilename(),
                     'limit' => $this->getSizeLimit(),
                     'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
                 ]];
             case UPLOAD_ERR_PARTIAL:
-                Yii::warning('File was only partially uploaded: ' . $value->name, __METHOD__);
+                Yii::warning('File was only partially uploaded: ' . $value->getClientFilename(), __METHOD__);
                 break;
             case UPLOAD_ERR_NO_TMP_DIR:
-                Yii::warning('Missing the temporary folder to store the uploaded file: ' . $value->name, __METHOD__);
+                Yii::warning('Missing the temporary folder to store the uploaded file: ' . $value->getClientFilename(), __METHOD__);
                 break;
             case UPLOAD_ERR_CANT_WRITE:
-                Yii::warning('Failed to write the uploaded file to disk: ' . $value->name, __METHOD__);
+                Yii::warning('Failed to write the uploaded file to disk: ' . $value->getClientFilename(), __METHOD__);
                 break;
             case UPLOAD_ERR_EXTENSION:
-                Yii::warning('File upload was stopped by some PHP extension: ' . $value->name, __METHOD__);
+                Yii::warning('File upload was stopped by some PHP extension: ' . $value->getClientFilename(), __METHOD__);
                 break;
             default:
                 break;
@@ -353,7 +353,7 @@ class FileValidator extends Validator
         $extension = mb_strtolower($file->extension, 'UTF-8');
 
         if ($this->checkExtensionByMimeType) {
-            $mimeType = FileHelper::getMimeType($file->tempName, null, false);
+            $mimeType = FileHelper::getMimeType($file->tempFilename, null, false);
             if ($mimeType === null) {
                 return false;
             }
@@ -476,7 +476,7 @@ class FileValidator extends Validator
      */
     protected function validateMimeType($file)
     {
-        $fileMimeType = FileHelper::getMimeType($file->tempName);
+        $fileMimeType = FileHelper::getMimeType($file->tempFilename);
 
         foreach ($this->mimeTypes as $mimeType) {
             if ($mimeType === $fileMimeType) {

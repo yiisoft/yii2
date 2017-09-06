@@ -39,7 +39,7 @@ class HttpBearerAuth extends AuthMethod
      */
     public function authenticate($user, $request, $response)
     {
-        $authHeader = $request->getHeaders()->get('Authorization');
+        $authHeader = $request->getHeaderLine('Authorization');
         if ($authHeader !== null && preg_match('/^Bearer\s+(.*?)$/', $authHeader, $matches)) {
             $identity = $user->loginByAccessToken($matches[1], get_class($this));
             if ($identity === null) {
@@ -56,6 +56,6 @@ class HttpBearerAuth extends AuthMethod
      */
     public function challenge($response)
     {
-        $response->getHeaders()->set('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
+        $response->setHeader('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
     }
 }

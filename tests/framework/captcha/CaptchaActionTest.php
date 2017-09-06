@@ -53,12 +53,11 @@ class CaptchaActionTest extends TestCase
         /* @var $response Response */
         $response = Yii::$app->response;
         $this->assertEquals(Response::FORMAT_RAW, $response->format);
-        $headerCollection = $response->getHeaders();
-        $this->assertEquals($driver->getImageMimeType(), $headerCollection->get('Content-type'));
-        $this->assertEquals('binary', $headerCollection->get('Content-Transfer-Encoding'));
-        $this->assertEquals('public', $headerCollection->get('Pragma'));
-        $this->assertEquals('0', $headerCollection->get('Expires'));
-        $this->assertEquals('must-revalidate, post-check=0, pre-check=0', $headerCollection->get('Cache-Control'));
+        $this->assertEquals([$driver->getImageMimeType()], $response->getHeader('Content-type'));
+        $this->assertEquals(['binary'], $response->getHeader('Content-Transfer-Encoding'));
+        $this->assertEquals(['public'], $response->getHeader('Pragma'));
+        $this->assertEquals(['0'], $response->getHeader('Expires'));
+        $this->assertEquals(['must-revalidate, post-check=0, pre-check=0'], $response->getHeader('Cache-Control'));
     }
 
     public function testRunRefresh()
