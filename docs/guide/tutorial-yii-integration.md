@@ -19,17 +19,7 @@ You can install such libraries by taking the following two simple steps:
 1. modify the `composer.json` file of your application and specify which Composer packages you want to install.
 2. run `composer install` to install the specified packages.
 
-The classes in the installed Composer packages can be autoloaded using the Composer autoloader. Make sure
-the [entry script](structure-entry-scripts.md) of your application contains the following lines to install
-the Composer autoloader:
-
-```php
-// install Composer autoloader
-require __DIR__ . '/../vendor/autoload.php';
-
-// include Yii class file
-require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
-```
+The classes in the installed Composer packages can be autoloaded using the Composer autoloader.
 
 ### Using Downloaded Libraries <span id="using-downloaded-libs"></span>
 
@@ -38,7 +28,7 @@ In most cases, you will need to download a release file manually and unpack it i
 where `BasePath` represents the [base path](structure-applications.md#basePath) of your application.
 
 If a library carries its own class autoloader, you may require it in the [entry script](structure-entry-scripts.md)
-of your application. It is recommended require statement is placed before Composer autoloader file so that
+of your application. It is recommended to put `require` statements before Composer autoloader file so that
 the Composer autoloader can take precedence in autoloading classes.
 
 If a library does not provide a class autoloader, but its class naming follows [PSR-4](http://www.php-fig.org/psr/psr-4/),
@@ -110,7 +100,7 @@ the `BasePath/vendor` directory.
 Next, you should modify the entry script of the 3rd-party system by including the following code at the beginning:
 
 ```php
-require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
+require __DIR__ . '/../vendor/autoload.php'; // in case 3rd-party system doesn't use Composer
 
 $yiiConfig = require __DIR__ . '/../config/yii/web.php';
 new yii\web\Application($yiiConfig); // Do NOT call run() here
