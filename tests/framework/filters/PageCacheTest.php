@@ -16,7 +16,7 @@ use yii\filters\PageCache;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\Controller;
-use yii\web\Cookie;
+use yii\http\Cookie;
 use yii\web\View;
 use yiiunit\framework\caching\CacheTestCase;
 use yiiunit\TestCase;
@@ -176,7 +176,7 @@ class PageCacheTest extends TestCase
         if (isset($testCase['headers'])) {
             foreach (array_keys($testCase['headers']) as $name) {
                 $value = Yii::$app->security->generateRandomString();
-                Yii::$app->response->headers->add($name, $value);
+                Yii::$app->response->addHeader($name, $value);
                 $headers[$name] = $value;
             }
         }
@@ -191,9 +191,9 @@ class PageCacheTest extends TestCase
         // Metadata
         $metadata = [
             'format' => Yii::$app->response->format,
-            'version' => Yii::$app->response->version,
-            'statusCode' => Yii::$app->response->statusCode,
-            'statusText' => Yii::$app->response->statusText,
+            'protocolVersion' => Yii::$app->response->getProtocolVersion(),
+            'statusCode' => Yii::$app->response->getStatusCode(),
+            'reasonPhrase' => Yii::$app->response->getReasonPhrase(),
         ];
         if ($testCase['cacheable']) {
             $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache->handler, '_cache'), $testCase['name']);
@@ -219,9 +219,9 @@ class PageCacheTest extends TestCase
         $this->assertSame($dynamic, $json['dynamic'], $testCase['name']);
         // Metadata
         $this->assertSame($metadata['format'], Yii::$app->response->format, $testCase['name']);
-        $this->assertSame($metadata['version'], Yii::$app->response->version, $testCase['name']);
-        $this->assertSame($metadata['statusCode'], Yii::$app->response->statusCode, $testCase['name']);
-        $this->assertSame($metadata['statusText'], Yii::$app->response->statusText, $testCase['name']);
+        $this->assertSame($metadata['protocolVersion'], Yii::$app->response->getProtocolVersion(), $testCase['name']);
+        $this->assertSame($metadata['statusCode'], Yii::$app->response->getStatusCode(), $testCase['name']);
+        $this->assertSame($metadata['reasonPhrase'], Yii::$app->response->getReasonPhrase(), $testCase['name']);
         // Cookies
         if (isset($testCase['cookies'])) {
             foreach ($testCase['cookies'] as $name => $expected) {
@@ -234,9 +234,9 @@ class PageCacheTest extends TestCase
         // Headers
         if (isset($testCase['headers'])) {
             foreach ($testCase['headers'] as $name => $expected) {
-                $this->assertSame($expected, Yii::$app->response->headers->has($name), $testCase['name']);
+                $this->assertSame($expected, Yii::$app->response->hasHeader($name), $testCase['name']);
                 if ($expected) {
-                    $this->assertSame($headers[$name], Yii::$app->response->headers->get($name), $testCase['name']);
+                    $this->assertSame($headers[$name], Yii::$app->response->getHeaderLine($name), $testCase['name']);
                 }
             }
         }

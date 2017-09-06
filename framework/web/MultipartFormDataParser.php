@@ -42,7 +42,7 @@ use yii\helpers\StringHelper;
  * Usage example:
  *
  * ```php
- * use yii\web\UploadedFile;
+ * use yii\http\UploadedFile;
  *
  * $restRequestData = Yii::$app->request->getBodyParams();
  * $uploadedFile = UploadedFile::getInstancesByName('photo');

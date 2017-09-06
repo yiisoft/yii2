@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\web\stubs;
 
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class VendorImage extends UploadedFile
 {

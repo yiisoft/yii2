@@ -237,12 +237,11 @@ class Serializer extends Component
             $links[] = "<$url>; rel=$rel";
         }
 
-        $this->response->getHeaders()
-            ->set($this->totalCountHeader, $pagination->totalCount)
-            ->set($this->pageCountHeader, $pagination->getPageCount())
-            ->set($this->currentPageHeader, $pagination->getPage() + 1)
-            ->set($this->perPageHeader, $pagination->pageSize)
-            ->set('Link', implode(', ', $links));
+        $this->response->setHeader($this->totalCountHeader, $pagination->totalCount);
+        $this->response->setHeader($this->pageCountHeader, $pagination->getPageCount());
+        $this->response->setHeader($this->currentPageHeader, $pagination->getPage() + 1);
+        $this->response->setHeader($this->perPageHeader, $pagination->pageSize);
+        $this->response->setHeader('Link', implode(', ', $links));
     }
 
     /**

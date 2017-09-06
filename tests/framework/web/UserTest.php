@@ -22,8 +22,8 @@ use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
 use yii\rbac\PhpManager;
-use yii\web\Cookie;
-use yii\web\CookieCollection;
+use yii\http\Cookie;
+use yii\http\CookieCollection;
 use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
 use yiiunit\TestCase;
@@ -159,6 +159,7 @@ class UserTest extends TestCase
         ]);
         Yii::$app->user->setReturnUrl(null);
     }
+
     public function testLoginRequired()
     {
         $appConfig = [
@@ -184,7 +185,6 @@ class UserTest extends TestCase
         $user->loginRequired();
         $this->assertEquals('normal', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
-
 
         $this->reset();
         Yii::$app->request->setUrl('ajax');

@@ -212,9 +212,8 @@ class Cors extends ActionFilter
     public function addCorsHeaders($response, $headers)
     {
         if (empty($headers) === false) {
-            $responseHeaders = $response->getHeaders();
             foreach ($headers as $field => $value) {
-                $responseHeaders->set($field, $value);
+                $response->setHeader($field, $value);
             }
         }
     }

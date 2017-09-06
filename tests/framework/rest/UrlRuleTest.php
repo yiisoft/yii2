@@ -47,7 +47,8 @@ class UrlRuleTest extends TestCase
             foreach ($tests as $j => $test) {
                 [$request->pathInfo, $route] = $test;
                 $params = $test[2] ?? [];
-                $_POST['_METHOD'] = $test[3] ?? 'GET';
+                $request->setMethod($test[3] ?? 'GET');
+
                 $result = $rule->parseRequest($manager, $request);
                 if ($route === false) {
                     $this->assertFalse($result, "Test#$i-$j: $name");

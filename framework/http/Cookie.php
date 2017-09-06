@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\http;
 
 /**
  * Cookie represents information related with a cookie, such as [[name]], [[value]], [[domain]], etc.

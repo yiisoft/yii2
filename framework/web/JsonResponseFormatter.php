@@ -80,7 +80,7 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     protected function formatJson($response)
     {
-        $response->getHeaders()->set('Content-Type', 'application/json; charset=UTF-8');
+        $response->setHeader('Content-Type', 'application/json; charset=UTF-8');
         if ($response->data !== null) {
             $options = $this->encodeOptions;
             if ($this->prettyPrint) {
@@ -96,7 +96,7 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     protected function formatJsonp($response)
     {
-        $response->getHeaders()->set('Content-Type', 'application/javascript; charset=UTF-8');
+        $response->setHeader('Content-Type', 'application/javascript; charset=UTF-8');
         if (is_array($response->data) && isset($response->data['data'], $response->data['callback'])) {
             $response->content = sprintf('%s(%s);', $response->data['callback'], Json::htmlEncode($response->data['data']));
         } elseif ($response->data !== null) {

@@ -139,13 +139,13 @@ class HttpCache extends ActionFilter
 
         $response = Yii::$app->getResponse();
         if ($etag !== null) {
-            $response->getHeaders()->set('Etag', $etag);
+            $response->setHeader('Etag', $etag);
         }
 
         $cacheValid = $this->validateCache($lastModified, $etag);
         // https://tools.ietf.org/html/rfc7232#section-4.1
         if ($lastModified !== null && (!$cacheValid || ($cacheValid && $etag === null))) {
-            $response->getHeaders()->set('Last-Modified', gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
+            $response->setHeader('Last-Modified', gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
         }
         if ($cacheValid) {
             $response->setStatusCode(304);
@@ -192,10 +192,8 @@ class HttpCache extends ActionFilter
             session_cache_limiter($this->sessionCacheLimiter);
         }
 
-        $headers = Yii::$app->getResponse()->getHeaders();
-
         if ($this->cacheControlHeader !== null) {
-            $headers->set('Cache-Control', $this->cacheControlHeader);
+            Yii::$app->getResponse()->setHeader('Cache-Control', $this->cacheControlHeader);
         }
     }
 

@@ -136,10 +136,9 @@ class RateLimiter extends ActionFilter
     public function addRateLimitHeaders($response, $limit, $remaining, $reset)
     {
         if ($this->enableRateLimitHeaders) {
-            $response->getHeaders()
-                ->set('X-Rate-Limit-Limit', $limit)
-                ->set('X-Rate-Limit-Remaining', $remaining)
-                ->set('X-Rate-Limit-Reset', $reset);
+            $response->setHeader('X-Rate-Limit-Limit', $limit);
+            $response->setHeader('X-Rate-Limit-Remaining', $remaining);
+            $response->setHeader('X-Rate-Limit-Reset', $reset);
         }
     }
 }

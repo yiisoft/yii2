@@ -142,7 +142,7 @@ class AuthTest extends \yiiunit\TestCase
      */
     public function testHttpBearerAuth($token, $login)
     {
-        Yii::$app->request->headers->set('Authorization', "Bearer $token");
+        Yii::$app->request->addHeader('Authorization', "Bearer $token");
         $filter = ['class' => HttpBearerAuth::class];
         $this->authOnly($token, $login, $filter, 'bearer-auth');
         $this->authOptional($token, $login, $filter, 'bearer-auth');

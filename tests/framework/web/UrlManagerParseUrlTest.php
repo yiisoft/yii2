@@ -308,22 +308,22 @@ class UrlManagerParseUrlTest extends TestCase
             ],
         ]);
         // matching pathinfo GET request
-        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $request->setMethod('GET');
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         // matching pathinfo PUT/POST request
-        $_SERVER['REQUEST_METHOD'] = 'PUT';
+        $request->setMethod('PUT');
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $request->setMethod('POST');
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
 
         // no wrong matching
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $request->setMethod('POST');
         $request->pathInfo = 'POST/GET';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/get', []], $result);
@@ -339,7 +339,5 @@ class UrlManagerParseUrlTest extends TestCase
         ], \yii\web\Application::class);
         $this->assertEquals('/app/post/delete?id=123', $manager->createUrl(['post/delete', 'id' => 123]));
         $this->destroyApplication();
-
-        unset($_SERVER['REQUEST_METHOD']);
     }
 }

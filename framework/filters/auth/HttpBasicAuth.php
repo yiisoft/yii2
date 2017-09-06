@@ -113,6 +113,6 @@ class HttpBasicAuth extends AuthMethod
      */
     public function challenge($response)
     {
-        $response->getHeaders()->set('WWW-Authenticate', "Basic realm=\"{$this->realm}\"");
+        $response->setHeader('WWW-Authenticate', "Basic realm=\"{$this->realm}\"");
     }
 }
