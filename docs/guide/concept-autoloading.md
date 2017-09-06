@@ -19,12 +19,19 @@ Since Yii uses Composer-generated autoloader, in order to configure it, `compose
     "name": "myorg/myapp",
     "autoload": {
         "psr-4": {
-          "app\\": "src",
-          "tests\\": "tests"
+          "app\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "tests\\": "tests"
         }
     }
 }
 ```
+
+Note that test-specific requirements are in `autoload-dev` in order not to pollute autoloader in production where Composer
+is used with `--no-dev` flag.
 
 See [Composer documentation](https://getcomposer.org/doc/01-basic-usage.md#autoloading) for details.
 
