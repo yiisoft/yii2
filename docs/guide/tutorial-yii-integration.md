@@ -62,12 +62,16 @@ In the worst case when the library requires explicitly including every class fil
 to include the classes on demand:
 
 * Identify which classes the library contains.
-* List the classes and the corresponding file paths in `Yii::$classMap` in the [entry script](structure-entry-scripts.md)
-  of the application. For example,
-```php
-Yii::$classMap['Class1'] = 'path/to/Class1.php';
-Yii::$classMap['Class2'] = 'path/to/Class2.php';
-```
+* List the classes and the corresponding file paths in the [entry script](structure-entry-scripts.md)
+  of the application:
+  ```php
+  /** @var \Composer\Autoload\ClassLoader $loader */
+  $loader = require __DIR__ . '/vendor/autoload.php';
+  $loader->addClassMap([
+      'Class1' => 'path/to/Class1.php',
+      'Class2' => 'path/to/Class2.php',
+  ]);
+  ```
 
 
 Using Yii in Third-Party Systems <span id="using-yii-in-others"></span>
@@ -160,9 +164,9 @@ class Yii extends \yii\BaseYii
     // copy-paste the code from YiiBase (1.x) here
 }
 
-Yii::$classMap = include($yii2path . '/classes.php');
-// register Yii 2 autoloader via Yii 1
-Yii::registerAutoloader(['yii\BaseYii', 'autoload']);
+// register Composer autoloader
+require(__DIR__ . '/../vendor/autoload.php');
+
 // create the dependency injection container
 Yii::$container = new yii\di\Container;
 ```
