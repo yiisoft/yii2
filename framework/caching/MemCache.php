@@ -117,7 +117,7 @@ class MemCache extends Cache
     }
 
     /**
-     * Add servers to the server pool of the cache specified
+     * Add servers to the server pool of the cache specified.
      *
      * @param \Memcache|\Memcached $cache
      * @param MemCacheServer[] $servers
@@ -221,7 +221,7 @@ class MemCache extends Cache
             }
 
             if ($this->useMemcached) {
-                $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached;
+                $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached();
                 if ($this->username !== null || $this->password !== null) {
                     $this->_cache->setOption(\Memcached::OPT_BINARY_PROTOCOL, true);
                     $this->_cache->setSaslAuthData($this->username, $this->password);
@@ -230,7 +230,7 @@ class MemCache extends Cache
                     $this->_cache->setOptions($this->options);
                 }
             } else {
-                $this->_cache = new \Memcache;
+                $this->_cache = new \Memcache();
             }
         }
 
@@ -317,9 +317,9 @@ class MemCache extends Cache
             // Memcached::setMulti() returns boolean
             // @see http://php.net/manual/en/memcached.setmulti.php
             return $this->_cache->setMulti($data, $expire) ? [] : array_keys($data);
-        } else {
-            return parent::setValues($data, $duration);
         }
+
+        return parent::setValues($data, $duration);
     }
 
     /**

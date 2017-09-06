@@ -1,10 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\rbac;
 
 use yii\rbac\PhpManager;
 
 /**
- * Exposes protected properties and methods to inspect from outside
+ * Exposes protected properties and methods to inspect from outside.
  */
 class ExposedPhpManager extends PhpManager
 {

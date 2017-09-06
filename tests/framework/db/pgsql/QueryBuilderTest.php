@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\pgsql;
 
@@ -18,32 +23,32 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT TRUE',
                 $this->boolean()->notNull()->defaultValue(true),
-                'boolean NOT NULL DEFAULT TRUE'
+                'boolean NOT NULL DEFAULT TRUE',
             ],
             [
                 Schema::TYPE_CHAR . ' CHECK (value LIKE \'test%\')',
                 $this->char()->check('value LIKE \'test%\''),
-                'char(1) CHECK (value LIKE \'test%\')'
+                'char(1) CHECK (value LIKE \'test%\')',
             ],
             [
                 Schema::TYPE_CHAR . '(6) CHECK (value LIKE \'test%\')',
                 $this->char(6)->check('value LIKE \'test%\''),
-                'char(6) CHECK (value LIKE \'test%\')'
+                'char(6) CHECK (value LIKE \'test%\')',
             ],
             [
                 Schema::TYPE_CHAR . '(6)',
                 $this->char(6)->unsigned(),
-                'char(6)'
+                'char(6)',
             ],
             [
                 Schema::TYPE_INTEGER . '(8)',
                 $this->integer(8)->unsigned(),
-                'integer'
+                'integer',
             ],
             [
                 Schema::TYPE_TIMESTAMP . '(4)',
                 $this->timestamp(4),
-                'timestamp(4)'
+                'timestamp(4)',
             ],
         ]);
     }
@@ -55,22 +60,22 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             // http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE
 
             // empty values
-            [ ['ilike', 'name', []], '0=1', [] ],
-            [ ['not ilike', 'name', []], '', [] ],
-            [ ['or ilike', 'name', []], '0=1', [] ],
-            [ ['or not ilike', 'name', []], '', [] ],
+            [['ilike', 'name', []], '0=1', []],
+            [['not ilike', 'name', []], '', []],
+            [['or ilike', 'name', []], '0=1', []],
+            [['or not ilike', 'name', []], '', []],
 
             // simple ilike
-            [ ['ilike', 'name', 'heyho'], '"name" ILIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['not ilike', 'name', 'heyho'], '"name" NOT ILIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['or ilike', 'name', 'heyho'], '"name" ILIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['or not ilike', 'name', 'heyho'], '"name" NOT ILIKE :qp0', [':qp0' => '%heyho%'] ],
+            [['ilike', 'name', 'heyho'], '"name" ILIKE :qp0', [':qp0' => '%heyho%']],
+            [['not ilike', 'name', 'heyho'], '"name" NOT ILIKE :qp0', [':qp0' => '%heyho%']],
+            [['or ilike', 'name', 'heyho'], '"name" ILIKE :qp0', [':qp0' => '%heyho%']],
+            [['or not ilike', 'name', 'heyho'], '"name" NOT ILIKE :qp0', [':qp0' => '%heyho%']],
 
             // ilike for many values
-            [ ['ilike', 'name', ['heyho', 'abc']], '"name" ILIKE :qp0 AND "name" ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['not ilike', 'name', ['heyho', 'abc']], '"name" NOT ILIKE :qp0 AND "name" NOT ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['or ilike', 'name', ['heyho', 'abc']], '"name" ILIKE :qp0 OR "name" ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['or not ilike', 'name', ['heyho', 'abc']], '"name" NOT ILIKE :qp0 OR "name" NOT ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
+            [['ilike', 'name', ['heyho', 'abc']], '"name" ILIKE :qp0 AND "name" ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%']],
+            [['not ilike', 'name', ['heyho', 'abc']], '"name" NOT ILIKE :qp0 AND "name" NOT ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%']],
+            [['or ilike', 'name', ['heyho', 'abc']], '"name" ILIKE :qp0 OR "name" ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%']],
+            [['or not ilike', 'name', ['heyho', 'abc']], '"name" NOT ILIKE :qp0 OR "name" NOT ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%']],
         ]);
     }
 
@@ -95,6 +100,18 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
+    public function indexesProvider()
+    {
+        $result = parent::indexesProvider();
+        $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
+        return $result;
+    }
+
+    public function defaultValuesProvider()
+    {
+        $this->markTestSkipped('Adding/dropping default constraints is not supported in PostgreSQL.');
+    }
+
     public function testCommentColumn()
     {
         $qb = $this->getQueryBuilder();
@@ -103,7 +120,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
         $this->assertEquals($this->replaceQuotes($expected), $sql);
 
-        $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS NULL";
+        $expected = 'COMMENT ON COLUMN [[comment]].[[text]] IS NULL';
         $sql = $qb->dropCommentFromColumn('comment', 'text');
         $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
@@ -116,7 +133,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $sql = $qb->addCommentOnTable('comment', 'This is my table.');
         $this->assertEquals($this->replaceQuotes($expected), $sql);
 
-        $expected = "COMMENT ON TABLE [[comment]] IS NULL";
+        $expected = 'COMMENT ON TABLE [[comment]] IS NULL';
         $sql = $qb->dropCommentFromTable('comment');
         $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
@@ -127,7 +144,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $data['escape-danger-chars']['expected'] = "INSERT INTO \"customer\" (\"address\") VALUES ('SQL-danger chars are escaped: ''); --')";
         $data['bool-false, bool2-null']['expected'] = 'INSERT INTO "type" ("bool_col", "bool_col2") VALUES (FALSE, NULL)';
-        $data['bool-false, time-now()']['expected'] = "INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (FALSE, now())";
+        $data['bool-false, time-now()']['expected'] = 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (FALSE, now())';
 
         return $data;
     }

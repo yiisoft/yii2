@@ -9,8 +9,8 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\web\JsExpression;
 use yii\helpers\Json;
+use yii\web\JsExpression;
 
 /**
  * UrlValidator validates that the attribute value is a valid http or https URL.

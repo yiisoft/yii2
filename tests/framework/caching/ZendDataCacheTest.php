@@ -1,10 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\caching;
 
 use yii\caching\ZendDataCache;
 
 /**
- * Class for testing Zend cache backend
+ * Class for testing Zend cache backend.
  * @group zenddata
  * @group caching
  */
@@ -17,8 +23,8 @@ class ZendDataCacheTest extends CacheTestCase
      */
     protected function getCacheInstance()
     {
-        if (!function_exists("zend_shm_cache_store")) {
-            $this->markTestSkipped("Zend Data cache not installed. Skipping.");
+        if (!function_exists('zend_shm_cache_store')) {
+            $this->markTestSkipped('Zend Data cache not installed. Skipping.');
         }
 
         if ($this->_cacheInstance === null) {

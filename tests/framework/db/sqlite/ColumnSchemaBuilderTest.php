@@ -1,12 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\sqlite;
 
-use yii\db\sqlite\ColumnSchemaBuilder;
 use yii\db\Schema;
+use yii\db\sqlite\ColumnSchemaBuilder;
 
 /**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for SQLite
+ * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for SQLite.
  * @group db
  * @group sqlite
  */
@@ -38,7 +43,7 @@ class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderT
             ]],
             // comments are ignored
             ['integer(10)', Schema::TYPE_INTEGER, 10, [
-                ['comment', 'test']
+                ['comment', 'test'],
             ]],
         ];
     }

@@ -1,12 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\mail;
 
 use Yii;
 use yii\base\View;
+use yii\helpers\FileHelper;
 use yii\mail\BaseMailer;
 use yii\mail\BaseMessage;
-use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
 /**
@@ -19,7 +24,7 @@ class BaseMailerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'mailer' => $this->createTestMailComponent(),
-            ]
+            ],
         ]);
         $filePath = $this->getTestFilePath();
         if (!file_exists($filePath)) {
@@ -76,11 +81,11 @@ class BaseMailerTest extends TestCase
             'params' => [
                 'param1' => 'value1',
                 'param2' => 'value2',
-            ]
+            ],
         ];
         $mailer->setView($viewConfig);
         $view = $mailer->getView();
-        $this->assertTrue(is_object($view), 'Unable to setup view via config!');
+        $this->assertInternalType('object', $view, 'Unable to setup view via config!');
         $this->assertEquals($viewConfig['params'], $view->params, 'Unable to configure view via config array!');
     }
 
@@ -91,14 +96,14 @@ class BaseMailerTest extends TestCase
     {
         $mailer = new Mailer();
         $view = $mailer->getView();
-        $this->assertTrue(is_object($view), 'Unable to get default view!');
+        $this->assertInternalType('object', $view, 'Unable to get default view!');
     }
 
     public function testCreateMessage()
     {
         $mailer = new Mailer();
         $message = $mailer->compose();
-        $this->assertTrue(is_object($message), 'Unable to create message instance!');
+        $this->assertInternalType('object', $message, 'Unable to create message instance!');
         $this->assertEquals($mailer->messageClass, get_class($message), 'Invalid message class!');
     }
 
@@ -149,7 +154,7 @@ class BaseMailerTest extends TestCase
         file_put_contents($viewFileName, $viewFileContent);
 
         $params = [
-            'testParam' => 'test output'
+            'testParam' => 'test output',
         ];
         $renderResult = $mailer->render($viewName, $params);
         $this->assertEquals($params['testParam'], $renderResult);
@@ -219,7 +224,7 @@ class BaseMailerTest extends TestCase
                 'HTML view file content http://yiifresh.com/index.php?r=site%2Freset-password&token=abcdef',
             ],
             [
-                2, <<<HTML
+                2, <<<'HTML'
 <html><head><style type="text/css">.content{color: #112345;}</style><title>TEST</title></head>
 <body>
     <style type="text/css">.content{color: #112345;}</style>
@@ -234,7 +239,7 @@ class BaseMailerTest extends TestCase
 </body>
 </html>
 HTML
-,                <<<TEXT
+,                <<<'TEXT'
 First paragraph
 second line
 
@@ -248,6 +253,9 @@ TEXT
 
     /**
      * @dataProvider htmlAndPlainProvider
+     * @param int $i
+     * @param string $htmlViewFileContent
+     * @param string $expectedTextRendering
      */
     public function testComposePlainTextFallback($i, $htmlViewFileContent, $expectedTextRendering)
     {
@@ -302,7 +310,7 @@ TEXT
 }
 
 /**
- * Test Mailer class
+ * Test Mailer class.
  */
 class Mailer extends BaseMailer
 {
@@ -318,7 +326,7 @@ class Mailer extends BaseMailer
 }
 
 /**
- * Test Message class
+ * Test Message class.
  */
 class Message extends BaseMessage
 {
@@ -432,13 +440,21 @@ class Message extends BaseMessage
         return $this;
     }
 
-    public function attachContent($content, array $options = []) {}
+    public function attachContent($content, array $options = [])
+    {
+    }
 
-    public function attach($fileName, array $options = []) {}
+    public function attach($fileName, array $options = [])
+    {
+    }
 
-    public function embed($fileName, array $options = []) {}
+    public function embed($fileName, array $options = [])
+    {
+    }
 
-    public function embedContent($content, array $options = []) {}
+    public function embedContent($content, array $options = [])
+    {
+    }
 
     public function toString()
     {

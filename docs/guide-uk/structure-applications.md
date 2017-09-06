@@ -19,11 +19,11 @@
 [конфігурацію](concept-configurations.md) та застосує її до додатка, наприклад:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // завантаження конфігурації додатка
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // створення екземпляру додатка і його налаштування
 (new yii\web\Application($config))->run();

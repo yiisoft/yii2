@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
@@ -20,7 +24,7 @@ abstract class FormatterTest extends \yiiunit\TestCase
     protected function setUp()
     {
         $this->mockApplication();
-        $this->response = new Response;
+        $this->response = new Response();
         $this->formatter = $this->getFormatterInstance();
     }
 
@@ -30,13 +34,13 @@ abstract class FormatterTest extends \yiiunit\TestCase
     abstract protected function getFormatterInstance();
 
     /**
-     * Formatter should not format null
+     * Formatter should not format null.
      */
     public function testFormatNull()
     {
         $this->response->data = null;
         $this->formatter->format($this->response);
-        $this->assertEquals(null, $this->response->content);
+        $this->assertNull($this->response->content);
     }
 
     /**

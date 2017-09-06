@@ -159,6 +159,9 @@ class StringValidator extends Validator
         return 'yii.validation.string(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getClientOptions($model, $attribute)
     {
         $label = $model->getAttributeLabel($attribute);

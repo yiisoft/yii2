@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\pgsql;
 
@@ -111,14 +116,14 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/4672
+     * @see https://github.com/yiisoft/yii2/issues/4672
      */
     public function testBooleanValues2()
     {
         $db = $this->getConnection();
         $db->charset = 'utf8';
 
-        $db->createCommand("DROP TABLE IF EXISTS bool_user;")->execute();
+        $db->createCommand('DROP TABLE IF EXISTS bool_user;')->execute();
         $db->createCommand()->createTable('bool_user', [
             'id' => Schema::TYPE_PK,
             'username' => Schema::TYPE_STRING . ' NOT NULL',

@@ -7,8 +7,8 @@
 
 namespace yii\helpers;
 
-use yii\base\InvalidParamException;
 use yii\base\Arrayable;
+use yii\base\InvalidParamException;
 use yii\web\JsExpression;
 
 /**
@@ -22,7 +22,7 @@ use yii\web\JsExpression;
 class BaseJson
 {
     /**
-     * List of JSON Error messages assigned to constant names for better handling of version differences
+     * List of JSON Error messages assigned to constant names for better handling of version differences.
      * @var array
      * @since 2.0.7
      */

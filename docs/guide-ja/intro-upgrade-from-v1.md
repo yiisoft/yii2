@@ -55,22 +55,22 @@ Yii 2.0 での最も顕著な変更は名前空間の使用です。
 コンポーネントとオブジェクト
 ----------------------------
 
-Yii 2.0 は、1.1 の `CComponent` クラスを二つのクラス、すなわち、[[yii\base\Object]] と [[yii\base\Component]] に分割しました。
-[[yii\base\Object|Object]] クラスは、ゲッターとセッターを通じて [オブジェクトプロパティ](concept-properties.md) を定義することを可能にする、軽量な基底クラスです。
-[[yii\base\Component|Component]] クラスは [[yii\base\Object|Object]] からの拡張であり、[イベント](concept-events.md) と [ビヘイビア](concept-behaviors.md) をサポートします。
+Yii 2.0 は、1.1 の `CComponent` クラスを二つのクラス、すなわち、[[yii\base\BaseObject]] と [[yii\base\Component]] に分割しました。
+[[yii\base\BaseObject|BaseObject]] クラスは、ゲッターとセッターを通じて [オブジェクトプロパティ](concept-properties.md) を定義することを可能にする、軽量な基底クラスです。
+[[yii\base\Component|Component]] クラスは [[yii\base\BaseObject|BaseObject]] からの拡張であり、[イベント](concept-events.md) と [ビヘイビア](concept-behaviors.md) をサポートします。
 
-あなたのクラスがイベントやビヘイビアの機能を必要としない場合は、[[yii\base\Object|Object]] を基底クラスとして使うことを考慮すべきです。
+あなたのクラスがイベントやビヘイビアの機能を必要としない場合は、[[yii\base\BaseObject|BaseObject]] を基底クラスとして使うことを考慮すべきです。
 通常は、基本的なデータ構造を表すクラスに対して、このことが当てはまります。
 
 
 オブジェクトの構成
 ------------------
 
-[[yii\base\Object|Object]] クラスはオブジェクトを構成するための統一された方法を導入しています。
-[[yii\base\Object|Object]] の全ての派生クラスは、コンストラクタが必要な場合には、インスタンスが正しく構成されるように、コンストラクタを以下のようにして宣言しなければなりません。
+[[yii\base\BaseObject|BaseObject]] クラスはオブジェクトを構成するための統一された方法を導入しています。
+[[yii\base\BaseObject|BaseObject]] の全ての派生クラスは、コンストラクタが必要な場合には、インスタンスが正しく構成されるように、コンストラクタを以下のようにして宣言しなければなりません。
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -90,7 +90,7 @@ class MyClass extends \yii\base\Object
 
 上記のように、コンストラクタは最後のパラメータとして構成情報の配列を取らなければなりません。
 構成情報の配列に含まれる「名前-値」のペアが、コンストラクタの最後でプロパティを構成します。
-[[yii\base\Object::init()|init()]] メソッドをオーバーライドして、構成情報が適用された後に行うべき初期化処理を行うことが出来ます。
+[[yii\base\BaseObject::init()|init()]] メソッドをオーバーライドして、構成情報が適用された後に行うべき初期化処理を行うことが出来ます。
 
 この規約に従うことによって、新しいオブジェクトを生成して構成するときに、構成情報配列を使うことが出来るようになります。
 

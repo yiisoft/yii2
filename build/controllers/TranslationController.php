@@ -83,7 +83,7 @@ class TranslationController extends Controller
     }
 
     /**
-     * Checks for files existence
+     * Checks for files existence.
      *
      * @param string $translatedFilePath
      * @param string $sourceFilePath
@@ -104,7 +104,7 @@ class TranslationController extends Controller
     }
 
     /**
-     * Getting DIFF from git
+     * Getting DIFF from git.
      *
      * @param string $translatedFilePath path pointing to translated file
      * @param string $sourceFilePath path pointing to original file
@@ -113,11 +113,11 @@ class TranslationController extends Controller
     protected function getDiff($translatedFilePath, $sourceFilePath)
     {
         $lastTranslationHash = shell_exec('git log -1 --format=format:"%H" -- ' . $translatedFilePath);
-        return shell_exec('git diff ' . $lastTranslationHash.'..HEAD -- ' . $sourceFilePath);
+        return shell_exec('git diff ' . $lastTranslationHash . '..HEAD -- ' . $sourceFilePath);
     }
 
     /**
-     * Adds all necessary HTML tags and classes to diff output
+     * Adds all necessary HTML tags and classes to diff output.
      *
      * @param string $diff DIFF
      * @return string highlighted DIFF

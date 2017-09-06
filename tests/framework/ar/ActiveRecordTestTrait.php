@@ -1,18 +1,17 @@
 <?php
 /**
- *
- *
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\ar;
 
 use yii\base\Event;
-use yii\db\ActiveQueryInterface;
 use yii\db\BaseActiveRecord;
-use yiiunit\TestCase;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;
+use yiiunit\TestCase;
 
 /**
  * This trait provides unit tests shared by the different AR implementations.
@@ -26,25 +25,25 @@ trait ActiveRecordTestTrait
 {
     /* @var $this TestCase */
     /**
-     * This method should return the classname of Customer class
+     * This method should return the classname of Customer class.
      * @return string
      */
     abstract public function getCustomerClass();
 
     /**
-     * This method should return the classname of Order class
+     * This method should return the classname of Order class.
      * @return string
      */
     abstract public function getOrderClass();
 
     /**
-     * This method should return the classname of OrderItem class
+     * This method should return the classname of OrderItem class.
      * @return string
      */
     abstract public function getOrderItemClass();
 
     /**
-     * This method should return the classname of Item class
+     * This method should return the classname of Item class.
      * @return string
      */
     abstract public function getItemClass();
@@ -54,7 +53,7 @@ trait ActiveRecordTestTrait
     abstract public function getOrderItemWithNullFKmClass();
 
     /**
-     * can be overridden to do things after save()
+     * Can be overridden to do things after save().
      */
     public function afterSave()
     {
@@ -152,7 +151,7 @@ trait ActiveRecordTestTrait
         /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
 
-        $customer = new $customerClass;
+        $customer = new $customerClass();
         $this->assertTrue($customer->hasAttribute('id'));
         $this->assertTrue($customer->hasAttribute('email'));
         $this->assertFalse($customer->hasAttribute(0));
@@ -370,7 +369,6 @@ trait ActiveRecordTestTrait
 
         $customer = $customerClass::find()->offset(3)->one();
         $this->assertNull($customer);
-
     }
 
     public function testFindComplexCondition()
@@ -561,8 +559,9 @@ trait ActiveRecordTestTrait
     }
 
     /**
-     * Ensure ActiveRelationTrait does preserve order of items on find via()
-     * https://github.com/yiisoft/yii2/issues/1310
+     * Ensure ActiveRelationTrait does preserve order of items on find via().
+     *
+     * @see https://github.com/yiisoft/yii2/issues/1310.
      */
     public function testFindEagerViaRelationPreserveOrder()
     {
@@ -672,7 +671,7 @@ trait ActiveRecordTestTrait
         $this->assertCount(2, $customer->orders);
 
         // has many
-        $order = new $orderClass;
+        $order = new $orderClass();
         $order->total = 100;
         $this->assertTrue($order->isNewRecord);
         $customer->link('orders', $order);
@@ -683,7 +682,7 @@ trait ActiveRecordTestTrait
         $this->assertEquals(2, $order->customer_id);
 
         // belongs to
-        $order = new $orderClass;
+        $order = new $orderClass();
         $order->total = 100;
         $this->assertTrue($order->isNewRecord);
         $customer = $customerClass::findOne(1);
@@ -819,7 +818,7 @@ trait ActiveRecordTestTrait
         $this->assertCount(2, $order->booksWithNullFK);
         $orderItemCount = $orderItemsWithNullFKClass::find()->count();
         $this->assertEquals(5, $itemClass::find()->count());
-        $order->unlinkAll('booksWithNullFK',false);
+        $order->unlinkAll('booksWithNullFK', false);
         $this->afterSave();
         $this->assertCount(0, $order->booksWithNullFK);
         $this->assertEquals(2, $orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
@@ -889,7 +888,7 @@ trait ActiveRecordTestTrait
         /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
         /* @var $this TestCase|ActiveRecordTestTrait */
-        $customer = new $customerClass;
+        $customer = new $customerClass();
         $customer->email = 'user4@example.com';
         $customer->name = 'user4';
         $customer->address = 'address4';
@@ -913,7 +912,7 @@ trait ActiveRecordTestTrait
         /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
         /* @var $this TestCase|ActiveRecordTestTrait */
-        $customer = new $customerClass;
+        $customer = new $customerClass();
         $customer->id = 1337;
         $customer->email = 'user1337@example.com';
         $customer->name = 'user1337';
@@ -1262,12 +1261,10 @@ trait ActiveRecordTestTrait
         $this->assertFalse($customer->canSetProperty('orderItems'));
 
         try {
-
             /* @var $itemClass \yii\db\ActiveRecordInterface */
             $itemClass = $this->getItemClass();
             $customer->orderItems = [new $itemClass()];
             $this->fail('setter call above MUST throw Exception');
-
         } catch (\Exception $e) {
             // catch exception "Setting read-only property"
             $this->assertInstanceOf('yii\base\InvalidCallException', $e);
@@ -1279,5 +1276,4 @@ trait ActiveRecordTestTrait
         $this->assertFalse($customer->canGetProperty('non_existing_property'));
         $this->assertFalse($customer->canSetProperty('non_existing_property'));
     }
-
 }
