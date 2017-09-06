@@ -214,7 +214,8 @@ class Sort extends BaseObject
     /**
      * Returns the columns and their corresponding sort directions.
      * @param bool $recalculate whether to recalculate the sort directions
-     * @return array the columns (keys) and their corresponding sort directions (values).
+     * @return array|string can be specified in either a string (e.g. "[[last_name]] ASC NULLS FIRST") or an array
+     * the columns (keys) and their corresponding sort directions (values).
      * This can be passed to [[\yii\db\Query::orderBy()]] to construct a DB query.
      */
     public function getOrders($recalculate = false)
@@ -229,7 +230,7 @@ class Sort extends BaseObject
                     $orders[$name] = $dir;
                 }
             } else {
-                $orders[] = $columns;
+                $orders = $columns;
             }
         }
 

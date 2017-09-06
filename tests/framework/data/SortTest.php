@@ -265,12 +265,12 @@ class SortTest extends TestCase
         $sort->params = ['sort' => '-name'];
         $orders = $sort->getOrders();
         $this->assertEquals(1, count($orders));
-        $this->assertEquals('[[last_name]] DESC NULLS LAST', $orders[0]);
+        $this->assertEquals('[[last_name]] DESC NULLS LAST', $orders);
 
         $sort->params = ['sort' => 'name'];
         $orders = $sort->getOrders(true);
         $this->assertEquals(1, count($orders));
-        $this->assertEquals('[[last_name]] ASC NULLS FIRST', $orders[0]);
+        $this->assertEquals('[[last_name]] ASC NULLS FIRST', $orders);
     }
 }
 
