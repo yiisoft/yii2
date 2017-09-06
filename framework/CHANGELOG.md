@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Enh #13254: Made StringHelper and StringValidator independent of `Yii::$app` instance (cebe)
 - Enh #14273: `yii\log\Target::$enabled` now supports callable value (dmirogin)
 - Bug #14773: Fixed `yii\widgets\ActiveField::$options` does not support 'class' option in array format (klimov-paul)
 - Bug #14723: Fixed serialization of `yii\db\Connection` instance closes database connection (klimov-paul)
@@ -159,9 +160,6 @@ Yii Framework 2 Change Log
 - Enh #13376: Data provider now automatically sets an ID so there is no need to set it manually in case multiple data providers are used with pagination (SamMousa)
 - Enh #13407: Added URL-safe base64 encode/decode methods to `StringHelper` (andrewnester)
 - Enh #13467: `yii\data\ActiveDataProvider` no longer queries models if models count is zero (kLkA, Kolyunya)
-- Enh #13523: Plural rule for pasta (developeruz)
-- Enh #13254: Made StringHelper and StringValidator independent of `Yii::$app` instance (cebe)
-- Enh #13550: Refactored unset call order in `yii\di\ServiceLocator::set()` (Lanrik)
 - Enh #13523: Fixed pluralization and singularization for words `pasta`, `currency` (developeruz, silverfire)
 - Enh #13550: Refactored `unset()` call order in `yii\di\ServiceLocator::set()` (Lanrik)
 - Enh #13560: Refactored `\yii\widgets\FragmentCache::getCachedContent()`, added tests (Kolyunya)
