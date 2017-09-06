@@ -217,7 +217,7 @@ class PageCache extends ActionFilter
         }
 
         if (isset($data['cookies']) && is_array($data['cookies'])) {
-            $response->{'cookies'}->fromArray(array_merge($data['cookies'], $response->{'cookies'}->toArray()));
+            $response->getCookies()->fromArray(array_merge($data['cookies'], $response->getCookies()->toArray()));
         }
 
         if (!empty($data['dynamicPlaceholders']) && is_array($data['dynamicPlaceholders'])) {
