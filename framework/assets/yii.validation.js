@@ -376,6 +376,12 @@ yii.validation = (function ($) {
             return [];
         }
 
+        // Continue validation if file input does not exist
+        // (in case file inputs are added dynamically and no file input has been added to the form)
+        if (typeof $(attribute.input, attribute.$form).get(0) === "undefined") {
+            return [];
+        }
+
         var files = $(attribute.input, attribute.$form).get(0).files;
         if (!files) {
             messages.push(options.message);
