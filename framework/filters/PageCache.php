@@ -216,11 +216,10 @@ class PageCache extends ActionFilter
             $response->setHeaders($data['headers']);
         }
 
-        foreach (['cookies'] as $name) {
-            if (isset($data[$name]) && is_array($data[$name])) {
-                $response->{$name}->fromArray(array_merge($data[$name], $response->{$name}->toArray()));
-            }
+        if (isset($data['cookies']) && is_array($data['cookies'])) {
+            $response->{'cookies'}->fromArray(array_merge($data['cookies'], $response->{'cookies'}->toArray()));
         }
+
         if (!empty($data['dynamicPlaceholders']) && is_array($data['dynamicPlaceholders'])) {
             if (empty($this->view->cacheStack)) {
                 // outermost cache: replace placeholder with dynamic content
