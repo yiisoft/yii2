@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #14273: `yii\log\Target::$enabled` now supports callable value (dmirogin)
+- Bug #14773: Fixed `yii\widgets\ActiveField::$options` does not support 'class' option in array format (klimov-paul)
 - Bug #14723: Fixed serialization of `yii\db\Connection` instance closes database connection (klimov-paul)
 - Bug #14697: Fixed `console\widgets\Table` rendering when there's no data supplied (bscheshirwork)
 - Enh #13853: Added `yii\db\Migration::$compact` as well as `yii\console\controllers\BaseMigrateController::$compact` to allow making the migration console output more compact (francislavoie)

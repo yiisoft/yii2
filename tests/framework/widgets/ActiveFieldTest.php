@@ -528,6 +528,50 @@ EOD;
     }
 
     /**
+     * @depends testInput
+     */
+    /*public function testInputClassOptions()
+    {
+        $expectedValue = <<<'EOD'
+<input type="text" id="activefieldtestmodel-attributename" class="pretty-input" name="ActiveFieldTestModel[attributeName]">
+EOD;
+        $activeField = $this->helperForm->field($this->helperModel, 'attributeName', ['options' => ['class' => ['pretty-input']]])->textInput();
+        $this->assertEquals('', $activeField->__toString());
+    }*/
+
+    /**
+     * @depends testHiddenInput
+     *
+     * @see https://github.com/yiisoft/yii2/issues/14773
+     */
+    public function testOptionsClass()
+    {
+        $this->activeField->options = ['class' => 'test-wrapper'];
+        $expectedValue = <<<HTML
+<div class="test-wrapper field-activefieldtestmodel-attributename">
+
+<input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+
+
+</div>
+HTML;
+        $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
+        $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+
+        $this->activeField->options = ['class' => ['test-wrapper', 'test-add']];
+        $expectedValue = <<<HTML
+<div class="test-wrapper test-add field-activefieldtestmodel-attributename">
+
+<input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+
+
+</div>
+HTML;
+        $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
+        $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+    }
+
+    /**
      * Helper methods.
      */
     protected function getView()
