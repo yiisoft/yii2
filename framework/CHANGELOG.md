@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Bug #14770: Avoid `Html::addCssClass` array to string conversion error (kartik-v)
 - Enh #14273: `yii\log\Target::$enabled` now supports callable value (dmirogin)
 - Bug #14723: Fixed serialization of `yii\db\Connection` instance closes database connection (klimov-paul)
 - Bug #14697: Fixed `console\widgets\Table` rendering when there's no data supplied (bscheshirwork)

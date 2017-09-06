@@ -1904,7 +1904,7 @@ class BaseHtml
                 $options['class'] = implode(' ', self::mergeCssClasses($classes, (array) $class));
             }
         } else {
-            $options['class'] = $class;
+            $options['class'] = is_array($options['class']) ? implode(' ', $options['class']) : $class;
         }
     }
 
