@@ -24,7 +24,6 @@ use yii\base\Model;
  */
 class BaseHtml
 {
-
     /**
      * @var string Regular expression used for attribute name validation.
      * @since 2.0.12
@@ -1221,7 +1220,7 @@ class BaseHtml
             foreach ($model->getErrors() as $errors) {
                 foreach ($errors as $error) {
                     $line = $encode ? Html::encode($error) : $error;
-                    if (array_search($line, $lines) === false) {
+                    if (!in_array($line, $lines, true)) {
                         $lines[] = $line;
                     }
                     if (!$showAllErrors) {

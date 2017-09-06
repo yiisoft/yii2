@@ -38,7 +38,7 @@ abstract class ErrorHandler extends Component
      */
     public $memoryReserveSize = 262144;
     /**
-     * @var \Exception the exception that is being handled currently.
+     * @var \Exception|null the exception that is being handled currently.
      */
     public $exception;
 
@@ -316,7 +316,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Converts an exception into a simple string.
-     * @param \Exception $exception the exception being converted
+     * @param \Exception|\Error $exception the exception being converted
      * @return string the string representation of the exception.
      */
     public static function convertExceptionToString($exception)

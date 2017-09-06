@@ -26,7 +26,9 @@ class LoggerTest extends TestCase
     protected function setUp()
     {
         $this->logger = new Logger();
-        $this->dispatcher = $this->getMock('yii\\log\\Dispatcher', ['dispatch']);
+        $this->dispatcher = $this->getMockBuilder('yii\\log\\Dispatcher')
+            ->setMethods(['dispatch'])
+            ->getMock();
     }
 
     /**
@@ -66,7 +68,7 @@ class LoggerTest extends TestCase
         $this->assertEquals('application', $this->logger->messages[0][2]);
         $this->assertEquals([
             'file' => __FILE__,
-            'line' => 62,
+            'line' => 64,
             'function' => 'log',
             'class' => get_class($this->logger),
             'type' => '->'
@@ -80,7 +82,9 @@ class LoggerTest extends TestCase
      */
     public function testLogWithFlush()
     {
-        $logger = $this->getMock('yii\\log\\Logger', ['flush']);
+        $logger = $this->getMockBuilder('yii\\log\\Logger')
+            ->setMethods(['flush'])
+            ->getMock();
         $logger->flushInterval = 1;
         $logger->expects($this->exactly(1))->method('flush');
         $logger->log('test1', Logger::LEVEL_INFO);
@@ -91,7 +95,7 @@ class LoggerTest extends TestCase
      */
     public function testFlushWithoutDispatcher()
     {
-        $dispatcher = $this->getMock('\stdClass');
+        $dispatcher = $this->getMockBuilder('\stdClass')->getMock();
         $dispatcher->expects($this->never())->method($this->anything());
 
         $this->logger->messages = ['anything'];
@@ -141,7 +145,9 @@ class LoggerTest extends TestCase
             ['duration' => 30],
         ];
 
-        $logger = $this->getMock('yii\\log\\Logger', ['getProfiling']);
+        $logger = $this->getMockBuilder('yii\\log\\Logger')
+            ->setMethods(['getProfiling'])
+            ->getMock();
         $logger->method('getProfiling')->willReturn($timings);
         $logger->expects($this->once())
             ->method('getProfiling')
@@ -235,6 +241,45 @@ class LoggerTest extends TestCase
     }
 
     /**
+     * See https://github.com/yiisoft/yii2/issues/14133
+     *
+     * @covers yii\log\Logger::calculateTimings()
+     */
+    public function testCalculateTimingsWithProfileBeginEndAndNestedMixedLevels()
+    {
+        $messages = [
+            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace', 1048576],
+            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace', 2097152],
+            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4194304],
+            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3145728],
+        ];
+        $this->assertEquals([
+            [
+                'info' => 'firstLevel',
+                'category' => 'firstLevelCategory',
+                'timestamp' => 10,
+                'trace' => 'firstTrace',
+                'level' => 1,
+                'duration' => 70,
+                'memory' => 4194304,
+                'memoryDiff' => 3145728
+            ],
+            [
+                'info' => 'secondLevel',
+                'category' => 'secondLevelCategory',
+                'timestamp' => 15,
+                'trace' => 'secondTrace',
+                'level' => 0,
+                'duration' => 40,
+                'memory' => 3145728,
+                'memoryDiff' => 1048576
+            ]
+        ],
+            $this->logger->calculateTimings($messages)
+        );
+    }
+
+    /**
      * @covers yii\log\Logger::getElapsedTime()
      */
     public function testGetElapsedTime()
@@ -271,7 +316,9 @@ class LoggerTest extends TestCase
     {
         $messages = ['anyData'];
         $returnValue = 'return value';
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
+        $logger = $this->getMockBuilder('yii\\log\\Logger')
+            ->setMethods(['calculateTimings'])
+            ->getMock();
 
         $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);
@@ -295,7 +342,9 @@ class LoggerTest extends TestCase
                 'duration' => 5,
             ]
         ];
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
+        $logger = $this->getMockBuilder('yii\\log\\Logger')
+            ->setMethods(['calculateTimings'])
+            ->getMock();
 
         $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);
@@ -332,7 +381,9 @@ class LoggerTest extends TestCase
         /**
          * Matched by category name
          */
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
+        $logger = $this->getMockBuilder('yii\\log\\Logger')
+            ->setMethods(['calculateTimings'])
+            ->getMock();
 
         $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);
@@ -342,7 +393,9 @@ class LoggerTest extends TestCase
         /**
          * Matched by prefix
          */
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
+        $logger = $this->getMockBuilder('yii\\log\\Logger')
+            ->setMethods(['calculateTimings'])
+            ->getMock();
 
         $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);
@@ -388,7 +441,9 @@ class LoggerTest extends TestCase
         /**
          * Exclude by category name
          */
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
+        $logger = $this->getMockBuilder('yii\\log\\Logger')
+            ->setMethods(['calculateTimings'])
+            ->getMock();
 
         $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);
@@ -398,7 +453,9 @@ class LoggerTest extends TestCase
         /**
          * Exclude by category prefix
          */
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
+        $logger = $this->getMockBuilder('yii\\log\\Logger')
+            ->setMethods(['calculateTimings'])
+            ->getMock();
 
         $logger->messages = $messages;
         $logger->method('calculateTimings')->willReturn($returnValue);

@@ -139,7 +139,7 @@ class DateValidator extends Validator
      *
      * If not set, [[timestampAttribute]] will receive a UNIX timestamp.
      * If [[timestampAttribute]] is not set, this property will be ignored.
-     * @see formatMessage
+     * @see format
      * @see timestampAttribute
      * @since 2.0.4
      */
@@ -266,6 +266,13 @@ class DateValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
+        if ($this->isEmpty($value)) {
+            if ($this->timestampAttribute !== null) {
+                $model->{$this->timestampAttribute} = null;
+            }
+            return;
+        }
+
         $timestamp = $this->parseDateValue($value);
         if ($timestamp === false) {
             if ($this->timestampAttribute === $attribute) {

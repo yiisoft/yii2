@@ -13,6 +13,7 @@ use yii\console\Exception;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 
 /**
  * BaseMigrateController is the base class for migrate controllers.
@@ -32,22 +33,33 @@ abstract class BaseMigrateController extends Controller
      */
     public $defaultAction = 'up';
     /**
-     * @var string the directory containing the migration classes. This can be either
-     * a path alias or a directory path.
+     * @var string|array the directory containing the migration classes. This can be either
+     * a [path alias](guide:concept-aliases) or a directory path.
      *
      * Migration classes located at this path should be declared without a namespace.
      * Use [[migrationNamespaces]] property in case you are using namespaced migrations.
      *
      * If you have set up [[migrationNamespaces]], you may set this field to `null` in order
      * to disable usage of migrations that are not namespaced.
+     *
+     * Since version 2.0.12 you may also specify an array of migration paths that should be searched for
+     * migrations to load. This is mainly useful to support old extensions that provide migrations
+     * without namespace and to adopt the new feature of namespaced migrations while keeping existing migrations.
+     *
+     * In general, to load migrations from different locations, [[migrationNamespaces]] is the preferable solution
+     * as the migration name contains the origin of the migration in the history, which is not the case when
+     * using multiple migration paths.
+     *
+     * @see $migrationNamespaces
      */
-    public $migrationPath = '@app/migrations';
+    public $migrationPath = ['@app/migrations'];
     /**
      * @var array list of namespaces containing the migration classes.
      *
-     * Migration namespaces should be resolvable as a path alias if prefixed with `@`, e.g. if you specify
+     * Migration namespaces should be resolvable as a [path alias](guide:concept-aliases) if prefixed with `@`, e.g. if you specify
      * the namespace `app\migrations`, the code `Yii::getAlias('@app/migrations')` should be able to return
      * the file path to the directory this namespace refers to.
+     * This corresponds with the [autoloading conventions](guide:concept-autoloading) of Yii.
      *
      * For example:
      *
@@ -59,11 +71,12 @@ abstract class BaseMigrateController extends Controller
      * ```
      *
      * @since 2.0.10
+     * @see $migrationPath
      */
     public $migrationNamespaces = [];
     /**
      * @var string the template file for generating new migrations.
-     * This can be either a path alias (e.g. "@app/migrations/template.php")
+     * This can be either a [path alias](guide:concept-aliases) (e.g. "@app/migrations/template.php")
      * or a file path.
      */
     public $templateFile;
@@ -99,7 +112,11 @@ abstract class BaseMigrateController extends Controller
                 $this->migrationNamespaces[$key] = trim($value, '\\');
             }
 
-            if ($this->migrationPath !== null) {
+            if (is_array($this->migrationPath)) {
+                foreach($this->migrationPath as $i => $path) {
+                    $this->migrationPath[$i] = Yii::getAlias($path);
+                }
+            } elseif ($this->migrationPath !== null) {
                 $path = Yii::getAlias($this->migrationPath);
                 if (!is_dir($path)) {
                     if ($action->id !== 'create') {
@@ -616,7 +633,7 @@ abstract class BaseMigrateController extends Controller
     private function findMigrationPath($namespace)
     {
         if (empty($namespace)) {
-            return $this->migrationPath;
+            return is_array($this->migrationPath) ? reset($this->migrationPath) : $this->migrationPath;
         }
 
         if (!in_array($namespace, $this->migrationNamespaces, true)) {
@@ -700,13 +717,36 @@ abstract class BaseMigrateController extends Controller
      */
     protected function createMigration($class)
     {
+        $this->includeMigrationFile($class);
+        return new $class();
+    }
+
+    /**
+     * Includes the migration file for a given migration class name.
+     *
+     * This function will do nothing on namespaced migrations, which are loaded by
+     * autoloading automatically. It will include the migration file, by searching
+     * [[migrationPath]] for classes without namespace.
+     * @param string $class the migration class name.
+     * @since 2.0.12
+     */
+    protected function includeMigrationFile($class)
+    {
         $class = trim($class, '\\');
         if (strpos($class, '\\') === false) {
-            $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
-            require_once($file);
+            if (is_array($this->migrationPath)) {
+                foreach($this->migrationPath as $path) {
+                    $file = $path . DIRECTORY_SEPARATOR . $class . '.php';
+                    if (is_file($file)) {
+                        require_once($file);
+                        break;
+                    }
+                }
+            } else {
+                $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
+                require_once($file);
+            }
         }
-
-        return new $class();
     }
 
     /**
@@ -776,15 +816,20 @@ abstract class BaseMigrateController extends Controller
         }
 
         $migrationPaths = [];
-        if (!empty($this->migrationPath)) {
-            $migrationPaths[''] = $this->migrationPath;
+        if (is_array($this->migrationPath)) {
+            foreach($this->migrationPath as $path) {
+                $migrationPaths[] = [$path, ''];
+            }
+        } elseif (!empty($this->migrationPath)) {
+            $migrationPaths[] = [$this->migrationPath, ''];
         }
         foreach ($this->migrationNamespaces as $namespace) {
-            $migrationPaths[$namespace] = $this->getNamespacePath($namespace);
+            $migrationPaths[] = [$this->getNamespacePath($namespace), $namespace];
         }
 
         $migrations = [];
-        foreach ($migrationPaths as $namespace => $migrationPath) {
+        foreach ($migrationPaths as $item) {
+            list($migrationPath, $namespace) = $item;
             if (!file_exists($migrationPath)) {
                 continue;
             }

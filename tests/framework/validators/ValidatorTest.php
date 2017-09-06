@@ -17,7 +17,9 @@ class ValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     protected function getTestModel($additionalAttributes = [])
@@ -168,10 +170,8 @@ class ValidatorTest extends TestCase
 
     public function testValidateValue()
     {
-        $this->setExpectedException(
-            'yii\base\NotSupportedException',
-            TestValidator::className() . ' does not support validateValue().'
-        );
+        $this->expectException('yii\base\NotSupportedException');
+        $this->expectExceptionMessage(TestValidator::className() . ' does not support validateValue().');
         $val = new TestValidator();
         $val->validate('abc');
     }
@@ -242,17 +242,27 @@ class ValidatorTest extends TestCase
         $this->assertEquals('attr_msg_val::abc::param_value', $errors[0]);
     }
 
+    public function testGetAttributeNames()
+    {
+        $validator = new TestValidator();
+        $validator->attributes = ['id', 'name', '!email'];
+        $this->assertEquals(['id', 'name', 'email'], $validator->getAttributeNames());
+    }
+
+    /**
+     * @depends  testGetAttributeNames
+     */
     public function testGetActiveValidatorsForSafeAttributes()
     {
         $model = $this->getTestModel();
         $validators = $model->getActiveValidators('safe_attr');
-        $is_found = false;
+        $isFound = false;
         foreach ($validators as $v) {
             if ($v instanceof NumberValidator) {
-                $is_found = true;
+                $isFound = true;
                 break;
             }
         }
-        $this->assertTrue($is_found);
+        $this->assertTrue($isFound);
     }
 }
