@@ -165,4 +165,79 @@ class ResourceStreamTest extends TestCase
 
         $this->assertSame('r', $stream->getMetadata('mode'));
     }
+
+    /**
+     * @return array test data.
+     */
+    public function dataProviderFileMode()
+    {
+        return [
+            ['r', true, false],
+            ['r+', true, true],
+            ['w', false, true],
+            ['w+', true, true],
+            ['rw', true, true],
+            ['x', false, true],
+            ['x+', true, true],
+            ['c', false, true],
+            ['c+', true, true],
+            ['a', false, true],
+            ['a+', true, true],
+            ['wb', false, true],
+            ['rb', true, false],
+            ['w+b', true, true],
+            ['r+b', true, true],
+            ['rt', true, false],
+            ['w+t', true, true],
+            ['r+t', true, true],
+            ['x+t', true, true],
+            ['c+t', true, true],
+        ];
+    }
+
+    /**
+     * @depends testGetMetadata
+     * @dataProvider dataProviderFileMode
+     *
+     * @param string $mode
+     * @param bool $isReadable
+     * @param bool $isWritable
+     */
+    public function testIsReadable($mode, $isReadable, $isWritable)
+    {
+        /* @var $stream ResourceStream|\PHPUnit_Framework_MockObject_MockObject */
+        $stream = $this->getMockBuilder(ResourceStream::class)
+            ->setMethods(['getMetadata'])
+            ->getMock();
+
+        $stream->expects($this->any())
+            ->method('getMetadata')
+            ->with('mode')
+            ->willReturn($mode);
+
+        $this->assertSame($isReadable, $stream->isReadable());
+    }
+
+    /**
+     * @depends testGetMetadata
+     * @dataProvider dataProviderFileMode
+     *
+     * @param string $mode
+     * @param bool $isReadable
+     * @param bool $isWritable
+     */
+    public function testIsWritable($mode, $isReadable, $isWritable)
+    {
+        /* @var $stream ResourceStream|\PHPUnit_Framework_MockObject_MockObject */
+        $stream = $this->getMockBuilder(ResourceStream::class)
+            ->setMethods(['getMetadata'])
+            ->getMock();
+
+        $stream->expects($this->any())
+            ->method('getMetadata')
+            ->with('mode')
+            ->willReturn($mode);
+
+        $this->assertSame($isWritable, $stream->isWritable());
+    }
 }

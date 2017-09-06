@@ -47,7 +47,7 @@ class ResourceStream extends BaseObject implements StreamInterface
 
     /**
      * Destructor.
-     * Closes the stream resource when the destructed.
+     * Closes the stream resource when destroyed.
      */
     public function __destruct()
     {
@@ -164,11 +164,13 @@ class ResourceStream extends BaseObject implements StreamInterface
      */
     public function isWritable()
     {
-        return in_array(
-            $this->getMetadata('mode'),
-            ['w', 'w+', 'rw', 'r+', 'x+', 'c+', 'wb', 'w+b', 'r+b', 'x+b', 'c+b', 'w+t', 'r+t', 'x+t', 'c+t', 'a', 'a+'],
-            true
-        );
+        $mode = $this->getMetadata('mode');
+        foreach (['w', 'c', 'a', 'x', 'r+'] as $key) {
+            if (strpos($mode, $key) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -188,11 +190,13 @@ class ResourceStream extends BaseObject implements StreamInterface
      */
     public function isReadable()
     {
-        return in_array(
-            $this->getMetadata('mode'),
-            ['r', 'w+', 'r+', 'x+', 'c+', 'rb', 'w+b', 'r+b', 'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t', 'a+'],
-            true
-        );
+        $mode = $this->getMetadata('mode');
+        foreach (['r', 'w+', 'a+', 'c+', 'x+'] as $key) {
+            if (strpos($mode, $key) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
