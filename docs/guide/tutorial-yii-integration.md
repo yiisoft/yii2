@@ -62,15 +62,17 @@ In the worst case when the library requires explicitly including every class fil
 to include the classes on demand:
 
 * Identify which classes the library contains.
-* List the classes and the corresponding file paths in the [entry script](structure-entry-scripts.md)
-  of the application:
-  ```php
-  /** @var \Composer\Autoload\ClassLoader $loader */
-  $loader = require __DIR__ . '/vendor/autoload.php';
-  $loader->addClassMap([
-      'Class1' => 'path/to/Class1.php',
-      'Class2' => 'path/to/Class2.php',
-  ]);
+* List the classes and the corresponding file paths in the application `composer.json`:
+  ```json
+  "autoload": {
+      "psr-4": {
+          "app\\": ""
+      },
+      "classmap": [
+          "path/to/Class1.php",
+          "path/to/Class2.php",
+      ]
+  },
   ```
 
 
