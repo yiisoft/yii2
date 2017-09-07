@@ -33,9 +33,15 @@ use yii\base\InvalidParamException;
 abstract class BaseDataProvider extends Component implements DataProviderInterface
 {
     /**
+     * @var int Number of data providers on the current page. Used to generate unique IDs.
+     */
+    private static $counter = 0;
+    /**
      * @var string an ID that uniquely identifies the data provider among all data providers.
-     * You should set this property if the same page contains two or more different data providers.
-     * Otherwise, the [[pagination]] and [[sort]] may not work properly.
+     * Generated automatically the following way in case it is not set:
+     *
+     * - First data provider ID is empty.
+     * - Second and all subsequent data provider IDs are: "dp-1", "dp-2", etc.
      */
     public $id;
 
@@ -45,6 +51,20 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     private $_models;
     private $_totalCount;
 
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->id === null) {
+            if (self::$counter > 0) {
+                $this->id = 'dp-' . self::$counter;
+            }
+            self::$counter++;
+        }
+    }
 
     /**
      * Prepares the data models that will be made available in the current page.

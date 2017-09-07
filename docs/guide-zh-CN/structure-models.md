@@ -36,8 +36,8 @@ $model->name = 'example';
 echo $model->name;
 ```
 
-也可像访问数组单元项一样访问属性，这要感谢[[yii\base\Model]]支持 
-[ArrayAccess 数组访问](http://php.net/manual/en/class.arrayaccess.php) 
+也可像访问数组单元项一样访问属性，这要感谢 [[yii\base\Model]] 
+支持 [ArrayAccess 数组访问](http://php.net/manual/en/class.arrayaccess.php) 
 和 [ArrayIterator 数组迭代器](http://php.net/manual/en/class.arrayiterator.php):
 
 ```php
@@ -75,18 +75,18 @@ class ContactForm extends Model
 ```
 
 
-另一种方式是可覆盖 [[yii\base\Model::attributes()]] 
-来定义属性，该方法返回模型的属性名。
+另一种方式是可覆盖 [[yii\base\Model::attributes()]] 来定义属性，
+该方法返回模型的属性名。
 例如 [[yii\db\ActiveRecord]] 返回对应数据表列名作为它的属性名，
-注意可能需要覆盖魔术方法如`__get()`,
+注意可能需要覆盖魔术方法如`__get()`, 
 `__set()`使属性像普通对象属性被访问。
 
 
 ### 属性标签 <span id="attribute-labels"></span>
 
-当属性显示或获取输入时，经常要显示属性相关标签，
-例如假定一个属性名为`firstName`，
-在某些地方如表单输入或错误信息处，你可能想显示对终端用户来说更友好的 `First Name` 标签。
+当属性显示或获取输入时，经常要显示属性相关标签，例如假定一个属性名为`firstName`，
+在某些地方如表单输入或错误信息处，
+你可能想显示对终端用户来说更友好的 `First Name` 标签。
 
 可以调用 [[yii\base\Model::getAttributeLabel()]] 获取属性的标签，例如：
 
@@ -102,8 +102,8 @@ echo $model->getAttributeLabel('name');
 例如 `username` 转换为 `Username`，
 `firstName` 转换为 `First Name`。
 
-如果你不想用自动生成的标签，可以覆盖 [[yii\base\Model::attributeLabels()]] 方法明确指定属性标签，
-例如：
+如果你不想用自动生成的标签，
+可以覆盖 [[yii\base\Model::attributeLabels()]] 方法明确指定属性标签，例如：
 
 ```php
 namespace app\models;
@@ -147,8 +147,8 @@ public function attributeLabels()
 甚至可以根据条件定义标签，例如通过使用模型的 [scenario场景](#scenarios)，
 可对相同的属性返回不同的标签。
 
-> Info: 属性标签是 [视图](structure-views.md)一部分，
-  但是在模型中申明标签通常非常方便，并可行程非常简洁可重用代码。
+> 注意：属性标签是 [视图](structure-views.md)一部分，但是在模型中申明标签通常非常方便，
+  并可行程非常简洁可重用代码。
 
 
 ## 场景 <span id="scenarios"></span>
@@ -234,9 +234,9 @@ class User extends ActiveRecord
 
 ## 验证规则 <span id="validation-rules"></span>
 
-当模型接收到终端用户输入的数据，
-数据应当满足某种规则(称为 *验证规则*, 也称为 *业务规则*)。
-例如假定`ContactForm`模型，你可能想确保所有属性不为空且 `email` 属性包含一个有效的邮箱地址，
+当模型接收到终端用户输入的数据，数据应当满足某种规则(称为 *验证规则*, 也称为 *业务规则*)。
+例如假定`ContactForm`模型，
+你可能想确保所有属性不为空且 `email` 属性包含一个有效的邮箱地址，
 如果某个属性的值不满足对应的业务规则，
 相应的错误信息应显示，以帮助用户修正错误。
 
@@ -260,8 +260,8 @@ if ($model->validate()) {
 ```
 
 
-通过覆盖 [[yii\base\Model::rules()]] 方法指定模型
-属性应该满足的规则来申明模型相关验证规则。
+通过覆盖 [[yii\base\Model::rules()]] 方法指定
+模型属性应该满足的规则来申明模型相关验证规则。
 下述例子显示`ContactForm`模型申明的验证规则:
 
 ```php
@@ -278,11 +278,11 @@ public function rules()
 ```
 
 一条规则可用来验证一个或多个属性，一个属性可对应一条或多条规则。
-更多关于如何申明验证规则的详情请参考 
-[验证输入](input-validation.md) 一节.
+更多关于如何申明验证规则的详情请参考
+[验证输入](input-validation.md) 一节。
 
-有时你想一条规则只在某个 [场景](#scenarios) 下应用，为此你可以指定规则的 `on` 属性，
-如下所示:
+有时你想一条规则只在某个 [场景](#scenarios) 下应用，
+为此你可以指定规则的 `on` 属性，如下所示:
 
 ```php
 public function rules()
@@ -350,12 +350,12 @@ public function scenarios()
   例如，如果 `User` 模型有一个`permission`属性对应用户的权限，
   你可能只想让这个属性在后台界面被管理员修改。
 
-由于默认[[yii\base\Model::scenarios()]]的实现会返回
-[[yii\base\Model::rules()]]所有属性和数据，
+由于默认[[yii\base\Model::scenarios()]]的实现
+会返回[[yii\base\Model::rules()]]所有属性和数据，
 如果不覆盖这个方法，表示所有只要出现在活动验证规则中的属性都是安全的。
 
-为此，提供一个特别的别名为 `safe` 的验证器来申明
-哪些属性是安全的不需要被验证，
+为此，提供一个特别的别名为 `safe` 的验证器来
+申明哪些属性是安全的不需要被验证，
 如下示例的规则申明 `title` 和 `description` 都为安全属性。
 
 ```php
@@ -408,14 +408,11 @@ In this case attributes `username`, `password` and `secret` are required, but `s
 
 ## 数据导出 <span id="data-exporting"></span>
 
-模型通常要导出成不同格式，例如，你可能想将模型的一个集合转成JSON或Excel格式，导出过程可分解为两个步骤，
-第一步，模型转换成数组；第二步，数组转换成所需要的格式。你只需要关注第一步，因为第二步可被通用的数据转换器如[[yii\web\JsonResponseFormatter]]来完成。
-
-- models are converted into arrays;
-- the arrays are converted into target formats.
-
-You may just focus on the first step, because the second step can be achieved by generic
-data formatters, such as [[yii\web\JsonResponseFormatter]].
+模型通常要导出成不同格式，例如，你可能想将模型的一个集合转成JSON或Excel格式，
+导出过程可分解为两个步骤，
+第一步，模型转换成数组；第二步，数组转换成所需要的格式。
+你只需要关注第一步，因为第二步可被通用的
+数据转换器如[[yii\web\JsonResponseFormatter]]来完成。
 
 将模型转换为数组最简单的方式是使用 [[yii\base\Model::attributes]] 属性，
 例如：
@@ -441,12 +438,12 @@ $array = $post->attributes;
 生成的数组的单元名。
 
 默认情况下，字段名对应属性名，但是你可以通过覆盖
-[[yii\base\Model::fields()|fields()]] 和/或 
-[[yii\base\Model::extraFields()|extraFields()]] 方法来改变这种行为，
+[[yii\base\Model::fields()|fields()]] 和/或 [[yii\base\Model::extraFields()|extraFields()]] 方法来改变这种行为，
 两个方法都返回一个字段定义列表，`fields()` 方法定义的字段是默认字段，
-表示`toArray()`方法默认会返回这些字段。 `extraFields()`方法定义额外可用字段，
-通过`toArray()`方法指定`$expand`参数来返回这些额外可用字段。
-例如如下代码会返回`fields()`方法定义的所有字段和`extraFields()`方法定义的`prettyName` and `fullAddress`字段。
+表示`toArray()`方法默认会返回这些字段。 
+`extraFields()`方法定义额外可用字段，通过`toArray()`方法指定`$expand`参数来返回这些额外可用字段。
+例如如下代码会返回`fields()`方法定义的所有字段
+和`extraFields()`方法定义的`prettyName` and `fullAddress`字段。
 
 ```php
 $array = $model->toArray([], ['prettyName', 'fullAddress']);
@@ -455,12 +452,12 @@ $array = $model->toArray([], ['prettyName', 'fullAddress']);
 可通过覆盖 `fields()` 来增加、删除、重命名和重定义字段，
 `fields()` 方法返回值应为数组，
 数组的键为字段名，数组的值为对应的可为属性名或匿名函数返回的字段定义对应的值。
-特使情况下，如果字段名和属性定义名相同，
-可以省略数组键，例如：
+特使情况下，如果字段名和属性定义名相同，可以省略数组键，
+例如：
 
 ```php
-// 明确列出每个字段，特别用于你想确保数据表或
-// 模型属性改变不会导致你的字段改变(保证后端的API兼容).
+// 明确列出每个字段，特别用于你想确保数据表或模型
+// 属性改变不会导致你的字段改变(保证后端的API兼容)。
 public function fields()
 {
     return [
@@ -477,8 +474,8 @@ public function fields()
     ];
 }
 
-// 过滤掉一些字段，特别用于
-// 你想继承父类实现并不想用一些敏感字段
+// 过滤掉一些字段，特别用于你想
+// 继承父类实现并不想用一些敏感字段
 public function fields()
 {
     $fields = parent::fields();
@@ -499,8 +496,8 @@ public function fields()
 ## 最佳实践 <span id="best-practices"></span>
 
 模型是代表业务数据、规则和逻辑的中心地方，通常在很多地方重用，
-在一个设计良好的应用中，模型通常比
-[控制器](structure-controllers.md)代码多。
+在一个设计良好的应用中，
+模型通常比[控制器](structure-controllers.md)代码多。
 
 归纳起来，模型
 
@@ -518,7 +515,7 @@ public function fields()
 因为一个简单修改会影响好多地方，
 为确保模型好维护，最好使用以下策略：
 
-* 定义可被多个 [应用主体](structure-applications.md) 
+* 定义可被多个 [应用主体](structure-applications.md)
   或 [模块](structure-modules.md) 共享的模型基类集合。
   这些模型类应包含通用的最小规则集合和逻辑。
 * 在每个使用模型的 [应用主体](structure-applications.md) 或 [模块](structure-modules.md)中，
@@ -529,5 +526,5 @@ public function fields()
 你可以定义一个模型基类`common\models\Post`，
 然后在前台应用中，定义并使用一个继承`common\models\Post`的具体模型类`frontend\models\Post`，
 在后台应用中可以类似地定义`backend\models\Post`。
-通过这种策略，你清楚`frontend\models\Post`只对应前台应用，如果你修改它，
-就无需担忧修改会影响后台应用。
+通过这种策略，你清楚`frontend\models\Post`只对应前台应用，
+如果你修改它，就无需担忧修改会影响后台应用。

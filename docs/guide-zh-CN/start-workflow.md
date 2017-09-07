@@ -1,18 +1,18 @@
 运行应用
 ====================
 
-安装 Yii 后，就有了一个可运行的 Yii 应用，根据配置的不同，
-可以通过 `http://hostname/basic/web/index.php` 或 `http://hostname/index.php` 访问。
+安装 Yii 后，就有了一个可运行的 Yii 应用，
+根据配置的不同，可以通过 `http://hostname/basic/web/index.php` 或 `http://hostname/index.php` 访问。
 本章节将介绍应用的内建功能，如何组织代码，
 以及一般情况下应用如何处理请求。
 
-> Info: 为简单起见，在整个“入门”板块都假定你已经
-  把 `basic/web` 设为 Web 服务器根目录并配置完毕，
-  你访问应用的地址会是 `http://lostname/index.php` 或类似的。
+> 补充：为简单起见，在整个“入门”板块都假定你已经把
+  `basic/web` 设为 Web 服务器根目录并配置完毕，
+  你访问应用的地址会是 `http://hostname/index.php` 或类似的。
   请按需调整 URL。
 
-Note that unlike framework itself, after project template is installed it's all yours. You're free to add or delete
-code and overall modify it as you need.
+注意项目模板和框架完全不同，安装完之后全都归你了。你可以根据你的需要自由的添加或删除代码和
+修改全部的。
 
 
 功能 <span id="functionality"></span>
@@ -32,9 +32,9 @@ code and overall modify it as you need.
 在浏览器底部可以看到一个工具栏。这是 Yii 提供的很有用的[调试工具](tool-debugger.md)，
 可以记录并显示大量的调试信息，例如日志信息，响应状态，数据库查询等等。
 
-Additionally to the web application, there is a console script called `yii`, which is located in the applications base directory.
-This script can be used to run background and maintenance tasks for the application, which are described
-in the [Console Application Section](tutorial-console.md).
+除了web应用程序，还有一个控制台脚步叫 `yii` ,它位于应用程序根目录。
+它可以用于程序的后台运行和维护任务，在[控制台应用程序章节](tutorial-console.md)
+中描述。
 
 
 应用结构 <span id="application-structure"></span>
@@ -72,11 +72,11 @@ Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-vie
 
 ![应用静态结构](images/application-structure.png)
 
-每个应用都有一个入口脚本 `web/index.php`，这是整个应用中唯一可以访问的 PHP 脚本。
-入口脚本接受一个 Web 请求并创建[应用](structure-application.md)实例去处理它。 
-[应用](structure-applications.md)在它的[组件](concept-components.md)辅助下解析请求，
-并分派请求至 MVC 元素。[视图](structure-views.md)使用[小部件](structure-widgets.md)
-去创建复杂和动态的用户界面。
+每个应用都有一个入口脚本 `web/index.php`，
+这是整个应用中唯一可以访问的 PHP 脚本。
+入口脚本接受一个 Web 请求并创建[应用](structure-application.md)实例去处理它。
+[应用](structure-applications.md)在它的[组建](concept-components.md)辅助下解析请求，
+并分派请求至 MVC 元素。[视图](structure-views.md)使用[小部件](structure-widgets.md)去创建复杂和动态的用户界面。
 
 
 请求生命周期 <span id="request-lifecycle"></span>
@@ -87,16 +87,16 @@ Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-vie
 ![请求生命周期](images/request-lifecycle.png)
 
 1. 用户向[入口脚本](structure-entry-scripts.md) `web/index.php` 发起请求。
-2. 入口脚本加载应用[配置](concept-configurations.md)并创建一个[应用](structure-applications.md)
-   实例去处理请求。
-3. 应用通过[请求](runtime-request.md)组件解析请求的
-   [路由](runtime-routing.md)。
+2. 入口脚本加载应用[配置](concept-configurations.md)
+   并创建一个[应用](structure-applications.md)实例去处理请求。
+3. 应用通过[请求](runtime-request.md)组件
+   解析请求的[路由](runtime-routing.md)。
 4. 应用创建一个[控制器](structure-controllers.md)实例去处理请求。
-5. 控制器创建一个[操作](structure-controllers.md)实例并针对操作执行过滤器。
-6. 如果任何一个过滤器返回失败，则操作退出。
-7. 如果所有过滤器都通过，操作将被执行。
-8. 操作会加载一个数据模型，或许是来自数据库。
-9. 操作会渲染一个视图，把数据模型提供给它。
+5. 控制器创建一个[动作](structure-controllers.md)实例并针对操作执行过滤器。
+6. 如果任何一个过滤器返回失败，则动作取消。
+7. 如果所有过滤器都通过，动作将被执行。
+8. 动作会加载一个数据模型，或许是来自数据库。
+9. 动作会渲染一个视图，把数据模型提供给它。
 10. 渲染结果返回给[响应](runtime-responses.md)组件。
 11. 响应组件发送渲染结果给用户浏览器。
 

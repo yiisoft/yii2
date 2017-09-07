@@ -73,7 +73,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
     /**
      * Renders the exception.
-     * @param \Exception $exception the exception to be rendered.
+     * @param \Exception|\Error $exception the exception to be rendered.
      */
     protected function renderException($exception)
     {
@@ -126,7 +126,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
     /**
      * Converts an exception into an array.
-     * @param \Exception $exception the exception being converted
+     * @param \Exception|\Error $exception the exception being converted
      * @return array the array representation of the exception.
      */
     protected function convertExceptionToArray($exception)
@@ -191,7 +191,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $url = null;
 
         $shouldGenerateLink = true;
-        if ($method !== null) {
+        if ($method !== null  && substr_compare($method, '{closure}', -9) !== 0) {
             $reflection = new \ReflectionMethod($class, $method);
             $shouldGenerateLink = $reflection->isPublic() || $reflection->isProtected();
         }
@@ -306,10 +306,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
     /**
      * Renders call stack.
-     * @param \Exception $exception exception to get call stack from
+     * @param \Exception|\ParseError $exception exception to get call stack from
      * @return string HTML content of the rendered call stack.
+     * @since 2.0.12
      */
-    public function renderCallStack(\Exception $exception)
+    public function renderCallStack($exception)
     {
         $out = '<ul>';
         $out .= $this->renderCallStackItem($exception->getFile(), $exception->getLine(), null, null, [], 1);

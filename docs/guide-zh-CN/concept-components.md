@@ -26,10 +26,10 @@ echo DatePicker::widget([
 
 这个小部件继承自 [[yii\base\Component]]，它的各项属性改写起来会很容易。
 
-正是因为组件功能的强大，他们比常规的对象（Object）稍微重量级一点，因为他们要使用额外的内存和 CPU 时间来处理
-[事件](concept-events.md) 和 [行为](concept-behaviors.md) 。
-如果你不需要这两项功能，可以继承 [[yii\base\Object]] 
-而不是 [[yii\base\Component]]。这样组件可以像普通 PHP 对象一样高效，
+正是因为组件功能的强大，他们比常规的对象（Object）稍微重量级一点，
+因为他们要使用额外的内存和 CPU 时间来处理 [事件](concept-events.md) 和 [行为](concept-behaviors.md) 。
+如果你不需要这两项功能，可以继承 [[yii\base\Object]] 而不是 [[yii\base\Component]]。
+这样组件可以像普通 PHP 对象一样高效，
 同时还支持[属性（Property）](concept-properties.md)功能。
 
 当继承 [[yii\base\Component]] 或 [[yii\base\Object]] 时，
@@ -43,20 +43,18 @@ echo DatePicker::widget([
 例子如下：
 
 ```php
-<?php
-
 namespace yii\components\MyClass;
 
-use yii\base\BaseObject;
+use yii\base\Object;
 
-class MyClass extends BaseObject
+class MyClass extends Object
 {
     public $prop1;
     public $prop2;
 
     public function __construct($param1, $param2, $config = [])
     {
-        // ... initialization before configuration is applied
+        // ... 配置生效前的初始化过程
 
         parent::__construct($config);
     }
@@ -65,7 +63,7 @@ class MyClass extends BaseObject
     {
         parent::init();
 
-        // ... initialization after configuration is applied
+        // ... 配置生效后的初始化过程
     }
 }
 ```
@@ -82,8 +80,8 @@ $component = \Yii::createObject([
 ], [1, 2]);
 ```
 
-> Info: 尽管调用 [[Yii::createObject()]] 的方法看起来更加复杂，但这主要因为它更加灵活强大，
-> 它是基于[依赖注入容器](concept-di-container.md)实现的。
+> 补充：尽管调用 [[Yii::createObject()]] 的方法看起来更加复杂，
+> 但这主要因为它更加灵活强大，它是基于[依赖注入容器](concept-di-container.md)实现的。
   
 
 [[yii\base\Object]] 类执行时的生命周期如下：
@@ -93,5 +91,5 @@ $component = \Yii::createObject([
 3. 在 [[yii\base\Object::init()|init()]] 方法内进行初始化后的收尾工作。你可以通过重写此方法，进行一些良品检验，属性的初始化之类的工作。
 4. 对象方法调用。
 
-前三步都是在对象的构造方法内发生的。这意味着一旦你获得了一个对象实例，
-那么它就已经初始化就绪可供使用。
+前三步都是在对象的构造方法内发生的。
+这意味着一旦你获得了一个对象实例，那么它就已经初始化就绪可供使用。

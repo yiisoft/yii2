@@ -213,6 +213,7 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->add($uniqueTrait);
 
         $createPost = $this->auth->createPermission('createPost');
+        $createPost->data = 'createPostData';
         $createPost->description = 'create a post';
         $this->auth->add($createPost);
 
@@ -241,6 +242,7 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->addChild($reader, $readPost);
 
         $author = $this->auth->createRole('author');
+        $author->data = 'authorData';
         $this->auth->add($author);
         $this->auth->addChild($author, $createPost);
         $this->auth->addChild($author, $updatePost);
@@ -279,6 +281,24 @@ abstract class ManagerTestCase extends TestCase
         foreach ($expectedPermissions as $permissionName) {
             $this->assertInstanceOf(Permission::className(), $permissions[$permissionName]);
         }
+    }
+
+    public function testGetRole()
+    {
+        $this->prepareData();
+        $author = $this->auth->getRole('author');
+        $this->assertEquals(Item::TYPE_ROLE, $author->type);
+        $this->assertEquals('author', $author->name);
+        $this->assertEquals('authorData', $author->data);
+    }
+
+    public function testGetPermission()
+    {
+        $this->prepareData();
+        $createPost = $this->auth->getPermission('createPost');
+        $this->assertEquals(Item::TYPE_PERMISSION, $createPost->type);
+        $this->assertEquals('createPost', $createPost->name);
+        $this->assertEquals('createPostData', $createPost->data);
     }
 
     public function testGetRolesByUser()

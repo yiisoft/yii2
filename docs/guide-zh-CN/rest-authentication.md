@@ -14,12 +14,12 @@
   当作用户名发送，应用在access token可安全存在API使用端的场景，
   例如，API使用端是运行在一台服务器上的程序。
 * 请求参数: access token 当作API URL请求参数发送，例如
-  `https://example.com/users?access-token=xxxxxxxx`，
+  `https://example.com/users?access-token=xxxxxxxx` ，
   由于大多数服务器都会保存请求参数到日志，
   这种方式应主要用于`JSONP` 请求，因为它不能使用HTTP头来发送access token 
-* [OAuth 2](http://oauth.net/2/): 使用者从认证服务器上获取基于OAuth2协议的access token，
-  然后通过[HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750) 
-  发送到API 服务器。
+* [OAuth 2](http://oauth.net/2/): 使用者从认证服务器上获取基于
+  OAuth2协议的access token，然后通过
+  [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750) 发送到API 服务器。
 
 Yii 支持上述的认证方式，你也可很方便的创建新的认证方式。
 
@@ -36,8 +36,8 @@ Yii 支持上述的认证方式，你也可很方便的创建新的认证方式�
 当[[yii\web\User::enableSession|enableSession]]为false，
 请求中的用户认证状态就不能通过session来保持，每个请求的认证通过步骤2和3来实现。
 
-> Tip: 如果你将RESTful APIs作为应用开发，可以设置应用配置中 `user` 组件的
-> [[yii\web\User::enableSession|enableSession]]，
+> 提示: 如果你将RESTful APIs作为应用开发，可以设置应用配置中 
+> `user` 组件的[[yii\web\User::enableSession|enableSession]]，
 > 如果将RESTful APIs作为模块开发，可以在模块的 `init()` 方法中增加如下代码，如下所示：
 
 > ```php
@@ -106,19 +106,19 @@ class User extends ActiveRecord implements IdentityInterface
 }
 ```
 
-在上述认证启用后，对于每个API请求，
-请求控制器都会在它的`beforeAction()`步骤中对用户进行认证。
+在上述认证启用后，对于每个API请求，请求控制器都会在它的`beforeAction()`
+步骤中对用户进行认证。
 
-如果认证成功，控制器再执行其他检查(如频率限制，操作权限)，然后再执行操作，
+如果认证成功，控制器再执行其他检查(如频率限制，操作权限)，然后再执行动作，
 授权用户信息可使用`Yii::$app->user->identity`获取.
 
-如果认证失败，会发送一个HTTP状态码为401的响应，
-并带有其他相关信息头(如HTTP 基本认证会有`WWW-Authenticate` 头信息).
+如果认证失败，会发送一个HTTP状态码为401的响应，并带有其他相关信息头
+(如HTTP 基本认证会有`WWW-Authenticate` 头信息).
 
 
-## 授权 <span id="authorization"></span>
+## 授权 <a name="authorization"></a>
 
-在用户认证成功后，你可能想要检查他是否有权限执行对应的操作来获取资源，
+在用户认证成功后，你可能想要检查他是否有权限执行对应的动作来获取资源，
 这个过程称为 *authorization* ，
 详情请参考 [Authorization section](security-authorization.md).
 

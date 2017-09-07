@@ -31,8 +31,8 @@ forum/
 
 每个模块都有一个继承[[yii\base\Module]]的模块类，
 该类文件直接放在模块的[[yii\base\Module::basePath|base path]]目录下，
-并且能被 [自动加载](concept-autoloading.md)。当一个模块被访问，
-和 [应用主体实例](structure-applications.md)
+并且能被 [自动加载](concept-autoloading.md)。
+当一个模块被访问，和 [应用主体实例](structure-applications.md)
 类似会创建该模块类唯一实例，模块实例用来帮模块内代码共享数据和组件。
 
 以下示例一个模块类大致定义：
@@ -64,8 +64,8 @@ public function init()
 }
 ```
 
-`config.php`配置文件可能包含以下内容，类似
-[应用主体配置](structure-applications.md#application-configurations).
+`config.php`配置文件可能包含以下内容，
+类似[应用主体配置](structure-applications.md#application-configurations).
 
 ```php
 <?php
@@ -118,14 +118,14 @@ class PostController extends Controller
 如果没有配置 `layout` 属性名，默认会使用应用的布局。
 
 
-### Console commands in Modules <span id="console-commands-in-modules"></span>
+### 模块中的控制台命令 <span id="console-commands-in-modules"></span>
 
-Your module may also declare commands, that will be available through the [Console](tutorial-console.md) mode.
+您的模块也可以声明命令，这将通过 [控制台](tutorial-console.md) 模式可用。
 
-In order for the command line utility to see your commands, you will need to change the [[yii\base\Module::controllerNamespace]]
-property, when Yii is executed in the console mode, and point it to your commands namespace.
+当 Yii 在控制台模式下执行，并指向你的命令的命名空间，为了让命令行实用程序看到您的命令，您需要更改 [[yii\base\Module::controllerNamespace]]
+属性。
 
-One way to achieve that is to test the instance type of the Yii application in the module's `init()` method:
+一种实现方法是在模块的 `init` 方法中测试Yii应用程序的实例类型:
 
 ```php
 public function init()
@@ -137,7 +137,7 @@ public function init()
 }
 ```
 
-Your commands will then be available from the command line using the following route:
+然后可以使用以下路由从命令行使用您的命令：
 
 ```
 yii <module_id>/<command>/<sub_command>
@@ -169,11 +169,11 @@ yii <module_id>/<command>/<sub_command>
 
 和访问应用的控制器类似，[路由](structure-controllers.md#routes) 
 也用在模块中控制器的寻址，
-模块中控制器的路由必须以模块ID开始，接下来为控制器ID和操作ID。
+模块中控制器的路由必须以模块ID开始，接下来为控制器ID和动作ID。
 例如，假定应用使用一个名为 `forum` 模块，
-路由`forum/post/index` 代表模块中 `post` 控制器的 `index` 操作，
-如果路由只包含模块ID，默认为 `default` 的
-[[yii\base\Module::defaultRoute]] 属性来决定使用哪个控制器/操作，
+路由`forum/post/index` 代表模块中 `post` 控制器的 `index` 动作，
+如果路由只包含模块ID，默认为 `default` 
+的[[yii\base\Module::defaultRoute]] 属性来决定使用哪个控制器/动作，
 也就是说路由 `forum` 可能代表 `forum` 模块的 `default` 控制器。
 
 
@@ -191,7 +191,7 @@ $module = MyModuleClass::getInstance();
 如果模块没有被请求，该方法会返回空，注意不需要手动创建一个模块类，
 因为手动创建的和Yii处理请求时自动创建的不同。
 
-> Info: 当开发模块时，你不能假定模块使用固定的ID，
+> 补充: 当开发模块时，你不能假定模块使用固定的ID，
   因为在应用或其他没模块中，模块可能会对应到任意的ID，
   为了获取模块ID，应使用上述代码获取模块实例，
   然后通过`$module->id`获取模块ID。
@@ -238,9 +238,9 @@ $maxPostCount = $module->params['maxPostCount'];
 
 ## 模块嵌套 <span id="nested-modules"></span>
 
-模块可无限级嵌套，也就是说，模块可以包含另一个包含模块的模块，我们称前者为*父模块*，后者为*子模块*，
-子模块必须在父模块的[[yii\base\Module::modules|modules]]属性中申明，
-例如：
+模块可无限级嵌套，也就是说，模块可以包含另一个包含模块的模块，
+我们称前者为*父模块*，后者为*子模块*，
+子模块必须在父模块的[[yii\base\Module::modules|modules]]属性中申明，例如：
 
 ```php
 namespace app\modules\forum;
@@ -263,11 +263,11 @@ class Module extends \yii\base\Module
 
 在嵌套模块中的控制器，它的路由应包含它所有祖先模块的ID，
 例如`forum/admin/dashboard/index` 代表
-在模块`forum`中子模块`admin`中`dashboard`控制器的`index`操作。
+在模块`forum`中子模块`admin`中`dashboard`控制器的`index`动作。
 
-> Info: The [[yii\base\Module::getModule()|getModule()]] method only returns the child module directly belonging
-to its parent. The [[yii\base\Application::loadedModules]] property keeps a list of loaded modules, including both
-direct children and nested ones, indexed by their class names.
+> 注意：[[yii\base\Module::getModule()|getModule()]] 方法只返回属直接归属于其父级的子模块。
+[[yii\base\Application::loadedModules]] 属性保存加载模块的列表，
+通过它们的类名索引，包含直接的子节点和嵌套节点。
 
 
 ## 最佳实践 <span id="best-practices"></span>
@@ -276,6 +276,6 @@ direct children and nested ones, indexed by their class names.
 每个组包含一些强相关的特性，
 每个特性组可以做成一个模块由特定的开发人员和开发组来开发和维护。
 
-在特性组上，使用模块也是重用代码的好方式，
-一些常用特性，如用户管理，评论管理，可以开发成模块，
+在特性组上，使用模块也是重用代码的好方式，一些常用特性，
+如用户管理，评论管理，可以开发成模块，
 这样在相关项目中非常容易被重用。

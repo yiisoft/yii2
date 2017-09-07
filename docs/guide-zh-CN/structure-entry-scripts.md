@@ -16,7 +16,7 @@ Web 应用的入口脚本必须放在终端用户能够访问的目录下，
 入口脚本主要完成以下工作：
 
 * 定义全局常量；
-* 注册 [Composer 自动加载器](https://getcomposer.org/doc/01-basic-usage.md#autoloading)；
+* 注册 [Composer 自动加载器](http://getcomposer.org/doc/01-basic-usage.md#autoloading)；
 * 包含 [[Yii]] 类文件；
 * 加载应用配置；
 * 创建一个[应用](structure-applications.md)实例并配置;
@@ -63,7 +63,6 @@ $config = require(__DIR__ . '/../config/web.php');
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // 注册 Composer 自动加载器
 require(__DIR__ . '/vendor/autoload.php');
@@ -84,11 +83,11 @@ exit($exitCode);
 
 入口脚本是定义全局常量的最好地方，Yii 支持以下三个常量：
 
-* `YII_DEBUG`：标识应用是否运行在调试模式。当在调试模式下，应用会保留更多日志信息，
-  如果抛出异常，会显示详细的错误调用堆栈。
+* `YII_DEBUG`：标识应用是否运行在调试模式。当在调试模式下，
+  应用会保留更多日志信息，如果抛出异常，会显示详细的错误调用堆栈。
   因此，调试模式主要适合在开发阶段使用，`YII_DEBUG` 默认值为 false。
-* `YII_ENV`：标识应用运行的环境，详情请查阅
-  [配置](concept-configurations.md#environment-constants)章节。
+* `YII_ENV`：标识应用运行的环境，
+  详情请查阅[配置](concept-configurations.md#environment-constants)章节。
   `YII_ENV` 默认值为 `'prod'`，表示应用运行在线上产品环境。
 * `YII_ENABLE_ERROR_HANDLER`：标识是否启用 Yii 提供的错误处理，
   默认为 true。

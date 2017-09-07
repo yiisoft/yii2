@@ -69,6 +69,16 @@ class XmlResponseFormatterTest extends FormatterTest
                 'c' => [2, '<>'],
                 false,
             ], "<response><a>1</a><b>abc</b><c><item>2</item><item>&lt;&gt;</item></c><item>false</item></response>\n"],
+
+            // Checks if empty keys and keys not valid in XML are processed.
+            // See https://github.com/yiisoft/yii2/pull/10346/
+            [[
+                '' => 1,
+                '2015-06-18' => '2015-06-18',
+                'b:c' => 'b:c',
+                'a b c' => 'a b c',
+                'äøñ' => 'äøñ'
+            ], "<response><item>1</item><item>2015-06-18</item><item>b:c</item><item>a b c</item><äøñ>äøñ</äøñ></response>\n"],
         ]);
     }
 

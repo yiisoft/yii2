@@ -9,7 +9,7 @@ Sessions 和 Cookies
 ## Sessions <span id="sessions"></span>
 
 和 [请求](runtime-requests.md) 和 [响应](runtime-responses.md)类似，
-默认可通过为[[yii\web\Session]] 实例的`session` 
+默认可通过为[[yii\web\Session]] 实例的`session`
 [应用组件](structure-application-components.md) 来访问sessions。
 
 
@@ -39,7 +39,6 @@ $session->destroy();
 
 ### 访问Session数据 <span id="access-session-data"></span>
 
-To access the data stored in session, you can do the following:
 可使用如下方式访问session中的数据：
 
 ```php
@@ -70,9 +69,9 @@ foreach ($session as $name => $value) ...
 foreach ($_SESSION as $name => $value) ...
 ```
 
-> Info: 当使用`session`组件访问session数据时候，
-  如果session没有开启会自动开启，
-  这和通过`$_SESSION`不同，`$_SESSION`要求先执行`session_start()`。
+> 注意: 当使用`session`组件访问session数据时候，
+如果session没有开启会自动开启，
+这和通过`$_SESSION`不同，`$_SESSION`要求先执行`session_start()`。
 
 当session数据为数组时，`session`组件会限制你直接修改数据中的单元项，
 例如：
@@ -138,7 +137,7 @@ Yii提供以下session类实现不同的session存储方式：
 所有这些session类支持相同的API方法集，因此，
 切换到不同的session存储介质不需要修改项目使用session的代码。
 
-> Note: 如果通过`$_SESSION`访问使用自定义存储介质的session，
+> 注意: 如果通过`$_SESSION`访问使用自定义存储介质的session，
   需要确保session已经用[[yii\web\Session::open()]] 开启，
   这是因为在该方法中注册自定义session存储处理器。
 
@@ -175,35 +174,10 @@ CREATE TABLE session
 - PostgreSQL: BYTEA
 - MSSQL: BLOB
 
-> Note: 根据 php.ini 设置的 `session.hash_function`，你需要调整`id`列的长度，
+> 注意: 根据php.ini 设置的 `session.hash_function`，你需要调整`id`列的长度，
   例如，如果 `session.hash_function=sha256` ，
   应使用长度为64而不是40的char类型。
 
-Alternatively, this can be accomplished with the following migration:
-
-```php
-<?php
-
-use yii\db\Migration;
-
-class m170529_050554_create_table_session extends Migration
-{
-    public function up()
-    {
-        $this->createTable('{{%session}}', [
-            'id' => $this->char(64)->notNull(),
-            'expire' => $this->integer(),
-            'data' => $this->binary()
-        ]);
-        $this->addPrimaryKey('pk-id', '{{%session}}', 'id');
-    }
-
-    public function down()
-    {
-        $this->dropTable('{{%session}}');
-    }
-}
-```
 
 ### Flash 数据 <span id="flash-data"></span>
 
@@ -250,7 +224,7 @@ $session->addFlash('alerts', 'You are promoted.');
 $alerts = $session->getFlash('alerts');
 ```
 
-> Note: 不要在相同名称的flash数据中使用[[yii\web\Session::setFlash()]] 的同时也使用[[yii\web\Session::addFlash()]]，
+> 注意: 不要在相同名称的flash数据中使用[[yii\web\Session::setFlash()]] 的同时也使用[[yii\web\Session::addFlash()]]，
   因为后一个防范会自动将flash信息转换为数组以使新的flash数据可追加进来，因此，
   当你调用[[yii\web\Session::getFlash()]]时，
   会发现有时获取到一个数组，有时获取到一个字符串，
@@ -268,9 +242,9 @@ $alerts = $session->getFlash('alerts');
 
 ## Cookies <span id="cookies"></span>
 
-Yii使用 [[yii\web\Cookie]]对象来代表每个cookie，
-[[yii\web\Request]] 和 [[yii\web\Response]]
-通过名为'cookies'的属性维护一个cookie集合，前者的cookie 集合代表请求提交的cookies，
+Yii使用 [[yii\web\Cookie]]对象来代表每个cookie，[[yii\web\Request]] 和 [[yii\web\Response]]
+通过名为'cookies'的属性维护一个cookie集合，
+前者的cookie 集合代表请求提交的cookies，
 后者的cookie集合表示发送给用户的cookies。
 
 The part of the application dealing with request and response directly is controller. Therefore, cookies should be
@@ -328,27 +302,27 @@ unset($cookies['language']);
 [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]
 可配置这些属性到cookie中并添加到响应的cookie集合中。
 
-> Note: 为安全起见[[yii\web\Cookie::httpOnly]] 被设置为true，
-  这可减少客户端脚本访问受保护cookie（如果浏览器支持）的风险，
-  更多详情可阅读 [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
+> 注意: 为安全起见[[yii\web\Cookie::httpOnly]] 被设置为true，
+这可减少客户端脚本访问受保护cookie（如果浏览器支持）的风险，
+更多详情可阅读 [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
 
 
 ### Cookie验证 <span id="cookie-validation"></span>
 
 在上两节中，当通过`request` 和 `response` 组件读取和发送cookie时，
 你会喜欢扩展的cookie验证的保障安全功能，它能
-使cookie不被客户端修改。该功能通过给每个cookie签发一个哈希字符串来告知服务端cookie是否在客户端被修改，
-如果被修改，通过`request`组件的
-[[yii\web\Request::cookies|cookie collection]]cookie集合访问不到该cookie。
+使cookie不被客户端修改。该功能通过给每个cookie签发一个
+哈希字符串来告知服务端cookie是否在客户端被修改，
+如果被修改，通过`request`组件的[[yii\web\Request::cookies|cookie collection]]cookie集合访问不到该cookie。
 
-> Note: Cookie验证只保护cookie值被修改，如果一个cookie验证失败，
-  仍然可以通过`$_COOKIE`来访问该cookie，
-  因为这是第三方库对未通过cookie验证自定义的操作方式。
+> 注意: Cookie验证只保护cookie值被修改，如果一个cookie验证失败，
+仍然可以通过`$_COOKIE`来访问该cookie，
+因为这是第三方库对未通过cookie验证自定义的操作方式。
 
 Cookie验证默认启用，可以设置[[yii\web\Request::enableCookieValidation]]属性为false来禁用它，
 尽管如此，我们强烈建议启用它。
 
-> Note: 直接通过`$_COOKIE` 和 `setcookie()` 读取和发送的Cookie不会被验证。
+> 注意: 直接通过`$_COOKIE` 和 `setcookie()` 读取和发送的Cookie不会被验证。
 
 当使用cookie验证，必须指定[[yii\web\Request::cookieValidationKey]]，它是用来生成s上述的哈希值，
 可通过在应用配置中配置`request` 组件。
@@ -363,5 +337,5 @@ return [
 ];
 ```
 
-> Info: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] 对你的应用安全很重要，
+> 补充: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] 对你的应用安全很重要，
   应只被你信任的人知晓，请不要将它放入版本控制中。
