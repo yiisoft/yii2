@@ -10,7 +10,7 @@ use yii\base\InvalidConfigException;
 class m170907_052038_rbac_add_index_on_auth_assignment_user_id extends Migration
 {
     public $column = 'user_id';
-    public $index = 'idx-auth_assignment-user_id';
+    public $index = 'idx_user_id';
 
     /**
      * @throws yii\base\InvalidConfigException
