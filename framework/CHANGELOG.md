@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.1.0 under development
 -----------------------
 
+- Bug #14458: Fixed `yii\filters\VerbFilter` uses case-insensitive comparison for the HTTP method name (klimov-paul)
 - Enh #879: Caching implementation refactored according to PSR-16 'Simple Cache' specification (klimov-paul)
 - Enh #11328: Added support for PSR-7 'HTTP Message' (klimov-paul)
 - Enh #13799: CAPTCHA rendering logic extracted into `yii\captcha\DriverInterface`, which instance is available via `yii\captcha\CaptchaAction::$driver` field (vladis84, klimov-paul)

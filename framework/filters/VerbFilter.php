@@ -89,15 +89,14 @@ class VerbFilter extends Behavior
     {
         $action = $event->action->id;
         if (isset($this->actions[$action])) {
-            $verbs = $this->actions[$action];
+            $allowed = $this->actions[$action];
         } elseif (isset($this->actions['*'])) {
-            $verbs = $this->actions['*'];
+            $allowed = $this->actions['*'];
         } else {
             return $event->isValid;
         }
 
         $verb = Yii::$app->getRequest()->getMethod();
-        $allowed = array_map('strtoupper', $verbs);
         if (!in_array($verb, $allowed)) {
             $event->isValid = false;
             // https://tools.ietf.org/html/rfc2616#section-14.7
