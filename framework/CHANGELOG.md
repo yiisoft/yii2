@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Chg #13885: Removed APC support in ApcCache. APCu works as before (samdark) 
 - Chg #14178: Removed HHVM-specific code (samdark)
 - Enh #14671: use `random_int()` instead of `mt_rand()` to generate cryptographically secure pseudo-random integers (yyxx9988)
+- Chg #14761: Removed Yii autoloader in favor of Composer's PSR-4 implementation (samdark)
 
 2.0.13 under development
 ------------------------

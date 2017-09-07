@@ -103,6 +103,9 @@
             "yii\\cs\\": "cs/src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {"yiiunit\\": "tests/"}
+    },
     "config": {
         "platform": {"php": "7.1"}
     },
