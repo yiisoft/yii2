@@ -178,7 +178,9 @@ trait ActiveRelationTrait
                 $relatedModel->populateRelation($this->inverseOf, $inverseRelation->multiple ? [$this->primaryModel] : $this->primaryModel);
             } else {
                 if (!isset($inverseRelation)) {
-                    $inverseRelation = (new $this->modelClass())->getRelation($this->inverseOf);
+                    /* @var $modelClass ActiveRecordInterface */
+                    $modelClass = $this->modelClass;
+                    $inverseRelation = $modelClass::instance()->getRelation($this->inverseOf);
                 }
                 $result[$i][$this->inverseOf] = $inverseRelation->multiple ? [$this->primaryModel] : $this->primaryModel;
             }
@@ -221,15 +223,14 @@ trait ActiveRelationTrait
 
         if (!$this->multiple && count($primaryModels) === 1) {
             $model = $this->one();
-            foreach ($primaryModels as $i => $primaryModel) {
-                if ($primaryModel instanceof ActiveRecordInterface) {
-                    $primaryModel->populateRelation($name, $model);
-                } else {
-                    $primaryModels[$i][$name] = $model;
-                }
-                if ($this->inverseOf !== null) {
-                    $this->populateInverseRelation($primaryModels, [$model], $name, $this->inverseOf);
-                }
+            $primaryModel = reset($primaryModels);
+            if ($primaryModel instanceof ActiveRecordInterface) {
+                $primaryModel->populateRelation($name, $model);
+            } else {
+                $primaryModels[key($primaryModels)][$name] = $model;
+            }
+            if ($this->inverseOf !== null) {
+                $this->populateInverseRelation($primaryModels, [$model], $name, $this->inverseOf);
             }
 
             return [$model];
@@ -299,7 +300,13 @@ trait ActiveRelationTrait
         }
         $model = reset($models);
         /* @var $relation ActiveQueryInterface|ActiveQuery */
-        $relation = $model instanceof ActiveRecordInterface ? $model->getRelation($name) : (new $this->modelClass())->getRelation($name);
+        if ($model instanceof ActiveRecordInterface) {
+            $relation = $model->getRelation($name);
+        } else {
+            /* @var $modelClass ActiveRecordInterface */
+            $modelClass = $this->modelClass;
+            $relation = $modelClass::instance()->getRelation($name);
+        }
 
         if ($relation->multiple) {
             $buckets = $this->buildBuckets($primaryModels, $relation->link, null, null, false);

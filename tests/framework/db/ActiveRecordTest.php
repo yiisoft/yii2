@@ -15,15 +15,19 @@ use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\CustomerQuery;
+use yiiunit\data\ar\CustomerWithConstructor;
 use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Dog;
 use yiiunit\data\ar\Item;
 use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
+use yiiunit\data\ar\OrderItemWithConstructor;
 use yiiunit\data\ar\OrderItemWithNullFK;
+use yiiunit\data\ar\OrderWithConstructor;
 use yiiunit\data\ar\OrderWithNullFK;
 use yiiunit\data\ar\Profile;
+use yiiunit\data\ar\ProfileWithConstructor;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\framework\db\cubrid\ActiveRecordTest as CubridActiveRecordTest;
@@ -552,6 +556,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2, $orders[0]->items[0]->category->id);
     }
 
+    /**
+     * @depends testJoinWith
+     */
     public function testJoinWithAndScope()
     {
         // hasOne inner join
@@ -1551,5 +1558,47 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             1 => 'user1 in profile customer 1',
             3 => 'user3 in profile customer 3',
         ], $result);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/5786
+     *
+     * @depends testJoinWith
+     */
+    public function testFindWithConstructors()
+    {
+        /** @var OrderWithConstructor[] $orders */
+        $orders = OrderWithConstructor::find()
+            ->with(['customer.profile', 'orderItems'])
+            ->orderBy('id')
+            ->all();
+
+        $this->assertCount(3, $orders);
+        $order = $orders[0];
+        $this->assertEquals(1, $order->id);
+
+        $this->assertNotNull($order->customer);
+        $this->assertInstanceOf(CustomerWithConstructor::className(), $order->customer);
+        $this->assertEquals(1, $order->customer->id);
+
+        $this->assertNotNull($order->customer->profile);
+        $this->assertInstanceOf(ProfileWithConstructor::className(), $order->customer->profile);
+        $this->assertEquals(1, $order->customer->profile->id);
+
+        $this->assertNotNull($order->customerJoinedWithProfile);
+        $customerWithProfile = $order->customerJoinedWithProfile;
+        $this->assertInstanceOf(CustomerWithConstructor::className(), $customerWithProfile);        
+        $this->assertEquals(1, $customerWithProfile->id);
+
+        $this->assertNotNull($customerProfile = $customerWithProfile->profile);
+        $this->assertInstanceOf(ProfileWithConstructor::className(), $customerProfile);
+        $this->assertEquals(1, $customerProfile->id);
+
+        $this->assertCount(2, $order->orderItems);
+
+        $item = $order->orderItems[0];
+        $this->assertInstanceOf(OrderItemWithConstructor::className(), $item);
+
+        $this->assertEquals(1, $item->item_id);
     }
 }

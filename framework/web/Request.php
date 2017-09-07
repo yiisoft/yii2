@@ -214,6 +214,7 @@ class Request extends \yii\base\Request
         'X-Forwarded-Host',
         'X-Forwarded-Proto',
         'Front-End-Https',
+        'X-Rewrite-Url',
     ];
     /**
      * @var string[] List of headers where proxies store the real client IP.

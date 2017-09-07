@@ -4,6 +4,12 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Enh #14273: `yii\log\Target::$enabled` now supports callable value (dmirogin)
+- Bug #14773: Fixed `yii\widgets\ActiveField::$options` does not support 'class' option in array format (klimov-paul)
+- Bug #14723: Fixed serialization of `yii\db\Connection` instance closes database connection (klimov-paul)
+- Bug #14697: Fixed `console\widgets\Table` rendering when there's no data supplied (bscheshirwork)
+- Enh #13853: Added `yii\db\Migration::$compact` as well as `yii\console\controllers\BaseMigrateController::$compact` to allow making the migration console output more compact (francislavoie)
+- Enh #14184: Module service locator now falls back to its parent module service locator in case component isn't found (SamMousa)
 - Bug #14596: Fix event call on init in `yii\widgets\BaseListView` (panchenkodv)
 - New #14151: Added `AttributesBehavior` that assigns values specified to one or multiple attributes of an AR object when certain events happen (bscheshirwork)
 - Bug #6526: Fixed `yii\db\Command::batchInsert()` casting of double values correctly independent of the locale (cebe, leammas)
@@ -49,6 +55,8 @@ Yii Framework 2 Change Log
 - Enh #14188: Add constants and function for sysexits(3) to `ConsoleHelper` (tom--, samdark, cebe)
 - Bug #14165: Set `_slave` of `Connection` to `false` instead of `null` in `close` method (rossoneri)
 - Bug #14423: Fixed `ArrayHelper::merge` behavior with null values for integer-keyed elements (dmirogin)
+- Bug #13779: Fixed `yii\db\ActiveRecord::joinWith()` unable to use relation defined via attached behavior (ElisDN, klimov-paul)
+- Enh #5786: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN, klimov-paul)
 - Bug #14406: Fixed caching rules in `yii\web\UrlManager` with different ruleConfig configuration (dmirogin)
 - Chg #7936: Deprecate `yii\base\Object` in favor of `yii\base\BaseObject` for compatibility with PHP 7.2 (rob006, cebe, klimov-paul)
 - Bug #14318: Trigger `yiiActiveForm.events.afterValidateAttribute` after updating attribute  (dmirogin)
@@ -61,6 +69,8 @@ Yii Framework 2 Change Log
 - Bug #14202: Fixed current time in (UTC) `\Yii::$app->formatter` if time not set (bscheshirwork)
 - Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase, silverfire)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
+- Bug #13969: Fixed a bug in a `yii\console\controllers\CacheController` when caches defined via a closure were not detected (Kolyunya)
+- Enh #14061: Added request scope assignments cache to `yii\rbac\DbManager::checkAccess()` to avoid duplicate queries for user assignments (leandrogehlen, cebe, nineinchnick, ryusoft)
 
 
 2.0.12 June 05, 2017

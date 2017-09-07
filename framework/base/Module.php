@@ -711,4 +711,22 @@ class Module extends ServiceLocator
         $this->trigger(self::EVENT_AFTER_ACTION, $event);
         return $event->result;
     }
+
+    /**
+     * @inheritdoc
+     * Since version 2.0.13, if a component isn't defined in the module, it will be looked up in the parent module.
+     * The parent module may be the application.
+     */
+    public function get($id, $throwException = true)
+    {
+        if (!isset($this->module)) {
+            return parent::get($id, $throwException);
+        }
+        
+        $component = parent::get($id, false);
+        if ($component === null) {
+            $component = $this->module->get($id, $throwException);
+        }
+        return $component;
+    }
 }

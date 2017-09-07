@@ -54,9 +54,10 @@ use yii\validators\Validator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayable
+class Model extends Component implements StaticInstanceInterface, IteratorAggregate, ArrayAccess, Arrayable
 {
     use ArrayableTrait;
+    use StaticInstanceTrait;
 
     /**
      * The name of the default scenario.

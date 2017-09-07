@@ -1082,8 +1082,15 @@ class Connection extends Component
      */
     public function __sleep()
     {
-        $this->close();
-        return array_keys((array) $this);
+        $fields = (array) $this;
+
+        unset($fields['pdo']);
+        unset($fields["\000" . __CLASS__ . "\000" . '_master']);
+        unset($fields["\000" . __CLASS__ . "\000" . '_slave']);
+        unset($fields["\000" . __CLASS__ . "\000" . '_transaction']);
+        unset($fields["\000" . __CLASS__ . "\000" . '_schema']);
+
+        return array_keys($fields);
     }
 
     /**
