@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Enh #13254: Made `yii\helpers\StringHelper` and `yii\validators\StringValidator` independent of `Yii::$app` instance (cebe)
 - Enh #14273: `yii\log\Target::$enabled` now supports callable value (dmirogin)
 - Bug #14773: Fixed `yii\widgets\ActiveField::$options` does not support 'class' option in array format (klimov-paul)
 - Bug #14723: Fixed serialization of `yii\db\Connection` instance closes database connection (klimov-paul)
