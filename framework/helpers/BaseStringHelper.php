@@ -113,8 +113,6 @@ class BaseStringHelper
 
         if (mb_strlen($string, $encoding) > $length) {
             return rtrim(mb_substr($string, 0, $length, $encoding)) . $suffix;
-        } else {
-            return $string;
         }
 
         return $string;
@@ -250,7 +248,7 @@ class BaseStringHelper
 
             return substr_compare($string, $with, -$bytes, $bytes) === 0;
         }
-      
+
         $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
         return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), $encoding) === mb_strtolower($with, $encoding);
     }
