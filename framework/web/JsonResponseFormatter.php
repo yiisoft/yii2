@@ -38,8 +38,24 @@ use yii\helpers\Json;
 class JsonResponseFormatter extends Component implements ResponseFormatterInterface
 {
     /**
+     * Json Content Type.
+     */
+    const CONTENT_TYPE_JSONP = 'application/javascript; charset=UTF-8';
+
+    /**
+     * Jsonp Content Type.
+     */
+    const CONTENT_TYPE_JSON = 'application/json; charset=UTF-8';
+ 
+    /**
+     * HAL Json Content Type.
+     */
+    const CONTENT_TYPE_HAL_JSON = 'application/hal+json; charset=UTF-8';
+    
+    /**
      * @var string|null custom value of the `Content-Type` header of the response.
      * When equals `null` default content type will be used based on the `useJsonp` property.
+     * @since 2.0.13
      */
     public $contentType;
     /**
@@ -65,13 +81,21 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     public $prettyPrint = false;
 
-
     /**
      * Formats the specified response.
      * @param Response $response the response to be formatted.
      */
     public function format($response)
     {
+        if ($this->contentType === null) {
+            $this->contentType = $this->useJsonp
+                ? self::CONTENT_TYPE_JSONP
+                : self::CONTENT_TYPE_JSON;
+        } elseif (stripos($this->contentType, 'charset') === false) {
+            $this->contentType .= '; charset=UTF-8';
+        }
+        $response->getHeaders()->set('Content-Type', $this->contentType);
+  
         if ($this->useJsonp) {
             $this->formatJsonp($response);
         } else {
@@ -85,7 +109,6 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     protected function formatJson($response)
     {
-        $this->setContentType($response, 'application/json; charset=UTF-8');
         if ($response->data !== null) {
             $options = $this->encodeOptions;
             if ($this->prettyPrint) {
@@ -101,24 +124,20 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     protected function formatJsonp($response)
     {
-        $this->setContentType($response, 'application/javascript; charset=UTF-8');
-        if (is_array($response->data) && isset($response->data['data'], $response->data['callback'])) {
-            $response->content = sprintf('%s(%s);', $response->data['callback'], Json::htmlEncode($response->data['data']));
+        if (is_array($response->data)
+            && isset($response->data['data'], $response->data['callback'])
+        ) {
+            $response->content = sprintf(
+                '%s(%s);',
+                $response->data['callback'],
+                Json::htmlEncode($response->data['data'])
+            );
         } elseif ($response->data !== null) {
             $response->content = '';
-            Yii::warning("The 'jsonp' response requires that the data be an array consisting of both 'data' and 'callback' elements.", __METHOD__);
+            Yii::warning(
+                "The 'jsonp' response requires that the data be an array consisting of both 'data' and 'callback' elements.",
+                __METHOD__
+            );
         }
-    }
-
-    /**
-     * Sets a `Content-Type` header value of a `response`.
-     * @param Response &$response response to set a `Content-Type` header of.
-     * @param string $defaultContentType default content type used when no custom content type is specified.
-     */
-    private function setContentType(&$response, $defaultContentType)
-    {
-        $contentType = $this->contentType ?: $defaultContentType;
-        $headers = $response->getHeaders();
-        $headers->set('Content-Type', $contentType);
     }
 }
