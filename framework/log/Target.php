@@ -313,6 +313,16 @@ abstract class Target extends Component
      * Sets a value indicating whether this log target is enabled.
      * @param bool|callable $value a boolean value or a callable to obtain the value from.
      * The callable value is available since version 2.0.13.
+     *
+     * A callable may be used to determine whether the log target should be enabled in a dynamic way.
+     * For example, to only enable a log if the current user is logged in you can configure the target
+     * as follows:
+     *
+     * ```php
+     * 'enabled' => function() {
+     *     return !Yii::$app->user->isGuest;
+     * }
+     * ```
      */
     public function setEnabled($value)
     {

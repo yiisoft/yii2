@@ -5,7 +5,9 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #14765: add index on `auth_assignment.user_id` for performance reasons when a medium-tiny prermission/role hierarchy is used with a lot of users see `yii\rbac\DbManager::getInheritedPermissionsByUser` and `yii\rbac\DbManager::getAssignments` (bicf)  
+- Enh #13254: Made `yii\helpers\StringHelper` and `yii\validators\StringValidator` independent of `Yii::$app` instance (cebe)
 - Enh #14273: `yii\log\Target::$enabled` now supports callable value (dmirogin)
+- Bug #14773: Fixed `yii\widgets\ActiveField::$options` does not support 'class' option in array format (klimov-paul)
 - Bug #14723: Fixed serialization of `yii\db\Connection` instance closes database connection (klimov-paul)
 - Bug #14697: Fixed `console\widgets\Table` rendering when there's no data supplied (bscheshirwork)
 - Enh #13853: Added `yii\db\Migration::$compact` as well as `yii\console\controllers\BaseMigrateController::$compact` to allow making the migration console output more compact (francislavoie)

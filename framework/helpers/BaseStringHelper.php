@@ -104,12 +104,15 @@ class BaseStringHelper
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
     {
+        if ($encoding === null) {
+            $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        }
         if ($asHtml) {
-            return static::truncateHtml($string, $length, $suffix, $encoding ?: Yii::$app->charset);
+            return static::truncateHtml($string, $length, $suffix, $encoding);
         }
 
-        if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
-            return rtrim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
+        if (mb_strlen($string, $encoding) > $length) {
+            return rtrim(mb_substr($string, 0, $length, $encoding)) . $suffix;
         }
 
         return $string;
@@ -152,7 +155,9 @@ class BaseStringHelper
     protected static function truncateHtml($string, $count, $suffix, $encoding = false)
     {
         $config = \HTMLPurifier_Config::create(null);
-        $config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
+        if (Yii::$app !== null) {
+            $config->set('Cache.SerializerPath', Yii::$app->getRuntimePath());
+        }
         $lexer = \HTMLPurifier_Lexer::create($config);
         $tokens = $lexer->tokenizeHTML($string, $config, new \HTMLPurifier_Context());
         $openTokens = [];
@@ -215,9 +220,10 @@ class BaseStringHelper
         }
         if ($caseSensitive) {
             return strncmp($string, $with, $bytes) === 0;
-        }
 
-        return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
+        }
+        $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), $encoding) === mb_strtolower($with, $encoding);
     }
 
     /**
@@ -243,7 +249,8 @@ class BaseStringHelper
             return substr_compare($string, $with, -$bytes, $bytes) === 0;
         }
 
-        return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
+        $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), $encoding) === mb_strtolower($with, $encoding);
     }
 
     /**
