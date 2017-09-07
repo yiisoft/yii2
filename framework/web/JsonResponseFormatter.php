@@ -81,6 +81,7 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     public $prettyPrint = false;
 
+
     /**
      * Formats the specified response.
      * @param Response $response the response to be formatted.
