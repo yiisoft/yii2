@@ -77,6 +77,8 @@ class FileValidatorTest extends TestCase
 
     public function testGetSizeLimit()
     {
+        $this->mockWebApplication();
+
         $size = min($this->sizeToBytes(ini_get('upload_max_filesize')), $this->sizeToBytes(ini_get('post_max_size')));
         $val = new FileValidator();
         $this->assertEquals($size, $val->getSizeLimit());
@@ -84,10 +86,10 @@ class FileValidatorTest extends TestCase
         $this->assertEquals($size, $val->getSizeLimit());
         $val->maxSize = abs($size - 1);
         $this->assertEquals($size - 1, $val->getSizeLimit());
-        $_POST['MAX_FILE_SIZE'] = $size + 1;
+        Yii::$app->request->setBodyParams(['MAX_FILE_SIZE' => $size + 1]);
         $this->assertEquals($size - 1, $val->getSizeLimit());
-        $_POST['MAX_FILE_SIZE'] = abs($size - 2);
-        $this->assertSame($_POST['MAX_FILE_SIZE'], $val->getSizeLimit());
+        Yii::$app->request->setBodyParams(['MAX_FILE_SIZE' => abs($size - 2)]);
+        $this->assertSame(abs($size - 2), $val->getSizeLimit());
     }
 
     protected function sizeToBytes($sizeStr)
