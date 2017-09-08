@@ -132,7 +132,9 @@ class MaskedInput extends InputWidget
     }
 
     /**
-     * Generates a hashed variable to store the plugin `clientOptions`. Helps in reusing the variable for similar
+     * Generates a hashed variable to store the plugin `clientOptions`.
+     *
+     * Helps in reusing the variable for similar
      * options passed for other widgets on the same page. The following special data attribute will also be
      * added to the input field to allow accessing the client options via javascript:
      *
@@ -150,7 +152,7 @@ class MaskedInput extends InputWidget
     }
 
     /**
-     * Initializes client options
+     * Initializes client options.
      */
     protected function initClientOptions()
     {

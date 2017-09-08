@@ -331,7 +331,7 @@ class DateValidator extends Validator
     }
 
     /**
-     * Parses date string into UNIX timestamp
+     * Parses date string into UNIX timestamp.
      *
      * @param string $value string representing date
      * @return int|false a UNIX timestamp or `false` on failure.
@@ -343,7 +343,7 @@ class DateValidator extends Validator
     }
 
     /**
-     * Parses date string into UNIX timestamp
+     * Parses date string into UNIX timestamp.
      *
      * @param string $value string representing date
      * @param string $format expected date format
@@ -369,7 +369,7 @@ class DateValidator extends Validator
     }
 
     /**
-     * Parses a date value using the IntlDateFormatter::parse()
+     * Parses a date value using the IntlDateFormatter::parse().
      * @param string $value string representing date
      * @param string $format the expected date format
      * @return int|bool a UNIX timestamp or `false` on failure.
@@ -407,7 +407,7 @@ class DateValidator extends Validator
     }
 
     /**
-     * Parses a date value using the DateTime::createFromFormat()
+     * Parses a date value using the DateTime::createFromFormat().
      * @param string $value string representing date
      * @param string $format the expected date format
      * @return int|bool a UNIX timestamp or `false` on failure.
@@ -426,11 +426,12 @@ class DateValidator extends Validator
         if (!$hasTimeInfo) {
             $date->setTime(0, 0, 0);
         }
+
         return $date->getTimestamp();
     }
 
     /**
-     * Formats a timestamp using the specified format
+     * Formats a timestamp using the specified format.
      * @param int $timestamp
      * @param string $format
      * @return string

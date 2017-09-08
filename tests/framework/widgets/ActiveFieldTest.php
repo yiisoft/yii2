@@ -258,6 +258,8 @@ EOT;
 
     /**
      * @dataProvider hintDataProvider
+     * @param mixed $hint
+     * @param string $expectedHtml
      */
     public function testHint($hint, $expectedHtml)
     {
@@ -526,7 +528,39 @@ EOD;
     }
 
     /**
-     * Helper methods
+     * @depends testHiddenInput
+     *
+     * @see https://github.com/yiisoft/yii2/issues/14773
+     */
+    public function testOptionsClass()
+    {
+        $this->activeField->options = ['class' => 'test-wrapper'];
+        $expectedValue = <<<HTML
+<div class="test-wrapper field-activefieldtestmodel-attributename">
+
+<input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+
+
+</div>
+HTML;
+        $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
+        $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+
+        $this->activeField->options = ['class' => ['test-wrapper', 'test-add']];
+        $expectedValue = <<<HTML
+<div class="test-wrapper test-add field-activefieldtestmodel-attributename">
+
+<input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+
+
+</div>
+HTML;
+        $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
+        $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+    }
+
+    /**
+     * Helper methods.
      */
     protected function getView()
     {
@@ -551,7 +585,7 @@ class ActiveFieldTestModel extends DynamicModel
 }
 
 /**
- * Helper Classes
+ * Helper Classes.
  */
 class ActiveFieldExtend extends ActiveField
 {

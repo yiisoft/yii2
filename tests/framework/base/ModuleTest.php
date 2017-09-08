@@ -9,6 +9,8 @@ namespace yiiunit\framework\base;
 
 use Yii;
 use yii\base\Controller;
+use yii\base\Module;
+use yii\base\Object;
 use yiiunit\TestCase;
 
 /**
@@ -83,6 +85,17 @@ class ModuleTest extends TestCase
         $this->assertEquals('test/test-controller1', Yii::$app->controller->uniqueId);
         $this->assertNotNull(Yii::$app->controller->action);
         $this->assertEquals('test/test-controller1/test1', Yii::$app->controller->action->uniqueId);
+    }
+
+
+    public function testServiceLocatorTraversal()
+    {
+        $parent = new Module('parent');
+        $child = new Module('child', $parent);
+        $grandchild = new Module('grandchild', $child);
+
+        $parent->set('test', new Object());
+        $this->assertInstanceOf(Object::className(), $grandchild->get('test'));
     }
 }
 

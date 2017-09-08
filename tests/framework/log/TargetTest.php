@@ -51,6 +51,8 @@ class TargetTest extends TestCase
 
     /**
      * @dataProvider filters
+     * @param array $filter
+     * @param array $expected
      */
     public function testFilter($filter, $expected)
     {
@@ -162,6 +164,23 @@ class TargetTest extends TestCase
         $this->expectException('yii\\base\\InvalidConfigException');
         $this->expectExceptionMessage('Incorrect 128 value');
         $target->setLevels(128);
+    }
+
+    public function testGetEnabled()
+    {
+        /** @var Target $target */
+        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+
+        $target->enabled = true;
+        $this->assertTrue($target->enabled);
+
+        $target->enabled = false;
+        $this->assertFalse($target->enabled);
+
+        $target->enabled = function ($target) {
+            return empty($target->messages);
+        };
+        $this->assertTrue($target->enabled);
     }
 }
 
