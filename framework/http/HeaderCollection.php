@@ -181,7 +181,12 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      */
     public function fromArray(array $array)
     {
-        $this->_headers = $array;
+        $this->removeAll();
+        foreach ($array as $name => $values) {
+            foreach ($values as $value) {
+                $this->add($name, $value);
+            }
+        }
     }
 
     /**
