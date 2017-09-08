@@ -183,8 +183,12 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
     {
         $this->removeAll();
         foreach ($array as $name => $values) {
-            foreach ($values as $value) {
-                $this->add($name, $value);
+            if (is_array($values)) {
+                foreach ($values as $value) {
+                    $this->add($name, $value);
+                }
+            } else {
+                $this->add($name, $values);
             }
         }
     }

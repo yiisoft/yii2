@@ -237,10 +237,6 @@ class Request extends \yii\base\Request implements RequestInterface
             }
         }
 
-        foreach ($headers as $name => $value) {
-            $headers[strtolower($name)] = (array)$value;
-        }
-
         return $headers;
     }
 
