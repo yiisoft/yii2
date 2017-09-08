@@ -17,9 +17,12 @@ namespace yii\web;
 interface RequestParserInterface
 {
     /**
-     * Parses a given request instance.
+     * Parses a given request instance determining its body parameters.
+     * This method MUST return the array of body parameters detected from [[$request]] data.
+     * However, this method MAY adjust the given [[Request]] instance directly for extra configuration.
      * @param Request $request the HTTP request instance to be parsed.
      * @return array parameters parsed from the request body.
+     * @throws BadRequestHttpException in case request body format is invalid.
      */
     public function parse($request);
 }
