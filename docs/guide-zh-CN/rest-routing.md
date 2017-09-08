@@ -73,9 +73,9 @@
 ]
 ```
 
-您可能已经注意到控制器ID`user`以复数形式出现在`users`末端。这是因为 [[yii\rest\UrlRule]] 
-能够为他们使用的末端全自动复数化控制器ID。您可以通过设置 [[yii\rest\UrlRule::pluralize]] 
-为false 来禁用此行为，如果您想使用一些特殊的名字您可以通过配置 [[yii\rest\UrlRule::controller]] 属性。
+您可能已经注意到控制器ID`user`以复数形式出现在`users`末端。这是因为 [[yii\rest\UrlRule]] 能够为他们使用的末端全自动复数化控制器ID。
+您可以通过设置 [[yii\rest\UrlRule::pluralize]] 为false 来禁用此行为，如果您想
+使用一些特殊的名字您可以通过配置 [[yii\rest\UrlRule::controller]] 属性。
 
 > Info: The pluralization of controller IDs is done by [[yii\helpers\Inflector::pluralize()]]. The method respects
   special pluralization rules. For example, the word `box` will be pluralized as `boxes` instead of `boxs`.
@@ -90,3 +90,22 @@ a controller ID. For example, the following code maps the name `u` to the contro
     'controller' => ['u' => 'user'],
 ]
 ```
+
+## Extra configuration for contained rules
+
+It could be useful to specify extra configuration that is applied to each rule contained within [[yii\rest\UrlRule]].
+A good example would be specifying defaults for `expand` parameter:
+
+```php
+[
+    'class' => 'yii\rest\UrlRule',
+    'controller' => ['user'],
+    'ruleConfig' => [
+        'class' => 'yii\web\UrlRule',
+        'defaults' => [
+            'expand' => 'profile',
+        ]
+    ],
+],
+```
+

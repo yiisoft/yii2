@@ -5,7 +5,7 @@
 响应对象包含的信息有HTTP状态码，HTTP头和主体内容等, 
 网页应用开发的最终目的本质上就是根据不同的请求构建这些响应对象。
 
-在大多数情况下主要处理继承自 [[yii\web\Response]] 的 
+在大多是情况下主要处理继承自 [[yii\web\Response]] 的 
 `response` [应用组件](structure-application-components.md)，
 尽管如此，Yii也允许你创建你自己的响应对象并发送给终端用户，这方面后续会阐述。
 
@@ -73,8 +73,8 @@ $headers->set('Pragma', 'no-cache');
 $values = $headers->remove('Pragma');
 ```
 
-> Info: 头名称是大小写敏感的，在[[yii\web\Response::send()]]
-  方法调用前新注册的头信息并不会发送给用户。
+> Info: 头名称是大小写敏感的，在[[yii\web\Response::send()]]方法
+  调用前新注册的头信息并不会发送给用户。
 
 
 ## 响应主体 <span id="response-body"></span>
@@ -107,8 +107,8 @@ Yii支持以下可直接使用的格式，每个实现了[[yii\web\ResponseForma
 * [[yii\web\Response::FORMAT_JSONP|JSONP]]: 通过 [[yii\web\JsonResponseFormatter]]来实现.
 * [[yii\web\Response::FORMAT_RAW|RAW]]: use this format if you want to send the response directly without applying any formatting.
 
-上述响应主体可明确地被设置，但是在大多数情况下是通过 [操作](structure-controllers.md) 方法的返回值隐式地设置，
-常用场景如下所示：
+上述响应主体可明确地被设置，但是在大多数情况下是通过 [操作](structure-controllers.md) 
+方法的返回值隐式地设置，常用场景如下所示：
  
 ```php
 public function actionIndex()
@@ -117,12 +117,12 @@ public function actionIndex()
 }
 ```
 
-上述的 `index` 动作返回 `index` 视图渲染结果，
+上述的 `index` 操作返回 `index` 视图渲染结果，
 返回值会被 `response` 组件格式化后发送给终端用户。
 
-因为响应格式默认为[[yii\web\Response::FORMAT_HTML|HTML]], 
-只需要在动作方法中返回一个字符串，
-如果想使用其他响应格式，应在返回数据前先设置格式，例如：
+因为响应格式默认为[[yii\web\Response::FORMAT_HTML|HTML]], 只需要在操作方法中返回一个字符串，
+如果想使用其他响应格式，应在返回数据前先设置格式，
+例如：
 
 ```php
 public function actionInfo()
@@ -136,7 +136,7 @@ public function actionInfo()
 ```
 
 如上所述，触雷使用默认的 `response` 应用组件，也可创建自己的响应对象并发送给终端用户，
-可在动作方法中返回该响应对象，如下所示：
+可在操作方法中返回该响应对象，如下所示：
 
 ```php
 public function actionInfo()
@@ -159,12 +159,12 @@ public function actionInfo()
 
 ## 浏览器跳转 <span id="browser-redirection"></span>
 
-浏览器跳转依赖于发送一个`Location` HTTP 头，
-因为该功能通常被使用，Yii提供对它提供了特别的支持。
+浏览器跳转依赖于发送一个`Location` HTTP 头，因为该功能通常被使用，
+Yii提供对它提供了特别的支持。
 
 可调用[[yii\web\Response::redirect()]] 方法将用户浏览器跳转到一个URL地址，该方法设置合适的
-带指定URL的 `Location` 头并返回它自己为响应对象，
-在动作的方法中，可调用缩写版[[yii\web\Controller::redirect()]]，例如：
+带指定URL的 `Location` 头并返回它自己为响应对象，在操作的方法中，
+可调用缩写版[[yii\web\Controller::redirect()]]，例如：
 
 ```php
 public function actionOld()
@@ -173,8 +173,8 @@ public function actionOld()
 }
 ```
 
-在如上代码中，动作的方法返回`redirect()` 方法的结果，如前所述，
-动作的方法返回的响应对象会被当总响应发送给终端用户。
+在如上代码中，操作的方法返回`redirect()` 方法的结果，如前所述，
+操作的方法返回的响应对象会被当总响应发送给终端用户。
 
 除了动作方法外，可直接调用[[yii\web\Response::redirect()]] 再调用
 [[yii\web\Response::send()]] 方法来确保没有其他内容追加到响应中。
@@ -184,18 +184,19 @@ public function actionOld()
 ```
 
 > Info: [[yii\web\Response::redirect()]] 方法默认会设置响应状态码为302，该状态码会告诉浏览器请求的资源
-  *临时* 放在另一个URI地址上，
-  可传递一个301状态码告知浏览器请求的资源已经 *永久* 重定向到新的URId地址。
+  *临时* 放在另一个URI地址上，可传递一个301状态码告知浏览器请求
+  的资源已经 *永久* 重定向到新的URId地址。
 
 如果当前请求为AJAX 请求，
 发送一个 `Location` 头不会自动使浏览器跳转，为解决这个问题，
 [[yii\web\Response::redirect()]] 方法设置一个值为要跳转的URL的`X-Redirect` 头，
-在客户端可编写JavaScript 代码读取该头部值然后让浏览器跳转对应的URL。
+在客户端可编写JavaScript 
+代码读取该头部值然后让浏览器跳转对应的URL。
 
-> Info: Yii 配备了一个`yii.js` JavaScript 文件提供常用JavaScript功能，包括基于`X-Redirect`头的浏览器跳转，
+> Info: Yii 配备了一个`yii.js` JavaScript 文件提供常用JavaScript功能，
+  包括基于`X-Redirect`头的浏览器跳转，
   因此，如果你使用该JavaScript 文件(通过[[yii\web\YiiAsset]] 资源包注册)，
   就不需要编写AJAX跳转的代码。
-
 
 ## 发送文件 <span id="sending-files"></span>
 
@@ -208,7 +209,7 @@ Yii提供方法集合来支持各种文件发送需求，它们对HTTP头都有�
 
 这些方法都将响应对象作为返回值，如果要发送的文件非常大，应考虑使用
 [[yii\web\Response::sendStreamAsFile()]] 因为它更节约内存，
-以下示例显示在控制器动作中如何发送文件：
+以下示例显示在控制器操作中如何发送文件：
 
 ```php
 public function actionDownload()
@@ -217,8 +218,8 @@ public function actionDownload()
 }
 ```
 
-如果不是在动作方法中调用文件发送方法，
-在后面还应调用 [[yii\web\Response::send()]] 没有其他内容追加到响应中。
+如果不是在操作方法中调用文件发送方法，在后面还应调用 
+[[yii\web\Response::send()]] 没有其他内容追加到响应中。
 
 ```php
 \Yii::$app->response->sendFile('path/to/file.txt')->send();
