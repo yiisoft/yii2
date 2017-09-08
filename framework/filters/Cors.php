@@ -135,8 +135,7 @@ class Cors extends ActionFilter
         $headers = [];
         $requestHeaders = array_keys($this->cors);
         foreach ($requestHeaders as $headerField) {
-            $serverField = $this->headerizeToPhp($headerField);
-            $headerData = isset($_SERVER[$serverField]) ? $_SERVER[$serverField] : null;
+            $headerData = $this->request->getHeaderLine($headerField);
             if ($headerData !== null) {
                 $headers[$headerField] = $headerData;
             }
@@ -232,17 +231,5 @@ class Cors extends ActionFilter
             return str_replace(' ', '-', ucwords(strtolower(str_replace(['_', '-'], [' ', ' '], $element))));
         }, $headers);
         return implode(', ', $headers);
-    }
-
-    /**
-     * Convert any string (including php headers with HTTP prefix) to header format like :
-     *  * X-Pingother -> HTTP_X_PINGOTHER
-     *  * X PINGOTHER -> HTTP_X_PINGOTHER
-     * @param string $string string to convert
-     * @return string the result in "php $_SERVER header" format
-     */
-    protected function headerizeToPhp($string)
-    {
-        return 'HTTP_' . strtoupper(str_replace([' ', '-'], ['_', '_'], $string));
     }
 }

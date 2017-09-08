@@ -289,8 +289,8 @@ class Request extends \yii\base\Request implements RequestInterface
         if ($this->_method === null) {
             if (isset($_POST[$this->methodParam])) {
                 $this->_method = $_POST[$this->methodParam];
-            } elseif (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
-                $this->_method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
+            } elseif ($this->hasHeader('x-http-method-override')) {
+                $this->_method = $this->getHeaderLine('x-http-method-override');
             } elseif (isset($_SERVER['REQUEST_METHOD'])) {
                 $this->_method = $_SERVER['REQUEST_METHOD'];
             } else {
@@ -447,7 +447,7 @@ class Request extends \yii\base\Request implements RequestInterface
      */
     public function getIsAjax()
     {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+        return $this->getHeaderLine('x-requested-with') === 'XMLHttpRequest';
     }
 
     /**
@@ -456,7 +456,7 @@ class Request extends \yii\base\Request implements RequestInterface
      */
     public function getIsPjax()
     {
-        return $this->getIsAjax() && !empty($_SERVER['HTTP_X_PJAX']);
+        return $this->getIsAjax() && $this->hasHeader('x-pjax');
     }
 
     /**
@@ -465,8 +465,11 @@ class Request extends \yii\base\Request implements RequestInterface
      */
     public function getIsFlash()
     {
-        return isset($_SERVER['HTTP_USER_AGENT']) &&
-            (stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
+        $userAgent = $this->getUserAgent();
+        if ($userAgent === null) {
+            return false;
+        }
+        return (stripos($userAgent, 'Shockwave') !== false || stripos($userAgent, 'Flash') !== false);
     }
 
     /**
@@ -694,8 +697,8 @@ class Request extends \yii\base\Request implements RequestInterface
         if ($this->_hostInfo === null) {
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
-            if (isset($_SERVER['HTTP_HOST'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['HTTP_HOST'];
+            if ($this->hasHeader('Host')) {
+                $this->_hostInfo = $http . '://' . $this->getHeaderLine('Host');
             } elseif (isset($_SERVER['SERVER_NAME'])) {
                 $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
                 $port = $secure ? $this->getSecurePort() : $this->getPort();
@@ -976,8 +979,8 @@ class Request extends \yii\base\Request implements RequestInterface
      */
     protected function resolveRequestUri()
     {
-        if (isset($_SERVER['HTTP_X_REWRITE_URL'])) { // IIS
-            $requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
+        if ($this->hasHeader('x-rewrite-url')) { // IIS
+            $requestUri = $this->getHeaderLine('x-rewrite-url');
         } elseif (isset($_SERVER['REQUEST_URI'])) {
             $requestUri = $_SERVER['REQUEST_URI'];
             if ($requestUri !== '' && $requestUri[0] !== '/') {
@@ -1011,7 +1014,7 @@ class Request extends \yii\base\Request implements RequestInterface
     public function getIsSecureConnection()
     {
         return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-            || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
+            || strcasecmp($this->getHeaderLine('x-forwarded-proto'), 'https') === 0;
     }
 
     /**
@@ -1038,7 +1041,10 @@ class Request extends \yii\base\Request implements RequestInterface
      */
     public function getReferrer()
     {
-        return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+        if (!$this->hasHeader('Referer')) {
+            return null;
+        }
+        return $this->getHeaderLine('Referer');
     }
 
     /**
@@ -1067,7 +1073,10 @@ class Request extends \yii\base\Request implements RequestInterface
      */
     public function getUserAgent()
     {
-        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
+        if (!$this->hasHeader('User-Agent')) {
+            return null;
+        }
+        return $this->getHeaderLine('User-Agent');
     }
 
     /**
@@ -1193,8 +1202,8 @@ class Request extends \yii\base\Request implements RequestInterface
     public function getAcceptableContentTypes()
     {
         if ($this->_contentTypes === null) {
-            if (isset($_SERVER['HTTP_ACCEPT'])) {
-                $this->_contentTypes = $this->parseAcceptHeader($_SERVER['HTTP_ACCEPT']);
+            if ($this->hasHeader('Accept')) {
+                $this->_contentTypes = $this->parseAcceptHeader($this->getHeaderLine('Accept'));
             } else {
                 $this->_contentTypes = [];
             }
@@ -1222,22 +1231,13 @@ class Request extends \yii\base\Request implements RequestInterface
      * contained in [[getRawBody()]] or, in the case of the HEAD method, the
      * media type that would have been sent had the request been a GET.
      * For the MIME-types the user expects in response, see [[acceptableContentTypes]].
-     * @return string request content-type. Null is returned if this information is not available.
+     * @return string request content-type. Empty string is returned if this information is not available.
      * @link https://tools.ietf.org/html/rfc2616#section-14.17
      * HTTP 1.1 header field definitions
      */
     public function getContentType()
     {
-        if (isset($_SERVER['CONTENT_TYPE'])) {
-            return $_SERVER['CONTENT_TYPE'];
-        }
-
-        if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
-            //fix bug https://bugs.php.net/bug.php?id=66606
-            return $_SERVER['HTTP_CONTENT_TYPE'];
-        }
-
-        return null;
+        return $this->getHeaderLine('Content-Type');
     }
 
     private $_languages;
@@ -1251,8 +1251,8 @@ class Request extends \yii\base\Request implements RequestInterface
     public function getAcceptableLanguages()
     {
         if ($this->_languages === null) {
-            if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-                $this->_languages = array_keys($this->parseAcceptHeader($_SERVER['HTTP_ACCEPT_LANGUAGE']));
+            if ($this->hasHeader('Accept-Language')) {
+                $this->_languages = array_keys($this->parseAcceptHeader($this->getHeaderLine('Accept-Language')));
             } else {
                 $this->_languages = [];
             }
@@ -1400,8 +1400,8 @@ class Request extends \yii\base\Request implements RequestInterface
      */
     public function getETags()
     {
-        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-            return preg_split('/[\s,]+/', str_replace('-gzip', '', $_SERVER['HTTP_IF_NONE_MATCH']), -1, PREG_SPLIT_NO_EMPTY);
+        if ($this->hasHeader('if-none-match')) {
+            return preg_split('/[\s,]+/', str_replace('-gzip', '', $this->getHeaderLine('if-none-match')), -1, PREG_SPLIT_NO_EMPTY);
         }
 
         return [];

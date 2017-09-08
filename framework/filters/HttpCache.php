@@ -165,12 +165,13 @@ class HttpCache extends ActionFilter
      */
     protected function validateCache($lastModified, $etag)
     {
-        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-            // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
+        $request = Yii::$app->getRequest();
+        if ($request->hasHeader('if-none-match')) {
+            // 'if-none-match' takes precedence over 'if-modified-since'
             // http://tools.ietf.org/html/rfc7232#section-3.3
             return $etag !== null && in_array($etag, Yii::$app->request->getETags(), true);
-        } elseif (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-            return $lastModified !== null && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified;
+        } elseif ($request->hasHeader('if-modified-since')) {
+            return $lastModified !== null && @strtotime($request->getHeaderLine('if-modified-since')) >= $lastModified;
         }
 
         return false;

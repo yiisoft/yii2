@@ -303,8 +303,10 @@ class FileValidator extends Validator
         if ($this->maxSize !== null && $limit > 0 && $this->maxSize < $limit) {
             $limit = $this->maxSize;
         }
-        if (isset($_POST['MAX_FILE_SIZE']) && $_POST['MAX_FILE_SIZE'] > 0 && $_POST['MAX_FILE_SIZE'] < $limit) {
-            $limit = (int) $_POST['MAX_FILE_SIZE'];
+
+        $maxFileSize = Yii::$app->getRequest()->getBodyParam('MAX_FILE_SIZE', 0);
+        if ($maxFileSize > 0 && $maxFileSize < $limit) {
+            $limit = (int)$maxFileSize;
         }
 
         return $limit;
