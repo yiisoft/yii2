@@ -123,9 +123,9 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function parse($rawBody, $contentType)
+    public function parse($request)
     {
         if (!$this->force) {
             if (!empty($_POST) || !empty($_FILES)) {
@@ -135,6 +135,9 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
         } else {
             $_FILES = [];
         }
+
+        $contentType = $request->getContentType();
+        $rawBody = $request->getBody()->__toString();
 
         if (empty($rawBody)) {
             return [];

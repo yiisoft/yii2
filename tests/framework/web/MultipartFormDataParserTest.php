@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use yii\web\MultipartFormDataParser;
+use yii\web\Request;
 use yiiunit\TestCase;
 
 class MultipartFormDataParserTest extends TestCase
@@ -24,6 +25,9 @@ class MultipartFormDataParserTest extends TestCase
         $rawBody .= "\r\n--{$boundary}\nContent-Disposition: form-data; name=\"Item[file]\"; filename=\"item-file.txt\"\nContent-Type: text/plain\r\n\r\nitem file content";
         $rawBody .= "\r\n--{$boundary}--";
 
+        $request = new Request([
+            'rawBody' => $rawBody,
+        ]);
         $bodyParams = $parser->parse($rawBody, $contentType);
 
         $expectedBodyParams = [
