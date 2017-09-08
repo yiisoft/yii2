@@ -12,7 +12,7 @@ use yii\caching\FileCache;
 use yii\rbac\DbManager;
 
 /**
- * PgSQLManagerTest
+ * PgSQLManagerTest.
  * @group db
  * @group rbac
  * @group pgsql

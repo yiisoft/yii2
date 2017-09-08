@@ -319,6 +319,8 @@ class View extends Component
      * @param string $_file_ the view file.
      * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @return string the rendering result
+     * @throws \Exception
+     * @throws \Throwable
      */
     public function renderPhpFile($_file_, $_params_ = [])
     {
@@ -371,6 +373,7 @@ class View extends Component
 
             return $placeholder;
         }
+
         return $this->evaluateDynamicContent($statements);
     }
 
@@ -401,7 +404,8 @@ class View extends Component
 
     /**
      * Begins recording a block.
-     * This method is a shortcut to beginning [[Block]]
+     *
+     * This method is a shortcut to beginning [[Block]].
      * @param string $id the block ID.
      * @param bool $renderInPlace whether to render the block content in place.
      * Defaults to false, meaning the captured block will not be displayed.
@@ -426,6 +430,7 @@ class View extends Component
 
     /**
      * Begins the rendering of content that is to be decorated by the specified view.
+     *
      * This method can be used to implement nested layout. For example, a layout can be embedded
      * in another layout file specified as '@app/views/layouts/base.php' like the following:
      *
@@ -460,6 +465,7 @@ class View extends Component
 
     /**
      * Begins fragment caching.
+     *
      * This method will display cached content if it is available.
      * If not, it will start caching and would expect an [[endCache()]]
      * call to end the cache and save the content into cache.
@@ -488,6 +494,7 @@ class View extends Component
 
             return false;
         }
+
         return true;
     }
 

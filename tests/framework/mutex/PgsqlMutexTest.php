@@ -11,7 +11,7 @@ use yii\mutex\PgsqlMutex;
 use yiiunit\framework\db\DatabaseTestCase;
 
 /**
- * Class PgsqlMutexTest
+ * Class PgsqlMutexTest.
  *
  * @group mutex
  * @group db

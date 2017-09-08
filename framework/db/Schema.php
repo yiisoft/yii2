@@ -314,6 +314,7 @@ abstract class Schema extends BaseObject
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -421,6 +422,7 @@ abstract class Schema extends BaseObject
 
             $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
         }
+
         return $result;
     }
 
@@ -493,6 +495,7 @@ abstract class Schema extends BaseObject
         if (strpos($name, '{{') !== false) {
             return $name;
         }
+
         return $prefix . $this->quoteSimpleColumnName($name);
     }
 
@@ -658,6 +661,7 @@ abstract class Schema extends BaseObject
             $this->_tableMetadata[$name][$type] = $this->{'loadTable' . ucfirst($type)}($this->getRawTableName($name));
             $this->saveTableMetadataToCache($cache, $name);
         }
+
         return $this->_tableMetadata[$name][$type];
     }
 
@@ -685,6 +689,7 @@ abstract class Schema extends BaseObject
                 $metadata[] = $tableMetadata;
             }
         }
+
         return $metadata;
     }
 

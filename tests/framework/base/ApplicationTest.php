@@ -63,8 +63,7 @@ class ApplicationTest extends TestCase
                 'withBootstrapInterface',
                 'moduleX',
                 function () {
-                }
-
+                },
             ],
         ]);
         $this->assertSame('Bootstrap with yii\base\Component', Yii::getLogger()->messages[0][1]);

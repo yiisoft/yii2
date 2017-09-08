@@ -11,7 +11,7 @@ use yii\log\EmailTarget;
 use yiiunit\TestCase;
 
 /**
- * Class EmailTargetTest
+ * Class EmailTargetTest.
  * @group log
  */
 class EmailTargetTest extends TestCase
@@ -22,7 +22,7 @@ class EmailTargetTest extends TestCase
     protected $mailer;
 
     /**
-     * Set up mailer
+     * Set up mailer.
      */
     protected function setUp()
     {

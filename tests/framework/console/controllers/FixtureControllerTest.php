@@ -57,6 +57,18 @@ class FixtureControllerTest extends TestCase
         $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
     }
 
+    public function testLoadGlobalFixtureWithFixture()
+    {
+        $this->_fixtureController->globalFixtures = [
+            '\yiiunit\data\console\controllers\fixtures\GlobalFixture',
+        ];
+
+        $this->_fixtureController->actionLoad(['First']);
+
+        $this->assertCount(1, FixtureStorage::$globalFixturesData, 'global fixture data should be loaded');
+        $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
+    }
+
     public function testUnloadGlobalFixture()
     {
         $this->_fixtureController->globalFixtures = [
@@ -194,19 +206,15 @@ class FixtureControllerTest extends TestCase
         $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should not be loaded');
     }
 
-    /**
-     * @expectedException \yii\console\Exception
-     */
     public function testNoFixturesWereFoundInLoad()
     {
+        $this->expectException(\yii\console\Exception::class);
         $this->_fixtureController->actionLoad(['NotExistingFixture']);
     }
 
-    /**
-     * @expectedException \yii\console\Exception
-     */
     public function testNoFixturesWereFoundInUnload()
     {
+        $this->expectException(\yii\console\Exception::class);
         $this->_fixtureController->actionUnload(['NotExistingFixture']);
     }
 }

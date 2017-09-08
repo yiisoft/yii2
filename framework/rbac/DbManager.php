@@ -115,12 +115,19 @@ class DbManager extends BaseManager
         }
     }
 
+    private $_checkAccessAssignments = [];
+
     /**
      * @inheritdoc
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
-        $assignments = $this->getAssignments($userId);
+        if (isset($this->_checkAccessAssignments[(string) $userId])) {
+            $assignments = $this->_checkAccessAssignments[(string) $userId];
+        } else {
+            $assignments = $this->getAssignments($userId);
+            $this->_checkAccessAssignments[(string) $userId] = $assignments;
+        }
 
         if ($this->hasNoAssignments($assignments)) {
             return false;
@@ -428,7 +435,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Populates an auth item with the data fetched from database
+     * Populates an auth item with the data fetched from database.
      * @param array $row the data from the auth item table
      * @return Item the populated auth item instance (either Role or Permission)
      */
@@ -471,6 +478,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $roles[$row['name']] = $this->populateItem($row);
         }
+
         return $roles;
     }
 
@@ -516,6 +524,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
@@ -552,6 +561,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
@@ -585,6 +595,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
@@ -600,6 +611,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $parents[$row['parent']][] = $row['child'];
         }
+
         return $parents;
     }
 
@@ -639,6 +651,7 @@ class DbManager extends BaseManager
         if (is_resource($data)) {
             $data = stream_get_contents($data);
         }
+
         return unserialize($data);
     }
 
@@ -822,6 +835,7 @@ class DbManager extends BaseManager
                 return true;
             }
         }
+
         return false;
     }
 
@@ -843,6 +857,7 @@ class DbManager extends BaseManager
                 'created_at' => $assignment->createdAt,
             ])->execute();
 
+        unset($this->_checkAccessAssignments[(string) $userId]);
         return $assignment;
     }
 
@@ -855,6 +870,7 @@ class DbManager extends BaseManager
             return false;
         }
 
+        unset($this->_checkAccessAssignments[(string) $userId]);
         return $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
             ->execute() > 0;
@@ -869,6 +885,7 @@ class DbManager extends BaseManager
             return false;
         }
 
+        unset($this->_checkAccessAssignments[(string) $userId]);
         return $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId])
             ->execute() > 0;
@@ -953,6 +970,7 @@ class DbManager extends BaseManager
      */
     public function removeAllAssignments()
     {
+        $this->_checkAccessAssignments = [];
         $this->db->createCommand()->delete($this->assignmentTable)->execute();
     }
 
@@ -964,6 +982,7 @@ class DbManager extends BaseManager
             $this->rules = null;
             $this->parents = null;
         }
+        $this->_checkAccessAssignments = [];
     }
 
     public function loadFromCache()

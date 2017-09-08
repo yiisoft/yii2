@@ -241,6 +241,7 @@ class UrlManager extends Component
             }
             $compiledRules[] = $rule;
         }
+
         return $compiledRules;
     }
 
@@ -437,7 +438,7 @@ class UrlManager extends Component
     }
 
     /**
-     * Get URL from internal cache if exists
+     * Get URL from internal cache if exists.
      * @param string $cacheKey generated cache key to store data.
      * @param string $route the route (e.g. `site/index`).
      * @param array $params rule params.
@@ -457,11 +458,12 @@ class UrlManager extends Component
         } else {
             $this->_ruleCache[$cacheKey] = [];
         }
+
         return false;
     }
 
     /**
-     * Store rule (e.g. [[UrlRule]]) to internal cache
+     * Store rule (e.g. [[UrlRule]]) to internal cache.
      * @param $cacheKey
      * @param UrlRuleInterface $rule
      * @since 2.0.8
@@ -531,7 +533,7 @@ class UrlManager extends Component
      */
     public function setBaseUrl($value)
     {
-        $this->_baseUrl = $value === null ? null : rtrim($value, '/');
+        $this->_baseUrl = $value === null ? null : rtrim(Yii::getAlias($value), '/');
     }
 
     /**

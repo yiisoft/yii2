@@ -128,6 +128,7 @@ class AccessControl extends ActionFilter
                 } else {
                     $this->denyAccess($user);
                 }
+
                 return false;
             }
         }
@@ -136,6 +137,7 @@ class AccessControl extends ActionFilter
         } else {
             $this->denyAccess($user);
         }
+
         return false;
     }
 
