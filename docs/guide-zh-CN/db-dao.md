@@ -2,7 +2,7 @@
 ========
 
 Yii 包含了一个建立在 PHP PDO 之上的数据访问层 (DAO)。DAO为不同的数据库提供了一套统一的API。
-其中```ActiveRecord``` 提供了数据库与模型(MVC 中的 M,Model) 的交互，```QueryBuilder``` 用于创建动态的查询语句。
+其中 `ActiveRecord` 提供了数据库与模型(MVC 中的 M,Model) 的交互，`QueryBuilder` 用于创建动态的查询语句。
 DAO提供了简单高效的SQL查询，可以用在与数据库交互的各个地方.
 
 使用 Yii DAO 时，你主要需要处理纯 SQL 语句和 PHP 数组。因此，这是访问数据库最高效的方法。

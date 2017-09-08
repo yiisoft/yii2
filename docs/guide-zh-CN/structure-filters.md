@@ -11,9 +11,9 @@
 
 ## 使用过滤器 <span id="using-filters"></span>
 
-过滤器本质上是一类特殊的 [行为](concept-behaviors.md)，所以使用过滤器和 [使用 行为](concept-behaviors.md#attaching-behaviors)一样。
-可以在控制器类中覆盖它的 [[yii\base\Controller::behaviors()|behaviors()]] 方法来申明过滤器，
-如下所示：
+过滤器本质上是一类特殊的 [行为](concept-behaviors.md)，
+所以使用过滤器和 [使用 行为](concept-behaviors.md#attaching-behaviors)一样。
+可以在控制器类中覆盖它的 [[yii\base\Controller::behaviors()|behaviors()]] 方法来申明过滤器，如下所示：
 
 ```php
 public function behaviors()
@@ -33,9 +33,9 @@ public function behaviors()
 
 控制器类的过滤器默认应用到该类的 *所有* 动作，
 你可以配置[[yii\base\ActionFilter::only|only]]属性明确指定控制器应用到哪些动作。
-在上述例子中，
-`HttpCache` 过滤器只应用到`index`和`view`动作。
-也可以配置[[yii\base\ActionFilter::except|except]]属性使一些动作不执行过滤器。
+在上述例子中，`HttpCache` 过滤器只应用到`index`和`view`动作。
+也可以配置[[yii\base\ActionFilter::except|except]]属性
+使一些动作不执行过滤器。
 
 除了控制器外，可在 [模块](structure-modules.md)或[应用主体](structure-applications.md) 中申明过滤器。
 申明之后，过滤器会应用到所属该模块或应用主体的 *所有* 控制器动作，
@@ -106,8 +106,8 @@ Yii提供了一组常用过滤器，在`yii\filters`命名空间下，
 ### [[yii\filters\AccessControl|AccessControl]] <span id="access-control"></span>
 
 AccessControl提供基于[[yii\filters\AccessControl::rules|rules]]规则的访问控制。
-特别是在动作执行之前，
-访问控制会检测所有规则并找到第一个符合上下文的变量（比如用户IP地址、登录状态等等）的规则，
+特别是在动作执行之前，访问控制会检测所有规则
+并找到第一个符合上下文的变量（比如用户IP地址、登录状态等等）的规则，
 来决定允许还是拒绝请求动作的执行，
 如果没有规则符合，访问就会被拒绝。
 
@@ -141,9 +141,9 @@ public function behaviors()
 
 ### 认证方法过滤器 <span id="auth-method-filters"></span>
 
-认证方法过滤器通过[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication)或[OAuth 2](http://oauth.net/2/)
-来认证一个用户，
-认证方法过滤器类在 `yii\filters\auth` 命名空间下。
+认证方法过滤器通过[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication)
+或[OAuth 2](http://oauth.net/2/)
+来认证一个用户，认证方法过滤器类在 `yii\filters\auth` 命名空间下。
 
 如下示例表示可使用[[yii\filters\auth\HttpBasicAuth]]来认证一个用户，
 它使用基于HTTP基础认证方法的令牌。
@@ -172,8 +172,8 @@ public function behaviors()
 ContentNegotiator支持响应内容格式处理和语言处理。
 通过检查 `GET` 参数和 `Accept` HTTP头部来决定响应内容格式和语言。
 
-如下示例，配置ContentNegotiator支持JSON和XML响应格式
-和英语（美国）和德语。
+如下示例，配置ContentNegotiator支持JSON和XML
+响应格式和英语（美国）和德语。
 
 ```php
 use yii\filters\ContentNegotiator;
@@ -224,7 +224,7 @@ use yii\web\Response;
 ];
 ```
 
-> 补充: 如果请求中没有检测到内容格式和语言，
+> Info: 如果请求中没有检测到内容格式和语言，
   使用[[formats]]和[[languages]]第一个配置项。
 
 
@@ -290,8 +290,8 @@ public function behaviors()
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 RateLimiter 根据 [漏桶算法](http://en.wikipedia.org/wiki/Leaky_bucket) 来实现速率限制。
-主要用在实现RESTful APIs，
-更多关于该过滤器详情请参阅 [Rate Limiting](rest-rate-limiting.md) 一节。
+主要用在实现RESTful APIs，更多关于该过滤器详情请参阅 
+[Rate Limiting](rest-rate-limiting.md) 一节。
 
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
@@ -322,7 +322,8 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-跨域资源共享 [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) 机制允许一个网页的许多资源（例如字体、JavaScript等）
+跨域资源共享 [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) 
+机制允许一个网页的许多资源（例如字体、JavaScript等）
 这些资源可以通过其他域名访问获取。
 特别是JavaScript's AJAX 调用可使用 XMLHttpRequest 机制，
 由于同源安全策略该跨域请求会被网页浏览器禁止.
@@ -345,7 +346,10 @@ public function behaviors()
 }
 ```
 
-Cors 可转为使用 `cors` 属性。
+Also check the section on [REST Controllers](rest-controllers.md#cors) if you want to add the CORS filter to an
+[[yii\rest\ActiveController]] class in your API.
+
+The Cors filtering could be tuned using the [[yii\filters\Cors::$cors|$cors]] property.
 
 * `cors['Origin']`: 定义允许来源的数组，可为`['*']` (任何用户) 或 `['http://www.myserver.net', 'http://www.myotherserver.com']`. 默认为 `['*']`.
 * `cors['Access-Control-Request-Method']`: 允许动作数组如 `['GET', 'OPTIONS', 'HEAD']`.  默认为 `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
@@ -373,8 +377,8 @@ public function behaviors()
 }
 ```
 
-可以覆盖默认参数为每个动作调整CORS 头部。例如，
-为`login`动作增加`Access-Control-Allow-Credentials`参数如下所示：
+可以覆盖默认参数为每个动作调整CORS 头部。例如，为`login`动作
+增加`Access-Control-Allow-Credentials`参数如下所示：
 
 ```php
 use yii\filters\Cors;

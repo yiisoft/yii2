@@ -32,7 +32,7 @@
 在浏览器底部可以看到一个工具栏。这是 Yii 提供的很有用的[调试工具](tool-debugger.md)，
 可以记录并显示大量的调试信息，例如日志信息，响应状态，数据库查询等等。
 
-除了web应用程序，还有一个控制台脚步叫 `yii` ,它位于应用程序根目录。
+除了 web 应用程序，还有一个控制台脚本叫 `yii` ,它位于应用程序根目录。
 它可以用于程序的后台运行和维护任务，在[控制台应用程序章节](tutorial-console.md)
 中描述。
 
@@ -72,11 +72,11 @@ Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-vie
 
 ![应用静态结构](images/application-structure.png)
 
-每个应用都有一个入口脚本 `web/index.php`，
-这是整个应用中唯一可以访问的 PHP 脚本。
-入口脚本接受一个 Web 请求并创建[应用](structure-application.md)实例去处理它。
-[应用](structure-applications.md)在它的[组件](concept-components.md)辅助下解析请求，
-并分派请求至 MVC 元素。[视图](structure-views.md)使用[小部件](structure-widgets.md)去创建复杂和动态的用户界面。
+每个应用都有一个入口脚本 `web/index.php`，这是整个应用中唯一可以访问的 PHP 脚本。
+入口脚本接受一个 Web 请求并创建[应用](structure-application.md)实例去处理它。 
+[应用](structure-applications.md)在它的[组建](concept-components.md)辅助下解析请求，
+并分派请求至 MVC 元素。[视图](structure-views.md)使用[小部件](structure-widgets.md)
+去创建复杂和动态的用户界面。
 
 
 请求生命周期 <span id="request-lifecycle"></span>
@@ -87,10 +87,10 @@ Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-vie
 ![请求生命周期](images/request-lifecycle.png)
 
 1. 用户向[入口脚本](structure-entry-scripts.md) `web/index.php` 发起请求。
-2. 入口脚本加载应用[配置](concept-configurations.md)
-   并创建一个[应用](structure-applications.md)实例去处理请求。
-3. 应用通过[请求](runtime-request.md)组件
-   解析请求的[路由](runtime-routing.md)。
+2. 入口脚本加载应用[配置](concept-configurations.md)并创建一个[应用](structure-applications.md)
+   实例去处理请求。
+3. 应用通过[请求](runtime-request.md)组件解析请求的
+   [路由](runtime-routing.md)。
 4. 应用创建一个[控制器](structure-controllers.md)实例去处理请求。
 5. 控制器创建一个[动作](structure-controllers.md)实例并针对操作执行过滤器。
 6. 如果任何一个过滤器返回失败，则动作取消。
