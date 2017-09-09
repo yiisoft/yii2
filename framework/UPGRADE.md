@@ -115,6 +115,13 @@ Upgrade from Yii 2.0.12
     compatible with the method added by Yii.
   - Otherwise this method is implemented in the `yii\base\Model`, so the change only affects your code if you implement `ActiveRecordInterface`
     in a class that does not extend `Model`. You may use `yii\base\StaticInstanceTrait` to implement it.
+    
+* Fixed built-in validator creating when model has a method with the same name. 
+
+  It is documented, that for the validation rules declared in model by `yii\base\Model::rules()`, validator can be either 
+  a built-in validator name, a method name of the model class, an anonymous function, or a validator class name. 
+  Before this change behavior was inconsistent with the documentation: method in the model had higher priority, than
+  a built-in validator. In case you have relied on this behavior, make sure to fix it.
 
 Upgrade from Yii 2.0.11
 -----------------------
