@@ -579,11 +579,11 @@ class View extends \yii\base\View
                 $lines[] = Html::script(implode("\n", $this->js[self::POS_END]), ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_READY])) {
-                $js = "jQuery(document).ready(function () {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
+                $js = "jQuery(function ($) {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_LOAD])) {
-                $js = "jQuery(window).on('load', function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
+                $js = "jQuery(function ($) {\n$(window).on('load', function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n}\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
         }
