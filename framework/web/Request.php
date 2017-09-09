@@ -195,9 +195,9 @@ class Request extends \yii\base\Request
      * Default is to trust all headers except those listed in [[secureHeaders]] from all hosts.
      * Matches are tried in order and searching is stopped when IP matches.
      * 
-     * > Info: Matching is performed using [[yii\validators\IpValidator|IpValidator]]. 
-     *   See [[yii\validators\IpValidator::networks|IpValidator::setRanges()]] 
-     *   and [[yii\validators\IpValidator::networks|IpValidator::networks]] for advanced matching.
+     * > Info: Matching is performed using [[IpValidator]].
+     *   See [[IpValidator::::setRanges()|IpValidator::setRanges()]]
+     *   and [[IpValidator::networks]] for advanced matching.
      * 
      * @see $secureHeaders
      * @since 2.0.13
@@ -310,7 +310,7 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Creates instance of [[yii\validators\IpValidator]].
+     * Creates instance of [[IpValidator]].
      * You can override this method to adjust validator or implement different matching strategy.
      *
      * @return IpValidator
