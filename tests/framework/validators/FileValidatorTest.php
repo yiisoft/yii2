@@ -389,24 +389,51 @@ class FileValidatorTest extends TestCase
     public function validMimeTypes()
     {
         return [
-            ['test.svg', 'image/*'],
-            ['test.jpg', 'image/*'],
-            ['test.png', 'image/*'],
-            ['test.png', 'IMAGE/*'],
-            ['test.txt', 'text/*'],
-            ['test.xml', '*/xml'],
-            ['test.odt', 'application/vnd*'],
+            ['test.svg', 'image/*', 'svg'],
+            ['test.jpg', 'image/*', 'jpg'],
+            ['test.png', 'image/*', 'png'],
+            ['test.png', 'IMAGE/*', 'png'],
+            ['test.txt', 'text/*', 'txt'],
+            ['test.xml', '*/xml', 'xml'],
+            ['test.odt', 'application/vnd*', 'odt'],
         ];
     }
 
     public function invalidMimeTypes()
     {
         return [
-            ['test.txt', 'image/*'],
-            ['test.odt', 'text/*'],
-            ['test.xml', '*/svg+xml'],
-            ['test.png', 'image/x-iso9660-image'],
+            ['test.txt', 'image/*', 'png, jpg'],
+            ['test.odt', 'text/*', 'txt'],
+            ['test.xml', '*/svg+xml', 'svg'],
+            ['test.png', 'image/x-iso9660-image', 'bmp'],
+            ['test.svg', 'image/*', 'jpg'],
         ];
+    }
+
+    /**
+     * @param string $fileName
+     * @param mixed $_
+     * @param string|array $allowedExtensions
+     * @dataProvider validMimeTypes
+     */
+    public function testValidateFileByExtensionUsingMimeType($fileName, $_, $allowedExtensions)
+    {
+        $validator = new FileValidator(['extensions' => (array)$allowedExtensions]);
+        $file = $this->getRealTestFile($fileName);
+        $this->assertTrue($validator->validate($file));
+    }
+
+    /**
+     * @param string $fileName
+     * @param mixed $_
+     * @param string|array $allowedExtensions
+     * @dataProvider invalidMimeTypes
+     */
+    public function testValidateFileByExtensionUsingMimeTypeInvalid($fileName, $_, $allowedExtensions)
+    {
+        $validator = new FileValidator(['extensions' => (array)$allowedExtensions]);
+        $file = $this->getRealTestFile($fileName);
+        $this->assertFalse($validator->validate($file));
     }
 
     protected function createModelForAttributeTest()
