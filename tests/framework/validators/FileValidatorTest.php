@@ -406,7 +406,7 @@ class FileValidatorTest extends TestCase
             ['test.odt', 'text/*', 'txt'],
             ['test.xml', '*/svg+xml', 'svg'],
             ['test.png', 'image/x-iso9660-image', 'bmp'],
-            ['test.svg', 'image/*', 'jpg'],
+            ['test.svg', 'application/*', 'jpg'],
         ];
     }
 
