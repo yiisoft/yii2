@@ -8,6 +8,7 @@
 namespace yiiunit\framework\base;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\base\Controller;
 use yii\base\Module;
 use yii\base\Object;
@@ -94,8 +95,31 @@ class ModuleTest extends TestCase
         $child = new Module('child', $parent);
         $grandchild = new Module('grandchild', $child);
 
-        $parent->set('test', new Object());
-        $this->assertInstanceOf(Object::className(), $grandchild->get('test'));
+        $parentObject = new BaseObject();
+        $childObject = new BaseObject();
+
+        $parent->set('test', $parentObject);
+        $this->assertTrue($grandchild->has('test'));
+        $this->assertTrue($child->has('test'));
+        $this->assertTrue($parent->has('test'));
+        $this->assertSame($parentObject, $grandchild->get('test'));
+        $this->assertSame($parentObject, $child->get('test'));
+        $this->assertSame($parentObject, $parent->get('test'));
+
+        $child->set('test', $childObject);
+        $this->assertSame($childObject, $grandchild->get('test'));
+        $this->assertSame($childObject, $child->get('test'));
+        $this->assertSame($parentObject, $parent->get('test'));
+        $this->assertTrue($grandchild->has('test'));
+        $this->assertTrue($child->has('test'));
+        $this->assertTrue($parent->has('test'));
+
+        $parent->clear('test');
+        $this->assertSame($childObject, $grandchild->get('test'));
+        $this->assertSame($childObject, $child->get('test'));
+        $this->assertTrue($grandchild->has('test'));
+        $this->assertTrue($child->has('test'));
+        $this->assertFalse($parent->has('test'));
     }
 }
 

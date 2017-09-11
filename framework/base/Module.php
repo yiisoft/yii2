@@ -729,4 +729,21 @@ class Module extends ServiceLocator
         }
         return $component;
     }
+
+    /**
+     * @inheritdoc
+     * @param string $id
+     * @param bool $checkInstance
+     * @return bool
+     * Since version 2.0.13, if a component isn't defined in the module, it will be looked up in the parent module.
+     * The parent module may be the application.
+     */
+    public function has($id, $checkInstance = false)
+    {
+        if (!isset($this->module)) {
+            return parent::has($id, $checkInstance);
+        }
+
+        return parent::has($id, $checkInstance) || $this->module->has($id, $checkInstance);
+    }
 }
