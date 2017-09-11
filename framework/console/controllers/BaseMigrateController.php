@@ -641,7 +641,7 @@ abstract class BaseMigrateController extends Controller
      * @return array list of 2 elements: 'namespace' and 'class base name'
      * @since 2.0.10
      */
-    private function generateClassName($name)
+    protected function generateClassName($name)
     {
         $namespace = null;
         $name = trim($name, '\\');
