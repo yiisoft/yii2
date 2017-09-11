@@ -72,6 +72,7 @@ Yii Framework 2 Change Log
 - Bug #13969: Fixed a bug in a `yii\console\controllers\CacheController` when caches defined via a closure were not detected (Kolyunya)
 - Enh #14061: Added request scope assignments cache to `yii\rbac\DbManager::checkAccess()` to avoid duplicate queries for user assignments (leandrogehlen, cebe, nineinchnick, ryusoft)
 - Enh #14294: Added `InputWidget::renderInput()` to move behavior described in `InputWidget` class docs to the class itself (cebe)
+- Enh #14620: Updated `yii.activeForm.js` and `yii\web\View` to jQuery 3.0 compatible API (silverfire)
 
 
 2.0.12 June 05, 2017
