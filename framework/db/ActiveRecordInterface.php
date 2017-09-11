@@ -7,6 +7,8 @@
 
 namespace yii\db;
 
+use yii\base\StaticInstanceInterface;
+
 /**
  * ActiveRecordInterface.
  *
@@ -14,7 +16,7 @@ namespace yii\db;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-interface ActiveRecordInterface
+interface ActiveRecordInterface extends StaticInstanceInterface
 {
     /**
      * Returns the primary key **name(s)** for this AR class.

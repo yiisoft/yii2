@@ -9,6 +9,7 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\NotSupportedException;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
@@ -81,6 +82,13 @@ abstract class BaseMigrateController extends Controller
      */
     public $templateFile;
 
+    /**
+     * @var bool indicates whether the console output should be compacted.
+     * If this is set to true, the individual commands ran within the migration will not be output to the console.
+     * Default is false, in other words the output is fully verbose by default.
+     * @since 2.0.13
+     */
+    public $compact = false;
 
     /**
      * @inheritdoc
@@ -89,7 +97,7 @@ abstract class BaseMigrateController extends Controller
     {
         return array_merge(
             parent::options($actionID),
-            ['migrationPath', 'migrationNamespaces'], // global for all actions
+            ['migrationPath', 'migrationNamespaces', 'compact'], // global for all actions
             $actionID === 'create' ? ['templateFile'] : [] // action create
         );
     }
@@ -447,7 +455,8 @@ abstract class BaseMigrateController extends Controller
 
         if ($this->confirm(
             "Are you sure you want to reset the database and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
-            $this->refreshDatabase();
+            $this->truncateDatabase();
+            $this->actionUp();
         } else {
             $this->stdout('Action was cancelled by user. Nothing has been performed.');
         }
@@ -750,7 +759,7 @@ abstract class BaseMigrateController extends Controller
     protected function createMigration($class)
     {
         $this->includeMigrationFile($class);
-        return new $class();
+        return new $class(['compact' => $this->compact]);
     }
 
     /**
@@ -906,16 +915,14 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Truncates the database and reapplies all migrations from the beginning.
-     *
-     * This method will simply print a message in the base class implementation.
-     * It should be overwritten in subclasses to implement the task of clearing the database.
-     *
+     * Truncates the database.
+     * This method should be overwritten in subclasses to implement the task of clearing the database.
+     * @throws NotSupportedException if not overridden
      * @since 2.0.13
      */
-    protected function refreshDatabase()
+    protected function truncateDatabase()
     {
-        $this->stdout('This command is not implemented in ' . get_class($this) . "\n");
+        throw new NotSupportedException('This command is not implemented in ' . get_class($this));
     }
 
     /**

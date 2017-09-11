@@ -48,8 +48,12 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection = $this->getConnection(false, false);
         $connection->open();
         $serialized = serialize($connection);
+
+        $this->assertNotNull($connection->pdo);
+
         $unserialized = unserialize($serialized);
         $this->assertInstanceOf('yii\db\Connection', $unserialized);
+        $this->assertNull($unserialized->pdo);
 
         $this->assertEquals(123, $unserialized->createCommand('SELECT 123')->queryScalar());
     }

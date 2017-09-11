@@ -7,7 +7,7 @@
 
 namespace yii\db;
 
-use yii\base\Event;
+use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
@@ -1290,7 +1290,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */
                 /* @var $record ActiveRecordInterface */
-                $record = new $viaClass();
+                $record = Yii::createObject($viaClass);
                 foreach ($columns as $column => $value) {
                     $record->$column = $value;
                 }
@@ -1589,7 +1589,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     } catch (InvalidParamException $e) {
                         return $this->generateAttributeLabel($attribute);
                     }
-                    $relatedModel = new $relation->modelClass();
+                    /* @var $modelClass ActiveRecordInterface */
+                    $modelClass = $relation->modelClass;
+                    $relatedModel = $modelClass::instance();
                 }
             }
 
@@ -1629,7 +1631,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     } catch (InvalidParamException $e) {
                         return '';
                     }
-                    $relatedModel = new $relation->modelClass();
+                    /* @var $modelClass ActiveRecordInterface */
+                    $modelClass = $relation->modelClass;
+                    $relatedModel = $modelClass::instance();
                 }
             }
 

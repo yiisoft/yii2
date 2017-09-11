@@ -181,7 +181,7 @@ abstract class CacheTestCase extends TestCase
         $this->assertEquals(['string_test' => 'string_test', 'number_test' => 42], $cache->multiGet(['string_test', 'number_test']));
         // ensure that order does not matter
         $this->assertEquals(['number_test' => 42, 'string_test' => 'string_test'], $cache->multiGet(['number_test', 'string_test']));
-        $this->assertEquals(['number_test' => 42, 'non_existent_key' => null], $cache->multiGet(['number_test', 'non_existent_key']));
+        $this->assertSame(['number_test' => 42, 'non_existent_key' => false], $cache->multiGet(['number_test', 'non_existent_key']));
     }
 
     public function testDefaultTtl()
@@ -246,7 +246,7 @@ abstract class CacheTestCase extends TestCase
     {
         $cache = $this->prepare();
 
-        $this->assertNotNull($cache->get('number_test'));
+        $this->assertEquals(42, $cache->get('number_test'));
         $this->assertTrue($cache->delete('number_test'));
         $this->assertFalse($cache->get('number_test'));
     }
@@ -265,7 +265,7 @@ abstract class CacheTestCase extends TestCase
         $expected = $this->getOrSetCallable($cache);
         $callable = [$this, 'getOrSetCallable'];
 
-        $this->assertEquals(null, $cache->get('something'));
+        $this->assertFalse($cache->get('something'));
         $this->assertEquals($expected, $cache->getOrSet('something', $callable));
         $this->assertEquals($expected, $cache->get('something'));
     }
