@@ -110,6 +110,8 @@ Upgrade from Yii 2.0.x
   with PHP. For details please refer to [guide on autoloading](https://github.com/yiisoft/yii2/blob/2.1/docs/guide/concept-autoloading.md),  
   [guide on customizing helpers](https://github.com/yiisoft/yii2/blob/2.1/docs/guide/helper-overview.md#customizing-helper-classes-)
   and [guide on Working with Third-Party Code](https://github.com/yiisoft/yii2/blob/2.1/docs/guide/tutorial-yii-integration.md).
+* The signature of `yii\web\RequestParserInterface::parse()` was changed. The method now accepts the `yii\web\Request` instance
+  as a sole argument. Make sure you declare and implement this method correctly, while creating your own request parser.
 
 
 Upgrade from Yii 2.0.12

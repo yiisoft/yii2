@@ -16,6 +16,7 @@ use yii\di\Instance;
 use yii\http\Cookie;
 use yii\http\CookieCollection;
 use yii\http\FileStream;
+use yii\http\MemoryStream;
 use yii\http\MessageTrait;
 use yii\http\Uri;
 
@@ -479,19 +480,13 @@ class Request extends \yii\base\Request implements RequestInterface
         ]);
     }
 
-    private $_rawBody;
-
     /**
      * Returns the raw HTTP request body.
      * @return string the request body
      */
     public function getRawBody()
     {
-        if ($this->_rawBody === null) {
-            $this->_rawBody = $this->getBody()->__toString();
-        }
-
-        return $this->_rawBody;
+        return $this->getBody()->__toString();
     }
 
     /**
@@ -500,7 +495,9 @@ class Request extends \yii\base\Request implements RequestInterface
      */
     public function setRawBody($rawBody)
     {
-        $this->_rawBody = $rawBody;
+        $body = new MemoryStream();
+        $body->write($rawBody);
+        $this->setBody($body);
     }
 
     private $_bodyParams;
@@ -539,13 +536,13 @@ class Request extends \yii\base\Request implements RequestInterface
                 if (!($parser instanceof RequestParserInterface)) {
                     throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
                 }
-                $this->_bodyParams = $parser->parse($this->getRawBody(), $rawContentType);
+                $this->_bodyParams = $parser->parse($this);
             } elseif (isset($this->parsers['*'])) {
                 $parser = Yii::createObject($this->parsers['*']);
                 if (!($parser instanceof RequestParserInterface)) {
                     throw new InvalidConfigException('The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.');
                 }
-                $this->_bodyParams = $parser->parse($this->getRawBody(), $rawContentType);
+                $this->_bodyParams = $parser->parse($this);
             } elseif ($this->getMethod() === 'POST') {
                 // PHP has already parsed the body so we have all params in $_POST
                 $this->_bodyParams = $_POST;
