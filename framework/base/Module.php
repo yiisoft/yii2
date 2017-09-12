@@ -740,10 +740,6 @@ class Module extends ServiceLocator
      */
     public function has($id, $checkInstance = false)
     {
-        if (!isset($this->module)) {
-            return parent::has($id, $checkInstance);
-        }
-
-        return parent::has($id, $checkInstance) || $this->module->has($id, $checkInstance);
+        return parent::has($id, $checkInstance) || (isset($this->module) && $this->module->has($id, $checkInstance));
     }
 }
