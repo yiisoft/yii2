@@ -1506,7 +1506,11 @@ class BaseHtml
             unset($options['label']);
         }
 
-        $checked = "$value" === "{$options['value']}";
+        if (is_array($value)) {
+            $checked = ArrayHelper::isIn($options['value'], $value);
+        } else {
+            $checked = "$value" === "{$options['value']}";
+        }
 
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
