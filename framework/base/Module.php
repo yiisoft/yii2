@@ -713,7 +713,7 @@ class Module extends ServiceLocator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * Since version 2.0.13, if a component isn't defined in the module, it will be looked up in the parent module.
      * The parent module may be the application.
@@ -732,7 +732,7 @@ class Module extends ServiceLocator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * Since version 2.0.13, if a component isn't defined in the module, it will be looked up in the parent module.
      * The parent module may be the application.
