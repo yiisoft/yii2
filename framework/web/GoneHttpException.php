@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * GoneHttpException represents a "Gone" HTTP exception with status code 410
+ * GoneHttpException represents a "Gone" HTTP exception with status code 410.
  *
  * Throw a GoneHttpException when a user requests a resource that no longer exists
  * at the requested url. For example, after a record is deleted, future requests

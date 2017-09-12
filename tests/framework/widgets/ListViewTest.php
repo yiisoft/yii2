@@ -7,8 +7,8 @@
 
 namespace yiiunit\framework\widgets;
 
-use Yii;
 use yii\data\ArrayDataProvider;
+use yii\data\DataProviderInterface;
 use yii\widgets\ListView;
 use yiiunit\TestCase;
 
@@ -58,6 +58,10 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
+    /**
+     * @param array $options
+     * @return ListView
+     */
     private function getListView($options = [])
     {
         return new ListView(array_merge([
@@ -66,6 +70,9 @@ HTML;
         ], $options));
     }
 
+    /**
+     * @return DataProviderInterface
+     */
     private function getDataProvider()
     {
         return new ArrayDataProvider([
@@ -138,6 +145,8 @@ HTML;
 
     /**
      * @dataProvider itemViewOptions
+     * @param mixed $itemView
+     * @param string $expected
      */
     public function testItemViewOptions($itemView, $expected)
     {
@@ -179,6 +188,8 @@ HTML;
 
     /**
      * @dataProvider itemOptions
+     * @param mixed $itemOptions
+     * @param string $expected
      */
     public function testItemOptions($itemOptions, $expected)
     {

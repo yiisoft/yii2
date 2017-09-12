@@ -29,6 +29,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider pdoAttributesProvider
+     * @param array $pdoAttributes
      */
     public function testGetTableNames($pdoAttributes)
     {
@@ -52,6 +53,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider pdoAttributesProvider
+     * @param array $pdoAttributes
      */
     public function testGetTableSchemas($pdoAttributes)
     {
@@ -570,6 +572,9 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider constraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
      */
     public function testTableSchemaConstraints($tableName, $type, $expected)
     {
@@ -583,6 +588,9 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider uppercaseConstraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
      */
     public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
     {
@@ -598,6 +606,9 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider lowercaseConstraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
      */
     public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
     {

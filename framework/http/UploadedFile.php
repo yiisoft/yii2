@@ -151,6 +151,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
                 $results[] = new static($file);
             }
         }
+
         return $results;
     }
 
@@ -183,6 +184,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
                 return copy($this->tempFilename, $file);
             }
         }
+
         return false;
     }
 
@@ -227,6 +229,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
                 }
             }
         }
+
         return self::$_files;
     }
 

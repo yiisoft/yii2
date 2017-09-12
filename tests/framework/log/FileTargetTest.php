@@ -35,6 +35,7 @@ class FileTargetTest extends TestCase
 
     /**
      * @dataProvider booleanDataProvider
+     * @param bool $rotateByCopy
      */
     public function testRotate($rotateByCopy)
     {

@@ -97,6 +97,7 @@ class EachValidator extends Validator
         if ($this->_validator === null) {
             $this->_validator = $this->createEmbeddedValidator($model);
         }
+
         return $this->_validator;
     }
 
@@ -115,6 +116,7 @@ class EachValidator extends Validator
             if (!is_object($model)) {
                 $model = new Model(); // mock up context model
             }
+
             return Validator::createValidator($rule[0], $model, $this->attributes, array_slice($rule, 1));
         }
 

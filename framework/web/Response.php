@@ -22,7 +22,7 @@ use yii\http\MessageTrait;
 use yii\http\ResourceStream;
 
 /**
- * The web Response class represents an HTTP response
+ * The web Response class represents an HTTP response.
  *
  * It holds the [[headers]], [[cookies]] and [[content]] that is to be sent to the client.
  * It also controls the HTTP [[statusCode|status code]].
@@ -274,6 +274,7 @@ class Response extends \yii\base\Response implements ResponseInterface
         } else {
             $this->reasonPhrase = $reasonPhrase;
         }
+
         return $this;
     }
 
@@ -313,6 +314,7 @@ class Response extends \yii\base\Response implements ResponseInterface
         } else {
             $this->setStatusCode(500);
         }
+
         return $this;
     }
 
@@ -369,7 +371,7 @@ class Response extends \yii\base\Response implements ResponseInterface
     }
 
     /**
-     * Sends the response headers to the client
+     * Sends the response headers to the client.
      */
     protected function sendHeaders()
     {
@@ -419,7 +421,7 @@ class Response extends \yii\base\Response implements ResponseInterface
     }
 
     /**
-     * Sends the response content to the client
+     * Sends the response content to the client.
      */
     protected function sendContent()
     {
@@ -780,7 +782,7 @@ class Response extends \yii\base\Response implements ResponseInterface
     }
 
     /**
-     * Returns Content-Disposition header value that is safe to use with both old and new browsers
+     * Returns Content-Disposition header value that is safe to use with both old and new browsers.
      *
      * Fallback name:
      *
@@ -812,6 +814,7 @@ class Response extends \yii\base\Response implements ResponseInterface
         if ($utfName !== $fallbackName) {
             $dispositionHeader .= "; filename*=utf-8''{$utfName}";
         }
+
         return $dispositionHeader;
     }
 
@@ -929,6 +932,7 @@ class Response extends \yii\base\Response implements ResponseInterface
 
     /**
      * Returns the cookie collection.
+     *
      * Through the returned cookie collection, you add or remove cookies as follows,
      *
      * ```php
@@ -951,6 +955,7 @@ class Response extends \yii\base\Response implements ResponseInterface
         if ($this->_cookies === null) {
             $this->_cookies = new CookieCollection();
         }
+
         return $this->_cookies;
     }
 
