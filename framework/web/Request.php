@@ -18,6 +18,7 @@ use yii\http\CookieCollection;
 use yii\http\FileStream;
 use yii\http\MemoryStream;
 use yii\http\MessageTrait;
+use yii\http\UploadedFile;
 use yii\http\Uri;
 
 /**
@@ -88,6 +89,7 @@ use yii\http\Uri;
  * @property int|null $serverPort Server port number, null if not available. This property is read-only.
  * @property string $url The currently requested relative URL. Note that the URI returned may be URL-encoded
  * depending on the client.
+ * @property array $uploadedFiles Uploaded files for this request. See [[getUploadedFiles()]] for details.
  * @property string|null $userAgent User agent, null if not available. This property is read-only.
  * @property string|null $userHost User host name, null if not available. This property is read-only.
  * @property string|null $userIP User IP address, null if not available. This property is read-only.
@@ -194,6 +196,11 @@ class Request extends \yii\base\Request implements RequestInterface
      * @var mixed the message's request target.
      */
     private $_requestTarget;
+    /**
+     * @var array uploaded files.
+     * @since 2.1.0
+     */
+    private $_uploadedFiles;
 
 
     /**
@@ -1475,6 +1482,82 @@ class Request extends \yii\base\Request implements RequestInterface
         }
 
         return $cookies;
+    }
+
+    /**
+     * Returns uploaded files for this request.
+     * Uploaded files are returned in format according to [PSR-7 Uploaded Files specs](http://www.php-fig.org/psr/psr-7/#16-uploaded-files).
+     * @return array uploaded files.
+     * @since 2.1.0
+     */
+    public function getUploadedFiles()
+    {
+        if ($this->_uploadedFiles === null) {
+            $this->getBodyParams(); // uploaded files are the part of the body and may be set while its parsing
+            if ($this->_uploadedFiles === null) {
+                $this->_uploadedFiles = $this->defaultUploadedFiles();
+            }
+        }
+        return $this->_uploadedFiles;
+    }
+
+    /**
+     * Sets uploaded files for this request.
+     * Data structure for the uploaded files should follow [PSR-7 Uploaded Files specs](http://www.php-fig.org/psr/psr-7/#16-uploaded-files).
+     * @param array|null $uploadedFiles uploaded files.
+     * @since 2.1.0
+     */
+    public function setUploadedFiles($uploadedFiles)
+    {
+        $this->_uploadedFiles = $uploadedFiles;
+    }
+
+    /**
+     * Initializes default uploaded files data structure parsing super-global $_FILES.
+     * @see http://www.php-fig.org/psr/psr-7/#16-uploaded-files
+     * @return array uploaded files.
+     * @since 2.1.0
+     */
+    protected function defaultUploadedFiles()
+    {
+        $files = [];
+        if (isset($_FILES) && is_array($_FILES)) {
+            foreach ($_FILES as $class => $info) {
+                $files[$class] = [];
+                $this->populateUploadedFileRecursive($files[$class], $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error']);
+            }
+        }
+
+        return $files;
+    }
+
+    /**
+     * Populates uploaded files array from $_FILE data structure recursively.
+     * @param array $files uploaded files array to be populated.
+     * @param mixed $names file names provided by PHP
+     * @param mixed $tempNames temporary file names provided by PHP
+     * @param mixed $types file types provided by PHP
+     * @param mixed $sizes file sizes provided by PHP
+     * @param mixed $errors uploading issues provided by PHP
+     * @since 2.1.0
+     */
+    private function populateUploadedFileRecursive(&$files, $names, $tempNames, $types, $sizes, $errors)
+    {
+        if (is_array($names)) {
+            foreach ($names as $i => $name) {
+                $files[$i] = [];
+                $this->populateUploadedFileRecursive($files[$i], $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
+            }
+        } else {
+            $files = Yii::createObject([
+                'class' => UploadedFile::class,
+                'clientFilename' => $names,
+                'tempFilename' => $tempNames,
+                'clientMediaType' => $types,
+                'size' => $sizes,
+                'error' => $errors,
+            ]);
+        }
     }
 
     private $_csrfToken;
