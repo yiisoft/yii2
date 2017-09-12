@@ -363,7 +363,7 @@ class RequestTest extends TestCase
     {
         $original = $_SERVER;
         $request = new Request([
-            'trustHeadersFrom' => [
+            'trustedHosts' => [
                 '192.168.0.0/24',
             ],
         ]);
@@ -423,7 +423,7 @@ class RequestTest extends TestCase
         $original = $_SERVER;
         $_SERVER = $server;
         $request = new Request([
-            'trustHeadersFrom' => [
+            'trustedHosts' => [
                 '192.168.0.0/24',
             ],
         ]);

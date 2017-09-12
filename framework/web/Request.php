@@ -202,13 +202,13 @@ class Request extends \yii\base\Request
      * @see $secureHeaders
      * @since 2.0.13
      */
-    public $trustHeadersFrom = [];
+    public $trustedHosts = [];
     /**
      * @var array lists of headers that are, by default, subject to the trusted host configuration.
-     * These headers will be filtered unless explicitly allowed in [[$trustHeadersFrom]].
+     * These headers will be filtered unless explicitly allowed in [[trustedHosts]].
      * The match of header names is case-insensitive.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
-     * @see $trustHeadersFrom
+     * @see $trustedHosts
      * @since 2.0.13
      */
     public $secureHeaders = [
@@ -222,7 +222,7 @@ class Request extends \yii\base\Request
      * @var string[] List of headers where proxies store the real client IP.
      * It's not advisable to put insecure headers here.
      * The match of header names is case-insensitive.
-     * @see $trustHeadersFrom
+     * @see $trustedHosts
      * @see $secureHeaders
      * @since 2.0.13
      */
@@ -234,7 +234,7 @@ class Request extends \yii\base\Request
      * The array keys are header names and the array value is a list of header values that indicate a secure connection.
      * The match of header names and values is case-insensitive.
      * It's not advisable to put insecure headers here.
-     * @see $trustHeadersFrom
+     * @see $trustedHosts
      * @see $secureHeaders
      * @since 2.0.13
      */
@@ -275,7 +275,7 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Filters headers according to the [[trustHeadersFrom]].
+     * Filters headers according to the [[trustedHosts]].
      * @param HeaderCollection $headerCollection
      * @since 2.0.13
      */
@@ -285,10 +285,10 @@ class Request extends \yii\base\Request
         $trustedHeaders = [];
 
         // check if the client is a trusted host
-        if (!empty($this->trustHeadersFrom)) {
+        if (!empty($this->trustedHosts)) {
             $validator = $this->getIpValidator();
             $ip = $this->getRemoteIP();
-            foreach ($this->trustHeadersFrom as $cidr => $headers) {
+            foreach ($this->trustedHosts as $cidr => $headers) {
                 if (!is_array($headers)) {
                     $cidr = $headers;
                     $headers = $this->secureHeaders;
