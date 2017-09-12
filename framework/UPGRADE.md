@@ -123,6 +123,14 @@ Upgrade from Yii 2.0.12
   Before this change behavior was inconsistent with the documentation: method in the model had higher priority, than
   a built-in validator. In case you have relied on this behavior, make sure to fix it.
 
+* Behavior was changed for methods `yii\base\Module::get()` and `yii\base\Module::has()` so in case when the requested
+  component was not found in the current module, the parent ones will be checked for this component hierarchically.
+  Considering that the root parent module is usually an application, this change can reduce calls to global `Yii::$app->get()`,
+  and replace them with module-scope calls to `get()`, making code more reliable and easier to test.
+  However, this change may affect your application if you have code that uses method `yii\base\Module::has()` in order
+  to check existence of the component exactly in this specific module. In this case make sure the logic is not corrupted.
+
+
 Upgrade from Yii 2.0.11
 -----------------------
 
