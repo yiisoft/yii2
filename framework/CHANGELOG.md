@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #14458: Fixed `yii\filters\VerbFilter` uses case-insensitive comparison for the HTTP method name (klimov-paul)
 - Enh #879: Caching implementation refactored according to PSR-16 'Simple Cache' specification (klimov-paul)
 - Enh #11328: Added support for PSR-7 'HTTP Message' (klimov-paul)
+- Enh #14522: `yii\web\Request::getBodyParams()` now generates 415 'Unsupported Media Type' error on invalid or missing 'Content-Type' header (klimov-paul)
 - Enh #13799: CAPTCHA rendering logic extracted into `yii\captcha\DriverInterface`, which instance is available via `yii\captcha\CaptchaAction::$driver` field (vladis84, klimov-paul)
 - Enh #9260: Mail view rendering encapsulated into `yii\mail\Template` class allowing rendering in isolation and access to `yii\mail\MessageInterface` instance via `$this->context->message` inside the view (klimov-paul)
 - Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)

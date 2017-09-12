@@ -509,7 +509,8 @@ class Request extends \yii\base\Request implements RequestInterface
      * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
      * to parse the [[rawBody|request body]].
      * @return array the request parameters given in the request body.
-     * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
+     * @throws InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
+     * @throws UnsupportedMediaTypeHttpException if unable to parse raw body.
      * @see getMethod()
      * @see getBodyParam()
      * @see setBodyParams()
@@ -523,12 +524,10 @@ class Request extends \yii\base\Request implements RequestInterface
                 return $this->_bodyParams;
             }
 
-            $rawContentType = $this->getContentType();
-            if (($pos = strpos($rawContentType, ';')) !== false) {
+            $contentType = $this->getContentType();
+            if (($pos = strpos($contentType, ';')) !== false) {
                 // e.g. text/html; charset=UTF-8
-                $contentType = substr($rawContentType, 0, $pos);
-            } else {
-                $contentType = $rawContentType;
+                $contentType = trim(substr($contentType, 0, $pos));
             }
 
             if (isset($this->parsers[$contentType])) {
@@ -544,9 +543,15 @@ class Request extends \yii\base\Request implements RequestInterface
                 }
                 $this->_bodyParams = $parser->parse($this);
             } elseif ($this->getMethod() === 'POST') {
+                if ($contentType !== 'application/x-www-form-urlencoded' && $contentType !== 'multipart/form-data') {
+                    throw new UnsupportedMediaTypeHttpException();
+                }
                 // PHP has already parsed the body so we have all params in $_POST
                 $this->_bodyParams = $_POST;
             } else {
+                if ($contentType !== 'application/x-www-form-urlencoded') {
+                    throw new UnsupportedMediaTypeHttpException();
+                }
                 $this->_bodyParams = [];
                 mb_parse_str($this->getRawBody(), $this->_bodyParams);
             }

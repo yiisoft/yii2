@@ -1279,7 +1279,7 @@ class UrlRuleTest extends TestCase
     }
 
     /**
-     * @dataProvider testGetCreateUrlStatusProvider
+     * @dataProvider dataProviderGetCreateUrlStatus
      * @param array $config
      * @param array $tests
      */
@@ -1316,7 +1316,7 @@ class UrlRuleTest extends TestCase
      *   - third element is the expected URL
      *   - fourth element is the expected result of getCreateUrlStatus() method
      */
-    public function testGetCreateUrlStatusProvider()
+    public function dataProviderGetCreateUrlStatus()
     {
         return [
             'route' => [

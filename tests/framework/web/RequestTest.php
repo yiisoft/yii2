@@ -7,7 +7,9 @@
 
 namespace yiiunit\framework\web;
 
+use yii\http\MemoryStream;
 use yii\web\Request;
+use yii\web\UnsupportedMediaTypeHttpException;
 use yiiunit\TestCase;
 
 /**
@@ -84,6 +86,7 @@ class RequestTest extends TestCase
         $this->mockWebApplication();
 
         $request = new Request();
+        $request->setHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request->enableCsrfCookie = false;
 
         $token = $request->getCsrfToken();
@@ -301,5 +304,30 @@ class RequestTest extends TestCase
         unset($_SERVER['HTTP_ORIGIN']);
         $request = new Request();
         $this->assertEquals(null, $request->getOrigin());
+    }
+
+    public function testGetBodyParams()
+    {
+        $body = new MemoryStream();
+        $body->write('name=value');
+
+        $request = new Request();
+        $request->setMethod('PUT');
+        $request->setBody($body);
+        $_POST = ['name' => 'post'];
+
+        $this->assertSame(['name' => 'value'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->getBodyParams());
+        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->withMethod('POST')->getBodyParams());
+        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'multipart/form-data')->withMethod('POST')->getBodyParams());
+
+        try {
+            $request->getBodyParams();
+        } catch (UnsupportedMediaTypeHttpException $noContentTypeException) {}
+        $this->assertTrue(isset($noContentTypeException));
+
+        try {
+            $request->withMethod('POST')->getBodyParams();
+        } catch (UnsupportedMediaTypeHttpException $postWithoutContentTypeException) {}
+        $this->assertTrue(isset($postWithoutContentTypeException));
     }
 }
