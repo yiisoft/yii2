@@ -156,17 +156,19 @@ SQL;
      */
     protected function findTableNames($schema = '')
     {
-        if ($schema === '') {
-            $schema = $this->defaultSchema;
+        if ($schema !== '') {
+            $schemas = [$schema];
+        } else {
+            $schemas = $this->findSchemaNames();
         }
         $sql = <<<'SQL'
-SELECT c.relname AS table_name
+SELECT CONCAT(ns.nspname, '.', c.relname) AS table_name
 FROM pg_class c
 INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
-WHERE ns.nspname = :schemaName AND c.relkind IN ('r','v','m','f')
+WHERE ns.nspname = ANY(STRING_TO_ARRAY(:schemaName, ',')) AND c.relkind IN ('r','v','m','f')
 ORDER BY c.relname
 SQL;
-        return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
+        return $this->db->createCommand($sql, [':schemaName' => implode(',', $schemas)])->queryColumn();
     }
 
     /**
