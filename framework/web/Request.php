@@ -9,10 +9,13 @@ namespace yii\web;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\http\Cookie;
 use yii\http\CookieCollection;
 use yii\http\FileStream;
@@ -179,6 +182,12 @@ class Request extends \yii\base\Request implements RequestInterface
      * @see getBodyParams()
      */
     public $parsers = [];
+    /**
+     * @var string name of the class to be used for uploaded file instantiation.
+     * This class should implement [[UploadedFileInterface]].
+     * @since 2.1.0
+     */
+    public $uploadedFileClass = UploadedFile::class;
 
     /**
      * @var CookieCollection Collection of request cookies.
@@ -1550,7 +1559,7 @@ class Request extends \yii\base\Request implements RequestInterface
             }
         } else {
             $files = Yii::createObject([
-                'class' => UploadedFile::class,
+                'class' => $this->uploadedFileClass,
                 'clientFilename' => $names,
                 'tempFilename' => $tempNames,
                 'clientMediaType' => $types,
@@ -1558,6 +1567,105 @@ class Request extends \yii\base\Request implements RequestInterface
                 'error' => $errors,
             ]);
         }
+    }
+
+    /**
+     * Returns an uploaded file according to the given name.
+     * Name can be either a string HTML form input name, e.g. 'Item[file]' or array path, e.g. `['Item', 'file']`.
+     * Note: this method returns `null` in case given name matches multiple files.
+     * @param string|array $name HTML form input name or array path.
+     * @return UploadedFileInterface|null uploaded file instance, `null` - if not found.
+     * @since 2.1.0
+     */
+    public function getUploadedFileByName($name)
+    {
+        $uploadedFile = $this->findUploadedFiles($name);
+        if ($uploadedFile instanceof UploadedFileInterface) {
+            return $uploadedFile;
+        }
+        return null;
+    }
+
+    /**
+     * Returns the list of uploaded file instances according to the given name.
+     * Name can be either a string HTML form input name, e.g. 'Item[file]' or array path, e.g. `['Item', 'file']`.
+     * Note: this method does NOT preserve uploaded files structure - it returns instances in single-level array (list),
+     * even if they are set by nested keys.
+     * @param string|array $name HTML form input name or array path.
+     * @return UploadedFileInterface[] list of uploaded file instances.
+     * @since 2.1.0
+     */
+    public function getUploadedFilesByName($name)
+    {
+        $uploadedFiles = $this->findUploadedFiles($name);
+        if ($uploadedFiles === null) {
+            return [];
+        }
+        if ($uploadedFiles instanceof UploadedFileInterface) {
+            return [$uploadedFiles];
+        }
+        return $this->reduceUploadedFiles($uploadedFiles);
+    }
+
+    /**
+     * Returns an uploaded file for the given model attribute.
+     * @param \yii\base\Model $model the data model.
+     * @param string $attribute the attribute name. The attribute name may contain array indexes.
+     * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
+     * @return UploadedFileInterface|null uploaded file instance, `null` - if not found.
+     * @since 2.1.0
+     */
+    public function getUploadedFileByModel($model, $attribute)
+    {
+        return $this->getUploadedFileByName(Html::getInputName($model, $attribute));
+    }
+
+    /**
+     * Returns all uploaded files for the given model attribute.
+     * Note: this method does NOT preserve uploaded files structure - it returns instances in single-level array (list),
+     * even if they are set by nested keys.
+     * @param \yii\base\Model $model the data model
+     * @param string $attribute the attribute name. The attribute name may contain array indexes
+     * for tabular file uploading, e.g. '[1]file'.
+     * @return UploadedFileInterface[] list of uploaded file instances.
+     * @since 2.1.0
+     */
+    public function getUploadedFilesByModel($model, $attribute)
+    {
+        return $this->getUploadedFilesByName(Html::getInputName($model, $attribute));
+    }
+
+    /**
+     * Finds the uploaded file or set of uploaded files inside [[$uploadedFiles]] according to given name.
+     * Name can be either a string HTML form input name, e.g. 'Item[file]' or array path, e.g. `['Item', 'file']`.
+     * @param string|array $name HTML form input name or array path.
+     * @return UploadedFileInterface|array|null
+     * @since 2.1.0
+     */
+    private function findUploadedFiles($name)
+    {
+        if (!is_array($name)) {
+            $name = preg_split('/\\]\\[|\\[|\\]/s', $name, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        return ArrayHelper::getValue($this->getUploadedFiles(), $name);
+    }
+
+    /**
+     * Reduces complex uploaded files structure to the single-level array (list).
+     * @param array $uploadedFiles raw set of the uploaded files.
+     * @return UploadedFileInterface[] list of uploaded files.
+     * @since 2.1.0
+     */
+    private function reduceUploadedFiles($uploadedFiles)
+    {
+        return array_reduce($uploadedFiles, function ($carry, $item) {
+            if ($item instanceof UploadedFileInterface) {
+                $carry[] = $item;
+            } else {
+                $carry = array_merge($carry, $this->reduceUploadedFiles($item));
+            }
+            return $carry;
+        }, []);
     }
 
     private $_csrfToken;
