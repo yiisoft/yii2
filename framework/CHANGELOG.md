@@ -70,6 +70,8 @@ Yii Framework 2 Change Log
 - Bug #14202: Fixed current time in (UTC) `\Yii::$app->formatter` if time not set (bscheshirwork)
 - Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase, silverfire)
 - Bug #13969: Fixed a bug in a `yii\console\controllers\CacheController` when caches defined via a closure were not detected (Kolyunya)
+- Bug #12860: Fixed possible race conditions in `yii\mutex\FileMutex` (kidol)
+- Bug: Fixed `yii\mutex\FileMutex::$autoRelease` having no effect due to missing base class initialization (kidol)
 - Enh #14061: Added request scope assignments cache to `yii\rbac\DbManager::checkAccess()` to avoid duplicate queries for user assignments (leandrogehlen, cebe, nineinchnick, ryusoft)
 - Enh #14294: Added `InputWidget::renderInput()` to move behavior described in `InputWidget` class docs to the class itself (cebe)
 - Enh #14620: Updated `yii.activeForm.js` and `yii\web\View` to jQuery 3.0 compatible API (silverfire)
