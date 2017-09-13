@@ -112,6 +112,10 @@ Upgrade from Yii 2.0.x
   and [guide on Working with Third-Party Code](https://github.com/yiisoft/yii2/blob/2.1/docs/guide/tutorial-yii-integration.md).
 * The signature of `yii\web\RequestParserInterface::parse()` was changed. The method now accepts the `yii\web\Request` instance
   as a sole argument. Make sure you declare and implement this method correctly, while creating your own request parser.
+* Uploaded file retrieve methods have been moved from `yii\http\UploadedFile` to `yii\web\Request`. You should use `Request::getUploadedFileByName()`
+  instead of `UploadedFile::getInstanceByName()`, `Request::getUploadedFilesByName()` instead of `UploadedFile::getInstancesByName()`,
+  `Request::getUploadedFileByModel()` instead of `UploadedFile::getInstance()` and `Request::getUploadedFilesByModel()` instead of
+  `UploadedFile::getInstances()`. You may set particular class for uploaded file instances using `Request::$uploadedFileClass`.
 
 
 Upgrade from Yii 2.0.12
