@@ -106,6 +106,12 @@ class Cors extends ActionFilter
         $responseCorsHeaders = $this->prepareHeaders($requestCorsHeaders);
         $this->addCorsHeaders($this->response, $responseCorsHeaders);
 
+        if ($this->request->isOptions && $this->request->headers->has('Access-Control-Request-Method')) {
+            // it is CORS preflight request, respond with 200 OK without further processing
+            $this->response->setStatusCode(200);
+            return false;
+        }
+
         return true;
     }
 
