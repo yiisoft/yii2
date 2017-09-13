@@ -1606,34 +1606,6 @@ class Request extends \yii\base\Request implements RequestInterface
     }
 
     /**
-     * Returns an uploaded file for the given model attribute.
-     * @param \yii\base\Model $model the data model.
-     * @param string $attribute the attribute name. The attribute name may contain array indexes.
-     * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
-     * @return UploadedFileInterface|null uploaded file instance, `null` - if not found.
-     * @since 2.1.0
-     */
-    public function getUploadedFileByModel($model, $attribute)
-    {
-        return $this->getUploadedFileByName(Html::getInputName($model, $attribute));
-    }
-
-    /**
-     * Returns all uploaded files for the given model attribute.
-     * Note: this method does NOT preserve uploaded files structure - it returns instances in single-level array (list),
-     * even if they are set by nested keys.
-     * @param \yii\base\Model $model the data model
-     * @param string $attribute the attribute name. The attribute name may contain array indexes
-     * for tabular file uploading, e.g. '[1]file'.
-     * @return UploadedFileInterface[] list of uploaded file instances.
-     * @since 2.1.0
-     */
-    public function getUploadedFilesByModel($model, $attribute)
-    {
-        return $this->getUploadedFilesByName(Html::getInputName($model, $attribute));
-    }
-
-    /**
      * Finds the uploaded file or set of uploaded files inside [[$uploadedFiles]] according to given name.
      * Name can be either a string HTML form input name, e.g. 'Item[file]' or array path, e.g. `['Item', 'file']`.
      * @param string|array $name HTML form input name or array path.

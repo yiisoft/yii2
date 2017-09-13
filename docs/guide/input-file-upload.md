@@ -99,7 +99,7 @@ class SiteController extends Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-            $model->imageFile = Yii::$app->request->getUploadedFileByModel($model, 'imageFile');
+            $model->load(Yii::$app->request->getUploadedFiles()); // populates `UploadForm::$imageFile` from `UploadForm[imageFile]`
             if ($model->upload()) {
                 // file is uploaded successfully
                 return;
@@ -111,9 +111,10 @@ class SiteController extends Controller
 }
 ```
 
-In the above code, when the form is submitted, the [[yii\web\Request::getUploadedFileByModel()]] method is called
-to represent the uploaded file as an `UploadedFile` instance. We then rely on the model validation to make sure
-the uploaded file is valid and save the file on the server.
+In the above code, when the form is submitted, the [[yii\base\Model::load()]] method is called upon result
+of [[yii\web\Request::getUploadedFiles()]], which contains `UploadedFile` instances in the array structured
+as regular POST data. We then rely on the model validation to make sure the uploaded file is valid and save
+the file on the server.
 
 
 ## Uploading Multiple Files <span id="uploading-multiple-files"></span>
@@ -195,7 +196,7 @@ class SiteController extends Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-            $model->imageFiles = Yii::$app->request->getUploadedFilesByModel($model, 'imageFiles');
+            $model->load(Yii::$app->request->getUploadedFiles()); // populates `UploadForm::$imageFiles` from `UploadForm[imageFiles][]`
             if ($model->upload()) {
                 // file is uploaded successfully
                 return;

@@ -12,7 +12,6 @@ use yii\http\UploadedFile;
 use yii\web\Request;
 use yii\web\UnsupportedMediaTypeHttpException;
 use yiiunit\TestCase;
-use yiiunit\framework\web\stubs\ModelStub;
 
 /**
  * @group web
@@ -548,62 +547,5 @@ class RequestTest extends TestCase
         $uploadedFiles = $request->getUploadedFilesByName('Item[file][0]');
         $this->assertCount(1, $uploadedFiles);
         $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
-    }
-
-    /**
-     * @depends testGetUploadedFileByName
-     */
-    public function testGetUploadedFileByModel()
-    {
-        $request = new Request();
-        $request->setUploadedFiles([
-            'ModelStub' => [
-                'prod_image' => new UploadedFile([
-                    'clientFilename' => 'file0.txt',
-                    'clientMediaType' => 'type/0',
-                    'tempFilename' => 'file0.tmp',
-                    'size' => 1000,
-                    'error' => 0,
-                ]),
-            ],
-        ]);
-
-        /* @var $uploadedFile UploadedFile */
-        $uploadedFile = $request->getUploadedFileByModel(new ModelStub(), 'prod_image');
-        $this->assertTrue($uploadedFile instanceof UploadedFile);
-        $this->assertSame('file0.txt', $uploadedFile->getClientFilename());
-    }
-
-    /**
-     * @depends testGetUploadedFilesByName
-     */
-    public function testGetUploadedFilesByModel()
-    {
-        $request = new Request();
-        $request->setUploadedFiles([
-            'ModelStub' => [
-                'prod_image' => [
-                    0 => new UploadedFile([
-                        'clientFilename' => 'file0.txt',
-                        'clientMediaType' => 'type/0',
-                        'tempFilename' => 'file0.tmp',
-                        'size' => 1000,
-                        'error' => 0,
-                    ]),
-                    1 => new UploadedFile([
-                        'clientFilename' => 'file1.txt',
-                        'clientMediaType' => 'type/1',
-                        'tempFilename' => 'file1.tmp',
-                        'size' => 1001,
-                        'error' => 1,
-                    ]),
-                ],
-            ],
-        ]);
-
-        $uploadedFiles = $request->getUploadedFilesByModel(new ModelStub(), 'prod_image');
-        $this->assertCount(2, $uploadedFiles);
-        $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
-        $this->assertTrue($uploadedFiles[1] instanceof UploadedFile);
     }
 }
