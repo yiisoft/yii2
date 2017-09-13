@@ -12,6 +12,10 @@ to validate its input on the server-side (Check the [Validating Input](input-val
 When creating model-based forms, the first step is to define the model itself. The model can be either based upon
 an [Active Record](db-active-record.md) class, representing some data from the database, or a generic Model class
 (extending from [[yii\base\Model]]) to capture arbitrary input, for example a login form.
+
+> Tip: If the form fields are different from database columns or there are formatting and logic that is specific to that
+> form only, prefer creating a separate model extended from [[yii\base\Model]].
+
 In the following example, we show how a generic model can be used for a login form:
 
 ```php
@@ -62,7 +66,7 @@ As with any widget, you can specify some options as to how the widget should be 
 the `begin` method. In this case, an extra CSS class and identifying ID are passed to be used in the opening `<form>` tag.
 For all available options, please refer to the API documentation of [[yii\widgets\ActiveForm]].
 
-### ActiveField <span id="activefield"></span>.
+### ActiveField <span id="activefield"></span>
 In order to create a form element in the form, along with the element's label, and any applicable JavaScript validation,
 the [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] method is called, which returns an instance of [[yii\widgets\ActiveField]].
 When the result of this method is echoed directly, the result is a regular (text) input.
@@ -141,9 +145,10 @@ $items = [
 ```
 
 or by retrieval from the DB:
+
 ```php
 $items = Category::find()
-        ->select(['id', 'label'])
+        ->select(['label'])
         ->indexBy('id')
         ->column();
 ```

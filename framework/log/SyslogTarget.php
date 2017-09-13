@@ -47,6 +47,7 @@ class SyslogTarget extends Target
         Logger::LEVEL_ERROR => LOG_ERR,
     ];
 
+
     /**
      * @inheritdoc
      */
@@ -59,7 +60,7 @@ class SyslogTarget extends Target
     }
 
     /**
-     * Writes log messages to syslog
+     * Writes log messages to syslog.
      */
     public function export()
     {

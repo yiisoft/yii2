@@ -146,23 +146,41 @@ contains a single method [[yii\web\Linkable::getLinks()|getLinks()]] which shoul
 Typically, you should return at least the `self` link representing the URL to the resource object itself. For example,
 
 ```php
-use yii\db\ActiveRecord;
-use yii\web\Link;
+use yii\base\Model;
+use yii\web\Link; // represents a link object as defined in JSON Hypermedia API Language.
 use yii\web\Linkable;
 use yii\helpers\Url;
 
-class User extends ActiveRecord implements Linkable
+class UserResource extends Model implements Linkable
 {
+    public $id;
+    public $email;
+
+    //...
+
+    public function fields()
+    {
+        return ['id', 'email'];
+    }
+
+    public function extraFields()
+    {
+        return ['profile'];
+    }
+
     public function getLinks()
     {
         return [
             Link::REL_SELF => Url::to(['user/view', 'id' => $this->id], true),
+            'edit' => Url::to(['user/view', 'id' => $this->id], true),
+            'profile' => Url::to(['user/profile/view', 'id' => $this->id], true),
+            'index' => Url::to(['users'], true),
         ];
     }
 }
 ```
 
-When a `User` object is returned in a response, it will contain a `_links` element representing the links related
+When a `UserResource` object is returned in a response, it will contain a `_links` element representing the links related
 to the user, for example,
 
 ```
@@ -173,6 +191,15 @@ to the user, for example,
     "_links" => {
         "self": {
             "href": "https://example.com/users/100"
+        },
+        "edit": {
+            "href": "https://example.com/users/100"
+        },
+        "profile": {
+            "href": "https://example.com/users/profile/100"
+        },
+        "index": {
+            "href": "https://example.com/users"
         }
     }
 }

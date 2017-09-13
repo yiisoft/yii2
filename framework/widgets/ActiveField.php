@@ -10,9 +10,9 @@ namespace yii\widgets;
 use Yii;
 use yii\base\Component;
 use yii\base\ErrorHandler;
+use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\base\Model;
 use yii\web\JsExpression;
 
 /**
@@ -163,6 +163,7 @@ class ActiveField extends Component
      */
     private $_skipLabelFor = false;
 
+
     /**
      * PHP magic method that returns the string representation of this object.
      * @return string the string representation of this object.
@@ -235,7 +236,7 @@ class ActiveField extends Component
         $inputID = $this->getInputId();
         $attribute = Html::getAttributeName($this->attribute);
         $options = $this->options;
-        $class = isset($options['class']) ? [$options['class']] : [];
+        $class = isset($options['class']) ? (array)$options['class'] : [];
         $class[] = "field-$inputID";
         if ($this->model->isAttributeRequired($attribute)) {
             $class[] = $this->form->requiredCssClass;
@@ -713,10 +714,14 @@ class ActiveField extends Component
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
-        if (isset($config['options']) && isset(class_parents($class)['yii\widgets\InputWidget'])) {
-        	$this->addAriaAttributes($config['options']);
-            $this->adjustLabelFor($config['options']);
+        if (is_subclass_of($class, 'yii\widgets\InputWidget')) {
+            $config['field'] = $this;
+            if (isset($config['options'])) {
+                $this->addAriaAttributes($config['options']);
+                $this->adjustLabelFor($config['options']);
+            }
         }
+
         $this->parts['{input}'] = $class::widget($config);
 
         return $this;
@@ -794,7 +799,7 @@ class ActiveField extends Component
         }
 
         if (!empty($validators)) {
-            $options['validate'] = new JsExpression("function (attribute, value, messages, deferred, \$form) {" . implode('', $validators) . '}');
+            $options['validate'] = new JsExpression('function (attribute, value, messages, deferred, $form) {' . implode('', $validators) . '}');
         }
 
         if ($this->addAriaAttributes === false) {
@@ -814,7 +819,7 @@ class ActiveField extends Component
     }
 
     /**
-     * Checks if client validation enabled for the field
+     * Checks if client validation enabled for the field.
      * @return bool
      * @since 2.0.11
      */
@@ -824,7 +829,7 @@ class ActiveField extends Component
     }
 
     /**
-     * Checks if ajax validation enabled for the field
+     * Checks if ajax validation enabled for the field.
      * @return bool
      * @since 2.0.11
      */
@@ -844,7 +849,7 @@ class ActiveField extends Component
     }
 
     /**
-     * Adds aria attributes to the input options
+     * Adds aria attributes to the input options.
      * @param $options array input options
      * @since 2.0.11
      */
@@ -852,7 +857,7 @@ class ActiveField extends Component
     {
         if ($this->addAriaAttributes) {
             if (!isset($options['aria-required']) && $this->model->isAttributeRequired($this->attribute)) {
-                $options['aria-required'] =  'true';
+                $options['aria-required'] = 'true';
             }
             if (!isset($options['aria-invalid'])) {
                 if ($this->model->hasErrors($this->attribute)) {

@@ -215,6 +215,26 @@ data filtering.
 As you can see, these validation rules do not really validate the inputs. Instead, they will process the values
 and save them back to the attributes being validated.
 
+A complete processing of user input is shown in the following example code, which will ensure only integer
+values are stored in an attribute:
+
+```php
+['age', 'trim'],
+['age', 'default', 'value' => null],
+['age', 'integer', 'integerOnly' => true, 'min' => 0],
+['age', 'filter', 'filter' => 'intval', 'skipOnEmpty' => true],
+```
+
+The above code will perform the following operations on the input:
+
+1. Trim whitespace from the input value.
+2. Make sure empty input is stored as `null` in the database; we differentiate between a value being "not set"
+   and the actual value `0`. If `null` is not allowed you can set another default value here.
+3. Validate that the value is an integer greater than 0 if it is not empty. Normal validators have
+   [[yii\validators\Validator::$skipOnEmpty|$skipOnEmpty]] set to `true`.
+4. Make sure the value is of type integer, e.g. casting a string `'42'` to integer `42`.
+   Here we set [[yii\validators\FilterValidator::$skipOnEmpty|$skipOnEmpty]] to `true`, which is `false` by default
+   on the [[yii\validators\FilterValidator|filter]] validator.
 
 ### Handling Empty Inputs <span id="handling-empty-inputs"></span>
 
@@ -331,7 +351,8 @@ the method/function is:
 /**
  * @param string $attribute the attribute currently being validated
  * @param mixed $params the value of the "params" given in the rule
- * @param \yii\validators\InlineValidator related InlineValidator instance
+ * @param \yii\validators\InlineValidator $validator related InlineValidator instance.
+ * This parameter is available since version 2.0.11.
  */
 function ($attribute, $params, $validator)
 ```
@@ -543,7 +564,7 @@ $this->addError('childrenCount', $message);
 Or use a loop:
 
 ```php
-$attributes = ['personalSalary, 'wifeSalary', 'childrenCount'];
+$attributes = ['personalSalary', 'wifeSalary', 'childrenCount'];
 foreach ($attributes as $attribute) {
     $this->addError($attribute, 'Your salary is not enough for children.');
 }
@@ -562,266 +583,7 @@ As a result, we will not see error message near form fields. To display it, we c
 <?= $form->errorSummary($model) ?>
 ```
 
-### Custom validator <span id="multiple-attributes-custom-validator"></span>
-
-If passing one attribute is not acceptable for you (for example it can be hard to choose which one is more relevant or
-you consider it misleading in rules), the more advanced solution is to implement `CustomValidator` with support for
-validating multiple attributes at once.
-
-By default if multiple attributes are used for validation, the loop will be used to apply the same validation to each
-of them. Let's use a separate trait and override [[yii\base\Validator:validateAttributes()]]:
-
-```php
-<?php
-
-namespace app\components;
-
-trait BatchValidationTrait
-{
-    /**
-     * @var bool whether to validate multiple attributes at once
-     */
-    public $batch = false;
-
-    /**
-     * Validates the specified object.
-     * @param \yii\base\Model $model the data model being validated.
-     * @param array|null $attributes the list of attributes to be validated.
-     * Note that if an attribute is not associated with the validator, or is is prefixed with `!` char - it will be
-     * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
-     */
-    public function validateAttributes($model, $attributes = null)
-    {
-        if (is_array($attributes)) {
-            $newAttributes = [];
-            foreach ($attributes as $attribute) {
-                if (in_array($attribute, $this->attributes) || in_array('!' . $attribute, $this->attributes)) {
-                    $newAttributes[] = $attribute;
-                }
-            }
-            $attributes = $newAttributes;
-        } else {
-            $attributes = [];
-            foreach ($this->attributes as $attribute) {
-                $attributes[] = $attribute[0] === '!' ? substr($attribute, 1) : $attribute;
-            }
-        }
-
-        foreach ($attributes as $attribute) {
-            $skip = $this->skipOnError && $model->hasErrors($attribute)
-                || $this->skipOnEmpty && $this->isEmpty($model->$attribute);
-            if ($skip) {
-                // Skip validation if at least one attribute is empty or already has error
-                // (according skipOnError and skipOnEmpty options must be set to true
-                return;
-            }
-        }
-
-        if ($this->batch) {
-            // Validate all attributes at once
-            if ($this->when === null || call_user_func($this->when, $model, $attribute)) {
-                // Pass array with all attributes instead of one attribute
-                $this->validateAttribute($model, $attributes);
-            }
-        } else {
-            // Validate each attribute separately using the same validation logic
-            foreach ($attributes as $attribute) {
-                if ($this->when === null || call_user_func($this->when, $model, $attribute)) {
-                    $this->validateAttribute($model, $attribute);
-                }
-            }
-        }
-    }
-}
-```
-
-Then we need to create custom validator and use the created trait:
-
-```php
-<?php
-
-namespace app\components;
-
-use yii\validators\Validator;
-
-class CustomValidator extends Validator
-{
-    use BatchValidationTrait;
-}
-```
-
-To support inline validation as well we can extend default inline validator and also use this trait:
-
-```php
-<?php
-
-namespace app\components;
-
-use yii\validators\InlineValidator;
-
-class CustomInlineValidator extends InlineValidator
-{
-    use BatchValidationTrait;
-}
-```
-
-Couple more changes are needed.
-
-First to use our `CustomInlineValidator` instead of default `InlineValidator` we need to override
-[[\yii\validators\Validator::createValidator()]] method in `CustomValidator`:
-
-```php
-public static function createValidator($type, $model, $attributes, $params = [])
-{
-    $params['attributes'] = $attributes;
-
-    if ($type instanceof \Closure || $model->hasMethod($type)) {
-        // method-based validator
-        // The following line is changed to use our CustomInlineValidator
-        $params['class'] = __NAMESPACE__ . '\CustomInlineValidator';
-        $params['method'] = $type;
-    } else {
-        if (isset(static::$builtInValidators[$type])) {
-            $type = static::$builtInValidators[$type];
-        }
-        if (is_array($type)) {
-            $params = array_merge($type, $params);
-        } else {
-            $params['class'] = $type;
-        }
-    }
-
-    return Yii::createObject($params);
-}
-```
-
-And finally to support our custom validator in model we can create the trait and override
-[[\yii\base\Model::createValidators()]] like this:
-
-```php
-<?php
-
-namespace app\components;
-
-use yii\base\InvalidConfigException;
-
-trait CustomValidationTrait
-{
-    /**
-     * Creates validator objects based on the validation rules specified in [[rules()]].
-     * Unlike [[getValidators()]], each time this method is called, a new list of validators will be returned.
-     * @return ArrayObject validators
-     * @throws InvalidConfigException if any validation rule configuration is invalid
-     */
-    public function createValidators()
-    {
-        $validators = new ArrayObject;
-        foreach ($this->rules() as $rule) {
-            if ($rule instanceof Validator) {
-                $validators->append($rule);
-            } elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
-                // The following line is changed in order to use our CustomValidator
-                $validator = CustomValidator::createValidator($rule[1], $this, (array) $rule[0], array_slice($rule, 2));
-                $validators->append($validator);
-            } else {
-                throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
-            }
-        }
-        return $validators;
-    }
-}
-```
-
-Now we can implement custom validator by extending from `CustomValidator`:
-
-```php
-<?php
-
-namespace app\validators;
-
-use app\components\CustomValidator;
-
-class ChildrenFundsValidator extends CustomValidator
-{
-    public function validateAttribute($model, $attribute)
-    {
-        // $attribute here is not a single attribute, it's an array containing all related attributes
-        $totalSalary = $this->personalSalary + $this->spouseSalary;
-        // Double the minimal adult funds if spouse salary is specified
-        $minAdultFunds = $this->spouseSalary ? self::MIN_ADULT_FUNDS * 2 : self::MIN_ADULT_FUNDS;
-        $childFunds = $totalSalary - $minAdultFunds;
-        if ($childFunds / $this->childrenCount < self::MIN_CHILD_FUNDS) {
-            $this->addError('*', 'Your salary is not enough for children.');
-        }
-    }
-}
-```
-
-Because `$attribute` contains the list of all related attributes, we can use loop in case of adding errors for all
-attributes is needed:
-
-```php
-foreach ($attribute as $singleAttribute) {
-    $this->addError($attribute, 'Your salary is not enough for children.');
-}
-```
-
-Now it's possible to specify all related attributes in according validation rule:
-
-```php
-[
-    ['personalSalary', 'spouseSalary', 'childrenCount'],
-    \app\validators\ChildrenFundsValidator::className(),
-    'batch' => `true`,
-    'when' => function ($model) {
-        return $model->childrenCount > 0;
-    }
-],
-```
-
-For inline validation the rule will be:
-
-```php
-[
-    ['personalSalary', 'spouseSalary', 'childrenCount'],
-    'validateChildrenFunds',
-    'batch' => `true`,
-    'when' => function ($model) {
-        return $model->childrenCount > 0;
-    }
-],
-```
-
-And here is according validation method:
-
-```php
-public function validateChildrenFunds($attribute, $params)
-{
-    // $attribute here is not a single attribute, it's an array containing all related attributes
-    $totalSalary = $this->personalSalary + $this->spouseSalary;
-    // Double the minimal adult funds if spouse salary is specified
-    $minAdultFunds = $this->spouseSalary ? self::MIN_ADULT_FUNDS * 2 : self::MIN_ADULT_FUNDS;
-    $childFunds = $totalSalary - $minAdultFunds;
-    if ($childFunds / $this->childrenCount < self::MIN_CHILD_FUNDS) {
-        $this->addError('childrenCount', 'Your salary is not enough for children.');
-    }
-}
-```
-
-The advantages of this approach:
-
-- It better reflects all attributes that participate in validation (the rules become more readable);
-- It respects the options [[yii\validators\Validator::skipOnError]] and [[yii\validators\Validator::skipOnEmpty]] for
-**each** used attribute (not only for that you decided to choose as more relevant).
-
-If you have problems with implementing client validation, you can:
-
-- combine [[yii\widgets\ActiveForm::enableAjaxValidation|enableClientValidation]] and
-[[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]] options, so multiple attributes will be validated
-with AJAX without page reload;
-- implement validation outside of [[yii\validators\Validator::clientValidateAttribute]] because it's designed to work
-with single attribute.
-
+> Note: Creating validator which validates multiple attributes at once is well described in the [community cookbook](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-validator-multiple-attributes.md).
 
 ## Client-Side Validation <span id="client-side-validation"></span>
 
@@ -1055,7 +817,7 @@ JS;
 ```
 
 
-### AJAX Validation <span id="ajax-validation"></span>
+## AJAX Validation <span id="ajax-validation"></span>
 
 Some validations can only be done on the server-side, because only the server has the necessary information.
 For example, to validate if a username is unique or not, it is necessary to check the user table on the server-side.
@@ -1079,7 +841,7 @@ echo $form->field($model, 'username', ['enableAjaxValidation' => true]);
 ActiveForm::end();
 ```
 
-To enable AJAX validation for the whole form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
+To enable AJAX validation for all inputs of the form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
 to be `true` at the form level:
 
 ```php
@@ -1109,4 +871,6 @@ this request by running the validation and returning the errors in JSON format.
   However, the AJAX validation feature described here is more systematic and requires less coding effort.
 
 When both `enableClientValidation` and `enableAjaxValidation` are set to `true`, AJAX validation request will be triggered
-only after the successful client validation.
+only after the successful client validation. Note that in case of validating a single field that happens if either
+`validateOnChange`, `validateOnBlur` or `validateOnType` is set to `true`, AJAX request will be sent when the field in
+question alone successfully passes client validation. 

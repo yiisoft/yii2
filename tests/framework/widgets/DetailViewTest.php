@@ -1,13 +1,15 @@
 <?php
 /**
- * @author Bennet Klarhoelter <boehsermoe@me.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
 
 use yii\base\Arrayable;
 use yii\base\ArrayableTrait;
-use yii\base\Object;
+use yii\base\Model;
 use yii\widgets\DetailView;
 
 /**
@@ -27,7 +29,7 @@ class DetailViewTest extends \yiiunit\TestCase
 
     public function testAttributeValue()
     {
-        $model = new ObjectMock();
+        $model = new ModelMock();
         $model->id = 'id';
 
         $this->detailView = new PublicDetailView([
@@ -64,9 +66,37 @@ class DetailViewTest extends \yiiunit\TestCase
         $this->assertEquals(2, $model->getDisplayedIdCallCount());
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13243
+     */
+    public function testUnicodeAttributeNames()
+    {
+        $model = new UnicodeAttributesModelMock();
+        $model->ИдентификаторТовара = 'A00001';
+        $model->το_αναγνωριστικό_του = 'A00002';
+
+        $this->detailView = new PublicDetailView([
+            'model' => $model,
+            'template' => '{label}:{value}',
+            'attributes' => [
+                'ИдентификаторТовара',
+                'το_αναγνωριστικό_του',
+            ],
+        ]);
+
+        $this->assertEquals(
+            'ИдентификаторТовара:A00001',
+            $this->detailView->renderAttribute($this->detailView->attributes[0], 0)
+        );
+        $this->assertEquals(
+            'το αναγνωριστικό του:A00002',
+            $this->detailView->renderAttribute($this->detailView->attributes[1], 1)
+        );
+    }
+
     public function testAttributeVisible()
     {
-        $model = new ObjectMock();
+        $model = new ModelMock();
         $model->id = 'id';
 
         $this->detailView = new PublicDetailView([
@@ -136,16 +166,16 @@ class DetailViewTest extends \yiiunit\TestCase
                 'label' => 'Id',
                 'value' => 'Displayed id',
                 'visible' => true,
-            ]
+            ],
         ], $this->detailView->attributes);
         $this->assertEquals(5, $model->getDisplayedIdCallCount());
     }
 
     public function testRelationAttribute()
     {
-        $model = new ObjectMock();
+        $model = new ModelMock();
         $model->id = 'model';
-        $model->related = new ObjectMock();
+        $model->related = new ModelMock();
         $model->related->id = 'related';
 
         $this->detailView = new PublicDetailView([
@@ -183,13 +213,13 @@ class DetailViewTest extends \yiiunit\TestCase
                 'attribute' => 'id',
                 'format' => 'text',
                 'label' => 'Id',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'attribute' => 'text',
                 'format' => 'text',
                 'label' => 'Text',
-                'value' => 'I`m arrayable'
+                'value' => 'I`m arrayable',
             ],
         ];
 
@@ -211,17 +241,17 @@ class DetailViewTest extends \yiiunit\TestCase
                 'attribute' => 'id',
                 'format' => 'text',
                 'label' => 'Id',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'attribute' => 'text',
                 'format' => 'text',
                 'label' => 'Text',
-                'value' => 'I`m an object'
+                'value' => 'I`m an object',
             ],
         ];
 
-        $model = new ObjectMock();
+        $model = new ModelMock();
         $model->id = 1;
         $model->text = 'I`m an object';
 
@@ -239,19 +269,19 @@ class DetailViewTest extends \yiiunit\TestCase
                 'attribute' => 'id',
                 'format' => 'text',
                 'label' => 'Id',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'attribute' => 'text',
                 'format' => 'text',
                 'label' => 'Text',
-                'value' => 'I`m an array'
+                'value' => 'I`m an array',
             ],
         ];
 
         $model = [
             'id' => 1,
-            'text' => 'I`m an array'
+            'text' => 'I`m an array',
         ];
 
         $this->detailView = new DetailView([
@@ -279,7 +309,7 @@ class DetailViewTest extends \yiiunit\TestCase
             ],
         ]);
 
-        foreach ($this->detailView->attributes as $index=>$attribute) {
+        foreach ($this->detailView->attributes as $index => $attribute) {
             $a = $this->detailView->renderAttribute($attribute, $index);
             $this->assertEquals($expectedValue, $a);
         }
@@ -287,7 +317,7 @@ class DetailViewTest extends \yiiunit\TestCase
 }
 
 /**
- * Helper Class
+ * Helper Class.
  */
 class ArrayableMock implements Arrayable
 {
@@ -299,9 +329,9 @@ class ArrayableMock implements Arrayable
 }
 
 /**
- * Helper Class
+ * Helper Class.
  */
-class ObjectMock extends Object
+class ModelMock extends Model
 {
     public $id;
     public $text;
@@ -330,6 +360,23 @@ class ObjectMock extends Object
     {
         return $this->_displayedIdCallCount;
     }
+}
+
+/**
+ * Used for testing attributes containing non-English characters.
+ */
+class UnicodeAttributesModelMock extends Model
+{
+    /**
+     * Product's ID (Russian).
+     * @var mixed
+     */
+    public $ИдентификаторТовара;
+    /**
+     * ID (Greek).
+     * @var mixed
+     */
+    public $το_αναγνωριστικό_του;
 }
 
 class PublicDetailView extends DetailView

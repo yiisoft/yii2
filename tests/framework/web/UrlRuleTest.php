@@ -1,13 +1,20 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
+use Yii;
+use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
+use yii\web\Request;
 use yii\web\UrlManager;
 use yii\web\UrlNormalizer;
 use yii\web\UrlNormalizerRedirectException;
 use yii\web\UrlRule;
-use yii\web\Request;
 use yiiunit\TestCase;
 
 /**
@@ -26,12 +33,12 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager(['cache' => null]);
         $suites = $this->getTestsForCreateUrl();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
-                list ($route, $params, $expected) = $test;
+                list($route, $params, $expected) = $test;
                 $url = $rule->createUrl($manager, $route, $params);
-                $this->assertEquals($expected, $url, "Test#$i-$j: $name");
+                $this->assertSame($expected, $url, "Test#$i-$j: $name");
             }
         }
     }
@@ -45,7 +52,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -69,7 +76,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -100,7 +107,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -129,7 +136,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -158,7 +165,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -186,7 +193,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -215,7 +222,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -270,6 +277,16 @@ class UrlRuleTest extends TestCase
         ]);
         $result = $rule->parseRequest($manager, $request);
         $this->assertEquals(['post/index', ['page' => 1, 'tag' => 'a']], $result);
+    }
+
+    public function testToString()
+    {
+        $suites = $this->getTestsForToString();
+        foreach ($suites as $i => $suite) {
+            list($name, $config, $test) = $suite;
+            $rule = new UrlRule($config);
+            $this->assertEquals($rule->__toString(), $test, "Test#$i: $name");
+        }
     }
 
     protected function getTestsForCreateUrl()
@@ -452,6 +469,44 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
+                'optional param at the beginning',
+                [
+                    'pattern' => '<language>/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en'],
+                ],
+                [
+                    ['site/category', ['language' => 'en', 'category' => 'books'], 'books'],
+                    ['site/category', ['language' => 'pl', 'category' => 'books'], 'pl/books'],
+                ],
+            ],
+            [
+                'two optional params at the beginning',
+                [
+                    'pattern' => '<language>/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books'],
+                ],
+                [
+                    ['site/category', ['language' => 'en', 'category' => 'books'], ''],
+                    ['site/category', ['language' => 'en', 'category' => 'games'], 'games'],
+                    ['site/category', ['language' => 'pl', 'category' => 'games'], 'pl/games'],
+                ],
+            ],
+            [
+                'optional param at the beginning with suffix',
+                [
+                    'pattern' => '<page>',
+                    'route' => 'page/view',
+                    'defaults' => ['page' => 'index'],
+                    'suffix' => '/',
+                ],
+                [
+                    ['page/view', ['page' => 'index'], ''],
+                    ['page/view', ['page' => 'news'], 'news/'],
+                ],
+            ],
+            [
                 'consecutive optional params',
                 [
                     'pattern' => 'post/<page:\d+>/<tag>',
@@ -481,6 +536,63 @@ class UrlRuleTest extends TestCase
                     ['post/index', ['page' => 1, 'tag' => 'b'], 'post/-b'],
                     ['post/index', ['page' => 2, 'tag' => 'a'], 'post/2-'],
                     ['post/index', ['page' => 2, 'tag' => 'b'], 'post/2-b'],
+                ],
+            ],
+            [
+                'optional params - example from guide',
+                [
+                    'pattern' => 'posts/<page:\d+>/<tag>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1, 'tag' => ''],
+                ],
+                [
+                    ['post/index', ['page' => 1, 'tag' => ''], 'posts'],
+                    ['post/index', ['page' => 2, 'tag' => ''], 'posts/2'],
+                    ['post/index', ['page' => 2, 'tag' => 'news'], 'posts/2/news'],
+                    ['post/index', ['page' => 1, 'tag' => 'news'], 'posts/news'],
+                    // allow skip empty params on URL creation
+                    ['post/index', [], false],
+                    ['post/index', ['tag' => ''], false],
+                    ['post/index', ['page' => 1], 'posts'],
+                    ['post/index', ['page' => 2], 'posts/2'],
+                ],
+            ],
+            [
+                'required params',
+                [
+                    'pattern' => 'about-me',
+                    'route' => 'site/page',
+                    'defaults' => ['id' => 1],
+                ],
+                [
+                    ['site/page', ['id' => 1], 'about-me'],
+                    ['site/page', ['id' => 2], false],
+                ],
+            ],
+            [
+                'required default param',
+                [
+                    'pattern' => '',
+                    'route' => 'site/home',
+                    'defaults' => ['lang' => 'en'],
+                ],
+                [
+                    ['site/home', ['lang' => 'en'], ''],
+                    ['site/home', ['lang' => ''], false],
+                    ['site/home', [], false],
+                ],
+            ],
+            [
+                'required default empty param',
+                [
+                    'pattern' => '',
+                    'route' => 'site/home',
+                    'defaults' => ['lang' => ''],
+                ],
+                [
+                    ['site/home', ['lang' => ''], ''],
+                    ['site/home', ['lang' => 'en'], false],
+                    ['site/home', [], false],
                 ],
             ],
             [
@@ -601,6 +713,31 @@ class UrlRuleTest extends TestCase
                 [
                     ['post/index', ['page' => 1, 'tag' => 'a'], false],
                     ['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], 'http://en.example.com/post/a'],
+                ],
+            ],
+            [
+                'with relative host info',
+                [
+                    'pattern' => 'post/<page:\d+>/<tag>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1],
+                    'host' => '//<lang:en|fr>.example.com',
+                ],
+                [
+                    ['post/index', ['page' => 1, 'tag' => 'a'], false],
+                    ['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], '//en.example.com/post/a'],
+                ],
+            ],
+            [
+                'with relative host info in pattern',
+                [
+                    'pattern' => '//<lang:en|fr>.example.com/post/<page:\d+>/<tag>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1],
+                ],
+                [
+                    ['post/index', ['page' => 1, 'tag' => 'a'], false],
+                    ['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], '//en.example.com/post/a'],
                 ],
             ],
             [
@@ -792,6 +929,103 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
+                'optional param at the beginning',
+                [
+                    'pattern' => '<language>/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en'],
+                ],
+                [
+                    ['books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'two optional params at the beginning',
+                [
+                    'pattern' => '<language:(en|pl)>/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books'],
+                ],
+                [
+                    ['', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'two optional params at the beginning followed by placeholder',
+                [
+                    'pattern' => '<language:(en|pl)>/<category>/test',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books'],
+                ],
+                [
+                    ['test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['books/test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/books/test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'two optional params at the beginning separated by placeholder',
+                [
+                    'pattern' => '<language:(en|pl)>/test/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books'],
+                ],
+                [
+                    ['test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['test/books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/test/books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'three optional params at the beginning separated by placeholder',
+                [
+                    'pattern' => '<language:(en|pl)>/test/<category>/<id:\d+>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books', 'id' => 1],
+                ],
+                [
+                    ['test', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en/test', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['test/books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en/test/books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                ],
+            ],
+            [
+                'two optional params at the beginning separated by dash',
+                [
+                    'pattern' => '<language:(en|pl)>-<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books'],
+                ],
+                [
+                    ['-', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en-', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['-books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en-books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'three optional params at the beginning separated by dash',
+                [
+                    'pattern' => '<language:(en|pl)>-<category>/<id:\d+>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books', 'id' => 1],
+                ],
+                [
+                    ['-', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['-books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-books/1', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-books/2', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 2]]],
+                ],
+            ],
+            [
                 'optional param at the end',
                 [
                     'pattern' => 'post/<tag>/<page:\d+>',
@@ -968,6 +1202,185 @@ class UrlRuleTest extends TestCase
                 [
                     ['', ['post/index', ['page' => 1]]],
                     ['2', ['post/index', ['page' => 2]]],
+                ],
+            ],
+            [
+                'with relative host info',
+                [
+                    'pattern' => 'post/<page:\d+>',
+                    'route' => 'post/index',
+                    'host' => '//<lang:en|fr>.example.com',
+                ],
+                [
+                    ['post/1', ['post/index', ['page' => '1', 'lang' => 'en']]],
+                    ['post/a', false],
+                    ['post/1/a', false],
+                ],
+            ],
+            [
+                'with relative host info in pattern',
+                [
+                    'pattern' => '//<lang:en|fr>.example.com/post/<page:\d+>',
+                    'route' => 'post/index',
+                ],
+                [
+                    ['post/1', ['post/index', ['page' => '1', 'lang' => 'en']]],
+                    ['post/a', false],
+                    ['post/1/a', false],
+                ],
+            ],
+        ];
+    }
+
+    protected function getTestsForToString()
+    {
+        return [
+            [
+                'empty pattern',
+                [
+                    'pattern' => '',
+                    'route' => 'post/index',
+                ],
+                '/',
+            ],
+            [
+                'multiple params with special chars',
+                [
+                    'pattern' => 'post/<page-number:\d+>/<per_page:\d+>/<author.login>',
+                    'route' => 'post/index',
+                ],
+                'post/<page-number:\d+>/<per_page:\d+>/<author.login>',
+            ],
+            [
+                'with host info',
+                [
+                    'pattern' => 'post/<page:\d+>/<tag>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1],
+                    'host' => 'http://<lang:en|fr>.example.com',
+                ],
+                'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>',
+            ],
+            [
+                'with host info in pattern',
+                [
+                    'pattern' => 'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1],
+                ],
+                'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>',
+            ],
+            [
+                'with verb',
+                [
+                    'verb' => ['POST'],
+                    'pattern' => 'post/<id:\d+>',
+                    'route' => 'post/index',
+                ],
+                'POST post/<id:\d+>',
+            ],
+            [
+                'with verbs',
+                [
+                    'verb' => ['PUT', 'POST'],
+                    'pattern' => 'post/<id:\d+>',
+                    'route' => 'post/index',
+                ],
+                'PUT,POST post/<id:\d+>',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider testGetCreateUrlStatusProvider
+     * @param array $config
+     * @param array $tests
+     */
+    public function testGetCreateUrlStatus($config, $tests)
+    {
+        foreach ($tests as $test) {
+            list($route, $params, $expected, $status) = $test;
+
+            $this->mockWebApplication();
+            Yii::$app->set('request', new Request(['hostInfo' => 'http://example.com', 'scriptUrl' => '/index.php']));
+
+            $manager = new UrlManager([
+                'cache' => null,
+            ]);
+            $rule = new UrlRule($config);
+            $errorMessage = 'Failed test: ' . VarDumper::dumpAsString($test);
+            $this->assertSame($expected, $rule->createUrl($manager, $route, $params), $errorMessage);
+            $this->assertNotNull($status, $errorMessage);
+            if ($status > 0) {
+                $this->assertSame($status, $rule->getCreateUrlStatus() & $status, $errorMessage);
+            } else {
+                $this->assertSame($status, $rule->getCreateUrlStatus(), $errorMessage);
+            }
+        }
+    }
+
+    /**
+     * Provides test cases for getCreateUrlStatus() method.
+     *
+     * - first param are properties of the UrlRule
+     * - second param is an array of test cases, containing two element arrays:
+     *   - first element is the route to create
+     *   - second element is the array of params
+     *   - third element is the expected URL
+     *   - fourth element is the expected result of getCreateUrlStatus() method
+     */
+    public function testGetCreateUrlStatusProvider()
+    {
+        return [
+            'route' => [
+                // rule properties
+                [
+                    'pattern' => 'post/<page:\d+>/<tag>/<sort:yes|no>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1, 'sort' => 'yes'],
+                ],
+                // test cases: route, params, expected, createStatus
+                [
+                    ['post/index', ['page' => 1, 'tag' => 'a', 'sort' => 'yes'], 'post/a', UrlRule::CREATE_STATUS_SUCCESS],
+                    ['module/post/index', ['page' => 1, 'tag' => 'a', 'sort' => 'yes'], false, UrlRule::CREATE_STATUS_ROUTE_MISMATCH],
+                    ['post/index/action', ['page' => 1, 'tag' => 'a', 'sort' => 'yes'], false, UrlRule::CREATE_STATUS_ROUTE_MISMATCH],
+                ],
+            ],
+            'optional params' => [
+                // rule properties
+                [
+                    'pattern' => 'post/<page:\d+>/<tag>/<sort:yes|no>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1, 'sort' => 'yes'],
+                ],
+                // test cases: route, params, expected, createStatus
+                [
+                    ['post/index', ['page' => 1, 'tag' => 'a', 'sort' => 'yes'], 'post/a', UrlRule::CREATE_STATUS_SUCCESS],
+                    ['post/index', ['page' => 2, 'tag' => 'a', 'sort' => 'yes'], 'post/2/a', UrlRule::CREATE_STATUS_SUCCESS],
+                    ['post/index', ['page' => 2, 'tag' => 'a', 'sort' => 'no'], 'post/2/a/no', UrlRule::CREATE_STATUS_SUCCESS],
+                    ['post/index', ['page' => 1, 'tag' => 'a', 'sort' => 'no'], 'post/a/no', UrlRule::CREATE_STATUS_SUCCESS],
+                    [
+                        'post/index',
+                        ['page' => 1, 'tag' => 'a', 'sort' => 'no', 'category' => 'my-category'],
+                        'post/a/no?category=my-category',
+                        UrlRule::CREATE_STATUS_SUCCESS,
+                    ],
+                    ['post/index', ['page' => 1], false, UrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+                    ['post/index', ['page' => '1abc', 'tag' => 'a'], false, UrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+                    ['post/index', ['page' => 1, 'tag' => 'a', 'sort' => 'YES'], false, UrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+                ],
+            ],
+            'parsing only' => [
+                // rule properties
+                [
+                    'pattern' => 'post/<page:\d+>/<tag>/<sort:yes|no>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1, 'sort' => 'yes'],
+                    'mode' => UrlRule::PARSING_ONLY,
+                ],
+                // test cases: route, params, expected, createStatus
+                [
+                    ['post/index', ['page' => 1, 'tag' => 'a', 'sort' => 'yes'], false, UrlRule::CREATE_STATUS_PARSING_ONLY],
                 ],
             ],
         ];

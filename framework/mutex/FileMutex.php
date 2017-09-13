@@ -41,7 +41,7 @@ use yii\helpers\FileHelper;
 class FileMutex extends Mutex
 {
     /**
-     * @var string the directory to store mutex files. You may use path alias here.
+     * @var string the directory to store mutex files. You may use [path alias](guide:concept-aliases) here.
      * Defaults to the "mutex" subdirectory under the application runtime path.
      */
     public $mutexPath = '@runtime/mutex';
@@ -89,29 +89,29 @@ class FileMutex extends Mutex
     {
         $filePath = $this->getLockFilePath($name);
         $waitTime = 0;
-        
+
         while (true) {
             $file = fopen($filePath, 'w+');
-            
+
             if ($file === false) {
                 return false;
             }
-            
+
             if ($this->fileMode !== null) {
                 @chmod($filePath, $this->fileMode);
             }
-            
+
             if (!flock($file, LOCK_EX | LOCK_NB)) {
                 fclose($file);
 
                 if (++$waitTime > $timeout) {
                     return false;
                 }
-                
+
                 sleep(1);
                 continue;
             }
-            
+
             // Under unix we delete the lock file before releasing the related handle. Thus it's possible that we've acquired a lock on
             // a non-existing file here (race condition). We must compare the inode of the lock file handle with the inode of the actual lock file.
             // If they do not match we simply continue the loop since we can assume the inodes will be equal on the next try.
@@ -128,7 +128,7 @@ class FileMutex extends Mutex
                 fclose($file);
                 continue;
             }
-            
+
             $this->_files[$name] = $file;
             return true;
         }
@@ -144,7 +144,7 @@ class FileMutex extends Mutex
         if (!isset($this->_files[$name])) {
             return false;
         }
-        
+
         if (DIRECTORY_SEPARATOR === '\\') {
             // Under windows it's not possible to delete a file opened via fopen (either by own or other process).
             // That's why we must first unlock and close the handle and then *try* to delete the lock file.

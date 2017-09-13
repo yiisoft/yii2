@@ -18,11 +18,11 @@
 и применит её к приложению, например:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // загрузка конфигурации приложения
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // создание объекта приложения и его конфигурирование
 (new yii\web\Application($config))->run();
@@ -136,12 +136,12 @@ ID в качестве элемента данного свойства.
 > будет использован компонент приложения. Если Вы вместо этого хотите использовать модуль, то можете указать его при
 > помощи анонимной функции похожей на эту:
 > ```php
-[
-    function () {
-        return Yii::$app->getModule('user');
-    },
-]
-```
+> [
+>     function () {
+>         return Yii::$app->getModule('user');
+>     },
+> ]
+> ```
 
 В процессе [начальной загрузки](runtime-bootstrapping.md), каждый компонент будет создан. Если класс компонента имеет
 интерфейс [[yii\base\BootstrapInterface]], то также будет вызван метод [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]].
@@ -190,7 +190,7 @@ if (YII_ENV_DEV) {
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
 Данное свойство является наиболее важным. Оно позволяет вам зарегистрировать список именованных компонентов, называемых
-[компоненты приложения](#structure-application-components.md), которые Вы можете использовать в других местах.
+[компоненты приложения](structure-application-components.md), которые Вы можете использовать в других местах.
 Например,
 
 ```php

@@ -66,6 +66,8 @@ use yii\base\InvalidConfigException;
  * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
  * is to be added to relational query join condition.
  *
+ * @property string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -148,10 +150,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->from)) {
-            /* @var $modelClass ActiveRecord */
-            $modelClass = $this->modelClass;
-            $tableName = $modelClass::tableName();
-            $this->from = [$tableName];
+            $this->from = [$this->getPrimaryTableName()];
         }
 
         if (empty($this->select) && !empty($this->join)) {
@@ -296,9 +295,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         if ($row !== false) {
             $models = $this->populate([$row]);
             return reset($models) ?: null;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -316,7 +315,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if ($this->sql === null) {
-            list ($sql, $params) = $db->getQueryBuilder()->build($this);
+            list($sql, $params) = $db->getQueryBuilder()->build($this);
         } else {
             $sql = $this->sql;
             $params = $this->params;
@@ -330,15 +329,17 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     protected function queryScalar($selectExpression, $db)
     {
-        if ($this->sql === null) {
-            return parent::queryScalar($selectExpression, $db);
-        }
         /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();
         }
-        return (new Query)->select([$selectExpression])
+
+        if ($this->sql === null) {
+            return parent::queryScalar($selectExpression, $db);
+        }
+
+        return (new Query())->select([$selectExpression])
             ->from(['c' => "({$this->sql})"])
             ->params($this->params)
             ->createCommand($db)
@@ -411,7 +412,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 list(, $relation, $alias) = $matches;
                 $name = $relation;
                 $callback = function ($query) use ($callback, $alias) {
-                    /** @var $query ActiveQuery */
+                    /* @var $query ActiveQuery */
                     $query->alias($alias);
                     if ($callback !== null) {
                         call_user_func($callback, $query);
@@ -434,9 +435,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $join = $this->join;
         $this->join = [];
 
-        $model = new $this->modelClass;
+        /* @var $modelClass ActiveRecordInterface */
+        $modelClass = $this->modelClass;
+        $model = $modelClass::instance();
         foreach ($this->joinWith as $config) {
-            list ($with, $eagerLoading, $joinType) = $config;
+            list($with, $eagerLoading, $joinType) = $config;
             $this->joinWithRelations($model, $with, $joinType);
 
             if (is_array($eagerLoading)) {
@@ -514,7 +517,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 } else {
                     $relation = $relations[$fullName];
                 }
-                $primaryModel = new $relation->modelClass;
+                /* @var $relationModelClass ActiveRecordInterface */
+                $relationModelClass = $relation->modelClass;
+                $primaryModel = $relationModelClass::instance();
                 $parent = $relation;
                 $prefix = $fullName;
                 $name = $childName;
@@ -544,9 +549,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         if (is_array($joinType) && isset($joinType[$name])) {
             return $joinType[$name];
-        } else {
-            return is_string($joinType) ? $joinType : 'INNER JOIN';
         }
+
+        return is_string($joinType) ? $joinType : 'INNER JOIN';
     }
 
     /**
@@ -557,17 +562,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     private function getTableNameAndAlias()
     {
         if (empty($this->from)) {
-            /* @var $modelClass ActiveRecord */
-            $modelClass = $this->modelClass;
-            $tableName = $modelClass::tableName();
+            $tableName = $this->getPrimaryTableName();
         } else {
             $tableName = '';
             foreach ($this->from as $alias => $tableName) {
                 if (is_string($alias)) {
                     return [$tableName, $alias];
-                } else {
-                    break;
                 }
+                break;
             }
         }
 
@@ -591,7 +593,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $via = $child->via;
         $child->via = null;
-        if ($via instanceof ActiveQuery) {
+        if ($via instanceof self) {
             // via table
             $this->joinWithRelation($parent, $via, $joinType);
             $this->joinWithRelation($via, $child, $joinType);
@@ -603,11 +605,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return;
         }
 
-        list ($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
-        list ($childTable, $childAlias) = $child->getTableNameAndAlias();
+        list($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
+        list($childTable, $childAlias) = $child->getTableNameAndAlias();
 
         if (!empty($child->link)) {
-
             if (strpos($parentAlias, '{{') === false) {
                 $parentAlias = '{{' . $parentAlias . '}}';
             }
@@ -751,7 +752,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function viaTable($tableName, $link, callable $callable = null)
     {
-        $relation = new ActiveQuery(get_class($this->primaryModel), [
+        $relation = new self(get_class($this->primaryModel), [
             'from' => [$tableName],
             'link' => $link,
             'multiple' => true,
@@ -778,12 +779,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function alias($alias)
     {
         if (empty($this->from) || count($this->from) < 2) {
-            list($tableName, ) = $this->getTableNameAndAlias();
+            list($tableName) = $this->getTableNameAndAlias();
             $this->from = [$alias => $tableName];
         } else {
-            /* @var $modelClass ActiveRecord */
-            $modelClass = $this->modelClass;
-            $tableName = $modelClass::tableName();
+            $tableName = $this->getPrimaryTableName();
 
             foreach ($this->from as $key => $table) {
                 if ($table === $tableName) {
@@ -792,6 +791,31 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 }
             }
         }
+
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.12
+     */
+    public function getTablesUsedInFrom()
+    {
+        if (empty($this->from)) {
+            $this->from = [$this->getPrimaryTableName()];
+        }
+
+        return parent::getTablesUsedInFrom();
+    }
+
+    /**
+     * @return string primary table name
+     * @since 2.0.12
+     */
+    protected function getPrimaryTableName()
+    {
+        /* @var $modelClass ActiveRecord */
+        $modelClass = $this->modelClass;
+        return $modelClass::tableName();
     }
 }

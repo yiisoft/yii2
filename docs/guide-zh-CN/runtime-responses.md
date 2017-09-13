@@ -14,7 +14,7 @@
 
 构建响应时，最先应做的是标识请求是否成功处理的状态，可通过设置
 [[yii\web\Response::statusCode]] 属性，该属性使用一个有效的
-[HTTP 状态码](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html)。例如，为标识处理已被处理成功，
+[HTTP 状态码](https://tools.ietf.org/html/rfc2616#section-10)。例如，为标识处理已被处理成功，
 可设置状态码为200，如下所示：
 
 ```php
@@ -181,9 +181,9 @@ public function actionOld()
 
 和浏览器跳转类似，文件发送是另一个依赖指定HTTP头的功能，Yii提供方法集合来支持各种文件发送需求，它们对HTTP头都有内置的支持。
 
-* [[yii\web\Response::sendFile()]]: 发送一个已存在的文件到客户端
-* [[yii\web\Response::sendContentAsFile()]]: 发送一个文本字符串作为文件到客户端
-* [[yii\web\Response::sendStreamAsFile()]]: 发送一个已存在的文件流作为文件到客户端
+- [[yii\web\Response::sendFile()]]: 发送一个已存在的文件到客户端
+- [[yii\web\Response::sendContentAsFile()]]: 发送一个文本字符串作为文件到客户端
+- [[yii\web\Response::sendStreamAsFile()]]: 发送一个已存在的文件流作为文件到客户端
 
 这些方法都将响应对象作为返回值，如果要发送的文件非常大，应考虑使用
 [[yii\web\Response::sendStreamAsFile()]] 因为它更节约内存，以下示例显示在控制器操作中如何发送文件：

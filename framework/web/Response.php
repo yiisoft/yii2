@@ -10,13 +10,13 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
-use yii\helpers\Inflector;
-use yii\helpers\Url;
 use yii\helpers\FileHelper;
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use yii\helpers\Url;
 
 /**
- * The web Response class represents an HTTP response
+ * The web Response class represents an HTTP response.
  *
  * It holds the [[headers]], [[cookies]] and [[content]] that is to be sent to the client.
  * It also controls the HTTP [[statusCode|status code]].
@@ -40,21 +40,20 @@ use yii\helpers\StringHelper;
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property string $downloadHeaders The attachment file name. This property is write-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
- * @property bool $isClientError Whether this response indicates a client error. This property is
- * read-only.
+ * @property bool $isClientError Whether this response indicates a client error. This property is read-only.
  * @property bool $isEmpty Whether this response is empty. This property is read-only.
- * @property bool $isForbidden Whether this response indicates the current request is forbidden. This
- * property is read-only.
+ * @property bool $isForbidden Whether this response indicates the current request is forbidden. This property
+ * is read-only.
  * @property bool $isInformational Whether this response is informational. This property is read-only.
  * @property bool $isInvalid Whether this response has a valid [[statusCode]]. This property is read-only.
- * @property bool $isNotFound Whether this response indicates the currently requested resource is not
- * found. This property is read-only.
+ * @property bool $isNotFound Whether this response indicates the currently requested resource is not found.
+ * This property is read-only.
  * @property bool $isOk Whether this response is OK. This property is read-only.
  * @property bool $isRedirection Whether this response is a redirection. This property is read-only.
- * @property bool $isServerError Whether this response indicates a server error. This property is
- * read-only.
+ * @property bool $isServerError Whether this response indicates a server error. This property is read-only.
  * @property bool $isSuccessful Whether this response is successful. This property is read-only.
  * @property int $statusCode The HTTP status code to send with the response.
+ * @property \Exception|\Error $statusCodeByException The exception object. This property is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -218,6 +217,7 @@ class Response extends \yii\base\Response
         431 => 'Request Header Fields Too Large',
         449 => 'Retry With',
         450 => 'Blocked by Windows Parental Controls',
+        451 => 'Unavailable For Legal Reasons',
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway or Proxy Error',
@@ -273,6 +273,7 @@ class Response extends \yii\base\Response
      * @param int $value the status code
      * @param string $text the status text. If not set, it will be set automatically based on the status code.
      * @throws InvalidParamException if the status code is invalid.
+     * @return $this the response object itself
      */
     public function setStatusCode($value, $text = null)
     {
@@ -288,6 +289,26 @@ class Response extends \yii\base\Response
         } else {
             $this->statusText = $text;
         }
+
+        return $this;
+    }
+
+    /**
+     * Sets the response status code based on the exception.
+     * @param \Exception|\Error $e the exception object.
+     * @throws InvalidParamException if the status code is invalid.
+     * @return $this the response object itself
+     * @since 2.0.12
+     */
+    public function setStatusCodeByException($e)
+    {
+        if ($e instanceof HttpException) {
+            $this->setStatusCode($e->statusCode);
+        } else {
+            $this->setStatusCode(500);
+        }
+
+        return $this;
     }
 
     /**
@@ -298,8 +319,9 @@ class Response extends \yii\base\Response
     public function getHeaders()
     {
         if ($this->_headers === null) {
-            $this->_headers = new HeaderCollection;
+            $this->_headers = new HeaderCollection();
         }
+
         return $this->_headers;
     }
 
@@ -336,7 +358,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Sends the response headers to the client
+     * Sends the response headers to the client.
      */
     protected function sendHeaders()
     {
@@ -377,7 +399,7 @@ class Response extends \yii\base\Response
         }
         foreach ($this->getCookies() as $cookie) {
             $value = $cookie->value;
-            if ($cookie->expire != 1  && isset($validationKey)) {
+            if ($cookie->expire != 1 && isset($validationKey)) {
                 $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
             }
             setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
@@ -385,7 +407,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Sends the response content to the client
+     * Sends the response content to the client.
      */
     protected function sendContent()
     {
@@ -399,7 +421,7 @@ class Response extends \yii\base\Response
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
         if (is_array($this->stream)) {
-            list ($handle, $begin, $end) = $this->stream;
+            list($handle, $begin, $end) = $this->stream;
             fseek($handle, $begin);
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
                 if ($pos + $chunkSize > $end) {
@@ -607,10 +629,11 @@ class Response extends \yii\base\Response
      */
     protected function getHttpRange($fileSize)
     {
-        if (!isset($_SERVER['HTTP_RANGE']) || $_SERVER['HTTP_RANGE'] === '-') {
+        $rangeHeader = Yii::$app->getRequest()->getHeaders()->get('Range', '-');
+        if ($rangeHeader === '-') {
             return [0, $fileSize - 1];
         }
-        if (!preg_match('/^bytes=(\d*)-(\d*)$/', $_SERVER['HTTP_RANGE'], $matches)) {
+        if (!preg_match('/^bytes=(\d*)-(\d*)$/', $rangeHeader, $matches)) {
             return false;
         }
         if ($matches[1] === '') {
@@ -628,9 +651,9 @@ class Response extends \yii\base\Response
         }
         if ($start < 0 || $start > $end) {
             return false;
-        } else {
-            return [$start, $end];
         }
+
+        return [$start, $end];
     }
 
     /**
@@ -719,7 +742,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Returns Content-Disposition header value that is safe to use with both old and new browsers
+     * Returns Content-Disposition header value that is safe to use with both old and new browsers.
      *
      * Fallback name:
      *
@@ -751,6 +774,7 @@ class Response extends \yii\base\Response
         if ($utfName !== $fallbackName) {
             $dispositionHeader .= "; filename*=utf-8''{$utfName}";
         }
+
         return $dispositionHeader;
     }
 
@@ -782,7 +806,7 @@ class Response extends \yii\base\Response
      *
      * ```javascript
      * $document.ajaxComplete(function (event, xhr, settings) {
-     *     var url = xhr.getResponseHeader('X-Redirect');
+     *     var url = xhr && xhr.getResponseHeader('X-Redirect');
      *     if (url) {
      *         window.location = url;
      *     }
@@ -797,11 +821,11 @@ class Response extends \yii\base\Response
      *   Note that the route is with respect to the whole application, instead of relative to a controller or module.
      *   [[Url::to()]] will be used to convert the array into a URL.
      *
-     * Any relative URL will be converted into an absolute one by prepending it with the host info
-     * of the current request.
+     * Any relative URL that starts with a single forward slash "/" will be converted
+     * into an absolute one by prepending it with the host info of the current request.
      *
      * @param int $statusCode the HTTP status code. Defaults to 302.
-     * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
+     * See <https://tools.ietf.org/html/rfc2616#section-10>
      * for details about HTTP status code
      * @param bool $checkAjax whether to specially handle AJAX (and PJAX) requests. Defaults to true,
      * meaning if the current request is an AJAX or PJAX request, then calling this method will cause the browser
@@ -868,6 +892,7 @@ class Response extends \yii\base\Response
 
     /**
      * Returns the cookie collection.
+     *
      * Through the returned cookie collection, you add or remove cookies as follows,
      *
      * ```php
@@ -888,8 +913,9 @@ class Response extends \yii\base\Response
     public function getCookies()
     {
         if ($this->_cookies === null) {
-            $this->_cookies = new CookieCollection;
+            $this->_cookies = new CookieCollection();
         }
+
         return $this->_cookies;
     }
 
@@ -979,9 +1005,15 @@ class Response extends \yii\base\Response
     protected function defaultFormatters()
     {
         return [
-            self::FORMAT_HTML => 'yii\web\HtmlResponseFormatter',
-            self::FORMAT_XML => 'yii\web\XmlResponseFormatter',
-            self::FORMAT_JSON => 'yii\web\JsonResponseFormatter',
+            self::FORMAT_HTML => [
+                'class' => 'yii\web\HtmlResponseFormatter',
+            ],
+            self::FORMAT_XML => [
+                'class' => 'yii\web\XmlResponseFormatter',
+            ],
+            self::FORMAT_JSON => [
+                'class' => 'yii\web\JsonResponseFormatter',
+            ],
             self::FORMAT_JSONP => [
                 'class' => 'yii\web\JsonResponseFormatter',
                 'useJsonp' => true,

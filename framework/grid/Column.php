@@ -8,7 +8,7 @@
 namespace yii\grid;
 
 use Closure;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\helpers\Html;
 
 /**
@@ -19,7 +19,7 @@ use yii\helpers\Html;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Column extends Object
+class Column extends BaseObject
 {
     /**
      * @var GridView the grid view object that owns this column.
@@ -107,6 +107,7 @@ class Column extends Object
         } else {
             $options = $this->contentOptions;
         }
+
         return Html::tag('td', $this->renderDataCellContent($model, $key, $index), $options);
     }
 
@@ -162,9 +163,9 @@ class Column extends Object
     {
         if ($this->content !== null) {
             return call_user_func($this->content, $model, $key, $index, $this);
-        } else {
-            return $this->grid->emptyCell;
         }
+
+        return $this->grid->emptyCell;
     }
 
     /**

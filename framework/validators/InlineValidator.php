@@ -35,7 +35,7 @@ class InlineValidator extends Validator
      *
      * - `$attribute` is the name of the attribute to be validated;
      * - `$params` contains the value of [[params]] that you specify when declaring the inline validation rule;
-     * - `$validator` is a reference to related [[InlineValidator]] object.
+     * - `$validator` is a reference to related [[InlineValidator]] object. This parameter is available since version 2.0.11.
      */
     public $method;
     /**
@@ -84,8 +84,8 @@ class InlineValidator extends Validator
             }
 
             return call_user_func($method, $attribute, $this->params, $this);
-        } else {
-            return null;
         }
+
+        return null;
     }
 }

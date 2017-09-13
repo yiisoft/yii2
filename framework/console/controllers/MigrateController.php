@@ -154,6 +154,7 @@ class MigrateController extends BaseMigrateController
             't' => 'migrationTable',
             'F' => 'templateFile',
             'P' => 'useTablePrefix',
+            'c' => 'compact',
         ]);
     }
 
@@ -169,10 +170,11 @@ class MigrateController extends BaseMigrateController
             if ($action->id !== 'create') {
                 $this->db = Instance::ensure($this->db, Connection::className());
             }
+
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -182,13 +184,8 @@ class MigrateController extends BaseMigrateController
      */
     protected function createMigration($class)
     {
-        $class = trim($class, '\\');
-        if (strpos($class, '\\') === false) {
-            $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
-            require_once($file);
-        }
-
-        return new $class(['db' => $this->db]);
+        $this->includeMigrationFile($class);
+        return new $class(['db' => $this->db, 'compact' => $this->compact]);
     }
 
     /**
@@ -225,7 +222,7 @@ class MigrateController extends BaseMigrateController
             } else {
                 $row['canonicalVersion'] = $row['version'];
             }
-            $row['apply_time'] = (int)$row['apply_time'];
+            $row['apply_time'] = (int) $row['apply_time'];
             $history[] = $row;
         }
 
@@ -234,8 +231,10 @@ class MigrateController extends BaseMigrateController
                 if (($compareResult = strcasecmp($b['canonicalVersion'], $a['canonicalVersion'])) !== 0) {
                     return $compareResult;
                 }
+
                 return strcasecmp($b['version'], $a['version']);
             }
+
             return ($a['apply_time'] > $b['apply_time']) ? -1 : +1;
         });
 
@@ -274,6 +273,32 @@ class MigrateController extends BaseMigrateController
             'version' => $version,
             'apply_time' => time(),
         ])->execute();
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.13
+     */
+    protected function truncateDatabase()
+    {
+        $db = $this->db;
+        $schemas = $db->schema->getTableSchemas();
+
+        // First drop all foreign keys,
+        foreach ($schemas as $schema) {
+            if ($schema->foreignKeys) {
+                foreach ($schema->foreignKeys as $name => $foreignKey) {
+                    $db->createCommand()->dropForeignKey($name, $schema->name)->execute();
+                    $this->stdout("Foreign key $name dropped.\n");
+                }
+            }
+        }
+
+        // Then drop the tables:
+        foreach ($schemas as $schema) {
+            $db->createCommand()->dropTable($schema->name)->execute();
+            $this->stdout("Table {$schema->name} dropped.\n");
+        }
     }
 
     /**
@@ -401,11 +426,12 @@ class MigrateController extends BaseMigrateController
         if (!$this->useTablePrefix) {
             return $tableName;
         }
+
         return '{{%' . $tableName . '}}';
     }
 
     /**
-     * Parse the command line migration fields
+     * Parse the command line migration fields.
      * @return array parse result with following fields:
      *
      * - fields: array, parsed fields
@@ -455,7 +481,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * Adds default primary key to fields list if there's no primary key specified
+     * Adds default primary key to fields list if there's no primary key specified.
      * @param array $fields parsed fields
      * @since 2.0.7
      */
