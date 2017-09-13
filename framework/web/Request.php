@@ -1530,11 +1530,9 @@ class Request extends \yii\base\Request implements RequestInterface
     protected function defaultUploadedFiles()
     {
         $files = [];
-        if (isset($_FILES) && is_array($_FILES)) {
-            foreach ($_FILES as $class => $info) {
-                $files[$class] = [];
-                $this->populateUploadedFileRecursive($files[$class], $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error']);
-            }
+        foreach ($_FILES as $class => $info) {
+            $files[$class] = [];
+            $this->populateUploadedFileRecursive($files[$class], $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error']);
         }
 
         return $files;

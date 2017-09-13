@@ -16,7 +16,7 @@ use yii\helpers\StringHelper;
  * This parser provides the fallback for the 'multipart/form-data' processing on non POST requests,
  * for example: the one with 'PUT' request method.
  *
- * In order to enable this parser you should configure [[Request::parsers]] in the following way:
+ * In order to enable this parser you should configure [[Request::$parsers]] in the following way:
  *
  * ```php
  * return [
