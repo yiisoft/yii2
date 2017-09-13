@@ -17,7 +17,7 @@ use yii\helpers\FileHelper;
  *
  * Application configuration example:
  *
- * ```
+ * ```php
  * [
  *     'components' => [
  *         'mutex' => [
@@ -132,6 +132,9 @@ class FileMutex extends Mutex
             $this->_files[$name] = $file;
             return true;
         }
+
+        // Should not be reached normally.
+        return false;
     }
 
     /**
