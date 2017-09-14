@@ -548,4 +548,64 @@ class RequestTest extends TestCase
         $this->assertCount(1, $uploadedFiles);
         $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
     }
+
+    /**
+     * Data provider for [[testResolvePathInfo()]]
+     * @return array test data
+     */
+    public function dataProviderResolvePathInfo()
+    {
+        return [
+            [
+                '/path/project/index.php',
+                '/path/project',
+                '/path/project/index.php',
+                '/path/project/index.php',
+                ''
+            ],
+            [
+                '/path/project/index.php/some/path',
+                '/path/project',
+                '/path/project/index.php',
+                '/path/project/index.php',
+                'some/path'
+            ],
+            [
+                '/path/project/some/path',
+                '/path/project',
+                '/path/project/index.php',
+                '/path/project/index.php',
+                'some/path'
+            ],
+            [
+                '/path/project/some/path/',
+                '/path/project',
+                '/path/project/index.php',
+                '/path/project/index.php',
+                'some/path/'
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderResolvePathInfo
+     *
+     * @param string $url
+     * @param string $baseUrl
+     * @param string $scriptUrl
+     * @param string $phpSelf
+     * @param string $expectedPathInfo
+     */
+    public function testResolvePathInfo($url, $baseUrl, $scriptUrl, $phpSelf, $expectedPathInfo)
+    {
+        $_SERVER['PHP_SELF'] = $phpSelf;
+
+        $request = new Request([
+            'url' => $url,
+            'baseUrl' => $baseUrl,
+            'scriptUrl' => $scriptUrl,
+        ]);
+
+        $this->assertSame($expectedPathInfo, $request->getPathInfo());
+    }
 }
