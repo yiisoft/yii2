@@ -94,7 +94,7 @@ class UrlNormalizer extends BaseObject
 
     /**
      * Normalizes specified pathInfo.
-     * @param string $pathInfo pathInfo for normalization
+     * @param string[] $pathInfo pathInfo for normalization
      * @param string $suffix current rule suffix
      * @param bool $normalized if specified, this variable will be set to `true` if $pathInfo
      * was changed during normalization
@@ -122,27 +122,33 @@ class UrlNormalizer extends BaseObject
 
     /**
      * Collapse consecutive slashes in $pathInfo, for example converts `site///index` into `site/index`.
-     * @param string $pathInfo raw path info.
-     * @return string normalized path info.
+     * @param string[] $pathInfo raw path info.
+     * @return string[] normalized path info.
      */
     protected function collapseSlashes($pathInfo)
     {
-        return ltrim(preg_replace('#/{2,}#', '/', $pathInfo), '/');
+        $last = array_pop($pathInfo);
+        $pathInfo = array_filter($pathInfo, function ($part) {
+            return $part !== '';
+        });
+        $pathInfo[] = $last;
+
+        return $pathInfo;
     }
 
     /**
      * Adds or removes trailing slashes from $pathInfo depending on whether the $suffix has a
      * trailing slash or not.
-     * @param string $pathInfo raw path info.
+     * @param string[] $pathInfo raw path info.
      * @param string $suffix
-     * @return string normalized path info.
+     * @return string[] normalized path info.
      */
     protected function normalizeTrailingSlash($pathInfo, $suffix)
     {
-        if (substr($suffix, -1) === '/' && substr($pathInfo, -1) !== '/') {
-            $pathInfo .= '/';
-        } elseif (substr($suffix, -1) !== '/' && substr($pathInfo, -1) === '/') {
-            $pathInfo = rtrim($pathInfo, '/');
+        if (substr($suffix, -1) === '/' && end($pathInfo) !== '') {
+            $pathInfo[] = '';
+        } elseif (substr($suffix, -1) !== '/' && end($pathInfo) === '') {
+            array_pop($pathInfo);
         }
 
         return $pathInfo;

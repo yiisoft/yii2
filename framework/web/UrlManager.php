@@ -280,11 +280,12 @@ class UrlManager extends Component
             if ($this->normalizer !== false) {
                 $pathInfo = $this->normalizer->normalizePathInfo($pathInfo, $suffix, $normalized);
             }
-            if ($suffix !== '' && $pathInfo !== '') {
+            if ($suffix !== '' && $pathInfo !== []) {
                 $n = strlen($this->suffix);
-                if (substr_compare($pathInfo, $this->suffix, -$n, $n) === 0) {
-                    $pathInfo = substr($pathInfo, 0, -$n);
-                    if ($pathInfo === '') {
+                $pathEnd = end($pathInfo);
+                if (substr_compare($pathEnd, $this->suffix, -$n, $n) === 0) {
+                    $pathEnd = substr($pathEnd, 0, -$n);
+                    if ($pathEnd === '') {
                         // suffix alone is not allowed
                         return false;
                     }
@@ -294,12 +295,14 @@ class UrlManager extends Component
                 }
             }
 
+            $route = implode('/', $pathInfo);
+
             if ($normalized) {
                 // pathInfo was changed by normalizer - we need also normalize route
-                return $this->normalizer->normalizeRoute([$pathInfo, []]);
+                return $this->normalizer->normalizeRoute([$route, []]);
             }
 
-            return [$pathInfo, []];
+            return [$route, []];
         }
 
         Yii::debug('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
