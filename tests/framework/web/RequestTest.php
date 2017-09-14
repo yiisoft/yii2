@@ -561,28 +561,35 @@ class RequestTest extends TestCase
                 '/path/project',
                 '/path/project/index.php',
                 '/path/project/index.php',
-                ''
+                []
             ],
             [
                 '/path/project/index.php/some/path',
                 '/path/project',
                 '/path/project/index.php',
                 '/path/project/index.php',
-                'some/path'
+                ['some', 'path']
             ],
             [
                 '/path/project/some/path',
                 '/path/project',
                 '/path/project/index.php',
                 '/path/project/index.php',
-                'some/path'
+                ['some', 'path']
             ],
             [
                 '/path/project/some/path/',
                 '/path/project',
                 '/path/project/index.php',
                 '/path/project/index.php',
-                'some/path/'
+                ['some', 'path', '']
+            ],
+            [
+                '/path/project/some%2fpath',
+                '/path/project',
+                '/path/project/index.php',
+                '/path/project/index.php',
+                ['some/path']
             ],
         ];
     }
