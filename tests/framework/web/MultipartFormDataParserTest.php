@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use Psr\Http\Message\UploadedFileInterface;
+use yii\http\UploadedFile;
 use yii\web\MultipartFormDataParser;
 use yii\web\Request;
 use yiiunit\TestCase;
@@ -35,14 +36,6 @@ class MultipartFormDataParserTest extends TestCase
 
         $bodyParams = $parser->parse($request);
 
-        $expectedBodyParams = [
-            'title' => 'test-title',
-            'Item' => [
-                'name' => 'test-name',
-            ],
-        ];
-        $this->assertEquals($expectedBodyParams, $bodyParams);
-
         $uploadedFiles = $request->getUploadedFiles();
 
         $this->assertFalse(empty($uploadedFiles['someFile']));
@@ -61,6 +54,16 @@ class MultipartFormDataParserTest extends TestCase
         $this->assertEquals('item-file.txt', $uploadedFile->getClientFilename());
         $this->assertEquals('text/plain', $uploadedFile->getClientMediaType());
         $this->assertEquals('item file content', $uploadedFile->getStream()->__toString());
+
+        $expectedBodyParams = [
+            'title' => 'test-title',
+            'Item' => [
+                'name' => 'test-name',
+                'file' => $uploadedFiles['Item']['file'],
+            ],
+            'someFile' => $uploadedFiles['someFile']
+        ];
+        $this->assertEquals($expectedBodyParams, $bodyParams);
     }
 
     /**
@@ -200,13 +203,14 @@ class MultipartFormDataParserTest extends TestCase
         ]);
         $bodyParams = $parser->parse($request);
 
-        $expectedBodyParams = [
-            'title' => 'test-title',
-        ];
-        $this->assertEquals($expectedBodyParams, $bodyParams);
-
         $uploadedFiles = $request->getUploadedFiles();
         $this->assertNotEmpty($uploadedFiles['someFile']);
         $this->assertFalse(isset($uploadedFiles['existingFile']));
+
+        $expectedBodyParams = [
+            'title' => 'test-title',
+            'someFile' => $uploadedFiles['someFile'],
+        ];
+        $this->assertEquals($expectedBodyParams, $bodyParams);
     }
 }

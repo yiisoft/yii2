@@ -564,6 +564,10 @@ class Request extends \yii\base\Request implements RequestInterface
                 }
                 // PHP has already parsed the body so we have all params in $_POST
                 $this->_bodyParams = $_POST;
+
+                if ($contentType === 'multipart/form-data') {
+                    $this->_bodyParams = ArrayHelper::merge($this->_bodyParams, $this->getUploadedFiles());
+                }
             } else {
                 if ($contentType !== 'application/x-www-form-urlencoded') {
                     throw new UnsupportedMediaTypeHttpException();
