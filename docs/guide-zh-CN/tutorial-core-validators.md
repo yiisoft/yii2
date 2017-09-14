@@ -221,7 +221,7 @@ function foo($model, $attribute) {
 - `maxFiles`：给定特性最多能承载多少个文件。默认为 1，代表只允许单文件上传。若值大于一，那么输入值必须为包含最多 `maxFiles` 个上传文件元素的数组。
 - `checkExtensionByMimeType`：是否通过文件的 MIME 类型来判断其文件扩展。若由 MIME 判定的文件扩展与给定文件的扩展不一样，则文件会被认为无效。默认为 true，代表执行上述检测。
 
-`FileValidator` 通常与 [[yii\web\UploadedFile]] 共同使用。请参考 [文件上传](input-file-upload.md)章节来了解有关文件上传与上传文件的检验的全部内容。
+`FileValidator` 通常与 [[yii\http\UploadedFile]] 共同使用。请参考 [文件上传](input-file-upload.md)章节来了解有关文件上传与上传文件的检验的全部内容。
 
 
 ## [[yii\validators\FilterValidator|filter（滤镜）]] <span id="filter"></span>

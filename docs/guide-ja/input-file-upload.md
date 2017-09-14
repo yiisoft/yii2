@@ -1,7 +1,7 @@
 ファイルをアップロードする
 ==========================
 
-Yii におけるファイルのアップロードは、通常、アップロードされる個々のファイルを `UploadedFile` としてカプセル化する [[yii\web\UploadedFile]] の助けを借りて実行されます。
+Yii におけるファイルのアップロードは、通常、アップロードされる個々のファイルを `UploadedFile` としてカプセル化する [[yii\http\UploadedFile]] の助けを借りて実行されます。
 これを [[yii\widgets\ActiveForm]] および [モデル](structure-models.md) と組み合わせることで、安全なファイルアップロードメカニズムを簡単に実装することが出来ます。
 
 
@@ -16,7 +16,7 @@ Yii におけるファイルのアップロードは、通常、アップロー�
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -92,7 +92,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -113,7 +113,7 @@ class SiteController extends Controller
 }
 ```
 
-上記のコードでは、フォームが送信されると [[yii\web\UploadedFile::getInstance()]] メソッドが呼ばれて、アップロードされたファイルが `UploadedFile` のインスタンスとして表現されます。
+上記のコードでは、フォームが送信されると [[yii\http\UploadedFile::getInstance()]] メソッドが呼ばれて、アップロードされたファイルが `UploadedFile` のインスタンスとして表現されます。
 そして、次に、モデルの検証によってアップロードされたファイルが有効なものであることを確かめ、サーバにファイルを保存します。
 
 
@@ -130,7 +130,7 @@ class SiteController extends Controller
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -184,7 +184,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {

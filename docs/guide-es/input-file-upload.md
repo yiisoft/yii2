@@ -1,7 +1,7 @@
 Subir Archivos
 ==============
 
-Subir archivos en Yii es normalmente realizado con la ayuda de [[yii\web\UploadedFile]], que encapsula cada archivo subido
+Subir archivos en Yii es normalmente realizado con la ayuda de [[yii\http\UploadedFile]], que encapsula cada archivo subido
 en un objeto `UploadedFile`. Combinado con [[yii\widgets\ActiveForm]] y [modelos](structure-models.md),
 puedes fácilmente implementar un mecanismo seguro de subida de archivos.
 
@@ -16,7 +16,7 @@ Por ejemplo,
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -90,7 +90,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -111,7 +111,7 @@ class SiteController extends Controller
 }
 ```
 
-En el código anterior, cuando se envía el formulario, el método [[yii\web\UploadedFile::getInstance()]] es llamado
+En el código anterior, cuando se envía el formulario, el método [[yii\http\UploadedFile::getInstance()]] es llamado
 para representar el archivo subido como una instancia de `UploadedFile`. Entonces dependemos de la validación del modelo
 para asegurarnos que el archivo subido es válido y entonces subirlo al servidor.
 
@@ -130,7 +130,7 @@ cuyo valor por defecto es 20. El método `upload()` debería también ser modifi
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -186,7 +186,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {

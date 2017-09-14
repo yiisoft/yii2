@@ -344,7 +344,7 @@ This validator checks if the input is a valid uploaded file.
   MIME type check differs from the uploaded file extension, the file will be considered as invalid. Defaults to `true`,
   meaning perform such check.
 
-`FileValidator` is used together with [[yii\web\UploadedFile]]. Please refer to the [Uploading Files](input-file-upload.md)
+`FileValidator` is used together with [[yii\http\UploadedFile]]. Please refer to the [Uploading Files](input-file-upload.md)
 section for complete coverage about uploading files and performing validation about the uploaded files.
 
 
