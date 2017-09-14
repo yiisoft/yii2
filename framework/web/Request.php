@@ -569,7 +569,7 @@ class Request extends \yii\base\Request implements RequestInterface
                     throw new UnsupportedMediaTypeHttpException();
                 }
                 $this->_bodyParams = [];
-                mb_parse_str($this->getRawBody(), $this->_bodyParams);
+                mb_parse_str($this->getBody()->__toString(), $this->_bodyParams);
             }
         }
 
@@ -1245,7 +1245,7 @@ class Request extends \yii\base\Request implements RequestInterface
     /**
      * Returns request content-type
      * The Content-Type header field indicates the MIME type of the data
-     * contained in [[getRawBody()]] or, in the case of the HEAD method, the
+     * contained in [[getBody()]] or, in the case of the HEAD method, the
      * media type that would have been sent had the request been a GET.
      * For the MIME-types the user expects in response, see [[acceptableContentTypes]].
      * @return string request content-type. Empty string is returned if this information is not available.
