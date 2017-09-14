@@ -1,7 +1,7 @@
 Uploading Files
 ===============
 
-Uploading files in Yii is usually done with the help of [[yii\web\UploadedFile]] which encapsulates each uploaded
+Uploading files in Yii is usually done with the help of [[yii\http\UploadedFile]] which encapsulates each uploaded
 file as an `UploadedFile` object. Combined with [[yii\widgets\ActiveForm]] and [models](structure-models.md),
 you can easily implement a secure file uploading mechanism.
 
@@ -16,7 +16,7 @@ For example,
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -90,7 +90,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -99,7 +99,7 @@ class SiteController extends Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            $model->load(Yii::$app->request->getUploadedFiles()); // populates `UploadForm::$imageFile` from `UploadForm[imageFile]`
             if ($model->upload()) {
                 // file is uploaded successfully
                 return;
@@ -111,9 +111,10 @@ class SiteController extends Controller
 }
 ```
 
-In the above code, when the form is submitted, the [[yii\web\UploadedFile::getInstance()]] method is called
-to represent the uploaded file as an `UploadedFile` instance. We then rely on the model validation to make sure
-the uploaded file is valid and save the file on the server.
+In the above code, when the form is submitted, the [[yii\base\Model::load()]] method is called upon result
+of [[yii\web\Request::getUploadedFiles()]], which contains `UploadedFile` instances in the array structured
+as regular POST data. We then rely on the model validation to make sure the uploaded file is valid and save
+the file on the server.
 
 
 ## Uploading Multiple Files <span id="uploading-multiple-files"></span>
@@ -130,7 +131,7 @@ which defaults to 20. The `upload()` method should also be updated to save the u
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -186,7 +187,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -195,7 +196,7 @@ class SiteController extends Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-            $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
+            $model->load(Yii::$app->request->getUploadedFiles()); // populates `UploadForm::$imageFiles` from `UploadForm[imageFiles][]`
             if ($model->upload()) {
                 // file is uploaded successfully
                 return;

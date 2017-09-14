@@ -12,17 +12,22 @@ use Psr\Http\Message\UploadedFileInterface;
 use yii\base\BaseObject;
 use yii\base\InvalidArgumentException;
 use yii\di\Instance;
-use yii\helpers\Html;
 
 /**
  * UploadedFile represents the information for an uploaded file.
  *
- * You can call [[getInstance()]] to retrieve the instance of an uploaded file,
- * and then use [[saveAs()]] to save it on the server.
+ * You can retrieve the set of an uploaded file from application 'request' component:
+ *
+ * ```php
+ * $uploadedFiles = Yii::$app->request->getUploadedFiles();
+ * ```
+ *
+ * You can use [[saveAs()]] to save file on the server.
  * You may also query other information about the file, including [[clientFilename]],
  * [[tempFilename]], [[clientMediaType]], [[size]] and [[error]].
  *
- * For more details and usage information on UploadedFile, see the [guide article on handling uploads](guide:input-file-upload).
+ * For more details and usage information on UploadedFile, see the [guide article on handling uploads](guide:input-file-upload)
+ * and [PSR-7 Uploaded Files specs](http://www.php-fig.org/psr/psr-7/#16-uploaded-files).
  *
  * @property string $clientFilename the original name of the file being uploaded.
  * @property int $error an error code describing the status of this file uploading.
@@ -73,8 +78,6 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
      */
     private $_stream;
 
-    private static $_files;
-
 
     /**
      * String output.
@@ -85,82 +88,6 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
     public function __toString()
     {
         return $this->clientFilename;
-    }
-
-    /**
-     * Returns an uploaded file for the given model attribute.
-     * The file should be uploaded using [[\yii\widgets\ActiveField::fileInput()]].
-     * @param \yii\base\Model $model the data model
-     * @param string $attribute the attribute name. The attribute name may contain array indexes.
-     * For example, '[1]file' for tabular file uploading; and 'file[1]' for an element in a file array.
-     * @return UploadedFile the instance of the uploaded file.
-     * Null is returned if no file is uploaded for the specified model attribute.
-     * @see getInstanceByName()
-     */
-    public static function getInstance($model, $attribute)
-    {
-        $name = Html::getInputName($model, $attribute);
-        return static::getInstanceByName($name);
-    }
-
-    /**
-     * Returns all uploaded files for the given model attribute.
-     * @param \yii\base\Model $model the data model
-     * @param string $attribute the attribute name. The attribute name may contain array indexes
-     * for tabular file uploading, e.g. '[1]file'.
-     * @return UploadedFile[] array of UploadedFile objects.
-     * Empty array is returned if no available file was found for the given attribute.
-     */
-    public static function getInstances($model, $attribute)
-    {
-        $name = Html::getInputName($model, $attribute);
-        return static::getInstancesByName($name);
-    }
-
-    /**
-     * Returns an uploaded file according to the given file input name.
-     * The name can be a plain string or a string like an array element (e.g. 'Post[imageFile]', or 'Post[0][imageFile]').
-     * @param string $name the name of the file input field.
-     * @return null|UploadedFile the instance of the uploaded file.
-     * Null is returned if no file is uploaded for the specified name.
-     */
-    public static function getInstanceByName($name)
-    {
-        $files = self::loadFiles();
-        return isset($files[$name]) ? new static($files[$name]) : null;
-    }
-
-    /**
-     * Returns an array of uploaded files corresponding to the specified file input name.
-     * This is mainly used when multiple files were uploaded and saved as 'files[0]', 'files[1]',
-     * 'files[n]'..., and you can retrieve them all by passing 'files' as the name.
-     * @param string $name the name of the array of files
-     * @return UploadedFile[] the array of UploadedFile objects. Empty array is returned
-     * if no adequate upload was found. Please note that this array will contain
-     * all files from all sub-arrays regardless how deeply nested they are.
-     */
-    public static function getInstancesByName($name)
-    {
-        $files = self::loadFiles();
-        if (isset($files[$name])) {
-            return [new static($files[$name])];
-        }
-        $results = [];
-        foreach ($files as $key => $file) {
-            if (strpos($key, "{$name}[") === 0) {
-                $results[] = new static($file);
-            }
-        }
-        return $results;
-    }
-
-    /**
-     * Cleans up the loaded UploadedFile instances.
-     * This method is mainly used by test scripts to set up a fixture.
-     */
-    public static function reset()
-    {
-        self::$_files = null;
     }
 
     /**
@@ -211,49 +138,6 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
     public function getHasError()
     {
         return $this->error != UPLOAD_ERR_OK;
-    }
-
-    /**
-     * Creates UploadedFile instances from $_FILE.
-     * @return array the UploadedFile instances
-     */
-    private static function loadFiles()
-    {
-        if (self::$_files === null) {
-            self::$_files = [];
-            if (isset($_FILES) && is_array($_FILES)) {
-                foreach ($_FILES as $class => $info) {
-                    self::loadFilesRecursive($class, $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error']);
-                }
-            }
-        }
-        return self::$_files;
-    }
-
-    /**
-     * Creates UploadedFile instances from $_FILE recursively.
-     * @param string $key key for identifying uploaded file: class name and sub-array indexes
-     * @param mixed $names file names provided by PHP
-     * @param mixed $tempNames temporary file names provided by PHP
-     * @param mixed $types file types provided by PHP
-     * @param mixed $sizes file sizes provided by PHP
-     * @param mixed $errors uploading issues provided by PHP
-     */
-    private static function loadFilesRecursive($key, $names, $tempNames, $types, $sizes, $errors)
-    {
-        if (is_array($names)) {
-            foreach ($names as $i => $name) {
-                self::loadFilesRecursive($key . '[' . $i . ']', $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
-            }
-        } elseif ((int) $errors !== UPLOAD_ERR_NO_FILE) {
-            self::$_files[$key] = [
-                'clientFilename' => $names,
-                'tempFilename' => $tempNames,
-                'clientMediaType' => $types,
-                'size' => $sizes,
-                'error' => $errors,
-            ];
-        }
     }
 
     /**

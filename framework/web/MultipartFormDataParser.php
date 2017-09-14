@@ -7,16 +7,18 @@
 
 namespace yii\web;
 
+use Yii;
 use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
+use yii\http\ResourceStream;
 
 /**
  * MultipartFormDataParser parses content encoded as 'multipart/form-data'.
  * This parser provides the fallback for the 'multipart/form-data' processing on non POST requests,
  * for example: the one with 'PUT' request method.
  *
- * In order to enable this parser you should configure [[Request::parsers]] in the following way:
+ * In order to enable this parser you should configure [[Request::$parsers]] in the following way:
  *
  * ```php
  * return [
@@ -32,12 +34,7 @@ use yii\helpers\StringHelper;
  * ];
  * ```
  *
- * Method [[parse()]] of this parser automatically populates `$_FILES` with the files parsed from raw body.
- *
- * > Note: since this is a request parser, it will initialize `$_FILES` values on [[Request::getBodyParams()]].
- * Until this method is invoked, `$_FILES` array will remain empty even if there are submitted files in the
- * request body. Make sure you have requested body params before any attempt to get uploaded file in case
- * you are using this parser.
+ * Method [[parse()]] of this parser automatically populates [[Request::$uploadedFiles]] with the files parsed from raw body.
  *
  * Usage example:
  *
@@ -45,17 +42,16 @@ use yii\helpers\StringHelper;
  * use yii\http\UploadedFile;
  *
  * $restRequestData = Yii::$app->request->getBodyParams();
- * $uploadedFile = UploadedFile::getInstancesByName('photo');
+ * $uploadedFile = Yii::$app->request->getUploadedFileByName('photo');
  *
  * $model = new Item();
  * $model->populate($restRequestData);
  * copy($uploadedFile->tempName, '/path/to/file/storage/photo.jpg');
  * ```
  *
- * > Note: although this parser fully emulates regular structure of the `$_FILES`, related temporary
- * files, which are available via `tmp_name` key, will not be recognized by PHP as uploaded ones.
- * Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will fail on them. This also
- * means [[UploadedFile::saveAs()]] will fail as well.
+ * > Note: although this parser populates temporary file name for the uploaded file instance, such temporary file will
+ * not be recognized by PHP as uploaded one. Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will
+ * fail on it. This also means [[UploadedFile::saveAs()]] will fail as well.
  *
  * @property int $uploadFileMaxCount Maximum upload files count.
  * @property int $uploadFileMaxSize Upload file max size in bytes.
@@ -69,7 +65,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
      * @var bool whether to parse raw body even for 'POST' request and `$_FILES` already populated.
      * By default this option is disabled saving performance for 'POST' requests, which are already
      * processed by PHP automatically.
-     * > Note: if this option is enabled, value of `$_FILES` will be reset on each parse.
+     * > Note: if this option is enabled, value of [[Request::$uploadedFiles]] will be reset on each parse.
      * @since 2.0.13
      */
     public $force = false;
@@ -132,9 +128,9 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
                 // normal POST request is parsed by PHP automatically
                 return $_POST;
             }
-        } else {
-            $_FILES = [];
         }
+
+        $uploadedFiles = [];
 
         $contentType = $request->getContentType();
         $rawBody = $request->getBody()->__toString();
@@ -170,35 +166,36 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
                     continue;
                 }
 
-                $fileInfo = [
-                    'name' => $headers['content-disposition']['filename'],
-                    'type' => ArrayHelper::getValue($headers, 'content-type', 'application/octet-stream'),
+                $fileConfig = [
+                    'class' => $request->uploadedFileClass,
+                    'clientFilename' => $headers['content-disposition']['filename'],
+                    'clientMediaType' => ArrayHelper::getValue($headers, 'content-type', 'application/octet-stream'),
                     'size' => StringHelper::byteLength($value),
                     'error' => UPLOAD_ERR_OK,
-                    'tmp_name' => null,
+                    'tempFilename' => null,
                 ];
 
-                if ($fileInfo['size'] > $this->getUploadFileMaxSize()) {
-                    $fileInfo['error'] = UPLOAD_ERR_INI_SIZE;
+                if ($fileConfig['size'] > $this->getUploadFileMaxSize()) {
+                    $fileConfig['error'] = UPLOAD_ERR_INI_SIZE;
                 } else {
                     $tmpResource = tmpfile();
                     if ($tmpResource === false) {
-                        $fileInfo['error'] = UPLOAD_ERR_CANT_WRITE;
+                        $fileConfig['error'] = UPLOAD_ERR_CANT_WRITE;
                     } else {
                         $tmpResourceMetaData = stream_get_meta_data($tmpResource);
                         $tmpFileName = $tmpResourceMetaData['uri'];
                         if (empty($tmpFileName)) {
-                            $fileInfo['error'] = UPLOAD_ERR_CANT_WRITE;
+                            $fileConfig['error'] = UPLOAD_ERR_CANT_WRITE;
                             @fclose($tmpResource);
                         } else {
                             fwrite($tmpResource, $value);
-                            $fileInfo['tmp_name'] = $tmpFileName;
-                            $fileInfo['tmp_resource'] = $tmpResource; // save file resource, otherwise it will be deleted
+                            $fileConfig['tempFilename'] = $tmpFileName;
+                            $fileConfig['stream'] = new ResourceStream(['resource' => $tmpResource]); // save file resource, otherwise it will be deleted
                         }
                     }
                 }
 
-                $this->addFile($_FILES, $headers['content-disposition']['name'], $fileInfo);
+                $this->addValue($uploadedFiles, $headers['content-disposition']['name'], Yii::createObject($fileConfig));
 
                 $filesCount++;
             } else {
@@ -206,6 +203,8 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
                 $this->addValue($bodyParams, $headers['content-disposition']['name'], $value);
             }
         }
+
+        $request->setUploadedFiles($uploadedFiles);
 
         return $bodyParams;
     }
@@ -273,64 +272,6 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
             }
         }
         $current = $value;
-    }
-
-    /**
-     * Adds file info to the uploaded files array by input name, e.g. `Item[file]`.
-     * @param array $files array containing uploaded files
-     * @param string $name input name specification.
-     * @param array $info file info.
-     */
-    private function addFile(&$files, $name, $info)
-    {
-        if (strpos($name, '[') === false) {
-            $files[$name] = $info;
-            return;
-        }
-
-        $fileInfoAttributes = [
-            'name',
-            'type',
-            'size',
-            'error',
-            'tmp_name',
-            'tmp_resource',
-        ];
-
-        $nameParts = preg_split('/\\]\\[|\\[/s', $name);
-        $baseName = array_shift($nameParts);
-        if (!isset($files[$baseName])) {
-            $files[$baseName] = [];
-            foreach ($fileInfoAttributes as $attribute) {
-                $files[$baseName][$attribute] = [];
-            }
-        } else {
-            foreach ($fileInfoAttributes as $attribute) {
-                $files[$baseName][$attribute] = (array) $files[$baseName][$attribute];
-            }
-        }
-
-        foreach ($fileInfoAttributes as $attribute) {
-            if (!isset($info[$attribute])) {
-                continue;
-            }
-
-            $current = &$files[$baseName][$attribute];
-            foreach ($nameParts as $namePart) {
-                $namePart = trim($namePart, ']');
-                if ($namePart === '') {
-                    $current[] = [];
-                    $lastKey = array_pop(array_keys($current));
-                    $current = &$current[$lastKey];
-                } else {
-                    if (!isset($current[$namePart])) {
-                        $current[$namePart] = [];
-                    }
-                    $current = &$current[$namePart];
-                }
-            }
-            $current = $info[$attribute];
-        }
     }
 
     /**

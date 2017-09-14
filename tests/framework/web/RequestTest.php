@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use yii\http\MemoryStream;
+use yii\http\UploadedFile;
 use yii\web\Request;
 use yii\web\UnsupportedMediaTypeHttpException;
 use yiiunit\TestCase;
@@ -329,5 +330,222 @@ class RequestTest extends TestCase
             $request->withMethod('POST')->getBodyParams();
         } catch (UnsupportedMediaTypeHttpException $postWithoutContentTypeException) {}
         $this->assertTrue(isset($postWithoutContentTypeException));
+    }
+
+    /**
+     * Data provider for [[testDefaultUploadedFiles()]]
+     * @return array test data.
+     */
+    public function dataProviderDefaultUploadedFiles()
+    {
+        return [
+            [
+                [],
+                [],
+            ],
+            [
+                [
+                    'avatar' => [
+                        'tmp_name' => 'avatar.tmp',
+                        'name' => 'my-avatar.png',
+                        'size' => 90996,
+                        'type' => 'image/png',
+                        'error' => 0,
+                    ],
+                ],
+                [
+                    'avatar' => new UploadedFile([
+                        'tempFilename' => 'avatar.tmp',
+                        'clientFilename' => 'my-avatar.png',
+                        'size' => 90996,
+                        'clientMediaType' => 'image/png',
+                        'error' => 0,
+                    ])
+                ]
+            ],
+            [
+                [
+                    'ItemFile' => [
+                        'name' => [
+                            0 => 'file0.txt',
+                            1 => 'file1.txt',
+                        ],
+                        'type' => [
+                            0 => 'type/0',
+                            1 => 'type/1',
+                        ],
+                        'tmp_name' => [
+                            0 => 'file0.tmp',
+                            1 => 'file1.tmp',
+                        ],
+                        'size' => [
+                            0 => 1000,
+                            1 => 1001,
+                        ],
+                        'error' => [
+                            0 => 0,
+                            1 => 1,
+                        ],
+                    ],
+                ],
+                [
+                    'ItemFile' => [
+                        0 => new UploadedFile([
+                            'clientFilename' => 'file0.txt',
+                            'clientMediaType' => 'type/0',
+                            'tempFilename' => 'file0.tmp',
+                            'size' => 1000,
+                            'error' => 0,
+                        ]),
+                        1 => new UploadedFile([
+                            'clientFilename' => 'file1.txt',
+                            'clientMediaType' => 'type/1',
+                            'tempFilename' => 'file1.tmp',
+                            'size' => 1001,
+                            'error' => 1,
+                        ]),
+                    ],
+                ],
+            ],
+            [
+                [
+                    'my-form' => [
+                        'name' => [
+                            'details' => [
+                                'avatar' => 'my-avatar.png'
+                            ],
+                        ],
+                        'tmp_name' => [
+                            'details' => [
+                                'avatar' => 'avatar.tmp'
+                            ],
+                        ],
+                        'size' => [
+                            'details' => [
+                                'avatar' => 90996
+                            ],
+                        ],
+                        'type' => [
+                            'details' => [
+                                'avatar' => 'image/png'
+                            ],
+                        ],
+                        'error' => [
+                            'details' => [
+                                'avatar' => 0
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'my-form' => [
+                        'details' => [
+                            'avatar' => new UploadedFile([
+                                'tempFilename' => 'avatar.tmp',
+                                'clientFilename' => 'my-avatar.png',
+                                'clientMediaType' => 'image/png',
+                                'size' => 90996,
+                                'error' => 0,
+                            ])
+                        ],
+                    ],
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @depends testGetBodyParams
+     * @dataProvider dataProviderDefaultUploadedFiles
+     *
+     * @param array $rawFiles
+     * @param array $expectedFiles
+     */
+    public function testDefaultUploadedFiles(array $rawFiles, array $expectedFiles)
+    {
+        $request = new Request();
+        $request->setMethod('POST');
+        $request->setHeader('Content-Type', 'multipart/form-data');
+
+        $_FILES = $rawFiles;
+
+        $this->assertEquals($expectedFiles, $request->getUploadedFiles());
+    }
+
+    /**
+     * @depends testDefaultUploadedFiles
+     */
+    public function testGetUploadedFileByName()
+    {
+        $request = new Request();
+        $request->setUploadedFiles([
+            'ItemFile' => [
+                0 => new UploadedFile([
+                    'clientFilename' => 'file0.txt',
+                    'clientMediaType' => 'type/0',
+                    'tempFilename' => 'file0.tmp',
+                    'size' => 1000,
+                    'error' => 0,
+                ]),
+                1 => new UploadedFile([
+                    'clientFilename' => 'file1.txt',
+                    'clientMediaType' => 'type/1',
+                    'tempFilename' => 'file1.tmp',
+                    'size' => 1001,
+                    'error' => 1,
+                ]),
+            ],
+        ]);
+
+        /* @var $uploadedFile UploadedFile */
+        $uploadedFile = $request->getUploadedFileByName('ItemFile[0]');
+        $this->assertTrue($uploadedFile instanceof UploadedFile);
+        $this->assertSame('file0.txt', $uploadedFile->getClientFilename());
+        $this->assertSame($uploadedFile, $request->getUploadedFileByName(['ItemFile', 0]));
+
+        $this->assertNull($request->getUploadedFileByName('ItemFile[3]'));
+        $this->assertNull($request->getUploadedFileByName(['ItemFile', 3]));
+    }
+
+    /**
+     * @depends testGetUploadedFileByName
+     */
+    public function testGetUploadedFilesByName()
+    {
+        $request = new Request();
+        $request->setUploadedFiles([
+            'Item' => [
+                'file' => [
+                    0 => new UploadedFile([
+                        'clientFilename' => 'file0.txt',
+                        'clientMediaType' => 'type/0',
+                        'tempFilename' => 'file0.tmp',
+                        'size' => 1000,
+                        'error' => 0,
+                    ]),
+                    1 => new UploadedFile([
+                        'clientFilename' => 'file1.txt',
+                        'clientMediaType' => 'type/1',
+                        'tempFilename' => 'file1.tmp',
+                        'size' => 1001,
+                        'error' => 1,
+                    ]),
+                ],
+            ],
+        ]);
+
+        $uploadedFiles = $request->getUploadedFilesByName('Item[file]');
+        $this->assertCount(2, $uploadedFiles);
+        $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
+        $this->assertTrue($uploadedFiles[1] instanceof UploadedFile);
+
+        $uploadedFiles = $request->getUploadedFilesByName('Item');
+        $this->assertCount(2, $uploadedFiles);
+        $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
+        $this->assertTrue($uploadedFiles[1] instanceof UploadedFile);
+
+        $uploadedFiles = $request->getUploadedFilesByName('Item[file][0]');
+        $this->assertCount(1, $uploadedFiles);
+        $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
     }
 }
