@@ -125,6 +125,13 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      * @since 2.0.10
      */
     public $normalizer;
+    /**
+     * @var bool whether to use url-encoded path info for pattern matching while parsing URL.
+     * This option allows to deal with path info parts containing slashes ('/').
+     * If disabled - path info will be escaped via [[UrlManager::escapePathInfo()]] before parsing.
+     * @since 2.1.0
+     */
+    public $parseUrlencoded = false;
 
     /**
      * @var int|null status of the URL creation after the last [[createUrl()]] call.
@@ -387,23 +394,21 @@ class UrlRule extends BaseObject implements UrlRuleInterface
 
         $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
         $pathInfo = $request->getPathInfo();
-        $originPathInfo = $pathInfo;
         $normalized = false;
         if ($this->hasNormalizer($manager)) {
             $pathInfo = $this->getNormalizer($manager)->normalizePathInfo($pathInfo, $suffix, $normalized);
         }
 
         $pathInfo = $manager->trimPathInfo($pathInfo, $suffix);
-        /*if ($this->route === 'post/index' && $suffix === '/') {
-            var_dump($originPathInfo);
-            var_dump($pathInfo);
-            var_dump($suffix);
-        }*/
         if ($pathInfo === false) {
             return false;
         }
 
-        $encodedPathInfo = $manager->escapePathInfo($pathInfo);
+        if ($this->parseUrlencoded) {
+            $encodedPathInfo = array_map('urlencode', $pathInfo);
+        } else {
+            $encodedPathInfo = $manager->escapePathInfo($pathInfo);
+        }
 
         if ($this->host !== null) {
             array_unshift($encodedPathInfo, strtolower($request->getHostInfo()));
@@ -414,10 +419,12 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         }
         $matches = $this->substitutePlaceholderNames($matches);
 
-        // revert encoding only for *exact* param match
-        foreach ($matches as $name => $value) {
-            if (strpos($value, urlencode('/')) !== false && ($pos = array_search($value, $encodedPathInfo, true)) !== false) {
-                $matches[$name] = $pathInfo[$pos];
+        if (!$this->parseUrlencoded) {
+            // revert encoding only for *exact* param match
+            foreach ($matches as $name => $value) {
+                if (strpos($value, urlencode('/')) !== false && ($pos = array_search($value, $encodedPathInfo, true)) !== false) {
+                    $matches[$name] = $pathInfo[$pos];
+                }
             }
         }
 
