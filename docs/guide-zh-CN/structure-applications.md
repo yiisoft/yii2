@@ -99,7 +99,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 #### [[yii\base\Application::bootstrap|bootstrap]] <span id="bootstrap"></span>
 
-这个属性很实用，它允许你用数组指定启动阶段[[yii\base\Application::bootstrap()|bootstrapping process]]需要运行的组件。
+这个属性很实用，它允许你用数组指定启动阶段 [[yii\base\Application::bootstrap()|bootstrapping process]] 需要运行的组件。
 比如，如果你希望一个 [模块](structure-modules.md) 
 自定义 [URL 规则](runtime-url-handling.md)，
 你可以将模块ID加入到bootstrap数组中。
@@ -129,7 +129,7 @@ $config = require(__DIR__ . '/../config/web.php');
             'level' => 3,
         ],
 
-        // 无名称函数
+        // 匿名函数
         function () {
             return new app\components\Profiler();
         }
@@ -137,9 +137,9 @@ $config = require(__DIR__ . '/../config/web.php');
 ]
 ```
 
-> Info: 如果模块ID和应用组件ID同名，优先使用应用组件ID，
-> 如果你想用模块ID，
-> 可以使用如下无名称函数返回模块ID。
+> Info: 如果模块 ID 和应用组件 ID 同名，优先使用应用组件 ID，
+> 如果你想用模块 ID，
+> 可以使用如下无名称函数返回模块 ID。
 > 
 > ```php
 [
@@ -192,11 +192,11 @@ if (YII_ENV_DEV) {
 ]
 ```
 
-> Info: Debug panel on development environment will not work when this property is enabled.
+> Info: 当开启这个属性时，开发环境下的调试面板将不能工作。
 
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
-这是最重要的属性，它允许你注册多个在其他地方使用的[应用组件](#structure-application-components.md). 
+这是最重要的属性，它允许你注册多个在其他地方使用的 [应用组件](#structure-application-components.md). 
 例如
 
 ```php
@@ -225,7 +225,7 @@ value代表组件类名或 [配置](concept-configurations.md)。
 #### [[yii\base\Application::controllerMap|controllerMap]] <span id="controllerMap"></span>
 
 该属性允许你指定一个控制器ID到任意控制器类。
-Yii遵循一个默认的 [规则](#controllerNamespace)指定控制器ID到任意控制器类（如`post`对应`app\controllers\PostController`）。
+Yii遵循一个默认的 [规则](#controllerNamespace) 指定控制器ID到任意控制器类（如`post`对应`app\controllers\PostController`）。
 通过配置这个属性，可以打破这个默认规则，在下面的例子中，
 `account`对应到`app\controllers\UserController`，
 `article` 对应到 `app\controllers\PostController`。
@@ -480,13 +480,13 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 可以配置它为一个目录或者路径 [别名](concept-aliases.md)，
 当你修改时，务必修改对应的 Composer 配置。
 
-为了简化访问该路径，Yii预定义别名 `@vendor` 代表该路径。
+为了简化访问该路径，Yii 预定义别名 `@vendor` 代表该路径。
 
 
 #### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <span id="enableCoreCommands"></span>
 
 该属性仅 [[yii\console\Application|console applications]] 控制台应用支持， 
-用来指定是否启用Yii中的核心命令，默认值为 `true`。
+用来指定是否启用 Yii 中的核心命令，默认值为 `true`。
 
 
 ## 应用事件 <span id="application-events"></span>
@@ -505,7 +505,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 `on eventName` 语法的用法在 [Configurations](concept-configurations.md#configuration-format) 
 一节有详细描述.
 
-另外，在应用主体实例化后，你可以在[引导启动](runtime-bootstrapping.md) 阶段附加事件处理代码，
+另外，在应用主体实例化后，你可以在 [引导启动](runtime-bootstrapping.md) 阶段附加事件处理代码，
 例如：
 
 ```php
@@ -520,19 +520,19 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 在事件触发前，应用主体已经实例化并配置好了，
 所以通过事件机制将你的代码嵌入到请求处理过程中非常不错。
-例如在事件处理中根据某些参数动态设置[[yii\base\Application::language]]语言属性。
+例如在事件处理中根据某些参数动态设置 [[yii\base\Application::language]] 语言属性。
 
 
 ### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <span id="afterRequest"></span>
 
-该事件在应用处理请求*after*之后但在返回响应*before*之前触发，
-实际的事件名为`afterRequest`。
+该事件在应用处理请求 *after* 之后但在返回响应 *before* 之前触发，
+实际的事件名为 `afterRequest`。
 
 该事件触发时，请求已经被处理完，
 可以做一些请求后处理或自定义响应。
 
 注意 [[yii\web\Response|response]] 组件在发送响应给终端用户时也会触发一些事件，
-这些事件都在本事件*after*之后触发。
+这些事件都在本事件 *after* 之后触发。
 
 
 ### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <span id="beforeAction"></span>
@@ -567,7 +567,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 实际的事件名为 `afterAction`.
 
 该事件的参数为 [[yii\base\ActionEvent]] 实例，
-通过[[yii\base\ActionEvent::result]]属性，
+通过 [[yii\base\ActionEvent::result]] 属性，
 事件处理可以访问和修改动作的结果。例如：
 
 ```php
@@ -597,7 +597,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 1. 入口脚本加载应用主体配置数组。
 2. 入口脚本创建一个应用主体实例：
   * 调用 [[yii\base\Application::preInit()|preInit()]] 配置几个高级别应用主体属性，
-    比如[[yii\base\Application::basePath|basePath]]。
+    比如 [[yii\base\Application::basePath|basePath]]。
   * 注册 [[yii\base\Application::errorHandler|error handler]] 错误处理方法.
   * 配置应用主体属性.
   * 调用 [[yii\base\Application::init()|init()]] 初始化，该函数会调用 [[yii\base\Application::bootstrap()|bootstrap()]] 
