@@ -285,11 +285,7 @@ class UrlManager extends Component
                 return false;
             }
 
-            $pathInfo = array_map(function ($part) {
-                // ensure '/' does not break the route
-                return str_replace('/', urlencode('/'), $part);
-            }, $pathInfo);
-            $route = implode('/', $pathInfo);
+            $route = implode('/', $this->escapePathInfo($pathInfo));
 
             if ($normalized) {
                 // pathInfo was changed by normalizer - we need also normalize route
@@ -608,7 +604,7 @@ class UrlManager extends Component
             $pathInfoEnd = array_pop($pathInfo);
 
             $n = strlen($suffix);
-            if (substr_compare($pathInfoEnd, $suffix, -$n, $n) !== 0) {
+            if (strlen($pathInfoEnd) < $n || substr_compare($pathInfoEnd, $suffix, -$n, $n) !== 0) {
                 return false;
             }
 
@@ -639,5 +635,20 @@ class UrlManager extends Component
         }
 
         return $pathInfo;
+    }
+
+    /**
+     * Processes path info array elements replacing '/' with its urlencoded value, so
+     * path info can be composed into a route safely.
+     * @param array $pathInfo raw path info.
+     * @return array escaped path info.
+     * @since 2.1.0
+     */
+    public function escapePathInfo(array $pathInfo)
+    {
+        return array_map(function ($part) {
+            // ensure '/' does not break the route
+            return str_replace('/', urlencode('/'), $part);
+        }, $pathInfo);
     }
 }

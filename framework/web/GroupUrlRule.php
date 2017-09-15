@@ -113,7 +113,7 @@ class GroupUrlRule extends CompositeUrlRule
      */
     public function parseRequest($manager, $request)
     {
-        $pathInfo = $request->getPathInfo();
+        $pathInfo = implode('/', $manager->escapePathInfo($request->getPathInfo()));
         if ($this->prefix === '' || strpos($pathInfo . '/', $this->prefix . '/') === 0) {
             return parent::parseRequest($manager, $request);
         }

@@ -134,9 +134,13 @@ class UrlManagerParseUrlTest extends TestCase
         if ($suffix !== '/') {
             $result = $manager->parseRequest($this->getRequest('module/site/index/'));
             $this->assertFalse($result);
+
+            $result = $manager->parseRequest($this->getRequest("module/site/index/$suffix"));
+            $this->assertFalse($result);
+        } else {
+            $result = $manager->parseRequest($this->getRequest("module/site/index/$suffix"));
+            $this->assertEquals(['module/site/index/', []], $result);
         }
-        $result = $manager->parseRequest($this->getRequest("module/site/index/$suffix"));
-        $this->assertEquals(['module/site/index/', []], $result);
     }
 
     public function testSimpleRules()
@@ -224,7 +228,11 @@ class UrlManagerParseUrlTest extends TestCase
             $this->assertFalse($result);
         }
         $result = $manager->parseRequest($this->getRequest("book/123/this+is+sample/$suffix"));
-        $this->assertEquals(['book/123/this+is+sample/', []], $result);
+        if ($suffix === '/') {
+            $this->assertEquals(['book/123/this+is+sample/', []], $result);
+        } else {
+            $this->assertFalse($result);
+        }
         // empty pathinfo
         $result = $manager->parseRequest($this->getRequest(''));
         $this->assertEquals(['', []], $result);

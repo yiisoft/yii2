@@ -218,12 +218,7 @@ class UrlRule extends CompositeUrlRule
      */
     public function parseRequest($manager, $request)
     {
-        $pathInfo = $request->getPathInfo();
-        $pathInfo = array_map(function($part) {
-            // ensure '/' does not break the route matching
-            return str_replace('/', urlencode('/'), $part);
-        }, $pathInfo);
-        $pathInfo = implode('/', $pathInfo);
+        $pathInfo = implode('/', $manager->escapePathInfo($request->getPathInfo()));
 
         foreach ($this->rules as $urlName => $rules) {
             if (strpos($pathInfo, $urlName) !== false) {

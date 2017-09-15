@@ -403,10 +403,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             return false;
         }
 
-        $encodedPathInfo = array_map(function($part) {
-            // ensure '/' does not break the route matching
-            return str_replace('/', urlencode('/'), $part);
-        }, $pathInfo);
+        $encodedPathInfo = $manager->escapePathInfo($pathInfo);
 
         if ($this->host !== null) {
             array_unshift($encodedPathInfo, strtolower($request->getHostInfo()));
