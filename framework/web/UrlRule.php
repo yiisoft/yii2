@@ -387,31 +387,42 @@ class UrlRule extends BaseObject implements UrlRuleInterface
 
         $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
         $pathInfo = $request->getPathInfo();
+        $originPathInfo = $pathInfo;
         $normalized = false;
         if ($this->hasNormalizer($manager)) {
             $pathInfo = $this->getNormalizer($manager)->normalizePathInfo($pathInfo, $suffix, $normalized);
         }
-        if ($suffix !== '' && $pathInfo !== '') {
-            $n = strlen($suffix);
-            if (substr_compare($pathInfo, $suffix, -$n, $n) === 0) {
-                $pathInfo = substr($pathInfo, 0, -$n);
-                if ($pathInfo === '') {
-                    // suffix alone is not allowed
-                    return false;
-                }
-            } else {
-                return false;
-            }
+
+        $pathInfo = $manager->trimPathInfo($pathInfo, $suffix);
+        /*if ($this->route === 'post/index' && $suffix === '/') {
+            var_dump($originPathInfo);
+            var_dump($pathInfo);
+            var_dump($suffix);
+        }*/
+        if ($pathInfo === false) {
+            return false;
         }
+
+        $encodedPathInfo = array_map(function($part) {
+            // ensure '/' does not break the route matching
+            return str_replace('/', urlencode('/'), $part);
+        }, $pathInfo);
 
         if ($this->host !== null) {
-            $pathInfo = strtolower($request->getHostInfo()) . ($pathInfo === '' ? '' : '/' . $pathInfo);
+            array_unshift($encodedPathInfo, strtolower($request->getHostInfo()));
         }
 
-        if (!preg_match($this->pattern, $pathInfo, $matches)) {
+        if (!preg_match($this->pattern, implode('/', $encodedPathInfo), $matches)) {
             return false;
         }
         $matches = $this->substitutePlaceholderNames($matches);
+
+        // revert encoding only for *exact* param match
+        foreach ($matches as $name => $value) {
+            if (strpos($value, urlencode('/')) !== false && ($pos = array_search($value, $encodedPathInfo, true)) !== false) {
+                $matches[$name] = $pathInfo[$pos];
+            }
+        }
 
         foreach ($this->defaults as $name => $value) {
             if (!isset($matches[$name]) || $matches[$name] === '') {

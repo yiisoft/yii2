@@ -894,6 +894,8 @@ class Request extends \yii\base\Request implements RequestInterface
     {
         if ($value === null || is_array($value)) {
             $this->_pathInfo = $value;
+        } elseif ($value === '') {
+            $this->_pathInfo = [];
         } else {
             $this->_pathInfo = explode('/', ltrim($value, '/'));
         }

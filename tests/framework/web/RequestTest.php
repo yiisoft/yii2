@@ -549,6 +549,29 @@ class RequestTest extends TestCase
         $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
     }
 
+    public function testSetupPathInfo()
+    {
+        $request = new Request();
+
+        $request->setPathInfo(['some', 'path']);
+        $this->assertSame(['some', 'path'], $request->getPathInfo());
+
+        $request->setPathInfo('some/path');
+        $this->assertSame(['some', 'path'], $request->getPathInfo());
+
+        $request->setPathInfo('some/path/');
+        $this->assertSame(['some', 'path', ''], $request->getPathInfo());
+
+        $request->setPathInfo('/some/path/');
+        $this->assertSame(['some', 'path', ''], $request->getPathInfo());
+
+        $request->setPathInfo('');
+        $this->assertSame([], $request->getPathInfo());
+
+        $request->setPathInfo('/');
+        $this->assertSame([''], $request->getPathInfo());
+    }
+
     /**
      * Data provider for [[testResolvePathInfo()]]
      * @return array test data

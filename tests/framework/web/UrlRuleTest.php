@@ -1216,6 +1216,18 @@ class UrlRuleTest extends TestCase
                     ['post/1/a', false],
                 ],
             ],
+            [
+                'with slash containing param requirement',
+                [
+                    'pattern' => 'post/<name:.+>',
+                    'route' => 'post/view',
+                ],
+                [
+                    [['post', 'some/name'], ['post/view', ['name' => 'some/name']]],
+                    [['post', 'some/name/end'], ['post/view', ['name' => 'some/name/end']]],
+                    [['post', 'some%2fname'], ['post/view', ['name' => 'some%2fname']]],
+                ],
+            ],
         ];
     }
 

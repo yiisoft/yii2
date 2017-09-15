@@ -280,21 +280,15 @@ class UrlManager extends Component
             if ($this->normalizer !== false) {
                 $pathInfo = $this->normalizer->normalizePathInfo($pathInfo, $suffix, $normalized);
             }
-            if ($suffix !== '' && $pathInfo !== []) {
-                $n = strlen($this->suffix);
-                $pathEnd = end($pathInfo);
-                if (substr_compare($pathEnd, $this->suffix, -$n, $n) === 0) {
-                    $pathEnd = substr($pathEnd, 0, -$n);
-                    if ($pathEnd === '') {
-                        // suffix alone is not allowed
-                        return false;
-                    }
-                } else {
-                    // suffix doesn't match
-                    return false;
-                }
+            $pathInfo = $this->trimPathInfo($pathInfo, $suffix);
+            if ($pathInfo === false) {
+                return false;
             }
 
+            $pathInfo = array_map(function ($part) {
+                // ensure '/' does not break the route
+                return str_replace('/', urlencode('/'), $part);
+            }, $pathInfo);
             $route = implode('/', $pathInfo);
 
             if ($normalized) {
@@ -594,5 +588,56 @@ class UrlManager extends Component
     public function setHostInfo($value)
     {
         $this->_hostInfo = $value === null ? null : rtrim($value, '/');
+    }
+
+
+    /**
+     * Trims URL suffix from the given path info in array format.
+     * @param array $pathInfo raw path info
+     * @param string $suffix URL suffix
+     * @return array|false trimmed path info, `false` - if path info does not match suffix.
+     * @since 2.1.0
+     */
+    public function trimPathInfo(array $pathInfo, $suffix)
+    {
+        if ($suffix === '' || $pathInfo === []) {
+            return $pathInfo;
+        }
+
+        if (strpos($suffix, '/') === false) {
+            $pathInfoEnd = array_pop($pathInfo);
+
+            $n = strlen($suffix);
+            if (substr_compare($pathInfoEnd, $suffix, -$n, $n) !== 0) {
+                return false;
+            }
+
+            $pathInfoEnd = substr($pathInfoEnd, 0, -$n);
+            if ($pathInfoEnd === '') {
+                // suffix alone is not allowed
+                return false;
+            }
+
+            $pathInfo[] = $pathInfoEnd;
+            return $pathInfo;
+        }
+
+        $suffixParts = explode('/', $suffix);
+        if ($suffixParts[0] === '') {
+            array_shift($suffixParts);
+        }
+        while (count($suffixParts) > 0 && count($pathInfo) > 0) {
+            $pathInfoEnd = array_pop($pathInfo);
+            $suffixEnd = array_pop($suffixParts);
+            if ($pathInfoEnd !== $suffixEnd) {
+                return false;
+            }
+        }
+
+        if ($pathInfo === []) {
+            return false;
+        }
+
+        return $pathInfo;
     }
 }
