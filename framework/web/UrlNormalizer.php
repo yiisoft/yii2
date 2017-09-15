@@ -128,9 +128,9 @@ class UrlNormalizer extends BaseObject
     protected function collapseSlashes($pathInfo)
     {
         $last = array_pop($pathInfo);
-        $pathInfo = array_filter($pathInfo, function ($part) {
+        $pathInfo = array_values(array_filter($pathInfo, function ($part) {
             return $part !== '';
-        });
+        }));
         $pathInfo[] = $last;
 
         return $pathInfo;
@@ -147,8 +147,10 @@ class UrlNormalizer extends BaseObject
     {
         if (substr($suffix, -1) === '/' && end($pathInfo) !== '') {
             $pathInfo[] = '';
-        } elseif (substr($suffix, -1) !== '/' && end($pathInfo) === '') {
-            array_pop($pathInfo);
+        } elseif (substr($suffix, -1) !== '/') {
+            while (end($pathInfo) === '') {
+                array_pop($pathInfo);
+            }
         }
 
         return $pathInfo;

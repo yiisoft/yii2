@@ -36,22 +36,22 @@ class UrlNormalizerTest extends TestCase
         $this->assertEquals(['post', '123'], $normalizer->normalizePathInfo(explode('/', 'post//123//'), ''));
 
         $normalizer->collapseSlashes = false;
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a/'));
-        $this->assertEquals('post//123', $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a'));
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/'));
-        $this->assertEquals('post//123', $normalizer->normalizePathInfo(explode('/', 'post//123//'), ''));
+        $this->assertEquals(['post', '', '123', '', ''], $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a/'));
+        $this->assertEquals(['post', '', '123'], $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a'));
+        $this->assertEquals(['post', '', '123', '', ''], $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/'));
+        $this->assertEquals(['post', '', '123'], $normalizer->normalizePathInfo(explode('/', 'post//123//'), ''));
 
         $normalizer->normalizeTrailingSlash = false;
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a/'));
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a'));
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/'));
-        $this->assertEquals('post//123//', $normalizer->normalizePathInfo(explode('/', 'post//123//'), ''));
+        $this->assertEquals(['post', '', '123', '', ''], $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a/'));
+        $this->assertEquals(['post', '', '123', '', ''], $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a'));
+        $this->assertEquals(['post', '', '123', '', ''], $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/'));
+        $this->assertEquals(['post', '', '123', '', ''], $normalizer->normalizePathInfo(explode('/', 'post//123//'), ''));
 
         $normalizer->collapseSlashes = true;
-        $this->assertEquals('post/123/', $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a/'));
-        $this->assertEquals('post/123/', $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a'));
-        $this->assertEquals('post/123/', $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/'));
-        $this->assertEquals('post/123/', $normalizer->normalizePathInfo(explode('/', 'post//123//'), ''));
+        $this->assertEquals(['post', '123', ''], $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a/'));
+        $this->assertEquals(['post', '123', ''], $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/a'));
+        $this->assertEquals(['post', '123', ''], $normalizer->normalizePathInfo(explode('/', 'post//123//'), '/'));
+        $this->assertEquals(['post', '123', ''], $normalizer->normalizePathInfo(explode('/', 'post//123//'), ''));
     }
 
     public function testNormalizeRoute()
