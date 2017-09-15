@@ -12,6 +12,7 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\db\ActiveQueryInterface;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
@@ -143,33 +144,42 @@ class DataColumn extends Column
     {
         $provider = $this->grid->dataProvider;
 
-        if ($this->label === null) {
-            if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
-                /* @var $modelClass Model */
-                $modelClass = $provider->query->modelClass;
-                $model = $modelClass::instance();
-                $label = $model->getAttributeLabel($this->attribute);
-            } elseif ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
-                /* @var $modelClass Model */
-                $modelClass = $provider->modelClass;
-                $model = $modelClass::instance();
-                $label = $model->getAttributeLabel($this->attribute);
-            } elseif ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
-                $label = $this->grid->filterModel->getAttributeLabel($this->attribute);
-            } else {
-                $models = $provider->getModels();
-                if (($model = reset($models)) instanceof Model) {
-                    /* @var $model Model */
-                    $label = $model->getAttributeLabel($this->attribute);
-                } else {
-                    $label = Inflector::camel2words($this->attribute);
-                }
+        if ($this->label !== null) {
+            return $this->label;
+        }
+        if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
+            /* @var $modelClass Model */
+            $modelClass = $provider->query->modelClass;
+            if ($this->grid->filterModel !== null && $this->grid->filterModel instanceof $modelClass) {
+                return $this->grid->filterModel->getAttributeLabel($this->attribute);
             }
-        } else {
-            $label = $this->label;
+            /* @var $model ActiveRecord */
+            $model = $modelClass::instance();
+
+            return $model->getAttributeLabel($this->attribute);
+        }
+        if ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
+            /* @var $modelClass Model */
+            $modelClass = $provider->modelClass;
+            if ($this->grid->filterModel !== null && $this->grid->filterModel instanceof $modelClass) {
+                return $this->grid->filterModel->getAttributeLabel($this->attribute);
+            }
+            /* @var $model Model */
+            $model = $modelClass::instance();
+
+            return $model->getAttributeLabel($this->attribute);
+        }
+        if ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
+            return $this->grid->filterModel->getAttributeLabel($this->attribute);
         }
 
-        return $label;
+        $models = $provider->getModels();
+        if (($model = reset($models)) instanceof Model) {
+            /* @var $model Model */
+            return $model->getAttributeLabel($this->attribute);
+        }
+
+        return Inflector::camel2words($this->attribute);
     }
 
     /**
