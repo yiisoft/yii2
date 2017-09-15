@@ -22,7 +22,7 @@ if ($this->beginCache($id)) {
 一直执行到[[yii\base\View::endCache()|endCache()]] 时，
 生成的内容将被捕获并存储在缓存中。
 
-和[[数据缓存]](caching-data.md)一样，每个片段缓存也需要全局唯一的 `$id` 标记。
+和[数据缓存](caching-data.md)一样，每个片段缓存也需要全局唯一的 `$id` 标记。
 
 
 ## 缓存选项 <span id="caching-options"></span>
@@ -52,7 +52,7 @@ If the option is not set, it will take the default value 60, which means the cac
 
 ### 依赖 <span id="dependencies"></span>
 
-和[[数据缓存]](caching-data.md)一样，片段缓存的内容一样可以设置缓存依赖。
+和[数据缓存](caching-data.md)一样，片段缓存的内容一样可以设置缓存依赖。
 例如一段被缓存的文章，是否重新缓存取决于它是否被修改过。
 
 通过设置 [[yii\widgets\FragmentCache::dependency|dependency]] 选项来指定依赖，
