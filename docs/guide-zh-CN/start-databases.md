@@ -68,7 +68,7 @@ return [
 ];
 ```
 
-`config/db/php` 是一个典型的基于文件的[配置](concept-configurations.md)工具。
+`config/db.php` 是一个典型的基于文件的[配置](concept-configurations.md)工具。
 这个文件配置了数据库连接 [[yii\db\Connection]] 的创建和初始化参数，
 应用的 SQL 查询正是基于这个数据库。
 
