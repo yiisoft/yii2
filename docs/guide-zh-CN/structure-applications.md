@@ -99,7 +99,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 #### [[yii\base\Application::bootstrap|bootstrap]] <span id="bootstrap"></span>
 
-这个属性很实用，它允许你用数组指定启动阶段[[yii\base\Application::bootstrap()|bootstrapping process]]需要运行的组件。
+这个属性很实用，它允许你用数组指定启动阶段 [[yii\base\Application::bootstrap()|bootstrapping process]] 需要运行的组件。
 比如，如果你希望一个 [模块](structure-modules.md) 
 自定义 [URL 规则](runtime-url-handling.md)，
 你可以将模块ID加入到bootstrap数组中。
