@@ -115,6 +115,8 @@ Upgrade from Yii 2.0.x
 * Uploaded file retrieve methods have been moved from `yii\http\UploadedFile` to `yii\web\Request`. You should use `Request::getUploadedFileByName()`
   instead of `UploadedFile::getInstanceByName()` and `Request::getUploadedFilesByName()` instead of `UploadedFile::getInstancesByName()`.
   Instead of `UploadedFile::getInstance()` and `UploadedFile::getInstances()` use construction `$model->load(Yii::$app->request->getUploadedFiles())`.
+* `yii\web\Request::$pathInfo` refactored to be an array of path parts (separated by '/') instead of string. Make sure
+  you process its value correctly while implementing your own URL parsing or creating custom URL rules.
 
 
 Upgrade from Yii 2.0.12
