@@ -83,12 +83,13 @@ class BaseUrl
      *
      * @param string|array $route use a string to represent a route (e.g. `index`, `site/index`),
      * or an array to represent a route with query parameters (e.g. `['site/index', 'param1' => 'value1']`).
-     * @param bool|string $scheme the URI scheme to use in the generated URL:
+     * @param null|bool|string $scheme the URI scheme to use in the generated URL:
      *
      * - `false` (default): generating a relative URL.
      * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::$hostInfo]].
      * - string: generating an absolute URL with the specified scheme (either `http`, `https` or empty string
      *   for protocol-relative URL).
+     * - `null`: generating an absolute URL with the current request scheme.
      *
      * @return string the generated URL
      * @throws InvalidParamException a relative route is given while there is no active controller
