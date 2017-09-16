@@ -66,8 +66,9 @@ class Expression extends \yii\base\BaseObject implements ExpressionInterface
     /**
      * {@inheritdoc}
      */
-    public function getParams()
+    public function buildUsing(QueryBuilder $queryBuilder, &$params = [])
     {
-        return $this->params;
+        $params = array_merge($params, $this->params);
+        return $this->__toString();
     }
 }

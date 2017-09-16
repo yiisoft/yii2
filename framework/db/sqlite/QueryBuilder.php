@@ -487,14 +487,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!empty($query->orderBy)) {
             foreach ($query->orderBy as $expression) {
                 if ($expression instanceof ExpressionInterface) {
-                    $params = array_merge($params, $expression->getParams());
+                    $expression->buildUsing($this, $params);
                 }
             }
         }
         if (!empty($query->groupBy)) {
             foreach ($query->groupBy as $expression) {
                 if ($expression instanceof ExpressionInterface) {
-                    $params = array_merge($params, $expression->getParams());
+                    $expression->buildUsing($this, $params);
                 }
             }
         }

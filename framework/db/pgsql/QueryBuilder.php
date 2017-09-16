@@ -93,16 +93,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         'OR NOT ILIKE' => 'buildLikeCondition',
         'EXISTS' => 'buildExistsCondition',
         'NOT EXISTS' => 'buildExistsCondition',
-        '@>' => 'buildArrayCondition',
-        '<@' => 'buildArrayCondition',
-        '&&' => 'buildArrayCondition',
-        '= ARRAY' => 'buildArrayCondition',
-        '!= ARRAY' => 'buildArrayCondition',
-        '<> ARRAY' => 'buildArrayCondition',
-        '> ARRAY' => 'buildArrayCondition',
-        '< ARRAY' => 'buildArrayCondition',
-        '<= ARRAY' => 'buildArrayCondition',
-        '>= ARRAY' => 'buildArrayCondition',
     ];
 
 
@@ -342,108 +332,5 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
-    }
-
-    /**
-     * Normalizes array-related operators
-     *
-     * @param string $operator
-     * @return string
-     */
-    private function normalizeArrayOperator($operator)
-    {
-        $map = [
-            '= ARRAY' => '=',
-            '!= ARRAY' => '<>',
-            '<> ARRAY' => '<>',
-            '> ARRAY' => '>',
-            '< ARRAY' => '<',
-            '<= ARRAY' => '<=',
-            '>= ARRAY' => '>=',
-        ];
-
-        return isset($map[$operator]) ? $map[$operator] : $operator;
-    }
-
-    /**
-     * Creates SQL expressions for array-related operations.
-     *
-     * Examples:
-     * ```php
-     * [
-     *     ['&&', 'ids', [123, 456]], // id && array[123, 456]
-     *     ['<> array', 'roles', ['user']], // id <> array['user']
-     *     ['<> array', 'roles', ['user']], // id <> array['user']
-     *     ['>= array', 'prices', [12, 16], 'float'], // type casted: id >= array[12,16]::float[]
-     *     ['&&', 'ids', []], // id && '{}'
-     * ]
-     * ```
-     *
-     * @param string $operator the operator to use (e.g. `@>`, '<@')
-     * @param array $operands Method accepts two required and one optional operand:
-     * The first operand the column name
-     * The second operand is an array of values that column value should be among.
-     * The third optional operand is used to typecast array of values from second operand. This operand will NOT be escaped!
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
-     * @since 2.0.13
-     */
-    protected function buildArrayCondition($operator, $operands, &$params)
-    {
-        $operator = $this->normalizeArrayOperator($operator);
-        if (!isset($operands[0], $operands[1])) {
-            throw new InvalidParamException("Operator '$operator' requires at least two operands.");
-        }
-        list($column, $values) = $operands;
-        $typecast = isset($operands[2]) ? $operands[2] : null;
-
-        if ($values instanceof Query) {
-            return $this->buildSubqueryArrayCondition($operator, $column, $values, $params, $typecast);
-        }
-        if (!is_array($values) && !$values instanceof \Traversable) {
-            $values = [$values];
-        }
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-
-        $sqlValues = [];
-        foreach ($values as $i => $value) {
-            if (is_array($value) || $value instanceof \ArrayAccess) {
-                $value = isset($value[$column]) ? $value[$column] : null;
-            }
-            if ($value === null) {
-                continue; // PgSQL array can not contain nulls
-            } elseif ($value instanceof ExpressionInterface) {
-                $sqlValues[$i] = $value->__toString();
-                foreach ($value->getParams() as $n => $v) {
-                    $params[$n] = $v;
-                }
-            } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $params[$phName] = $value;
-                $sqlValues[$i] = $phName;
-            }
-        }
-
-        if (empty($sqlValues)) {
-            $value = "'{}'";
-        } else {
-            $value = "ARRAY[" . implode(', ', $sqlValues) . "]";
-        }
-
-        return "$column $operator $value" . ($typecast !== null ? ('::' . $typecast . '[]') : '');
-    }
-
-    protected function buildSubqueryArrayCondition($operator, $column, $values, &$params, $typecast = null)
-    {
-        list($sql, $params) = $this->build($values, $params);
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-
-        return "$column $operator array($sql)" . ($typecast !== null ? ('::' . $typecast . '[]'): '');
     }
 }

@@ -120,7 +120,7 @@ abstract class DatabaseTestCase extends TestCase
             case 'cubrid':
             case 'pgsql':
             case 'oci':
-                return str_replace(['[[', ']]'], '"', $sql);
+                return str_replace(['\\[', '\\]'], ['[', ']'], preg_replace('/(\[\[)|((?<!(\[))\]\])/', '"', $sql));
             case 'sqlsrv':
                 return str_replace(['[[', ']]'], ['[', ']'], $sql);
             default:

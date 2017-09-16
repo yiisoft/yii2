@@ -248,10 +248,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
                 if ($value instanceof ExpressionInterface) {
-                    $placeholders[] = $value->__toString();
-                    foreach ($value->getParams() as $n => $v) {
-                        $params[$n] = $v;
-                    }
+                    $placeholders[] = $value->buildUsing($this, $params);
                 } elseif ($value instanceof \yii\db\Query) {
                     list($sql, $params) = $this->build($value, $params);
                     $placeholders[] = "($sql)";

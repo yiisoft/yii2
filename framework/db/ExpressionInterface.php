@@ -17,14 +17,11 @@ namespace yii\db;
 interface ExpressionInterface
 {
     /**
-     * @return string the expression that will be put in SQL without any escaping or quoting.
+     * Method builds the raw SQL expression
+     *
+     * @param QueryBuilder $queryBuilder the QueryBuilder that intends to use this expression
+     * @param array $params the binding parameters
+     * @return string the raw SQL that will not be additionally escaped or quoted
      */
-    public function __toString();
-
-    /**
-     * @return array list of parameters that should be bound for this expression.
-     * The keys are placeholders appearing in [[__toString()]] result, and the values
-     * are the corresponding parameter values.
-     */
-    public function getParams();
+    public function buildUsing(QueryBuilder $queryBuilder, &$params = []);
 }
