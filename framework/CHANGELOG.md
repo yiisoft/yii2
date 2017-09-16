@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
-- Enh #14765: add index on `auth_assignment.user_id` for performance reasons when a medium-tiny prermission/role hierarchy is used with a lot of users see `yii\rbac\DbManager::getInheritedPermissionsByUser` and `yii\rbac\DbManager::getAssignments` (bicf)  
+- Enh #14765: RBAC: add index on `user_id` column in `auth_assignment` table for performance reasons (bicf)
 - Enh #13254: Made `yii\helpers\StringHelper` and `yii\validators\StringValidator` independent of `Yii::$app` instance (cebe)
 - Enh #14273: `yii\log\Target::$enabled` now supports callable value (dmirogin)
 - Bug #14773: Fixed `yii\widgets\ActiveField::$options` does not support 'class' option in array format (klimov-paul)
