@@ -28,7 +28,7 @@ namespace yii\db;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Expression extends \yii\base\BaseObject
+class Expression extends \yii\base\BaseObject implements ExpressionInterface
 {
     /**
      * @var string the DB expression
@@ -56,11 +56,18 @@ class Expression extends \yii\base\BaseObject
     }
 
     /**
-     * String magic method.
-     * @return string the DB expression
+     * {@inheritdoc}
      */
     public function __toString()
     {
         return $this->expression;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParams()
+    {
+        return $this->params;
     }
 }

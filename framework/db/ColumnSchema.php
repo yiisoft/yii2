@@ -116,7 +116,7 @@ class ColumnSchema extends BaseObject
         if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY && $this->type !== Schema::TYPE_CHAR) {
             return null;
         }
-        if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression || $value instanceof Query) {
+        if ($value === null || gettype($value) === $this->phpType || $value instanceof ExpressionInterface || $value instanceof Query) {
             return $value;
         }
         switch ($this->phpType) {

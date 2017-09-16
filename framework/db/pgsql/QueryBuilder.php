@@ -8,7 +8,7 @@
 namespace yii\db\pgsql;
 
 use yii\base\InvalidParamException;
-use yii\db\Expression;
+use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
@@ -415,9 +415,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
             if ($value === null) {
                 continue; // PgSQL array can not contain nulls
-            } elseif ($value instanceof Expression) {
-                $sqlValues[$i] = $value->expression;
-                foreach ($value->params as $n => $v) {
+            } elseif ($value instanceof ExpressionInterface) {
+                $sqlValues[$i] = $value->__toString();
+                foreach ($value->getParams() as $n => $v) {
                     $params[$n] = $v;
                 }
             } else {

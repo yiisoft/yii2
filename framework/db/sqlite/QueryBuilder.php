@@ -10,7 +10,7 @@ namespace yii\db\sqlite;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\Connection;
-use yii\db\Expression;
+use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
@@ -486,15 +486,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         if (!empty($query->orderBy)) {
             foreach ($query->orderBy as $expression) {
-                if ($expression instanceof Expression) {
-                    $params = array_merge($params, $expression->params);
+                if ($expression instanceof ExpressionInterface) {
+                    $params = array_merge($params, $expression->getParams());
                 }
             }
         }
         if (!empty($query->groupBy)) {
             foreach ($query->groupBy as $expression) {
-                if ($expression instanceof Expression) {
-                    $params = array_merge($params, $expression->params);
+                if ($expression instanceof ExpressionInterface) {
+                    $params = array_merge($params, $expression->getParams());
                 }
             }
         }
