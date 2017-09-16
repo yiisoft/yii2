@@ -51,7 +51,7 @@ create table `auth_assignment`
    `item_name`            varchar(64) not null,
    `user_id`              varchar(64) not null,
    `created_at`           integer,
-   key `idx_user_id` (`user_id`),
    primary key (`item_name`, `user_id`),
-   foreign key (`item_name`) references `auth_item` (`name`) on delete cascade on update cascade
+   foreign key (`item_name`) references `auth_item` (`name`) on delete cascade on update cascade,
+   key `auth_assignment_user_id_idx` (`user_id`)
 ) engine InnoDB;

@@ -63,7 +63,7 @@ create table [auth_assignment]
    foreign key ([item_name]) references [auth_item] ([name]) on delete cascade on update cascade
 );
 
-create index [idx_user_id] on [auth_assignment] ([user_id]);
+create index [auth_assignment_user_id_idx] on [auth_assignment] ([user_id]);
 
 CREATE TRIGGER dbo.trigger_auth_item_child
     ON dbo.[auth_item]
