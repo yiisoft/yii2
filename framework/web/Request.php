@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\validators\IpValidator;
 
 /**
  * The web Request class represents an HTTP request.
@@ -168,42 +169,43 @@ class Request extends \yii\base\Request
     /**
      * @var array the configuration for trusted security related headers.
      *
-     * An array key is a regular expression for matching a client (ususally a proxy) by
-     * host name or ip address.
+     * An array key is an IPv4 or IPv6 IP address in CIDR notation for matching a client.
      *
      * An array value is a list of headers to trust. These will be matched against
      * [[secureHeaders]] to determine which headers are allowed to be sent by a specified host.
      * The case of the header names must be the same as specified in [[secureHeaders]].
      *
-     * To specify a host for which you trust all headers listed in [[secureHeaders]] you can just specify
-     * the regular expression as the array value.
-     *
-     * For example, to trust all headers listed in [[secureHeaders]]
-     * from domains ending in '.trusted.com' use the following:
+     * For example, to trust all headers listed in [[secureHeaders]] for IP addresses
+     * in range `192.168.0.0-192.168.0.254` write the following:
      *
      * ```php
      * [
-     *     '/\.trusted\.com$/',
+     *     '192.168.0.0/24',
      * ]
      * ```
      *
-     * To trust just the `x-forwarded-for` header from domains ending in `.partial.com` use:
+     * To trust just the `X-Forwarded-For` header from `10.0.0.1`, use:
      *
      * ```
      * [
-     *     '/\.partial\.com$/' => ['X-Forwarded-For']
+     *     '10.0.0.1' => ['X-Forwarded-For']
      * ]
      * ```
      *
      * Default is to trust all headers except those listed in [[secureHeaders]] from all hosts.
-     * Matches are tried in order and searching is stopped when a host or IP matches.
+     * Matches are tried in order and searching is stopped when IP matches.
+     * 
+     * > Info: Matching is performed using [[IpValidator]].
+     *   See [[IpValidator::::setRanges()|IpValidator::setRanges()]]
+     *   and [[IpValidator::networks]] for advanced matching.
+     * 
      * @see $secureHeaders
      * @since 2.0.13
      */
     public $trustedHosts = [];
     /**
      * @var array lists of headers that are, by default, subject to the trusted host configuration.
-     * These headers will be filtered unless explicitly allowed in [[$trustedHosts]].
+     * These headers will be filtered unless explicitly allowed in [[trustedHosts]].
      * The match of header names is case-insensitive.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
      * @see $trustedHosts
@@ -284,14 +286,15 @@ class Request extends \yii\base\Request
 
         // check if the client is a trusted host
         if (!empty($this->trustedHosts)) {
-            $host = $this->getRemoteHost();
+            $validator = $this->getIpValidator();
             $ip = $this->getRemoteIP();
-            foreach ($this->trustedHosts as $hostRegex => $headers) {
+            foreach ($this->trustedHosts as $cidr => $headers) {
                 if (!is_array($headers)) {
-                    $hostRegex = $headers;
+                    $cidr = $headers;
                     $headers = $this->secureHeaders;
                 }
-                if (preg_match($hostRegex, $host) || preg_match($hostRegex, $ip)) {
+                $validator->setRanges($cidr);
+                if ($validator->validate($ip)) {
                     $trustedHeaders = $headers;
                     break;
                 }
@@ -304,6 +307,18 @@ class Request extends \yii\base\Request
                 $headerCollection->remove($secureHeader);
             }
         }
+    }
+
+    /**
+     * Creates instance of [[IpValidator]].
+     * You can override this method to adjust validator or implement different matching strategy.
+     *
+     * @return IpValidator
+     * @since 2.0.13
+     */
+    protected function getIpValidator()
+    {
+        return new IpValidator();
     }
 
     /**

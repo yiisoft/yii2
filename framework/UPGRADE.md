@@ -108,9 +108,28 @@ Upgrade from Yii 2.0.12
   require `"yiisoft/yii2": "~2.0.13"` in composer.json and change affected classes to extend from `yii\base\BaseObject`
   instead. It is not possible to allow Yii versions `<2.0.13` and be compatible with PHP 7.2 or higher.
 
-* A new method `public static function instance($refresh = false);` has been added to the `yii\db\ActiveRecordInterface`.
-  This method is implemented in the `yii\base\Model`, so the change only affects your code if you implement `ActiveRecordInterface`
-  in a class that does not extend `Model`.
+* A new method `public static function instance($refresh = false);` has been added to the `yii\db\ActiveRecordInterface` via a new
+  `yii\base\StaticInstanceInterface`. This change may affect your application in the following ways:
+
+  - If you have an `instance()` method defined in an `ActiveRecord` or `Model` class, you need to check whether the behavior is
+    compatible with the method added by Yii.
+  - Otherwise this method is implemented in the `yii\base\Model`, so the change only affects your code if you implement `ActiveRecordInterface`
+    in a class that does not extend `Model`. You may use `yii\base\StaticInstanceTrait` to implement it.
+    
+* Fixed built-in validator creating when model has a method with the same name. 
+
+  It is documented, that for the validation rules declared in model by `yii\base\Model::rules()`, validator can be either 
+  a built-in validator name, a method name of the model class, an anonymous function, or a validator class name. 
+  Before this change behavior was inconsistent with the documentation: method in the model had higher priority, than
+  a built-in validator. In case you have relied on this behavior, make sure to fix it.
+
+* Behavior was changed for methods `yii\base\Module::get()` and `yii\base\Module::has()` so in case when the requested
+  component was not found in the current module, the parent ones will be checked for this component hierarchically.
+  Considering that the root parent module is usually an application, this change can reduce calls to global `Yii::$app->get()`,
+  and replace them with module-scope calls to `get()`, making code more reliable and easier to test.
+  However, this change may affect your application if you have code that uses method `yii\base\Module::has()` in order
+  to check existence of the component exactly in this specific module. In this case make sure the logic is not corrupted.
+
 
 Upgrade from Yii 2.0.11
 -----------------------
