@@ -40,8 +40,10 @@ return [
         '/messages',
     ],
 
+    // Format for saving messages.
+    // If empty or not set, messages will be saved via message source matching target category.
     // 'php' output format is for saving messages to php files.
-    'format' => 'php',
+    //'format' => '',
     // Root directory containing message translations.
     'messagePath' => __DIR__,
     // boolean, whether the message file should be overwritten with the merged messages

@@ -115,6 +115,10 @@ Upgrade from Yii 2.0.x
 * Uploaded file retrieve methods have been moved from `yii\http\UploadedFile` to `yii\web\Request`. You should use `Request::getUploadedFileByName()`
   instead of `UploadedFile::getInstanceByName()` and `Request::getUploadedFilesByName()` instead of `UploadedFile::getInstancesByName()`.
   Instead of `UploadedFile::getInstance()` and `UploadedFile::getInstances()` use construction `$model->load(Yii::$app->request->getUploadedFiles())`.
+* Visibility level of the method `yii\i18n\MessageSource::loadMessages()` changed to 'public'. Make sure to use correct
+  signature for this method in case you extend `MessageSource` overriding it.
+* New abstract method `saveMessages()` added to `yii\i18n\MessageSource`. Make sure to provide implementation for it
+  while extending `MessageSource` class.
 
 
 Upgrade from Yii 2.0.12
