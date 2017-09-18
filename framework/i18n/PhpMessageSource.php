@@ -198,5 +198,12 @@ EOD;
         if (file_put_contents($messageFile, $content) === false) {
             throw new \RuntimeException("Unable to write message file '{$messageFile}'");
         }
+
+        if (function_exists('opcache_invalidate')) {
+            opcache_invalidate($messageFile, true);
+        }
+        if (function_exists('apc_delete_file')) {
+            @apc_delete_file($messageFile);
+        }
     }
 }
