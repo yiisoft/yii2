@@ -8,6 +8,8 @@
 namespace yii\i18n;
 
 use Yii;
+use yii\base\InvalidArgumentException;
+use yii\helpers\FileHelper;
 
 /**
  * GettextMessageSource represents a message source that is based on GNU Gettext.
@@ -165,5 +167,41 @@ class GettextMessageSource extends MessageSource
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function saveMessages($category, $language, array $messages, array $options)
+    {
+        $options = array_merge([
+            'format' => $this->useMoFile ? 'mo' : 'po'
+        ], $options);
+
+        $filename = Yii::getAlias($this->basePath) . '/' . $language . '/' . $this->catalog;
+        switch ($options['format']) {
+            case 'po':
+                $filename .= self::PO_FILE_EXT;
+                $gettextFile = new GettextPoFile();
+                break;
+            case 'pot':
+                $filename .= '.pot';
+                $gettextFile = new GettextPoFile();
+                break;
+            case 'mo':
+                $filename .= self::MO_FILE_EXT;
+                $gettextFile = new GettextMoFile();
+                break;
+            default:
+                throw new InvalidArgumentException("Unknown format '{$options['format']}'");
+        }
+
+        FileHelper::createDirectory(dirname($filename));
+
+        $data = [];
+        foreach ($messages as $message => $translation) {
+            $data[$category . chr(4) . $message] = $translation;
+        }
+        $gettextFile->save($filename, $data);
     }
 }
