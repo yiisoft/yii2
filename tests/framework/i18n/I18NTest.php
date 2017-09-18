@@ -71,7 +71,7 @@ class I18NTest extends TestCase
         $i18n = new I18N([
             'translations' => [
                 '*' => [
-                    'class' => $this->getMessageSourceClass(),
+                    'class' => PhpMessageSource::class,
                     'basePath' => '@yiiunit/data/i18n/messages',
                     'fileMap' => [
                         'test' => 'test.php',

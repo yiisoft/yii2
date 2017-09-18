@@ -198,7 +198,5 @@ EOD;
         if (file_put_contents($messageFile, $content) === false) {
             throw new \RuntimeException("Unable to write message file '{$messageFile}'");
         }
-
-        return count($messages);
     }
 }

@@ -180,4 +180,131 @@ class DbMessageSource extends MessageSource
                 'NOT IN', 't2.id', (new Query())->select('[[id]]')->from($this->messageTable)->where(['language' => $language]),
             ]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function saveMessages($category, $language, array $messages, array $options)
+    {
+        $currentMessages = [];
+        $rows = (new Query())
+            ->select(['id', 'message'])
+            ->from($this->sourceMessageTable)
+            ->where(['category' => $category])
+            ->all($this->db);
+        foreach ($rows as $row) {
+            $currentMessages[$row['id']] = $row['message'];
+        }
+
+        $currentTranslations = [];
+        $rows = (new Query())
+            ->select(['id', 'translation'])
+            ->from($this->messageTable)
+            ->where(['language' => $language])
+            ->andWhere(['in', 'id', array_keys($currentMessages)])
+            ->all($this->db);
+        foreach ($rows as $row) {
+            $currentTranslations[$row['id']] = $row['translation'];
+        }
+
+        $insertMessage = [];
+        $insertTranslation = [];
+        $updateTranslation = [];
+        foreach ($messages as $message => $translation) {
+            if (($id = array_search($message, $currentMessages)) !== false) {
+                if (array_key_exists($id, $currentTranslations)) {
+                    if ($currentTranslations[$id] !== $translation) {
+                        $updateTranslation[$id] = $translation;
+                    }
+                } else {
+                    $insertTranslation[$id] = $translation;
+                }
+
+                unset($currentMessages[$id]);
+                unset($currentTranslations[$id]);
+            } else {
+                $insertMessage[$message] = $translation;
+            }
+        }
+
+        // Insert new :
+
+        foreach ($insertTranslation as $id => $translation) {
+            $this->db->createCommand()
+                ->insert($this->messageTable, [
+                    'id' => $id,
+                    'language' => $language,
+                    'translation' => $translation,
+                ])
+                ->execute();
+        }
+
+        foreach ($insertMessage as $message => $translation) {
+            $pk = $this->db->getSchema()->insert($this->sourceMessageTable, [
+                'category' => $category,
+                'message' => $message,
+            ]);
+
+            $this->db->createCommand()
+                ->insert($this->messageTable, [
+                    'id' => $pk['id'],
+                    'language' => $language,
+                    'translation' => $translation,
+                ])
+                ->execute();
+        }
+
+        // Update existing :
+
+        foreach ($updateTranslation as $id => $translation) {
+            $this->db->createCommand()
+                ->update(
+                    $this->messageTable,
+                    [
+                        'translation' => $translation,
+                    ],
+                    [
+                        'id' => $id,
+                        'language' => $language,
+                    ]
+                )
+                ->execute();
+        }
+
+        // Remove obsolete :
+
+        foreach ($currentTranslations as $id => $translation) {
+            $this->db->createCommand()
+                ->delete(
+                    $this->messageTable,
+                    [
+                        'id' => $id,
+                        'language' => $language,
+                    ]
+                )
+                ->execute();
+        }
+
+        if (!empty($currentMessages)) {
+            $lockedIds = (new Query())
+                ->select(['id'])
+                ->distinct(true)
+                ->from($this->messageTable)
+                ->where(['not', ['language' => $language]])
+                ->andWhere(['in', 'id', array_keys($currentMessages)])
+                ->column($this->db);
+
+            $ids = array_diff(array_keys($currentMessages), $lockedIds);
+            if (!empty($ids)) {
+                $this->db->createCommand()
+                    ->delete(
+                        $this->sourceMessageTable,
+                        [
+                            'in', 'id', $ids,
+                        ]
+                    )
+                    ->execute();
+            }
+        }
+    }
 }

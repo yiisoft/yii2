@@ -211,7 +211,6 @@ abstract class MessageSource extends Component
      * @param string $language the target language.
      * @param array $messages messages to be saved in format: `[message => translation]`
      * @param array $options saving options.
-     * @return int number of changed messages.
      * @since 2.1.0
      */
     abstract protected function saveMessages($category, $language, array $messages, array $options);

@@ -86,6 +86,9 @@ class DbMessageSourceTest extends I18NTest
 
         static::runConsoleAction('migrate/up', ['migrationPath' => '@yii/i18n/migrations/', 'interactive' => false]);
 
+        static::$db->createCommand()->delete('message')->execute();
+        static::$db->createCommand()->delete('source_message')->execute();
+
         static::$db->createCommand()->batchInsert('source_message', ['id', 'category', 'message'], [
             [1, 'test', 'Hello world!'],
             [2, 'test', 'The dog runs fast.'],
@@ -103,11 +106,35 @@ class DbMessageSourceTest extends I18NTest
             [4, 'de-DE', 'Er heißt {name} und ist {n, number} km/h schnell.'],
             [5, 'ru', 'На диване {n, plural, =0{нет кошек} =1{лежит одна кошка} one{лежит # кошка} few{лежит # кошки} many{лежит # кошек} other{лежит # кошки}}!'],
         ])->execute();
+
+        // For data saving:
+        try {
+            static::$db->createCommand()->createTable('source_message_dynamic', [
+                'id' => 'pk',
+                'category' => 'string',
+                'message' => 'text',
+            ])->execute();
+        } catch (\Throwable $e) {}
+
+        try {
+            static::$db->createCommand()->createTable('message_dynamic', [
+                'id' => 'integer',
+                'language' => 'string',
+                'translation' => 'text',
+                'PRIMARY KEY([[id]], [[language]])',
+            ])->execute();
+        } catch (\Throwable $e) {}
     }
 
     public static function tearDownAfterClass()
     {
+        try {
+            static::$db->createCommand()->dropTable('message_dynamic')->execute();
+            static::$db->createCommand()->dropTable('source_message_dynamic')->execute();
+        } catch (\Throwable $e) {}
+
         static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/i18n/migrations/', 'interactive' => false]);
+
         if (static::$db) {
             static::$db->close();
         }
@@ -166,9 +193,50 @@ class DbMessageSourceTest extends I18NTest
         Event::off(DbMessageSource::class, DbMessageSource::EVENT_MISSING_TRANSLATION);
     }
 
-
     public function testIssue11429($sourceLanguage = null)
     {
         $this->markTestSkipped('DbMessageSource does not produce any errors when messages file is missing.');
+    }
+
+    public function testSave()
+    {
+        $messageSource = new DbMessageSource([
+            'db' => static::$db,
+            'sourceMessageTable' => 'source_message_dynamic',
+            'messageTable' => 'message_dynamic',
+        ]);
+
+        $messages = [
+            'message 1' => 'message 1 translation',
+            'message 2' => 'message 2 translation',
+        ];
+        $this->assertSame(2, $messageSource->save('app', 'en', $messages));
+        $this->assertSame($messages, $messageSource->loadMessages('app', 'en'));
+
+        $this->assertSame(0, $messageSource->save('app', 'en', $messages));
+        $this->assertSame($messages, $messageSource->loadMessages('app', 'en'));
+
+        $this->assertSame(0, $messageSource->save('app', 'en', [
+            'message 1' => '',
+            'message 2' => '',
+        ]));
+        $this->assertSame($messages, $messageSource->loadMessages('app', 'en'));
+
+        $this->assertSame(2, $messageSource->save('app', 'en', [
+            'message 2' => 'new message 2',
+        ], ['markUnused' => true]));
+        $expectedMessages = [
+            'message 1' => '@@message 1 translation@@',
+            'message 2' => 'new message 2',
+        ];
+        $this->assertSame($expectedMessages, $messageSource->loadMessages('app', 'en'));
+
+        $this->assertSame(2, $messageSource->save('app', 'en', [
+            'message 2' => 'another new message 2',
+        ], ['removeUnused' => true]));
+        $expectedMessages = [
+            'message 2' => 'another new message 2',
+        ];
+        $this->assertSame($expectedMessages, $messageSource->loadMessages('app', 'en'));
     }
 }
