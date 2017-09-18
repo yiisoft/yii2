@@ -77,6 +77,9 @@ class DbMessageControllerTest extends BaseMessageControllerTest
 
     public function tearDown()
     {
+        static::$db->createCommand()->delete('{{%message}}')->execute();
+        static::$db->createCommand()->delete('{{%source_message}}')->execute();
+
         parent::tearDown();
         Yii::$app = null;
     }
@@ -161,7 +164,6 @@ class DbMessageControllerTest extends BaseMessageControllerTest
 
     /**
      * Source is marked instead of translation.
-     * @depends testMerge
      */
     public function testMarkObsoleteMessages()
     {
@@ -177,7 +179,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         $this->saveConfigFile($this->getConfig(['removeUnused' => false]));
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
 
-        $obsoleteMessage = '@@obsolete message@@';
+        $obsoleteTranslation = '@@obsolete translation@@';
 
         $messages = $this->loadMessages($category);
 
