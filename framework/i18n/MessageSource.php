@@ -20,7 +20,7 @@ use yii\base\Component;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class MessageSource extends Component
+abstract class MessageSource extends Component
 {
     /**
      * @event MissingTranslationEvent an event that is triggered when a message translation is not found.
@@ -62,7 +62,7 @@ class MessageSource extends Component
      * @return array the loaded messages. The keys are original messages, and the values
      * are translated messages.
      */
-    protected function loadMessages($category, $language)
+    public function loadMessages($category, $language)
     {
         return [];
     }
@@ -122,4 +122,97 @@ class MessageSource extends Component
 
         return $this->_messages[$key][$message] = false;
     }
+
+    /**
+     * Saves the message translations performing merge with the already existing ones.
+     * @param string $category the category that the messages belong to.
+     * @param string $language the target language.
+     * @param array $messages messages to be saved in format: `[message => translation]`
+     * @param array $options saving options. Available options are:
+     *
+     * - `markUnused`: bool, whether to mark messages that are not present in the given message set.
+     * - `removeUnused`: bool, whether to remove messages that are not present in the given message set.
+     * - `sort`: bool, whether to sort messages by keys when merging new messages with the existing ones.
+     *   Defaults to `false`, which means the new (untranslated) messages will be separated from the old (translated) ones.
+     *
+     * @return int number of changed messages.
+     * @since 2.1.0
+     */
+    public function save($category, $language, array $messages, array $options = [])
+    {
+        $options = array_merge([
+            'markUnused' => true,
+            'removeUnused' => false,
+            'sort' => false,
+        ], $options);
+
+        $rawExistingMessages = $this->loadMessages($category, $language);
+        $existingMessages = $rawExistingMessages;
+        ksort($messages);
+        ksort($existingMessages);
+        if ($existingMessages === $messages && (!$options['sort'] || $rawExistingMessages == $messages)) {
+            return 0;
+        }
+
+        $changeCount = 0;
+
+        $merged = [];
+        $todo = [];
+        foreach ($messages as $message => $translation) {
+            if (array_key_exists($message, $existingMessages)) {
+                if ($existingMessages[$message] === $translation || $translation === '') {
+                    $merged[$message] = $existingMessages[$message];
+                } else {
+                    $merged[$message] = $translation;
+                    $changeCount++;
+                }
+            } else {
+                $todo[$message] = $translation;
+                $changeCount++;
+            }
+        }
+        if ($changeCount < 1 && (!$options['sort'] || array_keys($rawExistingMessages) === array_keys($existingMessages))) {
+            return $changeCount;
+        }
+        unset($rawExistingMessages);
+
+        ksort($merged);
+        ksort($todo);
+        foreach ($existingMessages as $message => $translation) {
+            if (!isset($merged[$message]) && !isset($todo[$message])) {
+                if ($options['removeUnused']) {
+                    $changeCount++;
+                    continue;
+                }
+
+                if (!empty($translation) && (!$options['markUnused'] || (strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2, 2) === 0))) {
+                    $todo[$message] = $translation;
+                } else {
+                    $todo[$message] = '@@' . $translation . '@@';
+                    $changeCount++;
+                }
+            }
+        }
+        $merged = array_merge($todo, $merged);
+        if ($options['sort']) {
+            ksort($merged);
+        }
+
+        $key = $language . '/' . $category;
+        unset($this->_messages[$key]);
+
+        $this->saveMessages($category, $language, $merged, $options);
+        return $changeCount;
+    }
+
+    /**
+     * Saves the given message translations.
+     * @param string $category the category that the messages belong to.
+     * @param string $language the target language.
+     * @param array $messages messages to be saved in format: `[message => translation]`
+     * @param array $options saving options.
+     * @return int number of changed messages.
+     * @since 2.1.0
+     */
+    abstract protected function saveMessages($category, $language, array $messages, array $options);
 }

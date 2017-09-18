@@ -106,7 +106,7 @@ class DbMessageSource extends MessageSource
      * @return array the loaded messages. The keys are original messages, and the values
      * are translated messages.
      */
-    protected function loadMessages($category, $language)
+    public function loadMessages($category, $language)
     {
         if ($this->enableCaching) {
             $key = [

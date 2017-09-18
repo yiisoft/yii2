@@ -43,7 +43,7 @@ class DbMessageSourceTest extends I18NTest
         ]);
     }
 
-    private function getMessageSourceClass()
+    protected function getMessageSourceClass()
     {
         return DbMessageSource::class;
     }

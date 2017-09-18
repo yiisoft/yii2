@@ -44,7 +44,7 @@ class I18NTest extends TestCase
         ]);
     }
 
-    private function getMessageSourceClass()
+    protected function getMessageSourceClass()
     {
         return PhpMessageSource::class;
     }

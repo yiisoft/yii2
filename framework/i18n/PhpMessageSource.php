@@ -8,6 +8,8 @@
 namespace yii\i18n;
 
 use Yii;
+use yii\helpers\FileHelper;
+use yii\helpers\VarDumper;
 
 /**
  * PhpMessageSource represents a message source that stores translated messages in PHP scripts.
@@ -66,7 +68,7 @@ class PhpMessageSource extends MessageSource
      * @see loadFallbackMessages
      * @see sourceLanguage
      */
-    protected function loadMessages($category, $language)
+    public function loadMessages($category, $language)
     {
         $messageFile = $this->getMessageFilePath($category, $language);
         $messages = $this->loadMessagesFromFile($messageFile);
@@ -162,5 +164,41 @@ class PhpMessageSource extends MessageSource
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function saveMessages($category, $language, array $messages, array $options)
+    {
+        $options = array_merge([
+            'phpFileHeader' => '',
+            'phpDocBlock' => '',
+            'overwrite' => true,
+        ], $options);
+
+        $messageFile = $this->getMessageFilePath($category, $language);
+
+        if (is_file($messageFile)) {
+            if (!$options['overwrite']) {
+                $messageFile .= '.merged';
+            }
+        } else {
+            FileHelper::createDirectory(dirname($messageFile));
+        }
+
+        $array = VarDumper::export($messages);
+        $content = <<<EOD
+<?php
+{$options['phpFileHeader']}{$options['phpDocBlock']}
+return $array;
+
+EOD;
+
+        if (file_put_contents($messageFile, $content) === false) {
+            throw new \RuntimeException("Unable to write message file '{$messageFile}'");
+        }
+
+        return count($messages);
     }
 }
