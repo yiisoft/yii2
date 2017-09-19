@@ -314,10 +314,11 @@ class Request extends \yii\base\Request implements RequestInterface
 
     /**
      * Filters headers according to the [[trustedHosts]].
-     * @param HeaderCollection $headerCollection
+     * @param array $rawHeaders
+     * @return array filtered headers
      * @since 2.0.13
      */
-    protected function filterHeaders(HeaderCollection $headerCollection)
+    protected function filterHeaders($rawHeaders)
     {
         // do not trust any of the [[secureHeaders]] by default
         $trustedHeaders = [];
@@ -339,12 +340,16 @@ class Request extends \yii\base\Request implements RequestInterface
             }
         }
 
+        $rawHeaders = array_change_key_case($rawHeaders, CASE_LOWER);
+
         // filter all secure headers unless they are trusted
         foreach ($this->secureHeaders as $secureHeader) {
             if (!in_array($secureHeader, $trustedHeaders)) {
-                $headerCollection->remove($secureHeader);
+                unset($rawHeaders[strtolower($secureHeader)]);
             }
         }
+
+        return $rawHeaders;
     }
 
     /**
@@ -379,9 +384,7 @@ class Request extends \yii\base\Request implements RequestInterface
             }
         }
 
-        $this->filterHeaders($this->_headers);
-
-        return $headers;
+        return $this->filterHeaders($headers);
     }
 
     /**
@@ -1162,9 +1165,9 @@ class Request extends \yii\base\Request implements RequestInterface
             return true;
         }
         foreach ($this->secureProtocolHeaders as $header => $values) {
-            if (($headerValue = $this->headers->get($header, null)) !== null) {
+            if ($this->hasHeader($header)) {
                 foreach ($values as $value) {
-                    if (strcasecmp($headerValue, $value) === 0) {
+                    if (strcasecmp($this->getHeaderLine($header), $value) === 0) {
                         return true;
                     }
                 }
@@ -1244,8 +1247,8 @@ class Request extends \yii\base\Request implements RequestInterface
     public function getUserIP()
     {
         foreach ($this->ipHeaders as $ipHeader) {
-            if ($this->headers->has($ipHeader)) {
-                return trim(explode(',', $this->headers->get($ipHeader))[0]);
+            if ($this->hasHeader($ipHeader)) {
+                return trim(explode(',', $this->getHeaderLine($ipHeader))[0]);
             }
         }
 
@@ -1260,8 +1263,8 @@ class Request extends \yii\base\Request implements RequestInterface
     public function getUserHost()
     {
         foreach ($this->ipHeaders as $ipHeader) {
-            if ($this->headers->has($ipHeader)) {
-                return gethostbyaddr(trim(explode(',', $this->headers->get($ipHeader))[0]));
+            if ($this->hasHeader($ipHeader)) {
+                return gethostbyaddr(trim(explode(',', $this->getHeaderLine($ipHeader))[0]));
             }
         }
 
