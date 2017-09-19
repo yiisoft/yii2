@@ -662,7 +662,7 @@ class UserView extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function attributeLabels()
+    public function attributeLabels()
     {
         return [
             // ここで属性のラベルを定義
