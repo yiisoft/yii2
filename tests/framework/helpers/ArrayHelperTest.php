@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\helpers;
 
+use yii\base\Arrayable;
 use yii\base\BaseObject;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
@@ -56,7 +57,7 @@ class ArrayHelperTest extends TestCase
 
     public function testToArray()
     {
-        $dataArrayable = $this->getMock('yii\\base\\Arrayable');
+        $dataArrayable = $this->getMockBuilder(Arrayable::class)->getMock();
         $dataArrayable->method('toArray')->willReturn([]);
         $this->assertEquals([], ArrayHelper::toArray($dataArrayable));
         $this->assertEquals(['foo'], ArrayHelper::toArray('foo'));
@@ -82,7 +83,7 @@ class ArrayHelperTest extends TestCase
             '_content' => 'test',
             'length' => 4,
         ], ArrayHelper::toArray($object, [
-            $object->class => [
+            get_class($object) => [
                 'id', 'secret',
                 '_content' => 'content',
                 'length' => function ($post) {
@@ -110,13 +111,13 @@ class ArrayHelperTest extends TestCase
                 'id_plus_1' => 124,
             ],
         ], ArrayHelper::toArray($object, [
-            $object->class => [
+            get_class($object) => [
                 'id', 'subObject',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
                 },
             ],
-            $object->subObject->class => [
+            get_class($object->subObject) => [
                 'id',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
@@ -132,7 +133,7 @@ class ArrayHelperTest extends TestCase
                 'id_plus_1' => 124,
             ],
         ], ArrayHelper::toArray($object, [
-            $object->subObject->class => [
+            get_class($object->subObject) => [
                 'id',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
@@ -1183,7 +1184,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Argument $haystack must be an array or implement Traversable
      */
     public function testInException()
@@ -1204,7 +1205,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Argument $needles must be an array or implement Traversable
      */
     public function testIsSubsetException()

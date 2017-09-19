@@ -73,7 +73,7 @@ abstract class CacheTestCase extends TestCase
     {
         $cache = $this->getCacheInstance();
 
-        $cache->flush();
+        $cache->clear();
         $cache->set('string_test', 'string_test');
         $cache->set('number_test', 42);
         $cache->set('array_test', ['array_test' => 'array_test']);
@@ -251,7 +251,7 @@ abstract class CacheTestCase extends TestCase
         $this->assertNull($cache->get('number_test'));
     }
 
-    public function testFlush()
+    public function testClear()
     {
         $cache = $this->prepare();
         $this->assertTrue($cache->clear());

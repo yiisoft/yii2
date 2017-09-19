@@ -48,6 +48,31 @@ use yii\helpers\HtmlPurifier;
 class Formatter extends Component
 {
     /**
+     * @since 2.0.13
+     */
+    const UNIT_SYSTEM_METRIC = 'metric';
+    /**
+     * @since 2.0.13
+     */
+    const UNIT_SYSTEM_IMPERIAL = 'imperial';
+    /**
+     * @since 2.0.13
+     */
+    const FORMAT_WIDTH_LONG = 'long';
+    /**
+     * @since 2.0.13
+     */
+    const FORMAT_WIDTH_SHORT = 'short';
+    /**
+     * @since 2.0.13
+     */
+    const UNIT_LENGTH = 'length';
+    /**
+     * @since 2.0.13
+     */
+    const UNIT_WEIGHT = 'mass';
+
+    /**
      * @var string the text to be displayed when formatting a `null` value.
      * Defaults to `'<span class="not-set">(not set)</span>'`, where `(not set)`
      * will be translated according to [[locale]].
@@ -254,11 +279,95 @@ class Formatter extends Component
      * Defaults to 1024.
      */
     public $sizeFormatBase = 1024;
+    /**
+     * @var string default system of measure units. Defaults to [[UNIT_SYSTEM_METRIC]].
+     * Possible values:
+     *  - [[UNIT_SYSTEM_METRIC]]
+     *  - [[UNIT_SYSTEM_IMPERIAL]]
+     *
+     * @see asLength
+     * @see asWeight
+     * @since 2.0.13
+     */
+    public $systemOfUnits = self::UNIT_SYSTEM_METRIC;
+    /**
+     * @var array configuration of weight and length measurement units.
+     * This array contains the most usable measurement units, but you can change it
+     * in case you have some special requirements.
+     *
+     * For example, you can add smaller measure unit:
+     *
+     * ```php
+     * $this->measureUnits[self::UNIT_LENGTH][self::UNIT_SYSTEM_METRIC] = [
+     *     'nanometer' => 0.000001
+     * ]
+     * ```
+     * @see asLength
+     * @see asWeight
+     * @since 2.0.13
+     */
+    public $measureUnits = [
+        self::UNIT_LENGTH => [
+            self::UNIT_SYSTEM_IMPERIAL => [
+                'inch' => 1,
+                'foot' => 12,
+                'yard' => 36,
+                'chain' => 792,
+                'furlong' => 7920,
+                'mile' => 63360,
+            ],
+            self::UNIT_SYSTEM_METRIC => [
+                'millimeter' => 1,
+                'centimeter' => 10,
+                'meter' => 1000,
+                'kilometer' => 1000000,
+            ],
+        ],
+        self::UNIT_WEIGHT => [
+            self::UNIT_SYSTEM_IMPERIAL => [
+                'grain' => 1,
+                'drachm' => 27.34375,
+                'ounce' => 437.5,
+                'pound' => 7000,
+                'stone' => 98000,
+                'quarter' => 196000,
+                'hundredweight' => 784000,
+                'ton' => 15680000,
+            ],
+            self::UNIT_SYSTEM_METRIC => [
+                'gram' => 1,
+                'kilogram' => 1000,
+                'ton' => 1000000,
+            ],
+        ],
+    ];
+    /**
+     * @var array The base units that are used as multipliers for smallest possible unit from [[measureUnits]].
+     * @since 2.0.13
+     */
+    public $baseUnits = [
+        self::UNIT_LENGTH => [
+            self::UNIT_SYSTEM_IMPERIAL => 12, // 1 feet = 12 inches
+            self::UNIT_SYSTEM_METRIC => 1000, // 1 meter = 1000 millimeters
+        ],
+        self::UNIT_WEIGHT => [
+            self::UNIT_SYSTEM_IMPERIAL => 7000, // 1 pound = 7000 grains
+            self::UNIT_SYSTEM_METRIC => 1000, // 1 kilogram = 1000 grams
+        ],
+    ];
 
     /**
      * @var bool whether the [PHP intl extension](http://php.net/manual/en/book.intl.php) is loaded.
      */
     private $_intlLoaded = false;
+    /**
+     * @var \ResourceBundle cached ResourceBundle object used to read unit translations
+     */
+    private $_resourceBundle;
+    /**
+     * @var array cached unit translation patterns
+     */
+    private $_unitMessages = [];
 
 
     /**
@@ -1475,25 +1584,44 @@ class Formatter extends Component
      *
      * @param string|int|float $value value in bytes to be formatted.
      * @param int $decimals the number of digits after the decimal point
+     * @param int $maxPosition maximum internal position of size unit, ignored if $formatBase is an array
+     * @param array|int $formatBase the base at which each next unit is calculated, either 1000 or 1024, or an array
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return array [parameters for Yii::t containing formatted number, internal position of size unit]
-     * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      */
-    private function formatSizeNumber($value, $decimals, $options, $textOptions)
+    private function formatNumber($value, $decimals, $maxPosition, $formatBase, $options, $textOptions)
     {
         $value = $this->normalizeNumericValue($value);
 
         $position = 0;
+        if (is_array($formatBase)) {
+            $maxPosition = count($formatBase) - 1;
+        }
         do {
-            if (abs($value) < $this->sizeFormatBase) {
-                break;
-            }
-            $value /= $this->sizeFormatBase;
-            $position++;
-        } while ($position < 5);
+            if (is_array($formatBase)) {
+                if (!isset($formatBase[$position + 1])) {
+                    break;
+                }
 
-        // no decimals for bytes
+                if (abs($value) < $formatBase[$position + 1]) {
+                    break;
+                }
+            } else {
+                if (abs($value) < $formatBase) {
+                    break;
+                }
+                $value = $value / $formatBase;
+            }
+            $position++;
+        } while ($position < $maxPosition + 1);
+
+        if (is_array($formatBase) && $position !== 0) {
+            $value /= $formatBase[$position];
+        }
+
+        // no decimals for smallest unit
         if ($position === 0) {
             $decimals = 0;
         } elseif ($decimals !== null) {
@@ -1502,7 +1630,7 @@ class Formatter extends Component
         // disable grouping for edge cases like 1023 to get 1023 B instead of 1,023 B
         $oldThousandSeparator = $this->thousandSeparator;
         $this->thousandSeparator = '';
-        if ($this->_intlLoaded) {
+        if ($this->_intlLoaded && !isset($options[NumberFormatter::GROUPING_USED])) {
             $options[NumberFormatter::GROUPING_USED] = false;
         }
         // format the size value

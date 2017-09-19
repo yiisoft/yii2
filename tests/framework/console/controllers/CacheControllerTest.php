@@ -120,7 +120,7 @@ class CacheControllerTest extends TestCase
         $this->assertNull(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
     }
 
-    public function testNotFoundFlush()
+    public function testNotFoundClear()
     {
         Yii::$app->firstCache->set('firstKey', 'firstValue');
 

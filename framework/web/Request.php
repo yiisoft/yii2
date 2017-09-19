@@ -1676,6 +1676,151 @@ class Request extends \yii\base\Request implements RequestInterface
         return $cookies;
     }
 
+    /**
+     * Returns uploaded files for this request.
+     * Uploaded files are returned in format according to [PSR-7 Uploaded Files specs](http://www.php-fig.org/psr/psr-7/#16-uploaded-files).
+     * @return array uploaded files.
+     * @since 2.1.0
+     */
+    public function getUploadedFiles()
+    {
+        if ($this->_uploadedFiles === null) {
+            $this->getBodyParams(); // uploaded files are the part of the body and may be set while its parsing
+            if ($this->_uploadedFiles === null) {
+                $this->_uploadedFiles = $this->defaultUploadedFiles();
+            }
+        }
+        return $this->_uploadedFiles;
+    }
+
+    /**
+     * Sets uploaded files for this request.
+     * Data structure for the uploaded files should follow [PSR-7 Uploaded Files specs](http://www.php-fig.org/psr/psr-7/#16-uploaded-files).
+     * @param array|null $uploadedFiles uploaded files.
+     * @since 2.1.0
+     */
+    public function setUploadedFiles($uploadedFiles)
+    {
+        $this->_uploadedFiles = $uploadedFiles;
+    }
+
+    /**
+     * Initializes default uploaded files data structure parsing super-global $_FILES.
+     * @see http://www.php-fig.org/psr/psr-7/#16-uploaded-files
+     * @return array uploaded files.
+     * @since 2.1.0
+     */
+    protected function defaultUploadedFiles()
+    {
+        $files = [];
+        foreach ($_FILES as $class => $info) {
+            $files[$class] = [];
+            $this->populateUploadedFileRecursive($files[$class], $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error']);
+        }
+
+        return $files;
+    }
+
+    /**
+     * Populates uploaded files array from $_FILE data structure recursively.
+     * @param array $files uploaded files array to be populated.
+     * @param mixed $names file names provided by PHP
+     * @param mixed $tempNames temporary file names provided by PHP
+     * @param mixed $types file types provided by PHP
+     * @param mixed $sizes file sizes provided by PHP
+     * @param mixed $errors uploading issues provided by PHP
+     * @since 2.1.0
+     */
+    private function populateUploadedFileRecursive(&$files, $names, $tempNames, $types, $sizes, $errors)
+    {
+        if (is_array($names)) {
+            foreach ($names as $i => $name) {
+                $files[$i] = [];
+                $this->populateUploadedFileRecursive($files[$i], $name, $tempNames[$i], $types[$i], $sizes[$i], $errors[$i]);
+            }
+        } else {
+            $files = Yii::createObject([
+                'class' => $this->uploadedFileClass,
+                'clientFilename' => $names,
+                'tempFilename' => $tempNames,
+                'clientMediaType' => $types,
+                'size' => $sizes,
+                'error' => $errors,
+            ]);
+        }
+    }
+
+    /**
+     * Returns an uploaded file according to the given name.
+     * Name can be either a string HTML form input name, e.g. 'Item[file]' or array path, e.g. `['Item', 'file']`.
+     * Note: this method returns `null` in case given name matches multiple files.
+     * @param string|array $name HTML form input name or array path.
+     * @return UploadedFileInterface|null uploaded file instance, `null` - if not found.
+     * @since 2.1.0
+     */
+    public function getUploadedFileByName($name)
+    {
+        $uploadedFile = $this->findUploadedFiles($name);
+        if ($uploadedFile instanceof UploadedFileInterface) {
+            return $uploadedFile;
+        }
+        return null;
+    }
+
+    /**
+     * Returns the list of uploaded file instances according to the given name.
+     * Name can be either a string HTML form input name, e.g. 'Item[file]' or array path, e.g. `['Item', 'file']`.
+     * Note: this method does NOT preserve uploaded files structure - it returns instances in single-level array (list),
+     * even if they are set by nested keys.
+     * @param string|array $name HTML form input name or array path.
+     * @return UploadedFileInterface[] list of uploaded file instances.
+     * @since 2.1.0
+     */
+    public function getUploadedFilesByName($name)
+    {
+        $uploadedFiles = $this->findUploadedFiles($name);
+        if ($uploadedFiles === null) {
+            return [];
+        }
+        if ($uploadedFiles instanceof UploadedFileInterface) {
+            return [$uploadedFiles];
+        }
+        return $this->reduceUploadedFiles($uploadedFiles);
+    }
+
+    /**
+     * Finds the uploaded file or set of uploaded files inside [[$uploadedFiles]] according to given name.
+     * Name can be either a string HTML form input name, e.g. 'Item[file]' or array path, e.g. `['Item', 'file']`.
+     * @param string|array $name HTML form input name or array path.
+     * @return UploadedFileInterface|array|null
+     * @since 2.1.0
+     */
+    private function findUploadedFiles($name)
+    {
+        if (!is_array($name)) {
+            $name = preg_split('/\\]\\[|\\[|\\]/s', $name, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        return ArrayHelper::getValue($this->getUploadedFiles(), $name);
+    }
+
+    /**
+     * Reduces complex uploaded files structure to the single-level array (list).
+     * @param array $uploadedFiles raw set of the uploaded files.
+     * @return UploadedFileInterface[] list of uploaded files.
+     * @since 2.1.0
+     */
+    private function reduceUploadedFiles($uploadedFiles)
+    {
+        return array_reduce($uploadedFiles, function ($carry, $item) {
+            if ($item instanceof UploadedFileInterface) {
+                $carry[] = $item;
+            } else {
+                $carry = array_merge($carry, $this->reduceUploadedFiles($item));
+            }
+            return $carry;
+        }, []);
+    }
+
     private $_csrfToken;
 
     /**

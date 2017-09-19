@@ -7,13 +7,12 @@
 
 namespace yiiunit\framework\rbac;
 
-use app\models\User;
+use Psr\Log\LogLevel;
 use Yii;
 use yii\caching\ArrayCache;
 use yii\console\Application;
 use yii\console\ExitCode;
 use yii\db\Connection;
-use yii\log\Logger;
 use yii\rbac\Assignment;
 use yii\rbac\DbManager;
 use yii\rbac\Permission;
@@ -302,12 +301,16 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $this->auth->checkAccess(new UserID('author B'), 'createPost');
 
         // track db queries
-        Yii::$app->log->flushInterval = 1;
-        Yii::$app->log->getLogger()->messages = [];
-        Yii::$app->log->targets['rbacqueries'] = $logTarget = new ArrayTarget([
+        /* @var $logger \yii\log\Logger */
+        $logger = Yii::$app->getLogger();
+
+        $logger->flushInterval = 1;
+        $logger->messages = [];
+        $logTarget = new ArrayTarget([
             'categories' => ['yii\\db\\Command::query'],
-            'levels' => Logger::LEVEL_INFO,
+            'levels' => [LogLevel::INFO],
         ]);
+        $logger->addTarget($logTarget, 'rbacqueries');
         $this->assertCount(0, $logTarget->messages);
 
         // testing access on two different permissons for the same user should only result in one DB query for user assignments
@@ -353,7 +356,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
     private function assertSingleQueryToAssignmentsTable($logTarget)
     {
         $this->assertCount(1, $logTarget->messages, 'Only one query should have been performed, but there are the following logs: ' . print_r($logTarget->messages, true));
-        $this->assertContains('auth_assignment', $logTarget->messages[0][0], 'Log message should be a query to auth_assignment table');
+        $this->assertContains('auth_assignment', $logTarget->messages[0][1], 'Log message should be a query to auth_assignment table');
         $logTarget->messages = [];
     }
 }

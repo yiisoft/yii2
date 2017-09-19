@@ -93,7 +93,7 @@ class CacheController extends Controller
             return ExitCode::OK;
         }
 
-        if (!$this->confirmFlush($foundCaches)) {
+        if (!$this->confirmClear($foundCaches)) {
             return ExitCode::OK;
         }
 
@@ -101,17 +101,17 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' => $this->canBeFlushed($class) ? Yii::$app->get($name)->flush() : false,
+                'is_flushed' => $this->canBeCleared($class) ? Yii::$app->get($name)->clear() : false,
             ];
         }
 
-        $this->notifyFlushed($cachesInfo);
+        $this->notifyCleared($cachesInfo);
     }
 
     /**
      * Flushes all caches registered in the system.
      */
-    public function actionFlushAll()
+    public function actionClearAll()
     {
         $caches = $this->findCaches();
         $cachesInfo = [];
@@ -125,11 +125,11 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' => $this->canBeFlushed($class) ? Yii::$app->get($name)->flush() : false,
+                'is_flushed' => $this->canBeCleared($class) ? Yii::$app->get($name)->clear() : false,
             ];
         }
 
-        $this->notifyFlushed($cachesInfo);
+        $this->notifyCleared($cachesInfo);
     }
 
     /**
@@ -137,7 +137,7 @@ class CacheController extends Controller
      *
      * ```
      * # clears cache schema specified by component id: "db"
-     * yii cache/flush-schema db
+     * yii cache/clear-schema db
      * ```
      *
      * @param string $db id connection component
@@ -147,7 +147,7 @@ class CacheController extends Controller
      *
      * @since 2.0.1
      */
-    public function actionFlushSchema($db = 'db')
+    public function actionClearSchema($db = 'db')
     {
         $connection = Yii::$app->get($db, false);
         if ($connection === null) {
@@ -175,12 +175,12 @@ class CacheController extends Controller
      * Notifies user that given caches are found and can be flushed.
      * @param array $caches array of cache component classes
      */
-    private function notifyCachesCanBeFlushed($caches)
+    private function notifyCachesCanBeCleared($caches)
     {
         $this->stdout("The following caches were found in the system:\n\n", Console::FG_YELLOW);
 
         foreach ($caches as $name => $class) {
-            if ($this->canBeFlushed($class)) {
+            if ($this->canBeCleared($class)) {
                 $this->stdout("\t* $name ($class)\n", Console::FG_GREEN);
             } else {
                 $this->stdout("\t* $name ($class) - can not be flushed via console\n", Console::FG_YELLOW);
@@ -216,7 +216,7 @@ class CacheController extends Controller
     /**
      * @param array $caches
      */
-    private function notifyFlushed($caches)
+    private function notifyCleared($caches)
     {
         $this->stdout("The following cache components were processed:\n\n", Console::FG_YELLOW);
 
@@ -234,11 +234,11 @@ class CacheController extends Controller
     }
 
     /**
-     * Prompts user with confirmation if caches should be flushed.
+     * Prompts user with confirmation if caches should be cleared.
      * @param array $cachesNames
      * @return bool
      */
-    private function confirmFlush($cachesNames)
+    private function confirmClear($cachesNames)
     {
         $this->stdout("The following cache components will be flushed:\n\n", Console::FG_YELLOW);
 

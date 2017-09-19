@@ -96,7 +96,7 @@ Todos los componentes de almacenamiento de caché provienen de la misma clase "p
 * [[yii\caching\Cache::madd()|madd()]]: almacena múltiples elementos de datos en la memoria caché. Cada elemento se identifica con una clave. Si una clave ya existe en la caché, el elemento será omitido.
 * [[yii\caching\Cache::exists()|exists()]]: devuelve un valor que indica si la clave especificada se encuentra en la memoria caché.
 * [[yii\caching\Cache::delete()|delete()]]: elimina un elemento de datos identificado por una clave de la caché.
-* [[yii\caching\Cache::flush()|flush()]]: elimina todos los elementos de datos de la cache.
+* [[yii\caching\Cache::clear()|clear()]]: elimina todos los elementos de datos de la cache.
 
 > Note: No Almacenes el valor boolean `false` en caché directamente porque el método [[yii\caching\Cache::get()|get()]] devuelve
 el valor `false` para indicar que el dato no ha sido encontrado en la caché. Puedes poner `false` dentro de un array y cachear
