@@ -119,7 +119,7 @@ Todos os componentes de caches estendem a mesma classe base [[yii\caching\Cache]
   Se a chave já existir em cache, o registro é ignorado.
 * [[yii\caching\Cache::exists()|exists()]]: retorna se a chave específica é encontrada no cache.
 * [[yii\caching\Cache::delete()|delete()]]: remove um registro do cache identificado por uma chave.
-* [[yii\caching\Cache::flush()|flush()]]: remove todos os registros do cache.
+* [[yii\caching\Cache::clear()|clear()]]: remove todos os registros do cache.
 
 > Observação: Não armazene o valor boleano `false` diretamente, porque o método [[yii\caching\Cache::get()|get()]] retorna `false`para indicar que o registro não foi encontrado em cache. Você pode armazena `false` em um array e armazenar este em cache para evitar este problema.
 

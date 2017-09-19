@@ -90,7 +90,7 @@ Yii 支持一系列缓存存储器，概况如下：
 * [[yii\caching\Cache::madd()|madd()]]：将多项数据存储到缓存中，每项数据对应一个键。如果某个键已经存在于缓存中，则该项数据会被跳过。
 * [[yii\caching\Cache::exists()|exists()]]：返回一个值，指明某个键是否存在于缓存中。
 * [[yii\caching\Cache::delete()|delete()]]：通过一个键，删除缓存中对应的值。
-* [[yii\caching\Cache::flush()|flush()]]：删除缓存中的所有数据。
+* [[yii\caching\Cache::clear()|clear()]]：删除缓存中的所有数据。
 
 有些缓存存储器如 MemCache，APC 支持以批量模式取回缓存值，这样可以节省取回缓存数据的开支。 [[yii\caching\Cache::mget()|mget()]] 和 [[yii\caching\Cache::madd()|madd()]] API提供对该特性的支持。如果底层缓存存储器不支持该特性，Yii 也会模拟实现。
 

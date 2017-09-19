@@ -57,6 +57,7 @@ class m141106_185632_log_init extends Migration
                 throw new InvalidConfigException('You should configure "log" component to use one or more database targets before executing this migration.');
             }
         }
+
         return $this->dbTargets;
     }
 

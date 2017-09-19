@@ -407,6 +407,7 @@ class Command extends Component
 
     /**
      * Creates an INSERT command.
+     *
      * For example,
      *
      * ```php
@@ -436,6 +437,7 @@ class Command extends Component
 
     /**
      * Creates a batch INSERT command.
+     *
      * For example,
      *
      * ```php
@@ -466,6 +468,7 @@ class Command extends Component
 
     /**
      * Creates an UPDATE command.
+     *
      * For example,
      *
      * ```php
@@ -499,6 +502,7 @@ class Command extends Component
 
     /**
      * Creates a DELETE command.
+     *
      * For example,
      *
      * ```php
@@ -876,7 +880,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for adding comment to column
+     * Builds a SQL command for adding comment to column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -892,7 +896,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for adding comment to table
+     * Builds a SQL command for adding comment to table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
@@ -907,7 +911,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for dropping comment from column
+     * Builds a SQL command for dropping comment from column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -922,7 +926,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for dropping comment from table
+     * Builds a SQL command for dropping comment from table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @return $this the command object itself
@@ -1068,7 +1072,7 @@ class Command extends Component
     }
 
     /**
-     * Refreshes table schema, which was marked by [[requireTableSchemaRefresh()]]
+     * Refreshes table schema, which was marked by [[requireTableSchemaRefresh()]].
      * @since 2.0.6
      */
     protected function refreshTableSchema()

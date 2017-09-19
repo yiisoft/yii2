@@ -12,7 +12,7 @@ use yii\base\NotSupportedException;
 use yii\web\IdentityInterface;
 
 /**
- * Class UserIdentity
+ * Class UserIdentity.
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7
  */

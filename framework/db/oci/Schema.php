@@ -22,7 +22,7 @@ use yii\helpers\ArrayHelper;
 use yii\db\IntegrityException;
 
 /**
- * Schema is the class for retrieving metadata from an Oracle database
+ * Schema is the class for retrieving metadata from an Oracle database.
  *
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
@@ -130,6 +130,7 @@ SQL;
             }
             $names[] = $row['TABLE_NAME'];
         }
+
         return $names;
     }
 
@@ -201,6 +202,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -328,11 +330,12 @@ SQL;
             $c = $this->createColumn($column);
             $table->columns[$c->name] = $c;
         }
+
         return true;
     }
 
     /**
-     * Sequence name of table
+     * Sequence name of table.
      *
      * @param string $tableName
      * @internal param \yii\db\TableSchema $table->name the table schema
@@ -377,7 +380,7 @@ SQL;
     }
 
     /**
-     * Creates ColumnSchema instance
+     * Creates ColumnSchema instance.
      *
      * @param array $column
      * @return ColumnSchema
@@ -420,7 +423,7 @@ SQL;
     }
 
     /**
-     * Finds constraints and fills them into TableSchema object passed
+     * Finds constraints and fills them into TableSchema object passed.
      * @param TableSchema $table
      */
     protected function findConstraints($table)
@@ -489,7 +492,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
-     * Each array element is of the following structure:
+     * Each array element is of the following structure:.
      *
      * ```php
      * [
@@ -524,11 +527,12 @@ SQL;
         foreach ($command->queryAll() as $row) {
             $result[$row['INDEX_NAME']][] = $row['COLUMN_NAME'];
         }
+
         return $result;
     }
 
     /**
-     * Extracts the data types for the given column
+     * Extracts the data types for the given column.
      * @param ColumnSchema $column
      * @param string $dbType DB type
      * @param string $precision total number of digits.
@@ -716,6 +720,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

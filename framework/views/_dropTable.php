@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Creates a call for the method `yii\db\Migration::dropTable()`
+ * Creates a call for the method `yii\db\Migration::dropTable()`.
  */
 /* @var $table string the name table */
 /* @var $foreignKeys array the foreign keys */

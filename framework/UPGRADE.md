@@ -54,11 +54,13 @@ Upgrade from Yii 2.0.x
 ----------------------
 
 * PHP requirements were raised to 7.1. Make sure your code is updated accordingly.
-* memcache PECL extension support was dropped. Use memcached PECL extesion instead.
+* memcache PECL extension support was dropped. Use memcached PECL extension instead.
 * Following new methods have been added to `yii\i18n\MessageInterface` `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()`
   providing ability to setup custom mail headers. Make sure your provide implementation for those methods, while
   creating your own mailer solution.
-* `::className()` method calls should be replaced with native `::class`.
+* `::className()` method calls should be replaced with [native](http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class.class) `::class`.
+  When upgrading to Yii 2.1, You should do a global search and replace for `::className()` to `::class`.
+  All calls on objects via `->className()` should be replaced by a call to `get_class()`.
 * XCache and Zend data cache support was removed. Switch to another caching backends.
 * Rename `InvalidParamException` usage to `InvalidArgumentException`.
 * Masked input field widget was moved into separate extension https://github.com/yiisoft/yii2-maskedinput.
@@ -107,7 +109,7 @@ Upgrade from Yii 2.0.x
 * Console command used to clear cache now calls related actions "clear" instead of "flush".
 * Yii autoloader was removed in favor of Composer-generated one. You should remove explicit inclusion of `Yii.php` from
   your entry `index.php` scripts. In case you have relied on class map, use `composer.json` instead of configuring it
-  with PHP. For details please refer to [guide on autoloading](https://github.com/yiisoft/yii2/blob/2.1/docs/guide/concept-autoloading.md),  
+  with PHP. For details please refer to [guide on autoloading](https://github.com/yiisoft/yii2/blob/2.1/docs/guide/concept-autoloading.md),
   [guide on customizing helpers](https://github.com/yiisoft/yii2/blob/2.1/docs/guide/helper-overview.md#customizing-helper-classes-)
   and [guide on Working with Third-Party Code](https://github.com/yiisoft/yii2/blob/2.1/docs/guide/tutorial-yii-integration.md).
 * The signature of `yii\web\RequestParserInterface::parse()` was changed. The method now accepts the `yii\web\Request` instance
@@ -115,10 +117,40 @@ Upgrade from Yii 2.0.x
 * Uploaded file retrieve methods have been moved from `yii\http\UploadedFile` to `yii\web\Request`. You should use `Request::getUploadedFileByName()`
   instead of `UploadedFile::getInstanceByName()` and `Request::getUploadedFilesByName()` instead of `UploadedFile::getInstancesByName()`.
   Instead of `UploadedFile::getInstance()` and `UploadedFile::getInstances()` use construction `$model->load(Yii::$app->request->getUploadedFiles())`.
+* The following method signature have changed. If you override any of them in your code, you have to adjust these places:
+  `yii\db\QueryBuilderBuild::buildGroupBy($columns)` -> `buildGroupBy($columns, &$params)`
+  `yii\db\QueryBuilderbuild::buildOrderByAndLimit($sql, $orderBy, $limit, $offset)` -> `buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)`
+  `yii\widgets\ActiveField::hint($content = null, $options = [])`
+  `yii\base\View::renderDynamic($statements)` -> `yii\base\View::renderDynamic($statements, array $params = [])`
+* `yii\filters\AccessControl` has been optimized by only instantiating rules at the moment of use.
+   This could lead to a potential BC-break if you are depending on $rules to be instantiated in init().
+* `yii\widgets\BaseListView::run()` and `yii\widgets\GridView::run()` now return content, instead of echoing it.
+  Normally we call `BaseListView::widget()` and for this case behavior is NOT changed.
+  In case you call `::run()` method, ensure that its return is processed correctly.
+* `yii\web\UrlNormalizer` is now enabled by default in `yii\web\UrlManager`.
+  If you are using `yii\web\Request::resolve()` or `yii\web\UrlManager::parseRequest()` directly, make sure that
+  all potential exceptions are handled correctly or set `yii\web\UrlNormalizer::$normalizer` to `false` to disable normalizer.
+* `yii\base\InvalidParamException` was renamed to `yii\base\InvalidArgumentException`.
 
 
 Upgrade from Yii 2.0.12
 -----------------------
+
+* The `yii\web\Request` class allowed to determine the value of `getIsSecureConnection()` form the
+  `X-Forwarded-Proto` header if the connection was made via a normal HTTP request. This behavior
+  was insecure as the header could have been set by a malicious client on a non-HTTPS connection.
+  With 2.0.13 Yii adds support for configuring trusted proxies. If your application runs behind a reverse proxy and relies on
+  `getIsSecureConnection()` to return the value form the `X-Forwarded-Proto` header you need to explicitly allow
+  this in the Request configuration. See the [guide](http://www.yiiframework.com/doc-2.0/guide-runtime-requests.html#trusted-proxies) for more information.
+
+  This setting also affects you when Yii is running on IIS webserver, which sets the `X-Rewrite-Url` header.
+  This header is now filtered by default and must be listed in trusted hosts to be detected by Yii:
+
+  ```php
+  [   // accept X-Rewrite-Url from all hosts, as it will be set by IIS
+      '/.*/' => ['X-Rewrite-Url'],
+  ]
+  ```
 
 * For compatibiliy with [PHP 7.2 which does not allow classes to be named `Object` anymore](https://wiki.php.net/rfc/object-typehint),
   we needed to rename `yii\base\Object` to `yii\base\BaseObject`.
@@ -158,6 +190,29 @@ Upgrade from Yii 2.0.12
   For extensions that have classes extending from `yii\base\Object`, to be compatible with PHP 7.2, you need to
   require `"yiisoft/yii2": "~2.0.13"` in composer.json and change affected classes to extend from `yii\base\BaseObject`
   instead. It is not possible to allow Yii versions `<2.0.13` and be compatible with PHP 7.2 or higher.
+
+* A new method `public static function instance($refresh = false);` has been added to the `yii\db\ActiveRecordInterface` via a new
+  `yii\base\StaticInstanceInterface`. This change may affect your application in the following ways:
+
+  - If you have an `instance()` method defined in an `ActiveRecord` or `Model` class, you need to check whether the behavior is
+    compatible with the method added by Yii.
+  - Otherwise this method is implemented in the `yii\base\Model`, so the change only affects your code if you implement `ActiveRecordInterface`
+    in a class that does not extend `Model`. You may use `yii\base\StaticInstanceTrait` to implement it.
+
+* Fixed built-in validator creating when model has a method with the same name.
+
+  It is documented, that for the validation rules declared in model by `yii\base\Model::rules()`, validator can be either
+  a built-in validator name, a method name of the model class, an anonymous function, or a validator class name.
+  Before this change behavior was inconsistent with the documentation: method in the model had higher priority, than
+  a built-in validator. In case you have relied on this behavior, make sure to fix it.
+
+* Behavior was changed for methods `yii\base\Module::get()` and `yii\base\Module::has()` so in case when the requested
+  component was not found in the current module, the parent ones will be checked for this component hierarchically.
+  Considering that the root parent module is usually an application, this change can reduce calls to global `Yii::$app->get()`,
+  and replace them with module-scope calls to `get()`, making code more reliable and easier to test.
+  However, this change may affect your application if you have code that uses method `yii\base\Module::has()` in order
+  to check existence of the component exactly in this specific module. In this case make sure the logic is not corrupted.
+
 
 Upgrade from Yii 2.0.11
 -----------------------
@@ -204,46 +259,6 @@ Upgrade from Yii 2.0.10
   you should update these to match this new value. It is not a good idea to rely on auto generated values anyway, so
   you better fix these cases by specifying an explicit ID.
 
-
-Upgrade to Yii 2.1.0
---------------------
-
-* The minimum required PHP version is 5.5.0 now.
-
-* `yii\base\Object::className()` has been removed in favor of the [native PHP syntax](http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class.class)
-  `::class`. When upgrading to Yii 2.1, You should do a global search and replace for `::className()` to `::class`.
-  All calls on objects via `->className()` should be replaced by a call to `get_class()`.
-
-  You can make this change even before upgrading to Yii 2.1, Yii 2.0.x does work with it.
-
-  `::class` does not trigger auto loading so you can even use it in config.
-
-* The following method signature have changed. If you override any of them in your code, you have to adjust these places:
-
-  `yii\db\QueryBuilderbuild::buildGroupBy($columns)` -> `buildGroupBy($columns, &$params)`
-  
-  `yii\db\QueryBuilderbuild::buildOrderByAndLimit($sql, $orderBy, $limit, $offset)` -> `buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)`
-  
-  `yii\widgets\ActiveField::hint($content = null, $options = [])`
-  
-  `yii\base\View::renderDynamic($statements)` -> `yii\base\View::renderDynamic($statements, array $params = [])`
-
-* `yii\filters\AccessControl` has been optimized by only instantiating rules at the moment of use.
-   This could lead to a potential BC-break if you are depending on $rules to be instantiated in init().
-
-* `yii\widgets\BaseListView::run()` and `yii\widgets\GridView::run()` now return content, instead of echoing it.
-  Normally we call `BaseListView::widget()` and for this case behavior is NOT changed.
-  In case you call `::run()` method, ensure that its return is processed correctly. 
-
-* Method `yii\web\Request::getBodyParams()` has been changed to pass full value of 'content-type' header to the second
-  argument of `yii\web\RequestParserInterface::parse()`. If you create your own custom parser, which relies on `$contentType`
-  argument, ensure to process it correctly as it may content additional data.
-
-* `yii\web\UrlNormalizer` is now enabled by default in `yii\web\UrlManager`.
-  If you are using `yii\web\Request::resolve()` or `yii\web\UrlManager::parseRequest()` directly, make sure that
-  all potential exceptions are handled correctly or set `yii\web\UrlNormalizer::$normalizer` to `false` to disable normalizer.
-
-* `yii\base\InvalidParamException` was renamed to `yii\base\InvalidArgumentException`.
 
 Upgrade from Yii 2.0.9
 ----------------------

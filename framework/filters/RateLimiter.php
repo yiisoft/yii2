@@ -127,7 +127,7 @@ class RateLimiter extends ActionFilter
     }
 
     /**
-     * Adds the rate limit headers to the response
+     * Adds the rate limit headers to the response.
      * @param Response $response
      * @param int $limit the maximum number of allowed requests during a period
      * @param int $remaining the remaining number of allowed requests within the current period

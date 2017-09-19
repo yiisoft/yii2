@@ -8,7 +8,7 @@
 use yii\db\Migration;
 
 /**
- * Initializes Session tables
+ * Initializes Session tables.
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 2.0.8

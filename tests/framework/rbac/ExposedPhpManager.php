@@ -10,7 +10,7 @@ namespace yiiunit\framework\rbac;
 use yii\rbac\PhpManager;
 
 /**
- * Exposes protected properties and methods to inspect from outside
+ * Exposes protected properties and methods to inspect from outside.
  */
 class ExposedPhpManager extends PhpManager
 {

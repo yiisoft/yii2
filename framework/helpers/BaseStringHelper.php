@@ -104,12 +104,15 @@ class BaseStringHelper
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
     {
+        if ($encoding === null) {
+            $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        }
         if ($asHtml) {
-            return static::truncateHtml($string, $length, $suffix, $encoding ?: Yii::$app->charset);
+            return static::truncateHtml($string, $length, $suffix, $encoding);
         }
 
-        if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
-            return rtrim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
+        if (mb_strlen($string, $encoding) > $length) {
+            return rtrim(mb_substr($string, 0, $length, $encoding)) . $suffix;
         }
 
         return $string;
@@ -152,7 +155,9 @@ class BaseStringHelper
     protected static function truncateHtml($string, $count, $suffix, $encoding = false)
     {
         $config = \HTMLPurifier_Config::create(null);
-        $config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
+        if (Yii::$app !== null) {
+            $config->set('Cache.SerializerPath', Yii::$app->getRuntimePath());
+        }
         $lexer = \HTMLPurifier_Lexer::create($config);
         $tokens = $lexer->tokenizeHTML($string, $config, new \HTMLPurifier_Context());
         $openTokens = [];
@@ -215,9 +220,10 @@ class BaseStringHelper
         }
         if ($caseSensitive) {
             return strncmp($string, $with, $bytes) === 0;
-        }
 
-        return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
+        }
+        $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), $encoding) === mb_strtolower($with, $encoding);
     }
 
     /**
@@ -239,14 +245,16 @@ class BaseStringHelper
             if (static::byteLength($string) < $bytes) {
                 return false;
             }
+
             return substr_compare($string, $with, -$bytes, $bytes) === 0;
         }
 
-        return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
+        $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), $encoding) === mb_strtolower($with, $encoding);
     }
 
     /**
-     * Explodes string into array, optionally trims values and skips empty ones
+     * Explodes string into array, optionally trims values and skips empty ones.
      *
      * @param string $string String to be exploded.
      * @param string $delimiter Delimiter. Default is ','.
@@ -277,11 +285,12 @@ class BaseStringHelper
                 return $value !== '';
             }));
         }
+
         return $result;
     }
 
     /**
-     * Counts words in a string
+     * Counts words in a string.
      * @since 2.0.8
      *
      * @param string $string
@@ -293,8 +302,8 @@ class BaseStringHelper
     }
 
     /**
-     * Returns string represenation of number value with replaced commas to dots, if decimal point
-     * of current locale is comma
+     * Returns string representation of number value with replaced commas to dots, if decimal point
+     * of current locale is comma.
      * @param int|float|string $value
      * @return string
      * @since 2.0.11
@@ -314,7 +323,7 @@ class BaseStringHelper
     }
 
     /**
-     * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648).
      *
      * > Note: Base 64 padding `=` may be at the end of the returned string.
      * > `=` is not transparent to URL encoding.
@@ -330,7 +339,7 @@ class BaseStringHelper
     }
 
     /**
-     * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648).
      *
      * @see https://tools.ietf.org/html/rfc4648#page-7
      * @param string $input encoded string.

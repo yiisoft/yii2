@@ -99,7 +99,7 @@ class I18NTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/7964
+     * @see https://github.com/yiisoft/yii2/issues/7964
      */
     public function testSourceLanguageFallback()
     {
@@ -165,7 +165,8 @@ class I18NTest extends TestCase
 
     /**
      * When translation is missing source language should be used for formatting.
-     * https://github.com/yiisoft/yii2/issues/2209
+     *
+     * @see https://github.com/yiisoft/yii2/issues/2209
      */
     public function testMissingTranslationFormatting()
     {
@@ -173,7 +174,7 @@ class I18NTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/7093
+     * @see https://github.com/yiisoft/yii2/issues/7093
      */
     public function testRussianPlurals()
     {
@@ -194,7 +195,7 @@ class I18NTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/2519
+     * @see https://github.com/yiisoft/yii2/issues/2519
      */
     public function testMissingTranslationEvent()
     {
@@ -267,7 +268,7 @@ class I18NTest extends TestCase
 
     /**
      * Formatting a message that contains params but they are not provided.
-     * https://github.com/yiisoft/yii2/issues/10884
+     * @see https://github.com/yiisoft/yii2/issues/10884
      */
     public function testFormatMessageWithNoParam()
     {

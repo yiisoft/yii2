@@ -8,7 +8,9 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
+use yii\base\NotSupportedException;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
@@ -81,6 +83,13 @@ abstract class BaseMigrateController extends Controller
      */
     public $templateFile;
 
+    /**
+     * @var bool indicates whether the console output should be compacted.
+     * If this is set to true, the individual commands ran within the migration will not be output to the console.
+     * Default is false, in other words the output is fully verbose by default.
+     * @since 2.0.13
+     */
+    public $compact = false;
 
     /**
      * @inheritdoc
@@ -89,7 +98,7 @@ abstract class BaseMigrateController extends Controller
     {
         return array_merge(
             parent::options($actionID),
-            ['migrationPath', 'migrationNamespaces'], // global for all actions
+            ['migrationPath', 'migrationNamespaces', 'compact'], // global for all actions
             $actionID === 'create' ? ['templateFile'] : [] // action create
         );
     }
@@ -138,6 +147,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Upgrades the application by applying new migrations.
+     *
      * For example,
      *
      * ```
@@ -196,6 +206,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Downgrades the application by reverting old migrations.
+     *
      * For example,
      *
      * ```
@@ -428,6 +439,31 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
+     * Truncates the whole database and starts the migration from the beginning.
+     *
+     * ```
+     * yii migrate/fresh
+     * ```
+     *
+     * @since 2.0.13
+     */
+    public function actionFresh()
+    {
+        if (YII_ENV_PROD) {
+            $this->stdout("YII_ENV is set to 'prod'.\nRefreshing migrations is not possible on production systems.\n");
+            return ExitCode::OK;
+        }
+
+        if ($this->confirm(
+            "Are you sure you want to reset the database and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
+            $this->truncateDatabase();
+            $this->actionUp();
+        } else {
+            $this->stdout('Action was cancelled by user. Nothing has been performed.');
+        }
+    }
+
+    /**
      * Checks if given migration version specification matches namespaced migration name.
      * @param string $rawVersion raw version specification received from user input.
      * @return string|false actual migration version, `false` - if not match.
@@ -438,6 +474,7 @@ abstract class BaseMigrateController extends Controller
         if (preg_match('/^\\\\?([\w_]+\\\\)+m(\d{6}_?\d{6})(\D.*)?$/is', $rawVersion, $matches)) {
             return trim($rawVersion, '\\');
         }
+
         return false;
     }
 
@@ -452,6 +489,7 @@ abstract class BaseMigrateController extends Controller
         if (preg_match('/^m?(\d{6}_?\d{6})(\D.*)?$/is', $rawVersion, $matches)) {
             return 'm' . $matches[1];
         }
+
         return false;
     }
 
@@ -722,7 +760,11 @@ abstract class BaseMigrateController extends Controller
     protected function createMigration($class)
     {
         $this->includeMigrationFile($class);
-        return new $class();
+        $migration = new $class();
+        if ($migration instanceof BaseObject && $migration->canSetProperty('compact')) {
+            $migration->compact = $this->compact;
+        }
+        return $migration;
     }
 
     /**
@@ -875,6 +917,17 @@ abstract class BaseMigrateController extends Controller
     protected function generateMigrationSourceCode($params)
     {
         return $this->renderFile(Yii::getAlias($this->templateFile), $params);
+    }
+
+    /**
+     * Truncates the database.
+     * This method should be overwritten in subclasses to implement the task of clearing the database.
+     * @throws NotSupportedException if not overridden
+     * @since 2.0.13
+     */
+    protected function truncateDatabase()
+    {
+        throw new NotSupportedException('This command is not implemented in ' . get_class($this));
     }
 
     /**
