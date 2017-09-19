@@ -70,6 +70,7 @@ Yii Framework 2 Change Log
 - Enh #14431: Moved `ActiveQuery::getTablesUsedInFrom()` to `Query` to make the functionality available on the lower layer (cebe)
 - Enh #14620: Updated `yii.activeForm.js` and `yii\web\View` to jQuery 3.0 compatible API (silverfire)
 - Enh #14664: Add migrate/fresh command to truncate database and apply migrations again (thyseus)
+- Enh #14765: RBAC: add index on `user_id` column in `auth_assignment` table for performance reasons (bicf)
 - Chg #7936: Deprecate `yii\base\Object` in favor of `yii\base\BaseObject` for compatibility with PHP 7.2 (rob006, cebe, klimov-paul)
 - Chg #14201: `yii\console\controllers\MessageController::extractMessagesFromTokens()` is now protected (faenir)
 - Chg #14286: Used primary inputmask package name instead of an alias (samdark)
