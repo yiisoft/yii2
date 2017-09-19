@@ -10,6 +10,7 @@ namespace yiiunit\framework\rbac;
 use Psr\Log\LogLevel;
 use Yii;
 use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\console\Application;
 use yii\console\ExitCode;
 use yii\db\Connection;
@@ -296,7 +297,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $this->prepareData();
 
         // warm up item cache, so only assignment queries are sent to DB
-        $this->auth->cache = new ArrayCache();
+        $this->auth->cache = new Cache(['handler' => new ArrayCache()]);
         $this->auth->checkAccess('author B', 'readPost');
         $this->auth->checkAccess(new UserID('author B'), 'createPost');
 
