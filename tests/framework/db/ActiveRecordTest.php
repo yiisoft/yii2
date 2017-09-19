@@ -1578,26 +1578,26 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, $order->id);
 
         $this->assertNotNull($order->customer);
-        $this->assertInstanceOf(CustomerWithConstructor::className(), $order->customer);
+        $this->assertInstanceOf(CustomerWithConstructor::class, $order->customer);
         $this->assertEquals(1, $order->customer->id);
 
         $this->assertNotNull($order->customer->profile);
-        $this->assertInstanceOf(ProfileWithConstructor::className(), $order->customer->profile);
+        $this->assertInstanceOf(ProfileWithConstructor::class, $order->customer->profile);
         $this->assertEquals(1, $order->customer->profile->id);
 
         $this->assertNotNull($order->customerJoinedWithProfile);
         $customerWithProfile = $order->customerJoinedWithProfile;
-        $this->assertInstanceOf(CustomerWithConstructor::className(), $customerWithProfile);        
+        $this->assertInstanceOf(CustomerWithConstructor::class, $customerWithProfile);
         $this->assertEquals(1, $customerWithProfile->id);
 
         $this->assertNotNull($customerProfile = $customerWithProfile->profile);
-        $this->assertInstanceOf(ProfileWithConstructor::className(), $customerProfile);
+        $this->assertInstanceOf(ProfileWithConstructor::class, $customerProfile);
         $this->assertEquals(1, $customerProfile->id);
 
         $this->assertCount(2, $order->orderItems);
 
         $item = $order->orderItems[0];
-        $this->assertInstanceOf(OrderItemWithConstructor::className(), $item);
+        $this->assertInstanceOf(OrderItemWithConstructor::class, $item);
 
         $this->assertEquals(1, $item->item_id);
     }

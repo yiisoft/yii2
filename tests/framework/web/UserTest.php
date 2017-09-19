@@ -109,16 +109,16 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                     'authTimeout' => 10,
                     'enableAutoLogin' => true,
                     'autoRenewCookie' => false,
                 ],
                 'response' => [
-                    'class' => MockResponse::className(),
+                    'class' => MockResponse::class,
                 ],
                 'request' => [
-                    'class' => MockRequest::className(),
+                    'class' => MockRequest::class,
                 ],
             ],
         ];

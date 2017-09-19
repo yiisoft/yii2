@@ -31,11 +31,11 @@ class OrderItemWithConstructor extends ActiveRecord
 
     public static function instantiate($row)
     {
-        return (new \ReflectionClass(static::className()))->newInstanceWithoutConstructor();
+        return (new \ReflectionClass(static::class))->newInstanceWithoutConstructor();
     }
 
     public function getOrder()
     {
-        return $this->hasOne(OrderWithConstructor::className(), ['id' => 'order_id']);
+        return $this->hasOne(OrderWithConstructor::class, ['id' => 'order_id']);
     }
 }

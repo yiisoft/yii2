@@ -28,6 +28,6 @@ class ProfileWithConstructor extends ActiveRecord
 
     public static function instantiate($row)
     {
-        return (new \ReflectionClass(static::className()))->newInstanceWithoutConstructor();
+        return (new \ReflectionClass(static::class))->newInstanceWithoutConstructor();
     }
 }
