@@ -25,36 +25,30 @@ class ListViewTest extends TestCase
 
     public function testEmptyListShown()
     {
-        ob_start();
-        $this->getListView([
+        $out = $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'emptyText' => 'Nothing at all',
         ])->run();
-        $out = ob_get_clean();
 
         $this->assertEqualsWithoutLE('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $out);
     }
 
     public function testEmpty()
     {
-        ob_start();
-        $this->getListView([
+        $out = $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'emptyText' => false,
         ])->run();
-        $out = ob_get_clean();
 
         $this->assertEqualsWithoutLE('<div id="w0" class="list-view"></div>', $out);
     }
 
     public function testEmptyListNotShown()
     {
-        ob_start();
-        $this->getListView([
+        $out = $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'showOnEmpty' => true,
         ])->run();
-        $out = ob_get_clean();
 
         $this->assertEqualsWithoutLE(<<<'HTML'
 <div id="w0" class="list-view">
@@ -92,9 +86,7 @@ HTML
 
     public function testSimplyListView()
     {
-        ob_start();
-        $this->getListView()->run();
-        $out = ob_get_clean();
+        $out = $this->getListView()->run();
 
         $this->assertEqualsWithoutLE(<<<'HTML'
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
@@ -108,9 +100,7 @@ HTML
 
     public function testWidgetOptions()
     {
-        ob_start();
-        $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
-        $out = ob_get_clean();
+        $out = $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
 
         $this->assertEqualsWithoutLE(<<<'HTML'
 <div id="w0" class="test-passed"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
@@ -133,7 +123,7 @@ HTML
             ],
             [
                 function ($model, $key, $index, $widget) {
-                    return "Item #{$index}: {$model['login']} - Widget: " . $widget->class;
+                    return "Item #{$index}: {$model['login']} - Widget: " . get_class($widget);
                 },
                 '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">Item #0: silverfire - Widget: yii\widgets\ListView</div>
@@ -159,9 +149,7 @@ HTML
      */
     public function testItemViewOptions($itemView, $expected)
     {
-        ob_start();
-        $this->getListView(['itemView' => $itemView])->run();
-        $out = ob_get_clean();
+        $out = $this->getListView(['itemView' => $itemView])->run();
 
         $this->assertEqualsWithoutLE($expected, $out);
     }
@@ -205,9 +193,7 @@ HTML
      */
     public function testItemOptions($itemOptions, $expected)
     {
-        ob_start();
-        $this->getListView(['itemOptions' => $itemOptions])->run();
-        $out = ob_get_clean();
+        $out = $this->getListView(['itemOptions' => $itemOptions])->run();
 
         $this->assertEqualsWithoutLE($expected, $out);
     }
@@ -226,12 +212,10 @@ HTML
             return "<!-- after: {$model['id']}, key: $key, index: $index, widget: $widget -->";
         };
 
-        ob_start();
-        $this->getListView([
+        $out = $this->getListView([
             'beforeItem' => $before,
             'afterItem' => $after,
         ])->run();
-        $out = ob_get_clean();
 
         $this->assertEqualsWithoutLE(<<<HTML
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
