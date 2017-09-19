@@ -8,6 +8,7 @@
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
+use yii\caching\ArrayCache;
 use yii\console\controllers\CacheController;
 use yiiunit\TestCase;
 
@@ -49,8 +50,10 @@ class CacheControllerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'firstCache' => 'yii\caching\ArrayCache',
-                'secondCache' => 'yii\caching\ArrayCache',
-                'session' => 'yii\web\CacheSession', // should be ignored at `actionClearAll()`
+                'secondCache' => function () {
+                    return new ArrayCache();
+                },
+                'session' => 'yii\web\CacheSession', // should be ignored at `actionFlushAll()`
                 'db' => [
                     'class' => isset($config['class']) ? $config['class'] : 'yii\db\Connection',
                     'dsn' => $config['dsn'],

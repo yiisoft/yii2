@@ -164,6 +164,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -428,6 +429,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -477,6 +479,7 @@ SQL;
             $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
             $this->_oldMysql = version_compare($version, '5.1', '<=');
         }
+
         return $this->_oldMysql;
     }
 
@@ -503,7 +506,8 @@ SELECT DISTINCT
     `kcu`.`REFERENCED_TABLE_NAME` AS `foreign_table_name`,
     `kcu`.`REFERENCED_COLUMN_NAME` AS `foreign_column_name`,
     `rc`.`UPDATE_RULE` AS `on_update`,
-    `rc`.`DELETE_RULE` AS `on_delete`
+    `rc`.`DELETE_RULE` AS `on_delete`,
+    `kcu`.`ORDINAL_POSITION` as `position`
 FROM (SELECT DATABASE() AS `name`) AS `sch`
 INNER JOIN `information_schema`.`KEY_COLUMN_USAGE` AS `kcu`
     ON `kcu`.`TABLE_SCHEMA` = COALESCE(:schemaName, `sch`.`name`) AND `kcu`.`CONSTRAINT_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `kcu`.`TABLE_NAME` = :tableName
@@ -557,6 +561,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

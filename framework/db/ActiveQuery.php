@@ -154,7 +154,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->select) && !empty($this->join)) {
-            $alias = $this->getTableNameAndAlias()[1];
+            [, $alias] = $this->getTableNameAndAlias();
             $this->select = ["$alias.*"];
         }
 
@@ -435,7 +435,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $join = $this->join;
         $this->join = [];
 
-        $model = new $this->modelClass();
+        /* @var $modelClass ActiveRecordInterface */
+        $modelClass = $this->modelClass;
+        $model = $modelClass::instance();
         foreach ($this->joinWith as [$with, $eagerLoading, $joinType]) {
             $this->joinWithRelations($model, $with, $joinType);
 
@@ -514,7 +516,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 } else {
                     $relation = $relations[$fullName];
                 }
-                $primaryModel = new $relation->modelClass();
+                /* @var $relationModelClass ActiveRecordInterface */
+                $relationModelClass = $relation->modelClass;
+                $primaryModel = $relationModelClass::instance();
                 $parent = $relation;
                 $prefix = $fullName;
                 $name = $childName;
@@ -600,8 +604,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return;
         }
 
-        [$parentTable, $parentAlias] = $parent->getTableNameAndAlias();
-        [$childTable, $childAlias] = $child->getTableNameAndAlias();
+        list($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
+        list($childTable, $childAlias) = $child->getTableNameAndAlias();
 
         if (!empty($child->link)) {
             if (strpos($parentAlias, '{{') === false) {
@@ -661,7 +665,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * ```php
      * public function getActiveUsers()
      * {
-     *     return $this->hasMany(User::class, ['id' => 'user_id'])
+     *     return $this->hasMany(User::className(), ['id' => 'user_id'])
      *                 ->onCondition(['active' => true]);
      * }
      * ```
@@ -731,7 +735,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * ```php
      * public function getItems()
      * {
-     *     return $this->hasMany(Item::class, ['id' => 'item_id'])
+     *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
      *                 ->viaTable('order_item', ['order_id' => 'id']);
      * }
      * ```
@@ -774,7 +778,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function alias($alias)
     {
         if (empty($this->from) || count($this->from) < 2) {
-            $tableName = $this->getTableNameAndAlias()[0];
+            list($tableName) = $this->getTableNameAndAlias();
             $this->from = [$alias => $tableName];
         } else {
             $tableName = $this->getPrimaryTableName();
@@ -786,6 +790,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 }
             }
         }
+
         return $this;
     }
 
@@ -798,6 +803,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         if (empty($this->from)) {
             $this->from = [$this->getPrimaryTableName()];
         }
+
         return parent::getTablesUsedInFrom();
     }
 

@@ -27,15 +27,13 @@ use yii\web\Request;
  *
  * For more details and usage information on Target, see the [guide article on logging & targets](guide:runtime-logging).
  *
+ * @property bool $enabled Whether to enable this log target. Defaults to true.
+ * 
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 abstract class Target extends Component
 {
-    /**
-     * @var bool whether to enable this log target. Defaults to true.
-     */
-    public $enabled = true;
     /**
      * @var array list of message categories that this target is interested in. Defaults to empty, meaning all categories.
      * You can use an asterisk at the end of a category so that the category may be used to
@@ -105,6 +103,11 @@ abstract class Target extends Component
      */
     public $messages = [];
 
+    /**
+     * @var bool
+     */
+    private $_enabled = true;
+
 
     /**
      * Exports log [[messages]] to a specific destination.
@@ -150,6 +153,7 @@ abstract class Target extends Component
         foreach ($context as $key => $value) {
             $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
         }
+
         return implode("\n\n", $result);
     }
 
@@ -192,6 +196,7 @@ abstract class Target extends Component
                 unset($messages[$i]);
             }
         }
+
         return $messages;
     }
 
@@ -253,5 +258,39 @@ abstract class Target extends Component
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
 
         return "[$ip][$userID][$sessionID]";
+    }
+
+    /**
+     * Sets a value indicating whether this log target is enabled.
+     * @param bool|callable $value a boolean value or a callable to obtain the value from.
+     * The callable value is available since version 2.0.13.
+     *
+     * A callable may be used to determine whether the log target should be enabled in a dynamic way.
+     * For example, to only enable a log if the current user is logged in you can configure the target
+     * as follows:
+     *
+     * ```php
+     * 'enabled' => function() {
+     *     return !Yii::$app->user->isGuest;
+     * }
+     * ```
+     */
+    public function setEnabled($value)
+    {
+        $this->_enabled = $value;
+    }
+
+    /**
+     * Check whether the log target is enabled.
+     * @property Indicates whether this log target is enabled. Defaults to true.
+     * @return bool A value indicating whether this log target is enabled.
+     */
+    public function getEnabled()
+    {
+        if (is_callable($this->_enabled)) {
+            return call_user_func($this->_enabled, $this);
+        }
+
+        return $this->_enabled;
     }
 }

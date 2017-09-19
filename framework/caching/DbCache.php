@@ -188,6 +188,7 @@ class DbCache extends SimpleCache
             $this->gc();
             return true;
         }
+        
         return $this->addValue($key, $value, $ttl);
     }
 

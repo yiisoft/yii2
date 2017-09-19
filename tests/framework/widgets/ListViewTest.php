@@ -7,8 +7,8 @@
 
 namespace yiiunit\framework\widgets;
 
-use Yii;
 use yii\data\ArrayDataProvider;
+use yii\data\DataProviderInterface;
 use yii\widgets\ListView;
 use yiiunit\TestCase;
 
@@ -25,39 +25,49 @@ class ListViewTest extends TestCase
 
     public function testEmptyListShown()
     {
-        $actual = $this->getListView([
+        ob_start();
+        $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'emptyText' => 'Nothing at all',
         ])->run();
+        $out = ob_get_clean();
 
-        $this->assertEqualsWithoutLE('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $actual);
+        $this->assertEqualsWithoutLE('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $out);
     }
 
     public function testEmpty()
     {
-        $actual = $this->getListView([
+        ob_start();
+        $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'emptyText' => false,
         ])->run();
+        $out = ob_get_clean();
 
-        $this->assertEqualsWithoutLE('<div id="w0" class="list-view"></div>', $actual);
+        $this->assertEqualsWithoutLE('<div id="w0" class="list-view"></div>', $out);
     }
 
     public function testEmptyListNotShown()
     {
-        $actual = $this->getListView([
+        ob_start();
+        $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'showOnEmpty' => true,
         ])->run();
+        $out = ob_get_clean();
 
-        $expected = <<<'HTML'
+        $this->assertEqualsWithoutLE(<<<'HTML'
 <div id="w0" class="list-view">
 
 </div>
-HTML;
-        $this->assertEqualsWithoutLE($expected, $actual);
+HTML
+        , $out);
     }
 
+    /**
+     * @param array $options
+     * @return ListView
+     */
     private function getListView($options = [])
     {
         return new ListView(array_merge([
@@ -66,6 +76,9 @@ HTML;
         ], $options));
     }
 
+    /**
+     * @return DataProviderInterface
+     */
     private function getDataProvider()
     {
         return new ArrayDataProvider([
@@ -79,29 +92,32 @@ HTML;
 
     public function testSimplyListView()
     {
-        $actual = $this->getListView()->run();
+        ob_start();
+        $this->getListView()->run();
+        $out = ob_get_clean();
 
-        $expected = <<<'HTML'
+        $this->assertEqualsWithoutLE(<<<'HTML'
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
 <div data-key="2">2</div>
 </div>
-HTML;
-        
-        $this->assertEqualsWithoutLE($expected, $actual);
+HTML
+        , $out);
     }
 
     public function testWidgetOptions()
     {
-        $actual = $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
+        ob_start();
+        $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
+        $out = ob_get_clean();
 
-        $expected = <<<'HTML'
+        $this->assertEqualsWithoutLE(<<<'HTML'
 <div id="w0" class="test-passed"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div><div data-key="1">1</div><div data-key="2">2</div>
 </div>
-HTML;
-        $this->assertEqualsWithoutLE($expected, $actual);
+HTML
+        , $out);
     }
 
     public function itemViewOptions()
@@ -117,7 +133,7 @@ HTML;
             ],
             [
                 function ($model, $key, $index, $widget) {
-                    return "Item #{$index}: {$model['login']} - Widget: " . get_class($widget);
+                    return "Item #{$index}: {$model['login']} - Widget: " . $widget->className();
                 },
                 '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">Item #0: silverfire - Widget: yii\widgets\ListView</div>
@@ -138,11 +154,16 @@ HTML;
 
     /**
      * @dataProvider itemViewOptions
+     * @param mixed $itemView
+     * @param string $expected
      */
     public function testItemViewOptions($itemView, $expected)
     {
-        $actual = $this->getListView(['itemView' => $itemView])->run();
-        $this->assertEqualsWithoutLE($expected, $actual);
+        ob_start();
+        $this->getListView(['itemView' => $itemView])->run();
+        $out = ob_get_clean();
+
+        $this->assertEqualsWithoutLE($expected, $out);
     }
 
     public function itemOptions()
@@ -179,11 +200,16 @@ HTML;
 
     /**
      * @dataProvider itemOptions
+     * @param mixed $itemOptions
+     * @param string $expected
      */
     public function testItemOptions($itemOptions, $expected)
     {
-        $actual = $this->getListView(['itemOptions' => $itemOptions])->run();
-        $this->assertEqualsWithoutLE($expected, $actual);
+        ob_start();
+        $this->getListView(['itemOptions' => $itemOptions])->run();
+        $out = ob_get_clean();
+
+        $this->assertEqualsWithoutLE($expected, $out);
     }
 
     public function testBeforeAndAfterItem()
@@ -199,12 +225,15 @@ HTML;
             $widget = get_class($widget);
             return "<!-- after: {$model['id']}, key: $key, index: $index, widget: $widget -->";
         };
-        $actual = $this->getListView([
+
+        ob_start();
+        $this->getListView([
             'beforeItem' => $before,
             'afterItem' => $after,
         ])->run();
+        $out = ob_get_clean();
 
-        $expected = <<<'HTML'
+        $this->assertEqualsWithoutLE(<<<HTML
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <!-- before: 1, key: 0, index: 0, widget: yii\widgets\ListView -->
 <div data-key="0">0</div>
@@ -215,7 +244,23 @@ HTML;
 <div data-key="2">2</div>
 <!-- after: 3, key: 2, index: 2, widget: yii\widgets\ListView -->
 </div>
-HTML;
-        $this->assertEqualsWithoutLE($expected, $actual);
+HTML
+    , $out
+);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/pull/14596
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        $this->getListView([
+            'on init' => function () use (&$initTriggered) {
+                $initTriggered = true;
+            },
+            'dataProvider' => new ArrayDataProvider(['allModels' => []]),
+        ]);
+        $this->assertTrue($initTriggered);
     }
 }

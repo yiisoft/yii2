@@ -80,7 +80,7 @@ abstract class BaseMessageControllerTest extends TestCase
     }
 
     /**
-     * Creates source file with given content
+     * Creates source file with given content.
      * @param string $content file content
      * @return string path to source file
      */
@@ -92,7 +92,7 @@ abstract class BaseMessageControllerTest extends TestCase
     }
 
     /**
-     * Saves messages
+     * Saves messages.
      *
      * @param array $messages
      * @param string $category
@@ -100,7 +100,7 @@ abstract class BaseMessageControllerTest extends TestCase
     abstract protected function saveMessages($messages, $category);
 
     /**
-     * Loads messages
+     * Loads messages.
      *
      * @param string $category
      * @return array
@@ -113,7 +113,7 @@ abstract class BaseMessageControllerTest extends TestCase
     abstract protected function getDefaultConfig();
 
     /**
-     * Returns config
+     * Returns config.
      *
      * @param array $additionalConfig
      * @return array

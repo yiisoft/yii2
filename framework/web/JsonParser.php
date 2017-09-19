@@ -11,7 +11,7 @@ use yii\base\InvalidArgumentException;
 use yii\helpers\Json;
 
 /**
- * Parses a raw HTTP request using [[\yii\helpers\Json::decode()]]
+ * Parses a raw HTTP request using [[\yii\helpers\Json::decode()]].
  *
  * To enable parsing for JSON requests you can configure [[Request::parsers]] using this class:
  *
@@ -51,6 +51,7 @@ class JsonParser implements RequestParserInterface
             if ($this->throwException) {
                 throw new BadRequestHttpException('Invalid JSON data in request body: ' . $e->getMessage());
             }
+
             return [];
         }
     }

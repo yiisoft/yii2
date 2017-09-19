@@ -350,6 +350,7 @@ class BaseArrayHelper
                 }
             }
         }
+
         return $result;
     }
 
@@ -754,6 +755,7 @@ class BaseArrayHelper
                     return false;
                 }
             }
+
             return true;
         }
 

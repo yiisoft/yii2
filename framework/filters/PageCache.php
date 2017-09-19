@@ -338,6 +338,7 @@ class PageCache extends ActionFilter
                 $key[] = $value;
             }
         }
+
         return $key;
     }
 }
