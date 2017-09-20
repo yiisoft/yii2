@@ -55,7 +55,11 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     {
         parent::init();
         if ($this->defaultSchema === null) {
-            $this->defaultSchema = strtoupper($this->db->username);
+            $username = $this->db->username;
+            if (empty($username)) {
+                $username = isset($this->db->masters[0]['username']) ? $this->db->masters[0]['username'] : '';
+            }
+            $this->defaultSchema = strtoupper($username);
         }
     }
 
