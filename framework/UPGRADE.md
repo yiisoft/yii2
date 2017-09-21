@@ -133,6 +133,13 @@ Upgrade from Yii 2.0.x
   If you are using `yii\web\Request::resolve()` or `yii\web\UrlManager::parseRequest()` directly, make sure that
   all potential exceptions are handled correctly or set `yii\web\UrlNormalizer::$normalizer` to `false` to disable normalizer.
 * `yii\base\InvalidParamException` was renamed to `yii\base\InvalidArgumentException`.
+* Classes `yii\widgets\ActiveForm`, `yii\widgets\ActiveField`, `yii\grid\GridView`, `yii\web\View` have been refactored
+  to be more generic without including any 'JQuery' support and client-side processing (validation, automatic submit etc.).
+  You should use widget behaviors from `yii\jquery\*` package to make old code function as before. E.g. attach `yii\jquery\ActiveFormClientScript`
+  to `yii\widgets\ActiveForm`, `yii\jquery\GridViewClientScript` `yii\grid\GridView` and so on.
+* Assets `yii\web\JqueryAsset`, `yii\web\YiiAsset`, `yii\validators\ValidationAsset` have been moved under `yii\jquery\*`
+  namespace. Make sure you refer to the new full-qualified names of this classes.
+* Default script position for the `yii\web\View::registerJs()` changed to `View::POS_END`.
 
 
 Upgrade from Yii 2.0.12
