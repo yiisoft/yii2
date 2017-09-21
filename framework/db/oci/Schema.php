@@ -49,8 +49,8 @@ class Schema extends \yii\db\Schema
     {
         parent::init();
         if ($this->defaultSchema === null) {
-            if($this->db->username === null || $this->db->username == ''){
-                $username = isset($this->db->masters[0]['username'])?$this->db->masters[0]['username']:'';
+            if ($this->db->username === null || $this->db->username === ''){
+                $username = isset($this->db->masters[0]['username']) ? $this->db->masters[0]['username'] : '';
             } else {
                 $username = $this->db->username;
             }
