@@ -120,8 +120,8 @@ Upgrade from Yii 2.0.x
 * Result of `yii\web\Request::getBodyParams()` now includes uploaded files (e.g. result of `yii\web\Request::getUploadedFiles()`).
   You should aware that instances of `yii\http\UploadedFile` may appear inside body params.
 * The following method signature have changed. If you override any of them in your code, you have to adjust these places:
-  `yii\db\QueryBuilderBuild::buildGroupBy($columns)` -> `buildGroupBy($columns, &$params)`
-  `yii\db\QueryBuilderbuild::buildOrderByAndLimit($sql, $orderBy, $limit, $offset)` -> `buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)`
+  `yii\db\QueryBuilder::buildGroupBy($columns)` -> `buildGroupBy($columns, &$params)`
+  `yii\db\QueryBuilder::buildOrderByAndLimit($sql, $orderBy, $limit, $offset)` -> `buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)`
   `yii\widgets\ActiveField::hint($content = null, $options = [])`
   `yii\base\View::renderDynamic($statements)` -> `yii\base\View::renderDynamic($statements, array $params = [])`
 * `yii\filters\AccessControl` has been optimized by only instantiating rules at the moment of use.
