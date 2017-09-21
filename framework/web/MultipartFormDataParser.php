@@ -208,7 +208,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
 
         $request->setUploadedFiles($uploadedFiles);
 
-        return $bodyParams;
+        return ArrayHelper::merge($bodyParams, $uploadedFiles);
     }
 
     /**

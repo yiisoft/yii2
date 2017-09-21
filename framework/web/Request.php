@@ -655,6 +655,9 @@ class Request extends \yii\base\Request implements RequestInterface
      * Request parameters are determined using the parsers configured in [[parsers]] property.
      * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
      * to parse the [[rawBody|request body]].
+     *
+     * Since 2.1.0 body params also include result of [[getUploadedFiles()]].
+     *
      * @return array the request parameters given in the request body.
      * @throws InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
      * @throws UnsupportedMediaTypeHttpException if unable to parse raw body.
@@ -695,6 +698,10 @@ class Request extends \yii\base\Request implements RequestInterface
                 }
                 // PHP has already parsed the body so we have all params in $_POST
                 $this->_bodyParams = $_POST;
+
+                if ($contentType === 'multipart/form-data') {
+                    $this->_bodyParams = ArrayHelper::merge($this->_bodyParams, $this->getUploadedFiles());
+                }
             } else {
                 if ($contentType !== 'application/x-www-form-urlencoded') {
                     throw new UnsupportedMediaTypeHttpException();
