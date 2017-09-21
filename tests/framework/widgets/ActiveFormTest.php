@@ -29,7 +29,7 @@ class ActiveFormTest extends \yiiunit\TestCase
 
         $model = new DynamicModel(['name']);
         ob_start();
-        $form = ActiveForm::begin(['action' => '/something', 'enableClientScript' => false]);
+        $form = ActiveForm::begin(['action' => '/something']);
         ActiveForm::end();
         ob_end_clean();
 
@@ -63,7 +63,7 @@ EOF
         $model = new DynamicModel(['categories']);
         $model->categories = 1;
         ob_start();
-        $form = ActiveForm::begin(['action' => '/something', 'enableClientScript' => false]);
+        $form = ActiveForm::begin(['action' => '/something']);
         ActiveForm::end();
         ob_end_clean();
 
@@ -87,7 +87,7 @@ EOF
 
         $model = new DynamicModel(['name']);
 
-        $form = ActiveForm::begin(['id' => 'someform', 'action' => '/someform', 'enableClientScript' => false]);
+        $form = ActiveForm::begin(['id' => 'someform', 'action' => '/someform']);
         echo "\n" . $form->field($model, 'name') . "\n";
         ActiveForm::end();
 
@@ -106,38 +106,5 @@ EOF
 </form>
 HTML
 , $content);
-    }
-
-    public function testRegisterClientScript()
-    {
-        $this->mockWebApplication();
-        $_SERVER['REQUEST_URI'] = 'http://example.com/';
-
-        $model = new DynamicModel(['name']);
-        $model->addRule(['name'], 'required');
-
-        $mockedView = $this->createMock(View::class);
-        $mockedView
-            ->expects($this->once())
-            ->method('registerJs')
-            ->with($this->matches("jQuery('#w0').yiiActiveForm([], {\"validateOnSubmit\":false});"));
-        $mockedView
-            ->expects($this->once())
-            ->method('registerAssetBundle')
-            ->willReturn(true);
-
-        Widget::$counter = 0;
-        ob_start();
-        ob_implicit_flush(false);
-
-        $form = ActiveForm::begin(['view' => $mockedView, 'validateOnSubmit' => false]);
-        $form->field($model, 'name');
-        $form::end();
-
-        // Disable clientScript will not call `View->registerJs()`
-        $form = ActiveForm::begin(['view' => $mockedView, 'enableClientScript' => false]);
-        $form->field($model, 'name');
-        $form::end();
-        ob_get_clean();
     }
 }

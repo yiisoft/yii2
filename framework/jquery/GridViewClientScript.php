@@ -79,7 +79,7 @@ class GridViewClientScript extends Behavior
      */
     protected function getClientOptions()
     {
-        $filterUrl = isset($this->filterUrl) ? $this->filterUrl : Yii::$app->request->url;
+        $filterUrl = isset($this->owner->filterUrl) ? $this->owner->filterUrl : Yii::$app->request->url;
         $id = $this->owner->filterRowOptions['id'];
         $filterSelector = "#$id input, #$id select";
         if (isset($this->filterSelector)) {
