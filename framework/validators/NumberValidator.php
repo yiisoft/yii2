@@ -8,9 +8,7 @@
 namespace yii\validators;
 
 use Yii;
-use yii\helpers\Json;
 use yii\helpers\StringHelper;
-use yii\web\JsExpression;
 
 /**
  * NumberValidator validates that the attribute value is a number.
@@ -116,55 +114,5 @@ class NumberValidator extends Validator
         }
 
         return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.number(value, messages, ' . Json::htmlEncode($options) . ');';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $label = $model->getAttributeLabel($attribute);
-
-        $options = [
-            'pattern' => new JsExpression($this->integerOnly ? $this->integerPattern : $this->numberPattern),
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $label,
-            ]),
-        ];
-
-        if ($this->min !== null) {
-            // ensure numeric value to make javascript comparison equal to PHP comparison
-            // https://github.com/yiisoft/yii2/issues/3118
-            $options['min'] = is_string($this->min) ? (float) $this->min : $this->min;
-            $options['tooSmall'] = $this->formatMessage($this->tooSmall, [
-                'attribute' => $label,
-                'min' => $this->min,
-            ]);
-        }
-        if ($this->max !== null) {
-            // ensure numeric value to make javascript comparison equal to PHP comparison
-            // https://github.com/yiisoft/yii2/issues/3118
-            $options['max'] = is_string($this->max) ? (float) $this->max : $this->max;
-            $options['tooBig'] = $this->formatMessage($this->tooBig, [
-                'attribute' => $label,
-                'max' => $this->max,
-            ]);
-        }
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-
-        return $options;
     }
 }

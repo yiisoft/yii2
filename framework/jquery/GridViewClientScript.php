@@ -40,7 +40,7 @@ use yii\helpers\Url;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1
+ * @since 2.1.0
  */
 class GridViewClientScript extends Behavior
 {
