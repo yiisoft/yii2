@@ -8,7 +8,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * Model representing type table
+ * Model representing type table.
  *
  * @property int $int_col
  * @property int $int_col2 DEFAULT 1

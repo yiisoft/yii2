@@ -195,14 +195,15 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
             }
         }
 
+        foreach ($this->formats as $type => $format) {
+            $response->format = $format;
+            $response->acceptMimeType = $type;
+            $response->acceptParams = [];
+            break;
+        }
+
         if (isset($types['*/*'])) {
-            // return the first format
-            foreach ($this->formats as $type => $format) {
-                $response->format = $this->formats[$type];
-                $response->acceptMimeType = $type;
-                $response->acceptParams = [];
-                return;
-            }
+            return;
         }
 
         throw new NotAcceptableHttpException('None of your requested media types is supported.');
@@ -224,6 +225,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
                     return $supported;
                 }
             }
+
             return reset($this->languages);
         }
 

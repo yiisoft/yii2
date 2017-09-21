@@ -23,7 +23,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
     const CHILD_EXIT_CODE_DEADLOCK = 15;
 
     /**
-     * Test deadlock exception
+     * Test deadlock exception.
      *
      * Accident deadlock exception lost while rolling back a transaction or savepoint
      * @link https://github.com/yiisoft/yii2/issues/12715
@@ -279,7 +279,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
     }
 
     /**
-     * Sets filename for log file shared between children processes
+     * Sets filename for log file shared between children processes.
      * @param string $filename
      */
     private function setLogFile($filename)
@@ -312,6 +312,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             unlink($this->logFile);
             return $content;
         }
+
         return null;
     }
 

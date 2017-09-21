@@ -139,6 +139,7 @@ class PageCacheTest extends TestCase
 
     /**
      * @dataProvider cacheTestCaseProvider
+     * @param array $testCase
      */
     public function testCache($testCase)
     {

@@ -129,7 +129,7 @@ Yii はさまざまなキャッシュストレージをサポートしていま�
 * [[yii\caching\Cache::multiAdd()|multiAdd()]]: キャッシュに複数のデータを格納します。各データはキーによって識別されます。もしキャッシュ内にキーがすでに存在する場合はスキップされます。
 * [[yii\caching\Cache::exists()|exists()]]: 指定されたキーがキャッシュ内で見つかったかどうかを示す値を返します。
 * [[yii\caching\Cache::delete()|delete()]]: キャッシュからキーによって識別されるデータを削除します。
-* [[yii\caching\Cache::flush()|flush()]]: キャッシュからすべてのデータを削除します。
+* [[yii\caching\Cache::clear()|clear()]]: キャッシュからすべてのデータを削除します。
 
 > Note: [[yii\caching\Cache::get()|get()]] メソッドは、データがキャッシュ内に見つからないことを示すために戻り値として false を使用しているので、直接 boolean 型の `false` をキャッシュしないでください。
 代りに配列内に `false` を置いてキャッシュすることによって、この問題を回避できます。
@@ -278,7 +278,7 @@ $result = Customer::getDb()->cache(function ($db) {
 
 ### キャッシュのフラッシュ <span id="cache-flushing">
 
-保存されている全てのキャッシュデータを無効化する必要がある場合は、[[yii\caching\Cache::flush()]] を呼ぶことが出来ます。
+保存されている全てのキャッシュデータを無効化する必要がある場合は、[[yii\caching\Cache::clear()]] を呼ぶことが出来ます。
 
 コンソールから `yii cache/flush` を呼ぶことによっても、キャッシュをフラッシュすることが出来ます。
  - `yii cache`: アプリケーションで利用可能なキャッシュのリストを表示します。

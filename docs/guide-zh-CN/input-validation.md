@@ -161,13 +161,16 @@ return [
 如你所见，这些验证规则并不真的对输入数据进行任何验证。而是，对输入数据进行一些处理，然后把它们存回当前被验证的模型特性。
 
 下面的代码示例展示了对用户输入的完整处理，这将确保只将整数值存储在一个属性中：
+
 ```php
 ['age', 'trim'],
 ['age', 'default', 'value' => null],
 ['age', 'integer', 'integerOnly' => true, 'min' => 0],
 ['age', 'filter', 'filter' => 'intval', 'skipOnEmpty' => true],
 ```
+
 以上代码将对输入执行以下操作：
+
 1. 从输入值中去除前后空白。
 2. 确保空输入在数据库中存储为`null`；我们区分 `未设置` 值和实际值为 `0` 之间的区别。如果值不允许为`null`，则可以在此处设置另一个默认值。
 3. 如果该值不为空，则验证该值是否为大于0的整数。大多数验证器的 [[yii\validators\Validator::$skipOnEmpty|$skipOnEmpty]] 属性都被设置为`true`。
@@ -322,12 +325,13 @@ class MyForm extends Model
 ```
 
 > Note: 缺省状态下，行内验证器不会在关联特性的输入值为空或该特性已经在其他验证中失败的情况下起效。若你想要确保该验证器始终启用的话，你可以在定义规则时，酌情将 [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] 以及 [[yii\validators\Validator::skipOnError|skipOnError]]
-  属性设为 false，比如，
+>   属性设为 false，比如，
+>
 > ```php
-[
-    ['country', 'validateCountry', 'skipOnEmpty' => false, 'skipOnError' => false],
-]
-```
+> [
+>     ['country', 'validateCountry', 'skipOnEmpty' => false, 'skipOnError' => false],
+> ]
+> ```
 
 
 ### 独立验证器（Standalone Validators） <span id="standalone-validators"></span>
@@ -465,8 +469,9 @@ JS;
 ```
 
 > Tip: 上述代码主要是演示了如何支持客户端验证。在具体实践中，你可以使用 [in](tutorial-core-validators.md#in) 核心验证器来达到同样的目的。比如这样的验证规则：
+>
 > ```php
-[
-    ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
-]
+> [
+>     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
+> ]
 ```

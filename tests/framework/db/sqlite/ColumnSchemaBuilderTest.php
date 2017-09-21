@@ -11,7 +11,7 @@ use yii\db\Schema;
 use yii\db\sqlite\ColumnSchemaBuilder;
 
 /**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for SQLite
+ * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for SQLite.
  * @group db
  * @group sqlite
  */

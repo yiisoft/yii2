@@ -42,6 +42,8 @@ class IpValidatorTest extends TestCase
 
     /**
      * @dataProvider provideRangesForSubstitution
+     * @param array $range
+     * @param array $expectedRange
      */
     public function testRangesSubstitution($range, $expectedRange)
     {
@@ -70,6 +72,7 @@ class IpValidatorTest extends TestCase
 
     /**
      * @dataProvider provideBadIps
+     * @param mixed $badIp
      */
     public function testValidateValueNotAnIP($badIp)
     {
@@ -80,6 +83,7 @@ class IpValidatorTest extends TestCase
 
     /**
      * @dataProvider provideBadIps
+     * @param mixed $badIp
      */
     public function testValidateModelAttributeNotAnIP($badIp)
     {

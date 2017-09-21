@@ -112,6 +112,7 @@ class UrlManagerParseUrlTest extends TestCase
 
     /**
      * @dataProvider suffixProvider
+     * @param string $suffix
      */
     public function testWithoutRulesWithSuffix($suffix)
     {
@@ -202,6 +203,7 @@ class UrlManagerParseUrlTest extends TestCase
 
     /**
      * @dataProvider suffixProvider
+     * @param string $suffix
      */
     public function testSimpleRulesWithSuffix($suffix)
     {
@@ -250,6 +252,7 @@ class UrlManagerParseUrlTest extends TestCase
 
     /**
      * @dataProvider suffixProvider
+     * @param string $suffix
      */
     public function testSimpleRulesWithSuffixStrict($suffix)
     {

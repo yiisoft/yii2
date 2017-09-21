@@ -10,7 +10,7 @@ namespace yiiunit\data\cache;
 use yii\caching\Dependency;
 
 /**
- * Class MockDependency
+ * Class MockDependency.
  *
  * @author Boudewijn Vahrmeijer <vahrmeijer@gmail.com>
  * @since 2.0.11

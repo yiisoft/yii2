@@ -103,6 +103,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
             }
             static::$db = $db;
         }
+
         return static::$db;
     }
 

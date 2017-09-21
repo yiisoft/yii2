@@ -56,6 +56,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Generates a batch INSERT SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -102,6 +103,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
+                } elseif (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    $value = str_replace(',', '.', (string) $value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {
@@ -423,11 +427,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (is_array($columns)) {
             throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
         }
+
         return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
     }
 
     /**
-     * Builds SQL for IN condition
+     * Builds SQL for IN condition.
      *
      * @param string $operator
      * @param array $columns

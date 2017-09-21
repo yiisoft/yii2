@@ -244,7 +244,7 @@ class GridView extends BaseListView
      */
     public $filterErrorOptions = ['class' => 'help-block'];
     /**
-     * @var string the layout that determines how different sections of the list view should be organized.
+     * @var string the layout that determines how different sections of the grid view should be organized.
      * The following tokens will be replaced with the corresponding section contents:
      *
      * - `{summary}`: the summary section. See [[renderSummary()]].

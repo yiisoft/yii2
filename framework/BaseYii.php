@@ -471,6 +471,7 @@ class BaseYii
 
     /**
      * Marks the beginning of a code block for profiling.
+     *
      * This has to be matched with a call to [[endProfile]] with the same category name.
      * The begin- and end- calls must also be properly nested. For example,
      *

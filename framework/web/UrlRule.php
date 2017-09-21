@@ -33,11 +33,11 @@ use yii\base\InvalidConfigException;
 class UrlRule extends BaseObject implements UrlRuleInterface
 {
     /**
-     * Set [[mode]] with this value to mark that this rule is for URL parsing only
+     * Set [[mode]] with this value to mark that this rule is for URL parsing only.
      */
     const PARSING_ONLY = 1;
     /**
-     * Set [[mode]] with this value to mark that this rule is for URL creation only
+     * Set [[mode]] with this value to mark that this rule is for URL creation only.
      */
     const CREATION_ONLY = 2;
     /**
@@ -186,6 +186,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         if ($str === '') {
             return '/';
         }
+
         return $str;
     }
 
@@ -594,6 +595,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 unset($matches[$placeholder]);
             }
         }
+
         return $matches;
     }
 
@@ -609,6 +611,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         if (strpos($string, '//') === 0) {
             return '//' . trim($string, '/');
         }
+
         return trim($string, '/');
     }
 }

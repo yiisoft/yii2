@@ -14,7 +14,7 @@ use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
 /**
- * This command helps to set up a dev environment with all extensions and applications
+ * This command helps to set up a dev environment with all extensions and applications.
  *
  * It will clone an extension or app repo and link the yii2 dev installation to the containted applications/extensions vendor dirs
  * to help working on yii using the application to test it.
@@ -62,7 +62,7 @@ class DevController extends Controller
 
 
     /**
-     * Install all extensions and advanced + basic app
+     * Install all extensions and advanced + basic app.
      */
     public function actionAll()
     {
@@ -88,7 +88,7 @@ class DevController extends Controller
     }
 
     /**
-     * Runs a command in all extension and application directories
+     * Runs a command in all extension and application directories.
      *
      * Can be used to run e.g. `git pull`.
      *
@@ -118,7 +118,7 @@ class DevController extends Controller
     }
 
     /**
-     * This command installs a project template in the `apps` directory and links the framework and extensions
+     * This command installs a project template in the `apps` directory and links the framework and extensions.
      *
      * It basically runs the following commands in the dev repo root:
      *
@@ -178,7 +178,7 @@ class DevController extends Controller
     }
 
     /**
-     * This command installs an extension in the `extensions` directory and links the framework and other extensions
+     * This command installs an extension in the `extensions` directory and links the framework and other extensions.
      *
      * @param string $extension the application name e.g. `basic` or `advanced`.
      * @param string $repo url of the git repo to clone if it does not already exist.
@@ -237,12 +237,13 @@ class DevController extends Controller
         if (in_array($actionID, ['ext', 'app', 'all'], true)) {
             $options[] = 'useHttp';
         }
+
         return $options;
     }
 
 
     /**
-     * Remove all symlinks in the vendor subdirectory of the directory specified
+     * Remove all symlinks in the vendor subdirectory of the directory specified.
      * @param string $dir base directory
      */
     protected function cleanupVendorDir($dir)
@@ -261,7 +262,7 @@ class DevController extends Controller
     }
 
     /**
-     * Creates symlinks to framework and extension sources for the application
+     * Creates symlinks to framework and extension sources for the application.
      * @param string $dir application directory
      * @param string $base Yii sources base directory
      *
@@ -293,7 +294,7 @@ class DevController extends Controller
     }
 
     /**
-     * Properly removes symlinked directory under Windows, MacOS and Linux
+     * Properly removes symlinked directory under Windows, MacOS and Linux.
      *
      * @param string $file path to symlink
      */
@@ -307,7 +308,7 @@ class DevController extends Controller
     }
 
     /**
-     * Get a list of subdirectories for directory specified
+     * Get a list of subdirectories for directory specified.
      * @param string $dir directory to read
      *
      * @return array list of subdirectories
@@ -336,7 +337,7 @@ class DevController extends Controller
     }
 
     /**
-     * Finds linkable applications
+     * Finds linkable applications.
      *
      * @param string $dir directory to search in
      * @return array list of applications command can link

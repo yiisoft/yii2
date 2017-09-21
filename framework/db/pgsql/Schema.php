@@ -240,6 +240,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -418,6 +419,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -707,6 +709,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

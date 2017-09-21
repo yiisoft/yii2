@@ -41,6 +41,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     /**
      * @throws \Exception
      * @return QueryBuilder
+     * @param bool $reset
+     * @param bool $open
      */
     protected function getQueryBuilder($reset = true, $open = false)
     {
@@ -66,8 +68,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
-     * this is not used as a dataprovider for testGetColumnType to speed up the test
-     * when used as dataprovider every single line will cause a reconnect with the database which is not needed here
+     * This is not used as a dataprovider for testGetColumnType to speed up the test
+     * when used as dataprovider every single line will cause a reconnect with the database which is not needed here.
      */
     public function columnTypes()
     {
@@ -1153,6 +1155,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
+
         return $conditions;
     }
 
@@ -1201,11 +1204,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
+
         return $conditions;
     }
 
     /**
      * @dataProvider conditionProvider
+     * @param array $condition
+     * @param string $expected
+     * @param array $expectedParams
      */
     public function testBuildCondition($condition, $expected, $expectedParams)
     {
@@ -1217,6 +1224,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     /**
      * @dataProvider filterConditionProvider
+     * @param array $condition
+     * @param string $expected
+     * @param array $expectedParams
      */
     public function testBuildFilterCondition($condition, $expected, $expectedParams)
     {
@@ -1254,6 +1264,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     /**
      * @dataProvider primaryKeysProvider
+     * @param string $sql
      */
     public function testAddDropPrimaryKey($sql, \Closure $builder)
     {
@@ -1289,6 +1300,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     /**
      * @dataProvider foreignKeysProvider
+     * @param string $sql
      */
     public function testAddDropForeignKey($sql, \Closure $builder)
     {
@@ -1336,6 +1348,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     /**
      * @dataProvider indexesProvider
+     * @param string $sql
      */
     public function testCreateDropIndex($sql, \Closure $builder)
     {
@@ -1372,6 +1385,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     /**
      * @dataProvider uniquesProvider
+     * @param string $sql
      */
     public function testAddDropUnique($sql, \Closure $builder)
     {
@@ -1400,6 +1414,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     /**
      * @dataProvider checksProvider
+     * @param string $sql
      */
     public function testAddDropCheck($sql, \Closure $builder)
     {
@@ -1428,6 +1443,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     /**
      * @dataProvider defaultValuesProvider
+     * @param string $sql
      */
     public function testAddDropDefaultValue($sql, \Closure $builder)
     {
@@ -1444,6 +1460,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     /**
      * @dataProvider existsParamsProvider
+     * @param string $cond
+     * @param string $expectedQuerySql
      */
     public function testBuildWhereExists($cond, $expectedQuerySql)
     {
@@ -1606,7 +1624,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/10869
+     * @see https://github.com/yiisoft/yii2/issues/10869
      */
     public function testFromIndexHint()
     {
@@ -1802,6 +1820,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     /**
      * @dataProvider batchInsertProvider
+     * @param string $table
+     * @param array $columns
+     * @param array $value
+     * @param string $expected
      */
     public function testBatchInsert($table, $columns, $value, $expected)
     {
@@ -1891,11 +1913,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $conditions[$i][2][$name] = strtr($conditions[$i][2][$name], $this->likeParameterReplacements);
             }
         }
+
         return $conditions;
     }
 
     /**
      * @dataProvider likeConditionProvider
+     * @param array $condition
+     * @param string $expected
+     * @param array $expectedParams
      */
     public function testBuildLikeCondition($condition, $expected, $expectedParams)
     {

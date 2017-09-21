@@ -10,7 +10,7 @@ namespace yiiunit\framework\rbac;
 use yii\rbac\Rule;
 
 /**
- * Checks if authorID matches userID passed via params
+ * Checks if authorID matches userID passed via params.
  */
 class AuthorRule extends Rule
 {
