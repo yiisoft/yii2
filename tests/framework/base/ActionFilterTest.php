@@ -101,6 +101,7 @@ class ActionFilterTest extends TestCase
 
     /**
      * @dataProvider actionFilterProvider
+     * @param string|array $filterClass
      */
     public function testActive($filterClass)
     {

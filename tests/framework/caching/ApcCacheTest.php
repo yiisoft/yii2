@@ -11,7 +11,7 @@ use yii\caching\ApcCache;
 use yii\caching\Cache;
 
 /**
- * Class for testing APC cache backend
+ * Class for testing APC cache backend.
  * @group apc
  * @group caching
  */

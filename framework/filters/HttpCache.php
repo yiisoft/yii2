@@ -178,7 +178,7 @@ class HttpCache extends ActionFilter
     }
 
     /**
-     * Sends the cache control header to the client
+     * Sends the cache control header to the client.
      * @see cacheControlHeader
      */
     protected function sendCacheControlHeader()

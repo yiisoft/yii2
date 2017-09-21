@@ -214,6 +214,24 @@ abstract class BaseMailer extends Component implements MailerInterface
     }
 
     /**
+     * Renders the specified view with optional parameters and layout.
+     * The view will be rendered using the [[view]] component.
+     * @param string $view the view name or the [path alias](guide:concept-aliases) of the view file.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param string|bool $layout layout view name or [path alias](guide:concept-aliases). If false, no layout will be applied.
+     * @return string the rendering result.
+     */
+    public function render($view, $params = [], $layout = false)
+    {
+        $output = $this->getView()->render($view, $params, $this);
+        if ($layout !== false) {
+            return $this->getView()->render($layout, ['content' => $output, 'message' => $this->_message], $this);
+        }
+
+        return $output;
+    }
+
+    /**
      * Sends the specified message.
      * This method should be implemented by child classes with the actual email sending logic.
      * @param MessageInterface $message the message to be sent

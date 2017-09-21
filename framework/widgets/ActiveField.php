@@ -236,7 +236,7 @@ class ActiveField extends Component
         $inputID = $this->getInputId();
         $attribute = Html::getAttributeName($this->attribute);
         $options = $this->options;
-        $class = isset($options['class']) ? [$options['class']] : [];
+        $class = isset($options['class']) ? (array)$options['class'] : [];
         $class[] = "field-$inputID";
         if ($this->model->isAttributeRequired($attribute)) {
             $class[] = $this->form->requiredCssClass;
@@ -820,7 +820,7 @@ class ActiveField extends Component
     }
 
     /**
-     * Checks if client validation enabled for the field
+     * Checks if client validation enabled for the field.
      * @return bool
      * @since 2.0.11
      */
@@ -830,7 +830,7 @@ class ActiveField extends Component
     }
 
     /**
-     * Checks if ajax validation enabled for the field
+     * Checks if ajax validation enabled for the field.
      * @return bool
      * @since 2.0.11
      */
@@ -850,7 +850,7 @@ class ActiveField extends Component
     }
 
     /**
-     * Adds aria attributes to the input options
+     * Adds aria attributes to the input options.
      * @param $options array input options
      * @since 2.0.11
      */

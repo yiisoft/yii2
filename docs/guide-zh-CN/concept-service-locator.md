@@ -50,6 +50,7 @@ $cache = $locator->cache;
 你可以通过 [[yii\di\ServiceLocator::has()]] 检查某组件 ID 是否被注册。若你用一个无效的 ID 调用 [[yii\di\ServiceLocator::get()]]，则会抛出一个异常。
 
 因为服务定位器，经常会在创建时附带[配置信息](concept-configurations.md)，因此我们提供了一个可写的属性，名为 [[yii\di\ServiceLocator::setComponents()|components]]，这样就可以配置该属性，或一次性注册多个组件。下面的代码展示了如何用一个配置数组，配置一个应用并注册"db"，"cache" 和 "search" 三个组件：
+
 ```php
 return [
     // ...

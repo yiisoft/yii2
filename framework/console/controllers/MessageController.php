@@ -209,7 +209,7 @@ class MessageController extends \yii\console\Controller
     }
 
     /**
-     * Creates a configuration file for the "extract" command using command line options specified
+     * Creates a configuration file for the "extract" command using command line options specified.
      *
      * The generated configuration file contains parameters required
      * for source code messages extraction.
@@ -377,7 +377,7 @@ EOD;
     }
 
     /**
-     * Extracts messages from a file
+     * Extracts messages from a file.
      *
      * @param string $fileName name of the file to extract messages from
      * @param string $translator name of the function used to translate messages
@@ -491,6 +491,7 @@ EOD;
 
     /**
      * The method checks, whether the $category is ignored according to $ignoreCategories array.
+     *
      * Examples:
      *
      * - `myapp` - will be ignored only `myapp` category;
@@ -518,7 +519,7 @@ EOD;
     }
 
     /**
-     * Finds out if two PHP tokens are equal
+     * Finds out if two PHP tokens are equal.
      *
      * @param array|string $a
      * @param array|string $b
@@ -533,11 +534,12 @@ EOD;
         if (isset($a[0], $a[1], $b[0], $b[1])) {
             return $a[0] === $b[0] && $a[1] == $b[1];
         }
+
         return false;
     }
 
     /**
-     * Finds out a line of the first non-char PHP token found
+     * Finds out a line of the first non-char PHP token found.
      *
      * @param array $tokens
      * @return int|string
@@ -550,6 +552,7 @@ EOD;
                 return $token[2];
             }
         }
+
         return 'unknown';
     }
 

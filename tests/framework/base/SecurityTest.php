@@ -12,25 +12,30 @@ namespace yii\base {
      * where different execution paths are chosen based on calling function_exists.
      *
      * This function overrides function_exists from the root namespace in yii\base.
+     * @param string $name
      */
     function function_exists($name)
     {
         if (isset(\yiiunit\framework\base\SecurityTest::$functions[$name])) {
             return \yiiunit\framework\base\SecurityTest::$functions[$name];
         }
+
         return \function_exists($name);
     }
     /**
-     * emulate chunked reading of fread(), to test different branches of Security class
-     * where different execution paths are chosen based on the return value of fopen/fread
+     * Emulate chunked reading of fread(), to test different branches of Security class
+     * where different execution paths are chosen based on the return value of fopen/fread.
      *
      * This function overrides fopen and fread from the root namespace in yii\base.
+     * @param string $filename
+     * @param mixed $mode
      */
     function fopen($filename, $mode)
     {
         if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
             return \yiiunit\framework\base\SecurityTest::$fopen;
         }
+
         return \fopen($filename, $mode);
     }
     function fread($handle, $length)
@@ -41,6 +46,7 @@ namespace yii\base {
         if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
             return $length < 8 ? \str_repeat('s', $length) : 'test1234';
         }
+
         return \fread($handle, $length);
     }
 } // closing namespace yii\base;
@@ -153,10 +159,10 @@ class SecurityTest extends TestCase
     }
 
     /**
-     * Generates test vectors like this:
-     *   [key/password, plaintext, ciphertext]
+     * Generates test vectors like this: `[key/password, plaintext, ciphertext]`.
+     *
      * The output can then be used for testing compatibility of data encrypted in one
-     * version of Yii and decrypted in another
+     * version of Yii and decrypted in another.
      */
     public function notestGenerateVectors()
     {
@@ -875,6 +881,7 @@ TEXT;
     /**
      * @dataProvider randomKeyInvalidInputs
      * @expectedException \yii\base\InvalidArgumentException
+     * @param mixed $input
      */
     public function testRandomKeyInvalidInput($input)
     {
@@ -1187,6 +1194,7 @@ TEXT;
 
     /**
      * @dataProvider maskProvider
+     * @param mixed $unmaskedToken
      */
     public function testMasking($unmaskedToken)
     {

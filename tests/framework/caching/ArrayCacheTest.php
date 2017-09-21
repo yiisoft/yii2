@@ -11,7 +11,7 @@ use yii\caching\ArrayCache;
 use yii\caching\Cache;
 
 /**
- * Class for testing file cache backend
+ * Class for testing file cache backend.
  * @group caching
  */
 class ArrayCacheTest extends CacheTestCase
@@ -28,6 +28,7 @@ class ArrayCacheTest extends CacheTestCase
                 'handler' => new ArrayCache()
             ]);
         }
+
         return $this->_cacheInstance;
     }
 

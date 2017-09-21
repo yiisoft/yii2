@@ -11,7 +11,7 @@ use yii\caching\Cache;
 use yii\caching\FileCache;
 
 /**
- * Class for testing file cache backend
+ * Class for testing file cache backend.
  * @group caching
  */
 class FileCacheTest extends CacheTestCase

@@ -73,6 +73,8 @@ class UrlManagerTest extends TestCase
 
     /**
      * @dataProvider ignoredOptionsProvider
+     * @param bool $showScriptName
+     * @param bool $enableStrictParsing
      */
     public function testCreateUrlSimple($showScriptName, $enableStrictParsing)
     {
@@ -96,6 +98,8 @@ class UrlManagerTest extends TestCase
 
     /**
      * @dataProvider ignoredOptionsProvider
+     * @param bool $showScriptName
+     * @param bool $enableStrictParsing
      */
     public function testCreateUrlWithParams($showScriptName, $enableStrictParsing)
     {
@@ -117,6 +121,8 @@ class UrlManagerTest extends TestCase
      * @dataProvider ignoredOptionsProvider
      *
      * @see https://github.com/yiisoft/yii2/pull/9596
+     * @param bool $showScriptName
+     * @param bool $enableStrictParsing
      */
     public function testCreateUrlWithAnchor($showScriptName, $enableStrictParsing)
     {
@@ -140,6 +146,8 @@ class UrlManagerTest extends TestCase
 
     /**
      * @dataProvider ignoredOptionsProvider
+     * @param bool $showScriptName
+     * @param bool $enableStrictParsing
      */
     public function testCreateAbsoluteUrl($showScriptName, $enableStrictParsing)
     {
@@ -186,6 +194,8 @@ class UrlManagerTest extends TestCase
     /**
      * Test normalisation of different routes.
      * @dataProvider ignoredOptionsProvider
+     * @param bool $showScriptName
+     * @param bool $enableStrictParsing
      */
     public function testCreateUrlRouteVariants($showScriptName, $enableStrictParsing)
     {
@@ -216,6 +226,7 @@ class UrlManagerTest extends TestCase
 
     /**
      * @dataProvider routeParamProvider
+     * @param string $routeParam
      */
     public function testParseRequest($routeParam)
     {
@@ -242,5 +253,17 @@ class UrlManagerTest extends TestCase
         $result = $manager->parseRequest($request);
         $this->assertEquals(['site/index', []], $result);
         $this->assertEquals(5, $request->getQueryParam('id'));
+    }
+
+    public function testSetBaseUrl()
+    {
+        $manager = $this->getUrlManager();
+
+        $manager->setBaseUrl('example.com');
+        $this->assertEquals('example.com', $manager->getBaseUrl());
+
+        Yii::setAlias('@testAlias', 'example.com/');
+        $manager->setBaseUrl('@testAlias');
+        $this->assertEquals('example.com', $manager->getBaseUrl());
     }
 }

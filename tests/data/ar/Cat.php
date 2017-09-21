@@ -9,7 +9,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * Class Cat
+ * Class Cat.
  *
  * @author Jose Lorente <jose.lorente.martin@gmail.com>
  * @since 2.0
