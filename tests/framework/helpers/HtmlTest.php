@@ -171,7 +171,7 @@ class HtmlTest extends TestCase
     }
 
     /**
-     * Data provider for [[testBeginFormSimulateViaPost()]]
+     * Data provider for [[testBeginFormSimulateViaPost()]].
      * @return array test data
      */
     public function dataProviderBeginFormSimulateViaPost()
@@ -309,6 +309,9 @@ class HtmlTest extends TestCase
 
     /**
      * @dataProvider imgDataProvider
+     * @param string $expected
+     * @param string $src
+     * @param array $options
      */
     public function testImg($expected, $src, $options)
     {
@@ -424,6 +427,10 @@ class HtmlTest extends TestCase
 
     /**
      * @dataProvider textareaDataProvider
+     * @param string $expected
+     * @param string $name
+     * @param string $value
+     * @param array $options
      */
     public function testTextarea($expected, $name, $value, $options)
     {
@@ -1048,7 +1055,7 @@ EOD;
     }
 
     /**
-     * Data provider for [[testActiveTextInput()]]
+     * Data provider for [[testActiveTextInput()]].
      * @return array test data
      */
     public function dataProviderActiveTextInput()
@@ -1091,7 +1098,7 @@ EOD;
     }
 
     /**
-     * Data provider for [[testActivePasswordInput()]]
+     * Data provider for [[testActivePasswordInput()]].
      * @return array test data
      */
     public function dataProviderActivePasswordInput()
@@ -1213,7 +1220,7 @@ EOD;
     }
 
     /**
-     * Data provider for [[testActiveTextArea()]]
+     * Data provider for [[testActiveTextArea()]].
      * @return array test data
      */
     public function dataProviderActiveTextArea()
@@ -1263,7 +1270,7 @@ EOD;
     }
 
     /**
-     * Fixes #10078
+     * @see https://github.com/yiisoft/yii2/issues/10078
      */
     public function testCsrfDisable()
     {
@@ -1282,7 +1289,7 @@ EOD;
     }
 
     /**
-     * Data provider for [[testActiveRadio()]]
+     * Data provider for [[testActiveRadio()]].
      * @return array test data
      */
     public function dataProviderActiveRadio()
@@ -1326,7 +1333,7 @@ EOD;
     }
 
     /**
-     * Data provider for [[testActiveCheckbox()]]
+     * Data provider for [[testActiveCheckbox()]].
      * @return array test data
      */
     public function dataProviderActiveCheckbox()
@@ -1370,7 +1377,7 @@ EOD;
     }
 
     /**
-     * Data provider for [[testAttributeNameValidation()]]
+     * Data provider for [[testAttributeNameValidation()]].
      * @return array test data
      */
     public function validAttributeNamesProvider()
@@ -1396,7 +1403,7 @@ EOD;
     }
 
     /**
-     * Data provider for [[testAttributeNameValidation()]]
+     * Data provider for [[testAttributeNameValidation()]].
      * @return array test data
      */
     public function invalidAttributeNamesProvider()

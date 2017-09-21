@@ -37,6 +37,7 @@ class BaseFileHelper
 
     /**
      * Normalizes a file/directory path.
+     *
      * The normalization does the following work:
      *
      * - Convert all directory separators into `DIRECTORY_SEPARATOR` (e.g. "\a/b\c" becomes "/a/b/c")
@@ -209,6 +210,7 @@ class BaseFileHelper
         if (!isset(self::$_mimeTypes[$magicFile])) {
             self::$_mimeTypes[$magicFile] = require $magicFile;
         }
+
         return self::$_mimeTypes[$magicFile];
     }
 
@@ -729,6 +731,7 @@ class BaseFileHelper
                 }
             }
         }
+
         return $options;
     }
 }

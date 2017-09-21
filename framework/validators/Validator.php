@@ -456,7 +456,7 @@ class Validator extends Component
     }
 
     /**
-     * Returns cleaned attribute names without the `!` character at the beginning
+     * Returns cleaned attribute names without the `!` character at the beginning.
      * @return array attribute names.
      * @since 2.0.12
      */

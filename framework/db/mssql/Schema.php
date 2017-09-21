@@ -112,6 +112,7 @@ class Schema extends \yii\db\Schema
             $resolvedName->schemaName = $this->defaultSchema;
             $resolvedName->fullName = $resolvedName->name = $parts[0];
         }
+
         return $resolvedName;
     }
 
@@ -215,6 +216,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -570,6 +572,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -589,6 +592,7 @@ SQL;
         foreach ($this->findTableConstraints($table, 'UNIQUE') as $row) {
             $result[$row['index_name']][] = $row['field_name'];
         }
+
         return $result;
     }
 
@@ -704,6 +708,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

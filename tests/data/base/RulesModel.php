@@ -10,7 +10,7 @@ namespace yiiunit\data\base;
 use yii\base\Model;
 
 /**
- * model to test different rules combinations in ModelTest
+ * Model to test different rules combinations in ModelTest.
  */
 class RulesModel extends Model
 {

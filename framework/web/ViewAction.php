@@ -98,7 +98,7 @@ class ViewAction extends Action
     }
 
     /**
-     * Renders a view
+     * Renders a view.
      *
      * @param string $viewName view name
      * @return string result of the rendering

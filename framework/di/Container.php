@@ -334,6 +334,7 @@ class Container extends Component
                     throw new InvalidConfigException('A class definition requires a "class" member.');
                 }
             }
+
             return $definition;
         }
 
@@ -464,6 +465,7 @@ class Container extends Component
                 }
             }
         }
+
         return $dependencies;
     }
 
@@ -566,6 +568,7 @@ class Container extends Component
         foreach ($params as $value) {
             $args[] = $value;
         }
+
         return $args;
     }
 
@@ -628,7 +631,7 @@ class Container extends Component
     }
 
     /**
-     * Registers class definitions as singletons within this container by calling [[setSingleton()]]
+     * Registers class definitions as singletons within this container by calling [[setSingleton()]].
      *
      * @param array $singletons array of singleton definitions. See [[setDefinitions()]]
      * for allowed formats of array.

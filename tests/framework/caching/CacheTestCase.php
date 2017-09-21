@@ -8,7 +8,7 @@
 namespace yii\caching;
 
 /**
- * Mock for the time() function for caching classes
+ * Mock for the time() function for caching classes.
  * @return int
  */
 function time()
@@ -17,7 +17,7 @@ function time()
 }
 
 /**
- * Mock for the microtime() function for caching classes
+ * Mock for the microtime() function for caching classes.
  * @param bool $float
  * @return float
  */
@@ -33,7 +33,7 @@ use yii\caching\TagDependency;
 use yiiunit\TestCase;
 
 /**
- * Base class for testing cache backends
+ * Base class for testing cache backends.
  */
 abstract class CacheTestCase extends TestCase
 {
@@ -114,6 +114,7 @@ abstract class CacheTestCase extends TestCase
 
     /**
      * @dataProvider dataProviderSetMultiple
+     * @param int $expiry
      */
     public function testSetMultiple($expiry)
     {
@@ -245,12 +246,12 @@ abstract class CacheTestCase extends TestCase
     {
         $cache = $this->prepare();
 
-        $this->assertNotNull($cache->get('number_test'));
+        $this->assertEquals(42, $cache->get('number_test'));
         $this->assertTrue($cache->delete('number_test'));
         $this->assertNull($cache->get('number_test'));
     }
 
-    public function testFlush()
+    public function testClear()
     {
         $cache = $this->prepare();
         $this->assertTrue($cache->clear());

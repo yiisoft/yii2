@@ -11,7 +11,7 @@ use yii\caching\Cache;
 use yii\caching\MemCached;
 
 /**
- * Class for testing memcached cache backend
+ * Class for testing memcached cache backend.
  * @group memcached
  * @group caching
  */

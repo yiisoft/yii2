@@ -8,7 +8,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * Class Item
+ * Class Item.
  *
  * @property int $id
  * @property string $name

@@ -34,6 +34,7 @@ class XmlResponseFormatterTest extends FormatterTest
         foreach ($data as &$item) {
             $item[1] = $this->xmlHead . $item[1];
         }
+
         return $data;
     }
 

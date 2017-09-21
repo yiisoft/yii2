@@ -8,7 +8,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * Class Order
+ * Class Order.
  *
  * @property int $id
  * @property int $customer_id

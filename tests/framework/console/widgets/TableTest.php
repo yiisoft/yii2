@@ -171,4 +171,59 @@ EXPECTED;
             ])
         );
     }
+
+    public function testShortRow()
+    {
+        $table = new Table();
+
+        $expected = <<<'EXPECTED'
+╔═══════════════╤═══════════════╤═══════════════╗
+║ test1         │ test2         │ test3         ║
+╟───────────────┼───────────────┼───────────────╢
+║ testcontent1  │ testcontent2  │               ║
+╟───────────────┼───────────────┼───────────────╢
+║ testcontent21 │ testcontent22 │               ║
+╟───────────────┼───────────────┼───────────────╢
+║ testcontent31 │               │               ║
+╟───────────────┼───────────────┼───────────────╢
+║ testcontent41 │               │ testcontent43 ║
+╟───────────────┼───────────────┼───────────────╢
+║               │               │ testcontent53 ║
+╚═══════════════╧═══════════════╧═══════════════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+            ->setRows([
+                ['testcontent1', 'testcontent2'],
+                ['testcontent21', 'testcontent22', null],
+                ['testcontent31'],
+                ['testcontent41', null, 'testcontent43'],
+                [null, null, 'testcontent53'],
+            ])->setScreenWidth(200)->run()
+        );
+    }
+
+    public function testEmptyRow()
+    {
+        $table = new Table();
+
+        $expected = <<<'EXPECTED'
+╔═══════╤═══════╤═══════╗
+║ test1 │ test2 │ test3 ║
+╟───────┼───────┼───────╢
+║       │       │       ║
+╟───────┼───────┼───────╢
+║       │       │       ║
+╚═══════╧═══════╧═══════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+            ->setRows([
+                [null, null, null],
+                [],
+            ])->setScreenWidth(200)->run()
+        );
+    }
 }

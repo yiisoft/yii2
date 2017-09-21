@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * TooManyRequestsHttpException represents a "Too Many Requests" HTTP exception with status code 429
+ * TooManyRequestsHttpException represents a "Too Many Requests" HTTP exception with status code 429.
  *
  * Use this exception to indicate that a client has made too many requests in a
  * given period of time. For example, you would throw this exception when

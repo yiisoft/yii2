@@ -249,7 +249,7 @@ class AssetManager extends Component
     }
 
     /**
-     * Loads asset bundle class by name
+     * Loads asset bundle class by name.
      *
      * @param string $name bundle name
      * @param array $config bundle object configuration
@@ -267,11 +267,12 @@ class AssetManager extends Component
         if ($publish) {
             $bundle->publish($this);
         }
+
         return $bundle;
     }
 
     /**
-     * Loads dummy bundle by name
+     * Loads dummy bundle by name.
      *
      * @param string $name
      * @return AssetBundle
@@ -286,6 +287,7 @@ class AssetManager extends Component
                 'depends' => [],
             ]);
         }
+
         return $this->_dummyBundles[$name];
     }
 
