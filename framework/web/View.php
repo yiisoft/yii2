@@ -68,12 +68,12 @@ class View extends \yii\base\View
     const POS_END = 3;
     /**
      * The location of registered JavaScript code block.
-     * This means the JavaScript code block will be enclosed within `jQuery(document).ready()`.
+     * This means the JavaScript code block will be executed when HTML document composition is ready.
      */
     const POS_READY = 4;
     /**
      * The location of registered JavaScript code block.
-     * This means the JavaScript code block will be enclosed within `jQuery(window).load()`.
+     * This means the JavaScript code block will be executed when HTML page is completely loaded.
      */
     const POS_LOAD = 5;
     /**
@@ -430,23 +430,18 @@ class View extends \yii\base\View
      *
      * - [[POS_HEAD]]: in the head section
      * - [[POS_BEGIN]]: at the beginning of the body section
-     * - [[POS_END]]: at the end of the body section
-     * - [[POS_LOAD]]: enclosed within jQuery(window).load().
-     *   Note that by using this position, the method will automatically register the jQuery js file.
-     * - [[POS_READY]]: enclosed within jQuery(document).ready(). This is the default value.
-     *   Note that by using this position, the method will automatically register the jQuery js file.
+     * - [[POS_END]]: at the end of the body section. This is the default value.
+     * - [[POS_LOAD]]: executed when HTML page is completely loaded.
+     * - [[POS_READY]]: executed when HTML document composition is ready.
      *
      * @param string $key the key that identifies the JS code block. If null, it will use
      * $js as the key. If two JS code blocks are registered with the same key, the latter
      * will overwrite the former.
      */
-    public function registerJs($js, $position = self::POS_READY, $key = null)
+    public function registerJs($js, $position = self::POS_END, $key = null)
     {
         $key = $key ?: md5($js);
         $this->js[$position][$key] = $js;
-        if ($position === self::POS_READY || $position === self::POS_LOAD) {
-            JqueryAsset::register($this);
-        }
     }
 
     /**
@@ -579,11 +574,11 @@ class View extends \yii\base\View
                 $lines[] = Html::script(implode("\n", $this->js[self::POS_END]), ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_READY])) {
-                $js = "jQuery(function ($) {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
+                $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_LOAD])) {
-                $js = "jQuery(function ($) {\n$(window).on('load', function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});\n});";
+                $js = "window.addEventListener('load', function (event) {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
         }
