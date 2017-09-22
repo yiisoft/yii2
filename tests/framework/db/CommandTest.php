@@ -1085,4 +1085,30 @@ SQL;
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
     }
+
+    public function testResetSequence()
+    {
+        $db = $this->getConnection();
+
+        // ensure auto increment is working
+        $db->createCommand()->insert('profile', ['description' => 'test'])->execute();
+        $this->assertEquals(3, $db->createCommand('SELECT MAX([[id]]) FROM {{profile}}')->queryScalar());
+
+        // remove all records
+        $db->createCommand()->delete('customer')->execute();
+        $db->createCommand()->delete('profile')->execute();
+        $this->assertEquals(0, $db->createCommand('SELECT COUNT(*) FROM {{profile}}')->queryScalar());
+
+        // counter should be reset to 1
+        $db->createCommand()->resetSequence('profile');
+        $db->createCommand()->insert('profile', ['description' => 'test'])->execute();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{profile}}')->queryScalar());
+        $this->assertEquals(1, $db->createCommand('SELECT MAX([[id]]) FROM {{profile}}')->queryScalar());
+
+        // counter should be reset to 5, so next record gets ID 5
+        $db->createCommand()->resetSequence('profile', 5);
+        $db->createCommand()->insert('profile', ['description' => 'test'])->execute();
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{profile}}')->queryScalar());
+        $this->assertEquals(5, $db->createCommand('SELECT MAX([[id]]) FROM {{profile}}')->queryScalar());
+    }
 }
