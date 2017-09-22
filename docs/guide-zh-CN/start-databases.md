@@ -78,7 +78,7 @@ return [
   后者指定了整个[应用](structure-applications.md)如何初始化。
   请参考[配置](concept-configurations.md)章节了解更多信息。
 
-如果想要使用 Yii 没有捆绑支持的数据库，你可以查看一下插件：
+如果想要使用 Yii 没有捆绑支持的数据库，你可以查看以下插件：
 
 - [Informix](https://github.com/edgardmessias/yii2-informix)
 - [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
