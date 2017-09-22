@@ -185,7 +185,12 @@ class MigrateController extends BaseMigrateController
     protected function createMigration($class)
     {
         $this->includeMigrationFile($class);
-        return new $class(['db' => $this->db, 'compact' => $this->compact]);
+
+        return Yii::createObject([
+            'class' => $class,
+            'db' => $this->db,
+            'compact' => $this->compact,
+        ]);
     }
 
     /**
