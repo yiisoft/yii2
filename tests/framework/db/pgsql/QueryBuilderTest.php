@@ -7,7 +7,10 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use yii\db\Expression;
+use yii\db\Query;
 use yii\db\Schema;
+use yiiunit\data\base\TraversableObject;
 
 /**
  * @group db
@@ -76,6 +79,31 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [['not ilike', 'name', ['heyho', 'abc']], '"name" NOT ILIKE :qp0 AND "name" NOT ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%']],
             [['or ilike', 'name', ['heyho', 'abc']], '"name" ILIKE :qp0 OR "name" ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%']],
             [['or not ilike', 'name', ['heyho', 'abc']], '"name" NOT ILIKE :qp0 OR "name" NOT ILIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%']],
+
+            // array condition corner cases
+            [['@>', 'id', 1], '"id" @> ARRAY[:qp0]', [':qp0' => 1]],
+            [['@>', 'id', false], '"id" @> ARRAY[:qp0]', [':qp0' => false]],
+            [['&&', 'price', [12, 14], 'float'], '"price" && ARRAY[:qp0, :qp1]::float[]', [':qp0' => 12, ':qp1' => 14]],
+            [['@>', 'id', [2, 3]], '"id" @> ARRAY[:qp0, :qp1]', [':qp0' => 2, ':qp1' => 3]],
+            [['@>', 'id', []], '"id" @> \'{}\'', []],
+            'array can not contain nulls' => [['@>', 'id', [null]], '"id" @> \'{}\'', []],
+            [['@>', 'id', new TraversableObject([1, 2, 3])], '[[id]] @> ARRAY[:qp0, :qp1, :qp2]', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
+            [['@>', 'time', new Expression('now()')], '[[time]] @> ARRAY[now()]', []],
+            [['@>', 'time', [new Expression('now()')]], '[[time]] @> ARRAY[now()]', []],
+            [['@>', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] @> array(SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
+            [['@>', 'id', (new Query())->select('id')->from('users')->where(['active' => 1]), 'integer'], '[[id]] @> array(SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)::integer[]', [':qp0' => 1]],
+
+            // Checks to verity that mapping works correctly
+            [['@>', 'id', 1], '"id" @> ARRAY[:qp0]', [':qp0' => 1]],
+            [['<@', 'id', 1], '"id" <@ ARRAY[:qp0]', [':qp0' => 1]],
+            [['= array', 'id', 1], '"id" = ARRAY[:qp0]', [':qp0' => 1]],
+            [['!= array', 'id', 1], '"id" <> ARRAY[:qp0]', [':qp0' => 1]],
+            [['<> array', 'id', 1], '"id" <> ARRAY[:qp0]', [':qp0' => 1]],
+            [['> array', 'id', 1], '"id" > ARRAY[:qp0]', [':qp0' => 1]],
+            [['< array', 'id', 1], '"id" < ARRAY[:qp0]', [':qp0' => 1]],
+            [['>= array', 'id', 1], '"id" >= ARRAY[:qp0]', [':qp0' => 1]],
+            [['<= array', 'id', 1], '"id" <= ARRAY[:qp0]', [':qp0' => 1]],
+            [['&&', 'id', 1], '"id" && ARRAY[:qp0]', [':qp0' => 1]],
         ]);
     }
 
