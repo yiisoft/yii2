@@ -58,8 +58,8 @@
 有时你想在每个请求处理过程都实例化某个组件即便它不会被访问，
 可以将该组件ID加入到应用主体的 [[yii\base\Application::bootstrap|bootstrap]] 属性中。
 
-You can also use Closures to bootstrap customized components. Returning a instantiated component is not 
-required. A Closure can also be used simply for running code after [[yii\base\Application]] instantiation.
+你还可以使用闭包来引导启动自定义的组件。不需要直接返回一个实例化的组件。
+在应用主体 [[yii\base\Application]] 实例化后，闭包也会被调用。
 
 例如, 如下的应用主体配置保证了 `log` 组件一直被加载。
 
@@ -71,13 +71,13 @@ required. A Closure can also be used simply for running code after [[yii\base\Ap
             return new ComponentX();
         },
         function($app){
-            // some code
+            // 可以写自定义的代码
            return;
         }
     ],
     'components' => [
         'log' => [
-            // configuration for "log" component
+            // "log" 组件的配置
         ],
     ],
 ]
