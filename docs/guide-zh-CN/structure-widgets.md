@@ -67,34 +67,20 @@ use yii\helpers\Html;
 注意和调用 [[yii\base\Widget::widget()]] 返回渲染结果不同，
 调用 [[yii\base\Widget::begin()]] 方法返回一个可组建小部件内容的小部件实例。
 
-> Note: Some widgets will use [output buffering](http://php.net/manual/en/book.outcontrol.php) to adjust the enclosed
-> content when [[yii\base\Widget::end()]] is called. For this reason calling [[yii\base\Widget::begin()]] and
-> [[yii\base\Widget::end()]] is expected to happen in the same view file.
-> Not following this rule may result in unexpected output.
+> Note: 当调用 [[yii\base\Widget::end()]] 的时候，一些小部件将使用 [输出缓冲](http://php.net/manual/en/book.outcontrol.php)
+> 来调整封闭的内容。因此，期望调用 [[yii\base\Widget::begin()]] 和
+> [[yii\base\Widget::end()]] 在同一个视图文件里。
+> 不遵循这个规则可能会导致意外的输出。
 
+### 配置全局默认值
 
-### Configuring global defaults
-
-Global defaults for a widget type could be configured via DI container:
-
-```php
-\Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
-```
-
-See ["Practical Usage" section in Dependency Injection Container guide](concept-di-container.md#practical-usage) for
-details.
-
-
-### Configuring global defaults
-
-Global defaults for a widget type could be configured via DI container:
+小部件的全局默认值可以通过 DI 容器配置:
 
 ```php
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
 ```
 
-See ["Practical Usage" section in Dependency Injection Container guide](concept-di-container.md#practical-usage) for
-details.
+详见 [依赖注入容器 "实践中的应用" 一节](concept-di-container.md#practical-usage) 。
 
 
 ## 创建小部件 <span id="creating-widgets"></span>
