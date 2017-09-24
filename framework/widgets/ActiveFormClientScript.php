@@ -26,7 +26,7 @@ use yii\web\JsExpression;
 abstract class ActiveFormClientScript extends Behavior
 {
     /**
-     * @var array client validator class map in format: [server-side-validator-class => client-side-validator].
+     * @var array client validator class map in format: `[server-side-validator-class => client-side-validator]`.
      * Client side validator should be specified as an instance of [[\yii\validators\client\ClientValidator]] or
      * its DI compatible configuration.
      *
@@ -34,15 +34,21 @@ abstract class ActiveFormClientScript extends Behavior
      * `ChildValidator` in case it extends `ParentValidator`. In case maps for both `ParentValidator` and `ChildValidator`
      * are specified the first value will take precedence.
      *
+     * Result of [[defaultClientValidatorMap()]] method will be merged into this field at behavior initialization.
+     * In order to disable mapping for pre-defined validator use `false` value.
+     *
      * For example:
      *
      * ```php
      * [
      *     \yii\validators\BooleanValidator::class => \yii\jquery\validators\client\BooleanValidator::class,
      *     \yii\validators\ImageValidator::class => \yii\jquery\validators\client\ImageValidator::class,
-     *     \yii\validators\FileValidator::class => \yii\jquery\validators\client\FileValidator::class,
+     *     \yii\validators\FileValidator::class => false, // disable client validation for `FileValidator`
      * ]
      * ```
+     *
+     * You should use this field only in case particular client script does not provide any default mapping or
+     * in case you wish to override this mapping.
      */
     public $clientValidatorMap = [];
 
@@ -54,7 +60,20 @@ abstract class ActiveFormClientScript extends Behavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->clientValidatorMap = array_merge(
+            $this->defaultClientValidatorMap(),
+            $this->clientValidatorMap
+        );
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function events()
     {
@@ -203,12 +222,22 @@ abstract class ActiveFormClientScript extends Behavior
     protected function buildClientValidator($validator, $model, $attribute, $view)
     {
         foreach ($this->clientValidatorMap as $serverSideValidatorClass => $clientSideValidator) {
-            if ($validator instanceof $serverSideValidatorClass) {
+            if ($clientSideValidator !== false && $validator instanceof $serverSideValidatorClass) {
                 /* @var $clientValidator \yii\validators\client\ClientValidator */
                 $clientValidator = Yii::createObject($clientSideValidator);
                 return $clientValidator->build($validator, $model, $attribute, $view);
             }
         }
         return null;
+    }
+
+    /**
+     * Returns default client validator map, which will be merged with [[clientValidatorMap]] at [[init()]].
+     * Child class may override this method providing validator map specific for particular client script.
+     * @return array client validator class map in format: `[server-side-validator-class => client-side-validator]`.
+     */
+    protected function defaultClientValidatorMap()
+    {
+        return [];
     }
 }

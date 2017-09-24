@@ -35,28 +35,30 @@ use yii\helpers\Json;
 class ActiveFormClientScript extends \yii\widgets\ActiveFormClientScript
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public $clientValidatorMap = [
-        \yii\validators\BooleanValidator::class => \yii\jquery\validators\client\BooleanValidator::class,
-        \yii\validators\CompareValidator::class => \yii\jquery\validators\client\CompareValidator::class,
-        \yii\validators\EmailValidator::class => \yii\jquery\validators\client\EmailValidator::class,
-        \yii\validators\FilterValidator::class => \yii\jquery\validators\client\FilterValidator::class,
-        \yii\validators\IpValidator::class => \yii\jquery\validators\client\IpValidator::class,
-        \yii\validators\NumberValidator::class => \yii\jquery\validators\client\NumberValidator::class,
-        \yii\validators\RangeValidator::class => \yii\jquery\validators\client\RangeValidator::class,
-        \yii\validators\RegularExpressionValidator::class => \yii\jquery\validators\client\RegularExpressionValidator::class,
-        \yii\validators\RequiredValidator::class => \yii\jquery\validators\client\RequiredValidator::class,
-        \yii\validators\StringValidator::class => \yii\jquery\validators\client\StringValidator::class,
-        \yii\validators\UrlValidator::class => \yii\jquery\validators\client\UrlValidator::class,
-        \yii\validators\ImageValidator::class => \yii\jquery\validators\client\ImageValidator::class,
-        \yii\validators\FileValidator::class => \yii\jquery\validators\client\FileValidator::class,
-        \yii\captcha\CaptchaValidator::class => \yii\jquery\validators\client\CaptchaClientValidator::class,
-    ];
-
+    protected function defaultClientValidatorMap()
+    {
+        return [
+            \yii\validators\BooleanValidator::class => \yii\jquery\validators\client\BooleanValidator::class,
+            \yii\validators\CompareValidator::class => \yii\jquery\validators\client\CompareValidator::class,
+            \yii\validators\EmailValidator::class => \yii\jquery\validators\client\EmailValidator::class,
+            \yii\validators\FilterValidator::class => \yii\jquery\validators\client\FilterValidator::class,
+            \yii\validators\IpValidator::class => \yii\jquery\validators\client\IpValidator::class,
+            \yii\validators\NumberValidator::class => \yii\jquery\validators\client\NumberValidator::class,
+            \yii\validators\RangeValidator::class => \yii\jquery\validators\client\RangeValidator::class,
+            \yii\validators\RegularExpressionValidator::class => \yii\jquery\validators\client\RegularExpressionValidator::class,
+            \yii\validators\RequiredValidator::class => \yii\jquery\validators\client\RequiredValidator::class,
+            \yii\validators\StringValidator::class => \yii\jquery\validators\client\StringValidator::class,
+            \yii\validators\UrlValidator::class => \yii\jquery\validators\client\UrlValidator::class,
+            \yii\validators\ImageValidator::class => \yii\jquery\validators\client\ImageValidator::class,
+            \yii\validators\FileValidator::class => \yii\jquery\validators\client\FileValidator::class,
+            \yii\captcha\CaptchaValidator::class => \yii\jquery\validators\client\CaptchaClientValidator::class,
+        ];
+    }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function registerClientScript()
     {
@@ -69,7 +71,7 @@ class ActiveFormClientScript extends \yii\widgets\ActiveFormClientScript
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getFieldClientOptions($field)
     {
@@ -88,7 +90,7 @@ class ActiveFormClientScript extends \yii\widgets\ActiveFormClientScript
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getClientOptions()
     {
