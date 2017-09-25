@@ -130,6 +130,9 @@ Upgrade from Yii 2.0.12
   However, this change may affect your application if you have code that uses method `yii\base\Module::has()` in order
   to check existence of the component exactly in this specific module. In this case make sure the logic is not corrupted.
 
+* `yii\db\ExpressionInterface` has been introduced to represent a wider range of SQL expressions. In case you check for
+  `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
+  introduced methods to retrieve the expression content.
 
 Upgrade from Yii 2.0.11
 -----------------------
