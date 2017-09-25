@@ -272,8 +272,8 @@ Yii使用 [[yii\web\Cookie]]对象来代表每个cookie，
 通过名为'cookies'的属性维护一个cookie集合，前者的cookie 集合代表请求提交的cookies，
 后者的cookie集合表示发送给用户的cookies。
 
-The part of the application dealing with request and response directly is controller. Therefore, cookies should be
-read and sent in controller.
+控制器是直接处理请求和响应的部分。 因此, 在控制器中
+读取和发送cookie
 
 ### 读取 Cookies <span id="reading-cookies"></span>
 
