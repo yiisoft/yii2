@@ -46,7 +46,7 @@ class MyBehavior extends Behavior
 注意属性 `prop2` 是通过 getter `getProp2()` 和 setter `setProp2()` 定义的。
 能这样用是因为 [[yii\base\Object]] 是 [[yii\base\Behavior]] 的祖先类，此祖先类支持用 getter 和 setter 方法定义[属性](basic-properties.md)
 
-Because this class is a behavior, when it is attached to a component, that component will then also have the `prop1` and `prop2` properties and the `foo()` method.
+因为这是一个行为类，当它附加到一个组件时，该组件也将具有 `prop1` 和 `prop2` 属性和 `foo()` 方法。
 
 > 提示：在行为内部可以通过 [[yii\base\Behavior::owner]] 属性访问行为已附加的组件。
 
