@@ -56,7 +56,8 @@ class Expression extends \yii\base\BaseObject implements ExpressionInterface
     }
 
     /**
-     * {@inheritdoc}
+     * String magic method.
+     * @return string the DB expression.
      */
     public function __toString()
     {
@@ -64,7 +65,7 @@ class Expression extends \yii\base\BaseObject implements ExpressionInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function buildUsing(QueryBuilder $queryBuilder, &$params = [])
     {

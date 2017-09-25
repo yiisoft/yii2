@@ -43,7 +43,7 @@ Yii Framework 2 Change Log
 - Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
 - Enh #5786: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN, klimov-paul)
 - Enh #6644: Added `yii\helpers\ArrayHelper::setValue()` (LAV45)
-- Enh #7640: Updated `yii\db\pgsql\QueryBuilder` to support conditions over PostgreSQL arrays (silverfire)
+- Enh #7640: Updated `yii\db\pgsql\QueryBuilder` to support conditions over PostgreSQL arrays (silverfire, cebe)
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 - Enh #11415: Added `yii\console\widgets\Table` to draw tables in console apps (pana1990, rob006, samdark, tonykor)
 - Enh #13254: Made `yii\helpers\StringHelper` and `yii\validators\StringValidator` independent of `Yii::$app` instance (cebe)

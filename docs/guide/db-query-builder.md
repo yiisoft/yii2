@@ -756,3 +756,15 @@ $unbufferedDb->close();
 ```
 
 > Note: unbuffered query uses less memory on the PHP-side, but can increase the load on the MySQL server. It is recommended to design your own code with your production practice for extra massive data, [for example, divide the range for integer keys, loop them with Unbuffered Queries](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257).
+
+## DBMS specific features <span id="dbms-specific-features"></span>
+
+### PostgreSQL arrays
+
+TBD
+
+
+### PostgreSQL `ILIKE`
+
+TBD
+
