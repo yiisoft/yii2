@@ -114,7 +114,7 @@ public function rules()
 ```
 
 因为验证器会按照顺序执行，
-将首先验证`fromDate` 和 `toDate` 字段是一个有效的日期值，最终将被转换成一个系统可识别的格式。
+将首先验证 `fromDate` 和 `toDate` 字段是一个有效的日期值，最终将被转换成一个系统可识别的格式。
 此后这两个值将使用比对验证器进行比对。
 因日期验证器只提供服务端使用，当前不提供客户端验证，
 故 [[yii\validators\CompareValidator::$enableClientValidation|$enableClientValidation]]
