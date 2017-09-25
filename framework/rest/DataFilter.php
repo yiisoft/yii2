@@ -106,7 +106,7 @@ use yii\validators\StringValidator;
  *
  * In order to acquire actual filter value suitable for data fetching use [[build()]] method.
  *
- * > Note: this is a base class its implementation of [[build()]] simply returns [[filter]] value as it is.
+ * > Note: this is a base class its implementation of [[build()]] simply returns normalized [[filter]] value.
  * In order to convert filter in particular format you should use descendant of this class, which implements
  * [[buildInternal()]] method accordingly.
  *
@@ -236,7 +236,7 @@ class DataFilter extends Model
     public $attributeMap = [];
 
     /**
-     * @var array list of error messages responding to invalid filter structure, in format: `[errorKey => message]`.
+     * @var array|\Closure list of error messages responding to invalid filter structure, in format: `[errorKey => message]`.
      */
     private $_errorMessages = [
         'invalidFilter' => 'The format of {filter} is invalid.',
@@ -356,6 +356,7 @@ class DataFilter extends Model
                 }
             }
         }
+
         return $attributeTypes;
     }
 
