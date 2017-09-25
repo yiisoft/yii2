@@ -1,9 +1,9 @@
 核心验证器（Core Validators）
 ===============
 
-Yii 提供一系列常用的核心验证器，主要存在于 `yii\validators` 命名空间之下。
-为了避免使用冗长的类名，你可以直接用**昵称**来指定相应的核心验证器。
-比如你可以用 `required` 昵称代指 [[yii\validators\RequiredValidator]] 类：
+Yii 提供一系列常用的核心验证器，位于 `yii\validators` 命名空间之下。
+为了避免使用冗长的类名，你可以直接用**别名**来指定相应的核心验证器。
+比如你可以用 `required` 别名代指 [[yii\validators\RequiredValidator]] 类：
 
 ```php
 public function rules()
@@ -14,7 +14,7 @@ public function rules()
 }
 ```
 
-[[yii\validators\Validator::builtInValidators]] 属性声明了所有被支持的验证器昵称。
+[[yii\validators\Validator::builtInValidators]] 属性声明了所有被支持的验证器别名。
 
 下面，我们将详细介绍每一款验证器的主要用法和属性。
 
@@ -53,21 +53,21 @@ public function rules()
 该验证器通常配合 [[yii\captcha\CaptchaAction]] 以及 [[yii\captcha\Captcha]]
 使用，以确保某一输入与 [[yii\captcha\Captcha|CAPTCHA]] 小部件所显示的验证代码（verification code）相同。
 
-- `caseSensitive`：对验证代码的比对是否要求大小写敏感。默认为 false。
+- `caseSensitive`：对验证码的比对是否要求大小写敏感。默认为 false。
 - `captchaAction`：指向用于渲染 CAPTCHA 图片的 [[yii\captcha\CaptchaAction|CAPTCHA action]] 
   的 [路由](structure-controllers.md#routes)。默认为 `'site/captcha'`。
 - `skipOnEmpty`：当输入为空时，是否跳过验证。
   默认为 false，也就是输入值为必需项。
   
 
-## [[yii\validators\CompareValidator|compare（比较）]] <span id="compare"></span>
+## [[yii\validators\CompareValidator|compare（比对）]] <span id="compare"></span>
 
 ```php
 [
-    // 检查 "password" 特性的值是否与 "password_repeat" 的值相同
+    // 检查 "password" 属性的值是否与 "password_repeat" 的值相同
     ['password', 'compare'],
 
-    // same as above but with explicitly specifying the attribute to compare with
+    // 和上一个相同，只是明确指定了需要对比的属性字段
     ['password', 'compare', 'compareAttribute' => 'password_repeat'],
     
     // 检查年龄是否大于等于 30
@@ -75,16 +75,16 @@ public function rules()
 ]
 ```
 
-该验证器比较两个特定输入值之间的关系
+该验证器比对两个特定输入值之间的关系
 是否与 `operator` 属性所指定的相同。
 
-- `compareAttribute`：用于与原特性相比较的特性名称。
-  当该验证器被用于验证某目标特性时，
+- `compareAttribute`：用于与原属性相比对的属性名称。
+  当该验证器被用于验证某目标属性时，
   该属性会默认为目标属性加后缀 `_repeat`。
-  举例来说，若目标特性为 `password`，则该属性默认为 `password_repeat`。
-- `compareValue`：用于与输入值相比较的常量值。
+  举例来说，若目标属性为 `password`，则该属性默认为 `password_repeat`。
+- `compareValue`：用于与输入值相比对的常量值。
   当该属性与 `compareAttribute` 属性同时被指定时，该属性优先被使用。
-- `operator`：比较操作符。默认为 `==`，意味着检查输入值是否与 `compareAttribute` 或 `compareValue` 的值相等。
+- `operator`：比对操作符。默认为 `==`，意味着检查输入值是否与 `compareAttribute` 或 `compareValue` 的值相等。
   该属性支持如下操作符：
      * `==`：检查两值是否相等。比对为非严格模式。
      * `===`：检查两值是否全等。比对为严格模式。
@@ -94,18 +94,18 @@ public function rules()
      * `>=`：检查待测目标值是否大于等于给定被测值。
      * `<`：检查待测目标值是否小于给定被测值。
      * `<=`：检查待测目标值是否小于等于给定被测值。
-- `type`: The default comparison type is '[[yii\validators\CompareValidator::TYPE_STRING|string]]', which means the values are
-  compared byte by byte. When comparing numbers, make sure to set the [[yii\validators\CompareValidator::$type|$type]]
-  to '[[yii\validators\CompareValidator::TYPE_NUMBER|number]]' to enable numeric comparison.
+- `type`: 默认的比对类型是'[[yii\validators\CompareValidator::TYPE_STRING|string]]'，此时将按照字节逐个对比。
+  当需要比对的值是数字时，需要设置类型[[yii\validators\CompareValidator::$type|$type]]为
+  '[[yii\validators\CompareValidator::TYPE_NUMBER|number]]'，启用数字对比模式。
 
-### Comparing date values
+### 比对日期值
 
-The compare validator can only be used to compare strings and numbers. If you need to compare values
-like dates you have two options. For comparing a date against a fixed value, you can simply use the
-[[yii\validators\DateValidator|date]] validator and specify its
-[[yii\validators\DateValidator::$min|$min]] or [[yii\validators\DateValidator::$max|$max]] property.
-If you need to compare two dates entered in the form, e.g. a `fromDate` and a `toDate` field,
-you can use a combination of compare and date validator like the following:
+比对验证器只能用来对比字符串和数字。如果你需要比对日期，有两种方式。
+如果需要比对一个固定的日期值，只需要使用
+[[yii\validators\DateValidator|date]]验证器并设置对应的属性
+[[yii\validators\DateValidator::$min|$min]] 或 [[yii\validators\DateValidator::$max|$max]] 。
+如果需要比对如表单提交的两个日期，比如一个`fromDate`和一个`toDate`项，
+你可以结合比对验证器和日期验证器同时使用，如下所示：
 
 ```php
 ['fromDate', 'date', 'timestampAttribute' => 'fromDate'],
@@ -113,18 +113,18 @@ you can use a combination of compare and date validator like the following:
 ['fromDate', 'compare', 'compareAttribute' => 'toDate', 'operator' => '<', 'enableClientValidation' => false],
 ```
 
-As validators are executed in the order they are specified this will first validate that the values entered in
-`fromDate` and `toDate` are valid date values and if so, they will be converted into a machine readable format.
-Afterwards these two values are compared with the compare validator.
-Client validation is not enabled as this will only work on the server-side because the date validator currently does not
-provide client validation, so [[yii\validators\CompareValidator::$enableClientValidation|$enableClientValidation]]
-is set to `false` on the compare validator too.
+因为验证器会按照顺序执行，
+将首先验证`fromDate` 和 `toDate` 字段是一个有效的日期值，最终将被转换成一个系统可识别的格式。
+此后这两个值将使用比对验证器进行比对。
+因日期验证器只提供服务端使用，当前不提供客户端验证，
+故 [[yii\validators\CompareValidator::$enableClientValidation|$enableClientValidation]]
+在比对验证器将同样被设置为 `false` 。
 
 
 ## [[yii\validators\DateValidator|date（日期）]] <span id="date"></span>
 
-The [[yii\validators\DateValidator|date]] validator comes with three different
-shortcuts:
+此日期 [[yii\validators\DateValidator|date]] 验证器有三种不同的使用方式：
+
 
 ```php
 [
@@ -136,33 +136,33 @@ shortcuts:
 
 该验证器检查输入值是否为适当格式的 date，time，或者 datetime。
 另外，它还可以帮你把输入值转换为一个 UNIX 时间戳并保存到 
-[[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] 属性所指定的特性里。
+[[yii\validators\DateValidator::timestampAttribute|timestampAttribute]] 所指定的属性里。
 
-- `format`: the date/time format that the value being validated should be in.
-   This can be a date time pattern as described in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
-   Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the PHP
-   `Datetime` class. Please refer to <http://php.net/manual/en/datetime.createfromformat.php> on supported formats.
-   If this is not set, it will take the value of `Yii::$app->formatter->dateFormat`.
-   See the [[yii\validators\DateValidator::$format|API documentation]] for more details.
+- `format`: 被验证值的日期/时间格式。
+   这里的值可以是 [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax) 中定义的日期时间格式。
+   另外还可以设置以 `php:` 开头的字符串，用来表示PHP可以识别的日期时间格式。
+   `Datetime` 日期时间类。请参考 <http://php.net/manual/en/datetime.createfromformat.php> 获取更多支持的格式。
+   如果没有设置，默认值将使用 `Yii::$app->formatter->dateFormat` 中的值。
+   请参考 [[yii\validators\DateValidator::$format|API 文档]] 以获取更详细的说明。
 
-- `timestampAttribute`: the name of the attribute to which this validator may assign the UNIX timestamp
-  converted from the input date/time. This can be the same attribute as the one being validated. If this is the case,
-  the original value will be overwritten with the timestamp value after validation.
-  See ["Handling date input with the DatePicker"](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/topics-date-picker.md) for a usage example.
+- `timestampAttribute`: 输入的日期时间将被转换为时间戳后设置到的属性的名称。
+  可以设置为和被验证的属性相同。如果相同，
+  原始值将在验证结束后被时间戳覆盖。
+  请参考 ["Handling date input with the DatePicker"](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/topics-date-picker.md) 以获取更多使用事例。
 
-  Since version 2.0.4, a format and timezone can be specified for this attribute using
-  [[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] and
-  [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]].
+  从版本 2.0.4 开始，支持
+  使用 [[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] 设置日期时间格式
+  和使用 [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]] 设置时区。
   
-  Note, that when using `timestampAttribute`, the input value will be converted to a unix timestamp, which by definition is in UTC, so
-  a conversion from the [[yii\validators\DateValidator::timeZone|input time zone]] to UTC will be performed.
+  注：如果使用 `timestampAttribute`，被验证的值将被转换为UTC标准的时间戳，
+  所以使用 [[yii\validators\DateValidator::timeZone|input time zone]] 输入的时区将被转换为UTC时间。
 
-- Since version 2.0.4 it is also possible to specify a [[yii\validators\DateValidator::$min|minimum]] or
-  [[yii\validators\DateValidator::$max|maximum]] timestamp.
+- 自版本 2.0.4 开始支持
+  直接对 [[yii\validators\DateValidator::$min|minimum]] 和 [[yii\validators\DateValidator::$max|maximum]] 设置时间戳。
 
-In case the input is optional you may also want to add a [default value filter](#default) in addition to the date validator
-to ensure empty input is stored as `null`. Otherwise you may end up with dates like `0000-00-00` in your database
-or `1970-01-01` in the input field of a date picker.
+如果输入的值是可选的，可以设置一个 [默认值验证器](#default) 来确保空值通过验证器验证后的值是 `null`，
+否则数据库可能会保存类似 `0000-00-00` 的值，
+或表单日期选择器会显示 `1970-01-01` 。
 
 ```php
 [
@@ -189,10 +189,10 @@ or `1970-01-01` in the input field of a date picker.
 ```
 
 该验证器并不进行数据验证。
-而是，给为空的待测特性分配默认值。
+而是，给为空的待测属性分配默认值。
 
 - `value`：默认值，或一个返回默认值的 PHP Callable 对象（即回调函数）。
-  它们会分配给检测为空的待测特性。PHP 回调方法的样式如下：
+  它们会分配给检测为空的待测属性。PHP 回调方法的样式如下：
 
 ```php
 function foo($model, $attribute) {
@@ -201,7 +201,7 @@ function foo($model, $attribute) {
 }
 ```
 
-> Info: 如何判断待测值是否为空，
+> 注: 如何判断待测值是否为空，
   被写在另外一个话题的
   [处理空输入](input-validation.md#handling-empty-inputs)章节。
 
@@ -215,34 +215,34 @@ function foo($model, $attribute) {
 ]
 ```
 
-该验证器检查输入值是否为双精度浮点数。他等效于 [number](#number) 验证器。
+该验证器检查输入值是否为双精度浮点数。等效于 [number](#number) 验证器。
 
 - `max`：上限值（含界点）。若不设置，则验证器不检查上限。
 - `min`：下限值（含界点）。若不设置，则验证器不检查下限。
 
 
-## [[yii\validators\EachValidator|each]] <span id="each"></span>
+## [[yii\validators\EachValidator|each（循环验证）]] <span id="each"></span>
 
-> Info: This validator has been available since version 2.0.4.
+> 注：此验证器自版本 2.0.4 后可用。
 
 ```php
 [
-    // checks if every category ID is an integer
+    // 检查是否每个分类编号都是一个整数
     ['categoryIDs', 'each', 'rule' => ['integer']],
 ]
 ```
 
-This validator only works with an array attribute. It validates if *every* element of the array can be successfully
-validated by a specified validation rule. In the above example, the `categoryIDs` attribute must take an array value
-and each array element will be validated by the `integer` validation rule.
+此验证器只能验证数组格式的属性。此验证器将判断数组中的 *每个* 元素是否都符合验证规则。
+在上面的例子中，`categoryIDs` 属性必须是一个数组
+且每个元素将被使用 `integer` 验证器进行验证。
 
-- `rule`: an array specifying a validation rule. The first element in the array specifies the class name or
-  the alias of the validator. The rest of the name-value pairs in the array are used to configure the validator object.
-- `allowMessageFromRule`: whether to use the error message returned by the embedded validation rule. Defaults to `true`.
-  If `false`, it will use `message` as the error message.
+- `rule`：保存验证规则的数组。数组中第一个元素表示验证器类名或
+  验证器的别名。数组中其余键值对将被用来配置此验证器规则。
+- `allowMessageFromRule`：是否使用规则中指定的验证器返回的错误信息。默认值为 `true`。
+  如果设置为 `false`，将使用 `message` 作为错误信息。
 
-> Note: If the attribute value is not an array, it is considered validation fails and the `message` will be returned
-  as the error message.
+> 注意：如果被验证的值不是一个数组，将被认为验证失败，
+  并且返回 `message` 设定的错误信息。
   
   
 ## [[yii\validators\EmailValidator|email（电子邮件）]] <span id="email"></span>
@@ -269,7 +269,7 @@ and each array element will be validated by the `integer` validation rule.
 
 ```php
 [
-    // a1 需要在 "a1" 特性所代表的字段内存在
+    // a1 需要在 "a1" 属性所代表的字段内存在
     ['a1', 'exist'],
 
     // a1 必需存在，但检验的是 a1 的值在字段 a2 中的存在性
@@ -291,18 +291,18 @@ and each array element will be validated by the `integer` validation rule.
 
 该验证器检查输入值是否在某表字段中存在。
 它只对[活动记录](db-active-record.md)
-类型的模型类特性起作用，
+类型的模型类属性起作用，
 能支持对一个或多过字段的验证。
 
-You can use this validator to validate against a single column or multiple columns (i.e., the combination of
-multiple attribute values should exist).
+可以使用此验证器验证单个数据列或多个数据列（如多个列不同的组合是否存在）。
+
 
 - `targetClass`：用于查找输入值的目标 [AR](db-active-record.md) 类。
   若不设置，则会使用正在进行验证的当前模型类。
-- `targetAttribute`：用于检查输入值存在性的 `targetClass` 的模型特性。
-  若不设置，它会直接使用待测特性名（整个参数数组的首元素）。
+- `targetAttribute`：用于检查输入值存在性的 `targetClass` 的模型属性。
+  若不设置，它会直接使用待测属性名（整个参数数组的首元素）。
   除了指定为字符串以外，你也可以用数组的形式，同时指定多个用于验证的表字段，
-  数组的键和值都是代表字段的特性名，值表示 `targetClass` 的待测数据源字段，而键表示当前模型的待测特性名。
+  数组的键和值都是代表字段的属性名，值表示 `targetClass` 的待测数据源字段，而键表示当前模型的待测属性名。
   若键和值相同，你可以只指定值。（如:`['a2']` 就代表 `['a2'=>'a2']`）
 - `filter`：用于检查输入值存在性必然会进行数据库查询，而该属性为用于进一步筛选该查询的过滤条件。
   可以为代表额外查询条件的字符串或数组（关于查询条件的格式，请参考 [[yii\db\Query::where()]]）；
@@ -326,18 +326,18 @@ multiple attribute values should exist).
 该验证器检查输入值是否为一个有效的上传文件。
 
 - `extensions`：可接受上传的文件扩展名列表。它可以是数组，
-  也可以是用空格或逗号分隔各个扩展名的字符串 (e.g. "gif, jpg")。
+  也可以是用空格或逗号分隔各个扩展名的字符串 (如 "gif, jpg")。
   扩展名大小写不敏感。默认为 null，
   意味着所有扩展名都被接受。
 - `mimeTypes`：可接受上传的 MIME 类型列表。
   它可以是数组，也可以是用空格或逗号分隔各个 
-  MIME 的字符串 (e.g. "image/jpeg, image/png")。
+  MIME 的字符串 (如 "image/jpeg, image/png")。
   Mime 类型名是大小写不敏感的。默认为 null，
   意味着所有 MIME 类型都被接受。
-  For more details, please refer to [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types).
+  请参考 [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) 获取更多详细内容。
 - `minSize`：上传文件所需最少多少 Byte 的大小。默认为 null，代表没有下限。
 - `maxSize`：上传文件所需最多多少 Byte 的大小。默认为 null，代表没有上限。
-- `maxFiles`：给定特性最多能承载多少个文件。
+- `maxFiles`：给定属性最多能承载多少个文件。
   默认为 1，代表只允许单文件上传。
   若值大于一，那么输入值必须为包含最多 `maxFiles` 个上传文件元素的数组。
 - `checkExtensionByMimeType`：是否通过文件的 MIME 类型来判断其文件扩展。
@@ -348,7 +348,7 @@ multiple attribute values should exist).
 请参考 [文件上传](input-file-upload.md)章节来了解有关文件上传与上传文件的检验的全部内容。
 
 
-## [[yii\validators\FilterValidator|filter（滤镜）]] <span id="filter"></span>
+## [[yii\validators\FilterValidator|filter（过滤器）]] <span id="filter"></span>
 
 ```php
 [
@@ -363,21 +363,21 @@ multiple attribute values should exist).
 ]
 ```
 
-该验证器并不进行数据验证。而是，给输入值应用一个滤镜，
-并在检验过程之后把它赋值回特性变量。
+该验证器并不进行数据验证。而是给输入值应用一个过滤器，
+并在验证后把它赋值回原属性变量。
 
-- `filter`：用于定义滤镜的 PHP 回调函数。可以为全局函数名，匿名函数，或其他。
+- `filter`：用于定义过滤器的 PHP 回调函数。可以为全局函数名，匿名函数，或其他。
   该函数的样式必须是 `function ($value) { return $newValue; }`。该属性不能省略，必须设置。
-- `skipOnArray`：是否在输入值为数组时跳过滤镜。默认为 false。
-  请注意如果滤镜不能处理数组输入，你就应该把该属性设为 true。
+- `skipOnArray`：是否在输入值为数组时跳过过滤器。默认为 false。
+  请注意如果过滤器不能处理数组输入，你就应该把该属性设为 true。
   否则可能会导致 PHP Error 的发生。
 
 > 技巧：如果你只是想要用 trim 处理下输入值，你可以直接用 [trim](#trim) 验证器的。
 
-> Tip: There are many PHP functions that have the signature expected for the `filter` callback.
-> For example to apply type casting (using e.g. [intval](http://php.net/manual/en/function.intval.php),
-> [boolval](http://php.net/manual/en/function.boolval.php), ...) to ensure a specific type for an attribute,
-> you can simply specify the function names of the filter without the need to wrap them in a closure:
+> 技巧：有许多的PHP方法结构和`filter`需要的结构一致。
+> 比如使用类型转换方法 ([intval](http://php.net/manual/en/function.intval.php)，
+> [boolval](http://php.net/manual/en/function.boolval.php), ...) 来确保属性为指定的类型，
+> 你可以简单的设置这些方法名而不是重新定义一个匿名函数：
 >
 > ```php
 > ['property', 'filter', 'filter' => 'boolval'],
@@ -406,68 +406,68 @@ multiple attribute values should exist).
 - `minHeight`：图片的最小高度。 默认为 null，代表无下限。
 - `maxHeight`：图片的最大高度。默认为 null，代表无上限。
 
-## [[yii\validators\IpValidator|ip]] <span id="ip"></span>
+## [[yii\validators\IpValidator|ip（IP地址）]] <span id="ip"></span>
 ```php
 [
-    // checks if "ip_address" is a valid IPv4 or IPv6 address
+    // 检查 "ip_address" 是否为一个有效的 IPv4 或 IPv6 地址
     ['ip_address', 'ip'],
 
-    // checks if "ip_address" is a valid IPv6 address or subnet,
-    // value will be expanded to full IPv6 notation.
+    // 检查 "ip_address" 是否为一个有效的 IPv6 地址或子网地址，
+    // 被检查的值将被展开成为一个完整的 IPv6 表示方法。
     ['ip_address', 'ip', 'ipv4' => false, 'subnet' => null, 'expandIPv6' => true],
 
-    // checks if "ip_address" is a valid IPv4 or IPv6 address,
-    // allows negation character `!` at the beginning
+    // 检查 "ip_address" 是否为一个有效的 IPv4 或 IPv6 地址，
+    // 允许地址存在一个表示非的字符 `!`
     ['ip_address', 'ip', 'negation' => true],
 ]
 ```
 
-The validator checks if the attribute value is a valid IPv4/IPv6 address or subnet.
-It also may change attribute's value if normalization or IPv6 expansion is enabled.
+此验证器检查属性的值是否是一个有效的 IPv4/IPv6 地址或子网地址。
+如果标准记法或 IPv6 扩展记法被启用，原始值将被改变。
 
-The validator has such configuration options:
+此验证器有以下参数：
 
-- `ipv4`: whether the validating value can be an IPv4 address. Defaults to true.
-- `ipv6`: whether the validating value can be an IPv6 address. Defaults to true.
-- `subnet`: whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`
-     * `true` - the subnet is required, addresses without CIDR will be rejected
-     * `false` - the address can not have the CIDR
-     * `null` - the CIDR is optional
+- `ipv4`: 是否启用 IPv4 地址检测。默认为 true 。
+- `ipv6`: 是否启用 IPv6 地址检测。默认为 true。
+- `subnet`: 是否启用 CIDR 子网检测，类似 `192.168.10.0/24`
+     * `true` - 子网是必须的，如果不是标准 CIDR 格式将被拒绝
+     * `false` - 地址不能有 CIDR
+     * `null` - CIDR 是可选的
 
-    Defaults to false.
-- `normalize`: whether to add the CIDR prefix with the smallest length (32 for IPv4 and 128 for IPv6) to an
-address without it. Works only when `subnet` is not `false`. For example:
-    * `10.0.1.5` will normalized to `10.0.1.5/32`
-    * `2008:db0::1` will be normalized to `2008:db0::1/128`
+    默认值为 false。
+- `normalize`: 是否在地址没有 CIDR 时添加 CIDR 最小值作为后缀 (IPv4 为 32、IPv6 为 128)
+仅当 `subnet` 不为 `false`时使用。例如：
+    * `10.0.1.5` 将被转换为标准的`10.0.1.5/32`
+    * `2008:db0::1` 将被转换为标准的 `2008:db0::1/128`
 
-    Defaults to false.
-- `negation`: whether the validation address can have a negation character `!` at the beginning. Defaults to false.
-- `expandIPv6`: whether to expand an IPv6 address to the full notation format.
-For example, `2008:db0::1` will be expanded to `2008:0db0:0000:0000:0000:0000:0000:0001`. Defaults to false.
-- `ranges`: array of IPv4 or IPv6 ranges that are allowed or forbidden.
+    默认为 false。
+- `negation`: 是否允许被检测地址在首位存在代表非的字符 `!` 。默认为 false。
+- `expandIPv6`: 是否将简化的 IPv6 地址扩展为标准记法格式。
+例如， `2008:db0::1` 将被扩展成 `2008:0db0:0000:0000:0000:0000:0000:0001`。默认为 false。
+- `ranges`: 允许或禁止的 IPv4 或 IPv6 范围的数组。
 
-    When the array is empty, or the option is not set, all the IP addresses are allowed.
-    Otherwise, the rules are checked sequentially until the first match is found.
-    IP address is forbidden, when it has not matched any of the rules.
+    当此数组为空或此参数没有设置时，所有IP地址都被允许。
+    否则，将逐个对比此规则，当找到第一条适用时停止。
+    如果没有任何规则适用待验证的IP地址，IP地址将被禁止。
     
-    For example:
+    例如：
     ```php
     [
          'client_ip', 'ip', 'ranges' => [
              '192.168.10.128'
              '!192.168.10.0/24',
-             'any' // allows any other IP addresses
+             'any' // 允许任何其它IP地址
          ]
     ]
     ```
-In this example, access is allowed for all the IPv4 and IPv6 addresses excluding `192.168.10.0/24` subnet.
-IPv4 address `192.168.10.128` is also allowed, because it is listed before the restriction.
-- `networks`: array of network aliases, that can be used in `ranges`. Format of array:
-    * key - alias name
-    * value - array of strings. String can be a range, IP address or another alias. String can be
-    negated with `!` (independent of `negation` option).
+在这个例子中，除了 `192.168.10.0/24` 子网之外的所有 IPv4 和 IPv6 地址都被允许。
+IPv4 地址 `192.168.10.128` 同样时允许的，因为这条规则在约束规则之前适用。
+- `networks`: 网络别名数组， 可以用在 `ranges` 中。数组格式：
+    * key - 别名
+    * value - 一组字符串。每个子字符串可以是一个范围，IP地址或另一个别名。子字符串也可以
+    设置一个表示非的字符 `!` (和 `negation` 不相关)。
 
-    The following aliases are defined by default:
+    下列别名为默认定义：
     
     * `*`: `any`
     * `any`: `0.0.0.0/0, ::/0`
@@ -478,7 +478,7 @@ IPv4 address `192.168.10.128` is also allowed, because it is listed before the r
     * `documentation`: `192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32`
     * `system`: `multicast, linklocal, localhost, documentation`
 
-> Info: This validator has been available since version 2.0.7.
+> 注：此验证器自版本 2.0.7 后可用。
 
 ## [[yii\validators\RangeValidator|in（范围）]] <span id="in"></span>
 
@@ -574,13 +574,13 @@ IPv4 address `192.168.10.128` is also allowed, because it is listed before the r
 
 ```php
 [
-    // 标记 "description" 为安全特性
+    // 标记 "description" 为安全属性
     ['description', 'safe'],
 ]
 ```
 
-该验证器并不进行数据验证。而是把一个特性标记为
-[安全特性](structure-models.md#safe-attributes)。
+该验证器并不进行数据验证。而是把一个属性标记为
+[安全属性](structure-models.md#safe-attributes)。
 
 
 ## [[yii\validators\StringValidator|string（字符串）]] <span id="string"></span>
@@ -592,7 +592,7 @@ IPv4 address `192.168.10.128` is also allowed, because it is listed before the r
 ]
 ```
 
-该验证器检查输入值是否为特定长度的字符串。并检查特性的值是否为某个特定长度。
+该验证器检查输入值是否为特定长度的字符串。并检查属性的值是否为某个特定长度。
 
 - `length`：指定待测输入字符串的长度限制。
   该属性可以被指定为以下格式之一：
@@ -623,7 +623,7 @@ IPv4 address `192.168.10.128` is also allowed, because it is listed before the r
 
 ```php
 [
-    // a1 需要在 "a1" 特性所代表的字段内唯一
+    // a1 需要在 "a1" 属性所代表的字段内唯一
     ['a1', 'unique'],
 
     // a1 需要唯一，但检验的是 a1 的值在字段 a2 中的唯一性
@@ -641,15 +641,15 @@ IPv4 address `192.168.10.128` is also allowed, because it is listed before the r
 ```
 
 该验证器检查输入值是否在某表字段中唯一。
-它只对[活动记录](db-active-record.md)类型的模型类特性起作用，
+它只对[活动记录](db-active-record.md)类型的模型类属性起作用，
 能支持对一个或多过字段的验证。
 
 - `targetClass`：用于查找输入值的目标 [AR](db-active-record.md) 类。
   若不设置，则会使用正在进行验证的当前模型类。
-- `targetAttribute`：用于检查输入值唯一性的 `targetClass` 的模型特性。
-  若不设置，它会直接使用待测特性名（整个参数数组的首元素）。
-  除了指定为字符串以外，你也可以用数组的形式，同时指定多个用于验证的表字段，数组的键和值都是代表字段的特性名，
-  值表示 `targetClass` 的待测数据源字段，而键表示当前模型的待测特性名。
+- `targetAttribute`：用于检查输入值唯一性的 `targetClass` 的模型属性。
+  若不设置，它会直接使用待测属性名（整个参数数组的首元素）。
+  除了指定为字符串以外，你也可以用数组的形式，同时指定多个用于验证的表字段，数组的键和值都是代表字段的属性名，
+  值表示 `targetClass` 的待测数据源字段，而键表示当前模型的待测属性名。
   若键和值相同，你可以只指定值。（如:`['a2']` 就代表 `['a2'=>'a2']`）
 - `filter`：用于检查输入值唯一性必然会进行数据库查询，
   而该属性为用于进一步筛选该查询的过滤条件。可以为代表额外查询条件的字符串或数组
@@ -662,7 +662,7 @@ IPv4 address `192.168.10.128` is also allowed, because it is listed before the r
 ```php
 [
     // 检查 "website" 是否为有效的 URL。若没有 URI 方案，
-    // 则给 "website" 特性加 "http://" 前缀
+    // 则给 "website" 属性加 "http://" 前缀
     ['website', 'url', 'defaultScheme' => 'http'],
 ]
 ```
