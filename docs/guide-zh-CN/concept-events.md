@@ -291,7 +291,8 @@ class Developer extends Component implements DanceEventInterface
 }
 ```
 
-要处理由这些类触发的 `EVENT_DANCE` ，调用 [[yii\base\Event::on()|Event::on()]] 并将接口类名作为第一个参数:
+要处理由这些类触发的 `EVENT_DANCE` ，调用 [[yii\base\Event::on()|Event::on()]] 
+并将接口类名作为第一个参数:
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
