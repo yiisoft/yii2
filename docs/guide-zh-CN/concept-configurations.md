@@ -135,8 +135,8 @@ $config = [
 更多关于应用 `components` 属性配置的信息可以查阅[应用](structure-applications.md)
 以及[服务定位器](concept-service-locator.md)章节。
 
-Since version 2.0.11, the application configuration supports [Dependency Injection Container](concept-di-container.md)
-configuration using `container` property. For example:
+自版本 2.0.11 开始，系统配置支持使用 `container` 属性来配置[依赖注入容器](concept-di-container.md)
+例如：
 
 ```php
 $config = [
@@ -148,15 +148,15 @@ $config = [
             'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
         ],
         'singletons' => [
-            // Dependency Injection Container singletons configuration
+            // 依赖注入容器单例配置
         ]
     ]
 ];
 ```
 
-To know more about the possible values of `definitions` and `singletons` configuration arrays and real-life examples,
-please read [Advanced Practical Usage](concept-di-container.md#advanced-practical-usage) subsection of the
-[Dependency Injection Container](concept-di-container.md) article.
+请参考 [依赖注入容器](concept-di-container.md) 下面的 [高级应用实例](concept-di-container.md#advanced-practical-usage)
+获取更多 `definitions` 和 `singletons` 配置项和实际使用的例子。
+
 
 ### 小部件的配置 <span id="widget-configurations"></span>
 
