@@ -83,4 +83,4 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end() ?>
 ```
 
-你可以看到，在 `update` 视图中，我们同时显示了两个模型 `$user` 和 `$profile` 的属性。
+你可以看到，在 `update` 视图中，我们同时显示了两个模型 `$user` 和 `$profile` 的属性的输入栏。
