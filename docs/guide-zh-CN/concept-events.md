@@ -124,7 +124,7 @@ class Foo extends Component
 
 以上代码当调用 `bar()` ，它将触发名为 `hello` 的事件。
 
-> Tip: 推荐使用类常量来表示事件名。上例中，常量 `EVENT_HELLO` 用来表示 `hello` 。
+> 提示：推荐使用类常量来表示事件名。上例中，常量 `EVENT_HELLO` 用来表示 `hello` 。
   这有两个好处。第一，它可以防止拼写错误并支持 IDE 的自动完成。
   第二，只要简单检查常量声明就能了解一个类支持哪些事件。
 
@@ -238,7 +238,7 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 注意这种情况下 `$event->sender` 指向触发事件的类名而不是对象实例。
 
-> Note: 因为类级别的处理器响应类和其子类的所有实例触发的事件，
+> 注意：因为类级别的处理器响应类和其子类的所有实例触发的事件，
   必须谨慎使用，尤其是底层的基类，如 [[yii\base\Object]]。
 
 移除类级别的事件处理器只需调用[[yii\base\Event::off()]]，如：

@@ -77,7 +77,7 @@ use yii\widgets\ActiveForm;
 需要注意的是要记得在表单选项里加入 `enctype` 属性以确保文件能被正常上传。
 `fileInput()` 方法会渲染一个 `<input type="file">` 标签，让用户可以选择一个文件上传。
 
-> Tip: since version 2.0.8, [[yii\web\widgets\ActiveField::fileInput|fileInput]] adds `enctype` option to the form
+> 提示：since version 2.0.8, [[yii\web\widgets\ActiveField::fileInput|fileInput]] adds `enctype` option to the form
   automatically when file input field is used.
 
 ## 视图和模型的连接 <span id="wiring-up"></span>

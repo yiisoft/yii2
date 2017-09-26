@@ -48,7 +48,7 @@ class EntryForm extends Model
 该类继承自Yii 提供的一个基类 [[yii\base\Model]]，
 该基类通常用来表示数据。
 
-> Info: [[yii\base\Model]] 被用于普通模型类的父类并与数据表**无关**。[[yii\db\ActiveRecord]] 
+> 信息：[[yii\base\Model]] 被用于普通模型类的父类并与数据表**无关**。[[yii\db\ActiveRecord]] 
   通常是普通模型类的父类但与数据表有关联（译注：[[yii\db\ActiveRecord]] 类其实也是继承自 [[yii\base\Model]]，增加了数据库处理）。
 
 `EntryForm` 类包含 `name` 和 `email` 两个公共成员，
@@ -119,7 +119,7 @@ class SiteController extends Controller
 如果模型被成功填充数据（也就是说用户已经提交了 HTML 表单），
 操作将调用 [[yii\base\Model::validate()|validate()]] 去确保用户提交的是有效数据。
 
-> Info: 表达式 `Yii::$app` 代表[应用](structure-applications.md)实例，它是一个全局可访问的单例。
+> 信息：表达式 `Yii::$app` 代表[应用](structure-applications.md)实例，它是一个全局可访问的单例。
   同时它也是一个[服务定位器](concept-service-locator.md)，
   能提供 `request`，`response`，`db` 等等特定功能的组件。
   在上面的代码里就是使用 `request` 组件来访问应用实例收到的 `$_POST` 数据。
@@ -128,7 +128,7 @@ class SiteController extends Controller
 如果没填表单就提交，或数据包含错误（译者：如 email 格式不对），
 `entry` 视图将会渲染输出，连同表单一起输出的还有验证错误的详细信息。
 
-> Note: 在这个简单例子里我们只是呈现了有效数据的确认页面。
+> 注意：在这个简单例子里我们只是呈现了有效数据的确认页面。
   实践中你应该考虑使用 [[yii\web\Controller::refresh()|refresh()]] 
   或 [[yii\web\Controller::redirect()|redirect()]] 去避免[表单重复提交问题](http://en.wikipedia.org/wiki/Post/Redirect/Get)。
 
@@ -214,7 +214,7 @@ http://hostname/index.php?r=site/entry
 如果用户浏览器禁用了 JavaScript， 
 服务器端仍然会像 `actionEntry()` 方法里这样验证一遍数据。这保证了任何情况下用户提交的数据都是有效的。
 
-> Warning: 客户端验证是提高用户体验的手段。
+> 警告：客户端验证是提高用户体验的手段。
   无论它是否正常启用，服务端验证则都是必须的，请不要忽略它。
 
 输入框的文字标签是 `field()` 方法生成的，内容就是模型中该数据的属性名。
@@ -228,7 +228,7 @@ http://hostname/index.php?r=site/entry
 <?= $form->field($model, 'email')->label('自定义 Email') ?>
 ```
 
-> Info: Yii 提供了相当多类似的小部件去帮你生成复杂且动态的视图。
+> 信息：Yii 提供了相当多类似的小部件去帮你生成复杂且动态的视图。
   在后面你还会了解到自己写小部件是多么简单。
   你可能会把自己的很多视图代码转化成小部件以提高重用，加快开发效率。
 

@@ -296,7 +296,7 @@ class m150811_220037_create_post extends Migration
 }
 ```
 
-> Note: primary key is added automatically and is named `id` by default. If you want to use another name you may
+> 注意：primary key is added automatically and is named `id` by default. If you want to use another name you may
 > specify it explicitly like `--fields="name:primaryKey"`.
 
 #### Foreign keys
@@ -693,7 +693,7 @@ class m150101_185401_create_news_table extends Migration
   这是因为通常你是不需要去数据库把数据一行一行查出来再显示出来的。
   另外一个原因是你完全可以使用强大的 [Query Builder 查询构建器](db-query-builder.md) 来构建和查询。  
 
-> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
+> 注意：When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
 > for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
 > to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
 > So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
@@ -714,7 +714,7 @@ yii migrate
 如果其中任意一个迁移提交失败了，
 那么这条命令将会退出并停止剩下的那些还未执行的迁移。
 
-> Tip: In case you don't have command line at your server you may try [web shell](https://github.com/samdark/yii2-webshell)
+> 提示：In case you don't have command line at your server you may try [web shell](https://github.com/samdark/yii2-webshell)
 > extension.
 
 对于每一个成功提交的迁移，这条命令都会在一个叫做 `migration` 

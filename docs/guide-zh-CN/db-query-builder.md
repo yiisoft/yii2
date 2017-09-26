@@ -634,7 +634,7 @@ $query = (new \yii\db\Query())
 该匿名函数将带有一个包含了当前行的数据的 `$row` 参数，并且返回用作当前行索引的
 标量值（译者注：就是简单的数值或者字符串，而不是其他复杂结构，例如数组）。
 
-> Note: In contrast to query methods like [[yii\db\Query::groupBy()|groupBy()]] or [[yii\db\Query::orderBy()|orderBy()]]
+> 注意：In contrast to query methods like [[yii\db\Query::groupBy()|groupBy()]] or [[yii\db\Query::orderBy()|orderBy()]]
 > which are converted to SQL and are part of the query, this method works after the data has been fetched from the database.
 > That means that only those column names can be used that have been part of SELECT in your query.
 > Also if you selected a column with table prefix, e.g. `customer.id`, the result set will only contain `id` so you have to call
