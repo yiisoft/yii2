@@ -300,7 +300,7 @@ Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE
 });
 ```
 
-你可以在这些类中触发这个事件:
+你可以在这些类中触发这个事件：
 
 ```php
 // trigger event for Dog class
@@ -310,14 +310,14 @@ Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
 Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
 ```
 
-但是请注意, 你不能让所有实现这个接口的类都触发事件:
+但是请注意, 你不能让所有实现这个接口的类都触发事件：
 
 ```php
-// 不会生效. 实现此接口的类不会触发事件。
+// 不会生效。实现此接口的类不会触发事件。
 Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
-调用 [[yii\base\Event::off()|Event::off()]] 移除事件处理器。 例如:
+调用 [[yii\base\Event::off()|Event::off()]] 移除事件处理器。例如：
 
 ```php
 // 移除 $handler
