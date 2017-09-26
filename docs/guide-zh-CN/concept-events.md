@@ -317,13 +317,13 @@ Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
 Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
-To detach event handler, call [[yii\base\Event::off()|Event::off()]]. For example:
+调用 [[yii\base\Event::off()|Event::off()]] 移除事件处理器。 例如:
 
 ```php
-// 移除事件处理器
+// 移除 $handler
 Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
 
-// 移除所有 `EVENT_DANCE` 的处理器
+// 移除所有 `DanceEventInterface::EVENT_DANCE` 的处理器
 Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
