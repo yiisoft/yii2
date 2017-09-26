@@ -272,8 +272,8 @@ Yii使用 [[yii\web\Cookie]]对象来代表每个cookie，
 通过名为'cookies'的属性维护一个cookie集合，前者的cookie 集合代表请求提交的cookies，
 后者的cookie集合表示发送给用户的cookies。
 
-控制器是直接处理请求和响应的部分。 因此, 在控制器中
-读取和发送cookie
+控制器是直接处理请求和响应的部分。 因此, 应当在控制器中读取和发送 cookie 。
+(编者注：意思在控制器中处理 cookie 是安全的。)
 
 ### 读取 Cookies <span id="reading-cookies"></span>
 
