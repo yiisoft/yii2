@@ -147,13 +147,7 @@ public function actionError()
 > 注意：如果你使用 [基础应用模板](start-installation.md) 或 [高级应用模板](tutorial-advanced-app.md),
 错误动作和错误视图已经定义好了。
 
-> 注意：If you need to redirect in an error handler, do it the following way:
-> ```php
-> Yii::$app->getResponse()->redirect($url)->send();
-> return;
-> ```
-
-> 注意：If you need to redirect in an error handler, do it the following way:
+> 注意：如果您需要在错误处理程序中重定向，请执行以下操作：
 >
 > ```php
 > Yii::$app->getResponse()->redirect($url)->send();
