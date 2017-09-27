@@ -534,14 +534,14 @@ $query1->union($query2);
 
 [[yii\db\Query]] 提供了一整套的用于不同查询目的的方法。
 
-- [[yii\db\Query::all()|all()]]: 将返回一个由行组成的数组，每一行是一个由名称和值构成的关联数组（译者注：省略键的数组称为索引数组）。
-- [[yii\db\Query::one()|one()]]: 返回结果集的第一行。
-- [[yii\db\Query::column()|column()]]: 返回结果集的第一列。
-- [[yii\db\Query::scalar()|scalar()]]: 返回结果集的第一行第一列的标量值。
-- [[yii\db\Query::exists()|exists()]]: 返回一个表示该查询是否包结果集的值。
-- [[yii\db\Query::count()|count()]]: 返回 `COUNT` 查询的结果。
-- 其它集合查询方法: 包括 [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]],
-  [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]] 等. `$q` 是一个必选参数，
+- [[yii\db\Query::all()|all()]]：将返回一个由行组成的数组，每一行是一个由名称和值构成的关联数组（译者注：省略键的数组称为索引数组）。
+- [[yii\db\Query::one()|one()]]：返回结果集的第一行。
+- [[yii\db\Query::column()|column()]]：返回结果集的第一列。
+- [[yii\db\Query::scalar()|scalar()]]：返回结果集的第一行第一列的标量值。
+- [[yii\db\Query::exists()|exists()]]：返回一个表示该查询是否包结果集的值。
+- [[yii\db\Query::count()|count()]]：返回 `COUNT` 查询的结果。
+- 其它集合查询方法：包括 [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]],
+  [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]] 等。`$q` 是一个必选参数，
   既可以是一个字段名称，又可以是一个 DB 表达式。
 
 例如，
