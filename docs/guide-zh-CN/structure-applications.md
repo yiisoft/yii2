@@ -5,7 +5,7 @@
 每个Yii应用系统只能包含一个应用主体，应用主体在 
 [入口脚本](structure-entry-scripts.md) 中创建并能通过表达式 `\Yii::$app` 全局范围内访问。
 
-> Info: 当我们说"一个应用"，它可能是一个应用主体对象，也可能是一个应用系统，
+> 信息：当我们说"一个应用"，它可能是一个应用主体对象，也可能是一个应用系统，
   是根据上下文来决定[译：中文为避免歧义，Application翻译为应用主体]。
 
 Yii有两种应用主体: [[yii\web\Application|网页应用主体]] and
@@ -137,7 +137,7 @@ $config = require(__DIR__ . '/../config/web.php');
 ]
 ```
 
-> Info: 如果模块 ID 和应用组件 ID 同名，优先使用应用组件 ID，
+> 信息：如果模块 ID 和应用组件 ID 同名，优先使用应用组件 ID，
 > 如果你想用模块 ID，
 > 可以使用如下无名称函数返回模块 ID。
 > 
@@ -192,7 +192,7 @@ if (YII_ENV_DEV) {
 ]
 ```
 
-> Info: 当开启这个属性时，开发环境下的调试面板将不能工作。
+> 信息：当开启这个属性时，开发环境下的调试面板将不能工作。
 
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 

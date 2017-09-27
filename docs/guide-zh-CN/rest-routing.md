@@ -77,7 +77,7 @@
 您可以通过设置 [[yii\rest\UrlRule::pluralize]] 为false 来禁用此行为，如果您想
 使用一些特殊的名字您可以通过配置 [[yii\rest\UrlRule::controller]] 属性。
 
-> Info: The pluralization of controller IDs is done by [[yii\helpers\Inflector::pluralize()]]. The method respects
+> 信息：The pluralization of controller IDs is done by [[yii\helpers\Inflector::pluralize()]]. The method respects
   special pluralization rules. For example, the word `box` will be pluralized as `boxes` instead of `boxs`.
 
 In case when the automatic pluralization does not meet your requirement, you may also configure the 

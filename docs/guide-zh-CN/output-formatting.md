@@ -40,7 +40,7 @@ echo Yii::$app->formatter->format('2014-01-01', 'date');
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
-> Note: `formatter` 组件用来格式化最终展示给用户的数据. 
+> 注意：`formatter` 组件用来格式化最终展示给用户的数据. 
 > 如果你想要将用户的输入进行格式化或者只是将一些别的日期数据进行格式化（这里的格式化说的是机器可读的格式化），不要使用这个组件，
 > 而应该使用 [[yii\validators\DateValidator]] 和 [[yii\validators\NumberValidator]] 进行用户输入格式化
 > 关于日期格式化，戳这里 [date()](http://php.net/manual/en/function.date.php)
@@ -193,7 +193,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // output: 1 января 2014 
 默认配置下，当前 [[yii\i18n\Formatter::locale|locale]] 决定于 [[yii\base\Application::language]].
 你可以覆盖 [[yii\i18n\Formatter::locale]] 属性来满足不同的需要。
 
-> Note: Yii formatter 依赖 [PHP intl extension](http://php.net/manual/en/book.intl.php) 来进行本地数据格式化
+> 注意：Yii formatter 依赖 [PHP intl extension](http://php.net/manual/en/book.intl.php) 来进行本地数据格式化
 > 因为不同的 ICU 库可能会导致不同的输出，所以请在你的所有机器上保持 ICU 库的一致性. 
 > 请戳 [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
 >

@@ -59,8 +59,8 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 });
 ```
 
-You may also attach event handlers through [configurations](concept-configurations.md). For more details, please
-refer to the [Configurations](concept-configurations.md#configuration-format) section.
+你也可以通过 [配置](concept-configurations.md) 附加事件处理器。 请
+参考 [配置的格式](concept-configurations.md#configuration-format) 小节了解更多.
 
 
 附加事件处理器时可以提供额外数据作为 [[yii\base\Component::on()]] 方法的第三个参数。
@@ -124,7 +124,7 @@ class Foo extends Component
 
 以上代码当调用 `bar()` ，它将触发名为 `hello` 的事件。
 
-> Tip: 推荐使用类常量来表示事件名。上例中，常量 `EVENT_HELLO` 用来表示 `hello` 。
+> 提示：推荐使用类常量来表示事件名。上例中，常量 `EVENT_HELLO` 用来表示 `hello` 。
   这有两个好处。第一，它可以防止拼写错误并支持 IDE 的自动完成。
   第二，只要简单检查常量声明就能了解一个类支持哪些事件。
 
@@ -238,7 +238,7 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 注意这种情况下 `$event->sender` 指向触发事件的类名而不是对象实例。
 
-> Note: 因为类级别的处理器响应类和其子类的所有实例触发的事件，
+> 注意：因为类级别的处理器响应类和其子类的所有实例触发的事件，
   必须谨慎使用，尤其是底层的基类，如 [[yii\base\Object]]。
 
 移除类级别的事件处理器只需调用[[yii\base\Event::off()]]，如：
@@ -252,13 +252,13 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 ```
 
 
-Events using interfaces <span id="interface-level-event-handlers"></span>
+使用接口事件 <span id="interface-level-event-handlers"></span>
 -------------
 
-There is even more abstract way to deal with events. You can create a separated interface for the special event and
-implement it in classes, where you need it.
+有更多的抽象方式来处理事件。你可以为特殊的事件创建一个独立的接口，
+然后在你需要的类中实现它。
 
-For example, we can create the following interface:
+例如，我们可以先创建下面这个接口:
 
 ```php
 namespace app\interfaces;
@@ -269,7 +269,7 @@ interface DanceEventInterface
 }
 ```
 
-And two classes, that implement it:
+然后在两个类中实现:
 
 ```php
 class Dog extends Component implements DanceEventInterface
@@ -291,8 +291,8 @@ class Developer extends Component implements DanceEventInterface
 }
 ```
 
-To handle the `EVENT_DANCE`, triggered by any of these classes, call [[yii\base\Event::on()|Event::on()]] and
-pass the interface class name as the first argument:
+要处理由这些类触发的 `EVENT_DANCE` ，调用 [[yii\base\Event::on()|Event::on()]] 
+并将接口类名作为第一个参数:
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
@@ -300,7 +300,7 @@ Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE
 });
 ```
 
-You can trigger the event of those classes:
+你可以在这些类中触发这个事件：
 
 ```php
 // trigger event for Dog class
@@ -310,20 +310,20 @@ Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
 Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
 ```
 
-But please notice, that you can not trigger all the classes, that implement the interface:
+但是请注意, 你不能让所有实现这个接口的类都触发事件：
 
 ```php
-// DOES NOT WORK. Classes that implement this interface will NOT be triggered.
+// 不会生效。实现此接口的类不会触发事件。
 Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
-To detach event handler, call [[yii\base\Event::off()|Event::off()]]. For example:
+调用 [[yii\base\Event::off()|Event::off()]] 移除事件处理器。例如：
 
 ```php
-// detaches $handler
+// 移除 $handler
 Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
 
-// detaches all handlers of DanceEventInterface::EVENT_DANCE
+// 移除所有 `DanceEventInterface::EVENT_DANCE` 的处理器
 Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 

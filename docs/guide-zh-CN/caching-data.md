@@ -294,7 +294,7 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> Info: 有些 DBMS （例如：[MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)）
+> 信息：有些 DBMS （例如：[MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)）
 也支持数据库服务器端的查询缓存。
 你可以选择使用任一查询缓存机制。
 上文所述的查询缓存的好处在于你可以指定更灵活的缓存依赖因此可能更加高效。
@@ -309,7 +309,7 @@ $result = Customer::getDb()->cache(function ($db) {
  - `yii cache/flush cache1 cache2`: 冲刷缓存组件`cache1`, `cache2` (可以传递多个用空格分开的缓存组件）
  - `yii cache/flush-all`: 冲刷应用中所有的缓存组件
 
-> Info: 默认情况下，控制台应用使用独立的配置文件。所以，为了上述命令发挥作用，请确保Web应用和控制台应用配置相同的缓存组件。
+> 信息：默认情况下，控制台应用使用独立的配置文件。所以，为了上述命令发挥作用，请确保Web应用和控制台应用配置相同的缓存组件。
 
 
 ### 配置 <span id="query-caching-configs"></span>

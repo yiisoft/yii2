@@ -69,7 +69,7 @@ foreach ($session as $name => $value) ...
 foreach ($_SESSION as $name => $value) ...
 ```
 
-> Info: 当使用`session`组件访问session数据时候，
+> 信息：当使用`session`组件访问session数据时候，
   如果session没有开启会自动开启，
   这和通过`$_SESSION`不同，`$_SESSION`要求先执行`session_start()`。
 
@@ -137,7 +137,7 @@ Yii提供以下session类实现不同的session存储方式：
 所有这些session类支持相同的API方法集，因此，
 切换到不同的session存储介质不需要修改项目使用session的代码。
 
-> Note: 如果通过`$_SESSION`访问使用自定义存储介质的session，
+> 注意：如果通过`$_SESSION`访问使用自定义存储介质的session，
   需要确保session已经用[[yii\web\Session::open()]] 开启，
   这是因为在该方法中注册自定义session存储处理器。
 
@@ -174,11 +174,11 @@ CREATE TABLE session
 - PostgreSQL: BYTEA
 - MSSQL: BLOB
 
-> Note: 根据 php.ini 设置的 `session.hash_function`，你需要调整`id`列的长度，
+> 注意：根据 php.ini 设置的 `session.hash_function`，你需要调整`id`列的长度，
   例如，如果 `session.hash_function=sha256` ，
   应使用长度为64而不是40的char类型。
 
-Alternatively, this can be accomplished with the following migration:
+或者，可以通过以下迁移完成：
 
 ```php
 <?php
@@ -255,7 +255,7 @@ $alerts = $session->getFlash('alerts');
   会发现有时获取到一个数组，有时获取到一个字符串，
   取决于你调用这两个方法的顺序。
 
-> Tip: For displaying Flash messages you can use [[yii\bootstrap\Alert|bootstrap Alert]] widget in the following way:
+> 提示：For displaying Flash messages you can use [[yii\bootstrap\Alert|bootstrap Alert]] widget in the following way:
 >
 > ```php
 > echo Alert::widget([
@@ -273,7 +273,7 @@ Yii使用 [[yii\web\Cookie]]对象来代表每个cookie，
 后者的cookie集合表示发送给用户的cookies。
 
 控制器是直接处理请求和响应的部分。 因此, 应当在控制器中读取和发送 cookie 。
-(编者注：意思在控制器中处理 cookie 是安全的。)
+(译者注：意思在控制器中处理 cookie 是安全的。)
 
 ### 读取 Cookies <span id="reading-cookies"></span>
 
@@ -327,7 +327,7 @@ unset($cookies['language']);
 [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]
 可配置这些属性到cookie中并添加到响应的cookie集合中。
 
-> Note: 为安全起见[[yii\web\Cookie::httpOnly]] 被设置为true，
+> 注意：为安全起见[[yii\web\Cookie::httpOnly]] 被设置为true，
   这可减少客户端脚本访问受保护cookie（如果浏览器支持）的风险，
   更多详情可阅读 [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
 
@@ -340,7 +340,7 @@ unset($cookies['language']);
 如果被修改，通过`request`组件的
 [[yii\web\Request::cookies|cookie collection]]cookie集合访问不到该cookie。
 
-> Note: Cookie验证只保护cookie值被修改，如果一个cookie验证失败，
+> 注意：Cookie验证只保护cookie值被修改，如果一个cookie验证失败，
   仍然可以通过`$_COOKIE`来访问该cookie，
   因为这是第三方库对未通过cookie验证自定义的操作方式。
 

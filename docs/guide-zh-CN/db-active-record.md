@@ -168,7 +168,7 @@ $sql = 'SELECT * FROM customer';
 $customers = Customer::findBySql($sql)->all();
 ```
 
-> Tip: 在上面的代码中，`Customer::STATUS_ACTIVE` 是一个在 `Customer` 类里定义的常量。（译注：这种常量的值一般都是tinyint）相较于直接在代码中写死字符串或数字，使用一个更有意义的常量名称是一种更好的编程习惯。
+> 提示：在上面的代码中，`Customer::STATUS_ACTIVE` 是一个在 `Customer` 类里定义的常量。（译注：这种常量的值一般都是tinyint）相较于直接在代码中写死字符串或数字，使用一个更有意义的常量名称是一种更好的编程习惯。
 
 有两个快捷方法：`findOne` 和 `findAll()` 用来返回一个或者一组`ActiveRecord`实例。前者返回第一个匹配到的实例，后者返回所有。
 例如：
@@ -407,7 +407,7 @@ SELECT * FROM customer WHERE id=1;
 SELECT * FROM order WHERE customer_id=1;
 ```
 
-> Tip: 再次用表达式 `$customer->orders`将不会执行第二次 SQL 查询，
+> 提示：再次用表达式 `$customer->orders`将不会执行第二次 SQL 查询，
 SQL 查询只在该表达式第一次使用时执行。
 数据库访问只返回缓存在内部前一次取回的结果集，如果你想查询新的
 关联数据，先要注销现有结果集：`unset($customer->orders);`。
@@ -438,7 +438,7 @@ class Customer extends \yii\db\ActiveRecord
 $orders = $customer->getBigOrders(200)->all();
 ```
 
-> Note: 关联查询返回的是 [[yii\db\ActiveQuery]] 的实例，如果像特性（如类属性）那样连接关联数据，
+> 注意：关联查询返回的是 [[yii\db\ActiveQuery]] 的实例，如果像特性（如类属性）那样连接关联数据，
 返回的结果是关联查询的结果，即 [[yii\db\ActiveRecord]] 的实例，
 或者是数组，或者是 null ，取决于关联关系的多样性。如，`$customer->getOrders()` 返回
 `ActiveQuery` 实例，而 `$customer->orders` 返回`Order` 对象数组
@@ -632,7 +632,7 @@ if ($customers[0]->orders[0]->customer === $customers[0]) {
 }
 ```
 
-> Note: 相对关系不能在包含中间表的关联关系中定义。 即是，如果你的关系是通过[[yii\db\ActiveQuery::via()|via()]] 或 [[yii\db\ActiveQuery::viaTable()|viaTable()]]方法定义的， 就不能调用[[yii\db\ActiveQuery::inverseOf()]]方法了。
+> 注意：相对关系不能在包含中间表的关联关系中定义。 即是，如果你的关系是通过[[yii\db\ActiveQuery::via()|via()]] 或 [[yii\db\ActiveQuery::viaTable()|viaTable()]]方法定义的， 就不能调用[[yii\db\ActiveQuery::inverseOf()]]方法了。
 
 
  JOIN 类型关联查询
