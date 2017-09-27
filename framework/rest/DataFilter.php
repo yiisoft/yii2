@@ -298,10 +298,8 @@ class DataFilter extends Model
      */
     public function setSearchModel($model)
     {
-        if (is_object($model)) {
-            if (!$model instanceof Model && !$model instanceof \Closure) {
-                throw new InvalidConfigException('`' . get_class($this) . '::$model` should be an instance of `' . Model::className() . '` or its DI compatible configuration.');
-            }
+        if (is_object($model) && !$model instanceof Model && !$model instanceof \Closure) {
+            throw new InvalidConfigException('`' . get_class($this) . '::$model` should be an instance of `' . Model::className() . '` or its DI compatible configuration.');
         }
         $this->_searchModel = $model;
     }
