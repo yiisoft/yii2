@@ -178,7 +178,7 @@ CREATE TABLE session
   例如，如果 `session.hash_function=sha256` ，
   应使用长度为64而不是40的char类型。
 
-Alternatively, this can be accomplished with the following migration:
+或者，可以通过以下迁移完成：
 
 ```php
 <?php
