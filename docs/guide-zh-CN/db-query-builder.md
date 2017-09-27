@@ -31,7 +31,7 @@ WHERE `last_name` = :last_name
 LIMIT 10
 ```
 
-> 提示: 你平时更多的时候会使用 [[yii\db\Query]] 而不是 [yii\db\QueryBuilder]]。
+> 提示：你平时更多的时候会使用 [[yii\db\Query]] 而不是 [yii\db\QueryBuilder]]。
   当你调用其中一个查询方法时，后者将会被前者隐式的调用。[[yii\db\QueryBuilder]]主要负责将
   DBMS 不相关的 [[yii\db\Query]] 对象转换成 DBMS 相关的 SQL 语句（例如，
   以不同的方式引用表或字段名称）。
