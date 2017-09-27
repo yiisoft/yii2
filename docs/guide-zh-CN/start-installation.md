@@ -48,11 +48,11 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局生效，一劳永逸。
 第二条命令会将 Yii 安装在名为 `basic` 的目录中。如果你想使用其它目录名称，你可以选择其他目录名称。
 
-> 注意: 在安装过程中 Composer 可能会询问你 GitHub 账户的认证信息，因为可能在使用中超过了 GitHub API （对匿名用户的）使用限制。因为 Composer 需要为所有扩展包从 GitHub 
+> 注意：在安装过程中 Composer 可能会询问你 GitHub 账户的认证信息，因为可能在使用中超过了 GitHub API （对匿名用户的）使用限制。因为 Composer 需要为所有扩展包从 GitHub 
 > 中获取大量信息，所以超限非常正常。（译注：也意味着作为程序猿没有 GitHub 账号，就真不能愉快地玩耍了）登陆 GitHub 之后可以得到更高的 API 限额，这样 Composer 才能正常运行。更多细节请参考 [Composer 
 > 文档](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)（该段 Composer中文文档[期待您的参与](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)）。
 
-> 提示: 如果你想安装 Yii 的最新开发版本，可以使用以下命令代替，
+> 提示：如果你想安装 Yii 的最新开发版本，可以使用以下命令代替，
 > 它添加了一个 [stability 选项](https://getcomposer.org/doc/04-schema.md#minimum-stability)（[中文版](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/04-schema.md#minimum-stability)）:
 >
 > ```bash
@@ -138,7 +138,7 @@ http://localhost:8080/
 配置 Web 服务器 <span id="configuring-web-servers"></span>
 -----------------------
 
-> 提示: 如果你现在只是要试用 Yii 而不是将其部署到生产环境中，
+> 提示：如果你现在只是要试用 Yii 而不是将其部署到生产环境中，
   本小节可以跳过。
 
 通过上述方法安装的应用程序在 Windows，Max OS X，
@@ -153,11 +153,11 @@ URL `http://www.example.com/index.php` 访问而不是 `http://www.example.com/b
 可能你还会想隐藏掉 URL 中的 `index.php`，具体细节在 [URL 解析和生成](runtime-url-handling.md)一章中有介绍，
 你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
 
-> 信息: 将 `basic/web` 设置为文档根目录(document root)，可以防止终端用户访问 `basic/web` 相邻目录中
+> 信息：将 `basic/web` 设置为文档根目录(document root)，可以防止终端用户访问 `basic/web` 相邻目录中
 的私有应用代码和敏感数据文件。
 禁止对其他目录的访问是一个不错的安全改进。
 
-> 信息: 如果你的应用程序将来要运行在共享虚拟主机环境中，
+> 信息：如果你的应用程序将来要运行在共享虚拟主机环境中，
 没有修改其 Web 服务器配置的权限，你依然可以通过调整应用的结构来提升安全性。
 详情请参考[共享主机环境](tutorial-shared-hosting.md) 一章。
 

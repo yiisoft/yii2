@@ -51,7 +51,7 @@ class UploadForm extends Model
 通过 `file` 验证器，你可以检查文件的扩展名，大小，MIME类型等等。详情请查阅
 [Core Validatators](tutorial-core-validators.md#file) 章节。
 
->提示: 如果你要上传的是一张图片，可以考虑使用`image`验证器。
+> 提示：如果你要上传的是一张图片，可以考虑使用`image`验证器。
 `image` 验证器是通过[[yii\validators\ImageValidator]]实现验证的，确保对应的模型属性
 收到的文件是有效的图片文件，然后才保存，或者使用扩展类[Imagine Extension](https://github.com/yiisoft/yii2-imagine)进行处理.
 
