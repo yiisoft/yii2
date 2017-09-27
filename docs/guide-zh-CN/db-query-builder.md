@@ -541,7 +541,7 @@ $query1->union($query2);
 - [[yii\db\Query::exists()|exists()]]：返回一个表示该查询是否包结果集的值。
 - [[yii\db\Query::count()|count()]]：返回 `COUNT` 查询的结果。
 - 其它集合查询方法：包括 [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]],
-  [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]] 等. `$q` 是一个必选参数，
+  [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]] 等。`$q` 是一个必选参数，
   既可以是一个字段名称，又可以是一个 DB 表达式。
 
 例如，
