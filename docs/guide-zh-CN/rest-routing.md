@@ -73,7 +73,7 @@
 ]
 ```
 
-您可能已经注意到控制器ID `user` 以复数形式出现在 `users` 末端。
+您可能已经注意到控制器 ID `user` 以复数形式出现在 `users` 末端。
 这是因为 [[yii\rest\UrlRule]] 能够为他们使用的末端全自动复数化控制器 ID。
 您可以通过设置 [[yii\rest\UrlRule::pluralize]] 为 false 来禁用此行为。
 
