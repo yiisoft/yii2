@@ -48,7 +48,7 @@ abstract class Target extends Component
      * Processes the given log messages.
      * This method will filter the given messages with [[levels]] and [[categories]].
      * And if requested, it will also export the filtering result to specific medium (e.g. email).
-     * @param array $messages profiling messages to be processed. See [[Logger::messages]] for the structure
+     * @param array $messages profiling messages to be processed. See [[Profiler::$messages]] for the structure
      * of each message.
      */
     public function collect(array $messages)
