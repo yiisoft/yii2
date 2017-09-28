@@ -30,7 +30,7 @@ Yii 中使用名为 `YII_DEBUG` 的常量来定义调试模式是否应被激活
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-> 提示: `YII_DEBUG` 的默认值是 false 。所以如果你确信你不在你应用程序代码中别的地方更改其默认值，
+> 提示：`YII_DEBUG` 的默认值是 false 。所以如果你确信你不在你应用程序代码中别的地方更改其默认值，
   你可以简单地删除上述行来禁用调试模式。
   
 

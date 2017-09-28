@@ -105,7 +105,7 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 [[yii\helpers\Html::submitButton()|Html::submitButton()]]。
 
 
-> 提示: 如果你正在你的应用程序中使用 Twitter Bootstrap CSS 你可以使用[[yii\bootstrap\ActiveForm]] 
+> 提示：如果你正在你的应用程序中使用 Twitter Bootstrap CSS 你可以使用[[yii\bootstrap\ActiveForm]] 
 > 来代替 [[yii\widgets\ActiveForm]]。
 > 前者继承自后者并在生成表单字段时使用 Bootstrap 特有的样式。
 

@@ -144,7 +144,7 @@ $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
 
-> 注意: 为了保持精度，
+> 注意：为了保持精度，
 > 即使对应的数据库列类型为数值型，
 > 所有从数据库取得的数据都被表现为字符串。
 
@@ -417,12 +417,12 @@ Yii 为四个最常用的隔离级别提供了常量：
 在本文写作之时，
 只有 MSSQL 和 SQLite 受这些限制的影响。
 
-> 注意: SQLite 只支持两种隔离级别，
+> 注意：SQLite 只支持两种隔离级别，
 所以你只能使用 `READ UNCOMMITTED` 和 `SERIALIZABLE`。
 使用其他级别将导致异常的抛出。
 
 
-> 注意: PostgreSQL 不支持在事务开启前设定隔离级别，
+> 注意：PostgreSQL 不支持在事务开启前设定隔离级别，
 因此，你不能在开启事务时直接指定隔离级别。
 你必须在事务开始后再调用 [[yii\db\Transaction::setIsolationLevel()]]。
 
