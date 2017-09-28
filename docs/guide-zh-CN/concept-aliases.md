@@ -5,9 +5,6 @@
 一个别名必须以 `@` 字符开头，以区别于传统的文件路径和 URL。
 Yii 预定义了大量可用的别名。例如，别名 `@yii` 指的是 Yii 框架本身的安装目录，而 `@web` 表示的是当前运行应用的根 URL。
 
-Yii has many pre-defined aliases already available. For example, the alias `@yii` represents the installation path of
-the Yii framework; `@web` represents the base URL for the currently running Web application.
-
 定义别名 <span id="defining-aliases"></span>
 ----------------
 

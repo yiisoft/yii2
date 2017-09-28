@@ -66,7 +66,7 @@ throw new NotFoundHttpException();
 错误处理器会显示异常以及详细的函数调用栈和源代码行数来帮助调试，
 当`YII_DEBUG` 为 false，只有错误信息会被显示以防止应用的敏感信息泄漏。
 
-> Info: 如果异常是继承 [[yii\base\UserException]]，
+> 信息：如果异常是继承 [[yii\base\UserException]]，
   不管`YII_DEBUG`为何值，函数调用栈信息都不会显示，
   这是因为这种错误会被认为是用户产生的错误，开发人员不需要去修正。
 
@@ -144,16 +144,10 @@ public function actionError()
 * `exception`: 更多详细信息的异常对象，如HTTP 状态码，
   错误码，错误调用栈等。
 
-> Info: 如果你使用 [基础应用模板](start-installation.md) 或 [高级应用模板](tutorial-advanced-app.md),
+> 注意：如果你使用 [基础应用模板](start-installation.md) 或 [高级应用模板](tutorial-advanced-app.md),
 错误动作和错误视图已经定义好了。
 
-> Note: If you need to redirect in an error handler, do it the following way:
-> ```php
-> Yii::$app->getResponse()->redirect($url)->send();
-> return;
-> ```
-
-> Note: If you need to redirect in an error handler, do it the following way:
+> 注意：如果您需要在错误处理程序中重定向，请执行以下操作：
 >
 > ```php
 > Yii::$app->getResponse()->redirect($url)->send();

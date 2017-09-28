@@ -31,7 +31,7 @@ WHERE `last_name` = :last_name
 LIMIT 10
 ```
 
-> 提示: 你平时更多的时候会使用 [[yii\db\Query]] 而不是 [yii\db\QueryBuilder]]。
+> 提示：你平时更多的时候会使用 [[yii\db\Query]] 而不是 [yii\db\QueryBuilder]]。
   当你调用其中一个查询方法时，后者将会被前者隐式的调用。[[yii\db\QueryBuilder]]主要负责将
   DBMS 不相关的 [[yii\db\Query]] 对象转换成 DBMS 相关的 SQL 语句（例如，
   以不同的方式引用表或字段名称）。
@@ -534,14 +534,14 @@ $query1->union($query2);
 
 [[yii\db\Query]] 提供了一整套的用于不同查询目的的方法。
 
-- [[yii\db\Query::all()|all()]]: 将返回一个由行组成的数组，每一行是一个由名称和值构成的关联数组（译者注：省略键的数组称为索引数组）。
-- [[yii\db\Query::one()|one()]]: 返回结果集的第一行。
-- [[yii\db\Query::column()|column()]]: 返回结果集的第一列。
-- [[yii\db\Query::scalar()|scalar()]]: 返回结果集的第一行第一列的标量值。
-- [[yii\db\Query::exists()|exists()]]: 返回一个表示该查询是否包结果集的值。
-- [[yii\db\Query::count()|count()]]: 返回 `COUNT` 查询的结果。
-- 其它集合查询方法: 包括 [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]],
-  [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]] 等. `$q` 是一个必选参数，
+- [[yii\db\Query::all()|all()]]：将返回一个由行组成的数组，每一行是一个由名称和值构成的关联数组（译者注：省略键的数组称为索引数组）。
+- [[yii\db\Query::one()|one()]]：返回结果集的第一行。
+- [[yii\db\Query::column()|column()]]：返回结果集的第一列。
+- [[yii\db\Query::scalar()|scalar()]]：返回结果集的第一行第一列的标量值。
+- [[yii\db\Query::exists()|exists()]]：返回一个表示该查询是否包结果集的值。
+- [[yii\db\Query::count()|count()]]：返回 `COUNT` 查询的结果。
+- 其它集合查询方法：包括 [[yii\db\Query::sum()|sum($q)]], [[yii\db\Query::average()|average($q)]],
+  [[yii\db\Query::max()|max($q)]], [[yii\db\Query::min()|min($q)]] 等。`$q` 是一个必选参数，
   既可以是一个字段名称，又可以是一个 DB 表达式。
 
 例如，
@@ -634,7 +634,7 @@ $query = (new \yii\db\Query())
 该匿名函数将带有一个包含了当前行的数据的 `$row` 参数，并且返回用作当前行索引的
 标量值（译者注：就是简单的数值或者字符串，而不是其他复杂结构，例如数组）。
 
-> Note: In contrast to query methods like [[yii\db\Query::groupBy()|groupBy()]] or [[yii\db\Query::orderBy()|orderBy()]]
+> 注意：In contrast to query methods like [[yii\db\Query::groupBy()|groupBy()]] or [[yii\db\Query::orderBy()|orderBy()]]
 > which are converted to SQL and are part of the query, this method works after the data has been fetched from the database.
 > That means that only those column names can be used that have been part of SELECT in your query.
 > Also if you selected a column with table prefix, e.g. `customer.id`, the result set will only contain `id` so you have to call

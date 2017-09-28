@@ -22,7 +22,7 @@
 从请求中接收 `message` 参数并显示给最终用户。
 如果请求没有提供 `message` 参数，操作将显示默认参数 “Hello”。
 
-> Info: [操作](structure-controllers.md#creating-actions)是最终用户可以直接访问并执行的对象。
+> 信息：[操作](structure-controllers.md#creating-actions)是最终用户可以直接访问并执行的对象。
   操作被组织在[控制器](structure-controllers.md)中。
   一个操作的执行结果就是最终用户收到的响应内容。
 
@@ -112,7 +112,7 @@ http://hostname/index.php?r=site/say&message=Hello+World
 如果你省略 URL 中的 `message` 参数，将会看到页面只显示 “Hello”。
 这是因为 `message` 被作为一个参数传给 `actionSay()` 方法，当省略它时，参数将使用默认的 `“Hello”` 代替。
 
-> Info: 新页面和其它页面使用同样的头部和尾部是因为 [[yii\web\Controller::render()|render()]] 
+> 信息：新页面和其它页面使用同样的头部和尾部是因为 [[yii\web\Controller::render()|render()]] 
   方法会自动把 `say` 视图执行的结果嵌入称为[布局](structure-views.md#layouts)的文件中，
   本例中是 `views/layouts/main.php`。
 

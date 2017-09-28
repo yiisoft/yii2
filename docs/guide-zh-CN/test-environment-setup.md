@@ -42,7 +42,7 @@ Changed current directory to <directory>
 然后，将 `<directory>/vendor/bin` 增加到你的 `PATH` 环境变量中。现在，
 我们可以在命令行中全局的使用 `codecept` 命令了。
 
-> Note: global installation allows you use Codeception for all projects you are working on your development machine and
+> 注意：global installation allows you use Codeception for all projects you are working on your development machine and
   allows running `codecept` shell command globally without specifying path. However, such approach may be inappropriate,
   for example, if 2 different projects require different versions of Codeception installed.
   For the simplicity all shell commands related to the tests running around this guide are written assuming Codeception
