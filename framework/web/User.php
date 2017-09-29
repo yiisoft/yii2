@@ -513,7 +513,7 @@ class User extends Component
         if ($value !== null) {
             $data = json_decode($value, true);
             if (is_array($data) && isset($data[2])) {
-                $cookie = new Cookie($this->identityCookie);
+                $cookie = Yii::createObject('yii\web\Cookie', $this->identityCookie);
                 $cookie->value = $value;
                 $cookie->expire = time() + (int) $data[2];
                 Yii::$app->getResponse()->getCookies()->add($cookie);
@@ -532,7 +532,7 @@ class User extends Component
      */
     protected function sendIdentityCookie($identity, $duration)
     {
-        $cookie = new Cookie($this->identityCookie);
+        $cookie = Yii::createObject('yii\web\Cookie', $this->identityCookie);
         $cookie->value = json_encode([
             $identity->getId(),
             $identity->getAuthKey(),
@@ -583,7 +583,7 @@ class User extends Component
      */
     protected function removeIdentityCookie()
     {
-        Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
+        Yii::$app->getResponse()->getCookies()->remove(Yii::createObject('yii\web\Cookie', $this->identityCookie));
     }
 
     /**

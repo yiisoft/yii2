@@ -1499,7 +1499,7 @@ class Request extends \yii\base\Request
                 }
                 $data = @unserialize($data);
                 if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
-                    $cookies[$name] = new Cookie([
+                    $cookies[$name] = Yii::createObject('yii\web\Cookie', [
                         'name' => $name,
                         'value' => $data[1],
                         'expire' => null,
@@ -1508,7 +1508,7 @@ class Request extends \yii\base\Request
             }
         } else {
             foreach ($_COOKIE as $name => $value) {
-                $cookies[$name] = new Cookie([
+                $cookies[$name] = Yii::createObject('yii\web\Cookie', [
                     'name' => $name,
                     'value' => $value,
                     'expire' => null,
@@ -1593,7 +1593,7 @@ class Request extends \yii\base\Request
         $options = $this->csrfCookie;
         $options['name'] = $this->csrfParam;
         $options['value'] = $token;
-        return new Cookie($options);
+        return Yii::createObject('yii\web\Cookie', $options);
     }
 
     /**
