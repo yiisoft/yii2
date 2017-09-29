@@ -54,13 +54,8 @@ class AccessRuleTest extends \yiiunit\TestCase
      */
     protected function mockUser($userid = null)
     {
-        $user = new User([
-            'identityClass' => UserIdentity::className(),
-            'enableAutoLogin' => false,
-        ]);
-        if ($userid !== null) {
-            $user->setIdentity(UserIdentity::findIdentity($userid));
-        }
+        $user = $this->getMockBuilder('\yii\web\User')->getMock();
+        $user->method('identityClass')->willReturn(UserIdentity::className());
 
         return $user;
     }
