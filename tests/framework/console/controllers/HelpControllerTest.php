@@ -53,6 +53,29 @@ class HelpControllerTest extends TestCase
         return $controller->flushStdOutBuffer();
     }
 
+    public function testModuleControllersList()
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'modules' => [
+                'magic' => 'yiiunit\data\modules\magic\Module',
+            ],
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('list'));
+        $this->assertSame(<<<'STRING'
+help
+help/index
+help/list
+help/list-action-options
+help/usage
+magic/e-tag
+magic/e-tag/delete
+magic/e-tag/list-e-tags
+
+STRING
+            , $result);
+    }
+
     public function testActionList()
     {
         $this->mockApplication([

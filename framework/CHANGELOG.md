@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Bug #14129: Fixed console help to properly work with tricky camelcased controller names (samdark, silverfire)
 - Enh #14126: Added variadic parameters support to DI container (SamMousa)
 - Enh #14087: Added `yii\web\View::registerCsrfMetaTags()` method that registers CSRF tags dynamically ensuring that caching doesn't interfere (RobinKamps)
 - Bug #6526: Fixed `yii\db\Command::batchInsert()` casting of double values correctly independent of the locale (cebe, leammas)
