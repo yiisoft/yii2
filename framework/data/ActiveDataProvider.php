@@ -7,9 +7,9 @@
 
 namespace yii\data;
 
-use yii\db\ActiveQueryInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\db\ActiveQueryInterface;
 use yii\db\Connection;
 use yii\db\QueryInterface;
 use yii\di\Instance;
@@ -152,9 +152,9 @@ class ActiveDataProvider extends BaseDataProvider
             }
 
             return $keys;
-        } else {
-            return array_keys($models);
         }
+
+        return array_keys($models);
     }
 
     /**
@@ -176,8 +176,9 @@ class ActiveDataProvider extends BaseDataProvider
     {
         parent::setSort($value);
         if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
-            /* @var $model Model */
-            $model = new $this->query->modelClass;
+            /* @var $modelClass Model */
+            $modelClass = $this->query->modelClass;
+            $model = $modelClass::instance();
             if (empty($sort->attributes)) {
                 foreach ($model->attributes() as $attribute) {
                     $sort->attributes[$attribute] = [

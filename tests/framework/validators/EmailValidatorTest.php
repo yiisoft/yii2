@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\validators;
 
 use yii\validators\EmailValidator;
@@ -117,7 +123,7 @@ class EmailValidatorTest extends TestCase
             'Ivan Petrov <ipetrov@gmail.com>',
         ];
         foreach ($emails as $email) {
-            $this->assertTrue($validator->validate($email),"Email: '$email' failed to validate(checkDNS=true, allowName=true)");
+            $this->assertTrue($validator->validate($email), "Email: '$email' failed to validate(checkDNS=true, allowName=true)");
         }
     }
 
@@ -158,10 +164,11 @@ class EmailValidatorTest extends TestCase
     }
 
     /**
-     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074
-     * https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
+     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074.
+     * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
      * @dataProvider malformedAddressesProvider
+     * @param string $value
      */
     public function testMalformedAddresses($value)
     {

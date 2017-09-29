@@ -1,11 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\caching;
 
 use yii\caching\DbCache;
 
 /**
- * Class for testing file cache backend
+ * Class for testing file cache backend.
  * @group db
  * @group caching
  */
@@ -22,7 +27,7 @@ class DbCacheTest extends CacheTestCase
 
         parent::setUp();
 
-        $this->getConnection()->createCommand("
+        $this->getConnection()->createCommand('
             CREATE TABLE IF NOT EXISTS cache (
                 id char(128) NOT NULL,
                 expire int(11) DEFAULT NULL,
@@ -30,7 +35,7 @@ class DbCacheTest extends CacheTestCase
                 PRIMARY KEY (id),
                 KEY expire (expire)
             );
-        ")->execute();
+        ')->execute();
     }
 
     /**
@@ -42,7 +47,7 @@ class DbCacheTest extends CacheTestCase
         if ($this->_connection === null) {
             $databases = self::getParam('databases');
             $params = $databases['mysql'];
-            $db = new \yii\db\Connection;
+            $db = new \yii\db\Connection();
             $db->dsn = $params['dsn'];
             $db->username = $params['username'];
             $db->password = $params['password'];

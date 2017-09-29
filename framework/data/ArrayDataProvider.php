@@ -113,9 +113,9 @@ class ArrayDataProvider extends BaseDataProvider
             }
 
             return $keys;
-        } else {
-            return array_keys($models);
         }
+
+        return array_keys($models);
     }
 
     /**
@@ -127,7 +127,7 @@ class ArrayDataProvider extends BaseDataProvider
     }
 
     /**
-     * Sorts the data models according to the given sort definition
+     * Sorts the data models according to the given sort definition.
      * @param array $models the models to be sorted
      * @param Sort $sort the sort definition
      * @return array the sorted data models

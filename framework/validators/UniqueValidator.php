@@ -10,8 +10,8 @@ namespace yii\validators;
 use Yii;
 use yii\base\Model;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
+use yii\db\ActiveRecord;
 use yii\db\ActiveRecordInterface;
 use yii\helpers\Inflector;
 
@@ -75,7 +75,6 @@ class UniqueValidator extends Validator
      *
      * - `{attributes}`: the labels of the attributes being validated.
      * - `{values}`: the values of the attributes being validated.
-     *
      */
     public $message;
     /**
@@ -244,11 +243,13 @@ class UniqueValidator extends Validator
             $conditions = [$targetAttribute => $model->$attribute];
         }
 
-        if (!$model instanceof ActiveRecord) {
+        $targetModelClass = $this->getTargetClass($model);
+        if (!is_subclass_of($targetModelClass, 'yii\db\ActiveRecord')) {
             return $conditions;
         }
 
-        return $this->prefixConditions($model, $conditions);
+        /** @var ActiveRecord $targetModelClass */
+        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 
     /**
@@ -271,12 +272,12 @@ class UniqueValidator extends Validator
         }
         $this->addError($model, $attribute, $this->message, [
             'attributes' => Inflector::sentence($attributeCombo),
-            'values' => implode('-', $valueCombo)
+            'values' => implode('-', $valueCombo),
         ]);
     }
 
     /**
-     * Returns conditions with alias
+     * Returns conditions with alias.
      * @param ActiveQuery $query
      * @param array $conditions array of condition, keys to be modified
      * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
@@ -289,27 +290,19 @@ class UniqueValidator extends Validator
         }
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{$alias}.[[" . preg_replace(
+            if (strpos($columnName, '(') === false) {
+                $prefixedColumn = "{$alias}.[[" . preg_replace(
                     '/^' . preg_quote($alias) . '\.(.*)$/',
-                    "$1",
-                    $columnName) . "]]";
+                    '$1',
+                    $columnName) . ']]';
+            } else {
+                // there is an expression, can't prefix it reliably
+                $prefixedColumn = $columnName;
+            }
+
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
+
         return $prefixedConditions;
-    }
-
-    /**
-     * Prefix conditions with aliases
-     *
-     * @param ActiveRecord $model
-     * @param array $conditions
-     * @return array
-     */
-    private function prefixConditions($model, $conditions)
-    {
-        $targetModelClass = $this->getTargetClass($model);
-
-        /** @var ActiveRecord $targetModelClass */
-        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 }

@@ -1,14 +1,16 @@
 <?php
 /**
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\log;
 
+use Yii;
 use yii\helpers\FileHelper;
 use yii\log\Dispatcher;
 use yii\log\Logger;
-use Yii;
 use yiiunit\TestCase;
 
 /**
@@ -26,12 +28,13 @@ class FileTargetTest extends TestCase
     {
         return [
             [true],
-            [false]
+            [false],
         ];
     }
 
     /**
      * @dataProvider booleanDataProvider
+     * @param bool $rotateByCopy
      */
     public function testRotate($rotateByCopy)
     {
@@ -50,9 +53,9 @@ class FileTargetTest extends TestCase
                     'maxFileSize' => 1024, // 1 MB
                     'maxLogFiles' => 1, // one file for rotation and one normal log file
                     'logVars' => [],
-                    'rotateByCopy' => $rotateByCopy
-                ]
-            ]
+                    'rotateByCopy' => $rotateByCopy,
+                ],
+            ],
         ]);
 
         // one file

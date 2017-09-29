@@ -1,11 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\helpers;
 
 use yii\helpers\StringHelper;
 use yiiunit\TestCase;
 
 /**
- * StringHelperTest
+ * StringHelperTest.
  * @group helpers
  */
 class StringHelperTest extends TestCase
@@ -13,7 +19,9 @@ class StringHelperTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testStrlen()
@@ -30,30 +38,30 @@ class StringHelperTest extends TestCase
         $this->assertEquals('abcdef', StringHelper::byteSubstr('abcdef', 0));
         $this->assertEquals('abcdef', StringHelper::byteSubstr('abcdef', 0, null));
 
-        $this->assertEquals('de',     StringHelper::byteSubstr('abcdef', 3, 2));
-        $this->assertEquals('def',    StringHelper::byteSubstr('abcdef', 3));
-        $this->assertEquals('def',    StringHelper::byteSubstr('abcdef', 3, null));
+        $this->assertEquals('de', StringHelper::byteSubstr('abcdef', 3, 2));
+        $this->assertEquals('def', StringHelper::byteSubstr('abcdef', 3));
+        $this->assertEquals('def', StringHelper::byteSubstr('abcdef', 3, null));
 
-        $this->assertEquals('cd',     StringHelper::byteSubstr('abcdef', -4, 2));
-        $this->assertEquals('cdef',   StringHelper::byteSubstr('abcdef', -4));
-        $this->assertEquals('cdef',   StringHelper::byteSubstr('abcdef', -4, null));
+        $this->assertEquals('cd', StringHelper::byteSubstr('abcdef', -4, 2));
+        $this->assertEquals('cdef', StringHelper::byteSubstr('abcdef', -4));
+        $this->assertEquals('cdef', StringHelper::byteSubstr('abcdef', -4, null));
 
-        $this->assertEquals('',   StringHelper::byteSubstr('abcdef', 4, 0));
-        $this->assertEquals('',   StringHelper::byteSubstr('abcdef', -4, 0));
+        $this->assertEquals('', StringHelper::byteSubstr('abcdef', 4, 0));
+        $this->assertEquals('', StringHelper::byteSubstr('abcdef', -4, 0));
 
         $this->assertEquals('это', StringHelper::byteSubstr('это', 0));
         $this->assertEquals('это', StringHelper::byteSubstr('это', 0, null));
 
-        $this->assertEquals('т',     StringHelper::byteSubstr('это', 2, 2));
-        $this->assertEquals('то',    StringHelper::byteSubstr('это', 2));
-        $this->assertEquals('то',    StringHelper::byteSubstr('это', 2, null));
+        $this->assertEquals('т', StringHelper::byteSubstr('это', 2, 2));
+        $this->assertEquals('то', StringHelper::byteSubstr('это', 2));
+        $this->assertEquals('то', StringHelper::byteSubstr('это', 2, null));
 
-        $this->assertEquals('т',     StringHelper::byteSubstr('это', -4, 2));
-        $this->assertEquals('то',   StringHelper::byteSubstr('это', -4));
-        $this->assertEquals('то',   StringHelper::byteSubstr('это', -4, null));
+        $this->assertEquals('т', StringHelper::byteSubstr('это', -4, 2));
+        $this->assertEquals('то', StringHelper::byteSubstr('это', -4));
+        $this->assertEquals('то', StringHelper::byteSubstr('это', -4, null));
 
-        $this->assertEquals('',   StringHelper::byteSubstr('это', 4, 0));
-        $this->assertEquals('',   StringHelper::byteSubstr('это', -4, 0));
+        $this->assertEquals('', StringHelper::byteSubstr('это', 4, 0));
+        $this->assertEquals('', StringHelper::byteSubstr('это', -4, 0));
     }
 
     public function testBasename()
@@ -143,6 +151,9 @@ class StringHelperTest extends TestCase
 
     /**
      * @dataProvider providerStartsWith
+     * @param bool $result
+     * @param string $string
+     * @param string|null $with
      */
     public function testStartsWith($result, $string, $with)
     {
@@ -153,7 +164,7 @@ class StringHelperTest extends TestCase
     }
 
     /**
-     * Rules that should work the same for case-sensitive and case-insensitive `startsWith()`
+     * Rules that should work the same for case-sensitive and case-insensitive `startsWith()`.
      */
     public function providerStartsWith()
     {
@@ -196,6 +207,9 @@ class StringHelperTest extends TestCase
 
     /**
      * @dataProvider providerEndsWith
+     * @param bool $result
+     * @param string $string
+     * @param string|null $with
      */
     public function testEndsWith($result, $string, $with)
     {
@@ -206,7 +220,7 @@ class StringHelperTest extends TestCase
     }
 
     /**
-     * Rules that should work the same for case-sensitive and case-insensitive `endsWith()`
+     * Rules that should work the same for case-sensitive and case-insensitive `endsWith()`.
      */
     public function providerEndsWith()
     {
@@ -248,14 +262,14 @@ class StringHelperTest extends TestCase
 
     public function testExplode()
     {
-        $this->assertEquals(['It', 'is', 'a first', 'test'], StringHelper::explode("It, is, a first, test"));
-        $this->assertEquals(['It', 'is', 'a test with trimmed digits', '0', '1', '2'], StringHelper::explode("It, is, a test with trimmed digits, 0, 1, 2", ',', true, true));
-        $this->assertEquals(['It', 'is', 'a second', 'test'], StringHelper::explode("It+ is+ a second+ test", '+'));
-        $this->assertEquals(['Save', '', '', 'empty trimmed string'], StringHelper::explode("Save, ,, empty trimmed string", ','));
-        $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::explode("Здесь我 multibyte我 строка", '我'));
-        $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::explode("Disable,  trim  ,,,here but ignore empty", ',', false, true));
-        $this->assertEquals(['It/', ' is?', ' a', ' test with rtrim'], StringHelper::explode("It/, is?, a , test with rtrim", ',', 'rtrim'));
-        $this->assertEquals(['It', ' is', ' a ', ' test with closure'], StringHelper::explode("It/, is?, a , test with closure", ',', function ($value) { return trim($value, '/?'); }));
+        $this->assertEquals(['It', 'is', 'a first', 'test'], StringHelper::explode('It, is, a first, test'));
+        $this->assertEquals(['It', 'is', 'a test with trimmed digits', '0', '1', '2'], StringHelper::explode('It, is, a test with trimmed digits, 0, 1, 2', ',', true, true));
+        $this->assertEquals(['It', 'is', 'a second', 'test'], StringHelper::explode('It+ is+ a second+ test', '+'));
+        $this->assertEquals(['Save', '', '', 'empty trimmed string'], StringHelper::explode('Save, ,, empty trimmed string', ','));
+        $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::explode('Здесь我 multibyte我 строка', '我'));
+        $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::explode('Disable,  trim  ,,,here but ignore empty', ',', false, true));
+        $this->assertEquals(['It/', ' is?', ' a', ' test with rtrim'], StringHelper::explode('It/, is?, a , test with rtrim', ',', 'rtrim'));
+        $this->assertEquals(['It', ' is', ' a ', ' test with closure'], StringHelper::explode('It/, is?, a , test with closure', ',', function ($value) { return trim($value, '/?'); }));
     }
 
     public function testWordCount()

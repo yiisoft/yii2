@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
@@ -11,7 +16,7 @@ use yiiunit\TestCase;
 class SessionTest extends TestCase
 {
     /**
-     * Test to prove that after Session::destroy session id set to old value
+     * Test to prove that after Session::destroy session id set to old value.
      */
     public function testDestroySessionId()
     {

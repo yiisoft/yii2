@@ -66,6 +66,8 @@ use yii\base\InvalidConfigException;
  * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
  * is to be added to relational query join condition.
  *
+ * @property string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -293,9 +295,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         if ($row !== false) {
             $models = $this->populate([$row]);
             return reset($models) ?: null;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -313,7 +315,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if ($this->sql === null) {
-            list ($sql, $params) = $db->getQueryBuilder()->build($this);
+            list($sql, $params) = $db->getQueryBuilder()->build($this);
         } else {
             $sql = $this->sql;
             $params = $this->params;
@@ -337,7 +339,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return parent::queryScalar($selectExpression, $db);
         }
 
-        return (new Query)->select([$selectExpression])
+        return (new Query())->select([$selectExpression])
             ->from(['c' => "({$this->sql})"])
             ->params($this->params)
             ->createCommand($db)
@@ -388,9 +390,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * The alias syntax is available since version 2.0.7.
      *
-     * @param bool|array $eagerLoading whether to eager load the relations specified in `$with`.
-     * When this is a boolean, it applies to all relations specified in `$with`. Use an array
-     * to explicitly list which relations in `$with` need to be eagerly loaded. Defaults to `true`.
+     * @param bool|array $eagerLoading whether to eager load the relations
+     * specified in `$with`.  When this is a boolean, it applies to all
+     * relations specified in `$with`. Use an array to explicitly list which
+     * relations in `$with` need to be eagerly loaded.  Note, that this does
+     * not mean, that the relations are populated from the query result. An
+     * extra query will still be performed to bring in the related data.
+     * Defaults to `true`.
      * @param string|array $joinType the join type of the relations specified in `$with`.
      * When this is a string, it applies to all relations specified in `$with`. Use an array
      * in the format of `relationName => joinType` to specify different join types for different relations.
@@ -410,7 +416,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 list(, $relation, $alias) = $matches;
                 $name = $relation;
                 $callback = function ($query) use ($callback, $alias) {
-                    /** @var $query ActiveQuery */
+                    /* @var $query ActiveQuery */
                     $query->alias($alias);
                     if ($callback !== null) {
                         call_user_func($callback, $query);
@@ -433,9 +439,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $join = $this->join;
         $this->join = [];
 
-        $model = new $this->modelClass;
+        /* @var $modelClass ActiveRecordInterface */
+        $modelClass = $this->modelClass;
+        $model = $modelClass::instance();
         foreach ($this->joinWith as $config) {
-            list ($with, $eagerLoading, $joinType) = $config;
+            list($with, $eagerLoading, $joinType) = $config;
             $this->joinWithRelations($model, $with, $joinType);
 
             if (is_array($eagerLoading)) {
@@ -475,7 +483,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * This is a shortcut method to [[joinWith()]] with the join type set as "INNER JOIN".
      * Please refer to [[joinWith()]] for detailed usage of this method.
      * @param string|array $with the relations to be joined with.
-     * @param bool|array $eagerLoading whether to eager loading the relations.
+     * @param bool|array $eagerLoading whether to eager load the relations.
+     * Note, that this does not mean, that the relations are populated from the
+     * query result. An extra query will still be performed to bring in the
+     * related data.
      * @return $this the query object itself
      * @see joinWith()
      */
@@ -513,7 +524,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 } else {
                     $relation = $relations[$fullName];
                 }
-                $primaryModel = new $relation->modelClass;
+                /* @var $relationModelClass ActiveRecordInterface */
+                $relationModelClass = $relation->modelClass;
+                $primaryModel = $relationModelClass::instance();
                 $parent = $relation;
                 $prefix = $fullName;
                 $name = $childName;
@@ -543,9 +556,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         if (is_array($joinType) && isset($joinType[$name])) {
             return $joinType[$name];
-        } else {
-            return is_string($joinType) ? $joinType : 'INNER JOIN';
         }
+
+        return is_string($joinType) ? $joinType : 'INNER JOIN';
     }
 
     /**
@@ -562,9 +575,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             foreach ($this->from as $alias => $tableName) {
                 if (is_string($alias)) {
                     return [$tableName, $alias];
-                } else {
-                    break;
                 }
+                break;
             }
         }
 
@@ -588,7 +600,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $via = $child->via;
         $child->via = null;
-        if ($via instanceof ActiveQuery) {
+        if ($via instanceof self) {
             // via table
             $this->joinWithRelation($parent, $via, $joinType);
             $this->joinWithRelation($via, $child, $joinType);
@@ -600,11 +612,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return;
         }
 
-        list ($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
-        list ($childTable, $childAlias) = $child->getTableNameAndAlias();
+        list($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
+        list($childTable, $childAlias) = $child->getTableNameAndAlias();
 
         if (!empty($child->link)) {
-
             if (strpos($parentAlias, '{{') === false) {
                 $parentAlias = '{{' . $parentAlias . '}}';
             }
@@ -748,7 +759,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function viaTable($tableName, $link, callable $callable = null)
     {
-        $relation = new ActiveQuery(get_class($this->primaryModel), [
+        $relation = new self(get_class($this->primaryModel), [
             'from' => [$tableName],
             'link' => $link,
             'multiple' => true,
@@ -775,7 +786,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function alias($alias)
     {
         if (empty($this->from) || count($this->from) < 2) {
-            list($tableName, ) = $this->getTableNameAndAlias();
+            list($tableName) = $this->getTableNameAndAlias();
             $this->from = [$alias => $tableName];
         } else {
             $tableName = $this->getPrimaryTableName();
@@ -787,85 +798,21 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 }
             }
         }
+
         return $this;
     }
 
     /**
-     * Returns table names used in [[from]] indexed by aliases.
-     * Both aliases and names are enclosed into {{ and }}.
-     * @return string[] table names indexed by aliases
-     * @throws \yii\base\InvalidConfigException
+     * @inheritdoc
      * @since 2.0.12
      */
     public function getTablesUsedInFrom()
     {
         if (empty($this->from)) {
-            $tableNames = [$this->getPrimaryTableName()];
-        } elseif (is_array($this->from)) {
-            $tableNames = $this->from;
-        } elseif (is_string($this->from)) {
-            $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
-        } else {
-            throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
+            $this->from = [$this->getPrimaryTableName()];
         }
 
-        // Clean up table names and aliases
-        $cleanedUpTableNames = [];
-        foreach ($tableNames as $alias => $tableName) {
-            if (!is_string($alias)) {
-                $pattern = <<<PATTERN
-~
-^
-\s*
-(
-    (?:['"`\[]|{{)
-    .*?
-    (?:['"`\]]|}})
-    |
-    \w+
-)
-(?:
-    (?:
-        \s+
-        (?:as)?
-        \s*
-    )
-    (
-       (?:['"`\[]|{{)
-        .*?
-        (?:['"`\]]|}})
-        |
-        \w+
-    )
-)?
-\s*
-$
-~iux
-PATTERN;
-                if (preg_match($pattern, $tableName, $matches)) {
-                    if (isset($matches[1])) {
-                        if (isset($matches[2])) {
-                            list(, $tableName, $alias) = $matches;
-                        } else {
-                            $tableName = $alias = $matches[1];
-                        }
-                        if (strncmp($alias, '{{', 2) !== 0) {
-                            $alias = '{{' . $alias . '}}';
-                        }
-                        if (strncmp($tableName, '{{', 2) !== 0) {
-                            $tableName = '{{' . $tableName . '}}';
-                        }
-                    }
-                }
-            }
-
-            $tableName = str_replace(["'", '"', '`', '[', ']'], '', $tableName);
-            $alias = str_replace(["'", '"', '`', '[', ']'], '', $alias);
-
-            $cleanedUpTableNames[$alias] = $tableName;
-        }
-
-        return $cleanedUpTableNames;
+        return parent::getTablesUsedInFrom();
     }
 
     /**
