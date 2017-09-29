@@ -346,10 +346,10 @@ public function behaviors()
 }
 ```
 
-Also check the section on [REST Controllers](rest-controllers.md#cors) if you want to add the CORS filter to an
-[[yii\rest\ActiveController]] class in your API.
+如果要将CORS过滤器添加到你的API中的[[yii\rest\ActiveController]]类，
+还要检查[REST Controllers]（rest-controllers.md＃cors）中的部分。
 
-The Cors filtering could be tuned using the [[yii\filters\Cors::$cors|$cors]] property.
+CROS过滤器可以通过[[yii\filters\Cors::$cors|$cors]]属性进行调整。
 
 * `cors['Origin']`: 定义允许来源的数组，可为`['*']` (任何用户) 或 `['http://www.myserver.net', 'http://www.myotherserver.com']`. 默认为 `['*']`.
 * `cors['Access-Control-Request-Method']`: 允许动作数组如 `['GET', 'OPTIONS', 'HEAD']`.  默认为 `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
