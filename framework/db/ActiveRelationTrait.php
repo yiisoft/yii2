@@ -114,11 +114,14 @@ trait ActiveRelationTrait
 
     /**
      * Sets the name of the relation that is the inverse of this relation.
-     * For example, an order has a customer, which means the inverse of the "customer" relation
-     * is the "orders", and the inverse of the "orders" relation is the "customer".
-     * If this property is set, the primary record(s) will be referenced through the specified relation.
+     * For example, a customer has orders, which means the inverse of the "orders" relation
+     * is the "customer". Note that "customer" relation has not inverse relation "orders",
+     * because one order model in general case cannot represent all models in "orders".
+     * If this property is set, the primary record will be referenced through the specified relation.
      * For example, `$customer->orders[0]->customer` and `$customer` will be the same object,
      * and accessing the customer of an order will not trigger a new DB query.
+     * But in `$order->customer->orders` accessing the orders of a customer will trigger a new DB query,
+     * because `$order` may not represent all orders.
      *
      * Use this method when declaring a relation in the [[ActiveRecord]] class:
      *
@@ -175,14 +178,20 @@ trait ActiveRelationTrait
                 if (!isset($inverseRelation)) {
                     $inverseRelation = $relatedModel->getRelation($this->inverseOf);
                 }
-                $relatedModel->populateRelation($this->inverseOf, $inverseRelation->multiple ? [$this->primaryModel] : $this->primaryModel);
+                if ($inverseRelation->multiple) {
+                    return;
+                }
+                $relatedModel->populateRelation($this->inverseOf, $this->primaryModel);
             } else {
                 if (!isset($inverseRelation)) {
                     /* @var $modelClass ActiveRecordInterface */
                     $modelClass = $this->modelClass;
                     $inverseRelation = $modelClass::instance()->getRelation($this->inverseOf);
                 }
-                $result[$i][$this->inverseOf] = $inverseRelation->multiple ? [$this->primaryModel] : $this->primaryModel;
+                if ($inverseRelation->multiple) {
+                    return;
+                }
+                $result[$i][$this->inverseOf] = $this->primaryModel;
             }
         }
     }
@@ -309,43 +318,25 @@ trait ActiveRelationTrait
         }
 
         if ($relation->multiple) {
-            $buckets = $this->buildBuckets($primaryModels, $relation->link, null, null, false);
-            if ($model instanceof ActiveRecordInterface) {
-                foreach ($models as $model) {
-                    $key = $this->getModelKey($model, $relation->link);
-                    $model->populateRelation($name, isset($buckets[$key]) ? $buckets[$key] : []);
-                }
-            } else {
-                foreach ($primaryModels as $i => $primaryModel) {
-                    if ($this->multiple) {
-                        foreach ($primaryModel as $j => $m) {
-                            $key = $this->getModelKey($m, $relation->link);
-                            $primaryModels[$i][$j][$name] = isset($buckets[$key]) ? $buckets[$key] : [];
-                        }
-                    } elseif (!empty($primaryModel[$primaryName])) {
-                        $key = $this->getModelKey($primaryModel[$primaryName], $relation->link);
-                        $primaryModels[$i][$primaryName][$name] = isset($buckets[$key]) ? $buckets[$key] : [];
+            return;
+        }
+
+        if ($this->multiple) {
+            foreach ($primaryModels as $i => $primaryModel) {
+                foreach ($primaryModel[$primaryName] as $j => $m) {
+                    if ($m instanceof ActiveRecordInterface) {
+                        $m->populateRelation($name, $primaryModel);
+                    } else {
+                        $primaryModels[$i][$primaryName][$j][$name] = $primaryModel;
                     }
                 }
             }
         } else {
-            if ($this->multiple) {
-                foreach ($primaryModels as $i => $primaryModel) {
-                    foreach ($primaryModel[$primaryName] as $j => $m) {
-                        if ($m instanceof ActiveRecordInterface) {
-                            $m->populateRelation($name, $primaryModel);
-                        } else {
-                            $primaryModels[$i][$primaryName][$j][$name] = $primaryModel;
-                        }
-                    }
-                }
-            } else {
-                foreach ($primaryModels as $i => $primaryModel) {
-                    if ($primaryModels[$i][$primaryName] instanceof ActiveRecordInterface) {
-                        $primaryModels[$i][$primaryName]->populateRelation($name, $primaryModel);
-                    } elseif (!empty($primaryModels[$i][$primaryName])) {
-                        $primaryModels[$i][$primaryName][$name] = $primaryModel;
-                    }
+            foreach ($primaryModels as $i => $primaryModel) {
+                if ($primaryModels[$i][$primaryName] instanceof ActiveRecordInterface) {
+                    $primaryModels[$i][$primaryName]->populateRelation($name, $primaryModel);
+                } elseif (!empty($primaryModels[$i][$primaryName])) {
+                    $primaryModels[$i][$primaryName][$name] = $primaryModel;
                 }
             }
         }
