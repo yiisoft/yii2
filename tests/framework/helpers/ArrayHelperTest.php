@@ -508,6 +508,12 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    public function testMergeEmpty()
+    {
+        $this->assertEquals([], ArrayHelper::merge([], []));
+        $this->assertEquals([], ArrayHelper::merge([], [], []));
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/pull/11549
      */

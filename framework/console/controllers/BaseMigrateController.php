@@ -8,11 +8,13 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
+use yii\db\MigrationInterface;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
@@ -759,7 +761,14 @@ abstract class BaseMigrateController extends Controller
     protected function createMigration($class)
     {
         $this->includeMigrationFile($class);
-        return new $class(['compact' => $this->compact]);
+
+        /** @var MigrationInterface $migration */
+        $migration = Yii::createObject($class);
+        if ($migration instanceof BaseObject && $migration->canSetProperty('compact')) {
+            $migration->compact = $this->compact;
+        }
+
+        return $migration;
     }
 
     /**

@@ -13,8 +13,11 @@ namespace yii\base;
  * For example: adjustments made by DI or behaviors reveal only at object level, but might be needed
  * at class (static) level as well.
  *
+ * To implement the [[instance()]] method you may use [[StaticInstanceTrait]].
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.13
+ * @see StaticInstanceTrait
  */
 interface StaticInstanceInterface
 {

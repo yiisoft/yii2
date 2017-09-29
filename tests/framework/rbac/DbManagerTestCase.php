@@ -7,16 +7,20 @@
 
 namespace yiiunit\framework\rbac;
 
+use app\models\User;
 use Yii;
+use yii\caching\ArrayCache;
 use yii\console\Application;
 use yii\console\ExitCode;
 use yii\db\Connection;
+use yii\log\Logger;
 use yii\rbac\Assignment;
 use yii\rbac\DbManager;
 use yii\rbac\Permission;
 use yii\rbac\Role;
 use yiiunit\data\rbac\UserID;
 use yiiunit\framework\console\controllers\EchoMigrateController;
+use yiiunit\framework\log\ArrayTarget;
 
 /**
  * DbManagerTestCase.
@@ -285,5 +289,74 @@ abstract class DbManagerTestCase extends ManagerTestCase
         } else {
             $this->assertFalse($result);
         }
+    }
+
+    /**
+     * Ensure assignments are read from DB only once on subsequent tests.
+     */
+    public function testCheckAccessCache()
+    {
+        $this->mockApplication();
+        $this->prepareData();
+
+        // warm up item cache, so only assignment queries are sent to DB
+        $this->auth->cache = new ArrayCache();
+        $this->auth->checkAccess('author B', 'readPost');
+        $this->auth->checkAccess(new UserID('author B'), 'createPost');
+
+        // track db queries
+        Yii::$app->log->flushInterval = 1;
+        Yii::$app->log->getLogger()->messages = [];
+        Yii::$app->log->targets['rbacqueries'] = $logTarget = new ArrayTarget([
+            'categories' => ['yii\\db\\Command::query'],
+            'levels' => Logger::LEVEL_INFO,
+        ]);
+        $this->assertCount(0, $logTarget->messages);
+
+        // testing access on two different permissons for the same user should only result in one DB query for user assignments
+        foreach (['readPost' => true, 'createPost' => false] as $permission => $result) {
+            $this->assertEquals($result, $this->auth->checkAccess('reader A', $permission), "Checking $permission");
+        }
+        $this->assertSingleQueryToAssignmentsTable($logTarget);
+
+        // verify cache is flushed on assign (createPost is now true)
+        $this->auth->assign($this->auth->getRole('admin'), 'reader A');
+        foreach (['readPost' => true, 'createPost' => true] as $permission => $result) {
+            $this->assertEquals($result, $this->auth->checkAccess('reader A', $permission), "Checking $permission");
+        }
+        $this->assertSingleQueryToAssignmentsTable($logTarget);
+
+        // verify cache is flushed on unassign (createPost is now false again)
+        $this->auth->revoke($this->auth->getRole('admin'), 'reader A');
+        foreach (['readPost' => true, 'createPost' => false] as $permission => $result) {
+            $this->assertEquals($result, $this->auth->checkAccess('reader A', $permission), "Checking $permission");
+        }
+        $this->assertSingleQueryToAssignmentsTable($logTarget);
+
+        // verify cache is flushed on revokeall
+        $this->auth->revokeAll('reader A');
+        foreach (['readPost' => false, 'createPost' => false] as $permission => $result) {
+            $this->assertEquals($result, $this->auth->checkAccess('reader A', $permission), "Checking $permission");
+        }
+        $this->assertSingleQueryToAssignmentsTable($logTarget);
+
+        // verify cache is flushed on removeAllAssignments
+        $this->auth->assign($this->auth->getRole('admin'), 'reader A');
+        foreach (['readPost' => true, 'createPost' => true] as $permission => $result) {
+            $this->assertEquals($result, $this->auth->checkAccess('reader A', $permission), "Checking $permission");
+        }
+        $this->assertSingleQueryToAssignmentsTable($logTarget);
+        $this->auth->removeAllAssignments();
+        foreach (['readPost' => false, 'createPost' => false] as $permission => $result) {
+            $this->assertEquals($result, $this->auth->checkAccess('reader A', $permission), "Checking $permission");
+        }
+        $this->assertSingleQueryToAssignmentsTable($logTarget);
+    }
+
+    private function assertSingleQueryToAssignmentsTable($logTarget)
+    {
+        $this->assertCount(1, $logTarget->messages, 'Only one query should have been performed, but there are the following logs: ' . print_r($logTarget->messages, true));
+        $this->assertContains('auth_assignment', $logTarget->messages[0][0], 'Log message should be a query to auth_assignment table');
+        $logTarget->messages = [];
     }
 }

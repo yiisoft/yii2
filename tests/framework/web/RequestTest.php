@@ -320,7 +320,7 @@ class RequestTest extends TestCase
             [[
                 'HTTP_X_FORWARDED_PROTO' => 'https',
                 'REMOTE_HOST' => 'test.com',
-            ], true],
+            ], false],
             [[
                 'HTTP_X_FORWARDED_PROTO' => 'https',
                 'REMOTE_HOST' => 'othertest.com',
@@ -338,7 +338,7 @@ class RequestTest extends TestCase
             [[
                 'HTTP_FRONT_END_HTTPS' => 'on',
                 'REMOTE_HOST' => 'test.com',
-            ], true],
+            ], false],
             [[
                 'HTTP_FRONT_END_HTTPS' => 'on',
                 'REMOTE_HOST' => 'othertest.com',
@@ -364,8 +364,7 @@ class RequestTest extends TestCase
         $original = $_SERVER;
         $request = new Request([
             'trustedHosts' => [
-                '/^test.com$/',
-                '/^192\.168/',
+                '192.168.0.0/24',
             ],
         ]);
         $_SERVER = $server;
@@ -397,10 +396,10 @@ class RequestTest extends TestCase
                 [
                     'HTTP_X_FORWARDED_PROTO' => 'https',
                     'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
-                    'REMOTE_HOST' => 'trusted.com',
+                    'REMOTE_HOST' => 'untrusted.com',
                     'REMOTE_ADDR' => '192.169.1.1',
                 ],
-                '123.123.123.123',
+                '192.169.1.1',
             ],
             [
                 [
@@ -425,8 +424,7 @@ class RequestTest extends TestCase
         $_SERVER = $server;
         $request = new Request([
             'trustedHosts' => [
-                '/^192\.168/',
-                '/^trusted.com$/',
+                '192.168.0.0/24',
             ],
         ]);
 

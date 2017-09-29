@@ -561,7 +561,7 @@ class Migration extends Component implements MigrationInterface
     /**
      * Finalizes after the command has been executed, and outputs to the console the time elapsed
      * 
-     * @param float the time before the command was executed.
+     * @param float $time the time before the command was executed.
      * @since 2.0.13
      */
     protected function endCommand($time)
