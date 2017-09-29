@@ -122,8 +122,8 @@ class PostController extends Controller
 
 您的模块也可以声明命令，这将通过 [控制台](tutorial-console.md) 模式可用。
 
-In order for the command line utility to see your commands, you will need to change the [[yii\base\Module::controllerNamespace]]
-property, when Yii is executed in the console mode, and point it to your commands namespace.
+当Yii在控制台模式下执行并将其指向命令的命名空间时。想要在命令行中查看你的命令，
+你需要更改[[yii\base\Module::controllerNamespace]]属性。
 
 一种实现方法是在模块的 `init()` 方法中测试Yii应用程序的实例类型：
 
@@ -265,9 +265,9 @@ class Module extends \yii\base\Module
 例如`forum/admin/dashboard/index` 代表
 在模块`forum`中子模块`admin`中`dashboard`控制器的`index`操作。
 
-> Info: The [[yii\base\Module::getModule()|getModule()]] method only returns the child module directly belonging
-to its parent. The [[yii\base\Application::loadedModules]] property keeps a list of loaded modules, including both
-direct children and nested ones, indexed by their class names.
+> 注意: [[yii\base\Module::getModule()|getModule()]] 方法只返回子模块的直属的
+父模块。 [[yii\base\Application::loadedModules]] 保存了已加所有载模块的属性, 包括两者的子模块和
+嵌套模块，并用他们的类名进行索引。
 
 
 ## 最佳实践 <span id="best-practices"></span>
