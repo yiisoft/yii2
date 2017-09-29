@@ -54,8 +54,13 @@ class AccessRuleTest extends \yiiunit\TestCase
      */
     protected function mockUser($userid = null)
     {
-        $user = $this->getMockBuilder('\yii\web\User')->getMock();
-        $user->method('identityClass')->willReturn(UserIdentity::className());
+        $user = new User([
+            'identityClass' => UserIdentity::className(),
+            'enableAutoLogin' => false,
+        ]);
+        if ($userid !== null) {
+            $user->setIdentity(UserIdentity::findIdentity($userid));
+        }
 
         return $user;
     }
@@ -317,8 +322,6 @@ class AccessRuleTest extends \yiiunit\TestCase
         $rule->roles = ['allowed_role_1', 'allowed_role_2'];
         $rule->permissions = ['allowed_permission_1', 'allowed_permission_2'];
         $this->assertNull($rule->allows($action, $user, $request));
-
-        $user->method('can')->willReturn(true);
 
         $rule->roles = ['allowed_role_1', 'allowed_role_2'];
         $this->assertTrue($rule->allows($action, $user, $request));
