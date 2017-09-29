@@ -302,11 +302,6 @@ class ContainerTest extends TestCase
      */
     public function testVariadicCallable()
     {
-        $container = new Container();
-        $func = function(QuxInterface ...$quxes) {
-            return "That's a whole lot of quxes!";
-        };
-
-        $container->invoke($func);
+        require __DIR__ . '/testContainerWithVariadicCallable.php';
     }
 }
