@@ -18,6 +18,7 @@ use yiiunit\framework\di\stubs\Bar;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\di\stubs\QuxInterface;
+use yiiunit\framework\di\stubs\Variadic;
 use yiiunit\TestCase;
 
 /**
@@ -284,5 +285,22 @@ class ContainerTest extends TestCase
         $foo = $container->get('qux.using.closure');
         $sameFoo = $container->get('qux.using.closure');
         $this->assertSame($foo, $sameFoo);
+    }
+
+    /**
+     * @requires PHP 5.6
+     */
+    public function testVariadicConstructor()
+    {
+        $container = new Container();
+        $container->get(Variadic::class);
+    }
+
+    /**
+     * @requires PHP 5.6
+     */
+    public function testVariadicCallable()
+    {
+        require __DIR__ . '/testContainerWithVariadicCallable.php';
     }
 }
