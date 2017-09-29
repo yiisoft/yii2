@@ -261,11 +261,11 @@ $email = $customer->email;
 
 ### 数据转换 <span id="data-transformation"></span>
 
-It often happens that the data being entered and/or displayed are in a format which is different from the one used in
-storing the data in a database. For example, in the database you are storing customers' birthdays as UNIX timestamps
-(which is not a good design, though), while in most cases you would like to manipulate birthdays as strings in
-the format of `'YYYY/MM/DD'`. To achieve this goal, you can define *data transformation* methods in the `Customer`
-Active Record class like the following:
+常常遇到，要输入或显示的数据是一种格式，而要将其存储在数据库中是另一种格式。
+例如，在数据库中，您将客户的生日存储为 UNIX 时间戳（虽然这不是一个很好的设计），
+而在大多数情况下，你想以字符串 `'YYYY/MM/DD'` 的格式处理生日数据。
+为了实现这一目标，您可以在 `Customer` 中定义 *数据转换* 方法
+定义 AR 类如下：
 
 ```php
 class Customer extends ActiveRecord
@@ -284,76 +284,76 @@ class Customer extends ActiveRecord
 }
 ```
 
-Now in your PHP code, instead of accessing `$customer->birthday`, you would access `$customer->birthdayText`, which
-will allow you to input and display customer birthdays in the format of `'YYYY/MM/DD'`.
+现在你的 PHP 代码中，你可以访问 `$ customer-> birthdayText`，
+来以 `'YYYY/MM/DD'` 的格式输入和显示客户生日，而不是访问`$ customer-> birthday`。
 
-> Tip: The above example shows a generic way of transforming data in different formats. If you are working with
-> date values, you may use [DateValidator](tutorial-core-validators.md#date) and [[yii\jui\DatePicker|DatePicker]],
-> which is easier to use and more powerful.
+> 提示：上述示例显示了以不同格式转换数据的通用方法。如果你正在使用
+> 日期值，您可以使用 [DateValidator](tutorial-core-validators.md#date) 和 [[yii\jui\DatePicker|DatePicker]] 来操作，
+> 这将更易用，更强大。
 
 
-### Retrieving Data in Arrays <span id="data-in-arrays"></span>
+### 以数组形式获取数据 <span id="data-in-arrays"></span>
 
-While retrieving data in terms of Active Record objects is convenient and flexible, it is not always desirable
-when you have to bring back a large amount of data due to the big memory footprint. In this case, you can retrieve
-data using PHP arrays by calling [[yii\db\ActiveQuery::asArray()|asArray()]] before executing a query method:
+通过 AR 对象获取数据十分方便灵活，与此同时，当你需要返回大量的数据的时候，
+这样的做法并不令人满意，因为这将导致大量内存占用。在这种情况下，您可以
+在查询方法前调用 [[yii\db\ActiveQuery::asArray()|asArray()]] 方法，来获取 PHP 数组形式的结果：
 
 ```php
-// return all customers
-// each customer is returned as an associative array
+// 返回所有客户
+// 每个客户返回一个关联数组
 $customers = Customer::find()
     ->asArray()
     ->all();
 ```
 
-> Note: While this method saves memory and improves performance, it is closer to the lower DB abstraction layer
-  and you will lose most of the Active Record features. A very important distinction lies in the data type of
-  the column values. When you return data in Active Record instances, column values will be automatically typecast
-  according to the actual column types; on the other hand when you return data in arrays, column values will be
-  strings (since they are the result of PDO without any processing), regardless their actual column types.
+> 提示：虽然这种方法可以节省内存并提高性能，但它更靠近较低的 DB 抽象层
+  你将失去大部分的 AR 提供的功能。 一个非常重要的区别在于列值的数据类型。
+  当您在 AR 实例中返回数据时，列值将根据实际列类型，自动类型转换；
+  然而，当您以数组返回数据时，列值将为
+  字符串（因为它们是没有处理过的 PDO 的结果），不管它们的实际列是什么类型。
    
 
-### Retrieving Data in Batches <span id="data-in-batches"></span>
+### 批量获取数据 <span id="data-in-batches"></span>
 
-In [Query Builder](db-query-builder.md), we have explained that you may use *batch query* to minimize your memory
-usage when querying a large amount of data from the database. You may use the same technique in Active Record. For example,
+在 [查询生成器](db-query-builder.md) 中，我们已经解释说可以使用 *批处理查询* 来最小化你的内存使用，
+每当从数据库查询大量数据。你可以在 AR 中使用同样的技巧。例如，
 
 ```php
-// fetch 10 customers at a time
+// 每次获取 10 条客户数据
 foreach (Customer::find()->batch(10) as $customers) {
-    // $customers is an array of 10 or fewer Customer objects
+    // $customers 是个最多拥有 10 条数据的数组
 }
 
-// fetch 10 customers at a time and iterate them one by one
+// 每次获取 10 条客户数据，然后一条一条迭代它们
 foreach (Customer::find()->each(10) as $customer) {
-    // $customer is a Customer object
+    // $customer 是个 `Customer` 对象
 }
 
-// batch query with eager loading
+// 贪婪加载模式的批处理查询
 foreach (Customer::find()->with('orders')->each() as $customer) {
-    // $customer is a Customer object with the 'orders' relation populated
+    // $customer 是个 `Customer` 对象，并附带关联的 `'orders'`
 }
 ```
 
 
-## Saving Data <span id="inserting-updating-data"></span>
+## 保存数据 <span id="inserting-updating-data"></span>
 
-Using Active Record, you can easily save data to the database by taking the following steps:
+使用 AR （活动记录），您可以通过以下步骤轻松地将数据保存到数据库：
 
-1. Prepare an Active Record instance
-2. Assign new values to Active Record attributes
-3. Call [[yii\db\ActiveRecord::save()]] to save the data into database.
+1. 准备一个 AR 实例
+2. 将新值赋给 AR 的属性
+3. 调用 [[yii\db\ActiveRecord::save()]] 保存数据到数据库中。
 
-For example,
+举个栗子,
 
 ```php
-// insert a new row of data
+// 插入新记录
 $customer = new Customer();
 $customer->name = 'James';
 $customer->email = 'james@example.com';
 $customer->save();
 
-// update an existing row of data
+// 更新已存在的记录
 $customer = Customer::findOne(123);
 $customer->email = 'james@newexample.com';
 $customer->save();
