@@ -39,14 +39,14 @@ class CacheableWidgetBehavior extends Behavior
      *
      * @var Dependency|null
      */
-    public $cacheDependency = null;
+    public $cacheDependency;
 
     /**
      * Cache key or `null` meaning that it should be generated automaticcally.
      *
      * @var mixed|null
      */
-    public $cacheKey = null;
+    public $cacheKey;
 
     /**
      * Cache key variations. An array of factors that would cause the variation
