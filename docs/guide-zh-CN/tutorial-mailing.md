@@ -211,12 +211,12 @@ Yii::$app->mailer->compose('embed-email', ['imageFileName' => '/path/to/image.jp
 如果开启这个选项，会把邮件信息保存在本地文件而不是发送它们。
 这些文件保存在 `yii\mail\BaseMailer::fileTransportPath` 中，默认在 '@runtime/mail' 。
 
-> 提示: 你可以保存这些信息到本地文件或者把它们发送出去，但不能同时两者都做。
+> 提示：你可以保存这些信息到本地文件或者把它们发送出去，但不能同时两者都做。
 
 邮件信息文件可以在一个普通的文本编辑器中打开，这样你就可以浏览实际的邮件标题，内容等。
 这种机制可以用来调试应用程序或运行单元测试。
 
-> 提示: 该邮件信息文件是会被 `\yii\mail\MessageInterface::toString()` 转成字符串保存的，
+> 提示：该邮件信息文件是会被 `\yii\mail\MessageInterface::toString()` 转成字符串保存的，
   它依赖于实际在应用程序中使用的邮件扩展。
 
 

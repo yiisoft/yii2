@@ -191,7 +191,7 @@ short form: {PlaceholderName, ParameterType}
 full form: {PlaceholderName, ParameterType, ParameterStyle}
 ```
 
-> Note: If you need to use special characters such as `{`, `}`, `'`, `#`, wrap them in `'`:
+> 注意：If you need to use special characters such as `{`, `}`, `'`, `#`, wrap them in `'`:
 > 
 ```php
 echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count,plural,other{''count'' value is # '#{}'}}", ['count' => 3]);
@@ -369,7 +369,7 @@ echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are 
 而不是一个原始消息，除非设置应用程序的
 [[yii\base\Application::$sourceLanguage|源语言]] 为 `ru-RU`。
 
-> Note: The above example Russian message is mainly used as a translated message, not an original message, unless you set
+> 注意：The above example Russian message is mainly used as a translated message, not an original message, unless you set
 > the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU` and translating from Russian.
 >
 > When a translation is not found for an original message specified in `Yii::t()` call, the plural rules for the
