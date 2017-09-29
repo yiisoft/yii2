@@ -4,12 +4,15 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
 namespace yii\di;
+
 use ReflectionClass;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+
 /**
  * Container implements a [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection) container.
  *
@@ -117,6 +120,8 @@ class Container extends Component
      * is associated with a list of constructor parameter types or default values.
      */
     private $_dependencies = [];
+
+
     /**
      * Returns an instance of the requested class.
      *
@@ -150,15 +155,19 @@ class Container extends Component
         } elseif (!isset($this->_definitions[$class])) {
             return $this->build($class, $params, $config);
         }
+
         $definition = $this->_definitions[$class];
+
         if (is_callable($definition, true)) {
             $params = $this->resolveDependencies($this->mergeParams($class, $params));
             $object = call_user_func($definition, $this, $params, $config);
         } elseif (is_array($definition)) {
             $concrete = $definition['class'];
             unset($definition['class']);
+
             $config = array_merge($definition, $config);
             $params = $this->mergeParams($class, $params);
+
             if ($concrete === $class) {
                 $object = $this->build($class, $params, $config);
             } else {
@@ -169,12 +178,15 @@ class Container extends Component
         } else {
             throw new InvalidConfigException('Unexpected object definition type: ' . gettype($definition));
         }
+
         if (array_key_exists($class, $this->_singletons)) {
             // singleton
             $this->_singletons[$class] = $object;
         }
+
         return $object;
     }
+
     /**
      * Registers a class definition with this container.
      *
@@ -264,6 +276,7 @@ class Container extends Component
         $this->_singletons[$class] = null;
         return $this;
     }
+
     /**
      * Returns a value indicating whether the container has the definition of the specified name.
      * @param string $class class name, interface name or alias name
@@ -274,6 +287,7 @@ class Container extends Component
     {
         return isset($this->_definitions[$class]);
     }
+
     /**
      * Returns a value indicating whether the given name corresponds to a registered singleton.
      * @param string $class class name, interface name or alias name
@@ -285,6 +299,7 @@ class Container extends Component
     {
         return $checkInstance ? isset($this->_singletons[$class]) : array_key_exists($class, $this->_singletons);
     }
+
     /**
      * Removes the definition for the specified name.
      * @param string $class class name, interface name or alias name
@@ -293,6 +308,7 @@ class Container extends Component
     {
         unset($this->_definitions[$class], $this->_singletons[$class]);
     }
+
     /**
      * Normalizes the class definition.
      * @param string $class class name
@@ -321,6 +337,7 @@ class Container extends Component
             throw new InvalidConfigException("Unsupported definition type for \"$class\": " . gettype($definition));
         }
     }
+
     /**
      * Returns the list of the object definitions or the loaded shared objects.
      * @return array the list of the object definitions or the loaded shared objects (type or ID => definition or instance).
@@ -329,6 +346,7 @@ class Container extends Component
     {
         return $this->_definitions;
     }
+
     /**
      * Creates an instance of the specified class.
      * This method will resolve dependencies of the specified class, instantiate them, and inject
@@ -343,9 +361,11 @@ class Container extends Component
     {
         /* @var $reflection ReflectionClass */
         list ($reflection, $dependencies) = $this->getDependencies($class);
+
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
         }
+
         $dependencies = $this->resolveDependencies($dependencies, $reflection);
         if (!$reflection->isInstantiable()) {
             throw new NotInstantiableException($reflection->name);
@@ -353,6 +373,7 @@ class Container extends Component
         if (empty($config)) {
             return $reflection->newInstanceArgs($dependencies);
         }
+
         if (!empty($dependencies) && $reflection->implementsInterface('yii\base\Configurable')) {
             // set $config as the last parameter (existing one will be overwritten)
             $dependencies[count($dependencies) - 1] = $config;
@@ -365,6 +386,7 @@ class Container extends Component
             return $object;
         }
     }
+
     /**
      * Merges the user-specified constructor parameters with the ones registered via [[set()]].
      * @param string $class class name, interface name or alias name
@@ -385,6 +407,7 @@ class Container extends Component
             return $ps;
         }
     }
+
     /**
      * Returns the dependencies of the specified class.
      * @param string $class class name, interface name or alias name
@@ -395,8 +418,10 @@ class Container extends Component
         if (isset($this->_reflections[$class])) {
             return [$this->_reflections[$class], $this->_dependencies[$class]];
         }
+
         $dependencies = [];
         $reflection = new ReflectionClass($class);
+
         $constructor = $reflection->getConstructor();
         if ($constructor !== null) {
             foreach ($constructor->getParameters() as $param) {
@@ -410,10 +435,13 @@ class Container extends Component
                 }
             }
         }
+
         $this->_reflections[$class] = $reflection;
         $this->_dependencies[$class] = $dependencies;
+
         return [$reflection, $dependencies];
     }
+
     /**
      * Resolves dependencies by replacing them with the actual object instances.
      * @param array $dependencies the dependencies
@@ -436,6 +464,7 @@ class Container extends Component
         }
         return $dependencies;
     }
+
     /**
      * Invoke a callback with resolving dependencies in parameters.
      *
@@ -470,6 +499,7 @@ class Container extends Component
             return call_user_func_array($callback, $params);
         }
     }
+
     /**
      * Resolve dependencies for a function.
      *
@@ -490,8 +520,11 @@ class Container extends Component
         } else {
             $reflection = new \ReflectionFunction($callback);
         }
+
         $args = [];
+
         $associative = ArrayHelper::isAssociative($params);
+
         foreach ($reflection->getParameters() as $param) {
             $name = $param->getName();
             if (($class = $param->getClass()) !== null) {
@@ -530,11 +563,13 @@ class Container extends Component
                 throw new InvalidConfigException("Missing required parameter \"$name\" when calling \"$funcName\".");
             }
         }
+
         foreach ($params as $value) {
             $args[] = $value;
         }
         return $args;
     }
+
     /**
      * Registers class definitions within this container.
      *
@@ -588,9 +623,11 @@ class Container extends Component
                 $this->set($class, $definition[0], $definition[1]);
                 continue;
             }
+
             $this->set($class, $definition);
         }
     }
+
     /**
      * Registers class definitions as singletons within this container by calling [[setSingleton()]]
      *
@@ -608,6 +645,7 @@ class Container extends Component
                 $this->setSingleton($class, $definition[0], $definition[1]);
                 continue;
             }
+
             $this->setSingleton($class, $definition);
         }
     }
