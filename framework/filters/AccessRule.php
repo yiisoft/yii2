@@ -7,14 +7,16 @@
 
 namespace yii\filters;
 
-use yii\base\Component;
+use Closure;
 use yii\base\Action;
-use yii\web\User;
-use yii\web\Request;
+use yii\base\Component;
 use yii\base\Controller;
+use yii\base\InvalidConfigException;
+use yii\web\Request;
+use yii\web\User;
 
 /**
- * This class represents an access rule defined by the [[AccessControl]] action filter
+ * This class represents an access rule defined by the [[AccessControl]] action filter.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -31,13 +33,23 @@ class AccessRule extends Component
      */
     public $actions;
     /**
-     * @var array list of the controller IDs that this rule applies to. Each controller ID is prefixed with the module ID (if any).
-     * The comparison is case-sensitive. If not set or empty, it means this rule applies to all controllers.
+     * @var array list of the controller IDs that this rule applies to.
+     *
+     * The comparison uses [[\yii\base\Controller::uniqueId]], so each controller ID is prefixed
+     * with the module ID (if any). For a `product` controller in the application, you would specify
+     * this property like `['product']` and if that controller is located in a `shop` module, this
+     * would be `['shop/product']`.
+     *
+     * The comparison is case-sensitive.
+     *
+     * If not set or empty, it means this rule applies to all controllers.
+     *
+     * Since version 2.0.12 controller IDs can be specified as wildcards, e.g. `module/*`.
      */
     public $controllers;
     /**
-     * @var array list of roles that this rule applies to. Two special roles are recognized, and
-     * they are checked via [[User::isGuest]]:
+     * @var array list of roles that this rule applies to (requires properly configured User component).
+     * Two special roles are recognized, and they are checked via [[User::isGuest]]:
      *
      * - `?`: matches a guest user (not authenticated yet)
      * - `@`: matches an authenticated user
@@ -49,6 +61,7 @@ class AccessRule extends Component
      *
      * If this property is not set or empty, it means this rule applies regardless of roles.
      * @see $permissions
+     * @see $roleParams
      */
     public $roles;
     /** 
@@ -58,8 +71,43 @@ class AccessRule extends Component
      * If this property is not set or empty, it means this rule applies regardless of permissions.
      * @since 2.0.12
      * @see $roles
+     * @see $roleParams
      */
     public $permissions;
+    /**
+     * @var array|Closure parameters to pass to the [[User::can()]] function for evaluating
+     * user permissions in [[$roles]].
+     *
+     * If this is an array, it will be passed directly to [[User::can()]]. For example for passing an
+     * ID from the current request, you may use the following:
+     *
+     * ```php
+     * ['postId' => Yii::$app->request->get('id')]
+     * ```
+     *
+     * You may also specify a closure that returns an array. This can be used to
+     * evaluate the array values only if they are needed, for example when a model needs to be
+     * loaded like in the following code:
+     *
+     * ```php
+     * 'rules' => [
+     *     [
+     *         'allow' => true,
+     *         'actions' => ['update'],
+     *         'roles' => ['updatePost'],
+     *         'roleParams' => function($rule) {
+     *             return ['post' => Post::findOne(Yii::$app->request->get('id'))];
+     *         },
+     *     ],
+     * ],
+     * ```
+     *
+     * A reference to the [[AccessRule]] instance will be passed to the closure as the first parameter.
+     *
+     * @see $roles
+     * @since 2.0.12
+     */
+    public $roleParams = [];
     /**
      * @var array list of user IP addresses that this rule applies to. An IP address
      * can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
@@ -105,9 +153,9 @@ class AccessRule extends Component
     /**
      * Checks whether the Web user is allowed to perform the specified action.
      * @param Action $action the action to be performed
-     * @param User $user the user object
+     * @param User|false $user the user object or `false` in case of detached User component
      * @param Request $request
-     * @return bool|null true if the user is allowed, false if the user is denied, null if the rule does not apply to the user
+     * @return bool|null `true` if the user is allowed, `false` if the user is denied, `null` if the rule does not apply to the user
      */
     public function allows($action, $user, $request)
     {
@@ -119,9 +167,9 @@ class AccessRule extends Component
             && $this->matchCustom($action)
         ) {
             return $this->allow ? true : false;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -139,12 +187,24 @@ class AccessRule extends Component
      */
     protected function matchController($controller)
     {
-        return empty($this->controllers) || in_array($controller->uniqueId, $this->controllers, true);
+        if (empty($this->controllers)) {
+            return true;
+        }
+
+        $id = $controller->getUniqueId();
+        foreach ($this->controllers as $pattern) {
+            if (fnmatch($pattern, $id)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * @param User $user the user object
      * @return bool whether the rule applies to the role
+     * @throws InvalidConfigException if User component is detached
      */
     protected function matchRole($user)
     {
@@ -157,6 +217,10 @@ class AccessRule extends Component
         if (empty($items)) {
             return true;
         }
+      
+        if ($user === false) {
+            throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
+        }
 
         foreach ($items as $item) {
             if ($item === '?' && $user->getIsGuest()) {
@@ -167,7 +231,10 @@ class AccessRule extends Component
                 return true;
             }
 
-            if ($user->can($item)) {
+            if (!isset($roleParams)) {
+                $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
+            }
+            if ($user->can($item, $roleParams)) {
                 return true;
             }
         }
@@ -176,7 +243,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param string $ip the IP address
+     * @param string|null $ip the IP address
      * @return bool whether the rule applies to the IP address
      */
     protected function matchIP($ip)
@@ -185,7 +252,14 @@ class AccessRule extends Component
             return true;
         }
         foreach ($this->ips as $rule) {
-            if ($rule === '*' || $rule === $ip || (($pos = strpos($rule, '*')) !== false && !strncmp($ip, $rule, $pos))) {
+            if ($rule === '*' ||
+                $rule === $ip ||
+                (
+                    $ip !== null &&
+                    ($pos = strpos($rule, '*')) !== false &&
+                    strncmp($ip, $rule, $pos) === 0
+                )
+            ) {
                 return true;
             }
         }

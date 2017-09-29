@@ -37,7 +37,7 @@ trait SchemaBuilderTrait
     /**
      * @return Connection the database connection to be used for schema building.
      */
-    protected abstract function getDb();
+    abstract protected function getDb();
 
     /**
      * Creates a primary key column.
@@ -177,6 +177,7 @@ trait SchemaBuilderTrait
         if ($scale !== null) {
             $length[] = $scale;
         }
+
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DECIMAL, $length);
     }
 
@@ -268,6 +269,7 @@ trait SchemaBuilderTrait
         if ($scale !== null) {
             $length[] = $scale;
         }
+
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_MONEY, $length);
     }
 }

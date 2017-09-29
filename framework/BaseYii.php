@@ -10,8 +10,8 @@ namespace yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
-use yii\log\Logger;
 use yii\di\Container;
+use yii\log\Logger;
 
 /**
  * Gets the application start timestamp.
@@ -31,15 +31,15 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
  */
 defined('YII_ENV') or define('YII_ENV', 'prod');
 /**
- * Whether the the application is running in production environment
+ * Whether the the application is running in production environment.
  */
 defined('YII_ENV_PROD') or define('YII_ENV_PROD', YII_ENV === 'prod');
 /**
- * Whether the the application is running in development environment
+ * Whether the the application is running in development environment.
  */
 defined('YII_ENV_DEV') or define('YII_ENV_DEV', YII_ENV === 'dev');
 /**
- * Whether the the application is running in testing environment
+ * Whether the the application is running in testing environment.
  */
 defined('YII_ENV_TEST') or define('YII_ENV_TEST', YII_ENV === 'test');
 
@@ -62,7 +62,7 @@ class BaseYii
     /**
      * @var array class map used by the Yii autoloading mechanism.
      * The array keys are the class names (without leading backslashes), and the array values
-     * are the corresponding class file paths (or path aliases). This property mainly affects
+     * are the corresponding class file paths (or [path aliases](guide:concept-aliases)). This property mainly affects
      * how [[autoload()]] works.
      * @see autoload()
      */
@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.11-dev';
+        return '2.0.13-dev';
     }
 
     /**
@@ -118,6 +118,8 @@ class BaseYii
      * instead of '@foo/bar', because '/' serves as the boundary character.
      *
      * Note, this method does not check if the returned path exists or not.
+     *
+     * See the [guide article on aliases](guide:concept-aliases) for more information.
      *
      * @param string $alias the alias to be translated.
      * @param bool $throwException whether to throw an exception if the given alias is invalid.
@@ -196,6 +198,8 @@ class BaseYii
      *
      * Any trailing '/' and '\' characters in the given path will be trimmed.
      *
+     * See the [guide article on aliases](guide:concept-aliases) for more information.
+     *
      * @param string $alias the alias name (e.g. "@yii"). It must start with a '@' character.
      * It may contain the forward slash '/' which serves as boundary character when performing
      * alias translation by [[getAlias()]].
@@ -249,6 +253,7 @@ class BaseYii
 
     /**
      * Class autoload loader.
+     *
      * This method is invoked automatically when PHP sees an unknown class.
      * The method will attempt to include the class file according to the following procedure:
      *
@@ -285,7 +290,7 @@ class BaseYii
             return;
         }
 
-        include($classFile);
+        include $classFile;
 
         if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
             throw new UnknownClassException("Unable to find '$className' in file: $classFile. Namespace missing?");
@@ -377,8 +382,10 @@ class BaseYii
     /**
      * Logs a trace message.
      * Trace messages are logged mainly for development purpose to see
-     * the execution work flow of some code.
-     * @param string $message the message to be logged.
+     * the execution work flow of some code. This method will only log
+     * a message when the application is in debug mode.
+     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function trace($message, $category = 'application')
@@ -392,7 +399,8 @@ class BaseYii
      * Logs an error message.
      * An error message is typically logged when an unrecoverable error occurs
      * during the execution of an application.
-     * @param string $message the message to be logged.
+     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function error($message, $category = 'application')
@@ -404,7 +412,8 @@ class BaseYii
      * Logs a warning message.
      * A warning message is typically logged when an error occurs while the execution
      * can still continue.
-     * @param string $message the message to be logged.
+     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function warning($message, $category = 'application')
@@ -416,7 +425,8 @@ class BaseYii
      * Logs an informative message.
      * An informative message is typically logged by an application to keep record of
      * something important (e.g. an administrator logs in).
-     * @param string $message the message to be logged.
+     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function info($message, $category = 'application')
@@ -426,6 +436,7 @@ class BaseYii
 
     /**
      * Marks the beginning of a code block for profiling.
+     *
      * This has to be matched with a call to [[endProfile]] with the same category name.
      * The begin- and end- calls must also be properly nested. For example,
      *
@@ -466,7 +477,7 @@ class BaseYii
     {
         return \Yii::t('yii', 'Powered by {yii}', [
             'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
-                    'Yii Framework') . '</a>'
+                    'Yii Framework') . '</a>',
         ]);
     }
 

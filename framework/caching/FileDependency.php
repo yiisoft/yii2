@@ -24,7 +24,7 @@ use yii\base\InvalidConfigException;
 class FileDependency extends Dependency
 {
     /**
-     * @var string the file path or path alias whose last modification time is used to
+     * @var string the file path or [path alias](guide:concept-aliases) whose last modification time is used to
      * check if the dependency has been changed.
      */
     public $fileName;
@@ -33,7 +33,7 @@ class FileDependency extends Dependency
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method returns the file's last modification time.
-     * @param Cache $cache the cache component that is currently evaluating this dependency
+     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
      * @return mixed the data needed to determine if dependency has been changed.
      * @throws InvalidConfigException if [[fileName]] is not set
      */

@@ -164,8 +164,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $sequence = $this->db->quoteTableName($table->sequenceName);
             $tableName = $this->db->quoteTableName($tableName);
             if ($value === null) {
-                $key = reset($table->primaryKey);
-                $value = "(SELECT COALESCE(MAX(\"{$key}\"),0) FROM {$tableName})+1";
+                $key = $this->db->quoteColumnName(reset($table->primaryKey));
+                $value = "(SELECT COALESCE(MAX({$key}),0) FROM {$tableName})+1";
             } else {
                 $value = (int) $value;
             }
@@ -173,9 +173,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "SELECT SETVAL('$sequence',$value,false)";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
     }
 
     /**
@@ -188,14 +188,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
         $enable = $check ? 'ENABLE' : 'DISABLE';
-        $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
+        $schema = $schema ?: $this->db->getSchema()->defaultSchema;
         $tableNames = $table ? [$table] : $this->db->getSchema()->getTableNames($schema);
         $viewNames = $this->db->getSchema()->getViewNames($schema);
         $tableNames = array_diff($tableNames, $viewNames);
         $command = '';
 
         foreach ($tableNames as $tableName) {
-            $tableName = '"' . $schema . '"."' . $tableName . '"';
+            $tableName = $this->db->quoteTableName("{$schema}.{$tableName}");
             $command .= "ALTER TABLE $tableName $enable TRIGGER ALL; ";
         }
 
@@ -203,6 +203,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $this->db->getMasterPdo()->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
 
         return $command;
+    }
+
+    /**
+     * Builds a SQL statement for truncating a DB table.
+     * Explicitly restarts identity for PGSQL to be consistent with other databases which all do this by default.
+     * @param string $table the table to be truncated. The name will be properly quoted by the method.
+     * @return string the SQL statement for truncating a DB table.
+     */
+    public function truncateTable($table)
+    {
+        return 'TRUNCATE TABLE ' . $this->db->quoteTableName($table) . ' RESTART IDENTITY';
     }
 
     /**
@@ -222,6 +233,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
             $type = 'TYPE ' . $this->getColumnType($type);
         }
+
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
             . $this->db->quoteColumnName($column) . ' ' . $type;
     }
@@ -245,12 +257,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
      * @param string $table the table that data will be saved into.
-     * @param array $columns the column data (name => value) to be saved into the table.
+     * @param array|\yii\db\Query $columns the column data (name => value) to be saved into the table or instance
+     * of [[yii\db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
+     * Passing of [[yii\db\Query|Query]] is available since version 2.0.11.
      * @return array normalized columns
      * @since 2.0.9
      */
     private function normalizeTableRowData($table, $columns)
     {
+        if ($columns instanceof \yii\db\Query) {
+            return $columns;
+        }
+
         if (($tableSchema = $this->db->getSchema()->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
             foreach ($columns as $name => $value) {
@@ -259,6 +277,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
             }
         }
+
         return $columns;
     }
 
@@ -287,6 +306,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
+                } elseif (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    $value = str_replace(',', '.', (string) $value);
                 } elseif ($value === true) {
                     $value = 'TRUE';
                 } elseif ($value === false) {
@@ -297,6 +319,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $vs[] = $value;
             }
             $values[] = '(' . implode(', ', $vs) . ')';
+        }
+        if (empty($values)) {
+            return '';
         }
 
         foreach ($columns as $i => $name) {

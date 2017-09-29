@@ -6,7 +6,7 @@ Yii はデータを表示するために使うことが出来る一連の [ウ�
 それに対して、[ListView](#list-view) と [GridView](#grid-view) は、複数のデータレコードをリストまたはテーブルで表示することが出来るもので、ページネーション、並べ替え、フィルタリングなどの機能を提供するものです。
 
 
-DetailView
+DetailView <a name="detail-view"></a>
 ----------
 
 DetailView は単一のデータ [[yii\widgets\DetailView::$model|モデル]] の詳細を表示します。
@@ -23,19 +23,42 @@ DetailView は [[yii\widgets\DetailView::$attributes]] プロパティを使っ�
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',               // title 属性 (平文テキストで)
-        'description:html',    // description 属性は HTML としてフォーマットされる
-        [                      // モデルの所有者の名前
+        'title',                                           // title 属性 (平文テキストで)
+        'description:html',                                // description 属性は HTML としてフォーマットされる
+        [                                                  // モデルの所有者の名前
             'label' => '所有者',
             'value' => $model->owner->name,
+            'contentOptions' => ['class' => 'bg-red'],     // 値のタグをカスタマイズする HTML 属性
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // ラベルのタグをカスタマイズする HTML 属性
         ],
-        'created_at:datetime', // 作成日は datetime としてフォーマットされる
+        'created_at:datetime',                             // 作成日時は datetime としてフォーマットされる
     ],
 ]);
 ```
 
+[[yii\widgets\GridView|GridView]] が一組のモデルを処理するのとは異なって、
+[[yii\widgets\DetailView|DetailView]] は一つのモデルしか処理しないということを覚えておいてください。
+表示すべきモデルはビューの変数としてアクセスできる `$model` 一つだけですから、たいていの場合、クロージャを使用する必要はありません。
 
-ListView
+しかし、クロージャが役に立つ場合もあります。例えば、`visible` が指定されており、それが `false` と評価される場合には
+`value` の計算を避けたい場合です。
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        [
+            'attribute' => 'owner',
+            'value' => function ($model) {
+                return $model->owner->name;
+            },
+            'visible' => \Yii::$app->user->can('posts.owner.view'),
+        ],
+    ],
+]);
+```
+
+ListView <a name="list-view"></a>
 --------
 
 [[yii\widgets\ListView|ListView]] ウィジェットは、[データプロバイダ](output-data-providers.md) からのデータを表示するのに使用されます。
@@ -267,7 +290,7 @@ echo GridView::widget([
   コールバックのシグニチャは [[yii\grid\ActionColumn::createUrl()]] のそれと同じでなければなりません。
   このプロパティが設定されていないときは、ボタンの URL は [[yii\grid\ActionColumn::createUrl()]] を使って生成されます。
 - [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] は、各ボタンの可視性の条件を定義する配列です。
-  配列のキーはボタンの名前 (波括弧を除く) であり、値は真偽値 true/false または無名関数です。
+  配列のキーはボタンの名前 (波括弧を除く) であり、値は真偽値 `true`/`false` または無名関数です。
   ボタンの名前がこの配列の中で指定されていない場合は、デフォルトで、ボタンが表示されます。
   コールバックは次のシグニチャを使わなければなりません。
 
@@ -338,7 +361,8 @@ echo GridView::widget([
 データをフィルタリングするためには、GridView は検索基準を表す [モデル](structure-models.md) を必要とします。
 検索基準は、通常は、グリッドビューのテーブルのフィルタのフィールドから取得されます。
 [アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデルクラスを作成するのが一般的なプラクティスです (あなたに代って [Gii](start-gii.md) が生成してくれます)。
-このクラスは、検索のためのバリデーション規則を定義し、検索基準に従って修正されたクエリを持つデータプロバイダを返す `search()` メソッドを提供するものです。
+このクラスが、グリッドビューのテーブルに表示されるフィルタコントロールのための検証規則を定義し、
+検索基準に従って修正されたクエリを持つデータプロバイダを返す `search()` メソッドを提供します。
 
 `Post` モデルに対して検索機能を追加するために、次の例のようにして、`PostSearch` モデルを作成することが出来ます。
 
@@ -638,7 +662,7 @@ class UserView extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function attributeLabels()
+    public function attributeLabels()
     {
         return [
             // ここで属性のラベルを定義

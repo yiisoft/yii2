@@ -78,7 +78,7 @@ All Rights Reserved.
 * [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
 * [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
 * [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
-* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
+* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ru/README.md)
 * [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ru/README.md)
 * [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
@@ -102,7 +102,7 @@ All Rights Reserved.
 * [Сортировка](output-sorting.md)
 * [Провайдеры данных](output-data-providers.md)
 * [Виджеты для данных](output-data-widgets.md)
-* [Работа с клиентскими скриптами](output-client-scripts.md)
+* Работа с клиентскими скриптами
 * [Темизация](output-theming.md)
 
 
@@ -188,7 +188,7 @@ All Rights Reserved.
 * [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
 * [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
 * [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
-* [Виджеты Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
+* [Виджеты Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ru/README.md)
 * [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
 
 

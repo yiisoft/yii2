@@ -38,8 +38,8 @@ use yii\base\InvalidConfigException;
  * > with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
  * > since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
  *
- * @property bool $isActive Whether this transaction is active. Only an active transaction can [[commit()]]
- * or [[rollBack()]]. This property is read-only.
+ * @property bool $isActive Whether this transaction is active. Only an active transaction can [[commit()]] or
+ * [[rollBack()]]. This property is read-only.
  * @property string $isolationLevel The transaction isolation level to use for this transaction. This can be
  * one of [[READ_UNCOMMITTED]], [[READ_COMMITTED]], [[REPEATABLE_READ]] and [[SERIALIZABLE]] but also a string
  * containing DBMS specific syntax to be used after `SET TRANSACTION ISOLATION LEVEL`. This property is
@@ -49,7 +49,7 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Transaction extends \yii\base\Object
+class Transaction extends \yii\base\BaseObject
 {
     /**
      * A constant representing the transaction isolation level `READ UNCOMMITTED`.

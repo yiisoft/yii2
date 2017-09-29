@@ -11,8 +11,8 @@ use Yii;
 use yii\base\Model;
 use yii\db\ActiveQuery;
 use yii\db\ActiveQueryInterface;
+use yii\db\ActiveRecord;
 use yii\db\ActiveRecordInterface;
-use yii\db\Query;
 use yii\helpers\Inflector;
 
 /**
@@ -53,7 +53,6 @@ class UniqueValidator extends Validator
      * of the attribute currently being validated. You may use an array to validate the uniqueness
      * of multiple columns at the same time. The array values are the attributes that will be
      * used to validate the uniqueness, while the array keys are the attributes whose values are to be validated.
-     * If the key and the value are the same, you can just specify the value.
      */
     public $targetAttribute;
     /**
@@ -64,7 +63,9 @@ class UniqueValidator extends Validator
      */
     public $filter;
     /**
-     * @var string the user-defined error message. When validating single attribute, it may contain
+     * @var string the user-defined error message.
+     *
+     * When validating single attribute, it may contain
      * the following placeholders which will be replaced accordingly by the validator:
      *
      * - `{attribute}`: the label of the attribute being validated
@@ -74,7 +75,6 @@ class UniqueValidator extends Validator
      *
      * - `{attributes}`: the labels of the attributes being validated.
      * - `{values}`: the values of the attributes being validated.
-     *
      */
     public $message;
     /**
@@ -84,6 +84,11 @@ class UniqueValidator extends Validator
      * to setup custom message for multiple target attributes.
      */
     public $comboNotUnique;
+    /**
+     * @var string and|or define how target attributes are related
+     * @since 2.0.11
+     */
+    public $targetAttributeJunction = 'and';
 
 
     /**
@@ -113,15 +118,17 @@ class UniqueValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         /* @var $targetClass ActiveRecordInterface */
-        $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
+        $targetClass = $this->getTargetClass($model);
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
-        $conditions = $this->prepareConditions($targetAttribute, $model, $attribute);
+        $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
+        $conditions[] = $this->targetAttributeJunction === 'or' ? 'or' : 'and';
 
-        foreach ($conditions as $value) {
+        foreach ($rawConditions as $key => $value) {
             if (is_array($value)) {
                 $this->addError($model, $attribute, Yii::t('yii', '{attribute} is invalid.'));
                 return;
             }
+            $conditions[] = [$key => $value];
         }
 
         if ($this->modelExists($targetClass, $conditions, $model)) {
@@ -131,6 +138,15 @@ class UniqueValidator extends Validator
                 $this->addError($model, $attribute, $this->message);
             }
         }
+    }
+
+    /**
+     * @param Model $model the data model to be validated
+     * @return string Target class name
+     */
+    private function getTargetClass($model)
+    {
+        return $this->targetClass === null ? get_class($model) : $this->targetClass;
     }
 
     /**
@@ -154,22 +170,24 @@ class UniqueValidator extends Validator
             $exists = $query->exists();
         } else {
             // if current $model is in the database already we can't use exists()
-            /** @var $models ActiveRecordInterface[] */
-            $models = $query->select($targetClass::primaryKey())->limit(2)->all();
+            if ($query instanceof \yii\db\ActiveQuery) {
+                // only select primary key to optimize query
+                $columnsCondition = array_flip($targetClass::primaryKey());
+                $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
+            }
+            $models = $query->limit(2)->asArray()->all();
             $n = count($models);
             if ($n === 1) {
-                $keys = array_keys($conditions);
+                // if there is one record, check if it is the currently validated model
+                $dbModel = reset($models);
                 $pks = $targetClass::primaryKey();
-                sort($keys);
-                sort($pks);
-                if ($keys === $pks) {
-                    // primary key is modified and not unique
-                    $exists = $model->getOldPrimaryKey() != $model->getPrimaryKey();
-                } else {
-                    // non-primary key, need to exclude the current record based on PK
-                    $exists = reset($models)->getPrimaryKey() != $model->getOldPrimaryKey();
+                $pk = [];
+                foreach ($pks as $pkAttribute) {
+                    $pk[$pkAttribute] = $dbModel[$pkAttribute];
                 }
+                $exists = ($pk != $model->getOldPrimaryKey(true));
             } else {
+                // if there is more than one record, the value is not unique
                 $exists = $n > 1;
             }
         }
@@ -191,7 +209,6 @@ class UniqueValidator extends Validator
     {
         $query = $targetClass::find();
         $query->andWhere($conditions);
-
         if ($this->filter instanceof \Closure) {
             call_user_func($this->filter, $query);
         } elseif ($this->filter !== null) {
@@ -212,7 +229,7 @@ class UniqueValidator extends Validator
      * If the key and the value are the same, you can just specify the value.
      * @param Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated in the $model
-
+     *
      * @return array conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.
      */
     private function prepareConditions($targetAttribute, $model, $attribute)
@@ -226,7 +243,13 @@ class UniqueValidator extends Validator
             $conditions = [$targetAttribute => $model->$attribute];
         }
 
-        return $conditions;
+        $targetModelClass = $this->getTargetClass($model);
+        if (!is_subclass_of($targetModelClass, 'yii\db\ActiveRecord')) {
+            return $conditions;
+        }
+
+        /** @var ActiveRecord $targetModelClass */
+        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 
     /**
@@ -239,7 +262,7 @@ class UniqueValidator extends Validator
         $attributeCombo = [];
         $valueCombo = [];
         foreach ($this->targetAttribute as $key => $value) {
-            if(is_int($key)) {
+            if (is_int($key)) {
                 $attributeCombo[] = $model->getAttributeLabel($value);
                 $valueCombo[] = '"' . $model->$value . '"';
             } else {
@@ -249,7 +272,37 @@ class UniqueValidator extends Validator
         }
         $this->addError($model, $attribute, $this->message, [
             'attributes' => Inflector::sentence($attributeCombo),
-            'values' => implode('-', $valueCombo)
+            'values' => implode('-', $valueCombo),
         ]);
+    }
+
+    /**
+     * Returns conditions with alias.
+     * @param ActiveQuery $query
+     * @param array $conditions array of condition, keys to be modified
+     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
+     * @return array
+     */
+    private function applyTableAlias($query, $conditions, $alias = null)
+    {
+        if ($alias === null) {
+            $alias = array_keys($query->getTablesUsedInFrom())[0];
+        }
+        $prefixedConditions = [];
+        foreach ($conditions as $columnName => $columnValue) {
+            if (strpos($columnName, '(') === false) {
+                $prefixedColumn = "{$alias}.[[" . preg_replace(
+                    '/^' . preg_quote($alias) . '\.(.*)$/',
+                    '$1',
+                    $columnName) . ']]';
+            } else {
+                // there is an expression, can't prefix it reliably
+                $prefixedColumn = $columnName;
+            }
+
+            $prefixedConditions[$prefixedColumn] = $columnValue;
+        }
+
+        return $prefixedConditions;
     }
 }

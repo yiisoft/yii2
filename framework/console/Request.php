@@ -53,6 +53,7 @@ class Request extends \yii\base\Request
     /**
      * Resolves the current request into a route and the associated parameters.
      * @return array the first element is the route, and the second is the associated parameters.
+     * @throws Exception when parameter is wrong and can not be resolved
      */
     public function resolve()
     {
@@ -75,12 +76,16 @@ class Request extends \yii\base\Request
                 $params[] = $param;
             } elseif ($param === '--') {
                 $endOfOptionsFound = true;
-            } elseif (preg_match('/^--(\w+)(?:=(.*))?$/', $param, $matches)) {
+            } elseif (preg_match('/^--([\w-]+)(?:=(.*))?$/', $param, $matches)) {
                 $name = $matches[1];
+                if (is_numeric(substr($name, 0, 1))) {
+                    throw new Exception('Parameter "' . $name . '" is not valid');
+                }
+
                 if ($name !== Application::OPTION_APPCONFIG) {
                     $params[$name] = isset($matches[2]) ? $matches[2] : true;
                 }
-            } elseif (preg_match('/^-(\w+)(?:=(.*))?$/', $param, $matches)) {
+            } elseif (preg_match('/^-([\w-]+)(?:=(.*))?$/', $param, $matches)) {
                 $name = $matches[1];
                 if (is_numeric($name)) {
                     $params[] = $param;

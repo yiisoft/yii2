@@ -22,20 +22,20 @@ Before upgrading, make sure you have a global installation of the latest version
 as well as a stable version of Composer:
 
     composer self-update
-    composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
+    composer global require "fxp/composer-asset-plugin:^1.3.1" --no-plugins
 
 The simple way to upgrade Yii, for example to version 2.0.10 (replace this with the version you want) will be running `composer require`:
 
-    composer require "yiisoft/yii2:~2.0.10"
+    composer require "yiisoft/yii2:~2.0.10" --update-with-dependencies
 
-This however may fail due to changes in the dependencies of yiisoft/yii2, which may change due to security updates
-in other libraries or by adding support for newer versions. `composer require` will not update any other packages
-as a safety feature.
+This command will only upgrade Yii and its direct dependencies, if necessary. Without `--update-with-dependencies` the
+upgrade might fail when the Yii version you chose has slightly different dependencies than the version you had before.
+`composer require` will by default not update any other packages as a safety feature.
 
-The better way to upgrade is to change the `composer.json` file to require the new Yii version and then
+Another way to upgrade is to change the `composer.json` file to require the new Yii version and then
 run `composer update` by specifying all packages that are allowed to be updated.
 
-    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/jquery.inputmask
+    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/inputmask
 
 The above command will only update the specified packages and leave the versions of all other dependencies intact.
 This helps to update packages step by step without causing a lot of package version changes that might break in some way.
@@ -50,6 +50,113 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.12
+-----------------------
+
+* The `yii\web\Request` class allowed to determine the value of `getIsSecureConnection()` form the
+  `X-Forwarded-Proto` header if the connection was made via a normal HTTP request. This behavior
+  was insecure as the header could have been set by a malicious client on a non-HTTPS connection.
+  With 2.0.13 Yii adds support for configuring trusted proxies. If your application runs behind a reverse proxy and relies on
+  `getIsSecureConnection()` to return the value form the `X-Forwarded-Proto` header you need to explicitly allow
+  this in the Request configuration. See the [guide](http://www.yiiframework.com/doc-2.0/guide-runtime-requests.html#trusted-proxies) for more information.
+
+  This setting also affects you when Yii is running on IIS webserver, which sets the `X-Rewrite-Url` header.
+  This header is now filtered by default and must be listed in trusted hosts to be detected by Yii:
+
+  ```php
+  [   // accept X-Rewrite-Url from all hosts, as it will be set by IIS
+      '/.*/' => ['X-Rewrite-Url'],
+  ]
+  ```
+
+* For compatibiliy with [PHP 7.2 which does not allow classes to be named `Object` anymore](https://wiki.php.net/rfc/object-typehint),
+  we needed to rename `yii\base\Object` to `yii\base\BaseObject`.
+  
+  `yii\base\Object` still exists for backwards compatibility and will be loaded if needed in projects that are
+  running on PHP <7.2. The compatibility class `yii\base\Object` extends from `yii\base\BaseObject` so if you
+  have classes that extend from `yii\base\Object` these would still work.
+  
+  What does not work however will be code that relies on `instanceof` checks or `is_subclass_of()` calls
+  for `yii\base\Object` on framework classes as these do not extend `yii\base\Object` anymore but only
+  extend from `yii\base\BaseObject`. In general such a check is not needed as there is a `yii\base\Configurable`
+  interface you should check against instead.
+  
+  Here is a visualisation of the change (`a < b` means "b extends a"):
+  
+  ```
+  Before:
+  
+  yii\base\Object < Framework Classes
+  yii\base\Object < Application Classes
+  
+  After Upgrade:
+  
+  yii\base\BaseObject < Framework Classes
+  yii\base\BaseObject < yii\base\Object < Application Classes
+
+  ```
+  
+  If you want to upgrade PHP to version 7.2 in your project you need to remove all cases that extend `yii\base\Object`
+  and extend from `yii\base\BaseObject` instead:
+  
+  ```
+  yii\base\BaseObject < Framework Classes
+  yii\base\BaseObject < Application Classes
+  ```
+  
+  For extensions that have classes extending from `yii\base\Object`, to be compatible with PHP 7.2, you need to
+  require `"yiisoft/yii2": "~2.0.13"` in composer.json and change affected classes to extend from `yii\base\BaseObject`
+  instead. It is not possible to allow Yii versions `<2.0.13` and be compatible with PHP 7.2 or higher.
+
+* A new method `public static function instance($refresh = false);` has been added to the `yii\db\ActiveRecordInterface` via a new
+  `yii\base\StaticInstanceInterface`. This change may affect your application in the following ways:
+
+  - If you have an `instance()` method defined in an `ActiveRecord` or `Model` class, you need to check whether the behavior is
+    compatible with the method added by Yii.
+  - Otherwise this method is implemented in the `yii\base\Model`, so the change only affects your code if you implement `ActiveRecordInterface`
+    in a class that does not extend `Model`. You may use `yii\base\StaticInstanceTrait` to implement it.
+    
+* Fixed built-in validator creating when model has a method with the same name. 
+
+  It is documented, that for the validation rules declared in model by `yii\base\Model::rules()`, validator can be either 
+  a built-in validator name, a method name of the model class, an anonymous function, or a validator class name. 
+  Before this change behavior was inconsistent with the documentation: method in the model had higher priority, than
+  a built-in validator. In case you have relied on this behavior, make sure to fix it.
+
+* Behavior was changed for methods `yii\base\Module::get()` and `yii\base\Module::has()` so in case when the requested
+  component was not found in the current module, the parent ones will be checked for this component hierarchically.
+  Considering that the root parent module is usually an application, this change can reduce calls to global `Yii::$app->get()`,
+  and replace them with module-scope calls to `get()`, making code more reliable and easier to test.
+  However, this change may affect your application if you have code that uses method `yii\base\Module::has()` in order
+  to check existence of the component exactly in this specific module. In this case make sure the logic is not corrupted.
+
+
+Upgrade from Yii 2.0.11
+-----------------------
+
+* `yii\i18n\Formatter::normalizeDatetimeValue()` returns now array with additional third boolean element
+  indicating whether the timestamp has date information or it is just time value.
+
+* `yii\grid\DataColumn` filter is now automatically generated as dropdown list with localized `Yes` and `No` strings
+  in case of `format` being set to `boolean`.
+ 
+* The signature of `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` was changed. The method has got an extra optional parameter
+  `$params`.
+
+* The signature of `yii\cache\Cache::getOrSet()` has been adjusted to also accept a callable and not only `Closure`.
+  If you extend this method, make sure to adjust your code.
+  
+* `yii\web\UrlManager` now checks if rules implement `getCreateUrlStatus()` method in order to decide whether to use
+  internal cache for `createUrl()` calls. Ensure that all your custom rules implement this method in order to fully 
+  benefit from the acceleration provided by this cache.
+
+* `yii\filters\AccessControl` now can be used without `user` component.  
+  In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
+  matching a role throws `yii\base\InvalidConfigException`.
+  
+* Inputmask package name was changed from `jquery.inputmask` to `inputmask`. If you've configured path to
+  assets manually, please adjust it. 
+
 Upgrade from Yii 2.0.10
 -----------------------
 
@@ -59,7 +166,7 @@ Upgrade from Yii 2.0.10
 
 * `yii\validators\FileValidator::getClientOptions()` and `yii\validators\ImageValidator::getClientOptions()` are now public.
   If you extend from these classes and override these methods, you must make them public as well.
-  
+
 * `yii\widgets\MaskedInput` inputmask dependency was updated to `~3.3.3`.
   [See its changelog for details](https://github.com/RobinHerbots/Inputmask/blob/3.x/CHANGELOG.md).
 
@@ -259,7 +366,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:~1.0.0"
+  php composer.phar global require "fxp/composer-asset-plugin:~1.3.1"
   ```
 
   You also need to add the following code to your project's `composer.json` file:

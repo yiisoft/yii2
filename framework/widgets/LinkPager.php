@@ -9,10 +9,10 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 use yii\base\Widget;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * LinkPager displays a list of hyperlinks that lead to different pages of target.
@@ -41,6 +41,11 @@ class LinkPager extends Widget
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'pagination'];
+    /**
+     * @var array HTML attributes which will be applied to all link containers
+     * @since 2.0.13
+     */
+    public $linkContainerOptions = [];
     /**
      * @var array HTML attributes for the link in a pager container tag.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
@@ -75,18 +80,16 @@ class LinkPager extends Widget
      * @var string the CSS class for the disabled page buttons.
      */
     public $disabledPageCssClass = 'disabled';
-    
     /**
      * @var array the options for the disabled tag to be generated inside the disabled list element.
      * In order to customize the html tag, please use the tag key.
-     * 
+     *
      * ```php
      * $disabledListItemSubTagOptions = ['tag' => 'div', 'class' => 'disabled-div'];
      * ```
      * @since 2.0.11
      */
     public $disabledListItemSubTagOptions = [];
-    
     /**
      * @var int maximum number of page buttons that can be displayed. Defaults to 10.
      */
@@ -124,6 +127,11 @@ class LinkPager extends Widget
      * @var bool Hide widget when only one page exist.
      */
     public $hideOnSinglePage = true;
+    /**
+     * @var bool whether to render current page button as disabled.
+     * @since 2.0.12
+     */
+    public $disableCurrentPageButton = false;
 
 
     /**
@@ -192,7 +200,7 @@ class LinkPager extends Widget
         // internal pages
         list($beginPage, $endPage) = $this->getPageRange();
         for ($i = $beginPage; $i <= $endPage; ++$i) {
-            $buttons[] = $this->renderPageButton($i + 1, $i, null, false, $i == $currentPage);
+            $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disableCurrentPageButton && $i == $currentPage, $i == $currentPage);
         }
 
         // next page
@@ -209,7 +217,9 @@ class LinkPager extends Widget
             $buttons[] = $this->renderPageButton($lastPageLabel, $pageCount - 1, $this->lastPageCssClass, $currentPage >= $pageCount - 1, false);
         }
 
-        return Html::tag('ul', implode("\n", $buttons), $this->options);
+        $options = $this->options;
+        $tag = ArrayHelper::remove($options, 'tag', 'ul');
+        return Html::tag($tag, implode("\n", $buttons), $options);
     }
 
     /**
@@ -224,20 +234,23 @@ class LinkPager extends Widget
      */
     protected function renderPageButton($label, $page, $class, $disabled, $active)
     {
-        $options = ['class' => empty($class) ? $this->pageCssClass : $class];
+        $options = $this->linkContainerOptions;
+        $linkWrapTag = ArrayHelper::remove($options, 'tag', 'li');
+        Html::addCssClass($options, empty($class) ? $this->pageCssClass : $class);
+
         if ($active) {
             Html::addCssClass($options, $this->activePageCssClass);
         }
         if ($disabled) {
             Html::addCssClass($options, $this->disabledPageCssClass);
             $tag = ArrayHelper::remove($this->disabledListItemSubTagOptions, 'tag', 'span');
-            
-            return Html::tag('li', Html::tag($tag, $label, $this->disabledListItemSubTagOptions), $options);
+
+            return Html::tag($linkWrapTag, Html::tag($tag, $label, $this->disabledListItemSubTagOptions), $options);
         }
         $linkOptions = $this->linkOptions;
         $linkOptions['data-page'] = $page;
 
-        return Html::tag('li', Html::a($label, $this->pagination->createUrl($page), $linkOptions), $options);
+        return Html::tag($linkWrapTag, Html::a($label, $this->pagination->createUrl($page), $linkOptions), $options);
     }
 
     /**

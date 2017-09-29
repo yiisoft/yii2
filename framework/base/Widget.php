@@ -7,8 +7,8 @@
 
 namespace yii\base;
 
-use Yii;
 use ReflectionClass;
+use Yii;
 
 /**
  * Widget is the base class for widgets.
@@ -27,6 +27,23 @@ use ReflectionClass;
 class Widget extends Component implements ViewContextInterface
 {
     /**
+     * @event Event an event that is triggered when the widget is initialized via [[init()]].
+     * @since 2.0.11
+     */
+    const EVENT_INIT = 'init';
+    /**
+     * @event WidgetEvent an event raised right before executing a widget.
+     * You may set [[WidgetEvent::isValid]] to be false to cancel the widget execution.
+     * @since 2.0.11
+     */
+    const EVENT_BEFORE_RUN = 'beforeRun';
+    /**
+     * @event WidgetEvent an event raised right after executing a widget.
+     * @since 2.0.11
+     */
+    const EVENT_AFTER_RUN = 'afterRun';
+
+    /**
      * @var int a counter used to generate [[id]] for widgets.
      * @internal
      */
@@ -43,6 +60,17 @@ class Widget extends Component implements ViewContextInterface
      */
     public static $stack = [];
 
+
+    /**
+     * Initializes the object.
+     * This method is called at the end of the constructor.
+     * The default implementation will trigger an [[EVENT_INIT]] event.
+     */
+    public function init()
+    {
+        parent::init();
+        $this->trigger(self::EVENT_INIT);
+    }
 
     /**
      * Begins a widget.
@@ -76,14 +104,20 @@ class Widget extends Component implements ViewContextInterface
         if (!empty(static::$stack)) {
             $widget = array_pop(static::$stack);
             if (get_class($widget) === get_called_class()) {
-                echo $widget->run();
+                /* @var $widget Widget */
+                if ($widget->beforeRun()) {
+                    $result = $widget->run();
+                    $result = $widget->afterRun($result);
+                    echo $result;
+                }
+
                 return $widget;
-            } else {
-                throw new InvalidCallException('Expecting end() of ' . get_class($widget) . ', found ' . get_called_class());
             }
-        } else {
-            throw new InvalidCallException('Unexpected ' . get_called_class() . '::end() call. A matching begin() is not found.');
+
+            throw new InvalidCallException('Expecting end() of ' . get_class($widget) . ', found ' . get_called_class());
         }
+
+        throw new InvalidCallException('Unexpected ' . get_called_class() . '::end() call. A matching begin() is not found.');
     }
 
     /**
@@ -101,7 +135,11 @@ class Widget extends Component implements ViewContextInterface
             /* @var $widget Widget */
             $config['class'] = get_called_class();
             $widget = Yii::createObject($config);
-            $out = $widget->run();
+            $out = '';
+            if ($widget->beforeRun()) {
+                $result = $widget->run();
+                $out = $widget->afterRun($result);
+            }
         } catch (\Exception $e) {
             // close the output buffer opened above if it has not been closed already
             if (ob_get_level() > 0) {
@@ -175,9 +213,10 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Renders a view.
+     *
      * The view to be rendered can be specified in one of the following formats:
      *
-     * - path alias (e.g. "@app/views/site/index");
+     * - [path alias](guide:concept-aliases) (e.g. "@app/views/site/index");
      * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
      *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
      * - absolute path within module (e.g. "/site/index"): the view name starts with a single slash.
@@ -199,7 +238,7 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Renders a view file.
-     * @param string $file the view file to be rendered. This can be either a file path or a path alias.
+     * @param string $file the view file to be rendered. This can be either a file path or a [path alias](guide:concept-aliases).
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
      * @throws InvalidParamException if the view file does not exist.
@@ -219,5 +258,65 @@ class Widget extends Component implements ViewContextInterface
         $class = new ReflectionClass($this);
 
         return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
+    }
+
+    /**
+     * This method is invoked right before the widget is executed.
+     *
+     * The method will trigger the [[EVENT_BEFORE_RUN]] event. The return value of the method
+     * will determine whether the widget should continue to run.
+     *
+     * When overriding this method, make sure you call the parent implementation like the following:
+     *
+     * ```php
+     * public function beforeRun()
+     * {
+     *     if (!parent::beforeRun()) {
+     *         return false;
+     *     }
+     *
+     *     // your custom code here
+     *
+     *     return true; // or false to not run the widget
+     * }
+     * ```
+     *
+     * @return bool whether the widget should continue to be executed.
+     * @since 2.0.11
+     */
+    public function beforeRun()
+    {
+        $event = new WidgetEvent();
+        $this->trigger(self::EVENT_BEFORE_RUN, $event);
+        return $event->isValid;
+    }
+
+    /**
+     * This method is invoked right after a widget is executed.
+     *
+     * The method will trigger the [[EVENT_AFTER_RUN]] event. The return value of the method
+     * will be used as the widget return value.
+     *
+     * If you override this method, your code should look like the following:
+     *
+     * ```php
+     * public function afterRun($result)
+     * {
+     *     $result = parent::afterRun($result);
+     *     // your custom code here
+     *     return $result;
+     * }
+     * ```
+     *
+     * @param mixed $result the widget return result.
+     * @return mixed the processed widget result.
+     * @since 2.0.11
+     */
+    public function afterRun($result)
+    {
+        $event = new WidgetEvent();
+        $event->result = $result;
+        $this->trigger(self::EVENT_AFTER_RUN, $event);
+        return $event->result;
     }
 }

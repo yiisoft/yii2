@@ -165,9 +165,10 @@ class Controller extends \yii\base\Controller
             if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
+
             return true;
         }
-        
+
         return false;
     }
 
@@ -189,11 +190,11 @@ class Controller extends \yii\base\Controller
      * - an array in the format of `[$route, ...name-value pairs...]` (e.g. `['site/index', 'ref' => 1]`)
      *   [[Url::to()]] will be used to convert the array into a URL.
      *
-     * Any relative URL will be converted into an absolute one by prepending it with the host info
-     * of the current request.
+     * Any relative URL that starts with a single forward slash "/" will be converted
+     * into an absolute one by prepending it with the host info of the current request.
      *
      * @param int $statusCode the HTTP status code. Defaults to 302.
-     * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
+     * See <https://tools.ietf.org/html/rfc2616#section-10>
      * for details about HTTP status code
      * @return Response the current response object
      */
