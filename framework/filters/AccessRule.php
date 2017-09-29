@@ -42,16 +42,22 @@ class AccessRule extends Component
      * - `?`: matches a guest user (not authenticated yet)
      * - `@`: matches an authenticated user
      *
-     * If you are using RBAC (Role-Based Access Control), you may also specify role or permission names.
+     * If you are using RBAC (Role-Based Access Control), you may also specify role names.
      * In this case, [[User::can()]] will be called to check access.
+     * 
+     * Note that it is preferred to check for permissions instead.
      *
-     * If this property is not set or empty, it means this rule applies to all roles.
+     * If this property is not set or empty, it means this rule applies regardless of roles.
+     * @see $permissions
      */
     public $roles;
     /** 
-     * @var array alias for $roles
-     * @see $roles
+     * @var array list of RBAC (Role-Based Access Control) permissions that this rules applies to.
+     * [[User::can()]] will be called to check access.
+     * 
+     * If this property is not set or empty, it means this rule applies regardless of permissions.
      * @since 2.0.12
+     * @see $roles
      */
     public $permissions;
     /**
@@ -153,15 +159,15 @@ class AccessRule extends Component
         }
 
         foreach ($privileges as $privilege) {
-            if ($privilege === '?') {
-                if ($user->getIsGuest()) {
-                    return true;
-                }
-            } elseif ($privilege === '@') {
-                if (!$user->getIsGuest()) {
-                    return true;
-                }
-            } elseif ($user->can($privilege)) {
+            if ($privilege === '?' && $user->getIsGuest()) {
+                return true;
+            }
+
+            if ($privilege === '@' && !$user->getIsGuest()) {
+                return true;
+            }
+
+            if ($user->can($privilege)) {
                 return true;
             }
         }
