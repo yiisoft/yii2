@@ -293,7 +293,7 @@ class ContainerTest extends TestCase
     public function testVariadicConstructor()
     {
         $container = new Container();
-        $container->get(Variadic::class);
+        $container->get('yiiunit\framework\di\stubs\Variadic');
     }
 
     /**
