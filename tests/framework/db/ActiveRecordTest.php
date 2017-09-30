@@ -1601,4 +1601,29 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $this->assertEquals(1, $item->item_id);
     }
+
+    public function testQueryCallWithoutFind()
+    {
+        if ($this->driverName === 'oci') {
+            $customer = Customer::select(['{{customer}}.*', '([[status]]*2) AS [[status2]]'])
+                                ->where(['name' => 'user3'])->one();
+        } else {
+            $customer = Customer::select(['*', '([[status]]*2) AS [[status2]]'])
+                                ->where(['name' => 'user3'])->one();
+        }
+        $this->assertEquals(3, $customer->id);
+        $this->assertEquals(4, $customer->status2);
+
+        $this->assertEquals(3, Customer::count());
+        $this->assertEquals(2, Customer::where('[[id]]=1 OR [[id]]=2')->count());
+
+        $orders = Order::joinWith('customer')->orderBy('customer.id DESC, order.id')->all();
+        $this->assertCount(3, $orders);
+        $this->assertEquals(2, $orders[0]->id);
+        $this->assertEquals(3, $orders[1]->id);
+        $this->assertEquals(1, $orders[2]->id);
+        $this->assertTrue($orders[0]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[1]->isRelationPopulated('customer'));
+        $this->assertTrue($orders[2]->isRelationPopulated('customer'));
+    }
 }
