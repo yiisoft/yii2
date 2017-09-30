@@ -322,6 +322,21 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
+     * Handle dynamic static method calls into the method.
+     *
+     * @param  string  $method
+     * @param  array  $parameters
+     * @return mixed
+     */
+    public static function __callStatic($method, $parameters)
+    {
+        return call_user_func_array(
+            [static::find(), $method],
+            is_array($parameters) ? $parameters : [$parameters]
+        );
+    }
+
+    /**
      * Declares the name of the database table associated with this AR class.
      * By default this method returns the class name as the table name by calling [[Inflector::camel2id()]]
      * with prefix [[Connection::tablePrefix]]. For example if [[Connection::tablePrefix]] is `tbl_`,
