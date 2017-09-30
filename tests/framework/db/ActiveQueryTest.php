@@ -8,6 +8,7 @@
 namespace yiiunit\framework\db;
 
 use yii\base\Event;
+use yii\data\Pagination;
 use yii\db\ActiveQuery;
 use yii\db\Connection;
 use yii\db\QueryBuilder;
@@ -252,5 +253,20 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals([
             '{{' . Profile::tableName() . '}}' => '{{' . Profile::tableName() . '}}',
         ], $tables);
+    }
+
+    public function testPagination()
+    {
+        $query = new ActiveQuery(Profile::className());
+        $result = $query->paginate(5);
+
+        $query = new ActiveQuery(Profile::className());
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize'=>5]);
+        $models = $query->offset($pages->offset)
+                        ->limit($pages->limit)
+                        ->all();
+
+        $this->assertEquals(['items'=>$models, 'pages'=>$pages], $result);
     }
 }

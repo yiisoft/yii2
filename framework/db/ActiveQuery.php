@@ -816,6 +816,54 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
+     * Paginate the given query.
+     * ```php
+     * public function getItems()
+     * {
+     *     $result = Article::find()->where(['status' => 1])->paginate(15);
+     *     return $this->render('index', [
+     *                 'items' => $result['items'],
+     *                 'pages' => $result['pages'],
+     *            ]);
+     * }
+     * ```
+     * @param  int  $perPage
+     * @param  array  $columns
+     * @param  string  $pageName
+     * @param  int|null  $page
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function paginate($perPage = null, $columns = [], $pageName = 'page', $page = null)
+    {
+        $paginator = $this->setPaginator($this, $perPage, $pageName, $page);
+
+        if($columns){
+            $this->addSelect($columns);
+        }
+
+        $this->offset($paginator->offset)->limit($paginator->limit)->count();
+
+        return [
+            'items' => $this->all(),
+            'pages' => $paginator
+        ];
+    }
+
+    protected function setPaginator(Query $query, $perPage, $pageName = 'page', $page = null)
+    {
+        $paginator = \Yii::$container->get('yii\data\Pagination');
+        $paginator->totalCount = $query->count();
+        $paginator->pageParam = $pageName;
+        $paginator->setPage($page);
+        $paginator->setPageSize($perPage);
+
+        return $paginator;
+    }
+
+
+    /**
      * @return string primary table name
      * @since 2.0.12
      */
