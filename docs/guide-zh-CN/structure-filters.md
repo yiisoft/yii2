@@ -1,7 +1,7 @@
 过滤器
 =======
 
-过滤器是 [控制器 动作](structure-controllers.md#actions) 执行之前或之后执行的对象。
+过滤器是 [控制器动作](structure-controllers.md#actions) 执行之前或之后执行的对象。
 例如访问控制过滤器可在动作执行之前来控制特殊终端用户是否有权限执行动作，
 内容压缩过滤器可在动作执行之后发给终端用户之前压缩响应内容。
 
@@ -64,10 +64,10 @@ public function behaviors()
 ## 创建过滤器 <span id="creating-filters"></span>
 
 继承 [[yii\base\ActionFilter]] 类并覆盖
-[[yii\base\ActionFilter::beforeAction()|beforeAction()]] 和/或 [[yii\base\ActionFilter::afterAction()|afterAction()]]
+[[yii\base\ActionFilter::beforeAction()|beforeAction()]] 或 [[yii\base\ActionFilter::afterAction()|afterAction()]]
 方法来创建动作的过滤器，前者在动作执行之前执行，后者在动作执行之后执行。
 [[yii\base\ActionFilter::beforeAction()|beforeAction()]] 返回值决定动作是否应该执行，
-如果为false，之后的过滤器和动作不会继续执行。
+如果为 false，之后的过滤器和动作不会继续执行。
 
 下面的例子申明一个记录动作执行时间日志的过滤器。
 
@@ -99,19 +99,19 @@ class ActionTimeFilter extends ActionFilter
 
 ## 核心过滤器 <span id="core-filters"></span>
 
-Yii提供了一组常用过滤器，在`yii\filters`命名空间下，
+Yii 提供了一组常用过滤器，在 `yii\filters` 命名空间下，
 接下来我们简要介绍这些过滤器。
 
 
 ### [[yii\filters\AccessControl|AccessControl]] <span id="access-control"></span>
 
-AccessControl提供基于[[yii\filters\AccessControl::rules|rules]]规则的访问控制。
+AccessControl 提供基于 [[yii\filters\AccessControl::rules|rules]] 规则的访问控制。
 特别是在动作执行之前，访问控制会检测所有规则
 并找到第一个符合上下文的变量（比如用户IP地址、登录状态等等）的规则，
 来决定允许还是拒绝请求动作的执行，
 如果没有规则符合，访问就会被拒绝。
 
-如下示例表示表示允许已认证用户访问`create` 和 `update` 动作，
+如下示例表示表示允许已认证用户访问 `create` 和 `update` 动作，
 拒绝其他用户访问这两个动作。
 
 ```php
@@ -225,13 +225,13 @@ use yii\web\Response;
 ```
 
 > Info: 如果请求中没有检测到内容格式和语言，
-  使用[[formats]]和[[languages]]第一个配置项。
+  使用 [[formats]] 和 [[languages]] 第一个配置项。
 
 
 
 ### [[yii\filters\HttpCache|HttpCache]] <span id="http-cache"></span>
 
-HttpCache利用`Last-Modified` 和 `Etag` HTTP头实现客户端缓存。
+HttpCache 利用 `Last-Modified` 和 `Etag` HTTP头实现客户端缓存。
 例如：
 
 ```php
@@ -252,13 +252,13 @@ public function behaviors()
 }
 ```
 
-更多关于使用HttpCache详情请参阅 [HTTP 缓存](caching-http.md) 一节。
+更多关于使用 HttpCache 详情请参阅 [HTTP 缓存](caching-http.md) 一节。
 
 
 ### [[yii\filters\PageCache|PageCache]] <span id="page-cache"></span>
 
-PageCache实现服务器端整个页面的缓存。如下示例所示，PageCache应用在`index`动作，
-缓存整个页面60秒或`post`表的记录数发生变化。
+PageCache 实现服务器端整个页面的缓存。如下示例所示，PageCache应用在 `index` 动作，
+缓存整个页面 60 秒或 `post` 表的记录数发生变化。
 它也会根据不同应用语言保存不同的页面版本。
 
 ```php
@@ -325,7 +325,7 @@ public function behaviors()
 跨域资源共享 [CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) 
 机制允许一个网页的许多资源（例如字体、JavaScript等）
 这些资源可以通过其他域名访问获取。
-特别是JavaScript's AJAX 调用可使用 XMLHttpRequest 机制，
+特别是 JavaScript 的 AJAX 调用可使用 XMLHttpRequest 机制，
 由于同源安全策略该跨域请求会被网页浏览器禁止.
 CORS定义浏览器和服务器交互时哪些跨域请求允许和禁止。
 
@@ -346,18 +346,18 @@ public function behaviors()
 }
 ```
 
-如果要将CORS过滤器添加到你的API中的[[yii\rest\ActiveController]]类，
-还要检查[REST Controllers]（rest-controllers.md＃cors）中的部分。
+如果要将CORS过滤器添加到你的 API 中的 [[yii\rest\ActiveController]] 类，
+还要检查 [REST Controllers](rest-controllers.md＃cors) 中的部分。
 
-CROS过滤器可以通过[[yii\filters\Cors::$cors|$cors]]属性进行调整。
+CROS过滤器可以通过 [[yii\filters\Cors::$cors|$cors]] 属性进行调整。
 
-* `cors['Origin']`: 定义允许来源的数组，可为`['*']` (任何用户) 或 `['http://www.myserver.net', 'http://www.myotherserver.com']`. 默认为 `['*']`.
-* `cors['Access-Control-Request-Method']`: 允许动作数组如 `['GET', 'OPTIONS', 'HEAD']`.  默认为 `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
-* `cors['Access-Control-Request-Headers']`: 允许请求头部数组，可为 `['*']` 所有类型头部 或 `['X-Request-With']` 指定类型头部. 默认为 `['*']`.
-* `cors['Access-Control-Allow-Credentials']`: 定义当前请求是否使用证书，可为 `true`, `false` 或 `null` (不设置). 默认为 `null`.
-* `cors['Access-Control-Max-Age']`: 定义请求的有效时间，默认为 `86400`.
+* `cors['Origin']`：定义允许来源的数组，可为 `['*']`（任何用户）或 `['http://www.myserver.net', 'http://www.myotherserver.com']`。 默认为 `['*']`。
+* `cors['Access-Control-Request-Method']`：允许动作数组如 `['GET', 'OPTIONS', 'HEAD']`。默认为 `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`。
+* `cors['Access-Control-Request-Headers']`：允许请求头部数组，可为 `['*']` 所有类型头部 或 `['X-Request-With']` 指定类型头部。默认为 `['*']`。
+* `cors['Access-Control-Allow-Credentials']`：定义当前请求是否使用证书，可为 `true`, `false` 或 `null` (不设置). 默认为 `null`。
+* `cors['Access-Control-Max-Age']`: 定义请求的有效时间，默认为 `86400`。
 
-例如，允许来源为 `http://www.myserver.net` 和方式为 `GET`, `HEAD` 和 `OPTIONS` 的CORS如下：
+例如，允许来源为 `http://www.myserver.net` 和方式为 `GET`，`HEAD` 和 `OPTIONS` 的 CORS 如下：
 
 ```php
 use yii\filters\Cors;
@@ -377,8 +377,8 @@ public function behaviors()
 }
 ```
 
-可以覆盖默认参数为每个动作调整CORS 头部。例如，为`login`动作
-增加`Access-Control-Allow-Credentials`参数如下所示：
+可以覆盖默认参数为每个动作调整CORS 头部。例如，为 `login` 动作
+增加 `Access-Control-Allow-Credentials` 参数如下所示：
 
 ```php
 use yii\filters\Cors;
