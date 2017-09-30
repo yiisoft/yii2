@@ -347,10 +347,10 @@ unset($cookies['language']);
 Cookie验证默认启用，可以设置[[yii\web\Request::enableCookieValidation]]属性为false来禁用它，
 尽管如此，我们强烈建议启用它。
 
-> 注意: 直接通过`$_COOKIE` 和 `setcookie()` 读取和发送的Cookie不会被验证。
+> 注意: 直接通过 `$_COOKIE` 和 `setcookie()` 读取和发送的 Cookie 不会被验证。
 
-当使用cookie验证，必须指定[[yii\web\Request::cookieValidationKey]]，它是用来生成s上述的哈希值，
-可通过在应用配置中配置`request` 组件。
+当使用 cookie 验证时，必须指定 [[yii\web\Request::cookieValidationKey]]，它是用来生成上述的哈希值，
+可通过在应用配置中配置 `request` 组件。
 
 ```php
 return [
