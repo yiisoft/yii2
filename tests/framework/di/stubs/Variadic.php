@@ -7,8 +7,6 @@
 
 namespace yiiunit\framework\di\stubs;
 
-use yii\base\Object;
-
 /**
  * @author Sam Mousa <sam@mousa.nl>
  * @since 2.0.13
