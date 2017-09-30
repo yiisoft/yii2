@@ -837,32 +837,31 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function paginate($perPage = null, $columns = [], $pageName = 'page', $page = null)
     {
-        $query = $this;
-        $countQuery = clone $query;
-
-        $paginator = \Yii::$container->get('yii\data\Pagination');
-        $paginator->totalCount = $countQuery->count();
-        $paginator->pageParam = $pageName;
-
-        if($page){
-            $paginator->setPage($page);
-        }
-
-        if($perPage){
-            $paginator->setPageSize($perPage);
-        }
+        $paginator = $this->setPaginator($this, $perPage, $pageName, $page);
 
         if($columns){
-            $query = $query->addSelect($columns);
+            $this->addSelect($columns);
         }
 
-        $query->offset($paginator->offset)->limit($paginator->limit);
+        $this->offset($paginator->offset)->limit($paginator->limit)->count();
 
         return [
-            'items' => $query->all(),
+            'items' => $this->all(),
             'pages' => $paginator
         ];
     }
+
+    protected function setPaginator(Query $query, $perPage, $pageName = 'page', $page = null)
+    {
+        $paginator = \Yii::$container->get('yii\data\Pagination');
+        $paginator->totalCount = $query->count();
+        $paginator->pageParam = $pageName;
+        $paginator->setPage($page);
+        $paginator->setPageSize($perPage);
+
+        return $paginator;
+    }
+
 
     /**
      * @return string primary table name

@@ -255,7 +255,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         ], $tables);
     }
 
-    public function testPagination_true()
+    public function testPagination()
     {
         $query = new ActiveQuery(Profile::className());
         $result = $query->paginate(5);
