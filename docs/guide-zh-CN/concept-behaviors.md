@@ -50,7 +50,7 @@ class MyBehavior extends Behavior
 
 > 提示：在行为内部可以通过 [[yii\base\Behavior::owner]] 属性访问行为已附加的组件。
 
-> Note: In case [[yii\base\Behavior::__get()]] and/or [[yii\base\Behavior::__set()]] method of behavior is overridden you
+> 注意：In case [[yii\base\Behavior::__get()]] and/or [[yii\base\Behavior::__set()]] method of behavior is overridden you
 need to override [[yii\base\Behavior::canGetProperty()]] and/or [[yii\base\Behavior::canSetProperty()]] as well.
 
 处理事件
@@ -291,7 +291,7 @@ class User extends ActiveRecord
   `created_at` 和 `updated_at` 属性；
 * 当记录更新时，行为将当前时间戳赋值给 `updated_at` 属性。
 
-> Note: For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
+> 注意：For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
 
 With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
 filled with the current UNIX timestamp:
