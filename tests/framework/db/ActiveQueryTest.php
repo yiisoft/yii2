@@ -255,18 +255,18 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         ], $tables);
     }
 
-    public function testPagination()
+    public function testPagination_true()
     {
         $query = new ActiveQuery(Profile::className());
         $result = $query->paginate(5);
 
         $query = new ActiveQuery(Profile::className());
         $countQuery = clone $query;
-        $pages = new Pagination(['totalCount' => $countQuery->count()]);
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize'=>5]);
         $models = $query->offset($pages->offset)
                         ->limit($pages->limit)
                         ->all();
 
-        $this->assertEquals($result, ['items'=>$models, 'pages'=>$pages]);
+        $this->assertEquals(['items'=>$models, 'pages'=>$pages], $result);
     }
 }

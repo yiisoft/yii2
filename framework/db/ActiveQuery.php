@@ -840,7 +840,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $query = $this;
         $countQuery = clone $query;
 
-        $paginator = \Yii::$container->get('yii\data\Pagination',['totalCount' => $countQuery->count()]);
+        $paginator = \Yii::$container->get('yii\data\Pagination');
+        $paginator->totalCount = $countQuery->count();
         $paginator->pageParam = $pageName;
 
         if($page){
