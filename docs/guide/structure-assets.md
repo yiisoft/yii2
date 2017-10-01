@@ -252,7 +252,7 @@ Comparing to to using asset-packagist, composer-asset-plugin does not require to
 requires to install a special Composer plugin globally by running the following command:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.3.1"
+composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
 This command installs [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) globally
