@@ -237,7 +237,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Creates and executes an batch INSERT SQL statement.
+     * Creates and executes a batch INSERT SQL statement.
      * The method will properly escape the column names, and bind the values to be inserted.
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names.
