@@ -379,9 +379,10 @@ class GridView extends BaseListView
         foreach ($this->columns as $column) {
             /* @var $column Column */
             if (!empty($column->options)) {
-                $cols = array_map(function ($col) {
-                    return Html::tag('col', '', $col->options);
-                }, $this->columns);
+                $cols = [];
+                foreach ($this->columns as $col) {
+                    $cols[] = Html::tag('col', '', $col->options);
+                }
 
                 return Html::tag('colgroup', implode("\n", $cols));
             }
