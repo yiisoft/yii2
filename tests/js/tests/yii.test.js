@@ -328,7 +328,7 @@ describe('yii', function () {
             // container needs to be checked separately
 
             if (typeof pjaxOptions.container === 'string') {
-                assert.equal(pjaxOptions.container, '#' + pjaxContainerId || 'body');
+                assert.equal(pjaxOptions.container, pjaxContainerId ? ('#' + pjaxContainerId) : 'body');
             } else {
                 assert.instanceOf(pjaxOptions.container, $);
                 assert.equal(pjaxOptions.container.attr('id'), pjaxContainerId || 'body');
@@ -380,9 +380,13 @@ describe('yii', function () {
             var pjaxOptions = pjaxSubmitStub.getCall(0).args[1];
 
             // container needs to be checked separately
+            if (typeof pjaxOptions.container === 'string') {
+                assert.equal(pjaxOptions.container, 'body');
+            } else {
+                assert.instanceOf(pjaxOptions.container, $);
+                assert.equal(pjaxOptions.container.attr('id'), 'body');
+            }
 
-            assert.instanceOf(pjaxOptions.container, $);
-            assert.equal(pjaxOptions.container.attr('id'), 'body');
             delete pjaxOptions.container;
 
             assert.deepEqual(pjaxOptions, {
