@@ -328,7 +328,7 @@ describe('yii', function () {
             // container needs to be checked separately
 
             if (typeof pjaxOptions.container === 'string') {
-                assert.equal(pjaxOptions.container, '#' + pjaxContainerId || 'body');
+                assert.equal(pjaxOptions.container, ('#' + pjaxContainerId) || 'body');
             } else {
                 assert.instanceOf(pjaxOptions.container, $);
                 assert.equal(pjaxOptions.container.attr('id'), pjaxContainerId || 'body');
