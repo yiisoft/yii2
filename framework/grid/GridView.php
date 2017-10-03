@@ -376,21 +376,15 @@ class GridView extends BaseListView
      */
     public function renderColumnGroup()
     {
-        $requireColumnGroup = false;
         foreach ($this->columns as $column) {
             /* @var $column Column */
             if (!empty($column->options)) {
-                $requireColumnGroup = true;
-                break;
-            }
-        }
-        if ($requireColumnGroup) {
-            $cols = [];
-            foreach ($this->columns as $column) {
-                $cols[] = Html::tag('col', '', $column->options);
-            }
+                $cols = array_map(function ($col) {
+                    return Html::tag('col', '', $col->options);
+                }, $this->columns);
 
-            return Html::tag('colgroup', implode("\n", $cols));
+                return Html::tag('colgroup', implode("\n", $cols));
+            }
         }
 
         return false;
