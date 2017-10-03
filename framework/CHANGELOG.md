@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.13 under development
 ------------------------
-
+- Bug #6226: Fix fatal symlink error when publishing in multi threaded environments (dynasource)
 - Bug #14129: Fixed console help to properly work with tricky camelcased controller names (samdark, silverfire)
 - Enh #14126: Added variadic parameters support to DI container (SamMousa)
 - Enh #14087: Added `yii\web\View::registerCsrfMetaTags()` method that registers CSRF tags dynamically ensuring that caching doesn't interfere (RobinKamps)
