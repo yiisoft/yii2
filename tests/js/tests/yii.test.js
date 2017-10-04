@@ -328,7 +328,7 @@ describe('yii', function () {
             // container needs to be checked separately
 
             if (typeof pjaxOptions.container === 'string') {
-                assert.equal(pjaxOptions.container, pjaxContainerId ? ('#' + pjaxContainerId) : 'body');
+                assert.equal(pjaxOptions.container, pjaxContainerId || 'body');
             } else {
                 assert.instanceOf(pjaxOptions.container, $);
                 assert.equal(pjaxOptions.container.attr('id'), pjaxContainerId || 'body');
@@ -498,7 +498,7 @@ describe('yii', function () {
                         'link, data-pjax="1"': ['.link-pjax-1', 'body'],
                         'link, data-pjax="true"': ['.link-pjax-true', 'body'],
                         'link, data-pjax, outside a container': [
-                            '.link-pjax-outside-container', 'pjax-separate-container'
+                            '.link-pjax-outside-container', '#pjax-separate-container'
                         ],
                         'link href, data-pjax, inside a container': ['.link-pjax-inside-container', 'pjax-container-2']
                     }, function (elementSelector, expectedPjaxContainerId) {
