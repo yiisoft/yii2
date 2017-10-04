@@ -494,9 +494,9 @@ describe('yii', function () {
                     });
 
                     withData({
-                        'link, data-pjax': ['.link-pjax', 'body'],
-                        'link, data-pjax="1"': ['.link-pjax-1', 'body'],
-                        'link, data-pjax="true"': ['.link-pjax-true', 'body'],
+                        'link, data-pjax': ['.link-pjax', '#body'],
+                        'link, data-pjax="1"': ['.link-pjax-1', '#body'],
+                        'link, data-pjax="true"': ['.link-pjax-true', '#body'],
                         'link, data-pjax, outside a container': [
                             '.link-pjax-outside-container', 'pjax-separate-container'
                         ],
