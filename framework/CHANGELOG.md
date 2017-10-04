@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Bug #14016: Fixed empty messages marked as unused in PHP and PO sources when extracted with message command when `markUnused` is `false` (samdark)
 - Bug #14902: Fixed PHP notice in `yii\web\MultipartFormDataParser` (olimsaidov)
 - Bug #14129: Fixed console help to properly work with tricky camelcased controller names (samdark, silverfire)
 - Enh #14126: Added variadic parameters support to DI container (SamMousa)

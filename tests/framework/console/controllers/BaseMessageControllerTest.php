@@ -478,6 +478,41 @@ abstract class BaseMessageControllerTest extends TestCase
         $this->assertArrayHasKey($mainMessage, $messages,
             "\"$mainMessage\" is missing in translation file. Command output:\n\n" . $out);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14016
+     */
+    public function testShouldNotMarkUnused()
+    {
+        $category = 'my';
+
+        $key1 = 'key1';
+        $key2 = 'key2';
+
+        $this->saveMessages(
+            [
+                $key1 => '',
+                $key2 => '',
+            ],
+            $category
+        );
+
+        $sourceFileContent = 'Yii::t("my", "test");';
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig(['markUnused' => false]));
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $messages = $this->loadMessages($category);
+
+        $this->assertArrayHasKey($key1, $messages, "$key1 isn't there. Command output:\n\n" . $out);
+        $this->assertArrayHasKey($key2, $messages, "$key2 isn't there. Command output:\n\n" . $out);
+
+        $value1 = $messages[$key1];
+        $value2 = $messages[$key2];
+
+        $this->assertEquals('', $value1, "Message at $key1 should be empty but it is $value1. Command output:\n\n" . $out);
+        $this->assertEquals('', $value2, "Message at $key2 should be empty but it is $value2. Command output:\n\n" . $out);
+    }
 }
 
 class MessageControllerMock extends MessageController
