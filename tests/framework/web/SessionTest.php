@@ -16,7 +16,7 @@ use yiiunit\TestCase;
 class SessionTest extends TestCase
 {
     /**
-     * Test to prove that after Session::destroy session id set to old value
+     * Test to prove that after Session::destroy session id set to old value.
      */
     public function testDestroySessionId()
     {

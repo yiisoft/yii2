@@ -817,7 +817,7 @@ JS;
 ```
 
 
-### AJAX Validation <span id="ajax-validation"></span>
+## AJAX Validation <span id="ajax-validation"></span>
 
 Some validations can only be done on the server-side, because only the server has the necessary information.
 For example, to validate if a username is unique or not, it is necessary to check the user table on the server-side.

@@ -43,7 +43,7 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
-     * Provides some configuration that should not affect Integer formatter
+     * Provides some configuration that should not affect Integer formatter.
      */
     public function differentConfigProvider()
     {
@@ -80,6 +80,7 @@ class FormatterNumberTest extends TestCase
 
     /**
      * @dataProvider differentConfigProvider
+     * @param array $config
      */
     public function testIntlAsInteger($config)
     {
@@ -247,51 +248,52 @@ class FormatterNumberTest extends TestCase
         //$value = '-123456.123';
         //$this->assertSame("($123,456.12)", $this->formatter->asCurrency($value));
 
+        // "\xc2\xa0" is used as non-breaking space explicitly
         $this->formatter->locale = 'de-DE';
         $this->formatter->currencyCode = null;
-        $this->assertSame('123,00 €', $this->formatter->asCurrency('123'));
+        $this->assertSame("123,00\xc2\xa0€", $this->formatter->asCurrency('123'));
         $this->formatter->currencyCode = 'USD';
-        $this->assertSame('123,00 $', $this->formatter->asCurrency('123'));
+        $this->assertSame("123,00\xc2\xa0$", $this->formatter->asCurrency('123'));
         $this->formatter->currencyCode = 'EUR';
-        $this->assertSame('123,00 €', $this->formatter->asCurrency('123'));
+        $this->assertSame("123,00\xc2\xa0€", $this->formatter->asCurrency('123'));
 
         $this->formatter->locale = 'de-DE';
         $this->formatter->currencyCode = null;
-        $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
-        $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->assertSame("123,00\xc2\xa0€", $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame("123,00\xc2\xa0$", $this->formatter->asCurrency('123', 'USD'));
         $this->formatter->currencyCode = 'USD';
-        $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
-        $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->assertSame("123,00\xc2\xa0€", $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame("123,00\xc2\xa0$", $this->formatter->asCurrency('123', 'USD'));
         $this->formatter->currencyCode = 'EUR';
-        $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
-        $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->assertSame("123,00\xc2\xa0€", $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame("123,00\xc2\xa0$", $this->formatter->asCurrency('123', 'USD'));
 
         // default russian currency symbol
         $this->formatter->locale = 'ru-RU';
         $this->formatter->currencyCode = null;
-        $this->assertIsOneOf($this->formatter->asCurrency('123'), ['123,00 ₽', '123,00 руб.']);
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123,00\xc2\xa0₽", "123,00\xc2\xa0руб."]);
         $this->formatter->currencyCode = 'RUB';
-        $this->assertIsOneOf($this->formatter->asCurrency('123'), ['123,00 ₽', '123,00 руб.']);
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123,00\xc2\xa0₽", "123,00\xc2\xa0руб."]);
 
         // custom currency symbol
         $this->formatter->currencyCode = null;
         $this->formatter->numberFormatterSymbols = [
             NumberFormatter::CURRENCY_SYMBOL => '₽',
         ];
-        $this->assertSame('123,00 ₽', $this->formatter->asCurrency('123'));
+        $this->assertSame("123,00\xc2\xa0₽", $this->formatter->asCurrency('123'));
         $this->formatter->numberFormatterSymbols = [
             NumberFormatter::CURRENCY_SYMBOL => 'RUR',
         ];
-        $this->assertSame('123,00 RUR', $this->formatter->asCurrency('123'));
+        $this->assertSame("123,00\xc2\xa0RUR", $this->formatter->asCurrency('123'));
 
         /* See https://github.com/yiisoft/yii2/issues/13629
         // setting the currency code overrides the symbol
         $this->formatter->currencyCode = 'RUB';
-        $this->assertIsOneOf($this->formatter->asCurrency('123'), ['123,00 ₽', '123,00 руб.']);
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123,00\xc2\xa0₽", "123,00\xc2\xa0руб."]);
         $this->formatter->numberFormatterSymbols = [NumberFormatter::CURRENCY_SYMBOL => '₽'];
-        $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->assertSame("123,00\xc2\xa0$", $this->formatter->asCurrency('123', 'USD'));
         $this->formatter->numberFormatterSymbols = [NumberFormatter::CURRENCY_SYMBOL => '₽'];
-        $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame("123,00\xc2\xa0€", $this->formatter->asCurrency('123', 'EUR'));
         */
 
         // custom separators
@@ -299,22 +301,22 @@ class FormatterNumberTest extends TestCase
         $this->formatter->currencyCode = null;
         $this->formatter->numberFormatterSymbols = [];
         $this->formatter->thousandSeparator = ' ';
-        $this->assertSame('123 456,00 €', $this->formatter->asCurrency('123456', 'EUR'));
+        $this->assertSame("123 456,00\xc2\xa0€", $this->formatter->asCurrency('123456', 'EUR'));
 
         // empty input
         $this->formatter->locale = 'de-DE';
         $this->formatter->currencyCode = null;
         $this->formatter->numberFormatterSymbols = [];
         $this->formatter->thousandSeparator = null;
-        $this->assertSame('0,00 €', $this->formatter->asCurrency(false));
-        $this->assertSame('0,00 €', $this->formatter->asCurrency(''));
+        $this->assertSame("0,00\xc2\xa0€", $this->formatter->asCurrency(false));
+        $this->assertSame("0,00\xc2\xa0€", $this->formatter->asCurrency(''));
 
         // decimal formatting
         $this->formatter->locale = 'de-DE';
-        $this->assertSame('100 $', \Yii::$app->formatter->asCurrency(100, 'USD', [
+        $this->assertSame("100\xc2\xa0$", \Yii::$app->formatter->asCurrency(100, 'USD', [
             NumberFormatter::MAX_FRACTION_DIGITS => 0,
         ]));
-        $this->assertSame('100,00 $', $this->formatter->asCurrency(100, 'USD', [
+        $this->assertSame("100,00\xc2\xa0$", $this->formatter->asCurrency(100, 'USD', [
             NumberFormatter::MAX_FRACTION_DIGITS => 2,
         ]));
 
@@ -323,7 +325,7 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/12345
+     * @see https://github.com/yiisoft/yii2/issues/12345
      */
     public function testIntlCurrencyFraction()
     {
@@ -333,33 +335,33 @@ class FormatterNumberTest extends TestCase
         ];
         $this->formatter->locale = 'de-DE';
         $this->formatter->currencyCode = null;
-        $this->assertSame('123 €', $this->formatter->asCurrency('123'));
-        $this->assertSame('123 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame("123\xc2\xa0€", $this->formatter->asCurrency('123'));
+        $this->assertSame("123\xc2\xa0€", $this->formatter->asCurrency('123', 'EUR'));
         $this->formatter->currencyCode = 'USD';
-        $this->assertSame('123 $', $this->formatter->asCurrency('123'));
-        $this->assertSame('123 $', $this->formatter->asCurrency('123', 'USD'));
-        $this->assertSame('123 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame("123\xc2\xa0$", $this->formatter->asCurrency('123'));
+        $this->assertSame("123\xc2\xa0$", $this->formatter->asCurrency('123', 'USD'));
+        $this->assertSame("123\xc2\xa0€", $this->formatter->asCurrency('123', 'EUR'));
         $this->formatter->currencyCode = 'EUR';
-        $this->assertSame('123 €', $this->formatter->asCurrency('123'));
-        $this->assertSame('123 $', $this->formatter->asCurrency('123', 'USD'));
-        $this->assertSame('123 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->assertSame("123\xc2\xa0€", $this->formatter->asCurrency('123'));
+        $this->assertSame("123\xc2\xa0$", $this->formatter->asCurrency('123', 'USD'));
+        $this->assertSame("123\xc2\xa0€", $this->formatter->asCurrency('123', 'EUR'));
 
         $this->formatter->locale = 'ru-RU';
         $this->formatter->currencyCode = null;
-        $this->assertIsOneOf($this->formatter->asCurrency('123'), ['123 ₽', '123 руб.']);
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123\xc2\xa0₽", "123\xc2\xa0руб."]);
 
         $this->formatter->numberFormatterSymbols = [
             NumberFormatter::CURRENCY_SYMBOL => '&#8381;',
         ];
-        $this->assertSame('123 &#8381;', $this->formatter->asCurrency('123'));
+        $this->assertSame("123\xc2\xa0&#8381;", $this->formatter->asCurrency('123'));
 
         $this->formatter->numberFormatterSymbols = [];
         $this->formatter->currencyCode = 'RUB';
-        $this->assertIsOneOf($this->formatter->asCurrency('123'), ['123 ₽', '123 руб.']);
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123\xc2\xa0₽", "123\xc2\xa0руб."]);
     }
 
     /**
-     * https://github.com/yiisoft/yii2/pull/5261
+     * @see https://github.com/yiisoft/yii2/pull/5261
      */
     public function testIntlIssue5261()
     {
@@ -462,7 +464,7 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/14278
+     * @see https://github.com/yiisoft/yii2/issues/14278
      */
     public function testIntlAsOrdinalDate()
     {
@@ -678,7 +680,7 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/4960
+     * @see https://github.com/yiisoft/yii2/issues/4960
      */
     public function testAsSizeConfiguration()
     {

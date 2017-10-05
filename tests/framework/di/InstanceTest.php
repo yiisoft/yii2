@@ -147,7 +147,7 @@ class InstanceTest extends TestCase
     }
 
     /**
-     * This tests the usage example given in yii\di\Instance class PHPdoc
+     * This tests the usage example given in yii\di\Instance class PHPDoc.
      */
     public function testLazyInitializationExample()
     {

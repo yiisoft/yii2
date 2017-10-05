@@ -48,8 +48,12 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection = $this->getConnection(false, false);
         $connection->open();
         $serialized = serialize($connection);
+
+        $this->assertNotNull($connection->pdo);
+
         $unserialized = unserialize($serialized);
         $this->assertInstanceOf('yii\db\Connection', $unserialized);
+        $this->assertNull($unserialized->pdo);
 
         $this->assertEquals(123, $unserialized->createCommand('SELECT 123')->queryScalar());
     }
@@ -390,7 +394,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
 
     /**
-     * Test whether slave connection is recovered when call getSlavePdo() after close()
+     * Test whether slave connection is recovered when call getSlavePdo() after close().
      *
      * @see https://github.com/yiisoft/yii2/issues/14165
      */
@@ -412,6 +416,6 @@ abstract class ConnectionTest extends DatabaseTestCase
         $slavePdo = $connection->getSlavePdo(false);
         $this->assertNotFalse($slavePdo);
         $this->assertNotNull($slavePdo);
-        $this->assertNotSame($masterPdo,$slavePdo);
+        $this->assertNotSame($masterPdo, $slavePdo);
     }
 }

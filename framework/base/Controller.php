@@ -88,6 +88,7 @@ class Controller extends Component implements ViewContextInterface
 
     /**
      * Declares external actions for the controller.
+     *
      * This method is meant to be overwritten to declare external actions for the controller.
      * It should return an array, with array keys being action IDs, and array values the corresponding
      * action class names or action configuration arrays. For example,
@@ -189,6 +190,7 @@ class Controller extends Component implements ViewContextInterface
         } elseif ($pos > 0) {
             return $this->module->runAction($route, $params);
         }
+
         return Yii::$app->runAction(ltrim($route, '/'), $params);
     }
 
@@ -316,6 +318,7 @@ class Controller extends Component implements ViewContextInterface
             array_unshift($modules, $module->module);
             $module = $module->module;
         }
+
         return $modules;
     }
 
@@ -395,6 +398,7 @@ class Controller extends Component implements ViewContextInterface
         if ($layoutFile !== false) {
             return $this->getView()->renderFile($layoutFile, ['content' => $content], $this);
         }
+
         return $content;
     }
 
@@ -435,6 +439,7 @@ class Controller extends Component implements ViewContextInterface
         if ($this->_view === null) {
             $this->_view = Yii::$app->getView();
         }
+
         return $this->_view;
     }
 
@@ -458,6 +463,7 @@ class Controller extends Component implements ViewContextInterface
         if ($this->_viewPath === null) {
             $this->_viewPath = $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
         }
+
         return $this->_viewPath;
     }
 

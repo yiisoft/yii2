@@ -12,7 +12,7 @@ The most commonly used service locator in Yii is the *application* object, which
 `urlManager` components. You may configure these components, or even replace them with your own implementations, easily
 through functionality provided by the service locator.
 
-Besides the application object, each module object is also a service locator.
+Besides the application object, each module object is also a service locator. Modules implement [tree traversal](#tree-traversal).
 
 To use a service locator, the first step is to register components with it. A component can be registered
 via [[yii\di\ServiceLocator::set()]]. The following code shows different ways of registering components:
@@ -118,3 +118,13 @@ return [
 This alternative approach is most preferable when you are releasing a Yii component which encapsulates some non-Yii
 3rd-party library. You use the static method like shown above to represent the complex logic of building the
 3rd-party object, and the user of your component only needs to call the static method to configure the component.
+
+## Tree traversal <span id="tree-traversal"></span>
+
+Modules allow arbitrary nesting; a Yii application is essentially a tree of modules.
+Since each of these modules is a service locator it makes sense for children to have access to their parent.
+This allows modules to use `$this->get('db')` instead of referencing the root service locator `Yii::$app->get('db')`.
+Added benefit is the option for a developer to override configuration in a module.
+
+Any request for a service to be retrieved from a Module will be passed on to its parent in case the module is not able to satisfy it.
+ 

@@ -11,7 +11,7 @@ use yii\caching\FileCache;
 use yii\rbac\DbManager;
 
 /**
- * MySQLManagerCacheTest
+ * MySQLManagerCacheTest.
  * @group rbac
  * @group db
  * @group mysql

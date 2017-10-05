@@ -92,7 +92,8 @@ class DataReader extends \yii\base\BaseObject implements \Iterator, \Countable
     }
 
     /**
-     * Set the default fetch mode for this statement
+     * Set the default fetch mode for this statement.
+     *
      * @param int $mode fetch mode
      * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
      */

@@ -165,7 +165,7 @@ window.yii = (function ($) {
             if (usePjax) {
                 pjaxContainer = $e.data('pjax-container') || $e.closest('[data-pjax-container]');
                 if (!pjaxContainer.length) {
-                    pjaxContainer = $('body');
+                    pjaxContainer = 'body';
                 }
                 pjaxOptions = {
                     container: pjaxContainer,
@@ -294,6 +294,7 @@ window.yii = (function ($) {
                     params[name].push(value || '');
                 }
             }
+
             return params;
         },
 

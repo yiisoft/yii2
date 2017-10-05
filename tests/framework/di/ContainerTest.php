@@ -285,4 +285,29 @@ class ContainerTest extends TestCase
         $sameFoo = $container->get('qux.using.closure');
         $this->assertSame($foo, $sameFoo);
     }
+
+    /**
+     * @requires PHP 5.6
+     */
+    public function testVariadicConstructor()
+    {
+        if (defined('HHVM_VERSION')) {
+            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
+        }
+
+        $container = new Container();
+        $container->get('yiiunit\framework\di\stubs\Variadic');
+    }
+
+    /**
+     * @requires PHP 5.6
+     */
+    public function testVariadicCallable()
+    {
+        if (defined('HHVM_VERSION')) {
+            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
+        }
+
+        require __DIR__ . '/testContainerWithVariadicCallable.php';
+    }
 }

@@ -56,7 +56,7 @@ class Expression extends \yii\base\BaseObject
     }
 
     /**
-     * String magic method
+     * String magic method.
      * @return string the DB expression
      */
     public function __toString()

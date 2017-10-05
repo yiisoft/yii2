@@ -9,7 +9,7 @@ use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
 /**
- * Unit test for [[yii\helpers\FileHelper]]
+ * Unit test for [[yii\helpers\FileHelper]].
  * @see FileHelper
  * @group helpers
  */
@@ -98,7 +98,7 @@ class FileHelperTest extends TestCase
     }
 
     /**
-     * Creates test files structure,
+     * Creates test files structure.
      * @param array  $items    file system objects to be created in format: objectName => objectContent
      *                         Arrays specifies directories, other values - files.
      * @param string $basePath structure base file path.

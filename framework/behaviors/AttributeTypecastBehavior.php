@@ -285,6 +285,7 @@ class AttributeTypecastBehavior extends Behavior
                 }
             }
         }
+
         return $attributeTypes;
     }
 
