@@ -359,32 +359,32 @@ class BaseConsole
     {
         $styleMap = [
                 // http://www.w3.org/TR/CSS2/syndata.html#value-def-color
-                self::FG_BLACK    => ['color' => 'black'],
-                self::FG_BLUE     => ['color' => 'blue'],
-                self::FG_CYAN     => ['color' => 'aqua'],
-                self::FG_GREEN    => ['color' => 'lime'],
-                self::FG_GREY     => ['color' => 'silver'],
+                self::FG_BLACK => ['color' => 'black'],
+                self::FG_BLUE => ['color' => 'blue'],
+                self::FG_CYAN => ['color' => 'aqua'],
+                self::FG_GREEN => ['color' => 'lime'],
+                self::FG_GREY => ['color' => 'silver'],
                 // http://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/
                 // http://dev.w3.org/csswg/css-color/#valuedef-rebeccapurple
-                self::FG_PURPLE   => ['color' => 'rebeccapurple'],
-                self::FG_RED      => ['color' => 'red'],
-                self::FG_YELLOW   => ['color' => 'yellow'],
-                self::BG_BLACK    => ['background-color' => 'black'],
-                self::BG_BLUE     => ['background-color' => 'blue'],
-                self::BG_CYAN     => ['background-color' => 'aqua'],
-                self::BG_GREEN    => ['background-color' => 'lime'],
-                self::BG_GREY     => ['background-color' => 'silver'],
-                self::BG_PURPLE   => ['background-color' => 'rebeccapurple'],
-                self::BG_RED      => ['background-color' => 'red'],
-                self::BG_YELLOW   => ['background-color' => 'yellow'],
-                self::BOLD        => ['font-weight' => 'bold'],
-                self::ITALIC      => ['font-style' => 'italic'],
-                self::UNDERLINE   => ['text-decoration' => ['underline']],
-                self::OVERLINED   => ['text-decoration' => ['overline']],
+                self::FG_PURPLE => ['color' => 'rebeccapurple'],
+                self::FG_RED => ['color' => 'red'],
+                self::FG_YELLOW => ['color' => 'yellow'],
+                self::BG_BLACK => ['background-color' => 'black'],
+                self::BG_BLUE => ['background-color' => 'blue'],
+                self::BG_CYAN => ['background-color' => 'aqua'],
+                self::BG_GREEN => ['background-color' => 'lime'],
+                self::BG_GREY => ['background-color' => 'silver'],
+                self::BG_PURPLE => ['background-color' => 'rebeccapurple'],
+                self::BG_RED => ['background-color' => 'red'],
+                self::BG_YELLOW => ['background-color' => 'yellow'],
+                self::BOLD => ['font-weight' => 'bold'],
+                self::ITALIC => ['font-style' => 'italic'],
+                self::UNDERLINE => ['text-decoration' => ['underline']],
+                self::OVERLINED => ['text-decoration' => ['overline']],
                 self::CROSSED_OUT => ['text-decoration' => ['line-through']],
-                self::BLINK       => ['text-decoration' => ['blink']],
-                self::CONCEALED   => ['visibility' => 'hidden'],
-        ] + $styleMap;
+                self::BLINK => ['text-decoration' => ['blink']],
+                self::CONCEALED => ['visibility' => 'hidden'],
+            ] + $styleMap;
 
         $tags = 0;
         $result = preg_replace_callback(
