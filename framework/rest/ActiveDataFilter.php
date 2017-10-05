@@ -8,7 +8,7 @@
 namespace yii\rest;
 
 /**
- * ActiveDataFilter allows composition of the filter condition in format suitable for [[\yii\db\QueryInterface::where()]].
+ * ActiveDataFilter allows composing a filtering condition in a format suitable for [[\yii\db\QueryInterface::where()]].
  *
  * @see DataFilter
  *
@@ -18,8 +18,8 @@ namespace yii\rest;
 class ActiveDataFilter extends DataFilter
 {
     /**
-     * @var array map of filter condition keywords to build methods.
-     * These methods are used by [[buildCondition()]] to build the actual filter conditions.
+     * @var array maps filtering condition keywords to build methods.
+     * These methods are used by [[buildCondition()]] to build the actual filtering conditions.
      * Particular condition builder can be specified using a PHP callback. For example:
      *
      * ```php
@@ -48,12 +48,13 @@ class ActiveDataFilter extends DataFilter
         'LIKE' => 'buildOperatorCondition',
     ];
     /**
-     * @var array a map from filter operators to the ones use in [[\yii\db\QueryInterface::where()]],
-     * in format: `[filterOperator => queryOperator]`.
-     * If particular operator keyword does not appear in the map, it will be used as it is.
-     * Thus in general this field can be left empty as filter operator names are consistent with the ones
-     * used at [[\yii\db\QueryInterface::where()]]. However, you may want to adjust it in some special cases.
-     * For example: using PosgreSQL you may want to setup the following map:
+     * @var array map filtering operators to operators used in [[\yii\db\QueryInterface::where()]].
+     * The format is: `[filterOperator => queryOperator]`.
+     * If particular operator keyword does not appear in the map, it will be used as is.
+     *
+     * Usually the map can be left empty as filter operator names are consistent with the ones
+     * used in [[\yii\db\QueryInterface::where()]]. However, you may want to adjust it in some special cases.
+     * For example, when using PosgreSQL you may want to setup the following map:
      *
      * ```php
      * [
@@ -110,8 +111,8 @@ class ActiveDataFilter extends DataFilter
     }
 
     /**
-     * Builds conjunction condition, which consist of multiple independent ones.
-     * This covers such operators like `and` and `or`.
+     * Builds conjunction condition, which consists of multiple independent ones.
+     * It covers such operators as `and` and `or`.
      * @param string $operator operator keyword.
      * @param mixed $condition raw condition.
      * @return array actual condition.
@@ -131,8 +132,8 @@ class ActiveDataFilter extends DataFilter
     }
 
     /**
-     * Builds block condition, which consist of single condition.
-     * This covers such operators like `not`.
+     * Builds block condition, which consists of a single condition.
+     * It covers such operators as `not`.
      * @param string $operator operator keyword.
      * @param mixed $condition raw condition.
      * @return array actual condition.
@@ -149,7 +150,7 @@ class ActiveDataFilter extends DataFilter
     }
 
     /**
-     * Builds search condition for particular attribute.
+     * Builds search condition for a particular attribute.
      * @param string $attribute search attribute name.
      * @param mixed $condition search condition.
      * @return array actual condition.
@@ -186,7 +187,7 @@ class ActiveDataFilter extends DataFilter
     }
 
     /**
-     * Builds operator condition.
+     * Builds an operator condition.
      * @param string $operator operator keyword.
      * @param mixed $condition attribute condition.
      * @param string $attribute attribute name.
