@@ -147,7 +147,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return $content;
         }
-        $html = "<$name" . static::renderTagAttributes($options) . '>';
+        $html = '<' .$name . static::renderTagAttributes($options) . '>';
         return isset(static::$voidElements[strtolower($name)]) ? $html : "$html$content</$name>";
     }
 
@@ -168,7 +168,7 @@ class BaseHtml
             return '';
         }
 
-        return "<$name" . static::renderTagAttributes($options) . '>';
+        return '<' . $name . static::renderTagAttributes($options) . '>';
     }
 
     /**
