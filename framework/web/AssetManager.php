@@ -604,6 +604,6 @@ class AssetManager extends Component
             return call_user_func($this->hashCallback, $path);
         }
         $path = (is_file($path) ? dirname($path) : $path) . filemtime($path);
-        return sprintf('%x', crc32($path . Yii::getVersion()));
+        return sprintf('%x', crc32($path . Yii::getVersion() . '|' . $this->linkAssets));
     }
 }
