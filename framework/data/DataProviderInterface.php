@@ -69,4 +69,9 @@ interface DataProviderInterface
      * @return Pagination|false the pagination object. If this is false, it means the pagination is disabled.
      */
     public function getPagination();
+
+    /**
+     * @return Filter the filtering object. If this is false, it means the filtering is disabled.
+     */
+    public function getFilter();
 }
