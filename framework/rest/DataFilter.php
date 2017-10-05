@@ -17,10 +17,8 @@ use yii\validators\NumberValidator;
 use yii\validators\StringValidator;
 
 /**
- * DataFilter is a special kind of [[Model]] dedicated to the processing of the query filter specification.
- * It allows validation and building of the filter condition passed via request.
- *
- * The used filter format has been inspired from the ones used by ElasticSearch and MongoDB.
+ * DataFilter is a special [[Model]] for processing query filtering specification.
+ * It allows validating and building a filter condition passed via request.
  *
  * Filter example:
  *
@@ -48,7 +46,7 @@ use yii\validators\StringValidator;
  * }
  * ```
  *
- * Filter should be specified in request by key equal to [[filterAttributeName]] value. Thus actual HTTP request body
+ * In the request the filter should be specified using a key name equal to [[filterAttributeName]]. Thus actual HTTP request body
  * will look like following:
  *
  * ```json
@@ -59,8 +57,8 @@ use yii\validators\StringValidator;
  * }
  * ```
  *
- * Raw filter value should be assigned to [[filter]] property, which is considered as this model attribute.
- * Thus you may populate its from request data via [[load()]] method:
+ * Raw filter value should be assigned to [[filter]] property of the model.
+ * You may populate it from request data via [[load()]] method:
  *
  * ```php
  * use yii\rest\DataFilter;
@@ -69,7 +67,7 @@ use yii\validators\StringValidator;
  * $dataFilter->load(Yii::$app->request->getBodyParams());
  * ```
  *
- * In order to function this class requires a 'slave' model specified via [[searchModel]]. This model should declare
+ * In order to function this class requires a search model specified via [[searchModel]]. This search model should declare
  * all available search attributes and their validation rules. For example:
  *
  * ```php
@@ -89,8 +87,8 @@ use yii\validators\StringValidator;
  * }
  * ```
  *
- * In order to reduce amount of classes, you may use [[\yii\base\DynamicModel]] instance as [[searchModel]].
- * In this case you should specify [[searchModel]] using PHP callable:
+ * In order to reduce amount of classes, you may use [[\yii\base\DynamicModel]] instance as a [[searchModel]].
+ * In this case you should specify [[searchModel]] using a PHP callable:
  *
  * ```php
  * function () {
@@ -101,13 +99,13 @@ use yii\validators\StringValidator;
  * }
  * ```
  *
- * You can use [[validate()]] method to check if filter value is valid or not. If validation fails you can use
+ * You can use [[validate()]] method to check if filter value is valid. If validation fails you can use
  * [[getErrors()]] to get actual error messages.
  *
- * In order to acquire actual filter value suitable for data fetching use [[build()]] method.
+ * In order to acquire filter condition suitable for fetching data use [[build()]] method.
  *
- * > Note: this is a base class its implementation of [[build()]] simply returns normalized [[filter]] value.
- * In order to convert filter in particular format you should use descendant of this class, which implements
+ * > Note: This is a base class. Its implementation of [[build()]] simply returns normalized [[filter]] value.
+ * In order to convert filter to particular format you should use descendant of this class that implements
  * [[buildInternal()]] method accordingly.
  *
  * @see ActiveDataFilter
@@ -130,8 +128,8 @@ class DataFilter extends Model
     const TYPE_ARRAY = 'array';
 
     /**
-     * @var string name of the attribute, which should handle filter value.
-     * This field defines the filter attribute name, which will be used to load data via [[load()]] method.
+     * @var string name of the attribute that handles filter value.
+     * The name is used to load data via [[load()]] method.
      */
     public $filterAttributeName = 'filter';
     /**
@@ -140,13 +138,13 @@ class DataFilter extends Model
      */
     public $filterAttributeLabel;
     /**
-     * @var array the keywords or expressions, which could be used for filter composition.
-     * Array keys are the expressions, which are used in raw filter value obtained from user request,
-     * array values are internal build keys used over this class methods.
+     * @var array keywords or expressions that could be used in a filter.
+     * Array keys are the expressions used in raw filter value obtained from user request.
+     * Array values are internal build keys used in this class methods.
      *
-     * Any word, which does not appear here, will not be recognized as filter control and will be treated as
+     * Any unspecified keyword will not be recognized as a filter control and will be treated as
      * an attribute name. Thus you should avoid conflicts between control keywords and attribute names.
-     * For example: in case you have control keyword 'like' and attribute named 'like', condition specification
+     * For example: in case you have control keyword 'like' and an attribute named 'like', specifying condition
      * for such attribute will be impossible.
      *
      * You may specify several keywords for the same filter build key, creating multiple aliases. For example:
@@ -161,9 +159,9 @@ class DataFilter extends Model
      * ]
      * ```
      *
-     * > Note: while specifying filter controls keep in mind actual data exchange format, which your API uses.
-     *   Make sure each specified control keyword to be valid for this format. For example: in XML tag name can start
-     *   only from letter character, thus controls like `>`, '=' or `$gt` will break the XML schema.
+     * > Note: while specifying filter controls take actual data exchange format, which your API uses, in mind.
+     *   Make sure each specified control keyword is valid for the format. For example, in XML tag name can start
+     *   only with a letter character, thus controls like `>`, '=' or `$gt` will break the XML schema.
      */
     public $filterControls = [
         'and' => 'AND',
@@ -180,7 +178,7 @@ class DataFilter extends Model
         'like' => 'LIKE',
     ];
     /**
-     * @var array map of filter condition keywords to validation methods.
+     * @var array maps filter condition keywords to validation methods.
      * These methods are used by [[validateCondition()]] to validate raw filter conditions.
      */
     public $conditionValidators = [
@@ -198,10 +196,10 @@ class DataFilter extends Model
         'LIKE' => 'validateOperatorCondition',
     ];
     /**
-     * @var array specifies the list of supported search attribute type per each operator.
+     * @var array specifies the list of supported search attribute types per each operator.
      * This field should be in format: 'operatorKeyword' => ['type1', 'type2' ...].
-     * Supported types list can be specified as `*`, which indicates operator supports all available types.
-     * Any keyword, which is not present in this specification will not be considered as valid operator.
+     * Supported types list can be specified as `*`, which indicates that operator supports all types available.
+     * Any unspecified keyword will not be considered as a valid operator.
      */
     public $operatorTypes = [
         '<' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
@@ -223,7 +221,7 @@ class DataFilter extends Model
     ];
     /**
      * @var array actual attribute names to be used in searched condition, in format: [filterAttribute => actualAttribute].
-     * For example, in case of using table joins in the search query, attribute map may look like following:
+     * For example, in case of using table joins in the search query, attribute map may look like the following:
      *
      * ```php
      * [
@@ -231,7 +229,7 @@ class DataFilter extends Model
      * ]
      * ```
      *
-     * Attribute map will be applied to filter condition at [[normalize()]].
+     * Attribute map will be applied to filter condition in [[normalize()]] method.
      */
     public $attributeMap = [];
 
@@ -242,9 +240,9 @@ class DataFilter extends Model
         'invalidFilter' => 'The format of {filter} is invalid.',
         'operatorRequireMultipleOperands' => "Operator '{operator}' requires multiple operands.",
         'unknownAttribute' => "Unknown filter attribute '{attribute}'",
-        'invalidAttributeValueFormat' => "Condition for '{attribute}' should be either a value or valid operator specification.",
-        'operatorRequireAttribute' => "Operator '{operator}' must be used with search attribute.",
-        'unsupportedOperatorType' => "'{attribute}' does not support operator '{operator}'.",
+        'invalidAttributeValueFormat' => "Condition for '{attribute}' should be either a value or a valid operator specification.",
+        'operatorRequireAttribute' => "Operator '{operator}' must be used with a search attribute.",
+        'unsupportedOperatorType' => "'{attribute}' does not support '{operator}' operator.",
     ];
     /**
      * @var mixed raw filter specification.
@@ -378,9 +376,9 @@ class DataFilter extends Model
 
     /**
      * Sets the list of error messages responding to invalid filter structure, in format: `[errorKey => message]`.
-     * Message may contain placeholders, which will be populated depending on message context.
-     * For each message placeholder `{filter}` is available referring to the label for [[filterAttributeName]] attribute.
-     * @param array|\Closure $errorMessages error messages in format `[errorKey => message]`, or PHP callback returning them.
+     * Message may contain placeholders that will be populated depending on the message context.
+     * For each message a `{filter}` placeholder is available referring to the label for [[filterAttributeName]] attribute.
+     * @param array|\Closure $errorMessages error messages in `[errorKey => message]` format, or a PHP callback returning them.
      */
     public function setErrorMessages($errorMessages)
     {
@@ -392,7 +390,7 @@ class DataFilter extends Model
 
     /**
      * Returns default values for [[errorMessages]].
-     * @return array default error messages in format `[errorKey => message]`.
+     * @return array default error messages in `[errorKey => message]` format.
      */
     protected function defaultErrorMessages()
     {
@@ -431,7 +429,7 @@ class DataFilter extends Model
         return Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
     }
 
-    // Model specific :
+    // Model specific:
 
     /**
      * @inheritdoc
@@ -471,7 +469,7 @@ class DataFilter extends Model
         ];
     }
 
-    // Validation :
+    // Validation:
 
     /**
      * Validates filter attribute value to match filer condition specification.
@@ -512,8 +510,8 @@ class DataFilter extends Model
     }
 
     /**
-     * Validates conjunction condition, which consist of multiple independent ones.
-     * This covers such operators like `and` and `or`.
+     * Validates conjunction condition that consists of multiple independent ones.
+     * This covers such operators as `and` and `or`.
      * @param string $operator raw operator control keyword.
      * @param mixed $condition raw condition.
      */
@@ -530,8 +528,8 @@ class DataFilter extends Model
     }
 
     /**
-     * Validates block condition, which consist of single condition.
-     * This covers such operators like `not`.
+     * Validates block condition that consists of a single condition.
+     * This covers such operators as `not`.
      * @param string $operator raw operator control keyword.
      * @param mixed $condition raw condition.
      */
@@ -541,7 +539,7 @@ class DataFilter extends Model
     }
 
     /**
-     * Validates search condition for particular attribute.
+     * Validates search condition for a particular attribute.
      * @param string $attribute search attribute name.
      * @param mixed $condition search condition.
      */
@@ -570,7 +568,7 @@ class DataFilter extends Model
                     $this->addError($this->filterAttributeName, $this->parseErrorMessage('invalidAttributeValueFormat', ['attribute' => $attribute]));
                 }
             } else {
-                // attribute may allow array value :
+                // attribute may allow array value:
                 $this->validateAttributeValue($attribute, $condition);
             }
         } else {
@@ -587,7 +585,7 @@ class DataFilter extends Model
     protected function validateOperatorCondition($operator, $condition, $attribute = null)
     {
         if ($attribute === null) {
-            // absence of attribute indicates operator has been placed in wrong position
+            // absence of an attribute indicates that operator has been placed in a wrong position
             $this->addError($this->filterAttributeName, $this->parseErrorMessage('operatorRequireAttribute', ['operator' => $operator]));
             return;
         }
@@ -606,7 +604,7 @@ class DataFilter extends Model
         }
 
         if (in_array($internalOperator, $this->multiValueOperators, true)) {
-            // multi-value operator :
+            // multi-value operator:
             if (!is_array($condition)) {
                 $this->addError($this->filterAttributeName, $this->parseErrorMessage('operatorRequireMultipleOperands', ['operator' => $operator]));
             } else {
@@ -662,7 +660,7 @@ class DataFilter extends Model
         return $model->{$attribute};
     }
 
-    // Build :
+    // Build:
 
     /**
      * Builds actual filter specification form [[filter]] value.
@@ -734,7 +732,7 @@ class DataFilter extends Model
         return $result;
     }
 
-    // Property access :
+    // Property access:
 
     /**
      * @inheritdoc
