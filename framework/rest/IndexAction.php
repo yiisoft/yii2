@@ -33,8 +33,8 @@ class IndexAction extends Action
      *
      * The callable should return an instance of [[ActiveDataProvider]].
      *
-     * If [[dataFilter]] is set - the result of [[DataFilter::build()]] will be passed to the callable as a second parameter.
-     * In this case the signature of the callable should be:
+     * If [[dataFilter]] is set the result of [[DataFilter::build()]] will be passed to the callable as a second parameter.
+     * In this case the signature of the callable should be the following:
      *
      * ```php
      * function (IndexAction $action, mixed $filter) {
