@@ -513,6 +513,44 @@ abstract class BaseMessageControllerTest extends TestCase
         $this->assertEquals('', $value1, "Message at $key1 should be empty but it is $value1. Command output:\n\n" . $out);
         $this->assertEquals('', $value2, "Message at $key2 should be empty but it is $value2. Command output:\n\n" . $out);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13792
+     */
+    public function testShouldNotRemoveUnused()
+    {
+        $category = 'my';
+
+        $key1 = 'test';
+        $key2 = 'unused';
+
+        $this->saveMessages(
+            [
+                $key1 => 'test translation',
+                $key2 => 'unused translation',
+            ],
+            $category
+        );
+
+        $sourceFileContent = 'Yii::t("my", "test");';
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig([
+            'removeUnused' => false,
+            'markUnused' => false,
+        ]));
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $messages = $this->loadMessages($category);
+
+        $this->assertArrayHasKey($key1, $messages, "$key1 isn't there. Command output:\n\n" . $out);
+        $this->assertArrayHasKey($key2, $messages, "$key2 isn't there. Command output:\n\n" . $out);
+
+        $value1 = $messages[$key1];
+        $value2 = $messages[$key2];
+
+        $this->assertEquals('test translation', $value1, "Message at $key1 should be be \"test translation\" but it is $value1. Command output:\n\n" . $out);
+        $this->assertEquals('unused translation', $value2, "Message at $key2 should be \"unused translation\" but it is $value2. Command output:\n\n" . $out);
+    }
 }
 
 class MessageControllerMock extends MessageController
