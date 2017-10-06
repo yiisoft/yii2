@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Enh #14929: Ensure trailing `;` on combining files with `asset` command to fix compiler failures (tanakahisateru)
 - Bug #14902: Fixed PHP notice in `yii\web\MultipartFormDataParser` (olimsaidov)
 - Bug #14129: Fixed console help to properly work with tricky camelcased controller names (samdark, silverfire)
 - Enh #14126: Added variadic parameters support to DI container (SamMousa)
