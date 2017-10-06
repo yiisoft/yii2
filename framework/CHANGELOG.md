@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.13 under development
 ------------------------
-
+- Bug #6226: Fix fatal symlink error when publishing in multi threaded environments (dynasource)
 - Enh #13486: Use DI container to instantiate cookies in order to be able to set defaults (samdark)
 - Bug #14902: Fixed PHP notice in `yii\web\MultipartFormDataParser` (olimsaidov)
 - Bug #14129: Fixed console help to properly work with tricky camelcased controller names (samdark, silverfire)
