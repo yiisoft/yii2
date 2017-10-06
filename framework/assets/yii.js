@@ -163,7 +163,6 @@ window.yii = (function ($) {
                 pjaxOptions = {};
 
             if (usePjax) {
-                debugger;
                 pjaxContainer = $e.data('pjax-container');
                 if (pjaxContainer === undefined || !pjaxContainer.length) {
                     pjaxContainer = $e.closest('[data-pjax-container]').attr('id')
