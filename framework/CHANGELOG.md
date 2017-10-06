@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Bug #14016: Fixed empty messages marked as unused in PHP and PO sources when extracted with message command when `markUnused` is `false` (samdark)
 - Enh #9438: `yii\web\DbSession` now relies on error handler to display errors (samdark)
 - Bug #6226: Fix fatal symlink error when publishing in multi threaded environments (dynasource)
 - Enh #13486: Use DI container to instantiate cookies in order to be able to set defaults (samdark)
