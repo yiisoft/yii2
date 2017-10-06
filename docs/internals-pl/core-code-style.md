@@ -58,7 +58,7 @@ Termin "klasa" odnosi się tutaj do wszystkich klas i interfejsów.
 /**
  * Dokumentacja
  */
-class MyClass extends \yii\Object implements MyInterface
+class MyClass extends \yii\base\BaseObject implements MyInterface
 {
     // kod
 }
@@ -346,7 +346,7 @@ Dokumentacja
 - Każdy plik klasy musi zawierać blok dokumentacji "poziomu pliku" na początku pliku i blok dokumentacji "poziomu klasy"
   zaraz nad klasą.
 - Nie ma konieczności używania `@return`, jeśli metoda niczego nie zwraca.
-- Wszystkie wirtualne właściwości w klasach, które rozszerzają `yii\base\Object` są udokumentowane za pomocą tagu `@property`
+- Wszystkie wirtualne właściwości w klasach, które rozszerzają `yii\base\BaseObject` są udokumentowane za pomocą tagu `@property`
   w bloku dokumentacji klasy.
   Adnotacje te są automatycznie generowane z tagów `@return` lub `@param` w odpowiednich getterach lub setterach przez
   uruchomienie `./build php-doc` w folderze build.
@@ -389,7 +389,7 @@ Dokumentacja
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends \yii\base\Object
+class Component extends \yii\base\BaseObject
 ```
 
 

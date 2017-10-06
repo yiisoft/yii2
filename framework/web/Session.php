@@ -333,7 +333,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Sets the current session save path.
      * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
-     * @param string $value the current session save path. This can be either a directory name or a path alias.
+     * @param string $value the current session save path. This can be either a directory name or a [path alias](guide:concept-aliases).
      * @throws InvalidParamException if the path is not a valid directory
      */
     public function setSavePath($value)
@@ -395,13 +395,14 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             return false;
         } elseif (ini_get('session.use_only_cookies') === '1') {
             return true;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
      * Sets the value indicating whether cookies should be used to store session IDs.
+     *
      * Three states are possible:
      *
      * - true: cookies and only cookies will be used to store session IDs.
@@ -561,7 +562,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function getIterator()
     {
         $this->open();
-        return new SessionIterator;
+        return new SessionIterator();
     }
 
     /**
@@ -622,13 +623,13 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             unset($_SESSION[$key]);
 
             return $value;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
-     * Removes all session variables
+     * Removes all session variables.
      */
     public function removeAll()
     {
@@ -697,9 +698,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             }
 
             return $value;
-        } else {
-            return $defaultValue;
         }
+
+        return $defaultValue;
     }
 
     /**

@@ -1,10 +1,15 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
-use yii\web\UrlManager;
 use yii\web\GroupUrlRule;
 use yii\web\Request;
+use yii\web\UrlManager;
 use yii\web\UrlRule;
 use yiiunit\TestCase;
 
@@ -24,10 +29,10 @@ class GroupUrlRuleTest extends TestCase
         $manager = new UrlManager(['cache' => null]);
         $suites = $this->getTestsForCreateUrl();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new GroupUrlRule($config);
             foreach ($tests as $j => $test) {
-                list ($route, $params, $expected, $status) = $test;
+                list($route, $params, $expected, $status) = $test;
                 $url = $rule->createUrl($manager, $route, $params);
                 $this->assertEquals($expected, $url, "Test#$i-$j: $name");
                 $this->assertSame($status, $rule->getCreateUrlStatus(), "Test#$i-$j: $name");
@@ -41,7 +46,7 @@ class GroupUrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new GroupUrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -120,7 +125,7 @@ class GroupUrlRuleTest extends TestCase
                     'routePrefix' => 'admin',
                     'ruleConfig' => [
                         'suffix' => '.html',
-                        'class' => 'yii\\web\\UrlRule'
+                        'class' => 'yii\\web\\UrlRule',
                     ],
                     'rules' => [
                         'login' => 'user/login',
@@ -140,7 +145,7 @@ class GroupUrlRuleTest extends TestCase
                     'routePrefix' => 'admin',
                     'ruleConfig' => [
                         'suffix' => '.html',
-                        'class' => 'yii\web\UrlRule'
+                        'class' => 'yii\web\UrlRule',
                     ],
                     'rules' => [
                         'login' => 'user/login',
@@ -158,7 +163,7 @@ class GroupUrlRuleTest extends TestCase
                 [
                     [
                         'admin/user/logout', [], false,
-                        UrlRule::CREATE_STATUS_PARSING_ONLY | UrlRule::CREATE_STATUS_ROUTE_MISMATCH | UrlRule::CREATE_STATUS_PARAMS_MISMATCH
+                        UrlRule::CREATE_STATUS_PARSING_ONLY | UrlRule::CREATE_STATUS_ROUTE_MISMATCH | UrlRule::CREATE_STATUS_PARAMS_MISMATCH,
                     ],
                 ],
             ],
@@ -229,7 +234,7 @@ class GroupUrlRuleTest extends TestCase
                     'routePrefix' => 'admin',
                     'ruleConfig' => [
                         'suffix' => '.html',
-                        'class' => 'yii\\web\\UrlRule'
+                        'class' => 'yii\\web\\UrlRule',
                     ],
                     'rules' => [
                         'login' => 'user/login',

@@ -7,15 +7,15 @@
 
 namespace yii\grid;
 
-use Yii;
 use Closure;
-use yii\i18n\Formatter;
+use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Url;
+use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
+use yii\i18n\Formatter;
 use yii\widgets\BaseListView;
-use yii\base\Model;
 
 /**
  * The GridView widget is used to display data in a grid.
@@ -244,7 +244,7 @@ class GridView extends BaseListView
      */
     public $filterErrorOptions = ['class' => 'help-block'];
     /**
-     * @var string the layout that determines how different sections of the list view should be organized.
+     * @var string the layout that determines how different sections of the grid view should be organized.
      * The following tokens will be replaced with the corresponding section contents:
      *
      * - `{summary}`: the summary section. See [[renderSummary()]].
@@ -299,9 +299,9 @@ class GridView extends BaseListView
     {
         if ($this->filterModel instanceof Model && $this->filterModel->hasErrors()) {
             return Html::errorSummary($this->filterModel, $this->filterErrorSummaryOptions);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -365,9 +365,9 @@ class GridView extends BaseListView
     {
         if (!empty($this->caption)) {
             return Html::tag('caption', $this->caption, $this->captionOptions);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -376,24 +376,19 @@ class GridView extends BaseListView
      */
     public function renderColumnGroup()
     {
-        $requireColumnGroup = false;
         foreach ($this->columns as $column) {
             /* @var $column Column */
             if (!empty($column->options)) {
-                $requireColumnGroup = true;
-                break;
-            }
-        }
-        if ($requireColumnGroup) {
-            $cols = [];
-            foreach ($this->columns as $column) {
-                $cols[] = Html::tag('col', '', $column->options);
-            }
+                $cols = [];
+                foreach ($this->columns as $col) {
+                    $cols[] = Html::tag('col', '', $col->options);
+                }
 
-            return Html::tag('colgroup', implode("\n", $cols));
-        } else {
-            return false;
+                return Html::tag('colgroup', implode("\n", $cols));
+            }
         }
+
+        return false;
     }
 
     /**
@@ -450,9 +445,9 @@ class GridView extends BaseListView
             }
 
             return Html::tag('tr', implode('', $cells), $this->filterRowOptions);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -487,9 +482,9 @@ class GridView extends BaseListView
             $colspan = count($this->columns);
 
             return "<tbody>\n<tr><td colspan=\"$colspan\">" . $this->renderEmpty() . "</td></tr>\n</tbody>";
-        } else {
-            return "<tbody>\n" . implode("\n", $rows) . "\n</tbody>";
         }
+
+        return "<tbody>\n" . implode("\n", $rows) . "\n</tbody>";
     }
 
     /**
@@ -529,7 +524,7 @@ class GridView extends BaseListView
                 $column = $this->createDataColumn($column);
             } else {
                 $column = Yii::createObject(array_merge([
-                    'class' => $this->dataColumnClass ? : DataColumn::className(),
+                    'class' => $this->dataColumnClass ?: DataColumn::className(),
                     'grid' => $this,
                 ], $column));
             }
@@ -554,7 +549,7 @@ class GridView extends BaseListView
         }
 
         return Yii::createObject([
-            'class' => $this->dataColumnClass ? : DataColumn::className(),
+            'class' => $this->dataColumnClass ?: DataColumn::className(),
             'grid' => $this,
             'attribute' => $matches[1],
             'format' => isset($matches[3]) ? $matches[3] : 'text',

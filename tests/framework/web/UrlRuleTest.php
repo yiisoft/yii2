@@ -1,15 +1,20 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
 use Yii;
 use yii\helpers\VarDumper;
 use yii\web\NotFoundHttpException;
+use yii\web\Request;
 use yii\web\UrlManager;
 use yii\web\UrlNormalizer;
 use yii\web\UrlNormalizerRedirectException;
 use yii\web\UrlRule;
-use yii\web\Request;
 use yiiunit\TestCase;
 
 /**
@@ -28,10 +33,10 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager(['cache' => null]);
         $suites = $this->getTestsForCreateUrl();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
-                list ($route, $params, $expected) = $test;
+                list($route, $params, $expected) = $test;
                 $url = $rule->createUrl($manager, $route, $params);
                 $this->assertSame($expected, $url, "Test#$i-$j: $name");
             }
@@ -47,7 +52,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -71,7 +76,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -102,7 +107,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -131,7 +136,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -160,7 +165,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -188,7 +193,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -217,7 +222,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -278,7 +283,7 @@ class UrlRuleTest extends TestCase
     {
         $suites = $this->getTestsForToString();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $test) = $suite;
+            list($name, $config, $test) = $suite;
             $rule = new UrlRule($config);
             $this->assertEquals($rule->__toString(), $test, "Test#$i: $name");
         }
@@ -494,7 +499,7 @@ class UrlRuleTest extends TestCase
                     'pattern' => '<page>',
                     'route' => 'page/view',
                     'defaults' => ['page' => 'index'],
-                    'suffix' => '/'
+                    'suffix' => '/',
                 ],
                 [
                     ['page/view', ['page' => 'index'], ''],
@@ -1236,7 +1241,7 @@ class UrlRuleTest extends TestCase
                     'pattern' => '',
                     'route' => 'post/index',
                 ],
-                '/'
+                '/',
             ],
             [
                 'multiple params with special chars',
@@ -1244,7 +1249,7 @@ class UrlRuleTest extends TestCase
                     'pattern' => 'post/<page-number:\d+>/<per_page:\d+>/<author.login>',
                     'route' => 'post/index',
                 ],
-                'post/<page-number:\d+>/<per_page:\d+>/<author.login>'
+                'post/<page-number:\d+>/<per_page:\d+>/<author.login>',
             ],
             [
                 'with host info',
@@ -1254,7 +1259,7 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1],
                     'host' => 'http://<lang:en|fr>.example.com',
                 ],
-                'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>'
+                'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>',
             ],
             [
                 'with host info in pattern',
@@ -1263,28 +1268,26 @@ class UrlRuleTest extends TestCase
                     'route' => 'post/index',
                     'defaults' => ['page' => 1],
                 ],
-                'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>'
+                'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>',
             ],
             [
                 'with verb',
                 [
                     'verb' => ['POST'],
                     'pattern' => 'post/<id:\d+>',
-                    'route' => 'post/index'
+                    'route' => 'post/index',
                 ],
-                'POST post/<id:\d+>'
+                'POST post/<id:\d+>',
             ],
             [
                 'with verbs',
                 [
                     'verb' => ['PUT', 'POST'],
                     'pattern' => 'post/<id:\d+>',
-                    'route' => 'post/index'
+                    'route' => 'post/index',
                 ],
-                'PUT,POST post/<id:\d+>'
+                'PUT,POST post/<id:\d+>',
             ],
-
-
         ];
     }
 

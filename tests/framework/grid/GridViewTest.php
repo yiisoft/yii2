@@ -1,12 +1,16 @@
 <?php
-
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\grid;
 
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
-use yii\web\View;
 use yii\grid\GridView;
+use yii\web\View;
 
 /**
  * @author Evgeniy Tkachenko <et.coder@gmail.com>
@@ -74,7 +78,7 @@ class GridViewTest extends \yiiunit\TestCase
 
     public function testGuessColumns()
     {
-        $row = ['id' => 1, 'name' => 'Name1', 'value' => 'Value1', 'description' => 'Description1',];
+        $row = ['id' => 1, 'name' => 'Name1', 'value' => 'Value1', 'description' => 'Description1'];
 
         $grid = new GridView([
             'dataProvider' => new ArrayDataProvider(
@@ -94,8 +98,8 @@ class GridViewTest extends \yiiunit\TestCase
             $this->assertArrayHasKey($column->attribute, $row);
         }
 
-        $row = array_merge($row, ['relation' => ['id' => 1, 'name' => 'RelationName',],]);
-        $row = array_merge($row, ['otherRelation' => (object)$row['relation']]);
+        $row = array_merge($row, ['relation' => ['id' => 1, 'name' => 'RelationName']]);
+        $row = array_merge($row, ['otherRelation' => (object) $row['relation']]);
 
         $grid = new GridView([
             'dataProvider' => new ArrayDataProvider(

@@ -89,9 +89,9 @@ class I18N extends Component
         $translation = $messageSource->translate($category, $message, $language);
         if ($translation === false) {
             return $this->format($message, $params, $messageSource->sourceLanguage);
-        } else {
-            return $this->format($translation, $params, $language);
         }
+
+        return $this->format($translation, $params, $language);
     }
 
     /**
@@ -117,9 +117,9 @@ class I18N extends Component
                 Yii::warning("Formatting message for language '$language' failed with error: $errorMessage. The message being formatted was: $message.", __METHOD__);
 
                 return $message;
-            } else {
-                return $result;
             }
+
+            return $result;
         }
 
         $p = [];
@@ -172,29 +172,29 @@ class I18N extends Component
             $source = $this->translations[$category];
             if ($source instanceof MessageSource) {
                 return $source;
-            } else {
-                return $this->translations[$category] = Yii::createObject($source);
             }
-        } else {
-            // try wildcard matching
-            foreach ($this->translations as $pattern => $source) {
-                if (strpos($pattern, '*') > 0 && strpos($category, rtrim($pattern, '*')) === 0) {
-                    if ($source instanceof MessageSource) {
-                        return $source;
-                    } else {
-                        return $this->translations[$category] = $this->translations[$pattern] = Yii::createObject($source);
-                    }
-                }
-            }
-            // match '*' in the last
-            if (isset($this->translations['*'])) {
-                $source = $this->translations['*'];
+
+            return $this->translations[$category] = Yii::createObject($source);
+        }
+        // try wildcard matching
+        foreach ($this->translations as $pattern => $source) {
+            if (strpos($pattern, '*') > 0 && strpos($category, rtrim($pattern, '*')) === 0) {
                 if ($source instanceof MessageSource) {
                     return $source;
-                } else {
-                    return $this->translations[$category] = $this->translations['*'] = Yii::createObject($source);
                 }
+
+                return $this->translations[$category] = $this->translations[$pattern] = Yii::createObject($source);
             }
+        }
+
+        // match '*' in the last
+        if (isset($this->translations['*'])) {
+            $source = $this->translations['*'];
+            if ($source instanceof MessageSource) {
+                return $source;
+            }
+
+            return $this->translations[$category] = $this->translations['*'] = Yii::createObject($source);
         }
 
         throw new InvalidConfigException("Unable to locate message source for category '$category'.");

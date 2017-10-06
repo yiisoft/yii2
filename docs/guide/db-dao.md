@@ -209,6 +209,11 @@ Notice that you bind the placeholder to the `$id` variable before the execution,
 before each subsequent execution (this is often done with loops). Executing queries in this manner can be vastly 
 more efficient than running a new query for every different parameter value. 
 
+> Info: Parameter binding is only used in places where values need to be inserted into strings that contain plain SQL.
+> In many places in higher abstraction layers like [query builder](db-query-builder.md) and [active record](db-active-record.md)
+> you often specify an array of values which will be transformed into SQL. In these places parameter binding is done by Yii
+> internally, so there is no need to specify params manually.
+
 
 ### Executing Non-SELECT Queries <span id="non-select-queries"></span>
 
@@ -381,7 +386,7 @@ Yii provides four constants for the most common isolation levels:
 - [[\yii\db\Transaction::SERIALIZABLE]] - the strongest level, avoids all of the above named problems.
 
 Besides using the above constants to specify isolation levels, you may also use strings with a valid syntax supported
-by the DBMS that you are using. For example, in PostgreSQL, you may use `SERIALIZABLE READ ONLY DEFERRABLE`. 
+by the DBMS that you are using. For example, in PostgreSQL, you may use `"SERIALIZABLE READ ONLY DEFERRABLE"`.
 
 Note that some DBMS allow setting the isolation level only for the whole connection. Any subsequent transactions
 will get the same isolation level even if you do not specify any. When using this feature

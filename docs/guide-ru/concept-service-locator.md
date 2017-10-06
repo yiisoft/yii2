@@ -62,7 +62,7 @@ $cache = $locator->cache;
 Поскольку Service Locator часто используется с [конфигурациями](concept-configurations.md), в нём имеется доступное
 для записи свойство [[yii\di\ServiceLocator::setComponents()|components]]. Это позволяет настроить и зарегистрировать
 сразу несколько компонентов. Следующий код демонстрирует конфигурационный массив, который может использоваться
-для регистрации компонентов `db`, `cache` и `search` в Service Locator (то есть в [приложении](structure-applications.md)):
+для регистрации компонентов `db`, `cache`, `tz` и `search` в Service Locator (то есть в [приложении](structure-applications.md)):
 
 ```php
 return [
@@ -75,6 +75,9 @@ return [
             'password' => '',
         ],
         'cache' => 'yii\caching\ApcCache',
+        'tz' => function() {
+            return new \DateTimeZone(Yii::$app->formatter->defaultTimeZone);
+        },
         'search' => function () {
             $solr = new app\components\SolrService('127.0.0.1');
             // ... дополнительная инициализация ...

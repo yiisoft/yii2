@@ -15,7 +15,7 @@ namespace yii\web;
  * If you do not want to expose authorization information to the user, it is valid
  * to respond with a 404 [[NotFoundHttpException]].
  *
- * @link https://tools.ietf.org/html/rfc7231#section-6.5.3
+ * @see https://tools.ietf.org/html/rfc7231#section-6.5.3
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */

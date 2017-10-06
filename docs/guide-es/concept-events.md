@@ -248,7 +248,7 @@ lugar de a la instancia del objeto.
 
 > Note: Debido a que los gestores a nivel de clase responderán a los eventos lanzados por cualquier instancia de la
 clase, o cualquier clase hija, se debe usar con cuidado, especialmente en las clases de bajo nivel (low-level), tales
-como [[yii\base\Object]].
+como [[yii\base\BaseObject]].
 
 Para desadjuntar un gestor de eventos a nivel de clase, se tiene que llamar a [[yii\base\Event::off()]]. Por ejemplo:
 

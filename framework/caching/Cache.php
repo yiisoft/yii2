@@ -51,7 +51,7 @@ use yii\helpers\StringHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Cache extends Component implements \ArrayAccess
+abstract class Cache extends Component implements CacheInterface
 {
     /**
      * @var string a string prefixed to every cache key so that it is unique globally in the whole cache storage.
@@ -73,7 +73,7 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public $serializer;
     /**
-     * @var integer default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
+     * @var int default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
      * This value is used by [[set()]] if the duration is not explicitly given.
      * @since 2.0.11
      */
@@ -121,9 +121,9 @@ abstract class Cache extends Component implements \ArrayAccess
         }
         if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
             return $value[0];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -365,7 +365,7 @@ abstract class Cache extends Component implements \ArrayAccess
     }
 
     /**
-     * Deletes a value with the specified key from cache
+     * Deletes a value with the specified key from cache.
      * @param mixed $key a key identifying the value to be deleted from cache. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @return bool if no error happens during deletion

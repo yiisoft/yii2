@@ -9,8 +9,8 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\web\JsExpression;
 use yii\helpers\Json;
+use yii\web\JsExpression;
 
 /**
  * EmailValidator validates that the attribute value is a valid email address.
@@ -130,7 +130,7 @@ class EmailValidator extends Validator
             'message' => $this->formatMessage($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
             ]),
-            'enableIDN' => (bool)$this->enableIDN,
+            'enableIDN' => (bool) $this->enableIDN,
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;

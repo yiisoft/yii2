@@ -9,8 +9,8 @@ namespace yii\web;
 
 use DOMDocument;
 use DOMElement;
-use DOMText;
 use DOMException;
+use DOMText;
 use yii\base\Arrayable;
 use yii\base\Component;
 use yii\helpers\StringHelper;
@@ -126,7 +126,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
     }
 
     /**
-     * Formats scalar value to use in XML text node
+     * Formats scalar value to use in XML text node.
      *
      * @param int|string|bool $value
      * @return string
@@ -160,15 +160,17 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
         if (empty($name) || is_int($name) || !$this->isValidXmlName($name)) {
             return $this->itemTag;
         }
+
         return $name;
     }
 
     /**
-     * Checks if name is valid to be used in XML
+     * Checks if name is valid to be used in XML.
      *
      * @param mixed $name
      * @return bool
      * @see http://stackoverflow.com/questions/2519845/how-to-check-if-string-is-a-valid-xml-element-name/2519943#2519943
+     * @since 2.0.12
      */
     protected function isValidXmlName($name)
     {

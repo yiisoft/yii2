@@ -82,9 +82,9 @@ class DynamicModel extends Model
     {
         if (array_key_exists($name, $this->_attributes)) {
             return $this->_attributes[$name];
-        } else {
-            return parent::__get($name);
         }
+
+        return parent::__get($name);
     }
 
     /**
@@ -106,9 +106,9 @@ class DynamicModel extends Model
     {
         if (array_key_exists($name, $this->_attributes)) {
             return isset($this->_attributes[$name]);
-        } else {
-            return parent::__isset($name);
         }
+
+        return parent::__isset($name);
     }
 
     /**

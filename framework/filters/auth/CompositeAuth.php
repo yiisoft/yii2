@@ -85,7 +85,7 @@ class CompositeAuth extends AuthMethod
     public function challenge($response)
     {
         foreach ($this->authMethods as $method) {
-            /** @var $method AuthInterface */
+            /* @var $method AuthInterface */
             $method->challenge($response);
         }
     }

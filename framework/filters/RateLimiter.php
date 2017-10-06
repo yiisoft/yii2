@@ -108,8 +108,8 @@ class RateLimiter extends ActionFilter
     {
         $current = time();
 
-        list ($limit, $window) = $user->getRateLimit($request, $action);
-        list ($allowance, $timestamp) = $user->loadAllowance($request, $action);
+        list($limit, $window) = $user->getRateLimit($request, $action);
+        list($allowance, $timestamp) = $user->loadAllowance($request, $action);
 
         $allowance += (int) (($current - $timestamp) * $limit / $window);
         if ($allowance > $limit) {
@@ -120,14 +120,14 @@ class RateLimiter extends ActionFilter
             $user->saveAllowance($request, $action, 0, $current);
             $this->addRateLimitHeaders($response, $limit, 0, $window);
             throw new TooManyRequestsHttpException($this->errorMessage);
-        } else {
-            $user->saveAllowance($request, $action, $allowance - 1, $current);
-            $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance) * $window / $limit));
         }
+
+        $user->saveAllowance($request, $action, $allowance - 1, $current);
+        $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance) * $window / $limit));
     }
 
     /**
-     * Adds the rate limit headers to the response
+     * Adds the rate limit headers to the response.
      * @param Response $response
      * @param int $limit the maximum number of allowed requests during a period
      * @param int $remaining the remaining number of allowed requests within the current period

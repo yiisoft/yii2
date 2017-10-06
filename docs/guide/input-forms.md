@@ -66,7 +66,7 @@ As with any widget, you can specify some options as to how the widget should be 
 the `begin` method. In this case, an extra CSS class and identifying ID are passed to be used in the opening `<form>` tag.
 For all available options, please refer to the API documentation of [[yii\widgets\ActiveForm]].
 
-### ActiveField <span id="activefield"></span>.
+### ActiveField <span id="activefield"></span>
 In order to create a form element in the form, along with the element's label, and any applicable JavaScript validation,
 the [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] method is called, which returns an instance of [[yii\widgets\ActiveField]].
 When the result of this method is echoed directly, the result is a regular (text) input.

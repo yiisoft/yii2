@@ -105,6 +105,7 @@ class GroupUrlRule extends CompositeUrlRule
             }
             $rules[] = $rule;
         }
+
         return $rules;
     }
 
@@ -116,9 +117,9 @@ class GroupUrlRule extends CompositeUrlRule
         $pathInfo = $request->getPathInfo();
         if ($this->prefix === '' || strpos($pathInfo . '/', $this->prefix . '/') === 0) {
             return parent::parseRequest($manager, $request);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -128,9 +129,9 @@ class GroupUrlRule extends CompositeUrlRule
     {
         if ($this->routePrefix === '' || strpos($route, $this->routePrefix . '/') === 0) {
             return parent::createUrl($manager, $route, $params);
-        } else {
-            $this->createStatus = UrlRule::CREATE_STATUS_ROUTE_MISMATCH;
-            return false;
         }
+
+        $this->createStatus = UrlRule::CREATE_STATUS_ROUTE_MISMATCH;
+        return false;
     }
 }

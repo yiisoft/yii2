@@ -118,9 +118,9 @@ class UrlNormalizerTest extends TestCase
     }
 
     /**
-     * Test usage of UrlNormalizer in UrlManager
+     * Test usage of UrlNormalizer in UrlManager.
      *
-     * trailing slash is insignificant if normalizer is enabled
+     * Trailing slash is insignificant if normalizer is enabled.
      */
     public function testUrlManager()
     {

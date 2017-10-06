@@ -1,17 +1,20 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\mutex;
 
 use yii\mutex\Mutex;
 
 /**
- * Class MutexTestTrait
- *
- * @package yii\tests\unit\framework\mutex
+ * Class MutexTestTrait.
  */
 trait MutexTestTrait
 {
-    static $mutexName = 'testname';
+    public static $mutexName = 'testname';
 
     /**
      * @return Mutex
@@ -24,6 +27,7 @@ trait MutexTestTrait
         $mutex = $this->createMutex();
 
         $this->assertTrue($mutex->acquire(self::$mutexName));
+        $this->assertTrue($mutex->release(self::$mutexName));
     }
 
     public function testThatMutexLockIsWorking()

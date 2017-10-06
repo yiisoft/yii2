@@ -8,6 +8,7 @@
 namespace yii\db\mysql;
 
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\db\Exception;
 use yii\db\Expression;
 
@@ -120,6 +121,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritDoc
+     */
+    public function dropUnique($name, $table)
+    {
+        return $this->dropIndex($name, $table);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
+    }
+
+    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
@@ -144,9 +171,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "ALTER TABLE $tableName AUTO_INCREMENT=$value";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is no sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidParamException("There is no sequence associated with table '$tableName'.");
     }
 
     /**
@@ -320,6 +347,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
             }
         }
+
         return null;
     }
 }

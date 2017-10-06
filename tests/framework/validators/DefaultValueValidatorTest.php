@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -20,9 +25,9 @@ class DefaultValueValidatorTest extends TestCase
 
     public function testValidateAttribute()
     {
-        $val = new DefaultValueValidator;
+        $val = new DefaultValueValidator();
         $val->value = 'test_value';
-        $obj = new \stdclass;
+        $obj = new \stdclass();
         $obj->attrA = 'attrA';
         $obj->attrB = null;
         $obj->attrC = '';

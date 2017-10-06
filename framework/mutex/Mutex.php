@@ -72,9 +72,9 @@ abstract class Mutex extends Component
             $this->_locks[] = $name;
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -91,9 +91,9 @@ abstract class Mutex extends Component
             }
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
