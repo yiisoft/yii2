@@ -5,6 +5,9 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #14016: Fixed empty messages marked as unused in PHP and PO sources when extracted with message command when `markUnused` is `false` (samdark)
+- Enh #9438: `yii\web\DbSession` now relies on error handler to display errors (samdark)
+- Bug #6226: Fix fatal symlink error when publishing in multi threaded environments (dynasource)
+- Enh #13486: Use DI container to instantiate cookies in order to be able to set defaults (samdark)
 - Bug #14902: Fixed PHP notice in `yii\web\MultipartFormDataParser` (olimsaidov)
 - Bug #14129: Fixed console help to properly work with tricky camelcased controller names (samdark, silverfire)
 - Enh #14126: Added variadic parameters support to DI container (SamMousa)
@@ -82,6 +85,7 @@ Yii Framework 2 Change Log
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
 - Enh #14864: Ability to use dependencies in constructor of migrations (vtvz)
+- Enh #14913: Assset hashing now takes asset linking into account to improve cache busting (schmunk42)
 
 2.0.12 June 05, 2017
 --------------------
