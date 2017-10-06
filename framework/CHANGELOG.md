@@ -92,7 +92,6 @@ Yii Framework 2 Change Log
 2.0.12 June 05, 2017
 --------------------
 
-- Bug #5442: Fixed problem on load fixture dependencies with database related tests (leandrogehlen)
 - Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
 - Bug #5442: Fixed problem on load fixture dependencies with database related tests (leandrogehlen)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
