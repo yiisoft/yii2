@@ -568,8 +568,12 @@ EOD;
     {
         $content = '';
         foreach ($inputFiles as $file) {
+            $fileContent = rtrim(file_get_contents($file));
+            if (substr($fileContent, -1) !== ';') {
+                $fileContent .= ';';
+            }
             $content .= "/*** BEGIN FILE: $file ***/\n"
-                . file_get_contents($file)
+                . $fileContent . "\n"
                 . "/*** END FILE: $file ***/\n";
         }
         if (!file_put_contents($outputFile, $content)) {
