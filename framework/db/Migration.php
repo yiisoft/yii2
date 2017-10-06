@@ -176,8 +176,7 @@ class Migration extends Component implements MigrationInterface
      * needs to be within a transaction.
      *
      * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
-     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
-     * you should still implement `up()` and `down()`, instead.
+     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html).
      *
      * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
@@ -194,8 +193,7 @@ class Migration extends Component implements MigrationInterface
      * needs to be within a transaction.
      *
      * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
-     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
-     * you should still implement `up()` and `down()`, instead.
+     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html).
      *
      * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.

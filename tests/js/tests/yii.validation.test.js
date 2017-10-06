@@ -863,6 +863,7 @@ describe('yii.validation', function () {
                 'user mailbox': ['user+mailbox/department=shipping@example.com', true],
                 'special symbols in local-part': ['!#$%&\'*+-/=?^_`.{|}~@example.com', true],
                 'domain only': ['rmcreative.ru', false],
+                'double dot': ['ex..ample@example.com', false],
                 'unicode in domain': ['example@äüößìà.de', false],
                 'unicode (russian characters) in domain': ['sam@рмкреатиф.ru', false],
                 'ASCII in domain': ['example@xn--zcack7ayc9a.de', true],
