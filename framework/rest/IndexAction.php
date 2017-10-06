@@ -64,7 +64,7 @@ class IndexAction extends Action
      *
      * @see DataFilter
      *
-     * @since 2.0.10
+     * @since 2.0.13
      */
     public $dataFilter;
 
