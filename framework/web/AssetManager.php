@@ -482,7 +482,13 @@ class AssetManager extends Component
 
         if ($this->linkAssets) {
             if (!is_file($dstFile)) {
-                symlink($src, $dstFile);
+                try { // fix #6226 symlinking multi threaded
+                    symlink($src, $dstFile);
+                } catch (\Exception $e) {
+                    if (!is_file($dstFile)) {
+                        throw $e;
+                    }
+                }
             }
         } elseif (@filemtime($dstFile) < @filemtime($src)) {
             copy($src, $dstFile);
@@ -521,7 +527,13 @@ class AssetManager extends Component
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
                 FileHelper::createDirectory(dirname($dstDir), $this->dirMode, true);
-                symlink($src, $dstDir);
+                try { // fix #6226 symlinking multi threaded
+                    symlink($src, $dstDir);
+                } catch (\Exception $e) {
+                    if (!is_dir($dstDir)) {
+                        throw $e;
+                    }
+                }
             }
         } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
             $opts = array_merge(
@@ -604,6 +616,6 @@ class AssetManager extends Component
             return call_user_func($this->hashCallback, $path);
         }
         $path = (is_file($path) ? dirname($path) : $path) . filemtime($path);
-        return sprintf('%x', crc32($path . Yii::getVersion()));
+        return sprintf('%x', crc32($path . Yii::getVersion() . '|' . $this->linkAssets));
     }
 }
