@@ -985,12 +985,20 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     public function testInverseOf()
     {
+        // inverseOf should work for non-multiple relation
+
         // eager loading: find one and all
         $customer = Customer::find()->with('orders2')->where(['id' => 1])->one();
         $this->assertSame($customer->orders2[0]->customer2, $customer);
         $customers = Customer::find()->with('orders2')->where(['id' => [1, 3]])->all();
         $this->assertSame($customers[0]->orders2[0]->customer2, $customers[0]);
         $this->assertEmpty($customers[1]->orders2);
+        // eager loading as array: find one and all
+        $customer = Customer::find()->with('orders2')->where(['id' => 1])->asArray()->one();
+        $this->assertSame($customer['orders2'][0]['customer2']['id'], $customer['id']);
+        $customers = Customer::find()->with('orders2')->where(['id' => [1, 3]])->asArray()->all();
+        $this->assertSame($customer['orders2'][0]['customer2']['id'], $customers[0]['id']);
+        $this->assertEmpty($customers[1]['orders2']);
         // lazy loading
         $customer = Customer::findOne(2);
         $orders = $customer->orders2;
@@ -1006,36 +1014,22 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertSame($orders[0]->customer2, $customer);
         $this->assertSame($orders[1]->customer2, $customer);
 
-        // the other way around
-        $customer = Customer::find()->with('orders2')->where(['id' => 1])->asArray()->one();
-        $this->assertSame($customer['orders2'][0]['customer2']['id'], $customer['id']);
-        $customers = Customer::find()->with('orders2')->where(['id' => [1, 3]])->asArray()->all();
-        $this->assertSame($customer['orders2'][0]['customer2']['id'], $customers[0]['id']);
-        $this->assertEmpty($customers[1]['orders2']);
+        // inverseOf should be ignored for multiple relation
 
-        $orders = Order::find()->with('customer2')->where(['id' => 1])->all();
-        $this->assertSame($orders[0]->customer2->orders2, [$orders[0]]);
+        // eager loading: find one and all
         $order = Order::find()->with('customer2')->where(['id' => 1])->one();
-        $this->assertSame($order->customer2->orders2, [$order]);
-
-        $orders = Order::find()->with('customer2')->where(['id' => 1])->asArray()->all();
-        $this->assertSame($orders[0]['customer2']['orders2'][0]['id'], $orders[0]['id']);
+        $this->assertFalse($order->customer2->isRelationPopulated('orders2'));
+        $orders = Order::find()->with('customer2')->where(['id' => 1])->all();
+        $this->assertFalse($orders[0]->customer2->isRelationPopulated('orders2'));
+        // eager loading as array: find one and all
         $order = Order::find()->with('customer2')->where(['id' => 1])->asArray()->one();
-        $this->assertSame($order['customer2']['orders2'][0]['id'], $orders[0]['id']);
-
-        $orders = Order::find()->with('customer2')->where(['id' => [1, 3]])->all();
-        $this->assertSame($orders[0]->customer2->orders2, [$orders[0]]);
-        $this->assertSame($orders[1]->customer2->orders2, [$orders[1]]);
-
-        $orders = Order::find()->with('customer2')->where(['id' => [2, 3]])->orderBy('id')->all();
-        $this->assertSame($orders[0]->customer2->orders2, $orders);
-        $this->assertSame($orders[1]->customer2->orders2, $orders);
-
-        $orders = Order::find()->with('customer2')->where(['id' => [2, 3]])->orderBy('id')->asArray()->all();
-        $this->assertSame($orders[0]['customer2']['orders2'][0]['id'], $orders[0]['id']);
-        $this->assertSame($orders[0]['customer2']['orders2'][1]['id'], $orders[1]['id']);
-        $this->assertSame($orders[1]['customer2']['orders2'][0]['id'], $orders[0]['id']);
-        $this->assertSame($orders[1]['customer2']['orders2'][1]['id'], $orders[1]['id']);
+        $this->assertFalse(array_key_exists('orders2', $order['customer2']));
+        $orders = Order::find()->with('customer2')->where(['id' => 1])->asArray()->all();
+        $this->assertFalse(array_key_exists('orders2', $orders[0]['customer2']));
+        // lazy loading
+        $this->assertFalse(Order::findOne(1)->customer2->isRelationPopulated('orders2'));
+        // ad-hoc lazy loading
+        $this->assertFalse(Order::findOne(1)->getCustomer2()->one()->isRelationPopulated('orders2'));
     }
 
     public function testInverseOfDynamic()
