@@ -429,7 +429,7 @@ class BaseUrl
     {
         $currentParams = Yii::$app->getRequest()->getQueryParams();
         $currentParams[0] = '/' . Yii::$app->controller->getRoute();
-        $route = ArrayHelper::merge($currentParams, $params);
+        $route = array_replace($currentParams, $params);
         return static::toRoute($route, $scheme);
     }
 
