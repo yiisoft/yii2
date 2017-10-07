@@ -241,7 +241,7 @@ class BaseFormatConverter
      * [php date() function format]: http://php.net/manual/en/function.date.php
      * [ICU format]: http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
      *
-     * Since 2.0.13 it correctly handle also escaped characters.
+     * Since 2.0.13 it handles escaped characters correctly.
      *
      * @param string $pattern date format pattern in php date()-function format.
      * @return string The converted date format pattern.
