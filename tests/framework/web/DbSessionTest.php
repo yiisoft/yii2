@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
@@ -17,7 +22,7 @@ class DbSessionTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        /**
+        /*
          * @todo Optionally do fallback to some other database, however this might be overkill for tests only since
          * sqlite is always available on travis.
          */
@@ -86,7 +91,7 @@ class DbSessionTest extends TestCase
         $session = new DbSession();
         $session->writeCallback = function ($session) {
             return [
-                'user_id' => 15
+                'user_id' => 15,
             ];
         };
 
@@ -113,7 +118,7 @@ class DbSessionTest extends TestCase
         $migrate->run($action, $params);
         ob_get_clean();
 
-        return array_map(function($version){
+        return array_map(function ($version) {
             return substr($version, 15);
         }, (new Query())->select(['version'])->from('migration')->column());
     }
@@ -125,7 +130,7 @@ class DbSessionTest extends TestCase
                 'db' => [
                     'class' => Connection::className(),
                     'dsn' => 'sqlite::memory:',
-                ]
+                ],
             ],
         ]);
 
@@ -133,7 +138,7 @@ class DbSessionTest extends TestCase
         $this->assertEquals(['base'], $history);
 
         $history = $this->runMigrate('up');
-        $this->assertEquals(['base','session_init'], $history);
+        $this->assertEquals(['base', 'session_init'], $history);
 
         $history = $this->runMigrate('down');
         $this->assertEquals(['base'], $history);

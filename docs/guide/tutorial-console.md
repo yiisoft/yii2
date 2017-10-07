@@ -71,10 +71,10 @@ It contains code like the following:
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
-require(__DIR__ . '/vendor/autoload.php');
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -267,12 +267,21 @@ public function actionIndex()
 }
 ```
 
-There are some predefined constants you can use:
+There are some predefined constants you can use. These are defined in the [[yii\console\ExitCode]] class:
 
-- [[yii\console\Controller::EXIT_CODE_NORMAL|Controller::EXIT_CODE_NORMAL]] with value of `0`;
-- [[yii\console\Controller::EXIT_CODE_ERROR|Controller::EXIT_CODE_ERROR]] with value of `1`.
+```php
+public function actionIndex()
+{
+    if (/* some problem */) {
+        echo "A problem occurred!\n";
+        return ExitCode::UNSPECIFIED_ERROR;
+    }
+    // do something
+    return ExitCode::OK;
+}
+```
 
-It's a good practice to define meaningful constants for your controller in case you have more error code types.
+It's a good practice to define meaningful constants for your controller in case you have more specific error code types.
 
 ### Formatting and colors
 
@@ -291,3 +300,19 @@ If you need to build string dynamically combining multiple styles it's better to
 $name = $this->ansiFormat('Alex', Console::FG_YELLOW);
 echo "Hello, my name is $name.";
 ```
+
+### Tables
+
+Since version 2.0.13 there is a widget that allows you to format table data in console. It could be used as the following:
+
+```php
+echo Table::widget([
+    'headers' => ['Project', 'Status', 'Participant'],
+    'rows' => [
+        ['Yii', 'OK', '@samdark'],
+        ['Yii', 'OK', '@cebe'],
+    ],
+]);
+```
+
+For details please refer to [[yii\console\widgets\Table|API documentation]].

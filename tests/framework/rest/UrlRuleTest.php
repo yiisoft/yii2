@@ -1,11 +1,18 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\rest;
 
 use Yii;
-use yii\web\UrlManager;
+use yii\helpers\VarDumper;
 use yii\rest\UrlRule;
 use yii\web\Request;
+use yii\web\UrlManager;
+use yii\web\UrlRule as WebUrlRule;
 use yiiunit\TestCase;
 
 /**
@@ -23,9 +30,9 @@ class UrlRuleTest extends TestCase
     {
         $suites = $this->getTestsForControllerNamePluralization();
         foreach ($suites as $i => $suite) {
-            list ($name, $tests) = $suite;
+            list($name, $tests) = $suite;
             foreach ($tests as $j => $test) {
-                list ($config, $expected) = $test;
+                list($config, $expected) = $test;
                 $rule = new UrlRule($config);
                 $this->assertEquals($expected, $rule->controller, "Test#$i-$j: $name");
             }
@@ -35,10 +42,10 @@ class UrlRuleTest extends TestCase
     public function testParseRequest()
     {
         $manager = new UrlManager(['cache' => null]);
-        $request = new Request(['hostInfo' => 'http://en.example.com', 'methodParam' => '_METHOD',]);
+        $request = new Request(['hostInfo' => 'http://en.example.com', 'methodParam' => '_METHOD']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -76,14 +83,14 @@ class UrlRuleTest extends TestCase
             ],
             [
                 'prefixed route',
-                ['controller' => 'post', 'prefix' => 'admin',],
+                ['controller' => 'post', 'prefix' => 'admin'],
                 [
                     ['admin/posts', 'post/index'],
                 ],
             ],
             [
                 'suffixed route',
-                ['controller' => 'post', 'suffix' => '.json',],
+                ['controller' => 'post', 'suffix' => '.json'],
                 [
                     ['posts.json', 'post/index'],
                     ['posts.json', 'post/create', [], 'POST'],
@@ -109,12 +116,11 @@ class UrlRuleTest extends TestCase
                     ['posts/123', 'post/delete', ['id' => 123], 'DELETE'],
 
                     ['posts/new', false],
-
                 ],
             ],
             [
                 'only selected routes',
-                ['controller' => 'post', 'only' => ['index'],],
+                ['controller' => 'post', 'only' => ['index']],
                 [
                     ['posts', 'post/index'],
                     ['posts/123', false],
@@ -123,7 +129,7 @@ class UrlRuleTest extends TestCase
             ],
             [
                 'except routes',
-                ['controller' => 'post', 'except' => ['delete', 'create'],],
+                ['controller' => 'post', 'except' => ['delete', 'create']],
                 [
                     ['posts', 'post/index'],
                     ['posts/123', 'post/view', ['id' => 123]],
@@ -133,7 +139,7 @@ class UrlRuleTest extends TestCase
             ],
             [
                 'extra patterns',
-                ['controller' => 'post', 'extraPatterns' => ['POST new' => 'create',],],
+                ['controller' => 'post', 'extraPatterns' => ['POST new' => 'create']],
                 [
                     ['posts/new', 'post/create', [], 'POST'],
                     ['posts', 'post/create', [], 'POST'],
@@ -141,14 +147,14 @@ class UrlRuleTest extends TestCase
             ],
             [
                 'extra patterns overwrite patterns',
-                ['controller' => 'post', 'extraPatterns' => ['POST' => 'new',],],
+                ['controller' => 'post', 'extraPatterns' => ['POST' => 'new']],
                 [
                     ['posts', 'post/new', [], 'POST'],
                 ],
             ],
             [
                 'extra patterns rule is higher priority than patterns',
-                ['controller' => 'post', 'extraPatterns' => ['GET 1337' => 'leet',],],
+                ['controller' => 'post', 'extraPatterns' => ['GET 1337' => 'leet']],
                 [
                     ['posts/1337', 'post/leet'],
                     ['posts/1338', 'post/view', ['id' => 1338]],
@@ -161,43 +167,48 @@ class UrlRuleTest extends TestCase
     {
         return [
             [
-                'pluralized automatically', [
-                [
-                    ['controller' => 'user'],
-                    ['users' => 'user']
-                ],
-                [
-                    ['controller' => 'admin/user'],
-                    ['admin/users' => 'admin/user']
-                ],
-                [
-                    ['controller' => ['admin/user', 'post']],
-                    ['admin/users' => 'admin/user', 'posts' => 'post']
-                ],
-            ]],
-            [
-                'explicitly specified', [
-                [
-                    ['controller' => ['customer' => 'user']],
-                    ['customer' => 'user']
-                ]
-            ]],
-            [
-                'do not pluralize', [
+                'pluralized automatically',
                 [
                     [
-                        'pluralize' => false,
-                        'controller' => ['admin/user', 'post'],
+                        ['controller' => 'user'],
+                        ['users' => 'user'],
                     ],
-                    ['admin/user' => 'admin/user', 'post' => 'post',]
-                ]
-            ]],
-
+                    [
+                        ['controller' => 'admin/user'],
+                        ['admin/users' => 'admin/user'],
+                    ],
+                    [
+                        ['controller' => ['admin/user', 'post']],
+                        ['admin/users' => 'admin/user', 'posts' => 'post'],
+                    ],
+                ],
+            ],
+            [
+                'explicitly specified',
+                [
+                    [
+                        ['controller' => ['customer' => 'user']],
+                        ['customer' => 'user'],
+                    ],
+                ],
+            ],
+            [
+                'do not pluralize',
+                [
+                    [
+                        [
+                            'pluralize' => false,
+                            'controller' => ['admin/user', 'post'],
+                        ],
+                        ['admin/user' => 'admin/user', 'post' => 'post'],
+                    ],
+                ],
+            ],
         ];
     }
 
     /**
-     * Proviedes test cases for createUrl() method
+     * Provides test cases for createUrl() method.
      *
      * - first param are properties of the UrlRule
      * - second param is an array of test cases, containing two element arrays:
@@ -214,12 +225,12 @@ class UrlRuleTest extends TestCase
                     'pluralize' => true,
                 ],
                 [ // test cases: route, expected
-                    [ ['v1/channel/index'], 'v1/channels' ],
-                    [ ['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1' ],
-                    [ ['v1/channel/view', 'id' => 42], 'v1/channels/42' ],
-                    [ ['v1/channel/options'], 'v1/channels' ],
-                    [ ['v1/channel/options', 'id' => 42], 'v1/channels/42' ],
-                    [ ['v1/channel/delete'], false ],
+                    [['v1/channel/index'], 'v1/channels'],
+                    [['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1'],
+                    [['v1/channel/view', 'id' => 42], 'v1/channels/42'],
+                    [['v1/channel/options'], 'v1/channels'],
+                    [['v1/channel/options', 'id' => 42], 'v1/channels/42'],
+                    [['v1/channel/delete'], false],
                 ],
             ],
             [
@@ -228,12 +239,12 @@ class UrlRuleTest extends TestCase
                     'pluralize' => true,
                 ],
                 [ // test cases: route, expected
-                    [ ['v1/channel/index'], 'v1/channels' ],
-                    [ ['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1' ],
-                    [ ['v1/channel/view', 'id' => 42], 'v1/channels/42' ],
-                    [ ['v1/channel/options'], 'v1/channels' ],
-                    [ ['v1/channel/options', 'id' => 42], 'v1/channels/42' ],
-                    [ ['v1/channel/delete'], false ],
+                    [['v1/channel/index'], 'v1/channels'],
+                    [['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1'],
+                    [['v1/channel/view', 'id' => 42], 'v1/channels/42'],
+                    [['v1/channel/options'], 'v1/channels'],
+                    [['v1/channel/options', 'id' => 42], 'v1/channels/42'],
+                    [['v1/channel/delete'], false],
                 ],
             ],
             [
@@ -242,16 +253,16 @@ class UrlRuleTest extends TestCase
                     'pluralize' => true,
                 ],
                 [ // test cases: route, expected
-                    [ ['v1/channel/index'], 'v1/channels' ],
-                    [ ['v1/channel/view', 'id' => 42], 'v1/channels/42' ],
-                    [ ['v1/channel/options'], 'v1/channels' ],
-                    [ ['v1/channel/options', 'id' => 42], 'v1/channels/42' ],
-                    [ ['v1/channel/delete'], false ],
-                    [ ['v1/user/index'], 'v1/u' ],
-                    [ ['v1/user/view', 'id' => 1], 'v1/u/1' ],
-                    [ ['v1/channel/options'], 'v1/channels' ],
-                    [ ['v1/channel/options', 'id' => 42], 'v1/channels/42' ],
-                    [ ['v1/user/delete'], false ],
+                    [['v1/channel/index'], 'v1/channels'],
+                    [['v1/channel/view', 'id' => 42], 'v1/channels/42'],
+                    [['v1/channel/options'], 'v1/channels'],
+                    [['v1/channel/options', 'id' => 42], 'v1/channels/42'],
+                    [['v1/channel/delete'], false],
+                    [['v1/user/index'], 'v1/u'],
+                    [['v1/user/view', 'id' => 1], 'v1/u/1'],
+                    [['v1/channel/options'], 'v1/channels'],
+                    [['v1/channel/options', 'id' => 42], 'v1/channels/42'],
+                    [['v1/user/delete'], false],
                 ],
             ],
 
@@ -263,12 +274,12 @@ class UrlRuleTest extends TestCase
                     'pluralize' => false,
                 ],
                 [ // test cases: route, expected
-                    [ ['v1/channel/index'], 'v1/channel' ],
-                    [ ['v1/channel/index', 'offset' => 1], 'v1/channel?offset=1' ],
-                    [ ['v1/channel/view', 'id' => 42], 'v1/channel/42' ],
-                    [ ['v1/channel/options'], 'v1/channel' ],
-                    [ ['v1/channel/options', 'id' => 42], 'v1/channel/42' ],
-                    [ ['v1/channel/delete'], false ],
+                    [['v1/channel/index'], 'v1/channel'],
+                    [['v1/channel/index', 'offset' => 1], 'v1/channel?offset=1'],
+                    [['v1/channel/view', 'id' => 42], 'v1/channel/42'],
+                    [['v1/channel/options'], 'v1/channel'],
+                    [['v1/channel/options', 'id' => 42], 'v1/channel/42'],
+                    [['v1/channel/delete'], false],
                 ],
             ],
             [
@@ -277,12 +288,12 @@ class UrlRuleTest extends TestCase
                     'pluralize' => false,
                 ],
                 [ // test cases: route, expected
-                    [ ['v1/channel/index'], 'v1/channel' ],
-                    [ ['v1/channel/index', 'offset' => 1], 'v1/channel?offset=1' ],
-                    [ ['v1/channel/view', 'id' => 42], 'v1/channel/42' ],
-                    [ ['v1/channel/options'], 'v1/channel' ],
-                    [ ['v1/channel/options', 'id' => 42], 'v1/channel/42' ],
-                    [ ['v1/channel/delete'], false ],
+                    [['v1/channel/index'], 'v1/channel'],
+                    [['v1/channel/index', 'offset' => 1], 'v1/channel?offset=1'],
+                    [['v1/channel/view', 'id' => 42], 'v1/channel/42'],
+                    [['v1/channel/options'], 'v1/channel'],
+                    [['v1/channel/options', 'id' => 42], 'v1/channel/42'],
+                    [['v1/channel/delete'], false],
                 ],
             ],
             [
@@ -291,16 +302,16 @@ class UrlRuleTest extends TestCase
                     'pluralize' => false,
                 ],
                 [ // test cases: route, expected
-                    [ ['v1/channel/index'], 'v1/channel' ],
-                    [ ['v1/channel/view', 'id' => 42], 'v1/channel/42' ],
-                    [ ['v1/channel/options'], 'v1/channel' ],
-                    [ ['v1/channel/options', 'id' => 42], 'v1/channel/42' ],
-                    [ ['v1/channel/delete'], false ],
-                    [ ['v1/user/index'], 'v1/u' ],
-                    [ ['v1/user/view', 'id' => 1], 'v1/u/1' ],
-                    [ ['v1/user/options'], 'v1/u' ],
-                    [ ['v1/user/options', 'id' => 42], 'v1/u/42' ],
-                    [ ['v1/user/delete'], false ],
+                    [['v1/channel/index'], 'v1/channel'],
+                    [['v1/channel/view', 'id' => 42], 'v1/channel/42'],
+                    [['v1/channel/options'], 'v1/channel'],
+                    [['v1/channel/options', 'id' => 42], 'v1/channel/42'],
+                    [['v1/channel/delete'], false],
+                    [['v1/user/index'], 'v1/u'],
+                    [['v1/user/view', 'id' => 1], 'v1/u/1'],
+                    [['v1/user/options'], 'v1/u'],
+                    [['v1/user/options', 'id' => 42], 'v1/u/42'],
+                    [['v1/user/delete'], false],
                 ],
             ],
 
@@ -318,29 +329,30 @@ class UrlRuleTest extends TestCase
                 ],
                 [ // test cases: route, expected
                     // normal actions should behave as before
-                    [ ['v1/channel/index'], 'v1/channels' ],
-                    [ ['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1' ],
-                    [ ['v1/channel/view', 'id' => 42], 'v1/channels/42' ],
-                    [ ['v1/channel/options'], 'v1/channels' ],
-                    [ ['v1/channel/options', 'id' => 42], 'v1/channels/42' ],
-                    [ ['v1/channel/delete'], false ],
+                    [['v1/channel/index'], 'v1/channels'],
+                    [['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1'],
+                    [['v1/channel/view', 'id' => 42], 'v1/channels/42'],
+                    [['v1/channel/options'], 'v1/channels'],
+                    [['v1/channel/options', 'id' => 42], 'v1/channels/42'],
+                    [['v1/channel/delete'], false],
 
-                    [ ['v1/channel/my'], 'v1/channels/my' ],
-                    [ ['v1/channel/my', 'id' => 42], 'v1/channels/42/my' ],
-                    [ ['v1/channel/my2'], false ],
-                    [ ['v1/channel/my2', 'id' => 42], false ],
+                    [['v1/channel/my'], 'v1/channels/my'],
+                    [['v1/channel/my', 'id' => 42], 'v1/channels/42/my'],
+                    [['v1/channel/my2'], false],
+                    [['v1/channel/my2', 'id' => 42], false],
                 ],
             ],
-
         ];
     }
 
     /**
      * @dataProvider createUrlDataProvider
+     * @param array $rule
+     * @param array $tests
      */
     public function testCreateUrl($rule, $tests)
     {
-        foreach($tests as $test) {
+        foreach ($tests as $test) {
             list($params, $expected) = $test;
 
             $this->mockWebApplication();
@@ -355,4 +367,87 @@ class UrlRuleTest extends TestCase
         }
     }
 
+    /**
+     * @dataProvider testGetCreateUrlStatusProvider
+     * @param array $config
+     * @param array $tests
+     */
+    public function testGetCreateUrlStatus($config, $tests)
+    {
+        foreach ($tests as $test) {
+            list($params, $expected, $status) = $test;
+
+            $this->mockWebApplication();
+            Yii::$app->set('request', new Request(['hostInfo' => 'http://api.example.com', 'scriptUrl' => '/index.php']));
+            $route = array_shift($params);
+
+            $manager = new UrlManager([
+                'cache' => null,
+            ]);
+            $rule = new UrlRule($config);
+            $errorMessage = 'Failed test: ' . VarDumper::dumpAsString($test);
+            $this->assertSame($expected, $rule->createUrl($manager, $route, $params), $errorMessage);
+            $this->assertNotNull($status, $errorMessage);
+            if ($status > 0) {
+                $this->assertSame($status, $rule->getCreateUrlStatus() & $status, $errorMessage);
+            } else {
+                $this->assertSame($status, $rule->getCreateUrlStatus(), $errorMessage);
+            }
+        }
+    }
+
+    /**
+     * Provides test cases for getCreateUrlStatus() method.
+     *
+     * - first param are properties of the UrlRule
+     * - second param is an array of test cases, containing two element arrays:
+     *   - first element is the route to create
+     *   - second element is the expected URL
+     *   - third element is the expected result of getCreateUrlStatus() method
+     */
+    public function testGetCreateUrlStatusProvider()
+    {
+        return [
+            'single controller' => [
+                // rule properties
+                [
+                    'controller' => ['v1/channel'],
+                    'pluralize' => true,
+                ],
+                // test cases: route, expected, createStatus
+                [
+                    [['v1/channel/index'], 'v1/channels', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/view', 'id' => 42], 'v1/channels/42', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/options'], 'v1/channels', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/options', 'id' => 42], 'v1/channels/42', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/delete'], false, WebUrlRule::CREATE_STATUS_PARSING_ONLY],
+                    [['v1/missing/view'], false, WebUrlRule::CREATE_STATUS_ROUTE_MISMATCH],
+                    [['v1/channel/view'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+                ],
+            ],
+            'multiple controllers' => [
+                // rule properties
+                [
+                    'controller' => ['v1/channel', 'v1/u' => 'v1/user'],
+                    'pluralize' => false,
+                ],
+                // test cases: route, expected, createStatus
+                [
+                    [['v1/channel/index'], 'v1/channel', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/view', 'id' => 42], 'v1/channel/42', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/options'], 'v1/channel', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/options', 'id' => 42], 'v1/channel/42', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/channel/delete'], false, WebUrlRule::CREATE_STATUS_PARSING_ONLY],
+                    [['v1/user/index'], 'v1/u', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/user/view', 'id' => 1], 'v1/u/1', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/user/options'], 'v1/u', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/user/options', 'id' => 42], 'v1/u/42', WebUrlRule::CREATE_STATUS_SUCCESS],
+                    [['v1/user/delete'], false, WebUrlRule::CREATE_STATUS_PARSING_ONLY],
+                    [['v1/user/view'], false, WebUrlRule::CREATE_STATUS_PARAMS_MISMATCH],
+                    [['v1/missing/view'], false, WebUrlRule::CREATE_STATUS_ROUTE_MISMATCH],
+                ],
+            ],
+        ];
+    }
 }

@@ -123,7 +123,7 @@ public function rules()
 - `timestampAttribute`: имя атрибута, которому данный валидатор может присваивать значение UNIX timestamp,
    получаемое из входных даты и времени. Это может быть как тот же атрибут, что валидируется в данный момент. Если это так,
    после валидации оригинальное значение будет перезаписано значеним timestamp.
-   Дополнительные примеры вы модете найти в разделе ["Handling date input with the DatePicker"](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/topics-date-picker.md).
+   Дополнительные примеры вы можете найти в разделе ["Handling date input with the DatePicker"](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/topics-date-picker.md).
 
   Начиная с версии 2.0.4, для атрибута могут быть заданы формат и часовой пояс через
   [[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] и

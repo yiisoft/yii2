@@ -1101,6 +1101,8 @@ the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery
 Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
 If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as `false`. 
 
+> Note: Even when using [[yii\db\ActiveQuery::joinWith()|joinWith()]] or [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] with eager loading enabled the related data will **not** be populated from the result of the `JOIN` query. So there's still an extra query for each joined relation as explained in the section on [eager loading](#lazy-eager-loading).
+
 Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
 queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
 and [[yii\db\ActiveQuery::joinWith()|joinWith()]]. For example,

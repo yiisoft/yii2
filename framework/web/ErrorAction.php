@@ -98,6 +98,8 @@ class ErrorAction extends Action
      */
     public function run()
     {
+        Yii::$app->getResponse()->setStatusCodeByException($this->exception);
+
         if (Yii::$app->getRequest()->getIsAjax()) {
             return $this->renderAjaxResponse();
         }

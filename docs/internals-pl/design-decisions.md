@@ -25,3 +25,7 @@ powinna być najpierw zatwierdzona przez głównych deweloperów.
    Dodatkowo, pomimo tego, że unsigned int podwaja jego zakres, jeśli tabela wymaga tak dużych liczb, bezpieczniej jest używać typu 
    bigint lub mediumint, niż polegać na unsigned.
    <https://github.com/yiisoft/yii/pull/1923#issuecomment-11881967>
+6. [Klasy pomocnicze vs oddzielne niestatyczne klasy](https://github.com/yiisoft/yii2/pull/12661#issuecomment-251599463)
+7. **Łańcuchowanie metod setterów** powinno być unikane, jeśli w klasie znajdują się metody zwracające ważne wartości. 
+   Łańcuchowanie może być wspierane, jeśli klasa jest typu budującego, gdzie wszystkie settery modyfikują jedynie wewnętrzne stany: https://github.com/yiisoft/yii2/issues/13026
+   

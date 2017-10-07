@@ -9,7 +9,7 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\Widget;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\caching\Dependency;
 use yii\di\Instance;
 
@@ -25,7 +25,7 @@ use yii\di\Instance;
 class FragmentCache extends Widget
 {
     /**
-     * @var Cache|array|string the cache object or the application component ID of the cache object.
+     * @var CacheInterface|array|string the cache object or the application component ID of the cache object.
      * After the FragmentCache object is created, if you want to change this property,
      * you should only assign it with a cache object.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
@@ -84,9 +84,9 @@ class FragmentCache extends Widget
     {
         parent::init();
 
-        $this->cache = $this->enabled ? Instance::ensure($this->cache, Cache::className()) : null;
+        $this->cache = $this->enabled ? Instance::ensure($this->cache, 'yii\caching\CacheInterface') : null;
 
-        if ($this->cache instanceof Cache && $this->getCachedContent() === false) {
+        if ($this->cache instanceof CacheInterface && $this->getCachedContent() === false) {
             $this->getView()->cacheStack[] = $this;
             ob_start();
             ob_implicit_flush(false);
@@ -103,7 +103,7 @@ class FragmentCache extends Widget
     {
         if (($content = $this->getCachedContent()) !== false) {
             echo $content;
-        } elseif ($this->cache instanceof Cache) {
+        } elseif ($this->cache instanceof CacheInterface) {
             array_pop($this->getView()->cacheStack);
 
             $content = ob_get_clean();
@@ -134,25 +134,33 @@ class FragmentCache extends Widget
      */
     public function getCachedContent()
     {
-        if ($this->_content === null) {
-            $this->_content = false;
-            if ($this->cache instanceof Cache) {
-                $key = $this->calculateKey();
-                $data = $this->cache->get($key);
-                if (is_array($data) && count($data) === 2) {
-                    list ($content, $placeholders) = $data;
-                    if (is_array($placeholders) && count($placeholders) > 0) {
-                        if (empty($this->getView()->cacheStack)) {
-                            // outermost cache: replace placeholder with dynamic content
-                            $content = $this->updateDynamicContent($content, $placeholders);
-                        }
-                        foreach ($placeholders as $name => $statements) {
-                            $this->getView()->addDynamicPlaceholder($name, $statements);
-                        }
-                    }
-                    $this->_content = $content;
-                }
-            }
+        if ($this->_content !== null) {
+            return $this->_content;
+        }
+
+        $this->_content = false;
+
+        if (!($this->cache instanceof CacheInterface)) {
+            return $this->_content;
+        }
+
+        $key = $this->calculateKey();
+        $data = $this->cache->get($key);
+        if (!is_array($data) || count($data) !== 2) {
+            return $this->_content;
+        }
+
+        list($this->_content, $placeholders) = $data;
+        if (!is_array($placeholders) || count($placeholders) === 0) {
+            return $this->_content;
+        }
+
+        if (empty($this->getView()->cacheStack)) {
+            // outermost cache: replace placeholder with dynamic content
+            $this->_content = $this->updateDynamicContent($this->_content, $placeholders);
+        }
+        foreach ($placeholders as $name => $statements) {
+            $this->getView()->addDynamicPlaceholder($name, $statements);
         }
 
         return $this->_content;

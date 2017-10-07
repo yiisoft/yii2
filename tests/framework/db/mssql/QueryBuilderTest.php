@@ -1,9 +1,12 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\mssql;
 
-use yii\db\Expression;
-use yii\db\mssql\Schema;
 use yii\db\Query;
 
 /**
@@ -14,9 +17,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'sqlsrv';
 
-    protected $likeEscapeCharSql = " ESCAPE '\\'";
     protected $likeParameterReplacements = [
-        '[abc]' => '\[abc\]',
+        '\%' => '[%]',
+        '\_' => '[_]',
+        '[' => '[[]',
+        ']' => '[]]',
+        '\\\\' => '[\\]',
     ];
 
     public function testOffsetLimit()
@@ -88,8 +94,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     }
 
     /**
-     * this is not used as a dataprovider for testGetColumnType to speed up the test
-     * when used as dataprovider every single line will cause a reconnect with the database which is not needed here
+     * This is not used as a dataprovider for testGetColumnType to speed up the test
+     * when used as dataprovider every single line will cause a reconnect with the database which is not needed here.
      */
     public function columnTypes()
     {
@@ -102,7 +108,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $data['escape-danger-chars']['expected'] = 'INSERT INTO [customer] ([address]) VALUES ("SQL-danger chars are escaped: \'); --")';
         $data['bool-false, bool2-null']['expected'] = 'INSERT INTO [type] ([bool_col], [bool_col2]) VALUES (FALSE, NULL)';
-        $data['bool-false, time-now()']['expected'] = "INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (FALSE, now())";
+        $data['bool-false, time-now()']['expected'] = 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (FALSE, now())';
 
         return $data;
     }

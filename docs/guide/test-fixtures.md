@@ -3,7 +3,8 @@ Fixtures
 
 Fixtures are an important part of testing. Their main purpose is to set up the environment in a fixed/known state
 so that your tests are repeatable and run in an expected way. Yii provides a fixture framework that allows
-you to define your fixtures precisely and use them easily.
+you to define your fixtures precisely and use them easily both when running your tests with Codeception
+and independently.
 
 A key concept in the Yii fixture framework is the so-called *fixture object*. A fixture object represents
 a particular aspect of a test environment and is an instance of [[yii\test\Fixture]] or its child class. For example,
@@ -15,8 +16,7 @@ When a fixture is being loaded, the fixtures it depends on will be automatically
 and when the fixture is being unloaded, the dependent fixtures will be unloaded AFTER the fixture.
 
 
-Defining a Fixture
-------------------
+## Defining a Fixture
 
 To define a fixture, create a new class by extending [[yii\test\Fixture]] or [[yii\test\ActiveFixture]].
 The former is best suited for general purpose fixtures, while the latter has enhanced features specifically
@@ -105,31 +105,35 @@ In the above, we have shown how to define a fixture about a DB table. To define 
 [[yii\test\Fixture]] and override the [[yii\test\Fixture::load()|load()]] and [[yii\test\Fixture::unload()|unload()]] methods.
 
 
-Using Fixtures
---------------
+## Using Fixtures
 
-If you are using [Codeception](http://codeception.com/) to test your code, you should consider using
-the `yii2-codeception` extension which has built-in support for loading and accessing fixtures.
-If you are using other testing frameworks, you may use [[yii\test\FixtureTrait]] in your test cases
-to achieve the same goal.
+If you are using [Codeception](http://codeception.com/) to test your code, you can use built-in support for loading
+and accessing fixtures.
 
-In the following we will describe how to write a `UserProfile` unit test class using `yii2-codeception`.
+If you are using other testing frameworks, you may use [[yii\test\FixtureTrait]] in your
+test cases to achieve the same goal.
 
-In your unit test class extending [[yii\codeception\DbTestCase]] or [[yii\codeception\TestCase]],
-declare which fixtures you want to use in the [[yii\test\FixtureTrait::fixtures()|fixtures()]] method. For example,
+In the following we will describe how to write a `UserProfile` unit test class using Codeception.
+
+In your unit test class extending `\Codeception\Test\Unit` either declare fixtures you want to use in the
+`_fixtures()` method or use `haveFixtures()` method of an actor directly. For example,
 
 ```php
 namespace app\tests\unit\models;
 
-use yii\codeception\DbTestCase;
+
 use app\tests\fixtures\UserProfileFixture;
 
-class UserProfileTest extends DbTestCase
-{
-    public function fixtures()
+class UserProfileTest extends \Codeception\Test\Unit
+{   
+    public function _fixtures()
     {
         return [
-            'profiles' => UserProfileFixture::className(),
+            'profiles' => [
+                'class' => UserProfileFixture::className(),
+                // fixture data located in tests/_data/user.php
+                'dataFile' => codecept_data_dir() . 'user.php'
+            ],
         ];
     }
 
@@ -137,56 +141,32 @@ class UserProfileTest extends DbTestCase
 }
 ```
 
-The fixtures listed in the `fixtures()` method will be automatically loaded before running every test method
-in the test case and unloaded after finishing every test method. And as we described before, when a fixture is
-being loaded, all its dependent fixtures will be automatically loaded first. In the above example, because
-`UserProfileFixture` depends on `UserFixture`, when running any test method in the test class,
-two fixtures will be loaded sequentially: `UserFixture` and `UserProfileFixture`.
+The fixtures listed in the `_fixtures()` method will be automatically loaded before a test is executed. And as we
+described before, when a fixture is being loaded, all its dependent fixtures will be automatically loaded first.
+In the above example, because `UserProfileFixture` depends on `UserFixture`, when running any test method in the test
+class, two fixtures will be loaded sequentially: `UserFixture` and `UserProfileFixture`.
 
-When specifying fixtures in `fixtures()`, you may use either a class name or a configuration array to refer to
-a fixture. The configuration array will let you customize the fixture properties when the fixture is loaded.
+When specifying fixtures for both `_fixtures()` and `haveFixtures()`, you may use either a class name
+or a configuration array to refer to a fixture. The configuration array will let you customize
+the fixture properties when the fixture is loaded.
 
 You may also assign an alias to a fixture. In the above example, the `UserProfileFixture` is aliased as `profiles`.
-In the test methods, you may then access a fixture object using its alias. For example, `$this->profiles` will
-return the `UserProfileFixture` object.
+In the test methods, you may then access a fixture object using its alias in `grabFixture()` method. For example,
+
+```php
+$profile = $I->grabFixture('profiles', 'user1');` will return the `UserProfileFixture` object.
 
 Because `UserProfileFixture` extends from `ActiveFixture`, you may further use the following syntax to access
 the data provided by the fixture:
 
 ```php
-// returns the data row aliased as 'user1'
-$row = $this->profiles['user1'];
 // returns the UserProfile model corresponding to the data row aliased as 'user1'
-$profile = $this->profiles('user1');
-// traverse every data row in the fixture
-foreach ($this->profiles as $row) ...
+$profile = $I->grabFixture('profiles', 'user1');
+// traverse data in the fixture
+foreach ($I->grabFixture('profiles') as $profile) ...
 ```
 
-> Info: `$this->profiles` is still of `UserProfileFixture` type. The above access features are implemented
-> through PHP magic methods.
-
-
-Defining and Using Global Fixtures
-----------------------------------
-
-The fixtures described above are mainly used by individual test cases. In most cases, you also need some global
-fixtures that are applied to ALL or many test cases. An example is [[yii\test\InitDbFixture]] which does
-two things:
-
-* Perform some common initialization tasks by executing a script located at `@app/tests/fixtures/initdb.php`;
-* Disable the database integrity check before loading other DB fixtures, and re-enable it after other DB fixtures are unloaded.
-
-Using global fixtures is similar to using non-global ones. The only difference is that you declare these fixtures
-in [[yii\codeception\TestCase::globalFixtures()]] instead of `fixtures()`. When a test case loads fixtures, it will
-first load global fixtures and then non-global ones.
-
-By default, [[yii\codeception\DbTestCase]] already declares `InitDbFixture` in its `globalFixtures()` method.
-This means you only need to work with `@app/tests/fixtures/initdb.php` if you want to do some initialization work
-before each test. You may otherwise simply focus on developing each individual test case and the corresponding fixtures.
-
-
-Organizing Fixture Classes and Data Files
------------------------------------------
+## Organizing Fixture Classes and Data Files
 
 By default, fixture classes look for the corresponding data files under the `data` folder which is a sub-folder
 of the folder containing the fixture class files. You can follow this convention when working with simple projects.
@@ -221,34 +201,7 @@ In this way you will avoid collision of fixture data files between tests and use
 The similar hierarchy can be used to organize fixture class files. Instead of using `data` as the root directory, you may
 want to use `fixtures` as the root directory to avoid conflict with the data files.
 
-
-Summary
--------
-
-> Note: This section is under development.
-
-In the above, we have described how to define and use fixtures. Below we summarize the typical workflow
-of running unit tests related with DB:
-
-1. Use `yii migrate` tool to upgrade your test database to the latest version;
-2. Run a test case:
-   - Load fixtures: clean up the relevant DB tables and populate them with fixture data;
-   - Perform the actual test;
-   - Unload fixtures.
-3. Repeat Step 2 until all tests finish.
-
-
-**To be cleaned up below**
-
-Managing Fixtures
-=================
-
-> Note: This section is under development.
->
-> todo: this tutorial may be merged with the above part of test-fixtures.md
-
-Fixtures are important part of testing. Their main purpose is to populate you with data that needed by testing
-different cases. With this data using your tests becoming more efficient and useful.
+## Managing fixtures with `yii fixture`
 
 Yii supports fixtures via the `yii fixture` command line tool. This tool supports:
 
@@ -256,10 +209,8 @@ Yii supports fixtures via the `yii fixture` command line tool. This tool support
 * Unloading fixtures in different ways (usually it is clearing storage);
 * Auto-generating fixtures and populating it with random data.
 
-Fixtures format
----------------
+### Fixtures data format
 
-Fixtures are objects with different methods and configurations, refer to official [documentation](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixtures.md) on them.
 Lets assume we have fixtures data to load:
 
 ```
@@ -287,13 +238,14 @@ fixture, then this data will be applied to `users` mongodb collection. In order 
 Above fixture example was auto-generated by `yii2-faker` extension, read more about it in these [section](#auto-generating-fixtures).
 Fixture classes name should not be plural.
 
-Loading fixtures
-----------------
+### Loading fixtures
 
 Fixture classes should be suffixed by `Fixture` class. By default fixtures will be searched under `tests\unit\fixtures` namespace, you can
 change this behavior with config or command options. You can exclude some fixtures due load or unload by specifying `-` before its name like `-User`.
 
 To load fixture, run the following command:
+
+> Note: Prior to loading data unload sequence is executed. Usually that results in cleaning up all the existing data inserted by previous fixture executions.
 
 ```
 yii fixture/load <fixture_name>
@@ -330,8 +282,7 @@ yii fixture User --namespace='alias\my\custom\namespace'
 yii fixture User --globalFixtures='some\name\space\Custom'
 ```
 
-Unloading fixtures
-------------------
+### Unloading fixtures
 
 To unload fixture, run the following command:
 
@@ -352,8 +303,8 @@ yii fixture/unload "*, -DoNotUnloadThisOne"
 
 Same command options like: `namespace`, `globalFixtures` also can be applied to this command.
 
-Configure Command Globally
---------------------------
+### Configure Command Globally
+
 While command line options allow us to configure the migration command
 on-the-fly, sometimes we may want to configure the command once for all. For example you can configure
 different migration path as follows:
@@ -371,9 +322,20 @@ different migration path as follows:
 ]
 ```
 
-Auto-generating fixtures
-------------------------
+### Auto-generating fixtures
 
 Yii also can auto-generate fixtures for you based on some template. You can generate your fixtures with different data on different languages and formats.
 This feature is done by [Faker](https://github.com/fzaninotto/Faker) library and `yii2-faker` extension.
 See extension [guide](https://github.com/yiisoft/yii2-faker) for more docs.
+
+## Summary
+
+In the above, we have described how to define and use fixtures. Below we summarize the typical workflow
+of running unit tests related with DB:
+
+1. Use `yii migrate` tool to upgrade your test database to the latest version;
+2. Run a test case:
+   - Load fixtures: clean up the relevant DB tables and populate them with fixture data;
+   - Perform the actual test;
+   - Unload fixtures.
+3. Repeat Step 2 until all tests finish.

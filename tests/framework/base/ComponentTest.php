@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\base;
 
 use yii\base\Behavior;
@@ -38,6 +44,8 @@ class ComponentTest extends TestCase
     {
         parent::tearDown();
         $this->component = null;
+        gc_enable();
+        gc_collect_cycles();
     }
 
     public function testClone()
@@ -95,8 +103,8 @@ class ComponentTest extends TestCase
 
     public function testGetProperty()
     {
-        $this->assertTrue('default' === $this->component->Text);
-        $this->setExpectedException('yii\base\UnknownPropertyException');
+        $this->assertSame('default', $this->component->Text);
+        $this->expectException('yii\base\UnknownPropertyException');
         $value2 = $this->component->Caption;
     }
 
@@ -105,22 +113,22 @@ class ComponentTest extends TestCase
         $value = 'new value';
         $this->component->Text = $value;
         $this->assertEquals($value, $this->component->Text);
-        $this->setExpectedException('yii\base\UnknownPropertyException');
+        $this->expectException('yii\base\UnknownPropertyException');
         $this->component->NewMember = $value;
     }
 
     public function testIsset()
     {
         $this->assertTrue(isset($this->component->Text));
-        $this->assertFalse(empty($this->component->Text));
+        $this->assertNotEmpty($this->component->Text);
 
         $this->component->Text = '';
         $this->assertTrue(isset($this->component->Text));
-        $this->assertTrue(empty($this->component->Text));
+        $this->assertEmpty($this->component->Text);
 
         $this->component->Text = null;
         $this->assertFalse(isset($this->component->Text));
-        $this->assertTrue(empty($this->component->Text));
+        $this->assertEmpty($this->component->Text);
 
         $this->assertFalse(isset($this->component->p2));
         $this->component->attachBehavior('a', new NewBehavior());
@@ -130,7 +138,7 @@ class ComponentTest extends TestCase
 
     public function testCallUnknownMethod()
     {
-        $this->setExpectedException('yii\base\UnknownMethodException');
+        $this->expectException('yii\base\UnknownMethodException');
         $this->component->unknownMethod();
     }
 
@@ -138,7 +146,7 @@ class ComponentTest extends TestCase
     {
         unset($this->component->Text);
         $this->assertFalse(isset($this->component->Text));
-        $this->assertTrue(empty($this->component->Text));
+        $this->assertEmpty($this->component->Text);
 
         $this->component->attachBehavior('a', new NewBehavior());
         $this->component->setP2('test');
@@ -150,7 +158,7 @@ class ComponentTest extends TestCase
 
     public function testUnsetReadonly()
     {
-        $this->setExpectedException('yii\base\InvalidCallException');
+        $this->expectException('yii\base\InvalidCallException');
         unset($this->component->object);
     }
 
@@ -220,7 +228,7 @@ class ComponentTest extends TestCase
 
     public function testStopEvent()
     {
-        $component = new NewComponent;
+        $component = new NewComponent();
         $component->on('click', 'yiiunit\framework\base\globalEventHandler2');
         $component->on('click', [$this->component, 'myEventHandler']);
         $component->raiseEvent();
@@ -230,12 +238,12 @@ class ComponentTest extends TestCase
 
     public function testAttachBehavior()
     {
-        $component = new NewComponent;
+        $component = new NewComponent();
         $this->assertFalse($component->hasProperty('p'));
         $this->assertFalse($component->behaviorCalled);
         $this->assertNull($component->getBehavior('a'));
 
-        $behavior = new NewBehavior;
+        $behavior = new NewBehavior();
         $component->attachBehavior('a', $behavior);
         $this->assertSame($behavior, $component->getBehavior('a'));
         $this->assertTrue($component->hasProperty('p'));
@@ -244,11 +252,11 @@ class ComponentTest extends TestCase
 
         $this->assertSame($behavior, $component->detachBehavior('a'));
         $this->assertFalse($component->hasProperty('p'));
-        $this->setExpectedException('yii\base\UnknownMethodException');
+        $this->expectException('yii\base\UnknownMethodException');
         $component->test();
 
         $p = 'as b';
-        $component = new NewComponent;
+        $component = new NewComponent();
         $component->$p = ['class' => 'NewBehavior'];
         $this->assertSame($behavior, $component->getBehavior('a'));
         $this->assertTrue($component->hasProperty('p'));
@@ -258,11 +266,11 @@ class ComponentTest extends TestCase
 
     public function testAttachBehaviors()
     {
-        $component = new NewComponent;
+        $component = new NewComponent();
         $this->assertNull($component->getBehavior('a'));
         $this->assertNull($component->getBehavior('b'));
 
-        $behavior = new NewBehavior;
+        $behavior = new NewBehavior();
 
         $component->attachBehaviors([
             'a' => $behavior,
@@ -274,8 +282,8 @@ class ComponentTest extends TestCase
 
     public function testDetachBehavior()
     {
-        $component = new NewComponent;
-        $behavior = new NewBehavior;
+        $component = new NewComponent();
+        $behavior = new NewBehavior();
 
         $component->attachBehavior('a', $behavior);
         $this->assertSame($behavior, $component->getBehavior('a'));
@@ -290,8 +298,8 @@ class ComponentTest extends TestCase
 
     public function testDetachBehaviors()
     {
-        $component = new NewComponent;
-        $behavior = new NewBehavior;
+        $component = new NewComponent();
+        $behavior = new NewBehavior();
 
         $component->attachBehavior('a', $behavior);
         $this->assertSame($behavior, $component->getBehavior('a'));
@@ -305,10 +313,8 @@ class ComponentTest extends TestCase
 
     public function testSetReadOnlyProperty()
     {
-        $this->setExpectedException(
-            '\yii\base\InvalidCallException',
-            'Setting read-only property: yiiunit\framework\base\NewComponent::object'
-        );
+        $this->expectException('\yii\base\InvalidCallException');
+        $this->expectExceptionMessage('Setting read-only property: yiiunit\framework\base\NewComponent::object');
         $this->component->object = 'z';
     }
 
@@ -316,7 +322,7 @@ class ComponentTest extends TestCase
     {
         $this->assertNull($this->component->getBehavior('a'));
 
-        $behavior = new NewBehavior;
+        $behavior = new NewBehavior();
         $this->component->attachBehaviors([
             'a' => $behavior,
         ]);
@@ -330,16 +336,14 @@ class ComponentTest extends TestCase
         $behaviorName = 'foo';
         $this->assertNull($this->component->getBehavior($behaviorName));
         $p = 'as ' . $behaviorName;
-        $this->component->$p = __NAMESPACE__ .  '\NewBehavior';
-        $this->assertSame(__NAMESPACE__ .  '\NewBehavior', get_class($this->component->getBehavior($behaviorName)));
+        $this->component->$p = __NAMESPACE__ . '\NewBehavior';
+        $this->assertSame(__NAMESPACE__ . '\NewBehavior', get_class($this->component->getBehavior($behaviorName)));
     }
 
     public function testWriteOnlyProperty()
     {
-        $this->setExpectedException(
-            '\yii\base\InvalidCallException',
-            'Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly'
-        );
+        $this->expectException('\yii\base\InvalidCallException');
+        $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly');
         $this->component->writeOnly;
     }
 
@@ -375,7 +379,7 @@ class NewComponent extends Component
     public function getObject()
     {
         if (!$this->_object) {
-            $this->_object = new self;
+            $this->_object = new self();
             $this->_object->_text = 'object text';
         }
 
@@ -406,7 +410,7 @@ class NewComponent extends Component
 
     public function raiseEvent()
     {
-        $this->trigger('click', new Event);
+        $this->trigger('click', new Event());
     }
 
     public function setWriteOnly()

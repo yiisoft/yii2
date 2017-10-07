@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\validators\models;
 
@@ -35,7 +40,7 @@ class FakedValidationModel extends Model
             ['val_attr_c', 'integer'],
             ['attr_images', 'file', 'maxFiles' => 3, 'extensions' => ['png'], 'on' => 'validateMultipleFiles', 'checkExtensionByMimeType' => false],
             ['attr_image', 'file', 'extensions' => ['png'], 'on' => 'validateFile', 'checkExtensionByMimeType' => false],
-            ['!safe_attr', 'integer']
+            ['!safe_attr', 'integer'],
         ];
     }
 

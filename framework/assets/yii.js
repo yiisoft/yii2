@@ -163,9 +163,14 @@ window.yii = (function ($) {
                 pjaxOptions = {};
 
             if (usePjax) {
-                pjaxContainer = $e.data('pjax-container') || $e.closest('[data-pjax-container]');
+                pjaxContainer = $e.data('pjax-container');
+                if (pjaxContainer === undefined || !pjaxContainer.length) {
+                    pjaxContainer = $e.closest('[data-pjax-container]').attr('id')
+                        ? ('#' + $e.closest('[data-pjax-container]').attr('id'))
+                        : '';
+                }
                 if (!pjaxContainer.length) {
-                    pjaxContainer = $('body');
+                    pjaxContainer = 'body';
                 }
                 pjaxOptions = {
                     container: pjaxContainer,
@@ -273,8 +278,10 @@ window.yii = (function ($) {
                 return {};
             }
 
-            var pairs = url.substring(pos + 1).split('#')[0].split('&'),
-                params = {};
+            var pairs = $.grep(url.substring(pos + 1).split('#')[0].split('&'), function (value) {
+                return value !== '';
+            });
+            var params = {};
 
             for (var i = 0, len = pairs.length; i < len; i++) {
                 var pair = pairs[i].split('=');
@@ -292,6 +299,7 @@ window.yii = (function ($) {
                     params[name].push(value || '');
                 }
             }
+
             return params;
         },
 

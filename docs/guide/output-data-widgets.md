@@ -668,7 +668,7 @@ class UserView extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function attributeLabels()
+    public function attributeLabels()
     {
         return [
             // define here your attribute labels

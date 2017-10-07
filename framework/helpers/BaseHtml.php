@@ -9,10 +9,10 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\InvalidParamException;
+use yii\base\Model;
 use yii\db\ActiveRecordInterface;
 use yii\validators\StringValidator;
 use yii\web\Request;
-use yii\base\Model;
 
 /**
  * BaseHtml provides concrete implementation for [[Html]].
@@ -24,6 +24,11 @@ use yii\base\Model;
  */
 class BaseHtml
 {
+    /**
+     * @var string Regular expression used for attribute name validation.
+     * @since 2.0.12
+     */
+    public static $attributeRegex = '/(^|.*\])([\w\.\+]+)(\[.*|$)/u';
     /**
      * @var array list of void elements (element name => 1)
      * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
@@ -162,6 +167,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return '';
         }
+
         return "<$name" . static::renderTagAttributes($options) . '>';
     }
 
@@ -177,6 +183,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return '';
         }
+
         return "</$name>";
     }
 
@@ -238,9 +245,9 @@ class BaseHtml
         } elseif (isset($options['noscript']) && $options['noscript'] === true) {
             unset($options['noscript']);
             return '<noscript>' . static::tag('link', '', $options) . '</noscript>';
-        } else {
-            return static::tag('link', '', $options);
         }
+
+        return static::tag('link', '', $options);
     }
 
     /**
@@ -265,9 +272,9 @@ class BaseHtml
             $condition = $options['condition'];
             unset($options['condition']);
             return self::wrapIntoCondition(static::tag('script', '', $options), $condition);
-        } else {
-            return static::tag('script', '', $options);
         }
+
+        return static::tag('script', '', $options);
     }
 
     /**
@@ -281,6 +288,7 @@ class BaseHtml
         if (strpos($condition, '!IE') !== false) {
             return "<!--[if $condition]><!-->\n" . $content . "\n<!--<![endif]-->";
         }
+
         return "<!--[if $condition]>\n" . $content . "\n<![endif]-->";
     }
 
@@ -295,9 +303,9 @@ class BaseHtml
         if ($request instanceof Request && $request->enableCsrfValidation) {
             return static::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfParam]) . "\n    "
                 . static::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]) . "\n";
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -403,6 +411,7 @@ class BaseHtml
         if ($url !== null) {
             $options['href'] = Url::to($url);
         }
+
         return static::tag('a', $text, $options);
     }
 
@@ -432,9 +441,10 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @since 2.0.12 It is possible to pass the "srcset" option as an array which keys are
+     *
+     * Since version 2.0.12 It is possible to pass the `srcset` option as an array which keys are
      * descriptors and values are URLs. All URLs will be processed by [[Url::to()]].
-     * @return string the generated image tag
+     * @return string the generated image tag.
      */
     public static function img($src, $options = [])
     {
@@ -451,6 +461,7 @@ class BaseHtml
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
+
         return static::tag('img', '', $options);
     }
 
@@ -489,6 +500,7 @@ class BaseHtml
         if (!isset($options['type'])) {
             $options['type'] = 'button';
         }
+
         return static::tag('button', $content, $options);
     }
 
@@ -758,9 +770,9 @@ class BaseHtml
             unset($options['label'], $options['labelOptions']);
             $content = static::label(static::input($type, $name, $value, $options) . ' ' . $label, null, $labelOptions);
             return $hidden . $content;
-        } else {
-            return $hidden . static::input($type, $name, $value, $options);
         }
+
+        return $hidden . static::input($type, $name, $value, $options);
     }
 
     /**
@@ -1214,7 +1226,7 @@ class BaseHtml
             foreach ($model->getErrors() as $errors) {
                 foreach ($errors as $error) {
                     $line = $encode ? Html::encode($error) : $error;
-                    if (array_search($line, $lines) === false) {
+                    if (!in_array($line, $lines, true)) {
                         $lines[] = $line;
                     }
                     if (!$showAllErrors) {
@@ -1231,6 +1243,7 @@ class BaseHtml
         } else {
             $content = '<ul><li>' . implode("</li>\n<li>", $lines) . '</li></ul>';
         }
+
         return Html::tag('div', $header . $content . $footer, $options);
     }
 
@@ -1282,6 +1295,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
         return static::input($type, $name, $value, $options);
     }
 
@@ -1391,6 +1405,7 @@ class BaseHtml
         if (isset($options['name'])) {
             $hiddenOptions['name'] = $options['name'];
         }
+
         return static::activeHiddenInput($model, $attribute, $hiddenOptions)
             . static::activeInput('file', $model, $attribute, $options);
     }
@@ -1550,9 +1565,9 @@ class BaseHtml
     {
         if (empty($options['multiple'])) {
             return static::activeListInput('dropDownList', $model, $attribute, $items, $options);
-        } else {
-            return static::activeListBox($model, $attribute, $items, $options);
         }
+
+        return static::activeListBox($model, $attribute, $items, $options);
     }
 
     /**
@@ -1718,6 +1733,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
         return static::$type($name, $selection, $items, $options);
     }
 
@@ -1864,6 +1880,7 @@ class BaseHtml
 
     /**
      * Adds a CSS class (or several classes) to the specified options.
+     *
      * If the CSS class is already in the options, it will not be added again.
      * If class specification at given options is an array, and some class placed there with the named (string) key,
      * overriding of such key will have no effect. For example:
@@ -1907,6 +1924,7 @@ class BaseHtml
                 $existingClasses[$key] = $class;
             }
         }
+
         return array_unique($existingClasses);
     }
 
@@ -2050,6 +2068,7 @@ class BaseHtml
                 $result[trim($property[0])] = trim($property[1]);
             }
         }
+
         return $result;
     }
 
@@ -2072,11 +2091,11 @@ class BaseHtml
      */
     public static function getAttributeName($attribute)
     {
-        if (preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/', $attribute, $matches)) {
+        if (preg_match(static::$attributeRegex, $attribute, $matches)) {
             return $matches[2];
-        } else {
-            throw new InvalidParamException('Attribute name must contain word characters only.');
         }
+
+        throw new InvalidParamException('Attribute name must contain word characters only.');
     }
 
     /**
@@ -2095,7 +2114,7 @@ class BaseHtml
      */
     public static function getAttributeValue($model, $attribute)
     {
-        if (!preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/', $attribute, $matches)) {
+        if (!preg_match(static::$attributeRegex, $attribute, $matches)) {
             throw new InvalidParamException('Attribute name must contain word characters only.');
         }
         $attribute = $matches[2];
@@ -2145,7 +2164,7 @@ class BaseHtml
     public static function getInputName($model, $attribute)
     {
         $formName = $model->formName();
-        if (!preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/', $attribute, $matches)) {
+        if (!preg_match(static::$attributeRegex, $attribute, $matches)) {
             throw new InvalidParamException('Attribute name must contain word characters only.');
         }
         $prefix = $matches[1];
@@ -2155,9 +2174,9 @@ class BaseHtml
             return $attribute . $suffix;
         } elseif ($formName !== '') {
             return $formName . $prefix . "[$attribute]" . $suffix;
-        } else {
-            throw new InvalidParamException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
         }
+
+        throw new InvalidParamException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
     }
 
     /**
@@ -2177,7 +2196,7 @@ class BaseHtml
     }
 
     /**
-     * Escapes regular expression to use in JavaScript
+     * Escapes regular expression to use in JavaScript.
      * @param string $regexp the regular expression to be escaped.
      * @return string the escaped result.
      * @since 2.0.6

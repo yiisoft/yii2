@@ -13,7 +13,7 @@ use Yii;
  * Component is the base class that implements the *property*, *event* and *behavior* features.
  *
  * Component provides the *event* and *behavior* features, in addition to the *property* feature which is implemented in
- * its parent class [[\yii\base\Object|Object]].
+ * its parent class [[\yii\base\BaseObject|BaseObject]].
  *
  * Event is a way to "inject" custom code into existing code at certain places. For example, a comment object can trigger
  * an "add" event when the user adds a comment. We can write custom code and attach it to this event so that when the event
@@ -97,7 +97,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends Object
+class Component extends BaseObject
 {
     /**
      * @var array the attached event handlers (event name => handlers)
@@ -111,6 +111,7 @@ class Component extends Object
 
     /**
      * Returns the value of a component property.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a getter: return the getter result
@@ -149,6 +150,7 @@ class Component extends Object
 
     /**
      * Sets the value of a component property.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a setter: set the property value
@@ -203,6 +205,7 @@ class Component extends Object
 
     /**
      * Checks if a property is set, i.e. defined and not null.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a setter: return whether the property is set
@@ -235,6 +238,7 @@ class Component extends Object
 
     /**
      * Sets a component property to be null.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a setter: set the property value to be null
@@ -302,6 +306,7 @@ class Component extends Object
 
     /**
      * Returns a value indicating whether a property is defined for this component.
+     *
      * A property is defined if:
      *
      * - the class has a getter or setter method associated with the specified name
@@ -323,6 +328,7 @@ class Component extends Object
 
     /**
      * Returns a value indicating whether a property can be read.
+     *
      * A property can be read if:
      *
      * - the class has a getter method associated with the specified name
@@ -348,11 +354,13 @@ class Component extends Object
                 }
             }
         }
+
         return false;
     }
 
     /**
      * Returns a value indicating whether a property can be set.
+     *
      * A property can be written if:
      *
      * - the class has a setter method associated with the specified name
@@ -378,11 +386,13 @@ class Component extends Object
                 }
             }
         }
+
         return false;
     }
 
     /**
      * Returns a value indicating whether a method is defined.
+     *
      * A method is defined if:
      *
      * - the class has a method with the specified name
@@ -404,6 +414,7 @@ class Component extends Object
                 }
             }
         }
+
         return false;
     }
 
@@ -518,6 +529,7 @@ class Component extends Object
         if ($removed) {
             $this->_events[$name] = array_values($this->_events[$name]);
         }
+
         return $removed;
     }
 
@@ -533,7 +545,7 @@ class Component extends Object
         $this->ensureBehaviors();
         if (!empty($this->_events[$name])) {
             if ($event === null) {
-                $event = new Event;
+                $event = new Event();
             }
             if ($event->sender === null) {
                 $event->sender = $this;

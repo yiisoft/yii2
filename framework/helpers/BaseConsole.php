@@ -20,36 +20,36 @@ use yii\console\Markdown as ConsoleMarkdown;
 class BaseConsole
 {
     // foreground color control codes
-    const FG_BLACK  = 30;
-    const FG_RED    = 31;
-    const FG_GREEN  = 32;
+    const FG_BLACK = 30;
+    const FG_RED = 31;
+    const FG_GREEN = 32;
     const FG_YELLOW = 33;
-    const FG_BLUE   = 34;
+    const FG_BLUE = 34;
     const FG_PURPLE = 35;
-    const FG_CYAN   = 36;
-    const FG_GREY   = 37;
+    const FG_CYAN = 36;
+    const FG_GREY = 37;
     // background color control codes
-    const BG_BLACK  = 40;
-    const BG_RED    = 41;
-    const BG_GREEN  = 42;
+    const BG_BLACK = 40;
+    const BG_RED = 41;
+    const BG_GREEN = 42;
     const BG_YELLOW = 43;
-    const BG_BLUE   = 44;
+    const BG_BLUE = 44;
     const BG_PURPLE = 45;
-    const BG_CYAN   = 46;
-    const BG_GREY   = 47;
+    const BG_CYAN = 46;
+    const BG_GREY = 47;
     // fonts style control codes
-    const RESET       = 0;
-    const NORMAL      = 0;
-    const BOLD        = 1;
-    const ITALIC      = 3;
-    const UNDERLINE   = 4;
-    const BLINK       = 5;
-    const NEGATIVE    = 7;
-    const CONCEALED   = 8;
+    const RESET = 0;
+    const NORMAL = 0;
+    const BOLD = 1;
+    const ITALIC = 3;
+    const UNDERLINE = 4;
+    const BLINK = 5;
+    const NEGATIVE = 7;
+    const CONCEALED = 8;
     const CROSSED_OUT = 9;
-    const FRAMED      = 51;
-    const ENCIRCLED   = 52;
-    const OVERLINED   = 53;
+    const FRAMED = 51;
+    const ENCIRCLED = 52;
+    const OVERLINED = 53;
 
 
     /**
@@ -264,7 +264,7 @@ class BaseConsole
     /**
      * Resets any ANSI format set by previous method [[beginAnsiFormat()]]
      * Any output after this will have default text format.
-     * This is equal to calling
+     * This is equal to calling.
      *
      * ```php
      * echo Console::ansiFormatCode([Console::RESET])
@@ -276,7 +276,7 @@ class BaseConsole
     }
 
     /**
-     * Will return a string formatted with the given ANSI style
+     * Will return a string formatted with the given ANSI style.
      *
      * @param string $string the string to be formatted
      * @param array $format An array containing formatting values.
@@ -293,8 +293,9 @@ class BaseConsole
 
     /**
      * Returns the ansi format code for xterm foreground color.
+     *
      * You can pass the return value of this to one of the formatting methods:
-     * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
+     * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]].
      *
      * @param int $colorCode xterm color code
      * @return string
@@ -307,8 +308,9 @@ class BaseConsole
 
     /**
      * Returns the ansi format code for xterm background color.
+     *
      * You can pass the return value of this to one of the formatting methods:
-     * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
+     * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]].
      *
      * @param int $colorCode xterm color code
      * @return string
@@ -320,7 +322,7 @@ class BaseConsole
     }
 
     /**
-     * Strips ANSI control codes from a string
+     * Strips ANSI control codes from a string.
      *
      * @param string $string String to strip
      * @return string
@@ -341,7 +343,7 @@ class BaseConsole
     }
 
     /**
-     * Converts an ANSI formatted string to HTML
+     * Converts an ANSI formatted string to HTML.
      *
      * Note: xTerm 256 bit colors are currently not supported.
      *
@@ -357,31 +359,31 @@ class BaseConsole
     {
         $styleMap = [
             // http://www.w3.org/TR/CSS2/syndata.html#value-def-color
-            self::FG_BLACK =>    ['color' => 'black'],
-            self::FG_BLUE =>     ['color' => 'blue'],
-            self::FG_CYAN =>     ['color' => 'aqua'],
-            self::FG_GREEN =>    ['color' => 'lime'],
-            self::FG_GREY =>     ['color' => 'silver'],
+            self::FG_BLACK => ['color' => 'black'],
+            self::FG_BLUE => ['color' => 'blue'],
+            self::FG_CYAN => ['color' => 'aqua'],
+            self::FG_GREEN => ['color' => 'lime'],
+            self::FG_GREY => ['color' => 'silver'],
             // http://meyerweb.com/eric/thoughts/2014/06/19/rebeccapurple/
             // http://dev.w3.org/csswg/css-color/#valuedef-rebeccapurple
-            self::FG_PURPLE =>   ['color' => 'rebeccapurple'],
-            self::FG_RED =>      ['color' => 'red'],
-            self::FG_YELLOW =>   ['color' => 'yellow'],
-            self::BG_BLACK =>    ['background-color' => 'black'],
-            self::BG_BLUE =>     ['background-color' => 'blue'],
-            self::BG_CYAN =>     ['background-color' => 'aqua'],
-            self::BG_GREEN =>    ['background-color' => 'lime'],
-            self::BG_GREY =>     ['background-color' => 'silver'],
-            self::BG_PURPLE =>   ['background-color' => 'rebeccapurple'],
-            self::BG_RED =>      ['background-color' => 'red'],
-            self::BG_YELLOW =>   ['background-color' => 'yellow'],
-            self::BOLD =>        ['font-weight' => 'bold'],
-            self::ITALIC =>      ['font-style' => 'italic'],
-            self::UNDERLINE =>   ['text-decoration' => ['underline']],
-            self::OVERLINED =>   ['text-decoration' => ['overline']],
+            self::FG_PURPLE => ['color' => 'rebeccapurple'],
+            self::FG_RED => ['color' => 'red'],
+            self::FG_YELLOW => ['color' => 'yellow'],
+            self::BG_BLACK => ['background-color' => 'black'],
+            self::BG_BLUE => ['background-color' => 'blue'],
+            self::BG_CYAN => ['background-color' => 'aqua'],
+            self::BG_GREEN => ['background-color' => 'lime'],
+            self::BG_GREY => ['background-color' => 'silver'],
+            self::BG_PURPLE => ['background-color' => 'rebeccapurple'],
+            self::BG_RED => ['background-color' => 'red'],
+            self::BG_YELLOW => ['background-color' => 'yellow'],
+            self::BOLD => ['font-weight' => 'bold'],
+            self::ITALIC => ['font-style' => 'italic'],
+            self::UNDERLINE => ['text-decoration' => ['underline']],
+            self::OVERLINED => ['text-decoration' => ['overline']],
             self::CROSSED_OUT => ['text-decoration' => ['line-through']],
-            self::BLINK =>       ['text-decoration' => ['blink']],
-            self::CONCEALED =>   ['visibility' => 'hidden'],
+            self::BLINK => ['text-decoration' => ['blink']],
+            self::CONCEALED => ['visibility' => 'hidden'],
         ] + $styleMap;
 
         $tags = 0;
@@ -450,11 +452,12 @@ class BaseConsole
             $result .= '</span>';
             $tags--;
         }
+
         return $result;
     }
 
     /**
-     * Converts Markdown to be better readable in console environments by applying some ANSI format
+     * Converts Markdown to be better readable in console environments by applying some ANSI format.
      * @param string $markdown the markdown string.
      * @return string the parsed result as ANSI formatted string.
      */
@@ -465,7 +468,7 @@ class BaseConsole
     }
 
     /**
-     * Converts a string to ansi formatted by replacing patterns like %y (for yellow) with ansi control codes
+     * Converts a string to ansi formatted by replacing patterns like %y (for yellow) with ansi control codes.
      *
      * Uses almost the same syntax as https://github.com/pear/Console_Color2/blob/master/Console/Color2.php
      * The conversion table is: ('bold' meaning 'light' on some
@@ -557,11 +560,10 @@ class BaseConsole
 
     /**
      * Escapes % so they don't get interpreted as color codes when
-     * the string is parsed by [[renderColoredString]]
+     * the string is parsed by [[renderColoredString]].
      *
      * @param string $string String to escape
      *
-     * @access public
      * @return string
      */
     public static function escape($string)
@@ -587,7 +589,7 @@ class BaseConsole
     }
 
     /**
-     * Returns true if the console is running on windows
+     * Returns true if the console is running on windows.
      * @return bool
      */
     public static function isRunningOnWindows()
@@ -596,7 +598,13 @@ class BaseConsole
     }
 
     /**
-     * Usage: list($width, $height) = ConsoleHelper::getScreenSize();
+     * Returns terminal screen size.
+     *
+     * Usage:
+     *
+     * ```php
+     * list($width, $height) = ConsoleHelper::getScreenSize();
+     * ```
      *
      * @param bool $refresh whether to force checking and not re-use cached size value.
      * This is useful to detect changing window size while the application is running but may
@@ -624,12 +632,12 @@ class BaseConsole
 
                 // Linux stty output
                 if (preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', $stty, $matches)) {
-                    return $size = [(int)$matches[2], (int)$matches[1]];
+                    return $size = [(int) $matches[2], (int) $matches[1]];
                 }
 
                 // MacOS stty output
                 if (preg_match('/(\d+)\s+rows;\s*(\d+)\s+columns;/mi', $stty, $matches)) {
-                    return $size = [(int)$matches[2], (int)$matches[1]];
+                    return $size = [(int) $matches[2], (int) $matches[1]];
                 }
             }
 
@@ -648,7 +656,7 @@ class BaseConsole
     }
 
     /**
-     * Word wrap text with indentation to fit the screen size
+     * Word wrap text with indentation to fit the screen size.
      *
      * If screen size could not be detected, or the indentation is greater than the screen size, the text will not be wrapped.
      *
@@ -684,6 +692,7 @@ class BaseConsole
             }
             $lines[$i] = $pad . $line;
         }
+
         return implode("\n", $lines);
     }
 
@@ -759,7 +768,7 @@ class BaseConsole
     }
 
     /**
-     * Prompts the user for input and validates it
+     * Prompts the user for input and validates it.
      *
      * @param string $text prompt string
      * @param array $options the options to validate the input:
@@ -777,15 +786,15 @@ class BaseConsole
     {
         $options = ArrayHelper::merge(
             [
-                'required'  => false,
-                'default'   => null,
-                'pattern'   => null,
+                'required' => false,
+                'default' => null,
+                'pattern' => null,
                 'validator' => null,
-                'error'     => 'Invalid input.',
+                'error' => 'Invalid input.',
             ],
             $options
         );
-        $error   = null;
+        $error = null;
 
         top:
         $input = $options['default']

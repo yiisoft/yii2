@@ -77,7 +77,7 @@ use yii\widgets\ActiveForm;
 Важно помнить, что для корректной загрузки файла, необходим параметр формы `enctype`. Метод `fileInput()`
 выведет тег `<input type="file">`, позволяющий пользователю выбрать файл для загрузки.
 
-> Tip: начиная с версии 2.0.8, [[yii\web\widgets\ActiveField::fileInput|fileInput]] автоматически добавляет
+> Tip: начиная с версии 2.0.8, [[yii\widgets\ActiveField::fileInput|fileInput]] автоматически добавляет
   к форме свойство `enctype`, если в ней есть поле для загрузки файла.
 
 ## Загрузка <span id="wiring-up"></span>
