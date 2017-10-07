@@ -484,7 +484,7 @@ abstract class BaseMessageControllerTest extends TestCase
      */
     public function testShouldNotMarkUnused()
     {
-        $category = 'my';
+        $category = 'testShouldNotMarkUnused';
 
         $key1 = 'key1';
         $key2 = 'key2';
@@ -497,7 +497,7 @@ abstract class BaseMessageControllerTest extends TestCase
             $category
         );
 
-        $sourceFileContent = 'Yii::t("my", "test");';
+        $sourceFileContent = 'Yii::t("testShouldNotMarkUnused", "test");';
         $this->createSourceFile($sourceFileContent);
 
         $this->saveConfigFile($this->getConfig(['markUnused' => false]));
