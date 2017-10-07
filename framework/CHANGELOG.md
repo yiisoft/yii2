@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Bug #14134: Fixed multiple `validateAttribute()` calls when `scenarios()` returns duplicate attributes (krukru)
 - Enh #14929: Ensure trailing `;` on combining files with `asset` command to fix compiler failures (tanakahisateru)
 - Bug #14016: Fixed empty messages marked as unused in PHP and PO sources when extracted with message command when `markUnused` is `false` (samdark)
 - Enh #9438: `yii\web\DbSession` now relies on error handler to display errors (samdark)

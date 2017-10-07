@@ -781,7 +781,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         if (!isset($scenarios[$scenario])) {
             return [];
         }
-        $attributes = $scenarios[$scenario];
+        $attributes = array_keys(array_flip($scenarios[$scenario]));
         foreach ($attributes as $i => $attribute) {
             if ($attribute[0] === '!') {
                 $attributes[$i] = substr($attribute, 1);
