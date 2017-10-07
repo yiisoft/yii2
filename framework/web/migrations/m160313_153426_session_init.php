@@ -8,14 +8,13 @@
 use yii\db\Migration;
 
 /**
- * Initializes Session tables
+ * Initializes Session tables.
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 2.0.8
  */
 class m160313_153426_session_init extends Migration
 {
-
     /**
      * @inheritdoc
      */

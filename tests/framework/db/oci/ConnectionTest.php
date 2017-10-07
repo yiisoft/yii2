@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\oci;
 
@@ -20,7 +25,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $unserialized = unserialize($serialized);
         $this->assertInstanceOf('yii\db\Connection', $unserialized);
 
-        $this->assertEquals(123, $unserialized->createCommand("SELECT 123 FROM DUAL")->queryScalar());
+        $this->assertEquals(123, $unserialized->createCommand('SELECT 123 FROM DUAL')->queryScalar());
     }
 
     public function testQuoteTableName()

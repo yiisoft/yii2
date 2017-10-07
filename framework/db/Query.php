@@ -10,6 +10,7 @@ namespace yii\db;
 use Yii;
 use yii\base\Component;
 use yii\helpers\ArrayHelper;
+use yii\base\InvalidConfigException;
 
 /**
  * Query represents a SELECT SQL statement in a way that is independent of DBMS.
@@ -124,7 +125,7 @@ class Query extends Component implements QueryInterface
         if ($db === null) {
             $db = Yii::$app->getDb();
         }
-        list ($sql, $params) = $db->getQueryBuilder()->build($this);
+        list($sql, $params) = $db->getQueryBuilder()->build($this);
 
         return $db->createCommand($sql, $params);
     }
@@ -175,6 +176,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Starts a batch query and retrieves data row by row.
+     *
      * This method is similar to [[batch()]] except that in each iteration of the result,
      * only one row of data is returned. For example,
      *
@@ -231,6 +233,7 @@ class Query extends Component implements QueryInterface
         foreach ($rows as $row) {
             $result[ArrayHelper::getValue($row, $this->indexBy)] = $row;
         }
+
         return $result;
     }
 
@@ -246,6 +249,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return false;
         }
+
         return $this->createCommand($db)->queryOne();
     }
 
@@ -262,6 +266,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return null;
         }
+
         return $this->createCommand($db)->queryScalar();
     }
 
@@ -282,7 +287,11 @@ class Query extends Component implements QueryInterface
         }
 
         if (is_string($this->indexBy) && is_array($this->select) && count($this->select) === 1) {
-            $this->select[] = $this->indexBy;
+            if (strpos($this->indexBy, '.') === false && count($tables = $this->getTablesUsedInFrom()) > 0) {
+                $this->select[] = key($tables) . '.' . $this->indexBy;
+            } else {
+                $this->select[] = $this->indexBy;
+            }
         }
         $rows = $this->createCommand($db)->queryAll();
         $results = [];
@@ -295,6 +304,7 @@ class Query extends Component implements QueryInterface
                 $results[$row[$this->indexBy]] = $value;
             }
         }
+
         return $results;
     }
 
@@ -312,6 +322,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("COUNT($q)", $db);
     }
 
@@ -328,6 +339,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("SUM($q)", $db);
     }
 
@@ -344,6 +356,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("AVG($q)", $db);
     }
 
@@ -409,28 +422,109 @@ class Query extends Component implements QueryInterface
             && empty($this->groupBy)
             && empty($this->having)
             && empty($this->union)
-            && empty($this->orderBy)
         ) {
             $select = $this->select;
+            $order = $this->orderBy;
             $limit = $this->limit;
             $offset = $this->offset;
 
             $this->select = [$selectExpression];
+            $this->orderBy = null;
             $this->limit = null;
             $this->offset = null;
             $command = $this->createCommand($db);
 
             $this->select = $select;
+            $this->orderBy = $order;
             $this->limit = $limit;
             $this->offset = $offset;
 
             return $command->queryScalar();
-        } else {
-            return (new Query)->select([$selectExpression])
-                ->from(['c' => $this])
-                ->createCommand($db)
-                ->queryScalar();
         }
+
+        return (new self())
+            ->select([$selectExpression])
+            ->from(['c' => $this])
+            ->createCommand($db)
+            ->queryScalar();
+    }
+
+    /**
+     * Returns table names used in [[from]] indexed by aliases.
+     * Both aliases and names are enclosed into {{ and }}.
+     * @return string[] table names indexed by aliases
+     * @throws \yii\base\InvalidConfigException
+     * @since 2.0.12
+     */
+    public function getTablesUsedInFrom()
+    {
+        if (empty($this->from)) {
+            return [];
+        } elseif (is_array($this->from)) {
+            $tableNames = $this->from;
+        } elseif (is_string($this->from)) {
+            $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
+        }
+
+        // Clean up table names and aliases
+        $cleanedUpTableNames = [];
+        foreach ($tableNames as $alias => $tableName) {
+            if (!is_string($alias)) {
+                $pattern = <<<PATTERN
+~
+^
+\s*
+(
+    (?:['"`\[]|{{)
+    .*?
+    (?:['"`\]]|}})
+    |
+    .*?
+)
+(?:
+    (?:
+        \s+
+        (?:as)?
+        \s*
+    )
+    (
+       (?:['"`\[]|{{)
+        .*?
+        (?:['"`\]]|}})
+        |
+        .*?
+    )
+)?
+\s*
+$
+~iux
+PATTERN;
+                if (preg_match($pattern, $tableName, $matches)) {
+                    if (isset($matches[1])) {
+                        if (isset($matches[2])) {
+                            list(, $tableName, $alias) = $matches;
+                        } else {
+                            $tableName = $alias = $matches[1];
+                        }
+                        if (strncmp($alias, '{{', 2) !== 0) {
+                            $alias = '{{' . $alias . '}}';
+                        }
+                        if (strncmp($tableName, '{{', 2) !== 0) {
+                            $tableName = '{{' . $tableName . '}}';
+                        }
+                    }
+                }
+            }
+
+            $tableName = str_replace(["'", '"', '`', '[', ']'], '', $tableName);
+            $alias = str_replace(["'", '"', '`', '[', ']'], '', $alias);
+
+            $cleanedUpTableNames[$alias] = $tableName;
+        }
+
+        return $cleanedUpTableNames;
     }
 
     /**
@@ -494,6 +588,7 @@ class Query extends Component implements QueryInterface
         } else {
             $this->select = array_merge($this->select, $columns);
         }
+
         return $this;
     }
 
@@ -510,7 +605,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the FROM part of the query.
-     * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. `'user'`)
+     * @param string|array|Expression $tables the table(s) to be selected from. This can be either a string (e.g. `'user'`)
      * or an array (e.g. `['user', 'profile']`) specifying one or several table names.
      * Table names can contain schema prefixes (e.g. `'public.user'`) and/or table aliases (e.g. `'user u'`).
      * The method will automatically quote the table names unless it contains some parenthesis
@@ -521,6 +616,8 @@ class Query extends Component implements QueryInterface
      *
      * Use a Query object to represent a sub-query. In this case, the corresponding array key will be used
      * as the alias for the sub-query.
+     *
+     * To specify the `FROM` part in plain SQL, you may pass an instance of [[Expression]].
      *
      * Here are some examples:
      *
@@ -651,6 +748,7 @@ class Query extends Component implements QueryInterface
         } else {
             $operator = $defaultOperator;
         }
+
         return $this->andFilterWhere([$operator, $name, $value]);
     }
 
@@ -815,6 +913,7 @@ class Query extends Component implements QueryInterface
         } else {
             $this->groupBy = array_merge($this->groupBy, $columns);
         }
+
         return $this;
     }
 
@@ -910,6 +1009,7 @@ class Query extends Component implements QueryInterface
         if ($condition !== []) {
             $this->having($condition);
         }
+
         return $this;
     }
 
@@ -934,6 +1034,7 @@ class Query extends Component implements QueryInterface
         if ($condition !== []) {
             $this->andHaving($condition);
         }
+
         return $this;
     }
 
@@ -958,6 +1059,7 @@ class Query extends Component implements QueryInterface
         if ($condition !== []) {
             $this->orHaving($condition);
         }
+
         return $this;
     }
 
@@ -1008,6 +1110,7 @@ class Query extends Component implements QueryInterface
                 }
             }
         }
+
         return $this;
     }
 

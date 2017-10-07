@@ -148,10 +148,9 @@ class PostController extends Controller
 ### 小部件中渲染 <span id="rendering-in-widgets"></span>
 
 在 [小部件](structure-widgets.md) 中，可调用以下小部件方法来渲染视图：
-Within [widgets](structure-widgets.md), you may call the following widget methods to render views.
 
-* [[yii\base\Widget::render()|render()]]: 渲染一个 [视图名](#named-views).
-* [[yii\base\Widget::renderFile()|renderFile()]]: 渲染一个视图文件目录或[别名](concept-aliases.md)下的视图文件。
+- [[yii\base\Widget::render()|render()]]: 渲染一个 [视图名](#named-views)。
+- [[yii\base\Widget::renderFile()|renderFile()]]: 渲染一个视图文件目录或[别名](concept-aliases.md)下的视图文件。
 
 例如：
 
@@ -180,10 +179,10 @@ class ListWidget extends Widget
 
 可以在视图中渲染另一个视图，可以调用[[yii\base\View|view component]]视图组件提供的以下方法：
 
-* [[yii\base\View::render()|render()]]: 渲染一个 [视图名](#named-views).
-* [[yii\web\View::renderAjax()|renderAjax()]]: 渲染一个 [视图名](#named-views)
+- [[yii\base\View::render()|render()]]: 渲染一个 [视图名](#named-views).
+- [[yii\web\View::renderAjax()|renderAjax()]]: 渲染一个 [视图名](#named-views)
   并注入所有注册的JS/CSS脚本和文件，通常使用在响应AJAX网页请求的情况下。
-* [[yii\base\View::renderFile()|renderFile()]]: 渲染一个视图文件目录或[别名](concept-aliases.md)下的视图文件。
+- [[yii\base\View::renderFile()|renderFile()]]: 渲染一个视图文件目录或[别名](concept-aliases.md)下的视图文件。
 
 例如，视图中的如下代码会渲染该视图所在目录下的 `_overview.php` 视图文件，
 记住视图中 `$this` 对应 [[yii\base\View|view]] 组件:
@@ -211,19 +210,19 @@ echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 
 视图名可以依据以下规则到对应的视图文件路径：
 
-* 视图名可省略文件扩展名，这种情况下使用 `.php` 作为扩展，
+- 视图名可省略文件扩展名，这种情况下使用 `.php` 作为扩展，
   视图名 `about` 对应到 `about.php` 文件名；
-* 视图名以双斜杠 `//` 开头，对应的视图文件路径为 `@app/views/ViewName`，
+- 视图名以双斜杠 `//` 开头，对应的视图文件路径为 `@app/views/ViewName`，
   也就是说视图文件在 [[yii\base\Application::viewPath|application's view path]] 路径下找，
   例如 `//site/about` 对应到 `@app/views/site/about.php`。
-* 视图名以单斜杠`/`开始，视图文件路径以当前使用[模块](structure-modules.md) 的[[yii\base\Module::viewPath|view path]]开始，
+- 视图名以单斜杠`/`开始，视图文件路径以当前使用[模块](structure-modules.md) 的[[yii\base\Module::viewPath|view path]]开始，
   如果不存在模块，使用`@app/views/ViewName`开始，例如，如果当前模块为`user`， `/user/create` 对应成
   `@app/modules/user/views/user/create.php`, 如果不在模块中，`/user/create`对应`@app/views/user/create.php`。
-* 如果 [[yii\base\View::context|context]] 渲染视图 并且上下文实现了 [[yii\base\ViewContextInterface]],
+- 如果 [[yii\base\View::context|context]] 渲染视图 并且上下文实现了 [[yii\base\ViewContextInterface]],
   视图文件路径由上下文的 [[yii\base\ViewContextInterface::getViewPath()|view path]] 开始，
   这种主要用在控制器和小部件中渲染视图，例如
   如果上下文为控制器`SiteController`，`site/about` 对应到 `@app/views/site/about.php`。
-* 如果视图渲染另一个视图，包含另一个视图文件的目录以当前视图的文件路径开始，
+- 如果视图渲染另一个视图，包含另一个视图文件的目录以当前视图的文件路径开始，
   例如被视图`@app/views/post/index.php` 渲染的 `item` 对应到 `@app/views/post/item`。
 
 根据以上规则，在控制器中 `app\controllers\PostController` 调用 `$this->render('view')`，
@@ -257,7 +256,6 @@ The controller ID is: <?= $this->context->id ?>
 
 推送方式让视图更少依赖上下文对象，是视图获取数据优先使用方式，
 缺点是需要手动构建数组，有些繁琐，在不同地方渲染时容易出错。
-
 
 ### 视图间共享数据 <span id="sharing-data-among-views"></span>
 
@@ -500,11 +498,11 @@ class PostController extends Controller
 
 视图组件提供如下实用的视图相关特性，每项详情会在独立章节中介绍：
 
-* [主题](output-theming.md): 允许为你的Web站点开发和修改主题；
-* [片段缓存](caching-fragment.md): 允许你在Web页面中缓存片段；
-* [客户脚本处理](output-client-scripts.md): 支持CSS 和 JavaScript 注册和渲染；
-* [资源包处理](structure-assets.md): 支持 [资源包](structure-assets.md)的注册和渲染；
-* [模板引擎](tutorial-template-engines.md): 允许你使用其他模板引擎，如
+- [主题](output-theming.md): 允许为你的Web站点开发和修改主题；
+- [片段缓存](caching-fragment.md): 允许你在Web页面中缓存片段；
+- [客户脚本处理](output-client-scripts.md): 支持CSS 和 JavaScript 注册和渲染；
+- [资源包处理](structure-assets.md): 支持 [资源包](structure-assets.md)的注册和渲染；
+- [模板引擎](tutorial-template-engines.md): 允许你使用其他模板引擎，如
   [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/)。
 
 开发Web页面时，也可能频繁使用以下实用的小特性。
@@ -659,15 +657,15 @@ http://localhost/index.php?r=site/page&view=about
 
 视图负责将模型的数据展示用户想要的格式，总之，视图
 
-* 应主要包含展示代码，如HTML, 和简单的PHP代码来控制、格式化和渲染数据；
-* 不应包含执行数据查询代码，这种代码放在模型中；
-* 应避免直接访问请求数据，如 `$_GET`, `$_POST`，这种应在控制器中执行，
+- 应主要包含展示代码，如HTML, 和简单的PHP代码来控制、格式化和渲染数据；
+- 不应包含执行数据查询代码，这种代码放在模型中；
+- 应避免直接访问请求数据，如 `$_GET`, `$_POST`，这种应在控制器中执行，
   如果需要请求数据，应由控制器推送到视图。
-* 可读取模型属性，但不应修改它们。
+- 可读取模型属性，但不应修改它们。
 
 为使模型更易于维护，避免创建太复杂或包含太多冗余代码的视图，可遵循以下方法达到这个目标：
 
-* 使用 [布局](#layouts) 来展示公共代码（如，页面头部、尾部）；
-* 将复杂的视图分成几个小视图，可使用上面描述的渲染方法将这些小视图渲染并组装成大视图；
-* 创建并使用 [小部件](structure-widgets.md) 作为视图的数据块；
-* 创建并使用助手类在视图中转换和格式化数据。
+- 使用 [布局](#layouts) 来展示公共代码（如，页面头部、尾部）；
+- 将复杂的视图分成几个小视图，可使用上面描述的渲染方法将这些小视图渲染并组装成大视图；
+- 创建并使用 [小部件](structure-widgets.md) 作为视图的数据块；
+- 创建并使用助手类在视图中转换和格式化数据。

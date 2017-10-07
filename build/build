@@ -17,7 +17,7 @@ $composerAutoload = [
 
 foreach ($composerAutoload as $autoload) {
     if (file_exists($autoload)) {
-        require($autoload);
+        require $autoload;
         $vendorPath = dirname($autoload);
         break;
     }
@@ -27,7 +27,7 @@ if (!isset($vendorPath)) {
 	echo "composer autoloader could not be found.\nYou should run `composer install` in repo root directory.\n";
 	exit(1);
 }
-require(__DIR__ . '/../framework/Yii.php');
+require __DIR__ . '/../framework/Yii.php';
 
 Yii::setAlias('@yii/build', __DIR__);
 

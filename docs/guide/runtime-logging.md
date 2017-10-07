@@ -332,6 +332,9 @@ return [
 ];
 ```
 
+Since version 2.0.13, you may configure [[yii\log\Target::enabled|enabled]] with a callable to
+define a dynamic condition for whether the log target should be enabled or not.
+See the documentation of [[yii\log\Target::setEnabled()]] for an example.
 
 ### Creating New Targets <span id="new-targets"></span>
 

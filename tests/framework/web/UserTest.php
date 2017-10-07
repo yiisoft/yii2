@@ -1,10 +1,14 @@
 <?php
-
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\web;
 
 /**
- * Mock for the time() function for web classes
+ * Mock for the time() function for web classes.
  * @return int
  */
 function time()
@@ -14,18 +18,14 @@ function time()
 
 namespace yiiunit\framework\web;
 
-use yii\base\NotSupportedException;
+use Yii;
 use yii\base\Component;
+use yii\base\NotSupportedException;
 use yii\rbac\PhpManager;
-use yii\web\UnauthorizedHttpException;
 use yii\web\Cookie;
 use yii\web\CookieCollection;
+use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
-use yii\web\UrlManager;
-use yii\web\UrlRule;
-use yii\web\Request;
-use yii\web\Response;
-use Yii;
 use yiiunit\TestCase;
 
 /**
@@ -63,7 +63,7 @@ class UserTest extends TestCase
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                      'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                      'ruleFile' => '@runtime/user_test_rbac_rules.php',
-                ]
+                ],
             ],
         ];
         $this->mockWebApplication($appConfig);
@@ -95,7 +95,61 @@ class UserTest extends TestCase
         $this->mockWebApplication($appConfig);
         $this->assertTrue(Yii::$app->user->isGuest);
         $this->assertFalse(Yii::$app->user->can('doSomething'));
+    }
 
+    /**
+     * Make sure autologin works more than once.
+     * @see https://github.com/yiisoft/yii2/issues/11825
+     */
+    public function testIssue11825()
+    {
+        global $cookiesMock;
+        $cookiesMock = new CookieCollection();
+
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                    'authTimeout' => 10,
+                    'enableAutoLogin' => true,
+                    'autoRenewCookie' => false,
+                ],
+                'response' => [
+                    'class' => MockResponse::className(),
+                ],
+                'request' => [
+                    'class' => MockRequest::className(),
+                ],
+            ],
+        ];
+        $this->mockWebApplication($appConfig);
+
+        Yii::$app->session->removeAll();
+        static::$time = \time();
+        Yii::$app->user->login(UserIdentity::findIdentity('user1'), 20);
+
+        // User is logged in
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // IdentityCookie is valid
+        Yii::$app->session->removeAll();
+        static::$time += 5;
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // IdentityCookie is still valid
+        Yii::$app->session->removeAll();
+        static::$time += 10;
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // IdentityCookie is no longer valid (we remove it manually, but browser will do it automatically)
+        $this->invokeMethod(Yii::$app->user, 'removeIdentityCookie');
+        Yii::$app->session->removeAll();
+        static::$time += 25;
+        $this->mockWebApplication($appConfig);
+        $this->assertTrue(Yii::$app->user->isGuest);
     }
 
     public function testCookieCleanup()
@@ -128,12 +182,12 @@ class UserTest extends TestCase
         Yii::$app->user->getIdentity();
         $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
 
-        Yii::$app->user->login(UserIdentity::findIdentity('user1'),3600);
+        Yii::$app->user->login(UserIdentity::findIdentity('user1'), 3600);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user1');
         $this->assertNotEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
 
-        Yii::$app->user->login(UserIdentity::findIdentity('user2'),0);
+        Yii::$app->user->login(UserIdentity::findIdentity('user2'), 0);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user2');
         $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
@@ -154,9 +208,9 @@ class UserTest extends TestCase
         Yii::$app->set('response', ['class' => 'yii\web\Response']);
         Yii::$app->set('request', [
             'class' => 'yii\web\Request',
-            'scriptFile' => __DIR__ .'/index.php',
+            'scriptFile' => __DIR__ . '/index.php',
             'scriptUrl' => '/index.php',
-            'url' => ''
+            'url' => '',
         ]);
         Yii::$app->user->setReturnUrl(null);
     }
@@ -172,7 +226,7 @@ class UserTest extends TestCase
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
-                ]
+                ],
             ],
         ];
         $this->mockWebApplication($appConfig);
@@ -226,7 +280,8 @@ class UserTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/json, */*; q=0.1';
         try {
             $user->loginRequired();
-        } catch (UnauthorizedHttpException $e) {}
+        } catch (ForbiddenHttpException $e) {
+        }
         $this->assertFalse(Yii::$app->response->getIsRedirection());
 
         $this->reset();
@@ -263,12 +318,13 @@ class UserTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';
         try {
             $user->loginRequired();
-        } catch (UnauthorizedHttpException $e) {}
+        } catch (ForbiddenHttpException $e) {
+        }
         $this->assertNotEquals('json-only', $user->getReturnUrl());
 
         $this->reset();
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';
-        $this->setExpectedException('yii\\web\\UnauthorizedHttpException');
+        $this->expectException('yii\\web\\ForbiddenHttpException');
         $user->loginRequired();
     }
 
@@ -284,17 +340,16 @@ class UserTest extends TestCase
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
-                ]
+                ],
             ],
         ];
 
         $this->mockWebApplication($appConfig);
         $this->reset();
         $_SERVER['HTTP_ACCEPT'] = 'text/json,q=0.1';
-        $this->setExpectedException('yii\\web\\UnauthorizedHttpException');
+        $this->expectException('yii\\web\\ForbiddenHttpException');
         Yii::$app->user->loginRequired();
     }
-
 }
 
 class UserIdentity extends Component implements IdentityInterface
@@ -346,7 +401,7 @@ class MockRequest extends \yii\web\Request
         global $cookiesMock;
 
         return $cookiesMock;
-   }
+    }
 }
 
 class MockResponse extends \yii\web\Response

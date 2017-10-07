@@ -76,11 +76,11 @@ class RequiredValidator extends Validator
         }
         if ($this->requiredValue === null) {
             return [$this->message, []];
-        } else {
-            return [$this->message, [
-                'requiredValue' => $this->requiredValue,
-            ]];
         }
+
+        return [$this->message, [
+            'requiredValue' => $this->requiredValue,
+        ]];
     }
 
     /**

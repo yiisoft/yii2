@@ -17,7 +17,7 @@ class RequestTest extends TestCase
 {
     public function testParseAcceptHeader()
     {
-        $request = new Request;
+        $request = new Request();
 
         $this->assertEquals([], $request->parseAcceptHeader(' '));
 
@@ -38,7 +38,7 @@ class RequestTest extends TestCase
             text/x-dvi; q=0.8, text/x-c'));
     }
 
-    public function testPrefferedLanguage()
+    public function testPreferredLanguage()
     {
         $this->mockApplication([
             'language' => 'en',
@@ -77,6 +77,20 @@ class RequestTest extends TestCase
         $request = new Request();
         $request->acceptableLanguages = ['en-us', 'de'];
         $this->assertEquals('pl', $request->getPreferredLanguage(['pl', 'ru-ru']));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14542
+     */
+    public function testCsrfTokenContainsASCIIOnly()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->enableCsrfCookie = false;
+
+        $token = $request->getCsrfToken();
+        $this->assertRegExp('~[-_=a-z0-9]~i', $token);
     }
 
     public function testCsrfTokenValidation()
@@ -124,7 +138,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * test CSRF token validation by POST param
+     * Test CSRF token validation by POST param.
      */
     public function testCsrfTokenPost()
     {
@@ -149,11 +163,10 @@ class RequestTest extends TestCase
             $request->setBodyParams([$request->csrfParam => $token]);
             $this->assertTrue($request->validateCsrfToken());
         }
-
     }
 
     /**
-     * test CSRF token validation by POST param
+     * Test CSRF token validation by POST param.
      */
     public function testCsrfTokenHeader()
     {
@@ -174,14 +187,11 @@ class RequestTest extends TestCase
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $_POST[$request->methodParam] = $method;
             $request->setBodyParams([]);
-            //$request->headers->remove(Request::CSRF_HEADER);
-            unset($_SERVER['HTTP_' . str_replace('-', '_', strtoupper(Request::CSRF_HEADER))]);
+            $request->headers->remove(Request::CSRF_HEADER);
             $this->assertFalse($request->validateCsrfToken());
-            //$request->headers->add(Request::CSRF_HEADER, $token);
-            $_SERVER['HTTP_' . str_replace('-', '_', strtoupper(Request::CSRF_HEADER))] = $token;
+            $request->headers->add(Request::CSRF_HEADER, $token);
             $this->assertTrue($request->validateCsrfToken());
         }
-
     }
 
     public function testResolve()
@@ -196,8 +206,8 @@ class RequestTest extends TestCase
                         'posts' => 'post/list',
                         'post/<id>' => 'post/view',
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $request = new Request();
@@ -295,5 +305,240 @@ class RequestTest extends TestCase
 
         unset($_SERVER['SERVER_PORT']);
         $this->assertEquals(null, $request->getServerPort());
+    }
+
+    public function isSecureServerDataProvider()
+    {
+        return [
+            [['HTTPS' => 1], true],
+            [['HTTPS' => 'on'], true],
+            [['HTTPS' => 0], false],
+            [['HTTPS' => 'off'], false],
+            [[], false],
+            [['HTTP_X_FORWARDED_PROTO' => 'https'], false],
+            [['HTTP_X_FORWARDED_PROTO' => 'http'], false],
+            [[
+                'HTTP_X_FORWARDED_PROTO' => 'https',
+                'REMOTE_HOST' => 'test.com',
+            ], false],
+            [[
+                'HTTP_X_FORWARDED_PROTO' => 'https',
+                'REMOTE_HOST' => 'othertest.com',
+            ], false],
+            [[
+                'HTTP_X_FORWARDED_PROTO' => 'https',
+                'REMOTE_ADDR' => '192.168.0.1',
+            ], true],
+            [[
+                'HTTP_X_FORWARDED_PROTO' => 'https',
+                'REMOTE_ADDR' => '192.169.0.1',
+            ], false],
+            [['HTTP_FRONT_END_HTTPS' => 'on'], false],
+            [['HTTP_FRONT_END_HTTPS' => 'off'], false],
+            [[
+                'HTTP_FRONT_END_HTTPS' => 'on',
+                'REMOTE_HOST' => 'test.com',
+            ], false],
+            [[
+                'HTTP_FRONT_END_HTTPS' => 'on',
+                'REMOTE_HOST' => 'othertest.com',
+            ], false],
+            [[
+                'HTTP_FRONT_END_HTTPS' => 'on',
+                'REMOTE_ADDR' => '192.168.0.1',
+            ], true],
+            [[
+                'HTTP_FRONT_END_HTTPS' => 'on',
+                'REMOTE_ADDR' => '192.169.0.1',
+            ], false],
+        ];
+    }
+
+    /**
+     * @dataProvider isSecureServerDataProvider
+     * @param array $server
+     * @param bool $expected
+     */
+    public function testGetIsSecureConnection($server, $expected)
+    {
+        $original = $_SERVER;
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24',
+            ],
+        ]);
+        $_SERVER = $server;
+
+        $this->assertEquals($expected, $request->getIsSecureConnection());
+        $_SERVER = $original;
+    }
+
+    public function getUserIPDataProvider()
+    {
+        return [
+            [
+                [
+                    'HTTP_X_FORWARDED_PROTO' => 'https',
+                    'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                '123.123.123.123',
+            ],
+            [
+                [
+                    'HTTP_X_FORWARDED_PROTO' => 'https',
+                    'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
+                    'REMOTE_ADDR' => '192.169.1.1',
+                ],
+                '192.169.1.1',
+            ],
+            [
+                [
+                    'HTTP_X_FORWARDED_PROTO' => 'https',
+                    'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
+                    'REMOTE_HOST' => 'untrusted.com',
+                    'REMOTE_ADDR' => '192.169.1.1',
+                ],
+                '192.169.1.1',
+            ],
+            [
+                [
+                    'HTTP_X_FORWARDED_PROTO' => 'https',
+                    'HTTP_X_FORWARDED_FOR' => '192.169.1.1',
+                    'REMOTE_HOST' => 'untrusted.com',
+                    'REMOTE_ADDR' => '192.169.1.1',
+                ],
+                '192.169.1.1',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getUserIPDataProvider
+     * @param array $server
+     * @param string $expected
+     */
+    public function testGetUserIP($server, $expected)
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24',
+            ],
+        ]);
+
+        $this->assertEquals($expected, $request->getUserIP());
+        $_SERVER = $original;
+    }
+
+    public function getMethodDataProvider()
+    {
+        return [
+            [
+                [
+                    'REQUEST_METHOD' => 'DEFAULT',
+                    'HTTP_X-HTTP-METHOD-OVERRIDE' => 'OVERRIDE',
+                ],
+                'OVERRIDE',
+            ],
+            [
+                [
+                    'REQUEST_METHOD' => 'DEFAULT',
+                ],
+                'DEFAULT',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getMethodDataProvider
+     * @param array $server
+     * @param string $expected
+     */
+    public function testGetMethod($server, $expected)
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
+        $request = new Request();
+
+        $this->assertEquals($expected, $request->getMethod());
+        $_SERVER = $original;
+    }
+
+    public function getIsAjaxDataProvider()
+    {
+        return [
+            [
+                [
+                ],
+                false,
+            ],
+            [
+                [
+                    'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
+                ],
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getIsAjaxDataProvider
+     * @param array $server
+     * @param bool $expected
+     */
+    public function testGetIsAjax($server, $expected)
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
+        $request = new Request();
+
+        $this->assertEquals($expected, $request->getIsAjax());
+        $_SERVER = $original;
+    }
+
+    public function getIsPjaxDataProvider()
+    {
+        return [
+            [
+                [
+                ],
+                false,
+            ],
+            [
+                [
+                    'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
+                    'HTTP_X_PJAX' => 'any value',
+                ],
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getIsPjaxDataProvider
+     * @param array $server
+     * @param bool $expected
+     */
+    public function testGetIsPjax($server, $expected)
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
+        $request = new Request();
+
+        $this->assertEquals($expected, $request->getIsPjax());
+        $_SERVER = $original;
+    }
+
+    public function testGetOrigin()
+    {
+        $_SERVER['HTTP_ORIGIN'] = 'https://www.w3.org';
+        $request = new Request();
+        $this->assertEquals('https://www.w3.org', $request->getOrigin());
+
+        unset($_SERVER['HTTP_ORIGIN']);
+        $request = new Request();
+        $this->assertEquals(null, $request->getOrigin());
     }
 }

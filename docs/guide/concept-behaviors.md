@@ -44,7 +44,7 @@ class MyBehavior extends Behavior
 
 The above code defines the behavior class `app\components\MyBehavior`, with two properties--
 `prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
-is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
+is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\BaseObject]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
 Because this class is a behavior, when it is attached to a component, that component will then also have the `prop1` and `prop2` properties and the `foo()` method.
 

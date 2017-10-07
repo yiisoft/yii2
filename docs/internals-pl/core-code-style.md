@@ -7,8 +7,7 @@ stosowania go we własnych aplikacjach. Wybierz styl, który najbardziej odpowia
 
 Możesz pobrać gotową konfigurację dla CodeSniffera pod adresem: https://github.com/yiisoft/yii2-coding-standards
 
-1. Omówienie
-------------
+## 1. Omówienie
 
 Używamy przede wszystkim standardu kodowania
 [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md), zatem wszystko, co dotyczy
@@ -26,8 +25,7 @@ kodowania.
 - Nazwy właściwości klasy MUSZĄ zaczynać się podkreślnikiem, jeśli są prywatne.
 - Należy używać `elseif` zamiast `else if`.
 
-2. Pliki
---------
+## 2. Pliki
 
 ### 2.1. Tagi PHP
 
@@ -40,13 +38,11 @@ kodowania.
 
 Kod PHP MUSI używać wyłącznie UTF-8 bez znacznika BOM.
 
-3. Nazwy klas
--------------
+## 3. Nazwy klas
 
 Nazwy klas MUSZĄ być zadeklarowane w formacie `StudlyCaps`. Przykładowo `Controller`, `Model`.
 
-4. Klasy
---------
+## 4. Klasy
 
 Termin "klasa" odnosi się tutaj do wszystkich klas i interfejsów.
 
@@ -62,7 +58,7 @@ Termin "klasa" odnosi się tutaj do wszystkich klas i interfejsów.
 /**
  * Dokumentacja
  */
-class MyClass extends \yii\Object implements MyInterface
+class MyClass extends \yii\base\BaseObject implements MyInterface
 {
     // kod
 }
@@ -350,7 +346,7 @@ Dokumentacja
 - Każdy plik klasy musi zawierać blok dokumentacji "poziomu pliku" na początku pliku i blok dokumentacji "poziomu klasy"
   zaraz nad klasą.
 - Nie ma konieczności używania `@return`, jeśli metoda niczego nie zwraca.
-- Wszystkie wirtualne właściwości w klasach, które rozszerzają `yii\base\Object` są udokumentowane za pomocą tagu `@property`
+- Wszystkie wirtualne właściwości w klasach, które rozszerzają `yii\base\BaseObject` są udokumentowane za pomocą tagu `@property`
   w bloku dokumentacji klasy.
   Adnotacje te są automatycznie generowane z tagów `@return` lub `@param` w odpowiednich getterach lub setterach przez
   uruchomienie `./build php-doc` w folderze build.
@@ -393,7 +389,7 @@ Dokumentacja
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends \yii\base\Object
+class Component extends \yii\base\BaseObject
 ```
 
 

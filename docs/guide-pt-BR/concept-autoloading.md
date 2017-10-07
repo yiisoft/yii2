@@ -48,8 +48,8 @@ Uma vez que o Yii utiliza o Composer como seu gerenciador de dependência de pac
 Ao usar o Yii autoloader junto com outros autoloaders, você deve incluir o arquivo `Yii.php` *depois* de todos os outros autoloaders serem instalados. Isso fará com que o Yii autoloader seja o primeiro a responder a qualquer solicitação de autoloading  de classe. Por exemplo, o código a seguir foi extraído do [script de entrada](structure-entry-scripts.md) do [Template Básico de Projeto](start-installation.md). A primeira linha instala o Composer autoloader, enquanto a segunda linha instala o Yii autoloader:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 Você pode usar o autoloader do Composer sozinho sem o autoloader do Yii. No entanto, ao fazê-lo, o desempenho do carregamento automático das classes pode ser degradada, e você deve seguir as regras estabelecidas pelo Composer para que suas classes sejam auto carregáveis.
 

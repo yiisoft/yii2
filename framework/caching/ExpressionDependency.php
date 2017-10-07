@@ -40,7 +40,7 @@ class ExpressionDependency extends Dependency
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method returns the result of the PHP expression.
-     * @param Cache $cache the cache component that is currently evaluating this dependency
+     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
      * @return mixed the data needed to determine if dependency has been changed.
      */
     protected function generateDependencyData($cache)

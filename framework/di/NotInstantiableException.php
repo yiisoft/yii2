@@ -7,7 +7,7 @@
 
 namespace yii\di;
 
-use \yii\base\InvalidConfigException;
+use yii\base\InvalidConfigException;
 
 /**
  * NotInstantiableException represents an exception caused by incorrect dependency injection container

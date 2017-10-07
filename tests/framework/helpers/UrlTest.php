@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\helpers;
 
 use Yii;
@@ -8,11 +14,11 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\UrlManager;
 use yii\widgets\Menu;
-use yiiunit\TestCase;
 use yiiunit\framework\filters\stubs\UserIdentity;
+use yiiunit\TestCase;
 
 /**
- * UrlTest
+ * UrlTest.
  * @group helpers
  */
 class UrlTest extends TestCase
@@ -26,7 +32,7 @@ class UrlTest extends TestCase
                     'class' => 'yii\web\Request',
                     'scriptUrl' => '/base/index.php',
                     'hostInfo' => 'http://example.com/',
-                    'url' => '/base/index.php&r=site%2Fcurrent&id=42'
+                    'url' => '/base/index.php&r=site%2Fcurrent&id=42',
                 ],
                 'urlManager' => [
                     'class' => 'yii\web\UrlManager',
@@ -48,7 +54,7 @@ class UrlTest extends TestCase
     }
 
     /**
-     * Mocks controller action with parameters
+     * Mocks controller action with parameters.
      *
      * @param string $controllerId
      * @param string $actionID
@@ -108,20 +114,22 @@ class UrlTest extends TestCase
         // In case there is no controller, an exception should be thrown for relative route
         $this->removeMockedAction();
 
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidParamException');
         Url::toRoute('site/view');
     }
 
     public function testCurrent()
     {
         $this->mockAction('page', 'view', null, []);
-        \Yii::$app->request->setQueryParams(['id' => 10, 'name' => 'test']);
+        Yii::$app->request->setQueryParams(['id' => 10, 'name' => 'test', 10 => 0]);
 
-        $this->assertEquals('/base/index.php?r=page%2Fview&id=10&name=test', Url::current());
-
-        $this->assertEquals('/base/index.php?r=page%2Fview&id=20&name=test', Url::current(['id' => 20]));
-
-        $this->assertEquals('/base/index.php?r=page%2Fview&name=test', Url::current(['id' => null]));
+        $this->assertEquals('/base/index.php?r=page%2Fview&id=10&name=test&10=0', Url::current());
+        $this->assertEquals('/base/index.php?r=page%2Fview&id=20&name=test&10=0', Url::current(['id' => 20]));
+        $this->assertEquals('/base/index.php?r=page%2Fview&name=test&10=0', Url::current(['id' => null]));
+        $this->assertEquals('/base/index.php?r=page%2Fview&name=test&10=0&1=yes', Url::current(['id' => [], 1 => 'yes']));
+        $this->assertEquals('/base/index.php?r=page%2Fview&name=test&10=0', Url::current(['id' => []]));
+        $this->assertEquals('/base/index.php?r=page%2Fview&name=test', Url::current(['id' => null, 10 => null]));
+        $this->assertEquals('/base/index.php?r=page%2Fview&name=test&1=yes', Url::current(['id' => null, 10 => null, 1 => 'yes']));
     }
 
     public function testPrevious()
@@ -217,12 +225,12 @@ class UrlTest extends TestCase
         //In case there is no controller, throw an exception
         $this->removeMockedAction();
 
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidParamException');
         Url::to(['site/view']);
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/11925
+     * @see https://github.com/yiisoft/yii2/issues/11925
      */
     public function testToWithSuffix()
     {

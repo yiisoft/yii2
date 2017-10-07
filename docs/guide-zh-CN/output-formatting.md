@@ -143,7 +143,7 @@ For formatting numeric values the formatter class provides the following methods
 属性来调整数字格式化的格式，默认和当前区域相同。
 
 更多高级配置， [[yii\i18n\Formatter::numberFormatterOptions]] 和 [[yii\i18n\Formatter::numberFormatterTextOptions]]
-可用于配置内部使用 [Numberformatter class](http://php.net/manual/en/class.numberformatter.php)
+可用于配置内部使用 [NumberFormatter class](http://php.net/manual/en/class.numberformatter.php)
 
 为调整数字的小数部分的最大值和最小值，可配置如下属性：
 

@@ -47,18 +47,14 @@ mv composer.phar /usr/local/bin/composer
 ### Установка Yii
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-Первая команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
-который позволяет управлять зависимостями пакетов bower и npm через Composer. Эту команду достаточно выполнить один раз.
-Вторая команда устанавливает последнюю стабильную версию Yii в директорию `basic`. Если хотите, можете выбрать другое
+Эта команда устанавливает последнюю стабильную версию Yii в директорию `basic`. Если хотите, можете выбрать другое
 имя директории.
 
-> Info: Если команда `composer create-project` не выполняется нормально, убедитесь, что вы корректно установили composer
-> asset plugin. Вы можете сделать это выполнив `composer global show`. Вывод должен содержать `fxp/composer-asset-plugin`.
-> Также можно обратиться к [разделу "Troubleshooting" документации Composer](https://getcomposer.org/doc/articles/troubleshooting.md).
+> Info: Если команда `composer create-project` не выполняется нормально, попробуйте обратиться к
+> [разделу "Troubleshooting" документации Composer](https://getcomposer.org/doc/articles/troubleshooting.md).
 > Там описаны другие типичные ошибки. После того, как вы исправили ошибку, запустите `composer update` в директории `basic`.
 
 > Tip: Если вы хотите установить последнюю нестабильную ревизию Yii, можете использовать следующую команду,

@@ -66,8 +66,8 @@ Yii オートローダーを他のオートローダーと一緒に使うとき�
 最初の行は、Composer のオートローダーをインストールしており、二行目は Yii のオートローダーをインストールしています。
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 あなたは Yii のオートローダーを使わず、Composer のオートローダーだけを単独で使用することもできます。しかし、そうすることによって、

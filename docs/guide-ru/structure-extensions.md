@@ -362,7 +362,7 @@ class MyBootstrapClass implements BootstrapInterface
 * Руководства пользователя, демо-версии, скриншоты и т.д.: они необходимы, если ваше расширение предоставляет много
   возможностей, которые невозможно полностью описать в файле readme.
 * Документация API: ваш код должен быть документирован, чтобы позволить другим людям легко читать и понимать его. Вы
-  можете обратиться к [файлу класса Object](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php),
+  можете обратиться к [файлу класса BaseObject](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php),
   чтобы узнать, как нужно документировать код.
 
 > Info: Ваши комментарии к коду могут быть написаны в формате Markdown. Расширение `yiisoft/yii2-apidoc`

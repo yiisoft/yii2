@@ -43,7 +43,7 @@ class Action extends Component
      */
     public $id;
     /**
-     * @var Controller|\yii\web\Controller the controller that owns this action
+     * @var Controller|\yii\web\Controller|\yii\console\Controller the controller that owns this action
      */
     public $controller;
 
@@ -95,9 +95,9 @@ class Action extends Component
             $this->afterRun();
 
             return $result;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
