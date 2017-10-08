@@ -5,6 +5,11 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #4479: Implemented REST filters (klimov-paul)
+- Bug #14134: Fixed multiple `validateAttribute()` calls when `scenarios()` returns duplicate attributes (krukru)
+- Enh #14929: Ensure trailing `;` on combining files with `asset` command to fix compiler failures (tanakahisateru)
+- Bug #14016: Fixed empty messages marked as unused in PHP and PO sources when extracted with message command when `markUnused` is `false` (samdark)
+- Enh #9438: `yii\web\DbSession` now relies on error handler to display errors (samdark)
+- Bug #6226: Fix fatal symlink error when publishing in multi threaded environments (dynasource)
 - Enh #13486: Use DI container to instantiate cookies in order to be able to set defaults (samdark)
 - Bug #14902: Fixed PHP notice in `yii\web\MultipartFormDataParser` (olimsaidov)
 - Bug #14129: Fixed console help to properly work with tricky camelcased controller names (samdark, silverfire)
@@ -14,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
 - Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase, silverfire)
 - Bug #12860: Fixed possible race conditions in `yii\mutex\FileMutex` (kidol)
+- Bug #13720: Improve `yii\helpers\FormatConverter::convertDatePhpToIcu()` to handle escaped chars correctly (rob006)
 - Bug #13757: Fixed ambiguous column error in `BaseActiveRecord::refresh()` when the query adds a JOIN by default (cebe, ivankff)
 - Bug #13779: Fixed `yii\db\ActiveRecord::joinWith()` unable to use relation defined via attached behavior (ElisDN, klimov-paul)
 - Bug #13859: Fixed ambiguous column error in `Query::column()` when `$indexBy` is used with a JOIN (cebe)
@@ -45,7 +51,9 @@ Yii Framework 2 Change Log
 - Bug #14697: Fixed `console\widgets\Table` rendering when there's no data supplied (bscheshirwork)
 - Bug #14723: Fixed serialization of `yii\db\Connection` instance closes database connection (klimov-paul)
 - Bug #14773: Fixed `yii\widgets\ActiveField::$options` does not support 'class' option in array format (klimov-paul)
-- Bug: Fixed `yii\mutex\FileMutex::$autoRelease` having no effect due to missing base class initialization (kidol)
+- Bug #14921: Fixed bug with replacing numeric keys in `yii\helpers\Url::current()` (rob006)
+- Bug #13258: Fixed `yii\mutex\FileMutex::$autoRelease` having no effect due to missing base class initialization (kidol)
+- Bug #13564: Fixed `yii\web\Request::getAuthUser()`, `getAuthPassword()` to respect `HTTP_AUTHORIZATION` request header (silverfire)
 - Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
 - Enh #5786: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN, klimov-paul)
 - Enh #6644: Added `yii\helpers\ArrayHelper::setValue()` (LAV45)
@@ -83,6 +91,7 @@ Yii Framework 2 Change Log
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
 - Enh #14864: Ability to use dependencies in constructor of migrations (vtvz)
+- Enh #14913: Assset hashing now takes asset linking into account to improve cache busting (schmunk42)
 
 2.0.12 June 05, 2017
 --------------------
@@ -321,6 +330,7 @@ Yii Framework 2 Change Log
 - Enh #12901: Added `getDefaultHelpHeader` method to the `yii\console\controllers\HelpController` class to be able to override default help header in a class heir (diezztsk)
 - Enh #12988: Changed `textarea` method within the `yii\helpers\BaseHtml` class to allow users to control whether HTML entities found within `$value` will be double-encoded or not (cyphix333)
 - Enh #13020: Added `disabledListItemSubTagOptions` attribute for `yii\widgets\LinkPager` in order to customize the disabled list item sub tag element (nadar)
+- Enh #13403: Added 'permissions' additionally to 'roles' in `yii\filters\AccessRule` in order to be able to specify these separately (thyseus)
 - Enh #13035: Use ArrayHelper::getValue() in SluggableBehavior::getValue() (thyseus)
 - Enh #13036: Added shortcut methods `asJson()` and `asXml()` for returning JSON and XML data in web controller actions (cebe)
 - Enh #13050: Added `yii\filters\HostControl` allowing protection against 'host header' attacks (klimov-paul, rob006)
@@ -1381,7 +1391,7 @@ Yii Framework 2 Change Log
 - Bug #4105: `yii\helpers\Html::dropDownlist()` options encodeSpaces was not applied to subgroups (MDMunir)
 - Bug #4123: Trace level in logger had no effect in Targets, traces where not logged (cebe)
 - Bug #4127: `yii\captcha\CaptchaValidator` clientside error message wasn't formed properly (samdark)
-- Bug #4162: Fixed bug where schema name was not used in ’SHOW CREATE TABLE’ query in `yii\db\mysql\Schema` (stevekr)
+- Bug #4162: Fixed bug where schema name was not used in `SHOW CREATE TABLE` query in `yii\db\mysql\Schema` (stevekr)
 - Bug #4241: `yii\widgets\Pjax` was incorrectly setting container id (mitalcoi)
 - Bug #4254: `SqlDataProvider` does not work with Oracle and SQL Server (qiangxue, miramir)
 - Bug #4276: Added check for UPLOAD_ERR_NO_FILE in `yii\web\UploadedFile` and return null if no file was uploaded (OmgDef)
