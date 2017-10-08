@@ -49,6 +49,13 @@ use yii\web\Request;
  * }
  * ```
  *
+ * > Tip: In case authentication does not work like expected, make sure your web server passes
+ * username and password to `$_SERVER['PHP_AUTH_USER']` and `$_SERVER['PHP_AUTH_PW']` variables.
+ * If you are using Apache with PHP-CGI, you might need to add this line to your `.htaccess` file:
+ * ```
+ * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+ * ```
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -86,7 +93,7 @@ class HttpBasicAuth extends AuthMethod
      */
     public function authenticate($user, $request, $response)
     {
-        list($username, $password) = $this->getCredentialsFromRequest($request);
+        list($username, $password) = $request->getAuthCredentials();
 
         if ($this->auth) {
             if ($username !== null || $password !== null) {
@@ -109,39 +116,6 @@ class HttpBasicAuth extends AuthMethod
         }
 
         return null;
-    }
-
-    /**
-     * Extract username and password from $request.
-     *
-     * @param Request $request
-     * @since 2.0.13
-     * @return array
-     */
-    protected function getCredentialsFromRequest($request)
-    {
-        $username = $request->getAuthUser();
-        $password = $request->getAuthPassword();
-
-        if ($username !== null || $password !== null) {
-            return [$username, $password];
-        }
-
-        $headers = $request->getHeaders();
-        $auth_token = $headers->get('HTTP_AUTHORIZATION') ?: $headers->get('REDIRECT_HTTP_AUTHORIZATION');
-        if ($auth_token != null && strpos(strtolower($auth_token), 'basic') === 0) {
-            $parts = array_map(function ($value) {
-                return strlen($value) === 0 ? null : $value;
-            }, explode(':', base64_decode(mb_substr($auth_token, 6)), 2));
-
-            if (count($parts) < 2) {
-                return [$parts[0], null];
-            }
-
-            return $parts;
-        }
-
-        return [null, null];
     }
 
     /**

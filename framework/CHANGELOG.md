@@ -52,7 +52,7 @@ Yii Framework 2 Change Log
 - Bug #14773: Fixed `yii\widgets\ActiveField::$options` does not support 'class' option in array format (klimov-paul)
 - Bug #14921: Fixed bug with replacing numeric keys in `yii\helpers\Url::current()` (rob006)
 - Bug #13258: Fixed `yii\mutex\FileMutex::$autoRelease` having no effect due to missing base class initialization (kidol)
-- Bug #13564: Fixed `yii\filters\HttpBasicAuth` to respect `HTTP_AUTHORIZATION` request header (silverfire)
+- Bug #13564: Fixed `yii\web\Request::getAuthUser()`, `getAuthPassword()` to respect `HTTP_AUTHORIZATION` request header (silverfire)
 - Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
 - Enh #5786: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN, klimov-paul)
 - Enh #6644: Added `yii\helpers\ArrayHelper::setValue()` (LAV45)

@@ -55,33 +55,6 @@ class BasicAuthTest extends AuthTest
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
-    public function authHeadersProvider()
-    {
-        return [
-            ['not a base64 at all', [base64_decode('not a base64 at all'), null]],
-            [base64_encode('user:'), ['user', null]],
-            [base64_encode('user'), ['user', null]],
-            [base64_encode('user:pw'), ['user', 'pw']],
-            [base64_encode('user:pw'), ['user', 'pw']],
-            [base64_encode('user:a:b'), ['user', 'a:b']],
-            [base64_encode(':a:b'), [null, 'a:b']],
-            [base64_encode(':'), [null, null]],
-        ];
-    }
-
-    /**
-     * @dataProvider authHeadersProvider
-     * @param string $header
-     * @param array $expected
-     */
-    public function testHttpBasicAuthWithBrokenHttpAuthorizationHeader($header, $expected)
-    {
-        Yii::$app->request->getHeaders()->set('HTTP_AUTHORIZATION', 'Basic ' . $header);
-        $filter = new HttpBasicAuth();
-        $result = $this->invokeMethod($filter, 'getCredentialsFromRequest', [Yii::$app->request]);
-        $this->assertSame($expected, $result);
-    }
-
     /**
      * @dataProvider tokenProvider
      * @param string|null $token
