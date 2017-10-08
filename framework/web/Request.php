@@ -1174,7 +1174,7 @@ class Request extends \yii\base\Request
          * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
          */
         $auth_token = $this->getHeaders()->get('HTTP_AUTHORIZATION') ?: $this->getHeaders()->get('REDIRECT_HTTP_AUTHORIZATION');
-        if ($auth_token != null && strpos(strtolower($auth_token), 'basic') === 0) {
+        if ($auth_token !== null && strpos(strtolower($auth_token), 'basic') === 0) {
             $parts = array_map(function ($value) {
                 return strlen($value) === 0 ? null : $value;
             }, explode(':', base64_decode(mb_substr($auth_token, 6)), 2));
