@@ -54,13 +54,26 @@ class AccessRule extends Component
      * - `?`: matches a guest user (not authenticated yet)
      * - `@`: matches an authenticated user
      *
-     * If you are using RBAC (Role-Based Access Control), you may also specify role or permission names.
+     * If you are using RBAC (Role-Based Access Control), you may also specify role names.
      * In this case, [[User::can()]] will be called to check access.
+     * 
+     * Note that it is preferred to check for permissions instead.
      *
-     * If this property is not set or empty, it means this rule applies to all roles.
+     * If this property is not set or empty, it means this rule applies regardless of roles.
+     * @see $permissions
      * @see $roleParams
      */
     public $roles;
+    /** 
+     * @var array list of RBAC (Role-Based Access Control) permissions that this rules applies to.
+     * [[User::can()]] will be called to check access.
+     * 
+     * If this property is not set or empty, it means this rule applies regardless of permissions.
+     * @since 2.0.12
+     * @see $roles
+     * @see $roleParams
+     */
+    public $permissions;
     /**
      * @var array|Closure parameters to pass to the [[User::can()]] function for evaluating
      * user permissions in [[$roles]].
@@ -195,28 +208,34 @@ class AccessRule extends Component
      */
     protected function matchRole($user)
     {
-        if (empty($this->roles)) {
+        $items = empty($this->roles) ? [] : $this->roles;
+
+        if (!empty($this->permissions)) {
+           $items = array_merge($items, $this->permissions);
+        }
+
+        if (empty($items)) {
             return true;
         }
+      
         if ($user === false) {
             throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
         }
-        foreach ($this->roles as $role) {
-            if ($role === '?') {
-                if ($user->getIsGuest()) {
-                    return true;
-                }
-            } elseif ($role === '@') {
-                if (!$user->getIsGuest()) {
-                    return true;
-                }
-            } else {
-                if (!isset($roleParams)) {
-                    $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
-                }
-                if ($user->can($role, $roleParams)) {
-                    return true;
-                }
+
+        foreach ($items as $item) {
+            if ($item === '?' && $user->getIsGuest()) {
+                return true;
+            }
+
+            if ($item === '@' && !$user->getIsGuest()) {
+                return true;
+            }
+
+            if (!isset($roleParams)) {
+                $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
+            }
+            if ($user->can($item, $roleParams)) {
+                return true;
             }
         }
 
