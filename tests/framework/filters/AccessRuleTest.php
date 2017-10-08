@@ -303,7 +303,8 @@ class AccessRuleTest extends \yiiunit\TestCase
     public function testMatchRolesAndPermissions()
     {
         $action = $this->mockAction();
-        $user = $this->mockUser();
+        $user = $this->getMockBuilder('\yii\web\User')->getMock();
+        $user->identityCLass = UserIdentity::className();
 
         $rule = new AccessRule([
             'allow' => true,
@@ -323,6 +324,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         $rule->permissions = ['allowed_permission_1', 'allowed_permission_2'];
         $this->assertNull($rule->allows($action, $user, $request));
 
+        $user->method('can')->willReturn(true);
         $rule->roles = ['allowed_role_1', 'allowed_role_2'];
         $this->assertTrue($rule->allows($action, $user, $request));
 
