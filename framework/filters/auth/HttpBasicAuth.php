@@ -7,6 +7,8 @@
 
 namespace yii\filters\auth;
 
+use yii\web\Request;
+
 /**
  * HttpBasicAuth is an action filter that supports the HTTP Basic authentication method.
  *
@@ -84,8 +86,7 @@ class HttpBasicAuth extends AuthMethod
      */
     public function authenticate($user, $request, $response)
     {
-        $username = $request->getAuthUser();
-        $password = $request->getAuthPassword();
+        list($username, $password) = $this->getCredentialsFromRequest($request);
 
         if ($this->auth) {
             if ($username !== null || $password !== null) {
@@ -108,6 +109,39 @@ class HttpBasicAuth extends AuthMethod
         }
 
         return null;
+    }
+
+    /**
+     * Extract username and password from $request.
+     *
+     * @param Request $request
+     * @since 2.0.13
+     * @return array
+     */
+    protected function getCredentialsFromRequest($request)
+    {
+        $username = $request->getAuthUser();
+        $password = $request->getAuthPassword();
+
+        if ($username !== null || $password !== null) {
+            return [$username, $password];
+        }
+
+        $headers = $request->getHeaders();
+        $auth_token = $headers->get('HTTP_AUTHORIZATION') ?: $headers->get('REDIRECT_HTTP_AUTHORIZATION');
+        if ($auth_token != null && strpos(strtolower($auth_token), 'basic') === 0) {
+            $parts = array_map(function ($value) {
+                return strlen($value) === 0 ? null : $value;
+            }, explode(':', base64_decode(mb_substr($auth_token, 6)), 2));
+
+            if (count($parts) < 2) {
+                return [$parts[0], null];
+            }
+
+            return $parts;
+        }
+
+        return [null, null];
     }
 
     /**

@@ -10,7 +10,6 @@ namespace yiiunit\framework\filters\auth;
 use Yii;
 use yii\base\Action;
 use yii\filters\auth\AuthMethod;
-use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\helpers\ArrayHelper;
@@ -57,37 +56,44 @@ class AuthTest extends \yiiunit\TestCase
         ];
     }
 
-    public function authOnly($token, $login, $filter, $action)
+    public function authOnly($token, $login, $filter)
     {
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
-        $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => [$action]]);
+        $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {
-            $this->assertEquals($login, $controller->run($action));
+            $this->assertEquals($login, $controller->run('filtered'));
         } catch (UnauthorizedHttpException $e) {
         }
     }
 
-    public function authOptional($token, $login, $filter, $action)
+    public function authOptional($token, $login, $filter)
     {
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
-        $controller->authenticatorConfig = ArrayHelper::merge($filter, ['optional' => [$action]]);
+        $controller->authenticatorConfig = ArrayHelper::merge($filter, ['optional' => ['filtered']]);
         try {
-            $this->assertEquals($login, $controller->run($action));
+            $this->assertEquals($login, $controller->run('filtered'));
         } catch (UnauthorizedHttpException $e) {
         }
     }
 
-    public function authExcept($token, $login, $filter, $action)
+    public function authExcept($token, $login, $filter)
     {
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['except' => ['other']]);
         try {
-            $this->assertEquals($login, $controller->run($action));
+            $this->assertEquals($login, $controller->run('filtered'));
         } catch (UnauthorizedHttpException $e) {
         }
+    }
+
+    public function ensureFilterApplies($token, $login, $filter)
+    {
+        $this->authOnly($token, $login, $filter);
+        $this->authOptional($token, $login, $filter);
+        $this->authExcept($token, $login, $filter);
     }
 
     /**
@@ -99,48 +105,7 @@ class AuthTest extends \yiiunit\TestCase
     {
         $_GET['access-token'] = $token;
         $filter = ['class' => QueryParamAuth::className()];
-        $this->authOnly($token, $login, $filter, 'query-param-auth');
-        $this->authOptional($token, $login, $filter, 'query-param-auth');
-        $this->authExcept($token, $login, $filter, 'query-param-auth');
-    }
-
-    /**
-     * @dataProvider tokenProvider
-     * @param string|null $token
-     * @param string|null $login
-     */
-    public function testHttpBasicAuth($token, $login)
-    {
-        $_SERVER['PHP_AUTH_USER'] = $token;
-        $_SERVER['PHP_AUTH_PW'] = 'whatever, we are testers';
-        $filter = ['class' => HttpBasicAuth::className()];
-        $this->authOnly($token, $login, $filter, 'basic-auth');
-        $this->authOptional($token, $login, $filter, 'basic-auth');
-        $this->authExcept($token, $login, $filter, 'basic-auth');
-    }
-
-    /**
-     * @dataProvider tokenProvider
-     * @param string|null $token
-     * @param string|null $login
-     */
-    public function testHttpBasicAuthCustom($token, $login)
-    {
-        $_SERVER['PHP_AUTH_USER'] = $login;
-        $_SERVER['PHP_AUTH_PW'] = 'whatever, we are testers';
-        $filter = [
-            'class' => HttpBasicAuth::className(),
-            'auth' => function ($username, $password) {
-                if (preg_match('/\d$/', $username)) {
-                    return UserIdentity::findIdentity($username);
-                }
-
-                return null;
-            },
-        ];
-        $this->authOnly($token, $login, $filter, 'basic-auth');
-        $this->authOptional($token, $login, $filter, 'basic-auth');
-        $this->authExcept($token, $login, $filter, 'basic-auth');
+        $this->ensureFilterApplies($token, $login, $filter);
     }
 
     /**
@@ -152,16 +117,13 @@ class AuthTest extends \yiiunit\TestCase
     {
         Yii::$app->request->headers->set('Authorization', "Bearer $token");
         $filter = ['class' => HttpBearerAuth::className()];
-        $this->authOnly($token, $login, $filter, 'bearer-auth');
-        $this->authOptional($token, $login, $filter, 'bearer-auth');
-        $this->authExcept($token, $login, $filter, 'bearer-auth');
+        $this->ensureFilterApplies($token, $login, $filter);
     }
 
     public function authMethodProvider()
     {
         return [
             ['yii\filters\auth\CompositeAuth'],
-            ['yii\filters\auth\HttpBasicAuth'],
             ['yii\filters\auth\HttpBearerAuth'],
             ['yii\filters\auth\QueryParamAuth'],
         ];
@@ -232,17 +194,7 @@ class TestAuthController extends Controller
         return ['authenticator' => $this->authenticatorConfig];
     }
 
-    public function actionBasicAuth()
-    {
-        return Yii::$app->user->id;
-    }
-
-    public function actionBearerAuth()
-    {
-        return Yii::$app->user->id;
-    }
-
-    public function actionQueryParamAuth()
+    public function actionFiltered()
     {
         return Yii::$app->user->id;
     }
