@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
 - Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase, silverfire)
 - Bug #12860: Fixed possible race conditions in `yii\mutex\FileMutex` (kidol)
+- Bug #13720: Improve `yii\helpers\FormatConverter::convertDatePhpToIcu()` to handle escaped chars correctly (rob006)
 - Bug #13757: Fixed ambiguous column error in `BaseActiveRecord::refresh()` when the query adds a JOIN by default (cebe, ivankff)
 - Bug #13779: Fixed `yii\db\ActiveRecord::joinWith()` unable to use relation defined via attached behavior (ElisDN, klimov-paul)
 - Bug #13859: Fixed ambiguous column error in `Query::column()` when `$indexBy` is used with a JOIN (cebe)
