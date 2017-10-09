@@ -359,14 +359,14 @@ $customer->email = 'james@newexample.com';
 $customer->save();
 ```
 
-The [[yii\db\ActiveRecord::save()|save()]] method can either insert or update a row of data, depending on the state
-of the Active Record instance. If the instance is newly created via the `new` operator, calling 
-[[yii\db\ActiveRecord::save()|save()]] will cause insertion of a new row; If the instance is the result of a query method,
-calling [[yii\db\ActiveRecord::save()|save()]] will update the row associated with the instance. 
+[[yii\db\ActiveRecord::save()|save()]] 方法可能插入或者更新表的记录，这取决于 AR 实例的状态。
+如果实例通过 `new` 操作符实例化，调用 [[yii\db\ActiveRecord::save()|save()]] 方法将插入新记录；
+如果实例是一个查询方法的结果，调用 [[yii\db\ActiveRecord::save()|save()]] 方法
+将更新这个实例对应的表记录行。
 
-You can differentiate the two states of an Active Record instance by checking its 
-[[yii\db\ActiveRecord::isNewRecord|isNewRecord]] property value. This property is also used by 
-[[yii\db\ActiveRecord::save()|save()]] internally as follows:
+你可以通过检查 AR 实例的 [[yii\db\ActiveRecord::isNewRecord|isNewRecord]] 属性值来区分这两个状态。
+此属性也被使用在 [[yii\db\ActiveRecord::save()|save()]] 方法内部，
+代码如下：
 
 ```php
 public function save($runValidation = true, $attributeNames = null)
@@ -379,29 +379,29 @@ public function save($runValidation = true, $attributeNames = null)
 }
 ```
 
-> Tip: You can call [[yii\db\ActiveRecord::insert()|insert()]] or [[yii\db\ActiveRecord::update()|update()]]
-  directly to insert or update a row.
+> 提示：你可以直接调用 [[yii\db\ActiveRecord::insert()|insert()]] 或者 [[yii\db\ActiveRecord::update()|update()]]
+  方法来插入或更新一条记录。
   
 
-### Data Validation <span id="data-validation"></span>
+### 数据验证 <span id="data-validation"></span>
 
-Because [[yii\db\ActiveRecord]] extends from [[yii\base\Model]], it shares the same [data validation](input-validation.md) feature.
-You can declare validation rules by overriding the [[yii\db\ActiveRecord::rules()|rules()]] method and perform 
-data validation by calling the [[yii\db\ActiveRecord::validate()|validate()]] method.
+因为 [[yii\db\ActiveRecord]] 继承于 [[yii\base\Model]]，它共享相同的 [输入验证](input-validation.md) 功能。
+你可以通过重写 [[yii\db\ActiveRecord::rules()|rules()]] 方法声明验证规则并执行，
+通过调用 [[yii\db\ActiveRecord::validate()|validate()]] 方法进行数据验证。
+  
+当你调用 [[yii\db\ActiveRecord::save()|save()]] 时，默认情况下会自动调用 [[yii\db\ActiveRecord::validate()|validate()]]。
+只有当验证通过时，它才会真正地保存数据; 否则将简单地返回`false`，
+您可以检查 [[yii\db\ActiveRecord::errors|errors]] 属性来获取验证过程的错误消息。
 
-When you call [[yii\db\ActiveRecord::save()|save()]], by default it will call [[yii\db\ActiveRecord::validate()|validate()]]
-automatically. Only when the validation passes, will it actually save the data; otherwise it will simply return `false`,
-and you can check the [[yii\db\ActiveRecord::errors|errors]] property to retrieve the validation error messages.  
-
-> Tip: If you are certain that your data do not need validation (e.g., the data comes from trustable sources),
-  you can call `save(false)` to skip the validation.
+> 提示：如果你确定你的数据不需要验证（比如说数据来自可信的场景），
+  你可以调用 `save(false)` 来跳过验证过程。
 
 
-### Massive Assignment <span id="massive-assignment"></span>
+### 块赋值 <span id="massive-assignment"></span>
 
-Like normal [models](structure-models.md), Active Record instances also enjoy the [massive assignment feature](structure-models.md#massive-assignment).
-Using this feature, you can assign values to multiple attributes of an Active Record instance in a single PHP statement,
-like shown below. Do remember that only [safe attributes](structure-models.md#safe-attributes) can be massively assigned, though.
+和普通的 [models](structure-models.md) 一样，你亦可以享受 AR 实例的 [块赋值](structure-models.md#massive-assignment) 特性。
+使用此功能，您可以在单个 PHP 语句中，给 AR 实例的多个属性批量赋值，
+如下所示。 记住，只有 [安全属性](structure-models.md#safe-attributes) 才可以批量赋值。
 
 ```php
 $values = [
@@ -416,11 +416,11 @@ $customer->save();
 ```
 
 
-### Updating Counters <span id="updating-counters"></span>
+### 更新计数 <span id="updating-counters"></span>
 
-It is a common task to increment or decrement a column in a database table. We call these columns "counter columns".
-You can use [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] to update one or multiple counter columns.
-For example,
+在数据库表中增加或减少一个字段的值是个常见的任务。我们将这些列称为“计数列”。
+您可以使用 [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] 更新一个或多个计数列。
+例如，
 
 ```php
 $post = Post::findOne(100);
@@ -429,82 +429,82 @@ $post = Post::findOne(100);
 $post->updateCounters(['view_count' => 1]);
 ```
 
-> Note: If you use [[yii\db\ActiveRecord::save()]] to update a counter column, you may end up with inaccurate result,
-  because it is likely the same counter is being saved by multiple requests which read and write the same counter value.
+> 注：如果你使用 [[yii\db\ActiveRecord::save()]] 更新一个计数列，你最终将得到错误的结果，
+  因为可能发生这种情况，多个请求间并发读写同一个计数列。
 
 
-### Dirty Attributes <span id="dirty-attributes"></span>
+### 脏属性 <span id="dirty-attributes"></span>
 
-When you call [[yii\db\ActiveRecord::save()|save()]] to save an Active Record instance, only *dirty attributes*
-are being saved. An attribute is considered *dirty* if its value has been modified since it was loaded from DB or
-saved to DB most recently. Note that data validation will be performed regardless if the Active Record 
-instance has dirty attributes or not.
+当您调用 [[yii\db\ActiveRecord::save()|save()]] 保存 AR 实例时，只有 *脏属性*
+被保存。如果一个属性的值已被修改，则会被认为是 *脏*，因为它是从 DB 加载出来的或者
+刚刚保存到 DB 。请注意，无论如何 AR 都会执行数据验证
+不管有没有脏属性。
 
-Active Record automatically maintains the list of dirty attributes. It does so by maintaining an older version of
-the attribute values and comparing them with the latest one. You can call [[yii\db\ActiveRecord::getDirtyAttributes()]] 
-to get the attributes that are currently dirty. You can also call [[yii\db\ActiveRecord::markAttributeDirty()]] 
-to explicitly mark an attribute as dirty.
+AR 自动维护脏属性列表。 它保存所有属性的旧值，
+并其与最新的属性值进行比较，就是酱紫个道理。你可以调用 [[yii\db\ActiveRecord::getDirtyAttributes()]] 
+获取当前的脏属性。你也可以调用 [[yii\db\ActiveRecord::getDirtyAttributes()]] 
+将属性显式标记为脏。
 
-If you are interested in the attribute values prior to their most recent modification, you may call 
-[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] or [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
+如果你有需要获取属性原先的值，你可以调用
+[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] 或者 [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
 
-> Note: The comparison of old and new values will be done using the `===` operator so a value will be considered dirty
-> even if it has the same value but a different type. This is often the case when the model receives user input from
-> HTML forms where every value is represented as a string.
-> To ensure the correct type for e.g. integer values you may apply a [validation filter](input-validation.md#data-filtering):
-> `['attributeName', 'filter', 'filter' => 'intval']`. This works with all the typecasting functions of PHP like
-> [intval()](http://php.net/manual/en/function.intval.php), [floatval()](http://php.net/manual/en/function.floatval.php),
-> [boolval](http://php.net/manual/en/function.boolval.php), etc...
+> 注：属性新旧值的比较是用 `===` 操作符，所以一样的值但类型不同，
+> 依然被认为是脏的。当模型从 HTML 表单接收用户输入时，通常会出现这种情况，
+> 其中每个值都表示为一个字符串类型。
+> 为了确保正确的类型，比如，整型需要用 [过滤验证器](input-validation.md#data-filtering)：
+> `['attributeName', 'filter', 'filter' => 'intval']`。其他 PHP 类型转换函数一样适用，像
+> [intval()](http://php.net/manual/en/function.intval.php)， [floatval()](http://php.net/manual/en/function.floatval.php)，
+> [boolval](http://php.net/manual/en/function.boolval.php)， 等等
 
-### Default Attribute Values <span id="default-attribute-values"></span>
+### 默认属性值 <span id="default-attribute-values"></span>
 
-Some of your table columns may have default values defined in the database. Sometimes, you may want to pre-populate your
-Web form for an Active Record instance with these default values. To avoid writing the same default values again,
-you can call [[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]] to populate the DB-defined default values
-into the corresponding Active Record attributes:
+某些表列可能在数据库中定义了默认值。有时，你可能想预先填充
+具有这些默认值的 AR 实例的 Web 表单。 为了避免再次写入相同的默认值，
+您可以调用 [[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]] 来填充 DB 定义的默认值
+进入相应的 AR 属性：
 
 ```php
 $customer = new Customer();
 $customer->loadDefaultValues();
-// $customer->xyz will be assigned the default value declared when defining the "xyz" column
+// $customer->xyz 将被 “zyz” 列定义的默认值赋值
 ```
 
 
-### Attributes Typecasting <span id="attributes-typecasting"></span>
+### 属性类型转换 <span id="attributes-typecasting"></span>
 
-Being populated by query results [[yii\db\ActiveRecord]] performs automatic typecast for its attribute values, using
-information from [database table schema](db-dao.md#database-schema). This allows data retrieved from table column
-declared as integer to be populated in ActiveRecord instance with PHP integer, boolean with boolean and so on.
-However, typecasting mechanism has several limitations:
+在查询结果填充 [[yii\db\ActiveRecord]] 活动记录时，将自动对其属性值执行类型转换，基于
+[数据库表模式](db-dao.md#database-schema) 中的信息。 这允许从数据表中获取数据，
+声明为整型的，使用 PHP 整型填充 AR 实例，布尔值（boolean）的也用布尔值填充 AR 实例，等等。
+但是，类型转换机制有几个限制：
 
-* Float values are not be converted and will be represented as strings, otherwise they may loose precision.
-* Conversion of the integer values depends on the integer capacity of the operation system you use. In particular:
-  values of column declared as 'unsigned integer' or 'big integer' will be converted to PHP integer only at 64-bit
-  operation system, while on 32-bit ones - they will be represented as strings.
+* 浮点值不被转换，并且将被表示为字符串，否则它们可能会使精度降低。
+* 整型值的转换取决于您使用的操作系统的整数容量。尤其是：
+  声明为“无符号整型”或“大整型”的列的值将仅转换为 64 位操作系统的 PHP 整型，
+  而在 32 位操作系统中 - 它们将被表示为字符串。
 
-Note that attribute typecast is performed only during populating ActiveRecord instance from query result. There is no
-automatic conversion for the values loaded from HTTP request or set directly via property access.
-The table schema will also be used while preparing SQL statements for the ActiveRecord data saving, ensuring
-values are bound to the query with correct type. However, ActiveRecord instance attribute values will not be
-converted during saving process.
+值得注意的是，只有在从查询结果填充 ActiveRecord 实例时才执行属性类型转换。
+而从 HTTP 请求加载的值或直接通过属性访问赋值的，没有自动转换。
+在准备用于在 ActiveRecord 保存时，准备 SQL 语句还使用了表模式，以确保查询时
+值绑定到具有正确类型的。但是，ActiveRecord 实例的属性值不会
+在保存过程中转换。
 
-> Tip: you may use [[yii\behaviors\AttributeTypecastBehavior]] to facilitate attribute values typecasting
-  on ActiveRecord validation or saving.
+> 提示： 你可以使用 [[yii\behaviors\AttributeTypecastBehavior]] 来简化属性的类型转换
+  在 ActiveRecord 验证或者保存过程中。
 
 
 ### Updating Multiple Rows <span id="updating-multiple-rows"></span>
 
-The methods described above all work on individual Active Record instances, causing inserting or updating of individual
-table rows. To update multiple rows simultaneously, you should call [[yii\db\ActiveRecord::updateAll()|updateAll()]], instead,
-which is a static method.
+上述方法都可以用于单个 AR 实例，以插入或更新单条
+表数据行。 要同时更新多个数据行，你应该调用 [[yii\db\ActiveRecord::updateAll()|updateAll()]]
+这是一个静态方法。
 
 ```php
 // UPDATE `customer` SET `status` = 1 WHERE `email` LIKE `%@example.com%`
 Customer::updateAll(['status' => Customer::STATUS_ACTIVE], ['like', 'email', '@example.com']);
 ```
 
-Similarly, you can call [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] to update counter columns of
-multiple rows at the same time.
+同样, 你可以调用 [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] 同时更新多条记录的计数列。
+
 
 ```php
 // UPDATE `customer` SET `age` = `age` + 1
@@ -512,102 +512,104 @@ Customer::updateAllCounters(['age' => 1]);
 ```
 
 
-## Deleting Data <span id="deleting-data"></span>
+## 删除数据 <span id="deleting-data"></span>
 
-To delete a single row of data, first retrieve the Active Record instance corresponding to that row and then call
-the [[yii\db\ActiveRecord::delete()]] method.
+要删除单行数据，首先获取与该行对应的 AR 实例，然后调用
+[[yii\db\ActiveRecord::delete()]] 方法。
 
 ```php
 $customer = Customer::findOne(123);
 $customer->delete();
 ```
 
-You can call [[yii\db\ActiveRecord::deleteAll()]] to delete multiple or all rows of data. For example,
+你可以调用 [[yii\db\ActiveRecord::deleteAll()]] 方法删除多行甚至全部的数据。例如，
 
 ```php
 Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 ```
 
-> Note: Be very careful when calling [[yii\db\ActiveRecord::deleteAll()|deleteAll()]] because it may totally
-  erase all data from your table if you make a mistake in specifying the condition.
+> 提示：不要随意使用 [[yii\db\ActiveRecord::deleteAll()|deleteAll()]] 它真的会
+  清空你表里的数据，因为你指不定啥时候犯二。
 
 
-## Active Record Life Cycles <span id="ar-life-cycles"></span>
+## AR 的生命周期 <span id="ar-life-cycles"></span>
 
-It is important to understand the life cycles of Active Record when it is used for different purposes.
-During each life cycle, a certain sequence of methods will be invoked, and you can override these methods
-to get a chance to customize the life cycle. You can also respond to certain Active Record events triggered 
-during a life cycle to inject your custom code. These events are especially useful when you are developing 
-Active Record [behaviors](concept-behaviors.md) which need to customize Active Record life cycles.
+当你实现各种功能的时候，会发现了解 AR 的生命周期很重要。
+在每个生命周期中，一系列的方法将被调用执行，您可以重写这些方法
+以定制你要的生命周期。您还可以响应触发某些 AR 事件
+以便在生命周期中注入您的自定义代码。这些事件在开发 AR 的 [行为](concept-behaviors.md)时特别有用，
+通过行为可以定制 AR 生命周期的 。
 
-In the following, we will summarize the various Active Record life cycles and the methods/events that are involved
-in the life cycles.
-
-
-### New Instance Life Cycle <span id="new-instance-life-cycle"></span>
-
-When creating a new Active Record instance via the `new` operator, the following life cycle will happen:
-
-1. Class constructor.
-2. [[yii\db\ActiveRecord::init()|init()]]: triggers an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event.
+下面，我们将总结各种 AR 的生命周期，以及生命周期中
+所涉及的各种方法、事件。
 
 
-### Querying Data Life Cycle <span id="querying-data-life-cycle"></span>
+### 实例化生命周期 <span id="new-instance-life-cycle"></span>
 
-When querying data through one of the [querying methods](#querying-data), each newly populated Active Record will
-undergo the following life cycle:
+当通过 `new` 操作符新建一个 AR 实例时，会发生以下生命周期：
 
-1. Class constructor.
-2. [[yii\db\ActiveRecord::init()|init()]]: triggers an [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] event.
-3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]: triggers an [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] event.
+1. 类的构造函数调用.
+2. [[yii\db\ActiveRecord::init()|init()]]：触发 [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] 事件。
 
 
-### Saving Data Life Cycle <span id="saving-data-life-cycle"></span>
+### 查询数据生命周期 <span id="querying-data-life-cycle"></span>
+
+当通过 [查询方法](#querying-data) 查询数据时，每个新填充出来的 AR 实例
+将发生下面的生命周期：
+
+1. 类的构造函数调用.
+2. [[yii\db\ActiveRecord::init()|init()]]：触发 [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]] 事件。
+3. [[yii\db\ActiveRecord::afterFind()|afterFind()]]：触发 [[yii\db\ActiveRecord::EVENT_AFTER_FIND|EVENT_AFTER_FIND]] 事件。
+
+
+### 保存数据生命周期 <span id="saving-data-life-cycle"></span>
 
 When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an Active Record instance, the following
 life cycle will happen:
+当通过 [[yii\db\ActiveRecord::save()|save()]] 插入或更新 AR 实例时
+会发生以下生命周期：
 
-1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: triggers 
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event. If the method returns `false`
-   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
-2. Performs data validation. If data validation fails, the steps after Step 3 will be skipped. 
-3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: triggers 
-   an [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event.
-4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: triggers 
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] 
-   or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event. If the method returns `false`
-   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
-5. Performs the actual data insertion or updating.
-6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: triggers
-   an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 
-   or [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] event.
+1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]：触发 
+   [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] 事件。如果这方法返回 `false` 
+   或者 [[yii\base\ModelEvent::isValid]] 值为 `false`，接下来的步骤都会被跳过。
+2. 执行数据验证。如果数据验证失败，步骤 3 之后的步骤将被跳过。
+3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]：触发
+   [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] 事件。
+4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]：触发
+   [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] 
+   或者 [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] 事件。 如果这方法返回 `false` 
+   或者 [[yii\base\ModelEvent::isValid]] 值为 `false`，接下来的步骤都会被跳过。
+5. 执行真正的数据插入或者更新。
+6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]：触发
+   [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 
+   或者 [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] 事件。
    
 
-### Deleting Data Life Cycle <span id="deleting-data-life-cycle"></span>
+### 删除数据生命周期 <span id="deleting-data-life-cycle"></span>
 
-When calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an Active Record instance, the following
-life cycle will happen:
+当通过 [[yii\db\ActiveRecord::delete()|delete()]] 删除 AR 实例时，
+会发生以下生命周期：
 
-1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: triggers
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event. If the method returns `false`
-   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
-2. Performs the actual data deletion.
-3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: triggers
-   an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event.
+1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]：触发
+   [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] 事件。 如果这方法返回 `false` 
+   或者 [[yii\base\ModelEvent::isValid]] 值为 `false`，接下来的步骤都会被跳过。
+2. 执行真正的数据删除。
+3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]：触发
+   [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] 事件。
 
 
-> Note: Calling any of the following methods will NOT initiate any of the above life cycles because they work on the
-> database directly and not on a record basis:
+> 提示：调用以下方法则不会启动上述的任何生命周期，
+> 因为这些方法直接操作数据库，而不是基于 AR 模型：
 >
 > - [[yii\db\ActiveRecord::updateAll()]] 
 > - [[yii\db\ActiveRecord::deleteAll()]]
 > - [[yii\db\ActiveRecord::updateCounters()]] 
 > - [[yii\db\ActiveRecord::updateAllCounters()]] 
 
-### Refreshing Data Life Cycle <span id="refreshing-data-life-cycle"></span>
+### 刷新数据生命周期 <span id="refreshing-data-life-cycle"></span>
 
-When calling [[yii\db\ActiveRecord::refresh()|refresh()]] to refresh an Active Record instance, the
-[[yii\db\ActiveRecord::EVENT_AFTER_REFRESH|EVENT_AFTER_REFRESH]] event is triggered if refresh is successful and the method returns `true`.
+当通过 [[yii\db\ActiveRecord::refresh()|refresh()]] 刷新 AR 实例时，
+如刷新成功方法返回 `true`，那么 [[yii\db\ActiveRecord::EVENT_AFTER_REFRESH|EVENT_AFTER_REFRESH]] 事件将被触发。
 
 
 ## Working with Transactions <span id="transactional-operations"></span>
