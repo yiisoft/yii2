@@ -190,7 +190,7 @@ class DataFilterTest extends TestCase
                 ],
                 false,
                 [
-                    "Operator 'gt' must be used with search attribute."
+                    "Operator 'gt' must be used with a search attribute."
                 ]
             ],
         ];
