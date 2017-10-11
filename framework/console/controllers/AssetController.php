@@ -568,9 +568,11 @@ EOD;
     {
         $content = '';
         foreach ($inputFiles as $file) {
+            // Add a semicolon to source code if trailing semicolon missing.
+            // Notice: It needs a new line before `;` to avoid affection of line comment. (// ...;)
             $fileContent = rtrim(file_get_contents($file));
             if (substr($fileContent, -1) !== ';') {
-                $fileContent .= ';';
+                $fileContent .= "\n;";
             }
             $content .= "/*** BEGIN FILE: $file ***/\n"
                 . $fileContent . "\n"
