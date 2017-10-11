@@ -194,7 +194,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // Код будет работать ровно так же, как и в предыдущем примере.
 ```
 
