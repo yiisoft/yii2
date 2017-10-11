@@ -564,8 +564,6 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 
 ### 保存数据生命周期 <span id="saving-data-life-cycle"></span>
 
-When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an Active Record instance, the following
-life cycle will happen:
 当通过 [[yii\db\ActiveRecord::save()|save()]] 插入或更新 AR 实例时
 会发生以下生命周期：
 
@@ -612,11 +610,11 @@ life cycle will happen:
 如刷新成功方法返回 `true`，那么 [[yii\db\ActiveRecord::EVENT_AFTER_REFRESH|EVENT_AFTER_REFRESH]] 事件将被触发。
 
 
-## Working with Transactions <span id="transactional-operations"></span>
+## 事务操作 <span id="transactional-operations"></span>
 
-There are two ways of using [transactions](db-dao.md#performing-transactions) while working with Active Record. 
+AR 活动记录有两种方式来使用 [事务](db-dao.md#performing-transactions)。
 
-The first way is to explicitly enclose Active Record method calls in a transactional block, like shown below,
+第一种方法是在事务块中显式地包含 AR 的各个方法调用，如下所示，
 
 ```php
 $customer = Customer::findOne(123);
@@ -624,10 +622,10 @@ $customer = Customer::findOne(123);
 Customer::getDb()->transaction(function($db) use ($customer) {
     $customer->id = 200;
     $customer->save();
-    // ...other DB operations...
+    // ...其他 DB 操作...
 });
 
-// or alternatively
+// 或者
 
 $transaction = Customer::getDb()->beginTransaction();
 try {
@@ -644,12 +642,12 @@ try {
 }
 ```
 
-> Note: in the above code we have two catch-blocks for compatibility 
-> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
-> since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
+> 提示：在上面的代码中，我们有两个catch块用于兼容
+> PHP 5.x 和 PHP 7.x。 `\Exception` 继承于 [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
+> 由于 PHP 7.0 的改动，如果您的应用程序仅使用 PHP 7.0 及更高版本，您可以跳过 `\Exception` 部分。
 
-The second way is to list the DB operations that require transactional support in the [[yii\db\ActiveRecord::transactions()]]
-method. For example,
+第二种方法是在 [[yii\db\ActiveRecord::transactions()]] 方法中列出需要事务支持的 DB 操作。 
+例如，
 
 ```php
 class Customer extends ActiveRecord
@@ -659,64 +657,64 @@ class Customer extends ActiveRecord
         return [
             'admin' => self::OP_INSERT,
             'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
-            // the above is equivalent to the following:
+            // 上面等价于：
             // 'api' => self::OP_ALL,
         ];
     }
 }
 ```
 
-The [[yii\db\ActiveRecord::transactions()]] method should return an array whose keys are [scenario](structure-models.md#scenarios)
-names and values are the corresponding operations that should be enclosed within transactions. You should use the following
-constants to refer to different DB operations:
+[[yii\db\ActiveRecord::transactions()]] 方法应当返回以 [场景](structure-models.md#scenarios) 为键、
+以需要放到事务中的 DB 操作为值的数组。以下的常量
+可以表示相应的 DB 操作：
 
-* [[yii\db\ActiveRecord::OP_INSERT|OP_INSERT]]: insertion operation performed by [[yii\db\ActiveRecord::insert()|insert()]];
-* [[yii\db\ActiveRecord::OP_UPDATE|OP_UPDATE]]: update operation performed by [[yii\db\ActiveRecord::update()|update()]];
-* [[yii\db\ActiveRecord::OP_DELETE|OP_DELETE]]: deletion operation performed by [[yii\db\ActiveRecord::delete()|delete()]].
+* [[yii\db\ActiveRecord::OP_INSERT|OP_INSERT]]：插入操作用于执行 [[yii\db\ActiveRecord::insert()|insert()]]；
+* [[yii\db\ActiveRecord::OP_UPDATE|OP_UPDATE]]：更新操作用于执行 [[yii\db\ActiveRecord::update()|update()]]；
+* [[yii\db\ActiveRecord::OP_DELETE|OP_DELETE]]：删除操作用于执行 [[yii\db\ActiveRecord::delete()|delete()]]。
 
-Use the `|` operators to concatenate the above constants to indicate multiple operations. You may also use the shortcut
-constant [[yii\db\ActiveRecord::OP_ALL|OP_ALL]] to refer to all three operations above.
+使用 `|` 运算符连接上述常量来表明多个操作。您也可以使用
+快捷常量 [[yii\db\ActiveRecord::OP_ALL|OP_ALL]] 来指代上述所有的三个操作。
 
-Transactions that are created using this method will be started before calling [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]
-and will be committed after [[yii\db\ActiveRecord::afterSave()|afterSave()]] has run.
+这个事务方法的原理是：相应的事务在调用 [[yii\db\ActiveRecord::beforeSave()|beforeSave()]] 方法时开启，
+在调用 [[yii\db\ActiveRecord::afterSave()|afterSave()]] 方法时被提交。
 
-## Optimistic Locks <span id="optimistic-locks"></span>
+## 乐观锁 <span id="optimistic-locks"></span>
 
-Optimistic locking is a way to prevent conflicts that may occur when a single row of data is being
-updated by multiple users. For example, both user A and user B are editing the same wiki article
-at the same time. After user A saves his edits, user B clicks on the "Save" button in an attempt to
-save his edits as well. Because user B was actually working on an outdated version of the article,
-it would be desirable to have a way to prevent him from saving the article and show him some hint message.
+乐观锁是一种防止此冲突的方法：一行数据
+同时被多个用户更新。例如，同一时间内，用户 A 和用户 B 都在编辑
+相同的 wiki 文章。用户 A 保存他的编辑后，用户 B 也点击“保存”按钮来
+保存他的编辑。实际上，用户 B 正在处理的是过时版本的文章，
+因此最好是，想办法阻止他保存文章并向他提示一些信息。
 
-Optimistic locking solves the above problem by using a column to record the version number of each row.
-When a row is being saved with an outdated version number, a [[yii\db\StaleObjectException]] exception
-will be thrown, which prevents the row from being saved. Optimistic locking is only supported when you
-update or delete an existing row of data using [[yii\db\ActiveRecord::update()]] or [[yii\db\ActiveRecord::delete()]],
-respectively.
+乐观锁通过使用一个字段来记录每行的版本号来解决上述问题。
+当使用过时的版本号保存一行数据时，[[yii\db\StaleObjectException]] 异常
+将被抛出，这阻止了该行的保存。乐观锁只支持更新 [[yii\db\ActiveRecord::update()]] 
+或者删除 [[yii\db\ActiveRecord::delete()]]
+已经存在的单条数据行。
 
-To use optimistic locking,
+使用乐观锁的步骤，
 
-1. Create a column in the DB table associated with the Active Record class to store the version number of each row.
-   The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
-2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
-3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
-   Be sure your version attribute has input validation rules and validates successfully.
-4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
-   exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
+1. 在与 AR 类相关联的 DB 表中创建一个列，以存储每行的版本号。
+   这个列应当是长整型（在 MySQL 中是  `BIGINT DEFAULT 0`）。
+2. 重写 [[yii\db\ActiveRecord::optimisticLock()]] 方法返回这个列的命名。
+3. 在用于用户填写的 Web 表单中，添加一个隐藏字段（hidden field）来存储正在更新的行的当前版本号。
+   （AR 类中）版本号这个属性你要自行写进 rules() 方法并自己验证一下。
+4. 在使用 AR 更新数据的控制器动作中，要捕获（try/catch） [[yii\db\StaleObjectException]] 异常。
+   实现一些业务逻辑来解决冲突（例如合并更改，提示陈旧的数据等等）。
    
-For example, assume the version column is named as `version`. You can implement optimistic locking with the code like
-the following.
+举个栗子，假定版本列被命名为 `version`。您可以使用下面的代码来实现乐观锁。
+
 
 ```php
-// ------ view code -------
+// ------ 视图层代码 -------
 
 use yii\helpers\Html;
 
-// ...other input fields
+// ...其他输入栏
 echo Html::activeHiddenInput($model, 'version');
 
 
-// ------ controller code -------
+// ------ 控制器代码 -------
 
 use yii\db\StaleObjectException;
 
@@ -733,25 +731,25 @@ public function actionUpdate($id)
             ]);
         }
     } catch (StaleObjectException $e) {
-        // logic to resolve the conflict
+        // 解决冲突的代码
     }
 }
 ```
 
 
-## Working with Relational Data <span id="relational-data"></span>
+## 使用关联数据 <span id="relational-data"></span>
 
-Besides working with individual database tables, Active Record is also capable of bringing together related data,
-making them readily accessible through the primary data. For example, the customer data is related with the order
-data because one customer may have placed one or multiple orders. With appropriate declaration of this relation,
-you'll be able to access a customer's order information using the expression `$customer->orders` which gives
-back the customer's order information in terms of an array of `Order` Active Record instances.
+除了处理单个数据库表之外，AR 还可以将相关数据集中进来，
+使其可以通过原始数据轻松访问。 例如，客户数据与订单数据相关
+因为一个客户可能已经存放了一个或多个订单。这种关系通过适当的声明，
+你可以使用 `$customer->orders` 表达式访问客户的订单信息
+这表达式将返回包含 `Order` AR 实例的客户订单信息的数组。
 
 
-### Declaring Relations <span id="declaring-relations"></span>
+### 声明关联关系 <span id="declaring-relations"></span>
 
-To work with relational data using Active Record, you first need to declare relations in Active Record classes.
-The task is as simple as declaring a *relation method* for every interested relation, like the following,
+你必须先在 AR 类中定义关联关系，才能使用 AR 的关联数据。
+简单地为每个需要定义关联关系声明一个 *关联方法* 即可，如下所示，
 
 ```php
 class Customer extends ActiveRecord
@@ -775,75 +773,75 @@ class Order extends ActiveRecord
 }
 ```
 
-In the above code, we have declared an `orders` relation for the `Customer` class, and a `customer` relation
-for the `Order` class. 
+上述的代码中，我们为 `Customer` 类声明了一个 `orders` 关联，
+和为 `Order` 声明了一个 `customer` 关联。
 
-Each relation method must be named as `getXyz`. We call `xyz` (the first letter is in lower case) the *relation name*.
-Note that relation names are *case sensitive*.
+每个关联方法必须这样命名：`getXyz`。然后我们通过 `xyz`（首字母小写）调用这个关联名。
+请注意关联名是大小写敏感的。
 
-While declaring a relation, you should specify the following information:
+当声明一个关联关系的时候，必须指定好以下的信息：
 
-- the multiplicity of the relation: specified by calling either [[yii\db\ActiveRecord::hasMany()|hasMany()]]
-  or [[yii\db\ActiveRecord::hasOne()|hasOne()]]. In the above example you may easily read in the relation 
-  declarations that a customer has many orders while an order only has one customer.
-- the name of the related Active Record class: specified as the first parameter to 
-  either [[yii\db\ActiveRecord::hasMany()|hasMany()]] or [[yii\db\ActiveRecord::hasOne()|hasOne()]].
-  A recommended practice is to call `Xyz::className()` to get the class name string so that you can receive
-  IDE auto-completion support as well as error detection at compiling stage. 
-- the link between the two types of data: specifies the column(s) through which the two types of data are related.
-  The array values are the columns of the primary data (represented by the Active Record class that you are declaring
-  relations), while the array keys are the columns of the related data.
+- 关联的对应关系：通过调用 [[yii\db\ActiveRecord::hasMany()|hasMany()]]
+  或者 [[yii\db\ActiveRecord::hasOne()|hasOne()]] 指定。在上面的例子中，您可以很容易看出这样的关联声明：
+  一个客户可以有很多订单，而每个订单只有一个客户。
+- 相关联 AR 类名：用来指定为 [[yii\db\ActiveRecord::hasMany()|hasMany()]] 或者 
+  [[yii\db\ActiveRecord::hasOne()|hasOne()]] 方法的第一个参数。
+  推荐的做法是调用 `Xyz::className()` 来获取类名称的字符串，以便您
+  可以使用 IDE 的自动补全，以及让编译阶段的错误检测生效。
+- 两组数据的关联列：用以指定两组数据相关的列（hasOne()/hasMany() 的第二个参数）。
+  数组的值填的是主数据的列（当前要声明关联的 AR 类为主数据），
+  而数组的键要填的是相关数据的列。
 
-  An easy rule to remember this is, as you see in the example above, you write the column that belongs to the related
-  Active Record directly next to it. You see there that `customer_id` is a property of `Order` and `id` is a property
-  of `Customer`.
+  一个简单的口诀，先附表的主键，后主表的主键。
+  正如上面的例子，`customer_id` 是 `Order` 的属性，而 `id`是 `Customer` 的属性。
+  （译者注：hasMany() 的第二个参数，这个数组键值顺序不要弄反了）
   
 
-### Accessing Relational Data <span id="accessing-relational-data"></span>
+### 访问关联数据 <span id="accessing-relational-data"></span>
 
-After declaring relations, you can access relational data through relation names. This is just like accessing
-an object [property](concept-properties.md) defined by the relation method. For this reason, we call it *relation property*.
-For example,
+定义了关联关系后，你就可以通过关联名访问相应的关联数据了。就像
+访问一个由关联方法定义的对象一样，具体概念请查看 [属性](concept-properties.md)。
+因此，现在我们可以称它为 *关联属性* 了。
 
 ```php
 // SELECT * FROM `customer` WHERE `id` = 123
 $customer = Customer::findOne(123);
 
 // SELECT * FROM `order` WHERE `customer_id` = 123
-// $orders is an array of Order objects
+// $orders 是由 Order 类组成的数组
 $orders = $customer->orders;
 ```
 
-> Info: When you declare a relation named `xyz` via a getter method `getXyz()`, you will be able to access
-  `xyz` like an [object property](concept-properties.md). Note that the name is case sensitive.
+> 提示：当你通过 getter 方法 `getXyz()` 声明了一个叫 `xyz` 的关联属性，你就可以像
+  [属性](concept-properties.md) 那样访问 `xyz`。注意这个命名是区分大小写的。
   
-If a relation is declared with [[yii\db\ActiveRecord::hasMany()|hasMany()]], accessing this relation property
-will return an array of the related Active Record instances; if a relation is declared with 
-[[yii\db\ActiveRecord::hasOne()|hasOne()]], accessing the relation property will return the related
-Active Record instance or `null` if no related data is found.
+如果使用 [[yii\db\ActiveRecord::hasMany()|hasMany()]] 声明关联关系，则访问此关联属性
+将返回相关的 AR 实例的数组; 
+如果使用 [[yii\db\ActiveRecord::hasOne()|hasOne()]] 声明关联关系，访问此关联属性
+将返回相关的 AR 实例，如果没有找到相关数据的话，则返回 `null`。
 
-When you access a relation property for the first time, a SQL statement will be executed, like shown in the
-above example. If the same property is accessed again, the previous result will be returned without re-executing
-the SQL statement. To force re-executing the SQL statement, you should unset the relation property
-first: `unset($customer->orders)`.
+当你第一次访问关联属性时，将执行 SQL 语句获取数据，如
+上面的例子所示。如果再次访问相同的属性，将返回先前的结果，而不会重新执行
+SQL 语句。要强制重新执行 SQL 语句，你应该先 unset 这个关联属性，
+如：`unset（$ customer-> orders）`。
 
-> Note: While this concept looks similar to the [object property](concept-properties.md) feature, there is an
-> important difference. For normal object properties the property value is of the same type as the defining getter method.
-> A relation method however returns an [[yii\db\ActiveQuery]] instance, while accessing a relation property will either
-> return a [[yii\db\ActiveRecord]] instance or an array of these.
+> 提示：虽然这个概念跟 这个 [属性](concept-properties.md) 特性很像，
+> 但是还是有一个很重要的区别。普通对象属性的属性值与其定义的 getter 方法的类型是相同的。
+> 而关联方法返回的是一个 [[yii\db\ActiveQuery]] 活动查询生成器的实例。只有当访问关联属性的的时候，
+> 才会返回 [[yii\db\ActiveRecord]] AR 实例，或者 AR 实例组成的数组。
 > 
 > ```php
-> $customer->orders; // is an array of `Order` objects
-> $customer->getOrders(); // returns an ActiveQuery instance
+> $customer->orders; // 获得 `Order` 对象的数组
+> $customer->getOrders(); // 返回 ActiveQuery 类的实例
 > ```
 > 
-> This is useful for creating customized queries, which is described in the next section.
+> 这对于创建自定义查询很有用，下一节将对此进行描述。
 
 
-### Dynamic Relational Query <span id="dynamic-relational-query"></span>
+### 动态关联查询 <span id="dynamic-relational-query"></span>
 
-Because a relation method returns an instance of [[yii\db\ActiveQuery]], you can further build this query
-using query building methods before performing DB query. For example,
+由于关联方法返回 [[yii\db\ActiveQuery]] 的实例，因此你可以在执行 DB 查询之前，
+使用查询构建方法进一步构建此查询。例如，
 
 ```php
 $customer = Customer::findOne(123);
@@ -855,16 +853,16 @@ $orders = $customer->getOrders()
     ->all();
 ```
 
-Unlike accessing a relation property, each time you perform a dynamic relational query via a relation method, 
-a SQL statement will be executed, even if the same dynamic relational query was performed before.
+与访问关联属性不同，每次通过关联方法执行动态关联查询时，
+都会执行 SQL 语句，即使你之前执行过相同的动态关联查询。
 
-Sometimes you may even want to parametrize a relation declaration so that you can more easily perform
-dynamic relational query. For example, you may declare a `bigOrders` relation as follows, 
+有时你可能需要给你的关联声明传递参数，以便您能更方便地执行
+动态关系查询。例如，您可以声明一个 `bigOrders`  关联如下，
 
 ```php
 class Customer extends ActiveRecord
 {
-    public function getBigOrders($threshold = 100)
+    public function getBigOrders($threshold = 100) // 老司机的提醒：$threshold 参数一定一定要给个默认值
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id'])
             ->where('subtotal > :threshold', [':threshold' => $threshold])
@@ -873,7 +871,7 @@ class Customer extends ActiveRecord
 }
 ```
 
-Then you will be able to perform the following relational queries:
+然后你就可以执行以下关联查询：
 
 ```php
 // SELECT * FROM `order` WHERE `customer_id` = 123 AND `subtotal` > 200 ORDER BY `id`
@@ -884,17 +882,17 @@ $orders = $customer->bigOrders;
 ```
 
 
-### Relations via a Junction Table <span id="junction-table"></span>
+### 中间关联表 <span id="junction-table"></span>
 
-In database modelling, when the multiplicity between two related tables is many-to-many, 
-a [junction table](https://en.wikipedia.org/wiki/Junction_table) is usually introduced. For example, the `order`
-table and the `item` table may be related via a junction table named `order_item`. One order will then correspond
-to multiple order items, while one product item will also correspond to multiple order items.
+在数据库建模中，当两个关联表之间的对应关系是多对多时，
+通常会引入一个 [连接表](https://en.wikipedia.org/wiki/Junction_table)。例如，`order` 表
+和 `item` 表可以通过名为 `order_item` 的连接表相关联。一个 order 将关联多个 order items，
+而一个 order item 也会关联到多个 orders。
 
-When declaring such relations, you would call either [[yii\db\ActiveQuery::via()|via()]] or [[yii\db\ActiveQuery::viaTable()|viaTable()]]
-to specify the junction table. The difference between [[yii\db\ActiveQuery::via()|via()]] and [[yii\db\ActiveQuery::viaTable()|viaTable()]]
-is that the former specifies the junction table in terms of an existing relation name while the latter directly uses
-the junction table. For example,
+当声明这种表关联后，您可以调用 [[yii\db\ActiveQuery::via()|via()]] 或 [[yii\db\ActiveQuery::viaTable()|viaTable()]]
+指明连接表。[[yii\db\ActiveQuery::via()|via()]] 和 [[yii\db\ActiveQuery::viaTable()|viaTable()]] 之间的区别是
+前者是根据现有的关联名称来指定连接表，而后者直接使用
+连接表。例如，
 
 ```php
 class Order extends ActiveRecord
@@ -907,7 +905,7 @@ class Order extends ActiveRecord
 }
 ```
 
-or alternatively,
+或者,
 
 ```php
 class Order extends ActiveRecord
@@ -925,7 +923,7 @@ class Order extends ActiveRecord
 }
 ```
 
-The usage of relations declared with a junction table is the same as that of normal relations. For example,
+使用连接表声明的关联和正常声明的关联是等同的，例如，
 
 ```php
 // SELECT * FROM `order` WHERE `id` = 100
@@ -933,17 +931,17 @@ $order = Order::findOne(100);
 
 // SELECT * FROM `order_item` WHERE `order_id` = 100
 // SELECT * FROM `item` WHERE `item_id` IN (...)
-// returns an array of Item objects
+// 返回 Item 类组成的数组
 $items = $order->items;
 ```
 
 
-### Lazy Loading and Eager Loading <span id="lazy-eager-loading"></span>
+### 延迟加载和即时加载（又称惰性加载与贪婪加载） <span id="lazy-eager-loading"></span>
 
-In [Accessing Relational Data](#accessing-relational-data), we explained that you can access a relation property
-of an Active Record instance like accessing a normal object property. A SQL statement will be executed only when
-you access the relation property the first time. We call such relational data accessing method *lazy loading*.
-For example,
+在 [访问关联数据](#accessing-relational-data) 中，我们解释说可以像问正常的对象属性那样
+访问 AR 实例的关联属性。SQL 语句仅在
+你第一次访问关联属性时执行。我们称这种关联数据访问方法为 *延迟加载*。
+例如，
 
 ```php
 // SELECT * FROM `customer` WHERE `id` = 123
@@ -952,13 +950,13 @@ $customer = Customer::findOne(123);
 // SELECT * FROM `order` WHERE `customer_id` = 123
 $orders = $customer->orders;
 
-// no SQL executed
+// 没有 SQL 语句被执行
 $orders2 = $customer->orders;
 ```
 
-Lazy loading is very convenient to use. However, it may suffer from a performance issue when you need to access
-the same relation property of multiple Active Record instances. Consider the following code example. How many 
-SQL statements will be executed?
+延迟加载使用非常方便。但是，当你需要访问相同的具有多个 AR 实例的关联属性时，
+可能会遇到性能问题。请思考一下以下代码示例。
+有多少 SQL 语句会被执行？
 
 ```php
 // SELECT * FROM `customer` LIMIT 100
@@ -970,11 +968,11 @@ foreach ($customers as $customer) {
 }
 ```
 
-As you can see from the code comment above, there are 101 SQL statements being executed! This is because each
-time you access the `orders` relation property of a different `Customer` object in the for-loop, a SQL statement 
-will be executed.
+你瞅瞅，上面的代码会产生 101 次 SQL 查询！
+这是因为每次你访问 for 循环中不同的 `Customer` 对象的 `orders` 关联属性时，SQL 语句
+都会被执行一次。
 
-To solve this performance problem, you can use the so-called *eager loading* approach as shown below,
+为了解决上述的性能问题，你可以使用所谓的 *即时加载*，如下所示，
 
 ```php
 // SELECT * FROM `customer` LIMIT 100;
@@ -985,30 +983,30 @@ $customers = Customer::find()
     ->all();
 
 foreach ($customers as $customer) {
-    // no SQL executed
+    // 没有任何的 SQL 执行
     $orders = $customer->orders;
 }
 ```
 
-By calling [[yii\db\ActiveQuery::with()]], you instruct Active Record to bring back the orders for the first 100
-customers in one single SQL statement. As a result, you reduce the number of the executed SQL statements from 101 to 2!
+通过调用 [[yii\db\ActiveQuery::with()]] 方法，你使 AR 在一条 SQL 语句里就返回了这 100 位客户的订单。
+结果就是，你把要执行的 SQL 语句从 101 减少到 2 条！
 
-You can eagerly load one or multiple relations. You can even eagerly load *nested relations*. A nested relation is a relation
-that is declared within a related Active Record class. For example, `Customer` is related with `Order` through the `orders`
-relation, and `Order` is related with `Item` through the `items` relation. When querying for `Customer`, you can eagerly
-load `items` using the nested relation notation `orders.items`. 
+你可以即时加载一个或多个关联。 你甚至可以即时加载 *嵌套关联* 。嵌套关联是一种
+在相关的 AR 类中声明的关联。例如，`Customer` 通过 `orders` 关联属性 与 `Order` 相关联，
+`Order` 与 `Item` 通过 `items` 关联属性相关联。 当查询 `Customer` 时，您可以即时加载
+通过嵌套关联符 `orders.items` 关联的 `items`。
 
-The following code shows different usage of [[yii\db\ActiveQuery::with()|with()]]. We assume the `Customer` class
-has two relations `orders` and `country`, while the `Order` class has one relation `items`.
+以下代码展示了 [[yii\db\ActiveQuery::with()|with()]] 的各种用法。我们假设 `Customer` 类
+有两个关联 `orders` 和 `country` ，而 `Order` 类有一个关联 `items`。
 
 ```php
-// eager loading both "orders" and "country"
+//  即时加载 "orders" and "country"
 $customers = Customer::find()->with('orders', 'country')->all();
-// equivalent to the array syntax below
+// 等同于使用数组语法 如下
 $customers = Customer::find()->with(['orders', 'country'])->all();
-// no SQL executed 
+// 没有任何的 SQL 执行
 $orders= $customers[0]->orders;
-// no SQL executed 
+// 没有任何的 SQL 执行
 $country = $customers[0]->country;
 
 // eager loading "orders" and the nested relation "orders.items"
@@ -1018,19 +1016,19 @@ $customers = Customer::find()->with('orders.items')->all();
 $items = $customers[0]->orders[0]->items;
 ```
 
-You can eagerly load deeply nested relations, such as `a.b.c.d`. All parent relations will be eagerly loaded.
-That is, when you call [[yii\db\ActiveQuery::with()|with()]] using `a.b.c.d`, you will eagerly load
-`a`, `a.b`, `a.b.c` and `a.b.c.d`.  
+你也可以即时加载更深的嵌套关联，比如 `a.b.c.d`。所有的父关联都会被即时加载。
+那就是, 当你调用 [[yii\db\ActiveQuery::with()|with()]] 来 with `a.b.c.d`, 你将即时加载
+`a`, `a.b`, `a.b.c` and `a.b.c.d`。
 
-> Info: In general, when eagerly loading `N` relations among which `M` relations are defined with a 
-  [junction table](#junction-table), a total number of `N+M+1` SQL statements will be executed.
-  Note that a nested relation `a.b.c.d` counts as 4 relations.
+> 提示：一般来说，当即时加载 `N` 个关联，另有 `M` 个关联
+  通过 [连接表](#junction-table) 声明，则会有 `N+M+1` 条 SQL 语句被执行。
+  请注意这样的的嵌套关联 `a.b.c.d` 算四个关联。
 
-When eagerly loading a relation, you can customize the corresponding relational query using an anonymous function.
-For example,
+当即时加载一个关联，你可以通过匿名函数自定义相应的关联查询。
+例如，
 
 ```php
-// find customers and bring back together their country and active orders
+// 查找所有客户，并带上他们国家和活跃订单
 // SELECT * FROM `customer`
 // SELECT * FROM `country` WHERE `id` IN (...)
 // SELECT * FROM `order` WHERE `customer_id` IN (...) AND `status` = 1
@@ -1042,31 +1040,31 @@ $customers = Customer::find()->with([
 ])->all();
 ```
 
-When customizing the relational query for a relation, you should specify the relation name as an array key
-and use an anonymous function as the corresponding array value. The anonymous function will receive a `$query` parameter
-which represents the [[yii\db\ActiveQuery]] object used to perform the relational query for the relation.
-In the code example above, we are modifying the relational query by appending an additional condition about order status.
+自定义关联查询时，应该将关联名称指定为数组的键
+并使用匿名函数作为相应的数组的值。匿名函数将接受一个 `$query` 参数
+它用于表示这个自定义的关联执行关联查询的 [[yii\db\ActiveQuery]] 对象。
+在上面的代码示例中，我们通过附加一个关于订单状态的附加条件来修改关联查询。
 
-> Note: If you call [[yii\db\Query::select()|select()]] while eagerly loading relations, you have to make sure
-> the columns referenced in the relation declarations are being selected. Otherwise, the related models may not 
-> be loaded properly. For example,
+> 提示：如果你在即时加载的关联中调用 [[yii\db\Query::select()|select()]] 方法，你要确保
+> 在关联声明中引用的列必须被 select。否则，相应的模型（Models）可能
+> 无法加载。例如，
 >
 > ```php
 > $orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
-> // $orders[0]->customer is always `null`. To fix the problem, you should do the following:
+> // $orders[0]->customer 会一直是 `null`。你应该这样写，以解决这个问题：
 > $orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
 > ```
 
 
-### Joining with Relations <span id="joining-with-relations"></span>
+### 关联关系的 JOIN 查询 <span id="joining-with-relations"></span>
 
-> Note: The content described in this subsection is only applicable to relational databases, such as
-  MySQL, PostgreSQL, etc.
+> 提示：这小节的内容仅仅适用于关系数据库，
+  比如 MySQL，PostgreSQL 等等。
 
-The relational queries that we have described so far only reference the primary table columns when
-querying for the primary data. In reality we often need to reference columns in the related tables. For example,
-we may want to bring back the customers who have at least one active order. To solve this problem, we can
-build a join query like the following:
+到目前为止，我们所介绍的关联查询，仅仅是使用主表列
+去查询主表数据。实际应用中，我们经常需要在关联表中使用这些列。例如，
+我们可能要取出至少有一个活跃订单的客户。为了解决这个问题，我们可以
+构建一个 join 查询，如下所示：
 
 ```php
 // SELECT `customer`.* FROM `customer`
@@ -1082,10 +1080,10 @@ $customers = Customer::find()
     ->all();
 ```
 
-> Note: It is important to disambiguate column names when building relational queries involving JOIN SQL statements.
-  A common practice is to prefix column names with their corresponding table names.
+> 提示：在构建涉及 JOIN SQL 语句的连接查询时，清除列名的歧义很重要。
+  通常的做法是将表名称作为前缀加到对应的列名称前。
 
-However, a better approach is to exploit the existing relation declarations by calling [[yii\db\ActiveQuery::joinWith()]]:
+但是，更好的方法是通过调用 [[yii\db\ActiveQuery::joinWith()]] 来利用已存在的关联声明：
 
 ```php
 $customers = Customer::find()
@@ -1094,18 +1092,18 @@ $customers = Customer::find()
     ->all();
 ```
 
-Both approaches execute the same set of SQL statements. The latter approach is much cleaner and drier, though. 
+两种方法都执行相同的 SQL 语句集。然而，后一种方法更干净、简洁。
 
-By default, [[yii\db\ActiveQuery::joinWith()|joinWith()]] will use `LEFT JOIN` to join the primary table with the 
-related table. You can specify a different join type (e.g. `RIGHT JOIN`) via its third parameter `$joinType`. If
-the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]], instead.
+默认的，[[yii\db\ActiveQuery::joinWith()|joinWith()]] 会使用 `LEFT JOIN` 去连接主表和关联表。
+你可以通过 `$joinType` 参数指定不同的连接类型（比如 `RIGHT JOIN`）。
+如果你想要的连接类型是 `INNER JOIN`，你可以直接用 [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] 方法代替。
 
-Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
-If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as `false`. 
+调用 [[yii\db\ActiveQuery::joinWith()|joinWith()]] 方法会默认 [即时加载](#lazy-eager-loading) 相应的关联数据。
+如果你不需要那些关联数据，你可以指定它的第二个参数 $eagerLoading` 为 `false`。
 
-Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
-queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
-and [[yii\db\ActiveQuery::joinWith()|joinWith()]]. For example,
+和 [[yii\db\ActiveQuery::with()|with()]] 一样，你可以 join 多个关联表；你可以动态的自定义
+你的关联查询；你可以使用嵌套关联进行 join。你也可以将 [[yii\db\ActiveQuery::with()|with()]]
+和 [[yii\db\ActiveQuery::joinWith()|joinWith()]] 组合起来使用。例如：
 
 ```php
 $customers = Customer::find()->joinWith([
@@ -1116,8 +1114,8 @@ $customers = Customer::find()->joinWith([
     ->all();
 ```
 
-Sometimes when joining two tables, you may need to specify some extra conditions in the `ON` part of the JOIN query.
-This can be done by calling the [[yii\db\ActiveQuery::onCondition()]] method like the following:
+有时，当连接两个表时，你可能需要在 JOIN 查询的 `ON` 部分中指定一些额外的条件。
+这可以通过调用 [[yii\db\ActiveQuery::onCondition()]] 方法来完成，如下所示：
 
 ```php
 // SELECT `customer`.* FROM `customer`
@@ -1131,18 +1129,18 @@ $customers = Customer::find()->joinWith([
 ])->all();
 ```
 
-This above query brings back *all* customers, and for each customer it brings back all active orders.
-Note that this differs from our earlier example which only brings back customers who have at least one active order.
+以上查询取出 *所有* 客户，并为每个客户取回所有活跃订单。
+港真，这与我们之前的例子不同，后者仅取出至少有一个活跃订单的客户。
 
-> Info: When [[yii\db\ActiveQuery]] is specified with a condition via [[yii\db\ActiveQuery::onCondition()|onCondition()]],
-  the condition will be put in the `ON` part if the query involves a JOIN query. If the query does not involve
-  JOIN, the on-condition will be automatically appended to the `WHERE` part of the query.
-  Thus it may only contain conditions including columns of the related table.
+> 提示：当通过 [[yii\db\ActiveQuery::onCondition()|onCondition()]] 修改 [[yii\db\ActiveQuery]] 时，
+  如果查询涉及到 JOIN 查询，那么条件将被放在 `ON` 部分。如果查询不涉及
+  JOIN ，条件将自动附加到查询的 `WHERE` 部分。
+  因此，它可以只包含 包含了关联表的列 的条件。（译者注：意思是 onCondition() 中可以只写关联表的列，主表的列写不写都行）
 
 #### Relation table aliases <span id="relation-table-aliases"></span>
 
-As noted before, when using JOIN in a query, we need to disambiguate column names. Therefor often an alias is
-defined for a table. Setting an alias for the relational query would be possible by customizing the relation query in the following way:
+如前所述，当在查询中使用 JOIN 时，我们需要消除列名的歧义。因此通常为一张表定义
+一个别名。可以通过以下列方式自定义关联查询来设置关联查询的别名：
 
 ```php
 $query->joinWith([
@@ -1152,17 +1150,17 @@ $query->joinWith([
 ])
 ```
 
-This however looks very complicated and involves either hardcoding the related objects table name or calling `Order::tableName()`.
-Since version 2.0.7, Yii provides a shortcut for this. You may now define and use the alias for the relation table like the following:
+然而，这看起来很复杂和耦合，不管是对表名使用硬编码或是调用 `Order::tableName()`。
+从 2.0.7 版本起，Yii 为此提供了一个快捷方法。您现在可以定义和使用关联表的别名，如下所示：
 
 ```php
-// join the orders relation and sort the result by orders.id
+// 连接 `orders` 关联表并根据 `orders.id` 排序
 $query->joinWith(['orders o'])->orderBy('o.id');
 ```
 
-The above syntax works for simple relations. If you need an alias for an intermediate table when joining over
-nested relations, e.g. `$query->joinWith(['orders.product'])`,
-you need to nest the joinWith calls like in the following example:
+上述语法适用于简单的关联。如果在 join 嵌套关联时，
+需要用到中间表的别名，例如 `$query->joinWith(['orders.product'])`，
+你需要嵌套 joinWith 调用，如下例所示：
 
 ```php
 $query->joinWith(['orders o' => function($q) {
