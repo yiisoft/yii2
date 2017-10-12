@@ -1169,10 +1169,10 @@ $query->joinWith(['orders o' => function($q) {
     ->where('o.amount > 100');
 ```
 
-### Inverse Relations <span id="inverse-relations"></span>
+### 反向关联 <span id="inverse-relations"></span>
 
-Relation declarations are often reciprocal between two Active Record classes. For example, `Customer` is related 
-to `Order` via the `orders` relation, and `Order` is related back to `Customer` via the `customer` relation.
+两个 AR 类之间的关联声明往往像 *倒数* 那样。例如，`Customer` 是
+通过 `orders` 关联到 `Order` ，而`Order` 通过 `customer` 又关联回到了 `Customer`。
 
 ```php
 class Customer extends ActiveRecord
@@ -1192,7 +1192,7 @@ class Order extends ActiveRecord
 }
 ```
 
-Now consider the following piece of code:
+现在开一下脑洞：
 
 ```php
 // SELECT * FROM `customer` WHERE `id` = 123
@@ -1204,17 +1204,17 @@ $order = $customer->orders[0];
 // SELECT * FROM `customer` WHERE `id` = 123
 $customer2 = $order->customer;
 
-// displays "not the same"
+// 显示 "not the same"
 echo $customer2 === $customer ? 'same' : 'not the same';
 ```
 
-We would think `$customer` and `$customer2` are the same, but they are not! Actually they do contain the same
-customer data, but they are different objects. When accessing `$order->customer`, an extra SQL statement
-is executed to populate a new object `$customer2`.
+我们原本认为 `$customer` 和 `$customer2` 是一样的，但不是！其实他们确实包含相同的
+客户数据，但它们是不同的对象。 访问 `$order->customer` 时，需要执行额外的 SQL 语句，
+以填充出一个新对象 `$customer2`。
 
-To avoid the redundant execution of the last SQL statement in the above example, we should tell Yii that
-`customer` is an *inverse relation* of `orders` by calling the [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] method
-like shown below:
+为了避免上述例子中最后一个 SQL 语句被冗余执行，我们应该告诉 Yii 
+`customer` 是 `orders` 的 *反向关联*，可以通过调用 [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] 方法声明，
+如下所示：
 
 ```php
 class Customer extends ActiveRecord
@@ -1226,7 +1226,7 @@ class Customer extends ActiveRecord
 }
 ```
 
-With this modified relation declaration, we will have:
+这样修改关联声明后：
 
 ```php
 // SELECT * FROM `customer` WHERE `id` = 123
@@ -1238,20 +1238,20 @@ $order = $customer->orders[0];
 // No SQL will be executed
 $customer2 = $order->customer;
 
-// displays "same"
+// 输出 "same"
 echo $customer2 === $customer ? 'same' : 'not the same';
 ```
 
-> Note: Inverse relations cannot be defined for relations involving a [junction table](#junction-table).
-  That is, if a relation is defined with [[yii\db\ActiveQuery::via()|via()]] or [[yii\db\ActiveQuery::viaTable()|viaTable()]],
-  you should not call [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] further.
+> 提示：反向关联不能用在有 [连接表](#junction-table) 关联声明中。
+  也就是说，如果一个关联关系通过 [[yii\db\ActiveQuery::via()|via()]] 或 [[yii\db\ActiveQuery::viaTable()|viaTable()]] 声明，
+  你就不能再调用 [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] 了。
 
 
-## Saving Relations <span id="saving-relations"></span>
+## 保存关联数据 <span id="saving-relations"></span>
 
-When working with relational data, you often need to establish relationships between different data or destroy
-existing relationships. This requires setting proper values for the columns that define the relations. Using Active Record,
-you may end up writing the code like the following:
+在使用关联数据时，您经常需要建立不同数据之间的关联或销毁
+现有关联。这需要为定义的关联的列设置正确的值。通过使用 AR 活动记录，
+你就可以编写如下代码：
 
 ```php
 $customer = Customer::findOne(123);
@@ -1259,12 +1259,12 @@ $order = new Order();
 $order->subtotal = 100;
 // ...
 
-// setting the attribute that defines the "customer" relation in Order
+// 为 Order 设置属性以定义与 "customer" 的关联关系
 $order->customer_id = $customer->id;
 $order->save();
 ```
 
-Active Record provides the [[yii\db\ActiveRecord::link()|link()]] method that allows you to accomplish this task more nicely:
+AR 提供了 [[yii\db\ActiveRecord::link()|link()]] 方法，可以更好地完成此任务：
 
 ```php
 $customer = Customer::findOne(123);
@@ -1275,53 +1275,53 @@ $order->subtotal = 100;
 $order->link('customer', $customer);
 ```
 
-The [[yii\db\ActiveRecord::link()|link()]] method requires you to specify the relation name and the target Active Record
-instance that the relationship should be established with. The method will modify the values of the attributes that
-link two Active Record instances and save them to the database. In the above example, it will set the `customer_id`
-attribute of the `Order` instance to be the value of the `id` attribute of the `Customer` instance and then save it
-to the database.
+[[yii\db\ActiveRecord::link()|link()]] 方法需要指定关联名
+和要建立关联的目标 AR 实例。该方法将修改属性的值
+以连接两个 AR 实例，并将其保存到数据库。在上面的例子中，它将设置 `Order` 实例的 `customer_id` 属性
+为 `Customer` 实例的 `id` 属性的值，然后保存
+到数据库。
 
-> Note: You cannot link two newly created Active Record instances.
+> 提示：你不能 link() 两个新的 AR 实例。（译者注：其中的一个必须是数据库中查询出来的）
 
-The benefit of using [[yii\db\ActiveRecord::link()|link()]] is even more obvious when a relation is defined via
-a [junction table](#junction-table). For example, you may use the following code to link an `Order` instance
-with an `Item` instance:
+当一个关联关系通过 [连接表](#junction-table) 定义时，此 [[yii\db\ActiveRecord::link()|link()]] 方法更能体现在党的领导下的中国特色社会主义的优越性。
+例如，你可以使用以下代码 link() `Order` 实例
+和 `Item` 实例：
 
 ```php
 $order->link('items', $item);
 ```
 
-The above code will automatically insert a row in the `order_item` junction table to relate the order with the item.
+上述代码会自动在 `order_item` 关联表中插入一行，以关联 order 和 item 这两个数据记录。
 
-> Info: The [[yii\db\ActiveRecord::link()|link()]] method will NOT perform any data validation while
-  saving the affected Active Record instance. It is your responsibility to validate any input data before
-  calling this method.
+> 提示：[[yii\db\ActiveRecord::link()|link()]] 方法在保存相应的 AR 实例时，
+  将不会执行任何数据验证。在调用此方法之前，
+  您应当验证所有的输入数据。
 
-The opposite operation to [[yii\db\ActiveRecord::link()|link()]] is [[yii\db\ActiveRecord::unlink()|unlink()]]
-which breaks an existing relationship between two Active Record instances. For example,
+[[yii\db\ActiveRecord::link()|link()]] 方法的反向操作是 [[yii\db\ActiveRecord::unlink()|unlink()]] 方法，
+这将可以断掉两个 AR 实例间的已经存在了的关联关系。例如，
 
 ```php
 $customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 
-By default, the [[yii\db\ActiveRecord::unlink()|unlink()]] method will set the foreign key value(s) that specify
-the existing relationship to be `null`. You may, however, choose to delete the table row that contains the foreign key value
-by passing the `$delete` parameter as `true` to the method.
+默认情况下，[[yii\db\ActiveRecord::unlink()|unlink()]] 方法将设置指定的外键值，
+以把现有的关联指定为 `null`。此外，你可以选择通过将 `$delete` 参数设置为`true` 传递给方法，
+删除包含此外键值的表记录行。
  
-When a junction table is involved in a relation, calling [[yii\db\ActiveRecord::unlink()|unlink()]] will cause
-the foreign keys in the junction table to be cleared, or the deletion of the corresponding row in the junction table
-if `$delete` is `true`.
+当关联关系中有连接表时，调用 [[yii\db\ActiveRecord::unlink()|unlink()]] 时，
+如果 `$delete` 参数是 `true` 的话，将导致
+连接表中的外键或相应的行被删除。
 
 
-## Cross-Database Relations <span id="cross-database-relations"></span> 
+## 跨数据库关联 <span id="cross-database-relations"></span> 
 
-Active Record allows you to declare relations between Active Record classes that are powered by different databases.
-The databases can be of different types (e.g. MySQL and PostgreSQL, or MS SQL and MongoDB), and they can run on 
-different servers. You can use the same syntax to perform relational queries. For example,
+AR 活动记录允许您在不同数据库驱动的 AR 类之间声明关联关系。
+这些数据库可以是不同的类型（例如 MySQL 和 PostgreSQL ，或是 MS SQL 和 MongoDB），它们也可以运行在
+不同的服务器上。你可以使用相同的语法来执行关联查询。例如，
 
 ```php
-// Customer is associated with the "customer" table in a relational database (e.g. MySQL)
+// Customer 对应的表是关系数据库中（比如 MySQL）的 "customer" 表
 class Customer extends \yii\db\ActiveRecord
 {
     public static function tableName()
@@ -1331,12 +1331,12 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getComments()
     {
-        // a customer has many comments
+        // 一个 customer 有很多条评论（comments）
         return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
     }
 }
 
-// Comment is associated with the "comment" collection in a MongoDB database
+// Comment 对应的是 MongoDB 数据库中的  "comment" 集合（译者注：MongoDB 中的集合相当于 MySQL 中的表）
 class Comment extends \yii\mongodb\ActiveRecord
 {
     public static function collectionName()
@@ -1346,7 +1346,7 @@ class Comment extends \yii\mongodb\ActiveRecord
 
     public function getCustomer()
     {
-        // a comment has one customer
+        // 一条评论对应一位 customer
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }
@@ -1354,17 +1354,17 @@ class Comment extends \yii\mongodb\ActiveRecord
 $customers = Customer::find()->with('comments')->all();
 ```
 
-You can use most of the relational query features that have been described in this section. 
+本节中描述的大多数关联查询功能，你都可以抄一抄。
  
-> Note: Usage of [[yii\db\ActiveQuery::joinWith()|joinWith()]] is limited to databases that allow cross-database JOIN queries.
-  For this reason, you cannot use this method in the above example because MongoDB does not support JOIN.
+> 提示：[[yii\db\ActiveQuery::joinWith()|joinWith()]] 这个功能限制于某些数据库是否支持跨数据库 JOIN 查询。
+  因此，你再上述的代码里就不能用此方法了，因为 MongoDB 不知道 JOIN 查询。
 
 
-## Customizing Query Classes <span id="customizing-query-classes"></span>
+## 自定义查询类 <span id="customizing-query-classes"></span>
 
-By default, all Active Record queries are supported by [[yii\db\ActiveQuery]]. To use a customized query class
-in an Active Record class, you should override the [[yii\db\ActiveRecord::find()]] method and return an instance
-of your customized query class. For example,
+默认情况下，[[yii\db\ActiveQuery]] 支持所有 AR 查询。要在 AR 类中使用自定义的查询类，
+您应该重写 [[yii\db\ActiveRecord::find()]] 方法并返回一个你自定义查询类的实例。 
+例如，
 
 ```php
 // file Comment.php
@@ -1381,10 +1381,10 @@ class Comment extends ActiveRecord
 }
 ```
 
-Now whenever you are performing a query (e.g. `find()`, `findOne()`) or defining a relation (e.g. `hasOne()`)
-with `Comment`, you will be calling an instance of `CommentQuery` instead of `ActiveQuery`.
+现在，对于 `Comment` 类，不管你执行查询（比如 `find()`、`findOne()`），还是定义一个关联（比如 `hasOne()`），
+你都将调用到 `CommentQuery` 实例，而不再是 `ActiveQuery` 实例。
 
-You now have to define the `CommentQuery` class, which can be customized in many creative ways to improve your query building experience. For example,
+现在你可以定义 `CommentQuery` 类了，发挥你的奇技淫巧，以改善查询构建体验。例如，
 
 ```php
 // file CommentQuery.php
@@ -1394,14 +1394,14 @@ use yii\db\ActiveQuery;
 
 class CommentQuery extends ActiveQuery
 {
-    // conditions appended by default (can be skipped)
+    // 默认加上一些条件（可以跳过）
     public function init()
     {
         $this->andOnCondition(['deleted' => false]);
         parent::init();
     }
 
-    // ... add customized query methods here ...
+    // ... 在这里加上自定义的查询方法 ...
 
     public function active($state = true)
     {
@@ -1410,20 +1410,20 @@ class CommentQuery extends ActiveQuery
 }
 ```
 
-> Note: Instead of calling [[yii\db\ActiveQuery::onCondition()|onCondition()]], you usually should call
-  [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] or [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] to append additional conditions when defining new query building methods so that any existing conditions are not overwritten.
+> 提示：作为 [[yii\db\ActiveQuery::onCondition()|onCondition()]] 方法的替代方案，你应当
+  调用 [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] 或 [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] 方法来附加新增的条件，不然在一个新定义的查询方法，已存在的条件可能会被覆盖。
 
-This allows you to write query building code like the following:
+然后你就可以先下面这样构建你的查询了：
 
 ```php
 $comments = Comment::find()->active()->all();
 $inactiveComments = Comment::find()->active(false)->all();
 ```
 
-> Tip: In big projects, it is recommended that you use customized query classes to hold most query-related code
-  so that the Active Record classes can be kept clean.
+> 提示：在大型项目中，建议您使用自定义查询类来容纳大多数与查询相关的代码，
+  以使 AR 类保持简洁。
 
-You can also use the new query building methods when defining relations about `Comment` or performing relational query:
+您还可以在 `Comment` 关联关系的定义中或在执行关联查询时，使用刚刚新建查询构建方法：
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1436,7 +1436,7 @@ class Customer extends \yii\db\ActiveRecord
 
 $customers = Customer::find()->joinWith('activeComments')->all();
 
-// or alternatively
+// 或者这样
 class Customer extends \yii\db\ActiveRecord
 {
     public function getComments()
@@ -1452,22 +1452,22 @@ $customers = Customer::find()->joinWith([
 ])->all();
 ```
 
-> Info: In Yii 1.1, there is a concept called *scope*. Scope is no longer directly supported in Yii 2.0,
-  and you should use customized query classes and query methods to achieve the same goal.
+> 提示：在 Yii 1.1 中，有个概念叫做 *命名范围*。命名范围在 Yii 2.0 中不再支持，
+  你依然可以使用自定义查询类、查询方法来达到一样的效果。
 
 
-## Selecting extra fields
+## 选择额外的字段
 
-When Active Record instance is populated from query results, its attributes are filled up by corresponding column
-values from received data set.
+当 AR 实例从查询结果中填充时，从数据结果集中，
+其属性的值将被相应的列填充。
 
-You are able to fetch additional columns or values from query and store it inside the Active Record.
-For example, assume we have a table named `room`, which contains information about rooms available in the hotel.
-Each room stores information about its geometrical size using fields `length`, `width`, `height`.
-Imagine we need to retrieve list of all available rooms with their volume in descendant order.
-So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want `volume`
-to be displayed in the list.
-To achieve the goal, you need to declare an extra field in your `Room` Active Record class, which will store `volume` value:
+你可以从查询中获取其他列或值，并将其存储在 AR 活动记录中。
+例如，假设我们有一个名为 `room` 的表，其中包含有关酒店可用房间的信息。
+每个房间使用字段 `length`，`width`，`height` 存储有关其空间大小的信息。
+想象一下，我们需要检索出所有可用房间的列表，并按照体积大小倒序排列。
+你不可能使用 PHP 来计算体积，但是，由于我们需要按照它的值对这些记录进行排序，你依然需要 `volume` （体积）
+来显示在这个列表中。
+为了达到这个目标，你需要在你的 `Room` 活动记录类中声明一个额外的字段，它将存储 `volume` 的值：
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1478,25 +1478,25 @@ class Room extends \yii\db\ActiveRecord
 }
 ```
 
-Then you need to compose a query, which calculates volume of the room and performs the sort:
+然后，你需要撰写一个查询，它可以计算房间的大小并执行排序：
 
 ```php
 $rooms = Room::find()
     ->select([
         '{{room}}.*', // select all columns
-        '([[length]] * [[width]] * [[height]]) AS volume', // calculate a volume
+        '([[length]] * [[width]] * [[height]]) AS volume', // 计算体积
     ])
-    ->orderBy('volume DESC') // apply sort
+    ->orderBy('volume DESC') // 使用排序
     ->all();
 
 foreach ($rooms as $room) {
-    echo $room->volume; // contains value calculated by SQL
+    echo $room->volume; // 包含了由 SQL 计算出的值
 }
 ```
 
-Ability to select extra fields can be exceptionally useful for aggregation queries.
-Assume you need to display a list of customers with the count of orders they have made.
-First of all, you need to declare a `Customer` class with `orders` relation and extra field for count storage:
+额外字段的特性对于聚合查询非常有用。
+假设您需要显示一系列客户的订单数量。
+首先，您需要使用 `orders` 关系声明一个 `Customer` 类，并指定额外字段来存储 count 结果：
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1512,22 +1512,22 @@ class Customer extends \yii\db\ActiveRecord
 }
 ```
 
-Then you can compose a query, which joins the orders and calculates their count:
+然后你可以编写一个查询来 JOIN 订单表，并计算订单的总数：
 
 ```php
 $customers = Customer::find()
     ->select([
-        '{{customer}}.*', // select all customer fields
-        'COUNT({{order}}.id) AS ordersCount' // calculate orders count
+        '{{customer}}.*', // select customer 表所有的字段
+        'COUNT({{order}}.id) AS ordersCount' // 计算订单总数
     ])
-    ->joinWith('orders') // ensure table junction
-    ->groupBy('{{customer}}.id') // group the result to ensure aggregation function works
+    ->joinWith('orders') // 连接表
+    ->groupBy('{{customer}}.id') // 分组查询，以确保聚合函数生效
     ->all();
 ```
 
-A disadvantage of using this method would be that, if the information isn't loaded on the SQL query - it has to be calculated
-separately. Thus, if you have found particular record via regular query without extra select statements, it
-will be unable to return actual value for the extra field. Same will happen for the newly saved record.
+使用此方法的一个缺点是，如果数据不是从 SQL 查询上加载的，它必须再单独计算一遍。
+因此，如果你通过常规查询获取个别的数据记录时，它没有额外的 select 语句，那么它
+将无法返回额外字段的实际值。新保存的记录一样会发生这种情。
 
 ```php
 $room = new Room();
@@ -1535,11 +1535,11 @@ $room->length = 100;
 $room->width = 50;
 $room->height = 2;
 
-$room->volume; // this value will be `null`, since it was not declared yet
+$room->volume; // 为 `null`, 因为它没有被声明（赋值）
 ```
 
-Using the [[yii\db\BaseActiveRecord::__get()|__get()]] and [[yii\db\BaseActiveRecord::__set()|__set()]] magic methods
-we can emulate the behavior of a property:
+通过 [[yii\db\BaseActiveRecord::__get()|__get()]] 和 [[yii\db\BaseActiveRecord::__set()|__set()]] 魔术方法
+我们可以将属性赋予行为特性：
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1570,10 +1570,10 @@ class Room extends \yii\db\ActiveRecord
 }
 ```
 
-When the select query doesn't provide the volume, the model will be able to calculate it automatically using
-the attributes of the model.
+当 select 查询不提供 volume 体积时，这模型将能够自动计算体积的值出来
+，当访问模型的属性的时候。
 
-You can calculate the aggregation fields as well using defined relations:
+当定义关联关系的时候，你也可以计算聚合字段：
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1588,11 +1588,11 @@ class Customer extends \yii\db\ActiveRecord
     public function getOrdersCount()
     {
         if ($this->isNewRecord) {
-            return null; // this avoid calling a query searching for null primary keys
+            return null; // 这样可以避免调用空主键进行查询
         }
 
         if ($this->_ordersCount === null) {
-            $this->setOrdersCount($this->getOrders()->count()); // calculate aggregation on demand from relation
+            $this->setOrdersCount($this->getOrders()->count()); // 根据关联关系按需计算聚合字段
         }
 
         return $this->_ordersCount;
@@ -1607,29 +1607,29 @@ class Customer extends \yii\db\ActiveRecord
 }
 ```
 
-With this code, in case 'ordersCount' is present in 'select' statement - `Customer::ordersCount` will be populated
-by query results, otherwise it will be calculated on demand using `Customer::orders` relation.
+使用此代码，如果 'select' 语句中存在 'ordersCount'  - 它会从查询结果集获取数据填充 `Customer::ordersCount` 属性，
+，否则它会在被访问的时候，使用 `Customer::orders` 关联按需计算。
 
-This approach can be as well used for creation of the shortcuts for some relational data, especially for the aggregation.
-For example:
+这种方法也适用于创建一些关联数据的快捷访问方式，特别是对于聚合。
+例如：
 
 ```php
 class Customer extends \yii\db\ActiveRecord
 {
     /**
-     * Defines read-only virtual property for aggregation data.
+     * 为聚合数据定义一个只读的虚拟属性
      */
     public function getOrdersCount()
     {
         if ($this->isNewRecord) {
-            return null; // this avoid calling a query searching for null primary keys
+            return null; //  这样可以避免调用空主键进行查询
         }
         
         return empty($this->ordersAggregation) ? 0 : $this->ordersAggregation[0]['counted'];
     }
 
     /**
-     * Declares normal 'orders' relation.
+     * 声明一个常规的 'orders' 关联
      */
     public function getOrders()
     {
@@ -1637,7 +1637,7 @@ class Customer extends \yii\db\ActiveRecord
     }
 
     /**
-     * Declares new relation based on 'orders', which provides aggregation.
+     * 基于 'orders' 关联，声明一个用于查询聚合的新关联
      */
     public function getOrdersAggregation()
     {
@@ -1651,9 +1651,9 @@ class Customer extends \yii\db\ActiveRecord
 }
 
 foreach (Customer::find()->with('ordersAggregation')->all() as $customer) {
-    echo $customer->ordersCount; // outputs aggregation data from relation without extra query due to eager loading
+    echo $customer->ordersCount; // 输出关联的聚合数据，而不需要额外的查询，因为我们用了即时加载
 }
 
 $customer = Customer::findOne($pk);
-$customer->ordersCount; // output aggregation data from lazy loaded relation
+$customer->ordersCount; // 从延迟加载的关联中，输出聚合数据
 ```
