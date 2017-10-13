@@ -49,7 +49,7 @@ class DataFilterTest extends TestCase
         $model = $builder->getSearchModel();
         $this->assertTrue($model instanceof DynamicModel);
 
-        $this->setExpectedException('yii\base\InvalidConfigException');
+        $this->expectException('yii\base\InvalidConfigException');
         $builder->setSearchModel(new \stdClass());
     }
 
