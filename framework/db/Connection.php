@@ -577,12 +577,21 @@ class Connection extends Component
         $token = 'Opening DB connection: ' . $this->dsn;
         try {
             Yii::info($token, __METHOD__);
-            Yii::beginProfile($token, __METHOD__);
+            if ($this->enableProfiling) {
+                Yii::beginProfile($token, __METHOD__);
+            }
+
             $this->pdo = $this->createPdoInstance();
             $this->initConnection();
-            Yii::endProfile($token, __METHOD__);
+
+            if ($this->enableProfiling) {
+                Yii::endProfile($token, __METHOD__);
+            }
         } catch (\PDOException $e) {
-            Yii::endProfile($token, __METHOD__);
+            if ($this->enableProfiling) {
+                Yii::endProfile($token, __METHOD__);
+            }
+
             throw new Exception($e->getMessage(), $e->errorInfo, (int) $e->getCode(), $e);
         }
     }
