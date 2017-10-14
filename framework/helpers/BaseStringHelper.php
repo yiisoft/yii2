@@ -350,4 +350,25 @@ class BaseStringHelper
     {
         return base64_decode(strtr($input, '-_', '+/'));
     }
+
+    /**
+     * Ensures string is prefixed with the prefix specified. Avoids double prefixing.
+     *
+     * Useful for adding "http://" to user entered website addresses, twitter handles etc.
+     *
+     * @param string $string Input string
+     * @param string $prefix Prefix to be ensured in the string
+     * @param bool $caseSensitive Case sensitive comparison. Default is true. When case sensitive is enabled, $prefix
+     * must exactly match the starting of the string.
+     * @return string
+     *
+     * @since 2.0.13
+     */
+    public static function ensurePrefix($string, $prefix, $caseSensitive = true)
+    {
+        if (!static::startsWith($string, $prefix, $caseSensitive)) {
+            $string = $prefix . $string;
+        }
+        return $string;
+    }
 }
