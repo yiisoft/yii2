@@ -366,7 +366,7 @@ class BaseStringHelper
      */
     public static function ensurePrefix($string, $prefix, $caseSensitive = true)
     {
-        if (!self::startsWith($string, $prefix, $caseSensitive)) {
+        if (!static::startsWith($string, $prefix, $caseSensitive)) {
             $string = $prefix . $string;
         }
         return $string;
