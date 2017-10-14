@@ -312,4 +312,22 @@ class StringHelperTest extends TestCase
             ['Это закодированная строка', '0K3RgtC-INC30LDQutC-0LTQuNGA0L7QstCw0L3QvdCw0Y8g0YHRgtGA0L7QutCw'],
         ];
     }
+
+    public function ensurePrefixData()
+    {
+        return [
+            ['yiiframework.com', 'http://', true, 'http://yiiframework.com'],
+            ['http://yiiframework.com', 'http://', true, 'http://yiiframework.com'],
+            ['http://yiiframework.com', 'HTTP://', false, 'http://yiiframework.com'],
+        ];
+    }
+
+    /**
+     * @dataProvider ensurePrefixData
+     */
+    public function testEnsurePrefix($string, $prefix, $caseSensitive, $expected)
+    {
+        $actual = StringHelper::ensurePrefix($string, $prefix, $caseSensitive);
+        $this->assertSame($actual, $expected);
+    }
 }
