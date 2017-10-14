@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Enh #14967: Added Armenian Translations (gevorgmansuryan)
 - Enh #4479: Implemented REST filters (klimov-paul)
 - Bug #14134: Fixed multiple `validateAttribute()` calls when `scenarios()` returns duplicate attributes (krukru)
 - Enh #14929: Ensure trailing `;` on combining files with `asset` command to fix compiler failures (tanakahisateru)
