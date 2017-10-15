@@ -383,7 +383,7 @@ class FormatterTest extends TestCase
     /**
      * @dataProvider weightDataProvider
      */
-    public function testIntlAsWeight($message, $arguments, $expected, $_, $expectedException = [])
+    public function testIntlAsWeight($message, $arguments, $expected, $_shortWeight, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
         if ($expectedException !== []) {
@@ -396,7 +396,7 @@ class FormatterTest extends TestCase
     /**
      * @dataProvider weightDataProvider
      */
-    public function testIntlAsShortWeight($message, $arguments, $_, $expected, $expectedException = [])
+    public function testIntlAsShortWeight($message, $arguments, $_weight, $expected, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
         if ($expectedException !== []) {
