@@ -392,7 +392,7 @@ class DataFilter extends Model
             'operatorRequireMultipleOperands' => Yii::t('yii-rest', "Operator '{operator}' requires multiple operands."),
             'unknownAttribute' => Yii::t('yii-rest', "Unknown filter attribute '{attribute}'"),
             'invalidAttributeValueFormat' => Yii::t('yii-rest', "Condition for '{attribute}' should be either a value or valid operator specification."),
-            'operatorRequireAttribute' => Yii::t('yii-rest', "Operator '{operator}' must be used with search attribute."),
+            'operatorRequireAttribute' => Yii::t('yii-rest', "Operator '{operator}' must be used with a search attribute."),
             'unsupportedOperatorType' => Yii::t('yii-rest', "'{attribute}' does not support operator '{operator}'."),
         ];
     }
