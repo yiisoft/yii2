@@ -140,12 +140,17 @@ class HtmlTest extends TestCase
 
     public function testCsrfMetaTagsEnableCsrfValidationWithoutCookieValidationKey()
     {
-        $request = $this->getMockBuilder('yii\\web\\Request')->getMock();
-        $request->method('enableCsrfValidation')->willReturn(true);
-        Yii::$app->set('request', $request);
-        $pattern = '<meta name="csrf-param" content="_csrf">%A<meta name="csrf-token">';
-        $actual = Html::csrfMetaTags();
-        $this->assertStringMatchesFormat($pattern, $actual);
+        $this->mockApplication([
+            'components' => [
+                'request' => [
+                    'class' => 'yii\web\Request',
+                    'enableCsrfValidation' => true,
+                ]
+            ],
+        ]);
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('yii\web\Request::cookieValidationKey must be configured with a secret key.');
+        Html::csrfMetaTags();
     }
 
     /**
