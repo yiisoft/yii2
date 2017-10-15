@@ -182,10 +182,6 @@ class HttpCache extends ActionFilter
      */
     protected function sendCacheControlHeader()
     {
-        if (headers_sent($file, $line)) {
-            throw new \RuntimeException(sprintf('Failed to send cache control header. Headers have already been sent by "%s" at line %d.', $file, $line));
-        }
-
         if ($this->sessionCacheLimiter !== null) {
             if ($this->sessionCacheLimiter === '' && !headers_sent() && Yii::$app->getSession()->getIsActive()) {
                 header_remove('Expires');
