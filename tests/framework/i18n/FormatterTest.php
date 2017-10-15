@@ -294,7 +294,7 @@ class FormatterTest extends TestCase
     /**
      * @dataProvider lengthDataProvider
      */
-    public function testIntlAsLength($message, $arguments, $expected, $_, $expectedException = [])
+    public function testIntlAsLength($message, $arguments, $expected, $_shortLength, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
         if ($expectedException !== []) {
@@ -307,7 +307,7 @@ class FormatterTest extends TestCase
     /**
      * @dataProvider lengthDataProvider
      */
-    public function testIntlAsShortLength($message, $arguments, $_, $expected, $expectedException = [])
+    public function testIntlAsShortLength($message, $arguments, $_length, $expected, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
         if ($expectedException !== []) {
