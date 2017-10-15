@@ -76,8 +76,8 @@ class EmailValidator extends Validator
             $valid = false;
         } else {
             if ($this->enableIDN) {
-                $matches['local'] = idn_to_ascii($matches['local']);
-                $matches['domain'] = idn_to_ascii($matches['domain']);
+                $matches['local'] = idn_to_ascii($matches['local'], 0, INTL_IDNA_VARIANT_UTS46);
+                $matches['domain'] = idn_to_ascii($matches['domain'], 0, INTL_IDNA_VARIANT_UTS46);
                 $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
             }
 

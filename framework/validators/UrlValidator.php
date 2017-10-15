@@ -96,7 +96,7 @@ class UrlValidator extends Validator
 
             if ($this->enableIDN) {
                 $value = preg_replace_callback('/:\/\/([^\/]+)/', function ($matches) {
-                    return '://' . idn_to_ascii($matches[1]);
+                    return '://' . idn_to_ascii($matches[1], 0, INTL_IDNA_VARIANT_UTS46);
                 }, $value);
             }
 
