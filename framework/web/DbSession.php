@@ -165,19 +165,14 @@ class DbSession extends MultiFieldSession
         // exception must be caught in session write handler
         // http://us.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
-            
             // Fix for #11401, concurrency when inserting new session ID            
-            $exists = false;
-            $_self = $this;
-            $this->db->useMaster(function($db) use ($_self, $exists) {
-                $query = new Query();
-                $exists = $query->select(['id'])
-                    ->from($_self->sessionTable)
+            $exists = $this->db->useMaster(function($db) use ($id) {
+                return (new Query())->select(['id'])
+                    ->from($this->sessionTable)
                     ->where(['id' => $id])
                     ->createCommand($db)
                     ->queryScalar();
             });
-            // END Fix for #11401        
             
             $fields = $this->composeFields($id, $data);
             if ($exists === false) {
