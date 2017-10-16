@@ -810,28 +810,22 @@ class ArrayHelperTest extends TestCase
 
     /**
      * This is expected to result in a PHP error.
+     * @requires PHPUnit 6.0
      */
     public function testGetValueNonexistingProperties1()
     {
-        if (version_compare(PHP_VERSION, '7.0', '>=')) {
-            $this->expectException('PHPUnit\Framework\Error\Notice');
-        } else {
-            $this->expectException('PHPUnit_Framework_Error');
-        }
+        $this->expectException('PHPUnit\Framework\Error\Notice');
         $object = new Post1();
         $this->assertEquals(null, ArrayHelper::getValue($object, 'nonExisting'));
     }
 
     /**
      * This is expected to result in a PHP error.
+     * @requires PHPUnit 6.0
      */
     public function testGetValueNonexistingProperties2()
     {
-        if (version_compare(PHP_VERSION, '7.0', '>=')) {
-            $this->expectException('PHPUnit\Framework\Error\Notice');
-        } else {
-            $this->expectException('PHPUnit_Framework_Error');
-        }
+        $this->expectException('PHPUnit\Framework\Error\Notice');
         $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
         $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
     }
