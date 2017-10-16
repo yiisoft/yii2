@@ -179,7 +179,8 @@ before_script:
     fi
 
   # disable DEPRECATE messages for PHP 7.2. We need to update PHPUnit to get rid of them.
-  - if [[ $TRAVIS_PHP_VERSION = 7.2.0* ]]; then
+  - |
+    if [[ $TRAVIS_PHP_VERSION = 7.2.0* ]]; then
       PHP_FLAGS="-d error_reporting='E_ALL & ~E_DEPRECATED'"
     fi
 
