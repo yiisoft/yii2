@@ -26,6 +26,15 @@ namespace PHPUnit\TextUI {
     }
 }
 
+namespace PHPUnit\Framework\Error {
+    if (!class_exists('PHPUnit\Framework\Error\Notice') && class_exists('PHPUnit_Framework_Error_Notice')) {
+        class Notice extends \PHPUnit_Framework_Error_Notice
+        {
+            
+        }
+    }
+}
+
 namespace PHPUnit\Framework {
     if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
         abstract class TestCase extends \PHPUnit_Framework_TestCase
