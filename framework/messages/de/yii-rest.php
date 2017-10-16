@@ -25,7 +25,7 @@
 return [
     '\'{attribute}\' does not support operator \'{operator}\'.' => '\'{attribute}\' unterstützt den Operator \'{operator}\' nicht.',
     'Condition for \'{attribute}\' should be either a value or valid operator specification.' => 'Die Bedingung für \'{attribute}\' muss entweder ein Wert oder ein Operatorvergleich sein.',
-    'Operator \'{operator}\' must be used with search attribute.' => 'Der Operator \'{operator}\' muss zusammen mit einem Such-Attribut verwendet werden.',
+    'Operator \'{operator}\' must be used with a search attribute.' => 'Der Operator \'{operator}\' muss zusammen mit einem Such-Attribut verwendet werden.',
     'Operator \'{operator}\' requires multiple operands.' => 'Der Operator \'{operator}\' erwartet mehrere Operanden.',
     'The format of {filter} is invalid.' => 'Das Format von {filter} ist ungültig.',
     'Unknown filter attribute \'{attribute}\'' => 'Unbekanntes Filter-Attribut \'{attribute}\'',
