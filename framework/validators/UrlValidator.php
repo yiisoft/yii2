@@ -110,7 +110,7 @@ class UrlValidator extends Validator
 
     private function idnToAscii($idn)
     {
-        if (defined(PHP_VERSION_ID) && PHP_VERSION_ID < 50600) {
+        if (PHP_VERSION_ID < 50600) {
             // TODO: drop old PHP versions support
             return idn_to_ascii($idn);
         }
