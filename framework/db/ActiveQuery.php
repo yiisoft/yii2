@@ -759,7 +759,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function viaTable($tableName, $link, callable $callable = null)
     {
-        $relation = new self(get_class($this->primaryModel), [
+        $modelClass = $this->primaryModel !== null ? get_class($this->primaryModel) : get_class();
+
+        $relation = new self($modelClass, [
             'from' => [$tableName],
             'link' => $link,
             'multiple' => true,

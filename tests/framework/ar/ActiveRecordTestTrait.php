@@ -85,7 +85,7 @@ trait ActiveRecordTestTrait
         $this->assertNull($customer);
         $customer = $customerClass::findOne(['id' => [5, 6, 1]]);
         // can't use assertCount() here since it will count model attributes instead
-        $this->assertEquals(1, count($customer));
+        $this->assertEquals(1, count([$customer]));
         $customer = $customerClass::find()->where(['id' => [5, 6, 1]])->one();
         $this->assertNotNull($customer);
 
