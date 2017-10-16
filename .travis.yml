@@ -148,6 +148,7 @@ before_script:
 
   # show some versions and env information
   - php --version
+  - php --ini
   - composer --version
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
@@ -176,6 +177,9 @@ before_script:
     if [ $TASK_TESTS_COVERAGE == 1 ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
     fi
+
+  # disable DEPRECATE messages for PHP 7.2. We need to update PHPUnit to get rid of them.
+  - if [[ $TRAVIS_PHP_VERSION = 7.2.0* ]]; then echo 'error_reporting = E_ALL & ~E_DEPRECATED' >> /etc/php/php.ini; fi
 
 
 script:
