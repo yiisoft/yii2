@@ -96,7 +96,7 @@ class UrlValidator extends Validator
 
             if ($this->enableIDN) {
                 $value = preg_replace_callback('/:\/\/([^\/]+)/', function ($matches) {
-                    return '://' . idn_to_ascii($matches[1], 0, INTL_IDNA_VARIANT_UTS46);
+                    return '://' . $this->idnToAscii($matches[1]);
                 }, $value);
             }
 
@@ -106,6 +106,16 @@ class UrlValidator extends Validator
         }
 
         return [$this->message, []];
+    }
+
+    private function idnToAscii($idn)
+    {
+        if (defined(PHP_VERSION_ID) && PHP_VERSION_ID < 50600) {
+            // TODO: drop old PHP versions support
+            return idn_to_ascii($idn);
+        }
+
+        return idn_to_ascii($idn, 0, INTL_IDNA_VARIANT_UTS46);
     }
 
     /**
