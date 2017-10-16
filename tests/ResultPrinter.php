@@ -8,7 +8,9 @@
 namespace yiiunit;
 
 /**
- * IsOneOfAssert asserts that the value is one of the expected values.
+ * Class ResultPrinter overrides \PHPUnit\TextUI\ResultPrinter constructor
+ * to change default output to STDOUT and prevent some tests from fail when
+ * they can not be executed after headers have been sent. *
  */
 class ResultPrinter extends \PHPUnit\TextUI\ResultPrinter
 {
@@ -21,9 +23,16 @@ class ResultPrinter extends \PHPUnit\TextUI\ResultPrinter
         $reverse = false
     ) {
         if ($out === null) {
-            $out = 'php://stdout';
+            $out = STDOUT;
         }
 
         parent::__construct($out, $verbose, $colors, $debug, $numberOfColumns, $reverse);
+    }
+
+    public function flush()
+    {
+        if ($this->out !== STDOUT) {
+            parent::flush();
+        }
     }
 }

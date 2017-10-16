@@ -26,7 +26,7 @@ namespace yiiunit\framework\i18n {
             if (strncmp($test->getName(false), 'testIntl', 8) === 0) {
                 static::$enableIntl = true;
 
-                if (strpos(PHP_VERSION, '7.2.0RC') !== false && version_compare(PHP_VERSION, '7.2.0.RC.3', '<=')) {
+                if (version_compare(PHP_VERSION, '7.2.0.RC.1', '>=') && version_compare(PHP_VERSION, '7.2.0.RC.3', '<=')) {
                     // IntlDateFormatter::parse() is broken in PHP 7.2. Disabled INTL tests until regression is fixed:
                     // https://bugs.php.net/bug.php?id=75378
                     $test->markTestSkipped('intl extension is broken in PHP 7.2');

@@ -376,9 +376,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     private function setCookieParamsInternal()
     {
-        if (headers_sent($file, $line)) {
-            throw new \RuntimeException(sprintf('Failed to set cookie params. Headers have already been sent by "%s" at line %d.', $file, $line));
-        }
         $data = $this->getCookieParams();
         if (isset($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly'])) {
             session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
