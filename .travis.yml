@@ -178,7 +178,8 @@ before_script:
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
     fi
 
-  # disable DEPRECATE messages for PHP 7.2. We need to update PHPUnit to get rid of them.
+  # Disable DEPRECATE messages during PHPUnit initialization on PHP 7.2. To fix them, PHPUnit should be updated to 6.*
+  # For Yii2 tests, messages will be enabled by tests/bootstrap.php
   - |
     if [ $TRAVIS_PHP_VERSION == 7.2 ]; then
       echo 'Disabled DEPRECATED notifications for PHP 7.2';
