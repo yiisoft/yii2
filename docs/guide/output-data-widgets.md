@@ -245,7 +245,7 @@ echo GridView::widget([
         ],
         'created_at:datetime', // shortcut format
         [
-            'label'=>'Education'
+            'label' => 'Education',
             'attribute' => 'education',
             'filter' => ['0' => 'Elementary', '1' => 'Secondary', '2' => 'Higher'],
             'filterInputOptions' => ['prompt' => 'All educations', 'class' => 'form-control', 'id' => null]
