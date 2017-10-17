@@ -148,7 +148,6 @@ before_script:
 
   # show some versions and env information
   - php --version
-  - php --ini
   - composer --version
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
