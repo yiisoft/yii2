@@ -224,7 +224,7 @@ echo GridView::widget([
         ],
         'created_at:datetime', // короткий вид записи формата
         [
-            'label' => 'Education'
+            'label' => 'Education',
             'attribute' => 'education',
             'filter' => ['0' => 'Elementary', '1' => 'Secondary', '2' => 'Higher'],
             'filterInputOptions' => ['prompt' => 'All educations', 'class' => 'form-control', 'id' => null]
@@ -245,7 +245,7 @@ echo GridView::widget([
 Используйте [[yii\grid\DataColumn::filter|filter]] и [[yii\grid\DataColumn::filterInputOptions|filterInputOptions]] для
 генерации HTML кода фильтра.
 
-По умолчанию заголовки колонок генерируются используя [[yii\data\Sort::link]], эта может быть изменено через свойство
+По умолчанию заголовки колонок генерируются используя [[yii\data\Sort::link]], это может быть изменено через свойство
 [[yii\grid\Column::header]]. Для изменения только текста заголовка нужно задать [[yii\grid\DataColumn::$label]], как в
 примере выше. По умолчанию этот текст будет заполнен из модели данных, для подробностей смотрите [[yii\grid\DataColumn::getHeaderCellLabel]]
 
