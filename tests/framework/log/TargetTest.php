@@ -182,6 +182,27 @@ class TargetTest extends TestCase
         };
         $this->assertTrue($target->enabled);
     }
+
+    public function testFormatMessage()
+    {
+        /** @var Target $target */
+        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+
+        $text = 'message';
+        $level = Logger::LEVEL_INFO;
+        $category = 'application';
+        $timestamp = 1508160390.6083;
+
+        $expectedWithoutMicro = '2017-10-16 13:26:30 [info][application] message';
+        $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
+        $this->assertSame($expectedWithoutMicro, $formatted);
+
+        $target->microtime = true;
+
+        $expectedWithMicro = '2017-10-16 13:26:30.6083 [info][application] message';
+        $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
+        $this->assertSame($expectedWithMicro, $formatted);
+    }
 }
 
 class TestTarget extends Target
