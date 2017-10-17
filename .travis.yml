@@ -178,12 +178,10 @@ before_script:
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
     fi
 
-  - echo $TRAVIS_PHP_VERSION
-
   # disable DEPRECATE messages for PHP 7.2. We need to update PHPUnit to get rid of them.
   - |
-    if [ $TRAVIS_PHP_VERSION == 7.2.0 ]; then
-      echo 'Disabled DEPRECATED notifications for PHP 7.2.0';
+    if [ $TRAVIS_PHP_VERSION == 7.2 ]; then
+      echo 'Disabled DEPRECATED notifications for PHP 7.2';
       echo 'error_reporting = E_ALL & ~E_DEPRECATED' >> /tmp/php-config.ini;
       phpenv config-add /tmp/php-config.ini;
     fi
