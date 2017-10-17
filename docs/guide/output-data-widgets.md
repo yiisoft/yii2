@@ -243,6 +243,13 @@ echo GridView::widget([
             'attribute' => 'birthday',
             'format' => ['date', 'php:Y-m-d']
         ],
+        'created_at:datetime', // shortcut format
+        [
+            'label'=>'Education'
+            'attribute' => 'education',
+            'filter' => ['0' => 'Elementary', '1' => 'Secondary', '2' => 'Higher'],
+            'filterInputOptions' => ['prompt' => 'All educations', 'class' => 'form-control', 'id' => null]
+        ],
     ],
 ]);
 ```
@@ -256,6 +263,12 @@ For a list of available formatters see the [section about Data Formatting](outpu
 For configuring data columns there is also a shortcut format which is described in the
 API documentation for [[yii\grid\GridView::columns|columns]].
 
+Use [[yii\grid\DataColumn::filter|filter]] and [[yii\grid\DataColumn::filterInputOptions|filterInputOptions]] for 
+representing HTML code of a filter input.
+
+By default, headers of columns render by [[yii\data\Sort::link]] and HTML can be changed by [[yii\grid\Column::header]].
+To change some text of header you should setting [[yii\grid\DataColumn::$label]] only, like in example above. 
+By default, the label will be populated from Model of data, for more details see [[yii\grid\DataColumn::getHeaderCellLabel]]
 
 #### Action column
 
