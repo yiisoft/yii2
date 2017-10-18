@@ -388,15 +388,19 @@ class FileValidatorTest extends TestCase
 
     public function validMimeTypes()
     {
-        return [
+        return array_filter([
             ['test.svg', 'image/*', 'svg'],
             ['test.jpg', 'image/*', 'jpg'],
             ['test.png', 'image/*', 'png'],
             ['test.png', 'IMAGE/*', 'png'],
             ['test.txt', 'text/*', 'txt'],
-            ['test.xml', '*/xml', 'xml'],
+            // Disabled for PHP 7.2 RC because of regression:
+            // https://bugs.php.net/bug.php?id=75380
+            version_compare(PHP_VERSION, '7.2.0.RC.1', '>=') && version_compare(PHP_VERSION, '7.2.0.RC.3', '<=')
+                ? null
+                : ['test.xml', '*/xml', 'xml'],
             ['test.odt', 'application/vnd*', 'odt'],
-        ];
+        ]);
     }
 
     public function invalidMimeTypes()

@@ -624,7 +624,7 @@ class Container extends Component
     public function setDefinitions(array $definitions)
     {
         foreach ($definitions as $class => $definition) {
-            if (count($definition) === 2 && array_values($definition) === $definition) {
+            if (is_array($definition) && count($definition) === 2 && array_values($definition) === $definition) {
                 $this->set($class, $definition[0], $definition[1]);
                 continue;
             }
@@ -646,7 +646,7 @@ class Container extends Component
     public function setSingletons(array $singletons)
     {
         foreach ($singletons as $class => $definition) {
-            if (count($definition) === 2 && array_values($definition) === $definition) {
+            if (is_array($definition) && count($definition) === 2 && array_values($definition) === $definition) {
                 $this->setSingleton($class, $definition[0], $definition[1]);
                 continue;
             }

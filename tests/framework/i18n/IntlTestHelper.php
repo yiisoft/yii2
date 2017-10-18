@@ -24,10 +24,18 @@ namespace yiiunit\framework\i18n {
         {
             static::$enableIntl = null;
             if (strncmp($test->getName(false), 'testIntl', 8) === 0) {
+                static::$enableIntl = true;
+
+                if (version_compare(PHP_VERSION, '7.2.0.RC.1', '>=') && version_compare(PHP_VERSION, '7.2.0.RC.3', '<=')) {
+                    // IntlDateFormatter::parse() is broken in PHP 7.2. Disabled INTL tests until regression is fixed:
+                    // https://bugs.php.net/bug.php?id=75378
+                    $test->markTestSkipped('intl extension is broken in PHP 7.2');
+                    return;
+                }
+
                 if (!extension_loaded('intl')) {
                     $test->markTestSkipped('intl extension is not installed.');
                 }
-                static::$enableIntl = true;
             } else {
                 static::$enableIntl = false;
             }
