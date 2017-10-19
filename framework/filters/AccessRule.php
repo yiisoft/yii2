@@ -56,7 +56,7 @@ class AccessRule extends Component
      *
      * If you are using RBAC (Role-Based Access Control), you may also specify role names.
      * In this case, [[User::can()]] will be called to check access.
-     * 
+     *
      * Note that it is preferred to check for permissions instead.
      *
      * If this property is not set or empty, it means this rule applies regardless of roles.
@@ -64,10 +64,10 @@ class AccessRule extends Component
      * @see $roleParams
      */
     public $roles;
-    /** 
+    /**
      * @var array list of RBAC (Role-Based Access Control) permissions that this rules applies to.
      * [[User::can()]] will be called to check access.
-     * 
+     *
      * If this property is not set or empty, it means this rule applies regardless of permissions.
      * @since 2.0.12
      * @see $roles
@@ -136,8 +136,8 @@ class AccessRule extends Component
     public $matchCallback;
     /**
      * @var callable a callback that will be called if this rule determines the access to
-     * the current action should be denied. If not set, the behavior will be determined by
-     * [[AccessControl]].
+     * the current action should be denied. It's meant then [[$allow]] should be false.
+     * If not set, the behavior will be determined by [[AccessControl::denyCallback]].
      *
      * The signature of the callback should be as follows:
      *
@@ -217,7 +217,7 @@ class AccessRule extends Component
         if (empty($items)) {
             return true;
         }
-      
+
         if ($user === false) {
             throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
         }
