@@ -61,11 +61,11 @@ http://localhost/users?fields=id,email&expand=profile
 public function fields()
 {
     return [
-        // название поля совпадает с названием атрибута
+        // название поля совпадает с именем атрибута
         'id',
-        // имя поля "email", атрибут "email_address"
+        // название поля "email", атрибут "email_address"
         'email' => 'email_address',
-        // имя поля "name", значение определяется callback-ом PHP
+        // название поля "name", значение определяется callback-ом PHP
         'name' => function () {
             return $this->first_name . ' ' . $this->last_name;
         },
