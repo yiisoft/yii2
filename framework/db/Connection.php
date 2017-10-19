@@ -574,21 +574,23 @@ class Connection extends Component
         if (empty($this->dsn)) {
             throw new InvalidConfigException('Connection::dsn cannot be empty.');
         }
+
         $token = 'Opening DB connection: ' . $this->dsn;
+        $enableProfiling = $this->enableProfiling;
         try {
             Yii::info($token, __METHOD__);
-            if ($this->enableProfiling) {
+            if ($enableProfiling) {
                 Yii::beginProfile($token, __METHOD__);
             }
 
             $this->pdo = $this->createPdoInstance();
             $this->initConnection();
 
-            if ($this->enableProfiling) {
+            if ($enableProfiling) {
                 Yii::endProfile($token, __METHOD__);
             }
         } catch (\PDOException $e) {
-            if ($this->enableProfiling) {
+            if ($enableProfiling) {
                 Yii::endProfile($token, __METHOD__);
             }
 
