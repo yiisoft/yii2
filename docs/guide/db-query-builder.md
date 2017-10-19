@@ -250,6 +250,8 @@ the operator can be one of the following:
 
 - `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
 
+- `not`: requires only operand 1, which will be wrapped in `NOT()`. For example, `['not', 'id=1']` will generate `NOT (id=1)`. Operand 1 may also be an array to describe multiple expressions. For example `['not', ['status' => 'draft', 'name' => 'example']]` will generate `NOT ((status='draft') AND (name='example'))`.
+
 - `between`: operand 1 should be the column name, and operand 2 and 3 should be the
    starting and ending values of the range that the column is in.
    For example, `['between', 'id', 1, 10]` will generate `id BETWEEN 1 AND 10`.
