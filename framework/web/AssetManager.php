@@ -456,7 +456,7 @@ class AssetManager extends Component
             throw new InvalidParamException("The file or directory to be published does not exist: $path");
         }
 
-        if (is_file($src)) {
+        if (file_exists($src)) {
             return $this->_published[$path] = $this->publishFile($src);
         }
 
