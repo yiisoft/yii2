@@ -230,6 +230,7 @@ class UrlRuleTest extends TestCase
                 [ // Rule properties
                     'controller' => 'channel',
                     'controllerPrefix' => 'v1',
+                    'prefix' => 'v1',
                     'pluralize' => true,
                 ],
                 [ // test cases: route, expected
