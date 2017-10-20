@@ -89,6 +89,13 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
+                'prefixed route and controller',
+                ['controller' => 'post', 'controllerPrefix' => 'v1', 'prefix' => 'admin'],
+                [
+                    ['admin/posts', 'v1/post/index'],
+                ],
+            ],
+            [
                 'suffixed route',
                 ['controller' => 'post', 'suffix' => '.json'],
                 [
@@ -218,6 +225,22 @@ class UrlRuleTest extends TestCase
     public function createUrlDataProvider()
     {
         return [
+            // with prefix
+            [
+                [ // Rule properties
+                    'controller' => 'channel',
+                    'controllerPrefix' => 'v1',
+                    'pluralize' => true,
+                ],
+                [ // test cases: route, expected
+                    [['v1/channel/index'], 'v1/channels'],
+                    [['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1'],
+                    [['v1/channel/view', 'id' => 42], 'v1/channels/42'],
+                    [['v1/channel/options'], 'v1/channels'],
+                    [['v1/channel/options', 'id' => 42], 'v1/channels/42'],
+                    [['v1/channel/delete'], false],
+                ],
+            ],
             // with pluralize
             [
                 [ // Rule properties

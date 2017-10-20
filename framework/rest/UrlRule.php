@@ -63,6 +63,7 @@ class UrlRule extends CompositeUrlRule
 {
     /**
      * @var string the common prefix string shared by all patterns.
+     * The prefix and the pattern will be separated with a slash.
      */
     public $prefix;
     /**
@@ -82,6 +83,19 @@ class UrlRule extends CompositeUrlRule
      * generate applicable URL rules for EVERY specified controller. For example, `['user', 'post']`.
      */
     public $controller;
+    /**
+     * @var string the common prefix string shared by all controller (for example is a module ID).
+     * The controllerPrefix will not be a pluralize unlike of the composite controller property (e.g. `admin/user`).
+     * The controllerPrefix and the pattern will be separated with a slash.
+     * ```php
+     * [
+     *     'class' => 'yii\rest\UrlRule',
+     *     'controller' => ['user', 'post'],
+     *     'controllerPrefix' => 'v1',
+     * ]
+     * ```
+     */
+    public $controllerPrefix;
     /**
      * @var array list of acceptable actions. If not empty, only the actions within this array
      * will have the corresponding URL rules created.
@@ -151,6 +165,9 @@ class UrlRule extends CompositeUrlRule
 
         $controllers = [];
         foreach ((array) $this->controller as $urlName => $controller) {
+            if (!is_string($controller)) {
+                throw new InvalidConfigException('Controller property of REST URL rule must be a string or a array with strung values.');
+            }
             if (is_int($urlName)) {
                 $urlName = $this->pluralize ? Inflector::pluralize($controller) : $controller;
             }
@@ -159,6 +176,7 @@ class UrlRule extends CompositeUrlRule
         $this->controller = $controllers;
 
         $this->prefix = trim($this->prefix, '/');
+        $this->controllerPrefix = trim($this->controllerPrefix, '/');
 
         parent::init();
     }
@@ -174,6 +192,7 @@ class UrlRule extends CompositeUrlRule
         $rules = [];
         foreach ($this->controller as $urlName => $controller) {
             $prefix = trim($this->prefix . '/' . $urlName, '/');
+            $controller = ltrim($this->controllerPrefix . '/' . $controller, '/');
             foreach ($patterns as $pattern => $action) {
                 if (!isset($except[$action]) && (empty($only) || isset($only[$action]))) {
                     $rules[$urlName][] = $this->createRule($pattern, $prefix, $controller . '/' . $action);
