@@ -144,6 +144,18 @@ class MigrateControllerTest extends TestCase
         ]);
     }
 
+    public function testCreateLongNamedMigration()
+    {
+        $migrationName = str_repeat('a', 255);
+        $className = substr('m' . gmdate('ymd_His') . '_' . $migrationName, 0, 251);
+
+        $params[0] = $migrationName;
+        $this->runMigrateControllerAction('create', $params);
+
+        $createdFile = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
+        $this->assertTrue(file_exists($createdFile));
+    }
+
     public function testGenerateDropMigration()
     {
         $tables = [
