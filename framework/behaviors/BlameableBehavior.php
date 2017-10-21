@@ -73,6 +73,15 @@ class BlameableBehavior extends AttributeBehavior
      */
     public $value;
 
+    /**
+     * @var mixed Default value for cases when user is guest
+     */
+    public $defaultValue;
+
+    /**
+     * @var bool Whether is [[defaultValue]] enabled
+     */
+    public $useDefaultValue = false;
 
     /**
      * @inheritdoc
@@ -97,7 +106,12 @@ class BlameableBehavior extends AttributeBehavior
     protected function getValue($event)
     {
         if ($this->value === null && Yii::$app->has('user')) {
-            return Yii::$app->get('user')->id;
+            $userId = Yii::$app->get('user')->id;
+            if (is_null($userId) && $this->useDefaultValue) {
+                return $this->defaultValue;
+            }
+
+            return $userId;
         }
 
         return parent::getValue($event);

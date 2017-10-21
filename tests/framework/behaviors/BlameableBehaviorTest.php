@@ -154,6 +154,25 @@ class BlameableBehaviorTest extends TestCase
         $this->assertEquals(20, $model->created_by);
         $this->assertEquals(20, $model->updated_by);
     }
+
+    public function testDefaultValue()
+    {
+        $this->getUser()->logout();
+
+        $model = new ActiveRecordBlameable([
+            'as blameable' => [
+                'class' => BlameableBehavior::className(),
+                'defaultValue' => 10,
+                'useDefaultValue' => true
+            ],
+        ]);
+
+        $model->name = __METHOD__;
+        $model->beforeSave(true);
+
+        $this->assertEquals(10, $model->created_by);
+        $this->assertEquals(10, $model->updated_by);
+    }
 }
 
 /**

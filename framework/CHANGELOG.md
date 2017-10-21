@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when user is guest
 - Enh #14877: Disabled profiling on connection opening when profiling is disabled (njasm)
 - Enh #14967: Added Armenian Translations (gevorgmansuryan)
 - Enh #4479: Implemented REST filters (klimov-paul)
