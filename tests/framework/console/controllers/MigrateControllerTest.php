@@ -146,7 +146,7 @@ class MigrateControllerTest extends TestCase
 
     public function testCreateLongNamedMigration()
     {
-        $migrationName = str_repeat('a', 255);
+        $migrationName = str_repeat('a', 180);
 
         $this->expectException('yii\console\Exception');
         $this->expectExceptionMessage('The migration name is too long.');
