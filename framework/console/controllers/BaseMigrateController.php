@@ -624,8 +624,7 @@ abstract class BaseMigrateController extends Controller
         list($namespace, $className) = $this->generateClassName($name);
         // Check that class name less then 251 (255 - strlen('.php'))
         if (strlen($className) > 251) {
-            $className = substr($className, 0, 251);
-            $this->stdout('Length of the migration\'s class name was truncated', Console::FG_YELLOW);
+            throw new Exception('The migration name is too long.');
         }
 
         $migrationPath = $this->findMigrationPath($namespace);
