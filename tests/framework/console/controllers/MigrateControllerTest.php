@@ -144,6 +144,27 @@ class MigrateControllerTest extends TestCase
         ]);
     }
 
+    public function testUpdatingLongNamedMigration()
+    {
+        $this->createMigration(str_repeat('a', 180));
+
+        $result = $this->runMigrateControllerAction('up');
+
+        $this->assertContains('The migration name is too long. The rest of the migrations are canceled.', $result);
+    }
+
+    public function testCreateLongNamedMigration()
+    {
+        $migrationName = str_repeat('a', 180);
+
+        $this->expectException('yii\console\Exception');
+        $this->expectExceptionMessage('The migration name is too long.');
+
+        $controller = $this->createMigrateController([]);
+        $params[0] = $migrationName;
+        $controller->run('create', $params);
+    }
+
     public function testGenerateDropMigration()
     {
         $tables = [

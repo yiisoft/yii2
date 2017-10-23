@@ -32,6 +32,11 @@ abstract class BaseMigrateController extends Controller
     const BASE_MIGRATION = 'm000000_000000_base';
 
     /**
+     * Maximum length of migration name
+     */
+    const MAX_NAME_LENGTH = 180;
+
+    /**
      * @var string the default command action.
      */
     public $defaultAction = 'up';
@@ -191,6 +196,11 @@ abstract class BaseMigrateController extends Controller
         $applied = 0;
         if ($this->confirm('Apply the above ' . ($n === 1 ? 'migration' : 'migrations') . '?')) {
             foreach ($migrations as $migration) {
+                if (strlen($migration) > static::MAX_NAME_LENGTH) {
+                    $this->stdout("\nThe migration name is too long. The rest of the migrations are canceled.\n", Console::FG_RED);
+                    return ExitCode::UNSPECIFIED_ERROR;
+                }
+
                 if (!$this->migrateUp($migration)) {
                     $this->stdout("\n$applied from $n " . ($applied === 1 ? 'migration was' : 'migrations were') . " applied.\n", Console::FG_RED);
                     $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
@@ -622,6 +632,11 @@ abstract class BaseMigrateController extends Controller
         }
 
         list($namespace, $className) = $this->generateClassName($name);
+        // Abort if name is too long
+        if (strlen($className) > static::MAX_NAME_LENGTH) {
+            throw new Exception('The migration name is too long.');
+        }
+
         $migrationPath = $this->findMigrationPath($namespace);
 
         $file = $migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
