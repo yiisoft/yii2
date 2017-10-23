@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\cubrid;
 
@@ -86,5 +91,10 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $data['wrongBehavior']['expected'] = 'INSERT INTO "type" ("int_col", "float_col", "char_col") VALUES (\'\', \'\', \'Kyiv {{city}}, Ukraine\')';
 
         return $data;
+    }
+
+    public function testAddDropCheck()
+    {
+        $this->markTestSkipped('CUBRID does not support adding/dropping check constraints.');
     }
 }

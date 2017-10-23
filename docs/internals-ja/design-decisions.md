@@ -23,3 +23,7 @@
    unsigned の場合、32 bit システムでは、文字列を使って表現しなければならなくなる。
    また、unsigned int はサイズを倍にするとはいうものの、そのような広大な数値空間を必要とするテーブルを持っている場合は、unsigned に頼るより bigint または mediumint を使用する方が安全である。
    <https://github.com/yiisoft/yii/pull/1923#issuecomment-11881967>
+6. [ヘルパか、独立した非スタティックなクラスか](https://github.com/yiisoft/yii2/pull/12661#issuecomment-251599463)
+7. **セッターメソッドチェイニング** は、意味のある値を返すメソッドがそのクラスに存在する場合は、避けるべきである。
+   チェイニングは、クラスがビルダーであり、全てのセッターが内部状態を修正するものである場合にサポートされうる。
+   https://github.com/yiisoft/yii2/issues/13026

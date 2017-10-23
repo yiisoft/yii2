@@ -45,7 +45,7 @@ class MyBehavior extends Behavior
 
 上のコードは、 `app\components\MyBehavior` という、2つのプロパティ -- `prop1` と `prop2` -- と
 `foo()` メソッドを持つビヘイビアクラスを定義します。`prop2` プロパティは、 `getProp2()` getter メソッドと `setProp2()` setter メソッドで定義されることに着目してください。
-[[yii\base\Behavior]] は [[yii\base\Object]] を継承しているので、getter と​​ setter による [プロパティ](concept-properties.md) 定義をサポートします。
+[[yii\base\Behavior]] は [[yii\base\BaseObject]] を継承しているので、getter と​​ setter による [プロパティ](concept-properties.md) 定義をサポートします。
 
 このクラスはビヘイビアなので、コンポーネントにアタッチされると、そのコンポーネントは `prop1` と `prop2` プロパティ、それと `foo()` メソッドを持つようになります。
 

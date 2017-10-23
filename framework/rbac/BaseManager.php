@@ -16,6 +16,9 @@ use yii\base\InvalidParamException;
  *
  * For more details and usage information on DbManager, see the [guide article on security authorization](guide:security-authorization).
  *
+ * @property Role[] $defaultRoleInstances Default roles. The array is indexed by the role names. This property
+ * is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -23,6 +26,7 @@ abstract class BaseManager extends Component implements ManagerInterface
 {
     /**
      * @var array a list of role names that are assigned to every user automatically without calling [[assign()]].
+     * Note that these roles are applied to users, regardless of their state of authentication.
      */
     public $defaultRoles = [];
 
@@ -122,12 +126,13 @@ abstract class BaseManager extends Component implements ManagerInterface
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
+
             return $this->addItem($object);
         } elseif ($object instanceof Rule) {
             return $this->addRule($object);
-        } else {
-            throw new InvalidParamException('Adding unsupported object type.');
         }
+
+        throw new InvalidParamException('Adding unsupported object type.');
     }
 
     /**
@@ -139,9 +144,9 @@ abstract class BaseManager extends Component implements ManagerInterface
             return $this->removeItem($object);
         } elseif ($object instanceof Rule) {
             return $this->removeRule($object);
-        } else {
-            throw new InvalidParamException('Removing unsupported object type.');
         }
+
+        throw new InvalidParamException('Removing unsupported object type.');
     }
 
     /**
@@ -155,12 +160,13 @@ abstract class BaseManager extends Component implements ManagerInterface
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
+
             return $this->updateItem($name, $object);
         } elseif ($object instanceof Rule) {
             return $this->updateRule($name, $object);
-        } else {
-            throw new InvalidParamException('Updating unsupported object type.');
         }
+
+        throw new InvalidParamException('Updating unsupported object type.');
     }
 
     /**
@@ -187,6 +193,21 @@ abstract class BaseManager extends Component implements ManagerInterface
     public function getRoles()
     {
         return $this->getItems(Item::TYPE_ROLE);
+    }
+
+    /**
+     * Returns defaultRoles as array of Role objects.
+     * @since 2.0.12
+     * @return Role[] default roles. The array is indexed by the role names
+     */
+    public function getDefaultRoleInstances()
+    {
+        $result = [];
+        foreach ($this->defaultRoles as $roleName) {
+            $result[$roleName] = $this->createRole($roleName);
+        }
+
+        return $result;
     }
 
     /**
@@ -218,13 +239,13 @@ abstract class BaseManager extends Component implements ManagerInterface
         $rule = $this->getRule($item->ruleName);
         if ($rule instanceof Rule) {
             return $rule->execute($user, $item, $params);
-        } else {
-            throw new InvalidConfigException("Rule not found: {$item->ruleName}");
         }
+
+        throw new InvalidConfigException("Rule not found: {$item->ruleName}");
     }
 
     /**
-     * Checks whether array of $assignments is empty and [[defaultRoles]] property is empty as well
+     * Checks whether array of $assignments is empty and [[defaultRoles]] property is empty as well.
      *
      * @param Assignment[] $assignments array of user's assignments
      * @return bool whether array of $assignments is empty and [[defaultRoles]] property is empty as well

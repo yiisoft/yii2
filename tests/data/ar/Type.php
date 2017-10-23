@@ -1,9 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\ar;
 
 /**
- * Model representing type table
+ * Model representing type table.
  *
  * @property int $int_col
  * @property int $int_col2 DEFAULT 1
@@ -29,4 +34,3 @@ class Type extends ActiveRecord
         return 'type';
     }
 }
- 

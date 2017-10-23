@@ -10,7 +10,7 @@ Les objets d'accès aux bases de données de Yii prennent en charge les bases de
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)
+- [PostgreSQL](http://www.postgresql.org/): version 8.4 or higher.
 - [CUBRID](http://www.cubrid.org/): version 9.3 or higher.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.

@@ -179,41 +179,41 @@ class ImageValidator extends FileValidator
         $label = $model->getAttributeLabel($attribute);
 
         if ($this->notImage !== null) {
-            $options['notImage'] = Yii::$app->getI18n()->format($this->notImage, [
+            $options['notImage'] = $this->formatMessage($this->notImage, [
                 'attribute' => $label,
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->minWidth !== null) {
             $options['minWidth'] = $this->minWidth;
-            $options['underWidth'] = Yii::$app->getI18n()->format($this->underWidth, [
+            $options['underWidth'] = $this->formatMessage($this->underWidth, [
                 'attribute' => $label,
                 'limit' => $this->minWidth,
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->maxWidth !== null) {
             $options['maxWidth'] = $this->maxWidth;
-            $options['overWidth'] = Yii::$app->getI18n()->format($this->overWidth, [
+            $options['overWidth'] = $this->formatMessage($this->overWidth, [
                 'attribute' => $label,
                 'limit' => $this->maxWidth,
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->minHeight !== null) {
             $options['minHeight'] = $this->minHeight;
-            $options['underHeight'] = Yii::$app->getI18n()->format($this->underHeight, [
+            $options['underHeight'] = $this->formatMessage($this->underHeight, [
                 'attribute' => $label,
                 'limit' => $this->minHeight,
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->maxHeight !== null) {
             $options['maxHeight'] = $this->maxHeight;
-            $options['overHeight'] = Yii::$app->getI18n()->format($this->overHeight, [
+            $options['overHeight'] = $this->formatMessage($this->overHeight, [
                 'attribute' => $label,
                 'limit' => $this->maxHeight,
-            ], Yii::$app->language);
+            ]);
         }
 
         return $options;

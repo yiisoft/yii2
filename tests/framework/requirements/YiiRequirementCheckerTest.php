@@ -1,6 +1,11 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
-require_once(__DIR__.'/../../../framework/requirements/YiiRequirementChecker.php');
+require_once __DIR__ . '/../../../framework/requirements/YiiRequirementChecker.php';
 
 use yiiunit\TestCase;
 
@@ -42,7 +47,7 @@ class YiiRequirementCheckerTest extends TestCase
         $checkResult = $requirementsChecker->check($requirements)->getResult();
         $summary = $checkResult['summary'];
 
-        $this->assertEquals(count($requirements), $summary['total'], 'Wrong summary total!');
+        $this->assertCount($summary['total'], $requirements, 'Wrong summary total!');
         $this->assertEquals(1, $summary['errors'], 'Wrong summary errors!');
         $this->assertEquals(1, $summary['warnings'], 'Wrong summary warnings!');
 
@@ -121,7 +126,7 @@ class YiiRequirementCheckerTest extends TestCase
 
         $mergedRequirements = array_merge($requirements1, $requirements2);
 
-        $this->assertEquals(count($mergedRequirements), $checkResult['summary']['total'], 'Wrong total checks count!');
+        $this->assertCount($checkResult['summary']['total'], $mergedRequirements, 'Wrong total checks count!');
         foreach ($mergedRequirements as $key => $mergedRequirement) {
             $this->assertEquals($mergedRequirement['name'], $checkResult['requirements'][$key]['name'], 'Wrong requirements list!');
         }
@@ -147,12 +152,12 @@ class YiiRequirementCheckerTest extends TestCase
     {
         return [
             ['456', 456],
-            ['5K', 5*1024],
-            ['16KB', 16*1024],
-            ['4M', 4*1024*1024],
-            ['14MB', 14*1024*1024],
-            ['7G', 7*1024*1024*1024],
-            ['12GB', 12*1024*1024*1024],
+            ['5K', 5 * 1024],
+            ['16KB', 16 * 1024],
+            ['4M', 4 * 1024 * 1024],
+            ['14MB', 14 * 1024 * 1024],
+            ['7G', 7 * 1024 * 1024 * 1024],
+            ['12GB', 12 * 1024 * 1024 * 1024],
         ];
     }
 

@@ -27,12 +27,13 @@ trait QueryTrait
      */
     public $where;
     /**
-     * @var int maximum number of records to be returned. If not set or less than 0, it means no limit.
+     * @var int|Expression maximum number of records to be returned. May be an instance of [[Expression]].
+     * If not set or less than 0, it means no limit.
      */
     public $limit;
     /**
-     * @var int zero-based offset from where the records are to be returned. If not set or
-     * less than 0, it means starting from the beginning.
+     * @var int|Expression zero-based offset from where the records are to be returned.
+     * May be an instance of [[Expression]]. If not set or less than 0, it means starting from the beginning.
      */
     public $offset;
     /**
@@ -45,13 +46,13 @@ trait QueryTrait
      */
     public $orderBy;
     /**
-     * @var string|callable $column the name of the column by which the query results should be indexed by.
+     * @var string|callable the name of the column by which the query results should be indexed by.
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row data. For more details, see [[indexBy()]]. This property is only used by [[QueryInterface::all()|all()]].
      */
     public $indexBy;
     /**
-     * @var boolean whether to emulate the actual query execution, returning empty or false results.
+     * @var bool whether to emulate the actual query execution, returning empty or false results.
      * @see emulateExecution()
      * @since 2.0.11
      */
@@ -84,7 +85,7 @@ trait QueryTrait
      *
      * See [[QueryInterface::where()]] for detailed documentation.
      *
-     * @param string|array $condition the conditions that should be put in the WHERE part.
+     * @param array $condition the conditions that should be put in the WHERE part.
      * @return $this the query object itself
      * @see andWhere()
      * @see orWhere()
@@ -98,7 +99,7 @@ trait QueryTrait
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return $this the query object itself
      * @see where()
@@ -111,13 +112,14 @@ trait QueryTrait
         } else {
             $this->where = ['and', $this->where, $condition];
         }
+
         return $this;
     }
 
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return $this the query object itself
      * @see where()
@@ -130,6 +132,7 @@ trait QueryTrait
         } else {
             $this->where = ['or', $this->where, $condition];
         }
+
         return $this;
     }
 
@@ -166,6 +169,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->where($condition);
         }
+
         return $this;
     }
 
@@ -189,6 +193,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->andWhere($condition);
         }
+
         return $this;
     }
 
@@ -212,6 +217,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->orWhere($condition);
         }
+
         return $this;
     }
 
@@ -235,6 +241,7 @@ trait QueryTrait
                     unset($condition[$name]);
                 }
             }
+
             return $condition;
         }
 
@@ -344,11 +351,12 @@ trait QueryTrait
         } else {
             $this->orderBy = array_merge($this->orderBy, $columns);
         }
+
         return $this;
     }
 
     /**
-     * Normalizes format of ORDER BY data
+     * Normalizes format of ORDER BY data.
      *
      * @param array|string|Expression $columns the columns value to normalize. See [[orderBy]] and [[addOrderBy]].
      * @return array
@@ -359,23 +367,24 @@ trait QueryTrait
             return [$columns];
         } elseif (is_array($columns)) {
             return $columns;
-        } else {
-            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-            $result = [];
-            foreach ($columns as $column) {
-                if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
-                    $result[$matches[1]] = strcasecmp($matches[2], 'desc') ? SORT_ASC : SORT_DESC;
-                } else {
-                    $result[$column] = SORT_ASC;
-                }
-            }
-            return $result;
         }
+
+        $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+        $result = [];
+        foreach ($columns as $column) {
+            if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
+                $result[$matches[1]] = strcasecmp($matches[2], 'desc') ? SORT_ASC : SORT_DESC;
+            } else {
+                $result[$column] = SORT_ASC;
+            }
+        }
+
+        return $result;
     }
 
     /**
      * Sets the LIMIT part of the query.
-     * @param int $limit the limit. Use null or negative value to disable limit.
+     * @param int|Expression|null $limit the limit. Use null or negative value to disable limit.
      * @return $this the query object itself
      */
     public function limit($limit)
@@ -386,7 +395,7 @@ trait QueryTrait
 
     /**
      * Sets the OFFSET part of the query.
-     * @param int $offset the offset. Use null or negative value to disable offset.
+     * @param int|Expression|null $offset the offset. Use null or negative value to disable offset.
      * @return $this the query object itself
      */
     public function offset($offset)
@@ -401,7 +410,7 @@ trait QueryTrait
      * and so on, will return empty or false values.
      * You should use this method in case your program logic indicates query should not return any results, like
      * in case you set false where condition like `0=1`.
-     * @param boolean $value whether to prevent query execution.
+     * @param bool $value whether to prevent query execution.
      * @return $this the query object itself.
      * @since 2.0.11
      */

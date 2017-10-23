@@ -30,7 +30,7 @@ Getting Started
 Application Structure
 ---------------------
 
-* [Overview](structure-overview.md)
+* [Application Structure Overview](structure-overview.md)
 * [Entry Scripts](structure-entry-scripts.md)
 * [Applications](structure-applications.md)
 * [Application Components](structure-application-components.md)
@@ -47,7 +47,7 @@ Application Structure
 Handling Requests
 -----------------
 
-* [Overview](runtime-overview.md)
+* [Request Handling Overview](runtime-overview.md)
 * [Bootstrapping](runtime-bootstrapping.md)
 * [Routing and URL Creation](runtime-routing.md)
 * [Requests](runtime-requests.md)
@@ -92,6 +92,7 @@ Getting Data from Users
 * [Uploading Files](input-file-upload.md)
 * [Collecting Tabular Input](input-tabular-input.md)
 * [Getting Data for Multiple Models](input-multiple-models.md)
+* [Extending ActiveForm on the Client Side](input-form-javascript.md)
 
 
 Displaying Data
@@ -109,7 +110,7 @@ Displaying Data
 Security
 --------
 
-* [Overview](security-overview.md)
+* [Security Overview](security-overview.md)
 * [Authentication](security-authentication.md)
 * [Authorization](security-authorization.md)
 * [Working with Passwords](security-passwords.md)
@@ -121,7 +122,7 @@ Security
 Caching
 -------
 
-* [Overview](caching-overview.md)
+* [Caching Overview](caching-overview.md)
 * [Data Caching](caching-data.md)
 * [Fragment Caching](caching-fragment.md)
 * [Page Caching](caching-page.md)
@@ -153,7 +154,7 @@ Development Tools
 Testing
 -------
 
-* [Overview](test-overview.md)
+* [Testing Overview](test-overview.md)
 * [Testing environment setup](test-environment-setup.md)
 * [Unit Tests](test-unit.md)
 * [Functional Tests](test-functional.md)
@@ -174,6 +175,7 @@ Special Topics
 * [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
 * [Working with Third-Party Code](tutorial-yii-integration.md)
+* [Using Yii as a micro framework](tutorial-yii-as-micro-framework.md)
 
 
 Widgets
@@ -194,7 +196,7 @@ Widgets
 Helpers
 -------
 
-* [Overview](helper-overview.md)
+* [Helpers Overview](helper-overview.md)
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
 * [Url](helper-url.md)

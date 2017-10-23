@@ -50,9 +50,9 @@ Yii::$app->mailer->compose()
 ```php
 $message = Yii::$app->mailer->compose();
 if (Yii::$app->user->isGuest) {
-    $message->setFrom('from@domain.com')
+    $message->setFrom('from@domain.com');
 } else {
-    $message->setFrom(Yii::$app->user->identity->email)
+    $message->setFrom(Yii::$app->user->identity->email);
 }
 $message->setTo(Yii::$app->params['adminEmail'])
     ->setSubject('メッセージの題')
@@ -60,9 +60,9 @@ $message->setTo(Yii::$app->params['adminEmail'])
     ->send();
 ```
 
-> Note: すべての 'mailer' エクステンションは、二つの主要なクラス、すなわち、'Mailer' と 'Message' のセットとして提供されます。
-'Mailer' は常に 'Message' のクラス名と仕様を知っています。
-'Message' オブジェクトのインスタンスを直接に作成しようとしてはいけません。常に `compose()` メソッドを使って作成してください。
+> Note: すべての `mailer` エクステンションは、二つの主要なクラス、すなわち、`Mailer` と `Message` のセットとして提供されます。
+  `Mailer` は常に `Message` のクラス名と仕様を知っています。
+  `Message` オブジェクトのインスタンスを直接に作成しようとしてはいけません。常に `compose()` メソッドを使って作成してください。
 
 いくつかのメッセージを一度に送信することも出来ます。
 
@@ -83,7 +83,7 @@ Yii::$app->mailer->sendMultiple($messages);
 ----------------------------
 
 Yii は実際のメールメッセージを特別なビューファイルによって作成することを許容しています。
-デフォルトでは、それらのファイルは '@app/mail' というパスに配置されなければなりません。
+デフォルトでは、それらのファイルは `@app/mail` というパスに配置されなければなりません。
 
 以下はメールビューファイルの内容の例です。
 
@@ -91,7 +91,6 @@ Yii は実際のメールメッセージを特別なビューファイルによ�
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
-
 
 /* @var $this \yii\web\View ビューコンポーネントのインスタンス */
 /* @var $message \yii\mail\BaseMessage 新しく作成されたメールメッセージのインスタンス */
@@ -188,7 +187,7 @@ $message->attachContent('添付される内容', ['fileName' => 'attach.txt', 'c
 --------------
 
 `embed()` メソッドを使って、メッセージのコンテントに画像を埋め込むことが出来ます。
-このメソッドは添付ファイルの ID を返しますので、それを 'img' タグで使わなければなりません。
+このメソッドは添付ファイルの ID を返しますので、それを `img` タグで使わなければなりません。
 このメソッドはビューファイルによってメッセージのコンテントを作成するときに簡単に使うことが出来ます。
 
 ```php
@@ -210,7 +209,7 @@ Yii::$app->mailer->compose('embed-email', ['imageFileName' => '/path/to/image.jp
 開発者は、実際にどのようなメールがアプリケーションによって送信されたか、その内容はどのようなものであったか、等をチェックしなければならないことが多くあります。
 Yii は、そのようなチェックが出来ることを `yii\mail\BaseMailer::useFileTransport` によって保証しています。
 このオプションを有効にすると、メールのメッセージデータが、通常のように送信される代りに、ローカルファイルに強制的に保存されます。
-ファイルは、`yii\mail\BaseMailer::fileTransportPath`、デフォルトでは '@runtime/mail' の下に保存されます。
+ファイルは、`yii\mail\BaseMailer::fileTransportPath`、デフォルトでは `@runtime/mail` の下に保存されます。
 
 > Note: メッセージをファイルに保存するか、実際の受信者に送信するか、どちらかを選ぶことが出来ますが、両方を同時に実行することは出来ません。
 
@@ -224,7 +223,7 @@ Yii は、そのようなチェックが出来ることを `yii\mail\BaseMailer:
 ------------------------------------------
 
 あなた自身のカスタムメールソリューションを作成するためには、二つのクラスを作成する必要があります。
-すなわち、一つは 'Mailer' であり、もう一つは 'Message' です。
+すなわち、一つは `Mailer` であり、もう一つは `Message` です。
 `yii\mail\BaseMailer` と `yii\mail\BaseMessage` をあなたのソリューションの基底クラスとして使うことが出来ます。
 これらのクラスが、このガイドで説明された基本的なロジックを既に持っています。
 しかし、それを使用することは強制されていません。

@@ -43,9 +43,9 @@ class ArrayCache extends Cache
     {
         if (isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true))) {
             return $this->_cache[$key][0];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -64,10 +64,9 @@ class ArrayCache extends Cache
     {
         if (isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true))) {
             return false;
-        } else {
-            $this->_cache[$key] = [$value, $duration === 0 ? 0 : microtime(true) + $duration];
-            return true;
         }
+        $this->_cache[$key] = [$value, $duration === 0 ? 0 : microtime(true) + $duration];
+        return true;
     }
 
     /**

@@ -596,7 +596,7 @@ $this->registerLinkTag([
 これらのイベントに反応することによって、ビューにコンテントを注入したり、エンドユーザに送信される前にレンダリング結果を加工したりすることが出来ます。
 
 - [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: コントローラでファイルをレンダリングする前にトリガされます。
-  このイベントのハンドラは、[[yii\base\ViewEvent::isValid]] を false にセットして、レンダリングのプロセスをキャンセルすることが出来ます。
+  このイベントのハンドラは、[[yii\base\ViewEvent::isValid]] を `false` にセットして、レンダリングのプロセスをキャンセルすることが出来ます。
 - [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: ファイルのレンダリングの後、[[yii\base\View::afterRender()]] を呼ぶことによってトリガされます。
   このイベントのハンドラは、レンダリング結果をプロパティ [[yii\base\ViewEvent::output]] を通じて取得して、それを修正してレンダリング結果を変更することが出来ます。
 - [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]]: レイアウトの中で [[yii\base\View::beginPage()]] を呼ぶことによってトリガされます。

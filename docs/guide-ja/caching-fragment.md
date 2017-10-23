@@ -15,7 +15,7 @@ if ($this->beginCache($id)) {
 ```
 
 つまり、コンテント生成ロジックを [[yii\base\View::beginCache()|beginCache()]] と [[yii\base\View::endCache()|endCache()]] の呼び出しのペアで囲みます。
-コンテントがキャッシュ内で見つかった場合、[[yii\base\View::beginCache()|beginCache()]] はキャッシュされたコンテントをレンダリングして false を返し、結果として、コンテント生成ロジックがスキップされます。
+コンテントがキャッシュ内で見つかった場合、[[yii\base\View::beginCache()|beginCache()]] はキャッシュされたコンテントをレンダリングして `false` を返し、結果として、コンテント生成ロジックがスキップされます。
 それ以外の場合はコンテント生成ロジックが呼ばれ、そして [[yii\base\View::endCache()|endCache()]] が呼ばれたときに、生成されたコンテントがキャプチャされ、キャッシュに格納されます。
 
 [データキャッシュ](caching-data.md) と同様に、キャッシュされるコンテントを識別するためにユニークな `$id` が必要になります。

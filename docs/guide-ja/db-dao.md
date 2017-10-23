@@ -13,11 +13,14 @@ Yii は下記の DBMS のサポートを内蔵しています。
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)
+- [PostgreSQL](http://www.postgresql.org/): バージョン 8.4 以上。
 - [CUBRID](http://www.cubrid.org/): バージョン 9.3 以上。
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2008 以上。
 
+> Note: PHP 7 用の pdo_oci の新しいバージョンは、現在、ソースコードとしてのみ存在します。
+  [コミュニティによる説明](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268) に従ってコンパイルするか、
+  または、[PDO エミュレーションレイヤ](https://github.com/taq/pdooci) を使って下さい。
 
 ## DB 接続を作成する <span id="creating-db-connections"></span>
 
@@ -320,11 +323,11 @@ try {
     // ... その他の SQL 文を実行 ...
 
     $transaction->commit();
-
 } catch(\Exception $e) {
-
     $transaction->rollBack();
-
+    throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
     throw $e;
 }
 ```
@@ -336,6 +339,12 @@ try {
 そうでなく、例外がトリガされてキャッチされた場合は、[[yii\db\Transaction::rollBack()|rollBack()]]
 が呼ばれて、トランザクションの中で失敗したクエリに先行するクエリによって行なわれた変更が、ロールバックされます。
 そして、`throw $e` が、まるでそれをキャッチしなかったかのように、例外を再スローしますので、通常のエラー処理プロセスがその例外の面倒を見ることになります。
+
+> Note: 上記のコードでは、PHP 5.x と PHP 7.x との互換性のために、二つの
+> catch ブロックを持っています。`\Exception` は PHP 7.0 以降では、
+> [`\Throwable` インターフェイス](http://php.net/manual/ja/class.throwable.php) を実装しています。
+> 従って、あなたのアプリケーションが PHP 7.0 以上しか使わない場合は、`\Exception` の部分を省略することが出来ます。
+
 
 ### 分離レベルを指定する <span id="specifying-isolation-levels"></span>
 
@@ -408,11 +417,17 @@ try {
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
         throw $e;
+    } catch(\Throwable $e) {
+        $transaction->rollBack();
+        throw $e;
     }
 
     $outerTransaction->commit();
 } catch (\Exception $e) {
     $outerTransaction->rollBack();
+    throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
     throw $e;
 }
 ```
@@ -549,6 +564,9 @@ try {
 } catch(\Exception $e) {
     $transaction->rollBack();
     throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
+    throw $e;
 }
 ```
 
@@ -567,7 +585,7 @@ $rows = Yii::$app->db->useMaster(function ($db) {
 });
 ```
 
-直接に `Yii::$app->db->enableSlaves` を false に設定して、全てのクエリをマスタ接続に向けることも出来ます。
+直接に `Yii::$app->db->enableSlaves` を `false` に設定して、全てのクエリをマスタ接続に向けることも出来ます。
 
 
 ## データベーススキーマを扱う <span id="database-schema"></span>

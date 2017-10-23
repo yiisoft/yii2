@@ -7,6 +7,7 @@
 
 namespace yii\caching;
 
+use Yii;
 use yii\base\Component;
 use yii\helpers\StringHelper;
 
@@ -50,7 +51,7 @@ use yii\helpers\StringHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Cache extends Component implements \ArrayAccess
+abstract class Cache extends Component implements CacheInterface
 {
     /**
      * @var string a string prefixed to every cache key so that it is unique globally in the whole cache storage.
@@ -72,7 +73,7 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public $serializer;
     /**
-     * @var integer default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
+     * @var int default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
      * This value is used by [[set()]] if the duration is not explicitly given.
      * @since 2.0.11
      */
@@ -120,9 +121,9 @@ abstract class Cache extends Component implements \ArrayAccess
         }
         if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
             return $value[0];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -364,7 +365,7 @@ abstract class Cache extends Component implements \ArrayAccess
     }
 
     /**
-     * Deletes a value with the specified key from cache
+     * Deletes a value with the specified key from cache.
      * @param mixed $key a key identifying the value to be deleted from cache. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @return bool if no error happens during deletion
@@ -536,5 +537,46 @@ abstract class Cache extends Component implements \ArrayAccess
     public function offsetUnset($key)
     {
         $this->delete($key);
+    }
+
+    /**
+     * Method combines both [[set()]] and [[get()]] methods to retrieve value identified by a $key,
+     * or to store the result of $callable execution if there is no cache available for the $key.
+     *
+     * Usage example:
+     *
+     * ```php
+     * public function getTopProducts($count = 10) {
+     *     $cache = $this->cache; // Could be Yii::$app->cache
+     *     return $cache->getOrSet(['top-n-products', 'n' => $count], function ($cache) use ($count) {
+     *         return Products::find()->mostPopular()->limit(10)->all();
+     *     }, 1000);
+     * }
+     * ```
+     *
+     * @param mixed $key a key identifying the value to be cached. This can be a simple string or
+     * a complex data structure consisting of factors representing the key.
+     * @param callable|\Closure $callable the callable or closure that will be used to generate a value to be cached.
+     * In case $callable returns `false`, the value will not be cached.
+     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * [[defaultDuration]] value will be used.
+     * @param Dependency $dependency dependency of the cached item. If the dependency changes,
+     * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
+     * This parameter is ignored if [[serializer]] is `false`.
+     * @return mixed result of $callable execution
+     * @since 2.0.11
+     */
+    public function getOrSet($key, $callable, $duration = null, $dependency = null)
+    {
+        if (($value = $this->get($key)) !== false) {
+            return $value;
+        }
+
+        $value = call_user_func($callable, $this);
+        if (!$this->set($key, $value, $duration, $dependency)) {
+            Yii::warning('Failed to set cache value for key ' . json_encode($key), __METHOD__);
+        }
+
+        return $value;
     }
 }

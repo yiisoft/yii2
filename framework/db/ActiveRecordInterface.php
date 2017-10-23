@@ -7,14 +7,16 @@
 
 namespace yii\db;
 
+use yii\base\StaticInstanceInterface;
+
 /**
- * ActiveRecordInterface
+ * ActiveRecordInterface.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-interface ActiveRecordInterface
+interface ActiveRecordInterface extends StaticInstanceInterface
 {
     /**
      * Returns the primary key **name(s)** for this AR class.
@@ -87,7 +89,7 @@ interface ActiveRecordInterface
     public function getOldPrimaryKey($asArray = false);
 
     /**
-     * Returns a value indicating whether the given set of attributes represents the primary key for this model
+     * Returns a value indicating whether the given set of attributes represents the primary key for this model.
      * @param array $keys the set of attributes to check
      * @return bool whether the given set of attributes represents the primary key for this model
      */
@@ -163,7 +165,12 @@ interface ActiveRecordInterface
      *    matching all of them (or `null` if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
      *
      * That this method will automatically call the `one()` method and return an [[ActiveRecordInterface|ActiveRecord]]
-     * instance. For example,
+     * instance.
+     *
+     * > Note: As this is a short-hand method only, using more complex conditions, like ['!=', 'id', 1] will not work.
+     * > If you need to specify more complex conditions, use [[find()]] in combination with [[ActiveQuery::where()|where()]] instead.
+     *
+     * See the following code for usage examples:
      *
      * ```php
      * // find a single customer whose primary key value is 10
@@ -171,6 +178,12 @@ interface ActiveRecordInterface
      *
      * // the above code is equivalent to:
      * $customer = Customer::find()->where(['id' => 10])->one();
+     *
+     * // find the customers whose primary key value is 10, 11 or 12.
+     * $customers = Customer::findOne([10, 11, 12]);
+     *
+     * // the above code is equivalent to:
+     * $customers = Customer::find()->where(['id' => [10, 11, 12]])->one();
      *
      * // find the first customer whose age is 30 and whose status is 1
      * $customer = Customer::findOne(['age' => 30, 'status' => 1]);
@@ -200,7 +213,12 @@ interface ActiveRecordInterface
      *    a non-associative array.
      *
      * This method will automatically call the `all()` method and return an array of [[ActiveRecordInterface|ActiveRecord]]
-     * instances. For example,
+     * instances.
+     *
+     * > Note: As this is a short-hand method only, using more complex conditions, like ['!=', 'id', 1] will not work.
+     * > If you need to specify more complex conditions, use [[find()]] in combination with [[ActiveQuery::where()|where()]] instead.
+     *
+     * See the following code for usage examples:
      *
      * ```php
      * // find the customers whose primary key value is 10
@@ -229,6 +247,7 @@ interface ActiveRecordInterface
 
     /**
      * Updates records using the provided attribute values and conditions.
+     *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
      * ```php

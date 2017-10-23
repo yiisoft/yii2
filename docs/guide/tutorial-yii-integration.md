@@ -25,10 +25,10 @@ the Composer autoloader:
 
 ```php
 // install Composer autoloader
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // include Yii class file
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 ### Using Downloaded Libraries <span id="using-downloaded-libs"></span>
@@ -79,31 +79,16 @@ frameworks. For example, you may want to use the [[yii\helpers\ArrayHelper]] cla
 [Active Record](db-active-record.md) feature in a third-party system. To achieve this goal, you mainly need to
 take two steps: install Yii, and bootstrap Yii.
 
-If the third-party system uses Composer to manage its dependencies, you can simply run the following commands
-to install Yii:
+If the third-party system uses Composer to manage its dependencies, run the following command to add Yii
+to the project requirements:
 
-    composer global require "fxp/composer-asset-plugin:^1.2.0"
-    composer require yiisoft/yii2
-    composer install
-
-The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-which allows managing bower and npm package dependencies through Composer. Even if you only want to use the database
-layer or other non-asset related features of Yii, this is required to install the Yii composer package.
-
-If you want to use the [Asset publishing feature of Yii](structure-assets.md) you should also add the following configuration
-to the `extra` section in your `composer.json`:
-
-```json
-{
-    ...
-    "extra": {
-        "asset-installer-paths": {
-            "npm-asset-library": "vendor/npm",
-            "bower-asset-library": "vendor/bower"
-        }
-    }
-}
+```bash
+composer require yiisoft/yii2
 ```
+
+In case you would like to use only the database abstraction layer or other non-asset related features of Yii,
+you should require a special composer package that prevent Bower and NPM packages installation. See 
+[cebe/assetfree-yii2](https://github.com/cebe/assetfree-yii2) for details.
 
 See also the general [section about installing Yii](start-installation.md#installing-via-composer) for more information
 on Composer and solution to possible issues popping up during the installation.
@@ -114,9 +99,9 @@ the `BasePath/vendor` directory.
 Next, you should modify the entry script of the 3rd-party system by including the following code at the beginning:
 
 ```php
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
-$yiiConfig = require(__DIR__ . '/../config/yii/web.php');
+$yiiConfig = require __DIR__ . '/../config/yii/web.php';
 new yii\web\Application($yiiConfig); // Do NOT call run() here
 ```
 
@@ -149,14 +134,14 @@ Second, modify the entry script of the application as follows,
 
 ```php
 // include the customized Yii class described below
-require(__DIR__ . '/../components/Yii.php');
+require __DIR__ . '/../components/Yii.php';
 
 // configuration for Yii 2 application
-$yii2Config = require(__DIR__ . '/../config/yii2/web.php');
+$yii2Config = require __DIR__ . '/../config/yii2/web.php';
 new yii\web\Application($yii2Config); // Do NOT call run(), yii2 app is only used as service locator
 
 // configuration for Yii 1 application
-$yii1Config = require(__DIR__ . '/../config/yii1/main.php');
+$yii1Config = require __DIR__ . '/../config/yii1/main.php';
 Yii::createWebApplication($yii1Config)->run();
 ```
 
@@ -165,10 +150,10 @@ The above code includes the customized `Yii` class file, which can be created as
 
 ```php
 $yii2path = '/path/to/yii2';
-require($yii2path . '/BaseYii.php'); // Yii 2.x
+require $yii2path . '/BaseYii.php'; // Yii 2.x
 
 $yii1path = '/path/to/yii1';
-require($yii1path . '/YiiBase.php'); // Yii 1.x
+require $yii1path . '/YiiBase.php'; // Yii 1.x
 
 class Yii extends \yii\BaseYii
 {

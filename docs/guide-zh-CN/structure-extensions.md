@@ -376,7 +376,7 @@ help other people learn about and use your extension:
 * Tutorials, demos, screenshots, etc.: these are needed if your extension provides many features that cannot be
   fully covered in the readme file.
 * API documentation: your code should be well documented to allow other people more easily read and understand it.
-  You may refer to the [Object class file](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php)
+  You may refer to the [BaseObject class file](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php)
   to learn how to document your code.
 
 > Info: Your code comments can be written in Markdown format. The `yiisoft/yii2-apidoc` extension provides a tool

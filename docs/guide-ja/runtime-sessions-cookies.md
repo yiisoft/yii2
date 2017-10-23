@@ -288,7 +288,7 @@ unset($cookies['language']);
 や [[yii\web\Cookie::expire|expire]] など、他のプロパティを定義して、利用可能なクッキー情報の全てを完全に表しています。
 クッキーを準備するときに必要に応じてこれらのプロパティを構成してから、レスポンスのクッキーコレクションに追加することが出来ます。
 
-> Note: セキュリティを向上させるために、[[yii\web\Cookie::httpOnly]] のデフォルト値は true に設定されています。
+> Note: セキュリティを向上させるために、[[yii\web\Cookie::httpOnly]] のデフォルト値は `true` に設定されています。
 これは、クライアントサイドスクリプトが保護されたクッキーにアクセスする危険を軽減するものです (ブラウザがサポートしていれば)。
 詳細については、[httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) を読んでください。
 
@@ -304,7 +304,7 @@ unset($cookies['language']);
   これは、サードパーティのライブラリが、クッキー検証を含まない独自の方法でクッキーを操作することが出来るようにするするためです。
 
 クッキー検証はデフォルトで有効になっています。
-[[yii\web\Request::enableCookieValidation]] プロパティを false に設定することによって無効にすることが出来ますが、無効にしないことを強く推奨します。
+[[yii\web\Request::enableCookieValidation]] プロパティを `false` に設定することによって無効にすることが出来ますが、無効にしないことを強く推奨します。
 
 > Note: `$_COOKIE` と `setcookie()` によって直接に 読み出し/送信 されるクッキーは検証されません。
 

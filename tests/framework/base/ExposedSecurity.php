@@ -1,11 +1,16 @@
 <?php
-namespace yiiunit\framework\base;
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
+namespace yiiunit\framework\base;
 
 use yii\base\Security;
 
 /**
- * ExposedSecurity exposes protected methods for direct testing
+ * ExposedSecurity exposes protected methods for direct testing.
  */
 class ExposedSecurity extends Security
 {

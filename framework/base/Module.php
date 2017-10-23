@@ -32,8 +32,9 @@ use yii\di\ServiceLocator;
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
  * @property string $uniqueId The unique ID of the module. This property is read-only.
+ * @property string $version The version of this module. Note that the type of this property differs in getter
+ * and setter. See [[getVersion()]] and [[setVersion()]] for details.
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
- * @property string|callable $version The version of this module.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -230,7 +231,7 @@ class Module extends ServiceLocator
     /**
      * Sets the root directory of the module.
      * This method can only be invoked at the beginning of the constructor.
-     * @param string $path the root directory of the module. This can be either a directory name or a path alias.
+     * @param string $path the root directory of the module. This can be either a directory name or a [path alias](guide:concept-aliases).
      * @throws InvalidParamException if the directory does not exist.
      */
     public function setBasePath($path)
@@ -265,6 +266,7 @@ class Module extends ServiceLocator
         if ($this->_viewPath === null) {
             $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
         }
+
         return $this->_viewPath;
     }
 
@@ -293,7 +295,7 @@ class Module extends ServiceLocator
 
     /**
      * Sets the directory that contains the layout files.
-     * @param string $path the root directory or path alias of layout files.
+     * @param string $path the root directory or [path alias](guide:concept-aliases) of layout files.
      * @throws InvalidParamException if the directory is invalid
      */
     public function setLayoutPath($path)
@@ -316,6 +318,7 @@ class Module extends ServiceLocator
                 $this->_version = call_user_func($this->_version, $this);
             }
         }
+
         return $this->_version;
     }
 
@@ -349,6 +352,7 @@ class Module extends ServiceLocator
         if ($this->module === null) {
             return '1.0';
         }
+
         return $this->module->getVersion();
     }
 
@@ -392,6 +396,7 @@ class Module extends ServiceLocator
 
             return $module === null ? false : $module->hasModule(substr($id, $pos + 1));
         }
+
         return isset($this->_modules[$id]);
     }
 
@@ -414,7 +419,7 @@ class Module extends ServiceLocator
         }
 
         if (isset($this->_modules[$id])) {
-            if ($this->_modules[$id] instanceof Module) {
+            if ($this->_modules[$id] instanceof self) {
                 return $this->_modules[$id];
             } elseif ($load) {
                 Yii::trace("Loading module: $id", __METHOD__);
@@ -460,13 +465,14 @@ class Module extends ServiceLocator
         if ($loadedOnly) {
             $modules = [];
             foreach ($this->_modules as $module) {
-                if ($module instanceof Module) {
+                if ($module instanceof self) {
                     $modules[] = $module;
                 }
             }
 
             return $modules;
         }
+
         return $this->_modules;
     }
 
@@ -566,7 +572,7 @@ class Module extends ServiceLocator
         }
 
         if (strpos($route, '/') !== false) {
-            list ($id, $route) = explode('/', $route, 2);
+            list($id, $route) = explode('/', $route, 2);
         } else {
             $id = $route;
             $route = '';
@@ -605,7 +611,7 @@ class Module extends ServiceLocator
      * Note that this method does not check [[modules]] or [[controllerMap]].
      *
      * @param string $id the controller ID.
-     * @return Controller the newly created controller instance, or `null` if the controller ID is invalid.
+     * @return Controller|null the newly created controller instance, or `null` if the controller ID is invalid.
      * @throws InvalidConfigException if the controller class and its file name do not match.
      * This exception is only thrown when in debug mode.
      */
@@ -628,7 +634,7 @@ class Module extends ServiceLocator
         }
 
         $className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';
-        $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix)  . $className, '\\');
+        $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {
             return null;
         }
@@ -637,8 +643,9 @@ class Module extends ServiceLocator
             $controller = Yii::createObject($className, [$id, $this]);
             return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {
-            throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
+            throw new InvalidConfigException('Controller class must extend from \\yii\\base\\Controller.');
         }
+
         return null;
     }
 
@@ -703,5 +710,35 @@ class Module extends ServiceLocator
         $event->result = $result;
         $this->trigger(self::EVENT_AFTER_ACTION, $event);
         return $event->result;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Since version 2.0.13, if a component isn't defined in the module, it will be looked up in the parent module.
+     * The parent module may be the application.
+     */
+    public function get($id, $throwException = true)
+    {
+        if (!isset($this->module)) {
+            return parent::get($id, $throwException);
+        }
+        
+        $component = parent::get($id, false);
+        if ($component === null) {
+            $component = $this->module->get($id, $throwException);
+        }
+        return $component;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Since version 2.0.13, if a component isn't defined in the module, it will be looked up in the parent module.
+     * The parent module may be the application.
+     */
+    public function has($id, $checkInstance = false)
+    {
+        return parent::has($id, $checkInstance) || (isset($this->module) && $this->module->has($id, $checkInstance));
     }
 }

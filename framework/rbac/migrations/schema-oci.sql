@@ -36,7 +36,7 @@ create table "auth_item"
         foreign key ("rule_name") references "auth_rule"("name") on delete set null,
         primary key ("name")
 );
--- adds oracle specific index to auth_item 
+-- adds oracle specific index to auth_item
 CREATE INDEX auth_type_index ON "auth_item"("type");
 
 create table "auth_item_child"
@@ -56,3 +56,5 @@ create table "auth_assignment"
    primary key ("item_name","user_id"),
    foreign key ("item_name") references "auth_item" ("name") on delete cascade
 );
+
+CREATE INDEX auth_assignment_user_id_idx ON "auth_assignment" ("user_id");

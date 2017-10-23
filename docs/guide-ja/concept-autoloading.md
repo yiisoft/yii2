@@ -2,7 +2,7 @@
 =================
 
 Yiiは、必要となるすべてのクラスファイルを特定してインクルードするにあたり、 [クラスのオートローディングメカニズム](http://www.php.net/manual/ja/language.oop5.autoload.php)
-を頼りにします。Yii は、[PSR-4 標準](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md) に準拠した、高性能なクラスのオートローダーを提供しています。
+を頼りにします。Yii は、[PSR-4 標準](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md) に準拠した、高性能なクラスのオートローダーを提供しています。
 このオートローダーは、あなたが `Yii.php` ファイルをインクルードするときにインストールされます。
 
 > Note: 説明を簡単にするため、このセクションではクラスのオートローディングについてのみお話しします。しかし、
@@ -66,8 +66,8 @@ Yii オートローダーを他のオートローダーと一緒に使うとき�
 最初の行は、Composer のオートローダーをインストールしており、二行目は Yii のオートローダーをインストールしています。
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 あなたは Yii のオートローダーを使わず、Composer のオートローダーだけを単独で使用することもできます。しかし、そうすることによって、

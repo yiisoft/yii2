@@ -18,7 +18,7 @@ var StringUtils = {
 };
 
 var jsdom = require('mocha-jsdom');
-var punycode = require('../../../vendor/bower/punycode/punycode');
+var punycode = require('../../../vendor/bower-asset/punycode/punycode');
 
 var fs = require('fs');
 var vm = require('vm');
@@ -75,7 +75,7 @@ describe('yii.validation', function () {
         yii = sandbox.yii;
     }
 
-    jsdom({src: fs.readFileSync('vendor/bower/jquery/dist/jquery.js', 'utf-8')});
+    jsdom({src: fs.readFileSync('vendor/bower-asset/jquery/dist/jquery.js', 'utf-8')});
 
     before(function () {
         $ = window.$;
@@ -863,6 +863,7 @@ describe('yii.validation', function () {
                 'user mailbox': ['user+mailbox/department=shipping@example.com', true],
                 'special symbols in local-part': ['!#$%&\'*+-/=?^_`.{|}~@example.com', true],
                 'domain only': ['rmcreative.ru', false],
+                'double dot': ['ex..ample@example.com', false],
                 'unicode in domain': ['example@äüößìà.de', false],
                 'unicode (russian characters) in domain': ['sam@рмкреатиф.ru', false],
                 'ASCII in domain': ['example@xn--zcack7ayc9a.de', true],

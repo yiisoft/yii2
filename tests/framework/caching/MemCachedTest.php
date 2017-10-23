@@ -1,10 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\caching;
 
 use yii\caching\MemCache;
 
 /**
- * Class for testing memcached cache backend
+ * Class for testing memcached cache backend.
  * @group memcached
  * @group caching
  */
@@ -17,8 +23,8 @@ class MemCachedTest extends CacheTestCase
      */
     protected function getCacheInstance()
     {
-        if (!extension_loaded("memcached")) {
-            $this->markTestSkipped("memcached not installed. Skipping.");
+        if (!extension_loaded('memcached')) {
+            $this->markTestSkipped('memcached not installed. Skipping.');
         }
 
         // check whether memcached is running and skip tests if not.

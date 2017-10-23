@@ -171,6 +171,7 @@ class Pjax extends Widget
         $response->setStatusCode(200);
         $response->format = Response::FORMAT_HTML;
         $response->content = $content;
+        $response->headers->setDefault('X-Pjax-Url', Yii::$app->request->url);
         $response->send();
 
         Yii::$app->end();

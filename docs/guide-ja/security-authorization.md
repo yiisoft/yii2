@@ -245,6 +245,10 @@ return [
 
 `yii migrate --migrationPath=@yii/rbac/migrations`
 
+異なる名前空間のマイグレーションを扱う方法の詳細については
+[分離されたマイグレーション](db-migrations.md#separated-migrations) の節を参照して下さい。
+
+
 これで `authManager` は `\Yii::$app->authManager` によってアクセスすることが出来るようになります。
 
 

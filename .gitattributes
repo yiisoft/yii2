@@ -22,17 +22,15 @@
 *.gif  binary
 *.ttf  binary
 
-# Ignore all test and documentation for archive
+# Ignore some meta files when creating an archive of this repository
+# We do not ignore any content, because this repo represents the 
+# `yiisoft/yii2-dev` package, which is expected to ship all tests and docs.
 /.github            export-ignore
 /.editorconfig      export-ignore
 /.gitattributes     export-ignore
 /.gitignore         export-ignore
 /.scrutinizer.yml   export-ignore
 /.travis.yml        export-ignore
-/phpunit.xml.dist   export-ignore
-/tests              export-ignore
-/docs               export-ignore
-/build              export-ignore
 
 # Avoid merge conflicts in CHANGELOG
 # https://about.gitlab.com/2015/02/10/gitlab-reduced-merge-conflicts-by-90-percent-with-changelog-placeholders/
