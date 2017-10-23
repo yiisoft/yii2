@@ -380,14 +380,14 @@ API アプリケーションを開発していて、以下のクラスを持っ�
   ```php
   class FileStorage
   {
-      public function __contruct($root) {
+      public function __construct($root) {
           // あれやこれや
       }
   }
   
   class DocumentsReader
   {
-      public function __contruct(FileStorage $fs) {
+      public function __construct(FileStorage $fs) {
           // なんやかんや
       }
   }
