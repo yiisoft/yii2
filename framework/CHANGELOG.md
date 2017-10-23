@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Enh #14087: Added `yii\web\View::registerCsrfMetaTags()` method that registers CSRF tags dynamically ensuring that caching doesn't interfere (RobinKamps)
 - Bug #6526: Fixed `yii\db\Command::batchInsert()` casting of double values correctly independent of the locale (cebe, leammas)
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
+- Bug #11242: Fixed excess escaping in `yii\db\Command::batchInsert()` (silverfire)
 - Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase, silverfire)
 - Bug #12860: Fixed possible race conditions in `yii\mutex\FileMutex` (kidol)
 - Bug #13720: Improve `yii\helpers\FormatConverter::convertDatePhpToIcu()` to handle escaped chars correctly (rob006)
