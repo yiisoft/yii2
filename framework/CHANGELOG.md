@@ -272,8 +272,6 @@ Yii Framework 2 Change Log
 - Bug #13128: Fixed incorrect position of {pos} string in ColumnSchemaBuilder `__toString` (df2)
 - Bug #13159: Fixed `destroy` method in `yii.captcha.js` which did not work as expected (arogachev)
 - Bug #13198: Fixed order of checks in `yii\validators\IpValidator` that sometimes caused wrong error message (silverfire)
-- Bug #13200: Creating Urls for routes specified in `yii\rest\UrlRule::$extraPatterns` did not work if no HTTP verb was specified (cebe)
-- Bug #13108: Fix execute command with negative integer parameter (pana1990, uaoleg)
 - Bug #13200: Creating URLs for routes specified in `yii\rest\UrlRule::$extraPatterns` did not work if no HTTP verb was specified (cebe)
 - Bug #13212: Fixed `DbSession::regenerateID()` failure when `session_regenerate_id()` fails (andrewnester)
 - Bug #13229: Fix fetching schema information for `pgsql` when `PDO::ATTR_CASE` is set (klimov-paul)

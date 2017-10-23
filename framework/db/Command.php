@@ -138,7 +138,7 @@ class Command extends Component
 
     /**
      * Specifies the SQL statement to be executed. The SQL statement will be quoted using [[Connection::quoteSql()]].
-     * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well. See [[reset()]]
+     * The previous SQL (if any) will be discarded, and [[params]] will be cleared as well. See [[reset()]]
      * for details.
      *
      * @param string $sql the SQL statement to be set.
@@ -159,7 +159,7 @@ class Command extends Component
 
     /**
      * Specifies the SQL statement to be executed. The SQL statement will not be modified in any way.
-     * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well. See [[reset()]]
+     * The previous SQL (if any) will be discarded, and [[params]] will be cleared as well. See [[reset()]]
      * for details.
      *
      * @param string $sql the SQL statement to be set.
