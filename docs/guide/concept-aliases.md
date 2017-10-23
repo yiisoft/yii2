@@ -20,7 +20,7 @@ Yii::setAlias('@foo', '/path/to/foo');
 // an alias of a URL
 Yii::setAlias('@bar', 'http://www.example.com');
 
-// an alias of a concrete file that contain class \foo\Bar
+// an alias of a concrete file that contains a \foo\Bar class
 Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
 ```
 
