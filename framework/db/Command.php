@@ -163,8 +163,8 @@ class Command extends Component
      * for details.
      *
      * @param string $sql the SQL statement to be set.
-     * @return $this
-     * @since 2.0.11
+     * @return $this this command instance
+     * @since 2.0.13
      * @see reset()
      * @see cancel()
      */
@@ -1116,8 +1116,7 @@ class Command extends Component
     /**
      * Resets [[sql]] and [[params]] properties.
      *
-     * @void
-     * @since 2.0.11
+     * @since 2.0.13
      */
     protected function reset()
     {
