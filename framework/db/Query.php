@@ -597,6 +597,30 @@ PATTERN;
     }
 
     /**
+     * Add columns of $realTable table to the SELECT part of the query, except $exceptColumns
+     *
+     * @param string $asTable
+     * @param string $realTable
+     * @param string|array $exceptColumns
+     * @return $this the query object itself
+     * @throws InvalidConfigException
+     */
+    public function exceptSelect($asTable, $realTable, $exceptColumns)
+    {
+        $tableSchema = Yii::$app->db->getSchema()->getTableSchema($realTable);
+        if ($tableSchema === null) {
+            throw new InvalidConfigException('The table does not exist: ' . $realTable);
+        }
+        $col = $tableSchema->getColumnNames();
+        $exceptColumns = is_array($exceptColumns) ? $exceptColumns : [$exceptColumns];
+        foreach($exceptColumns as $v) {
+            unset($col[array_keys($col, $v)[0]]);
+        }
+        $this->select = array_merge($this->select, array_map(function($v) use($asTable) {return $asTable.'.'.$v;}, $col));
+        return $this;
+    }
+
+    /**
      * Sets the value indicating whether to SELECT DISTINCT or not.
      * @param bool $value whether to SELECT DISTINCT or not.
      * @return $this the query object itself
