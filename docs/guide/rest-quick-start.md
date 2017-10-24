@@ -190,7 +190,8 @@ For example, the URL `http://localhost/users?fields=id,email` will only return t
 
 Addionally, you can filter collections like `http://localhost/users?filter[id]=10` or
 `http://localhost/users?filter[email][like]=gmail.com` and sort collections like
-`http://localhost/users?sort=email` or `http://localhost/users?sort=-email`.
+`http://localhost/users?sort=email` or `http://localhost/users?sort=-email`. See [Resources](rest-resources.md) section
+for details.
 
 
 ## Summary <span id="summary"></span>

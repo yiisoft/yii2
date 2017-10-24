@@ -280,5 +280,26 @@ return new ActiveDataProvider([
 ]);
 ```
 
-Data filters are quite flexible. You can customize how conditions are built and which operators are allowed.
-For more details, please check the API docs at [[yii\rest\DataFilter]].
+PostSearch model serves the purpose of defining which properties and values are allowed for filtering:
+
+```php
+use yii\base\Model;
+
+class PostSearch extends Model 
+{
+    public $id;
+    public $title;
+    
+    public function rules()
+    {
+        return [
+            ['id', 'integer'],
+            ['title', 'string', 'min' => 2, 'max' => 200],            
+        ];
+    }
+}
+```
+
+Data filters are quite flexible. You may customize how conditions are built and which operators are allowed.
+For details check API docs on [[\yii\rest\DataFilter]].
+
