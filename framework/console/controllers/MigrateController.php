@@ -174,10 +174,7 @@ class MigrateController extends BaseMigrateController
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            if ($action->id !== 'create') {
-                $this->db = Instance::ensure($this->db, Connection::className());
-            }
-
+            $this->db = Instance::ensure($this->db, Connection::className());
             return true;
         }
 
@@ -324,12 +321,22 @@ class MigrateController extends BaseMigrateController
         ])->execute();
     }
 
+    private $_migrationNameLimit;
+
     /**
      * @inheritdoc
      * @since 2.0.13
      */
     protected function getMigrationNameLimit()
     {
+        if ($this->_migrationNameLimit !== null) {
+            return $this->_migrationNameLimit;
+        }
+        $tableSchema = $this->db->schema ? $this->db->schema->getTableSchema($this->migrationTable, true) : null;
+        if ($tableSchema !== null) {
+            return $this->_migrationNameLimit = $tableSchema->columns['version']->size;
+        }
+
         return static::MAX_NAME_LENGTH;
     }
 
