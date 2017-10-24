@@ -86,7 +86,7 @@ class YiiRequirementCheckerTest extends TestCase
                 'memo' => 'Requirement 2',
             ],
         ];
-
+        //check requirement and get result
         $checkResult = $requirementsChecker->check($requirements)->getResult();
         $checkedRequirements = $checkResult['requirements'];
         $requirementsKeys = array_flip(array_keys($requirements));
