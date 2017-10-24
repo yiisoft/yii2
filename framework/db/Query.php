@@ -599,9 +599,13 @@ PATTERN;
     /**
      * Add columns of $realTable table to the SELECT part of the query, except $exceptColumns
      *
-     * @param string $asTable
-     * @param string $realTable
-     * @param string|array $exceptColumns
+     * ```php
+     * $query->exceptSelect(["crowd", "crowdfunding", ["title", "content"])->one();
+     * ```
+     *
+     * @param string $asTable a table name will be rename use "as" in SQL
+     * @param string $realTable a real table name
+     * @param string|array $exceptColumns columns will be remove from SELECT
      * @return $this the query object itself
      * @throws InvalidConfigException
      */
