@@ -252,7 +252,7 @@ An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) 
 
 Since 2.0.13 Yii provides a facility to filter collections. In case you are using `ActiveController` you can enjoy it
 right away. An example can be found in the [Quick Start](rest-quick-start.md#trying-it-out) section. In case you're
-implementing an enpoint yourself, filtering could be done like the following:
+implementing an endpoint yourself, filtering could be done like the following:
 
 ```php
 $filter = new ActiveDataFilter([
@@ -280,5 +280,5 @@ return new ActiveDataProvider([
 ]);
 ```
 
-Data filters are quite flexible. You may customize how conditions are built and which operators are allowed.
-For details check API docs on [[\yii\rest\DataFilter]].
+Data filters are quite flexible. You can customize how conditions are built and which operators are allowed.
+For more details, please check the API docs at [[\yii\rest\DataFilter]].
