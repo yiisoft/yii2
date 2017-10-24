@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
-- Bug #14543: Throw exception when trying to create migration longer than 255 symbols (dmirogin)
+- Bug #14543: Throw exception when trying to create migration longer than 180 symbols (dmirogin)
 - Enh #14877: Disabled profiling on connection opening when profiling is disabled (njasm)
 - Enh #14967: Added Armenian Translations (gevorgmansuryan)
 - Enh #4479: Implemented REST filters (klimov-paul)
