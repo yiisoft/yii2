@@ -261,7 +261,9 @@ $filter = new ActiveDataFilter([
 
 $filterCondition = null;
 
-// if you prefer JSON in request body, use Yii::$app->request->getBodyParams() below:
+// You may load filters from any source. For example,
+// if you prefer JSON in request body,
+// use Yii::$app->request->getBodyParams() below:
 if ($filter->load(\Yii::$app->request->get())) { 
     $filterCondition = $filter->build();
     if ($filterCondition === false) {
