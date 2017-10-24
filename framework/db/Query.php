@@ -600,6 +600,7 @@ PATTERN;
      * Add columns of $realTable table to the SELECT part of the query, except $exceptColumns
      *
      * ```php
+     * $query->exceptSelect(["crowd", "crowdfunding", "title, content")->one();
      * $query->exceptSelect(["crowd", "crowdfunding", ["title", "content"])->one();
      * ```
      *
@@ -616,7 +617,7 @@ PATTERN;
             throw new InvalidConfigException('The table does not exist: ' . $realTable);
         }
         $col = $tableSchema->getColumnNames();
-        $exceptColumns = is_array($exceptColumns) ? $exceptColumns : [$exceptColumns];
+        $exceptColumns = is_array($exceptColumns) ? $exceptColumns : preg_split('/\s*,\s*/', trim($exceptColumns), -1, PREG_SPLIT_NO_EMPTY);
         foreach($exceptColumns as $v) {
             unset($col[array_keys($col, $v)[0]]);
         }
