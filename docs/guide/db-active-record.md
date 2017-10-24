@@ -936,6 +936,41 @@ $items = $order->items;
 ```
 
 
+### Chaining relation definitions via multiple tables <span id="multi-table-relations"></span>
+
+Its further possible to define relations via multiple tables by chaining relation definitions using [[yii\db\ActiveQuery::via()|via()]].
+Considering the examples above, we have classes `Customer`, `Order`, and `Item`.
+We can add a relation to the `Customer` class that lists all items from all the orders they placed,
+and name it `getPurchasedItems()`, the chaining of relations is show in the following code example:
+
+```php
+class Customer extends ActiveRecord
+{
+    // ...
+
+    public function getPurchasedItems()
+    {
+        // customer's items, matching 'id' column of `Item` to 'item_id' in OrderItem
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+                    ->via('orderItems');
+    }
+
+    public function getOrderItems()
+    {
+        // customer's order items, matching 'id' column of `Order` to 'order_id' in OrderItem
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+                    ->via('orders');
+    }
+
+    public function getOrders()
+    {
+        // same as above
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```
+
+
 ### Lazy Loading and Eager Loading <span id="lazy-eager-loading"></span>
 
 In [Accessing Relational Data](#accessing-relational-data), we explained that you can access a relation property
