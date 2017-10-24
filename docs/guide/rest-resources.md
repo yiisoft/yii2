@@ -251,7 +251,7 @@ An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) 
 ### Filtering collections
 
 Since 2.0.13 Yii provides a facility to filter collections. In case you are using `ActiveController` you can enjoy it
-right away. An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) section. In case you're
+right away. An example can be found in the [Quick Start](rest-quick-start.md#trying-it-out) section. In case you're
 implementing an enpoint yourself, filtering could be done like the following:
 
 ```php
