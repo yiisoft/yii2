@@ -150,7 +150,8 @@ class MigrateControllerTest extends TestCase
 
         $result = $this->runMigrateControllerAction('up');
 
-        $this->assertContains('The migration name is too long. The rest of the migrations are canceled.', $result);
+        $this->assertContains('The migration name', $result);
+        $this->assertContains('is too long. Its not possible to apply this migration.', $result);
     }
 
     public function testCreateLongNamedMigration()
