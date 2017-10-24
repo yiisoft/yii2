@@ -244,4 +244,41 @@ will also include the pagination information by the following HTTP headers:
 * `X-Pagination-Per-Page`: The number of resources in each page;
 * `Link`: A set of navigational links allowing client to traverse the resources page by page.
 
+Since collection in REST APIs is a data provider, it shares all data provider features i.e. pagination and sorting.
+
 An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) section.
+
+### Filtering collections
+
+Since 2.0.13 Yii provides a facility to filter collections. In case you are using `ActiveController` you can enjoy it
+right away. An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) section. In case you're
+implementing an enpoint yourself, filtering could be done like the following:
+
+```php
+$filter = new ActiveDataFilter([
+    'searchModel' => 'app\models\PostSearch'
+]);
+
+$filterCondition = null;
+
+// if you prefer JSON in request body, use Yii::$app->request->getBodyParams() below:
+if ($filter->load(\Yii::$app->request->get())) { 
+    $filterCondition = $filter->build();
+    if ($filterCondition === false) {
+        // Serializer would get errors out of it
+        return $filter;
+    }
+}
+
+$query = Post::find();
+if ($filterCondition !== null) {
+    $query->andWhere($filterCondition);
+}
+
+return new ActiveDataProvider([
+    'query' => $query,
+]);
+```
+
+Data filters are quite flexible. You may customize how conditions are built and which operators are allowed.
+For details check API docs on [[\yii\rest\DataFilter]].

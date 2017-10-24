@@ -8,6 +8,7 @@ In particular, Yii supports the following features about RESTful APIs:
 * Response format negotiation (supporting JSON and XML by default);
 * Customizable object serialization with support for selectable output fields;
 * Proper formatting of collection data and validation errors;
+* Collection pagination, filtering and sorting;
 * Support for [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS);
 * Efficient routing with proper HTTP verb check;
 * Built-in support for the `OPTIONS` and `HEAD` verbs;
@@ -185,7 +186,11 @@ For example, the URL `http://localhost/users?fields=id,email` will only return t
 
 > Info: You may have noticed that the result of `http://localhost/users` includes some sensitive fields,
 > such as `password_hash`, `auth_key`. You certainly do not want these to appear in your API result.
-> You can and should filter out these fields as described in the [Resources](rest-resources.md) section.
+> You can and should remove these fields from result as described in the [Resources](rest-resources.md) section.
+
+Addionally, you can filter collections like `http://localhost/users?filter[id]=10` or
+`http://localhost/users?filter[email][like]=gmail.com` and sort collections like
+`http://localhost/users?sort=email` or `http://localhost/users?sort=-email`.
 
 
 ## Summary <span id="summary"></span>
