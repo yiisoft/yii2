@@ -185,7 +185,8 @@ abstract class BaseMigrateController extends Controller
         }
 
         foreach ($migrations as $migration) {
-            if (strlen($migration) > $this->getMigrationNameLimit()) {
+            $nameLimit = $this->getMigrationNameLimit();
+            if ($nameLimit !== null && strlen($migration) > $nameLimit) {
                 $this->stdout("\nThe migration name '$migration' is too long. Its not possible to apply this migration.\n", Console::FG_RED);
                 return ExitCode::UNSPECIFIED_ERROR;
             }
@@ -628,7 +629,8 @@ abstract class BaseMigrateController extends Controller
 
         list($namespace, $className) = $this->generateClassName($name);
         // Abort if name is too long
-        if (strlen($className) > $this->getMigrationNameLimit()) {
+        $nameLimit = $this->getMigrationNameLimit();
+        if ($nameLimit !== null && strlen($className) > $nameLimit) {
             throw new Exception('The migration name is too long.');
         }
 
