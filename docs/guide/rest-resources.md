@@ -248,9 +248,9 @@ Since collection in REST APIs is a data provider, it shares all data provider fe
 
 An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) section.
 
-### Filtering collections
+### Filtering collections <span id="filtering-collections"></span>
 
-Since 2.0.13 Yii provides a facility to filter collections. In case you are using `ActiveController` you can enjoy it
+Since version 2.0.13 Yii provides a facility to filter collections. In case you are using `ActiveController` you can enjoy it
 right away. An example can be found in the [Quick Start](rest-quick-start.md#trying-it-out) section. In case you're
 implementing an endpoint yourself, filtering could be done like the following:
 
@@ -281,4 +281,4 @@ return new ActiveDataProvider([
 ```
 
 Data filters are quite flexible. You can customize how conditions are built and which operators are allowed.
-For more details, please check the API docs at [[\yii\rest\DataFilter]].
+For more details, please check the API docs at [[yii\rest\DataFilter]].
