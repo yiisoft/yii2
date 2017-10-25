@@ -406,8 +406,8 @@ trait QueryTrait
 
     /**
      * Sets whether to emulate query execution, preventing any interaction with data storage.
-     * After this mode is enabled, methods, returning query results like [[one()]], [[all()]], [[exists()]]
-     * and so on, will return empty or false values.
+     * After this mode is enabled, methods, returning query results like [[QueryInterface::one()]],
+     * [[QueryInterface::all()]], [[QueryInterface::exists()]] and so on, will return empty or false values.
      * You should use this method in case your program logic indicates query should not return any results, like
      * in case you set false where condition like `0=1`.
      * @param bool $value whether to prevent query execution.
