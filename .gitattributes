@@ -13,7 +13,6 @@
 *.json text
 *.bat  text
 *.sql  text
-*.xml  text
 *.yml  text
 
 # Ensure those won't be messed up with
