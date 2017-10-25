@@ -250,58 +250,8 @@ An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) 
 
 ### Filtering collections <span id="filtering-collections"></span>
 
-Since version 2.0.13 Yii provides a facility to filter collections. In case you are using `ActiveController` you can enjoy it
-right away. An example can be found in the [Quick Start](rest-quick-start.md#trying-it-out) section. In case you're
-implementing an endpoint yourself, filtering could be done like the following:
-
-```php
-$filter = new ActiveDataFilter([
-    'searchModel' => 'app\models\PostSearch'
-]);
-
-$filterCondition = null;
-
-// You may load filters from any source. For example,
-// if you prefer JSON in request body,
-// use Yii::$app->request->getBodyParams() below:
-if ($filter->load(\Yii::$app->request->get())) { 
-    $filterCondition = $filter->build();
-    if ($filterCondition === false) {
-        // Serializer would get errors out of it
-        return $filter;
-    }
-}
-
-$query = Post::find();
-if ($filterCondition !== null) {
-    $query->andWhere($filterCondition);
-}
-
-return new ActiveDataProvider([
-    'query' => $query,
-]);
-```
-
-PostSearch model serves the purpose of defining which properties and values are allowed for filtering:
-
-```php
-use yii\base\Model;
-
-class PostSearch extends Model 
-{
-    public $id;
-    public $title;
-    
-    public function rules()
-    {
-        return [
-            ['id', 'integer'],
-            ['title', 'string', 'min' => 2, 'max' => 200],            
-        ];
-    }
-}
-```
-
-Data filters are quite flexible. You may customize how conditions are built and which operators are allowed.
-For details check API docs on [[\yii\rest\DataFilter]].
-
+Since version 2.0.13 Yii provides a facility to filter collections. An example can be found in the
+[Quick Start](rest-quick-start.md#trying-it-out) guide. In case you're implementing an endpoint yourself,
+filtering could be done as described in
+[Filtering Data Providers using Data Filters](output-data-providers.md#filtering-data-providers-using-data-filters)
+section of Data Providers guide.

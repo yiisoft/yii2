@@ -155,7 +155,7 @@ The above code first creates a data provider and then uses GridView to display e
 the data provider. The displayed table is equipped with sorting and pagination functionality out of the box.
 
 
-### Grid columns
+### Grid columns <a name="grid-columns"></a>
 
 The columns of the grid table are configured in terms of [[yii\grid\Column]] classes, which are
 configured in the [[yii\grid\GridView::columns|columns]] property of GridView configuration.
@@ -186,7 +186,7 @@ Note that if the [[yii\grid\GridView::columns|columns]] part of the configuratio
 Yii tries to show all possible columns of the data provider's model.
 
 
-### Column classes
+### Column classes <a name="column-classes"></a>
 
 Grid columns could be customized by using different column classes:
 
@@ -257,7 +257,7 @@ For configuring data columns there is also a shortcut format which is described 
 API documentation for [[yii\grid\GridView::columns|columns]].
 
 
-#### Action column
+#### Action column <a name="action-column"></a>
 
 [[yii\grid\ActionColumn|Action column]] displays action buttons such as update or delete for each row.
 
@@ -314,7 +314,7 @@ Available properties you can configure are:
   ]
   ```
 
-#### Checkbox column
+#### Checkbox column <a name="checkbox-column"></a>
 
 [[yii\grid\CheckboxColumn|Checkbox column]] displays a column of checkboxes.
 
@@ -340,7 +340,7 @@ var keys = $('#grid').yiiGridView('getSelectedRows');
 // keys is an array consisting of the keys associated with the selected rows
 ```
 
-#### Serial column
+#### Serial column <a name="serial-column"></a>
 
 [[yii\grid\SerialColumn|Serial column]] renders row numbers starting with `1` and going forward.
 
@@ -355,13 +355,13 @@ echo GridView::widget([
 ```
 
 
-### Sorting data
+### Sorting data <a name="sorting-data"></a>
 
 > Note: This section is under development.
 >
 > - https://github.com/yiisoft/yii2/issues/1576
 
-### Filtering data
+### Filtering data <a name="filtering-data"></a>
 
 For filtering data, the GridView needs a [model](structure-models.md) that represents the search criteria which is
 usually taken from the filter fields in the GridView table.
@@ -448,7 +448,7 @@ echo GridView::widget([
 ]);
 ```
 
-### Separate filter form
+### Separate filter form <a name="separate-filter-form"></a>
 
 Most of the time using GridView header filters is enough, but in case you need a separate filter form,
 you can easily add it as well. You can create partial view `_search.php` with the following contents:
@@ -526,7 +526,7 @@ And add the representative fields to the filter form:
 <?= $form->field($model, 'creationTo') ?>
 ```
 
-### Working with model relations
+### Working with model relations <a name="working-with-model-relations"></a>
 
 When displaying active records in a GridView you might encounter the case where you display values of related
 columns such as the post author's name instead of just his `id`.

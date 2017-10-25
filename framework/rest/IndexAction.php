@@ -9,6 +9,7 @@ namespace yii\rest;
 
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\data\DataFilter;
 
 /**
  * IndexAction implements the API endpoint for listing multiple models.
@@ -51,7 +52,7 @@ class IndexAction extends Action
      *
      * ```php
      * [
-     *     'class' => 'yii\rest\ActiveDataFilter',
+     *     'class' => 'yii\data\ActiveDataFilter',
      *     'searchModel' => function () {
      *         return (new \yii\base\DynamicModel(['id' => null, 'name' => null, 'price' => null]))
      *             ->addRule('id', 'integer')
