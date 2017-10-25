@@ -1529,7 +1529,14 @@ class Formatter extends Component
 
         $multipliers = array_values($this->measureUnits[$unitType][$unitSystem]);
 
-        list($params, $position) = $this->formatNumber($value * $baseUnit, $decimals, null, $multipliers, $options, $textOptions);
+        list($params, $position) = $this->formatNumber(
+            $this->normalizeNumericValue($value) * $baseUnit,
+            $decimals,
+            null,
+            $multipliers,
+            $options,
+            $textOptions
+        );
 
         $message = $this->getUnitMessage($unitType, $unitFormat, $unitSystem, $position);
 

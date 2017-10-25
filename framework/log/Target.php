@@ -90,6 +90,13 @@ abstract class Target extends Component
      */
     public $messages = [];
 
+    /**
+     * @var bool whether to log time with microseconds.
+     * Defaults to false.
+     * @since 2.0.13
+     */
+    public $microtime = false;
+
     private $_levels = 0;
     private $_enabled = true;
 
@@ -269,7 +276,7 @@ abstract class Target extends Component
         }
 
         $prefix = $this->getMessagePrefix($message);
-        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text"
+        return $this->getTime($timestamp) . " {$prefix}[$level][$category] $text"
             . (empty($traces) ? '' : "\n    " . implode("\n    ", $traces));
     }
 
@@ -341,5 +348,19 @@ abstract class Target extends Component
         }
 
         return $this->_enabled;
+    }
+
+    /**
+     * Returns formatted ('Y-m-d H:i:s') timestamp for message.
+     * If [[microtime]] is configured to true it will return format 'Y-m-d H:i:s.u'
+     * @param float $timestamp
+     * @return string
+     * @since 2.0.13
+     */
+    protected function getTime($timestamp)
+    {
+        list ($timestamp, $usec) = explode('.', (string)$timestamp);
+
+        return date('Y-m-d H:i:s', $timestamp) . ($this->microtime ? ('.' . $usec) : '');
     }
 }

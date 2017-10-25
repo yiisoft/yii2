@@ -136,8 +136,12 @@ class AccessRule extends Component
     public $matchCallback;
     /**
      * @var callable a callback that will be called if this rule determines the access to
-     * the current action should be denied. If not set, the behavior will be determined by
-     * [[AccessControl]].
+     * the current action should be denied. This is the case when this rule matches
+     * and [[$allow]] is set to `false`.
+     *
+     * If not set, the behavior will be determined by [[AccessControl]],
+     * either using [[AccessControl::denyAccess()]]
+     * or [[AccessControl::$denyCallback]], if configured.
      *
      * The signature of the callback should be as follows:
      *
@@ -146,6 +150,7 @@ class AccessRule extends Component
      * ```
      *
      * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
+     * @see AccessControl::$denyCallback
      */
     public $denyCallback;
 

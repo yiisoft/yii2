@@ -237,7 +237,8 @@ class FormatterTest extends TestCase
             ],
             [
                 'Wrong value is casted properly',
-                ['NaN'], '0 millimeters', '0 mm'
+                ['NaN'], '0 millimeters', '0 mm',
+                ['yii\base\InvalidParamException', "'NaN' is not a numeric value"]
             ],
             [
                 'Negative value works',
@@ -293,18 +294,26 @@ class FormatterTest extends TestCase
     /**
      * @dataProvider lengthDataProvider
      */
-    public function testIntlAsLength($message, $arguments, $expected)
+    public function testIntlAsLength($message, $arguments, $expected, $_shortLength, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
+        if ($expectedException !== []) {
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
+        }
         $this->assertSame($expected, call_user_func_array([$this->formatter, 'asLength'], $arguments), 'Failed asserting that ' . $message);
     }
 
     /**
      * @dataProvider lengthDataProvider
      */
-    public function testIntlAsShortLength($message, $arguments, $_, $expected)
+    public function testIntlAsShortLength($message, $arguments, $_length, $expected, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
+        if ($expectedException !== []) {
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
+        }
         $this->assertSame($expected, call_user_func_array([$this->formatter, 'asShortLength'], $arguments), 'Failed asserting that ' . $message);
     }
 
@@ -317,7 +326,8 @@ class FormatterTest extends TestCase
             ],
             [
                 'Wrong value is casted properly',
-                ['NaN'], '0 grams', '0 g'
+                ['NaN'], '0 grams', '0 g',
+                ['yii\base\InvalidParamException', "'NaN' is not a numeric value"]
             ],
             [
                 'Negative value works',
@@ -373,18 +383,26 @@ class FormatterTest extends TestCase
     /**
      * @dataProvider weightDataProvider
      */
-    public function testIntlAsWeight($message, $arguments, $expected)
+    public function testIntlAsWeight($message, $arguments, $expected, $_shortWeight, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
+        if ($expectedException !== []) {
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
+        }
         $this->assertSame($expected, call_user_func_array([$this->formatter, 'asWeight'], $arguments), 'Failed asserting that ' . $message);
     }
 
     /**
      * @dataProvider weightDataProvider
      */
-    public function testIntlAsShortWeight($message, $arguments, $_, $expected)
+    public function testIntlAsShortWeight($message, $arguments, $_weight, $expected, $expectedException = [])
     {
         $this->ensureIntlUnitDataIsAvailable();
+        if ($expectedException !== []) {
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
+        }
         $this->assertSame($expected, call_user_func_array([$this->formatter, 'asShortWeight'], $arguments), 'Failed asserting that ' . $message);
     }
 
