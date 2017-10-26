@@ -621,6 +621,9 @@ PATTERN;
         foreach($removeColumns as $remove) {
             unset($cols[array_keys($cols, $remove)[0]]);
         }
+        if(empty($this->select)) {
+            $this->select = [];
+        }
         $this->select = array_merge($this->select, array_map(function($col) use($asTable) {return $asTable.'.'.$col;}, $cols));
         return $this;
     }
