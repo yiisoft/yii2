@@ -1,14 +1,14 @@
 <?php
 
-namespace yiiunit\framework\rest;
+namespace yiiunit\framework\data;
 
 use yii\base\DynamicModel;
-use yii\rest\DataFilter;
+use yii\data\DataFilter;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 
 /**
- * @group rest
+ * @group data
  */
 class DataFilterTest extends TestCase
 {

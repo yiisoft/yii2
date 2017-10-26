@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\rest;
+namespace yii\data;
 
 use Yii;
 use yii\base\InvalidConfigException;
@@ -61,7 +61,7 @@ use yii\validators\StringValidator;
  * You may populate it from request data via [[load()]] method:
  *
  * ```php
- * use yii\rest\DataFilter;
+ * use yii\data\DataFilter;
  *
  * $dataFilter = new DataFilter();
  * $dataFilter->load(Yii::$app->request->getBodyParams());
@@ -388,12 +388,12 @@ class DataFilter extends Model
     protected function defaultErrorMessages()
     {
         return [
-            'invalidFilter' => Yii::t('yii-rest', 'The format of {filter} is invalid.'),
-            'operatorRequireMultipleOperands' => Yii::t('yii-rest', "Operator '{operator}' requires multiple operands."),
-            'unknownAttribute' => Yii::t('yii-rest', "Unknown filter attribute '{attribute}'"),
-            'invalidAttributeValueFormat' => Yii::t('yii-rest', "Condition for '{attribute}' should be either a value or valid operator specification."),
-            'operatorRequireAttribute' => Yii::t('yii-rest', "Operator '{operator}' must be used with a search attribute."),
-            'unsupportedOperatorType' => Yii::t('yii-rest', "'{attribute}' does not support operator '{operator}'."),
+            'invalidFilter' => Yii::t('yii', 'The format of {filter} is invalid.'),
+            'operatorRequireMultipleOperands' => Yii::t('yii', "Operator '{operator}' requires multiple operands."),
+            'unknownAttribute' => Yii::t('yii', "Unknown filter attribute '{attribute}'"),
+            'invalidAttributeValueFormat' => Yii::t('yii', "Condition for '{attribute}' should be either a value or valid operator specification."),
+            'operatorRequireAttribute' => Yii::t('yii', "Operator '{operator}' must be used with a search attribute."),
+            'unsupportedOperatorType' => Yii::t('yii', "'{attribute}' does not support operator '{operator}'."),
         ];
     }
 
@@ -409,7 +409,7 @@ class DataFilter extends Model
         if (isset($messages[$messageKey])) {
             $message = $messages[$messageKey];
         } else {
-            $message = Yii::t('yii-rest', 'The format of {filter} is invalid.');
+            $message = Yii::t('yii', 'The format of {filter} is invalid.');
         }
 
         $params = array_merge(
@@ -756,9 +756,9 @@ class DataFilter extends Model
     {
         if ($name === $this->filterAttributeName) {
             return $this->getFilter();
-        } else {
-            return parent::__get($name);
         }
+
+        return parent::__get($name);
     }
 
     /**
@@ -780,9 +780,9 @@ class DataFilter extends Model
     {
         if ($name === $this->filterAttributeName) {
             return $this->getFilter() !== null;
-        } else {
-            return parent::__isset($name);
         }
+
+        return parent::__isset($name);
     }
 
     /**
