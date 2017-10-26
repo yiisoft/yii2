@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\rest;
+namespace yii\data;
 
 /**
  * ActiveDataFilter allows composing a filtering condition in a format suitable for [[\yii\db\QueryInterface::where()]].
@@ -96,7 +96,7 @@ class ActiveDataFilter extends DataFilter
             } else {
                 $callback = [$this, 'buildAttributeCondition'];
             }
-            $parts[] = call_user_func($callback, $key, $value);
+            $parts[] = $callback($key, $value);
         }
 
         if (!empty($parts)) {
@@ -168,7 +168,7 @@ class ActiveDataFilter extends DataFilter
                         } else {
                             $callback = $method;
                         }
-                        $parts[] = call_user_func($callback, $operator, $value, $attribute);
+                        $parts[] = $callback($operator, $value, $attribute);
                     } else {
                         $parts[] = $this->buildOperatorCondition($operator, $value, $attribute);
                     }

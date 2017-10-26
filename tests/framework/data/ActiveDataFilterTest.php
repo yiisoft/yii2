@@ -1,9 +1,9 @@
 <?php
 
-namespace yiiunit\framework\rest;
+namespace yiiunit\framework\data;
 
 use yii\base\DynamicModel;
-use yii\rest\ActiveDataFilter;
+use yii\data\ActiveDataFilter;
 use yiiunit\TestCase;
 
 class ActiveDataFilterTest extends TestCase

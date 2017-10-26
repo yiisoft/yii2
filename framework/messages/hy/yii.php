@@ -136,4 +136,10 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '{nFormatted} {n, plural, =1{պետաբայթ} other{պետաբայթ}}',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '{nFormatted} {n, plural, =1{տեբիբայթ} other{տեբիբայթ}}',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '{nFormatted} {n, plural, =1{տերաբայթ} other{տերաբայթ}}',
+    '\'{attribute}\' does not support operator \'{operator}\'.' => '«{attribute}»-ը չի սպասարկում «{operator}» օպերատորը։',
+    'Condition for \'{attribute}\' should be either a value or valid operator specification.' => '«{attribute}»-ի համար պետք է լինի արժեք կամ գործող օպերատորի հստակեցում:',
+    'Operator \'{operator}\' must be used with a search attribute.' => '«{operator}» օպերատորը պետք է օգտագործվի որոնման ատրիբուտի հետ միասին:',
+    'Operator \'{operator}\' requires multiple operands.' => '«{operator}» օպերատորը պահանջում բազմակի օպերանդներ։',
+    'The format of {filter} is invalid.' => '{filter}-ի ֆորմատը անվավեր է։',
+    'Unknown filter attribute \'{attribute}\'' => 'Անհայտ ֆիլտրի ատրիբուտ՝ «{attribute}»։',
 ];
