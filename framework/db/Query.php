@@ -597,31 +597,31 @@ PATTERN;
     }
 
     /**
-     * Add columns of $realTable table to the SELECT part of the query, except $exceptColumns
+     * Remove columns of $realTable table before add them in SELECT part of the query
      *
      * ```php
-     * $query->exceptSelect(["crowd", "crowdfunding", "title, content")->one();
-     * $query->exceptSelect(["crowd", "crowdfunding", ["title", "content"])->one();
+     * $query->removeSelect(["crowd", "crowdfunding", "title, content")->one();
+     * $query->removeSelect(["crowd", "crowdfunding", ["title", "content"])->one();
      * ```
      *
      * @param string $asTable a table name will be rename use "as" in SQL
      * @param string $realTable a real table name
-     * @param string|array $exceptColumns columns will be remove from SELECT
-     * @return $this the query object itself
+     * @param string|array $removeColumns columns will be remove from SELECT
+     * @return $this
      * @throws InvalidConfigException
      */
-    public function exceptSelect($asTable, $realTable, $exceptColumns)
+    public function removeSelect($asTable, $realTable, $removeColumns)
     {
         $tableSchema = Yii::$app->db->getSchema()->getTableSchema($realTable);
         if ($tableSchema === null) {
             throw new InvalidConfigException('The table does not exist: ' . $realTable);
         }
-        $col = $tableSchema->getColumnNames();
-        $exceptColumns = is_array($exceptColumns) ? $exceptColumns : preg_split('/\s*,\s*/', trim($exceptColumns), -1, PREG_SPLIT_NO_EMPTY);
-        foreach($exceptColumns as $v) {
-            unset($col[array_keys($col, $v)[0]]);
+        $cols = $tableSchema->getColumnNames();
+        $removeColumns = is_array($removeColumns) ? $removeColumns : preg_split('/\s*,\s*/', trim($removeColumns), -1, PREG_SPLIT_NO_EMPTY);
+        foreach($removeColumns as $remove) {
+            unset($cols[array_keys($cols, $remove)[0]]);
         }
-        $this->select = array_merge($this->select, array_map(function($v) use($asTable) {return $asTable.'.'.$v;}, $col));
+        $this->select = array_merge($this->select, array_map(function($col) use($asTable) {return $asTable.'.'.$col;}, $cols));
         return $this;
     }
 
