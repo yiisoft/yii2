@@ -288,7 +288,7 @@ class Component extends BaseObject
         $this->ensureBehaviors();
         foreach ($this->_behaviors as $object) {
             if ($object->hasMethod($name)) {
-                return call_user_func_array([$object, $name], $params);
+                return $object->$name(...$params);
             }
         }
         throw new UnknownMethodException('Calling unknown method: ' . get_class($this) . "::$name()");
