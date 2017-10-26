@@ -478,7 +478,7 @@ class BaseArrayHelper
                 $value = static::getValue($element, $key);
                 if ($value !== null) {
                     if (is_float($value)) {
-                        $value = (string) $value;
+                        $value = StringHelper::floatToString($value);
                     }
                     $lastArray[$value] = $element;
                 }

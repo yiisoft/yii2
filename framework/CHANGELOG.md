@@ -97,6 +97,7 @@ Yii Framework 2 Change Log
 - Chg #14487: Changed i18n message error to warning (dmirogin)
 - Enh #14864: Ability to use dependencies in constructor of migrations (vtvz)
 - Enh #14913: Assset hashing now takes asset linking into account to improve cache busting (schmunk42)
+- Enh #15015: Added `StringHelper::floatToString()` to savely cast float values independent of the locale, also fixes some places in the framework that use it now (cebe)
 
 2.0.12 June 05, 2017
 --------------------
