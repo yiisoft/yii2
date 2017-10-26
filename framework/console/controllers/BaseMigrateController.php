@@ -31,10 +31,6 @@ abstract class BaseMigrateController extends Controller
      */
     const BASE_MIGRATION = 'm000000_000000_base';
 
-    /**
-     * Maximum length of migration name
-     */
-    const MAX_NAME_LENGTH = 180;
 
     /**
      * @var string the default command action.
@@ -189,6 +185,11 @@ abstract class BaseMigrateController extends Controller
         }
 
         foreach ($migrations as $migration) {
+            $nameLimit = $this->getMigrationNameLimit();
+            if ($nameLimit !== null && strlen($migration) > $nameLimit) {
+                $this->stdout("\nThe migration name '$migration' is too long. Its not possible to apply this migration.\n", Console::FG_RED);
+                return ExitCode::UNSPECIFIED_ERROR;
+            }
             $this->stdout("\t$migration\n");
         }
         $this->stdout("\n");
@@ -196,11 +197,6 @@ abstract class BaseMigrateController extends Controller
         $applied = 0;
         if ($this->confirm('Apply the above ' . ($n === 1 ? 'migration' : 'migrations') . '?')) {
             foreach ($migrations as $migration) {
-                if (strlen($migration) > static::MAX_NAME_LENGTH) {
-                    $this->stdout("\nThe migration name is too long. The rest of the migrations are canceled.\n", Console::FG_RED);
-                    return ExitCode::UNSPECIFIED_ERROR;
-                }
-
                 if (!$this->migrateUp($migration)) {
                     $this->stdout("\n$applied from $n " . ($applied === 1 ? 'migration was' : 'migrations were') . " applied.\n", Console::FG_RED);
                     $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
@@ -633,7 +629,8 @@ abstract class BaseMigrateController extends Controller
 
         list($namespace, $className) = $this->generateClassName($name);
         // Abort if name is too long
-        if (strlen($className) > static::MAX_NAME_LENGTH) {
+        $nameLimit = $this->getMigrationNameLimit();
+        if ($nameLimit !== null && strlen($className) > $nameLimit) {
             throw new Exception('The migration name is too long.');
         }
 
@@ -947,6 +944,18 @@ abstract class BaseMigrateController extends Controller
     protected function truncateDatabase()
     {
         throw new NotSupportedException('This command is not implemented in ' . get_class($this));
+    }
+
+    /**
+     * Return the maximum name length for a migration.
+     *
+     * Subclasses may override this method to define a limit.
+     * @return int|null the maximum name length for a migration or `null` if no limit applies.
+     * @since 2.0.13
+     */
+    protected function getMigrationNameLimit()
+    {
+        return null;
     }
 
     /**

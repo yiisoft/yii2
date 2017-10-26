@@ -150,7 +150,23 @@ class MigrateControllerTest extends TestCase
 
         $result = $this->runMigrateControllerAction('up');
 
-        $this->assertContains('The migration name is too long. The rest of the migrations are canceled.', $result);
+        $this->assertContains('The migration name', $result);
+        $this->assertContains('is too long. Its not possible to apply this migration.', $result);
+    }
+
+    public function testNamedMigrationWithCustomLimit()
+    {
+        Yii::$app->db->createCommand()->createTable('migration', [
+            'version' => 'varchar(255) NOT NULL PRIMARY KEY', // varchar(255) is longer than the default of 180
+            'apply_time' => 'integer',
+        ])->execute();
+
+        $this->createMigration(str_repeat('a', 180));
+
+        $result = $this->runMigrateControllerAction('up');
+
+        $this->assertContains('1 migration was applied.', $result);
+        $this->assertContains('Migrated up successfully.', $result);
     }
 
     public function testCreateLongNamedMigration()

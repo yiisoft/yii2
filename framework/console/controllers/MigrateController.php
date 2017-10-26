@@ -74,6 +74,13 @@ use yii\helpers\Console;
 class MigrateController extends BaseMigrateController
 {
     /**
+     * Maximum length of a migration name.
+     * @since 2.0.13
+     */
+    const MAX_NAME_LENGTH = 180;
+
+
+    /**
      * @var string the name of the table for keeping applied migration information.
      */
     public $migrationTable = '{{%migration}}';
@@ -167,10 +174,7 @@ class MigrateController extends BaseMigrateController
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            if ($action->id !== 'create') {
-                $this->db = Instance::ensure($this->db, Connection::className());
-            }
-
+            $this->db = Instance::ensure($this->db, Connection::className());
             return true;
         }
 
@@ -258,7 +262,7 @@ class MigrateController extends BaseMigrateController
         $tableName = $this->db->schema->getRawTableName($this->migrationTable);
         $this->stdout("Creating migration history table \"$tableName\"...", Console::FG_YELLOW);
         $this->db->createCommand()->createTable($this->migrationTable, [
-            'version' => 'varchar(180) NOT NULL PRIMARY KEY',
+            'version' => 'varchar(' . static::MAX_NAME_LENGTH . ') NOT NULL PRIMARY KEY',
             'apply_time' => 'integer',
         ])->execute();
         $this->db->createCommand()->insert($this->migrationTable, [
@@ -315,6 +319,25 @@ class MigrateController extends BaseMigrateController
         $command->delete($this->migrationTable, [
             'version' => $version,
         ])->execute();
+    }
+
+    private $_migrationNameLimit;
+
+    /**
+     * @inheritdoc
+     * @since 2.0.13
+     */
+    protected function getMigrationNameLimit()
+    {
+        if ($this->_migrationNameLimit !== null) {
+            return $this->_migrationNameLimit;
+        }
+        $tableSchema = $this->db->schema ? $this->db->schema->getTableSchema($this->migrationTable, true) : null;
+        if ($tableSchema !== null) {
+            return $this->_migrationNameLimit = $tableSchema->columns['version']->size;
+        }
+
+        return static::MAX_NAME_LENGTH;
     }
 
     /**
