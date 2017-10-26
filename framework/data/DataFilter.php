@@ -388,12 +388,12 @@ class DataFilter extends Model
     protected function defaultErrorMessages()
     {
         return [
-            'invalidFilter' => Yii::t('yii-data', 'The format of {filter} is invalid.'),
-            'operatorRequireMultipleOperands' => Yii::t('yii-data', "Operator '{operator}' requires multiple operands."),
-            'unknownAttribute' => Yii::t('yii-data', "Unknown filter attribute '{attribute}'"),
-            'invalidAttributeValueFormat' => Yii::t('yii-data', "Condition for '{attribute}' should be either a value or valid operator specification."),
-            'operatorRequireAttribute' => Yii::t('yii-data', "Operator '{operator}' must be used with a search attribute."),
-            'unsupportedOperatorType' => Yii::t('yii-data', "'{attribute}' does not support operator '{operator}'."),
+            'invalidFilter' => Yii::t('yii', 'The format of {filter} is invalid.'),
+            'operatorRequireMultipleOperands' => Yii::t('yii', "Operator '{operator}' requires multiple operands."),
+            'unknownAttribute' => Yii::t('yii', "Unknown filter attribute '{attribute}'"),
+            'invalidAttributeValueFormat' => Yii::t('yii', "Condition for '{attribute}' should be either a value or valid operator specification."),
+            'operatorRequireAttribute' => Yii::t('yii', "Operator '{operator}' must be used with a search attribute."),
+            'unsupportedOperatorType' => Yii::t('yii', "'{attribute}' does not support operator '{operator}'."),
         ];
     }
 
@@ -409,7 +409,7 @@ class DataFilter extends Model
         if (isset($messages[$messageKey])) {
             $message = $messages[$messageKey];
         } else {
-            $message = Yii::t('yii-data', 'The format of {filter} is invalid.');
+            $message = Yii::t('yii', 'The format of {filter} is invalid.');
         }
 
         $params = array_merge(
