@@ -13,6 +13,7 @@ use yii\helpers\FileHelper;
 
 /**
  * FileMutex implements mutex "lock" mechanism via local file system files.
+ *
  * This component relies on PHP `flock()` function.
  *
  * Application configuration example:
@@ -27,11 +28,11 @@ use yii\helpers\FileHelper;
  * ]
  * ```
  *
- * Note: this component can maintain the locks only for the single web server,
- * it probably will not suffice to your in case you are using cloud server solution.
+ * > Note: this component can maintain the locks only for the single web server,
+ * > it probably will not suffice in case you are using cloud server solution.
  *
- * Warning: due to `flock()` function nature this component is unreliable when
- * using a multithreaded server API like ISAPI.
+ * > Warning: due to `flock()` function nature this component is unreliable when
+ * > using a multithreaded server API like ISAPI.
  *
  * @see Mutex
  *
@@ -82,7 +83,7 @@ class FileMutex extends Mutex
     /**
      * Acquires lock by given name.
      * @param string $name of the lock to be acquired.
-     * @param int $timeout to wait for lock to become released.
+     * @param int $timeout time (in seconds) to wait for lock to become released.
      * @return bool acquiring result.
      */
     protected function acquireLock($name, $timeout = 0)

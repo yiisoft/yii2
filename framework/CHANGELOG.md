@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
-- Bug #14543: Throw exception when trying to create migration longer than 180 symbols (dmirogin)
+- Bug #14543: Throw exception when trying to create migration longer than 180 symbols (dmirogin, cebe)
 - Enh #14877: Disabled profiling on connection opening when profiling is disabled (njasm)
 - Enh #14967: Added Armenian Translations (gevorgmansuryan)
 - Enh #4479: Implemented REST filters (klimov-paul)
@@ -97,6 +97,7 @@ Yii Framework 2 Change Log
 - Chg #14487: Changed i18n message error to warning (dmirogin)
 - Enh #14864: Ability to use dependencies in constructor of migrations (vtvz)
 - Enh #14913: Assset hashing now takes asset linking into account to improve cache busting (schmunk42)
+- Enh #15015: Added `StringHelper::floatToString()` to savely cast float values independent of the locale, also fixes some places in the framework that use it now (cebe)
 
 2.0.12 June 05, 2017
 --------------------

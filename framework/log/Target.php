@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
 use yii\web\Request;
 
@@ -359,7 +360,7 @@ abstract class Target extends Component
      */
     protected function getTime($timestamp)
     {
-        list ($timestamp, $usec) = explode('.', (string)$timestamp);
+        list ($timestamp, $usec) = explode('.', StringHelper::floatToString($timestamp));
 
         return date('Y-m-d H:i:s', $timestamp) . ($this->microtime ? ('.' . $usec) : '');
     }

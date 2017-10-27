@@ -76,7 +76,7 @@ class OracleMutex extends DbMutex
      * Acquires lock by given name.
      * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
      * @param string $name of the lock to be acquired.
-     * @param int $timeout to wait for lock to become released.
+     * @param int $timeout time (in seconds) to wait for lock to become released.
      * @return bool acquiring result.
      */
     protected function acquireLock($name, $timeout = 0)
