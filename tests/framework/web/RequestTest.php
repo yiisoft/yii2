@@ -541,4 +541,56 @@ class RequestTest extends TestCase
         $request = new Request();
         $this->assertEquals(null, $request->getOrigin());
     }
+
+    public function httpAuthorizationHeadersProvider()
+    {
+        return [
+            ['not a base64 at all', [base64_decode('not a base64 at all'), null]],
+            [base64_encode('user:'), ['user', null]],
+            [base64_encode('user'), ['user', null]],
+            [base64_encode('user:pw'), ['user', 'pw']],
+            [base64_encode('user:pw'), ['user', 'pw']],
+            [base64_encode('user:a:b'), ['user', 'a:b']],
+            [base64_encode(':a:b'), [null, 'a:b']],
+            [base64_encode(':'), [null, null]],
+        ];
+    }
+
+    /**
+     * @dataProvider httpAuthorizationHeadersProvider
+     * @param string $secret
+     * @param array $expected
+     */
+    public function testHttpAuthCredentialsFromHttpAuthorizationHeader($secret, $expected)
+    {
+        $request = new Request();
+
+        $request->getHeaders()->set('HTTP_AUTHORIZATION', 'Basic ' . $secret);
+        $this->assertSame($request->getAuthCredentials(), $expected);
+        $this->assertSame($request->getAuthUser(), $expected[0]);
+        $this->assertSame($request->getAuthPassword(), $expected[1]);
+        $request->getHeaders()->offsetUnset('HTTP_AUTHORIZATION');
+
+        $request->getHeaders()->set('REDIRECT_HTTP_AUTHORIZATION', 'Basic ' . $secret);
+        $this->assertSame($request->getAuthCredentials(), $expected);
+        $this->assertSame($request->getAuthUser(), $expected[0]);
+        $this->assertSame($request->getAuthPassword(), $expected[1]);
+    }
+
+    public function testHttpAuthCredentialsFromServerSuperglobal()
+    {
+        $original = $_SERVER;
+        list($user, $pw) = ['foo', 'bar'];
+        $_SERVER['PHP_AUTH_USER'] = $user;
+        $_SERVER['PHP_AUTH_PW'] = $pw;
+
+        $request = new Request();
+        $request->getHeaders()->set('HTTP_AUTHORIZATION', 'Basic ' . base64_encode('less-priority:than-PHP_AUTH_*'));
+
+        $this->assertSame($request->getAuthCredentials(), [$user, $pw]);
+        $this->assertSame($request->getAuthUser(), $user);
+        $this->assertSame($request->getAuthPassword(), $pw);
+
+        $_SERVER = $original;
+    }
 }

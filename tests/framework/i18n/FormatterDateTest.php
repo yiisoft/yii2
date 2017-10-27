@@ -204,6 +204,10 @@ class FormatterDateTest extends TestCase
         $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(false));
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
+
+        // DATE_ATOM
+        $value = time();
+        $this->assertEquals(date(DATE_ATOM, $value), $this->formatter->asDatetime($value, 'php:' . DATE_ATOM));
     }
 
     public function testIntlAsTimestamp()

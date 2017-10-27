@@ -382,7 +382,7 @@ class Connection extends Component
      */
     public $enableLogging = true;
     /**
-     * @var bool whether to enable profiling of database queries. Defaults to true.
+     * @var bool whether to enable profiling of opening database connection and database queries. Defaults to true.
      * You may want to disable this option in a production environment to gain performance
      * if you do not need the information being logged.
      * @since 2.0.12
@@ -574,15 +574,26 @@ class Connection extends Component
         if (empty($this->dsn)) {
             throw new InvalidConfigException('Connection::dsn cannot be empty.');
         }
+
         $token = 'Opening DB connection: ' . $this->dsn;
+        $enableProfiling = $this->enableProfiling;
         try {
             Yii::info($token, __METHOD__);
-            Yii::beginProfile($token, __METHOD__);
+            if ($enableProfiling) {
+                Yii::beginProfile($token, __METHOD__);
+            }
+
             $this->pdo = $this->createPdoInstance();
             $this->initConnection();
-            Yii::endProfile($token, __METHOD__);
+
+            if ($enableProfiling) {
+                Yii::endProfile($token, __METHOD__);
+            }
         } catch (\PDOException $e) {
-            Yii::endProfile($token, __METHOD__);
+            if ($enableProfiling) {
+                Yii::endProfile($token, __METHOD__);
+            }
+
             throw new Exception($e->getMessage(), $e->errorInfo, (int) $e->getCode(), $e);
         }
     }

@@ -299,6 +299,43 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->expectException('yii\base\InvalidConfigException');
         $rule->allows($action, false, $request);
     }
+  
+    public function testMatchRolesAndPermissions()
+    {
+        $action = $this->mockAction();
+        $user = $this->getMockBuilder('\yii\web\User')->getMock();
+        $user->identityCLass = UserIdentity::className();
+
+        $rule = new AccessRule([
+            'allow' => true,
+        ]);
+
+        $request = $this->mockRequest('GET');
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $rule->roles = ['allowed_role_1', 'allowed_role_2'];
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $rule->roles = [];
+        $rule->permissions = ['allowed_permission_1', 'allowed_permission_2'];
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $rule->roles = ['allowed_role_1', 'allowed_role_2'];
+        $rule->permissions = ['allowed_permission_1', 'allowed_permission_2'];
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $user->method('can')->willReturn(true);
+        $rule->roles = ['allowed_role_1', 'allowed_role_2'];
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $rule->roles = [];
+        $rule->permissions = ['allowed_permission_1', 'allowed_permission_2'];
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $rule->roles = ['allowed_role_1', 'allowed_role_2'];
+        $rule->permissions = ['allowed_permission_1', 'allowed_permission_2'];
+        $this->assertTrue($rule->allows($action, $user, $request));
+    }
 
     public function testMatchVerb()
     {

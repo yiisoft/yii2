@@ -55,9 +55,9 @@ addons:
 matrix:
   fast_finish: true
   include:
-    # run tests coverage on PHP 7.1
     - php: 7.2
 
+    # run tests coverage on PHP 7.1
     - php: 7.1
       env: TASK_TESTS_COVERAGE=1
 
@@ -110,7 +110,6 @@ matrix:
 
   allow_failures:
     - php: nightly
-    - php: 7.2
 
 install:
   - |
@@ -176,6 +175,15 @@ before_script:
   - |
     if [ $TASK_TESTS_COVERAGE == 1 ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
+    fi
+
+  # Disable DEPRECATE messages during PHPUnit initialization on PHP 7.2. To fix them, PHPUnit should be updated to 6.*
+  # For Yii2 tests, messages will be enabled by tests/bootstrap.php
+  - |
+    if [ $TRAVIS_PHP_VERSION == 7.2 ]; then
+      echo 'Disabled DEPRECATED notifications for PHP 7.2';
+      echo 'error_reporting = E_ALL & ~E_DEPRECATED' >> /tmp/php-config.ini;
+      phpenv config-add /tmp/php-config.ini;
     fi
 
 

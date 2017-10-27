@@ -62,6 +62,7 @@ class I18N extends Component
                 'basePath' => '@yii/messages',
             ];
         }
+
         if (!isset($this->translations['app']) && !isset($this->translations['app*'])) {
             $this->translations['app'] = [
                 'class' => 'yii\i18n\PhpMessageSource',
