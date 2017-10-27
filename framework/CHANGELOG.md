@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Bug #15031: Fixed incorrect string type length detection for OCI DB schema (Murolike)
 - Bug #14811: Fixed `yii\filters\HttpCache` to work with PHP 7.2 (samdark)
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
 - Bug #11401: Fixed `yii\web\DbSession` concurrency issues when writing and regenerating IDs (samdark, andreasanta, cebe)
