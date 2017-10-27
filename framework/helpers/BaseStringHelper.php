@@ -352,7 +352,7 @@ class BaseStringHelper
     }
 
     /**
-     * Savely casts a float to string independent of the current locale.
+     * Safely casts a float to string independent of the current locale.
      *
      * The decimal separator will always be `.`.
      * @param float|int $number a floating point number or integer.
