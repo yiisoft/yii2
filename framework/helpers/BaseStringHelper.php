@@ -362,7 +362,7 @@ class BaseStringHelper
     public static function floatToString($number)
     {
         // . and , are the only decimal separators known in ICU data,
-        // so its save to call str_replace here
+        // so its safe to call str_replace here
         return str_replace(',', '.', (string) $number);
     }
 }
