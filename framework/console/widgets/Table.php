@@ -32,13 +32,13 @@ use yii\helpers\Console;
  * or
  *
  * ```php
- * echo Table::widget(
+ * echo Table::widget([
  *     'headers' => ['test1', 'test2', 'test3'],
  *     'rows' => [
  *         ['col1', 'col2', 'col3'],
  *         ['col1', 'col2', ['col3-0', 'col3-1', 'col3-2']],
  *     ],
- * );
+ * ]);
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
  * @since 2.0.13
