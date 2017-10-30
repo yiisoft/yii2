@@ -200,6 +200,9 @@ DocumentRoot "path/to/basic/web"
     # Otherwise forward the request to index.php
     RewriteRule . index.php
 
+    # if $showScriptName is false in UrlManager, do not allow accessing URLs with script name
+    RewriteRule ^index.php/ - [L,R=404]
+
     # ...other settings...
 </Directory>
 ```
