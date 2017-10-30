@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\web;
+namespace yiiunit\framework\web\session;
 
 use Yii;
 use yii\db\Connection;
@@ -16,42 +16,74 @@ use yiiunit\TestCase;
 
 /**
  * @group db
+ * @group sqlite
  */
 class DbSessionTest extends TestCase
 {
+    protected function getDriverName()
+    {
+        return 'sqlite';
+    }
+
     protected function setUp()
     {
         parent::setUp();
-        /*
-         * @todo Optionally do fallback to some other database, however this might be overkill for tests only since
-         * sqlite is always available on travis.
-         */
-        if (!in_array('sqlite', \PDO::getAvailableDrivers())) {
-            $this->markTestIncomplete('DbSessionTest requires SQLite!');
-        }
         $this->mockApplication();
-        Yii::$app->set('db', [
+        Yii::$app->set('db', $this->getDbConfig());
+        $this->dropTableSession();
+        $this->createTableSession();
+    }
+
+    protected function tearDown()
+    {
+        $this->dropTableSession();
+        parent::tearDown();
+    }
+
+    protected function getDbConfig()
+    {
+        $driverName = $this->getDriverName();
+        if (!in_array($driverName, \PDO::getAvailableDrivers())) {
+            $this->markTestIncomplete(get_called_class() . ' requires ' . $driverName . ' PDO driver!');
+        }
+
+        $databases = self::getParam('databases');
+        $config = $databases[$driverName];
+
+        $result = [
             'class' => Connection::className(),
-            'dsn' => 'sqlite::memory:',
-        ]);
+            'dsn' => $config['dsn'],
+        ];
+
+        if (isset($config['username'])) {
+            $result['username'] = $config['username'];
+        }
+        if (isset($config['password'])) {
+            $result['password'] = $config['password'];
+        }
+
+        return $result;
     }
 
     protected function createTableSession()
     {
-        Yii::$app->db->createCommand()->createTable('session', [
-            'id' => 'string',
-            'expire' => 'integer',
-            'data' => 'text',
-            'user_id' => 'integer',
-        ])->execute();
+        $this->runMigrate('up');
+    }
+
+    protected function dropTableSession()
+    {
+        try {
+            $this->runMigrate('down');
+        } catch (\Exception $e) {
+            // Table may not exist for different reasons, but since this method
+            // reverts DB changes to make next test pass, this exception is skipped.
+        }
     }
 
     // Tests :
 
     public function testReadWrite()
     {
-        $this->createTableSession();
-
         $session = new DbSession();
 
         $session->writeSession('test', 'session data');
@@ -65,8 +97,6 @@ class DbSessionTest extends TestCase
      */
     public function testGarbageCollection()
     {
-        $this->createTableSession();
-
         $session = new DbSession();
 
         $session->writeSession('new', 'new data');
@@ -86,24 +116,31 @@ class DbSessionTest extends TestCase
      */
     public function testWriteCustomField()
     {
-        $this->createTableSession();
-
         $session = new DbSession();
+
         $session->writeCallback = function ($session) {
-            return [
-                'user_id' => 15,
-            ];
+            return ['data' => 'changed by callback data'];
         };
 
         $session->writeSession('test', 'session data');
 
         $query = new Query();
-        $sessionRow = $query->from('session')
-            ->where(['id' => 'test'])
-            ->one();
+        $this->assertSame('changed by callback data', $session->readSession('test'));
+    }
 
-        $this->assertEquals('session data', $sessionRow['data']);
-        $this->assertEquals(15, $sessionRow['user_id']);
+    public function testSerializedObjectSaving()
+    {
+        $session = new DbSession();
+
+        $object = new \stdClass();
+        $object->nullValue = null;
+        $object->floatValue = pi();
+        $object->textValue = str_repeat('QweåßƒТест', 200);
+        $object->array = [null, 'ab' => 'cd'];
+
+        $serializedObject = serialize($object);
+        $session->writeSession('test', $serializedObject);
+        $this->assertSame($serializedObject, $session->readSession('test'));
     }
 
     protected function runMigrate($action, $params = [])
@@ -125,12 +162,10 @@ class DbSessionTest extends TestCase
 
     public function testMigration()
     {
+        $this->dropTableSession();
         $this->mockWebApplication([
             'components' => [
-                'db' => [
-                    'class' => Connection::className(),
-                    'dsn' => 'sqlite::memory:',
-                ],
+                'db' => $this->getDbConfig(),
             ],
         ]);
 
@@ -142,5 +177,6 @@ class DbSessionTest extends TestCase
 
         $history = $this->runMigrate('down');
         $this->assertEquals(['base'], $history);
+        $this->createTableSession();
     }
 }
