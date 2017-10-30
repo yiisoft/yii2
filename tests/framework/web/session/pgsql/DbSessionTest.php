@@ -2,8 +2,6 @@
 
 namespace yiiunit\framework\web\session\pgsql;
 
-use yii\db\Connection;
-
 /**
  * Class DbSessionTest
  *
@@ -12,10 +10,10 @@ use yii\db\Connection;
  * @group db
  * @group pgsql
  */
-class DbSessionTest extends \yiiunit\framework\web\session\DbSessionTest
+class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
 {
-    protected function getDriverName()
+    protected function getDriverNames()
     {
-        return 'pgsql';
+        return ['pgsql'];
     }
 }

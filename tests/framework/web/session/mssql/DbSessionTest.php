@@ -2,8 +2,6 @@
 
 namespace yiiunit\framework\web\session\mssql;
 
-use yii\db\Connection;
-
 /**
  * Class DbSessionTest
  *
@@ -12,10 +10,10 @@ use yii\db\Connection;
  * @group db
  * @group mssql
  */
-class DbSessionTest extends \yiiunit\framework\web\session\DbSessionTest
+class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
 {
-    protected function getDriverName()
+    protected function getDriverNames()
     {
-        return 'sqlsrv';
+        return ['mssql', 'sqlsrv', 'dblib'];
     }
 }

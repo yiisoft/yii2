@@ -16,14 +16,13 @@ use yiiunit\TestCase;
 
 /**
  * @group db
- * @group sqlite
  */
-class DbSessionTest extends TestCase
+abstract class AbstractDbSessionTest extends TestCase
 {
-    protected function getDriverName()
-    {
-        return 'sqlite';
-    }
+    /**
+     * @return string[] the driver names that are suitable for the test (mysql, pgsql, etc)
+     */
+    abstract protected function getDriverNames();
 
     protected function setUp()
     {
@@ -42,9 +41,15 @@ class DbSessionTest extends TestCase
 
     protected function getDbConfig()
     {
-        $driverName = $this->getDriverName();
-        if (!in_array($driverName, \PDO::getAvailableDrivers())) {
-            $this->markTestIncomplete(get_called_class() . ' requires ' . $driverName . ' PDO driver!');
+        $driverNames = $this->getDriverNames();
+        foreach ($driverNames as $driverName) {
+            if (in_array($driverName, \PDO::getAvailableDrivers())) {
+                break;
+            }
+        }
+        if (!isset($driverName)) {
+            $this->markTestIncomplete(get_called_class() . ' requires ' . implode(' or ', $driverNames) . ' PDO driver!');
+            return [];
         }
 
         $databases = self::getParam('databases');
@@ -73,7 +78,7 @@ class DbSessionTest extends TestCase
     protected function dropTableSession()
     {
         try {
-            $this->runMigrate('down');
+            $this->runMigrate('down', ['all']);
         } catch (\Exception $e) {
             // Table may not exist for different reasons, but since this method
             // reverts DB changes to make next test pass, this exception is skipped.

@@ -29,6 +29,8 @@ class m160313_153426_session_init extends Migration
                 $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
                 break;
             case 'sqlsrv':
+            case 'mssql':
+            case 'dblib':
                 $dataType = $this->text();
                 break;
         }
