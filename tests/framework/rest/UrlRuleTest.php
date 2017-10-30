@@ -90,7 +90,7 @@ class UrlRuleTest extends TestCase
             ],
             [
                 'prefixed route and controller',
-                ['controller' => 'post', 'controllerPrefix' => 'v1', 'prefix' => 'admin'],
+                ['controller' => 'post', 'routePrefix' => 'v1', 'prefix' => 'admin'],
                 [
                     ['admin/posts', 'v1/post/index'],
                 ],
@@ -229,7 +229,7 @@ class UrlRuleTest extends TestCase
             [
                 [ // Rule properties
                     'controller' => 'channel',
-                    'controllerPrefix' => 'v1',
+                    'routePrefix' => 'v1',
                     'prefix' => 'v1',
                     'pluralize' => true,
                 ],

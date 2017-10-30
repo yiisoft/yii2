@@ -48,7 +48,7 @@ use yii\web\UrlRuleInterface;
  * The above example assumes the prefix for patterns and routes are the same. They can be made different
  * by configuring [[prefix]] and [[routePrefix]] separately.
  * Note: [[prefix]] can not be resolved to [[yii\rest\UrlRule::prefix]];
- * [[routePrefix]] can be resolved to [[yii\rest\UrlRule::controllerPrefix]]
+ * [[routePrefix]] can be resolved to [[yii\rest\UrlRule::routePrefix]]
  *
  * Using a GroupUrlRule is more efficient than directly declaring the individual rules it contains.
  * This is because GroupUrlRule can quickly determine if it should process a URL parsing or creation request
@@ -72,7 +72,7 @@ class GroupUrlRule extends CompositeUrlRule
      * automatically when it is put in the patterns of the generated rules.
      *
      * @see prefix
-     * @see controllerPrefix
+     * @see routePrefix
      * @see \yii\rest\UrlRule::controller
      */
     public $rules = [];
@@ -85,9 +85,9 @@ class GroupUrlRule extends CompositeUrlRule
      * @var string the prefix for the controller part of every rule declared in [[rules]].
      * The prefix and the route will be separated with a slash.
      * If this property is not set, it will take the value of [[prefix]].
-     * @see \yii\rest\UrlRule::controllerPrefix
+     * @see \yii\rest\UrlRule::routePrefix
      */
-    public $controllerPrefix;
+    public $routePrefix;
     /**
      * @var array the default configuration of URL rules. Individual rule configurations
      * specified via [[rules]] will take precedence when the same property of the rule is configured.
@@ -101,7 +101,7 @@ class GroupUrlRule extends CompositeUrlRule
     public function init()
     {
         $this->prefix = trim($this->prefix, '/');
-        $this->controllerPrefix = $this->controllerPrefix === null ? $this->prefix : trim($this->controllerPrefix, '/');
+        $this->routePrefix = $this->routePrefix === null ? $this->prefix : trim($this->routePrefix, '/');
         parent::init();
     }
 
@@ -121,9 +121,9 @@ class GroupUrlRule extends CompositeUrlRule
             $rule['prefix'] = isset($rule['prefix']) ?
                 ltrim($this->prefix . '/' . $rule['prefix'], '/') :
                 $this->prefix;
-            $rule['controllerPrefix'] = isset($rule['controllerPrefix']) ?
-                ltrim($this->controllerPrefix . '/' . $rule['controllerPrefix'], '/') :
-                $this->controllerPrefix;
+            $rule['routePrefix'] = isset($rule['routePrefix']) ?
+                ltrim($this->routePrefix . '/' . $rule['routePrefix'], '/') :
+                $this->routePrefix;
 
             $rule = Yii::createObject(array_merge($this->ruleConfig, $rule));
             if (!$rule instanceof UrlRuleInterface) {
@@ -153,7 +153,7 @@ class GroupUrlRule extends CompositeUrlRule
      */
     public function createUrl($manager, $route, $params)
     {
-        if ($this->controllerPrefix === '' || strpos($route, $this->controllerPrefix . '/') === 0) {
+        if ($this->routePrefix === '' || strpos($route, $this->routePrefix . '/') === 0) {
             return parent::createUrl($manager, $route, $params);
         }
 

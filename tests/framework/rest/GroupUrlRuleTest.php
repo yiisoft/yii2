@@ -82,6 +82,34 @@ class GroupUrlRuleTest extends TestCase
             ],
 
             [
+                'prefixed route prefixed group route',
+                [
+                    'prefix' => 'v1',
+                    'routePrefix' => 'moduleid',
+                    'rules' => [
+                        ['controller' => 'post', 'prefix' => 'admin'],
+                    ],
+                ],
+                [
+                    ['v1/admin/posts', 'moduleid/post/index'],
+                ],
+            ],
+
+            [
+                'prefixed route prefixed group route prefixed all',
+                [
+                    'prefix' => 'v1',
+                    'routePrefix' => 'moduleid',
+                    'rules' => [
+                        ['controller' => 'post', 'prefix' => 'admin', 'routePrefix' => 'controllersubfoder'],
+                    ],
+                ],
+                [
+                    ['v1/admin/posts', 'moduleid/controllersubfoder/post/index'],
+                ],
+            ],
+
+            [
                 'suffixed route',
                 [
                     'prefix' => 'v1',

@@ -85,17 +85,17 @@ class UrlRule extends CompositeUrlRule
     public $controller;
     /**
      * @var string the common prefix string shared by all controller (for example is a module ID).
-     * The controllerPrefix will not be a pluralize unlike of the composite controller property (e.g. `admin/user`).
-     * The controllerPrefix and the pattern will be separated with a slash.
+     * The routePrefix will not be a pluralize unlike of the composite controller property (e.g. `admin/user`).
+     * The routePrefix and the pattern will be separated with a slash.
      * ```php
      * [
      *     'class' => 'yii\rest\UrlRule',
      *     'controller' => ['user', 'post'],
-     *     'controllerPrefix' => 'v1',
+     *     'routePrefix' => 'v1',
      * ]
      * ```
      */
-    public $controllerPrefix;
+    public $routePrefix;
     /**
      * @var array list of acceptable actions. If not empty, only the actions within this array
      * will have the corresponding URL rules created.
@@ -176,7 +176,7 @@ class UrlRule extends CompositeUrlRule
         $this->controller = $controllers;
 
         $this->prefix = trim($this->prefix, '/');
-        $this->controllerPrefix = trim($this->controllerPrefix, '/');
+        $this->routePrefix = trim($this->routePrefix, '/'); // @todo 2.1 BC broken //$this->routePrefix = $this->routePrefix === null ? $this->prefix : trim($this->routePrefix, '/');
 
         parent::init();
     }
@@ -192,7 +192,7 @@ class UrlRule extends CompositeUrlRule
         $rules = [];
         foreach ($this->controller as $urlName => $controller) {
             $prefix = trim($this->prefix . '/' . $urlName, '/');
-            $controller = ltrim($this->controllerPrefix . '/' . $controller, '/');
+            $controller = ltrim($this->routePrefix . '/' . $controller, '/');
             foreach ($patterns as $pattern => $action) {
                 if (!isset($except[$action]) && (empty($only) || isset($only[$action]))) {
                     $rules[$urlName][] = $this->createRule($pattern, $prefix, $controller . '/' . $action);
