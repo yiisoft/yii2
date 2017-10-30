@@ -45,6 +45,8 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->rollBack();
+
+        $this->assertTrue(true); // No exceptions means test is passed.
     }
 
     public function testMasterSlave()
@@ -216,6 +218,6 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
     public function testExceptionContainsRawQuery()
     {
-        // This test does not work on sqlite because preparing the failing query fails
+        $this->markTestSkipped('This test does not work on sqlite because preparing the failing query fails');
     }
 }
