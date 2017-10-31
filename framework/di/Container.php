@@ -349,6 +349,21 @@ class Container extends Component
     }
 
     /**
+     * Configures an object with the initial property values.
+     * @param object $object the object to be configured
+     * @param array $properties the property initial values given in terms of name-value pairs.
+     * @return object the object itself
+     */
+    public function configureObject($object, $properties)
+    {
+        foreach ($properties as $name => $value) {
+            $object->$name = $value;
+        }
+
+        return $object;
+    }
+
+    /**
      * Creates an instance of the specified class.
      * This method will resolve dependencies of the specified class, instantiate them, and inject
      * them into the new instance of the specified class.
@@ -382,11 +397,8 @@ class Container extends Component
         }
 
         $object = $reflection->newInstanceArgs($dependencies);
-        foreach ($config as $name => $value) {
-            $object->$name = $value;
-        }
 
-        return $object;
+        return $this->configureObject($object, $config);
     }
 
     /**
