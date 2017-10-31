@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
-- Bug #6226: Fix fatal symlink error when publishing in multi threaded environments (dynasource)
+- Bug #6226: Fix fatal symlink error durint assets publishing in multi threaded environment (dynasource)
 - Bug #6526: Fixed `yii\db\Command::batchInsert()` casting of double values correctly independent of the locale (cebe, leammas)
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
 - Bug #11242: Fixed excess escaping in `yii\db\Command::batchInsert()` (silverfire)
@@ -58,7 +58,7 @@ Yii Framework 2 Change Log
 - Enh #9438: `yii\web\DbSession` now relies on error handler to display errors (samdark)
 - Enh #11415: Added `yii\console\widgets\Table` to draw tables in console apps (pana1990, rob006, samdark, tonykor)
 - Enh #13254: Made `yii\helpers\StringHelper` and `yii\validators\StringValidator` independent of `Yii::$app` instance (cebe)
-- Enh #13378: Added skipOnEmpty option to SluggableBehaviour (andrewnester)
+- Enh #13378: Added `yii\behaviors\SluggableBehaviour::skipOnEmpty` option (andrewnester)
 - Enh #13486: Use DI container to instantiate cookies in order to be able to set defaults (samdark)
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
 - Enh #13780: Added support for trusted proxies in `yii\web\Request` (sammousa, cebe, silverfire)
