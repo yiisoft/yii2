@@ -37,6 +37,11 @@ abstract class QueryTest extends DatabaseTestCase
         $query->select('id, name');
         $query->addSelect('email');
         $this->assertEquals(['id', 'name', 'email'], $query->select);
+        
+        $query = new Query();
+        $query->select('name, lastname');
+        $query->addSelect('name');
+        $this->assertEquals(['name', 'lastname'], $query->select);
     }
 
     public function testFrom()
