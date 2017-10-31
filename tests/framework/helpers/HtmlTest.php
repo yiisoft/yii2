@@ -145,7 +145,7 @@ class HtmlTest extends TestCase
                 'request' => [
                     'class' => 'yii\web\Request',
                     'enableCsrfValidation' => true,
-                ]
+                ],
             ],
         ]);
         $this->expectException('yii\base\InvalidConfigException');

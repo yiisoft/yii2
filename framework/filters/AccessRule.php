@@ -216,13 +216,13 @@ class AccessRule extends Component
         $items = empty($this->roles) ? [] : $this->roles;
 
         if (!empty($this->permissions)) {
-           $items = array_merge($items, $this->permissions);
+            $items = array_merge($items, $this->permissions);
         }
 
         if (empty($items)) {
             return true;
         }
-      
+
         if ($user === false) {
             throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
         }

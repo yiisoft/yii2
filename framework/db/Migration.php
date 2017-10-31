@@ -542,7 +542,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Prepares for a command to be executed, and outputs to the console
+     * Prepares for a command to be executed, and outputs to the console.
      * 
      * @param string $description the description for the command, to be output to the console.
      * @return float the time before the command is executed, for the time elapsed to be calculated.
@@ -557,7 +557,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Finalizes after the command has been executed, and outputs to the console the time elapsed
+     * Finalizes after the command has been executed, and outputs to the console the time elapsed.
      * 
      * @param float $time the time before the command was executed.
      * @since 2.0.13

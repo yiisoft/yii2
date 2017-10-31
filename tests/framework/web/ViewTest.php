@@ -99,7 +99,7 @@ class ViewTest extends TestCase
     }
 
     /**
-     * Parses CSRF token from page HTML
+     * Parses CSRF token from page HTML.
      *
      * @param string $html
      * @return string CSRF token

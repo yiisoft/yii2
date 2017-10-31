@@ -145,7 +145,7 @@ class ActiveDataFilter extends DataFilter
         }
         return [
             $operator,
-            $this->buildCondition($condition)
+            $this->buildCondition($condition),
         ];
     }
 

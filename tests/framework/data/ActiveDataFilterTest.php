@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\data;
 
@@ -40,13 +45,13 @@ class ActiveDataFilterTest extends TestCase
                     'and' => [
                         ['name' => 'some'],
                         ['number' => '2'],
-                    ]
+                    ],
                 ],
                 [
                     'AND',
                     ['name' => 'some'],
                     ['number' => '2'],
-                ]
+                ],
             ],
             [
                 [
@@ -59,7 +64,7 @@ class ActiveDataFilterTest extends TestCase
             [
                 [
                     'number' => [
-                        'in' => [1, 5, 8]
+                        'in' => [1, 5, 8],
                     ],
                 ],
                 ['IN', 'number', [1, 5, 8]],
@@ -67,7 +72,7 @@ class ActiveDataFilterTest extends TestCase
             [
                 [
                     'not' => [
-                        'number' => 10
+                        'number' => 10,
                     ],
                 ],
                 ['NOT', ['number' => 10]],
@@ -94,7 +99,7 @@ class ActiveDataFilterTest extends TestCase
                                 ],
                             ],
                         ],
-                    ]
+                    ],
                 ],
                 [
                     'OR',
@@ -177,7 +182,7 @@ class ActiveDataFilterTest extends TestCase
             'or' => [
                 ['name' => 'some'],
                 ['name' => 'another'],
-            ]
+            ],
         ];
         $expectedResult = [
             'CALLBACK-OR',
@@ -190,7 +195,7 @@ class ActiveDataFilterTest extends TestCase
 
         $builder->filter = [
             'name' => [
-                'like' => 'foo'
+                'like' => 'foo',
             ],
         ];
         $expectedResult = ['CALLBACK-LIKE', 'LIKE', 'foo', 'name'];

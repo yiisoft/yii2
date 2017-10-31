@@ -340,7 +340,7 @@ class DataFilter extends Model
             }
 
             if ($type !== null) {
-                foreach ((array)$validator->attributes as $attribute) {
+                foreach ((array) $validator->attributes as $attribute) {
                     $attributeTypes[$attribute] = $type;
                 }
             }
@@ -414,7 +414,7 @@ class DataFilter extends Model
 
         $params = array_merge(
             [
-                'filter' => $this->getAttributeLabel($this->filterAttributeName)
+                'filter' => $this->getAttributeLabel($this->filterAttributeName),
             ],
             $params
         );
@@ -430,7 +430,7 @@ class DataFilter extends Model
     public function attributes()
     {
         return [
-            $this->filterAttributeName
+            $this->filterAttributeName,
         ];
     }
 
@@ -448,7 +448,7 @@ class DataFilter extends Model
     public function rules()
     {
         return [
-            [$this->filterAttributeName, 'validateFilter', 'skipOnEmpty' => false]
+            [$this->filterAttributeName, 'validateFilter', 'skipOnEmpty' => false],
         ];
     }
 
@@ -657,7 +657,7 @@ class DataFilter extends Model
 
     /**
      * Builds actual filter specification form [[filter]] value.
-     * @param boolean $runValidation whether to perform validation (calling [[validate()]])
+     * @param bool $runValidation whether to perform validation (calling [[validate()]])
      * before building the filter. Defaults to `true`. If the validation fails, no filter will
      * be built and this method will return `false`.
      * @return mixed|false built actual filter value, or `false` if validation fails.

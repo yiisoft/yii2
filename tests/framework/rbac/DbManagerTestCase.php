@@ -20,7 +20,6 @@ use yii\rbac\Permission;
 use yii\rbac\Role;
 use yiiunit\data\rbac\UserID;
 use yiiunit\framework\console\controllers\EchoMigrateController;
-use yiiunit\framework\db\oci\QueryBuilderTest;
 use yiiunit\framework\log\ArrayTarget;
 
 /**
@@ -56,7 +55,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         Yii::$app->setComponents([
             'db' => static::createConnection(),
-            'authManager' => '\yii\rbac\DbManager'
+            'authManager' => '\yii\rbac\DbManager',
         ]);
         self::assertSame(static::$driverName, Yii::$app->db->getDriverName(), 'Connection represents the same DB driver, as is tested');
         ob_start();

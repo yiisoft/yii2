@@ -422,7 +422,7 @@ class FileValidatorTest extends TestCase
      */
     public function testValidateFileByExtensionUsingMimeType($fileName, $_, $allowedExtensions)
     {
-        $validator = new FileValidator(['extensions' => (array)$allowedExtensions]);
+        $validator = new FileValidator(['extensions' => (array) $allowedExtensions]);
         $file = $this->getRealTestFile($fileName);
         $this->assertTrue($validator->validate($file));
     }
@@ -435,7 +435,7 @@ class FileValidatorTest extends TestCase
      */
     public function testValidateFileByExtensionUsingMimeTypeInvalid($fileName, $_, $allowedExtensions)
     {
-        $validator = new FileValidator(['extensions' => (array)$allowedExtensions]);
+        $validator = new FileValidator(['extensions' => (array) $allowedExtensions]);
         $file = $this->getRealTestFile($fileName);
         $this->assertFalse($validator->validate($file));
     }

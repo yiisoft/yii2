@@ -15,8 +15,5 @@ class Variadic
 {
     public function __construct(QuxInterface ...$quxes)
     {
-
     }
-
-
 }

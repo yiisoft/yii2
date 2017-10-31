@@ -8,7 +8,6 @@
 namespace yiiunit\framework\web\session;
 
 use Yii;
-use yii\base\Security;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\web\DbSession;

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\data;
 
@@ -56,7 +61,7 @@ class DataFilterTest extends TestCase
     public function testLoad()
     {
         $filterValue = [
-            'name' => 'value'
+            'name' => 'value',
         ];
 
         $builder = new DataFilter();
@@ -86,19 +91,19 @@ class DataFilterTest extends TestCase
             [
                 [],
                 true,
-                []
+                [],
             ],
             [
                 null,
                 true,
-                []
+                [],
             ],
             [
                 '',
                 false,
                 [
-                    'The format of Filter is invalid.'
-                ]
+                    'The format of Filter is invalid.',
+                ],
             ],
             [
                 [
@@ -106,7 +111,7 @@ class DataFilterTest extends TestCase
                     'number' => '10',
                 ],
                 true,
-                []
+                [],
             ],
             [
                 [
@@ -115,14 +120,14 @@ class DataFilterTest extends TestCase
                 ],
                 false,
                 [
-                    "Unknown filter attribute 'fake'"
-                ]
+                    "Unknown filter attribute 'fake'",
+                ],
             ],
             [
                 [
                     'and' => [
                         [
-                            'name' => ['eq' => 'foo']
+                            'name' => ['eq' => 'foo'],
                         ],
                         [
                             'number' => ['in' => [1, 5, 8]],
@@ -130,7 +135,7 @@ class DataFilterTest extends TestCase
                     ],
                 ],
                 true,
-                []
+                [],
             ],
             [
                 [
@@ -141,21 +146,21 @@ class DataFilterTest extends TestCase
                 ],
                 false,
                 [
-                    "Operator 'and' requires multiple operands."
-                ]
+                    "Operator 'and' requires multiple operands.",
+                ],
             ],
             [
                 [
-                    'not' => ['name' => 'foo']
+                    'not' => ['name' => 'foo'],
                 ],
                 true,
-                []
+                [],
             ],
             [
                 [
                     'and' => [
                         [
-                            'not' => ['name' => 'foo']
+                            'not' => ['name' => 'foo'],
                         ],
                         [
                             'number' => ['in' => [1, 5, 8]],
@@ -163,7 +168,7 @@ class DataFilterTest extends TestCase
                     ],
                 ],
                 true,
-                []
+                [],
             ],
             [
                 [
@@ -171,8 +176,8 @@ class DataFilterTest extends TestCase
                 ],
                 false,
                 [
-                    "Name must be a string."
-                ]
+                    'Name must be a string.',
+                ],
             ],
             [
                 [
@@ -182,7 +187,7 @@ class DataFilterTest extends TestCase
                     ],
                 ],
                 true,
-                []
+                [],
             ],
             [
                 [
@@ -190,8 +195,8 @@ class DataFilterTest extends TestCase
                 ],
                 false,
                 [
-                    "Operator 'gt' must be used with a search attribute."
-                ]
+                    "Operator 'gt' must be used with a search attribute.",
+                ],
             ],
         ];
     }
@@ -202,7 +207,7 @@ class DataFilterTest extends TestCase
      * @dataProvider dataProviderValidate
      *
      * @param array $filter
-     * @param boolean $expectedResult
+     * @param bool $expectedResult
      * @param array $expectedErrors
      */
     public function testValidate($filter, $expectedResult, $expectedErrors)
@@ -268,20 +273,20 @@ class DataFilterTest extends TestCase
                 [
                     'and' => [
                         [
-                            'name' => ['eq' => 'foo']
+                            'name' => ['eq' => 'foo'],
                         ],
                         [
-                            'number' => ['gte' => 15]
+                            'number' => ['gte' => 15],
                         ],
                     ],
                 ],
                 [
                     'AND' => [
                         [
-                            'name' => ['=' => 'foo']
+                            'name' => ['=' => 'foo'],
                         ],
                         [
-                            'number' => ['>=' => 15]
+                            'number' => ['>=' => 15],
                         ],
                     ],
                 ],
@@ -318,7 +323,7 @@ class DataFilterTest extends TestCase
 
         $builder->setSearchModel($searchModel);
         $builder->attributeMap = [
-            'authorName' => '{{author}}.[[name]]'
+            'authorName' => '{{author}}.[[name]]',
         ];
 
         $builder->filter = $filter;
@@ -329,7 +334,7 @@ class DataFilterTest extends TestCase
     {
         $builder = new DataFilter();
         $builder->setErrorMessages([
-            'unsupportedOperatorType' => 'Test message'
+            'unsupportedOperatorType' => 'Test message',
         ]);
 
         $errorMessages = $builder->getErrorMessages();
@@ -338,7 +343,7 @@ class DataFilterTest extends TestCase
 
         $builder->setErrorMessages(function () {
             return [
-                'unsupportedOperatorType' => 'Test message callback'
+                'unsupportedOperatorType' => 'Test message callback',
             ];
         });
         $errorMessages = $builder->getErrorMessages();

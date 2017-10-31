@@ -353,14 +353,14 @@ abstract class Target extends Component
 
     /**
      * Returns formatted ('Y-m-d H:i:s') timestamp for message.
-     * If [[microtime]] is configured to true it will return format 'Y-m-d H:i:s.u'
+     * If [[microtime]] is configured to true it will return format 'Y-m-d H:i:s.u'.
      * @param float $timestamp
      * @return string
      * @since 2.0.13
      */
     protected function getTime($timestamp)
     {
-        list ($timestamp, $usec) = explode('.', StringHelper::floatToString($timestamp));
+        list($timestamp, $usec) = explode('.', StringHelper::floatToString($timestamp));
 
         return date('Y-m-d H:i:s', $timestamp) . ($this->microtime ? ('.' . $usec) : '');
     }
