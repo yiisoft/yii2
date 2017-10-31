@@ -20,6 +20,7 @@ use yii\rbac\Permission;
 use yii\rbac\Role;
 use yiiunit\data\rbac\UserID;
 use yiiunit\framework\console\controllers\EchoMigrateController;
+use yiiunit\framework\db\oci\QueryBuilderTest;
 use yiiunit\framework\log\ArrayTarget;
 
 /**
@@ -80,8 +81,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     public static function tearDownAfterClass()
     {
-        static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
-        Yii::$app = null;
+        static::runConsoleAction('migrate/down', ['all', 'migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
         parent::tearDownAfterClass();
     }
 
