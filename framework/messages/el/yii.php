@@ -23,6 +23,14 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    '\'{attribute}\' does not support operator \'{operator}\'.' => 'Το \'{attribute}\' δεν υποστηρίζει τον τελεστή \'{operator}\'.',
+    'Condition for \'{attribute}\' should be either a value or valid operator specification.' => 'Η συνθήκη για το \'{attribute}\' πρέπει να είναι είτε τιμή είτε προδιαγραφή έγκυρου τελεστή.',
+    'Operator \'{operator}\' must be used with a search attribute.' => 'Ο τελεστής \'{operator}\' πρέπει να χρησιμοποιηθεί με μια ιδιότητα για αναζήτηση.',
+    'Operator \'{operator}\' requires multiple operands.' => 'Ο τελεστής \'{operator}\' απαιτεί πολλούς τελεστέους.',
+    'Powered by {yii}' => 'Με τη δύναμη του {yii}',
+    'The format of {filter} is invalid.' => 'Η μορφή του {filter} δεν είναι έγκυρη.',
+    'Unknown filter attribute \'{attribute}\'' => 'Άγνωστη ιδιότητα φίλτρου \'{attribute}\'',
+    'Yii Framework' => 'Yii Framework',
     ' and ' => ' και ',
     '(not set)' => '(μη ορισμένο)',
     'An internal server error occurred.' => 'Υπήρξε ένα εσωτερικό σφάλμα του διακομιστή.',
