@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web\session;
 
 use Yii;
+use yii\base\Security;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\web\DbSession;
@@ -133,17 +134,24 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->assertSame('changed by callback data', $session->readSession('test'));
     }
 
-    public function testSerializedObjectSaving()
+    protected function buildObjectForSerialization()
     {
-        $session = new DbSession();
-
         $object = new \stdClass();
         $object->nullValue = null;
         $object->floatValue = pi();
         $object->textValue = str_repeat('QweåßƒТест', 200);
         $object->array = [null, 'ab' => 'cd'];
+        $object->binary = base64_decode('5qS2UUcXWH7rjAmvhqGJTDNkYWFiOGMzNTFlMzNmMWIyMDhmOWIwYzAwYTVmOTFhM2E5MDg5YjViYzViN2RlOGZlNjllYWMxMDA0YmQxM2RQ3ZC0in5ahjNcehNB/oP/NtOWB0u3Skm67HWGwGt9MA==');
+        $object->with_null_byte = 'hey!' . "\0" . 'y"ûƒ^äjw¾bðúl5êù-Ö=W¿Š±¬GP¥Œy÷&ø';
 
-        $serializedObject = serialize($object);
+        return $object;
+    }
+
+    public function testSerializedObjectSaving()
+    {
+        $session = new DbSession();
+
+        $serializedObject = serialize($this->buildObjectForSerialization());
         $session->writeSession('test', $serializedObject);
         $this->assertSame($serializedObject, $session->readSession('test'));
     }
