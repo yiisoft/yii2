@@ -349,6 +349,40 @@ class Container extends Component
     }
 
     /**
+     * Returns the dependencies merged with input params
+     * @param array $dependencies array of dependencies
+     * @param array $params array of params
+     * @param ReflectionClass $reflection the class reflection associated with the dependencies
+     * @return array
+     */
+    protected function mergeDependenciesWithParams($dependencies, $params, ReflectionClass $reflection)
+    {
+        $mapNames = [];
+
+        $constructor = $reflection->getConstructor();
+
+        $constructorParams = [];
+
+        if ($constructor !== null) {
+            $constructorParams = $constructor->getParameters();
+        }
+
+        foreach ($constructorParams as $index => $constructorParam) {
+            $mapNames[$constructorParam->getName()] = $index;
+        }
+
+        foreach ($params as $index => $param) {
+            if (is_string($index)) {
+                $dependencies[$mapNames[$index]] = $param;
+            } else {
+                $dependencies[$index] = $param;
+            }
+        }
+
+        return $dependencies;
+    }
+
+    /**
      * Creates an instance of the specified class.
      * This method will resolve dependencies of the specified class, instantiate them, and inject
      * them into the new instance of the specified class.
@@ -363,9 +397,7 @@ class Container extends Component
         /* @var $reflection ReflectionClass */
         list($reflection, $dependencies) = $this->getDependencies($class);
 
-        foreach ($params as $index => $param) {
-            $dependencies[$index] = $param;
-        }
+        $dependencies = $this->mergeDependenciesWithParams($dependencies, $params, $reflection);
 
         $dependencies = $this->resolveDependencies($dependencies, $reflection);
         if (!$reflection->isInstantiable()) {

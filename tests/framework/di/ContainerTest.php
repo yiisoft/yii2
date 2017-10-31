@@ -310,4 +310,20 @@ class ContainerTest extends TestCase
 
         require __DIR__ . '/testContainerWithVariadicCallable.php';
     }
+
+    /**
+     * @requires PHP 5.6
+     */
+    public function testNamedParams()
+    {
+        $container = new Container();
+        $container->set(Qux::className(), [], [
+            'a' => 'value_one'
+        ]);
+
+        $object = $container->get(Qux::className());
+
+        $this->assertInstanceOf(Qux::className(), $object);
+        $this->assertSame($object->a, 'value_one');
+    }
 }
