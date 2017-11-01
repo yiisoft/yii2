@@ -28,10 +28,6 @@ abstract class AbstractDbSessionTest extends TestCase
     {
         parent::setUp();
 
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('DbSession is not compatible with HHVM.');
-        }
-
         $this->mockApplication();
         Yii::$app->set('db', $this->getDbConfig());
         $this->dropTableSession();
