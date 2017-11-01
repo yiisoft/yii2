@@ -528,11 +528,7 @@ class BaseYii
      */
     public static function configure($object, $properties)
     {
-        foreach ($properties as $name => $value) {
-            $object->$name = $value;
-        }
-
-        return $object;
+        return self::$container->configureObject($object, $properties);
     }
 
     /**
