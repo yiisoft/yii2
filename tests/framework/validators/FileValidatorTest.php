@@ -145,6 +145,27 @@ class FileValidatorTest extends TestCase
         $this->assertTrue($m->hasErrors());
         $this->assertNotFalse(stripos(current($m->getErrors('attr_files')), 'you can upload at most'));
 
+        $files = [
+            'file_1' => [
+                'name' => 'test_up_1.txt',
+                'size' => 1024,
+            ],
+            'file_2' => [
+                'name' => 'test_up_2.txt',
+                'size' => 1024,
+            ]
+        ];
+        $m = FakedValidationModel::createWithAttributes(
+            [
+                'attr_files' => $this->createTestFiles(
+                    $files
+                ),
+            ]
+        );
+        $val->validateAttribute($m, 'attr_files');
+        $this->assertFalse($m->hasErrors());
+        $this->assertEquals(array_keys($m->attr_files), array_keys($files));
+
         $val->maxFiles = 0;
         $m->clearErrors();
         $val->validateAttribute($m, 'attr_files');
@@ -230,9 +251,9 @@ class FileValidatorTest extends TestCase
             return $randomString;
         };
         $files = [];
-        foreach ($params as $param) {
+        foreach ($params as $key => $param) {
             if (empty($param) && count($params) != 1) {
-                $files[] = ['no instance of UploadedFile'];
+                $files[$key] = ['no instance of UploadedFile'];
                 continue;
             }
             $name = isset($param['name']) ? $param['name'] : $rndString();
@@ -258,7 +279,7 @@ class FileValidatorTest extends TestCase
                     'error' => $error,
                 ]);
             }
-            $files[] = new UploadedFile([
+            $files[$key] = new UploadedFile([
                 'name' => $name,
                 'tempName' => $tempName,
                 'type' => $type,
