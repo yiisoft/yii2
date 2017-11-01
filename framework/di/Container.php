@@ -382,11 +382,8 @@ class Container extends Component
         }
 
         $object = $reflection->newInstanceArgs($dependencies);
-        foreach ($config as $name => $value) {
-            $object->$name = $value;
-        }
 
-        return $object;
+        return Yii::configure($object, $config);
     }
 
     /**
