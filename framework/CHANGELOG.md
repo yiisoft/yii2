@@ -100,6 +100,11 @@ Yii Framework 2 Change Log
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
 - Bug #13436: Fixed migration for MSSQL DbSession (silverfire)
+- Bug #14186: Forced validation in `yiiActiveForm` do not trigger `afterValidate` event (arogachev)
+- Bug #14510: The state of a form is always "not validated" when using forced validation in `yiiActiveForm` (arogachev)
+- Enh #13403: Added 'permissions' additionally to 'roles' in `yii\filters\AccessRule` in order to be able to specify these separately (thyseus)
+- Enh #14958: Added options to copy stacktrace and search for error message to the exception page (cebe)
+- Enh #9703, #9709: Added `yii\i18n\Formatter::asWeight()` and `::asLength()` formatters (nineinchnick, silverfire)
 
 2.0.12 June 05, 2017
 --------------------
@@ -163,8 +168,6 @@ Yii Framework 2 Change Log
 - Bug #14074: Fixed default value of `yii\console\controllers\FixtureController::$globalFixtures` to contain valid class name (lynicidn)
 - Bug #14094: Fixed bug when single `yii\web\UrlManager::createUrl()` call my result multiple calls of `yii\web\UrlRule::createUrl()` for the same rule (rossoneri)
 - Bug #14133: Fixed bug when calculating timings with mixed nested profile begin and end in `yii\log\Logger::calculateTimings()` (bizley)
-- Bug #14186: Forced validation in `yiiActiveForm` do not trigger `afterValidate` event (arogachev)
-- Bug #14510: The state of a form is always "not validated" when using forced validation in `yiiActiveForm` (arogachev)
 - Enh #4793: `yii\filters\AccessControl` now can be used without `user` component (bizley)
 - Enh #4999: Added support for wildcards at `yii\filters\AccessRule::$controllers` (klimov-paul)
 - Enh #5108: `yii\validators\DateValidator` now resets `$timestampAttribute` value on empty validated attribute value (klimov-paul)
@@ -213,7 +216,6 @@ Yii Framework 2 Change Log
 - Enh #14059: Removed unused AR instantiating for calling of static methods (ElisDN)
 - Enh #14067: `yii\web\View::clear()` sets populated arrays to empty arrays instead of null, also changed default values to empty array (craiglondon)
 - Enh #14098: `yii\helpers\BaseFileHelper::normalizeOptions()` is now protected (brandonkelly)
-- Enh #14958: Added options to copy stacktrace and search for error message to the exception page (cebe)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
 
 
@@ -339,7 +341,6 @@ Yii Framework 2 Change Log
 - Enh #12901: Added `getDefaultHelpHeader` method to the `yii\console\controllers\HelpController` class to be able to override default help header in a class heir (diezztsk)
 - Enh #12988: Changed `textarea` method within the `yii\helpers\BaseHtml` class to allow users to control whether HTML entities found within `$value` will be double-encoded or not (cyphix333)
 - Enh #13020: Added `disabledListItemSubTagOptions` attribute for `yii\widgets\LinkPager` in order to customize the disabled list item sub tag element (nadar)
-- Enh #13403: Added 'permissions' additionally to 'roles' in `yii\filters\AccessRule` in order to be able to specify these separately (thyseus)
 - Enh #13035: Use ArrayHelper::getValue() in SluggableBehavior::getValue() (thyseus)
 - Enh #13036: Added shortcut methods `asJson()` and `asXml()` for returning JSON and XML data in web controller actions (cebe)
 - Enh #13050: Added `yii\filters\HostControl` allowing protection against 'host header' attacks (klimov-paul, rob006)
@@ -730,7 +731,6 @@ Yii Framework 2 Change Log
 - Enh #10783: Added migration and unit-tests for `yii\i18n\DbMessageSource` (silverfire)
 - Enh #10797: Cleaned up requirements checker CSS (muhammadcahya)
 - Enh: Added last resort measure for `yii\helpers\FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
-- Enh #9707: Added `yii\i18n\Formatter::asWeight()` and `::asLength()` formatters (nineinchnick, silverfire)
 - Enh: `yii\behaviors\AttributeBehavior::getValue()` now respects the callable in array format (silverfire)
 - Chg #6419: Added `yii\web\ErrorHandler::displayVars` make list of displayed vars customizable. `$_ENV` and `$_SERVER` are not displayed by default anymore (silverfire)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
