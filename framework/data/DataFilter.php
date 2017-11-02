@@ -110,11 +110,13 @@ use yii\validators\StringValidator;
  *
  * @see ActiveDataFilter
  *
- * @property mixed $filter filter value.
- * @property Model $searchModel model to be used for filter attributes validation.
- * @property array $searchAttributeTypes search attribute type map.
- * @property array $errorMessages list of error messages responding to invalid filter structure,
- * in format: `[errorKey => message]`. Please refer to [[setErrorMessages()]] for details.
+ * @property array $errorMessages Error messages in format `[errorKey => message]`. Note that the type of this
+ * property differs in getter and setter. See [[getErrorMessages()]] and [[setErrorMessages()]] for details.
+ * @property mixed $filter Raw filter value.
+ * @property array $searchAttributeTypes Search attribute type map. Note that the type of this property
+ * differs in getter and setter. See [[getSearchAttributeTypes()]] and [[setSearchAttributeTypes()]] for details.
+ * @property Model $searchModel Model instance. Note that the type of this property differs in getter and
+ * setter. See [[getSearchModel()]] and [[setSearchModel()]] for details.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.13
@@ -160,8 +162,8 @@ class DataFilter extends Model
      * ```
      *
      * > Note: while specifying filter controls take actual data exchange format, which your API uses, in mind.
-     *   Make sure each specified control keyword is valid for the format. For example, in XML tag name can start
-     *   only with a letter character, thus controls like `>`, '=' or `$gt` will break the XML schema.
+     * > Make sure each specified control keyword is valid for the format. For example, in XML tag name can start
+     * > only with a letter character, thus controls like `>`, '=' or `$gt` will break the XML schema.
      */
     public $filterControls = [
         'and' => 'AND',

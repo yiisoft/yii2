@@ -79,7 +79,6 @@ class MigrateController extends BaseMigrateController
      */
     const MAX_NAME_LENGTH = 180;
 
-
     /**
      * @var string the name of the table for keeping applied migration information.
      */

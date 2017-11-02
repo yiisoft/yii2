@@ -355,6 +355,7 @@ class Formatter extends Component
             self::UNIT_SYSTEM_METRIC => 1000, // 1 kilogram = 1000 grams
         ],
     ];
+
     /**
      * @var bool whether the [PHP intl extension](http://php.net/manual/en/book.intl.php) is loaded.
      */

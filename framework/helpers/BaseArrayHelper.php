@@ -261,9 +261,9 @@ class BaseArrayHelper
      *
      * @param array $array the array to write the value to
      * @param string|array|null $path the path of where do you want to write a value to `$array`
-     *  the path can be described by a string when each key should be separated by a dot
-     *  you can also describe the path as an array of keys
-     *  if the path is null then `$array` will be assigned the `$value`
+     * the path can be described by a string when each key should be separated by a dot
+     * you can also describe the path as an array of keys
+     * if the path is null then `$array` will be assigned the `$value`
      * @param mixed $value the value to be written
      * @since 2.0.13
      */
