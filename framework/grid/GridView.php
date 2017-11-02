@@ -479,9 +479,7 @@ class GridView extends BaseListView
         }
 
         if (empty($rows) && $this->emptyText !== false) {
-            $colspan = count($this->columns);
-
-            return "<tbody>\n<tr><td colspan=\"$colspan\">" . $this->renderEmpty() . "</td></tr>\n</tbody>";
+            $rows[] = $this->renderEmptyTableRow();
         }
 
         return "<tbody>\n" . implode("\n", $rows) . "\n</tbody>";
@@ -509,6 +507,24 @@ class GridView extends BaseListView
         $options['data-key'] = is_array($key) ? json_encode($key) : (string) $key;
 
         return Html::tag('tr', implode('', $cells), $options);
+    }
+
+    /**
+     * Renders a empty table row with table row decoration
+     * pass `null` instead of `$model`, `$$key`, `$index` into Closure
+     * @return string the rendering result
+     * @since 2.0.14
+     */
+    public function renderEmptyTableRow()
+    {
+        if ($this->rowOptions instanceof Closure) {
+            $options = call_user_func($this->rowOptions, null, null, null, $this);
+        } else {
+            $options = $this->rowOptions;
+        }
+        $options['colspan'] = count($this->columns);
+
+        return Html::tag('tr', $this->renderEmpty(), $options);
     }
 
     /**
