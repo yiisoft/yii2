@@ -1,7 +1,13 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.13 under development
+2.0.14 under development
+------------------------
+
+- no changes in this release.
+
+
+2.0.13 November 03, 2017
 ------------------------
 
 - Bug #6226: Fix fatal symlink error durint assets publishing in multi threaded environment (dynasource)
