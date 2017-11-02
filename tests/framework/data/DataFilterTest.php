@@ -120,7 +120,7 @@ class DataFilterTest extends TestCase
                 ],
                 false,
                 [
-                    "Unknown filter attribute 'fake'",
+                    'Unknown filter attribute "fake"',
                 ],
             ],
             [
@@ -146,7 +146,7 @@ class DataFilterTest extends TestCase
                 ],
                 false,
                 [
-                    "Operator 'and' requires multiple operands.",
+                    'Operator "and" requires multiple operands.',
                 ],
             ],
             [
@@ -195,7 +195,7 @@ class DataFilterTest extends TestCase
                 ],
                 false,
                 [
-                    "Operator 'gt' must be used with a search attribute.",
+                    'Operator "gt" must be used with a search attribute.',
                 ],
             ],
         ];
