@@ -40,10 +40,10 @@ class GridViewTest extends \yiiunit\TestCase
     public function emptyDataProvider()
     {
         return [
-            [null, 'No results found.', null, null],
-            ['Empty', 'Empty', null, null],
+            [null, 'No results found.', [], []],
+            ['Empty', 'Empty', [], []],
             // https://github.com/yiisoft/yii2/issues/13352
-            [false, '', null, null],
+            [false, '', [], []],
             [null, 'No results found.', ['class' => 'test-class'], ['class' => 'test-class']],
             [null, 'No results found.', function ($model, $key, $index, $grid){
                 return ['class' => 'test-class'];
