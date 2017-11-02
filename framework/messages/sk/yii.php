@@ -23,12 +23,12 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    '\'{attribute}\' does not support operator \'{operator}\'.' => '\'{attribute}\' nepodporuje operátor \'{operator}\'.',
-    'Condition for \'{attribute}\' should be either a value or valid operator specification.' => 'Podmienkou pre \'{attribute}\' by mala byť hodnota alebo platná špecifikácia operátora.',
-    'Operator \'{operator}\' must be used with a search attribute.' => 'Operátor \'{operator}\' musí byť použitý s atribútom vyhľadávania.',
-    'Operator \'{operator}\' requires multiple operands.' => 'Operátor \'{operator}\' vyžaduje viac operandov.',
+    '"{attribute}" does not support operator "{operator}".' => '"{attribute}" nepodporuje operátor "{operator}".',
+    'Condition for "{attribute}" should be either a value or valid operator specification.' => 'Podmienkou pre "{attribute}" by mala byť hodnota alebo platná špecifikácia operátora.',
+    'Operator "{operator}" must be used with a search attribute.' => 'Operátor "{operator}" musí byť použitý s atribútom vyhľadávania.',
+    'Operator "{operator}" requires multiple operands.' => 'Operátor "{operator}" vyžaduje viac operandov.',
     'The format of {filter} is invalid.' => 'Format {filter} je neplatný.',
-    'Unknown filter attribute \'{attribute}\'' => 'Neznámy atribút filtra \'{attribute}\'',
+    'Unknown filter attribute "{attribute}"' => 'Neznámy atribút filtra "{attribute}"',
     ' and ' => ' a ',
     '(not set)' => '(nie je nastavené)',
     'An internal server error occurred.' => 'Vyskytla sa interná chyba servera.',
