@@ -68,6 +68,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BINARY => 'bytea',
         Schema::TYPE_BOOLEAN => 'boolean',
         Schema::TYPE_MONEY => 'numeric(19,4)',
+        Schema::TYPE_JSON => 'json',
     ];
 
     /**

@@ -67,6 +67,7 @@ class Schema extends \yii\db\Schema
         'timestamp' => self::TYPE_TIMESTAMP,
         'enum' => self::TYPE_STRING,
         'varbinary' => self::TYPE_BINARY,
+        'json' => self::TYPE_JSON,
     ];
 
     /**
