@@ -504,7 +504,7 @@ class GridView extends BaseListView
         } else {
             $options = $this->rowOptions;
         }
-        $options['data-key'] = is_array($key) ? json_encode($key) : (string)$key;
+        $options['data-key'] = is_array($key) ? json_encode($key) : (string) $key;
 
         return Html::tag('tr', implode('', $cells), $options);
     }
@@ -585,7 +585,7 @@ class GridView extends BaseListView
         if (is_array($model) || is_object($model)) {
             foreach ($model as $name => $value) {
                 if ($value === null || is_scalar($value) || is_callable([$value, '__toString'])) {
-                    $this->columns[] = (string)$name;
+                    $this->columns[] = (string) $name;
                 }
             }
         }
