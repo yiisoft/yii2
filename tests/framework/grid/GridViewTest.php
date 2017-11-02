@@ -10,6 +10,7 @@ namespace yiiunit\framework\grid;
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
+use yii\helpers\Html;
 use yii\web\View;
 
 /**
@@ -39,10 +40,14 @@ class GridViewTest extends \yiiunit\TestCase
     public function emptyDataProvider()
     {
         return [
-            [null, 'No results found.'],
-            ['Empty', 'Empty'],
+            [null, 'No results found.', null, null],
+            ['Empty', 'Empty', null, null],
             // https://github.com/yiisoft/yii2/issues/13352
-            [false, ''],
+            [false, '', null, null],
+            [null, 'No results found.', ['class' => 'test-class'], ['class' => 'test-class']],
+            [null, 'No results found.', function ($model, $key, $index, $grid){
+                return ['class' => 'test-class'];
+            }, ['class' => 'test-class']],
         ];
     }
 
@@ -50,9 +55,11 @@ class GridViewTest extends \yiiunit\TestCase
      * @dataProvider emptyDataProvider
      * @param mixed $emptyText
      * @param string $expectedText
+     * @param null|array|\Closure $rowOptions
+     * @param null|array|\Closure $expectedRowOptions
      * @throws \Exception
      */
-    public function testEmpty($emptyText, $expectedText)
+    public function testEmpty($emptyText, $expectedText, $rowOptions, $expectedRowOptions)
     {
         $html = GridView::widget([
             'id' => 'grid',
@@ -61,13 +68,16 @@ class GridViewTest extends \yiiunit\TestCase
             'emptyText' => $emptyText,
             'options' => [],
             'tableOptions' => [],
+            'rowOptions' => $rowOptions,
             'view' => new View(),
             'filterUrl' => '/',
         ]);
         $html = preg_replace("/\r|\n/", '', $html);
 
         if ($expectedText) {
-            $emptyRowHtml = "<tr><td colspan=\"0\"><div class=\"empty\">{$expectedText}</div></td></tr>";
+            $emptyRowHtml = Html::tag('tr',
+                "<td colspan=\"0\"><div class=\"empty\">{$expectedText}</div></td>",
+                $expectedRowOptions);
         } else {
             $emptyRowHtml = '';
         }
