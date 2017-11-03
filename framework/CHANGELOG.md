@@ -1,10 +1,10 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.14 under development
+2.0.13.1 under development
 ------------------------
 
-- no changes in this release.
+- Bug #15081: Fixed "Undefined offset: 1" in log Target (ischenko)
 
 
 2.0.13 November 03, 2017
