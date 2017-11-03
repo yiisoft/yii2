@@ -26,8 +26,8 @@ use yii\web\Request;
  * satisfying both filter conditions will be handled. Additionally, you
  * may specify [[except]] to exclude messages of certain categories.
  *
- * @property Indicates $enabled Whether this log target is enabled. Defaults to true. Note that the type of
- * this property differs in getter and setter. See [[getEnabled()]] and [[setEnabled()]] for details.
+ * @property bool $enabled Indicates whether this log target is enabled. Defaults to true. Note that the type
+ * of this property differs in getter and setter. See [[getEnabled()]] and [[setEnabled()]] for details.
  * @property int $levels The message levels that this target is interested in. This is a bitmap of level
  * values. Defaults to 0, meaning  all available levels. Note that the type of this property differs in getter
  * and setter. See [[getLevels()]] and [[setLevels()]] for details.
@@ -340,7 +340,7 @@ abstract class Target extends Component
 
     /**
      * Check whether the log target is enabled.
-     * @property Indicates whether this log target is enabled. Defaults to true.
+     * @property bool Indicates whether this log target is enabled. Defaults to true.
      * @return bool A value indicating whether this log target is enabled.
      */
     public function getEnabled()
