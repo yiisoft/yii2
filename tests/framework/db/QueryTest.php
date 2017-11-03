@@ -47,6 +47,10 @@ abstract class QueryTest extends DatabaseTestCase
         $query->addSelect(['*', 'abc']);
         $query->addSelect(['*', 'bca']);
         $this->assertEquals(['*', 'abc', 'bca'], array_values($query->select));
+        
+        $query = new Query();
+        $query->addSelect(['field1 as a', 'field 1 as b']);
+        $this->assertEquals(['field1 as a', 'field 1 as b'], $query->select);
     }
 
     public function testFrom()
