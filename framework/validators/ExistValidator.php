@@ -9,6 +9,9 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\Model;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * ExistValidator validates that the attribute value exists in a table.
@@ -41,7 +44,7 @@ class ExistValidator extends Validator
 {
     /**
      * @var string the name of the ActiveRecord class that should be used to validate the existence
-     * of the current attribute value. It not set, it will use the ActiveRecord class of the attribute being validated.
+     * of the current attribute value. If not set, it will use the ActiveRecord class of the attribute being validated.
      * @see targetAttribute
      */
     public $targetClass;
@@ -64,12 +67,12 @@ class ExistValidator extends Validator
      * @var bool whether to allow array type attribute.
      */
     public $allowArray = false;
-
     /**
      * @var string and|or define how target attributes are related
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
+
 
     /**
      * @inheritdoc
@@ -125,6 +128,7 @@ class ExistValidator extends Validator
      * of the attribute currently being validated. You may use an array to validate the existence
      * of multiple columns at the same time. The array key is the name of the attribute with the value to validate,
      * the array value is the name of the database field to search.
+     * If the key and the value are the same, you can just specify the value.
      * @param \yii\base\Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated in the $model
      * @return array conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.
@@ -136,14 +140,30 @@ class ExistValidator extends Validator
             if ($this->allowArray) {
                 throw new InvalidConfigException('The "targetAttribute" property must be configured as a string.');
             }
-            $params = [];
+            $conditions = [];
             foreach ($targetAttribute as $k => $v) {
-                $params[$v] = is_int($k) ? $model->$attribute : $model->$k;
+                $conditions[$v] = is_int($k) ? $model->$v : $model->$k;
             }
         } else {
-            $params = [$targetAttribute => $model->$attribute];
+            $conditions = [$targetAttribute => $model->$attribute];
         }
-        return $params;
+
+        $targetModelClass = $this->getTargetClass($model);
+        if (!is_subclass_of($targetModelClass, 'yii\db\ActiveRecord')) {
+            return $conditions;
+        }
+
+        /** @var ActiveRecord $targetModelClass */
+        return $this->applyTableAlias($targetModelClass::find(), $conditions);
+    }
+
+    /**
+     * @param Model $model the data model to be validated
+     * @return string Target class name
+     */
+    private function getTargetClass($model)
+    {
+        return $this->targetClass === null ? get_class($model) : $this->targetClass;
     }
 
     /**
@@ -164,10 +184,11 @@ class ExistValidator extends Validator
             if (!$this->allowArray) {
                 return [$this->message, []];
             }
+
             return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
-        } else {
-            return $query->exists() ? null : [$this->message, []];
         }
+
+        return $query->exists() ? null : [$this->message, []];
     }
 
     /**
@@ -187,5 +208,35 @@ class ExistValidator extends Validator
         }
 
         return $query;
+    }
+
+    /**
+     * Returns conditions with alias.
+     * @param ActiveQuery $query
+     * @param array $conditions array of condition, keys to be modified
+     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
+     * @return array
+     */
+    private function applyTableAlias($query, $conditions, $alias = null)
+    {
+        if ($alias === null) {
+            $alias = array_keys($query->getTablesUsedInFrom())[0];
+        }
+        $prefixedConditions = [];
+        foreach ($conditions as $columnName => $columnValue) {
+            if (strpos($columnName, '(') === false) {
+                $prefixedColumn = "{$alias}.[[" . preg_replace(
+                    '/^' . preg_quote($alias) . '\.(.*)$/',
+                    '$1',
+                    $columnName) . ']]';
+            } else {
+                // there is an expression, can't prefix it reliably
+                $prefixedColumn = $columnName;
+            }
+
+            $prefixedConditions[$prefixedColumn] = $columnValue;
+        }
+
+        return $prefixedConditions;
     }
 }

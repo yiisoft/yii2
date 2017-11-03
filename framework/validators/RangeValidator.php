@@ -126,9 +126,9 @@ class RangeValidator extends Validator
         $options = [
             'range' => $range,
             'not' => $this->not,
-            'message' => Yii::$app->getI18n()->format($this->message, [
+            'message' => $this->formatMessage($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language),
+            ]),
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;

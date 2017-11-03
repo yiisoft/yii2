@@ -33,6 +33,7 @@ Versioning and Release
 
 - [Project Organization](project-organization.md)
 - [Yii Versioning](versions.md)
+- [Backwards Compatibility](bc.md)
 - [Releasing a new version](release.md)
 
 Misc

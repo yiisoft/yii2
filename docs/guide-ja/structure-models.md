@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 また、配列の要素にアクセスするようして、属性にアクセスすることも出来ます。
-これは、[[yii\base\Model]] が [ArrayAccess インターフェイス](http://php.net/manual/ja/class.arrayaccess.php) と [ArrayIterator クラス](http://jp2.php.net/manual/ja/class.arrayiterator.php) をサポートしている恩恵です。
+これは、[[yii\base\Model]] が [ArrayAccess インターフェイス](http://php.net/manual/ja/class.arrayaccess.php) と [Traversable インターフェイス](http://jp2.php.net/manual/ja/class.traversable.php) をサポートしている恩恵です。
 
 ```php
 $model = new \app\models\ContactForm;
@@ -46,7 +46,7 @@ $model = new \app\models\ContactForm;
 $model['name'] = 'example';
 echo $model['name'];
 
-// 属性に反復アクセスする
+// モデルは foreach で中身をたどることが出来る
 foreach ($model as $name => $value) {
     echo "$name: $value\n";
 }

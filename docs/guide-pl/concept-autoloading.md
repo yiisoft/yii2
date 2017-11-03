@@ -68,8 +68,8 @@ w [skrypcie wejściowym](structure-entry-scripts.md) [podstawowego szablonu proj
 instrukcją instalacji autoloadera composera, a druga instaluje autoloader Yii:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 Możesz używać jedynie autoloadera composera bez autoloadera Yii, ale wydajność autoładowania klas może być wtedy obniżona i, dodatkowo, 

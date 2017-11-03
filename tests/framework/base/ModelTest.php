@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\base;
 
@@ -102,6 +107,41 @@ class ModelTest extends TestCase
         $this->assertEquals('', $model->firstName);
     }
 
+    public function testLoadMultiple()
+    {
+        $data = [
+            ['firstName' => 'Thomas', 'lastName' => 'Anderson'],
+            ['firstName' => 'Agent', 'lastName' => 'Smith'],
+        ];
+
+        Speaker::$formName = '';
+        $neo = new Speaker();
+        $neo->setScenario('test');
+        $smith = new Speaker();
+        $smith->setScenario('test');
+        $this->assertTrue(Speaker::loadMultiple([$neo, $smith], $data));
+        $this->assertEquals('Thomas', $neo->firstName);
+        $this->assertEquals('Smith', $smith->lastName);
+
+        Speaker::$formName = 'Speaker';
+        $neo = new Speaker();
+        $neo->setScenario('test');
+        $smith = new Speaker();
+        $smith->setScenario('test');
+        $this->assertTrue(Speaker::loadMultiple([$neo, $smith], ['Speaker' => $data], 'Speaker'));
+        $this->assertEquals('Thomas', $neo->firstName);
+        $this->assertEquals('Smith', $smith->lastName);
+
+        Speaker::$formName = 'Speaker';
+        $neo = new Speaker();
+        $neo->setScenario('test');
+        $smith = new Speaker();
+        $smith->setScenario('test');
+        $this->assertFalse(Speaker::loadMultiple([$neo, $smith], ['Speaker' => $data], 'Morpheus'));
+        $this->assertEquals('', $neo->firstName);
+        $this->assertEquals('', $smith->lastName);
+    }
+
     public function testActiveAttributes()
     {
         // by default mass assignment doesn't work at all
@@ -113,6 +153,17 @@ class ModelTest extends TestCase
         $this->assertEquals(['firstName', 'lastName', 'underscore_style'], $speaker->activeAttributes());
     }
 
+    public function testActiveAttributesAreUnique()
+    {
+        // by default mass assignment doesn't work at all
+        $speaker = new Speaker();
+        $this->assertEmpty($speaker->activeAttributes());
+
+        $speaker = new Speaker();
+        $speaker->setScenario('duplicates');
+        $this->assertEquals(['firstName', 'underscore_style'], $speaker->activeAttributes());
+    }
+
     public function testIsAttributeSafe()
     {
         // by default mass assignment doesn't work at all
@@ -122,7 +173,6 @@ class ModelTest extends TestCase
         $speaker = new Speaker();
         $speaker->setScenario('test');
         $this->assertTrue($speaker->isAttributeSafe('firstName'));
-
     }
 
     public function testSafeScenarios()
@@ -145,7 +195,7 @@ class ModelTest extends TestCase
             [['account_id', 'user_id'], 'required'],
             // only in create and update scenario
             [['user_id'], 'number', 'on' => ['create', 'update']],
-            [['email', 'name'], 'required', 'on' => 'create']
+            [['email', 'name'], 'required', 'on' => 'create'],
         ];
         $model->scenario = Model::SCENARIO_DEFAULT;
         $this->assertEquals(['account_id', 'user_id'], $model->safeAttributes());
@@ -201,7 +251,7 @@ class ModelTest extends TestCase
         $model = new RulesModel();
         $model->rules = [
             [['name', 'email'], 'required'],
-            [['!email'], 'safe']
+            [['!email'], 'safe'],
         ];
         $this->assertEquals(['name'], $model->safeAttributes());
         $model->attributes = ['name' => 'mdmunir', 'email' => 'm2792684@mdm.com'];
@@ -211,7 +261,7 @@ class ModelTest extends TestCase
         $model->rules = [
             [['name', 'email'], 'required'],
             [['email'], 'email'],
-            [['!email'], 'safe', 'on' => 'update']
+            [['!email'], 'safe', 'on' => 'update'],
         ];
         $model->setScenario(RulesModel::SCENARIO_DEFAULT);
         $this->assertEquals(['name', 'email'], $model->safeAttributes());
@@ -290,7 +340,7 @@ class ModelTest extends TestCase
         $singer->clearErrors();
         $errors = [
             'firstName' => ['Something is wrong!'],
-            'lastName' => ['Another one!']
+            'lastName' => ['Another one!'],
         ];
         $singer->addErrors($errors);
         $this->assertEquals($singer->getErrors(), $errors);
@@ -298,7 +348,7 @@ class ModelTest extends TestCase
         $singer->clearErrors();
         $errors = [
             'firstName' => ['Something is wrong!', 'Totally wrong!'],
-            'lastName' => ['Another one!']
+            'lastName' => ['Another one!'],
         ];
         $singer->addErrors($errors);
         $this->assertEquals($singer->getErrors(), $errors);
@@ -306,7 +356,7 @@ class ModelTest extends TestCase
         $singer->clearErrors();
         $errors = [
             'firstName' => ['Something is wrong!', 'Totally wrong!'],
-            'lastName' => ['Another one!', 'Totally wrong!']
+            'lastName' => ['Another one!', 'Totally wrong!'],
         ];
         $singer->addErrors($errors);
         $this->assertEquals($singer->getErrors(), $errors);
@@ -392,8 +442,8 @@ class ModelTest extends TestCase
 
     public function testCreateValidators()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException',
-            'Invalid validation rule: a rule must specify both attribute names and validator type.');
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Invalid validation rule: a rule must specify both attribute names and validator type.');
 
         $invalid = new InvalidRulesModel();
         $invalid->createValidators();
@@ -445,7 +495,7 @@ class WriteOnlyModel extends Model
     public function rules()
     {
         return [
-            [['password'],'safe'],
+            [['password'], 'safe'],
         ];
     }
 

@@ -9,6 +9,7 @@ namespace yii\web;
 
 use DOMDocument;
 use DOMElement;
+use DOMException;
 use DOMText;
 use yii\base\Arrayable;
 use yii\base\Component;
@@ -56,6 +57,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $useObjectTags = true;
 
+
     /**
      * Formats the specified response.
      * @param Response $response the response to be formatted.
@@ -93,11 +95,11 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 if (is_int($name) && is_object($value)) {
                     $this->buildXml($element, $value);
                 } elseif (is_array($value) || is_object($value)) {
-                    $child = new DOMElement(is_int($name) ? $this->itemTag : $name);
+                    $child = new DOMElement($this->getValidXmlElementName($name));
                     $element->appendChild($child);
                     $this->buildXml($child, $value);
                 } else {
-                    $child = new DOMElement(is_int($name) ? $this->itemTag : $name);
+                    $child = new DOMElement($this->getValidXmlElementName($name));
                     $element->appendChild($child);
                     $child->appendChild(new DOMText($this->formatScalarValue($value)));
                 }
@@ -105,7 +107,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
         } elseif (is_object($data)) {
             if ($this->useObjectTags) {
                 $child = new DOMElement(StringHelper::basename(get_class($data)));
-                $element->appendChild($child);    
+                $element->appendChild($child);
             } else {
                 $child = $element;
             }
@@ -124,10 +126,10 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
     }
 
     /**
-     * Formats scalar value to use in XML text node
+     * Formats scalar value to use in XML text node.
      *
-     * @param int|string|bool $value
-     * @return string
+     * @param int|string|bool|float $value a scalar value.
+     * @return string string representation of the value.
      * @since 2.0.11
      */
     protected function formatScalarValue($value)
@@ -135,11 +137,49 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
         if ($value === true) {
             return 'true';
         }
-
         if ($value === false) {
             return 'false';
         }
-
+        if (is_float($value)) {
+            return StringHelper::floatToString($value);
+        }
         return (string) $value;
+    }
+
+    /**
+     * Returns element name ready to be used in DOMElement if
+     * name is not empty, is not int and is valid.
+     *
+     * Falls back to [[itemTag]] otherwise.
+     *
+     * @param mixed $name
+     * @return string
+     * @since 2.0.12
+     */
+    protected function getValidXmlElementName($name)
+    {
+        if (empty($name) || is_int($name) || !$this->isValidXmlName($name)) {
+            return $this->itemTag;
+        }
+
+        return $name;
+    }
+
+    /**
+     * Checks if name is valid to be used in XML.
+     *
+     * @param mixed $name
+     * @return bool
+     * @see http://stackoverflow.com/questions/2519845/how-to-check-if-string-is-a-valid-xml-element-name/2519943#2519943
+     * @since 2.0.12
+     */
+    protected function isValidXmlName($name)
+    {
+        try {
+            new DOMElement($name);
+            return true;
+        } catch (DOMException $e) {
+            return false;
+        }
     }
 }

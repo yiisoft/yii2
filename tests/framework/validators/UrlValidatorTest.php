@@ -1,9 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
-use yiiunit\data\validators\models\FakedValidationModel;
 use yii\validators\UrlValidator;
+use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
 /**
@@ -14,18 +19,20 @@ class UrlValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testValidateValue()
     {
-        $val = new UrlValidator;
+        $val = new UrlValidator();
         $this->assertFalse($val->validate('google.de'));
         $this->assertTrue($val->validate('http://google.de'));
         $this->assertTrue($val->validate('https://google.de'));
         $this->assertFalse($val->validate('htp://yiiframework.com'));
         $this->assertTrue($val->validate('https://www.google.de/search?q=yii+framework&ie=utf-8&oe=utf-8'
-                                        .'&rls=org.mozilla:de:official&client=firefox-a&gws_rd=cr'));
+                                        . '&rls=org.mozilla:de:official&client=firefox-a&gws_rd=cr'));
         $this->assertFalse($val->validate('ftp://ftp.ruhr-uni-bochum.de/'));
         $this->assertFalse($val->validate('http://invalid,domain'));
         $this->assertFalse($val->validate('http://example.com,'));
@@ -94,25 +101,25 @@ class UrlValidatorTest extends TestCase
     public function testValidateLength()
     {
         $url = 'http://' . str_pad('base', 2000, 'url') . '.de';
-        $val = new UrlValidator;
+        $val = new UrlValidator();
         $this->assertFalse($val->validate($url));
     }
 
     public function testValidateAttributeAndError()
     {
-        $obj = new FakedValidationModel;
+        $obj = new FakedValidationModel();
         $obj->attr_url = 'http://google.de';
-        $val = new UrlValidator;
+        $val = new UrlValidator();
         $val->validateAttribute($obj, 'attr_url');
         $this->assertFalse($obj->hasErrors('attr_url'));
         $this->assertSame('http://google.de', $obj->attr_url);
-        $obj = new FakedValidationModel;
+        $obj = new FakedValidationModel();
         $val->defaultScheme = 'http';
         $obj->attr_url = 'google.de';
         $val->validateAttribute($obj, 'attr_url');
         $this->assertFalse($obj->hasErrors('attr_url'));
-        $this->assertTrue(stripos($obj->attr_url, 'http') !== false);
-        $obj = new FakedValidationModel;
+        $this->assertNotFalse(stripos($obj->attr_url, 'http'));
+        $obj = new FakedValidationModel();
         $obj->attr_url = 'gttp;/invalid string';
         $val->validateAttribute($obj, 'attr_url');
         $this->assertTrue($obj->hasErrors('attr_url'));

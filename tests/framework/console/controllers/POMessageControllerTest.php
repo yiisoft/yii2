@@ -1,6 +1,11 @@
 <?php
-namespace yiiunit\framework\console\controllers;
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
+namespace yiiunit\framework\console\controllers;
 
 use Yii;
 use yii\helpers\FileHelper;
@@ -17,10 +22,6 @@ class POMessageControllerTest extends BaseMessageControllerTest
     public function setUp()
     {
         parent::setUp();
-
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('POMessageControllerTest can not run on HHVM because it relies on saving and re-including PHP files which is not supported by HHVM.');
-        }
 
         $this->messagePath = Yii::getAlias('@yiiunit/runtime/test_messages');
         FileHelper::createDirectory($this->messagePath, 0777);

@@ -22,6 +22,11 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE "document"'; EXCEPTION WHEN OTHERS THEN IF S
 BEGIN EXECUTE IMMEDIATE 'DROP VIEW "animal_view"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_main"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_ref"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bit_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END; --
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "T_constraints_4"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "T_constraints_3"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "T_constraints_2"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "T_constraints_1"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "profile_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "customer_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
@@ -191,6 +196,52 @@ CREATE SEQUENCE "document_SEQ";
 
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
 
+CREATE TABLE "bit_values" (
+  "id" integer not null,
+  "val" char(1) NOT NULL,
+  CONSTRAINT "bit_values_PK" PRIMARY KEY ("id") ENABLE,
+  CONSTRAINT "bit_values_val" CHECK ("val" IN ('1','0'))
+);
+
+CREATE TABLE "T_constraints_1"
+(
+    "C_id" INT NOT NULL PRIMARY KEY,
+    "C_not_null" INT NOT NULL,
+    "C_check" VARCHAR(255) NULL CHECK ("C_check" <> ''),
+    "C_unique" INT NOT NULL,
+    "C_default" INT DEFAULT 0 NOT NULL,
+    CONSTRAINT "CN_unique" UNIQUE ("C_unique")
+);
+
+CREATE TABLE "T_constraints_2"
+(
+    "C_id_1" INT NOT NULL,
+    "C_id_2" INT NOT NULL,
+    "C_index_1" INT NULL,
+    "C_index_2_1" INT NULL,
+    "C_index_2_2" INT NULL,
+    CONSTRAINT "CN_constraints_2_multi" UNIQUE ("C_index_2_1", "C_index_2_2"),
+    CONSTRAINT "CN_pk" PRIMARY KEY ("C_id_1", "C_id_2")
+);
+
+CREATE INDEX "CN_constraints_2_single" ON "T_constraints_2" ("C_index_1");
+
+CREATE TABLE "T_constraints_3"
+(
+    "C_id" INT NOT NULL,
+    "C_fk_id_1" INT NOT NULL,
+    "C_fk_id_2" INT NOT NULL,
+    CONSTRAINT "CN_constraints_3" FOREIGN KEY ("C_fk_id_1", "C_fk_id_2") REFERENCES "T_constraints_2" ("C_id_1", "C_id_2") ON DELETE CASCADE
+);
+
+CREATE TABLE "T_constraints_4"
+(
+    "C_id" INT NOT NULL PRIMARY KEY,
+    "C_col_1" INT NULL,
+    "C_col_2" INT NOT NULL,
+    CONSTRAINT "CN_constraints_4" UNIQUE ("C_col_1", "C_col_2")
+);
+
 /**
  * (Postgres-)Database Schema for validator tests
  */
@@ -255,6 +306,11 @@ CREATE TRIGGER "animal_TRG" BEFORE INSERT ON "animal" FOR EACH ROW BEGIN <<COLUM
 END COLUMN_SEQUENCES;
 END;
 /
+CREATE TRIGGER "document_TRG" BEFORE INSERT ON "document" FOR EACH ROW BEGIN <<COLUMN_SEQUENCES>> BEGIN
+  IF INSERTING AND :NEW."id" IS NULL THEN SELECT "document_SEQ".NEXTVAL INTO :NEW."id" FROM SYS.DUAL; END IF;
+END COLUMN_SEQUENCES;
+END;
+/
 
 /* TRIGGERS */
 
@@ -313,23 +369,6 @@ INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (4, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (5, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (6, 'ref_to_5', 5);
 
-/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
-
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bit_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
-
-CREATE TABLE [dbo].[] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
-	[val] [bit] NOT NULL,
-	CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
-);
-
-CREATE TABLE "bit_values" (
-  "id" integer not null,
-  "val" char(1) NOT NULL,
-  CONSTRAINT "bit_values_PK" PRIMARY KEY ("id") ENABLE,
-  CONSTRAINT "bit_values_val" CHECK (val IN ('1','0'))
-);
-
-INSERT INTO "bit_values" ("id", "val") VALUES (1, '0'), (2, '1');
+INSERT INTO "bit_values" ("id", "val")
+  SELECT 1, '0' FROM SYS.DUAL
+  UNION ALL SELECT 2, '1' FROM SYS.DUAL;

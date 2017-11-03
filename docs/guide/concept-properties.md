@@ -16,11 +16,11 @@ property. If, in the future, the `label` property gets a new requirement, such a
 you would again have to modify every bit of code that assigns a value to `label`.
 The repetition of code leads to bugs, and is a practice you want to avoid as much as possible.
 
-To solve this problem, Yii introduces a base class called [[yii\base\Object]] that supports defining properties
+To solve this problem, Yii introduces a base class called [[yii\base\BaseObject]] that supports defining properties
 based on *getter* and *setter* class methods. If a class needs that functionality, it should extend from
-[[yii\base\Object]], or from a child class.
+[[yii\base\BaseObject]], or from a child class.
 
-> Info: Nearly every core class in the Yii framework extends from [[yii\base\Object]] or a child class.
+> Info: Nearly every core class in the Yii framework extends from [[yii\base\BaseObject]] or a child class.
   This means, that whenever you see a getter or setter in a core class, you can use it like a property.
 
 A getter method is a method whose name starts with the word `get`; a setter method starts with `set`.
@@ -30,9 +30,9 @@ a setter `setLabel()` defines a property named `label`, as shown in the followin
 ```php
 namespace app\components;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     private $_label;
 
@@ -77,8 +77,8 @@ There are several special rules for, and limitations on, the properties defined 
   will affect the *member variable* `label`; that line would not call the  `setLabel()` setter method.
 * These properties do not support visibility. It makes no difference to the defining getter or setter method if the property is public, protected or private.
 * The properties can only be defined by *non-static* getters and/or setters. Static methods will not be treated in the same manner.
-* A normal call to `property_exists()` does not work to determine magic properties. You should call [[yii\base\Object::canGetProperty()|canGetProperty()]]
-  or [[yii\base\Object::canSetProperty()|canSetProperty()]] respectively.
+* A normal call to `property_exists()` does not work to determine magic properties. You should call [[yii\base\BaseObject::canGetProperty()|canGetProperty()]]
+  or [[yii\base\BaseObject::canSetProperty()|canSetProperty()]] respectively.
 
 Returning back to the problem described at the beginning of this guide, instead of calling `trim()` everywhere a `label` value is assigned,
 `trim()` now only needs to be invoked within the setter `setLabel()`.

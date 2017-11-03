@@ -26,7 +26,7 @@ use yii\helpers\FileHelper;
 class FileTarget extends Target
 {
     /**
-     * @var string log file path or path alias. If not set, it will use the "@runtime/logs/app.log" file.
+     * @var string log file path or [path alias](guide:concept-aliases). If not set, it will use the "@runtime/logs/app.log" file.
      * The directory containing the log files will be automatically created if not existing.
      */
     public $logFile;

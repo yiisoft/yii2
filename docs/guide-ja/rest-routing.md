@@ -72,7 +72,7 @@
 
 エンドポイントの URL ではコントローラ ID `user` が `users` という複数形で出現していることに気が付いたかもしれません。
 これは、[[yii\rest\UrlRule]] が子 URL 規則を作るときに、コントローラの ID を自動的に複数形にするためです。
-この振る舞いは [[yii\rest\UrlRule::pluralize]] を false に設定することで無効にすることが出来ます。
+この振る舞いは [[yii\rest\UrlRule::pluralize]] を `false` に設定することで無効にすることが出来ます。
 
 > Info: コントローラ ID の複数形化は [[yii\helpers\Inflector::pluralize()]] によって行われます。
   このメソッドは特殊な複数形の規則を考慮します。

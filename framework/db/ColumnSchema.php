@@ -7,7 +7,8 @@
 
 namespace yii\db;
 
-use yii\base\Object;
+use yii\base\BaseObject;
+use yii\helpers\StringHelper;
 
 /**
  * ColumnSchema class describes the metadata of a column in a database table.
@@ -15,7 +16,7 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ColumnSchema extends Object
+class ColumnSchema extends BaseObject
 {
     /**
      * @var string name of this column (without quotes).
@@ -116,7 +117,7 @@ class ColumnSchema extends Object
         if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY && $this->type !== Schema::TYPE_CHAR) {
             return null;
         }
-        if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
+        if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression || $value instanceof Query) {
             return $value;
         }
         switch ($this->phpType) {
@@ -127,7 +128,7 @@ class ColumnSchema extends Object
                 }
                 if (is_float($value)) {
                     // ensure type cast always has . as decimal separator in all locales
-                    return str_replace(',', '.', (string) $value);
+                    return StringHelper::floatToString($value);
                 }
                 return (string) $value;
             case 'integer':
@@ -137,7 +138,7 @@ class ColumnSchema extends Object
                 // https://github.com/yiisoft/yii2/issues/9006
                 return (bool) $value && $value !== "\0";
             case 'double':
-                return (double) $value;
+                return (float) $value;
         }
 
         return $value;

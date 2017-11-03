@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -14,19 +19,22 @@ class RangeValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testInitException()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException', 'The "range" property must be set.');
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('The "range" property must be set.');
         new RangeValidator(['range' => 'not an array']);
     }
 
     public function testAssureMessageSetOnInit()
     {
         $val = new RangeValidator(['range' => []]);
-        $this->assertTrue(is_string($val->message));
+        $this->assertInternalType('string', $val->message);
     }
 
     public function testValidateValue()
@@ -37,8 +45,8 @@ class RangeValidatorTest extends TestCase
         $this->assertFalse($val->validate(11));
         $this->assertFalse($val->validate(5.5));
         $this->assertTrue($val->validate(10));
-        $this->assertTrue($val->validate("10"));
-        $this->assertTrue($val->validate("5"));
+        $this->assertTrue($val->validate('10'));
+        $this->assertTrue($val->validate('5'));
     }
 
     public function testValidateValueEmpty()
@@ -60,7 +68,7 @@ class RangeValidatorTest extends TestCase
         $this->assertTrue($val->validate([6, 7, 8, 9, 10]));
         $this->assertFalse($val->validate([0, 1, 2]));
         $this->assertFalse($val->validate([10, 11, 12]));
-        $this->assertTrue($val->validate(["1", "2", "3", 4, 5, 6]));
+        $this->assertTrue($val->validate(['1', '2', '3', 4, 5, 6]));
     }
 
     public function testValidateValueStrict()
@@ -69,17 +77,17 @@ class RangeValidatorTest extends TestCase
         $this->assertTrue($val->validate(1));
         $this->assertTrue($val->validate(5));
         $this->assertTrue($val->validate(10));
-        $this->assertFalse($val->validate("1"));
-        $this->assertFalse($val->validate("10"));
-        $this->assertFalse($val->validate("5.5"));
+        $this->assertFalse($val->validate('1'));
+        $this->assertFalse($val->validate('10'));
+        $this->assertFalse($val->validate('5.5'));
     }
 
     public function testValidateArrayValueStrict()
     {
         $val = new RangeValidator(['range' => range(1, 10, 1), 'strict' => true]);
         $val->allowArray = true;
-        $this->assertFalse($val->validate(["1", "2", "3", "4", "5", "6"]));
-        $this->assertFalse($val->validate(["1", "2", "3", 4, 5, 6]));
+        $this->assertFalse($val->validate(['1', '2', '3', '4', '5', '6']));
+        $this->assertFalse($val->validate(['1', '2', '3', 4, 5, 6]));
     }
 
     public function testValidateValueNot()
@@ -90,8 +98,8 @@ class RangeValidatorTest extends TestCase
         $this->assertTrue($val->validate(11));
         $this->assertTrue($val->validate(5.5));
         $this->assertFalse($val->validate(10));
-        $this->assertFalse($val->validate("10"));
-        $this->assertFalse($val->validate("5"));
+        $this->assertFalse($val->validate('10'));
+        $this->assertFalse($val->validate('5'));
     }
 
     public function testValidateAttribute()
@@ -103,30 +111,29 @@ class RangeValidatorTest extends TestCase
         $val->validateAttribute($m, 'attr_r2');
         $this->assertTrue($m->hasErrors('attr_r2'));
         $err = $m->getErrors('attr_r2');
-        $this->assertTrue(stripos($err[0], 'attr_r2') !== false);
+        $this->assertNotFalse(stripos($err[0], 'attr_r2'));
     }
 
     public function testValidateSubsetArrayable()
     {
-
         // Test in array, values are arrays. IE: ['a'] in [['a'], ['b']]
         $val = new RangeValidator([
             'range' => [['a'], ['b']],
-            'allowArray' => false
+            'allowArray' => false,
         ]);
         $this->assertTrue($val->validate(['a']));
 
         // Test in array, values are arrays. IE: ['a', 'b'] subset [['a', 'b', 'c']
         $val = new RangeValidator([
             'range' => ['a', 'b', 'c'],
-            'allowArray' => true
+            'allowArray' => true,
         ]);
         $this->assertTrue($val->validate(['a', 'b']));
 
         // Test in array, values are arrays. IE: ['a', 'b'] subset [['a', 'b', 'c']
         $val = new RangeValidator([
             'range' => ['a', 'b', 'c'],
-            'allowArray' => true
+            'allowArray' => true,
         ]);
         $this->assertTrue($val->validate(new \ArrayObject(['a', 'b'])));
 
@@ -134,10 +141,8 @@ class RangeValidatorTest extends TestCase
         // Test range as ArrayObject.
         $val = new RangeValidator([
             'range' => new \ArrayObject(['a', 'b']),
-            'allowArray' => false
+            'allowArray' => false,
         ]);
         $this->assertTrue($val->validate('a'));
-
-
     }
 }

@@ -115,6 +115,7 @@ class Dispatcher extends Component
         if ($this->_logger === null) {
             $this->setLogger(Yii::getLogger());
         }
+
         return $this->_logger;
     }
 

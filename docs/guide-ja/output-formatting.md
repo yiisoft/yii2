@@ -21,7 +21,7 @@ echo $formatter->asEmail('cebe@example.com');
 echo $formatter->asBoolean(true); 
 // it also handles display of null values:
 
-// 出力: (Not set)
+// 出力: (not set)
 echo $formatter->asDate(null); 
 ```
 

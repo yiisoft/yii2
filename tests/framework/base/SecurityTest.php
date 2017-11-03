@@ -12,36 +12,43 @@ namespace yii\base {
      * where different execution paths are chosen based on calling function_exists.
      *
      * This function overrides function_exists from the root namespace in yii\base.
+     * @param string $name
      */
-    function function_exists($name) {
-
+    function function_exists($name)
+    {
         if (isset(\yiiunit\framework\base\SecurityTest::$functions[$name])) {
             return \yiiunit\framework\base\SecurityTest::$functions[$name];
         }
+
         return \function_exists($name);
     }
     /**
-     * emulate chunked reading of fread(), to test different branches of Security class
-     * where different execution paths are chosen based on the return value of fopen/fread
+     * Emulate chunked reading of fread(), to test different branches of Security class
+     * where different execution paths are chosen based on the return value of fopen/fread.
      *
      * This function overrides fopen and fread from the root namespace in yii\base.
+     * @param string $filename
+     * @param mixed $mode
      */
-    function fopen($filename, $mode) {
+    function fopen($filename, $mode)
+    {
         if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
             return \yiiunit\framework\base\SecurityTest::$fopen;
         }
+
         return \fopen($filename, $mode);
     }
-    function fread($handle, $length) {
+    function fread($handle, $length)
+    {
         if (\yiiunit\framework\base\SecurityTest::$fread !== null) {
             return \yiiunit\framework\base\SecurityTest::$fread;
         }
         if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
             return $length < 8 ? \str_repeat('s', $length) : 'test1234';
         }
+
         return \fread($handle, $length);
     }
-
 } // closing namespace yii\base;
 
 namespace yiiunit\framework\base {
@@ -96,7 +103,7 @@ class SecurityTest extends TestCase
         $data = 'known data';
         $key = 'secret';
         $hashedData = $this->security->hashData($data, $key);
-        $this->assertFalse($data === $hashedData);
+        $this->assertNotSame($data, $hashedData);
         $this->assertEquals($data, $this->security->validateData($hashedData, $key));
         $hashedData[strlen($hashedData) - 1] = 'A';
         $this->assertFalse($this->security->validateData($hashedData, $key));
@@ -118,14 +125,14 @@ class SecurityTest extends TestCase
         $key = 'secret';
 
         $encryptedData = $this->security->encryptByPassword($data, $key);
-        $this->assertFalse($data === $encryptedData);
+        $this->assertNotSame($data, $encryptedData);
         $decryptedData = $this->security->decryptByPassword($encryptedData, $key);
         $this->assertEquals($data, $decryptedData);
 
         $tampered = $encryptedData;
         $tampered[20] = ~$tampered[20];
         $decryptedData = $this->security->decryptByPassword($tampered, $key);
-        $this->assertTrue(false === $decryptedData);
+        $this->assertFalse($decryptedData);
     }
 
     public function testEncryptByKey()
@@ -134,7 +141,7 @@ class SecurityTest extends TestCase
         $key = $this->security->generateRandomKey(80);
 
         $encryptedData = $this->security->encryptByKey($data, $key);
-        $this->assertFalse($data === $encryptedData);
+        $this->assertNotSame($data, $encryptedData);
         $decryptedData = $this->security->decryptByKey($encryptedData, $key);
         $this->assertEquals($data, $decryptedData);
 
@@ -145,17 +152,17 @@ class SecurityTest extends TestCase
         $tampered = $encryptedData;
         $tampered[20] = ~$tampered[20];
         $decryptedData = $this->security->decryptByKey($tampered, $key);
-        $this->assertTrue(false === $decryptedData);
+        $this->assertFalse($decryptedData);
 
         $decryptedData = $this->security->decryptByKey($encryptedData, $key, $key . "\0");
-        $this->assertTrue(false === $decryptedData);
+        $this->assertFalse($decryptedData);
     }
 
     /**
-     * Generates test vectors like this:
-     *   [key/password, plaintext, ciphertext]
+     * Generates test vectors like this: `[key/password, plaintext, ciphertext]`.
+     *
      * The output can then be used for testing compatibility of data encrypted in one
-     * version of Yii and decrypted in another
+     * version of Yii and decrypted in another.
      */
     public function notestGenerateVectors()
     {
@@ -863,17 +870,18 @@ TEXT;
     public function randomKeyInvalidInputs()
     {
         return [
-            [ 0 ],
-            [ -1 ],
-            [ '0' ],
-            [ '34' ],
-            [ [] ],
+            [0],
+            [-1],
+            ['0'],
+            ['34'],
+            [[]],
         ];
     }
 
     /**
      * @dataProvider randomKeyInvalidInputs
      * @expectedException \yii\base\InvalidParamException
+     * @param mixed $input
      */
     public function testRandomKeyInvalidInput($input)
     {
@@ -881,25 +889,27 @@ TEXT;
     }
 
     /**
-     * Test the case where opening /dev/urandom fails
+     * Test the case where opening /dev/urandom fails.
      */
     public function testRandomKeyNoOptions()
     {
-        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ];
+        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false];
         static::$fopen = false;
-        $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
+        $this->expectException('yii\base\Exception');
+        $this->expectExceptionMessage('Unable to generate a random key');
 
         $this->security->generateRandomKey(42);
     }
 
     /**
-     * Test the case where reading from /dev/urandom fails
+     * Test the case where reading from /dev/urandom fails.
      */
     public function testRandomKeyFreadFailure()
     {
-        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ];
+        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false];
         static::$fread = false;
-        $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
+        $this->expectException('yii\base\Exception');
+        $this->expectExceptionMessage('Unable to generate a random key');
 
         $this->security->generateRandomKey(42);
     }
@@ -910,19 +920,20 @@ TEXT;
     public function randomKeyVariants()
     {
         return [
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false ] ],
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ] ],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true]],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false]],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true]],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false]],
         ];
     }
 
     /**
      * @dataProvider randomKeyVariants
+     * @param array $functions
      */
     public function testGenerateRandomKey($functions)
     {
@@ -932,8 +943,9 @@ TEXT;
             }
         }
         // there is no /dev/urandom on windows so we expect this to fail
-        if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false ) {
-            $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
+        if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false) {
+            $this->expectException('yii\base\Exception');
+            $this->expectExceptionMessage('Unable to generate a random key');
         }
         // Function mcrypt_create_iv() is deprecated since PHP 7.1
         if (version_compare(PHP_VERSION, '7.1.0alpha', '>=') && $functions['random_bytes'] === false && $functions['mcrypt_create_iv'] === true) {
@@ -951,7 +963,7 @@ TEXT;
             $this->assertInternalType('string', $key2);
             $this->assertEquals($length, strlen($key2));
             if ($length >= 7) { // avoid random test failure, short strings are likely to collide
-                $this->assertTrue($key1 != $key2);
+                $this->assertNotEquals($key1, $key2);
             }
         }
 
@@ -963,7 +975,7 @@ TEXT;
         $key2 = $this->security->generateRandomKey($length);
         $this->assertInternalType('string', $key2);
         $this->assertEquals($length, strlen($key2));
-        $this->assertTrue($key1 != $key2);
+        $this->assertNotEquals($key1, $key2);
 
         // force /dev/urandom reading loop to deal with chunked data
         // the above test may have read everything in one run.
@@ -995,10 +1007,10 @@ TEXT;
         $tests = [
             "function_exists('random_bytes')",
             "defined('OPENSSL_VERSION_TEXT') ? OPENSSL_VERSION_TEXT : null",
-            "PHP_VERSION_ID",
-            "PHP_OS",
+            'PHP_VERSION_ID',
+            'PHP_OS',
             "function_exists('mcrypt_create_iv') ? bin2hex(mcrypt_create_iv(4, MCRYPT_DEV_URANDOM)) : null",
-            "DIRECTORY_SEPARATOR",
+            'DIRECTORY_SEPARATOR',
             "ini_get('open_basedir')",
         ];
         if (DIRECTORY_SEPARATOR === '/') {
@@ -1035,14 +1047,14 @@ TEXT;
 
     public function dataProviderPbkdf2()
     {
-        return [
+        return array_filter([
             [
                 'sha1',
                 'password',
                 'salt',
                 1,
                 20,
-                '0c60c80f961f0e71f3a9b524af6012062fe037a6'
+                '0c60c80f961f0e71f3a9b524af6012062fe037a6',
             ],
             [
                 'sha1',
@@ -1050,7 +1062,7 @@ TEXT;
                 'salt',
                 2,
                 20,
-                'ea6c014dc72d6f8ccd1ed92ace1d41f0d8de8957'
+                'ea6c014dc72d6f8ccd1ed92ace1d41f0d8de8957',
             ],
             [
                 'sha1',
@@ -1058,23 +1070,23 @@ TEXT;
                 'salt',
                 4096,
                 20,
-                '4b007901b765489abead49d926f721d065a429c1'
+                '4b007901b765489abead49d926f721d065a429c1',
             ],
-            [
+            getenv('TRAVIS') == true ? [
                 'sha1',
                 'password',
                 'salt',
                 16777216,
                 20,
-                'eefe3d61cd4da4e4e9945b3d6ba2158c2634e984'
-            ],
+                'eefe3d61cd4da4e4e9945b3d6ba2158c2634e984',
+            ] : null,
             [
                 'sha1',
                 'passwordPASSWORDpassword',
                 'saltSALTsaltSALTsaltSALTsaltSALTsalt',
                 4096,
                 25,
-                '3d2eec4fe41c849b80c8d83662c0e44a8b291a964cf2f07038'
+                '3d2eec4fe41c849b80c8d83662c0e44a8b291a964cf2f07038',
             ],
             [
                 'sha1',
@@ -1082,7 +1094,7 @@ TEXT;
                 "sa\0lt",
                 4096,
                 16,
-                '56fa6aa75548099dcc37d7f03425e0c3'
+                '56fa6aa75548099dcc37d7f03425e0c3',
             ],
             [
                 'sha256',
@@ -1090,7 +1102,7 @@ TEXT;
                 'salt',
                 1,
                 20,
-                '120fb6cffcf8b32c43e7225256c4f837a86548c9'
+                '120fb6cffcf8b32c43e7225256c4f837a86548c9',
             ],
             [
                 'sha256',
@@ -1098,7 +1110,7 @@ TEXT;
                 "sa\0lt",
                 4096,
                 32,
-                '89b69d0516f829893c696226650a86878c029ac13ee276509d5ae58b6466a724'
+                '89b69d0516f829893c696226650a86878c029ac13ee276509d5ae58b6466a724',
             ],
             [
                 'sha256',
@@ -1106,9 +1118,9 @@ TEXT;
                 'saltSALTsaltSALTsaltSALTsaltSALTsalt',
                 4096,
                 40,
-                '348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9'
+                '348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9',
             ],
-        ];
+        ]);
     }
 
     /**
@@ -1194,7 +1206,7 @@ TEXT;
                 'L' => 42,
                 'PRK' => '2adccada18779e7c2077ad2eb19d3f3e731385dd',
                 'OKM' => '2c91117204d745f3500d636a62f64f0ab3bae548aa53d423b0d1f27ebba6f5e5673a081d70cce7acfc48',
-            ]
+            ],
         ];
     }
 
@@ -1218,26 +1230,26 @@ TEXT;
     public function dataProviderCompareStrings()
     {
         return [
-            ["", ""],
-            [false, ""],
-            [null, ""],
-            [0, ""],
-            [0.00, ""],
-            ["", null],
-            ["", false],
-            ["", 0],
-            ["", "\0"],
-            ["\0", ""],
+            ['', ''],
+            [false, ''],
+            [null, ''],
+            [0, ''],
+            [0.00, ''],
+            ['', null],
+            ['', false],
+            ['', 0],
+            ['', "\0"],
+            ["\0", ''],
             ["\0", "\0"],
-            ["0", "\0"],
+            ['0', "\0"],
             [0, "\0"],
-            ["user", "User"],
-            ["password", "password"],
-            ["password", "passwordpassword"],
-            ["password1", "password"],
-            ["password", "password2"],
-            ["", "password"],
-            ["password", ""],
+            ['user', 'User'],
+            ['password', 'password'],
+            ['password', 'passwordpassword'],
+            ['password1', 'password'],
+            ['password', 'password2'],
+            ['', 'password'],
+            ['password', ''],
         ];
     }
 
@@ -1251,7 +1263,43 @@ TEXT;
     {
         $this->assertEquals(strcmp($expected, $actual) === 0, $this->security->compareString($expected, $actual));
     }
+
+    /**
+     * @dataProvider maskProvider
+     * @param mixed $unmaskedToken
+     */
+    public function testMasking($unmaskedToken)
+    {
+        $maskedToken = $this->security->maskToken($unmaskedToken);
+        $this->assertGreaterThan(mb_strlen($unmaskedToken, '8bit') * 2, mb_strlen($maskedToken, '8bit'));
+        $this->assertEquals($unmaskedToken, $this->security->unmaskToken($maskedToken));
+    }
+
+    public function testUnMaskingInvalidStrings()
+    {
+        $this->assertEquals('', $this->security->unmaskToken(''));
+        $this->assertEquals('', $this->security->unmaskToken('1'));
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     */
+    public function testMaskingInvalidStrings()
+    {
+        $this->security->maskToken('');
+    }
+
+    /**
+     * @return array
+     */
+    public function maskProvider()
+    {
+        return [
+            ['1'],
+            ['SimpleToken'],
+            ['Token with special characters: %d1    5"'],
+            ['Token with UTF8 character: †'],
+        ];
+    }
 }
-
 } // closing namespace yiiunit\framework\base;
-

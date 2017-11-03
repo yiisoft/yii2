@@ -77,9 +77,9 @@ Yii::$container->invoke([$obj, 'doSomething'], ['param1' => 42]); // $something 
 たとえば
 
 ```php
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     public $bar;
 
@@ -103,7 +103,7 @@ $container->get('Foo', [], [
 ```
 
 > Info: [[yii\di\Container::get()]] メソッドは三番目のパラメータを、生成されるオブジェクトに適用されるべき構成情報配列として受け取ります。
-  クラスが [[yii\base\Configurable]] インタフェイスを実装している場合 (例えば、クラスが [[yii\base\Object]] である場合) には、この構成情報配列がクラスのコンストラクタの最後のパラメータとして渡されます。
+  クラスが [[yii\base\Configurable]] インタフェイスを実装している場合 (例えば、クラスが [[yii\base\BaseObject]] である場合) には、この構成情報配列がクラスのコンストラクタの最後のパラメータとして渡されます。
   そうでない場合は、構成情報はオブジェクトが生成された *後で* 適用されることになります。
 
 ### PHP コーラブル・インジェクション <span id="php-callable-injection"></span>
@@ -249,7 +249,7 @@ $engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], 
 ```php
 namespace app\models;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\di\Container;
 
@@ -258,7 +258,7 @@ interface UserFinderInterface
     function findUser();
 }
 
-class UserFinder extends Object implements UserFinderInterface
+class UserFinder extends BaseObject implements UserFinderInterface
 {
     public $db;
 
@@ -273,7 +273,7 @@ class UserFinder extends Object implements UserFinderInterface
     }
 }
 
-class UserLister extends Object
+class UserLister extends BaseObject
 {
     public $finder;
 
@@ -380,14 +380,14 @@ API アプリケーションを開発していて、以下のクラスを持っ�
   ```php
   class FileStorage
   {
-      public function __contruct($root) {
+      public function __construct($root) {
           // あれやこれや
       }
   }
   
   class DocumentsReader
   {
-      public function __contruct(FileStorage $fs) {
+      public function __construct(FileStorage $fs) {
           // なんやかんや
       }
   }
@@ -493,7 +493,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader');
 ```
 
 いつ依存を登録するか <span id="when-to-register-dependencies"></span>

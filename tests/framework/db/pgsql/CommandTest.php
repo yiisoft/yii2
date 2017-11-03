@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\tests\unit\framework\db\pgsql;
 
@@ -77,7 +82,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('HHVMs PgSQL implementation does not seem to support blob colums in the way they are used here.');
         }
-        
+
         $db = $this->getConnection();
 
         $command = $db->createCommand()->insert('type', [
@@ -93,5 +98,14 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             'blob_col' => serialize($db),
         ], ['char_col' => 'serialize']);
         $this->assertEquals(1, $command->execute());
+    }
+
+    public function batchInsertSqlProvider()
+    {
+        $data = parent::batchInsertSqlProvider();
+        $data['issue11242']['expected'] = 'INSERT INTO "type" ("int_col", "float_col", "char_col") VALUES (NULL, NULL, \'Kyiv {{city}}, Ukraine\')';
+        $data['wrongBehavior']['expected'] = 'INSERT INTO "type" ("type"."int_col", "float_col", "char_col") VALUES (\'\', \'\', \'Kyiv {{city}}, Ukraine\')';
+
+        return $data;
     }
 }

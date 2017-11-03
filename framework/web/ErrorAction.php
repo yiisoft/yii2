@@ -66,12 +66,14 @@ class ErrorAction extends Action
      * Defaults to "An internal server error occurred.".
      */
     public $defaultMessage;
+
     /**
      * @var \Exception the exception object, normally is filled on [[init()]] method call.
      * @see [[findException()]] to know default way of obtaining exception.
      * @since 2.0.11
      */
     protected $exception;
+
 
     /**
      * {@inheritdoc}
@@ -96,6 +98,8 @@ class ErrorAction extends Action
      */
     public function run()
     {
+        Yii::$app->getResponse()->setStatusCodeByException($this->exception);
+
         if (Yii::$app->getRequest()->getIsAjax()) {
             return $this->renderAjaxResponse();
         }

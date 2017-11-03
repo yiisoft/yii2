@@ -8,9 +8,9 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Query;
-use yii\base\InvalidConfigException;
 use yii\di\Instance;
 
 /**
@@ -134,7 +134,7 @@ class DbSession extends MultiFieldSession
 
     /**
      * Session read handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @return string the session data
      */
@@ -155,7 +155,7 @@ class DbSession extends MultiFieldSession
 
     /**
      * Session write handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @param string $data session data
      * @return bool whether session write is successful
@@ -165,13 +165,14 @@ class DbSession extends MultiFieldSession
         // exception must be caught in session write handler
         // http://us.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
-            $query = new Query;
+            $query = new Query();
             $exists = $query->select(['id'])
                 ->from($this->sessionTable)
                 ->where(['id' => $id])
                 ->createCommand($this->db)
                 ->queryScalar();
             $fields = $this->composeFields($id, $data);
+            $fields = $this->typecastFields($fields);
             if ($exists === false) {
                 $this->db->createCommand()
                     ->insert($this->sessionTable, $fields)
@@ -183,12 +184,7 @@ class DbSession extends MultiFieldSession
                     ->execute();
             }
         } catch (\Exception $e) {
-            $exception = ErrorHandler::convertExceptionToString($e);
-            // its too late to use Yii logging here
-            error_log($exception);
-            if (YII_DEBUG) {
-                echo $exception;
-            }
+            Yii::$app->errorHandler->handleException($e);
             return false;
         }
 
@@ -197,7 +193,7 @@ class DbSession extends MultiFieldSession
 
     /**
      * Session destroy handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @return bool whether session is destroyed successfully
      */
@@ -212,7 +208,7 @@ class DbSession extends MultiFieldSession
 
     /**
      * Session GC (garbage collection) handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param int $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
      * @return bool whether session is GCed successfully
      */
@@ -223,5 +219,23 @@ class DbSession extends MultiFieldSession
             ->execute();
 
         return true;
+    }
+
+    /**
+     * Method typecasts $fields before passing them to PDO.
+     * Default implementation casts field `data` to `\PDO::PARAM_LOB`.
+     * You can override this method in case you need special type casting.
+     *
+     * @param array $fields Fields, that will be passed to PDO. Key - name, Value - value
+     * @return array
+     * @since 2.0.13
+     */
+    protected function typecastFields($fields)
+    {
+        if (isset($fields['data']) && !is_array($fields['data'])) {
+            $fields['data'] = [$fields['data'], \PDO::PARAM_LOB];
+        }
+
+        return $fields;
     }
 }

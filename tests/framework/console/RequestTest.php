@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 use yii\console\Request;
 use yiiunit\TestCase;
@@ -18,8 +23,8 @@ class RequestTest extends TestCase
                 'expected' => [
                     'route' => 'controller',
                     'params' => [
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'params' => [
@@ -28,22 +33,30 @@ class RequestTest extends TestCase
                     '-12345',
                     '--option1',
                     '--option2=testValue',
+                    '--option-3=testValue',
+                    '--option_4=testValue',
                     '-alias1',
-                    '-alias2=testValue'
+                    '-alias2=testValue',
+                    '-alias-3=testValue',
+                    '-alias_4=testValue',
                 ],
                 'expected' => [
                     'route' => 'controller/route',
                     'params' => [
                         'param1',
                         '-12345',
-                        'option1' => '1',
+                        'option1' => true,
                         'option2' => 'testValue',
+                        'option-3' => 'testValue',
+                        'option_4' => 'testValue',
                         '_aliases' => [
                             'alias1' => true,
-                            'alias2' => 'testValue'
-                        ]
-                    ]
-                ]
+                            'alias2' => 'testValue',
+                            'alias-3' => 'testValue',
+                            'alias_4' => 'testValue',
+                        ],
+                    ],
+                ],
             ],
             [
                 // Case: Special argument "End of Options" used
@@ -62,7 +75,7 @@ class RequestTest extends TestCase
                     '--', // Second `--` argument shouldn't be treated as special
                     '--option4=testValue',
                     '-alias3',
-                    '-alias4=testValue'
+                    '-alias4=testValue',
                 ],
                 'expected' => [
                     'route' => 'controller/route',
@@ -73,7 +86,7 @@ class RequestTest extends TestCase
                         'option2' => 'testValue',
                         '_aliases' => [
                             'alias1' => true,
-                            'alias2' => 'testValue'
+                            'alias2' => 'testValue',
                         ],
                         'param2',
                         '-54321',
@@ -81,9 +94,9 @@ class RequestTest extends TestCase
                         '--',
                         '--option4=testValue',
                         '-alias3',
-                        '-alias4=testValue'
-                    ]
-                ]
+                        '-alias4=testValue',
+                    ],
+                ],
             ],
             [
                 // Case: Special argument "End of Options" placed before route
@@ -95,7 +108,7 @@ class RequestTest extends TestCase
                     '--option1',
                     '--option2=testValue',
                     '-alias1',
-                    '-alias2=testValue'
+                    '-alias2=testValue',
                 ],
                 'expected' => [
                     'route' => 'controller/route',
@@ -105,18 +118,40 @@ class RequestTest extends TestCase
                         '--option1',
                         '--option2=testValue',
                         '-alias1',
-                        '-alias2=testValue'
-                    ]
-                ]
-            ]
+                        '-alias2=testValue',
+                    ],
+                ],
+            ],
+            [
+                // PHP does not allow variable name, starting with digit.
+                // InvalidParamException must be thrown during request resolving:
+                'params' => [
+                    'controller/route',
+                    '--0=test',
+                    '--1=testing',
+                ],
+                'expected' => [],
+                'exception' => [
+                    '\yii\console\Exception',
+                    'Parameter "0" is not valid',
+                ],
+            ],
         ];
     }
 
     /**
      * @dataProvider provider
+     * @param array $params
+     * @param array $expected
+     * @param array|null $expectedException
      */
-    public function testResolve($params, $expected)
+    public function testResolve($params, $expected, $expectedException = null)
     {
+        if (isset($expectedException)) {
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
+        }
+
         $request = new Request();
 
         $request->setParams($params);

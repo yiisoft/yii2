@@ -131,7 +131,7 @@ class HelpController extends Controller
     }
 
     /**
-     * Displays usage information for $action
+     * Displays usage information for $action.
      *
      * @param string $action route to action
      * @since 2.0.11
@@ -168,8 +168,6 @@ class HelpController extends Controller
         }
 
         $this->stdout("\n");
-
-        return;
     }
 
     /**
@@ -256,7 +254,7 @@ class HelpController extends Controller
                 if (!empty($file) && substr_compare($file, 'Controller.php', -14, 14) === 0) {
                     $controllerClass = $module->controllerNamespace . '\\' . substr(basename($file), 0, -4);
                     if ($this->validateControllerClass($controllerClass)) {
-                        $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
+                        $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14), '-', true);
                     }
                 }
             }
@@ -275,9 +273,9 @@ class HelpController extends Controller
         if (class_exists($controllerClass)) {
             $class = new \ReflectionClass($controllerClass);
             return !$class->isAbstract() && $class->isSubclassOf('yii\console\Controller');
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -372,14 +370,14 @@ class HelpController extends Controller
 
             $maxlen = 5;
             foreach ($actions as $action) {
-                $len = strlen($prefix.'/'.$action) + 2 + ($action === $controller->defaultAction ? 10 : 0);
+                $len = strlen($prefix . '/' . $action) + 2 + ($action === $controller->defaultAction ? 10 : 0);
                 if ($maxlen < $len) {
                     $maxlen = $len;
                 }
             }
             foreach ($actions as $action) {
-                $this->stdout('- ' . $this->ansiFormat($prefix.'/'.$action, Console::FG_YELLOW));
-                $len = strlen($prefix.'/'.$action) + 2;
+                $this->stdout('- ' . $this->ansiFormat($prefix . '/' . $action, Console::FG_YELLOW));
+                $len = strlen($prefix . '/' . $action) + 2;
                 if ($action === $controller->defaultAction) {
                     $this->stdout(' (default)', Console::FG_GREEN);
                     $len += 10;
@@ -531,6 +529,7 @@ class HelpController extends Controller
                 return ', -' . $name;
             }
         }
+
         return '';
     }
 

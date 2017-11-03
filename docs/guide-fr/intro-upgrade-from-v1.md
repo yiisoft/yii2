@@ -58,26 +58,26 @@ chargeur de classe de Yii.)
 Composants et objets
 --------------------
 
-Yii 2.0 décompose la classe `CComponent` 1.1 en deux classes: [[yii\base\Object]] et [[yii\base\Component]].
-Le classe [[yii\base\Object|Object]] est une classe de base légère qui permet de définir les
+Yii 2.0 décompose la classe `CComponent` 1.1 en deux classes: [[yii\base\BaseObject]] et [[yii\base\Component]].
+Le classe [[yii\base\BaseObject|BaseObject]] est une classe de base légère qui permet de définir les
 [Propriétés de l'objet](concept-properties.md) via des accesseurs. La classe [[yii\base\Component|Component]] est une
-sous classe de [[yii\base\Object|Object]] et prend en charge les [Evénements](concept events.md) et les
+sous classe de [[yii\base\BaseObject|BaseObject]] et prend en charge les [Evénements](concept events.md) et les
 [Comportements](concept-behaviors.md).
 
 Si votre classe n'a pas besoin des événements et des comportements, vous devriez envisager d'utiliser
-[[yii\base\Object|Object]] comme classe de base. C'est généralement le cas pour les classes qui représentent
+[[yii\base\BaseObject|BaseObject]] comme classe de base. C'est généralement le cas pour les classes qui représentent
 une structure de données basique.
 
 
 Configuration d'objets
 ---------------------
 
-La classe [[yii\base\Object|Object]] introduit une manière uniforme de configurer les objets. Toute sous-classe
-de [[yii\base\Object|Object]] doit déclarer son constructeur (si besoin) de la manière suivante afin qu'elle
+La classe [[yii\base\BaseObject|BaseObject]] introduit une manière uniforme de configurer les objets. Toute sous-classe
+de [[yii\base\BaseObject|BaseObject]] doit déclarer son constructeur (si besoin) de la manière suivante afin qu'elle
 puisse être configurée correctement :
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -97,7 +97,7 @@ class MyClass extends \yii\base\Object
 
 Dans ce qui précède, le dernier paramètre du constructeur doit être un tableau de configuration
 qui contient des entrées nom-valeur pour initialiser les propriétés à la fin du constructeur.
-Vous pouvez remplacer la méthode [[yii\base\Object::init()|init()]] pour le travail d'initialisation qui doit être fait
+Vous pouvez remplacer la méthode [[yii\base\BaseObject::init()|init()]] pour le travail d'initialisation qui doit être fait
 après que la configuration a été appliquée.
 
 En suivant cette convention, vous serez en mesure de créer et de configurer de nouveaux objets en utilisant un tableau

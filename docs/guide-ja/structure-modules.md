@@ -57,7 +57,7 @@ public function init()
 {
     parent::init();
     // config.php からロードした構成情報でモジュールを初期化する
-    \Yii::configure($this, require(__DIR__ . '/config.php'));
+    \Yii::configure($this, require __DIR__ . '/config.php');
 }
 ```
 
@@ -177,7 +177,7 @@ $module = MyModuleClass::getInstance();
 
 ここで `MyModuleClass` は、当該モジュールクラスの名前を指すものです。
 `getInstance()` メソッドは、現在リクエストされているモジュールクラスのインスタンスを返します。
-モジュールがリクエストされていない場合は、このメソッドは null を返します。
+モジュールがリクエストされていない場合は、このメソッドは `null` を返します。
 モジュールクラスの新しいインスタンスを手動で作成しようとしてはいけないことに注意してください。
 手動で作成したインスタンスは、リクエストに対するレスポンスとして Yii によって作成されたインスタンスとは別のものになります。
 
