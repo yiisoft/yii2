@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #15081: Fixed "Undefined offset: 1" in log Target (ischenko)
+- Bug #15086: Fixed jQuery onLoad event handling (alexantr)
 
 
 2.0.13 November 03, 2017
