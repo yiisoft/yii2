@@ -38,6 +38,7 @@ class FakedValidationModel extends Model
         return [
             [['val_attr_a', 'val_attr_b'], 'required', 'on' => 'reqTest'],
             ['val_attr_c', 'integer'],
+            [['val_attr_a', 'val_attr_b', 'val_attr_c'], 'atLeast', 'errorAttributes' => ['val_attr_c', 'val_attr_b'],  'on' => 'atLeastTest'],
             ['attr_images', 'file', 'maxFiles' => 3, 'extensions' => ['png'], 'on' => 'validateMultipleFiles', 'checkExtensionByMimeType' => false],
             ['attr_image', 'file', 'extensions' => ['png'], 'on' => 'validateFile', 'checkExtensionByMimeType' => false],
             ['!safe_attr', 'integer'],
