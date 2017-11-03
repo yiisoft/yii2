@@ -799,7 +799,7 @@ yii migrate/redo 3      # redo the last 3 applied migrations
 
 ## Refreshing Migrations <span id="refreshing-migrations"></span>
 
-Since Yii 2.0.13 you can reset the whole database and apply all migrations from the beginning.
+Since Yii 2.0.13 you can delete all tables and foreign keys from the database and apply all migrations from the beginning.
 
 ```
 yii migrate/fresh       # Truncate the database and apply all migrations from the beginning.
