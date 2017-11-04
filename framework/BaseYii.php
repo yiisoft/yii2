@@ -341,12 +341,10 @@ class BaseYii
      */
     public static function createObject($type, array $params = [])
     {
-        if (is_string($type)) {
+        if (is_array($type) && isset($type['class'])) {
+            return self::recursiveCreateObject($type, $params);
+        } elseif (is_string($type)) {
             return static::$container->get($type, $params);
-        } elseif (is_array($type) && isset($type['class'])) {
-            $class = $type['class'];
-            unset($type['class']);
-            return static::$container->get($class, $params, $type);
         } elseif (is_callable($type, true)) {
             return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
@@ -354,6 +352,50 @@ class BaseYii
         }
 
         throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
+    }
+
+    /**
+     * Recursively creates all the nested object, using the given configuration.
+     *
+     * @param array $options the array must contain a `class` element which is treated as the object class,
+     *   and the rest of the name-value pairs will be used to initialize the corresponding object properties
+     * @param array $params the constructor parameters
+     * @return object the created object
+     */
+    private static function recursiveCreateObject(array $options, array $params = [])
+    {
+        $class = $options['class'];
+        unset($options['class']);
+
+        $reflection = new \ReflectionClass($class);
+
+        if ($constructor = $reflection->getConstructor()) {
+            foreach ($constructor->getParameters() as $index => $param) {
+                $key = $param->name;
+                if (isset($options[$key]) || array_key_exists($key, $options)) {
+                    $value = $options[$key];
+                    unset($options[$key]);
+                } elseif ($param->isDefaultValueAvailable()) {
+                    $value = $param->getDefaultValue();
+                } else {
+                    continue;
+                }
+
+                if (is_array($value)) {
+                    if (isset($value['class'])) {
+                        $value = self::recursiveCreateObject($value);
+                    }
+                } elseif (is_string($value)) {
+                    if (class_exists($value)) {
+                        $value = static::$container->get($value);
+                    }
+                }
+
+                $params[$index] = $value;
+            }
+        }
+
+        return static::$container->get($class, $params, $options);
     }
 
     private static $_logger;

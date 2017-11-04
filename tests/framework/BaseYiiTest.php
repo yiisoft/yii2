@@ -11,6 +11,7 @@ use Yii;
 use yii\BaseYii;
 use yii\di\Container;
 use yii\log\Logger;
+use yii\base\Component;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 
@@ -93,6 +94,77 @@ class BaseYiiTest extends TestCase
         }));
     }
 
+    public function testCreateObjectWithPublicProperty()
+    {
+        $id = 100;
+        /** @var TestCreateObject $object */
+        $object = Yii::createObject([
+            'class' => 'yiiunit\framework\TestCreateObject',
+            'id' => $id,
+        ]);
+
+        $this->assertEquals($object->id, $id);
+
+        /** @var TestCreateObject $object */
+        $object = Yii::createObject([
+            'class' => 'yiiunit\framework\TestCreateObject'
+        ], [$id]);
+
+        $this->assertEquals($object->id, $id);
+    }
+
+    public function testCreateObjectRecursive()
+    {
+        $options = ['key' => 'val'];
+        $basePath = '/var/storage';
+
+        $transport = new Transport;
+        $storage = new Storage($transport);
+        $storage->basePath = $basePath;
+        $cdn = new CDN($storage, ['options' => $options]);
+
+        // VS
+
+        $this->mockApplication([
+            'components' => [
+               'cdn' => [
+                   'class' => 'yiiunit\framework\CDN',
+                   'options' => $options,
+                   'storage' => [
+                       'class' => 'yiiunit\framework\Storage',
+                       'transport' => 'yiiunit\framework\Transport',
+                       'basePath' => $basePath,
+                   ],
+               ]
+            ]
+        ]);
+
+        /** @var CDN $newCDN */
+        $newCDN = Yii::$app->get('cdn');
+
+        $this->assertEquals($cdn, $newCDN);
+
+        $this->assertTrue($newCDN instanceof CDN);
+        $this->assertTrue($newCDN->getStorage() instanceof Storage);
+        $this->assertTrue($newCDN->getStorage()->getTransport() instanceof Transport);
+    }
+
+    public function testCreateObjectEmptyArrayException()
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Object configuration must be an array containing a "class" element.');
+
+        Yii::createObject([]);
+    }
+
+    public function testCreateObjectInvalidConfigException()
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Unsupported configuration type: ' . gettype(null));
+
+        Yii::createObject(null);
+    }
+
     /**
      * @covers \yii\BaseYii::setLogger()
      * @covers \yii\BaseYii::getLogger()
@@ -155,5 +227,67 @@ class BaseYiiTest extends TestCase
         BaseYii::endProfile('endProfile message', 'endProfile category');
 
         BaseYii::setLogger(null);
+    }
+}
+
+interface TransportInterface {}
+
+interface StorageInterface {
+    /** @return TransportInterface */
+    public function getTransport();
+}
+
+class CDN extends Component
+{
+    /** @var array */
+    public $options = [];
+    /** @var StorageInterface */
+    private $storage;
+
+    public function __construct(StorageInterface $storage, $config = [])
+    {
+        $this->storage = $storage;
+        parent::__construct($config);
+    }
+
+    /**
+     * @return StorageInterface
+     */
+    public function getStorage()
+    {
+        return $this->storage;
+    }
+}
+
+class Storage implements StorageInterface
+{
+    /** @var string */
+    public $basePath;
+    /** @var TransportInterface */
+    private $transport;
+
+    public function __construct(TransportInterface $transport)
+    {
+        $this->transport = $transport;
+    }
+
+    /**
+     * @return TransportInterface
+     */
+    public function getTransport()
+    {
+        return $this->transport;
+    }
+}
+
+class Transport implements TransportInterface {}
+
+class TestCreateObject
+{
+    public $id;
+
+    public function __construct($id)
+    {
+        $this->id = $id;
     }
 }
