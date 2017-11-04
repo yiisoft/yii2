@@ -111,6 +111,14 @@ class BaseYiiTest extends TestCase
         ], [$id]);
 
         $this->assertEquals($object->id, $id);
+
+        /** @var TestCreateObject $object */
+        $object = Yii::createObject([
+            'class' => 'yiiunit\framework\TestCreateObject',
+            'id' => $id,
+        ], [200]);
+
+        $this->assertEquals($object->id, $id);
     }
 
     public function testCreateObjectRecursive()
