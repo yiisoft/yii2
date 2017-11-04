@@ -341,10 +341,10 @@ class BaseYii
      */
     public static function createObject($type, array $params = [])
     {
-        if (is_array($type) && isset($type['class'])) {
-            return self::recursiveCreateObject($type, $params);
-        } elseif (is_string($type)) {
+        if (is_string($type)) {
             return static::$container->get($type, $params);
+        } elseif (is_array($type) && isset($type['class'])) {
+            return self::recursiveCreateObject($type, $params);
         } elseif (is_callable($type, true)) {
             return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
