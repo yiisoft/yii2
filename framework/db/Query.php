@@ -590,7 +590,7 @@ PATTERN;
         if ($this->select === null) {
             $this->select = $columns;
         } else {
-            $this->select = array_unique(array_merge($this->select, $columns), SORT_REGULAR);
+            $this->select = array_unique(array_merge($this->select, $columns), SORT_STRING);
         }
 
         return $this;
