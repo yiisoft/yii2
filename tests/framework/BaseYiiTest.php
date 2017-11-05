@@ -10,6 +10,7 @@ namespace yiiunit\framework;
 use Yii;
 use yii\BaseYii;
 use yii\di\Container;
+use yii\di\Instance;
 use yii\log\Logger;
 use yii\base\Component;
 use yiiunit\data\base\Singer;
@@ -100,7 +101,7 @@ class BaseYiiTest extends TestCase
         /** @var TestCreateObject $object */
         $object = Yii::createObject([
             'class' => 'yiiunit\framework\TestCreateObject',
-            'id' => $id,
+            '$' => [$id],
         ]);
 
         $this->assertEquals($object->id, $id);
@@ -115,7 +116,7 @@ class BaseYiiTest extends TestCase
         /** @var TestCreateObject $object */
         $object = Yii::createObject([
             'class' => 'yiiunit\framework\TestCreateObject',
-            'id' => $id,
+            '$' => [$id],
         ], [200]);
 
         $this->assertEquals($object->id, $id);
@@ -126,29 +127,42 @@ class BaseYiiTest extends TestCase
         $options = ['key' => 'val'];
         $basePath = '/var/storage';
 
-        $transport = new Transport;
-        $storage = new Storage($transport);
-        $storage->basePath = $basePath;
-        $cdn = new CDN($storage, ['options' => $options]);
-
-        // VS
+        $login = 'user';
+        $password = 'pass';
 
         $this->mockApplication([
             'components' => [
-               'cdn' => [
-                   'class' => 'yiiunit\framework\CDN',
-                   'options' => $options,
-                   'storage' => [
-                       'class' => 'yiiunit\framework\Storage',
-                       'transport' => 'yiiunit\framework\Transport',
-                       'basePath' => $basePath,
-                   ],
-               ]
+                'cdn' => function () use ($basePath, $options, $login, $password) {
+                    $transport = new Transport;
+                    $storage = new Storage($transport, $login, $password);
+                    $storage->basePath = $basePath;
+                    $cdn = new CDN($storage, ['options' => $options]);
+
+                    return $cdn;
+                },
+
+                'newCDN' => [
+                    'class' => 'yiiunit\framework\CDN',
+                    'options' => $options,
+                    '$' => [
+                        Yii::createObject([
+                            'class' => 'yiiunit\framework\Storage',
+                            'basePath' => $basePath,
+                            '$' => [
+                                Instance::of('yiiunit\framework\Transport'),
+                                $login,
+                                $password,
+                            ],
+                        ])
+                    ]
+                ]
             ]
         ]);
 
+        /** @var CDN $cdn */
+        $cdn = Yii::$app->get('cdn');
         /** @var CDN $newCDN */
-        $newCDN = Yii::$app->get('cdn');
+        $newCDN = Yii::$app->get('newCDN');
 
         $this->assertEquals($cdn, $newCDN);
 
@@ -271,12 +285,18 @@ class Storage implements StorageInterface
 {
     /** @var string */
     public $basePath;
+    /** @var string */
+    private $login;
+    /** @var string */
+    private $password;
     /** @var TransportInterface */
     private $transport;
 
-    public function __construct(TransportInterface $transport)
+    public function __construct(TransportInterface $transport, $login, $password)
     {
         $this->transport = $transport;
+        $this->login = $login;
+        $this->password = $password;
     }
 
     /**
