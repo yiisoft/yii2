@@ -12,6 +12,7 @@ use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\console\Controller;
+use yii\console\ErrorHandler;
 use yii\console\Exception;
 use yii\console\ExitCode;
 use yii\db\MigrationInterface;
@@ -721,13 +722,22 @@ abstract class BaseMigrateController extends Controller
 
         $this->stdout("*** applying $class\n", Console::FG_YELLOW);
         $start = microtime(true);
-        $migration = $this->createMigration($class);
-        if ($migration->up() !== false) {
-            $this->addMigrationHistory($class);
-            $time = microtime(true) - $start;
-            $this->stdout("*** applied $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_GREEN);
+        try {
+            $migration = $this->createMigration($class);
+            if ($migration->up() !== false) {
+                $this->addMigrationHistory($class);
+                $time = microtime(true) - $start;
+                $this->stdout("*** applied $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_GREEN);
 
-            return true;
+                return true;
+            }
+        } catch (\Exception $e) {
+            // TODO: remove this catch when minimum PHP will be >= 7.0
+            $this->stdout(ErrorHandler::convertExceptionToString($e) . "\n");
+            return false;
+        } catch (\Throwable $e) {
+            $this->stdout(ErrorHandler::convertExceptionToString($e) . "\n");
+            return false;
         }
 
         $time = microtime(true) - $start;
@@ -749,13 +759,22 @@ abstract class BaseMigrateController extends Controller
 
         $this->stdout("*** reverting $class\n", Console::FG_YELLOW);
         $start = microtime(true);
-        $migration = $this->createMigration($class);
-        if ($migration->down() !== false) {
-            $this->removeMigrationHistory($class);
-            $time = microtime(true) - $start;
-            $this->stdout("*** reverted $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_GREEN);
+        try {
+            $migration = $this->createMigration($class);
+            if ($migration->down() !== false) {
+                $this->removeMigrationHistory($class);
+                $time = microtime(true) - $start;
+                $this->stdout("*** reverted $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_GREEN);
 
-            return true;
+                return true;
+            }
+        } catch (\Exception $e) {
+            // TODO: remove this catch when minimum PHP will be >= 7.0
+            $this->stdout(ErrorHandler::convertExceptionToString($e) . "\n");
+            return false;
+        } catch (\Throwable $e) {
+            $this->stdout(ErrorHandler::convertExceptionToString($e) . "\n");
+            return false;
         }
 
         $time = microtime(true) - $start;
