@@ -118,7 +118,11 @@ class BatchQueryResult extends BaseObject implements \Iterator
             if ($this->query->indexBy !== null) {
                 $this->_key = key($this->_batch);
             } elseif (key($this->_batch) !== null) {
-                $this->_key++;
+                if (null === $this->_key) {
+                    $this->_key = 0;
+                } else {
+                    $this->_key++;
+                }
             } else {
                 $this->_key = null;
             }
