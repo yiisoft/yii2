@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
 - Bug #14903: Fixed route with extra dashes is executed controller while it should not (developeruz)
+- Bug #14916: Fixed `yii\db\Query::each()` iterator key starts from 1 instead of 0 (Vovan-VE)
 - Bug #15046: Throw an `yii\web\HeadersAlreadySentException` if headers were sent before web response (dmirogin)
 - Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()` (IceJOKER)
 - Bug #15169: Fixed translating a string when NULL parameter is passed (developeruz)
