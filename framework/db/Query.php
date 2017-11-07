@@ -590,7 +590,20 @@ PATTERN;
         if ($this->select === null) {
             $this->select = $columns;
         } else {
-            $this->select = array_unique(array_merge($this->select, $columns), SORT_STRING);
+            foreach ($columns as $columnName => $columnDefinition) {
+                if (($columnDefinition instanceof Query) || !in_array($columnDefinition, $this->select, true)) {
+                    if (is_string($columnName))
+                        $this->select[$columnName] = $columnDefinition;
+                    else
+                        $this->select[] = $columnDefinition;
+                } else {
+                    $column_alias = array_search($columnDefinition, $this->select, true);
+                    if (is_string($columnName) && $column_alias != $columnName)
+                        $this->select[$columnName] = $columnDefinition;
+                    else if (is_string($column_alias) && !is_string($columnName))
+                        $this->select[] = $columnDefinition;
+                }
+            }
         }
 
         return $this;
