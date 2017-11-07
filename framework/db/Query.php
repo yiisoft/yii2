@@ -597,11 +597,16 @@ PATTERN;
                     else
                         $this->select[] = $columnDefinition;
                 } else {
-                    $column_alias = array_search($columnDefinition, $this->select, true);
-                    if (is_string($columnName) && $column_alias != $columnName)
+                    if (is_string($columnName) && (!isset($this->select[$columnName]) || $this->select[$columnName] !== $columnDefinition))
                         $this->select[$columnName] = $columnDefinition;
-                    else if (is_string($column_alias) && !is_string($columnName))
+                    else if (!is_string($columnName)) {
+                        foreach ($this->select as $selectAlias => $selectDefinition) {
+                            if ($selectDefinition === $columnDefinition && !is_string($selectAlias))
+                                continue(2);
+                        }
                         $this->select[] = $columnDefinition;
+                    }
+
                 }
             }
         }
