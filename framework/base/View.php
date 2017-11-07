@@ -349,6 +349,29 @@ class View extends Component
     }
 
     /**
+     * Renders a view string as a PHP script.
+     *
+     * This method treats the view string as a PHP script and evaluates it.
+     * It extracts the given parameters and makes them available in the view string.
+     * The method captures the output of the view string and returns it as a rendered string.
+     *
+     * @param string $string the view string.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view string.
+     * @return string the rendering result
+     */
+    public function renderPhpString($string, $params = [])
+    {
+        $tempFile = tmpfile();
+        $metaData = stream_get_meta_data($tempFile);
+        $tempFilename = $metaData['uri'];
+        fwrite($tempFile, $string);
+        $result = $this->renderPhpFile($tempFilename, $params);
+        fclose($tempFile);
+
+        return $result;
+    }
+
+    /**
      * Renders dynamic content returned by the given PHP statements.
      * This method is mainly used together with content caching (fragment caching and page caching)
      * when some portions of the content (called *dynamic content*) should not be cached.
