@@ -121,12 +121,13 @@ class Schema extends \yii\db\Schema
      */
     protected function findSchemaNames()
     {
-        $sql = <<<'SQL'
-SELECT ns.nspname AS schema_name
-FROM pg_namespace ns
-WHERE ns.nspname != 'information_schema' AND ns.nspname NOT LIKE 'pg_%'
-ORDER BY ns.nspname
+        static $sql = <<<'SQL'
+SELECT [s].[name]
+FROM [sys].[schemas] AS [s]
+WHERE [s].[name] != 'INFORMATION_SCHEMA' AND [s].[name] NOT LIKE 'db[_]%'
+ORDER BY [s].[name] ASC
 SQL;
+
         return $this->db->createCommand($sql)->queryColumn();
     }
 

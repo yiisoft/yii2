@@ -18,6 +18,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'sqlsrv';
 
+    protected $expectedSchemas = [
+        'dbo',
+        'sys',
+    ];
+
     public function constraintsProvider()
     {
         $result = parent::constraintsProvider();
