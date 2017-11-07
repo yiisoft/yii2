@@ -1179,7 +1179,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public static function instantiate($row)
     {
-        return new static();
+        /** @var static $instance */
+        $instance = Instance::ensure(static::className());
+        return $instance;
     }
 
     /**
