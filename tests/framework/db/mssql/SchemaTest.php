@@ -20,7 +20,6 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
     protected $expectedSchemas = [
         'dbo',
-        'sys',
     ];
 
     public function constraintsProvider()

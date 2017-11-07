@@ -118,13 +118,15 @@ class Schema extends \yii\db\Schema
 
     /**
      * @inheritDoc
+     * @see https://docs.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-principals-transact-sql
      */
     protected function findSchemaNames()
     {
         static $sql = <<<'SQL'
 SELECT [s].[name]
 FROM [sys].[schemas] AS [s]
-WHERE [s].[name] != 'INFORMATION_SCHEMA' AND [s].[name] NOT LIKE 'db[_]%'
+INNER JOIN [sys].[database_principals] AS [p] ON [p].[principal_id] = [s].[principal_id]
+WHERE [p].[is_fixed_role] = 0 AND [p].[sid] IS NOT NULL
 ORDER BY [s].[name] ASC
 SQL;
 
