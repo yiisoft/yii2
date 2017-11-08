@@ -1261,6 +1261,8 @@ class BaseHtml
      * - tag: this specifies the tag name. If not set, "div" will be used.
      *   See also [[tag()]].
      * - encode: boolean, if set to false then the error message won't be encoded.
+     * @since 2.0.14
+     * - errorMethod: string, if set then this value will be used as a method name to be called instead of getFirstError()
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
