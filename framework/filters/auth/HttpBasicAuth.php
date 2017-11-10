@@ -7,8 +7,6 @@
 
 namespace yii\filters\auth;
 
-use yii\web\Request;
-
 /**
  * HttpBasicAuth is an action filter that supports the HTTP Basic authentication method.
  *

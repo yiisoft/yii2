@@ -29,9 +29,12 @@ use yii\validators\IpValidator;
  * corresponding quality score and other parameters as given in the header.
  * @property array $acceptableLanguages The languages ordered by the preference level. The first element
  * represents the most preferred language.
- * @property string|null $authPassword The password sent via HTTP authentication, null if the password is not
- * given. This property is read-only.
- * @property string|null $authUser The username sent via HTTP authentication, null if the username is not
+ * @property array $authCredentials That contains exactly two elements: - 0: the username sent via HTTP
+ * authentication, `null` if the username is not given - 1: the password sent via HTTP authentication, `null` if
+ * the password is not given. This property is read-only.
+ * @property string|null $authPassword The password sent via HTTP authentication, `null` if the password is
+ * not given. This property is read-only.
+ * @property string|null $authUser The username sent via HTTP authentication, `null` if the username is not
  * given. This property is read-only.
  * @property string $baseUrl The relative URL for the application.
  * @property array $bodyParams The request parameters given in the request body.
@@ -62,6 +65,8 @@ use yii\validators\IpValidator;
  * read-only.
  * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
  * turned into upper case. This property is read-only.
+ * @property string|null $origin URL origin of a CORS request, `null` if not available. This property is
+ * read-only.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property int $port Port number for insecure requests.
@@ -70,7 +75,8 @@ use yii\validators\IpValidator;
  * read-only.
  * @property string $rawBody The request body.
  * @property string|null $referrer URL referrer, null if not available. This property is read-only.
- * @property string|null $origin URL origin, null if not available. This property is read-only.
+ * @property string|null $remoteHost Remote host name, `null` if not available. This property is read-only.
+ * @property string|null $remoteIP Remote IP address, `null` if not available. This property is read-only.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
  * @property int $securePort Port number for secure requests.
@@ -194,11 +200,11 @@ class Request extends \yii\base\Request
      *
      * Default is to trust all headers except those listed in [[secureHeaders]] from all hosts.
      * Matches are tried in order and searching is stopped when IP matches.
-     * 
+     *
      * > Info: Matching is performed using [[IpValidator]].
-     *   See [[IpValidator::::setRanges()|IpValidator::setRanges()]]
-     *   and [[IpValidator::networks]] for advanced matching.
-     * 
+     * See [[IpValidator::::setRanges()|IpValidator::setRanges()]]
+     * and [[IpValidator::networks]] for advanced matching.
+     *
      * @see $secureHeaders
      * @since 2.0.13
      */
@@ -242,6 +248,7 @@ class Request extends \yii\base\Request
         'X-Forwarded-Proto' => ['https'],
         'Front-End-Https' => ['on'],
     ];
+
     /**
      * @var CookieCollection Collection of request cookies.
      */

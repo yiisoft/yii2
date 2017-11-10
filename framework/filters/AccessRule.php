@@ -56,7 +56,7 @@ class AccessRule extends Component
      *
      * If you are using RBAC (Role-Based Access Control), you may also specify role names.
      * In this case, [[User::can()]] will be called to check access.
-     * 
+     *
      * Note that it is preferred to check for permissions instead.
      *
      * If this property is not set or empty, it means this rule applies regardless of roles.
@@ -216,13 +216,13 @@ class AccessRule extends Component
         $items = empty($this->roles) ? [] : $this->roles;
 
         if (!empty($this->permissions)) {
-           $items = array_merge($items, $this->permissions);
+            $items = array_merge($items, $this->permissions);
         }
 
         if (empty($items)) {
             return true;
         }
-      
+
         if ($user === false) {
             throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
         }

@@ -145,6 +145,7 @@ class ExitCode
         self::CONFIG => 'Configuration error',
     ];
 
+
     /**
      * Returns a short reason text for the given exit code.
      *

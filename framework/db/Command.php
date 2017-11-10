@@ -48,7 +48,7 @@ use yii\base\NotSupportedException;
  * For more details and usage information on Command, see the [guide article on Database Access Objects](guide:db-dao).
  *
  * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
- * [[sql]]. This property is read-only.
+ * [[sql]].
  * @property string $sql The SQL statement to be executed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

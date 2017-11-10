@@ -31,7 +31,6 @@ abstract class BaseMigrateController extends Controller
      */
     const BASE_MIGRATION = 'm000000_000000_base';
 
-
     /**
      * @var string the default command action.
      */
@@ -84,7 +83,6 @@ abstract class BaseMigrateController extends Controller
      * or a file path.
      */
     public $templateFile;
-
     /**
      * @var bool indicates whether the console output should be compacted.
      * If this is set to true, the individual commands ran within the migration will not be output to the console.
@@ -92,6 +90,7 @@ abstract class BaseMigrateController extends Controller
      * @since 2.0.13
      */
     public $compact = false;
+
 
     /**
      * @inheritdoc

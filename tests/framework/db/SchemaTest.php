@@ -19,12 +19,29 @@ use yii\db\Schema;
 
 abstract class SchemaTest extends DatabaseTestCase
 {
+    /**
+     * @var string[]
+     */
+    protected $expectedSchemas;
+
     public function pdoAttributesProvider()
     {
         return [
             [[PDO::ATTR_EMULATE_PREPARES => true]],
             [[PDO::ATTR_EMULATE_PREPARES => false]],
         ];
+    }
+
+    public function testGetSchemaNames()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $schemas = $schema->getSchemaNames();
+        $this->assertNotEmpty($schemas);
+        foreach ($this->expectedSchemas as $schema) {
+            $this->assertContains($schema, $schemas);
+        }
     }
 
     /**

@@ -23,12 +23,12 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    '\'{attribute}\' does not support operator \'{operator}\'.' => '"{attribute}" не поддерживает оператор "{operator}".',
-    'Condition for \'{attribute}\' should be either a value or valid operator specification.' => 'Условие для "{attribute}" должно быть или значением или верной спецификацией оператора.',
-    'Operator \'{operator}\' must be used with a search attribute.' => 'Оператор "{operator}" должен использоваться через атрибут поиска.',
-    'Operator \'{operator}\' requires multiple operands.' => 'Оператор "{operator}" требует несколько операндов.',
+    '"{attribute}" does not support operator "{operator}".' => '"{attribute}" не поддерживает оператор "{operator}".',
+    'Condition for "{attribute}" should be either a value or valid operator specification.' => 'Условие для "{attribute}" должно быть или значением или верной спецификацией оператора.',
+    'Operator "{operator}" must be used with a search attribute.' => 'Оператор "{operator}" должен использоваться через атрибут поиска.',
+    'Operator "{operator}" requires multiple operands.' => 'Оператор "{operator}" требует несколько операндов.',
     'The format of {filter} is invalid.' => 'Формат фильтра {filter} не верен.',
-    'Unknown filter attribute \'{attribute}\'' => 'Неизвестный атрибут фильтра "{attribute}"',
+    'Unknown filter attribute "{attribute}"' => 'Неизвестный атрибут фильтра "{attribute}"',
     ' and ' => ' и ',
     '(not set)' => '(не задано)',
     'An internal server error occurred.' => 'Возникла внутренняя ошибка сервера.',

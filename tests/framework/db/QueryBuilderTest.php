@@ -1777,7 +1777,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'is_active' => false,
                     'related_id' => null,
                 ],
-                $this->replaceQuotes("INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]]) VALUES (:qp0, :qp1, :qp2, :qp3, :qp4)"),
+                $this->replaceQuotes('INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]]) VALUES (:qp0, :qp1, :qp2, :qp3, :qp4)'),
                 [
                     ':qp0' => 'test@example.com',
                     ':qp1' => 'silverfire',
@@ -1795,7 +1795,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 'INSERT INTO {{%type}} ({{%type}}.[[related_id]], [[time]]) VALUES (:qp0, now())',
                 [
                     ':qp0' => null,
-                ]
+                ],
             ],
         ];
     }
@@ -1922,12 +1922,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 'user',
                 [
                     'is_enabled' => false,
-                    'power' => new Expression('WRONG_POWER()')
+                    'power' => new Expression('WRONG_POWER()'),
                 ],
                 $this->replaceQuotes('DELETE FROM [[user]] WHERE ([[is_enabled]]=:qp0) AND ([[power]]=WRONG_POWER())'),
                 [
                     ':qp0' => false,
-                ]
+                ],
             ],
         ];
     }

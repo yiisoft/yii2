@@ -67,6 +67,7 @@ class Schema extends \yii\db\Schema
         'enum' => self::TYPE_STRING,
     ];
 
+
     /**
      * @inheritDoc
      */

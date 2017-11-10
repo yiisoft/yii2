@@ -604,7 +604,7 @@ class View extends \yii\base\View
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_LOAD])) {
-                $js = "jQuery(function ($) {\n$(window).on('load', function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});\n});";
+                $js = "jQuery(window).on('load', function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
         }

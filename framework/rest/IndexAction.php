@@ -120,10 +120,10 @@ class IndexAction extends Action
             'class' => ActiveDataProvider::className(),
             'query' => $query,
             'pagination' => [
-                'params' => $requestParams
+                'params' => $requestParams,
             ],
             'sort' => [
-                'params' => $requestParams
+                'params' => $requestParams,
             ],
         ]);
     }

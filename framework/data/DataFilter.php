@@ -110,11 +110,13 @@ use yii\validators\StringValidator;
  *
  * @see ActiveDataFilter
  *
- * @property mixed $filter filter value.
- * @property Model $searchModel model to be used for filter attributes validation.
- * @property array $searchAttributeTypes search attribute type map.
- * @property array $errorMessages list of error messages responding to invalid filter structure,
- * in format: `[errorKey => message]`. Please refer to [[setErrorMessages()]] for details.
+ * @property array $errorMessages Error messages in format `[errorKey => message]`. Note that the type of this
+ * property differs in getter and setter. See [[getErrorMessages()]] and [[setErrorMessages()]] for details.
+ * @property mixed $filter Raw filter value.
+ * @property array $searchAttributeTypes Search attribute type map. Note that the type of this property
+ * differs in getter and setter. See [[getSearchAttributeTypes()]] and [[setSearchAttributeTypes()]] for details.
+ * @property Model $searchModel Model instance. Note that the type of this property differs in getter and
+ * setter. See [[getSearchModel()]] and [[setSearchModel()]] for details.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.13
@@ -160,8 +162,8 @@ class DataFilter extends Model
      * ```
      *
      * > Note: while specifying filter controls take actual data exchange format, which your API uses, in mind.
-     *   Make sure each specified control keyword is valid for the format. For example, in XML tag name can start
-     *   only with a letter character, thus controls like `>`, '=' or `$gt` will break the XML schema.
+     * > Make sure each specified control keyword is valid for the format. For example, in XML tag name can start
+     * > only with a letter character, thus controls like `>`, '=' or `$gt` will break the XML schema.
      */
     public $filterControls = [
         'and' => 'AND',
@@ -340,7 +342,7 @@ class DataFilter extends Model
             }
 
             if ($type !== null) {
-                foreach ((array)$validator->attributes as $attribute) {
+                foreach ((array) $validator->attributes as $attribute) {
                     $attributeTypes[$attribute] = $type;
                 }
             }
@@ -389,11 +391,11 @@ class DataFilter extends Model
     {
         return [
             'invalidFilter' => Yii::t('yii', 'The format of {filter} is invalid.'),
-            'operatorRequireMultipleOperands' => Yii::t('yii', "Operator '{operator}' requires multiple operands."),
-            'unknownAttribute' => Yii::t('yii', "Unknown filter attribute '{attribute}'"),
-            'invalidAttributeValueFormat' => Yii::t('yii', "Condition for '{attribute}' should be either a value or valid operator specification."),
-            'operatorRequireAttribute' => Yii::t('yii', "Operator '{operator}' must be used with a search attribute."),
-            'unsupportedOperatorType' => Yii::t('yii', "'{attribute}' does not support operator '{operator}'."),
+            'operatorRequireMultipleOperands' => Yii::t('yii', 'Operator "{operator}" requires multiple operands.'),
+            'unknownAttribute' => Yii::t('yii', 'Unknown filter attribute "{attribute}"'),
+            'invalidAttributeValueFormat' => Yii::t('yii', 'Condition for "{attribute}" should be either a value or valid operator specification.'),
+            'operatorRequireAttribute' => Yii::t('yii', 'Operator "{operator}" must be used with a search attribute.'),
+            'unsupportedOperatorType' => Yii::t('yii', '"{attribute}" does not support operator "{operator}".'),
         ];
     }
 
@@ -414,7 +416,7 @@ class DataFilter extends Model
 
         $params = array_merge(
             [
-                'filter' => $this->getAttributeLabel($this->filterAttributeName)
+                'filter' => $this->getAttributeLabel($this->filterAttributeName),
             ],
             $params
         );
@@ -430,7 +432,7 @@ class DataFilter extends Model
     public function attributes()
     {
         return [
-            $this->filterAttributeName
+            $this->filterAttributeName,
         ];
     }
 
@@ -448,7 +450,7 @@ class DataFilter extends Model
     public function rules()
     {
         return [
-            [$this->filterAttributeName, 'validateFilter', 'skipOnEmpty' => false]
+            [$this->filterAttributeName, 'validateFilter', 'skipOnEmpty' => false],
         ];
     }
 
@@ -657,7 +659,7 @@ class DataFilter extends Model
 
     /**
      * Builds actual filter specification form [[filter]] value.
-     * @param boolean $runValidation whether to perform validation (calling [[validate()]])
+     * @param bool $runValidation whether to perform validation (calling [[validate()]])
      * before building the filter. Defaults to `true`. If the validation fails, no filter will
      * be built and this method will return `false`.
      * @return mixed|false built actual filter value, or `false` if validation fails.
