@@ -108,28 +108,30 @@ class DbSession extends MultiFieldSession
             return;
         }
 
-        $query = new Query();
-        $row = $query->from($this->sessionTable)
-            ->where(['id' => $oldID])
-            ->createCommand($this->db)
-            ->queryOne();
-        if ($row !== false) {
-            if ($deleteOldSession) {
-                $this->db->createCommand()
-                    ->update($this->sessionTable, ['id' => $newID], ['id' => $oldID])
-                    ->execute();
+        $this->db->transaction(function () use ($deleteOldSession, $oldID, $newID) {
+            $query = new Query();
+            $row = $query->from($this->sessionTable)
+                ->where(['id' => $oldID])
+                ->createCommand($this->db)
+                ->queryOne();
+            if ($row !== false) {
+                if ($deleteOldSession) {
+                    $this->db->createCommand()
+                        ->update($this->sessionTable, ['id' => $newID], ['id' => $oldID])
+                        ->execute();
+                } else {
+                    $row['id'] = $newID;
+                    $this->db->createCommand()
+                        ->insert($this->sessionTable, $row)
+                        ->execute();
+                }
             } else {
-                $row['id'] = $newID;
+                // shouldn't reach here normally
                 $this->db->createCommand()
-                    ->insert($this->sessionTable, $row)
+                    ->insert($this->sessionTable, $this->composeFields($newID, ''))
                     ->execute();
             }
-        } else {
-            // shouldn't reach here normally
-            $this->db->createCommand()
-                ->insert($this->sessionTable, $this->composeFields($newID, ''))
-                ->execute();
-        }
+        });
     }
 
     /**
