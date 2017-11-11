@@ -23,9 +23,7 @@ trait DynamicContentAwareTrait
     abstract protected function getView();
 
     /**
-     * Returns a list of placeholders for dynamic content. This method
-     * is used internally to implement the content caching feature.
-     * @return string[] a list of placeholders.
+     * @inheritdoc
      */
     public function getDynamicPlaceholders()
     {
@@ -33,9 +31,7 @@ trait DynamicContentAwareTrait
     }
 
     /**
-     * Sets a list of placeholders for dynamic content. This method
-     * is used internally to implement the content caching feature.
-     * @param string[] $placeholders a list of placeholders.
+     * @inheritdoc
      */
     public function setDynamicPlaceholders($placeholders)
     {
@@ -43,10 +39,7 @@ trait DynamicContentAwareTrait
     }
 
     /**
-     * Adds a placeholder for dynamic content.
-     * This method is used internally to implement the content caching feature.
-     * @param string $name the placeholder name.
-     * @param string $statements the PHP statements for generating the dynamic content.
+     * @inheritdoc
      */
     public function addDynamicPlaceholder($name, $statements)
     {

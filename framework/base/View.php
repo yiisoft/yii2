@@ -373,9 +373,7 @@ class View extends Component implements DynamicContentAwareInterface
     }
 
     /**
-     * Returns a list of placeholders for dynamic content. This method
-     * is used internally to implement the content caching feature.
-     * @return array a list of placeholders.
+     * @inheritdoc
      */
     public function getDynamicPlaceholders()
     {
@@ -383,9 +381,7 @@ class View extends Component implements DynamicContentAwareInterface
     }
 
     /**
-     * Sets a list of placeholders for dynamic content. This method
-     * is used internally to implement the content caching feature.
-     * @param array $placeholders a list of placeholders.
+     * @inheritdoc
      */
     public function setDynamicPlaceholders($placeholders)
     {
@@ -572,13 +568,5 @@ class View extends Component implements DynamicContentAwareInterface
     {
         $this->trigger(self::EVENT_END_PAGE);
         ob_end_flush();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getView()
-    {
-        return $this;
     }
 }
