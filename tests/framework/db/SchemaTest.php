@@ -176,7 +176,6 @@ abstract class SchemaTest extends DatabaseTestCase
     }
 
     /**
-     * @group iss
      * @dataProvider tableSchemaCachePrefixesProvider
      * @depends testSchemaCache
      */
