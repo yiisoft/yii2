@@ -28,6 +28,8 @@ use yii\helpers\Url;
  */
 class Application extends \yii\base\Application
 {
+    use MiddlewareTrait;
+
     /**
      * @var string the default route of this application. Defaults to 'site'.
      */
@@ -56,6 +58,15 @@ class Application extends \yii\base\Application
      */
     public $controller;
 
+    public function __construct(array $config = [])
+    {
+        if (isset($config['middleware'])) {
+            foreach ($config['middleware'] as $middleware) {
+                $this->addMiddleware($middleware);
+            }
+        }
+        parent::__construct($config);
+    }
 
     /**
      * @inheritdoc
@@ -98,6 +109,8 @@ class Application extends \yii\base\Application
             unset($params[0]);
         }
         try {
+            $response = $this->getResponse();
+            $this->callMiddleware($request, $response);
             Yii::debug("Route requested: '$route'", __METHOD__);
             $this->requestedRoute = $route;
             $result = $this->runAction($route, $params);
@@ -105,7 +118,6 @@ class Application extends \yii\base\Application
                 return $result;
             }
 
-            $response = $this->getResponse();
             if ($result !== null) {
                 $response->data = $result;
             }

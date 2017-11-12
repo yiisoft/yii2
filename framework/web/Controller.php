@@ -21,6 +21,8 @@ use yii\helpers\Url;
  */
 class Controller extends \yii\base\Controller
 {
+    use MiddlewareTrait;
+
     /**
      * @var bool whether to enable CSRF validation for the actions in this controller.
      * CSRF validation is enabled only when both this property and [[\yii\web\Request::enableCsrfValidation]] are true.
