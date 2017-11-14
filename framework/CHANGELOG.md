@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
-- no changes in this release.
+- Bug #14276: Fixed I18N format with dotted parameters (developeruz)
 
 
 2.0.13.1 November 14, 2017
