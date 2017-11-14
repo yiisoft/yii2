@@ -117,14 +117,14 @@ $container->get('Foo', [], [
   ```php
   class FileStorage
   {
-      public function __contruct($root) {
+      public function __construct($root) {
           // делаем что-то
       }
   }
   
   class DocumentsReader
   {
-      public function __contruct(FileStorage $fs) {
+      public function __construct(FileStorage $fs) {
           // делаем что-то
       }
   }
@@ -194,7 +194,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // Код будет работать ровно так же, как и в предыдущем примере.
 ```
 

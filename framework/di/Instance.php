@@ -168,7 +168,7 @@ class Instance
     }
 
     /**
-     * Restores class state after using `var_export()`
+     * Restores class state after using `var_export()`.
      *
      * @param array $state
      * @return Instance

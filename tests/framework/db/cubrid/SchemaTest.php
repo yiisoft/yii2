@@ -18,6 +18,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'cubrid';
 
+    public function testGetSchemaNames()
+    {
+        $this->markTestSkipped('Schemas are not supported in CUBRID.');
+    }
+
     public function testGetPDOType()
     {
         $values = [
@@ -119,6 +124,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             foreach ($object as $name => $value) {
                 $result[] = $this->convertPropertiesToAnycase($value);
             }
+
             return $result;
         }
 
@@ -129,6 +135,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         } elseif (is_array($object) || is_string($object)) {
             $object = new AnyCaseValue($object);
         }
+
         return $object;
     }
 }

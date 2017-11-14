@@ -8,9 +8,10 @@
 namespace yiiunit\framework\rbac;
 
 /**
- * SqliteManagerTest
+ * SqliteManagerTest.
  * @group db
  * @group rbac
+ * @group sqlite
  */
 class SqliteManagerTest extends DbManagerTestCase
 {
@@ -24,6 +25,7 @@ class SqliteManagerTest extends DbManagerTestCase
         if (static::$sqliteDb === null) {
             static::$sqliteDb = parent::createConnection();
         }
+
         return static::$sqliteDb;
     }
 }

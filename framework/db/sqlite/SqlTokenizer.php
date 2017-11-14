@@ -55,6 +55,7 @@ class SqlTokenizer extends \yii\db\SqlTokenizer
         } else {
             $length = $this->indexAfter('*/') - $this->offset;
         }
+
         return true;
     }
 
@@ -121,6 +122,7 @@ class SqlTokenizer extends \yii\db\SqlTokenizer
         if ($delimiter !== ']') {
             $content = strtr($content, ["$delimiter$delimiter" => $delimiter]);
         }
+
         return true;
     }
 

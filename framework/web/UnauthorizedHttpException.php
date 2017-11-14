@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * UnauthorizedHttpException represents an "Unauthorized" HTTP exception with status code 401
+ * UnauthorizedHttpException represents an "Unauthorized" HTTP exception with status code 401.
  *
  * Use this exception to indicate that a client needs to authenticate via WWW-Authenticate header
  * to perform the requested action.

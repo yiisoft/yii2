@@ -147,7 +147,7 @@ class InstanceTest extends TestCase
     }
 
     /**
-     * This tests the usage example given in yii\di\Instance class PHPdoc
+     * This tests the usage example given in yii\di\Instance class PHPDoc.
      */
     public function testLazyInitializationExample()
     {
@@ -193,7 +193,8 @@ PHP
 
     public function testExceptionInvalidDataTypeInArray()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException', 'Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
         Instance::ensure([
             'class' => Connection::className(),
         ], 'yii\base\Widget');

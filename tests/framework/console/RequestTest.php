@@ -141,6 +141,9 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider provider
+     * @param array $params
+     * @param array $expected
+     * @param array|null $expectedException
      */
     public function testResolve($params, $expected, $expectedException = null)
     {

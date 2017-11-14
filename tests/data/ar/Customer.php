@@ -11,7 +11,7 @@ use yii\db\ActiveQuery;
 use yiiunit\framework\db\ActiveRecordTest;
 
 /**
- * Class Customer
+ * Class Customer.
  *
  * @property int $id
  * @property string $name

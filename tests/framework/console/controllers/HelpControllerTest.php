@@ -41,8 +41,8 @@ class HelpControllerTest extends TestCase
 
     /**
      * Emulates running controller action.
-     * @param  string $actionID id of action to be run.
-     * @param  array $args action arguments.
+     * @param string $actionID id of action to be run.
+     * @param array $actionParams action arguments.
      * @return string command output.
      */
     protected function runControllerAction($actionID, $actionParams = [])
@@ -51,6 +51,29 @@ class HelpControllerTest extends TestCase
         $action = $controller->createAction($actionID);
         $action->runWithParams($actionParams);
         return $controller->flushStdOutBuffer();
+    }
+
+    public function testModuleControllersList()
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'modules' => [
+                'magic' => 'yiiunit\data\modules\magic\Module',
+            ],
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('list'));
+        $this->assertSame(<<<'STRING'
+help
+help/index
+help/list
+help/list-action-options
+help/usage
+magic/e-tag
+magic/e-tag/delete
+magic/e-tag/list-e-tags
+
+STRING
+            , $result);
     }
 
     public function testActionList()
@@ -77,6 +100,7 @@ help/usage
 migrate
 migrate/create
 migrate/down
+migrate/fresh
 migrate/history
 migrate/mark
 migrate/new

@@ -88,7 +88,7 @@ class ServiceLocatorTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/11771
+     * @see https://github.com/yiisoft/yii2/issues/11771
      */
     public function testModulePropertyIsset()
     {

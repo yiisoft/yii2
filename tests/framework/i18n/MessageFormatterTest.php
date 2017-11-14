@@ -337,6 +337,11 @@ _MSG_
 
     /**
      * @dataProvider patterns
+     * @param string $pattern
+     * @param string $expected
+     * @param array $args
+     * @param bool $skip
+     * @param string $skipMessage
      */
     public function testNamedArguments($pattern, $expected, $args, $skip = false, $skipMessage = '')
     {
@@ -350,6 +355,10 @@ _MSG_
 
     /**
      * @dataProvider parsePatterns
+     * @param string $pattern
+     * @param string $expected
+     * @param array $args
+     * @param string $locale
      */
     public function testParseNamedArguments($pattern, $expected, $args, $locale = 'en-US')
     {

@@ -179,6 +179,8 @@ of `basic/web`. Denying access to those other folders is a security improvement.
 to modify its Web server configuration, you may still adjust the structure of your application for better security. Please refer to
 the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
 
+> Info: If you are running your Yii application behind a reverse proxy, you might need to configure
+> [Trusted proxies and headers](runtime-requests.md#trusted-proxies) in the request component.
 
 ### Recommended Apache Configuration <span id="recommended-apache-configuration"></span>
 
@@ -197,6 +199,9 @@ DocumentRoot "path/to/basic/web"
     RewriteCond %{REQUEST_FILENAME} !-d
     # Otherwise forward the request to index.php
     RewriteRule . index.php
+
+    # if $showScriptName is false in UrlManager, do not allow accessing URLs with script name
+    RewriteRule ^index.php/ - [L,R=404]
 
     # ...other settings...
 </Directory>

@@ -43,7 +43,7 @@ class Markdown extends \cebe\markdown\Parser
 
 
     /**
-     * Renders a code block
+     * Renders a code block.
      *
      * @param array $block
      * @return string
@@ -54,7 +54,7 @@ class Markdown extends \cebe\markdown\Parser
     }
 
     /**
-     * Render a paragraph block
+     * Render a paragraph block.
      *
      * @param string $block
      * @return string

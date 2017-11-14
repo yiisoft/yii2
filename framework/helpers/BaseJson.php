@@ -22,7 +22,7 @@ use yii\web\JsExpression;
 class BaseJson
 {
     /**
-     * List of JSON Error messages assigned to constant names for better handling of version differences
+     * List of JSON Error messages assigned to constant names for better handling of version differences.
      * @var array
      * @since 2.0.7
      */
