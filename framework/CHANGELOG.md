@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Chg #15135: Automatic completion for help in bash and zsh (Valkeru)
+- Bug #14276: Fixed I18N format with dotted parameters (developeruz)
 
 2.0.13.1 November 14, 2017
 --------------------------
