@@ -130,6 +130,9 @@ Upgrade from Yii 2.0.12
   However, this change may affect your application if you have code that uses method `yii\base\Module::has()` in order
   to check existence of the component exactly in this specific module. In this case make sure the logic is not corrupted.
 
+* If you are using "asset" command to compress assets and your web applicaiton `assetManager` has `linkAssets` turned on,
+  make sure that "asset" command config has `linkAssets` turned on as well.
+
 
 Upgrade from Yii 2.0.11
 -----------------------

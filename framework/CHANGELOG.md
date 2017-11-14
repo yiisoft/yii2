@@ -6,11 +6,13 @@ Yii Framework 2 Change Log
 
 - Chg #15135: Automatic completion for help in bash and zsh (Valkeru)
 
-2.0.13.1 under development
-------------------------
+2.0.13.1 November 14, 2017
+--------------------------
+
 - Bug #15081: Fixed "Undefined offset: 1" in log Target (ischenko)
 - Bug #15086: Fixed jQuery onLoad event handling (alexantr)
 - Bug #15108: Fixed `yii\db\Schema::getSchemaNames()` for MSSQL and added tests for all DBMSes (sergeymakinen)
+- Bug #15117: Fixed DB schema cache did not honor table prefixes (sergeymakinen)
 
 
 2.0.13 November 03, 2017
