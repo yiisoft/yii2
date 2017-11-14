@@ -38,24 +38,27 @@ use yii\helpers\Json;
 class JsonResponseFormatter extends Component implements ResponseFormatterInterface
 {
     /**
-     * Json Content Type.
+     * JSON Content Type
+     * @since 2.0.14
      */
     const CONTENT_TYPE_JSONP = 'application/javascript; charset=UTF-8';
 
     /**
-     * Jsonp Content Type.
+     * JSONP Content Type
+     * @since 2.0.14
      */
     const CONTENT_TYPE_JSON = 'application/json; charset=UTF-8';
  
     /**
-     * HAL Json Content Type.
+     * HAL JSON Content Type
+     * @since 2.0.14
      */
     const CONTENT_TYPE_HAL_JSON = 'application/hal+json; charset=UTF-8';
     
     /**
      * @var string|null custom value of the `Content-Type` header of the response.
      * When equals `null` default content type will be used based on the `useJsonp` property.
-     * @since 2.0.13
+     * @since 2.0.14
      */
     public $contentType;
     /**
