@@ -8,7 +8,7 @@ Yii Framework 2 Change Log
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150) 
 - Enh #15135: Automatic completion for help in bash and zsh (Valkeru)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
-
+- Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
 
 2.0.13.1 November 14, 2017
 --------------------------
