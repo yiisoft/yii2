@@ -287,9 +287,9 @@ class ValidatorTest extends TestCase
     }
 
     /**
-     * Make sure attribute names are calculated dynamically
-     * https://github.com/yiisoft/yii2/issues/13979
-     * https://github.com/yiisoft/yii2/pull/14413
+     * Make sure attribute names are calculated dynamically.
+     * @see https://github.com/yiisoft/yii2/issues/13979
+     * @see https://github.com/yiisoft/yii2/pull/14413
      */
     public function testAttributeNamesDynamic()
     {

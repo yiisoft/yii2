@@ -9,7 +9,7 @@ use yii\base\InvalidConfigException;
 use yii\rbac\DbManager;
 
 /**
- * Initializes RBAC tables
+ * Initializes RBAC tables.
  *
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
@@ -26,6 +26,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         if (!$authManager instanceof DbManager) {
             throw new InvalidConfigException('You should configure "authManager" component to use database before executing this migration.');
         }
+
         return $authManager;
     }
 

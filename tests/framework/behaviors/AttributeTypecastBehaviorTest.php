@@ -181,7 +181,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model->save(false);
 
         $model->refresh();
-        $this->assertEquals('58', $model->amount);
+        $this->assertSame(58, $model->amount);
     }
 }
 

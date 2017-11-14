@@ -11,7 +11,7 @@ use yii\mutex\MysqlMutex;
 use yiiunit\framework\db\DatabaseTestCase;
 
 /**
- * Class MysqlMutexTest
+ * Class MysqlMutexTest.
  *
  * @group mutex
  * @group db

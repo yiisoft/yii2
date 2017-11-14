@@ -13,7 +13,7 @@ use yii\helpers\Console;
 use yii\helpers\VarDumper;
 
 /**
- * MimeTypeController generates a map of file extensions to MIME types
+ * MimeTypeController generates a map of file extensions to MIME types.
  *
  * It uses `mime.types` file from apache http located under
  * http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup

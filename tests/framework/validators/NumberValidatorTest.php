@@ -250,7 +250,7 @@ class NumberValidatorTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/3118
+     * @see https://github.com/yiisoft/yii2/issues/3118
      */
     public function testClientValidateComparison()
     {

@@ -177,6 +177,7 @@ trait SchemaBuilderTrait
         if ($scale !== null) {
             $length[] = $scale;
         }
+
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DECIMAL, $length);
     }
 
@@ -268,6 +269,7 @@ trait SchemaBuilderTrait
         if ($scale !== null) {
             $length[] = $scale;
         }
+
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_MONEY, $length);
     }
 }

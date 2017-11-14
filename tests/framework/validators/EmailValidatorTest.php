@@ -39,6 +39,7 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($validator->validate('<mail@cebe.cc>'));
         $this->assertFalse($validator->validate('info@örtliches.de'));
         $this->assertFalse($validator->validate('sam@рмкреатиф.ru'));
+        $this->assertFalse($validator->validate('ex..ample@example.com'));
 
         $validator->allowName = true;
 
@@ -164,10 +165,11 @@ class EmailValidatorTest extends TestCase
     }
 
     /**
-     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074
-     * https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
+     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074.
+     * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
      * @dataProvider malformedAddressesProvider
+     * @param string $value
      */
     public function testMalformedAddresses($value)
     {

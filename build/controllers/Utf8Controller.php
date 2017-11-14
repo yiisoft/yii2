@@ -96,7 +96,7 @@ class Utf8Controller extends Controller
     }
 
     /**
-     * Equvalent for ord() just for unicode
+     * Equivalent for ord() just for unicode.
      *
      * http://stackoverflow.com/a/10333324/1106908
      *

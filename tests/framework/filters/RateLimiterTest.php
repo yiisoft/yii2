@@ -15,6 +15,7 @@ use yii\web\Request;
 use yii\web\Response;
 use yii\web\User;
 use yiiunit\framework\filters\stubs\RateLimit;
+use yiiunit\framework\filters\stubs\UserIdentity;
 use yiiunit\TestCase;
 
 /**
@@ -117,7 +118,7 @@ class RateLimiterTest extends TestCase
             ->setAllowance([1, time() + 2]);
         $rateLimiter = new RateLimiter();
 
-        $this->setExpectedException('yii\web\TooManyRequestsHttpException');
+        $this->expectException('yii\web\TooManyRequestsHttpException');
         $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, Yii::$app->response, 'testAction');
     }
 

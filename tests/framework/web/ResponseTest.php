@@ -43,6 +43,10 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider rightRanges
+     * @param string $rangeHeader
+     * @param string $expectedHeader
+     * @param int $length
+     * @param string $expectedContent
      */
     public function testSendFileRanges($rangeHeader, $expectedHeader, $length, $expectedContent)
     {
@@ -76,6 +80,7 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider wrongRanges
+     * @param string $rangeHeader
      */
     public function testSendFileWrongRanges($rangeHeader)
     {
@@ -92,7 +97,7 @@ class ResponseTest extends \yiiunit\TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/7529
+     * @see https://github.com/yiisoft/yii2/issues/7529
      */
     public function testSendContentAsFile()
     {
@@ -129,6 +134,8 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider dataProviderSetStatusCodeByException
+     * @param \Exception $exception
+     * @param int $statusCode
      */
     public function testSetStatusCodeByException($exception, $statusCode)
     {

@@ -264,7 +264,7 @@ class BaseConsole
     /**
      * Resets any ANSI format set by previous method [[beginAnsiFormat()]]
      * Any output after this will have default text format.
-     * This is equal to calling
+     * This is equal to calling.
      *
      * ```php
      * echo Console::ansiFormatCode([Console::RESET])
@@ -276,7 +276,7 @@ class BaseConsole
     }
 
     /**
-     * Will return a string formatted with the given ANSI style
+     * Will return a string formatted with the given ANSI style.
      *
      * @param string $string the string to be formatted
      * @param array $format An array containing formatting values.
@@ -293,8 +293,9 @@ class BaseConsole
 
     /**
      * Returns the ansi format code for xterm foreground color.
+     *
      * You can pass the return value of this to one of the formatting methods:
-     * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
+     * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]].
      *
      * @param int $colorCode xterm color code
      * @return string
@@ -307,8 +308,9 @@ class BaseConsole
 
     /**
      * Returns the ansi format code for xterm background color.
+     *
      * You can pass the return value of this to one of the formatting methods:
-     * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
+     * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]].
      *
      * @param int $colorCode xterm color code
      * @return string
@@ -320,7 +322,7 @@ class BaseConsole
     }
 
     /**
-     * Strips ANSI control codes from a string
+     * Strips ANSI control codes from a string.
      *
      * @param string $string String to strip
      * @return string
@@ -341,7 +343,7 @@ class BaseConsole
     }
 
     /**
-     * Converts an ANSI formatted string to HTML
+     * Converts an ANSI formatted string to HTML.
      *
      * Note: xTerm 256 bit colors are currently not supported.
      *
@@ -450,11 +452,12 @@ class BaseConsole
             $result .= '</span>';
             $tags--;
         }
+
         return $result;
     }
 
     /**
-     * Converts Markdown to be better readable in console environments by applying some ANSI format
+     * Converts Markdown to be better readable in console environments by applying some ANSI format.
      * @param string $markdown the markdown string.
      * @return string the parsed result as ANSI formatted string.
      */
@@ -465,7 +468,7 @@ class BaseConsole
     }
 
     /**
-     * Converts a string to ansi formatted by replacing patterns like %y (for yellow) with ansi control codes
+     * Converts a string to ansi formatted by replacing patterns like %y (for yellow) with ansi control codes.
      *
      * Uses almost the same syntax as https://github.com/pear/Console_Color2/blob/master/Console/Color2.php
      * The conversion table is: ('bold' meaning 'light' on some
@@ -557,7 +560,7 @@ class BaseConsole
 
     /**
      * Escapes % so they don't get interpreted as color codes when
-     * the string is parsed by [[renderColoredString]]
+     * the string is parsed by [[renderColoredString]].
      *
      * @param string $string String to escape
      *
@@ -586,7 +589,7 @@ class BaseConsole
     }
 
     /**
-     * Returns true if the console is running on windows
+     * Returns true if the console is running on windows.
      * @return bool
      */
     public static function isRunningOnWindows()
@@ -595,7 +598,13 @@ class BaseConsole
     }
 
     /**
-     * Usage: list($width, $height) = ConsoleHelper::getScreenSize();
+     * Returns terminal screen size.
+     *
+     * Usage:
+     *
+     * ```php
+     * list($width, $height) = ConsoleHelper::getScreenSize();
+     * ```
      *
      * @param bool $refresh whether to force checking and not re-use cached size value.
      * This is useful to detect changing window size while the application is running but may
@@ -647,7 +656,7 @@ class BaseConsole
     }
 
     /**
-     * Word wrap text with indentation to fit the screen size
+     * Word wrap text with indentation to fit the screen size.
      *
      * If screen size could not be detected, or the indentation is greater than the screen size, the text will not be wrapped.
      *
@@ -683,6 +692,7 @@ class BaseConsole
             }
             $lines[$i] = $pad . $line;
         }
+
         return implode("\n", $lines);
     }
 
@@ -758,7 +768,7 @@ class BaseConsole
     }
 
     /**
-     * Prompts the user for input and validates it
+     * Prompts the user for input and validates it.
      *
      * @param string $text prompt string
      * @param array $options the options to validate the input:

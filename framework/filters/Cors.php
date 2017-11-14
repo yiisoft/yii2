@@ -110,7 +110,7 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Override settings for specific action
+     * Override settings for specific action.
      * @param \yii\base\Action $action the action settings to override
      */
     public function overrideDefaultSettings($action)
@@ -127,7 +127,7 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Extract CORS headers from the request
+     * Extract CORS headers from the request.
      * @return array CORS headers to handle
      */
     public function extractHeaders()
@@ -141,11 +141,12 @@ class Cors extends ActionFilter
                 $headers[$headerField] = $headerData;
             }
         }
+
         return $headers;
     }
 
     /**
-     * For each CORS headers create the specific response
+     * For each CORS headers create the specific response.
      * @param array $requestHeaders CORS headers we have detected
      * @return array CORS headers ready to be sent
      */
@@ -169,7 +170,7 @@ class Cors extends ActionFilter
             $responseHeaders['Access-Control-Allow-Credentials'] = $this->cors['Access-Control-Allow-Credentials'] ? 'true' : 'false';
         }
 
-        if (isset($this->cors['Access-Control-Max-Age']) && Yii::$app->getRequest()->getIsOptions()) {
+        if (isset($this->cors['Access-Control-Max-Age']) && $this->request->getIsOptions()) {
             $responseHeaders['Access-Control-Max-Age'] = $this->cors['Access-Control-Max-Age'];
         }
 
@@ -181,7 +182,7 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Handle classic CORS request to avoid duplicate code
+     * Handle classic CORS request to avoid duplicate code.
      * @param string $type the kind of headers we would handle
      * @param array $requestHeaders CORS headers request by client
      * @param array $responseHeaders CORS response headers sent to the client
@@ -205,7 +206,7 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Adds the CORS headers to the response
+     * Adds the CORS headers to the response.
      * @param Response $response
      * @param array $headers CORS headers which have been computed
      */
@@ -220,9 +221,11 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Convert any string (including php headers with HTTP prefix) to header format like :
-     *  * X-PINGOTHER -> X-Pingother
-     *  * X_PINGOTHER -> X-Pingother
+     * Convert any string (including php headers with HTTP prefix) to header format.
+     *
+     * Example:
+     *  - X-PINGOTHER -> X-Pingother
+     *  - X_PINGOTHER -> X-Pingother
      * @param string $string string to convert
      * @return string the result in "header" format
      */
@@ -236,9 +239,11 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Convert any string (including php headers with HTTP prefix) to header format like :
-     *  * X-Pingother -> HTTP_X_PINGOTHER
-     *  * X PINGOTHER -> HTTP_X_PINGOTHER
+     * Convert any string (including php headers with HTTP prefix) to header format.
+     *
+     * Example:
+     *  - X-Pingother -> HTTP_X_PINGOTHER
+     *  - X PINGOTHER -> HTTP_X_PINGOTHER
      * @param string $string string to convert
      * @return string the result in "php $_SERVER header" format
      */

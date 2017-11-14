@@ -111,11 +111,12 @@ abstract class DbTargetTest extends TestCase
             }
             static::$db = $db;
         }
+
         return static::$db;
     }
 
     /**
-     * Tests that precision isn't lost for log timestamps
+     * Tests that precision isn't lost for log timestamps.
      * @see https://github.com/yiisoft/yii2/issues/7384
      */
     public function testTimestamp()

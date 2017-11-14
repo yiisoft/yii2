@@ -10,7 +10,7 @@ namespace yiiunit\data\ar;
 use yii\db\ActiveQuery;
 
 /**
- * CustomerQuery
+ * CustomerQuery.
  */
 class CustomerQuery extends ActiveQuery
 {

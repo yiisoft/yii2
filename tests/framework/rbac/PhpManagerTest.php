@@ -9,6 +9,7 @@ namespace yii\rbac;
 
 /**
  * Mock for the filemtime() function for rbac classes. Avoid random test fails.
+ * @param string $file
  * @return int
  */
 function filemtime($file)

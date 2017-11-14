@@ -113,7 +113,7 @@ class SerializerTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/12107
+     * @see https://github.com/yiisoft/yii2/issues/12107
      */
     public function testExpandInvalidInput()
     {

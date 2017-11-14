@@ -49,7 +49,7 @@ return [
 请参考 `[[yii\db\Connection]]` 获取可配置的属性列表。
 如果你想通过ODBC连接数据库，则需要配置[[yii\db\Connection::driverName]] 属性，例如:
 
-```
+```php
 'db' => [
     'class' => 'yii\db\Connection',
     'driverName' => 'mysql',
@@ -84,14 +84,14 @@ return [
 
 在代码中通过以下方式使用:
 
-```
+```php
 $primaryConnection = \Yii::$app->db;
 $secondaryConnection = \Yii::$app->secondDb;
 ```
 
 如果不想定义数据库连接为全局[应用](structure-application-components.md)组件，可以在代码中直接初始化使用：
 
-```
+```php
 $connection = new \yii\db\Connection([
     'dsn' => $dsn,
      'username' => $username,
@@ -102,7 +102,7 @@ $connection->open();
 
 > 小提示：如果在创建了连接后需要执行额外的 SQL 查询，可以添加以下代码到应用配置文件：
 
-```
+```php
 return [
     // ...
     'components' => [
@@ -126,28 +126,28 @@ return [
 ### SELECT 查询
 查询返回多行：
 
-```
+```php
 $command = $connection->createCommand('SELECT * FROM post');
 $posts = $command->queryAll();
 ```
 
 返回单行：
 
-```
+```php
 $command = $connection->createCommand('SELECT * FROM post WHERE id=1');
 $post = $command->queryOne();
 ```
 
 查询多行单值：
 
-```
+```php
 $command = $connection->createCommand('SELECT title FROM post');
 $titles = $command->queryColumn();
 ```
 
 查询标量值/计算值：
 
-```
+```php
 $command = $connection->createCommand('SELECT COUNT(*) FROM post');
 $postCount = $command->queryScalar();
 ```
@@ -156,7 +156,7 @@ $postCount = $command->queryScalar();
 
 如果执行 SQL 不返回任何数据可使用命令中的 execute 方法：
 
-```
+```php
 $command = $connection->createCommand('UPDATE post SET status=1 WHERE id=1');
 $command->execute();
 ```

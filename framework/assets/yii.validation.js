@@ -243,6 +243,7 @@ yii.validation = (function ($) {
                 value = $.trim(value);
                 $input.val(value);
             }
+
             return value;
         },
 
@@ -382,6 +383,7 @@ yii.validation = (function ($) {
             if (!options.skipOnEmpty) {
                 messages.push(options.uploadRequired);
             }
+
             return [];
         }
 

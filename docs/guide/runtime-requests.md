@@ -130,10 +130,73 @@ and returns the most appropriate language.
 
 ## Client Information <span id="client-information"></span>
 
-You can get the host name and IP address of the client machine through [[yii\web\Request::userHost|userHost]]
+You can get the host name and IP address
+of the client machine through [[yii\web\Request::userHost|userHost]]
 and [[yii\web\Request::userIP|userIP]], respectively. For example,
 
 ```php
 $userHost = Yii::$app->request->userHost;
 $userIP = Yii::$app->request->userIP;
 ```
+
+## Trusted proxies and headers <span id="trusted-proxies"></span>
+
+In the previous section you have seen how to get user information like host and IP address.
+This will work out of the box in a normal setup where a single webserver is used to serve the website.
+If your Yii application however runs behind a reverse proxy, you need to add additional configuration
+to retrieve this information as the direct client is now the proxy and the user IP address is passed to
+the Yii application by a header set by the proxy.
+
+You should not blindly trust headers provided by proxies unless you explicitly trust the proxy.
+Since 2.0.13 Yii supports configuring trusted proxies via the 
+[[yii\web\Request::trustedHosts|trustedHosts]],
+[[yii\web\Request::secureHeaders|secureHeaders]], 
+[[yii\web\Request::ipHeaders|ipHeaders]] and
+[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]]
+properties of the `request` component.
+
+The following is a request config for an application that runs behind an array of reverse proxies,
+which are located in the `10.0.2.0/24` IP network:
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '/^10\.0\.2\.\d+$/',
+    ],
+],
+```
+
+The IP is sent by the proxy in the `X-Forwarded-For` header by default, and the protocol (`http` or `https`) is sent in `X-Forwarded-Proto`.
+
+In case your proxies are using different headers you can use the request configuration to adjust these, e.g.:
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '/^10\.0\.2\.\d+$/' => [
+            'X-ProxyUser-Ip',
+            'Front-End-Https',
+        ],
+    ],
+    'secureHeaders' => [
+             'X-Forwarded-For',
+             'X-Forwarded-Host',
+             'X-Forwarded-Proto',
+             'X-Proxy-User-Ip',
+             'Front-End-Https',
+         ];
+    'ipHeaders' => [
+        'X-Proxy-User-Ip',
+    ],
+    'secureProtocolHeaders' => [
+        'Front-End-Https' => ['on']
+    ],
+],
+```
+
+With the above configuration, all headers listed in `secureHeaders` are filtered from the request,
+except the `X-ProxyUser-Ip` and `Front-End-Https` headers in case the request is made by the proxy.
+In that case the former is used to retrieve the user IP as configured in `ipHeaders` and the latter
+will be used to determine the result of [[yii\web\Request::getIsSecureConnection()]].

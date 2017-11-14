@@ -128,8 +128,9 @@ class BaseFormatConverter
                 $escaped[$match[0]] = '\\' . implode('\\', preg_split('//u', $match[1], -1, PREG_SPLIT_NO_EMPTY));
             }
         }
+
         return strtr($pattern, array_merge($escaped, [
-            '\'\'' => '\\\'', // two single quotes produce one
+            "''" => "\\'",  // two single quotes produce one
             'G' => '',      // era designator like (Anno Domini)
             'Y' => 'o',     // 4digit year of "Week of Year"
             'y' => 'Y',     // 4digit year e.g. 2014
@@ -235,14 +236,12 @@ class BaseFormatConverter
     /**
      * Converts a date format pattern from [php date() function format][] to [ICU format][].
      *
-     * The conversion is limited to date patterns that do not use escaped characters.
-     * Patterns like `jS \o\f F Y` which will result in a date like `1st of December 2014` may not be converted correctly
-     * because of the use of escaped characters.
-     *
      * Pattern constructs that are not supported by the ICU format will be removed.
      *
      * [php date() function format]: http://php.net/manual/en/function.date.php
      * [ICU format]: http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
+     *
+     * Since 2.0.13 it handles escaped characters correctly.
      *
      * @param string $pattern date format pattern in php date()-function format.
      * @return string The converted date format pattern.
@@ -250,51 +249,97 @@ class BaseFormatConverter
     public static function convertDatePhpToIcu($pattern)
     {
         // http://php.net/manual/en/function.date.php
-        return strtr($pattern, [
+        $result = strtr($pattern, [
+            "'" => "''''",  // single `'` should be encoded as `''`, which internally should be encoded as `''''`
             // Day
+            '\d' => "'d'",
             'd' => 'dd',    // Day of the month, 2 digits with leading zeros 	01 to 31
+            '\D' => "'D'",
             'D' => 'eee',   // A textual representation of a day, three letters 	Mon through Sun
+            '\j' => "'j'",
             'j' => 'd',     // Day of the month without leading zeros 	1 to 31
+            '\l' => "'l'",
             'l' => 'eeee',  // A full textual representation of the day of the week 	Sunday through Saturday
+            '\N' => "'N'",
             'N' => 'e',     // ISO-8601 numeric representation of the day of the week, 1 (for Monday) through 7 (for Sunday)
+            '\S' => "'S'",
             'S' => '',      // English ordinal suffix for the day of the month, 2 characters 	st, nd, rd or th. Works well with j
+            '\w' => "'w'",
             'w' => '',      // Numeric representation of the day of the week 	0 (for Sunday) through 6 (for Saturday)
+            '\z' => "'z'",
             'z' => 'D',     // The day of the year (starting from 0) 	0 through 365
             // Week
+            '\W' => "'W'",
             'W' => 'w',     // ISO-8601 week number of year, weeks starting on Monday (added in PHP 4.1.0) 	Example: 42 (the 42nd week in the year)
             // Month
+            '\F' => "'F'",
             'F' => 'MMMM',  // A full textual representation of a month, January through December
+            '\m' => "'m'",
             'm' => 'MM',    // Numeric representation of a month, with leading zeros 	01 through 12
+            '\M' => "'M'",
             'M' => 'MMM',   // A short textual representation of a month, three letters 	Jan through Dec
+            '\n' => "'n'",
             'n' => 'M',     // Numeric representation of a month, without leading zeros 	1 through 12, not supported by ICU but we fallback to "with leading zero"
+            '\t' => "'t'",
             't' => '',      // Number of days in the given month 	28 through 31
             // Year
+            '\L' => "'L'",
             'L' => '',      // Whether it's a leap year, 1 if it is a leap year, 0 otherwise.
+            '\o' => "'o'",
             'o' => 'Y',     // ISO-8601 year number. This has the same value as Y, except that if the ISO week number (W) belongs to the previous or next year, that year is used instead.
+            '\Y' => "'Y'",
             'Y' => 'yyyy',  // A full numeric representation of a year, 4 digits 	Examples: 1999 or 2003
+            '\y' => "'y'",
             'y' => 'yy',    // A two digit representation of a year 	Examples: 99 or 03
             // Time
+            '\a' => "'a'",
             'a' => 'a',     // Lowercase Ante meridiem and Post meridiem, am or pm
+            '\A' => "'A'",
             'A' => 'a',     // Uppercase Ante meridiem and Post meridiem, AM or PM, not supported by ICU but we fallback to lowercase
+            '\B' => "'B'",
             'B' => '',      // Swatch Internet time 	000 through 999
+            '\g' => "'g'",
             'g' => 'h',     // 12-hour format of an hour without leading zeros 	1 through 12
+            '\G' => "'G'",
             'G' => 'H',     // 24-hour format of an hour without leading zeros 0 to 23h
+            '\h' => "'h'",
             'h' => 'hh',    // 12-hour format of an hour with leading zeros, 01 to 12 h
+            '\H' => "'H'",
             'H' => 'HH',    // 24-hour format of an hour with leading zeros, 00 to 23 h
+            '\i' => "'i'",
             'i' => 'mm',    // Minutes with leading zeros 	00 to 59
+            '\s' => "'s'",
             's' => 'ss',    // Seconds, with leading zeros 	00 through 59
+            '\u' => "'u'",
             'u' => '',      // Microseconds. Example: 654321
             // Timezone
+            '\e' => "'e'",
             'e' => 'VV',    // Timezone identifier. Examples: UTC, GMT, Atlantic/Azores
+            '\I' => "'I'",
             'I' => '',      // Whether or not the date is in daylight saving time, 1 if Daylight Saving Time, 0 otherwise.
+            '\O' => "'O'",
             'O' => 'xx',    // Difference to Greenwich time (GMT) in hours, Example: +0200
+            '\P' => "'P'",
             'P' => 'xxx',   // Difference to Greenwich time (GMT) with colon between hours and minutes, Example: +02:00
+            '\T' => "'T'",
             'T' => 'zzz',   // Timezone abbreviation, Examples: EST, MDT ...
+            '\Z' => "'Z'",
             'Z' => '',      // Timezone offset in seconds. The offset for timezones west of UTC is always negative, and for those east of UTC is always positive. -43200 through 50400
             // Full Date/Time
-            'c' => 'yyyy-MM-dd\'T\'HH:mm:ssxxx', // ISO 8601 date, e.g. 2004-02-12T15:19:21+00:00
+            '\c' => "'c'",
+            'c' => "yyyy-MM-dd'T'HH:mm:ssxxx", // ISO 8601 date, e.g. 2004-02-12T15:19:21+00:00
+            '\r' => "'r'",
             'r' => 'eee, dd MMM yyyy HH:mm:ss xx', // RFC 2822 formatted date, Example: Thu, 21 Dec 2000 16:01:07 +0200
+            '\U' => "'U'",
             'U' => '',      // Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
+            '\\\\' => '\\',
+        ]);
+
+        // remove `''` - the're result of consecutive escaped chars (`\A\B` will be `'A''B'`, but should be `'AB'`)
+        // real `'` are encoded as `''''`
+        return strtr($result, [
+            "''''" => "''",
+            "''" => '',
         ]);
     }
 
@@ -339,6 +384,7 @@ class BaseFormatConverter
                 $escaped[$match] = $match;
             }
         }
+
         return strtr($pattern, array_merge($escaped, [
             'G' => '',      // era designator like (Anno Domini)
             'Y' => '',      // 4digit year of "Week of Year"

@@ -129,7 +129,7 @@ interface ManagerInterface extends CheckAccessInterface
     public function getRules();
 
     /**
-     * Checks the possibility of adding a child to parent
+     * Checks the possibility of adding a child to parent.
      * @param Item $parent the parent item
      * @param Item $child the child item to be added to the hierarchy
      * @return bool possibility of adding

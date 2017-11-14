@@ -204,6 +204,10 @@ class FormatterDateTest extends TestCase
         $this->assertRegExp('~Jan 1, 1970,? 12:00:00 AM~', $this->formatter->asDatetime(false));
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDatetime(null));
+
+        // DATE_ATOM
+        $value = time();
+        $this->assertEquals(date(DATE_ATOM, $value), $this->formatter->asDatetime($value, 'php:' . DATE_ATOM));
     }
 
     public function testIntlAsTimestamp()
@@ -239,8 +243,8 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * Test for dates before 1970
-     * https://github.com/yiisoft/yii2/issues/3126
+     * Test for dates before 1970.
+     * @see https://github.com/yiisoft/yii2/issues/3126
      */
     public function testDateRangeLow()
     {
@@ -259,8 +263,8 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * Test for dates after 2038
-     * https://github.com/yiisoft/yii2/issues/3126
+     * Test for dates after 2038.
+     * @see https://github.com/yiisoft/yii2/issues/3126
      */
     public function testDateRangeHigh()
     {
@@ -279,6 +283,7 @@ class FormatterDateTest extends TestCase
         foreach ($intervals as $interval) {
             $date->sub($interval);
         }
+
         return $date;
     }
 
@@ -520,6 +525,9 @@ class FormatterDateTest extends TestCase
 
     /**
      * @dataProvider dateInputs
+     * @param mixed $expected
+     * @param mixed $value
+     * @param mixed|null $expectedException
      */
     public function testIntlDateInput($expected, $value, $expectedException = null)
     {
@@ -528,6 +536,9 @@ class FormatterDateTest extends TestCase
 
     /**
      * @dataProvider dateInputs
+     * @param mixed $expected
+     * @param mixed $value
+     * @param mixed|null $expectedException
      */
     public function testDateInput($expected, $value, $expectedException = null)
     {
@@ -553,7 +564,7 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * provide default timezones times input date value
+     * Provide default timezones times input date value.
      */
     public function provideTimesAndTz()
     {
@@ -578,12 +589,16 @@ class FormatterDateTest extends TestCase
                 $result[] = [$tz[0], new \DateTimeImmutable('2014-08-10 14:41:00', $berlin), new \DateTimeImmutable('2014-01-01 13:41:00', $berlin)];
             }
         }
+
         return $result;
     }
 
     /**
-     * Test timezones with input date and time in other timezones
+     * Test timezones with input date and time in other timezones.
      * @dataProvider provideTimesAndTz
+     * @param string $defaultTz
+     * @param mixed $inputTimeDst
+     * @param mixed $inputTimeNonDst
      */
     public function testIntlTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
     {
@@ -591,8 +606,11 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * Test timezones with input date and time in other timezones
+     * Test timezones with input date and time in other timezones.
      * @dataProvider provideTimesAndTz
+     * @param string $defaultTz
+     * @param mixed $inputTimeDst
+     * @param mixed $inputTimeNonDst
      */
     public function testTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
     {
@@ -640,7 +658,7 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * Test timezones with input date and time in other timezones
+     * Test timezones with input date and time in other timezones.
      */
     public function testTimezoneInputNonDefault()
     {
@@ -714,9 +732,9 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/13343
-     *
      * Prevent timezone conversion for time-only values.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/13343
      */
     public function testTimeOnlyValues()
     {
@@ -736,13 +754,14 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/6263
+     * @see https://github.com/yiisoft/yii2/issues/6263.
      *
      * it is a PHP bug: https://bugs.php.net/bug.php?id=45543
      * Fixed in this commit: https://github.com/php/php-src/commit/22dba2f5f3211efe6c3b9bb24734c811ca64c68c#diff-7b738accc3d60f74c259da18588ddc5dL2996
      * Fixed in PHP >5.4.26 and >5.5.10. http://3v4l.org/mlZX7
      *
      * @dataProvider provideTimezones
+     * @param string $dtz
      */
     public function testIssue6263($dtz)
     {

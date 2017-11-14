@@ -92,6 +92,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
         if ($this->_uploadFileMaxSize === null) {
             $this->_uploadFileMaxSize = $this->getByteSize(ini_get('upload_max_filesize'));
         }
+
         return $this->_uploadFileMaxSize;
     }
 
@@ -111,6 +112,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
         if ($this->_uploadFileMaxCount === null) {
             $this->_uploadFileMaxCount = ini_get('max_file_uploads');
         }
+
         return $this->_uploadFileMaxCount;
     }
 
@@ -260,7 +262,8 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
             $namePart = trim($namePart, ']');
             if ($namePart === '') {
                 $current[] = [];
-                $lastKey = array_pop(array_keys($current));
+                $keys = array_keys($current);
+                $lastKey = array_pop($keys);
                 $current = &$current[$lastKey];
             } else {
                 if (!isset($current[$namePart])) {
@@ -332,7 +335,8 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
 
     /**
      * Gets the size in bytes from verbose size representation.
-     * For example: '5K' => 5*1024
+     *
+     * For example: '5K' => 5*1024.
      * @param string $verboseSize verbose size representation.
      * @return int actual size in bytes.
      */

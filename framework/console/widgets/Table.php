@@ -32,13 +32,16 @@ use yii\helpers\Console;
  * or
  *
  * ```php
- * echo Table::widget(
+ * echo Table::widget([
  *     'headers' => ['test1', 'test2', 'test3'],
  *     'rows' => [
  *         ['col1', 'col2', 'col3'],
  *         ['col1', 'col2', ['col3-0', 'col3-1', 'col3-2']],
  *     ],
- * );
+ * ]);
+ *
+ * @property string $listPrefix List prefix. This property is write-only.
+ * @property int $screenWidth Screen width. This property is write-only.
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
  * @since 2.0.13
@@ -102,8 +105,9 @@ class Table extends Widget
      */
     private $_listPrefix = '• ';
 
+
     /**
-     * Set table headers
+     * Set table headers.
      *
      * @param array $headers table headers
      * @return $this
@@ -115,7 +119,7 @@ class Table extends Widget
     }
 
     /**
-     * Set table rows
+     * Set table rows.
      *
      * @param array $rows table rows
      * @return $this
@@ -127,7 +131,7 @@ class Table extends Widget
     }
 
     /**
-     * Set table chars
+     * Set table chars.
      *
      * @param array $chars table chars
      * @return $this
@@ -139,7 +143,7 @@ class Table extends Widget
     }
 
     /**
-     * Set screen width
+     * Set screen width.
      *
      * @param int $width screen width
      * @return $this
@@ -151,7 +155,7 @@ class Table extends Widget
     }
 
     /**
-     * Set list prefix
+     * Set list prefix.
      *
      * @param string $listPrefix list prefix
      * @return $this
@@ -206,7 +210,7 @@ class Table extends Widget
     }
 
     /**
-     * Renders a row of data into a string
+     * Renders a row of data into a string.
      *
      * @param array $row row of data
      * @param string $spanLeft character for left border
@@ -221,9 +225,10 @@ class Table extends Widget
 
         $buffer = '';
         $arrayPointer = [];
-        for ($i = 0, $max = $this->calculateRowHeight($row); $i < $max; $i++) {
+        for ($i = 0, ($max = $this->calculateRowHeight($row)) ?: $max = 1; $i < $max; $i++) {
             $buffer .= $spanLeft . ' ';
-            foreach ($row as $index => $cell) {
+            foreach ($size as $index => $cellSize) {
+                $cell = isset($row[$index]) ? $row[$index] : null;
                 $prefix = '';
                 if ($index !== 0) {
                     $buffer .= $spanMiddle . ' ';
@@ -239,17 +244,17 @@ class Table extends Widget
                     } else {
                         $start = mb_strwidth($finalChunk[$index], Yii::$app->charset);
                     }
-                    $chunk = mb_substr($cell[$arrayPointer[$index]], $start, $size[$index] - 4, Yii::$app->charset);
+                    $chunk = mb_substr($cell[$arrayPointer[$index]], $start, $cellSize - 4, Yii::$app->charset);
                     $finalChunk[$index] .= $chunk;
                     if (isset($cell[$arrayPointer[$index] + 1]) && $finalChunk[$index] === $cell[$arrayPointer[$index]]) {
                         $arrayPointer[$index]++;
                         $finalChunk[$index] = '';
                     }
                 } else {
-                    $chunk = mb_substr($cell, ($size[$index] * $i) - ($i * 2), $size[$index] - 2, Yii::$app->charset);
+                    $chunk = mb_substr($cell, ($cellSize * $i) - ($i * 2), $cellSize - 2, Yii::$app->charset);
                 }
                 $chunk = $prefix . $chunk;
-                $repeat = $size[$index] - mb_strwidth($chunk, Yii::$app->charset) - 1;
+                $repeat = $cellSize - mb_strwidth($chunk, Yii::$app->charset) - 1;
                 $buffer .= $chunk;
                 if ($repeat >= 0) {
                     $buffer .= str_repeat(' ', $repeat);
@@ -262,7 +267,7 @@ class Table extends Widget
     }
 
     /**
-     * Renders separator
+     * Renders separator.
      *
      * @param string $spanLeft character for left border
      * @param string $spanMid character for middle border
@@ -285,7 +290,7 @@ class Table extends Widget
     }
 
     /**
-     * Calculate the size of rows to draw anchor of columns in console
+     * Calculate the size of rows to draw anchor of columns in console.
      *
      * @see \yii\console\widgets\Table::render()
      */
@@ -306,6 +311,7 @@ class Table extends Widget
                     $encodings = array_fill(0, count($val), Yii::$app->charset);
                     return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
                 }
+
                 return mb_strwidth($val, Yii::$app->charset);
             }, $column)) + 2;
             $this->_columnWidths[] = $columnWidth;
@@ -326,7 +332,7 @@ class Table extends Widget
     }
 
     /**
-     * Calculate the height of a row
+     * Calculate the height of a row.
      *
      * @param array $row
      * @return int maximum row per cell
@@ -340,14 +346,17 @@ class Table extends Widget
                 foreach ($columnWidth as $width) {
                     $rows += ceil($width / ($size - 2));
                 }
+
                 return $rows;
             }
+
             return ceil($columnWidth / ($size - 2));
         }, $this->_columnWidths, array_map(function ($val) {
             if (is_array($val)) {
                 $encodings = array_fill(0, count($val), Yii::$app->charset);
                 return array_map('mb_strwidth', $val, $encodings);
             }
+
             return mb_strwidth($val, Yii::$app->charset);
         }, $row)
         );
@@ -356,7 +365,7 @@ class Table extends Widget
     }
 
     /**
-     * Getting screen width
+     * Getting screen width.
      *
      * @return int screen width
      */
@@ -368,6 +377,7 @@ class Table extends Widget
                 $this->_screenWidth = $size[0];
             }
         }
+
         return $this->_screenWidth;
     }
 }

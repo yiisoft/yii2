@@ -19,6 +19,7 @@ class AnyValue extends CompareValue
         if (self::$_instance === null) {
             self::$_instance = new self();
         }
+
         return self::$_instance;
     }
 }
