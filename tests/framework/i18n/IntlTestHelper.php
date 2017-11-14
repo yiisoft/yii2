@@ -24,10 +24,10 @@ namespace yiiunit\framework\i18n {
         {
             static::$enableIntl = null;
             if (strncmp($test->getName(false), 'testIntl', 8) === 0) {
+                static::$enableIntl = true;
                 if (!extension_loaded('intl')) {
                     $test->markTestSkipped('intl extension is not installed.');
                 }
-                static::$enableIntl = true;
             } else {
                 static::$enableIntl = false;
             }

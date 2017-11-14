@@ -153,6 +153,17 @@ class ModelTest extends TestCase
         $this->assertEquals(['firstName', 'lastName', 'underscore_style'], $speaker->activeAttributes());
     }
 
+    public function testActiveAttributesAreUnique()
+    {
+        // by default mass assignment doesn't work at all
+        $speaker = new Speaker();
+        $this->assertEmpty($speaker->activeAttributes());
+
+        $speaker = new Speaker();
+        $speaker->setScenario('duplicates');
+        $this->assertEquals(['firstName', 'underscore_style'], $speaker->activeAttributes());
+    }
+
     public function testIsAttributeSafe()
     {
         // by default mass assignment doesn't work at all

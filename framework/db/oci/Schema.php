@@ -73,17 +73,17 @@ class Schema extends \yii\db\Schema
 
     /**
      * @inheritDoc
+     * @see https://docs.oracle.com/cd/B28359_01/server.111/b28337/tdpsg_user_accounts.htm
      */
     protected function findSchemaNames()
     {
-        $sql = <<<'SQL'
-SELECT
-    USERNAME
-FROM DBA_USERS U
-WHERE
-    EXISTS (SELECT 1 FROM DBA_OBJECTS O WHERE O.OWNER = U.USERNAME)
-    AND DEFAULT_TABLESPACE NOT IN ('SYSTEM','SYSAUX')
+        static $sql = <<<'SQL'
+SELECT "u"."USERNAME"
+FROM "DBA_USERS" "u"
+WHERE "u"."DEFAULT_TABLESPACE" NOT IN ('SYSTEM', 'SYSAUX')
+ORDER BY "u"."USERNAME" ASC
 SQL;
+
         return $this->db->createCommand($sql)->queryColumn();
     }
 

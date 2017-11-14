@@ -221,7 +221,7 @@
                  * Clean up error status when the form is reset.
                  * Note that $form.on('reset', ...) does work because the "reset" event does not bubble on IE.
                  */
-                $form.bind('reset.yiiActiveForm', methods.resetForm);
+                $form.on('reset.yiiActiveForm', methods.resetForm);
 
                 if (settings.validateOnSubmit) {
                     $form.on('mouseup.yiiActiveForm keyup.yiiActiveForm', ':submit', function () {
@@ -287,7 +287,7 @@
 
         destroy: function () {
             return this.each(function () {
-                $(this).unbind('.yiiActiveForm');
+                $(this).off('.yiiActiveForm');
                 $(this).removeData('yiiActiveForm');
             });
         },

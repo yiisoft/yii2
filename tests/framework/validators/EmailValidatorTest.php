@@ -39,6 +39,7 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($validator->validate('<mail@cebe.cc>'));
         $this->assertFalse($validator->validate('info@örtliches.de'));
         $this->assertFalse($validator->validate('sam@рмкреатиф.ru'));
+        $this->assertFalse($validator->validate('ex..ample@example.com'));
 
         $validator->allowName = true;
 

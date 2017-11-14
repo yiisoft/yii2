@@ -121,13 +121,15 @@ class UrlTest extends TestCase
     public function testCurrent()
     {
         $this->mockAction('page', 'view', null, []);
-        \Yii::$app->request->setQueryParams(['id' => 10, 'name' => 'test']);
+        Yii::$app->request->setQueryParams(['id' => 10, 'name' => 'test', 10 => 0]);
 
-        $this->assertEquals('/base/index.php?r=page%2Fview&id=10&name=test', Url::current());
-
-        $this->assertEquals('/base/index.php?r=page%2Fview&id=20&name=test', Url::current(['id' => 20]));
-
-        $this->assertEquals('/base/index.php?r=page%2Fview&name=test', Url::current(['id' => null]));
+        $this->assertEquals('/base/index.php?r=page%2Fview&id=10&name=test&10=0', Url::current());
+        $this->assertEquals('/base/index.php?r=page%2Fview&id=20&name=test&10=0', Url::current(['id' => 20]));
+        $this->assertEquals('/base/index.php?r=page%2Fview&name=test&10=0', Url::current(['id' => null]));
+        $this->assertEquals('/base/index.php?r=page%2Fview&name=test&10=0&1=yes', Url::current(['id' => [], 1 => 'yes']));
+        $this->assertEquals('/base/index.php?r=page%2Fview&name=test&10=0', Url::current(['id' => []]));
+        $this->assertEquals('/base/index.php?r=page%2Fview&name=test', Url::current(['id' => null, 10 => null]));
+        $this->assertEquals('/base/index.php?r=page%2Fview&name=test&1=yes', Url::current(['id' => null, 10 => null, 1 => 'yes']));
     }
 
     public function testPrevious()

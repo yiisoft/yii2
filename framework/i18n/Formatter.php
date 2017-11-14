@@ -355,6 +355,7 @@ class Formatter extends Component
             self::UNIT_SYSTEM_METRIC => 1000, // 1 kilogram = 1000 grams
         ],
     ];
+
     /**
      * @var bool whether the [PHP intl extension](http://php.net/manual/en/book.intl.php) is loaded.
      */
@@ -1529,7 +1530,14 @@ class Formatter extends Component
 
         $multipliers = array_values($this->measureUnits[$unitType][$unitSystem]);
 
-        list($params, $position) = $this->formatNumber($value * $baseUnit, $decimals, null, $multipliers, $options, $textOptions);
+        list($params, $position) = $this->formatNumber(
+            $this->normalizeNumericValue($value) * $baseUnit,
+            $decimals,
+            null,
+            $multipliers,
+            $options,
+            $textOptions
+        );
 
         $message = $this->getUnitMessage($unitType, $unitFormat, $unitSystem, $position);
 

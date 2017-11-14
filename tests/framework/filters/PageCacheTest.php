@@ -166,7 +166,7 @@ class PageCacheTest extends TestCase
                 Yii::$app->response->cookies->add(new Cookie([
                     'name' => $name,
                     'value' => $value,
-                    'expire' => PHP_INT_MAX,
+                    'expire' => strtotime('now +1 year'),
                 ]));
                 $cookies[$name] = $value;
             }

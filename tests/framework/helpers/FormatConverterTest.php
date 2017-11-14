@@ -73,12 +73,35 @@ class FormatConverterTest extends TestCase
 
     public function testIntlUtf8Ru()
     {
-        $this->assertEquals('d M Y \г.', FormatConverter::convertDateIcuToPhp('dd MMM y \'г\'.', 'date', 'ru-RU'));
-        $this->assertEquals('dd M yy \'г\'.', FormatConverter::convertDateIcuToJui('dd MMM y \'г\'.', 'date', 'ru-RU'));
+        $this->assertEquals('d M Y \г.', FormatConverter::convertDateIcuToPhp("dd MMM y 'г'.", 'date', 'ru-RU'));
+        $this->assertEquals("dd M yy 'г'.", FormatConverter::convertDateIcuToJui("dd MMM y 'г'.", 'date', 'ru-RU'));
 
         $formatter = new Formatter(['locale' => 'ru-RU']);
         // There is a dot after month name in updated ICU data and no dot in old data. Both are acceptable.
         // See https://github.com/yiisoft/yii2/issues/9906
-        $this->assertRegExp('/24 авг\.? 2014 г\./', $formatter->asDate('2014-8-24', 'dd MMM y \'г\'.'));
+        $this->assertRegExp('/24 авг\.? 2014 г\./', $formatter->asDate('2014-8-24', "dd MMM y 'г'."));
+    }
+
+    public function testPhpToICU()
+    {
+        $expected = "yyyy-MM-dd'T'HH:mm:ssxxx";
+        $actual = FormatConverter::convertDatePhpToIcu('Y-m-d\TH:i:sP');
+        $this->assertEquals($expected, $actual);
+
+        $expected = "yyyy-MM-dd'Yii'HH:mm:ssxxx";
+        $actual = FormatConverter::convertDatePhpToIcu('Y-m-d\Y\i\iH:i:sP');
+        $this->assertEquals($expected, $actual);
+
+        $expected = "yyyy-MM-dd'Yii'HH:mm:ssxxx''''";
+        $actual = FormatConverter::convertDatePhpToIcu("Y-m-d\Y\i\iH:i:sP''");
+        $this->assertEquals($expected, $actual);
+
+        $expected = "yyyy-MM-dd'Yii'\HH:mm:ssxxx''''";
+        $actual = FormatConverter::convertDatePhpToIcu("Y-m-d\Y\i\i\\\\H:i:sP''");
+        $this->assertEquals($expected, $actual);
+
+        $expected = "'dDjlNSwZWFmMntLoYyaBghHisueIOPTZcru'";
+        $actual = FormatConverter::convertDatePhpToIcu('\d\D\j\l\N\S\w\Z\W\F\m\M\n\t\L\o\Y\y\a\B\g\h\H\i\s\u\e\I\O\P\T\Z\c\r\u');
+        $this->assertEquals($expected, $actual);
     }
 }

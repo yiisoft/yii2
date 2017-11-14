@@ -936,6 +936,41 @@ $items = $order->items;
 ```
 
 
+### Chaining relation definitions via multiple tables <span id="multi-table-relations"></span>
+
+Its further possible to define relations via multiple tables by chaining relation definitions using [[yii\db\ActiveQuery::via()|via()]].
+Considering the examples above, we have classes `Customer`, `Order`, and `Item`.
+We can add a relation to the `Customer` class that lists all items from all the orders they placed,
+and name it `getPurchasedItems()`, the chaining of relations is show in the following code example:
+
+```php
+class Customer extends ActiveRecord
+{
+    // ...
+
+    public function getPurchasedItems()
+    {
+        // customer's items, matching 'id' column of `Item` to 'item_id' in OrderItem
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+                    ->via('orderItems');
+    }
+
+    public function getOrderItems()
+    {
+        // customer's order items, matching 'id' column of `Order` to 'order_id' in OrderItem
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+                    ->via('orders');
+    }
+
+    public function getOrders()
+    {
+        // same as above
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```
+
+
 ### Lazy Loading and Eager Loading <span id="lazy-eager-loading"></span>
 
 In [Accessing Relational Data](#accessing-relational-data), we explained that you can access a relation property
@@ -1100,6 +1135,8 @@ the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery
 
 Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
 If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as `false`. 
+
+> Note: Even when using [[yii\db\ActiveQuery::joinWith()|joinWith()]] or [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] with eager loading enabled the related data will **not** be populated from the result of the `JOIN` query. So there's still an extra query for each joined relation as explained in the section on [eager loading](#lazy-eager-loading).
 
 Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
 queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
