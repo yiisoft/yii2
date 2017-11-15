@@ -11,6 +11,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\db\ActiveQueryInterface;
 use yii\db\Connection;
+use yii\db\Query;
 use yii\db\QueryInterface;
 use yii\di\Instance;
 
@@ -166,7 +167,7 @@ class ActiveDataProvider extends BaseDataProvider
             throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
         }
         $query = clone $this->query;
-        return (int) $query->limit(-1)->offset(-1)->orderBy([])->count('*', $this->db);
+        return (int) (new Query())->from(['totalCount' => $query->limit(-1)->offset(-1)->orderBy([])])->count('*', $this->db);
     }
 
     /**
