@@ -144,7 +144,7 @@ class FileTarget extends Target
                 } else {
                     if ($this->rotateByCopy) {
                         @copy($rotateFile, $file . '.' . ($i + 1));
-                        if ($fp = @fopen($rotateFile, 'a')) {
+                        if ($i === 0 && $fp = @fopen($rotateFile, 'a')) {
                             @ftruncate($fp, 0);
                             @fclose($fp);
                         }
