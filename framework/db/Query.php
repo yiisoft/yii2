@@ -590,28 +590,38 @@ PATTERN;
         if ($this->select === null) {
             $this->select = $columns;
         } else {
-            foreach ($columns as $columnName => $columnDefinition) {
-                if (($columnDefinition instanceof Query) || !in_array($columnDefinition, $this->select, true)) {
-                    if (is_string($columnName))
-                        $this->select[$columnName] = $columnDefinition;
-                    else
-                        $this->select[] = $columnDefinition;
-                } else {
-                    if (is_string($columnName) && (!isset($this->select[$columnName]) || $this->select[$columnName] !== $columnDefinition))
-                        $this->select[$columnName] = $columnDefinition;
-                    else if (!is_string($columnName)) {
-                        foreach ($this->select as $selectAlias => $selectDefinition) {
-                            if ($selectDefinition === $columnDefinition && !is_string($selectAlias))
-                                continue(2);
-                        }
-                        $this->select[] = $columnDefinition;
-                    }
-
-                }
-            }
+            $this->mergeSelect($columns);
         }
 
         return $this;
+    }
+
+    /**
+     * Merges given columns definitions into current query.
+     *
+     * @param array $columns the columns to be merged to the select.
+     */
+    protected function mergeSelect($columns)
+    {
+        foreach ($columns as $columnName => $columnDefinition) {
+            if (($columnDefinition instanceof Query) || !in_array($columnDefinition, $this->select, true)) {
+                if (is_string($columnName))
+                    $this->select[$columnName] = $columnDefinition;
+                else
+                    $this->select[] = $columnDefinition;
+            } else {
+                if (is_string($columnName) && (!isset($this->select[$columnName]) || $this->select[$columnName] !== $columnDefinition))
+                    $this->select[$columnName] = $columnDefinition;
+                else if (!is_string($columnName)) {
+                    foreach ($this->select as $selectAlias => $selectDefinition) {
+                        if ($selectDefinition === $columnDefinition && !is_string($selectAlias))
+                            continue(2);
+                    }
+                    $this->select[] = $columnDefinition;
+                }
+
+            }
+        }
     }
 
     /**
