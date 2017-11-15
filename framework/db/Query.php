@@ -590,38 +590,37 @@ PATTERN;
         if ($this->select === null) {
             $this->select = $columns;
         } else {
-            $this->mergeSelect($columns);
+            $this->select = array_merge($this->select, $this->removeDuplicatedColumns($columns));
         }
 
         return $this;
     }
 
     /**
-     * Merges given columns definitions into current query.
+     * Removes duplicated columns from given columns definitions.
      *
      * @param array $columns the columns to be merged to the select.
      */
-    protected function mergeSelect($columns)
+    protected function removeDuplicatedColumns($columns)
     {
         foreach ($columns as $columnName => $columnDefinition) {
-            if (($columnDefinition instanceof Query) || !in_array($columnDefinition, $this->select, true)) {
-                if (is_string($columnName))
-                    $this->select[$columnName] = $columnDefinition;
-                else
-                    $this->select[] = $columnDefinition;
-            } else {
-                if (is_string($columnName) && (!isset($this->select[$columnName]) || $this->select[$columnName] !== $columnDefinition))
-                    $this->select[$columnName] = $columnDefinition;
-                else if (!is_string($columnName)) {
-                    foreach ($this->select as $selectAlias => $selectDefinition) {
-                        if ($selectDefinition === $columnDefinition && !is_string($selectAlias))
-                            continue(2);
-                    }
-                    $this->select[] = $columnDefinition;
-                }
+            if ($columnDefinition instanceof Query)
+                continue;
 
+            if (is_string($columnName) && isset($this->select[$columnName]) && $this->select[$columnName] == $columnDefinition)
+                unset($columns[$columnName]);
+
+
+            if (!is_string($columnName) && in_array($columnDefinition, $this->select)) {
+                foreach ($this->select as $selectAlias => $selectDefinition) {
+                    if (!is_string($selectAlias) && $selectDefinition === $columnDefinition) {
+                        unset($columns[$columnName]);
+                        break;
+                    }
+                }
             }
         }
+        return $columns;
     }
 
     /**
