@@ -8,6 +8,7 @@
 namespace yii\db;
 
 use yii\base\BaseObject;
+use yii\helpers\StringHelper;
 
 /**
  * ColumnSchema class describes the metadata of a column in a database table.
@@ -127,9 +128,8 @@ class ColumnSchema extends BaseObject
                 }
                 if (is_float($value)) {
                     // ensure type cast always has . as decimal separator in all locales
-                    return str_replace(',', '.', (string) $value);
+                    return StringHelper::floatToString($value);
                 }
-
                 return (string) $value;
             case 'integer':
                 return (int) $value;

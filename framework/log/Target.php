@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
 use yii\web\Request;
 
@@ -25,10 +26,11 @@ use yii\web\Request;
  * satisfying both filter conditions will be handled. Additionally, you
  * may specify [[except]] to exclude messages of certain categories.
  *
+ * @property bool $enabled Indicates whether this log target is enabled. Defaults to true. Note that the type
+ * of this property differs in getter and setter. See [[getEnabled()]] and [[setEnabled()]] for details.
  * @property int $levels The message levels that this target is interested in. This is a bitmap of level
  * values. Defaults to 0, meaning  all available levels. Note that the type of this property differs in getter
  * and setter. See [[getLevels()]] and [[setLevels()]] for details.
- * @property bool $enabled Whether to enable this log target. Defaults to true.
  *
  * For more details and usage information on Target, see the [guide article on logging & targets](guide:runtime-logging).
  *
@@ -89,7 +91,6 @@ abstract class Target extends Component
      * Please refer to [[Logger::messages]] for the details about the message structure.
      */
     public $messages = [];
-
     /**
      * @var bool whether to log time with microseconds.
      * Defaults to false.
@@ -99,6 +100,7 @@ abstract class Target extends Component
 
     private $_levels = 0;
     private $_enabled = true;
+
 
     /**
      * Exports log [[messages]] to a specific destination.
@@ -338,7 +340,7 @@ abstract class Target extends Component
 
     /**
      * Check whether the log target is enabled.
-     * @property Indicates whether this log target is enabled. Defaults to true.
+     * @property bool Indicates whether this log target is enabled. Defaults to true.
      * @return bool A value indicating whether this log target is enabled.
      */
     public function getEnabled()
@@ -352,15 +354,15 @@ abstract class Target extends Component
 
     /**
      * Returns formatted ('Y-m-d H:i:s') timestamp for message.
-     * If [[microtime]] is configured to true it will return format 'Y-m-d H:i:s.u'
+     * If [[microtime]] is configured to true it will return format 'Y-m-d H:i:s.u'.
      * @param float $timestamp
      * @return string
      * @since 2.0.13
      */
     protected function getTime($timestamp)
     {
-        list ($timestamp, $usec) = explode('.', (string)$timestamp);
+        $parts = explode('.', StringHelper::floatToString($timestamp));
 
-        return date('Y-m-d H:i:s', $timestamp) . ($this->microtime ? ('.' . $usec) : '');
+        return date('Y-m-d H:i:s', $parts[0]) . ($this->microtime && isset($parts[1]) ? ('.' . $parts[1]) : '');
     }
 }

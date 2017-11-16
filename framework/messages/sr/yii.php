@@ -69,7 +69,7 @@ return [
     'Page not found.' => 'Страница није пронађена.',
     'Please fix the following errors:' => 'Молимо вас исправите следеће грешке:',
     'Please upload a file.' => 'Молимо вас поставите фајл.',
-    'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Приказано <b>{begin, number}-{end, number}</b> од <b>{totalCount, number}</b> {totalCount, plural, =1{# ставке} one{# ставкe} few{# ставке} many{# ставки} other{# ставки}}.',
+    'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Приказано <b>{begin, number}-{end, number}</b> од <b>{totalCount, number}</b> {totalCount, plural, =1{ставке} one{ставкe} few{ставке} many{ставки} other{ставки}}.',
     'The file "{file}" is not an image.' => 'Фајл "{file}" није слика.',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'Фајл "{file}" је превелик. Величина не може бити већа од {formattedLimit}.',
     'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => 'Фајл "{file}" је премали. Величина не може бити мања од {formattedLimit}.',

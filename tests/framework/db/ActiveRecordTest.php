@@ -1587,7 +1587,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $this->assertNotNull($order->customerJoinedWithProfile);
         $customerWithProfile = $order->customerJoinedWithProfile;
-        $this->assertInstanceOf(CustomerWithConstructor::className(), $customerWithProfile);        
+        $this->assertInstanceOf(CustomerWithConstructor::className(), $customerWithProfile);
         $this->assertEquals(1, $customerWithProfile->id);
 
         $this->assertNotNull($customerProfile = $customerWithProfile->profile);

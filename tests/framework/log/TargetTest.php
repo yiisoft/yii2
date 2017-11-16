@@ -202,6 +202,12 @@ class TargetTest extends TestCase
         $expectedWithMicro = '2017-10-16 13:26:30.6083 [info][application] message';
         $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
         $this->assertSame($expectedWithMicro, $formatted);
+
+        $timestamp = 1508160390;
+
+        $expectedWithoutMicro = '2017-10-16 13:26:30 [info][application] message';
+        $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
+        $this->assertSame($expectedWithoutMicro, $formatted);
     }
 }
 

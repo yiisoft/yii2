@@ -299,7 +299,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->expectException('yii\base\InvalidConfigException');
         $rule->allows($action, false, $request);
     }
-  
+
     public function testMatchRolesAndPermissions()
     {
         $action = $this->mockAction();
