@@ -62,6 +62,52 @@ class GroupUrlRuleTest extends TestCase
         }
     }
 
+    public function testParseVerb()
+    {
+        $config = [
+            'prefix' => 'admin',
+            'rules' => [
+                'login' => 'user/login'
+            ],
+        ];
+        $rules = new GroupUrlRule($config);
+        $this->assertNull($rules->rules[0]->verb);
+
+        $config = [
+            'prefix' => 'admin',
+            'rules' => [
+                'login' => ['route' => 'user/login', 'pattern' => 'login', 'verb' => 'POST'],
+            ],
+        ];
+        $rules = new GroupUrlRule($config);
+        $this->assertCount(1, $rules->rules[0]->verb);
+        $this->assertContains('POST', $rules->rules[0]->verb);
+        $this->assertEquals('admin/user/login', $rules->rules[0]->route);
+
+        $config = [
+            'prefix' => 'admin',
+            'rules' => [
+                'POST login' => 'user/login'
+            ],
+        ];
+        $rules = new GroupUrlRule($config);
+        $this->assertCount(1, $rules->rules[0]->verb);
+        $this->assertContains('POST', $rules->rules[0]->verb);
+        $this->assertEquals('admin/user/login', $rules->rules[0]->route);
+
+        $config = [
+            'prefix' => 'admin',
+            'rules' => [
+                'POST,GET login' => 'user/login'
+            ],
+        ];
+        $rules = new GroupUrlRule($config);
+        $this->assertCount(2, $rules->rules[0]->verb);
+        $this->assertContains('POST', $rules->rules[0]->verb);
+        $this->assertContains('GET', $rules->rules[0]->verb);
+        $this->assertEquals('admin/user/login', $rules->rules[0]->route);
+    }
+
     protected function getTestsForCreateUrl()
     {
         // structure of each test
