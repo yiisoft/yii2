@@ -75,6 +75,7 @@ class BlameableBehavior extends AttributeBehavior
 
     /**
      * @var mixed Default value for cases when user is guest
+     * @since 2.0.14
      */
     public $defaultValue;
 
