@@ -162,16 +162,43 @@ class BlameableBehaviorTest extends TestCase
         $model = new ActiveRecordBlameable([
             'as blameable' => [
                 'class' => BlameableBehavior::className(),
-                'defaultValue' => 10,
-                'useDefaultValue' => true
+                'defaultValue' => 2
             ],
         ]);
 
         $model->name = __METHOD__;
         $model->beforeSave(true);
 
-        $this->assertEquals(10, $model->created_by);
-        $this->assertEquals(10, $model->updated_by);
+        $this->assertEquals(2, $model->created_by);
+        $this->assertEquals(2, $model->updated_by);
+    }
+
+    public function testDefaultValueWithClosure()
+    {
+        $model = new ActiveRecordBlameableWithDefaultValueClosure();
+        $model->name = __METHOD__;
+        $model->beforeSave(true);
+
+        $this->getUser()->logout();
+        $model->beforeSave(true);
+
+        $this->assertEquals(11, $model->created_by);
+        $this->assertEquals(11, $model->updated_by);
+    }
+}
+
+class ActiveRecordBlameableWithDefaultValueClosure extends ActiveRecordBlameable
+{
+    public function behaviors()
+    {
+        return [
+            'blameable' => [
+                'class' => BlameableBehavior::className(),
+                'defaultValue' => function () {
+                    return $this->created_by + 1;
+                }
+            ],
+        ];
     }
 }
 

@@ -79,11 +79,6 @@ class BlameableBehavior extends AttributeBehavior
     public $defaultValue;
 
     /**
-     * @var bool Whether is [[defaultValue]] enabled
-     */
-    public $useDefaultValue = false;
-
-    /**
      * @inheritdoc
      */
     public function init()
@@ -101,19 +96,33 @@ class BlameableBehavior extends AttributeBehavior
     /**
      * @inheritdoc
      *
-     * In case, when the [[value]] property is `null`, the value of `Yii::$app->user->id` will be used as the value.
+     * In case, when the [[value]] property is `null`, the value of [[defaultValue]] will be used as the value.
      */
     protected function getValue($event)
     {
         if ($this->value === null && Yii::$app->has('user')) {
             $userId = Yii::$app->get('user')->id;
-            if (is_null($userId) && $this->useDefaultValue) {
-                return $this->defaultValue;
+            if ($userId === null) {
+                return $this->getDefaultValue($event);
             }
 
             return $userId;
         }
 
         return parent::getValue($event);
+    }
+
+    /**
+     * Get default value
+     * @param $event
+     * @return array|mixed
+     */
+    protected function getDefaultValue($event)
+    {
+        if ($this->defaultValue instanceof \Closure || (is_array($this->defaultValue) && is_callable($this->defaultValue))) {
+            return call_user_func($this->defaultValue, $event);
+        }
+
+        return $this->defaultValue;
     }
 }
