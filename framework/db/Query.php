@@ -598,7 +598,9 @@ PATTERN;
 
     /**
      * Removes duplicated columns from given columns definitions.
-     *
+     * Columns to be removed:
+     * - if column definition already present in SELECT part with same alias
+     * - if column definition without alias already present in SELECT part without alias too
      * @param array $columns the columns to be merged to the select.
      */
     protected function removeDuplicatedColumns($columns)
@@ -610,15 +612,9 @@ PATTERN;
             if (is_string($columnName) && isset($this->select[$columnName]) && $this->select[$columnName] == $columnDefinition)
                 unset($columns[$columnName]);
 
-
-            if (!is_string($columnName) && in_array($columnDefinition, $this->select)) {
-                foreach ($this->select as $selectAlias => $selectDefinition) {
-                    if (!is_string($selectAlias) && $selectDefinition === $columnDefinition) {
-                        unset($columns[$columnName]);
-                        break;
-                    }
-                }
-            }
+            // check if column is already present with numeric key
+            if (is_integer($columnName) && in_array($columnDefinition, array_filter($this->select, function ($def, $key) { return is_integer($key); }, ARRAY_FILTER_USE_BOTH)))
+                unset($columns[$columnName]);
         }
         return $columns;
     }
