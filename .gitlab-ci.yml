@@ -1,22 +1,13 @@
-before_script:
-  # set stack isolation
-  - export ISOLATION=buildpipeline${CI_PIPELINE_ID}${CI_BUILD_NAME}
-  - export COMPOSE_PROJECT_NAME=${ISOLATION}
-  - export TUPLE_C=$(expr ${CI_BUILD_ID} % 99)
-  - echo ${TUPLE_C}
-  # run docker-compose commands from tests environment
-  - cd tests
-  - cp .env-dist .env
-  - docker-compose config
+image: docker:latest
 
-after_script:
-  - export ISOLATION=buildpipeline${CI_PIPELINE_ID}${CI_BUILD_NAME}
-  - export COMPOSE_PROJECT_NAME=${ISOLATION}
-  # run docker-compose commands from tests environment
+services:
+  - docker:dind
+
+before_script:
+  - apk add --no-cache python py2-pip git
+  - pip install --no-cache-dir docker-compose==1.16.0
+  - docker info
   - cd tests
-  - cp .env-dist .env
-  - docker-compose down -v --remove-orphans
-  - docker ps -f name=${ISOLATION}
 
 stages:
   - travis
