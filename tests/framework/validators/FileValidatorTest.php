@@ -417,7 +417,7 @@ class FileValidatorTest extends TestCase
             ['test.txt', 'text/*', 'txt'],
             // Disabled for PHP 7.2 RC because of regression:
             // https://bugs.php.net/bug.php?id=75380
-            version_compare(PHP_VERSION, '7.2.0.RC.1', '>=') && version_compare(PHP_VERSION, '7.2.0.RC.5', '<=')
+            version_compare(PHP_VERSION, '7.2.0.RC.1', '>=') && version_compare(PHP_VERSION, '7.2.0.RC.6', '<=')
                 ? null
                 : ['test.xml', '*/xml', 'xml'],
             ['test.odt', 'application/vnd*', 'odt'],
