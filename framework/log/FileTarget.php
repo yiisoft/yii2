@@ -141,21 +141,47 @@ class FileTarget extends Target
                 // suppress errors because it's possible multiple processes enter into this section
                 if ($i === $this->maxLogFiles) {
                     @unlink($rotateFile);
-                } else {
-                    if ($this->rotateByCopy) {
-                        @copy($rotateFile, $file . '.' . ($i + 1));
-                        if ($fp = @fopen($rotateFile, 'a')) {
-                            @ftruncate($fp, 0);
-                            @fclose($fp);
-                        }
-                        if ($this->fileMode !== null) {
-                            @chmod($file . '.' . ($i + 1), $this->fileMode);
-                        }
-                    } else {
-                        @rename($rotateFile, $file . '.' . ($i + 1));
-                    }
+                    continue;
+                }
+                $newFile = $this->logFile . '.' . ($i + 1);
+                $this->rotateByCopy ? $this->rotateByCopy($rotateFile, $newFile) : $this->rotateByRename($rotateFile, $newFile);
+                if ($i === 0) {
+                    $this->clearLogFile($rotateFile);
                 }
             }
         }
+    }
+
+    /***
+     * Clear log file without closing any other process' open handles
+     * @param $rotateFile
+     */
+    private function clearLogFile($rotateFile)
+    {
+        if ($filePointer = @fopen($rotateFile, 'a')) {
+            @ftruncate($filePointer, 0);
+            @fclose($filePointer);
+        }
+    }
+
+    /***
+     * @param $rotateFile
+     * @param $newFile
+     */
+    private function rotateByCopy($rotateFile, $newFile)
+    {
+        @copy($rotateFile, $newFile);
+        if ($this->fileMode !== null) {
+            @chmod($newFile, $this->fileMode);
+        }
+    }
+
+    /***
+     * @param $rotateFile
+     * @param $newFile
+     */
+    private function rotateByRename($rotateFile, $newFile)
+    {
+        @rename($rotateFile, $newFile);
     }
 }
