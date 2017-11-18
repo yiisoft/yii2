@@ -13,7 +13,7 @@
 
 过滤器本质上是一类特殊的 [行为](concept-behaviors.md)，
 所以使用过滤器和 [使用 行为](concept-behaviors.md#attaching-behaviors)一样。
-可以在控制器类中覆盖它的 [[yii\base\Controller::behaviors()|behaviors()]] 方法来申明过滤器，如下所示：
+可以在控制器类中覆盖它的 [[yii\base\Controller::behaviors()|behaviors()]] 方法来声明过滤器，如下所示：
 
 ```php
 public function behaviors()
