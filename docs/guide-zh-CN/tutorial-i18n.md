@@ -554,7 +554,7 @@ class Menu extends Widget
 你可以简单地使用类映射的同名文件而不是使用 `fileMap` 。
 现在你直接可以使用 `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` 。
 
-> **提示**: 对于小部件也可以使用 i18n 视图，并一样以控制器的规则来应用它们。
+> 提示：对于小部件也可以使用 i18n 视图，并一样以控制器的规则来应用它们。
 
 
 ### 翻译框架信息
