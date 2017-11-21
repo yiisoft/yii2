@@ -141,6 +141,41 @@ class BaseStringHelper
 
         return $string;
     }
+    
+    
+    /**
+     * Truncates a string in the middle. Keeping start and end.
+     * `StringHelper::truncateMiddle('Hello world number 2', 8)` produces "Hell...er 2".
+     *
+     * This method does not support html. It will strip all tags even if length is smaller.
+     *
+     * @param string $string    The string to truncate.
+     * @param int $length       How many characters from original string to include into truncated string.
+     * @param string $separator String to append in the middle of truncated string.
+     * @param string $encoding  The charset to use, defaults to charset currently used by application.
+     * @return string the truncated string.
+     */
+    public static function truncateMiddle($string, $length, $separator = '...', $encoding = null)
+    {
+        if ($encoding === null) {
+            $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        }
+
+        $string = strip_tags($string);
+
+        $strLen = mb_strlen($string, $encoding);
+
+        if ($strLen > $length) {
+
+            $partLen = floor($length / 2);
+            $left = ltrim(mb_substr($string, 0, $partLen, $encoding));
+            $right = rtrim(mb_substr($string, -$partLen, $partLen, $encoding));
+
+            return $left . $separator . $right;
+        }
+
+        return $string;
+    }
 
     /**
      * Truncate a string while preserving the HTML.
