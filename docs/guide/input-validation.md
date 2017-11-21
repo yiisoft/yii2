@@ -423,6 +423,8 @@ with [inline validators](#inline-validators).
 
 
 For example the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
+In this case we can use [[yii\validators\Validator::addError()]] for customize the error message before 
+save the error message in the model.
 
 ```php
 namespace app\components;
@@ -434,7 +436,7 @@ class CountryValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         if (!in_array($model->$attribute, ['USA', 'Web'])) {
-            $this->addError($model, $attribute, 'The country must be either "USA" or "Web".');
+            $this->addError($model, $attribute, 'The country must be either "{country1}" or "{country2}".', ['country1' => 'USA', 'country2' => 'Web']);
         }
     }
 }

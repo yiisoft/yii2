@@ -384,7 +384,9 @@ class MyForm extends Model
 Вы можете реализовать свою логику проверки путем переопределения метода
 [[yii\validators\Validator::validateAttribute()]]. Если атрибут не прошел проверку, вызвать
 [[yii\base\Model::addError()]],
-чтобы сохранить сообщение об ошибке в модели, как это делают [встроенные валидаторы](#inline-validators). Например:
+чтобы сохранить сообщение об ошибке в модели, как это делают [встроенные валидаторы](#inline-validators).
+Также можно использовать одноимённый метод валидатора [[yii\validators\Validator::addError()]] для дополнительной обработки
+сообщения о ошибке перед сохранением сообщения об ошибке в модели, например:
 
 ```php
 namespace app\components;
@@ -396,7 +398,7 @@ class CountryValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         if (!in_array($model->$attribute, ['USA', 'Web'])) {
-            $this->addError($model, $attribute, 'Страна должна быть либо "USA" или "Web".');
+            $this->addError($model, $attribute, 'Страна должна быть либо "{country1}" либо "{country2}".', ['country1' => 'USA', 'country2' => 'Web']);
         }
     }
 }
