@@ -395,7 +395,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 'defaultValue' => '2002-01-01 00:00:00',
             ],
             'bool_col' => [
-                'type' => 'smallint',
+                'type' => 'tinyint',
                 'dbType' => 'tinyint(1)',
                 'phpType' => 'integer',
                 'allowNull' => false,
@@ -407,7 +407,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 'defaultValue' => null,
             ],
             'bool_col2' => [
-                'type' => 'smallint',
+                'type' => 'tinyint',
                 'dbType' => 'tinyint(1)',
                 'phpType' => 'integer',
                 'allowNull' => true,
