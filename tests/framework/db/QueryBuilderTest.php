@@ -643,7 +643,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'mysql' => 'tinyint(2)',
                     'postgres' => 'smallint',
                     'sqlite' => 'tinyint',
-                    'oci' => 'NUMBER(8)',
+                    'oci' => 'NUMBER(2)',
                     'sqlsrv' => 'tinyint',
                     'cubrid' => 'smallint',
                 ],
