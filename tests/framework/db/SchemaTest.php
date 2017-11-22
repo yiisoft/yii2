@@ -286,6 +286,18 @@ abstract class SchemaTest extends DatabaseTestCase
                 'scale' => null,
                 'defaultValue' => 1,
             ],
+            'tinyint_col' => [
+                'type' => 'tinyint',
+                'dbType' => 'tinyint(3)',
+                'phpType' => 'integer',
+                'allowNull' => true,
+                'autoIncrement' => false,
+                'enumValues' => null,
+                'size' => 3,
+                'precision' => 3,
+                'scale' => null,
+                'defaultValue' => 1,
+            ],
             'char_col' => [
                 'type' => 'char',
                 'dbType' => 'char(100)',
@@ -451,6 +463,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('negative_default_values');
+        $this->assertEquals(-123, $table->getColumn('tinyint_col')->defaultValue);
         $this->assertEquals(-123, $table->getColumn('smallint_col')->defaultValue);
         $this->assertEquals(-123, $table->getColumn('int_col')->defaultValue);
         $this->assertEquals(-123, $table->getColumn('bigint_col')->defaultValue);

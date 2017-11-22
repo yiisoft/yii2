@@ -117,6 +117,7 @@ CREATE TABLE "negative_default_values" (
 CREATE TABLE "type" (
   "int_col" int(11) NOT NULL,
   "int_col2" int(11) DEFAULT '1',
+  "tinyint_col" smallint DEFAULT '1',
   "smallint_col" smallint DEFAULT '1',
   "char_col" char(100) NOT NULL,
   "char_col2" varchar(100) DEFAULT 'something',
