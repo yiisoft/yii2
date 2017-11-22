@@ -637,6 +637,42 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
+                Schema::TYPE_TINYINT . '(2)',
+                $this->tinyInteger(2),
+                [
+                    'mysql' => 'tinyint(2)',
+                    'postgres' => 'smallint',
+                    'sqlite' => 'smallint',
+                    'oci' => 'NUMBER(8)',
+                    'sqlsrv' => 'tinyint',
+                    'cubrid' => 'smallint',
+                ],
+            ],
+            [
+                Schema::TYPE_TINYINT . ' UNSIGNED',
+                $this->tinyInteger()->unsigned(),
+                [
+                    'mysql' => 'tinyint(3) UNSIGNED',
+                    'postgres' => 'smallint UNSIGNED',
+                    'sqlite' => 'tinyint UNSIGNED',
+                    'oci' => 'NUMBER(3) UNSIGNED',
+                    'sqlsrv' => 'tinyint UNSIGNED',
+                    'cubrid' => 'smallint UNSIGNED',
+                ],
+            ],
+            [
+                Schema::TYPE_TINYINT,
+                $this->tinyInteger(),
+                [
+                    'mysql' => 'tinyint(3)',
+                    'postgres' => 'smallint',
+                    'sqlite' => 'tinyint',
+                    'oci' => 'NUMBER(3)',
+                    'sqlsrv' => 'smallint',
+                    'cubrid' => 'smallint',
+                ],
+            ],
+            [
                 Schema::TYPE_SMALLINT . '(8)',
                 $this->smallInteger(8),
                 [

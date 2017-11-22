@@ -48,6 +48,7 @@ abstract class Schema extends BaseObject
     const TYPE_CHAR = 'char';
     const TYPE_STRING = 'string';
     const TYPE_TEXT = 'text';
+    const TYPE_TINYINT = 'tinyint';
     const TYPE_SMALLINT = 'smallint';
     const TYPE_INTEGER = 'integer';
     const TYPE_BIGINT = 'bigint';
