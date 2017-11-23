@@ -19,6 +19,9 @@ use yii\web\JsExpression;
  * Optionally, you may configure the [[max]] and [[min]] properties to ensure the number
  * is within certain range.
  *
+ * @property int|float $min
+ * @property int|float $max
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -28,16 +31,6 @@ class NumberValidator extends Validator
      * @var bool whether the attribute value can only be an integer. Defaults to false.
      */
     public $integerOnly = false;
-    /**
-     * @var int|float upper limit of the number. Defaults to null, meaning no upper limit.
-     * @see tooBig for the customized message used when the number is too big.
-     */
-    public $max;
-    /**
-     * @var int|float lower limit of the number. Defaults to null, meaning no lower limit.
-     * @see tooSmall for the customized message used when the number is too small.
-     */
-    public $min;
     /**
      * @var string user-defined error message used when the value is bigger than [[max]].
      */
@@ -56,6 +49,51 @@ class NumberValidator extends Validator
      */
     public $numberPattern = '/^\s*[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?\s*$/';
 
+    /**
+     * @var int|float upper limit of the number. Defaults to null, meaning no upper limit.
+     * @see tooBig for the customized message used when the number is too big.
+     */
+    protected $_max;
+    /**
+     * @var int|float lower limit of the number. Defaults to null, meaning no lower limit.
+     * @see tooSmall for the customized message used when the number is too small.
+     */
+    protected $_min;
+
+
+    /**
+     * @return int|float
+     */
+    public function getMax()
+    {
+        return $this->_max;
+    }
+
+    /**
+     * @param int|float $max
+     */
+    public function setMax($max)
+    {
+        $this->_max = $max;
+        $this->init();
+    }
+
+    /**
+     * @return int|float
+     */
+    public function getMin()
+    {
+        return $this->_min;
+    }
+
+    /**
+     * @param int|float $min
+     */
+    public function setMin($min)
+    {
+        $this->_min = $min;
+        $this->init();
+    }
 
     /**
      * @inheritdoc
