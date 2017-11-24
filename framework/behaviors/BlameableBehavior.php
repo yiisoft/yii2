@@ -74,7 +74,7 @@ class BlameableBehavior extends AttributeBehavior
     public $value;
 
     /**
-     * @var mixed Default value for cases when user is guest
+     * @var mixed Default value for cases when the user is guest
      * @since 2.0.14
      */
     public $defaultValue;
@@ -115,8 +115,9 @@ class BlameableBehavior extends AttributeBehavior
 
     /**
      * Get default value
-     * @param $event
+     * @param \yii\base\Event $event
      * @return array|mixed
+     * @since 2.0.14
      */
     protected function getDefaultValue($event)
     {
