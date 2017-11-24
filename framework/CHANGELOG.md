@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
-- Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when user is guest (dmirogin)
+- Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150) 
 - Enh #15135: Automatic completion for help in bash and zsh (Valkeru)
