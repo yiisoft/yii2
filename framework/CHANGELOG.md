@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150) 
+- Bug #15194: Fixed `yii\db\QueryBuilder::insert()` to preserve passed params when building a `INSERT INTO ... SELECT` query for MSSQL, PostgreSQL and SQLite (sergeymakinen)
 - Enh #15135: Automatic completion for help in bash and zsh (Valkeru)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
 - Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
