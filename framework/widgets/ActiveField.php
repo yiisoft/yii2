@@ -163,6 +163,8 @@ class ActiveField extends Component
      */
     private $_skipLabelFor = false;
 
+    public $autoPlaceholder = false;
+
 
     /**
      * PHP magic method that returns the string representation of this object.
@@ -389,6 +391,9 @@ class ActiveField extends Component
      */
     public function textInput($options = [])
     {
+        if ($this->autoPlaceholder) {
+            $options = array_merge($options, ['placeholder' => $this->model->getAttributeLabel($this->attribute)]);
+        }
         $options = array_merge($this->inputOptions, $options);
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
@@ -483,6 +488,9 @@ class ActiveField extends Component
      */
     public function textarea($options = [])
     {
+        if ($this->autoPlaceholder) {
+            $options = array_merge($options, ['placeholder' => $this->model->getAttributeLabel($this->attribute)]);
+        }
         $options = array_merge($this->inputOptions, $options);
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
