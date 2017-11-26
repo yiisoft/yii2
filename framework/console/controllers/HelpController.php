@@ -125,8 +125,8 @@ class HelpController extends Controller
         $this->stdout("\n");
         $options = $controller->getActionOptionsHelp($action);
         foreach ($options as $argument => $help) {
-            $description = str_replace("\n", '', addcslashes($help['comment'], ':')) ?: $argument;
-            $this->stdout('--' . $argument . ':' . $description . "\n");
+            $description = str_replace("\n", '', addcslashes($help['comment'], ':'));
+            $this->stdout('--' . $argument . ($description ? ':' . $description : '') . "\n");
         }
     }
 

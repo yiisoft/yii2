@@ -11,6 +11,9 @@ Yii Framework 2 Change Log
 - Enh #15135: Automatic completion for help in bash and zsh (Valkeru)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
 - Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
+- Enh #15221: Added support for specifying `--camelCase` console options in `--kebab-case` (brandonkelly)
+- Enh #15221: Added support for the `--<option> <value>` console option syntax (brandonkelly)
+- Enh #15221: Improved the `help/list-action-options` console command output for command options without a description (brandonkelly)
 
 2.0.13.1 November 14, 2017
 --------------------------
