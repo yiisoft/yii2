@@ -366,6 +366,7 @@ class Table extends Widget
 
     /**
      * Getting screen width.
+     * If it is not able to determine screen width, default value `123` will be set.
      *
      * @return int screen width
      */
@@ -375,6 +376,9 @@ class Table extends Widget
             $size = Console::getScreenSize();
             if (isset($size[0])) {
                 $this->_screenWidth = $size[0];
+            }
+            else {
+                $this->_screenWidth = 123;
             }
         }
 
