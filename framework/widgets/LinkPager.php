@@ -243,9 +243,10 @@ class LinkPager extends Widget
         }
         if ($disabled) {
             Html::addCssClass($options, $this->disabledPageCssClass);
-            $tag = ArrayHelper::remove($this->disabledListItemSubTagOptions, 'tag', 'span');
+            $disabledItemOptions = $this->disabledListItemSubTagOptions;
+            $tag = ArrayHelper::remove($disabledItemOptions, 'tag', 'span');
 
-            return Html::tag($linkWrapTag, Html::tag($tag, $label, $this->disabledListItemSubTagOptions), $options);
+            return Html::tag($linkWrapTag, Html::tag($tag, $label, $disabledItemOptions), $options);
         }
         $linkOptions = $this->linkOptions;
         $linkOptions['data-page'] = $page;
