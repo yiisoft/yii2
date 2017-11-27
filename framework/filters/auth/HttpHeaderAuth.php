@@ -24,7 +24,7 @@ namespace yii\filters\auth;
  * ```
  *
  * The default implementation of HttpHeaderAuth uses the [[\yii\web\User::loginByAccessToken()|loginByAccessToken()]]
- * method of the `user` application component passes the value of the `X-Api-Key` header. This implementation is used
+ * method of the `user` application component and passes the value of the `X-Api-Key` header. This implementation is used
  * for authenticating API clients.
  *
  * @author Benoît Boure <benoit.boure@gmail.com>
