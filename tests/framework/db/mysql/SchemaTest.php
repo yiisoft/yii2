@@ -17,6 +17,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'mysql';
 
+    public function testGetSchemaNames()
+    {
+        $this->markTestSkipped('Schemas are not supported in MySQL.');
+    }
+
     public function constraintsProvider()
     {
         $result = parent::constraintsProvider();

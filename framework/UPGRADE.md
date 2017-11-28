@@ -22,7 +22,7 @@ Before upgrading, make sure you have a global installation of the latest version
 as well as a stable version of Composer:
 
     composer self-update
-    composer global require "fxp/composer-asset-plugin:^1.3.1" --no-plugins
+    composer global require "fxp/composer-asset-plugin:^1.4.1" --no-plugins
 
 The simple way to upgrade Yii, for example to version 2.0.10 (replace this with the version you want) will be running `composer require`:
 
@@ -130,6 +130,9 @@ Upgrade from Yii 2.0.12
   However, this change may affect your application if you have code that uses method `yii\base\Module::has()` in order
   to check existence of the component exactly in this specific module. In this case make sure the logic is not corrupted.
 
+* If you are using "asset" command to compress assets and your web applicaiton `assetManager` has `linkAssets` turned on,
+  make sure that "asset" command config has `linkAssets` turned on as well.
+
 * `yii\db\ExpressionInterface` has been introduced to represent a wider range of SQL expressions. In case you check for
   `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
   introduced methods to retrieve the expression content.
@@ -153,9 +156,10 @@ Upgrade from Yii 2.0.11
   internal cache for `createUrl()` calls. Ensure that all your custom rules implement this method in order to fully 
   benefit from the acceleration provided by this cache.
 
-* `yii\filters\AccessControl` now can be used without `user` component.  
-  In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
-  matching a role throws `yii\base\InvalidConfigException`.
+* `yii\filters\AccessControl` now can be used without `user` component. This has two consequences:
+
+  1. If used without user component, `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` instead of redirecting to login page.
+  2. If used without user component, using `AccessRule` matching a role throws `yii\base\InvalidConfigException`.
   
 * Inputmask package name was changed from `jquery.inputmask` to `inputmask`. If you've configured path to
   assets manually, please adjust it. 

@@ -56,7 +56,7 @@ class ArrayHelperTest extends TestCase
 
     public function testToArray()
     {
-        $dataArrayable = $this->getMock('yii\\base\\Arrayable');
+        $dataArrayable = $this->getMockBuilder('yii\\base\\Arrayable')->getMock();
         $dataArrayable->method('toArray')->willReturn([]);
         $this->assertEquals([], ArrayHelper::toArray($dataArrayable));
         $this->assertEquals(['foo'], ArrayHelper::toArray('foo'));
@@ -810,20 +810,22 @@ class ArrayHelperTest extends TestCase
 
     /**
      * This is expected to result in a PHP error.
-     * @expectedException \PHPUnit_Framework_Error
+     * @requires PHPUnit 6.0
      */
     public function testGetValueNonexistingProperties1()
     {
+        $this->expectException('PHPUnit\Framework\Error\Notice');
         $object = new Post1();
         $this->assertEquals(null, ArrayHelper::getValue($object, 'nonExisting'));
     }
 
     /**
      * This is expected to result in a PHP error.
-     * @expectedException \PHPUnit_Framework_Error
+     * @requires PHPUnit 6.0
      */
     public function testGetValueNonexistingProperties2()
     {
+        $this->expectException('PHPUnit\Framework\Error\Notice');
         $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
         $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
     }

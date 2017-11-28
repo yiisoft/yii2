@@ -29,7 +29,7 @@ class <?= $className ?> extends Migration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
 <?= $this->render('_createTable', [
     'table' => $table,
@@ -42,7 +42,7 @@ class <?= $className ?> extends Migration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
 <?= $this->render('_dropTable', [
     'table' => $table,

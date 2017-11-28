@@ -32,13 +32,16 @@ use yii\helpers\Console;
  * or
  *
  * ```php
- * echo Table::widget(
+ * echo Table::widget([
  *     'headers' => ['test1', 'test2', 'test3'],
  *     'rows' => [
  *         ['col1', 'col2', 'col3'],
  *         ['col1', 'col2', ['col3-0', 'col3-1', 'col3-2']],
  *     ],
- * );
+ * ]);
+ *
+ * @property string $listPrefix List prefix. This property is write-only.
+ * @property int $screenWidth Screen width. This property is write-only.
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
  * @since 2.0.13
@@ -101,6 +104,7 @@ class Table extends Widget
      * @var string list prefix
      */
     private $_listPrefix = '• ';
+
 
     /**
      * Set table headers.
@@ -362,6 +366,7 @@ class Table extends Widget
 
     /**
      * Getting screen width.
+     * If it is not able to determine screen width, default value `123` will be set.
      *
      * @return int screen width
      */
@@ -371,6 +376,9 @@ class Table extends Widget
             $size = Console::getScreenSize();
             if (isset($size[0])) {
                 $this->_screenWidth = $size[0];
+            }
+            else {
+                $this->_screenWidth = 123;
             }
         }
 

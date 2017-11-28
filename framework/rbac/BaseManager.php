@@ -26,6 +26,7 @@ abstract class BaseManager extends Component implements ManagerInterface
 {
     /**
      * @var array a list of role names that are assigned to every user automatically without calling [[assign()]].
+     * Note that these roles are applied to users, regardless of their state of authentication.
      */
     public $defaultRoles = [];
 

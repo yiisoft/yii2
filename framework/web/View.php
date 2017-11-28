@@ -342,6 +342,27 @@ class View extends \yii\base\View
     }
 
     /**
+     * Registers CSRF meta tags.
+     * They are rendered dynamically to retrieve a new CSRF token for each request.
+     *
+     * ```php
+     * $view->registerCsrfMetaTags();
+     * ```
+     *
+     * The above code will result in `<meta name="csrf-param" content="[yii\web\Request::$csrfParam]">`
+     * and `<meta name="csrf-token" content="tTNpWKpdy-bx8ZmIq9R72...K1y8IP3XGkzZA==">` added to the page.
+     *
+     * Note: Hidden CSRF input of ActiveForm will be automatically refreshed by calling `window.yii.refreshCsrfToken()`
+     * from `yii.js`.
+     *
+     * @since 2.0.13
+     */
+    public function registerCsrfMetaTags()
+    {
+        $this->metaTags['csrf_meta_tags'] = $this->renderDynamic('return yii\helpers\Html::csrfMetaTags();');
+    }
+
+    /**
      * Registers a link tag.
      *
      * For example, a link tag for a custom [favicon](http://www.w3.org/2005/10/howto-favicon)
@@ -583,7 +604,7 @@ class View extends \yii\base\View
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_LOAD])) {
-                $js = "jQuery(function ($) {\n$(window).on('load', function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});\n});";
+                $js = "jQuery(window).on('load', function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
         }

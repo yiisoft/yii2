@@ -125,8 +125,8 @@ class HelpController extends Controller
         $this->stdout("\n");
         $options = $controller->getActionOptionsHelp($action);
         foreach ($options as $argument => $help) {
-            $description = str_replace("\n", '', addcslashes($help['comment'], ':')) ?: $argument;
-            $this->stdout('--' . $argument . ':' . $description . "\n");
+            $description = str_replace("\n", '', addcslashes($help['comment'], ':'));
+            $this->stdout('--' . $argument . ($description ? ':' . $description : '') . "\n");
         }
     }
 
@@ -254,7 +254,7 @@ class HelpController extends Controller
                 if (!empty($file) && substr_compare($file, 'Controller.php', -14, 14) === 0) {
                     $controllerClass = $module->controllerNamespace . '\\' . substr(basename($file), 0, -4);
                     if ($this->validateControllerClass($controllerClass)) {
-                        $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
+                        $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14), '-', true);
                     }
                 }
             }

@@ -19,6 +19,10 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'pgsql';
 
+    protected $expectedSchemas = [
+        'public',
+    ];
+
     public function getExpectedColumns()
     {
         $columns = parent::getExpectedColumns();

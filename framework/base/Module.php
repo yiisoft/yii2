@@ -723,7 +723,7 @@ class Module extends ServiceLocator
         if (!isset($this->module)) {
             return parent::get($id, $throwException);
         }
-        
+
         $component = parent::get($id, false);
         if ($component === null) {
             $component = $this->module->get($id, $throwException);
