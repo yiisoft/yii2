@@ -374,14 +374,8 @@ class Table extends Widget
     {
         if (!$this->_screenWidth) {
             $size = Console::getScreenSize();
-            if (isset($size[0])) {
-                $this->_screenWidth = $size[0];
-            }
-            else {
-                $this->_screenWidth = 123;
-            }
+            $this->_screenWidth = isset($size[0]) ? $size[0] : 123;
         }
-
         return $this->_screenWidth;
     }
 }
