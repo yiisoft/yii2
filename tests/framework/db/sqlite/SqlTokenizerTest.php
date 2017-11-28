@@ -1129,7 +1129,6 @@ SELECT*from/*foo*/`T_constraints_1`WHERE not`C_check`=\'foo\'\'bar\'--bar
 
     /**
      * Use this to export SqlToken for tests.
-     * @param SqlToken $token
      * @return array
      */
     private function exportToken(SqlToken $token)

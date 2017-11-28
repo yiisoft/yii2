@@ -250,8 +250,6 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @param $name
-         * @param $arguments
          * @return mixed
          */
         public static function __callStatic($name, $arguments)

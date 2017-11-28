@@ -557,11 +557,6 @@ EOL;
 
     /**
      * @dataProvider adjustCssUrlDataProvider
-     *
-     * @param $cssContent
-     * @param $inputFilePath
-     * @param $outputFilePath
-     * @param $expectedCssContent
      */
     public function testAdjustCssUrl($cssContent, $inputFilePath, $outputFilePath, $expectedCssContent)
     {

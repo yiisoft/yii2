@@ -1255,9 +1255,6 @@ TEXT;
 
     /**
      * @dataProvider dataProviderCompareStrings
-     *
-     * @param $expected
-     * @param $actual
      */
     public function testCompareStrings($expected, $actual)
     {

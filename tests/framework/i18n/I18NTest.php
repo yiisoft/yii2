@@ -232,7 +232,6 @@ class I18NTest extends TestCase
 
     /**
      * @dataProvider sourceLanguageDataProvider
-     * @param $sourceLanguage
      */
     public function testIssue11429($sourceLanguage)
     {
