@@ -620,10 +620,6 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
     /**
      * Adds a list of errors.
-     * @param array $items a list of errors. The array keys must be attribute names.
-     * The array values should be error messages. If an attribute has multiple errors,
-     * these errors must be given in terms of an array.
-     * You may use the result of [[getErrors()]] as the value for this parameter.
      * @since 2.0.2
      */
     public function addErrors(array $items)

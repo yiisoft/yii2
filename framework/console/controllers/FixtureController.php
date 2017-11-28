@@ -102,7 +102,6 @@ class FixtureController extends Controller
      * yii fixture/load "*, -User, -UserProfile"
      * ```
      *
-     * @param array $fixturesInput
      * @return int return code
      * @throws Exception if the specified fixture does not exist.
      */
@@ -182,7 +181,6 @@ class FixtureController extends Controller
      * yii fixture/unload "*, -User, -UserProfile"
      * ```
      *
-     * @param array $fixturesInput
      * @return int return code
      * @throws Exception if the specified fixture does not exist.
      */
