@@ -283,8 +283,6 @@ class StringHelperTest extends TestCase
 
     /**
      * @dataProvider base64UrlEncodedStringsProvider
-     * @param $input
-     * @param $base64UrlEncoded
      */
     public function testBase64UrlEncode($input, $base64UrlEncoded)
     {
@@ -294,8 +292,6 @@ class StringHelperTest extends TestCase
 
     /**
      * @dataProvider base64UrlEncodedStringsProvider
-     * @param $output
-     * @param $base64UrlEncoded
      */
     public function testBase64UrlDecode($output, $base64UrlEncoded)
     {

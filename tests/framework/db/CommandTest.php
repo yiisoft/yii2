@@ -1078,7 +1078,6 @@ SQL;
      * @dataProvider dataProviderGetRawSql
      *
      * @param string $sql
-     * @param array $params
      * @param string $expectedRawSql
      */
     public function testGetRawSql($sql, array $params, $expectedRawSql)

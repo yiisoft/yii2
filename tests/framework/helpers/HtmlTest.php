@@ -1082,7 +1082,6 @@ EOD;
      * @dataProvider dataProviderActiveTextInput
      *
      * @param string $value
-     * @param array $options
      * @param string $expectedHtml
      */
     public function testActiveTextInput($value, array $options, $expectedHtml)
@@ -1125,7 +1124,6 @@ EOD;
      * @dataProvider dataProviderActivePasswordInput
      *
      * @param string $value
-     * @param array $options
      * @param string $expectedHtml
      */
     public function testActivePasswordInput($value, array $options, $expectedHtml)
@@ -1198,7 +1196,6 @@ EOD;
      * @dataProvider errorSummaryDataProvider
      *
      * @param string $value
-     * @param array $options
      * @param string $expectedHtml
      * @param \Closure $beforeValidate
      */
@@ -1254,7 +1251,6 @@ EOD;
      * @dataProvider dataProviderActiveTextArea
      *
      * @param string $value
-     * @param array $options
      * @param string $expectedHtml
      */
     public function testActiveTextArea($value, array $options, $expectedHtml)
@@ -1317,7 +1313,6 @@ EOD;
      * @dataProvider dataProviderActiveRadio
      *
      * @param string $value
-     * @param array $options
      * @param string $expectedHtml
      */
     public function testActiveRadio($value, array $options, $expectedHtml)
@@ -1361,7 +1356,6 @@ EOD;
      * @dataProvider dataProviderActiveCheckbox
      *
      * @param string $value
-     * @param array $options
      * @param string $expectedHtml
      */
     public function testActiveCheckbox($value, array $options, $expectedHtml)

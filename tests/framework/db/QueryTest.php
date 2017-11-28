@@ -506,10 +506,8 @@ abstract class QueryTest extends DatabaseTestCase
     }
 
     /**
-     * @param Connection $db
      * @param string $tableName
      * @param string $columnName
-     * @param array $condition
      * @param string $operator
      * @return int
      */

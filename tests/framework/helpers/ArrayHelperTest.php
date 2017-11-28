@@ -766,8 +766,6 @@ class ArrayHelperTest extends TestCase
     /**
      * @dataProvider valueProvider
      *
-     * @param $key
-     * @param $expected
      * @param null $default
      */
     public function testGetValue($key, $expected, $default = null)

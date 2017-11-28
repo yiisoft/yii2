@@ -123,8 +123,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     /**
      * Invokes a inaccessible method.
-     * @param $object
-     * @param $method
      * @param array $args
      * @param bool $revoke whether to make method inaccessible after execution
      * @return mixed
@@ -145,9 +143,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     /**
      * Sets an inaccessible object property to a designated value.
-     * @param $object
-     * @param $propertyName
-     * @param $value
      * @param bool $revoke whether to make property inaccessible after setting
      * @since 2.0.11
      */
@@ -167,8 +162,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     /**
      * Gets an inaccessible object property.
-     * @param $object
-     * @param $propertyName
      * @param bool $revoke whether to make property inaccessible after getting
      * @return mixed
      */
@@ -193,7 +186,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * Asserts that value is one of expected values.
      *
      * @param mixed $actual
-     * @param array $expected
      * @param string $message
      */
     public function assertIsOneOf($actual, array $expected, $message = '')

@@ -292,7 +292,6 @@ class FileValidatorTest extends TestCase
     }
 
     /**
-     * @param $fileName
      * @return UploadedFile
      */
     protected function getRealTestFile($fileName)
