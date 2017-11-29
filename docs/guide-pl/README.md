@@ -92,6 +92,7 @@ Odbieranie danych od użytkowników
 * [Wysyłanie plików](input-file-upload.md)
 * [Odczytywanie tablicowych danych wejściowych](input-tabular-input.md)
 * [Pobieranie danych dla wielu modeli](input-multiple-models.md)
+* [Rozszerzanie ActiveForm po stronie klienta](input-form-javascript.md)
 
 
 Wyświetlanie danych
@@ -174,6 +175,7 @@ Tematy specjalne
 * [Współdzielone środowisko hostingowe](tutorial-shared-hosting.md)
 * [Silniki szablonów](tutorial-template-engines.md)
 * [Praca z kodem zewnętrznym](tutorial-yii-integration.md)
+* [Używanie Yii jako mikroframeworka](tutorial-yii-as-micro-framework.md)
 
 
 Widżety

@@ -132,7 +132,7 @@ class UniqueValidator extends Validator
         }
 
         if ($this->modelExists($targetClass, $conditions, $model)) {
-            if (count($targetAttribute) > 1) {
+            if (is_array($targetAttribute) && count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
                 $this->addError($model, $attribute, $this->message);
@@ -277,7 +277,7 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * Returns conditions with alias
+     * Returns conditions with alias.
      * @param ActiveQuery $query
      * @param array $conditions array of condition, keys to be modified
      * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
@@ -302,6 +302,7 @@ class UniqueValidator extends Validator
 
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
+
         return $prefixedConditions;
     }
 }

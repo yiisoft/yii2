@@ -10,7 +10,7 @@ namespace yiiunit\data\base;
 use yii\base\Model;
 
 /**
- * InvalidRulesModel
+ * InvalidRulesModel.
  */
 class InvalidRulesModel extends Model
 {

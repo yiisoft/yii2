@@ -134,6 +134,7 @@ class UploadedFile extends BaseObject
                 $results[] = new static($file);
             }
         }
+
         return $results;
     }
 
@@ -165,6 +166,7 @@ class UploadedFile extends BaseObject
                 return copy($this->tempName, $file);
             }
         }
+
         return false;
     }
 
@@ -209,6 +211,7 @@ class UploadedFile extends BaseObject
                 }
             }
         }
+
         return self::$_files;
     }
 

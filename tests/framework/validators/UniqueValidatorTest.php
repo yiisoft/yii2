@@ -395,7 +395,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     }
 
     /**
-     * Test ambiguous column name in select clause
+     * Test ambiguous column name in select clause.
      * @see https://github.com/yiisoft/yii2/issues/14042
      */
     public function testAmbiguousColumnName()
@@ -415,7 +415,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     }
 
     /**
-     * Test expresssion in targetAttribute
+     * Test expresssion in targetAttribute.
      * @see https://github.com/yiisoft/yii2/issues/14304
      */
     public function testExpresionInAttributeColumnName()

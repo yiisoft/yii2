@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * Mock for the time() function for web classes
+ * Mock for the time() function for web classes.
  * @return int
  */
 function time()
@@ -95,6 +95,61 @@ class UserTest extends TestCase
         $this->mockWebApplication($appConfig);
         $this->assertTrue(Yii::$app->user->isGuest);
         $this->assertFalse(Yii::$app->user->can('doSomething'));
+    }
+
+    /**
+     * Make sure autologin works more than once.
+     * @see https://github.com/yiisoft/yii2/issues/11825
+     */
+    public function testIssue11825()
+    {
+        global $cookiesMock;
+        $cookiesMock = new CookieCollection();
+
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                    'authTimeout' => 10,
+                    'enableAutoLogin' => true,
+                    'autoRenewCookie' => false,
+                ],
+                'response' => [
+                    'class' => MockResponse::className(),
+                ],
+                'request' => [
+                    'class' => MockRequest::className(),
+                ],
+            ],
+        ];
+        $this->mockWebApplication($appConfig);
+
+        Yii::$app->session->removeAll();
+        static::$time = \time();
+        Yii::$app->user->login(UserIdentity::findIdentity('user1'), 20);
+
+        // User is logged in
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // IdentityCookie is valid
+        Yii::$app->session->removeAll();
+        static::$time += 5;
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // IdentityCookie is still valid
+        Yii::$app->session->removeAll();
+        static::$time += 10;
+        $this->mockWebApplication($appConfig);
+        $this->assertFalse(Yii::$app->user->isGuest);
+
+        // IdentityCookie is no longer valid (we remove it manually, but browser will do it automatically)
+        $this->invokeMethod(Yii::$app->user, 'removeIdentityCookie');
+        Yii::$app->session->removeAll();
+        static::$time += 25;
+        $this->mockWebApplication($appConfig);
+        $this->assertTrue(Yii::$app->user->isGuest);
     }
 
     public function testCookieCleanup()

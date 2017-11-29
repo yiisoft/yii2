@@ -386,14 +386,14 @@ Say we work on API application and have:
   ```php
   class FileStorage
   {
-      public function __contruct($root) {
+      public function __construct($root) {
           // whatever
       }
   }
   
   class DocumentsReader
   {
-      public function __contruct(FileStorage $fs) {
+      public function __construct(FileStorage $fs) {
           // whatever
       }
   }
@@ -427,7 +427,7 @@ $container->setDefinitions([
     }
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // Will create DocumentReader object with its dependencies as described in the config 
 ```
 

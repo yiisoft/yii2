@@ -104,7 +104,7 @@ trait ActiveQueryTrait
     }
 
     /**
-     * Converts found rows into model instances
+     * Converts found rows into model instances.
      * @param array $rows
      * @return array|ActiveRecord[]
      * @since 2.0.11

@@ -80,6 +80,7 @@ return [
   '{attribute} must be a string.' => 'Полето "{attribute}" трябва да съдържа текст.',
   '{attribute} must be an integer.' => 'Полето "{attribute}" трябва да съдържа цяло число.',
   '{attribute} must be either "{true}" or "{false}".' => 'Полето "{attribute}"  трябва да бъде "{true}" или "{false}".',
+  '{attribute} must be equal to "{compareValueOrAttribute}".' => '"{attribute}" трябва да е равно на "{compareValueOrAttribute}".',
   '{attribute} must be greater than "{compareValue}".' => 'Полето "{attribute}" трябва да е по-голямо от "{compareValue}".',
   '{attribute} must be greater than or equal to "{compareValue}".' => 'Полето "{attribute}" трябва да е по-големо или равно на «{compareValue}».',
   '{attribute} must be less than "{compareValue}".' => 'Полето "{attribute}" трябва да е по-малко от "{compareValue}".',

@@ -48,7 +48,7 @@ use yii\base\NotSupportedException;
  * For more details and usage information on Command, see the [guide article on Database Access Objects](guide:db-dao).
  *
  * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
- * [[sql]]. This property is read-only.
+ * [[sql]].
  * @property string $sql The SQL statement to be executed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -137,19 +137,43 @@ class Command extends Component
     }
 
     /**
-     * Specifies the SQL statement to be executed.
-     * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well.
+     * Specifies the SQL statement to be executed. The SQL statement will be quoted using [[Connection::quoteSql()]].
+     * The previous SQL (if any) will be discarded, and [[params]] will be cleared as well. See [[reset()]]
+     * for details.
+     *
      * @param string $sql the SQL statement to be set.
      * @return $this this command instance
+     * @see reset()
+     * @see cancel()
      */
     public function setSql($sql)
     {
         if ($sql !== $this->_sql) {
             $this->cancel();
+            $this->reset();
             $this->_sql = $this->db->quoteSql($sql);
-            $this->_pendingParams = [];
-            $this->params = [];
-            $this->_refreshTableName = null;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Specifies the SQL statement to be executed. The SQL statement will not be modified in any way.
+     * The previous SQL (if any) will be discarded, and [[params]] will be cleared as well. See [[reset()]]
+     * for details.
+     *
+     * @param string $sql the SQL statement to be set.
+     * @return $this this command instance
+     * @since 2.0.13
+     * @see reset()
+     * @see cancel()
+     */
+    public function setRawSql($sql)
+    {
+        if ($sql !== $this->_sql) {
+            $this->cancel();
+            $this->reset();
+            $this->_sql = $sql;
         }
 
         return $this;
@@ -407,6 +431,7 @@ class Command extends Component
 
     /**
      * Creates an INSERT command.
+     *
      * For example,
      *
      * ```php
@@ -436,6 +461,7 @@ class Command extends Component
 
     /**
      * Creates a batch INSERT command.
+     *
      * For example,
      *
      * ```php
@@ -459,13 +485,21 @@ class Command extends Component
      */
     public function batchInsert($table, $columns, $rows)
     {
+        $table = $this->db->quoteSql($table);
+        $columns = array_map(function ($column) {
+            return $this->db->quoteSql($column);
+        }, $columns);
+
         $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
 
-        return $this->setSql($sql);
+        $this->setRawSql($sql);
+
+        return $this;
     }
 
     /**
      * Creates an UPDATE command.
+     *
      * For example,
      *
      * ```php
@@ -499,6 +533,7 @@ class Command extends Component
 
     /**
      * Creates a DELETE command.
+     *
      * For example,
      *
      * ```php
@@ -876,7 +911,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for adding comment to column
+     * Builds a SQL command for adding comment to column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -892,7 +927,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for adding comment to table
+     * Builds a SQL command for adding comment to table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
@@ -907,7 +942,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for dropping comment from column
+     * Builds a SQL command for dropping comment from column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -922,7 +957,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for dropping comment from table
+     * Builds a SQL command for dropping comment from table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @return $this the command object itself
@@ -1068,7 +1103,7 @@ class Command extends Component
     }
 
     /**
-     * Refreshes table schema, which was marked by [[requireTableSchemaRefresh()]]
+     * Refreshes table schema, which was marked by [[requireTableSchemaRefresh()]].
      * @since 2.0.6
      */
     protected function refreshTableSchema()
@@ -1076,5 +1111,18 @@ class Command extends Component
         if ($this->_refreshTableName !== null) {
             $this->db->getSchema()->refreshTableSchema($this->_refreshTableName);
         }
+    }
+
+    /**
+     * Resets [[sql]] and [[params]] properties.
+     *
+     * @since 2.0.13
+     */
+    protected function reset()
+    {
+        $this->_sql = null;
+        $this->_pendingParams = [];
+        $this->params = [];
+        $this->_refreshTableName = null;
     }
 }

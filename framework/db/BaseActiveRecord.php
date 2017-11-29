@@ -101,7 +101,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * @inheritdoc
-     * @return static ActiveRecord instance matching the condition, or `null` if nothing matches.
+     * @return static|null ActiveRecord instance matching the condition, or `null` if nothing matches.
      */
     public static function findOne($condition)
     {
@@ -144,6 +144,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Updates the whole table using the provided attribute values and conditions.
+     *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
      * ```php
@@ -163,6 +164,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Updates the whole table using the provided counter changes and conditions.
+     *
      * For example, to increment all customers' age by 1,
      *
      * ```php
@@ -665,6 +667,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
             }
         }
+
         return $attributes;
     }
 
@@ -756,6 +759,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($runValidation && !$this->validate($attributeNames)) {
             return false;
         }
+
         return $this->updateInternal($attributeNames);
     }
 
@@ -965,6 +969,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * This method is called at the beginning of inserting or updating a record.
+     *
      * The default implementation will trigger an [[EVENT_BEFORE_INSERT]] event when `$insert` is `true`,
      * or an [[EVENT_BEFORE_UPDATE]] event if `$insert` is `false`.
      * When overriding this method, make sure you call the parent implementation like the following:
@@ -1021,6 +1026,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * This method is invoked before deleting a record.
+     *
      * The default implementation raises the [[EVENT_BEFORE_DELETE]] event.
      * When overriding this method, make sure you call the parent implementation like the following:
      *
@@ -1337,7 +1343,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */
                 /* @var $record ActiveRecordInterface */
-                $record = new $viaClass();
+                $record = Yii::createObject($viaClass);
                 foreach ($columns as $column => $value) {
                     $record->$column = $value;
                 }
@@ -1595,7 +1601,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * Returns a value indicating whether the given set of attributes represents the primary key for this model
+     * Returns a value indicating whether the given set of attributes represents the primary key for this model.
      * @param array $keys the set of attributes to check
      * @return bool whether the given set of attributes represents the primary key for this model
      */
@@ -1636,7 +1642,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     } catch (InvalidParamException $e) {
                         return $this->generateAttributeLabel($attribute);
                     }
-                    $relatedModel = new $relation->modelClass();
+                    /* @var $modelClass ActiveRecordInterface */
+                    $modelClass = $relation->modelClass;
+                    $relatedModel = $modelClass::instance();
                 }
             }
 
@@ -1676,7 +1684,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     } catch (InvalidParamException $e) {
                         return '';
                     }
-                    $relatedModel = new $relation->modelClass();
+                    /* @var $modelClass ActiveRecordInterface */
+                    $modelClass = $relation->modelClass;
+                    $relatedModel = $modelClass::instance();
                 }
             }
 
@@ -1685,6 +1695,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 return $hints[$neededAttribute];
             }
         }
+
         return '';
     }
 

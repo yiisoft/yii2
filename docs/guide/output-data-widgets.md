@@ -7,7 +7,7 @@ While the [DetailView](#detail-view) widget can be used to display data for a si
 providing features like pagination, sorting and filtering.
 
 
-DetailView <a name="detail-view"></a>
+DetailView <span id="detail-view"></span>
 ----------
 
 The [[yii\widgets\DetailView|DetailView]] widget displays the details of a single data [[yii\widgets\DetailView::$model|model]].
@@ -59,7 +59,7 @@ echo DetailView::widget([
 ]);
 ```
 
-ListView <a name="list-view"></a>
+ListView <span id="list-view"></span>
 --------
 
 The [[yii\widgets\ListView|ListView]] widget is used to display data from a [data provider](output-data-providers.md).
@@ -124,7 +124,7 @@ echo ListView::widget([
 These are then also available as variables in the view.
 
 
-GridView <a name="grid-view"></a>
+GridView <span id="grid-view"></span>
 --------
 
 Data grid or [[yii\grid\GridView|GridView]] is one of the most powerful Yii widgets. It is extremely useful if you need to quickly build the admin
@@ -155,7 +155,7 @@ The above code first creates a data provider and then uses GridView to display e
 the data provider. The displayed table is equipped with sorting and pagination functionality out of the box.
 
 
-### Grid columns
+### Grid columns <span id="grid-columns"></span>
 
 The columns of the grid table are configured in terms of [[yii\grid\Column]] classes, which are
 configured in the [[yii\grid\GridView::columns|columns]] property of GridView configuration.
@@ -186,7 +186,7 @@ Note that if the [[yii\grid\GridView::columns|columns]] part of the configuratio
 Yii tries to show all possible columns of the data provider's model.
 
 
-### Column classes
+### Column classes <span id="column-classes"></span>
 
 Grid columns could be customized by using different column classes:
 
@@ -257,7 +257,7 @@ For configuring data columns there is also a shortcut format which is described 
 API documentation for [[yii\grid\GridView::columns|columns]].
 
 
-#### Action column
+#### Action column <span id="action-column"></span>
 
 [[yii\grid\ActionColumn|Action column]] displays action buttons such as update or delete for each row.
 
@@ -314,7 +314,7 @@ Available properties you can configure are:
   ]
   ```
 
-#### Checkbox column
+#### Checkbox column <span id="checkbox-column"></span>
 
 [[yii\grid\CheckboxColumn|Checkbox column]] displays a column of checkboxes.
 
@@ -340,7 +340,7 @@ var keys = $('#grid').yiiGridView('getSelectedRows');
 // keys is an array consisting of the keys associated with the selected rows
 ```
 
-#### Serial column
+#### Serial column <span id="serial-column"></span>
 
 [[yii\grid\SerialColumn|Serial column]] renders row numbers starting with `1` and going forward.
 
@@ -355,13 +355,13 @@ echo GridView::widget([
 ```
 
 
-### Sorting data
+### Sorting data <span id="sorting-data"></span>
 
 > Note: This section is under development.
 >
 > - https://github.com/yiisoft/yii2/issues/1576
 
-### Filtering data
+### Filtering data <span id="filtering-data"></span>
 
 For filtering data, the GridView needs a [model](structure-models.md) that represents the search criteria which is
 usually taken from the filter fields in the GridView table.
@@ -448,7 +448,7 @@ echo GridView::widget([
 ]);
 ```
 
-### Separate filter form
+### Separate filter form <span id="separate-filter-form"></span>
 
 Most of the time using GridView header filters is enough, but in case you need a separate filter form,
 you can easily add it as well. You can create partial view `_search.php` with the following contents:
@@ -526,7 +526,7 @@ And add the representative fields to the filter form:
 <?= $form->field($model, 'creationTo') ?>
 ```
 
-### Working with model relations
+### Working with model relations <span id="working-with-model-relations"></span>
 
 When displaying active records in a GridView you might encounter the case where you display values of related
 columns such as the post author's name instead of just his `id`.
@@ -619,7 +619,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > Info: For more information on `joinWith` and the queries performed in the background, check the
 > [active record docs on joining with relations](db-active-record.md#joining-with-relations).
 
-#### Using SQL views for filtering, sorting and displaying data
+#### Using SQL views for filtering, sorting and displaying data <span id="using-sql-views"></span>
 
 There is also another approach that can be faster and more useful - SQL views. For example, if we need to show the gridview
 with users and their profiles, we can do so in this way:
@@ -668,7 +668,7 @@ class UserView extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public static function attributeLabels()
+    public function attributeLabels()
     {
         return [
             // define here your attribute labels
@@ -688,7 +688,7 @@ All attributes will be working out of the box. Note that this approach has sever
 `isDeleted` or others that will influence the UI, you will need to duplicate them in this class too.
 
 
-### Multiple GridViews on one page
+### Multiple GridViews on one page <span id="multiple-gridviews"></span>
 
 You can use more than one GridView on a single page but some additional configuration is needed so that
 they do not interfere with each other.
@@ -721,7 +721,7 @@ echo GridView::widget([
 ]);
 ```
 
-### Using GridView with Pjax
+### Using GridView with Pjax <span id="using-gridview-with-pjax"></span>
 
 The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
 page instead of reloading the entire page. You can use it to update only the

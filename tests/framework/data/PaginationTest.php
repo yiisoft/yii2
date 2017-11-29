@@ -28,7 +28,7 @@ class PaginationTest extends TestCase
     }
 
     /**
-     * Data provider for [[testCreateUrl()]]
+     * Data provider for [[testCreateUrl()]].
      * @return array test data
      */
     public function dataProviderCreateUrl()
@@ -67,6 +67,7 @@ class PaginationTest extends TestCase
      * @param int $page
      * @param int $pageSize
      * @param string $expectedUrl
+     * @param array $params
      */
     public function testCreateUrl($page, $pageSize, $expectedUrl, $params)
     {

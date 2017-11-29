@@ -16,7 +16,7 @@ use yii\helpers\StringHelper;
 use yii\helpers\Url;
 
 /**
- * The web Response class represents an HTTP response
+ * The web Response class represents an HTTP response.
  *
  * It holds the [[headers]], [[cookies]] and [[content]] that is to be sent to the client.
  * It also controls the HTTP [[statusCode|status code]].
@@ -289,6 +289,7 @@ class Response extends \yii\base\Response
         } else {
             $this->statusText = $text;
         }
+
         return $this;
     }
 
@@ -306,6 +307,7 @@ class Response extends \yii\base\Response
         } else {
             $this->setStatusCode(500);
         }
+
         return $this;
     }
 
@@ -319,6 +321,7 @@ class Response extends \yii\base\Response
         if ($this->_headers === null) {
             $this->_headers = new HeaderCollection();
         }
+
         return $this->_headers;
     }
 
@@ -355,7 +358,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Sends the response headers to the client
+     * Sends the response headers to the client.
      */
     protected function sendHeaders()
     {
@@ -404,7 +407,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Sends the response content to the client
+     * Sends the response content to the client.
      */
     protected function sendContent()
     {
@@ -626,10 +629,11 @@ class Response extends \yii\base\Response
      */
     protected function getHttpRange($fileSize)
     {
-        if (!isset($_SERVER['HTTP_RANGE']) || $_SERVER['HTTP_RANGE'] === '-') {
+        $rangeHeader = Yii::$app->getRequest()->getHeaders()->get('Range', '-');
+        if ($rangeHeader === '-') {
             return [0, $fileSize - 1];
         }
-        if (!preg_match('/^bytes=(\d*)-(\d*)$/', $_SERVER['HTTP_RANGE'], $matches)) {
+        if (!preg_match('/^bytes=(\d*)-(\d*)$/', $rangeHeader, $matches)) {
             return false;
         }
         if ($matches[1] === '') {
@@ -738,7 +742,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Returns Content-Disposition header value that is safe to use with both old and new browsers
+     * Returns Content-Disposition header value that is safe to use with both old and new browsers.
      *
      * Fallback name:
      *
@@ -770,6 +774,7 @@ class Response extends \yii\base\Response
         if ($utfName !== $fallbackName) {
             $dispositionHeader .= "; filename*=utf-8''{$utfName}";
         }
+
         return $dispositionHeader;
     }
 
@@ -887,6 +892,7 @@ class Response extends \yii\base\Response
 
     /**
      * Returns the cookie collection.
+     *
      * Through the returned cookie collection, you add or remove cookies as follows,
      *
      * ```php
@@ -909,6 +915,7 @@ class Response extends \yii\base\Response
         if ($this->_cookies === null) {
             $this->_cookies = new CookieCollection();
         }
+
         return $this->_cookies;
     }
 

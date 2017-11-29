@@ -11,7 +11,7 @@ use yii\db\oci\ColumnSchemaBuilder;
 use yii\db\Schema;
 
 /**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle
+ * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle.
  * @group db
  * @group oci
  */

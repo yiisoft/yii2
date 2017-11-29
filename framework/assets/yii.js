@@ -163,9 +163,14 @@ window.yii = (function ($) {
                 pjaxOptions = {};
 
             if (usePjax) {
-                pjaxContainer = $e.data('pjax-container') || $e.closest('[data-pjax-container]');
+                pjaxContainer = $e.data('pjax-container');
+                if (pjaxContainer === undefined || !pjaxContainer.length) {
+                    pjaxContainer = $e.closest('[data-pjax-container]').attr('id')
+                        ? ('#' + $e.closest('[data-pjax-container]').attr('id'))
+                        : '';
+                }
                 if (!pjaxContainer.length) {
-                    pjaxContainer = $('body');
+                    pjaxContainer = 'body';
                 }
                 pjaxOptions = {
                     container: pjaxContainer,
@@ -294,6 +299,7 @@ window.yii = (function ($) {
                     params[name].push(value || '');
                 }
             }
+
             return params;
         },
 

@@ -10,7 +10,7 @@ namespace yiiunit\framework\caching;
 use yii\caching\ArrayCache;
 
 /**
- * Class for testing file cache backend
+ * Class for testing file cache backend.
  * @group caching
  */
 class ArrayCacheTest extends CacheTestCase
@@ -25,6 +25,7 @@ class ArrayCacheTest extends CacheTestCase
         if ($this->_cacheInstance === null) {
             $this->_cacheInstance = new ArrayCache();
         }
+
         return $this->_cacheInstance;
     }
 

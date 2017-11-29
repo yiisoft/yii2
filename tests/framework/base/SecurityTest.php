@@ -12,25 +12,30 @@ namespace yii\base {
      * where different execution paths are chosen based on calling function_exists.
      *
      * This function overrides function_exists from the root namespace in yii\base.
+     * @param string $name
      */
     function function_exists($name)
     {
         if (isset(\yiiunit\framework\base\SecurityTest::$functions[$name])) {
             return \yiiunit\framework\base\SecurityTest::$functions[$name];
         }
+
         return \function_exists($name);
     }
     /**
-     * emulate chunked reading of fread(), to test different branches of Security class
-     * where different execution paths are chosen based on the return value of fopen/fread
+     * Emulate chunked reading of fread(), to test different branches of Security class
+     * where different execution paths are chosen based on the return value of fopen/fread.
      *
      * This function overrides fopen and fread from the root namespace in yii\base.
+     * @param string $filename
+     * @param mixed $mode
      */
     function fopen($filename, $mode)
     {
         if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
             return \yiiunit\framework\base\SecurityTest::$fopen;
         }
+
         return \fopen($filename, $mode);
     }
     function fread($handle, $length)
@@ -41,6 +46,7 @@ namespace yii\base {
         if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
             return $length < 8 ? \str_repeat('s', $length) : 'test1234';
         }
+
         return \fread($handle, $length);
     }
 } // closing namespace yii\base;
@@ -153,10 +159,10 @@ class SecurityTest extends TestCase
     }
 
     /**
-     * Generates test vectors like this:
-     *   [key/password, plaintext, ciphertext]
+     * Generates test vectors like this: `[key/password, plaintext, ciphertext]`.
+     *
      * The output can then be used for testing compatibility of data encrypted in one
-     * version of Yii and decrypted in another
+     * version of Yii and decrypted in another.
      */
     public function notestGenerateVectors()
     {
@@ -875,6 +881,7 @@ TEXT;
     /**
      * @dataProvider randomKeyInvalidInputs
      * @expectedException \yii\base\InvalidParamException
+     * @param mixed $input
      */
     public function testRandomKeyInvalidInput($input)
     {
@@ -882,7 +889,7 @@ TEXT;
     }
 
     /**
-     * Test the case where opening /dev/urandom fails
+     * Test the case where opening /dev/urandom fails.
      */
     public function testRandomKeyNoOptions()
     {
@@ -895,7 +902,7 @@ TEXT;
     }
 
     /**
-     * Test the case where reading from /dev/urandom fails
+     * Test the case where reading from /dev/urandom fails.
      */
     public function testRandomKeyFreadFailure()
     {
@@ -926,6 +933,7 @@ TEXT;
 
     /**
      * @dataProvider randomKeyVariants
+     * @param array $functions
      */
     public function testGenerateRandomKey($functions)
     {
@@ -1039,7 +1047,7 @@ TEXT;
 
     public function dataProviderPbkdf2()
     {
-        return [
+        return array_filter([
             [
                 'sha1',
                 'password',
@@ -1064,14 +1072,14 @@ TEXT;
                 20,
                 '4b007901b765489abead49d926f721d065a429c1',
             ],
-            [
+            getenv('TRAVIS') == true ? [
                 'sha1',
                 'password',
                 'salt',
                 16777216,
                 20,
                 'eefe3d61cd4da4e4e9945b3d6ba2158c2634e984',
-            ],
+            ] : null,
             [
                 'sha1',
                 'passwordPASSWORDpassword',
@@ -1112,7 +1120,7 @@ TEXT;
                 40,
                 '348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9',
             ],
-        ];
+        ]);
     }
 
     /**
@@ -1258,6 +1266,7 @@ TEXT;
 
     /**
      * @dataProvider maskProvider
+     * @param mixed $unmaskedToken
      */
     public function testMasking($unmaskedToken)
     {

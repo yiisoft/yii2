@@ -10,7 +10,7 @@ namespace yiiunit\framework\base;
 use yii\base\Security;
 
 /**
- * ExposedSecurity exposes protected methods for direct testing
+ * ExposedSecurity exposes protected methods for direct testing.
  */
 class ExposedSecurity extends Security
 {

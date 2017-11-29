@@ -1,6 +1,7 @@
 <?php
 /**
- * This view is used by console/controllers/MigrateController.php
+ * This view is used by console/controllers/MigrateController.php.
+ *
  * The following variables are available in this view:
  * @since 2.0.7
  * @deprecated since 2.0.8
@@ -28,7 +29,7 @@ class <?= $className ?> extends Migration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
         $this->createTable('<?= $table ?>', [
             '<?= $field_first ?>_id' => $this->integer(),
@@ -70,7 +71,7 @@ class <?= $className ?> extends Migration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
         $this->dropTable('<?= $table ?>');
     }

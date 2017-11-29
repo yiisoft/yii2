@@ -133,6 +133,7 @@ abstract class MultiFieldSession extends Session
                 $_SESSION = array_merge((array) $_SESSION, (array) $extraData);
                 return session_encode();
             }
+
             return $fields['data'];
         }
 

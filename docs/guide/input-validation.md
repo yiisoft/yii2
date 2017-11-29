@@ -564,7 +564,7 @@ $this->addError('childrenCount', $message);
 Or use a loop:
 
 ```php
-$attributes = ['personalSalary, 'wifeSalary', 'childrenCount'];
+$attributes = ['personalSalary', 'wifeSalary', 'childrenCount'];
 foreach ($attributes as $attribute) {
     $this->addError($attribute, 'Your salary is not enough for children.');
 }
@@ -817,7 +817,7 @@ JS;
 ```
 
 
-### AJAX Validation <span id="ajax-validation"></span>
+## AJAX Validation <span id="ajax-validation"></span>
 
 Some validations can only be done on the server-side, because only the server has the necessary information.
 For example, to validate if a username is unique or not, it is necessary to check the user table on the server-side.

@@ -13,7 +13,7 @@ use yiiunit\data\cache\MockDependency;
 use yiiunit\TestCase;
 
 /**
- * Dependency (abstract) tests
+ * Dependency (abstract) tests.
  * @group caching
  * @author Boudewijn Vahrmeijer <vahrmeijer@gmail.com>
  * @since 2.0.11

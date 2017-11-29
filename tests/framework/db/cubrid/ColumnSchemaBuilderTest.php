@@ -11,7 +11,7 @@ use yii\db\cubrid\ColumnSchemaBuilder;
 use yii\db\Schema;
 
 /**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Cubrid
+ * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Cubrid.
  * @group db
  * @group cubrid
  */

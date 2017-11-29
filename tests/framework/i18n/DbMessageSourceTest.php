@@ -138,6 +138,7 @@ class DbMessageSourceTest extends I18NTest
             }
             static::$db = $db;
         }
+
         return static::$db;
     }
 
