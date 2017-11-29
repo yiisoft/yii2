@@ -250,8 +250,9 @@ class HelpController extends Controller
         $controllerPath = $module->getControllerPath();
         if (is_dir($controllerPath)) {
             $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($controllerPath, \RecursiveDirectoryIterator::KEY_AS_PATHNAME));
-            $iterator = new \RegexIterator($iterator, '/Controller\.php$/', \RecursiveRegexIterator::GET_MATCH);
-            foreach ($iterator as $file => $regex) {
+            $iterator = new \RegexIterator($iterator, '/.*Controller\.php$/', \RecursiveRegexIterator::GET_MATCH);
+            foreach ($iterator as $matches) {
+                $file = $matches[0];
                 $relativePath = str_replace($controllerPath, '', $file);
                 $class = strtr($relativePath, [
                     DIRECTORY_SEPARATOR => '\\',
