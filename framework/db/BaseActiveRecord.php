@@ -452,7 +452,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param string $relationName relation name in target (case sensitive, without 'get')
      * @param callable $callable a PHP callback for customizing the relation associated with the junction ActiveQuery in `via`.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
-     * @return ActiveQuery ActiveQuery type of end-side model
+     * @return ActiveQueryInterface ActiveQuery type of end-side model
      * @since 2.0.14
      * @see hasOne()
      * @see hasMany()
