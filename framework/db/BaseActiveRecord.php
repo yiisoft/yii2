@@ -419,7 +419,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * ```php
      * public function getItems(): ItemQuery
      * {
-     *     return $this->viaRelation('item', 'orderItems');
+     *     return $this->viaRelation('orderItems', 'item');
      * }
      * public function getOrderItems(): OrderItemQuery
      * {
@@ -444,12 +444,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * }
      * public function getItems(): ItemQuery
      * {
-     *     return $this->viaRelation('items', 'orders');
+     *     return $this->viaRelation('orders', 'items');
      * }
      * ```
      *
-     * @param string $relationName relation name in target (case sensitive, without 'get')
      * @param string $via relation name in called (self) class (case sensitive, without 'get')
+     * @param string $relationName relation name in target (case sensitive, without 'get')
      * @param callable $callable a PHP callback for customizing the relation associated with the junction ActiveQuery in `via`.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return ActiveQuery ActiveQuery type of end-side model
@@ -457,7 +457,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @see hasOne()
      * @see hasMany()
      */
-    public function viaRelation($relationName, $via, callable $callable = null)
+    public function viaRelation($via, $relationName, callable $callable = null)
     {
         $relation = $this->getRelation($via);
         $target = Yii::createObject($relation->modelClass);
