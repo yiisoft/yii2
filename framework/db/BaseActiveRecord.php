@@ -417,11 +417,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * For example, to declare the `items` relation for `Order` class, we can write
      * the following code in the `Order` class:
      * ```php
-     * public function getItems() : ItemQuery
+     * public function getItems(): ItemQuery
      * {
      *     return $this->viaRelation('item', 'orderItems');
      * }
-     * public function getOrderItems()
+     * public function getOrderItems(): OrderItemQuery
      * {
      *     return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
      * }
@@ -429,17 +429,22 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * and we can write following code in the `OrderItem` class:
      * ```php
-     * public function getItem()
+     * public function getItem(): ItemQuery
      * {
      *     return $this->hasOne(Item::className(), ['id' => 'item_id']);
      * }
      * ```
      *
-     * Can be used for create a chain of relations, i.e. for `Order` class:
+     * Tip: Can be used for create a chain of relations, i.e. for `Customer` class:
      * ```php
-     * public function getItemsCategory() : CategoryQuery
+     *
+     * public function getOrders(): OrderQuery
      * {
-     *     return $this->viaRelation('category', 'items');
+     *     return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
+     * }
+     * public function getItems(): ItemQuery
+     * {
+     *     return $this->viaRelation('items', 'orders');
      * }
      * ```
      *
