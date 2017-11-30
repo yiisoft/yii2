@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
-- Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()`
+- Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()` (IceJOKER)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150) 
