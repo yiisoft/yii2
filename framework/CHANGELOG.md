@@ -7,7 +7,7 @@ Yii Framework 2 Change Log
 - Bug #15249: Controllers in subdirectories were not visible in commands list (IceJOKER)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
-- Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150) 
+- Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
 - Bug #15194: Fixed `yii\db\QueryBuilder::insert()` to preserve passed params when building a `INSERT INTO ... SELECT` query for MSSQL, PostgreSQL and SQLite (sergeymakinen)
 - Bug #15229: Fixed `yii\console\widgets\Table` default value for `getScreenWidth()`, when `Console::getScreenSize()` can't determine screen size (webleaf)
 - Bug #15234: Fixed `\yii\widgets\LinkPager` removed `tag` from `disabledListItemSubTagOptions` (SDKiller)
