@@ -460,7 +460,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function viaRelation($via, $relationName, callable $callable = null)
     {
         $relation = $this->getRelation($via);
-        $target = Yii::createObject($relation->modelClass);
+        /* @var $modelClass ActiveRecordInterface */
+        $modelClass = $relation->modelClass;
+        $target = $modelClass::instance();
         /** @var ActiveQuery $relationQuery */
         $relationQuery = $target->getRelation($relationName);
         $relationQuery->primaryModel = $this;
