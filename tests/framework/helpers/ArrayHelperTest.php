@@ -816,7 +816,7 @@ class ArrayHelperTest extends TestCase
     {
         $this->expectException('PHPUnit\Framework\Error\Notice');
         $object = new Post1();
-        $this->assertEquals(null, ArrayHelper::getValue($object, 'nonExisting'));
+        $this->assertNull(ArrayHelper::getValue($object, 'nonExisting'));
     }
 
     /**
