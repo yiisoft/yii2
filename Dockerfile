@@ -1,4 +1,4 @@
-FROM dmstr/php-yii2:7.0-fpm-1.9-beta2-alpine-nginx
+FROM yiisoftware/yii2-php:7.1-apache
 
 # Project source-code
 WORKDIR /project

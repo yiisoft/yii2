@@ -71,6 +71,8 @@ help/usage
 magic/e-tag
 magic/e-tag/delete
 magic/e-tag/list-e-tags
+magic/subFolder/sub
+magic/subFolder/sub/test
 
 STRING
             , $result);
