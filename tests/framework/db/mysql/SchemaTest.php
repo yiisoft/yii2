@@ -50,7 +50,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $result['3: check'][2] = false;
 
         // https://github.com/yiisoft/yii2/issues/15248
-        if (version_compare($this->getServerVersion(), '8.0.0', '>=') === true) {
+        if (version_compare($this->getServerVersion(), '8.0.1', '>=') === true) {
             $result['3: foreign key'][2][0]->foreignColumnNames = ['c_id_1', 'c_id_2'];
         }
 
