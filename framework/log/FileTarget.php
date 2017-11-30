@@ -153,8 +153,8 @@ class FileTarget extends Target
     }
 
     /***
-     * Clear log file without closing any other process' open handles
-     * @param $rotateFile
+     * Clear log file without closing any other process open handles
+     * @param string $rotateFile
      */
     private function clearLogFile($rotateFile)
     {
@@ -165,8 +165,9 @@ class FileTarget extends Target
     }
 
     /***
-     * @param $rotateFile
-     * @param $newFile
+     * Copy rotated file into new file
+     * @param string $rotateFile
+     * @param string $newFile
      */
     private function rotateByCopy($rotateFile, $newFile)
     {
@@ -176,9 +177,10 @@ class FileTarget extends Target
         }
     }
 
-    /***
-     * @param $rotateFile
-     * @param $newFile
+    /**
+     * Renames rotated file into new file
+     * @param string $rotateFile
+     * @param string $newFile
      */
     private function rotateByRename($rotateFile, $newFile)
     {
