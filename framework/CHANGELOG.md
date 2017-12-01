@@ -5,12 +5,15 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()` (IceJOKER)
+- Bug #15249: Controllers in subdirectories were not visible in commands list (IceJOKER)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
-- Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150) 
+- Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
+- Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
 - Bug #15194: Fixed `yii\db\QueryBuilder::insert()` to preserve passed params when building a `INSERT INTO ... SELECT` query for MSSQL, PostgreSQL and SQLite (sergeymakinen)
 - Bug #15229: Fixed `yii\console\widgets\Table` default value for `getScreenWidth()`, when `Console::getScreenSize()` can't determine screen size (webleaf)
 - Bug #15234: Fixed `\yii\widgets\LinkPager` removed `tag` from `disabledListItemSubTagOptions` (SDKiller)
+- Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
 - Enh #15135: Automatic completion for help in bash and zsh (Valkeru)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
 - Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
