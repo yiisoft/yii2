@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use PDO;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Type;
@@ -22,6 +23,20 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     protected $expectedSchemas = [
         'public',
     ];
+
+    protected $_serverVersion;
+
+    protected function getServerVersion($refresh = false)
+    {
+        if ($refresh || !isset($this->_serverVersion)) {
+            $databases = self::getParam('databases');
+            $this->database = $databases[$this->driverName];
+            $connection = $this->getConnection();
+            $this->_serverVersion = $connection->getSlavePdo()->getAttribute(PDO::ATTR_SERVER_VERSION);
+        }
+
+        return $this->_serverVersion;
+    }
 
     public function getExpectedColumns()
     {
@@ -39,6 +54,10 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['smallint_col']['size'] = null;
         $columns['smallint_col']['precision'] = 16;
         $columns['smallint_col']['scale'] = 0;
+        // https://github.com/yiisoft/yii2/issues/15247
+        if (version_compare($this->getServerVersion(), '9.5', '>=') === true) {
+            $columns['smallint_col']['defaultValue'] = '1';
+        }
         $columns['char_col']['dbType'] = 'bpchar';
         $columns['char_col']['precision'] = null;
         $columns['char_col2']['dbType'] = 'varchar';
@@ -51,6 +70,10 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['float_col2']['precision'] = 53;
         $columns['float_col2']['scale'] = null;
         $columns['float_col2']['size'] = null;
+        // https://github.com/yiisoft/yii2/issues/15247
+        if (version_compare($this->getServerVersion(), '9.5', '>=') === true) {
+            $columns['float_col2']['defaultValue'] = '1.23';
+        }
         $columns['blob_col']['dbType'] = 'bytea';
         $columns['blob_col']['phpType'] = 'resource';
         $columns['blob_col']['type'] = 'binary';
@@ -85,6 +108,10 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'scale' => 0,
             'defaultValue' => null,
         ];
+        // https://github.com/yiisoft/yii2/issues/15265
+        if (version_compare($this->getServerVersion(), '10.0', '>=') === true) {
+            $columns['ts_default']['defaultValue'] = 'CURRENT_TIMESTAMP';
+        }
 
         return $columns;
     }
