@@ -207,7 +207,7 @@ class SiteController extends Controller
 }
 ```
 
-Uploaded files are also present inside result of [[yii\web\Request::getBodyParams()]]. Thus in case your model need to
+Uploaded files are also present inside result of [[yii\web\Request::getBodyParams()]]. This in case your model need to
 handle both regular inputs and uploaded files, you can use this method for the attributes population. For example:
 in case you have a form, which allows user to update his profile information, it may contain text inputs, like 'email',
 'bio' and so on, and file input for user avatar image upload. In such case controller code may look like following:
