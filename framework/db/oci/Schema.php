@@ -482,8 +482,7 @@ SQL;
         }
 
         foreach ($constraints as $constraint) {
-            $name = array_keys($constraint);
-            $name = current($name);
+            $name = current(array_keys($constraint));
 
             $table->foreignKeys[$name] = array_merge([$constraint['tableName']], $constraint['columns']);
         }
