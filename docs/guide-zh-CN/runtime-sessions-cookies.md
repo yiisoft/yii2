@@ -125,10 +125,10 @@ $session['captcha.lifetime'] = 3600;
 
 [[yii\web\Session]] 类默认存储session数据为文件到服务器上，Yii提供以下session类实现不同的session存储方式：
 
-* [[yii\web\DbSession]]: 存储session数据在数据表中
-* [[yii\web\CacheSession]]: 存储session数据到缓存中，缓存和配置中的[缓存组件](caching-data.md#cache-components)相关
-* [[yii\redis\Session]]: 存储session数据到以[redis](http://redis.io/) 作为存储媒介中
-* [[yii\mongodb\Session]]: 存储session数据到[MongoDB](http://www.mongodb.org/).
+- [[yii\web\DbSession]]: 存储session数据在数据表中
+- [[yii\web\CacheSession]]: 存储session数据到缓存中，缓存和配置中的[缓存组件](caching-data.md#cache-components)相关
+- [[yii\redis\Session]]: 存储session数据到以[redis](http://redis.io/) 作为存储媒介中
+- [[yii\mongodb\Session]]: 存储session数据到[MongoDB](http://www.mongodb.org/).
 
 所有这些session类支持相同的API方法集，因此，切换到不同的session存储介质不需要修改项目使用session的代码。
 

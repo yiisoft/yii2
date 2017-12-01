@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 return <<<CODE
 <?php
@@ -13,7 +18,7 @@ class {$class} extends Migration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
         \$this->createTable('{table}', [
             'brand_id' => \$this->bigPrimaryKey()->unsigned(),
@@ -23,7 +28,7 @@ class {$class} extends Migration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
         \$this->dropTable('{table}');
     }

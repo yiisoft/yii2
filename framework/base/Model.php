@@ -7,12 +7,12 @@
 
 namespace yii\base;
 
-use Yii;
 use ArrayAccess;
-use ArrayObject;
 use ArrayIterator;
-use ReflectionClass;
+use ArrayObject;
 use IteratorAggregate;
+use ReflectionClass;
+use Yii;
 use yii\helpers\Inflector;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
@@ -54,9 +54,10 @@ use yii\validators\Validator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayable
+class Model extends Component implements StaticInstanceInterface, IteratorAggregate, ArrayAccess, Arrayable
 {
     use ArrayableTrait;
+    use StaticInstanceTrait;
 
     /**
      * The name of the default scenario.
@@ -159,6 +160,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns a list of scenarios and the corresponding active attributes.
+     *
      * An active attribute is one that is subject to validation in the current scenario.
      * The returned array should be in the following format:
      *
@@ -372,7 +374,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function beforeValidate()
     {
-        $event = new ModelEvent;
+        $event = new ModelEvent();
         $this->trigger(self::EVENT_BEFORE_VALIDATE, $event);
 
         return $event->isValid;
@@ -410,6 +412,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         if ($this->_validators === null) {
             $this->_validators = $this->createValidators();
         }
+
         return $this->_validators;
     }
 
@@ -428,6 +431,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 $validators[] = $validator;
             }
         }
+
         return $validators;
     }
 
@@ -439,7 +443,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function createValidators()
     {
-        $validators = new ArrayObject;
+        $validators = new ArrayObject();
         foreach ($this->rules() as $rule) {
             if ($rule instanceof Validator) {
                 $validators->append($rule);
@@ -450,6 +454,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
             }
         }
+
         return $validators;
     }
 
@@ -474,6 +479,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 return true;
             }
         }
+
         return false;
     }
 
@@ -563,6 +569,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         if ($attribute === null) {
             return $this->_errors === null ? [] : $this->_errors;
         }
+
         return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : [];
     }
 
@@ -585,6 +592,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 $errors[$name] = reset($es);
             }
         }
+
         return $errors;
     }
 
@@ -773,7 +781,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         if (!isset($scenarios[$scenario])) {
             return [];
         }
-        $attributes = $scenarios[$scenario];
+        $attributes = array_keys(array_flip($scenarios[$scenario]));
         foreach ($attributes as $i => $attribute) {
             if ($attribute[0] === '!') {
                 $attributes[$i] = substr($attribute, 1);
@@ -828,6 +836,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
             return true;
         }
+
         return false;
     }
 

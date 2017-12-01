@@ -8,13 +8,13 @@
 namespace yii\web;
 
 /**
- * NotAcceptableHttpException represents a "Not Acceptable" HTTP exception with status code 406
+ * NotAcceptableHttpException represents a "Not Acceptable" HTTP exception with status code 406.
  *
  * Use this exception when the client requests a Content-Type that your
  * application cannot return. Note that, according to the HTTP 1.1 specification,
  * you are not required to respond with this status code in this situation.
  *
- * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.7
+ * @see https://tools.ietf.org/html/rfc7231#section-6.5.6
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */

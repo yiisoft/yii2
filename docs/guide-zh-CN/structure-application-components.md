@@ -15,7 +15,7 @@
 
 第一次使用以上表达式时候会创建应用组件实例，后续再访问会返回此实例，无需再次创建。
 
-应用组件可以是任意对象，可以在 [应用主体配置](structure-applications.md#application-configurations)配置 [[yii\base\Application::components]] 属性 .
+应用组件可以是任意对象，可以在 [应用主体配置](structure-applications.md#application-configurations) 配置 [[yii\base\Application::components]] 属性 .
 例如：
 
 ```php

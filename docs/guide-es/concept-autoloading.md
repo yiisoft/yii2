@@ -73,8 +73,8 @@ sido extraido del [script de entrada](structure-entry-scripts.md) de la [Plantil
 La primera línea instala el autocargador de Composer, mientras que la segunda línea instala el autocargador de Yii.
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 Puedes usar el autocargador de Composer sin el autocargador de Yii. Sin embargo, al hacerlo, la eficacia de la carga de

@@ -8,7 +8,7 @@
 namespace yii\helpers;
 
 /**
- * StringHelper
+ * StringHelper.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>

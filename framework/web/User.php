@@ -271,9 +271,9 @@ class User extends Component
         $identity = $class::findIdentityByAccessToken($token, $type);
         if ($identity && $this->login($identity)) {
             return $identity;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -363,9 +363,9 @@ class User extends Component
         if (is_array($url)) {
             if (isset($url[0])) {
                 return Yii::$app->getUrlManager()->createUrl($url);
-            } else {
-                $url = null;
             }
+
+            $url = null;
         }
 
         return $url === null ? Yii::$app->getHomeUrl() : $url;
@@ -513,9 +513,11 @@ class User extends Component
         if ($value !== null) {
             $data = json_decode($value, true);
             if (is_array($data) && isset($data[2])) {
-                $cookie = new Cookie($this->identityCookie);
-                $cookie->value = $value;
-                $cookie->expire = time() + (int) $data[2];
+                $cookie = Yii::createObject(array_merge($this->identityCookie, [
+                    'class' => 'yii\web\Cookie',
+                    'value' => $value,
+                    'expire' => time() + (int) $data[2],
+                ]));
                 Yii::$app->getResponse()->getCookies()->add($cookie);
             }
         }
@@ -532,13 +534,15 @@ class User extends Component
      */
     protected function sendIdentityCookie($identity, $duration)
     {
-        $cookie = new Cookie($this->identityCookie);
-        $cookie->value = json_encode([
-            $identity->getId(),
-            $identity->getAuthKey(),
-            $duration,
-        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $cookie->expire = time() + $duration;
+        $cookie = Yii::createObject(array_merge($this->identityCookie, [
+            'class' => 'yii\web\Cookie',
+            'value' => json_encode([
+                $identity->getId(),
+                $identity->getAuthKey(),
+                $duration,
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+            'expire' => time() + $duration,
+        ]));
         Yii::$app->getResponse()->getCookies()->add($cookie);
     }
 
@@ -557,8 +561,8 @@ class User extends Component
             return null;
         }
         $data = json_decode($value, true);
-        if (count($data) == 3) {
-            list ($id, $authKey, $duration) = $data;
+        if (is_array($data) && count($data) == 3) {
+            list($id, $authKey, $duration) = $data;
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
@@ -583,7 +587,9 @@ class User extends Component
      */
     protected function removeIdentityCookie()
     {
-        Yii::$app->getResponse()->getCookies()->remove(new Cookie($this->identityCookie));
+        Yii::$app->getResponse()->getCookies()->remove(Yii::createObject(array_merge($this->identityCookie, [
+            'class' => 'yii\web\Cookie',
+        ])));
     }
 
     /**
@@ -609,7 +615,7 @@ class User extends Component
         }
 
         /* Ensure any existing identity cookies are removed. */
-        if ($this->enableAutoLogin) {
+        if ($this->enableAutoLogin && ($this->autoRenewCookie || $identity === null)) {
             $this->removeIdentityCookie();
         }
 
@@ -628,7 +634,7 @@ class User extends Component
             if ($this->absoluteAuthTimeout !== null) {
                 $session->set($this->absoluteAuthTimeoutParam, time() + $this->absoluteAuthTimeout);
             }
-            if ($duration > 0 && $this->enableAutoLogin) {
+            if ($this->enableAutoLogin && $duration > 0) {
                 $this->sendIdentityCookie($identity, $duration);
             }
         }

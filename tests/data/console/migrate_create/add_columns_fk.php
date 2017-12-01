@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 return <<<CODE
 <?php
@@ -18,7 +23,7 @@ class {$class} extends Migration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
         \$this->addColumn('{table}', 'user_id', \$this->integer());
         \$this->addColumn('{table}', 'product_id', \$this->integer()->unsigned()->notNull());
@@ -80,7 +85,7 @@ class {$class} extends Migration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
         // drops foreign key for table `user`
         \$this->dropForeignKey(

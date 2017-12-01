@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,16 +8,14 @@
 namespace yiiunit\data\ar;
 
 /**
- * Class Cat
+ * Class Cat.
  *
  * @author Jose Lorente <jose.lorente.martin@gmail.com>
  * @since 2.0
  */
 class Cat extends Animal
 {
-
     /**
-     *
      * @param self $record
      * @param array $row
      */
@@ -28,5 +25,4 @@ class Cat extends Animal
 
         $record->does = 'meow';
     }
-
 }

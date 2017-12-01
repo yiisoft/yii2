@@ -178,6 +178,31 @@ where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB 
   the length of the `id` column. For example, if `session.hash_function=sha256`, you should use a
   length 64 instead of 40.
 
+Alternatively, this can be accomplished with the following migration:
+
+```php
+<?php
+
+use yii\db\Migration;
+
+class m170529_050554_create_table_session extends Migration
+{
+    public function up()
+    {
+        $this->createTable('{{%session}}', [
+            'id' => $this->char(64)->notNull(),
+            'expire' => $this->integer(),
+            'data' => $this->binary()
+        ]);
+        $this->addPrimaryKey('pk-id', '{{%session}}', 'id');
+    }
+
+    public function down()
+    {
+        $this->dropTable('{{%session}}');
+    }
+}
+```
 
 ### Flash Data <span id="flash-data"></span>
 

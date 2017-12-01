@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\console\controllers;
 
@@ -89,7 +94,7 @@ class MigrateControllerTest extends TestCase
                 'fields' => 'title:string(10):notNull:unique:defaultValue("test"),
                     body:text:notNull,
                     price:money(11,2):notNull,
-                    parenthesis_in_comment:string(255):notNull:comment(\'Name of set (RU)\')'
+                    parenthesis_in_comment:string(255):notNull:comment(\'Name of set (RU)\')',
             ]);
 
             $this->assertCommandCreatedFile('create_title_pk', $migrationName, $table, [
@@ -132,11 +137,48 @@ class MigrateControllerTest extends TestCase
             $this->assertCommandCreatedFile('drop_products_from_store_table', 'drop_' . $table . '_table', $table);
         }
         // @see https://github.com/yiisoft/yii2/issues/11461
-        $this->assertCommandCreatedFile('create_title_with_comma_default_values', 'create_test_table', 'test',  [
+        $this->assertCommandCreatedFile('create_title_with_comma_default_values', 'create_test_table', 'test', [
             'fields' => 'title:string(10):notNull:unique:defaultValue(",te,st"),
              body:text:notNull:defaultValue(",test"),
              test:custom(11,2,"s"):notNull',
         ]);
+    }
+
+    public function testUpdatingLongNamedMigration()
+    {
+        $this->createMigration(str_repeat('a', 180));
+
+        $result = $this->runMigrateControllerAction('up');
+
+        $this->assertContains('The migration name', $result);
+        $this->assertContains('is too long. Its not possible to apply this migration.', $result);
+    }
+
+    public function testNamedMigrationWithCustomLimit()
+    {
+        Yii::$app->db->createCommand()->createTable('migration', [
+            'version' => 'varchar(255) NOT NULL PRIMARY KEY', // varchar(255) is longer than the default of 180
+            'apply_time' => 'integer',
+        ])->execute();
+
+        $this->createMigration(str_repeat('a', 180));
+
+        $result = $this->runMigrateControllerAction('up');
+
+        $this->assertContains('1 migration was applied.', $result);
+        $this->assertContains('Migrated up successfully.', $result);
+    }
+
+    public function testCreateLongNamedMigration()
+    {
+        $migrationName = str_repeat('a', 180);
+
+        $this->expectException('yii\console\Exception');
+        $this->expectExceptionMessage('The migration name is too long.');
+
+        $controller = $this->createMigrateController([]);
+        $params[0] = $migrationName;
+        $controller->run('create', $params);
     }
 
     public function testGenerateDropMigration()
@@ -151,7 +193,7 @@ class MigrateControllerTest extends TestCase
             $this->assertCommandCreatedFile('drop_test', $migrationName, $table);
 
             $this->assertCommandCreatedFile('drop_fields', $migrationName, $table, [
-                'fields' => 'body:text:notNull,price:money(11,2)'
+                'fields' => 'body:text:notNull,price:money(11,2)',
             ]);
         }
 
@@ -174,7 +216,7 @@ class MigrateControllerTest extends TestCase
                 'fields' => 'title:string(10):notNull,
                     body:text:notNull,
                     price:money(11,2):notNull,
-                    created_at:dateTime'
+                    created_at:dateTime',
             ]);
 
             $this->assertCommandCreatedFile('add_columns_fk', $migrationName, $table, [
@@ -209,7 +251,7 @@ class MigrateControllerTest extends TestCase
                 $this->assertCommandCreatedFile('drop_columns_test', $migrationName, $table, [
                     'fields' => 'title:string(10):notNull,body:text:notNull,
                     price:money(11,2):notNull,
-                    created_at:dateTime'
+                    created_at:dateTime',
                 ]);
             }
         }
@@ -229,13 +271,35 @@ class MigrateControllerTest extends TestCase
     }
 
     /**
+     * Test the migrate:fresh command.
+     */
+    public function testRefreshMigration()
+    {
+        Yii::$app->db->createCommand('create table hall_of_fame(id int, string varchar(255))')
+            ->execute();
+
+        Yii::$app->db->createCommand("insert into hall_of_fame values(1, 'Qiang Xue');")
+            ->execute();
+        Yii::$app->db->createCommand("insert into hall_of_fame values(2, 'Alexander Makarov');")
+            ->execute();
+
+        $result = $this->runMigrateControllerAction('fresh');
+
+        // Drop worked
+        $this->assertContains('Table hall_of_fame dropped.', $result);
+
+        // Migration was restarted
+        $this->assertContains('No new migrations found. Your system is up-to-date.', $result);
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/12980
      */
     public function testGetMigrationHistory()
     {
         $controllerConfig = [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
         $this->runMigrateControllerAction('history', [], $controllerConfig);
 

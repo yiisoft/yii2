@@ -47,6 +47,13 @@ namespace yii\filters\auth;
  * }
  * ```
  *
+ * > Tip: In case authentication does not work like expected, make sure your web server passes
+ * username and password to `$_SERVER['PHP_AUTH_USER']` and `$_SERVER['PHP_AUTH_PW']` variables.
+ * If you are using Apache with PHP-CGI, you might need to add this line to your `.htaccess` file:
+ * ```
+ * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+ * ```
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -84,8 +91,7 @@ class HttpBasicAuth extends AuthMethod
      */
     public function authenticate($user, $request, $response)
     {
-        $username = $request->getAuthUser();
-        $password = $request->getAuthPassword();
+        list($username, $password) = $request->getAuthCredentials();
 
         if ($this->auth) {
             if ($username !== null || $password !== null) {
@@ -95,6 +101,7 @@ class HttpBasicAuth extends AuthMethod
                 } else {
                     $this->handleFailure($response);
                 }
+
                 return $identity;
             }
         } elseif ($username !== null) {
@@ -102,6 +109,7 @@ class HttpBasicAuth extends AuthMethod
             if ($identity === null) {
                 $this->handleFailure($response);
             }
+
             return $identity;
         }
 

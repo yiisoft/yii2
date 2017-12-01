@@ -78,9 +78,9 @@ will be used by the container to inject the dependencies through the correspondi
 For example,
 
 ```php
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     public $bar;
 
@@ -105,7 +105,7 @@ $container->get('Foo', [], [
 
 > Info: The [[yii\di\Container::get()]] method takes its third parameter as a configuration array that should
   be applied to the object being created. If the class implements the [[yii\base\Configurable]] interface (e.g.
-  [[yii\base\Object]]), the configuration array will be passed as the last parameter to the class constructor;
+  [[yii\base\BaseObject]]), the configuration array will be passed as the last parameter to the class constructor;
   otherwise, the configuration will be applied *after* the object is created.
 
 
@@ -253,7 +253,7 @@ and creates a new `UserLister` instance with a simple call of `get('userLister')
 ```php
 namespace app\models;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\di\Container;
 
@@ -262,7 +262,7 @@ interface UserFinderInterface
     function findUser();
 }
 
-class UserFinder extends Object implements UserFinderInterface
+class UserFinder extends BaseObject implements UserFinderInterface
 {
     public $db;
 
@@ -277,7 +277,7 @@ class UserFinder extends Object implements UserFinderInterface
     }
 }
 
-class UserLister extends Object
+class UserLister extends BaseObject
 {
     public $finder;
 
@@ -386,14 +386,14 @@ Say we work on API application and have:
   ```php
   class FileStorage
   {
-      public function __contruct($root) {
+      public function __construct($root) {
           // whatever
       }
   }
   
   class DocumentsReader
   {
-      public function __contruct(FileStorage $fs) {
+      public function __construct(FileStorage $fs) {
           // whatever
       }
   }
@@ -427,7 +427,7 @@ $container->setDefinitions([
     }
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // Will create DocumentReader object with its dependencies as described in the config 
 ```
 
