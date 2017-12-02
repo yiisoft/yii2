@@ -41,14 +41,6 @@ use yii\web\JsExpression;
 class IpValidator extends Validator
 {
     /**
-     * The length of IPv6 address in bits.
-     */
-    const IPV6_ADDRESS_LENGTH = 128;
-    /**
-     * The length of IPv4 address in bits.
-     */
-    const IPV4_ADDRESS_LENGTH = 32;
-    /**
      * Negation char.
      *
      * Used to negate [[ranges]] or [[networks]] or to negate validating value when [[negation]] is set to `true`.
