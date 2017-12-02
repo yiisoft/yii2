@@ -7,6 +7,8 @@
 
 namespace yiiunit;
 
+use yii\helpers\VarDumper;
+
 /**
  * IsOneOfAssert asserts that the value is one of the expected values.
  */
@@ -32,7 +34,10 @@ class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
      */
     public function toString()
     {
-        $expectedAsString = "'" . implode("', '", $this->allowedValues) . "'";
+        $allowedValues = array_map(function ($value) {
+            return VarDumper::dumpAsString($value);
+        }, $this->allowedValues);
+        $expectedAsString = implode(', ', $allowedValues);
         return "is one of $expectedAsString";
     }
 

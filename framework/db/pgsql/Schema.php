@@ -10,6 +10,7 @@ namespace yii\db\pgsql;
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
 use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
@@ -25,7 +26,7 @@ use yii\helpers\ArrayHelper;
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
-class Schema extends \yii\db\Schema
+class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ViewFinderTrait;
     use ConstraintFinderTrait;
@@ -117,6 +118,11 @@ class Schema extends \yii\db\Schema
         'jsonb' => self::TYPE_STRING,
         'xml' => self::TYPE_STRING,
     ];
+
+    /**
+     * @inheritDoc
+     */
+    protected $tableQuoteCharacter = '"';
 
 
     /**
@@ -297,17 +303,6 @@ SQL;
         }
 
         $table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
-    }
-
-    /**
-     * Quotes a table name for use in a query.
-     * A simple table name has no schema prefix.
-     * @param string $name table name
-     * @return string the properly quoted table name
-     */
-    public function quoteSimpleTableName($name)
-    {
-        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
     }
 
     /**
