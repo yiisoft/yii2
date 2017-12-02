@@ -3,9 +3,12 @@
 namespace yii\helpers;
 
 /**
- * Class BaseIpHelper
+ * Class BaseIpHelper provides concrete implementation for [[IpHelper]]
+ *
+ * Do not use BaseIpHelper, use [[IpHelper]] instead.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
+ * @since 2.0.14
  */
 class BaseIpHelper
 {
@@ -32,12 +35,26 @@ class BaseIpHelper
     }
 
     /**
-     * Checks whether the IP address is in the subnet range.
+     * Checks whether the IP address with the specified CIDR is in the subnet range.
+     *
+     * For example, the following code checks whether subnet `192.168.1.0/24` is in subnet `192.168.0.0/22`:
+     *
+     * ```php
+     * IpHelper::inRange('192.168.1.0', '24', '192.168.0.0/22'); // true
+     * ```
+     *
+     * In case you need to check whether a single IP address `192.168.1.21` is in the subnet `192.168.1.0/24`,
+     *
+     * ```php
+     * IpHelper::inRange('192.168.1.21', '32', '192.168.1.0/24'); // true
+     * ```
+     *
+     * @see https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing
      *
      * @param string $ip the valid IPv4 or IPv6 address
-     * @param int $cidr
+     * @param int|string $cidr the CIDR of $ip
      * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
-     * @return bool
+     * @return bool whether IP address with $cidr is in range
      */
     public static function inRange($ip, $cidr, $range)
     {
@@ -53,7 +70,7 @@ class BaseIpHelper
             return false;
         }
         if ($range_cidr === null) {
-            $range_cidr = $netVersion === 4 ? self::IPV4_ADDRESS_LENGTH : self::IPV6_ADDRESS_LENGTH;
+            $range_cidr = $netVersion === self::IPV4 ? self::IPV4_ADDRESS_LENGTH : self::IPV6_ADDRESS_LENGTH;
         }
 
         $binNet = static::ip2bin($net);
@@ -61,8 +78,9 @@ class BaseIpHelper
     }
 
     /**
-     * Expands an IPv6 address to it's full notation. For example `2001:db8::1` will be
-     * expanded to `2001:0db8:0000:0000:0000:0000:0000:0001`
+     * Expands an IPv6 address to it's full notation.
+     *
+     * For example `2001:db8::1` will be expanded to `2001:0db8:0000:0000:0000:0000:0000:0001`
      *
      * @param string $ip the original valid IPv6 address
      * @return string the expanded IPv6 address
@@ -74,7 +92,7 @@ class BaseIpHelper
     }
 
     /**
-     * Converts IP address to bits representation
+     * Converts IP address to bits representation.
      *
      * @param string $ip the valid IPv4 or IPv6 address
      * @return string bits as a string
