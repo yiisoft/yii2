@@ -108,7 +108,6 @@ class Component extends BaseObject
      */
     private $_behaviors;
 
-
     /**
      * Returns the value of a component property.
      *
@@ -491,12 +490,23 @@ class Component extends BaseObject
      */
     public function on($name, $handler, $data = null, $append = true)
     {
+        $priority = (int)$append;
         $this->ensureBehaviors();
-        if ($append || empty($this->_events[$name])) {
-            $this->_events[$name][] = [$handler, $data];
-        } else {
-            array_unshift($this->_events[$name], [$handler, $data]);
+
+        if (empty($this->_events[$name])) {
+            $this->_events[$name] = \Yii::createObject('yii\base\EventPriorityQueue');
         }
+
+        /**
+         *  5 is has no special meaning. It is a random number used in order to keep
+         *  prepend handlers functionality until we define priorities on base events' handlers.
+         *  Then we can totally remove that and deprecate EventPriorityQueue::getMaxPriority method
+         */
+        if (!$priority) {
+            $priority = $this->_events[$name]->getMaxPriority() + 5;
+        }
+
+        $this->_events[$name]->insert([$handler, $data], $priority);
     }
 
     /**
@@ -511,23 +521,20 @@ class Component extends BaseObject
     public function off($name, $handler = null)
     {
         $this->ensureBehaviors();
+
         if (empty($this->_events[$name])) {
             return false;
         }
+
         if ($handler === null) {
             unset($this->_events[$name]);
             return true;
         }
 
-        $removed = false;
-        foreach ($this->_events[$name] as $i => $event) {
-            if ($event[0] === $handler) {
-                unset($this->_events[$name][$i]);
-                $removed = true;
-            }
-        }
-        if ($removed) {
-            $this->_events[$name] = array_values($this->_events[$name]);
+        $removed = $this->_events[$name]->remove($handler);
+
+        if (!count($this->_events[$name])) {
+            unset($this->_events[$name]);
         }
 
         return $removed;
