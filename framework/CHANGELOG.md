@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Enh #15221: Added support for specifying `--camelCase` console options in `--kebab-case` (brandonkelly)
 - Enh #15221: Added support for the `--<option> <value>` console option syntax (brandonkelly)
 - Enh #15221: Improved the `help/list-action-options` console command output for command options without a description (brandonkelly)
+- Bug #15270: Resolved potential race conditions when writing generated php-files (kalessil)
 
 2.0.13.1 November 14, 2017
 --------------------------
