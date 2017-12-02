@@ -132,7 +132,7 @@ use yii\caching\CacheInterface;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Connection extends Component
+class Connection extends Component implements ConnectionInterface
 {
     /**
      * @event Event an event that is triggered after a DB connection is established
@@ -472,29 +472,7 @@ class Connection extends Component
     }
 
     /**
-     * Disables query cache temporarily.
-     *
-     * Queries performed within the callable will not use query cache at all. For example,
-     *
-     * ```php
-     * $db->cache(function (Connection $db) {
-     *
-     *     // ... queries that use query cache ...
-     *
-     *     return $db->noCache(function (Connection $db) {
-     *         // this query will not use query cache
-     *         return $db->createCommand('SELECT * FROM customer WHERE id=1')->queryOne();
-     *     });
-     * });
-     * ```
-     *
-     * @param callable $callable a PHP callable that contains DB queries which should not use query cache.
-     * The signature of the callable is `function (Connection $db)`.
-     * @return mixed the return result of the callable
-     * @throws \Exception|\Throwable if there is any exception during query
-     * @see enableQueryCache
-     * @see queryCache
-     * @see cache()
+     * @inheritdoc
      */
     public function noCache(callable $callable)
     {
@@ -513,12 +491,7 @@ class Connection extends Component
     }
 
     /**
-     * Returns the current query cache information.
-     * This method is used internally by [[Command]].
-     * @param int $duration the preferred caching duration. If null, it will be ignored.
-     * @param \yii\caching\Dependency $dependency the preferred caching dependency. If null, it will be ignored.
-     * @return array the current query cache information, or null if query cache is not enabled.
-     * @internal
+     * @inheritdoc
      */
     public function getQueryCacheInfo($duration, $dependency)
     {
@@ -551,9 +524,7 @@ class Connection extends Component
     }
 
     /**
-     * Establishes a DB connection.
-     * It does nothing if a DB connection has already been established.
-     * @throws Exception if connection fails
+     * @inheritdoc
      */
     public function open()
     {
@@ -599,8 +570,7 @@ class Connection extends Component
     }
 
     /**
-     * Closes the currently active DB connection.
-     * It does nothing if the connection is already closed.
+     * @inheritdoc
      */
     public function close()
     {
@@ -680,10 +650,7 @@ class Connection extends Component
     }
 
     /**
-     * Creates a command for execution.
-     * @param string $sql the SQL statement to be executed
-     * @param array $params the parameters to be bound to the SQL statement
-     * @return Command the DB command
+     * @inheritdoc
      */
     public function createCommand($sql = null, $params = [])
     {
@@ -697,8 +664,7 @@ class Connection extends Component
     }
 
     /**
-     * Returns the currently active transaction.
-     * @return Transaction the currently active transaction. Null if no active transaction.
+     * @inheritdoc
      */
     public function getTransaction()
     {
@@ -706,10 +672,7 @@ class Connection extends Component
     }
 
     /**
-     * Starts a transaction.
-     * @param string|null $isolationLevel The isolation level to use for this transaction.
-     * See [[Transaction::begin()]] for details.
-     * @return Transaction the transaction initiated
+     * @inheritdoc
      */
     public function beginTransaction($isolationLevel = null)
     {
@@ -724,13 +687,7 @@ class Connection extends Component
     }
 
     /**
-     * Executes callback provided in a transaction.
-     *
-     * @param callable $callback a valid PHP callback that performs the job. Accepts connection instance as parameter.
-     * @param string|null $isolationLevel The isolation level to use for this transaction.
-     * See [[Transaction::begin()]] for details.
-     * @throws \Exception|\Throwable if there is any exception during query. In this case the transaction will be rolled back.
-     * @return mixed result of callback function
+     * @inheritdoc
      */
     public function transaction(callable $callback, $isolationLevel = null)
     {
@@ -774,9 +731,7 @@ class Connection extends Component
     }
 
     /**
-     * Returns the schema information for the database opened by this connection.
-     * @return Schema the schema information for the database opened by this connection.
-     * @throws NotSupportedException if there is no support for the current driver type
+     * @inheritdoc
      */
     public function getSchema()
     {
@@ -796,8 +751,7 @@ class Connection extends Component
     }
 
     /**
-     * Returns the query builder for the current DB connection.
-     * @return QueryBuilder the query builder for the current DB connection.
+     * @inheritdoc
      */
     public function getQueryBuilder()
     {
@@ -805,10 +759,7 @@ class Connection extends Component
     }
 
     /**
-     * Obtains the schema information for the named table.
-     * @param string $name table name.
-     * @param bool $refresh whether to reload the table schema even if it is found in the cache.
-     * @return TableSchema table schema information. Null if the named table does not exist.
+     * @inheritdoc
      */
     public function getTableSchema($name, $refresh = false)
     {
@@ -816,10 +767,7 @@ class Connection extends Component
     }
 
     /**
-     * Returns the ID of the last inserted row or sequence value.
-     * @param string $sequenceName name of the sequence object (required by some DBMS)
-     * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
-     * @see http://php.net/manual/en/pdo.lastinsertid.php
+     * @inheritdoc
      */
     public function getLastInsertID($sequenceName = '')
     {
@@ -827,11 +775,7 @@ class Connection extends Component
     }
 
     /**
-     * Quotes a string value for use in a query.
-     * Note that if the parameter is not a string, it will be returned without change.
-     * @param string $value string to be quoted
-     * @return string the properly quoted string
-     * @see http://php.net/manual/en/pdo.quote.php
+     * @inheritdoc
      */
     public function quoteValue($value)
     {
@@ -839,12 +783,7 @@ class Connection extends Component
     }
 
     /**
-     * Quotes a table name for use in a query.
-     * If the table name contains schema prefix, the prefix will also be properly quoted.
-     * If the table name is already quoted or contains special characters including '(', '[[' and '{{',
-     * then this method will do nothing.
-     * @param string $name table name
-     * @return string the properly quoted table name
+     * @inheritdoc
      */
     public function quoteTableName($name)
     {
@@ -852,12 +791,7 @@ class Connection extends Component
     }
 
     /**
-     * Quotes a column name for use in a query.
-     * If the column name contains prefix, the prefix will also be properly quoted.
-     * If the column name is already quoted or contains special characters including '(', '[[' and '{{',
-     * then this method will do nothing.
-     * @param string $name column name
-     * @return string the properly quoted column name
+     * @inheritdoc
      */
     public function quoteColumnName($name)
     {
@@ -865,13 +799,7 @@ class Connection extends Component
     }
 
     /**
-     * Processes a SQL statement by quoting table and column names that are enclosed within double brackets.
-     * Tokens enclosed within double curly brackets are treated as table names, while
-     * tokens enclosed within double square brackets are column names. They will be quoted accordingly.
-     * Also, the percentage character "%" at the beginning or ending of a table name will be replaced
-     * with [[tablePrefix]].
-     * @param string $sql the SQL to be quoted
-     * @return string the quoted SQL
+     * @inheritdoc
      */
     public function quoteSql($sql)
     {
@@ -889,9 +817,7 @@ class Connection extends Component
     }
 
     /**
-     * Returns the name of the DB driver. Based on the the current [[dsn]], in case it was not set explicitly
-     * by an end user.
-     * @return string name of the DB driver
+     * @inheritdoc
      */
     public function getDriverName()
     {
@@ -907,8 +833,7 @@ class Connection extends Component
     }
 
     /**
-     * Changes the current driver name.
-     * @param string $driverName name of the DB driver
+     * @inheritdoc
      */
     public function setDriverName($driverName)
     {
@@ -916,12 +841,7 @@ class Connection extends Component
     }
 
     /**
-     * Returns the PDO instance for the currently active slave connection.
-     * When [[enableSlaves]] is true, one of the slaves will be used for read queries, and its PDO instance
-     * will be returned by this method.
-     * @param bool $fallbackToMaster whether to return a master PDO in case none of the slave connections is available.
-     * @return PDO the PDO instance for the currently active slave connection. `null` is returned if no slave connection
-     * is available and `$fallbackToMaster` is false.
+     * @inheritdoc
      */
     public function getSlavePdo($fallbackToMaster = true)
     {
@@ -934,9 +854,7 @@ class Connection extends Component
     }
 
     /**
-     * Returns the PDO instance for the currently active master connection.
-     * This method will open the master DB connection and then return [[pdo]].
-     * @return PDO the PDO instance for the currently active master connection.
+     * @inheritdoc
      */
     public function getMasterPdo()
     {
@@ -945,11 +863,7 @@ class Connection extends Component
     }
 
     /**
-     * Returns the currently active slave connection.
-     * If this method is called for the first time, it will try to open a slave connection when [[enableSlaves]] is true.
-     * @param bool $fallbackToMaster whether to return a master connection in case there is no slave connection available.
-     * @return Connection the currently active slave connection. `null` is returned if there is no slave available and
-     * `$fallbackToMaster` is false.
+     * @inheritdoc
      */
     public function getSlave($fallbackToMaster = true)
     {
@@ -965,10 +879,7 @@ class Connection extends Component
     }
 
     /**
-     * Returns the currently active master connection.
-     * If this method is called for the first time, it will try to open a master connection.
-     * @return Connection the currently active master connection. `null` is returned if there is no master available.
-     * @since 2.0.11
+     * @inheritdoc
      */
     public function getMaster()
     {
@@ -982,21 +893,7 @@ class Connection extends Component
     }
 
     /**
-     * Executes the provided callback by using the master connection.
-     *
-     * This method is provided so that you can temporarily force using the master connection to perform
-     * DB operations even if they are read queries. For example,
-     *
-     * ```php
-     * $result = $db->useMaster(function ($db) {
-     *     return $db->createCommand('SELECT * FROM user LIMIT 1')->queryOne();
-     * });
-     * ```
-     *
-     * @param callable $callback a PHP callable to be executed by this method. Its signature is
-     * `function (Connection $db)`. Its return value will be returned by this method.
-     * @return mixed the return value of the callback
-     * @throws \Exception|\Throwable if there is any exception thrown from the callback
+     * @inheritdoc
      */
     public function useMaster(callable $callback)
     {
