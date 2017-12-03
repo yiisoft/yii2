@@ -46,7 +46,7 @@ use yii\helpers\Url;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UrlManager extends Component
+class UrlManager extends Component implements UrlManagerInterface
 {
     /**
      * @var bool whether to enable pretty URLs. Instead of putting all parameters in the query
@@ -196,16 +196,7 @@ class UrlManager extends Component
     }
 
     /**
-     * Adds additional URL rules.
-     *
-     * This method will call [[buildRules()]] to parse the given rule declarations and then append or insert
-     * them to the existing [[rules]].
-     *
-     * Note that if [[enablePrettyUrl]] is `false`, this method will do nothing.
-     *
-     * @param array $rules the new rules to be added. Each array element represents a single rule declaration.
-     * Please refer to [[rules]] for the acceptable rule format.
-     * @param bool $append whether to add the new rules by appending them to the end of the existing rules.
+     * @inheritdoc
      */
     public function addRules($rules, $append = true)
     {
@@ -257,9 +248,8 @@ class UrlManager extends Component
     }
 
     /**
-     * Parses the user request.
-     * @param Request $request the request component
-     * @return array|bool the route and the associated parameters. The latter is always empty
+     * @inheritdoc
+     *
      * if [[enablePrettyUrl]] is `false`. `false` is returned if the current request cannot be successfully parsed.
      */
     public function parseRequest($request)
@@ -324,33 +314,7 @@ class UrlManager extends Component
     }
 
     /**
-     * Creates a URL using the given route and query parameters.
-     *
-     * You may specify the route as a string, e.g., `site/index`. You may also use an array
-     * if you want to specify additional query parameters for the URL being created. The
-     * array format must be:
-     *
-     * ```php
-     * // generates: /index.php?r=site%2Findex&param1=value1&param2=value2
-     * ['site/index', 'param1' => 'value1', 'param2' => 'value2']
-     * ```
-     *
-     * If you want to create a URL with an anchor, you can use the array format with a `#` parameter.
-     * For example,
-     *
-     * ```php
-     * // generates: /index.php?r=site%2Findex&param1=value1#name
-     * ['site/index', 'param1' => 'value1', '#' => 'name']
-     * ```
-     *
-     * The URL created is a relative one. Use [[createAbsoluteUrl()]] to create an absolute URL.
-     *
-     * Note that unlike [[\yii\helpers\Url::toRoute()]], this method always treats the given route
-     * as an absolute route.
-     *
-     * @param string|array $params use a string to represent a route (e.g. `site/index`),
-     * or an array to represent a route with query parameters (e.g. `['site/index', 'param1' => 'value1']`).
-     * @return string the created URL
+     * @inheritdoc
      */
     public function createUrl($params)
     {
@@ -485,20 +449,7 @@ class UrlManager extends Component
     }
 
     /**
-     * Creates an absolute URL using the given route and query parameters.
-     *
-     * This method prepends the URL created by [[createUrl()]] with the [[hostInfo]].
-     *
-     * Note that unlike [[\yii\helpers\Url::toRoute()]], this method always treats the given route
-     * as an absolute route.
-     *
-     * @param string|array $params use a string to represent a route (e.g. `site/index`),
-     * or an array to represent a route with query parameters (e.g. `['site/index', 'param1' => 'value1']`).
-     * @param string|null $scheme the scheme to use for the URL (either `http`, `https` or empty string
-     * for protocol-relative URL).
-     * If not specified the scheme of the current request will be used.
-     * @return string the created URL
-     * @see createUrl()
+     * @inheritdoc
      */
     public function createAbsoluteUrl($params, $scheme = null)
     {
@@ -517,11 +468,7 @@ class UrlManager extends Component
     }
 
     /**
-     * Returns the base URL that is used by [[createUrl()]] to prepend to created URLs.
-     * It defaults to [[Request::baseUrl]].
-     * This is mainly used when [[enablePrettyUrl]] is `true` and [[showScriptName]] is `false`.
-     * @return string the base URL that is used by [[createUrl()]] to prepend to created URLs.
-     * @throws InvalidConfigException if running in console application and [[baseUrl]] is not configured.
+     * @inheritdoc
      */
     public function getBaseUrl()
     {
@@ -538,9 +485,7 @@ class UrlManager extends Component
     }
 
     /**
-     * Sets the base URL that is used by [[createUrl()]] to prepend to created URLs.
-     * This is mainly used when [[enablePrettyUrl]] is `true` and [[showScriptName]] is `false`.
-     * @param string $value the base URL that is used by [[createUrl()]] to prepend to created URLs.
+     * @inheritdoc
      */
     public function setBaseUrl($value)
     {
@@ -548,11 +493,7 @@ class UrlManager extends Component
     }
 
     /**
-     * Returns the entry script URL that is used by [[createUrl()]] to prepend to created URLs.
-     * It defaults to [[Request::scriptUrl]].
-     * This is mainly used when [[enablePrettyUrl]] is `false` or [[showScriptName]] is `true`.
-     * @return string the entry script URL that is used by [[createUrl()]] to prepend to created URLs.
-     * @throws InvalidConfigException if running in console application and [[scriptUrl]] is not configured.
+     * @inheritdoc
      */
     public function getScriptUrl()
     {
@@ -569,9 +510,7 @@ class UrlManager extends Component
     }
 
     /**
-     * Sets the entry script URL that is used by [[createUrl()]] to prepend to created URLs.
-     * This is mainly used when [[enablePrettyUrl]] is `false` or [[showScriptName]] is `true`.
-     * @param string $value the entry script URL that is used by [[createUrl()]] to prepend to created URLs.
+     * @inheritdoc
      */
     public function setScriptUrl($value)
     {
@@ -579,9 +518,7 @@ class UrlManager extends Component
     }
 
     /**
-     * Returns the host info that is used by [[createAbsoluteUrl()]] to prepend to created URLs.
-     * @return string the host info (e.g. `http://www.example.com`) that is used by [[createAbsoluteUrl()]] to prepend to created URLs.
-     * @throws InvalidConfigException if running in console application and [[hostInfo]] is not configured.
+     * @inheritdoc
      */
     public function getHostInfo()
     {
@@ -598,8 +535,7 @@ class UrlManager extends Component
     }
 
     /**
-     * Sets the host info that is used by [[createAbsoluteUrl()]] to prepend to created URLs.
-     * @param string $value the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend to created URLs.
+     * @inheritdoc
      */
     public function setHostInfo($value)
     {
