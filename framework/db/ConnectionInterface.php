@@ -14,7 +14,6 @@ use yii\base\NotSupportedException;
  *
  * @author Nelson J Morais <njmorais@gmail.com>
  * @since 2.0.15
- * @package yii\db
  */
 interface ConnectionInterface
 {
