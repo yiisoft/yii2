@@ -13,6 +13,7 @@ use yii\base\NotSupportedException;
  * ConnectionInterface defines a connection to a database.
  *
  * @author Nelson J Morais <njmorais@gmail.com>
+ * @since 2.0.15
  * @package yii\db
  */
 interface ConnectionInterface
