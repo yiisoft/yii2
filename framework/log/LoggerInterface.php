@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: njasm
- * Date: 03/12/2017
- * Time: 17:04
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yii\log;
