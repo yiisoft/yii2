@@ -291,7 +291,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if ($updateColumns === true) {
             $updateColumns = [];
             foreach ($updateNames as $name) {
-                $updateColumns[$name] = new Expression('"EXCLUDED".' . $this->db->quoteColumnName($name));
+                $updateColumns[$name] = new Expression('EXCLUDED.' . $this->db->quoteColumnName($name));
             }
         }
         list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
