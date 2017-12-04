@@ -15,7 +15,6 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 use yii\http\Cookie;
 use yii\http\CookieCollection;
 use yii\http\FileStream;
@@ -299,14 +298,14 @@ class Request extends \yii\base\Request implements RequestInterface
     {
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
-            [$route, $params] = $result;
+            [$route, $params, $middleware] = $result;
             if ($this->_queryParams === null) {
                 $_GET = $params + $_GET; // preserve numeric keys
             } else {
                 $this->_queryParams = $params + $this->_queryParams;
             }
 
-            return [$route, $this->getQueryParams()];
+            return [$route, $this->getQueryParams(), $middleware];
         }
 
         throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));

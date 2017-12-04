@@ -4,5 +4,5 @@ namespace yii\web;
 
 interface MiddlewareInterface
 {
-    public function handle(Request $request, Response $response);
+    public function process(Request $request, Response $response);
 }

@@ -28,8 +28,6 @@ use yii\helpers\Url;
  */
 class Application extends \yii\base\Application
 {
-    use MiddlewareTrait;
-
     /**
      * @var string the default route of this application. Defaults to 'site'.
      */
@@ -58,6 +56,42 @@ class Application extends \yii\base\Application
      */
     public $controller;
 
+    protected $middlewareStack = [];
+
+    public function addMiddleware($middleware)
+    {
+        if (is_array($middleware)) {
+            if (!isset($middleware['middleware'])) {
+                throw new MiddlewareException("Param `middleware` must be set");
+            }
+            $this->middlewareStack[] = $middleware;
+        } elseif (is_callable($middleware)) {
+            $this->middlewareStack[] = [
+                'middleware' => $middleware,
+                'priority' => null,
+                'only' => [],
+                'except' => []
+            ];
+        } elseif (is_string($middleware)) {
+            if (!class_exists($middleware)) {
+                throw new MiddlewareException("Class {$middleware} not found");
+            }
+            $this->middlewareStack[] = [
+                'middleware' => $middleware,
+                'priority' => null,
+                'only' => [],
+                'except' => []
+            ];
+        } else {
+            throw new MiddlewareException("Middleware must be class name or callable or array. See documentation");
+        }
+    }
+
+    public function getMiddleware()
+    {
+        return $this->middlewareStack;
+    }
+
     public function __construct(array $config = [])
     {
         if (isset($config['middleware'])) {
@@ -65,6 +99,7 @@ class Application extends \yii\base\Application
                 $this->addMiddleware($middleware);
             }
         }
+        unset($config['middleware']);
         parent::__construct($config);
     }
 
@@ -90,7 +125,12 @@ class Application extends \yii\base\Application
     {
         if (empty($this->catchAll)) {
             try {
-                [$route, $params] = $request->resolve();
+                [$route, $params, $middleware] = $request->resolve();
+                if ($middleware !== null) {
+                    foreach ($middleware as $m) {
+                        $this->addMiddleware($m);
+                    }
+                }
             } catch (UrlNormalizerRedirectException $e) {
                 $url = $e->url;
                 if (is_array($url)) {
@@ -110,7 +150,6 @@ class Application extends \yii\base\Application
         }
         try {
             $response = $this->getResponse();
-            $this->callMiddleware($request, $response);
             Yii::debug("Route requested: '$route'", __METHOD__);
             $this->requestedRoute = $route;
             $result = $this->runAction($route, $params);
@@ -129,6 +168,24 @@ class Application extends \yii\base\Application
     }
 
     private $_homeUrl;
+
+    /**
+     * @param string $route
+     * @return array|bool
+     */
+    public function createController($route)
+    {
+        $parts = parent::createController($route);
+        if (is_array($parts)) {
+            [$controller, $action] = $parts;
+            if (method_exists($controller, 'middleware')) {
+                foreach ($controller->middleware() as $m) {
+                    $this->addMiddleware($m);
+                }
+            }
+        }
+        return $parts;
+    }
 
     /**
      * @return string the homepage URL
