@@ -32,16 +32,37 @@ namespace yii\filters\auth;
  */
 class HttpHeaderAuth extends AuthMethod
 {
+    /**
+     * @var string the HTTP header name
+     */
     public $header = 'X-Api-Key';
 
+    /**
+     * @var string a pattern to use to extract the HTTP authentication value
+     */
+    public $pattern = null;
+
+    /**
+     * @inheritdoc
+     */
     public function authenticate($user, $request, $response)
     {
-        $apiKey = $request->getHeaders()->get($this->header);
-        $identity = $user->loginByAccessToken($apiKey, get_class($this));
-        if ($identity === null) {
-            $this->handleFailure($response);
+        $authHeader = $request->getHeaders()->get($this->header);
+
+        if ($authHeader !== null) {
+            if (null !== $this->pattern
+                && preg_match($this->pattern, $authHeader, $matches)
+            ) {
+                $authHeader = $matches[1];
+            }
+            $identity = $user->loginByAccessToken($authHeader, get_class($this));
+            if ($identity === null) {
+                $this->handleFailure($response);
+            }
+
+            return $identity;
         }
 
-        return $identity;
+        return null;
     }
 }
