@@ -7,14 +7,14 @@
 
 namespace yiiunit\framework\helpers;
 
-use yii\helpers\BaseConsole;
+use yii\helpers\Console;
 
 /**
  * Console helper stub for STDIN/STDOUT/STDERR replacement
  *
  * @author Pavel Dovlatov <mysterydragon@yandex.ru>
  */
-class ConsoleStub extends BaseConsole
+class ConsoleStub extends Console
 {
     /**
      * @var resource input stream
