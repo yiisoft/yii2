@@ -7,8 +7,6 @@
 
 namespace yiiunit\framework\helpers;
 
-use Exception;
-
 use yii\helpers\BaseConsole;
 
 /**
@@ -39,22 +37,7 @@ class ConsoleStub extends BaseConsole
      */
     public static function stdin($raw = false)
     {
-        if (self::$inputStream !== \STDIN) {
-            // emulating user input
-            // real STDIN waits until user prompts something,
-            // but other stream can easily go away with nothing
-
-            $input = fgets(self::$inputStream);
-            $response = $raw ? $input : rtrim($input, PHP_EOL);
-
-            if (empty($input)) {
-                throw new Exception(__METHOD__ . ' didn\'t receive user data');
-            }
-
-            return $response;
-        }
-
-        return parent::stdin($raw);
+        return $raw ? fgets(self::$inputStream) : rtrim(fgets(self::$inputStream), PHP_EOL);
     }
 
     /**
