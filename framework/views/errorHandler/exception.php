@@ -490,9 +490,12 @@ window.onload = function() {
         // toggle code block visibility
         callStackItems[i].getElementsByClassName('element-wrap')[0].addEventListener('click', function() {
             var callStackItem = this.parentNode,
-                code = callStackItem.getElementsByClassName('code-wrap')[0]
-            code.style.display = window.getComputedStyle(code).display == 'block' ? 'none' : 'block';
-            refreshCallStackItemCode(callStackItem);
+                code = callStackItem.getElementsByClassName('code-wrap')[0];
+
+            if (typeof code !== 'undefined') {
+                code.style.display = window.getComputedStyle(code).display == 'block' ? 'none' : 'block';
+                refreshCallStackItemCode(callStackItem);
+            }
         });
     }
 
