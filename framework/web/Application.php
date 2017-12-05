@@ -55,15 +55,37 @@ class Application extends \yii\base\Application
      * @var Controller the currently active controller instance
      */
     public $controller;
-
+    /**
+     * Stack of middleware
+     * @var array
+     */
     protected $middlewareStack = [];
 
+    /**
+     * Add middleware to stack
+     * @param $middleware callable|string|array
+     * Array format
+     * ```php
+     * [
+     *  'middleware' => 'className', //class name or closure
+     *  'priority' => 1, //integer value, middleware will be executed in desc order (default null)
+     *  'only' => ['index', 'view'], // middleware will be executed for only this actions (default for all actions)
+     *  'except' => ['update'], // middleware will not be executed for this actions (default empty array)
+     * ]
+     * ```
+     * @throws MiddlewareException
+     */
     public function addMiddleware($middleware)
     {
         if (is_array($middleware)) {
             if (!isset($middleware['middleware'])) {
                 throw new MiddlewareException("Param `middleware` must be set");
             }
+            $middleware = array_merge([
+                'priority' => null,
+                'only' => [],
+                'except' => []
+            ], $middleware);
             $this->middlewareStack[] = $middleware;
         } elseif (is_callable($middleware)) {
             $this->middlewareStack[] = [
@@ -87,7 +109,11 @@ class Application extends \yii\base\Application
         }
     }
 
-    public function getMiddleware()
+    /**
+     * Return middleware stack
+     * @return array
+     */
+    protected function getMiddleware()
     {
         return $this->middlewareStack;
     }
@@ -179,12 +205,52 @@ class Application extends \yii\base\Application
         if (is_array($parts)) {
             [$controller, $action] = $parts;
             if (method_exists($controller, 'middleware')) {
-                foreach ($controller->middleware() as $m) {
-                    $this->addMiddleware($m);
+                foreach ($controller->middleware() as $middleware) {
+                    $this->addMiddleware($middleware);
                 }
             }
+            $this->callMiddlewareStack($action);
         }
         return $parts;
+    }
+
+    /**
+     * Sort middleware by priority and execute
+     *
+     * @param $action string|null
+     * @throws MiddlewareException
+     */
+    protected function callMiddlewareStack($action)
+    {
+        usort($this->middlewareStack, function ($a, $b) {
+            if ($a['priority'] == $b['priority']) {
+                return 0;
+            }
+            return $a['priority'] > $b['priority'] ? -1 : 1;
+        });
+
+        foreach ($this->middlewareStack as $middleware) {
+
+            if (in_array($action, (array)$middleware['except'])) {
+                continue;
+            }
+            if (count($middleware['only'])>0 && !in_array($action, $middleware['only'])) {
+                continue;
+            }
+
+            if (is_callable($middleware['middleware'])) {
+                Yii::debug("Execute middleware closure");
+                $middleware['middleware']($this->getRequest(), $this->getResponse());
+            } elseif (is_string($middleware['middleware'])) {
+                $object = new $middleware['middleware'];
+                $className = get_class($object);
+                if (!$object instanceof MiddlewareInterface) {
+                    throw new MiddlewareException("Class {$className} must be implemented by yii\web\MiddlewareInterface");
+                }
+                Yii::debug("Execute middleware class: {$className}");
+                $object->process($this->getRequest(), $this->getResponse());
+            }
+        }
     }
 
     /**
