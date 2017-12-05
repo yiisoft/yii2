@@ -34,6 +34,7 @@ Application Structure
 * [Entry Scripts](structure-entry-scripts.md)
 * [Applications](structure-applications.md)
 * [Application Components](structure-application-components.md)
+* [Middleware](middleware.md)
 * [Controllers](structure-controllers.md)
 * [Models](structure-models.md)
 * [Views](structure-views.md)
