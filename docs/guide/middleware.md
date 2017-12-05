@@ -9,7 +9,7 @@ Global middleware for all routes can add in application config:
 
 ```php
         [
-            'middleware' => \app\middleware\CopyrightMiddleware::class,
+            'handle' => \app\middleware\CopyrightMiddleware::class,
             'priority' => 10,
         ],        
         function (\yii\web\Request $request, \yii\web\Response $response) {
@@ -45,7 +45,7 @@ class CopyrightMiddleware implements MiddlewareInterface
             'route' => 'site/index',
             'middleware' => [
                 [
-                    'middleware' => function ($request, \yii\web\Response $response) {
+                    'handle' => function ($request, \yii\web\Response $response) {
                         echo "router middleware!";
                     },
                     'priority' => 5,
@@ -67,7 +67,7 @@ public function middleware()
 {
     return [
         [
-            'middleware' => function(Request $request, Response $response) {
+            'handle' => function(Request $request, Response $response) {
                 $response->addHeader('site', 'index');
             },
             'only' => ['index']
@@ -82,7 +82,7 @@ Middleware must configured by class name, closure or array:
 
 ```php
 [
-    'middleware' => 'className', //class name or closure
+    'handle' => 'className', //class name or closure
     'priority' => 1, //integer value, middleware will be executed in desc order (default null)
     'only' => ['index', 'view'], // middleware will be executed for only this actions (default for all actions)
     'except' => ['update'], // middleware will not be executed for this actions (default empty array)

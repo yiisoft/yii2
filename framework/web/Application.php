@@ -77,36 +77,29 @@ class Application extends \yii\base\Application
      */
     public function addMiddleware($middleware)
     {
-        if (is_array($middleware)) {
-            if (!isset($middleware['middleware'])) {
-                throw new MiddlewareException("Param `middleware` must be set");
-            }
-            $middleware = array_merge([
-                'priority' => null,
-                'only' => [],
-                'except' => []
-            ], $middleware);
-            $this->middlewareStack[] = $middleware;
-        } elseif (is_callable($middleware)) {
-            $this->middlewareStack[] = [
-                'middleware' => $middleware,
-                'priority' => null,
-                'only' => [],
-                'except' => []
+        if (is_callable($middleware)) {
+            $middleware = [
+                'handle' => $middleware
             ];
         } elseif (is_string($middleware)) {
             if (!class_exists($middleware)) {
                 throw new MiddlewareException("Class {$middleware} not found");
             }
-            $this->middlewareStack[] = [
-                'middleware' => $middleware,
-                'priority' => null,
-                'only' => [],
-                'except' => []
+            $middleware = [
+                'handle' => $middleware
             ];
-        } else {
+        } elseif (is_array($middleware) && !isset($middleware['handle'])) {
+            throw new MiddlewareException("Param `middleware` must be set");
+        }
+        if (!is_array($middleware)) {
             throw new MiddlewareException("Middleware must be class name or callable or array. See documentation");
         }
+        $middleware = array_merge([
+            'priority' => null,
+            'only' => [],
+            'except' => []
+        ], $middleware);
+        $this->middlewareStack[] = $middleware;
     }
 
     /**
@@ -238,11 +231,11 @@ class Application extends \yii\base\Application
                 continue;
             }
 
-            if (is_callable($middleware['middleware'])) {
+            if (is_callable($middleware['handle'])) {
                 Yii::debug("Execute middleware closure");
-                $middleware['middleware']($this->getRequest(), $this->getResponse());
-            } elseif (is_string($middleware['middleware'])) {
-                $object = new $middleware['middleware'];
+                $middleware['handle']($this->getRequest(), $this->getResponse());
+            } elseif (is_string($middleware['handle'])) {
+                $object = new $middleware['handle'];
                 $className = get_class($object);
                 if (!$object instanceof MiddlewareInterface) {
                     throw new MiddlewareException("Class {$className} must be implemented by yii\web\MiddlewareInterface");
