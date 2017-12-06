@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()` (IceJOKER)
 - Bug #15249: Controllers in subdirectories were not visible in commands list (IceJOKER)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
@@ -19,6 +20,7 @@ Yii Framework 2 Change Log
 - Enh #15221: Added support for specifying `--camelCase` console options in `--kebab-case` (brandonkelly)
 - Enh #15221: Added support for the `--<option> <value>` console option syntax (brandonkelly)
 - Enh #15221: Improved the `help/list-action-options` console command output for command options without a description (brandonkelly)
+- Bug #15270: Resolved potential race conditions when writing generated php-files (kalessil)
 
 2.0.13.1 November 14, 2017
 --------------------------
