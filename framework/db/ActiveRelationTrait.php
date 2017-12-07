@@ -283,7 +283,7 @@ trait ActiveRelationTrait
         if (isset($viaQuery)) {
             $deepViaQuery = $viaQuery;
             while ($deepViaQuery->via) {
-                $deepViaQuery = $deepViaQuery->via[1];
+                $deepViaQuery = is_array($deepViaQuery->via) ? $deepViaQuery->via[1] : $deepViaQuery->via;
             };
             $link = array_values($deepViaQuery->link);
         }
@@ -409,7 +409,7 @@ trait ActiveRelationTrait
 
             $viaVia = $viaQuery->via;
             while ($viaVia) {
-                $viaViaQuery = $viaVia[1];
+                $viaViaQuery = is_array($viaVia) ? $viaVia[1] : $viaVia;
                 $viaMap = $viaViaQuery->viaMap;
                 $oldMap = $map;
                 $map = [];
