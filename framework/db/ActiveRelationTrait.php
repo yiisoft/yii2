@@ -279,7 +279,14 @@ trait ActiveRelationTrait
             $buckets = $this->indexBuckets($buckets, $this->indexBy);
         }
 
-        $link = array_values(isset($viaQuery) ? $viaQuery->link : $this->link);
+        $link = array_values($this->link);
+        if (isset($viaQuery)) {
+            $deepViaQuery = $viaQuery;
+            while ($deepViaQuery->via) {
+                $deepViaQuery = $deepViaQuery->via[1];
+            };
+            $link = array_values($deepViaQuery->link);
+        }
         foreach ($primaryModels as $i => $primaryModel) {
             if ($this->multiple && count($link) === 1 && is_array($keys = $primaryModel[reset($link)])) {
                 $value = [];
