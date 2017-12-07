@@ -1269,5 +1269,14 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals(ArrayHelper::filter($array, ['X']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['X.Y']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['A.X']), []);
+        
+        $tmp = [
+            'a' => 0,
+            'b' => null,
+            'c' => '',
+            'd' => true,
+            'e' => false,
+        ];
+        $this->assertEquals(ArrayHelper::filter($tmp, ['a', 'b', 'c', 'd', 'e']), $tmp);
     }
 }
