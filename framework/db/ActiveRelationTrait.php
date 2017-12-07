@@ -62,6 +62,7 @@ trait ActiveRelationTrait
      */
     public $inverseOf;
 
+    private $viaMap;
 
     /**
      * Clones internal objects.
@@ -268,7 +269,7 @@ trait ActiveRelationTrait
         $models = $this->all();
 
         if (isset($viaModels, $viaQuery)) {
-            $buckets = $this->buildBuckets($models, $this->link, $viaModels, $viaQuery->link);
+            $buckets = $this->buildBuckets($models, $this->link, $viaModels, $viaQuery);
         } else {
             $buckets = $this->buildBuckets($models, $this->link);
         }
@@ -380,14 +381,15 @@ trait ActiveRelationTrait
      * @param array $models
      * @param array $link
      * @param array $viaModels
-     * @param array $viaLink
+     * @param null|self $viaQuery
      * @param bool $checkMultiple
      * @return array
      */
-    private function buildBuckets($models, $link, $viaModels = null, $viaLink = null, $checkMultiple = true)
+    private function buildBuckets($models, $link, $viaModels = null, $viaQuery = null, $checkMultiple = true)
     {
         if ($viaModels !== null) {
             $map = [];
+            $viaLink = $viaQuery->link;
             $viaLinkKeys = array_keys($viaLink);
             $linkValues = array_values($link);
             foreach ($viaModels as $viaModel) {
@@ -395,6 +397,25 @@ trait ActiveRelationTrait
                 $key2 = $this->getModelKey($viaModel, $linkValues);
                 $map[$key2][$key1] = true;
             }
+
+            $viaQuery->viaMap = $map;
+
+            $viaVia = $viaQuery->via;
+            while ($viaVia) {
+                $viaViaQuery = $viaVia[1];
+                $viaMap = $viaViaQuery->viaMap;
+                $oldMap = $map;
+                $map = [];
+                foreach ($oldMap as $key1 => $keys) {
+                    foreach (array_keys($keys) as $key2) {
+                        foreach (array_keys($viaMap[$key2]) as $key3) {
+                            $map[$key1][$key3] = true;
+                        }
+                    }
+                }
+
+                $viaVia = $viaViaQuery->via;
+            };
         }
 
         $buckets = [];
