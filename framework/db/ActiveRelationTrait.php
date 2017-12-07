@@ -410,16 +410,7 @@ trait ActiveRelationTrait
             $viaVia = $viaQuery->via;
             while ($viaVia) {
                 $viaViaQuery = is_array($viaVia) ? $viaVia[1] : $viaVia;
-                $viaMap = $viaViaQuery->viaMap;
-                $oldMap = $map;
-                $map = [];
-                foreach ($oldMap as $key1 => $keys) {
-                    foreach (array_keys($keys) as $key2) {
-                        foreach (array_keys($viaMap[$key2]) as $key3) {
-                            $map[$key1][$key3] = true;
-                        }
-                    }
-                }
+                $map = $this->mapVia($map, $viaViaQuery->viaMap);
 
                 $viaVia = $viaViaQuery->via;
             };
@@ -453,6 +444,20 @@ trait ActiveRelationTrait
         return $buckets;
     }
 
+    /**
+     * @param array $map
+     * @param array $viaMap
+     * @return array
+     */
+    private function mapVia($map, $viaMap) {
+        $resultMap = [];
+        foreach ($map as $key => $linkKeys) {
+            foreach (array_keys($linkKeys) as $linkKey) {
+                $resultMap[$key] = $viaMap[$linkKey];
+            }
+        }
+        return $resultMap;
+    }
 
     /**
      * Indexes buckets by column name.
