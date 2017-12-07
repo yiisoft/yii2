@@ -938,7 +938,11 @@ class BaseArrayHelper
                 continue;
             }
 
-            if (empty($array[$globalKey])) {
+//            if (empty($array[$globalKey])) {
+//                continue;
+//            }
+            
+            if (!key_exists($globalKey, $array)) {
                 continue;
             }
             if ($localKey === null) {
