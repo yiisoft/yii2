@@ -317,7 +317,12 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setName($value)
     {
+        $active = $this->getIsActive();
+        $this->close();
         session_name($value);
+        if ($active) {
+            $this->open();
+        }
     }
 
     /**
