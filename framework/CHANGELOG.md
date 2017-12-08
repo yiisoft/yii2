@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 - Enh #15221: Added support for the `--<option> <value>` console option syntax (brandonkelly)
 - Enh #15221: Improved the `help/list-action-options` console command output for command options without a description (brandonkelly)
 - Bug #15270: Resolved potential race conditions when writing generated php-files (kalessil)
+- Bug #15301: Fixed `ArrayHelper::filter()` to work properly with `0` in values (hhniao)
 
 2.0.13.1 November 14, 2017
 --------------------------
