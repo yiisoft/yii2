@@ -1069,7 +1069,7 @@ class BaseConsole
         $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
         $lines = self::collectErrors($models, $showAllErrors);
 
-        return implode("\n", $lines);
+        return implode(PHP_EOL, $lines);
     }
 
     /**

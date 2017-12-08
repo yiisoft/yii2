@@ -8,7 +8,6 @@
 namespace yiiunit\framework\helpers;
 
 use yii\base\DynamicModel;
-use yii\base\Model;
 use yii\helpers\BaseJson;
 use yii\helpers\Json;
 use yii\web\JsExpression;
