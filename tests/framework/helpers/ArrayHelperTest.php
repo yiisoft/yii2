@@ -1275,9 +1275,9 @@ class ArrayHelperTest extends TestCase
             'b' => '',
             'c' => false,
             'd' => null,
-            'e' => true
+            'e' => true,
         ];
         
-        $this->assertEquals(ArrayHelper::filter($tmp, array_keys($tmp)),$tmp);
+        $this->assertEquals(ArrayHelper::filter($tmp, array_keys($tmp)), $tmp);
     }
 }
