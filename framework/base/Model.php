@@ -329,7 +329,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Errors found during the validation can be retrieved via [[getErrors()]],
      * [[getFirstErrors()]] and [[getFirstError()]].
      *
-     * @param array $attributeNames list of attribute names that should be validated.
+     * @param string[]|string $attributeNames attribute name or list of attribute names that should be validated.
      * If this parameter is empty, it means any attribute listed in the applicable
      * validation rules should be validated.
      * @param bool $clearErrors whether to call [[clearErrors()]] before performing validation
@@ -355,6 +355,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         if ($attributeNames === null) {
             $attributeNames = $this->activeAttributes();
         }
+
+        $attributeNames = (array)$attributeNames;
 
         foreach ($this->getActiveValidators() as $validator) {
             $validator->validateAttributes($this, $attributeNames);
