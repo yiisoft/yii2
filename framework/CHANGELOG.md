@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Enh #15221: Improved the `help/list-action-options` console command output for command options without a description (brandonkelly)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
 - Bug #15270: Resolved potential race conditions when writing generated php-files (kalessil)
+- Bug #15302: Fixed `yii\caching\DbCache` so that `getValues` now behaves the same as `getValue` with regards to streams (edwards-sj)
 - Bug #15301: Fixed `ArrayHelper::filter()` to work properly with `0` in values (hhniao)
 
 2.0.13.1 November 14, 2017
