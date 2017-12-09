@@ -58,6 +58,7 @@ Yii Framework 2 Change Log
 - Bug #15270: Resolved potential race conditions when writing generated php-files (kalessil)
 - Bug #15301: Fixed `ArrayHelper::filter()` to work properly with `0` in values (hhniao)
 - Enh #7593: Created a new core validator AtLeastValidator (slinstj, developeruz)
+- Enh #7593: Created a new core validator AtLeastValidator (slinstj, developeruz, silverfire)
 
 2.0.13.1 November 14, 2017
 --------------------------
