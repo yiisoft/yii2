@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Enh #4352: Result of `yii\web\Request::getBodyParams()` now includes uploaded files (klimov-paul)
 - Enh #14522: `yii\web\Request::getBodyParams()` now generates 415 'Unsupported Media Type' error on invalid or missing 'Content-Type' header (klimov-paul)
 - Enh #13799: CAPTCHA rendering logic extracted into `yii\captcha\DriverInterface`, which instance is available via `yii\captcha\CaptchaAction::$driver` field (vladis84, klimov-paul)
+- Enh #9137: Added `clearErrors` parameter to `yii\base\Model` `validateMultiple()` method (developeruz)
 - Enh #9260: Mail view rendering encapsulated into `yii\mail\Template` class allowing rendering in isolation and access to `yii\mail\MessageInterface` instance via `$this->context->message` inside the view (klimov-paul)
 - Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)
 - Enh #12385: Methods `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()` have been added to `yii\mail\MessageInterface` allowing setup of custom message headers (klimov-paul)
