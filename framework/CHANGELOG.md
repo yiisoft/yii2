@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorSource" option to be able to customize errors display (yanggs07, developeruz, silverfire)
 - Enh #3250: Added support for events partial wildcard matching (klimov-paul)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
+- Enh #7593: Created a new core validator AtLeastValidator (slinstj, developeruz, silverfire)
 - Enh #7988: Added `\yii\helpers\Console::errorSummary()` and `\yii\helpers\Json::errorSummary()` (developeruz)
 - Enh #7996: Short syntax for verb in GroupUrlRule (schojniak, developeruz)
 - Enh #8752: Allow specify `$attributeNames` as a string for `yii\base\Model` `validate()` method (developeruz)
@@ -55,10 +56,6 @@ Yii Framework 2 Change Log
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 - Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
 
-- Bug #15270: Resolved potential race conditions when writing generated php-files (kalessil)
-- Bug #15301: Fixed `ArrayHelper::filter()` to work properly with `0` in values (hhniao)
-- Enh #7593: Created a new core validator AtLeastValidator (slinstj, developeruz)
-- Enh #7593: Created a new core validator AtLeastValidator (slinstj, developeruz, silverfire)
 
 2.0.13.1 November 14, 2017
 --------------------------
