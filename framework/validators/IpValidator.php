@@ -529,7 +529,7 @@ class IpValidator extends Validator
      */
     private function inRange($ip, $cidr, $range)
     {
-        return IpHelper::inRange($ip, $cidr, $range);
+        return IpHelper::inRange($ip . '/' . $cidr, $range);
     }
 
     /**

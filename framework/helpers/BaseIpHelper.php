@@ -35,46 +35,46 @@ class BaseIpHelper
     }
 
     /**
-     * Checks whether the IP address with the specified CIDR is in the subnet range.
+     * Checks whether IP address or subnet $subnet is contained by $subnet.
      *
      * For example, the following code checks whether subnet `192.168.1.0/24` is in subnet `192.168.0.0/22`:
      *
      * ```php
-     * IpHelper::inRange('192.168.1.0', '24', '192.168.0.0/22'); // true
+     * IpHelper::inRange('192.168.1.0/24', '192.168.0.0/22'); // true
      * ```
      *
      * In case you need to check whether a single IP address `192.168.1.21` is in the subnet `192.168.1.0/24`,
+     * you can use any of theses examples:
      *
      * ```php
-     * IpHelper::inRange('192.168.1.21', '32', '192.168.1.0/24'); // true
+     * IpHelper::inRange('192.168.1.21', '192.168.1.0/24'); // true
+     * IpHelper::inRange('192.168.1.21/32', '192.168.1.0/24'); // true
      * ```
      *
-     * @see https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing
+     * @param string $subnet the valid IPv4 or IPv6 address or CIDR range, e.g.: `10.0.0.0/8` or `2001:af::/64`
+     * @param string $range the valid IPv4 or IPv6 CIDR range, e.g. `10.0.0.0/8` or `2001:af::/64`
+     * @return bool whether $subnet is contained by $range
      *
-     * @param string $ip the valid IPv4 or IPv6 address
-     * @param int|string $cidr the CIDR of $ip
-     * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
-     * @return bool whether IP address with $cidr is in range
+     * @see https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing
      */
-    public static function inRange($ip, $cidr, $range)
+    public static function inRange($subnet, $range)
     {
+        list($ip, $mask) = array_pad(explode('/', $subnet), 2, null);
+        list($net, $netMask) = array_pad(explode('/', $range), 2, null);
+
         $ipVersion = static::getIpVersion($ip);
-        $binIp = static::ip2bin($ip);
-
-        $parts = explode('/', $range);
-        $net = array_shift($parts);
-        $range_cidr = array_shift($parts);
-
         $netVersion = static::getIpVersion($net);
         if ($ipVersion !== $netVersion) {
             return false;
         }
-        if ($range_cidr === null) {
-            $range_cidr = $netVersion === self::IPV4 ? self::IPV4_ADDRESS_LENGTH : self::IPV6_ADDRESS_LENGTH;
-        }
 
+        $maxMask = $ipVersion === self::IPV4 ? self::IPV4_ADDRESS_LENGTH : self::IPV6_ADDRESS_LENGTH;
+        $mask = isset($mask) ? $mask : $maxMask;
+        $netMask = isset($netMask) ? $netMask : $maxMask;
+
+        $binIp = static::ip2bin($ip);
         $binNet = static::ip2bin($net);
-        return substr($binIp, 0, $range_cidr) === substr($binNet, 0, $range_cidr) && $cidr >= $range_cidr;
+        return substr($binIp, 0, $netMask) === substr($binNet, 0, $netMask) && $mask >= $netMask;
     }
 
     /**

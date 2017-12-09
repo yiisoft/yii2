@@ -92,21 +92,22 @@ class IpHelperTest extends TestCase
      */
     public function testInRange($value, $range, $expected)
     {
-        $result = IpHelper::inRange($value[0], $value[1], $range);
+        $result = IpHelper::inRange($value, $range);
         $this->assertSame($expected, $result);
     }
 
     public function inRangeProvider()
     {
         return [
-            [['192.168.1.1', '24'], '192.168.0.0/23', true],
-            [['192.168.1.1', '24'], '192.168.0.0/24', false],
-            [['192.168.1.1', '24'], '0.0.0.0/0', true],
-            [['192.168.1.1', '32'], '192.168.1.1', true],
-            [['192.168.1.1', '32'], '192.168.1.1/32', true],
-            [['fa01::1', '128'], 'fa01::/64', true],
-            [['fa01::1', '128'], 'fa01::1/128', true],
-            [['fa01::1', 64], 'fa01::1/128', false],
+            ['192.168.1.1/24', '192.168.0.0/23', true],
+            ['192.168.1.1/24', '192.168.0.0/24', false],
+            ['192.168.1.1/24', '0.0.0.0/0', true],
+            ['192.168.1.1/32', '192.168.1.1', true],
+            ['192.168.1.1/32', '192.168.1.1/32', true],
+            ['192.168.1.1', '192.168.1.1/32', true],
+            ['fa01::1/128', 'fa01::/64', true],
+            ['fa01::1/128', 'fa01::1/128', true],
+            ['fa01::1/64', 'fa01::1/128', false],
         ];
     }
 }
