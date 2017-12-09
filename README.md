@@ -39,9 +39,10 @@ Community
 ---------
 
 - Participate in [discussions at forums](http://www.yiiframework.com/forum/).
-- [Community Slack](https://join.slack.com/t/yii/shared_invite/MjIxMjMxMTk5MTU1LTE1MDE3MDAwMzMtM2VkMTMyMjY1Ng) and [Chat in IRC](http://www.yiiframework.com/chat/)
+- [Community Slack](https://join.slack.com/t/yii/shared_invite/MjIxMjMxMTk5MTU1LTE1MDE3MDAwMzMtM2VkMTMyMjY1Ng) and [Chat in IRC](http://www.yiiframework.com/chat/).
 - Follow us on [Facebook](https://www.facebook.com/groups/yiitalk/), [Twitter](https://twitter.com/yiiframework)
 and [GitHub](https://github.com/yiisoft/yii2).
+- Check [other communities](https://github.com/yiisoft/yii2/wiki/communities).
 
 Contributing
 ------------
