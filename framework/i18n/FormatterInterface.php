@@ -15,7 +15,9 @@ use yii\base\InvalidParamException;
 /**
  * FormatterInterface defines a set of commonly used data formatting methods.
  *
- * @author Nelson J Morais <njmorais@gmail.com>
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @author Enrica Ruedin <e.ruedin@guggach.com>
+ * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0.15
  */
 interface FormatterInterface
