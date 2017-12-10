@@ -15,7 +15,7 @@ use yii\base\InvalidConfigException;
  * UrlManager is configured as an application component in [[\yii\base\Application]] by default.
  * You can access that instance via `Yii::$app->urlManager`.
  *
- * @author Nelson J Morais <njmorais@gmail.com>
+ * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0.15
  */
 interface UrlManagerInterface
