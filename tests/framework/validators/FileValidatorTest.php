@@ -415,11 +415,7 @@ class FileValidatorTest extends TestCase
             ['test.png', 'image/*', 'png'],
             ['test.png', 'IMAGE/*', 'png'],
             ['test.txt', 'text/*', 'txt'],
-            // Disabled for PHP 7.2 RC because of regression:
-            // https://bugs.php.net/bug.php?id=75380
-            version_compare(PHP_VERSION, '7.2.0.RC.1', '>=') && version_compare(PHP_VERSION, '7.2.0.RC.6', '<=')
-                ? null
-                : ['test.xml', '*/xml', 'xml'],
+            ['test.xml', '*/xml', 'xml'],
             ['test.odt', 'application/vnd*', 'odt'],
         ]);
     }
@@ -445,7 +441,8 @@ class FileValidatorTest extends TestCase
     {
         $validator = new FileValidator(['extensions' => (array) $allowedExtensions]);
         $file = $this->getRealTestFile($fileName);
-        $this->assertTrue($validator->validate($file));
+        $detectedMimeType = FileHelper::getMimeType($file->tempName, null, false);
+        $this->assertTrue($validator->validate($file), "Mime type detected was \"$detectedMimeType\". Consider adding it to MimeTypeController::\$aliases.");
     }
 
     /**
