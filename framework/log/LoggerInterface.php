@@ -13,7 +13,7 @@ namespace yii\log;
  * A Logger instance can be accessed via `Yii::getLogger()`.
  * For more details and usage information on Logger, see the [guide article on logging](guide:runtime-logging).
  *
- * @author Nelson J Morais <njmorais@gmail.com>
+ * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0.15
  */
 interface LoggerInterface
