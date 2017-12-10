@@ -12,7 +12,7 @@ use yii\base\NotSupportedException;
 /**
  * ConnectionInterface defines a connection to a database.
  *
- * @author Nelson J Morais <njmorais@gmail.com>
+ * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0.15
  */
 interface ConnectionInterface
