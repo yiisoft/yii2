@@ -282,7 +282,7 @@ class FileValidatorTest extends TestCase
                     'error' => $error,
                 ]);
             }
-            $files[] = new UploadedFile([
+            $files[$key] = new UploadedFile([
                 'clientFilename' => $name,
                 'tempFilename' => $tempName,
                 'clientMediaType' => $type,
