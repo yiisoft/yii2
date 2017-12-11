@@ -149,7 +149,7 @@ class TargetTest extends TestCase
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
         $text = 'message';
-        $level = Logger::LEVEL_INFO;
+        $level = LogLevel::INFO;
         $category = 'application';
         $timestamp = 1508160390.6083;
 

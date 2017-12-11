@@ -542,7 +542,7 @@ class RequestTest extends TestCase
 
         unset($_SERVER['HTTP_ORIGIN']);
         $request = new Request();
-        $this->assertNull($request->getOrigin());
+        $this->assertSame('', $request->getOrigin());
     }
 
     public function httpAuthorizationHeadersProvider()
