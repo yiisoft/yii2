@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #15302: Fixed `yii\caching\DbCache` so that `getValues` now behaves the same as `getValue` with regards to streams (edwards-sj)
 - Bug #15301: Fixed `ArrayHelper::filter()` to work properly with `0` in values (hhniao)
 - Bug #15322: Fixed PHP 7.2 compatibility of `FileHelper::getExtensionsByMimeType()` (samdark)
+- Bug #15320: Fixed special role checks in `yii\filters\AccessRule::matchRole()` (Izumi-kun)
 
 2.0.13.1 November 14, 2017
 --------------------------
