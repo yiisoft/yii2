@@ -31,6 +31,11 @@ class RequiredValidatorTest extends TestCase
         $this->assertFalse($val->validate([]));
         $this->assertTrue($val->validate('not empty'));
         $this->assertTrue($val->validate(['with', 'elements']));
+        $val->strict = true;
+        $this->assertTrue($val->validate(null));
+        $this->assertFalse($val->validate([]));
+        $this->assertFalse($val->validate('should fail'));
+        $this->assertFalse($val->validate(['should', 'fail', 'with', 'elements']));
     }
 
     public function testValidateValueWithValue()
