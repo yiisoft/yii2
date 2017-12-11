@@ -111,10 +111,10 @@ review your suggestion, and provide appropriate feedback along the way.
 
 > For small changes or documentation issues or straightforward fixes, you don't need to create an issue, a pull request is enough in this case.
 
-### 2. Fetch the latest code from the main Yii branch
+### 2. Pull the latest code from the main Yii branch
 
 ```
-git fetch upstream
+git pull upstream
 ```
 
 You should start at this point for every new contribution to make sure you are working on the latest code.

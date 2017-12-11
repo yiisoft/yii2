@@ -64,7 +64,7 @@ return [
     'Yes' => 'Ja',
     'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Sie dürfen diese Aktion nicht durchführen.',
-    'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Sie können maximal {limit, number} {limit, plural, one{eine Datei} other{# Dateien}} hochladen.',
+    'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Sie können maximal {limit, plural, one{eine Datei} other{# Dateien}} hochladen.',
     'in {delta, plural, =1{a day} other{# days}}' => 'in {delta, plural, =1{einem Tag} other{# Tagen}}',
     'in {delta, plural, =1{a minute} other{# minutes}}' => 'in {delta, plural, =1{einer Minute} other{# Minuten}}',
     'in {delta, plural, =1{a month} other{# months}}' => 'in {delta, plural, =1{einem Monat} other{# Monaten}}',

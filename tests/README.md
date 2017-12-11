@@ -75,6 +75,7 @@ Run phpunit directly
     cd tests    
     docker-compose run --rm php vendor/bin/phpunit -v --group caching,db   
     docker-compose run --rm php vendor/bin/phpunit -v --exclude base,caching,db,i18n,log,mutex,rbac,validators,web
+    docker-compose run --rm php vendor/bin/phpunit -v --exclude mssql,oci,wincache,xcache,zenddata,cubrid
 
 ### Cubrid
 

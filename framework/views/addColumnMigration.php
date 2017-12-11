@@ -31,7 +31,7 @@ class <?= $className ?> extends Migration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
 <?= $this->render('_addColumns', [
     'table' => $table,
@@ -44,7 +44,7 @@ class <?= $className ?> extends Migration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
 <?= $this->render('_dropColumns', [
     'table' => $table,
