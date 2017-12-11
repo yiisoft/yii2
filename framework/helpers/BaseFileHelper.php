@@ -376,25 +376,45 @@ class BaseFileHelper
                 if (is_dir($path)) {
                     static::removeDirectory($path, $options);
                 } else {
-                    try {
-                        unlink($path);
-                    } catch (ErrorException $e) {
-                        if (DIRECTORY_SEPARATOR === '\\') {
-                            // last resort measure for Windows
-                            $lines = [];
-                            exec("DEL /F/Q \"$path\"", $lines, $deleteError);
-                        } else {
-                            throw $e;
-                        }
-                    }
+                    static::unlink($path);
                 }
             }
             closedir($handle);
         }
         if (is_link($dir)) {
-            unlink($dir);
+            static::unlink($dir);
         } else {
             rmdir($dir);
+        }
+    }
+
+    /**
+     * Removes a file or symlink in a cross-platform way
+     *
+     * @param string $path
+     * @return bool
+     *
+     * @since 2.0.14
+     */
+    public static function unlink($path)
+    {
+        $isWindows = DIRECTORY_SEPARATOR === '\\';
+
+        if (!$isWindows) {
+            return unlink($path);
+        }
+
+        if (is_link($path) && is_dir($path)) {
+            return rmdir($path);
+        }
+
+        try {
+            return unlink($path);
+        } catch (ErrorException $e) {
+            // last resort measure for Windows
+            $lines = [];
+            exec("DEL /F/Q \"$path\"", $lines, $deleteError);
+            return $deleteError !== 0;
         }
     }
 
