@@ -14,6 +14,9 @@ use Yii;
  *
  * Note, this validator should only be used with string-typed attributes.
  *
+ * @property int $min
+ * @property int $max
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -33,16 +36,6 @@ class StringValidator extends Validator
      * @see notEqual for the customized message for a string that does not match desired length.
      */
     public $length;
-    /**
-     * @var int maximum length. If not set, it means no maximum length limit.
-     * @see tooLong for the customized message for a too long string.
-     */
-    public $max;
-    /**
-     * @var int minimum length. If not set, it means no minimum length limit.
-     * @see tooShort for the customized message for a too short string.
-     */
-    public $min;
     /**
      * @var string user-defined error message used when the value is not a string.
      */
@@ -65,6 +58,51 @@ class StringValidator extends Validator
      */
     public $encoding;
 
+    /**
+     * @var int maximum length. If not set, it means no maximum length limit.
+     * @see tooLong for the customized message for a too long string.
+     */
+    protected $_max;
+    /**
+     * @var int minimum length. If not set, it means no minimum length limit.
+     * @see tooShort for the customized message for a too short string.
+     */
+    protected $_min;
+
+
+    /**
+     * @return int
+     */
+    public function getMax()
+    {
+        return $this->_max;
+    }
+
+    /**
+     * @param int $max
+     */
+    public function setMax($max)
+    {
+        $this->_max = $max;
+        $this->init();
+    }
+
+    /**
+     * @return int
+     */
+    public function getMin()
+    {
+        return $this->_min;
+    }
+
+    /**
+     * @param int $min
+     */
+    public function setMin($min)
+    {
+        $this->_min = $min;
+        $this->init();
+    }
 
     /**
      * @inheritdoc

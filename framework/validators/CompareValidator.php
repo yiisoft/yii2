@@ -28,6 +28,8 @@ use yii\helpers\Html;
  * are compared byte by byte. When comparing numbers, make sure to set the [[$type]]
  * to [[TYPE_NUMBER]] to enable numeric comparison.
  *
+ * @property string $operator
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -69,6 +71,18 @@ class CompareValidator extends Validator
      */
     public $type = self::TYPE_STRING;
     /**
+     * @var string the user-defined error message. It may contain the following placeholders which
+     * will be replaced accordingly by the validator:
+     *
+     * - `{attribute}`: the label of the attribute being validated
+     * - `{value}`: the value of the attribute being validated
+     * - `{compareValue}`: the value or the attribute label to be compared with
+     * - `{compareAttribute}`: the label of the attribute to be compared with
+     * - `{compareValueOrAttribute}`: the value or the attribute label to be compared with
+     */
+    public $message;
+
+    /**
      * @var string the operator for comparison. The following operators are supported:
      *
      * - `==`: check if two values are equal. The comparison is done is non-strict mode.
@@ -82,18 +96,7 @@ class CompareValidator extends Validator
      *
      * When you want to compare numbers, make sure to also set [[type]] to `number`.
      */
-    public $operator = '==';
-    /**
-     * @var string the user-defined error message. It may contain the following placeholders which
-     * will be replaced accordingly by the validator:
-     *
-     * - `{attribute}`: the label of the attribute being validated
-     * - `{value}`: the value of the attribute being validated
-     * - `{compareValue}`: the value or the attribute label to be compared with
-     * - `{compareAttribute}`: the label of the attribute to be compared with
-     * - `{compareValueOrAttribute}`: the value or the attribute label to be compared with
-     */
-    public $message;
+    protected $_operator = '==';
 
 
     /**
@@ -160,6 +163,23 @@ class CompareValidator extends Validator
                 'compareValueOrAttribute' => $compareValueOrAttribute,
             ]);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getOperator()
+    {
+        return $this->_operator;
+    }
+
+    /**
+     * @param string $operator
+     */
+    public function setOperator($operator)
+    {
+        $this->_operator = $operator;
+        $this->init();
     }
 
     /**

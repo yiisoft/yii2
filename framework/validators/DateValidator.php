@@ -28,6 +28,9 @@ use yii\helpers\FormatConverter;
  * or [[timestampAttributeTimeZone]] otherwise. If you want to avoid the time zone conversion, make sure that [[timeZone]] and
  * [[timestampAttributeTimeZone]] are the same.
  *
+ * @property int|string $min
+ * @property int|string $max
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -157,22 +160,6 @@ class DateValidator extends Validator
      */
     public $timestampAttributeTimeZone = 'UTC';
     /**
-     * @var int|string upper limit of the date. Defaults to null, meaning no upper limit.
-     * This can be a unix timestamp or a string representing a date time value.
-     * If this property is a string, [[format]] will be used to parse it.
-     * @see tooBig for the customized message used when the date is too big.
-     * @since 2.0.4
-     */
-    public $max;
-    /**
-     * @var int|string lower limit of the date. Defaults to null, meaning no lower limit.
-     * This can be a unix timestamp or a string representing a date time value.
-     * If this property is a string, [[format]] will be used to parse it.
-     * @see tooSmall for the customized message used when the date is too small.
-     * @since 2.0.4
-     */
-    public $min;
-    /**
      * @var string user-defined error message used when the value is bigger than [[max]].
      * @since 2.0.4
      */
@@ -196,6 +183,23 @@ class DateValidator extends Validator
     public $minString;
 
     /**
+     * @var int|string upper limit of the date. Defaults to null, meaning no upper limit.
+     * This can be a unix timestamp or a string representing a date time value.
+     * If this property is a string, [[format]] will be used to parse it.
+     * @see tooBig for the customized message used when the date is too big.
+     * @since 2.0.4
+     */
+    protected $_max;
+    /**
+     * @var int|string lower limit of the date. Defaults to null, meaning no lower limit.
+     * This can be a unix timestamp or a string representing a date time value.
+     * If this property is a string, [[format]] will be used to parse it.
+     * @see tooSmall for the customized message used when the date is too small.
+     * @since 2.0.4
+     */
+    protected $_min;
+
+    /**
      * @var array map of short format names to IntlDateFormatter constant values.
      */
     private $_dateFormats = [
@@ -205,6 +209,40 @@ class DateValidator extends Validator
         'full' => 0, // IntlDateFormatter::FULL,
     ];
 
+
+    /**
+     * @return int|string
+     */
+    public function getMax()
+    {
+        return $this->_max;
+    }
+
+    /**
+     * @param int|string $max
+     */
+    public function setMax($max)
+    {
+        $this->_max = $max;
+        $this->init();
+    }
+
+    /**
+     * @return int|string
+     */
+    public function getMin()
+    {
+        return $this->_min;
+    }
+
+    /**
+     * @param int|string $min
+     */
+    public function setMin($min)
+    {
+        $this->_min = $min;
+        $this->init();
+    }
 
     /**
      * @inheritdoc
