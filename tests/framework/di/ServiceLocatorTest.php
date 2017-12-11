@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\di;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\di\ServiceLocator;
 use yiiunit\TestCase;
 
@@ -19,7 +19,7 @@ class Creator
     }
 }
 
-class TestClass extends Object
+class TestClass extends BaseObject
 {
     public $prop1 = 1;
     public $prop2;

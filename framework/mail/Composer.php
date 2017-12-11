@@ -8,8 +8,8 @@
 namespace yii\mail;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
-use yii\base\Object;
 use yii\web\View;
 
 /**
@@ -23,7 +23,7 @@ use yii\web\View;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1
  */
-class Composer extends Object
+class Composer extends BaseObject
 {
     /**
      * @var string|bool HTML layout view name.

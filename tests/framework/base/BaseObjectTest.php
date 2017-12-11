@@ -153,19 +153,6 @@ class BaseObjectTest extends TestCase
         $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewObject::writeOnly');
         $this->object->writeOnly;
     }
-
-    public function testBackwardCompatibilityWithObject()
-    {
-        if (PHP_MAJOR_VERSION > 7 || (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION >= 2)) {
-            $this->markTestSkipped('This test is meant to run on PHP <7.2.0 to check BC with yii\base\Object');
-        }
-        $this->assertInstanceOf('yii\base\Object', new BCObject());
-        $this->assertInstanceOf('yii\base\BaseObject', new BCObject());
-
-        BCObject::$initCalled = false;
-        new BCObject();
-        $this->assertTrue(BCObject::$initCalled);
-    }
 }
 
 
