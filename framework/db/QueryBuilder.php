@@ -66,6 +66,15 @@ class QueryBuilder extends \yii\base\BaseObject
         'EXISTS' => 'buildExistsCondition',
         'NOT EXISTS' => 'buildExistsCondition',
     ];
+
+    /**
+     * @var string[]|ExpressionBuilderInterface[] TODO docs
+     * @since 2.0.14
+     */
+    protected $expressionBuilders = [
+        'yii\db\Expression' => 'yii\db\ExpressionBuilder'
+    ];
+
     /**
      * @var array map of chars to their replacements in LIKE conditions.
      * By default it's configured to escape `%`, `_` and `\` with `\`.
@@ -96,7 +105,19 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
+     * TODO Docs
+     * @param string[] $builders
+     * @since 2.0.14
+     * @see expressionBuilders
+     */
+    public function setExpressionBuilders($builders)
+    {
+        $this->expressionBuilders = array_merge($this->expressionBuilders, $builders);
+    }
+
+    /**
      * Generates a SELECT SQL statement from a [[Query]] object.
+     *
      * @param Query $query the [[Query]] object from which the SQL statement will be generated.
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the query building process.
@@ -124,15 +145,15 @@ class QueryBuilder extends \yii\base\BaseObject
 
         if (!empty($query->orderBy)) {
             foreach ($query->orderBy as $expression) {
-                if ($expression instanceof Expression) {
-                    $params = array_merge($params, $expression->params);
+                if ($expression instanceof ExpressionInterface) {
+                    $this->buildExpression($expression, $params);
                 }
             }
         }
         if (!empty($query->groupBy)) {
             foreach ($query->groupBy as $expression) {
-                if ($expression instanceof Expression) {
-                    $params = array_merge($params, $expression->params);
+                if ($expression instanceof ExpressionInterface) {
+                    $this->buildExpression($expression, $params);
                 }
             }
         }
@@ -143,6 +164,43 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         return [$sql, $params];
+    }
+
+    /**
+     * Builds given $expression
+     *
+     * @param ExpressionInterface $expression the expression to be built
+     * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
+     * be included in the result with the additional parameters generated during the expression building process.
+     * @return string the SQL statement that will not be neither quoted nor encoded before passing to DBMS
+     * @see ExpressionInterface
+     * @see ExpressionBuilderInterface
+     * @see expressionBuilders
+     * @since 2.0.14
+     * @throws InvalidParamException when $expression building is not supported by this QueryBuilder.
+     */
+    public function buildExpression(ExpressionInterface $expression, &$params = [])
+    {
+        $className = get_class($expression);
+        if (!isset($this->expressionBuilders[$className])) {
+            foreach ($this->expressionBuilders as $expressionClass => $builderClass) {
+                if (is_subclass_of($expression, $expressionClass)) {
+                    $this->expressionBuilders[$className] = $builderClass;
+                    break;
+                }
+            }
+
+            if (!isset($this->expressionBuilders[$className])) {
+                throw new InvalidParamException('Expression of class ' . $className . ' can not be built in ' . get_class($this));
+            }
+        }
+
+        if (!is_object($this->expressionBuilders[$className])) {
+            $this->expressionBuilders[$className] = new $this->expressionBuilders[$className]($this);
+        }
+
+        $builder = $this->expressionBuilders[$className];
+        return $builder->build($expression, $params);
     }
 
     /**
@@ -183,11 +241,8 @@ class QueryBuilder extends \yii\base\BaseObject
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
-                if ($value instanceof Expression) {
-                    $placeholders[] = $value->expression;
-                    foreach ($value->params as $n => $v) {
-                        $params[$n] = $v;
-                    }
+                if ($value instanceof ExpressionInterface) {
+                    $placeholders[] = $this->buildExpression($value, $params);
                 } elseif ($value instanceof \yii\db\Query) {
                     list($sql, $params) = $this->build($value, $params);
                     $placeholders[] = "($sql)";
@@ -335,11 +390,8 @@ class QueryBuilder extends \yii\base\BaseObject
 
         $lines = [];
         foreach ($columns as $name => $value) {
-            if ($value instanceof Expression) {
-                $lines[] = $this->db->quoteColumnName($name) . '=' . $value->expression;
-                foreach ($value->params as $n => $v) {
-                    $params[$n] = $v;
-                }
+            if ($value instanceof ExpressionInterface) {
+                $lines[] = $this->db->quoteColumnName($name) . '=' . $this->buildExpression($value, $params);
             } else {
                 $phName = self::PARAM_PREFIX . count($params);
                 $lines[] = $this->db->quoteColumnName($name) . '=' . $phName;
@@ -882,13 +934,13 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         foreach ($columns as $i => $column) {
-            if ($column instanceof Expression) {
+            if ($column instanceof ExpressionInterface) {
                 if (is_int($i)) {
-                    $columns[$i] = $column->expression;
+                    $columns[$i] = $this->buildExpression($column, $params);
                 } else {
-                    $columns[$i] = $column->expression . ' AS ' . $this->db->quoteColumnName($i);
+                    $columns[$i] = $this->buildExpression($column, $params) . ' AS ' . $this->db->quoteColumnName($i);
                 }
-                $params = array_merge($params, $column->params);
+                $params = array_merge($params, $column->getParams());
             } elseif ($column instanceof Query) {
                 list($sql, $params) = $this->build($column, $params);
                 $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
@@ -1009,8 +1061,8 @@ class QueryBuilder extends \yii\base\BaseObject
             return '';
         }
         foreach ($columns as $i => $column) {
-            if ($column instanceof Expression) {
-                $columns[$i] = $column->expression;
+            if ($column instanceof ExpressionInterface) {
+                $columns[$i] = $this->buildExpression($column);
             } elseif (strpos($column, '(') === false) {
                 $columns[$i] = $this->db->quoteColumnName($column);
             }
@@ -1064,8 +1116,8 @@ class QueryBuilder extends \yii\base\BaseObject
         }
         $orders = [];
         foreach ($columns as $name => $direction) {
-            if ($direction instanceof Expression) {
-                $orders[] = $direction->expression;
+            if ($direction instanceof ExpressionInterface) {
+                $orders[] = $this->buildExpression($direction);
             } else {
                 $orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
             }
@@ -1099,7 +1151,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     protected function hasLimit($limit)
     {
-        return ($limit instanceof Expression) || ctype_digit((string) $limit);
+        return ($limit instanceof ExpressionInterface) || ctype_digit((string) $limit);
     }
 
     /**
@@ -1109,7 +1161,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     protected function hasOffset($offset)
     {
-        return ($offset instanceof Expression) || ctype_digit((string) $offset) && (string) $offset !== '0';
+        return ($offset instanceof ExpressionInterface) || ctype_digit((string) $offset) && (string) $offset !== '0';
     }
 
     /**
@@ -1153,8 +1205,8 @@ class QueryBuilder extends \yii\base\BaseObject
             $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
         }
         foreach ($columns as $i => $column) {
-            if ($column instanceof Expression) {
-                $columns[$i] = $column->expression;
+            if ($column instanceof ExpressionInterface) {
+                $columns[$i] = $this->buildExpression($column);
             } elseif (strpos($column, '(') === false) {
                 $columns[$i] = $this->db->quoteColumnName($column);
             }
@@ -1165,19 +1217,15 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Parses the condition specification and generates the corresponding SQL expression.
-     * @param string|array|Expression $condition the condition specification. Please refer to [[Query::where()]]
+     * @param string|array|ExpressionInterface $condition the condition specification. Please refer to [[Query::where()]]
      * on how to specify a condition.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
      */
     public function buildCondition($condition, &$params)
     {
-        if ($condition instanceof Expression) {
-            foreach ($condition->params as $n => $v) {
-                $params[$n] = $v;
-            }
-
-            return $condition->expression;
+        if ($condition instanceof ExpressionInterface) {
+            return $this->buildExpression($condition, $params);
         } elseif (!is_array($condition)) {
             return (string) $condition;
         } elseif (empty($condition)) {
@@ -1218,11 +1266,8 @@ class QueryBuilder extends \yii\base\BaseObject
                 }
                 if ($value === null) {
                     $parts[] = "$column IS NULL";
-                } elseif ($value instanceof Expression) {
-                    $parts[] = "$column=" . $value->expression;
-                    foreach ($value->params as $n => $v) {
-                        $params[$n] = $v;
-                    }
+                } elseif ($value instanceof ExpressionInterface) {
+                    $parts[] = "$column=" . $this->buildExpression($value, $params);
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);
                     $parts[] = "$column=$phName";
@@ -1248,11 +1293,8 @@ class QueryBuilder extends \yii\base\BaseObject
             if (is_array($operand)) {
                 $operand = $this->buildCondition($operand, $params);
             }
-            if ($operand instanceof Expression) {
-                foreach ($operand->params as $n => $v) {
-                    $params[$n] = $v;
-                }
-                $operand = $operand->expression;
+            if ($operand instanceof ExpressionInterface) {
+                $operand = $this->buildExpression($operand, $params);
             }
             if ($operand !== '') {
                 $parts[] = $operand;
@@ -1280,7 +1322,7 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         $operand = reset($operands);
-        if (is_array($operand) || $operand instanceof Expression) {
+        if (is_array($operand) || $operand instanceof ExpressionInterface) {
             $operand = $this->buildCondition($operand, $params);
         }
         if ($operand === '') {
@@ -1310,20 +1352,14 @@ class QueryBuilder extends \yii\base\BaseObject
         if (strpos($column, '(') === false) {
             $column = $this->db->quoteColumnName($column);
         }
-        if ($value1 instanceof Expression) {
-            foreach ($value1->params as $n => $v) {
-                $params[$n] = $v;
-            }
-            $phName1 = $value1->expression;
+        if ($value1 instanceof ExpressionInterface) {
+            $phName1 = $this->buildExpression($value1, $params);
         } else {
             $phName1 = self::PARAM_PREFIX . count($params);
             $params[$phName1] = $value1;
         }
-        if ($value2 instanceof Expression) {
-            foreach ($value2->params as $n => $v) {
-                $params[$n] = $v;
-            }
-            $phName2 = $value2->expression;
+        if ($value2 instanceof ExpressionInterface) {
+            $phName2 = $this->buildExpression($value2, $params);
         } else {
             $phName2 = self::PARAM_PREFIX . count($params);
             $params[$phName2] = $value2;
@@ -1378,11 +1414,8 @@ class QueryBuilder extends \yii\base\BaseObject
             }
             if ($value === null) {
                 $sqlValues[$i] = 'NULL';
-            } elseif ($value instanceof Expression) {
-                $sqlValues[$i] = $value->expression;
-                foreach ($value->params as $n => $v) {
-                    $params[$n] = $v;
-                }
+            } elseif ($value instanceof ExpressionInterface) {
+                $sqlValues[$i] = $this->buildExpression($value, $params);
             } else {
                 $phName = self::PARAM_PREFIX . count($params);
                 $params[$phName] = $value;
@@ -1525,11 +1558,8 @@ class QueryBuilder extends \yii\base\BaseObject
 
         $parts = [];
         foreach ($values as $value) {
-            if ($value instanceof Expression) {
-                foreach ($value->params as $n => $v) {
-                    $params[$n] = $v;
-                }
-                $phName = $value->expression;
+            if ($value instanceof ExpressionInterface) {
+                $phName = $this->buildExpression($value, $params);
             } else {
                 $phName = self::PARAM_PREFIX . count($params);
                 $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
@@ -1584,12 +1614,8 @@ class QueryBuilder extends \yii\base\BaseObject
 
         if ($value === null) {
             return "$column $operator NULL";
-        } elseif ($value instanceof Expression) {
-            foreach ($value->params as $n => $v) {
-                $params[$n] = $v;
-            }
-
-            return "$column $operator {$value->expression}";
+        } elseif ($value instanceof ExpressionInterface) {
+            return "$column $operator {$this->buildExpression($value, $params)}";
         } elseif ($value instanceof Query) {
             list($sql, $params) = $this->build($value, $params);
             return "$column $operator ($sql)";

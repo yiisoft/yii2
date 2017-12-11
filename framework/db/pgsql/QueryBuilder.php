@@ -8,6 +8,8 @@
 namespace yii\db\pgsql;
 
 use yii\base\InvalidParamException;
+use yii\db\ExpressionInterface;
+use yii\db\Query;
 use yii\helpers\StringHelper;
 
 /**
@@ -94,6 +96,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
         'NOT EXISTS' => 'buildExistsCondition',
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected $expressionBuilders = [
+        'yii\db\Expression' => 'yii\db\ExpressionBuilder',
+        'yii\db\ArrayExpression' => 'yii\db\pgsql\ArrayExpressionBuilder',
+        'yii\db\JsonExpression' => 'yii\db\pgsql\JsonExpressionBuilder',
+    ];
 
     /**
      * Builds a SQL statement for creating a new index.

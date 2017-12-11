@@ -56,6 +56,9 @@ Upgrade from Yii 2.0.13
 * Constants `IPV6_ADDRESS_LENGTH`, `IPV4_ADDRESS_LENGTH` were moved from `yii\validators\IpValidator` to `yii\helpers\IpHelper`.
   If your application relies on these constants, make sure to update your code to follow the changes.
 
+* `yii\db\ExpressionInterface` has been introduced to represent a wider range of SQL expressions. In case you check for
+  `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
+  introduced methods to retrieve the expression content.
 
 Upgrade from Yii 2.0.12
 -----------------------
