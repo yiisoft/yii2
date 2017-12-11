@@ -56,7 +56,7 @@ class IpHelperTest extends TestCase
         try {
             IpHelper::expandIPv6('fa01::1/64');
         } catch (\Exception $exception) {
-            $this->assertSame('inet_pton(): Unrecognized address fa01::1/64', $exception->getMessage());
+            $this->assertStringEndsWith('Unrecognized address fa01::1/64', $exception->getMessage());
         }
     }
 
