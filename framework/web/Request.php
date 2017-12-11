@@ -1342,11 +1342,11 @@ class Request extends \yii\base\Request implements RequestInterface
          *
          * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
          */
-        $auth_token = $this->getHeaders()->get('HTTP_AUTHORIZATION') ?: $this->getHeaders()->get('REDIRECT_HTTP_AUTHORIZATION');
-        if ($auth_token !== null && strpos(strtolower($auth_token), 'basic') === 0) {
+        $auth_token = $this->getHeader('HTTP_AUTHORIZATION') ?: $this->getHeader('REDIRECT_HTTP_AUTHORIZATION');
+        if ($auth_token !== [] && strpos(strtolower($auth_token[0]), 'basic') === 0) {
             $parts = array_map(function ($value) {
                 return strlen($value) === 0 ? null : $value;
-            }, explode(':', base64_decode(mb_substr($auth_token, 6)), 2));
+            }, explode(':', base64_decode(mb_substr($auth_token[0], 6)), 2));
 
             if (count($parts) < 2) {
                 return [$parts[0], null];
@@ -1704,7 +1704,7 @@ class Request extends \yii\base\Request implements RequestInterface
                 $data = @unserialize($data);
                 if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
                     $cookies[$name] = Yii::createObject([
-                        'class' => 'yii\web\Cookie',
+                        'class' => \yii\http\Cookie::class,
                         'name' => $name,
                         'value' => $data[1],
                         'expire' => null,
@@ -1714,7 +1714,7 @@ class Request extends \yii\base\Request implements RequestInterface
         } else {
             foreach ($_COOKIE as $name => $value) {
                 $cookies[$name] = Yii::createObject([
-                    'class' => 'yii\web\Cookie',
+                    'class' => \yii\http\Cookie::class,
                     'name' => $name,
                     'value' => $value,
                     'expire' => null,
@@ -1943,7 +1943,7 @@ class Request extends \yii\base\Request implements RequestInterface
     {
         $options = $this->csrfCookie;
         return Yii::createObject(array_merge($options, [
-            'class' => 'yii\web\Cookie',
+            'class' => \yii\http\Cookie::class,
             'name' => $this->csrfParam,
             'value' => $token,
         ]));

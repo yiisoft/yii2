@@ -75,8 +75,8 @@ class CaptchaActionTest extends TestCase
 
         $response = $action->run();
 
-        $this->assertContains('hash1', $response);
-        $this->assertContains('hash2', $response);
+        $this->assertArrayHasKey('hash1', $response);
+        $this->assertArrayHasKey('hash2', $response);
         $this->assertContains('/index.php?r=test%2Ftest', $response['url']);
 
         /* @var $response Response */

@@ -237,7 +237,7 @@ class FormatterTest extends TestCase
             [
                 'Wrong value is casted properly',
                 ['NaN'], '0 millimeters', '0 mm',
-                ['yii\base\InvalidParamException', "'NaN' is not a numeric value"],
+                ['yii\base\InvalidArgumentException', "'NaN' is not a numeric value"],
             ],
             [
                 'Negative value works',
@@ -336,7 +336,7 @@ class FormatterTest extends TestCase
             [
                 'Wrong value is casted properly',
                 ['NaN'], '0 grams', '0 g',
-                ['yii\base\InvalidParamException', "'NaN' is not a numeric value"],
+                ['yii\base\InvalidArgumentException', "'NaN' is not a numeric value"],
             ],
             [
                 'Negative value works',

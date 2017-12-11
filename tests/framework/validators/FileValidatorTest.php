@@ -444,7 +444,9 @@ class FileValidatorTest extends TestCase
     {
         $validator = new FileValidator(['extensions' => (array) $allowedExtensions]);
         $file = $this->getRealTestFile($fileName);
-        $detectedMimeType = FileHelper::getMimeType($file->tempName, null, false);
+        $filePath = \Yii::getAlias('@yiiunit/framework/validators/data/mimeType/') . $fileName;
+
+        $detectedMimeType = FileHelper::getMimeType($filePath, null, false);
         $this->assertTrue($validator->validate($file), "Mime type detected was \"$detectedMimeType\". Consider adding it to MimeTypeController::\$aliases.");
     }
 

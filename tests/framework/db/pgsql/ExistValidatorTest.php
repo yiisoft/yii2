@@ -30,7 +30,7 @@ class ExistValidatorTest extends \yiiunit\framework\validators\ExistValidatorTes
         $this->assertFalse($model->hasErrors());
 
         // Different target table
-        $validator = new ExistValidator(['targetClass' => ValidatorTestMainModel::className(), 'targetAttribute' => 'id']);
+        $validator = new ExistValidator(['targetClass' => ValidatorTestMainModel::class, 'targetAttribute' => 'id']);
         $model = ValidatorTestRefModel::findOne(['id' => 1]);
         $validator->validateAttribute($model, 'ref');
         $this->assertFalse($model->hasErrors());

@@ -330,7 +330,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     {
         $action = $this->mockAction();
         $user = $this->getMockBuilder('\yii\web\User')->getMock();
-        $user->identityCLass = UserIdentity::className();
+        $user->identityCLass = UserIdentity::class;
 
         $rule = new AccessRule([
             'allow' => true,

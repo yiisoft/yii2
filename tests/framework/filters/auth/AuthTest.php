@@ -10,6 +10,7 @@ namespace yiiunit\framework\filters\auth;
 use Yii;
 use yii\base\Action;
 use yii\filters\auth\AuthMethod;
+use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\helpers\ArrayHelper;

@@ -133,7 +133,7 @@ trait ActiveRelationTrait
      * ```php
      * public function getCustomer()
      * {
-     *     return $this->hasOne(Customer::className(), ['id' => 'customer_id'])->inverseOf('orders');
+     *     return $this->hasOne(Customer::class, ['id' => 'customer_id'])->inverseOf('orders');
      * }
      * ```
      *
