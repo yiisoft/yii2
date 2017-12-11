@@ -15,6 +15,7 @@ use yii\web\Request;
 use yii\web\Response;
 use yii\web\User;
 use yiiunit\framework\filters\stubs\RateLimit;
+use yiiunit\framework\filters\stubs\UserIdentity;
 use yiiunit\TestCase;
 
 /**

@@ -45,6 +45,8 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->rollBack();
+
+        $this->assertTrue(true); // No exceptions means test is passed.
     }
 
     public function testMasterSlave()
@@ -115,6 +117,9 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
             $hit_slaves[$db->getSlave()->dsn] = true;
             $hit_masters[$db->getMaster()->dsn] = true;
+            if (count($hit_slaves) === $slavesCount && count($hit_masters) === $mastersCount) {
+                break;
+            }
         }
 
         $this->assertCount($mastersCount, $hit_masters, 'all masters hit');
@@ -137,6 +142,9 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
             $hit_slaves[$db->getSlave()->dsn] = true;
             $hit_masters[$db->getMaster()->dsn] = true;
+            if (count($hit_slaves) === $slavesCount) {
+                break;
+            }
         }
 
         $this->assertCount(1, $hit_masters, 'same master hit');
@@ -208,6 +216,6 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
     public function testExceptionContainsRawQuery()
     {
-        // This test does not work on sqlite because preparing the failing query fails
+        $this->markTestSkipped('This test does not work on sqlite because preparing the failing query fails');
     }
 }

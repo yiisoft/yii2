@@ -183,7 +183,7 @@ $message = \yii\helpers\Json::htmlEncode(
     \Yii::t('app', 'Button clicked!')
 );
 $this->registerJs(<<<JS
-    $('#myButton').on('click', function() { alert( $message ); });",
+    $('#myButton').on('click', function() { alert( $message ); });
 JS
 );
 ```

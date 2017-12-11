@@ -236,7 +236,7 @@ class ActiveField extends Component
         $inputID = $this->getInputId();
         $attribute = Html::getAttributeName($this->attribute);
         $options = $this->options;
-        $class = isset($options['class']) ? (array)$options['class'] : [];
+        $class = isset($options['class']) ? (array) $options['class'] : [];
         $class[] = "field-$inputID";
         if ($this->model->isAttributeRequired($attribute)) {
             $class[] = $this->form->requiredCssClass;

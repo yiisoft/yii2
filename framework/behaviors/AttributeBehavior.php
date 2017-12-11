@@ -140,7 +140,7 @@ class AttributeBehavior extends Behavior
      */
     protected function getValue($event)
     {
-        if ($this->value instanceof Closure || is_array($this->value) && is_callable($this->value)) {
+        if ($this->value instanceof Closure || (is_array($this->value) && is_callable($this->value))) {
             return call_user_func($this->value, $event);
         }
 

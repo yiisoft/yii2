@@ -8,6 +8,7 @@
 namespace yiiunit\framework\db;
 
 use PDO;
+use yii\caching\ArrayCache;
 use yii\caching\FileCache;
 use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
@@ -16,15 +17,33 @@ use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\Schema;
+use yii\db\TableSchema;
 
 abstract class SchemaTest extends DatabaseTestCase
 {
+    /**
+     * @var string[]
+     */
+    protected $expectedSchemas;
+
     public function pdoAttributesProvider()
     {
         return [
             [[PDO::ATTR_EMULATE_PREPARES => true]],
             [[PDO::ATTR_EMULATE_PREPARES => false]],
         ];
+    }
+
+    public function testGetSchemaNames()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $schemas = $schema->getSchemaNames();
+        $this->assertNotEmpty($schemas);
+        foreach ($this->expectedSchemas as $schema) {
+            $this->assertContains($schema, $schemas);
+        }
     }
 
     /**
@@ -113,6 +132,82 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema->refreshTableSchema('type');
         $refreshedTable = $schema->getTableSchema('type', false);
         $this->assertNotSame($noCacheTable, $refreshedTable);
+    }
+
+    public function tableSchemaCachePrefixesProvider()
+    {
+        $configs = [
+            [
+                'prefix' => '',
+                'name' => 'type',
+            ],
+            [
+                'prefix' => '',
+                'name' => '{{%type}}',
+            ],
+            [
+                'prefix' => 'ty',
+                'name' => '{{%pe}}',
+            ],
+        ];
+        $data = [];
+        foreach ($configs as $config) {
+            foreach ($configs as $testConfig) {
+                if ($config === $testConfig) {
+                    continue;
+                }
+
+                $description = sprintf(
+                    "%s (with '%s' prefix) against %s (with '%s' prefix)",
+                    $config['name'],
+                    $config['prefix'],
+                    $testConfig['name'],
+                    $testConfig['prefix']
+                );
+                $data[$description] = [
+                    $config['prefix'],
+                    $config['name'],
+                    $testConfig['prefix'],
+                    $testConfig['name'],
+                ];
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * @dataProvider tableSchemaCachePrefixesProvider
+     * @depends testSchemaCache
+     */
+    public function testTableSchemaCacheWithTablePrefixes($tablePrefix, $tableName, $testTablePrefix, $testTableName)
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+        $schema->db->enableSchemaCache = true;
+
+        $schema->db->tablePrefix = $tablePrefix;
+        $schema->db->schemaCache = new ArrayCache();
+        $noCacheTable = $schema->getTableSchema($tableName, true);
+        $this->assertInstanceOf(TableSchema::className(), $noCacheTable);
+
+        // Compare
+        $schema->db->tablePrefix = $testTablePrefix;
+        $testNoCacheTable = $schema->getTableSchema($testTableName);
+        $this->assertSame($noCacheTable, $testNoCacheTable);
+
+        $schema->db->tablePrefix = $tablePrefix;
+        $schema->refreshTableSchema($tableName);
+        $refreshedTable = $schema->getTableSchema($tableName, false);
+        $this->assertInstanceOf(TableSchema::className(), $refreshedTable);
+        $this->assertNotSame($noCacheTable, $refreshedTable);
+
+        // Compare
+        $schema->db->tablePrefix = $testTablePrefix;
+        $schema->refreshTableSchema($testTablePrefix);
+        $testRefreshedTable = $schema->getTableSchema($testTableName, false);
+        $this->assertInstanceOf(TableSchema::className(), $testRefreshedTable);
+        $this->assertEquals($refreshedTable, $testRefreshedTable);
+        $this->assertNotSame($testNoCacheTable, $testRefreshedTable);
     }
 
     public function testCompositeFk()

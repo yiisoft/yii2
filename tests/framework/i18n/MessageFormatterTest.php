@@ -397,6 +397,5 @@ _MSG_
         $result = $formatter->format('{word,umber}', ['word' => 'test'], 'en-US'); // typo is intentional, message pattern should be invalid
         $this->assertFalse($result);
         $this->assertNotEmpty($formatter->getErrorMessage());
-        $this->assertContains('Message pattern is invalid', $formatter->getErrorMessage());
     }
 }

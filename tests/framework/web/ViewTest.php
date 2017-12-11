@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\web;
 
+use yii\caching\FileCache;
 use yii\web\View;
 use yiiunit\TestCase;
 
@@ -62,5 +63,53 @@ class ViewTest extends TestCase
         $view->registerCssFile('@web/css/somefile.css');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertContains('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
+    }
+
+    public function testRegisterregisterCsrfMetaTags()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'request' => [
+                    'scriptFile' => __DIR__ . '/baseUrl/index.php',
+                    'scriptUrl' => '/baseUrl/index.php',
+                ],
+                'cache' => [
+                    'class' => FileCache::className(),
+                ],
+            ],
+        ]);
+
+        $view = new View();
+
+        $view->registerCsrfMetaTags();
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<meta name="csrf-param" content="_csrf">', $html);
+        $this->assertContains('<meta name="csrf-token" content="', $html);
+        $csrfToken1 = $this->getCSRFTokenValue($html);
+
+        // regenerate token
+        \Yii::$app->request->getCsrfToken(true);
+        $view->registerCsrfMetaTags();
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<meta name="csrf-param" content="_csrf">', $html);
+        $this->assertContains('<meta name="csrf-token" content="', $html);
+        $csrfToken2 = $this->getCSRFTokenValue($html);
+
+        $this->assertNotSame($csrfToken1, $csrfToken2);
+    }
+
+    /**
+     * Parses CSRF token from page HTML.
+     *
+     * @param string $html
+     * @return string CSRF token
+     */
+    private function getCSRFTokenValue($html)
+    {
+        if (!preg_match('~<meta name="csrf-token" content="([^"]+)">~', $html, $matches)) {
+            $this->fail("No CSRF-token meta tag found. HTML was:\n$html");
+        }
+
+        return $matches[1];
     }
 }

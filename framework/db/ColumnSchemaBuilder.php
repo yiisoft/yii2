@@ -9,6 +9,7 @@ namespace yii\db;
 
 use Yii;
 use yii\base\BaseObject;
+use yii\helpers\StringHelper;
 
 /**
  * ColumnSchemaBuilder helps to define database schema types using a PHP interface.
@@ -345,7 +346,7 @@ class ColumnSchemaBuilder extends BaseObject
                 break;
             case 'double':
                 // ensure type cast always has . as decimal separator in all locales
-                $string .= str_replace(',', '.', (string) $this->default);
+                $string .= StringHelper::floatToString($this->default);
                 break;
             case 'boolean':
                 $string .= $this->default ? 'TRUE' : 'FALSE';

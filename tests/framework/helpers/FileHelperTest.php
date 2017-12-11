@@ -28,15 +28,7 @@ class FileHelperTest extends TestCase
             $this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
         }
 
-        // Check if chmod works as expected.
-        $dir = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_chmod';
-        mkdir($dir);
-        chmod($dir, 0700);
-        if ($this->getMode($dir) !== '0700') {
-            /*
-             * Chmod returns true but fileperms does not reflect this.
-             * This happens on remote file systems, also has been seen in vagrant mounts.
-             */
+        if (!$this->isChmodReliable()) {
             $this->markTestInComplete('Unit tests runtime directory should be local!');
         }
 
@@ -46,6 +38,22 @@ class FileHelperTest extends TestCase
         $this->destroyApplication();
     }
 
+    /**
+     * Check if chmod works as expected
+     *
+     * On remote file systems and vagrant mounts chmod returns true
+     * but file permissions are not set properly.
+     */
+    private function isChmodReliable()
+    {
+        $dir = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_chmod';
+        mkdir($dir);
+        chmod($dir, 0700);
+        $mode = $this->getMode($dir);
+        rmdir($dir);
+
+        return $mode === '0700';
+    }
 
     public function tearDown()
     {
@@ -72,7 +80,7 @@ class FileHelperTest extends TestCase
         if (!empty($dirName) && is_dir($dirName)) {
             if ($handle = opendir($dirName)) {
                 while (false !== ($entry = readdir($handle))) {
-                    if ($entry != '.' && $entry != '..') {
+                    if ($entry !== '.' && $entry !== '..') {
                         $item = $dirName . DIRECTORY_SEPARATOR . $entry;
                         if (is_dir($item) === true && !is_link($item)) {
                             $this->removeDir($item);
@@ -111,7 +119,7 @@ class FileHelperTest extends TestCase
         foreach ($items as $name => $content) {
             $itemName = $basePath . DIRECTORY_SEPARATOR . $name;
             if (is_array($content)) {
-                if (isset($content[0], $content[1]) && $content[0] == 'symlink') {
+                if (isset($content[0], $content[1]) && $content[0] === 'symlink') {
                     symlink($content[1], $itemName);
                 } else {
                     mkdir($itemName, 0777, true);

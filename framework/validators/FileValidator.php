@@ -197,7 +197,7 @@ class FileValidator extends Validator
                     unset($files[$i]);
                 }
             }
-            $model->$attribute = array_values($files);
+            $model->$attribute = $files;
             if (empty($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
             }

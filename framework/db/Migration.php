@@ -65,14 +65,12 @@ class Migration extends Component implements MigrationInterface
      * ```
      */
     public $db = 'db';
-
     /**
      * @var int max number of characters of the SQL outputted. Useful for reduction of long statements and making
      * console output more compact.
      * @since 2.0.13
      */
     public $maxSqlOutputLength;
-
     /**
      * @var bool indicates whether the console output should be compacted.
      * If this is set to true, the individual commands ran within the migration will not be output to the console.
@@ -80,6 +78,7 @@ class Migration extends Component implements MigrationInterface
      * @since 2.0.13
      */
     public $compact = false;
+
 
     /**
      * Initializes the migration.
@@ -168,8 +167,7 @@ class Migration extends Component implements MigrationInterface
      * needs to be within a transaction.
      *
      * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
-     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
-     * you should still implement `up()` and `down()`, instead.
+     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html).
      *
      * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
@@ -186,8 +184,7 @@ class Migration extends Component implements MigrationInterface
      * needs to be within a transaction.
      *
      * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
-     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
-     * you should still implement `up()` and `down()`, instead.
+     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html).
      *
      * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
@@ -229,7 +226,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Creates and executes an batch INSERT SQL statement.
+     * Creates and executes a batch INSERT SQL statement.
      * The method will properly escape the column names, and bind the values to be inserted.
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names.
@@ -536,8 +533,8 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Prepares for a command to be executed, and outputs to the console
-     * 
+     * Prepares for a command to be executed, and outputs to the console.
+     *
      * @param string $description the description for the command, to be output to the console.
      * @return float the time before the command is executed, for the time elapsed to be calculated.
      * @since 2.0.13
@@ -551,8 +548,8 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Finalizes after the command has been executed, and outputs to the console the time elapsed
-     * 
+     * Finalizes after the command has been executed, and outputs to the console the time elapsed.
+     *
      * @param float $time the time before the command was executed.
      * @since 2.0.13
      */

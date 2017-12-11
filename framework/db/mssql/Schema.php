@@ -118,15 +118,18 @@ class Schema extends \yii\db\Schema
 
     /**
      * @inheritDoc
+     * @see https://docs.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-principals-transact-sql
      */
     protected function findSchemaNames()
     {
-        $sql = <<<'SQL'
-SELECT ns.nspname AS schema_name
-FROM pg_namespace ns
-WHERE ns.nspname != 'information_schema' AND ns.nspname NOT LIKE 'pg_%'
-ORDER BY ns.nspname
+        static $sql = <<<'SQL'
+SELECT [s].[name]
+FROM [sys].[schemas] AS [s]
+INNER JOIN [sys].[database_principals] AS [p] ON [p].[principal_id] = [s].[principal_id]
+WHERE [p].[is_fixed_role] = 0 AND [p].[sid] IS NOT NULL
+ORDER BY [s].[name] ASC
 SQL;
+
         return $this->db->createCommand($sql)->queryColumn();
     }
 

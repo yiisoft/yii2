@@ -10,6 +10,7 @@ namespace yii\db;
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
 
 /**
  * QueryBuilder builds a SELECT SQL statement based on the specification given as a [[Query]] object.
@@ -163,7 +164,7 @@ class QueryBuilder extends \yii\base\BaseObject
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            [$names, $values, $params] = $this->prepareInsertSelectSubQuery($columns, $schema);
+            [$names, $values, $params] = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
@@ -267,7 +268,7 @@ class QueryBuilder extends \yii\base\BaseObject
                     $value = $schema->quoteValue($value);
                 } elseif (is_float($value)) {
                     // ensure type cast always has . as decimal separator in all locales
-                    $value = str_replace(',', '.', (string) $value);
+                    $value = StringHelper::floatToString($value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {

@@ -11,6 +11,8 @@ use yii\web\AssetBundle;
 use yii\web\YiiAsset;
 
 /**
+ * The asset bundle for the [[ActiveForm]] widget.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -28,7 +28,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection = $this->getConnection(false, false);
 
         $this->assertFalse($connection->isActive);
-        $this->assertEquals(null, $connection->pdo);
+        $this->assertNull($connection->pdo);
 
         $connection->open();
         $this->assertTrue($connection->isActive);
@@ -36,7 +36,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $connection->close();
         $this->assertFalse($connection->isActive);
-        $this->assertEquals(null, $connection->pdo);
+        $this->assertNull($connection->pdo);
 
         $connection = new Connection();
         $connection->dsn = 'unknown::memory:';
