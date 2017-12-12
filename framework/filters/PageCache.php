@@ -140,7 +140,7 @@ class PageCache extends ActionFilter
     {
         parent::init();
         if ($this->view === null) {
-            $this->view = Yii::$app->getView();
+            $this->view = $this->owner->getView();
         }
     }
 
@@ -162,7 +162,8 @@ class PageCache extends ActionFilter
             $this->dependency = Yii::createObject($this->dependency);
         }
 
-        $response = Yii::$app->getResponse();
+        /* @var $response \yii\web\Response */
+        $response = Yii::get('response');
         $data = $this->cache->get($this->calculateCacheKey());
         if (!is_array($data) || !isset($data['cacheVersion']) || $data['cacheVersion'] !== 1) {
             $this->view->cacheStack[] = $this;

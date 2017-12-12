@@ -99,6 +99,9 @@ class AccessControl extends ActionFilter
     {
         parent::init();
         if ($this->user !== false) {
+            if (is_string($this->user) && $this->owner->module->has($this->user)) {
+                $this->user = Yii::get($this->user);
+            }
             $this->user = Instance::ensure($this->user, User::className());
         }
         foreach ($this->rules as $i => $rule) {
@@ -117,7 +120,7 @@ class AccessControl extends ActionFilter
     public function beforeAction($action)
     {
         $user = $this->user;
-        $request = Yii::$app->getRequest();
+        $request = Yii::get('request');
         /* @var $rule AccessRule */
         foreach ($this->rules as $rule) {
             if ($allow = $rule->allows($action, $user, $request)) {

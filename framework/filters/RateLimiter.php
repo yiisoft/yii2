@@ -68,10 +68,10 @@ class RateLimiter extends ActionFilter
     public function init()
     {
         if ($this->request === null) {
-            $this->request = Yii::$app->getRequest();
+            $this->request = Yii::get('request');
         }
         if ($this->response === null) {
-            $this->response = Yii::$app->getResponse();
+            $this->response = Yii::get('response');
         }
     }
 
@@ -80,8 +80,10 @@ class RateLimiter extends ActionFilter
      */
     public function beforeAction($action)
     {
-        if ($this->user === null && Yii::$app->getUser()) {
-            $this->user = Yii::$app->getUser()->getIdentity(false);
+        if ($this->user === null && $action->controller->module->has('user')) {
+            /* @var $webUser \yii\web\User */
+            $webUser = $action->controller->module->get('user');
+            $this->user = $webUser->getIdentity(false);
         }
 
         if ($this->user instanceof RateLimitInterface) {

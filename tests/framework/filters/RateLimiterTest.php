@@ -9,8 +9,10 @@ namespace yiiunit\framework\filters;
 
 use Prophecy\Argument;
 use Yii;
+use yii\base\Action;
 use yii\filters\RateLimiter;
 use yii\log\Logger;
+use yii\web\Controller;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\User;
@@ -103,7 +105,7 @@ class RateLimiterTest extends TestCase
         Yii::$app->set('user', $user);
         $rateLimiter = new RateLimiter();
 
-        $result = $rateLimiter->beforeAction('test');
+        $result = $rateLimiter->beforeAction(new Action('test', new Controller('test', Yii::$app)));
 
         $this->assertContains('Rate limit skipped: user not logged in.', Yii::getLogger()->messages);
         $this->assertTrue($result);
