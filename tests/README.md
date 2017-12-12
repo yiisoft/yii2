@@ -73,9 +73,23 @@ Run a group of unit tests
 Run phpunit directly
     
     cd tests    
-    docker-compose run --rm php vendor/bin/phpunit -v --group caching,db   
     docker-compose run --rm php vendor/bin/phpunit -v --exclude base,caching,db,i18n,log,mutex,rbac,validators,web
     docker-compose run --rm php vendor/bin/phpunit -v --exclude mssql,oci,wincache,xcache,zenddata,cubrid
+
+### MySQL, PgSQL, Caching 
+
+You can choose services available for testing by merging `docker-compose.[...].yml` files in `.env`.
+
+    cd tests
+    cp .env-dist .env
+
+Adjust the newly created `.env` file and uncomment ie. this line to enable MySQL, Postgres and Caching services
+
+    COMPOSE_FILE=docker-compose.yml:docker-compose.mysql.yml:docker-compose.pgsql.yml:docker-compose.caching.yml
+    
+When starting the stack now, you get containers for databases and caching servers to test with.
+
+    docker-compose run --rm php vendor/bin/phpunit -v --group caching,db   
 
 ### Cubrid
 
