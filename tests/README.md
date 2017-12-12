@@ -91,13 +91,19 @@ When starting the stack now, you get containers for databases and caching server
 
     docker-compose run --rm php vendor/bin/phpunit -v --group caching,db   
 
+> Note: Documentation about [installing additional extensions](https://github.com/yiisoft/yii2-docker/blob/master/docs/install-extensions.md) can be found at `yiisoft/yii2-docker`.
+
 ### Cubrid
+
+> Note: Images for testing Cubrid are based on PHP 5, due to incompatibilities with PHP 7 
 
     cd tests
     docker-compose -f docker-compose.cubrid.yml up -d
     docker-compose -f docker-compose.cubrid.yml run --rm php vendor/bin/phpunit -v --group cubrid
 
-### MSSQL    
+### MSSQL
+
+> Note: Images for testing MSSQL are based on `bylexus/apache-php7` (Ubuntu) since drivers are not available for Debian or Alpine.     
 
 **experimental**
 
