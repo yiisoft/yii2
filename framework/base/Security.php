@@ -478,12 +478,12 @@ class Security extends Component
 
         // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
         // of using OpenSSL library. LibreSSL is OK everywhere but don't use OpenSSL on non-Windows.
-        if ($this->_useLibreSSL
+        if (function_exists('openssl_random_pseudo_bytes')
+            && ($this->_useLibreSSL
             || (
                 DIRECTORY_SEPARATOR !== '/'
                 && substr_compare(PHP_OS, 'win', 0, 3, true) === 0
-                && function_exists('openssl_random_pseudo_bytes')
-            )
+            ))
         ) {
             $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
             if ($cryptoStrong === false) {
