@@ -1,0 +1,33 @@
+version: '2'
+services:
+
+  phpunit:
+    build: ./docker
+    depends_on:
+      - redis
+      - memcached
+      - mysql
+      - postgres
+    volumes:
+      - ..:/project
+      - ./data/config-docker.php:/project/tests/data/config.php
+  redis:
+    image: redis
+
+  memcached:
+    image: memcached
+
+  mysql:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=yiitest
+      - MYSQL_USER=travis
+      - MYSQL_PASSWORD=travis
+
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_DB=yiitest
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres

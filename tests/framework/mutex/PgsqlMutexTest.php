@@ -23,6 +23,12 @@ class PgsqlMutexTest extends DatabaseTestCase
 
     protected $driverName = 'pgsql';
 
+    public function getConnection($reset = true, $open = true)
+    {
+        unset($this->database['fixture']);
+        return parent::getConnection($reset, $open);
+    }
+
     /**
      * @return PgsqlMutex
      * @throws \yii\base\InvalidConfigException

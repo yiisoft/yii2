@@ -23,6 +23,12 @@ class MysqlMutexTest extends DatabaseTestCase
 
     protected $driverName = 'mysql';
 
+    public function getConnection($reset = true, $open = true)
+    {
+        unset($this->database['fixture']);
+        return parent::getConnection($reset, $open);
+    }
+
     /**
      * @return MysqlMutex
      * @throws \yii\base\InvalidConfigException
