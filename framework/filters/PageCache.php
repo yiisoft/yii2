@@ -134,17 +134,6 @@ class PageCache extends ActionFilter
 
 
     /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-        if ($this->view === null) {
-            $this->view = $this->owner->getView();
-        }
-    }
-
-    /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.
      * @param Action $action the action to be executed.
@@ -154,6 +143,10 @@ class PageCache extends ActionFilter
     {
         if (!$this->enabled) {
             return true;
+        }
+
+        if ($this->view === null) {
+            $this->view = $this->owner->getView();
         }
 
         $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');

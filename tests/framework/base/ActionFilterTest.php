@@ -114,6 +114,7 @@ class ActionFilterTest extends TestCase
         $method->setAccessible(true);
 
         $controller = new \yii\web\Controller('test', Yii::$app);
+        $filter->owner = $controller;
 
         // active by default
         $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
