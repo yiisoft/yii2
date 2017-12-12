@@ -35,7 +35,7 @@ Yii Framework 2 Change Log
 - Bug #15320: Fixed special role checks in `yii\filters\AccessRule::matchRole()` (Izumi-kun)
 - Enh #15332: Always check for availability of `openssl_pseudo_random_bytes`, even if LibreSSL is available (sammousa)
 - Enh #15335: Added `FileHelper::unlink()` that works well under all OSes (samdark)
-
+- Enh #15340: Test CHANGELOG.md for valid format (sammousa)
 
 2.0.13.1 November 14, 2017
 --------------------------

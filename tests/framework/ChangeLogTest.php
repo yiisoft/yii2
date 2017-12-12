@@ -20,26 +20,24 @@ use yiiunit\TestCase;
  */
 class ChangeLogTest extends TestCase
 {
-    public function changeLogProvider()
-    {
-        return array_map(function($line) {
-            return [$line];
-        }, explode("\n", file_get_contents(__DIR__ . '/../../framework/CHANGELOG.md')));
-    }
-
     public function changeProvider()
     {
-        return array_filter($this->changeLogProvider(), function($arguments) {
-            return strncmp('- ', $arguments[0], 2) === 0;
-        });
-    }
 
-    /**
-     * @dataProvider changeLogProvider
-     */
-    public function testLineEndings($line)
-    {
-        $this->assertFalse(strpos($line, "\r"));
+        $lines = explode("\n", file_get_contents(__DIR__ . '/../../framework/CHANGELOG.md'));
+
+        // Don't check last 1500 lines, they are old and often don't obey the standard.
+        $lastIndex = count($lines) - 1500;
+        $result = [];
+        foreach($lines as $i => $line) {
+            if (strncmp('- ', $line, 2) === 0) {
+                $result[] = [$line];
+            }
+
+            if ($i > $lastIndex) {
+                break;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -58,6 +56,4 @@ class ChangeLogTest extends TestCase
          */
         $this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?: .*[^.] \(.*\)$/', $line);
     }
-
-
 }
