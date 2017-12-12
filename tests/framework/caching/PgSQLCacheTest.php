@@ -25,6 +25,9 @@ class PgSQLCacheTest extends DbCacheTest
         if (!extension_loaded('pdo') || !extension_loaded('pdo_pgsql')) {
             $this->markTestSkipped('pdo and pdo_pgsql extensions are required.');
         }
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('HHVMs PgSQL implementation does not seem to support blob colums in the way they are used here.');
+        }
 
         $this->getConnection()->createCommand('
 CREATE TABLE IF NOT EXISTS "cache"
