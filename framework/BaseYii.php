@@ -547,4 +547,33 @@ class BaseYii
     {
         return get_object_vars($object);
     }
+
+    /**
+     * Returns the component instance with the specified ID.
+     * In case there is a current controller running component will be requested from its owner module, otherwise
+     * it will be taken from current application instance.
+     * In case there is no application instance yet - a dummy application will be created.
+     * @param string $id component ID (e.g. `db`).
+     * @return object the component of the specified ID.
+     * @since 2.0.14
+     */
+    public static function get($id)
+    {
+        if (static::$app === null) {
+            $argv = isset($_SERVER['argv']) ? $_SERVER['argv'] : null; // bypass possible errors at `\yii\console\Application::loadConfig()`
+            static::$app = new \yii\console\Application([
+                'id' => 'yii',
+                'basePath' => __DIR__,
+            ]);
+            if ($argv !== null) {
+                $_SERVER['argv'] = $argv;
+            }
+        }
+
+        if (isset(static::$app->controller)) {
+            return static::$app->controller->module->get($id);
+        }
+
+        return static::$app->get($id);
+    }
 }
