@@ -1,6 +1,17 @@
 version: '2'
 services:
-
+  shell:
+    build: ./docker
+    depends_on:
+      - redis
+      - memcached
+      - mysql
+      - postgres
+    volumes:
+      - ..:/project
+      - ./data/config-docker.php:/project/tests/data/config.php
+    entrypoint:
+      - /bin/sh
   phpunit:
     build: ./docker
     depends_on:

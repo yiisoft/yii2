@@ -31,5 +31,7 @@ RUN apk add --update --no-cache \
     php7-xmlwriter \
     php7-zip \
     php7-zlib \
-    php7-simplexml
-
+    php7-simplexml \
+    tini
+WORKDIR /project
+ENTRYPOINT ["/sbin/tini", "--", "/project/vendor/bin/phpunit"]
