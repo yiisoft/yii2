@@ -300,9 +300,9 @@ class BaseUrl
         $url = static::to($url);
 
         if ($name === null) {
-            Yii::$app->getUser()->setReturnUrl($url);
+            Yii::get('user')->setReturnUrl($url);
         } else {
-            Yii::$app->getSession()->set($name, $url);
+            Yii::get('session')->set($name, $url);
         }
     }
 
@@ -319,10 +319,10 @@ class BaseUrl
     public static function previous($name = null)
     {
         if ($name === null) {
-            return Yii::$app->getUser()->getReturnUrl();
+            return Yii::get('user')->getReturnUrl();
         }
 
-        return Yii::$app->getSession()->get($name);
+        return Yii::get('session')->get($name);
     }
 
     /**
@@ -427,7 +427,7 @@ class BaseUrl
      */
     public static function current(array $params = [], $scheme = false)
     {
-        $currentParams = Yii::$app->getRequest()->getQueryParams();
+        $currentParams = Yii::get('request')->getQueryParams();
         $currentParams[0] = '/' . Yii::$app->controller->getRoute();
         $route = array_replace_recursive($currentParams, $params);
         return static::toRoute($route, $scheme);
@@ -439,6 +439,6 @@ class BaseUrl
      */
     protected static function getUrlManager()
     {
-        return static::$urlManager ?: Yii::$app->getUrlManager();
+        return static::$urlManager ?: Yii::get('urlManager');
     }
 }

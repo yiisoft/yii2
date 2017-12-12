@@ -299,7 +299,7 @@ class BaseHtml
      */
     public static function csrfMetaTags()
     {
-        $request = Yii::$app->getRequest();
+        $request = Yii::get('request');
         if ($request instanceof Request && $request->enableCsrfValidation) {
             return static::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfParam]) . "\n    "
                 . static::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]) . "\n";
@@ -333,7 +333,7 @@ class BaseHtml
 
         $hiddenInputs = [];
 
-        $request = Yii::$app->getRequest();
+        $request = Yii::get('request');
         if ($request instanceof Request) {
             if (strcasecmp($method, 'get') && strcasecmp($method, 'post')) {
                 // simulate PUT, DELETE, etc. via POST
