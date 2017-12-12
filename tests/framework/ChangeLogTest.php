@@ -7,11 +7,6 @@
 
 namespace yiiunit\framework;
 
-use Yii;
-use yii\BaseYii;
-use yii\di\Container;
-use yii\log\Logger;
-use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 
 /**
