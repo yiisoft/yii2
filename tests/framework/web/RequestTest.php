@@ -293,7 +293,7 @@ class RequestTest extends TestCase
         $this->assertEquals('servername', $request->getServerName());
 
         unset($_SERVER['SERVER_NAME']);
-        $this->assertEquals(null, $request->getServerName());
+        $this->assertNull($request->getServerName());
     }
 
     public function testGetServerPort()
@@ -304,7 +304,7 @@ class RequestTest extends TestCase
         $this->assertEquals(33, $request->getServerPort());
 
         unset($_SERVER['SERVER_PORT']);
-        $this->assertEquals(null, $request->getServerPort());
+        $this->assertNull($request->getServerPort());
     }
 
     public function isSecureServerDataProvider()
@@ -539,7 +539,7 @@ class RequestTest extends TestCase
 
         unset($_SERVER['HTTP_ORIGIN']);
         $request = new Request();
-        $this->assertEquals(null, $request->getOrigin());
+        $this->assertNull($request->getOrigin());
     }
 
     public function httpAuthorizationHeadersProvider()

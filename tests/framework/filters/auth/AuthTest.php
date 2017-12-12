@@ -144,38 +144,38 @@ class AuthTest extends \yiiunit\TestCase
         $controller = new \yii\web\Controller('test', Yii::$app);
 
         // active by default
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index'];
         $filter->except = [];
         $filter->optional = [];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index'];
         $filter->except = [];
         $filter->optional = ['view'];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index', 'view'];
         $filter->except = ['view'];
         $filter->optional = [];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index', 'view'];
         $filter->except = ['view'];
         $filter->optional = ['view'];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = [];
         $filter->except = ['view'];
         $filter->optional = ['view'];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
     }
 }
 
