@@ -178,8 +178,8 @@ class BaseYiiTest extends TestCase
      */
     public function testGet()
     {
-        $component = BaseYii::get('formatter');
-        $this->assertTrue($component instanceof \yii\i18n\Formatter);
+        $component = BaseYii::get('view');
+        $this->assertTrue($component instanceof \yii\base\View);
 
         $this->mockApplication([
             'components' => [
