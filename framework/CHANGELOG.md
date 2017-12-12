@@ -37,7 +37,6 @@ Yii Framework 2 Change Log
 - Enh #14671: use `random_int()` instead of `mt_rand()` to generate cryptographically secure pseudo-random integers (yyxx9988)
 - Chg #14761: Removed Yii autoloader in favor of Composer's PSR-4 implementation (samdark)
 
-2.0.13 under development
 2.0.14 under development
 ------------------------
 
