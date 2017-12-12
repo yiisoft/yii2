@@ -177,25 +177,24 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     protected function prepareMasterSlave($masterCount, $slaveCount)
     {
         $databases = self::getParam('databases');
-        $fixture = $databases[$this->driverName]['fixture'];
         $basePath = \Yii::getAlias('@yiiunit/runtime');
 
         $config = [
             'class' => 'yii\db\Connection',
             'dsn' => "sqlite:$basePath/yii2test.sq3",
         ];
-        $this->prepareDatabase($config, $fixture)->close();
+        $this->prepareDatabase($config, null)->close();
 
         for ($i = 0; $i < $masterCount; ++$i) {
             $master = ['dsn' => "sqlite:$basePath/yii2test_master{$i}.sq3"];
-            $db = $this->prepareDatabase($master, $fixture);
+            $db = $this->prepareDatabase($master, null);
             $db->close();
             $config['masters'][] = $master;
         }
 
         for ($i = 0; $i < $slaveCount; ++$i) {
             $slave = ['dsn' => "sqlite:$basePath/yii2test_slave{$i}.sq3"];
-            $db = $this->prepareDatabase($slave, $fixture);
+            $db = $this->prepareDatabase($slave, null);
             $db->close();
             $config['slaves'][] = $slave;
         }
