@@ -65,15 +65,16 @@ class CacheControllerTest extends TestCase
             ],
         ]);
 
-        if (isset($config['fixture'])) {
-            Yii::$app->db->open();
-            $lines = explode(';', file_get_contents($config['fixture']));
-            foreach ($lines as $line) {
-                if (trim($line) !== '') {
-                    Yii::$app->db->pdo->exec($line);
-                }
-            }
-        }
+        // Tests in this case do not use any models in the fixture...
+//        if (isset($config['fixture'])) {
+//            Yii::$app->db->open();
+//            $lines = explode(';', file_get_contents($config['fixture']));
+//            foreach ($lines as $line) {
+//                if (trim($line) !== '') {
+//                    Yii::$app->db->pdo->exec($line);
+//                }
+//            }
+//        }
     }
 
     public function testFlushOne()
