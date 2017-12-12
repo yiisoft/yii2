@@ -140,6 +140,9 @@ Upgrade from Yii 2.0.12
 * If you are using "asset" command to compress assets and your web applicaiton `assetManager` has `linkAssets` turned on,
   make sure that "asset" command config has `linkAssets` turned on as well.
 
+* `yii\db\ExpressionInterface` has been introduced to represent a wider range of SQL expressions. In case you check for
+  `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
+  introduced methods to retrieve the expression content.
 
 Upgrade from Yii 2.0.11
 -----------------------

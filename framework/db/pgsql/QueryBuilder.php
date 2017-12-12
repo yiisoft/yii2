@@ -8,6 +8,8 @@
 namespace yii\db\pgsql;
 
 use yii\base\InvalidParamException;
+use yii\db\ExpressionInterface;
+use yii\db\Query;
 use yii\helpers\StringHelper;
 
 /**
