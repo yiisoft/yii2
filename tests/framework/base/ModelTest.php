@@ -310,6 +310,9 @@ class ModelTest extends TestCase
             'lastName' => ['Another one!'],
         ], $speaker->getErrors());
 
+        $this->assertEquals(['Another one!', 'Something is wrong!', 'Totally wrong!'], $speaker->getErrorSummary(true));
+        $this->assertEquals(['Another one!', 'Something is wrong!'], $speaker->getErrorSummary(false));
+
         $speaker->clearErrors('firstName');
         $this->assertEquals([
             'lastName' => ['Another one!'],

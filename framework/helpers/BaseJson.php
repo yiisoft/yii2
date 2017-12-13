@@ -214,18 +214,9 @@ class BaseJson
         if (!is_array($models)) {
             $models = [$models];
         }
+
         foreach ($models as $model) {
-            /* @var $model Model */
-            foreach ($model->getErrors() as $errors) {
-                foreach ($errors as $error) {
-                    if (!in_array($error, $lines, true)) {
-                        $lines[] = $error;
-                    }
-                    if (!$showAllErrors) {
-                        break;
-                    }
-                }
-            }
+            $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
         }
 
         return $lines;

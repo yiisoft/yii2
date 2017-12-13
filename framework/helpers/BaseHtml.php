@@ -1243,18 +1243,14 @@ class BaseHtml
         if (!is_array($models)) {
             $models = [$models];
         }
+
         foreach ($models as $model) {
-            /* @var $model Model */
-            foreach ($model->getErrors() as $errors) {
-                foreach ($errors as $error) {
-                    $line = $encode ? Html::encode($error) : $error;
-                    if (!in_array($line, $lines, true)) {
-                        $lines[] = $line;
-                    }
-                    if (!$showAllErrors) {
-                        break;
-                    }
-                }
+            $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
+        }
+
+        if ($encode) {
+            for ($i = 0; $i < count($lines); $i++) {
+                $lines[$i] = Html::encode($lines[$i]);
             }
         }
 
