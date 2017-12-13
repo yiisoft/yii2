@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #15320: Fixed special role checks in `yii\filters\AccessRule::matchRole()` (Izumi-kun)
 - Bug #15322: Fixed PHP 7.2 compatibility of `FileHelper::getExtensionsByMimeType()` (samdark)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
+- Enh #8752: Allow specify `$attributeNames` as a string for `yii\base\Model` `validate()` method (developeruz)
 - Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
 - Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
