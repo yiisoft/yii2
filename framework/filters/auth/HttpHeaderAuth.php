@@ -27,8 +27,9 @@ namespace yii\filters\auth;
  * method of the `user` application component and passes the value of the `X-Api-Key` header. This implementation is used
  * for authenticating API clients.
  *
+ * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Benoît Boure <benoit.boure@gmail.com>
- * @since 2.x.x (TBD)
+ * @since 2.1.14
  */
 class HttpHeaderAuth extends AuthMethod
 {
@@ -40,7 +41,7 @@ class HttpHeaderAuth extends AuthMethod
     /**
      * @var string a pattern to use to extract the HTTP authentication value
      */
-    public $pattern = null;
+    public $pattern;
 
     /**
      * @inheritdoc
