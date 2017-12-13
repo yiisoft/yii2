@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #15302: Fixed `yii\caching\DbCache` so that `getValues` now behaves the same as `getValue` with regards to streams (edwards-sj)
 - Bug #15320: Fixed special role checks in `yii\filters\AccessRule::matchRole()` (Izumi-kun)
 - Bug #15322: Fixed PHP 7.2 compatibility of `FileHelper::getExtensionsByMimeType()` (samdark)
+- Bug #15353: Remove side effect of ActiveQuery::getTablesUsedInFrom() introduced in 2.0.13 (terales)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
 - Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
