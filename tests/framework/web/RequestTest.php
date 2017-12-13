@@ -137,6 +137,15 @@ class RequestTest extends TestCase
         }
     }
 
+    public function testIssue15317()
+    {
+        $this->mockWebApplication();
+        $_COOKIE[(new Request())->csrfParam] = '';
+        $request = new Request();
+        $request->enableCsrfCookie = true;
+        $request->enableCookieValidation = false;
+        $this->assertEmpty($request->getCsrfToken());
+    }
     /**
      * Test CSRF token validation by POST param.
      */
