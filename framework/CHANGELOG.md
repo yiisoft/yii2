@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
 - Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
+- Enh #15219: Added `yii\filters\auth\HttpHeaderAuth` (bboure)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
 - Enh #15024: `yii\web\Pjax` widget does not prevent CSS files from sending anymore because they are handled by client-side plugin correctly (onmotion)
 - Enh #15135: Automatic completion for help in bash and zsh (Valkeru)
