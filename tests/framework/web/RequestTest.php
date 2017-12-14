@@ -144,7 +144,14 @@ class RequestTest extends TestCase
         $request = new Request();
         $request->enableCsrfCookie = true;
         $request->enableCookieValidation = false;
-        $this->assertEmpty($request->getCsrfToken());
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Yii::$app->security->unmaskToken('');
+        $this->assertFalse($request->validateCsrfToken(''));
+
+        // When an empty CSRF token is given it is regenerated.
+        $this->assertNotEmpty($request->getCsrfToken());
+
     }
     /**
      * Test CSRF token validation by POST param.
