@@ -241,7 +241,7 @@ return $array;
 
 EOD;
 
-        if (file_put_contents($filePath, $content) === false) {
+        if (file_put_contents($filePath, $content, LOCK_EX) === false) {
             $this->stdout("Configuration file was NOT created: '{$filePath}'.\n\n", Console::FG_RED);
             return ExitCode::UNSPECIFIED_ERROR;
         }
@@ -733,7 +733,7 @@ return $array;
 
 EOD;
 
-        if (file_put_contents($fileName, $content) === false) {
+        if (file_put_contents($fileName, $content, LOCK_EX) === false) {
             $this->stdout("Translation was NOT saved.\n\n", Console::FG_RED);
             return ExitCode::UNSPECIFIED_ERROR;
         }

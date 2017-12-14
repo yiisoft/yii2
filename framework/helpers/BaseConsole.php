@@ -8,6 +8,7 @@
 namespace yii\helpers;
 
 use yii\console\Markdown as ConsoleMarkdown;
+use yii\base\Model;
 
 /**
  * BaseConsole provides concrete implementation for [[Console]].
@@ -1050,5 +1051,46 @@ class BaseConsole
         self::$_progressEta = null;
         self::$_progressEtaLastDone = 0;
         self::$_progressEtaLastUpdate = null;
+    }
+
+    /**
+     * Generates a summary of the validation errors.
+     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
+     *
+     * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
+     *   only the first error message for each attribute will be shown. Defaults to `false`.
+     *
+     * @return string the generated error summary
+     * @since 2.0.14
+     */
+    public static function errorSummary($models, $options = [])
+    {
+        $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
+        $lines = self::collectErrors($models, $showAllErrors);
+
+        return implode(PHP_EOL, $lines);
+    }
+
+    /**
+     * Return array of the validation errors
+     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
+     * only the first error message for each attribute will be shown.
+     * @return array of the validation errors
+     * @since 2.0.14
+     */
+    private static function collectErrors($models, $showAllErrors)
+    {
+        $lines = [];
+        if (!is_array($models)) {
+            $models = [$models];
+        }
+
+        foreach ($models as $model) {
+            $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
+        }
+
+        return $lines;
     }
 }

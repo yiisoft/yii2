@@ -1777,6 +1777,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'is_active' => false,
                     'related_id' => null,
                 ],
+                [],
                 $this->replaceQuotes('INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]]) VALUES (:qp0, :qp1, :qp2, :qp3, :qp4)'),
                 [
                     ':qp0' => 'test@example.com',
@@ -1792,9 +1793,62 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     '{{%type}}.[[related_id]]' => null,
                     '[[time]]' => new Expression('now()'),
                 ],
+                [],
                 'INSERT INTO {{%type}} ({{%type}}.[[related_id]], [[time]]) VALUES (:qp0, now())',
                 [
                     ':qp0' => null,
+                ],
+            ],
+            'carry passed params' => [
+                'customer',
+                [
+                    'email' => 'test@example.com',
+                    'name' => 'sergeymakinen',
+                    'address' => '{{city}}',
+                    'is_active' => false,
+                    'related_id' => null,
+                    'col' => new Expression('CONCAT(:phFoo, :phBar)', [':phFoo' => 'foo']),
+                ],
+                [':phBar' => 'bar'],
+                $this->replaceQuotes('INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]], [[col]]) VALUES (:qp1, :qp2, :qp3, :qp4, :qp5, CONCAT(:phFoo, :phBar))'),
+                [
+                    ':phBar' => 'bar',
+                    ':qp1' => 'test@example.com',
+                    ':qp2' => 'sergeymakinen',
+                    ':qp3' => '{{city}}',
+                    ':qp4' => false,
+                    ':qp5' => null,
+                    ':phFoo' => 'foo',
+                ],
+            ],
+            'carry passed params (query)' => [
+                'customer',
+                (new Query())
+                    ->select([
+                        'email',
+                        'name',
+                        'address',
+                        'is_active',
+                        'related_id',
+                    ])
+                    ->from('customer')
+                    ->where([
+                        'email' => 'test@example.com',
+                        'name' => 'sergeymakinen',
+                        'address' => '{{city}}',
+                        'is_active' => false,
+                        'related_id' => null,
+                        'col' => new Expression('CONCAT(:phFoo, :phBar)', [':phFoo' => 'foo']),
+                    ]),
+                [':phBar' => 'bar'],
+                $this->replaceQuotes('INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]]) SELECT [[email]], [[name]], [[address]], [[is_active]], [[related_id]] FROM [[customer]] WHERE ([[email]]=:qp1) AND ([[name]]=:qp2) AND ([[address]]=:qp3) AND ([[is_active]]=:qp4) AND ([[related_id]] IS NULL) AND ([[col]]=CONCAT(:phFoo, :phBar))'),
+                [
+                    ':phBar' => 'bar',
+                    ':qp1' => 'test@example.com',
+                    ':qp2' => 'sergeymakinen',
+                    ':qp3' => '{{city}}',
+                    ':qp4' => false,
+                    ':phFoo' => 'foo',
                 ],
             ],
         ];
@@ -1804,12 +1858,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @dataProvider insertProvider
      * @param string $table
      * @param array $columns
+     * @param array $params
      * @param string $expectedSQL
      * @param array $expectedParams
      */
-    public function testInsert($table, $columns, $expectedSQL, $expectedParams)
+    public function testInsert($table, $columns, $params, $expectedSQL, $expectedParams)
     {
-        $actualParams = [];
+        $actualParams = $params;
         $actualSQL = $this->getQueryBuilder()->insert($table, $columns, $actualParams);
         $this->assertSame($expectedSQL, $actualSQL);
         $this->assertSame($expectedParams, $actualParams);

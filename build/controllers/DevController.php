@@ -250,13 +250,13 @@ class DevController extends Controller
     {
         if (is_link($link = "$dir/vendor/yiisoft/yii2")) {
             $this->stdout("Removing symlink $link.\n");
-            $this->unlink($link);
+            FileHelper::unlink($link);
         }
         $extensions = $this->findDirs("$dir/vendor/yiisoft");
         foreach ($extensions as $ext) {
             if (is_link($link = "$dir/vendor/yiisoft/yii2-$ext")) {
                 $this->stdout("Removing symlink $link.\n");
-                $this->unlink($link);
+                FileHelper::unlink($link);
             }
         }
     }
@@ -290,20 +290,6 @@ class DevController extends Controller
                 }
                 symlink("$base/extensions/$ext", $link);
             }
-        }
-    }
-
-    /**
-     * Properly removes symlinked directory under Windows, MacOS and Linux.
-     *
-     * @param string $file path to symlink
-     */
-    protected function unlink($file)
-    {
-        if (is_dir($file) && DIRECTORY_SEPARATOR === '\\') {
-            rmdir($file);
-        } else {
-            unlink($file);
         }
     }
 

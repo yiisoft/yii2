@@ -50,6 +50,13 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.13
+-----------------------
+
+* Constants `IPV6_ADDRESS_LENGTH`, `IPV4_ADDRESS_LENGTH` were moved from `yii\validators\IpValidator` to `yii\helpers\IpHelper`.
+  If your application relies on these constants, make sure to update your code to follow the changes.
+
+
 Upgrade from Yii 2.0.12
 -----------------------
 
@@ -492,7 +499,7 @@ new ones save the following code as `convert.php` that should be placed in the s
       $out = var_export($data, true);
       $out = "<?php\nreturn " . $out . ';';
       $out = str_replace(['array (', ')'], ['[', ']'], $out);
-      file_put_contents($fileName, $out);
+      file_put_contents($fileName, $out, LOCK_EX);
   }
 
   $items = [];
