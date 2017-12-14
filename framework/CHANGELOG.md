@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #15194: Fixed `yii\db\QueryBuilder::insert()` to preserve passed params when building a `INSERT INTO ... SELECT` query for MSSQL, PostgreSQL and SQLite (sergeymakinen)
 - Bug #15229: Fixed `yii\console\widgets\Table` default value for `getScreenWidth()`, when `Console::getScreenSize()` can't determine screen size (webleaf)
 - Bug #15234: Fixed `\yii\widgets\LinkPager` removed `tag` from `disabledListItemSubTagOptions` (SDKiller)
+- Enh #7988: Added `\yii\helpers\Console::errorSummary()` and `\yii\helpers\Json::errorSummary()` (developeruz)
 - Bug #15249: Controllers in subdirectories were not visible in commands list (IceJOKER)
 - Bug #15270: Resolved potential race conditions when writing generated php-files (kalessil)
 - Bug #15301: Fixed `ArrayHelper::filter()` to work properly with `0` in values (hhniao)
