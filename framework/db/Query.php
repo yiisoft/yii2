@@ -605,7 +605,7 @@ PATTERN;
      */
     protected function removeDuplicatedColumns($columns)
     {
-        $simpleColumns = array_intersect_key($this->select, array_fill_keys(array_filter(array_keys($this->select), 'is_integer'), null));
+        $simpleColumns = array_filter($this->select, 'is_integer', ARRAY_FILTER_USE_KEY);
         foreach ($columns as $columnName => $columnDefinition) {
             if ($columnDefinition instanceof Query) {
                 continue;
