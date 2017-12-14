@@ -605,6 +605,7 @@ PATTERN;
      */
     protected function removeDuplicatedColumns($columns)
     {
+        $simpleColumns = array_intersect_key($this->select, array_fill_keys(array_filter(array_keys($this->select), 'is_integer'), null));
         foreach ($columns as $columnName => $columnDefinition) {
             if ($columnDefinition instanceof Query) {
                 continue;
@@ -615,15 +616,8 @@ PATTERN;
             }
 
             // check if column is already present with numeric key
-            if (is_integer($columnName) && in_array($columnDefinition, array_filter(
-                $this->select,
-                function ($def, $key) {
-                    return is_integer($key);
-                },
-                ARRAY_FILTER_USE_BOTH
-            ))) {
+            if (is_integer($columnName) && in_array($columnDefinition, $simpleColumns))
                 unset($columns[$columnName]);
-            }
         }
         return $columns;
     }
