@@ -462,10 +462,24 @@ class ModelTest extends TestCase
 
         $this->assertTrue($model->validate());
     }
+
+    public function testValidateAttributeNames()
+    {
+        $model = new ComplexModel1();
+        $model->name = 'Some value';
+        $this->assertTrue($model->validate(['name']), 'Should validate only name attribute');
+        $this->assertTrue($model->validate('name'), 'Should validate only name attribute');
+        $this->assertFalse($model->validate(), 'Should validate all attributes');
+    }
 }
 
 class ComplexModel1 extends Model
 {
+    public $name;
+    public $description;
+    public $id;
+    public $is_disabled;
+
     public function rules()
     {
         return [
