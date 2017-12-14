@@ -1582,7 +1582,8 @@ class Request extends \yii\base\Request
     public function getCsrfToken($regenerate = false)
     {
         if ($this->_csrfToken === null || $regenerate) {
-            if ($regenerate || empty($token = $this->loadCsrfToken())) {
+            $token = $this->loadCsrfToken();
+            if ($regenerate || empty($token)) {
                 $token = $this->generateCsrfToken();
             }
             $this->_csrfToken = Yii::$app->security->maskToken($token);
