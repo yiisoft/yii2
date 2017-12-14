@@ -29,7 +29,7 @@ namespace yii\filters\auth;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Benoît Boure <benoit.boure@gmail.com>
- * @since 2.1.14
+ * @since 2.0.14
  */
 class HttpHeaderAuth extends AuthMethod
 {
