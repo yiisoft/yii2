@@ -605,18 +605,15 @@ PATTERN;
      */
     protected function removeDuplicatedColumns($columns)
     {
+        // delete simple columns duplicates
         $simpleColumns = array_filter($this->select, 'is_integer', ARRAY_FILTER_USE_KEY);
+
         foreach ($columns as $columnName => $columnDefinition) {
-            if ($columnDefinition instanceof Query) {
+            if ($columnDefinition instanceof Query)
                 continue;
-            }
 
-            if (is_string($columnName) && isset($this->select[$columnName]) && $this->select[$columnName] === $columnDefinition) {
-                unset($columns[$columnName]);
-            }
-
-            // check if column is already present with numeric key
-            if (is_integer($columnName) && in_array($columnDefinition, $simpleColumns))
+            if ((is_string($columnName) && isset($this->select[$columnName]) && $this->select[$columnName] === $columnDefinition) ||
+                (is_integer($columnName) && in_array($columnDefinition, $simpleColumns)))
                 unset($columns[$columnName]);
         }
         return $columns;
