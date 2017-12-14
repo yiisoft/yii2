@@ -175,6 +175,7 @@ All Rights Reserved.
 * [Окружение виртуального хостинга](tutorial-shared-hosting.md)
 * [Шаблонизаторы](tutorial-template-engines.md)
 * [Работа со сторонним кодом](tutorial-yii-integration.md)
+* [Использование Yii в качестве микро-framework'а](tutorial-yii-as-micro-framework.md)
 
 
 Виджеты
