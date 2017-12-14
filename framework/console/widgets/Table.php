@@ -48,6 +48,9 @@ use yii\helpers\Console;
  */
 class Table extends Widget
 {
+    const DEFAULT_CONSOLE_SCREEN_WIDTH = 120;
+    const CONSOLE_SCROLLBAR_OFFSET = 3;
+
     const CHAR_TOP = 'top';
     const CHAR_TOP_MID = 'top-mid';
     const CHAR_TOP_LEFT = 'top-left';
@@ -298,7 +301,7 @@ class Table extends Widget
     {
         $this->_columnWidths = $columns = [];
         $totalWidth = 0;
-        $screenWidth = $this->getScreenWidth() - 3;
+        $screenWidth = $this->getScreenWidth() - self::CONSOLE_SCROLLBAR_OFFSET;
 
         for ($i = 0, $count = count($this->_headers); $i < $count; $i++) {
             $columns[] = ArrayHelper::getColumn($this->_rows, $i);
@@ -366,6 +369,7 @@ class Table extends Widget
 
     /**
      * Getting screen width.
+     * If it is not able to determine screen width, default value `123` will be set.
      *
      * @return int screen width
      */
@@ -373,11 +377,10 @@ class Table extends Widget
     {
         if (!$this->_screenWidth) {
             $size = Console::getScreenSize();
-            if (isset($size[0])) {
-                $this->_screenWidth = $size[0];
-            }
+            $this->_screenWidth = isset($size[0])
+                ? $size[0]
+                : self::DEFAULT_CONSOLE_SCREEN_WIDTH + self::CONSOLE_SCROLLBAR_OFFSET;
         }
-
         return $this->_screenWidth;
     }
 }
