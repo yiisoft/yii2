@@ -203,4 +203,4 @@ class PostController extends ActiveController
   необходимо настроить [[yii\web\JsonParser]].
 - Чтобы сделать URL более дружественным, вам необходимо настроить маршрутизацию.
   См. [Руководство по маршрутизации REST](rest-routing.md) о том, как это сделать.
-- Дополнительную информацию см. в разделе [Looking Ahead](start-looking-ahead.md).
+- Дополнительную информацию см. в разделе [Взгляд в будущее](start-looking-ahead.md).
