@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Enh #8752: Allow specify `$attributeNames` as a string for `yii\base\Model` `validate()` method (developeruz)
 - Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
+- Enh #7996: Short syntax for verb in GroupUrlRule (schojniak, developeruz)
 - Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
 - Enh #15219: Added `yii\filters\auth\HttpHeaderAuth` (bboure)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
