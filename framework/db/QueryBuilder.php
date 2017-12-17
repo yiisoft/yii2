@@ -68,7 +68,17 @@ class QueryBuilder extends \yii\base\BaseObject
     ];
 
     /**
-     * @var string[]|ExpressionBuilderInterface[] TODO docs
+     * @var string[]|ExpressionBuilderInterface[] map of expression class to expression builder class.
+     * This property is mainly used by [[buildExpression()]] to build SQL expressions form expression objects.
+     *
+     * To override existing builders or add custom, use [[setExpressionBuilder()]] method. New items will be added
+     * to the end of this array.
+     *
+     * To find a builder, [[buildExpression()]] will check the expression class for its exact presence in this map.
+     * In case it is NOT present, the array will be iterated in reverse direction, checking whether the expression
+     * extends the class, defined in this map.
+     *
+     * @see setExpressionBuilders()
      * @since 2.0.14
      */
     protected $expressionBuilders = [
@@ -105,8 +115,9 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * TODO Docs
-     * @param string[] $builders
+     * Setter for [[expressionBuilders]] property.
+     *
+     * @param string[] $builders array of builder that should be merged with [[expressionBuilders]]
      * @since 2.0.14
      * @see expressionBuilders
      */
@@ -183,7 +194,7 @@ class QueryBuilder extends \yii\base\BaseObject
     {
         $className = get_class($expression);
         if (!isset($this->expressionBuilders[$className])) {
-            foreach ($this->expressionBuilders as $expressionClass => $builderClass) {
+            foreach (array_reverse($this->expressionBuilders) as $expressionClass => $builderClass) {
                 if (is_subclass_of($expression, $expressionClass)) {
                     $this->expressionBuilders[$className] = $builderClass;
                     break;

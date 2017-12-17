@@ -46,6 +46,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected $expressionBuilders = [
+        'yii\db\Expression' => 'yii\db\ExpressionBuilder',
+        'yii\db\JsonExpression' => 'yii\db\mysql\JsonExpressionBuilder',
+    ];
 
     /**
      * Builds a SQL statement for renaming a column.

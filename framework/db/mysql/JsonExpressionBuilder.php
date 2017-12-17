@@ -1,6 +1,6 @@
 <?php
 
-namespace yii\db\pgsql;
+namespace yii\db\mysql;
 
 use yii\db\ExpressionBuilderInterface;
 use yii\db\ExpressionBuilderTrait;
@@ -10,7 +10,7 @@ use yii\db\Query;
 use yii\helpers\Json;
 
 /**
- * Class JsonExpressionBuilder builds [[JsonExpression]] for PostgreSQL DBMS.
+ * Class JsonExpressionBuilder builds [[JsonExpression]] for MySQL DBMS.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -31,25 +31,12 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
 
         if ($value instanceof Query) {
             list ($sql, $params) = $this->queryBuilder->build($value, $params);
-            return "($sql)" . $this->getTypecast($expression);
+            return "($sql)";
         }
 
         $placeholder = static::PARAM_PREFIX . count($params);
         $params[$placeholder] = Json::encode($value);
 
-        return $placeholder . $this->getTypecast($expression);
-    }
-
-    /**
-     * @param JsonExpression $expression
-     * @return string the typecast expression based on [[type]].
-     */
-    protected function getTypecast(JsonExpression $expression)
-    {
-        if ($expression->getType() === null) {
-            return '';
-        }
-
-        return '::' . $expression->getType();
+        return $placeholder;
     }
 }
