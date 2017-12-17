@@ -165,6 +165,7 @@ class Response extends \yii\base\Response
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
+        103 => 'Early Hints',
         118 => 'Connection timed out',
         200 => 'OK',
         201 => 'Created',
