@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #15194: Fixed `yii\db\QueryBuilder::insert()` to preserve passed params when building a `INSERT INTO ... SELECT` query for MSSQL, PostgreSQL and SQLite (sergeymakinen)
 - Bug #15229: Fixed `yii\console\widgets\Table` default value for `getScreenWidth()`, when `Console::getScreenSize()` can't determine screen size (webleaf)
 - Bug #15234: Fixed `\yii\widgets\LinkPager` removed `tag` from `disabledListItemSubTagOptions` (SDKiller)
+- Enh #7988: Added `\yii\helpers\Console::errorSummary()` and `\yii\helpers\Json::errorSummary()` (developeruz)
 - Bug #15249: Controllers in subdirectories were not visible in commands list (IceJOKER)
 - Bug #15270: Resolved potential race conditions when writing generated php-files (kalessil)
 - Bug #15301: Fixed `ArrayHelper::filter()` to work properly with `0` in values (hhniao)
@@ -18,9 +19,12 @@ Yii Framework 2 Change Log
 - Bug #15320: Fixed special role checks in `yii\filters\AccessRule::matchRole()` (Izumi-kun)
 - Bug #15322: Fixed PHP 7.2 compatibility of `FileHelper::getExtensionsByMimeType()` (samdark)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
+- Enh #8752: Allow specify `$attributeNames` as a string for `yii\base\Model` `validate()` method (developeruz)
 - Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
+- Enh #7996: Short syntax for verb in GroupUrlRule (schojniak, developeruz)
 - Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
+- Enh #15219: Added `yii\filters\auth\HttpHeaderAuth` (bboure)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
 - Enh #15024: `yii\web\Pjax` widget does not prevent CSS files from sending anymore because they are handled by client-side plugin correctly (onmotion)
 - Enh #15135: Automatic completion for help in bash and zsh (Valkeru)
@@ -29,7 +33,9 @@ Yii Framework 2 Change Log
 - Enh #15221: Improved the `help/list-action-options` console command output for command options without a description (brandonkelly)
 - Enh #15332: Always check for availability of `openssl_pseudo_random_bytes`, even if LibreSSL is available (sammousa)
 - Enh #15335: Added `FileHelper::unlink()` that works well under all OSes (samdark)
-- Enh #15347: Add support Instance for object property in dic (kojit2009)
+- Enh #15347: Add `Instance` support for object property in DI container (kojit2009)
+- Enh #15340: Test CHANGELOG.md for valid format (sammousa)
+- Bug #15317: Regenerate CSRF token if an empty value is given (sammousa)
 
 
 2.0.13.1 November 14, 2017

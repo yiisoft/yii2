@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\helpers;
 
-use yii\base\Model;
+use yii\base\DynamicModel;
 use yii\helpers\BaseJson;
 use yii\helpers\Json;
 use yii\web\JsExpression;
@@ -208,14 +208,39 @@ class JsonTest extends TestCase
             }
         }
     }
+
+    public function testErrorSummary()
+    {
+        $model = new JsonModel();
+        $model->name = 'not_an_integer';
+        $model->addError('name', 'Error message. Here are some chars: < >');
+        $model->addError('name', 'Error message. Here are even more chars: ""');
+        $model->validate(null, false);
+        $options = ['showAllErrors' => true];
+        $expectedHtml = '["Error message. Here are some chars: < >","Error message. Here are even more chars: \"\""]';
+        $this->assertEquals($expectedHtml, Json::errorSummary($model, $options));
+    }
 }
 
-class JsonModel extends Model implements \JsonSerializable
+class JsonModel extends DynamicModel implements \JsonSerializable
 {
     public $data = ['json' => 'serializable'];
 
     public function jsonSerialize()
     {
         return $this->data;
+    }
+
+    public function rules()
+    {
+        return [
+            ['name', 'required'],
+            ['name', 'string', 'max' => 100]
+        ];
+    }
+
+    public function init()
+    {
+       $this->defineAttribute('name');
     }
 }
