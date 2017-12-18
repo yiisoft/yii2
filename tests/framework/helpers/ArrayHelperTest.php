@@ -1280,4 +1280,18 @@ class ArrayHelperTest extends TestCase
         
         $this->assertEquals(ArrayHelper::filter($tmp, array_keys($tmp)), $tmp);
     }
+
+    public function testIsEmpty()
+    {
+        //should be true
+        $this->assertTrue(ArrayHelper::isEmpty([]));
+        $this->assertTrue(ArrayHelper::isEmpty(['']));
+        $this->assertTrue(ArrayHelper::isEmpty([0 => [], 1 => []]));
+        $this->assertTrue(ArrayHelper::isEmpty([0 => [], 1 => []]));
+        //should be false, as it's non-empty  or not an array
+        $this->assertFalse(ArrayHelper::isEmpty('this is string'));
+        $this->assertFalse(ArrayHelper::isEmpty(new static()));
+        $this->assertFalse(ArrayHelper::isEmpty(['x', 'y']));
+        $this->assertFalse(ArrayHelper::isEmpty(['x', 'test' => []]));
+    }
 }
