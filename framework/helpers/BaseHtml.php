@@ -1279,10 +1279,14 @@ class BaseHtml
     public static function error($model, $attribute, $options = [])
     {
         $attribute = static::getAttributeName($attribute);
-        $error = $model->getFirstError($attribute);
+        $multiple = ArrayHelper::remove($options, 'multipleErrors', false);
+        $errors = $multiple ? $model->getErrors($attribute) : (array)$model->getFirstError($attribute);
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         $encode = ArrayHelper::remove($options, 'encode', true);
-        return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
+        $errors = implode(Html::tag('br'), $encode ? array_map(function($error) {
+            return Html::encode($error);
+        }, $errors) : $errors);
+        return Html::tag($tag, $errors, $options);
     }
 
     /**
