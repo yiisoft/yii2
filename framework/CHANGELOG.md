@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
+- Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
 - Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()` (IceJOKER)
 - Bug #15194: Fixed `yii\db\QueryBuilder::insert()` to preserve passed params when building a `INSERT INTO ... SELECT` query for MSSQL, PostgreSQL and SQLite (sergeymakinen)
@@ -35,6 +36,7 @@ Yii Framework 2 Change Log
 - Enh #15335: Added `FileHelper::unlink()` that works well under all OSes (samdark)
 - Enh #15340: Test CHANGELOG.md for valid format (sammousa)
 - Bug #15317: Regenerate CSRF token if an empty value is given (sammousa)
+
 
 
 2.0.13.1 November 14, 2017
@@ -150,7 +152,6 @@ Yii Framework 2 Change Log
 - Chg #14286: Used primary inputmask package name instead of an alias (samdark)
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
-
 
 2.0.12 June 05, 2017
 --------------------
