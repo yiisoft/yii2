@@ -37,6 +37,7 @@ Yii Framework 2 Change Log
 - Enh #15340: Test CHANGELOG.md for valid format (sammousa)
 - Enh #15360: Refactored `BaseConsole::updateProgress()` (developeruz)
 - Bug #15317: Regenerate CSRF token if an empty value is given (sammousa)
+- Bug #15380: `FormatConverter::convertDateIcuToPhp()` now converts `a` ICU symbols to `A` (brandonkelly)
 
 
 
