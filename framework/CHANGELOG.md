@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
+- Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
 - Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()` (IceJOKER)
 - Bug #15194: Fixed `yii\db\QueryBuilder::insert()` to preserve passed params when building a `INSERT INTO ... SELECT` query for MSSQL, PostgreSQL and SQLite (sergeymakinen)
@@ -150,12 +151,6 @@ Yii Framework 2 Change Log
 - Chg #14286: Used primary inputmask package name instead of an alias (samdark)
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
-
-- Enh #13835: Added `yii\web\Request::getOrigin()` method that returns HTTP_ORIGIN of current CORS request (yyxx9988)
-- Enh #14188: Add constants and function for sysexits(3) to `ConsoleHelper` (tom--, samdark, cebe)
-- Bug #14165: Set `_slave` of `Connection` to `false` instead of `null` in `close` method (rossoneri)
-- Bug #14423: Fixed `ArrayHelper::merge` behavior with null values for integer-keyed elements (dmirogin)
-- Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl)
 
 2.0.12 June 05, 2017
 --------------------

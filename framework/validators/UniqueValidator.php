@@ -175,7 +175,7 @@ class UniqueValidator extends Validator
                 $columnsCondition = array_flip($targetClass::primaryKey());
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
                 
-                // since we only select() the primary key, a potential default scope can't be loaded
+                // any with relation can't be loaded because related fields are not selected
                 $query->with = null;
             }
             $models = $query->limit(2)->asArray()->all();

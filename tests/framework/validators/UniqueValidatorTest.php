@@ -444,11 +444,14 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $validator = new UniqueValidator([
             'targetAttribute' => ['status', 'profile_id']
         ]);
-
-       
         $model = WithCustomer::find()->one();
+        try {
+            $validator->validateAttribute($model, 'email');
+        } catch (\Exception $exception) {
+            $this->fail('Query is crashed because "with" relation cannot be loaded');
+        }
 
-        $validator->validateAttribute($model, 'dummy');
+
     }
 }
 
