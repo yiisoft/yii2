@@ -6,7 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #15081: Fixed "Undefined offset: 1" in log Target (ischenko)
 - Bug #15086: Fixed jQuery onLoad event handling (alexantr)
-- Enh #3087: Add `yii\helpers\BaseHtml::error()` options to choose which way to display errors (yanggs07) 
+- Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorMethod" option to be able to customize errors display (yanggs07) 
 
 
 2.0.13 November 03, 2017
