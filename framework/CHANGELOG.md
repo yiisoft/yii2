@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Enh #15046: Throw an `yii\web\HeadersAlreadySentException` if headers were sent before web response
 - Bug #15355: Fixed `yii\db\Query::from()` does not work with `yii\db\Expression` (vladis84)
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
