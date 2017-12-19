@@ -37,6 +37,7 @@ Yii Framework 2 Change Log
 - Enh #15221: Improved the `help/list-action-options` console command output for command options without a description (brandonkelly)
 - Enh #15332: Always check for availability of `openssl_pseudo_random_bytes`, even if LibreSSL is available (sammousa)
 - Enh #15335: Added `FileHelper::unlink()` that works well under all OSes (samdark)
+- Enh #15357: Added multi statement support for `yii\db\sqlite\Command` (sergeymakinen)
 - Enh #15347: Add `Instance` support for object property in DI container (kojit2009)
 - Enh #15340: Test CHANGELOG.md for valid format (sammousa)
 - Enh #15360: Refactored `BaseConsole::updateProgress()` (developeruz)
