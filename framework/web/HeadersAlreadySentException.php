@@ -19,15 +19,11 @@ use yii\base\Exception;
 class HeadersAlreadySentException extends Exception
 {
     /**
-     * Create instance of exception depending on debug mode.
-     *
-     * @param string $file
-     * @param int $line
-     * @return HeadersAlreadySentException
+     * @inheritdoc
      */
-    public static function make($file, $line)
+    public function __construct($file, $line)
     {
         $message = YII_DEBUG ? "Headers already sent in {$file} on line {$line}." : 'Headers already sent.';
-        return new static($message);
+        parent::__construct($message);
     }
 }
