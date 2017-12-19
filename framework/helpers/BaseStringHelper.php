@@ -389,7 +389,8 @@ class BaseStringHelper
             '\*' => '.*',
             '\?' => '.',
             '\[' => '[',
-            '\]' => ']'
+            '\]' => ']',
+            '\-' => '-',
         ];
 
         if (!empty($options['filePath'])) {
