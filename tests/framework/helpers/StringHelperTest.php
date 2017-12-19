@@ -342,6 +342,12 @@ class StringHelperTest extends TestCase
             ['gr[ae]y', 'groy', false],
             ['a[2-8]', 'a1', false],
             ['a[2-8]', 'a3', true],
+            // [!]
+            ['gr[!ae]y', 'gray', false],
+            ['gr[!ae]y', 'grey', false],
+            ['gr[!ae]y', 'groy', true],
+            ['a[!2-8]', 'a1', true],
+            ['a[!2-8]', 'a3', false],
             // -
             ['a-z', 'a-z', true],
             ['a-z', 'a-c', false],
