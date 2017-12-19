@@ -76,6 +76,20 @@ URL и логичные глаголы HTTP.
 > Note: Конфигурация, приведенная выше необязательна. Без приведенной выше конфигурации, API сможет определить только
   `application/x-www-form-urlencoded` и `multipart/form-data` форматы.
 
+## Выключение компонентов, не согласующихся с концепцией REST API<span id="disable-session-dependencies"></span>
+
+Некоторые настройки компонента `request` [application component](structure-application-components.md), 
+включённые по умолчанию, не имеют смысла в концепции REST API и, следовательно, должны быть отключены.
+
+```php
+'request' => [
+    'enableCsrfValidation' => false,
+    'enableCookieValidation' => false,
+    'parsers' => [
+        'application/json' => 'yii\web\JsonParser',
+    ]
+]
+```
 
 ## Пробуем <span id="trying-it-out"></span>
 
