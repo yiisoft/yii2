@@ -342,6 +342,8 @@ class StringHelperTest extends TestCase
             ['gr[ae]y', 'groy', false],
             ['a[2-8]', 'a1', false],
             ['a[2-8]', 'a3', true],
+            ['[][!]', '][!', true],
+            ['[-1]', '1--', true],
             // [!]
             ['gr[!ae]y', 'gray', false],
             ['gr[!ae]y', 'grey', false],
@@ -372,6 +374,11 @@ class StringHelperTest extends TestCase
             ['begin\*\end', 'begin\two\steps\end', false, ['filePath' => true]],
             ['*', 'any', true, ['filePath' => true]],
             ['*', 'any/path', false, ['filePath' => true]],
+            ['[.-0]', 'any/path', false, ['filePath' => true]],
+            ['*', '.dotenv', false, ['filePath' => true]],
+            // escaping
+            ['\*\?', '*?', true],
+            ['\*\?', 'zz', false],
         ];
     }
 
