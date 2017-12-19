@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Bug #15046: Throw an `yii\web\HeadersAlreadySentException` if headers were sent before web response (dmirogin)
 - Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorMethod" option to be able to customize errors display (yanggs07, developeruz)
 - Bug #15355: Fixed `yii\db\Query::from()` does not work with `yii\db\Expression` (vladis84)
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
