@@ -312,4 +312,66 @@ class StringHelperTest extends TestCase
             ['Это закодированная строка', '0K3RgtC-INC30LDQutC-0LTQuNGA0L7QstCw0L3QvdCw0Y8g0YHRgtGA0L7QutCw'],
         ];
     }
+
+    /**
+     * Data provider for [[testMatchWildcard()]]
+     * @return array test data.
+     */
+    public function dataProviderMatchWildcard()
+    {
+        return [
+            // *
+            ['*', 'any', true],
+            ['*', '', true],
+            ['begin*end', 'begin-middle-end', true],
+            ['begin*end', 'beginend', true],
+            ['begin*end', 'begin-d', false],
+            ['*end', 'beginend', true],
+            ['*end', 'begin', false],
+            ['begin*', 'begin-end', true],
+            ['begin*', 'end', false],
+            ['begin*', 'before-begin', false],
+            // ?
+            ['begin?end', 'begin1end', true],
+            ['begin?end', 'beginend', false],
+            ['begin??end', 'begin12end', true],
+            ['begin??end', 'begin1end', false],
+            // []
+            ['gr[ae]y', 'gray', true],
+            ['gr[ae]y', 'grey', true],
+            ['gr[ae]y', 'groy', false],
+            // slashes
+            ['begin/*/end', 'begin/middle/end', true],
+            ['begin/*/end', 'begin/two/steps/end', true],
+            ['begin/*/end', 'begin/end', false],
+            ['begin\*\end', 'begin\middle\end', true],
+            ['begin\*\end', 'begin\two\steps\end', true],
+            ['begin\*\end', 'begin\end', false],
+            // dots
+            ['begin.*.end', 'begin.middle.end', true],
+            ['begin.*.end', 'begin.two.steps.end', true],
+            ['begin.*.end', 'begin.end', false],
+            // case
+            ['begin*end', 'BEGIN-middle-END', false],
+            ['begin*end', 'BEGIN-middle-END', true, ['caseSensitive' => false]],
+            // file path
+            ['begin/*/end', 'begin/middle/end', true, ['filePath' => true]],
+            ['begin/*/end', 'begin/two/steps/end', false, ['filePath' => true]],
+            ['begin\*\end', 'begin\middle\end', true, ['filePath' => true]],
+            ['begin\*\end', 'begin\two\steps\end', false, ['filePath' => true]],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderMatchWildcard
+     *
+     * @param string $pattern
+     * @param string $string
+     * @param bool $expectedResult
+     * @param array $options
+     */
+    public function testMatchWildcard($pattern, $string, $expectedResult, $options = [])
+    {
+        $this->assertSame($expectedResult, StringHelper::matchWildcard($pattern, $string, $options));
+    }
 }
