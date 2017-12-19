@@ -243,11 +243,11 @@ echo GridView::widget([
 Для конфигурации колонок данных также доступен короткий вид записи, который описан в API документации для [[yii\grid\GridView::columns|колонок]].
 
 Используйте [[yii\grid\DataColumn::filter|filter]] и [[yii\grid\DataColumn::filterInputOptions|filterInputOptions]] для
-генерации HTML кода фильтра.
+настройки HTML кода фильтра.
 
-По умолчанию заголовки колонок генерируются используя [[yii\data\Sort::link]], это может быть изменено через свойство
-[[yii\grid\Column::header]]. Для изменения только текста заголовка нужно задать [[yii\grid\DataColumn::$label]], как в
-примере выше. По умолчанию этот текст будет заполнен из модели данных, для подробностей смотрите [[yii\grid\DataColumn::getHeaderCellLabel]]
+По умолчанию заголовки колонок генерируются используя [[yii\data\Sort::link]]. Это можно изменить через свойство
+[[yii\grid\Column::header]]. Для изменения заголовка нужно задать [[yii\grid\DataColumn::$label]], как в
+примере выше. По умолчанию текст будет взят из модели данных. Подробное описание ищите в [[yii\grid\DataColumn::getHeaderCellLabel]].
 
 #### ActionColumn
 
