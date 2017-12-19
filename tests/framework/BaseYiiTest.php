@@ -8,8 +8,10 @@
 namespace yiiunit\framework;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\BaseYii;
 use yii\di\Container;
+use yii\di\Instance;
 use yii\log\Logger;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
@@ -63,7 +65,7 @@ class BaseYiiTest extends TestCase
 
     public function testGetVersion()
     {
-        $this->assertTrue((bool) preg_match('~\d+\.\d+(?:\.\d+)?(?:-\w+)?~', \Yii::getVersion()));
+        $this->assertTrue((bool)preg_match('~\d+\.\d+(?:\.\d+)?(?:-\w+)?~', \Yii::getVersion()));
     }
 
     public function testPowered()
@@ -80,13 +82,11 @@ class BaseYiiTest extends TestCase
             return $a === 'a';
         }, ['a']));
 
-
         $singer = new Singer();
         $singer->firstName = 'Bob';
         $this->assertTrue(Yii::createObject(function (Singer $singer, $a) {
             return $singer->firstName === 'Bob';
         }, [$singer, 'a']));
-
 
         $this->assertTrue(Yii::createObject(function (Singer $singer, $a = 3) {
             return true;
@@ -171,5 +171,22 @@ class BaseYiiTest extends TestCase
         BaseYii::endProfile('endProfile message', 'endProfile category');
 
         BaseYii::setLogger(null);
+    }
+
+    public function testConfigure()
+    {
+        $stub = new \stdClass();
+
+        $stub = BaseYii::configure($stub, [
+            'a' => 'foo',
+            'b' => 'bar',
+            'c' => Instance::of(Logger::className()),
+            'd' => Instance::of(BaseObject::className()),
+        ]);
+
+        $this->assertSame('foo', $stub->a);
+        $this->assertSame('bar', $stub->b);
+        $this->assertInstanceOf(Logger::className(), $stub->c);
+        $this->assertInstanceOf(BaseObject::className(), $stub->d);
     }
 }

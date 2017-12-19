@@ -11,6 +11,7 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
 use yii\di\Container;
+use yii\di\Instance;
 use yii\log\Logger;
 
 /**
@@ -529,6 +530,10 @@ class BaseYii
     public static function configure($object, $properties)
     {
         foreach ($properties as $name => $value) {
+            if ($value instanceof Instance) {
+                $value = $value->get();
+            }
+
             $object->$name = $value;
         }
 
