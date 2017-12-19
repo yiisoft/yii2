@@ -1214,6 +1214,15 @@ EOD;
         $this->assertEquals($expectedHtml, Html::errorSummary($model, $options));
     }
 
+    public function testError()
+    {
+        $model = new HtmlTestModel();
+        $model->validate();
+        $this->assertEquals('<div>Name cannot be blank.</div>', Html::error($model, 'name'));
+
+        $this->assertEquals('<div>this is custom error message</div>', Html::error($model, 'name', ['errorMethod' => 'customError']));
+    }
+
     /**
      * Data provider for [[testActiveTextArea()]].
      * @return array test data
@@ -1579,5 +1588,10 @@ class HtmlTestModel extends DynamicModel
             ['description', 'string', 'max' => 500],
             [['radio', 'checkbox'], 'boolean'],
         ];
+    }
+
+    public function customError()
+    {
+        return 'this is custom error message';
     }
 }
