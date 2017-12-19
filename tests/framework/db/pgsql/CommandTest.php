@@ -99,4 +99,13 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         ], ['char_col' => 'serialize']);
         $this->assertEquals(1, $command->execute());
     }
+
+    public function batchInsertSqlProvider()
+    {
+        $data = parent::batchInsertSqlProvider();
+        $data['issue11242']['expected'] = 'INSERT INTO "type" ("int_col", "float_col", "char_col") VALUES (NULL, NULL, \'Kyiv {{city}}, Ukraine\')';
+        $data['wrongBehavior']['expected'] = 'INSERT INTO "type" ("type"."int_col", "float_col", "char_col") VALUES (\'\', \'\', \'Kyiv {{city}}, Ukraine\')';
+
+        return $data;
+    }
 }

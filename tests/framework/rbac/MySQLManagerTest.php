@@ -8,11 +8,12 @@
 namespace yiiunit\framework\rbac;
 
 /**
- * MySQLManagerTest
+ * MySQLManagerTest.
  * @group db
  * @group rbac
  * @group mysql
  */
 class MySQLManagerTest extends DbManagerTestCase
 {
+    protected static $driverName = 'mysql';
 }

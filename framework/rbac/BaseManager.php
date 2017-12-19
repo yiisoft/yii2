@@ -26,6 +26,7 @@ abstract class BaseManager extends Component implements ManagerInterface
 {
     /**
      * @var array a list of role names that are assigned to every user automatically without calling [[assign()]].
+     * Note that these roles are applied to users, regardless of their state of authentication.
      */
     public $defaultRoles = [];
 
@@ -125,6 +126,7 @@ abstract class BaseManager extends Component implements ManagerInterface
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
+
             return $this->addItem($object);
         } elseif ($object instanceof Rule) {
             return $this->addRule($object);
@@ -158,6 +160,7 @@ abstract class BaseManager extends Component implements ManagerInterface
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
+
             return $this->updateItem($name, $object);
         } elseif ($object instanceof Rule) {
             return $this->updateRule($name, $object);
@@ -193,7 +196,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Returns defaultRoles as array of Role objects
+     * Returns defaultRoles as array of Role objects.
      * @since 2.0.12
      * @return Role[] default roles. The array is indexed by the role names
      */
@@ -203,6 +206,7 @@ abstract class BaseManager extends Component implements ManagerInterface
         foreach ($this->defaultRoles as $roleName) {
             $result[$roleName] = $this->createRole($roleName);
         }
+
         return $result;
     }
 
@@ -241,7 +245,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Checks whether array of $assignments is empty and [[defaultRoles]] property is empty as well
+     * Checks whether array of $assignments is empty and [[defaultRoles]] property is empty as well.
      *
      * @param Assignment[] $assignments array of user's assignments
      * @return bool whether array of $assignments is empty and [[defaultRoles]] property is empty as well

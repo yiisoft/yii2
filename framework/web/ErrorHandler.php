@@ -412,7 +412,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     }
 
     /**
-     * Converts arguments array to its string representation
+     * Converts arguments array to its string representation.
      *
      * @param array $args arguments array to be converted
      * @return string string representation of the arguments array
@@ -466,7 +466,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     }
 
     /**
-     * Returns human-readable exception name
+     * Returns human-readable exception name.
      * @param \Exception $exception
      * @return string human-readable exception name or null if it cannot be determined
      */
@@ -475,6 +475,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         if ($exception instanceof \yii\base\Exception || $exception instanceof \yii\base\InvalidCallException || $exception instanceof \yii\base\InvalidParamException || $exception instanceof \yii\base\UnknownMethodException) {
             return $exception->getName();
         }
+
         return null;
     }
 
@@ -484,6 +485,6 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function shouldRenderSimpleHtml()
     {
-        return YII_ENV_TEST || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+        return YII_ENV_TEST || Yii::$app->request->getIsAjax();
     }
 }

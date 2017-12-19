@@ -7,7 +7,7 @@
 
 namespace yii\db;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * SqlToken represents SQL tokens produced by [[SqlTokenizer]] or its child classes.
@@ -21,7 +21,7 @@ use yii\base\Object;
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
  */
-class SqlToken extends Object implements \ArrayAccess
+class SqlToken extends BaseObject implements \ArrayAccess
 {
     const TYPE_CODE = 0;
     const TYPE_STATEMENT = 1;
@@ -190,6 +190,7 @@ class SqlToken extends Object implements \ArrayAccess
         while ($code->parent !== null) {
             $code = $code->parent;
         }
+
         return mb_substr($code->content, $this->startOffset, $this->endOffset - $this->startOffset, 'UTF-8');
     }
 
@@ -274,8 +275,10 @@ class SqlToken extends Object implements \ArrayAccess
                 $offset++;
                 continue 2;
             }
+
             return false;
         }
+
         return true;
     }
 

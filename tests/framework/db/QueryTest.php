@@ -21,7 +21,7 @@ abstract class QueryTest extends DatabaseTestCase
         $query->select('*');
         $this->assertEquals(['*'], $query->select);
         $this->assertNull($query->distinct);
-        $this->assertEquals(null, $query->selectOption);
+        $this->assertNull($query->selectOption);
 
         $query = new Query();
         $query->select('id, name', 'something')->distinct(true);
@@ -44,6 +44,14 @@ abstract class QueryTest extends DatabaseTestCase
         $query = new Query();
         $query->from('user');
         $this->assertEquals(['user'], $query->from);
+    }
+
+    public function testFromTableIsExpression()
+    {
+        $query = new Query();
+        $tables = new Expression('(SELECT id,name FROM user) u');
+        $query->from($tables);
+        $this->assertInstanceOf('\yii\db\Expression', $query->from);
     }
 
     use GetTablesAliasTestTrait;
@@ -337,13 +345,13 @@ abstract class QueryTest extends DatabaseTestCase
 
 
     /**
-     * Ensure no ambiguous column error occurs on indexBy with JOIN
-     * https://github.com/yiisoft/yii2/issues/13859
+     * Ensure no ambiguous column error occurs on indexBy with JOIN.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/13859
      */
     public function testAmbiguousColumnIndexBy()
     {
-        switch ($this->driverName)
-        {
+        switch ($this->driverName) {
             case 'pgsql':
             case 'sqlite':
                 $selectExpression = "(customer.name || ' in ' || p.description) AS name";
@@ -357,7 +365,7 @@ abstract class QueryTest extends DatabaseTestCase
         }
 
         $db = $this->getConnection();
-        $result = (new Query)->select([$selectExpression])->from('customer')
+        $result = (new Query())->select([$selectExpression])->from('customer')
             ->innerJoin('profile p', '{{customer}}.[[profile_id]] = {{p}}.[[id]]')
             ->indexBy('id')->column($db);
         $this->assertEquals([
@@ -526,6 +534,7 @@ abstract class QueryTest extends DatabaseTestCase
         if (is_numeric($result)) {
             $result = (int) $result;
         }
+
         return $result;
     }
 

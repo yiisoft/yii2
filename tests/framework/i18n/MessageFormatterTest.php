@@ -337,6 +337,11 @@ _MSG_
 
     /**
      * @dataProvider patterns
+     * @param string $pattern
+     * @param string $expected
+     * @param array $args
+     * @param bool $skip
+     * @param string $skipMessage
      */
     public function testNamedArguments($pattern, $expected, $args, $skip = false, $skipMessage = '')
     {
@@ -350,6 +355,10 @@ _MSG_
 
     /**
      * @dataProvider parsePatterns
+     * @param string $pattern
+     * @param string $expected
+     * @param array $args
+     * @param string $locale
      */
     public function testParseNamedArguments($pattern, $expected, $args, $locale = 'en-US')
     {
@@ -388,10 +397,5 @@ _MSG_
         $result = $formatter->format('{word,umber}', ['word' => 'test'], 'en-US'); // typo is intentional, message pattern should be invalid
         $this->assertFalse($result);
         $this->assertNotEmpty($formatter->getErrorMessage());
-        if (PHP_MAJOR_VERSION < 7) {
-            $this->assertContains('message formatter creation failed', $formatter->getErrorMessage());
-        } else {
-            $this->assertContains('Constructor failed', $formatter->getErrorMessage());
-        }
     }
 }

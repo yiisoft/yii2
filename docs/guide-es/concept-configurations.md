@@ -65,7 +65,7 @@ A continuación se muestra un ejemplo de una configuración con los valores de p
 
 ## Usando Configuraciones <span id="using-configurations"></span>
 
-Las configuraciones se utilizan en muchos lugares en Yii. Al comienzo de esta sección, hemos demostrado cómo crear un objeto según una configuración mediante el uso de [[Yii::CreateObject()]]. En este apartado, vamos a describir configuraciones de aplicaciones y configuraciones widget - dos principales usos de configuraciones.
+Las configuraciones se utilizan en muchos lugares en Yii. Al comienzo de esta sección, hemos demostrado cómo crear un objeto según una configuración mediante el uso de [[Yii::createObject()]]. En este apartado, vamos a describir configuraciones de aplicaciones y configuraciones widget - dos principales usos de configuraciones.
 
 
 ### Configuraciones de aplicación <span id="application-configurations"></span>

@@ -167,6 +167,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return '';
         }
+
         return "<$name" . static::renderTagAttributes($options) . '>';
     }
 
@@ -182,6 +183,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return '';
         }
+
         return "</$name>";
     }
 
@@ -286,6 +288,7 @@ class BaseHtml
         if (strpos($condition, '!IE') !== false) {
             return "<!--[if $condition]><!-->\n" . $content . "\n<!--<![endif]-->";
         }
+
         return "<!--[if $condition]>\n" . $content . "\n<![endif]-->";
     }
 
@@ -408,6 +411,7 @@ class BaseHtml
         if ($url !== null) {
             $options['href'] = Url::to($url);
         }
+
         return static::tag('a', $text, $options);
     }
 
@@ -457,6 +461,7 @@ class BaseHtml
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
+
         return static::tag('img', '', $options);
     }
 
@@ -495,6 +500,7 @@ class BaseHtml
         if (!isset($options['type'])) {
             $options['type'] = 'button';
         }
+
         return static::tag('button', $content, $options);
     }
 
@@ -1210,26 +1216,7 @@ class BaseHtml
         $encode = ArrayHelper::remove($options, 'encode', true);
         $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
         unset($options['header']);
-
-        $lines = [];
-        if (!is_array($models)) {
-            $models = [$models];
-        }
-        foreach ($models as $model) {
-            /* @var $model Model */
-            foreach ($model->getErrors() as $errors) {
-                foreach ($errors as $error) {
-                    $line = $encode ? Html::encode($error) : $error;
-                    if (!in_array($line, $lines, true)) {
-                        $lines[] = $line;
-                    }
-                    if (!$showAllErrors) {
-                        break;
-                    }
-                }
-            }
-        }
-
+        $lines = self::collectErrors($models, $encode, $showAllErrors);
         if (empty($lines)) {
             // still render the placeholder for client-side validation use
             $content = '<ul></ul>';
@@ -1237,7 +1224,37 @@ class BaseHtml
         } else {
             $content = '<ul><li>' . implode("</li>\n<li>", $lines) . '</li></ul>';
         }
+
         return Html::tag('div', $header . $content . $footer, $options);
+    }
+
+    /**
+     * Return array of the validation errors
+     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param $encode boolean, if set to false then the error messages won't be encoded.
+     * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
+     * only the first error message for each attribute will be shown.
+     * @return array of the validation errors
+     * @since 2.0.14
+     */
+    private static function collectErrors($models, $encode, $showAllErrors)
+    {
+        $lines = [];
+        if (!is_array($models)) {
+            $models = [$models];
+        }
+
+        foreach ($models as $model) {
+            $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
+        }
+
+        if ($encode) {
+            for ($i = 0; $i < count($lines); $i++) {
+                $lines[$i] = Html::encode($lines[$i]);
+            }
+        }
+
+        return $lines;
     }
 
     /**
@@ -1254,6 +1271,8 @@ class BaseHtml
      * - tag: this specifies the tag name. If not set, "div" will be used.
      *   See also [[tag()]].
      * - encode: boolean, if set to false then the error message won't be encoded.
+     * - errorMethod (since 2.0.14): string, if set then this value will be used as a method name to
+     *   be called instead of getFirstError().
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1262,7 +1281,8 @@ class BaseHtml
     public static function error($model, $attribute, $options = [])
     {
         $attribute = static::getAttributeName($attribute);
-        $error = $model->getFirstError($attribute);
+        $errorMethod = ArrayHelper::remove($options, 'errorMethod', 'getFirstError');
+        $error = $model->$errorMethod($attribute);
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         $encode = ArrayHelper::remove($options, 'encode', true);
         return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
@@ -1288,6 +1308,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
         return static::input($type, $name, $value, $options);
     }
 
@@ -1397,6 +1418,7 @@ class BaseHtml
         if (isset($options['name'])) {
             $hiddenOptions['name'] = $options['name'];
         }
+
         return static::activeHiddenInput($model, $attribute, $hiddenOptions)
             . static::activeInput('file', $model, $attribute, $options);
     }
@@ -1724,6 +1746,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
         return static::$type($name, $selection, $items, $options);
     }
 
@@ -1870,6 +1893,7 @@ class BaseHtml
 
     /**
      * Adds a CSS class (or several classes) to the specified options.
+     *
      * If the CSS class is already in the options, it will not be added again.
      * If class specification at given options is an array, and some class placed there with the named (string) key,
      * overriding of such key will have no effect. For example:
@@ -1913,6 +1937,7 @@ class BaseHtml
                 $existingClasses[$key] = $class;
             }
         }
+
         return array_unique($existingClasses);
     }
 
@@ -2056,6 +2081,7 @@ class BaseHtml
                 $result[trim($property[0])] = trim($property[1]);
             }
         }
+
         return $result;
     }
 
@@ -2183,7 +2209,7 @@ class BaseHtml
     }
 
     /**
-     * Escapes regular expression to use in JavaScript
+     * Escapes regular expression to use in JavaScript.
      * @param string $regexp the regular expression to be escaped.
      * @return string the escaped result.
      * @since 2.0.6

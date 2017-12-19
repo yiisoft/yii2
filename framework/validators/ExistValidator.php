@@ -164,11 +164,13 @@ class ExistValidator extends Validator
             $conditions = [$targetAttribute => $model->$attribute];
         }
 
-        if (!$model instanceof ActiveRecord) {
+        $targetModelClass = $this->getTargetClass($model);
+        if (!is_subclass_of($targetModelClass, 'yii\db\ActiveRecord')) {
             return $conditions;
         }
 
-        return $this->prefixConditions($model, $conditions);
+        /** @var ActiveRecord $targetModelClass */
+        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 
     /**
@@ -209,12 +211,18 @@ class ExistValidator extends Validator
 
         if (is_array($value)) {
             $result = $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
-        }else{
+        } else {
             $result = $query->exists() ? null : [$this->message, []];
         }
 
-        if($disabledSlaves){
+        if ($disabledSlaves){
             $db->enableSlaves = true;
+          
+            if (!$this->allowArray) {
+                return [$this->message, []];
+            }
+
+            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
         }
 
         return $result;
@@ -240,7 +248,7 @@ class ExistValidator extends Validator
     }
 
     /**
-     * Returns conditions with alias
+     * Returns conditions with alias.
      * @param ActiveQuery $query
      * @param array $conditions array of condition, keys to be modified
      * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
@@ -265,21 +273,7 @@ class ExistValidator extends Validator
 
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
+
         return $prefixedConditions;
-    }
-
-    /**
-     * Prefix conditions with aliases
-     *
-     * @param ActiveRecord $model
-     * @param array $conditions
-     * @return array
-     */
-    private function prefixConditions($model, $conditions)
-    {
-        $targetModelClass = $this->getTargetClass($model);
-
-        /** @var ActiveRecord $targetModelClass */
-        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 }

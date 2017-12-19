@@ -108,6 +108,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
                 return true;
             }
         }
+
         return false;
     }
 }

@@ -41,24 +41,23 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'withoutBootstrapInterface' => [
-                    'class' => Component::class
+                    'class' => Component::className(),
                 ],
                 'withBootstrapInterface' => [
-                    'class' => BootstrapComponentMock::class
-                ]
+                    'class' => BootstrapComponentMock::className(),
+                ],
             ],
             'modules' => [
                 'moduleX' => [
-                    'class' => Module::class
-                ]
+                    'class' => Module::className(),
+                ],
             ],
             'bootstrap' => [
                 'withoutBootstrapInterface',
                 'withBootstrapInterface',
                 'moduleX',
                 function () {
-                }
-
+                },
             ],
         ]);
         $this->assertSame('Bootstrap with yii\base\Component', Yii::getLogger()->messages[0][0]);

@@ -7,8 +7,8 @@
 
 namespace yiiunit\framework\db;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
-abstract class CompareValue extends Object
+abstract class CompareValue extends BaseObject
 {
 }

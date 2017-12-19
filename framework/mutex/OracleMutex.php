@@ -76,7 +76,7 @@ class OracleMutex extends DbMutex
      * Acquires lock by given name.
      * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
      * @param string $name of the lock to be acquired.
-     * @param int $timeout to wait for lock to become released.
+     * @param int $timeout time (in seconds) to wait for lock to become released.
      * @return bool acquiring result.
      */
     protected function acquireLock($name, $timeout = 0)
@@ -88,7 +88,7 @@ class OracleMutex extends DbMutex
         $timeout = abs((int) $timeout);
 
         // inside pl/sql scopes pdo binding not working correctly :(
-        $this->db->useMaster(function($db) use ($name, $timeout, $releaseOnCommit, &$lockStatus) {
+        $this->db->useMaster(function ($db) use ($name, $timeout, $releaseOnCommit, &$lockStatus) {
             /** @var \yii\db\Connection $db */
             $db->createCommand(
                 'DECLARE
@@ -115,7 +115,7 @@ END;',
     protected function releaseLock($name)
     {
         $releaseStatus = null;
-        $this->db->useMaster(function($db) use ($name, &$releaseStatus) {
+        $this->db->useMaster(function ($db) use ($name, &$releaseStatus) {
             /** @var \yii\db\Connection $db */
             $db->createCommand(
                 'DECLARE

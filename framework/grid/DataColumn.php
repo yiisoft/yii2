@@ -98,7 +98,9 @@ class DataColumn extends Column
      * @var string|array|null|false the HTML code representing a filter input (e.g. a text field, a dropdown list)
      * that is used for this data column. This property is effective only when [[GridView::filterModel]] is set.
      *
-     * - If this property is not set, a text field will be generated as the filter input;
+     * - If this property is not set, a text field will be generated as the filter input with attributes defined
+     *   with [[filterInputOptions]]. See [[\yii\helpers\BaseHtml::activeInput]] for details on how an active
+     *   input tag is generated.
      * - If this property is an array, a dropdown list will be generated that uses this property value as
      *   the list options.
      * - If you don't want a filter for this data column, set this value to be false.
@@ -108,6 +110,10 @@ class DataColumn extends Column
      * @var array the HTML attributes for the filter input fields. This property is used in combination with
      * the [[filter]] property. When [[filter]] is not set or is an array, this property will be used to
      * render the HTML attributes for the generated filter input fields.
+     * 
+     * Empty `id` in the default value ensures that id would not be obtained from the model attribute thus
+     * providing better performance.
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $filterInputOptions = ['class' => 'form-control', 'id' => null];
@@ -145,12 +151,14 @@ class DataColumn extends Column
 
         if ($this->label === null) {
             if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
-                /* @var $model Model */
-                $model = new $provider->query->modelClass();
+                /* @var $modelClass Model */
+                $modelClass = $provider->query->modelClass;
+                $model = $modelClass::instance();
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
-                /* @var $model Model */
-                $model = new $provider->modelClass();
+                /* @var $modelClass Model */
+                $modelClass = $provider->modelClass;
+                $model = $modelClass::instance();
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
                 $label = $this->grid->filterModel->getAttributeLabel($this->attribute);
@@ -223,6 +231,7 @@ class DataColumn extends Column
         } elseif ($this->attribute !== null) {
             return ArrayHelper::getValue($model, $this->attribute);
         }
+
         return null;
     }
 

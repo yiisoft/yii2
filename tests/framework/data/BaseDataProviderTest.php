@@ -28,7 +28,7 @@ class BaseDataProviderTest extends TestCase
 }
 
 /**
- * ConcreteDataProvider
+ * ConcreteDataProvider.
  */
 class ConcreteDataProvider extends BaseDataProvider
 {

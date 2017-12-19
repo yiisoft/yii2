@@ -13,7 +13,7 @@ use yii\rbac\Role;
 use yiiunit\TestCase;
 
 /**
- * ManagerTestCase
+ * ManagerTestCase.
  */
 abstract class ManagerTestCase extends TestCase
 {
@@ -93,7 +93,7 @@ abstract class ManagerTestCase extends TestCase
 
         $rule = $this->auth->getRule($ruleName);
         $this->assertEquals($ruleName, $rule->name);
-        $this->assertEquals(true, $rule->reallyReally);
+        $this->assertTrue($rule->reallyReally);
     }
 
     public function testUpdateRule()
@@ -106,24 +106,24 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->update('isAuthor', $rule);
 
         $rule = $this->auth->getRule('isAuthor');
-        $this->assertEquals(null, $rule);
+        $this->assertNull($rule);
 
         $rule = $this->auth->getRule('newName');
         $this->assertEquals('newName', $rule->name);
-        $this->assertEquals(false, $rule->reallyReally);
+        $this->assertFalse($rule->reallyReally);
 
         $rule->reallyReally = true;
         $this->auth->update('newName', $rule);
 
         $rule = $this->auth->getRule('newName');
-        $this->assertEquals(true, $rule->reallyReally);
+        $this->assertTrue($rule->reallyReally);
 
         $item = $this->auth->getPermission('createPost');
         $item->name = 'new createPost';
         $this->auth->update('createPost', $item);
 
         $item = $this->auth->getPermission('createPost');
-        $this->assertEquals(null, $item);
+        $this->assertNull($item);
 
         $item = $this->auth->getPermission('new createPost');
         $this->assertEquals('new createPost', $item->name);
@@ -454,34 +454,46 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNotEmpty($this->auth->getRoles());
     }
 
-    public function testAssignRule()
+    public function RBACItemsProvider()
+    {
+        return [
+            [Item::TYPE_ROLE],
+            [Item::TYPE_PERMISSION],
+        ];
+    }
+
+    /**
+     * @dataProvider RBACItemsProvider
+     * @param mixed $RBACItemType
+     */
+    public function testAssignRule($RBACItemType)
     {
         $auth = $this->auth;
         $userId = 3;
 
         $auth->removeAll();
-        $role = $auth->createRole('Admin');
-        $auth->add($role);
-        $auth->assign($role, $userId);
+        $item = $this->createRBACItem($RBACItemType, 'Admin');
+        $auth->add($item);
+        $auth->assign($item, $userId);
         $this->assertTrue($auth->checkAccess($userId, 'Admin'));
 
         // with normal register rule
         $auth->removeAll();
         $rule = new ActionRule();
         $auth->add($rule);
-        $role = $auth->createRole('Reader');
-        $role->ruleName = $rule->name;
-        $auth->add($role);
-        $auth->assign($role, $userId);
+        $item = $this->createRBACItem($RBACItemType, 'Reader');
+        $item->ruleName = $rule->name;
+        $auth->add($item);
+        $auth->assign($item, $userId);
         $this->assertTrue($auth->checkAccess($userId, 'Reader', ['action' => 'read']));
         $this->assertFalse($auth->checkAccess($userId, 'Reader', ['action' => 'write']));
 
         // using rule class name
         $auth->removeAll();
-        $role = $auth->createRole('Reader');
-        $role->ruleName = 'yiiunit\framework\rbac\ActionRule';
-        $auth->add($role);
-        $auth->assign($role, $userId);
+        $item = $this->createRBACItem($RBACItemType, 'Reader');
+        $item->ruleName = 'yiiunit\framework\rbac\ActionRule';
+        $auth->add($item);
+        $auth->assign($item, $userId);
         $this->assertTrue($auth->checkAccess($userId, 'Reader', ['action' => 'read']));
         $this->assertFalse($auth->checkAccess($userId, 'Reader', ['action' => 'write']));
 
@@ -490,37 +502,103 @@ abstract class ManagerTestCase extends TestCase
         \Yii::$container->set('delete_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'delete']);
         \Yii::$container->set('all_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'all']);
 
-        $role = $auth->createRole('Writer');
-        $role->ruleName = 'write_rule';
-        $auth->add($role);
-        $auth->assign($role, $userId);
+        $item = $this->createRBACItem($RBACItemType, 'Writer');
+        $item->ruleName = 'write_rule';
+        $auth->add($item);
+        $auth->assign($item, $userId);
         $this->assertTrue($auth->checkAccess($userId, 'Writer', ['action' => 'write']));
         $this->assertFalse($auth->checkAccess($userId, 'Writer', ['action' => 'update']));
 
-        $role = $auth->createRole('Deleter');
-        $role->ruleName = 'delete_rule';
-        $auth->add($role);
-        $auth->assign($role, $userId);
+        $item = $this->createRBACItem($RBACItemType, 'Deleter');
+        $item->ruleName = 'delete_rule';
+        $auth->add($item);
+        $auth->assign($item, $userId);
         $this->assertTrue($auth->checkAccess($userId, 'Deleter', ['action' => 'delete']));
         $this->assertFalse($auth->checkAccess($userId, 'Deleter', ['action' => 'update']));
 
-        $role = $auth->createRole('Author');
-        $role->ruleName = 'all_rule';
-        $auth->add($role);
-        $auth->assign($role, $userId);
+        $item = $this->createRBACItem($RBACItemType, 'Author');
+        $item->ruleName = 'all_rule';
+        $auth->add($item);
+        $auth->assign($item, $userId);
         $this->assertTrue($auth->checkAccess($userId, 'Author', ['action' => 'update']));
 
         // update role and rule
-        $role = $auth->getRole('Reader');
-        $role->name = 'AdminPost';
-        $role->ruleName = 'all_rule';
-        $auth->update('Reader', $role);
+        $item = $this->getRBACItem($RBACItemType, 'Reader');
+        $item->name = 'AdminPost';
+        $item->ruleName = 'all_rule';
+        $auth->update('Reader', $item);
         $this->assertTrue($auth->checkAccess($userId, 'AdminPost', ['action' => 'print']));
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/10176
-     * https://github.com/yiisoft/yii2/issues/12681
+     * @dataProvider RBACItemsProvider
+     * @param mixed $RBACItemType
+     */
+    public function testRevokeRule($RBACItemType)
+    {
+        $userId = 3;
+        $auth = $this->auth;
+
+        $auth->removeAll();
+        $item = $this->createRBACItem($RBACItemType, 'Admin');
+        $auth->add($item);
+        $auth->assign($item, $userId);
+
+        $this->assertTrue($auth->revoke($item, $userId));
+        $this->assertFalse($auth->checkAccess($userId, 'Admin'));
+
+        $auth->removeAll();
+        $rule = new ActionRule();
+        $auth->add($rule);
+        $item = $this->createRBACItem($RBACItemType, 'Reader');
+        $item->ruleName = $rule->name;
+        $auth->add($item);
+        $auth->assign($item, $userId);
+
+        $this->assertTrue($auth->revoke($item, $userId));
+        $this->assertFalse($auth->checkAccess($userId, 'Reader', ['action' => 'read']));
+        $this->assertFalse($auth->checkAccess($userId, 'Reader', ['action' => 'write']));
+    }
+
+    /**
+     * Create Role or Permission RBAC item.
+     * @param int $RBACItemType
+     * @param string $name
+     * @return Permission|Role
+     */
+    private function createRBACItem($RBACItemType, $name)
+    {
+        if ($RBACItemType === Item::TYPE_ROLE) {
+            return $this->auth->createRole($name);
+        }
+        if ($RBACItemType === Item::TYPE_PERMISSION) {
+            return $this->auth->createPermission($name);
+        }
+
+        throw new \InvalidArgumentException();
+    }
+
+    /**
+     * Get Role or Permission RBAC item.
+     * @param int $RBACItemType
+     * @param string $name
+     * @return Permission|Role
+     */
+    private function getRBACItem($RBACItemType, $name)
+    {
+        if ($RBACItemType === Item::TYPE_ROLE) {
+            return $this->auth->getRole($name);
+        }
+        if ($RBACItemType === Item::TYPE_PERMISSION) {
+            return $this->auth->getPermission($name);
+        }
+
+        throw new \InvalidArgumentException();
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/10176
+     * @see https://github.com/yiisoft/yii2/issues/12681
      */
     public function testRuleWithPrivateFields()
     {

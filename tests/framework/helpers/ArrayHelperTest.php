@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\helpers;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
 use yiiunit\TestCase;
@@ -18,7 +18,7 @@ class Post1
     public $title = 'tt';
 }
 
-class Post2 extends Object
+class Post2 extends BaseObject
 {
     public $id = 123;
     public $content = 'test';
@@ -29,10 +29,10 @@ class Post2 extends Object
     }
 }
 
-class Post3 extends Object
+class Post3 extends BaseObject
 {
     public $id = 33;
-    /** @var Object */
+    /** @var BaseObject */
     public $subObject;
 
     public function init()
@@ -56,7 +56,7 @@ class ArrayHelperTest extends TestCase
 
     public function testToArray()
     {
-        $dataArrayable = $this->getMock('yii\\base\\Arrayable');
+        $dataArrayable = $this->getMockBuilder('yii\\base\\Arrayable')->getMock();
         $dataArrayable->method('toArray')->willReturn([]);
         $this->assertEquals([], ArrayHelper::toArray($dataArrayable));
         $this->assertEquals(['foo'], ArrayHelper::toArray('foo'));
@@ -331,6 +331,7 @@ class ArrayHelperTest extends TestCase
                 $o = ['Bug' => 'C', 'Enh' => 'D'];
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
             }
+
             return 'B' . $i++;
         }, SORT_ASC, SORT_NATURAL);
         $this->assertEquals([
@@ -493,7 +494,7 @@ class ArrayHelperTest extends TestCase
         ];
         $b = [
             'secondValue',
-            'thirdValue'
+            'thirdValue',
         ];
 
         $result = ArrayHelper::merge($a, $b);
@@ -505,6 +506,12 @@ class ArrayHelperTest extends TestCase
         ];
 
         $this->assertEquals($expected, $result);
+    }
+
+    public function testMergeEmpty()
+    {
+        $this->assertEquals([], ArrayHelper::merge([], []));
+        $this->assertEquals([], ArrayHelper::merge([], [], []));
     }
 
     /**
@@ -802,27 +809,29 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * This is expected to result in a PHP error
-     * @expectedException \PHPUnit_Framework_Error
+     * This is expected to result in a PHP error.
+     * @requires PHPUnit 6.0
      */
     public function testGetValueNonexistingProperties1()
     {
+        $this->expectException('PHPUnit\Framework\Error\Notice');
         $object = new Post1();
-        $this->assertEquals(null, ArrayHelper::getValue($object, 'nonExisting'));
+        $this->assertNull(ArrayHelper::getValue($object, 'nonExisting'));
     }
 
     /**
-     * This is expected to result in a PHP error
-     * @expectedException \PHPUnit_Framework_Error
+     * This is expected to result in a PHP error.
+     * @requires PHPUnit 6.0
      */
     public function testGetValueNonexistingProperties2()
     {
+        $this->expectException('PHPUnit\Framework\Error\Notice');
         $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
         $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
     }
 
     /**
-     * Data provider for [[testSetValue()]]
+     * Data provider for [[testSetValue()]].
      * @return array test data
      */
     public function dataProviderSetValue()
@@ -870,7 +879,7 @@ class ArrayHelperTest extends TestCase
                 [
                     'key' => [
                         'val1',
-                        'in' => 'val'
+                        'in' => 'val',
                     ],
                 ],
             ],
@@ -892,7 +901,7 @@ class ArrayHelperTest extends TestCase
                 [
                     'key1' => 'val1',
                     'key' => [
-                        'in' => ['val']
+                        'in' => ['val'],
                     ],
                 ],
             ],
@@ -906,8 +915,8 @@ class ArrayHelperTest extends TestCase
                     'key1' => 'val1',
                     'key' => [
                         'in' => [
-                            'arr' => 'val'
-                        ]
+                            'arr' => 'val',
+                        ],
                     ],
                 ],
             ],
@@ -920,15 +929,15 @@ class ArrayHelperTest extends TestCase
                     'key1' => 'val1',
                     'key' => [
                         'in' => [
-                            'arr' => ['val']
-                        ]
+                            'arr' => ['val'],
+                        ],
                     ],
                 ],
             ],
             [
                 [
                     'key' => [
-                        'in' => ['val1']
+                        'in' => ['val1'],
                     ],
                 ],
                 'key.in.arr', 'val',
@@ -936,8 +945,8 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in' => [
                             'val1',
-                            'arr' => 'val'
-                        ]
+                            'arr' => 'val',
+                        ],
                     ],
                 ],
             ],
@@ -951,8 +960,8 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in' => [
                             'val1',
-                            'arr' => ['val']
-                        ]
+                            'arr' => ['val'],
+                        ],
                     ],
                 ],
             ],
@@ -961,8 +970,8 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in' => [
                             'val1',
-                            'key' => 'val'
-                        ]
+                            'key' => 'val',
+                        ],
                     ],
                 ],
                 'key.in.0', ['arr' => 'val'],
@@ -970,8 +979,8 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in' => [
                             ['arr' => 'val'],
-                            'key' => 'val'
-                        ]
+                            'key' => 'val',
+                        ],
                     ],
                 ],
             ],
@@ -980,14 +989,14 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in' => [
                             'val1',
-                            'key' => 'val'
-                        ]
+                            'key' => 'val',
+                        ],
                     ],
                 ],
                 'key.in', ['arr' => 'val'],
                 [
                     'key' => [
-                        'in' => ['arr' => 'val']
+                        'in' => ['arr' => 'val'],
                     ],
                 ],
             ],
@@ -1000,8 +1009,8 @@ class ArrayHelperTest extends TestCase
                                 'attr1',
                                 'attr2',
                                 'attr3',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ],
                 'key.in.schema', 'array',
@@ -1014,8 +1023,8 @@ class ArrayHelperTest extends TestCase
                                 'attr1',
                                 'attr2',
                                 'attr3',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -1024,7 +1033,7 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in.array' => [
                             'key' => 'val',
-                        ]
+                        ],
                     ],
                 ],
                 ['key', 'in.array', 'ok.schema'], 'array',
@@ -1033,7 +1042,7 @@ class ArrayHelperTest extends TestCase
                         'in.array' => [
                             'key' => 'val',
                             'ok.schema' => 'array',
-                        ]
+                        ],
                     ],
                 ],
             ],
@@ -1260,5 +1269,15 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals(ArrayHelper::filter($array, ['X']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['X.Y']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['A.X']), []);
+        
+        $tmp = [
+            'a' => 0,
+            'b' => '',
+            'c' => false,
+            'd' => null,
+            'e' => true,
+        ];
+        
+        $this->assertEquals(ArrayHelper::filter($tmp, array_keys($tmp)), $tmp);
     }
 }

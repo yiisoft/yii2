@@ -42,14 +42,14 @@ class AssetBundleTest extends \yiiunit\TestCase
             if (is_dir($path)) {
                 FileHelper::removeDirectory($path);
             } else {
-                unlink($path);
+                FileHelper::unlink($path);
             }
         }
         closedir($handle);
     }
 
     /**
-     * Returns View with configured AssetManager
+     * Returns View with configured AssetManager.
      *
      * @param array $config may be used to override default AssetManager config
      * @return View
@@ -194,7 +194,7 @@ class AssetBundleTest extends \yiiunit\TestCase
             $this->assertFileEquals($publishedFile, $sourceFile);
         }
 
-        $this->assertTrue(unlink($bundle->basePath));
+        $this->assertTrue(FileHelper::unlink($bundle->basePath));
         return $bundle;
     }
 
@@ -249,6 +249,8 @@ EOF;
 
     /**
      * @dataProvider positionProvider
+     * @param int $pos
+     * @param bool $jqAlreadyRegistered
      */
     public function testPositionDependency($pos, $jqAlreadyRegistered)
     {
@@ -318,6 +320,8 @@ EOF;
 
     /**
      * @dataProvider positionProvider
+     * @param int $pos
+     * @param bool $jqAlreadyRegistered
      */
     public function testPositionDependencyConflict($pos, $jqAlreadyRegistered)
     {
@@ -379,7 +383,7 @@ EOF;
 <link href="/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/normal.js" charset="utf-8"></script>
 <script src="/defered.js" charset="utf-8" defer></script>4
 EOF;
-        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+        $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
     public function registerFileDataProvider()
@@ -489,8 +493,9 @@ EOF;
      * @dataProvider registerFileDataProvider
      * @param string $type either `js` or `css`
      * @param string $path
-     * @param string bool $appendTimestamp
+     * @param string|bool $appendTimestamp
      * @param string $expected
+     * @param string|null $webAlias
      */
     public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expected, $webAlias = null)
     {

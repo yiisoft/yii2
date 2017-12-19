@@ -17,7 +17,7 @@
     <h3><?= nl2br($handler->htmlEncode($exception->getMessage())) ?></h3>
     <p>in <span class="file"><?= $exception->getFile() ?></span> at line <span class="line"><?= $exception->getLine() ?></span></p>
     <?php if ($exception instanceof \yii\db\Exception && !empty($exception->errorInfo)): ?>
-        <pre>Error Info: <?php print_r($exception->errorInfo, true) ?></pre>
+        <pre>Error Info: <?= $handler->htmlEncode(print_r($exception->errorInfo, true)) ?></pre>
     <?php endif ?>
     <?= $handler->renderPreviousExceptions($exception) ?>
 </div>

@@ -127,7 +127,7 @@ class ExitCode
      */
     public static $reasons = [
         self::OK => 'Success',
-        self::UNSPECIFIED_ERROR => "Unspecified error",
+        self::UNSPECIFIED_ERROR => 'Unspecified error',
         self::USAGE => 'Incorrect usage, argument or option error',
         self::DATAERR => 'Error in input data',
         self::NOINPUT => 'Input file not found or unreadable',
@@ -145,6 +145,7 @@ class ExitCode
         self::CONFIG => 'Configuration error',
     ];
 
+
     /**
      * Returns a short reason text for the given exit code.
      *
@@ -154,6 +155,6 @@ class ExitCode
      */
     public static function getReason($exitCode)
     {
-        return isset($exReasons[$exitCode]) ? $exReasons[$exitCode] : "Unknown exit code";
+        return isset(static::$reasons[$exitCode]) ? static::$reasons[$exitCode] : 'Unknown exit code';
     }
 }

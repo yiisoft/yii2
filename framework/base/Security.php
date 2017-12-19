@@ -278,6 +278,7 @@ class Security extends Component
             if ($outputKey === false) {
                 throw new InvalidParamException('Invalid parameters to hash_hkdf()');
             }
+
             return $outputKey;
         }
 
@@ -309,6 +310,7 @@ class Security extends Component
         if ($length !== 0) {
             $outputKey = StringHelper::byteSubstr($outputKey, 0, $length);
         }
+
         return $outputKey;
     }
 
@@ -333,6 +335,7 @@ class Security extends Component
             if ($outputKey === false) {
                 throw new InvalidParamException('Invalid parameters to hash_pbkdf2()');
             }
+
             return $outputKey;
         }
 
@@ -370,6 +373,7 @@ class Security extends Component
         if ($length !== 0) {
             $outputKey = StringHelper::byteSubstr($outputKey, 0, $length);
         }
+
         return $outputKey;
     }
 
@@ -395,6 +399,7 @@ class Security extends Component
         if (!$hash) {
             throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . $this->macHash);
         }
+
         return $hash . $data;
     }
 
@@ -430,6 +435,7 @@ class Security extends Component
                 return $pureData;
             }
         }
+
         return false;
     }
 
@@ -472,12 +478,12 @@ class Security extends Component
 
         // Since 5.4.0, openssl_random_pseudo_bytes() reads from CryptGenRandom on Windows instead
         // of using OpenSSL library. LibreSSL is OK everywhere but don't use OpenSSL on non-Windows.
-        if ($this->_useLibreSSL
+        if (function_exists('openssl_random_pseudo_bytes')
+            && ($this->_useLibreSSL
             || (
                 DIRECTORY_SEPARATOR !== '/'
                 && substr_compare(PHP_OS, 'win', 0, 3, true) === 0
-                && function_exists('openssl_random_pseudo_bytes')
-            )
+            ))
         ) {
             $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
             if ($cryptoStrong === false) {
@@ -704,6 +710,7 @@ class Security extends Component
         for ($i = 0; $i < $actualLength; $i++) {
             $diff |= (ord($actual[$i]) ^ ord($expected[$i % $expectedLength]));
         }
+
         return $diff === 0;
     }
 
@@ -736,6 +743,7 @@ class Security extends Component
         if (!is_int($length)) {
             return '';
         }
+
         return StringHelper::byteSubstr($decoded, $length, $length) ^ StringHelper::byteSubstr($decoded, 0, $length);
     }
 }

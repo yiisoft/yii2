@@ -10,13 +10,22 @@ return <<<CODE
 
 use yii\db\Migration;
 
+/**
+ * Class {$class}
+ */
 class {$class} extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function safeUp()
     {
 
     }
 
+    /**
+     * @inheritdoc
+     */
     public function safeDown()
     {
         echo "{$class} cannot be reverted.\\n";

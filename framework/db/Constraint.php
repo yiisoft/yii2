@@ -7,7 +7,7 @@
 
 namespace yii\db;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * Constraint represents the metadata of a table constraint.
@@ -15,7 +15,7 @@ use yii\base\Object;
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
  */
-class Constraint extends Object
+class Constraint extends BaseObject
 {
     /**
      * @var string[]|null list of column names the constraint belongs to.

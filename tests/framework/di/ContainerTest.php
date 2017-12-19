@@ -15,7 +15,9 @@ use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\di\stubs\Bar;
+use yiiunit\framework\di\stubs\BarSetter;
 use yiiunit\framework\di\stubs\Foo;
+use yiiunit\framework\di\stubs\FooProperty;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\TestCase;
@@ -93,6 +95,19 @@ class ContainerTest extends TestCase
         $foo = $container->get('foo');
         $this->assertInstanceOf($Foo, $foo);
         $this->assertInstanceOf($Bar, $foo->bar);
+        $this->assertInstanceOf($Qux, $foo->bar->qux);
+
+        // predefined property parameters
+        $fooSetter = FooProperty::className();
+        $barSetter = BarSetter::className();
+
+        $container = new Container();
+        $container->set('foo', ['class' => $fooSetter, 'bar' => Instance::of('bar')]);
+        $container->set('bar', ['class' => $barSetter, 'qux' => Instance::of('qux')]);
+        $container->set('qux', $Qux);
+        $foo = $container->get('foo');
+        $this->assertInstanceOf($fooSetter, $foo);
+        $this->assertInstanceOf($barSetter, $foo->bar);
         $this->assertInstanceOf($Qux, $foo->bar->qux);
 
         // wiring by closure
@@ -284,5 +299,30 @@ class ContainerTest extends TestCase
         $foo = $container->get('qux.using.closure');
         $sameFoo = $container->get('qux.using.closure');
         $this->assertSame($foo, $sameFoo);
+    }
+
+    /**
+     * @requires PHP 5.6
+     */
+    public function testVariadicConstructor()
+    {
+        if (defined('HHVM_VERSION')) {
+            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
+        }
+
+        $container = new Container();
+        $container->get('yiiunit\framework\di\stubs\Variadic');
+    }
+
+    /**
+     * @requires PHP 5.6
+     */
+    public function testVariadicCallable()
+    {
+        if (defined('HHVM_VERSION')) {
+            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
+        }
+
+        require __DIR__ . '/testContainerWithVariadicCallable.php';
     }
 }

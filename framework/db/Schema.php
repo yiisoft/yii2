@@ -8,10 +8,10 @@
 namespace yii\db;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\base\Object;
 use yii\caching\Cache;
 use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
@@ -38,7 +38,7 @@ use yii\caching\TagDependency;
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0
  */
-abstract class Schema extends Object
+abstract class Schema extends BaseObject
 {
     // The following are the supported abstract column data types.
     const TYPE_PK = 'pk';
@@ -61,7 +61,6 @@ abstract class Schema extends Object
     const TYPE_BINARY = 'binary';
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_MONEY = 'money';
-
     /**
      * Schema cache version, to detect incompatibilities in cached values when the
      * data format of the cache changes.
@@ -278,12 +277,13 @@ abstract class Schema extends Object
      */
     public function refreshTableSchema($name)
     {
-        unset($this->_tableMetadata[$name]);
+        $rawName = $this->getRawTableName($name);
+        unset($this->_tableMetadata[$rawName]);
         $this->_tableNames = [];
         /* @var $cache CacheInterface */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof CacheInterface) {
-            $cache->delete($this->getCacheKey($name));
+            $cache->delete($this->getCacheKey($rawName));
         }
     }
 
@@ -314,6 +314,7 @@ abstract class Schema extends Object
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -421,6 +422,7 @@ abstract class Schema extends Object
 
             $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
         }
+
         return $result;
     }
 
@@ -493,6 +495,7 @@ abstract class Schema extends Object
         if (strpos($name, '{{') !== false) {
             return $name;
         }
+
         return $prefix . $this->quoteSimpleColumnName($name);
     }
 
@@ -605,8 +608,8 @@ abstract class Schema extends Object
 
     /**
      * Returns the cache key for the specified table name.
-     * @param string $name the table name
-     * @return mixed the cache key
+     * @param string $name the table name.
+     * @return mixed the cache key.
      */
     protected function getCacheKey($name)
     {
@@ -614,7 +617,7 @@ abstract class Schema extends Object
             __CLASS__,
             $this->db->dsn,
             $this->db->username,
-            $name,
+            $this->getRawTableName($name),
         ];
     }
 
@@ -651,14 +654,16 @@ abstract class Schema extends Object
                 $cache = $schemaCache;
             }
         }
-        if ($refresh || !isset($this->_tableMetadata[$name])) {
-            $this->loadTableMetadataFromCache($cache, $name);
+        $rawName = $this->getRawTableName($name);
+        if ($refresh || !isset($this->_tableMetadata[$rawName])) {
+            $this->loadTableMetadataFromCache($cache, $rawName);
         }
-        if (!array_key_exists($type, $this->_tableMetadata[$name])) {
-            $this->_tableMetadata[$name][$type] = $this->{'loadTable' . ucfirst($type)}($this->getRawTableName($name));
-            $this->saveTableMetadataToCache($cache, $name);
+        if (!array_key_exists($type, $this->_tableMetadata[$rawName])) {
+            $this->_tableMetadata[$rawName][$type] = $this->{'loadTable' . ucfirst($type)}($rawName);
+            $this->saveTableMetadataToCache($cache, $rawName);
         }
-        return $this->_tableMetadata[$name][$type];
+
+        return $this->_tableMetadata[$rawName][$type];
     }
 
     /**
@@ -685,6 +690,7 @@ abstract class Schema extends Object
                 $metadata[] = $tableMetadata;
             }
         }
+
         return $metadata;
     }
 
@@ -697,7 +703,7 @@ abstract class Schema extends Object
      */
     protected function setTableMetadata($name, $type, $data)
     {
-        $this->_tableMetadata[$name][$type] = $data;
+        $this->_tableMetadata[$this->getRawTableName($name)][$type] = $data;
     }
 
     /**

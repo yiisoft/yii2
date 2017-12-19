@@ -444,6 +444,7 @@ class PhpManager extends BaseManager
                 $permissions[$itemName] = $this->items[$itemName];
             }
         }
+
         return $permissions;
     }
 
@@ -517,6 +518,7 @@ class PhpManager extends BaseManager
                 $permissions[$itemName] = $this->items[$itemName];
             }
         }
+
         return $permissions;
     }
 
@@ -880,6 +882,7 @@ class PhpManager extends BaseManager
                 }
             }
         }
+
         return $result;
     }
 }

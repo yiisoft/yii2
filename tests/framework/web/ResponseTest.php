@@ -33,7 +33,7 @@ class ResponseTest extends \yiiunit\TestCase
     public function rightRanges()
     {
         // TODO test more cases for range requests and check for rfc compatibility
-        // http://www.w3.org/Protocols/rfc2616/rfc2616.txt
+        // https://tools.ietf.org/html/rfc2616
         return [
             ['0-5', '0-5', 6, '12ёж'],
             ['2-', '2-66', 65, 'ёжик3456798áèabcdefghijklmnopqrstuvwxyz!"§$%&/(ёжик)=?'],
@@ -43,6 +43,10 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider rightRanges
+     * @param string $rangeHeader
+     * @param string $expectedHeader
+     * @param int $length
+     * @param string $expectedContent
      */
     public function testSendFileRanges($rangeHeader, $expectedHeader, $length, $expectedContent)
     {
@@ -65,7 +69,7 @@ class ResponseTest extends \yiiunit\TestCase
     public function wrongRanges()
     {
         // TODO test more cases for range requests and check for rfc compatibility
-        // http://www.w3.org/Protocols/rfc2616/rfc2616.txt
+        // https://tools.ietf.org/html/rfc2616
         return [
             ['1-2,3-5,6-10'], // multiple range request not supported
             ['5-1'],          // last-byte-pos value is less than its first-byte-pos value
@@ -76,6 +80,7 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider wrongRanges
+     * @param string $rangeHeader
      */
     public function testSendFileWrongRanges($rangeHeader)
     {
@@ -92,7 +97,7 @@ class ResponseTest extends \yiiunit\TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/7529
+     * @see https://github.com/yiisoft/yii2/issues/7529
      */
     public function testSendContentAsFile()
     {
@@ -129,6 +134,8 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider dataProviderSetStatusCodeByException
+     * @param \Exception $exception
+     * @param int $statusCode
      */
     public function testSetStatusCodeByException($exception, $statusCode)
     {

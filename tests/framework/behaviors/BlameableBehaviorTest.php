@@ -8,7 +8,7 @@
 namespace yiiunit\framework\behaviors;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\behaviors\BlameableBehavior;
 use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
@@ -154,6 +154,52 @@ class BlameableBehaviorTest extends TestCase
         $this->assertEquals(20, $model->created_by);
         $this->assertEquals(20, $model->updated_by);
     }
+
+    public function testDefaultValue()
+    {
+        $this->getUser()->logout();
+
+        $model = new ActiveRecordBlameable([
+            'as blameable' => [
+                'class' => BlameableBehavior::className(),
+                'defaultValue' => 2
+            ],
+        ]);
+
+        $model->name = __METHOD__;
+        $model->beforeSave(true);
+
+        $this->assertEquals(2, $model->created_by);
+        $this->assertEquals(2, $model->updated_by);
+    }
+
+    public function testDefaultValueWithClosure()
+    {
+        $model = new ActiveRecordBlameableWithDefaultValueClosure();
+        $model->name = __METHOD__;
+        $model->beforeSave(true);
+
+        $this->getUser()->logout();
+        $model->beforeSave(true);
+
+        $this->assertEquals(11, $model->created_by);
+        $this->assertEquals(11, $model->updated_by);
+    }
+}
+
+class ActiveRecordBlameableWithDefaultValueClosure extends ActiveRecordBlameable
+{
+    public function behaviors()
+    {
+        return [
+            'blameable' => [
+                'class' => BlameableBehavior::className(),
+                'defaultValue' => function () {
+                    return $this->created_by + 1;
+                }
+            ],
+        ];
+    }
 }
 
 /**
@@ -195,7 +241,7 @@ class ActiveRecordBlameable extends ActiveRecord
     }
 }
 
-class UserMock extends Object
+class UserMock extends BaseObject
 {
     public $id;
 
