@@ -611,6 +611,25 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     }
 
     /**
+     * Returns the errors for all attributes as a one-dimensional array.
+     * @param bool $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
+     * only the first error message for each attribute will be shown.
+     * @return array errors for all attributes as a one-dimensional array. Empty array is returned if no error.
+     * @see getErrors()
+     * @see getFirstErrors()
+     * @since 2.0.14
+     */
+    public function getErrorSummary($showAllErrors)
+    {
+        $lines = [];
+        $errors = $showAllErrors ? $this->getErrors() : $this->getFirstErrors();
+        foreach ($errors as $es) {
+            $lines = array_merge((array)$es, $lines);
+        }
+        return $lines;
+    }
+
+    /**
      * Adds a new error to the specified attribute.
      * @param string $attribute attribute name
      * @param string $error new error message
