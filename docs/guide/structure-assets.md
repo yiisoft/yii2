@@ -194,8 +194,8 @@ class FontAwesomeAsset extends AssetBundle
     ];
     public $publishOptions = [
         'only' => [
-            'fonts/',
-            'css/',
+            'fonts/*',
+            'css/*',
         ]
     ];
 }  
@@ -250,8 +250,8 @@ Visit [asset-packagist.org](https://asset-packagist.org) to know, how it works.
 
 ##### Using fxp/composer-asset-plugin
 
-Comparing to to using asset-packagist, composer-asset-plugin does not require to change application config. Instead, it
-requires to install a special Composer plugin globally by running the following command:
+Compared to asset-packagist, composer-asset-plugin does not require any changes to application config. Instead, it
+requires global installation of a special Composer plugin by running the following command:
 
 ```bash
 composer global require "fxp/composer-asset-plugin:^1.4.1"
