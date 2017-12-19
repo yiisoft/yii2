@@ -11,6 +11,7 @@ use yii\base\Behavior;
 use yii\base\InvalidParamException;
 use yii\base\Model;
 use yii\db\BaseActiveRecord;
+use yii\helpers\StringHelper;
 use yii\validators\BooleanValidator;
 use yii\validators\NumberValidator;
 use yii\validators\StringValidator;
@@ -253,6 +254,9 @@ class AttributeTypecastBehavior extends Behavior
                 case self::TYPE_BOOLEAN:
                     return (bool) $value;
                 case self::TYPE_STRING:
+                    if (is_float($value)) {
+                        return StringHelper::floatToString($value);
+                    }
                     return (string) $value;
                 default:
                     throw new InvalidParamException("Unsupported type '{$type}'");
@@ -280,11 +284,12 @@ class AttributeTypecastBehavior extends Behavior
             }
 
             if ($type !== null) {
-                foreach ((array)$validator->attributes as $attribute) {
+                foreach ((array) $validator->attributes as $attribute) {
                     $attributeTypes[$attribute] = $type;
                 }
             }
         }
+
         return $attributeTypes;
     }
 

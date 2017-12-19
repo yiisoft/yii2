@@ -1,6 +1,7 @@
 <?php
 /**
- * This view is used by console/controllers/MigrateController.php
+ * This view is used by console/controllers/MigrateController.php.
+ *
  * The following variables are available in this view:
  */
 /* @var $className string the new migration class name without namespace */
@@ -28,7 +29,7 @@ class <?= $className ?> extends Migration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
 <?= $this->render('_createTable', [
     'table' => $table,
@@ -41,7 +42,7 @@ class <?= $className ?> extends Migration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
 <?= $this->render('_dropTable', [
     'table' => $table,

@@ -7,9 +7,17 @@
 
 namespace yii\db\mysql;
 
-use yii\db\Expression;
-use yii\db\TableSchema;
+use yii\base\InvalidConfigException;
+use yii\base\NotSupportedException;
 use yii\db\ColumnSchema;
+use yii\db\Constraint;
+use yii\db\ConstraintFinderTrait;
+use yii\db\Exception;
+use yii\db\Expression;
+use yii\db\ForeignKeyConstraint;
+use yii\db\IndexConstraint;
+use yii\db\TableSchema;
+use yii\helpers\ArrayHelper;
 
 /**
  * Schema is the class for retrieving metadata from a MySQL database (version 4.1.x and 5.x).
@@ -19,6 +27,14 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
+    use ConstraintFinderTrait;
+
+    /**
+     * @var bool whether MySQL used is older than 5.1.
+     */
+    private $_oldMysql;
+
+
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
@@ -53,6 +69,130 @@ class Schema extends \yii\db\Schema
         'varbinary' => self::TYPE_BINARY,
     ];
 
+    /**
+     * @inheritDoc
+     */
+    protected function resolveTableName($name)
+    {
+        $resolvedName = new TableSchema();
+        $parts = explode('.', str_replace('`', '', $name));
+        if (isset($parts[1])) {
+            $resolvedName->schemaName = $parts[0];
+            $resolvedName->name = $parts[1];
+        } else {
+            $resolvedName->schemaName = $this->defaultSchema;
+            $resolvedName->name = $name;
+        }
+        $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') . $resolvedName->name;
+        return $resolvedName;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function findTableNames($schema = '')
+    {
+        $sql = 'SHOW TABLES';
+        if ($schema !== '') {
+            $sql .= ' FROM ' . $this->quoteSimpleTableName($schema);
+        }
+
+        return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableSchema($name)
+    {
+        $table = new TableSchema();
+        $this->resolveTableNames($table, $name);
+
+        if ($this->findColumns($table)) {
+            $this->findConstraints($table);
+            return $table;
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTablePrimaryKey($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'primaryKey');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableForeignKeys($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'foreignKeys');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableIndexes($tableName)
+    {
+        static $sql = <<<'SQL'
+SELECT
+    `s`.`INDEX_NAME` AS `name`,
+    `s`.`COLUMN_NAME` AS `column_name`,
+    `s`.`NON_UNIQUE` ^ 1 AS `index_is_unique`,
+    `s`.`INDEX_NAME` = 'PRIMARY' AS `index_is_primary`
+FROM `information_schema`.`STATISTICS` AS `s`
+WHERE `s`.`TABLE_SCHEMA` = COALESCE(:schemaName, DATABASE()) AND `s`.`INDEX_SCHEMA` = `s`.`TABLE_SCHEMA` AND `s`.`TABLE_NAME` = :tableName
+ORDER BY `s`.`SEQ_IN_INDEX` ASC
+SQL;
+
+        $resolvedName = $this->resolveTableName($tableName);
+        $indexes = $this->db->createCommand($sql, [
+            ':schemaName' => $resolvedName->schemaName,
+            ':tableName' => $resolvedName->name,
+        ])->queryAll();
+        $indexes = $this->normalizePdoRowKeyCase($indexes, true);
+        $indexes = ArrayHelper::index($indexes, null, 'name');
+        $result = [];
+        foreach ($indexes as $name => $index) {
+            $result[] = new IndexConstraint([
+                'isPrimary' => (bool) $index[0]['index_is_primary'],
+                'isUnique' => (bool) $index[0]['index_is_unique'],
+                'name' => $name !== 'PRIMARY' ? $name : null,
+                'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
+            ]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableUniques($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'uniques');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException if this method is called.
+     */
+    protected function loadTableChecks($tableName)
+    {
+        throw new NotSupportedException('MySQL does not support check constraints.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException if this method is called.
+     */
+    protected function loadTableDefaultValues($tableName)
+    {
+        throw new NotSupportedException('MySQL does not support default value constraints.');
+    }
 
     /**
      * Quotes a table name for use in a query.
@@ -83,25 +223,6 @@ class Schema extends \yii\db\Schema
     public function createQueryBuilder()
     {
         return new QueryBuilder($this->db);
-    }
-
-    /**
-     * Loads the metadata for the specified table.
-     * @param string $name table name
-     * @return TableSchema driver dependent table metadata. Null if the table does not exist.
-     */
-    protected function loadTableSchema($name)
-    {
-        $table = new TableSchema;
-        $this->resolveTableNames($table, $name);
-
-        if ($this->findColumns($table)) {
-            $this->findConstraints($table);
-
-            return $table;
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -248,7 +369,7 @@ class Schema extends \yii\db\Schema
      */
     protected function findConstraints($table)
     {
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT
     kcu.constraint_name,
     kcu.column_name,
@@ -308,6 +429,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -338,25 +460,108 @@ SQL;
     }
 
     /**
-     * Returns all table names in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @return array all table names in the database. The names have NO schema name prefix.
-     */
-    protected function findTableNames($schema = '')
-    {
-        $sql = 'SHOW TABLES';
-        if ($schema !== '') {
-            $sql .= ' FROM ' . $this->quoteSimpleTableName($schema);
-        }
-
-        return $this->db->createCommand($sql)->queryColumn();
-    }
-
-    /**
      * @inheritdoc
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
         return new ColumnSchemaBuilder($type, $length, $this->db);
+    }
+
+    /**
+     * @return bool whether the version of the MySQL being used is older than 5.1.
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @since 2.0.13
+     */
+    protected function isOldMysql()
+    {
+        if ($this->_oldMysql === null) {
+            $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            $this->_oldMysql = version_compare($version, '5.1', '<=');
+        }
+
+        return $this->_oldMysql;
+    }
+
+    /**
+     * Loads multiple types of constraints and returns the specified ones.
+     * @param string $tableName table name.
+     * @param string $returnType return type:
+     * - primaryKey
+     * - foreignKeys
+     * - uniques
+     * @return mixed constraints.
+     */
+    private function loadTableConstraints($tableName, $returnType)
+    {
+        static $sql = <<<'SQL'
+SELECT DISTINCT
+    `kcu`.`CONSTRAINT_NAME` AS `name`,
+    `kcu`.`COLUMN_NAME` AS `column_name`,
+    `tc`.`CONSTRAINT_TYPE` AS `type`,
+    CASE
+        WHEN :schemaName IS NULL AND `kcu`.`REFERENCED_TABLE_SCHEMA` = `sch`.`name` THEN NULL
+        ELSE `kcu`.`REFERENCED_TABLE_SCHEMA`
+    END AS `foreign_table_schema`,
+    `kcu`.`REFERENCED_TABLE_NAME` AS `foreign_table_name`,
+    `kcu`.`REFERENCED_COLUMN_NAME` AS `foreign_column_name`,
+    `rc`.`UPDATE_RULE` AS `on_update`,
+    `rc`.`DELETE_RULE` AS `on_delete`,
+    `kcu`.`ORDINAL_POSITION` as `position`
+FROM (SELECT DATABASE() AS `name`) AS `sch`
+INNER JOIN `information_schema`.`KEY_COLUMN_USAGE` AS `kcu`
+    ON `kcu`.`TABLE_SCHEMA` = COALESCE(:schemaName, `sch`.`name`) AND `kcu`.`CONSTRAINT_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `kcu`.`TABLE_NAME` = :tableName
+LEFT JOIN `information_schema`.`REFERENTIAL_CONSTRAINTS` AS `rc`
+    ON `rc`.`CONSTRAINT_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `rc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME`
+LEFT JOIN `information_schema`.`TABLE_CONSTRAINTS` AS `tc`
+    ON `tc`.`TABLE_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `tc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME`
+ORDER BY `kcu`.`ORDINAL_POSITION` ASC
+SQL;
+
+        $resolvedName = $this->resolveTableName($tableName);
+        $constraints = $this->db->createCommand($sql, [
+            ':schemaName' => $resolvedName->schemaName,
+            ':tableName' => $resolvedName->name,
+        ])->queryAll();
+        $constraints = $this->normalizePdoRowKeyCase($constraints, true);
+        $constraints = ArrayHelper::index($constraints, null, ['type', 'name']);
+        $result = [
+            'primaryKey' => null,
+            'foreignKeys' => [],
+            'uniques' => [],
+        ];
+        foreach ($constraints as $type => $names) {
+            foreach ($names as $name => $constraint) {
+                switch ($type) {
+                    case 'PRIMARY KEY':
+                        $result['primaryKey'] = new Constraint([
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                        ]);
+                        break;
+                    case 'FOREIGN KEY':
+                        $result['foreignKeys'][] = new ForeignKeyConstraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                            'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
+                            'foreignTableName' => $constraint[0]['foreign_table_name'],
+                            'foreignColumnNames' => ArrayHelper::getColumn($constraint, 'foreign_column_name'),
+                            'onDelete' => $constraint[0]['on_delete'],
+                            'onUpdate' => $constraint[0]['on_update'],
+                        ]);
+                        break;
+                    case 'UNIQUE':
+                        $result['uniques'][] = new Constraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                        ]);
+                        break;
+                }
+            }
+        }
+        foreach ($result as $type => $data) {
+            $this->setTableMetadata($tableName, $type, $data);
+        }
+
+        return $result[$returnType];
     }
 }

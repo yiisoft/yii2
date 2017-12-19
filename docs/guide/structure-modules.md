@@ -60,7 +60,7 @@ public function init()
 {
     parent::init();
     // initialize the module with the configuration loaded from config.php
-    \Yii::configure($this, require(__DIR__ . '/config.php'));
+    \Yii::configure($this, require __DIR__ . '/config.php');
 }
 ```
 
@@ -176,6 +176,14 @@ only contains the module ID, then the [[yii\base\Module::defaultRoute]] property
 will determine which controller/action should be used. This means a route `forum` would represent the `default`
 controller in the `forum` module.
 
+URL manager routes should be added before [[yii\web\UrlManager::parseRequest()]] is fired. That means doing it 
+in module's `init()` won't work because module will be initialized when routes were already processed. Thus, routes
+should be added at [bootstrap stage](structure-extensions.md#bootstrapping-classes). It is a also a good practice
+to wrap module's URL rules with [[\yii\web\GroupUrlRule]].  
+
+In case module is used to [version API](rest-versioning.md), routes should be added directly in `urlManager` 
+section of the application config.
+
 
 ### Accessing Modules <span id="accessing-modules"></span>
 
@@ -269,6 +277,34 @@ in the `admin` module which is a child module of the `forum` module.
 to its parent. The [[yii\base\Application::loadedModules]] property keeps a list of loaded modules, including both
 direct children and nested ones, indexed by their class names.
 
+## Accessing components from within modules
+
+Since version 2.0.13 modules support [tree traversal](concept-service-locator.md#tree-traversal). This allows module 
+developers to reference (application) components via the service locator that is their module.
+This means that it is preferable to use `$module->get('db')` over `Yii::$app->get('db')`.
+The user of a module is able to specify a specific component to be used for the module in case a different component
+(configuration) is required.
+
+For example consider this application configuration:
+
+```php
+'components' => [
+    'db' => [
+        'tablePrefix' => 'main_',
+    ],
+],
+'modules' => [
+    'mymodule' => [
+        'components' => [
+            'db' => [
+                'tablePrefix' => 'module_',
+            ],
+        ],
+    ],
+],
+```
+
+The application database tables will be prefixed with `main_`, while all module tables will be prefixed with `module_`.
 
 ## Best Practices <span id="best-practices"></span>
 

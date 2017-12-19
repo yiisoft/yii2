@@ -8,15 +8,18 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * CompositeUrlRule is the base class for URL rule classes that consist of multiple simpler rules.
  *
+ * @property null|int $createUrlStatus Status of the URL creation after the last [[createUrl()]] call. `null`
+ * if rule does not provide info about create status. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class CompositeUrlRule extends Object implements UrlRuleInterface
+abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
 {
     /**
      * @var UrlRuleInterface[] the URL rules contained in this composite rule.
@@ -57,7 +60,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
                 Yii::trace([
                     'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                     'match' => $result !== false,
-                    'parent' => self::className()
+                    'parent' => self::className(),
                 ], __METHOD__);
             }
             if ($result !== false) {
@@ -83,6 +86,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
             // create status was not changed - there is no rules configured
             $this->createStatus = UrlRule::CREATE_STATUS_PARSING_ONLY;
         }
+
         return false;
     }
 

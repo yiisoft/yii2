@@ -1,11 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
+use yii\console\controllers\MessageController;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yiiunit\TestCase;
-use yii\console\controllers\MessageController;
 
 /**
  * Base for [[\yii\console\controllers\MessageController]] unit tests.
@@ -94,7 +100,7 @@ abstract class BaseMessageControllerTest extends TestCase
     }
 
     /**
-     * Creates source file with given content
+     * Creates source file with given content.
      * @param string $content file content
      * @return string path to source file
      */
@@ -106,7 +112,7 @@ abstract class BaseMessageControllerTest extends TestCase
     }
 
     /**
-     * Saves messages
+     * Saves messages.
      *
      * @param array $messages
      * @param string $category
@@ -114,7 +120,7 @@ abstract class BaseMessageControllerTest extends TestCase
     abstract protected function saveMessages($messages, $category);
 
     /**
-     * Loads messages
+     * Loads messages.
      *
      * @param string $category
      * @return array
@@ -127,7 +133,7 @@ abstract class BaseMessageControllerTest extends TestCase
     abstract protected function getDefaultConfig();
 
     /**
-     * Returns config
+     * Returns config.
      *
      * @param array $additionalConfig
      * @return array
@@ -451,6 +457,99 @@ abstract class BaseMessageControllerTest extends TestCase
         $messages = $this->loadMessages($category);
         $this->language = $firstLanguage;
         $this->assertArrayHasKey($mainMessage, $messages, "\"$mainMessage\" for language \"$secondLanguage\" is missing in translation file. Command output:\n\n" . $out);
+    }
+
+    /**
+     * @depends testCreateTranslation
+     *
+     * @see https://github.com/yiisoft/yii2/issues/13824
+     */
+    public function testCreateTranslationFromConcatenatedString()
+    {
+        $category = 'test.category1';
+        $mainMessage = 'main message second message third message';
+        $sourceFileContent = "Yii::t('{$category}', 'main message' .   \" second message\".' third message');";
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig());
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $messages = $this->loadMessages($category);
+        $this->assertArrayHasKey($mainMessage, $messages,
+            "\"$mainMessage\" is missing in translation file. Command output:\n\n" . $out);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14016
+     */
+    public function testShouldNotMarkUnused()
+    {
+        $category = 'testShouldNotMarkUnused';
+
+        $key1 = 'key1';
+        $key2 = 'key2';
+
+        $this->saveMessages(
+            [
+                $key1 => '',
+                $key2 => '',
+            ],
+            $category
+        );
+
+        $sourceFileContent = 'Yii::t("testShouldNotMarkUnused", "test");';
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig(['markUnused' => false]));
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $messages = $this->loadMessages($category);
+
+        $this->assertArrayHasKey($key1, $messages, "$key1 isn't there. Command output:\n\n" . $out);
+        $this->assertArrayHasKey($key2, $messages, "$key2 isn't there. Command output:\n\n" . $out);
+
+        $value1 = $messages[$key1];
+        $value2 = $messages[$key2];
+
+        $this->assertEquals('', $value1, "Message at $key1 should be empty but it is $value1. Command output:\n\n" . $out);
+        $this->assertEquals('', $value2, "Message at $key2 should be empty but it is $value2. Command output:\n\n" . $out);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13792
+     */
+    public function testShouldNotRemoveUnused()
+    {
+        $category = 'my';
+
+        $key1 = 'test';
+        $key2 = 'unused';
+
+        $this->saveMessages(
+            [
+                $key1 => 'test translation',
+                $key2 => 'unused translation',
+            ],
+            $category
+        );
+
+        $sourceFileContent = 'Yii::t("my", "test");';
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig([
+            'removeUnused' => false,
+            'markUnused' => false,
+        ]));
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $messages = $this->loadMessages($category);
+
+        $this->assertArrayHasKey($key1, $messages, "$key1 isn't there. Command output:\n\n" . $out);
+        $this->assertArrayHasKey($key2, $messages, "$key2 isn't there. Command output:\n\n" . $out);
+
+        $value1 = $messages[$key1];
+        $value2 = $messages[$key2];
+
+        $this->assertEquals('test translation', $value1, "Message at $key1 should be be \"test translation\" but it is $value1. Command output:\n\n" . $out);
+        $this->assertEquals('unused translation', $value2, "Message at $key2 should be \"unused translation\" but it is $value2. Command output:\n\n" . $out);
     }
 }
 

@@ -10,7 +10,7 @@ Dans cette section, nous décrivons comment composer et enovoyer des réponses �
 
 ## Code d'état <span id="status-code"></span>
 
-Une de première chose que vous devez faire lorsque vous construisez une réponse est de déclarer si la requête a été correctement prise en charge ou pas. Cela se fait en définissant la propriété  [[yii\web\Response::statusCode (code d'état)]] qui peut prendre un des [code d'état HTTP](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) valides. Par exemple, pour indiquer que la requête a été prise en charge avec succès, vous pouvez définir le code à 200, comme ceci :
+Une de première chose que vous devez faire lorsque vous construisez une réponse est de déclarer si la requête a été correctement prise en charge ou pas. Cela se fait en définissant la propriété  [[yii\web\Response::statusCode (code d'état)]] qui peut prendre un des [code d'état HTTP](https://tools.ietf.org/html/rfc2616#section-10) valides. Par exemple, pour indiquer que la requête a été prise en charge avec succès, vous pouvez définir le code à 200, comme ceci :
 
 ```php
 Yii::$app->response->statusCode = 200;

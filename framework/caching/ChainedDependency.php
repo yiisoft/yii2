@@ -37,7 +37,7 @@ class ChainedDependency extends Dependency
 
     /**
      * Evaluates the dependency by generating and saving the data related with dependency.
-     * @param Cache $cache the cache component that is currently evaluating this dependency
+     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
      */
     public function evaluateDependency($cache)
     {
@@ -49,7 +49,7 @@ class ChainedDependency extends Dependency
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method does nothing in this class.
-     * @param Cache $cache the cache component that is currently evaluating this dependency
+     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
      * @return mixed the data needed to determine if dependency has been changed.
      */
     protected function generateDependencyData($cache)
@@ -69,6 +69,7 @@ class ChainedDependency extends Dependency
                 return false;
             }
         }
+
         return !$this->dependOnAll;
     }
 }

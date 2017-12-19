@@ -8,6 +8,7 @@
 namespace yii\db\pgsql;
 
 use yii\base\InvalidParamException;
+use yii\helpers\StringHelper;
 
 /**
  * QueryBuilder is the query builder for PostgreSQL databases.
@@ -173,9 +174,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "SELECT SETVAL('$sequence',$value,false)";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
     }
 
     /**
@@ -233,6 +234,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
             $type = 'TYPE ' . $this->getColumnType($type);
         }
+
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
             . $this->db->quoteColumnName($column) . ' ' . $type;
     }
@@ -305,6 +307,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
+                } elseif (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    $value = StringHelper::floatToString($value);
                 } elseif ($value === true) {
                     $value = 'TRUE';
                 } elseif ($value === false) {

@@ -39,7 +39,7 @@ use yii\web\View;
  * ```
  *
  * The masked text field is implemented based on the
- * [jQuery input masked plugin](https://github.com/RobinHerbots/jquery.inputmask).
+ * [jQuery input masked plugin](https://github.com/RobinHerbots/Inputmask).
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 2.0
@@ -84,7 +84,7 @@ class MaskedInput extends InputWidget
     public $aliases;
     /**
      * @var array the JQuery plugin options for the input mask plugin.
-     * @see https://github.com/RobinHerbots/jquery.inputmask
+     * @see https://github.com/RobinHerbots/Inputmask
      */
     public $clientOptions = [];
     /**
@@ -94,7 +94,7 @@ class MaskedInput extends InputWidget
     public $options = ['class' => 'form-control'];
     /**
      * @var string the type of the input tag. Currently only 'text' and 'tel' are supported.
-     * @see https://github.com/RobinHerbots/jquery.inputmask
+     * @see https://github.com/RobinHerbots/Inputmask
      * @since 2.0.6
      */
     public $type = 'text';
@@ -124,15 +124,13 @@ class MaskedInput extends InputWidget
     public function run()
     {
         $this->registerClientScript();
-        if ($this->hasModel()) {
-            echo Html::activeInput($this->type, $this->model, $this->attribute, $this->options);
-        } else {
-            echo Html::input($this->type, $this->name, $this->value, $this->options);
-        }
+        echo $this->renderInputHtml($this->type);
     }
 
     /**
-     * Generates a hashed variable to store the plugin `clientOptions`. Helps in reusing the variable for similar
+     * Generates a hashed variable to store the plugin `clientOptions`.
+     *
+     * Helps in reusing the variable for similar
      * options passed for other widgets on the same page. The following special data attribute will also be
      * added to the input field to allow accessing the client options via javascript:
      *
@@ -146,18 +144,22 @@ class MaskedInput extends InputWidget
         $encOptions = empty($this->clientOptions) ? '{}' : Json::htmlEncode($this->clientOptions);
         $this->_hashVar = self::PLUGIN_NAME . '_' . hash('crc32', $encOptions);
         $this->options['data-plugin-' . self::PLUGIN_NAME] = $this->_hashVar;
-        $view->registerJs("var {$this->_hashVar} = {$encOptions};", View::POS_READY);
+        $view->registerJs("var {$this->_hashVar} = {$encOptions};", View::POS_HEAD);
     }
 
     /**
-     * Initializes client options
+     * Initializes client options.
      */
     protected function initClientOptions()
     {
         $options = $this->clientOptions;
         foreach ($options as $key => $value) {
-            if (!$value instanceof JsExpression && in_array($key, ['oncomplete', 'onincomplete', 'oncleared', 'onKeyUp',
-                    'onKeyDown', 'onBeforeMask', 'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex'], true)
+            if (
+                !$value instanceof JsExpression
+                && in_array($key, [
+                    'oncomplete', 'onincomplete', 'oncleared', 'onKeyUp', 'onKeyDown', 'onBeforeMask',
+                    'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex',
+                ], true)
             ) {
                 $options[$key] = new JsExpression($value);
             }

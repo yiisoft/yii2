@@ -11,6 +11,7 @@ use yii\base\Component;
 
 /**
  * The Mutex component allows mutual execution of concurrent processes in order to prevent "race conditions".
+ *
  * This is achieved by using a "lock" mechanism. Each possibly concurrent thread cooperates by acquiring
  * a lock before accessing the corresponding data.
  *
@@ -62,7 +63,7 @@ abstract class Mutex extends Component
     /**
      * Acquires a lock by name.
      * @param string $name of the lock to be acquired. Must be unique.
-     * @param int $timeout time to wait for lock to be released. Defaults to zero meaning that method will return
+     * @param int $timeout time (in seconds) to wait for lock to be released. Defaults to zero meaning that method will return
      * false immediately in case lock was already acquired.
      * @return bool lock acquiring result.
      */
@@ -72,9 +73,9 @@ abstract class Mutex extends Component
             $this->_locks[] = $name;
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -91,15 +92,15 @@ abstract class Mutex extends Component
             }
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
      * This method should be extended by a concrete Mutex implementations. Acquires lock by name.
      * @param string $name of the lock to be acquired.
-     * @param int $timeout time to wait for the lock to be released.
+     * @param int $timeout time (in seconds) to wait for the lock to be released.
      * @return bool acquiring result.
      */
     abstract protected function acquireLock($name, $timeout = 0);

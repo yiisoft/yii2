@@ -48,7 +48,7 @@ use yii\base\NotSupportedException;
  * For more details and usage information on Command, see the [guide article on Database Access Objects](guide:db-dao).
  *
  * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
- * [[sql]]. This property is read-only.
+ * [[sql]].
  * @property string $sql The SQL statement to be executed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -137,19 +137,43 @@ class Command extends Component
     }
 
     /**
-     * Specifies the SQL statement to be executed.
-     * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well.
+     * Specifies the SQL statement to be executed. The SQL statement will be quoted using [[Connection::quoteSql()]].
+     * The previous SQL (if any) will be discarded, and [[params]] will be cleared as well. See [[reset()]]
+     * for details.
+     *
      * @param string $sql the SQL statement to be set.
      * @return $this this command instance
+     * @see reset()
+     * @see cancel()
      */
     public function setSql($sql)
     {
         if ($sql !== $this->_sql) {
             $this->cancel();
+            $this->reset();
             $this->_sql = $this->db->quoteSql($sql);
-            $this->_pendingParams = [];
-            $this->params = [];
-            $this->_refreshTableName = null;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Specifies the SQL statement to be executed. The SQL statement will not be modified in any way.
+     * The previous SQL (if any) will be discarded, and [[params]] will be cleared as well. See [[reset()]]
+     * for details.
+     *
+     * @param string $sql the SQL statement to be set.
+     * @return $this this command instance
+     * @since 2.0.13
+     * @see reset()
+     * @see cancel()
+     */
+    public function setRawSql($sql)
+    {
+        if ($sql !== $this->_sql) {
+            $this->cancel();
+            $this->reset();
+            $this->_sql = $sql;
         }
 
         return $this;
@@ -267,7 +291,7 @@ class Command extends Component
         } else {
             $this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
         }
-        $this->params[$name] =& $value;
+        $this->params[$name] = &$value;
 
         return $this;
     }
@@ -388,9 +412,9 @@ class Command extends Component
         $result = $this->queryInternal('fetchColumn', 0);
         if (is_resource($result) && get_resource_type($result) === 'stream') {
             return stream_get_contents($result);
-        } else {
-            return $result;
         }
+
+        return $result;
     }
 
     /**
@@ -407,6 +431,7 @@ class Command extends Component
 
     /**
      * Creates an INSERT command.
+     *
      * For example,
      *
      * ```php
@@ -436,6 +461,7 @@ class Command extends Component
 
     /**
      * Creates a batch INSERT command.
+     *
      * For example,
      *
      * ```php
@@ -454,22 +480,37 @@ class Command extends Component
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
-     * @param array $rows the rows to be batch inserted into the table
+     * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return $this the command object itself
      */
     public function batchInsert($table, $columns, $rows)
     {
+        $table = $this->db->quoteSql($table);
+        $columns = array_map(function ($column) {
+            return $this->db->quoteSql($column);
+        }, $columns);
+
         $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
 
-        return $this->setSql($sql);
+        $this->setRawSql($sql);
+
+        return $this;
     }
 
     /**
      * Creates an UPDATE command.
+     *
      * For example,
      *
      * ```php
      * $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
+     * ```
+     *
+     * or with using parameter binding for the condition:
+     *
+     * ```php
+     * $minAge = 30;
+     * $connection->createCommand()->update('user', ['status' => 1], 'age > :minAge', [':minAge' => $minAge])->execute();
      * ```
      *
      * The method will properly escape the column names and bind the values to be updated.
@@ -492,10 +533,18 @@ class Command extends Component
 
     /**
      * Creates a DELETE command.
+     *
      * For example,
      *
      * ```php
      * $connection->createCommand()->delete('user', 'status = 0')->execute();
+     * ```
+     *
+     * or with using parameter binding for the condition:
+     *
+     * ```php
+     * $status = 0;
+     * $connection->createCommand()->delete('user', 'status = :status', [':status' => $status])->execute();
      * ```
      *
      * The method will properly escape the table and column names.
@@ -709,7 +758,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->createIndex($name, $table, $columns, $unique);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -722,7 +771,110 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->dropIndex($name, $table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for adding an unique constraint to an existing table.
+     * @param string $name the name of the unique constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the unique constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string|array $columns the name of the column to that the constraint will be added on.
+     * If there are multiple columns, separate them with commas.
+     * The name will be properly quoted by the method.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function addUnique($name, $table, $columns)
+    {
+        $sql = $this->db->getQueryBuilder()->addUnique($name, $table, $columns);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for dropping an unique constraint.
+     * @param string $name the name of the unique constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose unique constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function dropUnique($name, $table)
+    {
+        $sql = $this->db->getQueryBuilder()->dropUnique($name, $table);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for adding a check constraint to an existing table.
+     * @param string $name the name of the check constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the check constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string $expression the SQL of the `CHECK` constraint.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        $sql = $this->db->getQueryBuilder()->addCheck($name, $table, $expression);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for dropping a check constraint.
+     * @param string $name the name of the check constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose check constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function dropCheck($name, $table)
+    {
+        $sql = $this->db->getQueryBuilder()->dropCheck($name, $table);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for adding a default value constraint to an existing table.
+     * @param string $name the name of the default value constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the default value constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string $column the name of the column to that the constraint will be added on.
+     * The name will be properly quoted by the method.
+     * @param mixed $value default value.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function addDefaultValue($name, $table, $column, $value)
+    {
+        $sql = $this->db->getQueryBuilder()->addDefaultValue($name, $table, $column, $value);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for dropping a default value constraint.
+     * @param string $name the name of the default value constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose default value constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function dropDefaultValue($name, $table)
+    {
+        $sql = $this->db->getQueryBuilder()->dropDefaultValue($name, $table);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -759,7 +911,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for adding comment to column
+     * Builds a SQL command for adding comment to column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -775,7 +927,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for adding comment to table
+     * Builds a SQL command for adding comment to table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
@@ -790,7 +942,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for dropping comment from column
+     * Builds a SQL command for dropping comment from column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -805,7 +957,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for dropping comment from table
+     * Builds a SQL command for dropping comment from table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @return $this the command object itself
@@ -868,9 +1020,9 @@ class Command extends Component
         }
         if (!$this->db->enableProfiling) {
             return [false, isset($rawSql) ? $rawSql : null];
-        } else {
-            return [true, isset($rawSql) ? $rawSql : $this->getRawSql()];
         }
+
+        return [true, isset($rawSql) ? $rawSql : $this->getRawSql()];
     }
 
     /**
@@ -889,7 +1041,7 @@ class Command extends Component
         if ($method !== '') {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
-                /* @var $cache \yii\caching\Cache */
+                /* @var $cache \yii\caching\CacheInterface */
                 $cache = $info[0];
                 $cacheKey = [
                     __CLASS__,
@@ -951,7 +1103,7 @@ class Command extends Component
     }
 
     /**
-     * Refreshes table schema, which was marked by [[requireTableSchemaRefresh()]]
+     * Refreshes table schema, which was marked by [[requireTableSchemaRefresh()]].
      * @since 2.0.6
      */
     protected function refreshTableSchema()
@@ -959,5 +1111,18 @@ class Command extends Component
         if ($this->_refreshTableName !== null) {
             $this->db->getSchema()->refreshTableSchema($this->_refreshTableName);
         }
+    }
+
+    /**
+     * Resets [[sql]] and [[params]] properties.
+     *
+     * @since 2.0.13
+     */
+    protected function reset()
+    {
+        $this->_sql = null;
+        $this->_pendingParams = [];
+        $this->params = [];
+        $this->_refreshTableName = null;
     }
 }

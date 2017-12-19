@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\helpers;
 
@@ -77,19 +82,19 @@ class InflectorTest extends TestCase
 
     public function testTitleize()
     {
-        $this->assertEquals("Me my self and i", Inflector::titleize('MeMySelfAndI'));
-        $this->assertEquals("Me My Self And I", Inflector::titleize('MeMySelfAndI', true));
+        $this->assertEquals('Me my self and i', Inflector::titleize('MeMySelfAndI'));
+        $this->assertEquals('Me My Self And I', Inflector::titleize('MeMySelfAndI', true));
     }
 
     public function testCamelize()
     {
-        $this->assertEquals("MeMySelfAndI", Inflector::camelize('me my_self-andI'));
-        $this->assertEquals("QweQweEwq", Inflector::camelize('qwe qwe^ewq'));
+        $this->assertEquals('MeMySelfAndI', Inflector::camelize('me my_self-andI'));
+        $this->assertEquals('QweQweEwq', Inflector::camelize('qwe qwe^ewq'));
     }
 
     public function testUnderscore()
     {
-        $this->assertEquals("me_my_self_and_i", Inflector::underscore('MeMySelfAndI'));
+        $this->assertEquals('me_my_self_and_i', Inflector::underscore('MeMySelfAndI'));
     }
 
     public function testCamel2words()
@@ -128,18 +133,18 @@ class InflectorTest extends TestCase
 
     public function testHumanize()
     {
-        $this->assertEquals("Me my self and i", Inflector::humanize('me_my_self_and_i'));
-        $this->assertEquals("Me My Self And I", Inflector::humanize('me_my_self_and_i', true));
+        $this->assertEquals('Me my self and i', Inflector::humanize('me_my_self_and_i'));
+        $this->assertEquals('Me My Self And I', Inflector::humanize('me_my_self_and_i', true));
     }
 
     public function testVariablize()
     {
-        $this->assertEquals("customerTable", Inflector::variablize('customer_table'));
+        $this->assertEquals('customerTable', Inflector::variablize('customer_table'));
     }
 
     public function testTableize()
     {
-        $this->assertEquals("customer_tables", Inflector::tableize('customerTable'));
+        $this->assertEquals('customer_tables', Inflector::tableize('customerTable'));
     }
 
     public function testSlugCommons()
@@ -340,7 +345,7 @@ class InflectorTest extends TestCase
 
     public function testClassify()
     {
-        $this->assertEquals("CustomerTable", Inflector::classify('customer_tables'));
+        $this->assertEquals('CustomerTable', Inflector::classify('customer_tables'));
     }
 
     public function testOrdinalize()

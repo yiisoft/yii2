@@ -1,10 +1,16 @@
 <?php
 /**
- * These are the Yii core requirements for the [[YiiRequirementChecker]] instance.
- * These requirements are mandatory for any Yii application.
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 /* @var $this YiiRequirementChecker */
+
+/**
+ * These are the Yii core requirements for the [[YiiRequirementChecker]] instance.
+ * These requirements are mandatory for any Yii application.
+ */
 return array(
     array(
         'name' => 'PHP version',

@@ -8,8 +8,8 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
-use yii\base\Object;
 
 /**
  * UrlRule represents a rule used by [[UrlManager]] for parsing and generating URLs.
@@ -24,17 +24,20 @@ use yii\base\Object;
  * ]
  * ```
  *
+ * @property null|int $createUrlStatus Status of the URL creation after the last [[createUrl()]] call. `null`
+ * if rule does not provide info about create status. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UrlRule extends Object implements UrlRuleInterface
+class UrlRule extends BaseObject implements UrlRuleInterface
 {
     /**
-     * Set [[mode]] with this value to mark that this rule is for URL parsing only
+     * Set [[mode]] with this value to mark that this rule is for URL parsing only.
      */
     const PARSING_ONLY = 1;
     /**
-     * Set [[mode]] with this value to mark that this rule is for URL creation only
+     * Set [[mode]] with this value to mark that this rule is for URL creation only.
      */
     const CREATION_ONLY = 2;
     /**
@@ -122,12 +125,12 @@ class UrlRule extends Object implements UrlRuleInterface
      * @since 2.0.10
      */
     public $normalizer;
+
     /**
      * @var int|null status of the URL creation after the last [[createUrl()]] call.
      * @since 2.0.12
      */
     protected $createStatus;
-
     /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
      * On the rule initialization, the [[pattern]] parameters names will be replaced with placeholders.
@@ -176,6 +179,7 @@ class UrlRule extends Object implements UrlRuleInterface
         if ($str === '') {
             return '/';
         }
+
         return $str;
     }
 
@@ -350,9 +354,9 @@ class UrlRule extends Object implements UrlRuleInterface
     {
         if ($this->normalizer === null) {
             return $manager->normalizer;
-        } else {
-            return $this->normalizer;
         }
+
+        return $this->normalizer;
     }
 
     /**
@@ -382,7 +386,7 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
+        $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
         $pathInfo = $request->getPathInfo();
         $normalized = false;
         if ($this->hasNormalizer($manager)) {
@@ -436,9 +440,9 @@ class UrlRule extends Object implements UrlRuleInterface
         if ($normalized) {
             // pathInfo was changed by normalizer - we need also normalize route
             return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
-        } else {
-            return [$route, $params];
         }
+
+        return [$route, $params];
     }
 
     /**
@@ -542,7 +546,8 @@ class UrlRule extends Object implements UrlRuleInterface
      * @see $createStatus
      * @since 2.0.12
      */
-    public function getCreateUrlStatus() {
+    public function getCreateUrlStatus()
+    {
         return $this->createStatus;
     }
 
@@ -575,6 +580,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 unset($matches[$placeholder]);
             }
         }
+
         return $matches;
     }
 
@@ -590,6 +596,7 @@ class UrlRule extends Object implements UrlRuleInterface
         if (strpos($string, '//') === 0) {
             return '//' . trim($string, '/');
         }
+
         return trim($string, '/');
     }
 }

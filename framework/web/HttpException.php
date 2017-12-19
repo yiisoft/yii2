@@ -55,8 +55,8 @@ class HttpException extends UserException
     {
         if (isset(Response::$httpStatuses[$this->statusCode])) {
             return Response::$httpStatuses[$this->statusCode];
-        } else {
-            return 'Error';
         }
+
+        return 'Error';
     }
 }

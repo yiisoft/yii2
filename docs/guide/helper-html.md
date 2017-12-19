@@ -233,11 +233,11 @@ If you know the input type in advance, it's more convenient to use the shortcut 
 Radios and checkboxes are a bit different in terms of method signature:
 
 ```php
-<?= Html::radio('agree', true, ['label' => 'I agree']);
-<?= Html::activeRadio($model, 'agree', ['class' => 'agreement'])
+<?= Html::radio('agree', true, ['label' => 'I agree']) ?>
+<?= Html::activeRadio($model, 'agree', ['class' => 'agreement']) ?>
 
-<?= Html::checkbox('agree', true, ['label' => 'I agree']);
-<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement'])
+<?= Html::checkbox('agree', true, ['label' => 'I agree']) ?>
+<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement']) ?>
 ```
 
 Dropdown lists and list boxes can be rendered like the following:
@@ -334,7 +334,7 @@ Gives you
 <style>.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("Hello!");', ['defer' => true]);
+<?= Html::script('alert("Hello!");', ['defer' => true]) ?>
 
 Gives you
 

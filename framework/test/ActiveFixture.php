@@ -40,7 +40,7 @@ class ActiveFixture extends BaseActiveFixture
      */
     public $tableName;
     /**
-     * @var string|bool the file path or path alias of the data file that contains the fixture data
+     * @var string|bool the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
      * to be returned by [[getData()]]. If this is not set, it will default to `FixturePath/data/TableName.php`,
      * where `FixturePath` stands for the directory containing this fixture class, and `TableName` stands for the
      * name of the table associated with this fixture. You can set this property to be false to prevent loading any data.
@@ -67,8 +67,7 @@ class ActiveFixture extends BaseActiveFixture
     /**
      * Loads the fixture.
      *
-     * The default implementation will first clean up the table by calling [[resetTable()]].
-     * It will then populate the table with the data returned by [[getData()]].
+     * It populate the table with the data returned by [[getData()]].
      *
      * If you override this method, you should consider calling the parent implementation
      * so that the data returned by [[getData()]] can be populated into the table.
@@ -99,10 +98,10 @@ class ActiveFixture extends BaseActiveFixture
             $class = new \ReflectionClass($this);
             $dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
 
-            return is_file($dataFile) ? require($dataFile) : [];
-        } else {
-            return parent::getData();
+            return is_file($dataFile) ? require $dataFile : [];
         }
+
+        return parent::getData();
     }
 
     /**

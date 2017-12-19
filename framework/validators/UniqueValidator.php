@@ -10,8 +10,8 @@ namespace yii\validators;
 use Yii;
 use yii\base\Model;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
+use yii\db\ActiveRecord;
 use yii\db\ActiveRecordInterface;
 use yii\helpers\Inflector;
 
@@ -75,7 +75,6 @@ class UniqueValidator extends Validator
      *
      * - `{attributes}`: the labels of the attributes being validated.
      * - `{values}`: the values of the attributes being validated.
-     *
      */
     public $message;
     /**
@@ -133,7 +132,7 @@ class UniqueValidator extends Validator
         }
 
         if ($this->modelExists($targetClass, $conditions, $model)) {
-            if (count($targetAttribute) > 1) {
+            if (is_array($targetAttribute) && count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
                 $this->addError($model, $attribute, $this->message);
@@ -173,12 +172,11 @@ class UniqueValidator extends Validator
             // if current $model is in the database already we can't use exists()
             if ($query instanceof \yii\db\ActiveQuery) {
                 // only select primary key to optimize query
-                $primaryAlias = array_keys($query->getTablesUsedInFrom())[0];
-                $columns = $targetClass::primaryKey();
-                foreach($columns as $c => $column) {
-                    $columns[$c] = "{$primaryAlias}.[[$column]]";
-                }
-                $query->select($columns);
+                $columnsCondition = array_flip($targetClass::primaryKey());
+                $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
+                
+                // any with relation can't be loaded because related fields are not selected
+                $query->with = null;
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);
@@ -248,11 +246,13 @@ class UniqueValidator extends Validator
             $conditions = [$targetAttribute => $model->$attribute];
         }
 
-        if (!$model instanceof ActiveRecord) {
+        $targetModelClass = $this->getTargetClass($model);
+        if (!is_subclass_of($targetModelClass, 'yii\db\ActiveRecord')) {
             return $conditions;
         }
 
-        return $this->prefixConditions($model, $conditions);
+        /** @var ActiveRecord $targetModelClass */
+        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 
     /**
@@ -275,28 +275,34 @@ class UniqueValidator extends Validator
         }
         $this->addError($model, $attribute, $this->message, [
             'attributes' => Inflector::sentence($attributeCombo),
-            'values' => implode('-', $valueCombo)
+            'values' => implode('-', $valueCombo),
         ]);
     }
 
     /**
-     * Prefix conditions with aliases
-     *
-     * @param ActiveRecord $model
-     * @param array $conditions
+     * Returns conditions with alias.
+     * @param ActiveQuery $query
+     * @param array $conditions array of condition, keys to be modified
+     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
      * @return array
      */
-    private function prefixConditions($model, $conditions)
+    private function applyTableAlias($query, $conditions, $alias = null)
     {
-        $targetModelClass = $this->getTargetClass($model);
-
-        /** @var ActiveRecord $targetModelClass */
-        $query = $targetModelClass::find();
-        $tableAliases = array_keys($query->getTablesUsedInFrom());
-        $primaryTableAlias = $tableAliases[0];
+        if ($alias === null) {
+            $alias = array_keys($query->getTablesUsedInFrom())[0];
+        }
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{$primaryTableAlias}.[[{$columnName}]]";
+            if (strpos($columnName, '(') === false) {
+                $prefixedColumn = "{$alias}.[[" . preg_replace(
+                    '/^' . preg_quote($alias) . '\.(.*)$/',
+                    '$1',
+                    $columnName) . ']]';
+            } else {
+                // there is an expression, can't prefix it reliably
+                $prefixedColumn = $columnName;
+            }
+
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
 

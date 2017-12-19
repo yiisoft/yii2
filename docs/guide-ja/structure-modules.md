@@ -57,7 +57,7 @@ public function init()
 {
     parent::init();
     // config.php からロードした構成情報でモジュールを初期化する
-    \Yii::configure($this, require(__DIR__ . '/config.php'));
+    \Yii::configure($this, require __DIR__ . '/config.php');
 }
 ```
 

@@ -61,7 +61,7 @@ class PgsqlMutex extends DbMutex
     /**
      * Acquires lock by given name.
      * @param string $name of the lock to be acquired.
-     * @param int $timeout to wait for lock to become released.
+     * @param int $timeout time (in seconds) to wait for lock to become released.
      * @return bool acquiring result.
      * @see http://www.postgresql.org/docs/9.0/static/functions-admin.html
      */
@@ -71,9 +71,13 @@ class PgsqlMutex extends DbMutex
             throw new InvalidParamException('PgsqlMutex does not support timeout.');
         }
         list($key1, $key2) = $this->getKeysFromName($name);
-        return (bool) $this->db
-            ->createCommand('SELECT pg_try_advisory_lock(:key1, :key2)', [':key1' => $key1, ':key2' => $key2])
-            ->queryScalar();
+        return $this->db->useMaster(function ($db) use ($key1, $key2) {
+            /** @var \yii\db\Connection $db */
+            return (bool) $db->createCommand(
+                'SELECT pg_try_advisory_lock(:key1, :key2)',
+                [':key1' => $key1, ':key2' => $key2]
+            )->queryScalar();
+        });
     }
 
     /**
@@ -85,8 +89,12 @@ class PgsqlMutex extends DbMutex
     protected function releaseLock($name)
     {
         list($key1, $key2) = $this->getKeysFromName($name);
-        return (bool) $this->db
-            ->createCommand('SELECT pg_advisory_unlock(:key1, :key2)', [':key1' => $key1, ':key2' => $key2])
-            ->queryScalar();
+        return $this->db->useMaster(function ($db) use ($key1, $key2) {
+            /** @var \yii\db\Connection $db */
+            return (bool) $db->createCommand(
+                'SELECT pg_advisory_unlock(:key1, :key2)',
+                [':key1' => $key1, ':key2' => $key2]
+            )->queryScalar();
+        });
     }
 }

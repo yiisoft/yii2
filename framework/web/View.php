@@ -8,9 +8,9 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\base\InvalidConfigException;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -342,6 +342,27 @@ class View extends \yii\base\View
     }
 
     /**
+     * Registers CSRF meta tags.
+     * They are rendered dynamically to retrieve a new CSRF token for each request.
+     *
+     * ```php
+     * $view->registerCsrfMetaTags();
+     * ```
+     *
+     * The above code will result in `<meta name="csrf-param" content="[yii\web\Request::$csrfParam]">`
+     * and `<meta name="csrf-token" content="tTNpWKpdy-bx8ZmIq9R72...K1y8IP3XGkzZA==">` added to the page.
+     *
+     * Note: Hidden CSRF input of ActiveForm will be automatically refreshed by calling `window.yii.refreshCsrfToken()`
+     * from `yii.js`.
+     *
+     * @since 2.0.13
+     */
+    public function registerCsrfMetaTags()
+    {
+        $this->metaTags['csrf_meta_tags'] = $this->renderDynamic('return yii\helpers\Html::csrfMetaTags();');
+    }
+
+    /**
      * Registers a link tag.
      *
      * For example, a link tag for a custom [favicon](http://www.w3.org/2005/10/howto-favicon)
@@ -386,6 +407,11 @@ class View extends \yii\base\View
 
     /**
      * Registers a CSS file.
+     *
+     * This method should be used for simple registration of CSS files. If you want to use features of
+     * [[AssetManager]] like appending timestamps to the URL and file publishing options, use [[AssetBundle]]
+     * and [[registerAssetBundle()]] instead.
+     *
      * @param string $url the CSS file to be registered.
      * @param array $options the HTML attributes for the link tag. Please refer to [[Html::cssFile()]] for
      * the supported options. The following options are specially handled and are not treated as HTML attributes:
@@ -411,7 +437,7 @@ class View extends \yii\base\View
                 'baseUrl' => '',
                 'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
-                'depends' => (array)$depends,
+                'depends' => (array) $depends,
             ]);
             $this->registerAssetBundle($key);
         }
@@ -446,6 +472,11 @@ class View extends \yii\base\View
 
     /**
      * Registers a JS file.
+     *
+     * This method should be used for simple registration of JS files. If you want to use features of
+     * [[AssetManager]] like appending timestamps to the URL and file publishing options, use [[AssetBundle]]
+     * and [[registerAssetBundle()]] instead.
+     *
      * @param string $url the JS file to be registered.
      * @param array $options the HTML attributes for the script tag. The following options are specially handled
      * and are not treated as HTML attributes:
@@ -479,7 +510,7 @@ class View extends \yii\base\View
                 'baseUrl' => '',
                 'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,
-                'depends' => (array)$depends,
+                'depends' => (array) $depends,
             ]);
             $this->registerAssetBundle($key);
         }
@@ -569,7 +600,7 @@ class View extends \yii\base\View
                 $lines[] = Html::script(implode("\n", $this->js[self::POS_END]), ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_READY])) {
-                $js = "jQuery(document).ready(function () {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
+                $js = "jQuery(function ($) {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_LOAD])) {

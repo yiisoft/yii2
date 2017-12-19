@@ -19,8 +19,8 @@ use Yii;
  * @property \yii\rbac\ManagerInterface $authManager The auth manager application component. Null is returned
  * if auth manager is not configured. This property is read-only.
  * @property string $basePath The root directory of the application.
- * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
- * This property is read-only.
+ * @property \yii\caching\CacheInterface $cache The cache application component. Null if the component is not
+ * enabled. This property is read-only.
  * @property array $container Values given in terms of name-value pairs. This property is write-only.
  * @property \yii\db\Connection $db The database connection. This property is read-only.
  * @property \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
@@ -168,6 +168,7 @@ abstract class Application extends Module
      * - a module ID as specified via [[modules]].
      * - a class name.
      * - a configuration array.
+     * - a Closure
      *
      * During the bootstrapping process, each component will be instantiated. If the component class
      * implements [[BootstrapInterface]], its [[BootstrapInterface::bootstrap()|bootstrap()]] method
@@ -281,7 +282,7 @@ abstract class Application extends Module
     {
         if ($this->extensions === null) {
             $file = Yii::getAlias('@vendor/yiisoft/extensions.php');
-            $this->extensions = is_file($file) ? include($file) : [];
+            $this->extensions = is_file($file) ? include $file : [];
         }
         foreach ($this->extensions as $extension) {
             if (!empty($extension['alias'])) {
@@ -300,19 +301,25 @@ abstract class Application extends Module
             }
         }
 
-        foreach ($this->bootstrap as $class) {
+        foreach ($this->bootstrap as $mixed) {
             $component = null;
-            if (is_string($class)) {
-                if ($this->has($class)) {
-                    $component = $this->get($class);
-                } elseif ($this->hasModule($class)) {
-                    $component = $this->getModule($class);
-                } elseif (strpos($class, '\\') === false) {
-                    throw new InvalidConfigException("Unknown bootstrapping component ID: $class");
+            if ($mixed instanceof \Closure) {
+                Yii::trace('Bootstrap with Closure', __METHOD__);
+                if (!$component = call_user_func($mixed, $this)) {
+                    continue;
+                }
+            } elseif (is_string($mixed)) {
+                if ($this->has($mixed)) {
+                    $component = $this->get($mixed);
+                } elseif ($this->hasModule($mixed)) {
+                    $component = $this->getModule($mixed);
+                } elseif (strpos($mixed, '\\') === false) {
+                    throw new InvalidConfigException("Unknown bootstrapping component ID: $mixed");
                 }
             }
+
             if (!isset($component)) {
-                $component = Yii::createObject($class);
+                $component = Yii::createObject($mixed);
             }
 
             if ($component instanceof BootstrapInterface) {
@@ -372,7 +379,6 @@ abstract class Application extends Module
     public function run()
     {
         try {
-
             $this->state = self::STATE_BEFORE_REQUEST;
             $this->trigger(self::EVENT_BEFORE_REQUEST);
 
@@ -388,12 +394,9 @@ abstract class Application extends Module
             $this->state = self::STATE_END;
 
             return $response->exitStatus;
-
         } catch (ExitException $e) {
-
             $this->end($e->statusCode, isset($response) ? $response : null);
             return $e->statusCode;
-
         }
     }
 
@@ -516,7 +519,7 @@ abstract class Application extends Module
 
     /**
      * Returns the cache component.
-     * @return \yii\caching\Cache the cache application component. Null if the component is not enabled.
+     * @return \yii\caching\CacheInterface the cache application component. Null if the component is not enabled.
      */
     public function getCache()
     {
@@ -569,7 +572,7 @@ abstract class Application extends Module
     }
 
     /**
-     * Returns the internationalization (i18n) component
+     * Returns the internationalization (i18n) component.
      * @return \yii\i18n\I18N the internationalization application component.
      */
     public function getI18n()
@@ -649,19 +652,19 @@ abstract class Application extends Module
 
         if ($this->state !== self::STATE_SENDING_RESPONSE && $this->state !== self::STATE_END) {
             $this->state = self::STATE_END;
-            $response = $response ? : $this->getResponse();
+            $response = $response ?: $this->getResponse();
             $response->send();
         }
 
         if (YII_ENV_TEST) {
             throw new ExitException($status);
-        } else {
-            exit($status);
         }
+
+        exit($status);
     }
 
     /**
-     * Configures [[Yii::$container]] with the $config
+     * Configures [[Yii::$container]] with the $config.
      *
      * @param array $config values given in terms of name-value pairs
      * @since 2.0.11

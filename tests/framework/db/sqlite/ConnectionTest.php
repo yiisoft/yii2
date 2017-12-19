@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\sqlite;
 
@@ -40,6 +45,8 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->rollBack();
+
+        $this->assertTrue(true); // No exceptions means test is passed.
     }
 
     public function testMasterSlave()
@@ -68,9 +75,9 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             } else {
                 $this->assertNull($db->getMaster());
             }
-            $this->assertNotEquals('test', $db->createCommand("SELECT description FROM profile WHERE id=1")->queryScalar());
+            $this->assertNotEquals('test', $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar());
             $result = $db->useMaster(function (Connection $db) {
-                return $db->createCommand("SELECT description FROM profile WHERE id=1")->queryScalar();
+                return $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar();
             });
             $this->assertEquals('test', $result);
 
@@ -106,12 +113,15 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $hit_slaves = $hit_masters = [];
 
-        for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
+        for ($i = $nodesCount * $retryPerNode; $i-- > 0;) {
             $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
             $db->shuffleMasters = true;
 
             $hit_slaves[$db->getSlave()->dsn] = true;
             $hit_masters[$db->getMaster()->dsn] = true;
+            if (count($hit_slaves) === $slavesCount && count($hit_masters) === $mastersCount) {
+                break;
+            }
         }
 
         $this->assertCount($mastersCount, $hit_masters, 'all masters hit');
@@ -128,12 +138,15 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $hit_slaves = $hit_masters = [];
 
-        for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
+        for ($i = $nodesCount * $retryPerNode; $i-- > 0;) {
             $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
             $db->shuffleMasters = false;
 
             $hit_slaves[$db->getSlave()->dsn] = true;
             $hit_masters[$db->getMaster()->dsn] = true;
+            if (count($hit_slaves) === $slavesCount) {
+                break;
+            }
         }
 
         $this->assertCount(1, $hit_masters, 'same master hit');
@@ -193,7 +206,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     public function testAliasDbPath()
     {
         $config = [
-            'dsn' => "sqlite:@yiiunit/runtime/yii2aliastest.sq3",
+            'dsn' => 'sqlite:@yiiunit/runtime/yii2aliastest.sq3',
         ];
         $connection = new Connection($config);
         $connection->open();
@@ -205,7 +218,6 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
     public function testExceptionContainsRawQuery()
     {
-        // This test does not work on sqlite because preparing the failing query fails
+        $this->markTestSkipped('This test does not work on sqlite because preparing the failing query fails');
     }
-
 }
