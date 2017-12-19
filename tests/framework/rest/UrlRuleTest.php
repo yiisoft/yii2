@@ -347,10 +347,10 @@ class UrlRuleTest extends TestCase
 
     /**
      * @dataProvider createUrlDataProvider
-     * @param array $rule
+     * @param array $config
      * @param array $tests
      */
-    public function testCreateUrl($rule, $tests)
+    public function testCreateUrl($config, $tests)
     {
         foreach ($tests as $test) {
             list($params, $expected) = $test;
@@ -362,7 +362,7 @@ class UrlRuleTest extends TestCase
             $manager = new UrlManager([
                 'cache' => null,
             ]);
-            $rule = new UrlRule($rule);
+            $rule = new UrlRule($config);
             $this->assertEquals($expected, $rule->createUrl($manager, $route, $params));
         }
     }
