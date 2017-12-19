@@ -364,6 +364,8 @@ class StringHelperTest extends TestCase
             ['begin/*/end', 'begin/two/steps/end', false, ['filePath' => true]],
             ['begin\*\end', 'begin\middle\end', true, ['filePath' => true]],
             ['begin\*\end', 'begin\two\steps\end', false, ['filePath' => true]],
+            ['*', 'any', true, ['filePath' => true]],
+            ['*', 'any/path', false, ['filePath' => true]],
         ];
     }
 

@@ -381,7 +381,7 @@ class BaseStringHelper
      */
     public static function matchWildcard($pattern, $string, $options = [])
     {
-        if ($pattern === '*') {
+        if ($pattern === '*' && empty($options['filePath'])) {
             return true;
         }
 
