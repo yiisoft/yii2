@@ -114,7 +114,7 @@ $container->get('Foo', [], [
 たとえば
 
 ```php
-$container->set('Foo', function () {
+$container->set('Foo', function ($container, $params, $config) {
     $foo = new Foo(new Bar);
     // ... その他の初期化 ...
     return $foo;
@@ -129,7 +129,7 @@ $foo = $container->get('Foo');
 ```php
 class FooBuilder
 {
-    public static function build()
+    public static function build($container, $params, $config)
     {
         $foo = new Foo(new Bar);
         // ... その他の初期化 ...
@@ -413,7 +413,7 @@ $container->setDefinitions([
         'class' => 'app\components\Response',
         'format' => 'json'
     ],
-    'app\storage\DocumentsReader' => function () {
+    'app\storage\DocumentsReader' => function ($container, $params, $config) {
         $fs = new app\storage\FileStorage('/var/tempfiles');
         return new app\storage\DocumentsReader($fs);
     }

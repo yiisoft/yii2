@@ -1216,26 +1216,7 @@ class BaseHtml
         $encode = ArrayHelper::remove($options, 'encode', true);
         $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
         unset($options['header']);
-
-        $lines = [];
-        if (!is_array($models)) {
-            $models = [$models];
-        }
-        foreach ($models as $model) {
-            /* @var $model Model */
-            foreach ($model->getErrors() as $errors) {
-                foreach ($errors as $error) {
-                    $line = $encode ? Html::encode($error) : $error;
-                    if (!in_array($line, $lines, true)) {
-                        $lines[] = $line;
-                    }
-                    if (!$showAllErrors) {
-                        break;
-                    }
-                }
-            }
-        }
-
+        $lines = self::collectErrors($models, $encode, $showAllErrors);
         if (empty($lines)) {
             // still render the placeholder for client-side validation use
             $content = '<ul></ul>';
@@ -1245,6 +1226,35 @@ class BaseHtml
         }
 
         return Html::tag('div', $header . $content . $footer, $options);
+    }
+
+    /**
+     * Return array of the validation errors
+     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param $encode boolean, if set to false then the error messages won't be encoded.
+     * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
+     * only the first error message for each attribute will be shown.
+     * @return array of the validation errors
+     * @since 2.0.14
+     */
+    private static function collectErrors($models, $encode, $showAllErrors)
+    {
+        $lines = [];
+        if (!is_array($models)) {
+            $models = [$models];
+        }
+
+        foreach ($models as $model) {
+            $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
+        }
+
+        if ($encode) {
+            for ($i = 0; $i < count($lines); $i++) {
+                $lines[$i] = Html::encode($lines[$i]);
+            }
+        }
+
+        return $lines;
     }
 
     /**

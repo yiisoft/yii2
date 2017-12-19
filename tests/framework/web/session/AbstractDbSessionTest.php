@@ -43,18 +43,18 @@ abstract class AbstractDbSessionTest extends TestCase
     protected function getDbConfig()
     {
         $driverNames = $this->getDriverNames();
+        $databases = self::getParam('databases');
         foreach ($driverNames as $driverName) {
-            if (in_array($driverName, \PDO::getAvailableDrivers())) {
+            if (in_array($driverName, \PDO::getAvailableDrivers()) && array_key_exists($driverName, $databases)) {
+                $driverAvailable = $driverName;
                 break;
             }
         }
-        if (!isset($driverName)) {
-            $this->markTestIncomplete(get_called_class() . ' requires ' . implode(' or ', $driverNames) . ' PDO driver!');
+        if (!isset($driverAvailable)) {
+            $this->markTestIncomplete(get_called_class() . ' requires ' . implode(' or ', $driverNames) . ' PDO driver! Configuration for connection required too.');
             return [];
         }
-
-        $databases = self::getParam('databases');
-        $config = $databases[$driverName];
+        $config = $databases[$driverAvailable];
 
         $result = [
             'class' => Connection::className(),

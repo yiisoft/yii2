@@ -3,6 +3,7 @@
 _yii() {
     local state command lastArgument commands options executive
     lastArgument=${words[${#words[@]}]}
+    prevArgument=${words[${#words[@]}-1]}
     executive=$words[1]
 
     # lookup for command
@@ -16,9 +17,10 @@ _yii() {
 
     [[ $lastArgument == $command ]] && state="command"
     [[ $lastArgument != $command ]] && state="option"
+    [[ $prevArgument == "help" ]] && state="help"
 
     case $state in
-        command)
+        command|help)
             commands=("${(@f)$(${executive} help/list 2>/dev/null)}")
             _describe 'command' commands
         ;;

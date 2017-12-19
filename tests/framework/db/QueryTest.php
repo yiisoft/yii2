@@ -21,7 +21,7 @@ abstract class QueryTest extends DatabaseTestCase
         $query->select('*');
         $this->assertEquals(['*'], $query->select);
         $this->assertNull($query->distinct);
-        $this->assertEquals(null, $query->selectOption);
+        $this->assertNull($query->selectOption);
 
         $query = new Query();
         $query->select('id, name', 'something')->distinct(true);
@@ -44,6 +44,14 @@ abstract class QueryTest extends DatabaseTestCase
         $query = new Query();
         $query->from('user');
         $this->assertEquals(['user'], $query->from);
+    }
+
+    public function testFromTableIsExpression()
+    {
+        $query = new Query();
+        $tables = new Expression('(SELECT id,name FROM user) u');
+        $query->from($tables);
+        $this->assertInstanceOf('\yii\db\Expression', $query->from);
     }
 
     use GetTablesAliasTestTrait;

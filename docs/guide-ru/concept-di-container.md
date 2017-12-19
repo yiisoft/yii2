@@ -151,7 +151,7 @@ $container->setDefinitions([
         'class' => 'app\components\Response',
         'format' => 'json'
     ],
-    'app\storage\DocumentsReader' => function () {
+    'app\storage\DocumentsReader' => function ($container, $params, $config) {
         $fs = new app\storage\FileStorage('/var/tempfiles');
         return new app\storage\DocumentsReader($fs);
     }
@@ -243,7 +243,7 @@ $reader = $container->get('app\storage\DocumentsReader');
 Callback отвечает за разрешения зависимостей и внедряет их в соответствии с вновь создаваемыми объектами. Например,
 
 ```php
-$container->set('Foo', function () {
+$container->set('Foo', function ($container, $params, $config) {
     $foo = new Foo(new Bar);
     // ... дополнительная инициализация
     return $foo;
@@ -258,7 +258,7 @@ callable:
 ```php
 class FooBuilder
 {
-    public static function build()
+    public static function build($container, $params, $config)
     {
         $foo = new Foo(new Bar);
         // ... дополнительная инициализация ...

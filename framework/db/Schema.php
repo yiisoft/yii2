@@ -277,12 +277,13 @@ abstract class Schema extends BaseObject
      */
     public function refreshTableSchema($name)
     {
-        unset($this->_tableMetadata[$name]);
+        $rawName = $this->getRawTableName($name);
+        unset($this->_tableMetadata[$rawName]);
         $this->_tableNames = [];
         /* @var $cache CacheInterface */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof CacheInterface) {
-            $cache->delete($this->getCacheKey($name));
+            $cache->delete($this->getCacheKey($rawName));
         }
     }
 
@@ -607,8 +608,8 @@ abstract class Schema extends BaseObject
 
     /**
      * Returns the cache key for the specified table name.
-     * @param string $name the table name
-     * @return mixed the cache key
+     * @param string $name the table name.
+     * @return mixed the cache key.
      */
     protected function getCacheKey($name)
     {
@@ -616,7 +617,7 @@ abstract class Schema extends BaseObject
             __CLASS__,
             $this->db->dsn,
             $this->db->username,
-            $name,
+            $this->getRawTableName($name),
         ];
     }
 
@@ -653,15 +654,16 @@ abstract class Schema extends BaseObject
                 $cache = $schemaCache;
             }
         }
-        if ($refresh || !isset($this->_tableMetadata[$name])) {
-            $this->loadTableMetadataFromCache($cache, $name);
+        $rawName = $this->getRawTableName($name);
+        if ($refresh || !isset($this->_tableMetadata[$rawName])) {
+            $this->loadTableMetadataFromCache($cache, $rawName);
         }
-        if (!array_key_exists($type, $this->_tableMetadata[$name])) {
-            $this->_tableMetadata[$name][$type] = $this->{'loadTable' . ucfirst($type)}($this->getRawTableName($name));
-            $this->saveTableMetadataToCache($cache, $name);
+        if (!array_key_exists($type, $this->_tableMetadata[$rawName])) {
+            $this->_tableMetadata[$rawName][$type] = $this->{'loadTable' . ucfirst($type)}($rawName);
+            $this->saveTableMetadataToCache($cache, $rawName);
         }
 
-        return $this->_tableMetadata[$name][$type];
+        return $this->_tableMetadata[$rawName][$type];
     }
 
     /**
@@ -701,7 +703,7 @@ abstract class Schema extends BaseObject
      */
     protected function setTableMetadata($name, $type, $data)
     {
-        $this->_tableMetadata[$name][$type] = $data;
+        $this->_tableMetadata[$this->getRawTableName($name)][$type] = $data;
     }
 
     /**

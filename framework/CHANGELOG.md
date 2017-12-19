@@ -1,12 +1,57 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.13.1 under development
+2.0.14 under development
 ------------------------
+
+- Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorMethod" option to be able to customize errors display (yanggs07) 
+- Bug #15355: Fixed `yii\db\Query::from()` does not work with `yii\db\Expression` (vladis84)
+- Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
+- Bug #14276: Fixed I18N format with dotted parameters (developeruz)
+- Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
+- Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
+- Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()` (IceJOKER)
+- Bug #15194: Fixed `yii\db\QueryBuilder::insert()` to preserve passed params when building a `INSERT INTO ... SELECT` query for MSSQL, PostgreSQL and SQLite (sergeymakinen)
+- Bug #15229: Fixed `yii\console\widgets\Table` default value for `getScreenWidth()`, when `Console::getScreenSize()` can't determine screen size (webleaf)
+- Bug #15234: Fixed `\yii\widgets\LinkPager` removed `tag` from `disabledListItemSubTagOptions` (SDKiller)
+- Enh #7988: Added `\yii\helpers\Console::errorSummary()` and `\yii\helpers\Json::errorSummary()` (developeruz)
+- Bug #15249: Controllers in subdirectories were not visible in commands list (IceJOKER)
+- Bug #15270: Resolved potential race conditions when writing generated php-files (kalessil)
+- Bug #15301: Fixed `ArrayHelper::filter()` to work properly with `0` in values (hhniao)
+- Bug #15302: Fixed `yii\caching\DbCache` so that `getValues` now behaves the same as `getValue` with regards to streams (edwards-sj)
+- Bug #15320: Fixed special role checks in `yii\filters\AccessRule::matchRole()` (Izumi-kun)
+- Bug #15322: Fixed PHP 7.2 compatibility of `FileHelper::getExtensionsByMimeType()` (samdark)
+- Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
+- Enh #8752: Allow specify `$attributeNames` as a string for `yii\base\Model` `validate()` method (developeruz)
+- Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
+- Enh #9253: Allow `variations` to be a string for `yii\filters\PageCache` and `yii\widgets\FragmentCache` (schojniak, developeruz)
+- Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
+- Enh #7996: Short syntax for verb in GroupUrlRule (schojniak, developeruz)
+- Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
+- Enh #15219: Added `yii\filters\auth\HttpHeaderAuth` (bboure)
+- Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
+- Enh #15024: `yii\web\Pjax` widget does not prevent CSS files from sending anymore because they are handled by client-side plugin correctly (onmotion)
+- Enh #15135: Automatic completion for help in bash and zsh (Valkeru)
+- Enh #15221: Added support for specifying `--camelCase` console options in `--kebab-case` (brandonkelly)
+- Enh #15221: Added support for the `--<option> <value>` console option syntax (brandonkelly)
+- Enh #15221: Improved the `help/list-action-options` console command output for command options without a description (brandonkelly)
+- Enh #15332: Always check for availability of `openssl_pseudo_random_bytes`, even if LibreSSL is available (sammousa)
+- Enh #15335: Added `FileHelper::unlink()` that works well under all OSes (samdark)
+- Enh #15347: Add `Instance` support for object property in DI container (kojit2009)
+- Enh #15340: Test CHANGELOG.md for valid format (sammousa)
+- Enh #15360: Refactored `BaseConsole::updateProgress()` (developeruz)
+- Bug #15317: Regenerate CSRF token if an empty value is given (sammousa)
+- Bug #15380: `FormatConverter::convertDateIcuToPhp()` now converts `a` ICU symbols to `A` (brandonkelly)
+
+
+
+2.0.13.1 November 14, 2017
+--------------------------
 
 - Bug #15081: Fixed "Undefined offset: 1" in log Target (ischenko)
 - Bug #15086: Fixed jQuery onLoad event handling (alexantr)
-- Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorMethod" option to be able to customize errors display (yanggs07) 
+- Bug #15108: Fixed `yii\db\Schema::getSchemaNames()` for MSSQL and added tests for all DBMSes (sergeymakinen)
+- Bug #15117: Fixed DB schema cache did not honor table prefixes (sergeymakinen)
 
 
 2.0.13 November 03, 2017
@@ -113,7 +158,6 @@ Yii Framework 2 Change Log
 - Chg #14286: Used primary inputmask package name instead of an alias (samdark)
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
-
 
 2.0.12 June 05, 2017
 --------------------

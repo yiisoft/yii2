@@ -397,10 +397,5 @@ _MSG_
         $result = $formatter->format('{word,umber}', ['word' => 'test'], 'en-US'); // typo is intentional, message pattern should be invalid
         $this->assertFalse($result);
         $this->assertNotEmpty($formatter->getErrorMessage());
-        if (PHP_MAJOR_VERSION < 7) {
-            $this->assertContains('message formatter creation failed', $formatter->getErrorMessage());
-        } else {
-            $this->assertContains('Constructor failed', $formatter->getErrorMessage());
-        }
     }
 }

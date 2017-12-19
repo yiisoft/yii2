@@ -38,6 +38,13 @@ command `yii help migrate`.
 > Tip: migrations could affect not only database schema but adjust existing data to fit new schema, create RBAC
   hierarchy or clean up cache.
 
+> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
+> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
+> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
+> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
+> existing migrations. For this reason migration code should be kept independent from other application logic such
+> as Active Record classes.
+
 
 ## Creating Migrations <span id="creating-migrations"></span>
 
@@ -714,14 +721,6 @@ Below is the list of all these database accessing methods:
 >     $this->update('users', ['status' => 1], ['id' => $user['id']]);
 > }
 > ```
-
-
-> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
-> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
-> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
-> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
-> existing migrations. For this reason migration code should be kept independent from other application logic such
-> as Active Record classes.
 
 
 ## Applying Migrations <span id="applying-migrations"></span>
