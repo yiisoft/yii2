@@ -300,8 +300,8 @@ class Connection extends Component
     public $commandClass = 'yii\db\Command';
     /**
      * @var array mapping between PDO driver names and [[Command]] classes.
-     * The keys of the array are PDO driver names while the values the corresponding
-     * command class name or configuration. Please refer to [[Yii::createObject()]] for
+     * The keys of the array are PDO driver names while the values are either the corresponding
+     * command class names or configurations. Please refer to [[Yii::createObject()]] for
      * details on how to specify a configuration.
      *
      * This property is mainly used by [[createCommand()]] to create new database [[Command]] objects.
