@@ -20,8 +20,10 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
     public function testLoadDefaultDatetimeColumn()
     {
-        if (version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
-            $sql = <<<SQL
+        if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
+            $this->markTestSkipped('Default datetime columns are supported since MySQL 5.6.');
+        }
+        $sql = <<<SQL
 CREATE TABLE  IF NOT EXISTS `datetime_test`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -30,14 +32,13 @@ CREATE TABLE  IF NOT EXISTS `datetime_test`  (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 SQL;
 
-            $this->getConnection()->createCommand($sql)->execute();
+        $this->getConnection()->createCommand($sql)->execute();
 
-            $schema = $this->getConnection()->getTableSchema('datetime_test');
+        $schema = $this->getConnection()->getTableSchema('datetime_test');
 
-            $dt = $schema->columns['dt'];
+        $dt = $schema->columns['dt'];
 
-            $this->assertInstanceOf(Expression::className(),$dt->defaultValue);
-        }
+        $this->assertInstanceOf(Expression::className(),$dt->defaultValue);
     }
 
     public function testGetSchemaNames()
