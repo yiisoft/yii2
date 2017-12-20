@@ -259,6 +259,11 @@ _MSG_
                 'offers',
                 [13],
             ],
+            [
+                'Message without {closing} {brace',
+                false, // Message pattern is invalid
+                ['closing brace and with'],
+            ],
         ];
     }
 

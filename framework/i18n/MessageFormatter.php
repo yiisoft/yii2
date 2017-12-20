@@ -299,7 +299,7 @@ class MessageFormatter extends Component
         while (true) {
             $open = mb_strpos($pattern, '{', $pos + 1, $charset);
             $close = mb_strpos($pattern, '}', $pos + 1, $charset);
-            if ($open === false || $close === false) {
+            if ($open === false && $close === false) {
                 break;
             }
             if ($open === false) {
@@ -317,6 +317,10 @@ class MessageFormatter extends Component
                 $start = $pos + 1;
                 $tokens[] = mb_substr($pattern, $start, $open - $start, $charset);
                 $start = $open;
+            }
+
+            if($depth !== 0 && ($open === false || $close === false)) {
+                break;
             }
         }
         if ($depth !== 0) {
