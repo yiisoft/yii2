@@ -473,7 +473,7 @@ class Query extends Component implements QueryInterface
         } elseif (is_string($this->from)) {
             $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
         } elseif ($this->from instanceof Expression) {
-            $tableNames[] = $this->from;
+            $tableNames = [$this->from];
         } else {
             throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
         }
@@ -481,12 +481,14 @@ class Query extends Component implements QueryInterface
         // Clean up table names and aliases
         $cleanedUpTableNames = [];
         foreach ($tableNames as $alias => $tableName) {
-            $tableNameString = $tableName;
-            if ($tableName instanceof Expression) {
+            $tableNameString = null;
+            if (is_string($tableName)) {
+                $tableNameString = $tableName;
+            } elseif ($tableName instanceof Expression) {
                 $tableNameString = $tableName->expression;
             }
 
-            if (!is_string($alias) && is_string($tableNameString)) {
+            if (!is_string($alias) && $tableNameString !== null) {
                 $pattern = <<<PATTERN
 ~
 ^
@@ -519,12 +521,10 @@ $
 ~iux
 PATTERN;
                 if (preg_match($pattern, $tableNameString, $matches)) {
-                    if (isset($matches[1])) {
-                        if (isset($matches[2])) {
-                            list(, $tableNameString, $alias) = $matches;
-                        } else {
-                            $tableNameString = $alias = $matches[1];
-                        }
+                    if (isset($matches[2])) {
+                        list(, $tableNameString, $alias) = $matches;
+                    } else {
+                        $tableNameString = $alias = $matches[1];
                     }
                 }
             }
