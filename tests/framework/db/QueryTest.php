@@ -640,7 +640,6 @@ abstract class QueryTest extends DatabaseTestCase
         $query = new Query;
         $expression = new \yii\db\Expression('(SELECT id from user) x');
         $query->from($expression);
-        $expected = ['{{activeusers}}' => '{{(SELECT * FROM user WHERE active = 1)}}'];
 
         $tables = $query->getTablesUsedInFrom();
 
