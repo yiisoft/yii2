@@ -470,6 +470,8 @@ class Query extends Component implements QueryInterface
             $tableNames = $this->from;
         } elseif (is_string($this->from)) {
             $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
+        } elseif ($this->from instanceof Expression) {
+            return (string) $this->from;
         } else {
             throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
         }
@@ -477,6 +479,11 @@ class Query extends Component implements QueryInterface
         // Clean up table names and aliases
         $cleanedUpTableNames = [];
         foreach ($tableNames as $alias => $tableName) {
+            if ($tableName instanceof self) {
+                $cleanedUpTableNames += $tableName->getTablesUsedInFrom();
+                
+                continue;
+            }
             if (!is_string($alias)) {
                 $pattern = <<<PATTERN
 ~
@@ -514,12 +521,6 @@ PATTERN;
                         } else {
                             $tableName = $alias = $matches[1];
                         }
-                        if (strncmp($alias, '{{', 2) !== 0) {
-                            $alias = '{{' . $alias . '}}';
-                        }
-                        if (strncmp($tableName, '{{', 2) !== 0) {
-                            $tableName = '{{' . $tableName . '}}';
-                        }
                     }
                 }
             }
@@ -527,10 +528,26 @@ PATTERN;
             $tableName = str_replace(["'", '"', '`', '[', ']'], '', $tableName);
             $alias = str_replace(["'", '"', '`', '[', ']'], '', $alias);
 
-            $cleanedUpTableNames[$alias] = $tableName;
+            $cleanedUpTableNames[$this->encloseName($alias)] = $this->encloseName($tableName);
         }
 
         return $cleanedUpTableNames;
+    }
+
+    /**
+     * Aliases or names  enclose into {{}}
+     * @param string $name
+     * @return string
+     */
+    private function encloseName($name)
+    {
+        if ($name && !preg_match('/^{{.*}}$/', $name)) {
+            $name = trim($name, '{}');
+            
+            return '{{' . $name . '}}';
+        }
+
+        return $name;
     }
 
     /**
