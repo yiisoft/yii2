@@ -17,16 +17,6 @@ trait GetTablesAliasTestTrait
      */
     abstract protected function createQuery();
 
-    public function testGetTableNames_isEmptyArray()
-    {
-        $query = $this->createQuery();
-        $query->from = [];
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([], $tables);
-    }
-
     public function testGetTableNames_isFromArrayWithAlias()
     {
         $query = $this->createQuery();
