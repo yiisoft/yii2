@@ -466,12 +466,14 @@ class Query extends Component implements QueryInterface
     {
         if (empty($this->from)) {
             return [];
-        } elseif (is_array($this->from)) {
+        }
+
+        if (is_array($this->from)) {
             $tableNames = $this->from;
         } elseif (is_string($this->from)) {
             $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
         } elseif ($this->from instanceof Expression) {
-            return (string) $this->from;
+            $tableNames[] = $this->from;
         } else {
             throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
         }
@@ -479,12 +481,12 @@ class Query extends Component implements QueryInterface
         // Clean up table names and aliases
         $cleanedUpTableNames = [];
         foreach ($tableNames as $alias => $tableName) {
-            if ($tableName instanceof self) {
-                $cleanedUpTableNames += $tableName->getTablesUsedInFrom();
-                
-                continue;
+            $tableNameString = $tableName;
+            if ($tableName instanceof Expression) {
+                $tableNameString = $tableName->expression;
             }
-            if (!is_string($alias)) {
+
+            if (!is_string($alias) && is_string($tableNameString)) {
                 $pattern = <<<PATTERN
 ~
 ^
@@ -493,6 +495,8 @@ class Query extends Component implements QueryInterface
     (?:['"`\[]|{{)
     .*?
     (?:['"`\]]|}})
+    |
+    \(.*?\)
     |
     .*?
 )
@@ -514,36 +518,38 @@ class Query extends Component implements QueryInterface
 $
 ~iux
 PATTERN;
-                if (preg_match($pattern, $tableName, $matches)) {
+                if (preg_match($pattern, $tableNameString, $matches)) {
                     if (isset($matches[1])) {
                         if (isset($matches[2])) {
-                            list(, $tableName, $alias) = $matches;
+                            list(, $tableNameString, $alias) = $matches;
                         } else {
-                            $tableName = $alias = $matches[1];
+                            $tableNameString = $alias = $matches[1];
                         }
                     }
                 }
             }
 
-            $tableName = str_replace(["'", '"', '`', '[', ']'], '', $tableName);
-            $alias = str_replace(["'", '"', '`', '[', ']'], '', $alias);
-
-            $cleanedUpTableNames[$this->encloseName($alias)] = $this->encloseName($tableName);
+            if ($tableName instanceof Expression) {
+                $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $tableNameString;
+            } elseif ($tableName instanceof self) {
+                $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $tableName;
+            } else {
+                $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $this->ensureNameQuoted($tableNameString);
+            }
         }
 
         return $cleanedUpTableNames;
     }
 
     /**
-     * Aliases or names  enclose into {{}}
+     * Ensures name is wrapped with {{ and }}
      * @param string $name
      * @return string
      */
-    private function encloseName($name)
+    private function ensureNameQuoted($name)
     {
+        $name = str_replace(["'", '"', '`', '[', ']'], '', $name);
         if ($name && !preg_match('/^{{.*}}$/', $name)) {
-            $name = trim($name, '{}');
-            
             return '{{' . $name . '}}';
         }
 
