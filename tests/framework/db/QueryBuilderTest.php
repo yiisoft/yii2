@@ -2080,7 +2080,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     public function testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams)
     {
         $actualParams = [];
-        $actualSQL = $this->getQueryBuilder()->upsert($table, $insertColumns, $updateColumns, $actualParams);
+        $actualSQL = $this->getQueryBuilder(true, $this->driverName === 'sqlite')->upsert($table, $insertColumns, $updateColumns, $actualParams);
         if (is_string($expectedSQL)) {
             $this->assertSame($expectedSQL, $actualSQL);
         } else {
