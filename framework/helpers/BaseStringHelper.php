@@ -374,6 +374,7 @@ class BaseStringHelper
      * @param array $options options for matching. Valid options are:
      *
      * - caseSensitive: bool, whether pattern should be case sensitive. Defaults to `true`.
+     * - escape: bool, whether backslash escaping is enabled. Defaults to `true`.
      * - filePath: bool, whether slashes in string only matches slashes in the given pattern. Defaults to `false`.
      *
      * @return bool whether the string matches pattern or not.
@@ -386,12 +387,22 @@ class BaseStringHelper
         }
 
         $replacements = [
+            '\\\\\\\\' => '\\\\',
+            '\\\\\\*' => '[*]',
+            '\\\\\\?' => '[?]',
             '\*' => '.*',
             '\?' => '.',
+            '\[\!' => '[^',
             '\[' => '[',
             '\]' => ']',
             '\-' => '-',
         ];
+
+        if (isset($options['escape']) && !$options['escape']) {
+            unset($replacements['\\\\\\\\']);
+            unset($replacements['\\\\\\*']);
+            unset($replacements['\\\\\\?']);
+        }
 
         if (!empty($options['filePath'])) {
             $replacements['\*'] = '[^/\\\\]*';

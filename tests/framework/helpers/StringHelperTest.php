@@ -342,8 +342,8 @@ class StringHelperTest extends TestCase
             ['gr[ae]y', 'groy', false],
             ['a[2-8]', 'a1', false],
             ['a[2-8]', 'a3', true],
-            ['[][!]', '][!', true],
-            ['[-1]', '1--', true],
+            ['[][!]', ']', true],
+            ['[-1]', '-', true],
             // [!]
             ['gr[!ae]y', 'gray', false],
             ['gr[!ae]y', 'grey', false],
@@ -357,9 +357,9 @@ class StringHelperTest extends TestCase
             ['begin/*/end', 'begin/middle/end', true],
             ['begin/*/end', 'begin/two/steps/end', true],
             ['begin/*/end', 'begin/end', false],
-            ['begin\*\end', 'begin\middle\end', true],
-            ['begin\*\end', 'begin\two\steps\end', true],
-            ['begin\*\end', 'begin\end', false],
+            ['begin\\\\*\\\\end', 'begin\middle\end', true],
+            ['begin\\\\*\\\\end', 'begin\two\steps\end', true],
+            ['begin\\\\*\\\\end', 'begin\end', false],
             // dots
             ['begin.*.end', 'begin.middle.end', true],
             ['begin.*.end', 'begin.two.steps.end', true],
@@ -370,15 +370,20 @@ class StringHelperTest extends TestCase
             // file path
             ['begin/*/end', 'begin/middle/end', true, ['filePath' => true]],
             ['begin/*/end', 'begin/two/steps/end', false, ['filePath' => true]],
-            ['begin\*\end', 'begin\middle\end', true, ['filePath' => true]],
-            ['begin\*\end', 'begin\two\steps\end', false, ['filePath' => true]],
+            ['begin\\\\*\\\\end', 'begin\middle\end', true, ['filePath' => true]],
+            ['begin\\\\*\\\\end', 'begin\two\steps\end', false, ['filePath' => true]],
             ['*', 'any', true, ['filePath' => true]],
             ['*', 'any/path', false, ['filePath' => true]],
             ['[.-0]', 'any/path', false, ['filePath' => true]],
-            ['*', '.dotenv', false, ['filePath' => true]],
+            ['*', '.dotenv', true, ['filePath' => true]],
             // escaping
             ['\*\?', '*?', true],
             ['\*\?', 'zz', false],
+            ['begin\*\end', 'begin\middle\end', true, ['escape' => false]],
+            ['begin\*\end', 'begin\two\steps\end', true, ['escape' => false]],
+            ['begin\*\end', 'begin\end', false, ['escape' => false]],
+            ['begin\*\end', 'begin\middle\end', true, ['filePath' => true, 'escape' => false]],
+            ['begin\*\end', 'begin\two\steps\end', false, ['filePath' => true, 'escape' => false]],
         ];
     }
 
