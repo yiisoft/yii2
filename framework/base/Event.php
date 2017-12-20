@@ -6,6 +6,7 @@
  */
 
 namespace yii\base;
+use yii\helpers\StringHelper;
 
 /**
  * Event is the base class for all event classes.
@@ -54,6 +55,11 @@ class Event extends BaseObject
      * @var array contains all globally registered event handlers.
      */
     private static $_events = [];
+    /**
+     * @var array the globally registered event handlers attached for wildcard patterns (event name wildcard => handlers)
+     * @since 2.0.14
+     */
+    private static $_eventWildcards = [];
 
 
     /**
@@ -88,6 +94,16 @@ class Event extends BaseObject
     public static function on($class, $name, $handler, $data = null, $append = true)
     {
         $class = ltrim($class, '\\');
+
+        if (strpos($class, '*') !== false || strpos($name, '*') !== false) {
+            if ($append || empty(self::$_eventWildcards[$name][$class])) {
+                self::$_eventWildcards[$name][$class][] = [$handler, $data];
+            } else {
+                array_unshift(self::$_eventWildcards[$name][$class], [$handler, $data]);
+            }
+            return;
+        }
+
         if ($append || empty(self::$_events[$name][$class])) {
             self::$_events[$name][$class][] = [$handler, $data];
         } else {
@@ -110,23 +126,40 @@ class Event extends BaseObject
     public static function off($class, $name, $handler = null)
     {
         $class = ltrim($class, '\\');
-        if (empty(self::$_events[$name][$class])) {
+        if (empty(self::$_events[$name][$class]) && empty(self::$_eventWildcards[$name][$class])) {
             return false;
         }
         if ($handler === null) {
             unset(self::$_events[$name][$class]);
+            unset(self::$_eventWildcards[$name][$class]);
             return true;
         }
 
+        // plain event names
+        if (isset(self::$_events[$name][$class])) {
+            $removed = false;
+            foreach (self::$_events[$name][$class] as $i => $event) {
+                if ($event[0] === $handler) {
+                    unset(self::$_events[$name][$class][$i]);
+                    $removed = true;
+                }
+            }
+            if ($removed) {
+                self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
+                return $removed;
+            }
+        }
+
+        // wildcard event names
         $removed = false;
-        foreach (self::$_events[$name][$class] as $i => $event) {
+        foreach (self::$_eventWildcards[$name][$class] as $i => $event) {
             if ($event[0] === $handler) {
-                unset(self::$_events[$name][$class][$i]);
+                unset(self::$_eventWildcards[$name][$class][$i]);
                 $removed = true;
             }
         }
         if ($removed) {
-            self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
+            self::$_eventWildcards[$name][$class] = array_values(self::$_eventWildcards[$name][$class]);
         }
 
         return $removed;
@@ -141,6 +174,7 @@ class Event extends BaseObject
     public static function offAll()
     {
         self::$_events = [];
+        self::$_eventWildcards = [];
     }
 
     /**
@@ -168,9 +202,24 @@ class Event extends BaseObject
             class_implements($class, true)
         );
 
+        // regular events
         foreach ($classes as $class) {
             if (!empty(self::$_events[$name][$class])) {
                 return true;
+            }
+        }
+
+        // wildcard events
+        foreach (self::$_eventWildcards as $nameWildcard => $classHandlers) {
+            if (!StringHelper::matchWildcard($nameWildcard, $name)) {
+                continue;
+            }
+            foreach (array_keys($classHandlers) as $classWildcard) {
+                foreach ($classes as $class) {
+                    if (!StringHelper::matchWildcard($classWildcard, $class)) {
+                        return true;
+                    }
+                }
             }
         }
 
@@ -187,9 +236,20 @@ class Event extends BaseObject
      */
     public static function trigger($class, $name, $event = null)
     {
-        if (empty(self::$_events[$name])) {
+        $wildcardEventHandlers = [];
+        if (!empty(self::$_eventWildcards)) {
+            foreach (self::$_eventWildcards as $nameWildcard => $classHandlers) {
+                if (!StringHelper::matchWildcard($nameWildcard, $name)) {
+                    continue;
+                }
+                $wildcardEventHandlers = array_merge($wildcardEventHandlers, $classHandlers);
+            }
+        }
+
+        if (empty(self::$_events[$name]) && empty($wildcardEventHandlers)) {
             return;
         }
+
         if ($event === null) {
             $event = new static();
         }
@@ -212,11 +272,18 @@ class Event extends BaseObject
         );
 
         foreach ($classes as $class) {
-            if (empty(self::$_events[$name][$class])) {
-                continue;
+            $eventHandlers = [];
+            foreach ($wildcardEventHandlers as $classWildcard => $handlers) {
+                if (StringHelper::matchWildcard($classWildcard, $class)) {
+                    $eventHandlers = array_merge($eventHandlers, $handlers);
+                }
             }
 
-            foreach (self::$_events[$name][$class] as $handler) {
+            if (!empty(self::$_events[$name][$class])) {
+                $eventHandlers = array_merge($eventHandlers, self::$_events[$name][$class]);
+            }
+
+            foreach ($eventHandlers as $handler) {
                 $event->data = $handler[1];
                 call_user_func($handler[0], $event);
                 if ($event->handled) {
