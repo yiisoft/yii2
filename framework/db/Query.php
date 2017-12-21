@@ -113,7 +113,44 @@ class Query extends Component implements QueryInterface
      * For example, `[':name' => 'Dan', ':age' => 31]`.
      */
     public $params = [];
+    /**
+     * @var int the default number of seconds that query results can remain valid in cache.
+     * Use 0 to indicate that the cached data will never expire. And use a negative number to indicate
+     * query cache should not be used.
+     * @see cache()
+     */
+    public $queryCacheDuration;
+    /**
+     * @var \yii\caching\Dependency the dependency to be associated with the cached query result for this query
+     * @see cache()
+     */
+    public $queryCacheDependency;
 
+
+    /**
+     * Enables query cache for this query.
+     * @param int $duration the number of seconds that query result of this command can remain valid in the cache.
+     * If this is not set, the value of [[Connection::queryCacheDuration]] will be used instead.
+     * Use 0 to indicate that the cached data will never expire.
+     * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query result.
+     * @return $this the command object itself
+     */
+    public function cache($duration = null, $dependency = null)
+    {
+        $this->queryCacheDuration = $duration;
+        $this->queryCacheDependency = $dependency;
+        return $this;
+    }
+
+    /**
+     * Disables query cache for this query.
+     * @return $this the query object itself
+     */
+    public function noCache()
+    {
+        $this->queryCacheDuration = -1;
+        return $this;
+    }
 
     /**
      * Creates a DB command that can be used to execute this query.
@@ -128,7 +165,11 @@ class Query extends Component implements QueryInterface
         }
         list($sql, $params) = $db->getQueryBuilder()->build($this);
 
-        return $db->createCommand($sql, $params);
+        $command = $db->createCommand($sql, $params);
+        if ($this->queryCacheDuration !== null || $this->queryCacheDependency !== null) {
+            $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
+        }
+        return $command;
     }
 
     /**
@@ -448,11 +489,14 @@ class Query extends Component implements QueryInterface
             return $command->queryScalar();
         }
 
-        return (new self())
+        $command = (new self())
             ->select([$selectExpression])
             ->from(['c' => $this])
-            ->createCommand($db)
-            ->queryScalar();
+            ->createCommand($db);
+        if ($this->queryCacheDuration !== null || $this->queryCacheDependency !== null) {
+            $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
+        }
+        return $command->queryScalar();
     }
 
     /**
