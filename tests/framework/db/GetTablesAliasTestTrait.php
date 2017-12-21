@@ -129,13 +129,14 @@ trait GetTablesAliasTestTrait
     public function testGetTableNames_isFromAliasedExpression()
     {
         $query = $this->createQuery();
-        $query->from = new \yii\db\Expression('(SELECT id FROM user) x');
+        $expression = new \yii\db\Expression('(SELECT id FROM user)');
+        $query->from = $expression;
 
+        $this->expectException('yii\base\InvalidParamException');
+        $this->expectExceptionMessage('To use Expression in from() method, pass it in array format with alias.');
         $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals([
-            '{{x}}' => '(SELECT id FROM user)',
-        ], $tables);
+        $this->assertEquals(['{{x}}' => $expression], $tables);
     }
 
     public function testGetTableNames_isFromAliasedArrayWithExpression()

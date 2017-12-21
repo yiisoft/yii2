@@ -8,7 +8,7 @@ Yii Framework 2 Change Log
 - Bug #14157: Add support for loading default value `CURRENT_TIMESTAMP` of MySQL `datetime` field (rossoneri)
 - Bug #15046: Throw an `yii\web\HeadersAlreadySentException` if headers were sent before web response (dmirogin)
 - Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorMethod" option to be able to customize errors display (yanggs07, developeruz)
-- Bug #15355: Fixed `yii\db\Query::from()` does not work with `yii\db\Expression` (vladis84)
+- Bug #15355: Fixed `yii\db\Query::from()` does not work with `yii\db\Expression` (vladis84, silverfire, samdark)
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
 - Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
