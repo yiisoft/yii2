@@ -47,6 +47,7 @@ Yii Framework 2 Change Log
 - Enh #15360: Refactored `BaseConsole::updateProgress()` (developeruz)
 - Bug #15317: Regenerate CSRF token if an empty value is given (sammousa)
 - Bug #15380: `FormatConverter::convertDateIcuToPhp()` now converts `a` ICU symbols to `A` (brandonkelly)
+- Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 
 
 
