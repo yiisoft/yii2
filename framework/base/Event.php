@@ -79,6 +79,14 @@ class Event extends BaseObject
      *
      * The handler will be invoked for EVERY successful ActiveRecord insertion.
      *
+     * Since 2.0.14 you can specify either class name or event name as a wildcard pattern:
+     *
+     * ```php
+     * Event::on('app\models\db\*', '*Insert', function ($event) {
+     *     Yii::trace(get_class($event->sender) . ' is inserted.');
+     * });
+     * ```
+     *
      * For more details about how to declare an event handler, please refer to [[Component::on()]].
      *
      * @param string $class the fully qualified class name to which the event handler needs to attach.
@@ -115,6 +123,9 @@ class Event extends BaseObject
      * Detaches an event handler from a class-level event.
      *
      * This method is the opposite of [[on()]].
+     *
+     * Note: in case wildcard pattern is passed for class name or event name, only the handlers registered with this
+     * wildcard will be removed, while handlers registered with plain names matching this wildcard will remain.
      *
      * @param string $class the fully qualified class name from which the event handler needs to be detached.
      * @param string $name the event name.
@@ -187,9 +198,10 @@ class Event extends BaseObject
      */
     public static function hasHandlers($class, $name)
     {
-        if (empty(self::$_events[$name])) {
+        if (empty(self::$_events[$name]) && empty(self::$_eventWildcards)) {
             return false;
         }
+
         if (is_object($class)) {
             $class = get_class($class);
         } else {
@@ -214,7 +226,10 @@ class Event extends BaseObject
             if (!StringHelper::matchWildcard($nameWildcard, $name)) {
                 continue;
             }
-            foreach (array_keys($classHandlers) as $classWildcard) {
+            foreach ($classHandlers as $classWildcard => $handlers) {
+                if (empty($handlers)) {
+                    continue;
+                }
                 foreach ($classes as $class) {
                     if (!StringHelper::matchWildcard($classWildcard, $class)) {
                         return true;

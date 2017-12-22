@@ -494,6 +494,14 @@ class Component extends BaseObject
      *
      * where `$event` is an [[Event]] object which includes parameters associated with the event.
      *
+     * Since 2.0.14 you can specify event name as a wildcard pattern:
+     *
+     * ```php
+     * $component->on('event.group.*', function ($event) {
+     *     Yii::trace($event->name . ' is triggered.');
+     * });
+     * ```
+     *
      * @param string $name the event name
      * @param callable $handler the event handler
      * @param mixed $data the data to be passed to the event handler when the event is triggered.
@@ -525,7 +533,12 @@ class Component extends BaseObject
 
     /**
      * Detaches an existing event handler from this component.
+     *
      * This method is the opposite of [[on()]].
+     *
+     * Note: in case wildcard pattern is passed for event name, only the handlers registered with this
+     * wildcard will be removed, while handlers registered with plain names matching this wildcard will remain.
+     *
      * @param string $name event name
      * @param callable $handler the event handler to be removed.
      * If it is null, all handlers attached to the named event will be removed.
