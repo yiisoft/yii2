@@ -48,7 +48,7 @@ trait ArrayAccessTrait
      */
     public function offsetExists($offset)
     {
-        return isset($this->data[$offset]);
+        return array_key_exists($offset, $this->data);
     }
 
     /**
