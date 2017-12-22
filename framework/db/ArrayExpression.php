@@ -32,6 +32,10 @@ class ArrayExpression implements ExpressionInterface
      * returns these values. A single value will be considered as an array containing one element.
      */
     protected $values;
+    /**
+     * @var int
+     */
+    private $dimension;
 
     /**
      * ArrayExpression constructor.
@@ -41,11 +45,13 @@ class ArrayExpression implements ExpressionInterface
      * @param string|null $type the type of the array elements. Defaults to `null` which means the type is
      * not explicitly specified. In case when type is not specified explicitly and DBMS can not guess it from the context,
      * SQL error will be raised.
+     * @param int $dimension
      */
-    public function __construct($values, $type = null)
+    public function __construct($values, $type = null, $dimension = 1)
     {
         $this->values = $values;
         $this->type = $type;
+        $this->dimension = $dimension;
     }
 
     /**
@@ -64,5 +70,14 @@ class ArrayExpression implements ExpressionInterface
     public function getValues()
     {
         return $this->values;
+    }
+
+    /**
+     * @return int
+     * @see dimensions
+     */
+    public function getDimension()
+    {
+        return $this->dimension;
     }
 }

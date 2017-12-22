@@ -114,7 +114,7 @@ class ColumnSchema extends BaseObject
      */
     protected function typecast($value)
     {
-        if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY && $this->type !== Schema::TYPE_CHAR) {
+        if ($value === '' && !in_array($this->type, [Schema::TYPE_TEXT, Schema::TYPE_STRING, Schema::TYPE_BINARY, Schema::TYPE_CHAR], true)) {
             return null;
         }
         if ($value === null || gettype($value) === $this->phpType || $value instanceof ExpressionInterface || $value instanceof Query) {

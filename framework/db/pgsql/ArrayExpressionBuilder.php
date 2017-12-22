@@ -26,8 +26,6 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $expression, &$params = [])
     {
-        $expressionClass = get_class($expression);
-
         $value = $expression->getValues();
 
         if ($value instanceof Query) {
@@ -35,31 +33,32 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
             return $this->buildSubqueryArray($sql, $expression);
         }
 
-        if (!is_array($value) && !$value instanceof \Traversable) {
-            $value = [$value];
+        if ($value === null) {
+            return "'{}'";
         }
 
         $placeholders = [];
-        foreach ($value as $item) {
-            if (is_array($item) || $item instanceof \Traversable) {
-                $placeholders[] = $this->build(new $expressionClass($item), $params);
-                continue;
-            }
-            if ($item instanceof Query) {
-                list ($sql, $params) = $this->queryBuilder->build($item, $params);
-                $placeholders[] = $this->buildSubqueryArray($sql, $expression);
-                continue;
-            }
-            if ($item instanceof ExpressionInterface) {
-                $placeholders[] = $this->queryBuilder->buildExpression($item, $params);
-                continue;
-            }
-            if ($item === null) {
-                continue;
-            }
+        if (is_array($value)) {
+            if ($expression->getDimension() > 1) {
+                foreach ($value as $item) {
+                    $placeholders[] = $this->build($this->unnestArrayExpression($expression, $item), $params);
+                }
+            } else {
+                foreach ($value as $item) {
+                    if ($item instanceof Query) {
+                        list ($sql, $params) = $this->queryBuilder->build($item, $params);
+                        $placeholders[] = $this->buildSubqueryArray($sql, $expression);
+                        continue;
+                    }
+                    if ($item instanceof ExpressionInterface) {
+                        $placeholders[] = $this->queryBuilder->buildExpression($item, $params);
+                        continue;
+                    }
 
-            $placeholders[] = $placeholder = static::PARAM_PREFIX . count($params);
-            $params[$placeholder] = $item;
+                    $placeholders[] = $placeholder = static::PARAM_PREFIX . count($params);
+                    $params[$placeholder] = $item;
+                }
+            }
         }
 
         if (empty($placeholders)) {
@@ -67,6 +66,18 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
         }
 
         return 'ARRAY[' . implode(', ', $placeholders) . ']' . $this->getTypecast($expression);
+    }
+
+    /**
+     * @param ArrayExpression $expression
+     * @param mixed $value
+     * @return ArrayExpression
+     */
+    private function unnestArrayExpression(ArrayExpression $expression, $value)
+    {
+        $expressionClass = get_class($expression);
+
+        return new $expressionClass($value, $expression->getType(), $expression->getDimension()-1);
     }
 
     /**
@@ -80,9 +91,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
         }
 
         $result = '::' . $expression->getType();
-        if (strpos($expression->getType(), '[]') === false) {
-            $result .= '[]';
-        }
+        $result .= str_repeat('[]', $expression->getDimension());
 
         return $result;
     }
