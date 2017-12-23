@@ -6,6 +6,7 @@
  */
 
 namespace yii\base;
+
 use yii\helpers\StringHelper;
 
 /**
@@ -171,6 +172,13 @@ class Event extends BaseObject
         }
         if ($removed) {
             self::$_eventWildcards[$name][$class] = array_values(self::$_eventWildcards[$name][$class]);
+            // remove empty wildcards to save future redundant regex checks :
+            if (empty(self::$_eventWildcards[$name][$class])) {
+                unset(self::$_eventWildcards[$name][$class]);
+                if (empty(self::$_eventWildcards[$name])) {
+                    unset(self::$_eventWildcards[$name]);
+                }
+            }
         }
 
         return $removed;
@@ -198,7 +206,7 @@ class Event extends BaseObject
      */
     public static function hasHandlers($class, $name)
     {
-        if (empty(self::$_events[$name]) && empty(self::$_eventWildcards)) {
+        if (empty(self::$_eventWildcards) && empty(self::$_events[$name])) {
             return false;
         }
 
@@ -252,13 +260,11 @@ class Event extends BaseObject
     public static function trigger($class, $name, $event = null)
     {
         $wildcardEventHandlers = [];
-        if (!empty(self::$_eventWildcards)) {
-            foreach (self::$_eventWildcards as $nameWildcard => $classHandlers) {
-                if (!StringHelper::matchWildcard($nameWildcard, $name)) {
-                    continue;
-                }
-                $wildcardEventHandlers = array_merge($wildcardEventHandlers, $classHandlers);
+        foreach (self::$_eventWildcards as $nameWildcard => $classHandlers) {
+            if (!StringHelper::matchWildcard($nameWildcard, $name)) {
+                continue;
             }
+            $wildcardEventHandlers = array_merge($wildcardEventHandlers, $classHandlers);
         }
 
         if (empty(self::$_events[$name]) && empty($wildcardEventHandlers)) {

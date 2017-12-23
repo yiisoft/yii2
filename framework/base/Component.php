@@ -465,7 +465,7 @@ class Component extends BaseObject
         $this->ensureBehaviors();
 
         foreach ($this->_eventWildcards as $wildcard => $handlers) {
-            if (StringHelper::matchWildcard($wildcard, $name) && !empty($handlers)) {
+            if (!empty($handlers) && StringHelper::matchWildcard($wildcard, $name)) {
                 return true;
             }
         }
@@ -582,6 +582,10 @@ class Component extends BaseObject
         }
         if ($removed) {
             $this->_eventWildcards[$name] = array_values($this->_eventWildcards[$name]);
+            // remove empty wildcards to save future redundant regex checks :
+            if (empty($this->_eventWildcards[$name])) {
+                unset($this->_eventWildcards[$name]);
+            }
         }
 
         return $removed;
@@ -599,11 +603,9 @@ class Component extends BaseObject
         $this->ensureBehaviors();
 
         $eventHandlers = [];
-        if (!empty($this->_eventWildcards)) {
-            foreach ($this->_eventWildcards as $wildcard => $handlers) {
-                if (StringHelper::matchWildcard($wildcard, $name)) {
-                    $eventHandlers = array_merge($eventHandlers, $handlers);
-                }
+        foreach ($this->_eventWildcards as $wildcard => $handlers) {
+            if (StringHelper::matchWildcard($wildcard, $name)) {
+                $eventHandlers = array_merge($eventHandlers, $handlers);
             }
         }
 
