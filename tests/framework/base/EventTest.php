@@ -90,6 +90,42 @@ class EventTest extends TestCase
         $this->assertTrue(Event::hasHandlers(ActiveRecord::className(), 'save'));
         $this->assertTrue(Event::hasHandlers('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT));
     }
+
+    /**
+     * @depends testOn
+     * @depends testHasHandlers
+     */
+    public function testOnWildcard()
+    {
+        Event::on(Post::className(), '*', function ($event) {
+            $this->counter += 1;
+        });
+        Event::on('*\Post', 'save', function ($event) {
+            $this->counter += 3;
+        });
+
+        $post = new Post();
+        $post->save();
+        $this->assertEquals(4, $this->counter);
+
+        $this->assertTrue(Event::hasHandlers(Post::className(), 'save'));
+    }
+
+    /**
+     * @depends testOnWildcard
+     * @depends testOff
+     */
+    public function testOffWildcard()
+    {
+        $handler = function ($event) {
+            $this->counter++;
+        };
+        $this->assertFalse(Event::hasHandlers(Post::className(), 'save'));
+        Event::on('*\Post', 'save', $handler);
+        $this->assertTrue(Event::hasHandlers(Post::className(), 'save'));
+        Event::off('*\Post', 'save', $handler);
+        $this->assertFalse(Event::hasHandlers(Post::className(), 'save'));
+    }
 }
 
 class ActiveRecord extends Component
