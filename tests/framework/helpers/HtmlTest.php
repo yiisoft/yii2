@@ -1579,6 +1579,24 @@ HTML;
         $actual = Html::activeCheckboxList($model, 'types', ['foo']);
         $this->assertEqualsWithoutLE($expected, $actual);
     }
+
+    public function testActiveTextInput_placeholderFillFromModel()
+    {
+        $model = new HtmlTestModel();
+
+        $html = Html::activeTextInput($model, 'name', ['placeholder' => true]);
+
+        $this->assertContains('placeholder="Name"', $html);
+    }
+
+    public function testActiveTextInput_customPlaceholder()
+    {
+        $model = new HtmlTestModel();
+
+        $html = Html::activeTextInput($model, 'name', ['placeholder' => 'Custom placeholder']);
+
+        $this->assertContains('placeholder="Custom placeholder"', $html);
+    }
 }
 
 /**

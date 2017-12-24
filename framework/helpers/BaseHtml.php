@@ -1314,6 +1314,8 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
 
+        self::setActivePlaceholder($model, $attribute, $options);
+
         return static::input($type, $name, $value, $options);
     }
 
@@ -1360,6 +1362,21 @@ class BaseHtml
     {
         self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
+    }
+
+    /**
+     * Generate placeholder from model label.
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+     * about attribute expression.
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     */
+    protected static function setActivePlaceholder($model, $attribute, &$options = [])
+    {
+        if (isset($options['placeholder']) && $options['placeholder'] === true) {
+            $options['placeholder'] = $model->getAttributeLabel($attribute);
+        }
     }
 
     /**
@@ -1458,6 +1475,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
         self::normalizeMaxLength($model, $attribute, $options);
+        self::setActivePlaceholder($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 
