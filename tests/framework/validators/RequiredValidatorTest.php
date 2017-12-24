@@ -66,4 +66,19 @@ class RequiredValidatorTest extends TestCase
         $val->validateAttribute($m, 'attr_val');
         $this->assertFalse($m->hasErrors('attr_val'));
     }
+
+    public function testValidateNot()
+    {
+        $val = new RequiredValidator(['not' => true]);
+        $this->assertTrue($val->validate(null));
+        $this->assertFalse($val->validate('55'));
+
+        $val = new RequiredValidator(['requiredValue' => 55, 'not' => true]);
+        $this->assertTrue($val->validate(45));
+        $this->assertFalse($val->validate(55));
+
+        $val = new RequiredValidator(['requiredValue' => 55, 'strict' => true, 'not' => true]);
+        $this->assertFalse($val->validate(55));
+        $this->assertTrue($val->validate('55'));
+    }
 }

@@ -48,7 +48,12 @@ class RequiredValidator extends Validator
      * - `{requiredValue}`: the value of [[requiredValue]]
      */
     public $message;
-
+    /**
+     * @var bool whether to invert the validation logic. Defaults to false. If set to true,
+     * the requiredValue should NOT match the attribute value.
+     * @since 2.0.14
+     */
+    public $not = false;
 
     /**
      * @inheritdoc
@@ -57,8 +62,13 @@ class RequiredValidator extends Validator
     {
         parent::init();
         if ($this->message === null) {
-            $this->message = $this->requiredValue === null ? Yii::t('yii', '{attribute} cannot be blank.')
-                : Yii::t('yii', '{attribute} must be "{requiredValue}".');
+            if($this->requiredValue === null) {
+                $this->message = $this->not ? Yii::t('yii', '{attribute} should be blank.')
+                    : Yii::t('yii', '{attribute} cannot be blank.');
+            } else {
+                $this->message = $this->not ? Yii::t('yii', '{attribute} must not be "{requiredValue}".')
+                    : Yii::t('yii', '{attribute} must be "{requiredValue}".');
+            }
         }
     }
 
@@ -68,10 +78,10 @@ class RequiredValidator extends Validator
     protected function validateValue($value)
     {
         if ($this->requiredValue === null) {
-            if ($this->strict && $value !== null || !$this->strict && !$this->isEmpty(is_string($value) ? trim($value) : $value)) {
+            if ($this->checkIsEmpty($value)) {
                 return null;
             }
-        } elseif (!$this->strict && $value == $this->requiredValue || $this->strict && $value === $this->requiredValue) {
+        } elseif ($this->checkIsEqual($value)) {
             return null;
         }
         if ($this->requiredValue === null) {
@@ -81,6 +91,36 @@ class RequiredValidator extends Validator
         return [$this->message, [
             'requiredValue' => $this->requiredValue,
         ]];
+    }
+
+    /**
+     * @param mixed $value the data value to be validated
+     * @return bool
+     */
+    private function checkIsEmpty($value)
+    {
+        if ($this->strict) {
+            return $this->not && $value === null || !$this->not && $value !== null;
+        }
+
+        if ($this->not) {
+            return $this->isEmpty(is_string($value) ? trim($value) : $value);
+        }
+
+        return !$this->isEmpty(is_string($value) ? trim($value) : $value);
+    }
+
+    /**
+     * @param mixed $value the data value to be validated
+     * @return bool
+     */
+    private function checkIsEqual($value)
+    {
+        if ($this->strict) {
+            return $this->not ? $value !== $this->requiredValue : $value === $this->requiredValue;
+        }
+
+        return $this->not ? $value != $this->requiredValue : $value == $this->requiredValue;
     }
 
     /**
