@@ -1314,7 +1314,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
 
-        self::activePlaceholder($model, $attribute, $options);
+        self::setActivePlaceholder($model, $attribute, $options);
 
         return static::input($type, $name, $value, $options);
     }
@@ -1372,7 +1372,7 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      */
-    protected static function activePlaceholder($model, $attribute, &$options = [])
+    protected static function setActivePlaceholder($model, $attribute, &$options = [])
     {
         if (isset($options['placeholder']) && $options['placeholder'] === true) {
             $options['placeholder'] = $model->getAttributeLabel($attribute);
@@ -1475,7 +1475,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
         self::normalizeMaxLength($model, $attribute, $options);
-        self::activePlaceholder($model, $attribute, $options);
+        self::setActivePlaceholder($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 
