@@ -1314,6 +1314,8 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
 
+        self::activePlaceholder($model, $attribute, $options);
+
         return static::input($type, $name, $value, $options);
     }
 
@@ -1359,7 +1361,6 @@ class BaseHtml
     public static function activeTextInput($model, $attribute, $options = [])
     {
         self::normalizeMaxLength($model, $attribute, $options);
-        self::activePlaceholder($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
     }
 
