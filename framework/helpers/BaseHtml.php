@@ -1313,6 +1313,9 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+        if (!array_key_exists('placeholder', $options) && $type!='hidden') {
+            $options['placeholder'] = $model->getAttributeLabel($attribute);
+        }
 
         return static::input($type, $name, $value, $options);
     }

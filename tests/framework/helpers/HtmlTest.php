@@ -1059,19 +1059,21 @@ EOD;
             [
                 'some text',
                 [],
-                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="some text">',
+                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="some text" placeholder="Name">',
             ],
             [
                 '',
                 [
                     'maxlength' => true,
+                    'placeholder' => 'test'
                 ],
-                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="100">',
+                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="100" placeholder="test">',
             ],
             [
                 '',
                 [
                     'maxlength' => 99,
+                    'placeholder' => null
                 ],
                 '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="99">',
             ],
@@ -1102,21 +1104,21 @@ EOD;
             [
                 'some text',
                 [],
-                '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="some text">',
+                '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="some text" placeholder="Name">',
             ],
             [
                 '',
                 [
                     'maxlength' => true,
                 ],
-                '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="100">',
+                '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="100" placeholder="Name">',
             ],
             [
                 '',
                 [
                     'maxlength' => 99,
                 ],
-                '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="99">',
+                '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="99" placeholder="Name">',
             ],
         ];
     }
@@ -1465,7 +1467,7 @@ EOD;
     {
         $expected = '<input type="hidden" name="foo" value=""><input type="file" id="htmltestmodel-types" name="foo">';
         $model = new HtmlTestModel();
-        $actual = Html::activeFileInput($model, 'types', ['name' => 'foo']);
+        $actual = Html::activeFileInput($model, 'types', ['name' => 'foo', 'placeholder' => null]);
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
