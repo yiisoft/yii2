@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #15355: Fixed `yii\db\Query::from()` does not work with `yii\db\Expression` (vladis84, silverfire, samdark)
 - Bug #15356: Fixed multiple bugs in `yii\db\Query::getTablesUsedInFrom()` (vladis84, samdark)
 - Bug #15380: `FormatConverter::convertDateIcuToPhp()` now converts `a` ICU symbols to `A` (brandonkelly)
+- Bug #15407: Fixed rendering rows with associative arrays in `yii\console\widgets\Table` (dmrogin)
 - Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorSource" option to be able to customize errors display (yanggs07, developeruz, silverfire)
 - Enh #3250: Added support for events partial wildcard matching (klimov-paul)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
