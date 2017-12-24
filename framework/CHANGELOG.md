@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.14 under development
 ------------------------
-
+- Enh #15226: Auto generate placeholder from fields (vladis84)
 - Bug #15356: Fixed multiple bugs in `yii\db\Query::getTablesUsedInFrom()` (vladis84, samdark)
 - Bug #14157: Add support for loading default value `CURRENT_TIMESTAMP` of MySQL `datetime` field (rossoneri)
 - Bug #15046: Throw an `yii\web\HeadersAlreadySentException` if headers were sent before web response (dmirogin)
