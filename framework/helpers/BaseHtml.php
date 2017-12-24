@@ -1355,6 +1355,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This is available since version 2.0.3.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated input tag
      */
@@ -1365,12 +1367,14 @@ class BaseHtml
     }
 
     /**
-     * Generate placeholder from model label.
+     * Generate placeholder from model attribute label.
+     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * @since 2.0.14
      */
     protected static function setActivePlaceholder($model, $attribute, &$options = [])
     {
@@ -1411,6 +1415,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This option is available since version 2.0.6.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated input tag
      */
@@ -1459,6 +1465,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This option is available since version 2.0.6.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated textarea tag
      */
