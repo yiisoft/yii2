@@ -23,12 +23,19 @@ yii.validation = (function ($) {
         required: function (value, messages, options) {
             var valid = false;
             if (options.requiredValue === undefined) {
-                var isString = typeof value == 'string' || value instanceof String;
-                if (options.strict && value !== undefined || !options.strict && !pub.isEmpty(isString ? $.trim(value) : value)) {
+                if(isRequiredValueEmpty(options, value)) {
                     valid = true;
                 }
-            } else if (!options.strict && value == options.requiredValue || options.strict && value === options.requiredValue) {
-                valid = true;
+            } else {
+                if (options.strict) {
+                    if ((options.not && value !== options.requiredValue) || (!options.not && value === options.requiredValue)) {
+                        valid = true;
+                    }
+                } else {
+                    if ((options.not && value != options.requiredValue) || (!options.not && value == options.requiredValue)) {
+                        valid = true;
+                    }
+                }
             }
 
             if (!valid) {
@@ -446,6 +453,24 @@ yii.validation = (function ($) {
         if (options.maxHeight && image.height > options.maxHeight) {
             messages.push(options.overHeight.replace(/\{file\}/g, file.name));
         }
+    }
+
+    function isRequiredValueEmpty(options, value) {
+        if (options.strict) {
+            if ((options.not && value === undefined) || (!options.not && value !== undefined)) {
+                return true;
+            }
+        }
+
+        if (!options.strict) {
+            var isString = typeof value == 'string' || value instanceof String;
+            var isEmptyString = pub.isEmpty(isString ? $.trim(value) : value);
+            if ((options.not && isEmptyString) || (!options.not && !isEmptyString)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     return pub;

@@ -81,11 +81,9 @@ class RequiredValidator extends Validator
             if ($this->checkIsEmpty($value)) {
                 return null;
             }
+            return [$this->message, []];
         } elseif ($this->checkIsEqual($value)) {
             return null;
-        }
-        if ($this->requiredValue === null) {
-            return [$this->message, []];
         }
 
         return [$this->message, [
@@ -150,6 +148,9 @@ class RequiredValidator extends Validator
         }
         if ($this->strict) {
             $options['strict'] = 1;
+        }
+        if ($this->not) {
+            $options['not'] = 1;
         }
 
         $options['message'] = $this->formatMessage($options['message'], [
