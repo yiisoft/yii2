@@ -4,6 +4,7 @@ namespace yii\db\pgsql;
 
 use yii\db\ArrayExpression;
 use yii\db\ExpressionInterface;
+use yii\db\JsonExpression;
 
 /**
  * Class ColumnSchema
@@ -22,8 +23,15 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public function dbTypecast($value)
     {
-        if ($this->dimension > 0 && !$value instanceof ExpressionInterface) {
+        if ($value instanceof ExpressionInterface) {
+            return $value;
+        }
+
+        if ($this->dimension > 0) {
             return new ArrayExpression($value, $this->dbType, $this->dimension);
+        }
+        if (in_array($this->dbType, [Schema::TYPE_JSON, Schema::TYPE_JSONB], true)) {
+            return new JsonExpression($value, $this->type);
         }
 
         return $this->typecast($value);
@@ -36,7 +44,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
     {
         if ($this->dimension > 0) {
             if (!is_array($value)) {
-                $value = ArrayConverter::toPhp($value, $this->delimiter);
+                $value = $this->getArrayParser()->parse($value);
             }
             if (is_array($value)) {
                 array_walk_recursive($value, function (&$val, $key) {
@@ -51,11 +59,9 @@ class ColumnSchema extends \yii\db\ColumnSchema
     }
 
     /**
-     * Converts the input value according to [[phpType]] after retrieval from the database.
-     * @param mixed $value input value
-     * @return mixed converted value
+     * TODO: phpdoc
      */
-    public function phpTypecastValue($value)
+    protected function phpTypecastValue($value)
     {
         if ($value === null) {
             return null;
@@ -72,21 +78,25 @@ class ColumnSchema extends \yii\db\ColumnSchema
                         return false;
                 }
                 return (bool) $value;
-            case Schema::TYPE_BIT:
-                return bindec($value);
-            case Schema::TYPE_BINARY:
-                return is_string($value) && strncmp($value, '\\x', 2) === 0 ? pack('H*', substr($value, 2)) : $value;
             case Schema::TYPE_JSON:
                 return json_decode($value, true);
-            case Schema::TYPE_TIMESTAMP:
-            case Schema::TYPE_TIME:
-            case Schema::TYPE_DATE:
-            case Schema::TYPE_DATETIME:
-                return new \DateTime($value);
-            case Schema::TYPE_COMPOSITE:
-                return $this->phpTypecastComposite($value);
         }
 
         return parent::phpTypecast($value);
+    }
+
+    /**
+     * TODO: phpdoc
+     * @return ArrayParser
+     */
+    protected function getArrayParser()
+    {
+        static $parser = null;
+
+        if ($parser === null) {
+            $parser = new ArrayParser();
+        }
+
+        return $parser;
     }
 }

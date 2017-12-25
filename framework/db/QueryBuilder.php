@@ -252,6 +252,8 @@ class QueryBuilder extends \yii\base\BaseObject
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
+                $value = $columnSchemas[$name]->dbTypecast($value);
+
                 if ($value instanceof ExpressionInterface) {
                     $placeholders[] = $this->buildExpression($value, $params);
                 } elseif ($value instanceof \yii\db\Query) {
@@ -260,7 +262,7 @@ class QueryBuilder extends \yii\base\BaseObject
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);
                     $placeholders[] = $phName;
-                    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                    $params[$phName] = $value;
                 }
             }
         }
@@ -342,7 +344,7 @@ class QueryBuilder extends \yii\base\BaseObject
         foreach ($rows as $row) {
             $vs = [];
             foreach ($row as $i => $value) {
-                if (isset($columns[$i], $columnSchemas[$columns[$i]]) && !is_array($value)) {
+                if (isset($columns[$i], $columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
@@ -406,7 +408,7 @@ class QueryBuilder extends \yii\base\BaseObject
             } else {
                 $phName = self::PARAM_PREFIX . count($params);
                 $lines[] = $this->db->quoteColumnName($name) . '=' . $phName;
-                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                $params[$phName] = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             }
         }
 
@@ -951,7 +953,6 @@ class QueryBuilder extends \yii\base\BaseObject
                 } else {
                     $columns[$i] = $this->buildExpression($column, $params) . ' AS ' . $this->db->quoteColumnName($i);
                 }
-                $params = array_merge($params, $column->getParams());
             } elseif ($column instanceof Query) {
                 list($sql, $params) = $this->build($column, $params);
                 $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);

@@ -281,6 +281,15 @@ CREATE TABLE "bit_values" (
 
 INSERT INTO "bit_values" (id, val) VALUES (1, '0'), (2, '1');
 
+DROP TABLE IF EXISTS "array_and_json_types" CASCADE;
+CREATE TABLE "array_and_json_types" (
+  intarray_col INT[],
+  textarray2_col TEXT[][],
+  json_col JSON,
+  jsonb_col JSONB,
+  jsonarray_col JSON[]
+);
+
 CREATE TABLE "T_constraints_1"
 (
     "C_id" INT NOT NULL PRIMARY KEY,

@@ -59,6 +59,8 @@ Upgrade from Yii 2.0.13
 * `yii\db\ExpressionInterface` has been introduced to represent a wider range of SQL expressions. In case you check for
   `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
   introduced methods to retrieve the expression content.
+  
+* TODO: `['value', \PDO::PARAM_STR]` syntax deprecation.
 
 Upgrade from Yii 2.0.12
 -----------------------

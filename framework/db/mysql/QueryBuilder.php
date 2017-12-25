@@ -262,7 +262,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);
                     $placeholders[] = $phName;
-                    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                    $params[$phName] = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
                 }
             }
             if (empty($names) && $tableSchema !== null) {

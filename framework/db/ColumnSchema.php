@@ -8,6 +8,7 @@
 namespace yii\db;
 
 use yii\base\BaseObject;
+use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
 /**
@@ -34,7 +35,7 @@ class ColumnSchema extends BaseObject
     public $type;
     /**
      * @var string the PHP type of this column. Possible PHP types include:
-     * `string`, `boolean`, `integer`, `double`.
+     * `string`, `boolean`, `integer`, `double`, `array`.
      */
     public $phpType;
     /**
@@ -120,6 +121,12 @@ class ColumnSchema extends BaseObject
         if ($value === null || gettype($value) === $this->phpType || $value instanceof ExpressionInterface || $value instanceof Query) {
             return $value;
         }
+        if (is_array($value) && count($value) === 2 && isset($value[1]) && in_array($value[1], $this->getPdoParamTypes(), true)) {
+            return new PdoValue($value[0], $value[1]);
+            // Backward compatibility thing, but too unreliable. Array [1,2] will pass into this condition and transform
+            // into PdoValue class. However, arrays did not come this method earlier so should not be a big deal. TODO: consider.
+        }
+
         switch ($this->phpType) {
             case 'resource':
             case 'string':
@@ -142,5 +149,10 @@ class ColumnSchema extends BaseObject
         }
 
         return $value;
+    }
+
+    private function getPdoParamTypes()
+    {
+        return [\PDO::PARAM_BOOL, \PDO::PARAM_INT, \PDO::PARAM_STR, \PDO::PARAM_LOB, \PDO::PARAM_NULL, \PDO::PARAM_STMT];
     }
 }

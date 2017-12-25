@@ -313,7 +313,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         foreach ($rows as $row) {
             $vs = [];
             foreach ($row as $i => $value) {
-                if (isset($columns[$i], $columnSchemas[$columns[$i]]) && !is_array($value)) {
+                if (isset($columns[$i], $columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {

@@ -31,7 +31,7 @@ class ArrayExpression implements ExpressionInterface
      * @var array|QueryInterface|mixed the array content. Either represented as an array of values or a [[Query]] that
      * returns these values. A single value will be considered as an array containing one element.
      */
-    protected $values;
+    protected $value;
     /**
      * @var int
      */
@@ -40,16 +40,16 @@ class ArrayExpression implements ExpressionInterface
     /**
      * ArrayExpression constructor.
      *
-     * @param array|QueryInterface|mixed $values the array content. Either represented as an array of values or a Query that
+     * @param array|QueryInterface|mixed $value the array content. Either represented as an array of values or a Query that
      * returns these values. A single value will be considered as an array containing one element.
      * @param string|null $type the type of the array elements. Defaults to `null` which means the type is
      * not explicitly specified. In case when type is not specified explicitly and DBMS can not guess it from the context,
      * SQL error will be raised.
      * @param int $dimension
      */
-    public function __construct($values, $type = null, $dimension = 1)
+    public function __construct($value, $type = null, $dimension = 1)
     {
-        $this->values = $values;
+        $this->value = $value;
         $this->type = $type;
         $this->dimension = $dimension;
     }
@@ -65,11 +65,11 @@ class ArrayExpression implements ExpressionInterface
 
     /**
      * @return array|mixed|QueryInterface
-     * @see values
+     * @see value
      */
-    public function getValues()
+    public function getValue()
     {
-        return $this->values;
+        return $this->value;
     }
 
     /**

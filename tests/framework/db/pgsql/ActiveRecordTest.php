@@ -8,7 +8,12 @@
 namespace yiiunit\framework\db\pgsql;
 
 use yii\behaviors\TimestampBehavior;
+use yii\db\ArrayExpression;
+use yii\db\Expression;
+use yii\db\ExpressionInterface;
+use yii\db\JsonExpression;
 use yii\db\pgsql\Schema;
+use yii\helpers\Json;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\DefaultPk;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
@@ -172,6 +177,67 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $record->save(false);
         $this->assertEquals(5, $record->primaryKey);
     }
+
+    /**
+     * @dataProvider arrayValuesProvider $attributes
+     */
+    public function testArrayValues($attributes)
+    {
+        $type = new ArrayAndJsonTypes();
+        foreach ($attributes as $attribute => $value) {
+            $type->$attribute = $value[0];
+        }
+        $type->save();
+
+        $type = ArrayAndJsonTypes::find()->one();
+        foreach ($attributes as $attribute => $value) {
+            $value = isset($value[1]) ? $value[1] : $value[0];
+            $this->assertEquals($value, $type->$attribute);
+        }
+    }
+
+    public function arrayValuesProvider()
+    {
+        return [
+            'simple arrays values' => [[
+                'intarray_col' => [[1,-2,null,'42']],
+                'textarray2_col' => [[['text'], [null], [1]]],
+                'json_col' => [['a' => 1, 'b' => null, 'c' => [1,3,5]]],
+                'jsonb_col' => [[null, 'a', 'b', '\"', '{"af"}']],
+                'jsonarray_col' => [[[',', 'null', true, 'false', 'f']]],
+            ]],
+            'arrays packed in classes' => [[
+                'intarray_col' => [
+                    new ArrayExpression([1,-2,null,'42'], 'int', 1),
+                    [1,-2,null,'42']
+                ],
+                'textarray2_col' => [
+                    new ArrayExpression([['text'], [null], [1]], 'text', 2),
+                    [['text'], [null], [1]]
+                ],
+                'json_col' => [
+                    new JsonExpression(['a' => 1, 'b' => null, 'c' => [1,3,5]]),
+                    ['a' => 1, 'b' => null, 'c' => [1,3,5]]
+                ],
+                'jsonb_col' => [
+                    new JsonExpression([null, 'a', 'b', '\"', '{"af"}']),
+                    [null, 'a', 'b', '\"', '{"af"}']
+                ],
+                'jsonarray_col' => [
+                    new Expression("array['[\",\",\"null\",true,\"false\",\"f\"]'::json]::json[]"),
+                    [[',', 'null', true, 'false', 'f']]
+                ]
+            ]],
+            'scalars' => [[
+                'json_col' => [
+                    '5.8',
+                ],
+                'jsonb_col' => [
+                    pi()
+                ],
+            ]]
+        ];
+    }
 }
 
 class BoolAR extends ActiveRecord
@@ -199,4 +265,16 @@ class UserAR extends ActiveRecord
             TimestampBehavior::className(),
         ];
     }
+}
+
+/**
+ * {@inheritdoc}
+ * @property array intarray_col
+ * @property array textarray2_col
+ * @property array json_col
+ * @property array jsonb_col
+ * @property array jsonarray_col
+ */
+class ArrayAndJsonTypes extends ActiveRecord
+{
 }

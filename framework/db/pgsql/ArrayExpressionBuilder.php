@@ -6,10 +6,12 @@ use yii\db\ArrayExpression;
 use yii\db\ExpressionBuilderInterface;
 use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
+use yii\db\JsonExpression;
 use yii\db\Query;
 
 /**
  * Class ArrayExpressionBuilder builds [[ArrayExpression]] for PostgreSQL DBMS.
+ * TODO: tests
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -26,7 +28,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $expression, &$params = [])
     {
-        $value = $expression->getValues();
+        $value = $expression->getValue();
 
         if ($value instanceof Query) {
             list ($sql, $params) = $this->queryBuilder->build($value, $params);
@@ -38,7 +40,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
         }
 
         $placeholders = [];
-        if (is_array($value)) {
+        if (is_array($value) || $value instanceof \Traversable) {
             if ($expression->getDimension() > 1) {
                 foreach ($value as $item) {
                     $placeholders[] = $this->build($this->unnestArrayExpression($expression, $item), $params);
@@ -50,6 +52,8 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
                         $placeholders[] = $this->buildSubqueryArray($sql, $expression);
                         continue;
                     }
+
+                    $item = $this->typecastValue($expression, $item);
                     if ($item instanceof ExpressionInterface) {
                         $placeholders[] = $this->queryBuilder->buildExpression($item, $params);
                         continue;
@@ -65,7 +69,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
             return "'{}'";
         }
 
-        return 'ARRAY[' . implode(', ', $placeholders) . ']' . $this->getTypecast($expression);
+        return 'ARRAY[' . implode(', ', $placeholders) . ']' . $this->getTypehint($expression);
     }
 
     /**
@@ -84,7 +88,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
      * @param ArrayExpression $expression
      * @return string the typecast expression based on [[type]].
      */
-    protected function getTypecast(ArrayExpression $expression)
+    protected function getTypehint(ArrayExpression $expression)
     {
         if ($expression->getType() === null) {
             return '';
@@ -105,6 +109,26 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
      */
     protected function buildSubqueryArray($sql, ArrayExpression $expression)
     {
-        return 'ARRAY(' . $sql . ')' . $this->getTypecast($expression);
+        return 'ARRAY(' . $sql . ')' . $this->getTypehint($expression);
+    }
+
+    /**
+     * Casts $value to use in $expression
+     *
+     * @param ArrayExpression $expression
+     * @param mixed $value
+     * @return JsonExpression
+     */
+    protected function typecastValue(ArrayExpression $expression, $value)
+    {
+        if ($value instanceof ExpressionInterface) {
+            return $value;
+        }
+
+        if (in_array($expression->getType(), [Schema::TYPE_JSON, Schema::TYPE_JSONB], true)) {
+            return new JsonExpression($value);
+        }
+
+        return $value;
     }
 }

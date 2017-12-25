@@ -85,6 +85,71 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'scale' => 0,
             'defaultValue' => null,
         ];
+        $columns['intarray_col'] = [
+            'type' => 'integer',
+            'dbType' => 'int4',
+            'phpType' => 'integer',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => null,
+            'precision' => null,
+            'scale' => null,
+            'defaultValue' => null,
+            'dimension' => 1
+        ];
+        $columns['textarray2_col'] = [
+            'type' => 'text',
+            'dbType' => 'text',
+            'phpType' => 'string',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => null,
+            'precision' => null,
+            'scale' => null,
+            'defaultValue' => null,
+            'dimension' => 2
+        ];
+        $columns['json_col'] = [
+            'type' => 'json',
+            'dbType' => 'json',
+            'phpType' => 'array',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => null,
+            'precision' => null,
+            'scale' => null,
+            'defaultValue' => null,
+            'dimension' => 0
+        ];
+        $columns['jsonb_col'] = [
+            'type' => 'json',
+            'dbType' => 'jsonb',
+            'phpType' => 'array',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => null,
+            'precision' => null,
+            'scale' => null,
+            'defaultValue' => null,
+            'dimension' => 0
+        ];
+        $columns['jsonarray_col'] = [
+            'type' => 'json',
+            'dbType' => 'json',
+            'phpType' => 'array',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => null,
+            'precision' => null,
+            'scale' => null,
+            'defaultValue' => null,
+            'dimension' => 1
+        ];
 
         return $columns;
     }

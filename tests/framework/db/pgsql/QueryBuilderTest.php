@@ -114,6 +114,27 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             'query' => [['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]))], '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)', [':qp0' => 1]],
             'query with type' => [['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]), 'jsonb')], '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)::jsonb', [':qp0' => 1]],
 
+            'array of json expressions' => [
+                ['=', 'colname', new ArrayExpression([new JsonExpression(['a' => null, 'b' => 123, 'c' => [4, 5]]), new JsonExpression([true])])],
+                '"colname" = ARRAY[:qp0, :qp1]',
+                [':qp0' => '{"a":null,"b":123,"c":[4,5]}', ':qp1' => '[true]']
+            ],
+            'Items in ArrayExpression of type json should be casted to Json' => [
+                ['=', 'colname', new ArrayExpression([['a' => null, 'b' => 123, 'c' => [4, 5]], [true]], 'json')],
+                '"colname" = ARRAY[:qp0, :qp1]::json[]',
+                [':qp0' => '{"a":null,"b":123,"c":[4,5]}', ':qp1' => '[true]']
+            ],
+            'Two dimension array of text' => [
+                ['=', 'colname', new ArrayExpression([['text1', 'text2'], ['text3', 'text4'], [null, 'text5']], 'text', 2)],
+                '"colname" = ARRAY[ARRAY[:qp0, :qp1]::text[], ARRAY[:qp2, :qp3]::text[], ARRAY[:qp4, :qp5]::text[]]::text[][]',
+                [':qp0' => 'text1', ':qp1' => 'text2', ':qp2' => 'text3', ':qp3' => 'text4', ':qp4' => null, ':qp5' => 'text5'],
+            ],
+            'Three dimension array of booleans' => [
+                ['=', 'colname', new ArrayExpression([[[true], [false, null]], [[false], [true], [false]], [['t', 'f']]], 'bool', 3)],
+                '"colname" = ARRAY[ARRAY[ARRAY[:qp0]::bool[], ARRAY[:qp1, :qp2]::bool[]]::bool[][], ARRAY[ARRAY[:qp3]::bool[], ARRAY[:qp4]::bool[], ARRAY[:qp5]::bool[]]::bool[][], ARRAY[ARRAY[:qp6, :qp7]::bool[]]::bool[][]]::bool[][][]',
+                [':qp0' => true, ':qp1' => false, ':qp2' => null, ':qp3' => false, ':qp4' => true, ':qp5' => false, ':qp6' => 't', ':qp7' => 'f'],
+            ],
+
             // Checks to verity that operators work correctly
             [['@>', 'id', new ArrayExpression([1])], '"id" @> ARRAY[:qp0]', [':qp0' => 1]],
             [['<@', 'id', new ArrayExpression([1])], '"id" <@ ARRAY[:qp0]', [':qp0' => 1]],

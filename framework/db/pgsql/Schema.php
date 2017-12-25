@@ -30,10 +30,16 @@ class Schema extends \yii\db\Schema
     use ViewFinderTrait;
     use ConstraintFinderTrait;
 
+    const TYPE_JSONB = 'jsonb';
+
     /**
      * @var string the default schema used for the current session.
      */
     public $defaultSchema = 'public';
+    /**
+     * {@inheritdoc}
+     */
+    public $columnSchemaClass = 'yii\db\pgsql\ColumnSchema';
     /**
      * @var array mapping from physical column types (keys) to abstract
      * column types (values)
@@ -507,7 +513,7 @@ SELECT
              AS numeric
     ) AS size,
     a.attnum = any (ct.conkey) as is_pkey,
-    COALESCE(NULLIF(a.attndims, 0), NULLIF(t.typndims, 0), (t.typcategory='A')::int) AS array_dimension
+    COALESCE(NULLIF(a.attndims, 0), NULLIF(t.typndims, 0), (t.typcategory='A')::int) AS dimension
 FROM
     pg_class c
     LEFT JOIN pg_attribute a ON a.attrelid = c.oid
