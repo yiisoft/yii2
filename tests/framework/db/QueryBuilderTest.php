@@ -1559,6 +1559,54 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals([], $queryParams);
     }
 
+    /**
+     * This aggregated select test.
+     * It could be useful to use "phpunit --group=db --filter testSelectWithAggregate" command for run it.
+     */
+    public function testSelectWithAggregate()
+    {
+        $targetSql = $this->replaceQuotes(
+            'SELECT [[status]], COUNT([[id]]) AS [[named]], COUNT([[id]]), COUNT([[id]]), ' .
+            'COUNT(DISTINCT [[id]]), count([[id]]), count(DISTINCT [[id]]), count([[id]]), ' .
+            'count(*), count(DISTINCT CASE WHEN ([[status]]=1) THEN [[id]] END), ' .
+            'count(DISTINCT CASE WHEN ([[status]]=2) THEN [[id]] END), ' .
+            'count(DISTINCT CASE WHEN ([[status]]=1) THEN 1 WHEN ([[status]]=2) THEN 0 WHEN ' .
+            '(([[status]]=3) OR ([[id]]=4)) THEN -1 END), ' .
+            'COUNT([[status]]) AS [[named_2]] FROM [[user]] GROUP BY [[agr_field]]'
+        );
+        $query = new Query();
+        $query
+            ->select([
+                'status',
+                'named' => ['id'],
+                ['id'],
+                [new Expression('`id`')],
+                [['id']],
+                ['count', 'id'],
+                [['count'], 'id'],
+                ['count', ['id']],
+                ['count', []],
+                [['count'], [
+                    ['id', ['status' => 1]],
+                ]],
+                [['count'], [
+                    [new Expression('`id`'), ['status' => 2]],
+                ]],
+                [['count'], [
+                    [1, ['status' => 1]],
+                    [0, ['status' => 2]],
+                    [-1, ['or', ['status' => 3], ['id' => 4]]],
+                ]],
+            ])
+            ->addSelect([
+                'named_2' => ['status']
+            ])
+            ->from('user')
+            ->groupBy('agr_field');
+        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals($targetSql, $actualQuerySql);
+    }
+
     public function testSelectSubquery()
     {
         $subquery = (new Query())

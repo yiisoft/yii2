@@ -2008,6 +2008,7 @@ Yii Framework 2 Change Log
 - New: Added `yii\filters\RateLimiter` (qiangxue)
 - New: Added various authentication methods, including `HttpBasicAuth`, `HttpBearerAuth`, `QueryParamAuth`, and `CompositeAuth` (qiangxue)
 - New: Added `yii\web\HtmlResponseFormatter` and `yii\web\JsonResponseFormatter` (qiangxue)
+- Enh #15411: QueryBuilder::buildSelect() with aggregate functions and inner constructions
 
 
 2.0.0-alpha December 1, 2013

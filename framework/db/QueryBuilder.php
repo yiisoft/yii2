@@ -892,6 +892,58 @@ class QueryBuilder extends \yii\base\BaseObject
             } elseif ($column instanceof Query) {
                 list($sql, $params) = $this->build($column, $params);
                 $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
+            } elseif (is_array($column)) {
+                $distinctGroup = false;
+                if (! isset($column[1])) {
+                    if (! is_array($column[0])) { // ['id']
+                        $function = 'COUNT';
+                        $value = $column[0];
+                    } else { // [['id']]
+                        $function = 'COUNT';
+                        $value = $column[0][0];
+                        $distinctGroup = true;
+                    }
+                    $expr = $this->buildSelectItem($value, $params);
+                } else {
+                    if (! is_array($column[0])) {
+                        $function = $column[0];
+                    } else {
+                        $function = $column[0][0];
+                        $distinctGroup = true;
+                    }
+                    if (! is_array($column[1])) {
+                        $expr = $this->buildSelectItem($column[1], $params);
+                    } else {
+                        $switch = '';
+                        $else = null;
+                        foreach ($column[1] as $case) {
+                            if (is_array($case)) {
+                                $value = $case[0];
+                                array_shift($case);
+                                $condition = $this->buildAndCondition('AND', $case, $params);
+                                $switch .= ' WHEN ' . $condition . ' THEN ' . $this->buildSelectItem($value, $params);
+                            } else {
+                                $else = $this->buildSelectItem($case, $params);
+                            }
+                        }
+                        if (! empty($switch)) {
+                            if (! is_null($else)) {
+                                $switch .= ' ELSE ' . $else;
+                            }
+                            $expr = 'CASE' . $switch . ' END';
+                        } else {
+                            $expr = $else;
+                        }
+                    }
+                }
+                if (empty($expr)) {
+                    $expr = '*';
+                }
+                $groupColumn = $function . '(' . ($distinctGroup ? 'DISTINCT ' : '') . $expr . ')';
+                if (is_string($i)) {
+                    $groupColumn .= ' AS ' . $this->db->quoteColumnName($i);
+                }
+                $columns[$i] = $groupColumn;
             } elseif (is_string($i)) {
                 if (strpos($column, '(') === false) {
                     $column = $this->db->quoteColumnName($column);
@@ -907,6 +959,44 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         return $select . ' ' . implode(', ', $columns);
+    }
+
+    /**
+     * @param $column
+     * @param array $params the binding parameters to be populated
+     * @param null|string $as select column as ...
+     * @return string the SQL safety string - select column
+     */
+    public function buildSelectItem($column, &$params, $as = null)
+    {
+        if ($column instanceof Expression) {
+            $sql = $column->expression;
+            $params = array_merge($params, $column->params);
+        } elseif ($column instanceof Query) {
+            list($sql, $params) = $this->build($column, $params);
+            $sql = "({$sql})";
+        } elseif (is_numeric($column)) {
+            $sql = "{$column}";
+        } elseif (is_null($column)) {
+            $sql = 'NULL';
+        } elseif (strpos($column, '(') === false) {
+            if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $column, $matches)) {
+                $sql = $this->db->quoteColumnName($matches[1]);
+                $as = $this->db->quoteColumnName($matches[2]);
+            } elseif ($column !== '') {
+                $sql = $this->db->quoteColumnName($column);
+            } else {
+                $sql = '';
+            }
+        } else {
+            $sql = "{$column}";
+        }
+
+        if (is_null($as)) {
+            return $sql;
+        } else {
+            return $sql . ' AS ' . $this->db->quoteColumnName($as);
+        }
     }
 
     /**
