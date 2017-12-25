@@ -106,6 +106,9 @@ Upgrade from Yii 2.0.x
   be configured there. Creating your own cache implementation you should implement `\Psr\SimpleCache\CacheInterface` or
   extend `yii\caching\SimpleCache` abstract class. Use `yii\caching\CacheInterface` only if you wish to replace `yii\caching\Cache`
   component providing your own solution for cache dependency handling.
+* `yii\caching\SimpleCache::$serializer` now should be `yii\serialize\SerializerInterface` instance or its DI compatible configuration.
+  Thus it does not longer accept pair of serialize/unserialize functions as an array. Use `yii\serialize\CallbackSerializer` or
+  other predefined serializer class from `yii\serialize\*` namespace instead.
 * Console command used to clear cache now calls related actions "clear" instead of "flush".
 * Yii autoloader was removed in favor of Composer-generated one. You should remove explicit inclusion of `Yii.php` from
   your entry `index.php` scripts. In case you have relied on class map, use `composer.json` instead of configuring it
