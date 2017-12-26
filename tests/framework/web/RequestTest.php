@@ -162,9 +162,9 @@ class RequestTest extends TestCase
         // only accept valid token on POST
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $request->setMethod($method);
-            $request->setBodyParams([]);
+            $request->setParsedBody([]);
             $this->assertFalse($request->validateCsrfToken());
-            $request->setBodyParams([$request->csrfParam => $token]);
+            $request->setParsedBody([$request->csrfParam => $token]);
             $this->assertTrue($request->validateCsrfToken());
         }
     }
@@ -190,7 +190,7 @@ class RequestTest extends TestCase
         // only accept valid token on POST
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $request->setMethod($method);
-            $request->setBodyParams([]);
+            $request->setParsedBody([]);
 
             $this->assertFalse($request->withoutHeader(Request::CSRF_HEADER)->validateCsrfToken());
             $this->assertTrue($request->withAddedHeader(Request::CSRF_HEADER, $token)->validateCsrfToken());
@@ -607,17 +607,17 @@ class RequestTest extends TestCase
         $request->setBody($body);
         $_POST = ['name' => 'post'];
 
-        $this->assertSame(['name' => 'value'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->getBodyParams());
-        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->withMethod('POST')->getBodyParams());
-        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'multipart/form-data')->withMethod('POST')->getBodyParams());
+        $this->assertSame(['name' => 'value'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->getParsedBody());
+        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->withMethod('POST')->getParsedBody());
+        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'multipart/form-data')->withMethod('POST')->getParsedBody());
 
         try {
-            $request->getBodyParams();
+            $request->getParsedBody();
         } catch (UnsupportedMediaTypeHttpException $noContentTypeException) {}
         $this->assertTrue(isset($noContentTypeException));
 
         try {
-            $request->withMethod('POST')->getBodyParams();
+            $request->withMethod('POST')->getParsedBody();
         } catch (UnsupportedMediaTypeHttpException $postWithoutContentTypeException) {}
         $this->assertTrue(isset($postWithoutContentTypeException));
     }

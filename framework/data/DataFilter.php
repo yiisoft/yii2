@@ -64,7 +64,7 @@ use yii\validators\StringValidator;
  * use yii\data\DataFilter;
  *
  * $dataFilter = new DataFilter();
- * $dataFilter->load(Yii::$app->request->getBodyParams());
+ * $dataFilter->load(Yii::$app->request->getParsedBody());
  * ```
  *
  * In order to function this class requires a search model specified via [[searchModel]]. This search model should declare

@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
@@ -15,12 +15,12 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
 use yii\http\Cookie;
 use yii\http\CookieCollection;
 use yii\http\FileStream;
 use yii\http\MemoryStream;
 use yii\http\MessageTrait;
+use yii\http\ServerRequestAttributeTrait;
 use yii\http\UploadedFile;
 use yii\http\Uri;
 use yii\validators\IpValidator;
@@ -48,7 +48,7 @@ use yii\validators\IpValidator;
  * @property string|null $authUser The username sent via HTTP authentication, null if the username is not
  * given. This property is read-only.
  * @property string $baseUrl The relative URL for the application.
- * @property array $bodyParams The request parameters given in the request body.
+ * @property array $parsedBody The request parameters given in the request body.
  * @property string $contentType Request content-type. Null is returned if this information is not available.
  * This property is read-only.
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
@@ -102,9 +102,10 @@ use yii\validators\IpValidator;
  * @since 2.0
  * @SuppressWarnings(PHPMD.SuperGlobals)
  */
-class Request extends \yii\base\Request implements RequestInterface
+class Request extends \yii\base\Request implements ServerRequestInterface
 {
     use MessageTrait;
+    use ServerRequestAttributeTrait;
 
     /**
      * The name of the HTTP header for sending CSRF token.
@@ -161,7 +162,7 @@ class Request extends \yii\base\Request implements RequestInterface
      * @var string the name of the POST parameter that is used to indicate if a request is a PUT, PATCH or DELETE
      * request tunneled through POST. Defaults to '_method'.
      * @see getMethod()
-     * @see getBodyParams()
+     * @see getParsedBody()
      */
     public $methodParam = '_method';
     /**
@@ -181,7 +182,7 @@ class Request extends \yii\base\Request implements RequestInterface
      * To register a parser for parsing all request types you can use `'*'` as the array key.
      * This one will be used as a fallback in case no other types match.
      *
-     * @see getBodyParams()
+     * @see getParsedBody()
      */
     public $parsers = [];
     /**
@@ -267,6 +268,16 @@ class Request extends \yii\base\Request implements RequestInterface
         'Front-End-Https' => ['on'],
     ];
 
+    /**
+     * @var array server parameters.
+     * @since 2.1.0
+     */
+    private $_serverParams;
+    /**
+     * @var array the cookies sent by the client to the server.
+     * @since 2.1.0
+     */
+    private $_cookieParams;
     /**
      * @var CookieCollection Collection of request cookies.
      */
@@ -647,7 +658,7 @@ class Request extends \yii\base\Request implements RequestInterface
         $this->setBody($body);
     }
 
-    private $_bodyParams;
+    private $_parsedBody;
 
     /**
      * Returns the request parameters given in the request body.
@@ -663,15 +674,15 @@ class Request extends \yii\base\Request implements RequestInterface
      * @throws UnsupportedMediaTypeHttpException if unable to parse raw body.
      * @see getMethod()
      * @see getBodyParam()
-     * @see setBodyParams()
+     * @see setParsedParams()
      */
-    public function getBodyParams()
+    public function getParsedBody()
     {
-        if ($this->_bodyParams === null) {
+        if ($this->_parsedBody === null) {
             if (isset($_POST[$this->methodParam])) {
-                $this->_bodyParams = $_POST;
-                unset($this->_bodyParams[$this->methodParam]);
-                return $this->_bodyParams;
+                $this->_parsedBody = $_POST;
+                unset($this->_parsedBody[$this->methodParam]);
+                return $this->_parsedBody;
             }
 
             $contentType = $this->getContentType();
@@ -685,44 +696,55 @@ class Request extends \yii\base\Request implements RequestInterface
                 if (!($parser instanceof RequestParserInterface)) {
                     throw new InvalidConfigException("The '$contentType' request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
                 }
-                $this->_bodyParams = $parser->parse($this);
+                $this->_parsedBody = $parser->parse($this);
             } elseif (isset($this->parsers['*'])) {
                 $parser = Yii::createObject($this->parsers['*']);
                 if (!($parser instanceof RequestParserInterface)) {
                     throw new InvalidConfigException('The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.');
                 }
-                $this->_bodyParams = $parser->parse($this);
+                $this->_parsedBody = $parser->parse($this);
             } elseif ($this->getMethod() === 'POST') {
                 if ($contentType !== 'application/x-www-form-urlencoded' && $contentType !== 'multipart/form-data') {
                     throw new UnsupportedMediaTypeHttpException();
                 }
                 // PHP has already parsed the body so we have all params in $_POST
-                $this->_bodyParams = $_POST;
+                $this->_parsedBody = $_POST;
 
                 if ($contentType === 'multipart/form-data') {
-                    $this->_bodyParams = ArrayHelper::merge($this->_bodyParams, $this->getUploadedFiles());
+                    $this->_parsedBody = ArrayHelper::merge($this->_parsedBody, $this->getUploadedFiles());
                 }
             } else {
                 if ($contentType !== 'application/x-www-form-urlencoded') {
                     throw new UnsupportedMediaTypeHttpException();
                 }
-                $this->_bodyParams = [];
-                mb_parse_str($this->getBody()->__toString(), $this->_bodyParams);
+                $this->_parsedBody = [];
+                mb_parse_str($this->getBody()->__toString(), $this->_parsedBody);
             }
         }
 
-        return $this->_bodyParams;
+        return $this->_parsedBody;
     }
 
     /**
      * Sets the request body parameters.
      * @param array $values the request body parameters (name-value pairs)
      * @see getBodyParam()
-     * @see getBodyParams()
+     * @see getParsedBody()
      */
-    public function setBodyParams($values)
+    public function setParsedBody($values)
     {
-        $this->_bodyParams = $values;
+        $this->_parsedBody = $values;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function withParsedBody($data)
+    {
+        $newInstance = clone $this;
+        $newInstance->setParsedBody($data);
+        return $newInstance;
     }
 
     /**
@@ -731,12 +753,12 @@ class Request extends \yii\base\Request implements RequestInterface
      * @param string $name the parameter name
      * @param mixed $defaultValue the default parameter value if the parameter does not exist.
      * @return mixed the parameter value
-     * @see getBodyParams()
-     * @see setBodyParams()
+     * @see getParsedBody()
+     * @see setParsedParams()
      */
     public function getBodyParam($name, $defaultValue = null)
     {
-        $params = $this->getBodyParams();
+        $params = $this->getParsedBody();
 
         return isset($params[$name]) ? $params[$name] : $defaultValue;
     }
@@ -751,7 +773,7 @@ class Request extends \yii\base\Request implements RequestInterface
     public function post($name = null, $defaultValue = null)
     {
         if ($name === null) {
-            return $this->getBodyParams();
+            return $this->getParsedBody();
         }
 
         return $this->getBodyParam($name, $defaultValue);
@@ -784,6 +806,20 @@ class Request extends \yii\base\Request implements RequestInterface
     public function setQueryParams($values)
     {
         $this->_queryParams = $values;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withQueryParams(array $query)
+    {
+        if ($this->getQueryParams() === $query) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setQueryParams($query);
+        return $newInstance;
     }
 
     /**
@@ -1682,7 +1718,7 @@ class Request extends \yii\base\Request implements RequestInterface
     }
 
     /**
-     * Converts `$_COOKIE` into an array of [[Cookie]].
+     * Converts [[cookieParams]] into an array of [[Cookie]].
      * @return array the cookies obtained from request
      * @throws InvalidConfigException if [[cookieValidationKey]] is not set when [[enableCookieValidation]] is true
      */
@@ -1691,9 +1727,9 @@ class Request extends \yii\base\Request implements RequestInterface
         $cookies = [];
         if ($this->enableCookieValidation) {
             if ($this->cookieValidationKey == '') {
-                throw new InvalidConfigException(get_class($this) . '::cookieValidationKey must be configured with a secret key.');
+                throw new InvalidConfigException(get_class($this) . '::$cookieValidationKey must be configured with a secret key.');
             }
-            foreach ($_COOKIE as $name => $value) {
+            foreach ($this->getCookieParams() as $name => $value) {
                 if (!is_string($value)) {
                     continue;
                 }
@@ -1712,7 +1748,7 @@ class Request extends \yii\base\Request implements RequestInterface
                 }
             }
         } else {
-            foreach ($_COOKIE as $name => $value) {
+            foreach ($this->getCookieParams() as $name => $value) {
                 $cookies[$name] = Yii::createObject([
                     'class' => \yii\http\Cookie::class,
                     'name' => $name,
@@ -1726,15 +1762,13 @@ class Request extends \yii\base\Request implements RequestInterface
     }
 
     /**
-     * Returns uploaded files for this request.
-     * Uploaded files are returned in format according to [PSR-7 Uploaded Files specs](http://www.php-fig.org/psr/psr-7/#16-uploaded-files).
-     * @return array uploaded files.
+     * {@inheritdoc}
      * @since 2.1.0
      */
     public function getUploadedFiles()
     {
         if ($this->_uploadedFiles === null) {
-            $this->getBodyParams(); // uploaded files are the part of the body and may be set while its parsing
+            $this->getParsedBody(); // uploaded files are the part of the body and may be set while its parsing
             if ($this->_uploadedFiles === null) {
                 $this->_uploadedFiles = $this->defaultUploadedFiles();
             }
@@ -1751,6 +1785,17 @@ class Request extends \yii\base\Request implements RequestInterface
     public function setUploadedFiles($uploadedFiles)
     {
         $this->_uploadedFiles = $uploadedFiles;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function withUploadedFiles(array $uploadedFiles)
+    {
+        $newInstance = clone $this;
+        $newInstance->setUploadedFiles($uploadedFiles);
+        return $newInstance;
     }
 
     /**
@@ -2011,5 +2056,65 @@ class Request extends \yii\base\Request implements RequestInterface
         if (is_object($this->_cookies)) {
             $this->_cookies = clone $this->_cookies;
         }
+    }
+
+    /**
+     * Sets the data related to the incoming request environment.
+     * @param array $serverParams server parameters.
+     * @since 2.1.0
+     */
+    public function setServerParams(array $serverParams)
+    {
+        $this->_serverParams = $serverParams;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function getServerParams()
+    {
+        if ($this->_serverParams === null) {
+            $this->_serverParams = $_SERVER;
+        }
+        return $this->_serverParams;
+    }
+
+    /**
+     * Specifies cookies.
+     * @param array $cookies array of key/value pairs representing cookies.
+     * @since 2.1.0
+     */
+    public function setCookieParams(array $cookies)
+    {
+        $this->_cookieParams = $cookies;
+        $this->_cookies = null;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function getCookieParams()
+    {
+        if ($this->_cookieParams === null) {
+            $this->_cookieParams = $_COOKIE;
+        }
+        return $this->_cookieParams;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function withCookieParams(array $cookies)
+    {
+        if ($this->getCookieParams() === $cookies) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setCookieParams($cookies);
+        return $newInstance;
     }
 }

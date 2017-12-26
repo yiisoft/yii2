@@ -81,15 +81,15 @@ class FileValidatorTest extends TestCase
 
         $size = min($this->sizeToBytes(ini_get('upload_max_filesize')), $this->sizeToBytes(ini_get('post_max_size')));
         $val = new FileValidator();
-        Yii::$app->request->setBodyParams([]);
+        Yii::$app->request->setParsedBody([]);
         $this->assertEquals($size, $val->getSizeLimit());
         $val->maxSize = $size + 1; // set and test if value is overridden
         $this->assertEquals($size, $val->getSizeLimit());
         $val->maxSize = abs($size - 1);
         $this->assertEquals($size - 1, $val->getSizeLimit());
-        Yii::$app->request->setBodyParams(['MAX_FILE_SIZE' => $size + 1]);
+        Yii::$app->request->setParsedBody(['MAX_FILE_SIZE' => $size + 1]);
         $this->assertEquals($size - 1, $val->getSizeLimit());
-        Yii::$app->request->setBodyParams(['MAX_FILE_SIZE' => abs($size - 2)]);
+        Yii::$app->request->setParsedBody(['MAX_FILE_SIZE' => abs($size - 2)]);
         $this->assertSame(abs($size - 2), $val->getSizeLimit());
     }
 
