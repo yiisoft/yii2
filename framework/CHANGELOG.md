@@ -19,6 +19,8 @@ Yii Framework 2 Change Log
 - Enh #12592: Optimized `yii\filters\AccessController` on processing accessrules (dynasource)
 - Enh #12938: Allow to pass additional parameters to `yii\base\View::renderDynamic()` (mikehaertl)
 - Enh #13006: Added a `/` to the `yii\captcha\Captcha::$captchaAction` string to work correctly in a module also (boehsermoe)
+- Enh #13702: Added support for PSR-3 'Logger' (klimov-paul)
+- Enh #13706: 'Profiler' layer extracted (klimov-paul)
 - Enh #15410: Added serialization abstraction layer under `yii\serialize\*` namespace (klimov-paul)
 - Removed methods marked as deprecated in 2.0.x (samdark)
 - Chg #14784: Signature of `yii\web\RequestParserInterface::parse()` changed to accept `yii\web\Request` instance as a sole argument (klimov-paul)
