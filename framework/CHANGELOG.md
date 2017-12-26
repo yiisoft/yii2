@@ -50,6 +50,7 @@ Yii Framework 2 Change Log
 - Enh #15347: Add `Instance` support for object property in DI container (kojit2009)
 - Enh #15357: Added multi statement support for `yii\db\sqlite\Command` (sergeymakinen)
 - Enh #15360: Refactored `BaseConsole::updateProgress()` (developeruz)
+- Enh #15415: Added transaction/retry support for `yii\db\Command` (sergeymakinen)
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 
 
