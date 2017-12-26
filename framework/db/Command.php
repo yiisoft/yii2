@@ -1147,6 +1147,9 @@ class Command extends Component
      * }
      * ```
      *
+     * The callable will recieve a database exception thrown and a current attempt
+     * (to execute the command) number starting from 1.
+     *
      * @param callable $handler a PHP callback to handle database exceptions.
      * @return $this this command instance.
      * @since 2.0.14
