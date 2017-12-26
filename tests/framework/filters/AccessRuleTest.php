@@ -416,7 +416,9 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertFalse($rule->allows($action, $user, $request));
 
         // match, one IP
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $request->setServerParams([
+            'REMOTE_ADDR' => '127.0.0.1'
+        ]);
         $rule->ips = ['127.0.0.1'];
         $rule->allow = true;
         $this->assertTrue($rule->allows($action, $user, $request));
@@ -424,7 +426,9 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertFalse($rule->allows($action, $user, $request));
 
         // no match, one IP
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $request->setServerParams([
+            'REMOTE_ADDR' => '127.0.0.1'
+        ]);
         $rule->ips = ['192.168.0.1'];
         $rule->allow = true;
         $this->assertNull($rule->allows($action, $user, $request));
@@ -432,13 +436,17 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
 
         // no partial match, one IP
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $request->setServerParams([
+            'REMOTE_ADDR' => '127.0.0.1'
+        ]);
         $rule->ips = ['127.0.0.10'];
         $rule->allow = true;
         $this->assertNull($rule->allows($action, $user, $request));
         $rule->allow = false;
         $this->assertNull($rule->allows($action, $user, $request));
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.10';
+        $request->setServerParams([
+            'REMOTE_ADDR' => '127.0.0.10'
+        ]);
         $rule->ips = ['127.0.0.1'];
         $rule->allow = true;
         $this->assertNull($rule->allows($action, $user, $request));
@@ -446,7 +454,9 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
 
         // match, one IP IPv6
-        $_SERVER['REMOTE_ADDR'] = '::1';
+        $request->setServerParams([
+            'REMOTE_ADDR' => '::1'
+        ]);
         $rule->ips = ['::1'];
         $rule->allow = true;
         $this->assertTrue($rule->allows($action, $user, $request));
@@ -454,7 +464,9 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertFalse($rule->allows($action, $user, $request));
 
         // no match, one IP IPv6
-        $_SERVER['REMOTE_ADDR'] = '::1';
+        $request->setServerParams([
+            'REMOTE_ADDR' => '::1'
+        ]);
         $rule->ips = ['dead::beaf::1'];
         $rule->allow = true;
         $this->assertNull($rule->allows($action, $user, $request));
@@ -462,13 +474,18 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
 
         // no partial match, one IP IPv6
-        $_SERVER['REMOTE_ADDR'] = '::1';
+        $request->setServerParams([
+            'REMOTE_ADDR' => '::1'
+        ]);
         $rule->ips = ['::123'];
         $rule->allow = true;
         $this->assertNull($rule->allows($action, $user, $request));
         $rule->allow = false;
         $this->assertNull($rule->allows($action, $user, $request));
-        $_SERVER['REMOTE_ADDR'] = '::123';
+
+        $request->setServerParams([
+            'REMOTE_ADDR' => '::123'
+        ]);
         $rule->ips = ['::1'];
         $rule->allow = true;
         $this->assertNull($rule->allows($action, $user, $request));
@@ -476,7 +493,9 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
 
         // undefined IP
-        $_SERVER['REMOTE_ADDR'] = null;
+        $request->setServerParams([
+            'REMOTE_ADDR' => null
+        ]);
         $rule->ips = ['192.168.*'];
         $rule->allow = true;
         $this->assertNull($rule->allows($action, $user, $request));
@@ -493,7 +512,9 @@ class AccessRuleTest extends \yiiunit\TestCase
         $rule = new AccessRule();
 
         // no match
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $request->setServerParams([
+            'REMOTE_ADDR' => '127.0.0.1'
+        ]);
         $rule->ips = ['192.168.*'];
         $rule->allow = true;
         $this->assertNull($rule->allows($action, $user, $request));
@@ -501,7 +522,9 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
 
         // match
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $request->setServerParams([
+            'REMOTE_ADDR' => '127.0.0.1'
+        ]);
         $rule->ips = ['127.0.*'];
         $rule->allow = true;
         $this->assertTrue($rule->allows($action, $user, $request));
@@ -509,7 +532,9 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertFalse($rule->allows($action, $user, $request));
 
         // match, IPv6
-        $_SERVER['REMOTE_ADDR'] = '2a01:4f8:120:7202::2';
+        $request->setServerParams([
+            'REMOTE_ADDR' => '2a01:4f8:120:7202::2'
+        ]);
         $rule->ips = ['2a01:4f8:120:*'];
         $rule->allow = true;
         $this->assertTrue($rule->allows($action, $user, $request));
@@ -517,7 +542,9 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertFalse($rule->allows($action, $user, $request));
 
         // no match, IPv6
-        $_SERVER['REMOTE_ADDR'] = '::1';
+        $request->setServerParams([
+            'REMOTE_ADDR' => '::1'
+        ]);
         $rule->ips = ['2a01:4f8:120:*'];
         $rule->allow = true;
         $this->assertNull($rule->allows($action, $user, $request));
