@@ -9,7 +9,10 @@ namespace yii\caching;
 
 use Psr\SimpleCache\CacheInterface;
 use yii\base\Component;
+use yii\di\Instance;
 use yii\helpers\StringHelper;
+use yii\serialize\PhpSerializer;
+use yii\serialize\SerializerInterface;
 
 /**
  * SimpleCache is the base class for cache classes implementing pure PSR-16 [[CacheInterface]].
@@ -46,17 +49,36 @@ abstract class SimpleCache extends Component implements CacheInterface
      */
     public $keyPrefix = '';
     /**
-     * @var null|array|false the functions used to serialize and unserialize cached data. Defaults to null, meaning
-     * using the default PHP `serialize()` and `unserialize()` functions. If you want to use some more efficient
-     * serializer (e.g. [igbinary](http://pecl.php.net/package/igbinary)), you may configure this property with
-     * a two-element array. The first element specifies the serialization function, and the second the deserialization
-     * function. If this property is set false, data will be directly sent to and retrieved from the underlying
+     * @var SerializerInterface|array|false the serializer to be used for serializing and unserializing of the cached data.
+     * Serializer should be an instance of [[SerializerInterface]] or its DI compatible configuration. For example:
+     *
+     * ```php
+     * [
+     *     'class' => \yii\serialize\IgbinarySerializer::class
+     * ]
+     * ```
+     *
+     * Default is [[PhpSerializer]], meaning using the default PHP `serialize()` and `unserialize()` functions.
+     *
+     * If this property is set `false`, data will be directly sent to and retrieved from the underlying
      * cache component without any serialization or deserialization. You should not turn off serialization if
      * you are using [[Dependency|cache dependency]], because it relies on data serialization. Also, some
      * implementations of the cache can not correctly save and retrieve data different from a string type.
      */
-    public $serializer;
+    public $serializer = PhpSerializer::class;
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+
+        if ($this->serializer !== false) {
+            $this->serializer = Instance::ensure($this->serializer instanceof \Closure ? call_user_func($this->serializer) : $this->serializer, SerializerInterface::class);
+        }
+    }
 
     /**
      * {@inheritdoc}
@@ -67,11 +89,9 @@ abstract class SimpleCache extends Component implements CacheInterface
         $value = $this->getValue($key);
         if ($value === false || $this->serializer === false) {
             return $default;
-        } elseif ($this->serializer === null) {
-            return unserialize($value);
         }
 
-        return call_user_func($this->serializer[1], $value);
+        return $this->serializer->unserialize($value);
     }
 
     /**
@@ -91,8 +111,7 @@ abstract class SimpleCache extends Component implements CacheInterface
                 if ($this->serializer === false) {
                     $results[$key] = $values[$newKey];
                 } else {
-                    $results[$key] = $this->serializer === null ? unserialize($values[$newKey])
-                        : call_user_func($this->serializer[1], $values[$newKey]);
+                    $results[$key] = $this->serializer->unserialize($values[$newKey]);
                 }
             }
         }
@@ -114,10 +133,8 @@ abstract class SimpleCache extends Component implements CacheInterface
      */
     public function set($key, $value, $ttl = null)
     {
-        if ($this->serializer === null) {
-            $value = serialize($value);
-        } elseif ($this->serializer !== false) {
-            $value = call_user_func($this->serializer[0], $value);
+        if ($this->serializer !== false) {
+            $value = $this->serializer->serialize($value);
         }
         $key = $this->normalizeKey($key);
         $ttl = $this->normalizeTtl($ttl);
@@ -131,10 +148,8 @@ abstract class SimpleCache extends Component implements CacheInterface
     {
         $data = [];
         foreach ($values as $key => $value) {
-            if ($this->serializer === null) {
-                $value = serialize($value);
-            } elseif ($this->serializer !== false) {
-                $value = call_user_func($this->serializer[0], $value);
+            if ($this->serializer !== false) {
+                $value = $this->serializer->serialize($value);
             }
             $key = $this->normalizeKey($key);
             $data[$key] = $value;
