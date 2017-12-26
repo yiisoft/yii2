@@ -1271,8 +1271,9 @@ class BaseHtml
      * - tag: this specifies the tag name. If not set, "div" will be used.
      *   See also [[tag()]].
      * - encode: boolean, if set to false then the error message won't be encoded.
-     * - errorMethod (since 2.0.14): string, if set then this value will be used as a method name to
-     *   be called instead of getFirstError().
+     * - errorSource (since 2.0.14): \Closure|callable, callback that will be called to obtain an error message.
+     *   The signature of the callback must be: `function ($model, $attribute)` and return a string.
+     *   When not set, the `$model->getFirstError()` method will be called.
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1281,8 +1282,12 @@ class BaseHtml
     public static function error($model, $attribute, $options = [])
     {
         $attribute = static::getAttributeName($attribute);
-        $errorMethod = ArrayHelper::remove($options, 'errorMethod', 'getFirstError');
-        $error = $model->$errorMethod($attribute);
+        $errorSource = ArrayHelper::remove($options, 'errorSource');
+        if ($errorSource !== null) {
+            $error = call_user_func($errorSource, $model, $attribute);
+        } else {
+            $error = $model->getFirstError($attribute);
+        }
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         $encode = ArrayHelper::remove($options, 'encode', true);
         return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
@@ -1308,6 +1313,8 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
+        self::setActivePlaceholder($model, $attribute, $options);
 
         return static::input($type, $name, $value, $options);
     }
@@ -1348,6 +1355,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This is available since version 2.0.3.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated input tag
      */
@@ -1355,6 +1364,23 @@ class BaseHtml
     {
         self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
+    }
+
+    /**
+     * Generate placeholder from model attribute label.
+     *
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+     * about attribute expression.
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * @since 2.0.14
+     */
+    protected static function setActivePlaceholder($model, $attribute, &$options = [])
+    {
+        if (isset($options['placeholder']) && $options['placeholder'] === true) {
+            $options['placeholder'] = $model->getAttributeLabel($attribute);
+        }
     }
 
     /**
@@ -1389,6 +1415,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This option is available since version 2.0.6.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated input tag
      */
@@ -1437,6 +1465,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This option is available since version 2.0.6.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated textarea tag
      */
@@ -1453,6 +1483,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
         self::normalizeMaxLength($model, $attribute, $options);
+        self::setActivePlaceholder($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 

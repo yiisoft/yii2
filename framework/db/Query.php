@@ -10,6 +10,7 @@ namespace yii\db;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 
 /**
  * Query represents a SELECT SQL statement in a way that is independent of DBMS.
@@ -481,60 +482,57 @@ class Query extends Component implements QueryInterface
         // Clean up table names and aliases
         $cleanedUpTableNames = [];
         foreach ($tableNames as $alias => $tableName) {
-            $tableNameString = null;
-            if (is_string($tableName)) {
-                $tableNameString = $tableName;
-            } elseif ($tableName instanceof Expression) {
-                $tableNameString = $tableName->expression;
-            }
-
-            if (!is_string($alias) && $tableNameString !== null) {
+            if (is_string($tableName) && !is_string($alias)) {
                 $pattern = <<<PATTERN
 ~
 ^
 \s*
 (
-    (?:['"`\[]|{{)
+(?:['"`\[]|{{)
+.*?
+(?:['"`\]]|}})
+|
+\(.*?\)
+|
+.*?
+)
+(?:
+(?:
+    \s+
+    (?:as)?
+    \s*
+)
+(
+   (?:['"`\[]|{{)
     .*?
     (?:['"`\]]|}})
     |
-    \(.*?\)
-    |
     .*?
 )
-(?:
-    (?:
-        \s+
-        (?:as)?
-        \s*
-    )
-    (
-       (?:['"`\[]|{{)
-        .*?
-        (?:['"`\]]|}})
-        |
-        .*?
-    )
 )?
 \s*
 $
 ~iux
 PATTERN;
-                if (preg_match($pattern, $tableNameString, $matches)) {
+                if (preg_match($pattern, $tableName, $matches)) {
                     if (isset($matches[2])) {
-                        list(, $tableNameString, $alias) = $matches;
+                        list(, $tableName, $alias) = $matches;
                     } else {
-                        $tableNameString = $alias = $matches[1];
+                        $tableName = $alias = $matches[1];
                     }
                 }
             }
 
+
             if ($tableName instanceof Expression) {
-                $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $tableNameString;
+                if (!is_string($alias)) {
+                    throw new InvalidParamException('To use Expression in from() method, pass it in array format with alias.');
+                }
+                $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $tableName;
             } elseif ($tableName instanceof self) {
                 $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $tableName;
             } else {
-                $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $this->ensureNameQuoted($tableNameString);
+                $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $this->ensureNameQuoted($tableName);
             }
         }
 
