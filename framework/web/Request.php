@@ -671,8 +671,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * @throws InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
      * @throws UnsupportedMediaTypeHttpException if unable to parse raw body.
      * @see getMethod()
-     * @see getBodyParam()
-     * @see setParsedParams()
+     * @see getParsedBodyParam()
+     * @see setParsedBody()
      */
     public function getParsedBody()
     {
@@ -726,7 +726,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     /**
      * Sets the request body parameters.
      * @param array $values the request body parameters (name-value pairs)
-     * @see getBodyParam()
+     * @see getParsedBodyParam()
      * @see getParsedBody()
      */
     public function setParsedBody($values)
@@ -752,9 +752,9 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * @param mixed $defaultValue the default parameter value if the parameter does not exist.
      * @return mixed the parameter value
      * @see getParsedBody()
-     * @see setParsedParams()
+     * @see setParsedBody()
      */
-    public function getBodyParam($name, $defaultValue = null)
+    public function getParsedBodyParam($name, $defaultValue = null)
     {
         $params = $this->getParsedBody();
 
@@ -774,7 +774,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             return $this->getParsedBody();
         }
 
-        return $this->getBodyParam($name, $defaultValue);
+        return $this->getParsedBodyParam($name, $defaultValue);
     }
 
     private $_queryParams;
@@ -842,7 +842,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * @param string $name the GET parameter name.
      * @param mixed $defaultValue the default parameter value if the GET parameter does not exist.
      * @return mixed the GET parameter value
-     * @see getBodyParam()
+     * @see getParsedBodyParam()
      */
     public function getQueryParam($name, $defaultValue = null)
     {
@@ -2103,7 +2103,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             return $this->validateCsrfTokenInternal($clientSuppliedToken, $trueToken);
         }
 
-        return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
+        return $this->validateCsrfTokenInternal($this->getParsedBodyParam($this->csrfParam), $trueToken)
             || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
     }
 
