@@ -445,10 +445,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
                 $this->_method = $_POST[$this->methodParam];
             } elseif ($this->hasHeader('x-http-method-override')) {
                 $this->_method = $this->getHeaderLine('x-http-method-override');
-            } elseif (isset($_SERVER['REQUEST_METHOD'])) {
-                $this->_method = $_SERVER['REQUEST_METHOD'];
             } else {
-                $this->_method = 'GET';
+                $this->_method = $this->getServerParam('REQUEST_METHOD', 'GET');
             }
         }
         return $this->_method;
@@ -853,6 +851,82 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         return isset($params[$name]) ? $params[$name] : $defaultValue;
     }
 
+    /**
+     * Sets the data related to the incoming request environment.
+     * @param array $serverParams server parameters.
+     * @since 2.1.0
+     */
+    public function setServerParams(array $serverParams)
+    {
+        $this->_serverParams = $serverParams;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function getServerParams()
+    {
+        if ($this->_serverParams === null) {
+            $this->_serverParams = $_SERVER;
+        }
+        return $this->_serverParams;
+    }
+
+    /**
+     * Return the server environment parameter by name.
+     * @param string $name parameter name.
+     * @param mixed $default default value to return if the parameter does not exist.
+     * @return mixed parameter value.
+     * @since 2.1.0
+     */
+    public function getServerParam($name, $default = null)
+    {
+        $params = $this->getServerParams();
+        if (!isset($params[$name])) {
+            return $default;
+        }
+        return $params[$name];
+    }
+
+    /**
+     * Specifies cookies.
+     * @param array $cookies array of key/value pairs representing cookies.
+     * @since 2.1.0
+     */
+    public function setCookieParams(array $cookies)
+    {
+        $this->_cookieParams = $cookies;
+        $this->_cookies = null;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function getCookieParams()
+    {
+        if ($this->_cookieParams === null) {
+            $this->_cookieParams = $_COOKIE;
+        }
+        return $this->_cookieParams;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function withCookieParams(array $cookies)
+    {
+        if ($this->getCookieParams() === $cookies) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setCookieParams($cookies);
+        return $newInstance;
+    }
+
     private $_hostInfo;
     private $_hostName;
 
@@ -890,8 +964,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             $http = $secure ? 'https' : 'http';
             if ($this->hasHeader('Host')) {
                 $this->_hostInfo = $http . '://' . $this->getHeaderLine('Host');
-            } elseif (isset($_SERVER['SERVER_NAME'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
+            } elseif (($serverName = $this->getServerParam('SERVER_NAME')) !== null) {
+                $this->_hostInfo = $http . '://' . $serverName;
                 $port = $secure ? $this->getSecurePort() : $this->getPort();
                 if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
                     $this->_hostInfo .= ':' . $port;
@@ -977,16 +1051,17 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         if ($this->_scriptUrl === null) {
             $scriptFile = $this->getScriptFile();
             $scriptName = basename($scriptFile);
-            if (isset($_SERVER['SCRIPT_NAME']) && basename($_SERVER['SCRIPT_NAME']) === $scriptName) {
-                $this->_scriptUrl = $_SERVER['SCRIPT_NAME'];
-            } elseif (isset($_SERVER['PHP_SELF']) && basename($_SERVER['PHP_SELF']) === $scriptName) {
-                $this->_scriptUrl = $_SERVER['PHP_SELF'];
-            } elseif (isset($_SERVER['ORIG_SCRIPT_NAME']) && basename($_SERVER['ORIG_SCRIPT_NAME']) === $scriptName) {
-                $this->_scriptUrl = $_SERVER['ORIG_SCRIPT_NAME'];
-            } elseif (isset($_SERVER['PHP_SELF']) && ($pos = strpos($_SERVER['PHP_SELF'], '/' . $scriptName)) !== false) {
-                $this->_scriptUrl = substr($_SERVER['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
-            } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && strpos($scriptFile, $_SERVER['DOCUMENT_ROOT']) === 0) {
-                $this->_scriptUrl = str_replace('\\', '/', str_replace($_SERVER['DOCUMENT_ROOT'], '', $scriptFile));
+            $serverParams = $this->getServerParams();
+            if (isset($serverParams['SCRIPT_NAME']) && basename($serverParams['SCRIPT_NAME']) === $scriptName) {
+                $this->_scriptUrl = $serverParams['SCRIPT_NAME'];
+            } elseif (isset($serverParams['PHP_SELF']) && basename($serverParams['PHP_SELF']) === $scriptName) {
+                $this->_scriptUrl = $serverParams['PHP_SELF'];
+            } elseif (isset($serverParams['ORIG_SCRIPT_NAME']) && basename($serverParams['ORIG_SCRIPT_NAME']) === $scriptName) {
+                $this->_scriptUrl = $serverParams['ORIG_SCRIPT_NAME'];
+            } elseif (isset($serverParams['PHP_SELF']) && ($pos = strpos($serverParams['PHP_SELF'], '/' . $scriptName)) !== false) {
+                $this->_scriptUrl = substr($serverParams['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
+            } elseif (!empty($serverParams['DOCUMENT_ROOT']) && strpos($scriptFile, $serverParams['DOCUMENT_ROOT']) === 0) {
+                $this->_scriptUrl = str_replace('\\', '/', str_replace($serverParams['DOCUMENT_ROOT'], '', $scriptFile));
             } else {
                 throw new InvalidConfigException('Unable to determine the entry script URL.');
             }
@@ -1020,8 +1095,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             return $this->_scriptFile;
         }
 
-        if (isset($_SERVER['SCRIPT_FILENAME'])) {
-            return $_SERVER['SCRIPT_FILENAME'];
+        if (($scriptFilename = $this->getServerParam('SCRIPT_FILENAME')) !== null) {
+            return $scriptFilename;
         }
 
         throw new InvalidConfigException('Unable to determine the entry script file path.');
@@ -1108,8 +1183,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             $pathInfo = substr($pathInfo, strlen($scriptUrl));
         } elseif ($baseUrl === '' || strpos($pathInfo, $baseUrl) === 0) {
             $pathInfo = substr($pathInfo, strlen($baseUrl));
-        } elseif (isset($_SERVER['PHP_SELF']) && strpos($_SERVER['PHP_SELF'], $scriptUrl) === 0) {
-            $pathInfo = substr($_SERVER['PHP_SELF'], strlen($scriptUrl));
+        } elseif (($phpSelf = $this->getServerParam('PHP_SELF')) !== null && strpos($phpSelf, $scriptUrl) === 0) {
+            $pathInfo = substr($phpSelf, strlen($scriptUrl));
         } else {
             throw new InvalidConfigException('Unable to determine the path info of the current request.');
         }
@@ -1170,17 +1245,19 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     protected function resolveRequestUri()
     {
+        $serverParams = $this->getServerParams();
+
         if ($this->hasHeader('x-rewrite-url')) { // IIS
             $requestUri = $this->getHeaderLine('x-rewrite-url');
-        } elseif (isset($_SERVER['REQUEST_URI'])) {
-            $requestUri = $_SERVER['REQUEST_URI'];
+        } elseif (isset($serverParams['REQUEST_URI'])) {
+            $requestUri = $serverParams['REQUEST_URI'];
             if ($requestUri !== '' && $requestUri[0] !== '/') {
                 $requestUri = preg_replace('/^(http|https):\/\/[^\/]+/i', '', $requestUri);
             }
-        } elseif (isset($_SERVER['ORIG_PATH_INFO'])) { // IIS 5.0 CGI
-            $requestUri = $_SERVER['ORIG_PATH_INFO'];
-            if (!empty($_SERVER['QUERY_STRING'])) {
-                $requestUri .= '?' . $_SERVER['QUERY_STRING'];
+        } elseif (isset($serverParams['ORIG_PATH_INFO'])) { // IIS 5.0 CGI
+            $requestUri = $serverParams['ORIG_PATH_INFO'];
+            if (!empty($serverParams['QUERY_STRING'])) {
+                $requestUri .= '?' . $serverParams['QUERY_STRING'];
             }
         } else {
             throw new InvalidConfigException('Unable to determine the request URI.');
@@ -1195,7 +1272,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     public function getQueryString()
     {
-        return isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
+        return $this->getServerParam('QUERY_STRING', '');
     }
 
     /**
@@ -1204,7 +1281,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     public function getIsSecureConnection()
     {
-        if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)) {
+        $https = $this->getServerParam('HTTPS');
+        if ($https !== null && (strcasecmp($https, 'on') === 0 || $https == 1)) {
             return true;
         }
         foreach ($this->secureProtocolHeaders as $header => $values) {
@@ -1226,7 +1304,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     public function getServerName()
     {
-        return isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : null;
+        return $this->getServerParam('SERVER_NAME');
     }
 
     /**
@@ -1235,7 +1313,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     public function getServerPort()
     {
-        return isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : null;
+        $port = $this->getServerParam('SERVER_PORT');
+        return $port === null ? null : (int) $port;
     }
 
     /**
@@ -1322,7 +1401,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     public function getRemoteIP()
     {
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        return $this->getServerParam('REMOTE_ADDR');
     }
 
     /**
@@ -1335,7 +1414,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     public function getRemoteHost()
     {
-        return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
+        return $this->getServerParam('REMOTE_HOST');
     }
 
     /**
@@ -1366,8 +1445,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     public function getAuthCredentials()
     {
-        $username = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null;
-        $password = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null;
+        $username = $this->getServerParam('PHP_AUTH_USER');
+        $password = $this->getServerParam('PHP_AUTH_PW');
         if ($username !== null || $password !== null) {
             return [$username, $password];
         }
@@ -1406,7 +1485,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     public function getPort()
     {
         if ($this->_port === null) {
-            $this->_port = !$this->getIsSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : 80;
+            $serverPort = $this->getServerParam('SERVER_PORT');
+            $this->_port = !$this->getIsSecureConnection() && $serverPort === null ? (int) $serverPort : 80;
         }
 
         return $this->_port;
@@ -1438,7 +1518,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     public function getSecurePort()
     {
         if ($this->_securePort === null) {
-            $this->_securePort = $this->getIsSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : 443;
+            $serverPort = $this->getServerParam('SERVER_PORT');
+            $this->_securePort = $this->getIsSecureConnection() && $serverPort === null ? (int) $serverPort : 443;
         }
 
         return $this->_securePort;
@@ -2056,65 +2137,5 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         if (is_object($this->_cookies)) {
             $this->_cookies = clone $this->_cookies;
         }
-    }
-
-    /**
-     * Sets the data related to the incoming request environment.
-     * @param array $serverParams server parameters.
-     * @since 2.1.0
-     */
-    public function setServerParams(array $serverParams)
-    {
-        $this->_serverParams = $serverParams;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @since 2.1.0
-     */
-    public function getServerParams()
-    {
-        if ($this->_serverParams === null) {
-            $this->_serverParams = $_SERVER;
-        }
-        return $this->_serverParams;
-    }
-
-    /**
-     * Specifies cookies.
-     * @param array $cookies array of key/value pairs representing cookies.
-     * @since 2.1.0
-     */
-    public function setCookieParams(array $cookies)
-    {
-        $this->_cookieParams = $cookies;
-        $this->_cookies = null;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @since 2.1.0
-     */
-    public function getCookieParams()
-    {
-        if ($this->_cookieParams === null) {
-            $this->_cookieParams = $_COOKIE;
-        }
-        return $this->_cookieParams;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @since 2.1.0
-     */
-    public function withCookieParams(array $cookies)
-    {
-        if ($this->getCookieParams() === $cookies) {
-            return $this;
-        }
-
-        $newInstance = clone $this;
-        $newInstance->setCookieParams($cookies);
-        return $newInstance;
     }
 }

@@ -292,10 +292,12 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
-        $_SERVER['SERVER_NAME'] = 'servername';
+        $request->setServerParams([
+            'SERVER_NAME' => 'servername'
+        ]);
         $this->assertEquals('servername', $request->getServerName());
 
-        unset($_SERVER['SERVER_NAME']);
+        $request->setServerParams([]);
         $this->assertNull($request->getServerName());
     }
 
@@ -303,10 +305,12 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
-        $_SERVER['SERVER_PORT'] = 33;
+        $request->setServerParams([
+            'SERVER_PORT' => 33
+        ]);
         $this->assertEquals(33, $request->getServerPort());
 
-        unset($_SERVER['SERVER_PORT']);
+        $request->setServerParams([]);
         $this->assertNull($request->getServerPort());
     }
 
