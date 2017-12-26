@@ -100,6 +100,16 @@ class Command extends Component
      * @var string name of the table, which schema, should be refreshed after command execution.
      */
     private $_refreshTableName;
+    /**
+     * @var string|false|null the isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
+     */
+    private $_isolationLevel = false;
+    /**
+     * @var callable a callable (e.g. anonymous function) that is called when [[\yii\db\Exception]] is thrown
+     * when executing the command.
+     */
+    private $_retryHandler;
 
 
     /**
@@ -991,7 +1001,7 @@ class Command extends Component
         try {
             $profile and Yii::beginProfile($rawSql, __METHOD__);
 
-            $this->pdoStatement->execute();
+            $this->internalExecute($rawSql);
             $n = $this->pdoStatement->rowCount();
 
             $profile and Yii::endProfile($rawSql, __METHOD__);
@@ -999,9 +1009,9 @@ class Command extends Component
             $this->refreshTableSchema();
 
             return $n;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $profile and Yii::endProfile($rawSql, __METHOD__);
-            throw $this->db->getSchema()->convertException($e, $rawSql ?: $this->getRawSql());
+            throw $e;
         }
     }
 
@@ -1064,7 +1074,7 @@ class Command extends Component
         try {
             $profile and Yii::beginProfile($rawSql, 'yii\db\Command::query');
 
-            $this->pdoStatement->execute();
+            $this->internalExecute($rawSql);
 
             if ($method === '') {
                 $result = new DataReader($this);
@@ -1077,9 +1087,9 @@ class Command extends Component
             }
 
             $profile and Yii::endProfile($rawSql, 'yii\db\Command::query');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $profile and Yii::endProfile($rawSql, 'yii\db\Command::query');
-            throw $this->db->getSchema()->convertException($e, $rawSql ?: $this->getRawSql());
+            throw $e;
         }
 
         if (isset($cache, $cacheKey, $info)) {
@@ -1114,7 +1124,78 @@ class Command extends Component
     }
 
     /**
-     * Resets [[sql]] and [[params]] properties.
+     * Marks the command to be executed in transaction.
+     * @param string|null $isolationLevel The isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
+     * @return $this this command instance.
+     * @since 2.0.14
+     */
+    protected function requireTransaction($isolationLevel = null)
+    {
+        $this->_isolationLevel = $isolationLevel;
+        return $this;
+    }
+
+    /**
+     * Sets a callable (e.g. anonymous function) that is called when [[Exception]] is thrown
+     * when executing the command. The signature of the callable should be:
+     *
+     * ```php
+     * function (\yii\db\Exception $e, $attempt)
+     * {
+     *     // return true or false (whether to retry the command or rethrow $e)
+     * }
+     * ```
+     *
+     * @param callable $handler a PHP callback to handle database exceptions.
+     * @return $this this command instance.
+     * @since 2.0.14
+     */
+    protected function setRetryHandler(callable $handler)
+    {
+        $this->_retryHandler = $handler;
+        return $this;
+    }
+
+    /**
+     * Executes a prepared statement.
+     *
+     * It's a wrapper around [[\PDOStatement::execute()]] to support transactions
+     * and retry handlers.
+     *
+     * @param string|null $rawSql the rawSql if it has been created.
+     * @throws Exception if execution failed.
+     * @since 2.0.14
+     */
+    protected function internalExecute($rawSql)
+    {
+        $attempt = 0;
+        while (true) {
+            try {
+                if (
+                    ++$attempt === 1
+                    && $this->_isolationLevel !== false
+                    && $this->db->getTransaction() === null
+                ) {
+                    $this->db->transaction(function () use ($rawSql) {
+                        $this->internalExecute($rawSql);
+                    }, $this->_isolationLevel);
+                } else {
+                    $this->pdoStatement->execute();
+                }
+                break;
+            } catch (\Exception $e) {
+                $rawSql = $rawSql ?: $this->getRawSql();
+                $e = $this->db->getSchema()->convertException($e, $rawSql);
+                if ($this->_retryHandler === null || !call_user_func($this->_retryHandler, $e, $attempt)) {
+                    throw $e;
+                }
+            }
+        }
+    }
+
+    /**
+     * Resets command properties to their initial state.
      *
      * @since 2.0.13
      */
@@ -1124,5 +1205,7 @@ class Command extends Component
         $this->_pendingParams = [];
         $this->params = [];
         $this->_refreshTableName = null;
+        $this->_isolationLevel = false;
+        $this->_retryHandler = null;
     }
 }
