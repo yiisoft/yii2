@@ -842,4 +842,45 @@ class RequestTest extends TestCase
         $this->assertCount(1, $uploadedFiles);
         $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
     }
+
+    public function testSetupAttributes()
+    {
+        $request = new Request();
+
+        $request->setAttributes(['some' => 'foo']);
+        $this->assertSame(['some' => 'foo'], $request->getAttributes());
+    }
+
+    /**
+     * @depends testSetupAttributes
+     */
+    public function testGetAttribute()
+    {
+        $request = new Request();
+
+        $request->setAttributes(['some' => 'foo']);
+
+        $this->assertSame('foo', $request->getAttribute('some'));
+        $this->assertSame(null, $request->getAttribute('un-existing'));
+        $this->assertSame('default', $request->getAttribute('un-existing', 'default'));
+    }
+
+    /**
+     * @depends testSetupAttributes
+     */
+    public function testModifyAttributes()
+    {
+        $request = new Request();
+
+        $request->setAttributes(['attr1' => '1']);
+
+        $newStorage = $request->withAttribute('attr2', '2');
+        $this->assertNotSame($newStorage, $request);
+        $this->assertSame(['attr1' => '1', 'attr2' => '2'], $newStorage->getAttributes());
+
+        $request = $newStorage;
+        $newStorage = $request->withoutAttribute('attr1');
+        $this->assertNotSame($newStorage, $request);
+        $this->assertSame(['attr2' => '2'], $newStorage->getAttributes());
+    }
 }

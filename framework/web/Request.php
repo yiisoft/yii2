@@ -20,7 +20,6 @@ use yii\http\CookieCollection;
 use yii\http\FileStream;
 use yii\http\MemoryStream;
 use yii\http\MessageTrait;
-use yii\http\ServerRequestAttributeTrait;
 use yii\http\UploadedFile;
 use yii\http\Uri;
 use yii\validators\IpValidator;
@@ -105,7 +104,6 @@ use yii\validators\IpValidator;
 class Request extends \yii\base\Request implements ServerRequestInterface
 {
     use MessageTrait;
-    use ServerRequestAttributeTrait;
 
     /**
      * The name of the HTTP header for sending CSRF token.
@@ -268,6 +266,11 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         'Front-End-Https' => ['on'],
     ];
 
+    /**
+     * @var array attributes derived from the request.
+     * @since 2.1.0
+     */
+    private $_attributes;
     /**
      * @var array server parameters.
      * @since 2.1.0
@@ -2123,6 +2126,86 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         $security = Yii::$app->security;
 
         return $security->unmaskToken($clientSuppliedToken) === $security->unmaskToken($trueToken);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function getAttributes()
+    {
+        if ($this->_attributes === null) {
+            $this->_attributes = $this->defaultAttributes();
+        }
+        return $this->_attributes;
+    }
+
+    /**
+     * @param array $attributes attributes derived from the request.
+     */
+    public function setAttributes(array $attributes)
+    {
+        $this->_attributes = $attributes;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function getAttribute($name, $default = null)
+    {
+        $attributes = $this->getAttributes();
+        if (!array_key_exists($name, $attributes)) {
+            return $default;
+        }
+
+        return $attributes[$name];
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function withAttribute($name, $value)
+    {
+        $attributes = $this->getAttributes();
+        if (array_key_exists($name, $attributes) && $attributes[$name] === $value) {
+            return $this;
+        }
+
+        $attributes[$name] = $value;
+
+        $newInstance = clone $this;
+        $newInstance->setAttributes($attributes);
+        return $newInstance;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.1.0
+     */
+    public function withoutAttribute($name)
+    {
+        $attributes = $this->getAttributes();
+        if (!array_key_exists($name, $attributes)) {
+            return $this;
+        }
+
+        unset($attributes[$name]);
+
+        $newInstance = clone $this;
+        $newInstance->setAttributes($attributes);
+        return $newInstance;
+    }
+
+    /**
+     * Returns default server request attributes to be used in case they are not explicitly set.
+     * @return array attributes derived from the request.
+     * @since 2.1.0
+     */
+    protected function defaultAttributes()
+    {
+        return [];
     }
 
     /**
