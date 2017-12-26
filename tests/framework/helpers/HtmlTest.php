@@ -149,7 +149,7 @@ class HtmlTest extends TestCase
             ],
         ]);
         $this->expectException(\yii\base\InvalidConfigException::class);
-        $this->expectExceptionMessage('yii\web\Request::cookieValidationKey must be configured with a secret key.');
+        $this->expectExceptionMessage('yii\web\Request::$cookieValidationKey must be configured with a secret key.');
         Html::csrfMetaTags();
     }
 
