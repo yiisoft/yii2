@@ -70,7 +70,6 @@ Yii Framework 2 Change Log
 - Bug #6226: Fix fatal symlink error during assets publishing in multi threaded environment (dynasource)
 - Bug #6526: Fixed `yii\db\Command::batchInsert()` casting of double values correctly independent of the locale (cebe, leammas)
 - Bug #6588: Fixed changing array keys after validation of multiple files in `yii\validators\FileValidator` (developeruz)
-- Bug #14449: Fix PHP 7.2 compatibility bugs and add explicit closure support in `yii\base\Application` (dynasource)
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
 - Bug #11242: Fixed excess escaping in `yii\db\Command::batchInsert()` (silverfire)
 - Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase, silverfire)
