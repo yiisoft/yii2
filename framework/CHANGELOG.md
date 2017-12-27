@@ -52,6 +52,7 @@ Yii Framework 2 Change Log
 - Enh #15360: Refactored `BaseConsole::updateProgress()` (developeruz)
 - Enh #15415: Added transaction/retry support for `yii\db\Command` (sergeymakinen)
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
+- Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
 
 
 2.0.13.1 November 14, 2017
@@ -69,13 +70,6 @@ Yii Framework 2 Change Log
 - Bug #6226: Fix fatal symlink error during assets publishing in multi threaded environment (dynasource)
 - Bug #6526: Fixed `yii\db\Command::batchInsert()` casting of double values correctly independent of the locale (cebe, leammas)
 - Bug #6588: Fixed changing array keys after validation of multiple files in `yii\validators\FileValidator` (developeruz)
-- Chg #14618: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough Authentication filters. (michaelarnauts)
-- Bug #14542: Ensured only ASCII characters are in CSRF cookie value since binary data causes issues with ModSecurity and some browsers (samdark)
-- Enh #14022: `yii\web\UrlManager::setBaseUrl()` now supports aliases (dmirogin)
-- Bug #14471: `ContentNegotiator` will always set one of the configured server response formats even if the client does not accept any of them (PowerGamer1)
-- Bug #14525: Fixed 2.0.12 regression of loading of global fixtures trough `yii fixture/load` (michaelarnauts)
-- Bug #14523: Added `yii\web\MultipartFormDataParser::$force` option allowing to enforce parsing even on 'POST' request (klimov-paul)
-- Bug #14533: Fixed `yii\validators\ExistValidator` and `yii\validators\UniqueValidator` throw exception in case they are set for `yii\db\ActiveRecord` with `$targetClass` pointing to NOSQL ActiveRecord (klimov-paul)
 - Bug #14449: Fix PHP 7.2 compatibility bugs and add explicit closure support in `yii\base\Application` (dynasource)
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
 - Bug #11242: Fixed excess escaping in `yii\db\Command::batchInsert()` (silverfire)
