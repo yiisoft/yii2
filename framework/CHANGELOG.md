@@ -52,6 +52,7 @@ Yii Framework 2 Change Log
 - Enh #15360: Refactored `BaseConsole::updateProgress()` (developeruz)
 - Enh #15415: Added transaction/retry support for `yii\db\Command` (sergeymakinen)
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
+- Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
 
 
 2.0.13.1 November 14, 2017
