@@ -28,7 +28,7 @@ abstract class BaseManager extends Component implements ManagerInterface
      * @var array a list of role names that are assigned to every user automatically without calling [[assign()]].
      * Note that these roles are applied to users, regardless of their state of authentication.
      */
-    public $defaultRoles = [];
+    protected $defaultRoles = [];
 
 
     /**
@@ -193,6 +193,34 @@ abstract class BaseManager extends Component implements ManagerInterface
     public function getRoles()
     {
         return $this->getItems(Item::TYPE_ROLE);
+    }
+
+    /**
+     * Setter for default roles property
+     * Allows to define default roles dynamically via closure
+     * @param array|\Closure $roles
+     */
+    public function setDefaultRoles($roles)
+    {
+        if (is_array($roles)) {
+            $this->defaultRoles = $roles;
+        } elseif (is_callable($roles)) {
+            $roles = $roles();
+            if (!is_array($roles)) {
+                throw new InvalidParamException('Default roles closure must return an array');
+            }
+            $this->defaultRoles = $roles;
+        } else {
+            throw new InvalidParamException('Default roles must be either an array or a callable');
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDefaultRoles()
+    {
+        return $this->defaultRoles;
     }
 
     /**
