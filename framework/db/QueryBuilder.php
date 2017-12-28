@@ -815,7 +815,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * - `char`: char type, will be converted into "char(1)"
      * - `string`: string type, will be converted into "varchar(255)"
      * - `text`: a long string type, will be converted into "text"
-     * - `smallint`: a small integer type, will be converted into "smallint(6)"
+     * - `smallinteger`: a small integer type, will be converted into "smallint(6)"
      * - `integer`: integer type, will be converted into "int(11)"
      * - `bigint`: a big integer type, will be converted into "bigint(20)"
      * - `boolean`: boolean type, will be converted into "tinyint(1)"
