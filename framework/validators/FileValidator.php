@@ -84,12 +84,11 @@ class FileValidator extends Validator
     /**
      * @var int the minimum file count the given attribute can hold.
      * Defaults to 1, meaning single file upload. By defining a higher number,
-     * multiple uploads become possible. Setting it to `0` means there is no limit on
-     * the number of files that can be uploaded simultaneously.
+     * multiple uploads become possible.
      *
      * @see tooFew for the customized message when too few files are uploaded.
      */
-    public $minFiles = 1;
+    public $minFiles = 0;
     /**
      * @var string the error message used when a file is not uploaded correctly.
      */
@@ -208,7 +207,7 @@ class FileValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($this->maxFiles != 1 || $this->minFiles != 1) {
+        if ($this->maxFiles != 1 || $this->minFiles > 1) {
             $rawFiles = $model->$attribute;
             if (!is_array($rawFiles)) {
                 $this->addError($model, $attribute, $this->uploadRequired);

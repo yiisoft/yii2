@@ -262,31 +262,6 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_images'));
     }
 
-    public function testValidateAttribute_minFilesOneMaxFilesTwo_notError()
-    {
-        $validator = new FileValidator(['minFiles' => 1, 'maxFiles' => 2]);
-        $model = FakedValidationModel::createWithAttributes(
-            [
-                'attr_images' => $this->createTestFiles(
-                    [
-                        [
-                            'name' => 'image.png',
-                            'size' => 1024,
-                            'type' => 'image/png',
-                        ],
-                        [
-                            'error' => UPLOAD_ERR_NO_FILE,
-                        ],
-                    ]
-                )
-            ]
-        );
-
-        $validator->validateAttribute($model, 'attr_images');
-
-        $this->assertFalse($model->hasErrors('attr_images'));
-    }
-
     public function testValidateAttribute_minFilesTwoMaxFilesFour_notError()
     {
         $validator = new FileValidator(['minFiles' => 2, 'maxFiles' => 4]);
