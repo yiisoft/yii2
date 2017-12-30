@@ -997,7 +997,6 @@ SQL;
         $db = $this->getConnection();
         $this->assertEquals(0, $db->createCommand('SELECT COUNT(*) FROM {{T_upsert}}')->queryScalar());
         $this->performAndCompareUpsertResult($db, $firstData);
-        // FIXME: https://stackoverflow.com/questions/19253673/pdosqlite-does-not-run-multiple-statements-in-one-query
         $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{T_upsert}}')->queryScalar());
         $this->performAndCompareUpsertResult($db, $secondData);
     }

@@ -24,6 +24,21 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals('SELECT `id`, `t`.`name` FROM `customer` t', $command->sql);
     }
 
+    /**
+     * @dataProvider upsertProvider
+     * @param array $firstData
+     * @param array $secondData
+     */
+    public function testUpsert(array $firstData, array $secondData)
+    {
+        if (version_compare($this->getConnection(false)->getServerVersion(), '3.8.3', '<')) {
+            $this->markTestSkipped('SQLite < 3.8.3 does nt support "WITH" keyword.');
+            return;
+        }
+
+        parent::testUpsert($firstData, $secondData);
+    }
+
     public function testAddDropPrimaryKey()
     {
         $this->markTestSkipped('SQLite does not support adding/dropping primary keys.');
