@@ -88,7 +88,7 @@ class IndexAction extends Action
      */
     protected function prepareDataProvider()
     {
-        $requestParams = Yii::$app->getRequest()->getBodyParams();
+        $requestParams = Yii::$app->getRequest()->getParsedBody();
         if (empty($requestParams)) {
             $requestParams = Yii::$app->getRequest()->getQueryParams();
         }
