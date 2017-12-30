@@ -162,9 +162,9 @@ class RequestTest extends TestCase
         // only accept valid token on POST
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $request->setMethod($method);
-            $request->setBodyParams([]);
+            $request->setParsedBody([]);
             $this->assertFalse($request->validateCsrfToken());
-            $request->setBodyParams([$request->csrfParam => $token]);
+            $request->setParsedBody([$request->csrfParam => $token]);
             $this->assertTrue($request->validateCsrfToken());
         }
     }
@@ -190,7 +190,7 @@ class RequestTest extends TestCase
         // only accept valid token on POST
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $request->setMethod($method);
-            $request->setBodyParams([]);
+            $request->setParsedBody([]);
 
             $this->assertFalse($request->withoutHeader(Request::CSRF_HEADER)->validateCsrfToken());
             $this->assertTrue($request->withAddedHeader(Request::CSRF_HEADER, $token)->validateCsrfToken());
@@ -292,22 +292,26 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
-        $_SERVER['SERVER_NAME'] = 'servername';
+        $request->setServerParams([
+            'SERVER_NAME' => 'servername'
+        ]);
         $this->assertEquals('servername', $request->getServerName());
 
-        unset($_SERVER['SERVER_NAME']);
-        $this->assertEquals(null, $request->getServerName());
+        $request->setServerParams([]);
+        $this->assertNull($request->getServerName());
     }
 
     public function testGetServerPort()
     {
         $request = new Request();
 
-        $_SERVER['SERVER_PORT'] = 33;
+        $request->setServerParams([
+            'SERVER_PORT' => 33
+        ]);
         $this->assertEquals(33, $request->getServerPort());
 
-        unset($_SERVER['SERVER_PORT']);
-        $this->assertEquals(null, $request->getServerPort());
+        $request->setServerParams([]);
+        $this->assertNull($request->getServerPort());
     }
 
     public function isSecureServerDataProvider()
@@ -542,7 +546,59 @@ class RequestTest extends TestCase
 
         unset($_SERVER['HTTP_ORIGIN']);
         $request = new Request();
-        $this->assertEquals(null, $request->getOrigin());
+        $this->assertSame('', $request->getOrigin());
+    }
+
+    public function httpAuthorizationHeadersProvider()
+    {
+        return [
+            ['not a base64 at all', [base64_decode('not a base64 at all'), null]],
+            [base64_encode('user:'), ['user', null]],
+            [base64_encode('user'), ['user', null]],
+            [base64_encode('user:pw'), ['user', 'pw']],
+            [base64_encode('user:pw'), ['user', 'pw']],
+            [base64_encode('user:a:b'), ['user', 'a:b']],
+            [base64_encode(':a:b'), [null, 'a:b']],
+            [base64_encode(':'), [null, null]],
+        ];
+    }
+
+    /**
+     * @dataProvider httpAuthorizationHeadersProvider
+     * @param string $secret
+     * @param array $expected
+     */
+    public function testHttpAuthCredentialsFromHttpAuthorizationHeader($secret, $expected)
+    {
+        $request = new Request();
+
+        $request->setHeader('HTTP_AUTHORIZATION', 'Basic ' . $secret);
+        $this->assertSame($request->getAuthCredentials(), $expected);
+        $this->assertSame($request->getAuthUser(), $expected[0]);
+        $this->assertSame($request->getAuthPassword(), $expected[1]);
+        $request->getHeaderCollection()->remove('HTTP_AUTHORIZATION');
+
+        $request->setHeader('REDIRECT_HTTP_AUTHORIZATION', 'Basic ' . $secret);
+        $this->assertSame($request->getAuthCredentials(), $expected);
+        $this->assertSame($request->getAuthUser(), $expected[0]);
+        $this->assertSame($request->getAuthPassword(), $expected[1]);
+    }
+
+    public function testHttpAuthCredentialsFromServerSuperglobal()
+    {
+        $original = $_SERVER;
+        list($user, $pw) = ['foo', 'bar'];
+        $_SERVER['PHP_AUTH_USER'] = $user;
+        $_SERVER['PHP_AUTH_PW'] = $pw;
+
+        $request = new Request();
+        $request->setHeader('HTTP_AUTHORIZATION', 'Basic ' . base64_encode('less-priority:than-PHP_AUTH_*'));
+
+        $this->assertSame($request->getAuthCredentials(), [$user, $pw]);
+        $this->assertSame($request->getAuthUser(), $user);
+        $this->assertSame($request->getAuthPassword(), $pw);
+
+        $_SERVER = $original;
     }
 
     public function testGetBodyParams()
@@ -555,17 +611,17 @@ class RequestTest extends TestCase
         $request->setBody($body);
         $_POST = ['name' => 'post'];
 
-        $this->assertSame(['name' => 'value'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->getBodyParams());
-        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->withMethod('POST')->getBodyParams());
-        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'multipart/form-data')->withMethod('POST')->getBodyParams());
+        $this->assertSame(['name' => 'value'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->getParsedBody());
+        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->withMethod('POST')->getParsedBody());
+        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'multipart/form-data')->withMethod('POST')->getParsedBody());
 
         try {
-            $request->getBodyParams();
+            $request->getParsedBody();
         } catch (UnsupportedMediaTypeHttpException $noContentTypeException) {}
         $this->assertTrue(isset($noContentTypeException));
 
         try {
-            $request->withMethod('POST')->getBodyParams();
+            $request->withMethod('POST')->getParsedBody();
         } catch (UnsupportedMediaTypeHttpException $postWithoutContentTypeException) {}
         $this->assertTrue(isset($postWithoutContentTypeException));
     }
@@ -785,5 +841,46 @@ class RequestTest extends TestCase
         $uploadedFiles = $request->getUploadedFilesByName('Item[file][0]');
         $this->assertCount(1, $uploadedFiles);
         $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
+    }
+
+    public function testSetupAttributes()
+    {
+        $request = new Request();
+
+        $request->setAttributes(['some' => 'foo']);
+        $this->assertSame(['some' => 'foo'], $request->getAttributes());
+    }
+
+    /**
+     * @depends testSetupAttributes
+     */
+    public function testGetAttribute()
+    {
+        $request = new Request();
+
+        $request->setAttributes(['some' => 'foo']);
+
+        $this->assertSame('foo', $request->getAttribute('some'));
+        $this->assertSame(null, $request->getAttribute('un-existing'));
+        $this->assertSame('default', $request->getAttribute('un-existing', 'default'));
+    }
+
+    /**
+     * @depends testSetupAttributes
+     */
+    public function testModifyAttributes()
+    {
+        $request = new Request();
+
+        $request->setAttributes(['attr1' => '1']);
+
+        $newStorage = $request->withAttribute('attr2', '2');
+        $this->assertNotSame($newStorage, $request);
+        $this->assertSame(['attr1' => '1', 'attr2' => '2'], $newStorage->getAttributes());
+
+        $request = $newStorage;
+        $newStorage = $request->withoutAttribute('attr1');
+        $this->assertNotSame($newStorage, $request);
+        $this->assertSame(['attr2' => '2'], $newStorage->getAttributes());
     }
 }

@@ -14,6 +14,7 @@ use yii\base\NotSupportedException;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
+use yii\db\MigrationInterface;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
@@ -82,7 +83,6 @@ abstract class BaseMigrateController extends Controller
      * or a file path.
      */
     public $templateFile;
-
     /**
      * @var bool indicates whether the console output should be compacted.
      * If this is set to true, the individual commands ran within the migration will not be output to the console.
@@ -90,6 +90,7 @@ abstract class BaseMigrateController extends Controller
      * @since 2.0.13
      */
     public $compact = false;
+
 
     /**
      * @inheritdoc
@@ -183,6 +184,11 @@ abstract class BaseMigrateController extends Controller
         }
 
         foreach ($migrations as $migration) {
+            $nameLimit = $this->getMigrationNameLimit();
+            if ($nameLimit !== null && strlen($migration) > $nameLimit) {
+                $this->stdout("\nThe migration name '$migration' is too long. Its not possible to apply this migration.\n", Console::FG_RED);
+                return ExitCode::UNSPECIFIED_ERROR;
+            }
             $this->stdout("\t$migration\n");
         }
         $this->stdout("\n");
@@ -621,6 +627,12 @@ abstract class BaseMigrateController extends Controller
         }
 
         [$namespace, $className] = $this->generateClassName($name);
+        // Abort if name is too long
+        $nameLimit = $this->getMigrationNameLimit();
+        if ($nameLimit !== null && strlen($className) > $nameLimit) {
+            throw new Exception('The migration name is too long.');
+        }
+
         $migrationPath = $this->findMigrationPath($namespace);
 
         $file = $migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
@@ -631,7 +643,7 @@ abstract class BaseMigrateController extends Controller
                 'namespace' => $namespace,
             ]);
             FileHelper::createDirectory($migrationPath);
-            file_put_contents($file, $content);
+            file_put_contents($file, $content, LOCK_EX);
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
     }
@@ -760,10 +772,13 @@ abstract class BaseMigrateController extends Controller
     protected function createMigration($class)
     {
         $this->includeMigrationFile($class);
-        $migration = new $class();
+
+        /** @var MigrationInterface $migration */
+        $migration = Yii::createObject($class);
         if ($migration instanceof BaseObject && $migration->canSetProperty('compact')) {
             $migration->compact = $this->compact;
         }
+
         return $migration;
     }
 
@@ -928,6 +943,18 @@ abstract class BaseMigrateController extends Controller
     protected function truncateDatabase()
     {
         throw new NotSupportedException('This command is not implemented in ' . get_class($this));
+    }
+
+    /**
+     * Return the maximum name length for a migration.
+     *
+     * Subclasses may override this method to define a limit.
+     * @return int|null the maximum name length for a migration or `null` if no limit applies.
+     * @since 2.0.13
+     */
+    protected function getMigrationNameLimit()
+    {
+        return null;
     }
 
     /**

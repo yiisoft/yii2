@@ -44,7 +44,7 @@ class UpdateAction extends Action
         }
 
         $model->scenario = $this->scenario;
-        $model->load(Yii::$app->getRequest()->getBodyParams(), '');
+        $model->load(Yii::$app->getRequest()->getParsedBody(), '');
         if ($model->save() === false && !$model->hasErrors()) {
             throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
         }

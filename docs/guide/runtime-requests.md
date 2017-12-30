@@ -186,7 +186,7 @@ In case your proxies are using different headers you can use the request configu
              'X-Forwarded-Proto',
              'X-Proxy-User-Ip',
              'Front-End-Https',
-         ];'
+         ];
     'ipHeaders' => [
         'X-Proxy-User-Ip',
     ],

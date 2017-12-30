@@ -159,7 +159,7 @@ class JsonTest extends TestCase
         // empty value
         $json = '';
         $actual = Json::decode($json);
-        $this->assertSame(null, $actual);
+        $this->assertNull($actual);
 
         // basic data decoding
         $json = '"1"';

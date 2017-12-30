@@ -138,24 +138,19 @@ class HtmlTest extends TestCase
         $this->assertStringMatchesFormat($pattern, $actual);
     }
 
-    public function testCsrfMetaTagsEnableCsrfValidation_WithoutCookieValidationKey()
+    public function testCsrfMetaTagsEnableCsrfValidationWithoutCookieValidationKey()
     {
         $this->mockApplication([
             'components' => [
                 'request' => [
                     'class' => 'yii\web\Request',
                     'enableCsrfValidation' => true,
-                    'enableCookieValidation' => false,
-                    'cookieValidationKey' => '',
-                ],
-                'response' => [
-                    'class' => 'yii\web\Response',
                 ],
             ],
         ]);
-        $pattern = '<meta name="csrf-param" content="_csrf">%A<meta name="csrf-token" content="%s">';
-        $actual = Html::csrfMetaTags();
-        $this->assertStringMatchesFormat($pattern, $actual);
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('yii\web\Request::$cookieValidationKey must be configured with a secret key.');
+        Html::csrfMetaTags();
     }
 
     /**

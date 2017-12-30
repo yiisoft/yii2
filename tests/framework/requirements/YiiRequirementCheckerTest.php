@@ -54,13 +54,13 @@ class YiiRequirementCheckerTest extends TestCase
         $checkedRequirements = $checkResult['requirements'];
         $requirementsKeys = array_flip(array_keys($requirements));
 
-        $this->assertEquals(false, $checkedRequirements[$requirementsKeys['requirementPass']]['error'], 'Passed requirement has an error!');
-        $this->assertEquals(false, $checkedRequirements[$requirementsKeys['requirementPass']]['warning'], 'Passed requirement has a warning!');
+        $this->assertFalse($checkedRequirements[$requirementsKeys['requirementPass']]['error'], 'Passed requirement has an error!');
+        $this->assertFalse($checkedRequirements[$requirementsKeys['requirementPass']]['warning'], 'Passed requirement has a warning!');
 
-        $this->assertEquals(true, $checkedRequirements[$requirementsKeys['requirementError']]['error'], 'Error requirement has no error!');
+        $this->assertTrue($checkedRequirements[$requirementsKeys['requirementError']]['error'], 'Error requirement has no error!');
 
-        $this->assertEquals(false, $checkedRequirements[$requirementsKeys['requirementWarning']]['error'], 'Error requirement has an error!');
-        $this->assertEquals(true, $checkedRequirements[$requirementsKeys['requirementWarning']]['warning'], 'Error requirement has no warning!');
+        $this->assertFalse($checkedRequirements[$requirementsKeys['requirementWarning']]['error'], 'Error requirement has an error!');
+        $this->assertTrue($checkedRequirements[$requirementsKeys['requirementWarning']]['warning'], 'Error requirement has no warning!');
     }
 
     /**
@@ -91,10 +91,10 @@ class YiiRequirementCheckerTest extends TestCase
         $checkedRequirements = $checkResult['requirements'];
         $requirementsKeys = array_flip(array_keys($requirements));
 
-        $this->assertEquals(false, $checkedRequirements[$requirementsKeys['requirementPass']]['error'], 'Passed requirement has an error!');
-        $this->assertEquals(false, $checkedRequirements[$requirementsKeys['requirementPass']]['warning'], 'Passed requirement has a warning!');
+        $this->assertFalse($checkedRequirements[$requirementsKeys['requirementPass']]['error'], 'Passed requirement has an error!');
+        $this->assertFalse($checkedRequirements[$requirementsKeys['requirementPass']]['warning'], 'Passed requirement has a warning!');
 
-        $this->assertEquals(true, $checkedRequirements[$requirementsKeys['requirementError']]['error'], 'Error requirement has no error!');
+        $this->assertTrue($checkedRequirements[$requirementsKeys['requirementError']]['error'], 'Error requirement has no error!');
     }
 
     /**

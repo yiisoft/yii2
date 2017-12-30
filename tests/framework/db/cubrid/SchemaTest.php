@@ -18,6 +18,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'cubrid';
 
+    public function testGetSchemaNames()
+    {
+        $this->markTestSkipped('Schemas are not supported in CUBRID.');
+    }
+
     public function testGetPDOType()
     {
         $values = [

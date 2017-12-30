@@ -66,8 +66,6 @@ use yii\base\InvalidConfigException;
  * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
  * is to be added to relational query join condition.
  *
- * @property string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -390,9 +388,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * The alias syntax is available since version 2.0.7.
      *
-     * @param bool|array $eagerLoading whether to eager load the relations specified in `$with`.
-     * When this is a boolean, it applies to all relations specified in `$with`. Use an array
-     * to explicitly list which relations in `$with` need to be eagerly loaded. Defaults to `true`.
+     * @param bool|array $eagerLoading whether to eager load the relations
+     * specified in `$with`.  When this is a boolean, it applies to all
+     * relations specified in `$with`. Use an array to explicitly list which
+     * relations in `$with` need to be eagerly loaded.  Note, that this does
+     * not mean, that the relations are populated from the query result. An
+     * extra query will still be performed to bring in the related data.
+     * Defaults to `true`.
      * @param string|array $joinType the join type of the relations specified in `$with`.
      * When this is a string, it applies to all relations specified in `$with`. Use an array
      * in the format of `relationName => joinType` to specify different join types for different relations.
@@ -478,7 +480,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * This is a shortcut method to [[joinWith()]] with the join type set as "INNER JOIN".
      * Please refer to [[joinWith()]] for detailed usage of this method.
      * @param string|array $with the relations to be joined with.
-     * @param bool|array $eagerLoading whether to eager loading the relations.
+     * @param bool|array $eagerLoading whether to eager load the relations.
+     * Note, that this does not mean, that the relations are populated from the
+     * query result. An extra query will still be performed to bring in the
+     * related data.
      * @return $this the query object itself
      * @see joinWith()
      */
@@ -751,7 +756,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function viaTable($tableName, $link, callable $callable = null)
     {
-        $relation = new self(get_class($this->primaryModel), [
+        $modelClass = $this->primaryModel !== null ? get_class($this->primaryModel) : get_class();
+
+        $relation = new self($modelClass, [
             'from' => [$tableName],
             'link' => $link,
             'multiple' => true,

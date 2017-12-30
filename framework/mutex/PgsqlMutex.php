@@ -61,7 +61,7 @@ class PgsqlMutex extends DbMutex
     /**
      * Acquires lock by given name.
      * @param string $name of the lock to be acquired.
-     * @param int $timeout to wait for lock to become released.
+     * @param int $timeout time (in seconds) to wait for lock to become released.
      * @return bool acquiring result.
      * @see http://www.postgresql.org/docs/9.0/static/functions-admin.html
      */

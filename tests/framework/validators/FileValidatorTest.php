@@ -81,15 +81,15 @@ class FileValidatorTest extends TestCase
 
         $size = min($this->sizeToBytes(ini_get('upload_max_filesize')), $this->sizeToBytes(ini_get('post_max_size')));
         $val = new FileValidator();
-        Yii::$app->request->setBodyParams([]);
+        Yii::$app->request->setParsedBody([]);
         $this->assertEquals($size, $val->getSizeLimit());
         $val->maxSize = $size + 1; // set and test if value is overridden
         $this->assertEquals($size, $val->getSizeLimit());
         $val->maxSize = abs($size - 1);
         $this->assertEquals($size - 1, $val->getSizeLimit());
-        Yii::$app->request->setBodyParams(['MAX_FILE_SIZE' => $size + 1]);
+        Yii::$app->request->setParsedBody(['MAX_FILE_SIZE' => $size + 1]);
         $this->assertEquals($size - 1, $val->getSizeLimit());
-        Yii::$app->request->setBodyParams(['MAX_FILE_SIZE' => abs($size - 2)]);
+        Yii::$app->request->setParsedBody(['MAX_FILE_SIZE' => abs($size - 2)]);
         $this->assertSame(abs($size - 2), $val->getSizeLimit());
     }
 
@@ -147,6 +147,27 @@ class FileValidatorTest extends TestCase
         $val->validateAttribute($m, 'attr_files');
         $this->assertTrue($m->hasErrors());
         $this->assertNotFalse(stripos(current($m->getErrors('attr_files')), 'you can upload at most'));
+
+        $files = [
+            'file_1' => [
+                'name' => 'test_up_1.txt',
+                'size' => 1024,
+            ],
+            'file_2' => [
+                'name' => 'test_up_2.txt',
+                'size' => 1024,
+            ]
+        ];
+        $m = FakedValidationModel::createWithAttributes(
+            [
+                'attr_files' => $this->createTestFiles(
+                    $files
+                ),
+            ]
+        );
+        $val->validateAttribute($m, 'attr_files');
+        $this->assertFalse($m->hasErrors());
+        $this->assertEquals(array_keys($m->attr_files), array_keys($files));
 
         $val->maxFiles = 0;
         $m->clearErrors();
@@ -233,9 +254,9 @@ class FileValidatorTest extends TestCase
             return $randomString;
         };
         $files = [];
-        foreach ($params as $param) {
+        foreach ($params as $key => $param) {
             if (empty($param) && count($params) != 1) {
-                $files[] = ['no instance of UploadedFile'];
+                $files[$key] = ['no instance of UploadedFile'];
                 continue;
             }
             $name = isset($param['clientFilename']) ? $param['clientFilename'] : $rndString();
@@ -261,7 +282,7 @@ class FileValidatorTest extends TestCase
                     'error' => $error,
                 ]);
             }
-            $files[] = new UploadedFile([
+            $files[$key] = new UploadedFile([
                 'clientFilename' => $name,
                 'tempFilename' => $tempName,
                 'clientMediaType' => $type,
@@ -391,7 +412,7 @@ class FileValidatorTest extends TestCase
 
     public function validMimeTypes()
     {
-        return [
+        return array_filter([
             ['test.svg', 'image/*', 'svg'],
             ['test.jpg', 'image/*', 'jpg'],
             ['test.png', 'image/*', 'png'],
@@ -399,7 +420,7 @@ class FileValidatorTest extends TestCase
             ['test.txt', 'text/*', 'txt'],
             ['test.xml', '*/xml', 'xml'],
             ['test.odt', 'application/vnd*', 'odt'],
-        ];
+        ]);
     }
 
     public function invalidMimeTypes()
@@ -421,9 +442,12 @@ class FileValidatorTest extends TestCase
      */
     public function testValidateFileByExtensionUsingMimeType($fileName, $_, $allowedExtensions)
     {
-        $validator = new FileValidator(['extensions' => (array)$allowedExtensions]);
+        $validator = new FileValidator(['extensions' => (array) $allowedExtensions]);
         $file = $this->getRealTestFile($fileName);
-        $this->assertTrue($validator->validate($file));
+        $filePath = \Yii::getAlias('@yiiunit/framework/validators/data/mimeType/') . $fileName;
+
+        $detectedMimeType = FileHelper::getMimeType($filePath, null, false);
+        $this->assertTrue($validator->validate($file), "Mime type detected was \"$detectedMimeType\". Consider adding it to MimeTypeController::\$aliases.");
     }
 
     /**
@@ -434,7 +458,7 @@ class FileValidatorTest extends TestCase
      */
     public function testValidateFileByExtensionUsingMimeTypeInvalid($fileName, $_, $allowedExtensions)
     {
-        $validator = new FileValidator(['extensions' => (array)$allowedExtensions]);
+        $validator = new FileValidator(['extensions' => (array) $allowedExtensions]);
         $file = $this->getRealTestFile($fileName);
         $this->assertFalse($validator->validate($file));
     }

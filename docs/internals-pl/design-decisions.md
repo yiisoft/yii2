@@ -28,4 +28,5 @@ powinna być najpierw zatwierdzona przez głównych deweloperów.
 6. [Klasy pomocnicze vs oddzielne niestatyczne klasy](https://github.com/yiisoft/yii2/pull/12661#issuecomment-251599463)
 7. **Łańcuchowanie metod setterów** powinno być unikane, jeśli w klasie znajdują się metody zwracające ważne wartości. 
    Łańcuchowanie może być wspierane, jeśli klasa jest typu budującego, gdzie wszystkie settery modyfikują jedynie wewnętrzne stany: https://github.com/yiisoft/yii2/issues/13026
-   
+8. **Globalny mechanizm przetwarzania wyjątków/błędów** jest używany zamiast lokalnych bloków try-catch, ponieważ jest on sprawdzony w przypadku łapania destruktorów 
+   i wszystkiego, co dzieje się poza zakresem obejmowanym przez metodę `run()` jak np. bootstrap. Zobacz [#14348](https://github.com/yiisoft/yii2/issues/14348).

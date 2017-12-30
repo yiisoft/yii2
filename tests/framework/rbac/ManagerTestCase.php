@@ -93,7 +93,7 @@ abstract class ManagerTestCase extends TestCase
 
         $rule = $this->auth->getRule($ruleName);
         $this->assertEquals($ruleName, $rule->name);
-        $this->assertEquals(true, $rule->reallyReally);
+        $this->assertTrue($rule->reallyReally);
     }
 
     public function testUpdateRule()
@@ -106,24 +106,24 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->update('isAuthor', $rule);
 
         $rule = $this->auth->getRule('isAuthor');
-        $this->assertEquals(null, $rule);
+        $this->assertNull($rule);
 
         $rule = $this->auth->getRule('newName');
         $this->assertEquals('newName', $rule->name);
-        $this->assertEquals(false, $rule->reallyReally);
+        $this->assertFalse($rule->reallyReally);
 
         $rule->reallyReally = true;
         $this->auth->update('newName', $rule);
 
         $rule = $this->auth->getRule('newName');
-        $this->assertEquals(true, $rule->reallyReally);
+        $this->assertTrue($rule->reallyReally);
 
         $item = $this->auth->getPermission('createPost');
         $item->name = 'new createPost';
         $this->auth->update('createPost', $item);
 
         $item = $this->auth->getPermission('createPost');
-        $this->assertEquals(null, $item);
+        $this->assertNull($item);
 
         $item = $this->auth->getPermission('new createPost');
         $this->assertEquals('new createPost', $item->name);

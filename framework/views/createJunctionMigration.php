@@ -29,7 +29,7 @@ class <?= $className ?> extends Migration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
         $this->createTable('<?= $table ?>', [
             '<?= $field_first ?>_id' => $this->integer(),
@@ -71,7 +71,7 @@ class <?= $className ?> extends Migration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
         $this->dropTable('<?= $table ?>');
     }
