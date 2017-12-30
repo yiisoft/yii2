@@ -18,6 +18,7 @@ Introduction
 Getting Started
 ---------------
 
+* [What do you need to know](start-prerequisites.md)
 * [Installing Yii](start-installation.md)
 * [Running Applications](start-workflow.md)
 * [Saying Hello](start-hello.md)
