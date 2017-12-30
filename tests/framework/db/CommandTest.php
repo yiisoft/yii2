@@ -1389,9 +1389,6 @@ SQL;
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
     }
 
-    /**
-     * @group iss
-     */
     public function testTransaction()
     {
         $connection = $this->getConnection(false);
@@ -1403,9 +1400,6 @@ SQL;
         $this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'command transaction'")->queryScalar());
     }
 
-    /**
-     * @group iss
-     */
     public function testRetryHandler()
     {
         $connection = $this->getConnection(false);
