@@ -12,8 +12,6 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\Html;
-use yii\helpers\Json;
-use yii\helpers\Url;
 use yii\i18n\Formatter;
 use yii\widgets\BaseListView;
 
@@ -216,10 +214,6 @@ class GridView extends BaseListView
      */
     public $filterUrl;
     /**
-     * @var string additional jQuery selector for selecting filter input fields
-     */
-    public $filterSelector;
-    /**
      * @var string whether the filters should be displayed in the grid view. Valid values include:
      *
      * - [[FILTER_POS_HEADER]]: the filters will be displayed on top of each column's header cell.
@@ -279,20 +273,6 @@ class GridView extends BaseListView
     }
 
     /**
-     * Runs the widget.
-     */
-    public function run()
-    {
-        $id = $this->options['id'];
-        $options = Json::htmlEncode($this->getClientOptions());
-        $view = $this->getView();
-        GridViewAsset::register($view);
-        $view->registerJs("jQuery('#$id').yiiGridView($options);");
-
-        return parent::run();
-    }
-
-    /**
      * Renders validator errors of filter model.
      * @return string the rendering result.
      */
@@ -316,25 +296,6 @@ class GridView extends BaseListView
             default:
                 return parent::renderSection($name);
         }
-    }
-
-    /**
-     * Returns the options for the grid view JS widget.
-     * @return array the options
-     */
-    protected function getClientOptions()
-    {
-        $filterUrl = isset($this->filterUrl) ? $this->filterUrl : Yii::$app->request->url;
-        $id = $this->filterRowOptions['id'];
-        $filterSelector = "#$id input, #$id select";
-        if (isset($this->filterSelector)) {
-            $filterSelector .= ', ' . $this->filterSelector;
-        }
-
-        return [
-            'filterUrl' => Url::to($filterUrl),
-            'filterSelector' => $filterSelector,
-        ];
     }
 
     /**

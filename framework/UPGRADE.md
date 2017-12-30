@@ -137,6 +137,23 @@ Upgrade from Yii 2.0.x
   If you are using `yii\web\Request::resolve()` or `yii\web\UrlManager::parseRequest()` directly, make sure that
   all potential exceptions are handled correctly or set `yii\web\UrlNormalizer::$normalizer` to `false` to disable normalizer.
 * `yii\base\InvalidParamException` was renamed to `yii\base\InvalidArgumentException`.
+* Classes `yii\widgets\ActiveForm`, `yii\widgets\ActiveField`, `yii\grid\GridView`, `yii\web\View` have been refactored
+  to be more generic without including any 'JQuery' support and client-side processing (validation, automatic submit etc.).
+  You should use widget behaviors from `yii\jquery\*` package to make old code function as before. E.g. attach `yii\jquery\ActiveFormClientScript`
+  to `yii\widgets\ActiveForm`, `yii\jquery\GridViewClientScript` to `yii\grid\GridView` and so on.
+* Fields `$enableClientScript` and `$attributes` have been removed from `yii\widgets\ActiveForm`. Make sure
+  you do not use them or specify them during `ActiveForm::begin()` invocation.
+* Field `yii\grid\GridView::$filterSelector` has been removed. Make sure you do not use it or specify it during
+  `GridView::widget()` invocation. Use `yii\jquery\GridViewClientScript::$filterSelector` instead.
+* Method `getClientOptions()` has been removed from `yii\validators\Validator` and all its descendants.
+  All implementations of `clientValidateAttribute()` around built-in validators now return `null`.
+  Use classes from `yii\jquery\validators\client\*` for building client validation (JavaScript) code.
+* Assets `yii\web\JqueryAsset`, `yii\web\YiiAsset`, `yii\validators\ValidationAsset` have been moved under `yii\jquery\*`
+  namespace. Make sure you refer to the new full-qualified names of this classes.
+* Methods `yii\validators\Validator::formatMessage()`, `yii\validators\IpValidator::getIpParsePattern()` and
+  `yii\validators\FileValidator::buildMimeTypeRegexp()` have been made `public`. Make sure you use correct
+  access level specification in case you override these methods.
+* Default script position for the `yii\web\View::registerJs()` changed to `View::POS_END`.
 
 
 Upgrade from Yii 2.0.13

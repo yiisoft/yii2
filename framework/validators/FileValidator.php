@@ -9,9 +9,6 @@ namespace yii\validators;
 
 use Yii;
 use yii\helpers\FileHelper;
-use yii\helpers\Html;
-use yii\helpers\Json;
-use yii\web\JsExpression;
 use yii\http\UploadedFile;
 
 /**
@@ -379,94 +376,13 @@ class FileValidator extends Validator
     }
 
     /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-        return 'yii.validation.file(attribute, messages, ' . Json::encode($options) . ');';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $label = $model->getAttributeLabel($attribute);
-
-        $options = [];
-        if ($this->message !== null) {
-            $options['message'] = $this->formatMessage($this->message, [
-                'attribute' => $label,
-            ]);
-        }
-
-        $options['skipOnEmpty'] = $this->skipOnEmpty;
-
-        if (!$this->skipOnEmpty) {
-            $options['uploadRequired'] = $this->formatMessage($this->uploadRequired, [
-                'attribute' => $label,
-            ]);
-        }
-
-        if ($this->mimeTypes !== null) {
-            $mimeTypes = [];
-            foreach ($this->mimeTypes as $mimeType) {
-                $mimeTypes[] = new JsExpression(Html::escapeJsRegularExpression($this->buildMimeTypeRegexp($mimeType)));
-            }
-            $options['mimeTypes'] = $mimeTypes;
-            $options['wrongMimeType'] = $this->formatMessage($this->wrongMimeType, [
-                'attribute' => $label,
-                'mimeTypes' => implode(', ', $this->mimeTypes),
-            ]);
-        }
-
-        if ($this->extensions !== null) {
-            $options['extensions'] = $this->extensions;
-            $options['wrongExtension'] = $this->formatMessage($this->wrongExtension, [
-                'attribute' => $label,
-                'extensions' => implode(', ', $this->extensions),
-            ]);
-        }
-
-        if ($this->minSize !== null) {
-            $options['minSize'] = $this->minSize;
-            $options['tooSmall'] = $this->formatMessage($this->tooSmall, [
-                'attribute' => $label,
-                'limit' => $this->minSize,
-                'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
-            ]);
-        }
-
-        if ($this->maxSize !== null) {
-            $options['maxSize'] = $this->maxSize;
-            $options['tooBig'] = $this->formatMessage($this->tooBig, [
-                'attribute' => $label,
-                'limit' => $this->getSizeLimit(),
-                'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
-            ]);
-        }
-
-        if ($this->maxFiles !== null) {
-            $options['maxFiles'] = $this->maxFiles;
-            $options['tooMany'] = $this->formatMessage($this->tooMany, [
-                'attribute' => $label,
-                'limit' => $this->maxFiles,
-            ]);
-        }
-
-        return $options;
-    }
-
-    /**
      * Builds the RegExp from the $mask.
      *
      * @param string $mask
      * @return string the regular expression
      * @see mimeTypes
      */
-    private function buildMimeTypeRegexp($mask)
+    public function buildMimeTypeRegexp($mask)
     {
         return '/^' . str_replace('\*', '.*', preg_quote($mask, '/')) . '$/';
     }

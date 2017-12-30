@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\validators;
+namespace yii\jquery;
 
 use yii\web\AssetBundle;
 

@@ -9,7 +9,7 @@ namespace yiiunit\framework\captcha;
 
 use yii\captcha\Captcha;
 use yii\web\AssetManager;
-use yii\web\JqueryAsset;
+use yii\jquery\JqueryAsset;
 use yiiunit\TestCase;
 
 class CaptchaTest extends TestCase

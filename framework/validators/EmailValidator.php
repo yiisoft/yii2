@@ -9,8 +9,6 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Json;
-use yii\web\JsExpression;
 
 /**
  * EmailValidator validates that the attribute value is a valid email address.
@@ -104,7 +102,6 @@ class EmailValidator extends Validator
         return $valid ? null : [$this->message, []];
     }
 
-
     private function idnToAscii($idn)
     {
         if (PHP_VERSION_ID < 50600) {
@@ -113,40 +110,5 @@ class EmailValidator extends Validator
         }
 
         return idn_to_ascii($idn, 0, INTL_IDNA_VARIANT_UTS46);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        if ($this->enableIDN) {
-            PunycodeAsset::register($view);
-        }
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.email(value, messages, ' . Json::htmlEncode($options) . ');';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $options = [
-            'pattern' => new JsExpression($this->pattern),
-            'fullPattern' => new JsExpression($this->fullPattern),
-            'allowName' => $this->allowName,
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ]),
-            'enableIDN' => (bool) $this->enableIDN,
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-
-        return $options;
     }
 }

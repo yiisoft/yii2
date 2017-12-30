@@ -67,39 +67,4 @@ class BooleanValidator extends Validator
 
         return null;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.boolean(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $options = [
-            'trueValue' => $this->trueValue,
-            'falseValue' => $this->falseValue,
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-                'true' => $this->trueValue === true ? 'true' : $this->trueValue,
-                'false' => $this->falseValue === false ? 'false' : $this->falseValue,
-            ]),
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-        if ($this->strict) {
-            $options['strict'] = 1;
-        }
-
-        return $options;
-    }
 }

@@ -19,7 +19,7 @@ var StringUtils = {
 };
 
 describe('yii', function () {
-    var yiiPath = 'framework/assets/yii.js';
+    var yiiPath = 'framework/jquery/assets/yii.js';
     var jQueryPath = 'vendor/bower-asset/jquery/dist/jquery.js';
     var pjaxPath = 'vendor/bower-asset/yii2-pjax/jquery.pjax.js';
     var sandbox;

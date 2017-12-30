@@ -5,29 +5,26 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\grid;
+namespace yii\jquery;
 
 use yii\web\AssetBundle;
-use yii\web\YiiAsset;
 
 /**
- * This asset bundle provides the javascript files for the [[GridView]] widget.
+ * The asset bundle for the [[ActiveForm]] widget.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class GridViewAsset extends AssetBundle
+class ActiveFormAsset extends AssetBundle
 {
     /**
      * @inheritdoc
      */
-    public $sourcePath = '@yii/assets';
-
+    public $sourcePath = '@yii/jquery/assets';
     /**
      * @inheritdoc
      */
-    public $js = ['yii.gridView.js'];
-
+    public $js = ['yii.activeForm.js'];
     /**
      * @inheritdoc
      */

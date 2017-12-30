@@ -5,7 +5,9 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\jquery;
+
+use yii\web\AssetBundle;
 
 /**
  * This asset bundle provides the base JavaScript files for the Yii Framework.
@@ -15,17 +17,14 @@ namespace yii\web;
  */
 class YiiAsset extends AssetBundle
 {
-
     /**
      * @inheritdoc
      */
-    public $sourcePath = '@yii/assets';
-
+    public $sourcePath = '@yii/jquery/assets';
     /**
      * @inheritdoc
      */
-    public $js = ['yii.js',];
-
+    public $js = ['yii.js'];
     /**
      * @inheritdoc
      */
