@@ -164,7 +164,11 @@ class DbCache extends SimpleCache
 
         $results = array_fill_keys($keys, false);
         foreach ($rows as $row) {
-            $results[$row['id']] = $row['data'];
+            if (is_resource($row['data']) && get_resource_type($row['data']) === 'stream') {
+                $results[$row['id']] = stream_get_contents($row['data']);
+            } else {
+                $results[$row['id']] = $row['data'];
+            }
         }
 
         return $results;

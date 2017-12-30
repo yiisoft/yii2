@@ -8,7 +8,7 @@
 namespace yii\mail;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\base\ViewContextInterface;
 
 /**
@@ -24,7 +24,7 @@ use yii\base\ViewContextInterface;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1
  */
-class Template extends Object implements ViewContextInterface
+class Template extends BaseObject implements ViewContextInterface
 {
     /**
      * @var MessageInterface related mail message instance.

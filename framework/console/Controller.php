@@ -12,6 +12,7 @@ use yii\base\Action;
 use yii\base\InlineAction;
 use yii\base\InvalidRouteException;
 use yii\helpers\Console;
+use yii\helpers\Inflector;
 
 /**
  * Controller is the base class of console command classes.
@@ -110,6 +111,14 @@ class Controller extends \yii\base\Controller
                 unset($params['_aliases']);
             }
             foreach ($params as $name => $value) {
+                // Allow camelCase options to be entered in kebab-case
+                if (!in_array($name, $options, true) && strpos($name, '-') !== false) {
+                    $altName = lcfirst(Inflector::id2camel($name));
+                    if (in_array($altName, $options, true)) {
+                        $name = $altName;
+                    }
+                }
+
                 if (in_array($name, $options, true)) {
                     $default = $this->$name;
                     if (is_array($default)) {
@@ -544,6 +553,10 @@ class Controller extends \yii\base\Controller
             }
             $defaultValue = $property->getValue($this);
             $tags = $this->parseDocCommentTags($property);
+
+            // Display camelCase options in kebab-case
+            $name = Inflector::camel2id($name, '-', true);
+
             if (isset($tags['var']) || isset($tags['property'])) {
                 $doc = isset($tags['var']) ? $tags['var'] : $tags['property'];
                 if (is_array($doc)) {

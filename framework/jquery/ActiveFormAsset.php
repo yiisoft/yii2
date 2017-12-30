@@ -10,6 +10,8 @@ namespace yii\jquery;
 use yii\web\AssetBundle;
 
 /**
+ * The asset bundle for the [[ActiveForm]] widget.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

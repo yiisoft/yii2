@@ -257,7 +257,6 @@ class Container extends Component
         unset($this->_singletons[$class]);
         return $this;
     }
-
     /**
      * Registers a class definition with this container and marks the class as a singleton class.
      *
@@ -430,7 +429,9 @@ class Container extends Component
         $constructor = $reflection->getConstructor();
         if ($constructor !== null) {
             foreach ($constructor->getParameters() as $param) {
-                if ($param->isDefaultValueAvailable()) {
+                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                    break;
+                } elseif ($param->isDefaultValueAvailable()) {
                     $dependencies[] = $param->getDefaultValue();
                 } else {
                     $c = $param->getClass();
@@ -533,7 +534,10 @@ class Container extends Component
             $name = $param->getName();
             if (($class = $param->getClass()) !== null) {
                 $className = $class->getName();
-                if ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
+                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                    $args = array_merge($args, array_values($params));
+                    break;
+                } elseif ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
                     $args[] = $params[$name];
                     unset($params[$name]);
                 } elseif (!$associative && isset($params[0]) && $params[0] instanceof $className) {
@@ -621,7 +625,7 @@ class Container extends Component
     public function setDefinitions(array $definitions)
     {
         foreach ($definitions as $class => $definition) {
-            if (count($definition) === 2 && array_values($definition) === $definition) {
+            if (is_array($definition) && count($definition) === 2 && array_values($definition) === $definition) {
                 $this->set($class, $definition[0], $definition[1]);
                 continue;
             }
@@ -643,7 +647,7 @@ class Container extends Component
     public function setSingletons(array $singletons)
     {
         foreach ($singletons as $class => $definition) {
-            if (count($definition) === 2 && array_values($definition) === $definition) {
+            if (is_array($definition) && count($definition) === 2 && array_values($definition) === $definition) {
                 $this->setSingleton($class, $definition[0], $definition[1]);
                 continue;
             }

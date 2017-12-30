@@ -863,6 +863,7 @@ describe('yii.validation', function () {
                 'user mailbox': ['user+mailbox/department=shipping@example.com', true],
                 'special symbols in local-part': ['!#$%&\'*+-/=?^_`.{|}~@example.com', true],
                 'domain only': ['rmcreative.ru', false],
+                'double dot': ['ex..ample@example.com', false],
                 'unicode in domain': ['example@äüößìà.de', false],
                 'unicode (russian characters) in domain': ['sam@рмкреатиф.ru', false],
                 'ASCII in domain': ['example@xn--zcack7ayc9a.de', true],
@@ -1504,9 +1505,18 @@ describe('yii.validation', function () {
 
         describe('with compareAttribute, "==" operator and 2 identical strings', function () {
             it(VALIDATOR_SUCCESS_MESSAGE, function () {
+                var $form = {
+                    data: function () {
+                        return {
+                            attributes: [{
+                                "id": "input-id",
+                                "input": "#input-id"
+                            }]
+                        }
+                    }
+                };
                 var messages = [];
-
-                yii.validation.compare('b', messages, {operator: '==', compareAttribute: 'input-id'});
+                yii.validation.compare('b', messages, {operator: '==', compareAttribute: 'input-id'}, $form);
                 assert.deepEqual(messages, []);
 
                 assert.isTrue(jQueryInitStub.calledOnce);

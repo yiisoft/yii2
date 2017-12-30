@@ -97,6 +97,22 @@ class BaseYiiTest extends TestCase
         }));
     }
 
+    public function testCreateObjectEmptyArrayException()
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Object configuration must be an array containing a "class" element.');
+
+        Yii::createObject([]);
+    }
+
+    public function testCreateObjectInvalidConfigException()
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Unsupported configuration type: ' . gettype(null));
+
+        Yii::createObject(null);
+    }
+
     /**
      * @covers \yii\BaseYii::setLogger()
      * @covers \yii\BaseYii::getLogger()

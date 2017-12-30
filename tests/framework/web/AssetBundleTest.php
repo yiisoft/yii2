@@ -42,7 +42,7 @@ class AssetBundleTest extends \yiiunit\TestCase
             if (is_dir($path)) {
                 FileHelper::removeDirectory($path);
             } else {
-                $this->unlink($path);
+                FileHelper::unlink($path);
             }
         }
         closedir($handle);
@@ -194,7 +194,7 @@ class AssetBundleTest extends \yiiunit\TestCase
             $this->assertFileEquals($publishedFile, $sourceFile);
         }
 
-        $this->assertTrue($this->unlink($bundle->basePath));
+        $this->assertTrue(FileHelper::unlink($bundle->basePath));
         return $bundle;
     }
 

@@ -57,35 +57,35 @@ class AuthTest extends \yiiunit\TestCase
         ];
     }
 
-    public function authOnly($token, $login, $filter, $action)
+    public function authOnly($token, $login, $filter)
     {
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
-        $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => [$action]]);
+        $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {
-            $this->assertEquals($login, $controller->run($action));
+            $this->assertEquals($login, $controller->run('filtered'));
         } catch (UnauthorizedHttpException $e) {
         }
     }
 
-    public function authOptional($token, $login, $filter, $action)
+    public function authOptional($token, $login, $filter)
     {
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
-        $controller->authenticatorConfig = ArrayHelper::merge($filter, ['optional' => [$action]]);
+        $controller->authenticatorConfig = ArrayHelper::merge($filter, ['optional' => ['filtered']]);
         try {
-            $this->assertEquals($login, $controller->run($action));
+            $this->assertEquals($login, $controller->run('filtered'));
         } catch (UnauthorizedHttpException $e) {
         }
     }
 
-    public function authExcept($token, $login, $filter, $action)
+    public function authExcept($token, $login, $filter)
     {
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['except' => ['other']]);
         try {
-            $this->assertEquals($login, $controller->run($action));
+            $this->assertEquals($login, $controller->run('filtered'));
         } catch (UnauthorizedHttpException $e) {
         }
     }
@@ -161,7 +161,6 @@ class AuthTest extends \yiiunit\TestCase
     {
         return [
             ['yii\filters\auth\CompositeAuth'],
-            ['yii\filters\auth\HttpBasicAuth'],
             ['yii\filters\auth\HttpBearerAuth'],
             ['yii\filters\auth\QueryParamAuth'],
         ];
@@ -182,38 +181,38 @@ class AuthTest extends \yiiunit\TestCase
         $controller = new \yii\web\Controller('test', Yii::$app);
 
         // active by default
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index'];
         $filter->except = [];
         $filter->optional = [];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index'];
         $filter->except = [];
         $filter->optional = ['view'];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index', 'view'];
         $filter->except = ['view'];
         $filter->optional = [];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index', 'view'];
         $filter->except = ['view'];
         $filter->optional = ['view'];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = [];
         $filter->except = ['view'];
         $filter->optional = ['view'];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
     }
 }
 
@@ -232,17 +231,7 @@ class TestAuthController extends Controller
         return ['authenticator' => $this->authenticatorConfig];
     }
 
-    public function actionBasicAuth()
-    {
-        return Yii::$app->user->id;
-    }
-
-    public function actionBearerAuth()
-    {
-        return Yii::$app->user->id;
-    }
-
-    public function actionQueryParamAuth()
+    public function actionFiltered()
     {
         return Yii::$app->user->id;
     }

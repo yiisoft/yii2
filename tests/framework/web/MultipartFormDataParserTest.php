@@ -84,7 +84,7 @@ class MultipartFormDataParserTest extends TestCase
                 'multipart/form-data' => MultipartFormDataParser::class
             ]
         ]);
-        $bodyParams = $request->getBodyParams();
+        $bodyParams = $request->getParsedBody();
         $this->assertEquals($_POST, $bodyParams);
         $this->assertEquals([], $request->getUploadedFiles());
     }
@@ -114,7 +114,7 @@ class MultipartFormDataParserTest extends TestCase
                 'multipart/form-data' => MultipartFormDataParser::class
             ]
         ]);
-        $bodyParams = $request->getBodyParams();
+        $bodyParams = $request->getParsedBody();
         $this->assertEquals([], $bodyParams);
     }
 

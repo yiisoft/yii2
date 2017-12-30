@@ -43,7 +43,7 @@ class Action extends Component
      */
     public $id;
     /**
-     * @var Controller|\yii\web\Controller the controller that owns this action
+     * @var Controller|\yii\web\Controller|\yii\console\Controller the controller that owns this action
      */
     public $controller;
 
@@ -91,7 +91,7 @@ class Action extends Component
             Yii::$app->requestedParams = $args;
         }
         if ($this->beforeRun()) {
-            $result = call_user_func_array([$this, 'run'], $args);
+            $result = $this->run(...$args);
             $this->afterRun();
 
             return $result;

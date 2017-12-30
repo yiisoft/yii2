@@ -443,7 +443,7 @@ EOD;
     public function testOptionsClass()
     {
         $this->activeField->options = ['class' => 'test-wrapper'];
-        $expectedValue = <<<HTML
+        $expectedValue = <<<'HTML'
 <div class="test-wrapper field-activefieldtestmodel-attributename">
 
 <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
@@ -455,7 +455,7 @@ HTML;
         $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
 
         $this->activeField->options = ['class' => ['test-wrapper', 'test-add']];
-        $expectedValue = <<<HTML
+        $expectedValue = <<<'HTML'
 <div class="test-wrapper test-add field-activefieldtestmodel-attributename">
 
 <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">

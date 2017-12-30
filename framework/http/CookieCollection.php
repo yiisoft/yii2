@@ -147,7 +147,8 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
             $cookie->expire = 1;
             $cookie->value = '';
         } else {
-            $cookie = new Cookie([
+            $cookie = Yii::createObject([
+                'class' => \yii\http\Cookie::class,
                 'name' => $cookie,
                 'expire' => 1,
             ]);

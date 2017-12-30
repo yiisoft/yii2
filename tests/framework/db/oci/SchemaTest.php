@@ -18,6 +18,8 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'oci';
 
+    protected $expectedSchemas = [];
+
     public function getExpectedColumns()
     {
         $columns = parent::getExpectedColumns();

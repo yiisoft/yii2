@@ -781,7 +781,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         if (!isset($scenarios[$scenario])) {
             return [];
         }
-        $attributes = $scenarios[$scenario];
+        $attributes = array_keys(array_flip($scenarios[$scenario]));
         foreach ($attributes as $i => $attribute) {
             if ($attribute[0] === '!') {
                 $attributes[$i] = substr($attribute, 1);
@@ -889,15 +889,16 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * @param array $attributeNames list of attribute names that should be validated.
      * If this parameter is empty, it means any attribute listed in the applicable
      * validation rules should be validated.
+     * @param bool $clearErrors whether to call [[clearErrors()]] before performing validation. Default true
      * @return bool whether all models are valid. False will be returned if one
      * or multiple models have validation error.
      */
-    public static function validateMultiple($models, $attributeNames = null)
+    public static function validateMultiple($models, $attributeNames = null, $clearErrors = true)
     {
         $valid = true;
         /* @var $model Model */
         foreach ($models as $model) {
-            $valid = $model->validate($attributeNames) && $valid;
+            $valid = $model->validate($attributeNames, $clearErrors) && $valid;
         }
 
         return $valid;

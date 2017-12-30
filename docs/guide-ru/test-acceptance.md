@@ -1,11 +1,16 @@
 Приёмочное тестирование
 =======================
 
-> Note: Данный раздел находится в разработке.
+Приемочный тест проверяет сценарий с точки зрения конечного пользователя. К тестируемому приложению получают доступ либо через PhpBrowser, либо через реальный браузер. В обоих случаях браузеры взаимодействуют с приложением через HTTP, поэтому приложение следует запускать посредством веб-сервера. 
 
+Приемочное тестирование реализуется с помощью фреймворка Codeception, который имеет отличную документацию:
+
+- [Codeception for Yii framework](http://codeception.com/for/yii)
 - [Codeception Acceptance Tests](http://codeception.com/docs/03-AcceptanceTests)
 
 Запуск тестов в шаблонах проектов basic и advanced
 --------------------------------------------------
 
-Инструкции приведены в `apps/advanced/tests/README.md` и `apps/basic/tests/README.md`.
+Если вы начали с шаблона advanced, пожалуйста, обратитесь к руководству по ["Тестированию"](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/start-testing.md) для получения более детальной информации о запускаемых тестах.  
+
+Если вы начали с шаблона basic, обратитесь к разделу ["Тестирование"](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing) в его README.

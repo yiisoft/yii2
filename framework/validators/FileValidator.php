@@ -194,7 +194,7 @@ class FileValidator extends Validator
                     unset($files[$i]);
                 }
             }
-            $model->$attribute = array_values($files);
+            $model->$attribute = $files;
             if (empty($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
             }
@@ -304,7 +304,7 @@ class FileValidator extends Validator
         }
 
         if (($request = Yii::$app->getRequest()) instanceof \yii\web\Request) {
-            $maxFileSize = Yii::$app->getRequest()->getBodyParam('MAX_FILE_SIZE', 0);
+            $maxFileSize = Yii::$app->getRequest()->getParsedBodyParam('MAX_FILE_SIZE', 0);
             if ($maxFileSize > 0 && $maxFileSize < $limit) {
                 $limit = (int)$maxFileSize;
             }

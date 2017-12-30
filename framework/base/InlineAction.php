@@ -54,6 +54,6 @@ class InlineAction extends Action
             Yii::$app->requestedParams = $args;
         }
 
-        return call_user_func_array([$this->controller, $this->actionMethod], $args);
+        return $this->controller->{$this->actionMethod}(...$args);
     }
 }

@@ -19,13 +19,10 @@ function time()
 namespace yiiunit\framework\web;
 
 use Yii;
-use yii\base\Component;
-use yii\base\NotSupportedException;
 use yii\rbac\PhpManager;
 use yii\http\Cookie;
 use yii\http\CookieCollection;
 use yii\web\ForbiddenHttpException;
-use yii\web\IdentityInterface;
 use yiiunit\TestCase;
 
 /**
@@ -349,46 +346,6 @@ class UserTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/json,q=0.1';
         $this->expectException('yii\\web\\ForbiddenHttpException');
         Yii::$app->user->loginRequired();
-    }
-}
-
-class UserIdentity extends Component implements IdentityInterface
-{
-    private static $ids = [
-        'user1',
-        'user2',
-        'user3',
-    ];
-
-    private $_id;
-
-    public static function findIdentity($id)
-    {
-        if (in_array($id, static::$ids)) {
-            $identitiy = new static();
-            $identitiy->_id = $id;
-            return $identitiy;
-        }
-    }
-
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        throw new NotSupportedException();
-    }
-
-    public function getId()
-    {
-        return $this->_id;
-    }
-
-    public function getAuthKey()
-    {
-        return 'ABCD1234';
-    }
-
-    public function validateAuthKey($authKey)
-    {
-        return $authKey === 'ABCD1234';
     }
 }
 
