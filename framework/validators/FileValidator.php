@@ -86,6 +86,7 @@ class FileValidator extends Validator
      * Defaults to 0. Higher value means at least that number of files should be uploaded.
      *
      * @see tooFew for the customized message when too few files are uploaded.
+     * @since 2.0.14
      */
     public $minFiles = 0;
     /**
