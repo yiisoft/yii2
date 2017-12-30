@@ -136,6 +136,8 @@ class FileValidator extends Validator
      *
      * - {attribute}: the attribute name
      * - {limit}: the value of [[minFiles]]
+     *
+     * @since 2.0.14
      */
     public $tooFew;
 
