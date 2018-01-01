@@ -1249,7 +1249,7 @@ class BaseHtml
         }
 
         if ($encode) {
-            for ($i = 0; $i < count($lines); $i++) {
+            for ($i = 0, $linesCount = count($lines); $i < $linesCount; $i++) {
                 $lines[$i] = Html::encode($lines[$i]);
             }
         }

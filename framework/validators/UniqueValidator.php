@@ -121,7 +121,7 @@ class UniqueValidator extends Validator
         $targetClass = $this->getTargetClass($model);
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
-        $conditions[] = $this->targetAttributeJunction === 'or' ? 'or' : 'and';
+        $conditions = [$this->targetAttributeJunction === 'or' ? 'or' : 'and'];
 
         foreach ($rawConditions as $key => $value) {
             if (is_array($value)) {
