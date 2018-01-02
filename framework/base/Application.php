@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * Application is the base class for all application classes.
@@ -248,12 +249,6 @@ abstract class Application extends Module
             $this->setTimeZone('UTC');
         }
 
-        if (isset($config['container'])) {
-            $this->setContainer($config['container']);
-
-            unset($config['container']);
-        }
-
         // merge core components with custom components
         foreach ($this->coreComponents() as $id => $component) {
             if (!isset($config['components'][$id])) {
@@ -261,6 +256,19 @@ abstract class Application extends Module
             } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
                 $config['components'][$id]['class'] = $component['class'];
             }
+        }
+
+        /* Config components in dic how singleton */
+        $this->prepareComponentsToDic($config);
+
+        /* Prepare aliases for compatibility with Service Locator  */
+        $config['components'] = $this->prepareServiceLocatorAliases(array_keys($config['components']));
+
+
+        if (isset($config['container'])) {
+            $this->setContainer($config['container']);
+
+            unset($config['container']);
         }
     }
 
@@ -672,5 +680,45 @@ abstract class Application extends Module
     public function setContainer($config)
     {
         Yii::configure(Yii::$container, $config);
+    }
+
+    /**
+     * Prepare components how dic singleton
+     *
+     * @param array $config     - application config
+     *
+     * @return void
+     */
+    protected function prepareComponentsToDic(array &$config)
+    {
+        if (!isset($config['container'])) {
+            $config['container'] = [];
+        }
+
+        if (!isset($config['container']['singletons'])) {
+            $config['container']['singletons'] = [];
+        }
+
+        $newSingletons = ArrayHelper::merge($config['container']['singletons'], $config['components']);
+
+        $config['container']['singletons'] = $newSingletons;
+    }
+
+    /**
+     * Prepare components aliases for Service Locator
+     *
+     * @param array $keys - components keys
+     *
+     * @return array
+     */
+    protected function prepareServiceLocatorAliases(array $keys)
+    {
+        $aliases = [];
+
+        foreach ($keys as $key) {
+            $aliases[$key] = ['class' => $key];
+        }
+
+        return $aliases;
     }
 }
