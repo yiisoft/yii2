@@ -258,10 +258,10 @@ abstract class Application extends Module
             }
         }
 
-        /* Config components in dic how singleton */
+        /* Config components for DIC how singletons */
         $this->prepareComponentsToDic($config);
 
-        /* Prepare aliases for compatibility with Service Locator  */
+        /* Prepare components aliases for Service Locator (SL compatibility)  */
         $config['components'] = $this->prepareServiceLocatorAliases(array_keys($config['components']));
 
 
@@ -683,9 +683,9 @@ abstract class Application extends Module
     }
 
     /**
-     * Prepare components how dic singleton
+     * Prepare components for dic how singletons
      *
-     * @param array $config     - application config
+     * @param array $config - application config
      *
      * @return void
      */
