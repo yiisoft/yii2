@@ -137,19 +137,19 @@ class Connection extends Component
     /**
      * @event Event an event that is triggered after a DB connection is established
      */
-    const EVENT_AFTER_OPEN = 'afterOpen';
+    const EVENT_AFTER_OPEN = 'db.open.after';
     /**
      * @event Event an event that is triggered right before a top-level transaction is started
      */
-    const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
+    const EVENT_BEGIN_TRANSACTION = 'db.transaction.begin';
     /**
      * @event Event an event that is triggered right after a top-level transaction is committed
      */
-    const EVENT_COMMIT_TRANSACTION = 'commitTransaction';
+    const EVENT_COMMIT_TRANSACTION = 'db.transaction.commit';
     /**
      * @event Event an event that is triggered right after a top-level transaction is rolled back
      */
-    const EVENT_ROLLBACK_TRANSACTION = 'rollbackTransaction';
+    const EVENT_ROLLBACK_TRANSACTION = 'db.transaction.rollback';
 
     /**
      * @var string the Data Source Name, or DSN, contains the information required to connect to the database.

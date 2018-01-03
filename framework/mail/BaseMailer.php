@@ -31,11 +31,11 @@ abstract class BaseMailer extends Component implements MailerInterface
      * @event MailEvent an event raised right before send.
      * You may set [[MailEvent::isValid]] to be false to cancel the send.
      */
-    const EVENT_BEFORE_SEND = 'beforeSend';
+    const EVENT_BEFORE_SEND = 'mail.send.before';
     /**
      * @event MailEvent an event raised right after send.
      */
-    const EVENT_AFTER_SEND = 'afterSend';
+    const EVENT_AFTER_SEND = 'mail.send.after';
 
     /**
      * @var array the configuration that should be applied to any newly created

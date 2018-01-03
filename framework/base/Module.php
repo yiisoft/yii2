@@ -45,11 +45,11 @@ class Module extends ServiceLocator
      * @event ActionEvent an event raised before executing a controller action.
      * You may set [[ActionEvent::isValid]] to be `false` to cancel the action execution.
      */
-    const EVENT_BEFORE_ACTION = 'beforeAction';
+    const EVENT_BEFORE_ACTION = 'action.run.before';
     /**
      * @event ActionEvent an event raised after executing a controller action.
      */
-    const EVENT_AFTER_ACTION = 'afterAction';
+    const EVENT_AFTER_ACTION = 'action.run.after';
 
     /**
      * @var array custom module parameters (name => value).

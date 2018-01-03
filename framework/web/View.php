@@ -46,11 +46,11 @@ class View extends \yii\base\View
     /**
      * @event Event an event that is triggered by [[beginBody()]].
      */
-    const EVENT_BEGIN_BODY = 'beginBody';
+    const EVENT_BEGIN_BODY = 'view.body.begin';
     /**
      * @event Event an event that is triggered by [[endBody()]].
      */
-    const EVENT_END_BODY = 'endBody';
+    const EVENT_END_BODY = 'view.body.end';
     /**
      * The location of registered JavaScript code block or files.
      * This means the location is in the head section.

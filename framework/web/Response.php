@@ -72,16 +72,16 @@ class Response extends \yii\base\Response implements ResponseInterface
     /**
      * @event ResponseEvent an event that is triggered at the beginning of [[send()]].
      */
-    const EVENT_BEFORE_SEND = 'beforeSend';
+    const EVENT_BEFORE_SEND = 'response.send.before';
     /**
      * @event ResponseEvent an event that is triggered at the end of [[send()]].
      */
-    const EVENT_AFTER_SEND = 'afterSend';
+    const EVENT_AFTER_SEND = 'response.send.after';
     /**
      * @event ResponseEvent an event that is triggered right after [[prepare()]] is called in [[send()]].
      * You may respond to this event to filter the response content before it is sent to the client.
      */
-    const EVENT_AFTER_PREPARE = 'afterPrepare';
+    const EVENT_AFTER_PREPARE = 'response.prepare.after';
     const FORMAT_RAW = 'raw';
     const FORMAT_HTML = 'html';
     const FORMAT_JSON = 'json';

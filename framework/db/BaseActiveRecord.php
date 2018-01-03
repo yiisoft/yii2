@@ -45,43 +45,43 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * @event Event an event that is triggered when the record is initialized via [[init()]].
      */
-    const EVENT_INIT = 'init';
+    const EVENT_INIT = 'db.ar.init';
     /**
      * @event Event an event that is triggered after the record is created and populated with query result.
      */
-    const EVENT_AFTER_FIND = 'afterFind';
+    const EVENT_AFTER_FIND = 'db.ar.find.after';
     /**
      * @event ModelEvent an event that is triggered before inserting a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the insertion.
      */
-    const EVENT_BEFORE_INSERT = 'beforeInsert';
+    const EVENT_BEFORE_INSERT = 'db.ar.insert.before';
     /**
      * @event AfterSaveEvent an event that is triggered after a record is inserted.
      */
-    const EVENT_AFTER_INSERT = 'afterInsert';
+    const EVENT_AFTER_INSERT = 'db.ar.insert.after';
     /**
      * @event ModelEvent an event that is triggered before updating a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the update.
      */
-    const EVENT_BEFORE_UPDATE = 'beforeUpdate';
+    const EVENT_BEFORE_UPDATE = 'db.ar.update.before';
     /**
      * @event AfterSaveEvent an event that is triggered after a record is updated.
      */
-    const EVENT_AFTER_UPDATE = 'afterUpdate';
+    const EVENT_AFTER_UPDATE = 'db.ar.update.after';
     /**
      * @event ModelEvent an event that is triggered before deleting a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the deletion.
      */
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
+    const EVENT_BEFORE_DELETE = 'db.ar.delete.before';
     /**
      * @event Event an event that is triggered after a record is deleted.
      */
-    const EVENT_AFTER_DELETE = 'afterDelete';
+    const EVENT_AFTER_DELETE = 'db.ar.delete.after';
     /**
      * @event Event an event that is triggered after a record is refreshed.
      * @since 2.0.8
      */
-    const EVENT_AFTER_REFRESH = 'afterRefresh';
+    const EVENT_AFTER_REFRESH = 'db.ar.refresh.after';
 
     /**
      * @var array attribute values indexed by attribute names

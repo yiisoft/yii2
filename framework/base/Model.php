@@ -67,11 +67,11 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
      * [[ModelEvent::isValid]] to be false to stop the validation.
      */
-    const EVENT_BEFORE_VALIDATE = 'beforeValidate';
+    const EVENT_BEFORE_VALIDATE = 'model.validate.before';
     /**
      * @event Event an event raised at the end of [[validate()]]
      */
-    const EVENT_AFTER_VALIDATE = 'afterValidate';
+    const EVENT_AFTER_VALIDATE = 'model.validate.after';
 
     /**
      * @var array validation errors (attribute name => array of errors)

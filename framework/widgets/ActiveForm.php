@@ -30,12 +30,12 @@ class ActiveForm extends Widget
      * @event ActiveFieldEvent an event raised right before rendering an ActiveField.
      * @since 2.1.0
      */
-    const EVENT_BEFORE_FIELD_RENDER = 'beforeFieldRender';
+    const EVENT_BEFORE_FIELD_RENDER = 'widget.form.field.render.before';
     /**
      * @event ActionEvent an event raised right after rendering an ActiveField.
      * @since 2.1.0
      */
-    const EVENT_AFTER_FIELD_RENDER = 'afterFieldRender';
+    const EVENT_AFTER_FIELD_RENDER = 'widget.form.field.render.after';
 
     /**
      * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].

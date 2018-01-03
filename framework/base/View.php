@@ -31,19 +31,19 @@ class View extends Component
     /**
      * @event Event an event that is triggered by [[beginPage()]].
      */
-    const EVENT_BEGIN_PAGE = 'beginPage';
+    const EVENT_BEGIN_PAGE = 'view.page.begin';
     /**
      * @event Event an event that is triggered by [[endPage()]].
      */
-    const EVENT_END_PAGE = 'endPage';
+    const EVENT_END_PAGE = 'view.page.end';
     /**
      * @event ViewEvent an event that is triggered by [[renderFile()]] right before it renders a view file.
      */
-    const EVENT_BEFORE_RENDER = 'beforeRender';
+    const EVENT_BEFORE_RENDER = 'view.render.before';
     /**
      * @event ViewEvent an event that is triggered by [[renderFile()]] right after it renders a view file.
      */
-    const EVENT_AFTER_RENDER = 'afterRender';
+    const EVENT_AFTER_RENDER = 'view.render.after';
 
     /**
      * @var ViewContextInterface the context under which the [[renderFile()]] method is being invoked.
