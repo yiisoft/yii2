@@ -176,7 +176,7 @@ class FileValidator extends Validator
             $this->tooMany = Yii::t('yii', 'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.');
         }
         if ($this->tooFew === null) {
-            $this->tooFew = Yii::t('yii', 'You can upload at less than {limit, number} {limit, plural, one{file} other{files}}.');
+            $this->tooFew = Yii::t('yii', 'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.');
         }
         if ($this->wrongExtension === null) {
             $this->wrongExtension = Yii::t('yii', 'Only files with these extensions are allowed: {extensions}.');
