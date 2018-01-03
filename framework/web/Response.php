@@ -16,7 +16,6 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\http\CookieCollection;
-use yii\http\HeaderCollection;
 use yii\http\MemoryStream;
 use yii\http\MessageTrait;
 use yii\http\ResourceStream;

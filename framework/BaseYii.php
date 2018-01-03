@@ -9,9 +9,8 @@ namespace yii;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use yii\base\InvalidConfigException;
 use yii\base\InvalidArgumentException;
-use yii\base\UnknownClassException;
+use yii\base\InvalidConfigException;
 use yii\di\Container;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
