@@ -62,13 +62,13 @@ class WidgetTest extends TestCase
     {
         $output = TestWidget::widget([
             'id' => 'test',
-            'on init' => function ($event) {
+            'on widget.init' => function ($event) {
                 echo '<init>';
             },
-            'on beforeRun' => function (WidgetEvent $event) {
+            'on widget.run.before' => function (WidgetEvent $event) {
                 echo '<before-run>';
             },
-            'on afterRun' => function (WidgetEvent $event) {
+            'on widget.run.after' => function (WidgetEvent $event) {
                 $event->result .= '<after-run>';
             },
         ]);
@@ -82,7 +82,7 @@ class WidgetTest extends TestCase
     {
         $output = TestWidget::widget([
             'id' => 'test',
-            'on beforeRun' => function (WidgetEvent $event) {
+            'on widget.run.before' => function (WidgetEvent $event) {
                 $event->isValid = false;
             },
         ]);

@@ -240,7 +240,7 @@ HTML
     {
         $initTriggered = false;
         $this->getListView([
-            'on init' => function () use (&$initTriggered) {
+            'on widget.init' => function () use (&$initTriggered) {
                 $initTriggered = true;
             },
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
