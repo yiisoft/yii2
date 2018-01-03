@@ -7,10 +7,20 @@
 
 namespace yii\helpers;
 
+use yii\base\InvalidConfigException;
+
 /**
  * BaseHtmlPurifier provides concrete implementation for [[HtmlPurifier]].
  *
  * Do not use BaseHtmlPurifier. Use [[HtmlPurifier]] instead.
+ *
+ * This helper requires `ezyang/htmlpurifier` library to be installed. This can be done via composer:
+ *
+ * ```
+ * composer require --prefer-dist "ezyang/htmlpurifier:~4.6"
+ * ```
+ *
+ * @see http://htmlpurifier.org/
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
@@ -44,6 +54,10 @@ class BaseHtmlPurifier
      */
     public static function process($content, $config = null)
     {
+        if (!class_exists(\HTMLPurifier::class)) {
+            throw new InvalidConfigException('Unable to load "' . \HTMLPurifier::class . '" class. Make sure you have installed "ezyang/htmlpurifier:~4.6" composer package.');
+        }
+
         $configInstance = \HTMLPurifier_Config::create($config instanceof \Closure ? null : $config);
         $configInstance->autoFinalize = false;
         $purifier = \HTMLPurifier::instance($configInstance);
