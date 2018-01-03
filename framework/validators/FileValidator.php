@@ -83,10 +83,10 @@ class FileValidator extends Validator
 
     /**
      * @var int the minimum file count the given attribute can hold.
-     * Defaults to 1, meaning single file upload. By defining a higher number,
-     * multiple uploads become possible.
+     * Defaults to 0. Higher value means at least that number of files should be uploaded.
      *
      * @see tooFew for the customized message when too few files are uploaded.
+     * @since 2.0.14
      */
     public $minFiles = 0;
     /**
@@ -136,6 +136,8 @@ class FileValidator extends Validator
      *
      * - {attribute}: the attribute name
      * - {limit}: the value of [[minFiles]]
+     *
+     * @since 2.0.14
      */
     public $tooFew;
 
