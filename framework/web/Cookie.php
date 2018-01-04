@@ -80,10 +80,4 @@ class Cookie extends \yii\base\BaseObject
 
         $this->_name = $name;
     }
-
-
-    public function init()
-    {
-        
-    }
 }
