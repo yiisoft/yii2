@@ -87,6 +87,7 @@ class Controller extends \yii\base\Controller
     /**
      * Runs an action with the specified action ID and parameters.
      * If the action ID is empty, the method will use [[defaultAction]].
+     * @param Request $request the request instance.
      * @param string $id the ID of the action to be executed.
      * @param array $params the parameters (name-value pairs) to be passed to the action.
      * @return int the status of the action execution. 0 means normal, other values mean abnormal.
@@ -94,7 +95,7 @@ class Controller extends \yii\base\Controller
      * @throws Exception if there are unknown options or missing arguments
      * @see createAction
      */
-    public function runAction($id, $params = [])
+    public function runAction($request, $id, $params = [])
     {
         if (!empty($params)) {
             // populate options here so that they are available in beforeAction().
@@ -138,10 +139,10 @@ class Controller extends \yii\base\Controller
         }
         if ($this->help) {
             $route = $this->getUniqueId() . '/' . $id;
-            return Yii::$app->runAction('help', [$route]);
+            return Yii::$app->runAction($request, 'help', [$route]);
         }
 
-        return parent::runAction($id, $params);
+        return parent::runAction($request, $id, $params);
     }
 
     /**

@@ -99,19 +99,21 @@ class Application extends \yii\base\Application
             unset($params[0]);
         }
         try {
-            Yii::debug("Route requested: '$route'", __METHOD__);
+            Yii::debug("Route requested: '{$route}'", __METHOD__);
             $this->requestedRoute = $route;
-            $result = $this->runAction($route, $params);
-            if ($result instanceof Response) {
-                return $result;
-            }
 
-            $response = $this->getResponse();
-            if ($result !== null) {
-                $response->data = $result;
-            }
+            return $this->getMiddlewareDispatcher()->dispatch($request, $this->middleware, function ($request) use ($route, $params) {
+                $result = $this->runAction($request, $route, $params);
+                if ($result instanceof Response) {
+                    return $result;
+                }
 
-            return $response;
+                $response = $this->getResponse();
+                if ($result !== null) {
+                    $response->data = $result;
+                }
+                return $response;
+            });
         } catch (InvalidRouteException $e) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'), $e->getCode(), $e);
         }

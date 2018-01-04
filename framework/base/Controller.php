@@ -63,6 +63,28 @@ class Controller extends Component implements ViewContextInterface
      * by [[run()]] when it is called by [[Application]] to run an action.
      */
     public $action;
+    /**
+     * @var array middleware stack to be applied for this controller. Particular array element
+     * represents a particular middleware instance or its DI compatible configuration.
+     * For example:
+     *
+     * ```php
+     * [
+     *     new SomeMiddleware(),
+     *     [
+     *         'class' => AnotherMiddleware::class,
+     *         'someProperty' => 'foo',
+     *     ],
+     *     function () {
+     *         return (new SomeMiddleware())->withParams(['param1' => '1']);
+     *     }
+     * ],
+     * ```
+     *
+     * @see MiddlewareDispatcherInterface::dispatch()
+     * @since 2.1.0
+     */
+    public $middleware = [];
 
     /**
      * @var View the view object that can be used to render views or view files.
@@ -115,13 +137,14 @@ class Controller extends Component implements ViewContextInterface
     /**
      * Runs an action within this controller with the specified action ID and parameters.
      * If the action ID is empty, the method will use [[defaultAction]].
+     * @param Request $request the request instance.
      * @param string $id the ID of the action to be executed.
      * @param array $params the parameters (name-value pairs) to be passed to the action.
      * @return mixed the result of the action.
      * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
      * @see createAction()
      */
-    public function runAction($id, $params = [])
+    public function runAction($request, $id, $params = [])
     {
         $action = $this->createAction($id);
         if ($action === null) {
@@ -137,33 +160,37 @@ class Controller extends Component implements ViewContextInterface
         $oldAction = $this->action;
         $this->action = $action;
 
-        $modules = [];
-        $runAction = true;
+        $result = Yii::$app->getMiddlewareDispatcher()->dispatch($request, $this->middleware, function () use ($action, $params) {
+            $modules = [];
+            $runAction = true;
 
-        // call beforeAction on modules
-        foreach ($this->getModules() as $module) {
-            if ($module->beforeAction($action)) {
-                array_unshift($modules, $module);
-            } else {
-                $runAction = false;
-                break;
+            // call beforeAction on modules
+            foreach ($this->getModules() as $module) {
+                if ($module->beforeAction($action)) {
+                    array_unshift($modules, $module);
+                } else {
+                    $runAction = false;
+                    break;
+                }
             }
-        }
 
-        $result = null;
+            $result = null;
 
-        if ($runAction && $this->beforeAction($action)) {
-            // run the action
-            $result = $action->runWithParams($params);
+            if ($runAction && $this->beforeAction($action)) {
+                // run the action
+                $result = $action->runWithParams($params);
 
-            $result = $this->afterAction($action, $result);
+                $result = $this->afterAction($action, $result);
 
-            // call afterAction on modules
-            foreach ($modules as $module) {
-                /* @var $module Module */
-                $result = $module->afterAction($action, $result);
+                // call afterAction on modules
+                foreach ($modules as $module) {
+                    /* @var $module Module */
+                    $result = $module->afterAction($action, $result);
+                }
             }
-        }
+
+            return $this->normalizeActionResponse($result);
+        });
 
         if ($oldAction !== null) {
             $this->action = $oldAction;
@@ -520,5 +547,17 @@ class Controller extends Component implements ViewContextInterface
         }
 
         return $path;
+    }
+
+    /**
+     * Normalized raw response built by action run.
+     * This may include performing typecasting, object wrapping and so on.
+     * @param mixed $response raw action response.
+     * @return mixed normalized response.
+     * @since 2.1.0
+     */
+    protected function normalizeActionResponse($response)
+    {
+        return $response;
     }
 }

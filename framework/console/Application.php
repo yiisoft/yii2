@@ -165,19 +165,20 @@ class Application extends \yii\base\Application
      * code should be used:
      *
      * ```php
-     * \Yii::$app->runAction('controller/test', ['option' => 'value', $a, $b]);
+     * \Yii::$app->runAction(Yii::$app->getRequest(), 'controller/test', ['option' => 'value', $a, $b]);
      * ```
      *
+     * @param Request $request the request instance.
      * @param string $route the route that specifies the action.
      * @param array $params the parameters to be passed to the action
      * @return int|Response the result of the action. This can be either an exit code or Response object.
-     * Exit code 0 means normal, and other values mean abnormal. Exit code of `null` is treaded as `0` as well.
+     * Exit code 0 means normal, and other values mean abnormal. Exit code of `null` is treated as `0` as well.
      * @throws Exception if the route is invalid
      */
-    public function runAction($route, $params = [])
+    public function runAction($request, $route, $params = [])
     {
         try {
-            $res = parent::runAction($route, $params);
+            $res = parent::runAction($request, $route, $params);
             return is_object($res) ? $res : (int) $res;
         } catch (InvalidRouteException $e) {
             throw new UnknownCommandException($route, $this, 0, $e);

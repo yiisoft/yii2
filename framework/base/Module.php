@@ -534,12 +534,13 @@ class Module extends ServiceLocator
      * This method parses the specified route and creates the corresponding child module(s), controller and action
      * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
      * If the route is empty, the method will use [[defaultRoute]].
+     * @param Request $request the request instance.
      * @param string $route the route that specifies the action.
      * @param array $params the parameters to be passed to the action
      * @return mixed the result of the action.
      * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully.
      */
-    public function runAction($route, $params = [])
+    public function runAction($request, $route, $params = [])
     {
         if ($route === '') {
             $route = $this->defaultRoute;
@@ -569,7 +570,11 @@ class Module extends ServiceLocator
             [$controller, $actionID] = $parts;
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;
-            $result = $controller->runAction($actionID, $params);
+
+            $result = Yii::$app->getMiddlewareDispatcher()->dispatch($request, $this->middleware, function ($request) use ($controller, $actionID, $params) {
+                return $controller->runAction($request, $actionID, $params);
+            });
+
             if ($oldController !== null) {
                 Yii::$app->controller = $oldController;
             }
