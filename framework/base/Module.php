@@ -582,7 +582,7 @@ class Module extends ServiceLocator
      * with the requested action ID. Otherwise `false` will be returned.
      * @throws InvalidConfigException if the controller class and its file do not match.
      */
-    public function createController($id, $route)
+    public function createController($id, $route = '')
     {
         // controller map take precedence
         if (isset($this->controllerMap[$id])) {
