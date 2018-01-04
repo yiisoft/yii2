@@ -102,9 +102,7 @@ class Application extends \yii\base\Application
             Yii::debug("Route requested: '{$route}'", __METHOD__);
             $this->requestedRoute = $route;
 
-            return $this->getMiddlewareDispatcher()->dispatch($request, $this->middleware, function ($request) use ($route, $params) {
-                return $this->runAction($request, $route, $params);
-            });
+            return $this->runAction($request, $route, $params);
         } catch (InvalidRouteException $e) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'), $e->getCode(), $e);
         }

@@ -552,6 +552,21 @@ class Module extends ServiceLocator
             throw new InvalidRouteException('Unable to resolve the request "' . $route . '".');
         }
 
+        return Yii::$app->getMiddlewareDispatcher()->dispatch($request, $this->middleware, function ($request) use ($route, $params) {
+            return $this->runActionInternal($request, $route, $params);
+        });
+    }
+
+    /**
+     * @param Request $request
+     * @param string $route
+     * @param array $params
+     * @return mixed the result of the action.
+     * @throws InvalidRouteException
+     * @since 2.1.0
+     */
+    protected function runActionInternal($request, $route, $params = [])
+    {
         if (strpos($route, '/') !== false) {
             [$id, $route] = explode('/', $route, 2);
         } else {
@@ -571,9 +586,7 @@ class Module extends ServiceLocator
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;
 
-            $result = Yii::$app->getMiddlewareDispatcher()->dispatch($request, $this->middleware, function ($request) use ($controller, $actionID, $params) {
-                return $controller->runAction($request, $actionID, $params);
-            });
+            $result = $controller->runAction($request, $actionID, $params);
 
             if ($oldController !== null) {
                 Yii::$app->controller = $oldController;
