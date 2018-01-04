@@ -519,7 +519,29 @@ class Module extends ServiceLocator
      */
     public function runAction($route, $params = [])
     {
-        $parts = $this->createController($route);
+        if ($route === '') {
+            $route = $this->defaultRoute;
+        }
+
+        // double slashes or leading/ending slashes may cause substr problem
+        $route = trim($route, '/');
+        if (strpos($route, '//') !== false) {
+            throw new InvalidRouteException('Unable to resolve the request "' . $route . '".');
+        }
+
+        if (strpos($route, '/') !== false) {
+            [$id, $route] = explode('/', $route, 2);
+        } else {
+            $id = $route;
+            $route = '';
+        }
+
+        $module = $this->getModule($id);
+        if ($module !== null) {
+            return $module->runAction($route, $params);
+        }
+
+        $parts = $this->createController($id, $route);
         if (is_array($parts)) {
             /* @var $controller Controller */
             [$controller, $actionID] = $parts;
@@ -533,8 +555,8 @@ class Module extends ServiceLocator
             return $result;
         }
 
-        $id = $this->getUniqueId();
-        throw new InvalidRouteException('Unable to resolve the request "' . ($id === '' ? $route : $id . '/' . $route) . '".');
+        $uniqueId = $this->getUniqueId();
+        throw new InvalidRouteException('Unable to resolve the request "' . ($uniqueId === '' ? $route : $uniqueId . '/' . $route) . '".');
     }
 
     /**
@@ -554,38 +576,18 @@ class Module extends ServiceLocator
      * If any of the above steps resolves into a controller, it is returned together with the rest
      * part of the route which will be treated as the action ID. Otherwise, `false` will be returned.
      *
+     * @param string $id the controller ID.
      * @param string $route the route consisting of module, controller and action IDs.
      * @return array|bool If the controller is created successfully, it will be returned together
      * with the requested action ID. Otherwise `false` will be returned.
      * @throws InvalidConfigException if the controller class and its file do not match.
      */
-    public function createController($route)
+    public function createController($id, $route)
     {
-        if ($route === '') {
-            $route = $this->defaultRoute;
-        }
-
-        // double slashes or leading/ending slashes may cause substr problem
-        $route = trim($route, '/');
-        if (strpos($route, '//') !== false) {
-            return false;
-        }
-
-        if (strpos($route, '/') !== false) {
-            [$id, $route] = explode('/', $route, 2);
-        } else {
-            $id = $route;
-            $route = '';
-        }
-
-        // module and controller map take precedence
+        // controller map take precedence
         if (isset($this->controllerMap[$id])) {
             $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
             return [$controller, $route];
-        }
-        $module = $this->getModule($id);
-        if ($module !== null) {
-            return $module->createController($route);
         }
 
         if (($pos = strrpos($route, '/')) !== false) {
