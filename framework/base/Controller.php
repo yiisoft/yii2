@@ -552,12 +552,12 @@ class Controller extends Component implements ViewContextInterface
     /**
      * Normalized raw response built by action run.
      * This may include performing typecasting, object wrapping and so on.
-     * @param mixed $response raw action response.
+     * @param mixed $rawResponse raw action response.
      * @return mixed normalized response.
      * @since 2.1.0
      */
-    protected function normalizeActionResponse($response)
+    protected function normalizeActionResponse($rawResponse)
     {
-        return $response;
+        return $rawResponse;
     }
 }

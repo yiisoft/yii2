@@ -103,16 +103,7 @@ class Application extends \yii\base\Application
             $this->requestedRoute = $route;
 
             return $this->getMiddlewareDispatcher()->dispatch($request, $this->middleware, function ($request) use ($route, $params) {
-                $result = $this->runAction($request, $route, $params);
-                if ($result instanceof Response) {
-                    return $result;
-                }
-
-                $response = $this->getResponse();
-                if ($result !== null) {
-                    $response->data = $result;
-                }
-                return $response;
+                return $this->runAction($request, $route, $params);
             });
         } catch (InvalidRouteException $e) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'), $e->getCode(), $e);

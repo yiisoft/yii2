@@ -178,8 +178,7 @@ class Application extends \yii\base\Application
     public function runAction($request, $route, $params = [])
     {
         try {
-            $res = parent::runAction($request, $route, $params);
-            return is_object($res) ? $res : (int) $res;
+            return parent::runAction($request, $route, $params);
         } catch (InvalidRouteException $e) {
             throw new UnknownCommandException($route, $this, 0, $e);
         }

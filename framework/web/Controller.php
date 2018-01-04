@@ -268,4 +268,20 @@ class Controller extends \yii\base\Controller
     {
         return Yii::$app->getResponse()->redirect(Yii::$app->getRequest()->getUrl() . $anchor);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function normalizeActionResponse($rawResponse)
+    {
+        if ($rawResponse instanceof Response) {
+            return $rawResponse;
+        }
+
+        $response = Yii::$app->getResponse();
+        if ($rawResponse !== null) {
+            $response->data = $rawResponse;
+        }
+        return $response;
+    }
 }

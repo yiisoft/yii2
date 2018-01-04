@@ -667,4 +667,19 @@ class Controller extends \yii\base\Controller
 
         return '';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function normalizeActionResponse($rawResponse)
+    {
+        if (is_object($rawResponse)) {
+            return $rawResponse;
+        }
+
+        $response = Yii::$app->getResponse();
+        $response->exitStatus = (int) $rawResponse;
+
+        return $response;
+    }
 }
