@@ -659,6 +659,16 @@ abstract class Application extends Module
     }
 
     /**
+     * Returns the middleware dispatcher component.
+     * @return MiddlewareDispatcherInterface the middleware dispatcher component.
+     * @since 2.1.0
+     */
+    public function getMiddlewareDispatcher()
+    {
+        return $this->get('middlewareDispatcher');
+    }
+
+    /**
      * Returns the configuration of core application components.
      * @see set()
      */

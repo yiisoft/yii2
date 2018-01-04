@@ -110,6 +110,28 @@ class Module extends ServiceLocator
      * [[Controller::defaultAction]].
      */
     public $defaultRoute = 'default';
+    /**
+     * @var array middleware stack to be applied for this module. Particular array element
+     * represents a particular middleware instance or its DI compatible configuration.
+     * For example:
+     *
+     * ```php
+     * [
+     *     new SomeMiddleware(),
+     *     [
+     *         'class' => AnotherMiddleware::class,
+     *         'someProperty' => 'foo',
+     *     ],
+     *     function () {
+     *         return (new SomeMiddleware())->withParams(['param1' => '1']);
+     *     }
+     * ],
+     * ```
+     *
+     * @see MiddlewareDispatcherInterface::dispatch()
+     * @since 2.1.0
+     */
+    public $middleware = [];
 
     /**
      * @var string the root directory of the module.

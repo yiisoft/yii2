@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidRouteException;
 use yii\helpers\Url;
+use yii\http\server\MiddlewareDispatcher;
 
 /**
  * Application is the base class for all web application classes.
@@ -198,6 +199,7 @@ class Application extends \yii\base\Application
             'session' => ['class' => Session::class],
             'user' => ['class' => User::class],
             'errorHandler' => ['class' => ErrorHandler::class],
+            'middlewareDispatcher' => ['class' => MiddlewareDispatcher::class],
         ]);
     }
 }

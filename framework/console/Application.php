@@ -237,6 +237,7 @@ class Application extends \yii\base\Application
             'request' => ['class' => Request::class],
             'response' => ['class' => Response::class],
             'errorHandler' => ['class' => ErrorHandler::class],
+            'middlewareDispatcher' => ['class' => MiddlewareDispatcher::class],
         ]);
     }
 }
