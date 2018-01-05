@@ -84,7 +84,8 @@ class IndexAction extends Action
 
     /**
      * Prepares the data provider that should return the requested collection of the models.
-     * @return ActiveDataProvider
+     * @return object|ActiveDataProvider|DataFilter
+     * @throws \yii\base\InvalidConfigException
      */
     protected function prepareDataProvider()
     {
@@ -101,11 +102,16 @@ class IndexAction extends Action
                 if ($filter === false) {
                     return $this->dataFilter;
                 }
+                $dataFilterLoaded = true;
             }
         }
 
         if ($this->prepareDataProvider !== null) {
             return call_user_func($this->prepareDataProvider, $this, $filter);
+        }
+
+        if (!empty($dataFilterLoaded)) {
+            unset($requestParams[$this->dataFilter->filterAttributeName]);
         }
 
         /* @var $modelClass \yii\db\BaseActiveRecord */
@@ -114,9 +120,13 @@ class IndexAction extends Action
         $query = $modelClass::find();
         if (!empty($filter)) {
             $query->andWhere($filter);
+            $query->addOrderBy(array_combine($pks = $modelClass::primaryKey(), array_fill(0, count($pks), SORT_ASC)));
         }
 
-        return Yii::createObject([
+        return Yii::createObject(empty($requestParams) ? [
+            'class' => ActiveDataProvider::className(),
+            'query' => $query,
+        ] : [
             'class' => ActiveDataProvider::className(),
             'query' => $query,
             'pagination' => [
