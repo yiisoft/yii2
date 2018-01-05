@@ -154,6 +154,9 @@ Upgrade from Yii 2.0.x
   `yii\validators\FileValidator::buildMimeTypeRegexp()` have been made `public`. Make sure you use correct
   access level specification in case you override these methods.
 * Default script position for the `yii\web\View::registerJs()` changed to `View::POS_END`.
+* Signature of the methods `yii\base\Controller::runAction()` and `yii\base\Module::runAction()` (`yii\base\Application::runAction()`)
+  has been changed with addition of request instance as the first argument. Make sure you invoke or override these
+  methods correctly.
 
 
 Upgrade from Yii 2.0.13

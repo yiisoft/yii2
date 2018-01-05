@@ -22,6 +22,8 @@ Yii Framework 2 Change Log
 - Enh #13702: Added support for PSR-3 'Logger' (klimov-paul)
 - Enh #13706: 'Profiler' layer extracted (klimov-paul)
 - Enh #15410: Added serialization abstraction layer under `yii\serialize\*` namespace (klimov-paul)
+- Chg #10659: Method `runAction()` now is invoked for every module instance in the request handling chain, allowing custom implementation in particular module (klimov-paul)
+- Enh #15438: Added middleware support including PSR-15 'HTTP Server Request Handlers' compatibility (klimov-paul)
 - Removed methods marked as deprecated in 2.0.x (samdark)
 - Chg #14784: Signature of `yii\web\RequestParserInterface::parse()` changed to accept `yii\web\Request` instance as a sole argument (klimov-paul)
 - Chg #10771: Consistent behavior of `run()` method in all framework widgets. All return the result now for better extensibility (pkirill99, cebe)
