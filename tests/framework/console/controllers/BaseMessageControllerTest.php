@@ -62,7 +62,7 @@ abstract class BaseMessageControllerTest extends TestCase
     protected function runMessageControllerAction($actionID, array $args = [])
     {
         $controller = $this->createMessageController();
-        $controller->run($actionID, $args);
+        $controller->runAction(Yii::$app->getRequest(), $actionID, $args);
         return $controller->flushStdOutBuffer();
     }
 

@@ -93,7 +93,7 @@ class AssetControllerTest extends TestCase
     protected function runAssetControllerAction($actionID, array $args = [])
     {
         $controller = $this->createAssetController();
-        $controller->run($actionID, $args);
+        $controller->runAction(Yii::$app->getRequest(), $actionID, $args);
         return $controller->flushStdOutBuffer();
     }
 

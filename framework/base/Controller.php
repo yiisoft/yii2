@@ -213,12 +213,12 @@ class Controller extends Component implements ViewContextInterface
     {
         $pos = strpos($route, '/');
         if ($pos === false) {
-            return $this->runAction($route, $params);
+            return $this->runAction(Yii::$app->getRequest(), $route, $params);
         } elseif ($pos > 0) {
-            return $this->module->runAction($route, $params);
+            return $this->module->runAction(Yii::$app->getRequest(), $route, $params);
         }
 
-        return Yii::$app->runAction(ltrim($route, '/'), $params);
+        return Yii::$app->runAction(Yii::$app->getRequest(), ltrim($route, '/'), $params);
     }
 
     /**
