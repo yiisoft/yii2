@@ -77,7 +77,7 @@
         "bower-asset/yii2-pjax": "~2.0.1"
     },
     "suggest": {
-        "ezyang/htmlpurifier": "required at `yii\\helpers\\HtmlPurifier` for 'html' data format support (e.g. `yii\\i18n\\Formatter:asHtml()`)"
+        "ezyang/htmlpurifier": "required at 'yii\\helpers\\HtmlPurifier' for 'html' data format support (e.g. 'yii\\i18n\\Formatter:asHtml()')"
     },
     "autoload": {
         "psr-4": {"yii\\": ""},
