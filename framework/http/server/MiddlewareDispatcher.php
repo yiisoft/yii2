@@ -24,6 +24,7 @@ class MiddlewareDispatcher extends Component implements MiddlewareDispatcherInte
 {
     /**
      * {@inheritdoc}
+     * @return \Psr\Http\Message\ResponseInterface response instance.
      */
     public function dispatch($request, array $middleware, $handler)
     {

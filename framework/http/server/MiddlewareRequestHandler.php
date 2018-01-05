@@ -80,4 +80,19 @@ class MiddlewareRequestHandler extends BaseObject implements RequestHandlerInter
     {
         return $this->getMiddleware()->process($request, $this->getHandler());
     }
+
+    /**
+     * Runs the request handler.
+     *
+     * Do not call this method directly as it is a PHP magic method that
+     * will be implicitly called when executing `$response = $object($request);`.
+     *
+     * This method duplicates `handle()` providing compatibility with non-PSR 15 middleware.
+     * @param ServerRequestInterface $request request instance.
+     * @return ResponseInterface response instance.
+     */
+    public function __invoke(ServerRequestInterface $request)
+    {
+        return $this->handle($request);
+    }
 }
