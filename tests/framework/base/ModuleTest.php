@@ -65,7 +65,7 @@ class ModuleTest extends TestCase
         $this->assertNull(Yii::$app->controller);
         static::$actionRuns = [];
 
-        $module->runAction('test-controller1/test1');
+        $module->runAction(Yii::$app->getRequest(), 'test-controller1/test1');
         $this->assertEquals([
             'test/test-controller1/test1',
         ], static::$actionRuns);
@@ -75,7 +75,7 @@ class ModuleTest extends TestCase
         $this->assertNotNull(Yii::$app->controller->action);
         $this->assertEquals('test/test-controller1/test1', Yii::$app->controller->action->uniqueId);
 
-        $module->runAction('test-controller2/test2');
+        $module->runAction(Yii::$app->getRequest(), 'test-controller2/test2');
         $this->assertEquals([
             'test/test-controller1/test1',
             'test/test-controller2/test2',

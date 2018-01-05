@@ -30,7 +30,7 @@ class ActionFilterTest extends TestCase
         // no filters
         $controller = new FakeController('fake', Yii::$app);
         $this->assertNull($controller->result);
-        $result = $controller->runAction('test');
+        $result = $controller->runAction(Yii::$app->getRequest(), 'test');
         $this->assertEquals('x', $result);
         $this->assertNull($controller->result);
 
@@ -42,7 +42,7 @@ class ActionFilterTest extends TestCase
             ],
         ]);
         $this->assertNull($controller->result);
-        $result = $controller->runAction('test');
+        $result = $controller->runAction(Yii::$app->getRequest(), 'test');
         $this->assertEquals('x-3-1', $result);
         $this->assertEquals([1, 3], $controller->result);
 
@@ -55,7 +55,7 @@ class ActionFilterTest extends TestCase
             ],
         ]);
         $this->assertNull($controller->result);
-        $result = $controller->runAction('test');
+        $result = $controller->runAction(Yii::$app->getRequest(), 'test');
         $this->assertNull($result);
         $this->assertEquals([1, 2], $controller->result);
 
@@ -68,7 +68,7 @@ class ActionFilterTest extends TestCase
             ],
         ]);
         $this->assertNull($controller->result);
-        $result = $controller->runAction('test');
+        $result = $controller->runAction(Yii::$app->getRequest(), 'test');
         $this->assertNull($result);
         $this->assertEquals([2], $controller->result);
 
@@ -81,7 +81,7 @@ class ActionFilterTest extends TestCase
             ],
         ]);
         $this->assertNull($controller->result);
-        $result = $controller->runAction('test');
+        $result = $controller->runAction(Yii::$app->getRequest(), 'test');
         $this->assertNull($result);
         $this->assertEquals([1, 3, 2], $controller->result);
     }

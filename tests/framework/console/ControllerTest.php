@@ -42,24 +42,24 @@ class ControllerTest extends TestCase
         $this->assertEquals('notdefault', $other);
 
         $params = ['d426,mdmunir', 'single'];
-        $result = $controller->runAction('aksi2', $params);
+        $result = $controller->runAction(Yii::$app->getRequest(), 'aksi2', $params);
         $this->assertEquals([['d426', 'mdmunir'], 'single'], $result);
 
         $params = ['_aliases' => ['t' => 'test']];
-        $result = $controller->runAction('aksi4', $params);
+        $result = $controller->runAction(Yii::$app->getRequest(), 'aksi4', $params);
         $this->assertEquals('test', $result);
 
         $params = ['_aliases' => ['a' => 'testAlias']];
-        $result = $controller->runAction('aksi5', $params);
+        $result = $controller->runAction(Yii::$app->getRequest(), 'aksi5', $params);
         $this->assertEquals('testAlias', $result);
 
         $params = ['_aliases' => ['ta' => 'from params,notdefault']];
-        [$fromParam, $other] = $controller->runAction('aksi6', $params);
+        [$fromParam, $other] = $controller->runAction(Yii::$app->getRequest(), 'aksi6', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
         $params = ['test-array' => 'from params,notdefault'];
-        list($fromParam, $other) = $controller->runAction('aksi6', $params);
+        list($fromParam, $other) = $controller->runAction(Yii::$app->getRequest(), 'aksi6', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
@@ -67,7 +67,7 @@ class ControllerTest extends TestCase
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
         $this->expectException('yii\console\Exception');
         $this->expectExceptionMessage($message);
-        $result = $controller->runAction('aksi3', $params);
+        $result = $controller->runAction(Yii::$app->getRequest(), 'aksi3', $params);
     }
 
     public function assertResponseStatus($status, $response)
@@ -106,7 +106,7 @@ class ControllerTest extends TestCase
     public function testHelpOptionNotSet()
     {
         $controller = new FakeController('posts', Yii::$app);
-        $controller->runAction('index');
+        $controller->runAction(Yii::$app->getRequest(), 'index');
 
         $this->assertTrue(FakeController::getWasActionIndexCalled());
         $this->assertNull(FakeHelpController::getActionIndexLastCallParams());
@@ -119,7 +119,7 @@ class ControllerTest extends TestCase
     {
         $controller = new FakeController('posts', Yii::$app);
         $controller->help = true;
-        $controller->runAction('index');
+        $controller->runAction(Yii::$app->getRequest(), 'index');
 
         $this->assertFalse(FakeController::getWasActionIndexCalled());
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['posts/index']);
@@ -132,7 +132,7 @@ class ControllerTest extends TestCase
     {
         $controller = new FakeController('posts', new Module('news'));
         $controller->help = true;
-        $controller->runAction('index');
+        $controller->runAction(Yii::$app->getRequest(), 'index');
 
         $this->assertFalse(FakeController::getWasActionIndexCalled());
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['news/posts/index']);

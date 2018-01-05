@@ -57,7 +57,7 @@ abstract class DbTargetTest extends TestCase
         }
 
         ob_start();
-        $result = Yii::$app->runAction($route, $params);
+        $result = Yii::$app->runAction(Yii::$app->getRequest(), $route, $params);
         echo 'Result is ' . $result;
         if ($result !== ExitCode::OK) {
             ob_end_flush();

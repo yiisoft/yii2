@@ -25,7 +25,7 @@ class ControllerTest extends TestCase
         static::$actionRuns = [];
         $controller = new TestController('test-controller', Yii::$app);
         $this->assertNull($controller->action);
-        $result = $controller->runAction('test1');
+        $result = $controller->runAction(Yii::$app->getRequest(), 'test1');
         $this->assertEquals('test1', $result);
         $this->assertEquals([
             'test-controller/test1',
@@ -34,7 +34,7 @@ class ControllerTest extends TestCase
         $this->assertEquals('test1', $controller->action->id);
         $this->assertEquals('test-controller/test1', $controller->action->uniqueId);
 
-        $result = $controller->runAction('test2');
+        $result = $controller->runAction(Yii::$app->getRequest(), 'test2');
         $this->assertEquals('test2', $result);
         $this->assertEquals([
             'test-controller/test1',

@@ -59,7 +59,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         ]);
         self::assertSame(static::$driverName, Yii::$app->db->getDriverName(), 'Connection represents the same DB driver, as is tested');
         ob_start();
-        $result = Yii::$app->runAction($route, $params);
+        $result = Yii::$app->runAction(Yii::$app->getRequest(), $route, $params);
         echo 'Result is ' . $result;
         if ($result !== ExitCode::OK) {
             ob_end_flush();

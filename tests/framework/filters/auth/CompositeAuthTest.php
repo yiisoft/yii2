@@ -36,7 +36,7 @@ class TestController extends Controller
         /*
          * this call will execute the actionA in a same instance of TestController
          */
-        return $this->runAction('a');
+        return $this->runAction(Yii::$app->getRequest(), 'a');
     }
 
     public function actionC()
