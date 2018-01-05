@@ -8,7 +8,24 @@
 namespace yii\base;
 
 /**
- * CallbackMiddleware
+ * CallbackMiddleware wraps arbitrary PHP callback into object matching [[MiddlewareInterface]].
+ * Usage example:
+ *
+ * ```php
+ * $middleware = new CallbackMiddleware([
+ *     'callback' => function ($request, $handler) {
+ *         if ($request->getParams() === []) {
+ *             return new Response();
+ *         }
+ *         return $handler($request);
+ *     }
+ * ]);
+ * $response = $middleware->process(Yii::$app->getRequest(), function ($request) {
+ *     return Yii::$app->handleRequest($request);
+ * });
+ * ```
+ *
+ * @see MiddlewareInterface
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0

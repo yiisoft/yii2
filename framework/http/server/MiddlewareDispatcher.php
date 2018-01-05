@@ -13,6 +13,13 @@ use yii\base\MiddlewareDispatcherInterface;
 
 /**
  * MiddlewareDispatcher handlers the middleware defined by PSR-15 'HTTP Server Request Handlers'.
+ * This dispatcher should be used for HTTP processing application, e.g. web application.
+ *
+ * This dispatcher requires "http-interop/http-server-middleware" library to be installed. This can be done via composer:
+ *
+ * ```
+ * composer require --prefer-dist "http-interop/http-server-middleware:~1.0.0"
+ * ```
  *
  * @see https://github.com/php-fig/fig-standards/tree/master/proposed/http-handlers
  * @see \Interop\Http\Server\MiddlewareInterface

@@ -15,7 +15,18 @@ use yii\base\BaseObject;
 use yii\di\Instance;
 
 /**
- * MiddlewareRequestHandler
+ * MiddlewareRequestHandler wraps a PSR middleware execution into object matching [[RequestHandlerInterface]].
+ * Usage example:
+ *
+ * ```php
+ * $handler = new MiddlewareRequestHandler([
+ *     'middleware' => SomePsrCompatibleMiddleware::class,
+ *     'handler' => SomePsrCompatibleRequestHandler::class,
+ * ]);
+ *
+ * $middleware = new AnotherPsrCompatibleMiddleware();
+ * $response = $middleware->process(Yii::$app->getRequest(), $handler);
+ * ```
  *
  * @property MiddlewareInterface $middleware
  * @property RequestHandlerInterface $handler

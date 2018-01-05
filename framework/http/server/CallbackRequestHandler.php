@@ -13,7 +13,21 @@ use Psr\Http\Message\ServerRequestInterface;
 use yii\base\BaseObject;
 
 /**
- * CallbackRequestHandler
+ * CallbackRequestHandler wraps arbitrary PHP callback into object matching [[RequestHandlerInterface]].
+ * Usage example:
+ *
+ * ```php
+ * $handler = new CallbackRequestHandler([
+ *     'callback' => function (ServerRequestInterface $request) {
+ *          return new Response();
+ *     }
+ * ]);
+ *
+ * $middleware = new SomePsrCompatibleMiddleware();
+ * $response = $middleware->process(Yii::$app->getRequest(), $handler);
+ * ```
+ *
+ * @see RequestHandlerInterface
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0
