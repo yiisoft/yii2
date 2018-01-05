@@ -43,15 +43,15 @@ class ControllerTest extends TestCase
 
         $params = ['d426,mdmunir', 'single'];
         $result = $controller->runAction(Yii::$app->getRequest(), 'aksi2', $params);
-        $this->assertEquals([['d426', 'mdmunir'], 'single'], $result);
+        $this->assertEquals([['d426', 'mdmunir'], 'single'], (array)$result);
 
         $params = ['_aliases' => ['t' => 'test']];
         $result = $controller->runAction(Yii::$app->getRequest(), 'aksi4', $params);
-        $this->assertEquals('test', $result);
+        $this->assertEquals(['test'], (array)$result);
 
         $params = ['_aliases' => ['a' => 'testAlias']];
         $result = $controller->runAction(Yii::$app->getRequest(), 'aksi5', $params);
-        $this->assertEquals('testAlias', $result);
+        $this->assertEquals(['testAlias'], (array)$result);
 
         $params = ['_aliases' => ['ta' => 'from params,notdefault']];
         [$fromParam, $other] = $controller->runAction(Yii::$app->getRequest(), 'aksi6', $params);
@@ -59,7 +59,7 @@ class ControllerTest extends TestCase
         $this->assertEquals('notdefault', $other);
 
         $params = ['test-array' => 'from params,notdefault'];
-        list($fromParam, $other) = $controller->runAction(Yii::$app->getRequest(), 'aksi6', $params);
+        [$fromParam, $other] = $controller->runAction(Yii::$app->getRequest(), 'aksi6', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 

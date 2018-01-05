@@ -144,7 +144,7 @@ class Application extends \yii\base\Application
     {
         [$route, $params] = $request->resolve();
         $this->requestedRoute = $route;
-        $result = $this->runAction($route, $params);
+        $result = $this->runAction($request, $route, $params);
         if ($result instanceof Response) {
             return $result;
         }

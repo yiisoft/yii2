@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\console;
 
+use ArrayIterator;
 use yii\console\Controller;
 use yii\console\Response;
 
@@ -57,12 +58,12 @@ class FakeController extends Controller
 
     public function actionAksi1($fromParam, $other = 'default')
     {
-        return[$fromParam, $other];
+        return new ArrayIterator([$fromParam, $other]);
     }
 
     public function actionAksi2(array $values, $value)
     {
-        return [$values, $value];
+        return new ArrayIterator([$values, $value]);
     }
 
     public function actionAksi3($available, $missing)
@@ -71,17 +72,17 @@ class FakeController extends Controller
 
     public function actionAksi4()
     {
-        return $this->test;
+        return new ArrayIterator([$this->test]);
     }
 
     public function actionAksi5()
     {
-        return $this->alias;
+        return new ArrayIterator([$this->alias]);
     }
 
     public function actionAksi6()
     {
-        return $this->testArray;
+        return new ArrayIterator($this->testArray);
     }
 
     public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument)

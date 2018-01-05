@@ -104,7 +104,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
     {
         /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
-        $this->assertEquals('success', $controller->run('test/d'));
+        $this->assertEquals('success', $controller->run('test/d')->data);
     }
 
     /**
@@ -114,13 +114,13 @@ class CompositeAuthTest extends \yiiunit\TestCase
     {
         /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
-        $this->assertEquals('success', $controller->run('b'));
+        $this->assertEquals('success', $controller->run('b')->data);
     }
 
     public function testRunButWithActionIdOnly()
     {
         /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
-        $this->assertEquals('success', $controller->run('c'));
+        $this->assertEquals('success', $controller->run('c')->data);
     }
 }
