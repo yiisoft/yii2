@@ -42,7 +42,6 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         }
 
         ob_start();
-
         try {
             $response = Yii::$app->runAction(Yii::$app->getRequest(), $route, $params);
             echo 'Result is ' . $response->exitStatus;

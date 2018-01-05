@@ -58,13 +58,19 @@ abstract class DbManagerTestCase extends ManagerTestCase
             'authManager' => '\yii\rbac\DbManager',
         ]);
         self::assertSame(static::$driverName, Yii::$app->db->getDriverName(), 'Connection represents the same DB driver, as is tested');
+
         ob_start();
-        $result = Yii::$app->runAction(Yii::$app->getRequest(), $route, $params);
-        echo 'Result is ' . $result;
-        if ($result !== ExitCode::OK) {
+        try {
+            $response = Yii::$app->runAction(Yii::$app->getRequest(), $route, $params);
+            echo 'Result is ' . $response->exitStatus;
+            if ($response->exitStatus !== \yii\console\ExitCode::OK) {
+                ob_end_flush();
+            } else {
+                ob_end_clean();
+            }
+        } catch (\Exception $e) {
+            echo 'Error: ' . $e->getMessage();
             ob_end_flush();
-        } else {
-            ob_end_clean();
         }
     }
 

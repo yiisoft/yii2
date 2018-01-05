@@ -64,12 +64,17 @@ class DbMessageSourceTest extends I18NTest
         }
 
         ob_start();
-        $result = Yii::$app->runAction(Yii::$app->getRequest(), $route, $params);
-        echo 'Result is ' . $result;
-        if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
+        try {
+            $response = Yii::$app->runAction(Yii::$app->getRequest(), $route, $params);
+            echo 'Result is ' . $response->exitStatus;
+            if ($response->exitStatus !== \yii\console\ExitCode::OK) {
+                ob_end_flush();
+            } else {
+                ob_end_clean();
+            }
+        } catch (\Exception $e) {
+            echo 'Error: ' . $e->getMessage();
             ob_end_flush();
-        } else {
-            ob_end_clean();
         }
     }
 
