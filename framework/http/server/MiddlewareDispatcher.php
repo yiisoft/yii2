@@ -12,8 +12,9 @@ use yii\base\Component;
 use yii\base\MiddlewareDispatcherInterface;
 
 /**
- * MiddlewareDispatcher
+ * MiddlewareDispatcher handlers the middleware defined by PSR-15 'HTTP Server Request Handlers'.
  *
+ * @see https://github.com/php-fig/fig-standards/tree/master/proposed/http-handlers
  * @see \Interop\Http\Server\MiddlewareInterface
  * @see \Interop\Http\Server\RequestHandlerInterface
  *

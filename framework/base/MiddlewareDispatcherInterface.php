@@ -8,7 +8,11 @@
 namespace yii\base;
 
 /**
- * MiddlewareDispatcherInterface
+ * MiddlewareDispatcherInterface defines the application component, which should handle middleware processing.
+ * This component handles multiple middleware composed into a stack.
+ * 
+ * @see MiddlewareDispatcher
+ * @see \yii\http\server\MiddlewareDispatcher
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0

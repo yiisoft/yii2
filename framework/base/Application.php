@@ -682,6 +682,7 @@ abstract class Application extends Module
             'assetManager' => ['class' => \yii\web\AssetManager::class],
             'urlManager' => ['class' => \yii\web\UrlManager::class],
             'view' => ['class' => \yii\web\View::class],
+            'middlewareDispatcher' => ['class' => MiddlewareDispatcher::class],
         ];
     }
 
