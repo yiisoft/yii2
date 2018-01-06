@@ -45,7 +45,8 @@ class ArrayParser
     private function parseArray($value, &$i = 0)
     {
         $result = [];
-        for(++$i; $i < strlen($value); ++$i) {
+        $len = strlen($value);
+        for (++$i; $i < $len; ++$i) {
             switch ($value[$i]) {
                 case '{':
                     $result[] = $this->parseArray($value, $i);
@@ -80,7 +81,8 @@ class ArrayParser
         $isQuoted = $value[$i] === '"';
         $stringEndChars = $isQuoted ? ['"'] : [$this->delimiter, '}'];
         $result = '';
-        for ($i += $isQuoted ? 1 : 0; $i < strlen($value); ++$i) {
+        $len = strlen($value);
+        for ($i += $isQuoted ? 1 : 0; $i < $len; ++$i) {
             if (in_array($value[$i], ['\\', '"'], true) && in_array($value[$i + 1], [$value[$i], '"'], true)) {
                 ++$i;
             } elseif (in_array($value[$i], $stringEndChars, true)) {

@@ -31,6 +31,7 @@ class ArrayParserTest extends TestCase
             ['{boo,",",,test', ['boo', ',', null, 'test']],
             ['{"string1","str\\\\in\\"g2","str,ing3"}', ['string1','str\\in"g2','str,ing3']],
             ['{{1,2,3},{4,5,6},{7,8,9}}', [['1','2','3'], ['4','5','6'], ['7','8','9']]],
+            ['{utf8€,👍}', ['utf8€', '👍']],
         ];
     }
 
