@@ -59,7 +59,10 @@ class ColumnSchema extends \yii\db\ColumnSchema
     }
 
     /**
-     * TODO: phpdoc
+     * Casts $value after retrieving from the DBMS to PHP representation.
+     *
+     * @param string|null $value
+     * @return bool|mixed|null
      */
     protected function phpTypecastValue($value)
     {
@@ -86,7 +89,8 @@ class ColumnSchema extends \yii\db\ColumnSchema
     }
 
     /**
-     * TODO: phpdoc
+     * Creates instance of ArrayParser
+     *
      * @return ArrayParser
      */
     protected function getArrayParser()
