@@ -105,6 +105,7 @@ class MigrateController extends BaseMigrateController
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
         'create_junction' => '@yii/views/createTableMigration.php',
+        'alter_column' => '@yii/views/alterColumnMigration.php',
     ];
     /**
      * @var bool indicates whether the table names generated should consider
@@ -126,6 +127,16 @@ class MigrateController extends BaseMigrateController
      * @since 2.0.7
      */
     public $fields = [];
+	/**
+     * @var array column definition strings used for creating the down migration code when altering a column.
+     *
+     * The format of each definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. Delimiter is `,`.
+     * For example, `--fields="name:string(12):notNull:unique"`
+     * produces a string column of size 12 which is not null and unique values.
+     *
+     * @since 2.0.??
+     */
+    public $oldFields = [];
     /**
      * @var Connection|array|string the DB connection object or the application component ID of the DB connection to use
      * when applying migrations. Starting from version 2.0.3, this can also be a configuration array
@@ -143,7 +154,7 @@ class MigrateController extends BaseMigrateController
             parent::options($actionID),
             ['migrationTable', 'db'], // global for all actions
             $actionID === 'create'
-                ? ['templateFile', 'fields', 'useTablePrefix']
+                ? ['templateFile', 'fields', 'useTablePrefix', 'oldFields']
                 : []
         );
     }
@@ -345,9 +356,10 @@ class MigrateController extends BaseMigrateController
      */
     protected function generateMigrationSourceCode($params)
     {
-        $parsedFields = $this->parseFields();
+        $parsedFields = $this->parseFields($this->fields);
         $fields = $parsedFields['fields'];
         $foreignKeys = $parsedFields['foreignKeys'];
+        $oldFields = [];
 
         $name = $params['name'];
 
@@ -398,6 +410,14 @@ class MigrateController extends BaseMigrateController
             $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['drop_table'];
             $table = $matches[1];
+        } elseif (preg_match('/^alter_(.+)_columns?_of_(.+)_table$/', $name, $matches)) {
+            $templateFile = $this->generatorTemplateFiles['alter_column'];
+            $table = $matches[2];
+			if (count($this->oldFields) == 1 && $this->oldFields[0] == 'from-db') {
+				$oldFields = $this->getOldFieldsFromDatabase($table, $fields);
+			} else {
+				$oldFields = $this->parseOldFields();
+			}
         }
 
         foreach ($foreignKeys as $column => $foreignKey) {
@@ -436,6 +456,7 @@ class MigrateController extends BaseMigrateController
         return $this->renderFile(Yii::getAlias($templateFile), array_merge($params, [
             'table' => $this->generateTableName($table),
             'fields' => $fields,
+            'oldFields' => $oldFields,
             'foreignKeys' => $foreignKeys,
         ]));
     }
@@ -459,6 +480,8 @@ class MigrateController extends BaseMigrateController
 
     /**
      * Parse the command line migration fields.
+     * @param array $sourceFields either $this->fields or $this->oldFields
+     *
      * @return array parse result with following fields:
      *
      * - fields: array, parsed fields
@@ -466,12 +489,12 @@ class MigrateController extends BaseMigrateController
      *
      * @since 2.0.7
      */
-    protected function parseFields()
+    protected function parseFields($sourceFields)
     {
         $fields = [];
         $foreignKeys = [];
 
-        foreach ($this->fields as $index => $field) {
+        foreach ($sourceFields as $index => $field) {
             $chunks = preg_split('/\s?:\s?/', $field, null);
             $property = array_shift($chunks);
 
@@ -507,6 +530,78 @@ class MigrateController extends BaseMigrateController
         ];
     }
 
+    /**
+     * Reads from the db schema the field definitions that will be altered
+     * 
+     * @param string $table the table name for the migration
+     * @param array $newFields the fields we want the definitions for
+     *
+     * @throws \InvalidArgumentException
+     * @return array the fields definitions from the db schema
+     */
+    protected function getOldFieldsFromDatabase($table, $newfields)
+    {
+		try {
+			$this->db = Instance::ensure($this->db, Connection::className());
+			$tableSchema = $this->db->getTableSchema($table);
+			if ($tableSchema !== null) {
+				$ret = [];
+				foreach ($newfields as $newfield) {
+					$column = $tableSchema->getColumn($newfield['property']);
+					if ($column == null) {
+						throw new \InvalidArgumentException($newfield['property'] . " column not found in schema of table $table");
+					} else {
+						$ret[] = [
+							'property' => $newfield['property'],
+							'decorators' => $this->genDecorators($column)
+						];
+					}
+				}
+				return $ret;
+			} else {
+				throw new \InvalidArgumentException("$table not found in database schema");
+			}
+		} catch (\ReflectionException $e) {
+			$this->stdout("Cannot initialize database component to try reading old table definitions\n", Console::FG_YELLOW);
+			throw $e;
+		}
+    }
+    
+    /**
+     * Generates decorators from a column schema
+     * @param yii\db\ColumnSchema $column
+     * 
+     * @todo What to do with primarykey and autoincrement?
+     */
+    protected function genDecorators($column)
+    {
+		$decorators = $column->dbType . "(";
+		if ($column->size != 0 ) {
+			$decorators .= intval($column->size);
+			if ($column->precision != 0) {
+				$decorators .= intval($column->precision);
+			} elseif ($column->scale != 0) {
+				$decorators .= intval($column->scale);
+			}
+		}
+		$decorators .= ")";
+		if ($column->allowNull) {
+			$decorators .= "->null()";
+		} else {
+			$decorators .= "->notNull()";
+		}
+		if ($column->unsigned) {
+			$decorators .= "->unsigned()";
+		}
+		if ($column->defaultValue != '') {
+			$decorators .= "->defaultValue('" . $column->defaultValue . "')";
+		}
+		if ($column->comment != '') {
+			$decorators .= "->comment('" . $column->comment . "')";
+		}
+		return $decorators;
+    }
+    
     /**
      * Adds default primary key to fields list if there's no primary key specified.
      * @param array $fields parsed fields
