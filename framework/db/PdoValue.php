@@ -39,11 +39,17 @@ class PdoValue implements ExpressionInterface
         $this->type = $type;
     }
 
+    /**
+     * @return mixed
+     */
     public function getValue()
     {
         return $this->value;
     }
 
+    /**
+     * @return int
+     */
     public function getType()
     {
         return $this->type;

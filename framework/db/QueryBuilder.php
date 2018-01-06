@@ -1626,9 +1626,11 @@ class QueryBuilder extends \yii\base\BaseObject
 
         if ($value === null) {
             return "$column $operator NULL";
-        } elseif ($value instanceof ExpressionInterface) {
+        }
+        if ($value instanceof ExpressionInterface) {
             return "$column $operator {$this->buildExpression($value, $params)}";
-        } elseif ($value instanceof Query) {
+        }
+        if ($value instanceof Query) {
             list($sql, $params) = $this->build($value, $params);
             return "$column $operator ($sql)";
         }

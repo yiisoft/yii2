@@ -3,10 +3,11 @@
 namespace yii\db\pgsql;
 
 /**
- * TODO: phpdoc, tests
+ * The class converts PostgreSQL array representation to PHP array
  *
  * @author Sergei Tigrov <rrr-r@ya.ru>
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
+ * @since 2.0.14
  */
 class ArrayParser
 {
@@ -23,7 +24,7 @@ class ArrayParser
      */
     public function parse($value)
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return null;
         }
 
@@ -34,6 +35,13 @@ class ArrayParser
         return $this->parseArray($value);
     }
 
+    /**
+     * Pares PgSQL array encoded in string
+     *
+     * @param string $value
+     * @param int $i parse starting position
+     * @return array
+     */
     private function parseArray($value, &$i = 0)
     {
         $result = [];
@@ -48,7 +56,7 @@ class ArrayParser
                     if (empty($result)) { // `{}` case
                         $result[] = null;
                     }
-                    if (in_array($value[$i + 1], [$this->delimiter, '}'])) { // `{,}` case
+                    if (in_array($value[$i + 1], [$this->delimiter, '}'], true)) { // `{,}` case
                         $result[] = null;
                     }
                     break;
@@ -60,6 +68,13 @@ class ArrayParser
         return $result;
     }
 
+    /**
+     * Parses PgSQL encoded string
+     *
+     * @param string $value
+     * @param int $i parse starting position
+     * @return null|string
+     */
     private function parseString($value, &$i)
     {
         $isQuoted = $value[$i] === '"';
@@ -68,7 +83,7 @@ class ArrayParser
         for ($i += $isQuoted ? 1 : 0; $i < strlen($value); ++$i) {
             if (in_array($value[$i], ['\\', '"'], true) && in_array($value[$i + 1], [$value[$i], '"'], true)) {
                 ++$i;
-            } elseif (in_array($value[$i], $stringEndChars)) {
+            } elseif (in_array($value[$i], $stringEndChars, true)) {
                 break;
             }
 

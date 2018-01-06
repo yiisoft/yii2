@@ -5,7 +5,7 @@ namespace yii\db;
 /**
  * Class ArrayExpression represents an array SQL expression.
  *
- * Expressions of this type can be used for example in conditions, like:
+ * Expressions of this type can be used in conditions like:
  *
  * ```php
  * $query->andWhere(['@>', 'items', new ArrayExpression([1, 2, 3], 'integer')])
@@ -33,7 +33,7 @@ class ArrayExpression implements ExpressionInterface
      */
     protected $value;
     /**
-     * @var int
+     * @var int the number of indices needed to select an element
      */
     private $dimension;
 
@@ -45,7 +45,7 @@ class ArrayExpression implements ExpressionInterface
      * @param string|null $type the type of the array elements. Defaults to `null` which means the type is
      * not explicitly specified. In case when type is not specified explicitly and DBMS can not guess it from the context,
      * SQL error will be raised.
-     * @param int $dimension
+     * @param int $dimension the number of indices needed to select an element
      */
     public function __construct($value, $type = null, $dimension = 1)
     {
@@ -73,7 +73,7 @@ class ArrayExpression implements ExpressionInterface
     }
 
     /**
-     * @return int
+     * @return int the number of indices needed to select an element
      * @see dimensions
      */
     public function getDimension()

@@ -11,7 +11,6 @@ use yii\db\Query;
 
 /**
  * Class ArrayExpressionBuilder builds [[ArrayExpression]] for PostgreSQL DBMS.
- * TODO: tests
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
