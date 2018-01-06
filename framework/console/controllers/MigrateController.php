@@ -416,7 +416,7 @@ class MigrateController extends BaseMigrateController
 			if (count($this->oldFields) == 1 && $this->oldFields[0] == 'from-db') {
 				$oldFields = $this->getOldFieldsFromDatabase($table, $fields);
 			} else {
-				$oldFields = $this->parseOldFields();
+				$oldFields = $this->parseFields($this->oldFields);
 			}
         }
 
@@ -456,7 +456,7 @@ class MigrateController extends BaseMigrateController
         return $this->renderFile(Yii::getAlias($templateFile), array_merge($params, [
             'table' => $this->generateTableName($table),
             'fields' => $fields,
-            'oldFields' => $oldFields,
+            'oldFields' => $oldFields['fields'],
             'foreignKeys' => $foreignKeys,
         ]));
     }
