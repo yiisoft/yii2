@@ -7,35 +7,57 @@
 
 namespace yiiunit\framework\widgets;
 
-use yii\data\ArrayDataProvider;
-use yii\widgets\ListView;
+use Yii;
+use yii\base\ExitException;
 use yii\widgets\Pjax;
 use yiiunit\TestCase;
 
 class PjaxTest extends TestCase
 {
-    public function testGeneratedIdByPjaxWidget()
+    public function testInitWithPjax()
     {
-        ListView::$counter = 0;
-        Pjax::$counter = 0;
-        $nonPjaxWidget1 = new ListView(['dataProvider' => new ArrayDataProvider()]);
-        ob_start();
-        $pjax1 = new Pjax();
-        ob_end_clean();
-        $nonPjaxWidget2 = new ListView(['dataProvider' => new ArrayDataProvider()]);
-        ob_start();
-        $pjax2 = new Pjax();
-        ob_end_clean();
-
-        $this->assertEquals('w0', $nonPjaxWidget1->options['id']);
-        $this->assertEquals('w1', $nonPjaxWidget2->options['id']);
-        $this->assertEquals('p0', $pjax1->options['id']);
-        $this->assertEquals('p1', $pjax2->options['id']);
+        $this->mockWebApplication();
+        $request = Yii::$app->getRequest();
+        $request->addHeader('X-Pjax', 1);
+        $request->addHeader('X-Pjax-Container', '#p0');
+        $request->url = '/test';
+        new Pjax();
+        $result = '<![CDATA[YII-BLOCK-HEAD]]><![CDATA[YII-BLOCK-BODY-BEGIN]]>';
+        /*
+        * Unfortunately I have to do this twice to avoid php unit message like
+        * 'Test code or tested code did not (only) close its own output buffers'
+        */
+        ob_end_flush();
+        ob_end_flush();
+        $this->expectOutputString($result);
     }
 
-    protected function setUp()
+
+    public function testRunWithPjax()
     {
-        parent::setUp();
         $this->mockWebApplication();
+        $request = Yii::$app->getRequest();
+        $request->addHeader('X-Pjax', 1);
+        $request->addHeader('X-Pjax-Container', '#p1');
+        $request->url = '/test';
+        $result = '<![CDATA[YII-BLOCK-HEAD]]><![CDATA[YII-BLOCK-BODY-BEGIN]]>';
+        $this->expectOutputString($result);
+        $this->expectException(ExitException::class);// But why exception? I want to check output here!
+        $pjax = new Pjax();
+        $pjax->run();
+    }
+
+    public function testNonPjaxRequest()
+    {
+        $this->mockWebApplication();
+        $pjax = new Pjax();
+        $result = sprintf(
+            '<div id="%s" data-pjax-container="%s" data-pjax-push-state data-pjax-timeout="%d"></div>',
+            $pjax->getId(),
+            '',
+            $pjax->timeout
+        );
+        $this->expectOutputString($result);
+        $pjax->run();
     }
 }
