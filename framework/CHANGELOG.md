@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.14 under development
 ------------------------
-
+- Enh #14919: Dots aren’t allowed in PHP cookie names (vladis84)
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
 - Bug #14157: Add support for loading default value `CURRENT_TIMESTAMP` of MySQL `datetime` field (rossoneri)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)

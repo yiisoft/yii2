@@ -11,6 +11,7 @@ namespace yii\web;
  * Cookie represents information related with a cookie, such as [[name]], [[value]], [[domain]], etc.
  *
  * For more details and usage information on Cookie, see the [guide article on handling cookies](guide:runtime-sessions-cookies).
+ * @property string $name name of the cookie
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -20,7 +21,7 @@ class Cookie extends \yii\base\BaseObject
     /**
      * @var string name of the cookie
      */
-    public $name;
+    private $_name;
     /**
      * @var string value of the cookie
      */
@@ -64,5 +65,19 @@ class Cookie extends \yii\base\BaseObject
     public function __toString()
     {
         return (string) $this->value;
+    }
+
+    function getName()
+    {
+        return $this->_name;
+    }
+
+    function setName($name)
+    {
+        if (strpos($name, '.') !== false) {
+            throw new \yii\base\InvalidParamException('Dots Aren’t Allowed In PHP Cookie Names.');
+        }
+
+        $this->_name = $name;
     }
 }
