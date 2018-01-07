@@ -23,7 +23,7 @@ yii.validation = (function ($) {
         required: function (value, messages, options) {
             var valid = false;
             if (options.requiredValue === undefined) {
-                if(isRequiredValueEmpty(options, value)) {
+                if (isRequiredValueEmpty(options, value)) {
                     valid = true;
                 }
             } else {
