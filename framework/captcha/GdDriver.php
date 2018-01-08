@@ -24,7 +24,6 @@ class GdDriver extends Driver
     {
         parent::init();
 
-        // Additional brackets for fix possible bug with operator precedence
         if (!extension_loaded('gd') || (($gdInfo = gd_info()) && empty($gdInfo['FreeType Support']))) {
             throw new InvalidConfigException('GD PHP extension with FreeType support is required.');
         }
