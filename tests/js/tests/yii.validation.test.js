@@ -123,6 +123,7 @@ describe('yii.validation', function () {
         withData({
             'empty string': ['', {}, false],
             'empty string, strict mode': ['', {strict: true}, true],
+            'empty string with not parameter': ['', {not: true}, true],
             'string containing whitespace': [' ', {}, false],
             'string containing whitespace, strict mode': [' ', {strict: true}, true],
             'non-empty string': ['a', {}, true],
@@ -134,6 +135,11 @@ describe('yii.validation', function () {
             'string and required value set to integer with the same value, strict mode': [
                 '1',
                 {requiredValue: 1, strict: true},
+                false
+            ],
+            'required value with not mode': [
+                1,
+                {requiredValue: 1, not: true},
                 false
             ],
             'integer and required value set to same integer, strict mode': [
