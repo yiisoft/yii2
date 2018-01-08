@@ -9,6 +9,7 @@ namespace yii\db;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\db\conditions\ConditionInterface;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
@@ -51,7 +52,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @var array map of query condition to builder methods.
      * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
      */
-    protected $conditionBuilders = [
+    protected $conditionBuilders = [ // TODO: TO BE DROPPED
         'NOT' => 'buildNotCondition',
         'AND' => 'buildAndCondition',
         'OR' => 'buildAndCondition',
@@ -65,6 +66,17 @@ class QueryBuilder extends \yii\base\BaseObject
         'OR NOT LIKE' => 'buildLikeCondition',
         'EXISTS' => 'buildExistsCondition',
         'NOT EXISTS' => 'buildExistsCondition',
+    ];
+
+    /**
+     * @var array map of condition aliases to condition classes.
+     * This property is used by [[createConditionFromArray]] method.
+     * In case you want to add custom conditions support, you can use [[setConditionClasses()]] method.
+     */
+    protected $conditionClasses = [
+        'AND' => 'yii\db\conditions\AndCondition',
+        'OR' => 'yii\db\conditions\OrCondition',
+        'NOT' => 'yii\db\conditions\NotCondition',
     ];
 
     /**
@@ -82,7 +94,13 @@ class QueryBuilder extends \yii\base\BaseObject
      * @since 2.0.14
      */
     protected $expressionBuilders = [
-        'yii\db\Expression' => 'yii\db\ExpressionBuilder'
+        'yii\db\PdoValue' => 'yii\db\PdoValueBuilder',
+        'yii\db\Expression' => 'yii\db\ExpressionBuilder',
+        'yii\db\conditions\ConjunctionCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
+        'yii\db\conditions\AndCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
+        'yii\db\conditions\OrCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
+        'yii\db\conditions\NotCondition' => 'yii\db\conditions\NotConditionBuilder',
+        'yii\db\conditions\SimpleCondition' => 'yii\db\conditions\SimpleConditionBuilder',
     ];
 
     /**
@@ -260,9 +278,7 @@ class QueryBuilder extends \yii\base\BaseObject
                     list($sql, $params) = $this->build($value, $params);
                     $placeholders[] = "($sql)";
                 } else {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $placeholders[] = $phName;
-                    $params[$phName] = $value;
+                    $placeholders[] = $this->bindParam($value, $params);
                 }
             }
         }
@@ -406,9 +422,11 @@ class QueryBuilder extends \yii\base\BaseObject
             if ($value instanceof ExpressionInterface) {
                 $lines[] = $this->db->quoteColumnName($name) . '=' . $this->buildExpression($value, $params);
             } else {
-                $phName = self::PARAM_PREFIX . count($params);
+                $phName = $this->bindParam(
+                    isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value,
+                    $params
+                );
                 $lines[] = $this->db->quoteColumnName($name) . '=' . $phName;
-                $params[$phName] = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             }
         }
 
@@ -1236,27 +1254,40 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function buildCondition($condition, &$params)
     {
-        if ($condition instanceof ExpressionInterface) {
-            return $this->buildExpression($condition, $params);
-        } elseif (!is_array($condition)) {
-            return (string) $condition;
-        } elseif (empty($condition)) {
-            return '';
+        if (is_array($condition)) {
+            $condition = $this->normalizeArrayCondition($condition);
         }
 
+        if ($condition instanceof ExpressionInterface) {
+            return $this->buildExpression($condition, $params);
+        }
+        if (empty($condition)) {
+            return '';
+        }
+        return (string) $condition;
+    }
+
+    /**
+     * TODO: docs
+     *
+     * @param array $condition
+     * @return string
+     */
+    protected function createConditionFromArray($condition)
+    {
         if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
-            $operator = strtoupper($condition[0]);
-            if (isset($this->conditionBuilders[$operator])) {
-                $method = $this->conditionBuilders[$operator];
+            $operator = strtoupper(array_shift($condition));
+            if (isset($this->conditionClasses[$operator])) {
+                $className = $this->conditionClasses[$operator];
             } else {
-                $method = 'buildSimpleCondition';
+                $className = 'yii\db\Conditions\SimpleCondition';
             }
-            array_shift($condition);
-            return $this->$method($operator, $condition, $params);
+            /** @var ConditionInterface $className */
+            return $className::fromArrayDefinition($operator, $condition);
         }
 
         // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-        return $this->buildHashCondition($condition, $params);
+        return $this->buildHashCondition($condition, $params); // TODO: REDO
     }
 
     /**
@@ -1281,67 +1312,13 @@ class QueryBuilder extends \yii\base\BaseObject
                 } elseif ($value instanceof ExpressionInterface) {
                     $parts[] = "$column=" . $this->buildExpression($value, $params);
                 } else {
-                    $phName = self::PARAM_PREFIX . count($params);
+                    $phName = $this->bindParam($value, $params);
                     $parts[] = "$column=$phName";
-                    $params[$phName] = $value;
                 }
             }
         }
 
         return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
-    }
-
-    /**
-     * Connects two or more SQL expressions with the `AND` or `OR` operator.
-     * @param string $operator the operator to use for connecting the given operands
-     * @param array $operands the SQL expressions to connect.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     */
-    public function buildAndCondition($operator, $operands, &$params)
-    {
-        $parts = [];
-        foreach ($operands as $operand) {
-            if (is_array($operand)) {
-                $operand = $this->buildCondition($operand, $params);
-            }
-            if ($operand instanceof ExpressionInterface) {
-                $operand = $this->buildExpression($operand, $params);
-            }
-            if ($operand !== '') {
-                $parts[] = $operand;
-            }
-        }
-        if (!empty($parts)) {
-            return '(' . implode(") $operator (", $parts) . ')';
-        }
-
-        return '';
-    }
-
-    /**
-     * Inverts an SQL expressions with `NOT` operator.
-     * @param string $operator the operator to use for connecting the given operands
-     * @param array $operands the SQL expressions to connect.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
-     */
-    public function buildNotCondition($operator, $operands, &$params)
-    {
-        if (count($operands) !== 1) {
-            throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
-        }
-
-        $operand = reset($operands);
-        if (is_array($operand) || $operand instanceof ExpressionInterface) {
-            $operand = $this->buildCondition($operand, $params);
-        }
-        if ($operand === '') {
-            return '';
-        }
-
-        return "$operator ($operand)";
     }
 
     /**
@@ -1367,14 +1344,12 @@ class QueryBuilder extends \yii\base\BaseObject
         if ($value1 instanceof ExpressionInterface) {
             $phName1 = $this->buildExpression($value1, $params);
         } else {
-            $phName1 = self::PARAM_PREFIX . count($params);
-            $params[$phName1] = $value1;
+            $phName1 = $this->bindParam($value1, $params);
         }
         if ($value2 instanceof ExpressionInterface) {
             $phName2 = $this->buildExpression($value2, $params);
         } else {
-            $phName2 = self::PARAM_PREFIX . count($params);
-            $params[$phName2] = $value2;
+            $phName2 = $this->bindParam($value2, $params);
         }
 
         return "$column $operator $phName1 AND $phName2";
@@ -1429,9 +1404,7 @@ class QueryBuilder extends \yii\base\BaseObject
             } elseif ($value instanceof ExpressionInterface) {
                 $sqlValues[$i] = $this->buildExpression($value, $params);
             } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $params[$phName] = $value;
-                $sqlValues[$i] = $phName;
+                $sqlValues[$i] = $this->bindParam($value, $params);
             }
         }
 
@@ -1496,9 +1469,7 @@ class QueryBuilder extends \yii\base\BaseObject
             $vs = [];
             foreach ($columns as $column) {
                 if (isset($value[$column])) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $params[$phName] = $value[$column];
-                    $vs[] = $phName;
+                    $vs[] = $this->bindParam($value[$column], $params);
                 } else {
                     $vs[] = 'NULL';
                 }
@@ -1573,8 +1544,7 @@ class QueryBuilder extends \yii\base\BaseObject
             if ($value instanceof ExpressionInterface) {
                 $phName = $this->buildExpression($value, $params);
             } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
+                $phName = $this->bindParam(empty($escape) ? $value : ('%' . strtr($value, $escape) . '%'), $params);
             }
             $escapeSql = '';
             if ($this->likeEscapeCharacter !== null) {
@@ -1605,42 +1575,6 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Creates an SQL expressions like `"column" operator value`.
-     * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
-     * @param array $operands contains two column names.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
-     */
-    public function buildSimpleCondition($operator, $operands, &$params)
-    {
-        if (count($operands) !== 2) {
-            throw new InvalidParamException("Operator '$operator' requires two operands.");
-        }
-
-        list($column, $value) = $operands;
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-
-        if ($value === null) {
-            return "$column $operator NULL";
-        }
-        if ($value instanceof ExpressionInterface) {
-            return "$column $operator {$this->buildExpression($value, $params)}";
-        }
-        if ($value instanceof Query) {
-            list($sql, $params) = $this->build($value, $params);
-            return "$column $operator ($sql)";
-        }
-
-        $phName = self::PARAM_PREFIX . count($params);
-        $params[$phName] = $value;
-        return "$column $operator $phName";
-    }
-
-    /**
      * Creates a SELECT EXISTS() SQL statement.
      * @param string $rawSql the subquery in a raw form to select from.
      * @return string the SELECT EXISTS() SQL statement.
@@ -1649,5 +1583,22 @@ class QueryBuilder extends \yii\base\BaseObject
     public function selectExists($rawSql)
     {
         return 'SELECT EXISTS(' . $rawSql . ')';
+    }
+
+    /**
+     * Helper method to add $value to $params array using [[PARAM_PREFIX]].
+     *
+     * @param string|null $value
+     * @param array $params passed by reference
+     * @return string the placeholder name in $params array
+     *
+     * @since 2.0.14
+     */
+    public function bindParam($value, &$params)
+    {
+        $phName = self::PARAM_PREFIX . count($params);
+        $params[$phName] = $value;
+
+        return $phName;
     }
 }

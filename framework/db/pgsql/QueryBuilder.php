@@ -104,7 +104,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         'yii\db\Expression' => 'yii\db\ExpressionBuilder',
         'yii\db\ArrayExpression' => 'yii\db\pgsql\ArrayExpressionBuilder',
         'yii\db\JsonExpression' => 'yii\db\pgsql\JsonExpressionBuilder',
-        'yii\db\PdoValue' => 'yii\db\FakeExpressionBuilder',
+        'yii\db\PdoValue' => 'yii\db\PdoValueBuilder',
     ];
 
     /**

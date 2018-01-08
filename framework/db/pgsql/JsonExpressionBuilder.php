@@ -19,8 +19,6 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
 
-    const PARAM_PREFIX = ':qp';
-
     /**
      * {@inheritdoc}
      * @param JsonExpression|ExpressionInterface $expression the expression to be built
@@ -34,8 +32,7 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
             return "($sql)" . $this->getTypecast($expression);
         }
 
-        $placeholder = static::PARAM_PREFIX . count($params);
-        $params[$placeholder] = Json::encode($value);
+        $placeholder = $this->queryBuilder->bindParam(Json::encode($value), $params);
 
         return $placeholder . $this->getTypecast($expression);
     }

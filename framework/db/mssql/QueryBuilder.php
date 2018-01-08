@@ -355,8 +355,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $vs = [];
             foreach ($columns as $i => $column) {
                 if (isset($value[$column])) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $params[$phName] = $value[$column];
+                    $phName = $this->bindParam($value[$column], $params);
                     $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
                 } else {
                     $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
@@ -390,8 +389,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             foreach ($columns as $name => $value) {
                 // @see https://github.com/yiisoft/yii2/issues/12599
                 if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && is_string($value)) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", [$phName => $value]);
+                    $exParams = [];
+                    $phName = $this->bindParam($value, $exParams);
+                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", $exParams);
                 }
             }
         }

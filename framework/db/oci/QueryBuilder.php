@@ -207,9 +207,10 @@ EOD;
                     list($sql, $params) = $this->build($value, $params);
                     $placeholders[] = "($sql)";
                 } else {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $placeholders[] = $phName;
-                    $params[$phName] = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                    $placeholders[] = $this->bindParam(
+                        isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value,
+                        $params
+                    );
                 }
             }
             if (empty($names) && $tableSchema !== null) {

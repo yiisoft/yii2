@@ -451,8 +451,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $vs = [];
             foreach ($columns as $i => $column) {
                 if (isset($value[$column])) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $params[$phName] = $value[$column];
+                    $phName = $this->bindParam($value[$column], $params);
                     $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
                 } else {
                     $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';

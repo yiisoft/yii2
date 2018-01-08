@@ -19,8 +19,6 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
 
-    const PARAM_PREFIX = ':qp';
-
     /**
      * {@inheritdoc}
      * @param ArrayExpression|ExpressionInterface $expression the expression to be built
@@ -58,8 +56,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
                         continue;
                     }
 
-                    $placeholders[] = $placeholder = static::PARAM_PREFIX . count($params);
-                    $params[$placeholder] = $item;
+                    $placeholders[] = $this->queryBuilder->bindParam($item, $params);
                 }
             }
         }
