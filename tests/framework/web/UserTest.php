@@ -19,6 +19,8 @@ function time()
 namespace yiiunit\framework\web;
 
 use Yii;
+use yii\base\BaseObject;
+use yii\rbac\CheckAccessInterface;
 use yii\rbac\PhpManager;
 use yii\web\Cookie;
 use yii\web\CookieCollection;
@@ -347,6 +349,22 @@ class UserTest extends TestCase
         $this->expectException('yii\\web\\ForbiddenHttpException');
         Yii::$app->user->loginRequired();
     }
+
+    public function testAccessChecker()
+    {
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                    'accessChecker' => AccessChecker::className()
+                ]
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+        $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
+    }
+
 }
 
 static $cookiesMock;
@@ -368,5 +386,14 @@ class MockResponse extends \yii\web\Response
         global $cookiesMock;
 
         return $cookiesMock;
+    }
+}
+
+class AccessChecker extends BaseObject implements CheckAccessInterface
+{
+
+    public function checkAccess($userId, $permissionName, $params = [])
+    {
+        // Implement checkAccess() method.
     }
 }
