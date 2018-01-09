@@ -10,6 +10,7 @@ namespace yii\db;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\conditions\ConditionInterface;
+use yii\db\conditions\HashCondition;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
@@ -72,11 +73,22 @@ class QueryBuilder extends \yii\base\BaseObject
      * @var array map of condition aliases to condition classes.
      * This property is used by [[createConditionFromArray]] method.
      * In case you want to add custom conditions support, you can use [[setConditionClasses()]] method.
+     * @since 2.0.14
      */
     protected $conditionClasses = [
+        'NOT' => 'yii\db\conditions\NotCondition',
         'AND' => 'yii\db\conditions\AndCondition',
         'OR' => 'yii\db\conditions\OrCondition',
-        'NOT' => 'yii\db\conditions\NotCondition',
+        'BETWEEN' => 'yii\db\conditions\BetweenCondition',
+        'NOT BETWEEN' => 'yii\db\conditions\BetweenCondition',
+        'IN' => 'yii\db\conditions\InCondition',
+        'NOT IN' => 'yii\db\conditions\InCondition',
+        'LIKE' => 'yii\db\conditions\LikeCondition',
+        'NOT LIKE' => 'yii\db\conditions\LikeCondition',
+        'OR LIKE' => 'yii\db\conditions\LikeCondition',
+        'OR NOT LIKE' => 'yii\db\conditions\LikeCondition',
+        'EXISTS' => 'yii\db\conditions\ExistsCondition',
+        'NOT EXISTS' => 'yii\db\conditions\ExistsCondition',
     ];
 
     /**
@@ -97,29 +109,16 @@ class QueryBuilder extends \yii\base\BaseObject
         'yii\db\PdoValue' => 'yii\db\PdoValueBuilder',
         'yii\db\Expression' => 'yii\db\ExpressionBuilder',
         'yii\db\conditions\ConjunctionCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
+        'yii\db\conditions\NotCondition' => 'yii\db\conditions\NotConditionBuilder',
         'yii\db\conditions\AndCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
         'yii\db\conditions\OrCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-        'yii\db\conditions\NotCondition' => 'yii\db\conditions\NotConditionBuilder',
+        'yii\db\conditions\BetweenCondition' => 'yii\db\conditions\BetweenConditionBuilder',
+        'yii\db\conditions\InCondition' => 'yii\db\conditions\InConditionBuilder',
+        'yii\db\conditions\LikeCondition' => 'yii\db\conditions\LikeConditionBuilder',
+        'yii\db\conditions\ExistsCondition' => 'yii\db\conditions\ExistsConditionBuilder',
         'yii\db\conditions\SimpleCondition' => 'yii\db\conditions\SimpleConditionBuilder',
+        'yii\db\conditions\HashCondition' => 'yii\db\conditions\HashConditionBuilder',
     ];
-
-    /**
-     * @var array map of chars to their replacements in LIKE conditions.
-     * By default it's configured to escape `%`, `_` and `\` with `\`.
-     * @since 2.0.12.
-     */
-    protected $likeEscapingReplacements = [
-        '%' => '\%',
-        '_' => '\_',
-        '\\' => '\\\\',
-    ];
-    /**
-     * @var string|null character used to escape special characters in LIKE conditions.
-     * By default it's assumed to be `\`.
-     * @since 2.0.12
-     */
-    protected $likeEscapeCharacter;
-
 
     /**
      * Constructor.
@@ -1255,7 +1254,7 @@ class QueryBuilder extends \yii\base\BaseObject
     public function buildCondition($condition, &$params)
     {
         if (is_array($condition)) {
-            $condition = $this->normalizeArrayCondition($condition);
+            $condition = $this->createConditionFromArray($condition, $params);
         }
 
         if ($condition instanceof ExpressionInterface) {
@@ -1272,306 +1271,23 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param array $condition
      * @return string
+     * @since 2.0.14
      */
-    protected function createConditionFromArray($condition)
+    protected function createConditionFromArray($condition, &$params)
     {
         if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
             $operator = strtoupper(array_shift($condition));
             if (isset($this->conditionClasses[$operator])) {
                 $className = $this->conditionClasses[$operator];
             } else {
-                $className = 'yii\db\Conditions\SimpleCondition';
+                $className = 'yii\db\conditions\SimpleCondition';
             }
             /** @var ConditionInterface $className */
             return $className::fromArrayDefinition($operator, $condition);
         }
 
         // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-        return $this->buildHashCondition($condition, $params); // TODO: REDO
-    }
-
-    /**
-     * Creates a condition based on column-value pairs.
-     * @param array $condition the condition specification.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     */
-    public function buildHashCondition($condition, &$params)
-    {
-        $parts = [];
-        foreach ($condition as $column => $value) {
-            if (ArrayHelper::isTraversable($value) || $value instanceof Query) {
-                // IN condition
-                $parts[] = $this->buildInCondition('IN', [$column, $value], $params);
-            } else {
-                if (strpos($column, '(') === false) {
-                    $column = $this->db->quoteColumnName($column);
-                }
-                if ($value === null) {
-                    $parts[] = "$column IS NULL";
-                } elseif ($value instanceof ExpressionInterface) {
-                    $parts[] = "$column=" . $this->buildExpression($value, $params);
-                } else {
-                    $phName = $this->bindParam($value, $params);
-                    $parts[] = "$column=$phName";
-                }
-            }
-        }
-
-        return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
-    }
-
-    /**
-     * Creates an SQL expressions with the `BETWEEN` operator.
-     * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
-     * @param array $operands the first operand is the column name. The second and third operands
-     * describe the interval that column value should be in.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
-     */
-    public function buildBetweenCondition($operator, $operands, &$params)
-    {
-        if (!isset($operands[0], $operands[1], $operands[2])) {
-            throw new InvalidParamException("Operator '$operator' requires three operands.");
-        }
-
-        list($column, $value1, $value2) = $operands;
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-        if ($value1 instanceof ExpressionInterface) {
-            $phName1 = $this->buildExpression($value1, $params);
-        } else {
-            $phName1 = $this->bindParam($value1, $params);
-        }
-        if ($value2 instanceof ExpressionInterface) {
-            $phName2 = $this->buildExpression($value2, $params);
-        } else {
-            $phName2 = $this->bindParam($value2, $params);
-        }
-
-        return "$column $operator $phName1 AND $phName2";
-    }
-
-    /**
-     * Creates an SQL expressions with the `IN` operator.
-     * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
-     * @param array $operands the first operand is the column name. If it is an array
-     * a composite IN condition will be generated.
-     * The second operand is an array of values that column value should be among.
-     * If it is an empty array the generated expression will be a `false` value if
-     * operator is `IN` and empty if operator is `NOT IN`.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws Exception if wrong number of operands have been given.
-     */
-    public function buildInCondition($operator, $operands, &$params)
-    {
-        if (!isset($operands[0], $operands[1])) {
-            throw new Exception("Operator '$operator' requires two operands.");
-        }
-
-        list($column, $values) = $operands;
-
-        if ($column === []) {
-            // no columns to test against
-            return $operator === 'IN' ? '0=1' : '';
-        }
-
-        if ($values instanceof Query) {
-            return $this->buildSubqueryInCondition($operator, $column, $values, $params);
-        }
-        if (!is_array($values) && !$values instanceof \Traversable) {
-            // ensure values is an array
-            $values = (array) $values;
-        }
-
-        if ($column instanceof \Traversable || ((is_array($column) || $column instanceof \Countable) && count($column) > 1)) {
-            return $this->buildCompositeInCondition($operator, $column, $values, $params);
-        } elseif (is_array($column)) {
-            $column = reset($column);
-        }
-
-        $sqlValues = [];
-        foreach ($values as $i => $value) {
-            if (is_array($value) || $value instanceof \ArrayAccess) {
-                $value = isset($value[$column]) ? $value[$column] : null;
-            }
-            if ($value === null) {
-                $sqlValues[$i] = 'NULL';
-            } elseif ($value instanceof ExpressionInterface) {
-                $sqlValues[$i] = $this->buildExpression($value, $params);
-            } else {
-                $sqlValues[$i] = $this->bindParam($value, $params);
-            }
-        }
-
-        if (empty($sqlValues)) {
-            return $operator === 'IN' ? '0=1' : '';
-        }
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-
-        if (count($sqlValues) > 1) {
-            return "$column $operator (" . implode(', ', $sqlValues) . ')';
-        }
-
-        $operator = $operator === 'IN' ? '=' : '<>';
-        return $column . $operator . reset($sqlValues);
-    }
-
-    /**
-     * Builds SQL for IN condition.
-     *
-     * @param string $operator
-     * @param array $columns
-     * @param Query $values
-     * @param array $params
-     * @return string SQL
-     */
-    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
-    {
-        list($sql, $params) = $this->build($values, $params);
-        if (is_array($columns)) {
-            foreach ($columns as $i => $col) {
-                if (strpos($col, '(') === false) {
-                    $columns[$i] = $this->db->quoteColumnName($col);
-                }
-            }
-
-            return '(' . implode(', ', $columns) . ") $operator ($sql)";
-        }
-
-        if (strpos($columns, '(') === false) {
-            $columns = $this->db->quoteColumnName($columns);
-        }
-
-        return "$columns $operator ($sql)";
-    }
-
-    /**
-     * Builds SQL for IN condition.
-     *
-     * @param string $operator
-     * @param array|\Traversable $columns
-     * @param array $values
-     * @param array $params
-     * @return string SQL
-     */
-    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
-    {
-        $vss = [];
-        foreach ($values as $value) {
-            $vs = [];
-            foreach ($columns as $column) {
-                if (isset($value[$column])) {
-                    $vs[] = $this->bindParam($value[$column], $params);
-                } else {
-                    $vs[] = 'NULL';
-                }
-            }
-            $vss[] = '(' . implode(', ', $vs) . ')';
-        }
-
-        if (empty($vss)) {
-            return $operator === 'IN' ? '0=1' : '';
-        }
-
-        $sqlColumns = [];
-        foreach ($columns as $i => $column) {
-            $sqlColumns[] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
-        }
-
-        return '(' . implode(', ', $sqlColumns) . ") $operator (" . implode(', ', $vss) . ')';
-    }
-
-    /**
-     * Creates an SQL expressions with the `LIKE` operator.
-     * @param string $operator the operator to use (e.g. `LIKE`, `NOT LIKE`, `OR LIKE` or `OR NOT LIKE`)
-     * @param array $operands an array of two or three operands
-     *
-     * - The first operand is the column name.
-     * - The second operand is a single value or an array of values that column value
-     *   should be compared with. If it is an empty array the generated expression will
-     *   be a `false` value if operator is `LIKE` or `OR LIKE`, and empty if operator
-     *   is `NOT LIKE` or `OR NOT LIKE`.
-     * - An optional third operand can also be provided to specify how to escape special characters
-     *   in the value(s). The operand should be an array of mappings from the special characters to their
-     *   escaped counterparts. If this operand is not provided, a default escape mapping will be used.
-     *   You may use `false` or an empty array to indicate the values are already escaped and no escape
-     *   should be applied. Note that when using an escape mapping (or the third operand is not provided),
-     *   the values will be automatically enclosed within a pair of percentage characters.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
-     */
-    public function buildLikeCondition($operator, $operands, &$params)
-    {
-        if (!isset($operands[0], $operands[1])) {
-            throw new InvalidParamException("Operator '$operator' requires two operands.");
-        }
-
-        $escape = isset($operands[2]) ? $operands[2] : $this->likeEscapingReplacements;
-        unset($operands[2]);
-
-        if (!preg_match('/^(AND |OR |)(((NOT |))I?LIKE)/', $operator, $matches)) {
-            throw new InvalidParamException("Invalid operator '$operator'.");
-        }
-        $andor = ' ' . (!empty($matches[1]) ? $matches[1] : 'AND ');
-        $not = !empty($matches[3]);
-        $operator = $matches[2];
-
-        list($column, $values) = $operands;
-
-        if (!is_array($values)) {
-            $values = [$values];
-        }
-
-        if (empty($values)) {
-            return $not ? '' : '0=1';
-        }
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-
-        $parts = [];
-        foreach ($values as $value) {
-            if ($value instanceof ExpressionInterface) {
-                $phName = $this->buildExpression($value, $params);
-            } else {
-                $phName = $this->bindParam(empty($escape) ? $value : ('%' . strtr($value, $escape) . '%'), $params);
-            }
-            $escapeSql = '';
-            if ($this->likeEscapeCharacter !== null) {
-                $escapeSql = " ESCAPE '{$this->likeEscapeCharacter}'";
-            }
-            $parts[] = "{$column} {$operator} {$phName}{$escapeSql}";
-        }
-
-        return implode($andor, $parts);
-    }
-
-    /**
-     * Creates an SQL expressions with the `EXISTS` operator.
-     * @param string $operator the operator to use (e.g. `EXISTS` or `NOT EXISTS`)
-     * @param array $operands contains only one element which is a [[Query]] object representing the sub-query.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if the operand is not a [[Query]] object.
-     */
-    public function buildExistsCondition($operator, $operands, &$params)
-    {
-        if ($operands[0] instanceof Query) {
-            list($sql, $params) = $this->build($operands[0], $params);
-            return "$operator ($sql)";
-        }
-
-        throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
+        return new HashCondition($condition);
     }
 
     /**

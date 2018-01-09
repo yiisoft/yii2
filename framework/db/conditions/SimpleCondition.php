@@ -5,7 +5,7 @@ namespace yii\db\conditions;
 use yii\base\InvalidParamException;
 
 /**
- * Class SimpleCondition represents a simple condition like like `"column" operator value`.
+ * Class SimpleCondition represents a simple condition like `"column" operator value`.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -30,7 +30,7 @@ class SimpleCondition implements ConditionInterface
      *
      * @param mixed $column the literal to the left of $operator
      * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
-     * @param mixed $value the liter to the right of $operator
+     * @param mixed $value the literal to the right of $operator
      */
     public function __construct($column, $operator, $value)
     {

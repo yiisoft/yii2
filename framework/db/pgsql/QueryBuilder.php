@@ -87,10 +87,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
         'NOT IN' => 'buildInCondition',
         'LIKE' => 'buildLikeCondition',
         'ILIKE' => 'buildLikeCondition',
-        'NOT LIKE' => 'buildLikeCondition',
-        'NOT ILIKE' => 'buildLikeCondition',
-        'OR LIKE' => 'buildLikeCondition',
-        'OR ILIKE' => 'buildLikeCondition',
+            // TODO: port these
+            'NOT LIKE' => 'buildLikeCondition',
+            'NOT ILIKE' => 'buildLikeCondition',
+            'OR LIKE' => 'buildLikeCondition',
+            'OR ILIKE' => 'buildLikeCondition',
         'OR NOT LIKE' => 'buildLikeCondition',
         'OR NOT ILIKE' => 'buildLikeCondition',
         'EXISTS' => 'buildExistsCondition',
@@ -105,6 +106,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
         'yii\db\ArrayExpression' => 'yii\db\pgsql\ArrayExpressionBuilder',
         'yii\db\JsonExpression' => 'yii\db\pgsql\JsonExpressionBuilder',
         'yii\db\PdoValue' => 'yii\db\PdoValueBuilder',
+        'yii\db\conditions\ConjunctionCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
+        'yii\db\conditions\NotCondition' => 'yii\db\conditions\NotConditionBuilder',
+        'yii\db\conditions\AndCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
+        'yii\db\conditions\OrCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
+        'yii\db\conditions\BetweenCondition' => 'yii\db\conditions\BetweenConditionBuilder',
+        'yii\db\conditions\InCondition' => 'yii\db\conditions\InConditionBuilder',
+        'yii\db\conditions\LikeCondition' => 'yii\db\conditions\LikeConditionBuilder',
+        'yii\db\conditions\ExistsCondition' => 'yii\db\conditions\ExistsConditionBuilder',
+        'yii\db\conditions\SimpleCondition' => 'yii\db\conditions\SimpleConditionBuilder',
+        'yii\db\conditions\HashCondition' => 'yii\db\conditions\HashConditionBuilder',
     ];
 
     /**

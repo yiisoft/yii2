@@ -51,22 +51,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    protected $likeEscapeCharacter = '!';
-    /**
-     * `\` is initialized in [[buildLikeCondition()]] method since
-     * we need to choose replacement value based on [[\yii\db\Schema::quoteValue()]].
-     * @inheritdoc
-     */
-    protected $likeEscapingReplacements = [
-        '%' => '!%',
-        '_' => '!_',
-        '!' => '!!',
-    ];
-
-
-    /**
-     * @inheritdoc
-     */
     public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
         $orderBy = $this->buildOrderBy($orderBy);

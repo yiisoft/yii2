@@ -46,20 +46,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     ];
 
     /**
-     * @inheritdoc
-     */
-    protected $likeEscapeCharacter = '!';
-    /**
-     * @inheritdoc
-     */
-    protected $likeEscapingReplacements = [
-        '%' => '!%',
-        '_' => '!_',
-        '!' => '!!',
-    ];
-
-
-    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
