@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Chg #14178: Removed HHVM-specific code (samdark)
 - Enh #14671: use `random_int()` instead of `mt_rand()` to generate cryptographically secure pseudo-random integers (yyxx9988)
 - Chg #14761: Removed Yii autoloader in favor of Composer's PSR-4 implementation (samdark)
+- Chg #15448: Package "ezyang/htmlpurifier" has been made optional and is not installed by default (klimov-paul)
 
 2.0.14 under development
 ------------------------

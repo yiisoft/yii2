@@ -154,6 +154,9 @@ Upgrade from Yii 2.0.x
   `yii\validators\FileValidator::buildMimeTypeRegexp()` have been made `public`. Make sure you use correct
   access level specification in case you override these methods.
 * Default script position for the `yii\web\View::registerJs()` changed to `View::POS_END`.
+* Package "ezyang/htmlpurifier" has been made optional and is not installed by default. If you need to use
+  `yii\helpers\HtmlPurifier` or `yii\i18n\Formatter::asHtml()` (e.g. 'html' data format), you'll have to install
+  this package manually for your project.
 
 
 Upgrade from Yii 2.0.13

@@ -76,7 +76,6 @@
         "yiisoft/yii2-composer": "~2.0.4",
         "psr/simple-cache": "~1.0.0",
         "psr/http-message": "~1.0.0",
-        "ezyang/htmlpurifier": "~4.6",
         "cebe/markdown": "~1.0.0 | ~1.1.0",
         "bower-asset/jquery": "3.2.*@stable | 3.1.*@stable | 2.2.*@stable | 2.1.*@stable | 1.11.*@stable | 1.12.*@stable",
         "bower-asset/inputmask": "~3.2.2 | ~3.3.5",
@@ -84,6 +83,7 @@
         "bower-asset/yii2-pjax": "~2.0.1"
     },
     "require-dev": {
+        "ezyang/htmlpurifier": "~4.6",
         "phpunit/phpunit": "~6.2.3",
         "cebe/indent": "~1.0.2",
         "friendsofphp/php-cs-fixer": "~2.2.3"
@@ -95,6 +95,7 @@
         }
     ],
     "suggest": {
+        "ezyang/htmlpurifier": "required at `yii\\helpers\\HtmlPurifier` for 'html' data format support (e.g. `yii\\i18n\\Formatter:asHtml()`)",
         "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
     },
     "autoload": {
