@@ -101,7 +101,10 @@
         "psr-4": {
             "yii\\": "framework/",
             "yii\\cs\\": "cs/src/"
-        }
+        },
+        "classmap": [
+            "framework/Yii.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {"yiiunit\\": "tests/"}

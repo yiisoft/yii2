@@ -9,10 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 use yii\helpers\IpHelper;
-use yii\helpers\Json;
-use yii\web\JsExpression;
 
 /**
  * The validator checks if the attribute value is a valid IPv4/IPv6 address or subnet.

@@ -228,6 +228,7 @@ class Table extends Widget
 
         $buffer = '';
         $arrayPointer = [];
+        $finalChunk = [];
         for ($i = 0, ($max = $this->calculateRowHeight($row)) ?: $max = 1; $i < $max; $i++) {
             $buffer .= $spanLeft . ' ';
             foreach ($size as $index => $cellSize) {
