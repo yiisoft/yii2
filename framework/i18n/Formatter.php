@@ -1013,6 +1013,7 @@ class Formatter extends Component
             $isNegative = $interval->invert;
         }
 
+        $parts = [];
         if ($interval->y > 0) {
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 year} other{# years}}', ['delta' => $interval->y], $this->locale);
         }

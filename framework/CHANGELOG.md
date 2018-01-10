@@ -3,14 +3,16 @@ Yii Framework 2 Change Log
 
 2.0.14 under development
 ------------------------
-
+- Enh #15417: Added `yii\validators\FileValidator::$minFiles` (vladis84)
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
 - Bug #14157: Add support for loading default value `CURRENT_TIMESTAMP` of MySQL `datetime` field (rossoneri)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
 - Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
+- Bug #14903: Fixed route with extra dashes is executed controller while it should not (developeruz)
 - Bug #15046: Throw an `yii\web\HeadersAlreadySentException` if headers were sent before web response (dmirogin)
 - Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()` (IceJOKER)
+- Bug #15169: Fixed translating a string when NULL parameter is passed (developeruz)
 - Bug #15194: Fixed `yii\db\QueryBuilder::insert()` to preserve passed params when building a `INSERT INTO ... SELECT` query for MSSQL, PostgreSQL and SQLite (sergeymakinen)
 - Bug #15229: Fixed `yii\console\widgets\Table` default value for `getScreenWidth()`, when `Console::getScreenSize()` can't determine screen size (webleaf)
 - Bug #15234: Fixed `\yii\widgets\LinkPager` removed `tag` from `disabledListItemSubTagOptions` (SDKiller)
@@ -25,6 +27,8 @@ Yii Framework 2 Change Log
 - Bug #15356: Fixed multiple bugs in `yii\db\Query::getTablesUsedInFrom()` (vladis84, samdark)
 - Bug #15380: `FormatConverter::convertDateIcuToPhp()` now converts `a` ICU symbols to `A` (brandonkelly)
 - Bug #15407: Fixed rendering rows with associative arrays in `yii\console\widgets\Table` (dmrogin)
+- Bug #15432: Fixed wrong value being set in `yii\filters\RateLimiter::checkRateLimit()` resulting in wrong `X-Rate-Limit-Reset` header value (bizley)
+- Bug #15440: Fixed `yii\behaviors\AttributeTypecastBehavior::$attributeTypes` auto-detection fails for rule, which specify attribute with '!' prefix (klimov-paul)
 - Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorSource" option to be able to customize errors display (yanggs07, developeruz, silverfire)
 - Enh #3250: Added support for events partial wildcard matching (klimov-paul)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
@@ -35,6 +39,7 @@ Yii Framework 2 Change Log
 - Enh #9253: Allow `variations` to be a string for `yii\filters\PageCache` and `yii\widgets\FragmentCache` (schojniak, developeruz)
 - Enh #12623: Added `yii\helpers\StringHelper::matchWildcard()` replacing usage of `fnmatch()`, which may be unreliable (klimov-paul)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
+- Enh #14355: Added ability to pass an empty array as a parameter in console command (developeruz)
 - Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
 - Enh #15024: `yii\web\Pjax` widget does not prevent CSS files from sending anymore because they are handled by client-side plugin correctly (onmotion)
