@@ -27,3 +27,8 @@ the core developers.
 7. **Setters method chaining** should be avoided if there are methods in the classs returning meaningful values. Chaining could be
    supported if a class is a builder where all setters are modifying internal state: https://github.com/yiisoft/yii2/issues/13026
 8. **Global exception/error handler** is used instead of local try-catch because it is reliable in terms of catching destructors and everything that happens outside the scope of the `run()` method such as bootstrap. See [#14348](https://github.com/yiisoft/yii2/issues/14348).
+9. **Event names** and corresponding constant names should follow these rules:
+  - Event name should separate its parts by dots.
+  - Parts should go from general to to specific.
+  - Each event should be named uniquely.
+  - The first word in event name should describe some general term of application workflow, e.g. 'request', 'db', 'view' and so on.
