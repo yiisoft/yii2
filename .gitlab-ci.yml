@@ -21,6 +21,17 @@ stages:
     MYSQL_USER: travis
     MYSQL_PASSWORD: travis
 
+.pgsql-shared: &pgsql-shared
+  services:
+    - name: postgres:9.3
+      alias: postgres
+  variables:
+    POSTGRES_DB: yiitest
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+    
+    
+    
 
 test:5.6:
   <<: *test-shared
@@ -62,3 +73,24 @@ test:mysql:7.1:
   image: yiisoftware/yii2-php:7.1-apache
   script:
     - php vendor/bin/phpunit -v --group mysql
+
+test:pgsql:5.6:
+  <<: *test-shared
+  <<: *pgsql-shared
+  image: yiisoftware/yii2-php:5.6-apache
+  script:
+    - php vendor/bin/phpunit -v --group pgsql
+
+test:pgsql:7.0:
+  <<: *test-shared
+  <<: *pgsql-shared
+  image: yiisoftware/yii2-php:7.0-apache
+  script:
+    - php vendor/bin/phpunit -v --group pgsql
+
+test:pgsql:7.1:
+  <<: *test-shared
+  <<: *pgsql-shared
+  image: yiisoftware/yii2-php:7.1-apache
+  script:
+    - php vendor/bin/phpunit -v --group pgsql
