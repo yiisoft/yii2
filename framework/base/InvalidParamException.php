@@ -7,6 +7,8 @@
 
 namespace yii\base;
 
+use Yii;
+
 /**
  * InvalidParamException represents an exception caused by invalid parameters passed to a method.
  *
