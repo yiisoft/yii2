@@ -1155,7 +1155,7 @@ class BaseHtml
     {
         $for = ArrayHelper::remove($options, 'for', static::getInputId($model, $attribute));
         $attribute = static::getAttributeName($attribute);
-        $label = ArrayHelper::remove($options, 'label', static::encode($model->getAttributeLabel($attribute)));
+        $label = ArrayHelper::remove($options, 'label', static::encode($model->getAttributeLabel($attribute), false));
         return static::label($label, $for, $options);
     }
 
