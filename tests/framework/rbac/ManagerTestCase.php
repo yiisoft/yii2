@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\rbac;
 
+use yii\base\InvalidParamException;
 use yii\rbac\Item;
 use yii\rbac\Permission;
 use yii\rbac\Role;
@@ -612,5 +613,28 @@ abstract class ManagerTestCase extends TestCase
         /** @var ActionRule $rule */
         $rule = $this->auth->getRule('action_rule');
         $this->assertInstanceOf(ActionRule::className(), $rule);
+    }
+
+    public function testDefaultRoles()
+    {
+        try {
+            $this->auth->defaultRoles = 'test';
+        } catch (\Exception $e) {
+            $this->assertInstanceOf(InvalidParamException::class, $e);
+            $this->assertEquals('Default roles must be either an array or a callable', $e->getMessage());
+
+            try {
+                $this->auth->defaultRoles = function () {
+                    return 'test';
+                };
+            } catch (\Exception $e) {
+                $this->assertInstanceOf(InvalidParamException::class, $e);
+                $this->assertEquals('Default roles closure must return an array', $e->getMessage());
+            }
+
+            return;
+        }
+
+        $this->fail('Not rise an exception');
     }
 }
