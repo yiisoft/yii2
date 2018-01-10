@@ -11,6 +11,16 @@ stages:
     - /usr/local/bin/composer install --prefer-dist
     - cp tests/data/config-docker.php tests/data/config.php
 
+.mysql-shared: &mysql-shared
+  services:
+    - name: percona:5.7
+      alias: mysql
+  variables:
+    MYSQL_ROOT_PASSWORD: secret
+    MYSQL_DATABASE: yiitest
+    MYSQL_USER: travis
+    MYSQL_PASSWORD: travis
+
 
 test:5.6:
   <<: *test-shared
@@ -31,3 +41,24 @@ test:7.1:
   image: yiisoftware/yii2-php:7.1-apache
   script:
     - php vendor/bin/phpunit -v --exclude caching,db,data
+
+test:mysql:5.6:
+  <<: *test-shared
+  <<: *mysql-shared
+  image: yiisoftware/yii2-php:5.6-apache
+  script:
+    - php vendor/bin/phpunit -v --group mysql
+
+test:mysql:7.0:
+  <<: *test-shared
+  <<: *mysql-shared
+  image: yiisoftware/yii2-php:7.0-apache
+  script:
+    - php vendor/bin/phpunit -v --group mysql
+
+test:mysql:7.1:
+  <<: *test-shared
+  <<: *mysql-shared
+  image: yiisoftware/yii2-php:7.1-apache
+  script:
+    - php vendor/bin/phpunit -v --group mysql
