@@ -30,8 +30,10 @@ stages:
     POSTGRES_USER: postgres
     POSTGRES_PASSWORD: postgres
     
-    
-    
+.caching-shared: &caching-shared
+  services:
+    - name: redis
+    - name: memcached   
 
 test:5.6:
   <<: *test-shared
@@ -39,13 +41,11 @@ test:5.6:
   script:
     - php vendor/bin/phpunit -v --exclude caching,db,data
 
-
 test:7.0:
   <<: *test-shared
   image: yiisoftware/yii2-php:7.0-apache
   script:
     - php vendor/bin/phpunit -v --exclude caching,db,data
-
 
 test:7.1:
   <<: *test-shared
@@ -94,3 +94,24 @@ test:pgsql:7.1:
   image: yiisoftware/yii2-php:7.1-apache
   script:
     - php vendor/bin/phpunit -v --group pgsql
+
+test:caching:5.6:
+  <<: *test-shared
+  <<: *caching-shared
+  image: yiisoftware/yii2-php:5.6-apache
+  script:
+    - php vendor/bin/phpunit -v --group caching --exclude db
+
+test:caching:7.0:
+  <<: *test-shared
+  <<: *caching-shared
+  image: yiisoftware/yii2-php:7.0-apache
+  script:
+    - php vendor/bin/phpunit -v --group caching --exclude db
+
+test:caching:7.1:
+  <<: *test-shared
+  <<: *caching-shared
+  image: yiisoftware/yii2-php:7.1-apache
+  script:
+    - php vendor/bin/phpunit -v --group caching --exclude db
