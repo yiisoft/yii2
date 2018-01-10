@@ -34,7 +34,7 @@ Yii Framework 2 Change Log
 - Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
 - Chg #9260: Mail message composition extracted into separated class `yii\mail\Composer`, which setup is available via `yii\mail\BaseMailer::$composer` (klimov-paul)
 - Chg: Moved masked input field widget into separate extension https://github.com/yiisoft/yii2-maskedinput (samdark)
-- Chg: All event names changed matching 'dot-separated string' format, e.g. 'some.event.name' (klimov-paul)
+- Chg #15449: All event names changed matching 'dot-separated string' format, e.g. 'some.event.name' (klimov-paul)
 - Chg #12089: Behavior of `yii\grid\DataColumn::$filterInputOptions` changed when default value is overwritten (bvanleeuwen, cebe)
 - Chg #13885: Removed APC support in ApcCache. APCu works as before (samdark) 
 - Chg #14178: Removed HHVM-specific code (samdark)
