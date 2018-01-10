@@ -52,11 +52,11 @@ abstract class Application extends Module
     /**
      * @event Event an event raised before the application starts to handle a request.
      */
-    const EVENT_BEFORE_REQUEST = 'request.process.before';
+    const EVENT_BEFORE_REQUEST = 'request.before';
     /**
      * @event Event an event raised after the application successfully handles a request (before the response is sent out).
      */
-    const EVENT_AFTER_REQUEST = 'request.process.after';
+    const EVENT_AFTER_REQUEST = 'request.after';
     /**
      * Application state used by [[state]]: application just started.
      */

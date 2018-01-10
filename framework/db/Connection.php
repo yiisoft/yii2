@@ -137,7 +137,7 @@ class Connection extends Component
     /**
      * @event Event an event that is triggered after a DB connection is established
      */
-    const EVENT_AFTER_OPEN = 'db.open.after';
+    const EVENT_AFTER_OPEN = 'db.connect.after';
     /**
      * @event Event an event that is triggered right before a top-level transaction is started
      */
