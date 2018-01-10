@@ -154,6 +154,9 @@ Upgrade from Yii 2.0.x
   `yii\validators\FileValidator::buildMimeTypeRegexp()` have been made `public`. Make sure you use correct
   access level specification in case you override these methods.
 * Default script position for the `yii\web\View::registerJs()` changed to `View::POS_END`.
+* Package "ezyang/htmlpurifier" has been made optional and is not installed by default. If you need to use
+  `yii\helpers\HtmlPurifier` or `yii\i18n\Formatter::asHtml()` (e.g. 'html' data format), you'll have to install
+  this package manually for your project.
 * All event names changed matching 'dot-separated string' format, e.g. 'some.event.name'. For example: event 'beforeInsert'
   has been changed to 'db.ar.insert.before'. Make sure you are using correct event names while attaching event handlers or
   declaring behaviors. This change does not affect your code in case you are using predefined class constants for event names,
