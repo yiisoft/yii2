@@ -203,7 +203,7 @@ DocumentRoot "path/to/basic/web"
 
 Aby użyć [Nginx](http://wiki.nginx.org/) powinienieś zainstalować PHP jako [FPM SAPI](http://php.net/install.fpm).
 Możesz użyć przedstawionej poniżej konfiguracji Nginx, zastępując jedynie ścieżkę `path/to/basic/web` aktualną ścieżką do `basic/web` Twojej aplikacji oraz 
-`mysite.local` aktualną nazwą hosta.
+`mysite.test` aktualną nazwą hosta.
 
 ```nginx
 server {
@@ -213,7 +213,7 @@ server {
     listen 80; ## nasłuchuj ipv4
     #listen [::]:80 default_server ipv6only=on; ## nasłuchuj ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

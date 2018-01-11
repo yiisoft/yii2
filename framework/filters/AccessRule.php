@@ -12,6 +12,7 @@ use yii\base\Action;
 use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
+use yii\helpers\StringHelper;
 use yii\web\Request;
 use yii\web\User;
 
@@ -198,7 +199,7 @@ class AccessRule extends Component
 
         $id = $controller->getUniqueId();
         foreach ($this->controllers as $pattern) {
-            if (fnmatch($pattern, $id)) {
+            if (StringHelper::matchWildcard($pattern, $id)) {
                 return true;
             }
         }

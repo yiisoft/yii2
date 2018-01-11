@@ -225,6 +225,8 @@ return [
     'components' => [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
+            // uncomment if you want to cache RBAC items hierarchy
+            // 'cache' => 'cache',
         ],
         // ...
     ],
@@ -264,7 +266,7 @@ Building authorization data is all about the following tasks:
 Depending on authorization flexibility requirements the tasks above could be done in different ways.
 If your permissions hierarchy is meant to be changed by developers only, you can use either migrations
 or a console command. Migration pro is that it could be executed along with other migrations. Console
-command pro is that you have a good overview of the hierarchy in the code rathe than it being scattered
+command pro is that you have a good overview of the hierarchy in the code rather than it being scattered
 among multiple migrations.
 
 Either way in the end you'll get the following RBAC hierarchy:

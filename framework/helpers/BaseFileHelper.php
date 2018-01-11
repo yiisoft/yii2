@@ -591,12 +591,12 @@ class BaseFileHelper
             }
         }
 
-        $fnmatchFlags = 0;
+        $matchOptions = [];
         if ($flags & self::PATTERN_CASE_INSENSITIVE) {
-            $fnmatchFlags |= FNM_CASEFOLD;
+            $matchOptions['caseSensitive'] = false;
         }
 
-        return fnmatch($pattern, $baseName, $fnmatchFlags);
+        return StringHelper::matchWildcard($pattern, $baseName, $matchOptions);
     }
 
     /**
@@ -645,12 +645,14 @@ class BaseFileHelper
             }
         }
 
-        $fnmatchFlags = FNM_PATHNAME;
+        $matchOptions = [
+            'filePath' => true
+        ];
         if ($flags & self::PATTERN_CASE_INSENSITIVE) {
-            $fnmatchFlags |= FNM_CASEFOLD;
+            $matchOptions['caseSensitive'] = false;
         }
 
-        return fnmatch($pattern, $name, $fnmatchFlags);
+        return StringHelper::matchWildcard($pattern, $name, $matchOptions);
     }
 
     /**
