@@ -1579,7 +1579,7 @@ class BaseHtml
      *   to override the value and to set other tag attributes:
      *
      *   ```php
-     *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
+     *   ['prompt' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
