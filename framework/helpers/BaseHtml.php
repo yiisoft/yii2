@@ -2224,7 +2224,7 @@ class BaseHtml
      * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
      * @since 2.1.0
      */
-    public static function powered()
+    public static function poweredByYii()
     {
         $yiiTitle = Yii::t('yii', 'Yii Framework');
         $yiiUrl = 'http://www.yiiframework.com/';

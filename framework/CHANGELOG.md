@@ -40,7 +40,7 @@ Yii Framework 2 Change Log
 - Enh #14671: use `random_int()` instead of `mt_rand()` to generate cryptographically secure pseudo-random integers (yyxx9988)
 - Chg #14761: Removed Yii autoloader in favor of Composer's PSR-4 implementation (samdark)
 - Chg #15448: Package "ezyang/htmlpurifier" has been made optional and is not installed by default (klimov-paul)
-- Chg #15481: Moved `yii\BaseYii::powered()` method to `yii\helpers\Html::powered()` (Kolyunya)
+- Chg #15481: Moved `yii\BaseYii::powered()` method to `yii\helpers\Html::poweredByYii()` (Kolyunya)
 
 2.0.14 under development
 ------------------------

@@ -1566,7 +1566,7 @@ HTML;
     {
         Yii::$app->language = $language;
 
-        $actual = Html::powered();
+        $actual = Html::poweredByYii();
         $this->assertEquals($expected, $actual);
     }
 
