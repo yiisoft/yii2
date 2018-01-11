@@ -504,18 +504,6 @@ class BaseYii
     }
 
     /**
-     * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
-     * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
-     */
-    public static function powered()
-    {
-        return \Yii::t('yii', 'Powered by {yii}', [
-            'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
-                    'Yii Framework') . '</a>',
-        ]);
-    }
-
-    /**
      * Translates a message to the specified language.
      *
      * This is a shortcut method of [[\yii\i18n\I18N::translate()]].
