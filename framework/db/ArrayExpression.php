@@ -26,12 +26,12 @@ class ArrayExpression implements ExpressionInterface
      * Note that in case when type is not specified explicitly and DBMS can not guess it from the context,
      * SQL error will be raised.
      */
-    protected $type;
+    private $type;
     /**
      * @var array|QueryInterface|mixed the array content. Either represented as an array of values or a [[Query]] that
      * returns these values. A single value will be considered as an array containing one element.
      */
-    protected $value;
+    private $value;
     /**
      * @var int the number of indices needed to select an element
      */

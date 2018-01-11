@@ -45,6 +45,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\conditions\InCondition' => 'yii\db\mssql\conditions\InConditionBuilder',
+            'yii\db\conditions\LikeCondition' => 'yii\db\mssql\conditions\LikeConditionBuilder',
+        ]);
+    }
 
     /**
      * @inheritdoc
@@ -309,51 +319,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $this->_oldMssql;
-    }
-
-    /**
-     * @inheritdoc
-     * @throws NotSupportedException if `$columns` is an array
-     */
-    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
-    {
-        if (is_array($columns)) {
-            throw new NotSupportedException(__METHOD__ . ' is not supported by MSSQL.');
-        }
-
-        return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
-    }
-
-    /**
-     * Builds SQL for IN condition.
-     *
-     * @param string $operator
-     * @param array $columns
-     * @param array $values
-     * @param array $params
-     * @return string SQL
-     */
-    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
-    {
-        $quotedColumns = [];
-        foreach ($columns as $i => $column) {
-            $quotedColumns[$i] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
-        }
-        $vss = [];
-        foreach ($values as $value) {
-            $vs = [];
-            foreach ($columns as $i => $column) {
-                if (isset($value[$column])) {
-                    $phName = $this->bindParam($value[$column], $params);
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
-                } else {
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
-                }
-            }
-            $vss[] = '(' . implode($operator === 'IN' ? ' AND ' : ' OR ', $vs) . ')';
-        }
-
-        return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
     }
 
     /**

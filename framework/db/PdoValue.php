@@ -15,17 +15,17 @@ namespace yii\db;
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
  */
-class PdoValue implements ExpressionInterface
+final class PdoValue implements ExpressionInterface
 {
     /**
      * @var mixed
      */
-    protected $value;
+    private $value;
     /**
      * @var int One of PDO_PARAM_* constants
      * @see http://php.net/manual/en/pdo.constants.php
      */
-    protected $type;
+    private $type;
 
     /**
      * PdoValue constructor.

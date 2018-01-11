@@ -49,21 +49,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      */
-    protected $expressionBuilders = [
-        'yii\db\Expression' => 'yii\db\ExpressionBuilder',
-        'yii\db\JsonExpression' => 'yii\db\mysql\JsonExpressionBuilder',
-        'yii\db\PdoValue' => 'yii\db\PdoValueBuilder',
-        'yii\db\conditions\ConjunctionCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-        'yii\db\conditions\NotCondition' => 'yii\db\conditions\NotConditionBuilder',
-        'yii\db\conditions\AndCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-        'yii\db\conditions\OrCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-        'yii\db\conditions\BetweenCondition' => 'yii\db\conditions\BetweenConditionBuilder',
-        'yii\db\conditions\InCondition' => 'yii\db\conditions\InConditionBuilder',
-        'yii\db\conditions\LikeCondition' => 'yii\db\conditions\LikeConditionBuilder',
-        'yii\db\conditions\ExistsCondition' => 'yii\db\conditions\ExistsConditionBuilder',
-        'yii\db\conditions\SimpleCondition' => 'yii\db\conditions\SimpleConditionBuilder',
-        'yii\db\conditions\HashCondition' => 'yii\db\conditions\HashConditionBuilder',
-    ];
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\JsonExpression' => 'yii\db\mysql\JsonExpressionBuilder',
+        ]);
+    }
 
     /**
      * Builds a SQL statement for renaming a column.

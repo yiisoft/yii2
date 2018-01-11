@@ -32,40 +32,53 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
             return $this->buildSubqueryArray($sql, $expression);
         }
 
-        if ($value === null) {
-            return "'{}'";
-        }
-
-        $placeholders = [];
-        if (is_array($value) || $value instanceof \Traversable) {
-            if ($expression->getDimension() > 1) {
-                foreach ($value as $item) {
-                    $placeholders[] = $this->build($this->unnestArrayExpression($expression, $item), $params);
-                }
-            } else {
-                foreach ($value as $item) {
-                    if ($item instanceof Query) {
-                        list ($sql, $params) = $this->queryBuilder->build($item, $params);
-                        $placeholders[] = $this->buildSubqueryArray($sql, $expression);
-                        continue;
-                    }
-
-                    $item = $this->typecastValue($expression, $item);
-                    if ($item instanceof ExpressionInterface) {
-                        $placeholders[] = $this->queryBuilder->buildExpression($item, $params);
-                        continue;
-                    }
-
-                    $placeholders[] = $this->queryBuilder->bindParam($item, $params);
-                }
-            }
-        }
-
+        $placeholders = $this->buildPlaceholders($expression, $params);
         if (empty($placeholders)) {
             return "'{}'";
         }
 
         return 'ARRAY[' . implode(', ', $placeholders) . ']' . $this->getTypehint($expression);
+    }
+
+    /**
+     * Builds placeholders array out of $expression values
+     * @param ExpressionInterface|ArrayExpression $expression
+     * @param array $params the binding parameters.
+     * @return array
+     */
+    protected function buildPlaceholders(ExpressionInterface $expression, &$params)
+    {
+        $value = $expression->getValue();
+
+        $placeholders = [];
+        if ($value === null || !is_array($value) && !$value instanceof \Traversable) {
+            return $placeholders;
+        }
+
+        if ($expression->getDimension() > 1) {
+            foreach ($value as $item) {
+                $placeholders[] = $this->build($this->unnestArrayExpression($expression, $item), $params);
+            }
+            return $placeholders;
+        }
+
+        foreach ($value as $item) {
+            if ($item instanceof Query) {
+                list ($sql, $params) = $this->queryBuilder->build($item, $params);
+                $placeholders[] = $this->buildSubqueryArray($sql, $expression);
+                continue;
+            }
+
+            $item = $this->typecastValue($expression, $item);
+            if ($item instanceof ExpressionInterface) {
+                $placeholders[] = $this->queryBuilder->buildExpression($item, $params);
+                continue;
+            }
+
+            $placeholders[] = $this->queryBuilder->bindParam($item, $params);
+        }
+
+        return $placeholders;
     }
 
     /**

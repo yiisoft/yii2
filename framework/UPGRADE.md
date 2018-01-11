@@ -62,6 +62,8 @@ Upgrade from Yii 2.0.13
   
 * TODO: `['value', \PDO::PARAM_STR]` syntax deprecation.
 
+* TODO: `yii\db\QueryBuilder::conditionBuilders` is no longer used.
+
 Upgrade from Yii 2.0.12
 -----------------------
 

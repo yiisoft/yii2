@@ -51,48 +51,42 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * @var array map of query condition to builder methods.
      * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
+     * @deprecated since 2.0.14. Is not used, will be dropped in 2.1.0
      */
-    protected $conditionBuilders = [ // TODO: TO BE DROPPED
-        'NOT' => 'buildNotCondition',
-        'AND' => 'buildAndCondition',
-        'OR' => 'buildAndCondition',
-        'BETWEEN' => 'buildBetweenCondition',
-        'NOT BETWEEN' => 'buildBetweenCondition',
-        'IN' => 'buildInCondition',
-        'NOT IN' => 'buildInCondition',
-        'LIKE' => 'buildLikeCondition',
-        'NOT LIKE' => 'buildLikeCondition',
-        'OR LIKE' => 'buildLikeCondition',
-        'OR NOT LIKE' => 'buildLikeCondition',
-        'EXISTS' => 'buildExistsCondition',
-        'NOT EXISTS' => 'buildExistsCondition',
-    ];
+    protected $conditionBuilders = [];
 
     /**
-     * @var array map of condition aliases to condition classes.
+     * @var array map of condition aliases to condition classes. For example:
+     *
+     * ```php
+     * return [
+     *     'LIKE' => yii\db\condition\LikeCondition::class,
+     * ];
+     * ```
+     *
      * This property is used by [[createConditionFromArray]] method.
-     * In case you want to add custom conditions support, you can use [[setConditionClasses()]] method.
+     * See default condition classes list in [[defaultConditionClasses()]] method.
+     *
+     * In case you want to add custom conditions support, use the [[setConditionClasses()]] method.
+     *
+     * @see setConditonClasses()
+     * @see defaultConditionClasses()
      * @since 2.0.14
      */
-    protected $conditionClasses = [
-        'NOT' => 'yii\db\conditions\NotCondition',
-        'AND' => 'yii\db\conditions\AndCondition',
-        'OR' => 'yii\db\conditions\OrCondition',
-        'BETWEEN' => 'yii\db\conditions\BetweenCondition',
-        'NOT BETWEEN' => 'yii\db\conditions\BetweenCondition',
-        'IN' => 'yii\db\conditions\InCondition',
-        'NOT IN' => 'yii\db\conditions\InCondition',
-        'LIKE' => 'yii\db\conditions\LikeCondition',
-        'NOT LIKE' => 'yii\db\conditions\LikeCondition',
-        'OR LIKE' => 'yii\db\conditions\LikeCondition',
-        'OR NOT LIKE' => 'yii\db\conditions\LikeCondition',
-        'EXISTS' => 'yii\db\conditions\ExistsCondition',
-        'NOT EXISTS' => 'yii\db\conditions\ExistsCondition',
-    ];
+    protected $conditionClasses = [];
 
     /**
-     * @var string[]|ExpressionBuilderInterface[] map of expression class to expression builder class.
+     * @var string[]|ExpressionBuilderInterface[] maps expression class to expression builder class.
+     * For example:
+     *
+     * ```php
+     * [
+     *    yii\db\Expression::class => yii\db\ExpressionBuilder::class
+     * ]
+     * ```
      * This property is mainly used by [[buildExpression()]] to build SQL expressions form expression objects.
+     * See default values in [[defaultExpressionBuilders()]] method.
+     *
      *
      * To override existing builders or add custom, use [[setExpressionBuilder()]] method. New items will be added
      * to the end of this array.
@@ -102,22 +96,10 @@ class QueryBuilder extends \yii\base\BaseObject
      * extends the class, defined in this map.
      *
      * @see setExpressionBuilders()
+     * @see defaultExpressionBuilders()
      * @since 2.0.14
      */
-    protected $expressionBuilders = [
-        'yii\db\PdoValue' => 'yii\db\PdoValueBuilder',
-        'yii\db\Expression' => 'yii\db\ExpressionBuilder',
-        'yii\db\conditions\ConjunctionCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-        'yii\db\conditions\NotCondition' => 'yii\db\conditions\NotConditionBuilder',
-        'yii\db\conditions\AndCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-        'yii\db\conditions\OrCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-        'yii\db\conditions\BetweenCondition' => 'yii\db\conditions\BetweenConditionBuilder',
-        'yii\db\conditions\InCondition' => 'yii\db\conditions\InConditionBuilder',
-        'yii\db\conditions\LikeCondition' => 'yii\db\conditions\LikeConditionBuilder',
-        'yii\db\conditions\ExistsCondition' => 'yii\db\conditions\ExistsConditionBuilder',
-        'yii\db\conditions\SimpleCondition' => 'yii\db\conditions\SimpleConditionBuilder',
-        'yii\db\conditions\HashCondition' => 'yii\db\conditions\HashConditionBuilder',
-    ];
+    protected $expressionBuilders = [];
 
     /**
      * Constructor.
@@ -128,6 +110,70 @@ class QueryBuilder extends \yii\base\BaseObject
     {
         $this->db = $connection;
         parent::__construct($config);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->expressionBuilders = array_merge($this->defaultExpressionBuilders(), $this->expressionBuilders);
+        $this->conditionClasses = array_merge($this->defaultConditionClasses(), $this->conditionClasses);
+    }
+
+    /**
+     * Contains array of default condition classes. Extend this method, if you want to change
+     * default condition classes for the query builder. See [[conditionClasses]] docs for details.
+     *
+     * @return array
+     * @see conditionClasses
+     * @since 2.0.14
+     */
+    protected function defaultConditionClasses()
+    {
+        return [
+            'NOT' => 'yii\db\conditions\NotCondition',
+            'AND' => 'yii\db\conditions\AndCondition',
+            'OR' => 'yii\db\conditions\OrCondition',
+            'BETWEEN' => 'yii\db\conditions\BetweenCondition',
+            'NOT BETWEEN' => 'yii\db\conditions\BetweenCondition',
+            'IN' => 'yii\db\conditions\InCondition',
+            'NOT IN' => 'yii\db\conditions\InCondition',
+            'LIKE' => 'yii\db\conditions\LikeCondition',
+            'NOT LIKE' => 'yii\db\conditions\LikeCondition',
+            'OR LIKE' => 'yii\db\conditions\LikeCondition',
+            'OR NOT LIKE' => 'yii\db\conditions\LikeCondition',
+            'EXISTS' => 'yii\db\conditions\ExistsCondition',
+            'NOT EXISTS' => 'yii\db\conditions\ExistsCondition',
+        ];
+    }
+
+    /**
+     * Contains array of default expression builders. Extend this method and override it, if you want to change
+     * default expression builders for this query builder. See [[expressionBuilders]] docs for details.
+     *
+     * @return array
+     * @see $expressionBuilders
+     * @since 2.0.14
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return [
+            'yii\db\PdoValue' => 'yii\db\PdoValueBuilder',
+            'yii\db\Expression' => 'yii\db\ExpressionBuilder',
+            'yii\db\conditions\ConjunctionCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
+            'yii\db\conditions\NotCondition' => 'yii\db\conditions\NotConditionBuilder',
+            'yii\db\conditions\AndCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
+            'yii\db\conditions\OrCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
+            'yii\db\conditions\BetweenCondition' => 'yii\db\conditions\BetweenConditionBuilder',
+            'yii\db\conditions\InCondition' => 'yii\db\conditions\InConditionBuilder',
+            'yii\db\conditions\LikeCondition' => 'yii\db\conditions\LikeConditionBuilder',
+            'yii\db\conditions\ExistsCondition' => 'yii\db\conditions\ExistsConditionBuilder',
+            'yii\db\conditions\SimpleCondition' => 'yii\db\conditions\SimpleConditionBuilder',
+            'yii\db\conditions\HashCondition' => 'yii\db\conditions\HashConditionBuilder',
+        ];
     }
 
     /**
@@ -268,7 +314,7 @@ class QueryBuilder extends \yii\base\BaseObject
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
-                $value = $columnSchemas[$name]->dbTypecast($value);
+                $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
 
                 if ($value instanceof ExpressionInterface) {
                     $placeholders[] = $this->buildExpression($value, $params);
@@ -1253,7 +1299,7 @@ class QueryBuilder extends \yii\base\BaseObject
     public function buildCondition($condition, &$params)
     {
         if (is_array($condition)) {
-            $condition = $this->createConditionFromArray($condition, $params);
+            $condition = $this->createConditionFromArray($condition);
         }
 
         if ($condition instanceof ExpressionInterface) {
@@ -1266,13 +1312,16 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * TODO: docs
+     * Transforms $condition defined in array format (as described in [[Query::where()]]
+     * to instance of [[yii\db\condition\ConditionInterface|ConditionInterface]] according to
+     * [[conditionClasses]] map.
      *
-     * @param array $condition
-     * @return string
+     * @param string|array $condition
+     * @see conditionClasses
+     * @return ConditionInterface
      * @since 2.0.14
      */
-    protected function createConditionFromArray($condition, &$params)
+    public function createConditionFromArray($condition)
     {
         if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
             $operator = strtoupper(array_shift($condition));

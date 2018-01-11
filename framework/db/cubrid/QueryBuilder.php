@@ -46,6 +46,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
     ];
 
     /**
+     * {@inheritdoc}
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\conditions\LikeCondition' => 'yii\db\cubrid\conditions\LikeConditionBuilder',
+        ]);
+    }
+
+    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
