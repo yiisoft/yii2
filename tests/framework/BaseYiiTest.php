@@ -9,6 +9,7 @@ namespace yiiunit\framework;
 
 use Psr\Log\LogLevel;
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\BaseYii;
 use yii\di\Container;
 use yii\log\Logger;
@@ -45,10 +46,13 @@ class BaseYiiTest extends TestCase
         Yii::$aliases = [];
         $this->assertFalse(Yii::getAlias('@yii', false));
 
+        $aliasNotBeginsWithAt = 'alias not begins with @';
+        $this->assertEquals($aliasNotBeginsWithAt, Yii::getAlias($aliasNotBeginsWithAt));
+
         Yii::setAlias('@yii', '/yii/framework');
         $this->assertEquals('/yii/framework', Yii::getAlias('@yii'));
         $this->assertEquals('/yii/framework/test/file', Yii::getAlias('@yii/test/file'));
-        Yii::setAlias('@yii/gii', '/yii/gii');
+        Yii::setAlias('yii/gii', '/yii/gii');
         $this->assertEquals('/yii/framework', Yii::getAlias('@yii'));
         $this->assertEquals('/yii/framework/test/file', Yii::getAlias('@yii/test/file'));
         $this->assertEquals('/yii/gii', Yii::getAlias('@yii/gii'));
@@ -63,6 +67,35 @@ class BaseYiiTest extends TestCase
 
         Yii::setAlias('@some/alias', '/www');
         $this->assertEquals('/www', Yii::getAlias('@some/alias'));
+
+        $erroneousAlias = '@alias_not_exists';
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(sprintf('Invalid path alias: %s', $erroneousAlias));
+        Yii::getAlias($erroneousAlias, true);
+
+    }
+
+    public function testGetRootAlias()
+    {
+        Yii::$aliases = [];
+        Yii::setAlias('@yii', '/yii/framework');
+        $this->assertEquals('@yii', Yii::getRootAlias('@yii'));
+        $this->assertEquals('@yii', Yii::getRootAlias('@yii/test/file'));
+        Yii::setAlias('@yii/gii', '/yii/gii');
+        $this->assertEquals('@yii/gii', Yii::getRootAlias('@yii/gii'));
+    }
+
+    /*
+     * Phpunit calculate coverage better in case of small tests
+     */
+    public function testSetAlias()
+    {
+        Yii::$aliases = [];
+        Yii::setAlias('@yii/gii', '/yii/gii');
+        $this->assertEquals('/yii/gii', Yii::getAlias('@yii/gii'));
+        Yii::setAlias('@yii/tii', '/yii/tii');
+        $this->assertEquals('/yii/tii', Yii::getAlias('@yii/tii'));
+
     }
 
     public function testGetVersion()
@@ -155,6 +188,14 @@ class BaseYiiTest extends TestCase
 
         $this->assertSame($profiler, BaseYii::getProfiler());
 
+        $this->assertEmpty($profiler->messages);
+        $messages = ['test' => 1, 'test2'=> 'test'];
+        BaseYii::setProfiler(['messages' => $messages]);
+        $this->assertSame($profiler, BaseYii::getProfiler());
+        $this->assertEquals(1, $profiler->messages['test']);
+        $this->assertEquals('test', $profiler->messages['test2']);
+
+
         BaseYii::setProfiler(null);
         $defaultProfiler = BaseYii::getProfiler();
         $this->assertInstanceOf(Profiler::class, $defaultProfiler);
@@ -183,7 +224,7 @@ class BaseYiiTest extends TestCase
      */
     public function testLog()
     {
-        $logger = $this->getMockBuilder('yii\\log\\Logger')
+        $logger = $this->getMockBuilder(Logger::class)
             ->setMethods(['log'])
             ->getMock();
         BaseYii::setLogger($logger);
@@ -217,6 +258,29 @@ class BaseYiiTest extends TestCase
         BaseYii::warning('warning message', 'warning category');
         BaseYii::debug('trace message', 'trace category');
         BaseYii::error('error message', 'error category');
+
+    }
+
+    /*
+     * Phpunit calculate coverage better in case of small tests
+     */
+    public function testLoggerWithException()
+    {
+        $logger = $this->getMockBuilder(Logger::class)
+            ->setMethods(['log'])
+            ->getMock();
+        BaseYii::setLogger($logger);
+        $throwable = new \Exception('test');
+
+        $logger
+            ->expects($this->once())
+            ->method('log')->with(
+                $this->equalTo(LogLevel::ERROR),
+                $this->equalTo($throwable),
+                $this->equalTo(['category' => 'error category', 'exception' => $throwable])
+            );
+
+        BaseYii::error($throwable, 'error category');
     }
 
     /**
