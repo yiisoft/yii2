@@ -135,7 +135,12 @@ CREATE TABLE "type" (
   bool_col2 boolean DEFAULT TRUE,
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   bit_col BIT(8) NOT NULL DEFAULT B'10000010',
-  bigint_col BIGINT
+  bigint_col BIGINT,
+  intarray_col integer[],
+  textarray2_col text[][],
+  json_col json DEFAULT '{"a":1}',
+  jsonb_col jsonb,
+  jsonarray_col json[]
 );
 
 CREATE TABLE "bool_values" (

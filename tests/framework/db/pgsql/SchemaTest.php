@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use yii\db\conditions\ExistsConditionBuilder;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Type;
@@ -121,7 +122,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'size' => null,
             'precision' => null,
             'scale' => null,
-            'defaultValue' => null,
+            'defaultValue' => ["a" => 1],
             'dimension' => 0
         ];
         $columns['jsonb_col'] = [
