@@ -308,16 +308,16 @@ you do not have to add parameters manually.
 
 #### Object Format <span id="object-format"></span>
 
-This is the most powerful, but the most advanced way to define conditions.
-You need to go this way if you want to build your own abstraction over query builder or want to implement
+Object Form is both most powerful and most complex way to define conditions.
+You need to follow it either if you want to build your own abstraction over query builder or if you want to implement
 your own complex conditions.
 
-Objects of condition classes are immutable and only store data regarding the condition and provide getters
-for condition builders. Condition builder is a class that holds all the logic that transforms data 
-stored in condition to the SQL expression.
+Instances of condition classes are immutable. Their only purpose is to store condition data and provide getters
+for condition builders. Condition builder is a class that holds the logic that transforms data 
+stored in condition into the SQL expression.
 
-Internally all the formats described above are implicitly converted to object format prior to raw SQL building,
-so it is possible to combine all the formats above in a single condition:
+Internally the formats described above are implicitly converted to object format prior to building raw SQL,
+so it is possible to combine formats in a single condition:
 
 ```php
 $query->andWhere(new OrCondition([
@@ -327,7 +327,7 @@ $query->andWhere(new OrCondition([
 ]))
 ```
 
-Conversion from operator format to object format is performed according to
+Conversion from operator format into object format is performed according to
 [[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]] property, that maps operators names
 to representative class names:
 
@@ -338,10 +338,10 @@ to representative class names:
 
 And so on.
 
-Using the object format makes possible to create your own conditions or change the way default ones get built.
+Using the object format makes it possible to create your own conditions or to change the way default ones are built.
 
-For example, we need to create a condition that will check that all the passed columns are less that some value.
-Using operator format, it would look like this:
+For example, we need to create a condition that will check that specific columns are less than some value.
+Using the operator format, it would look like the following:
 
 ```php
 [
@@ -353,8 +353,8 @@ Using operator format, it would look like this:
 ]
 ```
 
-When this condition is isolated in one code scope, it's quite acceptable, but in case it's about to be reused – it can
-be optimized a lot. Let's create a custom condition object, that will utilize this logic.
+When such condition applied once, it is fine. In case it is used multiple times in a single query it can
+be optimized a lot. Let's create a custom condition object to demonstrate it.
 
 First, create a class that implements [[yii\db\conditions\ConditionInterface|ConditionInterface]]:
 
@@ -405,8 +405,8 @@ class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
 }
 ```
 
-To make [[yii\db\QueryBuilder|QueryBuilder]] know about our new condition, add it to `expressionBuilders` array.
-For example, in application configuration:
+To let [[yii\db\QueryBuilder|QueryBuilder]] know about our new condition, add a mapping for it to `expressionBuilders` array.
+It could be done right from the application configuration:
 
 ```php
 'db' => [
@@ -420,13 +420,13 @@ For example, in application configuration:
 ],
 ```
 
-After that, we can use this condition in `where()`:
+Now we can use our condition in `where()`:
 
 ```php
 $query->andWhere(new AllGreaterCondition(['posts', 'comments', 'reactions', 'subscriptions'], $minValue));
 ```
 
-In case we want to make it possible to create our custom condition using operator format, we should declare it in
+If we want to make it possible to create our custom condition using operator format, we should declare it in
 [[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]]:
 
 ```php
@@ -444,7 +444,7 @@ In case we want to make it possible to create our custom condition using operato
 ],
 ```
 
-And create real implementation of `AllGreaterCondition` in `app\db\conditions\AllGreaterCondition`:
+And create a real implementation of `AllGreaterCondition` in `app\db\conditions\AllGreaterCondition`:
 
 ```php
 namespace app\db\conditions;
