@@ -641,6 +641,9 @@ class User extends Component
                 $this->sendIdentityCookie($identity, $duration);
             }
         }
+
+        // regenerate CSRF token
+        Yii::$app->getRequest()->getCsrfToken(true);
     }
 
     /**
