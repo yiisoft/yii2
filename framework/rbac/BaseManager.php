@@ -196,9 +196,9 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Setter for default roles property
-     * Allows to define default roles dynamically via closure
-     * @param array|\Closure $roles
+     * Set default roles
+     * @param array|\Closure $roles either array of roles or a callable returning it
+     * @since 2.0.14
      */
     public function setDefaultRoles($roles)
     {
@@ -216,7 +216,9 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * Get default roles
+     * @return array default roles
+     * @since 2.0.14
      */
     public function getDefaultRoles()
     {
