@@ -73,6 +73,6 @@ class SimpleCondition implements ConditionInterface
             throw new InvalidParamException("Operator '$operator' requires two operands.");
         }
 
-        return (new static($operands[0], $operator, $operands[1]));
+        return new static($operands[0], $operator, $operands[1]);
     }
 }

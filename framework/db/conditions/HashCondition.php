@@ -2,8 +2,6 @@
 
 namespace yii\db\conditions;
 
-use yii\base\InvalidParamException;
-
 /**
  * Condition based on column-value pairs.
  *
@@ -40,6 +38,6 @@ class HashCondition implements ConditionInterface
      */
     public static function fromArrayDefinition($operator, $operands)
     {
-        return (new static($operands));
+        return new static($operands);
     }
 }

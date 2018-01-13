@@ -43,7 +43,7 @@ class ExistsCondition implements ConditionInterface
             throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
         }
 
-        return (new static($operator, $operands[0]));
+        return new static($operator, $operands[0]);
     }
 
     /**

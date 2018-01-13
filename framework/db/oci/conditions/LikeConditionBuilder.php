@@ -24,7 +24,10 @@ class LikeConditionBuilder extends \yii\db\conditions\LikeConditionBuilder
         '!' => '!!',
     ];
 
-    public function build(ExpressionInterface $condition, &$params = [])
+    /**
+     * {@inheritdoc}
+     */
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
         if (!isset($this->escapingReplacements['\\'])) {
             /*
@@ -34,6 +37,6 @@ class LikeConditionBuilder extends \yii\db\conditions\LikeConditionBuilder
             $this->escapingReplacements['\\'] = substr($this->queryBuilder->db->quoteValue('\\'), 1, -1);
         }
 
-        return parent::build($condition, $params);
+        return parent::build($expression, $params);
     }
 }

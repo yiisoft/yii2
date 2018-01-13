@@ -22,13 +22,13 @@ class HashConditionBuilder implements ExpressionBuilderInterface
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param ExpressionInterface|HashCondition $condition the expression to be built.
+     * @param ExpressionInterface|HashCondition $expression the expression to be built.
      * @param array $params the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
-    public function build(ExpressionInterface $condition, &$params = [])
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $hash = $condition->getHash();
+        $hash = $expression->getHash();
         $parts = [];
         foreach ($hash as $column => $value) {
             if (ArrayHelper::isTraversable($value) || $value instanceof Query) {

@@ -42,6 +42,6 @@ abstract class ConjunctionCondition implements ConditionInterface
      */
     public static function fromArrayDefinition($operator, $operands)
     {
-        return (new static($operands));
+        return new static($operands);
     }
 }

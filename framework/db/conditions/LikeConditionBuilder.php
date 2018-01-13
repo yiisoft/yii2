@@ -36,16 +36,16 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param ExpressionInterface|LikeCondition $condition the expression to be built.
+     * @param ExpressionInterface|LikeCondition $expression the expression to be built.
      * @param array $params the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
-    public function build(ExpressionInterface $condition, &$params = [])
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $operator = $condition->getOperator();
-        $column = $condition->getColumn();
-        $values = $condition->getValue();
-        $escape = $condition->getEscapingReplacements() ?: $this->escapingReplacements;
+        $operator = $expression->getOperator();
+        $column = $expression->getColumn();
+        $values = $expression->getValue();
+        $escape = $expression->getEscapingReplacements() ?: $this->escapingReplacements;
 
         list($andor, $not, $operator) = $this->parseOperator($operator);
 
@@ -61,6 +61,7 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
             $column = $this->queryBuilder->db->quoteColumnName($column);
         }
 
+        $escapeSql = $this->getEscapeSql();
         $parts = [];
         foreach ($values as $value) {
             if ($value instanceof ExpressionInterface) {
@@ -68,14 +69,22 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
             } else {
                 $phName = $this->queryBuilder->bindParam(empty($escape) ? $value : ('%' . strtr($value, $escape) . '%'), $params);
             }
-            $escapeSql = '';
-            if ($this->escapeCharacter !== null) {
-                $escapeSql = " ESCAPE '{$this->escapeCharacter}'";
-            }
             $parts[] = "{$column} {$operator} {$phName}{$escapeSql}";
         }
 
         return implode($andor, $parts);
+    }
+
+    /**
+     * @return string
+     */
+    private function getEscapeSql()
+    {
+        if ($this->escapeCharacter !== null) {
+            return " ESCAPE '{$this->escapeCharacter}'";
+        }
+
+        return '';
     }
 
     /**

@@ -45,6 +45,6 @@ class NotCondition implements ConditionInterface
             throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
         }
 
-        return (new static(array_shift($operands)));
+        return new static(array_shift($operands));
     }
 }

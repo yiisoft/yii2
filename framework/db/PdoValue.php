@@ -3,15 +3,17 @@
 namespace yii\db;
 
 /**
- * Class PdoValue represents a $value that should be bound to PDO with defined $type and
- * should not be transformed before binding.
+ * Class PdoValue represents a $value that should be bound to PDO with exact $type.
  *
- * TODO: usage example description, update docs in framework to follow this change.
+ * For example, it will be useful when you need to bind binary data to BLOB column in DBMS:
  *
  * ```php
  * [':name' => 'John', ':profile' => new PdoValue($profile, \PDO::PARAM_LOB)]`.
  * ```
  *
+ * To see possible types, check [PDO::PARAM_* constants](http://php.net/manual/en/pdo.constants.php).
+ *
+ * @see http://php.net/manual/en/pdostatement.bindparam.php
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
  */

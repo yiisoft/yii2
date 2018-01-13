@@ -61,7 +61,7 @@ class LikeCondition extends SimpleCondition
             throw new InvalidParamException("Operator '$operator' requires two operands.");
         }
 
-        $condition = (new static($operands[0], $operator, $operands[1]));
+        $condition = new static($operands[0], $operator, $operands[1]);
         if (isset($operands[2])) {
             $condition->escapingReplacements = $operands[2];
         }

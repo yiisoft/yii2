@@ -87,6 +87,6 @@ class BetweenCondition implements ConditionInterface
             throw new InvalidParamException("Operator '$operator' requires three operands.");
         }
 
-        return (new static($operands[0], $operator, $operands[1], $operands[2]));
+        return new static($operands[0], $operator, $operands[1], $operands[2]);
     }
 }

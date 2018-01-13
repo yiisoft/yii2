@@ -20,13 +20,13 @@ class NotConditionBuilder implements ExpressionBuilderInterface
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param ExpressionInterface|NotCondition $condition the expression to be built.
+     * @param ExpressionInterface|NotCondition $expression the expression to be built.
      * @param array $params the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
-    public function build(ExpressionInterface $condition, &$params = [])
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $operand = $condition->getCondition();
+        $operand = $expression->getCondition();
         if ($operand === '') {
             return '';
         }

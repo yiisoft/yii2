@@ -5,7 +5,6 @@ namespace yii\db\conditions;
 use yii\db\ExpressionBuilderInterface;
 use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
-use yii\db\Query;
 
 /**
  * Class BetweenConditionBuilder builds objects of [[BetweenCondition]]
@@ -21,21 +20,21 @@ class BetweenConditionBuilder implements ExpressionBuilderInterface
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param ExpressionInterface|BetweenCondition $condition the expression to be built.
+     * @param ExpressionInterface|BetweenCondition $expression the expression to be built.
      * @param array $params the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
-    public function build(ExpressionInterface $condition, &$params = [])
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $operator = $condition->getOperator();
-        $column = $condition->getColumn();
+        $operator = $expression->getOperator();
+        $column = $expression->getColumn();
 
         if (strpos($column, '(') === false) {
             $column = $this->queryBuilder->db->quoteColumnName($column);
         }
 
-        $phName1 = $this->createPlaceholder($condition->getIntervalStart(), $params);
-        $phName2 = $this->createPlaceholder($condition->getIntervalEnd(), $params);
+        $phName1 = $this->createPlaceholder($expression->getIntervalStart(), $params);
+        $phName2 = $this->createPlaceholder($expression->getIntervalEnd(), $params);
 
         return "$column $operator $phName1 AND $phName2";
     }

@@ -15,7 +15,7 @@ class PdoValueBuilder implements ExpressionBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function build(ExpressionInterface $expression, &$params = [])
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
         $placeholder = static::PARAM_PREFIX . count($params);
         $params[$placeholder] = $expression;

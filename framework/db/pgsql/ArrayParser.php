@@ -14,7 +14,7 @@ class ArrayParser
     /**
      * @var string Character used in array
      */
-    protected $delimiter = ',';
+    private $delimiter = ',';
 
     /**
      * Convert array from PostgreSQL to PHP

@@ -21,15 +21,15 @@ class InConditionBuilder implements ExpressionBuilderInterface
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param ExpressionInterface|InCondition $condition the expression to be built.
+     * @param ExpressionInterface|InCondition $expression the expression to be built.
      * @param array $params the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
-    public function build(ExpressionInterface $condition, &$params = [])
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $operator = $condition->getOperator();
-        $column = $condition->getColumn();
-        $values = $condition->getValues();
+        $operator = $expression->getOperator();
+        $column = $expression->getColumn();
+        $values = $expression->getValues();
 
         if ($column === []) {
             // no columns to test against
@@ -44,14 +44,15 @@ class InConditionBuilder implements ExpressionBuilderInterface
             // ensure values is an array
             $values = (array) $values;
         }
-
         if ($column instanceof \Traversable || ((is_array($column) || $column instanceof \Countable) && count($column) > 1)) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
-        } elseif (is_array($column)) {
+        }
+
+        if (is_array($column)) {
             $column = reset($column);
         }
 
-        $sqlValues = $this->buildValues($condition, $values, $params);
+        $sqlValues = $this->buildValues($expression, $values, $params);
         if (empty($sqlValues)) {
             return $operator === 'IN' ? '0=1' : '';
         }
@@ -59,7 +60,6 @@ class InConditionBuilder implements ExpressionBuilderInterface
         if (strpos($column, '(') === false) {
             $column = $this->queryBuilder->db->quoteColumnName($column);
         }
-
         if (count($sqlValues) > 1) {
             return "$column $operator (" . implode(', ', $sqlValues) . ')';
         }

@@ -14,18 +14,18 @@ class InConditionBuilder extends \yii\db\conditions\InConditionBuilder
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param ExpressionInterface|InCondition $condition the expression to be built.
+     * @param ExpressionInterface|InCondition $expression the expression to be built.
      * @param array $params the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
-    public function build(ExpressionInterface $condition, &$params = [])
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $splitCondition = $this->splitCondition($condition, $params);
+        $splitCondition = $this->splitCondition($expression, $params);
         if ($splitCondition !== null) {
             return $splitCondition;
         }
 
-        return parent::build($condition, $params);
+        return parent::build($expression, $params);
     }
 
     /**

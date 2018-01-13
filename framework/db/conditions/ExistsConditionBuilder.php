@@ -20,14 +20,14 @@ class ExistsConditionBuilder implements ExpressionBuilderInterface
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param ExpressionInterface|ExistsCondition $condition the expression to be built.
+     * @param ExpressionInterface|ExistsCondition $expression the expression to be built.
      * @param array $params the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
-    public function build(ExpressionInterface $condition, &$params = [])
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $operator = $condition->getOperator();
-        $query = $condition->getQuery();
+        $operator = $expression->getOperator();
+        $query = $expression->getQuery();
 
         list($sql, $params) = $this->queryBuilder->build($query, $params);
 

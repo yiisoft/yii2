@@ -160,12 +160,12 @@ are in the ["Quoting Tables" section of the "Database Access Objects" guide](gui
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
 The [[yii\db\Query::where()|where()]] method specifies the `WHERE` fragment of a SQL query. You can use one of
-the three formats to specify a `WHERE` condition:
+the four formats to specify a `WHERE` condition:
 
 - string format, e.g., `'status=1'`
 - hash format, e.g. `['status' => 1, 'type' => 2]`
 - operator format, e.g. `['like', 'name', 'test']`
-
+- object format, e.g. `new LikeCondition('name', 'LIKE', 'test')`
 
 #### String Format <span id="string-format"></span>
 
@@ -306,6 +306,165 @@ the operator can be one of the following:
 Using the Operator Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
 you do not have to add parameters manually.
 
+#### Object Format <span id="object-format"></span>
+
+This is the most powerful, but the most advanced way to define conditions.
+You need to go this way if you want to build your own abstraction over query builder or want to implement
+your own complex conditions.
+
+Objects of condition classes are immutable and only store data regarding the condition and provide getters
+for condition builders. Condition builder is a class that holds all the logic that transforms data 
+stored in condition to the SQL expression.
+
+Internally all the formats described above are implicitly converted to object format prior to raw SQL building,
+so it is possible to combine all the formats above in a single condition:
+
+```php
+$query->andWhere(new OrCondition([
+    new InCondition('type', 'in', $types),
+    ['like', 'name', '%good%'],
+    'disabled=false'
+]))
+```
+
+Conversion from operator format to object format is performed according to
+[[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]] property, that maps operators names
+to representative class names:
+
+- `AND`, `OR` -> `yii\db\conditions\ConjunctionCondition`
+- `NOT` -> `yii\db\conditions\NotCondition`
+- `IN`, `NOT IN` -> `yii\db\conditions\InCondition`
+- `BETWEEN`, `NOT BETWEEN` -> `yii\db\conditions\BetweenCondition`
+
+And so on.
+
+Using the object format makes possible to create your own conditions or change the way default ones get built.
+
+For example, we need to create a condition that will check that all the passed columns are less that some value.
+Using operator format, it would look like this:
+
+```php
+[
+    'and',
+    '>', 'posts', $minLimit,
+    '>', 'comments', $minLimit,
+    '>', 'reactions', $minLimit,
+    '>', 'subscriptions', $minLimit
+]
+```
+
+When this condition is isolated in one code scope, it's quite acceptable, but in case it's about to be reused – it can
+be optimized a lot. Let's create a custom condition object, that will utilize this logic.
+
+First, create a class that implements [[yii\db\conditions\ConditionInterface|ConditionInterface]]:
+
+```php
+namespace app\db\conditions;
+
+class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
+{
+    private $columns;
+    private $value;
+
+    public function __construct(array $columns, $value)
+    {
+        $this->columns = $columns;
+        $this->value = $value;
+    }
+    
+    public static function fromArrayDefinition($operator, $operands)
+    {
+        throw new InvalidParamException('Not implemented yet, but will do it later');
+    }
+    
+    public function getColumns() { return $this->columns; }
+    public function getValue() { return $this->vaule; }
+}
+```
+
+Then create an appropriate builder:
+
+```php
+namespace app\db\conditions;
+
+class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
+{
+    use \yii\db\Condition\ExpressionBuilderTrait;
+
+    public function build(ConditionInterface $condition, &$params)
+    {
+        $value = $condition->getValue();
+        
+        $conditions = [];
+        foreach ($condition->getColumns() as $column) {
+            $conditions[] = new SimpleCondition($column, '>', $value);
+        }
+
+        return $this->queryBuider->buildCondition(new AndCondition($conditions), $params);
+    }
+}
+```
+
+To make [[yii\db\QueryBuilder|QueryBuilder]] know about our new condition, add it to `expressionBuilders` array.
+For example, in application configuration:
+
+```php
+'db' => [
+    'class' => 'yii\db\mysql\Connection',
+    // ...
+    'queryBuilder' => [
+        'expressionBuilders' => [
+            'app\db\conditions\AllGreaterCondition' => 'app\db\conditions\AllGreaterConditionBuilder',
+        ],
+    ],
+],
+```
+
+After that, we can use this condition in `where()`:
+
+```php
+$query->andWhere(new AllGreaterCondition(['posts', 'comments', 'reactions', 'subscriptions'], $minValue));
+```
+
+In case we want to make it possible to create our custom condition using operator format, we should declare it in
+[[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]]:
+
+```php
+'db' => [
+    'class' => 'yii\db\mysql\Connection',
+    // ...
+    'queryBuilder' => [
+        'expressionBuilders' => [
+            'app\db\conditions\AllGreaterCondition' => 'app\db\conditions\AllGreaterConditionBuilder',
+        ],
+        'conditionClasses' => [
+            'ALL>' => 'app\db\conditions\AllGreaterCondition',
+        ],
+    ],
+],
+```
+
+And create real implementation of `AllGreaterCondition` in `app\db\conditions\AllGreaterCondition`:
+
+```php
+namespace app\db\conditions;
+
+class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
+{
+    // ... see the implementation above
+     
+    public static function fromArrayDefinition($operator, $operands)
+    {
+        return new static($operands[0], $operands[1]);
+    }
+}
+```
+    
+After that, we can create our custom condition using shorter operator format:
+
+```php
+$query->andWhere(['ALL>', ['posts', 'comments', 'reactions', 'subscriptions'], $minValue]);
+```
 
 #### Appending Conditions <span id="appending-conditions"></span>
 
@@ -769,4 +928,5 @@ TBD
 ### PostgreSQL `ILIKE`
 
 TBD
+
 

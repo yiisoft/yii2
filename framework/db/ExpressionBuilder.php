@@ -16,7 +16,7 @@ class ExpressionBuilder implements ExpressionBuilderInterface
      * {@inheritdoc}
      * @param Expression|ExpressionInterface $expression the expression to be built
      */
-    public function build(ExpressionInterface $expression, &$params = [])
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
         $params = array_merge($params, $expression->params);
         return $expression->__toString();
