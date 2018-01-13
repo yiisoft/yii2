@@ -455,20 +455,10 @@ class BaseFileHelper
      */
     public static function findFiles($dir, $options = [])
     {
-        if (!is_dir($dir)) {
-            throw new InvalidParamException("The dir argument must be a directory: $dir");
-        }
-        $dir = rtrim($dir, DIRECTORY_SEPARATOR);
-        if (!isset($options['basePath'])) {
-            // this should be done only once
-            $options['basePath'] = realpath($dir);
-            $options = static::normalizeOptions($options);
-        }
+        $dir = self::clearDir($dir);
+        $options = self::setBasePath($dir, $options);
         $list = [];
-        $handle = opendir($dir);
-        if ($handle === false) {
-            throw new InvalidParamException("Unable to open directory: $dir");
-        }
+        $handle = self::openDir($dir);
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {
                 continue;
@@ -476,24 +466,92 @@ class BaseFileHelper
             $path = $dir . DIRECTORY_SEPARATOR . $file;
             if (static::filterPath($path, $options)) {
                 if (is_file($path)) {
-                    if ( !isset( $options['only_directories'] ) || !$options['only_directories'] ) {
-                        $list[] = $path;
-                    }
-                } else {
-                    if ( is_dir( $path ) ) {
-                        if ( isset( $options['include_directories'] ) && $options['include_directories'] ) {
-                            $list[] = $path;
-                        }
-                        if ( ! isset( $options['recursive'] ) || $options['recursive'] ) {
-                            $list = array_merge( $list, static::findFiles( $path, $options ) );
-                        }
-                    }
+                    $list[] = $path;
+                } elseif (is_dir($path) && (!isset($options['recursive']) || $options['recursive'])) {
+                    $list = array_merge($list, static::findFiles($path, $options));
                 }
             }
         }
         closedir($handle);
 
         return $list;
+    }
+
+    /**
+     * Returns the directories found under the specified directory and subdirectories.
+     * @param string $dir the directory under which the files will be looked for.
+     * @param array $options options for directory searching. Valid options are:
+     *
+     * - `filter`: callback, a PHP callback that is called for each directory or file.
+     *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
+     *   The callback can return one of the following values:
+     *
+     *   * `true`: the directory will be returned
+     *   * `false`: the directory will NOT be returned
+     *
+     * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
+     * @return array directories found under the directory, in no particular order. Ordering depends on the files system used.
+     * @throws InvalidParamException if the dir is invalid.
+     * @since 2.0.14
+     */
+    public static function findDirectory($dir, $options = [])
+    {
+        $dir = self::clearDir($dir);
+        $options = self::setBasePath($dir, $options);
+        $list = [];
+        $handle = self::openDir($dir);
+        while (($file = readdir($handle)) !== false) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($path) && static::filterPath($path, $options)) {
+                $list[] = $path;
+                if (!isset($options['recursive']) || $options['recursive']) {
+                    $list = array_merge($list, static::findDirectory($path, $options));
+                }
+            }
+        }
+        closedir($handle);
+
+        return $list;
+    }
+
+    /*
+     * @param string $dir
+     */
+    private static function setBasePath($dir, $options)
+    {
+        if (!isset($options['basePath'])) {
+            // this should be done only once
+            $options['basePath'] = realpath($dir);
+            $options = static::normalizeOptions($options);
+        }
+
+        return $options;
+    }
+
+    /*
+     * @param string $dir
+     */
+    private static function openDir($dir)
+    {
+        $handle = opendir($dir);
+        if ($handle === false) {
+            throw new InvalidParamException("Unable to open directory: $dir");
+        }
+        return $handle;
+    }
+
+    /*
+     * @param string $dir
+     */
+    private static function clearDir($dir)
+    {
+        if (!is_dir($dir)) {
+            throw new InvalidParamException("The dir argument must be a directory: $dir");
+        }
+        return rtrim($dir, DIRECTORY_SEPARATOR);
     }
 
     /**
