@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
 - Enh #9253: Allow `variations` to be a string for `yii\filters\PageCache` and `yii\widgets\FragmentCache` (schojniak, developeruz)
 - Enh #12623: Added `yii\helpers\StringHelper::matchWildcard()` replacing usage of `fnmatch()`, which may be unreliable (klimov-paul)
+- Enh #13176: Added alias for `saveAs` in `yii\web\UploadedFile` (DrDeath72)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
 - Enh #14355: Added ability to pass an empty array as a parameter in console command (developeruz)
 - Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
