@@ -38,36 +38,6 @@ class CacheableWidgetBehaviorTest extends TestCase
         $this->initializeWidgetMocks();
     }
 
-    public function testDefaultCache()
-    {
-        $this->assertEquals('cache', $this->simpleWidget->cache);
-    }
-
-    public function testDefaultDuration()
-    {
-        $this->assertEquals(60, $this->simpleWidget->cacheDuration);
-    }
-
-    public function testDefaultDependency()
-    {
-        $this->assertNull($this->simpleWidget->cacheDependency);
-    }
-
-    public function testDefaultKey()
-    {
-        $this->assertNull($this->simpleWidget->cacheKey);
-    }
-
-    public function testDefaultKeyVariations()
-    {
-        $this->assertEquals([], $this->simpleWidget->cacheKeyVariations);
-    }
-
-    public function testDefaultEnabled()
-    {
-        $this->assertTrue($this->simpleWidget->cacheEnabled);
-    }
-
     public function testWidgetIsRunWhenCacheIsEmpty()
     {
         $this->simpleWidget

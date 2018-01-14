@@ -32,7 +32,7 @@ class CacheableWidgetBehavior extends Behavior
      *
      * @var int
      */
-    public $cacheDuration = 60;
+    public $cacheDuration;
 
     /**
      * Cache dependency or `null` meaning no cache dependency.
@@ -64,45 +64,11 @@ class CacheableWidgetBehavior extends Behavior
     public $cacheEnabled = true;
 
     /**
-     * Cache object.
-     *
-     * @var Cache
-     */
-    private $_cache;
-
-    /**
-     * Cache key.
-     *
-     * @var mixed
-     */
-    private $_cacheKey;
-
-    /**
-     * Owner widget view.
-     *
-     * @var View
-     */
-    private $_view;
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-
-        $this->initializeCache();
-        $this->initializeCacheKey();
-    }
-
-    /**
      * @inheritdoc
      */
     public function attach($owner)
     {
         parent::attach($owner);
-
-        $this->initializeView();
         $this->initializeEventHandlers();
     }
 
@@ -115,12 +81,12 @@ class CacheableWidgetBehavior extends Behavior
     public function beforeRun($event)
     {
         $cacheConfig = [
-            'cache' => $this->_cache,
+            'cache' => Instance::ensure($this->cache, Cache::className()),
             'duration' => $this->cacheDuration,
             'dependency' => $this->cacheDependency,
             'enabled' => $this->cacheEnabled,
         ];
-        if (!$this->_view->beginCache($this->_cacheKey, $cacheConfig)) {
+        if (!$this->owner->view->beginCache($this->getCacheKey(), $cacheConfig)) {
             $event->isValid = false;
         }
     }
@@ -135,40 +101,15 @@ class CacheableWidgetBehavior extends Behavior
         echo $event->result;
         $event->result = null;
 
-        $this->_view->endCache();
+        $this->owner->view->endCache();
     }
 
     /**
-     * Initializes cache instance.
+     * Return cache key.
      */
-    private function initializeCache()
+    private function getCacheKey()
     {
-        $this->_cache = Instance::ensure($this->cache, Cache::className());
-    }
-
-    /**
-     * Initializes cache key.
-     */
-    private function initializeCacheKey()
-    {
-        if ($this->cacheKey !== null) {
-            $this->_cacheKey = $this->cacheKey;
-            return;
-        }
-
-        $this->_cacheKey = [get_class($this->owner)];
-        foreach ($this->cacheKeyVariations as $cacheKeyVariation) {
-            $this->_cacheKey[] = $cacheKeyVariation;
-        }
-    }
-
-
-    /**
-     * Initializes a reference to owner widget view.
-     */
-    private function initializeView()
-    {
-        $this->_view = $this->owner->view;
+        return array_merge([get_class($this->owner)], $this->cacheKeyVariations);
     }
 
     /**
