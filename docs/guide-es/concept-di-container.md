@@ -75,7 +75,7 @@ En este caso, el contenedor usará una llamada de retorno PHP registrada para co
 clase. La llamada de retorno se responsabiliza de que dependencias debe inyectar al nuevo objeto creado. Por ejemplo,
 
 ```php
-$container->set('Foo', function () {
+$container->set('Foo', function ($container, $params, $config) {
     return new Foo(new Bar);
 });
 

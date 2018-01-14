@@ -327,7 +327,7 @@ tandis que  `one` correspond à  `21` ou `101`:
 ```
 
 Ces noms d'arguments spéciaux tels que  `other`, `few`, `many` et autres varient en fonction de la langue. Pour savoir lesquels utiliser pour une locale particulière, reportez-vous aux "Plural Rules, Cardinal" à [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
-En alternative, vous pouvez vous reporter aux  [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+En alternative, vous pouvez vous reporter aux  [rules reference at unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 > Note: le message en russe ci-dessus est principalement utilisé comme message traduit, pas comme message source, sauf si vous définissez la [[yii\base\Application::$sourceLanguage|langue source]] de votre application comme étant `ru-RU` et traduisez à partir du russe.
 >

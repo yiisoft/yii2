@@ -10,6 +10,7 @@ namespace yiiunit\framework\helpers;
 use Yii;
 use yii\helpers\Console;
 use yiiunit\TestCase;
+use yii\base\DynamicModel;
 
 /**
  * @group helpers
@@ -202,6 +203,39 @@ class ConsoleTest extends TestCase
     public function testAnsi2Html($ansi, $html)
     {
         $this->assertEquals($html, Console::ansiToHtml($ansi));
+    }
+
+    public function testErrorSummary()
+    {
+        $model = new TestConsoleModel();
+        $model->name = 'not_an_integer';
+        $model->addError('name', 'Error message. Here are some chars: < >');
+        $model->addError('name', 'Error message. Here are even more chars: ""');
+        $model->validate(null, false);
+        $options = ['showAllErrors' => true];
+        $expectedHtml =  "Error message. Here are some chars: < >\nError message. Here are even more chars: \"\"";
+        $this->assertEquals($expectedHtml, Console::errorSummary($model, $options));
+    }
+}
+
+/**
+ * @property string name
+ * @property array types
+ * @property string description
+ */
+class TestConsoleModel extends DynamicModel
+{
+    public function rules()
+    {
+        return [
+            ['name', 'required'],
+            ['name', 'string', 'max' => 100]
+        ];
+    }
+
+    public function init()
+    {
+        $this->defineAttribute('name');
     }
 
     /**
