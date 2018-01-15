@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #15317: Regenerate CSRF token if an empty value is given (sammousa)
 - Bug #15320: Fixed special role checks in `yii\filters\AccessRule::matchRole()` (Izumi-kun)
 - Bug #15322: Fixed PHP 7.2 compatibility of `FileHelper::getExtensionsByMimeType()` (samdark)
+- Bug #15353: Remove side effect of ActiveQuery::getTablesUsedInFrom() introduced in 2.0.13 (terales)
 - Bug #15355: Fixed `yii\db\Query::from()` does not work with `yii\db\Expression` (vladis84, silverfire, samdark)
 - Bug #15356: Fixed multiple bugs in `yii\db\Query::getTablesUsedInFrom()` (vladis84, samdark)
 - Bug #15380: `FormatConverter::convertDateIcuToPhp()` now converts `a` ICU symbols to `A` (brandonkelly)
