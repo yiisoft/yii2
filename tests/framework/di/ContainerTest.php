@@ -98,8 +98,8 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf($Qux, $foo->bar->qux);
 
         // predefined property parameters
-        $fooSetter = FooProperty::className();
-        $barSetter = BarSetter::className();
+        $fooSetter = FooProperty::class;
+        $barSetter = BarSetter::class;
 
         $container = new Container();
         $container->set('foo', ['class' => $fooSetter, 'bar' => Instance::of('bar')]);

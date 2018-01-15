@@ -17,7 +17,7 @@ namespace yii\filters\auth;
  * {
  *     return [
  *         'basicAuth' => [
- *             'class' => \yii\filters\auth\HttpHeaderAuth::className(),
+ *             'class' => \yii\filters\auth\HttpHeaderAuth::class,
  *         ],
  *     ];
  * }
@@ -37,18 +37,18 @@ class HttpHeaderAuth extends AuthMethod
      * @var string the HTTP header name
      */
     public $header = 'X-Api-Key';
-
     /**
      * @var string a pattern to use to extract the HTTP authentication value
      */
     public $pattern;
+
 
     /**
      * @inheritdoc
      */
     public function authenticate($user, $request, $response)
     {
-        $authHeader = $request->getHeaders()->get($this->header);
+        $authHeader = $request->getHeaderLine('Authorization');
 
         if ($authHeader !== null) {
             if ($this->pattern !== null && preg_match($this->pattern, $authHeader, $matches)) {

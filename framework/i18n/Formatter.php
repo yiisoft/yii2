@@ -725,7 +725,7 @@ class Formatter extends Component
         $timeZone = $this->timeZone;
         // avoid time zone conversion for date-only and time-only values
         if ($type === 'date' || $type === 'time') {
-            list($timestamp, $hasTimeInfo, $hasDateInfo) = $this->normalizeDatetimeValue($value, true);
+            [$timestamp, $hasTimeInfo, $hasDateInfo] = $this->normalizeDatetimeValue($value, true);
             if ($type === 'date' && !$hasTimeInfo || $type === 'time' && !$hasDateInfo) {
                 $timeZone = $this->defaultTimeZone;
             }
@@ -1527,7 +1527,7 @@ class Formatter extends Component
 
         $multipliers = array_values($this->measureUnits[$unitType][$unitSystem]);
 
-        list($params, $position) = $this->formatNumber(
+        [$params, $position] = $this->formatNumber(
             $this->normalizeNumericValue($value) * $baseUnit,
             $decimals,
             null,

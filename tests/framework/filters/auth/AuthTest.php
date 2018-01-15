@@ -152,7 +152,7 @@ class AuthTest extends \yiiunit\TestCase
     public function testHttpHeaderAuth($token, $login)
     {
         Yii::$app->request->headers->set('X-Api-Key', $token);
-        $filter = ['class' => HttpHeaderAuth::className()];
+        $filter = ['class' => HttpHeaderAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
     }
 

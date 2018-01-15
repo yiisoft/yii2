@@ -527,7 +527,7 @@ $
 PATTERN;
                 if (preg_match($pattern, $tableName, $matches)) {
                     if (isset($matches[2])) {
-                        list(, $tableName, $alias) = $matches;
+                        [, $tableName, $alias] = $matches;
                     } else {
                         $tableName = $alias = $matches[1];
                     }

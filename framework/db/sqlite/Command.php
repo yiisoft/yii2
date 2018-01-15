@@ -34,7 +34,7 @@ class Command extends \yii\db\Command
 
         $result = null;
         foreach ($statements as $statement) {
-            list($statementSql, $statementParams) = $statement;
+            [$statementSql, $statementParams] = $statement;
             $this->setSql($statementSql)->bindValues($statementParams);
             $result = parent::execute();
         }
@@ -54,9 +54,9 @@ class Command extends \yii\db\Command
             return parent::queryInternal($method, $fetchMode);
         }
 
-        list($lastStatementSql, $lastStatementParams) = array_pop($statements);
+        [$lastStatementSql, $lastStatementParams] = array_pop($statements);
         foreach ($statements as $statement) {
-            list($statementSql, $statementParams) = $statement;
+            [$statementSql, $statementParams] = $statement;
             $this->setSql($statementSql)->bindValues($statementParams);
             parent::execute();
         }

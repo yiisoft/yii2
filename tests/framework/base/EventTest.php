@@ -97,7 +97,7 @@ class EventTest extends TestCase
      */
     public function testOnWildcard()
     {
-        Event::on(Post::className(), '*', function ($event) {
+        Event::on(Post::class, '*', function ($event) {
             $this->counter += 1;
         });
         Event::on('*\Post', 'save', function ($event) {
@@ -108,7 +108,7 @@ class EventTest extends TestCase
         $post->save();
         $this->assertEquals(4, $this->counter);
 
-        $this->assertTrue(Event::hasHandlers(Post::className(), 'save'));
+        $this->assertTrue(Event::hasHandlers(Post::class, 'save'));
     }
 
     /**
@@ -120,11 +120,11 @@ class EventTest extends TestCase
         $handler = function ($event) {
             $this->counter++;
         };
-        $this->assertFalse(Event::hasHandlers(Post::className(), 'save'));
+        $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
         Event::on('*\Post', 'save', $handler);
-        $this->assertTrue(Event::hasHandlers(Post::className(), 'save'));
+        $this->assertTrue(Event::hasHandlers(Post::class, 'save'));
         Event::off('*\Post', 'save', $handler);
-        $this->assertFalse(Event::hasHandlers(Post::className(), 'save'));
+        $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
     }
 }
 

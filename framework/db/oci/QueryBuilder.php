@@ -369,7 +369,7 @@ EOD;
             throw new Exception("Operator '$operator' requires two operands.");
         }
 
-        list($column, $values) = $operands;
+        [$column, $values] = $operands;
 
         if ($values instanceof \Traversable) {
             $values = iterator_to_array($values);

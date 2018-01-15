@@ -609,8 +609,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return;
         }
 
-        list($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
-        list($childTable, $childAlias) = $child->getTableNameAndAlias();
+        [$parentTable, $parentAlias] = $parent->getTableNameAndAlias();
+        [$childTable, $childAlias] = $child->getTableNameAndAlias();
 
         if (!empty($child->link)) {
             if (strpos($parentAlias, '{{') === false) {
@@ -785,7 +785,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function alias($alias)
     {
         if (empty($this->from) || count($this->from) < 2) {
-            list($tableName) = $this->getTableNameAndAlias();
+            [$tableName] = $this->getTableNameAndAlias();
             $this->from = [$alias => $tableName];
         } else {
             $tableName = $this->getPrimaryTableName();

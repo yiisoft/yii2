@@ -355,14 +355,14 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
-                    'accessChecker' => AccessChecker::className()
+                    'identityClass' => UserIdentity::class,
+                    'accessChecker' => AccessChecker::class
                 ]
             ],
         ];
 
         $this->mockWebApplication($appConfig);
-        $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
+        $this->assertInstanceOf(AccessChecker::class, Yii::$app->user->accessChecker);
     }
 
 }

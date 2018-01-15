@@ -256,7 +256,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
 
     public function testGetTableNames_wontFillFrom()
     {
-        $query = new ActiveQuery(Profile::className());
+        $query = new ActiveQuery(Profile::class);
         $this->assertEquals($query->from, null);
         $query->getTablesUsedInFrom();
         $this->assertEquals($query->from, null);
