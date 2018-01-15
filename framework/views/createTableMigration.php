@@ -38,11 +38,12 @@ class <?= $className ?> extends Migration
     'foreignKeys' => $foreignKeys,
 ])
 ?>
-
-<?= $this->render('_addComments', [
-    'table' => $table,
-    'tableComment' => $tableComment,
-])
+<?php if (!empty($tableComment)) {
+    echo $this->render('_addComments', [
+        'table' => $table,
+        'tableComment' => $tableComment,
+    ]);
+}
 ?>
     }
 
