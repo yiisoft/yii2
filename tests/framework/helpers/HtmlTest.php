@@ -1580,33 +1580,6 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
-    /**
-     * @dataProvider dataProviderPowered
-     *
-     * @param string $language
-     * @param string $expected
-     */
-    public function testPowered($language, $expected)
-    {
-        Yii::$app->language = $language;
-
-        $actual = Html::poweredByYii();
-        $this->assertEquals($expected, $actual);
-    }
-
-    /**
-     * Data provider for [[testPowered()]].
-     * @return array test data
-     */
-    public function dataProviderPowered()
-    {
-        return [
-            ['en_US', 'Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a>'],
-            ['ru_RU', 'Работает на <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a>'],
-            ['uk', 'Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a>'],
-        ];
-    }
-
     public function testActiveTextInput_placeholderFillFromModel()
     {
         $model = new HtmlTestModel();
