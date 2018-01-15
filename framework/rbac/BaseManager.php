@@ -207,11 +207,11 @@ abstract class BaseManager extends Component implements ManagerInterface
         } elseif (is_callable($roles)) {
             $roles = $roles();
             if (!is_array($roles)) {
-                throw new InvalidParamException('Default roles closure must return an array');
+                throw new InvalidArgumentException('Default roles closure must return an array');
             }
             $this->defaultRoles = $roles;
         } else {
-            throw new InvalidParamException('Default roles must be either an array or a callable');
+            throw new InvalidArgumentException('Default roles must be either an array or a callable');
         }
     }
 

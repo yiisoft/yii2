@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\base\InvalidArgumentException;
 use yii\db\ActiveQuery;
 use yii\db\Query;
 
@@ -132,7 +133,7 @@ trait GetTablesAliasTestTrait
         $expression = new \yii\db\Expression('(SELECT id FROM user)');
         $query->from = $expression;
 
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('To use Expression in from() method, pass it in array format with alias.');
         $tables = $query->getTablesUsedInFrom();
 

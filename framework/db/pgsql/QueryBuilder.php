@@ -7,7 +7,7 @@
 
 namespace yii\db\pgsql;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\helpers\StringHelper;
 
 /**
