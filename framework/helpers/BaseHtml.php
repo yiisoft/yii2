@@ -2218,20 +2218,4 @@ class BaseHtml
 
         return $pattern;
     }
-
-    /**
-     * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
-     * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
-     * @since 2.1.0
-     */
-    public static function poweredByYii()
-    {
-        $yiiTitle = Yii::t('yii', 'Yii Framework');
-        $yiiUrl = 'http://www.yiiframework.com/';
-        $yiiLink = static::a($yiiTitle, $yiiUrl , ['rel' => 'external']);
-
-        return Yii::t('yii', 'Powered by {yii}', [
-            'yii' => $yiiLink,
-        ]);
-    }
 }
