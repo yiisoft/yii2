@@ -141,7 +141,7 @@ class AttributeTypecastBehaviorTest extends TestCase
             ->addRule('name', 'string')
             ->addRule('amount', 'integer')
             ->addRule('price', 'number')
-            ->addRule('isActive', 'boolean');
+            ->addRule('!isActive', 'boolean');
 
         $behavior = new AttributeTypecastBehavior();
 

@@ -13,6 +13,7 @@ use yii\filters\auth\AuthMethod;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
+use yii\filters\auth\HttpHeaderAuth;
 use yii\helpers\ArrayHelper;
 use yii\rest\Controller;
 use yii\web\UnauthorizedHttpException;
@@ -148,6 +149,18 @@ class AuthTest extends \yiiunit\TestCase
      * @param string|null $token
      * @param string|null $login
      */
+    public function testHttpHeaderAuth($token, $login)
+    {
+        Yii::$app->request->headers->set('X-Api-Key', $token);
+        $filter = ['class' => HttpHeaderAuth::className()];
+        $this->ensureFilterApplies($token, $login, $filter);
+    }
+
+    /**
+     * @dataProvider tokenProvider
+     * @param string|null $token
+     * @param string|null $login
+     */
     public function testHttpBearerAuth($token, $login)
     {
         Yii::$app->request->addHeader('Authorization', "Bearer $token");
@@ -163,6 +176,7 @@ class AuthTest extends \yiiunit\TestCase
             ['yii\filters\auth\CompositeAuth'],
             ['yii\filters\auth\HttpBearerAuth'],
             ['yii\filters\auth\QueryParamAuth'],
+            ['yii\filters\auth\HttpHeaderAuth'],
         ];
     }
 

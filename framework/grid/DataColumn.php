@@ -98,7 +98,9 @@ class DataColumn extends Column
      * @var string|array|null|false the HTML code representing a filter input (e.g. a text field, a dropdown list)
      * that is used for this data column. This property is effective only when [[GridView::filterModel]] is set.
      *
-     * - If this property is not set, a text field will be generated as the filter input;
+     * - If this property is not set, a text field will be generated as the filter input with attributes defined
+     *   with [[filterInputOptions]]. See [[\yii\helpers\BaseHtml::activeInput]] for details on how an active
+     *   input tag is generated.
      * - If this property is an array, a dropdown list will be generated that uses this property value as
      *   the list options.
      * - If you don't want a filter for this data column, set this value to be false.
@@ -110,6 +112,10 @@ class DataColumn extends Column
      * render the HTML attributes for the generated filter input fields.
      * By default a `'class' => 'form-control'` element will be added if no class has been specified.
      * If you do not want to create a class attribute, you can specify `['class' => null]`.
+     * 
+     * Empty `id` in the default value ensures that id would not be obtained from the model attribute thus
+     * providing better performance.
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $filterInputOptions = [];

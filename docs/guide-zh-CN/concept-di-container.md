@@ -69,7 +69,7 @@ $container->get('Foo', [], [
 这种情况下，容器将使用一个注册过的 PHP 回调创建一个类的新实例。回调负责解决依赖并将其恰当地注入新创建的对象。例如：
 
 ```php
-$container->set('Foo', function () {
+$container->set('Foo', function ($container, $params, $config) {
     return new Foo(new Bar);
 });
 

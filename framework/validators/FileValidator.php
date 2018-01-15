@@ -77,6 +77,15 @@ class FileValidator extends Validator
      * @see tooMany for the customized message when too many files are uploaded.
      */
     public $maxFiles = 1;
+
+    /**
+     * @var int the minimum file count the given attribute can hold.
+     * Defaults to 0. Higher value means at least that number of files should be uploaded.
+     *
+     * @see tooFew for the customized message when too few files are uploaded.
+     * @since 2.0.14
+     */
+    public $minFiles = 0;
     /**
      * @var string the error message used when a file is not uploaded correctly.
      */
@@ -117,6 +126,18 @@ class FileValidator extends Validator
      * - {limit}: the value of [[maxFiles]]
      */
     public $tooMany;
+
+    /**
+     * @var string the error message used if the count of multiple uploads less that minFiles.
+     * You may use the following tokens in the message:
+     *
+     * - {attribute}: the attribute name
+     * - {limit}: the value of [[minFiles]]
+     *
+     * @since 2.0.14
+     */
+    public $tooFew;
+
     /**
      * @var string the error message used when the uploaded file has an extension name
      * that is not listed in [[extensions]]. You may use the following tokens in the message:
@@ -153,6 +174,9 @@ class FileValidator extends Validator
         if ($this->tooMany === null) {
             $this->tooMany = Yii::t('yii', 'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.');
         }
+        if ($this->tooFew === null) {
+            $this->tooFew = Yii::t('yii', 'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.');
+        }
         if ($this->wrongExtension === null) {
             $this->wrongExtension = Yii::t('yii', 'Only files with these extensions are allowed: {extensions}.');
         }
@@ -182,30 +206,36 @@ class FileValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($this->maxFiles != 1) {
-            $files = $model->$attribute;
-            if (!is_array($files)) {
+        if ($this->maxFiles != 1 || $this->minFiles > 1) {
+            $rawFiles = $model->$attribute;
+            if (!is_array($rawFiles)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
 
                 return;
             }
-            foreach ($files as $i => $file) {
-                if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
-                    unset($files[$i]);
-                }
-            }
+
+            $files = $this->filterFiles($rawFiles);
             $model->$attribute = $files;
+
             if (empty($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
+
+                return;
             }
-            if ($this->maxFiles && count($files) > $this->maxFiles) {
+
+            $filesCount = count($files);
+            if ($this->maxFiles && $filesCount > $this->maxFiles) {
                 $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
-            } else {
-                foreach ($files as $file) {
-                    $result = $this->validateValue($file);
-                    if (!empty($result)) {
-                        $this->addError($model, $attribute, $result[0], $result[1]);
-                    }
+            }
+            
+            if ($this->minFiles && $this->minFiles > $filesCount) {
+                $this->addError($model, $attribute, $this->tooFew, ['limit' => $this->minFiles]);
+            }
+
+            foreach ($files as $file) {
+                $result = $this->validateValue($file);
+                if (!empty($result)) {
+                    $this->addError($model, $attribute, $result[0], $result[1]);
                 }
             }
         } else {
@@ -214,6 +244,24 @@ class FileValidator extends Validator
                 $this->addError($model, $attribute, $result[0], $result[1]);
             }
         }
+    }
+
+    /**
+     * Files filter.
+     * @param array $files
+     * @return UploadedFile[]
+     */
+    private function filterFiles(array $files)
+    {
+        $result = [];
+
+        foreach ($files as $fileName => $file) {
+            if ($file instanceof UploadedFile && $file->error !== UPLOAD_ERR_NO_FILE) {
+                $result[$fileName] = $file;
+            }
+        }
+
+        return $result;
     }
 
     /**

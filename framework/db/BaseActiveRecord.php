@@ -894,8 +894,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Initializes the object.
      * This method is called at the end of the constructor.
      * The default implementation will trigger an [[EVENT_INIT]] event.
-     * If you override this method, make sure you call the parent implementation at the end
-     * to ensure triggering of the event.
      */
     public function init()
     {

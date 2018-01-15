@@ -259,6 +259,12 @@ _MSG_
                 'offers',
                 [13],
             ],
+            [
+                '{gender, select, female{Уважаемая} other{Уважаемый}} {firstname},',
+                'Уважаемый Vadim,',
+                ['gender' => null,
+                 'firstname' => 'Vadim'],
+            ],
         ];
     }
 

@@ -26,31 +26,22 @@ namespace yii\filters\auth;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class HttpBearerAuth extends AuthMethod
+class HttpBearerAuth extends HttpHeaderAuth
 {
     /**
-     * @var string the HTTP authentication realm
+     * @inheritdoc
      */
-    public $realm = 'api';
-
+    public $header = 'Authorization';
 
     /**
      * @inheritdoc
      */
-    public function authenticate($user, $request, $response)
-    {
-        $authHeader = $request->getHeaderLine('Authorization');
-        if ($authHeader !== null && preg_match('/^Bearer\s+(.*?)$/', $authHeader, $matches)) {
-            $identity = $user->loginByAccessToken($matches[1], get_class($this));
-            if ($identity === null) {
-                $this->handleFailure($response);
-            }
+    public $pattern = '/^Bearer\s+(.*?)$/';
 
-            return $identity;
-        }
-
-        return null;
-    }
+    /**
+    * @var string the HTTP authentication realm
+    */
+    public $realm = 'api';
 
     /**
      * @inheritdoc

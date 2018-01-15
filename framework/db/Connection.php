@@ -264,8 +264,8 @@ class Connection extends Component
     public $tablePrefix = '';
     /**
      * @var array mapping between PDO driver names and [[Schema]] classes.
-     * The keys of the array are PDO driver names while the values the corresponding
-     * schema class name or configuration. Please refer to [[Yii::createObject()]] for
+     * The keys of the array are PDO driver names while the values are either the corresponding
+     * schema class names or configurations. Please refer to [[Yii::createObject()]] for
      * details on how to specify a configuration.
      *
      * This property is mainly used by [[getSchema()]] when fetching the database schema information.
@@ -292,10 +292,35 @@ class Connection extends Component
     /**
      * @var string the class used to create new database [[Command]] objects. If you want to extend the [[Command]] class,
      * you may configure this property to use your extended version of the class.
+     * Since version 2.0.14 [[$commandMap]] is used if this property is set to its default value.
      * @see createCommand
      * @since 2.0.7
+     * @deprecated 2.0.14 Use [[$commandMap]] for precise configuration.
      */
     public $commandClass = Command::class;
+    /**
+     * @var array mapping between PDO driver names and [[Command]] classes.
+     * The keys of the array are PDO driver names while the values are either the corresponding
+     * command class names or configurations. Please refer to [[Yii::createObject()]] for
+     * details on how to specify a configuration.
+     *
+     * This property is mainly used by [[createCommand()]] to create new database [[Command]] objects.
+     * You normally do not need to set this property unless you want to use your own
+     * [[Command]] class or support DBMS that is not supported by Yii.
+     * @since 2.0.14
+     */
+    public $commandMap = [
+        'pgsql' => 'yii\db\Command', // PostgreSQL
+        'mysqli' => 'yii\db\Command', // MySQL
+        'mysql' => 'yii\db\Command', // MySQL
+        'sqlite' => 'yii\db\sqlite\Command', // sqlite 3
+        'sqlite2' => 'yii\db\sqlite\Command', // sqlite 2
+        'sqlsrv' => 'yii\db\Command', // newer MSSQL driver on MS Windows hosts
+        'oci' => 'yii\db\Command', // Oracle driver
+        'mssql' => 'yii\db\Command', // older MSSQL driver on MS Windows hosts
+        'dblib' => 'yii\db\Command', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
+        'cubrid' => 'yii\db\Command', // CUBRID
+    ];
     /**
      * @var bool whether to enable [savepoint](http://en.wikipedia.org/wiki/Savepoint).
      * Note that if the underlying DBMS does not support savepoint, setting this property to be true will have no effect.
@@ -681,12 +706,17 @@ class Connection extends Component
      */
     public function createCommand($sql = null, $params = [])
     {
+        $driver = $this->getDriverName();
+        $config = ['class' => 'yii\db\Command'];
+        if ($this->commandClass !== $config['class']) {
+            $config['class'] = $this->commandClass;
+        } elseif (isset($this->commandMap[$driver])) {
+            $config = !is_array($this->commandMap[$driver]) ? ['class' => $this->commandMap[$driver]] : $this->commandMap[$driver];
+        }
+        $config['db'] = $this;
+        $config['sql'] = $sql;
         /** @var Command $command */
-        $command = new $this->commandClass([
-            'db' => $this,
-            'sql' => $sql,
-        ]);
-
+        $command = Yii::createObject($config);
         return $command->bindValues($params);
     }
 

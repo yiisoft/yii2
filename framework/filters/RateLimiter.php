@@ -123,7 +123,7 @@ class RateLimiter extends ActionFilter
         }
 
         $user->saveAllowance($request, $action, $allowance - 1, $current);
-        $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance) * $window / $limit));
+        $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance + 1) * $window / $limit));
     }
 
     /**

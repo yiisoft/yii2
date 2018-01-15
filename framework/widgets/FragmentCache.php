@@ -53,7 +53,7 @@ class FragmentCache extends Widget
      */
     public $dependency;
     /**
-     * @var array list of factors that would cause the variation of the content being cached.
+     * @var string[]|string list of factors that would cause the variation of the content being cached.
      * Each factor is a string representing a variation (e.g. the language, a GET parameter).
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
@@ -191,13 +191,6 @@ class FragmentCache extends Widget
      */
     protected function calculateKey()
     {
-        $factors = [__CLASS__, $this->getId()];
-        if (is_array($this->variations)) {
-            foreach ($this->variations as $factor) {
-                $factors[] = $factor;
-            }
-        }
-
-        return $factors;
+        return array_merge([__CLASS__, $this->getId()], (array)$this->variations);
     }
 }

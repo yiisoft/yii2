@@ -6,6 +6,7 @@
  */
 
 namespace yii\base;
+use yii\helpers\StringHelper;
 
 /**
  * ActionFilter is the base class for action filters.
@@ -149,7 +150,7 @@ class ActionFilter extends Behavior
         } else {
             $onlyMatch = false;
             foreach ($this->only as $pattern) {
-                if (fnmatch($pattern, $id)) {
+                if (StringHelper::matchWildcard($pattern, $id)) {
                     $onlyMatch = true;
                     break;
                 }
@@ -158,7 +159,7 @@ class ActionFilter extends Behavior
 
         $exceptMatch = false;
         foreach ($this->except as $pattern) {
-            if (fnmatch($pattern, $id)) {
+            if (StringHelper::matchWildcard($pattern, $id)) {
                 $exceptMatch = true;
                 break;
             }
