@@ -30,16 +30,16 @@ class CorsTest extends TestCase
         $cors = new Cors();
         $cors->request = $request;
 
-        $_SERVER['REQUEST_METHOD'] = 'OPTIONS';
-        $request->headers->set('Access-Control-Request-Method', 'GET');
+        $request->setMethod('OPTIONS');
+        $request->setHeader('Access-Control-Request-Method', 'GET');
         $this->assertFalse($cors->beforeAction($action));
         $this->assertEquals(200, $cors->response->getStatusCode());
 
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $request->headers->set('Access-Control-Request-Method', 'GET');
+        $request->setMethod('GET');
+        $request->setHeader('Access-Control-Request-Method', 'GET');
         $this->assertTrue($cors->beforeAction($action));
 
-        $request->headers->remove('Access-Control-Request-Method');
+        $request->setHeaders([]);
         $this->assertTrue($cors->beforeAction($action));
     }
 }

@@ -91,6 +91,13 @@ class AuthTest extends \yiiunit\TestCase
         }
     }
 
+    public function ensureFilterApplies($token, $login, $filter)
+    {
+        $this->authOnly($token, $login, $filter);
+        $this->authOptional($token, $login, $filter);
+        $this->authExcept($token, $login, $filter);
+    }
+
     /**
      * @dataProvider tokenProvider
      * @param string|null $token
@@ -151,7 +158,7 @@ class AuthTest extends \yiiunit\TestCase
      */
     public function testHttpHeaderAuth($token, $login)
     {
-        Yii::$app->request->headers->set('X-Api-Key', $token);
+        Yii::$app->request->setHeader('X-Api-Key', $token);
         $filter = ['class' => HttpHeaderAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
     }

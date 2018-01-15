@@ -133,7 +133,7 @@ class RateLimiterTest extends TestCase
         $rateLimiter = new RateLimiter();
         $response = Yii::$app->response;
         $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, $response, 'testAction');
-        $headers = $response->getHeaders();
+        $headers = $response->getHeaderCollection();
         $this->assertEquals(2, $headers->get('X-Rate-Limit-Limit'));
         $this->assertEquals(1, $headers->get('X-Rate-Limit-Remaining'));
         $this->assertEquals(5, $headers->get('X-Rate-Limit-Reset'));

@@ -48,7 +48,7 @@ class HttpHeaderAuth extends AuthMethod
      */
     public function authenticate($user, $request, $response)
     {
-        $authHeader = $request->getHeaderLine('Authorization');
+        $authHeader = $request->getHeaderLine($this->header);
 
         if ($authHeader !== null) {
             if ($this->pattern !== null && preg_match($this->pattern, $authHeader, $matches)) {
