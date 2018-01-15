@@ -46,7 +46,6 @@ return [
     'Page not found.' => 'Nie odnaleziono strony.',
     'Please fix the following errors:' => 'Proszę poprawić następujące błędy:',
     'Please upload a file.' => 'Proszę wgrać plik.',
-    'Powered by {yii}' => 'Powered by {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Wyświetlone <b>{begin, number}-{end, number}</b> z <b>{totalCount, number}</b> {totalCount, plural, one{rekordu} other{rekordów}}.',
     'The combination {values} of {attributes} has already been taken.' => 'Zestawienie {values} dla {attributes} jest już w użyciu.',
     'The file "{file}" is not an image.' => 'Plik "{file}" nie jest obrazem.',

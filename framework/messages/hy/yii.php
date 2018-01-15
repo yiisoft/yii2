@@ -43,7 +43,6 @@ return [
     'Page not found.' => 'Էջը չի գտնվել։',
     'Please fix the following errors:' => 'Խնդրում ենք ուղղել հետևյալ սխալները՝',
     'Please upload a file.' => 'Խնդրում ենք վերբեռնել ֆայլ:',
-    'Powered by {yii}' => 'Աշխատում է {yii}ով։',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Ցուցադրված են <b>{begin, number}-ից {end, number}-ը</b> ընդհանուր <b>{totalCount, number}-ից</b>։',
     'The combination {values} of {attributes} has already been taken.' => '{attributes}-ի {values} արժեքների կոմբինացիան արդեն զբաղված է։',
     'The file "{file}" is not an image.' => '«{file}» ֆայլը վավեր նկար չէ։',
