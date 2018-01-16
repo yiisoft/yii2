@@ -80,13 +80,26 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
         $query = new Query();
         $query->from('customer')->orderBy('id');
         $allRows = [];
-        foreach ($query->each(100, $db) as $rows) {
-            $allRows[] = $rows;
+        foreach ($query->each(100, $db) as $index => $rows) {
+            $allRows[$index] = $rows;
         }
         $this->assertCount(3, $allRows);
+        $this->assertArrayHasKey(0, $allRows);
+        $this->assertArrayHasKey(1, $allRows);
+        $this->assertArrayHasKey(2, $allRows);
         $this->assertEquals('user1', $allRows[0]['name']);
         $this->assertEquals('user2', $allRows[1]['name']);
         $this->assertEquals('user3', $allRows[2]['name']);
+
+        // each with default keys in multiple batches
+        $query = new Query();
+        $query->from('customer')->orderBy('id');
+        $allKeys = [];
+        foreach ($query->each(2, $db) as $index => $rows) {
+            $allKeys[] = $index;
+        }
+        $this->assertCount(3, $allKeys);
+        $this->assertSame([0, 1, 2], $allKeys);
 
         // each with key
         $query = new Query();
