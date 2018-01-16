@@ -79,7 +79,7 @@ class ActionFilter extends Behavior
             // beforeFilter and afterFilter should be properly nested
             $this->owner->on(Controller::EVENT_AFTER_ACTION, [$this, 'afterFilter'], null, false);
         } else {
-            $event->_isPropagationStopped = true;
+            $event->stopPropagation();
         }
     }
 

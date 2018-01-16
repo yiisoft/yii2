@@ -211,7 +211,7 @@ class ComponentTest extends TestCase
         $this->assertTrue($this->component->eventHandled);
         $this->assertEquals('click', $this->component->event->name);
         $this->assertEquals($this->component, $this->component->event->getTarget());
-        $this->assertFalse($this->component->event->_isPropagationStopped);
+        $this->assertFalse($this->component->event->isPropagationStopped());
 
         $eventRaised = false;
         $this->component->on('click', function ($event) use (&$eventRaised) {
@@ -276,7 +276,7 @@ class ComponentTest extends TestCase
         $this->assertTrue($this->component->eventHandled);
         $this->assertEquals('click', $this->component->event->name);
         $this->assertEquals($this->component, $this->component->event->getTarget());
-        $this->assertFalse($this->component->event->_isPropagationStopped);
+        $this->assertFalse($this->component->event->isPropagationStopped());
 
         $eventRaised = false;
         $this->component->on('cli*', function ($event) use (&$eventRaised) {
