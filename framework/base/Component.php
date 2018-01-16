@@ -511,7 +511,7 @@ class Component extends BaseObject
      * handler list.
      * @see off()
      */
-    public function on($name, $handler, $params = [], $append = true)
+    public function on($name, $handler, array $params = [], $append = true)
     {
         $this->ensureBehaviors();
 

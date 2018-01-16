@@ -23,8 +23,8 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on Event, see the [guide article on events](guide:concept-events).
  *
- * @property string $name
- * @property object|null $target
+ * @property string $name the event name.
+ * @property object|string|null $target the target/context from which event was triggered.
  * @property array $params
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -33,25 +33,19 @@ use yii\helpers\StringHelper;
 class Event extends BaseObject
 {
     /**
-     * @var string the event name. This property is set by [[Component::trigger()]] and [[trigger()]].
-     * Event handlers may use this property to check what event it is handling.
+     * @var string the event name. Event handlers may use this property to check what event it is handling.
      */
     private $_name;
     /**
-     * @var object the sender of this event. If not set, this property will be
-     * set as the object whose `trigger()` method is called.
-     * This property may also be a `null` when this event is a
-     * class-level event which is triggered in a static context.
+     * @var object|null the target/context from which event was triggered.
      */
     private $_target;
     /**
-     * @var bool whether the event is handled. Defaults to `false`.
-     * When a handler sets this to be `true`, the event processing will stop and
-     * ignore the rest of the uninvoked event handlers.
+     * @var bool whether the propagation of this event is stopped.
      */
     private $_isPropagationStopped = false;
     /**
-     * @var array the data that is passed to [[Component::on()]] when attaching an event handler.
+     * @var array the parameters that are passed to [[Component::on()]] when attaching an event handler.
      * Note that this varies according to which event handler is currently executing.
      */
     private $_params = [];
@@ -103,7 +97,10 @@ class Event extends BaseObject
     }
 
     /**
-     * Get target/context from which event was triggered.
+     * Returns target/context from which event was triggered.
+     * Target usually is set as the object whose `trigger()` method is called.
+     * This property may be a `null` when this event is a class-level event,
+     * which is triggered in a static context.
      * @return object|null target/context from which event was triggered.
      * @since 2.1.0
      */
@@ -113,6 +110,7 @@ class Event extends BaseObject
     }
 
     /**
+     * Sets target/context from which event was triggered.
      * @param object|null $target target/context from which event was triggered.
      * @since 2.1.0
      */
@@ -123,7 +121,9 @@ class Event extends BaseObject
 
     /**
      * Indicate whether or not to stop propagating this event.
-     * @param bool $flag
+     * When a handler sets this to be `true`, the event processing will stop and
+     * ignore the rest of the event handlers, which have not been invoked yet.
+     * @param bool $flag whether or not to stop propagating this event. Default is `true`.
      * @since 2.1.0
      */
     public function stopPropagation($flag = true)
@@ -132,6 +132,7 @@ class Event extends BaseObject
     }
 
     /**
+     * Indicates whether or not the propagation of this event has been stopped.
      * @return bool whether or not the propagation of this event has been stopped.
      * @since 2.1.0
      */
@@ -210,7 +211,7 @@ class Event extends BaseObject
      * handler list.
      * @see off()
      */
-    public static function on($class, $name, $handler, $params = [], $append = true)
+    public static function on($class, $name, $handler, array $params = [], $append = true)
     {
         $class = ltrim($class, '\\');
 
@@ -393,8 +394,8 @@ class Event extends BaseObject
         $event->stopPropagation(false);
 
         if (is_object($class)) {
-            if ($event->target === null) {
-                $event->target = $class;
+            if ($event->getTarget() === null) {
+                $event->setTarget($class);
             }
             $class = get_class($class);
         } else {
