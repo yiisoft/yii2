@@ -18,16 +18,32 @@ class EventTest extends TestCase
 {
     public $counter;
 
+    /**
+     * {@inheritdoc}
+     */
     protected function setUp()
     {
         $this->counter = 0;
         Event::offAll();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function tearDown()
     {
         parent::tearDown();
         Event::offAll();
+    }
+
+    public function testSetupName()
+    {
+        $event = new Event();
+        $event->setName('some.event');
+        $this->assertSame('some.event', $event->getName());
+
+        $event = new Event();
+        $this->assertSame('yii.base.event', $event->getName());
     }
 
     public function testOn()

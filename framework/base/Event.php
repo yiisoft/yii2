@@ -75,7 +75,7 @@ class Event extends BaseObject
     public function getName()
     {
         if ($this->_name === null) {
-            $this->_name = str_replace('\\', '.', strtolower(get_class($this)));
+            $this->_name = $this->defaultName();
         }
         return $this->_name;
     }
@@ -88,6 +88,18 @@ class Event extends BaseObject
     public function setName($name)
     {
         $this->_name = $name;
+    }
+
+    /**
+     * Generates default event name to be used in case it is not explicitly set.
+     * By default this method generates event name from its class name, converting it to 'dot.separated.string' format.
+     * Child classes may override this method providing their own implementation.
+     * @return string default event name.
+     * @since 2.1.0
+     */
+    protected function defaultName()
+    {
+        return str_replace('\\', '.', strtolower(get_class($this)));
     }
 
     /**
