@@ -159,6 +159,12 @@ Upgrade from Yii 2.0.x
   this package manually for your project.
 * `yii\BaseYii::powered()` method has been removed. Please add "Powered by Yii" link either right into HTML or using
   `yii\helpers\Html::a()`.
+* Public interface of the `yii\base\Event` class have been changed to match commonly used event notations. Field `$sender`
+  converted into virtual property `$target`, field `$data` converted into virtual property `$params`. Public field `$handled`
+  has been removed - use methods `stopPropagation()` and `isPropagationStopped()` instead.
+* Signature of the methods `yii\base\Component::trigger()` and `yii\base\Event::trigger()` has been changed, removing
+  `$name` argument and allowing `$event` to be a string event name. Make sure you invoke these methods correctly and apply
+  new signature in case you override them.
 
 
 Upgrade from Yii 2.0.13
