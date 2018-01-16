@@ -130,10 +130,10 @@ class EmailValidatorTest extends TestCase
 
     public function testValidateAttribute()
     {
-        $val = new EmailValidator();
+        $validator = new EmailValidator();
         $model = new FakedValidationModel();
         $model->attr_email = '5011@gmail.com';
-        $val->validateAttribute($model, 'attr_email');
+        $validator->validateAttribute($model, 'attr_email');
         $this->assertFalse($model->hasErrors('attr_email'));
     }
 
@@ -165,17 +165,34 @@ class EmailValidatorTest extends TestCase
     }
 
     /**
-     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074.
+     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074 while IDN is disabled.
      * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
      * @dataProvider malformedAddressesProvider
      * @param string $value
      */
-    public function testMalformedAddresses($value)
+    public function testMalformedAddressesIdnDisabled($value)
     {
-        $val = new EmailValidator();
-        $this->assertFalse($val->validate($value));
+        $validator = new EmailValidator();
+        $validator->enableIDN = false;
+        $this->assertFalse($validator->validate($value));
+    }
 
+    /**
+     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074 while IDN is enabled.
+     * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
+     *
+     * @dataProvider malformedAddressesProvider
+     * @param string $value
+     */
+    public function testMalformedAddressesIdnEnabled($value)
+    {
+        if (!function_exists('idn_to_ascii')) {
+            $this->markTestSkipped('Intl extension required');
+            return;
+        }
+
+        $val = new EmailValidator();
         $val->enableIDN = true;
         $this->assertFalse($val->validate($value));
     }
