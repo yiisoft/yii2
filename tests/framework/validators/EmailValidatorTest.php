@@ -40,6 +40,7 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($validator->validate('info@örtliches.de'));
         $this->assertFalse($validator->validate('sam@рмкреатиф.ru'));
         $this->assertFalse($validator->validate('ex..ample@example.com'));
+        $this->assertFalse($validator->validate(['developer@yiiframework.com']));
 
         $validator->allowName = true;
 
@@ -59,6 +60,7 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($validator->validate('John Smith <example.com>'));
         $this->assertFalse($validator->validate('Short Name <localPartMoreThan64Characters-blah-blah-blah-blah-blah-blah-blah-blah@example.com>'));
         $this->assertFalse($validator->validate('Short Name <domainNameIsMoreThan254Characters@example-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah.com>'));
+        $this->assertFalse($validator->validate(['developer@yiiframework.com']));
     }
 
     public function testValidateValueIdn()
