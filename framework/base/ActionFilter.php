@@ -77,7 +77,7 @@ class ActionFilter extends Behavior
         if ($event->isValid) {
             // call afterFilter only if beforeFilter succeeds
             // beforeFilter and afterFilter should be properly nested
-            $this->owner->on(Controller::EVENT_AFTER_ACTION, [$this, 'afterFilter'], null, false);
+            $this->owner->on(Controller::EVENT_AFTER_ACTION, [$this, 'afterFilter'], [], false);
         } else {
             $event->stopPropagation();
         }

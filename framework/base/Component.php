@@ -504,30 +504,30 @@ class Component extends BaseObject
      *
      * @param string $name the event name
      * @param callable $handler the event handler
-     * @param mixed $data the data to be passed to the event handler when the event is triggered.
+     * @param array $params the parameters to be passed to the event handler when the event is triggered.
      * When the event handler is invoked, this data can be accessed via [[Event::data]].
      * @param bool $append whether to append new event handler to the end of the existing
      * handler list. If false, the new handler will be inserted at the beginning of the existing
      * handler list.
      * @see off()
      */
-    public function on($name, $handler, $data = null, $append = true)
+    public function on($name, $handler, $params = [], $append = true)
     {
         $this->ensureBehaviors();
 
         if (strpos($name, '*') !== false) {
             if ($append || empty($this->_eventWildcards[$name])) {
-                $this->_eventWildcards[$name][] = [$handler, $data];
+                $this->_eventWildcards[$name][] = [$handler, $params];
             } else {
-                array_unshift($this->_eventWildcards[$name], [$handler, $data]);
+                array_unshift($this->_eventWildcards[$name], [$handler, $params]);
             }
             return;
         }
 
         if ($append || empty($this->_events[$name])) {
-            $this->_events[$name][] = [$handler, $data];
+            $this->_events[$name][] = [$handler, $params];
         } else {
-            array_unshift($this->_events[$name], [$handler, $data]);
+            array_unshift($this->_events[$name], [$handler, $params]);
         }
     }
 
@@ -628,7 +628,7 @@ class Component extends BaseObject
             }
             $event->stopPropagation(false);
             foreach ($eventHandlers as $handler) {
-                $event->data = $handler[1];
+                $event->setParams($handler[1]);
                 call_user_func($handler[0], $event);
                 // stop further handling if the event is handled
                 if ($event->isPropagationStopped()) {

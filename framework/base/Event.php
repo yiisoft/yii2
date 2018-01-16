@@ -25,6 +25,7 @@ use yii\helpers\StringHelper;
  *
  * @property string $name
  * @property object|null $target
+ * @property array $params
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -49,12 +50,11 @@ class Event extends BaseObject
      * ignore the rest of the uninvoked event handlers.
      */
     private $_isPropagationStopped = false;
-
     /**
-     * @var mixed the data that is passed to [[Component::on()]] when attaching an event handler.
+     * @var array the data that is passed to [[Component::on()]] when attaching an event handler.
      * Note that this varies according to which event handler is currently executing.
      */
-    public $data;
+    private $_params = [];
 
     /**
      * @var array contains all globally registered event handlers.
@@ -129,6 +129,39 @@ class Event extends BaseObject
     }
 
     /**
+     * @return array
+     * @since 2.1.0
+     */
+    public function getParams()
+    {
+        return $this->_params;
+    }
+
+    /**
+     * @param array $params
+     * @since 2.1.0
+     */
+    public function setParams(array $params)
+    {
+        $this->_params = $params;
+    }
+
+    /**
+     * Get a single parameter by name
+     * @param string $name parameter name.
+     * @param mixed|null $default default value.
+     * @return mixed parameter value.
+     * @since 2.1.0
+     */
+    public function getParam($name, $default = null)
+    {
+        if (array_key_exists($name, $this->_params)) {
+            return $this->_params[$name];
+        }
+        return $default;
+    }
+
+    /**
      * Attaches an event handler to a class-level event.
      *
      * When a class-level event is triggered, event handlers attached
@@ -158,30 +191,30 @@ class Event extends BaseObject
      * @param string $class the fully qualified class name to which the event handler needs to attach.
      * @param string $name the event name.
      * @param callable $handler the event handler.
-     * @param mixed $data the data to be passed to the event handler when the event is triggered.
+     * @param array $params the parameters to be passed to the event handler when the event is triggered.
      * When the event handler is invoked, this data can be accessed via [[Event::data]].
      * @param bool $append whether to append new event handler to the end of the existing
      * handler list. If `false`, the new handler will be inserted at the beginning of the existing
      * handler list.
      * @see off()
      */
-    public static function on($class, $name, $handler, $data = null, $append = true)
+    public static function on($class, $name, $handler, $params = [], $append = true)
     {
         $class = ltrim($class, '\\');
 
         if (strpos($class, '*') !== false || strpos($name, '*') !== false) {
             if ($append || empty(self::$_eventWildcards[$name][$class])) {
-                self::$_eventWildcards[$name][$class][] = [$handler, $data];
+                self::$_eventWildcards[$name][$class][] = [$handler, $params];
             } else {
-                array_unshift(self::$_eventWildcards[$name][$class], [$handler, $data]);
+                array_unshift(self::$_eventWildcards[$name][$class], [$handler, $params]);
             }
             return;
         }
 
         if ($append || empty(self::$_events[$name][$class])) {
-            self::$_events[$name][$class][] = [$handler, $data];
+            self::$_events[$name][$class][] = [$handler, $params];
         } else {
-            array_unshift(self::$_events[$name][$class], [$handler, $data]);
+            array_unshift(self::$_events[$name][$class], [$handler, $params]);
         }
     }
 
@@ -375,7 +408,7 @@ class Event extends BaseObject
             }
 
             foreach ($eventHandlers as $handler) {
-                $event->data = $handler[1];
+                $event->setParams($handler[1]);
                 call_user_func($handler[0], $event);
                 if ($event->isPropagationStopped()) {
                     return;
