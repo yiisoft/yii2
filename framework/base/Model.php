@@ -381,8 +381,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      */
     public function beforeValidate()
     {
-        $event = new ModelEvent();
-        $this->trigger(self::EVENT_BEFORE_VALIDATE, $event);
+        $event = new ModelEvent(['name' => self::EVENT_BEFORE_VALIDATE]);
+        $this->trigger($event);
 
         return $event->isValid;
     }

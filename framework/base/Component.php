@@ -595,12 +595,17 @@ class Component extends BaseObject
      * Triggers an event.
      * This method represents the happening of an event. It invokes
      * all attached handlers for the event including class-level handlers.
-     * @param string $name the event name
-     * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
+     * @param Event|string $event the event instance or name. If string name passed, a default [[Event]] object will be created.
      */
-    public function trigger($name, Event $event = null)
+    public function trigger($event)
     {
         $this->ensureBehaviors();
+
+        if (is_object($event)) {
+            $name = $event->getName();
+        } else {
+            $name = $event;
+        }
 
         $eventHandlers = [];
         foreach ($this->_eventWildcards as $wildcard => $handlers) {
@@ -614,26 +619,26 @@ class Component extends BaseObject
         }
 
         if (!empty($eventHandlers)) {
-            if ($event === null) {
+            if (!is_object($event)) {
                 $event = new Event();
+                $event->setName($name);
             }
-            if ($event->sender === null) {
-                $event->sender = $this;
+            if ($event->getTarget() === null) {
+                $event->setTarget($this);
             }
-            $event->handled = false;
-            $event->name = $name;
+            $event->stopPropagation(false);
             foreach ($eventHandlers as $handler) {
                 $event->data = $handler[1];
                 call_user_func($handler[0], $event);
                 // stop further handling if the event is handled
-                if ($event->handled) {
+                if ($event->isPropagationStopped()) {
                     return;
                 }
             }
         }
 
         // invoke class-level attached handlers
-        Event::trigger($this, $name, $event);
+        Event::trigger($this, $event);
     }
 
     /**

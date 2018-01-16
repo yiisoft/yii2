@@ -279,8 +279,11 @@ abstract class BaseMailer extends Component implements MailerInterface
      */
     public function beforeSend($message)
     {
-        $event = new MailEvent(['message' => $message]);
-        $this->trigger(self::EVENT_BEFORE_SEND, $event);
+        $event = new MailEvent([
+            'name' => self::EVENT_BEFORE_SEND,
+            'message' => $message,
+        ]);
+        $this->trigger($event);
 
         return $event->isValid;
     }
@@ -294,7 +297,11 @@ abstract class BaseMailer extends Component implements MailerInterface
      */
     public function afterSend($message, $isSuccessful)
     {
-        $event = new MailEvent(['message' => $message, 'isSuccessful' => $isSuccessful]);
-        $this->trigger(self::EVENT_AFTER_SEND, $event);
+        $event = new MailEvent([
+            'name' => self::EVENT_AFTER_SEND,
+            'message' => $message,
+            'isSuccessful' => $isSuccessful
+        ]);
+        $this->trigger($event);
     }
 }

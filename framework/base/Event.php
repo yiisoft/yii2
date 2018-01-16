@@ -23,6 +23,9 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on Event, see the [guide article on events](guide:concept-events).
  *
+ * @property string $name
+ * @property object|null $target
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -32,20 +35,21 @@ class Event extends BaseObject
      * @var string the event name. This property is set by [[Component::trigger()]] and [[trigger()]].
      * Event handlers may use this property to check what event it is handling.
      */
-    public $name;
+    private $_name;
     /**
      * @var object the sender of this event. If not set, this property will be
      * set as the object whose `trigger()` method is called.
      * This property may also be a `null` when this event is a
      * class-level event which is triggered in a static context.
      */
-    public $sender;
+    private $_target;
     /**
      * @var bool whether the event is handled. Defaults to `false`.
      * When a handler sets this to be `true`, the event processing will stop and
      * ignore the rest of the uninvoked event handlers.
      */
-    public $handled = false;
+    private $_isPropagationStopped = false;
+
     /**
      * @var mixed the data that is passed to [[Component::on()]] when attaching an event handler.
      * Note that this varies according to which event handler is currently executing.
@@ -62,6 +66,67 @@ class Event extends BaseObject
      */
     private static $_eventWildcards = [];
 
+
+    /**
+     * Returns event name.
+     * @return string event name.
+     * @since 2.1.0
+     */
+    public function getName()
+    {
+        if ($this->_name === null) {
+            $this->_name = str_replace('\\', '.', strtolower(get_class($this)));
+        }
+        return $this->_name;
+    }
+
+    /**
+     * Sets the event name.
+     * @param string $name event name.
+     * @since 2.1.0
+     */
+    public function setName($name)
+    {
+        $this->_name = $name;
+    }
+
+    /**
+     * Get target/context from which event was triggered.
+     * @return object|null target/context from which event was triggered.
+     * @since 2.1.0
+     */
+    public function getTarget()
+    {
+        return $this->_target;
+    }
+
+    /**
+     * @param object|null $target target/context from which event was triggered.
+     * @since 2.1.0
+     */
+    public function setTarget($target)
+    {
+        $this->_target = $target;
+    }
+
+    /**
+     * Indicate whether or not to stop propagating this event.
+     * @param bool $flag
+     * @since 2.1.0
+     */
+    public function stopPropagation($flag = true)
+    {
+        $this->_isPropagationStopped = $flag;
+    }
+
+    /**
+     * @return bool whether or not the propagation of this event has been stopped.
+     * @since 2.1.0
+     */
+    public function isPropagationStopped()
+    {
+        return $this->_isPropagationStopped;
+    }
 
     /**
      * Attaches an event handler to a class-level event.
@@ -254,11 +319,16 @@ class Event extends BaseObject
      * This method will cause invocation of event handlers that are attached to the named event
      * for the specified class and all its parent classes.
      * @param string|object $class the object or the fully qualified class name specifying the class-level event.
-     * @param string $name the event name.
-     * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
+     * @param Event|string $event the event instance or name. If string name passed, a default [[Event]] object will be created.
      */
-    public static function trigger($class, $name, $event = null)
+    public static function trigger($class, $event)
     {
+        if (is_object($event)) {
+            $name = $event->getName();
+        } else {
+            $name = $event;
+        }
+
         $wildcardEventHandlers = [];
         foreach (self::$_eventWildcards as $nameWildcard => $classHandlers) {
             if (!StringHelper::matchWildcard($nameWildcard, $name)) {
@@ -271,15 +341,15 @@ class Event extends BaseObject
             return;
         }
 
-        if ($event === null) {
+        if (!is_object($event)) {
             $event = new static();
+            $event->setName($name);
         }
-        $event->handled = false;
-        $event->name = $name;
+        $event->stopPropagation(false);
 
         if (is_object($class)) {
-            if ($event->sender === null) {
-                $event->sender = $class;
+            if ($event->target === null) {
+                $event->target = $class;
             }
             $class = get_class($class);
         } else {
@@ -307,7 +377,7 @@ class Event extends BaseObject
             foreach ($eventHandlers as $handler) {
                 $event->data = $handler[1];
                 call_user_func($handler[0], $event);
-                if ($event->handled) {
+                if ($event->isPropagationStopped()) {
                     return;
                 }
             }
