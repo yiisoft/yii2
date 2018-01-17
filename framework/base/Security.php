@@ -589,7 +589,7 @@ class Security extends Component
      * // ...save $hash in database...
      *
      * // during login, validate if the password entered is correct using $hash fetched from database
-     * if (Yii::$app->getSecurity()->validatePassword($password, $hash) {
+     * if (Yii::$app->getSecurity()->validatePassword($password, $hash)) {
      *     // password is good
      * } else {
      *     // password is bad

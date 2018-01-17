@@ -216,7 +216,7 @@ class MessageFormatter extends Component
                 continue;
             }
             $param = trim($token[0]);
-            if (isset($givenParams[$param])) {
+            if (array_key_exists($param, $givenParams)) {
                 // if param is given, replace it with a number
                 if (!isset($map[$param])) {
                     $map[$param] = count($map);

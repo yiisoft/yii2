@@ -7,6 +7,7 @@
 /* @var $className string the new migration class name without namespace */
 /* @var $namespace string the new migration class namespace */
 /* @var $table string the name table */
+/* @var $tableComment string the comment table */
 /* @var $fields array the fields */
 /* @var $foreignKeys array the foreign keys */
 
@@ -36,6 +37,13 @@ class <?= $className ?> extends Migration
     'fields' => $fields,
     'foreignKeys' => $foreignKeys,
 ])
+?>
+<?php if (!empty($tableComment)) {
+    echo $this->render('_addComments', [
+        'table' => $table,
+        'tableComment' => $tableComment,
+    ]);
+}
 ?>
     }
 

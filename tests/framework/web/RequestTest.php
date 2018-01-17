@@ -609,4 +609,28 @@ class RequestTest extends TestCase
 
         $_SERVER = $original;
     }
+
+    public function testGetBodyParam()
+    {
+        $request = new Request();
+
+        $request->setBodyParams([
+            'someParam' => 'some value',
+            'param.dot' => 'value.dot',
+        ]);
+        $this->assertSame('some value', $request->getBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
+        $this->assertSame(null, $request->getBodyParam('unexisting'));
+        $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
+
+        // @see https://github.com/yiisoft/yii2/issues/14135
+        $bodyParams = new \stdClass();
+        $bodyParams->someParam = 'some value';
+        $bodyParams->{'param.dot'} = 'value.dot';
+        $request->setBodyParams($bodyParams);
+        $this->assertSame('some value', $request->getBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
+        $this->assertSame(null, $request->getBodyParam('unexisting'));
+        $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
+    }
 }
