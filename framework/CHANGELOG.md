@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #14903: Fixed route with extra dashes is executed controller while it should not (developeruz)
 - Bug #14916: Fixed `yii\db\Query::each()` iterator key starts from 1 instead of 0 (Vovan-VE)
 - Bug #15046: Throw an `yii\web\HeadersAlreadySentException` if headers were sent before web response (dmirogin)
+- Bug #14980: Fix looping in `yii\i18n\MessageFormatter` tokenize pattern if pattern is invalid (uaoleg, developeruz)
 - Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()` (IceJOKER)
 - Bug #15169: Fixed translating a string when NULL parameter is passed (developeruz)
 - Bug #15194: Fixed `yii\db\QueryBuilder::insert()` to preserve passed params when building a `INSERT INTO ... SELECT` query for MSSQL, PostgreSQL and SQLite (sergeymakinen)
