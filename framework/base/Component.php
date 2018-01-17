@@ -728,14 +728,16 @@ class Component extends BaseObject
      */
     public function ensureBehaviors()
     {
-        if ($this->_behaviors === null) {
-            $this->_behaviors = [];
-            foreach ($this->behaviors() as $name => $behavior) {
-                if (!$name) {
-                    continue;
-                }
-                $this->attachBehaviorInternal($name, $behavior);
+        if ($this->_behaviors !== null) {
+            return;
+        }
+
+        $this->_behaviors = [];
+        foreach ($this->behaviors() as $name => $behavior) {
+            if (!$name) {
+                continue;
             }
+            $this->attachBehaviorInternal($name, $behavior);
         }
     }
 
