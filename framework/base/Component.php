@@ -731,7 +731,9 @@ class Component extends BaseObject
         if ($this->_behaviors === null) {
             $this->_behaviors = [];
             foreach ($this->behaviors() as $name => $behavior) {
-                if (!$name) continue;
+                if (!$name) {
+                    continue;
+                }
                 $this->attachBehaviorInternal($name, $behavior);
             }
         }
