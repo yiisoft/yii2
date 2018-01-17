@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Bug #15122: Fixed `yii\db\Command::getRawSql()` to properly replace expressions (hiscaler, samdark)
 - Enh #15496: CSRF token is now regenerated on changing identity (samdark, rhertogh)
 - Enh #15417: Added `yii\validators\FileValidator::$minFiles` (vladis84)
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
@@ -130,7 +131,6 @@ Yii Framework 2 Change Log
 - Bug #14773: Fixed `yii\widgets\ActiveField::$options` does not support 'class' option in array format (klimov-paul)
 - Bug #14902: Fixed PHP notice in `yii\web\MultipartFormDataParser` (olimsaidov)
 - Bug #14921: Fixed bug with replacing numeric keys in `yii\helpers\Url::current()` (rob006)
-- Bug #15122: Fixed bug with sql error if params has expression in `yii\db\Command::getRawSql()` (hiscaler)
 - Enh #4479: Implemented REST filters (klimov-paul)
 - Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
 - Enh #5786: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN, klimov-paul)
