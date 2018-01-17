@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Enh #15496: CSRF token is now regenerated on changing identity (samdark, rhertogh)
 - Enh #15417: Added `yii\validators\FileValidator::$minFiles` (vladis84)
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
+- Bug #14135: Fixed `yii\web\Request::getBodyParam()` crashes on object type body params (klimov-paul)
 - Bug #14157: Add support for loading default value `CURRENT_TIMESTAMP` of MySQL `datetime` field (rossoneri)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
 - Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
