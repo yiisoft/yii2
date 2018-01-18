@@ -27,8 +27,8 @@ class CheckboxColumnTest extends TestCase
         $this->mockApplication();
         Yii::setAlias('@webroot', '@yiiunit/runtime');
         Yii::setAlias('@web', 'http://localhost/');
-        Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = false;
         FileHelper::createDirectory(Yii::getAlias('@webroot/assets'));
+        Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = false;
     }
 
     public function testInputName()
