@@ -315,11 +315,12 @@ class DateValidatorTest extends TestCase
             ],
         ]);
         $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31/5/2017 12:30'));
+        $this->assertTrue($val->validate('31/05/2017, 12:30'));
         $this->assertFalse($val->validate('5/31/2017 12:30'));
         $val = new DateValidator(['format' => 'short', 'locale' => 'en-GB', 'type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31/5/2017 12:30'));
+        $this->assertTrue($val->validate('31/05/2017, 12:30'));
         $this->assertFalse($val->validate('5/31/2017 12:30'));
+
         $this->mockApplication([
             'language' => 'de-DE',
             'components' => [
@@ -330,10 +331,10 @@ class DateValidatorTest extends TestCase
             ],
         ]);
         $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31.5.2017 12:30'));
+        $this->assertTrue($val->validate('31.05.2017, 12:30'));
         $this->assertFalse($val->validate('5.31.2017 12:30'));
         $val = new DateValidator(['format' => 'short', 'locale' => 'de-DE', 'type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31.5.2017 12:30'));
+        $this->assertTrue($val->validate('31.05.2017, 12:30'));
         $this->assertFalse($val->validate('5.31.2017 12:30'));
     }
 
