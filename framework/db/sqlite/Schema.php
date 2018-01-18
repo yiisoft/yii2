@@ -67,6 +67,7 @@ class Schema extends \yii\db\Schema
         'enum' => self::TYPE_STRING,
     ];
 
+
     /**
      * @inheritDoc
      */
@@ -120,6 +121,7 @@ class Schema extends \yii\db\Schema
                 'onUpdate' => isset($foreignKey[0]['on_update']) ? $foreignKey[0]['on_update'] : null,
             ]);
         }
+
         return $result;
     }
 
@@ -174,6 +176,7 @@ class Schema extends \yii\db\Schema
                 'expression' => $checkSql,
             ]);
         }
+
         return $result;
     }
 
@@ -276,6 +279,7 @@ class Schema extends \yii\db\Schema
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -447,6 +451,7 @@ class Schema extends \yii\db\Schema
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 

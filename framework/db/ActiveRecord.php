@@ -98,7 +98,7 @@ class ActiveRecord extends BaseActiveRecord
 
 
     /**
-     * Loads default values from database table schema
+     * Loads default values from database table schema.
      *
      * You may call this method to load default values after creating a new instance:
      *
@@ -119,6 +119,7 @@ class ActiveRecord extends BaseActiveRecord
                 $this->{$column->name} = $column->defaultValue;
             }
         }
+
         return $this;
     }
 
@@ -484,6 +485,7 @@ class ActiveRecord extends BaseActiveRecord
             } else {
                 $transaction->commit();
             }
+
             return $result;
         } catch (\Exception $e) {
             $transaction->rollBack();
@@ -593,6 +595,7 @@ class ActiveRecord extends BaseActiveRecord
             } else {
                 $transaction->commit();
             }
+
             return $result;
         } catch (\Exception $e) {
             $transaction->rollBack();
@@ -636,6 +639,7 @@ class ActiveRecord extends BaseActiveRecord
             } else {
                 $transaction->commit();
             }
+
             return $result;
         } catch (\Exception $e) {
             $transaction->rollBack();

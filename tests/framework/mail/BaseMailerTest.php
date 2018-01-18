@@ -253,6 +253,9 @@ TEXT
 
     /**
      * @dataProvider htmlAndPlainProvider
+     * @param int $i
+     * @param string $htmlViewFileContent
+     * @param string $expectedTextRendering
      */
     public function testComposePlainTextFallback($i, $htmlViewFileContent, $expectedTextRendering)
     {
@@ -307,7 +310,7 @@ TEXT
 }
 
 /**
- * Test Mailer class
+ * Test Mailer class.
  */
 class Mailer extends BaseMailer
 {
@@ -323,7 +326,7 @@ class Mailer extends BaseMailer
 }
 
 /**
- * Test Message class
+ * Test Message class.
  */
 class Message extends BaseMessage
 {

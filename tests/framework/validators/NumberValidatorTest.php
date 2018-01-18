@@ -133,7 +133,8 @@ class NumberValidatorTest extends TestCase
     {
         $val = new NumberValidator(['min' => 1]);
         $this->assertTrue($val->validate(1));
-        $this->assertFalse($val->validate(-1));
+        $this->assertFalse($val->validate(-1, $error));
+        $this->assertContains('the input value must be no less than 1.', $error);
         $this->assertFalse($val->validate('22e-12'));
         $this->assertTrue($val->validate(PHP_INT_MAX + 1));
         $val = new NumberValidator(['min' => 1], ['integerOnly' => true]);
@@ -250,7 +251,7 @@ class NumberValidatorTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/3118
+     * @see https://github.com/yiisoft/yii2/issues/3118
      */
     public function testClientValidateComparison()
     {

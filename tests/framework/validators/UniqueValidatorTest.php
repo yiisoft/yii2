@@ -395,7 +395,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     }
 
     /**
-     * Test ambiguous column name in select clause
+     * Test ambiguous column name in select clause.
      * @see https://github.com/yiisoft/yii2/issues/14042
      */
     public function testAmbiguousColumnName()
@@ -415,7 +415,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     }
 
     /**
-     * Test expresssion in targetAttribute
+     * Test expresssion in targetAttribute.
      * @see https://github.com/yiisoft/yii2/issues/14304
      */
     public function testExpresionInAttributeColumnName()
@@ -433,5 +433,34 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model->save(false);
         $validator->validateAttribute($model, 'title');
         $this->assertFalse($model->hasErrors(), 'There were errors: ' . json_encode($model->getErrors()));
+    }
+
+    /**
+     * Test validating a class with default scope
+     * @see https://github.com/yiisoft/yii2/issues/14484
+    */
+    public function testFindModelWith()
+    {
+        $validator = new UniqueValidator([
+            'targetAttribute' => ['status', 'profile_id']
+        ]);
+        $model = WithCustomer::find()->one();
+        try {
+            $validator->validateAttribute($model, 'email');
+        } catch (\Exception $exception) {
+            $this->fail('Query is crashed because "with" relation cannot be loaded');
+        }
+
+
+    }
+}
+
+class WithCustomer extends Customer {
+    public static function find() {
+        $res = parent::find();
+
+        $res->with('profile');
+
+        return $res;
     }
 }

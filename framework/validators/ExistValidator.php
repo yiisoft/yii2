@@ -92,7 +92,7 @@ class ExistValidator extends Validator
     {
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $params = $this->prepareConditions($targetAttribute, $model, $attribute);
-        $conditions[] = $this->targetAttributeJunction == 'or' ? 'or' : 'and';
+        $conditions = [$this->targetAttributeJunction == 'or' ? 'or' : 'and'];
 
         if (!$this->allowArray) {
             foreach ($params as $key => $value) {
@@ -184,6 +184,7 @@ class ExistValidator extends Validator
             if (!$this->allowArray) {
                 return [$this->message, []];
             }
+
             return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
         }
 
@@ -210,7 +211,7 @@ class ExistValidator extends Validator
     }
 
     /**
-     * Returns conditions with alias
+     * Returns conditions with alias.
      * @param ActiveQuery $query
      * @param array $conditions array of condition, keys to be modified
      * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
@@ -235,6 +236,7 @@ class ExistValidator extends Validator
 
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
+
         return $prefixedConditions;
     }
 }

@@ -15,7 +15,7 @@ use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 
 /**
- * BaseYiiTest
+ * BaseYiiTest.
  * @group base
  */
 class BaseYiiTest extends TestCase
@@ -91,6 +91,22 @@ class BaseYiiTest extends TestCase
         $this->assertTrue(Yii::createObject(function (Singer $singer, $a = 3) {
             return true;
         }));
+    }
+
+    public function testCreateObjectEmptyArrayException()
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Object configuration must be an array containing a "class" element.');
+
+        Yii::createObject([]);
+    }
+
+    public function testCreateObjectInvalidConfigException()
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Unsupported configuration type: ' . gettype(null));
+
+        Yii::createObject(null);
     }
 
     /**

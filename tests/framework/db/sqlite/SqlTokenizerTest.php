@@ -1119,6 +1119,7 @@ SELECT*from/*foo*/`T_constraints_1`WHERE not`C_check`=\'foo\'\'bar\'--bar
 
     /**
      * @dataProvider sqlProvider
+     * @param string $sql
      */
     public function testTokenizer($sql, SqlToken $expectedToken)
     {

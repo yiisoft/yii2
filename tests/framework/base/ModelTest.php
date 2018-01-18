@@ -153,6 +153,17 @@ class ModelTest extends TestCase
         $this->assertEquals(['firstName', 'lastName', 'underscore_style'], $speaker->activeAttributes());
     }
 
+    public function testActiveAttributesAreUnique()
+    {
+        // by default mass assignment doesn't work at all
+        $speaker = new Speaker();
+        $this->assertEmpty($speaker->activeAttributes());
+
+        $speaker = new Speaker();
+        $speaker->setScenario('duplicates');
+        $this->assertEquals(['firstName', 'underscore_style'], $speaker->activeAttributes());
+    }
+
     public function testIsAttributeSafe()
     {
         // by default mass assignment doesn't work at all
@@ -298,6 +309,9 @@ class ModelTest extends TestCase
             ],
             'lastName' => ['Another one!'],
         ], $speaker->getErrors());
+
+        $this->assertEquals(['Another one!', 'Something is wrong!', 'Totally wrong!'], $speaker->getErrorSummary(true));
+        $this->assertEquals(['Another one!', 'Something is wrong!'], $speaker->getErrorSummary(false));
 
         $speaker->clearErrors('firstName');
         $this->assertEquals([
@@ -451,10 +465,39 @@ class ModelTest extends TestCase
 
         $this->assertTrue($model->validate());
     }
+
+    public function testValidateAttributeNames()
+    {
+        $model = new ComplexModel1();
+        $model->name = 'Some value';
+        $this->assertTrue($model->validate(['name']), 'Should validate only name attribute');
+        $this->assertTrue($model->validate('name'), 'Should validate only name attribute');
+        $this->assertFalse($model->validate(), 'Should validate all attributes');
+    }
+
+    public function testFormNameWithAnonymousClass()
+    {
+        if (PHP_VERSION_ID < 70000) {
+            $this->markTestSkipped('Can not be tested on PHP < 7.0');
+            return;
+        }
+
+        $model = include 'stub/AnonymousModelClass.php';
+
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('The "formName()" method should be explicitly defined for anonymous models');
+
+        $model->formName();
+    }
 }
 
 class ComplexModel1 extends Model
 {
+    public $name;
+    public $description;
+    public $id;
+    public $is_disabled;
+
     public function rules()
     {
         return [

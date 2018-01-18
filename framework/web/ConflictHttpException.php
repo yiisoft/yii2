@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * ConflictHttpException represents a "Conflict" HTTP exception with status code 409
+ * ConflictHttpException represents a "Conflict" HTTP exception with status code 409.
  *
  * @see https://tools.ietf.org/html/rfc7231#section-6.5.8
  * @author Dan Schmidt <danschmidt5189@gmail.com>

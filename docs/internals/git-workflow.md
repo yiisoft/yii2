@@ -37,7 +37,7 @@ The following steps are not necessary if you want to work only on translations o
 
 - run `composer install` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.3.1"`
+> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.4.1"`
 
 If you are going to work with JavaScript:
 
@@ -111,10 +111,10 @@ review your suggestion, and provide appropriate feedback along the way.
 
 > For small changes or documentation issues or straightforward fixes, you don't need to create an issue, a pull request is enough in this case.
 
-### 2. Fetch the latest code from the main Yii branch
+### 2. Pull the latest code from the main Yii branch
 
 ```
-git fetch upstream
+git pull upstream
 ```
 
 You should start at this point for every new contribution to make sure you are working on the latest code.

@@ -95,14 +95,17 @@ class AttributesBehaviorTest extends TestCase
 
     /**
      * @dataProvider preserveNonEmptyValuesDataProvider
+     * @param string $aliasExpected
+     * @param bool $preserveNonEmptyValues
+     * @param string $name
+     * @param string|null $alias
      */
     public function testPreserveNonEmptyValues(
         $aliasExpected,
         $preserveNonEmptyValues,
         $name,
         $alias
-    )
-    {
+    ) {
         $model = new ActiveRecordWithAttributesBehavior();
         $model->attributesBehavior->preserveNonEmptyValues = $preserveNonEmptyValues;
         $model->name = $name;
@@ -119,7 +122,7 @@ class AttributesBehaviorTest extends TestCase
     {
         return [
             [
-                'Johnny',
+                'name: Johnny',
                 [ActiveRecordWithAttributesBehavior::EVENT_BEFORE_VALIDATE => ['name', 'alias']],
                 // 1: name = alias; 2: alias = name; check alias
                 'John Doe', // name
@@ -137,14 +140,17 @@ class AttributesBehaviorTest extends TestCase
 
     /**
      * @dataProvider orderProvider
+     * @param string $aliasExpected
+     * @param array $order
+     * @param string $name
+     * @param string $alias
      */
     public function testOrder(
         $aliasExpected,
         $order,
         $name,
         $alias
-    )
-    {
+    ) {
         $model = new ActiveRecordWithAttributesBehavior();
         $model->attributesBehavior->order = $order;
         $model->name = $name;
@@ -181,8 +187,8 @@ class ActiveRecordWithAttributesBehavior extends ActiveRecord
                         },
                     ],
                     'name' => [
-                        self::EVENT_BEFORE_VALIDATE => function ($event) {
-                            return $event->sender->alias;
+                        self::EVENT_BEFORE_VALIDATE => function ($event, $attribute) {
+                            return $attribute . ': ' . $event->sender->alias;
                         },
                     ],
                 ],

@@ -44,6 +44,7 @@ class ArrayCache extends Cache
         if (isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true))) {
             return $this->_cache[$key][0];
         }
+
         return false;
     }
 

@@ -107,6 +107,7 @@ class Column extends BaseObject
         } else {
             $options = $this->contentOptions;
         }
+
         return Html::tag('td', $this->renderDataCellContent($model, $key, $index), $options);
     }
 

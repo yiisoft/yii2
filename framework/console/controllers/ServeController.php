@@ -12,7 +12,7 @@ use yii\console\Controller;
 use yii\helpers\Console;
 
 /**
- * Runs PHP built-in web server
+ * Runs PHP built-in web server.
  *
  * In order to access server from remote machines use 0.0.0.0:8000. That is especially useful when running server in
  * a virtual machine.
@@ -43,7 +43,7 @@ class ServeController extends Controller
 
 
     /**
-     * Runs PHP built-in web server
+     * Runs PHP built-in web server.
      *
      * @param string $address address to serve on. Either "host" or "host:port".
      *

@@ -10,6 +10,7 @@ namespace yiiunit\framework\db;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
+use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Schema;
 
@@ -56,11 +57,11 @@ abstract class CommandTest extends DatabaseTestCase
         $db = $this->getConnection(false);
 
         $command = $db->createCommand('SELECT * FROM {{customer}}');
-        $this->assertEquals(null, $command->pdoStatement);
+        $this->assertNull($command->pdoStatement);
         $command->prepare();
         $this->assertNotNull($command->pdoStatement);
         $command->cancel();
-        $this->assertEquals(null, $command->pdoStatement);
+        $this->assertNull($command->pdoStatement);
     }
 
     public function testExecute()
@@ -239,8 +240,9 @@ SQL;
     }
 
     /**
-     * Test whether param binding works in other places than WHERE
+     * Test whether param binding works in other places than WHERE.
      * @dataProvider paramsNonWhereProvider
+     * @param string $sql
      */
     public function testBindParamsNonWhere($sql)
     {
@@ -343,7 +345,7 @@ SQL;
             // batch insert on "type" table
             $db->createCommand()->batchInsert('type', $cols, $data)->execute();
 
-            $data = $db->createCommand("SELECT * FROM {{type}} WHERE [[int_col]] IN (1,2,3) ORDER BY [[int_col]];")->queryAll();
+            $data = $db->createCommand('SELECT int_col, char_col, float_col, bool_col FROM {{type}} WHERE [[int_col]] IN (1,2,3) ORDER BY [[int_col]];')->queryAll();
             $this->assertEquals(3, count($data));
             $this->assertEquals(1, $data[0]['int_col']);
             $this->assertEquals(2, $data[1]['int_col']);
@@ -357,7 +359,6 @@ SQL;
             $this->assertEquals('1', $data[0]['bool_col']);
             $this->assertIsOneOf($data[1]['bool_col'], ['0', false]);
             $this->assertIsOneOf($data[2]['bool_col'], ['0', false]);
-
         } catch (\Exception $e) {
             setlocale(LC_NUMERIC, $locale);
             throw $e;
@@ -366,6 +367,50 @@ SQL;
             throw $e;
         }
         setlocale(LC_NUMERIC, $locale);
+    }
+
+    public function batchInsertSqlProvider()
+    {
+        return [
+            'issue11242' => [
+                'type',
+                ['int_col', 'float_col', 'char_col'],
+                [['', '', 'Kyiv {{city}}, Ukraine']],
+
+                'expected' => "INSERT INTO `type` (`int_col`, `float_col`, `char_col`) VALUES (NULL, NULL, 'Kyiv {{city}}, Ukraine')",
+                // See https://github.com/yiisoft/yii2/issues/11242
+                // Make sure curly bracelets (`{{..}}`) in values will not be escaped
+            ],
+            'wrongBehavior' => [
+                '{{%type}}',
+                ['{{%type}}.[[int_col]]', '[[float_col]]', 'char_col'],
+                [['', '', 'Kyiv {{city}}, Ukraine']],
+
+                'expected' => "INSERT INTO `type` (`type`.`int_col`, `float_col`, `char_col`) VALUES ('', '', 'Kyiv {{city}}, Ukraine')",
+                /* Test covers potentially wrong behavior and marks it as expected!
+                 * In case table name or table column is passed with curly or square bracelets,
+                 * QueryBuilder can not determine the table schema and typecast values properly.
+                 * TODO: make it work. Impossible without BC breaking for public methods.
+                 */
+            ],
+        ];
+    }
+
+    /**
+     * Make sure that `{{something}}` in values will not be encoded
+     * https://github.com/yiisoft/yii2/issues/11242.
+     *
+     * @dataProvider batchInsertSqlProvider
+     * @param mixed $table
+     * @param mixed $columns
+     * @param mixed $values
+     * @param mixed $expected
+     */
+    public function testBatchInsertSQL($table, $columns, $values, $expected)
+    {
+        $command = $this->getConnection()->createCommand();
+        $command->batchInsert($table, $columns, $values);
+        $this->assertEquals($expected, $command->getSql());
     }
 
     public function testInsert()
@@ -392,7 +437,7 @@ SQL;
     }
 
     /**
-     * verify that {{}} are not going to be replaced in parameters
+     * verify that {{}} are not going to be replaced in parameters.
      */
     public function testNoTablenameReplacement()
     {
@@ -425,7 +470,7 @@ SQL;
     }
 
     /**
-     * Test INSERT INTO ... SELECT SQL statement
+     * Test INSERT INTO ... SELECT SQL statement.
      */
     public function testInsertSelect()
     {
@@ -479,7 +524,7 @@ SQL;
     }
 
     /**
-     * Test INSERT INTO ... SELECT SQL statement with alias syntax
+     * Test INSERT INTO ... SELECT SQL statement with alias syntax.
      */
     public function testInsertSelectAlias()
     {
@@ -533,7 +578,7 @@ SQL;
     }
 
     /**
-     * Data provider for testInsertSelectFailed
+     * Data provider for testInsertSelectFailed.
      * @return array
      */
     public function invalidSelectColumns()
@@ -546,11 +591,12 @@ SQL;
     }
 
     /**
-     * Test INSERT INTO ... SELECT SQL statement with wrong query object
+     * Test INSERT INTO ... SELECT SQL statement with wrong query object.
      *
      * @dataProvider invalidSelectColumns
      * @expectedException \yii\base\InvalidParamException
      * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
+     * @param mixed $invalidSelectColumns
      */
     public function testInsertSelectFailed($invalidSelectColumns)
     {
@@ -989,7 +1035,7 @@ SQL;
     }
 
     /**
-     * Data provider for [[testGetRawSql()]]
+     * Data provider for [[testGetRawSql()]].
      * @return array test data
      */
     public function dataProviderGetRawSql()
@@ -1023,6 +1069,12 @@ SQL;
                 'SELECT * FROM customer WHERE active = :active',
                 [':active' => false],
                 'SELECT * FROM customer WHERE active = FALSE',
+            ],
+            // https://github.com/yiisoft/yii2/issues/15122
+            [
+                'SELECT * FROM customer WHERE id IN (:ids)',
+                [':ids' => new Expression(implode(', ', [1, 2]))],
+                'SELECT * FROM customer WHERE id IN (1, 2)',
             ],
         ];
     }
@@ -1083,5 +1135,51 @@ SQL;
 
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
+    }
+
+    /**
+     * @group iss
+     */
+    public function testTransaction()
+    {
+        $connection = $this->getConnection(false);
+        $this->assertNull($connection->transaction);
+        $command = $connection->createCommand("INSERT INTO {{profile}}([[description]]) VALUES('command transaction')");
+        $this->invokeMethod($command, 'requireTransaction');
+        $command->execute();
+        $this->assertNull($connection->transaction);
+        $this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'command transaction'")->queryScalar());
+    }
+
+    /**
+     * @group iss
+     */
+    public function testRetryHandler()
+    {
+        $connection = $this->getConnection(false);
+        $this->assertNull($connection->transaction);
+        $connection->createCommand("INSERT INTO {{profile}}([[description]]) VALUES('command retry')")->execute();
+        $this->assertNull($connection->transaction);
+        $this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'command retry'")->queryScalar());
+
+        $attempts = null;
+        $hitHandler = false;
+        $hitCatch = false;
+        $command = $connection->createCommand("INSERT INTO {{profile}}([[id]], [[description]]) VALUES(1, 'command retry')");
+        $this->invokeMethod($command, 'setRetryHandler', [function ($exception, $attempt) use (&$attempts, &$hitHandler) {
+            $attempts = $attempt;
+            $hitHandler = true;
+            return $attempt <= 2;
+        }]);
+        try {
+            $command->execute();
+        } catch (Exception $e) {
+            $hitCatch = true;
+            $this->assertInstanceOf('yii\db\IntegrityException', $e);
+        }
+        $this->assertNull($connection->transaction);
+        $this->assertSame(3, $attempts);
+        $this->assertTrue($hitHandler);
+        $this->assertTrue($hitCatch);
     }
 }

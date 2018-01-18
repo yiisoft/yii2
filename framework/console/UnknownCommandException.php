@@ -94,6 +94,7 @@ class UnknownCommandException extends Exception
                 }
             }
         }
+
         return $this->filterBySimilarity($availableActions, $this->command);
     }
 

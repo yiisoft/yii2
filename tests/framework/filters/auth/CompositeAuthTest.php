@@ -108,7 +108,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
     }
 
     /**
-     * reproducing the issue specified in https://github.com/yiisoft/yii2/issues/7409
+     * @see https://github.com/yiisoft/yii2/issues/7409
      */
     public function testRunAction()
     {
