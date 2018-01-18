@@ -132,6 +132,11 @@ class MigrateController extends BaseMigrateController
      * for creating the object.
      */
     public $db = 'db';
+    /**
+     * @var string the comment for the table being created.
+     * @since 2.0.14
+     */
+    public $comment = '';
 
 
     /**
@@ -143,7 +148,7 @@ class MigrateController extends BaseMigrateController
             parent::options($actionID),
             ['migrationTable', 'db'], // global for all actions
             $actionID === 'create'
-                ? ['templateFile', 'fields', 'useTablePrefix']
+                ? ['templateFile', 'fields', 'useTablePrefix', 'comment']
                 : []
         );
     }
@@ -155,6 +160,7 @@ class MigrateController extends BaseMigrateController
     public function optionAliases()
     {
         return array_merge(parent::optionAliases(), [
+            'c' => 'comment',
             'f' => 'fields',
             'p' => 'migrationPath',
             't' => 'migrationTable',
@@ -437,6 +443,7 @@ class MigrateController extends BaseMigrateController
             'table' => $this->generateTableName($table),
             'fields' => $fields,
             'foreignKeys' => $foreignKeys,
+            'tableComment' => $this->comment,
         ]));
     }
 
