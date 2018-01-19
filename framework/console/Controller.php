@@ -141,7 +141,12 @@ class Controller extends \yii\base\Controller
             return Yii::$app->runAction('help', [$route]);
         }
 
-        return parent::runAction($id, $params);
+        try {
+            return parent::runAction($id, $params);
+        } catch (Exception $e) {
+            $this->stderr("{$e->getMessage()}", Console::FG_RED);
+            return Yii::$app->runAction('help', ["{$this->getUniqueId()}/$id"]);
+        }
     }
 
     /**
