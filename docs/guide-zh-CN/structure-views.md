@@ -358,7 +358,7 @@ use yii\helpers\Html;
 - [[yii\base\View::beginPage()|beginPage()]]: 该方法应在布局的开始处调用，
   它触发表明页面开始的 [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]] 事件。
 - [[yii\base\View::endPage()|endPage()]]: 该方法应在布局的结尾处调用，
-  它触发表明页面结尾的 [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]] 时间。
+  它触发表明页面结尾的 [[yii\base\View::EVENT_END_PAGE|EVENT_END_PAGE]] 事件。
 - [[yii\web\View::head()|head()]]: 该方法应在HTML页面的`<head>`标签中调用，
   它生成一个占位符，在页面渲染结束时会被注册的头部HTML代码
   （如，link标签, meta标签）替换。
