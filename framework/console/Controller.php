@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Action;
 use yii\base\InlineAction;
 use yii\base\InvalidRouteException;
+use yii\base\TooFewArgumentsException;
 use yii\helpers\Console;
 use yii\helpers\Inflector;
 
@@ -105,7 +106,8 @@ class Controller extends \yii\base\Controller
                     if (array_key_exists($name, $optionAliases)) {
                         $params[$optionAliases[$name]] = $value;
                     } else {
-                        throw new Exception(Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]));
+                        $message = Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]);
+                        return $this->callHelp($message, $id);
                     }
                 }
                 unset($params['_aliases']);
@@ -132,7 +134,8 @@ class Controller extends \yii\base\Controller
                     $this->_passedOptions[] = $name;
                     unset($params[$name]);
                 } elseif (!is_int($name)) {
-                    throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
+                    $message = Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]);
+                    return $this->callHelp($message, $id);
                 }
             }
         }
@@ -143,9 +146,8 @@ class Controller extends \yii\base\Controller
 
         try {
             return parent::runAction($id, $params);
-        } catch (Exception $e) {
-            $this->stderr("{$e->getMessage()}", Console::FG_RED);
-            return Yii::$app->runAction('help', ["{$this->getUniqueId()}/$id"]);
+        } catch (TooFewArgumentsException $e) {
+            return $this->callHelp($e->getMessage(), $id);
         }
     }
 
@@ -154,10 +156,12 @@ class Controller extends \yii\base\Controller
      * This method is invoked by [[Action]] when it begins to run with the given parameters.
      * This method will first bind the parameters with the [[options()|options]]
      * available to the action. It then validates the given arguments.
+     *
      * @param Action $action the action to be bound with parameters
      * @param array $params the parameters to be bound to the action
+     *
      * @return array the valid parameters that the action can run with.
-     * @throws Exception if there are unknown options or missing arguments
+     * @throws TooFewArgumentsException if there are missing arguments
      */
     public function bindActionParams($action, $params)
     {
@@ -184,7 +188,7 @@ class Controller extends \yii\base\Controller
         }
 
         if (!empty($missing)) {
-            throw new Exception(Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', $missing)]));
+            throw new TooFewArgumentsException(Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', $missing)]));
         }
 
         return $args;
@@ -670,5 +674,19 @@ class Controller extends \yii\base\Controller
         }
 
         return '';
+    }
+
+    /**
+     * Calls help, when user starts application with incorrect options or arguments
+     *
+     * @param $message
+     * @param $id
+     *
+     * @return int|mixed|Response
+     */
+    private function callHelp($message, $id)
+    {
+        $this->stderr($message, Console::FG_RED);
+        return Yii::$app->runAction('help', ["{$this->getUniqueId()}/$id"]);
     }
 }
