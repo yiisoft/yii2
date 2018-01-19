@@ -220,6 +220,121 @@ class JsonTest extends TestCase
         $expectedHtml = '["Error message. Here are some chars: < >","Error message. Here are even more chars: \"\""]';
         $this->assertEquals($expectedHtml, Json::errorSummary($model, $options));
     }
+
+    /**
+     * @dataProvider dataProviderValidate
+     *
+     * @param mixed $input
+     * @param bool $isValidExpected
+     */
+    public function testValidate($input, $isValidExpected)
+    {
+        $isValidActual = Json::validate($input);
+
+        $this->assertEquals($isValidExpected, $isValidActual);
+    }
+
+    /**
+     * Data provider for [[testValidate()]].
+     *
+     * @return array
+     */
+    public function dataProviderValidate()
+    {
+        return [
+            // Empty string.
+            [
+                '',
+                false,
+            ],
+            [
+                '""',
+                true,
+            ],
+
+            // Null.
+            [
+                null,
+                false,
+            ],
+            [
+                'null',
+                true,
+            ],
+
+            // Boolean.
+            [
+                true,
+                false,
+            ],
+            [
+                false,
+                false,
+            ],
+            [
+                'true',
+                true,
+            ],
+            [
+                'false',
+                true,
+            ],
+
+            // Number.
+            [
+                1,
+                false,
+            ],
+            [
+                1.5,
+                false,
+            ],
+            [
+                '1',
+                true,
+            ],
+            [
+                '1.5',
+                true,
+            ],
+
+            // Object.
+            [
+                new \stdClass(),
+                false,
+            ],
+            [
+                '{}',
+                true,
+            ],
+            [
+                '{"data": "invalid JSON",}',
+                false,
+            ],
+            [
+                '{"data": "valid JSON"}',
+                true,
+            ],
+
+            // Array.
+            [
+                [],
+                false,
+            ],
+            [
+                '[]',
+                true,
+            ],
+            [
+                '["invalid", "JSON",]',
+                false,
+            ],
+            [
+                '["Valid", "JSON"]',
+                true,
+            ],
+        ];
+    }
 }
 
 class JsonModel extends DynamicModel implements \JsonSerializable
