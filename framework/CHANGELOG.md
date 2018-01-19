@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.14 under development
 ------------------------
-
+- Enh #15426: Added abilitiy to create and drop database views (igravity, vladis84)
 - Enh #10186: Use native `hash_equals` in `yii\base\Security::compareString()` if available, throw exception if non-strings are compared (aotd1, samdark)
 - Bug #15122: Fixed `yii\db\Command::getRawSql()` to properly replace expressions (hiscaler, samdark)
 - Enh #15496: CSRF token is now regenerated on changing identity (samdark, rhertogh)
