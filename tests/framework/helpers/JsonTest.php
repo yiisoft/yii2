@@ -224,13 +224,17 @@ class JsonTest extends TestCase
     /**
      * @dataProvider dataProviderValidate
      *
-     * @param mixed $input
-     * @param int $errorExpected
+     * @param mixed $input input data.
+     * @param bool $isValidExpected expected value of the input data validity.
+     * @param int $errorExpected expected value of the validation error.
      */
-    public function testValidate($input, $errorExpected)
+    public function testValidate($input, $isValidExpected, $errorExpected)
     {
-        $errorActual = Json::validate($input);
+        $errorActual = null;
 
+        $isValidActual = Json::validate($input, $errorActual);
+
+        $this->assertEquals($isValidExpected, $isValidActual);
         $this->assertEquals($errorExpected, $errorActual);
     }
 
@@ -245,37 +249,45 @@ class JsonTest extends TestCase
             // Empty string.
             [
                 '""',
+                true,
                 JSON_ERROR_NONE,
             ],
             [
                 '',
+                false,
                 JSON_ERROR_SYNTAX,
             ],
 
             // Null.
             [
                 'null',
+                true,
                 JSON_ERROR_NONE,
             ],
             [
                 null,
+                false,
                 JSON_ERROR_SYNTAX,
             ],
 
             // Boolean.
             [
                 'true',
+                true,
                 JSON_ERROR_NONE,
             ],
             [
                 'false',
+                true,
                 JSON_ERROR_NONE,
             ],
             [
                 true,
+                false,
                 JSON_ERROR_SYNTAX,
             ],
             [
+                false,
                 false,
                 JSON_ERROR_SYNTAX,
             ],
@@ -283,64 +295,78 @@ class JsonTest extends TestCase
             // Number.
             [
                 '1',
+                true,
                 JSON_ERROR_NONE,
             ],
             [
                 '1.5',
+                true,
                 JSON_ERROR_NONE,
             ],
             [
                 1,
+                false,
                 JSON_ERROR_SYNTAX,
             ],
             [
                 1.5,
+                false,
                 JSON_ERROR_SYNTAX,
             ],
 
             // String
             [
                 '"foo"',
+                true,
                 JSON_ERROR_NONE,
             ],
             [
                 'bar',
+                false,
                 JSON_ERROR_SYNTAX,
             ],
 
             // Object.
             [
                 '{}',
+                true,
                 JSON_ERROR_NONE,
             ],
             [
                 '{"data": "valid JSON"}',
+                true,
                 JSON_ERROR_NONE,
             ],
             [
                 new \stdClass(),
+                false,
                 JSON_ERROR_SYNTAX,
             ],
             [
                 '{"data": "invalid JSON",}',
+                false,
                 JSON_ERROR_SYNTAX,
             ],
 
             // Array.
             [
                 '[]',
+                true,
                 JSON_ERROR_NONE,
             ],
             [
                 '["Valid", "JSON"]',
+                true,
                 JSON_ERROR_NONE,
             ],
             [
                 [],
+                false,
                 JSON_ERROR_SYNTAX,
             ],
             [
                 '["invalid", "JSON",]',
+                false,
                 JSON_ERROR_SYNTAX,
             ],
         ];
