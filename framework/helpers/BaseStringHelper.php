@@ -361,7 +361,7 @@ class BaseStringHelper
      */
     public static function floatToString($number)
     {
-        return number_format($number, ini_get('precision'), '.', '');
+        return sprintf("%F", $number);
     }
 
     /**
