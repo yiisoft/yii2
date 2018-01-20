@@ -45,6 +45,7 @@ use yii\base\NotSupportedException;
  * - `unique`: [[UniqueValidator]]
  * - `url`: [[UrlValidator]]
  * - `ip`: [[IpValidator]]
+ * - `json`: [[JsonValidator]]
  *
  * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
  *
@@ -97,6 +98,7 @@ class Validator extends Component
         'unique' => 'yii\validators\UniqueValidator',
         'url' => 'yii\validators\UrlValidator',
         'ip' => 'yii\validators\IpValidator',
+        'json' => 'yii\validators\JsonValidator',
     ];
     /**
      * @var array|string attributes to be validated by this validator. For multiple attributes,
