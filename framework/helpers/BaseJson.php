@@ -110,28 +110,28 @@ class BaseJson
     }
 
     /**
-     * Validates the given data and returns a boolean indicating whether
-     * it is a valid JSON string or not.
+     * Validates the given data and returns an integer indicating whether
+     * any errors occurred while validation or not.
      *
      * @param mixed $data data to validate.
-     * @return boolean `true` if given data is a valid JSON string, `false` otherwise.
+     * @return int one of the constants returned from the `json_last_error()`.
+     * `JSON_ERROR_NONE` is returned if provided data is a valid JSON string.
      *
+     * @see http://php.net/manual/en/function.json-last-error.php
      * @since 2.0.14
      */
     public static function validate($data)
     {
-        $isValid = false;
+        $error = JSON_ERROR_NONE;
 
-        if (is_string($data) === true) {
+        if (is_string($data) === false) {
+            $error = JSON_ERROR_SYNTAX;
+        } else {
             json_decode($data);
-
-            $lastError = json_last_error();
-            if ($lastError === JSON_ERROR_NONE) {
-                $isValid = true;
-            }
+            $error = json_last_error();
         }
 
-        return $isValid;
+        return $error;
     }
 
     /**
