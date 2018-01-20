@@ -70,6 +70,7 @@ Yii Framework 2 Change Log
 - Enh #15422: Added default roles dynamic definition support via closure for `yii\rbac\BaseManager` (deltacube)
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 - Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
+- Enh: #15524 Added `validate()` method to JSON helper and implemented JSON validator (Kolyunya)
 
 2.0.13.1 November 14, 2017
 --------------------------
