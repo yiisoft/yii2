@@ -176,9 +176,9 @@ class CompareValidator extends Validator
                 'compareValue' => $this->compareValue,
                 'compareValueOrAttribute' => $this->compareValue,
             ]];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -228,7 +228,7 @@ class CompareValidator extends Validator
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
 
-        return 'yii.validation.compare(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return 'yii.validation.compare(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ', $form);';
     }
 
     /**

@@ -459,7 +459,7 @@ echo \Yii::t('app', 'There {n,plural,=0{are no cats} =1{is one cat} other{are # 
 
 これら `other`、`few`、`many` などの特別な引数の名前は言語によって異なります。
 特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Plural Rules, Cardinal" を参照してください。
-あるいは、その代りに、[unicode.org の規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照することも出来ます。
+あるいは、その代りに、[unicode.org の規則のリファレンス](http://cldr.unicode.org/index/cldr-spec/plural-rules) を参照することも出来ます。
 
 
 > Note: 上記のロシア語のメッセージのサンプルは、主として翻訳メッセージとして使用されるものです。

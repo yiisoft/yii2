@@ -153,7 +153,9 @@ interface QueryInterface
      * - Additionally you can specify arbitrary operators as follows: A condition of `['>=', 'id', 10]` will result in the
      *   following SQL expression: `id >= 10`.
      *
-     * @param string|array $condition the conditions that should be put in the WHERE part.
+     * **Note that this method will override any existing WHERE condition. You might want to use [[andWhere()]] or [[orWhere()]] instead.**
+     *
+     * @param array $condition the conditions that should be put in the WHERE part.
      * @return $this the query object itself
      * @see andWhere()
      * @see orWhere()
@@ -163,7 +165,7 @@ interface QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return $this the query object itself
      * @see where()
@@ -174,7 +176,7 @@ interface QueryInterface
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return $this the query object itself
      * @see where()
@@ -241,14 +243,14 @@ interface QueryInterface
 
     /**
      * Sets the LIMIT part of the query.
-     * @param int $limit the limit. Use null or negative value to disable limit.
+     * @param int|null $limit the limit. Use null or negative value to disable limit.
      * @return $this the query object itself
      */
     public function limit($limit);
 
     /**
      * Sets the OFFSET part of the query.
-     * @param int $offset the offset. Use null or negative value to disable offset.
+     * @param int|null $offset the offset. Use null or negative value to disable offset.
      * @return $this the query object itself
      */
     public function offset($offset);

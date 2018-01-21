@@ -21,9 +21,9 @@ class JsonResponseFormatterTest extends FormatterTest
     /**
      * @return JsonResponseFormatter
      */
-    protected function getFormatterInstance()
+    protected function getFormatterInstance($configuration = [])
     {
-        return new JsonResponseFormatter();
+        return new JsonResponseFormatter($configuration);
     }
 
     public function formatScalarDataProvider()
@@ -32,7 +32,7 @@ class JsonResponseFormatterTest extends FormatterTest
             [1, 1],
             ['abc', '"abc"'],
             [true, 'true'],
-            ["<>", '"<>"'],
+            ['<>', '"<>"'],
         ];
     }
 
@@ -40,25 +40,36 @@ class JsonResponseFormatterTest extends FormatterTest
     {
         return [
             // input, json, pretty json
-            [[], "[]", "[]"],
+            [[], '[]', '[]'],
             [[1, 'abc'], '[1,"abc"]', "[\n    1,\n    \"abc\"\n]"],
-            [[
-                'a' => 1,
-                'b' => 'abc',
-            ], '{"a":1,"b":"abc"}', "{\n    \"a\": 1,\n    \"b\": \"abc\"\n}"],
-            [[
-                1,
-                'abc',
-                [2, 'def'],
-                true,
-            ], '[1,"abc",[2,"def"],true]', "[\n    1,\n    \"abc\",\n    [\n        2,\n        \"def\"\n    ],\n    true\n]"],
-            [[
-                'a' => 1,
-                'b' => 'abc',
-                'c' => [2, '<>'],
-                true,
-            ], '{"a":1,"b":"abc","c":[2,"<>"],"0":true}',
-               "{\n    \"a\": 1,\n    \"b\": \"abc\",\n    \"c\": [\n        2,\n        \"<>\"\n    ],\n    \"0\": true\n}"],
+            [
+                [
+                    'a' => 1,
+                    'b' => 'abc',
+                ],
+                '{"a":1,"b":"abc"}',
+                "{\n    \"a\": 1,\n    \"b\": \"abc\"\n}",
+            ],
+            [
+                [
+                    1,
+                    'abc',
+                    [2, 'def'],
+                    true,
+                ],
+                '[1,"abc",[2,"def"],true]',
+                "[\n    1,\n    \"abc\",\n    [\n        2,\n        \"def\"\n    ],\n    true\n]",
+            ],
+            [
+                [
+                    'a' => 1,
+                    'b' => 'abc',
+                    'c' => [2, '<>'],
+                    true,
+                ],
+                '{"a":1,"b":"abc","c":[2,"<>"],"0":true}',
+                "{\n    \"a\": 1,\n    \"b\": \"abc\",\n    \"c\": [\n        2,\n        \"<>\"\n    ],\n    \"0\": true\n}",
+            ],
         ];
     }
 
@@ -84,14 +95,65 @@ class JsonResponseFormatterTest extends FormatterTest
         $postsStack->push(new Post(456, 'record2'));
 
         return [
-            [$postsStack, '{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}']
+            [$postsStack, '{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}'],
         ];
     }
 
     public function formatModelDataProvider()
     {
         return [
-            [new ModelStub(['id' => 123, 'title' => 'abc', 'hidden' => 'hidden']), '{"id":123,"title":"abc"}']
+            [new ModelStub(['id' => 123, 'title' => 'abc', 'hidden' => 'hidden']), '{"id":123,"title":"abc"}'],
+        ];
+    }
+
+    public function contentTypeGenerationDataProvider()
+    {
+        return [
+            [
+                [
+                ],
+                'application/json; charset=UTF-8',
+            ],
+            [
+                [
+                    'useJsonp' => false,
+                ],
+                'application/json; charset=UTF-8',
+            ],
+            [
+                [
+                    'useJsonp' => true,
+                ],
+                'application/javascript; charset=UTF-8',
+            ],
+            [
+                [
+                    'contentType' => 'application/javascript; charset=UTF-8',
+                    'useJsonp' => false,
+                ],
+                'application/javascript; charset=UTF-8',
+            ],
+            [
+                [
+                    'contentType' => 'application/json; charset=UTF-8',
+                    'useJsonp' => true,
+                ],
+                'application/json; charset=UTF-8',
+            ],
+            [
+                [
+                    'contentType' => 'application/hal+json; charset=UTF-8',
+                    'useJsonp' => false,
+                ],
+                'application/hal+json; charset=UTF-8',
+            ],
+            [
+                [
+                    'contentType' => 'application/hal+json; charset=UTF-8',
+                    'useJsonp' => true,
+                ],
+                'application/hal+json; charset=UTF-8',
+            ],
         ];
     }
 
@@ -109,4 +171,17 @@ class JsonResponseFormatterTest extends FormatterTest
         $this->assertEquals($prettyJson, $this->response->content);
     }
 
+    /**
+     * @param array $configuration JSON formatter configuration array.
+     * @param string $contentTypeExpected Expected value of the response `Content-Type` header.
+     * @dataProvider contentTypeGenerationDataProvider
+     */
+    public function testContentTypeGeneration($configuration, $contentTypeExpected)
+    {
+        $formatter = $this->getFormatterInstance($configuration);
+        $formatter->format($this->response);
+        $contentTypeActual = $this->response->headers->get('Content-Type');
+
+        $this->assertEquals($contentTypeExpected, $contentTypeActual);
+    }
 }

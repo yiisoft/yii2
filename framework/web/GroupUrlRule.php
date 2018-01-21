@@ -90,9 +90,16 @@ class GroupUrlRule extends CompositeUrlRule
         $rules = [];
         foreach ($this->rules as $key => $rule) {
             if (!is_array($rule)) {
+                $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
+                $verb = null;
+                if (preg_match("/^((?:(?:$verbs),)*(?:$verbs))\\s+(.*)$/", $key, $matches)) {
+                    $verb = explode(',', $matches[1]);
+                    $key = $matches[2];
+                }
                 $rule = [
                     'pattern' => ltrim($this->prefix . '/' . $key, '/'),
                     'route' => ltrim($this->routePrefix . '/' . $rule, '/'),
+                    'verb' => $verb
                 ];
             } elseif (isset($rule['pattern'], $rule['route'])) {
                 $rule['pattern'] = ltrim($this->prefix . '/' . $rule['pattern'], '/');
@@ -105,6 +112,7 @@ class GroupUrlRule extends CompositeUrlRule
             }
             $rules[] = $rule;
         }
+
         return $rules;
     }
 
@@ -116,9 +124,9 @@ class GroupUrlRule extends CompositeUrlRule
         $pathInfo = $request->getPathInfo();
         if ($this->prefix === '' || strpos($pathInfo . '/', $this->prefix . '/') === 0) {
             return parent::parseRequest($manager, $request);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -128,8 +136,9 @@ class GroupUrlRule extends CompositeUrlRule
     {
         if ($this->routePrefix === '' || strpos($route, $this->routePrefix . '/') === 0) {
             return parent::createUrl($manager, $route, $params);
-        } else {
-            return false;
         }
+
+        $this->createStatus = UrlRule::CREATE_STATUS_ROUTE_MISMATCH;
+        return false;
     }
 }

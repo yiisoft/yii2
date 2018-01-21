@@ -77,7 +77,7 @@ use yii\widgets\ActiveForm;
 Es importante recordad que agregues la opción `enctype` al formulario para que el archivo pueda ser subido apropiadamente.
 La llamada a `fileInput()` renderizará un tag `<input type="file">` que le permitirá al usuario seleccionar el archivo a subir.
 
-> Tip: desde la versión 2.0.8, [[yii\web\widgets\ActiveField::fileInput|fileInput]] agrega la opción `enctype` al formulario
+> Tip: desde la versión 2.0.8, [[yii\widgets\ActiveField::fileInput|fileInput]] agrega la opción `enctype` al formulario
   automáticamente cuando se utiliza una campo de subida de archivo.
 
 ## Uniendo Todo <span id="wiring-up"></span>

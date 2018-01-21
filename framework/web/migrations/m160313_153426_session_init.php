@@ -8,29 +8,37 @@
 use yii\db\Migration;
 
 /**
- * Initializes Session tables
+ * Initializes Session tables.
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 2.0.8
  */
 class m160313_153426_session_init extends Migration
 {
-
     /**
      * @inheritdoc
      */
     public function up()
     {
+        $dataType = $this->binary();
         $tableOptions = null;
-        if ($this->db->driverName === 'mysql') {
-            // http://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
-            $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
+
+        switch ($this->db->driverName) {
+            case 'mysql':
+                // http://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
+                $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
+                break;
+            case 'sqlsrv':
+            case 'mssql':
+            case 'dblib':
+                $dataType = $this->text();
+                break;
         }
 
         $this->createTable('{{%session}}', [
             'id' => $this->string()->notNull(),
             'expire' => $this->integer(),
-            'data' => $this->binary(),
+            'data' => $dataType,
             'PRIMARY KEY ([[id]])',
         ], $tableOptions);
     }

@@ -82,7 +82,7 @@ class StringValidator extends Validator
             $this->length = null;
         }
         if ($this->encoding === null) {
-            $this->encoding = Yii::$app->charset;
+            $this->encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
         }
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} must be a string.');
@@ -159,6 +159,9 @@ class StringValidator extends Validator
         return 'yii.validation.string(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getClientOptions($model, $attribute)
     {
         $label = $model->getAttributeLabel($attribute);

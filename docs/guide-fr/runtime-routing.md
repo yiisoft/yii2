@@ -452,9 +452,9 @@ Vous pouvez créer les classes de règle d'URL suivantes pour résoudre ce probl
 namespace app\components;
 
 use yii\web\UrlRuleInterface;
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class CarUrlRule extends Object implements UrlRuleInterface
+class CarUrlRule extends BaseObject implements UrlRuleInterface
 {
 
     public function createUrl($manager, $route, $params)

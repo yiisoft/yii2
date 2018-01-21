@@ -10,7 +10,7 @@ namespace yii\caching;
 /**
  * MemCacheServer represents the configuration data for a single memcache or memcached server.
  *
- * See [PHP manual](http://www.php.net/manual/en/function.Memcache-addServer.php) for detailed explanation
+ * See [PHP manual](http://php.net/manual/en/memcache.addserver.php) for detailed explanation
  * of each configuration property.
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
@@ -18,7 +18,7 @@ namespace yii\caching;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class MemCacheServer extends \yii\base\Object
+class MemCacheServer extends \yii\base\BaseObject
 {
     /**
      * @var string memcache server hostname or IP address

@@ -23,6 +23,11 @@ DROP TABLE IF EXISTS "default_pk" CASCADE;
 DROP TABLE IF EXISTS "document" CASCADE;
 DROP TABLE IF EXISTS "comment" CASCADE;
 DROP VIEW IF EXISTS "animal_view";
+DROP TABLE IF EXISTS "T_constraints_4";
+DROP TABLE IF EXISTS "T_constraints_3";
+DROP TABLE IF EXISTS "T_constraints_2";
+DROP TABLE IF EXISTS "T_constraints_1";
+
 DROP SCHEMA IF EXISTS "schema1" CASCADE;
 DROP SCHEMA IF EXISTS "schema2" CASCADE;
 
@@ -226,16 +231,27 @@ INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This 
 
 DROP TABLE IF EXISTS "validator_main" CASCADE;
 DROP TABLE IF EXISTS "validator_ref" CASCADE;
+DROP TABLE IF EXISTS "validatorMain" CASCADE;
+DROP TABLE IF EXISTS "validatorRef" CASCADE;
 
 CREATE TABLE "validator_main" (
   id integer not null primary key,
   field1 VARCHAR(255)
 );
-
 CREATE TABLE "validator_ref" (
   id integer not null primary key,
   a_field VARCHAR(255),
   ref     integer
+);
+CREATE TABLE "validatorMain" (
+  id integer not null primary key,
+  field1 VARCHAR(255)
+);
+CREATE TABLE "validatorRef" (
+  id integer not null primary key,
+  a_field VARCHAR(255),
+  ref     integer,
+  CONSTRAINT "validatorRef_id" FOREIGN KEY ("ref") REFERENCES "validatorMain" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 INSERT INTO "validator_main" (id, field1) VALUES (1, 'just a string1');
@@ -248,6 +264,11 @@ INSERT INTO "validator_ref" (id, a_field, ref) VALUES (3, 'ref_to_3', 3);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (4, 'ref_to_4', 4);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (5, 'ref_to_4', 4);
 INSERT INTO "validator_ref" (id, a_field, ref) VALUES (6, 'ref_to_5', 5);
+INSERT INTO "validatorMain" (id, field1) VALUES (2, 'just a string2');
+INSERT INTO "validatorMain" (id, field1) VALUES (3, 'just a string3');
+INSERT INTO "validatorRef" (id, a_field, ref) VALUES (1, 'ref_to_2', 2);
+INSERT INTO "validatorRef" (id, a_field, ref) VALUES (2, 'ref_to_2', 2);
+INSERT INTO "validatorRef" (id, a_field, ref) VALUES (3, 'ref_to_3', 3);
 
 /* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
 
@@ -259,3 +280,42 @@ CREATE TABLE "bit_values" (
 );
 
 INSERT INTO "bit_values" (id, val) VALUES (1, '0'), (2, '1');
+
+CREATE TABLE "T_constraints_1"
+(
+    "C_id" INT NOT NULL PRIMARY KEY,
+    "C_not_null" INT NOT NULL,
+    "C_check" VARCHAR(255) NULL CHECK ("C_check" <> ''),
+    "C_unique" INT NOT NULL,
+    "C_default" INT NOT NULL DEFAULT 0,
+    CONSTRAINT "CN_unique" UNIQUE ("C_unique")
+);
+
+CREATE TABLE "T_constraints_2"
+(
+    "C_id_1" INT NOT NULL,
+    "C_id_2" INT NOT NULL,
+    "C_index_1" INT NULL,
+    "C_index_2_1" INT NULL,
+    "C_index_2_2" INT NULL,
+    CONSTRAINT "CN_constraints_2_multi" UNIQUE ("C_index_2_1", "C_index_2_2"),
+    CONSTRAINT "CN_pk" PRIMARY KEY ("C_id_1", "C_id_2")
+);
+
+CREATE INDEX "CN_constraints_2_single" ON "T_constraints_2" ("C_index_1");
+
+CREATE TABLE "T_constraints_3"
+(
+    "C_id" INT NOT NULL,
+    "C_fk_id_1" INT NOT NULL,
+    "C_fk_id_2" INT NOT NULL,
+    CONSTRAINT "CN_constraints_3" FOREIGN KEY ("C_fk_id_1", "C_fk_id_2") REFERENCES "T_constraints_2" ("C_id_1", "C_id_2") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE "T_constraints_4"
+(
+    "C_id" INT NOT NULL PRIMARY KEY,
+    "C_col_1" INT NULL,
+    "C_col_2" INT NOT NULL,
+    CONSTRAINT "CN_constraints_4" UNIQUE ("C_col_1", "C_col_2")
+);

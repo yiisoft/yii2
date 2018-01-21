@@ -11,10 +11,7 @@ The framework is easy to adjust to meet your needs, because Yii has been designe
 
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2/v/stable.png)](https://packagist.org/packages/yiisoft/yii2)
 [![Total Downloads](https://poser.pugx.org/yiisoft/yii2/downloads.png)](https://packagist.org/packages/yiisoft/yii2)
-[![Reference Status](https://www.versioneye.com/php/yiisoft:yii2/reference_badge.svg)](https://www.versioneye.com/php/yiisoft:yii2/references)
 [![Build Status](https://img.shields.io/travis/yiisoft/yii2.svg)](http://travis-ci.org/yiisoft/yii2)
-[![Dependency Status](https://www.versioneye.com/php/yiisoft:yii2/dev-master/badge.png)](https://www.versioneye.com/php/yiisoft:yii2/dev-master)
-[![HHVM Status](https://img.shields.io/hhvm/yiisoft/yii2-dev.svg)](http://hhvm.h4cc.de/package/yiisoft/yii2-dev)
 [![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/coverage.png?s=31d80f1036099e9d6a3e4d7738f6b000b3c3d10e)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Code Climate](https://img.shields.io/codeclimate/github/yiisoft/yii2.svg)](https://codeclimate.com/github/yiisoft/yii2)
@@ -42,9 +39,10 @@ Community
 ---------
 
 - Participate in [discussions at forums](http://www.yiiframework.com/forum/).
-- [Chat in IRC](http://www.yiiframework.com/chat/).
+- [Community Slack](https://join.slack.com/t/yii/shared_invite/MjIxMjMxMTk5MTU1LTE1MDE3MDAwMzMtM2VkMTMyMjY1Ng) and [Chat in IRC](http://www.yiiframework.com/chat/).
 - Follow us on [Facebook](https://www.facebook.com/groups/yiitalk/), [Twitter](https://twitter.com/yiiframework)
 and [GitHub](https://github.com/yiisoft/yii2).
+- Check [other communities](https://github.com/yiisoft/yii2/wiki/communities).
 
 Contributing
 ------------

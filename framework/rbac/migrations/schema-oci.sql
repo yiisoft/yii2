@@ -56,3 +56,5 @@ create table "auth_assignment"
    primary key ("item_name","user_id"),
    foreign key ("item_name") references "auth_item" ("name") on delete cascade
 );
+
+CREATE INDEX auth_assignment_user_id_idx ON "auth_assignment" ("user_id");
