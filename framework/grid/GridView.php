@@ -127,6 +127,10 @@ class GridView extends BaseListView
      * @var bool whether to show the footer section of the grid table.
      */
     public $showFooter = false;
+	/**
+	 * @var bool whether to place footer after body in DOM if $showFooter is true
+	 */
+	public $placeFooterAfterBody = false;
     /**
      * @var bool whether to show the grid view if [[dataProvider]] returns no data.
      */
@@ -345,13 +349,15 @@ class GridView extends BaseListView
         $columnGroup = $this->renderColumnGroup();
         $tableHeader = $this->showHeader ? $this->renderTableHeader() : false;
         $tableBody = $this->renderTableBody();
-        $tableFooter = $this->showFooter ? $this->renderTableFooter() : false;
+	    $tableFooter = $this->showFooter ? (!$this->placeFooterAfterBody ? $this->renderTableFooter() : false) : false;
+	    $tableFooterAfterBody = $this->showFooter ? ($this->placeFooterAfterBody ? $this->renderTableFooter() : false) : false;
         $content = array_filter([
             $caption,
             $columnGroup,
             $tableHeader,
             $tableFooter,
             $tableBody,
+            $tableFooterAfterBody,
         ]);
 
         return Html::tag('table', implode("\n", $content), $this->tableOptions);
