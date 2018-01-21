@@ -18,6 +18,8 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on ActionFilter, see the [guide article on filters](guide:structure-filters).
  *
+ * @property Controller|Module $owner the owner of this behavior.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

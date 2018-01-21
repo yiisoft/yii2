@@ -39,7 +39,7 @@ class AjaxFilterTest extends TestCase
         $this->mockWebApplication();
         $controller = new Controller('id', Yii::$app);
         $action = new Action('test', $controller);
-        $filter = new AjaxFilter();
+        $filter = new AjaxFilter(['owner' => $controller]);
 
         $filter->request = $this->mockRequest(true);
         $this->assertTrue($filter->beforeAction($action));

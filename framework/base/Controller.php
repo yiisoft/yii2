@@ -437,7 +437,7 @@ class Controller extends Component implements ViewContextInterface
     public function getView()
     {
         if ($this->_view === null) {
-            $this->_view = Yii::$app->getView();
+            $this->_view = $this->module->get('view');
         }
 
         return $this->_view;

@@ -172,4 +172,26 @@ class BaseYiiTest extends TestCase
 
         BaseYii::setLogger(null);
     }
+
+    /**
+     * @covers \yii\BaseYii::get()
+     */
+    public function testGet()
+    {
+        $component = BaseYii::get('view');
+        $this->assertTrue($component instanceof \yii\base\View);
+
+        $this->mockApplication([
+            'components' => [
+                'foo' => [
+                    'class' => 'yii\console\Request'
+                ],
+            ]
+        ]);
+        $component = BaseYii::get('foo');
+        $this->assertTrue($component instanceof \yii\console\Request);
+
+        $this->expectException('yii\base\InvalidConfigException');
+        $component = BaseYii::get('unexisting');
+    }
 }

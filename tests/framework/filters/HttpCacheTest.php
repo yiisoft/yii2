@@ -9,6 +9,7 @@ namespace yiiunit\framework\filters;
 
 use Yii;
 use yii\filters\HttpCache;
+use yii\web\Controller;
 
 /**
  * @group filters
@@ -27,7 +28,7 @@ class HttpCacheTest extends \yiiunit\TestCase
 
     public function testDisabled()
     {
-        $httpCache = new HttpCache();
+        $httpCache = new HttpCache(['owner' => new Controller('test', Yii::$app)]);
         $this->assertTrue($httpCache->beforeAction(null));
         $httpCache->enabled = false;
         $this->assertTrue($httpCache->beforeAction(null));
@@ -35,7 +36,7 @@ class HttpCacheTest extends \yiiunit\TestCase
 
     public function testEmptyPragma()
     {
-        $httpCache = new HttpCache();
+        $httpCache = new HttpCache(['owner' => new Controller('test', Yii::$app)]);
         $httpCache->etagSeed = function ($action, $params) {
             return '';
         };
@@ -50,8 +51,8 @@ class HttpCacheTest extends \yiiunit\TestCase
      */
     public function testValidateCache()
     {
-        $httpCache = new HttpCache();
         $request = Yii::$app->getRequest();
+        $httpCache = new HttpCache(['request' => $request]);
 
         $method = new \ReflectionMethod($httpCache, 'validateCache');
         $method->setAccessible(true);
@@ -83,7 +84,7 @@ class HttpCacheTest extends \yiiunit\TestCase
      */
     public function testGenerateEtag()
     {
-        $httpCache = new HttpCache();
+        $httpCache = new HttpCache(['owner' => new Controller('test', Yii::$app)]);
         $httpCache->weakEtag = false;
 
         $httpCache->etagSeed = function ($action, $params) {

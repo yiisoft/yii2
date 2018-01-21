@@ -114,6 +114,16 @@ class HostControl extends ActionFilter
      * @see \yii\web\Request::getHostInfo()
      */
     public $fallbackHostInfo = '';
+    /**
+     * @var \yii\web\Request the current request. If not set, the `request` application component will be used.
+     * @since 2.0.14
+     */
+    public $request;
+    /**
+     * @var \yii\web\Response the response to be sent. If not set, the `response` application component will be used.
+     * @since 2.0.14
+     */
+    public $response;
 
 
     /**
@@ -121,6 +131,13 @@ class HostControl extends ActionFilter
      */
     public function beforeAction($action)
     {
+        if ($this->request === null) {
+            $this->request = Yii::get('request');
+        }
+        if ($this->response === null) {
+            $this->response = Yii::get('response');
+        }
+
         $allowedHosts = $this->allowedHosts;
         if ($allowedHosts instanceof \Closure) {
             $allowedHosts = call_user_func($allowedHosts, $action);
@@ -143,7 +160,7 @@ class HostControl extends ActionFilter
 
         // replace invalid host info to prevent using it in further processing
         if ($this->fallbackHostInfo !== null) {
-            Yii::$app->getRequest()->setHostInfo($this->fallbackHostInfo);
+            $this->request->setHostInfo($this->fallbackHostInfo);
         }
 
         if ($this->denyCallback !== null) {
@@ -168,12 +185,13 @@ class HostControl extends ActionFilter
         $exception = new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
 
         // use regular error handling if $this->fallbackHostInfo was set
-        if (!empty(Yii::$app->getRequest()->hostName)) {
+        if (!empty($this->request->hostName)) {
             throw $exception;
         }
 
-        $response = Yii::$app->getResponse();
-        $errorHandler = Yii::$app->getErrorHandler();
+        $response = $this->response;
+        /* @var $errorHandler \yii\web\ErrorHandler */
+        $errorHandler = Yii::get('errorHandler');
 
         $response->setStatusCode($exception->statusCode, $exception->getMessage());
         $response->data = $errorHandler->renderFile($errorHandler->errorView, ['exception' => $exception]);

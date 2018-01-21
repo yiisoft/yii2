@@ -68,7 +68,7 @@ class UrlTest extends TestCase
         $controller->action = new Action($actionID, $controller);
 
         if ($moduleID !== null) {
-            $controller->module = new Module($moduleID);
+            $controller->module = new Module($moduleID, Yii::$app);
         }
     }
 

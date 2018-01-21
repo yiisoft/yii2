@@ -93,11 +93,12 @@ class HostControlTest extends TestCase
     {
         $_SERVER['HTTP_HOST'] = $host;
 
-        $filter = new HostControl();
-        $filter->allowedHosts = $allowedHosts;
-
         $controller = new Controller('id', Yii::$app);
         $action = new Action('test', $controller);
+
+        $filter = new HostControl();
+        $filter->owner = $controller;
+        $filter->allowedHosts = $allowedHosts;
 
         if ($allowed) {
             $this->assertTrue($filter->beforeAction($action));
@@ -124,28 +125,32 @@ class HostControlTest extends TestCase
 
     public function testDenyCallback()
     {
+        $controller = new Controller('test', Yii::$app);
+        $action = new Action('test', $controller);
+
         $filter = new HostControl();
+        $filter->owner = $controller;
         $filter->allowedHosts = ['example.com'];
         $this->denyCallBackCalled = false;
         $filter->denyCallback = function () {
             $this->denyCallBackCalled = true;
         };
 
-        $controller = new Controller('test', Yii::$app);
-        $action = new Action('test', $controller);
         $this->assertFalse($filter->beforeAction($action));
         $this->assertTrue($this->denyCallBackCalled, 'denyCallback should have been called.');
     }
 
     public function testDefaultHost()
     {
+        $controller = new Controller('test', Yii::$app);
+        $action = new Action('test', $controller);
+
         $filter = new HostControl();
+        $filter->owner = $controller;
         $filter->allowedHosts = ['example.com'];
         $filter->fallbackHostInfo = 'http://yiiframework.com';
         $filter->denyCallback = function () {};
 
-        $controller = new Controller('test', Yii::$app);
-        $action = new Action('test', $controller);
         $filter->beforeAction($action);
 
         $this->assertSame('yiiframework.com', Yii::$app->getRequest()->getHostName());
@@ -156,12 +161,14 @@ class HostControlTest extends TestCase
         $this->expectException('yii\web\NotFoundHttpException');
         $this->expectExceptionMessage('Page not found.');
 
+        $controller = new Controller('test', Yii::$app);
+        $action = new Action('test', $controller);
+
         $filter = new HostControl();
+        $filter->owner = $controller;
         $filter->allowedHosts = ['example.com'];
         $filter->fallbackHostInfo = 'http://yiiframework.com';
 
-        $controller = new Controller('test', Yii::$app);
-        $action = new Action('test', $controller);
         $filter->beforeAction($action);
     }
 }
