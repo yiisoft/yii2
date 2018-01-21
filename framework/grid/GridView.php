@@ -129,6 +129,7 @@ class GridView extends BaseListView
     public $showFooter = false;
 	/**
 	 * @var bool whether to place footer after body in DOM if $showFooter is true
+     * @since 2.0.14
 	 */
 	public $placeFooterAfterBody = false;
     /**
