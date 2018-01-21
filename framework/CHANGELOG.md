@@ -4,6 +4,8 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 - Enh #14806: Added $placeFooterAfterBody option for GridView (terehru) 
+- Enh #13814: MySQL unique index names can now contain spaces (df2)
+- Bug #15300: Fixed "Cannot read property 'style' of undefined" error at the error screen (vitorarantes)
 - Enh #15426: Added abilitiy to create and drop database views (igravity, vladis84)
 - Enh #10186: Use native `hash_equals` in `yii\base\Security::compareString()` if available, throw exception if non-strings are compared (aotd1, samdark)
 - Bug #15122: Fixed `yii\db\Command::getRawSql()` to properly replace expressions (hiscaler, samdark)
@@ -39,6 +41,7 @@ Yii Framework 2 Change Log
 - Bug #15432: Fixed wrong value being set in `yii\filters\RateLimiter::checkRateLimit()` resulting in wrong `X-Rate-Limit-Reset` header value (bizley)
 - Bug #15440: Fixed `yii\behaviors\AttributeTypecastBehavior::$attributeTypes` auto-detection fails for rule, which specify attribute with '!' prefix (klimov-paul)
 - Bug #15462: Fixed `accessChecker` configuration error (developeruz)
+- Bug #15494: Fixed missing `WWW-Authenticate` header (developeruz)
 - Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorSource" option to be able to customize errors display (yanggs07, developeruz, silverfire)
 - Enh #3250: Added support for events partial wildcard matching (klimov-paul)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
