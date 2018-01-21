@@ -52,7 +52,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
                 });
             }
 
-            return $value;
+            return new ArrayExpression($value, $this->dbType, $this->dimension);
         }
 
         return $this->phpTypecastValue($value);
