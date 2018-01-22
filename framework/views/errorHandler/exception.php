@@ -17,7 +17,6 @@
         if ($exception instanceof \yii\web\HttpException) {
             echo (int) $exception->statusCode . ' ' . $handler->htmlEncode($name);
         } else {
-            $name = $handler->getExceptionName($exception);
             if ($name !== null) {
                 echo $handler->htmlEncode($name . ' – ' . get_class($exception));
             } else {
