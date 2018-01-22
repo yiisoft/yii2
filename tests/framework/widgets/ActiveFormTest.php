@@ -136,7 +136,7 @@ HTML
     }
 
     /**
-     * @see https://github.com/yiisoft/yii2/pull/14596
+     * @see https://github.com/yiisoft/yii2/issues/15536
      */
     public function testShouldTriggerInitEvent()
     {
