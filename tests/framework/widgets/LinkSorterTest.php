@@ -88,6 +88,10 @@ class LinkSorterTest extends DatabaseTestCase
         $initTriggered = false;
         $linkSorter = new LinkSorter(
             [
+                'sort' => [
+                    'attributes' => ['total'],
+                    'route' => 'site/index',
+                ],
                 'on init' => function () use (&$initTriggered) {
                     $initTriggered = true;
                 }
