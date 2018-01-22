@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
-- Enh #14806: Added $placeFooterAfterBody option for GridView (terehru) 
+- Enh #14806: Added $placeFooterAfterBody option for GridView (terehru)
 - Bug #14711: Fixed `yii\web\ErrorHandler` displaying exception message in non-debug mode (samdark)
 - Enh #13814: MySQL unique index names can now contain spaces (df2)
 - Bug #15300: Fixed "Cannot read property 'style' of undefined" error at the error screen (vitorarantes)
