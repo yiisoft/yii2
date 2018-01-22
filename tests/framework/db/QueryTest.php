@@ -46,6 +46,14 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(['user'], $query->from);
     }
 
+    public function testFromTableIsExpression()
+    {
+        $query = new Query();
+        $tables = new Expression('(SELECT id,name FROM user) u');
+        $query->from($tables);
+        $this->assertInstanceOf('\yii\db\Expression', $query->from);
+    }
+
     use GetTablesAliasTestTrait;
     protected function createQuery()
     {

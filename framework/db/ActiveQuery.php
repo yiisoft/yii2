@@ -809,7 +809,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function getTablesUsedInFrom()
     {
         if (empty($this->from)) {
-            $this->from = [$this->getPrimaryTableName()];
+            return $this->cleanUpTableNames([$this->getPrimaryTableName()]);
         }
 
         return parent::getTablesUsedInFrom();

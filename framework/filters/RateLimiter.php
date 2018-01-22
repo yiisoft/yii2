@@ -106,10 +106,10 @@ class RateLimiter extends ActionFilter
      */
     public function checkRateLimit($user, $request, $response, $action)
     {
-        $current = time();
-
         list($limit, $window) = $user->getRateLimit($request, $action);
         list($allowance, $timestamp) = $user->loadAllowance($request, $action);
+
+        $current = time();
 
         $allowance += (int) (($current - $timestamp) * $limit / $window);
         if ($allowance > $limit) {
@@ -123,7 +123,7 @@ class RateLimiter extends ActionFilter
         }
 
         $user->saveAllowance($request, $action, $allowance - 1, $current);
-        $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance) * $window / $limit));
+        $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance + 1) * $window / $limit));
     }
 
     /**
