@@ -351,12 +351,15 @@ class GridView extends BaseListView
         $tableHeader = $this->showHeader ? $this->renderTableHeader() : false;
         $tableBody = $this->renderTableBody();
 
+        $tableFooter = false;
+        $tableFooterAfterBody = false;
+        
         if ($this->showFooter) {
-	        $tableFooter = !$this->placeFooterAfterBody ? $this->renderTableFooter() : false;
-	        $tableFooterAfterBody = $this->placeFooterAfterBody ? $this->renderTableFooter() : false;
-        } else {
-            $tableFooter = false;
-	        $tableFooterAfterBody = false;
+            if ($this->placeFooterAfterBody) {
+                $tableFooterAfterBody = $this->renderTableFooter();
+            } else {
+                $tableFooter = $this->renderTableFooter();
+            }	        
         }
 
         $content = array_filter([
