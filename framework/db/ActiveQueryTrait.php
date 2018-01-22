@@ -162,7 +162,7 @@ trait ActiveQueryTrait
     {
         $primaryModel = reset($models);
         if (!$primaryModel instanceof ActiveRecordInterface) {
-            $primaryModel = new $this->modelClass();
+            $primaryModel = \Yii::createObject($this->modelClass);
         }
         $relations = $this->normalizeRelations($primaryModel, $with);
         /* @var $relation ActiveQuery */
