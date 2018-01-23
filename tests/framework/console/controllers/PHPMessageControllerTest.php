@@ -32,7 +32,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     protected function getDefaultConfig()
     {
@@ -57,7 +57,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     protected function saveMessages($messages, $category)
     {
@@ -75,7 +75,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     protected function loadMessages($category)
     {

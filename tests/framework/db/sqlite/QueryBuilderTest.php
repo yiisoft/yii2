@@ -117,7 +117,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     public function testBuildUnion()
     {

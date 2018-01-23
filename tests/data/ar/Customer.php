@@ -95,7 +95,7 @@ class Customer extends ActiveRecord
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      * @return CustomerQuery
      */
     public static function find()

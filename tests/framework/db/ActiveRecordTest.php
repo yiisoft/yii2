@@ -45,7 +45,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     public function getCustomerClass()
     {
@@ -53,7 +53,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     public function getItemClass()
     {
@@ -61,7 +61,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     public function getOrderClass()
     {
@@ -69,7 +69,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     public function getOrderItemClass()
     {
@@ -85,7 +85,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     public function getOrderWithNullFKClass()
     {
@@ -93,7 +93,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     public function getOrderItemWithNullFKmClass()
     {

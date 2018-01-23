@@ -58,7 +58,7 @@ class NumberValidator extends Validator
 
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -76,7 +76,7 @@ class NumberValidator extends Validator
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -99,7 +99,7 @@ class NumberValidator extends Validator
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -119,7 +119,7 @@ class NumberValidator extends Validator
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -130,7 +130,7 @@ class NumberValidator extends Validator
     }
 
     /**
-     *{@inheritdoc}
+     * {@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {
