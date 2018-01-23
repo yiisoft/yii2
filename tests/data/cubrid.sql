@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS "T_constraints_4";
 DROP TABLE IF EXISTS "T_constraints_3";
 DROP TABLE IF EXISTS "T_constraints_2";
 DROP TABLE IF EXISTS "T_constraints_1";
+DROP TABLE IF EXISTS "T_upsert";
 
 CREATE TABLE "constraints"
 (
@@ -255,4 +256,17 @@ CREATE TABLE "T_constraints_4"
     "C_col_1" INT NULL,
     "C_col_2" INT NOT NULL,
     CONSTRAINT "CN_constraints_4" UNIQUE ("C_col_1", "C_col_2")
+);
+
+CREATE TABLE "T_upsert"
+(
+    "id" INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    "ts" INT NULL,
+    "email" VARCHAR(128) NOT NULL UNIQUE,
+    "recovery_email" VARCHAR(128) NULL,
+    "address" STRING NULL,
+    "status" TINYINT NOT NULL DEFAULT 0,
+    "orders" INT NOT NULL DEFAULT 0,
+    "profile_id" INT NULL,
+    UNIQUE ("email", "recovery_email")
 );
