@@ -60,7 +60,7 @@ class Action extends \yii\base\Action
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {

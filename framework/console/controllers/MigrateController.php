@@ -84,7 +84,7 @@ class MigrateController extends BaseMigrateController
      */
     public $migrationTable = '{{%migration}}';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $templateFile = '@yii/views/migration.php';
     /**
@@ -140,7 +140,7 @@ class MigrateController extends BaseMigrateController
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
@@ -154,7 +154,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function optionAliases()
@@ -203,7 +203,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getMigrationHistory($limit)
     {
@@ -278,7 +278,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function addMigrationHistory($version)
     {
@@ -290,7 +290,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.13
      */
     protected function truncateDatabase()
@@ -316,7 +316,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function removeMigrationHistory($version)
     {
@@ -329,7 +329,7 @@ class MigrateController extends BaseMigrateController
     private $_migrationNameLimit;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.13
      */
     protected function getMigrationNameLimit()
@@ -346,7 +346,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     protected function generateMigrationSourceCode($params)

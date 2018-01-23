@@ -205,7 +205,7 @@ class IpValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     *{@inheritdoc}
      */
     public function init()
     {
@@ -283,7 +283,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     *{@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -297,7 +297,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     *{@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -533,7 +533,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     *{@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -544,7 +544,7 @@ class IpValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     *{@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {

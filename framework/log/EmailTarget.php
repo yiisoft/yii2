@@ -59,7 +59,7 @@ class EmailTarget extends Target
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {

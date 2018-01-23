@@ -310,7 +310,7 @@ class GridView extends BaseListView
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderSection($name)
     {

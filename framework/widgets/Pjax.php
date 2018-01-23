@@ -98,18 +98,18 @@ class Pjax extends Widget
      */
     public $clientOptions;
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @internal
      */
     public static $counter = 0;
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static $autoIdPrefix = 'p';
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -142,7 +142,7 @@ class Pjax extends Widget
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function run()
     {

@@ -33,7 +33,7 @@ class ConsoleStub extends Console
 
 
     /**
-     * @inheritdoc
+     *{@inheritdoc}
      */
     public static function stdin($raw = false)
     {
@@ -41,7 +41,7 @@ class ConsoleStub extends Console
     }
 
     /**
-     * @inheritdoc
+     *{@inheritdoc}
      */
     public static function stdout($string)
     {
@@ -49,7 +49,7 @@ class ConsoleStub extends Console
     }
 
     /**
-     * @inheritdoc
+     *{@inheritdoc}
      */
     public static function stderr($string)
     {
