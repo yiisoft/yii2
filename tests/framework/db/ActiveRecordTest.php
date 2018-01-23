@@ -1600,5 +1600,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf(OrderItemWithConstructor::className(), $item);
 
         $this->assertEquals(1, $item->item_id);
+
+        // @see https://github.com/yiisoft/yii2/issues/15540
+        $orders = OrderWithConstructor::find()
+            ->with(['customer.profile', 'orderItems'])
+            ->orderBy('id')
+            ->asArray(true)
+            ->all();
+        $this->assertCount(3, $orders);
     }
 }
