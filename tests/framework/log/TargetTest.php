@@ -226,7 +226,7 @@ class TestTarget extends Target
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getContextMessage()
     {

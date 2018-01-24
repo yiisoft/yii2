@@ -75,7 +75,7 @@ class Dispatcher extends Component
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __construct($config = [])
     {
@@ -91,7 +91,7 @@ class Dispatcher extends Component
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
