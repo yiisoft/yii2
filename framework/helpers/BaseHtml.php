@@ -1430,7 +1430,7 @@ class BaseHtml
      * Generates a file input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
-     * Additionally, if a separate set of html options array is defined inside `$options` with a key named `hiddenOptions`,
+     * Additionally, if a separate set of HTML options array is defined inside `$options` with a key named `hiddenOptions`,
      * it will be passed to the `activeHiddenInput` field as its own `$options` parameter.
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
@@ -1438,7 +1438,7 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * If `hiddenOptions` parameter which is another set of html options array is defined, it will be extracted 
+     * If `hiddenOptions` parameter which is another set of HTML options array is defined, it will be extracted 
      * from `$options` to be used for the hidden input.
      * @return string the generated input tag
      */
