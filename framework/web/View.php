@@ -486,7 +486,6 @@ class View extends \yii\base\View
     }
 
     /**
-     *
      * Registers a JS code block defining a variable. The name of variable will be
      * used as key, preventing duplicated variable names.
      *
@@ -508,6 +507,7 @@ class View extends \yii\base\View
      * will overwrite the former.
      *
      * @throws InvalidConfigException If variable name does not match ECMA requirements.
+     * @since 2.0.14
      */
     public function registerJsVar($name, $value, $position = self::POS_HEAD)
     {
@@ -519,7 +519,7 @@ class View extends \yii\base\View
             throw new InvalidConfigException('Variable name must be in a valid ECMAscript format');
         }
 
-        $js = sprintf('var %s=%s', $name, \yii\helpers\Json::htmlEncode($value));
+        $js = sprintf('var %s = %s;', $name, \yii\helpers\Json::htmlEncode($value));
 
         $this->registerJs($js, $position, (string)$name);
     }
