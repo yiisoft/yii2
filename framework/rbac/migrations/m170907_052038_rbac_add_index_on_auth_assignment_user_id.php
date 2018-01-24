@@ -20,7 +20,7 @@ use yii\rbac\DbManager;
 class m170907_052038_rbac_add_index_on_auth_assignment_user_id extends Migration
 {
     public $column = 'user_id';
-    public $index = 'auth_assignment_user_id_idx';
+    public $index = '{{%auth_assignment_user_id_idx}}';
 
     /**
      * @throws yii\base\InvalidConfigException
