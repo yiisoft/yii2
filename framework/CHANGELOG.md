@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Enh #9771: Assign hidden input with its own set of HTML options via `$hiddenOptions` in activeFileInput `$options` (HanafiAhmat)
 - Bug #15536: Fixed `yii\widgets\ActiveForm::init()` for call `parent::init()` (panchenkodv)
 - Enh #14806: Added $placeFooterAfterBody option for GridView (terehru)
 - Bug #14711: Fixed `yii\web\ErrorHandler` displaying exception message in non-debug mode (samdark)
