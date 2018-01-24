@@ -494,12 +494,12 @@ class View extends \yii\base\View
      * @param int $position the position in a page at which the JavaScript variable should be inserted.
      * The possible values are:
      *
-     * - [[POS_HEAD]]: in the head section
-     * - [[POS_BEGIN]]: at the beginning of the body section
-     * - [[POS_END]]: at the end of the body section
+     * - [[POS_HEAD]]: in the head section. This is the default value.
+     * - [[POS_BEGIN]]: at the beginning of the body section.
+     * - [[POS_END]]: at the end of the body section.
      * - [[POS_LOAD]]: enclosed within jQuery(window).load().
      *   Note that by using this position, the method will automatically register the jQuery js file.
-     * - [[POS_READY]]: enclosed within jQuery(document).ready(). This is the default value.
+     * - [[POS_READY]]: enclosed within jQuery(document).ready().
      *   Note that by using this position, the method will automatically register the jQuery js file.
      *
      * @param string $key the key that identifies the JS code block. If null, it will use
