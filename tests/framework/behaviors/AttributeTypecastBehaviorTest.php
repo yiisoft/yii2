@@ -1,12 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\behaviors;
 
 use Yii;
 use yii\base\DynamicModel;
-use yiiunit\TestCase;
-use yii\db\ActiveRecord;
 use yii\behaviors\AttributeTypecastBehavior;
+use yii\db\ActiveRecord;
+use yiiunit\TestCase;
 
 /**
  * Unit test for [[\yii\behaviors\AttributeTypecastBehavior]].
@@ -30,8 +35,8 @@ class AttributeTypecastBehaviorTest extends TestCase
                 'db' => [
                     'class' => '\yii\db\Connection',
                     'dsn' => 'sqlite::memory:',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $columns = [
@@ -136,7 +141,7 @@ class AttributeTypecastBehaviorTest extends TestCase
             ->addRule('name', 'string')
             ->addRule('amount', 'integer')
             ->addRule('price', 'number')
-            ->addRule('isActive', 'boolean');
+            ->addRule('!isActive', 'boolean');
 
         $behavior = new AttributeTypecastBehavior();
 
@@ -176,7 +181,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model->save(false);
 
         $model->refresh();
-        $this->assertEquals('58', $model->amount);
+        $this->assertSame(58, $model->amount);
     }
 }
 

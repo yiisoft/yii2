@@ -58,7 +58,7 @@ The term "class" refers to all classes and interfaces here.
 /**
  * Documentation
  */
-class MyClass extends \yii\Object implements MyInterface
+class MyClass extends \yii\base\BaseObject implements MyInterface
 {
     // code
 }
@@ -367,7 +367,7 @@ Documentation
 - All class files must contain a "file-level" docblock at the top of each file
   and a "class-level" docblock immediately above each class.
 - There is no need to use `@return` if method does return nothing.
-- All virtual properties in classes that extend from `yii\base\Object`
+- All virtual properties in classes that extend from `yii\base\BaseObject`
   are documented with an `@property` tag in the class doc block.
   These annotations are automatically generated from the `@return` or `@param`
   tag in the corresponding getter or setter by running `./build php-doc` in the build directory.
@@ -412,7 +412,7 @@ Documentation
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends \yii\base\Object
+class Component extends \yii\base\BaseObject
 ```
 
 

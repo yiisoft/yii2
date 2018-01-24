@@ -40,6 +40,7 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        ['css/print.css', 'media' => 'print'],
     ];
     public $js = [
     ];
@@ -68,17 +69,18 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
   [[yii\web\AssetBundle::basePath|basePath]]. Like [[yii\web\AssetBundle::basePath|basePath]],
   if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property, the [asset manager](#asset-manager)
   will publish the assets and overwrite this property accordingly. [Path aliases](concept-aliases.md) can be used here.
-* [[yii\web\AssetBundle::js|js]]: an array listing the JavaScript files contained in this bundle. Note that only
-  forward slash "/" should be used as directory separators. Each JavaScript file can be specified in one of the
-  following two formats:
+* [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. Note that only forward slash "/"
+  should be used as directory separators. Each file can be specified on its own as a string or in an array together with
+  attribute tags and their values.
+* [[yii\web\AssetBundle::js|js]]: an array listing the JavaScript files contained in this bundle. The format of this array
+  is the same as that of [[yii\web\AssetBundle::css|css]]. Each JavaScript file can be specified in one of the following two
+  formats:
   - a relative path representing a local JavaScript file (e.g. `js/main.js`). The actual path of the file
     can be determined by prepending [[yii\web\AssetManager::basePath]] to the relative path, and the actual URL
     of the file can be determined by prepending [[yii\web\AssetManager::baseUrl]] to the relative path.
   - an absolute URL representing an external JavaScript file. For example,
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-* [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. The format of this array
-  is the same as that of [[yii\web\AssetBundle::js|js]].
 * [[yii\web\AssetBundle::depends|depends]]: an array listing the names of the asset bundles that this bundle depends on
   (to be explained shortly).
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: specifies the options that will be passed to the
@@ -143,8 +145,8 @@ will be passed to the [[yii\web\View::registerCssFile()]] and [[yii\web\View::re
 they are called by the [view](structure-views.md) to include CSS and JavaScript files.
 
 > Note: The options you set in a bundle class apply to *every* CSS/JavaScript file in the bundle. If you want to
-  use different options for different files, you should create separate asset bundles, and use one set of options
-  in each bundle.
+  use different options for different files, you should use the format mentioned [[yii\web\AssetBundle::css|above]] or create
+  separate asset bundles, and use one set of options in each bundle.
 
 For example, to conditionally include a CSS file for browsers that are IE9 or below, you can use the following option:
 
@@ -192,8 +194,8 @@ class FontAwesomeAsset extends AssetBundle
     ];
     public $publishOptions = [
         'only' => [
-            'fonts/',
-            'css/',
+            'fonts/*',
+            'css/*',
         ]
     ];
 }  
@@ -203,16 +205,86 @@ The above example defines an asset bundle for the ["fontawesome" package](http:/
 the `only` publishing option, only the `fonts` and `css` subdirectories will be published.
 
 
-### Bower and NPM Assets <span id="bower-npm-assets"></span>
+### Bower and NPM Assets installation <span id="bower-npm-assets"></span>
 
-Most JavaScript/CSS packages are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/).
-If your application or extension is using such a package, it is recommended that you follow these steps to manage
-the assets in the library:
+Most JavaScript/CSS packages are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) package 
+managers. In PHP world we have Composer, that manages PHP dependencies, but it is possible to load
+both Bower and NPM packages using `composer.json` just as PHP packages.
+
+To achieve this, we should configure our composer a bit. There are two options to do that:
+
+___
+
+##### Using asset-packagist repository
+
+This way will satisfy requirements of the majority of projects, that need NPM or Bower packages.
+
+> Note: Since 2.0.13 both Basic and Advanced application templates are pre-configured to use asset-packagist
+ by default, so you can skip this section.
+
+In the `composer.json` of your project, add the following lines:
+
+```json
+"repositories": [
+    {
+        "type": "composer",
+        "url": "https://asset-packagist.org"
+    }
+]
+```
+
+Adjust `@npm` and `@bower` [aliases](concept-aliases.md) in you [application configuration](concept-configurations.md):
+
+```php
+$config = [
+    ...
+    'aliases' => [
+        '@bower' => '@vendor/bower-asset',
+        '@npm'   => '@vendor/npm-asset',
+    ],
+    ...
+];
+```
+
+Visit [asset-packagist.org](https://asset-packagist.org) to know, how it works.
+
+##### Using fxp/composer-asset-plugin
+
+Compared to asset-packagist, composer-asset-plugin does not require any changes to application config. Instead, it
+requires global installation of a special Composer plugin by running the following command:
+
+```bash
+composer global require "fxp/composer-asset-plugin:^1.4.1"
+```
+
+This command installs [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) globally
+which allows managing Bower and NPM package dependencies through Composer. After the plugin installation, 
+every single project on your computer will support Bower and NPM packages through `composer.json`. 
+
+Add the following lines to `composer.json` of your project to adjust directories where the installed packages 
+will be placed, if you want to publish them using Yii:
+
+```json
+"extra": {
+    "asset-installer-paths": {
+        "npm-asset-library": "vendor/npm",
+        "bower-asset-library": "vendor/bower"
+    }
+}
+```
+
+> Note: `fxp/composer-asset-plugin` significantly slows down the `composer update` command in comparison
+  to asset-packagist.
+ 
+____
+ 
+After configuring Composer to support Bower and NPM:
 
 1. Modify the `composer.json` file of your application or extension and list the package in the `require` entry.
    You should use `bower-asset/PackageName` (for Bower packages) or `npm-asset/PackageName` (for NPM packages)
    to refer to the library.
-2. Create an asset bundle class and list the JavaScript/CSS files that you plan to use in your application or extension.
+2. Run `composer update`
+3. Create an asset bundle class and list the JavaScript/CSS files that you plan to use in your application or extension.
    You should specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property as `@bower/PackageName` or `@npm/PackageName`.
    This is because Composer will install the Bower or NPM package in the directory corresponding to this alias.
 
@@ -248,7 +320,7 @@ properties.
 ### Dynamic Asset Bundles <span id="dynamic-asset-bundles"></span>
 
 Being a regular PHP class asset bundle can bear some extra logic related to it and may adjust its internal parameters dynamically.
-For example: you may use som sophisticated JavaScript library, which provides some internationalization packed in separated
+For example: you may use some sophisticated JavaScript library, which provides some internationalization packed in separated
 source files: each per each supported language. Thus you will need to add particular '.js' file to your page in order to
 make library translation work. This can be achieved overriding [[yii\web\AssetBundle::init()]] method:
 
@@ -667,7 +739,7 @@ include this file in the application configuration. For example,
 return [
     'components' => [
         'assetManager' => [
-            'bundles' => require(__DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php')),  
+            'bundles' => require __DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php'),  
         ],
     ],
 ];

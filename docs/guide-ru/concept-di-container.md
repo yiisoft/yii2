@@ -60,7 +60,7 @@ class MyClass extends \yii\base\Component
 }
 ```
 
-Метод можно вызвать либо передав экземпляр `\my\heavy\Dependency` самостоятельно, либо использовава
+Метод можно вызвать либо передав экземпляр `\my\heavy\Dependency` самостоятельно, либо использовав
 [[yii\di\Container::invoke()]]:
 
 ```php
@@ -76,9 +76,9 @@ Yii::$container->invoke([$obj, 'doSomething'], ['param1' => 42]); // $something 
 Например,
 
 ```php
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     public $bar;
 
@@ -101,7 +101,7 @@ $container->get('Foo', [], [
 ]);
 ```
 
-> Info: Метод [[yii\di\Container::get()]] третьим аргументом принимает массив конфигурации, которым инициализируется создаваемый объект. Если класс реализует интерфейс [[yii\base\Configurable]] (например, [[yii\base\Object]]), то массив конфигурации передается в последний параметр конструктора класса. Иначе конфигурация применяется уже *после* создания объекта.
+> Info: Метод [[yii\di\Container::get()]] третьим аргументом принимает массив конфигурации, которым инициализируется создаваемый объект. Если класс реализует интерфейс [[yii\base\Configurable]] (например, [[yii\base\BaseObject]]), то массив конфигурации передается в последний параметр конструктора класса. Иначе конфигурация применяется уже *после* создания объекта.
 
 
 Более сложное практическое применение <span id="advanced-practical-usage"></span>
@@ -117,14 +117,14 @@ $container->get('Foo', [], [
   ```php
   class FileStorage
   {
-      public function __contruct($root) {
+      public function __construct($root) {
           // делаем что-то
       }
   }
   
   class DocumentsReader
   {
-      public function __contruct(FileStorage $fs) {
+      public function __construct(FileStorage $fs) {
           // делаем что-то
       }
   }
@@ -151,7 +151,7 @@ $container->setDefinitions([
         'class' => 'app\components\Response',
         'format' => 'json'
     ],
-    'app\storage\DocumentsReader' => function () {
+    'app\storage\DocumentsReader' => function ($container, $params, $config) {
         $fs = new app\storage\FileStorage('/var/tempfiles');
         return new app\storage\DocumentsReader($fs);
     }
@@ -194,7 +194,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // Код будет работать ровно так же, как и в предыдущем примере.
 ```
 
@@ -243,7 +243,7 @@ $reader = $container->get('app\storage\DocumentsReader');
 Callback отвечает за разрешения зависимостей и внедряет их в соответствии с вновь создаваемыми объектами. Например,
 
 ```php
-$container->set('Foo', function () {
+$container->set('Foo', function ($container, $params, $config) {
     $foo = new Foo(new Bar);
     // ... дополнительная инициализация
     return $foo;
@@ -258,7 +258,7 @@ callable:
 ```php
 class FooBuilder
 {
-    public static function build()
+    public static function build($container, $params, $config)
     {
         $foo = new Foo(new Bar);
         // ... дополнительная инициализация ...
@@ -375,7 +375,7 @@ $engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1
 ```php
 namespace app\models;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\di\Container;
 
@@ -384,7 +384,7 @@ interface UserFinderInterface
     function findUser();
 }
 
-class UserFinder extends Object implements UserFinderInterface
+class UserFinder extends BaseObject implements UserFinderInterface
 {
     public $db;
 
@@ -399,7 +399,7 @@ class UserFinder extends Object implements UserFinderInterface
     }
 }
 
-class UserLister extends Object
+class UserLister extends BaseObject
 {
     public $finder;
 

@@ -8,6 +8,7 @@
 namespace yii\db\cubrid;
 
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\db\Exception;
 
 /**
@@ -45,17 +46,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $likeEscapeCharacter = '!';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $likeEscapingReplacements = [
         '%' => '!%',
         '_' => '!_',
         '!' => '!!',
     ];
+
 
     /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
@@ -82,13 +84,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return 'ALTER TABLE ' . $this->db->schema->quoteTableName($tableName) . " AUTO_INCREMENT=$value;";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildLimit($limit, $offset)
     {
@@ -109,7 +111,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function selectExists($rawSql)
@@ -118,7 +120,42 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
+     * @see http://www.cubrid.org/manual/93/en/sql/schema/table.html#drop-index-clause
+     */
+    public function dropIndex($name, $table)
+    {
+        /** @var Schema $schema */
+        $schema = $this->db->getSchema();
+        foreach ($schema->getTableUniques($table) as $unique) {
+            if ($unique->name === $name) {
+                return $this->dropUnique($name, $table);
+            }
+        }
+
+        return 'DROP INDEX ' . $this->db->quoteTableName($name) . ' ON ' . $this->db->quoteTableName($table);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by CUBRID.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by CUBRID.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by CUBRID.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by CUBRID.');
+    }
+
+    /**
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
@@ -134,7 +171,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
@@ -143,7 +180,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
@@ -152,7 +189,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromTable($table)
@@ -191,6 +228,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
             }
         }
+
         return null;
     }
 }

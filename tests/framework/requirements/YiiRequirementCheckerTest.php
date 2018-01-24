@@ -1,6 +1,11 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
-require_once(__DIR__.'/../../../framework/requirements/YiiRequirementChecker.php');
+require_once __DIR__ . '/../../../framework/requirements/YiiRequirementChecker.php';
 
 use yiiunit\TestCase;
 
@@ -49,13 +54,13 @@ class YiiRequirementCheckerTest extends TestCase
         $checkedRequirements = $checkResult['requirements'];
         $requirementsKeys = array_flip(array_keys($requirements));
 
-        $this->assertEquals(false, $checkedRequirements[$requirementsKeys['requirementPass']]['error'], 'Passed requirement has an error!');
-        $this->assertEquals(false, $checkedRequirements[$requirementsKeys['requirementPass']]['warning'], 'Passed requirement has a warning!');
+        $this->assertFalse($checkedRequirements[$requirementsKeys['requirementPass']]['error'], 'Passed requirement has an error!');
+        $this->assertFalse($checkedRequirements[$requirementsKeys['requirementPass']]['warning'], 'Passed requirement has a warning!');
 
-        $this->assertEquals(true, $checkedRequirements[$requirementsKeys['requirementError']]['error'], 'Error requirement has no error!');
+        $this->assertTrue($checkedRequirements[$requirementsKeys['requirementError']]['error'], 'Error requirement has no error!');
 
-        $this->assertEquals(false, $checkedRequirements[$requirementsKeys['requirementWarning']]['error'], 'Error requirement has an error!');
-        $this->assertEquals(true, $checkedRequirements[$requirementsKeys['requirementWarning']]['warning'], 'Error requirement has no warning!');
+        $this->assertFalse($checkedRequirements[$requirementsKeys['requirementWarning']]['error'], 'Error requirement has an error!');
+        $this->assertTrue($checkedRequirements[$requirementsKeys['requirementWarning']]['warning'], 'Error requirement has no warning!');
     }
 
     /**
@@ -86,10 +91,10 @@ class YiiRequirementCheckerTest extends TestCase
         $checkedRequirements = $checkResult['requirements'];
         $requirementsKeys = array_flip(array_keys($requirements));
 
-        $this->assertEquals(false, $checkedRequirements[$requirementsKeys['requirementPass']]['error'], 'Passed requirement has an error!');
-        $this->assertEquals(false, $checkedRequirements[$requirementsKeys['requirementPass']]['warning'], 'Passed requirement has a warning!');
+        $this->assertFalse($checkedRequirements[$requirementsKeys['requirementPass']]['error'], 'Passed requirement has an error!');
+        $this->assertFalse($checkedRequirements[$requirementsKeys['requirementPass']]['warning'], 'Passed requirement has a warning!');
 
-        $this->assertEquals(true, $checkedRequirements[$requirementsKeys['requirementError']]['error'], 'Error requirement has no error!');
+        $this->assertTrue($checkedRequirements[$requirementsKeys['requirementError']]['error'], 'Error requirement has no error!');
     }
 
     /**
@@ -147,12 +152,12 @@ class YiiRequirementCheckerTest extends TestCase
     {
         return [
             ['456', 456],
-            ['5K', 5*1024],
-            ['16KB', 16*1024],
-            ['4M', 4*1024*1024],
-            ['14MB', 14*1024*1024],
-            ['7G', 7*1024*1024*1024],
-            ['12GB', 12*1024*1024*1024],
+            ['5K', 5 * 1024],
+            ['16KB', 16 * 1024],
+            ['4M', 4 * 1024 * 1024],
+            ['14MB', 14 * 1024 * 1024],
+            ['7G', 7 * 1024 * 1024 * 1024],
+            ['12GB', 12 * 1024 * 1024 * 1024],
         ];
     }
 

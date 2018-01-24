@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -14,7 +19,9 @@ class EachValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testArrayFormat()
@@ -43,7 +50,7 @@ class EachValidatorTest extends TestCase
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
-                '  to be trimmed  '
+                '  to be trimmed  ',
             ],
         ]);
         $validator = new EachValidator(['rule' => ['trim']]);
@@ -58,7 +65,7 @@ class EachValidatorTest extends TestCase
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
-                'text'
+                'text',
             ],
         ]);
         $validator = new EachValidator(['rule' => ['integer']]);
@@ -110,7 +117,7 @@ class EachValidatorTest extends TestCase
 
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
-                ''
+                '',
             ],
         ]);
         $validator = new EachValidator(['rule' => ['integer', 'skipOnEmpty' => true]]);
@@ -163,7 +170,7 @@ class EachValidatorTest extends TestCase
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
-                'one', 2, 'three'
+                'one', 2, 'three',
             ],
         ]);
         $validator = new EachValidator(['rule' => ['integer']]);

@@ -1,13 +1,19 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\base;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yiiunit\TestCase;
 
 /**
  * @group base
  */
-class ObjectTest extends TestCase
+class BaseObjectTest extends TestCase
 {
     /**
      * @var NewObject
@@ -18,7 +24,7 @@ class ObjectTest extends TestCase
     {
         parent::setUp();
         $this->mockApplication();
-        $this->object = new NewObject;
+        $this->object = new NewObject();
     }
 
     protected function tearDown()
@@ -94,7 +100,8 @@ class ObjectTest extends TestCase
         $this->assertEmpty($this->object->Text);
 
         $this->assertFalse(isset($this->object->unknownProperty));
-        $this->assertTrue(empty($this->object->unknownProperty));
+        $isEmpty = empty($this->object->unknownProperty);
+        $this->assertTrue($isEmpty);
     }
 
     public function testUnset()
@@ -152,10 +159,23 @@ class ObjectTest extends TestCase
         $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewObject::writeOnly');
         $this->object->writeOnly;
     }
+
+    public function testBackwardCompatibilityWithObject()
+    {
+        if (PHP_MAJOR_VERSION > 7 || (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION >= 2)) {
+            $this->markTestSkipped('This test is meant to run on PHP <7.2.0 to check BC with yii\base\Object');
+        }
+        $this->assertInstanceOf('yii\base\Object', new BCObject());
+        $this->assertInstanceOf('yii\base\BaseObject', new BCObject());
+
+        BCObject::$initCalled = false;
+        new BCObject();
+        $this->assertTrue(BCObject::$initCalled);
+    }
 }
 
 
-class NewObject extends Object
+class NewObject extends BaseObject
 {
     private $_object = null;
     private $_text = 'default';
@@ -175,7 +195,7 @@ class NewObject extends Object
     public function getObject()
     {
         if (!$this->_object) {
-            $this->_object = new self;
+            $this->_object = new self();
             $this->_object->_text = 'object text';
         }
 
@@ -194,5 +214,7 @@ class NewObject extends Object
         return $this->_items;
     }
 
-    public function setWriteOnly() {}
+    public function setWriteOnly()
+    {
+    }
 }

@@ -8,9 +8,9 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Json;
 use yii\helpers\StringHelper;
 use yii\web\JsExpression;
-use yii\helpers\Json;
 
 /**
  * NumberValidator validates that the attribute value is a number.
@@ -58,7 +58,7 @@ class NumberValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -76,7 +76,7 @@ class NumberValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -99,7 +99,7 @@ class NumberValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -113,13 +113,13 @@ class NumberValidator extends Validator
             return [$this->tooSmall, ['min' => $this->min]];
         } elseif ($this->max !== null && $value > $this->max) {
             return [$this->tooBig, ['max' => $this->max]];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -130,7 +130,7 @@ class NumberValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {

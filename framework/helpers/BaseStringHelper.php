@@ -86,9 +86,9 @@ class BaseStringHelper
         $pos = mb_strrpos(str_replace('\\', '/', $path), '/');
         if ($pos !== false) {
             return mb_substr($path, 0, $pos);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -104,15 +104,18 @@ class BaseStringHelper
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
     {
+        if ($encoding === null) {
+            $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        }
         if ($asHtml) {
-            return static::truncateHtml($string, $length, $suffix, $encoding ?: Yii::$app->charset);
+            return static::truncateHtml($string, $length, $suffix, $encoding);
         }
 
-        if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
-            return rtrim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
-        } else {
-            return $string;
+        if (mb_strlen($string, $encoding) > $length) {
+            return rtrim(mb_substr($string, 0, $length, $encoding)) . $suffix;
         }
+
+        return $string;
     }
 
     /**
@@ -134,9 +137,9 @@ class BaseStringHelper
         $words = preg_split('/(\s+)/u', trim($string), null, PREG_SPLIT_DELIM_CAPTURE);
         if (count($words) / 2 > $count) {
             return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
-        } else {
-            return $string;
         }
+
+        return $string;
     }
 
     /**
@@ -152,7 +155,9 @@ class BaseStringHelper
     protected static function truncateHtml($string, $count, $suffix, $encoding = false)
     {
         $config = \HTMLPurifier_Config::create(null);
-        $config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
+        if (Yii::$app !== null) {
+            $config->set('Cache.SerializerPath', Yii::$app->getRuntimePath());
+        }
         $lexer = \HTMLPurifier_Lexer::create($config);
         $tokens = $lexer->tokenizeHTML($string, $config, new \HTMLPurifier_Context());
         $openTokens = [];
@@ -166,7 +171,7 @@ class BaseStringHelper
                 ++$depth;
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
-                    preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['',''];
+                    preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['', ''];
                     $token->data = $prefixSpace[1] . self::truncateWords(ltrim($token->data), $count - $totalCount, '');
                     $currentCount = self::countWords($token->data);
                 } else {
@@ -176,7 +181,7 @@ class BaseStringHelper
                 $totalCount += $currentCount;
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
-                if ($token->name === $openTokens[$depth-1]) {
+                if ($token->name === $openTokens[$depth - 1]) {
                     --$depth;
                     unset($openTokens[$depth]);
                     $truncated[] = $token;
@@ -215,9 +220,10 @@ class BaseStringHelper
         }
         if ($caseSensitive) {
             return strncmp($string, $with, $bytes) === 0;
-        } else {
-            return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
+
         }
+        $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), $encoding) === mb_strtolower($with, $encoding);
     }
 
     /**
@@ -239,14 +245,16 @@ class BaseStringHelper
             if (static::byteLength($string) < $bytes) {
                 return false;
             }
+
             return substr_compare($string, $with, -$bytes, $bytes) === 0;
-        } else {
-            return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
         }
+
+        $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), $encoding) === mb_strtolower($with, $encoding);
     }
 
     /**
-     * Explodes string into array, optionally trims values and skips empty ones
+     * Explodes string into array, optionally trims values and skips empty ones.
      *
      * @param string $string String to be exploded.
      * @param string $delimiter Delimiter. Default is ','.
@@ -277,11 +285,12 @@ class BaseStringHelper
                 return $value !== '';
             }));
         }
+
         return $result;
     }
 
     /**
-     * Counts words in a string
+     * Counts words in a string.
      * @since 2.0.8
      *
      * @param string $string
@@ -293,8 +302,8 @@ class BaseStringHelper
     }
 
     /**
-     * Returns string represenation of number value with replaced commas to dots, if decimal point
-     * of current locale is comma
+     * Returns string representation of number value with replaced commas to dots, if decimal point
+     * of current locale is comma.
      * @param int|float|string $value
      * @return string
      * @since 2.0.11
@@ -314,7 +323,7 @@ class BaseStringHelper
     }
 
     /**
-     * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648).
      *
      * > Note: Base 64 padding `=` may be at the end of the returned string.
      * > `=` is not transparent to URL encoding.
@@ -330,7 +339,7 @@ class BaseStringHelper
     }
 
     /**
-     * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648).
      *
      * @see https://tools.ietf.org/html/rfc4648#page-7
      * @param string $input encoded string.
@@ -340,5 +349,73 @@ class BaseStringHelper
     public static function base64UrlDecode($input)
     {
         return base64_decode(strtr($input, '-_', '+/'));
+    }
+
+    /**
+     * Safely casts a float to string independent of the current locale.
+     *
+     * The decimal separator will always be `.`.
+     * @param float|int $number a floating point number or integer.
+     * @return string the string representation of the number.
+     * @since 2.0.13
+     */
+    public static function floatToString($number)
+    {
+        // . and , are the only decimal separators known in ICU data,
+        // so its safe to call str_replace here
+        return str_replace(',', '.', (string) $number);
+    }
+
+    /**
+     * Checks if the passed string would match the given shell wildcard pattern.
+     * This function emulates [[fnmatch()]], which may be unavailable at certain environment, using PCRE.
+     * @param string $pattern the shell wildcard pattern.
+     * @param string $string the tested string.
+     * @param array $options options for matching. Valid options are:
+     *
+     * - caseSensitive: bool, whether pattern should be case sensitive. Defaults to `true`.
+     * - escape: bool, whether backslash escaping is enabled. Defaults to `true`.
+     * - filePath: bool, whether slashes in string only matches slashes in the given pattern. Defaults to `false`.
+     *
+     * @return bool whether the string matches pattern or not.
+     * @since 2.0.14
+     */
+    public static function matchWildcard($pattern, $string, $options = [])
+    {
+        if ($pattern === '*' && empty($options['filePath'])) {
+            return true;
+        }
+
+        $replacements = [
+            '\\\\\\\\' => '\\\\',
+            '\\\\\\*' => '[*]',
+            '\\\\\\?' => '[?]',
+            '\*' => '.*',
+            '\?' => '.',
+            '\[\!' => '[^',
+            '\[' => '[',
+            '\]' => ']',
+            '\-' => '-',
+        ];
+
+        if (isset($options['escape']) && !$options['escape']) {
+            unset($replacements['\\\\\\\\']);
+            unset($replacements['\\\\\\*']);
+            unset($replacements['\\\\\\?']);
+        }
+
+        if (!empty($options['filePath'])) {
+            $replacements['\*'] = '[^/\\\\]*';
+            $replacements['\?'] = '[^/\\\\]';
+        }
+
+        $pattern = strtr(preg_quote($pattern, '#'), $replacements);
+        $pattern = '#^' . $pattern . '$#us';
+
+        if (isset($options['caseSensitive']) && !$options['caseSensitive']) {
+            $pattern .= 'i';
+        }
+
+        return preg_match($pattern, $string) === 1;
     }
 }

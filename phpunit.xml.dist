@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <phpunit bootstrap="./tests/bootstrap.php"
+		backupGlobals="true"
 		colors="true"
 		convertErrorsToExceptions="true"
 		convertNoticesToExceptions="true"
 		convertWarningsToExceptions="true"
-		stopOnFailure="false">
+		stopOnFailure="false"
+		printerClass="yiiunit\ResultPrinter">
 		<testsuites>
 			<testsuite name="Yii Test Suite">
 				<directory>./tests</directory>

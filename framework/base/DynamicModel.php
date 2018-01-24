@@ -76,19 +76,19 @@ class DynamicModel extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __get($name)
     {
         if (array_key_exists($name, $this->_attributes)) {
             return $this->_attributes[$name];
-        } else {
-            return parent::__get($name);
         }
+
+        return parent::__get($name);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __set($name, $value)
     {
@@ -100,19 +100,19 @@ class DynamicModel extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __isset($name)
     {
         if (array_key_exists($name, $this->_attributes)) {
             return isset($this->_attributes[$name]);
-        } else {
-            return parent::__isset($name);
         }
+
+        return parent::__isset($name);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __unset($name)
     {
@@ -193,7 +193,7 @@ class DynamicModel extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributes()
     {

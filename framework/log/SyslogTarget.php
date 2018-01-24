@@ -49,7 +49,7 @@ class SyslogTarget extends Target
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -60,7 +60,7 @@ class SyslogTarget extends Target
     }
 
     /**
-     * Writes log messages to syslog
+     * Writes log messages to syslog.
      */
     public function export()
     {
@@ -72,7 +72,7 @@ class SyslogTarget extends Target
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function formatMessage($message)
     {

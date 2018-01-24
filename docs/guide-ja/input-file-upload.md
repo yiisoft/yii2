@@ -79,7 +79,7 @@ use yii\widgets\ActiveForm;
 ファイルが正しくアップロードされるように、フォームに `enctype` オプションを追加することを憶えておくのは重要なことです。
 `fileInput()` を呼ぶと `<input type="file">` のタグがレンダリングされて、ユーザがアップロードするファイルを選ぶことが出来るようになります。
 
-> Tip: バージョン 2.0.8 以降では、ファイルインプットのフィールドが使われているときは、[[yii\web\widgets\ActiveField::fileInput|fileInput]] がフォームに `enctype` オプションを自動的に追加します。
+> Tip: バージョン 2.0.8 以降では、ファイルインプットのフィールドが使われているときは、[[yii\widgets\ActiveField::fileInput|fileInput]] がフォームに `enctype` オプションを自動的に追加します。
 
 
 ## 繋ぎ合せる <span id="wiring-up"></span>

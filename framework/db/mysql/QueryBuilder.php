@@ -8,6 +8,7 @@
 namespace yii\db\mysql;
 
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\db\Exception;
 use yii\db\Expression;
 
@@ -84,7 +85,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @see https://bugs.mysql.com/bug.php?id=48875
      */
     public function createIndex($name, $table, $columns, $unique = false)
@@ -120,6 +121,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritDoc
+     */
+    public function dropUnique($name, $table)
+    {
+        return $this->dropIndex($name, $table);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
+    }
+
+    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
@@ -144,9 +171,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "ALTER TABLE $tableName AUTO_INCREMENT=$value";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is no sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidParamException("There is no sequence associated with table '$tableName'.");
     }
 
     /**
@@ -162,7 +189,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildLimit($limit, $offset)
     {
@@ -183,7 +210,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function hasLimit($limit)
     {
@@ -192,7 +219,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function hasOffset($offset)
     {
@@ -202,7 +229,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns, &$params)
     {
@@ -216,7 +243,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
+            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
@@ -249,7 +276,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
@@ -265,7 +292,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
@@ -274,7 +301,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
@@ -283,7 +310,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromTable($table)
@@ -320,6 +347,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
             }
         }
+
         return null;
     }
 }

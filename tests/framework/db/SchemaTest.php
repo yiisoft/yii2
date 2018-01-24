@@ -1,15 +1,31 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db;
 
 use PDO;
+use yii\caching\ArrayCache;
 use yii\caching\FileCache;
+use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
+use yii\db\Constraint;
 use yii\db\Expression;
+use yii\db\ForeignKeyConstraint;
+use yii\db\IndexConstraint;
 use yii\db\Schema;
+use yii\db\TableSchema;
 
 abstract class SchemaTest extends DatabaseTestCase
 {
+    /**
+     * @var string[]
+     */
+    protected $expectedSchemas;
+
     public function pdoAttributesProvider()
     {
         return [
@@ -18,8 +34,21 @@ abstract class SchemaTest extends DatabaseTestCase
         ];
     }
 
+    public function testGetSchemaNames()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $schemas = $schema->getSchemaNames();
+        $this->assertNotEmpty($schemas);
+        foreach ($this->expectedSchemas as $schema) {
+            $this->assertContains($schema, $schemas);
+        }
+    }
+
     /**
      * @dataProvider pdoAttributesProvider
+     * @param array $pdoAttributes
      */
     public function testGetTableNames($pdoAttributes)
     {
@@ -43,6 +72,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     /**
      * @dataProvider pdoAttributesProvider
+     * @param array $pdoAttributes
      */
     public function testGetTableSchemas($pdoAttributes)
     {
@@ -102,6 +132,82 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema->refreshTableSchema('type');
         $refreshedTable = $schema->getTableSchema('type', false);
         $this->assertNotSame($noCacheTable, $refreshedTable);
+    }
+
+    public function tableSchemaCachePrefixesProvider()
+    {
+        $configs = [
+            [
+                'prefix' => '',
+                'name' => 'type',
+            ],
+            [
+                'prefix' => '',
+                'name' => '{{%type}}',
+            ],
+            [
+                'prefix' => 'ty',
+                'name' => '{{%pe}}',
+            ],
+        ];
+        $data = [];
+        foreach ($configs as $config) {
+            foreach ($configs as $testConfig) {
+                if ($config === $testConfig) {
+                    continue;
+                }
+
+                $description = sprintf(
+                    "%s (with '%s' prefix) against %s (with '%s' prefix)",
+                    $config['name'],
+                    $config['prefix'],
+                    $testConfig['name'],
+                    $testConfig['prefix']
+                );
+                $data[$description] = [
+                    $config['prefix'],
+                    $config['name'],
+                    $testConfig['prefix'],
+                    $testConfig['name'],
+                ];
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * @dataProvider tableSchemaCachePrefixesProvider
+     * @depends testSchemaCache
+     */
+    public function testTableSchemaCacheWithTablePrefixes($tablePrefix, $tableName, $testTablePrefix, $testTableName)
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+        $schema->db->enableSchemaCache = true;
+
+        $schema->db->tablePrefix = $tablePrefix;
+        $schema->db->schemaCache = new ArrayCache();
+        $noCacheTable = $schema->getTableSchema($tableName, true);
+        $this->assertInstanceOf(TableSchema::className(), $noCacheTable);
+
+        // Compare
+        $schema->db->tablePrefix = $testTablePrefix;
+        $testNoCacheTable = $schema->getTableSchema($testTableName);
+        $this->assertSame($noCacheTable, $testNoCacheTable);
+
+        $schema->db->tablePrefix = $tablePrefix;
+        $schema->refreshTableSchema($tableName);
+        $refreshedTable = $schema->getTableSchema($tableName, false);
+        $this->assertInstanceOf(TableSchema::className(), $refreshedTable);
+        $this->assertNotSame($noCacheTable, $refreshedTable);
+
+        // Compare
+        $schema->db->tablePrefix = $testTablePrefix;
+        $schema->refreshTableSchema($testTablePrefix);
+        $testRefreshedTable = $schema->getTableSchema($testTableName, false);
+        $this->assertInstanceOf(TableSchema::className(), $testRefreshedTable);
+        $this->assertEquals($refreshedTable, $testRefreshedTable);
+        $this->assertNotSame($testNoCacheTable, $testRefreshedTable);
     }
 
     public function testCompositeFk()
@@ -222,7 +328,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 'phpType' => 'string',
                 'allowNull' => true,
                 'autoIncrement' => false,
-                'enumValues' => ['a', 'B','c,D'],
+                'enumValues' => ['a', 'B', 'c,D'],
                 'size' => null,
                 'precision' => null,
                 'scale' => null,
@@ -376,7 +482,7 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->assertSame($expected['precision'], $column->precision, "precision of column $name does not match.");
             $this->assertSame($expected['scale'], $column->scale, "scale of column $name does not match.");
             if (is_object($expected['defaultValue'])) {
-                $this->assertTrue(is_object($column->defaultValue), "defaultValue of column $name is expected to be an object but it is not.");
+                $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
                 $this->assertEquals((string) $expected['defaultValue'], (string) $column->defaultValue, "defaultValue of column $name does not match.");
             } else {
                 $this->assertSame($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
@@ -425,5 +531,268 @@ abstract class SchemaTest extends DatabaseTestCase
             'somecolUnique' => ['somecol'],
             'someCol2Unique' => ['someCol2'],
         ], $uniqueIndexes);
+        
+        // see https://github.com/yiisoft/yii2/issues/13814
+        $db->createCommand()->createIndex('another unique index', 'uniqueIndex', 'someCol2', true)->execute();
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([
+            'somecolUnique' => ['somecol'],
+            'someCol2Unique' => ['someCol2'],
+            'another unique index' => ['someCol2'],
+        ], $uniqueIndexes);
+    }
+
+    public function testContraintTablesExistance()
+    {
+        $tableNames = [
+            'T_constraints_1',
+            'T_constraints_2',
+            'T_constraints_3',
+            'T_constraints_4',
+        ];
+        $schema = $this->getConnection()->getSchema();
+        foreach ($tableNames as $tableName) {
+            $tableSchema = $schema->getTableSchema($tableName);
+            $this->assertInstanceOf('yii\db\TableSchema', $tableSchema, $tableName);
+        }
+    }
+
+    public function constraintsProvider()
+    {
+        return [
+            '1: primary key' => ['T_constraints_1', 'primaryKey', new Constraint([
+                'name' => AnyValue::getInstance(),
+                'columnNames' => ['C_id'],
+            ])],
+            '1: check' => ['T_constraints_1', 'checks', [
+                new CheckConstraint([
+                    'name' => AnyValue::getInstance(),
+                    'columnNames' => ['C_check'],
+                    'expression' => "C_check <> ''",
+                ]),
+            ]],
+            '1: unique' => ['T_constraints_1', 'uniques', [
+                new Constraint([
+                    'name' => 'CN_unique',
+                    'columnNames' => ['C_unique'],
+                ]),
+            ]],
+            '1: index' => ['T_constraints_1', 'indexes', [
+                new IndexConstraint([
+                    'name' => AnyValue::getInstance(),
+                    'columnNames' => ['C_id'],
+                    'isUnique' => true,
+                    'isPrimary' => true,
+                ]),
+                new IndexConstraint([
+                    'name' => 'CN_unique',
+                    'columnNames' => ['C_unique'],
+                    'isPrimary' => false,
+                    'isUnique' => true,
+                ]),
+            ]],
+            '1: default' => ['T_constraints_1', 'defaultValues', false],
+
+            '2: primary key' => ['T_constraints_2', 'primaryKey', new Constraint([
+                'name' => 'CN_pk',
+                'columnNames' => ['C_id_1', 'C_id_2'],
+            ])],
+            '2: unique' => ['T_constraints_2', 'uniques', [
+                new Constraint([
+                    'name' => 'CN_constraints_2_multi',
+                    'columnNames' => ['C_index_2_1', 'C_index_2_2'],
+                ]),
+            ]],
+            '2: index' => ['T_constraints_2', 'indexes', [
+                new IndexConstraint([
+                    'name' => AnyValue::getInstance(),
+                    'columnNames' => ['C_id_1', 'C_id_2'],
+                    'isUnique' => true,
+                    'isPrimary' => true,
+                ]),
+                new IndexConstraint([
+                    'name' => 'CN_constraints_2_single',
+                    'columnNames' => ['C_index_1'],
+                    'isPrimary' => false,
+                    'isUnique' => false,
+                ]),
+                new IndexConstraint([
+                    'name' => 'CN_constraints_2_multi',
+                    'columnNames' => ['C_index_2_1', 'C_index_2_2'],
+                    'isPrimary' => false,
+                    'isUnique' => true,
+                ]),
+            ]],
+            '2: check' => ['T_constraints_2', 'checks', []],
+            '2: default' => ['T_constraints_2', 'defaultValues', false],
+
+            '3: primary key' => ['T_constraints_3', 'primaryKey', null],
+            '3: foreign key' => ['T_constraints_3', 'foreignKeys', [
+                new ForeignKeyConstraint([
+                    'name' => 'CN_constraints_3',
+                    'columnNames' => ['C_fk_id_1', 'C_fk_id_2'],
+                    'foreignTableName' => 'T_constraints_2',
+                    'foreignColumnNames' => ['C_id_1', 'C_id_2'],
+                    'onDelete' => 'CASCADE',
+                    'onUpdate' => 'CASCADE',
+                ]),
+            ]],
+            '3: unique' => ['T_constraints_3', 'uniques', []],
+            '3: index' => ['T_constraints_3', 'indexes', [
+                new IndexConstraint([
+                    'name' => 'CN_constraints_3',
+                    'columnNames' => ['C_fk_id_1', 'C_fk_id_2'],
+                    'isUnique' => false,
+                    'isPrimary' => false,
+                ]),
+            ]],
+            '3: check' => ['T_constraints_3', 'checks', []],
+            '3: default' => ['T_constraints_3', 'defaultValues', false],
+
+            '4: primary key' => ['T_constraints_4', 'primaryKey', new Constraint([
+                'name' => AnyValue::getInstance(),
+                'columnNames' => ['C_id'],
+            ])],
+            '4: unique' => ['T_constraints_4', 'uniques', [
+                new Constraint([
+                    'name' => 'CN_constraints_4',
+                    'columnNames' => ['C_col_1', 'C_col_2'],
+                ]),
+            ]],
+            '4: check' => ['T_constraints_4', 'checks', []],
+            '4: default' => ['T_constraints_4', 'defaultValues', false],
+        ];
+    }
+
+    public function lowercaseConstraintsProvider()
+    {
+        return $this->constraintsProvider();
+    }
+
+    public function uppercaseConstraintsProvider()
+    {
+        return $this->constraintsProvider();
+    }
+
+    /**
+     * @dataProvider constraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
+     */
+    public function testTableSchemaConstraints($tableName, $type, $expected)
+    {
+        if ($expected === false) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
+        $constraints = $this->getConnection(false)->getSchema()->{'getTable' . ucfirst($type)}($tableName);
+        $this->assertMetadataEquals($expected, $constraints);
+    }
+
+    /**
+     * @dataProvider uppercaseConstraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
+     */
+    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
+    {
+        if ($expected === false) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
+        $connection = $this->getConnection(false);
+        $connection->getSlavePdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
+        $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
+        $this->assertMetadataEquals($expected, $constraints);
+    }
+
+    /**
+     * @dataProvider lowercaseConstraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
+     */
+    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
+    {
+        if ($expected === false) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
+        $connection = $this->getConnection(false);
+        $connection->getSlavePdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+        $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
+        $this->assertMetadataEquals($expected, $constraints);
+    }
+
+    private function assertMetadataEquals($expected, $actual)
+    {
+        $this->assertInternalType(strtolower(gettype($expected)), $actual);
+        if (is_array($expected)) {
+            $this->normalizeArrayKeys($expected, false);
+            $this->normalizeArrayKeys($actual, false);
+        }
+        $this->normalizeConstraints($expected, $actual);
+        if (is_array($expected)) {
+            $this->normalizeArrayKeys($expected, true);
+            $this->normalizeArrayKeys($actual, true);
+        }
+        $this->assertEquals($expected, $actual);
+    }
+
+    private function normalizeArrayKeys(array &$array, $caseSensitive)
+    {
+        $newArray = [];
+        foreach ($array as $value) {
+            if ($value instanceof Constraint) {
+                $key = (array) $value;
+                unset($key['name'], $key['foreignSchemaName']);
+                foreach ($key as $keyName => $keyValue) {
+                    if ($keyValue instanceof AnyCaseValue) {
+                        $key[$keyName] = $keyValue->value;
+                    } elseif ($keyValue instanceof AnyValue) {
+                        $key[$keyName] = '[AnyValue]';
+                    }
+                }
+                ksort($key, SORT_STRING);
+                $newArray[$caseSensitive ? json_encode($key) : strtolower(json_encode($key))] = $value;
+            } else {
+                $newArray[] = $value;
+            }
+        }
+        ksort($newArray, SORT_STRING);
+        $array = $newArray;
+    }
+
+    private function normalizeConstraints(&$expected, &$actual)
+    {
+        if (is_array($expected)) {
+            foreach ($expected as $key => $value) {
+                if (!$value instanceof Constraint || !isset($actual[$key]) || !$actual[$key] instanceof Constraint) {
+                    continue;
+                }
+
+                $this->normalizeConstraintPair($value, $actual[$key]);
+            }
+        } elseif ($expected instanceof Constraint && $actual instanceof Constraint) {
+            $this->normalizeConstraintPair($expected, $actual);
+        }
+    }
+
+    private function normalizeConstraintPair(Constraint $expectedConstraint, Constraint $actualConstraint)
+    {
+        if ($expectedConstraint::className() !== $actualConstraint::className()) {
+            return;
+        }
+
+        foreach (array_keys((array) $expectedConstraint) as $name) {
+            if ($expectedConstraint->$name instanceof AnyValue) {
+                $actualConstraint->$name = $expectedConstraint->$name;
+            } elseif ($expectedConstraint->$name instanceof AnyCaseValue) {
+                $actualConstraint->$name = new AnyCaseValue($actualConstraint->$name);
+            }
+        }
     }
 }

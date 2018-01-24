@@ -51,8 +51,9 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     private $_models;
     private $_totalCount;
 
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {

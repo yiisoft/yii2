@@ -11,6 +11,7 @@ use yii\base\InvalidParamException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\helpers\StringHelper;
 
 /**
  * QueryBuilder is the query builder for Oracle databases.
@@ -47,13 +48,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $likeEscapeCharacter = '!';
     /**
      * `\` is initialized in [[buildLikeCondition()]] method since
      * we need to choose replacement value based on [[\yii\db\Schema::quoteValue()]].
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $likeEscapingReplacements = [
         '%' => '!%',
@@ -61,8 +62,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         '!' => '!!',
     ];
 
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
@@ -134,7 +136,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function resetSequence($table, $value = null)
     {
@@ -160,7 +162,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
     {
@@ -180,7 +182,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns, &$params)
     {
@@ -194,7 +196,7 @@ EOD;
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
+            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
@@ -228,6 +230,7 @@ EOD;
 
     /**
      * Generates a batch INSERT SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -242,7 +245,7 @@ EOD;
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
-     * @param array $rows the rows to be batch inserted into the table
+     * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
     public function batchInsert($table, $columns, $rows)
@@ -267,6 +270,9 @@ EOD;
                 }
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
+                } elseif (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    $value = StringHelper::floatToString($value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {
@@ -291,7 +297,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function selectExists($rawSql)
@@ -300,7 +306,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
@@ -309,7 +315,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromTable($table)
@@ -329,6 +335,61 @@ EOD;
              */
             $this->likeEscapingReplacements['\\'] = substr($this->db->quoteValue('\\'), 1, -1);
         }
+
         return parent::buildLikeCondition($operator, $operands, $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildInCondition($operator, $operands, &$params)
+    {
+        $splitCondition = $this->splitInCondition($operator, $operands, $params);
+        if ($splitCondition !== null) {
+            return $splitCondition;
+        }
+
+        return parent::buildInCondition($operator, $operands, $params);
+    }
+
+    /**
+     * Oracle DBMS does not support more than 1000 parameters in `IN` condition.
+     * This method splits long `IN` condition into series of smaller ones.
+     *
+     * @param string $operator
+     * @param array $operands
+     * @param array $params
+     * @return null|string null when split is not required. Otherwise - built SQL condition.
+     * @throws Exception
+     * @since 2.0.12
+     */
+    protected function splitInCondition($operator, $operands, &$params)
+    {
+        if (!isset($operands[0], $operands[1])) {
+            throw new Exception("Operator '$operator' requires two operands.");
+        }
+
+        list($column, $values) = $operands;
+
+        if ($values instanceof \Traversable) {
+            $values = iterator_to_array($values);
+        }
+
+        if (!is_array($values)) {
+            return null;
+        }
+
+        $maxParameters = 1000;
+        $count = count($values);
+        if ($count <= $maxParameters) {
+            return null;
+        }
+
+        $condition = [($operator === 'IN') ? 'OR' : 'AND'];
+        for ($i = 0; $i < $count; $i += $maxParameters) {
+            $condition[] = [$operator, $column, array_slice($values, $i, $maxParameters)];
+        }
+
+        return $this->buildCondition(['AND', $condition], $params);
     }
 }

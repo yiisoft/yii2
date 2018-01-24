@@ -1,10 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\data\base;
 
 use yii\base\Model;
 
 /**
- * Speaker
+ * Speaker.
  */
 class Speaker extends Model
 {
@@ -40,6 +46,7 @@ class Speaker extends Model
     {
         return [
             'test' => ['firstName', 'lastName', '!underscore_style'],
+            'duplicates' => ['firstName', 'firstName', '!underscore_style', '!underscore_style'],
         ];
     }
 }

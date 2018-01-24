@@ -46,7 +46,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $likeEscapingReplacements = [
         '%' => '[%]',
@@ -56,8 +56,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         '\\' => '[\\]',
     ];
 
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
@@ -68,9 +69,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         if ($this->isOldMssql()) {
             return $this->oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
-        } else {
-            return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         }
+
+        return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
     }
 
     /**
@@ -176,6 +177,25 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritDoc
+     */
+    public function addDefaultValue($name, $table, $column, $value)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+            . $this->db->quoteColumnName($name) . ' DEFAULT ' . $this->db->quoteValue($value) . ' FOR '
+            . $this->db->quoteColumnName($column);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dropDefaultValue($name, $table)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+    }
+
+    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
@@ -200,9 +220,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "DBCC CHECKIDENT ('{$tableName}', RESEED, {$value})";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
     }
 
     /**
@@ -230,7 +250,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
@@ -239,7 +259,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
@@ -248,7 +268,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
@@ -257,7 +277,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromTable($table)
@@ -266,7 +286,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Returns an array of column names given model name
+     * Returns an array of column names given model name.
      *
      * @param string $modelClass name of the model class
      * @return array|null array of column names
@@ -276,9 +296,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$modelClass) {
             return null;
         }
-        /* @var $model \yii\db\ActiveRecord */
-        $model = new $modelClass;
-        $schema = $model->getTableSchema();
+        /* @var $modelClass \yii\db\ActiveRecord */
+        $schema = $modelClass::getTableSchema();
         return array_keys($schema->columns);
     }
 
@@ -299,11 +318,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $version = explode('.', $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
             $this->_oldMssql = $version[0] < 11;
         }
+
         return $this->_oldMssql;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws NotSupportedException if `$columns` is an array
      */
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
@@ -311,11 +331,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (is_array($columns)) {
             throw new NotSupportedException(__METHOD__ . ' is not supported by MSSQL.');
         }
+
         return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
     }
 
     /**
-     * Builds SQL for IN condition
+     * Builds SQL for IN condition.
      *
      * @param string $operator
      * @param array $columns
@@ -348,7 +369,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function selectExists($rawSql)
@@ -374,11 +395,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
             }
         }
+
         return $columns;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns, &$params)
     {
@@ -386,7 +408,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function update($table, $columns, $condition, &$params)
     {
