@@ -490,10 +490,10 @@ class View extends \yii\base\View
      * Registers a JS code block defining a variable. The name of variable will be
      * used as key, preventing duplicated variable names.
      *
-     * @param string $name Name of variable
-     * @param array|string $value Value of variable. If array an object will be created
-     * @param int $position the position at which the JS script tag should be inserted
-     * in a page. The possible values are:
+     * @param string $name Name of the variable
+     * @param array|string $value Value of the variable
+     * @param int $position the position in a page at which the JavaScript variable should be inserted.
+     * The possible values are:
      *
      * - [[POS_HEAD]]: in the head section
      * - [[POS_BEGIN]]: at the beginning of the body section
@@ -509,19 +509,19 @@ class View extends \yii\base\View
      *
      * @throws InvalidConfigException If variable name does not match ECMA requirements.
      */
-    public function registerJsVar($name,$value,$position=self::POS_HEAD)
+    public function registerJsVar($name, $value, $position = self::POS_HEAD)
     {
-        $validator=new \yii\validators\RegularExpressionValidator([
-            'pattern'=>'/^[^a-zA-Z_]+|[^a-zA-Z_0-9]+/',
+        $validator = new \yii\validators\RegularExpressionValidator([
+            'pattern' => '/^[^a-zA-Z_]+|[^a-zA-Z_0-9]+/',
         ]);
 
-        if($validator->validate($name) || empty($name))
-            throw new InvalidConfigException('Variable name must be in a valid ECMAscript format ');
+        if ($validator->validate($name) || empty($name)) {
+            throw new InvalidConfigException('Variable name must be in a valid ECMAscript format');
+        }
 
-        $val = \yii\helpers\Json::htmlEncode($value);
-        $js=sprintf('var %s=%s',$name,$val);
+        $js = sprintf('var %s=%s', $name, \yii\helpers\Json::htmlEncode($value));
 
-        $this->registerJs($js,$position,strval($name));
+        $this->registerJs($js, $position, (string)$name);
     }
 
     /**
