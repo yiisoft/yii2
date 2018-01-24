@@ -14,6 +14,23 @@ class ViewTest extends TestCase
     {
         parent::setUp();
     }
+    
+    public function testRegisterJsVar()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'request' => [
+                    'scriptFile' => __DIR__ . '/baseUrl/index.php',
+                    'scriptUrl' => '/baseUrl/index.php',
+                ],
+            ],
+        ]);
+
+        $view = new View();
+        $view->registerJsVar('username', 'samdark');
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertContains('<script>var username = "samdark";</script></head>', $html);
+    }
 
     public function testRegisterJsFileWithAlias()
     {
