@@ -35,7 +35,7 @@ class ViewTest extends TestCase
         $view = new View();
         $view->registerJsVar('username', 'samdark');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script>var username = "samdark";</script></head>', $html);
+        $this->assertContains('<script type="text/javascript">var username = "samdark";</script></head>', $html);
         
         $view = new View();
         $view->registerJsVar('objectTest', [
