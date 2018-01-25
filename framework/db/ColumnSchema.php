@@ -114,13 +114,33 @@ class ColumnSchema extends BaseObject
      */
     protected function typecast($value)
     {
-        if ($value === '' && !in_array($this->type, [Schema::TYPE_TEXT, Schema::TYPE_STRING, Schema::TYPE_BINARY, Schema::TYPE_CHAR], true)) {
+        if ($value === ''
+            && !in_array(
+                $this->type,
+                [
+                    Schema::TYPE_TEXT,
+                    Schema::TYPE_STRING,
+                    Schema::TYPE_BINARY,
+                    Schema::TYPE_CHAR
+                ],
+                true)
+        ) {
             return null;
         }
-        if ($value === null || gettype($value) === $this->phpType || $value instanceof ExpressionInterface || $value instanceof Query) {
+
+        if ($value === null
+            || gettype($value) === $this->phpType
+            || $value instanceof ExpressionInterface
+            || $value instanceof Query
+        ) {
             return $value;
         }
-        if (is_array($value) && count($value) === 2 && isset($value[1]) && in_array($value[1], $this->getPdoParamTypes(), true)) {
+
+        if (is_array($value)
+            && count($value) === 2
+            && isset($value[1])
+            && in_array($value[1], $this->getPdoParamTypes(), true)
+        ) {
             return new PdoValue($value[0], $value[1]);
         }
 

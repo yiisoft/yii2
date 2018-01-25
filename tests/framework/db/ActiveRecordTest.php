@@ -1128,6 +1128,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(5, $itemClass::find()->count());
     }
 
+    /**
+     * @requires PHP 5.6
+     */
     public function testCastValues()
     {
         $model = new Type();

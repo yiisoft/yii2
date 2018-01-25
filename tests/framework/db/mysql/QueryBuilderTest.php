@@ -26,7 +26,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
      */
     public function columnTypes()
     {
-        return array_merge(parent::columnTypes(), [
+        $columns = [
             [
                 Schema::TYPE_PK . ' AFTER `col_before`',
                 $this->primaryKey()->after('col_before'),
@@ -62,7 +62,23 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 $this->primaryKey()->comment('test')->after('col_before'),
                 "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test' AFTER `col_before`",
             ],
-        ]);
+        ];
+
+        /*
+         * TODO Remove in Yii 2.1
+         *
+         * Disabled due bug in MySQL extension
+         * @link https://bugs.php.net/bug.php?id=70384
+         */
+        if (version_compare(PHP_VERSION, '5.6', '>=')) {
+            $columns[] = [
+                Schema::TYPE_JSON,
+                $this->json(),
+                "json",
+            ];
+        }
+
+        return array_merge(parent::columnTypes(), $columns);
     }
 
     public function primaryKeysProvider()
