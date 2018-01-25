@@ -1880,6 +1880,7 @@ class BaseHtml
      * @return string the rendering result. If the attributes are not empty, they will be rendered
      * into a string with a leading white space (so that it can be directly appended to the tag name
      * in a tag. If there is no attribute, an empty string will be returned.
+     * @see addCssClass()
      */
     public static function renderTagAttributes($attributes)
     {
@@ -1944,6 +1945,8 @@ class BaseHtml
      *
      * @param array $options the options to be modified.
      * @param string|array $class the CSS class(es) to be added
+     * @see mergeCssClasses()
+     * @see removeCssClass()
      */
     public static function addCssClass(&$options, $class)
     {
@@ -1965,6 +1968,7 @@ class BaseHtml
      * @param array $existingClasses already existing CSS classes.
      * @param array $additionalClasses CSS classes to be added.
      * @return array merge result.
+     * @see addCssClass()
      */
     private static function mergeCssClasses(array $existingClasses, array $additionalClasses)
     {
@@ -1983,6 +1987,7 @@ class BaseHtml
      * Removes a CSS class from the specified options.
      * @param array $options the options to be modified.
      * @param string|array $class the CSS class(es) to be removed
+     * @see addCssClass()
      */
     public static function removeCssClass(&$options, $class)
     {
