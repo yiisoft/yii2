@@ -47,6 +47,7 @@ Yii Framework 2 Change Log
 - Bug #15440: Fixed `yii\behaviors\AttributeTypecastBehavior::$attributeTypes` auto-detection fails for rule, which specify attribute with '!' prefix (klimov-paul)
 - Bug #15462: Fixed `accessChecker` configuration error (developeruz)
 - Bug #15494: Fixed missing `WWW-Authenticate` header (developeruz)
+- Bug #15553: Fixed `yii\validators\NumberValidator` incorrectly validate resource (developeruz)
 - Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorSource" option to be able to customize errors display (yanggs07, developeruz, silverfire)
 - Enh #3250: Added support for events partial wildcard matching (klimov-paul)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
