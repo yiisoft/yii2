@@ -538,7 +538,7 @@ class View extends \yii\base\View
     public function registerJsVar($name, $value, $position = self::POS_HEAD)
     {
         $js = sprintf('var %s = %s;', $name, \yii\helpers\Json::htmlEncode($value));
-        $this->registerJs($js, $position, (string)$name);
+        $this->registerJs($js, $position, $name);
     }
 
     /**
