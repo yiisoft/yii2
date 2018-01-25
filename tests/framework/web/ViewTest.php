@@ -43,7 +43,7 @@ class ViewTest extends TestCase
             'question' => 'Unknown',
         ]);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<script>var objectTest = {"number":42,"question":"Unknown"};</script></head>', $html);
+        $this->assertContains('<script type="text/javascript">var objectTest = {"number":42,"question":"Unknown"};</script></head>', $html);
     }
 
     public function testRegisterJsFileWithAlias()
