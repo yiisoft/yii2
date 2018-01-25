@@ -533,25 +533,11 @@ class View extends \yii\base\View
      * - [[POS_READY]]: enclosed within jQuery(document).ready().
      *   Note that by using this position, the method will automatically register the jQuery js file.
      *
-     * @param string $key the key that identifies the JS code block. If null, it will use
-     * $js as the key. If two JS code blocks are registered with the same key, the latter
-     * will overwrite the former.
-     *
-     * @throws InvalidConfigException If variable name does not match ECMA requirements.
      * @since 2.0.14
      */
     public function registerJsVar($name, $value, $position = self::POS_HEAD)
     {
-        $validator = new \yii\validators\RegularExpressionValidator([
-            'pattern' => '/^[^a-zA-Z_]+|[^a-zA-Z_0-9]+/',
-        ]);
-
-        if ($validator->validate($name) || empty($name)) {
-            throw new InvalidConfigException('Variable name must be in a valid ECMAscript format');
-        }
-
         $js = sprintf('var %s = %s;', $name, \yii\helpers\Json::htmlEncode($value));
-
         $this->registerJs($js, $position, (string)$name);
     }
 
