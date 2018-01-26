@@ -26,8 +26,8 @@ use yii\helpers\Url;
  */
 class ActiveForm extends Widget
 {
-    const VALIDATION_STATE_ON_CONTAINER = 'validation_state_on_container';
-    const VALIDATION_STATE_ON_INPUT = 'validation_state_on_input';
+    const VALIDATION_STATE_ON_CONTAINER = 'container';
+    const VALIDATION_STATE_ON_INPUT = 'input';
 
     /**
      * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
@@ -101,8 +101,8 @@ class ActiveForm extends Widget
     public $validatingCssClass = 'validating';
     /**
      * @var string where to render validation state class
-     * Could be either VALIDATION_STATE_ON_CONTAINER or VALIDATION_STATE_ON_INPUT.
-     * Default is container.
+     * Could be either "container" or "input".
+     * Default is "container".
      * @since 2.0.14
      */
     public $validationStateOn = self::VALIDATION_STATE_ON_CONTAINER;
@@ -254,6 +254,7 @@ class ActiveForm extends Widget
             'ajaxDataType' => $this->ajaxDataType,
             'scrollToError' => $this->scrollToError,
             'scrollToErrorOffset' => $this->scrollToErrorOffset,
+            'validationStateOn' => $this->validationStateOn,
         ];
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);
@@ -271,6 +272,7 @@ class ActiveForm extends Widget
             'ajaxDataType' => 'json',
             'scrollToError' => true,
             'scrollToErrorOffset' => 0,
+            'validationStateOn' => self::VALIDATION_STATE_ON_CONTAINER,
         ]);
     }
 

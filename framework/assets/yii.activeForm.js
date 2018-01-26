@@ -134,7 +134,9 @@
         // whether to scroll to first visible error after validation.
         scrollToError: true,
         // offset in pixels that should be added when scrolling to the first error.
-        scrollToErrorOffset: 0
+        scrollToErrorOffset: 0,
+        // where to add validation class: container or input
+        validationStateOn: 'container'
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
