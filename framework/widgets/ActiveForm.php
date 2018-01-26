@@ -26,6 +26,9 @@ use yii\helpers\Url;
  */
 class ActiveForm extends Widget
 {
+    const VALIDATION_STATE_ON_CONTAINER = 'validation_state_on_container';
+    const VALIDATION_STATE_ON_INPUT = 'validation_state_on_input';
+
     /**
      * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @see method for specifying the HTTP method for this form.
@@ -96,6 +99,13 @@ class ActiveForm extends Widget
      * @var string the CSS class that is added to a field container when the associated attribute is being validated.
      */
     public $validatingCssClass = 'validating';
+    /**
+     * @var string where to render validation state class
+     * Could be either VALIDATION_STATE_ON_CONTAINER or VALIDATION_STATE_ON_INPUT.
+     * Default is container.
+     * @since 2.0.14
+     */
+    public $validationStateOn = self::VALIDATION_STATE_ON_CONTAINER;
     /**
      * @var bool whether to enable client-side data validation.
      * If [[ActiveField::enableClientValidation]] is set, its value will take precedence for that input field.

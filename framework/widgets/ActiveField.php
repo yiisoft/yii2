@@ -241,7 +241,7 @@ class ActiveField extends Component
         if ($this->model->isAttributeRequired($attribute)) {
             $class[] = $this->form->requiredCssClass;
         }
-        if ($this->model->hasErrors($attribute)) {
+        if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_CONTAINER && $this->model->hasErrors($attribute)) {
             $class[] = $this->form->errorCssClass;
         }
         $options['class'] = implode(' ', $class);
@@ -363,6 +363,11 @@ class ActiveField extends Component
     public function input($type, $options = [])
     {
         $options = array_merge($this->inputOptions, $options);
+
+        if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT && $this->model->hasErrors($this->attribute)) {
+            $options['class'][] = $this->form->errorCssClass;
+        }
+
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activeInput($type, $this->model, $this->attribute, $options);
