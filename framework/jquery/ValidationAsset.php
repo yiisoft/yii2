@@ -18,15 +18,15 @@ use yii\web\AssetBundle;
 class ValidationAsset extends AssetBundle
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $sourcePath = '@yii/jquery/assets';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $js = ['yii.validation.js'];
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $depends = [YiiAsset::class];
 }

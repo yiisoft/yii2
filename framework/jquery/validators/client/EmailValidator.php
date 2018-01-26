@@ -25,7 +25,7 @@ use yii\web\JsExpression;
 class EmailValidator extends ClientValidator
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function build($validator, $model, $attribute, $view)
     {

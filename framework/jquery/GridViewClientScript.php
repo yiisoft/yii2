@@ -51,7 +51,7 @@ class GridViewClientScript extends Behavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function events()
     {

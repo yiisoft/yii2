@@ -19,15 +19,15 @@ use yii\jquery\YiiAsset;
 class CaptchaAsset extends AssetBundle
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $sourcePath = '@yii/captcha/assets';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $js = ['yii.captcha.js',];
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $depends = [YiiAsset::class];
 }

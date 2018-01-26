@@ -26,7 +26,7 @@ use yii\web\JsExpression;
 class FileValidator extends ClientValidator
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function build($validator, $model, $attribute, $view)
     {

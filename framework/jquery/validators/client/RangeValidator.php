@@ -22,7 +22,7 @@ use yii\validators\client\ClientValidator;
 class RangeValidator extends ClientValidator
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function build($validator, $model, $attribute, $view)
     {

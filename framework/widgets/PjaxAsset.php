@@ -19,17 +19,17 @@ use yii\web\YiiAsset;
 class PjaxAsset extends AssetBundle
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $sourcePath = '@bower/yii2-pjax';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $js = ['jquery.pjax.js',];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $depends = [YiiAsset::class];
 }

@@ -18,15 +18,15 @@ use yii\web\AssetBundle;
 class YiiAsset extends AssetBundle
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $sourcePath = '@yii/jquery/assets';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $js = ['yii.js'];
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $depends = [JqueryAsset::class];
 }
