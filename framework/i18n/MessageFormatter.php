@@ -313,6 +313,10 @@ class MessageFormatter extends Component
                 $tokens[] = mb_substr($pattern, $start, $open - $start, $charset);
                 $start = $open;
             }
+
+            if ($depth !== 0 && ($open === false || $close === false)) {
+                break;
+            }
         }
         if ($depth !== 0) {
             return false;

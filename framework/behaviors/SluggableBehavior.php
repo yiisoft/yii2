@@ -124,7 +124,7 @@ class SluggableBehavior extends AttributeBehavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -140,7 +140,7 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getValue($event)
     {

@@ -29,22 +29,21 @@ namespace yii\filters\auth;
 class HttpBearerAuth extends HttpHeaderAuth
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $header = 'Authorization';
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $pattern = '/^Bearer\s+(.*?)$/';
-
     /**
     * @var string the HTTP authentication realm
     */
     public $realm = 'api';
 
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function challenge($response)
     {

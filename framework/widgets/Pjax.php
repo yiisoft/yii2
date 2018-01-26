@@ -98,21 +98,22 @@ class Pjax extends Widget
      */
     public $clientOptions;
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @internal
      */
     public static $counter = 0;
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static $autoIdPrefix = 'p';
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
+        parent::init();
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
@@ -142,7 +143,7 @@ class Pjax extends Widget
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function run()
     {

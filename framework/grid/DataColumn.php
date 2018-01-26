@@ -122,7 +122,7 @@ class DataColumn extends Column
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderHeaderCellContent()
     {
@@ -144,7 +144,7 @@ class DataColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc]
      * @since 2.0.8
      */
     protected function getHeaderCellLabel()
@@ -181,7 +181,7 @@ class DataColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderFilterCellContent()
     {
@@ -242,7 +242,7 @@ class DataColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderDataCellContent($model, $key, $index)
     {

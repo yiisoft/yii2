@@ -48,7 +48,7 @@ class ArrayCache extends SimpleCache
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -57,7 +57,7 @@ class ArrayCache extends SimpleCache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getValue($key)
     {
@@ -69,7 +69,7 @@ class ArrayCache extends SimpleCache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function setValue($key, $value, $ttl)
     {
@@ -78,7 +78,7 @@ class ArrayCache extends SimpleCache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function deleteValue($key)
     {
@@ -87,7 +87,7 @@ class ArrayCache extends SimpleCache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clear()
     {

@@ -44,7 +44,7 @@ class HttpHeaderAuth extends AuthMethod
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function authenticate($user, $request, $response)
     {
@@ -56,6 +56,7 @@ class HttpHeaderAuth extends AuthMethod
             }
             $identity = $user->loginByAccessToken($authHeader, get_class($this));
             if ($identity === null) {
+                $this->challenge($response);
                 $this->handleFailure($response);
             }
 

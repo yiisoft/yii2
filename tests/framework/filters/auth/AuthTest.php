@@ -235,6 +235,20 @@ class AuthTest extends \yiiunit\TestCase
         $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
         $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
     }
+
+    public function testHeaders()
+    {
+        Yii::$app->request->headers->set('Authorization', "Bearer wrong_token");
+        $filter = ['class' => HttpBearerAuth::className()];
+        $controller = Yii::$app->createController('test-auth')[0];
+        $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
+        try {
+            $controller->run('filtered');
+            $this->fail('Should throw UnauthorizedHttpException');
+        } catch (UnauthorizedHttpException $e) {
+            $this->assertArrayHasKey('WWW-Authenticate', Yii::$app->getResponse()->getHeaders());
+        }
+    }
 }
 
 /**

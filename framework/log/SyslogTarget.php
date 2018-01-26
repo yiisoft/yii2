@@ -50,7 +50,7 @@ class SyslogTarget extends Target
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -73,7 +73,7 @@ class SyslogTarget extends Target
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function formatMessage($message)
     {

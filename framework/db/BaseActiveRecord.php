@@ -99,7 +99,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @return static|null ActiveRecord instance matching the condition, or `null` if nothing matches.
      */
     public static function findOne($condition)
@@ -108,7 +108,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @return static[] an array of ActiveRecord instances, or an empty array if nothing matches.
      */
     public static function findAll($condition)
@@ -232,7 +232,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
@@ -249,7 +249,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
@@ -1645,7 +1645,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * The default implementation returns the names of the columns whose values have been populated into this record.
      */
@@ -1657,7 +1657,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * The default implementation returns the names of the relations that have been populated into this record.
      */

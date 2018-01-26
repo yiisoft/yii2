@@ -96,7 +96,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     abstract protected function updateRule($name, $rule);
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createRole($name)
     {
@@ -106,7 +106,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createPermission($name)
     {
@@ -116,7 +116,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function add($object)
     {
@@ -136,7 +136,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function remove($object)
     {
@@ -150,7 +150,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function update($name, $object)
     {
@@ -170,7 +170,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRole($name)
     {
@@ -179,7 +179,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermission($name)
     {
@@ -188,7 +188,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRoles()
     {
@@ -241,7 +241,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermissions()
     {

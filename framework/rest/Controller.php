@@ -38,12 +38,12 @@ class Controller extends \yii\web\Controller
     public $serializer = Serializer::class;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $enableCsrfValidation = false;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {
@@ -69,7 +69,7 @@ class Controller extends \yii\web\Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterAction($action, $result)
     {

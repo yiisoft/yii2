@@ -788,6 +788,43 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
+     * Creates a SQL View.
+     *
+     * @param string $viewName the name of the view to be created.
+     * @param string|Query $subQuery the select statement which defines the view.
+     * This can be either a string or a [[Query]] object.
+     * @return string the `CREATE VIEW` SQL statement.
+     * @since 2.0.14
+     */
+    public function createView($viewName, $subQuery)
+    {
+        if ($subQuery instanceof Query) {
+            list($rawQuery, $params) = $this->build($subQuery);
+            array_walk(
+                $params,
+                function(&$param) {
+                    $param = $this->db->quoteValue($param);
+                }
+            );
+            $subQuery = strtr($rawQuery, $params);
+        }
+
+        return 'CREATE VIEW ' . $this->db->quoteTableName($viewName) . ' AS ' . $subQuery;
+    }
+
+    /**
+     * Drops a SQL View.
+     *
+     * @param string $viewName the name of the view to be dropped.
+     * @return string the `DROP VIEW` SQL statement.
+     * @since 2.0.14
+     */
+    public function dropView($viewName)
+    {
+        return 'DROP VIEW ' . $this->db->quoteTableName($viewName);
+    }
+
+    /**
      * Converts an abstract column type into a physical column type.
      *
      * The conversion is done using the type map specified in [[typeMap]].

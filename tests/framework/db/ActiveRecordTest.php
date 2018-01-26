@@ -45,7 +45,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getCustomerClass()
     {
@@ -53,7 +53,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getItemClass()
     {
@@ -61,7 +61,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderClass()
     {
@@ -69,7 +69,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderItemClass()
     {
@@ -85,7 +85,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderWithNullFKClass()
     {
@@ -93,7 +93,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderItemWithNullFKmClass()
     {
@@ -1600,5 +1600,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf(OrderItemWithConstructor::class, $item);
 
         $this->assertEquals(1, $item->item_id);
+
+        // @see https://github.com/yiisoft/yii2/issues/15540
+        $orders = OrderWithConstructor::find()
+            ->with(['customer.profile', 'orderItems'])
+            ->orderBy('id')
+            ->asArray(true)
+            ->all();
+        $this->assertCount(3, $orders);
     }
 }

@@ -371,7 +371,7 @@ class Formatter extends Component
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
