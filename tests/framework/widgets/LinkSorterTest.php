@@ -9,6 +9,7 @@ namespace yiiunit\framework\widgets;
 
 use yii\data\ActiveDataProvider;
 use yii\widgets\Breadcrumbs;
+use yii\widgets\LinkSorter;
 use yii\widgets\ListView;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Order;
@@ -77,5 +78,26 @@ class LinkSorterTest extends DatabaseTestCase
             '<a href="/index.php?r=site%2Findex&amp;sort=customer_id" data-sort="customer_id">Customer</a>'));
         $this->assertNotFalse(strpos($actualHtml,
             '<a href="/index.php?r=site%2Findex&amp;sort=total" data-sort="total">Invoice Total</a>'));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15536
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        $linkSorter = new LinkSorter(
+            [
+                'sort' => [
+                    'attributes' => ['total'],
+                    'route' => 'site/index',
+                ],
+                'on init' => function () use (&$initTriggered) {
+                    $initTriggered = true;
+                }
+            ]
+        );
+
+        $this->assertTrue($initTriggered);
     }
 }

@@ -12,6 +12,7 @@ use yii\base\Action;
 use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
+use yii\helpers\StringHelper;
 use yii\web\Request;
 use yii\web\User;
 
@@ -198,7 +199,7 @@ class AccessRule extends Component
 
         $id = $controller->getUniqueId();
         foreach ($this->controllers as $pattern) {
-            if (fnmatch($pattern, $id)) {
+            if (StringHelper::matchWildcard($pattern, $id)) {
                 return true;
             }
         }
@@ -228,19 +229,21 @@ class AccessRule extends Component
         }
 
         foreach ($items as $item) {
-            if ($item === '?' && $user->getIsGuest()) {
-                return true;
-            }
-
-            if ($item === '@' && !$user->getIsGuest()) {
-                return true;
-            }
-
-            if (!isset($roleParams)) {
-                $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
-            }
-            if ($user->can($item, $roleParams)) {
-                return true;
+            if ($item === '?') {
+                if ($user->getIsGuest()) {
+                    return true;
+                }
+            } elseif ($item === '@') {
+                if (!$user->getIsGuest()) {
+                    return true;
+                }
+            } else {
+                if (!isset($roleParams)) {
+                    $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
+                }
+                if ($user->can($item, $roleParams)) {
+                    return true;
+                }
             }
         }
 

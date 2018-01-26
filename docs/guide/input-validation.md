@@ -221,7 +221,7 @@ values are stored in an attribute:
 ```php
 ['age', 'trim'],
 ['age', 'default', 'value' => null],
-['age', 'integer', 'integerOnly' => true, 'min' => 0],
+['age', 'integer', 'min' => 0],
 ['age', 'filter', 'filter' => 'intval', 'skipOnEmpty' => true],
 ```
 

@@ -37,7 +37,7 @@ class m170907_052038_rbac_add_index_on_auth_assignment_user_id extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -46,7 +46,7 @@ class m170907_052038_rbac_add_index_on_auth_assignment_user_id extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {

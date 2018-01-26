@@ -144,12 +144,15 @@ echo Yii::$app->formatter->asTime('2014-10-06 12:41:00'); // 14:41:00
 echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 ```
 
+If the [[yii\i18n\Formatter::timeZone|time zone]] is not set explicitly on the formatter component, the 
+[[yii\base\Application::timeZone|time zone configured in the application]] is used, which is the same time zone
+as set in the PHP configuration.
+
 > Note: As time zones are subject to rules made by the governments around the world and may change frequently, it is
 > likely that you do not have the latest information in the time zone database installed on your system.
 > You may refer to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data)
 > for details on updating the time zone database. Please also read
-> [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
-
+> [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).  
 
 ## Formatting Numbers <span id="numbers"></span>
 

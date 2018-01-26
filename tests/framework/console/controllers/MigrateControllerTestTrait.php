@@ -10,6 +10,7 @@ namespace yiiunit\framework\console\controllers;
 use Yii;
 use yii\console\controllers\BaseMigrateController;
 use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 use yiiunit\TestCase;
 
 /**
@@ -190,7 +191,7 @@ CODE;
         $appliedMigrations = $migrationHistory;
         foreach ($expectedMigrations as $expectedMigrationName) {
             $appliedMigration = array_shift($appliedMigrations);
-            if (!fnmatch(strtr($expectedMigrationName, ['\\' => DIRECTORY_SEPARATOR]), strtr($appliedMigration['version'], ['\\' => DIRECTORY_SEPARATOR]))) {
+            if (!StringHelper::matchWildcard(strtr($expectedMigrationName, ['\\' => DIRECTORY_SEPARATOR]), strtr($appliedMigration['version'], ['\\' => DIRECTORY_SEPARATOR]))) {
                 $success = false;
                 break;
             }

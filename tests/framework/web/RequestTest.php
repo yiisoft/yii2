@@ -137,6 +137,22 @@ class RequestTest extends TestCase
         }
     }
 
+    public function testIssue15317()
+    {
+        $this->mockWebApplication();
+        $_COOKIE[(new Request())->csrfParam] = '';
+        $request = new Request();
+        $request->enableCsrfCookie = true;
+        $request->enableCookieValidation = false;
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Yii::$app->security->unmaskToken('');
+        $this->assertFalse($request->validateCsrfToken(''));
+
+        // When an empty CSRF token is given it is regenerated.
+        $this->assertNotEmpty($request->getCsrfToken());
+
+    }
     /**
      * Test CSRF token validation by POST param.
      */
@@ -592,5 +608,29 @@ class RequestTest extends TestCase
         $this->assertSame($request->getAuthPassword(), $pw);
 
         $_SERVER = $original;
+    }
+
+    public function testGetBodyParam()
+    {
+        $request = new Request();
+
+        $request->setBodyParams([
+            'someParam' => 'some value',
+            'param.dot' => 'value.dot',
+        ]);
+        $this->assertSame('some value', $request->getBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
+        $this->assertSame(null, $request->getBodyParam('unexisting'));
+        $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
+
+        // @see https://github.com/yiisoft/yii2/issues/14135
+        $bodyParams = new \stdClass();
+        $bodyParams->someParam = 'some value';
+        $bodyParams->{'param.dot'} = 'value.dot';
+        $request->setBodyParams($bodyParams);
+        $this->assertSame('some value', $request->getBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
+        $this->assertSame(null, $request->getBodyParam('unexisting'));
+        $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
     }
 }
