@@ -19,7 +19,7 @@ use yiiunit\TestCase;
 class HelpControllerTest extends TestCase
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setUp()
     {
@@ -62,7 +62,7 @@ class HelpControllerTest extends TestCase
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list'));
-        $this->assertSame(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 help
 help/index
 help/list
@@ -88,7 +88,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list'));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 cache
 cache/flush
 cache/flush-all
@@ -124,7 +124,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list-action-options', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 action:route to action
 
 --interactive: whether to run the command interactively.
@@ -145,7 +145,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('usage', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 bootstrap.php help/list-action-options <action>
 
 STRING

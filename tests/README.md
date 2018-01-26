@@ -58,32 +58,48 @@ $config['databases']['mysql']['password'] = 'changeme';
 DOCKERIZED TESTING
 ------------------
 
-*This section is under construction*
-
-Start test stack and enter PHP container
+Get started by going to the `tests` directory and copy the environment configuration.
 
     cd tests
+    cp .env-dist .env
+
+The newly created `.env` file defines the configuration files used by `docker-compose`. By default MySQL, Postgres and Caching services are enabled.
+
+> You can choose services available for testing by merging `docker-compose.[...].yml` files in `.env`. For example, if you only want to test with MySQL, you can modify the `COMPOSE_FILE` variable as follows 
+
+>     COMPOSE_FILE=docker-compose.yml:docker-compose.mysql.yml
+
+When starting the stack now, you get containers for databases and caching servers to test with.
+
     docker-compose up -d
-    docker-compose run --rm php bash
+
+After all services have been initialized and the stack is fully up and running enter the PHP container    
+    
+    docker-compose exec php bash
 
 Run a group of unit tests
     
     $ vendor/bin/phpunit -v --group base --debug
 
-Run phpunit directly
+#### Examples for running phpunit in a separate container
     
-    cd tests    
-    docker-compose run --rm php vendor/bin/phpunit -v --group caching,db   
-    docker-compose run --rm php vendor/bin/phpunit -v --exclude base,caching,db,i18n,log,mutex,rbac,validators,web
-    docker-compose run --rm php vendor/bin/phpunit -v --exclude mssql,oci,wincache,xcache,zenddata,cubrid
+    docker-compose run php vendor/bin/phpunit -v --group caching,db   
+    docker-compose run php vendor/bin/phpunit -v --exclude base,caching,db,i18n,log,mutex,rbac,validators,web
+    docker-compose run php vendor/bin/phpunit -v --exclude mssql,oci,wincache,xcache,zenddata,cubrid
+
+> Note: Documentation about [installing additional extensions](https://github.com/yiisoft/yii2-docker/blob/master/docs/install-extensions.md) can be found at `yiisoft/yii2-docker`.
 
 ### Cubrid
 
-    cd tests
-    docker-compose -f docker-compose.cubrid.yml up -d
-    docker-compose -f docker-compose.cubrid.yml run --rm php vendor/bin/phpunit -v --group cubrid
+> Note: Images for testing Cubrid are based on PHP 5, due to incompatibilities with PHP 7 
 
-### MSSQL    
+    cd tests/cubrid
+    docker-compose up -d
+    docker-compose run php vendor/bin/phpunit -v --group cubrid
+
+### MSSQL
+
+> Note: Images for testing MSSQL are based on `bylexus/apache-php7` (Ubuntu) since drivers are not available for Debian or Alpine.     
 
 **experimental**
 
@@ -92,7 +108,7 @@ Run phpunit directly
 
 Example commands    
     
-    cd tests
+    cd tests/mssql
 
 Using a shell    
     
@@ -108,7 +124,7 @@ Create database (one-liner)
 
 Run MSSQL tests
 
-    docker-compose run --rm php 
+    docker-compose run php 
     $ vendor/bin/phpunit --group mssql
 
 ### Build triggers
@@ -129,7 +145,7 @@ Run MSSQL tests
 
 #### Via runner
 
-**experimental**
+*experimental*
 
 docker-compose configuration
 

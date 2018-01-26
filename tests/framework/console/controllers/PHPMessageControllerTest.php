@@ -32,7 +32,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getDefaultConfig()
     {
@@ -57,7 +57,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function saveMessages($messages, $category)
     {
@@ -75,7 +75,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function loadMessages($category)
     {
@@ -120,6 +120,6 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
         $content = file_get_contents($messageFilePath);
         $head = substr($content, 0, strpos($content, 'return '));
         $expected = "<?php\n/*file header*/\n/*doc block*/\n";
-        $this->assertSame($expected, $head);
+        $this->assertEqualsWithoutLE($expected, $head);
     }
 }

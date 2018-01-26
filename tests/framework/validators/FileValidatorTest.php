@@ -235,6 +235,85 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($m->validate());
     }
 
+    public function testValidateAttribute_minFilesGreaterThanOneMaxFilesUnlimited_notError()
+    {
+        $validator = new FileValidator(['minFiles' => 2, 'maxFiles' => 0]);
+        $model = FakedValidationModel::createWithAttributes(
+            [
+                'attr_images' => $this->createTestFiles(
+                    [
+                        [
+                            'name' => 'image.png',
+                            'size' => 1024,
+                            'type' => 'image/png',
+                        ],
+                        [
+                            'name' => 'image.png',
+                            'size' => 1024,
+                            'type' => 'image/png',
+                        ],
+                    ]
+                )
+            ]
+        );
+
+        $validator->validateAttribute($model, 'attr_images');
+
+        $this->assertFalse($model->hasErrors('attr_images'));
+    }
+
+    public function testValidateAttribute_minFilesTwoMaxFilesFour_notError()
+    {
+        $validator = new FileValidator(['minFiles' => 2, 'maxFiles' => 4]);
+        $model = FakedValidationModel::createWithAttributes(
+            [
+                'attr_images' => $this->createTestFiles(
+                    [
+                        [
+                            'name' => 'image.png',
+                            'size' => 1024,
+                            'type' => 'image/png',
+                        ],
+                        [
+                            'name' => 'image.png',
+                            'size' => 1024,
+                            'type' => 'image/png',
+                        ],
+                    ]
+                )
+            ]
+        );
+
+        $validator->validateAttribute($model, 'attr_images');
+
+        $this->assertFalse($model->hasErrors('attr_images'));
+    }
+
+    public function testValidateAttribute_minFilesTwoMaxFilesUnlimited_hasError()
+    {
+        $validator = new FileValidator(['minFiles' => 2, 'maxFiles' => 0]);
+        $model = FakedValidationModel::createWithAttributes(
+            [
+                'attr_images' => $this->createTestFiles(
+                    [
+                        [
+                            'name' => 'image.png',
+                            'size' => 1024,
+                            'type' => 'image/png',
+                        ],
+                        [
+                            'error' => UPLOAD_ERR_NO_FILE,
+                        ],
+                    ]
+                )
+            ]
+        );
+
+        $validator->validateAttribute($model, 'attr_images');
+
+        $this->assertTrue($model->hasErrors('attr_images'));
+    }
+
     /**
      * @param  array          $params
      * @return UploadedFile[]
@@ -415,11 +494,7 @@ class FileValidatorTest extends TestCase
             ['test.png', 'image/*', 'png'],
             ['test.png', 'IMAGE/*', 'png'],
             ['test.txt', 'text/*', 'txt'],
-            // Disabled for PHP 7.2 RC because of regression:
-            // https://bugs.php.net/bug.php?id=75380
-            version_compare(PHP_VERSION, '7.2.0.RC.1', '>=') && version_compare(PHP_VERSION, '7.2.0.RC.6', '<=')
-                ? null
-                : ['test.xml', '*/xml', 'xml'],
+            ['test.xml', '*/xml', 'xml'],
             ['test.odt', 'application/vnd*', 'odt'],
         ]);
     }
@@ -445,7 +520,8 @@ class FileValidatorTest extends TestCase
     {
         $validator = new FileValidator(['extensions' => (array) $allowedExtensions]);
         $file = $this->getRealTestFile($fileName);
-        $this->assertTrue($validator->validate($file));
+        $detectedMimeType = FileHelper::getMimeType($file->tempName, null, false);
+        $this->assertTrue($validator->validate($file), "Mime type detected was \"$detectedMimeType\". Consider adding it to MimeTypeController::\$aliases.");
     }
 
     /**

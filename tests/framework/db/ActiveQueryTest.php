@@ -256,6 +256,14 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         ], $tables);
     }
 
+    public function testGetTableNames_wontFillFrom()
+    {
+        $query = new ActiveQuery(Profile::className());
+        $this->assertEquals($query->from, null);
+        $query->getTablesUsedInFrom();
+        $this->assertEquals($query->from, null);
+    }
+
     /**
      * https://github.com/yiisoft/yii2/issues/5341
      *

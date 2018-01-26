@@ -54,7 +54,7 @@ class ActiveFixture extends BaseActiveFixture
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -105,7 +105,7 @@ class ActiveFixture extends BaseActiveFixture
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function unload()
     {
