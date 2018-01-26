@@ -1286,7 +1286,7 @@ class UrlRuleTest extends TestCase
     public function testGetCreateUrlStatus($config, $tests)
     {
         foreach ($tests as $test) {
-            list($route, $params, $expected, $status) = $test;
+            [$route, $params, $expected, $status] = $test;
 
             $this->mockWebApplication();
             Yii::$app->set('request', new Request(['hostInfo' => 'http://example.com', 'scriptUrl' => '/index.php']));

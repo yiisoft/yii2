@@ -799,7 +799,7 @@ class QueryBuilder extends \yii\base\BaseObject
     public function createView($viewName, $subQuery)
     {
         if ($subQuery instanceof Query) {
-            list($rawQuery, $params) = $this->build($subQuery);
+            [$rawQuery, $params] = $this->build($subQuery);
             array_walk(
                 $params,
                 function(&$param) {

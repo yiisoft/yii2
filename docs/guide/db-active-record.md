@@ -952,21 +952,21 @@ class Customer extends ActiveRecord
     public function getPurchasedItems()
     {
         // customer's items, matching 'id' column of `Item` to 'item_id' in OrderItem
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
                     ->via('orderItems');
     }
 
     public function getOrderItems()
     {
         // customer's order items, matching 'id' column of `Order` to 'order_id' in OrderItem
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id'])
                     ->via('orders');
     }
 
     public function getOrders()
     {
         // same as above
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```

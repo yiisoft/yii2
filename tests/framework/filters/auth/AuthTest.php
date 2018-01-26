@@ -238,15 +238,15 @@ class AuthTest extends \yiiunit\TestCase
 
     public function testHeaders()
     {
-        Yii::$app->request->headers->set('Authorization', "Bearer wrong_token");
-        $filter = ['class' => HttpBearerAuth::className()];
+        Yii::$app->request->setHeader('Authorization', "Bearer wrong_token");
+        $filter = ['class' => HttpBearerAuth::class];
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {
             $controller->run('filtered');
             $this->fail('Should throw UnauthorizedHttpException');
         } catch (UnauthorizedHttpException $e) {
-            $this->assertArrayHasKey('WWW-Authenticate', Yii::$app->getResponse()->getHeaders());
+            $this->assertTrue(Yii::$app->getResponse()->hasHeader('www-authenticate'));
         }
     }
 }
