@@ -190,7 +190,7 @@ A list of all available methods for defining the column types is available in th
 
 ## Generating Migrations <span id="generating-migrations"></span>
 
-Since version 2.0.7 migration console provides a convenient way to create migrations.
+ version 2.0.7 migration console provides a convenient way to create migrations.
 
 If the migration name is of a special form, for example `create_xxx_table` or `drop_xxx_table` then the generated migration
 file will contain extra code, in this case for creating/dropping tables.
@@ -211,7 +211,7 @@ generates
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function up()
     {
@@ -221,7 +221,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function down()
     {
@@ -245,7 +245,7 @@ generates
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function up()
     {
@@ -257,7 +257,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function down()
     {
@@ -282,7 +282,7 @@ generates
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function up()
     {
@@ -294,7 +294,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function down()
     {
@@ -327,7 +327,7 @@ generates
 class m160328_040430_create_post_table extends Migration
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function up()
     {
@@ -375,7 +375,7 @@ class m160328_040430_create_post_table extends Migration
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function down()
     {
@@ -497,7 +497,7 @@ yii migrate/create add_xxx_column_yyy_column_to_zzz_table --fields="xxx:integer,
 If the migration name is of the form `drop_xxx_column_from_yyy_table` then
 the file content would contain `addColumn` and `dropColumn` statements necessary.
 
-```php
+```
 yii migrate/create drop_position_column_from_post_table --fields="position:integer"
 ```
 
@@ -517,6 +517,56 @@ class m150811_220037_drop_position_column_from_post_table extends Migration
     }
 }
 ```
+
+### Alter column
+
+Since Yii2 version 2.0.?? the generator supports altering (changing the definition of) fields. If the migration name is of the form `alter_xxx_column_of_yyy_table` then the file content would contain an `alterColumn` sentence in the `up` method to alter the column and the reverse `alterColumn` in the `down` method to undo the change. 
+
+The undoing of the change can be set with the required `oldFields` option, which can have two values:
+
+* A fields and decorators specification like the `fields` option,
+* `from-db` which means that the definition of the fields to change will be read from the database schema
+
+```
+yii migrate/create alter_title_column_of_post_table --fields="title:string:notNull:comment('I forgot to mention that this field can not be null')" --oldFields="title:string"
+```
+
+generates
+
+```php
+<?php
+
+/**
+ * Handles changing columns 'title' of table `post`.
+ */
+class m180106_152146_alter_name_column_of_post_table extends Migration
+{
+    /**
+     * @inheritdoc
+     */
+    public function safeUp()
+    {
+        $this->alterColumn('post', 'title', $this->string()->notNull()->comment('I forgot to mention that this field can not be null'));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function safeDown()
+    {
+        $this->alterColumn('post', 'title', $this->string());
+    }
+}
+```
+
+and
+
+```
+yii migrate/create alter_title_column_of_post_table --fields="title:string:notNull:comment('I forgot to mention that this field can not be null')" --oldFields=from-db
+```
+
+generates the same migration but the `down` method will read the db schema to find the old definition.
+
 
 ### Add Junction Table
 
@@ -540,7 +590,7 @@ generates
 class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migration
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function up()
     {
@@ -587,7 +637,7 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function down()
     {
