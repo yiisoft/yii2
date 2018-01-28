@@ -236,6 +236,25 @@ class MigrateControllerTest extends TestCase
         }
     }
 
+    public function testGenerateAlterColumnMigration()
+    {
+        $tables = [
+            'test',
+            'TEST',
+        ];
+        foreach ($tables as $table) {
+            $migrationName = 'alter_columns_column_of_' . $table . '_table';
+
+            $this->assertCommandCreatedFile('alter_columns_test', $migrationName, $table, [
+                'fields' => 'title:string(10):notNull,
+                    body:text:notNull,
+                    price:money(11,2):notNull,
+                    created_at:dateTime'
+            ]);
+
+        }
+    }
+    
     public function testGenerateDropColumnMigration()
     {
         $tables = [
