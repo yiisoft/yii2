@@ -34,7 +34,7 @@ $ composer update
 #### 1. 配置
 
 在组件中添加如下配置：
-```
+```php
 'components' => [
     'redis' => [
         'class' => 'yii\redis\Connection',
@@ -48,7 +48,7 @@ $ composer update
 #### 2. 示例
 
 下面代码演示了 redis 最基本的 string 类型的使用：
-```
+```php
 // 获取 redis 组件
 $redis = Yii::$app->redis;
 
@@ -72,7 +72,7 @@ if ($val = $redis->get($key);) {
 #### 1. 配置
 
 修改组件中 cache 的 class 为 `yii\redis\Cache` 即可，配置如下：
-```
+```php
 'components' => [
     'cache' => [
         // 'class' => 'yii\caching\FileCache',
@@ -82,7 +82,7 @@ if ($val = $redis->get($key);) {
 ```
 
 如果没有配置过 redis 组件，需要在 cache 组件下配置 redis 服务相关参数，完整配置如下：
-```
+```php
 'components' => [
     'cache' => [
         // 'class' => 'yii\caching\FileCache',
@@ -99,7 +99,7 @@ if ($val = $redis->get($key);) {
 #### 2. 示例
 
 下面代码演示了缓存的基本使用：
-```
+```php
 // 获取 cache 组件
 $cache = Yii::$app->cache;
 
@@ -122,7 +122,7 @@ if ($cache->exists($key)) {
 #### 1. 配置
 
 修改组件 session 的配置，指定 class 为 `yii\redis\Session` 即可，配置如下：
-```
+```php
 'components' => [
     'session' => [
         'name' => 'advanced-frontend',
@@ -132,7 +132,7 @@ if ($cache->exists($key)) {
 ```
 
 如果没有配置过 redis 组件，需要在 session 组件下配置 redis 服务相关参数，完整配置如下：
-```
+```php
 'components' => [
     'session' => [
         'name' => 'advanced-frontend',
@@ -149,7 +149,7 @@ if ($cache->exists($key)) {
 #### 2. 使用
 
 在开发过程中，切记一定不要使用 PHP 原生的 $_SESSION 去操作，而要使用 Yii 提供的 session 组件，获取方式如下：
-```
+```php
 $session = Yii::$app->session;
 ```
 
@@ -163,7 +163,7 @@ $session = Yii::$app->session;
 主键可以通过 `yii\redis\ActiveRecord::primaryKey()` 定义，如果未指定，则默认为 id。 primaryKey 必须在 attributes() 方法定义的属性中，如果没有指定主键，请确保 id 在属性中。
 
 下面定义一个 Customer 模型来演示：
-```
+```php
 class Customer extends \yii\redis\ActiveRecord
 {
     /**
@@ -200,7 +200,7 @@ class Customer extends \yii\redis\ActiveRecord
 ```
 
 使用示例：
-```
+```php
 // 使用 AR 方式新增一条记录
 $customer = new Customer();
 $customer->name = 'marko';
@@ -223,17 +223,17 @@ redis ActiveRecord 的一般用法与权威指南中数据库的 ActiveRecord �
 ## 直接使用命令
 
 直接使用 redis 连接，就可以使用 redis 提供的很多有用的命令。配置好 redis 后，用以下方式获取 redis 组件：
-```
+```php
 $redis = Yii::$app->redis;
 ```
 
 然后就可以执行命令了，最通用的方法是使用 executeCommand 方法：
-```
+```php
 $result = $redis->executeCommand('hmset', ['test_collection', 'key1', 'val1', 'key2', 'val2']);
 ```
 
 支持的每个命令都有一些快捷方式，可以按照如下方式使用：
-```
+```php
 $result = $redis->hmset('test_collection', 'key1', 'val1', 'key2', 'val2');
 ```
 
