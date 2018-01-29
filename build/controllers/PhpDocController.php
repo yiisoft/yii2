@@ -176,7 +176,7 @@ class PhpDocController extends Controller
             $this->setUpExtensionAliases($extensionPath);
 
             list(, $extension) = $matches;
-            Yii::setAlias("@yii/$extension", "$root");
+            Yii::setAlias("@yii/$extension", (string)$root);
             if (is_file($autoloadFile = Yii::getAlias("@yii/$extension/vendor/autoload.php"))) {
                 include $autoloadFile;
             }
@@ -199,7 +199,7 @@ class PhpDocController extends Controller
             $this->setUpExtensionAliases($extensionPath);
 
             list(, $appName) = $matches;
-            Yii::setAlias("@app-$appName", "$root");
+            Yii::setAlias("@app-$appName", (string)$root);
             if (is_file($autoloadFile = Yii::getAlias("@app-$appName/vendor/autoload.php"))) {
                 include $autoloadFile;
             }
@@ -688,7 +688,7 @@ class PhpDocController extends Controller
                     $docline = ' * @';
                     $docline .= 'property'; // Do not use property-read and property-write as few IDEs support complex syntax.
                     $note = '';
-                    if (isset($prop['get']) && isset($prop['set'])) {
+                    if (isset($prop['get'], $prop['set'])) {
                         if ($prop['get']['type'] != $prop['set']['type']) {
                             $note = ' Note that the type of this property differs in getter and setter.'
                                   . ' See [[get' . ucfirst($propName) . '()]] and [[set' . ucfirst($propName) . '()]] for details.';
