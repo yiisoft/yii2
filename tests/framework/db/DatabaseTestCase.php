@@ -37,7 +37,7 @@ abstract class DatabaseTestCase extends TestCase
             $pdo_database = 'oci8';
         }
 
-        if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
+        if (!\extension_loaded('pdo') || !\extension_loaded($pdo_database)) {
             $this->markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
         }
         $this->mockApplication();
