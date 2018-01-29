@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Enh #15476: Added `\yii\widgets\ActiveForm::$validationStateOn` to be able to specify where to add class for invalid fields (samdark)
 - Enh #13996: Added `yii\web\View::registerJsVar()` method that allows registering JavaScript variables (Eseperio, samdark)
 - Enh #9771: Assign hidden input with its own set of HTML options via `$hiddenOptions` in activeFileInput `$options` (HanafiAhmat)
 - Bug #15536: Fixed `yii\widgets\ActiveForm::init()` for call `parent::init()` (panchenkodv)
