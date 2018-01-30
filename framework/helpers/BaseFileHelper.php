@@ -62,7 +62,11 @@ class BaseFileHelper
             return $path;
         }
         // the path may contain ".", ".." or double slashes, need to clean them up
-        $parts = [];
+        if (strpos($path, "{$ds}{$ds}") === 0 && $ds == '\\') {
+            $parts = [$ds];
+        } else {
+            $parts = [];
+        }
         foreach (explode($ds, $path) as $part) {
             if ($part === '..' && !empty($parts) && end($parts) !== '..') {
                 array_pop($parts);
