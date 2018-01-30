@@ -148,7 +148,7 @@ public function attributeLabels()
 可对相同的属性返回不同的标签。
 
 > 信息：属性标签是 [视图](structure-views.md)一部分，
-  但是在模型中申明标签通常非常方便，并可行程非常简洁可重用代码。
+  但是在模型中声明标签通常非常方便，并可形成非常简洁可重用代码。
 
 
 ## 场景 <span id="scenarios"></span>

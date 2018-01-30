@@ -79,7 +79,7 @@ Yii 2.0 权威指南
 * [活动记录（Active Record）](db-active-record.md): 活动记录对象关系映射（ORM），检索和操作记录、定义关联关系
 * [数据库迁移（Migrations）](db-migrations.md): 在团体开发中对你的数据库使用版本控制
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
-* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
+* [Redis（yii2-redis）](yii2-redis.md): yii2-redis 扩展详解
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
 * [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
 
