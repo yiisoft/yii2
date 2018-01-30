@@ -241,10 +241,10 @@ class ActiveField extends Component
         if ($this->model->isAttributeRequired($attribute)) {
             $class[] = $this->form->requiredCssClass;
         }
+        $options['class'] = implode(' ', $class);
         if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_CONTAINER) {
             $this->addErrorClassIfNeeded($options);
         }
-        $options['class'] = implode(' ', $class);
         $tag = ArrayHelper::remove($options, 'tag', 'div');
 
         return Html::beginTag($tag, $options);
