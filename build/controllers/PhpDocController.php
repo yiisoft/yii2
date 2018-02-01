@@ -11,6 +11,7 @@ use Yii;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\helpers\Json;
 
 /**
  * PhpDocController is there to help maintaining PHPDoc annotation in class files.
@@ -21,6 +22,9 @@ use yii\helpers\FileHelper;
  */
 class PhpDocController extends Controller
 {
+    /**
+     * {@inheritdoc}
+     */
     public $defaultAction = 'property';
     /**
      * @var bool whether to update class docs directly. Setting this to false will just output docs
@@ -106,13 +110,18 @@ class PhpDocController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
         return array_merge(parent::options($actionID), ['updateFiles', 'skipFrameworkRequirements']);
     }
 
+    /**
+     * @param string $root
+     * @param bool $needsInclude
+     * @return array list of files.
+     */
     protected function findFiles($root, $needsInclude = true)
     {
         $except = [];
@@ -132,7 +141,7 @@ class PhpDocController extends Controller
                     '/generators/extension/default/AutoloadExample.php',
                 ],
                 'swiftmailer' => [
-                    '/Logger.php',
+                    'src/Logger.php',
                 ],
                 'twig' => [
                     '/Extension.php',
@@ -149,11 +158,7 @@ class PhpDocController extends Controller
         if ($root === null) {
             $root = dirname(YII2_PATH);
             $extensionPath = "$root/extensions";
-            foreach (scandir($extensionPath) as $extension) {
-                if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
-                    Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
-                }
-            }
+            $this->setUpExtensionAliases($extensionPath);
 
             $except = [
                 '/apps/',
@@ -230,14 +235,30 @@ class PhpDocController extends Controller
                 'vendor/',
             ]),
         ];
+
         return FileHelper::findFiles($root, $options);
     }
 
+    /**
+     * @param string $extensionPath root path containing extension repositories.
+     */
     private function setUpExtensionAliases($extensionPath)
     {
         foreach (scandir($extensionPath) as $extension) {
             if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
                 Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
+
+                $composerConfigFile = $extensionPath . '/' . $extension . '/composer.json';
+                if (file_exists($composerConfigFile)) {
+                    $composerConfig = Json::decode(file_get_contents($composerConfigFile));
+                    if (isset($composerConfig['autoload']['psr-4'])) {
+                        foreach ($composerConfig['autoload']['psr-4'] as $namespace => $subPath) {
+                            $alias = '@' . str_replace('\\', '/', $namespace);
+                            $path = rtrim("$extensionPath/$extension/$subPath", '/');
+                            Yii::setAlias($alias, $path);
+                        }
+                    }
+                }
             }
         }
     }
@@ -285,6 +306,7 @@ class PhpDocController extends Controller
 
     /**
      * Markdown aware fix of whitespace issues in doc comments.
+     * @param array $lines
      */
     protected function fixDocBlockIndentation(&$lines)
     {
@@ -340,6 +362,10 @@ class PhpDocController extends Controller
         }
     }
 
+    /**
+     * @param string $line
+     * @return string
+     */
     protected function fixParamTypes($line)
     {
         return preg_replace_callback('~@(param|return) ([\w\\|]+)~i', function ($matches) {
@@ -706,7 +732,7 @@ class PhpDocController extends Controller
                         }
                         if (!$parentSetter) {
                             $note = ' This property is read-only.';
-//							$docline .= '-read';
+                            //$docline .= '-read';
                         }
                     } elseif (isset($prop['set'])) {
                         // check if parent class has getter defined
@@ -721,7 +747,7 @@ class PhpDocController extends Controller
                         }
                         if (!$parentGetter) {
                             $note = ' This property is write-only.';
-//							$docline .= '-write';
+                            //$docline .= '-write';
                         }
                     } else {
                         continue;
