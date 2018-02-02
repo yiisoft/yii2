@@ -594,7 +594,7 @@ PATTERN;
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
-        $this->select = $columns;
+        $this->select = $this->getUniqueColumns($columns);
         $this->selectOption = $option;
         return $this;
     }
@@ -621,6 +621,7 @@ PATTERN;
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
+        $columns = $this->getUniqueColumns($columns);
         if ($this->select === null) {
             $this->select = $columns;
         } else {
@@ -628,6 +629,51 @@ PATTERN;
         }
 
         return $this;
+    }
+
+    /**
+     * Returns unique column names excluding duplicates.
+     * Columns to be removed:
+     * - if column definition already present in SELECT part with same alias
+     * - if column definition without alias already present in SELECT part without alias too
+     * @param array $columns the columns to be merged to the select.
+     * @since 2.0.14
+     */
+    protected function getUniqueColumns($columns)
+    {
+        $columns = array_unique($columns);
+        $unaliasedColumns = $this->getUnaliasedColumnsFromSelect();
+
+        foreach ($columns as $columnAlias => $columnDefinition) {
+            if ($columnDefinition instanceof Query) {
+                continue;
+            }
+
+            if (
+                (is_string($columnAlias) && isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition)
+                || (is_integer($columnAlias) && in_array($columnDefinition, $unaliasedColumns))
+            ) {
+                unset($columns[$columnAlias]);
+            }
+        }
+        return $columns;
+    }
+
+    /**
+     * @return array List of columns without aliases from SELECT statement.
+     * @since 2.0.14
+     */
+    protected function getUnaliasedColumnsFromSelect()
+    {
+        $result = [];
+        if (is_array($this->select)) {
+            foreach ($this->select as $name => $value) {
+                if (is_integer($name)) {
+                    $result[] = $value;
+                }
+            }
+        }
+        return array_unique($result);
     }
 
     /**
@@ -1179,5 +1225,14 @@ PATTERN;
             'union' => $from->union,
             'params' => $from->params,
         ]);
+    }
+
+    /**
+     * Returns the SQL representation of Query
+     * @return string
+     */
+    public function __toString()
+    {
+        return serialize($this);
     }
 }
