@@ -499,7 +499,7 @@ class BaseInflector
      */
     public static function transliterate($string, $transliterator = null)
     {
-        if (static::hasIntl()) {
+        if (static::hasIntl() && defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.8', '>=')) {
             if ($transliterator === null) {
                 $transliterator = static::$transliterator;
             }
