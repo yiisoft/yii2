@@ -86,7 +86,7 @@ class PhpDocController extends Controller
         $nFilesUpdated = 0;
         foreach ($files as $file) {
             $contents = file_get_contents($file);
-            $sha = sha1($contents);
+            $hash = $this->hash($contents);
 
             // fix line endings
             $lines = preg_split('/(\r\n|\n|\r)/', $contents);
@@ -98,10 +98,10 @@ class PhpDocController extends Controller
             $lines = array_values($this->fixLineSpacing($lines));
 
             $newContent = implode("\n", $lines);
-            if ($sha !== sha1($newContent)) {
+            if ($hash !== $this->hash($newContent)) {
+                file_put_contents($file, $newContent);
                 $nFilesUpdated++;
             }
-            file_put_contents($file, $newContent);
             $nFilesTotal++;
         }
 
@@ -805,5 +805,18 @@ class PhpDocController extends Controller
     protected function getPropParam($prop, $param)
     {
         return isset($prop['property']) ? $prop['property'][$param] : (isset($prop['get']) ? $prop['get'][$param] : $prop['set'][$param]);
+    }
+
+    /**
+     * Generate a hash value (message digest)
+     * @param string $string message to be hashed.
+     * @return string calculated message digest.
+     */
+    private function hash($string)
+    {
+        if (!function_exists('hash')) {
+            return sha1($string);
+        }
+        return hash('sha256', $string);
     }
 }
