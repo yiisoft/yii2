@@ -560,7 +560,7 @@ PATTERN;
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
-        $this->select = $columns;
+        $this->select = $this->getUniqueColumns($columns);
         $this->selectOption = $option;
         return $this;
     }
@@ -587,10 +587,11 @@ PATTERN;
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
+        $columns = $this->getUniqueColumns($columns);
         if ($this->select === null) {
             $this->select = $columns;
         } else {
-            $this->select = array_merge($this->select, $this->getUniqueColumns($columns));
+            $this->select = array_merge($this->select, $columns);
         }
 
         return $this;
@@ -606,7 +607,7 @@ PATTERN;
      */
     protected function getUniqueColumns($columns)
     {
-        $simpleColumns = $this->getUnaliasedColumnsFromSelect();
+        $unaliasedColumns = $this->getUnaliasedColumnsFromSelect();
         $columns = array_unique($columns);
 
         foreach ($columns as $columnAlias => $columnDefinition) {
@@ -615,7 +616,7 @@ PATTERN;
             }
 
             if ((is_string($columnAlias) && isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition) ||
-                (is_integer($columnAlias) && in_array($columnDefinition, $simpleColumns))) {
+                (is_integer($columnAlias) && in_array($columnDefinition, $unaliasedColumns))) {
                 unset($columns[$columnAlias]);
             }
         }
@@ -629,9 +630,11 @@ PATTERN;
     protected function getUnaliasedColumnsFromSelect()
     {
         $result = [];
-        foreach ($this->select as $name => $value) {
-            if (is_integer($name)) {
-                $result[] = $value;
+        if (is_array($this->select)) {
+            foreach ($this->select as $name => $value) {
+                if (is_integer($name)) {
+                    $result[] = $value;
+                }
             }
         }
         return array_unique($result);
