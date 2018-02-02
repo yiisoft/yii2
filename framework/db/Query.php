@@ -605,21 +605,30 @@ PATTERN;
      */
     protected function removeDuplicatedColumns($columns)
     {
-        $numeric_values = [];
-        foreach ($this->select as $columnName => $columnDefinition) {
-            if (is_integer($columnName))
-                $numeric_values[] = $columnDefinition;
-        }
+        $simple_columns = $this->filterSimpleColumnsFromSelect();
 
         foreach ($columns as $columnName => $columnDefinition) {
             if ($columnDefinition instanceof Query)
                 continue;
 
             if ((is_string($columnName) && isset($this->select[$columnName]) && $this->select[$columnName] === $columnDefinition) ||
-                (is_integer($columnName) && in_array($columnDefinition, $numeric_values)))
+                (is_integer($columnName) && in_array($columnDefinition, $simple_columns)))
                 unset($columns[$columnName]);
         }
         return $columns;
+    }
+
+    /**
+     * @return array List of simple columns from query SELECT
+     */
+    protected function filterSimpleColumnsFromSelect()
+    {
+        $result = [];
+        foreach ($this->select as $name => $value) {
+            if (is_integer($name) && !in_array($value, $result))
+                $result[] = $value;
+        }
+        return $result;
     }
 
     /**
