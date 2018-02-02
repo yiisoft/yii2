@@ -590,45 +590,51 @@ PATTERN;
         if ($this->select === null) {
             $this->select = $columns;
         } else {
-            $this->select = array_merge($this->select, $this->removeDuplicatedColumns($columns));
+            $this->select = array_merge($this->select, $this->getUniqueColumns($columns));
         }
 
         return $this;
     }
 
     /**
-     * Removes duplicated columns from given columns definitions.
+     * Returns unique column names excluding duplicates.
      * Columns to be removed:
      * - if column definition already present in SELECT part with same alias
      * - if column definition without alias already present in SELECT part without alias too
      * @param array $columns the columns to be merged to the select.
+     * @since 2.0.14
      */
-    protected function removeDuplicatedColumns($columns)
+    protected function getUniqueColumns($columns)
     {
-        $simple_columns = $this->filterSimpleColumnsFromSelect();
+        $simpleColumns = $this->getUnaliasedColumnsFromSelect();
+        $columns = array_unique($columns);
 
-        foreach ($columns as $columnName => $columnDefinition) {
-            if ($columnDefinition instanceof Query)
+        foreach ($columns as $columnAlias => $columnDefinition) {
+            if ($columnDefinition instanceof Query) {
                 continue;
+            }
 
-            if ((is_string($columnName) && isset($this->select[$columnName]) && $this->select[$columnName] === $columnDefinition) ||
-                (is_integer($columnName) && in_array($columnDefinition, $simple_columns)))
-                unset($columns[$columnName]);
+            if ((is_string($columnAlias) && isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition) ||
+                (is_integer($columnAlias) && in_array($columnDefinition, $simpleColumns))) {
+                unset($columns[$columnAlias]);
+            }
         }
         return $columns;
     }
 
     /**
-     * @return array List of simple columns from query SELECT
+     * @return array List of columns without aliases from SELECT statement.
+     * @since 2.0.14
      */
-    protected function filterSimpleColumnsFromSelect()
+    protected function getUnaliasedColumnsFromSelect()
     {
         $result = [];
         foreach ($this->select as $name => $value) {
-            if (is_integer($name) && !in_array($value, $result))
+            if (is_integer($name)) {
                 $result[] = $value;
+            }
         }
-        return $result;
+        return array_unique($result);
     }
 
     /**
