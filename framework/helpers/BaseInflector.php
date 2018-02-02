@@ -504,7 +504,11 @@ class BaseInflector
                 $transliterator = static::$transliterator;
             }
 
-            if ($transliterator instanceof \Transliterator || $transliterator = \Transliterator::create($transliterator)) {
+            if (!$transliterator instanceof \Transliterator) {
+                $transliterator = \Transliterator::create($transliterator);
+            }
+
+            if ($transliterator !== null) {
                 return $transliterator->transliterate($string);
             }
         }
