@@ -12,7 +12,7 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 
 /**
- * Locale provides various locale information via conenient methods.
+ * Locale provides various locale information via convenient methods.
  *
  * The class requires [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
  * @since 2.0.14
