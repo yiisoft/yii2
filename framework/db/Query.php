@@ -677,6 +677,9 @@ PATTERN;
      */
     public function from($tables)
     {
+        if ($tables instanceof Expression) {
+            $tables = [$tables];
+        }
         if (is_string($tables)) {
             $tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
         }
