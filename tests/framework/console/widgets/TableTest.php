@@ -21,7 +21,30 @@ class TableTest extends TestCase
         $this->mockApplication();
     }
 
-    public function testTable()
+    public function getTableData()
+    {
+        return [
+            [
+                ['test1', 'test2', 'test3'],
+                [
+                    ['testcontent1', 'testcontent2', 'testcontent3'],
+                    ['testcontent21', 'testcontent22', 'testcontent23'],
+                ]
+            ],
+            [
+                ['key1' => 'test1', 'key2' => 'test2', 'key3' => 'test3'],
+                [
+                    ['key1' => 'testcontent1', 'key2' => 'testcontent2', 'key3' => 'testcontent3'],
+                    ['key1' => 'testcontent21', 'key2' => 'testcontent22', 'key3' => 'testcontent23'],
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getTableData
+     */
+    public function testTable($headers, $rows)
     {
         $table = new Table();
 
@@ -36,12 +59,12 @@ class TableTest extends TestCase
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
-            ->setRows([
-                ['testcontent1', 'testcontent2', 'testcontent3'],
-                ['testcontent21', 'testcontent22', 'testcontent23'],
-            ])->setScreenWidth(200)->run()
-        );
+        $tableContent = $table
+            ->setHeaders($headers)
+            ->setRows($rows)
+            ->setScreenWidth(200)
+            ->run();
+        $this->assertEqualsWithoutLE($expected, $tableContent);
     }
 
     public function testTableWithFullwidthChars()

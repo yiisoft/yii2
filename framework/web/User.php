@@ -165,6 +165,9 @@ class User extends Component
         if ($this->enableAutoLogin && !isset($this->identityCookie['name'])) {
             throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
         }
+        if (!empty($this->accessChecker) && is_string($this->accessChecker)) {
+            $this->accessChecker = Yii::createObject($this->accessChecker);
+        }
     }
 
     private $_identity = false;
@@ -638,6 +641,9 @@ class User extends Component
                 $this->sendIdentityCookie($identity, $duration);
             }
         }
+
+        // regenerate CSRF token
+        Yii::$app->getRequest()->getCsrfToken(true);
     }
 
     /**

@@ -259,6 +259,19 @@ _MSG_
                 'offers',
                 [13],
             ],
+            [
+                'Message without {closing} {brace',
+                false, // Message pattern is invalid
+                ['closing brace and with'],
+            ],
+            [
+                '{gender, select, female{Уважаемая} other{Уважаемый}} {firstname},',
+                'Уважаемый Vadim,',
+                [
+                    'gender' => null,
+                    'firstname' => 'Vadim'
+                ],
+            ],
         ];
     }
 

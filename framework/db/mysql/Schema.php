@@ -295,7 +295,7 @@ SQL;
         $column->phpType = $this->getColumnPhpType($column);
 
         if (!$column->isPrimaryKey) {
-            if ($column->type === 'timestamp' && $info['default'] === 'CURRENT_TIMESTAMP') {
+            if (($column->type === 'timestamp' || $column->type ==='datetime') && $info['default'] === 'CURRENT_TIMESTAMP') {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } elseif (isset($type) && $type === 'bit') {
                 $column->defaultValue = bindec(trim($info['default'], 'b\''));
@@ -447,11 +447,11 @@ SQL;
         $sql = $this->getCreateTableSql($table);
         $uniqueIndexes = [];
 
-        $regexp = '/UNIQUE KEY\s+([^\(\s]+)\s*\(([^\(\)]+)\)/mi';
+        $regexp = '/UNIQUE KEY\s+\`(.+)\`\s*\((\`.+\`)+\)/mi';
         if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
-                $indexName = str_replace('`', '', $match[1]);
-                $indexColumns = array_map('trim', explode(',', str_replace('`', '', $match[2])));
+                $indexName = $match[1];
+                $indexColumns = array_map('trim', explode('`,`', trim($match[2], '`')));
                 $uniqueIndexes[$indexName] = $indexColumns;
             }
         }
@@ -460,7 +460,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {

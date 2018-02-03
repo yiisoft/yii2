@@ -58,6 +58,8 @@ class ContentDecorator extends Widget
      */
     public function init()
     {
+        parent::init();
+
         if ($this->viewFile === null) {
             throw new InvalidConfigException('ContentDecorator::viewFile must be set.');
         }

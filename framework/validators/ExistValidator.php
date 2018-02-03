@@ -80,7 +80,7 @@ class ExistValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -91,13 +91,13 @@ class ExistValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $params = $this->prepareConditions($targetAttribute, $model, $attribute);
-        $conditions[] = $this->targetAttributeJunction == 'or' ? 'or' : 'and';
+        $conditions = [$this->targetAttributeJunction == 'or' ? 'or' : 'and'];
 
         if (!$this->allowArray) {
             foreach ($params as $key => $value) {
@@ -183,7 +183,7 @@ class ExistValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {

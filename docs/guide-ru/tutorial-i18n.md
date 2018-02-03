@@ -269,7 +269,7 @@ for an argument: U_ARGUMENT_TYPE_MISMATCH":
 ```
 
 Подробная документация о формах склонений для различных языков доступна на сайте 
-[unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+[unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 #### Вариации
 

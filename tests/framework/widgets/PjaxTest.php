@@ -38,4 +38,21 @@ class PjaxTest extends TestCase
         parent::setUp();
         $this->mockWebApplication();
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15536
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        $pjax = new Pjax(
+            [
+                'on init' => function () use (&$initTriggered) {
+                    $initTriggered = true;
+                }
+            ]
+        );
+
+        $this->assertTrue($initTriggered);
+    }
 }

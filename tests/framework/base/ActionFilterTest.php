@@ -180,7 +180,7 @@ class FakeController extends Controller
 class Filter1 extends ActionFilter
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -189,7 +189,7 @@ class Filter1 extends ActionFilter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterAction($action, $result)
     {
@@ -200,7 +200,7 @@ class Filter1 extends ActionFilter
 class Filter2 extends ActionFilter
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -209,7 +209,7 @@ class Filter2 extends ActionFilter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterAction($action, $result)
     {
@@ -220,7 +220,7 @@ class Filter2 extends ActionFilter
 class Filter3 extends ActionFilter
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -229,7 +229,7 @@ class Filter3 extends ActionFilter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterAction($action, $result)
     {

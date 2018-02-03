@@ -16,7 +16,7 @@ namespace yii\rbac;
 class Role extends Item
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $type = self::TYPE_ROLE;
 }
