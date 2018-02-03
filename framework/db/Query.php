@@ -607,8 +607,8 @@ PATTERN;
      */
     protected function getUniqueColumns($columns)
     {
-        $unaliasedColumns = $this->getUnaliasedColumnsFromSelect();
         $columns = array_unique($columns);
+        $unaliasedColumns = $this->getUnaliasedColumnsFromSelect();
 
         foreach ($columns as $columnAlias => $columnDefinition) {
             if ($columnDefinition instanceof Query) {
@@ -1186,5 +1186,14 @@ PATTERN;
             'union' => $from->union,
             'params' => $from->params,
         ]);
+    }
+
+    /**
+     * Returns the SQL representation of Query
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->createCommand()->getSql();
     }
 }
