@@ -422,9 +422,8 @@ fails the validation, call [[yii\base\Model::addError()]] to save the error mess
 with [inline validators](#inline-validators).
 
 
-For example the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
-In this case we can use [[yii\validators\Validator::addError()]] for customize the error message before 
-save the error message in the model.
+For example, the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
+In this case we can use [[yii\validators\Validator::addError()]] to set customized for the model.
 
 ```php
 namespace app\components;
