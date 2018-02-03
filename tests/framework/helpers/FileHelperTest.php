@@ -882,4 +882,44 @@ class FileHelperTest extends TestCase
         $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir2');
         $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir3');
     }
+
+    public function testFindDirectory()
+    {
+        $dirName = 'test_dir';
+        $this->createFileStructure([
+            $dirName => [
+               'test_sub_dir' => [
+                    'file_1.txt' => 'sub dir file 1 content',
+                ],
+                'second_sub_dir' => [
+                    'file_1.txt' => 'sub dir file 2 content',
+                ],
+            ],
+        ]);
+        $basePath = $this->testFilePath;
+        $dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
+        $expectedFiles = [
+            $dirName . DIRECTORY_SEPARATOR . 'test_sub_dir',
+            $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir'
+        ];
+
+        $foundFiles = FileHelper::findDirectory($dirName);
+        sort($expectedFiles);
+        sort($foundFiles);
+        $this->assertEquals($expectedFiles, $foundFiles);
+
+        $expectedFiles = [
+            $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir'
+        ];
+        $options = [
+            'filter' => function ($path) {
+                return 'second_sub_dir' == basename($path);
+            },
+        ];
+        $foundFiles = FileHelper::findDirectory($dirName, $options);
+        sort($expectedFiles);
+        sort($foundFiles);
+        $this->assertEquals($expectedFiles, $foundFiles);
+
+    }
 }

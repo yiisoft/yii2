@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Enh #13465: Added `yii\helpers\FileHelper::findDirectory()` method (ArsSirek, developeruz)
 - Enh #8527: Added `yii\i18n\Locale` component having `getCurrencySymbol()` method (amarox, samdark)
 - Enh #14546: Added `dataDirectory` property into `BaseActiveFixture` (leandrogehlen)
 - Bug #15522: Fixed `yii\db\ActiveRecord::refresh()` method does not use an alias in the condition (vladis84)
