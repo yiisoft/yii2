@@ -66,10 +66,68 @@ class ApplicationTest extends TestCase
         $this->assertSame('Bootstrap with yii\base\Module', Yii::getLogger()->messages[3][0]);
         $this->assertSame('Bootstrap with Closure', Yii::getLogger()->messages[4][0]);
     }
+
+    public function testComponentsInDIC()
+    {
+        $logProperty = 'dog';
+
+        $this->mockApplication([
+            'components' => [
+                'log' => [
+                    'class' => DispatcherMock::className(),
+                    'property' => $logProperty
+                ],
+            ],
+        ]);
+
+        /* @var \yiiunit\framework\base\DispatcherMock $logSL */
+        $logSL = Yii::$app->log;
+        /* @var \yiiunit\framework\base\DispatcherMock $logDIC */
+        $logDIC = Yii::createObject(['class' => 'log']);
+
+        $this->assertInstanceOf(DispatcherMock::className(), $logSL);
+        $this->assertInstanceOf(DispatcherMock::className(), $logDIC);
+        $this->assertEquals($logSL, $logDIC);
+        $this->assertEquals($logSL->property, $logProperty);
+        $this->assertEquals($logSL->property, $logDIC->property);
+    }
+
+    public function testComponentsInDICReWriteSingleton()
+    {
+        $logProperty = 'dog';
+
+        $this->mockApplication([
+            'container' => [
+                'singletons' => [
+                    'log' => [
+                        'class' => Dispatcher::className(),
+                    ]
+                ]
+            ],
+            'components' => [
+                'log' => [
+                    'class' => DispatcherMock::className(),
+                    'property' => $logProperty
+                ],
+            ],
+        ]);
+
+        /* @var \yiiunit\framework\base\DispatcherMock $logSL */
+        $logSL = Yii::$app->log;
+        /* @var \yiiunit\framework\base\DispatcherMock $logDIC */
+        $logDIC = Yii::createObject(['class' => 'log']);
+
+        $this->assertInstanceOf(DispatcherMock::className(), $logSL);
+        $this->assertInstanceOf(DispatcherMock::className(), $logDIC);
+        $this->assertEquals($logSL, $logDIC);
+        $this->assertEquals($logSL->property, $logProperty);
+        $this->assertEquals($logSL->property, $logDIC->property);
+    }
 }
 
 class DispatcherMock extends Dispatcher
 {
+    public $property = 'log';
 }
 
 class BootstrapComponentMock extends Component implements BootstrapInterface
