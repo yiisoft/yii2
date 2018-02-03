@@ -22,7 +22,7 @@
 
 Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下命令即可安装 Yii ：
 
-    composer global require "fxp/composer-asset-plugin:^1.3.1"
+    composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 第一条命令安装 [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)，它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局生效，一劳永逸。
@@ -132,7 +132,7 @@ DocumentRoot "path/to/basic/web"
 
 ### 推荐使用的 Nginx 配置 <span id="recommended-nginx-configuration"></span>
 
-为了使用 [Nginx](http://wiki.nginx.org/)，你应该已经将 PHP 安装为 [FPM SAPI](http://php.net/install.fpm) 了。使用如下 Nginx 配置，将 `path/to/basic/web` 替换为实际的 `basic/web` 目录，`mysite.local` 替换为实际的主机名以提供服务。
+为了使用 [Nginx](http://wiki.nginx.org/)，你应该已经将 PHP 安装为 [FPM SAPI](http://php.net/install.fpm) 了。使用如下 Nginx 配置，将 `path/to/basic/web` 替换为实际的 `basic/web` 目录，`mysite.test` 替换为实际的主机名以提供服务。
 
 ```
 server {
@@ -142,7 +142,7 @@ server {
     listen 80; ## 监听 ipv4 上的 80 端口
     #listen [::]:80 default_server ipv6only=on; ## 监听 ipv6 上的 80 端口
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

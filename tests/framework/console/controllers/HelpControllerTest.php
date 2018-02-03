@@ -19,7 +19,7 @@ use yiiunit\TestCase;
 class HelpControllerTest extends TestCase
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setUp()
     {
@@ -41,8 +41,8 @@ class HelpControllerTest extends TestCase
 
     /**
      * Emulates running controller action.
-     * @param  string $actionID id of action to be run.
-     * @param  array $args action arguments.
+     * @param string $actionID id of action to be run.
+     * @param array $actionParams action arguments.
      * @return string command output.
      */
     protected function runControllerAction($actionID, $actionParams = [])
@@ -51,6 +51,31 @@ class HelpControllerTest extends TestCase
         $action = $controller->createAction($actionID);
         $action->runWithParams($actionParams);
         return $controller->flushStdOutBuffer();
+    }
+
+    public function testModuleControllersList()
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'modules' => [
+                'magic' => 'yiiunit\data\modules\magic\Module',
+            ],
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('list'));
+        $this->assertEqualsWithoutLE(<<<'STRING'
+help
+help/index
+help/list
+help/list-action-options
+help/usage
+magic/e-tag
+magic/e-tag/delete
+magic/e-tag/list-e-tags
+magic/subFolder/sub
+magic/subFolder/sub/test
+
+STRING
+            , $result);
     }
 
     public function testActionList()
@@ -63,7 +88,7 @@ class HelpControllerTest extends TestCase
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list'));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 cache
 cache/flush
 cache/flush-all
@@ -77,6 +102,7 @@ help/usage
 migrate
 migrate/create
 migrate/down
+migrate/fresh
 migrate/history
 migrate/mark
 migrate/new
@@ -98,7 +124,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list-action-options', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 action:route to action
 
 --interactive: whether to run the command interactively.
@@ -119,7 +145,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('usage', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 bootstrap.php help/list-action-options <action>
 
 STRING

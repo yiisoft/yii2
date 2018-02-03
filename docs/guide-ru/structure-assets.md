@@ -186,7 +186,7 @@ $config = [
 установить специальный глобальный пакет Composer, выполнив следующую команду:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.3.1"
+composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
 Эта команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) глобально,

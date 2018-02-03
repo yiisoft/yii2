@@ -56,7 +56,7 @@ Jeśli jesteś już posiadaczem Composera, upewnij się, że jest on zaktualizow
 Teraz możesz przejść już do instalacji samego Yii, wywołując poniższe komendy w katalogu dostępnym z poziomu sieci web:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.3.1"
+composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -203,7 +203,7 @@ DocumentRoot "path/to/basic/web"
 
 Aby użyć [Nginx](http://wiki.nginx.org/) powinienieś zainstalować PHP jako [FPM SAPI](http://php.net/install.fpm).
 Możesz użyć przedstawionej poniżej konfiguracji Nginx, zastępując jedynie ścieżkę `path/to/basic/web` aktualną ścieżką do `basic/web` Twojej aplikacji oraz 
-`mysite.local` aktualną nazwą hosta.
+`mysite.test` aktualną nazwą hosta.
 
 ```nginx
 server {
@@ -213,7 +213,7 @@ server {
     listen 80; ## nasłuchuj ipv4
     #listen [::]:80 default_server ipv6only=on; ## nasłuchuj ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

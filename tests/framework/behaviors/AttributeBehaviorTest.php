@@ -95,6 +95,10 @@ class AttributeBehaviorTest extends TestCase
 
     /**
      * @dataProvider preserveNonEmptyValuesDataProvider
+     * @param string $aliasExpected
+     * @param bool $preserveNonEmptyValues
+     * @param string $name
+     * @param string|null $alias
      */
     public function testPreserveNonEmptyValues(
         $aliasExpected,
@@ -124,7 +128,7 @@ class AttributeBehaviorTest extends TestCase
 class ActiveRecordWithAttributeBehavior extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {
@@ -142,7 +146,7 @@ class ActiveRecordWithAttributeBehavior extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {

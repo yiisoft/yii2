@@ -8,7 +8,7 @@
 namespace yiiunit\framework\rbac;
 
 /**
- * PgSQLManagerTest
+ * PgSQLManagerTest.
  * @group db
  * @group rbac
  * @group pgsql

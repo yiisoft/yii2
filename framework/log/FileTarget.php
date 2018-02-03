@@ -141,7 +141,6 @@ class FileTarget extends Target
         $file = $this->logFile;
         for ($i = $this->maxLogFiles; $i >= 0; --$i) {
             // $i == 0 is the original log file
-            $rotateFile = $file . ($i === 0 ? '' : '.' . $i);
             $rotateTarget = $file . '.' . ($i + 1);
             if (!is_file($rotateFile)) {
                 if ($this->compressRotatedFiles && is_file("$rotateFile.gz")) {
@@ -207,5 +206,40 @@ class FileTarget extends Target
         gzclose($gz);
         @unlink($filename);
         return $gzFilename;
+    }
+
+    /***
+     * Clear log file without closing any other process open handles
+     * @param string $rotateFile
+     */
+    private function clearLogFile($rotateFile)
+    {
+        if ($filePointer = @fopen($rotateFile, 'a')) {
+            @ftruncate($filePointer, 0);
+            @fclose($filePointer);
+        }
+    }
+
+    /***
+     * Copy rotated file into new file
+     * @param string $rotateFile
+     * @param string $newFile
+     */
+    private function rotateByCopy($rotateFile, $newFile)
+    {
+        @copy($rotateFile, $newFile);
+        if ($this->fileMode !== null) {
+            @chmod($newFile, $this->fileMode);
+        }
+    }
+
+    /**
+     * Renames rotated file into new file
+     * @param string $rotateFile
+     * @param string $newFile
+     */
+    private function rotateByRename($rotateFile, $newFile)
+    {
+        @rename($rotateFile, $newFile);
     }
 }

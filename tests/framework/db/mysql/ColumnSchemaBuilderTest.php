@@ -11,7 +11,7 @@ use yii\db\mysql\ColumnSchemaBuilder;
 use yii\db\Schema;
 
 /**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for MySQL
+ * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for MySQL.
  * @group db
  * @group mysql
  */

@@ -138,6 +138,7 @@ class PageCacheTest extends TestCase
 
     /**
      * @dataProvider cacheTestCaseProvider
+     * @param array $testCase
      */
     public function testCache($testCase)
     {
@@ -165,7 +166,7 @@ class PageCacheTest extends TestCase
                 Yii::$app->response->cookies->add(new Cookie([
                     'name' => $name,
                     'value' => $value,
-                    'expire' => PHP_INT_MAX,
+                    'expire' => strtotime('now +1 year'),
                 ]));
                 $cookies[$name] = $value;
             }
@@ -444,5 +445,19 @@ class PageCacheTest extends TestCase
             Yii::$app->response->send();
             ob_end_clean();
         }
+    }
+
+    public function testCalculateCacheKey()
+    {
+        $expected = ['yii\filters\PageCache', 'test', 'ru'];
+        Yii::$app->requestedRoute = 'test';
+        $keys = $this->invokeMethod(new PageCache(['variations' => ['ru']]), 'calculateCacheKey');
+        $this->assertEquals($expected, $keys);
+
+        $keys = $this->invokeMethod(new PageCache(['variations' => 'ru']), 'calculateCacheKey');
+        $this->assertEquals($expected, $keys);
+
+        $keys = $this->invokeMethod(new PageCache(), 'calculateCacheKey');
+        $this->assertEquals(['yii\filters\PageCache', 'test'], $keys);
     }
 }

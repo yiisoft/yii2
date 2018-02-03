@@ -21,7 +21,7 @@ use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
 
 /**
- * Schema is the class for retrieving metadata from an Oracle database
+ * Schema is the class for retrieving metadata from an Oracle database.
  *
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
@@ -43,7 +43,7 @@ class Schema extends \yii\db\Schema
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -73,17 +73,17 @@ class Schema extends \yii\db\Schema
 
     /**
      * @inheritDoc
+     * @see https://docs.oracle.com/cd/B28359_01/server.111/b28337/tdpsg_user_accounts.htm
      */
     protected function findSchemaNames()
     {
-        $sql = <<<'SQL'
-SELECT
-    USERNAME
-FROM DBA_USERS U
-WHERE
-    EXISTS (SELECT 1 FROM DBA_OBJECTS O WHERE O.OWNER = U.USERNAME)
-    AND DEFAULT_TABLESPACE NOT IN ('SYSTEM','SYSAUX')
+        static $sql = <<<'SQL'
+SELECT "u"."USERNAME"
+FROM "DBA_USERS" "u"
+WHERE "u"."DEFAULT_TABLESPACE" NOT IN ('SYSTEM', 'SYSAUX')
+ORDER BY "u"."USERNAME" ASC
 SQL;
+
         return $this->db->createCommand($sql)->queryColumn();
     }
 
@@ -129,6 +129,7 @@ SQL;
             }
             $names[] = $row['TABLE_NAME'];
         }
+
         return $names;
     }
 
@@ -200,6 +201,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -229,7 +231,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function releaseSavepoint($name)
     {
@@ -237,7 +239,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function quoteSimpleTableName($name)
     {
@@ -245,7 +247,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createQueryBuilder()
     {
@@ -253,7 +255,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
@@ -327,11 +329,12 @@ SQL;
             $c = $this->createColumn($column);
             $table->columns[$c->name] = $c;
         }
+
         return true;
     }
 
     /**
-     * Sequence name of table
+     * Sequence name of table.
      *
      * @param string $tableName
      * @internal param \yii\db\TableSchema $table->name the table schema
@@ -376,7 +379,7 @@ SQL;
     }
 
     /**
-     * Creates ColumnSchema instance
+     * Creates ColumnSchema instance.
      *
      * @param array $column
      * @return ColumnSchema
@@ -419,7 +422,7 @@ SQL;
     }
 
     /**
-     * Finds constraints and fills them into TableSchema object passed
+     * Finds constraints and fills them into TableSchema object passed.
      * @param TableSchema $table
      */
     protected function findConstraints($table)
@@ -479,8 +482,7 @@ SQL;
         }
 
         foreach ($constraints as $constraint) {
-            $name = array_keys($constraint);
-            $name = current($name);
+            $name = current(array_keys($constraint));
 
             $table->foreignKeys[$name] = array_merge([$constraint['tableName']], $constraint['columns']);
         }
@@ -488,7 +490,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
-     * Each array element is of the following structure:
+     * Each array element is of the following structure:.
      *
      * ```php
      * [
@@ -523,11 +525,12 @@ SQL;
         foreach ($command->queryAll() as $row) {
             $result[$row['INDEX_NAME']][] = $row['COLUMN_NAME'];
         }
+
         return $result;
     }
 
     /**
-     * Extracts the data types for the given column
+     * Extracts the data types for the given column.
      * @param ColumnSchema $column
      * @param string $dbType DB type
      * @param string $precision total number of digits.
@@ -581,7 +584,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns)
     {
@@ -715,6 +718,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

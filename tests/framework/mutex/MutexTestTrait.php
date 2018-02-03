@@ -10,7 +10,7 @@ namespace yiiunit\framework\mutex;
 use yii\mutex\Mutex;
 
 /**
- * Class MutexTestTrait
+ * Class MutexTestTrait.
  */
 trait MutexTestTrait
 {
@@ -27,6 +27,7 @@ trait MutexTestTrait
         $mutex = $this->createMutex();
 
         $this->assertTrue($mutex->acquire(self::$mutexName));
+        $this->assertTrue($mutex->release(self::$mutexName));
     }
 
     public function testThatMutexLockIsWorking()

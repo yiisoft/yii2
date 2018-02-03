@@ -11,7 +11,7 @@ use yii\db\ActiveQuery;
 use yiiunit\framework\db\ActiveRecordTest;
 
 /**
- * Class Customer
+ * Class Customer.
  *
  * @property int $id
  * @property string $name
@@ -95,7 +95,7 @@ class Customer extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @return CustomerQuery
      */
     public static function find()

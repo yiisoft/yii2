@@ -48,7 +48,7 @@ use yii\base\NotSupportedException;
  * For more details and usage information on Command, see the [guide article on Database Access Objects](guide:db-dao).
  *
  * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
- * [[sql]]. This property is read-only.
+ * [[sql]].
  * @property string $sql The SQL statement to be executed.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -100,6 +100,16 @@ class Command extends Component
      * @var string name of the table, which schema, should be refreshed after command execution.
      */
     private $_refreshTableName;
+    /**
+     * @var string|false|null the isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
+     */
+    private $_isolationLevel = false;
+    /**
+     * @var callable a callable (e.g. anonymous function) that is called when [[\yii\db\Exception]] is thrown
+     * when executing the command.
+     */
+    private $_retryHandler;
 
 
     /**
@@ -137,19 +147,43 @@ class Command extends Component
     }
 
     /**
-     * Specifies the SQL statement to be executed.
-     * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well.
+     * Specifies the SQL statement to be executed. The SQL statement will be quoted using [[Connection::quoteSql()]].
+     * The previous SQL (if any) will be discarded, and [[params]] will be cleared as well. See [[reset()]]
+     * for details.
+     *
      * @param string $sql the SQL statement to be set.
      * @return $this this command instance
+     * @see reset()
+     * @see cancel()
      */
     public function setSql($sql)
     {
         if ($sql !== $this->_sql) {
             $this->cancel();
+            $this->reset();
             $this->_sql = $this->db->quoteSql($sql);
-            $this->_pendingParams = [];
-            $this->params = [];
-            $this->_refreshTableName = null;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Specifies the SQL statement to be executed. The SQL statement will not be modified in any way.
+     * The previous SQL (if any) will be discarded, and [[params]] will be cleared as well. See [[reset()]]
+     * for details.
+     *
+     * @param string $sql the SQL statement to be set.
+     * @return $this this command instance
+     * @since 2.0.13
+     * @see reset()
+     * @see cancel()
+     */
+    public function setRawSql($sql)
+    {
+        if ($sql !== $this->_sql) {
+            $this->cancel();
+            $this->reset();
+            $this->_sql = $sql;
         }
 
         return $this;
@@ -177,7 +211,7 @@ class Command extends Component
                 $params[$name] = ($value ? 'TRUE' : 'FALSE');
             } elseif ($value === null) {
                 $params[$name] = 'NULL';
-            } elseif (!is_object($value) && !is_resource($value)) {
+            } elseif ((!is_object($value) && !is_resource($value)) || $value instanceof Expression) {
                 $params[$name] = $value;
             }
         }
@@ -407,6 +441,7 @@ class Command extends Component
 
     /**
      * Creates an INSERT command.
+     *
      * For example,
      *
      * ```php
@@ -436,6 +471,7 @@ class Command extends Component
 
     /**
      * Creates a batch INSERT command.
+     *
      * For example,
      *
      * ```php
@@ -459,13 +495,21 @@ class Command extends Component
      */
     public function batchInsert($table, $columns, $rows)
     {
+        $table = $this->db->quoteSql($table);
+        $columns = array_map(function ($column) {
+            return $this->db->quoteSql($column);
+        }, $columns);
+
         $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
 
-        return $this->setSql($sql);
+        $this->setRawSql($sql);
+
+        return $this;
     }
 
     /**
      * Creates an UPDATE command.
+     *
      * For example,
      *
      * ```php
@@ -499,6 +543,7 @@ class Command extends Component
 
     /**
      * Creates a DELETE command.
+     *
      * For example,
      *
      * ```php
@@ -876,7 +921,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for adding comment to column
+     * Builds a SQL command for adding comment to column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -892,7 +937,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for adding comment to table
+     * Builds a SQL command for adding comment to table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
@@ -907,7 +952,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for dropping comment from column
+     * Builds a SQL command for dropping comment from column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -922,7 +967,7 @@ class Command extends Component
     }
 
     /**
-     * Builds a SQL command for dropping comment from table
+     * Builds a SQL command for dropping comment from table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @return $this the command object itself
@@ -933,6 +978,36 @@ class Command extends Component
         $sql = $this->db->getQueryBuilder()->dropCommentFromTable($table);
 
         return $this->setSql($sql);
+    }
+
+    /**
+     * Creates a SQL View.
+     *
+     * @param string $viewName the name of the view to be created.
+     * @param string|Query $subquery the select statement which defines the view.
+     * This can be either a string or a [[Query]] object.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function createView($viewName, $subquery)
+    {
+        $sql = $this->db->getQueryBuilder()->createView($viewName, $subquery);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($viewName);
+    }
+    
+    /**
+     * Drops a SQL View.
+     *
+     * @param string $viewName the name of the view to be dropped.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function dropView($viewName)
+    {
+        $sql = $this->db->getQueryBuilder()->dropView($viewName);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($viewName);
     }
 
     /**
@@ -956,7 +1031,7 @@ class Command extends Component
         try {
             $profile and Yii::beginProfile($rawSql, __METHOD__);
 
-            $this->pdoStatement->execute();
+            $this->internalExecute($rawSql);
             $n = $this->pdoStatement->rowCount();
 
             $profile and Yii::endProfile($rawSql, __METHOD__);
@@ -964,9 +1039,9 @@ class Command extends Component
             $this->refreshTableSchema();
 
             return $n;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $profile and Yii::endProfile($rawSql, __METHOD__);
-            throw $this->db->getSchema()->convertException($e, $rawSql ?: $this->getRawSql());
+            throw $e;
         }
     }
 
@@ -1029,7 +1104,7 @@ class Command extends Component
         try {
             $profile and Yii::beginProfile($rawSql, 'yii\db\Command::query');
 
-            $this->pdoStatement->execute();
+            $this->internalExecute($rawSql);
 
             if ($method === '') {
                 $result = new DataReader($this);
@@ -1042,9 +1117,9 @@ class Command extends Component
             }
 
             $profile and Yii::endProfile($rawSql, 'yii\db\Command::query');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $profile and Yii::endProfile($rawSql, 'yii\db\Command::query');
-            throw $this->db->getSchema()->convertException($e, $rawSql ?: $this->getRawSql());
+            throw $e;
         }
 
         if (isset($cache, $cacheKey, $info)) {
@@ -1068,7 +1143,7 @@ class Command extends Component
     }
 
     /**
-     * Refreshes table schema, which was marked by [[requireTableSchemaRefresh()]]
+     * Refreshes table schema, which was marked by [[requireTableSchemaRefresh()]].
      * @since 2.0.6
      */
     protected function refreshTableSchema()
@@ -1076,5 +1151,94 @@ class Command extends Component
         if ($this->_refreshTableName !== null) {
             $this->db->getSchema()->refreshTableSchema($this->_refreshTableName);
         }
+    }
+
+    /**
+     * Marks the command to be executed in transaction.
+     * @param string|null $isolationLevel The isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
+     * @return $this this command instance.
+     * @since 2.0.14
+     */
+    protected function requireTransaction($isolationLevel = null)
+    {
+        $this->_isolationLevel = $isolationLevel;
+        return $this;
+    }
+
+    /**
+     * Sets a callable (e.g. anonymous function) that is called when [[Exception]] is thrown
+     * when executing the command. The signature of the callable should be:
+     *
+     * ```php
+     * function (\yii\db\Exception $e, $attempt)
+     * {
+     *     // return true or false (whether to retry the command or rethrow $e)
+     * }
+     * ```
+     *
+     * The callable will recieve a database exception thrown and a current attempt
+     * (to execute the command) number starting from 1.
+     *
+     * @param callable $handler a PHP callback to handle database exceptions.
+     * @return $this this command instance.
+     * @since 2.0.14
+     */
+    protected function setRetryHandler(callable $handler)
+    {
+        $this->_retryHandler = $handler;
+        return $this;
+    }
+
+    /**
+     * Executes a prepared statement.
+     *
+     * It's a wrapper around [[\PDOStatement::execute()]] to support transactions
+     * and retry handlers.
+     *
+     * @param string|null $rawSql the rawSql if it has been created.
+     * @throws Exception if execution failed.
+     * @since 2.0.14
+     */
+    protected function internalExecute($rawSql)
+    {
+        $attempt = 0;
+        while (true) {
+            try {
+                if (
+                    ++$attempt === 1
+                    && $this->_isolationLevel !== false
+                    && $this->db->getTransaction() === null
+                ) {
+                    $this->db->transaction(function () use ($rawSql) {
+                        $this->internalExecute($rawSql);
+                    }, $this->_isolationLevel);
+                } else {
+                    $this->pdoStatement->execute();
+                }
+                break;
+            } catch (\Exception $e) {
+                $rawSql = $rawSql ?: $this->getRawSql();
+                $e = $this->db->getSchema()->convertException($e, $rawSql);
+                if ($this->_retryHandler === null || !call_user_func($this->_retryHandler, $e, $attempt)) {
+                    throw $e;
+                }
+            }
+        }
+    }
+
+    /**
+     * Resets command properties to their initial state.
+     *
+     * @since 2.0.13
+     */
+    protected function reset()
+    {
+        $this->_sql = null;
+        $this->_pendingParams = [];
+        $this->params = [];
+        $this->_refreshTableName = null;
+        $this->_isolationLevel = false;
+        $this->_retryHandler = null;
     }
 }

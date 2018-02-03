@@ -26,7 +26,7 @@ class ErrorActionTest extends TestCase
     }
 
     /**
-     * Creates a controller instance
+     * Creates a controller instance.
      *
      * @param array $actionConfig
      * @return TestController

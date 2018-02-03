@@ -190,6 +190,7 @@ class Schema extends \yii\db\Schema
                 'onUpdate' => isset($actionTypes[$foreignKey[0]['UPDATE_RULE']]) ? $actionTypes[$foreignKey[0]['UPDATE_RULE']] : null,
             ]);
         }
+
         return $result;
     }
 
@@ -228,7 +229,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function releaseSavepoint($name)
     {
@@ -359,7 +360,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @see http://www.cubrid.org/manual/91/en/sql/transaction.html#database-concurrency
      */
     public function setTransactionIsolationLevel($level)
@@ -383,7 +384,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
@@ -427,6 +428,7 @@ class Schema extends \yii\db\Schema
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

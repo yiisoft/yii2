@@ -67,6 +67,7 @@ class Schema extends \yii\db\Schema
         'enum' => self::TYPE_STRING,
     ];
 
+
     /**
      * @inheritDoc
      */
@@ -120,6 +121,7 @@ class Schema extends \yii\db\Schema
                 'onUpdate' => isset($foreignKey[0]['on_update']) ? $foreignKey[0]['on_update'] : null,
             ]);
         }
+
         return $result;
     }
 
@@ -174,6 +176,7 @@ class Schema extends \yii\db\Schema
                 'expression' => $checkSql,
             ]);
         }
+
         return $result;
     }
 
@@ -219,7 +222,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @return ColumnSchemaBuilder column schema builder instance
      */
     public function createColumnSchemaBuilder($type, $length = null)
@@ -276,6 +279,7 @@ class Schema extends \yii\db\Schema
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -399,6 +403,16 @@ class Schema extends \yii\db\Schema
     {
         $indexes = $this->db->createCommand('PRAGMA INDEX_LIST (' . $this->quoteValue($tableName) . ')')->queryAll();
         $indexes = $this->normalizePdoRowKeyCase($indexes, true);
+        $tableColumns = null;
+        if (!empty($indexes) && !isset($indexes[0]['origin'])) {
+            /*
+             * SQLite may not have an "origin" column in INDEX_LIST
+             * See https://www.sqlite.org/src/info/2743846cdba572f6
+             */
+            $tableColumns = $this->db->createCommand('PRAGMA TABLE_INFO (' . $this->quoteValue($tableName) . ')')->queryAll();
+            $tableColumns = $this->normalizePdoRowKeyCase($tableColumns, true);
+            $tableColumns = ArrayHelper::index($tableColumns, 'cid');
+        }
         $result = [
             'primaryKey' => null,
             'indexes' => [],
@@ -408,6 +422,15 @@ class Schema extends \yii\db\Schema
             $columns = $this->db->createCommand('PRAGMA INDEX_INFO (' . $this->quoteValue($index['name']) . ')')->queryAll();
             $columns = $this->normalizePdoRowKeyCase($columns, true);
             ArrayHelper::multisort($columns, 'seqno', SORT_ASC, SORT_NUMERIC);
+            if ($tableColumns !== null) {
+                // SQLite may not have an "origin" column in INDEX_LIST
+                $index['origin'] = 'c';
+                if (!empty($columns) && $tableColumns[$columns[0]['cid']]['pk'] > 0) {
+                    $index['origin'] = 'pk';
+                } elseif ($index['unique'] && $this->isSystemIdentifier($index['name'])) {
+                    $index['origin'] = 'u';
+                }
+            }
             $result['indexes'][] = new IndexConstraint([
                 'isPrimary' => $index['origin'] === 'pk',
                 'isUnique' => (bool) $index['unique'],
@@ -428,6 +451,18 @@ class Schema extends \yii\db\Schema
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
+    }
+
+    /**
+     * Return whether the specified identifier is a SQLite system identifier.
+     * @param string $identifier
+     * @return bool
+     * @see https://www.sqlite.org/src/artifact/74108007d286232f
+     */
+    private function isSystemIdentifier($identifier)
+    {
+        return strpos($identifier, 'sqlite_') === 0;
     }
 }

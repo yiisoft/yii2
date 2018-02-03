@@ -266,6 +266,7 @@ class Module extends ServiceLocator
         if ($this->_viewPath === null) {
             $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
         }
+
         return $this->_viewPath;
     }
 
@@ -317,6 +318,7 @@ class Module extends ServiceLocator
                 $this->_version = call_user_func($this->_version, $this);
             }
         }
+
         return $this->_version;
     }
 
@@ -350,6 +352,7 @@ class Module extends ServiceLocator
         if ($this->module === null) {
             return '1.0';
         }
+
         return $this->module->getVersion();
     }
 
@@ -393,6 +396,7 @@ class Module extends ServiceLocator
 
             return $module === null ? false : $module->hasModule(substr($id, $pos + 1));
         }
+
         return isset($this->_modules[$id]);
     }
 
@@ -468,6 +472,7 @@ class Module extends ServiceLocator
 
             return $modules;
         }
+
         return $this->_modules;
     }
 
@@ -621,14 +626,13 @@ class Module extends ServiceLocator
             $className = substr($id, $pos + 1);
         }
 
-        if (!preg_match('%^[a-z][a-z0-9\\-_]*$%', $className)) {
-            return null;
-        }
-        if ($prefix !== '' && !preg_match('%^[a-z0-9_/]+$%i', $prefix)) {
+        if ($this->isIncorrectClassNameOrPrefix($className, $prefix)) {
             return null;
         }
 
-        $className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';
+        $className = preg_replace_callback('%-([a-z0-9_])%i', function ($matches) {
+                return ucfirst($matches[1]);
+            }, ucfirst($className)) . 'Controller';
         $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {
             return null;
@@ -640,7 +644,25 @@ class Module extends ServiceLocator
         } elseif (YII_DEBUG) {
             throw new InvalidConfigException('Controller class must extend from \\yii\\base\\Controller.');
         }
+
         return null;
+    }
+
+    /**
+     * @param string $className
+     * @param string $prefix
+     * @return bool
+     */
+    private function isIncorrectClassNameOrPrefix($className, $prefix)
+    {
+        if (!preg_match('%^[a-z][a-z0-9\\-_]*$%', $className)) {
+            return true;
+        }
+        if ($prefix !== '' && !preg_match('%^[a-z0-9_/]+$%i', $prefix)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -704,5 +726,35 @@ class Module extends ServiceLocator
         $event->result = $result;
         $this->trigger(self::EVENT_AFTER_ACTION, $event);
         return $event->result;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Since version 2.0.13, if a component isn't defined in the module, it will be looked up in the parent module.
+     * The parent module may be the application.
+     */
+    public function get($id, $throwException = true)
+    {
+        if (!isset($this->module)) {
+            return parent::get($id, $throwException);
+        }
+
+        $component = parent::get($id, false);
+        if ($component === null) {
+            $component = $this->module->get($id, $throwException);
+        }
+        return $component;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Since version 2.0.13, if a component isn't defined in the module, it will be looked up in the parent module.
+     * The parent module may be the application.
+     */
+    public function has($id, $checkInstance = false)
+    {
+        return parent::has($id, $checkInstance) || (isset($this->module) && $this->module->has($id, $checkInstance));
     }
 }

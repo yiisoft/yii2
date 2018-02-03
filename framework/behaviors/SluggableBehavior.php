@@ -124,7 +124,7 @@ class SluggableBehavior extends AttributeBehavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -140,25 +140,23 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getValue($event)
     {
-        if ($this->attribute !== null) {
-            if ($this->isNewSlugNeeded()) {
-                $slugParts = [];
-                foreach ((array) $this->attribute as $attribute) {
-                    $part = ArrayHelper::getValue($this->owner, $attribute);
-                    if ($this->skipOnEmpty && $this->isEmpty($part)) {
-                        return $this->owner->{$this->slugAttribute};
-                    }
-                    $slugParts[] = $part;
-                }
-                $slug = $this->generateSlug($slugParts);
-            } else {
-                return $this->owner->{$this->slugAttribute};
-            }
+        if (!$this->isNewSlugNeeded()) {
+            return $this->owner->{$this->slugAttribute};
+        }
 
+        if ($this->attribute !== null) {
+            $slugParts = [];
+            foreach ((array) $this->attribute as $attribute) {
+                $part = ArrayHelper::getValue($this->owner, $attribute);
+                if ($this->skipOnEmpty && $this->isEmpty($part)) {
+                    return $this->owner->{$this->slugAttribute};
+                }
+                $slugParts[] = $part;
+            }
             $slug = $this->generateSlug($slugParts);
         } else {
             $slug = parent::getValue($event);
@@ -227,6 +225,7 @@ class SluggableBehavior extends AttributeBehavior
             $iteration++;
             $uniqueSlug = $this->generateUniqueSlug($slug, $iteration);
         }
+
         return $uniqueSlug;
     }
 
@@ -266,6 +265,7 @@ class SluggableBehavior extends AttributeBehavior
         if (is_callable($this->uniqueSlugGenerator)) {
             return call_user_func($this->uniqueSlugGenerator, $baseSlug, $iteration, $this->owner);
         }
+
         return $baseSlug . '-' . ($iteration + 1);
     }
 

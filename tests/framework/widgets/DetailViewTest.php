@@ -314,10 +314,30 @@ class DetailViewTest extends \yiiunit\TestCase
             $this->assertEquals($expectedValue, $a);
         }
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15536
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        $model = new ModelMock();
+        $model->id = 1;
+        $model->text = 'I`m an object';
+
+        $this->detailView = new DetailView([
+            'model' => $model,
+            'on init' => function () use (&$initTriggered) {
+                $initTriggered = true;
+            }
+        ]);
+
+        $this->assertTrue($initTriggered);
+    }
 }
 
 /**
- * Helper Class
+ * Helper Class.
  */
 class ArrayableMock implements Arrayable
 {
@@ -329,7 +349,7 @@ class ArrayableMock implements Arrayable
 }
 
 /**
- * Helper Class
+ * Helper Class.
  */
 class ModelMock extends Model
 {
@@ -363,17 +383,17 @@ class ModelMock extends Model
 }
 
 /**
- * Used for testing attributes containing non-English characters
+ * Used for testing attributes containing non-English characters.
  */
 class UnicodeAttributesModelMock extends Model
 {
     /**
-     * Product's ID (Russian)
+     * Product's ID (Russian).
      * @var mixed
      */
     public $ИдентификаторТовара;
     /**
-     * ID (Greek)
+     * ID (Greek).
      * @var mixed
      */
     public $το_αναγνωριστικό_του;

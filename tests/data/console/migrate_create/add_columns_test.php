@@ -16,9 +16,9 @@ use yii\db\Migration;
 class {$class} extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function up()
+    public function safeUp()
     {
         \$this->addColumn('{table}', 'title', \$this->string(10)->notNull());
         \$this->addColumn('{table}', 'body', \$this->text()->notNull());
@@ -27,9 +27,9 @@ class {$class} extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function down()
+    public function safeDown()
     {
         \$this->dropColumn('{table}', 'title');
         \$this->dropColumn('{table}', 'body');

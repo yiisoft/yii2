@@ -56,25 +56,25 @@ class loader.)
 Component and Object
 --------------------
 
-Yii 2.0 breaks the `CComponent` class in 1.1 into two classes: [[yii\base\Object]] and [[yii\base\Component]].
-The [[yii\base\Object|Object]] class is a lightweight base class that allows defining [object properties](concept-properties.md)
-via getters and setters. The [[yii\base\Component|Component]] class extends from [[yii\base\Object|Object]] and supports
+Yii 2.0 breaks the `CComponent` class in 1.1 into two classes: [[yii\base\BaseObject]] and [[yii\base\Component]].
+The [[yii\base\BaseObject|BaseObject]] class is a lightweight base class that allows defining [object properties](concept-properties.md)
+via getters and setters. The [[yii\base\Component|Component]] class extends from [[yii\base\BaseObject|BaseObject]] and supports
 [events](concept-events.md) and [behaviors](concept-behaviors.md).
 
 If your class does not need the event or behavior feature, you should consider using
-[[yii\base\Object|Object]] as the base class. This is usually the case for classes that represent basic
+[[yii\base\BaseObject|BaseObject]] as the base class. This is usually the case for classes that represent basic
 data structures.
 
 
 Object Configuration
 --------------------
 
-The [[yii\base\Object|Object]] class introduces a uniform way of configuring objects. Any descendant class
-of [[yii\base\Object|Object]] should declare its constructor (if needed) in the following way so that
+The [[yii\base\BaseObject|BaseObject]] class introduces a uniform way of configuring objects. Any descendant class
+of [[yii\base\BaseObject|BaseObject]] should declare its constructor (if needed) in the following way so that
 it can be properly configured:
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -94,7 +94,7 @@ class MyClass extends \yii\base\Object
 
 In the above, the last parameter of the constructor must take a configuration array
 that contains name-value pairs for initializing the properties at the end of the constructor.
-You can override the [[yii\base\Object::init()|init()]] method to do initialization work that should be done after
+You can override the [[yii\base\BaseObject::init()|init()]] method to do initialization work that should be done after
 the configuration has been applied.
 
 By following this convention, you will be able to create and configure new objects

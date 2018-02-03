@@ -101,6 +101,7 @@ class ActionFilterTest extends TestCase
 
     /**
      * @dataProvider actionFilterProvider
+     * @param string|array $filterClass
      */
     public function testActive($filterClass)
     {
@@ -115,23 +116,23 @@ class ActionFilterTest extends TestCase
         $controller = new \yii\web\Controller('test', Yii::$app);
 
         // active by default
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index'];
         $filter->except = [];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only = ['index', 'view'];
         $filter->except = ['view'];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
 
         $filter->only;
         $filter->except = ['view'];
-        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
-        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
     }
 
     /**
@@ -179,7 +180,7 @@ class FakeController extends Controller
 class Filter1 extends ActionFilter
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -188,7 +189,7 @@ class Filter1 extends ActionFilter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterAction($action, $result)
     {
@@ -199,7 +200,7 @@ class Filter1 extends ActionFilter
 class Filter2 extends ActionFilter
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -208,7 +209,7 @@ class Filter2 extends ActionFilter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterAction($action, $result)
     {
@@ -219,7 +220,7 @@ class Filter2 extends ActionFilter
 class Filter3 extends ActionFilter
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -228,7 +229,7 @@ class Filter3 extends ActionFilter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterAction($action, $result)
     {

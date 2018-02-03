@@ -104,11 +104,12 @@ class DbMessageControllerTest extends BaseMessageControllerTest
             }
             static::$db = $db;
         }
+
         return static::$db;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getDefaultConfig()
     {
@@ -122,7 +123,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function saveMessages($messages, $category)
     {
@@ -144,7 +145,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function loadMessages($category)
     {

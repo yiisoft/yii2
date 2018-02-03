@@ -7,9 +7,9 @@
 
 namespace yiiunit\framework\web;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Post extends Object
+class Post extends BaseObject
 {
     public $id;
     public $title;

@@ -27,7 +27,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection = $this->getConnection(false, false);
 
         $this->assertFalse($connection->isActive);
-        $this->assertEquals(null, $connection->pdo);
+        $this->assertNull($connection->pdo);
 
         $connection->open();
         $this->assertTrue($connection->isActive);
@@ -35,7 +35,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $connection->close();
         $this->assertFalse($connection->isActive);
-        $this->assertEquals(null, $connection->pdo);
+        $this->assertNull($connection->pdo);
 
         $connection = new Connection();
         $connection->dsn = 'unknown::memory:';
@@ -48,8 +48,12 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection = $this->getConnection(false, false);
         $connection->open();
         $serialized = serialize($connection);
+
+        $this->assertNotNull($connection->pdo);
+
         $unserialized = unserialize($serialized);
         $this->assertInstanceOf('yii\db\Connection', $unserialized);
+        $this->assertNull($unserialized->pdo);
 
         $this->assertEquals(123, $unserialized->createCommand('SELECT 123')->queryScalar());
     }
@@ -386,5 +390,32 @@ abstract class ConnectionTest extends DatabaseTestCase
         } else {
             $this->assertNull($conn3->pdo);
         }
+    }
+
+
+    /**
+     * Test whether slave connection is recovered when call getSlavePdo() after close().
+     *
+     * @see https://github.com/yiisoft/yii2/issues/14165
+     */
+    public function testGetPdoAfterClose()
+    {
+        $connection = $this->getConnection();
+        $connection->slaves[] = [
+            'dsn' => $connection->dsn,
+            'username' => $connection->username,
+            'password' => $connection->password,
+        ];
+        $this->assertNotNull($connection->getSlavePdo(false));
+        $connection->close();
+
+        $masterPdo = $connection->getMasterPdo();
+        $this->assertNotFalse($masterPdo);
+        $this->assertNotNull($masterPdo);
+
+        $slavePdo = $connection->getSlavePdo(false);
+        $this->assertNotFalse($slavePdo);
+        $this->assertNotNull($slavePdo);
+        $this->assertNotSame($masterPdo, $slavePdo);
     }
 }

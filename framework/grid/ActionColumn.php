@@ -34,7 +34,7 @@ use yii\helpers\Url;
 class ActionColumn extends Column
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $headerOptions = ['class' => 'action-column'];
     /**
@@ -129,7 +129,7 @@ class ActionColumn extends Column
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -151,7 +151,7 @@ class ActionColumn extends Column
     }
 
     /**
-     * Initializes the default button rendering callback for single button
+     * Initializes the default button rendering callback for single button.
      * @param string $name Button name as it's written in template
      * @param string $iconName The part of Bootstrap glyphicon class that makes it unique
      * @param array $additionalOptions Array of additional options
@@ -207,7 +207,7 @@ class ActionColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderDataCellContent($model, $key, $index)
     {

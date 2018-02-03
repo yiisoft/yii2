@@ -172,6 +172,7 @@ class DbSession extends MultiFieldSession
                 ->createCommand($this->db)
                 ->queryScalar();
             $fields = $this->composeFields($id, $data);
+            $fields = $this->typecastFields($fields);
             if ($exists === false) {
                 $this->db->createCommand()
                     ->insert($this->sessionTable, $fields)
@@ -183,12 +184,7 @@ class DbSession extends MultiFieldSession
                     ->execute();
             }
         } catch (\Exception $e) {
-            $exception = ErrorHandler::convertExceptionToString($e);
-            // its too late to use Yii logging here
-            error_log($exception);
-            if (YII_DEBUG) {
-                echo $exception;
-            }
+            Yii::$app->errorHandler->handleException($e);
             return false;
         }
 
@@ -223,5 +219,23 @@ class DbSession extends MultiFieldSession
             ->execute();
 
         return true;
+    }
+
+    /**
+     * Method typecasts $fields before passing them to PDO.
+     * Default implementation casts field `data` to `\PDO::PARAM_LOB`.
+     * You can override this method in case you need special type casting.
+     *
+     * @param array $fields Fields, that will be passed to PDO. Key - name, Value - value
+     * @return array
+     * @since 2.0.13
+     */
+    protected function typecastFields($fields)
+    {
+        if (isset($fields['data']) && !is_array($fields['data'])) {
+            $fields['data'] = [$fields['data'], \PDO::PARAM_LOB];
+        }
+
+        return $fields;
     }
 }

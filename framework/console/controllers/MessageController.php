@@ -9,6 +9,7 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -153,7 +154,7 @@ class MessageController extends \yii\console\Controller
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
@@ -180,7 +181,7 @@ class MessageController extends \yii\console\Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function optionAliases()
@@ -204,7 +205,7 @@ class MessageController extends \yii\console\Controller
     }
 
     /**
-     * Creates a configuration file for the "extract" command using command line options specified
+     * Creates a configuration file for the "extract" command using command line options specified.
      *
      * The generated configuration file contains parameters required
      * for source code messages extraction.
@@ -219,7 +220,7 @@ class MessageController extends \yii\console\Controller
         $filePath = Yii::getAlias($filePath);
         if (file_exists($filePath)) {
             if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
         }
 
@@ -240,13 +241,13 @@ return $array;
 
 EOD;
 
-        if (file_put_contents($filePath, $content) === false) {
+        if (file_put_contents($filePath, $content, LOCK_EX) === false) {
             $this->stdout("Configuration file was NOT created: '{$filePath}'.\n\n", Console::FG_RED);
-            return self::EXIT_CODE_ERROR;
+            return ExitCode::UNSPECIFIED_ERROR;
         }
 
         $this->stdout("Configuration file created: '{$filePath}'.\n\n", Console::FG_GREEN);
-        return self::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 
     /**
@@ -266,17 +267,17 @@ EOD;
 
         if (file_exists($filePath)) {
             if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
         }
 
         if (!copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath)) {
             $this->stdout("Configuration file template was NOT created at '{$filePath}'.\n\n", Console::FG_RED);
-            return self::EXIT_CODE_ERROR;
+            return ExitCode::UNSPECIFIED_ERROR;
         }
 
         $this->stdout("Configuration file template created at '{$filePath}'.\n\n", Console::FG_GREEN);
-        return self::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 
     /**
@@ -335,7 +336,7 @@ EOD;
     }
 
     /**
-     * Saves messages to database
+     * Saves messages to database.
      *
      * @param array $messages
      * @param Connection $db
@@ -457,7 +458,7 @@ EOD;
     }
 
     /**
-     * Extracts messages from a file
+     * Extracts messages from a file.
      *
      * @param string $fileName name of the file to extract messages from
      * @param string $translator name of the function used to translate messages
@@ -571,6 +572,7 @@ EOD;
 
     /**
      * The method checks, whether the $category is ignored according to $ignoreCategories array.
+     *
      * Examples:
      *
      * - `myapp` - will be ignored only `myapp` category;
@@ -598,7 +600,7 @@ EOD;
     }
 
     /**
-     * Finds out if two PHP tokens are equal
+     * Finds out if two PHP tokens are equal.
      *
      * @param array|string $a
      * @param array|string $b
@@ -613,11 +615,12 @@ EOD;
         if (isset($a[0], $a[1], $b[0], $b[1])) {
             return $a[0] === $b[0] && $a[1] == $b[1];
         }
+
         return false;
     }
 
     /**
-     * Finds out a line of the first non-char PHP token found
+     * Finds out a line of the first non-char PHP token found.
      *
      * @param array $tokens
      * @return int|string
@@ -630,11 +633,12 @@ EOD;
                 return $token[2];
             }
         }
+
         return 'unknown';
     }
 
     /**
-     * Writes messages into PHP files
+     * Writes messages into PHP files.
      *
      * @param array $messages
      * @param string $dirName name of the directory to write to
@@ -657,7 +661,7 @@ EOD;
     }
 
     /**
-     * Writes category messages into PHP file
+     * Writes category messages into PHP file.
      *
      * @param array $messages
      * @param string $fileName name of the file to write to
@@ -677,7 +681,7 @@ EOD;
             ksort($existingMessages);
             if (array_keys($existingMessages) === $messages && (!$sort || array_keys($rawExistingMessages) === $messages)) {
                 $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n", Console::FG_GREEN);
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
             unset($rawExistingMessages);
             $merged = [];
@@ -698,7 +702,7 @@ EOD;
             ksort($existingMessages);
             foreach ($existingMessages as $message => $translation) {
                 if (!$removeUnused && !isset($merged[$message]) && !isset($todo[$message])) {
-                    if (!empty($translation) && (!$markUnused || (strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2, 2) === 0))) {
+                    if (!$markUnused || (!empty($translation) && (strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2, 2) === 0))) {
                         $todo[$message] = $translation;
                     } else {
                         $todo[$message] = '@@' . $translation . '@@';
@@ -729,17 +733,17 @@ return $array;
 
 EOD;
 
-        if (file_put_contents($fileName, $content) === false) {
+        if (file_put_contents($fileName, $content, LOCK_EX) === false) {
             $this->stdout("Translation was NOT saved.\n\n", Console::FG_RED);
-            return self::EXIT_CODE_ERROR;
+            return ExitCode::UNSPECIFIED_ERROR;
         }
 
         $this->stdout("Translation saved.\n\n", Console::FG_GREEN);
-        return self::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 
     /**
-     * Writes messages into PO file
+     * Writes messages into PO file.
      *
      * @param array $messages
      * @param string $dirName name of the directory to write to
@@ -800,7 +804,7 @@ EOD;
                 // add obsolete unused messages
                 foreach ($existingMessages as $message => $translation) {
                     if (!$removeUnused && !isset($merged[$category . chr(4) . $message]) && !isset($todos[$category . chr(4) . $message])) {
-                        if (!empty($translation) && (!$markUnused || (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@'))) {
+                        if (!$markUnused || (!empty($translation) && ((substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@')))) {
                             $todos[$category . chr(4) . $message] = $translation;
                         } else {
                             $todos[$category . chr(4) . $message] = '@@' . $translation . '@@';
@@ -835,7 +839,7 @@ EOD;
     }
 
     /**
-     * Writes messages into POT file
+     * Writes messages into POT file.
      *
      * @param array $messages
      * @param string $dirName name of the directory to write to

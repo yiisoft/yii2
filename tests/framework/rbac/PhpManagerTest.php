@@ -9,6 +9,7 @@ namespace yii\rbac;
 
 /**
  * Mock for the filemtime() function for rbac classes. Avoid random test fails.
+ * @param string $file
  * @return int
  */
 function filemtime($file)
@@ -61,7 +62,7 @@ class PhpManagerTest extends ManagerTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function createManager()
     {

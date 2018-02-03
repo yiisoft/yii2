@@ -79,7 +79,7 @@ All Rights Reserved.
 * [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
 * [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ru/README.md)
-* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
+* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide-ru/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ru/README.md)
 * [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
 
@@ -175,6 +175,7 @@ All Rights Reserved.
 * [Окружение виртуального хостинга](tutorial-shared-hosting.md)
 * [Шаблонизаторы](tutorial-template-engines.md)
 * [Работа со сторонним кодом](tutorial-yii-integration.md)
+* [Использование Yii в качестве микро-framework'а](tutorial-yii-as-micro-framework.md)
 
 
 Виджеты

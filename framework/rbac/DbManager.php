@@ -115,12 +115,19 @@ class DbManager extends BaseManager
         }
     }
 
+    private $_checkAccessAssignments = [];
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
-        $assignments = $this->getAssignments($userId);
+        if (isset($this->_checkAccessAssignments[(string) $userId])) {
+            $assignments = $this->_checkAccessAssignments[(string) $userId];
+        } else {
+            $assignments = $this->getAssignments($userId);
+            $this->_checkAccessAssignments[(string) $userId] = $assignments;
+        }
 
         if ($this->hasNoAssignments($assignments)) {
             return false;
@@ -219,7 +226,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getItem($name)
     {
@@ -253,7 +260,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function addItem($item)
     {
@@ -281,7 +288,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function removeItem($item)
     {
@@ -304,7 +311,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function updateItem($name, $item)
     {
@@ -339,7 +346,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function addRule($rule)
     {
@@ -364,7 +371,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function updateRule($name, $rule)
     {
@@ -391,7 +398,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function removeRule($rule)
     {
@@ -411,7 +418,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getItems($type)
     {
@@ -428,7 +435,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Populates an auth item with the data fetched from database
+     * Populates an auth item with the data fetched from database.
      * @param array $row the data from the auth item table
      * @return Item the populated auth item instance (either Role or Permission)
      */
@@ -452,12 +459,12 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * The roles returned by this method include the roles assigned via [[$defaultRoles]].
      */
     public function getRolesByUser($userId)
     {
-        if (!isset($userId) || $userId === '') {
+        if ($this->isEmptyUserId($userId)) {
             return [];
         }
 
@@ -471,11 +478,12 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $roles[$row['name']] = $this->populateItem($row);
         }
+
         return $roles;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getChildRoles($roleName)
     {
@@ -498,7 +506,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermissionsByRole($roleName)
     {
@@ -516,15 +524,16 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermissionsByUser($userId)
     {
-        if (empty($userId)) {
+        if ($this->isEmptyUserId($userId)) {
             return [];
         }
 
@@ -552,6 +561,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
@@ -585,6 +595,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
@@ -600,6 +611,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $parents[$row['parent']][] = $row['child'];
         }
+
         return $parents;
     }
 
@@ -620,7 +632,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRule($name)
     {
@@ -639,11 +651,12 @@ class DbManager extends BaseManager
         if (is_resource($data)) {
             $data = stream_get_contents($data);
         }
+
         return unserialize($data);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRules()
     {
@@ -666,11 +679,11 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getAssignment($roleName, $userId)
     {
-        if (empty($userId)) {
+        if ($this->isEmptyUserId($userId)) {
             return null;
         }
 
@@ -690,11 +703,11 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getAssignments($userId)
     {
-        if (empty($userId)) {
+        if ($this->isEmptyUserId($userId)) {
             return [];
         }
 
@@ -715,7 +728,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function canAddChild($parent, $child)
@@ -724,7 +737,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function addChild($parent, $child)
     {
@@ -750,7 +763,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeChild($parent, $child)
     {
@@ -764,7 +777,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeChildren($parent)
     {
@@ -778,7 +791,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function hasChild($parent, $child)
     {
@@ -789,7 +802,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getChildren($name)
     {
@@ -822,11 +835,12 @@ class DbManager extends BaseManager
                 return true;
             }
         }
+
         return false;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function assign($role, $userId)
     {
@@ -843,39 +857,42 @@ class DbManager extends BaseManager
                 'created_at' => $assignment->createdAt,
             ])->execute();
 
+        unset($this->_checkAccessAssignments[(string) $userId]);
         return $assignment;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function revoke($role, $userId)
     {
-        if (empty($userId)) {
+        if ($this->isEmptyUserId($userId)) {
             return false;
         }
 
+        unset($this->_checkAccessAssignments[(string) $userId]);
         return $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
             ->execute() > 0;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function revokeAll($userId)
     {
-        if (empty($userId)) {
+        if ($this->isEmptyUserId($userId)) {
             return false;
         }
 
+        unset($this->_checkAccessAssignments[(string) $userId]);
         return $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId])
             ->execute() > 0;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeAll()
     {
@@ -887,7 +904,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeAllPermissions()
     {
@@ -895,7 +912,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeAllRoles()
     {
@@ -933,7 +950,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeAllRules()
     {
@@ -949,10 +966,11 @@ class DbManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeAllAssignments()
     {
+        $this->_checkAccessAssignments = [];
         $this->db->createCommand()->delete($this->assignmentTable)->execute();
     }
 
@@ -964,6 +982,7 @@ class DbManager extends BaseManager
             $this->rules = null;
             $this->parents = null;
         }
+        $this->_checkAccessAssignments = [];
     }
 
     public function loadFromCache()
@@ -1021,5 +1040,15 @@ class DbManager extends BaseManager
         return (new Query())->select('[[user_id]]')
             ->from($this->assignmentTable)
             ->where(['item_name' => $roleName])->column($this->db);
+    }
+
+    /**
+     * Check whether $userId is empty.
+     * @param mixed $userId
+     * @return bool
+     */
+    private function isEmptyUserId($userId)
+    {
+        return !isset($userId) || $userId === '';
     }
 }

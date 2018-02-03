@@ -7,8 +7,7 @@
 
 namespace yii\test;
 
-use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\di\Instance;
 
@@ -34,11 +33,11 @@ abstract class DbFixture extends Fixture
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Object::className());
+        $this->db = Instance::ensure($this->db, BaseObject::className());
     }
 }

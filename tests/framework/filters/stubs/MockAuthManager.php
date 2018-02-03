@@ -12,8 +12,8 @@ use yii\rbac\PhpManager;
 class MockAuthManager extends PhpManager
 {
     /**
-     * This mock does not persist
-     * @inheritdoc
+     * This mock does not persist.
+     * {@inheritdoc}
      */
     protected function saveToFile($data, $file)
     {

@@ -19,7 +19,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
     protected $driverName = 'mysql';
 
     /**
-     * Tests MySQL specific syntax for index hints
+     * Tests MySQL specific syntax for index hints.
      */
     public function testQueryIndexHint()
     {

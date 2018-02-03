@@ -11,7 +11,7 @@ use yii\helpers\Markdown;
 use yiiunit\TestCase;
 
 /**
- * Description of MarkdownTest
+ * Description of MarkdownTest.
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @group helpers

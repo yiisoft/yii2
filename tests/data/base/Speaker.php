@@ -10,7 +10,7 @@ namespace yiiunit\data\base;
 use yii\base\Model;
 
 /**
- * Speaker
+ * Speaker.
  */
 class Speaker extends Model
 {
@@ -46,6 +46,7 @@ class Speaker extends Model
     {
         return [
             'test' => ['firstName', 'lastName', '!underscore_style'],
+            'duplicates' => ['firstName', 'firstName', '!underscore_style', '!underscore_style'],
         ];
     }
 }

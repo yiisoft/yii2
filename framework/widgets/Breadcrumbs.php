@@ -175,6 +175,7 @@ class Breadcrumbs extends Widget
         } else {
             $link = $label;
         }
+
         return strtr($template, ['{link}' => $link]);
     }
 }
