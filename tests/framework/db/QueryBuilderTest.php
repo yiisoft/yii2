@@ -1067,7 +1067,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['or', 'type=1', ['or', 'id=1', 'id=2']], '(type=1) OR ((id=1) OR (id=2))', []],
             [['or', 'type=1', new Expression('id=:qp0', [':qp0' => 1])], '(type=1) OR (id=:qp0)', [':qp0' => 1]],
 
-
             // between
             [['between', 'id', 1, 10], '[[id]] BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10]],
             [['not between', 'id', 1, 10], '[[id]] NOT BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10]],
@@ -1075,6 +1074,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), 123], '[[date]] BETWEEN (NOW() - INTERVAL 1 MONTH) AND :qp0', [':qp0' => 123]],
             [['not between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), new Expression('NOW()')], '[[date]] NOT BETWEEN (NOW() - INTERVAL 1 MONTH) AND NOW()', []],
             [['not between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), 123], '[[date]] NOT BETWEEN (NOW() - INTERVAL 1 MONTH) AND :qp0', [':qp0' => 123]],
+            [['between', ['id', 'type'], 3], ':qp0 BETWEEN [[id]] AND [[type]]', [':qp0' => 3]],
+            [['between', ['id', 'type'], new Expression('column1')], 'column1 BETWEEN [[id]] AND [[type]]', []],
+            [['between', [new Expression(-120), 'type'], new Expression('column1')], 'column1 BETWEEN -120 AND [[type]]', []],
+            [['between', [new Expression(-120), 'type'], '-9999'], ':qp0 BETWEEN -120 AND [[type]]', [':qp0' => -9999]],
 
             // in
             [['in', 'id', [1, 2, 3]], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
