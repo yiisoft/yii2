@@ -13,7 +13,7 @@ use yiiunit\TestCase;
 /**
  * @group i18n
  */
-class FormatterNumberTest extends TestCase
+class LocaleTest extends TestCase
 {
     /**
      * @var Locale
