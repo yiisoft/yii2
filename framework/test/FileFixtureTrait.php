@@ -13,13 +13,13 @@ use yii\base\InvalidConfigException;
  * FileFixtureTrait provides functionalities for loading data fixture from file.
  *
  * @author Leandro Guindani Gehlen <leandrogehlen@gmail.com>
- * @since 2.0.15
+ * @since 2.0.14
  */
 trait FileFixtureTrait
 {
     /**
      * @var string the directory path or [path alias](guide:concept-aliases) that contains the fixture data
-     * @since 2.0.15
+     * @since 2.0.14
      */
     public $dataDirectory;
     /**
