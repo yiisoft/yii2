@@ -1194,6 +1194,6 @@ PATTERN;
      */
     public function __toString()
     {
-        return $this->createCommand()->getSql();
+        return serialize($this);
     }
 }
