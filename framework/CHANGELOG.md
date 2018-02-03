@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Bug #14135: Fixed `yii\web\Request::getBodyParam()` crashes on object type body params (klimov-paul)
 - Bug #14157: Add support for loading default value `CURRENT_TIMESTAMP` of MySQL `datetime` field (rossoneri)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
+- Bug #14296: Fixed log targets to throw exception in case log can not be properly exported (bizley)
 - Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
 - Bug #14903: Fixed route with extra dashes is executed controller while it should not (developeruz)
