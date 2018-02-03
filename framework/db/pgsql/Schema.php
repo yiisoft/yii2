@@ -142,12 +142,13 @@ class Schema extends \yii\db\Schema
      */
     protected function findSchemaNames()
     {
-        $sql = <<<'SQL'
-SELECT ns.nspname AS schema_name
-FROM pg_namespace ns
-WHERE ns.nspname != 'information_schema' AND ns.nspname NOT LIKE 'pg_%'
-ORDER BY ns.nspname
+        static $sql = <<<'SQL'
+SELECT "ns"."nspname"
+FROM "pg_namespace" AS "ns"
+WHERE "ns"."nspname" != 'information_schema' AND "ns"."nspname" NOT LIKE 'pg_%'
+ORDER BY "ns"."nspname" ASC
 SQL;
+
         return $this->db->createCommand($sql)->queryColumn();
     }
 
@@ -240,6 +241,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -309,7 +311,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc]
      */
     protected function findViewNames($schema = '')
     {
@@ -418,6 +420,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -586,7 +589,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns)
     {
@@ -707,6 +710,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

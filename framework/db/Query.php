@@ -10,6 +10,7 @@ namespace yii\db;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 
 /**
  * Query represents a SELECT SQL statement in a way that is independent of DBMS.
@@ -39,6 +40,8 @@ use yii\base\InvalidConfigException;
  * Query internally uses the [[QueryBuilder]] class to generate the SQL statement.
  *
  * A more detailed usage guide on how to work with Query can be found in the [guide article on Query Builder](guide:db-query-builder).
+ *
+ * @property string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -175,6 +178,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Starts a batch query and retrieves data row by row.
+     *
      * This method is similar to [[batch()]] except that in each iteration of the result,
      * only one row of data is returned. For example,
      *
@@ -236,6 +240,7 @@ class Query extends Component implements QueryInterface
             }
             $result[$key] = $row;
         }
+
         return $result;
     }
 
@@ -251,6 +256,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return false;
         }
+
         return $this->createCommand($db)->queryOne();
     }
 
@@ -267,6 +273,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return null;
         }
+
         return $this->createCommand($db)->queryScalar();
     }
 
@@ -304,6 +311,7 @@ class Query extends Component implements QueryInterface
                 $results[$row[$this->indexBy]] = $value;
             }
         }
+
         return $results;
     }
 
@@ -321,6 +329,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("COUNT($q)", $db);
     }
 
@@ -337,6 +346,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("SUM($q)", $db);
     }
 
@@ -353,6 +363,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("AVG($q)", $db);
     }
 
@@ -456,71 +467,102 @@ class Query extends Component implements QueryInterface
     {
         if (empty($this->from)) {
             return [];
-        } elseif (is_array($this->from)) {
+        }
+
+        if (is_array($this->from)) {
             $tableNames = $this->from;
         } elseif (is_string($this->from)) {
             $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
+        } elseif ($this->from instanceof Expression) {
+            $tableNames = [$this->from];
         } else {
             throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
         }
 
-        // Clean up table names and aliases
+        return $this->cleanUpTableNames($tableNames);
+    }
+
+    /**
+     * Clean up table names and aliases
+     * Both aliases and names are enclosed into {{ and }}.
+     * @param array $tableNames non-empty array
+     * @return string[] table names indexed by aliases
+     * @since 2.0.14
+     */
+    protected function cleanUpTableNames($tableNames)
+    {
         $cleanedUpTableNames = [];
         foreach ($tableNames as $alias => $tableName) {
-            if (!is_string($alias)) {
+            if (is_string($tableName) && !is_string($alias)) {
                 $pattern = <<<PATTERN
 ~
 ^
 \s*
 (
-    (?:['"`\[]|{{)
+(?:['"`\[]|{{)
+.*?
+(?:['"`\]]|}})
+|
+\(.*?\)
+|
+.*?
+)
+(?:
+(?:
+    \s+
+    (?:as)?
+    \s*
+)
+(
+   (?:['"`\[]|{{)
     .*?
     (?:['"`\]]|}})
     |
     .*?
 )
-(?:
-    (?:
-        \s+
-        (?:as)?
-        \s*
-    )
-    (
-       (?:['"`\[]|{{)
-        .*?
-        (?:['"`\]]|}})
-        |
-        .*?
-    )
 )?
 \s*
 $
 ~iux
 PATTERN;
                 if (preg_match($pattern, $tableName, $matches)) {
-                    if (isset($matches[1])) {
-                        if (isset($matches[2])) {
-                            list(, $tableName, $alias) = $matches;
-                        } else {
-                            $tableName = $alias = $matches[1];
-                        }
-                        if (strncmp($alias, '{{', 2) !== 0) {
-                            $alias = '{{' . $alias . '}}';
-                        }
-                        if (strncmp($tableName, '{{', 2) !== 0) {
-                            $tableName = '{{' . $tableName . '}}';
-                        }
+                    if (isset($matches[2])) {
+                        list(, $tableName, $alias) = $matches;
+                    } else {
+                        $tableName = $alias = $matches[1];
                     }
                 }
             }
 
-            $tableName = str_replace(["'", '"', '`', '[', ']'], '', $tableName);
-            $alias = str_replace(["'", '"', '`', '[', ']'], '', $alias);
 
-            $cleanedUpTableNames[$alias] = $tableName;
+            if ($tableName instanceof Expression) {
+                if (!is_string($alias)) {
+                    throw new InvalidParamException('To use Expression in from() method, pass it in array format with alias.');
+                }
+                $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $tableName;
+            } elseif ($tableName instanceof self) {
+                $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $tableName;
+            } else {
+                $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $this->ensureNameQuoted($tableName);
+            }
         }
 
         return $cleanedUpTableNames;
+    }
+
+    /**
+     * Ensures name is wrapped with {{ and }}
+     * @param string $name
+     * @return string
+     */
+    private function ensureNameQuoted($name)
+    {
+        $name = str_replace(["'", '"', '`', '[', ']'], '', $name);
+        if ($name && !preg_match('/^{{.*}}$/', $name)) {
+            return '{{' . $name . '}}';
+        }
+
+        return $name;
     }
 
     /**
@@ -584,6 +626,7 @@ PATTERN;
         } else {
             $this->select = array_merge($this->select, $columns);
         }
+
         return $this;
     }
 
@@ -634,7 +677,7 @@ PATTERN;
      */
     public function from($tables)
     {
-        if (!is_array($tables)) {
+        if (is_string($tables)) {
             $tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->from = $tables;
@@ -649,7 +692,7 @@ PATTERN;
      *
      * The `$condition` parameter should be either a string (e.g. `'id=1'`) or an array.
      *
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param string|array|Expression $condition the conditions that should be put in the WHERE part.
      * @param array $params the parameters (name => value) to be bound to the query.
@@ -743,6 +786,7 @@ PATTERN;
         } else {
             $operator = $defaultOperator;
         }
+
         return $this->andFilterWhere([$operator, $name, $value]);
     }
 
@@ -907,6 +951,7 @@ PATTERN;
         } else {
             $this->groupBy = array_merge($this->groupBy, $columns);
         }
+
         return $this;
     }
 
@@ -1002,6 +1047,7 @@ PATTERN;
         if ($condition !== []) {
             $this->having($condition);
         }
+
         return $this;
     }
 
@@ -1026,6 +1072,7 @@ PATTERN;
         if ($condition !== []) {
             $this->andHaving($condition);
         }
+
         return $this;
     }
 
@@ -1050,6 +1097,7 @@ PATTERN;
         if ($condition !== []) {
             $this->orHaving($condition);
         }
+
         return $this;
     }
 
@@ -1100,6 +1148,7 @@ PATTERN;
                 }
             }
         }
+
         return $this;
     }
 

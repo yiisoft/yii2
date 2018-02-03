@@ -44,6 +44,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidateValue($timezone)
     {
@@ -83,6 +84,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidateValue($timezone)
     {
@@ -125,6 +127,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidateAttributePHPFormat($timezone)
     {
@@ -133,6 +136,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidateAttributePHPFormat($timezone)
     {
@@ -169,6 +173,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidateAttributeICUFormat($timezone)
     {
@@ -177,6 +182,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidateAttributeICUFormat($timezone)
     {
@@ -252,11 +258,17 @@ class DateValidatorTest extends TestCase
                 $return[] = [null, '2013-09-13', 1379030400, $tz[0], $appTz[0]];
             }
         }
+
         return $return;
     }
 
     /**
      * @dataProvider timestampFormatProvider
+     * @param string|null $format
+     * @param string $date
+     * @param string|int $expectedDate
+     * @param string $timezone
+     * @param string $appTimezone
      */
     public function testIntlTimestampAttributeFormat($format, $date, $expectedDate, $timezone, $appTimezone)
     {
@@ -265,6 +277,11 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider timestampFormatProvider
+     * @param string|null $format
+     * @param string $date
+     * @param string|int $expectedDate
+     * @param string $timezone
+     * @param string $appTimezone
      */
     public function testTimestampAttributeFormat($format, $date, $expectedDate, $timezone, $appTimezone)
     {
@@ -282,9 +299,25 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidationWithTime($timezone)
     {
+        // prepare data for specific ICU version, see https://github.com/yiisoft/yii2/issues/15140
+        switch (true) {
+            case (version_compare(INTL_ICU_VERSION, '57.1', '>=')):
+                $enGB_dateTime_valid = '31/05/2017, 12:30';
+                $enGB_dateTime_invalid = '05/31/2017, 12:30';
+                $deDE_dateTime_valid = '31.05.2017, 12:30';
+                $deDE_dateTime_invalid = '05.31.2017, 12:30';
+                break;
+            default:
+                $enGB_dateTime_valid = '31/5/2017 12:30';
+                $enGB_dateTime_invalid = '5/31/2017 12:30';
+                $deDE_dateTime_valid = '31.5.2017 12:30';
+                $deDE_dateTime_invalid = '5.31.2017 12:30';
+        }
+
         $this->testValidationWithTime($timezone);
 
         $this->mockApplication([
@@ -296,12 +329,13 @@ class DateValidatorTest extends TestCase
                 ],
             ],
         ]);
+
         $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31/5/2017 12:30'));
-        $this->assertFalse($val->validate('5/31/2017 12:30'));
+        $this->assertTrue($val->validate($enGB_dateTime_valid));
+        $this->assertFalse($val->validate($enGB_dateTime_invalid));
         $val = new DateValidator(['format' => 'short', 'locale' => 'en-GB', 'type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31/5/2017 12:30'));
-        $this->assertFalse($val->validate('5/31/2017 12:30'));
+        $this->assertTrue($val->validate($enGB_dateTime_valid));
+        $this->assertFalse($val->validate($enGB_dateTime_invalid));
         $this->mockApplication([
             'language' => 'de-DE',
             'components' => [
@@ -312,15 +346,16 @@ class DateValidatorTest extends TestCase
             ],
         ]);
         $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31.5.2017 12:30'));
-        $this->assertFalse($val->validate('5.31.2017 12:30'));
+        $this->assertTrue($val->validate($deDE_dateTime_valid));
+        $this->assertFalse($val->validate($deDE_dateTime_invalid));
         $val = new DateValidator(['format' => 'short', 'locale' => 'de-DE', 'type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31.5.2017 12:30'));
-        $this->assertFalse($val->validate('5.31.2017 12:30'));
+        $this->assertTrue($val->validate($deDE_dateTime_valid));
+        $this->assertFalse($val->validate($deDE_dateTime_invalid));
     }
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidationWithTime($timezone)
     {
@@ -383,6 +418,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidationWithTimeAndOutputTimeZone($timezone)
     {
@@ -391,6 +427,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidationWithTimeAndOutputTimeZone($timezone)
     {
@@ -559,9 +596,9 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * returns true if the version of ICU is old and has a bug that makes it
+     * Returns true if the version of ICU is old and has a bug that makes it
      * impossible to parse two digit years properly.
-     * see http://bugs.icu-project.org/trac/ticket/9836
+     * @see http://bugs.icu-project.org/trac/ticket/9836
      * @return bool
      */
     private function checkOldIcuBug()

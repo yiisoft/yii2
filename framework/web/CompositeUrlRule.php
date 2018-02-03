@@ -40,7 +40,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     abstract protected function createRules();
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -49,7 +49,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parseRequest($manager, $request)
     {
@@ -72,7 +72,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createUrl($manager, $route, $params)
     {
@@ -86,6 +86,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
             // create status was not changed - there is no rules configured
             $this->createStatus = UrlRule::CREATE_STATUS_PARSING_ONLY;
         }
+
         return false;
     }
 

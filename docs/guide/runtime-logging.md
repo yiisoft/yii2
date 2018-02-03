@@ -70,7 +70,8 @@ in the application configuration, like the following:
 return [
     // the "log" component must be loaded during bootstrapping time
     'bootstrap' => ['log'],
-    
+    // the "log" component process messages with timestamp. Set PHP timezone to create correct timestamp
+    'timeZone' => 'America/Los_Angeles',
     'components' => [
         'log' => [
             'targets' => [
@@ -332,6 +333,9 @@ return [
 ];
 ```
 
+Since version 2.0.13, you may configure [[yii\log\Target::enabled|enabled]] with a callable to
+define a dynamic condition for whether the log target should be enabled or not.
+See the documentation of [[yii\log\Target::setEnabled()]] for an example.
 
 ### Creating New Targets <span id="new-targets"></span>
 

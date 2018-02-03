@@ -124,7 +124,7 @@ class SluggableBehavior extends AttributeBehavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -140,7 +140,7 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getValue($event)
     {
@@ -225,6 +225,7 @@ class SluggableBehavior extends AttributeBehavior
             $iteration++;
             $uniqueSlug = $this->generateUniqueSlug($slug, $iteration);
         }
+
         return $uniqueSlug;
     }
 
@@ -264,6 +265,7 @@ class SluggableBehavior extends AttributeBehavior
         if (is_callable($this->uniqueSlugGenerator)) {
             return call_user_func($this->uniqueSlugGenerator, $baseSlug, $iteration, $this->owner);
         }
+
         return $baseSlug . '-' . ($iteration + 1);
     }
 

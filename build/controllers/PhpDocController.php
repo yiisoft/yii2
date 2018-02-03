@@ -11,9 +11,10 @@ use Yii;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\helpers\Json;
 
 /**
- * PhpDocController is there to help maintaining PHPDoc annotation in class files
+ * PhpDocController is there to help maintaining PHPDoc annotation in class files.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -21,6 +22,9 @@ use yii\helpers\FileHelper;
  */
 class PhpDocController extends Controller
 {
+    /**
+     * {@inheritdoc}
+     */
     public $defaultAction = 'property';
     /**
      * @var bool whether to update class docs directly. Setting this to false will just output docs
@@ -34,7 +38,7 @@ class PhpDocController extends Controller
 
 
     /**
-     * Generates `@property` annotations in class files from getters and setters
+     * Generates `@property` annotations in class files from getters and setters.
      *
      * Property description will be taken from getter or setter or from an `@property` annotation
      * in the getters docblock if there is one defined.
@@ -70,7 +74,7 @@ class PhpDocController extends Controller
     }
 
     /**
-     * Fix some issues with PHPdoc in files
+     * Fix some issues with PHPDoc in files.
      *
      * @param string $root the directory to parse files from. Defaults to YII2_PATH.
      */
@@ -82,7 +86,7 @@ class PhpDocController extends Controller
         $nFilesUpdated = 0;
         foreach ($files as $file) {
             $contents = file_get_contents($file);
-            $sha = sha1($contents);
+            $hash = $this->hash($contents);
 
             // fix line endings
             $lines = preg_split('/(\r\n|\n|\r)/', $contents);
@@ -94,10 +98,10 @@ class PhpDocController extends Controller
             $lines = array_values($this->fixLineSpacing($lines));
 
             $newContent = implode("\n", $lines);
-            if ($sha !== sha1($newContent)) {
+            if ($hash !== $this->hash($newContent)) {
+                file_put_contents($file, $newContent);
                 $nFilesUpdated++;
             }
-            file_put_contents($file, $newContent);
             $nFilesTotal++;
         }
 
@@ -106,13 +110,18 @@ class PhpDocController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
         return array_merge(parent::options($actionID), ['updateFiles', 'skipFrameworkRequirements']);
     }
 
+    /**
+     * @param string $root
+     * @param bool $needsInclude
+     * @return array list of files.
+     */
     protected function findFiles($root, $needsInclude = true)
     {
         $except = [];
@@ -132,7 +141,7 @@ class PhpDocController extends Controller
                     '/generators/extension/default/AutoloadExample.php',
                 ],
                 'swiftmailer' => [
-                    '/Logger.php',
+                    'src/Logger.php',
                 ],
                 'twig' => [
                     '/Extension.php',
@@ -149,11 +158,7 @@ class PhpDocController extends Controller
         if ($root === null) {
             $root = dirname(YII2_PATH);
             $extensionPath = "$root/extensions";
-            foreach (scandir($extensionPath) as $extension) {
-                if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
-                    Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
-                }
-            }
+            $this->setUpExtensionAliases($extensionPath);
 
             $except = [
                 '/apps/',
@@ -176,7 +181,7 @@ class PhpDocController extends Controller
             $this->setUpExtensionAliases($extensionPath);
 
             list(, $extension) = $matches;
-            Yii::setAlias("@yii/$extension", "$root");
+            Yii::setAlias("@yii/$extension", (string)$root);
             if (is_file($autoloadFile = Yii::getAlias("@yii/$extension/vendor/autoload.php"))) {
                 include $autoloadFile;
             }
@@ -199,7 +204,7 @@ class PhpDocController extends Controller
             $this->setUpExtensionAliases($extensionPath);
 
             list(, $appName) = $matches;
-            Yii::setAlias("@app-$appName", "$root");
+            Yii::setAlias("@app-$appName", (string)$root);
             if (is_file($autoloadFile = Yii::getAlias("@app-$appName/vendor/autoload.php"))) {
                 include $autoloadFile;
             }
@@ -230,20 +235,36 @@ class PhpDocController extends Controller
                 'vendor/',
             ]),
         ];
+
         return FileHelper::findFiles($root, $options);
     }
 
+    /**
+     * @param string $extensionPath root path containing extension repositories.
+     */
     private function setUpExtensionAliases($extensionPath)
     {
         foreach (scandir($extensionPath) as $extension) {
             if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
                 Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
+
+                $composerConfigFile = $extensionPath . '/' . $extension . '/composer.json';
+                if (file_exists($composerConfigFile)) {
+                    $composerConfig = Json::decode(file_get_contents($composerConfigFile));
+                    if (isset($composerConfig['autoload']['psr-4'])) {
+                        foreach ($composerConfig['autoload']['psr-4'] as $namespace => $subPath) {
+                            $alias = '@' . str_replace('\\', '/', $namespace);
+                            $path = rtrim("$extensionPath/$extension/$subPath", '/');
+                            Yii::setAlias($alias, $path);
+                        }
+                    }
+                }
             }
         }
     }
 
     /**
-     * Fix file PHPdoc
+     * Fix file PHPDoc.
      */
     protected function fixFileDoc(&$lines)
     {
@@ -284,7 +305,8 @@ class PhpDocController extends Controller
     }
 
     /**
-     * Markdown aware fix of whitespace issues in doc comments
+     * Markdown aware fix of whitespace issues in doc comments.
+     * @param array $lines
      */
     protected function fixDocBlockIndentation(&$lines)
     {
@@ -340,6 +362,10 @@ class PhpDocController extends Controller
         }
     }
 
+    /**
+     * @param string $line
+     * @return string
+     */
     protected function fixParamTypes($line)
     {
         return preg_replace_callback('~@(param|return) ([\w\\|]+)~i', function ($matches) {
@@ -350,12 +376,15 @@ class PhpDocController extends Controller
                     case 'boolean': $types[$i] = 'bool'; break;
                 }
             }
+
             return '@' . $matches[1] . ' ' . implode('|', $types);
         }, $line);
     }
 
     /**
-     * Fixes line spacing code style for properties and constants
+     * Fixes line spacing code style for properties and constants.
+     * @param string[] $lines
+     * @return string[]
      */
     protected function fixLineSpacing($lines)
     {
@@ -551,7 +580,7 @@ class PhpDocController extends Controller
     }
 
     /**
-     * remove multi empty lines and trim trailing whitespace
+     * remove multi empty lines and trim trailing whitespace.
      *
      * @param $doc
      * @return string
@@ -571,7 +600,7 @@ class PhpDocController extends Controller
     }
 
     /**
-     * Replace property annotations in doc comment
+     * Replace property annotations in doc comment.
      * @param $doc
      * @param $properties
      * @return string
@@ -685,7 +714,7 @@ class PhpDocController extends Controller
                     $docline = ' * @';
                     $docline .= 'property'; // Do not use property-read and property-write as few IDEs support complex syntax.
                     $note = '';
-                    if (isset($prop['get']) && isset($prop['set'])) {
+                    if (isset($prop['get'], $prop['set'])) {
                         if ($prop['get']['type'] != $prop['set']['type']) {
                             $note = ' Note that the type of this property differs in getter and setter.'
                                   . ' See [[get' . ucfirst($propName) . '()]] and [[set' . ucfirst($propName) . '()]] for details.';
@@ -703,7 +732,7 @@ class PhpDocController extends Controller
                         }
                         if (!$parentSetter) {
                             $note = ' This property is read-only.';
-//							$docline .= '-read';
+                            //$docline .= '-read';
                         }
                     } elseif (isset($prop['set'])) {
                         // check if parent class has getter defined
@@ -718,7 +747,7 @@ class PhpDocController extends Controller
                         }
                         if (!$parentGetter) {
                             $note = ' This property is write-only.';
-//							$docline .= '-write';
+                            //$docline .= '-write';
                         }
                     } else {
                         continue;
@@ -759,6 +788,7 @@ class PhpDocController extends Controller
                 $sets[] = $set;
             }
         }
+
         return $sets;
     }
 
@@ -768,11 +798,25 @@ class PhpDocController extends Controller
         if ($str == '') {
             return '';
         }
+
         return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[strlen($str) - 1] != '.' ? '.' : '');
     }
 
     protected function getPropParam($prop, $param)
     {
         return isset($prop['property']) ? $prop['property'][$param] : (isset($prop['get']) ? $prop['get'][$param] : $prop['set'][$param]);
+    }
+
+    /**
+     * Generate a hash value (message digest)
+     * @param string $string message to be hashed.
+     * @return string calculated message digest.
+     */
+    private function hash($string)
+    {
+        if (!function_exists('hash')) {
+            return sha1($string);
+        }
+        return hash('sha256', $string);
     }
 }

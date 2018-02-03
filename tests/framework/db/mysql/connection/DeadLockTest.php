@@ -23,7 +23,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
     const CHILD_EXIT_CODE_DEADLOCK = 15;
 
     /**
-     * Test deadlock exception
+     * Test deadlock exception.
      *
      * Accident deadlock exception lost while rolling back a transaction or savepoint
      * @link https://github.com/yiisoft/yii2/issues/12715
@@ -31,7 +31,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     public function testDeadlockException()
     {
-        if (getenv('TRAVIS') && version_compare(PHP_VERSION, '7.0.0', '<')) {
+        if (getenv('TRAVIS') && PHP_VERSION_ID < 70000) {
             $this->markTestSkipped('Skipping PHP 5 on Travis since it segfaults with pcntl');
         }
 
@@ -272,7 +272,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     private function setErrorHandler()
     {
-        if (version_compare(PHP_VERSION, '7', '<')) {
+        if (PHP_VERSION_ID < 70000) {
             set_error_handler(function ($errno, $errstr, $errfile, $errline) {
                 throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
             });
@@ -280,7 +280,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
     }
 
     /**
-     * Sets filename for log file shared between children processes
+     * Sets filename for log file shared between children processes.
      * @param string $filename
      */
     private function setLogFile($filename)
@@ -313,6 +313,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             unlink($this->logFile);
             return $content;
         }
+
         return null;
     }
 

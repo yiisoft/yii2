@@ -122,6 +122,45 @@ class RequestTest extends TestCase
                     ],
                 ],
             ],
+            // Case: `--<option> <value>` and `-<alias> <value>` syntax
+            [
+                'params' => [
+                    'controller/route',
+                    'param1',
+                    '-12345',
+                    '--option1',
+                    '--option2',
+                    'testValue1',
+                    '--option-3',
+                    'testValue2',
+                    '--option_4',
+                    'testValue3',
+                    '-alias1',
+                    '-alias2',
+                    'testValue1',
+                    '-alias-3',
+                    'testValue2',
+                    '-alias_4',
+                    'testValue3',
+                ],
+                'expected' => [
+                    'route' => 'controller/route',
+                    'params' => [
+                        'param1',
+                        '-12345',
+                        'option1' => true,
+                        'option2' => 'testValue1',
+                        'option-3' => 'testValue2',
+                        'option_4' => 'testValue3',
+                        '_aliases' => [
+                            'alias1' => true,
+                            'alias2' => 'testValue1',
+                            'alias-3' => 'testValue2',
+                            'alias_4' => 'testValue3',
+                        ],
+                    ],
+                ],
+            ],
             [
                 // PHP does not allow variable name, starting with digit.
                 // InvalidParamException must be thrown during request resolving:
@@ -141,6 +180,9 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider provider
+     * @param array $params
+     * @param array $expected
+     * @param array|null $expectedException
      */
     public function testResolve($params, $expected, $expectedException = null)
     {

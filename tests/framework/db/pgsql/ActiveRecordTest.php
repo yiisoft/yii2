@@ -116,7 +116,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/4672
+     * @see https://github.com/yiisoft/yii2/issues/4672
      */
     public function testBooleanValues2()
     {

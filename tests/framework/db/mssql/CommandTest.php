@@ -116,4 +116,13 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $db->createCommand()->dropDefaultValue($name, $tableName)->execute();
         $this->assertEmpty($schema->getTableDefaultValues($tableName, true));
     }
+
+    public function batchInsertSqlProvider()
+    {
+        $data = parent::batchInsertSqlProvider();
+        $data['issue11242']['expected'] = 'INSERT INTO [type] ([int_col], [float_col], [char_col]) VALUES (NULL, NULL, \'Kyiv {{city}}, Ukraine\')';
+        $data['wrongBehavior']['expected'] = 'INSERT INTO [type] ([int_col], [float_col], [char_col]) VALUES (\'\', \'\', \'Kyiv {{city}}, Ukraine\')';
+
+        return $data;
+    }
 }

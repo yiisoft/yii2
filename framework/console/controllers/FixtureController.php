@@ -64,7 +64,7 @@ class FixtureController extends Controller
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
@@ -74,7 +74,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function optionAliases()
@@ -87,6 +87,7 @@ class FixtureController extends Controller
 
     /**
      * Loads the specified fixture data.
+     *
      * For example,
      *
      * ```
@@ -167,6 +168,7 @@ class FixtureController extends Controller
 
     /**
      * Unloads the specified fixtures.
+     *
      * For example,
      *
      * ```
@@ -242,7 +244,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Notifies user that there are no fixtures to load according input conditions
+     * Notifies user that there are no fixtures to load according input conditions.
      * @param array $foundFixtures array of found fixtures
      * @param array $except array of names of fixtures that should not be loaded
      */
@@ -264,7 +266,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Notifies user that there are no fixtures to unload according input conditions
+     * Notifies user that there are no fixtures to unload according input conditions.
      * @param array $foundFixtures array of found fixtures
      * @param array $except array of names of fixtures that should not be loaded
      */
@@ -424,7 +426,7 @@ class FixtureController extends Controller
 
     /**
      * Calculates fixture's name
-     * Basically, strips [[getFixturePath()]] and `Fixture.php' suffix from fixture's full path
+     * Basically, strips [[getFixturePath()]] and `Fixture.php' suffix from fixture's full path.
      * @see getFixturePath()
      * @param string $fullFixturePath Full fixture path
      * @return string Relative fixture name
@@ -467,6 +469,7 @@ class FixtureController extends Controller
 
     /**
      * Filters fixtures by splitting them in two categories: one that should be applied and not.
+     *
      * If fixture is prefixed with "-", for example "-User", that means that fixture should not be loaded,
      * if it is not prefixed it is considered as one to be loaded. Returns array:
      *

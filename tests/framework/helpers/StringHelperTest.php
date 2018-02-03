@@ -11,7 +11,7 @@ use yii\helpers\StringHelper;
 use yiiunit\TestCase;
 
 /**
- * StringHelperTest
+ * StringHelperTest.
  * @group helpers
  */
 class StringHelperTest extends TestCase
@@ -19,7 +19,9 @@ class StringHelperTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testStrlen()
@@ -149,6 +151,9 @@ class StringHelperTest extends TestCase
 
     /**
      * @dataProvider providerStartsWith
+     * @param bool $result
+     * @param string $string
+     * @param string|null $with
      */
     public function testStartsWith($result, $string, $with)
     {
@@ -159,7 +164,7 @@ class StringHelperTest extends TestCase
     }
 
     /**
-     * Rules that should work the same for case-sensitive and case-insensitive `startsWith()`
+     * Rules that should work the same for case-sensitive and case-insensitive `startsWith()`.
      */
     public function providerStartsWith()
     {
@@ -202,6 +207,9 @@ class StringHelperTest extends TestCase
 
     /**
      * @dataProvider providerEndsWith
+     * @param bool $result
+     * @param string $string
+     * @param string|null $with
      */
     public function testEndsWith($result, $string, $with)
     {
@@ -212,7 +220,7 @@ class StringHelperTest extends TestCase
     }
 
     /**
-     * Rules that should work the same for case-sensitive and case-insensitive `endsWith()`
+     * Rules that should work the same for case-sensitive and case-insensitive `endsWith()`.
      */
     public function providerEndsWith()
     {
@@ -303,5 +311,92 @@ class StringHelperTest extends TestCase
             ['subjects>_d=1', 'c3ViamVjdHM-X2Q9MQ=='],
             ['Это закодированная строка', '0K3RgtC-INC30LDQutC-0LTQuNGA0L7QstCw0L3QvdCw0Y8g0YHRgtGA0L7QutCw'],
         ];
+    }
+
+    /**
+     * Data provider for [[testMatchWildcard()]]
+     * @return array test data.
+     */
+    public function dataProviderMatchWildcard()
+    {
+        return [
+            // *
+            ['*', 'any', true],
+            ['*', '', true],
+            ['begin*end', 'begin-middle-end', true],
+            ['begin*end', 'beginend', true],
+            ['begin*end', 'begin-d', false],
+            ['*end', 'beginend', true],
+            ['*end', 'begin', false],
+            ['begin*', 'begin-end', true],
+            ['begin*', 'end', false],
+            ['begin*', 'before-begin', false],
+            // ?
+            ['begin?end', 'begin1end', true],
+            ['begin?end', 'beginend', false],
+            ['begin??end', 'begin12end', true],
+            ['begin??end', 'begin1end', false],
+            // []
+            ['gr[ae]y', 'gray', true],
+            ['gr[ae]y', 'grey', true],
+            ['gr[ae]y', 'groy', false],
+            ['a[2-8]', 'a1', false],
+            ['a[2-8]', 'a3', true],
+            ['[][!]', ']', true],
+            ['[-1]', '-', true],
+            // [!]
+            ['gr[!ae]y', 'gray', false],
+            ['gr[!ae]y', 'grey', false],
+            ['gr[!ae]y', 'groy', true],
+            ['a[!2-8]', 'a1', true],
+            ['a[!2-8]', 'a3', false],
+            // -
+            ['a-z', 'a-z', true],
+            ['a-z', 'a-c', false],
+            // slashes
+            ['begin/*/end', 'begin/middle/end', true],
+            ['begin/*/end', 'begin/two/steps/end', true],
+            ['begin/*/end', 'begin/end', false],
+            ['begin\\\\*\\\\end', 'begin\middle\end', true],
+            ['begin\\\\*\\\\end', 'begin\two\steps\end', true],
+            ['begin\\\\*\\\\end', 'begin\end', false],
+            // dots
+            ['begin.*.end', 'begin.middle.end', true],
+            ['begin.*.end', 'begin.two.steps.end', true],
+            ['begin.*.end', 'begin.end', false],
+            // case
+            ['begin*end', 'BEGIN-middle-END', false],
+            ['begin*end', 'BEGIN-middle-END', true, ['caseSensitive' => false]],
+            // file path
+            ['begin/*/end', 'begin/middle/end', true, ['filePath' => true]],
+            ['begin/*/end', 'begin/two/steps/end', false, ['filePath' => true]],
+            ['begin\\\\*\\\\end', 'begin\middle\end', true, ['filePath' => true]],
+            ['begin\\\\*\\\\end', 'begin\two\steps\end', false, ['filePath' => true]],
+            ['*', 'any', true, ['filePath' => true]],
+            ['*', 'any/path', false, ['filePath' => true]],
+            ['[.-0]', 'any/path', false, ['filePath' => true]],
+            ['*', '.dotenv', true, ['filePath' => true]],
+            // escaping
+            ['\*\?', '*?', true],
+            ['\*\?', 'zz', false],
+            ['begin\*\end', 'begin\middle\end', true, ['escape' => false]],
+            ['begin\*\end', 'begin\two\steps\end', true, ['escape' => false]],
+            ['begin\*\end', 'begin\end', false, ['escape' => false]],
+            ['begin\*\end', 'begin\middle\end', true, ['filePath' => true, 'escape' => false]],
+            ['begin\*\end', 'begin\two\steps\end', false, ['filePath' => true, 'escape' => false]],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderMatchWildcard
+     *
+     * @param string $pattern
+     * @param string $string
+     * @param bool $expectedResult
+     * @param array $options
+     */
+    public function testMatchWildcard($pattern, $string, $expectedResult, $options = [])
+    {
+        $this->assertSame($expectedResult, StringHelper::matchWildcard($pattern, $string, $options));
     }
 }

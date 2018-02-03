@@ -90,7 +90,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function unload()
     {

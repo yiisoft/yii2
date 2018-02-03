@@ -10,10 +10,11 @@ namespace yiiunit\framework\console\controllers;
 use Yii;
 use yii\console\controllers\BaseMigrateController;
 use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 use yiiunit\TestCase;
 
 /**
- * This trait provides unit tests shared by the different migration controllers implementations
+ * This trait provides unit tests shared by the different migration controllers implementations.
  * @see BaseMigrateController
  */
 trait MigrateControllerTestTrait
@@ -98,6 +99,7 @@ trait MigrateControllerTestTrait
     /**
      * @param string $name
      * @param string|null $date
+     * @param string|null $path
      * @return string generated class name
      */
     protected function createMigration($name, $date = null, $path = null)
@@ -161,7 +163,7 @@ CODE;
     }
 
     /**
-     * Change class name migration to $class
+     * Change class name migration to $class.
      * @param string $class name class
      * @return string content generated class migration
      * @see https://github.com/yiisoft/yii2/pull/10213
@@ -189,7 +191,7 @@ CODE;
         $appliedMigrations = $migrationHistory;
         foreach ($expectedMigrations as $expectedMigrationName) {
             $appliedMigration = array_shift($appliedMigrations);
-            if (!fnmatch(strtr($expectedMigrationName, ['\\' => DIRECTORY_SEPARATOR]), strtr($appliedMigration['version'], ['\\' => DIRECTORY_SEPARATOR]))) {
+            if (!StringHelper::matchWildcard(strtr($expectedMigrationName, ['\\' => DIRECTORY_SEPARATOR]), strtr($appliedMigration['version'], ['\\' => DIRECTORY_SEPARATOR]))) {
                 $success = false;
                 break;
             }
@@ -490,7 +492,7 @@ CODE;
     }
 
     /**
-     * Test migration with using multiple migration paths and namespaces
+     * Test migration with using multiple migration paths and namespaces.
      */
     public function testCombinedMigrationProcess()
     {

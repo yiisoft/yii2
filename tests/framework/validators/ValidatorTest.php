@@ -12,6 +12,7 @@ use yii\validators\BooleanValidator;
 use yii\validators\InlineValidator;
 use yii\validators\NumberValidator;
 use yii\validators\RequiredValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestFunctionModel;
 use yiiunit\data\validators\TestValidator;
@@ -85,7 +86,7 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(RequiredValidator::className(), $validator);
     }
 
-    public function testValidate()
+    public function testValidateAttributes()
     {
         $val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2']]);
         $model = $this->getTestModel();
@@ -201,7 +202,7 @@ class ValidatorTest extends TestCase
         // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
 
         $model = new FakedValidationModel();
-        $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
+        $val = Validator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
         $val->validateAttribute($model, 'val_attr_a');
         $args = $model->getInlineValArgs();
 
@@ -221,7 +222,7 @@ class ValidatorTest extends TestCase
         // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
 
         $model = new FakedValidationModel();
-        $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
+        $val = Validator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
         $val->clientValidate = 'clientInlineVal';
         $args = $val->clientValidateAttribute($model, 'val_attr_a', null);
 
@@ -287,9 +288,9 @@ class ValidatorTest extends TestCase
     }
 
     /**
-     * Make sure attribute names are calculated dynamically
-     * https://github.com/yiisoft/yii2/issues/13979
-     * https://github.com/yiisoft/yii2/pull/14413
+     * Make sure attribute names are calculated dynamically.
+     * @see https://github.com/yiisoft/yii2/issues/13979
+     * @see https://github.com/yiisoft/yii2/pull/14413
      */
     public function testAttributeNamesDynamic()
     {

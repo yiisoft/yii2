@@ -33,7 +33,7 @@ abstract class DbFixture extends Fixture
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {

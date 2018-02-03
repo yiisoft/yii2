@@ -58,7 +58,7 @@ class Application extends \yii\base\Application
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function bootstrap()
     {
@@ -89,6 +89,7 @@ class Application extends \yii\base\Application
                     }
                     $url += $request->getQueryParams();
                 }
+
                 return $this->getResponse()->redirect(Url::to($url, $e->scheme), $e->statusCode);
             }
         } else {
@@ -187,7 +188,7 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function coreComponents()
     {

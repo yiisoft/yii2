@@ -164,6 +164,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -294,7 +295,7 @@ SQL;
         $column->phpType = $this->getColumnPhpType($column);
 
         if (!$column->isPrimaryKey) {
-            if ($column->type === 'timestamp' && $info['default'] === 'CURRENT_TIMESTAMP') {
+            if (($column->type === 'timestamp' || $column->type ==='datetime') && $info['default'] === 'CURRENT_TIMESTAMP') {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } elseif (isset($type) && $type === 'bit') {
                 $column->defaultValue = bindec(trim($info['default'], 'b\''));
@@ -428,6 +429,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -445,11 +447,11 @@ SQL;
         $sql = $this->getCreateTableSql($table);
         $uniqueIndexes = [];
 
-        $regexp = '/UNIQUE KEY\s+([^\(\s]+)\s*\(([^\(\)]+)\)/mi';
+        $regexp = '/UNIQUE KEY\s+\`(.+)\`\s*\((\`.+\`)+\)/mi';
         if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
-                $indexName = str_replace('`', '', $match[1]);
-                $indexColumns = array_map('trim', explode(',', str_replace('`', '', $match[2])));
+                $indexName = $match[1];
+                $indexColumns = array_map('trim', explode('`,`', trim($match[2], '`')));
                 $uniqueIndexes[$indexName] = $indexColumns;
             }
         }
@@ -458,7 +460,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
@@ -477,6 +479,7 @@ SQL;
             $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
             $this->_oldMysql = version_compare($version, '5.1', '<=');
         }
+
         return $this->_oldMysql;
     }
 
@@ -503,7 +506,8 @@ SELECT DISTINCT
     `kcu`.`REFERENCED_TABLE_NAME` AS `foreign_table_name`,
     `kcu`.`REFERENCED_COLUMN_NAME` AS `foreign_column_name`,
     `rc`.`UPDATE_RULE` AS `on_update`,
-    `rc`.`DELETE_RULE` AS `on_delete`
+    `rc`.`DELETE_RULE` AS `on_delete`,
+    `kcu`.`ORDINAL_POSITION` as `position`
 FROM (SELECT DATABASE() AS `name`) AS `sch`
 INNER JOIN `information_schema`.`KEY_COLUMN_USAGE` AS `kcu`
     ON `kcu`.`TABLE_SCHEMA` = COALESCE(:schemaName, `sch`.`name`) AND `kcu`.`CONSTRAINT_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `kcu`.`TABLE_NAME` = :tableName
@@ -557,6 +561,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

@@ -342,6 +342,27 @@ class View extends \yii\base\View
     }
 
     /**
+     * Registers CSRF meta tags.
+     * They are rendered dynamically to retrieve a new CSRF token for each request.
+     *
+     * ```php
+     * $view->registerCsrfMetaTags();
+     * ```
+     *
+     * The above code will result in `<meta name="csrf-param" content="[yii\web\Request::$csrfParam]">`
+     * and `<meta name="csrf-token" content="tTNpWKpdy-bx8ZmIq9R72...K1y8IP3XGkzZA==">` added to the page.
+     *
+     * Note: Hidden CSRF input of ActiveForm will be automatically refreshed by calling `window.yii.refreshCsrfToken()`
+     * from `yii.js`.
+     *
+     * @since 2.0.13
+     */
+    public function registerCsrfMetaTags()
+    {
+        $this->metaTags['csrf_meta_tags'] = $this->renderDynamic('return yii\helpers\Html::csrfMetaTags();');
+    }
+
+    /**
      * Registers a link tag.
      *
      * For example, a link tag for a custom [favicon](http://www.w3.org/2005/10/howto-favicon)
@@ -496,6 +517,31 @@ class View extends \yii\base\View
     }
 
     /**
+     * Registers a JS code block defining a variable. The name of variable will be
+     * used as key, preventing duplicated variable names.
+     *
+     * @param string $name Name of the variable
+     * @param array|string $value Value of the variable
+     * @param int $position the position in a page at which the JavaScript variable should be inserted.
+     * The possible values are:
+     *
+     * - [[POS_HEAD]]: in the head section. This is the default value.
+     * - [[POS_BEGIN]]: at the beginning of the body section.
+     * - [[POS_END]]: at the end of the body section.
+     * - [[POS_LOAD]]: enclosed within jQuery(window).load().
+     *   Note that by using this position, the method will automatically register the jQuery js file.
+     * - [[POS_READY]]: enclosed within jQuery(document).ready().
+     *   Note that by using this position, the method will automatically register the jQuery js file.
+     *
+     * @since 2.0.14
+     */
+    public function registerJsVar($name, $value, $position = self::POS_HEAD)
+    {
+        $js = sprintf('var %s = %s;', $name, \yii\helpers\Json::htmlEncode($value));
+        $this->registerJs($js, $position, $name);
+    }
+
+    /**
      * Renders the content to be inserted in the head section.
      * The content is rendered using the registered meta tags, link tags, CSS/JS code blocks and files.
      * @return string the rendered content
@@ -579,7 +625,7 @@ class View extends \yii\base\View
                 $lines[] = Html::script(implode("\n", $this->js[self::POS_END]), ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_READY])) {
-                $js = "jQuery(document).ready(function () {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
+                $js = "jQuery(function ($) {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_LOAD])) {

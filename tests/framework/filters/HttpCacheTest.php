@@ -51,26 +51,29 @@ class HttpCacheTest extends \yiiunit\TestCase
     public function testValidateCache()
     {
         $httpCache = new HttpCache();
+        $request = Yii::$app->getRequest();
+
         $method = new \ReflectionMethod($httpCache, 'validateCache');
         $method->setAccessible(true);
 
-        unset($_SERVER['HTTP_IF_MODIFIED_SINCE'], $_SERVER['HTTP_IF_NONE_MATCH']);
+        $request->headers->remove('If-Modified-Since');
+        $request->headers->remove('If-None-Match');
         $this->assertFalse($method->invoke($httpCache, null, null));
         $this->assertFalse($method->invoke($httpCache, 0, null));
         $this->assertFalse($method->invoke($httpCache, 0, '"foo"'));
 
-        $_SERVER['HTTP_IF_MODIFIED_SINCE'] = 'Thu, 01 Jan 1970 00:00:00 GMT';
+        $request->headers->set('If-Modified-Since', 'Thu, 01 Jan 1970 00:00:00 GMT');
         $this->assertTrue($method->invoke($httpCache, 0, null));
         $this->assertFalse($method->invoke($httpCache, 1, null));
 
-        $_SERVER['HTTP_IF_NONE_MATCH'] = '"foo"';
+        $request->headers->set('If-None-Match', '"foo"');
         $this->assertTrue($method->invoke($httpCache, 0, '"foo"'));
         $this->assertFalse($method->invoke($httpCache, 0, '"foos"'));
         $this->assertTrue($method->invoke($httpCache, 1, '"foo"'));
         $this->assertFalse($method->invoke($httpCache, 1, '"foos"'));
         $this->assertFalse($method->invoke($httpCache, null, null));
 
-        $_SERVER['HTTP_IF_NONE_MATCH'] = '*';
+        $request->headers->set('If-None-Match', '*');
         $this->assertFalse($method->invoke($httpCache, 0, '"foo"'));
         $this->assertFalse($method->invoke($httpCache, 0, null));
     }

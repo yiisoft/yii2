@@ -16,7 +16,7 @@ use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Profile;
 
 /**
- * Class ActiveQueryTest the base class for testing ActiveQuery
+ * Class ActiveQueryTest the base class for testing ActiveQuery.
  */
 abstract class ActiveQueryTest extends DatabaseTestCase
 {
@@ -252,5 +252,13 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals([
             '{{' . Profile::tableName() . '}}' => '{{' . Profile::tableName() . '}}',
         ], $tables);
+    }
+
+    public function testGetTableNames_wontFillFrom()
+    {
+        $query = new ActiveQuery(Profile::className());
+        $this->assertEquals($query->from, null);
+        $query->getTablesUsedInFrom();
+        $this->assertEquals($query->from, null);
     }
 }

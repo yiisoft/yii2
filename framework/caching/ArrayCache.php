@@ -28,7 +28,7 @@ class ArrayCache extends Cache
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function exists($key)
     {
@@ -37,18 +37,19 @@ class ArrayCache extends Cache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getValue($key)
     {
         if (isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true))) {
             return $this->_cache[$key][0];
         }
+
         return false;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function setValue($key, $value, $duration)
     {
@@ -57,7 +58,7 @@ class ArrayCache extends Cache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function addValue($key, $value, $duration)
     {
@@ -69,7 +70,7 @@ class ArrayCache extends Cache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function deleteValue($key)
     {
@@ -78,7 +79,7 @@ class ArrayCache extends Cache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function flushValues()
     {

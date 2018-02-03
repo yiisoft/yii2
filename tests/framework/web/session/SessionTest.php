@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\web;
+namespace yiiunit\framework\web\session;
 
 use yii\web\Session;
 use yiiunit\TestCase;
@@ -16,7 +16,7 @@ use yiiunit\TestCase;
 class SessionTest extends TestCase
 {
     /**
-     * Test to prove that after Session::destroy session id set to old value
+     * Test to prove that after Session::destroy session id set to old value.
      */
     public function testDestroySessionId()
     {

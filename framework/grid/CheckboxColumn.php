@@ -77,7 +77,7 @@ class CheckboxColumn extends Column
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws \yii\base\InvalidConfigException if [[name]] is not set.
      */
     public function init()
@@ -109,7 +109,7 @@ class CheckboxColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderDataCellContent($model, $key, $index)
     {
@@ -131,7 +131,7 @@ class CheckboxColumn extends Column
     }
 
     /**
-     * Returns header checkbox name
+     * Returns header checkbox name.
      * @return string header checkbox name
      * @since 2.0.8
      */
@@ -151,7 +151,7 @@ class CheckboxColumn extends Column
     }
 
     /**
-     * Registers the needed JavaScript
+     * Registers the needed JavaScript.
      * @since 2.0.8
      */
     public function registerClientScript()

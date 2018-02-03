@@ -43,4 +43,47 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     {
         $this->markTestSkipped('SQLite does not support adding/dropping check constraints.');
     }
+
+    public function testMultiStatementSupport()
+    {
+        $db = $this->getConnection(false);
+        $sql = <<<'SQL'
+DROP TABLE IF EXISTS {{T_multistatement}};
+CREATE TABLE {{T_multistatement}} (
+    [[intcol]] INTEGER,
+    [[textcol]] TEXT
+);
+INSERT INTO {{T_multistatement}} VALUES(41, :val1);
+INSERT INTO {{T_multistatement}} VALUES(42, :val2);
+SQL;
+        $db->createCommand($sql, [
+            'val1' => 'foo',
+            'val2' => 'bar',
+        ])->execute();
+        $this->assertSame([
+            [
+                'intcol' => '41',
+                'textcol' => 'foo',
+            ],
+            [
+                'intcol' => '42',
+                'textcol' => 'bar',
+            ],
+        ], $db->createCommand('SELECT * FROM {{T_multistatement}}')->queryAll());
+        $sql = <<<'SQL'
+UPDATE {{T_multistatement}} SET [[intcol]] = :newInt WHERE [[textcol]] = :val1;
+DELETE FROM {{T_multistatement}} WHERE [[textcol]] = :val2;
+SELECT * FROM {{T_multistatement}}
+SQL;
+        $this->assertSame([
+            [
+                'intcol' => '410',
+                'textcol' => 'foo',
+            ],
+        ], $db->createCommand($sql, [
+            'newInt' => 410,
+            'val1' => 'foo',
+            'val2' => 'bar',
+        ])->queryAll());
+    }
 }

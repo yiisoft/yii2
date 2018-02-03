@@ -10,12 +10,12 @@ namespace yiiunit\framework\helpers;
 use yii\helpers\BaseInflector;
 
 /**
- * Forces Inflector::slug to use PHP even if intl is available
+ * Forces Inflector::slug to use PHP even if intl is available.
  */
 class FallbackInflector extends BaseInflector
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected static function hasIntl()
     {

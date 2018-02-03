@@ -8,7 +8,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * Class NullValues
+ * Class NullValues.
  *
  * @property int $id
  * @property int $var1

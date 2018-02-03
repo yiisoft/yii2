@@ -19,7 +19,7 @@ use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function buildUnsignedString()
     {
@@ -27,7 +27,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __toString()
     {
@@ -41,6 +41,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
             default:
                 $format = '{type}{length}{default}{notnull}{check}{append}';
         }
+
         return $this->buildCompleteString($format);
     }
 }

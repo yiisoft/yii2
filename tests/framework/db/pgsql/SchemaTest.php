@@ -19,6 +19,10 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'pgsql';
 
+    protected $expectedSchemas = [
+        'public',
+    ];
+
     public function getExpectedColumns()
     {
         $columns = parent::getExpectedColumns();
@@ -151,6 +155,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
     /**
      * @dataProvider bigintValueProvider
+     * @param int $bigint
      */
     public function testBigintValue($bigint)
     {
@@ -172,7 +177,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/12483
+     * @see https://github.com/yiisoft/yii2/issues/12483
      */
     public function testParenthesisDefaultValue()
     {
@@ -197,7 +202,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/14192
+     * @see https://github.com/yiisoft/yii2/issues/14192
      */
     public function testTimestampNullDefaultValue()
     {

@@ -8,7 +8,7 @@
 namespace yii\web;
 
 /**
- * UnsupportedMediaTypeHttpException represents an "Unsupported Media Type" HTTP exception with status code 415
+ * UnsupportedMediaTypeHttpException represents an "Unsupported Media Type" HTTP exception with status code 415.
  *
  * Use this exception when the client sends data in a format that your
  * application does not understand. For example, you would throw this exception

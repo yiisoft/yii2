@@ -261,9 +261,9 @@ class BaseArrayHelper
      *
      * @param array $array the array to write the value to
      * @param string|array|null $path the path of where do you want to write a value to `$array`
-     *  the path can be described by a string when each key should be separated by a dot
-     *  you can also describe the path as an array of keys
-     *  if the path is null then `$array` will be assigned the `$value`
+     * the path can be described by a string when each key should be separated by a dot
+     * you can also describe the path as an array of keys
+     * if the path is null then `$array` will be assigned the `$value`
      * @param mixed $value the value to be written
      * @since 2.0.13
      */
@@ -350,6 +350,7 @@ class BaseArrayHelper
                 }
             }
         }
+
         return $result;
     }
 
@@ -477,7 +478,7 @@ class BaseArrayHelper
                 $value = static::getValue($element, $key);
                 if ($value !== null) {
                     if (is_float($value)) {
-                        $value = (string) $value;
+                        $value = StringHelper::floatToString($value);
                     }
                     $lastArray[$value] = $element;
                 }
@@ -754,6 +755,7 @@ class BaseArrayHelper
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -777,7 +779,7 @@ class BaseArrayHelper
      * @param array $array the array being checked
      * @param bool $consecutive whether the array keys must be a consecutive sequence
      * in order for the array to be treated as indexed.
-     * @return bool whether the array is associative
+     * @return bool whether the array is indexed
      */
     public static function isIndexed($array, $consecutive = false)
     {
@@ -936,7 +938,7 @@ class BaseArrayHelper
                 continue;
             }
 
-            if (empty($array[$globalKey])) {
+            if (!key_exists($globalKey, $array)) {
                 continue;
             }
             if ($localKey === null) {

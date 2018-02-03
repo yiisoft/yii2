@@ -53,7 +53,7 @@ abstract class ErrorHandler extends Component
 
 
     /**
-     * Register this error handler
+     * Register this error handler.
      */
     public function register()
     {
@@ -185,6 +185,7 @@ abstract class ErrorHandler extends Component
             $ref->setValue($exception, $backtrace);
             $this->_hhvmException = $exception;
         }
+
         return false;
     }
 
@@ -226,11 +227,12 @@ abstract class ErrorHandler extends Component
 
             throw $exception;
         }
+
         return false;
     }
 
     /**
-     * Handles fatal PHP errors
+     * Handles fatal PHP errors.
      */
     public function handleFatalError()
     {
@@ -275,7 +277,7 @@ abstract class ErrorHandler extends Component
     abstract protected function renderException($exception);
 
     /**
-     * Logs the given exception
+     * Logs the given exception.
      * @param \Exception $exception the exception to be logged
      * @since 2.0.3 this method is now public.
      */
@@ -322,22 +324,37 @@ abstract class ErrorHandler extends Component
      */
     public static function convertExceptionToString($exception)
     {
-        if ($exception instanceof Exception && ($exception instanceof UserException || !YII_DEBUG)) {
-            $message = "{$exception->getName()}: {$exception->getMessage()}";
-        } elseif (YII_DEBUG) {
-            if ($exception instanceof Exception) {
-                $message = "Exception ({$exception->getName()})";
-            } elseif ($exception instanceof ErrorException) {
-                $message = "{$exception->getName()}";
-            } else {
-                $message = 'Exception';
-            }
-            $message .= " '" . get_class($exception) . "' with message '{$exception->getMessage()}' \n\nin "
-                . $exception->getFile() . ':' . $exception->getLine() . "\n\n"
-                . "Stack trace:\n" . $exception->getTraceAsString();
-        } else {
-            $message = 'Error: ' . $exception->getMessage();
+        if ($exception instanceof UserException) {
+            return "{$exception->getName()}: {$exception->getMessage()}";
         }
+
+        if (YII_DEBUG) {
+            return static::convertExceptionToVerboseString($exception);
+        }
+
+        return 'An internal server error occurred.';
+    }
+
+    /**
+     * Converts an exception into a string that has verbose information about the exception and its trace.
+     * @param \Exception|\Error $exception the exception being converted
+     * @return string the string representation of the exception.
+     *
+     * @since 2.0.14
+     */
+    public static function convertExceptionToVerboseString($exception)
+    {
+        if ($exception instanceof Exception) {
+            $message = "Exception ({$exception->getName()})";
+        } elseif ($exception instanceof ErrorException) {
+            $message = "{$exception->getName()}";
+        } else {
+            $message = 'Exception';
+        }
+        $message .= " '" . get_class($exception) . "' with message '{$exception->getMessage()}' \n\nin "
+            . $exception->getFile() . ':' . $exception->getLine() . "\n\n"
+            . "Stack trace:\n" . $exception->getTraceAsString();
+
         return $message;
     }
 }

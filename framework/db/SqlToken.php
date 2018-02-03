@@ -190,6 +190,7 @@ class SqlToken extends BaseObject implements \ArrayAccess
         while ($code->parent !== null) {
             $code = $code->parent;
         }
+
         return mb_substr($code->content, $this->startOffset, $this->endOffset - $this->startOffset, 'UTF-8');
     }
 
@@ -274,8 +275,10 @@ class SqlToken extends BaseObject implements \ArrayAccess
                 $offset++;
                 continue 2;
             }
+
             return false;
         }
+
         return true;
     }
 

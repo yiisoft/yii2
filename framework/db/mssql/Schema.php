@@ -112,20 +112,24 @@ class Schema extends \yii\db\Schema
             $resolvedName->schemaName = $this->defaultSchema;
             $resolvedName->fullName = $resolvedName->name = $parts[0];
         }
+
         return $resolvedName;
     }
 
     /**
      * @inheritDoc
+     * @see https://docs.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-principals-transact-sql
      */
     protected function findSchemaNames()
     {
-        $sql = <<<'SQL'
-SELECT ns.nspname AS schema_name
-FROM pg_namespace ns
-WHERE ns.nspname != 'information_schema' AND ns.nspname NOT LIKE 'pg_%'
-ORDER BY ns.nspname
+        static $sql = <<<'SQL'
+SELECT [s].[name]
+FROM [sys].[schemas] AS [s]
+INNER JOIN [sys].[database_principals] AS [p] ON [p].[principal_id] = [s].[principal_id]
+WHERE [p].[is_fixed_role] = 0 AND [p].[sid] IS NOT NULL
+ORDER BY [s].[name] ASC
 SQL;
+
         return $this->db->createCommand($sql)->queryColumn();
     }
 
@@ -215,6 +219,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -243,7 +248,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createSavepoint($name)
     {
@@ -251,7 +256,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function releaseSavepoint($name)
     {
@@ -259,7 +264,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rollBackSavepoint($name)
     {
@@ -550,7 +555,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function findViewNames($schema = '')
     {
@@ -570,6 +575,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
+     *
      * Each array element is of the following structure:
      *
      * ```php
@@ -589,6 +595,7 @@ SQL;
         foreach ($this->findTableConstraints($table, 'UNIQUE') as $row) {
             $result[$row['index_name']][] = $row['field_name'];
         }
+
         return $result;
     }
 
@@ -704,6 +711,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

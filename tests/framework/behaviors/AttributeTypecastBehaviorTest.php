@@ -141,7 +141,7 @@ class AttributeTypecastBehaviorTest extends TestCase
             ->addRule('name', 'string')
             ->addRule('amount', 'integer')
             ->addRule('price', 'number')
-            ->addRule('isActive', 'boolean');
+            ->addRule('!isActive', 'boolean');
 
         $behavior = new AttributeTypecastBehavior();
 
@@ -181,7 +181,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model->save(false);
 
         $model->refresh();
-        $this->assertEquals('58', $model->amount);
+        $this->assertSame(58, $model->amount);
     }
 }
 

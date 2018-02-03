@@ -15,7 +15,7 @@ use yii\web\Request;
 use yiiunit\TestCase;
 
 /**
- * Class RadiobuttonColumnTest
+ * Class RadiobuttonColumnTest.
  * @group grid
  * @since 2.0.11
  */

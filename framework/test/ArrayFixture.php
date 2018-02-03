@@ -55,7 +55,7 @@ class ArrayFixture extends Fixture implements \IteratorAggregate, \ArrayAccess, 
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function unload()
     {
