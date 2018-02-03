@@ -387,8 +387,8 @@ class MyForm extends Model
 
     public function validateCountry($attribute, $params, $validator)
     {
-        if (!in_array($this->$attribute, ['USA', 'Web'])) {
-            $this->addError($attribute, 'The country must be either "USA" or "Web".');
+        if (!in_array($this->$attribute, ['USA', 'Indonesia'])) {
+            $this->addError($attribute, 'The country must be either "USA" or "Indonesia".');
         }
     }
 }
@@ -434,7 +434,7 @@ class CountryValidator extends Validator
 {
     public function validateAttribute($model, $attribute)
     {
-        if (!in_array($model->$attribute, ['USA', 'Web'])) {
+        if (!in_array($model->$attribute, ['USA', 'Indonesia'])) {
             $this->addError($model, $attribute, 'The country must be either "{country1}" or "{country2}".', ['country1' => 'USA', 'country2' => 'Indonesia']);
         }
     }
