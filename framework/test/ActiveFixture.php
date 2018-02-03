@@ -7,7 +7,6 @@
 
 namespace yii\test;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\TableSchema;
 
@@ -95,10 +94,15 @@ class ActiveFixture extends BaseActiveFixture
     protected function getData()
     {
         if ($this->dataFile === null) {
-            $class = new \ReflectionClass($this);
-            $dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
 
-            return is_file($dataFile) ? require $dataFile : [];
+            if ($this->dataDirectory !== null) {
+                $dataFile = $this->getTableSchema()->fullName . '.php';
+            } else {
+                $class = new \ReflectionClass($this);
+                $dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
+            }
+
+            return $this->loadData($dataFile);
         }
 
         return parent::getData();

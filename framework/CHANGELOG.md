@@ -3,6 +3,8 @@ Yii Framework 2 Change Log
 
 2.0.14 under development
 ------------------------
+
+- Enh #14546: Added `dataDirectory` property into `BaseActiveFixture` (leandrogehlen)
 - Bug #15522: Fixed `yii\db\ActiveRecord::refresh()` method does not use an alias in the condition (vladis84)
 - Enh #15476: Added `\yii\widgets\ActiveForm::$validationStateOn` to be able to specify where to add class for invalid fields (samdark)
 - Enh #13996: Added `yii\web\View::registerJsVar()` method that allows registering JavaScript variables (Eseperio, samdark)
