@@ -19,7 +19,7 @@ use yii\base\Exception;
 class HeadersAlreadySentException extends Exception
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __construct($file, $line)
     {

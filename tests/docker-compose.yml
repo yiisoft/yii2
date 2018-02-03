@@ -12,6 +12,8 @@ services:
     # Tmpfs volume (experimental, asset tests may fail)
     #tmpfs:
     #  - /project/tests/runtime
+    environment:
+      - TEST_RUNTIME_PATH=/tmp/runtime
 
 networks:
   default:

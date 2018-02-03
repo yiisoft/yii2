@@ -479,7 +479,18 @@ class Query extends Component implements QueryInterface
             throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
         }
 
-        // Clean up table names and aliases
+        return $this->cleanUpTableNames($tableNames);
+    }
+
+    /**
+     * Clean up table names and aliases
+     * Both aliases and names are enclosed into {{ and }}.
+     * @param array $tableNames non-empty array
+     * @return string[] table names indexed by aliases
+     * @since 2.0.14
+     */
+    protected function cleanUpTableNames($tableNames)
+    {
         $cleanedUpTableNames = [];
         foreach ($tableNames as $alias => $tableName) {
             if (is_string($tableName) && !is_string($alias)) {
@@ -681,7 +692,7 @@ PATTERN;
      *
      * The `$condition` parameter should be either a string (e.g. `'id=1'`) or an array.
      *
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param string|array|Expression $condition the conditions that should be put in the WHERE part.
      * @param array $params the parameters (name => value) to be bound to the query.

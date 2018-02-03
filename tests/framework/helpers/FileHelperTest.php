@@ -739,6 +739,12 @@ class FileHelperTest extends TestCase
         $this->assertEquals("..{$ds}a", FileHelper::normalizePath('././..\\a'));
         $this->assertEquals("..{$ds}a", FileHelper::normalizePath('./..\\a/../a'));
         $this->assertEquals("..{$ds}b", FileHelper::normalizePath('./..\\a/../b'));
+
+        // Windows file system may have paths for network shares that start with two backslashes
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
+        // https://github.com/yiisoft/yii2/issues/13034
+        $this->assertEquals('\\\\server\share\path\file', FileHelper::normalizePath('\\\\server\share\path\file', '\\'));
+
     }
 
     public function testLocalizedDirectory()
