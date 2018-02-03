@@ -192,6 +192,7 @@ Yii Framework 2 Change Log
 - Enh #14958: Added options to copy stacktrace and search for error message to the exception page (cebe)
 - Enh #14967: Added Armenian Translations (gevorgmansuryan)
 - Enh #15015: Added `StringHelper::floatToString()` to safely cast float values independent of the locale, also fixes some places in the framework that use it now (cebe)
+- Enh #15076: Perfect `yii\db\QueryBuilder` buildColumns function (hiscaler)
 - Chg #7936: Deprecate `yii\base\Object` in favor of `yii\base\BaseObject` for compatibility with PHP 7.2 (rob006, cebe, klimov-paul)
 - Chg #14201: `yii\console\controllers\MessageController::extractMessagesFromTokens()` is now protected (faenir)
 - Chg #14286: Used primary inputmask package name instead of an alias (samdark)

@@ -1187,7 +1187,11 @@ class QueryBuilder extends \yii\base\BaseObject
                 return $columns;
             }
 
+            $rawColumns = $columns;
             $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+            if ($columns === false) {
+                throw new InvalidParamException("$rawColumns is not valid columns.");
+            }
         }
         foreach ($columns as $i => $column) {
             if ($column instanceof Expression) {
@@ -1197,7 +1201,7 @@ class QueryBuilder extends \yii\base\BaseObject
             }
         }
 
-        return is_array($columns) ? implode(', ', $columns) : $columns;
+        return implode(', ', $columns);
     }
 
     /**
