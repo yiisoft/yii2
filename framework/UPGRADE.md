@@ -58,6 +58,8 @@ Upgrade from Yii 2.0.13
 
 * `yii\base\Security::compareString()` is now throwing `yii\base\InvalidParamException` in case non-strings are compared.
 
+* Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
+
 Upgrade from Yii 2.0.12
 -----------------------
 
