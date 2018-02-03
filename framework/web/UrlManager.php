@@ -150,6 +150,15 @@ class UrlManager extends Component
     public $normalizer = false;
 
     /**
+     * define URL forward parameters
+     *
+     * if new URL params no forward parameter, get it from request url and add  to new URL.
+     *
+     * @var array
+     */
+    public $forwardGetParams = [];	
+	
+    /**
      * @var string the cache key for cached rules
      * @since 2.0.8
      */
@@ -363,6 +372,15 @@ class UrlManager extends Component
 
         $baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $this->getScriptUrl() : $this->getBaseUrl();
 
+        /**
+         * get from request GET forward parameters and add to url, if no exist it
+         */
+        foreach(array_intersect_key(Yii::$app->getRequest()->get(),array_flip($this->forwardGetParams)) as $paramName => $paramValue){
+            if(!isset($params[$paramName])) {
+                $params[$paramName] = $paramValue;
+            }
+        }		
+		
         if ($this->enablePrettyUrl) {
             $cacheKey = $route . '?';
             foreach ($params as $key => $value) {
