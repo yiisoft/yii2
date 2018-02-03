@@ -423,7 +423,7 @@ with [inline validators](#inline-validators).
 
 
 For example, the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
-In this case we can use [[yii\validators\Validator::addError()]] to set customized for the model.
+In this case we can use [[yii\validators\Validator::addError()]] to set customized message for the model.
 
 ```php
 namespace app\components;
