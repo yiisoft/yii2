@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
 - Enh #13465: Added `yii\helpers\FileHelper::findDirectory()` method (ArsSirek, developeruz)
 - Enh #8527: Added `yii\i18n\Locale` component having `getCurrencySymbol()` method (amarox, samdark)
 - Enh #14546: Added `dataDirectory` property into `BaseActiveFixture` (leandrogehlen)
