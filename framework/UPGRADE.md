@@ -62,9 +62,9 @@ Upgrade from Yii 2.0.13
   `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
   introduced methods to retrieve the expression content.
 
-* `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PRO parameter type 
+* `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PDO parameter type 
 when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
-You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii v.2.1.
+You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
 
 * `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
 Class-based conditions and builders are introduces instead to provide more flexibility, extensibility and
