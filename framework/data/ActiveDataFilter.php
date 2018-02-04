@@ -66,7 +66,7 @@ class ActiveDataFilter extends DataFilter
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function buildInternal()
     {

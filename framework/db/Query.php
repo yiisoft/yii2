@@ -677,6 +677,9 @@ PATTERN;
      */
     public function from($tables)
     {
+        if ($tables instanceof Expression) {
+            $tables = [$tables];
+        }
         if (is_string($tables)) {
             $tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
         }
@@ -692,7 +695,7 @@ PATTERN;
      *
      * The `$condition` parameter should be either a string (e.g. `'id=1'`) or an array.
      *
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * @param string|array|ExpressionInterface $condition the conditions that should be put in the WHERE part.
      * @param array $params the parameters (name => value) to be bound to the query.

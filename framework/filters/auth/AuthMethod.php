@@ -48,7 +48,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -79,14 +79,14 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function challenge($response)
     {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function handleFailure($response)
     {

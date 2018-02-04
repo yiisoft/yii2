@@ -44,7 +44,7 @@ class ActionFilter extends Behavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attach($owner)
     {
@@ -53,7 +53,7 @@ class ActionFilter extends Behavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function detach()
     {

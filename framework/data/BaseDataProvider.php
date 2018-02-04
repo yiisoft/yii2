@@ -53,7 +53,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {

@@ -31,7 +31,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     public function testDeadlockException()
     {
-        if (getenv('TRAVIS') && version_compare(PHP_VERSION, '7.0.0', '<')) {
+        if (getenv('TRAVIS') && PHP_VERSION_ID < 70000) {
             $this->markTestSkipped('Skipping PHP 5 on Travis since it segfaults with pcntl');
         }
 
@@ -272,7 +272,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     private function setErrorHandler()
     {
-        if (version_compare(PHP_VERSION, '7', '<')) {
+        if (PHP_VERSION_ID < 70000) {
             set_error_handler(function ($errno, $errstr, $errfile, $errline) {
                 throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
             });

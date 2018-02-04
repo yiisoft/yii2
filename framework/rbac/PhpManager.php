@@ -94,7 +94,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
@@ -108,7 +108,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getAssignments($userId)
     {
@@ -156,7 +156,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function canAddChild($parent, $child)
@@ -165,7 +165,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function addChild($parent, $child)
     {
@@ -218,7 +218,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeChild($parent, $child)
     {
@@ -232,7 +232,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeChildren($parent)
     {
@@ -246,7 +246,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function hasChild($parent, $child)
     {
@@ -254,7 +254,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function assign($role, $userId)
     {
@@ -275,7 +275,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function revoke($role, $userId)
     {
@@ -289,7 +289,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function revokeAll($userId)
     {
@@ -305,7 +305,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getAssignment($roleName, $userId)
     {
@@ -313,7 +313,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getItems($type)
     {
@@ -331,7 +331,7 @@ class PhpManager extends BaseManager
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeItem($item)
     {
@@ -352,7 +352,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getItem($name)
     {
@@ -360,7 +360,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function updateRule($name, $rule)
     {
@@ -373,7 +373,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRule($name)
     {
@@ -381,7 +381,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRules()
     {
@@ -389,7 +389,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * The roles returned by this method include the roles assigned via [[$defaultRoles]].
      */
     public function getRolesByUser($userId)
@@ -406,7 +406,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getChildRoles($roleName)
     {
@@ -429,7 +429,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermissionsByRole($roleName)
     {
@@ -465,7 +465,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermissionsByUser($userId)
     {
@@ -523,7 +523,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getChildren($name)
     {
@@ -531,7 +531,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeAll()
     {
@@ -543,7 +543,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeAllPermissions()
     {
@@ -551,7 +551,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeAllRoles()
     {
@@ -599,7 +599,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeAllRules()
     {
@@ -611,7 +611,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function removeAllAssignments()
     {
@@ -620,7 +620,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function removeRule($rule)
     {
@@ -639,7 +639,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function addRule($rule)
     {
@@ -649,7 +649,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function updateItem($name, $item)
     {
@@ -688,7 +688,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function addItem($item)
     {
@@ -869,7 +869,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.7
      */
     public function getUserIdsByRole($roleName)

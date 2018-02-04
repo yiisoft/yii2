@@ -93,7 +93,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.6
      */
     protected function getDb()

@@ -317,7 +317,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc]
      */
     protected function findViewNames($schema = '')
     {
@@ -603,7 +603,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns)
     {

@@ -46,12 +46,12 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(['user'], $query->from);
     }
 
-    public function testFromTableIsExpression()
+    public function testFromTableIsArrayWithExpression()
     {
         $query = new Query();
         $tables = new Expression('(SELECT id,name FROM user) u');
         $query->from($tables);
-        $this->assertInstanceOf('\yii\db\Expression', $query->from);
+        $this->assertInstanceOf('\yii\db\Expression', $query->from[0]);
     }
 
     use GetTablesAliasTestTrait;
@@ -582,5 +582,19 @@ abstract class QueryTest extends DatabaseTestCase
             'foo',
             '%ba',
         ]));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15355
+     */
+    public function testExpressionInFrom()
+    {
+        $db = $this->getConnection();
+        $query = (new Query())
+            ->from(new \yii\db\Expression('(SELECT id, name, email, address, status FROM customer) c'))
+            ->where(['status' => 2]);
+
+        $result = $query->one($db);
+        $this->assertEquals('user3', $result['name']);
     }
 }
