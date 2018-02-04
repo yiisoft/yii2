@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #14254: add an option to specify whether validator can run on slave db connections for `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` (rossoneri)
+- Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
 - Enh #13465: Added `yii\helpers\FileHelper::findDirectory()` method (ArsSirek, developeruz)
 - Enh #8527: Added `yii\i18n\Locale` component having `getCurrencySymbol()` method (amarox, samdark)
 - Enh #14546: Added `dataDirectory` property into `BaseActiveFixture` (leandrogehlen)
@@ -28,6 +29,7 @@ Yii Framework 2 Change Log
 - Bug #14135: Fixed `yii\web\Request::getBodyParam()` crashes on object type body params (klimov-paul)
 - Bug #14157: Add support for loading default value `CURRENT_TIMESTAMP` of MySQL `datetime` field (rossoneri)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
+- Bug #14296: Fixed log targets to throw exception in case log can not be properly exported (bizley)
 - Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
 - Bug #14903: Fixed route with extra dashes is executed controller while it should not (developeruz)
