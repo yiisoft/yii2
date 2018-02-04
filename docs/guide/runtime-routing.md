@@ -435,6 +435,9 @@ The above rule can be used to parse or create any of the following URLs:
 
 Without using optional parameters, you would have to create 4 rules to achieve the same result.
 
+> Note: If [[yii\web\UrlRule::$pattern|pattern]] contains only optional parameters and slashes, first parameter could be omitted 
+  only if all other parameters are omitted.
+
 
 ### Rules with Server Names <span id="rules-with-server-names"></span>
 
@@ -582,9 +585,9 @@ We can create the following URL rule class to solve this problem.
 namespace app\components;
 
 use yii\web\UrlRuleInterface;
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class CarUrlRule extends Object implements UrlRuleInterface
+class CarUrlRule extends BaseObject implements UrlRuleInterface
 {
     public function createUrl($manager, $route, $params)
     {

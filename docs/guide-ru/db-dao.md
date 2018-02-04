@@ -15,7 +15,7 @@ Yii DAO из коробки поддерживает следующие базы
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)
+- [PostgreSQL](http://www.postgresql.org/): версии 8.4 или выше.
 - [CUBRID](http://www.cubrid.org/): версии 9.3 или выше.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): версии 2008 или выше.

@@ -1,12 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\behaviors;
 
 use Yii;
-use yiiunit\TestCase;
-use yii\db\Connection;
-use yii\db\ActiveRecord;
 use yii\behaviors\SluggableBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Connection;
+use yiiunit\TestCase;
 
 /**
  * Unit test for [[\yii\behaviors\SluggableBehavior]].
@@ -35,8 +40,8 @@ class SluggableBehaviorTest extends TestCase
                 'db' => [
                     'class' => '\yii\db\Connection',
                     'dsn' => 'sqlite::memory:',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $columns = [
@@ -59,6 +64,8 @@ class SluggableBehaviorTest extends TestCase
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
+        gc_enable();
+        gc_collect_cycles();
     }
 
     // Tests :
@@ -78,7 +85,7 @@ class SluggableBehaviorTest extends TestCase
     public function testSlugSeveralAttributes()
     {
         $model = new ActiveRecordSluggable();
-        $model->getBehavior('sluggable')->attribute = array('name', 'category_id');
+        $model->getBehavior('sluggable')->attribute = ['name', 'category_id'];
 
         $model->name = 'test';
         $model->category_id = 10;
@@ -137,7 +144,7 @@ class SluggableBehaviorTest extends TestCase
         $model->save();
 
         $model = new ActiveRecordSluggableUnique();
-        $model->sluggable->uniqueSlugGenerator = function($baseSlug, $iteration) {return $baseSlug . '-callback';};
+        $model->sluggable->uniqueSlugGenerator = function ($baseSlug, $iteration) {return $baseSlug . '-callback';};
         $model->name = $name;
         $model->save();
 
@@ -165,6 +172,60 @@ class SluggableBehaviorTest extends TestCase
         $model->name = 'test-name';
         $model->save();
         $this->assertEquals('test-name', $model->slug);
+    }
+
+    public function testSkipOnEmpty()
+    {
+        $model = new SkipOnEmptySluggableActiveRecord();
+        $model->name = 'test name';
+        $model->save();
+        $this->assertEquals('test-name', $model->slug);
+
+        $model->name = null;
+        $model->save();
+        $this->assertEquals('test-name', $model->slug);
+
+        $model->name = 'test name 2';
+        $model->save();
+        $this->assertEquals('test-name-2', $model->slug);
+    }
+
+    /**
+     * @depends testSlug
+     */
+    public function testImmutableByAttribute()
+    {
+        $model = new ActiveRecordSluggable();
+        $model->getSluggable()->immutable = true;
+
+        $model->name = 'test name';
+        $model->validate();
+        $this->assertEquals('test-name', $model->slug);
+
+        $model->name = 'another name';
+        $model->validate();
+        $this->assertEquals('test-name', $model->slug);
+    }
+
+    /**
+     * @depends testSlug
+     */
+    public function testImmutableByCallback()
+    {
+        $model = new ActiveRecordSluggable();
+        $model->getSluggable()->immutable = true;
+        $model->getSluggable()->attribute = null;
+        $model->getSluggable()->value = function () use ($model) {
+            return $model->name;
+        };
+
+        $model->name = 'test name';
+        $model->validate();
+        $this->assertEquals('test name', $model->slug);
+
+        $model->name = 'another name';
+        $model->validate();
+        $this->assertEquals('test name', $model->slug);
     }
 }
 
@@ -226,6 +287,22 @@ class ActiveRecordSluggableUnique extends ActiveRecordSluggable
                 'class' => SluggableBehavior::className(),
                 'attribute' => 'name',
                 'ensureUnique' => true,
+            ],
+        ];
+    }
+}
+
+class SkipOnEmptySluggableActiveRecord extends ActiveRecordSluggable
+{
+    public function behaviors()
+    {
+        return [
+            'sluggable' => [
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'name',
+                'slugAttribute' => 'slug',
+                'ensureUnique' => true,
+                'skipOnEmpty' => true,
             ],
         ];
     }

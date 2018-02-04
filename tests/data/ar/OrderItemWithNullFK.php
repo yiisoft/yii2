@@ -1,9 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\ar;
 
 /**
- * Class OrderItem
+ * Class OrderItem.
  *
  * @property int $order_id
  * @property int $item_id
@@ -16,5 +21,4 @@ class OrderItemWithNullFK extends ActiveRecord
     {
         return 'order_item_with_null_fk';
     }
-
 }

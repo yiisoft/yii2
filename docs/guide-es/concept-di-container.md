@@ -44,9 +44,9 @@ registra una dependencia o se crea un nuevo objeto, se puede proporcionar una co
 para inyectar las dependencias a través de sus correspondientes setters y propiedades. Por ejemplo,
 
 ```php
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     public $bar;
 
@@ -75,7 +75,7 @@ En este caso, el contenedor usará una llamada de retorno PHP registrada para co
 clase. La llamada de retorno se responsabiliza de que dependencias debe inyectar al nuevo objeto creado. Por ejemplo,
 
 ```php
-$container->set('Foo', function () {
+$container->set('Foo', function ($container, $params, $config) {
     return new Foo(new Bar);
 });
 
@@ -185,7 +185,7 @@ una nueva instancia de `UserLister` con una simple llamada a `get('userLister')`
 ```php
 namespace app\models;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\di\Container;
 
@@ -194,7 +194,7 @@ interface UserFinderInterface
     function findUser();
 }
 
-class UserFinder extends Object implements UserFinderInterface
+class UserFinder extends BaseObject implements UserFinderInterface
 {
     public $db;
 
@@ -209,7 +209,7 @@ class UserFinder extends Object implements UserFinderInterface
     }
 }
 
-class UserLister extends Object
+class UserLister extends BaseObject
 {
     public $finder;
 

@@ -1,7 +1,11 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
-return
-        $code = <<<CODE
+return <<<CODE
 <?php
 
 use yii\db\Migration;
@@ -16,9 +20,9 @@ use yii\db\Migration;
 class {$class} extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function up()
+    public function safeUp()
     {
         \$this->createTable('post_tag', [
             'post_id' => \$this->integer(),
@@ -62,9 +66,9 @@ class {$class} extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function down()
+    public function safeDown()
     {
         // drops foreign key for table `post`
         \$this->dropForeignKey(

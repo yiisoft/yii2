@@ -70,7 +70,8 @@ in the application configuration, like the following:
 return [
     // the "log" component must be loaded during bootstrapping time
     'bootstrap' => ['log'],
-    
+    // the "log" component process messages with timestamp. Set PHP timezone to create correct timestamp
+    'timeZone' => 'America/Los_Angeles',
     'components' => [
         'log' => [
             'targets' => [
@@ -332,6 +333,9 @@ return [
 ];
 ```
 
+Since version 2.0.13, you may configure [[yii\log\Target::enabled|enabled]] with a callable to
+define a dynamic condition for whether the log target should be enabled or not.
+See the documentation of [[yii\log\Target::setEnabled()]] for an example.
 
 ### Creating New Targets <span id="new-targets"></span>
 
@@ -340,6 +344,9 @@ sending the content of the [[yii\log\Target::messages]] array to a designated me
 [[yii\log\Target::formatMessage()]] method to format each message. For more details, you may refer to any of the
 log target classes included in the Yii release.
 
+> Tip: Instead of creating your own loggers you may try any PSR-3 compatible logger such
+  as [Monolog](https://github.com/Seldaek/monolog) by using
+  [PSR log target extension](https://github.com/samdark/yii2-psr-log-target).
 
 ## Performance Profiling <span id="performance-profiling"></span>
 

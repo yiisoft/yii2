@@ -8,8 +8,9 @@
 namespace yii\db\mysql;
 
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\db\Exception;
-use yii\db\Expression;
+use yii\db\ExpressionInterface;
 
 /**
  * QueryBuilder is the query builder for MySQL databases.
@@ -45,6 +46,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\JsonExpression' => 'yii\db\mysql\JsonExpressionBuilder',
+        ]);
+    }
 
     /**
      * Builds a SQL statement for renaming a column.
@@ -84,7 +94,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @see https://bugs.mysql.com/bug.php?id=48875
      */
     public function createIndex($name, $table, $columns, $unique = false)
@@ -120,6 +130,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritDoc
+     */
+    public function dropUnique($name, $table)
+    {
+        return $this->dropIndex($name, $table);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
+    }
+
+    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
@@ -144,9 +180,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "ALTER TABLE $tableName AUTO_INCREMENT=$value";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is no sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidParamException("There is no sequence associated with table '$tableName'.");
     }
 
     /**
@@ -162,7 +198,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildLimit($limit, $offset)
     {
@@ -183,7 +219,26 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     */
+    protected function hasLimit($limit)
+    {
+        // In MySQL limit argument must be nonnegative integer constant
+        return ctype_digit((string) $limit);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function hasOffset($offset)
+    {
+        // In MySQL offset argument must be nonnegative integer constant
+        $offset = (string) $offset;
+        return ctype_digit($offset) && $offset !== '0';
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function insert($table, $columns, &$params)
     {
@@ -197,22 +252,20 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
+            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
-                if ($value instanceof Expression) {
-                    $placeholders[] = $value->expression;
-                    foreach ($value->params as $n => $v) {
-                        $params[$n] = $v;
-                    }
+                if ($value instanceof ExpressionInterface) {
+                    $placeholders[] = $this->buildExpression($value, $params);
                 } elseif ($value instanceof \yii\db\Query) {
                     list($sql, $params) = $this->build($value, $params);
                     $placeholders[] = "($sql)";
                 } else {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $placeholders[] = $phName;
-                    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                    $placeholders[] = $this->bindParam(
+                        isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value,
+                        $params
+                    );
                 }
             }
             if (empty($names) && $tableSchema !== null) {
@@ -230,7 +283,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
@@ -246,7 +299,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
@@ -255,7 +308,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
@@ -264,7 +317,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromTable($table)
@@ -301,6 +354,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
             }
         }
+
         return null;
     }
+
 }

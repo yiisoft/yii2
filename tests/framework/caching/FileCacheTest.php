@@ -1,10 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\caching;
 
 use yii\caching\FileCache;
 
 /**
- * Class for testing file cache backend
+ * Class for testing file cache backend.
  * @group caching
  */
 class FileCacheTest extends CacheTestCase

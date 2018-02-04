@@ -51,7 +51,7 @@ class RequiredValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -63,7 +63,7 @@ class RequiredValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -76,15 +76,15 @@ class RequiredValidator extends Validator
         }
         if ($this->requiredValue === null) {
             return [$this->message, []];
-        } else {
-            return [$this->message, [
-                'requiredValue' => $this->requiredValue,
-            ]];
         }
+
+        return [$this->message, [
+            'requiredValue' => $this->requiredValue,
+        ]];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -95,15 +95,15 @@ class RequiredValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {
         $options = [];
         if ($this->requiredValue !== null) {
-            $options['message'] = Yii::$app->getI18n()->format($this->message, [
+            $options['message'] = $this->formatMessage($this->message, [
                 'requiredValue' => $this->requiredValue,
-            ], Yii::$app->language);
+            ]);
             $options['requiredValue'] = $this->requiredValue;
         } else {
             $options['message'] = $this->message;
@@ -112,9 +112,9 @@ class RequiredValidator extends Validator
             $options['strict'] = 1;
         }
 
-        $options['message'] = Yii::$app->getI18n()->format($options['message'], [
+        $options['message'] = $this->formatMessage($options['message'], [
             'attribute' => $model->getAttributeLabel($attribute),
-        ], Yii::$app->language);
+        ]);
 
         return $options;
     }

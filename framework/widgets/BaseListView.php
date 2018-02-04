@@ -40,14 +40,14 @@ abstract class BaseListView extends Widget
      * @var array the configuration for the pager widget. By default, [[LinkPager]] will be
      * used to render the pager. You can use a different widget class by configuring the "class" element.
      * Note that the widget must support the `pagination` property which will be populated with the
-     * [[\yii\data\BaseDataProvider::pagination|pagination]] value of the [[dataProvider]].
+     * [[\yii\data\BaseDataProvider::pagination|pagination]] value of the [[dataProvider]] and will overwrite this value.
      */
     public $pager = [];
     /**
      * @var array the configuration for the sorter widget. By default, [[LinkSorter]] will be
      * used to render the sorter. You can use a different widget class by configuring the "class" element.
      * Note that the widget must support the `sort` property which will be populated with the
-     * [[\yii\data\BaseDataProvider::sort|sort]] value of the [[dataProvider]].
+     * [[\yii\data\BaseDataProvider::sort|sort]] value of the [[dataProvider]] and will overwrite this value.
      */
     public $sorter = [];
     /**
@@ -72,12 +72,16 @@ abstract class BaseListView extends Widget
     public $summaryOptions = ['class' => 'summary'];
     /**
      * @var bool whether to show an empty list view if [[dataProvider]] returns no data.
-     * The default value is false which displays an element according to the `emptyText`
-     * and `emptyTextOptions` properties.
+     * The default value is false which displays an element according to the [[emptyText]]
+     * and [[emptyTextOptions]] properties.
      */
     public $showOnEmpty = false;
     /**
-     * @var string the HTML content to be displayed when [[dataProvider]] does not have any data.
+     * @var string|false the HTML content to be displayed when [[dataProvider]] does not have any data.
+     * When this is set to `false` no extra HTML content will be generated.
+     * The default value is the text "No results found." which will be translated to the current application language.
+     * @see showOnEmpty
+     * @see emptyTextOptions
      */
     public $emptyText;
     /**
@@ -109,6 +113,7 @@ abstract class BaseListView extends Widget
      */
     public function init()
     {
+        parent::init();
         if ($this->dataProvider === null) {
             throw new InvalidConfigException('The "dataProvider" property must be set.');
         }
@@ -126,7 +131,7 @@ abstract class BaseListView extends Widget
     public function run()
     {
         if ($this->showOnEmpty || $this->dataProvider->getCount() > 0) {
-            $content = preg_replace_callback("/{\\w+}/", function ($matches) {
+            $content = preg_replace_callback('/{\\w+}/', function ($matches) {
                 $content = $this->renderSection($matches[0]);
 
                 return $content === false ? $matches[0] : $content;
@@ -169,6 +174,9 @@ abstract class BaseListView extends Widget
      */
     public function renderEmpty()
     {
+        if ($this->emptyText === false) {
+            return '';
+        }
         $options = $this->emptyTextOptions;
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         return Html::tag($tag, $this->emptyText, $options);

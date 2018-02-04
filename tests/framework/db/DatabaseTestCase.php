@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db;
 
@@ -27,13 +32,13 @@ abstract class DatabaseTestCase extends TestCase
         parent::setUp();
         $databases = self::getParam('databases');
         $this->database = $databases[$this->driverName];
-        $pdo_database = 'pdo_'.$this->driverName;
+        $pdo_database = 'pdo_' . $this->driverName;
         if ($this->driverName === 'oci') {
             $pdo_database = 'oci8';
         }
 
         if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
-            $this->markTestSkipped('pdo and '.$pdo_database.' extension are required.');
+            $this->markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
         }
         $this->mockApplication();
     }
@@ -66,8 +71,9 @@ abstract class DatabaseTestCase extends TestCase
         try {
             $this->_db = $this->prepareDatabase($config, $fixture, $open);
         } catch (\Exception $e) {
-            $this->markTestSkipped("Something wrong when preparing database: " . $e->getMessage());
+            $this->markTestSkipped('Something wrong when preparing database: ' . $e->getMessage());
         }
+
         return $this->_db;
     }
 
@@ -96,11 +102,12 @@ abstract class DatabaseTestCase extends TestCase
                 }
             }
         }
+
         return $db;
     }
 
     /**
-     * adjust dbms specific escaping
+     * Adjust dbms specific escaping.
      * @param $sql
      * @return mixed
      */
@@ -111,9 +118,11 @@ abstract class DatabaseTestCase extends TestCase
             case 'sqlite':
                 return str_replace(['[[', ']]'], '`', $sql);
             case 'cubrid':
-            case 'pgsql':
             case 'oci':
                 return str_replace(['[[', ']]'], '"', $sql);
+            case 'pgsql':
+                // more complex replacement needed to not conflict with postgres array syntax
+                return str_replace(['\\[', '\\]'], ['[', ']'], preg_replace('/(\[\[)|((?<!(\[))\]\])/', '"', $sql));
             case 'sqlsrv':
                 return str_replace(['[[', ']]'], ['[', ']'], $sql);
             default:

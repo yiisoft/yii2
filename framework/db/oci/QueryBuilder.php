@@ -11,6 +11,8 @@ use yii\base\InvalidParamException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\helpers\StringHelper;
+use yii\db\ExpressionInterface;
 
 /**
  * QueryBuilder is the query builder for Oracle databases.
@@ -46,9 +48,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'NUMBER(19,4)',
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\conditions\InCondition' => 'yii\db\conditions\oci\InConditionBuilder',
+            'yii\db\conditions\LikeCondition' => 'yii\db\oci\conditions\LikeConditionBuilder',
+        ]);
+    }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
@@ -120,7 +132,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function resetSequence($table, $value = null)
     {
@@ -146,7 +158,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
     {
@@ -166,7 +178,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns, &$params)
     {
@@ -180,22 +192,20 @@ EOD;
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
+            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
-                if ($value instanceof Expression) {
-                    $placeholders[] = $value->expression;
-                    foreach ($value->params as $n => $v) {
-                        $params[$n] = $v;
-                    }
+                if ($value instanceof ExpressionInterface) {
+                    $placeholders[] = $this->buildExpression($value, $params);
                 } elseif ($value instanceof \yii\db\Query) {
                     list($sql, $params) = $this->build($value, $params);
                     $placeholders[] = "($sql)";
                 } else {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $placeholders[] = $phName;
-                    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                    $placeholders[] = $this->bindParam(
+                        isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value,
+                        $params
+                    );
                 }
             }
             if (empty($names) && $tableSchema !== null) {
@@ -214,6 +224,7 @@ EOD;
 
     /**
      * Generates a batch INSERT SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -228,7 +239,7 @@ EOD;
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
-     * @param array $rows the rows to be batch inserted into the table
+     * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
     public function batchInsert($table, $columns, $rows)
@@ -248,11 +259,14 @@ EOD;
         foreach ($rows as $row) {
             $vs = [];
             foreach ($row as $i => $value) {
-                if (isset($columns[$i], $columnSchemas[$columns[$i]]) && !is_array($value)) {
+                if (isset($columns[$i], $columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
+                } elseif (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    $value = StringHelper::floatToString($value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {
@@ -261,6 +275,9 @@ EOD;
                 $vs[] = $value;
             }
             $values[] = '(' . implode(', ', $vs) . ')';
+        }
+        if (empty($values)) {
+            return '';
         }
 
         foreach ($columns as $i => $name) {
@@ -274,7 +291,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function selectExists($rawSql)
@@ -283,7 +300,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
@@ -292,7 +309,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromTable($table)

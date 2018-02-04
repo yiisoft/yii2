@@ -55,21 +55,18 @@ by running `composer self-update`.
 
 ### Installing Yii <span id="installing-from-composer"></span>
 
-With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
+With Composer installed, you can install Yii application template by running the following command
+under a Web-accessible folder:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-which allows managing bower and npm package dependencies through Composer. You only need to run this command
-once for all. The second command installs the latest stable version of Yii in a directory named `basic`.
+This will install the latest stable version of Yii application template in a directory named `basic`.
 You can choose a different directory name if you want.
 
-> Info: If the `composer create-project` command fails make sure you have the composer asset plugin installed correctly.
-> You can do that by running `composer global show`, which should contain an entry `fxp/composer-asset-plugin`.
-> You may also refer to the [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
+> Info: If the `composer create-project` command fails you may also refer to the 
+> [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
 > for common errors. When you have fixed the error, you can resume the aborted installation
 > by running `composer update` inside of the `basic` directory.
 
@@ -182,6 +179,8 @@ of `basic/web`. Denying access to those other folders is a security improvement.
 to modify its Web server configuration, you may still adjust the structure of your application for better security. Please refer to
 the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
 
+> Info: If you are running your Yii application behind a reverse proxy, you might need to configure
+> [Trusted proxies and headers](runtime-requests.md#trusted-proxies) in the request component.
 
 ### Recommended Apache Configuration <span id="recommended-apache-configuration"></span>
 
@@ -201,6 +200,9 @@ DocumentRoot "path/to/basic/web"
     # Otherwise forward the request to index.php
     RewriteRule . index.php
 
+    # if $showScriptName is false in UrlManager, do not allow accessing URLs with script name
+    RewriteRule ^index.php/ - [L,R=404]
+
     # ...other settings...
 </Directory>
 ```
@@ -210,7 +212,7 @@ DocumentRoot "path/to/basic/web"
 
 To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](http://php.net/install.fpm).
 You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
-`basic/web` and `mysite.local` with the actual hostname to serve.
+`basic/web` and `mysite.test` with the actual hostname to serve.
 
 ```nginx
 server {
@@ -220,7 +222,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

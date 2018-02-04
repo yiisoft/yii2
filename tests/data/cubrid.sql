@@ -23,6 +23,10 @@ DROP TABLE IF EXISTS "dossier";
 DROP TABLE IF EXISTS "employee";
 DROP TABLE IF EXISTS "department";
 DROP VIEW IF EXISTS "animal_view";
+DROP TABLE IF EXISTS "T_constraints_4";
+DROP TABLE IF EXISTS "T_constraints_3";
+DROP TABLE IF EXISTS "T_constraints_2";
+DROP TABLE IF EXISTS "T_constraints_1";
 
 CREATE TABLE "constraints"
 (
@@ -58,7 +62,7 @@ CREATE TABLE "item" (
   "name" varchar(128) NOT NULL,
   "category_id" int(11) NOT NULL,
   PRIMARY KEY ("id"),
-  CONSTRAINT "FK_item_category_id" FOREIGN KEY ("category_id") REFERENCES "category" ("id") ON DELETE CASCADE
+  CONSTRAINT "FK_item_category_id" FOREIGN KEY ("category_id") REFERENCES "category" ("id")
 );
 
 CREATE TABLE "order" (
@@ -67,7 +71,7 @@ CREATE TABLE "order" (
   "created_at" int(11) NOT NULL,
   "total" decimal(10,0) NOT NULL,
   PRIMARY KEY ("id"),
-  CONSTRAINT "FK_order_customer_id" FOREIGN KEY ("customer_id") REFERENCES "customer" ("id") ON DELETE CASCADE
+  CONSTRAINT "FK_order_customer_id" FOREIGN KEY ("customer_id") REFERENCES "customer" ("id")
 );
 
 CREATE TABLE "order_with_null_fk" (
@@ -84,8 +88,8 @@ CREATE TABLE "order_item" (
   "quantity" int(11) NOT NULL,
   "subtotal" decimal(10,0) NOT NULL,
   PRIMARY KEY ("order_id","item_id"),
-  CONSTRAINT "FK_order_item_order_id" FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE CASCADE,
-  CONSTRAINT "FK_order_item_item_id" FOREIGN KEY ("item_id") REFERENCES "item" ("id") ON DELETE CASCADE
+  CONSTRAINT "FK_order_item_order_id" FOREIGN KEY ("order_id") REFERENCES "order" ("id"),
+  CONSTRAINT "FK_order_item_item_id" FOREIGN KEY ("item_id") REFERENCES "item" ("id")
 );
 
 CREATE TABLE "order_item_with_null_fk" (
@@ -137,7 +141,7 @@ CREATE TABLE "composite_fk" (
   "order_id" int(11) NOT NULL,
   "item_id" int(11) NOT NULL,
   PRIMARY KEY ("id"),
-  CONSTRAINT "FK_composite_fk_order_item" FOREIGN KEY ("order_id","item_id") REFERENCES "order_item" ("order_id","item_id") ON DELETE CASCADE
+  CONSTRAINT "FK_composite_fk_order_item" FOREIGN KEY ("order_id","item_id") REFERENCES "order_item" ("order_id","item_id")
 );
 
 CREATE TABLE "animal" (
@@ -240,12 +244,51 @@ INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (3, 2, 2,
 
 /* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
 
-DROP TABLE IF EXISTS `bit_values` CASCADE;
+DROP TABLE IF EXISTS `bit_values`;
 
 CREATE TABLE `bit_values` (
   `id`      INT(11) NOT NULL AUTO_INCREMENT,
   `val` bit(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 INSERT INTO `bit_values` (id, val) VALUES (1, b'0'), (2, b'1');
+
+CREATE TABLE "T_constraints_1"
+(
+    "C_id" INT NOT NULL PRIMARY KEY,
+    "C_not_null" INT NOT NULL,
+    "C_check" VARCHAR(255) NULL CHECK ("C_check" <> ''),
+    "C_unique" INT NOT NULL,
+    "C_default" INT NOT NULL DEFAULT 0,
+    CONSTRAINT "CN_unique" UNIQUE ("C_unique")
+);
+
+CREATE TABLE "T_constraints_2"
+(
+    "C_id_1" INT NOT NULL,
+    "C_id_2" INT NOT NULL,
+    "C_index_1" INT NULL,
+    "C_index_2_1" INT NULL,
+    "C_index_2_2" INT NULL,
+    CONSTRAINT "CN_constraints_2_multi" UNIQUE ("C_index_2_1", "C_index_2_2"),
+    CONSTRAINT "CN_pk" PRIMARY KEY ("C_id_1", "C_id_2")
+);
+
+CREATE INDEX "CN_constraints_2_single" ON "T_constraints_2" ("C_index_1");
+
+CREATE TABLE "T_constraints_3"
+(
+    "C_id" INT NOT NULL,
+    "C_fk_id_1" INT NOT NULL,
+    "C_fk_id_2" INT NOT NULL,
+    CONSTRAINT "CN_constraints_3" FOREIGN KEY ("C_fk_id_1", "C_fk_id_2") REFERENCES "T_constraints_2" ("C_id_1", "C_id_2") ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+CREATE TABLE "T_constraints_4"
+(
+    "C_id" INT NOT NULL PRIMARY KEY,
+    "C_col_1" INT NULL,
+    "C_col_2" INT NOT NULL,
+    CONSTRAINT "CN_constraints_4" UNIQUE ("C_col_1", "C_col_2")
+);

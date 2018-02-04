@@ -35,7 +35,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BIGINT => 'bigint',
         Schema::TYPE_FLOAT => 'float',
         Schema::TYPE_DOUBLE => 'float',
-        Schema::TYPE_DECIMAL => 'decimal',
+        Schema::TYPE_DECIMAL => 'decimal(18,0)',
         Schema::TYPE_DATETIME => 'datetime',
         Schema::TYPE_TIMESTAMP => 'datetime',
         Schema::TYPE_TIME => 'time',
@@ -45,9 +45,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\conditions\InCondition' => 'yii\db\mssql\conditions\InConditionBuilder',
+            'yii\db\conditions\LikeCondition' => 'yii\db\mssql\conditions\LikeConditionBuilder',
+        ]);
+    }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
@@ -58,9 +68,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         if ($this->isOldMssql()) {
             return $this->oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
-        } else {
-            return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         }
+
+        return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
     }
 
     /**
@@ -166,29 +176,80 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for enabling or disabling integrity check.
-     * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
-     * @return string the SQL statement for checking integrity
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     * @inheritDoc
      */
-    public function checkIntegrity($check = true, $schema = '', $table = '')
+    public function addDefaultValue($name, $table, $column, $value)
     {
-        if ($schema !== '') {
-            $table = "{$schema}.{$table}";
-        }
-        $table = $this->db->quoteTableName($table);
-        if ($this->db->getTableSchema($table) === null) {
-            throw new InvalidParamException("Table not found: $table");
-        }
-        $enable = $check ? 'CHECK' : 'NOCHECK';
-
-        return "ALTER TABLE {$table} {$enable} CONSTRAINT ALL";
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+            . $this->db->quoteColumnName($name) . ' DEFAULT ' . $this->db->quoteValue($value) . ' FOR '
+            . $this->db->quoteColumnName($column);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
+     */
+    public function dropDefaultValue($name, $table)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+    }
+
+    /**
+     * Creates a SQL statement for resetting the sequence value of a table's primary key.
+     * The sequence will be reset such that the primary key of the next new row inserted
+     * will have the specified value or 1.
+     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
+     * @return string the SQL statement for resetting sequence
+     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     */
+    public function resetSequence($tableName, $value = null)
+    {
+        $table = $this->db->getTableSchema($tableName);
+        if ($table !== null && $table->sequenceName !== null) {
+            $tableName = $this->db->quoteTableName($tableName);
+            if ($value === null) {
+                $key = $this->db->quoteColumnName(reset($table->primaryKey));
+                $value = "(SELECT COALESCE(MAX({$key}),0) FROM {$tableName})+1";
+            } else {
+                $value = (int) $value;
+            }
+
+            return "DBCC CHECKIDENT ('{$tableName}', RESEED, {$value})";
+        } elseif ($table === null) {
+            throw new InvalidParamException("Table not found: $tableName");
+        }
+
+        throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
+    }
+
+    /**
+     * Builds a SQL statement for enabling or disabling integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
+     * @param string $schema the schema of the tables.
+     * @param string $table the table name.
+     * @return string the SQL statement for checking integrity
+     */
+    public function checkIntegrity($check = true, $schema = '', $table = '')
+    {
+        $enable = $check ? 'CHECK' : 'NOCHECK';
+        $schema = $schema ?: $this->db->getSchema()->defaultSchema;
+        $tableNames = $this->db->getTableSchema($table) ? [$table] : $this->db->getSchema()->getTableNames($schema);
+        $viewNames = $this->db->getSchema()->getViewNames($schema);
+        $tableNames = array_diff($tableNames, $viewNames);
+        $command = '';
+
+        foreach ($tableNames as $tableName) {
+            $tableName = $this->db->quoteTableName("{$schema}.{$tableName}");
+            $command .= "ALTER TABLE $tableName $enable CONSTRAINT ALL; ";
+        }
+
+        return $command;
+    }
+
+    /**
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
@@ -197,7 +258,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
@@ -206,7 +267,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
@@ -215,7 +276,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromTable($table)
@@ -224,7 +285,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Returns an array of column names given model name
+     * Returns an array of column names given model name.
      *
      * @param string $modelClass name of the model class
      * @return array|null array of column names
@@ -234,9 +295,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$modelClass) {
             return null;
         }
-        /* @var $model \yii\db\ActiveRecord */
-        $model = new $modelClass;
-        $schema = $model->getTableSchema();
+        /* @var $modelClass \yii\db\ActiveRecord */
+        $schema = $modelClass::getTableSchema();
         return array_keys($schema->columns);
     }
 
@@ -257,56 +317,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $version = explode('.', $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
             $this->_oldMssql = $version[0] < 11;
         }
+
         return $this->_oldMssql;
     }
 
     /**
-     * @inheritdoc
-     * @throws NotSupportedException if `$columns` is an array
-     */
-    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
-    {
-        if (is_array($columns)) {
-            throw new NotSupportedException(__METHOD__ . ' is not supported by MSSQL.');
-        }
-        return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
-    }
-
-    /**
-     * Builds SQL for IN condition
-     *
-     * @param string $operator
-     * @param array $columns
-     * @param array $values
-     * @param array $params
-     * @return string SQL
-     */
-    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
-    {
-        $quotedColumns = [];
-        foreach ($columns as $i => $column) {
-            $quotedColumns[$i] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
-        }
-        $vss = [];
-        foreach ($values as $value) {
-            $vs = [];
-            foreach ($columns as $i => $column) {
-                if (isset($value[$column])) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $params[$phName] = $value[$column];
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
-                } else {
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
-                }
-            }
-            $vss[] = '(' . implode($operator === 'IN' ? ' AND ' : ' OR ', $vs) . ')';
-        }
-
-        return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
-    }
-
-    /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function selectExists($rawSql)
@@ -327,16 +343,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
             foreach ($columns as $name => $value) {
                 // @see https://github.com/yiisoft/yii2/issues/12599
                 if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && is_string($value)) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", [$phName => $value]);
+                    $exParams = [];
+                    $phName = $this->bindParam($value, $exParams);
+                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", $exParams);
                 }
             }
         }
+
         return $columns;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns, &$params)
     {
@@ -344,7 +362,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function update($table, $columns, $condition, &$params)
     {

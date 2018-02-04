@@ -7,9 +7,9 @@
 
 namespace yii\data;
 
-use yii\db\ActiveQueryInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\db\ActiveQueryInterface;
 use yii\db\Connection;
 use yii\db\QueryInterface;
 use yii\di\Instance;
@@ -94,7 +94,7 @@ class ActiveDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareModels()
     {
@@ -104,6 +104,9 @@ class ActiveDataProvider extends BaseDataProvider
         $query = clone $this->query;
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
+            if ($pagination->totalCount === 0) {
+                return [];
+            }
             $query->limit($pagination->getLimit())->offset($pagination->getOffset());
         }
         if (($sort = $this->getSort()) !== false) {
@@ -114,7 +117,7 @@ class ActiveDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareKeys($models)
     {
@@ -130,7 +133,7 @@ class ActiveDataProvider extends BaseDataProvider
 
             return $keys;
         } elseif ($this->query instanceof ActiveQueryInterface) {
-            /* @var $class \yii\db\ActiveRecord */
+            /* @var $class \yii\db\ActiveRecordInterface */
             $class = $this->query->modelClass;
             $pks = $class::primaryKey();
             if (count($pks) === 1) {
@@ -149,13 +152,13 @@ class ActiveDataProvider extends BaseDataProvider
             }
 
             return $keys;
-        } else {
-            return array_keys($models);
         }
+
+        return array_keys($models);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareTotalCount()
     {
@@ -167,14 +170,15 @@ class ActiveDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setSort($value)
     {
         parent::setSort($value);
         if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
-            /* @var $model Model */
-            $model = new $this->query->modelClass;
+            /* @var $modelClass Model */
+            $modelClass = $this->query->modelClass;
+            $model = $modelClass::instance();
             if (empty($sort->attributes)) {
                 foreach ($model->attributes() as $attribute) {
                     $sort->attributes[$attribute] = [

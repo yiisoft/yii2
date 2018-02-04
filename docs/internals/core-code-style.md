@@ -7,8 +7,7 @@ what suits you better.
 
 You can get a config for CodeSniffer here: https://github.com/yiisoft/yii2-coding-standards
 
-1. Overview
------------
+## 1. Overview
 
 Overall we're using [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)
 compatible style so everything that applies to
@@ -26,8 +25,7 @@ style as well.
 - Property names MUST start with an initial underscore if they are private.
 - Always use `elseif` instead of `else if`.
 
-2. Files
---------
+## 2. Files
 
 ### 2.1. PHP Tags
 
@@ -40,13 +38,11 @@ style as well.
 
 PHP code MUST use only UTF-8 without BOM.
 
-3. Class Names
---------------
+## 3. Class Names
 
 Class names MUST be declared in `StudlyCaps`. For example, `Controller`, `Model`.
 
-4. Classes
-----------
+## 4. Classes
 
 The term "class" refers to all classes and interfaces here.
 
@@ -62,7 +58,7 @@ The term "class" refers to all classes and interfaces here.
 /**
  * Documentation
  */
-class MyClass extends \yii\Object implements MyInterface
+class MyClass extends \yii\base\BaseObject implements MyInterface
 {
     // code
 }
@@ -371,7 +367,7 @@ Documentation
 - All class files must contain a "file-level" docblock at the top of each file
   and a "class-level" docblock immediately above each class.
 - There is no need to use `@return` if method does return nothing.
-- All virtual properties in classes that extend from `yii\base\Object`
+- All virtual properties in classes that extend from `yii\base\BaseObject`
   are documented with an `@property` tag in the class doc block.
   These annotations are automatically generated from the `@return` or `@param`
   tag in the corresponding getter or setter by running `./build php-doc` in the build directory.
@@ -416,7 +412,7 @@ Documentation
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends \yii\base\Object
+class Component extends \yii\base\BaseObject
 ```
 
 

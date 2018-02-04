@@ -1,6 +1,7 @@
 <?php
 /**
- * This view is used by console/controllers/MigrateController.php
+ * This view is used by console/controllers/MigrateController.php.
+ *
  * The following variables are available in this view:
  */
 /* @var $className string the new migration class name without namespace */
@@ -27,9 +28,9 @@ use yii\db\Migration;
 class <?= $className ?> extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function up()
+    public function safeUp()
     {
 <?= $this->render('_dropColumns', [
     'table' => $table,
@@ -40,9 +41,9 @@ class <?= $className ?> extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function down()
+    public function safeDown()
     {
 <?= $this->render('_addColumns', [
     'table' => $table,

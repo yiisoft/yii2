@@ -50,15 +50,19 @@ class MysqlMutex extends DbMutex
     /**
      * Acquires lock by given name.
      * @param string $name of the lock to be acquired.
-     * @param int $timeout to wait for lock to become released.
+     * @param int $timeout time (in seconds) to wait for lock to become released.
      * @return bool acquiring result.
      * @see http://dev.mysql.com/doc/refman/5.0/en/miscellaneous-functions.html#function_get-lock
      */
     protected function acquireLock($name, $timeout = 0)
     {
-        return (bool) $this->db
-            ->createCommand('SELECT GET_LOCK(:name, :timeout)', [':name' => $name, ':timeout' => $timeout])
-            ->queryScalar();
+        return $this->db->useMaster(function ($db) use ($name, $timeout) {
+            /** @var \yii\db\Connection $db */
+            return (bool) $db->createCommand(
+                'SELECT GET_LOCK(:name, :timeout)',
+                [':name' => $name, ':timeout' => $timeout]
+            )->queryScalar();
+        });
     }
 
     /**
@@ -69,8 +73,12 @@ class MysqlMutex extends DbMutex
      */
     protected function releaseLock($name)
     {
-        return (bool) $this->db
-            ->createCommand('SELECT RELEASE_LOCK(:name)', [':name' => $name])
-            ->queryScalar();
+        return $this->db->useMaster(function ($db) use ($name) {
+            /** @var \yii\db\Connection $db */
+            return (bool) $db->createCommand(
+                'SELECT RELEASE_LOCK(:name)',
+                [':name' => $name]
+            )->queryScalar();
+        });
     }
 }
