@@ -356,23 +356,25 @@ class DataFilter extends Model
      */
     protected function detectSearchAttributeType(Validator $validator)
     {
+        $type = null;
         if ($validator instanceof BooleanValidator) {
-            return self::TYPE_BOOLEAN;
+            $type = self::TYPE_BOOLEAN;
         } elseif ($validator instanceof NumberValidator) {
-            return $validator->integerOnly ? self::TYPE_INTEGER : self::TYPE_FLOAT;
+            $type = $validator->integerOnly ? self::TYPE_INTEGER : self::TYPE_FLOAT;
         } elseif ($validator instanceof StringValidator) {
-            return self::TYPE_STRING;
+            $type = self::TYPE_STRING;
         } elseif ($validator instanceof EachValidator) {
-            return self::TYPE_ARRAY;
+            $type = self::TYPE_ARRAY;
         } elseif ($validator instanceof DateValidator) {
             if ($validator->type == DateValidator::TYPE_DATETIME) {
-                return self::TYPE_DATETIME;
+                $type = self::TYPE_DATETIME;
             } elseif ($validator->type == DateValidator::TYPE_TIME) {
-                return self::TYPE_TIME;
+                $type = self::TYPE_TIME;
             } else {
-                return self::TYPE_DATE;
+                $type = self::TYPE_DATE;
             }
         }
+        return $type;
     }
 
     /**
