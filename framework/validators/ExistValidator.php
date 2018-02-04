@@ -208,7 +208,6 @@ class ExistValidator extends Validator
             $disabledSlaves = true;
         }
 
-
         if (is_array($value)) {
             $result = $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
         } else {
@@ -217,12 +216,6 @@ class ExistValidator extends Validator
 
         if ($disabledSlaves){
             $db->enableSlaves = true;
-          
-            if (!$this->allowArray) {
-                return [$this->message, []];
-            }
-
-            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
         }
 
         return $result;
