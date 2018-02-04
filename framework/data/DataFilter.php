@@ -351,30 +351,39 @@ class DataFilter extends Model
      * Detect attribute type from validator given.
      *
      * @param Validator validator from which to detect attribute type.
-     *
      * @return string detected attribute type.
+     * @since 2.0.14 
      */
     protected function detectSearchAttributeType(Validator $validator)
     {
-        $type = null;
         if ($validator instanceof BooleanValidator) {
-            $type = self::TYPE_BOOLEAN;
-        } elseif ($validator instanceof NumberValidator) {
-            $type = $validator->integerOnly ? self::TYPE_INTEGER : self::TYPE_FLOAT;
-        } elseif ($validator instanceof StringValidator) {
-            $type = self::TYPE_STRING;
-        } elseif ($validator instanceof EachValidator) {
-            $type = self::TYPE_ARRAY;
-        } elseif ($validator instanceof DateValidator) {
-            if ($validator->type == DateValidator::TYPE_DATETIME) {
-                $type = self::TYPE_DATETIME;
-            } elseif ($validator->type == DateValidator::TYPE_TIME) {
-                $type = self::TYPE_TIME;
-            } else {
-                $type = self::TYPE_DATE;
-            }
+            return self::TYPE_BOOLEAN;
         }
-        return $type;
+        
+        if ($validator instanceof NumberValidator) {
+            return $validator->integerOnly ? self::TYPE_INTEGER : self::TYPE_FLOAT;
+        }
+        
+        if ($validator instanceof StringValidator) {
+            return self::TYPE_STRING;
+        }
+        
+        if ($validator instanceof EachValidator) {
+            return self::TYPE_ARRAY;
+        }
+        
+        if ($validator instanceof DateValidator) {
+            if ($validator->type == DateValidator::TYPE_DATETIME) {
+                return self::TYPE_DATETIME;
+            }
+            
+            if ($validator->type == DateValidator::TYPE_TIME) {
+                return self::TYPE_TIME;
+            }
+            return self::TYPE_DATE;
+        }
+        
+        return null;
     }
 
     /**
