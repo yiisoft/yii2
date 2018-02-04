@@ -20,28 +20,42 @@ class ConjunctionConditionBuilder implements ExpressionBuilderInterface
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param ExpressionInterface|ConjunctionCondition $expression the expression to be built.
+     * @param ExpressionInterface|ConjunctionCondition $condition the expression to be built.
      * @param array $params the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
-    public function build(ExpressionInterface $expression, array &$params = [])
+    public function build(ExpressionInterface $condition, array &$params = [])
     {
-        $parts = [];
-        foreach ($expression->getExpressions() as $expression) {
-            if (is_array($expression)) {
-                $expression = $this->queryBuilder->buildCondition($expression, $params);
-            }
-            if ($expression instanceof ExpressionInterface) {
-                $expression = $this->queryBuilder->buildExpression($expression, $params);
-            }
-            if ($expression !== '') {
-                $parts[] = $expression;
-            }
-        }
+        $parts = $this->buildExpressionsFrom($condition);
+
         if (!empty($parts)) {
-            return '(' . implode(") {$expression->getOperator()} (", $parts) . ')';
+            return '(' . implode(") {$condition->getOperator()} (", $parts) . ')';
         }
 
         return '';
+    }
+
+    /**
+     * Builds expressions, that are stored in $condition
+     *
+     * @param ExpressionInterface|ConjunctionCondition $condition the expression to be built.
+     * @return string[]
+     */
+    private function buildExpressionsFrom(ExpressionInterface $condition)
+    {
+        $parts = [];
+        foreach ($condition->getExpressions() as $condition) {
+            if (is_array($condition)) {
+                $condition = $this->queryBuilder->buildCondition($condition, $params);
+            }
+            if ($condition instanceof ExpressionInterface) {
+                $condition = $this->queryBuilder->buildExpression($condition, $params);
+            }
+            if ($condition !== '') {
+                $parts[] = $condition;
+            }
+        }
+
+        return $parts;
     }
 }
