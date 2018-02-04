@@ -16,6 +16,7 @@ use yii\validators\EachValidator;
 use yii\validators\NumberValidator;
 use yii\validators\StringValidator;
 use yii\validators\DateValidator;
+use yii\validators\Validator;
 
 /**
  * DataFilter is a special [[Model]] for processing query filtering specification.
@@ -334,24 +335,7 @@ class DataFilter extends Model
         }
 
         foreach ($model->getValidators() as $validator) {
-            $type = null;
-            if ($validator instanceof BooleanValidator) {
-                $type = self::TYPE_BOOLEAN;
-            } elseif ($validator instanceof NumberValidator) {
-                $type = $validator->integerOnly ? self::TYPE_INTEGER : self::TYPE_FLOAT;
-            } elseif ($validator instanceof StringValidator) {
-                $type = self::TYPE_STRING;
-            } elseif ($validator instanceof EachValidator) {
-                $type = self::TYPE_ARRAY;
-            } elseif ($validator instanceof DateValidator) {
-                if ($validator->type == DateValidator::TYPE_DATETIME) {
-                    $type = self::TYPE_DATETIME;
-                } elseif ($validator->type == DateValidator::TYPE_TIME) {
-                    $type = self::TYPE_TIME;
-                } else {
-                    $type = self::TYPE_DATE;
-                }
-            }
+            $type = $this->detectSearchAttributeType($validator);
 
             if ($type !== null) {
                 foreach ((array) $validator->attributes as $attribute) {
@@ -361,6 +345,34 @@ class DataFilter extends Model
         }
 
         return $attributeTypes;
+    }
+
+    /**
+     * Detect attribute type from validator given.
+     *
+     * @param Validator validator from which to detect attribute type.
+     *
+     * @return string detected attribute type.
+     */
+    protected function detectSearchAttributeType(Validator $validator)
+    {
+        if ($validator instanceof BooleanValidator) {
+            return self::TYPE_BOOLEAN;
+        } elseif ($validator instanceof NumberValidator) {
+            return $validator->integerOnly ? self::TYPE_INTEGER : self::TYPE_FLOAT;
+        } elseif ($validator instanceof StringValidator) {
+            return self::TYPE_STRING;
+        } elseif ($validator instanceof EachValidator) {
+            return self::TYPE_ARRAY;
+        } elseif ($validator instanceof DateValidator) {
+            if ($validator->type == DateValidator::TYPE_DATETIME) {
+                return self::TYPE_DATETIME;
+            } elseif ($validator->type == DateValidator::TYPE_TIME) {
+                return self::TYPE_TIME;
+            } else {
+                return self::TYPE_DATE;
+            }
+        }
     }
 
     /**
