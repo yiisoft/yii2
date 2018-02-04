@@ -15,6 +15,7 @@ use yii\validators\BooleanValidator;
 use yii\validators\EachValidator;
 use yii\validators\NumberValidator;
 use yii\validators\StringValidator;
+use yii\validators\DateValidator;
 
 /**
  * DataFilter is a special [[Model]] for processing query filtering specification.
@@ -128,6 +129,9 @@ class DataFilter extends Model
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_STRING = 'string';
     const TYPE_ARRAY = 'array';
+    const TYPE_DATETIME = 'datetime';
+    const TYPE_DATE = 'date';
+    const TYPE_TIME = 'time';
 
     /**
      * @var string name of the attribute that handles filter value.
@@ -204,10 +208,10 @@ class DataFilter extends Model
      * Any unspecified keyword will not be considered as a valid operator.
      */
     public $operatorTypes = [
-        '<' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
-        '>' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
-        '<=' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
-        '>=' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
+        '<' => [self::TYPE_INTEGER, self::TYPE_FLOAT, self::TYPE_DATETIME, self::TYPE_DATE, self::TYPE_TIME],
+        '>' => [self::TYPE_INTEGER, self::TYPE_FLOAT, self::TYPE_DATETIME, self::TYPE_DATE, self::TYPE_TIME],
+        '<=' => [self::TYPE_INTEGER, self::TYPE_FLOAT, self::TYPE_DATETIME, self::TYPE_DATE, self::TYPE_TIME],
+        '>=' => [self::TYPE_INTEGER, self::TYPE_FLOAT, self::TYPE_DATETIME, self::TYPE_DATE, self::TYPE_TIME],
         '=' => '*',
         '!=' => '*',
         'IN' => '*',
@@ -339,6 +343,14 @@ class DataFilter extends Model
                 $type = self::TYPE_STRING;
             } elseif ($validator instanceof EachValidator) {
                 $type = self::TYPE_ARRAY;
+            } elseif ($validator instanceof DateValidator) {
+                if ($validator->type == DateValidator::TYPE_DATETIME) {
+                    $type = self::TYPE_DATETIME;
+                } elseif ($validator->type == DateValidator::TYPE_TIME) {
+                    $type = self::TYPE_TIME;
+                } else {
+                    $type = self::TYPE_DATE;
+                }
             }
 
             if ($type !== null) {
