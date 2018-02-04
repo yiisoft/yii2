@@ -485,7 +485,10 @@ abstract class SchemaTest extends DatabaseTestCase
                 $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
                 $this->assertEquals((string) $expected['defaultValue'], (string) $column->defaultValue, "defaultValue of column $name does not match.");
             } else {
-                $this->assertSame($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
+                $this->assertEquals($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
+            }
+            if (isset($expected['dimension'])) { // PgSQL only
+                $this->assertSame($expected['dimension'], $column->dimension, "dimension of column $name does not match");
             }
         }
     }

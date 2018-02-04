@@ -58,6 +58,20 @@ Upgrade from Yii 2.0.13
 
 * `yii\base\Security::compareString()` is now throwing `yii\base\InvalidParamException` in case non-strings are compared.
 
+* `yii\db\ExpressionInterface` has been introduced to represent a wider range of SQL expressions. In case you check for
+  `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
+  introduced methods to retrieve the expression content.
+
+* `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PDO parameter type 
+when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
+You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
+
+* `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
+Class-based conditions and builders are introduces instead to provide more flexibility, extensibility and
+space to customization. In case you rely on that property or override any of default condition builders, follow the 
+special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
+to update your code.
+
 * Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
 
 Upgrade from Yii 2.0.12
