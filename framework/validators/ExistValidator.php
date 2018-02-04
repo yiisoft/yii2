@@ -75,6 +75,7 @@ class ExistValidator extends Validator
 
     /**
      * @var bool whether this validator can run on salve connections
+     * @since 2.0.14
      */
     public $canValidateOnSlaveDb =  false;
 
@@ -117,7 +118,7 @@ class ExistValidator extends Validator
 
         $db = $targetClass::getDb();
         $disabledSlaves = false;
-        if(!$this->canValidateOnSlaveDb && $db->enableSlaves){
+        if (!$this->canValidateOnSlaveDb && $db->enableSlaves){
             $db->enableSlaves = false;
             $disabledSlaves = true;
         }
@@ -130,7 +131,7 @@ class ExistValidator extends Validator
             $this->addError($model, $attribute, $this->message);
         }
 
-        if($disabledSlaves){
+        if ($disabledSlaves){
             $db->enableSlaves = true;
         }
     }
@@ -203,7 +204,7 @@ class ExistValidator extends Validator
         $targetClass = $this->targetClass;
         $db = $targetClass::getDb();
         $disabledSlaves = false;
-        if(!$this->canValidateOnSlaveDb && $db->enableSlaves){
+        if (!$this->canValidateOnSlaveDb && $db->enableSlaves){
             $db->enableSlaves = false;
             $disabledSlaves = true;
         }
