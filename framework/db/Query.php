@@ -615,8 +615,10 @@ PATTERN;
                 continue;
             }
 
-            if ((is_string($columnAlias) && isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition) ||
-                (is_integer($columnAlias) && in_array($columnDefinition, $unaliasedColumns))) {
+            if (
+                (is_string($columnAlias) && isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition)
+                || (is_integer($columnAlias) && in_array($columnDefinition, $unaliasedColumns))
+            ) {
                 unset($columns[$columnAlias]);
             }
         }
