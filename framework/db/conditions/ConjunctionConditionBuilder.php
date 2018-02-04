@@ -26,7 +26,7 @@ class ConjunctionConditionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $condition, array &$params = [])
     {
-        $parts = $this->buildExpressionsFrom($condition);
+        $parts = $this->buildExpressionsFrom($condition, $params);
 
         if (!empty($parts)) {
             return '(' . implode(") {$condition->getOperator()} (", $parts) . ')';
@@ -39,9 +39,10 @@ class ConjunctionConditionBuilder implements ExpressionBuilderInterface
      * Builds expressions, that are stored in $condition
      *
      * @param ExpressionInterface|ConjunctionCondition $condition the expression to be built.
+     * @param array $params the binding parameters.
      * @return string[]
      */
-    private function buildExpressionsFrom(ExpressionInterface $condition)
+    private function buildExpressionsFrom(ExpressionInterface $condition, &$params = [])
     {
         $parts = [];
         foreach ($condition->getExpressions() as $condition) {
