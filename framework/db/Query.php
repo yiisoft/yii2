@@ -97,7 +97,7 @@ class Query extends Component implements QueryInterface
      */
     public $join;
     /**
-     * @var string|array|Expression the condition to be applied in the GROUP BY clause.
+     * @var string|array|ExpressionInterface the condition to be applied in the GROUP BY clause.
      * It can be either a string or an array. Please refer to [[where()]] on how to specify the condition.
      */
     public $having;
@@ -414,7 +414,7 @@ class Query extends Component implements QueryInterface
     /**
      * Queries a scalar value by setting [[select]] first.
      * Restores the value of select to make this query reusable.
-     * @param string|Expression $selectExpression
+     * @param string|ExpressionInterface $selectExpression
      * @param Connection|null $db
      * @return bool|string
      */
@@ -567,12 +567,12 @@ PATTERN;
 
     /**
      * Sets the SELECT part of the query.
-     * @param string|array|Expression $columns the columns to be selected.
+     * @param string|array|ExpressionInterface $columns the columns to be selected.
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * Columns can be prefixed with table names (e.g. "user.id") and/or contain column aliases (e.g. "user.id AS user_id").
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression). A DB expression may also be passed in form of
-     * an [[Expression]] object.
+     * an [[ExpressionInterface]] object.
      *
      * Note that if you are selecting an expression like `CONCAT(first_name, ' ', last_name)`, you should
      * use an array to specify the columns. Otherwise, the expression may be incorrectly split into several parts.
@@ -589,7 +589,7 @@ PATTERN;
      */
     public function select($columns, $option = null)
     {
-        if ($columns instanceof Expression) {
+        if ($columns instanceof ExpressionInterface) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
@@ -609,14 +609,14 @@ PATTERN;
      * $query->addSelect(["*", "CONCAT(first_name, ' ', last_name) AS full_name"])->one();
      * ```
      *
-     * @param string|array|Expression $columns the columns to add to the select. See [[select()]] for more
+     * @param string|array|ExpressionInterface $columns the columns to add to the select. See [[select()]] for more
      * details about the format of this parameter.
      * @return $this the query object itself
      * @see select()
      */
     public function addSelect($columns)
     {
-        if ($columns instanceof Expression) {
+        if ($columns instanceof ExpressionInterface) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
@@ -689,7 +689,7 @@ PATTERN;
 
     /**
      * Sets the FROM part of the query.
-     * @param string|array|Expression $tables the table(s) to be selected from. This can be either a string (e.g. `'user'`)
+     * @param string|array|ExpressionInterface $tables the table(s) to be selected from. This can be either a string (e.g. `'user'`)
      * or an array (e.g. `['user', 'profile']`) specifying one or several table names.
      * Table names can contain schema prefixes (e.g. `'public.user'`) and/or table aliases (e.g. `'user u'`).
      * The method will automatically quote the table names unless it contains some parenthesis
@@ -701,7 +701,7 @@ PATTERN;
      * Use a Query object to represent a sub-query. In this case, the corresponding array key will be used
      * as the alias for the sub-query.
      *
-     * To specify the `FROM` part in plain SQL, you may pass an instance of [[Expression]].
+     * To specify the `FROM` part in plain SQL, you may pass an instance of [[ExpressionInterface]].
      *
      * Here are some examples:
      *
@@ -743,7 +743,7 @@ PATTERN;
      *
      * {@inheritdoc}
      *
-     * @param string|array|Expression $condition the conditions that should be put in the WHERE part.
+     * @param string|array|ExpressionInterface $condition the conditions that should be put in the WHERE part.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
      * @see andWhere()
@@ -760,7 +760,7 @@ PATTERN;
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the `AND` operator.
-     * @param string|array|Expression $condition the new WHERE condition. Please refer to [[where()]]
+     * @param string|array|ExpressionInterface $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
@@ -783,7 +783,7 @@ PATTERN;
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the `OR` operator.
-     * @param string|array|Expression $condition the new WHERE condition. Please refer to [[where()]]
+     * @param string|array|ExpressionInterface $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
@@ -949,7 +949,7 @@ PATTERN;
 
     /**
      * Sets the GROUP BY part of the query.
-     * @param string|array|Expression $columns the columns to be grouped by.
+     * @param string|array|ExpressionInterface $columns the columns to be grouped by.
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
@@ -958,13 +958,13 @@ PATTERN;
      * to represent the group-by information. Otherwise, the method will not be able to correctly determine
      * the group-by columns.
      *
-     * Since version 2.0.7, an [[Expression]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
+     * Since version 2.0.7, an [[ExpressionInterface]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
      * @return $this the query object itself
      * @see addGroupBy()
      */
     public function groupBy($columns)
     {
-        if ($columns instanceof Expression) {
+        if ($columns instanceof ExpressionInterface) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
@@ -984,13 +984,13 @@ PATTERN;
      * to represent the group-by information. Otherwise, the method will not be able to correctly determine
      * the group-by columns.
      *
-     * Since version 2.0.7, an [[Expression]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
+     * Since version 2.0.7, an [[ExpressionInterface]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
      * @return $this the query object itself
      * @see groupBy()
      */
     public function addGroupBy($columns)
     {
-        if ($columns instanceof Expression) {
+        if ($columns instanceof ExpressionInterface) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
@@ -1006,7 +1006,7 @@ PATTERN;
 
     /**
      * Sets the HAVING part of the query.
-     * @param string|array|Expression $condition the conditions to be put after HAVING.
+     * @param string|array|ExpressionInterface $condition the conditions to be put after HAVING.
      * Please refer to [[where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
@@ -1023,7 +1023,7 @@ PATTERN;
     /**
      * Adds an additional HAVING condition to the existing one.
      * The new condition and the existing one will be joined using the `AND` operator.
-     * @param string|array|Expression $condition the new HAVING condition. Please refer to [[where()]]
+     * @param string|array|ExpressionInterface $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
@@ -1044,7 +1044,7 @@ PATTERN;
     /**
      * Adds an additional HAVING condition to the existing one.
      * The new condition and the existing one will be joined using the `OR` operator.
-     * @param string|array|Expression $condition the new HAVING condition. Please refer to [[where()]]
+     * @param string|array|ExpressionInterface $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself

@@ -7,6 +7,9 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use yii\base\DynamicModel;
+use yii\db\JsonExpression;
+use yii\db\Query;
 use yii\db\Schema;
 
 /**
@@ -116,5 +119,35 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $expected = 'ALTER TABLE `item` AUTO_INCREMENT=4';
         $sql = $qb->resetSequence('item', 4);
         $this->assertEquals($expected, $sql);
+    }
+
+    public function conditionProvider()
+    {
+        return array_merge(parent::conditionProvider(), [
+            // json conditions
+            [['=', 'jsoncol', new JsonExpression(['lang' => 'uk', 'country' => 'UA'])], '[[jsoncol]] = :qp0', [':qp0' => '{"lang":"uk","country":"UA"}']],
+            [['=', 'jsoncol', new JsonExpression([false])], '[[jsoncol]] = :qp0', [':qp0' => '[false]']],
+            'object with type. Type is ignored for MySQL' => [
+                ['=', 'prices', new JsonExpression(['seeds' => 15, 'apples' => 25], 'jsonb')],
+                '[[prices]] = :qp0', [':qp0' => '{"seeds":15,"apples":25}']
+            ],
+            'nested json' => [
+                ['=', 'data', new JsonExpression(['user' => ['login' => 'silverfire', 'password' => 'c4ny0ur34d17?'], 'props' => ['mood' => 'good']])],
+                '[[data]] = :qp0', [':qp0' => '{"user":{"login":"silverfire","password":"c4ny0ur34d17?"},"props":{"mood":"good"}}']
+            ],
+            'null value' => [['=', 'jsoncol', new JsonExpression(null)], '[[jsoncol]] = :qp0', [':qp0' => 'null']],
+            'null as array value' => [['=', 'jsoncol', new JsonExpression([null])], '[[jsoncol]] = :qp0', [':qp0' => '[null]']],
+            'null as object value' => [['=', 'jsoncol', new JsonExpression(['nil' => null])], '[[jsoncol[[ = :qp0', [':qp0' => '{"nil":null}']],
+
+            [['=', 'jsoncol', new JsonExpression(new DynamicModel(['a' => 1, 'b' => 2]))], '[[jsoncol]] = :qp0', [':qp0' => '{"a":1,"b":2}']],
+            'query' => [
+                ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]))],
+                '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)', [':qp0' => 1]
+            ],
+            'query with type, that is ignored in MySQL' => [
+                ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]), 'jsonb')],
+                '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)', [':qp0' => 1]
+            ],
+        ]);
     }
 }
