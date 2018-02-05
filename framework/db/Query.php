@@ -153,6 +153,15 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * @see Command::cache() this has default duration
+     * @return bool
+     */
+    public function hasCache()
+    {
+        return $this->queryCacheDuration !== null || $this->queryCacheDependency !== null;
+    }
+
+    /**
      * Creates a DB command that can be used to execute this query.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
@@ -166,7 +175,7 @@ class Query extends Component implements QueryInterface
         list($sql, $params) = $db->getQueryBuilder()->build($this);
 
         $command = $db->createCommand($sql, $params);
-        if ($this->queryCacheDuration !== null || $this->queryCacheDependency !== null) {
+        if ($this->hasCache()) {
             $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
         }
         return $command;
@@ -493,7 +502,7 @@ class Query extends Component implements QueryInterface
             ->select([$selectExpression])
             ->from(['c' => $this])
             ->createCommand($db);
-        if ($this->queryCacheDuration !== null || $this->queryCacheDependency !== null) {
+        if ($this->hasCache()) {
             $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
         }
         return $command->queryScalar();
