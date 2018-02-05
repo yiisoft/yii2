@@ -111,6 +111,27 @@ But there are other installation options available:
   you may consider installing the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
 
+Installing Assets <span id="installing-assets"></span>
+-----------------
+
+Yii relies on [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) packages for the assets (CSS and JavaScript) libraries installation.
+It uses Composer to pick up these libraries, allowing PHP and CSS/JavaScript packages versions resolve at the same time.
+This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
+Please refer to [Assets docs](structure-assets.md) for more details.
+
+You may want to manage your assets via native Bower/NPM client, use CDN or avoid assets installation entirely.
+In order to prevent assets installation via Composer, add the following lines to your 'composer.json':
+
+```json
+"replace": {
+    "bower-asset/jquery": ">=1.11.0",
+    "bower-asset/inputmask": ">=3.2.0",
+    "bower-asset/punycode": ">=1.3.0",
+    "bower-asset/yii2-pjax": ">=2.0.0",
+},
+```
+
+
 Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
