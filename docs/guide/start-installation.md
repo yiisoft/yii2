@@ -127,7 +127,7 @@ In order to prevent assets installation via Composer, add the following lines to
     "bower-asset/jquery": ">=1.11.0",
     "bower-asset/inputmask": ">=3.2.0",
     "bower-asset/punycode": ">=1.3.0",
-    "bower-asset/yii2-pjax": ">=2.0.0",
+    "bower-asset/yii2-pjax": ">=2.0.0"
 },
 ```
 
