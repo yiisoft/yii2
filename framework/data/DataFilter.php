@@ -348,10 +348,10 @@ class DataFilter extends Model
     }
 
     /**
-     * Detect attribute type from validator given.
+     * Detect attribute type from given validator.
      *
      * @param Validator validator from which to detect attribute type.
-     * @return string detected attribute type.
+     * @return string|null detected attribute type.
      * @since 2.0.14 
      */
     protected function detectSearchAttributeType(Validator $validator)
@@ -382,8 +382,6 @@ class DataFilter extends Model
             }
             return self::TYPE_DATE;
         }
-        
-        return null;
     }
 
     /**
