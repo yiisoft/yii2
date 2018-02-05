@@ -131,6 +131,10 @@ In order to prevent assets installation via Composer, add the following lines to
 },
 ```
 
+> Note: in case of bypassing asset installation via Composer, you are responsible for the assets installation and their
+  possible version collision resolve on your own. Be prepared for possible inconsistencies among asset files from different
+  extensions.
+
 
 Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
