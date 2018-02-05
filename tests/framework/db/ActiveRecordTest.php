@@ -22,7 +22,6 @@ use yiiunit\data\ar\Dossier;
 use yiiunit\data\ar\Employee;
 use yiiunit\data\ar\CustomerQuery;
 use yiiunit\data\ar\CustomerWithConstructor;
-use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Dog;
 use yiiunit\data\ar\Item;
 use yiiunit\data\ar\NullValues;
