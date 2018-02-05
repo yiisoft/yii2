@@ -10,7 +10,7 @@ use yii\caching\Dependency;
 use yii\di\Instance;
 
 /**
- * Cacheable widget behavior automatically caches widget contents basing on specified duration and dependencies.
+ * Cacheable widget behavior automatically caches widget contents according to duration and dependencies specified.
  *
  * The behavior may be used without any configuration if an application has `cache` component configured.
  * By default the widget will be cached for one minute.
