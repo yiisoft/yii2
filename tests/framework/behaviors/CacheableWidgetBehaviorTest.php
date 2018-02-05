@@ -133,11 +133,11 @@ class BaseCacheableWidget extends Widget
                 $result = $this->run();
                 $out = $this->afterRun($result);
             }
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             if (ob_get_level() > 0) {
                 ob_end_clean();
             }
-            throw $e;
+            throw $exception;
         }
 
         return ob_get_clean() . $out;

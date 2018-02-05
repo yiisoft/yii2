@@ -5,70 +5,107 @@ namespace yii\behaviors;
 use yii\base\Behavior;
 use yii\base\Widget;
 use yii\base\WidgetEvent;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\caching\Dependency;
 use yii\di\Instance;
-use yii\web\View;
 
 /**
- * Cacheable widget behavior.
+ * Cacheable widget behavior automatically caches widget contents basing on specified duration and dependencies.
+ *
+ * The behavior may be used without any configuration if an application has `cache` component configured.
+ * By default the widget will be cached for one minute.
+ *
+ * The following example will cache the posts widget for an indefinite duration until any post is modified.
+ *
+ * ```php
+ * use yii\behaviors\CacheableWidgetBehavior;
+ *
+ * public function behaviors()
+ * {
+ *     return [
+ *         [
+ *             'class' => CacheableWidgetBehavior::className(),
+ *             'cacheDuration' => 0,
+ *             'cacheDependency' => [
+ *                 'class' => 'yii\caching\DbDependency',
+ *                 'sql' => 'SELECT MAX(updated_at) FROM posts',
+ *             ],
+ *         ],
+ *     ];
+ * }
+ * ```
  *
  * @property Widget $owner
- *
  * @group behaviors
+ * @since 2.0.14
  */
 class CacheableWidgetBehavior extends Behavior
 {
     /**
-     * The cache object or the application component ID of the cache object
-     * or a configuration array for creating the object.
-     *
-     * @var Cache|string|array
+     * @var CacheInterface|string|array a cache object or a cache component ID
+     * or a configuration array for creating a cache object.
+     * Defaults to the `cache` application component.
      */
     public $cache = 'cache';
 
     /**
-     * Cache duration in seconds.
-     *
-     * @var int
+     * @var int cache duration in seconds.
+     * Set to `0` to indicate that the cached data will never expire.
+     * Defaults to 60 seconds or 1 minute.
      */
-    public $cacheDuration;
+    public $cacheDuration = 60;
 
     /**
-     * Cache dependency or `null` meaning no cache dependency.
+     * @var Dependency|array|null a cache dependency or a configuration array
+     * for creating a cache dependency or `null` meaning no cache dependency.
      *
-     * @var Dependency|null
+     * For example,
+     *
+     * ```php
+     * [
+     *     'class' => 'yii\caching\DbDependency',
+     *     'sql' => 'SELECT MAX(updated_at) FROM posts',
+     * ]
+     * ```
+     *
+     * would make the widget cache depend on the last modified time of all posts.
+     * If any post has its modification time changed, the cached content would be invalidated.
      */
     public $cacheDependency;
 
     /**
-     * Cache key or `null` meaning that it should be generated automaticcally.
+     * @var string[]|string an array of strings or a single string which would cause
+     * the variation of the content being cached (e.g. an application language, a GET parameter).
      *
-     * @var mixed|null
-     */
-    public $cacheKey;
-
-    /**
-     * Cache key variations. An array of factors that would cause the variation
-     * of the content being cached.
+     * The following variation setting will cause the content to be cached in different versions
+     * according to the current application language:
      *
-     * @var array
+     * ```php
+     * [
+     *     Yii::$app->language,
+     * ]
+     * ```
      */
     public $cacheKeyVariations = [];
 
     /**
-     * Whether caching is enabled or not.
+     * @var bool whether to enable caching or not. Allows to turn the widget caching
+     * on and off according to specific conditions.
+     * The following configuration will disable caching when a special GET parameter is passed:
      *
-     * @var bool
+     * ```php
+     * empty(Yii::$app->request->get('disable-caching'))
+     * ```
      */
     public $cacheEnabled = true;
 
     /**
-     * @inheritdoc
+     *{@inheritdoc}
      */
     public function attach($owner)
     {
         parent::attach($owner);
+
         $this->initializeEventHandlers();
     }
 
@@ -76,16 +113,17 @@ class CacheableWidgetBehavior extends Behavior
      * Begins fragment caching. Prevents owner widget from execution
      * if its contents can be retrieved from the cache.
      *
-     * @param WidgetEvent $event
+     * @param WidgetEvent $event `Widget::EVENT_BEFORE_RUN` event.
      */
     public function beforeRun($event)
     {
         $cacheConfig = [
-            'cache' => Instance::ensure($this->cache, Cache::className()),
+            'cache' => Instance::ensure($this->cache, 'yii\caching\CacheInterface'),
             'duration' => $this->cacheDuration,
             'dependency' => $this->cacheDependency,
             'enabled' => $this->cacheEnabled,
         ];
+
         if (!$this->owner->view->beginCache($this->getCacheKey(), $cacheConfig)) {
             $event->isValid = false;
         }
@@ -94,7 +132,7 @@ class CacheableWidgetBehavior extends Behavior
     /**
      * Outputs widget contents and ends fragment caching.
      *
-     * @param WidgetEvent $event
+     * @param WidgetEvent $event `Widget::EVENT_AFTER_RUN` event.
      */
     public function afterRun($event)
     {
@@ -105,11 +143,16 @@ class CacheableWidgetBehavior extends Behavior
     }
 
     /**
-     * Return cache key.
+     * Returns widget cache key.
      */
     private function getCacheKey()
     {
-        return array_merge([get_class($this->owner)], $this->cacheKeyVariations);
+        $cacheKey = array_merge(
+            (array)get_class($this->owner),
+            (array)$this->cacheKeyVariations
+        );
+
+        return $cacheKey;
     }
 
     /**
