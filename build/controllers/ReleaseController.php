@@ -109,7 +109,7 @@ class ReleaseController extends Controller
             foreach ($items as $item) {
                 $this->stdout("fetching tags for $item...");
                 if ($item === 'framework') {
-                    $this->gitFetchTags("{$this->basePath}");
+                    $this->gitFetchTags((string)$this->basePath);
                 } elseif (strncmp('app-', $item, 4) === 0) {
                     $this->gitFetchTags("{$this->basePath}/apps/" . substr($item, 4));
                 } else {
@@ -874,7 +874,7 @@ class ReleaseController extends Controller
                 $state = 'end';
             }
             // add continued lines to the last item to keep them together
-            if (!empty(${$state}) && trim($line !== '') && strpos($line, '- ') !== 0) {
+            if (!empty(${$state}) && trim($line) !== '' && strncmp($line, '- ', 2) !== 0) {
                 end(${$state});
                 ${$state}[key(${$state})] .= "\n" . $line;
             } else {

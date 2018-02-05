@@ -211,7 +211,7 @@ class Command extends Component
                 $params[$name] = ($value ? 'TRUE' : 'FALSE');
             } elseif ($value === null) {
                 $params[$name] = 'NULL';
-            } elseif (!is_object($value) && !is_resource($value)) {
+            } elseif ((!is_object($value) && !is_resource($value)) || $value instanceof Expression) {
                 $params[$name] = $value;
             }
         }
@@ -347,8 +347,8 @@ class Command extends Component
      * @param array $values the values to be bound. This must be given in terms of an associative
      * array with array keys being the parameter names, and array values the corresponding parameter values,
      * e.g. `[':name' => 'John', ':age' => 25]`. By default, the PDO type of each value is determined
-     * by its PHP type. You may explicitly specify the PDO type by using an array: `[value, type]`,
-     * e.g. `[':name' => 'John', ':profile' => [$profile, \PDO::PARAM_LOB]]`.
+     * by its PHP type. You may explicitly specify the PDO type by using a [[yii\db\PdoValue]] class: `new PdoValue(value, type)`,
+     * e.g. `[':name' => 'John', ':profile' => new PdoValue($profile, \PDO::PARAM_LOB)]`.
      * @return $this the current command being executed
      */
     public function bindValues($values)
@@ -359,9 +359,9 @@ class Command extends Component
 
         $schema = $this->db->getSchema();
         foreach ($values as $name => $value) {
-            if (is_array($value)) {
-                $this->_pendingParams[$name] = $value;
-                $this->params[$name] = $value[0];
+            if ($value instanceof PdoValue) {
+                $this->_pendingParams[$name] = [$value->getValue(), $value->getType()];
+                $this->params[$name] = $value->getValue();
             } else {
                 $type = $schema->getPdoType($value);
                 $this->_pendingParams[$name] = [$value, $type];
@@ -978,6 +978,36 @@ class Command extends Component
         $sql = $this->db->getQueryBuilder()->dropCommentFromTable($table);
 
         return $this->setSql($sql);
+    }
+
+    /**
+     * Creates a SQL View.
+     *
+     * @param string $viewName the name of the view to be created.
+     * @param string|Query $subquery the select statement which defines the view.
+     * This can be either a string or a [[Query]] object.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function createView($viewName, $subquery)
+    {
+        $sql = $this->db->getQueryBuilder()->createView($viewName, $subquery);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($viewName);
+    }
+    
+    /**
+     * Drops a SQL View.
+     *
+     * @param string $viewName the name of the view to be dropped.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function dropView($viewName)
+    {
+        $sql = $this->db->getQueryBuilder()->dropView($viewName);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($viewName);
     }
 
     /**

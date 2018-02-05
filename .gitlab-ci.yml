@@ -4,6 +4,7 @@ services:
   - docker:dind
 
 variables:
+  DOCKER_YII2_PHP_IMAGE: yiisoftware/yii2-php:7.1-apache
   DOCKER_MYSQL_IMAGE: percona:5.7
   DOCKER_POSTGRES_IMAGE: postgres:9.3
 

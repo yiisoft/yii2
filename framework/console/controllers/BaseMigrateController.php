@@ -93,7 +93,7 @@ abstract class BaseMigrateController extends Controller
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {

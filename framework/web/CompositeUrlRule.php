@@ -40,7 +40,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     abstract protected function createRules();
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -49,7 +49,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parseRequest($manager, $request)
     {
@@ -72,7 +72,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createUrl($manager, $route, $params)
     {
