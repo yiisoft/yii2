@@ -8,7 +8,6 @@
 namespace yiiunit\framework\db;
 
 use yii\caching\FileCache;
-use yii\db\Command;
 use yii\db\Connection;
 use yii\db\DataReader;
 use yii\db\Exception;
@@ -71,12 +70,7 @@ abstract class CommandTest extends DatabaseTestCase
 
         $sql = 'INSERT INTO {{customer}}([[email]], [[name]], [[address]]) VALUES (\'user4@example.com\', \'user4\', \'address4\')';
         $command = $db->createCommand($sql);
-        $afterExecuteTriggered = false;
-        $command->on(Command::EVENT_AFTER_EXECUTE, function () use (&$afterExecuteTriggered) {
-            $afterExecuteTriggered = true;
-        });
         $this->assertEquals(1, $command->execute());
-        $this->assertTrue($afterExecuteTriggered, 'Command::EVENT_AFTER_EXECUTE event should be triggered.');
 
         $sql = 'SELECT COUNT(*) FROM {{customer}} WHERE [[name]] = \'user4\'';
         $command = $db->createCommand($sql);

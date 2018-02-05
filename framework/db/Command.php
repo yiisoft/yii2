@@ -57,12 +57,6 @@ use yii\base\NotSupportedException;
 class Command extends Component
 {
     /**
-     * @event Event an event that is triggered after a command is executed
-     * @since 2.0.14
-     */
-    const EVENT_AFTER_EXECUTE = 'afterExecute';
-
-    /**
      * @var Connection the DB connection that this command is associated with
      */
     public $db;
@@ -1041,10 +1035,6 @@ class Command extends Component
             $n = $this->pdoStatement->rowCount();
 
             $profile and Yii::endProfile($rawSql, __METHOD__);
-
-            $this->trigger(self::EVENT_AFTER_EXECUTE, new AfterExecuteEvent([
-                'command' => $this,
-            ]));
 
             $this->refreshTableSchema();
 
