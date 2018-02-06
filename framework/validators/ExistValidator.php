@@ -116,17 +116,8 @@ class ExistValidator extends Validator
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $query = $this->createQuery($targetClass, $conditions);
 
-        $db = $targetClass::getDb();
-        $existed = false;
         $value = $model->$attribute;
-
-        if($this->forceMasterDb){
-            $db->useMaster(function ($db) use ($query,$value,&$existed){
-                $this->checkValueExisted($query,$value,$existed);
-            });
-        }else{
-            $this->checkValueExisted($query,$value,$existed);
-        }
+        $existed = $this->checkExisted($targetClass,$query,$value);
 
         if(!$existed){
             $this->addError($model, $attribute, $this->message);
@@ -198,8 +189,22 @@ class ExistValidator extends Validator
 
         $query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
 
-        $targetClass = $this->targetClass;
+        $existed = $this->checkExisted($this->targetClass,$query,$value);
 
+        $result = $existed ? null : [$this->message, []];
+
+        return $result;
+    }
+
+    /**
+     * Check whether value exist in target table
+     *
+     * @param $targetClass
+     * @param $query QueryInterface
+     * @param $value mixed the value want to be checked
+     * @return boolean
+     */
+    private function checkExisted($targetClass, $query,$value ){
         $db = $targetClass::getDb();
         $existed = false;
 
@@ -211,16 +216,14 @@ class ExistValidator extends Validator
             $this->checkValueExisted($query,$value,$existed);
         }
 
-
-        $result = $existed ? null : [$this->message, []];
-
-        return $result;
+        return $existed;
     }
+
 
     /**
      * Run query to check value existed
      *
-     * @param $query QueryInterface $query
+     * @param $query QueryInterface
      * @param $value mixed the value want to be checked
      * @param $existed bool
      */
