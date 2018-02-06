@@ -193,15 +193,16 @@ DocumentRoot "path/to/basic/web"
 <Directory "path/to/basic/web">
     # use mod_rewrite for pretty URL support
     RewriteEngine on
+    
+    # if $showScriptName is false in UrlManager, do not allow accessing URLs with script name
+    RewriteRule ^index.php/ - [L,R=404]
+    
     # If a directory or a file exists, use the request directly
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     # Otherwise forward the request to index.php
     RewriteRule . index.php
-
-    # if $showScriptName is false in UrlManager, do not allow accessing URLs with script name
-    RewriteRule ^index.php/ - [L,R=404]
-
+    
     # ...other settings...
 </Directory>
 ```
