@@ -49,6 +49,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     public function getExpectedColumns()
     {
         $columns = parent::getExpectedColumns();
+        unset($columns['json_col']);
         $columns['int_col']['dbType'] = 'integer';
         $columns['int_col']['size'] = null;
         $columns['int_col']['precision'] = null;

@@ -442,6 +442,18 @@ abstract class SchemaTest extends DatabaseTestCase
                 'scale' => null,
                 'defaultValue' => 130, // b'10000010'
             ],
+            'json_col' => [
+                'type' => 'json',
+                'dbType' => 'json',
+                'phpType' => 'array',
+                'allowNull' => true,
+                'autoIncrement' => false,
+                'enumValues' => null,
+                'size' => null,
+                'precision' => null,
+                'scale' => null,
+                'defaultValue' => null,
+            ],
         ];
     }
 

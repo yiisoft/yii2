@@ -26,7 +26,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public function columnTypes()
     {
-        return array_merge(parent::columnTypes(), [
+        $columns = [
             [
                 Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT TRUE',
                 $this->boolean()->notNull()->defaultValue(true),
@@ -57,7 +57,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 $this->timestamp(4),
                 'timestamp(4)',
             ],
-        ]);
+            [
+                Schema::TYPE_JSON,
+                $this->json(),
+                "jsonb",
+            ],
+        ];
+
+        return array_merge(parent::columnTypes(), $columns);
     }
 
     public function conditionProvider()

@@ -44,6 +44,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BINARY => 'blob',
         Schema::TYPE_BOOLEAN => 'tinyint(1)',
         Schema::TYPE_MONEY => 'decimal(19,4)',
+        Schema::TYPE_JSON => 'json'
     ];
 
     /**

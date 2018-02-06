@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Enh #13019: Support JSON in SchemaBuilderTrait (zhukovra, undefinedor)
 - Enh #15047: `yii\db\Query::select()` and `yii\db\Query::addSelect()` now check for duplicate column names (wapmorgan)
 - Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
 - Enh #13465: Added `yii\helpers\FileHelper::findDirectory()` method (ArsSirek, developeruz)
