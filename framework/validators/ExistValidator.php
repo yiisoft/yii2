@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\QueryInterface;
 
 /**
  * ExistValidator validates that the attribute value exists in a table.
@@ -74,10 +75,9 @@ class ExistValidator extends Validator
     public $targetAttributeJunction = 'and';
 
     /**
-     * @var bool whether this validator can run on salve connections
-     * @since 2.0.14
+     * @var bool whether this validator are forced to  run on master db
      */
-    public $canValidateOnSlaveDb =  false;
+    public $forceMasterDb =  true;
 
 
     /**
@@ -117,22 +117,19 @@ class ExistValidator extends Validator
         $query = $this->createQuery($targetClass, $conditions);
 
         $db = $targetClass::getDb();
-        $disabledSlaves = false;
-        if (!$this->canValidateOnSlaveDb && $db->enableSlaves){
-            $db->enableSlaves = false;
-            $disabledSlaves = true;
+        $existed = false;
+        $value = $model->$attribute;
+
+        if($this->forceMasterDb){
+            $db->useMaster(function ($db) use ($query,$value,&$existed){
+                $this->checkValueExisted($query,$value,$existed);
+            });
+        }else{
+            $this->checkValueExisted($query,$value,$existed);
         }
 
-        if (is_array($model->$attribute)) {
-            if ($query->count("DISTINCT [[$targetAttribute]]") != count($model->$attribute)) {
-                $this->addError($model, $attribute, $this->message);
-            }
-        } elseif (!$query->exists()) {
+        if(!$existed){
             $this->addError($model, $attribute, $this->message);
-        }
-
-        if ($disabledSlaves){
-            $db->enableSlaves = true;
         }
     }
 
@@ -202,24 +199,37 @@ class ExistValidator extends Validator
         $query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
 
         $targetClass = $this->targetClass;
+
         $db = $targetClass::getDb();
-        $disabledSlaves = false;
-        if (!$this->canValidateOnSlaveDb && $db->enableSlaves){
-            $db->enableSlaves = false;
-            $disabledSlaves = true;
+        $existed = false;
+
+        if($this->forceMasterDb){
+            $db->useMaster(function ($db) use ($query,$value,&$existed){
+                $this->checkValueExisted($query,$value,$existed);
+            });
+        }else{
+            $this->checkValueExisted($query,$value,$existed);
         }
 
-        if (is_array($value)) {
-            $result = $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
-        } else {
-            $result = $query->exists() ? null : [$this->message, []];
-        }
 
-        if ($disabledSlaves){
-            $db->enableSlaves = true;
-        }
+        $result = $existed ? null : [$this->message, []];
 
         return $result;
+    }
+
+    /**
+     * Run query to check value existed
+     *
+     * @param $query QueryInterface $query
+     * @param $value mixed the value want to be checked
+     * @param $existed bool
+     */
+    private function checkValueExisted($query, $value,&$existed){
+        if (is_array($value)) {
+            $existed = $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ;
+        } else {
+            $existed = $query->exists();
+        }
     }
 
     /**
