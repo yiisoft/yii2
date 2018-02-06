@@ -313,14 +313,14 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     {
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
-            [$route, $params] = $result;
+            [$route, $params, $middleware] = $result;
             if ($this->_queryParams === null) {
                 $_GET = $params + $_GET; // preserve numeric keys
             } else {
                 $this->_queryParams = $params + $this->_queryParams;
             }
 
-            return [$route, $this->getQueryParams()];
+            return [$route, $this->getQueryParams(), $middleware];
         }
 
         throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));

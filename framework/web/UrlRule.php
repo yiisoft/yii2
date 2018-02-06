@@ -88,6 +88,10 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public $route;
     /**
+     * @var array
+     */
+    public $middleware = [];
+    /**
      * @var array the default GET parameters (name => value) that this rule provides.
      * When this rule is used to parse the incoming request, the values declared in this property
      * will be injected into $_GET.
@@ -442,7 +446,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
         }
 
-        return [$route, $params];
+        return [$route, $params, $this->middleware];
     }
 
     /**

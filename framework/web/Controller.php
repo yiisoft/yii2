@@ -31,6 +31,13 @@ class Controller extends \yii\base\Controller
      */
     public $actionParams = [];
 
+    /**
+     * @return array
+     */
+    public function middleware()
+    {
+        return [];
+    }
 
     /**
      * Renders a view in response to an AJAX request.
