@@ -3,6 +3,7 @@
 namespace yii\behaviors;
 
 use yii\base\Behavior;
+use yii\base\InvalidConfigException;
 use yii\base\Widget;
 use yii\base\WidgetEvent;
 use yii\caching\CacheInterface;
@@ -117,14 +118,10 @@ class CacheableWidgetBehavior extends Behavior
      */
     public function beforeRun($event)
     {
-        $cacheConfig = [
-            'cache' => Instance::ensure($this->cache, 'yii\caching\CacheInterface'),
-            'duration' => $this->cacheDuration,
-            'dependency' => $this->cacheDependency,
-            'enabled' => $this->cacheEnabled,
-        ];
+        $cacheKey = $this->getCacheKey();
+        $fragmentCacheConfiguration = $this->getFragmentCacheConfiguration();
 
-        if (!$this->owner->view->beginCache($this->getCacheKey(), $cacheConfig)) {
+        if (!$this->owner->view->beginCache($cacheKey, $fragmentCacheConfiguration)) {
             $event->isValid = false;
         }
     }
@@ -143,10 +140,36 @@ class CacheableWidgetBehavior extends Behavior
     }
 
     /**
-     * Returns widget cache key.
+     * Initializes widget event handlers.
+     */
+    private function initializeEventHandlers()
+    {
+        $this->owner->on(Widget::EVENT_BEFORE_RUN, [$this, 'beforeRun']);
+        $this->owner->on(Widget::EVENT_AFTER_RUN, [$this, 'afterRun']);
+    }
+
+    /**
+     * Returns the cache instance.
+     *
+     * @return CacheInterface cache instance.
+     * @throws InvalidConfigException if cache instance instantiation fails.
+     */
+    private function getCacheInstance()
+    {
+        $cacheInterface = 'yii\caching\CacheInterface';
+        $cache = Instance::ensure($this->cache, $cacheInterface);
+
+        return $cache;
+    }
+
+    /**
+     * Returns the widget cache key.
+     *
+     * @return string[] an array of strings representing the cache key.
      */
     private function getCacheKey()
     {
+        // `$cacheKeyVariations` may be a `string` and needs to be cast to an `array`.
         $cacheKey = array_merge(
             (array)get_class($this->owner),
             (array)$this->cacheKeyVariations
@@ -156,11 +179,20 @@ class CacheableWidgetBehavior extends Behavior
     }
 
     /**
-     * Initializes widget event handlers.
+     * Returns a fragment cache widget configuration array.
+     *
+     * @return array a fragment cache widget configuration array.
      */
-    private function initializeEventHandlers()
+    private function getFragmentCacheConfiguration()
     {
-        $this->owner->on(Widget::EVENT_BEFORE_RUN, [$this, 'beforeRun']);
-        $this->owner->on(Widget::EVENT_AFTER_RUN, [$this, 'afterRun']);
+        $cache = $this->getCacheInstance();
+        $fragmentCacheConfiguration = [
+            'cache' => $cache,
+            'duration' => $this->cacheDuration,
+            'dependency' => $this->cacheDependency,
+            'enabled' => $this->cacheEnabled,
+        ];
+
+        return $fragmentCacheConfiguration;
     }
 }
