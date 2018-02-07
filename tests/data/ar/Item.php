@@ -25,4 +25,11 @@ class Item extends ActiveRecord
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
+
+    //relation with dynamic alias
+    public function getCategoryWithAlias()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'category_id'])
+              ->andOncondition(['like', '@alias.name', 'o']);
+    }
 }

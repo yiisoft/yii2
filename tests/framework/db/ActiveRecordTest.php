@@ -42,6 +42,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
         CustomerQuery::$joinWithProfile = false;
+        \Yii::$app->enableAliasDynamic = true;
     }
 
     /**
@@ -1611,5 +1612,102 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             ->asArray(true)
             ->all();
         $this->assertCount(3, $orders);
+    }
+
+    /**
+     * Check if the dynamic alias (@alias) in a simple ActiveRecord::find() is replaced correctly
+     */
+    public function testAliasDynamicInFind()
+    {
+        $query = Order::findWithAlias()->alias('o');
+        $orders = $query->all();
+
+        $this->assertEquals(3, $orders[2]->id);
+        $this->assertEquals(3, count($orders));
+    }
+
+    /**
+     * Check if the dynamic alias @alias is replaced in a query a related joinWith
+     */
+    public function testAliasDynamicInJoin()
+    {
+        $query = Order::findWithAlias()
+                  ->alias('o')
+                  ->innerJoinWith(['customerWithAlias c'], true)
+                  ->orderBy('@alias.id');
+        $orders = $query->all();
+
+        $this->assertEquals(1, $orders[0]->id);
+        $this->assertEquals(3, count($orders));
+        $this->assertTrue($orders[0]->isRelationPopulated('customerWithAlias'));
+        $this->assertEquals(2, $orders[1]->customerWithAlias->id);
+    }
+
+    /**
+     * Check if the dynamic alias @alias is replaced even if no alias is given (but the relation has a placeholder)
+     */
+    public function testAliasDynamicInJoinNoAliasGiven()
+    {
+        $query = Order::findWithAlias()
+                  //->alias('o') //no alias given
+                  ->innerJoinWith(['customerWithAlias'], true) //no alias given (but still has @alias in relation)
+                  ->orderBy('@alias.id');
+        $orders = $query->all();
+
+        $this->assertEquals(1, $orders[0]->id);
+        $this->assertEquals(3, count($orders));
+        $this->assertTrue($orders[0]->isRelationPopulated('customerWithAlias'));
+        $this->assertEquals(2, $orders[1]->customerWithAlias->id);
+    }
+
+    /**
+     * Check if the placeholder for dynamic alias is correctly replaced
+     *  when two relations with a dynamic alias in concerning the same table
+     *  and when the same relation with a dynamic alias is adressed twice
+     */
+    public function testAliasDynamicInJoinSameTableSameRelationTwoAliases()
+    {
+        $query = Order::findWithAlias()
+                  ->alias('o')
+                  ->joinWith(['bookItemsWithAlias bi' => function($q){
+                      $q->joinWith(['categoryWithAlias bic']);
+                  }])
+                  ->joinWith(['movieItemsWithAlias mi' => function($q){ //other relation of same table
+                      $q->joinWith(['categoryWithAlias mic']); //same relation of same table with another alias
+                  }]);
+        $orders = $query->all();
+
+        $this->assertEquals(1, $orders[0]->id);
+        $this->assertEquals(2, $orders[1]->id);
+        $this->assertEquals(0, count($orders[1]->bookItemsWithAlias));
+        $this->assertTrue($orders[1]->isRelationPopulated('movieItemsWithAlias'));
+        $this->assertEquals(3, count($orders[1]->movieItemsWithAlias));
+        $this->assertEquals(3, $orders[1]->movieItemsWithAlias[2]->id);
+        $this->assertTrue($orders[1]->movieItemsWithAlias[2]->isRelationPopulated('categoryWithAlias'));
+        $this->assertEquals(2, $orders[1]->movieItemsWithAlias[2]->categoryWithAlias->id);
+    }
+
+    /**
+     * Check if the dynamic alias @alias is replaced correctly in anonymous function
+     *  and in select part and in expression condition in a query with related joinWith
+     */
+    public function testAliasDynamicInJoinSelectExpressionAnonymous()
+    {
+        $query = Order::findWithAlias()
+                  ->select(['@alias.id', '@alias.customer_id']) //here '@alias' to be replaced by 'o'
+                  ->alias('o')
+                  ->innerJoinWith(['customerWithAlias c' => function($q){
+                      $q->select('@alias.id'); //here '@alias' to be replaced by 'c'
+                      $q->andWhere( new \yii\db\Expression('@alias.id != 0') ); //here '@alias' to be replaced by 'c' in expression
+                  }], true)
+                  ->orderBy('@alias.id'); //here '@alias' to be replaced by 'o'
+        $orders = $query->all();
+
+        $this->assertEquals(1, $orders[0]->id);
+        $this->assertNull($orders[1]->total); //not selected
+        $this->assertEquals(3, count($orders));
+        $this->assertTrue($orders[0]->isRelationPopulated('customerWithAlias'));
+        $this->assertEquals(2, $orders[1]->customerWithAlias->id);
+        $this->assertNull($orders[1]->customerWithAlias->email); //not selected
     }
 }

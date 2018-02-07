@@ -8,7 +8,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * Class Order.
+ * Class Order
  *
  * @property int $id
  * @property int $customer_id
@@ -44,6 +44,13 @@ class Order extends ActiveRecord
     public function getCustomer2()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id'])->inverseOf('orders2');
+    }
+
+    //relation with dynamic alias
+    public function getCustomerWithAlias()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id'])
+            ->orderBy('@alias.id');
     }
 
     public function getOrderItems()
@@ -176,6 +183,13 @@ class Order extends ActiveRecord
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
+    public function getBookItemsWithAlias()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->onCondition(['@alias.category_id' => 1])
+            ->viaTable('order_item oib', ['order_id' => 'id']);
+    }
+
     public function getMovieItems()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('movies')
@@ -188,6 +202,14 @@ class Order extends ActiveRecord
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
             ->onCondition(['item.id' => [3, 5]])
             ->via('orderItems');
+    }
+
+    public function getMovieItemsWithAlias()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('movies')
+            ->onCondition(['@alias.category_id' => 2])
+            ->viaTable('order_item oim', ['order_id' => 'id'])
+            ->addOrderBy(['@alias.id' => SORT_DESC]);
     }
 
     public function beforeSave($insert)
@@ -214,5 +236,15 @@ class Order extends ActiveRecord
         return [
             0 => 'customer_id',
         ];
+    }
+
+    //Overloading find method with dynamic alias placeholder to test replacement
+    public static function findWithAlias()
+    {
+        return parent::find()
+            ->where([
+                '<>', '@alias.id', 0,
+            ])
+            ->orderBy( '@alias.id' );
     }
 }

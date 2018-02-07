@@ -184,6 +184,12 @@ abstract class Application extends Module
      * @var array list of loaded modules indexed by their class names.
      */
     public $loadedModules = [];
+    /**
+     * @var bool whether to enable dynamic alias feature in ActiveQuery. Defaults to false.
+     * Enable only if you want to use this feature in your application.
+     * @since 2.0.14
+     */
+    public $enableAliasDynamic = false;
 
 
     /**

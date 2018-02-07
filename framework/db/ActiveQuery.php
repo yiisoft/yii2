@@ -81,6 +81,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     const EVENT_INIT = 'init';
 
     /**
+     * string placeholder to be replaced by the table alias of a query.
+     */
+    const ALIAS_PLACEHOLDER = '@alias';
+
+    /**
      * @var string the SQL statement to be executed for retrieving AR records.
      * This is set by [[ActiveRecord::findBySql()]].
      */
@@ -152,9 +157,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->select) && !empty($this->join)) {
-            list(, $alias) = $this->getTableNameAndAlias();
-            $this->select = ["$alias.*"];
+            if ($this->getIsAliasDynamicEnabled()) {
+                $this->select = ['@alias.*'];
+            } else {
+                $alias = $this->getTableAlias();
+                $this->select = ["$alias.*"];
+            }
         }
+
+        //replace dynamic alias placeholder in the query by the current aliasTableName
+        $this->normalizeAliasInQuery();
 
         if ($this->primaryModel === null) {
             // eager loading
@@ -588,6 +600,15 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
+     * Returns the table alias (or the table name if empty) of the current ActiveQuery
+     * @return string table alias or table name of the current activeQuery
+     */
+    private function getTableAlias()
+    {
+        return $this->getTableNameAndAlias()[1];
+    }
+
+    /**
      * Joins a parent query with a child query.
      * The current query object will be modified accordingly.
      * @param ActiveQuery $parent
@@ -613,7 +634,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         list($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
         list($childTable, $childAlias) = $child->getTableNameAndAlias();
 
+        //replace dynamic alias placeholder in the child query by the current aliasTableName
+        $child->normalizeAliasInQuery();
+
         if (!empty($child->link)) {
+            //automatically quote table aliasName only for the link part
             if (strpos($parentAlias, '{{') === false) {
                 $parentAlias = '{{' . $parentAlias . '}}';
             }
@@ -824,5 +849,73 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
         return $modelClass::tableName();
+    }
+
+    /**
+     * Replace occurence of self::ALIAS_PLACEHOLDER by $aliasName into given conditions
+     * @param string|array|Expression $condition the given conditions
+     * @param string $aliasName
+     * @return string|array|Expression $condition with alias replaced
+     */
+    protected static function replaceAliasPlaceholder($condition, $aliasName)
+    {
+        if (empty($condition) or is_int($condition)) {
+            return $condition;
+        } elseif (is_string($condition)) {
+            return str_replace(self::ALIAS_PLACEHOLDER, $aliasName, $condition);
+        } elseif (is_array($condition)) {
+            $conditionNew = [];
+            foreach ($condition as $key => $value) {
+                $key = self::replaceAliasPlaceholder($key, $aliasName);
+                $value = self::replaceAliasPlaceholder($value, $aliasName);
+                $conditionNew[$key] = $value;
+            }
+            $condition = $conditionNew;
+        } elseif ($condition instanceof \yii\db\Expression) {
+            $condition->expression = self::replaceAliasPlaceholder($condition->expression, $aliasName);
+        }
+
+        return $condition;
+    }
+
+    /**
+     * Returns a value indicating whether the dynamic alias feature is enable
+     * @return bool the value indicating whether the dynamic alias feature is enable
+     */
+    public static function getIsAliasDynamicEnabled()
+    {
+        if (isset(\Yii::$app->enableAliasDynamic)) {
+            return \Yii::$app->enableAliasDynamic;
+        }
+
+        return false;
+    }
+
+    /**
+     * Replace the dynamic alias placeholders by the alias table name of the current ActiveQuery
+     * @return $this the current ActiveQuery with relation alias replaced
+     */
+    protected function normalizeAliasInQuery()
+    {
+        //Skip normalisation if dynamic alias feature is not enabled (to save speed)
+        if (!$this->getIsAliasDynamicEnabled()) {
+            return $this;
+        }
+
+        $alias = $this->getTableAlias();
+
+        $this->select = self::replaceAliasPlaceholder($this->select, $alias);
+        $this->on = self::replaceAliasPlaceholder($this->on, $alias);
+        $this->where = self::replaceAliasPlaceholder($this->where, $alias);
+        $this->having = self::replaceAliasPlaceholder($this->having, $alias);
+        $this->orderBy = self::replaceAliasPlaceholder($this->orderBy, $alias);
+        $this->groupBy = self::replaceAliasPlaceholder($this->groupBy, $alias);
+        if (!empty($this->join)) {
+            foreach ($this->join as &$join) {
+                $join = self::replaceAliasPlaceholder($join, $alias);
+            }
+        }
+
+        return $this;
     }
 }
