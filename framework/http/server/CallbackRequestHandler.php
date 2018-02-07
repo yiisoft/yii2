@@ -7,9 +7,9 @@
 
 namespace yii\http\server;
 
-use Interop\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use yii\base\BaseObject;
 
 /**

@@ -22,8 +22,8 @@ use yii\base\MiddlewareDispatcherInterface;
  * ```
  *
  * @see https://github.com/php-fig/fig-standards/tree/master/proposed/http-handlers
- * @see \Interop\Http\Server\MiddlewareInterface
- * @see \Interop\Http\Server\RequestHandlerInterface
+ * @see \Psr\Http\Server\MiddlewareInterface
+ * @see \Psr\Http\Server\RequestHandlerInterface
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0
@@ -40,7 +40,7 @@ class MiddlewareDispatcher extends Component implements MiddlewareDispatcherInte
             return call_user_func($handler, $request);
         }
 
-        /* @var $middlewareInstance \Interop\Http\Server\MiddlewareInterface */
+        /* @var $middlewareInstance \Psr\Http\Server\MiddlewareInterface */
         $middlewareInstance = array_shift($middleware);
         if (!is_object($middlewareInstance) || $middlewareInstance instanceof \Closure) {
             $middlewareInstance = Yii::createObject($middlewareInstance);

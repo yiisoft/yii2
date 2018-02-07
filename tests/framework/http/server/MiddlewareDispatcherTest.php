@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\http\server;
 
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use yii\http\server\CallbackMiddleware;
 use yii\http\server\MiddlewareDispatcher;
 use yii\web\Request;

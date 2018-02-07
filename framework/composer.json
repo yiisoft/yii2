@@ -78,7 +78,7 @@
         "bower-asset/yii2-pjax": "~2.0.1"
     },
     "suggest": {
-        "http-interop/http-server-middleware": "required for PSR-15 HTTP middleware support"
+        "psr/http-server-middleware": "required for PSR-15 HTTP middleware support"
     },
     "autoload": {
         "psr-4": {"yii\\": ""},

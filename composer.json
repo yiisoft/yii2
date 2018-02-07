@@ -84,7 +84,7 @@
         "bower-asset/yii2-pjax": "~2.0.1"
     },
     "require-dev": {
-        "http-interop/http-server-middleware": "~1.0.0",
+        "psr/http-server-middleware": "~1.0.0",
         "phpunit/phpunit": "~6.2.3",
         "cebe/indent": "~1.0.2",
         "friendsofphp/php-cs-fixer": "~2.2.3"
