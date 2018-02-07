@@ -4,6 +4,10 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 - Enh #15216: Added `yii\web\ErrorHandler::$traceLine` click here(whatever line) and open file in my ide
+
+- Enh #14488: Added support for X-Forwarded-Host to `yii\web\Request`, fixed `getServerPort()` usage (si294r, samdark)
+- Enh #13019: Support JSON in SchemaBuilderTrait (zhukovra, undefinedor)
+- Enh #15047: `yii\db\Query::select()` and `yii\db\Query::addSelect()` now check for duplicate column names (wapmorgan)
 - Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
 - Enh #13465: Added `yii\helpers\FileHelper::findDirectory()` method (ArsSirek, developeruz)
 - Enh #8527: Added `yii\i18n\Locale` component having `getCurrencySymbol()` method (amarox, samdark)
@@ -67,6 +71,7 @@ Yii Framework 2 Change Log
 - Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
 - Enh #9253: Allow `variations` to be a string for `yii\filters\PageCache` and `yii\widgets\FragmentCache` (schojniak, developeruz)
 - Enh #12623: Added `yii\helpers\StringHelper::matchWildcard()` replacing usage of `fnmatch()`, which may be unreliable (klimov-paul)
+- Enh #13679: Added `yii\behaviors\CacheableWidgetBehavior` (Kolyunya)
 - Enh #13919: Added option to add comment for created table to migration console command (mixartemev, developeruz)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
 - Enh #14355: Added ability to pass an empty array as a parameter in console command (developeruz)
@@ -89,6 +94,7 @@ Yii Framework 2 Change Log
 - Enh #15422: Added default roles dynamic definition support via closure for `yii\rbac\BaseManager` (deltacube)
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 - Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
+- Enh #15595: `yii\data\DataFilter` can now handle `lt`,`gt`,`lte` and `gte` on `yii\validators\DateValidator` (mikk150)
 
 2.0.13.1 November 14, 2017
 --------------------------
@@ -156,6 +162,7 @@ Yii Framework 2 Change Log
 - Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
 - Enh #5786: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN, klimov-paul)
 - Enh #6644: Added `yii\helpers\ArrayHelper::setValue()` (LAV45)
+- Enh #7640: Implemented custom data types support. Added JSON support for MySQL and PostgreSQL, array support for PostgreSQL (silverfire, cebe)
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 - Enh #9438: `yii\web\DbSession` now relies on error handler to display errors (samdark)
 - Enh #9703, #9709: Added `yii\i18n\Formatter::asWeight()` and `::asLength()` formatters (nineinchnick, silverfire)

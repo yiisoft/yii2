@@ -48,14 +48,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      */
-    protected $likeEscapingReplacements = [
-        '%' => '[%]',
-        '_' => '[_]',
-        '[' => '[[]',
-        ']' => '[]]',
-        '\\' => '[\\]',
-    ];
-
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\conditions\InCondition' => 'yii\db\mssql\conditions\InConditionBuilder',
+            'yii\db\conditions\LikeCondition' => 'yii\db\mssql\conditions\LikeConditionBuilder',
+        ]);
+    }
 
     /**
      * {@inheritdoc}
@@ -324,52 +323,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException if `$columns` is an array
-     */
-    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
-    {
-        if (is_array($columns)) {
-            throw new NotSupportedException(__METHOD__ . ' is not supported by MSSQL.');
-        }
-
-        return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
-    }
-
-    /**
-     * Builds SQL for IN condition.
-     *
-     * @param string $operator
-     * @param array $columns
-     * @param array $values
-     * @param array $params
-     * @return string SQL
-     */
-    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
-    {
-        $quotedColumns = [];
-        foreach ($columns as $i => $column) {
-            $quotedColumns[$i] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
-        }
-        $vss = [];
-        foreach ($values as $value) {
-            $vs = [];
-            foreach ($columns as $i => $column) {
-                if (isset($value[$column])) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $params[$phName] = $value[$column];
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
-                } else {
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
-                }
-            }
-            $vss[] = '(' . implode($operator === 'IN' ? ' AND ' : ' OR ', $vs) . ')';
-        }
-
-        return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
-    }
-
-    /**
-     * {@inheritdoc}
      * @since 2.0.8
      */
     public function selectExists($rawSql)
@@ -390,8 +343,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             foreach ($columns as $name => $value) {
                 // @see https://github.com/yiisoft/yii2/issues/12599
                 if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && is_string($value)) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", [$phName => $value]);
+                    $exParams = [];
+                    $phName = $this->bindParam($value, $exParams);
+                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", $exParams);
                 }
             }
         }

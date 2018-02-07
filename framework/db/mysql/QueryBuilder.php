@@ -10,7 +10,7 @@ namespace yii\db\mysql;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\Exception;
-use yii\db\Expression;
+use yii\db\ExpressionInterface;
 
 /**
  * QueryBuilder is the query builder for MySQL databases.
@@ -44,8 +44,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BINARY => 'blob',
         Schema::TYPE_BOOLEAN => 'tinyint(1)',
         Schema::TYPE_MONEY => 'decimal(19,4)',
+        Schema::TYPE_JSON => 'json'
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\JsonExpression' => 'yii\db\mysql\JsonExpressionBuilder',
+        ]);
+    }
 
     /**
      * Builds a SQL statement for renaming a column.
@@ -247,18 +257,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
-                if ($value instanceof Expression) {
-                    $placeholders[] = $value->expression;
-                    foreach ($value->params as $n => $v) {
-                        $params[$n] = $v;
-                    }
+                if ($value instanceof ExpressionInterface) {
+                    $placeholders[] = $this->buildExpression($value, $params);
                 } elseif ($value instanceof \yii\db\Query) {
                     list($sql, $params) = $this->build($value, $params);
                     $placeholders[] = "($sql)";
                 } else {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $placeholders[] = $phName;
-                    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                    $placeholders[] = $this->bindParam(
+                        isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value,
+                        $params
+                    );
                 }
             }
             if (empty($names) && $tableSchema !== null) {
@@ -350,4 +358,5 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return null;
     }
+
 }

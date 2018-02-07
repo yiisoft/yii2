@@ -48,16 +48,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      */
-    protected $likeEscapeCharacter = '!';
-    /**
-     * {@inheritdoc}
-     */
-    protected $likeEscapingReplacements = [
-        '%' => '!%',
-        '_' => '!_',
-        '!' => '!!',
-    ];
-
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\conditions\LikeCondition' => 'yii\db\cubrid\conditions\LikeConditionBuilder',
+        ]);
+    }
 
     /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
