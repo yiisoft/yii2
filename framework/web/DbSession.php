@@ -13,6 +13,7 @@ use yii\db\Connection;
 use yii\db\PdoValue;
 use yii\db\Query;
 use yii\di\Instance;
+use yii\helpers\ArrayHelper;
 
 /**
  * DbSession extends [[Session]] by using database as session data storage.
@@ -74,7 +75,6 @@ class DbSession extends MultiFieldSession
      * length 64 instead of 40.
      */
     public $sessionTable = '{{%session}}';
-
 
     /**
      * Initializes the DbSession component.
