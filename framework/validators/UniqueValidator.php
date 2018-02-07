@@ -92,7 +92,7 @@ class UniqueValidator extends Validator
 
 
     /**
-     * @var bool whether this validator are forced to  run on master db
+     * @var bool whether this validator is forced to always use master DB
      */
     public $forceMasterDb =  true;
 

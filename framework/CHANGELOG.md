@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
-- Enh #14254: add an option to specify whether validator can run on slave db connections for `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` (rossoneri)
+- Enh #14254: add an option to specify whether validator is forced to always use master DB for `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` (rossoneri)
 - Enh #15047: `yii\db\Query::select()` and `yii\db\Query::addSelect()` now check for duplicate column names (wapmorgan)
 - Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
 - Enh #13465: Added `yii\helpers\FileHelper::findDirectory()` method (ArsSirek, developeruz)

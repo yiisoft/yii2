@@ -75,7 +75,7 @@ class ExistValidator extends Validator
     public $targetAttributeJunction = 'and';
 
     /**
-     * @var bool whether this validator are forced to  run on master db
+     * @var bool whether this validator is forced to always use master DB
      */
     public $forceMasterDb =  true;
 
@@ -116,10 +116,7 @@ class ExistValidator extends Validator
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $query = $this->createQuery($targetClass, $conditions);
 
-        $value = $model->$attribute;
-        $existed = $this->checkExisted($targetClass,$query,$value);
-
-        if(!$existed){
+        if(!$this->valueExists($targetClass, $query, $model->$attribute)){
             $this->addError($model, $attribute, $this->message);
         }
     }
@@ -189,11 +186,7 @@ class ExistValidator extends Validator
 
         $query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
 
-        $existed = $this->checkExisted($this->targetClass,$query,$value);
-
-        $result = $existed ? null : [$this->message, []];
-
-        return $result;
+        return $this->valueExists($this->targetClass, $query, $value) ? null : [$this->message, []];
     }
 
     /**
@@ -204,16 +197,16 @@ class ExistValidator extends Validator
      * @param $value mixed the value want to be checked
      * @return boolean
      */
-    private function checkExisted($targetClass, $query,$value ){
+    private function valueExists($targetClass, $query, $value ){
         $db = $targetClass::getDb();
         $existed = false;
 
         if($this->forceMasterDb){
-            $db->useMaster(function ($db) use ($query,$value,&$existed){
-                $this->checkValueExisted($query,$value,$existed);
+            $db->useMaster(function ($db) use ($query, $value, &$existed){
+                $existed = $this->queryValueExists($query, $value);
             });
         }else{
-            $this->checkValueExisted($query,$value,$existed);
+            $existed = $this->queryValueExists($query, $value);
         }
 
         return $existed;
@@ -225,14 +218,16 @@ class ExistValidator extends Validator
      *
      * @param $query QueryInterface
      * @param $value mixed the value want to be checked
-     * @param $existed bool
+     * @return bool
      */
-    private function checkValueExisted($query, $value,&$existed){
+    private function queryValueExists($query, $value){
         if (is_array($value)) {
             $existed = $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ;
         } else {
             $existed = $query->exists();
         }
+
+        return $existed;
     }
 
     /**
