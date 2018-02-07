@@ -442,6 +442,18 @@ abstract class SchemaTest extends DatabaseTestCase
                 'scale' => null,
                 'defaultValue' => 130, // b'10000010'
             ],
+            'json_col' => [
+                'type' => 'json',
+                'dbType' => 'json',
+                'phpType' => 'array',
+                'allowNull' => true,
+                'autoIncrement' => false,
+                'enumValues' => null,
+                'size' => null,
+                'precision' => null,
+                'scale' => null,
+                'defaultValue' => null,
+            ],
         ];
     }
 
@@ -485,7 +497,10 @@ abstract class SchemaTest extends DatabaseTestCase
                 $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
                 $this->assertEquals((string) $expected['defaultValue'], (string) $column->defaultValue, "defaultValue of column $name does not match.");
             } else {
-                $this->assertSame($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
+                $this->assertEquals($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
+            }
+            if (isset($expected['dimension'])) { // PgSQL only
+                $this->assertSame($expected['dimension'], $column->dimension, "dimension of column $name does not match");
             }
         }
     }
@@ -530,6 +545,16 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertEquals([
             'somecolUnique' => ['somecol'],
             'someCol2Unique' => ['someCol2'],
+        ], $uniqueIndexes);
+        
+        // see https://github.com/yiisoft/yii2/issues/13814
+        $db->createCommand()->createIndex('another unique index', 'uniqueIndex', 'someCol2', true)->execute();
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([
+            'somecolUnique' => ['somecol'],
+            'someCol2Unique' => ['someCol2'],
+            'another unique index' => ['someCol2'],
         ], $uniqueIndexes);
     }
 

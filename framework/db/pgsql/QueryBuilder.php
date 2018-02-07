@@ -11,6 +11,7 @@ use yii\base\InvalidParamException;
 use yii\db\Constraint;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\db\PdoValue;
 use yii\helpers\StringHelper;
 
 /**
@@ -71,32 +72,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BINARY => 'bytea',
         Schema::TYPE_BOOLEAN => 'boolean',
         Schema::TYPE_MONEY => 'numeric(19,4)',
+        Schema::TYPE_JSON => 'jsonb',
     ];
 
     /**
-     * @var array map of query condition to builder methods.
-     * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
+     * {@inheritdoc}
      */
-    protected $conditionBuilders = [
-        'NOT' => 'buildNotCondition',
-        'AND' => 'buildAndCondition',
-        'OR' => 'buildAndCondition',
-        'BETWEEN' => 'buildBetweenCondition',
-        'NOT BETWEEN' => 'buildBetweenCondition',
-        'IN' => 'buildInCondition',
-        'NOT IN' => 'buildInCondition',
-        'LIKE' => 'buildLikeCondition',
-        'ILIKE' => 'buildLikeCondition',
-        'NOT LIKE' => 'buildLikeCondition',
-        'NOT ILIKE' => 'buildLikeCondition',
-        'OR LIKE' => 'buildLikeCondition',
-        'OR ILIKE' => 'buildLikeCondition',
-        'OR NOT LIKE' => 'buildLikeCondition',
-        'OR NOT ILIKE' => 'buildLikeCondition',
-        'EXISTS' => 'buildExistsCondition',
-        'NOT EXISTS' => 'buildExistsCondition',
-    ];
+    protected function defaultConditionClasses()
+    {
+        return array_merge(parent::defaultConditionClasses(), [
+            'ILIKE' => 'yii\db\conditions\LikeCondition',
+            'NOT ILIKE' => 'yii\db\conditions\LikeCondition',
+            'OR ILIKE' => 'yii\db\conditions\LikeCondition',
+            'OR NOT ILIKE' => 'yii\db\conditions\LikeCondition',
+        ]);
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\ArrayExpression' => 'yii\db\pgsql\ArrayExpressionBuilder',
+            'yii\db\JsonExpression' => 'yii\db\pgsql\JsonExpressionBuilder',
+        ]);
+    }
 
     /**
      * Builds a SQL statement for creating a new index.
@@ -243,7 +244,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns, &$params)
     {
@@ -386,7 +387,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function update($table, $columns, $condition, &$params)
     {
@@ -413,7 +414,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $columnSchemas = $tableSchema->columns;
             foreach ($columns as $name => $value) {
                 if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && is_string($value)) {
-                    $columns[$name] = [$value, \PDO::PARAM_LOB]; // explicitly setup PDO param type for binary column
+                    $columns[$name] = new PdoValue($value, \PDO::PARAM_LOB); // explicitly setup PDO param type for binary column
                 }
             }
         }
@@ -422,7 +423,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function batchInsert($table, $columns, $rows)
     {
@@ -441,7 +442,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         foreach ($rows as $row) {
             $vs = [];
             foreach ($row as $i => $value) {
-                if (isset($columns[$i], $columnSchemas[$columns[$i]]) && !is_array($value)) {
+                if (isset($columns[$i], $columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {

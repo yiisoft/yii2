@@ -835,6 +835,17 @@ class Connection extends Component
     }
 
     /**
+     * Can be used to set [[QueryBuilder]] configuration via Connection configuration array.
+     *
+     * @param $value
+     * @since 2.0.14
+     */
+    public function setQueryBuilder($value)
+    {
+        Yii::configure($this->getQueryBuilder(), $value);
+    }
+
+    /**
      * Obtains the schema information for the named table.
      * @param string $name table name.
      * @param bool $refresh whether to reload the table schema even if it is found in the cache.

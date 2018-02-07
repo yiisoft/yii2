@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\db\PdoValue;
 use yii\db\Query;
 use yii\di\Instance;
 
@@ -232,8 +233,8 @@ class DbSession extends MultiFieldSession
      */
     protected function typecastFields($fields)
     {
-        if (isset($fields['data']) && !is_array($fields['data'])) {
-            $fields['data'] = [$fields['data'], \PDO::PARAM_LOB];
+        if (isset($fields['data']) && is_array($fields['data'] && is_object($fields['data']))) {
+            $fields['data'] = new PdoValue($fields['data'], \PDO::PARAM_LOB);
         }
 
         return $fields;

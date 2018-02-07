@@ -19,7 +19,7 @@ use yiiunit\TestCase;
 class HelpControllerTest extends TestCase
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setUp()
     {

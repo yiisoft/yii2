@@ -49,7 +49,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -237,7 +237,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function releaseSavepoint($name)
     {
@@ -245,7 +245,15 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     */
+    public function quoteSimpleTableName($name)
+    {
+        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function createQueryBuilder()
     {
@@ -253,7 +261,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
@@ -582,7 +590,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns)
     {

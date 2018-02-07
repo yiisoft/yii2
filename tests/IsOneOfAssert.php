@@ -42,7 +42,7 @@ class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function matches($other)
     {
