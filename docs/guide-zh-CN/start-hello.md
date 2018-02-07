@@ -62,7 +62,7 @@ Yii 使用 `action` 前缀区分普通方法和操作。
 它的默认值是 `“Hello”`（就像你设置 PHP 中其它函数或方法的默认值一样）。
 当应用接收到请求并确定由 `say` 操作来响应请求时，应用将从请求的参数中寻找对应值传入进来。
 换句话说，如果请求包含一个 `message` 参数，
-它的值是 `“Goodybye”`， 操作方法中的 `$message` 变量也将被填充为 `“Goodbye”`。
+它的值是 `“Goodbye”`， 操作方法中的 `$message` 变量也将被填充为 `“Goodbye”`。
 
 在操作方法中，[[yii\web\Controller::render()|render()]] 被用来渲染一个
 名为 `say` 的[视图](structure-views.md)文件。
