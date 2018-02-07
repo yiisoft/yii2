@@ -140,17 +140,17 @@ class UniqueValidator extends Validator
 
         $db = $targetClass::getDb();
 
-        $modelExisted = false;
+        $modelExists = false;
 
         if ($this->forceMasterDb) {
-            $db->useMaster(function ($db) use($targetClass, $conditions, $model, &$modelExisted) {
-                $modelExisted = $this->modelExists($targetClass, $conditions, $model);
+            $db->useMaster(function ($db) use($targetClass, $conditions, $model, &$modelExists) {
+                $modelExists = $this->modelExists($targetClass, $conditions, $model);
             });
         } else {
-            $modelExisted = $this->modelExists($targetClass, $conditions, $model);
+            $modelExists = $this->modelExists($targetClass, $conditions, $model);
         }
 
-        if ($modelExisted) {
+        if ($modelExists) {
             if (is_array($targetAttribute) && count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
