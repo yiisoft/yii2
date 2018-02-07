@@ -458,7 +458,7 @@ abstract class QueryTest extends DatabaseTestCase
      */
     public function testCountHavingWithoutGroupBy()
     {
-        if (!in_array($this->driverName, ['mysql'])) {
+        if (!\in_array($this->driverName, ['mysql'])) {
             $this->markTestSkipped("{$this->driverName} does not support having without group by.");
         }
 
