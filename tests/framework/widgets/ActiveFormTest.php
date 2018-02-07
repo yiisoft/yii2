@@ -107,4 +107,22 @@ EOF
 HTML
 , $content);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15536
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        $form = ActiveForm::begin(
+            [
+                'action' => '/something',
+                'on init' => function () use (&$initTriggered) {
+                    $initTriggered = true;
+                }
+            ]
+        );
+        ActiveForm::end();
+        $this->assertTrue($initTriggered);
+    }
 }

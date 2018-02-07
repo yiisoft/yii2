@@ -83,11 +83,11 @@ return [
                 ],
             ],
         ],
-    ], 
+    ],
 ];
 ```
 
-In the above code, two log targets are registered: 
+In the above code, two log targets are registered:
 
 * the first target selects error and warning messages and saves them in a database table;
 * the second target selects error messages under the categories whose names start with `yii\db\`, and sends
@@ -321,3 +321,44 @@ log target classes included in the Yii release.
 
 > Tip: Instead of creating your own loggers you may try using PSR-3 compatible targets.
 
+## Performance Profiling <span id="performance-profiling"></span>
+
+Performance profiling is a special type of message logging that is used to measure the time taken by certain
+code blocks and find out what are the performance bottlenecks. For example, the [[yii\db\Command]] class uses
+performance profiling to find out the time taken by each DB query.
+
+To use performance profiling, first identify the code blocks that need to be profiled. Then enclose each
+code block like the following:
+
+```php
+\Yii::beginProfile('myBenchmark');
+
+...code block being profiled...
+
+\Yii::endProfile('myBenchmark');
+```
+
+where `myBenchmark` stands for a unique token identifying a code block. Later when you examine the profiling
+result, you will use this token to locate the time spent by the corresponding code block.
+
+It is important to make sure that the pairs of `beginProfile` and `endProfile` are properly nested.
+For example,
+
+```php
+\Yii::beginProfile('block1');
+
+    // some code to be profiled
+
+    \Yii::beginProfile('block2');
+        // some other code to be profiled
+    \Yii::endProfile('block2');
+
+\Yii::endProfile('block1');
+```
+
+If you miss `\Yii::endProfile('block1')` or switch the order of `\Yii::endProfile('block1')` and
+`\Yii::endProfile('block2')`, the performance profiling will not work.
+
+For each code block being profiled, a log message with the severity level `profile` is recorded. You can configure
+a [log target](#log-targets) to collect such messages and export them. The [Yii debugger](tool-debugger.md) has
+a built-in performance profiling panel showing the profiling results.

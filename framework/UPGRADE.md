@@ -154,6 +154,11 @@ Upgrade from Yii 2.0.x
   `yii\validators\FileValidator::buildMimeTypeRegexp()` have been made `public`. Make sure you use correct
   access level specification in case you override these methods.
 * Default script position for the `yii\web\View::registerJs()` changed to `View::POS_END`.
+* Package "ezyang/htmlpurifier" has been made optional and is not installed by default. If you need to use
+  `yii\helpers\HtmlPurifier` or `yii\i18n\Formatter::asHtml()` (e.g. 'html' data format), you'll have to install
+  this package manually for your project.
+* `yii\BaseYii::powered()` method has been removed. Please add "Powered by Yii" link either right into HTML or using
+  `yii\helpers\Html::a()`.
 * Signature of the methods `yii\base\Controller::runAction()` and `yii\base\Module::runAction()` (`yii\base\Application::runAction()`)
   has been changed with addition of request instance as the first argument. Make sure you invoke or override these
   methods correctly.
@@ -165,6 +170,7 @@ Upgrade from Yii 2.0.13
 * Constants `IPV6_ADDRESS_LENGTH`, `IPV4_ADDRESS_LENGTH` were moved from `yii\validators\IpValidator` to `yii\helpers\IpHelper`.
   If your application relies on these constants, make sure to update your code to follow the changes.
 
+* `yii\base\Security::compareString()` is now throwing `yii\base\InvalidParamException` in case non-strings are compared.
 
 Upgrade from Yii 2.0.12
 -----------------------

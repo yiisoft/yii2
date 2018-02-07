@@ -28,7 +28,7 @@ abstract class BaseManager extends Component implements ManagerInterface
      * @var array a list of role names that are assigned to every user automatically without calling [[assign()]].
      * Note that these roles are applied to users, regardless of their state of authentication.
      */
-    public $defaultRoles = [];
+    protected $defaultRoles = [];
 
 
     /**
@@ -96,7 +96,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     abstract protected function updateRule($name, $rule);
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createRole($name)
     {
@@ -106,7 +106,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createPermission($name)
     {
@@ -116,7 +116,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function add($object)
     {
@@ -136,7 +136,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function remove($object)
     {
@@ -150,7 +150,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function update($name, $object)
     {
@@ -170,7 +170,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRole($name)
     {
@@ -179,7 +179,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermission($name)
     {
@@ -188,11 +188,41 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRoles()
     {
         return $this->getItems(Item::TYPE_ROLE);
+    }
+
+    /**
+     * Set default roles
+     * @param array|\Closure $roles either array of roles or a callable returning it
+     * @since 2.0.14
+     */
+    public function setDefaultRoles($roles)
+    {
+        if (is_array($roles)) {
+            $this->defaultRoles = $roles;
+        } elseif (is_callable($roles)) {
+            $roles = $roles();
+            if (!is_array($roles)) {
+                throw new InvalidArgumentException('Default roles closure must return an array');
+            }
+            $this->defaultRoles = $roles;
+        } else {
+            throw new InvalidArgumentException('Default roles must be either an array or a callable');
+        }
+    }
+
+    /**
+     * Get default roles
+     * @return array default roles
+     * @since 2.0.14
+     */
+    public function getDefaultRoles()
+    {
+        return $this->defaultRoles;
     }
 
     /**
@@ -211,7 +241,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermissions()
     {

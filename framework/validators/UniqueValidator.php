@@ -96,7 +96,7 @@ class UniqueValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -117,7 +117,7 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -125,7 +125,7 @@ class UniqueValidator extends Validator
         $targetClass = $this->getTargetClass($model);
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
-        $conditions[] = $this->targetAttributeJunction === 'or' ? 'or' : 'and';
+        $conditions = [$this->targetAttributeJunction === 'or' ? 'or' : 'and'];
 
         foreach ($rawConditions as $key => $value) {
             if (is_array($value)) {
@@ -181,6 +181,9 @@ class UniqueValidator extends Validator
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
+                
+                // any with relation can't be loaded because related fields are not selected
+                $query->with = null;
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);

@@ -154,7 +154,10 @@ You may also assign an alias to a fixture. In the above example, the `UserProfil
 In the test methods, you may then access a fixture object using its alias in `grabFixture()` method. For example,
 
 ```php
-$profile = $I->grabFixture('profiles', 'user1');` will return the `UserProfileFixture` object.
+$profile = $I->grabFixture('profiles', 'user1');
+```
+
+will return the `UserProfileFixture` object.
 
 Because `UserProfileFixture` extends from `ActiveFixture`, you may further use the following syntax to access
 the data provided by the fixture:

@@ -41,7 +41,6 @@ return [
     'Page not found.' => 'ไม่พบหน้า',
     'Please fix the following errors:' => 'โปรดแก้ไขข้อผิดพลาดต่อไปนี้:',
     'Please upload a file.' => 'กรุณาอัพโหลดไฟล์',
-    'Powered by {yii}' => 'ขับเคลื่อนโดย {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'แสดง <b>{begin, number} ถึง {end, number}</b> จาก <b>{totalCount, number}</b> ผลลัพธ์',
     'The file "{file}" is not an image.' => 'ไฟล์ "{file}" ไม่ใช่รูปภาพ',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'ไฟล์ "{file}" มีขนาดใหญ่ไป ไฟล์จะต้องมีขนาดไม่เกิน {formattedLimit}',

@@ -835,7 +835,7 @@ class FileHelperTest extends TestCase
      */
     public function testCopyDirectoryEmptyDirectories()
     {
-        list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
+        [$basePath, $srcDirName] = $this->setupCopyEmptyDirectoriesTest();
 
         // copy with empty directories
         $dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_empty_dst_dir';
@@ -860,7 +860,7 @@ class FileHelperTest extends TestCase
      */
     public function testCopyDirectoryNoEmptyDirectories()
     {
-        list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
+        [$basePath, $srcDirName] = $this->setupCopyEmptyDirectoriesTest();
 
         // copy without empty directories
         $dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_empty_dst_dir2';

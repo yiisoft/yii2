@@ -59,7 +59,7 @@ class Application extends \yii\base\Application
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function bootstrap()
     {
@@ -180,7 +180,7 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function coreComponents()
     {

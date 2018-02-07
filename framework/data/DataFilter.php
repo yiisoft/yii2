@@ -427,7 +427,7 @@ class DataFilter extends Model
     // Model specific:
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributes()
     {
@@ -437,7 +437,7 @@ class DataFilter extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function formName()
     {
@@ -445,7 +445,7 @@ class DataFilter extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -455,7 +455,7 @@ class DataFilter extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attributeLabels()
     {
@@ -730,7 +730,7 @@ class DataFilter extends Model
     // Property access:
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
@@ -741,7 +741,7 @@ class DataFilter extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
@@ -752,7 +752,7 @@ class DataFilter extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __get($name)
     {
@@ -764,7 +764,7 @@ class DataFilter extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __set($name, $value)
     {
@@ -776,7 +776,7 @@ class DataFilter extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __isset($name)
     {
@@ -788,7 +788,7 @@ class DataFilter extends Model
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __unset($name)
     {

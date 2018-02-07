@@ -253,4 +253,12 @@ abstract class ActiveQueryTest extends DatabaseTestCase
             '{{' . Profile::tableName() . '}}' => '{{' . Profile::tableName() . '}}',
         ], $tables);
     }
+
+    public function testGetTableNames_wontFillFrom()
+    {
+        $query = new ActiveQuery(Profile::class);
+        $this->assertEquals($query->from, null);
+        $query->getTablesUsedInFrom();
+        $this->assertEquals($query->from, null);
+    }
 }

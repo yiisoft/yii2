@@ -761,6 +761,15 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     {
         $params = $this->getParsedBody();
 
+        if (is_object($params)) {
+            // unable to use `ArrayHelper::getValue()` due to different dots in key logic and lack of exception handling
+            try {
+                return $params->{$name};
+            } catch (\Exception $e) {
+                return $defaultValue;
+            }
+        }
+
         return isset($params[$name]) ? $params[$name] : $defaultValue;
     }
 
@@ -2013,7 +2022,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     public function getCsrfToken($regenerate = false)
     {
         if ($this->_csrfToken === null || $regenerate) {
-            if ($regenerate || ($token = $this->loadCsrfToken()) === null) {
+            $token = $this->loadCsrfToken();
+            if ($regenerate || empty($token)) {
                 $token = $this->generateCsrfToken();
             }
             $this->_csrfToken = Yii::$app->security->maskToken($token);

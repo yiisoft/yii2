@@ -16,7 +16,7 @@ use yii\db\Migration;
 class m160313_153426_session_init extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -44,7 +44,7 @@ class m160313_153426_session_init extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {

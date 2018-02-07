@@ -81,7 +81,7 @@ class Application extends \yii\base\Application
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __construct($config = [])
     {
@@ -229,7 +229,7 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function coreComponents()
     {

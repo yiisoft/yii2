@@ -10,8 +10,6 @@ namespace yii\db\sqlite;
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Connection;
-use yii\db\Exception;
-use yii\db\Expression;
 use yii\db\Query;
 use yii\helpers\StringHelper;
 
@@ -50,7 +48,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     ];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $likeEscapeCharacter = '\\';
 
@@ -360,7 +358,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws NotSupportedException
      * @since 2.0.8
      */
@@ -370,7 +368,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws NotSupportedException
      * @since 2.0.8
      */
@@ -380,7 +378,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws NotSupportedException
      * @since 2.0.8
      */
@@ -390,7 +388,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws NotSupportedException
      * @since 2.0.8
      */
@@ -400,7 +398,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildLimit($limit, $offset)
     {
@@ -420,7 +418,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws NotSupportedException if `$columns` is an array
      */
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
@@ -466,7 +464,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function build($query, $params = [])
     {
@@ -495,7 +493,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildUnion($unions, &$params)
     {

@@ -44,7 +44,6 @@ return [
     'Page not found.' => '找不到頁面。',
     'Please fix the following errors:' => '請修正以下錯誤：',
     'Please upload a file.' => '請上傳一個檔案。',
-    'Powered by {yii}' => '技术支持 {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => '第 <b>{begin, number}-{end, number}</b> 項，共 <b>{totalCount, number}</b> 項資料.',
     'The file "{file}" is not an image.' => '檔案 "{file}" 不是一個圖片檔案。',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => '檔案"{file}"太大了。它的大小不可以超過{formattedLimit}。',

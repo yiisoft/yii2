@@ -25,7 +25,7 @@ use yii\web\JsExpression;
 class UrlValidator extends ClientValidator
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function build($validator, $model, $attribute, $view)
     {

@@ -87,11 +87,11 @@ class HttpBasicAuth extends AuthMethod
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function authenticate($user, $request, $response)
     {
-        list($username, $password) = $request->getAuthCredentials();
+        [$username, $password] = $request->getAuthCredentials();
 
         if ($this->auth) {
             if ($username !== null || $password !== null) {
@@ -117,7 +117,7 @@ class HttpBasicAuth extends AuthMethod
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function challenge($response)
     {

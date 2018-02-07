@@ -9,9 +9,8 @@ namespace yii;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use yii\base\InvalidConfigException;
 use yii\base\InvalidArgumentException;
-use yii\base\UnknownClassException;
+use yii\base\InvalidConfigException;
 use yii\di\Container;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
@@ -133,19 +132,10 @@ class BaseYii
             return $alias;
         }
 
-        $pos = strpos($alias, '/');
-        $root = $pos === false ? $alias : substr($alias, 0, $pos);
+        $result = static::findAlias($alias);
 
-        if (isset(static::$aliases[$root])) {
-            if (is_string(static::$aliases[$root])) {
-                return $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos);
-            }
-
-            foreach (static::$aliases[$root] as $name => $path) {
-                if (strpos($alias . '/', $name . '/') === 0) {
-                    return $path . substr($alias, strlen($name));
-                }
-            }
+        if (is_array($result)) {
+            return $result['path'];
         }
 
         if ($throwException) {
@@ -164,17 +154,30 @@ class BaseYii
      */
     public static function getRootAlias($alias)
     {
+        $result = static::findAlias($alias);
+        if (is_array($result)) {
+            $result = $result['root'];
+        }
+        return $result;
+    }
+
+    /**
+     * @param string $alias
+     * @return array|bool
+     */
+    protected static function findAlias(string $alias)
+    {
         $pos = strpos($alias, '/');
         $root = $pos === false ? $alias : substr($alias, 0, $pos);
 
         if (isset(static::$aliases[$root])) {
             if (is_string(static::$aliases[$root])) {
-                return $root;
+                return ['root' => $root, 'path' => $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos)];
             }
 
             foreach (static::$aliases[$root] as $name => $path) {
                 if (strpos($alias . '/', $name . '/') === 0) {
-                    return $name;
+                    return ['root' => $name, 'path' => $path . substr($alias, strlen($name))];
                 }
             }
         }
@@ -502,18 +505,6 @@ class BaseYii
     public static function endProfile($token, $category = 'application')
     {
         static::getProfiler()->end($token, ['category' => $category]);
-    }
-
-    /**
-     * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
-     * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
-     */
-    public static function powered()
-    {
-        return \Yii::t('yii', 'Powered by {yii}', [
-            'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
-                    'Yii Framework') . '</a>',
-        ]);
     }
 
     /**

@@ -51,18 +51,20 @@ class RadioButtonColumn extends Column
      * A function may be used to assign different attributes to different rows based on the data in that row.
      * Specifically if you want to set a different value for the radio button you can use this option
      * in the following way (in this example using the `name` attribute of the model):
+     *
      * ```php
      * 'radioOptions' => function ($model, $key, $index, $column) {
      *     return ['value' => $model->attribute];
      * }
      * ```
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $radioOptions = [];
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws \yii\base\InvalidConfigException if [[name]] is not set.
      */
     public function init()
@@ -74,7 +76,7 @@ class RadioButtonColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderDataCellContent($model, $key, $index)
     {

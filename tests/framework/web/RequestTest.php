@@ -141,6 +141,22 @@ class RequestTest extends TestCase
         }
     }
 
+    public function testIssue15317()
+    {
+        $this->mockWebApplication();
+        $_COOKIE[(new Request())->csrfParam] = '';
+        $request = new Request();
+        $request->enableCsrfCookie = true;
+        $request->enableCookieValidation = false;
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Yii::$app->security->unmaskToken('');
+        $this->assertFalse($request->validateCsrfToken(''));
+
+        // When an empty CSRF token is given it is regenerated.
+        $this->assertNotEmpty($request->getCsrfToken());
+
+    }
     /**
      * Test CSRF token validation by POST param.
      */
@@ -587,7 +603,7 @@ class RequestTest extends TestCase
     public function testHttpAuthCredentialsFromServerSuperglobal()
     {
         $original = $_SERVER;
-        list($user, $pw) = ['foo', 'bar'];
+        [$user, $pw] = ['foo', 'bar'];
         $_SERVER['PHP_AUTH_USER'] = $user;
         $_SERVER['PHP_AUTH_PW'] = $pw;
 
@@ -882,5 +898,29 @@ class RequestTest extends TestCase
         $newStorage = $request->withoutAttribute('attr1');
         $this->assertNotSame($newStorage, $request);
         $this->assertSame(['attr2' => '2'], $newStorage->getAttributes());
+    }
+
+    public function testGetParsedBodyParam()
+    {
+        $request = new Request();
+
+        $request->setParsedBody([
+            'someParam' => 'some value',
+            'param.dot' => 'value.dot',
+        ]);
+        $this->assertSame('some value', $request->getParsedBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getParsedBodyParam('param.dot'));
+        $this->assertSame(null, $request->getParsedBodyParam('unexisting'));
+        $this->assertSame('default', $request->getParsedBodyParam('unexisting', 'default'));
+
+        // @see https://github.com/yiisoft/yii2/issues/14135
+        $bodyParams = new \stdClass();
+        $bodyParams->someParam = 'some value';
+        $bodyParams->{'param.dot'} = 'value.dot';
+        $request->setParsedBody($bodyParams);
+        $this->assertSame('some value', $request->getParsedBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getParsedBodyParam('param.dot'));
+        $this->assertSame(null, $request->getParsedBodyParam('unexisting'));
+        $this->assertSame('default', $request->getParsedBodyParam('unexisting', 'default'));
     }
 }

@@ -21,7 +21,7 @@ use yii\jquery\ValidationAsset;
 class ImageValidator extends FileValidator
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function build($validator, $model, $attribute, $view)
     {

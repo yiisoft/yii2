@@ -26,7 +26,7 @@ use yii\web\JsExpression;
 class IpValidator extends ClientValidator
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function build($validator, $model, $attribute, $view)
     {

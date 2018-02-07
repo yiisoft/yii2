@@ -193,15 +193,16 @@ DocumentRoot "path/to/basic/web"
 <Directory "path/to/basic/web">
     # use mod_rewrite for pretty URL support
     RewriteEngine on
+    
+    # if $showScriptName is false in UrlManager, do not allow accessing URLs with script name
+    RewriteRule ^index.php/ - [L,R=404]
+    
     # If a directory or a file exists, use the request directly
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     # Otherwise forward the request to index.php
     RewriteRule . index.php
-
-    # if $showScriptName is false in UrlManager, do not allow accessing URLs with script name
-    RewriteRule ^index.php/ - [L,R=404]
-
+    
     # ...other settings...
 </Directory>
 ```
@@ -211,7 +212,7 @@ DocumentRoot "path/to/basic/web"
 
 To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](http://php.net/install.fpm).
 You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
-`basic/web` and `mysite.local` with the actual hostname to serve.
+`basic/web` and `mysite.test` with the actual hostname to serve.
 
 ```nginx
 server {
@@ -221,7 +222,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

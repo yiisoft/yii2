@@ -44,7 +44,7 @@ class Schema extends \yii\db\Schema
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -232,7 +232,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function releaseSavepoint($name)
     {
@@ -240,7 +240,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function quoteSimpleTableName($name)
     {
@@ -248,7 +248,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createQueryBuilder()
     {
@@ -256,7 +256,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
@@ -585,7 +585,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns)
     {

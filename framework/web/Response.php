@@ -16,7 +16,6 @@ use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
 use yii\http\CookieCollection;
-use yii\http\HeaderCollection;
 use yii\http\MemoryStream;
 use yii\http\MessageTrait;
 use yii\http\ResourceStream;
@@ -375,8 +374,8 @@ class Response extends \yii\base\Response implements ResponseInterface
      */
     protected function sendHeaders()
     {
-        if (headers_sent()) {
-            return;
+        if (headers_sent($file, $line)) {
+            throw new HeadersAlreadySentException($file, $line);
         }
         if ($this->_headerCollection) {
             $headers = $this->getHeaders();

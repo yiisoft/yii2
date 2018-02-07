@@ -48,7 +48,6 @@ return [
     'Page not found.' => 'Stránka nebola nájdená.',
     'Please fix the following errors:' => 'Opravte prosím nasledujúce chyby:',
     'Please upload a file.' => 'Nahrajte prosím súbor.',
-    'Powered by {yii}' => 'Beží na {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Zobrazujem <b>{begin, number}-{end, number}</b> z <b>{totalCount, number}</b> {totalCount, plural, one{záznam} other{záznamov}}.',
     'The combination {values} of {attributes} has already been taken.' => 'Kombinácia {values} pre {attributes} je už použitá.',
     'The file "{file}" is not an image.' => 'Súbor "{file}" nie je obrázok.',

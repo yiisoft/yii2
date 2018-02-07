@@ -18,15 +18,15 @@ use yii\web\AssetBundle;
 class GridViewAsset extends AssetBundle
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $sourcePath = '@yii/jquery/assets';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $js = ['yii.gridView.js'];
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public $depends = [YiiAsset::class];
 }

@@ -121,7 +121,7 @@ class Serializer extends Component
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {

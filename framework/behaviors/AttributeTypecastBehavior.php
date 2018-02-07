@@ -188,7 +188,7 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attach($owner)
     {
@@ -285,7 +285,7 @@ class AttributeTypecastBehavior extends Behavior
 
             if ($type !== null) {
                 foreach ((array) $validator->attributes as $attribute) {
-                    $attributeTypes[$attribute] = $type;
+                    $attributeTypes[ltrim($attribute, '!')] = $type;
                 }
             }
         }
@@ -294,7 +294,7 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function events()
     {

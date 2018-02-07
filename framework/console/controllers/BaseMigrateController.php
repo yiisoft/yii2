@@ -93,7 +93,7 @@ abstract class BaseMigrateController extends Controller
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
@@ -890,7 +890,7 @@ abstract class BaseMigrateController extends Controller
 
         $migrations = [];
         foreach ($migrationPaths as $item) {
-            list($migrationPath, $namespace) = $item;
+            [$migrationPath, $namespace] = $item;
             if (!file_exists($migrationPath)) {
                 continue;
             }

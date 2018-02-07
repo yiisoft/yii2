@@ -248,7 +248,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createSavepoint($name)
     {
@@ -256,7 +256,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function releaseSavepoint($name)
     {
@@ -264,7 +264,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rollBackSavepoint($name)
     {
@@ -555,7 +555,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function findViewNames($schema = '')
     {
