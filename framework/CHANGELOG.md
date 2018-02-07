@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.14 under development
 ------------------------
-
+- Enh #15216: Added `yii\web\ErrorHandler::$traceLine` click here(whatever line) and open file in my ide
 - Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
 - Enh #13465: Added `yii\helpers\FileHelper::findDirectory()` method (ArsSirek, developeruz)
 - Enh #8527: Added `yii\i18n\Locale` component having `getCurrencySymbol()` method (amarox, samdark)
