@@ -191,7 +191,7 @@ class View extends Component
         }
         $path = $file . '.' . $this->defaultExtension;
         if ($this->defaultExtension !== 'php' && !is_file($path)) {
-            $path = $file . '.php';
+            $path = $file . '.' . $this->defaultExtension;
         }
 
         return $path;
