@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
+use yii\helpers\ArrayHelper;
 
 /**
  * DbSession extends [[Session]] by using database as session data storage.
@@ -81,7 +82,9 @@ class DbSession extends MultiFieldSession
      */
     public function __construct(array $config = [])
     {
-        $this->db = Instance::ensure($this->db, Connection::className());
+        // db component should be initialized before configuring DbSession component
+        // @see https://github.com/yiisoft/yii2/pull/15523#discussion_r166701079
+        $this->db = Instance::ensure(ArrayHelper::remove($config, 'db', $this->db), Connection::className());
         parent::__construct($config);
     }
 
