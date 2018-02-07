@@ -959,6 +959,7 @@ PATTERN;
      * the group-by columns.
      *
      * Since version 2.0.7, an [[ExpressionInterface]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
+     * Since version 2.0.14, an [[ExpressionInterface]] object can be passed as well.
      * @return $this the query object itself
      * @see addGroupBy()
      */
@@ -984,7 +985,8 @@ PATTERN;
      * to represent the group-by information. Otherwise, the method will not be able to correctly determine
      * the group-by columns.
      *
-     * Since version 2.0.7, an [[ExpressionInterface]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
+     * Since version 2.0.7, an [[Expression]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
+     * Since version 2.0.14, an [[ExpressionInterface]] object can be passed as well.
      * @return $this the query object itself
      * @see groupBy()
      */

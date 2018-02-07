@@ -254,7 +254,25 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function buildExpression(ExpressionInterface $expression, &$params = [])
     {
+        $builder = $this->getExpressionBuilder($expression);
+
+        return $builder->build($expression, $params);
+    }
+
+    /**
+     * Gets object of [[ExpressionBuilderInterface]] that is suitable for $expression.
+     * Uses [[expressionBuilders]] array to find a suitable builder class.
+     *
+     * @param ExpressionInterface $expression
+     * @return ExpressionBuilderInterface
+     * @see expressionBuilders
+     * @since 2.0.14
+     * @throws InvalidParamException when $expression building is not supported by this QueryBuilder.
+     */
+    public function getExpressionBuilder(ExpressionInterface $expression)
+    {
         $className = get_class($expression);
+
         if (!isset($this->expressionBuilders[$className])) {
             foreach (array_reverse($this->expressionBuilders) as $expressionClass => $builderClass) {
                 if (is_subclass_of($expression, $expressionClass)) {
@@ -272,8 +290,7 @@ class QueryBuilder extends \yii\base\BaseObject
             $this->expressionBuilders[$className] = new $this->expressionBuilders[$className]($this);
         }
 
-        $builder = $this->expressionBuilders[$className];
-        return $builder->build($expression, $params);
+        return $this->expressionBuilders[$className];
     }
 
     /**

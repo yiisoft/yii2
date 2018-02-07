@@ -218,9 +218,12 @@ class Request extends \yii\base\Request
      * @since 2.0.13
      */
     public $secureHeaders = [
+        // Common:
         'X-Forwarded-For',
         'X-Forwarded-Host',
         'X-Forwarded-Proto',
+
+        // Microsoft:
         'Front-End-Https',
         'X-Rewrite-Url',
     ];
@@ -233,7 +236,7 @@ class Request extends \yii\base\Request
      * @since 2.0.13
      */
     public $ipHeaders = [
-        'X-Forwarded-For',
+        'X-Forwarded-For', // Common
     ];
     /**
      * @var array list of headers to check for determining whether the connection is made via HTTPS.
@@ -245,8 +248,8 @@ class Request extends \yii\base\Request
      * @since 2.0.13
      */
     public $secureProtocolHeaders = [
-        'X-Forwarded-Proto' => ['https'],
-        'Front-End-Https' => ['on'],
+        'X-Forwarded-Proto' => ['https'], // Common
+        'Front-End-Https' => ['on'], // Microsoft
     ];
 
     /**
@@ -705,7 +708,10 @@ class Request extends \yii\base\Request
         if ($this->_hostInfo === null) {
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
-            if ($this->headers->has('Host')) {
+
+            if ($this->headers->has('X-Forwarded-Host')) {
+                $this->_hostInfo = $http . '://' . $this->headers->get('X-Forwarded-Host');
+            } elseif ($this->headers->has('Host')) {
                 $this->_hostInfo = $http . '://' . $this->headers->get('Host');
             } elseif (isset($_SERVER['SERVER_NAME'])) {
                 $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
@@ -1217,7 +1223,8 @@ class Request extends \yii\base\Request
     public function getPort()
     {
         if ($this->_port === null) {
-            $this->_port = !$this->getIsSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : 80;
+            $serverPort = $this->getServerPort();
+            $this->_port = !$this->getIsSecureConnection() && $serverPort !== null ? $serverPort : 80;
         }
 
         return $this->_port;
@@ -1249,7 +1256,8 @@ class Request extends \yii\base\Request
     public function getSecurePort()
     {
         if ($this->_securePort === null) {
-            $this->_securePort = $this->getIsSecureConnection() && isset($_SERVER['SERVER_PORT']) ? (int) $_SERVER['SERVER_PORT'] : 443;
+            $serverPort = $this->getServerPort();
+            $this->_securePort = $this->getIsSecureConnection() && $serverPort !== null ? $serverPort : 443;
         }
 
         return $this->_securePort;
