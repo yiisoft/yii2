@@ -93,6 +93,7 @@ class UniqueValidator extends Validator
 
     /**
      * @var bool whether this validator is forced to always use master DB
+     * @since 2.0.14
      */
     public $forceMasterDb =  true;
 
@@ -139,17 +140,17 @@ class UniqueValidator extends Validator
 
         $db = $targetClass::getDb();
 
-        $modelExisted = false;
+        $exists = false;
 
-        if($this->forceMasterDb){
+        if ($this->forceMasterDb) {
             $db->useMaster(function ($db) use($targetClass, $conditions, $model, &$modelExisted) {
-                $modelExisted = $this->modelExists($targetClass, $conditions, $model);
+                $exists = $this->modelExists($targetClass, $conditions, $model);
             });
         }else{
-            $modelExisted = $this->modelExists($targetClass, $conditions, $model);
+            $exists = $this->modelExists($targetClass, $conditions, $model);
         }
 
-        if ($modelExisted) {
+        if ($exists) {
             if (is_array($targetAttribute) && count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
@@ -181,7 +182,6 @@ class UniqueValidator extends Validator
     {
         /** @var ActiveRecordInterface $targetClass $query */
         $query = $this->prepareQuery($targetClass, $conditions);
-
 
         if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
             // if current $model isn't in the database yet then it's OK just to call exists()
