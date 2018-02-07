@@ -77,6 +77,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      * `File: {file} - Line: {line} - Text: {text}`
      *
      * @example <a href="netbeans://open?file={file}&line={line}">{html}</a>
+     * @since 2.0.14
      */
     public $traceLine = '{html}';
 
