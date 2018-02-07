@@ -76,6 +76,7 @@ class ExistValidator extends Validator
 
     /**
      * @var bool whether this validator is forced to always use master DB
+     * @since 2.0.14
      */
     public $forceMasterDb =  true;
 
@@ -116,7 +117,7 @@ class ExistValidator extends Validator
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $query = $this->createQuery($targetClass, $conditions);
 
-        if(!$this->valueExists($targetClass, $query, $model->$attribute)){
+        if (!$this->valueExists($targetClass, $query, $model->$attribute)){
             $this->addError($model, $attribute, $this->message);
         }
     }
@@ -190,44 +191,41 @@ class ExistValidator extends Validator
     }
 
     /**
-     * Check whether value exist in target table
+     * Check whether value exists in target table
      *
-     * @param $targetClass
-     * @param $query QueryInterface
-     * @param $value mixed the value want to be checked
+     * @param string $targetClass
+     * @param QueryInterface $query
+     * @param mixed $value the value want to be checked
      * @return boolean
      */
     private function valueExists($targetClass, $query, $value ){
         $db = $targetClass::getDb();
-        $existed = false;
+        $exists = false;
 
         if($this->forceMasterDb){
-            $db->useMaster(function ($db) use ($query, $value, &$existed){
-                $existed = $this->queryValueExists($query, $value);
+            $db->useMaster(function ($db) use ($query, $value, &$exists){
+                $exists = $this->queryValueExists($query, $value);
             });
-        }else{
-            $existed = $this->queryValueExists($query, $value);
+        } else {
+            $exists = $this->queryValueExists($query, $value);
         }
 
-        return $existed;
+        return $exists;
     }
 
 
     /**
-     * Run query to check value existed
+     * Run query to check if value exists
      *
-     * @param $query QueryInterface
-     * @param $value mixed the value want to be checked
+     * @param QueryInterface $query
+     * @param mixed $value the value to be checked
      * @return bool
      */
     private function queryValueExists($query, $value){
         if (is_array($value)) {
-            $existed = $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ;
-        } else {
-            $existed = $query->exists();
+            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ;
         }
-
-        return $existed;
+        return $query->exists();
     }
 
     /**
