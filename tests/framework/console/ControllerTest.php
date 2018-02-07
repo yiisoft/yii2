@@ -32,12 +32,12 @@ class ControllerTest extends TestCase
         $controller = new FakeController('fake', Yii::$app);
 
         $params = ['from params'];
-        [$fromParam, $other] = $controller->run('aksi1', $params);
+        [$fromParam, $other] = $controller->runAction(Yii::$app->getRequest(), 'aksi1', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('default', $other);
 
         $params = ['from params', 'notdefault'];
-        [$fromParam, $other] = $controller->run('aksi1', $params);
+        [$fromParam, $other] = $controller->runAction(Yii::$app->getRequest(), 'aksi1', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
@@ -46,8 +46,8 @@ class ControllerTest extends TestCase
         $this->assertEquals([['d426', 'mdmunir'], 'single'], (array)$result);
 
         $params = ['', 'single'];
-        $result = $controller->runAction('aksi2', $params);
-        $this->assertEquals([[], 'single'], $result);
+        $result = $controller->runAction(Yii::$app->getRequest(), 'aksi2', $params);
+        $this->assertEquals([[], 'single'], (array)$result);
 
         $params = ['_aliases' => ['t' => 'test']];
         $result = $controller->runAction(Yii::$app->getRequest(), 'aksi4', $params);
