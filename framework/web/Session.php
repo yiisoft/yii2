@@ -923,7 +923,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     protected function freeze()
     {
-        if (isset($_SESSION) && $this->getIsActive()) {
+        if ($this->getIsActive() && isset($_SESSION)) {
             $this->frozenSessionData = $_SESSION;
         }
         $this->close();
