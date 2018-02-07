@@ -197,4 +197,18 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->assertEquals(['base'], $history);
         $this->createTableSession();
     }
+
+    public function testInstantiate()
+    {
+        // unset Yii::$app->db to make sure that all queries are made against sessionDb
+        Yii::$app->set('db', null);
+        Yii::$app->set('sessionDb', $this->getDbConfig());
+
+        $session = new DbSession([
+            'timeout' => 300,
+            'db' => 'sessionDb',
+        ]);
+
+        $this->assertSame(Yii::$app->sessionDb, $session->db);
+    }
 }
