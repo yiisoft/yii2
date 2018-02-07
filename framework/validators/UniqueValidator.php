@@ -146,7 +146,7 @@ class UniqueValidator extends Validator
             $db->useMaster(function ($db) use($targetClass, $conditions, $model, &$modelExisted) {
                 $exists = $this->modelExists($targetClass, $conditions, $model);
             });
-        }else{
+        } else {
             $exists = $this->modelExists($targetClass, $conditions, $model);
         }
 
