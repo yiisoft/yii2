@@ -104,6 +104,7 @@ At this point the project structure should look like this:
 ```
 micro-app/
 ├── composer.json
+├── config.php
 ├── web/
     └── index.php
 └── controllers/

@@ -314,6 +314,26 @@ class DetailViewTest extends \yiiunit\TestCase
             $this->assertEquals($expectedValue, $a);
         }
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15536
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        $model = new ModelMock();
+        $model->id = 1;
+        $model->text = 'I`m an object';
+
+        $this->detailView = new DetailView([
+            'model' => $model,
+            'on init' => function () use (&$initTriggered) {
+                $initTriggered = true;
+            }
+        ]);
+
+        $this->assertTrue($initTriggered);
+    }
 }
 
 /**

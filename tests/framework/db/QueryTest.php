@@ -37,6 +37,30 @@ abstract class QueryTest extends DatabaseTestCase
         $query->select('id, name');
         $query->addSelect('email');
         $this->assertEquals(['id', 'name', 'email'], $query->select);
+
+        $query = new Query();
+        $query->select('name, lastname');
+        $query->addSelect('name');
+        $this->assertEquals(['name', 'lastname'], $query->select);
+
+        $query = new Query();
+        $query->addSelect(['*', 'abc']);
+        $query->addSelect(['*', 'bca']);
+        $this->assertEquals(['*', 'abc', 'bca'], $query->select);
+
+        $query = new Query();
+        $query->addSelect(['field1 as a', 'field 1 as b']);
+        $this->assertEquals(['field1 as a', 'field 1 as b'], $query->select);
+
+        $query = new Query();
+        $query->select(['name' => 'firstname', 'lastname']);
+        $query->addSelect(['firstname', 'surname' => 'lastname']);
+        $query->addSelect(['firstname', 'lastname']);
+        $this->assertEquals(['name' => 'firstname', 'lastname', 'firstname', 'surname' => 'lastname'], $query->select);
+
+        $query = new Query();
+        $query->select('name, name, name as X, name as X');
+        $this->assertEquals(['name', 'name as X'], array_values($query->select));
     }
 
     public function testFrom()
@@ -46,12 +70,12 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(['user'], $query->from);
     }
 
-    public function testFromTableIsExpression()
+    public function testFromTableIsArrayWithExpression()
     {
         $query = new Query();
         $tables = new Expression('(SELECT id,name FROM user) u');
         $query->from($tables);
-        $this->assertInstanceOf('\yii\db\Expression', $query->from);
+        $this->assertInstanceOf('\yii\db\Expression', $query->from[0]);
     }
 
     use GetTablesAliasTestTrait;
@@ -582,5 +606,19 @@ abstract class QueryTest extends DatabaseTestCase
             'foo',
             '%ba',
         ]));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15355
+     */
+    public function testExpressionInFrom()
+    {
+        $db = $this->getConnection();
+        $query = (new Query())
+            ->from(new \yii\db\Expression('(SELECT id, name, email, address, status FROM customer) c'))
+            ->where(['status' => 2]);
+
+        $result = $query->one($db);
+        $this->assertEquals('user3', $result['name']);
     }
 }

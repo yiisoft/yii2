@@ -24,19 +24,25 @@ use yii\helpers\FileHelper;
  */
 class DevController extends Controller
 {
+    /**
+     * {@inheritdoc}
+     */
     public $defaultAction = 'all';
-
     /**
      * @var bool whether to use HTTP when cloning github repositories
      */
     public $useHttp = false;
-
+    /**
+     * @var array
+     */
     public $apps = [
         'basic' => 'git@github.com:yiisoft/yii2-app-basic.git',
         'advanced' => 'git@github.com:yiisoft/yii2-app-advanced.git',
         'benchmark' => 'git@github.com:yiisoft/yii2-app-benchmark.git',
     ];
-
+    /**
+     * @var array
+     */
     public $extensions = [
         'apidoc' => 'git@github.com:yiisoft/yii2-apidoc.git',
         'authclient' => 'git@github.com:yiisoft/yii2-authclient.git',
@@ -229,7 +235,7 @@ class DevController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
