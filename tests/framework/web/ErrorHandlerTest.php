@@ -47,7 +47,7 @@ Exception: yii\web\NotFoundHttpException', $out);
 
         $out = $handler->renderCallStackItem($file, 63, \yii\web\Application::className(), null, null, null);
 
-        $this->assertContains('<a href="netbeans://open?file=/www/yii2/framework/web/Application.php&line=61">', $out);
+        $this->assertContains('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
     }
 }
 
