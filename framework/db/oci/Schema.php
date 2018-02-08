@@ -13,6 +13,7 @@ use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
 use yii\db\Connection;
 use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
@@ -29,7 +30,7 @@ use yii\helpers\ArrayHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Schema extends \yii\db\Schema
+class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
@@ -40,6 +41,11 @@ class Schema extends \yii\db\Schema
     public $exceptionMap = [
         'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
     ];
+
+    /**
+     * @inheritDoc
+     */
+    protected $tableQuoteCharacter = '"';
 
 
     /**

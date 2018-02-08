@@ -9,7 +9,9 @@ namespace yii\db\cubrid;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\db\Constraint;
 use yii\db\Exception;
+use yii\db\Expression;
 
 /**
  * QueryBuilder is the query builder for CUBRID databases (version 9.3.x and higher).
@@ -53,6 +55,62 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return array_merge(parent::defaultExpressionBuilders(), [
             'yii\db\conditions\LikeCondition' => 'yii\db\cubrid\conditions\LikeConditionBuilder',
         ]);
+    }
+
+    /**
+     * @inheritdoc
+     * @see https://www.cubrid.org/manual/en/9.3.0/sql/query/merge.html
+     */
+    public function upsert($table, $insertColumns, $updateColumns, &$params)
+    {
+        /** @var Constraint[] $constraints */
+        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
+        if (empty($uniqueNames)) {
+            return $this->insert($table, $insertColumns, $params);
+        }
+
+        $onCondition = ['or'];
+        $quotedTableName = $this->db->quoteTableName($table);
+        foreach ($constraints as $constraint) {
+            $constraintCondition = ['and'];
+            foreach ($constraint->columnNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                $constraintCondition[] = "$quotedTableName.$quotedName=\"EXCLUDED\".$quotedName";
+            }
+            $onCondition[] = $constraintCondition;
+        }
+        $on = $this->buildCondition($onCondition, $params);
+        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+        $mergeSql = 'MERGE INTO ' . $this->db->quoteTableName($table) . ' '
+            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS "EXCLUDED" (' . implode(', ', $insertNames) . ') '
+            . 'ON ' . $on;
+        $insertValues = [];
+        foreach ($insertNames as $name) {
+            $quotedName = $this->db->quoteColumnName($name);
+            if (strrpos($quotedName, '.') === false) {
+                $quotedName = '"EXCLUDED".' . $quotedName;
+            }
+            $insertValues[] = $quotedName;
+        }
+        $insertSql = 'INSERT (' . implode(', ', $insertNames) . ')'
+            . ' VALUES (' . implode(', ', $insertValues) . ')';
+        if ($updateColumns === false) {
+            return "$mergeSql WHEN NOT MATCHED THEN $insertSql";
+        }
+
+        if ($updateColumns === true) {
+            $updateColumns = [];
+            foreach ($updateNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                if (strrpos($quotedName, '.') === false) {
+                    $quotedName = '"EXCLUDED".' . $quotedName;
+                }
+                $updateColumns[$name] = new Expression($quotedName);
+            }
+        }
+        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        $updateSql = 'UPDATE SET ' . implode(', ', $updates);
+        return "$mergeSql WHEN MATCHED THEN $updateSql WHEN NOT MATCHED THEN $insertSql";
     }
 
     /**

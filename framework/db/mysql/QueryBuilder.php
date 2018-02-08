@@ -10,7 +10,8 @@ namespace yii\db\mysql;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\Exception;
-use yii\db\ExpressionInterface;
+use yii\db\Expression;
+use yii\db\Query;
 
 /**
  * QueryBuilder is the query builder for MySQL databases.
@@ -241,46 +242,45 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      */
-    public function insert($table, $columns, &$params)
+    protected function prepareInsertValues($table, $columns, $params = [])
     {
-        $schema = $this->db->getSchema();
-        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
-            $columnSchemas = $tableSchema->columns;
-        } else {
-            $columnSchemas = [];
-        }
-        $names = [];
-        $placeholders = [];
-        $values = ' DEFAULT VALUES';
-        if ($columns instanceof \yii\db\Query) {
-            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
-        } else {
-            foreach ($columns as $name => $value) {
-                $names[] = $schema->quoteColumnName($name);
-                if ($value instanceof ExpressionInterface) {
-                    $placeholders[] = $this->buildExpression($value, $params);
-                } elseif ($value instanceof \yii\db\Query) {
-                    list($sql, $params) = $this->build($value, $params);
-                    $placeholders[] = "($sql)";
-                } else {
-                    $placeholders[] = $this->bindParam(
-                        isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value,
-                        $params
-                    );
-                }
-            }
-            if (empty($names) && $tableSchema !== null) {
+        list($names, $placeholders, $values, $params) = parent::prepareInsertValues($table, $columns, $params);
+        if (!$columns instanceof Query && empty($names)) {
+            $tableSchema = $this->db->getSchema()->getTableSchema($table);
+            if ($tableSchema !== null) {
                 $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
                 foreach ($columns as $name) {
-                    $names[] = $schema->quoteColumnName($name);
+                    $names[] = $this->db->quoteColumnName($name);
                     $placeholders[] = 'DEFAULT';
                 }
             }
         }
+        return [$names, $placeholders, $values, $params];
+    }
 
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
-            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
+    /**
+     * @inheritdoc
+     * @see https://downloads.mysql.com/docs/refman-5.1-en.pdf
+     */
+    public function upsert($table, $insertColumns, $updateColumns, &$params)
+    {
+        $insertSql = $this->insert($table, $insertColumns, $params);
+        list($uniqueNames, , $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns);
+        if (empty($uniqueNames)) {
+            return $insertSql;
+        }
+
+        if ($updateColumns === true) {
+            $updateColumns = [];
+            foreach ($updateNames as $name) {
+                $updateColumns[$name] = new Expression('VALUES(' . $this->db->quoteColumnName($name) . ')');
+            }
+        } elseif ($updateColumns === false) {
+            $name = $this->db->quoteColumnName(reset($uniqueNames));
+            $updateColumns = [$name => new Expression($this->db->quoteTableName($table) . '.' . $name)];
+        }
+        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        return $insertSql . ' ON DUPLICATE KEY UPDATE ' . implode(', ', $updates);
     }
 
     /**

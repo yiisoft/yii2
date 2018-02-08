@@ -10,6 +10,7 @@ namespace yii\db\mssql;
 use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
 use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
 use yii\db\DefaultValueConstraint;
 use yii\db\ForeignKeyConstraint;
@@ -23,7 +24,7 @@ use yii\helpers\ArrayHelper;
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
  */
-class Schema extends \yii\db\Schema
+class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ViewFinderTrait;
     use ConstraintFinderTrait;
@@ -78,6 +79,15 @@ class Schema extends \yii\db\Schema
         'xml' => self::TYPE_STRING,
         'table' => self::TYPE_STRING,
     ];
+
+    /**
+     * @inheritDoc
+     */
+    protected $tableQuoteCharacter = ['[', ']'];
+    /**
+     * @inheritDoc
+     */
+    protected $columnQuoteCharacter = ['[', ']'];
 
 
     /**
@@ -269,28 +279,6 @@ SQL;
     public function rollBackSavepoint($name)
     {
         $this->db->createCommand("ROLLBACK TRANSACTION $name")->execute();
-    }
-
-    /**
-     * Quotes a table name for use in a query.
-     * A simple table name has no schema prefix.
-     * @param string $name table name.
-     * @return string the properly quoted table name.
-     */
-    public function quoteSimpleTableName($name)
-    {
-        return strpos($name, '[') === false ? "[{$name}]" : $name;
-    }
-
-    /**
-     * Quotes a column name for use in a query.
-     * A simple column name has no prefix.
-     * @param string $name column name.
-     * @return string the properly quoted column name.
-     */
-    public function quoteSimpleColumnName($name)
-    {
-        return strpos($name, '[') === false && $name !== '*' ? "[{$name}]" : $name;
     }
 
     /**

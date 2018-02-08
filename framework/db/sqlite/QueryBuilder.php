@@ -10,6 +10,8 @@ namespace yii\db\sqlite;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\Connection;
+use yii\db\Constraint;
+use yii\db\Expression;
 use yii\db\ExpressionInterface;
 use yii\db\Query;
 use yii\helpers\StringHelper;
@@ -60,6 +62,52 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritdoc
+     * @see https://stackoverflow.com/questions/15277373/sqlite-upsert-update-or-insert/15277374#15277374
+     */
+    public function upsert($table, $insertColumns, $updateColumns, &$params)
+    {
+        /** @var Constraint[] $constraints */
+        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
+        if (empty($uniqueNames)) {
+            return $this->insert($table, $insertColumns, $params);
+        }
+
+        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+        $insertSql = 'INSERT OR IGNORE INTO ' . $this->db->quoteTableName($table)
+            . (!empty($insertNames) ? ' (' . implode(', ', $insertNames) . ')' : '')
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
+        if ($updateColumns === false) {
+            return $insertSql;
+        }
+
+        $updateCondition = ['or'];
+        $quotedTableName = $this->db->quoteTableName($table);
+        foreach ($constraints as $constraint) {
+            $constraintCondition = ['and'];
+            foreach ($constraint->columnNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                $constraintCondition[] = "$quotedTableName.$quotedName=(SELECT $quotedName FROM `EXCLUDED`)";
+            }
+            $updateCondition[] = $constraintCondition;
+        }
+        if ($updateColumns === true) {
+            $updateColumns = [];
+            foreach ($updateNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                if (strrpos($quotedName, '.') === false) {
+                    $quotedName = "(SELECT $quotedName FROM `EXCLUDED`)";
+                }
+                $updateColumns[$name] = new Expression($quotedName);
+            }
+        }
+        $updateSql = 'WITH "EXCLUDED" (' . implode(', ', $insertNames)
+            . ') AS (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') '
+            . $this->update($table, $updateColumns, $updateCondition, $params);
+        return "$updateSql; $insertSql;";
+    }
+
+    /**
      * Generates a batch INSERT SQL statement.
      *
      * For example,
@@ -88,7 +136,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         // SQLite supports batch insert natively since 3.7.11
         // http://www.sqlite.org/releaselog/3_7_11.html
         $this->db->open(); // ensure pdo is not null
-        if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
+        if (version_compare($this->db->getServerVersion(), '3.7.11', '>=')) {
             return parent::batchInsert($table, $columns, $rows);
         }
 

@@ -9,8 +9,10 @@ namespace yii\db\oci;
 
 use yii\base\InvalidParamException;
 use yii\db\Connection;
+use yii\db\Constraint;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\helpers\StringHelper;
 use yii\db\ExpressionInterface;
 
@@ -180,46 +182,86 @@ EOD;
     /**
      * {@inheritdoc}
      */
-    public function insert($table, $columns, &$params)
+    protected function prepareInsertValues($table, $columns, $params = [])
     {
-        $schema = $this->db->getSchema();
-        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
-            $columnSchemas = $tableSchema->columns;
-        } else {
-            $columnSchemas = [];
-        }
-        $names = [];
-        $placeholders = [];
-        $values = ' DEFAULT VALUES';
-        if ($columns instanceof \yii\db\Query) {
-            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
-        } else {
-            foreach ($columns as $name => $value) {
-                $names[] = $schema->quoteColumnName($name);
-                if ($value instanceof ExpressionInterface) {
-                    $placeholders[] = $this->buildExpression($value, $params);
-                } elseif ($value instanceof \yii\db\Query) {
-                    list($sql, $params) = $this->build($value, $params);
-                    $placeholders[] = "($sql)";
-                } else {
-                    $placeholders[] = $this->bindParam(
-                        isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value,
-                        $params
-                    );
-                }
-            }
-            if (empty($names) && $tableSchema !== null) {
+        list($names, $placeholders, $values, $params) = parent::prepareInsertValues($table, $columns, $params);
+        if (!$columns instanceof Query && empty($names)) {
+            $tableSchema = $this->db->getSchema()->getTableSchema($table);
+            if ($tableSchema !== null) {
                 $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
                 foreach ($columns as $name) {
-                    $names[] = $schema->quoteColumnName($name);
+                    $names[] = $this->db->quoteColumnName($name);
                     $placeholders[] = 'DEFAULT';
                 }
             }
         }
+        return [$names, $placeholders, $values, $params];
+    }
 
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
-            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
+    /**
+     * @inheritdoc
+     * @see https://docs.oracle.com/cd/B28359_01/server.111/b28286/statements_9016.htm#SQLRF01606
+     */
+    public function upsert($table, $insertColumns, $updateColumns, &$params)
+    {
+        /** @var Constraint[] $constraints */
+        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
+        if (empty($uniqueNames)) {
+            return $this->insert($table, $insertColumns, $params);
+        }
+
+        $onCondition = ['or'];
+        $quotedTableName = $this->db->quoteTableName($table);
+        foreach ($constraints as $constraint) {
+            $constraintCondition = ['and'];
+            foreach ($constraint->columnNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                $constraintCondition[] = "$quotedTableName.$quotedName=\"EXCLUDED\".$quotedName";
+            }
+            $onCondition[] = $constraintCondition;
+        }
+        $on = $this->buildCondition($onCondition, $params);
+        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+        if (!empty($placeholders)) {
+            $usingSelectValues = [];
+            foreach ($insertNames as $index => $name) {
+                $usingSelectValues[$name] = new Expression($placeholders[$index]);
+            }
+            $usingSubQuery = (new Query())
+                ->select($usingSelectValues)
+                ->from('DUAL');
+            list($usingValues, $params) = $this->build($usingSubQuery, $params);
+        }
+        $mergeSql = 'MERGE INTO ' . $this->db->quoteTableName($table) . ' '
+            . 'USING (' . (isset($usingValues) ? $usingValues : ltrim($values, ' ')) . ') "EXCLUDED" '
+            . 'ON ' . $on;
+        $insertValues = [];
+        foreach ($insertNames as $name) {
+            $quotedName = $this->db->quoteColumnName($name);
+            if (strrpos($quotedName, '.') === false) {
+                $quotedName = '"EXCLUDED".' . $quotedName;
+            }
+            $insertValues[] = $quotedName;
+        }
+        $insertSql = 'INSERT (' . implode(', ', $insertNames) . ')'
+            . ' VALUES (' . implode(', ', $insertValues) . ')';
+        if ($updateColumns === false) {
+            return "$mergeSql WHEN NOT MATCHED THEN $insertSql";
+        }
+
+        if ($updateColumns === true) {
+            $updateColumns = [];
+            foreach ($updateNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                if (strrpos($quotedName, '.') === false) {
+                    $quotedName = '"EXCLUDED".' . $quotedName;
+                }
+                $updateColumns[$name] = new Expression($quotedName);
+            }
+        }
+        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        $updateSql = 'UPDATE SET ' . implode(', ', $updates);
+        return "$mergeSql WHEN MATCHED THEN $updateSql WHEN NOT MATCHED THEN $insertSql";
     }
 
     /**

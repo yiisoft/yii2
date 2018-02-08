@@ -957,6 +957,16 @@ class Connection extends Component
     }
 
     /**
+     * Returns a server version as a string comparable by [[\version_compare()]].
+     * @return string server version as a string.
+     * @since 2.0.14
+     */
+    public function getServerVersion()
+    {
+        return $this->getSchema()->getServerVersion();
+    }
+
+    /**
      * Returns the PDO instance for the currently active slave connection.
      * When [[enableSlaves]] is true, one of the slaves will be used for read queries, and its PDO instance
      * will be returned by this method.

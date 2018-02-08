@@ -17,6 +17,7 @@ IF OBJECT_ID('[T_constraints_4]', 'U') IS NOT NULL DROP TABLE [T_constraints_4];
 IF OBJECT_ID('[T_constraints_3]', 'U') IS NOT NULL DROP TABLE [T_constraints_3];
 IF OBJECT_ID('[T_constraints_2]', 'U') IS NOT NULL DROP TABLE [T_constraints_2];
 IF OBJECT_ID('[T_constraints_1]', 'U') IS NOT NULL DROP TABLE [T_constraints_1];
+IF OBJECT_ID('[T_upsert]', 'U') IS NOT NULL DROP TABLE [T_upsert];
 
 CREATE TABLE [dbo].[profile] (
     [id] [int] IDENTITY NOT NULL,
@@ -247,4 +248,17 @@ CREATE TABLE [T_constraints_4]
     [C_col_1] INT NULL,
     [C_col_2] INT NOT NULL,
     CONSTRAINT [CN_constraints_4] UNIQUE ([C_col_1], [C_col_2])
+);
+
+CREATE TABLE [T_upsert]
+(
+    [id] INT NOT NULL IDENTITY PRIMARY KEY,
+    [ts] INT NULL,
+    [email] VARCHAR(128) NOT NULL UNIQUE,
+    [recovery_email] VARCHAR(128) NULL,
+    [address] TEXT NULL,
+    [status] TINYINT NOT NULL DEFAULT 0,
+    [orders] INT NOT NULL DEFAULT 0,
+    [profile_id] INT NULL,
+    UNIQUE ([email], [recovery_email])
 );
