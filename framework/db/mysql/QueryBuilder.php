@@ -10,7 +10,7 @@ namespace yii\db\mysql;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\Exception;
-use yii\db\ExpressionInterface;
+use yii\db\Expression;
 use yii\db\Query;
 
 /**
