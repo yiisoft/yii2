@@ -97,6 +97,7 @@ Yii Framework 2 Change Log
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 - Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
 - Enh #15595: `yii\data\DataFilter` can now handle `lt`,`gt`,`lte` and `gte` on `yii\validators\DateValidator` (mikk150)
+- Bug #15621: Fixed `yii\web\User::getIdentity()` returning `null` if an exception had been thrown when it was called previously (brandonkelly)
 
 2.0.13.1 November 14, 2017
 --------------------------
