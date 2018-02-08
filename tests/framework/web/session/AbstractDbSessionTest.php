@@ -207,7 +207,7 @@ abstract class AbstractDbSessionTest extends TestCase
         Yii::$app->set('db', null);
 
         $session = new DbSession([
-            'timeout' => 300,
+//            'timeout' => 300,
             'db' => 'sessionDb',
         ]);
 
