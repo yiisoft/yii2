@@ -73,7 +73,7 @@ class GroupUrlRule extends CompositeUrlRule
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -83,7 +83,7 @@ class GroupUrlRule extends CompositeUrlRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function createRules()
     {
@@ -117,7 +117,7 @@ class GroupUrlRule extends CompositeUrlRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parseRequest($manager, $request)
     {
@@ -130,7 +130,7 @@ class GroupUrlRule extends CompositeUrlRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createUrl($manager, $route, $params)
     {

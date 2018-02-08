@@ -10,6 +10,7 @@ namespace yiiunit\framework\db;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
+use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Schema;
 
@@ -143,7 +144,7 @@ abstract class CommandTest extends DatabaseTestCase
 
     public function testBindParamValue()
     {
-        if (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
+        if (\defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             $this->markTestSkipped('HHVMs PgSQL implementation has some specific behavior that breaks some parts of this test.');
         }
 
@@ -204,14 +205,14 @@ SQL;
         $this->assertEquals($floatCol, $row['float_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'sqlite' || $this->driverName === 'oci') {
             $this->assertEquals($blobCol, $row['blob_col']);
-        } elseif (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
+        } elseif (\defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             // HHVMs pgsql implementation does not seem to support blob columns correctly.
         } else {
             $this->assertInternalType('resource', $row['blob_col']);
             $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
-        if ($this->driverName === 'mysql' || $this->driverName === 'oci' || (defined('HHVM_VERSION') && in_array($this->driverName, ['sqlite', 'pgsql']))) {
+        if ($this->driverName === 'mysql' || $this->driverName === 'oci' || (\defined('HHVM_VERSION') && \in_array($this->driverName, ['sqlite', 'pgsql']))) {
             $this->assertEquals($boolCol, (int) $row['bool_col']);
         } else {
             $this->assertEquals($boolCol, $row['bool_col']);
@@ -265,7 +266,7 @@ SQL;
         $sql = 'SELECT * FROM {{customer}}';
         $command = $db->createCommand($sql);
         $result = $command->queryOne();
-        $this->assertTrue(is_array($result) && isset($result['id']));
+        $this->assertTrue(\is_array($result) && isset($result['id']));
 
         // FETCH_OBJ, customized via fetchMode property
         $sql = 'SELECT * FROM {{customer}}';
@@ -278,7 +279,7 @@ SQL;
         $sql = 'SELECT * FROM {{customer}}';
         $command = $db->createCommand($sql);
         $result = $command->queryOne([], \PDO::FETCH_NUM);
-        $this->assertTrue(is_array($result) && isset($result[0]));
+        $this->assertTrue(\is_array($result) && isset($result[0]));
     }
 
     public function testBatchInsert()
@@ -306,7 +307,7 @@ SQL;
 
     public function testBatchInsertWithYield()
     {
-        if (version_compare(PHP_VERSION, '5.5', '<')) {
+        if (PHP_VERSION_ID < 50500) {
             $this->markTestSkipped('The yield function is only supported with php 5.5 =< version');
         } else {
             include __DIR__ . '/testBatchInsertWithYield.php';
@@ -345,7 +346,7 @@ SQL;
             $db->createCommand()->batchInsert('type', $cols, $data)->execute();
 
             $data = $db->createCommand('SELECT int_col, char_col, float_col, bool_col FROM {{type}} WHERE [[int_col]] IN (1,2,3) ORDER BY [[int_col]];')->queryAll();
-            $this->assertEquals(3, count($data));
+            $this->assertEquals(3, \count($data));
             $this->assertEquals(1, $data[0]['int_col']);
             $this->assertEquals(2, $data[1]['int_col']);
             $this->assertEquals(3, $data[2]['int_col']);
@@ -1069,6 +1070,12 @@ SQL;
                 [':active' => false],
                 'SELECT * FROM customer WHERE active = FALSE',
             ],
+            // https://github.com/yiisoft/yii2/issues/15122
+            [
+                'SELECT * FROM customer WHERE id IN (:ids)',
+                [':ids' => new Expression(implode(', ', [1, 2]))],
+                'SELECT * FROM customer WHERE id IN (1, 2)',
+            ],
         ];
     }
 
@@ -1128,5 +1135,86 @@ SQL;
 
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
+    }
+
+    /**
+     * @group iss
+     */
+    public function testTransaction()
+    {
+        $connection = $this->getConnection(false);
+        $this->assertNull($connection->transaction);
+        $command = $connection->createCommand("INSERT INTO {{profile}}([[description]]) VALUES('command transaction')");
+        $this->invokeMethod($command, 'requireTransaction');
+        $command->execute();
+        $this->assertNull($connection->transaction);
+        $this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'command transaction'")->queryScalar());
+    }
+
+    /**
+     * @group iss
+     */
+    public function testRetryHandler()
+    {
+        $connection = $this->getConnection(false);
+        $this->assertNull($connection->transaction);
+        $connection->createCommand("INSERT INTO {{profile}}([[description]]) VALUES('command retry')")->execute();
+        $this->assertNull($connection->transaction);
+        $this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'command retry'")->queryScalar());
+
+        $attempts = null;
+        $hitHandler = false;
+        $hitCatch = false;
+        $command = $connection->createCommand("INSERT INTO {{profile}}([[id]], [[description]]) VALUES(1, 'command retry')");
+        $this->invokeMethod($command, 'setRetryHandler', [function ($exception, $attempt) use (&$attempts, &$hitHandler) {
+            $attempts = $attempt;
+            $hitHandler = true;
+            return $attempt <= 2;
+        }]);
+        try {
+            $command->execute();
+        } catch (Exception $e) {
+            $hitCatch = true;
+            $this->assertInstanceOf('yii\db\IntegrityException', $e);
+        }
+        $this->assertNull($connection->transaction);
+        $this->assertSame(3, $attempts);
+        $this->assertTrue($hitHandler);
+        $this->assertTrue($hitCatch);
+    }
+
+    public function testCreateView()
+    {
+        $db = $this->getConnection();
+        $subquery = (new \yii\db\Query())
+            ->select('bar')
+            ->from('testCreateViewTable')
+            ->where(['>', 'bar', '5']);
+        if ($db->getSchema()->getTableSchema('testCreateViewTable')) {
+            $db->createCommand()->dropTable('testCreateViewTable')->execute();
+        }
+        if ($db->getSchema()->getTableSchema('testCreateView') !== null) {
+            $db->createCommand()->dropView('testCreateView')->execute();
+        }
+        $db->createCommand()->createTable('testCreateViewTable', [
+            'id' => Schema::TYPE_PK,
+            'bar' => Schema::TYPE_INTEGER,
+        ])->execute();
+        $db->createCommand()->insert('testCreateViewTable', ['bar' => 1])->execute();
+        $db->createCommand()->insert('testCreateViewTable', ['bar' => 6])->execute();
+        $db->createCommand()->createView('testCreateView', $subquery)->execute();
+        $records = $db->createCommand('SELECT [[bar]] FROM {{testCreateView}};')->queryAll();
+
+        $this->assertEquals([['bar' => 6]], $records);
+    }
+
+    public function testDropView()
+    {
+        $db = $this->getConnection();
+        $viewName = 'animal_view'; // since it already exists in the fixtures
+        $this->assertNotNull($db->getSchema()->getTableSchema($viewName));
+        $db->createCommand()->dropView($viewName)->execute();
+
+        $this->assertNull($db->getSchema()->getTableSchema($viewName));
     }
 }

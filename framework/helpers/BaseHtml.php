@@ -1249,7 +1249,7 @@ class BaseHtml
         }
 
         if ($encode) {
-            for ($i = 0; $i < count($lines); $i++) {
+            for ($i = 0, $linesCount = count($lines); $i < $linesCount; $i++) {
                 $lines[$i] = Html::encode($lines[$i]);
             }
         }
@@ -1271,8 +1271,9 @@ class BaseHtml
      * - tag: this specifies the tag name. If not set, "div" will be used.
      *   See also [[tag()]].
      * - encode: boolean, if set to false then the error message won't be encoded.
-     * - errorMethod (since 2.0.14): string, if set then this value will be used as a method name to
-     *   be called instead of getFirstError().
+     * - errorSource (since 2.0.14): \Closure|callable, callback that will be called to obtain an error message.
+     *   The signature of the callback must be: `function ($model, $attribute)` and return a string.
+     *   When not set, the `$model->getFirstError()` method will be called.
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1281,8 +1282,12 @@ class BaseHtml
     public static function error($model, $attribute, $options = [])
     {
         $attribute = static::getAttributeName($attribute);
-        $errorMethod = ArrayHelper::remove($options, 'errorMethod', 'getFirstError');
-        $error = $model->$errorMethod($attribute);
+        $errorSource = ArrayHelper::remove($options, 'errorSource');
+        if ($errorSource !== null) {
+            $error = call_user_func($errorSource, $model, $attribute);
+        } else {
+            $error = $model->getFirstError($attribute);
+        }
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         $encode = ArrayHelper::remove($options, 'encode', true);
         return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
@@ -1308,6 +1313,8 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
+        self::setActivePlaceholder($model, $attribute, $options);
 
         return static::input($type, $name, $value, $options);
     }
@@ -1348,6 +1355,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This is available since version 2.0.3.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated input tag
      */
@@ -1355,6 +1364,23 @@ class BaseHtml
     {
         self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
+    }
+
+    /**
+     * Generate placeholder from model attribute label.
+     *
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+     * about attribute expression.
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * @since 2.0.14
+     */
+    protected static function setActivePlaceholder($model, $attribute, &$options = [])
+    {
+        if (isset($options['placeholder']) && $options['placeholder'] === true) {
+            $options['placeholder'] = $model->getAttributeLabel($attribute);
+        }
     }
 
     /**
@@ -1389,6 +1415,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This option is available since version 2.0.6.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated input tag
      */
@@ -1402,22 +1430,29 @@ class BaseHtml
      * Generates a file input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
+     * Additionally, if a separate set of HTML options array is defined inside `$options` with a key named `hiddenOptions`,
+     * it will be passed to the `activeHiddenInput` field as its own `$options` parameter.
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * If `hiddenOptions` parameter which is another set of HTML options array is defined, it will be extracted 
+     * from `$options` to be used for the hidden input.
      * @return string the generated input tag
      */
     public static function activeFileInput($model, $attribute, $options = [])
     {
-        // add a hidden field so that if a model only has a file field, we can
-        // still use isset($_POST[$modelClass]) to detect if the input is submitted
         $hiddenOptions = ['id' => null, 'value' => ''];
         if (isset($options['name'])) {
             $hiddenOptions['name'] = $options['name'];
         }
+        $hiddenOptions = ArrayHelper::merge($hiddenOptions, ArrayHelper::remove($options, 'hiddenOptions', []));
+        // add a hidden field so that if a model only has a file field, we can
+        // still use isset($_POST[$modelClass]) to detect if the input is submitted.
+        // The hidden input will be assigned its own set of html options via `$hiddenOptions`.
+        // This provides the possibility to interact with the hidden field via client script.
 
         return static::activeHiddenInput($model, $attribute, $hiddenOptions)
             . static::activeInput('file', $model, $attribute, $options);
@@ -1437,6 +1472,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This option is available since version 2.0.6.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated textarea tag
      */
@@ -1453,6 +1490,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
         self::normalizeMaxLength($model, $attribute, $options);
+        self::setActivePlaceholder($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 
@@ -1842,6 +1880,7 @@ class BaseHtml
      * @return string the rendering result. If the attributes are not empty, they will be rendered
      * into a string with a leading white space (so that it can be directly appended to the tag name
      * in a tag. If there is no attribute, an empty string will be returned.
+     * @see addCssClass()
      */
     public static function renderTagAttributes($attributes)
     {
@@ -1906,6 +1945,8 @@ class BaseHtml
      *
      * @param array $options the options to be modified.
      * @param string|array $class the CSS class(es) to be added
+     * @see mergeCssClasses()
+     * @see removeCssClass()
      */
     public static function addCssClass(&$options, $class)
     {
@@ -1927,6 +1968,7 @@ class BaseHtml
      * @param array $existingClasses already existing CSS classes.
      * @param array $additionalClasses CSS classes to be added.
      * @return array merge result.
+     * @see addCssClass()
      */
     private static function mergeCssClasses(array $existingClasses, array $additionalClasses)
     {
@@ -1945,6 +1987,7 @@ class BaseHtml
      * Removes a CSS class from the specified options.
      * @param array $options the options to be modified.
      * @param string|array $class the CSS class(es) to be removed
+     * @see addCssClass()
      */
     public static function removeCssClass(&$options, $class)
     {

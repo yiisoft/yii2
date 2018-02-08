@@ -87,7 +87,7 @@ class HttpBasicAuth extends AuthMethod
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function authenticate($user, $request, $response)
     {
@@ -117,7 +117,7 @@ class HttpBasicAuth extends AuthMethod
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function challenge($response)
     {

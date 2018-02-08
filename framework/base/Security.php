@@ -589,7 +589,7 @@ class Security extends Component
      * // ...save $hash in database...
      *
      * // during login, validate if the password entered is correct using $hash fetched from database
-     * if (Yii::$app->getSecurity()->validatePassword($password, $hash) {
+     * if (Yii::$app->getSecurity()->validatePassword($password, $hash)) {
      *     // password is good
      * } else {
      *     // password is bad
@@ -702,6 +702,18 @@ class Security extends Component
      */
     public function compareString($expected, $actual)
     {
+        if (!is_string($expected)) {
+            throw new InvalidParamException('Expected expected value to be a string, ' . gettype($expected) . ' given.');
+        }
+
+        if (!is_string($actual)) {
+            throw new InvalidParamException('Expected actual value to be a string, ' . gettype($actual) . ' given.');
+        }
+
+        if (function_exists('hash_equals')) {
+            return hash_equals($expected, $actual);
+        }
+
         $expected .= "\0";
         $actual .= "\0";
         $expectedLength = StringHelper::byteLength($expected);
