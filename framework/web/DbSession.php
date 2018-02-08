@@ -13,6 +13,7 @@ use yii\db\Connection;
 use yii\db\PdoValue;
 use yii\db\Query;
 use yii\di\Instance;
+use yii\helpers\ArrayHelper;
 
 /**
  * DbSession extends [[Session]] by using database as session data storage.
@@ -81,10 +82,12 @@ class DbSession extends MultiFieldSession
      * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
      * @throws InvalidConfigException if [[db]] is invalid.
      */
-    public function init()
+    public function __construct(array $config = [])
     {
-        parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        // db component should be initialized before configuring DbSession component
+        // @see https://github.com/yiisoft/yii2/pull/15523#discussion_r166701079
+        $this->db = Instance::ensure(ArrayHelper::remove($config, 'db', $this->db), Connection::className());
+        parent::__construct($config);
     }
 
     /**
