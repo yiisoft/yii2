@@ -210,5 +210,7 @@ abstract class AbstractDbSessionTest extends TestCase
         ]);
 
         $this->assertSame(Yii::$app->sessionDb, $session->db);
+
+        $session->close();
     }
 }
