@@ -32,7 +32,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     public function testUpsert(array $firstData, array $secondData)
     {
         if (version_compare($this->getConnection(false)->getServerVersion(), '3.8.3', '<')) {
-            $this->markTestSkipped('SQLite < 3.8.3 does nt support "WITH" keyword.');
+            $this->markTestSkipped('SQLite < 3.8.3 does not support "WITH" keyword.');
             return;
         }
 
