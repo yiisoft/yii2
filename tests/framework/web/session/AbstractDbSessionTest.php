@@ -200,7 +200,7 @@ abstract class AbstractDbSessionTest extends TestCase
 
     public function testInstantiate()
     {
-        $oldTimeout = (int) ini_get('session.gc_maxlifetime');
+        $oldTimeout = ini_get('session.gc_maxlifetime');
 
         // unset Yii::$app->db to make sure that all queries are made against sessionDb
         Yii::$app->set('sessionDb', Yii::$app->db);
