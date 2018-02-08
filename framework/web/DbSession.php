@@ -112,11 +112,13 @@ class DbSession extends MultiFieldSession
             return;
         }
 
-        $query = new Query();
-        $row = $query->from($this->sessionTable)
-            ->where(['id' => $oldID])
-            ->createCommand($this->db)
-            ->queryOne();
+        $row = $this->db->useMaster(function() use ($oldID) {
+            return (new Query())->from($this->sessionTable)
+               ->where(['id' => $oldID])
+               ->createCommand($this->db)
+               ->queryOne();
+        });
+
         if ($row !== false) {
             if ($deleteOldSession) {
                 $this->db->createCommand()
@@ -169,24 +171,9 @@ class DbSession extends MultiFieldSession
         // exception must be caught in session write handler
         // http://us.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
-            $query = new Query();
-            $exists = $query->select(['id'])
-                ->from($this->sessionTable)
-                ->where(['id' => $id])
-                ->createCommand($this->db)
-                ->queryScalar();
             $fields = $this->composeFields($id, $data);
             $fields = $this->typecastFields($fields);
-            if ($exists === false) {
-                $this->db->createCommand()
-                    ->insert($this->sessionTable, $fields)
-                    ->execute();
-            } else {
-                unset($fields['id']);
-                $this->db->createCommand()
-                    ->update($this->sessionTable, $fields, ['id' => $id])
-                    ->execute();
-            }
+            $this->db->createCommand()->upsert($this->sessionTable, $fields)->execute();
         } catch (\Exception $e) {
             Yii::$app->errorHandler->handleException($e);
             return false;
