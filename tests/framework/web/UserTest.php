@@ -25,8 +25,6 @@ use yii\rbac\PhpManager;
 use yii\web\Cookie;
 use yii\web\CookieCollection;
 use yii\web\ForbiddenHttpException;
-use yii\web\IdentityInterface;
-use yii\web\User;
 use yiiunit\TestCase;
 
 /**
