@@ -213,6 +213,7 @@ abstract class AbstractDbSessionTest extends TestCase
 
         $this->assertSame(Yii::$app->sessionDb, $session->db);
         $this->assertSame(300, $session->timeout);
+        $session->close();
 
         ini_set('session.gc_maxlifetime', $oldTimeout);
     }
