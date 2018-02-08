@@ -45,7 +45,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getCustomerClass()
     {
@@ -53,7 +53,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getItemClass()
     {
@@ -61,7 +61,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderClass()
     {
@@ -69,7 +69,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderItemClass()
     {
@@ -85,7 +85,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderWithNullFKClass()
     {
@@ -93,7 +93,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderItemWithNullFKmClass()
     {
@@ -744,7 +744,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // join with ON condition and alias in relation definition
         if ($aliasMethod === 'explicit' || $aliasMethod === 'querysyntax') {
             $relationName = 'books' . ucfirst($aliasMethod) . 'A';
-            $orders = Order::find()->joinWith(["$relationName"])->orderBy('order.id')->all();
+            $orders = Order::find()->joinWith([(string)$relationName])->orderBy('order.id')->all();
             $this->assertCount(3, $orders);
             $this->assertEquals(1, $orders[0]->id);
             $this->assertEquals(2, $orders[1]->id);
@@ -1128,6 +1128,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(5, $itemClass::find()->count());
     }
 
+    /**
+     * @requires PHP 5.6
+     */
     public function testCastValues()
     {
         $model = new Type();
@@ -1600,5 +1603,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf(OrderItemWithConstructor::className(), $item);
 
         $this->assertEquals(1, $item->item_id);
+
+        // @see https://github.com/yiisoft/yii2/issues/15540
+        $orders = OrderWithConstructor::find()
+            ->with(['customer.profile', 'orderItems'])
+            ->orderBy('id')
+            ->asArray(true)
+            ->all();
+        $this->assertCount(3, $orders);
     }
 }
