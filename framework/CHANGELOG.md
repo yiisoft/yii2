@@ -4,6 +4,13 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Bug #11401: Fixed `yii\web\DbSession` concurrency issues when writing and regenerating IDs (samdark, andreasanta, cebe)
+- Bug #15523: `yii\web\Session` settings could now be configured after session is started (StalkAlex, rob006, daniel1302, samdark)
+- Enh #15216: Added `yii\web\ErrorHandler::$traceLine` to allow opening file at line clicked in IDE (vladis84)
+- Enh #14488: Added support for X-Forwarded-Host to `yii\web\Request`, fixed `getServerPort()` usage (si294r, samdark)
+- Enh #13019: Support JSON in SchemaBuilderTrait (zhukovra, undefinedor)
+- Enh #15047: `yii\db\Query::select()` and `yii\db\Query::addSelect()` now check for duplicate column names (wapmorgan)
+- Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
 - Enh #13465: Added `yii\helpers\FileHelper::findDirectory()` method (ArsSirek, developeruz)
 - Enh #8527: Added `yii\i18n\Locale` component having `getCurrencySymbol()` method (amarox, samdark)
 - Enh #14546: Added `dataDirectory` property into `BaseActiveFixture` (leandrogehlen)
@@ -27,6 +34,7 @@ Yii Framework 2 Change Log
 - Bug #14135: Fixed `yii\web\Request::getBodyParam()` crashes on object type body params (klimov-paul)
 - Bug #14157: Add support for loading default value `CURRENT_TIMESTAMP` of MySQL `datetime` field (rossoneri)
 - Bug #14276: Fixed I18N format with dotted parameters (developeruz)
+- Bug #14296: Fixed log targets to throw exception in case log can not be properly exported (bizley)
 - Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
 - Bug #14903: Fixed route with extra dashes is executed controller while it should not (developeruz)
@@ -65,6 +73,7 @@ Yii Framework 2 Change Log
 - Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
 - Enh #9253: Allow `variations` to be a string for `yii\filters\PageCache` and `yii\widgets\FragmentCache` (schojniak, developeruz)
 - Enh #12623: Added `yii\helpers\StringHelper::matchWildcard()` replacing usage of `fnmatch()`, which may be unreliable (klimov-paul)
+- Enh #13679: Added `yii\behaviors\CacheableWidgetBehavior` (Kolyunya)
 - Enh #13919: Added option to add comment for created table to migration console command (mixartemev, developeruz)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
 - Enh #14355: Added ability to pass an empty array as a parameter in console command (developeruz)
@@ -76,6 +85,7 @@ Yii Framework 2 Change Log
 - Enh #15221: Added support for specifying `--camelCase` console options in `--kebab-case` (brandonkelly)
 - Enh #15221: Added support for the `--<option> <value>` console option syntax (brandonkelly)
 - Enh #15221: Improved the `help/list-action-options` console command output for command options without a description (brandonkelly)
+- Enh #13879: Added upsert support for `yii\db\QueryBuilder` and `yii\db\Command` (sergeymakinen)
 - Enh #15226: Auto generate placeholder from fields (vladis84)
 - Enh #15332: Always check for availability of `openssl_pseudo_random_bytes`, even if LibreSSL is available (sammousa)
 - Enh #15335: Added `FileHelper::unlink()` that works well under all OSes (samdark)
@@ -88,6 +98,8 @@ Yii Framework 2 Change Log
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 - Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
 - Chg #15625: `yii\grid\DataColumn` boolean filter dropdown list values are now in reversed order (bizley)
+- Enh #15595: `yii\data\DataFilter` can now handle `lt`,`gt`,`lte` and `gte` on `yii\validators\DateValidator` (mikk150)
+- Bug #15621: Fixed `yii\web\User::getIdentity()` returning `null` if an exception had been thrown when it was called previously (brandonkelly)
 
 2.0.13.1 November 14, 2017
 --------------------------
@@ -155,6 +167,7 @@ Yii Framework 2 Change Log
 - Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
 - Enh #5786: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN, klimov-paul)
 - Enh #6644: Added `yii\helpers\ArrayHelper::setValue()` (LAV45)
+- Enh #7640: Implemented custom data types support. Added JSON support for MySQL and PostgreSQL, array support for PostgreSQL (silverfire, cebe)
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 - Enh #9438: `yii\web\DbSession` now relies on error handler to display errors (samdark)
 - Enh #9703, #9709: Added `yii\i18n\Formatter::asWeight()` and `::asLength()` formatters (nineinchnick, silverfire)

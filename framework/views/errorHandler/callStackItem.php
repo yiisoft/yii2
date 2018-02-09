@@ -34,12 +34,14 @@
             <?php for ($i = $begin; $i <= $end; ++$i): ?><div class="hover-line"></div><?php endfor; ?>
             <div class="code">
                 <?php for ($i = $begin; $i <= $end; ++$i): ?><span class="lines-item"><?= (int) ($i + 1) ?></span><?php endfor; ?>
-                <pre><?php
+                <pre>
+                    <?php
                     // fill empty lines with a whitespace to avoid rendering problems in opera
                     for ($i = $begin; $i <= $end; ++$i) {
-                        echo (trim($lines[$i]) === '') ? " \n" : $handler->htmlEncode($lines[$i]);
+                        echo (trim($lines[$i]) === '') ? " \n" : strtr($handler->traceLine, ['{file}' => $file, '{line}' => $i + 1, '{html}' => $handler->htmlEncode($lines[$i])]);
                     }
-                ?></pre>
+                    ?>
+                </pre>
             </div>
         </div>
     <?php endif; ?>

@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `T_constraints_4` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_3` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_2` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_1` CASCADE;
+DROP TABLE IF EXISTS `T_upsert` CASCADE;
 
 CREATE TABLE `constraints`
 (
@@ -142,7 +143,8 @@ CREATE TABLE `type` (
   `bool_col` tinyint(1) NOT NULL,
   `bool_col2` tinyint(1) DEFAULT '1',
   `ts_default` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `bit_col` BIT(8) NOT NULL DEFAULT b'10000010'
+  `bit_col` BIT(8) NOT NULL DEFAULT b'10000010',
+  `json_col` json
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `animal` (
@@ -302,5 +304,19 @@ CREATE TABLE `T_constraints_4`
     `C_col_1` INT NULL,
     `C_col_2` INT NOT NULL,
     CONSTRAINT `CN_constraints_4` UNIQUE (`C_col_1`, `C_col_2`)
+)
+ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';
+
+CREATE TABLE `T_upsert`
+(
+    `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `ts` INT NULL,
+    `email` VARCHAR(128) NOT NULL UNIQUE,
+    `recovery_email` VARCHAR(128) NULL,
+    `address` TEXT NULL,
+    `status` TINYINT NOT NULL DEFAULT 0,
+    `orders` INT NOT NULL DEFAULT 0,
+    `profile_id` INT NULL,
+    UNIQUE (`email`, `recovery_email`)
 )
 ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';

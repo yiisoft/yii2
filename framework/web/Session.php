@@ -89,6 +89,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     private $_cookieParams = ['httponly' => true];
 
+    /**
+     * @var $frozenSessionData array|null is used for saving session between recreations due to session parameters update.
+     */
+    private $frozenSessionData;
+
 
     /**
      * Initializes the application component.
@@ -413,6 +418,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setUseCookies($value)
     {
+        $this->freeze();
         if ($value === false) {
             ini_set('session.use_cookies', '0');
             ini_set('session.use_only_cookies', '0');
@@ -423,6 +429,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             ini_set('session.use_cookies', '1');
             ini_set('session.use_only_cookies', '0');
         }
+        $this->unfreeze();
     }
 
     /**
@@ -439,6 +446,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setGCProbability($value)
     {
+        $this->freeze();
         if ($value >= 0 && $value <= 100) {
             // percent * 21474837 / 2147483647 ≈ percent * 0.01
             ini_set('session.gc_probability', floor($value * 21474836.47));
@@ -446,6 +454,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         } else {
             throw new InvalidParamException('GCProbability must be a value between 0 and 100.');
         }
+        $this->unfreeze();
     }
 
     /**
@@ -461,7 +470,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setUseTransparentSessionID($value)
     {
+        $this->freeze();
         ini_set('session.use_trans_sid', $value ? '1' : '0');
+        $this->unfreeze();
     }
 
     /**
@@ -478,7 +489,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setTimeout($value)
     {
+        $this->freeze();
         ini_set('session.gc_maxlifetime', $value);
+        $this->unfreeze();
     }
 
     /**
@@ -901,5 +914,31 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         $this->open();
         unset($_SESSION[$offset]);
+    }
+
+    /**
+     * If session is started it's not possible to edit session ini settings. In PHP7.2+ it throws exception.
+     * This function saves session data to temporary variable and stop session.
+     * @since 2.0.14
+     */
+    protected function freeze()
+    {
+        if (isset($_SESSION) && $this->getIsActive()) {
+            $this->frozenSessionData = $_SESSION;
+        }
+        $this->close();
+    }
+
+    /**
+     * Starts session and restores data from temporary variable
+     * @since 2.0.14
+     */
+    protected function unfreeze()
+    {
+        $this->open();
+        if (null !== $this->frozenSessionData) {
+            $_SESSION = $this->frozenSessionData;
+            $this->frozenSessionData = null;
+        }
     }
 }
