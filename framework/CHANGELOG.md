@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Bug #11401: Fixed `yii\web\DbSession` concurrency issues when writing and regenerating IDs (samdark, andreasanta, cebe)
 - Bug #15523: `yii\web\Session` settings could now be configured after session is started (StalkAlex, rob006, daniel1302, samdark)
 - Enh #15216: Added `yii\web\ErrorHandler::$traceLine` to allow opening file at line clicked in IDE (vladis84)
 - Enh #14488: Added support for X-Forwarded-Host to `yii\web\Request`, fixed `getServerPort()` usage (si294r, samdark)
