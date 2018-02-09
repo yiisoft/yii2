@@ -97,6 +97,7 @@ Yii Framework 2 Change Log
 - Enh #15422: Added default roles dynamic definition support via closure for `yii\rbac\BaseManager` (deltacube)
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 - Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
+- Chg #15625: `yii\grid\DataColumn` boolean filter dropdown list values are now in reversed order (bizley)
 - Enh #15595: `yii\data\DataFilter` can now handle `lt`,`gt`,`lte` and `gte` on `yii\validators\DateValidator` (mikk150)
 - Bug #15621: Fixed `yii\web\User::getIdentity()` returning `null` if an exception had been thrown when it was called previously (brandonkelly)
 
