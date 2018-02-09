@@ -98,6 +98,19 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->assertEquals('', $session->readSession('test'));
     }
 
+    public function testInitializeWithConfig()
+    {
+        // should produce no exceptions
+        $session = new DbSession([
+            'useCookies' => true,
+        ]);
+
+        $session->writeSession('test', 'session data');
+        $this->assertEquals('session data', $session->readSession('test'));
+        $session->destroySession('test');
+        $this->assertEquals('', $session->readSession('test'));
+    }
+
     /**
      * @depends testReadWrite
      */
