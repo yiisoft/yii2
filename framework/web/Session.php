@@ -923,7 +923,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     protected function freeze()
     {
-        if (isset($_SESSION) && $this->getIsActive()) {
+        if ($this->getIsActive()) {
             $this->frozenSessionData = $_SESSION;
             $this->close();
             Yii::info('Session frozen', __METHOD__);
