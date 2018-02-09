@@ -56,7 +56,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     protected function defaultExpressionBuilders()
     {
         return array_merge(parent::defaultExpressionBuilders(), [
-            'yii\db\conditions\InCondition' => 'yii\db\conditions\oci\InConditionBuilder',
+            'yii\db\conditions\InCondition' => 'yii\db\oci\conditions\InConditionBuilder',
             'yii\db\conditions\LikeCondition' => 'yii\db\oci\conditions\LikeConditionBuilder',
         ]);
     }
