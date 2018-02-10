@@ -770,6 +770,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $condition = $this->getOldPrimaryKey(true);
         $lock = $this->optimisticLock();
         if ($lock !== null) {
+            if (isset($values[$lock])) {
+                throw new StaleObjectException('The object being updated is outdated.');
+            }
             $values[$lock] = $this->$lock + 1;
             $condition[$lock] = $this->$lock;
         }
