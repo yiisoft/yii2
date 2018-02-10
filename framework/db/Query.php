@@ -50,6 +50,7 @@ use yii\base\InvalidParamException;
 class Query extends Component implements QueryInterface
 {
     use QueryTrait;
+    use CacheableQueryTrait;
 
     /**
      * @var array the columns being selected. For example, `['id', 'name']`.
@@ -129,7 +130,11 @@ class Query extends Component implements QueryInterface
         }
         list($sql, $params) = $db->getQueryBuilder()->build($this);
 
-        return $db->createCommand($sql, $params);
+        $command = $db->createCommand($sql, $params);
+        if ($this->hasCache()) {
+            $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
+        }
+        return $command;
     }
 
     /**
@@ -449,11 +454,14 @@ class Query extends Component implements QueryInterface
             return $command->queryScalar();
         }
 
-        return (new self())
+        $command = (new self())
             ->select([$selectExpression])
             ->from(['c' => $this])
-            ->createCommand($db)
-            ->queryScalar();
+            ->createCommand($db);
+        if ($this->hasCache()) {
+            $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
+        }
+        return $command->queryScalar();
     }
 
     /**

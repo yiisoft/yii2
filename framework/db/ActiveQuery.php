@@ -319,7 +319,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $params = $this->params;
         }
 
-        return $db->createCommand($sql, $params);
+        $command = $db->createCommand($sql, $params);
+        if ($this->hasCache()) {
+            $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
+        }
+        return $command;
     }
 
     /**
@@ -337,11 +341,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return parent::queryScalar($selectExpression, $db);
         }
 
-        return (new Query())->select([$selectExpression])
+        $command = (new Query())->select([$selectExpression])
             ->from(['c' => "({$this->sql})"])
             ->params($this->params)
-            ->createCommand($db)
-            ->queryScalar();
+            ->createCommand($db);
+        if ($this->hasCache()) {
+            $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
+        }
+        return $command->queryScalar();
     }
 
     /**
