@@ -14,7 +14,7 @@ namespace yii\base;
  * @since 2.0
  * @deprecated 2.0.14 Use [[InvalidArgumentException]]
  */
-class InvalidParamException extends \BadMethodCallException
+class InvalidParamException extends InvalidArgumentException
 {
     /**
      * @return string the user-friendly name of this exception
