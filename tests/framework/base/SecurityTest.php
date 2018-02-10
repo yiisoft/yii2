@@ -880,7 +880,7 @@ TEXT;
 
     /**
      * @dataProvider randomKeyInvalidInputs
-     * @expectedException \yii\base\InvalidArgumentException
+     * @expectedException \yii\base\InvalidParamException
      * @param mixed $input
      */
     public function testRandomKeyInvalidInput($input)
@@ -1276,7 +1276,7 @@ TEXT;
     }
 
     /**
-     * @expectedException \yii\base\InvalidArgumentException
+     * @expectedException \yii\base\InvalidParamException
      */
     public function testMaskingInvalidStrings()
     {

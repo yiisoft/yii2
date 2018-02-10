@@ -2,7 +2,7 @@
 
 namespace yii\db\conditions;
 
-use yii\base\InvalidArgumentException;
+use yii\base\InvalidParamException;
 use yii\db\ExpressionInterface;
 
 /**
@@ -22,7 +22,7 @@ interface ConditionInterface extends ExpressionInterface
      * @param array $operands array of corresponding operands
      *
      * @return $this
-     * @throws InvalidArgumentException if input parameters are not suitable for this condition
+     * @throws InvalidParamException if input parameters are not suitable for this condition
      */
     public static function fromArrayDefinition($operator, $operands);
 }

@@ -52,7 +52,7 @@ class FormatterTest extends TestCase
         $this->assertSame(date('M j, Y', $value), $this->formatter->format($value, 'date'));
         $this->assertSame(date('M j, Y', $value), $this->formatter->format($value, 'DATE'));
         $this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, ['date', 'php:Y/m/d']));
-        $this->expectException('\yii\base\InvalidArgumentException');
+        $this->expectException('\yii\base\InvalidParamException');
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, function ($value) {
             return date('Y-m-d', $value);
@@ -237,7 +237,7 @@ class FormatterTest extends TestCase
             [
                 'Wrong value is casted properly',
                 ['NaN'], '0 millimeters', '0 mm',
-                ['yii\base\InvalidArgumentException', "'NaN' is not a numeric value"],
+                ['yii\base\InvalidParamException', "'NaN' is not a numeric value"],
             ],
             [
                 'Negative value works',
@@ -336,7 +336,7 @@ class FormatterTest extends TestCase
             [
                 'Wrong value is casted properly',
                 ['NaN'], '0 grams', '0 g',
-                ['yii\base\InvalidArgumentException', "'NaN' is not a numeric value"],
+                ['yii\base\InvalidParamException', "'NaN' is not a numeric value"],
             ],
             [
                 'Negative value works',

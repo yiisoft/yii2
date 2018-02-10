@@ -344,7 +344,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidArgumentException
+     * @expectedException \yii\base\InvalidParamException
      */
     public function testMultisortInvalidParamExceptionDirection()
     {
@@ -353,7 +353,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidArgumentException
+     * @expectedException \yii\base\InvalidParamException
      */
     public function testMultisortInvalidParamExceptionSortFlag()
     {
@@ -1189,7 +1189,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidArgumentException
+     * @expectedException \yii\base\InvalidParamException
      * @expectedExceptionMessage Argument $haystack must be an array or implement Traversable
      */
     public function testInException()
@@ -1210,7 +1210,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidArgumentException
+     * @expectedException \yii\base\InvalidParamException
      * @expectedExceptionMessage Argument $needles must be an array or implement Traversable
      */
     public function testIsSubsetException()
@@ -1269,7 +1269,7 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals(ArrayHelper::filter($array, ['X']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['X.Y']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['A.X']), []);
-        
+
         $tmp = [
             'a' => 0,
             'b' => '',
@@ -1277,7 +1277,7 @@ class ArrayHelperTest extends TestCase
             'd' => null,
             'e' => true,
         ];
-        
+
         $this->assertEquals(ArrayHelper::filter($tmp, array_keys($tmp)), $tmp);
     }
 }

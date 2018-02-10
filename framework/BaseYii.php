@@ -8,7 +8,7 @@
 namespace yii;
 
 use yii\base\InvalidConfigException;
-use yii\base\InvalidArgumentException;
+use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
 use yii\di\Container;
 use yii\log\Logger;
@@ -125,7 +125,7 @@ class BaseYii
      * @param bool $throwException whether to throw an exception if the given alias is invalid.
      * If this is false and an invalid alias is given, false will be returned by this method.
      * @return string|bool the path corresponding to the alias, false if the root alias is not previously registered.
-     * @throws InvalidArgumentException if the alias is invalid while $throwException is true.
+     * @throws InvalidParamException if the alias is invalid while $throwException is true.
      * @see setAlias()
      */
     public static function getAlias($alias, $throwException = true)
@@ -151,7 +151,7 @@ class BaseYii
         }
 
         if ($throwException) {
-            throw new InvalidArgumentException("Invalid path alias: $alias");
+            throw new InvalidParamException("Invalid path alias: $alias");
         }
 
         return false;
@@ -211,7 +211,7 @@ class BaseYii
      * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
      *   actual path first by calling [[getAlias()]].
      *
-     * @throws InvalidArgumentException if $path is an invalid alias.
+     * @throws InvalidParamException if $path is an invalid alias.
      * @see getAlias()
      */
     public static function setAlias($alias, $path)

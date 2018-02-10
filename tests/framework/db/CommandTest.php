@@ -597,7 +597,7 @@ SQL;
      * Test INSERT INTO ... SELECT SQL statement with wrong query object.
      *
      * @dataProvider invalidSelectColumns
-     * @expectedException \yii\base\InvalidArgumentException
+     * @expectedException \yii\base\InvalidParamException
      * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
      * @param mixed $invalidSelectColumns
      */

@@ -83,7 +83,7 @@ interface ManagerInterface extends CheckAccessInterface
      * @param string $roleName name of the role to file child roles for
      * @return Role[] Child roles. The array is indexed by the role names.
      * First element is an instance of the parent Role itself.
-     * @throws \yii\base\InvalidArgumentException if Role was not found that are getting by $roleName
+     * @throws \yii\base\InvalidParamException if Role was not found that are getting by $roleName
      * @since 2.0.10
      */
     public function getChildRoles($roleName);

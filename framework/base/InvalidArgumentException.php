@@ -13,7 +13,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0.14
  */
-class InvalidArgumentException extends \BadMethodCallException
+class InvalidArgumentException extends InvalidParamException
 {
     /**
      * @return string the user-friendly name of this exception

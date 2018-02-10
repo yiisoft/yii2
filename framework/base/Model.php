@@ -339,7 +339,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * validation rules should be validated.
      * @param bool $clearErrors whether to call [[clearErrors()]] before performing validation
      * @return bool whether the validation is successful without any error.
-     * @throws InvalidArgumentException if the current scenario is unknown.
+     * @throws InvalidParamException if the current scenario is unknown.
      */
     public function validate($attributeNames = null, $clearErrors = true)
     {
@@ -354,7 +354,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         $scenarios = $this->scenarios();
         $scenario = $this->getScenario();
         if (!isset($scenarios[$scenario])) {
-            throw new InvalidArgumentException("Unknown scenario: $scenario");
+            throw new InvalidParamException("Unknown scenario: $scenario");
         }
 
         if ($attributeNames === null) {
