@@ -10,7 +10,7 @@ namespace yii\db;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * Query represents a SELECT SQL statement in a way that is independent of DBMS.
@@ -537,7 +537,7 @@ PATTERN;
 
             if ($tableName instanceof Expression) {
                 if (!is_string($alias)) {
-                    throw new InvalidParamException('To use Expression in from() method, pass it in array format with alias.');
+                    throw new InvalidArgumentException('To use Expression in from() method, pass it in array format with alias.');
                 }
                 $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $tableName;
             } elseif ($tableName instanceof self) {

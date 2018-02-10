@@ -2,7 +2,7 @@
 
 namespace yii\db\conditions;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * Class LikeCondition represents a `LIKE` condition.
@@ -53,12 +53,12 @@ class LikeCondition extends SimpleCondition
 
     /**
      * {@inheritdoc}
-     * @throws InvalidParamException if wrong number of operands have been given.
+     * @throws InvalidArgumentException if wrong number of operands have been given.
      */
     public static function fromArrayDefinition($operator, $operands)
     {
         if (!isset($operands[0], $operands[1])) {
-            throw new InvalidParamException("Operator '$operator' requires two operands.");
+            throw new InvalidArgumentException("Operator '$operator' requires two operands.");
         }
 
         $condition = new static($operands[0], $operator, $operands[1]);

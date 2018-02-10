@@ -7,7 +7,7 @@
 
 namespace yii\db\sqlite;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Connection;
 use yii\db\Constraint;
@@ -184,11 +184,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
+     *
      * @param string $tableName the name of the table whose primary key sequence will be reset
      * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have a value 1.
+     *
      * @return string the SQL statement for resetting sequence
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      */
     public function resetSequence($tableName, $value = null)
     {
@@ -207,10 +209,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
             return "UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'";
         } elseif ($table === null) {
-            throw new InvalidParamException("Table not found: $tableName");
+            throw new InvalidArgumentException("Table not found: $tableName");
         }
 
-        throw new InvalidParamException("There is not sequence associated with table '$tableName'.'");
+        throw new InvalidArgumentException("There is not sequence associated with table '$tableName'.'");
     }
 
     /**

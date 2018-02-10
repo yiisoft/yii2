@@ -9,7 +9,7 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\Arrayable;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * BaseArrayHelper provides concrete implementation for [[ArrayHelper]].
@@ -616,6 +616,7 @@ class BaseArrayHelper
 
     /**
      * Sorts an array of objects or arrays (with the same structure) by one or several keys.
+     *
      * @param array $array the array to be sorted. The array will be modified after calling this method.
      * @param string|\Closure|array $key the key(s) to be sorted by. This refers to a key name of the sub-array
      * elements, a property name of the objects, or an anonymous function returning the values for comparison
@@ -627,7 +628,8 @@ class BaseArrayHelper
      * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
      * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
      * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
-     * @throws InvalidParamException if the $direction or $sortFlag parameters do not have
+     *
+     * @throws InvalidArgumentException if the $direction or $sortFlag parameters do not have
      * correct number of elements as that of $key.
      */
     public static function multisort(&$array, $key, $direction = SORT_ASC, $sortFlag = SORT_REGULAR)
@@ -640,12 +642,12 @@ class BaseArrayHelper
         if (is_scalar($direction)) {
             $direction = array_fill(0, $n, $direction);
         } elseif (count($direction) !== $n) {
-            throw new InvalidParamException('The length of $direction parameter must be the same as that of $keys.');
+            throw new InvalidArgumentException('The length of $direction parameter must be the same as that of $keys.');
         }
         if (is_scalar($sortFlag)) {
             $sortFlag = array_fill(0, $n, $sortFlag);
         } elseif (count($sortFlag) !== $n) {
-            throw new InvalidParamException('The length of $sortFlag parameter must be the same as that of $keys.');
+            throw new InvalidArgumentException('The length of $sortFlag parameter must be the same as that of $keys.');
         }
         $args = [];
         foreach ($keys as $i => $key) {
@@ -809,11 +811,13 @@ class BaseArrayHelper
      *
      * This method does the same as the PHP function [in_array()](http://php.net/manual/en/function.in-array.php)
      * but additionally works for objects that implement the [[\Traversable]] interface.
+     *
      * @param mixed $needle The value to look for.
      * @param array|\Traversable $haystack The set of values to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
+     *
      * @return bool `true` if `$needle` was found in `$haystack`, `false` otherwise.
-     * @throws InvalidParamException if `$haystack` is neither traversable nor an array.
+     * @throws InvalidArgumentException if `$haystack` is neither traversable nor an array.
      * @see http://php.net/manual/en/function.in-array.php
      * @since 2.0.7
      */
@@ -828,7 +832,7 @@ class BaseArrayHelper
         } elseif (is_array($haystack)) {
             return in_array($needle, $haystack, $strict);
         } else {
-            throw new InvalidParamException('Argument $haystack must be an array or implement Traversable');
+            throw new InvalidArgumentException('Argument $haystack must be an array or implement Traversable');
         }
 
         return false;
@@ -854,10 +858,12 @@ class BaseArrayHelper
      *
      * This method will return `true`, if all elements of `$needles` are contained in
      * `$haystack`. If at least one element is missing, `false` will be returned.
+     *
      * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
      * @param array|\Traversable $haystack The set of value to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
-     * @throws InvalidParamException if `$haystack` or `$needles` is neither traversable nor an array.
+     *
+     * @throws InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
      * @return bool `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
      * @since 2.0.7
      */
@@ -873,7 +879,7 @@ class BaseArrayHelper
             return true;
         }
 
-        throw new InvalidParamException('Argument $needles must be an array or implement Traversable');
+        throw new InvalidArgumentException('Argument $needles must be an array or implement Traversable');
     }
 
     /**

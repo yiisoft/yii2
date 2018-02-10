@@ -8,7 +8,7 @@
 namespace yii\db;
 
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * ActiveRelationTrait implements the common methods and properties for active record relational queries.
@@ -166,10 +166,12 @@ trait ActiveRelationTrait
     /**
      * Finds the related records for the specified primary record.
      * This method is invoked when a relation of an ActiveRecord is being accessed in a lazy fashion.
+     *
      * @param string $name the relation name
      * @param ActiveRecordInterface|BaseActiveRecord $model the primary model
+     *
      * @return mixed the related record(s)
-     * @throws InvalidParamException if the relation is invalid
+     * @throws InvalidArgumentException if the relation is invalid
      */
     public function findFor($name, $model)
     {
@@ -177,7 +179,7 @@ trait ActiveRelationTrait
             $method = new \ReflectionMethod($model, 'get' . $name);
             $realName = lcfirst(substr($method->getName(), 3));
             if ($realName !== $name) {
-                throw new InvalidParamException('Relation names are case sensitive. ' . get_class($model) . " has a relation named \"$realName\" instead of \"$name\".");
+                throw new InvalidArgumentException('Relation names are case sensitive. ' . get_class($model) . " has a relation named \"$realName\" instead of \"$name\".");
             }
         }
 

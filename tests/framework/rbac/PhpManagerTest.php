@@ -137,7 +137,7 @@ class PhpManagerTest extends ManagerTestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      */
     public function testOverwriteName()
     {

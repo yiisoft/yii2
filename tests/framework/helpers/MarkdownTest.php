@@ -44,7 +44,7 @@ TEXT;
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Markdown flavor 'undefined' is not defined.
      */
     public function testProcessInvalidParamException()

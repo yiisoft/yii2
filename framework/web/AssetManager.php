@@ -10,7 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\helpers\FileHelper;
 use yii\helpers\Url;
 
@@ -442,7 +442,7 @@ class AssetManager extends Component
      *   This overrides [[forceCopy]] if set.
      *
      * @return array the path (directory or file path) and the URL that the asset is published as.
-     * @throws InvalidParamException if the asset to be published does not exist.
+     * @throws InvalidArgumentException if the asset to be published does not exist.
      */
     public function publish($path, $options = [])
     {
@@ -453,7 +453,7 @@ class AssetManager extends Component
         }
 
         if (!is_string($path) || ($src = realpath($path)) === false) {
-            throw new InvalidParamException("The file or directory to be published does not exist: $path");
+            throw new InvalidArgumentException("The file or directory to be published does not exist: $path");
         }
 
         if (is_file($src)) {
@@ -465,9 +465,11 @@ class AssetManager extends Component
 
     /**
      * Publishes a file.
+     *
      * @param string $src the asset file to be published
+     *
      * @return string[] the path and the URL that the asset is published as.
-     * @throws InvalidParamException if the asset to be published does not exist.
+     * @throws InvalidArgumentException if the asset to be published does not exist.
      */
     protected function publishFile($src)
     {
@@ -502,6 +504,7 @@ class AssetManager extends Component
 
     /**
      * Publishes a directory.
+     *
      * @param string $src the asset directory to be published
      * @param array $options the options to be applied when publishing a directory.
      * The following options are supported:
@@ -518,7 +521,7 @@ class AssetManager extends Component
      *   This overrides [[forceCopy]] if set.
      *
      * @return string[] the path directory and the URL that the asset is published as.
-     * @throws InvalidParamException if the asset to be published does not exist.
+     * @throws InvalidArgumentException if the asset to be published does not exist.
      */
     protected function publishDirectory($src, $options)
     {

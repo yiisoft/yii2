@@ -8,7 +8,7 @@
 namespace yii\helpers;
 
 use Yii;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * BaseMarkdown provides concrete implementation for [[Markdown]].
@@ -56,8 +56,9 @@ class BaseMarkdown
      * @param string $markdown the markdown text to parse
      * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
      * Defaults to [[$defaultFlavor]], if not set.
+     *
      * @return string the parsed HTML output
-     * @throws \yii\base\InvalidParamException when an undefined flavor is given.
+     * @throws \yii\base\InvalidArgumentException when an undefined flavor is given.
      */
     public static function process($markdown, $flavor = null)
     {
@@ -74,8 +75,9 @@ class BaseMarkdown
      * @param string $markdown the markdown text to parse
      * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
      * Defaults to [[$defaultFlavor]], if not set.
+     *
      * @return string the parsed HTML output
-     * @throws \yii\base\InvalidParamException when an undefined flavor is given.
+     * @throws \yii\base\InvalidArgumentException when an undefined flavor is given.
      */
     public static function processParagraph($markdown, $flavor = null)
     {
@@ -87,8 +89,9 @@ class BaseMarkdown
     /**
      * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
      * Defaults to [[$defaultFlavor]], if not set.
+     *
      * @return \cebe\markdown\Parser
-     * @throws \yii\base\InvalidParamException when an undefined flavor is given.
+     * @throws \yii\base\InvalidArgumentException when an undefined flavor is given.
      */
     protected static function getParser($flavor)
     {
@@ -97,7 +100,7 @@ class BaseMarkdown
         }
         /* @var $parser \cebe\markdown\Markdown */
         if (!isset(static::$flavors[$flavor])) {
-            throw new InvalidParamException("Markdown flavor '$flavor' is not defined.'");
+            throw new InvalidArgumentException("Markdown flavor '$flavor' is not defined.'");
         } elseif (!is_object($config = static::$flavors[$flavor])) {
             static::$flavors[$flavor] = Yii::createObject($config);
         }

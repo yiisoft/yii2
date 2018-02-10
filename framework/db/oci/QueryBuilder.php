@@ -7,7 +7,7 @@
 
 namespace yii\db\oci;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\db\Connection;
 use yii\db\Constraint;
 use yii\db\Exception;
@@ -140,7 +140,7 @@ EOD;
     {
         $tableSchema = $this->db->getTableSchema($table);
         if ($tableSchema === null) {
-            throw new InvalidParamException("Unknown table: $table");
+            throw new InvalidArgumentException("Unknown table: $table");
         }
         if ($tableSchema->sequenceName === null) {
             return '';

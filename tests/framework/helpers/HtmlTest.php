@@ -1443,7 +1443,7 @@ EOD;
     public function testAttributeNameValidation($name, $expected)
     {
         if (!isset($expected)) {
-            $this->expectException('yii\base\InvalidParamException');
+            $this->expectException('yii\base\InvalidArgumentException');
             Html::getAttributeName($name);
         } else {
             $this->assertEquals($expected, Html::getAttributeName($name));
@@ -1457,7 +1457,7 @@ EOD;
      */
     public function testAttributeNameException($name)
     {
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidArgumentException');
         Html::getAttributeName($name);
     }
 
@@ -1490,7 +1490,7 @@ EOD;
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Attribute name must contain word characters only.
      */
     public function testGetAttributeValueInvalidParamException()
@@ -1525,7 +1525,7 @@ EOD;
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Attribute name must contain word characters only.
      */
     public function testGetInputNameInvalidParamExceptionAttribute()
@@ -1535,7 +1535,7 @@ EOD;
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessageRegExp /(.*)formName\(\) cannot be empty for tabular inputs.$/
      */
     public function testGetInputNameInvalidParamExceptionFormName()

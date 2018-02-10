@@ -2,7 +2,7 @@
 
 namespace yii\db\conditions;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * Condition that inverts passed [[condition]].
@@ -37,12 +37,12 @@ class NotCondition implements ConditionInterface
 
     /**
      * {@inheritdoc}
-     * @throws InvalidParamException if wrong number of operands have been given.
+     * @throws InvalidArgumentException if wrong number of operands have been given.
      */
     public static function fromArrayDefinition($operator, $operands)
     {
         if (count($operands) !== 1) {
-            throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
+            throw new InvalidArgumentException("Operator '$operator' requires exactly one operand.");
         }
 
         return new static(array_shift($operands));

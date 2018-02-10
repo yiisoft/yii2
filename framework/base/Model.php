@@ -338,8 +338,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * If this parameter is empty, it means any attribute listed in the applicable
      * validation rules should be validated.
      * @param bool $clearErrors whether to call [[clearErrors()]] before performing validation
+     *
      * @return bool whether the validation is successful without any error.
-     * @throws InvalidParamException if the current scenario is unknown.
+     * @throws InvalidArgumentException if the current scenario is unknown.
      */
     public function validate($attributeNames = null, $clearErrors = true)
     {
@@ -354,7 +355,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         $scenarios = $this->scenarios();
         $scenario = $this->getScenario();
         if (!isset($scenarios[$scenario])) {
-            throw new InvalidParamException("Unknown scenario: $scenario");
+            throw new InvalidArgumentException("Unknown scenario: $scenario");
         }
 
         if ($attributeNames === null) {
@@ -747,7 +748,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function onUnsafeAttribute($name, $value)
     {
         if (YII_DEBUG) {
-            Yii::trace("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
+            Yii::debug("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
         }
     }
 
