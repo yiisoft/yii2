@@ -2,7 +2,7 @@
 
 namespace yii\db\conditions;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\db\Query;
 
 /**
@@ -40,7 +40,7 @@ class ExistsCondition implements ConditionInterface
     public static function fromArrayDefinition($operator, $operands)
     {
         if (!isset($operands[0]) || !$operands[0] instanceof Query) {
-            throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
+            throw new InvalidArgumentException('Subquery for EXISTS operator must be a Query object.');
         }
 
         return new static($operator, $operands[0]);
