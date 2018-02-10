@@ -100,6 +100,11 @@ Yii Framework 2 Change Log
 - Chg #15625: `yii\grid\DataColumn` boolean filter dropdown list values are now in reversed order (bizley)
 - Enh #15595: `yii\data\DataFilter` can now handle `lt`,`gt`,`lte` and `gte` on `yii\validators\DateValidator` (mikk150)
 - Bug #15621: Fixed `yii\web\User::getIdentity()` returning `null` if an exception had been thrown when it was called previously (brandonkelly)
+- Chg #15633: Deprecated `yii\base\Object::className()` in favor of native PHP syntax `::class`, which does not trigger autoloading (brandonkelly)
+- Chg #15633: Deprecated XCache and Zend data cache support as caching backends (brandonkelly)
+- Chg #15633: Deprecated `yii\BaseYii::powered()` method (brandonkelly)
+- Chg #15633: Added `yii\base\InvalidArgumentException` and deprecated `yii\base\InvalidParamException` (brandonkelly)
+- Chg #15633: Added `yii\BaseYii::debug()` and deprecated `yii\BaseYii::trace()` (brandonkelly)
 
 2.0.13.1 November 14, 2017
 --------------------------
