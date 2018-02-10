@@ -134,7 +134,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
         $this->setCookieParamsInternal();
 
-        @session_start();
+        YII_DEBUG ? session_start() : @session_start();
 
         if ($this->getIsActive()) {
             Yii::info('Session started', __METHOD__);
@@ -923,10 +923,13 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     protected function freeze()
     {
-        if (isset($_SESSION) && $this->getIsActive()) {
-            $this->frozenSessionData = $_SESSION;
+        if ($this->getIsActive()) {
+            if (isset($_SESSION)) {
+                $this->frozenSessionData = $_SESSION;
+            }
+            $this->close();
+            Yii::info('Session frozen', __METHOD__);
         }
-        $this->close();
     }
 
     /**
@@ -935,8 +938,18 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     protected function unfreeze()
     {
-        $this->open();
         if (null !== $this->frozenSessionData) {
+
+            YII_DEBUG ? session_start() : @session_start();
+
+            if ($this->getIsActive()) {
+                Yii::info('Session unfrozen', __METHOD__);
+            } else {
+                $error = error_get_last();
+                $message = isset($error['message']) ? $error['message'] : 'Failed to unfreeze session.';
+                Yii::error($message, __METHOD__);
+            }
+
             $_SESSION = $this->frozenSessionData;
             $this->frozenSessionData = null;
         }
