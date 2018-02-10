@@ -338,9 +338,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Sets the current session save path.
      * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
-     *
      * @param string $value the current session save path. This can be either a directory name or a [path alias](guide:concept-aliases).
-     *
      * @throws InvalidArgumentException if the path is not a valid directory
      */
     public function setSavePath($value)
@@ -366,9 +364,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Sets the session cookie parameters.
      * The cookie parameters passed to this method will be merged with the result
      * of `session_get_cookie_params()`.
-     *
      * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httponly`.
-     *
      * @throws InvalidArgumentException if the parameters are incomplete.
      * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
      */
@@ -380,7 +376,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Sets the session cookie parameters.
      * This method is called by [[open()]] when it is about to open the session.
-     *
      * @throws InvalidArgumentException if the parameters are incomplete.
      * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
      */
@@ -447,7 +442,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * @param float $value the probability (percentage) that the GC (garbage collection) process is started on every session initialization.
-     *
      * @throws InvalidArgumentException if the value is not between 0 and 100.
      */
     public function setGCProbability($value)

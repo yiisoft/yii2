@@ -465,9 +465,7 @@ class AssetManager extends Component
 
     /**
      * Publishes a file.
-     *
      * @param string $src the asset file to be published
-     *
      * @return string[] the path and the URL that the asset is published as.
      * @throws InvalidArgumentException if the asset to be published does not exist.
      */
@@ -504,7 +502,6 @@ class AssetManager extends Component
 
     /**
      * Publishes a directory.
-     *
      * @param string $src the asset directory to be published
      * @param array $options the options to be applied when publishing a directory.
      * The following options are supported:

@@ -82,9 +82,7 @@ class TableSchema extends BaseObject
 
     /**
      * Manually specifies the primary key for this table.
-     *
      * @param string|array $keys the primary key (can be composite)
-     *
      * @throws InvalidArgumentException if the specified key cannot be found in the table.
      */
     public function fixPrimaryKey($keys)

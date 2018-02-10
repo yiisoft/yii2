@@ -338,7 +338,6 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * If this parameter is empty, it means any attribute listed in the applicable
      * validation rules should be validated.
      * @param bool $clearErrors whether to call [[clearErrors()]] before performing validation
-     *
      * @return bool whether the validation is successful without any error.
      * @throws InvalidArgumentException if the current scenario is unknown.
      */

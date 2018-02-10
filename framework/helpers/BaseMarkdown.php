@@ -56,7 +56,6 @@ class BaseMarkdown
      * @param string $markdown the markdown text to parse
      * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
      * Defaults to [[$defaultFlavor]], if not set.
-     *
      * @return string the parsed HTML output
      * @throws \yii\base\InvalidArgumentException when an undefined flavor is given.
      */
@@ -75,7 +74,6 @@ class BaseMarkdown
      * @param string $markdown the markdown text to parse
      * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
      * Defaults to [[$defaultFlavor]], if not set.
-     *
      * @return string the parsed HTML output
      * @throws \yii\base\InvalidArgumentException when an undefined flavor is given.
      */
@@ -89,7 +87,6 @@ class BaseMarkdown
     /**
      * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
      * Defaults to [[$defaultFlavor]], if not set.
-     *
      * @return \cebe\markdown\Parser
      * @throws \yii\base\InvalidArgumentException when an undefined flavor is given.
      */

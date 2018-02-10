@@ -166,10 +166,8 @@ trait ActiveRelationTrait
     /**
      * Finds the related records for the specified primary record.
      * This method is invoked when a relation of an ActiveRecord is being accessed in a lazy fashion.
-     *
      * @param string $name the relation name
      * @param ActiveRecordInterface|BaseActiveRecord $model the primary model
-     *
      * @return mixed the related record(s)
      * @throws InvalidArgumentException if the relation is invalid
      */

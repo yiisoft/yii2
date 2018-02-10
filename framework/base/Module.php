@@ -231,9 +231,7 @@ class Module extends ServiceLocator
     /**
      * Sets the root directory of the module.
      * This method can only be invoked at the beginning of the constructor.
-     *
      * @param string $path the root directory of the module. This can be either a directory name or a [path alias](guide:concept-aliases).
-     *
      * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)
@@ -251,7 +249,6 @@ class Module extends ServiceLocator
      * Returns the directory that contains the controller classes according to [[controllerNamespace]].
      * Note that in order for this method to return a value, you must define
      * an alias for the root namespace of [[controllerNamespace]].
-     *
      * @return string the directory that contains the controller classes.
      * @throws InvalidArgumentException if there is no alias defined for the root namespace of [[controllerNamespace]].
      */
@@ -275,9 +272,7 @@ class Module extends ServiceLocator
 
     /**
      * Sets the directory that contains the view files.
-     *
      * @param string $path the root directory of view files.
-     *
      * @throws InvalidArgumentException if the directory is invalid.
      */
     public function setViewPath($path)
@@ -300,9 +295,7 @@ class Module extends ServiceLocator
 
     /**
      * Sets the directory that contains the layout files.
-     *
      * @param string $path the root directory or [path alias](guide:concept-aliases) of layout files.
-     *
      * @throws InvalidArgumentException if the directory is invalid
      */
     public function setLayoutPath($path)

@@ -270,7 +270,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * This method is overridden so that attributes and related objects can be accessed like properties.
      *
      * @param string $name property name
-     *
      * @throws \yii\base\InvalidArgumentException if relation name is wrong
      * @return mixed property value
      * @see getAttribute()
@@ -490,10 +489,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Sets the named attribute value.
-     *
      * @param string $name the attribute name
      * @param mixed $value the attribute value.
-     *
      * @throws InvalidArgumentException if the named attribute does not exist.
      * @see hasAttribute()
      */
@@ -542,10 +539,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Sets the old value of the named attribute.
-     *
      * @param string $name the attribute name
      * @param mixed $value the old attribute value.
-     *
      * @throws InvalidArgumentException if the named attribute does not exist.
      * @see hasAttribute()
      */
@@ -1200,10 +1195,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Returns the relation object with the specified name.
      * A relation is defined by a getter method which returns an [[ActiveQueryInterface]] object.
      * It can be declared in either the Active Record class itself or one of its behaviors.
-     *
      * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
      * @param bool $throwException whether to throw exception if the relation does not exist.
-     *
      * @return ActiveQueryInterface|ActiveQuery the relational query object. If the relation does not exist
      * and `$throwException` is `false`, `null` will be returned.
      * @throws InvalidArgumentException if the named relation does not exist.

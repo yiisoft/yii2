@@ -260,7 +260,6 @@ class Security extends Component
      * Derives a key from the given input key using the standard HKDF algorithm.
      * Implements HKDF specified in [RFC 5869](https://tools.ietf.org/html/rfc5869).
      * Recommend use one of the SHA-2 hash algorithms: sha224, sha256, sha384 or sha512.
-     *
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $inputKey the source key
      * @param string $salt the random salt
@@ -269,7 +268,6 @@ class Security extends Component
      * [RFC 5869](https://tools.ietf.org/html/rfc5869)
      * @param int $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
-     *
      * @throws InvalidArgumentException when HMAC generation fails.
      * @return string the derived key
      */
@@ -320,7 +318,6 @@ class Security extends Component
      * Derives a key from the given password using the standard PBKDF2 algorithm.
      * Implements HKDF2 specified in [RFC 2898](http://tools.ietf.org/html/rfc2898#section-5.2)
      * Recommend use one of the SHA-2 hash algorithms: sha224, sha256, sha384 or sha512.
-     *
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $password the source password
      * @param string $salt the random salt
@@ -328,7 +325,6 @@ class Security extends Component
      * possible to hinder dictionary password attacks.
      * @param int $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
-     *
      * @return string the derived key
      * @throws InvalidArgumentException when hash generation fails due to invalid params given.
      */
@@ -449,11 +445,9 @@ class Security extends Component
     /**
      * Generates specified number of random bytes.
      * Note that output may not be ASCII.
-     *
      * @see generateRandomString() if you need a string.
      *
      * @param int $length the number of bytes to generate
-     *
      * @return string the generated random bytes
      * @throws InvalidArgumentException if wrong length is specified
      * @throws Exception on failure.
@@ -638,10 +632,8 @@ class Security extends Component
 
     /**
      * Verifies a password against a hash.
-     *
      * @param string $password The password to verify.
      * @param string $hash The hash to verify the password against.
-     *
      * @return bool whether the password is correct.
      * @throws InvalidArgumentException on bad password/hash parameters or if crypt() with Blowfish hash is not available.
      * @see generatePasswordHash()
@@ -681,7 +673,6 @@ class Security extends Component
      * from the alphabet "./0-9A-Za-z".
      *
      * @param int $cost the cost parameter
-     *
      * @return string the random salt value.
      * @throws InvalidArgumentException if the cost parameter is out of the range of 4 to 31.
      */

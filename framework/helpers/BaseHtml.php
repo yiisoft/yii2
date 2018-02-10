@@ -2141,9 +2141,7 @@ class BaseHtml
      *   for the first model in tabular input.
      *
      * If `$attribute` has neither prefix nor suffix, it will be returned back without change.
-     *
      * @param string $attribute the attribute name or expression
-     *
      * @return string the attribute name without prefix and suffix.
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
@@ -2167,7 +2165,6 @@ class BaseHtml
      *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
-     *
      * @return string|array the corresponding attribute value
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
@@ -2217,7 +2214,6 @@ class BaseHtml
      *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
-     *
      * @return string the generated input name
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
@@ -2244,10 +2240,8 @@ class BaseHtml
      *
      * This method converts the result [[getInputName()]] into a valid input ID.
      * For example, if [[getInputName()]] returns `Post[content]`, this method will return `post-content`.
-     *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for explanation of attribute expression.
-     *
      * @return string the generated input ID
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */

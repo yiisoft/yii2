@@ -881,7 +881,6 @@ TEXT;
     /**
      * @dataProvider randomKeyInvalidInputs
      * @expectedException \yii\base\InvalidArgumentException
-     *
      * @param mixed $input
      */
     public function testRandomKeyInvalidInput($input)

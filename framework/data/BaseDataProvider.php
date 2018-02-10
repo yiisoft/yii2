@@ -198,7 +198,6 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Sets the pagination for this data provider.
-     *
      * @param array|Pagination|bool $value the pagination to be used by this data provider.
      * This can be one of the following:
      *
@@ -240,7 +239,6 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Sets the sort definition for this data provider.
-     *
      * @param array|Sort|bool $value the sort definition to be used by this data provider.
      * This can be one of the following:
      *

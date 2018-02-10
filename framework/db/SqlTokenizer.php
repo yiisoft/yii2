@@ -370,9 +370,7 @@ abstract class SqlTokenizer extends Component
 
     /**
      * Adds the specified length to the current offset.
-     *
      * @param int $length
-     *
      * @throws InvalidArgumentException
      */
     private function advance($length)

@@ -254,7 +254,6 @@ class BaseFileHelper
     /**
      * Copies a whole directory as another one.
      * The files and sub-directories will also be copied over.
-     *
      * @param string $src the source directory
      * @param string $dst the destination directory
      * @param array $options options for directory copy. Valid options are:
@@ -293,7 +292,6 @@ class BaseFileHelper
      *   that do not contain files. This affects directories that do not contain files initially as well as directories that
      *   do not contain files at the target destination because files have been filtered via `only` or `except`.
      *   Defaults to true. This option is available since version 2.0.12. Before 2.0.12 empty directories are always copied.
-     *
      * @throws \yii\base\InvalidArgumentException if unable to open directory
      */
     public static function copyDirectory($src, $dst, $options = [])
@@ -426,7 +424,6 @@ class BaseFileHelper
 
     /**
      * Returns the files found under the specified directory and subdirectories.
-     *
      * @param string $dir the directory under which the files will be looked for.
      * @param array $options options for file searching. Valid options are:
      *
@@ -457,7 +454,6 @@ class BaseFileHelper
      *   If a file path matches a pattern in both `only` and `except`, it will NOT be returned.
      * - `caseSensitive`: boolean, whether patterns specified at `only` or `except` should be case sensitive. Defaults to `true`.
      * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
-     *
      * @return array files found under the directory, in no particular order. Ordering depends on the files system used.
      * @throws InvalidArgumentException if the dir is invalid.
      */
@@ -487,7 +483,6 @@ class BaseFileHelper
 
     /**
      * Returns the directories found under the specified directory and subdirectories.
-     *
      * @param string $dir the directory under which the files will be looked for.
      * @param array $options options for directory searching. Valid options are:
      *
@@ -499,7 +494,6 @@ class BaseFileHelper
      *   * `false`: the directory will NOT be returned
      *
      * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
-     *
      * @return array directories found under the directory, in no particular order. Ordering depends on the files system used.
      * @throws InvalidArgumentException if the dir is invalid.
      * @since 2.0.14
@@ -743,7 +737,6 @@ class BaseFileHelper
      * @param string $basePath
      * @param string $path
      * @param array $excludes list of patterns to match $path against
-     *
      * @return array|null null or one of $excludes item as an array with keys: 'pattern', 'flags'
      * @throws InvalidArgumentException if any of the exclude patterns is not a string or an array with keys: pattern, flags, firstWildcard.
      */
@@ -777,10 +770,8 @@ class BaseFileHelper
 
     /**
      * Processes the pattern, stripping special characters like / and ! from the beginning and settings flags instead.
-     *
      * @param string $pattern
-     * @param bool   $caseSensitive
-     *
+     * @param bool $caseSensitive
      * @throws \yii\base\InvalidArgumentException
      * @return array with keys: (string) pattern, (int) flags, (int|bool) firstWildcard
      */

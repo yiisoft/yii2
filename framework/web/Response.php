@@ -270,10 +270,8 @@ class Response extends \yii\base\Response
     /**
      * Sets the response status code.
      * This method will set the corresponding status text if `$text` is null.
-     *
      * @param int $value the status code
      * @param string $text the status text. If not set, it will be set automatically based on the status code.
-     *
      * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      */
@@ -297,9 +295,7 @@ class Response extends \yii\base\Response
 
     /**
      * Sets the response status code based on the exception.
-     *
      * @param \Exception|\Error $e the exception object.
-     *
      * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      * @since 2.0.12

@@ -121,7 +121,6 @@ class BaseUrl
      * will be converted into the actual route first before conducting the above transformation steps.
      *
      * @param string $route the route. This can be either an absolute route or a relative route.
-     *
      * @return string normalized route suitable for UrlManager
      * @throws InvalidArgumentException a relative route is given while there is no active controller
      */

@@ -403,7 +403,6 @@ class Formatter extends Component
      * This method will call one of the "as" methods available in this class to do the formatting.
      * For type "xyz", the method "asXyz" will be used. For example, if the format is "html",
      * then [[asHtml()]] will be used. Format names are case insensitive.
-     *
      * @param mixed $value the value to be formatted.
      * @param string|array|Closure $format the format of the value, e.g., "html", "text" or an anonymous function
      * returning the formatted value.
@@ -417,7 +416,6 @@ class Formatter extends Component
      * where `$value` is the value that should be formatted and `$formatter` is an instance of the Formatter class,
      * which can be used to call other formatting functions.
      * The possibility to use an anonymous function is available since version 2.0.13.
-     *
      * @return string the formatting result.
      * @throws InvalidArgumentException if the format type is not supported by this class.
      */
@@ -595,7 +593,6 @@ class Formatter extends Component
 
     /**
      * Formats the value as a date.
-     *
      * @param int|string|DateTime $value the value to be formatted. The following
      * types of value are supported:
      *
@@ -634,7 +631,6 @@ class Formatter extends Component
 
     /**
      * Formats the value as a time.
-     *
      * @param int|string|DateTime $value the value to be formatted. The following
      * types of value are supported:
      *
@@ -672,7 +668,6 @@ class Formatter extends Component
 
     /**
      * Formats the value as a datetime.
-     *
      * @param int|string|DateTime $value the value to be formatted. The following
      * types of value are supported:
      *
@@ -808,7 +803,6 @@ class Formatter extends Component
      * timestamp, the second a boolean indicating whether the timestamp has time information and third a boolean indicating
      * whether the timestamp has date information.
      * This parameter is available since version 2.0.1.
-     *
      * @return DateTime|array the normalized datetime value.
      * Since version 2.0.1 this may also return an array if `$checkDateTimeInfo` is true.
      * The first element of the array is the normalized timestamp and the second is a boolean indicating whether
@@ -895,7 +889,6 @@ class Formatter extends Component
      *
      * @param int|string|DateTime $referenceTime if specified the value is used as a reference time instead of `now`
      * when `$value` is not a `DateInterval` object.
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value can not be evaluated as a date value.
      */
@@ -1057,7 +1050,6 @@ class Formatter extends Component
      * @param mixed $value the value to be formatted.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      */
@@ -1096,7 +1088,6 @@ class Formatter extends Component
      * specify a value here.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @see decimalSeparator
@@ -1139,7 +1130,6 @@ class Formatter extends Component
      * specify a value here.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      */
@@ -1180,7 +1170,6 @@ class Formatter extends Component
      * specify a value here.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      */
@@ -1218,7 +1207,6 @@ class Formatter extends Component
      * If null, [[currencyCode]] will be used.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @throws InvalidConfigException if no currency is given and [[currencyCode]] is not defined.
@@ -1266,7 +1254,6 @@ class Formatter extends Component
      * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
      *
      * @param mixed $value the value to be formatted
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @throws InvalidConfigException when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available.
@@ -1295,7 +1282,6 @@ class Formatter extends Component
      * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
      *
      * @param mixed $value the value to be formatted
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @throws InvalidConfigException when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available.
@@ -1330,7 +1316,6 @@ class Formatter extends Component
      * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @see sizeFormatBase
@@ -1387,7 +1372,6 @@ class Formatter extends Component
      * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @see sizeFormatBase
@@ -1443,7 +1427,6 @@ class Formatter extends Component
      * @param int $decimals the number of digits after the decimal point.
      * @param array $numberOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @throws InvalidConfigException when INTL is not installed or does not contain required information.
@@ -1467,7 +1450,6 @@ class Formatter extends Component
      * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @throws InvalidConfigException when INTL is not installed or does not contain required information.
@@ -1489,7 +1471,6 @@ class Formatter extends Component
      * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @throws InvalidConfigException when INTL is not installed or does not contain required information.
@@ -1512,7 +1493,6 @@ class Formatter extends Component
      * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @throws InvalidConfigException when INTL is not installed or does not contain required information.
@@ -1620,7 +1600,6 @@ class Formatter extends Component
      * @param array|int $formatBase the base at which each next unit is calculated, either 1000 or 1024, or an array
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
-     *
      * @return array [parameters for Yii::t containing formatted number, internal position of size unit]
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      */
@@ -1689,7 +1668,6 @@ class Formatter extends Component
      *   otherwise an exception is thrown.
      *
      * @param mixed $value the input value
-     *
      * @return float|int the normalized number value
      * @throws InvalidArgumentException if the input value is not numeric.
      */

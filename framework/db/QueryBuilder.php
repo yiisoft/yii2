@@ -245,7 +245,6 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param ExpressionInterface $expression the expression to be built
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the expression building process.
-     *
      * @return string the SQL statement that will not be neither quoted nor encoded before passing to DBMS
      * @see ExpressionInterface
      * @see ExpressionBuilderInterface
@@ -265,7 +264,6 @@ class QueryBuilder extends \yii\base\BaseObject
      * Uses [[expressionBuilders]] array to find a suitable builder class.
      *
      * @param ExpressionInterface $expression
-     *
      * @return ExpressionBuilderInterface
      * @see expressionBuilders
      * @since 2.0.14
@@ -368,7 +366,6 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param \yii\db\Schema $schema Schema object to quote column name.
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the query building process.
-     *
      * @return array array of column names, values and params.
      * @throws InvalidArgumentException if query's select does not contain named parameters only.
      * @since 2.0.11
@@ -1555,11 +1552,9 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Inverts an SQL expressions with `NOT` operator.
-     *
      * @param string $operator the operator to use for connecting the given operands
      * @param array $operands the SQL expressions to connect.
      * @param array $params the binding parameters to be populated
-     *
      * @return string the generated SQL expression
      * @throws InvalidArgumentException if wrong number of operands have been given.
      * @deprecated since 2.0.14. Use `buildCondition()` instead.
@@ -1572,12 +1567,10 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Creates an SQL expressions with the `BETWEEN` operator.
-     *
      * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
      * @param array $operands the first operand is the column name. The second and third operands
      * describe the interval that column value should be in.
      * @param array $params the binding parameters to be populated
-     *
      * @return string the generated SQL expression
      * @throws InvalidArgumentException if wrong number of operands have been given.
      * @deprecated since 2.0.14. Use `buildCondition()` instead.
@@ -1609,7 +1602,6 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Creates an SQL expressions with the `LIKE` operator.
-     *
      * @param string $operator the operator to use (e.g. `LIKE`, `NOT LIKE`, `OR LIKE` or `OR NOT LIKE`)
      * @param array $operands an array of two or three operands
      *
@@ -1625,7 +1617,6 @@ class QueryBuilder extends \yii\base\BaseObject
      *   should be applied. Note that when using an escape mapping (or the third operand is not provided),
      *   the values will be automatically enclosed within a pair of percentage characters.
      * @param array $params the binding parameters to be populated
-     *
      * @return string the generated SQL expression
      * @throws InvalidArgumentException if wrong number of operands have been given.
      * @deprecated since 2.0.14. Use `buildCondition()` instead.
@@ -1638,11 +1629,9 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Creates an SQL expressions with the `EXISTS` operator.
-     *
      * @param string $operator the operator to use (e.g. `EXISTS` or `NOT EXISTS`)
      * @param array $operands contains only one element which is a [[Query]] object representing the sub-query.
      * @param array $params the binding parameters to be populated
-     *
      * @return string the generated SQL expression
      * @throws InvalidArgumentException if the operand is not a [[Query]] object.
      * @deprecated since 2.0.14. Use `buildCondition()` instead.
@@ -1655,11 +1644,9 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Creates an SQL expressions like `"column" operator value`.
-     *
      * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
      * @param array $operands contains two column names.
      * @param array $params the binding parameters to be populated
-     *
      * @return string the generated SQL expression
      * @throws InvalidArgumentException if wrong number of operands have been given.
      * @deprecated since 2.0.14. Use `buildCondition()` instead.

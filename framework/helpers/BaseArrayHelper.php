@@ -616,7 +616,6 @@ class BaseArrayHelper
 
     /**
      * Sorts an array of objects or arrays (with the same structure) by one or several keys.
-     *
      * @param array $array the array to be sorted. The array will be modified after calling this method.
      * @param string|\Closure|array $key the key(s) to be sorted by. This refers to a key name of the sub-array
      * elements, a property name of the objects, or an anonymous function returning the values for comparison
@@ -628,7 +627,6 @@ class BaseArrayHelper
      * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
      * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
      * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
-     *
      * @throws InvalidArgumentException if the $direction or $sortFlag parameters do not have
      * correct number of elements as that of $key.
      */
@@ -811,11 +809,9 @@ class BaseArrayHelper
      *
      * This method does the same as the PHP function [in_array()](http://php.net/manual/en/function.in-array.php)
      * but additionally works for objects that implement the [[\Traversable]] interface.
-     *
      * @param mixed $needle The value to look for.
      * @param array|\Traversable $haystack The set of values to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
-     *
      * @return bool `true` if `$needle` was found in `$haystack`, `false` otherwise.
      * @throws InvalidArgumentException if `$haystack` is neither traversable nor an array.
      * @see http://php.net/manual/en/function.in-array.php
@@ -858,11 +854,9 @@ class BaseArrayHelper
      *
      * This method will return `true`, if all elements of `$needles` are contained in
      * `$haystack`. If at least one element is missing, `false` will be returned.
-     *
      * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
      * @param array|\Traversable $haystack The set of value to search.
      * @param bool $strict Whether to enable strict (`===`) comparison.
-     *
      * @throws InvalidArgumentException if `$haystack` or `$needles` is neither traversable nor an array.
      * @return bool `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
      * @since 2.0.7
