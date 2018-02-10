@@ -56,8 +56,6 @@ use yii\base\NotSupportedException;
  */
 class Command extends Component
 {
-	use CacheableQueryTrait;
-
     /**
      * @var Connection the DB connection that this command is associated with
      */
@@ -77,6 +75,18 @@ class Command extends Component
      * and is used to generate [[rawSql]]. Do not modify it directly.
      */
     public $params = [];
+    /**
+     * @var int the default number of seconds that query results can remain valid in cache.
+     * Use 0 to indicate that the cached data will never expire. And use a negative number to indicate
+     * query cache should not be used.
+     * @see cache()
+     */
+    public $queryCacheDuration;
+    /**
+     * @var \yii\caching\Dependency the dependency to be associated with the cached query result for this command
+     * @see cache()
+     */
+    public $queryCacheDependency;
 
     /**
      * @var array pending parameters to be bound to the current PDO statement.
@@ -101,6 +111,30 @@ class Command extends Component
      */
     private $_retryHandler;
 
+    /**
+     * Enables query cache for this command.
+     * @param int $duration the number of seconds that query result of this command can remain valid in the cache.
+     * If this is not set, the value of [[Connection::queryCacheDuration]] will be used instead.
+     * Use 0 to indicate that the cached data will never expire.
+     * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query result.
+     * @return $this the command object itself
+     */
+    public function cache($duration = null, $dependency = null)
+    {
+        $this->queryCacheDuration = $duration === null ? $this->db->queryCacheDuration : $duration;
+        $this->queryCacheDependency = $dependency;
+        return $this;
+    }
+
+    /**
+     * Disables query cache for this command.
+     * @return $this the command object itself
+     */
+    public function noCache()
+    {
+        $this->queryCacheDuration = -1;
+        return $this;
+    }
 
     /**
      * Returns the SQL statement for this command.

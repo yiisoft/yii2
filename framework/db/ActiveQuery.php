@@ -320,9 +320,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         $command = $db->createCommand($sql, $params);
-        if ($this->hasCache()) {
-            $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
-        }
+        $this->setCommandCache($command);
+
         return $command;
     }
 
@@ -345,9 +344,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             ->from(['c' => "({$this->sql})"])
             ->params($this->params)
             ->createCommand($db);
-        if ($this->hasCache()) {
-            $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
-        }
+        $this->setCommandCache($command);
+
         return $command->queryScalar();
     }
 

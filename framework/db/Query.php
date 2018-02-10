@@ -50,7 +50,6 @@ use yii\base\InvalidParamException;
 class Query extends Component implements QueryInterface
 {
     use QueryTrait;
-    use CacheableQueryTrait;
 
     /**
      * @var array the columns being selected. For example, `['id', 'name']`.
@@ -115,7 +114,19 @@ class Query extends Component implements QueryInterface
      * For example, `[':name' => 'Dan', ':age' => 31]`.
      */
     public $params = [];
-
+    /**
+     * @var int|true the default number of seconds that query results can remain valid in cache.
+     * Use 0 to indicate that the cached data will never expire.
+     * Use a negative number to indicate that query cache should not be used.
+     * Use boolean `true` to indicate that [[Connection::queryCacheDuration]] should be used.
+     * @see cache()
+     */
+    public $queryCacheDuration;
+    /**
+     * @var \yii\caching\Dependency the dependency to be associated with the cached query result for this query
+     * @see cache()
+     */
+    public $queryCacheDependency;
 
     /**
      * Creates a DB command that can be used to execute this query.
@@ -131,9 +142,8 @@ class Query extends Component implements QueryInterface
         list($sql, $params) = $db->getQueryBuilder()->build($this);
 
         $command = $db->createCommand($sql, $params);
-        if ($this->hasCache()) {
-            $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
-        }
+        $this->setCommandCache($command);
+
         return $command;
     }
 
@@ -458,9 +468,8 @@ class Query extends Component implements QueryInterface
             ->select([$selectExpression])
             ->from(['c' => $this])
             ->createCommand($db);
-        if ($this->hasCache()) {
-            $command->cache($this->queryCacheDuration, $this->queryCacheDependency);
-        }
+        $this->setCommandCache($command);
+
         return $command->queryScalar();
     }
 
@@ -1209,6 +1218,51 @@ PATTERN;
         }
 
         return $this;
+    }
+
+    /**
+     * Enables query cache for this Query.
+     * @param int|true the number of seconds that query results can remain valid in cache.
+     * Use 0 to indicate that the cached data will never expire.
+     * Use a negative number to indicate that query cache should not be used.
+     * Use boolean `true` to indicate that [[Connection::queryCacheDuration]] should be used.
+     * Defaults to `true`.
+     * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached result.
+     * @return $this the Query object itself
+     */
+    public function cache($duration = true, $dependency = null)
+    {
+        $this->queryCacheDuration = $duration;
+        $this->queryCacheDependency = $dependency;
+        return $this;
+    }
+
+    /**
+     * Disables query cache for this Query.
+     * @return $this the Query object itself
+     * @since 2.0.14
+     */
+    public function noCache()
+    {
+        $this->queryCacheDuration = -1;
+        return $this;
+    }
+
+    /**
+     * Sets $command cache, if this query has enabled caching.
+     *
+     * @param Command $command
+     * @return Command
+     * @since 2.0.14
+     */
+    protected function setCommandCache($command)
+    {
+        if ($this->queryCacheDuration !== null || $this->queryCacheDependency !== null) {
+            $duration = $this->queryCacheDuration === true ? null : $this->queryCacheDuration;
+            $command->cache($duration, $this->queryCacheDependency);
+        }
+
+        return $command;
     }
 
     /**

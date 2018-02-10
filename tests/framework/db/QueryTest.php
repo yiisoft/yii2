@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
@@ -620,5 +621,58 @@ abstract class QueryTest extends DatabaseTestCase
 
         $result = $query->one($db);
         $this->assertEquals('user3', $result['name']);
+    }
+
+    public function testQueryCache()
+    {
+        $db = $this->getConnection();
+        $db->enableQueryCache = true;
+        $db->queryCache = new ArrayCache();
+        $query = (new Query())
+            ->select(['name'])
+            ->from('customer');
+        $update = $db->createCommand('UPDATE {{customer}} SET [[name]] = :name WHERE [[id]] = :id');
+
+        $this->assertEquals('user1', $query->where(['id' => 1])->scalar($db), 'Asserting initial value');
+
+        // No cache
+        $update->bindValues([':id' => 1, ':name' => 'user11'])->execute();
+        $this->assertEquals('user11', $query->where(['id' => 1])->scalar($db), 'Query reflects DB changes when caching is disabled');
+
+        // Connection cache
+        $db->cache(function (Connection $db) use ($query, $update) {
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db), 'Asserting initial value for user #2');
+
+            $update->bindValues([':id' => 2, ':name' => 'user22'])->execute();
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db), 'Query does NOT reflect DB changes when wrapped in connection caching');
+
+            $db->noCache(function () use ($query, $db) {
+                $this->assertEquals('user22', $query->where(['id' => 2])->scalar($db), 'Query reflects DB changes when wrapped in connection caching and noCache simultaneously');
+            });
+
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db), 'Cache does not get changes after getting newer data from DB in noCache block.');
+        }, 10);
+
+
+        $db->enableQueryCache = false;
+        $db->cache(function ($db) use ($query, $update) {
+            $this->assertEquals('user22', $query->where(['id' => 2])->scalar($db), 'When cache is disabled for the whole connection, Query inside cache block does not get cached');
+            $update->bindValues([':id' => 2, ':name' => 'user2'])->execute();
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db));
+        }, 10);
+
+
+        $db->enableQueryCache = true;
+        $query->cache();
+
+        $this->assertEquals('user11', $query->where(['id' => 1])->scalar($db));
+        $update->bindValues([':id' => 1, ':name' => 'user1'])->execute();
+        $this->assertEquals('user11', $query->where(['id' => 1])->scalar($db), 'When both Connection and Query have cache enabled, we get cached value');
+        $this->assertEquals('user1', $query->noCache()->where(['id' => 1])->scalar($db), 'When Query has disabled cache, we get actual data');
+
+        $db->cache(function (Connection $db) use ($query, $update) {
+            $this->assertEquals('user1', $query->noCache()->where(['id' => 1])->scalar($db));
+            $this->assertEquals('user11', $query->cache()->where(['id' => 1])->scalar($db));
+        }, 10);
     }
 }
