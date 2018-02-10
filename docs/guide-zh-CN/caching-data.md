@@ -74,8 +74,8 @@ Yii 支持一系列缓存存储器，概况如下：
 * [[yii\caching\MemCache]]：使用 PHP [memcache](http://php.net/manual/en/book.memcache.php) 和 [memcached](http://php.net/manual/en/book.memcached.php) 扩展。这个选项被看作分布式应用环境中（例如：多台服务器，有负载均衡等）最快的缓存方案。
 * [[yii\redis\Cache]]：实现了一个基于 [Redis](http://redis.io/) 键值对存储器的缓存组件（需要 redis 2.6.12 及以上版本的支持 ）。
 * [[yii\caching\WinCache]]：使用 PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)（[另可参考](http://php.net/manual/en/book.wincache.php)）扩展.
-* [[yii\caching\XCache]]：使用 PHP [XCache](http://xcache.lighttpd.net/)扩展。
-* [[yii\caching\ZendDataCache]]：使用 [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) 作为底层缓存媒介。
+* [[yii\caching\XCache]] _(deprecated)_：使用 PHP [XCache](http://xcache.lighttpd.net/)扩展。
+* [[yii\caching\ZendDataCache]] _(deprecated)_：使用 [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) 作为底层缓存媒介。
 
 
 > Tip: 你可以在同一个应用程序中使用不同的缓存存储器。一个常见的策略是使用基于内存的缓存存储器存储小而常用的数据（例如：统计数据），使用基于文件或数据库的缓存存储器存储大而不太常用的数据（例如：网页内容）。
