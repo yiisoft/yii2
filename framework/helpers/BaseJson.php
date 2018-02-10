@@ -8,7 +8,7 @@
 namespace yii\helpers;
 
 use yii\base\Arrayable;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\web\JsExpression;
 use yii\base\Model;
 
@@ -53,7 +53,7 @@ class BaseJson
      * @param int $options the encoding options. For more details please refer to
      * <http://www.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
      * @return string the encoding result.
-     * @throws InvalidParamException if there is any encoding error.
+     * @throws InvalidArgumentException if there is any encoding error.
      */
     public static function encode($value, $options = 320)
     {
@@ -82,7 +82,7 @@ class BaseJson
      * @param mixed $value the data to be encoded
      * @return string the encoding result
      * @since 2.0.4
-     * @throws InvalidParamException if there is any encoding error
+     * @throws InvalidArgumentException if there is any encoding error
      */
     public static function htmlEncode($value)
     {
@@ -94,12 +94,12 @@ class BaseJson
      * @param string $json the JSON string to be decoded
      * @param bool $asArray whether to return objects in terms of associative arrays.
      * @return mixed the PHP data
-     * @throws InvalidParamException if there is any decoding error
+     * @throws InvalidArgumentException if there is any decoding error
      */
     public static function decode($json, $asArray = true)
     {
         if (is_array($json)) {
-            throw new InvalidParamException('Invalid JSON data.');
+            throw new InvalidArgumentException('Invalid JSON data.');
         } elseif ($json === null || $json === '') {
             return null;
         }
@@ -113,7 +113,7 @@ class BaseJson
      * Handles [[encode()]] and [[decode()]] errors by throwing exceptions with the respective error message.
      *
      * @param int $lastError error code from [json_last_error()](http://php.net/manual/en/function.json-last-error.php).
-     * @throws \yii\base\InvalidParamException if there is any encoding/decoding error.
+     * @throws InvalidArgumentException if there is any encoding/decoding error.
      * @since 2.0.6
      */
     protected static function handleJsonError($lastError)
@@ -130,10 +130,10 @@ class BaseJson
         }
 
         if (isset($availableErrors[$lastError])) {
-            throw new InvalidParamException($availableErrors[$lastError], $lastError);
+            throw new InvalidArgumentException($availableErrors[$lastError], $lastError);
         }
 
-        throw new InvalidParamException('Unknown JSON encoding/decoding error.');
+        throw new InvalidArgumentException('Unknown JSON encoding/decoding error.');
     }
 
     /**

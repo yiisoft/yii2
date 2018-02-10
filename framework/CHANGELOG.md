@@ -101,6 +101,11 @@ Yii Framework 2 Change Log
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 - Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
 - Chg #15625: `yii\grid\DataColumn` boolean filter dropdown list values are now in reversed order (bizley)
+- Chg #15633: Deprecated `yii\base\BaseObject::className()` in favor of native PHP syntax `::class`, which does not trigger autoloading (brandonkelly)
+- Chg #15633: Deprecated XCache and Zend data cache support as caching backends (brandonkelly)
+- Chg #15633: Deprecated `yii\BaseYii::powered()` method (brandonkelly)
+- Chg #15633: Added `yii\base\InvalidArgumentException` and deprecated `yii\base\InvalidParamException` (brandonkelly)
+- Chg #15633: Added `yii\BaseYii::debug()` and deprecated `yii\BaseYii::trace()` (brandonkelly)
 
 
 2.0.13.1 November 14, 2017

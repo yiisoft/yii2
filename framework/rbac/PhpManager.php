@@ -8,8 +8,8 @@
 namespace yii\rbac;
 
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
-use yii\base\InvalidParamException;
 use yii\helpers\VarDumper;
 
 /**
@@ -136,7 +136,7 @@ class PhpManager extends BaseManager
 
         /* @var $item Item */
         $item = $this->items[$itemName];
-        Yii::trace($item instanceof Role ? "Checking role: $itemName" : "Checking permission : $itemName", __METHOD__);
+        Yii::debug($item instanceof Role ? "Checking role: $itemName" : "Checking permission : $itemName", __METHOD__);
 
         if (!$this->executeRule($user, $item, $params)) {
             return false;
@@ -170,14 +170,14 @@ class PhpManager extends BaseManager
     public function addChild($parent, $child)
     {
         if (!isset($this->items[$parent->name], $this->items[$child->name])) {
-            throw new InvalidParamException("Either '{$parent->name}' or '{$child->name}' does not exist.");
+            throw new InvalidArgumentException("Either '{$parent->name}' or '{$child->name}' does not exist.");
         }
 
         if ($parent->name === $child->name) {
-            throw new InvalidParamException("Cannot add '{$parent->name} ' as a child of itself.");
+            throw new InvalidArgumentException("Cannot add '{$parent->name} ' as a child of itself.");
         }
         if ($parent instanceof Permission && $child instanceof Role) {
-            throw new InvalidParamException('Cannot add a role as a child of a permission.');
+            throw new InvalidArgumentException('Cannot add a role as a child of a permission.');
         }
 
         if ($this->detectLoop($parent, $child)) {
@@ -259,9 +259,9 @@ class PhpManager extends BaseManager
     public function assign($role, $userId)
     {
         if (!isset($this->items[$role->name])) {
-            throw new InvalidParamException("Unknown role '{$role->name}'.");
+            throw new InvalidArgumentException("Unknown role '{$role->name}'.");
         } elseif (isset($this->assignments[$userId][$role->name])) {
-            throw new InvalidParamException("Authorization item '{$role->name}' has already been assigned to user '$userId'.");
+            throw new InvalidArgumentException("Authorization item '{$role->name}' has already been assigned to user '$userId'.");
         }
 
         $this->assignments[$userId][$role->name] = new Assignment([
@@ -413,7 +413,7 @@ class PhpManager extends BaseManager
         $role = $this->getRole($roleName);
 
         if ($role === null) {
-            throw new InvalidParamException("Role \"$roleName\" not found.");
+            throw new InvalidArgumentException("Role \"$roleName\" not found.");
         }
 
         $result = [];
@@ -655,7 +655,7 @@ class PhpManager extends BaseManager
     {
         if ($name !== $item->name) {
             if (isset($this->items[$item->name])) {
-                throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
+                throw new InvalidArgumentException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
             }
 
             // Remove old item in case of renaming

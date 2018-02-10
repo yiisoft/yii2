@@ -7,7 +7,7 @@
 
 namespace yii\db;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\conditions\ConditionInterface;
 use yii\db\conditions\HashCondition;
@@ -250,7 +250,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @see ExpressionBuilderInterface
      * @see expressionBuilders
      * @since 2.0.14
-     * @throws InvalidParamException when $expression building is not supported by this QueryBuilder.
+     * @throws InvalidArgumentException when $expression building is not supported by this QueryBuilder.
      */
     public function buildExpression(ExpressionInterface $expression, &$params = [])
     {
@@ -267,7 +267,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @return ExpressionBuilderInterface
      * @see expressionBuilders
      * @since 2.0.14
-     * @throws InvalidParamException when $expression building is not supported by this QueryBuilder.
+     * @throws InvalidArgumentException when $expression building is not supported by this QueryBuilder.
      */
     public function getExpressionBuilder(ExpressionInterface $expression)
     {
@@ -282,7 +282,7 @@ class QueryBuilder extends \yii\base\BaseObject
             }
 
             if (!isset($this->expressionBuilders[$className])) {
-                throw new InvalidParamException('Expression of class ' . $className . ' can not be built in ' . get_class($this));
+                throw new InvalidArgumentException('Expression of class ' . $className . ' can not be built in ' . get_class($this));
             }
         }
 
@@ -367,13 +367,13 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the query building process.
      * @return array array of column names, values and params.
-     * @throws InvalidParamException if query's select does not contain named parameters only.
+     * @throws InvalidArgumentException if query's select does not contain named parameters only.
      * @since 2.0.11
      */
     protected function prepareInsertSelectSubQuery($columns, $schema, $params = [])
     {
         if (!is_array($columns->select) || empty($columns->select) || in_array('*', $columns->select)) {
-            throw new InvalidParamException('Expected select query object with enumerated (named) parameters');
+            throw new InvalidArgumentException('Expected select query object with enumerated (named) parameters');
         }
 
         list($values, $params) = $this->build($columns, $params);
@@ -1461,7 +1461,7 @@ class QueryBuilder extends \yii\base\BaseObject
             $rawColumns = $columns;
             $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
             if ($columns === false) {
-                throw new InvalidParamException("$rawColumns is not valid columns.");
+                throw new InvalidArgumentException("$rawColumns is not valid columns.");
             }
         }
         foreach ($columns as $i => $column) {
@@ -1556,7 +1556,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array $operands the SQL expressions to connect.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
+     * @throws InvalidArgumentException if wrong number of operands have been given.
      * @deprecated since 2.0.14. Use `buildCondition()` instead.
      */
     public function buildNotCondition($operator, $operands, &$params)
@@ -1572,7 +1572,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * describe the interval that column value should be in.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
+     * @throws InvalidArgumentException if wrong number of operands have been given.
      * @deprecated since 2.0.14. Use `buildCondition()` instead.
      */
     public function buildBetweenCondition($operator, $operands, &$params)
@@ -1618,7 +1618,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *   the values will be automatically enclosed within a pair of percentage characters.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
+     * @throws InvalidArgumentException if wrong number of operands have been given.
      * @deprecated since 2.0.14. Use `buildCondition()` instead.
      */
     public function buildLikeCondition($operator, $operands, &$params)
@@ -1633,7 +1633,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array $operands contains only one element which is a [[Query]] object representing the sub-query.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
-     * @throws InvalidParamException if the operand is not a [[Query]] object.
+     * @throws InvalidArgumentException if the operand is not a [[Query]] object.
      * @deprecated since 2.0.14. Use `buildCondition()` instead.
      */
     public function buildExistsCondition($operator, $operands, &$params)
@@ -1648,7 +1648,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array $operands contains two column names.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
+     * @throws InvalidArgumentException if wrong number of operands have been given.
      * @deprecated since 2.0.14. Use `buildCondition()` instead.
      */
     public function buildSimpleCondition($operator, $operands, &$params)

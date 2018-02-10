@@ -839,7 +839,7 @@ class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
     
     public static function fromArrayDefinition($operator, $operands)
     {
-        throw new InvalidParamException('Not implemented yet, but we will do it later');
+        throw new InvalidArgumentException('Not implemented yet, but we will do it later');
     }
     
     public function getColumns() { return $this->columns; }
