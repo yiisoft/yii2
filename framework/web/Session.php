@@ -950,10 +950,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
                 Yii::error($message, __METHOD__);
             }
 
-            if ($this->frozenSessionData !== null) {
-                $_SESSION = $this->frozenSessionData;
-                $this->frozenSessionData = null;
-            }
+            $_SESSION = $this->frozenSessionData;
+            $this->frozenSessionData = null;
         }
     }
 }
