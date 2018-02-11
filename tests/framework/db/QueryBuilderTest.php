@@ -2282,16 +2282,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['or not like', 'name', [new Expression('CONCAT("test", name, "%")'), '\ab_c']], '[[name]] NOT LIKE CONCAT("test", name, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
             // @see https://github.com/yiisoft/yii2/issues/15630
             [
-                [
-                    'or',
-                    ['like', 'location.title_ru', 'vi%', false],
-                    ['like', 'location.title_en', 'vi%', false],
-                ],
-                '([[location]].[[title_ru]] LIKE :qp0) OR ([[location]].[[title_en]] LIKE :qp1)',
-                [
-                    ':qp0' => 'vi%',
-                    ':qp1' => 'vi%',
-                ],
+                ['like', 'location.title_ru', 'vi%', false],
+                '[[location]].[[title_ru]] LIKE :qp0',
+                [':qp0' => 'vi%'],
             ],
         ];
 
