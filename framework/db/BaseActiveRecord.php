@@ -1720,17 +1720,22 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         unset($this->_relationsDependencies[$attribute]);
     }
 
-    private function setRelationDependencies($relationName, $relation)
+    /**
+     * Sets relation dependencies for a property
+     * @param string $name property name
+     * @param ActiveQueryInterface $relation relation instance
+     */
+    private function setRelationDependencies($name, $relation)
     {
         if (empty($relation->via)) {
             foreach ($relation->link as $attribute) {
-                $this->_relationsDependencies[$attribute][$relationName] = $relationName;
+                $this->_relationsDependencies[$attribute][$name] = $name;
             }
         } elseif ($relation->via instanceof ActiveQueryInterface) {
-            $this->setRelationDependencies($relationName, $relation->via);
+            $this->setRelationDependencies($name, $relation->via);
         } elseif (is_array($relation->via)) {
             list(, $viaQuery) = $relation->via;
-            $this->setRelationDependencies($relationName, $viaQuery);
+            $this->setRelationDependencies($name, $viaQuery);
         }
     }
 }
