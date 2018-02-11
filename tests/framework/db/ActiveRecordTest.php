@@ -8,7 +8,6 @@
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecordInterface;
 use yii\helpers\ArrayHelper;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Animal;
@@ -16,10 +15,8 @@ use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
-use yiiunit\data\ar\Department;
 use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Dossier;
-use yiiunit\data\ar\Employee;
 use yiiunit\data\ar\CustomerQuery;
 use yiiunit\data\ar\CustomerWithConstructor;
 use yiiunit\data\ar\Dog;
@@ -972,8 +969,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $orderItem = new OrderItem();
         $orderItem->order_id = 1;
         $orderItem->item_id = 3;
-        $orderItem->quantity = 5;
-        $orderItem->subtotal = 80.0;
         $this->assertEquals(1, $orderItem->order->id);
         $this->assertEquals(3, $orderItem->item->id);
 
