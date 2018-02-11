@@ -656,8 +656,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'mysql' => 'tinyint(3) UNSIGNED',
                     'postgres' => 'smallint UNSIGNED',
                     'sqlite' => 'tinyint UNSIGNED',
-                    'oci' => 'NUMBER(3) UNSIGNED',
-                    'sqlsrv' => 'tinyint UNSIGNED',
                     'cubrid' => 'smallint UNSIGNED',
                 ],
             ],
