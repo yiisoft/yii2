@@ -15,15 +15,15 @@ class SimpleCondition implements ConditionInterface
     /**
      * @var string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
      */
-    protected $operator;
+    private $operator;
     /**
      * @var mixed the column name to the left of [[operator]]
      */
-    protected $column;
+    private $column;
     /**
      * @var mixed the value to the right of the [[operator]]
      */
-    protected $value;
+    private $value;
 
     /**
      * SimpleCondition constructor
