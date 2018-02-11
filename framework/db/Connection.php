@@ -639,7 +639,7 @@ class Connection extends Component
         }
 
         if ($this->pdo !== null) {
-            Yii::trace('Closing DB connection: ' . $this->dsn, __METHOD__);
+            Yii::debug('Closing DB connection: ' . $this->dsn, __METHOD__);
             $this->pdo = null;
             $this->_schema = null;
             $this->_transaction = null;
@@ -954,6 +954,16 @@ class Connection extends Component
     public function setDriverName($driverName)
     {
         $this->_driverName = strtolower($driverName);
+    }
+
+    /**
+     * Returns a server version as a string comparable by [[\version_compare()]].
+     * @return string server version as a string.
+     * @since 2.0.14
+     */
+    public function getServerVersion()
+    {
+        return $this->getSchema()->getServerVersion();
     }
 
     /**

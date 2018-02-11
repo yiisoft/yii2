@@ -156,7 +156,7 @@ class PhpDocController extends Controller
         }
 
         if ($root === null) {
-            $root = dirname(YII2_PATH);
+            $root = \dirname(YII2_PATH);
             $extensionPath = "$root/extensions";
             $this->setUpExtensionAliases($extensionPath);
 
@@ -177,7 +177,7 @@ class PhpDocController extends Controller
                 }
             }
         } elseif (preg_match('~extensions/([\w-]+)[\\\\/]?$~', $root, $matches)) {
-            $extensionPath = dirname(rtrim($root, '\\/'));
+            $extensionPath = \dirname(rtrim($root, '\\/'));
             $this->setUpExtensionAliases($extensionPath);
 
             list(, $extension) = $matches;
@@ -200,7 +200,7 @@ class PhpDocController extends Controller
 //                return [];
 //            }
         } elseif (preg_match('~apps/([\w-]+)[\\\\/]?$~', $root, $matches)) {
-            $extensionPath = dirname(dirname(rtrim($root, '\\/'))) . '/extensions';
+            $extensionPath = \dirname(\dirname(rtrim($root, '\\/'))) . '/extensions';
             $this->setUpExtensionAliases($extensionPath);
 
             list(, $appName) = $matches;
@@ -348,7 +348,7 @@ class PhpDocController extends Controller
                     $codeBlock = !$codeBlock;
                     $listIndent = '';
                 } elseif (preg_match('/^(\s*)([0-9]+\.|-|\*|\+) /', $docLine, $matches)) {
-                    $listIndent = str_repeat(' ', strlen($matches[0]));
+                    $listIndent = str_repeat(' ', \strlen($matches[0]));
                     $tag = false;
                     $lines[$i] = $indent . ' * ' . $docLine;
                     continue;
@@ -558,10 +558,10 @@ class PhpDocController extends Controller
         if (trim($oldDoc) != trim($newDoc)) {
             $fileContent = explode("\n", file_get_contents($file));
             $start = $ref->getStartLine() - 2;
-            $docStart = $start - count(explode("\n", $oldDoc)) + 1;
+            $docStart = $start - \count(explode("\n", $oldDoc)) + 1;
 
             $newFileContent = [];
-            $n = count($fileContent);
+            $n = \count($fileContent);
             for ($i = 0; $i < $n; $i++) {
                 if ($i > $start || $i < $docStart) {
                     $newFileContent[] = $fileContent[$i];
@@ -588,7 +588,7 @@ class PhpDocController extends Controller
     protected function cleanDocComment($doc)
     {
         $lines = explode("\n", $doc);
-        $n = count($lines);
+        $n = \count($lines);
         for ($i = 0; $i < $n; $i++) {
             $lines[$i] = rtrim($lines[$i]);
             if (trim($lines[$i]) == '*' && trim($lines[$i + 1]) == '*') {
@@ -629,7 +629,7 @@ class PhpDocController extends Controller
 
         // if no properties or other tags where present add properties at the end
         if ($propertyPosition === false) {
-            $propertyPosition = count($lines) - 2;
+            $propertyPosition = \count($lines) - 2;
         }
 
         $finalDoc = '';
@@ -652,22 +652,22 @@ class PhpDocController extends Controller
         $namespace = $namespace['name'];
         $classes = $this->match('#\n(?:abstract )?class (?<name>\w+)( extends .+)?( implements .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
 
-        if (count($classes) > 1) {
+        if (\count($classes) > 1) {
             $this->stderr("[ERR] There should be only one class in a file: $fileName\n", Console::FG_RED);
 
             return false;
         }
-        if (count($classes) < 1) {
+        if (\count($classes) < 1) {
             $interfaces = $this->match('#\ninterface (?<name>\w+)( extends .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
-            if (count($interfaces) == 1) {
+            if (\count($interfaces) == 1) {
                 return false;
-            } elseif (count($interfaces) > 1) {
+            } elseif (\count($interfaces) > 1) {
                 $this->stderr("[ERR] There should be only one interface in a file: $fileName\n", Console::FG_RED);
             } else {
                 $traits = $this->match('#\ntrait (?<name>\w+)\n\{(?<content>.*)\n\}(\n|$)#', $file);
-                if (count($traits) == 1) {
+                if (\count($traits) == 1) {
                     return false;
-                } elseif (count($traits) > 1) {
+                } elseif (\count($traits) > 1) {
                     $this->stderr("[ERR] There should be only one class/trait/interface in a file: $fileName\n", Console::FG_RED);
                 } else {
                     $this->stderr("[ERR] No class in file: $fileName\n", Console::FG_RED);
@@ -708,7 +708,7 @@ class PhpDocController extends Controller
 
             ksort($props);
 
-            if (count($props) > 0) {
+            if (\count($props) > 0) {
                 $phpdoc .= " *\n";
                 foreach ($props as $propName => &$prop) {
                     $docline = ' * @';
@@ -799,7 +799,7 @@ class PhpDocController extends Controller
             return '';
         }
 
-        return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[strlen($str) - 1] != '.' ? '.' : '');
+        return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[\strlen($str) - 1] != '.' ? '.' : '');
     }
 
     protected function getPropParam($prop, $param)

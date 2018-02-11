@@ -9,8 +9,8 @@ namespace yii\db;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * Query represents a SELECT SQL statement in a way that is independent of DBMS.
@@ -114,7 +114,19 @@ class Query extends Component implements QueryInterface
      * For example, `[':name' => 'Dan', ':age' => 31]`.
      */
     public $params = [];
-
+    /**
+     * @var int|true the default number of seconds that query results can remain valid in cache.
+     * Use 0 to indicate that the cached data will never expire.
+     * Use a negative number to indicate that query cache should not be used.
+     * Use boolean `true` to indicate that [[Connection::queryCacheDuration]] should be used.
+     * @see cache()
+     */
+    public $queryCacheDuration;
+    /**
+     * @var \yii\caching\Dependency the dependency to be associated with the cached query result for this query
+     * @see cache()
+     */
+    public $queryCacheDependency;
 
     /**
      * Creates a DB command that can be used to execute this query.
@@ -129,7 +141,10 @@ class Query extends Component implements QueryInterface
         }
         list($sql, $params) = $db->getQueryBuilder()->build($this);
 
-        return $db->createCommand($sql, $params);
+        $command = $db->createCommand($sql, $params);
+        $this->setCommandCache($command);
+
+        return $command;
     }
 
     /**
@@ -449,11 +464,13 @@ class Query extends Component implements QueryInterface
             return $command->queryScalar();
         }
 
-        return (new self())
+        $command = (new self())
             ->select([$selectExpression])
             ->from(['c' => $this])
-            ->createCommand($db)
-            ->queryScalar();
+            ->createCommand($db);
+        $this->setCommandCache($command);
+
+        return $command->queryScalar();
     }
 
     /**
@@ -537,7 +554,7 @@ PATTERN;
 
             if ($tableName instanceof Expression) {
                 if (!is_string($alias)) {
-                    throw new InvalidParamException('To use Expression in from() method, pass it in array format with alias.');
+                    throw new InvalidArgumentException('To use Expression in from() method, pass it in array format with alias.');
                 }
                 $cleanedUpTableNames[$this->ensureNameQuoted($alias)] = $tableName;
             } elseif ($tableName instanceof self) {
@@ -959,6 +976,7 @@ PATTERN;
      * the group-by columns.
      *
      * Since version 2.0.7, an [[ExpressionInterface]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
+     * Since version 2.0.14, an [[ExpressionInterface]] object can be passed as well.
      * @return $this the query object itself
      * @see addGroupBy()
      */
@@ -984,7 +1002,8 @@ PATTERN;
      * to represent the group-by information. Otherwise, the method will not be able to correctly determine
      * the group-by columns.
      *
-     * Since version 2.0.7, an [[ExpressionInterface]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
+     * Since version 2.0.7, an [[Expression]] object can be passed to specify the GROUP BY part explicitly in plain SQL.
+     * Since version 2.0.14, an [[ExpressionInterface]] object can be passed as well.
      * @return $this the query object itself
      * @see groupBy()
      */
@@ -1199,6 +1218,51 @@ PATTERN;
         }
 
         return $this;
+    }
+
+    /**
+     * Enables query cache for this Query.
+     * @param int|true the number of seconds that query results can remain valid in cache.
+     * Use 0 to indicate that the cached data will never expire.
+     * Use a negative number to indicate that query cache should not be used.
+     * Use boolean `true` to indicate that [[Connection::queryCacheDuration]] should be used.
+     * Defaults to `true`.
+     * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached result.
+     * @return $this the Query object itself
+     */
+    public function cache($duration = true, $dependency = null)
+    {
+        $this->queryCacheDuration = $duration;
+        $this->queryCacheDependency = $dependency;
+        return $this;
+    }
+
+    /**
+     * Disables query cache for this Query.
+     * @return $this the Query object itself
+     * @since 2.0.14
+     */
+    public function noCache()
+    {
+        $this->queryCacheDuration = -1;
+        return $this;
+    }
+
+    /**
+     * Sets $command cache, if this query has enabled caching.
+     *
+     * @param Command $command
+     * @return Command
+     * @since 2.0.14
+     */
+    protected function setCommandCache($command)
+    {
+        if ($this->queryCacheDuration !== null || $this->queryCacheDependency !== null) {
+            $duration = $this->queryCacheDuration === true ? null : $this->queryCacheDuration;
+            $command->cache($duration, $this->queryCacheDependency);
+        }
+
+        return $command;
     }
 
     /**

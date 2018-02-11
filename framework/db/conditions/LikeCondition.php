@@ -2,7 +2,7 @@
 
 namespace yii\db\conditions;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * Class LikeCondition represents a `LIKE` condition.
@@ -13,8 +13,9 @@ use yii\base\InvalidParamException;
 class LikeCondition extends SimpleCondition
 {
     /**
-     * @var array map of chars to their replacements.
-     * By default it's set to `null` meaning responsibility is fully on condition builder.
+     * @var array|false map of chars to their replacements, false if characters should not be escaped
+     * or either null or empty array if escaping is condition builder responsibility.
+     * By default it's set to `null`.
      */
     protected $escapingReplacements;
 
@@ -44,7 +45,7 @@ class LikeCondition extends SimpleCondition
     }
 
     /**
-     * @return array
+     * @return array|false
      */
     public function getEscapingReplacements()
     {
@@ -53,12 +54,12 @@ class LikeCondition extends SimpleCondition
 
     /**
      * {@inheritdoc}
-     * @throws InvalidParamException if wrong number of operands have been given.
+     * @throws InvalidArgumentException if wrong number of operands have been given.
      */
     public static function fromArrayDefinition($operator, $operands)
     {
         if (!isset($operands[0], $operands[1])) {
-            throw new InvalidParamException("Operator '$operator' requires two operands.");
+            throw new InvalidArgumentException("Operator '$operator' requires two operands.");
         }
 
         $condition = new static($operands[0], $operator, $operands[1]);

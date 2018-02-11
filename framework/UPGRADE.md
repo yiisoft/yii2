@@ -67,7 +67,7 @@ when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_S
 You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
 
 * `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
-Class-based conditions and builders are introduces instead to provide more flexibility, extensibility and
+Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
 space to customization. In case you rely on that property or override any of default condition builders, follow the 
 special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
 to update your code.

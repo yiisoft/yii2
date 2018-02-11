@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\web;
+namespace yiiunit\framework\web\session;
 
 use Yii;
 use yii\caching\FileCache;

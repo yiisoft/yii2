@@ -2,7 +2,7 @@
 
 namespace yii\db\conditions;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\db\ExpressionBuilderInterface;
 use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
@@ -45,7 +45,10 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
         $operator = $expression->getOperator();
         $column = $expression->getColumn();
         $values = $expression->getValue();
-        $escape = $expression->getEscapingReplacements() ?: $this->escapingReplacements;
+        $escape = $expression->getEscapingReplacements();
+        if ($escape === null || $escape === []) {
+            $escape = $this->escapingReplacements;
+        }
 
         list($andor, $not, $operator) = $this->parseOperator($operator);
 
@@ -94,7 +97,7 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
     protected function parseOperator($operator)
     {
         if (!preg_match('/^(AND |OR |)(((NOT |))I?LIKE)/', $operator, $matches)) {
-            throw new InvalidParamException("Invalid operator '$operator'.");
+            throw new InvalidArgumentException("Invalid operator '$operator'.");
         }
         $andor = ' ' . (!empty($matches[1]) ? $matches[1] : 'AND ');
         $not = !empty($matches[3]);
