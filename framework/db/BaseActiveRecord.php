@@ -97,6 +97,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @var array related models indexed by the relation names
      */
     private $_related = [];
+    /**
+     * @var array relation names indexed by their link attributes
+     */
+    private $_relationsDependencies = [];
 
 
     /**
@@ -279,7 +283,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
             return $this->_attributes[$name];
-        } elseif ($this->hasAttribute($name)) {
+        }
+
+        if ($this->hasAttribute($name)) {
             return null;
         }
 
@@ -288,6 +294,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
         $value = parent::__get($name);
         if ($value instanceof ActiveQueryInterface) {
+            $this->setRelationDependencies($name, $value);
             return $this->_related[$name] = $value->findFor($name, $this);
         }
 
@@ -303,6 +310,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function __set($name, $value)
     {
         if ($this->hasAttribute($name)) {
+            if (
+                !empty($this->_relationsDependencies[$name])
+                && (!array_key_exists($name, $this->_attributes) || $this->_attributes[$name] !== $value)
+            ) {
+                $this->resetDependentRelations($name);
+            }
             $this->_attributes[$name] = $value;
         } else {
             parent::__set($name, $value);
@@ -334,6 +347,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if ($this->hasAttribute($name)) {
             unset($this->_attributes[$name]);
+            if (!empty($this->_relationsDependencies[$name])) {
+                $this->resetDependentRelations($name);
+            }
         } elseif (array_key_exists($name, $this->_related)) {
             unset($this->_related[$name]);
         } elseif ($this->getRelation($name, false) === null) {
@@ -498,6 +514,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function setAttribute($name, $value)
     {
         if ($this->hasAttribute($name)) {
+            if (
+                !empty($this->_relationsDependencies[$name])
+                && (!array_key_exists($name, $this->_attributes) || $this->_attributes[$name] !== $value)
+            ) {
+                $this->resetDependentRelations($name);
+            }
             $this->_attributes[$name] = $value;
         } else {
             throw new InvalidArgumentException(get_class($this) . ' has no attribute named "' . $name . '".');
@@ -1042,6 +1064,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
         $this->_oldAttributes = $record->_oldAttributes;
         $this->_related = [];
+        $this->_relationsDependencies = [];
         $this->afterRefresh();
 
         return true;
@@ -1161,6 +1184,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         }
         $record->_oldAttributes = $record->_attributes;
+        $record->_related = [];
+        $record->_relationsDependencies = [];
     }
 
     /**
@@ -1681,6 +1706,37 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $this->$offset = null;
         } else {
             unset($this->$offset);
+        }
+    }
+
+    /**
+     * Resets dependent related models checking if their links contain specific attribute.
+     * @param string $attribute The changed attribute name.
+     */
+    private function resetDependentRelations($attribute)
+    {
+        foreach ($this->_relationsDependencies[$attribute] as $relation) {
+            unset($this->_related[$relation]);
+        }
+        unset($this->_relationsDependencies[$attribute]);
+    }
+
+    /**
+     * Sets relation dependencies for a property
+     * @param string $name property name
+     * @param ActiveQueryInterface $relation relation instance
+     */
+    private function setRelationDependencies($name, $relation)
+    {
+        if (empty($relation->via)) {
+            foreach ($relation->link as $attribute) {
+                $this->_relationsDependencies[$attribute][$name] = $name;
+            }
+        } elseif ($relation->via instanceof ActiveQueryInterface) {
+            $this->setRelationDependencies($name, $relation->via);
+        } elseif (is_array($relation->via)) {
+            list(, $viaQuery) = $relation->via;
+            $this->setRelationDependencies($name, $viaQuery);
         }
     }
 }

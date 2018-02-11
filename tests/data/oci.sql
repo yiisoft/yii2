@@ -19,6 +19,9 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bool_values"'; EXCEPTION WHEN OTHERS THEN I
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "animal"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "default_pk"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "document"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "dossier"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "employee"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "department"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP VIEW "animal_view"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_main"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_ref"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
@@ -195,6 +198,30 @@ CREATE TABLE "document" (
   CONSTRAINT "document_PK" PRIMARY KEY ("id") ENABLE
 );
 CREATE SEQUENCE "document_SEQ";
+
+CREATE TABLE "department" (
+  "id" INTEGER NOT NULL,
+  "title" varchar2(255) not null,
+  CONSTRAINT "department_PK" PRIMARY KEY ("id") ENABLE
+);
+CREATE SEQUENCE "department_SEQ";
+
+CREATE TABLE "employee" (
+  "id" INTEGER NOT NULL,
+  "department_id" INTEGER NOT NULL,
+  "first_name" varchar2(255) not null,
+  "last_name" varchar2(255) not null,
+  CONSTRAINT "employee_PK" PRIMARY KEY ("id") ENABLE
+);
+CREATE SEQUENCE "employee_SEQ";
+
+CREATE TABLE "dossier" (
+  "id" INTEGER NOT NULL,
+  "department_id" INTEGER NOT NULL,
+  "employee_id" INTEGER NOT NULL,
+  "summary" varchar2(255) not null,
+  CONSTRAINT "dossier_PK" PRIMARY KEY ("id", "department_id") ENABLE
+);
 
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
 
@@ -378,6 +405,17 @@ INSERT INTO "order_item_with_null_fk" ("order_id", "item_id", "quantity", "subto
 INSERT INTO "order_item_with_null_fk" ("order_id", "item_id", "quantity", "subtotal") VALUES (3, 2, 1, 40.0);
 
 INSERT INTO "document" ("title", "content", "version") VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+
+INSERT INTO "department" ("id", "title") VALUES (1, 'IT');
+INSERT INTO "department" ("id", "title") VALUES (2, 'accounting');
+
+INSERT INTO "employee" ("id", "department_id", "first_name", "last_name") VALUES (1, 1, 'John', 'Doe');
+INSERT INTO "employee" ("id", "department_id", "first_name", "last_name") VALUES (1, 2, 'Ann', 'Smith');
+INSERT INTO "employee" ("id", "department_id", "first_name", "last_name") VALUES (2, 2, 'Will', 'Smith');
+
+INSERT INTO "dossier" ("id", "department_id", "employee_id", "summary") VALUES (1, 1, 1, 'Excellent employee.');
+INSERT INTO "dossier" ("id", "department_id", "employee_id", "summary") VALUES (2, 2, 1, 'Brilliant employee.');
+INSERT INTO "dossier" ("id", "department_id", "employee_id", "summary") VALUES (3, 2, 2, 'Good employee.');
 
 INSERT INTO "validator_main" ("id", "field1") VALUES (1, 'just a string1');
 INSERT INTO "validator_main" ("id", "field1") VALUES (2, 'just a string2');

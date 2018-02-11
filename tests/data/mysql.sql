@@ -20,6 +20,9 @@ DROP TABLE IF EXISTS `animal` CASCADE;
 DROP TABLE IF EXISTS `default_pk` CASCADE;
 DROP TABLE IF EXISTS `document` CASCADE;
 DROP TABLE IF EXISTS `comment` CASCADE;
+DROP TABLE IF EXISTS `dossier`;
+DROP TABLE IF EXISTS `employee`;
+DROP TABLE IF EXISTS `department`;
 DROP VIEW IF EXISTS `animal_view`;
 DROP TABLE IF EXISTS `T_constraints_4` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_3` CASCADE;
@@ -175,6 +178,28 @@ CREATE TABLE `comment` (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `department` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `employee` (
+  `id` INT(11) NOT NULL,
+  `department_id` INT(11) NOT NULL,
+  `first_name` VARCHAR(255) NOT NULL,
+  `last_name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`, `department_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `dossier` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `department_id` INT(11) NOT NULL,
+  `employee_id` INT(11) NOT NULL,
+  `summary` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE VIEW `animal_view` AS SELECT * FROM `animal`;
 
 INSERT INTO `animal` (`type`) VALUES ('yiiunit\data\ar\Cat');
@@ -219,6 +244,17 @@ INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VA
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO `document` (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+
+INSERT INTO `department` (id, title) VALUES (1, 'IT');
+INSERT INTO `department` (id, title) VALUES (2, 'accounting');
+
+INSERT INTO `employee` (id, department_id, first_name, last_name) VALUES (1, 1, 'John', 'Doe');
+INSERT INTO `employee` (id, department_id, first_name, last_name) VALUES (1, 2, 'Ann', 'Smith');
+INSERT INTO `employee` (id, department_id, first_name, last_name) VALUES (2, 2, 'Will', 'Smith');
+
+INSERT INTO `dossier` (id, department_id, employee_id, summary) VALUES (1, 1, 1, 'Excellent employee.');
+INSERT INTO `dossier` (id, department_id, employee_id, summary) VALUES (2, 2, 1, 'Brilliant employee.');
+INSERT INTO `dossier` (id, department_id, employee_id, summary) VALUES (3, 2, 2, 'Good employee.');
 
 
 /**

@@ -12,6 +12,9 @@ IF OBJECT_ID('[dbo].[negative_default_values]', 'U') IS NOT NULL DROP TABLE [dbo
 IF OBJECT_ID('[dbo].[animal]', 'U') IS NOT NULL DROP TABLE [dbo].[animal];
 IF OBJECT_ID('[dbo].[default_pk]', 'U') IS NOT NULL DROP TABLE [dbo].[default_pk];
 IF OBJECT_ID('[dbo].[document]', 'U') IS NOT NULL DROP TABLE [dbo].[document];
+IF OBJECT_ID('[dbo].[dossier]', 'U') IS NOT NULL DROP TABLE [dbo].[dossier];
+IF OBJECT_ID('[dbo].[employee]', 'U') IS NOT NULL DROP TABLE [dbo].[employee];
+IF OBJECT_ID('[dbo].[department]', 'U') IS NOT NULL DROP TABLE [dbo].[department];
 IF OBJECT_ID('[dbo].[animal_view]', 'V') IS NOT NULL DROP VIEW [dbo].[animal_view];
 IF OBJECT_ID('[T_constraints_4]', 'U') IS NOT NULL DROP TABLE [T_constraints_4];
 IF OBJECT_ID('[T_constraints_3]', 'U') IS NOT NULL DROP TABLE [T_constraints_3];
@@ -152,6 +155,35 @@ CREATE TABLE [dbo].[document] (
     ) ON [PRIMARY]
 );
 
+CREATE TABLE [dbo].[department] (
+    [id] [int] IDENTITY NOT NULL,
+    [title] [varchar](255) NOT NULL,
+    CONSTRAINT [PK_department_pk] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
+);
+
+CREATE TABLE [dbo].[employee] (
+    [id] [int] NOT NULL,
+    [department_id] [int] NOT NULL,
+    [first_name] [varchar](255) NOT NULL,
+    [last_name] [varchar](255) NOT NULL,
+    CONSTRAINT [PK_employee_pk] PRIMARY KEY CLUSTERED (
+        [id] ASC,
+        [department_id] ASC
+    ) ON [PRIMARY]
+);
+
+CREATE TABLE [dbo].[dossier] (
+    [id] [int] IDENTITY NOT NULL,
+    [department_id] [int] NOT NULL,
+    [employee_id] [int] NOT NULL,
+    [summary] [varchar](255) NOT NULL,
+    CONSTRAINT [PK_dossier_pk] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
+);
+
 CREATE VIEW [dbo].[animal_view] AS SELECT * FROM [dbo].[animal];
 
 INSERT INTO [dbo].[animal] (type) VALUES ('yiiunit\data\ar\Cat');
@@ -196,6 +228,17 @@ INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], 
 INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], [subtotal]) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO [dbo].[document] ([title], [content], [version]) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+
+INSERT INTO [dbo].[department] (id, title) VALUES (1, 'IT');
+INSERT INTO [dbo].[department] (id, title) VALUES (2, 'accounting');
+
+INSERT INTO [dbo].[employee] (id, department_id, first_name, last_name) VALUES (1, 1, 'John', 'Doe');
+INSERT INTO [dbo].[employee] (id, department_id, first_name, last_name) VALUES (1, 2, 'Ann', 'Smith');
+INSERT INTO [dbo].[employee] (id, department_id, first_name, last_name) VALUES (2, 2, 'Will', 'Smith');
+
+INSERT INTO [dbo].[dossier] (id, department_id, employee_id, summary) VALUES (1, 1, 1, 'Excellent employee.');
+INSERT INTO [dbo].[dossier] (id, department_id, employee_id, summary) VALUES (2, 2, 1, 'Brilliant employee.');
+INSERT INTO [dbo].[dossier] (id, department_id, employee_id, summary) VALUES (3, 2, 2, 'Good employee.');
 
 /* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
 
