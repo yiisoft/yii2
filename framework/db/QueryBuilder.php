@@ -161,6 +161,7 @@ class QueryBuilder extends \yii\base\BaseObject
     protected function defaultExpressionBuilders()
     {
         return [
+            'yii\db\Query' => 'yii\db\QueryExpressionBuilder',
             'yii\db\PdoValue' => 'yii\db\PdoValueBuilder',
             'yii\db\Expression' => 'yii\db\ExpressionBuilder',
             'yii\db\conditions\ConjunctionCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
@@ -284,6 +285,10 @@ class QueryBuilder extends \yii\base\BaseObject
             if (!isset($this->expressionBuilders[$className])) {
                 throw new InvalidArgumentException('Expression of class ' . $className . ' can not be built in ' . get_class($this));
             }
+        }
+
+        if ($this->expressionBuilders[$className] === __CLASS__) {
+            return $this;
         }
 
         if (!is_object($this->expressionBuilders[$className])) {

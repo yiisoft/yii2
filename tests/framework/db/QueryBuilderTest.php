@@ -1057,17 +1057,18 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
             // not
             [['not', 'name'], 'NOT (name)', []],
+            [['not', (new Query)->select('exists')->from('some_table')], 'NOT ((SELECT [[exists]] FROM [[some_table]])', []],
 
             // and
             [['and', 'id=1', 'id=2'], '(id=1) AND (id=2)', []],
             [['and', 'type=1', ['or', 'id=1', 'id=2']], '(type=1) AND ((id=1) OR (id=2))', []],
             [['and', 'id=1', new Expression('id=:qp0', [':qp0' => 2])], '(id=1) AND (id=:qp0)', [':qp0' => 2]],
+            [['and', ['expired' => false], (new Query)->select('count(*) > 1')->from('queue')], '([[expired]]=:qp0) AND ((SELECT count(*) > 1 FROM [[queue]]))', [':qp0' => false]],
 
             // or
             [['or', 'id=1', 'id=2'], '(id=1) OR (id=2)', []],
             [['or', 'type=1', ['or', 'id=1', 'id=2']], '(type=1) OR ((id=1) OR (id=2))', []],
             [['or', 'type=1', new Expression('id=:qp0', [':qp0' => 1])], '(type=1) OR (id=:qp0)', [':qp0' => 1]],
-
 
             // between
             [['between', 'id', 1, 10], '[[id]] BETWEEN :qp0 AND :qp1', [':qp0' => 1, ':qp1' => 10]],
@@ -1078,7 +1079,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['not between', 'date', new Expression('(NOW() - INTERVAL 1 MONTH)'), 123], '[[date]] NOT BETWEEN (NOW() - INTERVAL 1 MONTH) AND :qp0', [':qp0' => 123]],
 
             // in
-            [['in', 'id', [1, 2, 3]], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
+            [['in', 'id', [1, 2, (new Query())->select(3)]], '[[id]] IN (:qp0, :qp1, (SELECT 3))', [':qp0' => 1, ':qp1' => 2]],
             [['not in', 'id', [1, 2, 3]], '[[id]] NOT IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
             [['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
             [['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],

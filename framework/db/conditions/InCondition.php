@@ -3,6 +3,7 @@
 namespace yii\db\conditions;
 
 use yii\base\InvalidArgumentException;
+use yii\db\ExpressionInterface;
 
 /**
  * Class LikeCondition represents `IN` condition.
@@ -24,7 +25,7 @@ class InCondition implements ConditionInterface
     protected $column;
 
     /**
-     * @var array an array of values that [[column]] value should be among.
+     * @var ExpressionInterface[]|string[]|int[] an array of values that [[column]] value should be among.
      * If it is an empty array the generated expression will be a `false` value if
      * [[operator]] is `IN` and empty if operator is `NOT IN`.
      */
@@ -63,7 +64,7 @@ class InCondition implements ConditionInterface
     }
 
     /**
-     * @return mixed
+     * @return ExpressionInterface[]|string[]|int[]
      */
     public function getValues()
     {
