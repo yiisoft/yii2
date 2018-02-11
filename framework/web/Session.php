@@ -954,4 +954,28 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             $this->frozenSessionData = null;
         }
     }
+
+    /**
+     * Set cache limiter
+     *
+     * @param string $cacheLimiter
+     * @since 2.0.14
+     */
+    public function setCacheLimiter($cacheLimiter)
+    {
+        $this->freeze();
+        session_cache_limiter($cacheLimiter);
+        $this->unfreeze();
+    }
+
+    /**
+     * Returns current cache limiter
+     *
+     * @return string current cache limiter
+     * @since 2.0.14
+     */
+    public function getCacheLimiter()
+    {
+        return session_cache_limiter();
+    }
 }
