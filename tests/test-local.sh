@@ -9,18 +9,13 @@ export CI_PIPELINE_ID=${1}
 case $1 in
 'default')
     export ISOLATION=buildpipeline${CI_PIPELINE_ID}
-    export COMPOSE_PROJECT_NAME=${ISOLATION}
-    export TUPLE_C=$(expr ${CI_BUILD_ID} % 255)
-    echo ${TUPLE_C}
+    export COMPOSE_PROJECT_NAME=${ISOLATION}default
     docker-compose up -d
     docker-compose run --rm php vendor/bin/phpunit -v --exclude caching,db
     docker-compose down -v
   ;;
 'caching')
     export ISOLATION=buildpipeline${CI_PIPELINE_ID}
-    export COMPOSE_PROJECT_NAME=${ISOLATION}
-    export TUPLE_C=$(expr ${CI_BUILD_ID} % 255)
-    echo ${TUPLE_C}
     export COMPOSE_PROJECT_NAME=${ISOLATION}caching
     docker-compose up -d
     docker-compose run --rm php bash -c "while ! curl mysql:3306; do ((c++)) && ((c==30)) && break; sleep 2; done"
@@ -29,9 +24,7 @@ case $1 in
   ;;
 'mssql')
     export ISOLATION=buildpipeline${CI_PIPELINE_ID}
-    export COMPOSE_PROJECT_NAME=${ISOLATION}
-    export TUPLE_C=$(expr ${CI_BUILD_ID} % 255)
-    echo ${TUPLE_C}
+    export COMPOSE_PROJECT_NAME=${ISOLATION}mssql
     cd mssql
     docker-compose up --build -d
     docker-compose run --rm php bash -c 'while [ true ]; do curl mssql:1433; if [ $? == 52 ]; then break; fi; ((c++)) && ((c==15)) && break; sleep 5; done'
@@ -48,9 +41,6 @@ case $1 in
   ;;
 'pgsql')
     export ISOLATION=buildpipeline${CI_PIPELINE_ID}
-    export COMPOSE_PROJECT_NAME=${ISOLATION}
-    export TUPLE_C=$(expr ${CI_BUILD_ID} % 255)
-    echo ${TUPLE_C}
     export COMPOSE_PROJECT_NAME=${ISOLATION}pgsql
     docker-compose up -d
     docker-compose run --rm php bash -c 'while [ true ]; do curl postgres:5432; if [ $? == 52 ]; then break; fi; ((c++)) && ((c==25)) && break; sleep 2; done'

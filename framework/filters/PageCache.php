@@ -88,7 +88,7 @@ class PageCache extends ActionFilter
      */
     public $dependency;
     /**
-     * @var array list of factors that would cause the variation of the content being cached.
+     * @var string[]|string list of factors that would cause the variation of the content being cached.
      * Each factor is a string representing a variation (e.g. the language, a GET parameter).
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
@@ -134,7 +134,7 @@ class PageCache extends ActionFilter
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -169,12 +169,12 @@ class PageCache extends ActionFilter
             ob_start();
             ob_implicit_flush(false);
             $response->on(Response::EVENT_AFTER_SEND, [$this, 'cacheResponse']);
-            Yii::trace('Valid page content is not found in the cache.', __METHOD__);
+            Yii::debug('Valid page content is not found in the cache.', __METHOD__);
             return true;
         }
 
         $this->restoreResponse($response, $data);
-        Yii::trace('Valid page content is found in the cache.', __METHOD__);
+        Yii::debug('Valid page content is found in the cache.', __METHOD__);
         return false;
     }
 
@@ -323,12 +323,6 @@ class PageCache extends ActionFilter
         if ($this->varyByRoute) {
             $key[] = Yii::$app->requestedRoute;
         }
-        if (is_array($this->variations)) {
-            foreach ($this->variations as $value) {
-                $key[] = $value;
-            }
-        }
-
-        return $key;
+        return array_merge($key, (array)$this->variations);
     }
 }

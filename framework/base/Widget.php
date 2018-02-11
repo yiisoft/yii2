@@ -229,7 +229,7 @@ class Widget extends Component implements ViewContextInterface
      * @param string $view the view name.
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
-     * @throws InvalidParamException if the view file does not exist.
+     * @throws InvalidArgumentException if the view file does not exist.
      */
     public function render($view, $params = [])
     {
@@ -241,7 +241,7 @@ class Widget extends Component implements ViewContextInterface
      * @param string $file the view file to be rendered. This can be either a file path or a [path alias](guide:concept-aliases).
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
-     * @throws InvalidParamException if the view file does not exist.
+     * @throws InvalidArgumentException if the view file does not exist.
      */
     public function renderFile($file, $params = [])
     {

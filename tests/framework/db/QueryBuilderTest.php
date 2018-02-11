@@ -18,6 +18,7 @@ use yii\db\QueryBuilder;
 use yii\db\Schema;
 use yii\db\SchemaBuilderTrait;
 use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
+use yii\helpers\ArrayHelper;
 use yiiunit\data\base\TraversableObject;
 
 abstract class QueryBuilderTest extends DatabaseTestCase
@@ -1813,6 +1814,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'is_active' => false,
                     'related_id' => null,
                 ],
+                [],
                 $this->replaceQuotes('INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]]) VALUES (:qp0, :qp1, :qp2, :qp3, :qp4)'),
                 [
                     ':qp0' => 'test@example.com',
@@ -1828,9 +1830,62 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     '{{%type}}.[[related_id]]' => null,
                     '[[time]]' => new Expression('now()'),
                 ],
+                [],
                 'INSERT INTO {{%type}} ({{%type}}.[[related_id]], [[time]]) VALUES (:qp0, now())',
                 [
                     ':qp0' => null,
+                ],
+            ],
+            'carry passed params' => [
+                'customer',
+                [
+                    'email' => 'test@example.com',
+                    'name' => 'sergeymakinen',
+                    'address' => '{{city}}',
+                    'is_active' => false,
+                    'related_id' => null,
+                    'col' => new Expression('CONCAT(:phFoo, :phBar)', [':phFoo' => 'foo']),
+                ],
+                [':phBar' => 'bar'],
+                $this->replaceQuotes('INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]], [[col]]) VALUES (:qp1, :qp2, :qp3, :qp4, :qp5, CONCAT(:phFoo, :phBar))'),
+                [
+                    ':phBar' => 'bar',
+                    ':qp1' => 'test@example.com',
+                    ':qp2' => 'sergeymakinen',
+                    ':qp3' => '{{city}}',
+                    ':qp4' => false,
+                    ':qp5' => null,
+                    ':phFoo' => 'foo',
+                ],
+            ],
+            'carry passed params (query)' => [
+                'customer',
+                (new Query())
+                    ->select([
+                        'email',
+                        'name',
+                        'address',
+                        'is_active',
+                        'related_id',
+                    ])
+                    ->from('customer')
+                    ->where([
+                        'email' => 'test@example.com',
+                        'name' => 'sergeymakinen',
+                        'address' => '{{city}}',
+                        'is_active' => false,
+                        'related_id' => null,
+                        'col' => new Expression('CONCAT(:phFoo, :phBar)', [':phFoo' => 'foo']),
+                    ]),
+                [':phBar' => 'bar'],
+                $this->replaceQuotes('INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]]) SELECT [[email]], [[name]], [[address]], [[is_active]], [[related_id]] FROM [[customer]] WHERE ([[email]]=:qp1) AND ([[name]]=:qp2) AND ([[address]]=:qp3) AND ([[is_active]]=:qp4) AND ([[related_id]] IS NULL) AND ([[col]]=CONCAT(:phFoo, :phBar))'),
+                [
+                    ':phBar' => 'bar',
+                    ':qp1' => 'test@example.com',
+                    ':qp2' => 'sergeymakinen',
+                    ':qp3' => '{{city}}',
+                    ':qp4' => false,
+                    ':phFoo' => 'foo',
                 ],
             ],
         ];
@@ -1840,15 +1895,238 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @dataProvider insertProvider
      * @param string $table
      * @param array $columns
+     * @param array $params
      * @param string $expectedSQL
      * @param array $expectedParams
      */
-    public function testInsert($table, $columns, $expectedSQL, $expectedParams)
+    public function testInsert($table, $columns, $params, $expectedSQL, $expectedParams)
     {
-        $actualParams = [];
+        $actualParams = $params;
         $actualSQL = $this->getQueryBuilder()->insert($table, $columns, $actualParams);
         $this->assertSame($expectedSQL, $actualSQL);
         $this->assertSame($expectedParams, $actualParams);
+    }
+
+    /**
+     * Dummy test to speed up QB's tests which rely on DB schema
+     */
+    public function testInitFixtures()
+    {
+        $this->assertInstanceOf('yii\db\QueryBuilder', $this->getQueryBuilder(true, true));
+    }
+
+    public function upsertProvider()
+    {
+        return [
+            'regular values' => [
+                'T_upsert',
+                [
+                    'email' => 'test@example.com',
+                    'address' => 'bar {{city}}',
+                    'status' => 1,
+                    'profile_id' => null,
+                ],
+                true,
+                null,
+                [
+                    ':qp0' => 'test@example.com',
+                    ':qp1' => 'bar {{city}}',
+                    ':qp2' => 1,
+                    ':qp3' => null,
+                ],
+            ],
+            'regular values with update part' => [
+                'T_upsert',
+                [
+                    'email' => 'test@example.com',
+                    'address' => 'bar {{city}}',
+                    'status' => 1,
+                    'profile_id' => null,
+                ],
+                [
+                    'address' => 'foo {{city}}',
+                    'status' => 2,
+                    'orders' => new Expression('T_upsert.orders + 1'),
+                ],
+                null,
+                [
+                    ':qp0' => 'test@example.com',
+                    ':qp1' => 'bar {{city}}',
+                    ':qp2' => 1,
+                    ':qp3' => null,
+                    ':qp4' => 'foo {{city}}',
+                    ':qp5' => 2,
+                ],
+            ],
+            'regular values without update part' => [
+                'T_upsert',
+                [
+                    'email' => 'test@example.com',
+                    'address' => 'bar {{city}}',
+                    'status' => 1,
+                    'profile_id' => null,
+                ],
+                false,
+                null,
+                [
+                    ':qp0' => 'test@example.com',
+                    ':qp1' => 'bar {{city}}',
+                    ':qp2' => 1,
+                    ':qp3' => null,
+                ],
+            ],
+            'query' => [
+                'T_upsert',
+                (new Query())
+                    ->select([
+                        'email',
+                        'status' => new Expression('2'),
+                    ])
+                    ->from('customer')
+                    ->where(['name' => 'user1'])
+                    ->limit(1),
+                true,
+                null,
+                [
+                    ':qp0' => 'user1',
+                ],
+            ],
+            'query with update part' => [
+                'T_upsert',
+                (new Query())
+                    ->select([
+                        'email',
+                        'status' => new Expression('2'),
+                    ])
+                    ->from('customer')
+                    ->where(['name' => 'user1'])
+                    ->limit(1),
+                [
+                    'address' => 'foo {{city}}',
+                    'status' => 2,
+                    'orders' => new Expression('T_upsert.orders + 1'),
+                ],
+                null,
+                [
+                    ':qp0' => 'user1',
+                    ':qp1' => 'foo {{city}}',
+                    ':qp2' => 2,
+                ],
+            ],
+            'query without update part' => [
+                'T_upsert',
+                (new Query())
+                    ->select([
+                        'email',
+                        'status' => new Expression('2'),
+                    ])
+                    ->from('customer')
+                    ->where(['name' => 'user1'])
+                    ->limit(1),
+                false,
+                null,
+                [
+                    ':qp0' => 'user1',
+                ],
+            ],
+            'values and expressions' => [
+                '{{%T_upsert}}',
+                [
+                    '{{%T_upsert}}.[[email]]' => 'dynamic@example.com',
+                    '[[ts]]' => new Expression('now()'),
+                ],
+                true,
+                null,
+                [
+                    ':qp0' => 'dynamic@example.com',
+                ],
+            ],
+            'values and expressions with update part' => [
+                '{{%T_upsert}}',
+                [
+                    '{{%T_upsert}}.[[email]]' => 'dynamic@example.com',
+                    '[[ts]]' => new Expression('now()'),
+                ],
+                [
+                    '[[orders]]' => new Expression('T_upsert.orders + 1'),
+                ],
+                null,
+                [
+                    ':qp0' => 'dynamic@example.com',
+                ],
+            ],
+            'values and expressions without update part' => [
+                '{{%T_upsert}}',
+                [
+                    '{{%T_upsert}}.[[email]]' => 'dynamic@example.com',
+                    '[[ts]]' => new Expression('now()'),
+                ],
+                false,
+                null,
+                [
+                    ':qp0' => 'dynamic@example.com',
+                ],
+            ],
+            'query, values and expressions with update part' => [
+                '{{%T_upsert}}',
+                (new Query())
+                    ->select([
+                        'email' => new Expression(':phEmail', [':phEmail' => 'dynamic@example.com']),
+                        '[[time]]' => new Expression('now()'),
+                    ]),
+                [
+                    'ts' => 0,
+                    '[[orders]]' => new Expression('T_upsert.orders + 1'),
+                ],
+                null,
+                [
+                    ':phEmail' => 'dynamic@example.com',
+                    ':qp1' => 0,
+                ],
+            ],
+            'query, values and expressions without update part' => [
+                '{{%T_upsert}}',
+                (new Query())
+                    ->select([
+                        'email' => new Expression(':phEmail', [':phEmail' => 'dynamic@example.com']),
+                        '[[time]]' => new Expression('now()'),
+                    ]),
+                [
+                    'ts' => 0,
+                    '[[orders]]' => new Expression('T_upsert.orders + 1'),
+                ],
+                null,
+                [
+                    ':phEmail' => 'dynamic@example.com',
+                    ':qp1' => 0,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @depends testInitFixtures
+     * @dataProvider upsertProvider
+     * @param string $table
+     * @param array $insertColumns
+     * @param array|null $updateColumns
+     * @param string|string[] $expectedSQL
+     * @param array $expectedParams
+     */
+    public function testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams)
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder(true, $this->driverName === 'sqlite')->upsert($table, $insertColumns, $updateColumns, $actualParams);
+        if (is_string($expectedSQL)) {
+            $this->assertSame($expectedSQL, $actualSQL);
+        } else {
+            $this->assertContains($actualSQL, $expectedSQL);
+        }
+        if (ArrayHelper::isAssociative($expectedParams)) {
+            $this->assertSame($expectedParams, $actualParams);
+        } else {
+            $this->assertIsOneOf($actualParams, $expectedParams);
+        }
     }
 
     public function batchInsertProvider()

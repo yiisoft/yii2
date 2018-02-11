@@ -32,4 +32,42 @@ class SessionTest extends TestCase
         $this->assertNotEmpty($newSessionId);
         $this->assertEquals($oldSessionId, $newSessionId);
     }
+
+    /**
+     * Test to prove that after Session::open changing session parameters will not throw exceptions
+     * and its values will be changed as expected.
+     */
+    public function testParamsAfterSessionStart()
+    {
+        $session = new Session();
+        $session->open();
+
+        $oldUseTransparentSession = $session->getUseTransparentSessionID();
+        $session->setUseTransparentSessionID(true);
+        $newUseTransparentSession = $session->getUseTransparentSessionID();
+        $this->assertNotEquals($oldUseTransparentSession, $newUseTransparentSession);
+        $this->assertTrue($newUseTransparentSession);
+        //without this line phpunit will complain about risky tests due to unclosed buffer
+        $session->setUseTransparentSessionID(false);
+
+        $oldTimeout = $session->getTimeout();
+        $session->setTimeout(600);
+        $newTimeout = $session->getTimeout();
+        $this->assertNotEquals($oldTimeout, $newTimeout);
+        $this->assertEquals(600, $newTimeout);
+
+        $oldUseCookies = $session->getUseCookies();
+        $session->setUseCookies(false);
+        $newUseCookies = $session->getUseCookies();
+        if (null !== $newUseCookies) {
+            $this->assertNotEquals($oldUseCookies, $newUseCookies);
+            $this->assertFalse($newUseCookies);
+        }
+
+        $oldGcProbability = $session->getGCProbability();
+        $session->setGCProbability(100);
+        $newGcProbability = $session->getGCProbability();
+        $this->assertNotEquals($oldGcProbability, $newGcProbability);
+        $this->assertEquals(100, $newGcProbability);
+    }
 }

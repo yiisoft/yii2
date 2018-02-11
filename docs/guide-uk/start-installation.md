@@ -193,7 +193,7 @@ DocumentRoot "path/to/basic/web"
 
 Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](http://php.net/install.fpm).
 Використовуйте наступні параметри Nginx, замінивши `path/to/basic/web` на коректний шлях до
-`basic/web`, а `mysite.local` на актуальний домен.
+`basic/web`, а `mysite.test` на актуальний домен.
 
 ```
 server {
@@ -203,7 +203,7 @@ server {
     listen 80; ## "слухаємо порт" для ipv4
     #listen [::]:80 default_server ipv6only=on; ## "слухаємо порт" для ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

@@ -120,7 +120,7 @@ DocumentRoot "path/to/basic/web"
 ### Configuration Nginx recommandée <span id="recommended-nginx-configuration"></span>
 
 Pour utiliser Nginx, vous devez avoir installé PHP en utilisant [FPM SAPI](http://php.net/install.fpm).
-Utilisez la configuration Nginx suivante, en remplaçant `path/to/basic/web` par le chemin vers le dossier `basic/web` et `mysite.local` par le nom d'hôte de votre serveur.
+Utilisez la configuration Nginx suivante, en remplaçant `path/to/basic/web` par le chemin vers le dossier `basic/web` et `mysite.test` par le nom d'hôte de votre serveur.
 
 ```
 server {
@@ -130,7 +130,7 @@ server {
     listen 80; ## port pour ipv4
     #listen [::]:80 default_server ipv6only=on; ## port pour ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

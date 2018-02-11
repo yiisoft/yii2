@@ -37,7 +37,7 @@ abstract class DatabaseTestCase extends TestCase
             $pdo_database = 'oci8';
         }
 
-        if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
+        if (!\extension_loaded('pdo') || !\extension_loaded($pdo_database)) {
             $this->markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
         }
         $this->mockApplication();
@@ -118,9 +118,11 @@ abstract class DatabaseTestCase extends TestCase
             case 'sqlite':
                 return str_replace(['[[', ']]'], '`', $sql);
             case 'cubrid':
-            case 'pgsql':
             case 'oci':
                 return str_replace(['[[', ']]'], '"', $sql);
+            case 'pgsql':
+                // more complex replacement needed to not conflict with postgres array syntax
+                return str_replace(['\\[', '\\]'], ['[', ']'], preg_replace('/(\[\[)|((?<!(\[))\]\])/', '"', $sql));
             case 'sqlsrv':
                 return str_replace(['[[', ']]'], ['[', ']'], $sql);
             default:

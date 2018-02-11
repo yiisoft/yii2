@@ -96,7 +96,7 @@ return [
   '{delta, plural, =1{a minute} other{# minutes}} ago' => 'преди {delta, plural, =1{минута} other{# минути}}',
   '{delta, plural, =1{a month} other{# months}} ago' => 'преди {delta, plural, =1{месец} other{# месеца}}',
   '{delta, plural, =1{a second} other{# seconds}} ago' => 'преди {delta, plural, =1{секунда} other{# секунди}}',
-  '{delta, plural, =1{a year} other{# years}} ago' => 'преди{delta, plural, =1{година} other{# години}}',
+  '{delta, plural, =1{a year} other{# years}} ago' => 'преди {delta, plural, =1{година} other{# години}}',
   '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta, plural, =1{час} other{# часа}}',
   '{n, plural, =1{# byte} other{# bytes}}' => '{n, plural, =1{# байт} other{# байта}}',
   '{n, plural, =1{# gigabyte} other{# gigabytes}}' => '{n, plural, =1{# гигабайт} other{# гигабайта}}',
