@@ -16,7 +16,7 @@ Dans cette section, nous décrivons principalement les deux premières étapes.
 
 Enregistrer des messages est aussi simple que d'appeler une des méthodes suivantes :
 
-* [[Yii::trace()]]: enregistre un message pour garder une trace de comment un morceau de code fonctionne. Cela est utilisé principalement en développement.
+* [[Yii::debug()]]: enregistre un message pour garder une trace de comment un morceau de code fonctionne. Cela est utilisé principalement en développement.
 * [[Yii::info()]]: enregistre un message qui contient quelques informations utiles.
 * [[Yii::warning()]]: enregistre un message d'avertissement qui indique que quelque chose d'inattendu s'est produit.
 * [[Yii::error()]]: enregistre une erreur fatale qui doit être analysée dès que possible. 
@@ -24,7 +24,7 @@ Enregistrer des messages est aussi simple que d'appeler une des méthodes suivan
 Ces méthodes enregistrent les messages à différents niveaux de sévérité et dans différentes catégories. Elles partagent la même signature `function ($message, $category = 'application')`, où `$message` représente le message à enregistrer, tandis que `$category` est la catégorie de ce message. Le code de l'exemple qui suit enregistre un message de trace dans la catégorie `application`:
 
 ```php
-Yii::trace('start calculating average revenue');
+Yii::debug('start calculating average revenue');
 ```
 
 > Info: les messages enregistrés peuvent être des chaînes de caractères aussi bien que des données complexes telles que des tableaux ou des objets. Il est de la responsabilité des [cibles d'enregistrement](#log-targets) de traiter correctement ces messages. Par défaut, si un message enregistré n'est pas un chaîne de caractères, il est exporté comme une chaîne de caractères en appelant la méthode [[yii\helpers\VarDumper::export()]].
@@ -32,7 +32,7 @@ Yii::trace('start calculating average revenue');
 Pour mieux organiser et filtrer les messages enregistrés, il est recommandé que vous spécifiiez une catégorie appropriée pour chacun des messages. Vous pouvez choisir une schéma de nommage hiérarchisé pour les catégories, ce qui facilitera le filtrage des messages par les [cibles d'enregistrement](#log-targets)  sur la base de ces catégories. Un schéma de nommage simple et efficace est d'utiliser la constante magique `__METHOD__` de PHP dans les noms de catégorie. Par exemple :
 
 ```php
-Yii::trace('start calculating average revenue', __METHOD__);
+Yii::debug('start calculating average revenue', __METHOD__);
 ```
 
 La constante magique `__METHOD__` est évaluée comme le nom de la méthode (préfixée par le nom pleinement qualifié de la classe), là où la constante apparaît. Par exemple, elle est égale à `'app\controllers\RevenueController::calculate'` si la ligne suivante est utilisée dans cette méthode. 
@@ -100,7 +100,7 @@ La propriété [[yii\log\Target::levels|levels]] accepte un tableau constitué d
 * `error`: correspondant aux messages enregistrés par [[Yii::error()]].
 * `warning`: correspondant aux messages enregistrés par [[Yii::warning()]].
 * `info`: correspondant aux messages enregistrés par [[Yii::info()]].
-* `trace`: correspondant aux messages enregistrés par [[Yii::trace()]].
+* `trace`: correspondant aux messages enregistrés par [[Yii::debug()]].
 * `profile`: correspondant aux messages enregistrés par [[Yii::beginProfile()]] et [[Yii::endProfile()]], et qui sera expliqué en détails dans la sous-section [Profilage de la performance](#performance-profiling).
 
 Si vous ne spécifiez pas la propriété [[yii\log\Target::levels|levels]], cela signifie que la cible traitera les messages de *n'importe quel* niveau de sévérité. 
@@ -222,7 +222,7 @@ Lorsque l'[[yii\log\Logger|objet *logger*]] purge les messages enregistrés vers
 ]
 ```
 
-À cause des niveaux de purge et d'exportation, par défaut, lorsque vous appelez `Yii::trace()` ou toute autre méthode d'enregistrement, vous ne voyez PAS immédiatement le message enregistré dans la cible. Cela peut représenter un problème pour pour certaines applications de console qui durent longtemps. Pour faire en sorte que les messages apparaissent immédiatement dans les cibles d'enregistrement, vous devriez définir les propriétés [[yii\log\Dispatcher::flushInterval|flushInterval]] et [[yii\log\Target::exportInterval|exportInterval]] toutes deux à 1, comme montré ci-après :
+À cause des niveaux de purge et d'exportation, par défaut, lorsque vous appelez `Yii::debug()` ou toute autre méthode d'enregistrement, vous ne voyez PAS immédiatement le message enregistré dans la cible. Cela peut représenter un problème pour pour certaines applications de console qui durent longtemps. Pour faire en sorte que les messages apparaissent immédiatement dans les cibles d'enregistrement, vous devriez définir les propriétés [[yii\log\Dispatcher::flushInterval|flushInterval]] et [[yii\log\Target::exportInterval|exportInterval]] toutes deux à 1, comme montré ci-après :
 
 ```php
 return [

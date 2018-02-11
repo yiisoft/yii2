@@ -15,7 +15,7 @@ use yii\helpers\BaseInflector;
 class FallbackInflector extends BaseInflector
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected static function hasIntl()
     {

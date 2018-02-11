@@ -7,7 +7,6 @@
 
 namespace yii\test;
 
-use Yii;
 use yii\base\ArrayAccessTrait;
 use yii\base\InvalidConfigException;
 
@@ -22,16 +21,12 @@ use yii\base\InvalidConfigException;
 class ArrayFixture extends Fixture implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     use ArrayAccessTrait;
+    use FileFixtureTrait;
 
     /**
      * @var array the data rows. Each array element represents one row of data (column name => column value).
      */
     public $data = [];
-    /**
-     * @var string|bool the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
-     * to be returned by [[getData()]]. You can set this property to be false to prevent loading any data.
-     */
-    public $dataFile;
 
 
     /**
@@ -56,19 +51,11 @@ class ArrayFixture extends Fixture implements \IteratorAggregate, \ArrayAccess, 
      */
     protected function getData()
     {
-        if ($this->dataFile === false || $this->dataFile === null) {
-            return [];
-        }
-        $dataFile = Yii::getAlias($this->dataFile);
-        if (is_file($dataFile)) {
-            return require $dataFile;
-        }
-
-        throw new InvalidConfigException("Fixture data file does not exist: {$this->dataFile}");
+        return $this->loadData($this->dataFile);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function unload()
     {

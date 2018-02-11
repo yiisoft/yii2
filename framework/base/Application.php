@@ -265,7 +265,7 @@ abstract class Application extends Module
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -293,10 +293,10 @@ abstract class Application extends Module
             if (isset($extension['bootstrap'])) {
                 $component = Yii::createObject($extension['bootstrap']);
                 if ($component instanceof BootstrapInterface) {
-                    Yii::trace('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
+                    Yii::debug('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
                     $component->bootstrap($this);
                 } else {
-                    Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
+                    Yii::debug('Bootstrap with ' . get_class($component), __METHOD__);
                 }
             }
         }
@@ -304,7 +304,7 @@ abstract class Application extends Module
         foreach ($this->bootstrap as $mixed) {
             $component = null;
             if ($mixed instanceof \Closure) {
-                Yii::trace('Bootstrap with Closure', __METHOD__);
+                Yii::debug('Bootstrap with Closure', __METHOD__);
                 if (!$component = call_user_func($mixed, $this)) {
                     continue;
                 }
@@ -323,10 +323,10 @@ abstract class Application extends Module
             }
 
             if ($component instanceof BootstrapInterface) {
-                Yii::trace('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
+                Yii::debug('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
                 $component->bootstrap($this);
             } else {
-                Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
+                Yii::debug('Bootstrap with ' . get_class($component), __METHOD__);
             }
         }
     }
@@ -363,7 +363,7 @@ abstract class Application extends Module
      * This method can only be invoked at the beginning of the constructor.
      * @param string $path the root directory of the application.
      * @property string the root directory of the application.
-     * @throws InvalidParamException if the directory does not exist.
+     * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)
     {

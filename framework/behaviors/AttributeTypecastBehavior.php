@@ -8,7 +8,7 @@
 namespace yii\behaviors;
 
 use yii\base\Behavior;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\db\BaseActiveRecord;
 use yii\helpers\StringHelper;
@@ -188,7 +188,7 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attach($owner)
     {
@@ -218,7 +218,7 @@ class AttributeTypecastBehavior extends Behavior
         } else {
             foreach ($attributeNames as $attribute) {
                 if (!isset($this->attributeTypes[$attribute])) {
-                    throw new InvalidParamException("There is no type mapping for '{$attribute}'.");
+                    throw new InvalidArgumentException("There is no type mapping for '{$attribute}'.");
                 }
                 $attributeTypes[$attribute] = $this->attributeTypes[$attribute];
             }
@@ -259,7 +259,7 @@ class AttributeTypecastBehavior extends Behavior
                     }
                     return (string) $value;
                 default:
-                    throw new InvalidParamException("Unsupported type '{$type}'");
+                    throw new InvalidArgumentException("Unsupported type '{$type}'");
             }
         }
 
@@ -285,7 +285,7 @@ class AttributeTypecastBehavior extends Behavior
 
             if ($type !== null) {
                 foreach ((array) $validator->attributes as $attribute) {
-                    $attributeTypes[$attribute] = $type;
+                    $attributeTypes[ltrim($attribute, '!')] = $type;
                 }
             }
         }
@@ -294,7 +294,7 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function events()
     {

@@ -53,6 +53,8 @@ class LinkSorter extends Widget
      */
     public function init()
     {
+        parent::init();
+
         if ($this->sort === null) {
             throw new InvalidConfigException('The "sort" property must be set.');
         }

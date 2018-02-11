@@ -38,6 +38,17 @@ class ErrorHandlerTest extends TestCase
 Message: This message is displayed to end user
 Exception: yii\web\NotFoundHttpException', $out);
     }
+
+    public function testRenderCallStackItem()
+    {
+        $handler = Yii::$app->getErrorHandler();
+        $handler->traceLine = '<a href="netbeans://open?file={file}&line={line}">{html}</a>';
+        $file = \yii\BaseYii::getAlias('@yii/web/Application.php');
+
+        $out = $handler->renderCallStackItem($file, 63, \yii\web\Application::className(), null, null, null);
+
+        $this->assertContains('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
+    }
 }
 
 class ErrorHandler extends \yii\web\ErrorHandler

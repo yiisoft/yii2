@@ -1467,6 +1467,26 @@ EOD;
         $model = new HtmlTestModel();
         $actual = Html::activeFileInput($model, 'types', ['name' => 'foo']);
         $this->assertEqualsWithoutLE($expected, $actual);
+
+        $expected = '<input type="hidden" id="specific-id" name="foo" value=""><input type="file" id="htmltestmodel-types" name="foo">';
+        $model = new HtmlTestModel();
+        $actual = Html::activeFileInput($model, 'types', ['name' => 'foo', 'hiddenOptions'=>['id'=>'specific-id']]);
+        $this->assertEqualsWithoutLE($expected, $actual);
+
+        $expected = '<input type="hidden" id="specific-id" name="HtmlTestModel[types]" value=""><input type="file" id="htmltestmodel-types" name="HtmlTestModel[types]">';
+        $model = new HtmlTestModel();
+        $actual = Html::activeFileInput($model, 'types', ['hiddenOptions'=>['id'=>'specific-id']]);
+        $this->assertEqualsWithoutLE($expected, $actual);
+
+        $expected = '<input type="hidden" name="HtmlTestModel[types]" value=""><input type="file" id="htmltestmodel-types" name="HtmlTestModel[types]">';
+        $model = new HtmlTestModel();
+        $actual = Html::activeFileInput($model, 'types', ['hiddenOptions'=>[]]);
+        $this->assertEqualsWithoutLE($expected, $actual);
+
+        $expected = '<input type="hidden" name="foo" value=""><input type="file" id="htmltestmodel-types" name="foo">';
+        $model = new HtmlTestModel();
+        $actual = Html::activeFileInput($model, 'types', ['name' => 'foo', 'hiddenOptions'=>[]]);
+        $this->assertEqualsWithoutLE($expected, $actual);
     }
 
     /**

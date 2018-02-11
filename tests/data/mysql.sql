@@ -20,11 +20,15 @@ DROP TABLE IF EXISTS `animal` CASCADE;
 DROP TABLE IF EXISTS `default_pk` CASCADE;
 DROP TABLE IF EXISTS `document` CASCADE;
 DROP TABLE IF EXISTS `comment` CASCADE;
+DROP TABLE IF EXISTS `dossier`;
+DROP TABLE IF EXISTS `employee`;
+DROP TABLE IF EXISTS `department`;
 DROP VIEW IF EXISTS `animal_view`;
 DROP TABLE IF EXISTS `T_constraints_4` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_3` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_2` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_1` CASCADE;
+DROP TABLE IF EXISTS `T_upsert` CASCADE;
 
 CREATE TABLE `constraints`
 (
@@ -142,7 +146,8 @@ CREATE TABLE `type` (
   `bool_col` tinyint(1) NOT NULL,
   `bool_col2` tinyint(1) DEFAULT '1',
   `ts_default` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `bit_col` BIT(8) NOT NULL DEFAULT b'10000010'
+  `bit_col` BIT(8) NOT NULL DEFAULT b'10000010',
+  `json_col` json
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `animal` (
@@ -171,6 +176,28 @@ CREATE TABLE `comment` (
   `replace_comment` VARCHAR(255) COMMENT 'comment',
   `delete_comment` VARCHAR(128) NOT NULL COMMENT 'comment',
   PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `department` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `employee` (
+  `id` INT(11) NOT NULL,
+  `department_id` INT(11) NOT NULL,
+  `first_name` VARCHAR(255) NOT NULL,
+  `last_name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`, `department_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `dossier` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `department_id` INT(11) NOT NULL,
+  `employee_id` INT(11) NOT NULL,
+  `summary` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE VIEW `animal_view` AS SELECT * FROM `animal`;
@@ -217,6 +244,17 @@ INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VA
 INSERT INTO `order_item_with_null_fk` (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO `document` (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+
+INSERT INTO `department` (id, title) VALUES (1, 'IT');
+INSERT INTO `department` (id, title) VALUES (2, 'accounting');
+
+INSERT INTO `employee` (id, department_id, first_name, last_name) VALUES (1, 1, 'John', 'Doe');
+INSERT INTO `employee` (id, department_id, first_name, last_name) VALUES (1, 2, 'Ann', 'Smith');
+INSERT INTO `employee` (id, department_id, first_name, last_name) VALUES (2, 2, 'Will', 'Smith');
+
+INSERT INTO `dossier` (id, department_id, employee_id, summary) VALUES (1, 1, 1, 'Excellent employee.');
+INSERT INTO `dossier` (id, department_id, employee_id, summary) VALUES (2, 2, 1, 'Brilliant employee.');
+INSERT INTO `dossier` (id, department_id, employee_id, summary) VALUES (3, 2, 2, 'Good employee.');
 
 
 /**
@@ -302,5 +340,19 @@ CREATE TABLE `T_constraints_4`
     `C_col_1` INT NULL,
     `C_col_2` INT NOT NULL,
     CONSTRAINT `CN_constraints_4` UNIQUE (`C_col_1`, `C_col_2`)
+)
+ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';
+
+CREATE TABLE `T_upsert`
+(
+    `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `ts` INT NULL,
+    `email` VARCHAR(128) NOT NULL UNIQUE,
+    `recovery_email` VARCHAR(128) NULL,
+    `address` TEXT NULL,
+    `status` TINYINT NOT NULL DEFAULT 0,
+    `orders` INT NOT NULL DEFAULT 0,
+    `profile_id` INT NULL,
+    UNIQUE (`email`, `recovery_email`)
 )
 ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';

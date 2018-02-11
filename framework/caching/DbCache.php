@@ -10,6 +10,7 @@ namespace yii\caching;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\db\PdoValue;
 use yii\db\Query;
 use yii\di\Instance;
 
@@ -195,7 +196,7 @@ class DbCache extends Cache
             $command = $db->createCommand()
                 ->update($this->cacheTable, [
                     'expire' => $duration > 0 ? $duration + time() : 0,
-                    'data' => [$value, \PDO::PARAM_LOB],
+                    'data' => new PdoValue($value, \PDO::PARAM_LOB),
                 ], ['id' => $key]);
             return $command->execute();
         });
@@ -228,7 +229,7 @@ class DbCache extends Cache
                     ->insert($this->cacheTable, [
                         'id' => $key,
                         'expire' => $duration > 0 ? $duration + time() : 0,
-                        'data' => [$value, \PDO::PARAM_LOB],
+                        'data' => new PdoValue($value, \PDO::PARAM_LOB),
                     ])->execute();
             });
 

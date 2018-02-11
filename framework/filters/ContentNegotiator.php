@@ -130,7 +130,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function bootstrap($app)
     {
@@ -138,7 +138,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
