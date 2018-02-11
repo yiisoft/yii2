@@ -5,7 +5,7 @@ namespace yii\db\conditions;
 use yii\base\InvalidArgumentException;
 
 /**
- * Class LikeCondition represents `IN` condition.
+ * Class InCondition represents `IN` condition.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

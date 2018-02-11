@@ -13,8 +13,9 @@ use yii\base\InvalidArgumentException;
 class LikeCondition extends SimpleCondition
 {
     /**
-     * @var array map of chars to their replacements.
-     * By default it's set to `null` meaning responsibility is fully on condition builder.
+     * @var array|false map of chars to their replacements, false if characters should not be escaped
+     * or either null or empty array if escaping is condition builder responsibility.
+     * By default it's set to `null`.
      */
     protected $escapingReplacements;
 
@@ -44,7 +45,7 @@ class LikeCondition extends SimpleCondition
     }
 
     /**
-     * @return array
+     * @return array|false
      */
     public function getEscapingReplacements()
     {

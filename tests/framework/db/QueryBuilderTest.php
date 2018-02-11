@@ -2286,6 +2286,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['not like', 'name', [new Expression('CONCAT("test", name, "%")'), '\ab_c']], '[[name]] NOT LIKE CONCAT("test", name, "%") AND [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
             [['or like', 'name', [new Expression('CONCAT("test", name, "%")'), '\ab_c']], '[[name]] LIKE CONCAT("test", name, "%") OR [[name]] LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
             [['or not like', 'name', [new Expression('CONCAT("test", name, "%")'), '\ab_c']], '[[name]] NOT LIKE CONCAT("test", name, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
+            // @see https://github.com/yiisoft/yii2/issues/15630
+            [
+                ['like', 'location.title_ru', 'vi%', false],
+                '[[location]].[[title_ru]] LIKE :qp0',
+                [':qp0' => 'vi%'],
+            ],
         ];
 
         // adjust dbms specific escaping
