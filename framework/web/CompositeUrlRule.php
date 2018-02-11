@@ -40,7 +40,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     abstract protected function createRules();
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -49,7 +49,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parseRequest($manager, $request)
     {
@@ -57,7 +57,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
             /* @var $rule UrlRule */
             $result = $rule->parseRequest($manager, $request);
             if (YII_DEBUG) {
-                Yii::trace([
+                Yii::debug([
                     'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                     'match' => $result !== false,
                     'parent' => self::className(),
@@ -72,7 +72,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createUrl($manager, $route, $params)
     {

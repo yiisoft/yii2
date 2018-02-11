@@ -28,7 +28,7 @@ class ArrayCache extends Cache
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function exists($key)
     {
@@ -37,7 +37,7 @@ class ArrayCache extends Cache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getValue($key)
     {
@@ -49,7 +49,7 @@ class ArrayCache extends Cache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function setValue($key, $value, $duration)
     {
@@ -58,7 +58,7 @@ class ArrayCache extends Cache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function addValue($key, $value, $duration)
     {
@@ -70,7 +70,7 @@ class ArrayCache extends Cache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function deleteValue($key)
     {
@@ -79,7 +79,7 @@ class ArrayCache extends Cache
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function flushValues()
     {
