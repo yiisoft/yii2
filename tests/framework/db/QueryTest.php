@@ -153,6 +153,34 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals($condition, $query->where);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15630
+     */
+    public function testLikeEscaping()
+    {
+        $query = new Query();
+        $q = 'vi';
+        $query->andWhere(['OR',
+            ['like', 'location.title_ru', $q . '%', false],
+            ['like', 'location.title_en', $q . '%', false],
+        ]);
+        $this->assertEquals([
+            0 => 'OR',
+            1 => [
+                0 => 'like',
+                1 => 'location.title_ru',
+                2 => 'vi%',
+                3 => false,
+            ],
+            2 => [
+                0 => 'like',
+                1 => 'location.title_en',
+                2 => 'vi%',
+                3 => false,
+            ],
+        ], $query->where);
+    }
+
     public function testFilterHavingWithHashFormat()
     {
         $query = new Query();
