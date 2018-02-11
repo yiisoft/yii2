@@ -45,7 +45,7 @@ class LikeCondition extends SimpleCondition
     }
 
     /**
-     * @return array
+     * @return array|false
      */
     public function getEscapingReplacements()
     {
