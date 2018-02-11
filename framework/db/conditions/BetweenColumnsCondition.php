@@ -38,19 +38,19 @@ class BetweenColumnsCondition implements ConditionInterface
     /**
      * @var string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
      */
-    protected $operator;
+    private $operator;
     /**
      * @var mixed the value to compare against
      */
-    protected $value;
+    private $value;
     /**
      * @var string|ExpressionInterface|Query the column name or expression that is a beginning of the interval
      */
-    protected $intervalStartColumn;
+    private $intervalStartColumn;
     /**
      * @var string|ExpressionInterface|Query the column name or expression that is an end of the interval
      */
-    protected $intervalEndColumn;
+    private $intervalEndColumn;
 
     /**
      * Creates a condition with the `BETWEEN` operator.
