@@ -255,6 +255,9 @@ the operator can be one of the following:
 - `between`: operand 1 should be the column name, and operand 2 and 3 should be the
    starting and ending values of the range that the column is in.
    For example, `['between', 'id', 1, 10]` will generate `id BETWEEN 1 AND 10`.
+   In case you need to build a condition where value is between two columns (like `11 BETWEEN min_id AND max_id`), 
+   you should use [[yii\db\conditions\BetweenColumnsCondition|BetweenColumnsCondition]]. 
+   See [Conditions – Object Format](#object-format) chapter to learn more about object definition of conditions.
 
 - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
   in the generated condition.
@@ -796,7 +799,7 @@ $unbufferedDb->close();
 
 ### Adding custom Conditions and Expressions <span id="adding-custom-conditions-and-expressions"></span>
 
-As it was mentioned in [Conditions – Object Fromat](#object-format) chapter, is is possible to create custom condition
+As it was mentioned in [Conditions – Object Format](#object-format) chapter, is is possible to create custom condition
 classes. For example, let's create a condition that will check that specific columns are less than some value.
 Using the operator format, it would look like the following:
 
