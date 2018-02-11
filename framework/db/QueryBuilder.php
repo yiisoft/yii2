@@ -173,6 +173,7 @@ class QueryBuilder extends \yii\base\BaseObject
             'yii\db\conditions\ExistsCondition' => 'yii\db\conditions\ExistsConditionBuilder',
             'yii\db\conditions\SimpleCondition' => 'yii\db\conditions\SimpleConditionBuilder',
             'yii\db\conditions\HashCondition' => 'yii\db\conditions\HashConditionBuilder',
+            'yii\db\conditions\BetweenColumnsCondition' => 'yii\db\conditions\BetweenColumnsConditionBuilder',
         ];
     }
 
