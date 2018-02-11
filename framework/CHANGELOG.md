@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Enh #13618: Active record now resets related models after corresponding attributes updates (Kolyunya, rob006)
 - Enh #15047: `yii\db\Query::select()` and `yii\db\Query::addSelect()` now check for duplicate column names (wapmorgan)
 - Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
 - Enh #13465: Added `yii\helpers\FileHelper::findDirectory()` method (ArsSirek, developeruz)
@@ -296,7 +297,6 @@ Yii Framework 2 Change Log
 - Enh #13550: Refactored `unset()` call order in `yii\di\ServiceLocator::set()` (Lanrik)
 - Enh #13560: Refactored `\yii\widgets\FragmentCache::getCachedContent()`, added tests (Kolyunya)
 - Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
-- Enh #13618: Active record now resets related models after corresponding attributes updates (Kolyunya, rob006)
 - Enh #13577: Implemented `yii\db\mssql\QueryBuilder::resetSequence()` (boboldehampsink)
 - Enh #13582: Added tests for all `yii\db\QueryBuilder::resetSequence()` implementations, fixed SQLite implementation (boboldehampsink)
 - Enh #13642: Allow overriding the function for creating related queries in ActiveRecord by adding `createRelationQuery()` (leandrogehlen)
