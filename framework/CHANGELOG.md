@@ -104,6 +104,7 @@ Yii Framework 2 Change Log
 - Enh #15496: CSRF token is now regenerated on changing identity (samdark, rhertogh)
 - Enh #15595: `yii\data\DataFilter` can now handle `lt`,`gt`,`lte` and `gte` on `yii\validators\DateValidator` (mikk150)
 - Enh #11611: Added `BetweenColumnsCondition` to build SQL condition like `value BETWEEN col1 and col2` (silverfire)
+- Enh #14732, #11218, #14810, #10855: It is now possible to pass `yii\db\Query` anywhere, where `yii\db\Expression` was supported (silverfire)
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 - Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
 - Chg #15625: `yii\grid\DataColumn` boolean filter dropdown list values are now in reversed order (bizley)
