@@ -308,4 +308,12 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     {
         return $this->view;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getView()
+    {
+        return $this->view;
+    }
 }
