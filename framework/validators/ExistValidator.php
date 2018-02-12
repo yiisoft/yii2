@@ -57,6 +57,12 @@ class ExistValidator extends Validator
      */
     public $targetAttribute;
     /**
+     * @var string the name of the relation that should be used to validate the existence of the current attribute value
+     * This param overwrites $targetClass and $targetAttribute
+     * @since 2.0.14
+     */
+    public $targetRelation;
+    /**
      * @var string|array|\Closure additional filter to be applied to the DB query used to check the existence of the attribute value.
      * This can be a string or an array representing the additional query condition (refer to [[\yii\db\Query::where()]]
      * on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
@@ -89,6 +95,32 @@ class ExistValidator extends Validator
      * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
+    {
+        if (!empty($this->targetRelation)) {
+            $this->checkTargetRelationExistence($model, $attribute);
+        } else {
+            $this->checkTargetAttributeExistence($model, $attribute);
+        }
+    }
+
+    /**
+     * Validates existence of the current attribute based on relation name
+     * @param \yii\base\Model $model the data model to be validated
+     * @param string $attribute the name of the attribute to be validated.
+     */
+    private function checkTargetRelationExistence($model, $attribute)
+    {
+        if (empty($model->{$this->targetRelation})) {
+            $this->addError($model, $attribute, $this->message);
+        }
+    }
+
+    /**
+     * Validates existence of the current attribute based on targetAttribute
+     * @param \yii\base\Model $model the data model to be validated
+     * @param string $attribute the name of the attribute to be validated.
+     */
+    private function checkTargetAttributeExistence($model, $attribute)
     {
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $params = $this->prepareConditions($targetAttribute, $model, $attribute);

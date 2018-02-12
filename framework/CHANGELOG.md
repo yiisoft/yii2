@@ -57,6 +57,7 @@ Yii Framework 2 Change Log
 - Enh #6844: `yii\base\ArrayableTrait::toArray()` now allows recursive `$fields` and `$expand` (bboure)
 - Enh #7988: Added `\yii\helpers\Console::errorSummary()` and `\yii\helpers\Json::errorSummary()` (developeruz)
 - Enh #7996: Short syntax for verb in GroupUrlRule (schojniak, developeruz)
+- Enh #8092: ExistValidator for relations (developeruz)
 - Enh #8527: Added `yii\i18n\Locale` component having `getCurrencySymbol()` method (amarox, samdark)
 - Enh #8752: Allow specify `$attributeNames` as a string for `yii\base\Model` `validate()` method (developeruz)
 - Enh #9137: Added `Access-Control-Allow-Method` header for the OPTIONS request (developeruz)
