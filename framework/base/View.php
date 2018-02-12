@@ -89,14 +89,16 @@ class View extends Component implements DynamicContentAwareInterface
      * @var array|DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
      * This property is used internally to implement the dynamic content caching feature. Do not modify it directly.
      * @internal
-     * @deprecated 2.0.14
+     * @deprecated Sice 2.0.14. Do not use this property directly. Use methods [[getDynamicContents()]], 
+     * [[pushDynamicContent()]], [[popDynamicContent()]] instead.
      */
     public $cacheStack = [];
     /**
      * @var array a list of placeholders for embedding dynamic contents. This property
      * is used internally to implement the content caching feature. Do not modify it directly.
      * @internal
-     * @deprecated 2.0.14
+     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicPlaceholders()]], 
+     * [[setDynamicPlaceholders()]], [[addDynamicPlaceholder()]] instead.
      */
     public $dynamicPlaceholders = [];
 
@@ -373,7 +375,7 @@ class View extends Component implements DynamicContentAwareInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDynamicPlaceholders()
     {
@@ -381,7 +383,7 @@ class View extends Component implements DynamicContentAwareInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setDynamicPlaceholders($placeholders)
     {
@@ -389,7 +391,7 @@ class View extends Component implements DynamicContentAwareInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function addDynamicPlaceholder($placeholder, $statements)
     {
