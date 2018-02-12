@@ -110,7 +110,7 @@ class ExistValidator extends Validator
      */
     private function checkTargetRelationExistence($model, $attribute)
     {
-        if (empty($model->{$this->targetRelation})) {
+        if (!$model->{'get' . ucfirst($this->targetRelation)}()->exists()) {
             $this->addError($model, $attribute, $this->message);
         }
     }
