@@ -308,7 +308,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getView()
     {
