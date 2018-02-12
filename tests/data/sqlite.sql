@@ -105,6 +105,7 @@ CREATE TABLE "null_values" (
 );
 
 CREATE TABLE "negative_default_values" (
+  tinyint_col tinyint default '-123',
   smallint_col integer default '-123',
   int_col integer default '-123',
   bigint_col integer default '-123',
@@ -115,6 +116,7 @@ CREATE TABLE "negative_default_values" (
 CREATE TABLE "type" (
   int_col INTEGER NOT NULL,
   int_col2 INTEGER DEFAULT '1',
+  tinyint_col TINYINT(3) DEFAULT '1',
   smallint_col SMALLINT(1) DEFAULT '1',
   char_col char(100) NOT NULL,
   char_col2 varchar(100) DEFAULT 'something',

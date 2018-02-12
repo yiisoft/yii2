@@ -76,6 +76,7 @@ Yii Framework 2 Change Log
 - Enh #14488: Added support for X-Forwarded-Host to `yii\web\Request`, fixed `getServerPort()` usage (si294r, samdark)
 - Enh #14546: Added `dataDirectory` property into `BaseActiveFixture` (leandrogehlen)
 - Enh #14568: Refactored migration templates to use `safeUp()` and `safeDown()` methods (Kolyunya)
+- Enh #14638: Added `yii\db\SchemaBuilderTrait::tinyInteger()` (rob006)
 - Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
 - Enh #14806: Added $placeFooterAfterBody option for GridView (terehru)

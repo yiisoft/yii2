@@ -38,7 +38,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
     public $typeMap = [
-        'tinyint' => self::TYPE_SMALLINT,
+        'tinyint' => self::TYPE_TINYINT,
         'bit' => self::TYPE_SMALLINT,
         'boolean' => self::TYPE_BOOLEAN,
         'bool' => self::TYPE_BOOLEAN,
