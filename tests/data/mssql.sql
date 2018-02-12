@@ -106,6 +106,7 @@ CREATE TABLE [dbo].[null_values] (
 );
 
 CREATE TABLE [dbo].[negative_default_values] (
+  [tinyint_col] [tinyint] DEFAULT '-123',
   [smallint_col] [tinyint] DEFAULT '-123',
   [int_col] [smallint] DEFAULT '-123',
   [bigint_col] [int] DEFAULT '-123',
@@ -116,6 +117,7 @@ CREATE TABLE [dbo].[negative_default_values] (
 CREATE TABLE [dbo].[type] (
     [int_col] [int] NOT NULL,
     [int_col2] [int] DEFAULT '1',
+    [tinyint_col] [tinyint] DEFAULT '1',
     [smallint_col] [smallint] DEFAULT '1',
     [char_col] [char](100) NOT NULL,
     [char_col2] [varchar](100) DEFAULT 'something',

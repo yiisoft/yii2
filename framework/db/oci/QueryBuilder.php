@@ -35,6 +35,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_CHAR => 'CHAR(1)',
         Schema::TYPE_STRING => 'VARCHAR2(255)',
         Schema::TYPE_TEXT => 'CLOB',
+        Schema::TYPE_TINYINT => 'NUMBER(3)',
         Schema::TYPE_SMALLINT => 'NUMBER(5)',
         Schema::TYPE_INTEGER => 'NUMBER(10)',
         Schema::TYPE_BIGINT => 'NUMBER(20)',

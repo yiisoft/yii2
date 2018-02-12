@@ -56,6 +56,10 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['int_col2']['dbType'] = 'integer';
         $columns['int_col2']['size'] = null;
         $columns['int_col2']['precision'] = null;
+        $columns['tinyint_col']['smallint'] = 'short';
+        $columns['tinyint_col']['dbType'] = 'short';
+        $columns['tinyint_col']['size'] = null;
+        $columns['tinyint_col']['precision'] = null;
         $columns['smallint_col']['dbType'] = 'short';
         $columns['smallint_col']['size'] = null;
         $columns['smallint_col']['precision'] = null;

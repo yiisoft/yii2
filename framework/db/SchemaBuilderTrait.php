@@ -98,6 +98,18 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Creates a tinyint column. If tinyint is not supported by the DBMS, smallint will be used.
+     * @param int $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.14
+     */
+    public function tinyInteger($length = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TINYINT, $length);
+    }
+
+    /**
      * Creates a smallint column.
      * @param int $length column size or precision definition.
      * This parameter will be ignored if not supported by the DBMS.

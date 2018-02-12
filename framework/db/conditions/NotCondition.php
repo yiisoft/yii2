@@ -15,7 +15,7 @@ class NotCondition implements ConditionInterface
     /**
      * @var mixed the condition to be negated
      */
-    protected $condition;
+    private $condition;
 
     /**
      * NotCondition constructor.
