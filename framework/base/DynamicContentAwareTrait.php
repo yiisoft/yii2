@@ -23,7 +23,7 @@ trait DynamicContentAwareTrait
     abstract protected function getView();
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDynamicPlaceholders()
     {
@@ -31,7 +31,7 @@ trait DynamicContentAwareTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function setDynamicPlaceholders($placeholders)
     {
@@ -39,7 +39,7 @@ trait DynamicContentAwareTrait
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function addDynamicPlaceholder($name, $statements)
     {
@@ -47,13 +47,13 @@ trait DynamicContentAwareTrait
     }
 
     /**
-     * Replaces placeholders in content by results of evaluated dynamic statements.
+     * Replaces placeholders in $content with results of evaluated dynamic statements.
      * @param string $content content to be parsed.
      * @param string[] $placeholders placeholders and their values.
-     * @param bool $restore whether content is going to be restored from cache.
+     * @param bool $isRestoredFromCache whether content is going to be restored from cache.
      * @return string final content.
      */
-    protected function updateDynamicContent($content, $placeholders, $restore = false)
+    protected function updateDynamicContent($content, $placeholders, $isRestoredFromCache = false)
     {
         if (empty($placeholders) || !is_array($placeholders)) {
             return $content;
@@ -66,11 +66,12 @@ trait DynamicContentAwareTrait
             }
             $content = strtr($content, $placeholders);
         }
-        if ($restore) {
+        if ($isRestoredFromCache) {
             foreach ($placeholders as $name => $statements) {
                 $this->getView()->addDynamicPlaceholder($name, $statements);
             }
         }
+
         return $content;
     }
 }
