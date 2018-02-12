@@ -15,11 +15,11 @@ class BetweenCondition implements ConditionInterface
     /**
      * @var string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
      */
-    protected $operator;
+    private $operator;
     /**
      * @var mixed the column name to the left of [[operator]]
      */
-    protected $column;
+    private $column;
     /**
      * @var mixed beginning of the interval
      */
