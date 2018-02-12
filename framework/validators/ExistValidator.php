@@ -59,7 +59,7 @@ class ExistValidator extends Validator
     /**
      * @var string the name of the relation that should be used to validate the existence of the current attribute value
      * This param overwrites $targetClass and $targetAttribute
-     * @since 2.0.12
+     * @since 2.0.14
      */
     public $targetRelation;
     /**
