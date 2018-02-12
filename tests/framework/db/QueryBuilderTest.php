@@ -1085,7 +1085,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [new BetweenColumnsCondition(new Expression('NOW()'), 'NOT BETWEEN', (new Query)->select('min_date')->from('some_table'), 'max_date'), 'NOW() NOT BETWEEN (SELECT [[min_date]] FROM [[some_table]]) AND [[max_date]]', []],
 
             // in
-            [['in', 'id', [1, 2, (new Query())->select(3)]], '[[id]] IN (:qp0, :qp1, (SELECT 3))', [':qp0' => 1, ':qp1' => 2]],
+            [['in', 'id', [1, 2, (new Query())->select('three')->from('digits')]], '[[id]] IN (:qp0, :qp1, (SELECT [[three]] FROM [[digits]]))', [':qp0' => 1, ':qp1' => 2]],
             [['not in', 'id', [1, 2, 3]], '[[id]] NOT IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
             [['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
             [['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
