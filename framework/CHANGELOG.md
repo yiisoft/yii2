@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Enh #15120: Refactored dynamic caching introducing `DynamicContentAwareInterface` and `DynamicContentAwareTrait` (sergeymakinen)
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
 - Bug #11401: Fixed `yii\web\DbSession` concurrency issues when writing and regenerating IDs (samdark, andreasanta, cebe)
 - Bug #13034: Fixed `normalizePath` for windows network shares that start with two backslashes (developeruz)
