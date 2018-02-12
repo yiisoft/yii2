@@ -940,7 +940,7 @@ class BaseHtml
             $name .= '[]';
         }
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', $selection);
+            $selection = array_map('strval', (array)$selection);
         }
 
         $formatter = ArrayHelper::remove($options, 'item');
@@ -1020,7 +1020,7 @@ class BaseHtml
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', $selection);
+            $selection = array_map('strval', (array)$selection);
         }
 
         $formatter = ArrayHelper::remove($options, 'item');
@@ -1815,7 +1815,7 @@ class BaseHtml
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', $selection);
+            $selection = array_map('strval', (array)$selection);
         }
 
         $lines = [];
