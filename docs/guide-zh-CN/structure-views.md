@@ -691,7 +691,7 @@ class SiteController extends Controller
 ```
 
 现在如果你在`@app/views/site/pages`目录下创建名为 `about` 的视图，
-可通过如下rul显示该视图：
+可通过如下url显示该视图：
 
 ```
 http://localhost/index.php?r=site/page&view=about
