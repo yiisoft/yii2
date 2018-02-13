@@ -637,7 +637,7 @@ $this->registerLinkTag([
 
 - [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: 在控制器渲染文件开始时触发，
   该事件可设置 [[yii\base\ViewEvent::isValid]] 为 false 取消视图渲染。
-- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: 在布局中调用 [[yii\base\View::beginPage()]] 时触发，
+- [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: 在布局中调用 [[yii\base\View::afterRender()]] 时触发，
   该事件可获取[[yii\base\ViewEvent::output]]的渲染结果，
   可修改该属性来修改渲染结果。
 - [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]]: 在布局调用 [[yii\base\View::beginPage()]] 时触发；
