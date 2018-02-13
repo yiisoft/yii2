@@ -175,7 +175,7 @@ In case your proxies are using different headers you can use the request configu
 'request' => [
     // ...
     'trustedHosts' => [
-        '/^10\.0\.2\.\d+$/' => [
+        '10.10.2.0/24' => [
             'X-ProxyUser-Ip',
             'Front-End-Https',
         ],
