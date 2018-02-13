@@ -870,7 +870,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $value = self::replaceAliasPlaceholder($value, $aliasName);
                 $conditionNew[$key] = $value;
             }
-            $condition = $conditionNew;
+            return $conditionNew;
         } elseif ($condition instanceof \yii\db\Expression) {
             $condition->expression = self::replaceAliasPlaceholder($condition->expression, $aliasName);
         }
