@@ -84,7 +84,7 @@ class ExistValidator extends Validator
      * @var bool whether this validator is forced to always use master DB
      * @since 2.0.14
      */
-    public $forceMasterDb =  true;
+    public $forceMasterDb = true;
 
 
     /**
@@ -112,12 +112,25 @@ class ExistValidator extends Validator
 
     /**
      * Validates existence of the current attribute based on relation name
-     * @param \yii\base\Model $model the data model to be validated
+     * @param \yii\db\ActiveRecord $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated.
      */
     private function checkTargetRelationExistence($model, $attribute)
     {
-        if (!$model->{'get' . ucfirst($this->targetRelation)}()->exists()) {
+        $exists = false;
+        /** @var ActiveQuery $relationQuery */
+        $relationQuery = $model->{'get' . ucfirst($this->targetRelation)}();
+
+        if ($this->forceMasterDb) {
+            $model::getDb()->useMaster(function() use ($relationQuery, &$exists) {
+                $exists = $relationQuery->exists();
+            });
+        } else {
+            $relationQuery->exists();
+        }
+
+
+        if (!$exists) {
             $this->addError($model, $attribute, $this->message);
         }
     }
