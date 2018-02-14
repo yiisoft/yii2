@@ -9,8 +9,8 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\ErrorException;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * BaseFileHelper provides concrete implementation for [[FileHelper]].
@@ -292,7 +292,7 @@ class BaseFileHelper
      *   that do not contain files. This affects directories that do not contain files initially as well as directories that
      *   do not contain files at the target destination because files have been filtered via `only` or `except`.
      *   Defaults to true. This option is available since version 2.0.12. Before 2.0.12 empty directories are always copied.
-     * @throws \yii\base\InvalidParamException if unable to open directory
+     * @throws InvalidArgumentException if unable to open directory
      */
     public static function copyDirectory($src, $dst, $options = [])
     {
@@ -300,7 +300,7 @@ class BaseFileHelper
         $dst = static::normalizePath($dst);
 
         if ($src === $dst || strpos($dst, $src . DIRECTORY_SEPARATOR) === 0) {
-            throw new InvalidParamException('Trying to copy a directory to itself or a subdirectory.');
+            throw new InvalidArgumentException('Trying to copy a directory to itself or a subdirectory.');
         }
         $dstExists = is_dir($dst);
         if (!$dstExists && (!isset($options['copyEmptyDirectories']) || $options['copyEmptyDirectories'])) {
@@ -310,7 +310,7 @@ class BaseFileHelper
 
         $handle = opendir($src);
         if ($handle === false) {
-            throw new InvalidParamException("Unable to open directory: $src");
+            throw new InvalidArgumentException("Unable to open directory: $src");
         }
         if (!isset($options['basePath'])) {
             // this should be done only once
@@ -455,7 +455,7 @@ class BaseFileHelper
      * - `caseSensitive`: boolean, whether patterns specified at `only` or `except` should be case sensitive. Defaults to `true`.
      * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
      * @return array files found under the directory, in no particular order. Ordering depends on the files system used.
-     * @throws InvalidParamException if the dir is invalid.
+     * @throws InvalidArgumentException if the dir is invalid.
      */
     public static function findFiles($dir, $options = [])
     {
@@ -495,7 +495,7 @@ class BaseFileHelper
      *
      * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
      * @return array directories found under the directory, in no particular order. Ordering depends on the files system used.
-     * @throws InvalidParamException if the dir is invalid.
+     * @throws InvalidArgumentException if the dir is invalid.
      * @since 2.0.14
      */
     public static function findDirectory($dir, $options = [])
@@ -542,7 +542,7 @@ class BaseFileHelper
     {
         $handle = opendir($dir);
         if ($handle === false) {
-            throw new InvalidParamException("Unable to open directory: $dir");
+            throw new InvalidArgumentException("Unable to open directory: $dir");
         }
         return $handle;
     }
@@ -553,7 +553,7 @@ class BaseFileHelper
     private static function clearDir($dir)
     {
         if (!is_dir($dir)) {
-            throw new InvalidParamException("The dir argument must be a directory: $dir");
+            throw new InvalidArgumentException("The dir argument must be a directory: $dir");
         }
         return rtrim($dir, DIRECTORY_SEPARATOR);
     }
@@ -738,7 +738,7 @@ class BaseFileHelper
      * @param string $path
      * @param array $excludes list of patterns to match $path against
      * @return array|null null or one of $excludes item as an array with keys: 'pattern', 'flags'
-     * @throws InvalidParamException if any of the exclude patterns is not a string or an array with keys: pattern, flags, firstWildcard.
+     * @throws InvalidArgumentException if any of the exclude patterns is not a string or an array with keys: pattern, flags, firstWildcard.
      */
     private static function lastExcludeMatchingFromList($basePath, $path, $excludes)
     {
@@ -747,7 +747,7 @@ class BaseFileHelper
                 $exclude = self::parseExcludePattern($exclude, false);
             }
             if (!isset($exclude['pattern']) || !isset($exclude['flags']) || !isset($exclude['firstWildcard'])) {
-                throw new InvalidParamException('If exclude/include pattern is an array it must contain the pattern, flags and firstWildcard keys.');
+                throw new InvalidArgumentException('If exclude/include pattern is an array it must contain the pattern, flags and firstWildcard keys.');
             }
             if ($exclude['flags'] & self::PATTERN_MUSTBEDIR && !is_dir($path)) {
                 continue;
@@ -772,13 +772,13 @@ class BaseFileHelper
      * Processes the pattern, stripping special characters like / and ! from the beginning and settings flags instead.
      * @param string $pattern
      * @param bool $caseSensitive
-     * @throws \yii\base\InvalidParamException
+     * @throws InvalidArgumentException
      * @return array with keys: (string) pattern, (int) flags, (int|bool) firstWildcard
      */
     private static function parseExcludePattern($pattern, $caseSensitive)
     {
         if (!is_string($pattern)) {
-            throw new InvalidParamException('Exclude/include pattern must be a string.');
+            throw new InvalidArgumentException('Exclude/include pattern must be a string.');
         }
 
         $result = [

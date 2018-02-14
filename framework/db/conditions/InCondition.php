@@ -2,10 +2,11 @@
 
 namespace yii\db\conditions;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
+use yii\db\ExpressionInterface;
 
 /**
- * Class LikeCondition represents `IN` condition.
+ * Class InCondition represents `IN` condition.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -15,20 +16,20 @@ class InCondition implements ConditionInterface
     /**
      * @var string $operator the operator to use (e.g. `IN` or `NOT IN`)
      */
-    protected $operator;
+    private $operator;
 
     /**
      * @var string|string[] the column name. If it is an array, a composite `IN` condition
      * will be generated.
      */
-    protected $column;
+    private $column;
 
     /**
-     * @var array an array of values that [[column]] value should be among.
+     * @var ExpressionInterface[]|string[]|int[] an array of values that [[column]] value should be among.
      * If it is an empty array the generated expression will be a `false` value if
      * [[operator]] is `IN` and empty if operator is `NOT IN`.
      */
-    protected $values;
+    private $values;
 
     /**
      * SimpleCondition constructor
@@ -63,7 +64,7 @@ class InCondition implements ConditionInterface
     }
 
     /**
-     * @return mixed
+     * @return ExpressionInterface[]|string[]|int[]
      */
     public function getValues()
     {
@@ -71,12 +72,12 @@ class InCondition implements ConditionInterface
     }
     /**
      * {@inheritdoc}
-     * @throws InvalidParamException if wrong number of operands have been given.
+     * @throws InvalidArgumentException if wrong number of operands have been given.
      */
     public static function fromArrayDefinition($operator, $operands)
     {
         if (!isset($operands[0], $operands[1])) {
-            throw new InvalidParamException("Operator '$operator' requires two operands.");
+            throw new InvalidArgumentException("Operator '$operator' requires two operands.");
         }
 
         return new static($operands[0], $operator, $operands[1]);

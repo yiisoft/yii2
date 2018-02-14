@@ -8,7 +8,7 @@
 namespace yii\helpers;
 
 use Yii;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yii\db\ActiveRecordInterface;
 use yii\validators\StringValidator;
@@ -1438,7 +1438,7 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * If `hiddenOptions` parameter which is another set of HTML options array is defined, it will be extracted 
+     * If `hiddenOptions` parameter which is another set of HTML options array is defined, it will be extracted
      * from `$options` to be used for the hidden input.
      * @return string the generated input tag
      */
@@ -2143,7 +2143,7 @@ class BaseHtml
      * If `$attribute` has neither prefix nor suffix, it will be returned back without change.
      * @param string $attribute the attribute name or expression
      * @return string the attribute name without prefix and suffix.
-     * @throws InvalidParamException if the attribute name contains non-word characters.
+     * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getAttributeName($attribute)
     {
@@ -2151,7 +2151,7 @@ class BaseHtml
             return $matches[2];
         }
 
-        throw new InvalidParamException('Attribute name must contain word characters only.');
+        throw new InvalidArgumentException('Attribute name must contain word characters only.');
     }
 
     /**
@@ -2166,12 +2166,12 @@ class BaseHtml
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
      * @return string|array the corresponding attribute value
-     * @throws InvalidParamException if the attribute name contains non-word characters.
+     * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getAttributeValue($model, $attribute)
     {
         if (!preg_match(static::$attributeRegex, $attribute, $matches)) {
-            throw new InvalidParamException('Attribute name must contain word characters only.');
+            throw new InvalidArgumentException('Attribute name must contain word characters only.');
         }
         $attribute = $matches[2];
         $value = $model->$attribute;
@@ -2215,13 +2215,13 @@ class BaseHtml
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
      * @return string the generated input name
-     * @throws InvalidParamException if the attribute name contains non-word characters.
+     * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getInputName($model, $attribute)
     {
         $formName = $model->formName();
         if (!preg_match(static::$attributeRegex, $attribute, $matches)) {
-            throw new InvalidParamException('Attribute name must contain word characters only.');
+            throw new InvalidArgumentException('Attribute name must contain word characters only.');
         }
         $prefix = $matches[1];
         $attribute = $matches[2];
@@ -2232,7 +2232,7 @@ class BaseHtml
             return $formName . $prefix . "[$attribute]" . $suffix;
         }
 
-        throw new InvalidParamException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
+        throw new InvalidArgumentException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
     }
 
     /**
@@ -2243,7 +2243,7 @@ class BaseHtml
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for explanation of attribute expression.
      * @return string the generated input ID
-     * @throws InvalidParamException if the attribute name contains non-word characters.
+     * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getInputId($model, $attribute)
     {

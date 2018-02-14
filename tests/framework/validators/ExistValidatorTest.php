@@ -205,4 +205,17 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $val->validateAttribute($m, 'id');
         $this->assertFalse($m->hasErrors('id'));
     }
+
+    public function testTargetRelation()
+    {
+        $val = new ExistValidator(['targetRelation' => 'references']);
+
+        $m = ValidatorTestMainModel::findOne(2);
+        $val->validateAttribute($m, 'id');
+        $this->assertFalse($m->hasErrors('id'));
+
+        $m = ValidatorTestMainModel::findOne(1);
+        $val->validateAttribute($m, 'id');
+        $this->assertTrue($m->hasErrors('id'));
+    }
 }

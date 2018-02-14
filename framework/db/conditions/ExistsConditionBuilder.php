@@ -29,8 +29,8 @@ class ExistsConditionBuilder implements ExpressionBuilderInterface
         $operator = $expression->getOperator();
         $query = $expression->getQuery();
 
-        list($sql, $params) = $this->queryBuilder->build($query, $params);
+        $sql = $this->queryBuilder->buildExpression($query, $params);
 
-        return "$operator ($sql)";
+        return "$operator $sql";
     }
 }

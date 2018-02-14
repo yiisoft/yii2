@@ -1269,7 +1269,7 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals(ArrayHelper::filter($array, ['X']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['X.Y']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['A.X']), []);
-        
+
         $tmp = [
             'a' => 0,
             'b' => '',
@@ -1277,7 +1277,7 @@ class ArrayHelperTest extends TestCase
             'd' => null,
             'e' => true,
         ];
-        
+
         $this->assertEquals(ArrayHelper::filter($tmp, array_keys($tmp)), $tmp);
     }
 }

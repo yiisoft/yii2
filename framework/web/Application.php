@@ -98,7 +98,7 @@ class Application extends \yii\base\Application
             unset($params[0]);
         }
         try {
-            Yii::trace("Route requested: '$route'", __METHOD__);
+            Yii::debug("Route requested: '$route'", __METHOD__);
             $this->requestedRoute = $route;
             $result = $this->runAction($route, $params);
             if ($result instanceof Response) {

@@ -2,7 +2,7 @@
 
 namespace yii\db\conditions;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * Class SimpleCondition represents a simple condition like `"column" operator value`.
@@ -15,15 +15,15 @@ class SimpleCondition implements ConditionInterface
     /**
      * @var string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
      */
-    protected $operator;
+    private $operator;
     /**
      * @var mixed the column name to the left of [[operator]]
      */
-    protected $column;
+    private $column;
     /**
      * @var mixed the value to the right of the [[operator]]
      */
-    protected $value;
+    private $value;
 
     /**
      * SimpleCondition constructor
@@ -65,12 +65,12 @@ class SimpleCondition implements ConditionInterface
 
     /**
      * {@inheritdoc}
-     * @throws InvalidParamException if wrong number of operands have been given.
+     * @throws InvalidArgumentException if wrong number of operands have been given.
      */
     public static function fromArrayDefinition($operator, $operands)
     {
         if (count($operands) !== 2) {
-            throw new InvalidParamException("Operator '$operator' requires two operands.");
+            throw new InvalidArgumentException("Operator '$operator' requires two operands.");
         }
 
         return new static($operands[0], $operator, $operands[1]);
