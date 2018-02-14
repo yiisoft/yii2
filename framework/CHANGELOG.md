@@ -83,6 +83,7 @@ Yii Framework 2 Change Log
 - Enh #14638: Added `yii\db\SchemaBuilderTrait::tinyInteger()` (rob006)
 - Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
+- Enh #14538: Added `yii\behaviors\AttributeTypecastBehavior::typecastAfterFind` property (littlefuntik, silverfire)
 - Enh #14732, #11218, #14810, #10855: It is now possible to pass `yii\db\Query` anywhere, where `yii\db\Expression` was supported (silverfire)
 - Enh #14806: Added $placeFooterAfterBody option for GridView (terehru)
 - Enh #15024: `yii\web\Pjax` widget does not prevent CSS files from sending anymore because they are handled by client-side plugin correctly (onmotion)
