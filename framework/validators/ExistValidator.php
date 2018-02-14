@@ -117,7 +117,7 @@ class ExistValidator extends Validator
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $query = $this->createQuery($targetClass, $conditions);
 
-        if (!$this->valueExists($targetClass, $query, $model->$attribute)){
+        if (!$this->valueExists($targetClass, $query, $model->$attribute)) {
             $this->addError($model, $attribute, $this->message);
         }
     }
@@ -198,12 +198,13 @@ class ExistValidator extends Validator
      * @param mixed $value the value want to be checked
      * @return boolean
      */
-    private function valueExists($targetClass, $query, $value ){
+    private function valueExists($targetClass, $query, $value)
+    {
         $db = $targetClass::getDb();
         $exists = false;
 
-        if($this->forceMasterDb){
-            $db->useMaster(function ($db) use ($query, $value, &$exists){
+        if ($this->forceMasterDb) {
+            $db->useMaster(function ($db) use ($query, $value, &$exists) {
                 $exists = $this->queryValueExists($query, $value);
             });
         } else {
@@ -221,7 +222,8 @@ class ExistValidator extends Validator
      * @param mixed $value the value to be checked
      * @return bool
      */
-    private function queryValueExists($query, $value){
+    private function queryValueExists($query, $value)
+    {
         if (is_array($value)) {
             return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ;
         }
