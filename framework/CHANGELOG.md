@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Enh #14254: add an option to specify whether validator is forced to always use master DB for `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` (rossoneri, samdark)
 - Enh #15272: Removed type attribute from script tag (aleksbelic)
 - Enh #15120: Refactored dynamic caching introducing `DynamicContentAwareInterface` and `DynamicContentAwareTrait` (sergeymakinen)
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
@@ -83,7 +84,6 @@ Yii Framework 2 Change Log
 - Enh #14638: Added `yii\db\SchemaBuilderTrait::tinyInteger()` (rob006)
 - Enh #14643: Added `yii\web\ErrorAction::$layout` property to conveniently set layout from error action config (swods, cebe, samdark)
 - Enh #14662: Added support for custom `Content-Type` specification to `yii\web\JsonResponseFormatter` (Kolyunya)
-- Enh #14538: Added `yii\behaviors\AttributeTypecastBehavior::typecastAfterFind` property (littlefuntik, silverfire)
 - Enh #14732, #11218, #14810, #10855: It is now possible to pass `yii\db\Query` anywhere, where `yii\db\Expression` was supported (silverfire)
 - Enh #14806: Added $placeFooterAfterBody option for GridView (terehru)
 - Enh #15024: `yii\web\Pjax` widget does not prevent CSS files from sending anymore because they are handled by client-side plugin correctly (onmotion)

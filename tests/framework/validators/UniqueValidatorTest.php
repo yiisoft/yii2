@@ -453,6 +453,32 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
 
     }
+    
+    public function testForceMaster()
+    {
+        $connection = $this->getConnectionWithInvalidSlave();
+        ActiveRecord::$db = $connection;
+
+        $model = null;
+        $connection->useMaster(function() use (&$model) {
+            $model = WithCustomer::find()->one();
+        });
+
+        $validator = new UniqueValidator([
+            'forceMasterDb' => true,
+            'targetAttribute' => ['status', 'profile_id']
+        ]);
+        $validator->validateAttribute($model, 'email');
+
+        $this->expectException('\yii\base\InvalidConfigException');
+        $validator = new UniqueValidator([
+            'forceMasterDb' => false,
+            'targetAttribute' => ['status', 'profile_id']
+        ]);
+        $validator->validateAttribute($model, 'email');
+
+        ActiveRecord::$db = $this->getConnection();
+    }
 }
 
 class WithCustomer extends Customer {

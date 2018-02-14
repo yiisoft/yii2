@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\caching\DummyCache;
 use yii\db\Connection;
 use yiiunit\TestCase as TestCase;
 
@@ -128,5 +129,27 @@ abstract class DatabaseTestCase extends TestCase
             default:
                 return $sql;
         }
+    }
+    
+    /**
+     * @return \yii\db\Connection
+     */
+    protected function getConnectionWithInvalidSlave()
+    {
+        $config = array_merge($this->database, [
+            'serverStatusCache' => new DummyCache(),
+            'slaves' => [
+                [], // invalid config
+            ],
+        ]);
+
+        if (isset($config['fixture'])) {
+            $fixture = $config['fixture'];
+            unset($config['fixture']);
+        } else {
+            $fixture = null;
+        }
+
+        return $this->prepareDatabase($config, $fixture, true);
     }
 }
