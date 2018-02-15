@@ -41,10 +41,6 @@ class SimpleConditionBuilder implements ExpressionBuilderInterface
         if ($value instanceof ExpressionInterface) {
             return "$column $operator {$this->queryBuilder->buildExpression($value, $params)}";
         }
-        if ($value instanceof Query) {
-            list($sql, $params) = $this->queryBuilder->build($value, $params);
-            return "$column $operator ($sql)";
-        }
 
         $phName = $this->queryBuilder->bindParam($value, $params);
         return "$column $operator $phName";

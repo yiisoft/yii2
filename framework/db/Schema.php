@@ -49,6 +49,7 @@ abstract class Schema extends BaseObject
     const TYPE_CHAR = 'char';
     const TYPE_STRING = 'string';
     const TYPE_TEXT = 'text';
+    const TYPE_TINYINT = 'tinyint';
     const TYPE_SMALLINT = 'smallint';
     const TYPE_INTEGER = 'integer';
     const TYPE_BIGINT = 'bigint';
@@ -615,14 +616,15 @@ abstract class Schema extends BaseObject
     {
         static $typeMap = [
             // abstract type => php type
-            'smallint' => 'integer',
-            'integer' => 'integer',
-            'bigint' => 'integer',
-            'boolean' => 'boolean',
-            'float' => 'double',
-            'double' => 'double',
-            'binary' => 'resource',
-            'json' => 'array',
+            self::TYPE_TINYINT => 'integer',
+            self::TYPE_SMALLINT => 'integer',
+            self::TYPE_INTEGER => 'integer',
+            self::TYPE_BIGINT => 'integer',
+            self::TYPE_BOOLEAN => 'boolean',
+            self::TYPE_FLOAT => 'double',
+            self::TYPE_DOUBLE => 'double',
+            self::TYPE_BINARY => 'resource',
+            self::TYPE_JSON => 'array',
         ];
         if (isset($typeMap[$column->type])) {
             if ($column->type === 'bigint') {

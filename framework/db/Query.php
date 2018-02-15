@@ -47,7 +47,7 @@ use yii\base\InvalidConfigException;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class Query extends Component implements QueryInterface
+class Query extends Component implements QueryInterface, ExpressionInterface
 {
     use QueryTrait;
 

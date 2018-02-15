@@ -45,7 +45,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
         'decimal' => self::TYPE_DECIMAL,
         'smallmoney' => self::TYPE_MONEY,
         'int' => self::TYPE_INTEGER,
-        'tinyint' => self::TYPE_SMALLINT,
+        'tinyint' => self::TYPE_TINYINT,
         'money' => self::TYPE_MONEY,
         // approximate numbers
         'float' => self::TYPE_FLOAT,

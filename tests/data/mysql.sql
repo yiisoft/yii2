@@ -123,6 +123,7 @@ CREATE TABLE null_values (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `negative_default_values` (
+  `tinyint_col` tinyint default '-123',
   `smallint_col` smallint default '-123',
   `int_col` integer default '-123',
   `bigint_col` bigint default '-123',
@@ -133,6 +134,7 @@ CREATE TABLE `negative_default_values` (
 CREATE TABLE `type` (
   `int_col` integer NOT NULL,
   `int_col2` integer DEFAULT '1',
+  `tinyint_col` tinyint(3) DEFAULT '1',
   `smallint_col` smallint(1) DEFAULT '1',
   `char_col` char(100) NOT NULL,
   `char_col2` varchar(100) DEFAULT 'something',

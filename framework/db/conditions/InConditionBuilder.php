@@ -109,7 +109,8 @@ class InConditionBuilder implements ExpressionBuilderInterface
      */
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
     {
-        list($sql, $params) = $this->queryBuilder->build($values, $params);
+        $sql = $this->queryBuilder->buildExpression($values, $params);
+
         if (is_array($columns)) {
             foreach ($columns as $i => $col) {
                 if (strpos($col, '(') === false) {
@@ -117,14 +118,14 @@ class InConditionBuilder implements ExpressionBuilderInterface
                 }
             }
 
-            return '(' . implode(', ', $columns) . ") $operator ($sql)";
+            return '(' . implode(', ', $columns) . ") $operator $sql";
         }
 
         if (strpos($columns, '(') === false) {
             $columns = $this->queryBuilder->db->quoteColumnName($columns);
         }
 
-        return "$columns $operator ($sql)";
+        return "$columns $operator $sql";
     }
 
     /**
