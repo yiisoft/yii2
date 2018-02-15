@@ -68,6 +68,9 @@ abstract class Target extends Component
      * - `var.key` - only `var[key]` key will be logged.
      * - `!var.key` - `var[key]` key will be excluded.
      *
+     * Note that if you need $_SESSION to logged regardless if session was used you have to open it right at
+     * the start of your request.
+     *
      * @see \yii\helpers\ArrayHelper::filter()
      */
     public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
@@ -361,8 +364,8 @@ abstract class Target extends Component
      */
     protected function getTime($timestamp)
     {
-        list($timestamp, $usec) = explode('.', StringHelper::floatToString($timestamp));
+        $parts = explode('.', StringHelper::floatToString($timestamp));
 
-        return date('Y-m-d H:i:s', $timestamp) . ($this->microtime ? ('.' . $usec) : '');
+        return date('Y-m-d H:i:s', $parts[0]) . ($this->microtime && isset($parts[1]) ? ('.' . $parts[1]) : '');
     }
 }

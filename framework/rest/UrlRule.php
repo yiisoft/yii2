@@ -141,7 +141,7 @@ class UrlRule extends CompositeUrlRule
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -164,7 +164,7 @@ class UrlRule extends CompositeUrlRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function createRules()
     {
@@ -214,7 +214,7 @@ class UrlRule extends CompositeUrlRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parseRequest($manager, $request)
     {
@@ -225,7 +225,7 @@ class UrlRule extends CompositeUrlRule
                     /* @var $rule WebUrlRule */
                     $result = $rule->parseRequest($manager, $request);
                     if (YII_DEBUG) {
-                        Yii::trace([
+                        Yii::debug([
                             'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                             'match' => $result !== false,
                             'parent' => self::className(),
@@ -242,7 +242,7 @@ class UrlRule extends CompositeUrlRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createUrl($manager, $route, $params)
     {

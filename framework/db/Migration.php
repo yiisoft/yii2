@@ -93,7 +93,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.6
      */
     protected function getDb()
@@ -502,7 +502,7 @@ class Migration extends Component implements MigrationInterface
     /**
      * Builds a SQL statement for adding comment to table.
      *
-     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $table the table to be commented. The table name will be properly quoted by the method.
      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
      * @since 2.0.8
      */

@@ -17,11 +17,17 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     protected $driverName = 'sqlite';
 
+    public function testGetSchemaNames()
+    {
+        $this->markTestSkipped('Schemas are not supported in SQLite.');
+    }
+
     public function getExpectedColumns()
     {
         $columns = parent::getExpectedColumns();
         unset($columns['enum_col']);
         unset($columns['bit_col']);
+        unset($columns['json_col']);
         $columns['int_col']['dbType'] = 'integer';
         $columns['int_col']['size'] = null;
         $columns['int_col']['precision'] = null;

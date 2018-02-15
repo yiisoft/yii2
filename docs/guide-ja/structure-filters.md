@@ -83,7 +83,7 @@ class ActionTimeFilter extends ActionFilter
     public function afterAction($action, $result)
     {
         $time = microtime(true) - $this->_startTime;
-        Yii::trace("アクション '{$action->uniqueId}' は $time 秒を消費。");
+        Yii::debug("アクション '{$action->uniqueId}' は $time 秒を消費。");
         return parent::afterAction($action, $result);
     }
 }

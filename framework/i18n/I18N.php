@@ -110,7 +110,7 @@ class I18N extends Component
             return $message;
         }
 
-        if (preg_match('~{\s*[\w]+\s*,~u', $message)) {
+        if (preg_match('~{\s*[\w.]+\s*,~u', $message)) {
             $formatter = $this->getMessageFormatter();
             $result = $formatter->format($message, $params, $language);
             if ($result === false) {

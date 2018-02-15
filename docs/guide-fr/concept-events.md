@@ -186,7 +186,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' is inserted');
+    Yii::debug(get_class($event->sender) . ' is inserted');
 });
 ```
 
@@ -263,7 +263,7 @@ Pour gérer l'évenement `EVENT_DANCE` déclenché par n'importe laquelle de ces
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
+    Yii::debug(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
 });
 ```
 

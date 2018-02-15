@@ -63,7 +63,7 @@ class RateLimiter extends ActionFilter
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -76,7 +76,7 @@ class RateLimiter extends ActionFilter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -85,7 +85,7 @@ class RateLimiter extends ActionFilter
         }
 
         if ($this->user instanceof RateLimitInterface) {
-            Yii::trace('Check rate limit', __METHOD__);
+            Yii::debug('Check rate limit', __METHOD__);
             $this->checkRateLimit($this->user, $this->request, $this->response, $action);
         } elseif ($this->user) {
             Yii::info('Rate limit skipped: "user" does not implement RateLimitInterface.', __METHOD__);
@@ -106,10 +106,10 @@ class RateLimiter extends ActionFilter
      */
     public function checkRateLimit($user, $request, $response, $action)
     {
-        $current = time();
-
         list($limit, $window) = $user->getRateLimit($request, $action);
         list($allowance, $timestamp) = $user->loadAllowance($request, $action);
+
+        $current = time();
 
         $allowance += (int) (($current - $timestamp) * $limit / $window);
         if ($allowance > $limit) {
@@ -123,7 +123,7 @@ class RateLimiter extends ActionFilter
         }
 
         $user->saveAllowance($request, $action, $allowance - 1, $current);
-        $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance) * $window / $limit));
+        $this->addRateLimitHeaders($response, $limit, $allowance - 1, (int) (($limit - $allowance + 1) * $window / $limit));
     }
 
     /**

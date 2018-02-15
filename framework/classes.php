@@ -31,6 +31,7 @@ return [
   'yii\base\Exception' => YII2_PATH . '/base/Exception.php',
   'yii\base\ExitException' => YII2_PATH . '/base/ExitException.php',
   'yii\base\InlineAction' => YII2_PATH . '/base/InlineAction.php',
+  'yii\base\InvalidArgumentException' => YII2_PATH . '/base/InvalidArgumentException.php',
   'yii\base\InvalidCallException' => YII2_PATH . '/base/InvalidCallException.php',
   'yii\base\InvalidConfigException' => YII2_PATH . '/base/InvalidConfigException.php',
   'yii\base\InvalidParamException' => YII2_PATH . '/base/InvalidParamException.php',

@@ -91,6 +91,7 @@ class ColumnSchemaBuilder extends BaseObject
         Schema::TYPE_CHAR => self::CATEGORY_STRING,
         Schema::TYPE_STRING => self::CATEGORY_STRING,
         Schema::TYPE_TEXT => self::CATEGORY_STRING,
+        Schema::TYPE_TINYINT => self::CATEGORY_NUMERIC,
         Schema::TYPE_SMALLINT => self::CATEGORY_NUMERIC,
         Schema::TYPE_INTEGER => self::CATEGORY_NUMERIC,
         Schema::TYPE_BIGINT => self::CATEGORY_NUMERIC,

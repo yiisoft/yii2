@@ -111,6 +111,30 @@ But there are other installation options available:
   you may consider installing the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
 
+Installing Assets <span id="installing-assets"></span>
+-----------------
+
+Yii relies on [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) packages for the asset (CSS and JavaScript) libraries installation.
+It uses Composer to obtain these libraries, allowing PHP and CSS/JavaScript package versions to resolve at the same time.
+This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
+Please refer to [Assets documentation](structure-assets.md) for more details.
+
+You may want to either manage your assets via native Bower/NPM client, use CDN or avoid assets installation entirely.
+In order to prevent assets installation via Composer, add the following lines to your 'composer.json':
+
+```json
+"replace": {
+    "bower-asset/jquery": ">=1.11.0",
+    "bower-asset/inputmask": ">=3.2.0",
+    "bower-asset/punycode": ">=1.3.0",
+    "bower-asset/yii2-pjax": ">=2.0.0"
+},
+```
+
+> Note: in case of bypassing asset installation via Composer, you are responsible for the assets installation and resolving
+> version collisions. Be prepared for possible inconsistencies among asset files from different extensions.
+
+
 Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
@@ -212,7 +236,7 @@ DocumentRoot "path/to/basic/web"
 
 To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](http://php.net/install.fpm).
 You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
-`basic/web` and `mysite.local` with the actual hostname to serve.
+`basic/web` and `mysite.test` with the actual hostname to serve.
 
 ```nginx
 server {
@@ -222,7 +246,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

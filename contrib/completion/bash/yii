@@ -15,6 +15,7 @@ _yii()
     local cur opts yii command
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
     yii="${COMP_WORDS[0]}"
 
     # exit if ./yii does not exist
@@ -31,9 +32,10 @@ _yii()
     [[ $cur == $command ]] && state="command"
     [[ $cur != $command ]] && state="option"
     [[ $cur = *=* ]] && state="value"
+    [[ $prev == "help" ]] && state="help"
 
     case $state in
-        command)
+        command|help)
             # complete command/route if not given
             # fetch available commands from ./yii help/list command
             opts=$($yii help/list 2> /dev/null)

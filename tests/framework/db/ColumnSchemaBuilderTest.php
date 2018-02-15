@@ -70,7 +70,7 @@ abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
         $builder = $this->getColumnSchemaBuilder($type, $length);
         foreach ($calls as $call) {
             $method = array_shift($call);
-            call_user_func_array([$builder, $method], $call);
+            \call_user_func_array([$builder, $method], $call);
         }
 
         self::assertEquals($expected, $builder->__toString());

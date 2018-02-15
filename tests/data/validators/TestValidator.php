@@ -18,7 +18,7 @@ class TestValidator extends Validator
     {
         $this->markAttributeValidated($attribute);
         if ($this->_setErrorOnValidateAttribute == true) {
-            $this->addError($object, $attribute, sprintf('%s##%s', $attribute, get_class($object)));
+            $this->addError($object, $attribute, sprintf('%s##%s', $attribute, \get_class($object)));
         }
     }
 

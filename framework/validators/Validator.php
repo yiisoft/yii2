@@ -227,7 +227,7 @@ class Validator extends Component
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -316,7 +316,21 @@ class Validator extends Component
      * Validates a value.
      * A validator class can implement this method to support data validation out of the context of a data model.
      * @param mixed $value the data value to be validated.
-     * @return array|null the error message and the parameters to be inserted into the error message.
+     * @return array|null the error message and the array of parameters to be inserted into the error message.
+     * ```php
+     * if (!$valid) {
+     *     return [$this->message, [
+     *         'param1' => $this->param1,
+     *         'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
+     *         'mimeTypes' => implode(', ', $this->mimeTypes),
+     *         'param4' => 'etc...',
+     *     ]];
+     * }
+     *
+     * return null;
+     * ```
+     * for this example `message` template can contain `{param1}`, `{formattedLimit}`, `{mimeTypes}`, `{param4}`
+     *
      * Null should be returned if the data is valid.
      * @throws NotSupportedException if the validator does not supporting data validation without a model
      */

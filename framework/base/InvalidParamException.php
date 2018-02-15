@@ -12,6 +12,7 @@ namespace yii\base;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @deprecated 2.0.14 Use [[InvalidArgumentException]]
  */
 class InvalidParamException extends \BadMethodCallException
 {

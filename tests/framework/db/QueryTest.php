@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
@@ -21,7 +22,7 @@ abstract class QueryTest extends DatabaseTestCase
         $query->select('*');
         $this->assertEquals(['*'], $query->select);
         $this->assertNull($query->distinct);
-        $this->assertEquals(null, $query->selectOption);
+        $this->assertNull($query->selectOption);
 
         $query = new Query();
         $query->select('id, name', 'something')->distinct(true);
@@ -37,6 +38,30 @@ abstract class QueryTest extends DatabaseTestCase
         $query->select('id, name');
         $query->addSelect('email');
         $this->assertEquals(['id', 'name', 'email'], $query->select);
+
+        $query = new Query();
+        $query->select('name, lastname');
+        $query->addSelect('name');
+        $this->assertEquals(['name', 'lastname'], $query->select);
+
+        $query = new Query();
+        $query->addSelect(['*', 'abc']);
+        $query->addSelect(['*', 'bca']);
+        $this->assertEquals(['*', 'abc', 'bca'], $query->select);
+
+        $query = new Query();
+        $query->addSelect(['field1 as a', 'field 1 as b']);
+        $this->assertEquals(['field1 as a', 'field 1 as b'], $query->select);
+
+        $query = new Query();
+        $query->select(['name' => 'firstname', 'lastname']);
+        $query->addSelect(['firstname', 'surname' => 'lastname']);
+        $query->addSelect(['firstname', 'lastname']);
+        $this->assertEquals(['name' => 'firstname', 'lastname', 'firstname', 'surname' => 'lastname'], $query->select);
+
+        $query = new Query();
+        $query->select('name, name, name as X, name as X');
+        $this->assertEquals(['name', 'name as X'], array_values($query->select));
     }
 
     public function testFrom()
@@ -44,6 +69,14 @@ abstract class QueryTest extends DatabaseTestCase
         $query = new Query();
         $query->from('user');
         $this->assertEquals(['user'], $query->from);
+    }
+
+    public function testFromTableIsArrayWithExpression()
+    {
+        $query = new Query();
+        $tables = new Expression('(SELECT id,name FROM user) u');
+        $query->from($tables);
+        $this->assertInstanceOf('\yii\db\Expression', $query->from[0]);
     }
 
     use GetTablesAliasTestTrait;
@@ -426,7 +459,7 @@ abstract class QueryTest extends DatabaseTestCase
      */
     public function testCountHavingWithoutGroupBy()
     {
-        if (!in_array($this->driverName, ['mysql'])) {
+        if (!\in_array($this->driverName, ['mysql'])) {
             $this->markTestSkipped("{$this->driverName} does not support having without group by.");
         }
 
@@ -574,5 +607,72 @@ abstract class QueryTest extends DatabaseTestCase
             'foo',
             '%ba',
         ]));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15355
+     */
+    public function testExpressionInFrom()
+    {
+        $db = $this->getConnection();
+        $query = (new Query())
+            ->from(new \yii\db\Expression('(SELECT id, name, email, address, status FROM customer) c'))
+            ->where(['status' => 2]);
+
+        $result = $query->one($db);
+        $this->assertEquals('user3', $result['name']);
+    }
+
+    public function testQueryCache()
+    {
+        $db = $this->getConnection();
+        $db->enableQueryCache = true;
+        $db->queryCache = new ArrayCache();
+        $query = (new Query())
+            ->select(['name'])
+            ->from('customer');
+        $update = $db->createCommand('UPDATE {{customer}} SET [[name]] = :name WHERE [[id]] = :id');
+
+        $this->assertEquals('user1', $query->where(['id' => 1])->scalar($db), 'Asserting initial value');
+
+        // No cache
+        $update->bindValues([':id' => 1, ':name' => 'user11'])->execute();
+        $this->assertEquals('user11', $query->where(['id' => 1])->scalar($db), 'Query reflects DB changes when caching is disabled');
+
+        // Connection cache
+        $db->cache(function (Connection $db) use ($query, $update) {
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db), 'Asserting initial value for user #2');
+
+            $update->bindValues([':id' => 2, ':name' => 'user22'])->execute();
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db), 'Query does NOT reflect DB changes when wrapped in connection caching');
+
+            $db->noCache(function () use ($query, $db) {
+                $this->assertEquals('user22', $query->where(['id' => 2])->scalar($db), 'Query reflects DB changes when wrapped in connection caching and noCache simultaneously');
+            });
+
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db), 'Cache does not get changes after getting newer data from DB in noCache block.');
+        }, 10);
+
+
+        $db->enableQueryCache = false;
+        $db->cache(function ($db) use ($query, $update) {
+            $this->assertEquals('user22', $query->where(['id' => 2])->scalar($db), 'When cache is disabled for the whole connection, Query inside cache block does not get cached');
+            $update->bindValues([':id' => 2, ':name' => 'user2'])->execute();
+            $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db));
+        }, 10);
+
+
+        $db->enableQueryCache = true;
+        $query->cache();
+
+        $this->assertEquals('user11', $query->where(['id' => 1])->scalar($db));
+        $update->bindValues([':id' => 1, ':name' => 'user1'])->execute();
+        $this->assertEquals('user11', $query->where(['id' => 1])->scalar($db), 'When both Connection and Query have cache enabled, we get cached value');
+        $this->assertEquals('user1', $query->noCache()->where(['id' => 1])->scalar($db), 'When Query has disabled cache, we get actual data');
+
+        $db->cache(function (Connection $db) use ($query, $update) {
+            $this->assertEquals('user1', $query->noCache()->where(['id' => 1])->scalar($db));
+            $this->assertEquals('user11', $query->cache()->where(['id' => 1])->scalar($db));
+        }, 10);
     }
 }

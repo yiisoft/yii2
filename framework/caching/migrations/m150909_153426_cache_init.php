@@ -32,7 +32,7 @@ class m150909_153426_cache_init extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -54,7 +54,7 @@ class m150909_153426_cache_init extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
