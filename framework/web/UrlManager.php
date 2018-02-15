@@ -251,7 +251,7 @@ class UrlManager extends Component
             $builtRules[] = $rule;
         }
 
-        $this->cacheBuiltRules($ruleDeclarations, $builtRules);
+        $this->setBuiltRulesCache($ruleDeclarations, $builtRules);
 
         return $builtRules;
     }
@@ -265,13 +265,13 @@ class UrlManager extends Component
      * @return bool whether the value is successfully stored into cache
      * @since 2.0.14
      */
-    protected function cacheBuiltRules($ruleDeclarations, $builtRules)
+    protected function setBuiltRulesCache($ruleDeclarations, $builtRules)
     {
         if (!$this->cache instanceof CacheInterface) {
             return false;
         }
 
-        return $this->cache->set([$this->cacheKey, $ruleDeclarations], $builtRules);
+        return $this->cache->set([$this->cacheKey, $this->ruleConfig, $ruleDeclarations], $builtRules);
     }
 
     /**
@@ -289,7 +289,7 @@ class UrlManager extends Component
             return false;
         }
 
-        return $this->cache->get([$this->cacheKey, $ruleDeclarations]);
+        return $this->cache->get([$this->cacheKey, $this->ruleConfig, $ruleDeclarations]);
     }
 
     /**
