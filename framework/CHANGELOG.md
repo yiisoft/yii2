@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Bug #15644: Avoid wrong default selection on a dropdown, checkbox list, and radio list, when a option has a key equals to zero (berosoboy)
 - Enh #14538: Added `yii\behaviors\AttributeTypecastBehavior::typecastAfterFind` property (littlefuntik, silverfire)
 - Enh #14254: add an option to specify whether validator is forced to always use master DB for `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` (rossoneri, samdark)
 - Enh #15272: Removed type attribute from script tag (aleksbelic)
