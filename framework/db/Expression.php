@@ -28,7 +28,7 @@ namespace yii\db;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Expression extends \yii\base\BaseObject
+class Expression extends \yii\base\BaseObject implements ExpressionInterface
 {
     /**
      * @var string the DB expression
@@ -40,7 +40,6 @@ class Expression extends \yii\base\BaseObject
      * are the corresponding parameter values.
      */
     public $params = [];
-
 
     /**
      * Constructor.
@@ -57,7 +56,7 @@ class Expression extends \yii\base\BaseObject
 
     /**
      * String magic method.
-     * @return string the DB expression
+     * @return string the DB expression.
      */
     public function __toString()
     {

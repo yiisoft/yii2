@@ -269,7 +269,7 @@ class UrlManager extends Component
             foreach ($this->rules as $rule) {
                 $result = $rule->parseRequest($this, $request);
                 if (YII_DEBUG) {
-                    Yii::trace([
+                    Yii::debug([
                         'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                         'match' => $result !== false,
                         'parent' => null,
@@ -284,7 +284,7 @@ class UrlManager extends Component
                 return false;
             }
 
-            Yii::trace('No matching URL rules. Using default URL parsing logic.', __METHOD__);
+            Yii::debug('No matching URL rules. Using default URL parsing logic.', __METHOD__);
 
             $suffix = (string) $this->suffix;
             $pathInfo = $request->getPathInfo();
@@ -314,7 +314,7 @@ class UrlManager extends Component
             return [$pathInfo, []];
         }
 
-        Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
+        Yii::debug('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
         $route = $request->getQueryParam($this->routeParam, '');
         if (is_array($route)) {
             $route = '';

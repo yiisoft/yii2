@@ -275,6 +275,16 @@ trait ActiveRecordTestTrait
         $this->assertEquals('user1', $customer->name);
     }
 
+    public function testRefresh_querySetAlias_findRecord()
+    {
+        $customer = new \yiiunit\data\ar\CustomerWithAlias();
+        $customer->id = 1;
+
+        $customer->refresh();
+
+        $this->assertEquals(1, $customer->id);
+    }
+
     public function testEquals()
     {
         /* @var $customerClass \yii\db\ActiveRecordInterface */
@@ -1105,7 +1115,7 @@ trait ActiveRecordTestTrait
         Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
             /* @var $ar BaseActiveRecord */
             $ar = $event->sender;
-            $afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+            $afterFindCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
 
         $customer = $customerClass::findOne(1);
@@ -1160,7 +1170,7 @@ trait ActiveRecordTestTrait
         Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_REFRESH, function ($event) use (&$afterRefreshCalls) {
             /* @var $ar BaseActiveRecord */
             $ar = $event->sender;
-            $afterRefreshCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+            $afterRefreshCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
 
         $customer = $customerClass::findOne(1);

@@ -387,8 +387,8 @@ class MyForm extends Model
 
     public function validateCountry($attribute, $params, $validator)
     {
-        if (!in_array($this->$attribute, ['USA', 'Web'])) {
-            $this->addError($attribute, 'The country must be either "USA" or "Web".');
+        if (!in_array($this->$attribute, ['USA', 'Indonesia'])) {
+            $this->addError($attribute, 'The country must be either "USA" or "Indonesia".');
         }
     }
 }
@@ -422,7 +422,8 @@ fails the validation, call [[yii\base\Model::addError()]] to save the error mess
 with [inline validators](#inline-validators).
 
 
-For example the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
+For example, the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
+In this case we can use [[yii\validators\Validator::addError()]] to set customized message for the model.
 
 ```php
 namespace app\components;
@@ -433,8 +434,8 @@ class CountryValidator extends Validator
 {
     public function validateAttribute($model, $attribute)
     {
-        if (!in_array($model->$attribute, ['USA', 'Web'])) {
-            $this->addError($model, $attribute, 'The country must be either "USA" or "Web".');
+        if (!in_array($model->$attribute, ['USA', 'Indonesia'])) {
+            $this->addError($model, $attribute, 'The country must be either "{country1}" or "{country2}".', ['country1' => 'USA', 'country2' => 'Indonesia']);
         }
     }
 }

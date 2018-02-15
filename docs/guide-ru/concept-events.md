@@ -188,7 +188,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' добавлен');
+    Yii::debug(get_class($event->sender) . ' добавлен');
 });
 ```
 
@@ -266,7 +266,7 @@ class Developer extends Component implements DanceEventInterface
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
+    Yii::debug(get_class($event->sender) . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
 });
 ```
 

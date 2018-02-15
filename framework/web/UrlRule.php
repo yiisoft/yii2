@@ -435,7 +435,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             $route = $this->route;
         }
 
-        Yii::trace("Request parsed with URL rule: {$this->name}", __METHOD__);
+        Yii::debug("Request parsed with URL rule: {$this->name}", __METHOD__);
 
         if ($normalized) {
             // pathInfo was changed by normalizer - we need also normalize route
