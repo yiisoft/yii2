@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Bug #15644: Avoid wrong default selection on a dropdown, checkbox list, and radio list, when a option has a key equals to zero (berosoboy)
 - Enh #13618: Active record now resets related models after corresponding attributes updates (Kolyunya, rob006)
 - Bug #14859: Fixed OCI DB `defaultSchema` failure when `masterConfig` is used (lovezhl456)
 - Bug #15031: Fixed incorrect string type length detection for OCI DB schema (Murolike)
