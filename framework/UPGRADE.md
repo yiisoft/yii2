@@ -72,6 +72,10 @@ space to customization. In case you rely on that property or override any of def
 special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
 to update your code.
 
+* Protected method `yii\db\ActiveQueryTrait::createModels()` does not apply indexes as defined in `indexBy` property anymore.  
+In case you override default ActiveQuery implementation and relied on that behavior, call `yii\db\Query::populate()`
+method instead to index query results according to the `indexBy` parameter.
+
 * Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
 
 Upgrade from Yii 2.0.12

@@ -1590,6 +1590,26 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
+     * https://github.com/yiisoft/yii2/pull/13891
+     */
+    public function testIndexByAfterLoadingRelations()
+    {
+        $orderClass = $this->getOrderClass();
+
+        $orderClass::find()->with('customer')->indexBy(function(Order $order) {
+            $this->assertTrue($order->isRelationPopulated('customer'));
+            $this->assertNotEmpty($order->customer->id);
+
+            return $order->customer->id;
+        })->all();
+
+        $orders = $orderClass::find()->with('customer')->indexBy('customer.id')->all();
+        foreach ($orders as $customer_id => $order) {
+            $this->assertEquals($customer_id, $order->customer_id);
+        }
+    }
+
+    /**
      * Verify that {{}} are not going to be replaced in parameters.
      */
     public function testNoTablenameReplacement()

@@ -447,11 +447,10 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model = WithCustomer::find()->one();
         try {
             $validator->validateAttribute($model, 'email');
+            $this->assertTrue(true);
         } catch (\Exception $exception) {
             $this->fail('Query is crashed because "with" relation cannot be loaded');
         }
-
-
     }
     
     public function testForceMaster()
