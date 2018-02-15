@@ -11,6 +11,7 @@ namespace yiiunit\framework\rbac;
  * SqliteManagerTest.
  * @group db
  * @group rbac
+ * @group sqlite
  */
 class SqliteManagerTest extends DbManagerTestCase
 {

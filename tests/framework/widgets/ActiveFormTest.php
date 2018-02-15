@@ -116,7 +116,7 @@ HTML
         $model = new DynamicModel(['name']);
         $model->addRule(['name'], 'required');
 
-        $view = $this->getMock(View::className());
+        $view = $this->getMockBuilder(View::className())->getMock();
         $view->method('registerJs')->with($this->matches("jQuery('#w0').yiiActiveForm([], {\"validateOnSubmit\":false});"));
         $view->method('registerAssetBundle')->willReturn(true);
 
@@ -133,5 +133,52 @@ HTML
         $form->field($model, 'name');
         $form::end();
         ob_get_clean();
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15536
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        $form = ActiveForm::begin(
+            [
+                'action' => '/something',
+                'enableClientScript' => false,
+                'on init' => function () use (&$initTriggered) {
+                    $initTriggered = true;
+                }
+            ]
+        );
+        ActiveForm::end();
+        $this->assertTrue($initTriggered);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15476
+     */
+    public function testValidationStateOnInput()
+    {
+        $model = new DynamicModel(['name']);
+        $model->addError('name', 'I have an error!');
+        ob_start();
+        $form = ActiveForm::begin([
+            'action' => '/something',
+            'enableClientScript' => false,
+            'validationStateOn' => ActiveForm::VALIDATION_STATE_ON_INPUT,
+        ]);
+        ActiveForm::end();
+        ob_end_clean();
+
+        $this->assertEqualsWithoutLE(<<<'EOF'
+<div class="form-group field-dynamicmodel-name">
+<label class="control-label" for="dynamicmodel-name">Name</label>
+<input type="text" id="dynamicmodel-name" class="form-control has-error" name="DynamicModel[name]" aria-invalid="true">
+
+<div class="help-block">I have an error!</div>
+</div>
+EOF
+        , (string) $form->field($model, 'name'));
+
     }
 }

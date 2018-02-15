@@ -42,3 +42,7 @@ Misc
 ### Exception Hierarchy
 
 ![Yii Framework Exception Hierarchy](exception_hierarchy.png)
+
+### Database testing
+
+[Here](https://gist.github.com/sergeymakinen/0696a5952f160ea28d7b64c3adfecf6f) is config for test environments for all supported Yii databases.

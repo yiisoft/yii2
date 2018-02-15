@@ -8,7 +8,7 @@
 namespace yii\helpers;
 
 use Yii;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * BaseUrl provides concrete implementation for [[Url]].
@@ -91,7 +91,7 @@ class BaseUrl
      *   for protocol-relative URL).
      *
      * @return string the generated URL
-     * @throws InvalidParamException a relative route is given while there is no active controller
+     * @throws InvalidArgumentException a relative route is given while there is no active controller
      */
     public static function toRoute($route, $scheme = false)
     {
@@ -122,7 +122,7 @@ class BaseUrl
      *
      * @param string $route the route. This can be either an absolute route or a relative route.
      * @return string normalized route suitable for UrlManager
-     * @throws InvalidParamException a relative route is given while there is no active controller
+     * @throws InvalidArgumentException a relative route is given while there is no active controller
      */
     protected static function normalizeRoute($route)
     {
@@ -134,7 +134,7 @@ class BaseUrl
 
         // relative route
         if (Yii::$app->controller === null) {
-            throw new InvalidParamException("Unable to resolve the relative route: $route. No active controller is available.");
+            throw new InvalidArgumentException("Unable to resolve the relative route: $route. No active controller is available.");
         }
 
         if (strpos($route, '/') === false) {
@@ -206,7 +206,7 @@ class BaseUrl
      *   for protocol-relative URL).
      *
      * @return string the generated URL
-     * @throws InvalidParamException a relative route is given while there is no active controller
+     * @throws InvalidArgumentException a relative route is given while there is no active controller
      */
     public static function to($url = '', $scheme = false)
     {
@@ -429,7 +429,7 @@ class BaseUrl
     {
         $currentParams = Yii::$app->getRequest()->getQueryParams();
         $currentParams[0] = '/' . Yii::$app->controller->getRoute();
-        $route = array_replace($currentParams, $params);
+        $route = array_replace_recursive($currentParams, $params);
         return static::toRoute($route, $scheme);
     }
 

@@ -40,6 +40,7 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        ['css/print.css', 'media' => 'print'],
     ];
     public $js = [
     ];
@@ -68,17 +69,18 @@ explanation about the properties of [[yii\web\AssetBundle]] can be found in the 
   [[yii\web\AssetBundle::basePath|basePath]]. Like [[yii\web\AssetBundle::basePath|basePath]],
   if you specify the [[yii\web\AssetBundle::sourcePath|sourcePath]] property, the [asset manager](#asset-manager)
   will publish the assets and overwrite this property accordingly. [Path aliases](concept-aliases.md) can be used here.
-* [[yii\web\AssetBundle::js|js]]: an array listing the JavaScript files contained in this bundle. Note that only
-  forward slash "/" should be used as directory separators. Each JavaScript file can be specified in one of the
-  following two formats:
+* [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. Note that only forward slash "/"
+  should be used as directory separators. Each file can be specified on its own as a string or in an array together with
+  attribute tags and their values.
+* [[yii\web\AssetBundle::js|js]]: an array listing the JavaScript files contained in this bundle. The format of this array
+  is the same as that of [[yii\web\AssetBundle::css|css]]. Each JavaScript file can be specified in one of the following two
+  formats:
   - a relative path representing a local JavaScript file (e.g. `js/main.js`). The actual path of the file
     can be determined by prepending [[yii\web\AssetManager::basePath]] to the relative path, and the actual URL
     of the file can be determined by prepending [[yii\web\AssetManager::baseUrl]] to the relative path.
   - an absolute URL representing an external JavaScript file. For example,
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-* [[yii\web\AssetBundle::css|css]]: an array listing the CSS files contained in this bundle. The format of this array
-  is the same as that of [[yii\web\AssetBundle::js|js]].
 * [[yii\web\AssetBundle::depends|depends]]: an array listing the names of the asset bundles that this bundle depends on
   (to be explained shortly).
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: specifies the options that will be passed to the
@@ -143,8 +145,8 @@ will be passed to the [[yii\web\View::registerCssFile()]] and [[yii\web\View::re
 they are called by the [view](structure-views.md) to include CSS and JavaScript files.
 
 > Note: The options you set in a bundle class apply to *every* CSS/JavaScript file in the bundle. If you want to
-  use different options for different files, you should create separate asset bundles, and use one set of options
-  in each bundle.
+  use different options for different files, you should use the format mentioned [[yii\web\AssetBundle::css|above]] or create
+  separate asset bundles, and use one set of options in each bundle.
 
 For example, to conditionally include a CSS file for browsers that are IE9 or below, you can use the following option:
 
@@ -192,8 +194,8 @@ class FontAwesomeAsset extends AssetBundle
     ];
     public $publishOptions = [
         'only' => [
-            'fonts/',
-            'css/',
+            'fonts/*',
+            'css/*',
         ]
     ];
 }  
@@ -248,8 +250,8 @@ Visit [asset-packagist.org](https://asset-packagist.org) to know, how it works.
 
 ##### Using fxp/composer-asset-plugin
 
-Comparing to to using asset-packagist, composer-asset-plugin does not require to change application config. Instead, it
-requires to install a special Composer plugin globally by running the following command:
+Compared to asset-packagist, composer-asset-plugin does not require any changes to application config. Instead, it
+requires global installation of a special Composer plugin by running the following command:
 
 ```bash
 composer global require "fxp/composer-asset-plugin:^1.4.1"

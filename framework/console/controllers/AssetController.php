@@ -494,7 +494,7 @@ class AssetController extends Controller
  */
 return {$array};
 EOD;
-        if (!file_put_contents($bundleFile, $bundleFileContent)) {
+        if (!file_put_contents($bundleFile, $bundleFileContent, LOCK_EX)) {
             throw new Exception("Unable to write output bundle configuration at '{$bundleFile}'.");
         }
         $this->stdout("Output bundle configuration created at '{$bundleFile}'.\n", Console::FG_GREEN);
@@ -568,9 +568,11 @@ EOD;
     {
         $content = '';
         foreach ($inputFiles as $file) {
+            // Add a semicolon to source code if trailing semicolon missing.
+            // Notice: It needs a new line before `;` to avoid affection of line comment. (// ...;)
             $fileContent = rtrim(file_get_contents($file));
             if (substr($fileContent, -1) !== ';') {
-                $fileContent .= ';';
+                $fileContent .= "\n;";
             }
             $content .= "/*** BEGIN FILE: $file ***/\n"
                 . $fileContent . "\n"
@@ -736,7 +738,7 @@ EOD;
                 return ExitCode::OK;
             }
         }
-        if (!file_put_contents($configFile, $template)) {
+        if (!file_put_contents($configFile, $template, LOCK_EX)) {
             throw new Exception("Unable to write template file '{$configFile}'.");
         }
 

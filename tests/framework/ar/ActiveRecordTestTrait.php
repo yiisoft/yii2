@@ -84,8 +84,7 @@ trait ActiveRecordTestTrait
         $customer = $customerClass::findOne(5);
         $this->assertNull($customer);
         $customer = $customerClass::findOne(['id' => [5, 6, 1]]);
-        // can't use assertCount() here since it will count model attributes instead
-        $this->assertEquals(1, count($customer));
+        $this->assertInstanceOf($customerClass, $customer);
         $customer = $customerClass::find()->where(['id' => [5, 6, 1]])->one();
         $this->assertNotNull($customer);
 
@@ -274,6 +273,16 @@ trait ActiveRecordTestTrait
         $customer->name = 'to be refreshed';
         $this->assertTrue($customer->refresh());
         $this->assertEquals('user1', $customer->name);
+    }
+
+    public function testRefresh_querySetAlias_findRecord()
+    {
+        $customer = new \yiiunit\data\ar\CustomerWithAlias();
+        $customer->id = 1;
+
+        $customer->refresh();
+
+        $this->assertEquals(1, $customer->id);
     }
 
     public function testEquals()
@@ -1106,7 +1115,7 @@ trait ActiveRecordTestTrait
         Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
             /* @var $ar BaseActiveRecord */
             $ar = $event->sender;
-            $afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+            $afterFindCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
 
         $customer = $customerClass::findOne(1);
@@ -1161,7 +1170,7 @@ trait ActiveRecordTestTrait
         Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_REFRESH, function ($event) use (&$afterRefreshCalls) {
             /* @var $ar BaseActiveRecord */
             $ar = $event->sender;
-            $afterRefreshCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+            $afterRefreshCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
 
         $customer = $customerClass::findOne(1);

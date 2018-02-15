@@ -32,19 +32,25 @@ use yii\helpers\Console;
  * or
  *
  * ```php
- * echo Table::widget(
+ * echo Table::widget([
  *     'headers' => ['test1', 'test2', 'test3'],
  *     'rows' => [
  *         ['col1', 'col2', 'col3'],
  *         ['col1', 'col2', ['col3-0', 'col3-1', 'col3-2']],
  *     ],
- * );
+ * ]);
+ *
+ * @property string $listPrefix List prefix. This property is write-only.
+ * @property int $screenWidth Screen width. This property is write-only.
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
  * @since 2.0.13
  */
 class Table extends Widget
 {
+    const DEFAULT_CONSOLE_SCREEN_WIDTH = 120;
+    const CONSOLE_SCROLLBAR_OFFSET = 3;
+
     const CHAR_TOP = 'top';
     const CHAR_TOP_MID = 'top-mid';
     const CHAR_TOP_LEFT = 'top-left';
@@ -102,6 +108,7 @@ class Table extends Widget
      */
     private $_listPrefix = '• ';
 
+
     /**
      * Set table headers.
      *
@@ -110,7 +117,7 @@ class Table extends Widget
      */
     public function setHeaders(array $headers)
     {
-        $this->_headers = $headers;
+        $this->_headers = array_values($headers);
         return $this;
     }
 
@@ -122,7 +129,7 @@ class Table extends Widget
      */
     public function setRows(array $rows)
     {
-        $this->_rows = $rows;
+        $this->_rows = array_map('array_values', $rows);
         return $this;
     }
 
@@ -221,6 +228,7 @@ class Table extends Widget
 
         $buffer = '';
         $arrayPointer = [];
+        $finalChunk = [];
         for ($i = 0, ($max = $this->calculateRowHeight($row)) ?: $max = 1; $i < $max; $i++) {
             $buffer .= $spanLeft . ' ';
             foreach ($size as $index => $cellSize) {
@@ -294,7 +302,7 @@ class Table extends Widget
     {
         $this->_columnWidths = $columns = [];
         $totalWidth = 0;
-        $screenWidth = $this->getScreenWidth() - 3;
+        $screenWidth = $this->getScreenWidth() - self::CONSOLE_SCROLLBAR_OFFSET;
 
         for ($i = 0, $count = count($this->_headers); $i < $count; $i++) {
             $columns[] = ArrayHelper::getColumn($this->_rows, $i);
@@ -362,6 +370,7 @@ class Table extends Widget
 
     /**
      * Getting screen width.
+     * If it is not able to determine screen width, default value `123` will be set.
      *
      * @return int screen width
      */
@@ -369,11 +378,10 @@ class Table extends Widget
     {
         if (!$this->_screenWidth) {
             $size = Console::getScreenSize();
-            if (isset($size[0])) {
-                $this->_screenWidth = $size[0];
-            }
+            $this->_screenWidth = isset($size[0])
+                ? $size[0]
+                : self::DEFAULT_CONSOLE_SCREEN_WIDTH + self::CONSOLE_SCROLLBAR_OFFSET;
         }
-
         return $this->_screenWidth;
     }
 }

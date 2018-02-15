@@ -92,7 +92,14 @@ class UniqueValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * @var bool whether this validator is forced to always use master DB
+     * @since 2.0.14
+     */
+    public $forceMasterDb =  true;
+
+
+    /**
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -113,7 +120,7 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -121,7 +128,7 @@ class UniqueValidator extends Validator
         $targetClass = $this->getTargetClass($model);
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
-        $conditions[] = $this->targetAttributeJunction === 'or' ? 'or' : 'and';
+        $conditions = [$this->targetAttributeJunction === 'or' ? 'or' : 'and'];
 
         foreach ($rawConditions as $key => $value) {
             if (is_array($value)) {
@@ -131,8 +138,20 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
-        if ($this->modelExists($targetClass, $conditions, $model)) {
-            if (count($targetAttribute) > 1) {
+        $db = $targetClass::getDb();
+
+        $modelExists = false;
+
+        if ($this->forceMasterDb) {
+            $db->useMaster(function () use ($targetClass, $conditions, $model, &$modelExists) {
+                $modelExists = $this->modelExists($targetClass, $conditions, $model);
+            });
+        } else {
+            $modelExists = $this->modelExists($targetClass, $conditions, $model);
+        }
+
+        if ($modelExists) {
+            if (is_array($targetAttribute) && count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
                 $this->addError($model, $attribute, $this->message);
@@ -174,6 +193,9 @@ class UniqueValidator extends Validator
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
+                
+                // any with relation can't be loaded because related fields are not selected
+                $query->with = null;
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);

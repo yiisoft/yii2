@@ -17,13 +17,13 @@ use yiiunit\framework\db\DatabaseTestCase;
 class DbDependencyTest extends DatabaseTestCase
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $driverName = 'sqlite';
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function setUp()
     {

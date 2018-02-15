@@ -375,6 +375,8 @@ class Container extends Component
             return $reflection->newInstanceArgs($dependencies);
         }
 
+        $config = $this->resolveDependencies($config);
+
         if (!empty($dependencies) && $reflection->implementsInterface('yii\base\Configurable')) {
             // set $config as the last parameter (existing one will be overwritten)
             $dependencies[count($dependencies) - 1] = $config;
@@ -624,7 +626,7 @@ class Container extends Component
     public function setDefinitions(array $definitions)
     {
         foreach ($definitions as $class => $definition) {
-            if (count($definition) === 2 && array_values($definition) === $definition) {
+            if (is_array($definition) && count($definition) === 2 && array_values($definition) === $definition) {
                 $this->set($class, $definition[0], $definition[1]);
                 continue;
             }
@@ -646,7 +648,7 @@ class Container extends Component
     public function setSingletons(array $singletons)
     {
         foreach ($singletons as $class => $definition) {
-            if (count($definition) === 2 && array_values($definition) === $definition) {
+            if (is_array($definition) && count($definition) === 2 && array_values($definition) === $definition) {
                 $this->setSingleton($class, $definition[0], $definition[1]);
                 continue;
             }

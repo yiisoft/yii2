@@ -65,14 +65,12 @@ class Migration extends Component implements MigrationInterface
      * ```
      */
     public $db = 'db';
-
     /**
      * @var int max number of characters of the SQL outputted. Useful for reduction of long statements and making
      * console output more compact.
      * @since 2.0.13
      */
     public $maxSqlOutputLength;
-
     /**
      * @var bool indicates whether the console output should be compacted.
      * If this is set to true, the individual commands ran within the migration will not be output to the console.
@@ -80,6 +78,7 @@ class Migration extends Component implements MigrationInterface
      * @since 2.0.13
      */
     public $compact = false;
+
 
     /**
      * Initializes the migration.
@@ -94,7 +93,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.6
      */
     protected function getDb()
@@ -503,7 +502,7 @@ class Migration extends Component implements MigrationInterface
     /**
      * Builds a SQL statement for adding comment to table.
      *
-     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $table the table to be commented. The table name will be properly quoted by the method.
      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
      * @since 2.0.8
      */
@@ -542,8 +541,8 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Prepares for a command to be executed, and outputs to the console
-     * 
+     * Prepares for a command to be executed, and outputs to the console.
+     *
      * @param string $description the description for the command, to be output to the console.
      * @return float the time before the command is executed, for the time elapsed to be calculated.
      * @since 2.0.13
@@ -557,8 +556,8 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * Finalizes after the command has been executed, and outputs to the console the time elapsed
-     * 
+     * Finalizes after the command has been executed, and outputs to the console the time elapsed.
+     *
      * @param float $time the time before the command was executed.
      * @since 2.0.13
      */

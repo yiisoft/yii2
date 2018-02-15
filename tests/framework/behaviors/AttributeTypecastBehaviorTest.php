@@ -9,6 +9,7 @@ namespace yiiunit\framework\behaviors;
 
 use Yii;
 use yii\base\DynamicModel;
+use yii\base\Event;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\db\ActiveRecord;
 use yiiunit\TestCase;
@@ -114,25 +115,99 @@ class AttributeTypecastBehaviorTest extends TestCase
     /**
      * @depends testTypecast
      */
-    public function testEvents()
+    public function testAfterFindEvent()
+    {
+        $model = new ActiveRecordAttributeTypecast();
+
+        $model->validate();
+        $model->save(false);
+
+        $model->updateAll(['callback' => 'find']);
+        $model->refresh();
+        $this->assertSame('callback: find', $model->callback);
+    }
+
+    /**
+     * @depends testTypecast
+     */
+    public function testAfterValidateEvent()
     {
         $model = new ActiveRecordAttributeTypecast();
 
         $model->callback = 'validate';
         $model->validate();
         $this->assertSame('callback: validate', $model->callback);
+    }
 
+    /**
+     * @depends testTypecast
+     */
+    public function testBeforeSaveEvent()
+    {
+        $model = new ActiveRecordAttributeTypecast();
+
+        $beforeInsertHappened = false;
         $model->callback = 'insert';
+        $model->on(ActiveRecordAttributeTypecast::EVENT_BEFORE_INSERT, function (Event $event) use (&$beforeInsertHappened) {
+            $beforeInsertHappened = true;
+        });
         $model->save(false);
         $this->assertSame('callback: insert', $model->callback);
+        $this->assertTrue($beforeInsertHappened);
+        $beforeInsertHappened = false;
 
+        $beforeUpdateHappened = false;
         $model->callback = 'update';
+        $model->on(ActiveRecordAttributeTypecast::EVENT_BEFORE_UPDATE, function (Event $event) use (&$beforeUpdateHappened) {
+            $beforeUpdateHappened = true;
+        });
         $model->save(false);
         $this->assertSame('callback: update', $model->callback);
+        $this->assertTrue($beforeUpdateHappened);
+        $this->assertFalse($beforeInsertHappened);
+    }
 
-        $model->updateAll(['callback' => 'find']);
-        $model->refresh();
-        $this->assertSame('callback: find', $model->callback);
+    /**
+     * @depends testTypecast
+     */
+    public function testAfterSaveEvent()
+    {
+        $model = new ActiveRecordAttributeTypecast([
+            'typecastAfterSave' => true
+        ]);
+
+        $model->callback = 'insert';
+
+        $beforeInsertHappened = false;
+        $model->on(ActiveRecordAttributeTypecast::EVENT_BEFORE_INSERT, function (Event $event) use (&$beforeInsertHappened) {
+            $beforeInsertHappened = true;
+        });
+        $afterInsertHappened = false;
+        $model->on(ActiveRecordAttributeTypecast::EVENT_AFTER_INSERT, function (Event $event) use (&$afterInsertHappened) {
+            $afterInsertHappened = true;
+        });
+        $model->save(false);
+        $this->assertTrue($beforeInsertHappened);
+        $this->assertTrue($afterInsertHappened);
+        $this->assertSame('callback: callback: insert', $model->callback);
+        $beforeInsertHappened = $afterInsertHappened = false;
+
+
+        $model->callback = 'update';
+        $beforeUpdateHappened = false;
+        $model->on(ActiveRecordAttributeTypecast::EVENT_BEFORE_UPDATE, function (Event $event) use (&$beforeUpdateHappened) {
+            $beforeUpdateHappened = true;
+        });
+        $afterUpdateHappened = false;
+        $model->on(ActiveRecordAttributeTypecast::EVENT_AFTER_UPDATE, function (Event $event) use (&$afterUpdateHappened) {
+            $afterUpdateHappened = true;
+        });
+        $model->save(false);
+        $this->assertSame('callback: callback: update', $model->callback);
+        $this->assertTrue($beforeUpdateHappened);
+        $this->assertTrue($afterUpdateHappened);
+        $this->assertFalse($beforeInsertHappened);
+        $this->assertFalse($afterInsertHappened);
     }
 
     public function testAutoDetectAttributeTypes()
@@ -141,7 +216,7 @@ class AttributeTypecastBehaviorTest extends TestCase
             ->addRule('name', 'string')
             ->addRule('amount', 'integer')
             ->addRule('price', 'number')
-            ->addRule('isActive', 'boolean');
+            ->addRule('!isActive', 'boolean');
 
         $behavior = new AttributeTypecastBehavior();
 
@@ -199,6 +274,8 @@ class AttributeTypecastBehaviorTest extends TestCase
  */
 class ActiveRecordAttributeTypecast extends ActiveRecord
 {
+    public $typecastAfterSave = false;
+
     public function behaviors()
     {
         return [
@@ -216,6 +293,7 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
                 'typecastAfterValidate' => true,
                 'typecastBeforeSave' => true,
                 'typecastAfterFind' => true,
+                'typecastAfterSave' => $this->typecastAfterSave,
             ],
         ];
     }

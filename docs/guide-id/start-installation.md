@@ -189,7 +189,7 @@ DocumentRoot "path/to/basic/web"
 
 Untuk menggunakan [Nginx](http://wiki.nginx.org/), Anda harus menginstal PHP sebagai [FPM SAPI](http://php.net/install.fpm).
 Anda dapat menggunakan konfigurasi Nginx berikut, menggantikan `path/to/basic/web` dengan path yang sebenarnya untuk
-`basic/web` dan `mysite.local` dengan hostname yang sebenarnya untuk server.
+`basic/web` dan `mysite.test` dengan hostname yang sebenarnya untuk server.
 
 ```nginx
 server {
@@ -199,7 +199,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

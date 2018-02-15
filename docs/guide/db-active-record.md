@@ -472,7 +472,7 @@ $customer->loadDefaultValues();
 
 ### Attributes Typecasting <span id="attributes-typecasting"></span>
 
-Being populated by query results [[yii\db\ActiveRecord]] performs automatic typecast for its attribute values, using
+Being populated by query results, [[yii\db\ActiveRecord]] performs automatic typecast for its attribute values, using
 information from [database table schema](db-dao.md#database-schema). This allows data retrieved from table column
 declared as integer to be populated in ActiveRecord instance with PHP integer, boolean with boolean and so on.
 However, typecasting mechanism has several limitations:
@@ -490,7 +490,33 @@ converted during saving process.
 
 > Tip: you may use [[yii\behaviors\AttributeTypecastBehavior]] to facilitate attribute values typecasting
   on ActiveRecord validation or saving.
+  
+Since 2.0.14, Yii ActiveRecord supports complex data types, such as JSON or multidimensional arrays.
 
+#### JSON in MySQL and PostgreSQL
+
+After data population, the value from JSON column will be automatically decoded from JSON according to standard JSON
+decoding rules.
+
+To save attribute value to a JSON column, ActiveRecord will automatically create a [[yii\db\JsonExpression|JsonExpression]] object
+that will be encoded to a JSON string on [QueryBuilder](db-query-builder.md) level.
+
+#### Arrays in PostgreSQL
+
+After data population, the value from Array column will be automatically decoded from PgSQL notation to an [[yii\db\ArrayExpression|ArrayExpression]]
+object. It implements PHP `ArrayAccess` interface, so you can use it as an array, or call `->getValue()` to get the array itself.
+
+To save attribute value to an array column, ActiveRecord will automatically create an [[yii\db\ArrayExpression|ArrayExpression]] object
+that will be encoded by [QueryBuilder](db-query-builder.md) to an PgSQL string representation of array.
+
+You can also use conditions for JSON columns:
+
+```php
+$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
+```
+
+To learn more about expressions building system read the [Query Builder – Adding custom Conditions and Expressions](db-query-builder.md#adding-custom-conditions-and-expressions)
+article.
 
 ### Updating Multiple Rows <span id="updating-multiple-rows"></span>
 
@@ -933,6 +959,41 @@ $order = Order::findOne(100);
 // SELECT * FROM `item` WHERE `item_id` IN (...)
 // returns an array of Item objects
 $items = $order->items;
+```
+
+
+### Chaining relation definitions via multiple tables <span id="multi-table-relations"></span>
+
+Its further possible to define relations via multiple tables by chaining relation definitions using [[yii\db\ActiveQuery::via()|via()]].
+Considering the examples above, we have classes `Customer`, `Order`, and `Item`.
+We can add a relation to the `Customer` class that lists all items from all the orders they placed,
+and name it `getPurchasedItems()`, the chaining of relations is show in the following code example:
+
+```php
+class Customer extends ActiveRecord
+{
+    // ...
+
+    public function getPurchasedItems()
+    {
+        // customer's items, matching 'id' column of `Item` to 'item_id' in OrderItem
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+                    ->via('orderItems');
+    }
+
+    public function getOrderItems()
+    {
+        // customer's order items, matching 'id' column of `Order` to 'order_id' in OrderItem
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+                    ->via('orders');
+    }
+
+    public function getOrders()
+    {
+        // same as above
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
 ```
 
 

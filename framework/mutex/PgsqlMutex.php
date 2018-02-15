@@ -7,8 +7,8 @@
 
 namespace yii\mutex;
 
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * PgsqlMutex implements mutex "lock" mechanism via PgSQL locks.
@@ -61,14 +61,14 @@ class PgsqlMutex extends DbMutex
     /**
      * Acquires lock by given name.
      * @param string $name of the lock to be acquired.
-     * @param int $timeout to wait for lock to become released.
+     * @param int $timeout time (in seconds) to wait for lock to become released.
      * @return bool acquiring result.
      * @see http://www.postgresql.org/docs/9.0/static/functions-admin.html
      */
     protected function acquireLock($name, $timeout = 0)
     {
         if ($timeout !== 0) {
-            throw new InvalidParamException('PgsqlMutex does not support timeout.');
+            throw new InvalidArgumentException('PgsqlMutex does not support timeout.');
         }
         list($key1, $key2) = $this->getKeysFromName($name);
         return $this->db->useMaster(function ($db) use ($key1, $key2) {

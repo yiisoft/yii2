@@ -19,13 +19,12 @@ function time()
 namespace yiiunit\framework\web;
 
 use Yii;
-use yii\base\Component;
-use yii\base\NotSupportedException;
+use yii\base\BaseObject;
+use yii\rbac\CheckAccessInterface;
 use yii\rbac\PhpManager;
 use yii\web\Cookie;
 use yii\web\CookieCollection;
 use yii\web\ForbiddenHttpException;
-use yii\web\IdentityInterface;
 use yiiunit\TestCase;
 
 /**
@@ -350,46 +349,51 @@ class UserTest extends TestCase
         $this->expectException('yii\\web\\ForbiddenHttpException');
         Yii::$app->user->loginRequired();
     }
-}
 
-class UserIdentity extends Component implements IdentityInterface
-{
-    private static $ids = [
-        'user1',
-        'user2',
-        'user3',
-    ];
-
-    private $_id;
-
-    public static function findIdentity($id)
+    public function testAccessChecker()
     {
-        if (in_array($id, static::$ids)) {
-            $identitiy = new static();
-            $identitiy->_id = $id;
-            return $identitiy;
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                    'accessChecker' => AccessChecker::className()
+                ]
+            ],
+        ];
+
+        $this->mockWebApplication($appConfig);
+        $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
+    }
+
+    public function testGetIdentityException()
+    {
+        $session = $this->getMock('yii\web\Session');
+        $session->method('getHasSessionId')->willReturn(true);
+        $session->method('get')->with($this->equalTo('__id'))->willReturn('1');
+
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => ExceptionIdentity::className(),
+                ],
+                'session' => $session,
+            ],
+        ];
+        $this->mockWebApplication($appConfig);
+
+        $exceptionThrown = false;
+        try {
+            Yii::$app->getUser()->getIdentity();
+        } catch (\Exception $e) {
+            $exceptionThrown = true;
         }
+        $this->assertTrue($exceptionThrown);
+
+        // Do it again to make sure the exception is thrown the second time
+        $this->expectException('Exception');
+        Yii::$app->getUser()->getIdentity();
     }
 
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        throw new NotSupportedException();
-    }
-
-    public function getId()
-    {
-        return $this->_id;
-    }
-
-    public function getAuthKey()
-    {
-        return 'ABCD1234';
-    }
-
-    public function validateAuthKey($authKey)
-    {
-        return $authKey === 'ABCD1234';
-    }
 }
 
 static $cookiesMock;
@@ -411,5 +415,22 @@ class MockResponse extends \yii\web\Response
         global $cookiesMock;
 
         return $cookiesMock;
+    }
+}
+
+class AccessChecker extends BaseObject implements CheckAccessInterface
+{
+
+    public function checkAccess($userId, $permissionName, $params = [])
+    {
+        // Implement checkAccess() method.
+    }
+}
+
+class ExceptionIdentity extends \yiiunit\framework\filters\stubs\UserIdentity
+{
+    public static function findIdentity($id)
+    {
+        throw new \Exception();
     }
 }

@@ -19,6 +19,7 @@ namespace yii\caching;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @deprecated 2.0.14
  */
 class ZendDataCache extends Cache
 {

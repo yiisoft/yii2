@@ -137,7 +137,9 @@ trait ActiveQueryTrait
     {
         $primaryModel = reset($models);
         if (!$primaryModel instanceof ActiveRecordInterface) {
-            $primaryModel = new $this->modelClass();
+            /* @var $modelClass ActiveRecordInterface */
+            $modelClass = $this->modelClass;
+            $primaryModel = $modelClass::instance();
         }
         $relations = $this->normalizeRelations($primaryModel, $with);
         /* @var $relation ActiveQuery */
