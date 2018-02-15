@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
+- Enh #13425: Added caching of dynamically URL rules with `yii\web\UrlManager::addRules()` (scriptcube)
 - Bug #15644: Avoid wrong default selection on a dropdown, checkbox list, and radio list, when a option has a key equals to zero (berosoboy)
 - Enh #14538: Added `yii\behaviors\AttributeTypecastBehavior::typecastAfterFind` property (littlefuntik, silverfire)
 - Enh #14254: add an option to specify whether validator is forced to always use master DB for `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` (rossoneri, samdark)
@@ -491,13 +492,6 @@ Yii Framework 2 Change Log
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 - Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
-- Bug #13287: Fixed translating "and" separator in `UniqueValidator` error message (jetexe)
-- Enh #11464: Populate foreign key names from schema (joaoppereira)
-- Bug #13401: Fixed lack of escaping of request dump at exception screens (samdark)
-- Enh #13417: Allow customizing `yii\data\ActiveDataProvider` in `yii\rest\IndexAction` (leandrogehlen)
-- Chg #13393: Removed redundant call to `yii\helpers\Url::to()` in `yii\web\Controller::redirect()` (greeflas)
-- Enh #13425: Added caching of dynamically URL rules with `yii\web\UrlManager::addRules()` (scriptcube)
-- Bug #12599: Fixed MSSQL fail to work with `nvarbinary`. Enhanced SQL scripts compatibility with older versions (samdark)
 - Chg #11906: Updated `yii\widgets\MaskedInput` inputmask dependency to `~3.3.3` (samdark)
 
 2.0.10 October 20, 2016
