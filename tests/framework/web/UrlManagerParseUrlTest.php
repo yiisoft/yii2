@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\web;
 
+use yii\caching\ArrayCache;
 use yii\web\Request;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
@@ -48,11 +49,12 @@ class UrlManagerParseUrlTest extends TestCase
     {
         // in this test class, all tests have enablePrettyUrl enabled.
         $config['enablePrettyUrl'] = true;
-        $config['cache'] = null;
         // normalizer is tested in UrlNormalizerTest
         $config['normalizer'] = false;
 
-        return new UrlManager($config);
+        return new UrlManager(array_merge([
+            'cache' => null,
+        ], $config));
     }
 
     protected function getRequest($pathInfo, $hostInfo = 'http://www.example.com', $method = 'GET', $config = [])
@@ -344,5 +346,92 @@ class UrlManagerParseUrlTest extends TestCase
         $this->destroyApplication();
 
         unset($_SERVER['REQUEST_METHOD']);
+    }
+
+    public function testAppendRules()
+    {
+        $manager = $this->getUrlManager(['rules' => ['post/<id:\d+>' => 'post/view']]);
+
+        $this->assertCount(1, $manager->rules);
+        $firstRule = $manager->rules[0];
+        $this->assertInstanceOf('yii\web\UrlRuleInterface', $firstRule);
+
+        $manager->addRules([
+            'posts' => 'post/index',
+            'book/<id:\d+>/<title>' => 'book/view',
+        ]);
+        $this->assertCount(3, $manager->rules);
+        $this->assertSame($firstRule, $manager->rules[0]);
+    }
+
+    public function testPrependRules()
+    {
+        $manager = $this->getUrlManager(['rules' => ['post/<id:\d+>' => 'post/view']]);
+
+        $this->assertCount(1, $manager->rules);
+        $firstRule = $manager->rules[0];
+        $this->assertInstanceOf('yii\web\UrlRuleInterface', $firstRule);
+
+        $manager->addRules([
+            'posts' => 'post/index',
+            'book/<id:\d+>/<title>' => 'book/view',
+        ], false);
+        $this->assertCount(3, $manager->rules);
+        $this->assertNotSame($firstRule, $manager->rules[0]);
+        $this->assertSame($firstRule, $manager->rules[2]);
+    }
+
+    public function testRulesCache()
+    {
+        $arrayCache = new ArrayCache();
+
+        $manager = $this->getUrlManager([
+            'rules' => ['post/<id:\d+>' => 'post/view'],
+            'cache' => $arrayCache,
+        ]);
+
+        $this->assertCount(1, $manager->rules);
+        $firstRule = $manager->rules[0];
+        $this->assertInstanceOf('yii\web\UrlRuleInterface', $firstRule);
+        $this->assertCount(1, $this->getInaccessibleProperty($arrayCache, '_cache'),
+            'Cache contains the only one record that represents initial built rules'
+        );
+
+        $manager->addRules(['posts' => 'post/index']);
+        $manager->addRules([
+            'book/<id:\d+>/<title>' => 'book/view',
+            'book/<id:\d+>/<author>' => 'book/view'
+        ]);
+
+        $this->assertCount(4, $manager->rules);
+        $this->assertSame($firstRule, $manager->rules[0]);
+        $this->assertCount(3, $this->getInaccessibleProperty($arrayCache, '_cache'),
+            'The addRules() method was called twice, adding 3 new rules to the UrlManager, but we have only ' .
+            'two additional caches: one for each addRules() method call.'
+        );
+    }
+
+    public function testRulesCacheIsUsed()
+    {
+        $arrayCache = $this->getMockBuilder('yii\caching\ArrayCache')
+            ->setMethods(['get', 'set'])
+            ->getMock();
+
+        $manager = $this->getUrlManager([
+            'rules' => ['post/<id:\d+>' => 'post/view'],
+            'cache' => $arrayCache,
+        ]);
+
+        $savedRules = $manager->rules;
+        // save rules to "cache" and make sure it is reused
+        $arrayCache->expects($this->exactly(2))->method('get')->willReturn($savedRules);
+        $arrayCache->expects($this->never())->method('set');
+
+        for ($i = 0; $i < 2; $i++) {
+            $this->getUrlManager([
+                'rules' => ['post/<id:\d+>' => 'post/view'],
+                'cache' => $arrayCache,
+            ]);
+        }
     }
 }

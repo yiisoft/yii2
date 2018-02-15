@@ -214,29 +214,28 @@ class UrlManager extends Component
 
     /**
      * Builds URL rule objects from the given rule declarations.
-     * @param array $rules the rule declarations. Each array element represents a single rule declaration.
+     *
+     * @param array $ruleDeclarations the rule declarations. Each array element represents a single rule declaration.
      * Please refer to [[rules]] for the acceptable rule formats.
      * @return UrlRuleInterface[] the rule objects built from the given rule declarations
      * @throws InvalidConfigException if a rule declaration is invalid
      */
-    protected function buildRules($rules)
+    protected function buildRules($ruleDeclarations)
     {
-        if ($this->cache instanceof Cache) {
-            $cacheKey = $this->cacheKey . '#' . md5(json_encode($rules));
-            if (($compiledRules = $this->cache->get($cacheKey)) !== false) {
-                return $compiledRules;
-            }
+        $builtRules = $this->getBuiltRulesFromCache($ruleDeclarations);
+        if ($builtRules !== false) {
+            return $builtRules;
         }
 
-        $compiledRules = [];
+        $builtRules = [];
         $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
-        foreach ($rules as $key => $rule) {
+        foreach ($ruleDeclarations as $key => $rule) {
             if (is_string($rule)) {
                 $rule = ['route' => $rule];
                 if (preg_match("/^((?:($verbs),)*($verbs))\\s+(.*)$/", $key, $matches)) {
                     $rule['verb'] = explode(',', $matches[1]);
-                    // rules that do not apply for GET requests should not be use to create urls
-                    if (!in_array('GET', $rule['verb'])) {
+                    // rules that are not applicable for GET requests should not be used to create URLs
+                    if (!in_array('GET', $rule['verb'], true)) {
                         $rule['mode'] = UrlRule::PARSING_ONLY;
                     }
                     $key = $matches[4];
@@ -249,14 +248,48 @@ class UrlManager extends Component
             if (!$rule instanceof UrlRuleInterface) {
                 throw new InvalidConfigException('URL rule class must implement UrlRuleInterface.');
             }
-            $compiledRules[] = $rule;
+            $builtRules[] = $rule;
         }
 
-        if ($this->cache instanceof Cache) {
-            $this->cache->set($cacheKey, $compiledRules);
+        $this->cacheBuiltRules($ruleDeclarations, $builtRules);
+
+        return $builtRules;
+    }
+
+    /**
+     * Stores $builtRules to cache, using $rulesDeclaration as a part of cache key.
+     *
+     * @param array $ruleDeclarations the rule declarations. Each array element represents a single rule declaration.
+     * Please refer to [[rules]] for the acceptable rule formats.
+     * @param UrlRuleInterface[] $builtRules the rule objects built from the given rule declarations.
+     * @return bool whether the value is successfully stored into cache
+     * @since 2.0.14
+     */
+    protected function cacheBuiltRules($ruleDeclarations, $builtRules)
+    {
+        if (!$this->cache instanceof CacheInterface) {
+            return false;
         }
 
-        return $compiledRules;
+        return $this->cache->set([$this->cacheKey, $ruleDeclarations], $builtRules);
+    }
+
+    /**
+     * Provides the built URL rules that are associated with the $ruleDeclarations from cache.
+     *
+     * @param array $ruleDeclarations the rule declarations. Each array element represents a single rule declaration.
+     * Please refer to [[rules]] for the acceptable rule formats.
+     * @return UrlRuleInterface[]|false the rule objects built from the given rule declarations or boolean `false` when
+     * there are no cache items for this definition exists.
+     * @since 2.0.14
+     */
+    protected function getBuiltRulesFromCache($ruleDeclarations)
+    {
+        if (!$this->cache instanceof CacheInterface) {
+            return false;
+        }
+
+        return $this->cache->get([$this->cacheKey, $ruleDeclarations]);
     }
 
     /**
