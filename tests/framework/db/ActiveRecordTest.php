@@ -1596,11 +1596,17 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         $orderClass = $this->getOrderClass();
 
-        $this->assertNotEmpty($orderClass::find()->with('customer')->indexBy(function($order) {
-            return isset($order->product->id) ? $order->product->id : null;
-        })->all());
+        $orderClass::find()->with('customer')->indexBy(function(Order $order) {
+            $this->assertTrue($order->isRelationPopulated('customer'));
+            $this->assertNotEmpty($order->customer->id);
 
-        $this->assertNotEmpty($orderClass::find()->with('customer')->indexBy('product.id')->all());
+            return $order->customer->id;
+        })->all();
+
+        $orders = $orderClass::find()->with('customer')->indexBy('customer.id')->all();
+        foreach ($orders as $customer_id => $order) {
+            $this->assertEquals($customer_id, $order->customer_id);
+        }
     }
 
     /**
