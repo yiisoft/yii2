@@ -124,6 +124,10 @@ class UrlManager extends Component
      * After the UrlManager object is created, if you want to change this property,
      * you should only assign it with a cache object.
      * Set this property to `false` if you do not want to cache the URL rules.
+     *
+     * Cache entries are stored for the time set by [[\yii\caching\Cache::$defaultDuration|$defaultDuration]] in
+     * the cache configuration, which is unlimited by default. You may want to tune this value if your [[rules]]
+     * change frequently.
      */
     public $cache = 'cache';
     /**
