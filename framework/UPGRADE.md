@@ -78,6 +78,14 @@ method instead to index query results according to the `indexBy` parameter.
 
 * Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
 
+* You can start preparing your application for Yii 2.1 by doing the following:
+
+  - Replace `::className()` calls with `::class` (if you’re running PHP 5.5+).
+  - Replace usages of `yii\base\InvalidParamException` with `yii\base\InvalidArgumentException`.
+  - Replace calls to `Yii::trace()` with `Yii::debug()`.
+  - Remove calls to `yii\BaseYii::powered()}`.
+  - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
+
 Upgrade from Yii 2.0.12
 -----------------------
 
