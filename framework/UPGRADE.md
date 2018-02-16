@@ -63,18 +63,18 @@ Upgrade from Yii 2.0.13
   introduced methods to retrieve the expression content.
 
 * `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PDO parameter type 
-when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
-You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
+  when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
+  You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
 
 * `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
-Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
-space to customization. In case you rely on that property or override any of default condition builders, follow the 
-special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
-to update your code.
+  Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
+  space to customization. In case you rely on that property or override any of default condition builders, follow the 
+  special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
+  to update your code.
 
 * Protected method `yii\db\ActiveQueryTrait::createModels()` does not apply indexes as defined in `indexBy` property anymore.  
-In case you override default ActiveQuery implementation and relied on that behavior, call `yii\db\Query::populate()`
-method instead to index query results according to the `indexBy` parameter.
+  In case you override default ActiveQuery implementation and relied on that behavior, call `yii\db\Query::populate()`
+  method instead to index query results according to the `indexBy` parameter.
 
 * Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
 
