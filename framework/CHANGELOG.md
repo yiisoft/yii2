@@ -73,7 +73,7 @@ Yii Framework 2 Change Log
 - Enh #11611: Added `BetweenColumnsCondition` to build SQL condition like `value BETWEEN col1 and col2` (silverfire)
 - Enh #12623: Added `yii\helpers\StringHelper::matchWildcard()` replacing usage of `fnmatch()`, which may be unreliable (klimov-paul)
 - Enh #13019: Support JSON in SchemaBuilderTrait (zhukovra, undefinedor)
-- Enh #13465: Added `yii\helpers\FileHelper::findDirectory()` method (ArsSirek, developeruz)
+- Enh #13465: Added `yii\helpers\FileHelper::findDirectories()` method (ArsSirek, developeruz)
 - Enh #13618: Active record now resets related models after corresponding attributes updates (Kolyunya, rob006)
 - Enh #13679: Added `yii\behaviors\CacheableWidgetBehavior` (Kolyunya)
 - Enh #13814: MySQL unique index names can now contain spaces (df2)
