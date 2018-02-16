@@ -56,27 +56,35 @@ Upgrade from Yii 2.0.13
 * Constants `IPV6_ADDRESS_LENGTH`, `IPV4_ADDRESS_LENGTH` were moved from `yii\validators\IpValidator` to `yii\helpers\IpHelper`.
   If your application relies on these constants, make sure to update your code to follow the changes.
 
-* `yii\base\Security::compareString()` is now throwing `yii\base\InvalidParamException` in case non-strings are compared.
+* `yii\base\Security::compareString()` is now throwing `yii\base\InvalidArgumentException` in case non-strings are compared.
 
 * `yii\db\ExpressionInterface` has been introduced to represent a wider range of SQL expressions. In case you check for
   `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
   introduced methods to retrieve the expression content.
 
 * `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PDO parameter type 
-when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
-You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
+  when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
+  You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
 
 * `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
-Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
-space to customization. In case you rely on that property or override any of default condition builders, follow the 
-special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
-to update your code.
+  Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
+  space to customization. In case you rely on that property or override any of default condition builders, follow the 
+  special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
+  to update your code.
 
 * Protected method `yii\db\ActiveQueryTrait::createModels()` does not apply indexes as defined in `indexBy` property anymore.  
-In case you override default ActiveQuery implementation and relied on that behavior, call `yii\db\Query::populate()`
-method instead to index query results according to the `indexBy` parameter.
+  In case you override default ActiveQuery implementation and relied on that behavior, call `yii\db\Query::populate()`
+  method instead to index query results according to the `indexBy` parameter.
 
 * Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
+
+* You can start preparing your application for Yii 2.1 by doing the following:
+
+  - Replace `::className()` calls with `::class` (if you’re running PHP 5.5+).
+  - Replace usages of `yii\base\InvalidParamException` with `yii\base\InvalidArgumentException`.
+  - Replace calls to `Yii::trace()` with `Yii::debug()`.
+  - Remove calls to `yii\BaseYii::powered()}`.
+  - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
 
 Upgrade from Yii 2.0.12
 -----------------------
