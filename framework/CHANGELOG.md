@@ -77,7 +77,7 @@ Yii Framework 2 Change Log
 - Enh #13618: Active record now resets related models after corresponding attributes updates (Kolyunya, rob006)
 - Enh #13679: Added `yii\behaviors\CacheableWidgetBehavior` (Kolyunya)
 - Enh #13814: MySQL unique index names can now contain spaces (df2)
-- Enh #13879: Added upsert support for `yii\db\QueryBuilder` and `yii\db\Command` (sergeymakinen)
+- Enh #13879: Added upsert support for `yii\db\QueryBuilder`, `yii\db\Command`, and `yii\db\Migration` (sergeymakinen)
 - Enh #13919: Added option to add comment for created table to migration console command (mixartemev, developeruz)
 - Enh #13996: Added `yii\web\View::registerJsVar()` method that allows registering JavaScript variables (Eseperio, samdark)
 - Enh #14043: Added `yii\helpers\IpHelper` (silverfire, cebe)
