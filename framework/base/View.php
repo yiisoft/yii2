@@ -89,7 +89,7 @@ class View extends Component implements DynamicContentAwareInterface
      * @var array|DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
      * This property is used internally to implement the dynamic content caching feature. Do not modify it directly.
      * @internal
-     * @deprecated Sice 2.0.14. Do not use this property directly. Use methods [[getDynamicContents()]], 
+     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicContents()]],
      * [[pushDynamicContent()]], [[popDynamicContent()]] instead.
      */
     public $cacheStack = [];

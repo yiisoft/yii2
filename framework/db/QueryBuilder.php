@@ -51,7 +51,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * @var array map of query condition to builder methods.
      * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
-     * @deprecated since 2.0.14. Is not used, will be dropped in 2.1.0
+     * @deprecated since 2.0.14. Is not used, will be dropped in 2.1.0.
      */
     protected $conditionBuilders = [];
 

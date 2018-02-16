@@ -100,7 +100,7 @@ class Request extends \yii\base\Request
     const CSRF_HEADER = 'X-CSRF-Token';
     /**
      * The length of the CSRF token mask.
-     * @deprecated 2.0.12 The mask length is now equal to the token length.
+     * @deprecated since 2.0.12. The mask length is now equal to the token length.
      */
     const CSRF_MASK_LENGTH = 8;
 

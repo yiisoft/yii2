@@ -295,7 +295,7 @@ class Connection extends Component
      * Since version 2.0.14 [[$commandMap]] is used if this property is set to its default value.
      * @see createCommand
      * @since 2.0.7
-     * @deprecated 2.0.14 Use [[$commandMap]] for precise configuration.
+     * @deprecated since 2.0.14. Use [[$commandMap]] for precise configuration.
      */
     public $commandClass = 'yii\db\Command';
     /**
