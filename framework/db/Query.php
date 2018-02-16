@@ -1218,7 +1218,7 @@ PATTERN;
 
     /**
      * Enables query cache for this Query.
-     * @param int|true the number of seconds that query results can remain valid in cache.
+     * @param int|true $duration the number of seconds that query results can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire.
      * Use a negative number to indicate that query cache should not be used.
      * Use boolean `true` to indicate that [[Connection::queryCacheDuration]] should be used.
