@@ -79,7 +79,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @event Event an event that is triggered when the query is initialized via [[init()]].
      */
     const EVENT_INIT = 'init';
-
     /**
      * string placeholder to be replaced by the table alias of a query.
      */
@@ -160,8 +159,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             if ($this->getIsAliasDynamicEnabled()) {
                 $this->select = ['@alias.*'];
             } else {
-                $alias = $this->getTableAlias();
-                $this->select = ["$alias.*"];
+                $this->select = [$this->getTableAlias() . '.*'];
             }
         }
 
@@ -897,7 +895,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     protected function normalizeAliasInQuery()
     {
-        //Skip normalisation if dynamic alias feature is not enabled (to save speed)
+        //Skip normalisation if dynamic alias feature is not enabled
         if (!$this->getIsAliasDynamicEnabled()) {
             return $this;
         }
@@ -911,8 +909,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $this->orderBy = self::replaceAliasPlaceholder($this->orderBy, $alias);
         $this->groupBy = self::replaceAliasPlaceholder($this->groupBy, $alias);
         if (!empty($this->join)) {
-            foreach ($this->join as &$join) {
-                $join = self::replaceAliasPlaceholder($join, $alias);
+            foreach ($this->join as $key => $join) {
+                $this->join[$key] = self::replaceAliasPlaceholder($join, $alias);
             }
         }
 
