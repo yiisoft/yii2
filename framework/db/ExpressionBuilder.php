@@ -3,7 +3,7 @@
 namespace yii\db;
 
 /**
- * Interface ExpressionBuilderInterface
+ * Class ExpressionBuilder builds objects of [[yii\db\Expression]] class.
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
