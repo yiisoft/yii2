@@ -1491,15 +1491,17 @@ class QueryBuilder extends \yii\base\BaseObject
     public function buildCondition($condition, &$params)
     {
         if (is_array($condition)) {
+            if (empty($condition)) {
+                return '';
+            }
+
             $condition = $this->createConditionFromArray($condition);
         }
 
         if ($condition instanceof ExpressionInterface) {
             return $this->buildExpression($condition, $params);
         }
-        if (empty($condition)) {
-            return '';
-        }
+
         return (string) $condition;
     }
 

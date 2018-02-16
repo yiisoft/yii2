@@ -2359,4 +2359,22 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $this->replaceQuotes($expected)), $sql);
         $this->assertEquals($expectedParams, $params);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15653
+     */
+    public function testIssue15653()
+    {
+        $query = (new Query())
+            ->from('admin_user')
+            ->where(['is_deleted' => false]);
+
+        $query
+            ->where([])
+            ->andWhere(['in', 'id', ['1', '0']]);
+
+        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        $this->assertSame("SELECT * FROM `admin_user` WHERE `id` IN (:qp0, :qp1)", $sql);
+        $this->assertSame([':qp0' => '1', ':qp1' => '0'], $params);
+    }
 }
