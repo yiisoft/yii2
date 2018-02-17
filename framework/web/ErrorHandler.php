@@ -71,12 +71,13 @@ class ErrorHandler extends \yii\base\ErrorHandler
     public $displayVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION'];
 
     /**
-     * @var string placeholders to be be substituted.
+     * @var string trace line with placeholders to be be substituted.
      * The placeholders are {file}, {line} and {text} and the string should be as follows.
      *
      * `File: {file} - Line: {line} - Text: {text}`
      *
-     * @example <a href="netbeans://open?file={file}&line={line}">{html}</a>
+     * @example <a href="ide://open?file={file}&line={line}">{html}</a>
+     * @see https://github.com/yiisoft/yii2-debug#open-files-in-ide
      * @since 2.0.14
      */
     public $traceLine = '{html}';
