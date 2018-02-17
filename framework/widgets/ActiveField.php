@@ -770,7 +770,7 @@ class ActiveField extends Component
             $config['field'] = $this;
             if (isset($config['options'])) {
                 if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
-                    $this->addErrorClassIfNeeded($options);
+                    $this->addErrorClassIfNeeded($config['options']);
                 }
 
                 $this->addAriaAttributes($config['options']);
