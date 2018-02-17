@@ -62,6 +62,7 @@ Yii Framework 2 Change Log
 - Enh #3250: Added support for events partial wildcard matching (klimov-paul)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
 - Enh #6844: `yii\base\ArrayableTrait::toArray()` now allows recursive `$fields` and `$expand` (bboure)
+- Enh #7640: Implemented custom data types support. Added JSON support for MySQL and PostgreSQL, array support for PostgreSQL (silverfire, cebe)
 - Enh #7988: Added `\yii\helpers\Console::errorSummary()` and `\yii\helpers\Json::errorSummary()` (developeruz)
 - Enh #7996: Short syntax for verb in GroupUrlRule (schojniak, developeruz)
 - Enh #8092: ExistValidator for relations (developeruz)
@@ -93,6 +94,7 @@ Yii Framework 2 Change Log
 - Enh #14806: Added $placeFooterAfterBody option for GridView (terehru)
 - Enh #15024: `yii\web\Pjax` widget does not prevent CSS files from sending anymore because they are handled by client-side plugin correctly (onmotion)
 - Enh #15047: `yii\db\Query::select()` and `yii\db\Query::addSelect()` now check for duplicate column names (wapmorgan)
+- Enh #15076: Improve `yii\db\QueryBuilder::buildColumns()` to throw exception on invalid input (hiscaler)
 - Enh #15135: Automatic completion for help in bash and zsh (Valkeru)
 - Enh #15216: Added `yii\web\ErrorHandler::$traceLine` to allow opening file at line clicked in IDE (vladis84)
 - Enh #15219: Added `yii\filters\auth\HttpHeaderAuth` (bboure)
@@ -190,7 +192,6 @@ Yii Framework 2 Change Log
 - Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
 - Enh #5786: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN, klimov-paul)
 - Enh #6644: Added `yii\helpers\ArrayHelper::setValue()` (LAV45)
-- Enh #7640: Implemented custom data types support. Added JSON support for MySQL and PostgreSQL, array support for PostgreSQL (silverfire, cebe)
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 - Enh #9438: `yii\web\DbSession` now relies on error handler to display errors (samdark)
 - Enh #9703, #9709: Added `yii\i18n\Formatter::asWeight()` and `::asLength()` formatters (nineinchnick, silverfire)
@@ -233,12 +234,12 @@ Yii Framework 2 Change Log
 - Enh #14958: Added options to copy stacktrace and search for error message to the exception page (cebe)
 - Enh #14967: Added Armenian Translations (gevorgmansuryan)
 - Enh #15015: Added `StringHelper::floatToString()` to safely cast float values independent of the locale, also fixes some places in the framework that use it now (cebe)
-- Enh #15076: Perfect `yii\db\QueryBuilder` buildColumns function (hiscaler)
 - Chg #7936: Deprecate `yii\base\Object` in favor of `yii\base\BaseObject` for compatibility with PHP 7.2 (rob006, cebe, klimov-paul)
 - Chg #14201: `yii\console\controllers\MessageController::extractMessagesFromTokens()` is now protected (faenir)
 - Chg #14286: Used primary inputmask package name instead of an alias (samdark)
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
+
 
 2.0.12 June 05, 2017
 --------------------
