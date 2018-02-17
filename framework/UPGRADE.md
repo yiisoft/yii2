@@ -82,7 +82,6 @@ Upgrade from Yii 2.0.13
 
   - Replace `::className()` calls with `::class` (if you’re running PHP 5.5+).
   - Replace usages of `yii\base\InvalidParamException` with `yii\base\InvalidArgumentException`.
-  - Replace calls to `Yii::trace()` with `Yii::debug()`.
   - Remove calls to `yii\BaseYii::powered()`.
   - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
 
