@@ -167,6 +167,7 @@ class AttributeTypecastBehavior extends Behavior
      * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting after save
      * will grant no benefit an thus can be disabled.
      * Note that changing this option value will have no effect after this behavior has been attached to the model.
+     * @since 2.0.14
      */
     public $typecastAfterSave = false;
     /**
@@ -176,7 +177,6 @@ class AttributeTypecastBehavior extends Behavior
      * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting after find
      * will grant no benefit in most cases an thus can be disabled.
      * Note that changing this option value will have no effect after this behavior has been attached to the model.
-     * @since 2.0.14
      */
     public $typecastAfterFind = false;
 
