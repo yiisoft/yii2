@@ -837,7 +837,7 @@ class Connection extends Component
     /**
      * Can be used to set [[QueryBuilder]] configuration via Connection configuration array.
      *
-     * @param $value
+     * @param array $value the [[QueryBuilder]] properties to be configured.
      * @since 2.0.14
      */
     public function setQueryBuilder($value)

@@ -350,6 +350,7 @@ class AttributeTypecastBehavior extends Behavior
     /**
      * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring attribute typecasting.
      * @param \yii\base\Event $event event instance.
+     * @since 2.0.14
      */
     public function afterSave($event)
     {
