@@ -157,9 +157,7 @@ class CacheableWidgetBehavior extends Behavior
     private function getCacheInstance()
     {
         $cacheInterface = 'yii\caching\CacheInterface';
-        $cache = Instance::ensure($this->cache, $cacheInterface);
-
-        return $cache;
+        return Instance::ensure($this->cache, $cacheInterface);
     }
 
     /**
