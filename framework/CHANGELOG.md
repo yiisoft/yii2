@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.14 under development
 ------------------------
 
-- Bug #15658: Fixed `yii\db\HttpBasicAuth` not to switch identity, when user is already authenticated and identity does not get changed (silverfire)
+- Bug #15658: Fixed `yii\filters\auth\HttpBasicAuth` not to switch identity, when user is already authenticated and identity does not get changed (silverfire)
 - Bug #9342: Fixed `yii\db\ActiveQueryTrait` to apply `indexBy` after relations population in order to prevent excess queries (sammousa, silverfire)
 - Enh #13425: Added caching of dynamically added URL rules with `yii\web\UrlManager::addRules()` (scriptcube, silverfire)
 - Bug #15644: Avoid wrong default selection on a dropdown, checkbox list, and radio list, when a option has a key equals to zero (berosoboy)
