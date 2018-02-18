@@ -418,9 +418,10 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array|\Generator $rows the rows to be batch inserted into the table
+     * @param array $params the binding parameters. This parameter exists since 2.0.14
      * @return string the batch INSERT SQL statement
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, &$params = [])
     {
         if (empty($rows)) {
             return '';
@@ -449,6 +450,8 @@ class QueryBuilder extends \yii\base\BaseObject
                     $value = 0;
                 } elseif ($value === null) {
                     $value = 'NULL';
+                } elseif ($value instanceof ExpressionInterface) {
+                    $value = $this->buildExpression($value, $params);
                 }
                 $vs[] = $value;
             }

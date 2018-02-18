@@ -10,6 +10,7 @@ namespace yii\db\pgsql;
 use yii\base\InvalidArgumentException;
 use yii\db\Constraint;
 use yii\db\Expression;
+use yii\db\ExpressionInterface;
 use yii\db\Query;
 use yii\db\PdoValue;
 use yii\helpers\StringHelper;
@@ -426,7 +427,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, &$params = [])
     {
         if (empty($rows)) {
             return '';
@@ -457,6 +458,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     $value = 'FALSE';
                 } elseif ($value === null) {
                     $value = 'NULL';
+                } elseif ($value instanceof ExpressionInterface) {
+                    $value = $this->buildExpression($value, $params);
                 }
                 $vs[] = $value;
             }
