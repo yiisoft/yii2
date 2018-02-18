@@ -417,7 +417,7 @@ class BaseFileHelper
         } catch (ErrorException $e) {
             // last resort measure for Windows
             $lines = [];
-            exec('DEL /F/Q "' . escapeshellarg($path) . '"', $lines, $deleteError);
+            exec('DEL /F/Q ' . escapeshellarg($path), $lines, $deleteError);
             return $deleteError !== 0;
         }
     }
