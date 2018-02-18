@@ -10,6 +10,7 @@ namespace yii\rbac;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidValueException;
 
 /**
  * BaseManager is a base class implementing [[ManagerInterface]] for RBAC management.
@@ -18,6 +19,7 @@ use yii\base\InvalidConfigException;
  *
  * @property Role[] $defaultRoleInstances Default roles. The array is indexed by the role names. This property
  * is read-only.
+ * @property string[] $defaultRoles The default roles.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -198,16 +200,18 @@ abstract class BaseManager extends Component implements ManagerInterface
     /**
      * Set default roles
      * @param array|\Closure $roles either array of roles or a callable returning it
+     * @throws InvalidArgumentException when $roles is neither array nor Closure
+     * @throws InvalidValueException when Closure return is not an array
      * @since 2.0.14
      */
     public function setDefaultRoles($roles)
     {
         if (is_array($roles)) {
             $this->defaultRoles = $roles;
-        } elseif (is_callable($roles)) {
-            $roles = $roles();
+        } elseif ($roles instanceof \Closure) {
+            $roles = call_user_func($roles);
             if (!is_array($roles)) {
-                throw new InvalidArgumentException('Default roles closure must return an array');
+                throw new InvalidValueException('Default roles closure must return an array');
             }
             $this->defaultRoles = $roles;
         } else {
