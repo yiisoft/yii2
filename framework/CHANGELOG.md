@@ -54,6 +54,7 @@ Yii Framework 2 Change Log
 - Bug #15628: Fixed `yii\validators\DateValidator` to respect time when the `format` property is set to UNIX Epoch format (silverfire, gayHacker)
 - Bug #15644: Avoid wrong default selection on a dropdown, checkbox list, and radio list, when a option has a key equals to zero (berosoboy)
 - Bug #15658: Fixed `yii\filters\auth\HttpBasicAuth` not to switch identity, when user is already authenticated and identity does not get changed (silverfire)
+- Bug #15662: Fixed `yii\log\FileTarget` not to create log directory during init process (alexeevdv)
 - Enh #3087: Added `yii\helpers\BaseHtml::error()` "errorSource" option to be able to customize errors display (yanggs07, developeruz, silverfire)
 - Enh #3250: Added support for events partial wildcard matching (klimov-paul)
 - Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
