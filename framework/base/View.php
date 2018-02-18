@@ -399,7 +399,7 @@ class View extends Component implements DynamicContentAwareInterface
             if ($cache instanceof DynamicContentAwareInterface) {
                 $cache->addDynamicPlaceholder($placeholder, $statements);
             } else {
-                // To be removed in 2.1
+                // TODO: Remove in 2.1
                 $cache->dynamicPlaceholders[$placeholder] = $statements;
             }
         }
