@@ -128,7 +128,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, &$params = [])
     {
         if (empty($rows)) {
             return '';
@@ -138,7 +138,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         // http://www.sqlite.org/releaselog/3_7_11.html
         $this->db->open(); // ensure pdo is not null
         if (version_compare($this->db->getServerVersion(), '3.7.11', '>=')) {
-            return parent::batchInsert($table, $columns, $rows);
+            return parent::batchInsert($table, $columns, $rows, $params);
         }
 
         $schema = $this->db->getSchema();
@@ -164,6 +164,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     $value = 0;
                 } elseif ($value === null) {
                     $value = 'NULL';
+                } elseif ($value instanceof ExpressionInterface) {
+                    $value = $this->buildExpression($value, $params);
                 }
                 $vs[] = $value;
             }
