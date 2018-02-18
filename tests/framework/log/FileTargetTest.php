@@ -10,6 +10,7 @@ namespace yiiunit\framework\log;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\log\Dispatcher;
+use yii\log\FileTarget;
 use yii\log\Logger;
 use yiiunit\TestCase;
 
@@ -30,6 +31,22 @@ class FileTargetTest extends TestCase
             [true],
             [false],
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function testInit()
+    {
+        $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
+        FileHelper::removeDirectory(dirname($logFile));
+        new FileTarget([
+            'logFile' => Yii::getAlias('@yiiunit/runtime/log/filetargettest.log'),
+        ]);
+        $this->assertFileNotExists(
+            dirname($logFile),
+            'Log directory should not be created during init process'
+        );
     }
 
     /**
