@@ -449,6 +449,8 @@ class QueryBuilder extends \yii\base\BaseObject
                     $value = 0;
                 } elseif ($value === null) {
                     $value = 'NULL';
+                } elseif($value instanceof \yii\db\JsonExpression){
+                    $value="'".$value->getValue()."'";
                 }
                 $vs[] = $value;
             }
