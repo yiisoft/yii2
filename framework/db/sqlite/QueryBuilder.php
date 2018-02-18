@@ -63,7 +63,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @see https://stackoverflow.com/questions/15277373/sqlite-upsert-update-or-insert/15277374#15277374
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
@@ -361,7 +361,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function addUnique($name, $table, $columns)
@@ -370,7 +370,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function dropUnique($name, $table)
@@ -379,7 +379,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function addCheck($name, $table, $expression)
@@ -388,7 +388,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function dropCheck($name, $table)
@@ -397,7 +397,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function addDefaultValue($name, $table, $column, $value)
@@ -406,7 +406,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function dropDefaultValue($name, $table)

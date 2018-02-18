@@ -10,13 +10,13 @@ use yii\db\ExpressionInterface;
 class LikeConditionBuilder extends \yii\db\conditions\LikeConditionBuilder
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $escapeCharacter = '!';
     /**
      * `\` is initialized in [[buildLikeCondition()]] method since
      * we need to choose replacement value based on [[\yii\db\Schema::quoteValue()]].
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $escapingReplacements = [
         '%' => '!%',

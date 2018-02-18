@@ -24,7 +24,7 @@ use yii\db\ActiveQuery;
 class Department extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {

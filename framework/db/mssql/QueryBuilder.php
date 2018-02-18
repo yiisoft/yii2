@@ -177,7 +177,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function addDefaultValue($name, $table, $column, $value)
     {
@@ -187,7 +187,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function dropDefaultValue($name, $table)
     {
@@ -353,7 +353,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @see https://docs.microsoft.com/en-us/sql/t-sql/statements/merge-transact-sql
      * @see http://weblogs.sqlteam.com/dang/archive/2009/01/31/UPSERT-Race-Condition-With-MERGE.aspx
      */

@@ -38,7 +38,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function phpTypecast($value)
     {

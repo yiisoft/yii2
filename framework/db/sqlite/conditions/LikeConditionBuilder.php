@@ -8,7 +8,7 @@ namespace yii\db\sqlite\conditions;
 class LikeConditionBuilder extends \yii\db\conditions\LikeConditionBuilder
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $escapeCharacter = '\\';
 }
