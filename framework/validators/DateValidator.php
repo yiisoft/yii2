@@ -402,7 +402,7 @@ class DateValidator extends Validator
     private function parseDateValuePHP($value, $format)
     {
         // if no time was provided in the format string set time to 0 to get a simple date timestamp
-        $hasTimeInfo = (strpbrk($format, 'HhGgis') !== false);
+        $hasTimeInfo = (strpbrk($format, 'HhGgisU') !== false);
 
         $date = DateTime::createFromFormat($format, $value, new \DateTimeZone($hasTimeInfo ? $this->timeZone : 'UTC'));
         $errors = DateTime::getLastErrors();
