@@ -131,7 +131,6 @@ class ColumnSchema extends BaseObject
         if ($value === null
             || gettype($value) === $this->phpType
             || $value instanceof ExpressionInterface
-            || $value instanceof Query
         ) {
             return $value;
         }

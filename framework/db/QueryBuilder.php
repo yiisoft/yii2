@@ -354,9 +354,6 @@ class QueryBuilder extends \yii\base\BaseObject
 
                 if ($value instanceof ExpressionInterface) {
                     $placeholders[] = $this->buildExpression($value, $params);
-                } elseif ($value instanceof \yii\db\Query) {
-                    list($sql, $params) = $this->build($value, $params);
-                    $placeholders[] = "($sql)";
                 } else {
                     $placeholders[] = $this->bindParam($value, $params);
                 }
@@ -1204,8 +1201,8 @@ class QueryBuilder extends \yii\base\BaseObject
                     $columns[$i] = $this->buildExpression($column, $params) . ' AS ' . $this->db->quoteColumnName($i);
                 }
             } elseif ($column instanceof Query) {
-                list($sql, $params) = $this->build($column, $params);
-                $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
+                $sql = $this->buildExpression($column, $params);
+                $columns[$i] = "$sql AS " . $this->db->quoteColumnName($i);
             } elseif (is_string($i)) {
                 if (strpos($column, '(') === false) {
                     $column = $this->db->quoteColumnName($column);
@@ -1282,8 +1279,8 @@ class QueryBuilder extends \yii\base\BaseObject
     {
         foreach ($tables as $i => $table) {
             if ($table instanceof Query) {
-                list($sql, $params) = $this->build($table, $params);
-                $tables[$i] = "($sql) " . $this->db->quoteTableName($i);
+                $sql = $this->buildExpression($table, $params);
+                $tables[$i] = "$sql " . $this->db->quoteTableName($i);
             } elseif (is_string($i)) {
                 if (strpos($table, '(') === false) {
                     $table = $this->db->quoteTableName($table);
@@ -1442,7 +1439,7 @@ class QueryBuilder extends \yii\base\BaseObject
         foreach ($unions as $i => $union) {
             $query = $union['query'];
             if ($query instanceof Query) {
-                list($unions[$i]['query'], $params) = $this->build($query, $params);
+                $unions[$i]['query'] = $this->buildExpression($query, $params);
             }
 
             $result .= 'UNION ' . ($union['all'] ? 'ALL ' : '') . '( ' . $unions[$i]['query'] . ' ) ';

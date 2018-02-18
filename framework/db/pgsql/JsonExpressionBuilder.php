@@ -28,8 +28,8 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
         $value = $expression->getValue();
 
         if ($value instanceof Query) {
-            list ($sql, $params) = $this->queryBuilder->build($value, $params);
-            return "($sql)" . $this->getTypecast($expression);
+            $sql = $this->queryBuilder->buildExpression($value, $params);
+            return $sql . $this->getTypecast($expression);
         }
 
         $placeholder = $this->queryBuilder->bindParam(Json::encode($value), $params);

@@ -530,7 +530,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         foreach ($unions as $i => $union) {
             $query = $union['query'];
             if ($query instanceof Query) {
-                list($unions[$i]['query'], $params) = $this->build($query, $params);
+                $unions[$i]['query'] = $this->buildExpression($query, $params);
             }
 
             $result .= ' UNION ' . ($union['all'] ? 'ALL ' : '') . ' ' . $unions[$i]['query'];
