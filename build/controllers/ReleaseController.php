@@ -795,7 +795,11 @@ class ReleaseController extends Controller
 
     protected function gitFetchTags($path)
     {
-        chdir($path);
+        try {
+            chdir($path);
+        } catch (\yii\base\ErrorException $e) {
+            throw new Exception('Failed to getch git tags in ' . $path . ': ' . $e->getMessage());
+        }
         exec('git fetch --tags', $output, $ret);
         if ($ret != 0) {
             throw new Exception('Command "git fetch --tags" failed with code ' . $ret);
