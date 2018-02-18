@@ -34,7 +34,8 @@ class FileTargetTest extends TestCase
     }
 
     /**
-     * @test
+     * Tests that log directory isn't created during init process
+     * @see https://github.com/yiisoft/yii2/issues/15662
      */
     public function testInit()
     {
