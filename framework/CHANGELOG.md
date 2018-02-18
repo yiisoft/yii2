@@ -1,7 +1,7 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.14 under development
+2.0.14 February 18, 2018
 ------------------------
 
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)

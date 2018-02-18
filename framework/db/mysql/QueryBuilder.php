@@ -49,6 +49,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_JSON => 'json'
     ];
 
+
     /**
      * {@inheritdoc}
      */

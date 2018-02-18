@@ -97,7 +97,7 @@ class View extends Component implements DynamicContentAwareInterface
      * @var array a list of placeholders for embedding dynamic contents. This property
      * is used internally to implement the content caching feature. Do not modify it directly.
      * @internal
-     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicPlaceholders()]], 
+     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicPlaceholders()]],
      * [[setDynamicPlaceholders()]], [[addDynamicPlaceholder()]] instead.
      */
     public $dynamicPlaceholders = [];

@@ -89,8 +89,6 @@ class UniqueValidator extends Validator
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
-
-
     /**
      * @var bool whether this validator is forced to always use master DB
      * @since 2.0.14

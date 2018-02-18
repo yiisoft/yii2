@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db;
 
@@ -12,6 +17,7 @@ namespace yii\db;
 class QueryExpressionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
+
 
     /**
      * Method builds the raw SQL from the $expression that will not be additionally

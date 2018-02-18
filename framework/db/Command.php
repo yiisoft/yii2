@@ -111,6 +111,7 @@ class Command extends Component
      */
     private $_retryHandler;
 
+
     /**
      * Enables query cache for this command.
      * @param int $duration the number of seconds that query result of this command can remain valid in the cache.

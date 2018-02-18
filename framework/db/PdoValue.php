@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db;
 
@@ -28,6 +33,7 @@ final class PdoValue implements ExpressionInterface
      * @see http://php.net/manual/en/pdo.constants.php
      */
     private $type;
+
 
     /**
      * PdoValue constructor.

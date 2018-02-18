@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\conditions;
 
@@ -17,19 +22,18 @@ class InCondition implements ConditionInterface
      * @var string $operator the operator to use (e.g. `IN` or `NOT IN`)
      */
     private $operator;
-
     /**
      * @var string|string[] the column name. If it is an array, a composite `IN` condition
      * will be generated.
      */
     private $column;
-
     /**
      * @var ExpressionInterface[]|string[]|int[] an array of values that [[column]] value should be among.
      * If it is an empty array the generated expression will be a `false` value if
      * [[operator]] is `IN` and empty if operator is `NOT IN`.
      */
     private $values;
+
 
     /**
      * SimpleCondition constructor

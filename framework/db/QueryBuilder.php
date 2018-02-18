@@ -22,6 +22,9 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
+ * @property string[] $expressionBuilders Array of builders that should be merged with the pre-defined ones
+ * in [[expressionBuilders]] property. This property is write-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -54,7 +57,6 @@ class QueryBuilder extends \yii\base\BaseObject
      * @deprecated since 2.0.14. Is not used, will be dropped in 2.1.0.
      */
     protected $conditionBuilders = [];
-
     /**
      * @var array map of condition aliases to condition classes. For example:
      *
@@ -74,7 +76,6 @@ class QueryBuilder extends \yii\base\BaseObject
      * @since 2.0.14
      */
     protected $conditionClasses = [];
-
     /**
      * @var string[]|ExpressionBuilderInterface[] maps expression class to expression builder class.
      * For example:
@@ -100,6 +101,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @since 2.0.14
      */
     protected $expressionBuilders = [];
+
 
     /**
      * Constructor.
@@ -181,7 +183,8 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * Setter for [[expressionBuilders]] property.
      *
-     * @param string[] $builders array of builder that should be merged with [[expressionBuilders]]
+     * @param string[] $builders array of builders that should be merged with the pre-defined ones
+     * in [[expressionBuilders]] property.
      * @since 2.0.14
      * @see expressionBuilders
      */

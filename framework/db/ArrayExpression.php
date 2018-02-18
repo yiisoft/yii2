@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db;
 
@@ -36,6 +41,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable
      * @var int the number of indices needed to select an element
      */
     private $dimension;
+
 
     /**
      * ArrayExpression constructor.
@@ -88,7 +94,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable
      * @param mixed $offset <p>
      * An offset to check for.
      * </p>
-     * @return boolean true on success or false on failure.
+     * @return bool true on success or false on failure.
      * </p>
      * <p>
      * The return value will be casted to boolean if non-boolean was returned.

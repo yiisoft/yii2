@@ -352,7 +352,7 @@ class DataFilter extends Model
      *
      * @param Validator validator from which to detect attribute type.
      * @return string|null detected attribute type.
-     * @since 2.0.14 
+     * @since 2.0.14
      */
     protected function detectSearchAttributeType(Validator $validator)
     {

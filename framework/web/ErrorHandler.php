@@ -69,7 +69,6 @@ class ErrorHandler extends \yii\base\ErrorHandler
      * @since 2.0.7
      */
     public $displayVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION'];
-
     /**
      * @var string trace line with placeholders to be be substituted.
      * The placeholders are {file}, {line} and {text} and the string should be as follows.
@@ -81,6 +80,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      * @since 2.0.14
      */
     public $traceLine = '{html}';
+
 
     /**
      * Renders the exception.

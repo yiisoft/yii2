@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\pgsql;
 
@@ -17,6 +22,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * @var int the dimension of array. Defaults to 0, means this column is not an array.
      */
     public $dimension = 0;
+
 
     /**
      * {@inheritdoc}

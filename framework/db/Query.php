@@ -131,6 +131,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $queryCacheDependency;
 
+
     /**
      * Creates a DB command that can be used to execute this query.
      * @param Connection $db the database connection used to generate the SQL statement.
