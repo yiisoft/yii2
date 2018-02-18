@@ -102,9 +102,7 @@ class FileTarget extends Target
     public function export()
     {
         $logPath = dirname($this->logFile);
-        if (!is_dir($logPath)) {
-            FileHelper::createDirectory($logPath, $this->dirMode, true);
-        }
+        FileHelper::createDirectory($logPath, $this->dirMode, true);
 
         $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
         if (($fp = @fopen($this->logFile, 'a')) === false) {
