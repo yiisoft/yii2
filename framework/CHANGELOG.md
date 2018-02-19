@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.15 under development
 ------------------------
 
-- no changes in this release.
+- Bug #15676, #15674: Fixed `yii\db\Query::select()` to override existing selects (silverfire)
 
 
 2.0.14 February 18, 2018
