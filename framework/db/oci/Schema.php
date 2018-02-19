@@ -43,7 +43,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     ];
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected $tableQuoteCharacter = '"';
 
@@ -64,7 +64,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function resolveTableName($name)
     {
@@ -82,7 +82,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @see https://docs.oracle.com/cd/B28359_01/server.111/b28337/tdpsg_user_accounts.htm
      */
     protected function findSchemaNames()
@@ -98,7 +98,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function findTableNames($schema = '')
     {
@@ -144,7 +144,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableSchema($name)
     {
@@ -159,7 +159,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTablePrimaryKey($tableName)
     {
@@ -167,7 +167,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableForeignKeys($tableName)
     {
@@ -175,7 +175,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableIndexes($tableName)
     {
@@ -216,7 +216,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableUniques($tableName)
     {
@@ -224,7 +224,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableChecks($tableName)
     {
@@ -232,7 +232,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)

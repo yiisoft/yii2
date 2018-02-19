@@ -33,7 +33,6 @@ class BaseFileHelper
      * @var string the path (or alias) of a PHP file containing MIME type information.
      */
     public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
-
     /**
      * @var string the path (or alias) of a PHP file containing MIME aliases.
      * @since 2.0.14
@@ -417,7 +416,7 @@ class BaseFileHelper
         } catch (ErrorException $e) {
             // last resort measure for Windows
             $lines = [];
-            exec("DEL /F/Q \"$path\"", $lines, $deleteError);
+            exec('DEL /F/Q ' . escapeshellarg($path), $lines, $deleteError);
             return $deleteError !== 0;
         }
     }

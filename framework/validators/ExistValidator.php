@@ -79,7 +79,6 @@ class ExistValidator extends Validator
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
-
     /**
      * @var bool whether this validator is forced to always use master DB
      * @since 2.0.14
@@ -241,7 +240,7 @@ class ExistValidator extends Validator
      * @param string $targetClass
      * @param QueryInterface $query
      * @param mixed $value the value want to be checked
-     * @return boolean
+     * @return bool
      */
     private function valueExists($targetClass, $query, $value)
     {

@@ -28,7 +28,7 @@ use yii\db\ActiveQuery;
 class Employee extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {

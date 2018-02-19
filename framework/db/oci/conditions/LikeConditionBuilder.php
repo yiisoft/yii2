@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\oci\conditions;
 
@@ -10,19 +15,20 @@ use yii\db\ExpressionInterface;
 class LikeConditionBuilder extends \yii\db\conditions\LikeConditionBuilder
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $escapeCharacter = '!';
     /**
      * `\` is initialized in [[buildLikeCondition()]] method since
      * we need to choose replacement value based on [[\yii\db\Schema::quoteValue()]].
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected $escapingReplacements = [
         '%' => '!%',
         '_' => '!_',
         '!' => '!!',
     ];
+
 
     /**
      * {@inheritdoc}

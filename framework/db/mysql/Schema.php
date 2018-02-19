@@ -72,16 +72,16 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     ];
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected $tableQuoteCharacter = '`';
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected $columnQuoteCharacter = '`';
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function resolveTableName($name)
     {
@@ -99,7 +99,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function findTableNames($schema = '')
     {
@@ -112,7 +112,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableSchema($name)
     {
@@ -128,7 +128,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTablePrimaryKey($tableName)
     {
@@ -136,7 +136,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableForeignKeys($tableName)
     {
@@ -144,7 +144,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableIndexes($tableName)
     {
@@ -180,7 +180,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableUniques($tableName)
     {
@@ -188,7 +188,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableChecks($tableName)
@@ -197,7 +197,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)

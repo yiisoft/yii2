@@ -81,11 +81,11 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     ];
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected $tableQuoteCharacter = ['[', ']'];
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected $columnQuoteCharacter = ['[', ']'];
 
@@ -127,7 +127,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @see https://docs.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-principals-transact-sql
      */
     protected function findSchemaNames()
@@ -144,7 +144,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function findTableNames($schema = '')
     {
@@ -163,7 +163,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableSchema($name)
     {
@@ -179,7 +179,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTablePrimaryKey($tableName)
     {
@@ -187,7 +187,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableForeignKeys($tableName)
     {
@@ -195,7 +195,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableIndexes($tableName)
     {
@@ -234,7 +234,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableUniques($tableName)
     {
@@ -242,7 +242,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableChecks($tableName)
     {
@@ -250,7 +250,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableDefaultValues($tableName)
     {

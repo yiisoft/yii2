@@ -72,6 +72,7 @@ class FileTarget extends Target
      */
     public $rotateByCopy = true;
 
+
     /**
      * Initializes the route.
      * This method is invoked after the route is created by the route manager.

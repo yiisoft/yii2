@@ -31,7 +31,6 @@ class ActiveForm extends Widget
      * @since 2.0.14
      */
     const VALIDATION_STATE_ON_CONTAINER = 'container';
-
     /**
      * Add validation state class to input tag
      * @since 2.0.14

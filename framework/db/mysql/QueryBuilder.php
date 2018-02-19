@@ -49,6 +49,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_JSON => 'json'
     ];
 
+
     /**
      * {@inheritdoc}
      */
@@ -133,7 +134,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function dropUnique($name, $table)
     {
@@ -141,7 +142,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException this is not supported by MySQL.
      */
     public function addCheck($name, $table, $expression)
@@ -150,7 +151,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException this is not supported by MySQL.
      */
     public function dropCheck($name, $table)
@@ -260,7 +261,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @see https://downloads.mysql.com/docs/refman-5.1-en.pdf
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)

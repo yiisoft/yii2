@@ -26,7 +26,7 @@ use yii\db\ActiveQuery;
 class Dossier extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {

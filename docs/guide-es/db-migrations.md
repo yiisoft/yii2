@@ -204,7 +204,7 @@ esto genera
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -214,7 +214,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -238,7 +238,7 @@ genera
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -250,7 +250,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -275,7 +275,7 @@ genera
 class m150811_220037_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -287,7 +287,7 @@ class m150811_220037_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -320,7 +320,7 @@ genera
 class m160328_040430_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -368,7 +368,7 @@ class m160328_040430_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -522,7 +522,7 @@ genera
 class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -569,7 +569,7 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {

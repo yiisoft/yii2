@@ -192,7 +192,7 @@ trait ArrayableTrait
 
         foreach ($fields as $field) {
             if (0 === strpos($field, "{$rootField}.")) {
-                $result[] = preg_replace("/^{$rootField}\./i", '', $field);
+                $result[] = preg_replace('/^' . preg_quote($rootField, '/') . '\./i', '', $field);
             }
         }
 

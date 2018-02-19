@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\mysql;
 
@@ -20,6 +25,7 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
     use ExpressionBuilderTrait;
 
     const PARAM_PREFIX = ':qp';
+
 
     /**
      * {@inheritdoc}

@@ -118,10 +118,11 @@ use yii\caching\CacheInterface;
  * master available. This property is read-only.
  * @property PDO $masterPdo The PDO instance for the currently active master connection. This property is
  * read-only.
- * @property QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
- * read-only.
+ * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
+ * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
+ * @property string $serverVersion Server version as a string. This property is read-only.
  * @property Connection $slave The currently active slave connection. `null` is returned if there is no slave
  * available and `$fallbackToMaster` is false. This property is read-only.
  * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
