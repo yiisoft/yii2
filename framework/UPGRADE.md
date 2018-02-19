@@ -62,7 +62,7 @@ Upgrade from Yii 2.0.13
   `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
   introduced methods to retrieve the expression content.
 
-* Added JSON support for PostgreSQL and MySQL as well as Arrays support for PostgreSQL on ActiveRecord layer.
+* Added JSON support for PostgreSQL and MySQL as well as Arrays support for PostgreSQL in ActiveRecord layer.
   In case you already implemented such support yourself, please switch to Yii implementation. Active Record will
   return arrays instead of strings after data population and expects arrays to be assigned for further saving them into database.
 
