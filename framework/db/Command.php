@@ -111,6 +111,7 @@ class Command extends Component
      */
     private $_retryHandler;
 
+
     /**
      * Enables query cache for this command.
      * @param int $duration the number of seconds that query result of this command can remain valid in the cache.
@@ -499,9 +500,11 @@ class Command extends Component
             return $this->db->quoteSql($column);
         }, $columns);
 
-        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows, $params);
 
         $this->setRawSql($sql);
+        $this->bindValues($params);
 
         return $this;
     }

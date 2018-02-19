@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\conditions;
 
@@ -31,6 +36,7 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
      * By default it's assumed to be `\`.
      */
     protected $escapeCharacter;
+
 
     /**
      * Method builds the raw SQL from the $expression that will not be additionally

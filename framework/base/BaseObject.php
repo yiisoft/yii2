@@ -79,7 +79,7 @@ class BaseObject implements Configurable
     /**
      * Returns the fully qualified name of this class.
      * @return string the fully qualified name of this class.
-     * @deprecated 2.0.14 Use `::class`.
+     * @deprecated since 2.0.14. On PHP >=5.5, use `::class` instead.
      */
     public static function className()
     {

@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.14-dev';
+        return '2.0.15-dev';
     }
 
     /**
@@ -401,7 +401,7 @@ class BaseYii
      * @param string|array $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as array.
      * @param string $category the category of the message.
-     * @deprecated 2.0.14 Use [[debug()]]
+     * @deprecated since 2.0.14. Use [[debug()]] instead.
      */
     public static function trace($message, $category = 'application')
     {
@@ -485,7 +485,7 @@ class BaseYii
     /**
      * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
      * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
-     * @deprecated 2.0.14
+     * @deprecated since 2.0.14, this method will be removed in 2.1.0.
      */
     public static function powered()
     {

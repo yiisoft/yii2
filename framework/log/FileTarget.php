@@ -85,10 +85,6 @@ class FileTarget extends Target
         } else {
             $this->logFile = Yii::getAlias($this->logFile);
         }
-        $logPath = dirname($this->logFile);
-        if (!is_dir($logPath)) {
-            FileHelper::createDirectory($logPath, $this->dirMode, true);
-        }
         if ($this->maxLogFiles < 1) {
             $this->maxLogFiles = 1;
         }
@@ -105,6 +101,9 @@ class FileTarget extends Target
      */
     public function export()
     {
+        $logPath = dirname($this->logFile);
+        FileHelper::createDirectory($logPath, $this->dirMode, true);
+
         $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
         if (($fp = @fopen($this->logFile, 'a')) === false) {
             throw new InvalidConfigException("Unable to append to log file: {$this->logFile}");

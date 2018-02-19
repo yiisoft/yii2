@@ -31,10 +31,12 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      * @var array the data rows. Each array element represents one row of data (column name => column value).
      */
     public $data = [];
+
     /**
      * @var \yii\db\ActiveRecord[] the loaded AR models
      */
     private $_models = [];
+
 
     /**
      * Returns the AR model by the specified model name.

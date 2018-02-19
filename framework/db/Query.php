@@ -10,6 +10,7 @@ namespace yii\db;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
+use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
 
 /**
@@ -120,13 +121,16 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Use a negative number to indicate that query cache should not be used.
      * Use boolean `true` to indicate that [[Connection::queryCacheDuration]] should be used.
      * @see cache()
+     * @since 2.0.14
      */
     public $queryCacheDuration;
     /**
      * @var \yii\caching\Dependency the dependency to be associated with the cached query result for this query
      * @see cache()
+     * @since 2.0.14
      */
     public $queryCacheDependency;
+
 
     /**
      * Creates a DB command that can be used to execute this query.
@@ -248,12 +252,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
         }
         $result = [];
         foreach ($rows as $row) {
-            if (is_string($this->indexBy)) {
-                $key = $row[$this->indexBy];
-            } else {
-                $key = call_user_func($this->indexBy, $row);
-            }
-            $result[$key] = $row;
+            $result[ArrayHelper::getValue($row, $this->indexBy)] = $row;
         }
 
         return $result;
@@ -611,6 +610,7 @@ PATTERN;
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
+        $this->select = [];
         $this->select = $this->getUniqueColumns($columns);
         $this->selectOption = $option;
         return $this;
@@ -1222,13 +1222,14 @@ PATTERN;
 
     /**
      * Enables query cache for this Query.
-     * @param int|true the number of seconds that query results can remain valid in cache.
+     * @param int|true $duration the number of seconds that query results can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire.
      * Use a negative number to indicate that query cache should not be used.
      * Use boolean `true` to indicate that [[Connection::queryCacheDuration]] should be used.
      * Defaults to `true`.
      * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached result.
      * @return $this the Query object itself
+     * @since 2.0.14
      */
     public function cache($duration = true, $dependency = null)
     {

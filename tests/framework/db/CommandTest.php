@@ -12,6 +12,7 @@ use yii\db\Connection;
 use yii\db\DataReader;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
 
@@ -396,6 +397,13 @@ SQL;
                  * TODO: make it work. Impossible without BC breaking for public methods.
                  */
             ],
+            'batchInsert binds params from expression' => [
+                '{{%type}}',
+                ['int_col'],
+                [[new Expression(':qp1', [':qp1' => 42])]], // This example is completely useless. This feature of batchInsert is intended to be used with complex expression objects, such as JsonExpression.
+                'expected' => "INSERT INTO `type` (`int_col`) VALUES (:qp1)",
+                'expectedParams' => [':qp1' => 42]
+            ]
         ];
     }
 
@@ -408,12 +416,15 @@ SQL;
      * @param mixed $columns
      * @param mixed $values
      * @param mixed $expected
+     * @param array $expectedParams
      */
-    public function testBatchInsertSQL($table, $columns, $values, $expected)
+    public function testBatchInsertSQL($table, $columns, $values, $expected, array $expectedParams = [])
     {
         $command = $this->getConnection()->createCommand();
         $command->batchInsert($table, $columns, $values);
-        $this->assertEquals($expected, $command->getSql());
+        $command->prepare(false);
+        $this->assertSame($expected, $command->getSql());
+        $this->assertSame($expectedParams, $command->params);
     }
 
     public function testInsert()

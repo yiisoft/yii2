@@ -30,7 +30,7 @@ class CacheableWidgetBehaviorTest extends TestCase
     private $dynamicWidget;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function setUp()
     {
@@ -121,7 +121,7 @@ class CacheableWidgetBehaviorTest extends TestCase
 class BaseCacheableWidget extends Widget
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function test()
     {
@@ -144,7 +144,7 @@ class BaseCacheableWidget extends Widget
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {
@@ -157,7 +157,7 @@ class BaseCacheableWidget extends Widget
 class SimpleCacheableWidget extends BaseCacheableWidget
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function run()
     {
@@ -170,7 +170,7 @@ class SimpleCacheableWidget extends BaseCacheableWidget
 class DynamicCacheableWidget extends BaseCacheableWidget
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function run()
     {

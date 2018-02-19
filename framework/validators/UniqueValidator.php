@@ -89,8 +89,6 @@ class UniqueValidator extends Validator
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
-
-
     /**
      * @var bool whether this validator is forced to always use master DB
      * @since 2.0.14
@@ -142,7 +140,7 @@ class UniqueValidator extends Validator
 
         $modelExists = false;
 
-        if ($this->forceMasterDb) {
+        if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
             $db->useMaster(function () use ($targetClass, $conditions, $model, &$modelExists) {
                 $modelExists = $this->modelExists($targetClass, $conditions, $model);
             });

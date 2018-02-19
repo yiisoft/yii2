@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\conditions;
 
@@ -21,6 +26,7 @@ class ExistsCondition implements ConditionInterface
      * @var Query the [[Query]] object representing the sub-query.
      */
     private $query;
+
 
     /**
      * ExistsCondition constructor.

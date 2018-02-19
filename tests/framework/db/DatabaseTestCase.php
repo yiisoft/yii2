@@ -9,7 +9,7 @@ namespace yiiunit\framework\db;
 
 use yii\caching\DummyCache;
 use yii\db\Connection;
-use yiiunit\TestCase as TestCase;
+use yiiunit\TestCase;
 
 abstract class DatabaseTestCase extends TestCase
 {

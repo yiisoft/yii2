@@ -51,6 +51,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'NUMBER(19,4)',
     ];
 
+
     /**
      * {@inheritdoc}
      */
@@ -200,7 +201,7 @@ EOD;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @see https://docs.oracle.com/cd/B28359_01/server.111/b28286/statements_9016.htm#SQLRF01606
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
@@ -285,7 +286,7 @@ EOD;
      * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, &$params = [])
     {
         if (empty($rows)) {
             return '';
@@ -314,6 +315,8 @@ EOD;
                     $value = 0;
                 } elseif ($value === null) {
                     $value = 'NULL';
+                } elseif ($value instanceof ExpressionInterface) {
+                    $value = $this->buildExpression($value, $params);
                 }
                 $vs[] = $value;
             }

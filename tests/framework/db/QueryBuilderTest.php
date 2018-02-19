@@ -1216,13 +1216,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
             // and
             [['and', '', ''], '', []],
-            [['and', '', 'id=2'], '(id=2)', []],
-            [['and', 'id=1', ''], '(id=1)', []],
-            [['and', 'type=1', ['or', '', 'id=2']], '(type=1) AND ((id=2))', []],
+            [['and', '', 'id=2'], 'id=2', []],
+            [['and', 'id=1', ''], 'id=1', []],
+            [['and', 'type=1', ['or', '', 'id=2']], '(type=1) AND (id=2)', []],
 
             // or
-            [['or', 'id=1', ''], '(id=1)', []],
-            [['or', 'type=1', ['or', '', 'id=2']], '(type=1) OR ((id=2))', []],
+            [['or', 'id=1', ''], 'id=1', []],
+            [['or', 'type=1', ['or', '', 'id=2']], '(type=1) OR (id=2)', []],
 
 
             // between
@@ -2358,5 +2358,23 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $this->replaceQuotes($expected)), $sql);
         $this->assertEquals($expectedParams, $params);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15653
+     */
+    public function testIssue15653()
+    {
+        $query = (new Query())
+            ->from('admin_user')
+            ->where(['is_deleted' => false]);
+
+        $query
+            ->where([])
+            ->andWhere(['in', 'id', ['1', '0']]);
+
+        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        $this->assertSame($this->replaceQuotes("SELECT * FROM [[admin_user]] WHERE [[id]] IN (:qp0, :qp1)"), $sql);
+        $this->assertSame([':qp0' => '1', ':qp1' => '0'], $params);
     }
 }

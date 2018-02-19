@@ -33,7 +33,6 @@ class BaseFileHelper
      * @var string the path (or alias) of a PHP file containing MIME type information.
      */
     public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
-
     /**
      * @var string the path (or alias) of a PHP file containing MIME aliases.
      * @since 2.0.14
@@ -417,7 +416,7 @@ class BaseFileHelper
         } catch (ErrorException $e) {
             // last resort measure for Windows
             $lines = [];
-            exec("DEL /F/Q \"$path\"", $lines, $deleteError);
+            exec('DEL /F/Q ' . escapeshellarg($path), $lines, $deleteError);
             return $deleteError !== 0;
         }
     }
@@ -498,7 +497,7 @@ class BaseFileHelper
      * @throws InvalidArgumentException if the dir is invalid.
      * @since 2.0.14
      */
-    public static function findDirectory($dir, $options = [])
+    public static function findDirectories($dir, $options = [])
     {
         $dir = self::clearDir($dir);
         $options = self::setBasePath($dir, $options);
@@ -512,7 +511,7 @@ class BaseFileHelper
             if (is_dir($path) && static::filterPath($path, $options)) {
                 $list[] = $path;
                 if (!isset($options['recursive']) || $options['recursive']) {
-                    $list = array_merge($list, static::findDirectory($path, $options));
+                    $list = array_merge($list, static::findDirectories($path, $options));
                 }
             }
         }
