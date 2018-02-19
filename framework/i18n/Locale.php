@@ -18,7 +18,6 @@ use yii\base\InvalidConfigException;
  * @since 2.0.14
  *
  * @property string $currencySymbol This property is read-only.
- *
  */
 class Locale extends Component
 {

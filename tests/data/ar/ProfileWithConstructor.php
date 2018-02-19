@@ -15,15 +15,15 @@ namespace yiiunit\data\ar;
  */
 class ProfileWithConstructor extends ActiveRecord
 {
-    public static function tableName()
-    {
-        return 'profile';
-    }
-
     public function __construct($description)
     {
         $this->description = $description;
         parent::__construct();
+    }
+
+    public static function tableName()
+    {
+        return 'profile';
     }
 
     public static function instance($refresh = false)

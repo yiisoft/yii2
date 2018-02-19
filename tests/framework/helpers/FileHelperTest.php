@@ -4,7 +4,6 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
@@ -744,7 +743,6 @@ class FileHelperTest extends TestCase
         // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
         // https://github.com/yiisoft/yii2/issues/13034
         $this->assertEquals('\\\\server\share\path\file', FileHelper::normalizePath('\\\\server\share\path\file', '\\'));
-
     }
 
     public function testLocalizedDirectory()
@@ -900,7 +898,7 @@ class FileHelperTest extends TestCase
         $dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
         $expectedFiles = [
             $dirName . DIRECTORY_SEPARATOR . 'test_sub_dir',
-            $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir'
+            $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir',
         ];
 
         $foundFiles = FileHelper::findDirectories($dirName);
@@ -909,7 +907,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals($expectedFiles, $foundFiles);
 
         $expectedFiles = [
-            $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir'
+            $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir',
         ];
         $options = [
             'filter' => function ($path) {
@@ -920,6 +918,5 @@ class FileHelperTest extends TestCase
         sort($expectedFiles);
         sort($foundFiles);
         $this->assertEquals($expectedFiles, $foundFiles);
-
     }
 }

@@ -28,6 +28,7 @@ trait FileFixtureTrait
      */
     public $dataFile;
 
+
     /**
      * Returns the fixture data.
      *
@@ -55,5 +56,4 @@ trait FileFixtureTrait
 
         throw new InvalidConfigException("Fixture data file does not exist: {$file}");
     }
-
 }

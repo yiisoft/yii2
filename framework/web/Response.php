@@ -240,6 +240,8 @@ class Response extends \yii\base\Response
      */
     private $_headers;
 
+    private $_cookies;
+
 
     /**
      * Initializes this component.
@@ -887,8 +889,6 @@ class Response extends \yii\base\Response
     {
         return $this->redirect(Yii::$app->getRequest()->getUrl() . $anchor);
     }
-
-    private $_cookies;
 
     /**
      * Returns the cookie collection.

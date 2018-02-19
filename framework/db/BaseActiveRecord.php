@@ -104,6 +104,93 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
 
     /**
+     * PHP getter magic method.
+     * This method is overridden so that attributes and related objects can be accessed like properties.
+     *
+     * @param string $name property name
+     * @throws InvalidArgumentException if relation name is wrong
+     * @return mixed property value
+     * @see getAttribute()
+     */
+    public function __get($name)
+    {
+        if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
+            return $this->_attributes[$name];
+        }
+
+        if ($this->hasAttribute($name)) {
+            return null;
+        }
+
+        if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+            return $this->_related[$name];
+        }
+        $value = parent::__get($name);
+        if ($value instanceof ActiveQueryInterface) {
+            $this->setRelationDependencies($name, $value);
+            return $this->_related[$name] = $value->findFor($name, $this);
+        }
+
+        return $value;
+    }
+
+    /**
+     * PHP setter magic method.
+     * This method is overridden so that AR attributes can be accessed like properties.
+     * @param string $name property name
+     * @param mixed $value property value
+     */
+    public function __set($name, $value)
+    {
+        if ($this->hasAttribute($name)) {
+            if (
+                !empty($this->_relationsDependencies[$name])
+                && (!array_key_exists($name, $this->_attributes) || $this->_attributes[$name] !== $value)
+            ) {
+                $this->resetDependentRelations($name);
+            }
+            $this->_attributes[$name] = $value;
+        } else {
+            parent::__set($name, $value);
+        }
+    }
+
+    /**
+     * Checks if a property value is null.
+     * This method overrides the parent implementation by checking if the named attribute is `null` or not.
+     * @param string $name the property name or the event name
+     * @return bool whether the property value is null
+     */
+    public function __isset($name)
+    {
+        try {
+            return $this->__get($name) !== null;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sets a component property to be null.
+     * This method overrides the parent implementation by clearing
+     * the specified attribute value.
+     * @param string $name the property name or the event name
+     */
+    public function __unset($name)
+    {
+        if ($this->hasAttribute($name)) {
+            unset($this->_attributes[$name]);
+            if (!empty($this->_relationsDependencies[$name])) {
+                $this->resetDependentRelations($name);
+            }
+        } elseif (array_key_exists($name, $this->_related)) {
+            unset($this->_related[$name]);
+        } elseif ($this->getRelation($name, false) === null) {
+            parent::__unset($name);
+        }
+    }
+
+    /**
      * {@inheritdoc}
      * @return static|null ActiveRecord instance matching the condition, or `null` if nothing matches.
      */
@@ -267,93 +354,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } catch (\Exception $e) {
             // `hasAttribute()` may fail on base/abstract classes in case automatic attribute list fetching used
             return false;
-        }
-    }
-
-    /**
-     * PHP getter magic method.
-     * This method is overridden so that attributes and related objects can be accessed like properties.
-     *
-     * @param string $name property name
-     * @throws InvalidArgumentException if relation name is wrong
-     * @return mixed property value
-     * @see getAttribute()
-     */
-    public function __get($name)
-    {
-        if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
-            return $this->_attributes[$name];
-        }
-
-        if ($this->hasAttribute($name)) {
-            return null;
-        }
-
-        if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
-            return $this->_related[$name];
-        }
-        $value = parent::__get($name);
-        if ($value instanceof ActiveQueryInterface) {
-            $this->setRelationDependencies($name, $value);
-            return $this->_related[$name] = $value->findFor($name, $this);
-        }
-
-        return $value;
-    }
-
-    /**
-     * PHP setter magic method.
-     * This method is overridden so that AR attributes can be accessed like properties.
-     * @param string $name property name
-     * @param mixed $value property value
-     */
-    public function __set($name, $value)
-    {
-        if ($this->hasAttribute($name)) {
-            if (
-                !empty($this->_relationsDependencies[$name])
-                && (!array_key_exists($name, $this->_attributes) || $this->_attributes[$name] !== $value)
-            ) {
-                $this->resetDependentRelations($name);
-            }
-            $this->_attributes[$name] = $value;
-        } else {
-            parent::__set($name, $value);
-        }
-    }
-
-    /**
-     * Checks if a property value is null.
-     * This method overrides the parent implementation by checking if the named attribute is `null` or not.
-     * @param string $name the property name or the event name
-     * @return bool whether the property value is null
-     */
-    public function __isset($name)
-    {
-        try {
-            return $this->__get($name) !== null;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-    /**
-     * Sets a component property to be null.
-     * This method overrides the parent implementation by clearing
-     * the specified attribute value.
-     * @param string $name the property name or the event name
-     */
-    public function __unset($name)
-    {
-        if ($this->hasAttribute($name)) {
-            unset($this->_attributes[$name]);
-            if (!empty($this->_relationsDependencies[$name])) {
-                $this->resetDependentRelations($name);
-            }
-        } elseif (array_key_exists($name, $this->_related)) {
-            unset($this->_related[$name]);
-        } elseif ($this->getRelation($name, false) === null) {
-            parent::__unset($name);
         }
     }
 

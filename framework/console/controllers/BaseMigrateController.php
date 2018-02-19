@@ -461,7 +461,8 @@ abstract class BaseMigrateController extends Controller
         }
 
         if ($this->confirm(
-            "Are you sure you want to reset the database and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
+            "Are you sure you want to reset the database and start the migration from the beginning?\nAll data will be lost irreversibly!"
+        )) {
             $this->truncateDatabase();
             $this->actionUp();
         } else {

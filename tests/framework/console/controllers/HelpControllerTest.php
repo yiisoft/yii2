@@ -189,7 +189,6 @@ STRING
     }
 }
 
-
 class BufferedHelpController extends HelpController
 {
     use StdOutBufferControllerTrait;

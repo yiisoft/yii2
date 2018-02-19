@@ -108,6 +108,8 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      */
     private $_viewPath;
 
+    private $_message;
+
 
     /**
      * @param array|View $view view instance or its array configuration that will be used to
@@ -147,8 +149,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 
         return Yii::createObject($config);
     }
-
-    private $_message;
 
     /**
      * Creates a new message instance and optionally composes its body content via view rendering.
@@ -193,7 +193,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
         } else {
             $html = $this->render($view, $params, $this->htmlLayout);
         }
-
 
         $this->_message = null;
 

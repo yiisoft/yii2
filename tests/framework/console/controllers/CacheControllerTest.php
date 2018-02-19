@@ -46,7 +46,6 @@ class CacheControllerTest extends TestCase
             $this->markTestSkipped('pdo and ' . $pdoDriver . ' extensions are required.');
         }
 
-
         $this->mockApplication([
             'components' => [
                 'firstCache' => 'yii\caching\ArrayCache',

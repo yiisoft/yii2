@@ -20,6 +20,9 @@ class Utf8Controller extends Controller
 {
     public $defaultAction = 'check-guide';
 
+    private $_foundFiles = [];
+
+
     /**
      * Check guide for non-printable characters that may break docs generation.
      *
@@ -79,8 +82,6 @@ class Utf8Controller extends Controller
             }
         }
     }
-
-    private $_foundFiles = [];
 
     private function found($what, $char, $line, $pos, $file)
     {

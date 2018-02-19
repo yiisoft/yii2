@@ -20,10 +20,10 @@ class Speaker extends Model
     public $customLabel;
     public $underscore_style;
 
+    public static $formName = 'Speaker';
+
     protected $protectedProperty;
     private $_privateProperty;
-
-    public static $formName = 'Speaker';
 
     public function formName()
     {

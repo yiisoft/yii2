@@ -20,17 +20,17 @@ namespace yiiunit\data\ar;
  */
 class CustomerWithConstructor extends ActiveRecord
 {
-    public static function tableName()
-    {
-        return 'customer';
-    }
-
     public function __construct($name, $email, $address)
     {
         $this->name = $name;
         $this->email = $email;
         $this->address = $address;
         parent::__construct();
+    }
+
+    public static function tableName()
+    {
+        return 'customer';
     }
 
     public static function instance($refresh = false)

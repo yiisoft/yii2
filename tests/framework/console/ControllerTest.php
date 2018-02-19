@@ -142,7 +142,6 @@ class ControllerTest extends TestCase
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['news/posts/index']);
     }
 
-
     /**
      * Tests if action help does not include (class) type hinted arguments.
      * @see #10372

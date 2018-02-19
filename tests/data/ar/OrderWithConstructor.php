@@ -21,16 +21,16 @@ namespace yiiunit\data\ar;
  */
 class OrderWithConstructor extends ActiveRecord
 {
-    public static function tableName()
-    {
-        return 'order';
-    }
-
     public function __construct($id)
     {
         $this->id = $id;
         $this->created_at = time();
         parent::__construct();
+    }
+
+    public static function tableName()
+    {
+        return 'order';
     }
 
     public static function instance($refresh = false)

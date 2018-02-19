@@ -77,7 +77,6 @@ class FormatterNumberTest extends TestCase
         ];
     }
 
-
     /**
      * @dataProvider differentConfigProvider
      * @param array $config

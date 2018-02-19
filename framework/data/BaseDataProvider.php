@@ -33,10 +33,6 @@ use yii\base\InvalidArgumentException;
 abstract class BaseDataProvider extends Component implements DataProviderInterface
 {
     /**
-     * @var int Number of data providers on the current page. Used to generate unique IDs.
-     */
-    private static $counter = 0;
-    /**
      * @var string an ID that uniquely identifies the data provider among all data providers.
      * Generated automatically the following way in case it is not set:
      *
@@ -44,6 +40,10 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * - Second and all subsequent data provider IDs are: "dp-1", "dp-2", etc.
      */
     public $id;
+    /**
+     * @var int Number of data providers on the current page. Used to generate unique IDs.
+     */
+    private static $counter = 0;
 
     private $_sort;
     private $_pagination;

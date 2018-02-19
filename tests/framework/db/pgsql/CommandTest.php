@@ -48,8 +48,10 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->batchInsert('bool_values',
-            ['bool_col'], [
+        $command->batchInsert(
+            'bool_values',
+            ['bool_col'],
+            [
                 [true],
                 [false],
             ]
@@ -114,14 +116,14 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             ['json_col'],
             [[new JsonExpression(['username' => 'silverfire', 'is_active' => true, 'langs' => ['Ukrainian', 'Russian', 'English']])]],
             'expected' => 'INSERT INTO "type" ("json_col") VALUES (:qp0)',
-            'expectedParams' => [':qp0' => '{"username":"silverfire","is_active":true,"langs":["Ukrainian","Russian","English"]}']
+            'expectedParams' => [':qp0' => '{"username":"silverfire","is_active":true,"langs":["Ukrainian","Russian","English"]}'],
         ];
         $data['batchInsert binds params from arrayExpression'] = [
             '{{%type}}',
             ['intarray_col'],
-            [[new ArrayExpression([1,null,3], 'int')]],
+            [[new ArrayExpression([1, null, 3], 'int')]],
             'expected' => 'INSERT INTO "type" ("intarray_col") VALUES (ARRAY[:qp0, :qp1, :qp2]::int[])',
-            'expectedParams' => [':qp0' => 1, ':qp1' => null, ':qp2' => 3]
+            'expectedParams' => [':qp0' => 1, ':qp1' => null, ':qp2' => 3],
         ];
 
         return $data;

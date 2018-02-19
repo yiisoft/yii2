@@ -144,6 +144,8 @@ class Pagination extends BaseObject implements Linkable
      */
     private $_pageSize;
 
+    private $_page;
+
 
     /**
      * @return int number of pages
@@ -159,8 +161,6 @@ class Pagination extends BaseObject implements Linkable
 
         return (int) (($totalCount + $pageSize - 1) / $pageSize);
     }
-
-    private $_page;
 
     /**
      * Returns the zero-based current page number.

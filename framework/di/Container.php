@@ -256,6 +256,7 @@ class Container extends Component
         unset($this->_singletons[$class]);
         return $this;
     }
+
     /**
      * Registers a class definition with this container and marks the class as a singleton class.
      *

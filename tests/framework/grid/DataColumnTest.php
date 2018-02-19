@@ -95,7 +95,6 @@ class DataColumnTest extends \yiiunit\TestCase
         $this->assertEquals($result, $filterInput);
     }
 
-
     /**
      * @see DataColumn::$filter
      * @see DataColumn::renderFilterCellContent()

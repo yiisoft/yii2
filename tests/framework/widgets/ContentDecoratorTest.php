@@ -33,7 +33,7 @@ class ContentDecoratorTest extends \yiiunit\TestCase
                 'viewFile' => '@app/views/layouts/base.php',
                 'on init' => function () use (&$initTriggered) {
                     $initTriggered = true;
-                }
+                },
             ]
         );
 

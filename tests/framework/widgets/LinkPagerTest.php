@@ -155,7 +155,7 @@ class LinkPagerTest extends \yiiunit\TestCase
             'pagination' => $this->getPagination(1),
             'on init' => function () use (&$initTriggered) {
                 $initTriggered = true;
-            }
+            },
         ]);
 
         $this->assertTrue($initTriggered);

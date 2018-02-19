@@ -12,10 +12,10 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\validators\BooleanValidator;
+use yii\validators\DateValidator;
 use yii\validators\EachValidator;
 use yii\validators\NumberValidator;
 use yii\validators\StringValidator;
-use yii\validators\DateValidator;
 use yii\validators\Validator;
 
 /**
@@ -259,6 +259,54 @@ class DataFilter extends Model
 
 
     /**
+     * {@inheritdoc}
+     */
+    public function __get($name)
+    {
+        if ($name === $this->filterAttributeName) {
+            return $this->getFilter();
+        }
+
+        return parent::__get($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __set($name, $value)
+    {
+        if ($name === $this->filterAttributeName) {
+            $this->setFilter($value);
+        } else {
+            parent::__set($name, $value);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __isset($name)
+    {
+        if ($name === $this->filterAttributeName) {
+            return $this->getFilter() !== null;
+        }
+
+        return parent::__isset($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __unset($name)
+    {
+        if ($name === $this->filterAttributeName) {
+            $this->setFilter(null);
+        } else {
+            parent::__unset($name);
+        }
+    }
+
+    /**
      * @return mixed raw filter value.
      */
     public function getFilter()
@@ -359,24 +407,24 @@ class DataFilter extends Model
         if ($validator instanceof BooleanValidator) {
             return self::TYPE_BOOLEAN;
         }
-        
+
         if ($validator instanceof NumberValidator) {
             return $validator->integerOnly ? self::TYPE_INTEGER : self::TYPE_FLOAT;
         }
-        
+
         if ($validator instanceof StringValidator) {
             return self::TYPE_STRING;
         }
-        
+
         if ($validator instanceof EachValidator) {
             return self::TYPE_ARRAY;
         }
-        
+
         if ($validator instanceof DateValidator) {
             if ($validator->type == DateValidator::TYPE_DATETIME) {
                 return self::TYPE_DATETIME;
             }
-            
+
             if ($validator->type == DateValidator::TYPE_TIME) {
                 return self::TYPE_TIME;
             }
@@ -782,53 +830,5 @@ class DataFilter extends Model
             return true;
         }
         return parent::canSetProperty($name, $checkVars, $checkBehaviors);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __get($name)
-    {
-        if ($name === $this->filterAttributeName) {
-            return $this->getFilter();
-        }
-
-        return parent::__get($name);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __set($name, $value)
-    {
-        if ($name === $this->filterAttributeName) {
-            $this->setFilter($value);
-        } else {
-            parent::__set($name, $value);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __isset($name)
-    {
-        if ($name === $this->filterAttributeName) {
-            return $this->getFilter() !== null;
-        }
-
-        return parent::__isset($name);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __unset($name)
-    {
-        if ($name === $this->filterAttributeName) {
-            $this->setFilter(null);
-        } else {
-            parent::__unset($name);
-        }
     }
 }

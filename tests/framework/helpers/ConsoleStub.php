@@ -31,7 +31,6 @@ class ConsoleStub extends Console
      */
     public static $errorStream = \STDERR;
 
-
     /**
      * {@inheritdoc}
      */

@@ -67,7 +67,7 @@ class GroupUrlRuleTest extends TestCase
         $config = [
             'prefix' => 'admin',
             'rules' => [
-                'login' => 'user/login'
+                'login' => 'user/login',
             ],
         ];
         $rules = new GroupUrlRule($config);
@@ -87,7 +87,7 @@ class GroupUrlRuleTest extends TestCase
         $config = [
             'prefix' => 'admin',
             'rules' => [
-                'POST login' => 'user/login'
+                'POST login' => 'user/login',
             ],
         ];
         $rules = new GroupUrlRule($config);
@@ -98,7 +98,7 @@ class GroupUrlRuleTest extends TestCase
         $config = [
             'prefix' => 'admin',
             'rules' => [
-                'POST,GET login' => 'user/login'
+                'POST,GET login' => 'user/login',
             ],
         ];
         $rules = new GroupUrlRule($config);

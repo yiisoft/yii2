@@ -15,11 +15,11 @@ use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
-use yiiunit\data\ar\Document;
-use yiiunit\data\ar\Dossier;
 use yiiunit\data\ar\CustomerQuery;
 use yiiunit\data\ar\CustomerWithConstructor;
+use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Dog;
+use yiiunit\data\ar\Dossier;
 use yiiunit\data\ar\Item;
 use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\Order;
@@ -746,7 +746,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // join with ON condition and alias in relation definition
         if ($aliasMethod === 'explicit' || $aliasMethod === 'querysyntax') {
             $relationName = 'books' . ucfirst($aliasMethod) . 'A';
-            $orders = Order::find()->joinWith([(string)$relationName])->orderBy('order.id')->all();
+            $orders = Order::find()->joinWith([(string) $relationName])->orderBy('order.id')->all();
             $this->assertCount(3, $orders);
             $this->assertEquals(1, $orders[0]->id);
             $this->assertEquals(2, $orders[1]->id);
@@ -1165,7 +1165,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('something', $model->char_col2);
         $this->assertEquals(1.23, $model->float_col2);
         $this->assertEquals(33.22, $model->numeric_col);
-        $this->assertEquals(true, $model->bool_col2);
+        $this->assertTrue($model->bool_col2);
 
         if ($this instanceof CubridActiveRecordTest) {
             // cubrid has non-standard timestamp representation
@@ -1415,10 +1415,10 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function testBit()
     {
         $falseBit = BitValues::findOne(1);
-        $this->assertEquals(false, $falseBit->val);
+        $this->assertFalse($falseBit->val);
 
         $trueBit = BitValues::findOne(2);
-        $this->assertEquals(true, $trueBit->val);
+        $this->assertTrue($trueBit->val);
     }
 
     public function testLinkWhenRelationIsIndexed2()
@@ -1596,7 +1596,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         $orderClass = $this->getOrderClass();
 
-        $orderClass::find()->with('customer')->indexBy(function(Order $order) {
+        $orderClass::find()->with('customer')->indexBy(function (Order $order) {
             $this->assertTrue($order->isRelationPopulated('customer'));
             $this->assertNotEmpty($order->customer->id);
 

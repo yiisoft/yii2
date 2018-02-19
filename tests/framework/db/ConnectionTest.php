@@ -299,7 +299,6 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection->enableProfiling = true;
         $this->runExceptionTest($connection);
 
-
         // profiling only
         $connection->enableLogging = false;
         $connection->enableProfiling = true;
@@ -391,7 +390,6 @@ abstract class ConnectionTest extends DatabaseTestCase
             $this->assertNull($conn3->pdo);
         }
     }
-
 
     /**
      * Test whether slave connection is recovered when call getSlavePdo() after close().

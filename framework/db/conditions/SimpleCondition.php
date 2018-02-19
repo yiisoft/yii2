@@ -18,7 +18,7 @@ use yii\base\InvalidArgumentException;
 class SimpleCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
+     * @var string the operator to use. Anything could be used e.g. `>`, `<=`, etc.
      */
     private $operator;
     /**

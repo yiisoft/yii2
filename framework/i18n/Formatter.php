@@ -369,6 +369,16 @@ class Formatter extends Component
      */
     private $_unitMessages = [];
 
+    /**
+     * @var array map of short format names to IntlDateFormatter constant values.
+     */
+    private $_dateFormats = [
+        'short' => 3, // IntlDateFormatter::SHORT,
+        'medium' => 2, // IntlDateFormatter::MEDIUM,
+        'long' => 1, // IntlDateFormatter::LONG,
+        'full' => 0, // IntlDateFormatter::FULL,
+    ];
+
 
     /**
      * {@inheritdoc}
@@ -442,9 +452,7 @@ class Formatter extends Component
         throw new InvalidArgumentException("Unknown format type: $format");
     }
 
-
     // simple formats
-
 
     /**
      * Formats the value as is without any formatting.
@@ -587,9 +595,7 @@ class Formatter extends Component
         return $value ? $this->booleanFormat[1] : $this->booleanFormat[0];
     }
 
-
     // date and time formats
-
 
     /**
      * Formats the value as a date.
@@ -702,16 +708,6 @@ class Formatter extends Component
 
         return $this->formatDateTimeValue($value, $format, 'datetime');
     }
-
-    /**
-     * @var array map of short format names to IntlDateFormatter constant values.
-     */
-    private $_dateFormats = [
-        'short' => 3, // IntlDateFormatter::SHORT,
-        'medium' => 2, // IntlDateFormatter::MEDIUM,
-        'long' => 1, // IntlDateFormatter::LONG,
-        'full' => 0, // IntlDateFormatter::FULL,
-    ];
 
     /**
      * @param int|string|DateTime $value the value to be formatted. The following
@@ -1040,9 +1036,7 @@ class Formatter extends Component
         return empty($parts) ? $this->nullDisplay : (($isNegative ? $negativeSign : '') . implode($implodeString, $parts));
     }
 
-
     // number formats
-
 
     /**
      * Formats the value as an integer number by removing any decimal digits without rounding.
@@ -1115,7 +1109,6 @@ class Formatter extends Component
 
         return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
     }
-
 
     /**
      * Formats the value as a percent number with "%" sign.

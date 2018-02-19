@@ -90,9 +90,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     private $_cookieParams = ['httponly' => true];
     /**
-     * @var $frozenSessionData array|null is used for saving session between recreations due to session parameters update.
+     * @var array|null is used for saving session between recreations due to session parameters update.
      */
     private $frozenSessionData;
+
+    private $_hasSessionId;
 
 
     /**
@@ -221,8 +223,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         return session_status() === PHP_SESSION_ACTIVE;
     }
-
-    private $_hasSessionId;
 
     /**
      * Returns a value indicating whether the current request has sent the session ID.
@@ -939,7 +939,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     protected function unfreeze()
     {
         if (null !== $this->frozenSessionData) {
-
             YII_DEBUG ? session_start() : @session_start();
 
             if ($this->getIsActive()) {

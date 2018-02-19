@@ -39,6 +39,7 @@ class RateLimiterTest extends TestCase
 
         $this->mockWebApplication();
     }
+
     protected function tearDown()
     {
         parent::tearDown();

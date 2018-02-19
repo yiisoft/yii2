@@ -62,7 +62,6 @@ class UrlRuleTest extends TestCase
         }
     }
 
-
     protected function getTestsForParseRequest()
     {
         // structure of each test
@@ -265,7 +264,6 @@ class UrlRuleTest extends TestCase
                     [['v1/user/delete'], false],
                 ],
             ],
-
 
             // without pluralize
             [

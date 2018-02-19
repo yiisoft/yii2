@@ -19,7 +19,7 @@ use yii\db\ExpressionInterface;
 class InCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use (e.g. `IN` or `NOT IN`)
+     * @var string the operator to use (e.g. `IN` or `NOT IN`)
      */
     private $operator;
     /**
@@ -74,6 +74,7 @@ class InCondition implements ConditionInterface
     {
         return $this->values;
     }
+
     /**
      * {@inheritdoc}
      * @throws InvalidArgumentException if wrong number of operands have been given.

@@ -26,7 +26,6 @@ class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
         $this->allowedValues = $allowedValues;
     }
 
-
     /**
      * Returns a string representation of the object.
      *

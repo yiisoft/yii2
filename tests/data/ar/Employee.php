@@ -58,8 +58,7 @@ class Employee extends ActiveRecord
             ->hasOne(Department::className(), [
                 'id' => 'department_id',
             ])
-            ->inverseOf('employees')
-        ;
+            ->inverseOf('employees');
     }
 
     /**
@@ -74,7 +73,6 @@ class Employee extends ActiveRecord
                 'department_id' => 'department_id',
                 'employee_id' => 'id',
             ])
-            ->inverseOf('employee')
-        ;
+            ->inverseOf('employee');
     }
 }

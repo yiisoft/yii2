@@ -121,13 +121,12 @@ class ExistValidator extends Validator
         $relationQuery = $model->{'get' . ucfirst($this->targetRelation)}();
 
         if ($this->forceMasterDb) {
-            $model::getDb()->useMaster(function() use ($relationQuery, &$exists) {
+            $model::getDb()->useMaster(function () use ($relationQuery, &$exists) {
                 $exists = $relationQuery->exists();
             });
         } else {
             $relationQuery->exists();
         }
-
 
         if (!$exists) {
             $this->addError($model, $attribute, $this->message);
@@ -258,7 +257,6 @@ class ExistValidator extends Validator
         return $exists;
     }
 
-
     /**
      * Run query to check if value exists
      *
@@ -269,7 +267,7 @@ class ExistValidator extends Validator
     private function queryValueExists($query, $value)
     {
         if (is_array($value)) {
-            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ;
+            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value);
         }
         return $query->exists();
     }
@@ -311,7 +309,8 @@ class ExistValidator extends Validator
                 $prefixedColumn = "{$alias}.[[" . preg_replace(
                     '/^' . preg_quote($alias) . '\.(.*)$/',
                     '$1',
-                    $columnName) . ']]';
+                    $columnName
+                ) . ']]';
             } else {
                 // there is an expression, can't prefix it reliably
                 $prefixedColumn = $columnName;

@@ -138,6 +138,8 @@ class MigrateController extends BaseMigrateController
      */
     public $comment = '';
 
+    private $_migrationNameLimit;
+
 
     /**
      * {@inheritdoc}
@@ -325,8 +327,6 @@ class MigrateController extends BaseMigrateController
             'version' => $version,
         ])->execute();
     }
-
-    private $_migrationNameLimit;
 
     /**
      * {@inheritdoc}

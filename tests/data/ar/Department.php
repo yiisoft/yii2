@@ -42,7 +42,6 @@ class Department extends ActiveRecord
             ->hasMany(Employee::className(), [
                 'department_id' => 'id',
             ])
-            ->inverseOf('department')
-        ;
+            ->inverseOf('department');
     }
 }
