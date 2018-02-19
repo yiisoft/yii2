@@ -4,34 +4,12 @@ Yii Framework 2 Change Log
 2.0.15 under development
 ------------------------
 
-- no changes in this release.
+- Bug #5341: HasMany via two relations (shirase, cebe)
 
 
 2.0.14 February 18, 2018
 ------------------------
 
-- Bug #5341: HasMany via two relations (shirase, cebe)
-- Bug #15142: Fixed array params replacing in `yii\helpers\BaseUrl::current()` (IceJOKER)
-- Bug #15249: Controllers in subdirectories were not visible in commands list (IceJOKER)
-- Enh #5515: Added default value for `yii\behaviors\BlameableBehavior` for cases when the user is guest (dmirogin)
-- Bug #14276: Fixed I18N format with dotted parameters (developeruz)
-- Enh #13996: Added `yii\web\View::registerJsVar()` method that allows registering JavaScript variables (Eseperio, samdark)
-- Enh #9771: Assign hidden input with its own set of HTML options via `$hiddenOptions` in activeFileInput `$options` (HanafiAhmat)
-- Bug #15536: Fixed `yii\widgets\ActiveForm::init()` for call `parent::init()` (panchenkodv)
-- Enh #14806: Added $placeFooterAfterBody option for GridView (terehru)
-- Bug #14711: Fixed `yii\web\ErrorHandler` displaying exception message in non-debug mode (samdark)
-- Enh #13814: MySQL unique index names can now contain spaces (df2)
-- Bug #15300: Fixed "Cannot read property 'style' of undefined" error at the error screen (vitorarantes)
-- Bug #15540: Fixed `yii\db\ActiveRecord::with()` unable to use relation defined via attached behavior in case `asArray` is enabled (klimov-paul)
-- Enh #15426: Added abilitiy to create and drop database views (igravity, vladis84)
-- Enh #10186: Use native `hash_equals` in `yii\base\Security::compareString()` if available, throw exception if non-strings are compared (aotd1, samdark)
-- Bug #15122: Fixed `yii\db\Command::getRawSql()` to properly replace expressions (hiscaler, samdark)
-- Enh #15496: CSRF token is now regenerated on changing identity (samdark, rhertogh)
-- Enh #15417: Added `yii\validators\FileValidator::$minFiles` (vladis84)
-- Enh #14538: Added `yii\behaviors\AttributeTypecastBehavior::typecastAfterFind` property (littlefuntik, silverfire)
-- Enh #14254: add an option to specify whether validator is forced to always use master DB for `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` (rossoneri, samdark)
-- Enh #15272: Removed type attribute from script tag (aleksbelic)
-- Enh #15120: Refactored dynamic caching introducing `DynamicContentAwareInterface` and `DynamicContentAwareTrait` (sergeymakinen)
 - Bug #8983: Only truncate the original log file for rotation (matthewyang, developeruz)
 - Bug #9342: Fixed `yii\db\ActiveQueryTrait` to apply `indexBy` after relations population in order to prevent excess queries (sammousa, silverfire)
 - Bug #11401: Fixed `yii\web\DbSession` concurrency issues when writing and regenerating IDs (samdark, andreasanta, cebe)
