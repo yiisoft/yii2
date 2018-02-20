@@ -159,6 +159,8 @@ class Serializer extends Component
             return $this->serializeModel($data);
         } elseif ($data instanceof DataProviderInterface) {
             return $this->serializeDataProvider($data);
+        } elseif (is_array($data)) {
+            return $this->serializeModels($data);
         }
 
         return $data;
