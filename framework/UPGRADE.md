@@ -98,6 +98,9 @@ Upgrade from Yii 2.0.13
   - Replace calls to `Yii::trace()` with `Yii::debug()`.
   - Remove calls to `yii\BaseYii::powered()`.
   - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
+  
+* When hash format condition is used in `yii\db\ActiveRecord::findOne()` and `findAll()`, the array keys (column names) are now limited
+  to the table column names for SQL DBMSs and to the following character set for NoSQL DBMSs: `A-Z0-9a-z$_-`.
 
 Upgrade from Yii 2.0.12
 -----------------------

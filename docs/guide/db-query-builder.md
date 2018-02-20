@@ -227,9 +227,19 @@ $userQuery = (new Query())->select('id')->from('user');
 $query->where(['id' => $userQuery]);
 ```
 
-Using the Hash Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
-you do not have to add parameters manually.
+Using the Hash Format, Yii internally uses parameter binding for values, so in contrast to the [string format](#string-format),
+here you do not have to add parameters manually. However, Yii never escape the column name, so you should never
+embed variable as a column name, especially if the variable value came from end user inputs, because this will make
+your application subject to SQL injection attack. In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
+guide article. For example the following code is vulnerable:
 
+```php
+// Vulnarable code:
+$column = $request->get('column');
+$value = $request->get('value);
+$query->where([$column => $value]);
+// $value will be encoded and is safe, but $column name is not!
+```
 
 #### Operator Format <span id="operator-format"></span>
 
@@ -306,8 +316,19 @@ the operator can be one of the following:
 - `>`, `<=`, or any other valid DB operator that takes two operands: the first operand must be a column name
   while the second operand a value. For example, `['>', 'age', 10]` will generate `age>10`.
 
-Using the Operator Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
-you do not have to add parameters manually.
+Using the Operator Format, Yii internally uses parameter binding for values, so in contrast to the [string format](#string-format),
+here you do not have to add parameters manually. However, Yii never escape the column name, so you should never
+embed variable as a column name, especially if the variable value came from end user inputs, because this will make
+your application subject to SQL injection attack. In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
+guide article. For example the following code is vulnerable:
+
+```php
+// Vulnarable code:
+$column = $request->get('column');
+$value = $request->get('value);
+$query->where(['=', $column, $value]);
+// $value will be encoded and is safe, but $column name is not!
+```
 
 #### Object Format <span id="object-format"></span>
 

@@ -161,8 +161,10 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *    corresponding record (or `null` if not found).
      *  - a non-associative array: query by a list of primary key values and return the
      *    first record (or `null` if not found).
-     *  - an associative array of name-value pairs: query by a set of attribute values and return a single record
-     *    matching all of them (or `null` if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
+     *  - an associative array of columnName-value pairs: query by a set of attribute values and return a single record
+     *    matching all of them (or `null` if not found). Note that `['id' => 1, 2]` is treated as a non-associative array,
+     *    column names are limited to current table columns or to a set of characters `A-Z0-9a-z$_-` when DBMS table schema
+     *    is not available (for example for NoSQL drivers).
      *
      * That this method will automatically call the `one()` method and return an [[ActiveRecordInterface|ActiveRecord]]
      * instance.
@@ -210,7 +212,8 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *    primary keys and not an empty `WHERE` condition.
      *  - an associative array of name-value pairs: query by a set of attribute values and return an array of records
      *    matching all of them (or an empty array if none was found). Note that `['id' => 1, 2]` is treated as
-     *    a non-associative array.
+     *    a non-associative array. Column names are limited to current table columns or to a set of characters
+     *    `A-Z0-9a-z$_-` when DBMS table schema is not available (for example for NoSQL drivers).
      *
      * This method will automatically call the `all()` method and return an array of [[ActiveRecordInterface|ActiveRecord]]
      * instances.
