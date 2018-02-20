@@ -117,27 +117,6 @@ trait ActiveQueryTrait
             $models = [];
             /* @var $class ActiveRecord */
             $class = $this->modelClass;
-            if ($this->indexBy === null) {
-                foreach ($rows as $row) {
-                    $model = $class::instantiate($row);
-                    /* @var $modelClass BaseActiveRecord */
-                    $modelClass = get_class($model);
-                    $modelClass::populateRecord($model, $row);
-                    $models[] = $model;
-                }
-            } else {
-                foreach ($rows as $row) {
-                    $model = $class::instantiate($row);
-                    /* @var $modelClass BaseActiveRecord */
-                    $modelClass = get_class($model);
-                    $modelClass::populateRecord($model, $row);
-                    if (is_string($this->indexBy)) {
-                        $key = $model->{$this->indexBy};
-                    } else {
-                        $key = call_user_func($this->indexBy, $model);
-                    }
-                    $models[$key] = $model;
-                }
             foreach ($rows as $row) {
                 $model = $class::instantiate($row);
                 $modelClass = get_class($model);
