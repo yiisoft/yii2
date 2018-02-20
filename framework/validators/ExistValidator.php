@@ -120,12 +120,18 @@ class ExistValidator extends Validator
         /** @var ActiveQuery $relationQuery */
         $relationQuery = $model->{'get' . ucfirst($this->targetRelation)}();
 
+        if ($this->filter instanceof \Closure) {
+            call_user_func($this->filter, $relationQuery);
+        } elseif ($this->filter !== null) {
+            $relationQuery->andWhere($this->filter);
+        }
+
         if ($this->forceMasterDb) {
             $model::getDb()->useMaster(function() use ($relationQuery, &$exists) {
                 $exists = $relationQuery->exists();
             });
         } else {
-            $relationQuery->exists();
+            $exists = $relationQuery->exists();
         }
 
 

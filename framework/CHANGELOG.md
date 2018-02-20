@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.15 under development
 ------------------------
 
-- no changes in this release.
+- Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 
 
 2.0.14 February 18, 2018
