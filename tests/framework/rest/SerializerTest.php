@@ -9,6 +9,7 @@ namespace yiiunit\framework\rest;
 
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
+use yii\db\ActiveRecord;
 use yii\rest\Serializer;
 use yiiunit\TestCase;
 
@@ -131,6 +132,51 @@ class SerializerTest extends TestCase
                 'extraField4' => 'testExtra2',
             ],
         ], $serializer->serialize($model));
+    }
+
+    public function testAutoNestedExpand()
+    {
+        $serializer = new Serializer();
+        $serializer->autoNestedExpand = true;
+
+        $child = new TestActiveRecord();
+        $child->field6 = 55;
+        $child->populateRelation('more', [
+            new TestActiveRecord(),
+            new TestActiveRecord(),
+            new TestModel(),
+        ]);
+
+        $parent = new TestActiveRecord();
+        $parent->field6 = 123;
+        $parent->populateRelation('children', [
+            $child,
+        ]);
+
+        $this->assertSame([
+            'field5' => 'test3',
+            'field6' => 123,
+            'children' => [
+                [
+                    'field5' => 'test3',
+                    'field6' => 55,
+                    'more' => [
+                        [
+                            'field5' => 'test3',
+                            'field6' => 16,
+                        ],
+                        [
+                            'field5' => 'test3',
+                            'field6' => 16,
+                        ],
+                        [
+                            'field1' => 'test',
+                            'field2' => 2,
+                        ],
+                    ],
+                ],
+            ],
+        ], $serializer->serialize($parent));
     }
 
     public function testFields()
@@ -455,5 +501,23 @@ class TestModel2 extends Model
     public function extraFields()
     {
         return static::$extraFields;
+    }
+}
+
+class TestActiveRecord extends ActiveRecord
+{
+    public $fields = ['field5', 'field6'];
+
+    public $field5 = 'test3';
+    public $field6 = 16;
+
+    public function fields()
+    {
+        return $this->fields;
+    }
+
+    public function attributes()
+    {
+        return $this->fields;
     }
 }

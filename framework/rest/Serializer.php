@@ -13,6 +13,7 @@ use yii\base\Component;
 use yii\base\Model;
 use yii\data\DataProviderInterface;
 use yii\data\Pagination;
+use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\web\Link;
 use yii\web\Request;
@@ -118,6 +119,14 @@ class Serializer extends Component
      * @since 2.0.10
      */
     public $preserveKeys = false;
+    /**
+     * @var bool whether to automatically expand relations when serializing models.
+     * Set this to `true` to use the loaded relations of the passed model in serialization. The default is to only
+     * use the attributes of the model, relations are ignored unless explicitly specified in the `expandParam` parameter
+     * of the request.
+     * @since 2.1
+     */
+    public $autoNestedExpand = false;
 
 
     /**
@@ -171,6 +180,38 @@ class Serializer extends Component
             is_string($fields) ? preg_split('/\s*,\s*/', $fields, -1, PREG_SPLIT_NO_EMPTY) : [],
             is_string($expand) ? preg_split('/\s*,\s*/', $expand, -1, PREG_SPLIT_NO_EMPTY) : [],
         ];
+    }
+
+    /**
+     * Adds loaded relations to the list of expands.
+     * @param Arrayable $model
+     * @param array $expand
+     * @return array the array with all the loaded relations of this model appended.
+     */
+    protected function autoExpand($model, $expand = [])
+    {
+        if (!$model instanceof BaseActiveRecord) {
+            return [];
+        }
+        $relations = $model->getRelatedRecords();
+        $expands = array_keys($relations);
+        foreach ($relations as $key => $value) {
+            $children = [];
+            if ($value instanceof Model) {
+                $children[] = $value;
+            } elseif (is_array($value)) {
+                $children = $value;
+            }
+
+            foreach ($children as $child) {
+                $child_expands = $this->autoExpand($child);
+                array_walk($child_expands, function (&$record, $index, $key) {
+                    $record = sprintf('%s.%s', $key, $record);
+                }, $key);
+                $expands = array_merge($expands, $child_expands);
+            }
+        }
+        return array_unique(array_merge($expand, $expands));
     }
 
     /**
@@ -256,7 +297,11 @@ class Serializer extends Component
         }
 
         [$fields, $expand] = $this->getRequestedFields();
-        return $model->toArray($fields, $expand);
+        if ($this->autoNestedExpand) {
+            return $model->toArray($fields, $this->autoExpand($model, $expand));
+        } else {
+            return $model->toArray($fields, $expand);
+        }
     }
 
     /**
@@ -288,7 +333,11 @@ class Serializer extends Component
         [$fields, $expand] = $this->getRequestedFields();
         foreach ($models as $i => $model) {
             if ($model instanceof Arrayable) {
-                $models[$i] = $model->toArray($fields, $expand);
+                if ($this->autoNestedExpand) {
+                    $models[$i] = $model->toArray($fields, $this->autoExpand($model, $expand));
+                } else {
+                    $models[$i] = $model->toArray($fields, $expand);
+                }
             } elseif (is_array($model)) {
                 $models[$i] = ArrayHelper::toArray($model);
             }
