@@ -150,6 +150,8 @@ class Serializer extends Component
             return $this->serializeModel($data);
         } elseif ($data instanceof DataProviderInterface) {
             return $this->serializeDataProvider($data);
+        } elseif (is_array($data)) {
+            return $this->serializeModels($data);
         }
 
         return $data;
@@ -171,6 +173,33 @@ class Serializer extends Component
             is_string($fields) ? preg_split('/\s*,\s*/', $fields, -1, PREG_SPLIT_NO_EMPTY) : [],
             is_string($expand) ? preg_split('/\s*,\s*/', $expand, -1, PREG_SPLIT_NO_EMPTY) : [],
         ];
+    }
+
+    /**
+     * Return a list of all populated relations of this Model.
+     * @param Model $model
+     * @return array the array with all the populated relations of this Model.
+     */
+    protected function getRelations($model)
+    {
+        $expand = array_keys($model->getRelatedRecords());
+        foreach ($model->getRelatedRecords() as $key => $value) {
+            $children = [];
+            if ($value instanceof Model) {
+                $children[] = $value;
+            } elseif (is_array($value)) {
+                $children = $value;
+            }
+
+            foreach ($children as $child) {
+                $child_expands = $this->getRelations($child);
+                array_walk($child_expands, function (&$record, $index, $key) {
+                    $record = sprintf('%s.%s', $key, $record);
+                }, $key);
+                $expand = array_merge($expand, $child_expands);
+            }
+        }
+        return array_unique($expand);
     }
 
     /**
@@ -257,7 +286,7 @@ class Serializer extends Component
         }
 
         list($fields, $expand) = $this->getRequestedFields();
-        return $model->toArray($fields, $expand);
+        return $model->toArray($fields, array_merge($expand, $this->getRelations($model)));
     }
 
     /**
@@ -289,7 +318,7 @@ class Serializer extends Component
         list($fields, $expand) = $this->getRequestedFields();
         foreach ($models as $i => $model) {
             if ($model instanceof Arrayable) {
-                $models[$i] = $model->toArray($fields, $expand);
+                $models[$i] = $model->toArray($fields, array_merge($expand, $this->getRelations($model)));
             } elseif (is_array($model)) {
                 $models[$i] = ArrayHelper::toArray($model);
             }
