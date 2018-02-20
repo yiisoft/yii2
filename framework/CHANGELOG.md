@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.15 under development
 ------------------------
 
-- Bug #15693: Fixed Fix HttpAuthHeader when no pattern is present but not matched (bboure).
+- Bug #15693: Fixed Fix HttpAuthHeader when no pattern is present but not matched (bboure)
 
 2.0.14 February 18, 2018
 ------------------------
