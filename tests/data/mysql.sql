@@ -169,6 +169,7 @@ CREATE TABLE `document` (
   `title` VARCHAR(255) NOT NULL,
   `content` TEXT,
   `version` INT(11) NOT NULL DEFAULT 0,
+  `properties` JSON,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
