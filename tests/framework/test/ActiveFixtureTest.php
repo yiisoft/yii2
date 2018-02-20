@@ -64,7 +64,7 @@ class CustomDirectoryDbTestCase extends BaseDbTestCase
     public function fixtures()
     {
         return [
-            'customers' => CustomDirectoryFixture::className(),
+            'customers' => CustomDirectoryFixture::class,
         ];
     }
 }
@@ -75,7 +75,7 @@ class DataPathDbTestCase extends BaseDbTestCase
     {
         return [
             'customers' => [
-                'class' => CustomDirectoryFixture::className(),
+                'class' => CustomDirectoryFixture::class,
                 'dataFile' => '@app/framework/test/data/customer.php'
             ]
         ];

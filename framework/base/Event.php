@@ -84,7 +84,7 @@ class Event extends BaseObject
      *
      * ```php
      * Event::on('app\models\db\*', '*Insert', function ($event) {
-     *     Yii::trace(get_class($event->sender) . ' is inserted.');
+     *     Yii::debug(get_class($event->sender) . ' is inserted.');
      * });
      * ```
      *

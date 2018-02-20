@@ -310,7 +310,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function insert($table, $columns, &$params)
     {
-        list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
+        [$names, $placeholders, $values, $params] = $this->prepareInsertValues($table, $columns, $params);
         return 'INSERT INTO ' . $this->db->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
@@ -336,7 +336,7 @@ class QueryBuilder extends \yii\base\BaseObject
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof Query) {
-            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
+            [$names, $values, $params] = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
@@ -507,7 +507,7 @@ class QueryBuilder extends \yii\base\BaseObject
     protected function prepareUpsertColumns($table, $insertColumns, $updateColumns, &$constraints = [])
     {
         if ($insertColumns instanceof Query) {
-            list($insertNames) = $this->prepareInsertSelectSubQuery($insertColumns, $this->db->getSchema());
+            [$insertNames] = $this->prepareInsertSelectSubQuery($insertColumns, $this->db->getSchema());
         } else {
             $insertNames = array_map([$this->db, 'quoteColumnName'], array_keys($insertColumns));
         }
@@ -590,7 +590,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function update($table, $columns, $condition, &$params)
     {
-        list($lines, $params) = $this->prepareUpdateSets($table, $columns, $params);
+        [$lines, $params] = $this->prepareUpdateSets($table, $columns, $params);
         $sql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $lines);
         $where = $this->buildWhere($condition, $params);
         return $where === '' ? $sql : $sql . ' ' . $where;

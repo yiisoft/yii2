@@ -2372,7 +2372,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->where([])
             ->andWhere(['in', 'id', ['1', '0']]);
 
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $this->assertSame($this->replaceQuotes("SELECT * FROM [[admin_user]] WHERE [[id]] IN (:qp0, :qp1)"), $sql);
         $this->assertSame([':qp0' => '1', ':qp1' => '0'], $params);
     }

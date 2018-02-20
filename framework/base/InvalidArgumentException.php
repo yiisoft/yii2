@@ -12,7 +12,6 @@ namespace yii\base;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- * @deprecated since 2.0.14. Use [[InvalidArgumentException]] instead.
  */
 class InvalidArgumentException extends \BadMethodCallException
 {

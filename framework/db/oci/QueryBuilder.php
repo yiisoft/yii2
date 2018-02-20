@@ -186,7 +186,7 @@ EOD;
      */
     protected function prepareInsertValues($table, $columns, $params = [])
     {
-        list($names, $placeholders, $values, $params) = parent::prepareInsertValues($table, $columns, $params);
+        [$names, $placeholders, $values, $params] = parent::prepareInsertValues($table, $columns, $params);
         if (!$columns instanceof Query && empty($names)) {
             $tableSchema = $this->db->getSchema()->getTableSchema($table);
             if ($tableSchema !== null) {
@@ -207,7 +207,7 @@ EOD;
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
         /** @var Constraint[] $constraints */
-        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
+        [$uniqueNames, $insertNames, $updateNames] = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
         }
@@ -223,7 +223,7 @@ EOD;
             $onCondition[] = $constraintCondition;
         }
         $on = $this->buildCondition($onCondition, $params);
-        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+        [, $placeholders, $values, $params] = $this->prepareInsertValues($table, $insertColumns, $params);
         if (!empty($placeholders)) {
             $usingSelectValues = [];
             foreach ($insertNames as $index => $name) {
@@ -232,7 +232,7 @@ EOD;
             $usingSubQuery = (new Query())
                 ->select($usingSelectValues)
                 ->from('DUAL');
-            list($usingValues, $params) = $this->build($usingSubQuery, $params);
+            [$usingValues, $params] = $this->build($usingSubQuery, $params);
         }
         $mergeSql = 'MERGE INTO ' . $this->db->quoteTableName($table) . ' '
             . 'USING (' . (isset($usingValues) ? $usingValues : ltrim($values, ' ')) . ') "EXCLUDED" '
@@ -261,7 +261,7 @@ EOD;
                 $updateColumns[$name] = new Expression($quotedName);
             }
         }
-        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        [$updates, $params] = $this->prepareUpdateSets($table, $updateColumns, $params);
         $updateSql = 'UPDATE SET ' . implode(', ', $updates);
         return "$mergeSql WHEN MATCHED THEN $updateSql WHEN NOT MATCHED THEN $insertSql";
     }

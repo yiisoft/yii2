@@ -283,7 +283,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     private function newUpsert($table, $insertColumns, $updateColumns, &$params)
     {
         $insertSql = $this->insert($table, $insertColumns, $params);
-        list($uniqueNames, , $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns);
+        [$uniqueNames, , $updateNames] = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns);
         if (empty($uniqueNames)) {
             return $insertSql;
         }
@@ -298,7 +298,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $updateColumns[$name] = new Expression('EXCLUDED.' . $this->db->quoteColumnName($name));
             }
         }
-        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        [$updates, $params] = $this->prepareUpdateSets($table, $updateColumns, $params);
         return $insertSql . ' ON CONFLICT (' . implode(', ', $uniqueNames) . ') DO UPDATE SET ' . implode(', ', $updates);
     }
 
@@ -313,7 +313,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     private function oldUpsert($table, $insertColumns, $updateColumns, &$params)
     {
         /** @var Constraint[] $constraints */
-        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
+        [$uniqueNames, $insertNames, $updateNames] = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
         }
@@ -333,7 +333,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
             }
         }
-        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+        [, $placeholders, $values, $params] = $this->prepareInsertValues($table, $insertColumns, $params);
         $updateCondition = ['or'];
         $insertCondition = ['or'];
         $quotedTableName = $schema->quoteTableName($table);
@@ -373,7 +373,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $updateColumns[$name] = new Expression($quotedName);
             }
         }
-        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        [$updates, $params] = $this->prepareUpdateSets($table, $updateColumns, $params);
         $updateSql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $updates)
             . ' FROM "EXCLUDED" ' . $this->buildWhere($updateCondition, $params)
             . ' RETURNING ' . $this->db->quoteTableName($table) .'.*';

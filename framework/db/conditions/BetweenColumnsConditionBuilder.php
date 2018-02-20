@@ -52,7 +52,7 @@ class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
     protected function escapeColumnName($columnName, &$params = [])
     {
         if ($columnName instanceof Query) {
-            list($sql, $params) = $this->queryBuilder->build($columnName, $params);
+            [$sql, $params] = $this->queryBuilder->build($columnName, $params);
             return "($sql)";
         } elseif ($columnName instanceof ExpressionInterface) {
             return $this->queryBuilder->buildExpression($columnName, $params);

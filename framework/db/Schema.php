@@ -532,7 +532,7 @@ abstract class Schema extends BaseObject
         if (is_string($this->tableQuoteCharacter)) {
             $startingCharacter = $endingCharacter = $this->tableQuoteCharacter;
         } else {
-            list($startingCharacter, $endingCharacter) = $this->tableQuoteCharacter;
+            [$startingCharacter, $endingCharacter] = $this->tableQuoteCharacter;
         }
         return strpos($name, $startingCharacter) !== false ? $name : $startingCharacter . $name . $endingCharacter;
     }
@@ -549,7 +549,7 @@ abstract class Schema extends BaseObject
         if (is_string($this->tableQuoteCharacter)) {
             $startingCharacter = $endingCharacter = $this->columnQuoteCharacter;
         } else {
-            list($startingCharacter, $endingCharacter) = $this->columnQuoteCharacter;
+            [$startingCharacter, $endingCharacter] = $this->columnQuoteCharacter;
         }
         return $name === '*' || strpos($name, $startingCharacter) !== false ? $name : $startingCharacter . $name . $endingCharacter;
     }

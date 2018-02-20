@@ -498,7 +498,7 @@ class Component extends BaseObject
      *
      * ```php
      * $component->on('event.group.*', function ($event) {
-     *     Yii::trace($event->name . ' is triggered.');
+     *     Yii::debug($event->name . ' is triggered.');
      * });
      * ```
      *

@@ -374,7 +374,7 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => ExceptionIdentity::className(),
+                    'identityClass' => ExceptionIdentity::class,
                 ],
                 'session' => $session,
             ],

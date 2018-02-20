@@ -246,7 +246,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function prepareInsertValues($table, $columns, $params = [])
     {
-        list($names, $placeholders, $values, $params) = parent::prepareInsertValues($table, $columns, $params);
+        [$names, $placeholders, $values, $params] = parent::prepareInsertValues($table, $columns, $params);
         if (!$columns instanceof Query && empty($names)) {
             $tableSchema = $this->db->getSchema()->getTableSchema($table);
             if ($tableSchema !== null) {
@@ -267,7 +267,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
         $insertSql = $this->insert($table, $insertColumns, $params);
-        list($uniqueNames, , $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns);
+        [$uniqueNames, , $updateNames] = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns);
         if (empty($uniqueNames)) {
             return $insertSql;
         }
@@ -281,7 +281,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $name = $this->db->quoteColumnName(reset($uniqueNames));
             $updateColumns = [$name => new Expression($this->db->quoteTableName($table) . '.' . $name)];
         }
-        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        [$updates, $params] = $this->prepareUpdateSets($table, $updateColumns, $params);
         return $insertSql . ' ON DUPLICATE KEY UPDATE ' . implode(', ', $updates);
     }
 

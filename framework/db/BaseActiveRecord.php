@@ -11,7 +11,6 @@ use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\base\Model;
 use yii\base\ModelEvent;
 use yii\base\NotSupportedException;
@@ -1235,7 +1234,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $relation = $this->$getter();
         } catch (UnknownMethodException $e) {
             if ($throwException) {
-                throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
+                throw new InvalidArgumentException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
             }
 
             return null;
@@ -1735,7 +1734,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } elseif ($relation->via instanceof ActiveQueryInterface) {
             $this->setRelationDependencies($name, $relation->via);
         } elseif (is_array($relation->via)) {
-            list(, $viaQuery) = $relation->via;
+            [, $viaQuery] = $relation->via;
             $this->setRelationDependencies($name, $viaQuery);
         }
     }
