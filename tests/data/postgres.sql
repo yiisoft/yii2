@@ -178,8 +178,7 @@ CREATE TABLE "document" (
   id serial primary key,
   title varchar(255) not null,
   content text not null,
-  version integer not null default 0,
-  properties json
+  version integer not null default 0
 );
 
 CREATE TABLE "comment" (
