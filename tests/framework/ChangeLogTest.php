@@ -49,6 +49,7 @@ class ChangeLogTest extends TestCase
          * - Description ends without a "."
          * - Line ends with contributor name between "(" and ")".
          */
-        $this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?: .*[^.] \(.*\)$/', $line);
+        //$this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?: .*[^.] \(.*\)$/', $line);
+        $this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*( \(CVE\-\d+\-\d+\))*)?: .*[^.] \(.*\)$/', $line);
     }
 }

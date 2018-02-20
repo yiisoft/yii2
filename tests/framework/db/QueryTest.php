@@ -8,6 +8,7 @@
 namespace yiiunit\framework\db;
 
 use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
@@ -627,7 +628,7 @@ abstract class QueryTest extends DatabaseTestCase
     {
         $db = $this->getConnection();
         $db->enableQueryCache = true;
-        $db->queryCache = new ArrayCache();
+        $db->queryCache = new Cache(['handler' => new ArrayCache()]);
         $query = (new Query())
             ->select(['name'])
             ->from('customer');
