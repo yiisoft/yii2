@@ -282,7 +282,7 @@ class UrlManager extends Component
             return false;
         }
 
-        return $this->cache->get([$this->cacheKey, $this->ruleConfig, $ruleDeclarations]);
+        return $this->cache->get([$this->cacheKey, $this->ruleConfig, $ruleDeclarations], false);
     }
 
     /**

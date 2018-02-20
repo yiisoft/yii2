@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\web\Request;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
@@ -385,12 +386,12 @@ class UrlManagerParseUrlTest extends TestCase
 
         $manager = $this->getUrlManager([
             'rules' => ['post/<id:\d+>' => 'post/view'],
-            'cache' => $arrayCache,
+            'cache' => new Cache(['handler' => $arrayCache]),
         ]);
 
         $this->assertCount(1, $manager->rules);
         $firstRule = $manager->rules[0];
-        $this->assertInstanceOf('yii\web\UrlRuleInterface', $firstRule);
+        $this->assertInstanceOf(\yii\web\UrlRuleInterface::class, $firstRule);
         $this->assertCount(1, $this->getInaccessibleProperty($arrayCache, '_cache'),
             'Cache contains the only one record that represents initial built rules'
         );
@@ -411,13 +412,13 @@ class UrlManagerParseUrlTest extends TestCase
 
     public function testRulesCacheIsUsed()
     {
-        $arrayCache = $this->getMockBuilder('yii\caching\ArrayCache')
+        $arrayCache = $this->getMockBuilder(\yii\caching\ArrayCache::class)
             ->setMethods(['get', 'set'])
             ->getMock();
 
         $manager = $this->getUrlManager([
             'rules' => ['post/<id:\d+>' => 'post/view'],
-            'cache' => $arrayCache,
+            'cache' => new Cache(['handler' => $arrayCache]),
         ]);
 
         $savedRules = $manager->rules;
@@ -428,7 +429,7 @@ class UrlManagerParseUrlTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $this->getUrlManager([
                 'rules' => ['post/<id:\d+>' => 'post/view'],
-                'cache' => $arrayCache,
+                'cache' => new Cache(['handler' => $arrayCache]),
             ]);
         }
     }

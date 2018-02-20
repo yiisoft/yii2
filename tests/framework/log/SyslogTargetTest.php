@@ -167,7 +167,7 @@ namespace yiiunit\framework\log {
             $syslogTarget->options = LOG_ODELAY | LOG_PID;
             $syslogTarget->facility = 'facility string';
             $syslogTarget->messages = [
-                ['test', Logger::LEVEL_INFO],
+                [LogLevel::INFO, 'test', []],
             ];
 
             static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
