@@ -40,6 +40,7 @@ class Profiler extends Component implements ProfilerInterface
      *
      * - token: string, profiling token.
      * - category: string, message category.
+     * - nestedLevel: int, profiling message nested level.
      * - beginTime: float, profiling begin timestamp obtained by microtime(true).
      * - endTime: float, profiling end timestamp obtained by microtime(true).
      * - duration: float, profiling block duration in milliseconds.
@@ -54,14 +55,16 @@ class Profiler extends Component implements ProfilerInterface
      */
     private $_pendingMessages = [];
     /**
+     * @var int current profiling messages nested level.
+     */
+    private $_nestedLevel = 0;
+    /**
      * @var array|Target[] the profiling targets. Each array element represents a single [[Target|profiling target]] instance
      * or the configuration for creating the profiling target instance.
-     * @since 2.1
      */
     private $_targets = [];
     /**
      * @var bool whether [[targets]] have been initialized, e.g. ensured to be objects.
-     * @since 2.1
      */
     private $_isTargetsInitialized = false;
 
@@ -133,11 +136,13 @@ class Profiler extends Component implements ProfilerInterface
         $message = array_merge($context, [
             'token' => $token,
             'category' => $category,
+            'nestedLevel' => $this->_nestedLevel,
             'beginTime' => microtime(true),
             'beginMemory' => memory_get_usage(),
         ]);
 
         $this->_pendingMessages[$category][$token][] = $message;
+        $this->_nestedLevel++;
     }
 
     /**
@@ -176,6 +181,7 @@ class Profiler extends Component implements ProfilerInterface
         $message['memoryDiff'] = $message['endMemory'] - $message['beginMemory'];
 
         $this->messages[] = $message;
+        $this->_nestedLevel--;
     }
 
     /**
@@ -191,6 +197,7 @@ class Profiler extends Component implements ProfilerInterface
             }
         }
         $this->_pendingMessages = [];
+        $this->_nestedLevel = 0;
 
         if (empty($this->messages)) {
             return;

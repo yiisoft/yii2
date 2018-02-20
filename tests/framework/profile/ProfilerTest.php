@@ -119,4 +119,41 @@ class ProfilerTest extends TestCase
 
         $this->assertCount(2, $profiler->messages);
     }
+
+    /**
+     * @depends testNestedMessages
+     */
+    public function testNestedLevel()
+    {
+        $profiler = new Profiler();
+
+        $profiler->begin('outer');
+        $profiler->begin('inner');
+        $profiler->end('inner');
+        $profiler->end('outer');
+        $profiler->begin('not-nested');
+        $profiler->end('not-nested');
+
+        $outerMessage = null;
+        $innerMessage = null;
+        $notNestedMessage = null;
+        foreach ($profiler->messages as $message) {
+            if ($message['token'] === 'outer') {
+                $outerMessage = $message;
+                continue;
+            }
+            if ($message['token'] === 'inner') {
+                $innerMessage = $message;
+                continue;
+            }
+            if ($message['token'] === 'not-nested') {
+                $notNestedMessage = $message;
+                continue;
+            }
+        }
+
+        $this->assertSame(0, $outerMessage['nestedLevel']);
+        $this->assertSame(1, $innerMessage['nestedLevel']);
+        $this->assertSame(0, $notNestedMessage['nestedLevel']);
+    }
 }
