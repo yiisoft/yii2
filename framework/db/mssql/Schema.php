@@ -10,6 +10,7 @@ namespace yii\db\mssql;
 use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
 use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
 use yii\db\DefaultValueConstraint;
 use yii\db\ForeignKeyConstraint;
@@ -23,7 +24,7 @@ use yii\helpers\ArrayHelper;
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
  */
-class Schema extends \yii\db\Schema
+class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ViewFinderTrait;
     use ConstraintFinderTrait;
@@ -44,7 +45,7 @@ class Schema extends \yii\db\Schema
         'decimal' => self::TYPE_DECIMAL,
         'smallmoney' => self::TYPE_MONEY,
         'int' => self::TYPE_INTEGER,
-        'tinyint' => self::TYPE_SMALLINT,
+        'tinyint' => self::TYPE_TINYINT,
         'money' => self::TYPE_MONEY,
         // approximate numbers
         'float' => self::TYPE_FLOAT,
@@ -78,6 +79,15 @@ class Schema extends \yii\db\Schema
         'xml' => self::TYPE_STRING,
         'table' => self::TYPE_STRING,
     ];
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $tableQuoteCharacter = ['[', ']'];
+    /**
+     * {@inheritdoc}
+     */
+    protected $columnQuoteCharacter = ['[', ']'];
 
 
     /**
@@ -117,7 +127,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @see https://docs.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-principals-transact-sql
      */
     protected function findSchemaNames()
@@ -134,7 +144,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function findTableNames($schema = '')
     {
@@ -153,7 +163,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableSchema($name)
     {
@@ -169,7 +179,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTablePrimaryKey($tableName)
     {
@@ -177,7 +187,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableForeignKeys($tableName)
     {
@@ -185,7 +195,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableIndexes($tableName)
     {
@@ -224,7 +234,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableUniques($tableName)
     {
@@ -232,7 +242,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableChecks($tableName)
     {
@@ -240,7 +250,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableDefaultValues($tableName)
     {
@@ -248,7 +258,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createSavepoint($name)
     {
@@ -256,7 +266,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function releaseSavepoint($name)
     {
@@ -264,33 +274,11 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rollBackSavepoint($name)
     {
         $this->db->createCommand("ROLLBACK TRANSACTION $name")->execute();
-    }
-
-    /**
-     * Quotes a table name for use in a query.
-     * A simple table name has no schema prefix.
-     * @param string $name table name.
-     * @return string the properly quoted table name.
-     */
-    public function quoteSimpleTableName($name)
-    {
-        return strpos($name, '[') === false ? "[{$name}]" : $name;
-    }
-
-    /**
-     * Quotes a column name for use in a query.
-     * A simple column name has no prefix.
-     * @param string $name column name.
-     * @return string the properly quoted column name.
-     */
-    public function quoteSimpleColumnName($name)
-    {
-        return strpos($name, '[') === false && $name !== '*' ? "[{$name}]" : $name;
     }
 
     /**
@@ -555,7 +543,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function findViewNames($schema = '')
     {

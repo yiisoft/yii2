@@ -5,6 +5,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+require __DIR__ . '/BaseYii.php';
+
 /**
  * Yii is a helper class serving common framework functionalities.
  *

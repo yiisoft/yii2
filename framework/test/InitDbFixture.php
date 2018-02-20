@@ -44,7 +44,7 @@ class InitDbFixture extends DbFixture
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeLoad()
     {
@@ -52,7 +52,7 @@ class InitDbFixture extends DbFixture
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterLoad()
     {
@@ -60,7 +60,7 @@ class InitDbFixture extends DbFixture
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function load()
     {
@@ -71,7 +71,7 @@ class InitDbFixture extends DbFixture
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeUnload()
     {
@@ -79,7 +79,7 @@ class InitDbFixture extends DbFixture
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterUnload()
     {

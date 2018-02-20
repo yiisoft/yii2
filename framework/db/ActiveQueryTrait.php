@@ -111,45 +111,20 @@ trait ActiveQueryTrait
      */
     protected function createModels($rows)
     {
-        $models = [];
         if ($this->asArray) {
-            if ($this->indexBy === null) {
-                return $rows;
-            }
-            foreach ($rows as $row) {
-                if (is_string($this->indexBy)) {
-                    $key = $row[$this->indexBy];
-                } else {
-                    $key = call_user_func($this->indexBy, $row);
-                }
-                $models[$key] = $row;
-            }
+            return $rows;
         } else {
+            $models = [];
             /* @var $class ActiveRecord */
             $class = $this->modelClass;
-            if ($this->indexBy === null) {
-                foreach ($rows as $row) {
-                    $model = $class::instantiate($row);
-                    $modelClass = get_class($model);
-                    $modelClass::populateRecord($model, $row);
-                    $models[] = $model;
-                }
-            } else {
-                foreach ($rows as $row) {
-                    $model = $class::instantiate($row);
-                    $modelClass = get_class($model);
-                    $modelClass::populateRecord($model, $row);
-                    if (is_string($this->indexBy)) {
-                        $key = $model->{$this->indexBy};
-                    } else {
-                        $key = call_user_func($this->indexBy, $model);
-                    }
-                    $models[$key] = $model;
-                }
+            foreach ($rows as $row) {
+                $model = $class::instantiate($row);
+                $modelClass = get_class($model);
+                $modelClass::populateRecord($model, $row);
+                $models[] = $model;
             }
+            return $models;
         }
-
-        return $models;
     }
 
     /**
@@ -162,7 +137,9 @@ trait ActiveQueryTrait
     {
         $primaryModel = reset($models);
         if (!$primaryModel instanceof ActiveRecordInterface) {
-            $primaryModel = new $this->modelClass();
+            /* @var $modelClass ActiveRecordInterface */
+            $modelClass = $this->modelClass;
+            $primaryModel = $modelClass::instance();
         }
         $relations = $this->normalizeRelations($primaryModel, $with);
         /* @var $relation ActiveQuery */

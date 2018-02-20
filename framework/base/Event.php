@@ -297,6 +297,7 @@ class Event extends BaseObject
             foreach ($wildcardEventHandlers as $classWildcard => $handlers) {
                 if (StringHelper::matchWildcard($classWildcard, $class)) {
                     $eventHandlers = array_merge($eventHandlers, $handlers);
+                    unset($wildcardEventHandlers[$classWildcard]);
                 }
             }
 
