@@ -75,14 +75,14 @@ class CacheableWidgetBehaviorTest extends TestCase
 
     /**
      * Initializes a mock application.
-     *
      */
     private function initializeApplicationMock()
     {
         $this->mockApplication([
             'components' => [
                 'cache' => [
-                    'class' => '\yii\caching\ArrayCache',
+                    'class' => \yii\caching\Cache::class,
+                    'handler' => ['class' => \yii\caching\ArrayCache::class],
                 ],
             ],
             'params' => [
@@ -149,7 +149,7 @@ class BaseCacheableWidget extends Widget
     public function behaviors()
     {
         return [
-            'cacheable' => 'yii\behaviors\CacheableWidgetBehavior',
+            'cacheable' => \yii\behaviors\CacheableWidgetBehavior::class,
         ];
     }
 }
