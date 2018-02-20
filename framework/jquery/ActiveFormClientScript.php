@@ -9,6 +9,7 @@ namespace yii\jquery;
 
 use Yii;
 use yii\helpers\Json;
+use yii\widgets\ActiveForm;
 
 /**
  * ActiveFormClientScript is a behavior for [[\yii\widgets\ActiveForm]], which allows composition
@@ -108,6 +109,7 @@ class ActiveFormClientScript extends \yii\widgets\ActiveFormClientScript
             'ajaxDataType' => 'json',
             'scrollToError' => true,
             'scrollToErrorOffset' => 0,
+            'validationStateOn' => ActiveForm::VALIDATION_STATE_ON_CONTAINER,
         ]);
     }
 }
