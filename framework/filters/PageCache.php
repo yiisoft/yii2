@@ -253,7 +253,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
         }
 
         $data['dynamicPlaceholders'] = $this->getDynamicPlaceholders();
-        foreach (['format', 'version', 'statusCode', 'statusText'] as $name) {
+        foreach (['format', 'protocolVersion', 'statusCode', 'reasonPhrase'] as $name) {
             $data[$name] = $response->{$name};
         }
         $this->insertResponseCollectionIntoData($response, 'headers', $data);
