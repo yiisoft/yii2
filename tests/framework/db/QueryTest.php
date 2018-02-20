@@ -675,4 +675,18 @@ abstract class QueryTest extends DatabaseTestCase
             $this->assertEquals('user11', $query->cache()->where(['id' => 1])->scalar($db));
         }, 10);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15676
+     */
+    public function testIssue15676()
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('place');
+        $this->assertSame(['id'], $query->select);
+
+        $query->select(['id', 'brand_id']);
+        $this->assertSame(['id', 'brand_id'], $query->select);
+    }
 }
