@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\helpers;
 
@@ -22,6 +27,7 @@ class BaseIpHelper
      * The length of IPv4 address in bits
      */
     const IPV4_ADDRESS_LENGTH = 32;
+
 
     /**
      * Gets the IP version. Does not perform IP address validation.

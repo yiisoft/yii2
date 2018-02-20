@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
+use yii\base\UnknownClassException;
 use yii\di\Container;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
@@ -90,7 +91,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.14-dev';
+        return '2.0.15-dev';
     }
 
     /**
@@ -425,6 +426,7 @@ class BaseYii
      * @param string|array $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as array.
      * @param string $category the category of the message.
+     * @since 2.0.14
      */
     public static function debug($message, $category = 'application')
     {

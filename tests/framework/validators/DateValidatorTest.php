@@ -675,4 +675,20 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
         $this->assertNull($model->attr_timestamp);
     }
+
+    /**
+     * Tests that DateValidator with format `php:U` does not truncate timestamp to date.
+     * @see https://github.com/yiisoft/yii2/issues/15628
+     */
+    public function testIssue15628()
+    {
+        $validator = new DateValidator(['format' => 'php:U' , 'type' => DateValidator::TYPE_DATETIME, 'timestampAttribute' => 'attr_date']);
+        $model = new FakedValidationModel();
+        $value = 1518023610;
+        $model->attr_date = $value;
+
+        $validator->validateAttribute($model, 'attr_date');
+
+        $this->assertEquals($value, $model->attr_date);
+    }
 }

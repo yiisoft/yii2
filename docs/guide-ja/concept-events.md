@@ -209,7 +209,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' が挿入されました');
+    Yii::debug(get_class($event->sender) . ' が挿入されました');
 });
 ```
 
@@ -292,7 +292,7 @@ class Developer extends Component implements DanceEventInterface
 
 ```php
 Event::on(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' が躍り上がって喜んだ。'); // 犬または開発者が躍り上がって喜んだことをログに記録。
+    Yii::debug(get_class($event->sender) . ' が躍り上がって喜んだ。'); // 犬または開発者が躍り上がって喜んだことをログに記録。
 })
 ```
 

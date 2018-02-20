@@ -319,6 +319,13 @@ $result = Customer::getDb()->cache(function ($db) {
   The query caching described above has the advantage that you may specify flexible cache dependencies
   and are potentially more efficient.
 
+Since 2.0.14 you can use the following shortcuts:
+
+```php
+(new Query())->cache(7200)->all();
+// and
+User::find()->cache(7200)->all();
+```
 
 ### Clearing Cache <span id="clearing-cache">
 

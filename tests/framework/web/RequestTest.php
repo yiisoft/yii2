@@ -269,7 +269,85 @@ class RequestTest extends TestCase
         $this->assertEquals($_GET, ['id' => 63]);
     }
 
-    public function testGetHostInfo()
+    public function getHostInfoDataProvider()
+    {
+        return [
+            // empty
+            [
+                [],
+                [null, null]
+            ],
+            // normal
+            [
+                [
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example1.com',
+                    'example1.com',
+                ]
+            ],
+            // HTTP header missing
+            [
+                [
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example2.com',
+                    'example2.com',
+                ]
+            ],
+            // forwarded from untrusted server
+            [
+                [
+                    'HTTP_X_FORWARDED_HOST' => 'example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example1.com',
+                    'example1.com',
+                ]
+            ],
+            // forwarded from trusted proxy
+            [
+                [
+                    'HTTP_X_FORWARDED_HOST' => 'example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                [
+                    'http://example3.com',
+                    'example3.com',
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getHostInfoDataProvider
+     * @param array $server
+     * @param array $expected
+     */
+    public function testGetHostInfo($server, $expected)
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24',
+            ],
+        ]);
+
+        $this->assertEquals($expected[0], $request->getHostInfo());
+        $this->assertEquals($expected[1], $request->getHostName());
+        $_SERVER = $original;
+    }
+
+
+    public function testSetHostInfo()
     {
         $request = new Request();
 

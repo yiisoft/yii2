@@ -10,7 +10,9 @@ namespace yii\log;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\db\Exception;
 use yii\di\Instance;
+use yii\helpers\VarDumper;
 
 /**
  * DbTarget stores log messages in a database table.
@@ -56,6 +58,9 @@ class DbTarget extends Target
 
     /**
      * Stores log messages to DB.
+     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
+     * @throws Exception
+     * @throws LogRuntimeException
      */
     public function export()
     {
@@ -71,13 +76,24 @@ class DbTarget extends Target
         $command = $this->db->createCommand($sql);
         foreach ($this->messages as $message) {
             [$level, $text, $context] = $message;
-            $command->bindValues([
-                ':level' => $level,
-                ':category' => $context['category'],
-                ':log_time' => $context['time'],
-                ':prefix' => $this->getMessagePrefix($message),
-                ':message' => $text,
-            ])->execute();
+            if (!is_string($text)) {
+                // exceptions may not be serializable if in the call stack somewhere is a Closure
+                if ($text instanceof \Throwable || $text instanceof \Exception) {
+                    $text = (string) $text;
+                } else {
+                    $text = VarDumper::export($text);
+                }
+            }
+            if ($command->bindValues([
+                    ':level' => $level,
+                    ':category' => $category,
+                    ':log_time' => $timestamp,
+                    ':prefix' => $this->getMessagePrefix($message),
+                    ':message' => $text,
+                ])->execute() > 0) {
+                continue;
+            }
+            throw new LogRuntimeException('Unable to export log through database!');
         }
     }
 }

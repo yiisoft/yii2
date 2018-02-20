@@ -118,10 +118,11 @@ use yii\caching\CacheInterface;
  * master available. This property is read-only.
  * @property PDO $masterPdo The PDO instance for the currently active master connection. This property is
  * read-only.
- * @property QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
- * read-only.
+ * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
+ * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
+ * @property string $serverVersion Server version as a string. This property is read-only.
  * @property Connection $slave The currently active slave connection. `null` is returned if there is no slave
  * available and `$fallbackToMaster` is false. This property is read-only.
  * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
@@ -295,7 +296,7 @@ class Connection extends Component
      * Since version 2.0.14 [[$commandMap]] is used if this property is set to its default value.
      * @see createCommand
      * @since 2.0.7
-     * @deprecated 2.0.14 Use [[$commandMap]] for precise configuration.
+     * @deprecated since 2.0.14. Use [[$commandMap]] for precise configuration.
      */
     public $commandClass = Command::class;
     /**
@@ -826,6 +827,17 @@ class Connection extends Component
     }
 
     /**
+     * Can be used to set [[QueryBuilder]] configuration via Connection configuration array.
+     *
+     * @param array $value the [[QueryBuilder]] properties to be configured.
+     * @since 2.0.14
+     */
+    public function setQueryBuilder($value)
+    {
+        Yii::configure($this->getQueryBuilder(), $value);
+    }
+
+    /**
      * Obtains the schema information for the named table.
      * @param string $name table name.
      * @param bool $refresh whether to reload the table schema even if it is found in the cache.
@@ -934,6 +946,16 @@ class Connection extends Component
     public function setDriverName($driverName)
     {
         $this->_driverName = strtolower($driverName);
+    }
+
+    /**
+     * Returns a server version as a string comparable by [[\version_compare()]].
+     * @return string server version as a string.
+     * @since 2.0.14
+     */
+    public function getServerVersion()
+    {
+        return $this->getSchema()->getServerVersion();
     }
 
     /**

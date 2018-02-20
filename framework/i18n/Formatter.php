@@ -16,8 +16,8 @@ use IntlDateFormatter;
 use NumberFormatter;
 use Yii;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 use yii\helpers\FormatConverter;
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
@@ -458,6 +458,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return $value;
     }
 
@@ -471,6 +472,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return Html::encode($value);
     }
 
@@ -484,6 +486,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return nl2br(Html::encode($value));
     }
 
@@ -499,6 +502,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return str_replace('<p></p>', '', '<p>' . preg_replace('/\R{2,}/u', "</p>\n<p>", Html::encode($value)) . '</p>');
     }
 
@@ -515,6 +519,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return HtmlPurifier::process($value, $config);
     }
 
@@ -529,6 +534,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return Html::mailto(Html::encode($value), $value, $options);
     }
 
@@ -543,6 +549,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return Html::img($value, $options);
     }
 
@@ -1056,8 +1063,7 @@ class Formatter extends Component
             $f = $this->createNumberFormatter(NumberFormatter::DECIMAL, null, $options, $textOptions);
             $f->setAttribute(NumberFormatter::FRACTION_DIGITS, 0);
             if (($result = $f->format($value, NumberFormatter::TYPE_INT64)) === false) {
-                throw new InvalidArgumentException('Formatting integer value failed: ' . $f->getErrorCode() . ' '
-                    . $f->getErrorMessage());
+                throw new InvalidArgumentException('Formatting integer value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
 
             return $result;
@@ -1097,8 +1103,7 @@ class Formatter extends Component
         if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::DECIMAL, $decimals, $options, $textOptions);
             if (($result = $f->format($value)) === false) {
-                throw new InvalidArgumentException('Formatting decimal value failed: ' . $f->getErrorCode() . ' '
-                    . $f->getErrorMessage());
+                throw new InvalidArgumentException('Formatting decimal value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
 
             return $result;
@@ -1138,8 +1143,7 @@ class Formatter extends Component
         if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::PERCENT, $decimals, $options, $textOptions);
             if (($result = $f->format($value)) === false) {
-                throw new InvalidArgumentException('Formatting percent value failed: ' . $f->getErrorCode() . ' '
-                    . $f->getErrorMessage());
+                throw new InvalidArgumentException('Formatting percent value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
 
             return $result;

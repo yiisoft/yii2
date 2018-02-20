@@ -8,7 +8,7 @@
 namespace yii\db\mssql;
 
 use yii\base\InvalidArgumentException;
-use yii\base\NotSupportedException;
+use yii\db\Constraint;
 use yii\db\Expression;
 
 /**
@@ -30,6 +30,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_CHAR => 'nchar(1)',
         Schema::TYPE_STRING => 'nvarchar(255)',
         Schema::TYPE_TEXT => 'nvarchar(max)',
+        Schema::TYPE_TINYINT => 'tinyint',
         Schema::TYPE_SMALLINT => 'smallint',
         Schema::TYPE_INTEGER => 'int',
         Schema::TYPE_BIGINT => 'bigint',
@@ -45,17 +46,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+
     /**
      * {@inheritdoc}
      */
-    protected $likeEscapingReplacements = [
-        '%' => '[%]',
-        '_' => '[_]',
-        '[' => '[[]',
-        ']' => '[]]',
-        '\\' => '[\\]',
-    ];
-
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\conditions\InCondition' => 'yii\db\mssql\conditions\InConditionBuilder',
+            'yii\db\conditions\LikeCondition' => 'yii\db\mssql\conditions\LikeConditionBuilder',
+        ]);
+    }
 
     /**
      * {@inheritdoc}
@@ -67,7 +68,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return $orderBy === '' ? $sql : $sql . $this->separator . $orderBy;
         }
 
-        if ($this->isOldMssql()) {
+        if (version_compare($this->db->getSchema()->getServerVersion(), '11', '<')) {
             return $this->oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset, $params);
         }
 
@@ -179,7 +180,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function addDefaultValue($name, $table, $column, $value)
     {
@@ -189,7 +190,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function dropDefaultValue($name, $table)
     {
@@ -304,70 +305,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @var bool whether MSSQL used is old.
-     */
-    private $_oldMssql;
-
-    /**
      * @return bool whether the version of the MSSQL being used is older than 2012.
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
+     * @deprecated 2.0.14 Use [[Schema::getServerVersion]] with [[\version_compare()]].
      */
     protected function isOldMssql()
     {
-        if ($this->_oldMssql === null) {
-            $pdo = $this->db->getSlavePdo();
-            $version = explode('.', $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
-            $this->_oldMssql = $version[0] < 11;
-        }
-
-        return $this->_oldMssql;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws NotSupportedException if `$columns` is an array
-     */
-    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
-    {
-        if (is_array($columns)) {
-            throw new NotSupportedException(__METHOD__ . ' is not supported by MSSQL.');
-        }
-
-        return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
-    }
-
-    /**
-     * Builds SQL for IN condition.
-     *
-     * @param string $operator
-     * @param array $columns
-     * @param array $values
-     * @param array $params
-     * @return string SQL
-     */
-    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
-    {
-        $quotedColumns = [];
-        foreach ($columns as $i => $column) {
-            $quotedColumns[$i] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
-        }
-        $vss = [];
-        foreach ($values as $value) {
-            $vs = [];
-            foreach ($columns as $i => $column) {
-                if (isset($value[$column])) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $params[$phName] = $value[$column];
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
-                } else {
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
-                }
-            }
-            $vss[] = '(' . implode($operator === 'IN' ? ' AND ' : ' OR ', $vs) . ')';
-        }
-
-        return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
+        return version_compare($this->db->getSchema()->getServerVersion(), '11', '<');
     }
 
     /**
@@ -392,8 +337,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             foreach ($columns as $name => $value) {
                 // @see https://github.com/yiisoft/yii2/issues/12599
                 if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && is_string($value)) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", [$phName => $value]);
+                    $exParams = [];
+                    $phName = $this->bindParam($value, $exParams);
+                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", $exParams);
                 }
             }
         }
@@ -407,6 +353,63 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function insert($table, $columns, &$params)
     {
         return parent::insert($table, $this->normalizeTableRowData($table, $columns, $params), $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @see https://docs.microsoft.com/en-us/sql/t-sql/statements/merge-transact-sql
+     * @see http://weblogs.sqlteam.com/dang/archive/2009/01/31/UPSERT-Race-Condition-With-MERGE.aspx
+     */
+    public function upsert($table, $insertColumns, $updateColumns, &$params)
+    {
+        /** @var Constraint[] $constraints */
+        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
+        if (empty($uniqueNames)) {
+            return $this->insert($table, $insertColumns, $params);
+        }
+
+        $onCondition = ['or'];
+        $quotedTableName = $this->db->quoteTableName($table);
+        foreach ($constraints as $constraint) {
+            $constraintCondition = ['and'];
+            foreach ($constraint->columnNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                $constraintCondition[] = "$quotedTableName.$quotedName=[EXCLUDED].$quotedName";
+            }
+            $onCondition[] = $constraintCondition;
+        }
+        $on = $this->buildCondition($onCondition, $params);
+        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+        $mergeSql = 'MERGE ' . $this->db->quoteTableName($table) . ' WITH (HOLDLOCK) '
+            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNames) . ') '
+            . 'ON ' . $on;
+        $insertValues = [];
+        foreach ($insertNames as $name) {
+            $quotedName = $this->db->quoteColumnName($name);
+            if (strrpos($quotedName, '.') === false) {
+                $quotedName = '[EXCLUDED].' . $quotedName;
+            }
+            $insertValues[] = $quotedName;
+        }
+        $insertSql = 'INSERT (' . implode(', ', $insertNames) . ')'
+            . ' VALUES (' . implode(', ', $insertValues) . ')';
+        if ($updateColumns === false) {
+            return "$mergeSql WHEN NOT MATCHED THEN $insertSql;";
+        }
+
+        if ($updateColumns === true) {
+            $updateColumns = [];
+            foreach ($updateNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                if (strrpos($quotedName, '.') === false) {
+                    $quotedName = '[EXCLUDED].' . $quotedName;
+                }
+                $updateColumns[$name] = new Expression($quotedName);
+            }
+        }
+        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        $updateSql = 'UPDATE SET ' . implode(', ', $updates);
+        return "$mergeSql WHEN MATCHED THEN $updateSql WHEN NOT MATCHED THEN $insertSql;";
     }
 
     /**

@@ -649,6 +649,8 @@ class Module extends ServiceLocator
     }
 
     /**
+     * Checks if class name or prefix is incorrect
+     *
      * @param string $className
      * @param string $prefix
      * @return bool

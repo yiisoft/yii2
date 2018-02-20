@@ -46,9 +46,14 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.npm
 
-# try running against postgres 9.3
+# try running against postgres 9.6
 addons:
-  postgresql: "9.3"
+  postgresql: "9.6"
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
   code_climate:
     repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
 
@@ -119,6 +124,7 @@ before_script:
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
       travis_retry mysql -e 'CREATE DATABASE `yiitest`;';
+      mysql -e "SET GLOBAL sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';";
       mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
       mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
       psql -U postgres -c 'CREATE DATABASE yiitest;';

@@ -370,7 +370,7 @@ $foo = new Foo();
 
 $foo->on('foo.event.*', function ($event) {
     // triggered for any event, which name starts on 'foo.event.'
-    Yii::trace('trigger event: ' . $event->name);
+    Yii::debug('trigger event: ' . $event->name);
 });
 ```
 
@@ -382,7 +382,7 @@ use Yii;
 
 Event::on('app\models\*', 'before*', function ($event) {
     // triggered for any class in namespace 'app\models' for any event, which name starts on 'before'
-    Yii::trace('trigger event: ' . $event->name . ' for class: ' . get_class($event->sender));
+    Yii::debug('trigger event: ' . $event->name . ' for class: ' . get_class($event->sender));
 });
 ```
 
@@ -394,7 +394,7 @@ use Yii;
 
 Event::on('*', '*', function ($event) {
     // triggered for any event at any class
-    Yii::trace('trigger event: ' . $event->name);
+    Yii::debug('trigger event: ' . $event->name);
 });
 ```
 

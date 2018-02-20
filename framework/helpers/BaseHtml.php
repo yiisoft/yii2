@@ -939,6 +939,9 @@ class BaseHtml
         if (substr($name, -2) !== '[]') {
             $name .= '[]';
         }
+        if (ArrayHelper::isTraversable($selection)) {
+            $selection = array_map('strval', (array)$selection);
+        }
 
         $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
@@ -951,7 +954,7 @@ class BaseHtml
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -1016,6 +1019,10 @@ class BaseHtml
      */
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
+        if (ArrayHelper::isTraversable($selection)) {
+            $selection = array_map('strval', (array)$selection);
+        }
+
         $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
         $encode = ArrayHelper::remove($options, 'encode', true);
@@ -1030,7 +1037,7 @@ class BaseHtml
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -1438,7 +1445,7 @@ class BaseHtml
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * If `hiddenOptions` parameter which is another set of HTML options array is defined, it will be extracted 
+     * If `hiddenOptions` parameter which is another set of HTML options array is defined, it will be extracted
      * from `$options` to be used for the hidden input.
      * @return string the generated input tag
      */
@@ -1807,6 +1814,10 @@ class BaseHtml
      */
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
+        if (ArrayHelper::isTraversable($selection)) {
+            $selection = array_map('strval', (array)$selection);
+        }
+
         $lines = [];
         $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
         $encode = ArrayHelper::remove($tagOptions, 'encode', true);
@@ -1846,7 +1857,7 @@ class BaseHtml
                 if (!array_key_exists('selected', $attrs)) {
                     $attrs['selected'] = $selection !== null &&
                         (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($key, $selection));
+                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection));
                 }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {

@@ -13,6 +13,7 @@ use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
 use yii\db\Connection;
 use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
@@ -30,7 +31,7 @@ use yii\db\IntegrityException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Schema extends \yii\db\Schema
+class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
@@ -42,6 +43,11 @@ class Schema extends \yii\db\Schema
         'ORA-00001: unique constraint' => IntegrityException::class,
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected $tableQuoteCharacter = '"';
+
 
     /**
      * {@inheritdoc}
@@ -50,12 +56,16 @@ class Schema extends \yii\db\Schema
     {
         parent::init();
         if ($this->defaultSchema === null) {
-            $this->defaultSchema = strtoupper($this->db->username);
+            $username = $this->db->username;
+            if (empty($username)) {
+                $username = isset($this->db->masters[0]['username']) ? $this->db->masters[0]['username'] : '';
+            }
+            $this->defaultSchema = strtoupper($username);
         }
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function resolveTableName($name)
     {
@@ -73,7 +83,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @see https://docs.oracle.com/cd/B28359_01/server.111/b28337/tdpsg_user_accounts.htm
      */
     protected function findSchemaNames()
@@ -89,7 +99,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function findTableNames($schema = '')
     {
@@ -135,7 +145,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableSchema($name)
     {
@@ -150,7 +160,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTablePrimaryKey($tableName)
     {
@@ -158,7 +168,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableForeignKeys($tableName)
     {
@@ -166,7 +176,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableIndexes($tableName)
     {
@@ -207,7 +217,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableUniques($tableName)
     {
@@ -215,7 +225,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableChecks($tableName)
     {
@@ -223,7 +233,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
@@ -296,7 +306,11 @@ SELECT
     A.DATA_TYPE,
     A.DATA_PRECISION,
     A.DATA_SCALE,
-    A.DATA_LENGTH,
+    (
+      CASE A.CHAR_USED WHEN 'C' THEN A.CHAR_LENGTH
+        ELSE A.DATA_LENGTH
+      END
+    ) AS DATA_LENGTH,
     A.NULLABLE,
     A.DATA_DEFAULT,
     COM.COMMENTS AS COLUMN_COMMENT

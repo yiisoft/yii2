@@ -108,6 +108,18 @@ Exception: yii\web\NotFoundHttpException', $this->getController()->runAction('er
         $this->expectExceptionMessageRegExp('#The view file does not exist: .*?views' . $ds . 'test' . $ds . 'error.php#');
         $this->invokeMethod($action, 'renderHtmlResponse');
     }
+
+    public function testLayout()
+    {
+        $this->expectException('yii\base\ViewNotFoundException');
+
+        $this->getController([
+            'layout' => 'non-existing',
+        ])->runAction('error');
+
+        $ds = preg_quote(DIRECTORY_SEPARATOR, '\\');
+        $this->expectExceptionMessageRegExp('#The view file does not exist: .*?views' . $ds . 'layouts' . $ds . 'non-existing.php#');
+    }
 }
 
 class TestController extends Controller

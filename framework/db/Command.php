@@ -347,8 +347,8 @@ class Command extends Component
      * @param array $values the values to be bound. This must be given in terms of an associative
      * array with array keys being the parameter names, and array values the corresponding parameter values,
      * e.g. `[':name' => 'John', ':age' => 25]`. By default, the PDO type of each value is determined
-     * by its PHP type. You may explicitly specify the PDO type by using an array: `[value, type]`,
-     * e.g. `[':name' => 'John', ':profile' => [$profile, \PDO::PARAM_LOB]]`.
+     * by its PHP type. You may explicitly specify the PDO type by using a [[yii\db\PdoValue]] class: `new PdoValue(value, type)`,
+     * e.g. `[':name' => 'John', ':profile' => new PdoValue($profile, \PDO::PARAM_LOB)]`.
      * @return $this the current command being executed
      */
     public function bindValues($values)
@@ -359,9 +359,9 @@ class Command extends Component
 
         $schema = $this->db->getSchema();
         foreach ($values as $name => $value) {
-            if (is_array($value)) {
-                $this->_pendingParams[$name] = $value;
-                $this->params[$name] = $value[0];
+            if ($value instanceof PdoValue) {
+                $this->_pendingParams[$name] = [$value->getValue(), $value->getType()];
+                $this->params[$name] = $value->getValue();
             } else {
                 $type = $schema->getPdoType($value);
                 $this->_pendingParams[$name] = [$value, $type];
@@ -500,11 +500,49 @@ class Command extends Component
             return $this->db->quoteSql($column);
         }, $columns);
 
-        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows, $params);
 
         $this->setRawSql($sql);
+        $this->bindValues($params);
 
         return $this;
+    }
+
+    /**
+     * Creates a command to insert rows into a database table if
+     * they do not already exist (matching unique constraints),
+     * or update them if they do.
+     *
+     * For example,
+     *
+     * ```php
+     * $sql = $queryBuilder->upsert('pages', [
+     *     'name' => 'Front page',
+     *     'url' => 'http://example.com/', // url is unique
+     *     'visits' => 0,
+     * ], [
+     *     'visits' => new \yii\db\Expression('visits + 1'),
+     * ], $params);
+     * ```
+     *
+     * The method will properly escape the table and column names.
+     *
+     * @param string $table the table that new rows will be inserted into/updated in.
+     * @param array|Query $insertColumns the column data (name => value) to be inserted into the table or instance
+     * of [[Query]] to perform `INSERT INTO ... SELECT` SQL statement.
+     * @param array|bool $updateColumns the column data (name => value) to be updated if they already exist.
+     * If `true` is passed, the column data will be updated to match the insert column data.
+     * If `false` is passed, no update will be performed if the column data already exists.
+     * @param array $params the parameters to be bound to the command.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function upsert($table, $insertColumns, $updateColumns = true, $params = [])
+    {
+        $sql = $this->db->getQueryBuilder()->upsert($table, $insertColumns, $updateColumns, $params);
+
+        return $this->setSql($sql)->bindValues($params);
     }
 
     /**
@@ -995,7 +1033,7 @@ class Command extends Component
 
         return $this->setSql($sql)->requireTableSchemaRefresh($viewName);
     }
-    
+
     /**
      * Drops a SQL View.
      *

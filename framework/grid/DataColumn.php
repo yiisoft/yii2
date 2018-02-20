@@ -207,8 +207,8 @@ class DataColumn extends Column
             if ($this->format === 'boolean') {
                 $options = array_merge(['prompt' => ''], $filterOptions);
                 return Html::activeDropDownList($model, $this->attribute, [
-                    $this->grid->formatter->booleanFormat[0],
-                    $this->grid->formatter->booleanFormat[1],
+                    1 => $this->grid->formatter->booleanFormat[1],
+                    0 => $this->grid->formatter->booleanFormat[0],
                 ], $options) . $error;
             }
 

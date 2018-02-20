@@ -100,6 +100,6 @@ class Customer extends ActiveRecord
      */
     public static function find()
     {
-        return new CustomerQuery(get_called_class());
+        return new CustomerQuery(\get_called_class());
     }
 }

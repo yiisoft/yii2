@@ -47,6 +47,7 @@ use yii\base\InvalidConfigException;
  *
  * @property array $allFlashes Flash messages (key => message or key => [message1, message2]). This property
  * is read-only.
+ * @property string $cacheLimiter Current cache limiter. This property is read-only.
  * @property array $cookieParams The session cookie parameters. This property is read-only.
  * @property int $count The number of session variables. This property is read-only.
  * @property string $flash The key identifying the flash message. Note that flash messages and normal session
@@ -88,6 +89,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
      */
     private $_cookieParams = ['httponly' => true];
+    /**
+     * @var $frozenSessionData array|null is used for saving session between recreations due to session parameters update.
+     */
+    private $frozenSessionData;
 
 
     /**
@@ -129,7 +134,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
         $this->setCookieParamsInternal();
 
-        @session_start();
+        YII_DEBUG ? session_start() : @session_start();
 
         if ($this->getIsActive()) {
             Yii::info('Session started', __METHOD__);
@@ -381,8 +386,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if (isset($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly'])) {
             session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
         } else {
-            throw new InvalidArgumentException('Please make sure cookieParams contains these elements: lifetime, '
-                . 'path, domain, secure and httponly.');
+            throw new InvalidArgumentException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
         }
     }
 
@@ -415,6 +419,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setUseCookies($value)
     {
+        $this->freeze();
         if ($value === false) {
             ini_set('session.use_cookies', '0');
             ini_set('session.use_only_cookies', '0');
@@ -425,6 +430,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             ini_set('session.use_cookies', '1');
             ini_set('session.use_only_cookies', '0');
         }
+        $this->unfreeze();
     }
 
     /**
@@ -441,6 +447,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setGCProbability($value)
     {
+        $this->freeze();
         if ($value >= 0 && $value <= 100) {
             // percent * 21474837 / 2147483647 ≈ percent * 0.01
             ini_set('session.gc_probability', floor($value * 21474836.47));
@@ -448,6 +455,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         } else {
             throw new InvalidArgumentException('GCProbability must be a value between 0 and 100.');
         }
+        $this->unfreeze();
     }
 
     /**
@@ -463,7 +471,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setUseTransparentSessionID($value)
     {
+        $this->freeze();
         ini_set('session.use_trans_sid', $value ? '1' : '0');
+        $this->unfreeze();
     }
 
     /**
@@ -480,7 +490,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setTimeout($value)
     {
+        $this->freeze();
         ini_set('session.gc_maxlifetime', $value);
+        $this->unfreeze();
     }
 
     /**
@@ -903,5 +915,68 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         $this->open();
         unset($_SESSION[$offset]);
+    }
+
+    /**
+     * If session is started it's not possible to edit session ini settings. In PHP7.2+ it throws exception.
+     * This function saves session data to temporary variable and stop session.
+     * @since 2.0.14
+     */
+    protected function freeze()
+    {
+        if ($this->getIsActive()) {
+            if (isset($_SESSION)) {
+                $this->frozenSessionData = $_SESSION;
+            }
+            $this->close();
+            Yii::info('Session frozen', __METHOD__);
+        }
+    }
+
+    /**
+     * Starts session and restores data from temporary variable
+     * @since 2.0.14
+     */
+    protected function unfreeze()
+    {
+        if (null !== $this->frozenSessionData) {
+
+            YII_DEBUG ? session_start() : @session_start();
+
+            if ($this->getIsActive()) {
+                Yii::info('Session unfrozen', __METHOD__);
+            } else {
+                $error = error_get_last();
+                $message = isset($error['message']) ? $error['message'] : 'Failed to unfreeze session.';
+                Yii::error($message, __METHOD__);
+            }
+
+            $_SESSION = $this->frozenSessionData;
+            $this->frozenSessionData = null;
+        }
+    }
+
+    /**
+     * Set cache limiter
+     *
+     * @param string $cacheLimiter
+     * @since 2.0.14
+     */
+    public function setCacheLimiter($cacheLimiter)
+    {
+        $this->freeze();
+        session_cache_limiter($cacheLimiter);
+        $this->unfreeze();
+    }
+
+    /**
+     * Returns current cache limiter
+     *
+     * @return string current cache limiter
+     * @since 2.0.14
+     */
+    public function getCacheLimiter()
+    {
+        return session_cache_limiter();
     }
 }

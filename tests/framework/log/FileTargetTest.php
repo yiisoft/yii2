@@ -34,6 +34,23 @@ class FileTargetTest extends TestCase
     }
 
     /**
+     * Tests that log directory isn't created during init process
+     * @see https://github.com/yiisoft/yii2/issues/15662
+     */
+    public function testInit()
+    {
+        $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
+        FileHelper::removeDirectory(dirname($logFile));
+        new FileTarget([
+            'logFile' => Yii::getAlias('@yiiunit/runtime/log/filetargettest.log'),
+        ]);
+        $this->assertFileNotExists(
+            dirname($logFile),
+            'Log directory should not be created during init process'
+        );
+    }
+
+    /**
      * @dataProvider booleanDataProvider
      * @param bool $rotateByCopy
      */

@@ -50,7 +50,6 @@ class Table extends Widget
 {
     const DEFAULT_CONSOLE_SCREEN_WIDTH = 120;
     const CONSOLE_SCROLLBAR_OFFSET = 3;
-
     const CHAR_TOP = 'top';
     const CHAR_TOP_MID = 'top-mid';
     const CHAR_TOP_LEFT = 'top-left';

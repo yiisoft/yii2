@@ -162,6 +162,15 @@ class AttributeTypecastBehavior extends Behavior
      */
     public $typecastBeforeSave = false;
     /**
+     * @var bool whether to perform typecasting after saving owner model (insert or update).
+     * This option may be disabled in order to achieve better performance.
+     * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting after save
+     * will grant no benefit an thus can be disabled.
+     * Note that changing this option value will have no effect after this behavior has been attached to the model.
+     * @since 2.0.14
+     */
+    public $typecastAfterSave = false;
+    /**
      * @var bool whether to perform typecasting after retrieving owner model data from
      * the database (after find or refresh).
      * This option may be disabled in order to achieve better performance.
@@ -307,6 +316,10 @@ class AttributeTypecastBehavior extends Behavior
             $events[BaseActiveRecord::EVENT_BEFORE_INSERT] = 'beforeSave';
             $events[BaseActiveRecord::EVENT_BEFORE_UPDATE] = 'beforeSave';
         }
+        if ($this->typecastAfterSave) {
+            $events[BaseActiveRecord::EVENT_AFTER_INSERT] = 'afterSave';
+            $events[BaseActiveRecord::EVENT_AFTER_UPDATE] = 'afterSave';
+        }
         if ($this->typecastAfterFind) {
             $events[BaseActiveRecord::EVENT_AFTER_FIND] = 'afterFind';
         }
@@ -326,10 +339,20 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring attribute typecasting.
+     * Handles owner 'beforeInsert' and 'beforeUpdate' events, ensuring attribute typecasting.
      * @param \yii\base\Event $event event instance.
      */
     public function beforeSave($event)
+    {
+        $this->typecastAttributes();
+    }
+    
+    /**
+     * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring attribute typecasting.
+     * @param \yii\base\Event $event event instance.
+     * @since 2.0.14
+     */
+    public function afterSave($event)
     {
         $this->typecastAttributes();
     }

@@ -365,6 +365,35 @@ class UserTest extends TestCase
         $this->assertInstanceOf(AccessChecker::class, Yii::$app->user->accessChecker);
     }
 
+    public function testGetIdentityException()
+    {
+        $session = $this->getMock('yii\web\Session');
+        $session->method('getHasSessionId')->willReturn(true);
+        $session->method('get')->with($this->equalTo('__id'))->willReturn('1');
+
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => ExceptionIdentity::className(),
+                ],
+                'session' => $session,
+            ],
+        ];
+        $this->mockWebApplication($appConfig);
+
+        $exceptionThrown = false;
+        try {
+            Yii::$app->getUser()->getIdentity();
+        } catch (\Exception $e) {
+            $exceptionThrown = true;
+        }
+        $this->assertTrue($exceptionThrown);
+
+        // Do it again to make sure the exception is thrown the second time
+        $this->expectException('Exception');
+        Yii::$app->getUser()->getIdentity();
+    }
+
 }
 
 static $cookiesMock;
@@ -395,5 +424,13 @@ class AccessChecker extends BaseObject implements CheckAccessInterface
     public function checkAccess($userId, $permissionName, $params = [])
     {
         // Implement checkAccess() method.
+    }
+}
+
+class ExceptionIdentity extends \yiiunit\framework\filters\stubs\UserIdentity
+{
+    public static function findIdentity($id)
+    {
+        throw new \Exception();
     }
 }
