@@ -8,9 +8,9 @@
 namespace yiiunit\framework\helpers;
 
 use Yii;
+use yii\base\DynamicModel;
 use yii\helpers\Console;
 use yiiunit\TestCase;
-use yii\base\DynamicModel;
 
 /**
  * @group helpers
@@ -213,7 +213,7 @@ class ConsoleTest extends TestCase
         $model->addError('name', 'Error message. Here are even more chars: ""');
         $model->validate(null, false);
         $options = ['showAllErrors' => true];
-        $expectedHtml =  "Error message. Here are some chars: < >\nError message. Here are even more chars: \"\"";
+        $expectedHtml = "Error message. Here are some chars: < >\nError message. Here are even more chars: \"\"";
         $this->assertEquals($expectedHtml, Console::errorSummary($model, $options));
     }
 }
@@ -229,7 +229,7 @@ class TestConsoleModel extends DynamicModel
     {
         return [
             ['name', 'required'],
-            ['name', 'string', 'max' => 100]
+            ['name', 'string', 'max' => 100],
         ];
     }
 

@@ -137,7 +137,6 @@ class RangeValidatorTest extends TestCase
         ]);
         $this->assertTrue($val->validate(new \ArrayObject(['a', 'b'])));
 
-
         // Test range as ArrayObject.
         $val = new RangeValidator([
             'range' => new \ArrayObject(['a', 'b']),

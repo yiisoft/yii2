@@ -303,7 +303,6 @@ class Logger extends Component
         return array_values($timings);
     }
 
-
     /**
      * Returns the text display of the specified level.
      * @param int $level the message level, e.g. [[LEVEL_ERROR]], [[LEVEL_WARNING]].

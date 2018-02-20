@@ -151,6 +151,8 @@ class User extends Component
 
     private $_access = [];
 
+    private $_identity = false;
+
 
     /**
      * Initializes the application component.
@@ -169,8 +171,6 @@ class User extends Component
             $this->accessChecker = Yii::createObject($this->accessChecker);
         }
     }
-
-    private $_identity = false;
 
     /**
      * Returns the identity object associated with the currently logged-in user.

@@ -104,7 +104,6 @@ class EmailValidator extends Validator
         return $valid ? null : [$this->message, []];
     }
 
-
     private function idnToAscii($idn)
     {
         if (PHP_VERSION_ID < 50600) {

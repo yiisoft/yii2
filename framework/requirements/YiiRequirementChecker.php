@@ -112,7 +112,7 @@ class YiiRequirementChecker
      */
     function checkYii()
     {
-        return $this->check(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'requirements.php');
+        return $this->check(__DIR__ . DIRECTORY_SEPARATOR . 'requirements.php');
     }
 
     /**
@@ -141,9 +141,8 @@ class YiiRequirementChecker
     {
         if (isset($this->result)) {
             return $this->result;
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -155,7 +154,7 @@ class YiiRequirementChecker
         if (!isset($this->result)) {
             $this->usageError('Nothing to render!');
         }
-        $baseViewFilePath = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'views';
+        $baseViewFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'views';
         if (!empty($_SERVER['argv'])) {
             $viewFileName = $baseViewFilePath . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR . 'index.php';
         } else {
@@ -199,7 +198,7 @@ class YiiRequirementChecker
             return false;
         }
 
-        return ((int) $value === 1 || strtolower($value) === 'on');
+        return (int) $value === 1 || strtolower($value) === 'on';
     }
 
     /**
@@ -214,7 +213,7 @@ class YiiRequirementChecker
             return true;
         }
 
-        return (strtolower($value) === 'off');
+        return strtolower($value) === 'off';
     }
 
     /**
@@ -287,7 +286,7 @@ class YiiRequirementChecker
             $maxCheckResult = true;
         }
 
-        return ($minCheckResult && $maxCheckResult);
+        return $minCheckResult && $maxCheckResult;
     }
 
     /**
@@ -313,9 +312,8 @@ class YiiRequirementChecker
             require $_viewFile_;
 
             return ob_get_clean();
-        } else {
-            require $_viewFile_;
         }
+        require $_viewFile_;
     }
 
     /**

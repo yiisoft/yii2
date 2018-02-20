@@ -18,6 +18,8 @@ use yiiunit\framework\web\stubs\ModelStub;
  */
 class XmlResponseFormatterTest extends FormatterTest
 {
+    private $xmlHead = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+
     /**
      * @param array $options
      * @return XmlResponseFormatter
@@ -26,8 +28,6 @@ class XmlResponseFormatterTest extends FormatterTest
     {
         return new XmlResponseFormatter($options);
     }
-
-    private $xmlHead = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
     private function addXmlHead(array $data)
     {

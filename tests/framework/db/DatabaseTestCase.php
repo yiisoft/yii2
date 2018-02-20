@@ -130,7 +130,7 @@ abstract class DatabaseTestCase extends TestCase
                 return $sql;
         }
     }
-    
+
     /**
      * @return \yii\db\Connection
      */

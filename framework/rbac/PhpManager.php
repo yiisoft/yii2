@@ -329,7 +329,6 @@ class PhpManager extends BaseManager
         return $items;
     }
 
-
     /**
      * {@inheritdoc}
      */

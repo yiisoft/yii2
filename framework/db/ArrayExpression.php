@@ -130,7 +130,6 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable
      * @param mixed $value <p>
      * The value to set.
      * </p>
-     * @return void
      * @since 5.0.0
      */
     public function offsetSet($offset, $value)
@@ -145,7 +144,6 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable
      * @param mixed $offset <p>
      * The offset to unset.
      * </p>
-     * @return void
      * @since 5.0.0
      */
     public function offsetUnset($offset)

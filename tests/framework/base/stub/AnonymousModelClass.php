@@ -1,6 +1,4 @@
 <?php
 
-return new class() extends \yii\base\Model
-{
-
+return new class() extends \yii\base\Model {
 };

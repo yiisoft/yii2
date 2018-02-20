@@ -58,7 +58,6 @@ class MessageFormatterTest extends TestCase
                 ],
             ],
 
-
             [
                 'Here is a big number: {' . self::F . ', number, integer}', // pattern
                 'Here is a big number: ' . self::F_VALUE_FORMATTED, // expected
@@ -269,7 +268,7 @@ _MSG_
                 'Уважаемый Vadim,',
                 [
                     'gender' => null,
-                    'firstname' => 'Vadim'
+                    'firstname' => 'Vadim',
                 ],
             ],
         ];

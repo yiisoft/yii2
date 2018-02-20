@@ -42,6 +42,8 @@ use yii\helpers\FileHelper;
  */
 class ReleaseController extends Controller
 {
+    const MINOR = 'minor';
+    const PATCH = 'patch';
     public $defaultAction = 'release';
 
     /**
@@ -61,6 +63,8 @@ class ReleaseController extends Controller
      */
     public $version;
 
+    private $_oldAlias;
+
 
     public function options($actionID)
     {
@@ -74,7 +78,6 @@ class ReleaseController extends Controller
 
         return array_merge(parent::options($actionID), $options);
     }
-
 
     public function beforeAction($action)
     {
@@ -109,7 +112,7 @@ class ReleaseController extends Controller
             foreach ($items as $item) {
                 $this->stdout("fetching tags for $item...");
                 if ($item === 'framework') {
-                    $this->gitFetchTags((string)$this->basePath);
+                    $this->gitFetchTags((string) $this->basePath);
                 } elseif (strncmp('app-', $item, 4) === 0) {
                     $this->gitFetchTags("{$this->basePath}/apps/" . substr($item, 4));
                 } else {
@@ -409,7 +412,6 @@ class ReleaseController extends Controller
         }
     }
 
-
     protected function releaseFramework($frameworkPath, $version)
     {
         $this->stdout("\n");
@@ -486,14 +488,12 @@ class ReleaseController extends Controller
         // TODO release applications
         // $this->composerSetStability($what, $version);
 
-
 //        $this->resortChangelogs($what, $version);
-  //        $this->closeChangelogs($what, $version);
-  //        $this->composerSetStability($what, $version);
-  //        if (in_array('framework', $what)) {
-  //            $this->updateYiiVersion($version);
-  //        }
-
+        //        $this->closeChangelogs($what, $version);
+        //        $this->composerSetStability($what, $version);
+        //        if (in_array('framework', $what)) {
+        //            $this->updateYiiVersion($version);
+        //        }
 
         // if done:
         //     * ./build/build release/done framework 2.0.0-dev 2.0.0-rc
@@ -503,8 +503,6 @@ class ReleaseController extends Controller
 //            if (in_array('framework', $what)) {
 //                $this->updateYiiVersion($devVersion);
 //            }
-
-
 
         // prepare next release
 
@@ -518,7 +516,6 @@ class ReleaseController extends Controller
         $this->stdout('updating Yii version...');
         $this->dryRun || $this->updateYiiVersion($frameworkPath, $nextVersion['framework'] . '-dev');
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
 
         $this->stdout("\n");
         $this->runGit('git diff --color', $frameworkPath);
@@ -628,8 +625,6 @@ class ReleaseController extends Controller
 
         $this->stdout("\n");
     }
-
-    private $_oldAlias;
 
     protected function setAppAliases($app, $path)
     {
@@ -747,7 +742,6 @@ class ReleaseController extends Controller
         $this->stdout("\n");
     }
 
-
     protected function runCommand($cmd, $path)
     {
         $this->stdout("running  $cmd  ...", Console::BOLD);
@@ -806,14 +800,12 @@ class ReleaseController extends Controller
         }
     }
 
-
     protected function checkComposer($fwPath)
     {
         if (!$this->confirm("\nNot yet automated: Please check if composer.json dependencies in framework dir match the one in repo root. Continue?", false)) {
             exit;
         }
     }
-
 
     protected function closeChangelogs($what, $version)
     {
@@ -987,7 +979,8 @@ class ReleaseController extends Controller
         $this->sed(
             '/function getVersion\(\)\n    \{\n        return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
-            $frameworkPath . '/BaseYii.php');
+            $frameworkPath . '/BaseYii.php'
+        );
     }
 
     protected function sed($pattern, $replace, $files)
@@ -1019,9 +1012,6 @@ class ReleaseController extends Controller
 
         return $versions;
     }
-
-    const MINOR = 'minor';
-    const PATCH = 'patch';
 
     protected function getNextVersions(array $versions, $type)
     {

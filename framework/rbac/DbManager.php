@@ -101,6 +101,8 @@ class DbManager extends BaseManager
      */
     protected $parents;
 
+    private $_checkAccessAssignments = [];
+
 
     /**
      * Initializes the application component.
@@ -114,8 +116,6 @@ class DbManager extends BaseManager
             $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
         }
     }
-
-    private $_checkAccessAssignments = [];
 
     /**
      * {@inheritdoc}

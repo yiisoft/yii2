@@ -32,6 +32,22 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
 
 
     /**
+     * PHP magic method that returns the string representation of this object.
+     * @return string the string representation of this object.
+     */
+    public function __toString()
+    {
+        // __toString cannot throw exception
+        // use trigger_error to bypass this limitation
+        try {
+            return $this->toString();
+        } catch (\Exception $e) {
+            ErrorHandler::convertExceptionToError($e);
+            return '';
+        }
+    }
+
+    /**
      * Sends this email message.
      * @param MailerInterface $mailer the mailer that should be used to send this message.
      * If no mailer is given it will first check if [[mailer]] is set and if not,
@@ -47,21 +63,5 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
         }
 
         return $mailer->send($this);
-    }
-
-    /**
-     * PHP magic method that returns the string representation of this object.
-     * @return string the string representation of this object.
-     */
-    public function __toString()
-    {
-        // __toString cannot throw exception
-        // use trigger_error to bypass this limitation
-        try {
-            return $this->toString();
-        } catch (\Exception $e) {
-            ErrorHandler::convertExceptionToError($e);
-            return '';
-        }
     }
 }

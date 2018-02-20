@@ -346,7 +346,7 @@ class AttributeTypecastBehavior extends Behavior
     {
         $this->typecastAttributes();
     }
-    
+
     /**
      * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring attribute typecasting.
      * @param \yii\base\Event $event event instance.

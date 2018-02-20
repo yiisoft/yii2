@@ -163,7 +163,6 @@ class ValidatorTest extends TestCase
         $this->assertTrue($validator->isAttributeValidated('attr_empty1'));
         $this->assertTrue($validator->isAttributeValidated('attr_empty2'));
 
-
         $validator = new TestValidator(['attributes' => $attributes, 'skipOnEmpty' => true]);
         $validator->validateAttributes($model);
 

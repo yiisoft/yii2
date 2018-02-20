@@ -1101,7 +1101,7 @@ class QueryBuilder extends \yii\base\BaseObject
             list($rawQuery, $params) = $this->build($subQuery);
             array_walk(
                 $params,
-                function(&$param) {
+                function (&$param) {
                     $param = $this->db->quoteValue($param);
                 }
             );

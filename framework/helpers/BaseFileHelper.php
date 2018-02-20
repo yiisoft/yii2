@@ -39,6 +39,10 @@ class BaseFileHelper
      */
     public static $mimeAliasesFile = '@yii/helpers/mimeAliases.php';
 
+    private static $_mimeTypes = [];
+
+    private static $_mimeAliases = [];
+
 
     /**
      * Normalizes a file/directory path.
@@ -207,8 +211,6 @@ class BaseFileHelper
         return array_keys($mimeTypes, mb_strtolower($mimeType, 'UTF-8'), true);
     }
 
-    private static $_mimeTypes = [];
-
     /**
      * Loads MIME types from the specified file.
      * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
@@ -227,8 +229,6 @@ class BaseFileHelper
 
         return self::$_mimeTypes[$magicFile];
     }
-
-    private static $_mimeAliases = [];
 
     /**
      * Loads MIME aliases from the specified file.
@@ -716,7 +716,7 @@ class BaseFileHelper
         }
 
         $matchOptions = [
-            'filePath' => true
+            'filePath' => true,
         ];
         if ($flags & self::PATTERN_CASE_INSENSITIVE) {
             $matchOptions['caseSensitive'] = false;

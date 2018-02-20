@@ -69,6 +69,8 @@ class Controller extends \yii\base\Controller
      */
     private $_passedOptions = [];
 
+    private $_reflections = [];
+    
 
     /**
      * Returns a value indicating whether ANSI color is enabled.
@@ -589,8 +591,6 @@ class Controller extends \yii\base\Controller
 
         return $options;
     }
-
-    private $_reflections = [];
 
     /**
      * @param Action $action

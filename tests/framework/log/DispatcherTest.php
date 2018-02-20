@@ -30,16 +30,6 @@ namespace yiiunit\framework\log {
     class DispatcherTest extends TestCase
     {
         /**
-         * @var Logger
-         */
-        protected $logger;
-
-        /**
-         * @var Dispatcher
-         */
-        protected $dispatcher;
-
-        /**
          * @var bool
          */
         public static $microtimeIsMocked = false;
@@ -50,6 +40,29 @@ namespace yiiunit\framework\log {
          * @var array
          */
         public static $functions = [];
+        /**
+         * @var Logger
+         */
+        protected $logger;
+
+        /**
+         * @var Dispatcher
+         */
+        protected $dispatcher;
+
+        /**
+         * @param $name
+         * @param $arguments
+         * @return mixed
+         */
+        public static function __callStatic($name, $arguments)
+        {
+            if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
+                $arguments = isset($arguments[0]) ? $arguments[0] : $arguments;
+                return forward_static_call(static::$functions[$name], $arguments);
+            }
+            static::fail("Function '$name' has not implemented yet!");
+        }
 
         protected function setUp()
         {
@@ -63,20 +76,17 @@ namespace yiiunit\framework\log {
             $dispatcher = new Dispatcher();
             $this->assertSame(Yii::getLogger(), $dispatcher->getLogger());
 
-
             $logger = new Logger();
             $dispatcher = new Dispatcher([
                 'logger' => $logger,
             ]);
             $this->assertSame($logger, $dispatcher->getLogger());
 
-
             $dispatcher = new Dispatcher([
                 'logger' => 'yii\log\Logger',
             ]);
             $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
             $this->assertEquals(0, $dispatcher->getLogger()->traceLevel);
-
 
             $dispatcher = new Dispatcher([
                 'logger' => [
@@ -203,7 +213,7 @@ namespace yiiunit\framework\log {
                 ->withConsecutive(
                     [$this->equalTo('messages'), $this->equalTo(true)],
                     [
-                        $this->callback(function($arg) use ($target1) {
+                        $this->callback(function ($arg) use ($target1) {
                             if (!isset($arg[0][0], $arg[0][1], $arg[0][2], $arg[0][3])) {
                                 return false;
                             }
@@ -267,20 +277,6 @@ namespace yiiunit\framework\log {
             );
 
             $this->assertEquals($dispatcher->targets['syslog'], Yii::createObject('yii\log\SyslogTarget'));
-        }
-
-        /**
-         * @param $name
-         * @param $arguments
-         * @return mixed
-         */
-        public static function __callStatic($name, $arguments)
-        {
-            if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
-                $arguments = isset($arguments[0]) ? $arguments[0] : $arguments;
-                return forward_static_call(static::$functions[$name], $arguments);
-            }
-            static::fail("Function '$name' has not implemented yet!");
         }
     }
 }

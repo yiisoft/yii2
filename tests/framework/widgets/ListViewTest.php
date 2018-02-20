@@ -233,7 +233,8 @@ HTML
         ])->run();
         $out = ob_get_clean();
 
-        $this->assertEqualsWithoutLE(<<<HTML
+        $this->assertEqualsWithoutLE(
+            <<<HTML
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <!-- before: 1, key: 0, index: 0, widget: yii\widgets\ListView -->
 <div data-key="0">0</div>
@@ -245,8 +246,9 @@ HTML
 <!-- after: 3, key: 2, index: 2, widget: yii\widgets\ListView -->
 </div>
 HTML
-    , $out
-);
+            ,
+            $out
+        );
     }
 
     /**

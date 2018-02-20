@@ -17,16 +17,16 @@ namespace yiiunit\data\ar;
  */
 class OrderItemWithConstructor extends ActiveRecord
 {
-    public static function tableName()
-    {
-        return 'order_item';
-    }
-
     public function __construct($item_id, $quantity)
     {
         $this->item_id = $item_id;
         $this->quantity = $quantity;
         parent::__construct();
+    }
+
+    public static function tableName()
+    {
+        return 'order_item';
     }
 
     public static function instance($refresh = false)

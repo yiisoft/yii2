@@ -21,14 +21,6 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     /**
      * {@inheritdoc}
      */
-    protected function buildUnsignedString()
-    {
-        return $this->isUnsigned ? ' UNSIGNED' : '';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function __toString()
     {
         switch ($this->getTypeCategory()) {
@@ -43,5 +35,13 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
         }
 
         return $this->buildCompleteString($format);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function buildUnsignedString()
+    {
+        return $this->isUnsigned ? ' UNSIGNED' : '';
     }
 }

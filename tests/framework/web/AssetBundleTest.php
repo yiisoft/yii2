@@ -505,7 +505,6 @@ EOF;
         }
         Yii::setAlias('@web', $webAlias);
 
-
         $view = $this->getView(['appendTimestamp' => $appendTimestamp]);
         $method = 'register' . ucfirst($type) . 'File';
         $view->$method($path);

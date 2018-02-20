@@ -47,7 +47,6 @@ EOF
 EOF
             , (string) $form->field($model, 'name', $o)->input('email', ['required' => false]));
 
-
         $this->assertEqualsWithoutLE(<<<'EOF'
 <div class="form-group field-dynamicmodel-name">
 <input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]" required="test">
@@ -147,7 +146,7 @@ HTML
                 'enableClientScript' => false,
                 'on init' => function () use (&$initTriggered) {
                     $initTriggered = true;
-                }
+                },
             ]
         );
         ActiveForm::end();
@@ -179,6 +178,5 @@ HTML
 </div>
 EOF
         , (string) $form->field($model, 'name'));
-
     }
 }

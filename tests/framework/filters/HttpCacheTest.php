@@ -105,7 +105,6 @@ class HttpCacheTest extends \yiiunit\TestCase
         $this->assertStringStartsWith('"', $etag);
         $this->assertStringEndsWith('"', $etag);
 
-
         $httpCache->weakEtag = true;
         $httpCache->beforeAction(null);
         $response = Yii::$app->getResponse();

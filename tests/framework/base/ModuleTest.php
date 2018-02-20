@@ -18,6 +18,8 @@ use yiiunit\TestCase;
  */
 class ModuleTest extends TestCase
 {
+    public static $actionRuns = [];
+
     protected function setUp()
     {
         parent::setUp();
@@ -57,8 +59,6 @@ class ModuleTest extends TestCase
         $this->assertEquals('1.0', $version);
     }
 
-    public static $actionRuns = [];
-
     public function testRunControllerAction()
     {
         $module = new TestModule('test');
@@ -86,7 +86,6 @@ class ModuleTest extends TestCase
         $this->assertNotNull(Yii::$app->controller->action);
         $this->assertEquals('test/test-controller1/test1', Yii::$app->controller->action->uniqueId);
     }
-
 
     public function testServiceLocatorTraversal()
     {
@@ -163,6 +162,7 @@ class ModuleTestController extends Controller
     {
         ModuleTest::$actionRuns[] = $this->action->uniqueId;
     }
+
     public function actionTest2()
     {
         ModuleTest::$actionRuns[] = $this->action->uniqueId;

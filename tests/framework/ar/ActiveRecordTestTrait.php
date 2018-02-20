@@ -23,7 +23,10 @@ use yiiunit\TestCase;
  */
 trait ActiveRecordTestTrait
 {
+    public static $afterSaveNewRecord;
+    public static $afterSaveInsert;
     /* @var $this TestCase */
+
     /**
      * This method should return the classname of Customer class.
      * @return string
@@ -729,8 +732,6 @@ trait ActiveRecordTestTrait
         /* @var $orderItemsWithNullFKClass \yii\db\ActiveRecordInterface */
         $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
 
-
-
         /* @var $this TestCase|ActiveRecordTestTrait */
         // has many without delete
         $customer = $customerClass::findOne(2);
@@ -799,7 +800,6 @@ trait ActiveRecordTestTrait
         $this->assertNull($orderClass::findOne(2));
         $this->assertNull($orderClass::findOne(3));
 
-
         // has many without delete
         $customer = $customerClass::findOne(2);
         $this->assertCount(2, $customer->ordersWithNullFK);
@@ -809,7 +809,6 @@ trait ActiveRecordTestTrait
         $this->assertCount(0, $customer->ordersWithNullFK);
         $this->assertEquals(3, $orderWithNullFKClass::find()->count());
         $this->assertEquals(2, $orderWithNullFKClass::find()->where(['AND', ['id' => [2, 3]], ['customer_id' => null]])->count());
-
 
         // via model with delete
         /* @var $order Order */
@@ -888,9 +887,6 @@ trait ActiveRecordTestTrait
         $this->assertCount(2, $customer->orders);
         $this->assertCount(0, $customer->expensiveOrders);
     }
-
-    public static $afterSaveNewRecord;
-    public static $afterSaveInsert;
 
     public function testInsert()
     {
@@ -1244,7 +1240,6 @@ trait ActiveRecordTestTrait
         // @see https://github.com/yiisoft/yii2-gii/issues/190
         $baseModel = new $customerClass();
         $this->assertFalse($baseModel->hasProperty('unExistingColumn'));
-
 
         /* @var $customer ActiveRecord */
         $customer = new $customerClass();

@@ -425,7 +425,6 @@ trait ActiveRelationTrait
         return $buckets;
     }
 
-
     /**
      * Indexes buckets by column name.
      *

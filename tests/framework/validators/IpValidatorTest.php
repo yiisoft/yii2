@@ -51,7 +51,6 @@ class IpValidatorTest extends TestCase
         $this->assertEquals($expectedRange, $validator->ranges);
     }
 
-
     public function testValidateOrder()
     {
         $validator = new IpValidator([
@@ -95,14 +94,12 @@ class IpValidatorTest extends TestCase
         $this->assertEquals('attr_ip must be a valid IP address.', $model->getFirstError('attr_ip'));
         $model->clearErrors();
 
-
         $validator->ipv4 = false;
 
         $model->attr_ip = $badIp;
         $validator->validateAttribute($model, 'attr_ip');
         $this->assertEquals('attr_ip must be a valid IP address.', $model->getFirstError('attr_ip'));
         $model->clearErrors();
-
 
         $validator->ipv4 = true;
         $validator->ipv6 = false;
@@ -146,7 +143,6 @@ class IpValidatorTest extends TestCase
         $this->assertTrue($validator->validate('!192.168.5.32/32'));
         $this->assertFalse($validator->validate('!!192.168.5.32/32'));
     }
-
 
     public function testValidateValueIPv6()
     {
@@ -345,7 +341,6 @@ class IpValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_ip'));
         $this->assertEquals('8.8.8.8/32', $model->attr_ip);
     }
-
 
     public function testValidateAttributeIPv6()
     {

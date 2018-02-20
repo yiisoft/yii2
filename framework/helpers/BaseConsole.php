@@ -7,8 +7,8 @@
 
 namespace yii\helpers;
 
-use yii\console\Markdown as ConsoleMarkdown;
 use yii\base\Model;
+use yii\console\Markdown as ConsoleMarkdown;
 
 /**
  * BaseConsole provides concrete implementation for [[Console]].
@@ -51,6 +51,13 @@ class BaseConsole
     const FRAMED = 51;
     const ENCIRCLED = 52;
     const OVERLINED = 53;
+
+    private static $_progressStart;
+    private static $_progressWidth;
+    private static $_progressPrefix;
+    private static $_progressEta;
+    private static $_progressEtaLastDone = 0;
+    private static $_progressEtaLastUpdate;
 
 
     /**
@@ -886,13 +893,6 @@ class BaseConsole
 
         return $input;
     }
-
-    private static $_progressStart;
-    private static $_progressWidth;
-    private static $_progressPrefix;
-    private static $_progressEta;
-    private static $_progressEtaLastDone = 0;
-    private static $_progressEtaLastUpdate;
 
     /**
      * Starts display of a progress bar on screen.

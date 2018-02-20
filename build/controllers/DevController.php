@@ -247,7 +247,6 @@ class DevController extends Controller
         return $options;
     }
 
-
     /**
      * Remove all symlinks in the vendor subdirectory of the directory specified.
      * @param string $dir base directory

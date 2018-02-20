@@ -75,7 +75,6 @@ class CacheableWidgetBehaviorTest extends TestCase
 
     /**
      * Initializes a mock application.
-     *
      */
     private function initializeApplicationMock()
     {
@@ -94,7 +93,6 @@ class CacheableWidgetBehaviorTest extends TestCase
 
     /**
      * Initializes mock widgets.
-     *
      */
     private function initializeWidgetMocks()
     {
@@ -104,7 +102,6 @@ class CacheableWidgetBehaviorTest extends TestCase
 
     /**
      * Returns a widget mock.
-     *
      */
     private function getWidgetMock($widgetClass)
     {

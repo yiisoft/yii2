@@ -185,6 +185,10 @@ abstract class Application extends Module
      */
     public $loadedModules = [];
 
+    private $_runtimePath;
+
+    private $_vendorPath;
+
 
     /**
      * Constructor.
@@ -411,8 +415,6 @@ abstract class Application extends Module
      */
     abstract public function handleRequest($request);
 
-    private $_runtimePath;
-
     /**
      * Returns the directory that stores runtime files.
      * @return string the directory that stores runtime files.
@@ -436,8 +438,6 @@ abstract class Application extends Module
         $this->_runtimePath = Yii::getAlias($path);
         Yii::setAlias('@runtime', $this->_runtimePath);
     }
-
-    private $_vendorPath;
 
     /**
      * Returns the directory that stores vendor files.

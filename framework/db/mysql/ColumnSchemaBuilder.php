@@ -20,6 +20,25 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     /**
      * {@inheritdoc}
      */
+    public function __toString()
+    {
+        switch ($this->getTypeCategory()) {
+            case self::CATEGORY_PK:
+                $format = '{type}{length}{check}{comment}{append}{pos}';
+                break;
+            case self::CATEGORY_NUMERIC:
+                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{comment}{append}{pos}';
+                break;
+            default:
+                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}{pos}';
+        }
+
+        return $this->buildCompleteString($format);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function buildUnsignedString()
     {
         return $this->isUnsigned ? ' UNSIGNED' : '';
@@ -49,24 +68,5 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     protected function buildCommentString()
     {
         return $this->comment !== null ? ' COMMENT ' . $this->db->quoteValue($this->comment) : '';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __toString()
-    {
-        switch ($this->getTypeCategory()) {
-            case self::CATEGORY_PK:
-                $format = '{type}{length}{check}{comment}{append}{pos}';
-                break;
-            case self::CATEGORY_NUMERIC:
-                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{comment}{append}{pos}';
-                break;
-            default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}{pos}';
-        }
-
-        return $this->buildCompleteString($format);
     }
 }

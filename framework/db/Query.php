@@ -10,8 +10,8 @@ namespace yii\db;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
-use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 
 /**
  * Query represents a SELECT SQL statement in a way that is independent of DBMS.
@@ -131,6 +131,15 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $queryCacheDependency;
 
+
+    /**
+     * Returns the SQL representation of Query
+     * @return string
+     */
+    public function __toString()
+    {
+        return serialize($this);
+    }
 
     /**
      * Creates a DB command that can be used to execute this query.
@@ -550,7 +559,6 @@ PATTERN;
                 }
             }
 
-
             if ($tableName instanceof Expression) {
                 if (!is_string($alias)) {
                     throw new InvalidArgumentException('To use Expression in from() method, pass it in array format with alias.');
@@ -662,13 +670,13 @@ PATTERN;
         $unaliasedColumns = $this->getUnaliasedColumnsFromSelect();
 
         foreach ($columns as $columnAlias => $columnDefinition) {
-            if ($columnDefinition instanceof Query) {
+            if ($columnDefinition instanceof self) {
                 continue;
             }
 
             if (
                 (is_string($columnAlias) && isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition)
-                || (is_integer($columnAlias) && in_array($columnDefinition, $unaliasedColumns))
+                || (is_int($columnAlias) && in_array($columnDefinition, $unaliasedColumns))
             ) {
                 unset($columns[$columnAlias]);
             }
@@ -685,7 +693,7 @@ PATTERN;
         $result = [];
         if (is_array($this->select)) {
             foreach ($this->select as $name => $value) {
-                if (is_integer($name)) {
+                if (is_int($name)) {
                     $result[] = $value;
                 }
             }
@@ -1290,14 +1298,5 @@ PATTERN;
             'union' => $from->union,
             'params' => $from->params,
         ]);
-    }
-
-    /**
-     * Returns the SQL representation of Query
-     * @return string
-     */
-    public function __toString()
-    {
-        return serialize($this);
     }
 }

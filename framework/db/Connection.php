@@ -443,6 +443,40 @@ class Connection extends Component
 
 
     /**
+     * Close the connection before serializing.
+     * @return array
+     */
+    public function __sleep()
+    {
+        $fields = (array) $this;
+
+        unset($fields['pdo']);
+        unset($fields["\000" . __CLASS__ . "\000" . '_master']);
+        unset($fields["\000" . __CLASS__ . "\000" . '_slave']);
+        unset($fields["\000" . __CLASS__ . "\000" . '_transaction']);
+        unset($fields["\000" . __CLASS__ . "\000" . '_schema']);
+
+        return array_keys($fields);
+    }
+
+    /**
+     * Reset the connection after cloning.
+     */
+    public function __clone()
+    {
+        parent::__clone();
+
+        $this->_master = false;
+        $this->_slave = false;
+        $this->_schema = null;
+        $this->_transaction = null;
+        if (strncmp($this->dsn, 'sqlite::memory:', 15) !== 0) {
+            // reset PDO connection, unless its sqlite in-memory, which can only have one connection
+            $this->pdo = null;
+        }
+    }
+
+    /**
      * Returns a value indicating whether the DB connection is established.
      * @return bool whether the DB connection is established
      */
@@ -1137,39 +1171,5 @@ class Connection extends Component
         }
 
         return null;
-    }
-
-    /**
-     * Close the connection before serializing.
-     * @return array
-     */
-    public function __sleep()
-    {
-        $fields = (array) $this;
-
-        unset($fields['pdo']);
-        unset($fields["\000" . __CLASS__ . "\000" . '_master']);
-        unset($fields["\000" . __CLASS__ . "\000" . '_slave']);
-        unset($fields["\000" . __CLASS__ . "\000" . '_transaction']);
-        unset($fields["\000" . __CLASS__ . "\000" . '_schema']);
-
-        return array_keys($fields);
-    }
-
-    /**
-     * Reset the connection after cloning.
-     */
-    public function __clone()
-    {
-        parent::__clone();
-
-        $this->_master = false;
-        $this->_slave = false;
-        $this->_schema = null;
-        $this->_transaction = null;
-        if (strncmp($this->dsn, 'sqlite::memory:', 15) !== 0) {
-            // reset PDO connection, unless its sqlite in-memory, which can only have one connection
-            $this->pdo = null;
-        }
     }
 }

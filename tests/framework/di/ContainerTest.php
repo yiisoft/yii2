@@ -168,7 +168,6 @@ class ContainerTest extends TestCase
         $result = Yii::$container->invoke($callback, ['MDM', 'not_default']);
         $this->assertEquals(['MDM', true, 'independent', 'not_default'], $result);
 
-
         $myFunc = function ($a, NumberValidator $b, $c = 'default') {
             return[$a, \get_class($b), $c];
         };
@@ -184,7 +183,6 @@ class ContainerTest extends TestCase
         // use helper function
         $array = ['M36', 'D426', 'Y2684'];
         $this->assertFalse(Yii::$container->invoke(['yii\helpers\ArrayHelper', 'isAssociative'], [$array]));
-
 
         $myFunc = function (\yii\console\Request $request, \yii\console\Response $response) {
             return [$request, $response];

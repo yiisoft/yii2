@@ -15,6 +15,8 @@ use yii\db\Schema;
 
 abstract class QueryTest extends DatabaseTestCase
 {
+    use GetTablesAliasTestTrait;
+
     public function testSelect()
     {
         // default
@@ -79,7 +81,6 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertInstanceOf('\yii\db\Expression', $query->from[0]);
     }
 
-    use GetTablesAliasTestTrait;
     protected function createQuery()
     {
         return new Query();
@@ -368,7 +369,6 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(['user3' => 'user3', 'user2' => 'user2', 'user1' => 'user1'], $result);
     }
 
-
     /**
      * Ensure no ambiguous column error occurs on indexBy with JOIN.
      *
@@ -653,14 +653,12 @@ abstract class QueryTest extends DatabaseTestCase
             $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db), 'Cache does not get changes after getting newer data from DB in noCache block.');
         }, 10);
 
-
         $db->enableQueryCache = false;
         $db->cache(function ($db) use ($query, $update) {
             $this->assertEquals('user22', $query->where(['id' => 2])->scalar($db), 'When cache is disabled for the whole connection, Query inside cache block does not get cached');
             $update->bindValues([':id' => 2, ':name' => 'user2'])->execute();
             $this->assertEquals('user2', $query->where(['id' => 2])->scalar($db));
         }, 10);
-
 
         $db->enableQueryCache = true;
         $query->cache();

@@ -281,11 +281,15 @@ abstract class CacheTestCase extends TestCase
         $dependency = new TagDependency(['tags' => 'test']);
 
         $expected = 'SilverFire';
-        $loginClosure = function ($cache) use (&$login) { return 'SilverFire'; };
+        $loginClosure = function ($cache) use (&$login) {
+            return 'SilverFire';
+        };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
 
         // Call again with another login to make sure that value is cached
-        $loginClosure = function ($cache) use (&$login) { return 'SamDark'; };
+        $loginClosure = function ($cache) use (&$login) {
+            return 'SamDark';
+        };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
 
         $dependency->invalidate($cache, 'test');

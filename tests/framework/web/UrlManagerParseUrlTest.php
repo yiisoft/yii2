@@ -290,11 +290,7 @@ class UrlManagerParseUrlTest extends TestCase
         $this->assertFalse($result);
     }
 
-
-
     // TODO implement with hostinfo
-
-
 
     public function testParseRESTRequest()
     {
@@ -393,19 +389,23 @@ class UrlManagerParseUrlTest extends TestCase
         $this->assertCount(1, $manager->rules);
         $firstRule = $manager->rules[0];
         $this->assertInstanceOf('yii\web\UrlRuleInterface', $firstRule);
-        $this->assertCount(1, $this->getInaccessibleProperty($arrayCache, '_cache'),
+        $this->assertCount(
+            1,
+            $this->getInaccessibleProperty($arrayCache, '_cache'),
             'Cache contains the only one record that represents initial built rules'
         );
 
         $manager->addRules(['posts' => 'post/index']);
         $manager->addRules([
             'book/<id:\d+>/<title>' => 'book/view',
-            'book/<id:\d+>/<author>' => 'book/view'
+            'book/<id:\d+>/<author>' => 'book/view',
         ]);
 
         $this->assertCount(4, $manager->rules);
         $this->assertSame($firstRule, $manager->rules[0]);
-        $this->assertCount(3, $this->getInaccessibleProperty($arrayCache, '_cache'),
+        $this->assertCount(
+            3,
+            $this->getInaccessibleProperty($arrayCache, '_cache'),
             'The addRules() method was called twice, adding 3 new rules to the UrlManager, but we have only ' .
             'two additional caches: one for each addRules() method call.'
         );

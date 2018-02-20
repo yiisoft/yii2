@@ -80,13 +80,11 @@ class BaseYiiTest extends TestCase
             return $a === 'a';
         }, ['a']));
 
-
         $singer = new Singer();
         $singer->firstName = 'Bob';
         $this->assertTrue(Yii::createObject(function (Singer $singer, $a) {
             return $singer->firstName === 'Bob';
         }, [$singer, 'a']));
-
 
         $this->assertTrue(Yii::createObject(function (Singer $singer, $a = 3) {
             return true;

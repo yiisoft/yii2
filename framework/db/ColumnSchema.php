@@ -121,9 +121,10 @@ class ColumnSchema extends BaseObject
                     Schema::TYPE_TEXT,
                     Schema::TYPE_STRING,
                     Schema::TYPE_BINARY,
-                    Schema::TYPE_CHAR
+                    Schema::TYPE_CHAR,
                 ],
-                true)
+                true
+            )
         ) {
             return null;
         }

@@ -75,6 +75,11 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      */
     public $enabled = true;
 
+    /**
+     * @var string|bool the cached content. False if the content is not cached.
+     */
+    private $_content;
+
 
     /**
      * Initializes the FragmentCache object.
@@ -119,11 +124,6 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
     }
 
     /**
-     * @var string|bool the cached content. False if the content is not cached.
-     */
-    private $_content;
-
-    /**
      * Returns the cached content if available.
      * @return string|false the cached content. False is returned if valid content is not found in the cache.
      */
@@ -161,6 +161,6 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      */
     protected function calculateKey()
     {
-        return array_merge([__CLASS__, $this->getId()], (array)$this->variations);
+        return array_merge([__CLASS__, $this->getId()], (array) $this->variations);
     }
 }

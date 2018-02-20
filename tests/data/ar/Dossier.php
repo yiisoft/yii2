@@ -45,7 +45,6 @@ class Dossier extends ActiveRecord
                 'department_id' => 'department_id',
                 'id' => 'employee_id',
             ])
-            ->inverseOf('dossier')
-        ;
+            ->inverseOf('dossier');
     }
 }
