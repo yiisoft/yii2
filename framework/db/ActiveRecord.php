@@ -160,6 +160,39 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
+     * Filter one condition key using forbiddenChars list
+     * @param $key
+     * @return mixed
+     */
+    protected static function filterConditionKey($key)
+    {
+        if (!is_string($key)) {
+            return $key;
+        }
+        $forbiddenChars = ['\'', '"', '`', '(', ')', '!', '@', '#', '$', '%', '^', '&', '*', '{', '}', '[', ']', ';', ',', '<', '>', '?', '\\', '/', '|', ' '];
+        $resKey = str_replace($forbiddenChars, '', $key);
+        return $resKey;
+    }
+
+    /**
+     * Filter array key conditions for special chars
+     * @param $condition
+     * @return array
+     */
+    protected static function filterCondition($condition)
+    {
+        if (!is_array($condition)) {
+            return $condition;
+        }
+        $returnCondition = [];
+        foreach ($condition as $key => $item) {
+            $filteredKey = self::filterConditionKey($key);
+            $returnCondition[$filteredKey] = self::filterCondition($item);
+        }
+        return $returnCondition;
+    }
+
+    /**
      * Finds ActiveRecord instance(s) by the given condition.
      * This method is internally called by [[findOne()]] and [[findAll()]].
      * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
@@ -170,6 +203,7 @@ class ActiveRecord extends BaseActiveRecord
     protected static function findByCondition($condition)
     {
         $query = static::find();
+        $condition = self::filterCondition($condition);
 
         if (!ArrayHelper::isAssociative($condition)) {
             // query by primary key
