@@ -44,7 +44,14 @@ class YiiConfig extends Config
             'dir_constant' => true,
             'ereg_to_preg' => true,
             'function_typehint_space' => true,
-            'hash_to_slash_comment' => true,
+            'single_line_comment_style' => [
+                'comment_types' => [
+                    [
+                        // 'asterisk', // needs more discussion
+                        'hash',
+                    ],
+                ],
+            ],
             'include' => true,
             'heredoc_to_nowdoc' => true,
             'is_null' => [
@@ -54,7 +61,13 @@ class YiiConfig extends Config
             'lowercase_cast' => true,
             'magic_constant_casing' => true,
 //            'mb_str_functions' => true, // needs more discussion
-//            'method_separation' => true, // conflicts with current Yii style with double line between properties and methods
+            'class_attributes_separation' => [
+                'elements' => [
+                    // 'const', https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md#42-properties
+                    // 'property', https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md#42-properties
+                    'method', // breaks double line between properties and methods but add line between methods
+                ],
+            ],
             'modernize_types_casting' => true,
             'native_function_casing' => true,
             'new_with_braces' => true,
@@ -64,7 +77,7 @@ class YiiConfig extends Config
             'no_empty_comment' => true,
             'no_empty_phpdoc' => true,
             'no_empty_statement' => true,
-            'no_extra_consecutive_blank_lines' => [
+            'no_extra_blank_lines' => [
                 'tokens' => [
                     'break',
                     'continue',
@@ -82,7 +95,7 @@ class YiiConfig extends Config
             'no_leading_namespace_whitespace' => true,
             'no_mixed_echo_print' => true,
             'no_multiline_whitespace_around_double_arrow' => true,
-            'no_multiline_whitespace_before_semicolons' => true,
+            'multiline_whitespace_before_semicolons' => true,
             'no_php4_constructor' => true,
             'no_short_bool_cast' => true,
             'no_singleline_whitespace_before_semicolons' => true,
@@ -98,20 +111,20 @@ class YiiConfig extends Config
             'non_printable_character' => true,
             'normalize_index_brace' => true,
             'object_operator_without_whitespace' => true,
-//            'ordered_class_elements' => [ // needs more discussion
-//                'order' => [
-//                    'use_trait',
-//                    'constant_public',
-//                    'constant_protected',
-//                    'constant_private',
-//                    'property_public',
-//                    'property_protected',
-//                    'property_private',
-//                    'construct',
-//                    'destruct',
-//                    'magic',
-//                ],
-//            ],
+            'ordered_class_elements' => [
+                'order' => [
+                    'use_trait',
+                    'constant_public',
+                    'constant_protected',
+                    'constant_private',
+                    'property_public',
+                    'property_protected',
+                    'property_private',
+                    'construct',
+                    'destruct',
+                    'magic',
+                ],
+            ],
             'ordered_imports' => [
                 'sortAlgorithm' => 'alpha',
                 'importsOrder' => [
