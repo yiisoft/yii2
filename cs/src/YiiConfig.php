@@ -46,10 +46,8 @@ class YiiConfig extends Config
             'function_typehint_space' => true,
             'single_line_comment_style' => [
                 'comment_types' => [
-                    [
-                        // 'asterisk', // needs more discussion
-                        'hash',
-                    ],
+                    // 'asterisk', // needs more discussion
+                    'hash',
                 ],
             ],
             'include' => true,
