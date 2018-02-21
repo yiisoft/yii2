@@ -74,7 +74,7 @@ A fim de configurar temas por widgets, você pode configurar [[yii\base\Theme::p
 ],
 ```
  
-Isto lhe permitirá tematizar `@app/widgets/currency/views/index.php` com `@app/themes/basic/widgets/currency/index.php`.
+Isto lhe permitirá tematizar `@app/widgets/currency/views/index.php` com `@app/themes/basic/widgets/currency/views/index.php`.
  
  
 ## Herança de Tema <span id="theme-inheritance"></span>
