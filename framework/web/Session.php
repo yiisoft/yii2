@@ -325,12 +325,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if ($this->getUseCustomStorage()) {
             return;
         }
-        $active = $this->getIsActive();
-        $this->close();
+        $this->freeze();
         session_name($value);
-        if ($active) {
-            $this->open();
-        }
+        $this->unfreeze();
     }
 
     /**
