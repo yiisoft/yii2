@@ -55,6 +55,25 @@ class VarDumperTest extends TestCase
         $this->assertContains('[price] => 19', $dumpResult);
     }
 
+    public function testDumpRecursive()
+    {
+        $var = [
+            'copyVar' => null,
+            'vars' => [
+                'recursive' => null,
+            ],
+            'recursive' => [],
+        ];
+        $var['copyVar'] = $var;
+        $var['vars']['recursive'] = &$var;
+        $var['recursive']['anotherRecursive'] = &$var['recursive'];
+
+        $dumpResult = VarDumper::dumpAsString($var);
+        $this->assertNotContains("'copyVar' => *RECURSION*", $dumpResult);
+        $this->assertContains("'recursive' => *RECURSION*", $dumpResult);
+        $this->assertContains("'anotherRecursive' => *RECURSION*", $dumpResult);
+    }
+
     /**
      * Data provider for [[testExport()]].
      * @return array test data
