@@ -22,8 +22,7 @@ interface CheckAccessInterface
      * @param string $permissionName the name of the permission to be checked against
      * @param array $params name-value pairs that will be passed to the rules associated
      * with the roles and permissions assigned to the user.
-     * @return bool whether the user has the specified permission.
-     * @throws \yii\base\InvalidParamException if $permissionName does not refer to an existing permission
+     * @return bool whether the user has the specified permission, false if $permissionName does not refer to an existing permission
      */
     public function checkAccess($userId, $permissionName, $params = []);
 }

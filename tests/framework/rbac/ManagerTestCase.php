@@ -7,7 +7,6 @@
 
 namespace yiiunit\framework\rbac;
 
-use yii\base\InvalidParamException;
 use yii\rbac\BaseManager;
 use yii\rbac\Item;
 use yii\rbac\Permission;
