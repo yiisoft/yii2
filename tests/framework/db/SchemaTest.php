@@ -60,14 +60,14 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema = $connection->schema;
 
         $tables = $schema->getTableNames();
-        $this->assertTrue(in_array('customer', $tables));
-        $this->assertTrue(in_array('category', $tables));
-        $this->assertTrue(in_array('item', $tables));
-        $this->assertTrue(in_array('order', $tables));
-        $this->assertTrue(in_array('order_item', $tables));
-        $this->assertTrue(in_array('type', $tables));
-        $this->assertTrue(in_array('animal', $tables));
-        $this->assertTrue(in_array('animal_view', $tables));
+        $this->assertTrue(\in_array('customer', $tables));
+        $this->assertTrue(\in_array('category', $tables));
+        $this->assertTrue(\in_array('item', $tables));
+        $this->assertTrue(\in_array('order', $tables));
+        $this->assertTrue(\in_array('order_item', $tables));
+        $this->assertTrue(\in_array('type', $tables));
+        $this->assertTrue(\in_array('animal', $tables));
+        $this->assertTrue(\in_array('animal_view', $tables));
     }
 
     /**
@@ -84,7 +84,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema = $connection->schema;
 
         $tables = $schema->getTableSchemas();
-        $this->assertEquals(count($schema->getTableNames()), count($tables));
+        $this->assertEquals(\count($schema->getTableNames()), \count($tables));
         foreach ($tables as $table) {
             $this->assertInstanceOf('yii\db\TableSchema', $table);
         }
@@ -94,10 +94,10 @@ abstract class SchemaTest extends DatabaseTestCase
     {
         $db = $this->getConnection(false);
         $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
-        $this->assertEquals(count($db->schema->getTableNames()), count($db->schema->getTableSchemas()));
+        $this->assertEquals(\count($db->schema->getTableNames()), \count($db->schema->getTableSchemas()));
 
         $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
-        $this->assertEquals(count($db->schema->getTableNames()), count($db->schema->getTableSchemas()));
+        $this->assertEquals(\count($db->schema->getTableNames()), \count($db->schema->getTableSchemas()));
     }
 
     public function testGetNonExistingTableSchema()
@@ -274,6 +274,18 @@ abstract class SchemaTest extends DatabaseTestCase
                 'scale' => null,
                 'defaultValue' => 1,
             ],
+            'tinyint_col' => [
+                'type' => 'tinyint',
+                'dbType' => 'tinyint(3)',
+                'phpType' => 'integer',
+                'allowNull' => true,
+                'autoIncrement' => false,
+                'enumValues' => null,
+                'size' => 3,
+                'precision' => 3,
+                'scale' => null,
+                'defaultValue' => 1,
+            ],
             'smallint_col' => [
                 'type' => 'smallint',
                 'dbType' => 'smallint(1)',
@@ -395,7 +407,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 'defaultValue' => '2002-01-01 00:00:00',
             ],
             'bool_col' => [
-                'type' => 'smallint',
+                'type' => 'tinyint',
                 'dbType' => 'tinyint(1)',
                 'phpType' => 'integer',
                 'allowNull' => false,
@@ -407,7 +419,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 'defaultValue' => null,
             ],
             'bool_col2' => [
-                'type' => 'smallint',
+                'type' => 'tinyint',
                 'dbType' => 'tinyint(1)',
                 'phpType' => 'integer',
                 'allowNull' => true,
@@ -442,6 +454,18 @@ abstract class SchemaTest extends DatabaseTestCase
                 'scale' => null,
                 'defaultValue' => 130, // b'10000010'
             ],
+            'json_col' => [
+                'type' => 'json',
+                'dbType' => 'json',
+                'phpType' => 'array',
+                'allowNull' => true,
+                'autoIncrement' => false,
+                'enumValues' => null,
+                'size' => null,
+                'precision' => null,
+                'scale' => null,
+                'defaultValue' => null,
+            ],
         ];
     }
 
@@ -451,6 +475,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('negative_default_values');
+        $this->assertEquals(-123, $table->getColumn('tinyint_col')->defaultValue);
         $this->assertEquals(-123, $table->getColumn('smallint_col')->defaultValue);
         $this->assertEquals(-123, $table->getColumn('int_col')->defaultValue);
         $this->assertEquals(-123, $table->getColumn('bigint_col')->defaultValue);
@@ -481,11 +506,14 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->assertSame($expected['size'], $column->size, "size of column $name does not match.");
             $this->assertSame($expected['precision'], $column->precision, "precision of column $name does not match.");
             $this->assertSame($expected['scale'], $column->scale, "scale of column $name does not match.");
-            if (is_object($expected['defaultValue'])) {
+            if (\is_object($expected['defaultValue'])) {
                 $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
                 $this->assertEquals((string) $expected['defaultValue'], (string) $column->defaultValue, "defaultValue of column $name does not match.");
             } else {
-                $this->assertSame($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
+                $this->assertEquals($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
+            }
+            if (isset($expected['dimension'])) { // PgSQL only
+                $this->assertSame($expected['dimension'], $column->dimension, "dimension of column $name does not match");
             }
         }
     }
@@ -530,6 +558,16 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertEquals([
             'somecolUnique' => ['somecol'],
             'someCol2Unique' => ['someCol2'],
+        ], $uniqueIndexes);
+        
+        // see https://github.com/yiisoft/yii2/issues/13814
+        $db->createCommand()->createIndex('another unique index', 'uniqueIndex', 'someCol2', true)->execute();
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([
+            'somecolUnique' => ['somecol'],
+            'someCol2Unique' => ['someCol2'],
+            'another unique index' => ['someCol2'],
         ], $uniqueIndexes);
     }
 
@@ -719,13 +757,13 @@ abstract class SchemaTest extends DatabaseTestCase
 
     private function assertMetadataEquals($expected, $actual)
     {
-        $this->assertInternalType(strtolower(gettype($expected)), $actual);
-        if (is_array($expected)) {
+        $this->assertInternalType(strtolower(\gettype($expected)), $actual);
+        if (\is_array($expected)) {
             $this->normalizeArrayKeys($expected, false);
             $this->normalizeArrayKeys($actual, false);
         }
         $this->normalizeConstraints($expected, $actual);
-        if (is_array($expected)) {
+        if (\is_array($expected)) {
             $this->normalizeArrayKeys($expected, true);
             $this->normalizeArrayKeys($actual, true);
         }
@@ -758,7 +796,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     private function normalizeConstraints(&$expected, &$actual)
     {
-        if (is_array($expected)) {
+        if (\is_array($expected)) {
             foreach ($expected as $key => $value) {
                 if (!$value instanceof Constraint || !isset($actual[$key]) || !$actual[$key] instanceof Constraint) {
                     continue;

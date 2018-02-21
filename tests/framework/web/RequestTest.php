@@ -137,6 +137,22 @@ class RequestTest extends TestCase
         }
     }
 
+    public function testIssue15317()
+    {
+        $this->mockWebApplication();
+        $_COOKIE[(new Request())->csrfParam] = '';
+        $request = new Request();
+        $request->enableCsrfCookie = true;
+        $request->enableCookieValidation = false;
+
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Yii::$app->security->unmaskToken('');
+        $this->assertFalse($request->validateCsrfToken(''));
+
+        // When an empty CSRF token is given it is regenerated.
+        $this->assertNotEmpty($request->getCsrfToken());
+
+    }
     /**
      * Test CSRF token validation by POST param.
      */
@@ -250,7 +266,85 @@ class RequestTest extends TestCase
         $this->assertEquals($_GET, ['id' => 63]);
     }
 
-    public function testGetHostInfo()
+    public function getHostInfoDataProvider()
+    {
+        return [
+            // empty
+            [
+                [],
+                [null, null]
+            ],
+            // normal
+            [
+                [
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example1.com',
+                    'example1.com',
+                ]
+            ],
+            // HTTP header missing
+            [
+                [
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example2.com',
+                    'example2.com',
+                ]
+            ],
+            // forwarded from untrusted server
+            [
+                [
+                    'HTTP_X_FORWARDED_HOST' => 'example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example1.com',
+                    'example1.com',
+                ]
+            ],
+            // forwarded from trusted proxy
+            [
+                [
+                    'HTTP_X_FORWARDED_HOST' => 'example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                [
+                    'http://example3.com',
+                    'example3.com',
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getHostInfoDataProvider
+     * @param array $server
+     * @param array $expected
+     */
+    public function testGetHostInfo($server, $expected)
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24',
+            ],
+        ]);
+
+        $this->assertEquals($expected[0], $request->getHostInfo());
+        $this->assertEquals($expected[1], $request->getHostName());
+        $_SERVER = $original;
+    }
+
+
+    public function testSetHostInfo()
     {
         $request = new Request();
 
@@ -592,5 +686,29 @@ class RequestTest extends TestCase
         $this->assertSame($request->getAuthPassword(), $pw);
 
         $_SERVER = $original;
+    }
+
+    public function testGetBodyParam()
+    {
+        $request = new Request();
+
+        $request->setBodyParams([
+            'someParam' => 'some value',
+            'param.dot' => 'value.dot',
+        ]);
+        $this->assertSame('some value', $request->getBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
+        $this->assertSame(null, $request->getBodyParam('unexisting'));
+        $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
+
+        // @see https://github.com/yiisoft/yii2/issues/14135
+        $bodyParams = new \stdClass();
+        $bodyParams->someParam = 'some value';
+        $bodyParams->{'param.dot'} = 'value.dot';
+        $request->setBodyParams($bodyParams);
+        $this->assertSame('some value', $request->getBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
+        $this->assertSame(null, $request->getBodyParam('unexisting'));
+        $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
     }
 }

@@ -125,7 +125,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parse($rawBody, $contentType)
     {

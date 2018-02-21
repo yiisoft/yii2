@@ -120,6 +120,33 @@ class ModuleTest extends TestCase
         $this->assertTrue($child->has('test'));
         $this->assertFalse($parent->has('test'));
     }
+
+    public function testCreateControllerByID()
+    {
+        $module = new TestModule('test');
+        $module->controllerNamespace = 'yiiunit\framework\base';
+
+        $route = 'module-test';
+        $this->assertInstanceOf(ModuleTestController::className(), $module->createControllerByID($route));
+
+        $route = 'module-test-';
+        $this->assertNotInstanceOf(ModuleTestController::className(), $module->createControllerByID($route));
+
+        $route = '-module-test';
+        $this->assertNotInstanceOf(ModuleTestController::className(), $module->createControllerByID($route));
+
+        $route = 'very-complex-name-test';
+        $this->assertInstanceOf(VeryComplexNameTestController::className(), $module->createControllerByID($route));
+
+        $route = 'very-complex-name-test--';
+        $this->assertNotInstanceOf(VeryComplexNameTestController::className(), $module->createControllerByID($route));
+
+        $route = '--very-complex-name-test';
+        $this->assertNotInstanceOf(VeryComplexNameTestController::className(), $module->createControllerByID($route));
+
+        $route = 'very---complex---name---test';
+        $this->assertNotInstanceOf(VeryComplexNameTestController::className(), $module->createControllerByID($route));
+    }
 }
 
 class TestModule extends \yii\base\Module
@@ -137,6 +164,14 @@ class ModuleTestController extends Controller
         ModuleTest::$actionRuns[] = $this->action->uniqueId;
     }
     public function actionTest2()
+    {
+        ModuleTest::$actionRuns[] = $this->action->uniqueId;
+    }
+}
+
+class VeryComplexNameTestController extends Controller
+{
+    public function actionIndex()
     {
         ModuleTest::$actionRuns[] = $this->action->uniqueId;
     }

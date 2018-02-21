@@ -216,7 +216,7 @@ class MessageFormatter extends Component
                 continue;
             }
             $param = trim($token[0]);
-            if (isset($givenParams[$param])) {
+            if (array_key_exists($param, $givenParams)) {
                 // if param is given, replace it with a number
                 if (!isset($map[$param])) {
                     $map[$param] = count($map);
@@ -317,6 +317,10 @@ class MessageFormatter extends Component
                 $start = $pos + 1;
                 $tokens[] = mb_substr($pattern, $start, $open - $start, $charset);
                 $start = $open;
+            }
+
+            if ($depth !== 0 && ($open === false || $close === false)) {
+                break;
             }
         }
         if ($depth !== 0) {

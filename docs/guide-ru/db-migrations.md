@@ -266,7 +266,7 @@ yii migrate/create create_post_table --fields="author_id:integer:notNull:foreign
 class m160328_040430_create_post_table extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -314,7 +314,7 @@ class m160328_040430_create_post_table extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {
@@ -465,7 +465,7 @@ yii migrate/create create_junction_table_for_post_and_tag_tables
 class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -512,7 +512,7 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {

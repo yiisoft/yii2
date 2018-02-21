@@ -42,7 +42,7 @@ Attaching Event Handlers <span id="attaching-event-handlers"></span>
 You can attach a handler to an event by calling the [[yii\base\Component::on()]] method. For example:
 
 ```php
-$foo = new Foo;
+$foo = new Foo();
 
 // this handler is a global function
 $foo->on(Foo::EVENT_HELLO, 'function_name');
@@ -212,7 +212,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' is inserted');
+    Yii::debug(get_class($event->sender) . ' is inserted');
 });
 ```
 
@@ -296,7 +296,7 @@ pass the interface class name as the first argument:
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
+    Yii::debug(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
 });
 ```
 
@@ -355,3 +355,74 @@ done through the Singleton (e.g. the application instance).
 
 However, because the namespace of the global events is shared by all parties, you should name the global events
 wisely, such as introducing some sort of namespace (e.g. "frontend.mail.sent", "backend.mail.sent").
+
+
+Wildcard Events <span id="wildcard-events"></span>
+---------------
+
+Since 2.0.14 you can setup event handler for multiple events matching wildcard pattern.
+For example:
+
+```php
+use Yii;
+
+$foo = new Foo();
+
+$foo->on('foo.event.*', function ($event) {
+    // triggered for any event, which name starts on 'foo.event.'
+    Yii::debug('trigger event: ' . $event->name);
+});
+```
+
+Wildcard patterns can be used for class-level events as well. For example:
+
+```php
+use yii\base\Event;
+use Yii;
+
+Event::on('app\models\*', 'before*', function ($event) {
+    // triggered for any class in namespace 'app\models' for any event, which name starts on 'before'
+    Yii::debug('trigger event: ' . $event->name . ' for class: ' . get_class($event->sender));
+});
+```
+
+This allows you catching all application events by single handler using following code:
+
+```php
+use yii\base\Event;
+use Yii;
+
+Event::on('*', '*', function ($event) {
+    // triggered for any event at any class
+    Yii::debug('trigger event: ' . $event->name);
+});
+```
+
+> Note: usage wildcards for event handlers setup may reduce the application performance.
+  It is better to be avoided if possible.
+
+In order to detach event handler specified by wildcard pattern, you should repeat same pattern at
+[[yii\base\Component::off()]] or [[yii\base\Event::off()]] invocation. Keep in mind that passing wildcard
+during detaching of event handler will detach ony the handler specified for this wildcard, while handlers
+attached for regular event names will remain even if they match the pattern. For example:
+
+```php
+use Yii;
+
+$foo = new Foo();
+
+// attach regular handler
+$foo->on('event.hello', function ($event) {
+    echo 'direct-handler'
+});
+
+// attach wildcard handler
+$foo->on('*', function ($event) {
+    echo 'wildcard-handler'
+});
+
+// detach wildcard handler only!
+$foo->off('*');
+
+$foo->trigger('event.hello'); // outputs: 'direct-handler'
+```
