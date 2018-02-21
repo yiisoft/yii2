@@ -40,15 +40,20 @@ class ChangeLogTest extends TestCase
      */
     public function testContributorLine($line)
     {
+        if ($line === '- no changes in this release.') {
+            $this->markTestSkipped('Placeholder line');
+        }
+
         /**
          * Each change line is tested for:
          * - Starts with "- "
          * - Has a type: Bug, Enh, Chg, New
-         * - Has a number formatted like #12345
+         * - Has a number formatted like #12345 one or more times
+         * - Can contain CVE ID
          * - Description starts after ": "
          * - Description ends without a "."
          * - Line ends with contributor name between "(" and ")".
          */
-        $this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?: .*[^.] \(.*\)$/', $line);
+        $this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?(\s\(CVE-[\d-]+\))?: .*[^.] \(.*\)$/', $line);
     }
 }

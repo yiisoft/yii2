@@ -331,4 +331,26 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         }
         return $newData;
     }
+
+    public function updateProvider()
+    {
+        $items = parent::updateProvider();
+
+        $items[] = [
+            'profile',
+            [
+                'description' => new JsonExpression(['abc' => 'def', 123, null]),
+            ],
+            [
+                'id' => 1,
+            ],
+            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1'),
+            [
+                ':qp0' => '{"abc":"def","0":123,"1":null}',
+                ':qp1' => 1,
+            ],
+        ];
+
+        return $items;
+    }
 }
