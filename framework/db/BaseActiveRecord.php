@@ -1728,7 +1728,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     private function setRelationDependencies($name, $relation)
     {
-        if (empty($relation->via)) {
+        if (empty($relation->via) && $relation->link) {
             foreach ($relation->link as $attribute) {
                 $this->_relationsDependencies[$attribute][$name] = $name;
             }
