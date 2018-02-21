@@ -24,11 +24,11 @@ if (is_file($composerAutoload)) {
         $autoloaderList = spl_autoload_functions();
         $phpUnitAutoloader = $autoloaderList[0][0];
         $phpUnitAutoloader->unregister();
-    }
-    require_once $composerAutoload;
-    // PHPUnit autoload at top
-    if (!empty($phpUnitAutoloader)) {
+        require_once $composerAutoload;
+        // PHPUnit autoload at top
         $phpUnitAutoloader->register(true);
+    } else {
+        require_once $composerAutoload;
     }
 }
 require_once __DIR__ . '/../framework/Yii.php';
