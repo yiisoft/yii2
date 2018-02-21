@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.15 under development
 ------------------------
 
+- Enh #15716: Implemented `\Traversable` in `yii\db\ArrayExpression` (silverfire)
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15696: Fix magic getter for ActiveRecord (developeruz)
 
