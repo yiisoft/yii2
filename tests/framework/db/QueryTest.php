@@ -78,6 +78,21 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test'], $query->select);
         $query->addSelect(['test' => 'LEFT(name,7)']);
         $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test', 'test' => 'LEFT(name,7)'], $query->select);
+
+        /** @see https://github.com/yiisoft/yii2/issues/15731 */
+        $selectedCols = [
+            'total_sum' => 'SUM(f.amount)',
+            'in_sum' => 'SUM(IF(f.type = :type_in, f.amount, 0))',
+            'out_sum' => 'SUM(IF(f.type = :type_out, f.amount, 0))',
+        ];
+        $query = (new Query())->select($selectedCols)->addParams([
+            ':type_in' => 'in',
+            ':type_out' => 'out',
+            ':type_partner' => 'partner',
+        ]);
+        $this->assertSame($selectedCols, $query->select);
+        $query->select($selectedCols);
+        $this->assertSame($selectedCols, $query->select);
     }
 
     public function testFrom()

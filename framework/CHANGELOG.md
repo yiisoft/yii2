@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.15 under development
 ------------------------
 
+- Bug #15728, #15731: Fixed BC break in `Query::select()` method (silverfire)
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15696: Fix magic getter for ActiveRecord (developeruz)
 
