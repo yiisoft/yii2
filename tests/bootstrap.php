@@ -17,7 +17,19 @@ $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 // require composer autoloader if available
 $composerAutoload = __DIR__ . '/../vendor/autoload.php';
 if (is_file($composerAutoload)) {
-    require_once $composerAutoload;
+    // check another composer's of PHPUnit
+    if (defined('PHPUNIT_COMPOSER_INSTALL') && (
+            stream_resolve_include_path(PHPUNIT_COMPOSER_INSTALL) !=
+            stream_resolve_include_path($composerAutoload))) {
+        $autoloaderList = spl_autoload_functions();
+        $phpUnitAutoloader = $autoloaderList[0][0];
+        $phpUnitAutoloader->unregister();
+        require_once $composerAutoload;
+        // PHPUnit autoload at top
+        $phpUnitAutoloader->register(true);
+    } else {
+        require_once $composerAutoload;
+    }
 }
 require_once __DIR__ . '/../framework/Yii.php';
 
