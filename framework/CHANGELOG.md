@@ -1,8 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.15 under development
-------------------------
+2.0.14.1 under development
+--------------------------
 
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15696: Fix magic getter for ActiveRecord (developeruz)
