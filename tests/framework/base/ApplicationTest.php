@@ -43,7 +43,6 @@ class ApplicationTest extends TestCase
     {
         Yii::getLogger()->flush();
 
-
         $this->mockApplication([
             'components' => [
                 'withoutBootstrapInterface' => [

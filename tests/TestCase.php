@@ -41,6 +41,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         parent::tearDown();
         $this->destroyApplication();
         Yii::setLogger(null);
+        Yii::$container = new \yii\di\Container();
     }
 
     /**
