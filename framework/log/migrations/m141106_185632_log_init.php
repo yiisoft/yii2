@@ -75,7 +75,7 @@ class m141106_185632_log_init extends Migration
 
             $this->createTable($target->logTable, [
                 'id' => $this->bigPrimaryKey(),
-                'level' => $this->integer(),
+                'level' => $this->string(),
                 'category' => $this->string(),
                 'log_time' => $this->double(),
                 'prefix' => $this->text(),
