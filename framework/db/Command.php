@@ -535,7 +535,7 @@ class Command extends Component
      * If `true` is passed, the column data will be updated to match the insert column data.
      * If `false` is passed, no update will be performed if the column data already exists.
      * @param array $params the parameters to be bound to the command.
-     * @return $this the command object itself.
+     * @return string the resulting SQL.
      * @since 2.0.14
      */
     public function upsert($table, $insertColumns, $updateColumns = true, $params = [])
