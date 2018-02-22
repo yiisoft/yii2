@@ -86,8 +86,8 @@ class DbTarget extends Target
             }
             if ($command->bindValues([
                     ':level' => $level,
-                    ':category' => $category,
-                    ':log_time' => $timestamp,
+                    ':category' => $context['category'],
+                    ':log_time' => $context['time'],
                     ':prefix' => $this->getMessagePrefix($message),
                     ':message' => $text,
                 ])->execute() > 0) {
