@@ -18,15 +18,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     public static $params;
 
     /**
-     * Clean up after test case.
-     */
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-        Yii::setLogger(null);
-    }
-
-    /**
      * Returns a test configuration param from /data/config.php.
      * @param  string $name params name
      * @param  mixed $default default value to use when param is not set.
@@ -49,6 +40,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         parent::tearDown();
         $this->destroyApplication();
+        Yii::setLogger(null);
     }
 
     /**
