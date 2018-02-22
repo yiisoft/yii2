@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15696: Fix magic getter for ActiveRecord (developeruz)
+- Bug #15726: Fix ExistValidator is broken for NOSQL (developeruz)
 
 
 2.0.14 February 18, 2018
