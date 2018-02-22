@@ -80,6 +80,50 @@ describe('yii.activeForm', function () {
         });
     });
 
+    describe('resetForm method', function () {
+        var windowSetTimeoutStub;
+
+        beforeEach(function () {
+            windowSetTimeoutStub = sinon.stub(window, 'setTimeout', function (callback) {
+                callback();
+            });
+        });
+
+        afterEach(function () {
+            windowSetTimeoutStub.restore();
+        });
+
+        it('should remove classes from error element', function () {
+            var inputId = 'name';
+            var $input = $('#' + inputId);
+            var options = {
+                validatingCssClass: 'validating',
+                errorCssClass: 'error',
+                successCssClass: 'success',
+                validationStateOn: 'input'
+            };
+
+            $activeForm = $('#w0');
+            $activeForm.yiiActiveForm('destroy');
+            $activeForm.yiiActiveForm([
+                {
+                    id: inputId,
+                    input: '#' + inputId
+                }
+            ], options);
+
+            $input.addClass(options.validatingCssClass);
+            $input.addClass(options.errorCssClass);
+            $input.addClass(options.successCssClass);
+            $input.addClass('test');
+            $activeForm.yiiActiveForm('resetForm');
+            assert.isFalse($input.hasClass(options.validatingCssClass));
+            assert.isFalse($input.hasClass(options.errorCssClass));
+            assert.isFalse($input.hasClass(options.successCssClass));
+            assert.isTrue($input.hasClass('test'));
+        });
+    });
+
     describe('events', function () {
         describe('afterValidateAttribute', function () {
             var afterValidateAttributeSpy;
