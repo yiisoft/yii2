@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #15728, #15731: Fixed BC break in `Query::select()` method (silverfire)
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
+- Bug #15693: Fixed `yii\filters\auth\HttpHeaderAuth` to work correctly when pattern is set but was not matched (bboure)
 - Bug #15696: Fix magic getter for ActiveRecord (developeruz)
 - Enh #15716: Implemented `\Traversable` in `yii\db\ArrayExpression` (silverfire)
 - Bug #15678: Fixed `resetForm()` method in `yii.activeForm.js` which used an undefined variable (Izumi-kun)
