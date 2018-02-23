@@ -342,7 +342,7 @@ to representative class names:
 And so on.
 
 Using the object format makes it possible to create your own conditions or to change the way default ones are built.
-See [Creating Custom Conditions and Expressions](#creating-custom-conditions-and-expressions) chapter to learn more.
+See [Adding Custom Conditions and Expressions](#adding-custom-conditions-and-expressions) chapter to learn more.
 
 
 #### Appending Conditions <span id="appending-conditions"></span>
