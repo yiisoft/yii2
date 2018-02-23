@@ -186,7 +186,6 @@ class AttributeTypecastBehavior extends Behavior
      */
     private static $autoDetectedAttributeTypes = [];
 
-
     /**
      * Clears internal static cache of auto detected [[attributeTypes]] values
      * over all affected owner classes.
@@ -346,7 +345,7 @@ class AttributeTypecastBehavior extends Behavior
     {
         $this->typecastAttributes();
     }
-    
+
     /**
      * Handles owner 'afterInsert' and 'afterUpdate' events, ensuring attribute typecasting.
      * @param \yii\base\Event $event event instance.

@@ -6,8 +6,8 @@
  */
 
 namespace yiiunit\framework\db\mysql;
-use yii\db\Expression;
 
+use yii\db\Expression;
 use yiiunit\framework\db\AnyCaseValue;
 
 /**
@@ -23,7 +23,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
             $this->markTestSkipped('Default datetime columns are supported since MySQL 5.6.');
         }
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 CREATE TABLE  IF NOT EXISTS `datetime_test`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `dt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -38,7 +38,7 @@ SQL;
 
         $dt = $schema->columns['dt'];
 
-        $this->assertInstanceOf(Expression::className(),$dt->defaultValue);
+        $this->assertInstanceOf(Expression::className(), $dt->defaultValue);
     }
 
     public function testGetSchemaNames()

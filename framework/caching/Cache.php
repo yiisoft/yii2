@@ -79,7 +79,6 @@ abstract class Cache extends Component implements CacheInterface
      */
     public $defaultDuration = 0;
 
-
     /**
      * Builds a normalized cache key from a given key.
      *

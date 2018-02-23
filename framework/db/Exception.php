@@ -21,7 +21,6 @@ class Exception extends \yii\base\Exception
      */
     public $errorInfo = [];
 
-
     /**
      * Constructor.
      * @param string $message PDO error message

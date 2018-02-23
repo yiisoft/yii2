@@ -51,7 +51,6 @@ abstract class ErrorHandler extends Component
      */
     private $_hhvmException;
 
-
     /**
      * Register this error handler.
      */

@@ -152,7 +152,6 @@ class MessageController extends \yii\console\Controller
      */
     protected $config;
 
-
     /**
      * {@inheritdoc}
      */

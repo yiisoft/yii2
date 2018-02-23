@@ -46,7 +46,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BINARY => 'blob',
         Schema::TYPE_BOOLEAN => 'tinyint(1)',
         Schema::TYPE_MONEY => 'decimal(19,4)',
-        Schema::TYPE_JSON => 'json'
+        Schema::TYPE_JSON => 'json',
     ];
 
     /**
@@ -327,7 +327,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $this->addCommentOnTable($table, '');
     }
 
-
     /**
      * Gets column definition.
      *
@@ -359,5 +358,4 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return null;
     }
-
 }

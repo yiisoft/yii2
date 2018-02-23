@@ -52,7 +52,6 @@ class Link extends BaseObject
      */
     public $hreflang;
 
-
     /**
      * Serializes a list of links into proper array format.
      * @param array $links the links to be serialized

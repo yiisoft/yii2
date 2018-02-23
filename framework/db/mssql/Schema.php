@@ -89,7 +89,6 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     protected $columnQuoteCharacter = ['[', ']'];
 
-
     /**
      * Resolves the table name and schema name (if any).
      * @param string $name the table name

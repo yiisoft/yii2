@@ -80,6 +80,7 @@ abstract class QueryTest extends DatabaseTestCase
     }
 
     use GetTablesAliasTestTrait;
+
     protected function createQuery()
     {
         return new Query();
@@ -367,7 +368,6 @@ abstract class QueryTest extends DatabaseTestCase
             ->column($db);
         $this->assertEquals(['user3' => 'user3', 'user2' => 'user2', 'user1' => 'user1'], $result);
     }
-
 
     /**
      * Ensure no ambiguous column error occurs on indexBy with JOIN.

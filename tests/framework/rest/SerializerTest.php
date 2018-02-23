@@ -156,7 +156,7 @@ class SerializerTest extends TestCase
         \Yii::$app->request->setQueryParams(
             [
                 'fields' => 'field1,extraField3.field3',
-                'expand' => 'extraField3.extraField4'
+                'expand' => 'extraField3.extraField4',
             ]
         );
         $this->assertSame([
@@ -183,7 +183,7 @@ class SerializerTest extends TestCase
         \Yii::$app->request->setQueryParams(
             [
                 'fields' => 'extraField3.*',
-                'expand' => 'extraField3.extraField4'
+                'expand' => 'extraField3.extraField4',
             ]
         );
         $this->assertSame([

@@ -6,6 +6,7 @@
  */
 
 namespace yii\test;
+
 use Yii;
 use yii\base\InvalidConfigException;
 
@@ -55,5 +56,4 @@ trait FileFixtureTrait
 
         throw new InvalidConfigException("Fixture data file does not exist: {$file}");
     }
-
 }

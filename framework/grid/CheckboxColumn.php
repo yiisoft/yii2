@@ -75,7 +75,6 @@ class CheckboxColumn extends Column
      */
     public $cssClass;
 
-
     /**
      * {@inheritdoc}
      * @throws \yii\base\InvalidConfigException if [[name]] is not set.

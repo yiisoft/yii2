@@ -58,7 +58,6 @@ class DbQueryDependency extends Dependency
      */
     public $method;
 
-
     /**
      * Generates the data needed to determine if dependency is changed.
      *

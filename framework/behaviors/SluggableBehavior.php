@@ -122,7 +122,6 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $uniqueSlugGenerator;
 
-
     /**
      * {@inheritdoc}
      */

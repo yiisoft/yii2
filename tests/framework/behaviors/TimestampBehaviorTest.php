@@ -132,7 +132,9 @@ class TimestampBehaviorTest extends TestCase
     public function expressionProvider()
     {
         return [
-            [function () { return '2015-01-01'; }, '2015-01-01'],
+            [function () {
+                return '2015-01-01';
+            }, '2015-01-01'],
             [new Expression("strftime('%Y')"), date('Y')],
             ['2015-10-20', '2015-10-20'],
             [time(), time()],

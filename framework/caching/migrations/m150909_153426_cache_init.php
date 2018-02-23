@@ -4,7 +4,6 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-
 use yii\base\InvalidConfigException;
 use yii\caching\DbCache;
 use yii\db\Migration;

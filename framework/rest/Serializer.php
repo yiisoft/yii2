@@ -119,7 +119,6 @@ class Serializer extends Component
      */
     public $preserveKeys = false;
 
-
     /**
      * {@inheritdoc}
      */

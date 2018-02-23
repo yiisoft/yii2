@@ -3,7 +3,7 @@
 namespace yii\db\pgsql;
 
 /**
- * The class converts PostgreSQL array representation to PHP array
+ * The class converts PostgreSQL array representation to PHP array.
  *
  * @author Sergei Tigrov <rrr-r@ya.ru>
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
@@ -17,7 +17,7 @@ class ArrayParser
     private $delimiter = ',';
 
     /**
-     * Convert array from PostgreSQL to PHP
+     * Convert array from PostgreSQL to PHP.
      *
      * @param string $value string to be converted
      * @return array|null
@@ -36,7 +36,7 @@ class ArrayParser
     }
 
     /**
-     * Pares PgSQL array encoded in string
+     * Pares PgSQL array encoded in string.
      *
      * @param string $value
      * @param int $i parse starting position
@@ -70,7 +70,7 @@ class ArrayParser
     }
 
     /**
-     * Parses PgSQL encoded string
+     * Parses PgSQL encoded string.
      *
      * @param string $value
      * @param int $i parse starting position

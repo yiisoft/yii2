@@ -68,7 +68,6 @@ class UrlNormalizer extends BaseObject
      */
     public $action = self::ACTION_REDIRECT_PERMANENT;
 
-
     /**
      * Performs normalization action for the specified $route.
      * @param array $route route for normalization

@@ -4,7 +4,7 @@ namespace yii\db;
 
 /**
  * Trait ExpressionBuilderTrait provides common constructor for classes that
- * should implement [[ExpressionBuilderInterface]]
+ * should implement [[ExpressionBuilderInterface]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

@@ -62,7 +62,6 @@ trait ActiveRelationTrait
      */
     public $inverseOf;
 
-
     /**
      * Clones internal objects.
      */
@@ -424,7 +423,6 @@ trait ActiveRelationTrait
 
         return $buckets;
     }
-
 
     /**
      * Indexes buckets by column name.

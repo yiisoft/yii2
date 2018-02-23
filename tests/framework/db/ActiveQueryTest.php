@@ -238,6 +238,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     }
 
     use GetTablesAliasTestTrait;
+
     protected function createQuery()
     {
         return new ActiveQuery(null);

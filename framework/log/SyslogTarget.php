@@ -47,7 +47,6 @@ class SyslogTarget extends Target
         Logger::LEVEL_ERROR => LOG_ERR,
     ];
 
-
     /**
      * {@inheritdoc}
      */

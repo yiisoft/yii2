@@ -67,7 +67,6 @@ class BatchQueryResult extends BaseObject implements \Iterator
      */
     private $_key;
 
-
     /**
      * Destructor.
      */

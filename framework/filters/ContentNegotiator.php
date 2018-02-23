@@ -128,7 +128,6 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      */
     public $response;
 
-
     /**
      * {@inheritdoc}
      */

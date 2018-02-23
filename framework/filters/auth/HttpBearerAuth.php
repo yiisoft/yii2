@@ -37,10 +37,9 @@ class HttpBearerAuth extends HttpHeaderAuth
      */
     public $pattern = '/^Bearer\s+(.*?)$/';
     /**
-    * @var string the HTTP authentication realm
-    */
+     * @var string the HTTP authentication realm
+     */
     public $realm = 'api';
-
 
     /**
      * {@inheritdoc}

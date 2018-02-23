@@ -66,7 +66,6 @@ class DevController extends Controller
         'twig' => 'git@github.com:yiisoft/yii2-twig.git',
     ];
 
-
     /**
      * Install all extensions and advanced + basic app.
      */
@@ -246,7 +245,6 @@ class DevController extends Controller
 
         return $options;
     }
-
 
     /**
      * Remove all symlinks in the vendor subdirectory of the directory specified.

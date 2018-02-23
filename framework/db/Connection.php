@@ -440,7 +440,6 @@ class Connection extends Component
      */
     private $_queryCacheInfo = [];
 
-
     /**
      * Returns a value indicating whether the DB connection is established.
      * @return bool whether the DB connection is established

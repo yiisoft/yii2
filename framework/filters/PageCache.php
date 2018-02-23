@@ -135,7 +135,6 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      */
     public $cacheHeaders = true;
 
-
     /**
      * {@inheritdoc}
      */
@@ -298,7 +297,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
         if ($this->varyByRoute) {
             $key[] = Yii::$app->requestedRoute;
         }
-        return array_merge($key, (array)$this->variations);
+        return array_merge($key, (array) $this->variations);
     }
 
     /**

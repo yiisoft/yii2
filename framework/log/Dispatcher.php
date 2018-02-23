@@ -73,7 +73,6 @@ class Dispatcher extends Component
      */
     private $_logger;
 
-
     /**
      * {@inheritdoc}
      */

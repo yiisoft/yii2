@@ -64,7 +64,6 @@ class ActiveDataFilter extends DataFilter
      */
     public $queryOperatorMap = [];
 
-
     /**
      * {@inheritdoc}
      */

@@ -32,6 +32,7 @@ class Fixture1 extends Fixture
 class Fixture2 extends Fixture
 {
     public $depends = ['yiiunit\framework\test\Fixture3'];
+
     public function load()
     {
         MyTestCase::$load .= '2';

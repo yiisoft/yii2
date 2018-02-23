@@ -185,7 +185,6 @@ abstract class Application extends Module
      */
     public $loadedModules = [];
 
-
     /**
      * Constructor.
      * @param array $config name-value pairs that will be used to initialize the object properties.

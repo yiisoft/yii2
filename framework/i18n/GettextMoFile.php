@@ -48,7 +48,6 @@ class GettextMoFile extends GettextFile
      */
     public $useBigEndian = false;
 
-
     /**
      * Loads messages from an MO file.
      * @param string $filePath file path

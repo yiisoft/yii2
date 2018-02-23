@@ -14,7 +14,7 @@ use yii\db\Query;
 class ExistsCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use (e.g. `EXISTS` or `NOT EXISTS`)
+     * @var string the operator to use (e.g. `EXISTS` or `NOT EXISTS`)
      */
     private $operator;
     /**

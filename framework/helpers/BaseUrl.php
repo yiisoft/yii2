@@ -26,7 +26,6 @@ class BaseUrl
      */
     public static $urlManager;
 
-
     /**
      * Creates a URL for the given route.
      *

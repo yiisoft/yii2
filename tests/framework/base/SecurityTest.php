@@ -866,7 +866,6 @@ TEXT;
         $this->assertEquals($data, $this->security->decryptByPassword($encrypted, $password));
     }
 
-
     public function randomKeyInvalidInputs()
     {
         return [

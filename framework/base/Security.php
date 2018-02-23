@@ -91,7 +91,6 @@ class Security extends Component
      */
     public $passwordHashCost = 13;
 
-
     /**
      * Encrypts data using a password.
      * Derives keys for encryption and authentication from the password using PBKDF2 and a random salt,

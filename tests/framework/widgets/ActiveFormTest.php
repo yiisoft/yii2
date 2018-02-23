@@ -147,7 +147,7 @@ HTML
                 'enableClientScript' => false,
                 'on init' => function () use (&$initTriggered) {
                     $initTriggered = true;
-                }
+                },
             ]
         );
         ActiveForm::end();
@@ -179,6 +179,5 @@ HTML
 </div>
 EOF
         , (string) $form->field($model, 'name'));
-
     }
 }

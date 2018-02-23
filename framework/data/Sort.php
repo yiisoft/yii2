@@ -186,7 +186,6 @@ class Sort extends BaseObject
      */
     public $urlManager;
 
-
     /**
      * Normalizes the [[attributes]] property.
      */

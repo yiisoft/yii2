@@ -7,7 +7,7 @@ use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * Class ExistsConditionBuilder builds objects of [[ExistsCondition]]
+ * Class ExistsConditionBuilder builds objects of [[ExistsCondition]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

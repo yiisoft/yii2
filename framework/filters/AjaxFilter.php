@@ -41,7 +41,6 @@ class AjaxFilter extends ActionFilter
      */
     public $request;
 
-
     /**
      * {@inheritdoc}
      */

@@ -65,7 +65,6 @@ class StringValidator extends Validator
      */
     public $encoding;
 
-
     /**
      * {@inheritdoc}
      */

@@ -33,7 +33,6 @@ class TagDependency extends Dependency
      */
     public $tags = [];
 
-
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method does nothing in this class.

@@ -98,7 +98,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public $joinWith;
 
-
     /**
      * Constructor.
      * @param string $modelClass the model class associated with this query

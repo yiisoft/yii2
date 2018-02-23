@@ -235,12 +235,12 @@ class JsonModel extends DynamicModel implements \JsonSerializable
     {
         return [
             ['name', 'required'],
-            ['name', 'string', 'max' => 100]
+            ['name', 'string', 'max' => 100],
         ];
     }
 
     public function init()
     {
-       $this->defineAttribute('name');
+        $this->defineAttribute('name');
     }
 }

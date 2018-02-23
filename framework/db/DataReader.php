@@ -58,7 +58,6 @@ class DataReader extends \yii\base\BaseObject implements \Iterator, \Countable
     private $_row;
     private $_index = -1;
 
-
     /**
      * Constructor.
      * @param Command $command the command generating the query result

@@ -75,7 +75,6 @@ class EachValidator extends Validator
      */
     private $_validator;
 
-
     /**
      * {@inheritdoc}
      */

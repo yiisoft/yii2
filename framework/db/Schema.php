@@ -15,7 +15,6 @@ use yii\base\NotSupportedException;
 use yii\caching\Cache;
 use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
-use yii\helpers\StringHelper;
 
 /**
  * Schema is the base class for concrete DBMS-specific schema classes.
@@ -124,7 +123,6 @@ abstract class Schema extends BaseObject
      * @var string server version as a string.
      */
     private $_serverVersion;
-
 
     /**
      * Resolves the table name and schema name (if any).

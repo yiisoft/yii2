@@ -102,7 +102,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     private $_relationsDependencies = [];
 
-
     /**
      * {@inheritdoc}
      * @return static|null ActiveRecord instance matching the condition, or `null` if nothing matches.
@@ -1722,7 +1721,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * Sets relation dependencies for a property
+     * Sets relation dependencies for a property.
      * @param string $name property name
      * @param ActiveQueryInterface $relation relation instance
      */

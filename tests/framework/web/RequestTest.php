@@ -151,8 +151,8 @@ class RequestTest extends TestCase
 
         // When an empty CSRF token is given it is regenerated.
         $this->assertNotEmpty($request->getCsrfToken());
-
     }
+
     /**
      * Test CSRF token validation by POST param.
      */
@@ -272,7 +272,7 @@ class RequestTest extends TestCase
             // empty
             [
                 [],
-                [null, null]
+                [null, null],
             ],
             // normal
             [
@@ -283,7 +283,7 @@ class RequestTest extends TestCase
                 [
                     'http://example1.com',
                     'example1.com',
-                ]
+                ],
             ],
             // HTTP header missing
             [
@@ -293,7 +293,7 @@ class RequestTest extends TestCase
                 [
                     'http://example2.com',
                     'example2.com',
-                ]
+                ],
             ],
             // forwarded from untrusted server
             [
@@ -305,7 +305,7 @@ class RequestTest extends TestCase
                 [
                     'http://example1.com',
                     'example1.com',
-                ]
+                ],
             ],
             // forwarded from trusted proxy
             [
@@ -318,7 +318,7 @@ class RequestTest extends TestCase
                 [
                     'http://example3.com',
                     'example3.com',
-                ]
+                ],
             ],
         ];
     }
@@ -342,7 +342,6 @@ class RequestTest extends TestCase
         $this->assertEquals($expected[1], $request->getHostName());
         $_SERVER = $original;
     }
-
 
     public function testSetHostInfo()
     {
@@ -698,7 +697,7 @@ class RequestTest extends TestCase
         ]);
         $this->assertSame('some value', $request->getBodyParam('someParam'));
         $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
-        $this->assertSame(null, $request->getBodyParam('unexisting'));
+        $this->assertNull($request->getBodyParam('unexisting'));
         $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
 
         // @see https://github.com/yiisoft/yii2/issues/14135
@@ -708,7 +707,7 @@ class RequestTest extends TestCase
         $request->setBodyParams($bodyParams);
         $this->assertSame('some value', $request->getBodyParam('someParam'));
         $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
-        $this->assertSame(null, $request->getBodyParam('unexisting'));
+        $this->assertNull($request->getBodyParam('unexisting'));
         $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
     }
 }

@@ -22,7 +22,6 @@ class ExitException extends \Exception
      */
     public $statusCode;
 
-
     /**
      * Constructor.
      * @param int $status the exit status code

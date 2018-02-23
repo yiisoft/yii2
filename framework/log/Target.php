@@ -104,7 +104,6 @@ abstract class Target extends Component
     private $_levels = 0;
     private $_enabled = true;
 
-
     /**
      * Exports log [[messages]] to a specific destination.
      * Child classes must implement this method.

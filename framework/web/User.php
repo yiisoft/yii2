@@ -151,7 +151,6 @@ class User extends Component
 
     private $_access = [];
 
-
     /**
      * Initializes the application component.
      */

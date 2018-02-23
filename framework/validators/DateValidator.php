@@ -205,7 +205,6 @@ class DateValidator extends Validator
         'full' => 0, // IntlDateFormatter::FULL,
     ];
 
-
     /**
      * {@inheritdoc}
      */

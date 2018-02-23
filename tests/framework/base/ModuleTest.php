@@ -87,7 +87,6 @@ class ModuleTest extends TestCase
         $this->assertEquals('test/test-controller1/test1', Yii::$app->controller->action->uniqueId);
     }
 
-
     public function testServiceLocatorTraversal()
     {
         $parent = new Module('parent');
@@ -163,6 +162,7 @@ class ModuleTestController extends Controller
     {
         ModuleTest::$actionRuns[] = $this->action->uniqueId;
     }
+
     public function actionTest2()
     {
         ModuleTest::$actionRuns[] = $this->action->uniqueId;

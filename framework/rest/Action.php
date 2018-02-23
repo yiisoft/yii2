@@ -58,7 +58,6 @@ class Action extends \yii\base\Action
      */
     public $checkAccess;
 
-
     /**
      * {@inheritdoc}
      */

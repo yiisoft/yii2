@@ -47,7 +47,6 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     protected $tableQuoteCharacter = '"';
 
-
     /**
      * {@inheritdoc}
      */

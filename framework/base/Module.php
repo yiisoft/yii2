@@ -144,7 +144,6 @@ class Module extends ServiceLocator
      */
     private $_version;
 
-
     /**
      * Constructor.
      * @param string $id the ID of this module.
@@ -631,8 +630,8 @@ class Module extends ServiceLocator
         }
 
         $className = preg_replace_callback('%-([a-z0-9_])%i', function ($matches) {
-                return ucfirst($matches[1]);
-            }, ucfirst($className)) . 'Controller';
+            return ucfirst($matches[1]);
+        }, ucfirst($className)) . 'Controller';
         $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {
             return null;
@@ -649,7 +648,7 @@ class Module extends ServiceLocator
     }
 
     /**
-     * Checks if class name or prefix is incorrect
+     * Checks if class name or prefix is incorrect.
      *
      * @param string $className
      * @param string $prefix

@@ -130,7 +130,6 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     protected $tableQuoteCharacter = '"';
 
-
     /**
      * @inheritDoc
      */
@@ -312,7 +311,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc]
+     * {@inheritdoc].
      */
     protected function findViewNames($schema = '')
     {
@@ -586,7 +585,7 @@ SQL;
         $column->precision = $info['numeric_precision'];
         $column->scale = $info['numeric_scale'];
         $column->size = $info['size'] === null ? null : (int) $info['size'];
-        $column->dimension = (int)$info['dimension'];
+        $column->dimension = (int) $info['dimension'];
         if (isset($this->typeMap[$column->dbType])) {
             $column->type = $this->typeMap[$column->dbType];
         } else {

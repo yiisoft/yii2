@@ -44,7 +44,6 @@ abstract class Mutex extends Component
      */
     private $_locks = [];
 
-
     /**
      * Initializes the Mutex component.
      */

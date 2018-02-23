@@ -33,7 +33,6 @@ class RegularExpressionValidator extends Validator
      */
     public $not = false;
 
-
     /**
      * {@inheritdoc}
      */

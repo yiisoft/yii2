@@ -32,7 +32,6 @@ class ActionEvent extends Event
      */
     public $isValid = true;
 
-
     /**
      * Constructor.
      * @param Action $action the action associated with this action event.

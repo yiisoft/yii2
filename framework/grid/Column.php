@@ -76,7 +76,6 @@ class Column extends BaseObject
      */
     public $filterOptions = [];
 
-
     /**
      * Renders the header cell.
      */

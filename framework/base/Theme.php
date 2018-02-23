@@ -83,7 +83,6 @@ class Theme extends Component
 
     private $_baseUrl;
 
-
     /**
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
      * to be under this base URL.

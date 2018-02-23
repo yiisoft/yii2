@@ -17,5 +17,4 @@ class LikeConditionBuilder extends \yii\db\conditions\LikeConditionBuilder
         ']' => '[]]',
         '\\' => '[\\]',
     ];
-
 }

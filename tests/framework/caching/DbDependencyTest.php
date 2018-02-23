@@ -21,7 +21,6 @@ class DbDependencyTest extends DatabaseTestCase
      */
     protected $driverName = 'sqlite';
 
-
     /**
      * {@inheritdoc}
      */

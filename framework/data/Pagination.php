@@ -144,7 +144,6 @@ class Pagination extends BaseObject implements Linkable
      */
     private $_pageSize;
 
-
     /**
      * @return int number of pages
      */

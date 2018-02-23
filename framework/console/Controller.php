@@ -69,7 +69,6 @@ class Controller extends \yii\base\Controller
      */
     private $_passedOptions = [];
 
-
     /**
      * Returns a value indicating whether ANSI color is enabled.
      *

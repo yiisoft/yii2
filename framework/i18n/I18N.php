@@ -48,7 +48,6 @@ class I18N extends Component
      */
     public $translations;
 
-
     /**
      * Initializes the component by configuring the default message categories.
      */

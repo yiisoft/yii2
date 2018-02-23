@@ -70,7 +70,6 @@ class FileCache extends Cache
      */
     public $dirMode = 0775;
 
-
     /**
      * Initializes this component by ensuring the existence of the cache path.
      */

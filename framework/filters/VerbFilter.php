@@ -70,7 +70,6 @@ class VerbFilter extends Behavior
      */
     public $actions = [];
 
-
     /**
      * Declares event handlers for the [[owner]]'s events.
      * @return array events (array keys) and the corresponding event handler methods (array values).

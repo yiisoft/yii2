@@ -110,14 +110,13 @@ class DataColumn extends Column
      * @var array the HTML attributes for the filter input fields. This property is used in combination with
      * the [[filter]] property. When [[filter]] is not set or is an array, this property will be used to
      * render the HTML attributes for the generated filter input fields.
-     * 
+     *
      * Empty `id` in the default value ensures that id would not be obtained from the model attribute thus
      * providing better performance.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $filterInputOptions = ['class' => 'form-control', 'id' => null];
-
 
     /**
      * {@inheritdoc}
@@ -142,7 +141,7 @@ class DataColumn extends Column
     }
 
     /**
-     * {@inheritdoc]
+     * {@inheritdoc].
      * @since 2.0.8
      */
     protected function getHeaderCellLabel()

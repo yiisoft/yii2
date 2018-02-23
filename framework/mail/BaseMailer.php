@@ -108,7 +108,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      */
     private $_viewPath;
 
-
     /**
      * @param array|View $view view instance or its array configuration that will be used to
      * render message bodies.

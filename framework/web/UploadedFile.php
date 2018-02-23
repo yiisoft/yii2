@@ -58,7 +58,6 @@ class UploadedFile extends BaseObject
 
     private static $_files;
 
-
     /**
      * String output.
      * This is PHP magic method that returns string representation of an object.

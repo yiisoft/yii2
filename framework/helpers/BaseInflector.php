@@ -289,7 +289,6 @@ class BaseInflector
      */
     public static $transliterator = self::TRANSLITERATE_LOOSE;
 
-
     /**
      * Converts a word to its plural form.
      * Note that this is for English only!

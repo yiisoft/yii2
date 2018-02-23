@@ -73,7 +73,6 @@ class Controller extends Component implements ViewContextInterface
      */
     private $_viewPath;
 
-
     /**
      * @param string $id the ID of this controller.
      * @param Module $module the module that this controller belongs to.

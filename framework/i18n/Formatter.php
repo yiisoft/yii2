@@ -369,7 +369,6 @@ class Formatter extends Component
      */
     private $_unitMessages = [];
 
-
     /**
      * {@inheritdoc}
      */
@@ -442,9 +441,7 @@ class Formatter extends Component
         throw new InvalidArgumentException("Unknown format type: $format");
     }
 
-
     // simple formats
-
 
     /**
      * Formats the value as is without any formatting.
@@ -587,9 +584,7 @@ class Formatter extends Component
         return $value ? $this->booleanFormat[1] : $this->booleanFormat[0];
     }
 
-
     // date and time formats
-
 
     /**
      * Formats the value as a date.
@@ -1040,9 +1035,7 @@ class Formatter extends Component
         return empty($parts) ? $this->nullDisplay : (($isNegative ? $negativeSign : '') . implode($implodeString, $parts));
     }
 
-
     // number formats
-
 
     /**
      * Formats the value as an integer number by removing any decimal digits without rounding.
@@ -1115,7 +1108,6 @@ class Formatter extends Component
 
         return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
     }
-
 
     /**
      * Formats the value as a percent number with "%" sign.

@@ -65,7 +65,6 @@ class FileMutex extends Mutex
      */
     private $_files = [];
 
-
     /**
      * Initializes mutex component implementation dedicated for UNIX, GNU/Linux, Mac OS X, and other UNIX-like
      * operating systems.

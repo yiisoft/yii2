@@ -105,7 +105,6 @@ class CaptchaAction extends Action
      */
     public $imageLibrary;
 
-
     /**
      * Initializes the action.
      * @throws InvalidConfigException if the font file does not exist.

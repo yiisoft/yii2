@@ -203,7 +203,6 @@ class IpValidator extends Validator
      */
     private $_ranges = [];
 
-
     /**
      * {@inheritdoc}
      */

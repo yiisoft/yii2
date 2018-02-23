@@ -138,7 +138,6 @@ class MigrateController extends BaseMigrateController
      */
     public $comment = '';
 
-
     /**
      * {@inheritdoc}
      */

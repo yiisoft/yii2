@@ -61,7 +61,6 @@ class ReplaceArrayValue
      */
     public $value;
 
-
     /**
      * Constructor.
      * @param mixed $value value used as replacement.

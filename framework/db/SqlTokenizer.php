@@ -65,7 +65,6 @@ abstract class SqlTokenizer extends Component
      */
     private $_token;
 
-
     /**
      * Constructor.
      * @param string $sql SQL code to be tokenized.

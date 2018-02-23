@@ -24,6 +24,7 @@ use yiiunit\TestCase;
 trait ActiveRecordTestTrait
 {
     /* @var $this TestCase */
+
     /**
      * This method should return the classname of Customer class.
      * @return string

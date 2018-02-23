@@ -82,7 +82,6 @@ class Transaction extends \yii\base\BaseObject
      */
     private $_level = 0;
 
-
     /**
      * Returns a value indicating whether this transaction is active.
      * @return bool whether this transaction is active. Only an active transaction

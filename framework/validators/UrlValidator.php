@@ -48,7 +48,6 @@ class UrlValidator extends Validator
      */
     public $enableIDN = false;
 
-
     /**
      * {@inheritdoc}
      */

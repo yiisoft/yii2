@@ -37,7 +37,6 @@ class Fixture extends Component
      */
     public $depends = [];
 
-
     /**
      * Loads the fixture.
      * This method is called before performing every test method.

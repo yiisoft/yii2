@@ -69,7 +69,6 @@ class IndexAction extends Action
      */
     public $dataFilter;
 
-
     /**
      * @return ActiveDataProvider
      */

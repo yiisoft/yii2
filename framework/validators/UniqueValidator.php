@@ -95,8 +95,7 @@ class UniqueValidator extends Validator
      * @var bool whether this validator is forced to always use master DB
      * @since 2.0.14
      */
-    public $forceMasterDb =  true;
-
+    public $forceMasterDb = true;
 
     /**
      * {@inheritdoc}
@@ -193,7 +192,7 @@ class UniqueValidator extends Validator
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
-                
+
                 // any with relation can't be loaded because related fields are not selected
                 $query->with = null;
             }
@@ -316,7 +315,8 @@ class UniqueValidator extends Validator
                 $prefixedColumn = "{$alias}.[[" . preg_replace(
                     '/^' . preg_quote($alias) . '\.(.*)$/',
                     '$1',
-                    $columnName) . ']]';
+                    $columnName
+                ) . ']]';
             } else {
                 // there is an expression, can't prefix it reliably
                 $prefixedColumn = $columnName;

@@ -87,7 +87,6 @@ class ImageValidator extends FileValidator
      */
     public $overHeight;
 
-
     /**
      * {@inheritdoc}
      */

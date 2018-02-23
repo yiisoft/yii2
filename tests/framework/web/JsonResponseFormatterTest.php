@@ -20,6 +20,7 @@ class JsonResponseFormatterTest extends FormatterTest
 {
     /**
      * @return JsonResponseFormatter
+     * @param mixed $configuration
      */
     protected function getFormatterInstance($configuration = [])
     {

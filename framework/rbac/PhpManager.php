@@ -78,7 +78,6 @@ class PhpManager extends BaseManager
      */
     protected $rules = []; // ruleName => rule
 
-
     /**
      * Initializes the application component.
      * This method overrides parent implementation by loading the authorization data
@@ -328,7 +327,6 @@ class PhpManager extends BaseManager
 
         return $items;
     }
-
 
     /**
      * {@inheritdoc}

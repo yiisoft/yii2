@@ -120,7 +120,6 @@ class DetailView extends Widget
      */
     public $formatter;
 
-
     /**
      * Initializes the detail view.
      * This method will initialize required property values.

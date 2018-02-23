@@ -139,7 +139,6 @@ class UrlRule extends CompositeUrlRule
      */
     public $pluralize = true;
 
-
     /**
      * {@inheritdoc}
      */

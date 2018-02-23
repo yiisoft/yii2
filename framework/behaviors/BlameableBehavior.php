@@ -114,7 +114,7 @@ class BlameableBehavior extends AttributeBehavior
     }
 
     /**
-     * Get default value
+     * Get default value.
      * @param \yii\base\Event $event
      * @return array|mixed
      * @since 2.0.14

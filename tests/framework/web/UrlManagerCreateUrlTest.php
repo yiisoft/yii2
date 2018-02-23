@@ -68,7 +68,6 @@ class UrlManagerCreateUrlTest extends TestCase
         return new UrlManager($config);
     }
 
-
     public function variationsProvider()
     {
         $baseUrlConfig = [
@@ -459,7 +458,6 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals("$prefix/site/index?param2=123", $url);
     }
 
-
     /**
      * Test createUrl() and createAbsoluteUrl()
      * with varying $showScriptName
@@ -516,7 +514,6 @@ class UrlManagerCreateUrlTest extends TestCase
         $manager = $this->getUrlManager($config, $showScriptName);
         $assertations($manager);
     }
-
 
     public function absolutePatternsVariations()
     {

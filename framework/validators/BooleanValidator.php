@@ -35,7 +35,6 @@ class BooleanValidator extends Validator
      */
     public $strict = false;
 
-
     /**
      * {@inheritdoc}
      */

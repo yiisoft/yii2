@@ -8,7 +8,7 @@ use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * Class LikeConditionBuilder builds objects of [[LikeCondition]]
+ * Class LikeConditionBuilder builds objects of [[LikeCondition]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

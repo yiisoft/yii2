@@ -114,7 +114,6 @@ class AssetBundle extends BaseObject
      */
     public $publishOptions = [];
 
-
     /**
      * Registers this asset bundle with a view.
      * @param View $view the view to be registered with

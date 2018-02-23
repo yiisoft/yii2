@@ -9,7 +9,7 @@ use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
 /**
- * Class HashConditionBuilder builds objects of [[HashCondition]]
+ * Class HashConditionBuilder builds objects of [[HashCondition]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

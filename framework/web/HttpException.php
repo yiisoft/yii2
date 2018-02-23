@@ -34,7 +34,6 @@ class HttpException extends UserException
      */
     public $statusCode;
 
-
     /**
      * Constructor.
      * @param int $status HTTP status code, such as 404, 500, etc.

@@ -65,10 +65,10 @@ class AccessRule extends Component
      * @see $roleParams
      */
     public $roles;
-    /** 
+    /**
      * @var array list of RBAC (Role-Based Access Control) permissions that this rules applies to.
      * [[User::can()]] will be called to check access.
-     * 
+     *
      * If this property is not set or empty, it means this rule applies regardless of permissions.
      * @since 2.0.12
      * @see $roles
@@ -154,7 +154,6 @@ class AccessRule extends Component
      * @see AccessControl::$denyCallback
      */
     public $denyCallback;
-
 
     /**
      * Checks whether the Web user is allowed to perform the specified action.

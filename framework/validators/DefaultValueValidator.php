@@ -37,7 +37,6 @@ class DefaultValueValidator extends Validator
      */
     public $skipOnEmpty = false;
 
-
     /**
      * {@inheritdoc}
      */

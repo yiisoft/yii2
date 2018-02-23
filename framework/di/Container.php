@@ -121,7 +121,6 @@ class Container extends Component
      */
     private $_dependencies = [];
 
-
     /**
      * Returns an instance of the requested class.
      *
@@ -256,6 +255,7 @@ class Container extends Component
         unset($this->_singletons[$class]);
         return $this;
     }
+
     /**
      * Registers a class definition with this container and marks the class as a singleton class.
      *

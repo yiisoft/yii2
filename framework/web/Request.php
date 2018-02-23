@@ -261,7 +261,6 @@ class Request extends \yii\base\Request
      */
     private $_headers;
 
-
     /**
      * Resolves the current request into a route and the associated parameters.
      * @return array the first element is the route, and the second is the associated parameters.

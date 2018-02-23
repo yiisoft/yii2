@@ -27,7 +27,6 @@ class UnknownCommandException extends Exception
      */
     protected $application;
 
-
     /**
      * Construct the exception.
      *

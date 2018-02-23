@@ -86,7 +86,6 @@ class DbMessageSource extends MessageSource
      */
     public $enableCaching = false;
 
-
     /**
      * Initializes the DbMessageSource component.
      * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.

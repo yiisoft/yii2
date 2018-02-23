@@ -82,13 +82,13 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable
     }
 
     /**
-     * Whether a offset exists
+     * Whether a offset exists.
      *
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      * @param mixed $offset <p>
      * An offset to check for.
      * </p>
-     * @return boolean true on success or false on failure.
+     * @return bool true on success or false on failure.
      * </p>
      * <p>
      * The return value will be casted to boolean if non-boolean was returned.
@@ -100,7 +100,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable
     }
 
     /**
-     * Offset to retrieve
+     * Offset to retrieve.
      *
      * @link http://php.net/manual/en/arrayaccess.offsetget.php
      * @param mixed $offset <p>
@@ -115,7 +115,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable
     }
 
     /**
-     * Offset to set
+     * Offset to set.
      *
      * @link http://php.net/manual/en/arrayaccess.offsetset.php
      * @param mixed $offset <p>
@@ -124,7 +124,6 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable
      * @param mixed $value <p>
      * The value to set.
      * </p>
-     * @return void
      * @since 5.0.0
      */
     public function offsetSet($offset, $value)
@@ -133,13 +132,12 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable
     }
 
     /**
-     * Offset to unset
+     * Offset to unset.
      *
      * @link http://php.net/manual/en/arrayaccess.offsetunset.php
      * @param mixed $offset <p>
      * The offset to unset.
      * </p>
-     * @return void
      * @since 5.0.0
      */
     public function offsetUnset($offset)
@@ -148,7 +146,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable
     }
 
     /**
-     * Count elements of an object
+     * Count elements of an object.
      *
      * @link http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.

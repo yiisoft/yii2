@@ -27,7 +27,6 @@ class Behavior extends BaseObject
      */
     public $owner;
 
-
     /**
      * Declares event handlers for the [[owner]]'s events.
      *

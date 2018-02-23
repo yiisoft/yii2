@@ -44,7 +44,6 @@ class DbTarget extends Target
      */
     public $logTable = '{{%log}}';
 
-
     /**
      * Initializes the DbTarget component.
      * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.

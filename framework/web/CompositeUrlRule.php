@@ -32,7 +32,6 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
      */
     protected $createStatus;
 
-
     /**
      * Creates the URL rules that should be contained within this composite rule.
      * @return UrlRuleInterface[] the URL rules

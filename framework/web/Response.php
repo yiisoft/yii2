@@ -240,7 +240,6 @@ class Response extends \yii\base\Response
      */
     private $_headers;
 
-
     /**
      * Initializes this component.
      */

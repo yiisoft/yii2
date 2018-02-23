@@ -52,7 +52,6 @@ class ContentDecorator extends Widget
      */
     public $params = [];
 
-
     /**
      * Starts recording a clip.
      */

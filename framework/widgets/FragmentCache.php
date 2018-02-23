@@ -75,7 +75,6 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      */
     public $enabled = true;
 
-
     /**
      * Initializes the FragmentCache object.
      */
@@ -161,6 +160,6 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      */
     protected function calculateKey()
     {
-        return array_merge([__CLASS__, $this->getId()], (array)$this->variations);
+        return array_merge([__CLASS__, $this->getId()], (array) $this->variations);
     }
 }

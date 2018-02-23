@@ -133,7 +133,6 @@ class LinkPager extends Widget
      */
     public $disableCurrentPageButton = false;
 
-
     /**
      * Initializes the pager.
      */

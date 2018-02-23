@@ -46,7 +46,6 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      */
     public $optional = [];
 
-
     /**
      * {@inheritdoc}
      */

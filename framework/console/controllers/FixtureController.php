@@ -62,7 +62,6 @@ class FixtureController extends Controller
         'yii\test\InitDbFixture',
     ];
 
-
     /**
      * {@inheritdoc}
      */

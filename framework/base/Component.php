@@ -114,7 +114,6 @@ class Component extends BaseObject
      */
     private $_behaviors;
 
-
     /**
      * Returns the value of a component property.
      *

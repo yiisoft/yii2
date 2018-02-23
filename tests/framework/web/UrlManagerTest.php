@@ -211,7 +211,6 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('/index.php?r=post%2Fview', $url);
     }
 
-
     /**
      * @return array provides different names for UrlManager::$routeParam
      */

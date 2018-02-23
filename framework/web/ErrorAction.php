@@ -81,7 +81,6 @@ class ErrorAction extends Action
      */
     protected $exception;
 
-
     /**
      * {@inheritdoc}
      */

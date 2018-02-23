@@ -51,7 +51,6 @@ class ActiveFixture extends BaseActiveFixture
      */
     private $_table;
 
-
     /**
      * {@inheritdoc}
      */
@@ -94,7 +93,6 @@ class ActiveFixture extends BaseActiveFixture
     protected function getData()
     {
         if ($this->dataFile === null) {
-
             if ($this->dataDirectory !== null) {
                 $dataFile = $this->getTableSchema()->fullName . '.php';
             } else {

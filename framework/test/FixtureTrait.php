@@ -34,7 +34,6 @@ trait FixtureTrait
      */
     private $_fixtures;
 
-
     /**
      * Declares the fixtures that are needed by the current test case.
      *

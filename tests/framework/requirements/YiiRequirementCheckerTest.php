@@ -4,7 +4,6 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-
 require_once __DIR__ . '/../../../framework/requirements/YiiRequirementChecker.php';
 
 use yiiunit\TestCase;
@@ -175,7 +174,7 @@ class YiiRequirementCheckerTest extends TestCase
     }
 
     /**
-     * Data provider for [[testCompareByteSize()]]
+     * Data provider for [[testCompareByteSize()]].
      * @return array
      */
     public function dataProviderCompareByteSize()

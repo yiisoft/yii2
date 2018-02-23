@@ -49,7 +49,6 @@ class Cookie extends \yii\base\BaseObject
      */
     public $httpOnly = true;
 
-
     /**
      * Magic method to turn a cookie object into a string without having to explicitly access [[value]].
      *

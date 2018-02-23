@@ -57,7 +57,6 @@ class DynamicModel extends Model
 {
     private $_attributes = [];
 
-
     /**
      * Constructors.
      * @param array $attributes the dynamic attributes (name-value pairs, or names) being defined
