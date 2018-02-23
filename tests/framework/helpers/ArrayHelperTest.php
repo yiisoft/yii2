@@ -344,18 +344,18 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      */
-    public function testMultisortInvalidParamExceptionDirection()
+    public function testMultisorInvalidArgumentExceptionDirection()
     {
         $data = ['foo' => 'bar'];
         ArrayHelper::multisort($data, ['foo'], []);
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      */
-    public function testMultisortInvalidParamExceptionSortFlag()
+    public function testMultisortInvalidArgumentExceptionSortFlag()
     {
         $data = ['foo' => 'bar'];
         ArrayHelper::multisort($data, ['foo'], ['foo'], []);
@@ -1189,7 +1189,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Argument $haystack must be an array or implement Traversable
      */
     public function testInException()
@@ -1210,7 +1210,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Argument $needles must be an array or implement Traversable
      */
     public function testIsSubsetException()
