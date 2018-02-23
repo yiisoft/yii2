@@ -4,11 +4,11 @@ Yii Framework 2 Change Log
 2.0.14.1 under development
 --------------------------
 
-- Bug #15678: Fixed `resetForm` method in `yii.activeForm.js` which used an undefined variable (Izumi-kun)
-- Bug #15742: Updated setActivePlaceholder to be consistent with activeLabel (edwards-sj)
-- Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
-- Bug #15696: Fix magic getter for ActiveRecord (developeruz)
-- Bug #15684, #15677: Fixed updating JSON columns using ActiveRecord in MySQL (silverfire, berosoboy)
+- Enh #15716: Implemented `\Traversable` in `yii\db\ArrayExpression` (silverfire)
+- Bug #15678: Fixed `resetForm()` method in `yii.activeForm.js` which used an undefined variable (Izumi-kun)
+- Bug #15742: Updated `yii\helpers\BaseHtml::setActivePlaceholder()` to be consistent with `activeLabel()` (edwards-sj)
+- Bug #15692: Fix `yii\validators\ExistValidator` to respect filter when `targetRelation` is used (developeruz)
+- Bug #15696: Fix magic getter for `yii\db\ActiveRecord` (developeruz)
 - Bug #15707: Fixed JSON retrieving from MySQL (silverfire)
 
 
