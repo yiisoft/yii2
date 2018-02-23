@@ -1725,4 +1725,10 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             ->all();
         $this->assertCount(3, $orders);
     }
+
+    public function testCustomARRelation()
+    {
+        $orderItem = OrderItem::findOne(1);
+        $this->assertInstanceOf(Order::className(), $orderItem->custom);
+    }
 }
