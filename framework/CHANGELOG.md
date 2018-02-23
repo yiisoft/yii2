@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15696: Fix magic getter for ActiveRecord (developeruz)
+- Bug #15318: Fixed "session_name(): Cannot change session name when session is active" errors (bscheshirwork, samdark)
 
 
 2.0.14 February 18, 2018
