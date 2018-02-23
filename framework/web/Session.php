@@ -322,9 +322,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setName($value)
     {
-        if ($this->getUseCustomStorage()) {
-            return;
-        }
         $this->freeze();
         session_name($value);
         $this->unfreeze();
