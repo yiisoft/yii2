@@ -4,6 +4,9 @@ Yii Framework 2 Change Log
 2.0.14.1 under development
 --------------------------
 
+- Bug #15728, #15731: Fixed BC break in `Query::select()` method (silverfire)
+- Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
+- Bug #15696: Fix magic getter for ActiveRecord (developeruz)
 - Enh #15716: Implemented `\Traversable` in `yii\db\ArrayExpression` (silverfire)
 - Bug #15678: Fixed `resetForm()` method in `yii.activeForm.js` which used an undefined variable (Izumi-kun)
 - Bug #15742: Updated `yii\helpers\BaseHtml::setActivePlaceholder()` to be consistent with `activeLabel()` (edwards-sj)

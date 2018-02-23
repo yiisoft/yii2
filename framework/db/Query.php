@@ -658,22 +658,28 @@ PATTERN;
      */
     protected function getUniqueColumns($columns)
     {
-        $columns = array_unique($columns);
         $unaliasedColumns = $this->getUnaliasedColumnsFromSelect();
 
+        $result = [];
         foreach ($columns as $columnAlias => $columnDefinition) {
-            if ($columnDefinition instanceof Query) {
-                continue;
+            if (!$columnDefinition instanceof Query) {
+                if (is_string($columnAlias)) {
+                    $existsInSelect = isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition;
+                    if ($existsInSelect) {
+                        continue;
+                    }
+                } elseif (is_integer($columnAlias)) {
+                    $existsInSelect = in_array($columnDefinition, $unaliasedColumns, true);
+                    $existsInResultSet = in_array($columnDefinition, $result, true);
+                    if ($existsInSelect || $existsInResultSet) {
+                        continue;
+                    }
+                }
             }
 
-            if (
-                (is_string($columnAlias) && isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition)
-                || (is_integer($columnAlias) && in_array($columnDefinition, $unaliasedColumns))
-            ) {
-                unset($columns[$columnAlias]);
-            }
+            $result[$columnAlias] = $columnDefinition;
         }
-        return $columns;
+        return $result;
     }
 
     /**
