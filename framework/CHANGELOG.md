@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 --------------------------
 
 - Bug #15678: Fixed `resetForm` method in `yii.activeForm.js` which used an undefined variable (Izumi-kun)
+- Bug #15742: Updated setActivePlaceholder to be consistent with activeLabel (edwards-sj)
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15696: Fix magic getter for ActiveRecord (developeruz)
 
