@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14.1 under development
 --------------------------
 
+- Bug #15742: Updated setActivePlaceholder to be consistent with activeLabel (edwards-sj)
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15696: Fix magic getter for ActiveRecord (developeruz)
 
