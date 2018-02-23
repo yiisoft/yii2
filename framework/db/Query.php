@@ -662,25 +662,22 @@ PATTERN;
 
         $result = [];
         foreach ($columns as $columnAlias => $columnDefinition) {
-            if ($columnDefinition instanceof Query) {
-                continue;
-            }
-
-            if (is_string($columnAlias)) {
-                $existsInSelect = isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition;
-                if ($existsInSelect) {
-                    continue;
-                }
-            } elseif (is_integer($columnAlias)) {
-                $existsInSelect = in_array($columnDefinition, $unaliasedColumns, true);
-                $existsInResultSet = in_array($columnDefinition, $result, true);
-                if ($existsInSelect || $existsInResultSet) {
-                    continue;
+            if (!$columnDefinition instanceof Query) {
+                if (is_string($columnAlias)) {
+                    $existsInSelect = isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition;
+                    if ($existsInSelect) {
+                        continue;
+                    }
+                } elseif (is_integer($columnAlias)) {
+                    $existsInSelect = in_array($columnDefinition, $unaliasedColumns, true);
+                    $existsInResultSet = in_array($columnDefinition, $result, true);
+                    if ($existsInSelect || $existsInResultSet) {
+                        continue;
+                    }
                 }
             }
 
             $result[$columnAlias] = $columnDefinition;
-
         }
         return $result;
     }
