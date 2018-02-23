@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
-- Bug #15693: Fixed Fix HttpHeaderAuth when no pattern is present but not matched (bboure)
+- Bug #15693: Fixed `yii\filters\auth\HttpHeaderAuth` to work correctly when pattern is set but was not matched (bboure)
 - Bug #15696: Fix magic getter for ActiveRecord (developeruz)
 
 
