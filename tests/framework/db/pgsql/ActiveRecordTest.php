@@ -195,6 +195,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
             $value = $type->$attribute;
 
             $this->assertEquals($expected, $value, 'In column ' . $attribute);
+
             if ($value instanceof ArrayExpression) {
                 $this->assertInstanceOf('\ArrayAccess', $value);
                 $this->assertInstanceOf('\Traversable', $value);
@@ -203,6 +204,12 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
                 }
             }
         }
+
+        // Testing UPDATE
+        foreach ($attributes as $attribute => $expected) {
+            $type->markAttributeDirty($attribute);
+        }
+        $this->assertSame(1, $type->update(), 'The record got updated');
     }
 
     public function arrayValuesProvider()
@@ -284,6 +291,7 @@ class UserAR extends ActiveRecord
 
 /**
  * {@inheritdoc}
+ * @property array id
  * @property array intarray_col
  * @property array textarray2_col
  * @property array json_col

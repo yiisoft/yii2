@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #15742: Updated `yii\helpers\BaseHtml::setActivePlaceholder()` to be consistent with `activeLabel()` (edwards-sj)
 - Bug #15692: Fix `yii\validators\ExistValidator` to respect filter when `targetRelation` is used (developeruz)
 - Bug #15696: Fix magic getter for `yii\db\ActiveRecord` (developeruz)
+- Bug #15707: Fixed JSON retrieving from MySQL (silverfire)
 
 
 2.0.14 February 18, 2018
