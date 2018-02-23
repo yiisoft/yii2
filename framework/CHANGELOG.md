@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14.1 under development
 --------------------------
 
+- Bug #15756: Add `rel="noopener noreferrer"` in links contain `target="_blank"`, for prevent access `window.opener` object. (NabiKAZ)
 - Enh #15716: Implemented `\Traversable` in `yii\db\ArrayExpression` (silverfire)
 - Bug #15678: Fixed `resetForm()` method in `yii.activeForm.js` which used an undefined variable (Izumi-kun)
 - Bug #15742: Updated `yii\helpers\BaseHtml::setActivePlaceholder()` to be consistent with `activeLabel()` (edwards-sj)
