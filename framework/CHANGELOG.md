@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14.1 under development
 --------------------------
 
+- Enh #15716: Added `disableJsonSupport` to MySQL and PgSQL `ColumnSchema`, `disableArraySupport` and `deserializeArrayColumnToArrayExpression` to PgSQL `ColumnSchema` (silverfire)
 - Enh #15716: Implemented `\Traversable` in `yii\db\ArrayExpression` (silverfire)
 - Bug #15678: Fixed `resetForm()` method in `yii.activeForm.js` which used an undefined variable (Izumi-kun)
 - Bug #15742: Updated `yii\helpers\BaseHtml::setActivePlaceholder()` to be consistent with `activeLabel()` (edwards-sj)

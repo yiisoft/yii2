@@ -87,7 +87,7 @@ abstract class Schema extends BaseObject
         'SQLSTATE[23' => 'yii\db\IntegrityException',
     ];
     /**
-     * @var string column schema class
+     * @var string|array column schema class or class config
      * @since 2.0.11
      */
     public $columnSchemaClass = 'yii\db\ColumnSchema';
