@@ -62,6 +62,37 @@ abstract class QueryTest extends DatabaseTestCase
         $query = new Query();
         $query->select('name, name, name as X, name as X');
         $this->assertEquals(['name', 'name as X'], array_values($query->select));
+
+        /** @see https://github.com/yiisoft/yii2/issues/15676 */
+        $query = (new Query())->select('id');
+        $this->assertSame(['id'], $query->select);
+        $query->select(['id', 'brand_id']);
+        $this->assertSame(['id', 'brand_id'], $query->select);
+
+        /** @see https://github.com/yiisoft/yii2/issues/15676 */
+        $query = (new Query())->select(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)'], $query->select);
+        $query->addSelect(['LEFT(name,7) as test']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test'], $query->select);
+        $query->addSelect(['LEFT(name,7) as test']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test'], $query->select);
+        $query->addSelect(['test' => 'LEFT(name,7)']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test', 'test' => 'LEFT(name,7)'], $query->select);
+
+        /** @see https://github.com/yiisoft/yii2/issues/15731 */
+        $selectedCols = [
+            'total_sum' => 'SUM(f.amount)',
+            'in_sum' => 'SUM(IF(f.type = :type_in, f.amount, 0))',
+            'out_sum' => 'SUM(IF(f.type = :type_out, f.amount, 0))',
+        ];
+        $query = (new Query())->select($selectedCols)->addParams([
+            ':type_in' => 'in',
+            ':type_out' => 'out',
+            ':type_partner' => 'partner',
+        ]);
+        $this->assertSame($selectedCols, $query->select);
+        $query->select($selectedCols);
+        $this->assertSame($selectedCols, $query->select);
     }
 
     public function testFrom()
@@ -674,19 +705,5 @@ abstract class QueryTest extends DatabaseTestCase
             $this->assertEquals('user1', $query->noCache()->where(['id' => 1])->scalar($db));
             $this->assertEquals('user11', $query->cache()->where(['id' => 1])->scalar($db));
         }, 10);
-    }
-
-    /**
-     * @see https://github.com/yiisoft/yii2/issues/15676
-     */
-    public function testIssue15676()
-    {
-        $query = (new Query())
-            ->select('id')
-            ->from('place');
-        $this->assertSame(['id'], $query->select);
-
-        $query->select(['id', 'brand_id']);
-        $this->assertSame(['id', 'brand_id'], $query->select);
     }
 }
