@@ -70,4 +70,22 @@ class SessionTest extends TestCase
         $this->assertNotEquals($oldGcProbability, $newGcProbability);
         $this->assertEquals(100, $newGcProbability);
     }
+
+    /**
+     * Test set name. Also check set name twice and after open
+     */
+    public function testSetName()
+    {
+        $session = new Session();
+        $session->setName('oldName');
+
+        $this->assertEquals('oldName', $session->getName());
+
+        $session->open();
+        $session->setName('newName');
+
+        $this->assertEquals('newName', $session->getName());
+
+        $session->destroy();
+    }
 }
