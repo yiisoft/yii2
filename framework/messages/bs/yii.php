@@ -35,7 +35,7 @@ return [
     'Missing required arguments: {params}' => 'Nedostaju obavezni argumenti: {params}',
     'Missing required parameters: {params}' => 'Nedostaju obavezni parametri: {params}',
     'No' => 'Ne',
-    'No results found.' => 'Nema rezulatata.',
+    'No results found.' => 'Nema rezultata.',
     'Only files with these MIME types are allowed: {mimeTypes}.' => 'Samo datoteke sa sljedećim MIME tipovima su dozvoljeni: {mimeTypes}.',
     'Only files with these extensions are allowed: {extensions}.' => 'Samo datoteke sa sljedećim ekstenzijama su dozvoljeni: {extensions}.',
     'Page not found.' => 'Stranica nije pronađena.',

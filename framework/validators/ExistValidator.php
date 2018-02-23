@@ -126,7 +126,7 @@ class ExistValidator extends Validator
             $relationQuery->andWhere($this->filter);
         }
 
-        if ($this->forceMasterDb) {
+        if ($this->forceMasterDb && method_exists($model::getDb(), 'useMaster')) {
             $model::getDb()->useMaster(function() use ($relationQuery, &$exists) {
                 $exists = $relationQuery->exists();
             });
@@ -253,7 +253,7 @@ class ExistValidator extends Validator
         $db = $targetClass::getDb();
         $exists = false;
 
-        if ($this->forceMasterDb) {
+        if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
             $db->useMaster(function ($db) use ($query, $value, &$exists) {
                 $exists = $this->queryValueExists($query, $value);
             });
