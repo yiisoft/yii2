@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\db\mysql;
 
-use yiiunit\data\ar\Document;
+use yiiunit\data\ar\Storage;
 
 /**
  * @group db
@@ -26,7 +26,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
             $this->markTestSkipped('JSON columns are not supported in PDO for PHP < 5.6');
         }
 
-        $props = [
+        $data = [
             'obj' => ['a' => ['b' => ['c' => 2.7418]]],
             'array' => [1,2,null,3],
             'null_field' => null,
@@ -34,20 +34,17 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
             'last_update_time' => '2018-02-21',
         ];
 
-        $document = new Document([
-            'title' => 'Doc with JSON props',
-            'properties' => $props,
-        ]);
-        $this->assertTrue($document->save(), 'Document can be saved');
-        $this->assertNotNull($document->id);
+        $storage = new Storage(['data' => $data]);
+        $this->assertTrue($storage->save(), 'Storage can be saved');
+        $this->assertNotNull($storage->id);
 
-        $retrievedDocument = Document::findOne($document->id);
-        $this->assertSame($props, $retrievedDocument->properties, 'Properties are restored from JSON to array without changes');
+        $retrievedStorage = Storage::findOne($storage->id);
+        $this->assertSame($data, $retrievedStorage->data, 'Properties are restored from JSON to array without changes');
 
-        $retrievedDocument->properties = ['updatedProps' => $props];
-        $this->assertSame(1, $retrievedDocument->update(), 'Document can be updated');
+        $retrievedStorage->data = ['updatedData' => $data];
+        $this->assertSame(1, $retrievedStorage->update(), 'Storage can be updated');
 
-        $retrievedDocument->refresh();
-        $this->assertSame(['updatedProps' => $props], $retrievedDocument->properties, 'Properties have been changed during update');
+        $retrievedStorage->refresh();
+        $this->assertSame(['updatedData' => $data], $retrievedStorage->data, 'Properties have been changed during update');
     }
 }

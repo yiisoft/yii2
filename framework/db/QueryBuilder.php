@@ -624,7 +624,6 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $sets = [];
         foreach ($columns as $name => $value) {
-            $columnName = $this->db->quoteColumnName($name);
 
             $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             if ($value instanceof ExpressionInterface) {
@@ -633,7 +632,7 @@ class QueryBuilder extends \yii\base\BaseObject
                 $placeholder = $this->bindParam($value, $params);
             }
 
-            $sets[] = $columnName . '=' . $placeholder;
+            $sets[] = $this->db->quoteColumnName($name) . '=' . $placeholder;
         }
         return [$sets, $params];
     }
