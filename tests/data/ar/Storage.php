@@ -8,16 +8,16 @@
 namespace yiiunit\data\ar;
 
 /**
+ * Class Animal
+ *
+ * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @property int $id
- * @property string $title
- * @property string $content
- * @property int $version
- * @property array $properties
+ * @property array $data
  */
-class Document extends ActiveRecord
+class Storage extends ActiveRecord
 {
-    public function optimisticLock()
+    public static function tableName()
     {
-        return 'version';
+        return 'storage';
     }
 }

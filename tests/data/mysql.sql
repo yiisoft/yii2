@@ -23,6 +23,7 @@ DROP TABLE IF EXISTS `comment` CASCADE;
 DROP TABLE IF EXISTS `dossier`;
 DROP TABLE IF EXISTS `employee`;
 DROP TABLE IF EXISTS `department`;
+DROP TABLE IF EXISTS `storage`;
 DROP VIEW IF EXISTS `animal_view`;
 DROP TABLE IF EXISTS `T_constraints_4` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_3` CASCADE;
@@ -199,6 +200,12 @@ CREATE TABLE `dossier` (
   `department_id` INT(11) NOT NULL,
   `employee_id` INT(11) NOT NULL,
   `summary` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `storage` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `data` JSON NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

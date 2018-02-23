@@ -1,12 +1,19 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.15 under development
-------------------------
+2.0.14.1 under development
+--------------------------
 
 - Bug #15728, #15731: Fixed BC break in `Query::select()` method (silverfire)
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15696: Fix magic getter for ActiveRecord (developeruz)
+- Enh #15716: Implemented `\Traversable` in `yii\db\ArrayExpression` (silverfire)
+- Bug #15678: Fixed `resetForm()` method in `yii.activeForm.js` which used an undefined variable (Izumi-kun)
+- Bug #15742: Updated `yii\helpers\BaseHtml::setActivePlaceholder()` to be consistent with `activeLabel()` (edwards-sj)
+- Bug #15692: Fix `yii\validators\ExistValidator` to respect filter when `targetRelation` is used (developeruz)
+- Bug #15696: Fix magic getter for `yii\db\ActiveRecord` (developeruz)
+- Bug #15707: Fixed JSON retrieving from MySQL (silverfire)
+- Bug #15724: Changed shortcut in `yii\console\controllers\BaseMigrateController` for `comment` option from `-c` to `-C` due to conflict (Izumi-kun)
 
 
 2.0.14 February 18, 2018

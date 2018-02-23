@@ -1698,6 +1698,16 @@ HTML;
 
         $this->assertContains('placeholder="Custom placeholder"', $html);
     }
+
+    public function testActiveTextInput_placeholderFillFromModelTabular()
+    {
+        $model = new HtmlTestModel();
+
+        $html = Html::activeTextInput($model, '[0]name', ['placeholder' => true]);
+
+        $this->assertContains('placeholder="Name"', $html);
+    }
+
 }
 
 /**

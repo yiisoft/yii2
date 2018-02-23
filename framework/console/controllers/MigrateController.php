@@ -160,7 +160,7 @@ class MigrateController extends BaseMigrateController
     public function optionAliases()
     {
         return array_merge(parent::optionAliases(), [
-            'c' => 'comment',
+            'C' => 'comment',
             'f' => 'fields',
             'p' => 'migrationPath',
             't' => 'migrationTable',

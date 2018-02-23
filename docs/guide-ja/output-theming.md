@@ -81,7 +81,7 @@ $file = $theme->getPath('img/logo.gif');
 ],
 ```
 
-これによって、`@app/widgets/currency/views/index.php` に `@app/themes/basic/widgets/currency/index.php` というテーマを適用することが出来ます。
+これによって、`@app/widgets/currency/views/index.php` に `@app/themes/basic/widgets/currency/views/index.php` というテーマを適用することが出来ます。
 
 
 ## テーマの継承 <span id="theme-inheritance"></span>

@@ -76,7 +76,7 @@ siguiente configuración para el componente vista, tema:
 ```
 
 Con la configuración anterior, se puede crear una versión de la vista `@app/widgets/currency/index.php` para que se 
-aplique el tema en `@app/themes/basic/widgets/currency/index.php`.
+aplique el tema en `@app/themes/basic/widgets/currency/views/index.php`.
 
 Uso de Multiples Rutas
 ----------------------
