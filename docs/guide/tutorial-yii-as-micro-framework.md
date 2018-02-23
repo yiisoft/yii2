@@ -147,7 +147,7 @@ Make sure you have a separate configuration file as explained above, we need it 
 Running the following commands will
 create a database migration file and apply the migration to the database:
 
-    vendor/bin/yii migrate/create --appconfig=config.php create_post_table --fields="title:string,body:text"
+    vendor/bin/yii migrate/create --appconfig=config.php create_posts_table --fields="title:string,body:text"
     vendor/bin/yii migrate/up --appconfig=config.php
 
 Create directory `models` and a `Post.php` file in that directory. This is the code for the model:
