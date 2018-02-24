@@ -177,7 +177,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
      * @return Traversable An instance of an object implementing <b>Iterator</b> or
      * <b>Traversable</b>
-     * @since 5.0.0
+     * @since 2.0.14.1
      */
     public function getIterator()
     {
