@@ -74,8 +74,8 @@ matrix:
 
     - php: 5.4
 
-    # Test against HHVM 3.12 LTS version by using trusty
-    - php: hhvm-3.12
+    # Test against HHVM 3.21 LTS version by using trusty
+    - php: hhvm-3.21
       sudo: true
       addons:
         code_climate:
@@ -126,11 +126,6 @@ install:
   # install composer dependencies
   - travis_retry composer self-update
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - |
-    if [[ $TRAVIS_PHP_VERSION == "hhvm-3.12" ]]; then
-      # remove php-cs-fixer from composer dependencies on hhvm-3.12 - php-cs-fixer requires at least hhvm-3.18
-      composer remove friendsofphp/php-cs-fixer --dev
-    fi
   - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
 
   # setup PHP extension
