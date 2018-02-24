@@ -28,6 +28,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public $disableJsonSupport = false;
 
+
     /**
      * {@inheritdoc}
      */
