@@ -101,7 +101,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      * </p>
      * <p>
      * The return value will be casted to boolean if non-boolean was returned.
-     * @since 5.0.0
+     * @since 2.0.14
      */
     public function offsetExists($offset)
     {
@@ -116,7 +116,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      * The offset to retrieve.
      * </p>
      * @return mixed Can return all value types.
-     * @since 5.0.0
+     * @since 2.0.14
      */
     public function offsetGet($offset)
     {
@@ -134,7 +134,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      * The value to set.
      * </p>
      * @return void
-     * @since 5.0.0
+     * @since 2.0.14
      */
     public function offsetSet($offset, $value)
     {
@@ -149,7 +149,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      * The offset to unset.
      * </p>
      * @return void
-     * @since 5.0.0
+     * @since 2.0.14
      */
     public function offsetUnset($offset)
     {
@@ -164,7 +164,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      * </p>
      * <p>
      * The return value is cast to an integer.
-     * @since 5.1.0
+     * @since 2.0.14
      */
     public function count()
     {
@@ -178,6 +178,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      * @return Traversable An instance of an object implementing <b>Iterator</b> or
      * <b>Traversable</b>
      * @since 2.0.14.1
+     * @throws InvalidConfigException when ArrayExpression contains QueryInterface object
      */
     public function getIterator()
     {
