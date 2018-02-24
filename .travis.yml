@@ -80,6 +80,7 @@ matrix:
       addons:
         code_climate:
           repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
+        postgresql: "9.6"
         apt:
           sources:
             - mysql-5.7-trusty
@@ -87,6 +88,7 @@ matrix:
             - mysql-server
       services:
         - mysql
+        - postgresql
 
     # test against the latest HHVM version by using a newer image
     - php: hhvm
