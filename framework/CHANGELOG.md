@@ -9,7 +9,7 @@ Yii Framework 2 Change Log
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15693: Fixed `yii\filters\auth\HttpHeaderAuth` to work correctly when pattern is set but was not matched (bboure)
 - Bug #15696: Fix magic getter for ActiveRecord (developeruz)
-- Bug #15318: Fixed "session_name(): Cannot change session name when session is active" errors (bscheshirwork, samdark)
+- Bug #15318: Fixed `session_name(): Cannot change session name when session is active` errors (bscheshirwork, samdark)
 - Bug #15726: Fix ExistValidator is broken for NOSQL (developeruz)
 - Enh #15716: Implemented `\Traversable` in `yii\db\ArrayExpression` (silverfire)
 - Bug #15678: Fixed `resetForm()` method in `yii.activeForm.js` which used an undefined variable (Izumi-kun)
@@ -2127,3 +2127,6 @@ Yii Framework 2 Change Log
 
   - [Smarty View Renderer](https://github.com/yiisoft/yii2-smarty)
   - [Twig View Renderer](https://github.com/yiisoft/yii2-twig)
+
+
+
