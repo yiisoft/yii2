@@ -412,6 +412,16 @@ class BaseHtml
             $options['href'] = Url::to($url);
         }
 
+        //Security tip: https://mathiasbynens.github.io/rel-noopener/
+        if (isset($options['target']) && $options['target'] == '_blank') {
+            if (isset($options['rel'])) {
+                $rels = preg_split('/\s+/', $options['rel'], -1, PREG_SPLIT_NO_EMPTY);
+                $options['rel'] = implode(' ', self::mergeCssClasses($rels, ['noopener', 'noreferrer']));
+            } else {
+                $options['rel'] = 'noopener noreferrer';
+            }
+        }
+
         return static::tag('a', $text, $options);
     }
 

@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14.1 under development
 --------------------------
 
+- Bug #15756: Add `rel="noopener noreferrer"` in links contain `target="_blank"`, for prevent access `window.opener` object. (NabiKAZ)
 - Bug #15728, #15731: Fixed BC break in `Query::select()` method (silverfire)
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15693: Fixed `yii\filters\auth\HttpHeaderAuth` to work correctly when pattern is set but was not matched (bboure)
