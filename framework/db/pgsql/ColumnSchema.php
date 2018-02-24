@@ -12,7 +12,7 @@ use yii\db\ExpressionInterface;
 use yii\db\JsonExpression;
 
 /**
- * Class ColumnSchema
+ * Class ColumnSchema for PostgreSQL database.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  */
@@ -24,33 +24,30 @@ class ColumnSchema extends \yii\db\ColumnSchema
     public $dimension = 0;
 
     /**
-     * Temporary property to indicate, whether the column schema should OMIT using new JSON support feature.
-     * You can temporary use this property to make upgrade to the next framework version easier.
+     * @var bool whether the column schema should OMIT using JSON support feature.
+     * You can use this property to make upgrade to Yii 2.0.14 easier.
      * Default to `false`, meaning JSON support is enabled.
      *
-     * @var bool
      * @since 2.0.14.1
      * @deprecated Since 2.0.14.1 and will be removed in 2.1.
      */
     public $disableJsonSupport = false;
 
     /**
-     * Temporary property to indicate, whether the column schema should OMIT using new PgSQL arrays support feature.
-     * You can temporary use this property to make upgrade to the next framework version easier.
-     * Default to `false`, meaning arrays support is enabled.
+     * @var bool whether the column schema should OMIT using PgSQL Arrays support feature.
+     * You can use this property to make upgrade to Yii 2.0.14 easier.
+     * Default to `false`, meaning Arrays support is enabled.
      *
-     * @var bool
      * @since 2.0.14.1
      * @deprecated Since 2.0.14.1 and will be removed in 2.1.
      */
     public $disableArraySupport = false;
 
     /**
-     * Temporary property to indicate, whether the Array column value should to deserialized to an [[ArrayExpression]]
-     * object. You can temporary use this property to make upgrade to the next framework version easier.
-     * Default to `true`, meaning arrays are deserilized to [[ArrayExpression]] objects.
+     * @var bool whether the Array column value should be unserialized to an [[ArrayExpression]] object.
+     * You can use this property to make upgrade to Yii 2.0.14 easier.
+     * Default to `true`, meaning arrays are unserilized to [[ArrayExpression]] objects.
      *
-     * @var bool
      * @since 2.0.14.1
      * @deprecated Since 2.0.14.1 and will be removed in 2.1.
      */
