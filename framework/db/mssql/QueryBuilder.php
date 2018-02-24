@@ -380,7 +380,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
         $mergeSql = 'MERGE ' . $this->db->quoteTableName($table) . ' WITH (HOLDLOCK) '
             . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNames) . ') '
-            . 'ON ' . $on;
+            . "ON ($on)";
         $insertValues = [];
         foreach ($insertNames as $name) {
             $quotedName = $this->db->quoteColumnName($name);
