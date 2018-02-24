@@ -29,12 +29,15 @@ class LikeCondition extends SimpleCondition
      * @param string $column the column name.
      * @param string $operator the operator to use (e.g. `LIKE`, `NOT LIKE`, `OR LIKE` or `OR NOT LIKE`)
      * @param string[]|string $value single value or an array of values that $column should be compared with.
+     * @param string $escaping user-defined escape mapping.
      * If it is an empty array the generated expression will  be a `false` value if operator is `LIKE` or `OR LIKE`
      * and empty if operator is `NOT LIKE` or `OR NOT LIKE`.
      */
-    public function __construct($column, $operator, $value)
+    public function __construct($column, $operator, $value, $escaping = null)
     {
         parent::__construct($column, $operator, $value);
+        
+        $this->escapingReplacements = $escaping;
     }
 
     /**
