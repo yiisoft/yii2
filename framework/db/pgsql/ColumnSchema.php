@@ -46,7 +46,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
     /**
      * @var bool whether the Array column value should be unserialized to an [[ArrayExpression]] object.
      * You can use this property to make upgrade to Yii 2.0.14 easier.
-     * Default to `true`, meaning arrays are unserilized to [[ArrayExpression]] objects.
+     * Default to `true`, meaning arrays are unserialized to [[ArrayExpression]] objects.
      *
      * @since 2.0.14.1
      * @deprecated Since 2.0.14.1 and will be removed in 2.1.
