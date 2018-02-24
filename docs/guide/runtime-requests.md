@@ -162,7 +162,7 @@ which are located in the `10.0.2.0/24` IP network:
 'request' => [
     // ...
     'trustedHosts' => [
-        '/^10\.0\.2\.\d+$/',
+        '10.0.2.0/24',
     ],
 ],
 ```
@@ -175,18 +175,18 @@ In case your proxies are using different headers you can use the request configu
 'request' => [
     // ...
     'trustedHosts' => [
-        '/^10\.0\.2\.\d+$/' => [
+        '10.0.2.0/24' => [
             'X-ProxyUser-Ip',
             'Front-End-Https',
         ],
     ],
     'secureHeaders' => [
-             'X-Forwarded-For',
-             'X-Forwarded-Host',
-             'X-Forwarded-Proto',
-             'X-Proxy-User-Ip',
-             'Front-End-Https',
-         ];
+        'X-Forwarded-For',
+        'X-Forwarded-Host',
+        'X-Forwarded-Proto',
+        'X-Proxy-User-Ip',
+        'Front-End-Https',
+    ],
     'ipHeaders' => [
         'X-Proxy-User-Ip',
     ],

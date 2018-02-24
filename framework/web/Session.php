@@ -322,7 +322,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setName($value)
     {
+        $this->freeze();
         session_name($value);
+        $this->unfreeze();
     }
 
     /**

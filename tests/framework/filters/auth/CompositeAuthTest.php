@@ -10,6 +10,7 @@ namespace yiiunit\framework\filters\auth;
 use Yii;
 use yii\filters\auth\AuthMethod;
 use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
 use yiiunit\framework\web\UserIdentity;
 
@@ -26,6 +27,8 @@ class TestAuth extends AuthMethod
 
 class TestController extends Controller
 {
+    public $authMethods = [];
+
     public function actionA()
     {
         return 'success';
@@ -66,7 +69,7 @@ class TestController extends Controller
         return [
             'authenticator' => [
                 'class' => CompositeAuth::className(),
-                'authMethods' => [
+                'authMethods' => $this->authMethods ?: [
                     TestAuth::className(),
                 ],
             ],
@@ -122,5 +125,20 @@ class CompositeAuthTest extends \yiiunit\TestCase
         /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
         $this->assertEquals('success', $controller->run('c'));
+    }
+
+    public function testCompositeAuth()
+    {
+        Yii::$app->request->headers->set('Authorization', base64_encode("foo:bar"));
+        /** @var TestAuthController $controller */
+        $controller = Yii::$app->createController('test')[0];
+        $controller->authMethods = [
+            HttpBearerAuth::className(),
+            TestAuth::className(),
+        ];
+        try {
+            $this->assertEquals('success', $controller->run('b'));
+        } catch (UnauthorizedHttpException $e) {
+        }
     }
 }
