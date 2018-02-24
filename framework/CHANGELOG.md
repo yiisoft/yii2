@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #15696: Fix magic getter for `yii\db\ActiveRecord` (developeruz)
 - Bug #15707: Fixed JSON retrieving from MySQL (silverfire)
 - Bug #15724: Changed shortcut in `yii\console\controllers\BaseMigrateController` for `comment` option from `-c` to `-C` due to conflict (Izumi-kun)
+- Enh #15760: Added `ArrayAccess` support as validated value in `yii\validators\EachValidator` (silverfire)
 
 
 2.0.14 February 18, 2018
