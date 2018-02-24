@@ -15,7 +15,6 @@ Yii Framework 2 Change Log
 - Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15692: Fix `yii\validators\ExistValidator` to respect filter when `targetRelation` is used (developeruz)
 - Bug #15693: Fixed `yii\filters\auth\HttpHeaderAuth` to work correctly when pattern is set but was not matched (bboure)
-- Bug #15696: Fix magic getter for ActiveRecord (developeruz)
 - Bug #15696: Fix magic getter for `yii\db\ActiveRecord` (developeruz)
 - Bug #15707: Fixed JSON retrieving from MySQL (silverfire)
 - Bug #15708: Fixed `yii\db\Command::upsert()` for Cubrid/MSSQL/Oracle (sergeymakinen)
