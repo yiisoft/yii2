@@ -82,7 +82,7 @@ $file = $theme->getPath('img/logo.gif');
 ],
 ```
 
-Это позволит вам темизировать `@app/widgets/currency/views/index.php` в `@app/themes/basic/widgets/currency/index.php`.
+Это позволит вам темизировать `@app/widgets/currency/views/index.php` в `@app/themes/basic/widgets/currency/views/index.php`.
 
 
 ## Наследование тем <span id="theme-inheritance"></span>

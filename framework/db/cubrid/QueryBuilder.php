@@ -85,7 +85,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         [, $placeholders, $values, $params] = $this->prepareInsertValues($table, $insertColumns, $params);
         $mergeSql = 'MERGE INTO ' . $this->db->quoteTableName($table) . ' '
             . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS "EXCLUDED" (' . implode(', ', $insertNames) . ') '
-            . 'ON ' . $on;
+            . "ON ($on)";
         $insertValues = [];
         foreach ($insertNames as $name) {
             $quotedName = $this->db->quoteColumnName($name);

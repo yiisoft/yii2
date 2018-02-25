@@ -1386,6 +1386,7 @@ class BaseHtml
     protected static function setActivePlaceholder($model, $attribute, &$options = [])
     {
         if (isset($options['placeholder']) && $options['placeholder'] === true) {
+            $attribute = static::getAttributeName($attribute);
             $options['placeholder'] = $model->getAttributeLabel($attribute);
         }
     }

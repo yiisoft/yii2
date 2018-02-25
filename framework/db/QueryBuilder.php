@@ -22,8 +22,8 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
- * @property string[] $expressionBuilders Array of builders that should be merged with the pre-defined ones
- * in [[expressionBuilders]] property. This property is write-only.
+ * @property string[] $expressionBuilders Array of builders that should be merged with the pre-defined ones in
+ * [[expressionBuilders]] property. This property is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -611,15 +611,15 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $sets = [];
         foreach ($columns as $name => $value) {
+
+            $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             if ($value instanceof ExpressionInterface) {
-                $sets[] = $this->db->quoteColumnName($name) . '=' . $this->buildExpression($value, $params);
+                $placeholder = $this->buildExpression($value, $params);
             } else {
-                $phName = $this->bindParam(
-                    isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value,
-                    $params
-                );
-                $sets[] = $this->db->quoteColumnName($name) . '=' . $phName;
+                $placeholder = $this->bindParam($value, $params);
             }
+
+            $sets[] = $this->db->quoteColumnName($name) . '=' . $placeholder;
         }
         return [$sets, $params];
     }

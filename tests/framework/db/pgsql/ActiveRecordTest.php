@@ -195,21 +195,35 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
             $value = $type->$attribute;
 
             $this->assertEquals($expected, $value, 'In column ' . $attribute);
+
             if ($value instanceof ArrayExpression) {
                 $this->assertInstanceOf('\ArrayAccess', $value);
+                $this->assertInstanceOf('\Traversable', $value);
                 foreach ($type->$attribute as $key => $v) { // testing arrayaccess
                     $this->assertSame($expected[$key], $value[$key]);
                 }
             }
         }
+
+        // Testing UPDATE
+        foreach ($attributes as $attribute => $expected) {
+            $type->markAttributeDirty($attribute);
+        }
+        $this->assertSame(1, $type->update(), 'The record got updated');
     }
 
     public function arrayValuesProvider()
     {
         return [
             'simple arrays values' => [[
-                'intarray_col' => [new ArrayExpression([1,-2,null,'42'], 'int4', 1)],
-                'textarray2_col' => [new ArrayExpression([['text'], [null], [1]], 'text', 2)],
+                'intarray_col' => [
+                    new ArrayExpression([1,-2,null,'42'], 'int4', 1),
+                    new ArrayExpression([1,-2,null,42], 'int4', 1),
+                ],
+                'textarray2_col' => [
+                    new ArrayExpression([['text'], [null], [1]], 'text', 2),
+                    new ArrayExpression([['text'], [null], ['1']], 'text', 2),
+                ],
                 'json_col' => [['a' => 1, 'b' => null, 'c' => [1,3,5]]],
                 'jsonb_col' => [[null, 'a', 'b', '\"', '{"af"}']],
                 'jsonarray_col' => [new ArrayExpression([[',', 'null', true, 'false', 'f']], 'json')],
@@ -217,11 +231,11 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
             'arrays packed in classes' => [[
                 'intarray_col' => [
                     new ArrayExpression([1,-2,null,'42'], 'int', 1),
-                    new ArrayExpression([1,-2,null,'42'], 'int4', 1),
+                    new ArrayExpression([1,-2,null,42], 'int4', 1),
                 ],
                 'textarray2_col' => [
                     new ArrayExpression([['text'], [null], [1]], 'text', 2),
-                    new ArrayExpression([['text'], [null], [1]], 'text', 2),
+                    new ArrayExpression([['text'], [null], ['1']], 'text', 2),
                 ],
                 'json_col' => [
                     new JsonExpression(['a' => 1, 'b' => null, 'c' => [1,3,5]]),
@@ -234,7 +248,6 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
                 'jsonarray_col' => [
                     new Expression("array['[\",\",\"null\",true,\"false\",\"f\"]'::json]::json[]"),
                     new ArrayExpression([[',', 'null', true, 'false', 'f']], 'json'),
-
                 ]
             ]],
             'scalars' => [[
@@ -278,6 +291,7 @@ class UserAR extends ActiveRecord
 
 /**
  * {@inheritdoc}
+ * @property array id
  * @property array intarray_col
  * @property array textarray2_col
  * @property array json_col

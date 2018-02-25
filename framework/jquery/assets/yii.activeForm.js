@@ -444,7 +444,7 @@
                     this.value = getValue($form, this);
                     this.status = 0;
                     var $container = $form.find(this.container),
-                        $input = findInput($form, attribute),
+                        $input = findInput($form, this),
                         $errorElement = data.settings.validationStateOn === 'input' ? $input : $container;
 
                     $errorElement.removeClass(
