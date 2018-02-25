@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.15 under development
 ------------------------
 
-- no changes in this release.
+- Bug #15769: Namespace inconsistences in fixtures (ricpelo)
 
 
 2.0.14.1 February 24, 2018
