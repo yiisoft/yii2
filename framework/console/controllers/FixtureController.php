@@ -21,7 +21,7 @@ use yii\test\FixtureTrait;
  * Manages fixture data loading and unloading.
  *
  * ```
- * #load fixtures from UsersFixture class with default namespace "tests\unit\fixtures"
+ * #load fixtures from UsersFixture class with default namespace "tests\fixtures"
  * yii fixture/load User
  *
  * #also a short version of this command (generate action is default)
@@ -53,7 +53,7 @@ class FixtureController extends Controller
     /**
      * @var string default namespace to search fixtures in
      */
-    public $namespace = 'tests\unit\fixtures';
+    public $namespace = 'tests\fixtures';
     /**
      * @var array global fixtures that should be applied when loading and unloading. By default it is set to `InitDbFixture`
      * that disables and enables integrity check, so your data can be safely loaded.
@@ -95,7 +95,7 @@ class FixtureController extends Controller
      * # any existing fixture data will be removed first
      * yii fixture/load "User, UserProfile"
      *
-     * # load all available fixtures found under 'tests\unit\fixtures'
+     * # load all available fixtures found under 'tests\fixtures'
      * yii fixture/load "*"
      *
      * # load all fixtures except User and UserProfile
@@ -175,7 +175,7 @@ class FixtureController extends Controller
      * # unload the fixture data specified by User and UserProfile.
      * yii fixture/unload "User, UserProfile"
      *
-     * # unload all fixtures found under 'tests\unit\fixtures'
+     * # unload all fixtures found under 'tests\fixtures'
      * yii fixture/unload "*"
      *
      * # unload all fixtures except User and UserProfile
