@@ -131,8 +131,6 @@ class UserProfileTest extends \Codeception\Test\Unit
         return [
             'profiles' => [
                 'class' => UserProfileFixture::className(),
-                // fixture data located in tests/_data/user.php
-                'dataFile' => codecept_data_dir() . 'user.php'
             ],
         ];
     }
