@@ -210,6 +210,21 @@ class AssetController extends Controller
     }
 
     /**
+     * Publish asset files according to this configuration.
+     * In the process, the asset packages in the configuration file will be published in the Web-accessible directory.
+     * @param string $configFile configuration file name.
+     */
+    public function actionPublish($configFile)
+    {
+        $this->loadConfiguration($configFile);
+        $assetManager = $this->getAssetManager();
+        $bundles = $this->loadBundles($this->bundles);
+        foreach ($bundles as $bundle) {
+            $bundle->publish($assetManager);
+        }
+    }
+
+    /**
      * Applies configuration from the given file to self instance.
      * @param string $configFile configuration file name.
      * @throws \yii\console\Exception on failure.
