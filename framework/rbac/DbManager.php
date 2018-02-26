@@ -86,7 +86,7 @@ class DbManager extends BaseManager
      * @see cache
      * @since 2.0.3
      */
-    public $cacheKey = 'rbac';
+    public $cacheKey = __CLASS__;
 
     /**
      * @var Item[] all auth items (name => Item)
