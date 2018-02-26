@@ -12,7 +12,6 @@ Yii Framework 2 Change Log
 
 - Bug #15318: Fixed `session_name(): Cannot change session name when session is active` errors (bscheshirwork, samdark)
 - Bug #15678: Fixed `resetForm()` method in `yii.activeForm.js` which used an undefined variable (Izumi-kun)
-- Bug #15692: Fix ExistValidator with targetRelation ignores filter (developeruz)
 - Bug #15692: Fix `yii\validators\ExistValidator` to respect filter when `targetRelation` is used (developeruz)
 - Bug #15693: Fixed `yii\filters\auth\HttpHeaderAuth` to work correctly when pattern is set but was not matched (bboure)
 - Bug #15696: Fix magic getter for `yii\db\ActiveRecord` (developeruz)
