@@ -132,7 +132,7 @@ class CaptchaAction extends Action
                 'hash2' => $this->generateValidationHash(strtolower($code)),
                 // we add a random 'v' parameter so that FireFox can refresh the image
                 // when src attribute of image tag is changed
-                'url' => Url::to([$this->id, 'v' => uniqid()]),
+                'url' => Url::to([$this->id, 'v' => uniqid('', true)]),
             ];
         }
 

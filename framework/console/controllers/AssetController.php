@@ -484,7 +484,7 @@ class AssetController extends Controller
             }
         }
         $array = VarDumper::export($array);
-        $version = date('Y-m-d H:i:s', time());
+        $version = date('Y-m-d H:i:s');
         $bundleFileContent = <<<EOD
 <?php
 /**
