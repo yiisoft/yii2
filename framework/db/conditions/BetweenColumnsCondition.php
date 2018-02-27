@@ -32,7 +32,7 @@ use yii\db\Query;
  * );
  *
  * // Will be built to:
- * // NOW() BETWEEN (SELECT time FROM log ORDER BY id ASC LIMIT 1) AND update_time
+ * // NOW() NOT BETWEEN (SELECT time FROM log ORDER BY id ASC LIMIT 1) AND update_time
  * ```
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
