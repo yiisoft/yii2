@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Enh #13702: Added support for PSR-3 'Logger' (klimov-paul)
 - Enh #13706: 'Profiler' layer extracted (klimov-paul)
 - Enh #15410: Added serialization abstraction layer under `yii\serialize\*` namespace (klimov-paul)
+- Enh: Objects `yii\helpers\ReplaceArrayValue`, `yii\helpers\UnsetArrayValue` now support restoring after being exported with `var_export()` function (silverfire)
 - Chg: Removed methods marked as deprecated in 2.0.x (samdark)
 - Chg #14784: Signature of `yii\web\RequestParserInterface::parse()` changed to accept `yii\web\Request` instance as a sole argument (klimov-paul)
 - Chg #10771: Consistent behavior of `run()` method in all framework widgets. All return the result now for better extensibility (pkirill99, cebe)
