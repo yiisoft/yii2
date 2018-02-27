@@ -42,6 +42,10 @@ Yii Framework 2 Change Log
 - Chg #14761: Removed Yii autoloader in favor of Composer's PSR-4 implementation (samdark)
 - Chg #15448: Package "ezyang/htmlpurifier" has been made optional and is not installed by default (klimov-paul)
 - Chg #15481: Removed `yii\BaseYii::powered()` method (Kolyunya, samdark)
+2.0.14.2 under development
+------------------------
+
+- Bug #15792: Added missing `yii\db\QueryBuilder::conditionClasses` setter (silverfire)
 
 
 2.0.14.1 February 24, 2018
