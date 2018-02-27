@@ -15,7 +15,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\filters\auth\HttpHeaderAuth;
 use yii\helpers\ArrayHelper;
-use yii\rest\Controller;
+use yii\web\Controller;
 use yii\web\UnauthorizedHttpException;
 use yiiunit\framework\filters\stubs\UserIdentity;
 
