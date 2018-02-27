@@ -63,6 +63,16 @@ Upgrade from Yii 2.0.x
   All calls on objects via `->className()` should be replaced by a call to `get_class()`.
 * XCache and Zend data cache support was removed. Switch to another caching backends.
 * Rename `InvalidParamException` usage to `InvalidArgumentException`.
+* CAPTCHA package has been moved into separate extension https://github.com/yiisoft/yii2-captcha.
+  Include it in your composer.json if you use it.
+* JQuery related code (e.g. `yii.js`, `yiiActiveForm.js`, `yiiGridView.js`) has been moved into separate extension https://github.com/yiisoft/yii2-jquery.
+  Include it in your composer.json if you use it.
+* REST API package has been moved into separate extension https://github.com/yiisoft/yii2-rest.
+  Include it in your composer.json if you use it.
+* MSSQL Server DB package has been moved into separate extension https://github.com/yiisoft/yii2-mssql.
+  Include it in your composer.json if you use it.
+* Oracle DB package has been moved into separate extension https://github.com/yiisoft/yii2-oracle.
+  Include it in your composer.json if you use it.
 * Masked input field widget was moved into separate extension https://github.com/yiisoft/yii2-maskedinput.
   Include it in your composer.json if you use it.
 * If you've used ApcCache and set `useApcu` in your config, remove the option.
