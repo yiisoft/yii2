@@ -1,10 +1,10 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.15 under development
+2.0.14.2 under development
 ------------------------
 
-- no changes in this release.
+- Bug #15792: Added missing `yii\db\QueryBuilder::conditionClasses` setter (silverfire)
 
 
 2.0.14.1 February 24, 2018

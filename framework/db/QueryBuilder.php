@@ -194,6 +194,23 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
+     * Setter for [[expressionBuilders]] property.
+     *
+     * @param string[] $classes map of condition aliases to condition classes. For example:
+     *
+     * ```php
+     * ['LIKE' => yii\db\condition\LikeCondition::class]
+     * ```
+     *
+     * @since 2.0.14.2
+     * @see conditionClasses
+     */
+    public function setConditionClasses($classes)
+    {
+        $this->conditionClasses = array_merge($this->conditionClasses, $classes);
+    }
+
+    /**
      * Generates a SELECT SQL statement from a [[Query]] object.
      *
      * @param Query $query the [[Query]] object from which the SQL statement will be generated.
