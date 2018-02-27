@@ -992,8 +992,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         ]));
 
         // Undo pk assigned if a rollback transaction event occurs on insert
-        if ($this->db->transaction !== null) {
-            $this->db->on(\yii\db\Connection::EVENT_ROLLBACK_TRANSACTION, function ($event) use ($insert) {
+        $db = static::getDb();
+        if ($db->transaction !== null) {
+            $db->on(\yii\db\Connection::EVENT_ROLLBACK_TRANSACTION, function ($event) use ($insert) {
                 if ($insert) {
                     $this->isNewRecord = true;
                     if ($this->tableSchema->sequenceName !== null) {
