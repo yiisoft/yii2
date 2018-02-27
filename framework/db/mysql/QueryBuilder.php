@@ -56,7 +56,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     protected function defaultExpressionBuilders()
     {
         return array_merge(parent::defaultExpressionBuilders(), [
-            'yii\db\JsonExpression' => 'yii\db\mysql\JsonExpressionBuilder',
+            \yii\db\JsonExpression::class => JsonExpressionBuilder::class,
         ]);
     }
 

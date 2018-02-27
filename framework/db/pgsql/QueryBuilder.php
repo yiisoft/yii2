@@ -84,10 +84,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     protected function defaultConditionClasses()
     {
         return array_merge(parent::defaultConditionClasses(), [
-            'ILIKE' => 'yii\db\conditions\LikeCondition',
-            'NOT ILIKE' => 'yii\db\conditions\LikeCondition',
-            'OR ILIKE' => 'yii\db\conditions\LikeCondition',
-            'OR NOT ILIKE' => 'yii\db\conditions\LikeCondition',
+            'ILIKE' => \yii\db\conditions\LikeCondition::class,
+            'NOT ILIKE' => \yii\db\conditions\LikeCondition::class,
+            'OR ILIKE' => \yii\db\conditions\LikeCondition::class,
+            'OR NOT ILIKE' => \yii\db\conditions\LikeCondition::class,
         ]);
     }
 
@@ -97,8 +97,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     protected function defaultExpressionBuilders()
     {
         return array_merge(parent::defaultExpressionBuilders(), [
-            'yii\db\ArrayExpression' => 'yii\db\pgsql\ArrayExpressionBuilder',
-            'yii\db\JsonExpression' => 'yii\db\pgsql\JsonExpressionBuilder',
+            \yii\db\ArrayExpression::class => ArrayExpressionBuilder::class,
+            \yii\db\JsonExpression::class => JsonExpressionBuilder::class,
         ]);
     }
 

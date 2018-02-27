@@ -136,19 +136,19 @@ class QueryBuilder extends \yii\base\BaseObject
     protected function defaultConditionClasses()
     {
         return [
-            'NOT' => 'yii\db\conditions\NotCondition',
-            'AND' => 'yii\db\conditions\AndCondition',
-            'OR' => 'yii\db\conditions\OrCondition',
-            'BETWEEN' => 'yii\db\conditions\BetweenCondition',
-            'NOT BETWEEN' => 'yii\db\conditions\BetweenCondition',
-            'IN' => 'yii\db\conditions\InCondition',
-            'NOT IN' => 'yii\db\conditions\InCondition',
-            'LIKE' => 'yii\db\conditions\LikeCondition',
-            'NOT LIKE' => 'yii\db\conditions\LikeCondition',
-            'OR LIKE' => 'yii\db\conditions\LikeCondition',
-            'OR NOT LIKE' => 'yii\db\conditions\LikeCondition',
-            'EXISTS' => 'yii\db\conditions\ExistsCondition',
-            'NOT EXISTS' => 'yii\db\conditions\ExistsCondition',
+            'NOT' => conditions\NotCondition::class,
+            'AND' => conditions\AndCondition::class,
+            'OR' => conditions\OrCondition::class,
+            'BETWEEN' => conditions\BetweenCondition::class,
+            'NOT BETWEEN' => conditions\BetweenCondition::class,
+            'IN' => conditions\InCondition::class,
+            'NOT IN' => conditions\InCondition::class,
+            'LIKE' => conditions\LikeCondition::class,
+            'NOT LIKE' => conditions\LikeCondition::class,
+            'OR LIKE' => conditions\LikeCondition::class,
+            'OR NOT LIKE' => conditions\LikeCondition::class,
+            'EXISTS' => conditions\ExistsCondition::class,
+            'NOT EXISTS' => conditions\ExistsCondition::class,
         ];
     }
 
@@ -163,20 +163,20 @@ class QueryBuilder extends \yii\base\BaseObject
     protected function defaultExpressionBuilders()
     {
         return [
-            'yii\db\Query' => 'yii\db\QueryExpressionBuilder',
-            'yii\db\PdoValue' => 'yii\db\PdoValueBuilder',
-            'yii\db\Expression' => 'yii\db\ExpressionBuilder',
-            'yii\db\conditions\ConjunctionCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-            'yii\db\conditions\NotCondition' => 'yii\db\conditions\NotConditionBuilder',
-            'yii\db\conditions\AndCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-            'yii\db\conditions\OrCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-            'yii\db\conditions\BetweenCondition' => 'yii\db\conditions\BetweenConditionBuilder',
-            'yii\db\conditions\InCondition' => 'yii\db\conditions\InConditionBuilder',
-            'yii\db\conditions\LikeCondition' => 'yii\db\conditions\LikeConditionBuilder',
-            'yii\db\conditions\ExistsCondition' => 'yii\db\conditions\ExistsConditionBuilder',
-            'yii\db\conditions\SimpleCondition' => 'yii\db\conditions\SimpleConditionBuilder',
-            'yii\db\conditions\HashCondition' => 'yii\db\conditions\HashConditionBuilder',
-            'yii\db\conditions\BetweenColumnsCondition' => 'yii\db\conditions\BetweenColumnsConditionBuilder',
+            Query::class => QueryExpressionBuilder::class,
+            PdoValue::class => PdoValueBuilder::class,
+            Expression::class => ExpressionBuilder::class,
+            conditions\ConjunctionCondition::class => conditions\ConjunctionConditionBuilder::class,
+            conditions\NotCondition::class => conditions\NotConditionBuilder::class,
+            conditions\AndCondition::class => conditions\ConjunctionConditionBuilder::class,
+            conditions\OrCondition::class => conditions\ConjunctionConditionBuilder::class,
+            conditions\BetweenCondition::class => conditions\BetweenConditionBuilder::class,
+            conditions\InCondition::class => conditions\InConditionBuilder::class,
+            conditions\LikeCondition::class => conditions\LikeConditionBuilder::class,
+            conditions\ExistsCondition::class => conditions\ExistsConditionBuilder::class,
+            conditions\SimpleCondition::class => conditions\SimpleConditionBuilder::class,
+            conditions\HashCondition::class => conditions\HashConditionBuilder::class,
+            conditions\BetweenColumnsCondition::class => conditions\BetweenColumnsConditionBuilder::class,
         ];
     }
 
