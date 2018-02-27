@@ -20,15 +20,15 @@ Yii 为包括 [`yii2-basic`](https://github.com/yiisoft/yii2/tree/master/apps/ba
 For the local installation use following commands:
 
 ```
-composer global require "codeception/codeception=2.0.*"
-composer global require "codeception/specify=*"
-composer global require "codeception/verify=*"
+composer require-dev "codeception/codeception=*"
+composer require-dev "codeception/specify=*"
+composer require-dev "codeception/verify=*"
 ```
 
 For the global installation you will need to use `global` directive:
 
 ```
-composer global require "codeception/codeception=2.1.*"
+composer global require "codeception/codeception=*"
 composer global require "codeception/specify=*"
 composer global require "codeception/verify=*"
 ```
