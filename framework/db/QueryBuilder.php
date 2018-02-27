@@ -194,7 +194,7 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Setter for [[expressionBuilders]] property.
+     * Setter for [[conditionClasses]] property.
      *
      * @param string[] $classes map of condition aliases to condition classes. For example:
      *
