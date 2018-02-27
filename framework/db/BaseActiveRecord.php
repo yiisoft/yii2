@@ -991,15 +991,17 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             'changedAttributes' => $changedAttributes,
         ]));
 
-        // Undo pk assigned if a rollback transaction event occurs on insert
+        // Unassign autoincrement pk if a rollback transaction event occurs on insert
         $db = static::getDb();
         if ($db->transaction !== null) {
             $db->on(\yii\db\Connection::EVENT_ROLLBACK_TRANSACTION, function ($event) use ($insert) {
                 if ($insert) {
                     $this->isNewRecord = true;
-                    if ($this->tableSchema->sequenceName !== null) {
-                        $pk = static::primaryKey()[0];
-                        $this->{$pk} = null;
+                    foreach ($this->tableSchema->primaryKey as $pk) {
+                        if ($this->tableSchema->columns[$pk]->autoIncrement) {
+                            $this->{$pk} = null;
+                            break;
+                        }
                     }
                 }
             });
