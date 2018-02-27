@@ -10,7 +10,6 @@ namespace yii\validators;
 use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
-use yii\captcha\CaptchaValidator;
 
 /**
  * Validator is the base class for all validators.
@@ -23,7 +22,6 @@ use yii\captcha\CaptchaValidator;
  * be referenced using short names. They are listed as follows:
  *
  * - `boolean`: [[BooleanValidator]]
- * - `captcha`: [[\yii\captcha\CaptchaValidator]]
  * - `compare`: [[CompareValidator]]
  * - `date`: [[DateValidator]]
  * - `datetime`: [[DateValidator]]
@@ -61,7 +59,6 @@ class Validator extends Component
      */
     public static $builtInValidators = [
         'boolean' => BooleanValidator::class,
-        'captcha' => CaptchaValidator::class,
         'compare' => CompareValidator::class,
         'date' => DateValidator::class,
         'datetime' => [

@@ -9,6 +9,7 @@ namespace yiiunit\framework\di;
 
 use yii\base\BaseObject;
 use yii\di\ServiceLocator;
+use yii\widgets\InputWidget;
 use yiiunit\TestCase;
 
 class Creator
@@ -96,7 +97,7 @@ class ServiceLocatorTest extends TestCase
             'components' => [
                 'captcha' => [
                     'name' => 'foo bar',
-                    'class' => 'yii\captcha\Captcha',
+                    'class' => InputWidget::class,
                 ],
             ],
         ];
