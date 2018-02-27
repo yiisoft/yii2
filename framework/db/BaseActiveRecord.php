@@ -990,6 +990,19 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $this->trigger($insert ? self::EVENT_AFTER_INSERT : self::EVENT_AFTER_UPDATE, new AfterSaveEvent([
             'changedAttributes' => $changedAttributes,
         ]));
+
+        // Undo pk assigned if a rollback transaction event occurs on insert
+        if ($this->db->transaction !== null) {
+            $this->db->on(\yii\db\Connection::EVENT_ROLLBACK_TRANSACTION, function ($event) use ($insert) {
+                if ($insert) {
+                    $this->isNewRecord = true;
+                    if ($this->tableSchema->sequenceName !== null) {
+                        $pk = static::primaryKey()[0];
+                        $this->{$pk} = null;
+                    }
+                }
+            });
+        }
     }
 
     /**
