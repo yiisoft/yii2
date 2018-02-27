@@ -995,6 +995,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $db = static::getDb();
         if ($db->transaction !== null) {
             $db->on(\yii\db\Connection::EVENT_ROLLBACK_TRANSACTION, function ($event) use ($insert) {
+                if ($event->transaction !== $event->data['saveTransaction']) {
+                    // Not the same transaction where model was saved
+                    return;
+                }
+
                 if ($insert) {
                     $this->isNewRecord = true;
                     foreach ($this->tableSchema->primaryKey as $pk) {
@@ -1004,7 +1009,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                         }
                     }
                 }
-            });
+            }, ['saveTransaction' => $db->transaction]);
         }
     }
 

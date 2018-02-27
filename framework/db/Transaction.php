@@ -124,7 +124,9 @@ class Transaction extends \yii\base\BaseObject
             }
             Yii::debug('Begin transaction' . ($isolationLevel ? ' with isolation level ' . $isolationLevel : ''), __METHOD__);
 
-            $this->db->trigger(Connection::EVENT_BEGIN_TRANSACTION);
+            $this->db->trigger(Connection::EVENT_BEGIN_TRANSACTION, new TransactionEvent([
+                'transaction' => $this,
+            ]));
             $this->db->pdo->beginTransaction();
             $this->_level = 1;
 
@@ -155,7 +157,9 @@ class Transaction extends \yii\base\BaseObject
         if ($this->_level === 0) {
             Yii::debug('Commit transaction', __METHOD__);
             $this->db->pdo->commit();
-            $this->db->trigger(Connection::EVENT_COMMIT_TRANSACTION);
+            $this->db->trigger(Connection::EVENT_COMMIT_TRANSACTION, new TransactionEvent([
+                'transaction' => $this,
+            ]));
             return;
         }
 
@@ -184,7 +188,9 @@ class Transaction extends \yii\base\BaseObject
         if ($this->_level === 0) {
             Yii::debug('Roll back transaction', __METHOD__);
             $this->db->pdo->rollBack();
-            $this->db->trigger(Connection::EVENT_ROLLBACK_TRANSACTION);
+            $this->db->trigger(Connection::EVENT_ROLLBACK_TRANSACTION, new TransactionEvent([
+                'transaction' => $this,
+            ]));
             return;
         }
 
