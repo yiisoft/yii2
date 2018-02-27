@@ -1624,7 +1624,7 @@ class Formatter extends Component
                 if (abs($value) < $formatBase) {
                     break;
                 }
-                $value = $value / $formatBase;
+                $value /= $formatBase;
             }
             $position++;
         } while ($position < $maxPosition + 1);

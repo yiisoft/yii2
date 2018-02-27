@@ -125,7 +125,7 @@ class NumberValidator extends Validator
     {
         return is_array($value)
         || (is_object($value) && !method_exists($value, '__toString'))
-        || (!is_object($value) && !is_scalar($value) && !is_null($value));
+        || (!is_object($value) && !is_scalar($value) && $value !== null);
     }
 
     /**

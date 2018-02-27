@@ -1025,7 +1025,7 @@ class Connection extends Component
     public function getMaster()
     {
         if ($this->_master === false) {
-            $this->_master = ($this->shuffleMasters)
+            $this->_master = $this->shuffleMasters
                 ? $this->openFromPool($this->masters, $this->masterConfig)
                 : $this->openFromPoolSequentially($this->masters, $this->masterConfig);
         }

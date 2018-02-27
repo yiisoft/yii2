@@ -668,7 +668,7 @@ PATTERN;
                     if ($existsInSelect) {
                         continue;
                     }
-                } elseif (is_integer($columnAlias)) {
+                } elseif (is_int($columnAlias)) {
                     $existsInSelect = in_array($columnDefinition, $unaliasedColumns, true);
                     $existsInResultSet = in_array($columnDefinition, $result, true);
                     if ($existsInSelect || $existsInResultSet) {
@@ -691,7 +691,7 @@ PATTERN;
         $result = [];
         if (is_array($this->select)) {
             foreach ($this->select as $name => $value) {
-                if (is_integer($name)) {
+                if (is_int($name)) {
                     $result[] = $value;
                 }
             }
