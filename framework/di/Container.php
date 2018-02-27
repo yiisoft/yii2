@@ -429,7 +429,7 @@ class Container extends Component
         
         try {
             $reflection = new ReflectionClass($class);
-        } catch (ReflectionException $e) {
+        } catch (\ReflectionException $e) {
             throw new InvalidConfigException($e->getMessage());
         }
 
