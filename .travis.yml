@@ -30,7 +30,6 @@ env:
   global:
     - DEFAULT_COMPOSER_FLAGS="--prefer-dist --no-interaction --no-progress --optimize-autoloader"
     - TASK_TESTS_PHP=1
-    - TASK_TESTS_JS=0
     - TASK_TESTS_COVERAGE=0
 
 
@@ -67,13 +66,6 @@ matrix:
       env: TASK_TESTS_COVERAGE=1
     - php: nightly
 
-    # have a separate branch for javascript tests
-    - language: node_js
-      node_js: 6
-      env: TASK_TESTS_PHP=0 TASK_TESTS_JS=1
-      # overwrite services used for PHP tests
-      services:
-
   allow_failures:
     - php: nightly
 
@@ -97,12 +89,6 @@ install:
       tests/data/travis/imagick-setup.sh
     fi
 
-  # setup JS test
-  - |
-    if [ $TASK_TESTS_JS == 1 ]; then
-      travis_retry npm install
-    fi
-
 before_script:
   # show some versions and env information
   - php --version
@@ -113,11 +99,6 @@ before_script:
       php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
       psql --version
       mysql --version
-    fi
-  - |
-    if [ $TASK_TESTS_JS == 1 ]; then
-      node --version
-      npm --version
     fi
 
   # initialize databases
@@ -151,12 +132,6 @@ script:
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
       vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
-    fi
-
-  # JS tests
-  - |
-    if [ $TASK_TESTS_JS == 1 ]; then
-      npm test
     fi
 
 after_script:
