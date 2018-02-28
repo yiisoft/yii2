@@ -144,7 +144,7 @@ class DataColumn extends Column
     }
 
     /**
-     * {@inheritdoc]
+     * {@inheritdoc}
      * @since 2.0.8
      */
     protected function getHeaderCellLabel()

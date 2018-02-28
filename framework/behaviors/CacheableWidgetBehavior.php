@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\behaviors;
 
@@ -168,8 +173,8 @@ class CacheableWidgetBehavior extends Behavior
     {
         // `$cacheKeyVariations` may be a `string` and needs to be cast to an `array`.
         $cacheKey = array_merge(
-            (array)get_class($this->owner),
-            (array)$this->cacheKeyVariations
+            (array) get_class($this->owner),
+            (array) $this->cacheKeyVariations
         );
 
         return $cacheKey;

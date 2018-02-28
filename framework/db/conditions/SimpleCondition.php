@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\conditions;
 
@@ -13,7 +18,7 @@ use yii\base\InvalidArgumentException;
 class SimpleCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
+     * @var string the operator to use. Anything could be used e.g. `>`, `<=`, etc.
      */
     private $operator;
     /**
@@ -26,7 +31,7 @@ class SimpleCondition implements ConditionInterface
     private $value;
 
     /**
-     * SimpleCondition constructor
+     * SimpleCondition constructor.
      *
      * @param mixed $column the literal to the left of $operator
      * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.

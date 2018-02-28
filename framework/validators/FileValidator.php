@@ -227,7 +227,7 @@ class FileValidator extends Validator
             if ($this->maxFiles && $filesCount > $this->maxFiles) {
                 $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
             }
-            
+
             if ($this->minFiles && $this->minFiles > $filesCount) {
                 $this->addError($model, $attribute, $this->tooFew, ['limit' => $this->minFiles]);
             }
@@ -354,7 +354,7 @@ class FileValidator extends Validator
         if (($request = Yii::$app->getRequest()) instanceof \yii\web\Request) {
             $maxFileSize = Yii::$app->getRequest()->getParsedBodyParam('MAX_FILE_SIZE', 0);
             if ($maxFileSize > 0 && $maxFileSize < $limit) {
-                $limit = (int)$maxFileSize;
+                $limit = (int) $maxFileSize;
             }
         }
 

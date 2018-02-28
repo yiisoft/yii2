@@ -16,7 +16,7 @@ use yiiunit\TestCase;
 class TargetTest extends TestCase
 {
     /**
-     * Data provider for [[testFilterMessages()]]
+     * Data provider for [[testFilterMessages()]].
      * @return array test data
      */
     public function dataProviderFilterMessages()

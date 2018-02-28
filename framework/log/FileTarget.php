@@ -194,7 +194,7 @@ class FileTarget extends Target
     }
 
     /**
-     * Renames rotated file into new file
+     * Renames rotated file into new file.
      * @param string $rotateFile
      * @param string $newFile
      */

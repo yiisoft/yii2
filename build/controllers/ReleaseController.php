@@ -109,7 +109,7 @@ class ReleaseController extends Controller
             foreach ($items as $item) {
                 $this->stdout("fetching tags for $item...");
                 if ($item === 'framework') {
-                    $this->gitFetchTags((string)$this->basePath);
+                    $this->gitFetchTags((string) $this->basePath);
                 } elseif (strncmp('app-', $item, 4) === 0) {
                     $this->gitFetchTags("{$this->basePath}/apps/" . substr($item, 4));
                 } else {
@@ -487,22 +487,22 @@ class ReleaseController extends Controller
         // $this->composerSetStability($what, $version);
 
 
-//        $this->resortChangelogs($what, $version);
-  //        $this->closeChangelogs($what, $version);
-  //        $this->composerSetStability($what, $version);
-  //        if (in_array('framework', $what)) {
-  //            $this->updateYiiVersion($version);
-  //        }
+        // $this->resortChangelogs($what, $version);
+        // $this->closeChangelogs($what, $version);
+        // $this->composerSetStability($what, $version);
+        // if (in_array('framework', $what)) {
+        //    $this->updateYiiVersion($version);
+        // }
 
 
         // if done:
-        //     * ./build/build release/done framework 2.0.0-dev 2.0.0-rc
-        //     * ./build/build release/done redis 2.0.0-dev 2.0.0-rc
-//            $this->openChangelogs($what, $nextVersion);
-//            $this->composerSetStability($what, 'dev');
-//            if (in_array('framework', $what)) {
-//                $this->updateYiiVersion($devVersion);
-//            }
+        // * ./build/build release/done framework 2.0.0-dev 2.0.0-rc
+        // * ./build/build release/done redis 2.0.0-dev 2.0.0-rc
+        // $this->openChangelogs($what, $nextVersion);
+        // $this->composerSetStability($what, 'dev');
+        // if (in_array('framework', $what)) {
+        //     $this->updateYiiVersion($devVersion);
+        // }
 
 
 
@@ -983,7 +983,8 @@ class ReleaseController extends Controller
         $this->sed(
             '/function getVersion\(\)\n    \{\n        return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
-            $frameworkPath . '/BaseYii.php');
+            $frameworkPath . '/BaseYii.php'
+        );
     }
 
     protected function sed($pattern, $replace, $files)

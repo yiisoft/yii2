@@ -1,14 +1,18 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\conditions;
 
 use yii\db\ExpressionBuilderInterface;
 use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
-use yii\db\Query;
 
 /**
- * Class NotConditionBuilder builds objects of [[SimpleCondition]]
+ * Class NotConditionBuilder builds objects of [[SimpleCondition]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

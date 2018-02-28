@@ -84,6 +84,6 @@ class SyslogTarget extends Target
         [$level, $text, $context] = $message;
         $level = Logger::getLevelName($level);
         $prefix = $this->getMessagePrefix($message);
-        return $prefix. '[' . $level . '][' . ($context['category'] ?? '') . '] ' .$text;
+        return $prefix . '[' . $level . '][' . ($context['category'] ?? '') . '] ' . $text;
     }
 }

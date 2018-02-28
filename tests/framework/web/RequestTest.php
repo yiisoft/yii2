@@ -155,7 +155,6 @@ class RequestTest extends TestCase
 
         // When an empty CSRF token is given it is regenerated.
         $this->assertNotEmpty($request->getCsrfToken());
-
     }
     /**
      * Test CSRF token validation by POST param.
@@ -275,7 +274,7 @@ class RequestTest extends TestCase
             // empty
             [
                 [],
-                [null, null]
+                [null, null],
             ],
             // normal
             [
@@ -286,7 +285,7 @@ class RequestTest extends TestCase
                 [
                     'http://example1.com',
                     'example1.com',
-                ]
+                ],
             ],
             // HTTP header missing
             [
@@ -296,7 +295,7 @@ class RequestTest extends TestCase
                 [
                     'http://example2.com',
                     'example2.com',
-                ]
+                ],
             ],
             // forwarded from untrusted server
             [
@@ -308,7 +307,7 @@ class RequestTest extends TestCase
                 [
                     'http://example1.com',
                     'example1.com',
-                ]
+                ],
             ],
             // forwarded from trusted proxy
             [
@@ -321,7 +320,7 @@ class RequestTest extends TestCase
                 [
                     'http://example3.com',
                     'example3.com',
-                ]
+                ],
             ],
         ];
     }
@@ -387,7 +386,7 @@ class RequestTest extends TestCase
         $request = new Request();
 
         $request->setServerParams([
-            'SERVER_NAME' => 'servername'
+            'SERVER_NAME' => 'servername',
         ]);
         $this->assertEquals('servername', $request->getServerName());
 
@@ -400,7 +399,7 @@ class RequestTest extends TestCase
         $request = new Request();
 
         $request->setServerParams([
-            'SERVER_PORT' => 33
+            'SERVER_PORT' => 33,
         ]);
         $this->assertEquals(33, $request->getServerPort());
 
@@ -711,17 +710,19 @@ class RequestTest extends TestCase
 
         try {
             $request->getParsedBody();
-        } catch (UnsupportedMediaTypeHttpException $noContentTypeException) {}
+        } catch (UnsupportedMediaTypeHttpException $noContentTypeException) {
+        }
         $this->assertTrue(isset($noContentTypeException));
 
         try {
             $request->withMethod('POST')->getParsedBody();
-        } catch (UnsupportedMediaTypeHttpException $postWithoutContentTypeException) {}
+        } catch (UnsupportedMediaTypeHttpException $postWithoutContentTypeException) {
+        }
         $this->assertTrue(isset($postWithoutContentTypeException));
     }
 
     /**
-     * Data provider for [[testDefaultUploadedFiles()]]
+     * Data provider for [[testDefaultUploadedFiles()]].
      * @return array test data.
      */
     public function dataProviderDefaultUploadedFiles()
@@ -748,8 +749,8 @@ class RequestTest extends TestCase
                         'size' => 90996,
                         'clientMediaType' => 'image/png',
                         'error' => 0,
-                    ])
-                ]
+                    ]),
+                ],
             ],
             [
                 [
@@ -800,27 +801,27 @@ class RequestTest extends TestCase
                     'my-form' => [
                         'name' => [
                             'details' => [
-                                'avatar' => 'my-avatar.png'
+                                'avatar' => 'my-avatar.png',
                             ],
                         ],
                         'tmp_name' => [
                             'details' => [
-                                'avatar' => 'avatar.tmp'
+                                'avatar' => 'avatar.tmp',
                             ],
                         ],
                         'size' => [
                             'details' => [
-                                'avatar' => 90996
+                                'avatar' => 90996,
                             ],
                         ],
                         'type' => [
                             'details' => [
-                                'avatar' => 'image/png'
+                                'avatar' => 'image/png',
                             ],
                         ],
                         'error' => [
                             'details' => [
-                                'avatar' => 0
+                                'avatar' => 0,
                             ],
                         ],
                     ],
@@ -834,10 +835,10 @@ class RequestTest extends TestCase
                                 'clientMediaType' => 'image/png',
                                 'size' => 90996,
                                 'error' => 0,
-                            ])
+                            ]),
                         ],
                     ],
-                ]
+                ],
             ],
         ];
     }
@@ -955,7 +956,7 @@ class RequestTest extends TestCase
         $request->setAttributes(['some' => 'foo']);
 
         $this->assertSame('foo', $request->getAttribute('some'));
-        $this->assertSame(null, $request->getAttribute('un-existing'));
+        $this->assertNull($request->getAttribute('un-existing'));
         $this->assertSame('default', $request->getAttribute('un-existing', 'default'));
     }
 
@@ -988,7 +989,7 @@ class RequestTest extends TestCase
         ]);
         $this->assertSame('some value', $request->getParsedBodyParam('someParam'));
         $this->assertSame('value.dot', $request->getParsedBodyParam('param.dot'));
-        $this->assertSame(null, $request->getParsedBodyParam('unexisting'));
+        $this->assertNull($request->getParsedBodyParam('unexisting'));
         $this->assertSame('default', $request->getParsedBodyParam('unexisting', 'default'));
 
         // @see https://github.com/yiisoft/yii2/issues/14135
@@ -998,7 +999,7 @@ class RequestTest extends TestCase
         $request->setParsedBody($bodyParams);
         $this->assertSame('some value', $request->getParsedBodyParam('someParam'));
         $this->assertSame('value.dot', $request->getParsedBodyParam('param.dot'));
-        $this->assertSame(null, $request->getParsedBodyParam('unexisting'));
+        $this->assertNull($request->getParsedBodyParam('unexisting'));
         $this->assertSame('default', $request->getParsedBodyParam('unexisting', 'default'));
     }
 }

@@ -11,7 +11,7 @@ use yii\db\ExpressionInterface;
 use yii\db\JsonExpression;
 
 /**
- * Class ColumnSchema for MySQL database
+ * Class ColumnSchema for MySQL database.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14.1

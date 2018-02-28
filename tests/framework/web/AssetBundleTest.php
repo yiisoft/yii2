@@ -199,7 +199,7 @@ class AssetBundleTest extends \yiiunit\TestCase
     }
 
     /**
-     * Properly removes symlinked directory under Windows, MacOS and Linux
+     * Properly removes symlinked directory under Windows, MacOS and Linux.
      *
      * @param string $file path to symlink
      * @return bool

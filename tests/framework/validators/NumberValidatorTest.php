@@ -8,7 +8,6 @@
 namespace yiiunit\framework\validators;
 
 use yii\validators\NumberValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 

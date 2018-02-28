@@ -193,7 +193,7 @@ abstract class SimpleCache extends Component implements CacheInterface
      */
     protected function normalizeKey($key)
     {
-        $key = (string)$key;
+        $key = (string) $key;
         $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
         return $this->keyPrefix . $key;
     }
@@ -211,7 +211,7 @@ abstract class SimpleCache extends Component implements CacheInterface
         if ($ttl instanceof \DateInterval) {
             return (new \DateTime('@0'))->add($ttl)->getTimestamp();
         }
-        return (int)$ttl;
+        return (int) $ttl;
     }
 
     /**

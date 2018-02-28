@@ -72,7 +72,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * Test set name. Also check set name twice and after open
+     * Test set name. Also check set name twice and after open.
      */
     public function testSetName()
     {

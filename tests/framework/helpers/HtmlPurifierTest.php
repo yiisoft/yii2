@@ -30,7 +30,7 @@ class HtmlPurifierTest extends TestCase
     }
 
     /**
-     * Data provider for [[testProcess()]]
+     * Data provider for [[testProcess()]].
      * @return array test data.
      */
     public function dataProviderProcess()

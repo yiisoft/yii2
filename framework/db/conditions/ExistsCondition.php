@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\conditions;
 
@@ -14,7 +19,7 @@ use yii\db\Query;
 class ExistsCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use (e.g. `EXISTS` or `NOT EXISTS`)
+     * @var string the operator to use (e.g. `EXISTS` or `NOT EXISTS`)
      */
     private $operator;
     /**

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\ar;
 
@@ -21,12 +26,12 @@ class CustomerWithAlias extends ActiveRecord
     public $status2;
 
     public $sumTotal;
-    
+
     public static function tableName()
     {
         return 'customer';
     }
-    
+
     /**
      * {@inheritdoc}
      * @return CustomerQuery

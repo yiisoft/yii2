@@ -495,7 +495,7 @@ class ArrayHelperTest extends TestCase
         ];
         $b = [
             'secondValue',
-            'thirdValue'
+            'thirdValue',
         ];
 
         $result = ArrayHelper::merge($a, $b);

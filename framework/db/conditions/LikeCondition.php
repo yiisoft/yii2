@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\conditions;
 
@@ -38,6 +43,7 @@ class LikeCondition extends SimpleCondition
      *  You may use `false` or an empty array to indicate the values are already escaped and no escape
      *  should be applied. Note that when using an escape mapping (or the third operand is not provided),
      *  the values will be automatically enclosed within a pair of percentage characters.
+     * @param mixed $escapingReplacements
      */
     public function setEscapingReplacements($escapingReplacements)
     {

@@ -10,8 +10,8 @@ namespace yii\db;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidArgumentException;
-use yii\helpers\ArrayHelper;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 
 /**
  * Query represents a SELECT SQL statement in a way that is independent of DBMS.
@@ -566,7 +566,7 @@ PATTERN;
     }
 
     /**
-     * Ensures name is wrapped with {{ and }}
+     * Ensures name is wrapped with {{ and }}.
      * @param string $name
      * @return string
      */
@@ -650,7 +650,7 @@ PATTERN;
      * Returns unique column names excluding duplicates.
      * Columns to be removed:
      * - if column definition already present in SELECT part with same alias
-     * - if column definition without alias already present in SELECT part without alias too
+     * - if column definition without alias already present in SELECT part without alias too.
      * @param array $columns the columns to be merged to the select.
      * @since 2.0.14
      */
@@ -660,13 +660,13 @@ PATTERN;
 
         $result = [];
         foreach ($columns as $columnAlias => $columnDefinition) {
-            if (!$columnDefinition instanceof Query) {
+            if (!$columnDefinition instanceof self) {
                 if (is_string($columnAlias)) {
                     $existsInSelect = isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition;
                     if ($existsInSelect) {
                         continue;
                     }
-                } elseif (is_integer($columnAlias)) {
+                } elseif (is_int($columnAlias)) {
                     $existsInSelect = in_array($columnDefinition, $unaliasedColumns, true);
                     $existsInResultSet = in_array($columnDefinition, $result, true);
                     if ($existsInSelect || $existsInResultSet) {
@@ -689,7 +689,7 @@ PATTERN;
         $result = [];
         if (is_array($this->select)) {
             foreach ($this->select as $name => $value) {
-                if (is_integer($name)) {
+                if (is_int($name)) {
                     $result[] = $value;
                 }
             }
@@ -1297,7 +1297,7 @@ PATTERN;
     }
 
     /**
-     * Returns the SQL representation of Query
+     * Returns the SQL representation of Query.
      * @return string
      */
     public function __toString()

@@ -147,7 +147,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return $content;
         }
-        $html = '<' .$name . static::renderTagAttributes($options) . '>';
+        $html = '<' . $name . static::renderTagAttributes($options) . '>';
         return isset(static::$voidElements[strtolower($name)]) ? $html : "$html$content</$name>";
     }
 
@@ -940,7 +940,7 @@ class BaseHtml
             $name .= '[]';
         }
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', (array)$selection);
+            $selection = array_map('strval', (array) $selection);
         }
 
         $formatter = ArrayHelper::remove($options, 'item');
@@ -954,7 +954,7 @@ class BaseHtml
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string) $value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -1020,7 +1020,7 @@ class BaseHtml
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', (array)$selection);
+            $selection = array_map('strval', (array) $selection);
         }
 
         $formatter = ArrayHelper::remove($options, 'item');
@@ -1037,7 +1037,7 @@ class BaseHtml
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string) $value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -1236,7 +1236,7 @@ class BaseHtml
     }
 
     /**
-     * Return array of the validation errors
+     * Return array of the validation errors.
      * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
      * @param $encode boolean, if set to false then the error messages won't be encoded.
      * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
@@ -1815,7 +1815,7 @@ class BaseHtml
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', (array)$selection);
+            $selection = array_map('strval', (array) $selection);
         }
 
         $lines = [];
@@ -1857,7 +1857,7 @@ class BaseHtml
                 if (!array_key_exists('selected', $attrs)) {
                     $attrs['selected'] = $selection !== null &&
                         (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection));
+                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string) $key, $selection));
                 }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {

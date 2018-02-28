@@ -77,7 +77,7 @@ class Uri extends BaseObject implements UriInterface
      * @var array scheme default ports in format: `[scheme => port]`
      */
     private static $defaultPorts = [
-        'http'  => 80,
+        'http' => 80,
         'https' => 443,
         'ftp' => 21,
         'gopher' => 70,
@@ -237,7 +237,7 @@ class Uri extends BaseObject implements UriInterface
     }
 
     /**
-     * Specifies path component of the URI
+     * Specifies path component of the URI.
      * @param string $path the path to be used.
      */
     public function setPath($path)

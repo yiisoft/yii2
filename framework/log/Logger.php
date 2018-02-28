@@ -9,8 +9,8 @@ namespace yii\log;
 
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 use Psr\Log\LoggerTrait;
+use Psr\Log\LogLevel;
 use Yii;
 use yii\base\Component;
 use yii\base\ErrorHandler;
@@ -157,11 +157,11 @@ class Logger extends Component implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         if (!is_string($message)) {
             if (is_scalar($message)) {
-                $message = (string)$message;
+                $message = (string) $message;
             } elseif (is_object($message)) {
                 if ($message instanceof \Throwable) {
                     if (!isset($context['exception'])) {
@@ -275,7 +275,7 @@ class Logger extends Component implements LoggerInterface
         return preg_replace_callback('/\\{([\\w\\.]+)\\}/is', function ($matches) use ($context) {
             $placeholderName = $matches[1];
             if (isset($context[$placeholderName])) {
-                return (string)$context[$placeholderName];
+                return (string) $context[$placeholderName];
             }
             return $matches[0];
         }, $message);

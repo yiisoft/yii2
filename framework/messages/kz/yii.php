@@ -16,6 +16,7 @@
  *
  * NOTE: this file must be saved in UTF-8 encoding.
  */
+
 return [
     '{nFormatted} B' => '{nFormatted} Б',
     '{nFormatted} GB' => '{nFormatted} ГБ',

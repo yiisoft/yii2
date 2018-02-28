@@ -109,7 +109,7 @@ class MemCached extends SimpleCache
     }
 
     /**
-     * Add servers to the server pool of the cache specified
+     * Add servers to the server pool of the cache specified.
      *
      * @param \Memcached $cache
      * @param MemCachedServer[] $servers
@@ -155,7 +155,7 @@ class MemCached extends SimpleCache
                 throw new InvalidConfigException('MemCached requires PHP memcached extension to be loaded.');
             }
 
-            $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached;
+            $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached();
             if ($this->username !== null || $this->password !== null) {
                 $this->_cache->setOption(\Memcached::OPT_BINARY_PROTOCOL, true);
                 $this->_cache->setSaslAuthData($this->username, $this->password);

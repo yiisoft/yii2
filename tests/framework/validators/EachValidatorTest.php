@@ -7,10 +7,8 @@
 
 namespace yiiunit\framework\validators;
 
-use yii\db\ArrayExpression;
 use yii\validators\EachValidator;
 use yiiunit\data\base\ArrayAccessObject;
-use yiiunit\data\base\TraversableObject;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -191,7 +189,7 @@ class EachValidatorTest extends TestCase
     public function testValidateArrayAccess()
     {
         $model = FakedValidationModel::createWithAttributes([
-            'attr_array' => new ArrayAccessObject([1,2,3]),
+            'attr_array' => new ArrayAccessObject([1, 2, 3]),
         ]);
 
         $validator = new EachValidator(['rule' => ['integer']]);

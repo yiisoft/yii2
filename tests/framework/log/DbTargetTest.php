@@ -135,7 +135,7 @@ abstract class DbTargetTest extends TestCase
                 'category' => 'test',
                 'time' => $time,
                 'trace' => [],
-            ]
+            ],
         ];
 
         $logger->messages[] = $messsageData;
@@ -160,7 +160,7 @@ abstract class DbTargetTest extends TestCase
                 'category' => 'test',
                 'time' => time(),
                 'trace' => [],
-            ]
+            ],
         ];
 
         $logger->messages[] = $messsageData;

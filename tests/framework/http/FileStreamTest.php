@@ -108,10 +108,10 @@ class FileStreamTest extends TestCase
         $stream->filename = $filename;
         $stream->mode = 'r';
 
-        $this->assertSame('0123456789', (string)$stream);
+        $this->assertSame('0123456789', (string) $stream);
 
         $stream->seek(5);
-        $this->assertSame('0123456789', (string)$stream);
+        $this->assertSame('0123456789', (string) $stream);
     }
 
     /**

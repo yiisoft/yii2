@@ -7,8 +7,6 @@
 
 namespace yiiunit\framework\rbac;
 
-use yii\base\InvalidArgumentException;
-use yii\rbac\BaseManager;
 use yii\rbac\Item;
 use yii\rbac\Permission;
 use yii\rbac\Role;

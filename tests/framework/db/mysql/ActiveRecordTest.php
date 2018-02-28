@@ -28,7 +28,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
         $data = [
             'obj' => ['a' => ['b' => ['c' => 2.7418]]],
-            'array' => [1,2,null,3],
+            'array' => [1, 2, null, 3],
             'null_field' => null,
             'boolean_field' => true,
             'last_update_time' => '2018-02-21',

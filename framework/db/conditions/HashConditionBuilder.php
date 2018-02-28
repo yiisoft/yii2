@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\conditions;
 
@@ -9,7 +14,7 @@ use yii\db\Query;
 use yii\helpers\ArrayHelper;
 
 /**
- * Class HashConditionBuilder builds objects of [[HashCondition]]
+ * Class HashConditionBuilder builds objects of [[HashCondition]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

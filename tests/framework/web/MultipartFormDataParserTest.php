@@ -8,7 +8,6 @@
 namespace yiiunit\framework\web;
 
 use Psr\Http\Message\UploadedFileInterface;
-use yii\http\UploadedFile;
 use yii\web\MultipartFormDataParser;
 use yii\web\Request;
 use yiiunit\TestCase;
@@ -30,15 +29,15 @@ class MultipartFormDataParserTest extends TestCase
         $request = new Request([
             'rawBody' => $rawBody,
             'headers' => [
-                'content-type' => [$contentType]
-            ]
+                'content-type' => [$contentType],
+            ],
         ]);
 
         $bodyParams = $parser->parse($request);
 
         $uploadedFiles = $request->getUploadedFiles();
 
-        $this->assertFalse(empty($uploadedFiles['someFile']));
+        $this->assertNotEmpty($uploadedFiles['someFile']);
         /* @var $uploadedFile UploadedFileInterface */
         $uploadedFile = $uploadedFiles['someFile'];
         $this->assertTrue($uploadedFile instanceof UploadedFileInterface);
@@ -47,7 +46,7 @@ class MultipartFormDataParserTest extends TestCase
         $this->assertEquals('text/plain', $uploadedFile->getClientMediaType());
         $this->assertEquals('some file content', $uploadedFile->getStream()->__toString());
 
-        $this->assertFalse(empty($uploadedFiles['Item']['file']));
+        $this->assertNotEmpty($uploadedFiles['Item']['file']);
         /* @var $uploadedFile UploadedFileInterface */
         $uploadedFile = $uploadedFiles['Item']['file'];
         $this->assertEquals(UPLOAD_ERR_OK, $uploadedFile->getError());
@@ -61,7 +60,7 @@ class MultipartFormDataParserTest extends TestCase
                 'name' => 'test-name',
                 'file' => $uploadedFiles['Item']['file'],
             ],
-            'someFile' => $uploadedFiles['someFile']
+            'someFile' => $uploadedFiles['someFile'],
         ];
         $this->assertEquals($expectedBodyParams, $bodyParams);
     }
@@ -78,11 +77,11 @@ class MultipartFormDataParserTest extends TestCase
         $request = new Request([
             'rawBody' => 'should not matter',
             'headers' => [
-                'content-type' => ['multipart/form-data; boundary=---12345']
+                'content-type' => ['multipart/form-data; boundary=---12345'],
             ],
             'parsers' => [
-                'multipart/form-data' => MultipartFormDataParser::class
-            ]
+                'multipart/form-data' => MultipartFormDataParser::class,
+            ],
         ]);
         $bodyParams = $request->getParsedBody();
         $this->assertEquals($_POST, $bodyParams);
@@ -108,11 +107,11 @@ class MultipartFormDataParserTest extends TestCase
         $request = new Request([
             'rawBody' => $rawBody,
             'headers' => [
-                'content-type' => [$contentType]
+                'content-type' => [$contentType],
             ],
             'parsers' => [
-                'multipart/form-data' => MultipartFormDataParser::class
-            ]
+                'multipart/form-data' => MultipartFormDataParser::class,
+            ],
         ]);
         $bodyParams = $request->getParsedBody();
         $this->assertEquals([], $bodyParams);
@@ -136,8 +135,8 @@ class MultipartFormDataParserTest extends TestCase
         $request = new Request([
             'rawBody' => $rawBody,
             'headers' => [
-                'content-type' => [$contentType]
-            ]
+                'content-type' => [$contentType],
+            ],
         ]);
         $parser->parse($request);
         $this->assertCount(2, $request->getUploadedFiles());
@@ -161,8 +160,8 @@ class MultipartFormDataParserTest extends TestCase
         $request = new Request([
             'rawBody' => $rawBody,
             'headers' => [
-                'content-type' => [$contentType]
-            ]
+                'content-type' => [$contentType],
+            ],
         ]);
         $parser->parse($request);
         $uploadedFiles = $request->getUploadedFiles();
@@ -198,8 +197,8 @@ class MultipartFormDataParserTest extends TestCase
         $request = new Request([
             'rawBody' => $rawBody,
             'headers' => [
-                'content-type' => [$contentType]
-            ]
+                'content-type' => [$contentType],
+            ],
         ]);
         $bodyParams = $parser->parse($request);
 

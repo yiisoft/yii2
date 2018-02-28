@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\conditions;
 
@@ -13,7 +18,7 @@ use yii\base\InvalidArgumentException;
 class BetweenCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
+     * @var string the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
      */
     private $operator;
     /**

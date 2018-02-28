@@ -247,7 +247,7 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Builds given $expression
+     * Builds given $expression.
      *
      * @param ExpressionInterface $expression the expression to be built
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
@@ -306,7 +306,7 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Creates an INSERT SQL statement.
-     * For example,
+     * For example,.
      *
      * ```php
      * $sql = $queryBuilder->insert('user', [
@@ -625,7 +625,6 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $sets = [];
         foreach ($columns as $name => $value) {
-
             $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             if ($value instanceof ExpressionInterface) {
                 $placeholder = $this->buildExpression($value, $params);
@@ -1102,7 +1101,7 @@ class QueryBuilder extends \yii\base\BaseObject
             [$rawQuery, $params] = $this->build($subQuery);
             array_walk(
                 $params,
-                function(&$param) {
+                function (&$param) {
                     $param = $this->db->quoteValue($param);
                 }
             );

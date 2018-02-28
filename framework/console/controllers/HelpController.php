@@ -463,7 +463,8 @@ class HelpController extends Controller
                         $arg['required'],
                         $arg['type'],
                         $arg['default'],
-                        $arg['comment']) . "\n\n");
+                        $arg['comment']
+                ) . "\n\n");
             }
         }
 
@@ -471,12 +472,16 @@ class HelpController extends Controller
             $this->stdout("\nOPTIONS\n\n", Console::BOLD);
             foreach ($options as $name => $option) {
                 $this->stdout($this->formatOptionHelp(
-                        $this->ansiFormat('--' . $name . $this->formatOptionAliases($controller, $name),
-                            Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
+                        $this->ansiFormat(
+                            '--' . $name . $this->formatOptionAliases($controller, $name),
+                            Console::FG_RED,
+                            empty($option['required']) ? Console::FG_RED : Console::BOLD
+                        ),
                         !empty($option['required']),
                         $option['type'],
                         $option['default'],
-                        $option['comment']) . "\n\n");
+                        $option['comment']
+                ) . "\n\n");
             }
         }
     }
@@ -504,7 +509,7 @@ class HelpController extends Controller
             }
             if (is_bool($defaultValue)) {
                 // show as integer to avoid confusion
-                $defaultValue = (int)$defaultValue;
+                $defaultValue = (int) $defaultValue;
             }
             if (is_string($defaultValue)) {
                 $defaultValue = "'" . $defaultValue . "'";

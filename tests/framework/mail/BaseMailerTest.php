@@ -23,7 +23,7 @@ class BaseMailerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'mailer' => $this->createTestMailComponent(),
-            ]
+            ],
         ]);
         $filePath = $this->getTestFilePath();
         if (!file_exists($filePath)) {
@@ -54,8 +54,8 @@ class BaseMailerTest extends TestCase
     {
         return new TestMailer([
             'composer' => [
-                'viewPath' => $this->getTestFilePath()
-            ]
+                'viewPath' => $this->getTestFilePath(),
+            ],
         ]);
     }
 
@@ -73,7 +73,7 @@ class BaseMailerTest extends TestCase
     {
         $mailer = new TestMailer();
         $message = $mailer->compose();
-        $this->assertTrue(is_object($message), 'Unable to create message instance!');
+        $this->assertInternalType('object', $message, 'Unable to create message instance!');
         $this->assertEquals($mailer->messageClass, get_class($message), 'Invalid message class!');
     }
 

@@ -34,7 +34,7 @@ class WinCacheTest extends CacheTestCase
 
         if ($this->_cacheInstance === null) {
             $this->_cacheInstance = new Cache([
-                'handler' => new WinCache()
+                'handler' => new WinCache(),
             ]);
         }
 

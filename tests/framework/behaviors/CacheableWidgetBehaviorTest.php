@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\behaviors;
 
@@ -94,7 +99,6 @@ class CacheableWidgetBehaviorTest extends TestCase
 
     /**
      * Initializes mock widgets.
-     *
      */
     private function initializeWidgetMocks()
     {
@@ -105,6 +109,7 @@ class CacheableWidgetBehaviorTest extends TestCase
     /**
      * Returns a widget mock.
      *
+     * @param mixed $widgetClass
      */
     private function getWidgetMock($widgetClass)
     {

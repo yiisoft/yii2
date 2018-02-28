@@ -116,7 +116,7 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Override settings for specific action
+     * Override settings for specific action.
      * @param \yii\base\Action $action the action settings to override
      */
     public function overrideDefaultSettings($action)

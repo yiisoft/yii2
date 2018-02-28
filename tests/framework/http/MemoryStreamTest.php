@@ -21,7 +21,7 @@ class MemoryStreamTest extends TestCase
         $this->assertSame(5, $stream->write('01234'));
         $this->assertSame(5, $stream->write('56789'));
 
-        $this->assertSame('0123456789', (string)$stream);
+        $this->assertSame('0123456789', (string) $stream);
     }
 
     /**
@@ -84,10 +84,10 @@ class MemoryStreamTest extends TestCase
         $stream->write('0123456789');
         $stream->rewind();
 
-        $this->assertSame('0123456789', (string)$stream);
+        $this->assertSame('0123456789', (string) $stream);
 
         $stream->seek(5);
-        $this->assertSame('0123456789', (string)$stream);
+        $this->assertSame('0123456789', (string) $stream);
     }
 
     /**
@@ -128,6 +128,6 @@ class MemoryStreamTest extends TestCase
         $stream->seek(5);
         $this->assertSame(4, $stream->write('0000'));
 
-        $this->assertSame('0123400009', (string)$stream);
+        $this->assertSame('0123400009', (string) $stream);
     }
 }

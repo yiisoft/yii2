@@ -9,7 +9,6 @@ namespace yiiunit\framework\db;
 
 use yii\caching\ArrayCache;
 use yii\caching\Cache;
-use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
 use yii\db\Exception;
@@ -493,7 +492,8 @@ SQL;
         )->execute();
 
         $query = new \yii\db\Query();
-        $query->select([
+        $query->select(
+            [
                     '{{customer}}.[[email]] as name',
                     '[[name]] as email',
                     '[[address]]',
@@ -547,7 +547,8 @@ SQL;
         )->execute();
 
         $query = new \yii\db\Query();
-        $query->select([
+        $query->select(
+            [
                 'email' => '{{customer}}.[[email]]',
                 'address' => 'name',
                 'name' => 'address',
@@ -778,8 +779,8 @@ SQL;
                             'email' => 'foo@example.com',
                             'address' => 'Earth',
                             'status' => 3,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 [
                     'params' => [
@@ -788,8 +789,8 @@ SQL;
                             'email' => 'foo@example.com',
                             'address' => 'Universe',
                             'status' => 1,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
             ],
             'regular values with update part' => [
@@ -837,7 +838,7 @@ SQL;
                             'status' => 3,
                         ],
                         false,
-                    ]
+                    ],
                 ],
                 [
                     'params' => [
@@ -868,7 +869,7 @@ SQL;
                             ])
                             ->from('customer')
                             ->where(['name' => 'user1'])
-                            ->limit(1)
+                            ->limit(1),
                     ],
                     'expected' => [
                         'email' => 'user1@example.com',
@@ -887,7 +888,7 @@ SQL;
                             ])
                             ->from('customer')
                             ->where(['name' => 'user1'])
-                            ->limit(1)
+                            ->limit(1),
                     ],
                     'expected' => [
                         'email' => 'user1@example.com',

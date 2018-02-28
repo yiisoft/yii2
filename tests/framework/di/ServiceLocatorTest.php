@@ -16,7 +16,7 @@ class Creator
 {
     public static function create()
     {
-        return new TestClass;
+        return new TestClass();
     }
 }
 
@@ -52,7 +52,7 @@ class ServiceLocatorTest extends TestCase
         // static method
         $container = new ServiceLocator();
         $className = TestClass::class;
-        $container->set($className, [__NAMESPACE__ . "\\Creator", 'create']);
+        $container->set($className, [__NAMESPACE__ . '\\Creator', 'create']);
         $object = $container->get($className);
         $this->assertInstanceOf($className, $object);
         $this->assertEquals(1, $object->prop1);
@@ -63,7 +63,7 @@ class ServiceLocatorTest extends TestCase
     {
         $object = new TestClass();
         $className = TestClass::class;
-        $container = new ServiceLocator;
+        $container = new ServiceLocator();
         $container->set($className, $object);
         $this->assertSame($container->get($className), $object);
     }

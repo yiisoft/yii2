@@ -97,7 +97,7 @@ class View extends Component implements DynamicContentAwareInterface
      * @var array a list of placeholders for embedding dynamic contents. This property
      * is used internally to implement the content caching feature. Do not modify it directly.
      * @internal
-     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicPlaceholders()]], 
+     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicPlaceholders()]],
      * [[setDynamicPlaceholders()]], [[addDynamicPlaceholder()]] instead.
      */
     public $dynamicPlaceholders = [];
@@ -350,7 +350,7 @@ class View extends Component implements DynamicContentAwareInterface
      * This method is mainly used together with content caching (fragment caching and page caching)
      * when some portions of the content (called *dynamic content*) should not be cached.
      * The dynamic content must be returned by some PHP statements. You can optionally pass
-     * additional parameters that will be available as variables in the PHP statement:
+     * additional parameters that will be available as variables in the PHP statement:.
      *
      * ```php
      * <?= $this->renderDynamic('return foo($myVar);', [
@@ -411,7 +411,7 @@ class View extends Component implements DynamicContentAwareInterface
             }
         }
         $this->dynamicPlaceholders[$placeholder] = $statements;
-}
+    }
 
     /**
      * Evaluates the given PHP statements.

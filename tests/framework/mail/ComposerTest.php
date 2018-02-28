@@ -8,8 +8,8 @@
 namespace yiiunit\framework\mail;
 
 use Yii;
-use yii\mail\Composer;
 use yii\base\View;
+use yii\mail\Composer;
 use yii\mail\Template;
 use yiiunit\TestCase;
 
@@ -30,11 +30,11 @@ class ComposerTest extends TestCase
             'params' => [
                 'param1' => 'value1',
                 'param2' => 'value2',
-            ]
+            ],
         ];
         $composer->setView($viewConfig);
         $view = $composer->getView();
-        $this->assertTrue(is_object($view), 'Unable to setup view via config!');
+        $this->assertInternalType('object', $view, 'Unable to setup view via config!');
         $this->assertEquals($viewConfig['params'], $view->params, 'Unable to configure view via config array!');
     }
 
@@ -45,7 +45,7 @@ class ComposerTest extends TestCase
     {
         $composer = new Composer();
         $view = $composer->getView();
-        $this->assertTrue(is_object($view), 'Unable to get default view!');
+        $this->assertInternalType('object', $view, 'Unable to get default view!');
     }
 
     /**

@@ -161,9 +161,8 @@ class Cache extends Component implements CacheInterface
                 if (is_array($value) && isset($value[1]) && $value[1] instanceof Dependency) {
                     if ($value[1]->isChanged($this)) {
                         continue;
-                    } else {
-                        $value = $value[0];
                     }
+                    $value = $value[0];
                 }
                 $results[$key] = $value;
             }

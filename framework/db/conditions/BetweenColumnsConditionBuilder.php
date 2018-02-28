@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\db\conditions;
 
@@ -8,7 +13,7 @@ use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
- * Class BetweenColumnsConditionBuilder builds objects of [[BetweenColumnsCondition]]
+ * Class BetweenColumnsConditionBuilder builds objects of [[BetweenColumnsCondition]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

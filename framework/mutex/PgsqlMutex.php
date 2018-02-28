@@ -7,8 +7,8 @@
 
 namespace yii\mutex;
 
-use yii\base\InvalidConfigException;
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 
 /**
  * PgsqlMutex implements mutex "lock" mechanism via PgSQL locks.

@@ -1203,7 +1203,7 @@ class Command extends Component
 
     /**
      * Sets a callable (e.g. anonymous function) that is called when [[Exception]] is thrown
-     * when executing the command. The signature of the callable should be:
+     * when executing the command. The signature of the callable should be:.
      *
      * ```php
      * function (\yii\db\Exception $e, $attempt)

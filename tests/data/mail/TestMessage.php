@@ -1,11 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\mail;
 
 use yii\mail\BaseMessage;
 
 /**
- * Test Message class
+ * Test Message class.
  */
 class TestMessage extends BaseMessage
 {
@@ -119,13 +124,21 @@ class TestMessage extends BaseMessage
         return $this;
     }
 
-    public function attachContent($content, array $options = []) {}
+    public function attachContent($content, array $options = [])
+    {
+    }
 
-    public function attach($fileName, array $options = []) {}
+    public function attach($fileName, array $options = [])
+    {
+    }
 
-    public function embed($fileName, array $options = []) {}
+    public function embed($fileName, array $options = [])
+    {
+    }
 
-    public function embedContent($content, array $options = []) {}
+    public function embedContent($content, array $options = [])
+    {
+    }
 
     public function toString()
     {
@@ -136,11 +149,19 @@ class TestMessage extends BaseMessage
         return $s;
     }
 
-    public function addHeader($name, $value) {}
+    public function addHeader($name, $value)
+    {
+    }
 
-    public function setHeader($name, $value) {}
+    public function setHeader($name, $value)
+    {
+    }
 
-    public function getHeader($name) {}
+    public function getHeader($name)
+    {
+    }
 
-    public function setHeaders($headers) {}
+    public function setHeaders($headers)
+    {
+    }
 }
