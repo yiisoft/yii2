@@ -126,20 +126,6 @@ All Rights Reserved.
 * **TBD** [HTTP кешування](caching-http.md)
 
 
-Веб-сервіси RESTful
--------------------
-
-* **TBD** [Швидкий старт](rest-quick-start.md)
-* **TBD** [Ресурси](rest-resources.md)
-* **TBD** [Контролери](rest-controllers.md)
-* **TBD** [Маршрутизація](rest-routing.md)
-* **TBD** [Форматування відповіді](rest-response-formatting.md)
-* **TBD** [Аутентифікація](rest-authentication.md)
-* [Обмеження частоти запитів](rest-rate-limiting.md)
-* **TBD** [Версіонування](rest-versioning.md)
-* **TBD** [Обробка помилок](rest-error-handling.md)
-
-
 Інструменти розробника
 ----------------------
 

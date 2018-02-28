@@ -128,20 +128,6 @@ All Rights Reserved.
 * [HTTP кэширование](caching-http.md)
 
 
-Веб-сервисы REST
-----------------
-
-* [Быстрый старт](rest-quick-start.md)
-* [Ресурсы](rest-resources.md)
-* [Контроллеры](rest-controllers.md)
-* [Роутинг](rest-routing.md)
-* [Форматирование ответа](rest-response-formatting.md)
-* [Аутентификация](rest-authentication.md)
-* [Ограничение частоты запросов](rest-rate-limiting.md)
-* [Версионирование](rest-versioning.md)
-* [Обработка ошибок](rest-error-handling.md)
-
-
 Инструменты разработчика
 ------------------------
 

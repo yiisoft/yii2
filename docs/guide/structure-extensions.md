@@ -399,6 +399,8 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
   provides a set of commonly used auth clients, such as Facebook OAuth2 client, GitHub OAuth2 client.
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
   provides a set of widgets that encapsulate the [Bootstrap](http://getbootstrap.com/) components and plugins.
+- [yiisoft/yii2-captcha](https://github.com/yiisoft/yii2-captcha):
+  provides an implementation for the CAPTCHA protection.
 - [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception):
   provides testing support based on [Codeception](http://codeception.com/).
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
@@ -418,14 +420,22 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
   provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
   provides commonly used image manipulation functions based on [Imagine](http://imagine.readthedocs.org/).
+- [yiisoft/yii2-jquery](https://github.com/yiisoft/yii2-jquery):
+  provides an integration of [JQuery](http://jquery.com/) and a set of widget behaviors for client side.
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
   provides a set of widgets that encapsulate the [JQuery UI](http://jqueryui.com/) interactions and widgets.
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
   provides the support for using [MongoDB](http://www.mongodb.org/). It includes features such as basic query,
   Active Record, migrations, caching, code generation, etc.
+- [yiisoft/yii2-mssql](https://github.com/yiisoft/yii2-mssql):
+  provides support for MSSQL Server database usage.
+- [yiisoft/yii2-oracle](https://github.com/yiisoft/yii2-oracle):
+  provides support for Oracle database usage.
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
   provides the support for using [redis](http://redis.io/). It includes features such as basic query,
   Active Record, caching, etc.
+- [yiisoft/yii2-rest](https://github.com/yiisoft/yii2-rest):
+  provides the support for REST API server side creation.
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
   provides a template engine based on [Smarty](http://www.smarty.net/).
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):

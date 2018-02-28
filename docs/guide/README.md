@@ -130,20 +130,6 @@ Caching
 * [HTTP Caching](caching-http.md)
 
 
-RESTful Web Services
---------------------
-
-* [Quick Start](rest-quick-start.md)
-* [Resources](rest-resources.md)
-* [Controllers](rest-controllers.md)
-* [Routing](rest-routing.md)
-* [Response Formatting](rest-response-formatting.md)
-* [Authentication](rest-authentication.md)
-* [Rate Limiting](rest-rate-limiting.md)
-* [Versioning](rest-versioning.md)
-* [Error Handling](rest-error-handling.md)
-
-
 Development Tools
 -----------------
 
