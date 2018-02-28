@@ -247,6 +247,17 @@ EOT;
         $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
     }
 
+    public function testTabularInputErrors()
+    {
+        $this->activeField->attribute = '[0]'.$this->attributeName;
+        $this->helperModel->addError($this->attributeName, 'Error Message');
+
+        $expectedValue = '<div class="form-group field-activefieldtestmodel-0-attributename has-error">';
+        $actualValue = $this->activeField->begin();
+
+        $this->assertEquals($expectedValue, $actualValue);
+    }
+
     public function hintDataProvider()
     {
         return [
