@@ -8,7 +8,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * Class Animal
+ * Class Storage
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @property int $id
