@@ -75,6 +75,8 @@ Upgrade from Yii 2.0.x
   Include it in your composer.json if you use it.
 * Masked input field widget was moved into separate extension https://github.com/yiisoft/yii2-maskedinput.
   Include it in your composer.json if you use it.
+* PJAX support has been removed: widget `yii\widget\Pjax`, method `yii\web\Request::getIsPjax()`, PJAX related checks and
+  headers are no longer available. If you wish to use PJAX further you should create your own integration for it.
 * If you've used ApcCache and set `useApcu` in your config, remove the option.
 * During mail view rendering the `$message` variable is no longer set by default to be an instance of `yii\mail\MessageInterface`. Instead it is available via `$this->context->message` expression.
 * `yii\mail\BaseMailer::render()` method has been removed. Make sure you do not use it anywhere in your program.

@@ -866,10 +866,10 @@ class Response extends \yii\base\Response implements ResponseInterface
      * @param int $statusCode the HTTP status code. Defaults to 302.
      * See <https://tools.ietf.org/html/rfc2616#section-10>
      * for details about HTTP status code
-     * @param bool $checkAjax whether to specially handle AJAX (and PJAX) requests. Defaults to true,
-     * meaning if the current request is an AJAX or PJAX request, then calling this method will cause the browser
+     * @param bool $checkAjax whether to specially handle AJAX requests. Defaults to true,
+     * meaning if the current request is an AJAX request, then calling this method will cause the browser
      * to redirect to the given URL. If this is false, a `Location` header will be sent, which when received as
-     * an AJAX/PJAX response, may NOT cause browser redirection.
+     * an AJAX response, may NOT cause browser redirection.
      * Takes effect only when request header `X-Ie-Redirect-Compatibility` is absent.
      * @return $this the response object itself
      */
@@ -890,11 +890,7 @@ class Response extends \yii\base\Response implements ResponseInterface
                     // Ajax 302 redirect in IE does not work. Change status code to 200. See https://github.com/yiisoft/yii2/issues/9670
                     $statusCode = 200;
                 }
-                if (Yii::$app->getRequest()->getIsPjax()) {
-                    $this->setHeader('X-Pjax-Url', $url);
-                } else {
-                    $this->setHeader('X-Redirect', $url);
-                }
+                $this->setHeader('X-Redirect', $url);
             } else {
                 $this->setHeader('Location', $url);
             }
