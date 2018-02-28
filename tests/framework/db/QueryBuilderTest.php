@@ -10,9 +10,7 @@ namespace yiiunit\framework\db;
 use yii\db\conditions\BetweenColumnsCondition;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\Expression;
-use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\mysql\QueryBuilder as MysqlQueryBuilder;
-use yii\db\oci\QueryBuilder as OracleQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\Query;
 use yii\db\QueryBuilder;
@@ -57,14 +55,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 return new MysqlQueryBuilder($connection);
             case 'sqlite':
                 return new SqliteQueryBuilder($connection);
-            case 'sqlsrv':
-                return new MssqlQueryBuilder($connection);
             case 'pgsql':
                 return new PgsqlQueryBuilder($connection);
             case 'cubrid':
                 return new CubridQueryBuilder($connection);
-            case 'oci':
-                return new OracleQueryBuilder($connection);
         }
         throw new \Exception('Test is not implemented for ' . $this->driverName);
     }

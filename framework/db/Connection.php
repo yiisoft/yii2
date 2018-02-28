@@ -279,10 +279,6 @@ class Connection extends Component
         'mysql' => mysql\Schema::class, // MySQL
         'sqlite' => sqlite\Schema::class, // sqlite 3
         'sqlite2' => sqlite\Schema::class, // sqlite 2
-        'sqlsrv' => mssql\Schema::class, // newer MSSQL driver on MS Windows hosts
-        'oci' => oci\Schema::class, // Oracle driver
-        'mssql' => mssql\Schema::class, // older MSSQL driver on MS Windows hosts
-        'dblib' => mssql\Schema::class, // dblib drivers on GNU/Linux (and maybe other OSes) hosts
         'cubrid' => cubrid\Schema::class, // CUBRID
     ];
     /**
