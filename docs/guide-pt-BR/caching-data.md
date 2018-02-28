@@ -96,10 +96,6 @@ Yii suporta uma ampla gama de sistemas de cache. A seguir um resumo:
   [Redis](http://redis.io/) (requer redis versão 2.6.12 ou mais recente).
 * [[yii\caching\WinCache]]: usa a extensão PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
   ([veja também](http://php.net/manual/en/book.wincache.php)).
-* [[yii\caching\XCache]] _(deprecated)_: usa a extensão PHP [XCache](http://xcache.lighttpd.net/).
-* [[yii\caching\ZendDataCache]] _(deprecated)_: usa
-  [Cache de Dados Zend](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
-  como o meio de cache subjacente.
 
 
 > Dica: Você pode usar vários tipos de cache na mesma aplicação. Uma estratégia comum é usar caches baseados 
@@ -123,7 +119,7 @@ Todos os componentes de caches estendem a mesma classe base [[yii\caching\Cache]
   Se a chave já existir em cache, o registro é ignorado.
 * [[yii\caching\Cache::exists()|exists()]]: retorna se a chave específica é encontrada no cache.
 * [[yii\caching\Cache::delete()|delete()]]: remove um registro do cache identificado por uma chave.
-* [[yii\caching\Cache::flush()|flush()]]: remove todos os registros do cache.
+* [[yii\caching\Cache::clear()|clear()]]: remove todos os registros do cache.
 
 > Observação: Não armazene o valor boleano `false` diretamente, porque o método [[yii\caching\Cache::get()|get()]] retorna `false`para indicar que o registro não foi encontrado em cache. Você pode armazena `false` em um array e armazenar este em cache para evitar este problema.
 

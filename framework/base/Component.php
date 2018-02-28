@@ -83,7 +83,7 @@ use yii\helpers\StringHelper;
  * ```php
  * [
  *     'as tree' => [
- *         'class' => 'Tree',
+ *         'class' => Tree::class,
  *     ],
  * ]
  * ```
@@ -294,7 +294,7 @@ class Component extends BaseObject
         $this->ensureBehaviors();
         foreach ($this->_behaviors as $object) {
             if ($object->hasMethod($name)) {
-                return call_user_func_array([$object, $name], $params);
+                return $object->$name(...$params);
             }
         }
         throw new UnknownMethodException('Calling unknown method: ' . get_class($this) . "::$name()");
@@ -436,7 +436,7 @@ class Component extends BaseObject
      *
      * ```php
      * 'behaviorName' => [
-     *     'class' => 'BehaviorClass',
+     *     'class' => BehaviorClass::class,
      *     'property1' => 'value1',
      *     'property2' => 'value2',
      * ]
@@ -498,7 +498,7 @@ class Component extends BaseObject
      *
      * ```php
      * $component->on('event.group.*', function ($event) {
-     *     Yii::trace($event->name . ' is triggered.');
+     *     Yii::debug($event->name . ' is triggered.');
      * });
      * ```
      *

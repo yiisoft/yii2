@@ -364,7 +364,7 @@ class Customer extends \yii\db\ActiveRecord
     public function getOrders()
     {
         // 客户和订单通过 Order.customer_id -> id 关联建立一对多关系
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -373,7 +373,7 @@ class Order extends \yii\db\ActiveRecord
     // 订单和客户通过 Customer.id -> customer_id 关联建立一对一关系
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -419,7 +419,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getBigOrders($threshold = 100)
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])
             ->where('subtotal > :threshold', [':threshold' => $threshold])
             ->orderBy('id');
     }
@@ -455,7 +455,7 @@ class Order extends \yii\db\ActiveRecord
 {
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 }
@@ -468,12 +468,12 @@ class Order extends \yii\db\ActiveRecord
 {
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems');
     }
 }
@@ -560,7 +560,7 @@ class Customer extends ActiveRecord
     ....
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -569,7 +569,7 @@ class Order extends ActiveRecord
     ....
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -597,7 +597,7 @@ class Customer extends ActiveRecord
     ....
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
     }
 }
 ```
@@ -707,7 +707,7 @@ class User extends ActiveRecord
 {
     public function getBooks()
     {
-        return $this->hasMany(Item::className(), ['owner_id' => 'id'])->onCondition(['category_id' => 1]);
+        return $this->hasMany(Item::class, ['owner_id' => 'id'])->onCondition(['category_id' => 1]);
     }
 }
 ```
@@ -820,7 +820,7 @@ class Post extends \yii\db\ActiveRecord
 {
     public function getActiveComments()
     {
-        return $this->hasMany(Comment::className(), ['post_id' => 'id'])->active();
+        return $this->hasMany(Comment::class, ['post_id' => 'id'])->active();
 
     }
 }
@@ -868,7 +868,7 @@ class Feature extends \yii\db\ActiveRecord
 
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 }
 
@@ -878,7 +878,7 @@ class Product extends \yii\db\ActiveRecord
 
     public function getFeatures()
     {
-        return $this->hasMany(Feature::className(), ['product_id' => 'id']);
+        return $this->hasMany(Feature::class, ['product_id' => 'id']);
     }
 }
 ```
@@ -917,7 +917,7 @@ class Feature extends \yii\db\ActiveRecord
 
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['product_id' => 'id']);
+        return $this->hasOne(Product::class, ['product_id' => 'id']);
     }
 
     public function scenarios()
@@ -937,7 +937,7 @@ class Product extends \yii\db\ActiveRecord
 
     public function getFeatures()
     {
-        return $this->hasMany(Feature::className(), ['id' => 'product_id']);
+        return $this->hasMany(Feature::class, ['id' => 'product_id']);
     }
 
     public function scenarios()

@@ -7,7 +7,10 @@
 
 namespace yiiunit\framework\web;
 
+use yii\http\MemoryStream;
+use yii\http\UploadedFile;
 use yii\web\Request;
+use yii\web\UnsupportedMediaTypeHttpException;
 use yiiunit\TestCase;
 
 /**
@@ -98,6 +101,7 @@ class RequestTest extends TestCase
         $this->mockWebApplication();
 
         $request = new Request();
+        $request->setHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request->enableCsrfCookie = false;
 
         $token = $request->getCsrfToken();
@@ -116,7 +120,7 @@ class RequestTest extends TestCase
 
         // accept any value on GET request
         foreach (['GET', 'HEAD', 'OPTIONS'] as $method) {
-            $_POST[$request->methodParam] = $method;
+            $request->setMethod($method);
             $this->assertTrue($request->validateCsrfToken($token));
             $this->assertTrue($request->validateCsrfToken($token . 'a'));
             $this->assertTrue($request->validateCsrfToken([]));
@@ -127,7 +131,7 @@ class RequestTest extends TestCase
 
         // only accept valid token on POST
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
-            $_POST[$request->methodParam] = $method;
+            $request->setMethod($method);
             $this->assertTrue($request->validateCsrfToken($token));
             $this->assertFalse($request->validateCsrfToken($token . 'a'));
             $this->assertFalse($request->validateCsrfToken([]));
@@ -167,16 +171,16 @@ class RequestTest extends TestCase
 
         // accept no value on GET request
         foreach (['GET', 'HEAD', 'OPTIONS'] as $method) {
-            $_POST[$request->methodParam] = $method;
+            $request->setMethod($method);
             $this->assertTrue($request->validateCsrfToken());
         }
 
         // only accept valid token on POST
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
-            $_POST[$request->methodParam] = $method;
-            $request->setBodyParams([]);
+            $request->setMethod($method);
+            $request->setParsedBody([]);
             $this->assertFalse($request->validateCsrfToken());
-            $request->setBodyParams([$request->csrfParam => $token]);
+            $request->setParsedBody([$request->csrfParam => $token]);
             $this->assertTrue($request->validateCsrfToken());
         }
     }
@@ -201,12 +205,11 @@ class RequestTest extends TestCase
 
         // only accept valid token on POST
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
-            $_POST[$request->methodParam] = $method;
-            $request->setBodyParams([]);
-            $request->headers->remove(Request::CSRF_HEADER);
-            $this->assertFalse($request->validateCsrfToken());
-            $request->headers->add(Request::CSRF_HEADER, $token);
-            $this->assertTrue($request->validateCsrfToken());
+            $request->setMethod($method);
+            $request->setParsedBody([]);
+
+            $this->assertFalse($request->withoutHeader(Request::CSRF_HEADER)->validateCsrfToken());
+            $this->assertTrue($request->withAddedHeader(Request::CSRF_HEADER, $token)->validateCsrfToken());
         }
     }
 
@@ -383,10 +386,12 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
-        $_SERVER['SERVER_NAME'] = 'servername';
+        $request->setServerParams([
+            'SERVER_NAME' => 'servername'
+        ]);
         $this->assertEquals('servername', $request->getServerName());
 
-        unset($_SERVER['SERVER_NAME']);
+        $request->setServerParams([]);
         $this->assertNull($request->getServerName());
     }
 
@@ -394,10 +399,12 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
-        $_SERVER['SERVER_PORT'] = 33;
+        $request->setServerParams([
+            'SERVER_PORT' => 33
+        ]);
         $this->assertEquals(33, $request->getServerPort());
 
-        unset($_SERVER['SERVER_PORT']);
+        $request->setServerParams([]);
         $this->assertNull($request->getServerPort());
     }
 
@@ -633,7 +640,7 @@ class RequestTest extends TestCase
 
         unset($_SERVER['HTTP_ORIGIN']);
         $request = new Request();
-        $this->assertNull($request->getOrigin());
+        $this->assertSame('', $request->getOrigin());
     }
 
     public function httpAuthorizationHeadersProvider()
@@ -659,13 +666,13 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
-        $request->getHeaders()->set('HTTP_AUTHORIZATION', 'Basic ' . $secret);
+        $request->setHeader('HTTP_AUTHORIZATION', 'Basic ' . $secret);
         $this->assertSame($request->getAuthCredentials(), $expected);
         $this->assertSame($request->getAuthUser(), $expected[0]);
         $this->assertSame($request->getAuthPassword(), $expected[1]);
-        $request->getHeaders()->offsetUnset('HTTP_AUTHORIZATION');
+        $request->getHeaderCollection()->remove('HTTP_AUTHORIZATION');
 
-        $request->getHeaders()->set('REDIRECT_HTTP_AUTHORIZATION', 'Basic ' . $secret);
+        $request->setHeader('REDIRECT_HTTP_AUTHORIZATION', 'Basic ' . $secret);
         $this->assertSame($request->getAuthCredentials(), $expected);
         $this->assertSame($request->getAuthUser(), $expected[0]);
         $this->assertSame($request->getAuthPassword(), $expected[1]);
@@ -674,12 +681,12 @@ class RequestTest extends TestCase
     public function testHttpAuthCredentialsFromServerSuperglobal()
     {
         $original = $_SERVER;
-        list($user, $pw) = ['foo', 'bar'];
+        [$user, $pw] = ['foo', 'bar'];
         $_SERVER['PHP_AUTH_USER'] = $user;
         $_SERVER['PHP_AUTH_PW'] = $pw;
 
         $request = new Request();
-        $request->getHeaders()->set('HTTP_AUTHORIZATION', 'Basic ' . base64_encode('less-priority:than-PHP_AUTH_*'));
+        $request->setHeader('HTTP_AUTHORIZATION', 'Basic ' . base64_encode('less-priority:than-PHP_AUTH_*'));
 
         $this->assertSame($request->getAuthCredentials(), [$user, $pw]);
         $this->assertSame($request->getAuthUser(), $user);
@@ -688,27 +695,310 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function testGetBodyParam()
+    public function testGetBodyParams()
+    {
+        $body = new MemoryStream();
+        $body->write('name=value');
+
+        $request = new Request();
+        $request->setMethod('PUT');
+        $request->setBody($body);
+        $_POST = ['name' => 'post'];
+
+        $this->assertSame(['name' => 'value'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->getParsedBody());
+        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'application/x-www-form-urlencoded')->withMethod('POST')->getParsedBody());
+        $this->assertSame(['name' => 'post'], $request->withHeader('Content-Type', 'multipart/form-data')->withMethod('POST')->getParsedBody());
+
+        try {
+            $request->getParsedBody();
+        } catch (UnsupportedMediaTypeHttpException $noContentTypeException) {}
+        $this->assertTrue(isset($noContentTypeException));
+
+        try {
+            $request->withMethod('POST')->getParsedBody();
+        } catch (UnsupportedMediaTypeHttpException $postWithoutContentTypeException) {}
+        $this->assertTrue(isset($postWithoutContentTypeException));
+    }
+
+    /**
+     * Data provider for [[testDefaultUploadedFiles()]]
+     * @return array test data.
+     */
+    public function dataProviderDefaultUploadedFiles()
+    {
+        return [
+            [
+                [],
+                [],
+            ],
+            [
+                [
+                    'avatar' => [
+                        'tmp_name' => 'avatar.tmp',
+                        'name' => 'my-avatar.png',
+                        'size' => 90996,
+                        'type' => 'image/png',
+                        'error' => 0,
+                    ],
+                ],
+                [
+                    'avatar' => new UploadedFile([
+                        'tempFilename' => 'avatar.tmp',
+                        'clientFilename' => 'my-avatar.png',
+                        'size' => 90996,
+                        'clientMediaType' => 'image/png',
+                        'error' => 0,
+                    ])
+                ]
+            ],
+            [
+                [
+                    'ItemFile' => [
+                        'name' => [
+                            0 => 'file0.txt',
+                            1 => 'file1.txt',
+                        ],
+                        'type' => [
+                            0 => 'type/0',
+                            1 => 'type/1',
+                        ],
+                        'tmp_name' => [
+                            0 => 'file0.tmp',
+                            1 => 'file1.tmp',
+                        ],
+                        'size' => [
+                            0 => 1000,
+                            1 => 1001,
+                        ],
+                        'error' => [
+                            0 => 0,
+                            1 => 1,
+                        ],
+                    ],
+                ],
+                [
+                    'ItemFile' => [
+                        0 => new UploadedFile([
+                            'clientFilename' => 'file0.txt',
+                            'clientMediaType' => 'type/0',
+                            'tempFilename' => 'file0.tmp',
+                            'size' => 1000,
+                            'error' => 0,
+                        ]),
+                        1 => new UploadedFile([
+                            'clientFilename' => 'file1.txt',
+                            'clientMediaType' => 'type/1',
+                            'tempFilename' => 'file1.tmp',
+                            'size' => 1001,
+                            'error' => 1,
+                        ]),
+                    ],
+                ],
+            ],
+            [
+                [
+                    'my-form' => [
+                        'name' => [
+                            'details' => [
+                                'avatar' => 'my-avatar.png'
+                            ],
+                        ],
+                        'tmp_name' => [
+                            'details' => [
+                                'avatar' => 'avatar.tmp'
+                            ],
+                        ],
+                        'size' => [
+                            'details' => [
+                                'avatar' => 90996
+                            ],
+                        ],
+                        'type' => [
+                            'details' => [
+                                'avatar' => 'image/png'
+                            ],
+                        ],
+                        'error' => [
+                            'details' => [
+                                'avatar' => 0
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'my-form' => [
+                        'details' => [
+                            'avatar' => new UploadedFile([
+                                'tempFilename' => 'avatar.tmp',
+                                'clientFilename' => 'my-avatar.png',
+                                'clientMediaType' => 'image/png',
+                                'size' => 90996,
+                                'error' => 0,
+                            ])
+                        ],
+                    ],
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @depends testGetBodyParams
+     * @dataProvider dataProviderDefaultUploadedFiles
+     *
+     * @param array $rawFiles
+     * @param array $expectedFiles
+     */
+    public function testDefaultUploadedFiles(array $rawFiles, array $expectedFiles)
+    {
+        $request = new Request();
+        $request->setMethod('POST');
+        $request->setHeader('Content-Type', 'multipart/form-data');
+
+        $_FILES = $rawFiles;
+
+        $this->assertEquals($expectedFiles, $request->getUploadedFiles());
+    }
+
+    /**
+     * @depends testDefaultUploadedFiles
+     */
+    public function testGetUploadedFileByName()
+    {
+        $request = new Request();
+        $request->setUploadedFiles([
+            'ItemFile' => [
+                0 => new UploadedFile([
+                    'clientFilename' => 'file0.txt',
+                    'clientMediaType' => 'type/0',
+                    'tempFilename' => 'file0.tmp',
+                    'size' => 1000,
+                    'error' => 0,
+                ]),
+                1 => new UploadedFile([
+                    'clientFilename' => 'file1.txt',
+                    'clientMediaType' => 'type/1',
+                    'tempFilename' => 'file1.tmp',
+                    'size' => 1001,
+                    'error' => 1,
+                ]),
+            ],
+        ]);
+
+        /* @var $uploadedFile UploadedFile */
+        $uploadedFile = $request->getUploadedFileByName('ItemFile[0]');
+        $this->assertTrue($uploadedFile instanceof UploadedFile);
+        $this->assertSame('file0.txt', $uploadedFile->getClientFilename());
+        $this->assertSame($uploadedFile, $request->getUploadedFileByName(['ItemFile', 0]));
+
+        $this->assertNull($request->getUploadedFileByName('ItemFile[3]'));
+        $this->assertNull($request->getUploadedFileByName(['ItemFile', 3]));
+    }
+
+    /**
+     * @depends testGetUploadedFileByName
+     */
+    public function testGetUploadedFilesByName()
+    {
+        $request = new Request();
+        $request->setUploadedFiles([
+            'Item' => [
+                'file' => [
+                    0 => new UploadedFile([
+                        'clientFilename' => 'file0.txt',
+                        'clientMediaType' => 'type/0',
+                        'tempFilename' => 'file0.tmp',
+                        'size' => 1000,
+                        'error' => 0,
+                    ]),
+                    1 => new UploadedFile([
+                        'clientFilename' => 'file1.txt',
+                        'clientMediaType' => 'type/1',
+                        'tempFilename' => 'file1.tmp',
+                        'size' => 1001,
+                        'error' => 1,
+                    ]),
+                ],
+            ],
+        ]);
+
+        $uploadedFiles = $request->getUploadedFilesByName('Item[file]');
+        $this->assertCount(2, $uploadedFiles);
+        $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
+        $this->assertTrue($uploadedFiles[1] instanceof UploadedFile);
+
+        $uploadedFiles = $request->getUploadedFilesByName('Item');
+        $this->assertCount(2, $uploadedFiles);
+        $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
+        $this->assertTrue($uploadedFiles[1] instanceof UploadedFile);
+
+        $uploadedFiles = $request->getUploadedFilesByName('Item[file][0]');
+        $this->assertCount(1, $uploadedFiles);
+        $this->assertTrue($uploadedFiles[0] instanceof UploadedFile);
+    }
+
+    public function testSetupAttributes()
     {
         $request = new Request();
 
-        $request->setBodyParams([
+        $request->setAttributes(['some' => 'foo']);
+        $this->assertSame(['some' => 'foo'], $request->getAttributes());
+    }
+
+    /**
+     * @depends testSetupAttributes
+     */
+    public function testGetAttribute()
+    {
+        $request = new Request();
+
+        $request->setAttributes(['some' => 'foo']);
+
+        $this->assertSame('foo', $request->getAttribute('some'));
+        $this->assertSame(null, $request->getAttribute('un-existing'));
+        $this->assertSame('default', $request->getAttribute('un-existing', 'default'));
+    }
+
+    /**
+     * @depends testSetupAttributes
+     */
+    public function testModifyAttributes()
+    {
+        $request = new Request();
+
+        $request->setAttributes(['attr1' => '1']);
+
+        $newStorage = $request->withAttribute('attr2', '2');
+        $this->assertNotSame($newStorage, $request);
+        $this->assertSame(['attr1' => '1', 'attr2' => '2'], $newStorage->getAttributes());
+
+        $request = $newStorage;
+        $newStorage = $request->withoutAttribute('attr1');
+        $this->assertNotSame($newStorage, $request);
+        $this->assertSame(['attr2' => '2'], $newStorage->getAttributes());
+    }
+
+    public function testGetParsedBodyParam()
+    {
+        $request = new Request();
+
+        $request->setParsedBody([
             'someParam' => 'some value',
             'param.dot' => 'value.dot',
         ]);
-        $this->assertSame('some value', $request->getBodyParam('someParam'));
-        $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
-        $this->assertSame(null, $request->getBodyParam('unexisting'));
-        $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
+        $this->assertSame('some value', $request->getParsedBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getParsedBodyParam('param.dot'));
+        $this->assertSame(null, $request->getParsedBodyParam('unexisting'));
+        $this->assertSame('default', $request->getParsedBodyParam('unexisting', 'default'));
 
         // @see https://github.com/yiisoft/yii2/issues/14135
         $bodyParams = new \stdClass();
         $bodyParams->someParam = 'some value';
         $bodyParams->{'param.dot'} = 'value.dot';
-        $request->setBodyParams($bodyParams);
-        $this->assertSame('some value', $request->getBodyParam('someParam'));
-        $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
-        $this->assertSame(null, $request->getBodyParam('unexisting'));
-        $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
+        $request->setParsedBody($bodyParams);
+        $this->assertSame('some value', $request->getParsedBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getParsedBodyParam('param.dot'));
+        $this->assertSame(null, $request->getParsedBodyParam('unexisting'));
+        $this->assertSame('default', $request->getParsedBodyParam('unexisting', 'default'));
     }
 }

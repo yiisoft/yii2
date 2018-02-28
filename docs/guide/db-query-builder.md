@@ -799,7 +799,7 @@ $unbufferedDb->close();
 
 ### Adding custom Conditions and Expressions <span id="adding-custom-conditions-and-expressions"></span>
 
-As it was mentioned in [Conditions – Object Format](#object-format) chapter, is is possible to create custom condition
+As it was mentioned in [Conditions – Object Format](#object-format) chapter, it is possible to create custom condition
 classes. For example, let's create a condition that will check that specific columns are less than some value.
 Using the operator format, it would look like the following:
 
@@ -856,7 +856,7 @@ So we can create a condition object:
 $conditon = new AllGreaterCondition(['col1', 'col2'], 42);
 ```
 
-But `QueryBuilder` still does not know, to to make an SQL condition out of this object.
+But `QueryBuilder` still does not know, to make an SQL condition out of this object.
 Now we need to create a builder for this condition. It must implement [[yii\db\ExpressionBuilderInterface]]
 that requires us to implement a `build()` method. 
 

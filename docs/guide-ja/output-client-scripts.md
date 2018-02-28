@@ -56,7 +56,7 @@ ID を指定しない場合は、JS コードそれ自身が ID として扱わ�
 ```php
 $this->registerJsFile(
     '@web/js/main.js',
-    ['depends' => [\yii\web\JqueryAsset::className()]]
+    ['depends' => [\yii\web\JqueryAsset::class]]
 );
 ```
 
@@ -97,7 +97,7 @@ CSS ファイルは次のようにして登録することが出来ます。
 
 ```php
 $this->registerCssFile("@web/css/themes/black-and-white.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+    'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```

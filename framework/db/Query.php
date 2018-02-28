@@ -142,7 +142,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
         if ($db === null) {
             $db = Yii::$app->getDb();
         }
-        list($sql, $params) = $db->getQueryBuilder()->build($this);
+        [$sql, $params] = $db->getQueryBuilder()->build($this);
 
         $command = $db->createCommand($sql, $params);
         $this->setCommandCache($command);
@@ -186,7 +186,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
     public function batch($batchSize = 100, $db = null)
     {
         return Yii::createObject([
-            'class' => BatchQueryResult::className(),
+            'class' => BatchQueryResult::class,
             'query' => $this,
             'batchSize' => $batchSize,
             'db' => $db,
@@ -214,7 +214,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
     public function each($batchSize = 100, $db = null)
     {
         return Yii::createObject([
-            'class' => BatchQueryResult::className(),
+            'class' => BatchQueryResult::class,
             'query' => $this,
             'batchSize' => $batchSize,
             'db' => $db,
@@ -542,7 +542,7 @@ $
 PATTERN;
                 if (preg_match($pattern, $tableName, $matches)) {
                     if (isset($matches[2])) {
-                        list(, $tableName, $alias) = $matches;
+                        [, $tableName, $alias] = $matches;
                     } else {
                         $tableName = $alias = $matches[1];
                     }
@@ -656,22 +656,28 @@ PATTERN;
      */
     protected function getUniqueColumns($columns)
     {
-        $columns = array_unique($columns);
         $unaliasedColumns = $this->getUnaliasedColumnsFromSelect();
 
+        $result = [];
         foreach ($columns as $columnAlias => $columnDefinition) {
-            if ($columnDefinition instanceof Query) {
-                continue;
+            if (!$columnDefinition instanceof Query) {
+                if (is_string($columnAlias)) {
+                    $existsInSelect = isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition;
+                    if ($existsInSelect) {
+                        continue;
+                    }
+                } elseif (is_integer($columnAlias)) {
+                    $existsInSelect = in_array($columnDefinition, $unaliasedColumns, true);
+                    $existsInResultSet = in_array($columnDefinition, $result, true);
+                    if ($existsInSelect || $existsInResultSet) {
+                        continue;
+                    }
+                }
             }
 
-            if (
-                (is_string($columnAlias) && isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition)
-                || (is_integer($columnAlias) && in_array($columnDefinition, $unaliasedColumns))
-            ) {
-                unset($columns[$columnAlias]);
-            }
+            $result[$columnAlias] = $columnDefinition;
         }
-        return $columns;
+        return $result;
     }
 
     /**

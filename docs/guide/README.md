@@ -56,7 +56,7 @@ Handling Requests
 * [Sessions and Cookies](runtime-sessions-cookies.md)
 * [Handling Errors](runtime-handling-errors.md)
 * [Logging](runtime-logging.md)
-
+* [Performance Profiling](runtime-profiling.md)
 
 Key Concepts
 ------------

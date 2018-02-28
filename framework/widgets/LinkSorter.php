@@ -63,10 +63,11 @@ class LinkSorter extends Widget
     /**
      * Executes the widget.
      * This method renders the sort links.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
-        echo $this->renderSortLinks();
+        return $this->renderSortLinks();
     }
 
     /**

@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\web\Request;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
@@ -313,22 +314,22 @@ class UrlManagerParseUrlTest extends TestCase
             ],
         ]);
         // matching pathinfo GET request
-        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $request->setMethod('GET');
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         // matching pathinfo PUT/POST request
-        $_SERVER['REQUEST_METHOD'] = 'PUT';
+        $request->setMethod('PUT');
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $request->setMethod('POST');
         $request->pathInfo = 'post/123/this+is+sample';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/create', ['id' => '123', 'title' => 'this+is+sample']], $result);
 
         // no wrong matching
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $request->setMethod('POST');
         $request->pathInfo = 'POST/GET';
         $result = $manager->parseRequest($request);
         $this->assertEquals(['post/get', []], $result);
@@ -341,11 +342,9 @@ class UrlManagerParseUrlTest extends TestCase
                     'baseUrl' => '/app',
                 ],
             ],
-        ], \yii\web\Application::className());
+        ], \yii\web\Application::class);
         $this->assertEquals('/app/post/delete?id=123', $manager->createUrl(['post/delete', 'id' => 123]));
         $this->destroyApplication();
-
-        unset($_SERVER['REQUEST_METHOD']);
     }
 
     public function testAppendRules()
@@ -387,12 +386,12 @@ class UrlManagerParseUrlTest extends TestCase
 
         $manager = $this->getUrlManager([
             'rules' => ['post/<id:\d+>' => 'post/view'],
-            'cache' => $arrayCache,
+            'cache' => new Cache(['handler' => $arrayCache]),
         ]);
 
         $this->assertCount(1, $manager->rules);
         $firstRule = $manager->rules[0];
-        $this->assertInstanceOf('yii\web\UrlRuleInterface', $firstRule);
+        $this->assertInstanceOf(\yii\web\UrlRuleInterface::class, $firstRule);
         $this->assertCount(1, $this->getInaccessibleProperty($arrayCache, '_cache'),
             'Cache contains the only one record that represents initial built rules'
         );
@@ -413,13 +412,13 @@ class UrlManagerParseUrlTest extends TestCase
 
     public function testRulesCacheIsUsed()
     {
-        $arrayCache = $this->getMockBuilder('yii\caching\ArrayCache')
+        $arrayCache = $this->getMockBuilder(\yii\caching\ArrayCache::class)
             ->setMethods(['get', 'set'])
             ->getMock();
 
         $manager = $this->getUrlManager([
             'rules' => ['post/<id:\d+>' => 'post/view'],
-            'cache' => $arrayCache,
+            'cache' => new Cache(['handler' => $arrayCache]),
         ]);
 
         $savedRules = $manager->rules;
@@ -430,7 +429,7 @@ class UrlManagerParseUrlTest extends TestCase
         for ($i = 0; $i < 2; $i++) {
             $this->getUrlManager([
                 'rules' => ['post/<id:\d+>' => 'post/view'],
-                'cache' => $arrayCache,
+                'cache' => new Cache(['handler' => $arrayCache]),
             ]);
         }
     }

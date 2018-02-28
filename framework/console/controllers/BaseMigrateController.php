@@ -626,7 +626,7 @@ abstract class BaseMigrateController extends Controller
             throw new Exception('The migration name should contain letters, digits, underscore and/or backslash characters only.');
         }
 
-        list($namespace, $className) = $this->generateClassName($name);
+        [$namespace, $className] = $this->generateClassName($name);
         // Abort if name is too long
         $nameLimit = $this->getMigrationNameLimit();
         if ($nameLimit !== null && strlen($className) > $nameLimit) {
@@ -890,7 +890,7 @@ abstract class BaseMigrateController extends Controller
 
         $migrations = [];
         foreach ($migrationPaths as $item) {
-            list($migrationPath, $namespace) = $item;
+            [$migrationPath, $namespace] = $item;
             if (!file_exists($migrationPath)) {
                 continue;
             }

@@ -22,7 +22,6 @@ use yii\base\NotSupportedException;
  * be referenced using short names. They are listed as follows:
  *
  * - `boolean`: [[BooleanValidator]]
- * - `captcha`: [[\yii\captcha\CaptchaValidator]]
  * - `compare`: [[CompareValidator]]
  * - `date`: [[DateValidator]]
  * - `datetime`: [[DateValidator]]
@@ -59,44 +58,43 @@ class Validator extends Component
      * @var array list of built-in validators (name => class or configuration)
      */
     public static $builtInValidators = [
-        'boolean' => 'yii\validators\BooleanValidator',
-        'captcha' => 'yii\captcha\CaptchaValidator',
-        'compare' => 'yii\validators\CompareValidator',
-        'date' => 'yii\validators\DateValidator',
+        'boolean' => BooleanValidator::class,
+        'compare' => CompareValidator::class,
+        'date' => DateValidator::class,
         'datetime' => [
-            'class' => 'yii\validators\DateValidator',
+            'class' => DateValidator::class,
             'type' => DateValidator::TYPE_DATETIME,
         ],
         'time' => [
-            'class' => 'yii\validators\DateValidator',
+            'class' => DateValidator::class,
             'type' => DateValidator::TYPE_TIME,
         ],
-        'default' => 'yii\validators\DefaultValueValidator',
-        'double' => 'yii\validators\NumberValidator',
-        'each' => 'yii\validators\EachValidator',
-        'email' => 'yii\validators\EmailValidator',
-        'exist' => 'yii\validators\ExistValidator',
-        'file' => 'yii\validators\FileValidator',
-        'filter' => 'yii\validators\FilterValidator',
-        'image' => 'yii\validators\ImageValidator',
-        'in' => 'yii\validators\RangeValidator',
+        'default' => DefaultValueValidator::class,
+        'double' => NumberValidator::class,
+        'each' => EachValidator::class,
+        'email' => EmailValidator::class,
+        'exist' => ExistValidator::class,
+        'file' => FileValidator::class,
+        'filter' => FilterValidator::class,
+        'image' => ImageValidator::class,
+        'in' => RangeValidator::class,
         'integer' => [
-            'class' => 'yii\validators\NumberValidator',
+            'class' => NumberValidator::class,
             'integerOnly' => true,
         ],
-        'match' => 'yii\validators\RegularExpressionValidator',
-        'number' => 'yii\validators\NumberValidator',
-        'required' => 'yii\validators\RequiredValidator',
-        'safe' => 'yii\validators\SafeValidator',
-        'string' => 'yii\validators\StringValidator',
+        'match' => RegularExpressionValidator::class,
+        'number' => NumberValidator::class,
+        'required' => RequiredValidator::class,
+        'safe' => SafeValidator::class,
+        'string' => StringValidator::class,
         'trim' => [
-            'class' => 'yii\validators\FilterValidator',
+            'class' => FilterValidator::class,
             'filter' => 'trim',
             'skipOnArray' => true,
         ],
-        'unique' => 'yii\validators\UniqueValidator',
-        'url' => 'yii\validators\UrlValidator',
-        'ip' => 'yii\validators\IpValidator',
+        'unique' => UniqueValidator::class,
+        'url' => UrlValidator::class,
+        'ip' => IpValidator::class,
     ];
     /**
      * @var array|string attributes to be validated by this validator. For multiple attributes,
@@ -298,7 +296,7 @@ class Validator extends Component
             return true;
         }
 
-        list($message, $params) = $result;
+        [$message, $params] = $result;
         $params['attribute'] = Yii::t('yii', 'the input value');
         if (is_array($value)) {
             $params['value'] = 'array()';
@@ -342,8 +340,6 @@ class Validator extends Component
     /**
      * Returns the JavaScript needed for performing client-side validation.
      *
-     * Calls [[getClientOptions()]] to generate options array for client-side validation.
-     *
      * You may override this method to return the JavaScript validation code if
      * the validator can support client-side validation.
      *
@@ -375,20 +371,6 @@ class Validator extends Component
     public function clientValidateAttribute($model, $attribute, $view)
     {
         return null;
-    }
-
-    /**
-     * Returns the client-side validation options.
-     * This method is usually called from [[clientValidateAttribute()]]. You may override this method to modify options
-     * that will be passed to the client-side validation.
-     * @param \yii\base\Model $model the model being validated
-     * @param string $attribute the attribute name being validated
-     * @return array the client-side validation options
-     * @since 2.0.11
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        return [];
     }
 
     /**
@@ -448,13 +430,13 @@ class Validator extends Component
     }
 
     /**
-     * Formats a mesage using the I18N, or simple strtr if `\Yii::$app` is not available.
+     * Formats a message using the I18N, or simple strtr if `\Yii::$app` is not available.
      * @param string $message
      * @param array $params
      * @since 2.0.12
      * @return string
      */
-    protected function formatMessage($message, $params)
+    public function formatMessage($message, $params)
     {
         if (Yii::$app !== null) {
             return \Yii::$app->getI18n()->format($message, $params, Yii::$app->language);

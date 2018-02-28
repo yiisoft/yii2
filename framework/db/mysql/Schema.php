@@ -31,6 +31,10 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     use ConstraintFinderTrait;
 
     /**
+     * {@inheritdoc}
+     */
+    public $columnSchemaClass = 'yii\db\mysql\ColumnSchema';
+    /**
      * @var bool whether MySQL used is older than 5.1.
      */
     private $_oldMysql;

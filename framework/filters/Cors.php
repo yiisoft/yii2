@@ -25,7 +25,7 @@ use yii\web\Response;
  * {
  *     return [
  *         'corsFilter' => [
- *             'class' => \yii\filters\Cors::className(),
+ *             'class' => \yii\filters\Cors::class,
  *         ],
  *     ];
  * }
@@ -39,7 +39,7 @@ use yii\web\Response;
  * {
  *     return [
  *         'corsFilter' => [
- *             'class' => \yii\filters\Cors::className(),
+ *             'class' => \yii\filters\Cors::class,
  *             'cors' => [
  *                 // restrict access to
  *                 'Origin' => ['http://www.myserver.com', 'https://www.myserver.com'],
@@ -106,7 +106,7 @@ class Cors extends ActionFilter
         $responseCorsHeaders = $this->prepareHeaders($requestCorsHeaders);
         $this->addCorsHeaders($this->response, $responseCorsHeaders);
 
-        if ($this->request->isOptions && $this->request->headers->has('Access-Control-Request-Method')) {
+        if ($this->request->isOptions && $this->request->hasHeader('Access-Control-Request-Method')) {
             // it is CORS preflight request, respond with 200 OK without further processing
             $this->response->setStatusCode(200);
             return false;
@@ -116,7 +116,7 @@ class Cors extends ActionFilter
     }
 
     /**
-     * Override settings for specific action.
+     * Override settings for specific action
      * @param \yii\base\Action $action the action settings to override
      */
     public function overrideDefaultSettings($action)
@@ -141,8 +141,7 @@ class Cors extends ActionFilter
         $headers = [];
         $requestHeaders = array_keys($this->cors);
         foreach ($requestHeaders as $headerField) {
-            $serverField = $this->headerizeToPhp($headerField);
-            $headerData = isset($_SERVER[$serverField]) ? $_SERVER[$serverField] : null;
+            $headerData = $this->request->getHeaderLine($headerField);
             if ($headerData !== null) {
                 $headers[$headerField] = $headerData;
             }
@@ -219,9 +218,8 @@ class Cors extends ActionFilter
     public function addCorsHeaders($response, $headers)
     {
         if (empty($headers) === false) {
-            $responseHeaders = $response->getHeaders();
             foreach ($headers as $field => $value) {
-                $responseHeaders->set($field, $value);
+                $response->setHeader($field, $value);
             }
         }
     }
@@ -242,19 +240,5 @@ class Cors extends ActionFilter
             return str_replace(' ', '-', ucwords(strtolower(str_replace(['_', '-'], [' ', ' '], $element))));
         }, $headers);
         return implode(', ', $headers);
-    }
-
-    /**
-     * Convert any string (including php headers with HTTP prefix) to header format.
-     *
-     * Example:
-     *  - X-Pingother -> HTTP_X_PINGOTHER
-     *  - X PINGOTHER -> HTTP_X_PINGOTHER
-     * @param string $string string to convert
-     * @return string the result in "php $_SERVER header" format
-     */
-    protected function headerizeToPhp($string)
-    {
-        return 'HTTP_' . strtoupper(str_replace([' ', '-'], ['_', '_'], $string));
     }
 }

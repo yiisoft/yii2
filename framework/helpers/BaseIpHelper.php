@@ -59,8 +59,8 @@ class BaseIpHelper
      */
     public static function inRange($subnet, $range)
     {
-        list($ip, $mask) = array_pad(explode('/', $subnet), 2, null);
-        list($net, $netMask) = array_pad(explode('/', $range), 2, null);
+        [$ip, $mask] = array_pad(explode('/', $subnet), 2, null);
+        [$net, $netMask] = array_pad(explode('/', $range), 2, null);
 
         $ipVersion = static::getIpVersion($ip);
         $netVersion = static::getIpVersion($net);

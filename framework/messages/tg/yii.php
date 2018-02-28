@@ -23,7 +23,6 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'Powered by {yii}' => 'Дар {yii} кор мекунад',
     'Unknown alias: -{name}' => 'Тахаллуси номаълум: -{name}',
     'Yii Framework' => 'Yii Framework',
     '(not set)' => '(супориш дода нашуд)',

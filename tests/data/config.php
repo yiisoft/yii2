@@ -36,23 +36,11 @@ $config = [
             'dsn' => 'sqlite::memory:',
             'fixture' => __DIR__ . '/sqlite.sql',
         ],
-        'sqlsrv' => [
-            'dsn' => 'sqlsrv:Server=localhost;Database=test',
-            'username' => '',
-            'password' => '',
-            'fixture' => __DIR__ . '/mssql.sql',
-        ],
         'pgsql' => [
             'dsn' => 'pgsql:host=localhost;dbname=yiitest;port=5432;',
             'username' => 'postgres',
             'password' => 'postgres',
             'fixture' => __DIR__ . '/postgres.sql',
-        ],
-        'oci' => [
-            'dsn' => 'oci:dbname=LOCAL_XE;charset=AL32UTF8;',
-            'username' => '',
-            'password' => '',
-            'fixture' => __DIR__ . '/oci.sql',
         ],
     ],
 ];

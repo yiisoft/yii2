@@ -48,7 +48,6 @@ return [
     'Page not found.' => 'Страница не найдена.',
     'Please fix the following errors:' => 'Исправьте следующие ошибки:',
     'Please upload a file.' => 'Загрузите файл.',
-    'Powered by {yii}' => 'Работает на {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Показаны записи <b>{begin, number}-{end, number}</b> из <b>{totalCount, number}</b>.',
     'The combination {values} of {attributes} has already been taken.' => 'Комбинация {values} параметров {attributes} уже существует.',
     'The file "{file}" is not an image.' => 'Файл «{file}» не является изображением.',

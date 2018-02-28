@@ -339,7 +339,7 @@ function foo($model, $attribute) {
   MIME タイプのチェックから導かれる拡張子がアップロードされたファイルの拡張子と違う場合に、そのファイルは無効であると見なされます。
   デフォルト値は `true` であり、そのようなチェックが行われることを意味します。
 
-`FileValidator` は [[yii\web\UploadedFile]] と一緒に使用されます。
+`FileValidator` は [[yii\http\UploadedFile]] と一緒に使用されます。
 ファイルのアップロードおよびアップロードされたファイルの検証の実行に関する完全な説明は、[ファイルをアップロードする](input-file-upload.md) の節を参照してください。
 
 

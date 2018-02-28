@@ -154,10 +154,7 @@ class BaseStringHelper
      */
     protected static function truncateHtml($string, $count, $suffix, $encoding = false)
     {
-        $config = \HTMLPurifier_Config::create(null);
-        if (Yii::$app !== null) {
-            $config->set('Cache.SerializerPath', Yii::$app->getRuntimePath());
-        }
+        $config = HtmlPurifier::createConfig();
         $lexer = \HTMLPurifier_Lexer::create($config);
         $tokens = $lexer->tokenizeHTML($string, $config, new \HTMLPurifier_Context());
         $openTokens = [];

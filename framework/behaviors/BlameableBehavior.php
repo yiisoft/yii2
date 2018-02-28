@@ -21,7 +21,7 @@ use yii\db\BaseActiveRecord;
  * public function behaviors()
  * {
  *     return [
- *         BlameableBehavior::className(),
+ *         BlameableBehavior::class,
  *     ];
  * }
  * ```
@@ -41,7 +41,7 @@ use yii\db\BaseActiveRecord;
  * {
  *     return [
  *         [
- *             'class' => BlameableBehavior::className(),
+ *             'class' => BlameableBehavior::class,
  *             'createdByAttribute' => 'author_id',
  *             'updatedByAttribute' => 'updater_id',
  *         ],

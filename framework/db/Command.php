@@ -1055,7 +1055,7 @@ class Command extends Component
     public function execute()
     {
         $sql = $this->getSql();
-        list($profile, $rawSql) = $this->logQuery(__METHOD__);
+        [$profile, $rawSql] = $this->logQuery(__METHOD__);
 
         if ($sql == '') {
             return 0;
@@ -1111,7 +1111,7 @@ class Command extends Component
      */
     protected function queryInternal($method, $fetchMode = null)
     {
-        list($profile, $rawSql) = $this->logQuery('yii\db\Command::query');
+        [$profile, $rawSql] = $this->logQuery('yii\db\Command::query');
 
         if ($method !== '') {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);

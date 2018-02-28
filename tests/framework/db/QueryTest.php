@@ -8,6 +8,7 @@
 namespace yiiunit\framework\db;
 
 use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
@@ -62,6 +63,37 @@ abstract class QueryTest extends DatabaseTestCase
         $query = new Query();
         $query->select('name, name, name as X, name as X');
         $this->assertEquals(['name', 'name as X'], array_values($query->select));
+
+        /** @see https://github.com/yiisoft/yii2/issues/15676 */
+        $query = (new Query())->select('id');
+        $this->assertSame(['id'], $query->select);
+        $query->select(['id', 'brand_id']);
+        $this->assertSame(['id', 'brand_id'], $query->select);
+
+        /** @see https://github.com/yiisoft/yii2/issues/15676 */
+        $query = (new Query())->select(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)'], $query->select);
+        $query->addSelect(['LEFT(name,7) as test']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test'], $query->select);
+        $query->addSelect(['LEFT(name,7) as test']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test'], $query->select);
+        $query->addSelect(['test' => 'LEFT(name,7)']);
+        $this->assertSame(['prefix' => 'LEFT(name, 7)', 'prefix_key' => 'LEFT(name, 7)', 'LEFT(name,7) as test', 'test' => 'LEFT(name,7)'], $query->select);
+
+        /** @see https://github.com/yiisoft/yii2/issues/15731 */
+        $selectedCols = [
+            'total_sum' => 'SUM(f.amount)',
+            'in_sum' => 'SUM(IF(f.type = :type_in, f.amount, 0))',
+            'out_sum' => 'SUM(IF(f.type = :type_out, f.amount, 0))',
+        ];
+        $query = (new Query())->select($selectedCols)->addParams([
+            ':type_in' => 'in',
+            ':type_out' => 'out',
+            ':type_partner' => 'partner',
+        ]);
+        $this->assertSame($selectedCols, $query->select);
+        $query->select($selectedCols);
+        $this->assertSame($selectedCols, $query->select);
     }
 
     public function testFrom()
@@ -627,7 +659,7 @@ abstract class QueryTest extends DatabaseTestCase
     {
         $db = $this->getConnection();
         $db->enableQueryCache = true;
-        $db->queryCache = new ArrayCache();
+        $db->queryCache = new Cache(['handler' => new ArrayCache()]);
         $query = (new Query())
             ->select(['name'])
             ->from('customer');

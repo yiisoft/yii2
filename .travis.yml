@@ -30,7 +30,6 @@ env:
   global:
     - DEFAULT_COMPOSER_FLAGS="--prefer-dist --no-interaction --no-progress --optimize-autoloader"
     - TASK_TESTS_PHP=1
-    - TASK_TESTS_JS=0
     - TASK_TESTS_COVERAGE=0
 
 
@@ -65,53 +64,7 @@ matrix:
     # run tests coverage on PHP 7.1
     - php: 7.1
       env: TASK_TESTS_COVERAGE=1
-
-    - php: 7.0
-
-    - php: 5.6
-
-    - php: 5.5
-
-    - php: 5.4
-
-    # Test against HHVM 3.12 LTS version by using trusty
-    - php: hhvm-3.12
-      sudo: true
-      addons:
-        code_climate:
-          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
-        apt:
-          sources:
-            - mysql-5.7-trusty
-          packages:
-            - mysql-server
-      services:
-        - mysql
-
-    # test against the latest HHVM version by using a newer image
-    - php: hhvm
-      sudo: true
-      addons:
-        code_climate:
-          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
-        postgresql: "9.6"
-        apt:
-          sources:
-            - mysql-5.7-trusty
-          packages:
-            - mysql-server
-      services:
-        - mysql
-        - postgresql
-
     - php: nightly
-
-    # have a separate branch for javascript tests
-    - language: node_js
-      node_js: 6
-      env: TASK_TESTS_PHP=0 TASK_TESTS_JS=1
-      # overwrite services used for PHP tests
-      services:
 
   allow_failures:
     - php: nightly
@@ -119,38 +72,24 @@ matrix:
 install:
   - |
     if [[ $TASK_TESTS_COVERAGE != 1 && $TRAVIS_PHP_VERSION != hhv* ]]; then
-      # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
+      # disable xdebug for performance reasons when code coverage is not needed
       phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
 
   # install composer dependencies
   - travis_retry composer self-update
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - |
-    if [[ $TRAVIS_PHP_VERSION == "hhvm-3.12" ]]; then
-      # remove php-cs-fixer from composer dependencies on hhvm-3.12 - php-cs-fixer requires at least hhvm-3.18
-      composer remove friendsofphp/php-cs-fixer --dev
-    fi
   - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
 
   # setup PHP extension
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
-      tests/data/travis/apc-setup.sh
+      tests/data/travis/apcu-setup.sh
       tests/data/travis/memcache-setup.sh
       tests/data/travis/imagick-setup.sh
     fi
 
-  # setup JS test
-  - |
-    if [ $TASK_TESTS_JS == 1 ]; then
-      travis_retry npm install
-    fi
-
 before_script:
-  # Disable the HHVM JIT for faster Unit Testing
-  - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini; fi
-
   # show some versions and env information
   - php --version
   - composer --version
@@ -160,11 +99,6 @@ before_script:
       php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
       psql --version
       mysql --version
-    fi
-  - |
-    if [ $TASK_TESTS_JS == 1 ]; then
-      node --version
-      npm --version
     fi
 
   # initialize databases
@@ -198,12 +132,6 @@ script:
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
       vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
-    fi
-
-  # JS tests
-  - |
-    if [ $TASK_TESTS_JS == 1 ]; then
-      npm test
     fi
 
 after_script:

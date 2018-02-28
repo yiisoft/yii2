@@ -101,7 +101,7 @@ use yii\caching\CacheInterface;
  * ```php
  * 'components' => [
  *     'db' => [
- *         'class' => '\yii\db\Connection',
+ *         'class' => \yii\db\Connection::class,
  *         'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
  *         'username' => 'root',
  *         'password' => '',
@@ -135,19 +135,19 @@ use yii\caching\CacheInterface;
 class Connection extends Component
 {
     /**
-     * @event Event an event that is triggered after a DB connection is established
+     * @event [[yii\base\Event|Event]] an event that is triggered after a DB connection is established
      */
     const EVENT_AFTER_OPEN = 'afterOpen';
     /**
-     * @event Event an event that is triggered right before a top-level transaction is started
+     * @event [[yii\base\Event|Event]] an event that is triggered right before a top-level transaction is started
      */
     const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
     /**
-     * @event Event an event that is triggered right after a top-level transaction is committed
+     * @event [[yii\base\Event|Event]] an event that is triggered right after a top-level transaction is committed
      */
     const EVENT_COMMIT_TRANSACTION = 'commitTransaction';
     /**
-     * @event Event an event that is triggered right after a top-level transaction is rolled back
+     * @event [[yii\base\Event|Event]] an event that is triggered right after a top-level transaction is rolled back
      */
     const EVENT_ROLLBACK_TRANSACTION = 'rollbackTransaction';
 
@@ -273,16 +273,12 @@ class Connection extends Component
      * [[Schema]] class to support DBMS that is not supported by Yii.
      */
     public $schemaMap = [
-        'pgsql' => 'yii\db\pgsql\Schema', // PostgreSQL
-        'mysqli' => 'yii\db\mysql\Schema', // MySQL
-        'mysql' => 'yii\db\mysql\Schema', // MySQL
-        'sqlite' => 'yii\db\sqlite\Schema', // sqlite 3
-        'sqlite2' => 'yii\db\sqlite\Schema', // sqlite 2
-        'sqlsrv' => 'yii\db\mssql\Schema', // newer MSSQL driver on MS Windows hosts
-        'oci' => 'yii\db\oci\Schema', // Oracle driver
-        'mssql' => 'yii\db\mssql\Schema', // older MSSQL driver on MS Windows hosts
-        'dblib' => 'yii\db\mssql\Schema', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
-        'cubrid' => 'yii\db\cubrid\Schema', // CUBRID
+        'pgsql' => pgsql\Schema::class, // PostgreSQL
+        'mysqli' => mysql\Schema::class, // MySQL
+        'mysql' => mysql\Schema::class, // MySQL
+        'sqlite' => sqlite\Schema::class, // sqlite 3
+        'sqlite2' => sqlite\Schema::class, // sqlite 2
+        'cubrid' => cubrid\Schema::class, // CUBRID
     ];
     /**
      * @var string Custom PDO wrapper class. If not set, it will use [[PDO]] or [[\yii\db\mssql\PDO]] when MSSQL is used.
@@ -297,7 +293,7 @@ class Connection extends Component
      * @since 2.0.7
      * @deprecated since 2.0.14. Use [[$commandMap]] for precise configuration.
      */
-    public $commandClass = 'yii\db\Command';
+    public $commandClass = Command::class;
     /**
      * @var array mapping between PDO driver names and [[Command]] classes.
      * The keys of the array are PDO driver names while the values are either the corresponding
@@ -475,7 +471,7 @@ class Connection extends Component
      * Use 0 to indicate that the cached data will never expire.
      * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query results.
      * @return mixed the return result of the callable
-     * @throws \Exception|\Throwable if there is any exception during query
+     * @throws \Throwable if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see noCache()
@@ -487,9 +483,6 @@ class Connection extends Component
             $result = call_user_func($callable, $this);
             array_pop($this->_queryCacheInfo);
             return $result;
-        } catch (\Exception $e) {
-            array_pop($this->_queryCacheInfo);
-            throw $e;
         } catch (\Throwable $e) {
             array_pop($this->_queryCacheInfo);
             throw $e;
@@ -516,7 +509,7 @@ class Connection extends Component
      * @param callable $callable a PHP callable that contains DB queries which should not use query cache.
      * The signature of the callable is `function (Connection $db)`.
      * @return mixed the return result of the callable
-     * @throws \Exception|\Throwable if there is any exception during query
+     * @throws \Throwable if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see cache()
@@ -528,9 +521,6 @@ class Connection extends Component
             $result = call_user_func($callable, $this);
             array_pop($this->_queryCacheInfo);
             return $result;
-        } catch (\Exception $e) {
-            array_pop($this->_queryCacheInfo);
-            throw $e;
         } catch (\Throwable $e) {
             array_pop($this->_queryCacheInfo);
             throw $e;
@@ -670,9 +660,9 @@ class Connection extends Component
             }
             if (isset($driver)) {
                 if ($driver === 'mssql' || $driver === 'dblib') {
-                    $pdoClass = 'yii\db\mssql\PDO';
+                    $pdoClass = mssql\PDO::class;
                 } elseif ($driver === 'sqlsrv') {
-                    $pdoClass = 'yii\db\mssql\SqlsrvPDO';
+                    $pdoClass = mssql\SqlsrvPDO::class;
                 }
             }
         }
@@ -759,7 +749,7 @@ class Connection extends Component
      * @param callable $callback a valid PHP callback that performs the job. Accepts connection instance as parameter.
      * @param string|null $isolationLevel The isolation level to use for this transaction.
      * See [[Transaction::begin()]] for details.
-     * @throws \Exception|\Throwable if there is any exception during query. In this case the transaction will be rolled back.
+     * @throws \Throwable if there is any exception during query. In this case the transaction will be rolled back.
      * @return mixed result of callback function
      */
     public function transaction(callable $callback, $isolationLevel = null)
@@ -772,9 +762,6 @@ class Connection extends Component
             if ($transaction->isActive && $transaction->level === $level) {
                 $transaction->commit();
             }
-        } catch (\Exception $e) {
-            $this->rollbackTransactionOnLevel($transaction, $level);
-            throw $e;
         } catch (\Throwable $e) {
             $this->rollbackTransactionOnLevel($transaction, $level);
             throw $e;
@@ -1047,7 +1034,7 @@ class Connection extends Component
      * @param callable $callback a PHP callable to be executed by this method. Its signature is
      * `function (Connection $db)`. Its return value will be returned by this method.
      * @return mixed the return value of the callback
-     * @throws \Exception|\Throwable if there is any exception thrown from the callback
+     * @throws \Throwable if there is any exception thrown from the callback
      */
     public function useMaster(callable $callback)
     {
@@ -1055,9 +1042,6 @@ class Connection extends Component
             $this->enableSlaves = false;
             try {
                 $result = call_user_func($callback, $this);
-            } catch (\Exception $e) {
-                $this->enableSlaves = true;
-                throw $e;
             } catch (\Throwable $e) {
                 $this->enableSlaves = true;
                 throw $e;

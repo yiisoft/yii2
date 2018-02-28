@@ -7,11 +7,17 @@
 
 namespace yii;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\base\UnknownClassException;
 use yii\di\Container;
+use yii\di\Instance;
+use yii\helpers\VarDumper;
 use yii\log\Logger;
+use yii\profile\Profiler;
+use yii\profile\ProfilerInterface;
 
 /**
  * Gets the application start timestamp.
@@ -31,15 +37,15 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
  */
 defined('YII_ENV') or define('YII_ENV', 'prod');
 /**
- * Whether the the application is running in production environment.
+ * Whether the the application is running in production environment
  */
 defined('YII_ENV_PROD') or define('YII_ENV_PROD', YII_ENV === 'prod');
 /**
- * Whether the the application is running in development environment.
+ * Whether the the application is running in development environment
  */
 defined('YII_ENV_DEV') or define('YII_ENV_DEV', YII_ENV === 'dev');
 /**
- * Whether the the application is running in testing environment.
+ * Whether the the application is running in testing environment
  */
 defined('YII_ENV_TEST') or define('YII_ENV_TEST', YII_ENV === 'test');
 
@@ -59,14 +65,6 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
  */
 class BaseYii
 {
-    /**
-     * @var array class map used by the Yii autoloading mechanism.
-     * The array keys are the class names (without leading backslashes), and the array values
-     * are the corresponding class file paths (or [path aliases](guide:concept-aliases)). This property mainly affects
-     * how [[autoload()]] works.
-     * @see autoload()
-     */
-    public static $classMap = [];
     /**
      * @var \yii\console\Application|\yii\web\Application the application instance
      */
@@ -135,19 +133,10 @@ class BaseYii
             return $alias;
         }
 
-        $pos = strpos($alias, '/');
-        $root = $pos === false ? $alias : substr($alias, 0, $pos);
+        $result = static::findAlias($alias);
 
-        if (isset(static::$aliases[$root])) {
-            if (is_string(static::$aliases[$root])) {
-                return $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos);
-            }
-
-            foreach (static::$aliases[$root] as $name => $path) {
-                if (strpos($alias . '/', $name . '/') === 0) {
-                    return $path . substr($alias, strlen($name));
-                }
-            }
+        if (is_array($result)) {
+            return $result['path'];
         }
 
         if ($throwException) {
@@ -166,17 +155,30 @@ class BaseYii
      */
     public static function getRootAlias($alias)
     {
+        $result = static::findAlias($alias);
+        if (is_array($result)) {
+            $result = $result['root'];
+        }
+        return $result;
+    }
+
+    /**
+     * @param string $alias
+     * @return array|bool
+     */
+    protected static function findAlias(string $alias)
+    {
         $pos = strpos($alias, '/');
         $root = $pos === false ? $alias : substr($alias, 0, $pos);
 
         if (isset(static::$aliases[$root])) {
             if (is_string(static::$aliases[$root])) {
-                return $root;
+                return ['root' => $root, 'path' => $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos)];
             }
 
             foreach (static::$aliases[$root] as $name => $path) {
                 if (strpos($alias . '/', $name . '/') === 0) {
-                    return $name;
+                    return ['root' => $name, 'path' => $path . substr($alias, strlen($name))];
                 }
             }
         }
@@ -252,52 +254,6 @@ class BaseYii
     }
 
     /**
-     * Class autoload loader.
-     *
-     * This method is invoked automatically when PHP sees an unknown class.
-     * The method will attempt to include the class file according to the following procedure:
-     *
-     * 1. Search in [[classMap]];
-     * 2. If the class is namespaced (e.g. `yii\base\Component`), it will attempt
-     *    to include the file associated with the corresponding path alias
-     *    (e.g. `@yii/base/Component.php`);
-     *
-     * This autoloader allows loading classes that follow the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/)
-     * and have its top-level namespace or sub-namespaces defined as path aliases.
-     *
-     * Example: When aliases `@yii` and `@yii/bootstrap` are defined, classes in the `yii\bootstrap` namespace
-     * will be loaded using the `@yii/bootstrap` alias which points to the directory where bootstrap extension
-     * files are installed and all classes from other `yii` namespaces will be loaded from the yii framework directory.
-     *
-     * Also the [guide section on autoloading](guide:concept-autoloading).
-     *
-     * @param string $className the fully qualified class name without a leading backslash "\"
-     * @throws UnknownClassException if the class does not exist in the class file
-     */
-    public static function autoload($className)
-    {
-        if (isset(static::$classMap[$className])) {
-            $classFile = static::$classMap[$className];
-            if ($classFile[0] === '@') {
-                $classFile = static::getAlias($classFile);
-            }
-        } elseif (strpos($className, '\\') !== false) {
-            $classFile = static::getAlias('@' . str_replace('\\', '/', $className) . '.php', false);
-            if ($classFile === false || !is_file($classFile)) {
-                return;
-            }
-        } else {
-            return;
-        }
-
-        include $classFile;
-
-        if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
-            throw new UnknownClassException("Unable to find '$className' in file: $classFile. Namespace missing?");
-        }
-    }
-
-    /**
      * Creates a new object using the given configuration.
      *
      * You may view this method as an enhanced version of the `new` operator.
@@ -308,11 +264,11 @@ class BaseYii
      *
      * ```php
      * // create an object using a class name
-     * $object = Yii::createObject('yii\db\Connection');
+     * $object = Yii::createObject(\yii\db\Connection::class);
      *
      * // create an object using a configuration array
      * $object = Yii::createObject([
-     *     'class' => 'yii\db\Connection',
+     *     'class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -356,10 +312,13 @@ class BaseYii
         throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
     }
 
+    /**
+     * @var LoggerInterface logger instance.
+     */
     private static $_logger;
 
     /**
-     * @return Logger message logger
+     * @return LoggerInterface message logger
      */
     public static function getLogger()
     {
@@ -367,23 +326,103 @@ class BaseYii
             return self::$_logger;
         }
 
-        return self::$_logger = static::createObject('yii\log\Logger');
+        return self::$_logger = Instance::ensure(['class' => Logger::class], LoggerInterface::class);
     }
 
     /**
      * Sets the logger object.
-     * @param Logger $logger the logger object.
+     * @param LoggerInterface|\Closure|array|null $logger the logger object or its DI compatible configuration.
      */
     public static function setLogger($logger)
     {
-        self::$_logger = $logger;
+        if ($logger === null) {
+            self::$_logger = null;
+            return;
+        }
+
+        if (is_array($logger)) {
+            if (!isset($logger['class']) && is_object(self::$_logger)) {
+                static::configure(self::$_logger, $logger);
+                return;
+            }
+            $logger = array_merge(['class' => Logger::class], $logger);
+        } elseif ($logger instanceof \Closure) {
+            $logger = call_user_func($logger);
+        }
+
+        self::$_logger = Instance::ensure($logger, LoggerInterface::class);
+    }
+
+    /**
+     * @var ProfilerInterface profiler instance.
+     * @since 2.1
+     */
+    private static $_profiler;
+
+    /**
+     * @return ProfilerInterface profiler instance.
+     * @since 2.1
+     */
+    public static function getProfiler()
+    {
+        if (self::$_profiler !== null) {
+            return self::$_profiler;
+        }
+        return self::$_profiler = Instance::ensure(['class' => Profiler::class], ProfilerInterface::class);
+    }
+
+    /**
+     * @param ProfilerInterface|\Closure|array|null $profiler profiler instance or its DI compatible configuration.
+     * @since 2.1
+     */
+    public static function setProfiler($profiler)
+    {
+        if ($profiler === null) {
+            self::$_profiler = null;
+            return;
+        }
+
+        if (is_array($profiler)) {
+            if (!isset($profiler['class']) && is_object(self::$_profiler)) {
+                static::configure(self::$_profiler, $profiler);
+                return;
+            }
+            $profiler = array_merge(['class' => Profiler::class], $profiler);
+        } elseif ($profiler instanceof \Closure) {
+            $profiler = call_user_func($profiler);
+        }
+
+        self::$_profiler = Instance::ensure($profiler, ProfilerInterface::class);
+    }
+
+    /**
+     * Logs a message with category.
+     * @param string $level log level.
+     * @param mixed $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
+     * @param string $category the category of the message.
+     * @since 2.1.0
+     */
+    public static function log($level, $message, $category = 'application')
+    {
+        $context = ['category' => $category];
+        if (!is_string($message)) {
+            if ($message instanceof \Throwable) {
+                // exceptions are string-convertable, thus should be passed as it is to the logger
+                // if exception instance is given to produce a stack trace, it MUST be in a key named "exception".
+                $context['exception'] = $message;
+            } else {
+                // exceptions may not be serializable if in the call stack somewhere is a Closure
+                $message = VarDumper::export($message);
+            }
+        }
+        static::getLogger()->log($level, $message, $context);
     }
 
     /**
      * Logs a debug message.
      * Trace messages are logged mainly for development purpose to see
-     * the execution work flow of some code. This method will only log
-     * a message when the application is in debug mode.
+     * the execution work flow of some code.
      * @param string|array $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as array.
      * @param string $category the category of the message.
@@ -392,20 +431,8 @@ class BaseYii
     public static function debug($message, $category = 'application')
     {
         if (YII_DEBUG) {
-            static::getLogger()->log($message, Logger::LEVEL_TRACE, $category);
+            static::log(LogLevel::DEBUG, $message, $category);
         }
-    }
-
-    /**
-     * Alias of [[debug()]].
-     * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
-     * @param string $category the category of the message.
-     * @deprecated since 2.0.14. Use [[debug()]] instead.
-     */
-    public static function trace($message, $category = 'application')
-    {
-        static::debug($message, $category);
     }
 
     /**
@@ -418,7 +445,7 @@ class BaseYii
      */
     public static function error($message, $category = 'application')
     {
-        static::getLogger()->log($message, Logger::LEVEL_ERROR, $category);
+        static::log(LogLevel::ERROR, $message, $category);
     }
 
     /**
@@ -431,7 +458,7 @@ class BaseYii
      */
     public static function warning($message, $category = 'application')
     {
-        static::getLogger()->log($message, Logger::LEVEL_WARNING, $category);
+        static::log(LogLevel::WARNING, $message, $category);
     }
 
     /**
@@ -444,7 +471,7 @@ class BaseYii
      */
     public static function info($message, $category = 'application')
     {
-        static::getLogger()->log($message, Logger::LEVEL_INFO, $category);
+        static::log(LogLevel::INFO, $message, $category);
     }
 
     /**
@@ -467,7 +494,7 @@ class BaseYii
      */
     public static function beginProfile($token, $category = 'application')
     {
-        static::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
+        static::getProfiler()->begin($token, ['category' => $category]);
     }
 
     /**
@@ -479,20 +506,7 @@ class BaseYii
      */
     public static function endProfile($token, $category = 'application')
     {
-        static::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
-    }
-
-    /**
-     * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
-     * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
-     * @deprecated since 2.0.14, this method will be removed in 2.1.0.
-     */
-    public static function powered()
-    {
-        return \Yii::t('yii', 'Powered by {yii}', [
-            'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
-                    'Yii Framework') . '</a>',
-        ]);
+        static::getProfiler()->end($token, ['category' => $category]);
     }
 
     /**

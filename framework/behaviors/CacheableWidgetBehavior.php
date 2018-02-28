@@ -25,10 +25,10 @@ use yii\di\Instance;
  * {
  *     return [
  *         [
- *             'class' => CacheableWidgetBehavior::className(),
+ *             'class' => CacheableWidgetBehavior::class,
  *             'cacheDuration' => 0,
  *             'cacheDependency' => [
- *                 'class' => 'yii\caching\DbDependency',
+ *                 'class' => \yii\caching\DbDependency::class,
  *                 'sql' => 'SELECT MAX(updated_at) FROM posts',
  *             ],
  *         ],
@@ -36,8 +36,7 @@ use yii\di\Instance;
  * }
  * ```
  *
- * @property Widget $owner
- * @group behaviors
+ * @author Nikolay Oleynikov <oleynikovny@mail.ru>
  * @since 2.0.14
  */
 class CacheableWidgetBehavior extends Behavior

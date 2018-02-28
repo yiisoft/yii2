@@ -47,7 +47,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      *
      * ```php
      * [
-     *     'class' => 'yii\caching\DbDependency',
+     *     'class' => \yii\caching\DbDependency::class,
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
      * ```
@@ -83,7 +83,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
     {
         parent::init();
 
-        $this->cache = $this->enabled ? Instance::ensure($this->cache, 'yii\caching\CacheInterface') : null;
+        $this->cache = $this->enabled ? Instance::ensure($this->cache, CacheInterface::class) : null;
 
         if ($this->cache instanceof CacheInterface && $this->getCachedContent() === false) {
             $this->getView()->pushDynamicContent($this);
@@ -97,25 +97,27 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      * Content displayed before this method call and after [[init()]]
      * will be captured and saved in cache.
      * This method does nothing if valid content is already found in cache.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
         if (($content = $this->getCachedContent()) !== false) {
-            echo $content;
+            return $content;
         } elseif ($this->cache instanceof CacheInterface) {
             $this->getView()->popDynamicContent();
 
             $content = ob_get_clean();
             if ($content === false || $content === '') {
-                return;
+                return '';
             }
             if (is_array($this->dependency)) {
                 $this->dependency = Yii::createObject($this->dependency);
             }
             $data = [$content, $this->getDynamicPlaceholders()];
             $this->cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
-            echo $this->updateDynamicContent($content, $this->getDynamicPlaceholders());
+            return $this->updateDynamicContent($content, $this->getDynamicPlaceholders());
         }
+        return '';
     }
 
     /**
@@ -145,7 +147,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
             return $this->_content;
         }
 
-        list($this->_content, $placeholders) = $data;
+        [$this->_content, $placeholders] = $data;
         if (!is_array($placeholders) || count($placeholders) === 0) {
             return $this->_content;
         }

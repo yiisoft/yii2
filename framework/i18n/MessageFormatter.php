@@ -113,11 +113,6 @@ class MessageFormatter extends Component
             $this->_errorCode = $e->getCode();
             $this->_errorMessage = 'Message pattern is invalid: ' . $e->getMessage();
             return false;
-        } catch (\Exception $e) {
-            // Exception is thrown by HHVM
-            $this->_errorCode = $e->getCode();
-            $this->_errorMessage = 'Message pattern is invalid: ' . $e->getMessage();
-            return false;
         }
 
         $result = $formatter->format($params);

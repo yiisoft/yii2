@@ -65,7 +65,7 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => HttpBasicAuth::className(),
+        'class' => HttpBasicAuth::class,
     ];
     return $behaviors;
 }
@@ -93,7 +93,7 @@ public function behaviors()
     
     // CORS フィルタを追加する
     $behaviors['corsFilter'] = [
-        'class' => \yii\filters\Cors::className(),
+        'class' => \yii\filters\Cors::class,
     ];
     
     // 認証フィルタを再度追加する

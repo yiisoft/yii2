@@ -91,7 +91,7 @@ class HostControlTest extends TestCase
      */
     public function testFilter($allowedHosts, $host, $allowed)
     {
-        $_SERVER['HTTP_HOST'] = $host;
+        Yii::$app->request->setHeader('Host', $host);
 
         $filter = new HostControl();
         $filter->allowedHosts = $allowedHosts;

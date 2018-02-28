@@ -1,7 +1,7 @@
 Chargement de fichiers sur le serveur
 =====================================
 
-Le chargement de fichiers sur le serveur dans Yii est ordinairement effectué avec l'aide de [[yii\web\UploadedFile]] qui encapsule chaque fichier chargé dans un objet `UploadedFile`. Combiné avec les [[yii\widgets\ActiveForm]] et les [modèles](structure-models.md), vous pouvez aisément mettre en œuvre un mécanisme sûr de chargement de fichiers sur le serveur.
+Le chargement de fichiers sur le serveur dans Yii est ordinairement effectué avec l'aide de [[yii\http\UploadedFile]] qui encapsule chaque fichier chargé dans un objet `UploadedFile`. Combiné avec les [[yii\widgets\ActiveForm]] et les [modèles](structure-models.md), vous pouvez aisément mettre en œuvre un mécanisme sûr de chargement de fichiers sur le serveur.
 
 
 ## Création de modèles <span id="creating-models"></span>
@@ -12,7 +12,7 @@ Comme on le ferait avec des entrées de texte simple, pour charger un unique fic
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -79,7 +79,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -100,7 +100,7 @@ class SiteController extends Controller
 }
 ```
 
-Dans le code ci-dessus, lorsque le formulaire est soumis, la méthode [[yii\web\UploadedFile::getInstance()]] est appelée pour représenter le fichier chargé sous forme d'instance de `UploadedFile`. Nous comptons ensuite sur la validation du modèle pour garantir que le fichier chargé est valide et le sauvegarder sur le serveur.
+Dans le code ci-dessus, lorsque le formulaire est soumis, la méthode [[yii\http\UploadedFile::getInstance()]] est appelée pour représenter le fichier chargé sous forme d'instance de `UploadedFile`. Nous comptons ensuite sur la validation du modèle pour garantir que le fichier chargé est valide et le sauvegarder sur le serveur.
 
 
 ## Chargement sur le serveur de plusieurs fichiers  <span id="uploading-multiple-files"></span>
@@ -113,7 +113,7 @@ Tout d'abord, vous devez ajuster la classe du modèle en ajoutant l'option `maxF
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -167,7 +167,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {

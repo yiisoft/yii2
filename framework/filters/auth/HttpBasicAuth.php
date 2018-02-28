@@ -17,7 +17,7 @@ namespace yii\filters\auth;
  * {
  *     return [
  *         'basicAuth' => [
- *             'class' => \yii\filters\auth\HttpBasicAuth::className(),
+ *             'class' => \yii\filters\auth\HttpBasicAuth::class,
  *         ],
  *     ];
  * }
@@ -34,7 +34,7 @@ namespace yii\filters\auth;
  * {
  *     return [
  *         'basicAuth' => [
- *             'class' => \yii\filters\auth\HttpBasicAuth::className(),
+ *             'class' => \yii\filters\auth\HttpBasicAuth::class,
  *             'auth' => function ($username, $password) {
  *                 $user = User::find()->where(['username' => $username])->one();
  *                 if ($user->verifyPassword($password)) {
@@ -92,7 +92,7 @@ class HttpBasicAuth extends AuthMethod
      */
     public function authenticate($user, $request, $response)
     {
-        list($username, $password) = $request->getAuthCredentials();
+        [$username, $password] = $request->getAuthCredentials();
 
         if ($this->auth) {
             if ($username !== null || $password !== null) {
@@ -123,6 +123,6 @@ class HttpBasicAuth extends AuthMethod
      */
     public function challenge($response)
     {
-        $response->getHeaders()->set('WWW-Authenticate', "Basic realm=\"{$this->realm}\"");
+        $response->setHeader('WWW-Authenticate', "Basic realm=\"{$this->realm}\"");
     }
 }

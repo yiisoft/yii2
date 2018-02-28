@@ -122,7 +122,7 @@ Tous les composants de mise en cache dérivent de la même classe de base [[yii\
 * [[yii\caching\Cache::multiAdd()|multiAdd()]]: stocke de multiples données dans le cache. Chaque donnée est identifiée par une clé. Si la clé existe déjà dans le cache, la donnée est ignorée.
 * [[yii\caching\Cache::exists()|exists()]]: retourne une valeur indiquant si la clé spécifiée existe dans le cache.
 * [[yii\caching\Cache::delete()|delete()]]: retire du cache une donnée identifiée par une clé.
-* [[yii\caching\Cache::flush()|flush()]]: retire toutes les données du cache.
+* [[yii\caching\Cache::clear()|clear()]]: retire toutes les données du cache.
 
 > Note : ne mettez pas directement en cache une valeur booléenne `false` parce que la méthode [[yii\caching\Cache::get()|get()]] utilise  la valeur `false` pour indiquer que la donnée n'a pas été trouvée dans le cache. Au lieu de cela, vous pouvez placer cette donnée dans un tableau et mettre ce tableau en cache pour éviter le problème.
 
@@ -254,7 +254,7 @@ $result = Customer::getDb()->cache(function ($db) {
 
 ### Vidage du cache <span id="cache-flushing">
 
-Lorsque vous avez besoin d'invalider toutes les données stockées dans le cache, vous pouvez appeler [[yii\caching\Cache::flush()]].
+Lorsque vous avez besoin d'invalider toutes les données stockées dans le cache, vous pouvez appeler [[yii\caching\Cache::clear()]].
 
 Vous pouvez aussi vider le cache depuis la console en appelant `yii cache/flush`.
  - `yii cache`: liste les caches disponibles dans une application

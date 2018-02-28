@@ -96,7 +96,7 @@ class SqlDataProvider extends BaseDataProvider
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db = Instance::ensure($this->db, Connection::class);
         if ($this->sql === null) {
             throw new InvalidConfigException('The "sql" property must be set.');
         }
@@ -132,7 +132,7 @@ class SqlDataProvider extends BaseDataProvider
             $offset = $pagination->getOffset();
         }
 
-        $sql = $this->db->getQueryBuilder()->buildOrderByAndLimit($sql, $orders, $limit, $offset);
+        $sql = $this->db->getQueryBuilder()->buildOrderByAndLimit($sql, $orders, $limit, $offset, $params);
 
         return $this->db->createCommand($sql, $this->params)->queryAll();
     }

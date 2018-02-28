@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
+use yii\http\Cookie;
 use yii\rbac\CheckAccessInterface;
 
 /**
@@ -525,7 +526,7 @@ class User extends Component
             $data = json_decode($value, true);
             if (is_array($data) && isset($data[2])) {
                 $cookie = Yii::createObject(array_merge($this->identityCookie, [
-                    'class' => 'yii\web\Cookie',
+                    'class' => \yii\http\Cookie::class,
                     'value' => $value,
                     'expire' => time() + (int) $data[2],
                 ]));
@@ -546,7 +547,7 @@ class User extends Component
     protected function sendIdentityCookie($identity, $duration)
     {
         $cookie = Yii::createObject(array_merge($this->identityCookie, [
-            'class' => 'yii\web\Cookie',
+            'class' => \yii\http\Cookie::class,
             'value' => json_encode([
                 $identity->getId(),
                 $identity->getAuthKey(),
@@ -573,7 +574,7 @@ class User extends Component
         }
         $data = json_decode($value, true);
         if (is_array($data) && count($data) == 3) {
-            list($id, $authKey, $duration) = $data;
+            [$id, $authKey, $duration] = $data;
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
@@ -599,7 +600,7 @@ class User extends Component
     protected function removeIdentityCookie()
     {
         Yii::$app->getResponse()->getCookies()->remove(Yii::createObject(array_merge($this->identityCookie, [
-            'class' => 'yii\web\Cookie',
+            'class' => \yii\http\Cookie::class,
         ])));
     }
 
@@ -771,11 +772,14 @@ class User extends Component
 
     /**
      * Returns the access checker used for checking access.
+     *
+     * By default this is the `authManager` application component.
+     *
      * @return CheckAccessInterface
      * @since 2.0.9
      */
     protected function getAccessChecker()
     {
-        return $this->accessChecker !== null ? $this->accessChecker : $this->getAuthManager();
+        return $this->accessChecker !== null ? $this->accessChecker : Yii::$app->getAuthManager();
     }
 }

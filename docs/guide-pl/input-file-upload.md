@@ -1,7 +1,7 @@
 Wysyłanie plików
 ===============
 
-Przesyłanie plików w Yii jest zazwyczaj wykonywane przy użyciu klasy [[yii\web\UploadedFile|UploadedFile]], która hermetyzuje każdy przesłany plik jako obiekt `UploadedFile`.
+Przesyłanie plików w Yii jest zazwyczaj wykonywane przy użyciu klasy [[yii\http\UploadedFile|UploadedFile]], która hermetyzuje każdy przesłany plik jako obiekt `UploadedFile`.
 W połączeniu z [[yii\widgets\ActiveForm|ActiveForm]] oraz [modelem](structure-models.md), możesz w łatwy sposób zaimplementować bezpieczny mechanizm przesyłania plików.
 
 ## Tworzenie modeli <span id="creating-models"></span>
@@ -14,7 +14,7 @@ Dla przykładu:
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -86,7 +86,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -107,7 +107,7 @@ class SiteController extends Controller
 }
 ```
 
-W powyższym kodzie, kiedy formularz jest wysłany, metoda [[yii\web\UploadedFile::getInstance()|getInstance()]] wywoływana jest do reprezentowania pliku jako instancji `UploadedFile`.
+W powyższym kodzie, kiedy formularz jest wysłany, metoda [[yii\http\UploadedFile::getInstance()|getInstance()]] wywoływana jest do reprezentowania pliku jako instancji `UploadedFile`.
 Następnie przystępujemy do walidacji modelu, aby upewnić się, że przesłany plik jest prawidłowy, po czym zapisujemy go na serwerze.
 
 ## Przesyłanie wielu plików <span id="uploading-multiple-files"></span>
@@ -121,7 +121,7 @@ Metoda `upload()` powinna również zostać zaktualizowana, aby zapisywać pliki
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -176,7 +176,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {

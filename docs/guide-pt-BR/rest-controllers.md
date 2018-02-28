@@ -51,7 +51,7 @@ public function behaviors()
 {
    $behaviors = parent::behaviors();
    $behaviors['authenticator'] = [
-       'class' => HttpBasicAuth::className(),
+       'class' => HttpBasicAuth::class,
    ];
    return $behaviors;
 }

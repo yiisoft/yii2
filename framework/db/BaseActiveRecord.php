@@ -11,7 +11,6 @@ use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\base\Model;
 use yii\base\ModelEvent;
 use yii\base\NotSupportedException;
@@ -275,7 +274,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * This method is overridden so that attributes and related objects can be accessed like properties.
      *
      * @param string $name property name
-     * @throws InvalidArgumentException if relation name is wrong
+     * @throws \yii\base\InvalidArgumentException if relation name is wrong
      * @return mixed property value
      * @see getAttribute()
      */
@@ -371,7 +370,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * ```php
      * public function getCountry()
      * {
-     *     return $this->hasOne(Country::className(), ['id' => 'country_id']);
+     *     return $this->hasOne(Country::class, ['id' => 'country_id']);
      * }
      * ```
      *
@@ -406,7 +405,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * ```php
      * public function getOrders()
      * {
-     *     return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+     *     return $this->hasMany(Order::class, ['customer_id' => 'id']);
      * }
      * ```
      *
@@ -1293,7 +1292,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
-                list($viaName, $viaRelation) = $relation->via;
+                [$viaName, $viaRelation] = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 // unset $viaName so that it can be reloaded to reflect the change
                 unset($this->_related[$viaName]);
@@ -1383,7 +1382,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
-                list($viaName, $viaRelation) = $relation->via;
+                [$viaName, $viaRelation] = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);
             } else {
@@ -1482,7 +1481,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
-                list($viaName, $viaRelation) = $relation->via;
+                [$viaName, $viaRelation] = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);
             } else {
@@ -1610,7 +1609,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 } else {
                     try {
                         $relation = $relatedModel->getRelation($relationName);
-                    } catch (InvalidParamException $e) {
+                    } catch (InvalidArgumentException $e) {
                         return $this->generateAttributeLabel($attribute);
                     }
                     /* @var $modelClass ActiveRecordInterface */
@@ -1652,7 +1651,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 } else {
                     try {
                         $relation = $relatedModel->getRelation($relationName);
-                    } catch (InvalidParamException $e) {
+                    } catch (InvalidArgumentException $e) {
                         return '';
                     }
                     /* @var $modelClass ActiveRecordInterface */
@@ -1735,7 +1734,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } elseif ($relation->via instanceof ActiveQueryInterface) {
             $this->setRelationDependencies($name, $relation->via);
         } elseif (is_array($relation->via)) {
-            list(, $viaQuery) = $relation->via;
+            [, $viaQuery] = $relation->via;
             $this->setRelationDependencies($name, $viaQuery);
         }
     }

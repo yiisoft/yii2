@@ -121,21 +121,21 @@ class User extends ActiveRecord
     {
         return [
             // 無名ビヘイビア ビヘイビアクラス名のみ
-            MyBehavior::className(),
+            MyBehavior::class,
 
             // 名前付きビヘイビア ビヘイビアクラス名のみ
-            'myBehavior2' => MyBehavior::className(),
+            'myBehavior2' => MyBehavior::class,
 
             // 無名ビヘイビア 構成情報配列
             [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
             // 名前付きビヘイビア 構成情報配列
             'myBehavior4' => [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ]
@@ -157,11 +157,11 @@ use app\components\MyBehavior;
 $component->attachBehavior('myBehavior1', new MyBehavior);
 
 // ビヘイビアクラスをアタッチ
-$component->attachBehavior('myBehavior2', MyBehavior::className());
+$component->attachBehavior('myBehavior2', MyBehavior::class);
 
 // 構成情報配列をアタッチ
 $component->attachBehavior('myBehavior3', [
-    'class' => MyBehavior::className(),
+    'class' => MyBehavior::class,
     'prop1' => 'value1',
     'prop2' => 'value2',
 ]);
@@ -171,7 +171,7 @@ $component->attachBehavior('myBehavior3', [
 ```php
 $component->attachBehaviors([
     'myBehavior1' => new MyBehavior,  // 名前付きビヘイビア
-    MyBehavior::className(),          // 無名ビヘイビア
+    MyBehavior::class,          // 無名ビヘイビア
 ]);
 ```
 
@@ -179,10 +179,10 @@ $component->attachBehaviors([
 
 ```php
 [
-    'as myBehavior2' => MyBehavior::className(),
+    'as myBehavior2' => MyBehavior::class,
 
     'as myBehavior3' => [
-        'class' => MyBehavior::className(),
+        'class' => MyBehavior::class,
         'prop1' => 'value1',
         'prop2' => 'value2',
     ],
@@ -270,7 +270,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],

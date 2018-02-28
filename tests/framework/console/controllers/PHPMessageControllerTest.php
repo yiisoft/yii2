@@ -85,13 +85,6 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
             return [];
         }
 
-        if (defined('HHVM_VERSION')) {
-            // use eval() to bypass HHVM content cache
-            // https://github.com/facebook/hhvm/issues/1447
-            $content = file_get_contents($messageFilePath);
-            return eval(substr($content, strpos($content, 'return ')));
-        }
-
         return require $messageFilePath;
     }
 

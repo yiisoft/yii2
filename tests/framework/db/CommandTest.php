@@ -7,6 +7,8 @@
 
 namespace yiiunit\framework\db;
 
+use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
@@ -91,7 +93,7 @@ abstract class CommandTest extends DatabaseTestCase
         // query
         $sql = 'SELECT * FROM {{customer}}';
         $reader = $db->createCommand($sql)->query();
-        $this->assertInstanceOf(DataReader::className(), $reader);
+        $this->assertInstanceOf(DataReader::class, $reader);
 
         // queryAll
         $rows = $db->createCommand('SELECT * FROM {{customer}}')->queryAll();
@@ -597,7 +599,7 @@ SQL;
      * Test INSERT INTO ... SELECT SQL statement with wrong query object.
      *
      * @dataProvider invalidSelectColumns
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
      * @param mixed $invalidSelectColumns
      */
@@ -1226,7 +1228,7 @@ SQL;
     {
         $db = $this->getConnection();
         $db->enableQueryCache = true;
-        $db->queryCache = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
+        $db->queryCache = new Cache(['handler' => new ArrayCache()]);
         $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id');
 
         $this->assertEquals('user1', $command->bindValue(':id', 1)->queryScalar());

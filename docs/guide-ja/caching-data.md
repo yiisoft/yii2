@@ -111,8 +111,6 @@ Yii はさまざまなキャッシュストレージをサポートしていま�
 分散型のアプリケーションでキャッシュを扱うときには最速の一つとして考えることができます (例えば、複数台のサーバで、ロードバランサがある、などの場合) 。
 * [[yii\redis\Cache]]: [Redis](http://redis.io/) の key-value ストアに基づいてキャッシュコンポーネントを実装しています。(Redis の バージョン 2.6.12 以降が必要です) 。
 * [[yii\caching\WinCache]]: PHP の [WinCache](http://iis.net/downloads/microsoft/wincache-extension) ([関連リンク](http://php.net/manual/ja/book.wincache.php)) 拡張モジュールを使用します。
-* [[yii\caching\XCache]] _(deprecated)_: PHP の [XCache](http://xcache.lighttpd.net/) 拡張モジュールを使用します。
-* [[yii\caching\ZendDataCache]] _(deprecated)_: キャッシュメディアして [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) を使用します。
 
 > Tip: 同じアプリケーション内で異なるキャッシュを使用することもできます。一般的なやり方として、小さくとも常に使用されるデータ (例えば、統計データ) を格納する場合はメモリベースのキャッシュストレージを使用し、大きくて使用頻度の低いデータ (例えば、ページコンテント) を格納する場合はファイルベース、またはデータベースのキャッシュストレージを使用します  。
 
@@ -131,7 +129,7 @@ Yii はさまざまなキャッシュストレージをサポートしていま�
 * [[yii\caching\Cache::multiAdd()|multiAdd()]]: キャッシュに複数のデータを格納します。各データはキーによって識別されます。もしキャッシュ内にキーがすでに存在する場合はスキップされます。
 * [[yii\caching\Cache::exists()|exists()]]: 指定されたキーがキャッシュ内で見つかったかどうかを示す値を返します。
 * [[yii\caching\Cache::delete()|delete()]]: キャッシュからキーによって識別されるデータを削除します。
-* [[yii\caching\Cache::flush()|flush()]]: キャッシュからすべてのデータを削除します。
+* [[yii\caching\Cache::clear()|clear()]]: キャッシュからすべてのデータを削除します。
 
 > Note: [[yii\caching\Cache::get()|get()]] メソッドは、データがキャッシュ内に見つからないことを示すために戻り値として false を使用しているので、直接 boolean 型の `false` をキャッシュしないでください。
 代りに配列内に `false` を置いてキャッシュすることによって、この問題を回避できます。
@@ -280,7 +278,7 @@ $result = Customer::getDb()->cache(function ($db) {
 
 ### キャッシュのフラッシュ <span id="cache-flushing">
 
-保存されている全てのキャッシュデータを無効化する必要がある場合は、[[yii\caching\Cache::flush()]] を呼ぶことが出来ます。
+保存されている全てのキャッシュデータを無効化する必要がある場合は、[[yii\caching\Cache::clear()]] を呼ぶことが出来ます。
 
 コンソールから `yii cache/flush` を呼ぶことによっても、キャッシュをフラッシュすることが出来ます。
  - `yii cache`: アプリケーションで利用可能なキャッシュのリストを表示します。

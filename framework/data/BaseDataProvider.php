@@ -201,8 +201,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * @param array|Pagination|bool $value the pagination to be used by this data provider.
      * This can be one of the following:
      *
-     * - a configuration array for creating the pagination object. The "class" element defaults
-     *   to 'yii\data\Pagination'
+     * - a configuration array for creating the pagination object. The
+     *   "class" element defaults to `yii\data\Pagination`
      * - an instance of [[Pagination]] or its subclass
      * - false, if pagination needs to be disabled.
      *
@@ -211,7 +211,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     public function setPagination($value)
     {
         if (is_array($value)) {
-            $config = ['class' => Pagination::className()];
+            $config = ['class' => Pagination::class];
             if ($this->id !== null) {
                 $config['pageParam'] = $this->id . '-page';
                 $config['pageSizeParam'] = $this->id . '-per-page';
@@ -242,8 +242,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * @param array|Sort|bool $value the sort definition to be used by this data provider.
      * This can be one of the following:
      *
-     * - a configuration array for creating the sort definition object. The "class" element defaults
-     *   to 'yii\data\Sort'
+     * - a configuration array for creating the sort definition object. The
+     *   "class" element defaults to `yii\data\Sort`
      * - an instance of [[Sort]] or its subclass
      * - false, if sorting needs to be disabled.
      *
@@ -252,7 +252,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     public function setSort($value)
     {
         if (is_array($value)) {
-            $config = ['class' => Sort::className()];
+            $config = ['class' => Sort::class];
             if ($this->id !== null) {
                 $config['sortParam'] = $this->id . '-sort';
             }

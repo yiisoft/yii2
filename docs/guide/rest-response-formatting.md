@@ -32,7 +32,7 @@ $ curl -i -H "Accept: application/json; q=1.0, */*; q=0.1" "http://localhost/use
 
 HTTP/1.1 200 OK
 Date: Sun, 02 Mar 2014 05:31:43 GMT
-Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/7.1.0 mod_ssl/2.2.26 OpenSSL/0.9.8y
 X-Powered-By: PHP/5.4.20
 X-Pagination-Total-Count: 1000
 X-Pagination-Page-Count: 50
@@ -112,8 +112,8 @@ You may then get the following response for request `http://localhost/users`:
 ```
 HTTP/1.1 200 OK
 Date: Sun, 02 Mar 2014 05:31:43 GMT
-Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
-X-Powered-By: PHP/5.4.20
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/7.1.0 mod_ssl/2.2.26 OpenSSL/0.9.8y
+X-Powered-By: PHP/7.1.0
 X-Pagination-Total-Count: 1000
 X-Pagination-Page-Count: 50
 X-Pagination-Current-Page: 1

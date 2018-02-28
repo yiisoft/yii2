@@ -19,7 +19,7 @@ Sessions 和 Cookies
 ```php
 $session = Yii::$app->session;
 
-// 检查session是否开启 
+// 检查session是否开启
 if ($session->isActive) ...
 
 // 开启session
@@ -215,7 +215,7 @@ $alerts = $session->getFlash('alerts');
 ```
 
 > Note: 不要在相同名称的flash数据中使用[[yii\web\Session::setFlash()]] 的同时也使用[[yii\web\Session::addFlash()]]，
-  因为后一个防范会自动将flash信息转换为数组以使新的flash数据可追加进来，因此，
+  因为后一个方法会自动将flash信息转换为数组以使新的flash数据可追加进来，因此，
   当你调用[[yii\web\Session::getFlash()]]时，会发现有时获取到一个数组，有时获取到一个字符串，
   取决于你调用这两个方法的顺序。
 
@@ -256,7 +256,7 @@ if (isset($cookies['language'])) ...
 
 ### 发送 Cookies <span id="sending-cookies"></span>
 
-You can send cookies to end users using the following code:
+
 可使用如下代码发送cookie到终端用户：
 
 ```php
@@ -297,7 +297,7 @@ Cookie验证默认启用，可以设置[[yii\web\Request::enableCookieValidation
 
 > Note: 直接通过`$_COOKIE` 和 `setcookie()` 读取和发送的Cookie不会被验证。
 
-当使用cookie验证，必须指定[[yii\web\Request::cookieValidationKey]]，它是用来生成s上述的哈希值，
+当使用cookie验证，必须指定[[yii\web\Request::cookieValidationKey]]，它是用来生成上述的哈希值，
 可通过在应用配置中配置`request` 组件。
 
 ```php

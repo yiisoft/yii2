@@ -28,8 +28,8 @@ class BaseFormatConverter
     public static $phpFallbackDatePatterns = [
         'short' => [
             'date' => 'n/j/y',
-            'time' => 'H:i',
-            'datetime' => 'n/j/y H:i',
+            'time' => 'g:i a',
+            'datetime' => 'n/j/y g:i a',
         ],
         'medium' => [
             'date' => 'M j, Y',
@@ -38,13 +38,13 @@ class BaseFormatConverter
         ],
         'long' => [
             'date' => 'F j, Y',
-            'time' => 'g:i:sA',
-            'datetime' => 'F j, Y g:i:sA',
+            'time' => 'g:i:s A T',
+            'datetime' => 'F j, Y g:i:s A T',
         ],
         'full' => [
             'date' => 'l, F j, Y',
-            'time' => 'g:i:sA T',
-            'datetime' => 'l, F j, Y g:i:sA T',
+            'time' => 'g:i:s A T',
+            'datetime' => 'l, F j, Y g:i:s A T',
         ],
     ];
     /**

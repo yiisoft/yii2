@@ -26,8 +26,10 @@ namespace yii\log {
 namespace yiiunit\framework\log {
 
     use PHPUnit_Framework_MockObject_MockObject;
+    use Psr\Log\LogLevel;
     use yii\helpers\VarDumper;
     use yii\log\Logger;
+    use yii\log\SyslogTarget;
     use yiiunit\TestCase;
 
     /**
@@ -54,7 +56,7 @@ namespace yiiunit\framework\log {
          */
         protected function setUp()
         {
-            $this->syslogTarget = $this->getMockBuilder('yii\\log\\SyslogTarget')
+            $this->syslogTarget = $this->getMockBuilder(SyslogTarget::class)
                 ->setMethods(['getMessagePrefix'])
                 ->getMock();
         }
@@ -68,15 +70,17 @@ namespace yiiunit\framework\log {
             $options = LOG_ODELAY | LOG_PID;
             $facility = 'facility string';
             $messages = [
-                ['info message', Logger::LEVEL_INFO],
-                ['error message', Logger::LEVEL_ERROR],
-                ['warning message', Logger::LEVEL_WARNING],
-                ['trace message', Logger::LEVEL_TRACE],
-                ['profile message', Logger::LEVEL_PROFILE],
-                ['profile begin message', Logger::LEVEL_PROFILE_BEGIN],
-                ['profile end message', Logger::LEVEL_PROFILE_END],
+                [LogLevel::INFO, 'info message'],
+                [LogLevel::ERROR, 'error message'],
+                [LogLevel::WARNING, 'warning message'],
+                [LogLevel::DEBUG, 'trace message'],
+                [LogLevel::NOTICE, 'notice message'],
+                [LogLevel::EMERGENCY, 'emergency message'],
+                [LogLevel::ALERT, 'alert message'],
             ];
-            $syslogTarget = $this->getMockBuilder('yii\\log\\SyslogTarget')
+
+            /* @var $syslogTarget SyslogTarget|PHPUnit_Framework_MockObject_MockObject */
+            $syslogTarget = $this->getMockBuilder(SyslogTarget::class)
                 ->setMethods(['openlog', 'syslog', 'formatMessage', 'closelog'])
                 ->getMock();
 
@@ -120,23 +124,25 @@ namespace yiiunit\framework\log {
                     [$this->equalTo(LOG_ERR), $this->equalTo('formatted message 2')],
                     [$this->equalTo(LOG_WARNING), $this->equalTo('formatted message 3')],
                     [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 4')],
-                    [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 5')],
-                    [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 6')],
-                    [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 7')]
+                    [$this->equalTo(LOG_NOTICE), $this->equalTo('formatted message 5')],
+                    [$this->equalTo(LOG_EMERG), $this->equalTo('formatted message 6')],
+                    [$this->equalTo(LOG_ALERT), $this->equalTo('formatted message 7')]
                 );
 
             $syslogTarget->expects($this->once())->method('closelog');
 
             static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(3, $arguments);
-                list($identity, $option, $facility) = $arguments;
+                [$identity, $option, $facility] = $arguments;
                 return $syslogTarget->openlog($identity, $option, $facility);
             };
+
             static::$functions['syslog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(2, $arguments);
-                list($priority, $message) = $arguments;
+                [$priority, $message] = $arguments;
                 return $syslogTarget->syslog($priority, $message);
             };
+
             static::$functions['closelog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(0, $arguments);
                 return $syslogTarget->closelog();
@@ -161,17 +167,17 @@ namespace yiiunit\framework\log {
             $syslogTarget->options = LOG_ODELAY | LOG_PID;
             $syslogTarget->facility = 'facility string';
             $syslogTarget->messages = [
-                ['test', Logger::LEVEL_INFO],
+                [LogLevel::INFO, 'test', []],
             ];
 
             static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(3, $arguments);
-                list($identity, $option, $facility) = $arguments;
+                [$identity, $option, $facility] = $arguments;
                 return $syslogTarget->openlog($identity, $option, $facility);
             };
             static::$functions['syslog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(2, $arguments);
-                list($priority, $message) = $arguments;
+                [$priority, $message] = $arguments;
                 return $syslogTarget->syslog($priority, $message);
             };
             static::$functions['closelog'] = function ($arguments) use ($syslogTarget) {
@@ -202,7 +208,7 @@ namespace yiiunit\framework\log {
          */
         public function testFormatMessageWhereTextIsString()
         {
-            $message = ['text', Logger::LEVEL_INFO, 'category', 'timestamp'];
+            $message = [LogLevel::INFO, 'text', ['category' => 'category', 'time' => 'timestamp']];
 
             $this->syslogTarget
                 ->expects($this->once())
@@ -220,7 +226,7 @@ namespace yiiunit\framework\log {
         public function testFormatMessageWhereTextIsException()
         {
             $exception = new \Exception('exception text');
-            $message = [$exception, Logger::LEVEL_INFO, 'category', 'timestamp'];
+            $message = [LogLevel::INFO, $exception, ['category' => 'category', 'time' => 'timestamp']];
 
             $this->syslogTarget
                 ->expects($this->once())
@@ -230,25 +236,6 @@ namespace yiiunit\framework\log {
 
             $result = $this->syslogTarget->formatMessage($message);
             $this->assertEquals('some prefix[info][category] ' . (string) $exception, $result);
-        }
-
-        /**
-         * @covers \yii\log\SyslogTarget::formatMessage()
-         */
-        public function testFormatMessageWhereTextIsNotStringAndNotThrowable()
-        {
-            $text = new \stdClass();
-            $text->var = 'some text';
-            $message = [$text, Logger::LEVEL_ERROR, 'category', 'timestamp'];
-
-            $this->syslogTarget
-                ->expects($this->once())
-                ->method('getMessagePrefix')
-                ->with($this->equalTo($message))
-                ->willReturn('some prefix');
-
-            $result = $this->syslogTarget->formatMessage($message);
-            $this->assertEquals('some prefix[error][category] ' . VarDumper::export($text), $result);
         }
     }
 }

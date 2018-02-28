@@ -87,7 +87,7 @@ class Migration extends Component implements MigrationInterface
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db = Instance::ensure($this->db, Connection::class);
         $this->db->getSchema()->refresh();
         $this->db->enableSlaves = false;
     }
@@ -116,10 +116,6 @@ class Migration extends Component implements MigrationInterface
                 return false;
             }
             $transaction->commit();
-        } catch (\Exception $e) {
-            $this->printException($e);
-            $transaction->rollBack();
-            return false;
         } catch (\Throwable $e) {
             $this->printException($e);
             $transaction->rollBack();
@@ -145,10 +141,6 @@ class Migration extends Component implements MigrationInterface
                 return false;
             }
             $transaction->commit();
-        } catch (\Exception $e) {
-            $this->printException($e);
-            $transaction->rollBack();
-            return false;
         } catch (\Throwable $e) {
             $this->printException($e);
             $transaction->rollBack();
@@ -159,7 +151,7 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
-     * @param \Throwable|\Exception $e
+     * @param \Throwable $e
      */
     private function printException($e)
     {

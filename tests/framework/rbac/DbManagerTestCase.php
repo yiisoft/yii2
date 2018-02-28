@@ -7,13 +7,13 @@
 
 namespace yiiunit\framework\rbac;
 
-use app\models\User;
+use Psr\Log\LogLevel;
 use Yii;
 use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\console\Application;
 use yii\console\ExitCode;
 use yii\db\Connection;
-use yii\log\Logger;
 use yii\rbac\Assignment;
 use yii\rbac\DbManager;
 use yii\rbac\Permission;
@@ -44,7 +44,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
                 'id' => 'Migrator',
                 'basePath' => '@yiiunit',
                 'controllerMap' => [
-                    'migrate' => EchoMigrateController::className(),
+                    'migrate' => EchoMigrateController::class,
                 ],
                 'components' => [
                     'db' => static::createConnection(),
@@ -90,9 +90,6 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     protected function setUp()
     {
-        if (defined('HHVM_VERSION') && static::$driverName === 'pgsql') {
-            static::markTestSkipped('HHVM PDO for pgsql does not work with binary columns, which are essential for rbac schema. See https://github.com/yiisoft/yii2/issues/14244');
-        }
         parent::setUp();
         $this->auth = $this->createManager();
     }
@@ -108,7 +105,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
     }
 
     /**
-     * @throws \yii\base\InvalidParamException
+     * @throws \yii\base\InvalidArgumentException
      * @throws \yii\db\Exception
      * @throws \yii\base\InvalidConfigException
      * @return \yii\db\Connection
@@ -188,7 +185,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         if ($isValid) {
             $this->assertTrue(isset($permissions['createPost']));
-            $this->assertInstanceOf(Permission::className(), $permissions['createPost']);
+            $this->assertInstanceOf(Permission::class, $permissions['createPost']);
         } else {
             $this->assertEmpty($permissions);
         }
@@ -208,7 +205,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         if ($isValid) {
             $this->assertTrue(isset($roles['Author']));
-            $this->assertInstanceOf(Role::className(), $roles['Author']);
+            $this->assertInstanceOf(Role::class, $roles['Author']);
         } else {
             $this->assertEmpty($roles);
         }
@@ -227,7 +224,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $assignment = $this->auth->getAssignment('createPost', $searchUserId);
 
         if ($isValid) {
-            $this->assertInstanceOf(Assignment::className(), $assignment);
+            $this->assertInstanceOf(Assignment::class, $assignment);
             $this->assertEquals($userId, $assignment->userId);
         } else {
             $this->assertEmpty($assignment);
@@ -248,8 +245,8 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         if ($isValid) {
             $this->assertNotEmpty($assignments);
-            $this->assertInstanceOf(Assignment::className(), $assignments['createPost']);
-            $this->assertInstanceOf(Assignment::className(), $assignments['updatePost']);
+            $this->assertInstanceOf(Assignment::class, $assignments['createPost']);
+            $this->assertInstanceOf(Assignment::class, $assignments['updatePost']);
         } else {
             $this->assertEmpty($assignments);
         }
@@ -303,17 +300,21 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $this->prepareData();
 
         // warm up item cache, so only assignment queries are sent to DB
-        $this->auth->cache = new ArrayCache();
+        $this->auth->cache = new Cache(['handler' => new ArrayCache()]);
         $this->auth->checkAccess('author B', 'readPost');
         $this->auth->checkAccess(new UserID('author B'), 'createPost');
 
         // track db queries
-        Yii::$app->log->flushInterval = 1;
-        Yii::$app->log->getLogger()->messages = [];
-        Yii::$app->log->targets['rbacqueries'] = $logTarget = new ArrayTarget([
+        /* @var $logger \yii\log\Logger */
+        $logger = Yii::$app->getLogger();
+
+        $logger->flushInterval = 1;
+        $logger->messages = [];
+        $logTarget = new ArrayTarget([
             'categories' => ['yii\\db\\Command::query'],
-            'levels' => Logger::LEVEL_INFO,
+            'levels' => [LogLevel::INFO],
         ]);
+        $logger->addTarget($logTarget, 'rbacqueries');
         $this->assertCount(0, $logTarget->messages);
 
         // testing access on two different permissons for the same user should only result in one DB query for user assignments
@@ -359,7 +360,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
     private function assertSingleQueryToAssignmentsTable($logTarget)
     {
         $this->assertCount(1, $logTarget->messages, 'Only one query should have been performed, but there are the following logs: ' . print_r($logTarget->messages, true));
-        $this->assertContains('auth_assignment', $logTarget->messages[0][0], 'Log message should be a query to auth_assignment table');
+        $this->assertContains('auth_assignment', $logTarget->messages[0][1], 'Log message should be a query to auth_assignment table');
         $logTarget->messages = [];
     }
 }

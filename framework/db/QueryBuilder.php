@@ -22,6 +22,9 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
+ * @property string[] $expressionBuilders Array of builders that should be merged with the pre-defined ones in
+ * [[expressionBuilders]] property. This property is write-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -134,19 +137,19 @@ class QueryBuilder extends \yii\base\BaseObject
     protected function defaultConditionClasses()
     {
         return [
-            'NOT' => 'yii\db\conditions\NotCondition',
-            'AND' => 'yii\db\conditions\AndCondition',
-            'OR' => 'yii\db\conditions\OrCondition',
-            'BETWEEN' => 'yii\db\conditions\BetweenCondition',
-            'NOT BETWEEN' => 'yii\db\conditions\BetweenCondition',
-            'IN' => 'yii\db\conditions\InCondition',
-            'NOT IN' => 'yii\db\conditions\InCondition',
-            'LIKE' => 'yii\db\conditions\LikeCondition',
-            'NOT LIKE' => 'yii\db\conditions\LikeCondition',
-            'OR LIKE' => 'yii\db\conditions\LikeCondition',
-            'OR NOT LIKE' => 'yii\db\conditions\LikeCondition',
-            'EXISTS' => 'yii\db\conditions\ExistsCondition',
-            'NOT EXISTS' => 'yii\db\conditions\ExistsCondition',
+            'NOT' => conditions\NotCondition::class,
+            'AND' => conditions\AndCondition::class,
+            'OR' => conditions\OrCondition::class,
+            'BETWEEN' => conditions\BetweenCondition::class,
+            'NOT BETWEEN' => conditions\BetweenCondition::class,
+            'IN' => conditions\InCondition::class,
+            'NOT IN' => conditions\InCondition::class,
+            'LIKE' => conditions\LikeCondition::class,
+            'NOT LIKE' => conditions\LikeCondition::class,
+            'OR LIKE' => conditions\LikeCondition::class,
+            'OR NOT LIKE' => conditions\LikeCondition::class,
+            'EXISTS' => conditions\ExistsCondition::class,
+            'NOT EXISTS' => conditions\ExistsCondition::class,
         ];
     }
 
@@ -161,20 +164,20 @@ class QueryBuilder extends \yii\base\BaseObject
     protected function defaultExpressionBuilders()
     {
         return [
-            'yii\db\Query' => 'yii\db\QueryExpressionBuilder',
-            'yii\db\PdoValue' => 'yii\db\PdoValueBuilder',
-            'yii\db\Expression' => 'yii\db\ExpressionBuilder',
-            'yii\db\conditions\ConjunctionCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-            'yii\db\conditions\NotCondition' => 'yii\db\conditions\NotConditionBuilder',
-            'yii\db\conditions\AndCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-            'yii\db\conditions\OrCondition' => 'yii\db\conditions\ConjunctionConditionBuilder',
-            'yii\db\conditions\BetweenCondition' => 'yii\db\conditions\BetweenConditionBuilder',
-            'yii\db\conditions\InCondition' => 'yii\db\conditions\InConditionBuilder',
-            'yii\db\conditions\LikeCondition' => 'yii\db\conditions\LikeConditionBuilder',
-            'yii\db\conditions\ExistsCondition' => 'yii\db\conditions\ExistsConditionBuilder',
-            'yii\db\conditions\SimpleCondition' => 'yii\db\conditions\SimpleConditionBuilder',
-            'yii\db\conditions\HashCondition' => 'yii\db\conditions\HashConditionBuilder',
-            'yii\db\conditions\BetweenColumnsCondition' => 'yii\db\conditions\BetweenColumnsConditionBuilder',
+            Query::class => QueryExpressionBuilder::class,
+            PdoValue::class => PdoValueBuilder::class,
+            Expression::class => ExpressionBuilder::class,
+            conditions\ConjunctionCondition::class => conditions\ConjunctionConditionBuilder::class,
+            conditions\NotCondition::class => conditions\NotConditionBuilder::class,
+            conditions\AndCondition::class => conditions\ConjunctionConditionBuilder::class,
+            conditions\OrCondition::class => conditions\ConjunctionConditionBuilder::class,
+            conditions\BetweenCondition::class => conditions\BetweenConditionBuilder::class,
+            conditions\InCondition::class => conditions\InConditionBuilder::class,
+            conditions\LikeCondition::class => conditions\LikeConditionBuilder::class,
+            conditions\ExistsCondition::class => conditions\ExistsConditionBuilder::class,
+            conditions\SimpleCondition::class => conditions\SimpleConditionBuilder::class,
+            conditions\HashCondition::class => conditions\HashConditionBuilder::class,
+            conditions\BetweenColumnsCondition::class => conditions\BetweenColumnsConditionBuilder::class,
         ];
     }
 
@@ -188,6 +191,23 @@ class QueryBuilder extends \yii\base\BaseObject
     public function setExpressionBuilders($builders)
     {
         $this->expressionBuilders = array_merge($this->expressionBuilders, $builders);
+    }
+
+    /**
+     * Setter for [[conditionClasses]] property.
+     *
+     * @param string[] $classes map of condition aliases to condition classes. For example:
+     *
+     * ```php
+     * ['LIKE' => yii\db\condition\LikeCondition::class]
+     * ```
+     *
+     * @since 2.0.14.2
+     * @see conditionClasses
+     */
+    public function setConditionClasses($classes)
+    {
+        $this->conditionClasses = array_merge($this->conditionClasses, $classes);
     }
 
     /**
@@ -211,27 +231,12 @@ class QueryBuilder extends \yii\base\BaseObject
             $this->buildFrom($query->from, $params),
             $this->buildJoin($query->join, $params),
             $this->buildWhere($query->where, $params),
-            $this->buildGroupBy($query->groupBy),
+            $this->buildGroupBy($query->groupBy, $params),
             $this->buildHaving($query->having, $params),
         ];
 
         $sql = implode($this->separator, array_filter($clauses));
-        $sql = $this->buildOrderByAndLimit($sql, $query->orderBy, $query->limit, $query->offset);
-
-        if (!empty($query->orderBy)) {
-            foreach ($query->orderBy as $expression) {
-                if ($expression instanceof ExpressionInterface) {
-                    $this->buildExpression($expression, $params);
-                }
-            }
-        }
-        if (!empty($query->groupBy)) {
-            foreach ($query->groupBy as $expression) {
-                if ($expression instanceof ExpressionInterface) {
-                    $this->buildExpression($expression, $params);
-                }
-            }
-        }
+        $sql = $this->buildOrderByAndLimit($sql, $query->orderBy, $query->limit, $query->offset, $params);
 
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
@@ -302,12 +307,14 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * Creates an INSERT SQL statement.
      * For example,
+     *
      * ```php
      * $sql = $queryBuilder->insert('user', [
      *     'name' => 'Sam',
      *     'age' => 30,
      * ], $params);
      * ```
+     *
      * The method will properly escape the table and column names.
      *
      * @param string $table the table that new rows will be inserted into.
@@ -320,7 +327,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function insert($table, $columns, &$params)
     {
-        list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
+        [$names, $placeholders, $values, $params] = $this->prepareInsertValues($table, $columns, $params);
         return 'INSERT INTO ' . $this->db->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
@@ -346,7 +353,7 @@ class QueryBuilder extends \yii\base\BaseObject
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof Query) {
-            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
+            [$names, $values, $params] = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
@@ -355,7 +362,7 @@ class QueryBuilder extends \yii\base\BaseObject
                 if ($value instanceof ExpressionInterface) {
                     $placeholders[] = $this->buildExpression($value, $params);
                 } elseif ($value instanceof \yii\db\Query) {
-                    list($sql, $params) = $this->build($value, $params);
+                    [$sql, $params] = $this->build($value, $params);
                     $placeholders[] = "($sql)";
                 } else {
                     $placeholders[] = $this->bindParam($value, $params);
@@ -382,7 +389,7 @@ class QueryBuilder extends \yii\base\BaseObject
             throw new InvalidArgumentException('Expected select query object with enumerated (named) parameters');
         }
 
-        list($values, $params) = $this->build($columns, $params);
+        [$values, $params] = $this->build($columns, $params);
         $names = [];
         $values = ' ' . $values;
         foreach ($columns->select as $title => $field) {
@@ -514,7 +521,7 @@ class QueryBuilder extends \yii\base\BaseObject
     protected function prepareUpsertColumns($table, $insertColumns, $updateColumns, &$constraints = [])
     {
         if ($insertColumns instanceof Query) {
-            list($insertNames) = $this->prepareInsertSelectSubQuery($insertColumns, $this->db->getSchema());
+            [$insertNames] = $this->prepareInsertSelectSubQuery($insertColumns, $this->db->getSchema());
         } else {
             $insertNames = array_map([$this->db, 'quoteColumnName'], array_keys($insertColumns));
         }
@@ -597,7 +604,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function update($table, $columns, $condition, &$params)
     {
-        list($lines, $params) = $this->prepareUpdateSets($table, $columns, $params);
+        [$lines, $params] = $this->prepareUpdateSets($table, $columns, $params);
         $sql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $lines);
         $where = $this->buildWhere($condition, $params);
         return $where === '' ? $sql : $sql . ' ' . $where;
@@ -618,15 +625,15 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $sets = [];
         foreach ($columns as $name => $value) {
+
+            $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             if ($value instanceof ExpressionInterface) {
-                $sets[] = $this->db->quoteColumnName($name) . '=' . $this->buildExpression($value, $params);
+                $placeholder = $this->buildExpression($value, $params);
             } else {
-                $phName = $this->bindParam(
-                    isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value,
-                    $params
-                );
-                $sets[] = $this->db->quoteColumnName($name) . '=' . $phName;
+                $placeholder = $this->bindParam($value, $params);
             }
+
+            $sets[] = $this->db->quoteColumnName($name) . '=' . $placeholder;
         }
         return [$sets, $params];
     }
@@ -1092,7 +1099,7 @@ class QueryBuilder extends \yii\base\BaseObject
     public function createView($viewName, $subQuery)
     {
         if ($subQuery instanceof Query) {
-            list($rawQuery, $params) = $this->build($subQuery);
+            [$rawQuery, $params] = $this->build($subQuery);
             array_walk(
                 $params,
                 function(&$param) {
@@ -1204,7 +1211,7 @@ class QueryBuilder extends \yii\base\BaseObject
                     $columns[$i] = $this->buildExpression($column, $params) . ' AS ' . $this->db->quoteColumnName($i);
                 }
             } elseif ($column instanceof Query) {
-                list($sql, $params) = $this->build($column, $params);
+                [$sql, $params] = $this->build($column, $params);
                 $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
             } elseif (is_string($i)) {
                 if (strpos($column, '(') === false) {
@@ -1256,7 +1263,7 @@ class QueryBuilder extends \yii\base\BaseObject
                 throw new Exception('A join clause must be specified as an array of join type, join table, and optionally join condition.');
             }
             // 0:join type, 1:join table, 2:on-condition (optional)
-            list($joinType, $table) = $join;
+            [$joinType, $table] = $join;
             $tables = $this->quoteTableNames((array) $table, $params);
             $table = reset($tables);
             $joins[$i] = "$joinType $table";
@@ -1282,7 +1289,7 @@ class QueryBuilder extends \yii\base\BaseObject
     {
         foreach ($tables as $i => $table) {
             if ($table instanceof Query) {
-                list($sql, $params) = $this->build($table, $params);
+                [$sql, $params] = $this->build($table, $params);
                 $tables[$i] = "($sql) " . $this->db->quoteTableName($i);
             } elseif (is_string($i)) {
                 if (strpos($table, '(') === false) {
@@ -1315,9 +1322,10 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * @param array $columns
+     * @param array $params the binding parameters to be populated
      * @return string the GROUP BY clause
      */
-    public function buildGroupBy($columns)
+    public function buildGroupBy($columns, &$params)
     {
         if (empty($columns)) {
             return '';
@@ -1325,6 +1333,7 @@ class QueryBuilder extends \yii\base\BaseObject
         foreach ($columns as $i => $column) {
             if ($column instanceof ExpressionInterface) {
                 $columns[$i] = $this->buildExpression($column);
+                $params = array_merge($params, $column->params);
             } elseif (strpos($column, '(') === false) {
                 $columns[$i] = $this->db->quoteColumnName($column);
             }
@@ -1351,11 +1360,12 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
      * @param int $limit the limit number. See [[Query::limit]] for more details.
      * @param int $offset the offset number. See [[Query::offset]] for more details.
+     * @param array $params the binding parameters to be populated
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
-    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)
     {
-        $orderBy = $this->buildOrderBy($orderBy);
+        $orderBy = $this->buildOrderBy($orderBy, $params);
         if ($orderBy !== '') {
             $sql .= $this->separator . $orderBy;
         }
@@ -1369,9 +1379,10 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * @param array $columns
+     * @param array $params the binding parameters to be populated
      * @return string the ORDER BY clause built from [[Query::$orderBy]].
      */
-    public function buildOrderBy($columns)
+    public function buildOrderBy($columns, &$params)
     {
         if (empty($columns)) {
             return '';
@@ -1380,6 +1391,7 @@ class QueryBuilder extends \yii\base\BaseObject
         foreach ($columns as $name => $direction) {
             if ($direction instanceof ExpressionInterface) {
                 $orders[] = $this->buildExpression($direction);
+                $params = array_merge($params, $direction->params);
             } else {
                 $orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
             }
@@ -1442,7 +1454,7 @@ class QueryBuilder extends \yii\base\BaseObject
         foreach ($unions as $i => $union) {
             $query = $union['query'];
             if ($query instanceof Query) {
-                list($unions[$i]['query'], $params) = $this->build($query, $params);
+                [$unions[$i]['query'], $params] = $this->build($query, $params);
             }
 
             $result .= 'UNION ' . ($union['all'] ? 'ALL ' : '') . '( ' . $unions[$i]['query'] . ' ) ';

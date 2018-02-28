@@ -29,7 +29,7 @@ Jeśli ten argument nie zostanie podany, kod JavaScript zostanie użyty jako ID.
 Skrypt zewnętrzny może zostać dodany następująco:
 
 ```php
-$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ```
 
 Argumenty dla metod [[yii\web\View::registerCssFile()|registerCssFile()]] są podobne do [[yii\web\View::registerJsFile()|registerJsFile()]].
@@ -73,7 +73,7 @@ Jeśli chcesz się upewnić, że jest tylko jeden tag `style`, użyj trzeciego a
 
 ```php
 $this->registerCssFile("http://example.com/css/themes/black-and-white.css", [
-    'depends' => [BootstrapAsset::className()],
+    'depends' => [BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```

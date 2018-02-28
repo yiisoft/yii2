@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\caching;
 
+use yii\caching\Cache;
 use yii\caching\FileCache;
 
 /**
@@ -18,12 +19,14 @@ class FileCacheTest extends CacheTestCase
     private $_cacheInstance = null;
 
     /**
-     * @return FileCache
+     * @return Cache
      */
     protected function getCacheInstance()
     {
         if ($this->_cacheInstance === null) {
-            $this->_cacheInstance = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
+            $this->_cacheInstance = new Cache([
+                'handler' => new FileCache(['cachePath' => '@yiiunit/runtime/cache'])
+            ]);
         }
 
         return $this->_cacheInstance;
@@ -38,7 +41,7 @@ class FileCacheTest extends CacheTestCase
         static::$time++;
         $this->assertEquals('expire_test', $cache->get('expire_test'));
         static::$time++;
-        $this->assertFalse($cache->get('expire_test'));
+        $this->assertNull($cache->get('expire_test'));
     }
 
     public function testExpireAdd()
@@ -50,6 +53,6 @@ class FileCacheTest extends CacheTestCase
         static::$time++;
         $this->assertEquals('expire_testa', $cache->get('expire_testa'));
         static::$time++;
-        $this->assertFalse($cache->get('expire_testa'));
+        $this->assertNull($cache->get('expire_testa'));
     }
 }

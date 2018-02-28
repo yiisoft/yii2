@@ -312,7 +312,7 @@ class FileHelperTest extends TestCase
             $dirName => [],
         ]);
 
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidArgumentException');
 
         $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_dir';
         FileHelper::copyDirectory($dirName, $dirName);
@@ -328,7 +328,7 @@ class FileHelperTest extends TestCase
             'backup' => ['data' => []],
         ]);
 
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidArgumentException');
 
         FileHelper::copyDirectory(
             $this->testFilePath . DIRECTORY_SEPARATOR . 'backup',
@@ -841,7 +841,7 @@ class FileHelperTest extends TestCase
      */
     public function testCopyDirectoryEmptyDirectories()
     {
-        list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
+        [$basePath, $srcDirName] = $this->setupCopyEmptyDirectoriesTest();
 
         // copy with empty directories
         $dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_empty_dst_dir';
@@ -866,7 +866,7 @@ class FileHelperTest extends TestCase
      */
     public function testCopyDirectoryNoEmptyDirectories()
     {
-        list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
+        [$basePath, $srcDirName] = $this->setupCopyEmptyDirectoriesTest();
 
         // copy without empty directories
         $dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_empty_dst_dir2';
@@ -908,12 +908,13 @@ class FileHelperTest extends TestCase
         sort($foundFiles);
         $this->assertEquals($expectedFiles, $foundFiles);
 
+        // filter
         $expectedFiles = [
             $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir'
         ];
         $options = [
             'filter' => function ($path) {
-                return 'second_sub_dir' == basename($path);
+                return 'second_sub_dir' === basename($path);
             },
         ];
         $foundFiles = FileHelper::findDirectories($dirName, $options);
@@ -921,5 +922,16 @@ class FileHelperTest extends TestCase
         sort($foundFiles);
         $this->assertEquals($expectedFiles, $foundFiles);
 
+        // except
+        $expectedFiles = [
+            $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir'
+        ];
+        $options = [
+            'except' => ['test_sub_dir'],
+        ];
+        $foundFiles = FileHelper::findDirectories($dirName, $options);
+        sort($expectedFiles);
+        sort($foundFiles);
+        $this->assertEquals($expectedFiles, $foundFiles);
     }
 }

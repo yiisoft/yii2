@@ -56,7 +56,7 @@ class PhpDocController extends Controller
         foreach ($files as $file) {
             $result = $this->generateClassPropertyDocs($file);
             if ($result !== false) {
-                list($className, $phpdoc) = $result;
+                [$className, $phpdoc] = $result;
                 if ($this->updateFiles) {
                     if ($this->updateClassPropertyDocs($file, $className, $phpdoc)) {
                         $nFilesUpdated++;
@@ -180,7 +180,7 @@ class PhpDocController extends Controller
             $extensionPath = \dirname(rtrim($root, '\\/'));
             $this->setUpExtensionAliases($extensionPath);
 
-            list(, $extension) = $matches;
+            [, $extension] = $matches;
             Yii::setAlias("@yii/$extension", (string)$root);
             if (is_file($autoloadFile = Yii::getAlias("@yii/$extension/vendor/autoload.php"))) {
                 include $autoloadFile;
@@ -203,7 +203,7 @@ class PhpDocController extends Controller
             $extensionPath = \dirname(\dirname(rtrim($root, '\\/'))) . '/extensions';
             $this->setUpExtensionAliases($extensionPath);
 
-            list(, $appName) = $matches;
+            [, $appName] = $matches;
             Yii::setAlias("@app-$appName", (string)$root);
             if (is_file($autoloadFile = Yii::getAlias("@app-$appName/vendor/autoload.php"))) {
                 include $autoloadFile;
@@ -515,7 +515,7 @@ class PhpDocController extends Controller
             return false;
         }
 
-        if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object' && !$ref->isSubclassOf('yii\base\BaseObject') && $className != 'yii\base\BaseObject') {
+        if (!$ref->isSubclassOf('yii\base\BaseObject') && $className !== 'yii\base\BaseObject') {
             $this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\BaseObject.\n", Console::FG_BLUE, Console::BOLD);
             return false;
         }

@@ -604,7 +604,7 @@ class BaseConsole
      * Usage:
      *
      * ```php
-     * list($width, $height) = ConsoleHelper::getScreenSize();
+     * [$width, $height] = ConsoleHelper::getScreenSize();
      * ```
      *
      * @param bool $refresh whether to force checking and not re-use cached size value.
@@ -657,7 +657,7 @@ class BaseConsole
     }
 
     /**
-     * Word wrap text with indentation to fit the screen size.
+     * Word wrap text with indentation to fit the screen size
      *
      * If screen size could not be detected, or the indentation is greater than the screen size, the text will not be wrapped.
      *
@@ -693,7 +693,6 @@ class BaseConsole
             }
             $lines[$i] = $pad . $line;
         }
-
         return implode("\n", $lines);
     }
 
@@ -769,7 +768,7 @@ class BaseConsole
     }
 
     /**
-     * Prompts the user for input and validates it.
+     * Prompts the user for input and validates it
      *
      * @param string $text prompt string
      * @param array $options the options to validate the input:

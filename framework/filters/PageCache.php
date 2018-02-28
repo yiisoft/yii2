@@ -32,11 +32,11 @@ use yii\web\Response;
  * {
  *     return [
  *         'pageCache' => [
- *             'class' => 'yii\filters\PageCache',
+ *             'class' => \yii\filters\PageCache::class,
  *             'only' => ['index'],
  *             'duration' => 60,
  *             'dependency' => [
- *                 'class' => 'yii\caching\DbDependency',
+ *                 'class' => \yii\caching\DbDependency::class,
  *                 'sql' => 'SELECT COUNT(*) FROM post',
  *             ],
  *             'variations' => [
@@ -85,7 +85,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      *
      * ```php
      * [
-     *     'class' => 'yii\caching\DbDependency',
+     *     'class' => \yii\caching\DbDependency::class,
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
      * ```
@@ -159,7 +159,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
             return true;
         }
 
-        $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
+        $this->cache = Instance::ensure($this->cache, CacheInterface::class);
 
         if (is_array($this->dependency)) {
             $this->dependency = Yii::createObject($this->dependency);
@@ -211,14 +211,18 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      */
     protected function restoreResponse($response, $data)
     {
-        foreach (['format', 'version', 'statusCode', 'statusText', 'content'] as $name) {
+        foreach (['format', 'protocolVersion', 'statusCode', 'reasonPhrase', 'content'] as $name) {
             $response->{$name} = $data[$name];
         }
-        foreach (['headers', 'cookies'] as $name) {
-            if (isset($data[$name]) && is_array($data[$name])) {
-                $response->{$name}->fromArray(array_merge($data[$name], $response->{$name}->toArray()));
-            }
+
+        if (isset($data['headers'])) {
+            $response->setHeaders($data['headers']);
         }
+
+        if (isset($data['cookies']) && is_array($data['cookies'])) {
+            $response->getCookies()->fromArray(array_merge($data['cookies'], $response->getCookies()->toArray()));
+        }
+
         if (!empty($data['dynamicPlaceholders']) && is_array($data['dynamicPlaceholders'])) {
             $response->content = $this->updateDynamicContent($response->content, $data['dynamicPlaceholders'], true);
         }
@@ -249,7 +253,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
         }
 
         $data['dynamicPlaceholders'] = $this->getDynamicPlaceholders();
-        foreach (['format', 'version', 'statusCode', 'statusText'] as $name) {
+        foreach (['format', 'protocolVersion', 'statusCode', 'reasonPhrase'] as $name) {
             $data[$name] = $response->{$name};
         }
         $this->insertResponseCollectionIntoData($response, 'headers', $data);
@@ -272,7 +276,8 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
             return;
         }
 
-        $all = $response->{$collectionName}->toArray();
+        $collection = $response->{$collectionName};
+        $all = is_array($collection) ? $collection : $collection->toArray();
         if (is_array($this->{$property})) {
             $filtered = [];
             foreach ($this->{$property} as $name) {

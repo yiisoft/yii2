@@ -38,7 +38,7 @@ SQL;
 
         $dt = $schema->columns['dt'];
 
-        $this->assertInstanceOf(Expression::className(),$dt->defaultValue);
+        $this->assertInstanceOf(Expression::class, $dt->defaultValue);
     }
 
     public function testGetSchemaNames()

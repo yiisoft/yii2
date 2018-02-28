@@ -7,11 +7,12 @@
 
 namespace yiiunit\framework\base;
 
+use Psr\Log\NullLogger;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\Component;
 use yii\base\Module;
-use yii\log\Dispatcher;
+use yii\log\Logger;
 use yiiunit\TestCase;
 
 /**
@@ -24,33 +25,37 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'container' => [
                 'definitions' => [
-                    Dispatcher::className() => DispatcherMock::className(),
+                    Logger::class => NullLogger::class
+                ],
+            ],
+            'components' => [
+                'log' => [
+                    'class' => Logger::class
                 ],
             ],
             'bootstrap' => ['log'],
         ]);
 
-        $this->assertInstanceOf(DispatcherMock::className(), Yii::$app->log);
+        $this->assertInstanceOf(NullLogger::class, Yii::$app->log);
     }
 
     public function testBootstrap()
     {
         Yii::getLogger()->flush();
 
-
         $this->mockApplication([
             'components' => [
                 'withoutBootstrapInterface' => [
-                    'class' => Component::className(),
+                    'class' => Component::class
                 ],
                 'withBootstrapInterface' => [
-                    'class' => BootstrapComponentMock::className(),
-                ],
+                    'class' => BootstrapComponentMock::class
+                ]
             ],
             'modules' => [
                 'moduleX' => [
-                    'class' => Module::className(),
-                ],
+                    'class' => Module::class
+                ]
             ],
             'bootstrap' => [
                 'withoutBootstrapInterface',
@@ -60,16 +65,12 @@ class ApplicationTest extends TestCase
                 },
             ],
         ]);
-        $this->assertSame('Bootstrap with yii\base\Component', Yii::getLogger()->messages[0][0]);
-        $this->assertSame('Bootstrap with yiiunit\framework\base\BootstrapComponentMock::bootstrap()', Yii::getLogger()->messages[1][0]);
-        $this->assertSame('Loading module: moduleX', Yii::getLogger()->messages[2][0]);
-        $this->assertSame('Bootstrap with yii\base\Module', Yii::getLogger()->messages[3][0]);
-        $this->assertSame('Bootstrap with Closure', Yii::getLogger()->messages[4][0]);
+        $this->assertSame('Bootstrap with yii\base\Component', Yii::getLogger()->messages[0][1]);
+        $this->assertSame('Bootstrap with yiiunit\framework\base\BootstrapComponentMock::bootstrap()', Yii::getLogger()->messages[1][1]);
+        $this->assertSame('Loading module: moduleX', Yii::getLogger()->messages[2][1]);
+        $this->assertSame('Bootstrap with yii\base\Module', Yii::getLogger()->messages[3][1]);
+        $this->assertSame('Bootstrap with Closure', Yii::getLogger()->messages[4][1]);
     }
-}
-
-class DispatcherMock extends Dispatcher
-{
 }
 
 class BootstrapComponentMock extends Component implements BootstrapInterface

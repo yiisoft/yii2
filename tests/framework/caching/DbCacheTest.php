@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\caching;
 
+use yii\caching\Cache;
 use yii\caching\DbCache;
 
 /**
@@ -38,6 +39,12 @@ class DbCacheTest extends CacheTestCase
         ')->execute();
     }
 
+    protected function tearDown()
+    {
+        $this->getConnection()->createCommand('DROP TABLE IF EXISTS cache')->execute();
+        parent::tearDown();
+    }
+
     /**
      * @param  bool            $reset whether to clean up the test database
      * @return \yii\db\Connection
@@ -67,12 +74,14 @@ class DbCacheTest extends CacheTestCase
     }
 
     /**
-     * @return DbCache
+     * @return Cache
      */
     protected function getCacheInstance()
     {
         if ($this->_cacheInstance === null) {
-            $this->_cacheInstance = new DbCache(['db' => $this->getConnection()]);
+            $this->_cacheInstance = new Cache([
+                'handler' => new DbCache(['db' => $this->getConnection()])
+            ]);
         }
 
         return $this->_cacheInstance;
@@ -87,7 +96,7 @@ class DbCacheTest extends CacheTestCase
         static::$time++;
         $this->assertEquals('expire_test', $cache->get('expire_test'));
         static::$time++;
-        $this->assertFalse($cache->get('expire_test'));
+        $this->assertNull($cache->get('expire_test'));
     }
 
     public function testExpireAdd()
@@ -99,6 +108,6 @@ class DbCacheTest extends CacheTestCase
         static::$time++;
         $this->assertEquals('expire_testa', $cache->get('expire_testa'));
         static::$time++;
-        $this->assertFalse($cache->get('expire_testa'));
+        $this->assertNull($cache->get('expire_testa'));
     }
 }

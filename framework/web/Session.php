@@ -236,6 +236,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if ($this->_hasSessionId === null) {
             $name = $this->getName();
             $request = Yii::$app->getRequest();
+            // unable to use `Request::$cookies` since CSRF protection feature exclude the session one from them
             if (!empty($_COOKIE[$name]) && ini_get('session.use_cookies')) {
                 $this->_hasSessionId = true;
             } elseif (!ini_get('session.use_only_cookies') && ini_get('session.use_trans_sid')) {
@@ -322,7 +323,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setName($value)
     {
+        $this->freeze();
         session_name($value);
+        $this->unfreeze();
     }
 
     /**

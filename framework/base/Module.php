@@ -80,9 +80,9 @@ class Module extends ServiceLocator
      *
      * ```php
      * [
-     *   'account' => 'app\controllers\UserController',
+     *   'account' => \app\controllers\UserController::class,
      *   'article' => [
-     *      'class' => 'app\controllers\PostController',
+     *      'class' => \app\controllers\PostController::class,
      *      'pageTitle' => 'something new',
      *   ],
      * ]
@@ -491,10 +491,10 @@ class Module extends ServiceLocator
      * ```php
      * [
      *     'comment' => [
-     *         'class' => 'app\modules\comment\CommentModule',
+     *         'class' => \app\modules\comment\CommentModule::class,
      *         'db' => 'db',
      *     ],
-     *     'booking' => ['class' => 'app\modules\booking\BookingModule'],
+     *     'booking' => ['class' => \app\modules\booking\BookingModule::class],
      * ]
      * ```
      *
@@ -522,7 +522,7 @@ class Module extends ServiceLocator
         $parts = $this->createController($route);
         if (is_array($parts)) {
             /* @var $controller Controller */
-            list($controller, $actionID) = $parts;
+            [$controller, $actionID] = $parts;
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;
             $result = $controller->runAction($actionID, $params);
@@ -572,7 +572,7 @@ class Module extends ServiceLocator
         }
 
         if (strpos($route, '/') !== false) {
-            list($id, $route) = explode('/', $route, 2);
+            [$id, $route] = explode('/', $route, 2);
         } else {
             $id = $route;
             $route = '';
@@ -638,7 +638,7 @@ class Module extends ServiceLocator
             return null;
         }
 
-        if (is_subclass_of($className, 'yii\base\Controller')) {
+        if (is_subclass_of($className, Controller::class)) {
             $controller = Yii::createObject($className, [$id, $this]);
             return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {

@@ -93,9 +93,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
             // reset parameters of response to avoid interference with partially created response data
             // in case the error occurred while sending the response.
             $response->isSent = false;
-            $response->stream = null;
+            $response->bodyRange = null;
             $response->data = null;
-            $response->content = null;
+            $response->setBody(null);
         } else {
             $response = new Response();
         }
@@ -483,7 +483,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function getExceptionName($exception)
     {
-        if ($exception instanceof \yii\base\Exception || $exception instanceof \yii\base\InvalidCallException || $exception instanceof \yii\base\InvalidParamException || $exception instanceof \yii\base\UnknownMethodException) {
+        if ($exception instanceof \yii\base\Exception || $exception instanceof \yii\base\InvalidCallException ||
+            $exception instanceof \yii\base\InvalidArgumentException ||
+            $exception instanceof \yii\base\UnknownMethodException) {
             return $exception->getName();
         }
 
@@ -496,6 +498,6 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function shouldRenderSimpleHtml()
     {
-        return YII_ENV_TEST || Yii::$app->request->getIsAjax();
+        return YII_ENV_TEST || Yii::$app->getRequest()->getHeaderLine('x-requested-with') === 'XMLHttpRequest';
     }
 }

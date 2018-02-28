@@ -244,7 +244,7 @@ Este validador verifica se o dados de entrada é um arquivo válido.
 - `maxFiles`: o número máximo de arquivos que o atributo pode receber. O padrão é 1, ou seja, a entrada de dados deve ser composto de um único arquivo. Se o `maxFiles` for maior que 1, então a entrada de dados deve ser composto por um array constituído de no máximo `maxFiles` arquivos.
 - `checkExtensionByMimeType`: verificação da extensão do arquivo por tipo MIME do arquivo. Se a extensão produzido pela verificação do tipo MIME difere da extensão do arquivo carregado, o arquivo será considerado inválido. O padrão é `true`, o que significa realizar tal verificação.
 
-`FileValidator` é usado junto com [[yii\web\UploadedFile]]. Consulte a seção [Upload de Arquivos](input-file-upload.md) para mais informações sobre o upload de arquivos e de uma validação sobre os arquivos carregados.
+`FileValidator` é usado junto com [[yii\http\UploadedFile]]. Consulte a seção [Upload de Arquivos](input-file-upload.md) para mais informações sobre o upload de arquivos e de uma validação sobre os arquivos carregados.
 
 
 ## [[yii\validators\FilterValidator|filter]] <span id="filter"></span>
