@@ -41,9 +41,9 @@ class ActionColumnTest extends \yiiunit\TestCase
             return 'http://test.com';
         };
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
-        $viewButton = '<a href="http://test.com" title="View" aria-label="View" data-pjax="0"><span class="glyphicon glyphicon-eye-open"></span></a>';
-        $updateButton = '<a href="http://test.com" title="Update" aria-label="Update" data-pjax="0"><span class="glyphicon glyphicon-pencil"></span></a>';
-        $deleteButton = '<a href="http://test.com" title="Delete" aria-label="Delete" data-pjax="0" data-confirm="Are you sure you want to delete this item?" data-method="post"><span class="glyphicon glyphicon-trash"></span></a>';
+        $viewButton = '<a href="http://test.com" title="View" aria-label="View"><span class="glyphicon glyphicon-eye-open"></span></a>';
+        $updateButton = '<a href="http://test.com" title="Update" aria-label="Update"><span class="glyphicon glyphicon-pencil"></span></a>';
+        $deleteButton = '<a href="http://test.com" title="Delete" aria-label="Delete" data-confirm="Are you sure you want to delete this item?" data-method="post"><span class="glyphicon glyphicon-trash"></span></a>';
         $expectedHtml = "<td>$viewButton $updateButton $deleteButton</td>";
         $this->assertEquals($expectedHtml, $columnContents);
 

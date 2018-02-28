@@ -599,39 +599,6 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function getIsPjaxDataProvider()
-    {
-        return [
-            [
-                [
-                ],
-                false,
-            ],
-            [
-                [
-                    'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
-                    'HTTP_X_PJAX' => 'any value',
-                ],
-                true,
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider getIsPjaxDataProvider
-     * @param array $server
-     * @param bool $expected
-     */
-    public function testGetIsPjax($server, $expected)
-    {
-        $original = $_SERVER;
-        $_SERVER = $server;
-        $request = new Request();
-
-        $this->assertEquals($expected, $request->getIsPjax());
-        $_SERVER = $original;
-    }
-
     public function testGetOrigin()
     {
         $_SERVER['HTTP_ORIGIN'] = 'https://www.w3.org';

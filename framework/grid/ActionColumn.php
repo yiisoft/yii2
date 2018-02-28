@@ -177,7 +177,6 @@ class ActionColumn extends Column
                 $options = array_merge([
                     'title' => $title,
                     'aria-label' => $title,
-                    'data-pjax' => '0',
                 ], $additionalOptions, $this->buttonOptions);
                 $icon = Html::tag('span', '', ['class' => "glyphicon glyphicon-$iconName"]);
                 return Html::a($icon, $url, $options);

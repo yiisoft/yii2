@@ -67,7 +67,6 @@ use yii\validators\IpValidator;
  * @property bool $isHead Whether this is a HEAD request. This property is read-only.
  * @property bool $isOptions Whether this is a OPTIONS request. This property is read-only.
  * @property bool $isPatch Whether this is a PATCH request. This property is read-only.
- * @property bool $isPjax Whether this is a PJAX request. This property is read-only.
  * @property bool $isPost Whether this is a POST request. This property is read-only.
  * @property bool $isPut Whether this is a PUT request. This property is read-only.
  * @property bool $isSecureConnection If the request is sent via secure channel (https). This property is
@@ -606,15 +605,6 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     public function getIsAjax()
     {
         return $this->getHeaderLine('x-requested-with') === 'XMLHttpRequest';
-    }
-
-    /**
-     * Returns whether this is a PJAX request
-     * @return bool whether this is a PJAX request
-     */
-    public function getIsPjax()
-    {
-        return $this->getIsAjax() && $this->hasHeader('x-pjax');
     }
 
     /**

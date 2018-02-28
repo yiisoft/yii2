@@ -198,39 +198,6 @@ echo $form->field($model, 'category')->checkboxList([
 ]);
 ```
 
-
-Working with Pjax <span id="working-with-pjax"></span>
------------------------
-
-The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
-page instead of reloading the entire page. You can use it to update only the form
-and replace its contents after the submission.
-
-You can configure [[yii\widgets\Pjax::$formSelector|$formSelector]] to specify
-which form submission may trigger pjax. If not set, all forms with `data-pjax`
-attribute within the enclosed content of Pjax will trigger pjax requests.
-
-```php
-use yii\widgets\Pjax;
-use yii\widgets\ActiveForm;
-
-Pjax::begin([
-    // Pjax options
-]);
-    $form = ActiveForm::begin([
-        'options' => ['data' => ['pjax' => true]],
-        // more ActiveForm options
-    ]);
-
-        // ActiveForm content
-
-    ActiveForm::end();
-Pjax::end();
-```
-> Tip: Be careful with the links inside the [[yii\widgets\Pjax|Pjax]] widget since
-> the response  will also be rendered inside the widget. To prevent this, use the
-> `data-pjax="0"` HTML attribute.
-
 #### Values in Submit Buttons and File Upload
 
 There are known issues using `jQuery.serializeArray()` when dealing with
@@ -240,8 +207,7 @@ won't be solved and are instead deprecated in favor of the `FormData` class
 introduced in HTML5.
 
 That means the only official support for files and submit button values with
-ajax or using the [[yii\widgets\Pjax|Pjax]] widget depends on the
-[browser support](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
+ajax depends on the [browser support](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
 for the `FormData` class.
 
 Further Reading <span id="further-reading"></span>

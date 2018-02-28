@@ -197,9 +197,9 @@ class Controller extends \yii\base\Controller
      * See <https://tools.ietf.org/html/rfc2616#section-10>
      * for details about HTTP status code
      *
-     * @param boolean $checkAjax whether to specially handle AJAX (and PJAX) requests. Defaults to false,
-     * meaning a `Location` header will be sent, which when received as an AJAX/PJAX response, may NOT cause
-     * browser redirection. If this is true, the current request is an AJAX or PJAX request, then calling this method
+     * @param boolean $checkAjax whether to specially handle AJAX requests. Defaults to false,
+     * meaning a `Location` header will be sent, which when received as an AJAX response, may NOT cause
+     * browser redirection. If this is true, the current request is an AJAX request, then calling this method
      * will cause the browser to redirect to the given URL.
      * Takes effect only when request header `X-Ie-Redirect-Compatibility` is absent.
      * @return Response the current response object
