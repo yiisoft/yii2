@@ -172,7 +172,6 @@ Widgets
 * [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
 * [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
 * [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
-* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
 * [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
 * [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
 * [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)

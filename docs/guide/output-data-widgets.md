@@ -734,45 +734,6 @@ echo GridView::widget([
 ]);
 ```
 
-### Using GridView with Pjax <span id="using-gridview-with-pjax"></span>
-
-The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
-page instead of reloading the entire page. You can use it to update only the
-[[yii\grid\GridView|GridView]] content when using filters.
-
-```php
-use yii\widgets\Pjax;
-use yii\grid\GridView;
-
-Pjax::begin([
-    // PJax options
-]);
-    Gridview::widget([
-        // GridView options
-    ]);
-Pjax::end();
-```
-
-Pjax also works for the links inside the [[yii\widgets\Pjax|Pjax]] widget and
-for the links specified by [[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]].
-But this might be a problem for the links of an [[yii\grid\ActionColumn|ActionColumn]].
-To prevent this, add the HTML attribute `data-pjax="0"` to the links when you edit
-the [[yii\grid\ActionColumn::$buttons|ActionColumn::$buttons]] property.
-
-#### GridView/ListView with Pjax in Gii
-
-Since 2.0.5, the CRUD generator of [Gii](start-gii.md) has an option called
-`$enablePjax` that can be used via either web interface or command line.
-
-```php
-yii gii/crud --controllerClass="backend\\controllers\PostController" \
-  --modelClass="common\\models\\Post" \
-  --enablePjax=1
-```
-
-Which generates a [[yii\widgets\Pjax|Pjax]] widget wrapping the
-[[yii\grid\GridView|GridView]] or [[yii\widgets\ListView|ListView]] widgets.
-
 Further reading
 ---------------
 
