@@ -104,10 +104,10 @@ class ResourceStreamTest extends TestCase
         $stream = new ResourceStream();
         $stream->resource = fopen($filename, 'r');
 
-        $this->assertSame('0123456789', (string)$stream);
+        $this->assertSame('0123456789', (string) $stream);
 
         $stream->seek(5);
-        $this->assertSame('0123456789', (string)$stream);
+        $this->assertSame('0123456789', (string) $stream);
     }
 
     /**

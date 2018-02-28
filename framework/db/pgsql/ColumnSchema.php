@@ -50,7 +50,6 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public $deserializeArrayColumnToArrayExpression = true;
 
-
     /**
      * {@inheritdoc}
      */
@@ -71,7 +70,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function phpTypecast($value)
     {
@@ -124,7 +123,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
     }
 
     /**
-     * Creates instance of ArrayParser
+     * Creates instance of ArrayParser.
      *
      * @return ArrayParser
      */

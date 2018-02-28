@@ -13,7 +13,7 @@ use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * Class LikeConditionBuilder builds objects of [[LikeCondition]]
+ * Class LikeConditionBuilder builds objects of [[LikeCondition]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -36,7 +36,6 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
      * By default it's assumed to be `\`.
      */
     protected $escapeCharacter;
-
 
     /**
      * Method builds the raw SQL from the $expression that will not be additionally

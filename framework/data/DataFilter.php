@@ -12,10 +12,10 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\validators\BooleanValidator;
+use yii\validators\DateValidator;
 use yii\validators\EachValidator;
 use yii\validators\NumberValidator;
 use yii\validators\StringValidator;
-use yii\validators\DateValidator;
 use yii\validators\Validator;
 
 /**
@@ -359,24 +359,24 @@ class DataFilter extends Model
         if ($validator instanceof BooleanValidator) {
             return self::TYPE_BOOLEAN;
         }
-        
+
         if ($validator instanceof NumberValidator) {
             return $validator->integerOnly ? self::TYPE_INTEGER : self::TYPE_FLOAT;
         }
-        
+
         if ($validator instanceof StringValidator) {
             return self::TYPE_STRING;
         }
-        
+
         if ($validator instanceof EachValidator) {
             return self::TYPE_ARRAY;
         }
-        
+
         if ($validator instanceof DateValidator) {
             if ($validator->type == DateValidator::TYPE_DATETIME) {
                 return self::TYPE_DATETIME;
             }
-            
+
             if ($validator->type == DateValidator::TYPE_TIME) {
                 return self::TYPE_TIME;
             }

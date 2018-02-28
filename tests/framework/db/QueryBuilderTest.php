@@ -1061,7 +1061,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $columns = [];
         $i = 0;
         foreach ($this->columnTypes() as [$column, $builder, $expected]) {
-            if (!(strncmp($column, Schema::TYPE_PK, 2) === 0 ||
+            if (!(
+                strncmp($column, Schema::TYPE_PK, 2) === 0 ||
                   strncmp($column, Schema::TYPE_UPK, 3) === 0 ||
                   strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||
                   strncmp($column, Schema::TYPE_UBIGPK, 6) === 0 ||
@@ -1085,13 +1086,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
             // not
             [['not', 'name'], 'NOT (name)', []],
-            [['not', (new Query)->select('exists')->from('some_table')], 'NOT ((SELECT [[exists]] FROM [[some_table]]))', []],
+            [['not', (new Query())->select('exists')->from('some_table')], 'NOT ((SELECT [[exists]] FROM [[some_table]]))', []],
 
             // and
             [['and', 'id=1', 'id=2'], '(id=1) AND (id=2)', []],
             [['and', 'type=1', ['or', 'id=1', 'id=2']], '(type=1) AND ((id=1) OR (id=2))', []],
             [['and', 'id=1', new Expression('id=:qp0', [':qp0' => 2])], '(id=1) AND (id=:qp0)', [':qp0' => 2]],
-            [['and', ['expired' => false], (new Query)->select('count(*) > 1')->from('queue')], '([[expired]]=:qp0) AND ((SELECT count(*) > 1 FROM [[queue]]))', [':qp0' => false]],
+            [['and', ['expired' => false], (new Query())->select('count(*) > 1')->from('queue')], '([[expired]]=:qp0) AND ((SELECT count(*) > 1 FROM [[queue]]))', [':qp0' => false]],
 
             // or
             [['or', 'id=1', 'id=2'], '(id=1) OR (id=2)', []],
@@ -1109,7 +1110,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [new BetweenColumnsCondition('2018-02-11', 'NOT BETWEEN', 'NOW()', 'update_time'), ':qp0 NOT BETWEEN NOW() AND [[update_time]]', [':qp0' => '2018-02-11']],
             [new BetweenColumnsCondition(new Expression('NOW()'), 'BETWEEN', 'create_time', 'update_time'), 'NOW() BETWEEN [[create_time]] AND [[update_time]]', []],
             [new BetweenColumnsCondition(new Expression('NOW()'), 'NOT BETWEEN', 'create_time', 'update_time'), 'NOW() NOT BETWEEN [[create_time]] AND [[update_time]]', []],
-            [new BetweenColumnsCondition(new Expression('NOW()'), 'NOT BETWEEN', (new Query)->select('min_date')->from('some_table'), 'max_date'), 'NOW() NOT BETWEEN (SELECT [[min_date]] FROM [[some_table]]) AND [[max_date]]', []],
+            [new BetweenColumnsCondition(new Expression('NOW()'), 'NOT BETWEEN', (new Query())->select('min_date')->from('some_table'), 'max_date'), 'NOW() NOT BETWEEN (SELECT [[min_date]] FROM [[some_table]]) AND [[max_date]]', []],
 
             // in
             [['in', 'id', [1, 2, (new Query())->select('three')->from('digits')]], '[[id]] IN (:qp0, :qp1, (SELECT [[three]] FROM [[digits]]))', [':qp0' => 1, ':qp1' => 2]],
@@ -1625,7 +1626,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = $this->replaceQuotes(
             'SELECT [[t]].[[id]] AS [[ID]], [[gsm]].[[username]] AS [[GSM]], [[part]].[[Part]], [[t]].[[Part_Cost]] AS [[Part Cost]], st_x(location::geometry) as lon,'
-            . ' case t.Status_Id when 1 then \'Acknowledge\' when 2 then \'No Action\' else \'Unknown Action\' END as [[Next Action]] FROM [[tablename]]');
+            . ' case t.Status_Id when 1 then \'Acknowledge\' when 2 then \'No Action\' else \'Unknown Action\' END as [[Next Action]] FROM [[tablename]]'
+        );
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
@@ -1636,7 +1638,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->select(new Expression('1 AS ab'))
             ->from('tablename');
         [$sql, $params] = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes("SELECT 1 AS ab FROM [[tablename]]");
+        $expected = $this->replaceQuotes('SELECT 1 AS ab FROM [[tablename]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
 
@@ -1646,7 +1648,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->addSelect(['ef' => new Expression('3')])
             ->from('tablename');
         [$sql, $params] = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes("SELECT 1 AS ab, 2 AS cd, 3 AS [[ef]] FROM [[tablename]]");
+        $expected = $this->replaceQuotes('SELECT 1 AS ab, 2 AS cd, 3 AS [[ef]] FROM [[tablename]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
 
@@ -1654,7 +1656,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->select(new Expression('SUBSTR(name, 0, :len)', [':len' => 4]))
             ->from('tablename');
         [$sql, $params] = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes("SELECT SUBSTR(name, 0, :len) FROM [[tablename]]");
+        $expected = $this->replaceQuotes('SELECT SUBSTR(name, 0, :len) FROM [[tablename]]');
         $this->assertEquals($expected, $sql);
         $this->assertEquals([':len' => 4], $params);
     }
@@ -1906,7 +1908,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
-     * Dummy test to speed up QB's tests which rely on DB schema
+     * Dummy test to speed up QB's tests which rely on DB schema.
      */
     public function testInitFixtures()
     {
@@ -2367,7 +2369,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->andWhere(['in', 'id', ['1', '0']]);
 
         [$sql, $params] = $this->getQueryBuilder()->build($query);
-        $this->assertSame($this->replaceQuotes("SELECT * FROM [[admin_user]] WHERE [[id]] IN (:qp0, :qp1)"), $sql);
+        $this->assertSame($this->replaceQuotes('SELECT * FROM [[admin_user]] WHERE [[id]] IN (:qp0, :qp1)'), $sql);
         $this->assertSame([':qp0' => '1', ':qp1' => '0'], $params);
     }
 }

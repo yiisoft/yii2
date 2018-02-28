@@ -87,7 +87,7 @@ trait MessageTrait
     protected function defaultProtocolVersion()
     {
         if (!empty($_SERVER['SERVER_PROTOCOL'])) {
-            return str_replace('HTTP/', '',  $_SERVER['SERVER_PROTOCOL']);
+            return str_replace('HTTP/', '', $_SERVER['SERVER_PROTOCOL']);
         }
         return '1.0';
     }

@@ -194,13 +194,13 @@ Upgrade from Yii 2.0.13
   In case this change makes the upgrade process to Yii 2.0.14 too hard in your project, you can [switch off the described behavior](https://github.com/yiisoft/yii2/issues/15716#issuecomment-368143206)
   Then you can take your time to change your code and then re-enable arrays or JSON support.
 
-* `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PDO parameter type 
+* `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PDO parameter type
   when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
   You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
 
-* `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
+* `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used.
   Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
-  space to customization. In case you rely on that property or override any of default condition builders, follow the 
+  space to customization. In case you rely on that property or override any of default condition builders, follow the
   special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
   to update your code.
 
@@ -239,39 +239,39 @@ Upgrade from Yii 2.0.12
 
 * For compatibiliy with [PHP 7.2 which does not allow classes to be named `Object` anymore](https://wiki.php.net/rfc/object-typehint),
   we needed to rename `yii\base\Object` to `yii\base\BaseObject`.
-  
+
   `yii\base\Object` still exists for backwards compatibility and will be loaded if needed in projects that are
   running on PHP <7.2. The compatibility class `yii\base\Object` extends from `yii\base\BaseObject` so if you
   have classes that extend from `yii\base\Object` these would still work.
-  
+
   What does not work however will be code that relies on `instanceof` checks or `is_subclass_of()` calls
   for `yii\base\Object` on framework classes as these do not extend `yii\base\Object` anymore but only
   extend from `yii\base\BaseObject`. In general such a check is not needed as there is a `yii\base\Configurable`
   interface you should check against instead.
-  
+
   Here is a visualisation of the change (`a < b` means "b extends a"):
-  
+
   ```
   Before:
-  
+
   yii\base\Object < Framework Classes
   yii\base\Object < Application Classes
-  
+
   After Upgrade:
-  
+
   yii\base\BaseObject < Framework Classes
   yii\base\BaseObject < yii\base\Object < Application Classes
 
   ```
-  
+
   If you want to upgrade PHP to version 7.2 in your project you need to remove all cases that extend `yii\base\Object`
   and extend from `yii\base\BaseObject` instead:
-  
+
   ```
   yii\base\BaseObject < Framework Classes
   yii\base\BaseObject < Application Classes
   ```
-  
+
   For extensions that have classes extending from `yii\base\Object`, to be compatible with PHP 7.2, you need to
   require `"yiisoft/yii2": "~2.0.13"` in composer.json and change affected classes to extend from `yii\base\BaseObject`
   instead. It is not possible to allow Yii versions `<2.0.13` and be compatible with PHP 7.2 or higher.
@@ -310,24 +310,24 @@ Upgrade from Yii 2.0.11
 
 * `yii\grid\DataColumn` filter is now automatically generated as dropdown list with localized `Yes` and `No` strings
   in case of `format` being set to `boolean`.
- 
+
 * The signature of `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` was changed. The method has got an extra optional parameter
   `$params`.
 
 * The signature of `yii\cache\Cache::getOrSet()` has been adjusted to also accept a callable and not only `Closure`.
   If you extend this method, make sure to adjust your code.
-  
+
 * `yii\web\UrlManager` now checks if rules implement `getCreateUrlStatus()` method in order to decide whether to use
-  internal cache for `createUrl()` calls. Ensure that all your custom rules implement this method in order to fully 
+  internal cache for `createUrl()` calls. Ensure that all your custom rules implement this method in order to fully
   benefit from the acceleration provided by this cache.
 
 * `yii\filters\AccessControl` now can be used without `user` component. This has two consequences:
 
   1. If used without user component, `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` instead of redirecting to login page.
   2. If used without user component, using `AccessRule` matching a role throws `yii\base\InvalidConfigException`.
-  
+
 * Inputmask package name was changed from `jquery.inputmask` to `inputmask`. If you've configured path to
-  assets manually, please adjust it. 
+  assets manually, please adjust it.
 
 Upgrade from Yii 2.0.10
 -----------------------

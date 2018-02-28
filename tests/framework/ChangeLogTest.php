@@ -17,13 +17,12 @@ class ChangeLogTest extends TestCase
 {
     public function changeProvider()
     {
-
         $lines = explode("\n", file_get_contents(__DIR__ . '/../../framework/CHANGELOG.md'));
 
         // Don't check last 1500 lines, they are old and often don't obey the standard.
         $lastIndex = count($lines) - 1500;
         $result = [];
-        foreach($lines as $i => $line) {
+        foreach ($lines as $i => $line) {
             if (strncmp('- ', $line, 2) === 0) {
                 $result[] = [$line];
             }
@@ -37,23 +36,19 @@ class ChangeLogTest extends TestCase
 
     /**
      * @dataProvider changeProvider
+     * @param mixed $line
      */
     public function testContributorLine($line)
     {
-        if ($line === '- no changes in this release.') {
-            $this->markTestSkipped('Placeholder line');
-        }
-
         /**
          * Each change line is tested for:
          * - Starts with "- "
          * - Has a type: Bug, Enh, Chg, New
-         * - Has a number formatted like #12345 one or more times
-         * - Can contain CVE ID
+         * - Has a number formatted like #12345
          * - Description starts after ": "
          * - Description ends without a "."
          * - Line ends with contributor name between "(" and ")".
          */
-        $this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?(\s\(CVE-[\d-]+\))?: .*[^.] \(.*\)$/', $line);
+        $this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?: .*[^.] \(.*\)$/', $line);
     }
 }

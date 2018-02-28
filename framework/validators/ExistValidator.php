@@ -79,6 +79,7 @@ class ExistValidator extends Validator
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
+
     /**
      * @var bool whether this validator is forced to always use master DB
      * @since 2.0.14
@@ -110,7 +111,7 @@ class ExistValidator extends Validator
     }
 
     /**
-     * Validates existence of the current attribute based on relation name
+     * Validates existence of the current attribute based on relation name.
      * @param \yii\db\ActiveRecord $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated.
      */
@@ -127,11 +128,11 @@ class ExistValidator extends Validator
         }
 
         if ($this->forceMasterDb && method_exists($model::getDb(), 'useMaster')) {
-            $model::getDb()->useMaster(function() use ($relationQuery, &$exists) {
+            $model::getDb()->useMaster(function () use ($relationQuery, &$exists) {
                 $exists = $relationQuery->exists();
             });
         } else {
-            $exists = $relationQuery->exists();
+            $relationQuery->exists();
         }
 
 
@@ -141,7 +142,7 @@ class ExistValidator extends Validator
     }
 
     /**
-     * Validates existence of the current attribute based on targetAttribute
+     * Validates existence of the current attribute based on targetAttribute.
      * @param \yii\base\Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated.
      */
@@ -241,7 +242,7 @@ class ExistValidator extends Validator
     }
 
     /**
-     * Check whether value exists in target table
+     * Check whether value exists in target table.
      *
      * @param string $targetClass
      * @param QueryInterface $query
@@ -266,7 +267,7 @@ class ExistValidator extends Validator
 
 
     /**
-     * Run query to check if value exists
+     * Run query to check if value exists.
      *
      * @param QueryInterface $query
      * @param mixed $value the value to be checked
@@ -275,7 +276,7 @@ class ExistValidator extends Validator
     private function queryValueExists($query, $value)
     {
         if (is_array($value)) {
-            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ;
+            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value);
         }
         return $query->exists();
     }
@@ -317,7 +318,8 @@ class ExistValidator extends Validator
                 $prefixedColumn = "{$alias}.[[" . preg_replace(
                     '/^' . preg_quote($alias) . '\.(.*)$/',
                     '$1',
-                    $columnName) . ']]';
+                    $columnName
+                ) . ']]';
             } else {
                 // there is an expression, can't prefix it reliably
                 $prefixedColumn = $columnName;

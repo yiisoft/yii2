@@ -76,16 +76,16 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     ];
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected $tableQuoteCharacter = '`';
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected $columnQuoteCharacter = '`';
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function resolveTableName($name)
     {
@@ -103,7 +103,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function findTableNames($schema = '')
     {
@@ -116,7 +116,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableSchema($name)
     {
@@ -132,7 +132,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTablePrimaryKey($tableName)
     {
@@ -140,7 +140,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableForeignKeys($tableName)
     {
@@ -148,7 +148,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableIndexes($tableName)
     {
@@ -184,7 +184,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableUniques($tableName)
     {
@@ -192,7 +192,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableChecks($tableName)
@@ -201,7 +201,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
@@ -288,7 +288,7 @@ SQL;
         $column->phpType = $this->getColumnPhpType($column);
 
         if (!$column->isPrimaryKey) {
-            if (($column->type === 'timestamp' || $column->type ==='datetime') && $info['default'] === 'CURRENT_TIMESTAMP') {
+            if (($column->type === 'timestamp' || $column->type === 'datetime') && $info['default'] === 'CURRENT_TIMESTAMP') {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } elseif (isset($type) && $type === 'bit') {
                 $column->defaultValue = bindec(trim($info['default'], 'b\''));

@@ -8,8 +8,8 @@
 namespace yii\rbac;
 
 use Yii;
-use yii\base\InvalidCallException;
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidCallException;
 use yii\caching\CacheInterface;
 use yii\db\Connection;
 use yii\db\Expression;

@@ -101,12 +101,4 @@ SQL;
             'val2' => 'bar',
         ])->queryAll());
     }
-
-    public function batchInsertSqlProvider()
-    {
-        $parent = parent::batchInsertSqlProvider();
-        unset($parent['wrongBehavior']); // Produces SQL syntax error: General error: 1 near ".": syntax error
-
-        return $parent;
-    }
 }

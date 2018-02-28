@@ -8,8 +8,6 @@
 namespace yiiunit\framework\widgets;
 
 use yii\base\DynamicModel;
-use yii\base\Widget;
-use yii\web\View;
 use yii\widgets\ActiveForm;
 
 /**
@@ -114,17 +112,15 @@ HTML
     public function testShouldTriggerInitEvent()
     {
         $initTriggered = false;
-        ob_start();
         $form = ActiveForm::begin(
             [
                 'action' => '/something',
                 'on init' => function () use (&$initTriggered) {
                     $initTriggered = true;
-                }
+                },
             ]
         );
         ActiveForm::end();
-        ob_end_clean();
         $this->assertTrue($initTriggered);
     }
 
@@ -152,6 +148,5 @@ HTML
 </div>
 EOF
         , (string) $form->field($model, 'name'));
-
     }
 }

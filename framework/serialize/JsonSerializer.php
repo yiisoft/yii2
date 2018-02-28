@@ -19,7 +19,7 @@ use yii\helpers\Json;
 class JsonSerializer extends BaseObject implements SerializerInterface
 {
     /**
-     * @var integer the encoding options. For more details please refer to
+     * @var int the encoding options. For more details please refer to
      * <http://www.php.net/manual/en/function.json-encode.php>.
      * Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
      */

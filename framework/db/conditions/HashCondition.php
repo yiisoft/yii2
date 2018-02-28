@@ -20,7 +20,6 @@ class HashCondition implements ConditionInterface
      */
     private $hash;
 
-
     /**
      * HashCondition constructor.
      *

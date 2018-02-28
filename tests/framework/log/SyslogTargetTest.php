@@ -27,8 +27,6 @@ namespace yiiunit\framework\log {
 
     use PHPUnit_Framework_MockObject_MockObject;
     use Psr\Log\LogLevel;
-    use yii\helpers\VarDumper;
-    use yii\log\Logger;
     use yii\log\SyslogTarget;
     use yiiunit\TestCase;
 

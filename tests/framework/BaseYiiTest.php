@@ -72,7 +72,6 @@ class BaseYiiTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Invalid path alias: %s', $erroneousAlias));
         Yii::getAlias($erroneousAlias, true);
-
     }
 
     public function testGetRootAlias()
@@ -95,7 +94,6 @@ class BaseYiiTest extends TestCase
         $this->assertEquals('/yii/gii', Yii::getAlias('@yii/gii'));
         Yii::setAlias('@yii/tii', '/yii/tii');
         $this->assertEquals('/yii/tii', Yii::getAlias('@yii/tii'));
-
     }
 
     public function testGetVersion()
@@ -161,7 +159,7 @@ class BaseYiiTest extends TestCase
         $this->assertSame($defaultLogger, $logger);
         $this->assertEquals(789, $logger->flushInterval);
 
-        BaseYii::setLogger(function() {
+        BaseYii::setLogger(function () {
             return new Logger();
         });
         $this->assertNotSame($defaultLogger, BaseYii::getLogger());
@@ -189,7 +187,7 @@ class BaseYiiTest extends TestCase
         $this->assertSame($profiler, BaseYii::getProfiler());
 
         $this->assertEmpty($profiler->messages);
-        $messages = ['test' => 1, 'test2'=> 'test'];
+        $messages = ['test' => 1, 'test2' => 'test'];
         BaseYii::setProfiler(['messages' => $messages]);
         $this->assertSame($profiler, BaseYii::getProfiler());
         $this->assertEquals(1, $profiler->messages['test']);
@@ -200,7 +198,7 @@ class BaseYiiTest extends TestCase
         $defaultProfiler = BaseYii::getProfiler();
         $this->assertInstanceOf(Profiler::class, $defaultProfiler);
 
-        BaseYii::setProfiler(function() {
+        BaseYii::setProfiler(function () {
             return new Profiler();
         });
         $this->assertNotSame($defaultProfiler, BaseYii::getProfiler());
@@ -235,7 +233,7 @@ class BaseYiiTest extends TestCase
                 [
                     $this->equalTo(LogLevel::INFO),
                     $this->equalTo('info message'),
-                    $this->equalTo(['category' => 'info category'])
+                    $this->equalTo(['category' => 'info category']),
                 ],
                 [
                     $this->equalTo(LogLevel::WARNING),
@@ -245,12 +243,12 @@ class BaseYiiTest extends TestCase
                 [
                     $this->equalTo(LogLevel::DEBUG),
                     $this->equalTo('trace message'),
-                    $this->equalTo(['category' => 'trace category'])
+                    $this->equalTo(['category' => 'trace category']),
                 ],
                 [
                     $this->equalTo(LogLevel::ERROR),
                     $this->equalTo('error message'),
-                    $this->equalTo(['category' => 'error category'])
+                    $this->equalTo(['category' => 'error category']),
                 ]
             );
 
@@ -258,7 +256,6 @@ class BaseYiiTest extends TestCase
         BaseYii::warning('warning message', 'warning category');
         BaseYii::debug('trace message', 'trace category');
         BaseYii::error('error message', 'error category');
-
     }
 
     /*
@@ -301,7 +298,7 @@ class BaseYiiTest extends TestCase
             ->withConsecutive(
                 [
                     $this->equalTo('Profile message 1'),
-                    $this->equalTo(['category' => 'Profile category 1'])
+                    $this->equalTo(['category' => 'Profile category 1']),
                 ],
                 [
                     $this->equalTo('Profile message 2'),
@@ -314,7 +311,7 @@ class BaseYiiTest extends TestCase
             ->withConsecutive(
                 [
                     $this->equalTo('Profile message 1'),
-                    $this->equalTo(['category' => 'Profile category 1'])
+                    $this->equalTo(['category' => 'Profile category 1']),
                 ],
                 [
                     $this->equalTo('Profile message 2'),

@@ -19,14 +19,16 @@ use yii\db\ExpressionInterface;
 class InCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use (e.g. `IN` or `NOT IN`)
+     * @var string the operator to use (e.g. `IN` or `NOT IN`)
      */
     private $operator;
+
     /**
      * @var string|string[] the column name. If it is an array, a composite `IN` condition
      * will be generated.
      */
     private $column;
+
     /**
      * @var ExpressionInterface[]|string[]|int[] an array of values that [[column]] value should be among.
      * If it is an empty array the generated expression will be a `false` value if
@@ -34,15 +36,16 @@ class InCondition implements ConditionInterface
      */
     private $values;
 
-
     /**
-     * SimpleCondition constructor
+     * SimpleCondition constructor.
      *
      * @param string|string[] the column name. If it is an array, a composite `IN` condition
      * will be generated.
      * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
      * @param array an array of values that [[column]] value should be among. If it is an empty array the generated
      * expression will be a `false` value if [[operator]] is `IN` and empty if operator is `NOT IN`.
+     * @param mixed $column
+     * @param mixed $values
      */
     public function __construct($column, $operator, $values)
     {

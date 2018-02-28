@@ -87,7 +87,7 @@ class InstanceTest extends TestCase
         ]);
 
         $this->assertInstanceOf(Connection::class, Instance::ensure('db', null, $container));
-        $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection, null, $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection(), null, $container));
         $this->assertInstanceOf(Connection::class, Instance::ensure(['class' => Connection::class, 'dsn' => 'test'], null, $container));
     }
 

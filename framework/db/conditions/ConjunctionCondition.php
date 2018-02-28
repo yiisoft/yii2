@@ -8,7 +8,7 @@
 namespace yii\db\conditions;
 
 /**
- * Class ConjunctionCondition
+ * Class ConjunctionCondition.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -19,7 +19,6 @@ abstract class ConjunctionCondition implements ConditionInterface
      * @var mixed[]
      */
     protected $expressions;
-
 
     /**
      * @param mixed $expressions

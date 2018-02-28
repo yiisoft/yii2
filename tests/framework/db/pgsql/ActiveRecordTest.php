@@ -10,7 +10,6 @@ namespace yiiunit\framework\db\pgsql;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ArrayExpression;
 use yii\db\Expression;
-use yii\db\ExpressionInterface;
 use yii\db\JsonExpression;
 use yii\db\pgsql\Schema;
 use yii\helpers\Json;
@@ -98,8 +97,10 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->batchInsert('bool_values',
-            ['bool_col'], [
+        $command->batchInsert(
+            'bool_values',
+            ['bool_col'],
+            [
                 [true],
                 [false],
             ]
@@ -180,6 +181,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
     /**
      * @dataProvider arrayValuesProvider $attributes
+     * @param mixed $attributes
      */
     public function testArrayValues($attributes)
     {
@@ -217,47 +219,47 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         return [
             'simple arrays values' => [[
                 'intarray_col' => [
-                    new ArrayExpression([1,-2,null,'42'], 'int4', 1),
-                    new ArrayExpression([1,-2,null,42], 'int4', 1),
+                    new ArrayExpression([1, -2, null, '42'], 'int4', 1),
+                    new ArrayExpression([1, -2, null, 42], 'int4', 1),
                 ],
                 'textarray2_col' => [
                     new ArrayExpression([['text'], [null], [1]], 'text', 2),
                     new ArrayExpression([['text'], [null], ['1']], 'text', 2),
                 ],
-                'json_col' => [['a' => 1, 'b' => null, 'c' => [1,3,5]]],
+                'json_col' => [['a' => 1, 'b' => null, 'c' => [1, 3, 5]]],
                 'jsonb_col' => [[null, 'a', 'b', '\"', '{"af"}']],
                 'jsonarray_col' => [new ArrayExpression([[',', 'null', true, 'false', 'f']], 'json')],
             ]],
             'arrays packed in classes' => [[
                 'intarray_col' => [
-                    new ArrayExpression([1,-2,null,'42'], 'int', 1),
-                    new ArrayExpression([1,-2,null,42], 'int4', 1),
+                    new ArrayExpression([1, -2, null, '42'], 'int', 1),
+                    new ArrayExpression([1, -2, null, 42], 'int4', 1),
                 ],
                 'textarray2_col' => [
                     new ArrayExpression([['text'], [null], [1]], 'text', 2),
                     new ArrayExpression([['text'], [null], ['1']], 'text', 2),
                 ],
                 'json_col' => [
-                    new JsonExpression(['a' => 1, 'b' => null, 'c' => [1,3,5]]),
-                    ['a' => 1, 'b' => null, 'c' => [1,3,5]]
+                    new JsonExpression(['a' => 1, 'b' => null, 'c' => [1, 3, 5]]),
+                    ['a' => 1, 'b' => null, 'c' => [1, 3, 5]],
                 ],
                 'jsonb_col' => [
                     new JsonExpression([null, 'a', 'b', '\"', '{"af"}']),
-                    [null, 'a', 'b', '\"', '{"af"}']
+                    [null, 'a', 'b', '\"', '{"af"}'],
                 ],
                 'jsonarray_col' => [
                     new Expression("array['[\",\",\"null\",true,\"false\",\"f\"]'::json]::json[]"),
                     new ArrayExpression([[',', 'null', true, 'false', 'f']], 'json'),
-                ]
+                ],
             ]],
             'scalars' => [[
                 'json_col' => [
                     '5.8',
                 ],
                 'jsonb_col' => [
-                    pi()
+                    pi(),
                 ],
-            ]]
+            ]],
         ];
     }
 }

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\behaviors;
 
@@ -30,7 +35,7 @@ class CacheableWidgetBehaviorTest extends TestCase
     private $dynamicWidget;
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function setUp()
     {
@@ -94,7 +99,6 @@ class CacheableWidgetBehaviorTest extends TestCase
 
     /**
      * Initializes mock widgets.
-     *
      */
     private function initializeWidgetMocks()
     {
@@ -105,6 +109,7 @@ class CacheableWidgetBehaviorTest extends TestCase
     /**
      * Returns a widget mock.
      *
+     * @param mixed $widgetClass
      */
     private function getWidgetMock($widgetClass)
     {
@@ -121,7 +126,7 @@ class CacheableWidgetBehaviorTest extends TestCase
 class BaseCacheableWidget extends Widget
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function test()
     {
@@ -144,7 +149,7 @@ class BaseCacheableWidget extends Widget
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function behaviors()
     {
@@ -157,7 +162,7 @@ class BaseCacheableWidget extends Widget
 class SimpleCacheableWidget extends BaseCacheableWidget
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function run()
     {
@@ -170,7 +175,7 @@ class SimpleCacheableWidget extends BaseCacheableWidget
 class DynamicCacheableWidget extends BaseCacheableWidget
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function run()
     {

@@ -41,7 +41,7 @@ class FormatConverterTest extends TestCase
     }
 
     /**
-     * ensure PHP fallback matches the ICU format for en_US
+     * ensure PHP fallback matches the ICU format for en_US.
      */
     public function testPHPDefaultFormat()
     {
@@ -81,14 +81,14 @@ class FormatConverterTest extends TestCase
                             'UTC'
                         );
                         switch ($format) {
-                            case 'short' :
+                            case 'short':
                                 $expected = str_replace('yy', 'yy,', $expected);
                                 break;
-                            case 'medium' :
+                            case 'medium':
                                 $expected = str_replace(' y', ' y,', $expected);
                                 break;
-                            case 'long' :
-                            case 'full' :
+                            case 'long':
+                            case 'full':
                                 $expected = str_replace(' y', " y 'at'", $expected);
                                 break;
                         }

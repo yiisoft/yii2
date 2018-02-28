@@ -7,7 +7,6 @@
 
 namespace yiiunit\framework\caching;
 
-use yii\caching\Cache;
 use yii\caching\Dependency;
 use yii\caching\SimpleCache;
 use yiiunit\data\cache\MockDependency;

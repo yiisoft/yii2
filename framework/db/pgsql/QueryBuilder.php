@@ -10,9 +10,8 @@ namespace yii\db\pgsql;
 use yii\base\InvalidArgumentException;
 use yii\db\Constraint;
 use yii\db\Expression;
-use yii\db\ExpressionInterface;
-use yii\db\Query;
 use yii\db\PdoValue;
+use yii\db\Query;
 use yii\helpers\StringHelper;
 
 /**
@@ -76,7 +75,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'numeric(19,4)',
         Schema::TYPE_JSON => 'jsonb',
     ];
-
 
     /**
      * {@inheritdoc}
@@ -255,7 +253,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      * @see https://www.postgresql.org/docs/9.5/static/sql-insert.html#SQL-ON-CONFLICT
      * @see https://stackoverflow.com/questions/1109061/insert-on-duplicate-update-in-postgresql/8702291#8702291
      */
@@ -376,7 +374,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         [$updates, $params] = $this->prepareUpdateSets($table, $updateColumns, $params);
         $updateSql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $updates)
             . ' FROM "EXCLUDED" ' . $this->buildWhere($updateCondition, $params)
-            . ' RETURNING ' . $this->db->quoteTableName($table) .'.*';
+            . ' RETURNING ' . $this->db->quoteTableName($table) . '.*';
         $selectUpsertSubQuery = (new Query())
             ->select(new Expression('1'))
             ->from('upsert')
@@ -428,7 +426,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      */
-    public function batchInsert($table, $columns, $rows, &$params = [])
+    public function batchInsert($table, $columns, $rows)
     {
         if (empty($rows)) {
             return '';
@@ -459,8 +457,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     $value = 'FALSE';
                 } elseif ($value === null) {
                     $value = 'NULL';
-                } elseif ($value instanceof ExpressionInterface) {
-                    $value = $this->buildExpression($value, $params);
                 }
                 $vs[] = $value;
             }

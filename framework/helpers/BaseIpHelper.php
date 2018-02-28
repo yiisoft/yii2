@@ -8,7 +8,7 @@
 namespace yii\helpers;
 
 /**
- * Class BaseIpHelper provides concrete implementation for [[IpHelper]]
+ * Class BaseIpHelper provides concrete implementation for [[IpHelper]].
  *
  * Do not use BaseIpHelper, use [[IpHelper]] instead.
  *
@@ -20,14 +20,13 @@ class BaseIpHelper
     const IPV4 = 4;
     const IPV6 = 6;
     /**
-     * The length of IPv6 address in bits
+     * The length of IPv6 address in bits.
      */
     const IPV6_ADDRESS_LENGTH = 128;
     /**
-     * The length of IPv4 address in bits
+     * The length of IPv4 address in bits.
      */
     const IPV4_ADDRESS_LENGTH = 32;
-
 
     /**
      * Gets the IP version. Does not perform IP address validation.

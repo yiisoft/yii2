@@ -1,12 +1,18 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
 use yii\base\Module;
+use yii\console\controllers\MessageController;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yiiunit\TestCase;
-use yii\console\controllers\MessageController;
 
 /**
  * Base for [[\yii\console\controllers\MessageController]] unit tests.
@@ -129,8 +135,10 @@ abstract class BaseMessageControllerTest extends TestCase
     {
         $configFileName = $this->configFileName;
         $out = $this->runMessageControllerAction('config', [$configFileName]);
-        $this->assertFileExists($configFileName,
-            "Unable to create config file from template. Command output:\n\n" . $out);
+        $this->assertFileExists(
+            $configFileName,
+            "Unable to create config file from template. Command output:\n\n" . $out
+        );
     }
 
     public function testConfigFileNotExist()
@@ -167,8 +175,10 @@ abstract class BaseMessageControllerTest extends TestCase
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
         $out .= $this->runMessageControllerAction('extract', [$this->configFileName]);
 
-        $this->assertNotFalse(strpos($out, 'Nothing to save'),
-            "Controller should respond with \"Nothing to save\" if there's nothing to update. Command output:\n\n" . $out);
+        $this->assertNotFalse(
+            strpos($out, 'Nothing to save'),
+            "Controller should respond with \"Nothing to save\" if there's nothing to update. Command output:\n\n" . $out
+        );
     }
 
     /**
@@ -271,12 +281,16 @@ abstract class BaseMessageControllerTest extends TestCase
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
 
         $messages = $this->loadMessages($category);
-        $this->assertSame($zeroMessageContent,
+        $this->assertSame(
+            $zeroMessageContent,
             $messages[$zeroMessage],
-            "Message content \"0\" is lost. Command output:\n\n" . $out);
-        $this->assertSame($falseMessageContent,
+            "Message content \"0\" is lost. Command output:\n\n" . $out
+        );
+        $this->assertSame(
+            $falseMessageContent,
             $messages[$falseMessage],
-            "Message content \"false\" is lost. Command output:\n\n" . $out);
+            "Message content \"false\" is lost. Command output:\n\n" . $out
+        );
     }
 
     /**
@@ -455,8 +469,11 @@ abstract class BaseMessageControllerTest extends TestCase
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
 
         $messages = $this->loadMessages($category);
-        $this->assertArrayHasKey($mainMessage, $messages,
-            "\"$mainMessage\" is missing in translation file. Command output:\n\n" . $out);
+        $this->assertArrayHasKey(
+            $mainMessage,
+            $messages,
+            "\"$mainMessage\" is missing in translation file. Command output:\n\n" . $out
+        );
     }
 
     /**

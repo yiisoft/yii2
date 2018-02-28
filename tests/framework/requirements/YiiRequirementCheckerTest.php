@@ -171,7 +171,7 @@ class YiiRequirementCheckerTest extends TestCase
     }
 
     /**
-     * Data provider for [[testCompareByteSize()]]
+     * Data provider for [[testCompareByteSize()]].
      * @return array
      */
     public function dataProviderCompareByteSize()

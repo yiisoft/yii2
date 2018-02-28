@@ -11,7 +11,7 @@ namespace yiiunit\data\ar;
 use yii\db\ActiveQuery;
 
 /**
- * Class Employee
+ * Class Employee.
  *
  * @property int $id
  * @property int $department_id
@@ -28,7 +28,7 @@ use yii\db\ActiveQuery;
 class Employee extends ActiveRecord
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public static function tableName()
     {
@@ -58,8 +58,7 @@ class Employee extends ActiveRecord
             ->hasOne(Department::class, [
                 'id' => 'department_id',
             ])
-            ->inverseOf('employees')
-        ;
+            ->inverseOf('employees');
     }
 
     /**
@@ -74,7 +73,6 @@ class Employee extends ActiveRecord
                 'department_id' => 'department_id',
                 'employee_id' => 'id',
             ])
-            ->inverseOf('employee')
-        ;
+            ->inverseOf('employee');
     }
 }

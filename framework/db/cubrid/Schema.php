@@ -81,13 +81,12 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     ];
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected $tableQuoteCharacter = '"';
 
-
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function findTableNames($schema = '')
     {
@@ -105,7 +104,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableSchema($name)
     {
@@ -154,7 +153,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTablePrimaryKey($tableName)
     {
@@ -171,7 +170,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableForeignKeys($tableName)
     {
@@ -201,7 +200,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableIndexes($tableName)
     {
@@ -209,7 +208,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableUniques($tableName)
     {
@@ -217,7 +216,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableChecks($tableName)
@@ -226,7 +225,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)

@@ -12,7 +12,7 @@ use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * Class BetweenConditionBuilder builds objects of [[BetweenCondition]]
+ * Class BetweenConditionBuilder builds objects of [[BetweenCondition]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -20,7 +20,6 @@ use yii\db\ExpressionInterface;
 class BetweenConditionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
-
 
     /**
      * Method builds the raw SQL from the $expression that will not be additionally

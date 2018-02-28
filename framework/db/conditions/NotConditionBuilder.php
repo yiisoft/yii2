@@ -12,7 +12,7 @@ use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * Class NotConditionBuilder builds objects of [[NotCondition]]
+ * Class NotConditionBuilder builds objects of [[NotCondition]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -20,7 +20,6 @@ use yii\db\ExpressionInterface;
 class NotConditionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
-
 
     /**
      * Method builds the raw SQL from the $expression that will not be additionally

@@ -18,7 +18,7 @@ use yii\base\InvalidArgumentException;
 class BetweenCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
+     * @var string the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
      */
     private $operator;
     /**
@@ -33,7 +33,6 @@ class BetweenCondition implements ConditionInterface
      * @var mixed end of the interval
      */
     private $intervalEnd;
-
 
     /**
      * Creates a condition with the `BETWEEN` operator.

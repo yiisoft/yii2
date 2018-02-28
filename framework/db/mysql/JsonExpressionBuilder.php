@@ -26,7 +26,6 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
 
     const PARAM_PREFIX = ':qp';
 
-
     /**
      * {@inheritdoc}
      * @param JsonExpression|ExpressionInterface $expression the expression to be built
@@ -36,7 +35,7 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
         $value = $expression->getValue();
 
         if ($value instanceof Query) {
-            list ($sql, $params) = $this->queryBuilder->build($value, $params);
+            list($sql, $params) = $this->queryBuilder->build($value, $params);
             return "($sql)";
         }
 

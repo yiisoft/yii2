@@ -138,7 +138,7 @@ class ResourceStream extends BaseObject implements StreamInterface
      */
     public function isSeekable()
     {
-        return (bool)$this->getMetadata('seekable');
+        return (bool) $this->getMetadata('seekable');
     }
 
     /**

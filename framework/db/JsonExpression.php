@@ -29,6 +29,7 @@ class JsonExpression implements ExpressionInterface
      * The value must be compatible with [\yii\helpers\Json::encode()|Json::encode()]] input requirements.
      */
     protected $value;
+
     /**
      * @var string|null Type of JSON, expression should be casted to. Defaults to `null`, meaning
      * no explicit casting will be performed.
@@ -36,7 +37,6 @@ class JsonExpression implements ExpressionInterface
      * For example, PostgreSQL has `json` and `jsonb` types.
      */
     protected $type;
-
 
     /**
      * JsonExpression constructor.

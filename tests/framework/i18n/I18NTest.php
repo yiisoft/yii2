@@ -105,7 +105,8 @@ class I18NTest extends TestCase
     {
         $i18n = new I18N([
             'translations' => [
-                '*' => new PhpMessageSource([
+                '*' => new PhpMessageSource(
+                    [
                         'basePath' => '@yiiunit/data/i18n/messages',
                         'sourceLanguage' => 'de-DE',
                         'fileMap' => [
@@ -203,7 +204,8 @@ class I18NTest extends TestCase
         $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
 
-        Event::on(PhpMessageSource::class, PhpMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {});
+        Event::on(PhpMessageSource::class, PhpMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {
+        });
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));

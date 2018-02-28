@@ -111,7 +111,6 @@ class Command extends Component
      */
     private $_retryHandler;
 
-
     /**
      * Enables query cache for this command.
      * @param int $duration the number of seconds that query result of this command can remain valid in the cache.
@@ -500,11 +499,9 @@ class Command extends Component
             return $this->db->quoteSql($column);
         }, $columns);
 
-        $params = [];
-        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows, $params);
+        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
 
         $this->setRawSql($sql);
-        $this->bindValues($params);
 
         return $this;
     }
@@ -1206,7 +1203,7 @@ class Command extends Component
 
     /**
      * Sets a callable (e.g. anonymous function) that is called when [[Exception]] is thrown
-     * when executing the command. The signature of the callable should be:
+     * when executing the command. The signature of the callable should be:.
      *
      * ```php
      * function (\yii\db\Exception $e, $attempt)

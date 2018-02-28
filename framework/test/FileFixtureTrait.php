@@ -20,6 +20,7 @@ trait FileFixtureTrait
 {
     /**
      * @var string the directory path or [path alias](guide:concept-aliases) that contains the fixture data
+     * @since 2.0.14
      */
     public $dataDirectory;
     /**
@@ -44,7 +45,7 @@ trait FileFixtureTrait
             return [];
         }
 
-        if (basename($file) === $file && $this->dataDirectory !== null) {
+        if (basename($file) == $file && $this->dataDirectory !== null) {
             $file = $this->dataDirectory . '/' . $file;
         }
 
@@ -55,5 +56,4 @@ trait FileFixtureTrait
 
         throw new InvalidConfigException("Fixture data file does not exist: {$file}");
     }
-
 }

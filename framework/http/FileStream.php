@@ -164,7 +164,7 @@ class FileStream extends BaseObject implements StreamInterface
      */
     public function isSeekable()
     {
-        return (bool)$this->getMetadata('seekable');
+        return (bool) $this->getMetadata('seekable');
     }
 
     /**

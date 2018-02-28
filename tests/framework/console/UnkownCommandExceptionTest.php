@@ -8,7 +8,6 @@
 namespace yiiunit\framework\console;
 
 use Yii;
-use yii\console\Application;
 use yii\console\UnknownCommandException;
 use yiiunit\TestCase;
 

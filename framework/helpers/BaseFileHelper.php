@@ -33,6 +33,7 @@ class BaseFileHelper
      * @var string the path (or alias) of a PHP file containing MIME type information.
      */
     public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
+
     /**
      * @var string the path (or alias) of a PHP file containing MIME aliases.
      * @since 2.0.14
@@ -392,7 +393,7 @@ class BaseFileHelper
     }
 
     /**
-     * Removes a file or symlink in a cross-platform way
+     * Removes a file or symlink in a cross-platform way.
      *
      * @param string $path
      * @return bool
@@ -416,7 +417,7 @@ class BaseFileHelper
         } catch (ErrorException $e) {
             // last resort measure for Windows
             $lines = [];
-            exec('DEL /F/Q ' . escapeshellarg($path), $lines, $deleteError);
+            exec("DEL /F/Q \"$path\"", $lines, $deleteError);
             return $deleteError !== 0;
         }
     }
@@ -716,7 +717,7 @@ class BaseFileHelper
         }
 
         $matchOptions = [
-            'filePath' => true
+            'filePath' => true,
         ];
         if ($flags & self::PATTERN_CASE_INSENSITIVE) {
             $matchOptions['caseSensitive'] = false;

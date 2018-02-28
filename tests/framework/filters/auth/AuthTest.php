@@ -12,8 +12,8 @@ use yii\base\Action;
 use yii\filters\auth\AuthMethod;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
-use yii\filters\auth\QueryParamAuth;
 use yii\filters\auth\HttpHeaderAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\UnauthorizedHttpException;
@@ -242,7 +242,7 @@ class AuthTest extends \yiiunit\TestCase
 
     public function testHeaders()
     {
-        Yii::$app->request->setHeader('Authorization', "Bearer wrong_token");
+        Yii::$app->request->setHeader('Authorization', 'Bearer wrong_token');
         $filter = ['class' => HttpBearerAuth::class];
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);

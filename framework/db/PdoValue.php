@@ -34,7 +34,6 @@ final class PdoValue implements ExpressionInterface
      */
     private $type;
 
-
     /**
      * PdoValue constructor.
      *

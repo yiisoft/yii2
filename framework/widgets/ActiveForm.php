@@ -27,12 +27,13 @@ use yii\helpers\Url;
 class ActiveForm extends Widget
 {
     /**
-     * Add validation state class to container tag
+     * Add validation state class to container tag.
      * @since 2.0.14
      */
     const VALIDATION_STATE_ON_CONTAINER = 'container';
+
     /**
-     * Add validation state class to input tag
+     * Add validation state class to input tag.
      * @since 2.0.14
      */
     const VALIDATION_STATE_ON_INPUT = 'input';

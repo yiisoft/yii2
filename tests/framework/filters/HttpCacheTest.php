@@ -60,13 +60,13 @@ class HttpCacheTest extends \yiiunit\TestCase
         $this->assertFalse($method->invoke($httpCache, 0, '"foo"'));
 
         $request->setHeaders([
-            'if-modified-since' => ['Thu, 01 Jan 1970 00:00:00 GMT']
+            'if-modified-since' => ['Thu, 01 Jan 1970 00:00:00 GMT'],
         ]);
         $this->assertTrue($method->invoke($httpCache, 0, null));
         $this->assertFalse($method->invoke($httpCache, 1, null));
 
         $request->setHeaders([
-            'if-none-match' => ['"foo"']
+            'if-none-match' => ['"foo"'],
         ]);
         $this->assertTrue($method->invoke($httpCache, 0, '"foo"'));
         $this->assertFalse($method->invoke($httpCache, 0, '"foos"'));
@@ -75,7 +75,7 @@ class HttpCacheTest extends \yiiunit\TestCase
         $this->assertFalse($method->invoke($httpCache, null, null));
 
         $request->setHeaders([
-            'if-none-match' => ['*']
+            'if-none-match' => ['*'],
         ]);
         $this->assertFalse($method->invoke($httpCache, 0, '"foo"'));
         $this->assertFalse($method->invoke($httpCache, 0, null));

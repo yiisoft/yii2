@@ -136,7 +136,7 @@ class AssetManager extends Component
      */
     public $dirMode = 0775;
     /**
-     * @var callback a PHP callback that is called before copying each sub-directory or file.
+     * @var callable a PHP callback that is called before copying each sub-directory or file.
      * This option is used only when publishing a directory. If the callback returns false, the copy
      * operation for the sub-directory or file will be cancelled.
      *
@@ -147,7 +147,7 @@ class AssetManager extends Component
      */
     public $beforeCopy;
     /**
-     * @var callback a PHP callback that is called after a sub-directory or file is successfully copied.
+     * @var callable a PHP callback that is called after a sub-directory or file is successfully copied.
      * This option is used only when publishing a directory. The signature of the callback is the same as
      * for [[beforeCopy]].
      * This is passed as a parameter `afterCopy` to [[\yii\helpers\FileHelper::copyDirectory()]].

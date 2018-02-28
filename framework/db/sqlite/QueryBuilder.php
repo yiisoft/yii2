@@ -12,7 +12,6 @@ use yii\base\NotSupportedException;
 use yii\db\Connection;
 use yii\db\Constraint;
 use yii\db\Expression;
-use yii\db\ExpressionInterface;
 use yii\db\Query;
 use yii\helpers\StringHelper;
 
@@ -51,7 +50,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
-
     /**
      * {@inheritdoc}
      */
@@ -64,7 +62,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      * @see https://stackoverflow.com/questions/15277373/sqlite-upsert-update-or-insert/15277374#15277374
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
@@ -129,7 +127,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
-    public function batchInsert($table, $columns, $rows, &$params = [])
+    public function batchInsert($table, $columns, $rows)
     {
         if (empty($rows)) {
             return '';
@@ -139,7 +137,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         // http://www.sqlite.org/releaselog/3_7_11.html
         $this->db->open(); // ensure pdo is not null
         if (version_compare($this->db->getServerVersion(), '3.7.11', '>=')) {
-            return parent::batchInsert($table, $columns, $rows, $params);
+            return parent::batchInsert($table, $columns, $rows);
         }
 
         $schema = $this->db->getSchema();
@@ -165,8 +163,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     $value = 0;
                 } elseif ($value === null) {
                     $value = 'NULL';
-                } elseif ($value instanceof ExpressionInterface) {
-                    $value = $this->buildExpression($value, $params);
                 }
                 $vs[] = $value;
             }
@@ -362,7 +358,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function addUnique($name, $table, $columns)
@@ -371,7 +367,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function dropUnique($name, $table)
@@ -380,7 +376,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function addCheck($name, $table, $expression)
@@ -389,7 +385,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function dropCheck($name, $table)
@@ -398,7 +394,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function addDefaultValue($name, $table, $column, $value)
@@ -407,7 +403,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException this is not supported by SQLite.
      */
     public function dropDefaultValue($name, $table)

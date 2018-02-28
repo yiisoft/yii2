@@ -48,7 +48,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
-
     /**
      * {@inheritdoc}
      */
@@ -60,7 +59,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      * @see https://www.cubrid.org/manual/en/9.3.0/sql/query/merge.html
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
@@ -176,7 +175,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @see http://www.cubrid.org/manual/93/en/sql/schema/table.html#drop-index-clause
      */
     public function dropIndex($name, $table)
@@ -193,7 +192,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException this is not supported by CUBRID.
      */
     public function addCheck($name, $table, $expression)
@@ -202,7 +201,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException this is not supported by CUBRID.
      */
     public function dropCheck($name, $table)

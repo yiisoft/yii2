@@ -1,6 +1,7 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.14 under development
 2.1.0 under development
 -----------------------
 
@@ -80,7 +81,7 @@ Yii Framework 2 Change Log
 - Bug #14296: Fixed log targets to throw exception in case log can not be properly exported (bizley)
 - Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl, developeruz)
 - Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150)
-- Bug #14711: (CVE-2018-6010): Fixed `yii\web\ErrorHandler` displaying exception message in non-debug mode (samdark)
+- Bug #14711: Fixed `yii\web\ErrorHandler` displaying exception message in non-debug mode (samdark)
 - Bug #14811: Fixed `yii\filters\HttpCache` to work with PHP 7.2 (samdark)
 - Bug #14859: Fixed OCI DB `defaultSchema` failure when `masterConfig` is used (lovezhl456)
 - Bug #14903: Fixed route with extra dashes is executed controller while it should not (developeruz)
@@ -182,9 +183,8 @@ Yii Framework 2 Change Log
 - Enh #15422: Added default roles dynamic definition support via closure for `yii\rbac\BaseManager` (deltacube)
 - Enh #15426: Added abilitiy to create and drop database views (igravity, vladis84)
 - Enh #15476: Added `\yii\widgets\ActiveForm::$validationStateOn` to be able to specify where to add class for invalid fields (samdark)
-- Enh #15496: (CVE-2018-6009): CSRF token is now regenerated on changing identity (samdark, rhertogh)
+- Enh #15496: CSRF token is now regenerated on changing identity (samdark, rhertogh)
 - Enh #15595: `yii\data\DataFilter` can now handle `lt`,`gt`,`lte` and `gte` on `yii\validators\DateValidator` (mikk150)
-- Enh #15661: Added `yii\db\ExpressionInterface` support to `yii\db\Command::batchInsert()` (silverfire)
 - Enh: Added check to `yii\base\Model::formName()` to prevent source path disclosure when form is represented by an anonymous class (silverfire)
 - Chg #15420: Handle OPTIONS request in `yii\filter\Cors` so the preflight check isn't passed trough authentication filters (michaelarnauts, leandrogehlen)
 - Chg #15625: `yii\grid\DataColumn` boolean filter dropdown list values are now in reversed order (bizley)

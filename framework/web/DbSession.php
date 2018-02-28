@@ -13,7 +13,6 @@ use yii\db\Connection;
 use yii\db\PdoValue;
 use yii\db\Query;
 use yii\di\Instance;
-use yii\helpers\ArrayHelper;
 
 /**
  * DbSession extends [[Session]] by using database as session data storage.
@@ -110,7 +109,7 @@ class DbSession extends MultiFieldSession
             return;
         }
 
-        $row = $this->db->useMaster(function() use ($oldID) {
+        $row = $this->db->useMaster(function () use ($oldID) {
             return (new Query())->from($this->sessionTable)
                ->where(['id' => $oldID])
                ->createCommand($this->db)

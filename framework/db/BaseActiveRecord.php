@@ -1721,13 +1721,13 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * Sets relation dependencies for a property
+     * Sets relation dependencies for a property.
      * @param string $name property name
      * @param ActiveQueryInterface $relation relation instance
      */
     private function setRelationDependencies($name, $relation)
     {
-        if (empty($relation->via) && $relation->link) {
+        if (empty($relation->via)) {
             foreach ($relation->link as $attribute) {
                 $this->_relationsDependencies[$attribute][$name] = $name;
             }

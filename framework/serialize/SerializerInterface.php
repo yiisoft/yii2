@@ -23,7 +23,7 @@ interface SerializerInterface
     public function serialize($value);
 
     /**
-     * Restores value from its serialized representations
+     * Restores value from its serialized representations.
      * @param string $value serialized string.
      * @return mixed restored value
      */

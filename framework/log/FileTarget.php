@@ -72,7 +72,6 @@ class FileTarget extends Target
      */
     public $rotateByCopy = true;
 
-
     /**
      * Initializes the route.
      * This method is invoked after the route is created by the route manager.
@@ -195,7 +194,7 @@ class FileTarget extends Target
     }
 
     /**
-     * Renames rotated file into new file
+     * Renames rotated file into new file.
      * @param string $rotateFile
      * @param string $newFile
      */

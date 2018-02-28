@@ -47,7 +47,7 @@ class MessageTraitTest extends TestCase
         $message = new TestMessage();
 
         $message->setBody([
-            'class' => FileStream::class
+            'class' => FileStream::class,
         ]);
         $this->assertTrue($message->getBody() instanceof FileStream);
 
@@ -93,11 +93,11 @@ class MessageTraitTest extends TestCase
         $this->assertEquals('', $clearMessage->getHeaderLine('some'));
 
         $message->setHeaders([
-            'some' => ['line1', 'line2']
+            'some' => ['line1', 'line2'],
         ]);
         $this->assertEquals(['some' => ['line1', 'line2']], $message->getHeaders());
         $message->setHeaders([
-            'another' => ['one']
+            'another' => ['one'],
         ]);
         $this->assertEquals(['another' => ['one']], $message->getHeaders());
     }
@@ -118,7 +118,7 @@ class MessageTraitTest extends TestCase
                 ],
             ],
             'body' => [
-                'class' => FileStream::class
+                'class' => FileStream::class,
             ],
         ]);
 

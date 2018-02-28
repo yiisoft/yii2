@@ -33,7 +33,7 @@ class SimpleCacheTest extends TestCase
     }
 
     /**
-     * Data provider for [[testNormalizeTtl()]]
+     * Data provider for [[testNormalizeTtl()]].
      * @return array test data.
      */
     public function dataProviderNormalizeTtl()

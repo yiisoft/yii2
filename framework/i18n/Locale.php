@@ -16,9 +16,6 @@ use yii\base\InvalidConfigException;
  *
  * The class requires [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
  * @since 2.0.14
- *
- * @property string $currencySymbol This property is read-only.
- *
  */
 class Locale extends Component
 {
@@ -27,7 +24,6 @@ class Locale extends Component
      * If not set, [[\yii\base\Application::language]] will be used.
      */
     public $locale;
-
 
     /**
      * {@inheritdoc}
@@ -44,7 +40,7 @@ class Locale extends Component
     }
 
     /**
-     * Returns a currency symbol
+     * Returns a currency symbol.
      *
      * @param string $currencyCode the 3-letter ISO 4217 currency code to get symbol for. If null,
      * method will attempt using currency code from [[locale]].

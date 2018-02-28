@@ -26,7 +26,7 @@ class PjaxAsset extends AssetBundle
     /**
      * {@inheritdoc}
      */
-    public $js = ['jquery.pjax.js',];
+    public $js = ['jquery.pjax.js'];
 
     /**
      * {@inheritdoc}

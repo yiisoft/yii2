@@ -89,7 +89,7 @@ class TemplateTest extends TestCase
         file_put_contents($viewFileName, $viewFileContent);
 
         $params = [
-            'testParam' => 'test output'
+            'testParam' => 'test output',
         ];
         $renderResult = $template->render($viewName, $params);
         $this->assertEquals($params['testParam'], $renderResult);
@@ -162,7 +162,7 @@ class TemplateTest extends TestCase
                 'HTML view file content http://yiifresh.com/index.php?r=site%2Freset-password&token=abcdef',
             ],
             [
-                <<<HTML
+                <<<'HTML'
 <html><head><style type="text/css">.content{color: #112345;}</style><title>TEST</title></head>
 <body>
     <style type="text/css">.content{color: #112345;}</style>
@@ -177,7 +177,7 @@ class TemplateTest extends TestCase
 </body>
 </html>
 HTML
-                ,<<<TEXT
+                , <<<'TEXT'
 First paragraph
 second line
 

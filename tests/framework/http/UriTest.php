@@ -73,7 +73,7 @@ class UriTest extends TestCase
             'path' => '/content/path',
             'query' => 'foo=some',
         ]);
-        $this->assertSame('http://example.com/content/path?foo=some', (string)$uri);
+        $this->assertSame('http://example.com/content/path?foo=some', (string) $uri);
     }
 
     /**

@@ -126,7 +126,7 @@ class GridView extends BaseListView
      */
     public $showFooter = false;
     /**
-     * @var bool whether to place footer after body in DOM if $showFooter is true
+     * @var bool whether to place footer after body in DOM if is true
      * @since 2.0.14
      */
     public $placeFooterAfterBody = false;
@@ -315,13 +315,13 @@ class GridView extends BaseListView
 
         $tableFooter = false;
         $tableFooterAfterBody = false;
-        
+
         if ($this->showFooter) {
             if ($this->placeFooterAfterBody) {
                 $tableFooterAfterBody = $this->renderTableFooter();
             } else {
                 $tableFooter = $this->renderTableFooter();
-            }	        
+            }
         }
 
         $content = array_filter([

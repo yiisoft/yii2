@@ -13,7 +13,7 @@ use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
- * Class InConditionBuilder builds objects of [[InCondition]]
+ * Class InConditionBuilder builds objects of [[InCondition]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -21,7 +21,6 @@ use yii\db\Query;
 class InConditionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
-
 
     /**
      * Method builds the raw SQL from the $expression that will not be additionally
@@ -76,7 +75,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Builds $values to be used in [[InCondition]]
+     * Builds $values to be used in [[InCondition]].
      *
      * @param ConditionInterface|InCondition $condition
      * @param array $values

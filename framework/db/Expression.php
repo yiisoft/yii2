@@ -41,7 +41,6 @@ class Expression extends \yii\base\BaseObject implements ExpressionInterface
      */
     public $params = [];
 
-
     /**
      * Constructor.
      * @param string $expression the DB expression

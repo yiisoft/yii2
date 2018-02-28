@@ -11,7 +11,7 @@ namespace yiiunit\data\ar;
 use yii\db\ActiveQuery;
 
 /**
- * Class Dossier
+ * Class Dossier.
  *
  * @property int $id
  * @property int $department_id
@@ -26,7 +26,7 @@ use yii\db\ActiveQuery;
 class Dossier extends ActiveRecord
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public static function tableName()
     {
@@ -45,7 +45,6 @@ class Dossier extends ActiveRecord
                 'department_id' => 'department_id',
                 'id' => 'employee_id',
             ])
-            ->inverseOf('dossier')
-        ;
+            ->inverseOf('dossier');
     }
 }

@@ -21,7 +21,7 @@ abstract class SerializerTest extends TestCase
     abstract protected function createSerializer();
 
     /**
-     * Data provider for [[testSerialize()]]
+     * Data provider for [[testSerialize()]].
      * @return array test data.
      */
     public function dataProviderSerialize()
@@ -44,7 +44,7 @@ abstract class SerializerTest extends TestCase
         $serializer = $this->createSerializer();
 
         $serialized = $serializer->serialize($value);
-        $this->assertTrue(is_string($serialized));
+        $this->assertInternalType('string', $serialized);
 
         $this->assertEquals($value, $serializer->unserialize($serialized));
     }

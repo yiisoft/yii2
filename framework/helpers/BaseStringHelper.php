@@ -217,7 +217,6 @@ class BaseStringHelper
         }
         if ($caseSensitive) {
             return strncmp($string, $with, $bytes) === 0;
-
         }
         $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
         return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), $encoding) === mb_strtolower($with, $encoding);

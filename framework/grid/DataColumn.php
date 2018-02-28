@@ -112,7 +112,7 @@ class DataColumn extends Column
      * render the HTML attributes for the generated filter input fields.
      * By default a `'class' => 'form-control'` element will be added if no class has been specified.
      * If you do not want to create a class attribute, you can specify `['class' => null]`.
-     * 
+     *
      * Empty `id` in the default value ensures that id would not be obtained from the model attribute thus
      * providing better performance.
      *
@@ -144,7 +144,7 @@ class DataColumn extends Column
     }
 
     /**
-     * {@inheritdoc]
+     * {@inheritdoc}
      * @since 2.0.8
      */
     protected function getHeaderCellLabel()

@@ -25,7 +25,7 @@ class FileCacheTest extends CacheTestCase
     {
         if ($this->_cacheInstance === null) {
             $this->_cacheInstance = new Cache([
-                'handler' => new FileCache(['cachePath' => '@yiiunit/runtime/cache'])
+                'handler' => new FileCache(['cachePath' => '@yiiunit/runtime/cache']),
             ]);
         }
 

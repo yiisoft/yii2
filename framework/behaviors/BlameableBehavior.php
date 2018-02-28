@@ -72,12 +72,12 @@ class BlameableBehavior extends AttributeBehavior
      * In case, when the property is `null`, the value of `Yii::$app->user->id` will be used as the value.
      */
     public $value;
+
     /**
      * @var mixed Default value for cases when the user is guest
      * @since 2.0.14
      */
     public $defaultValue;
-
 
     /**
      * {@inheritdoc}
@@ -114,7 +114,7 @@ class BlameableBehavior extends AttributeBehavior
     }
 
     /**
-     * Get default value
+     * Get default value.
      * @param \yii\base\Event $event
      * @return array|mixed
      * @since 2.0.14

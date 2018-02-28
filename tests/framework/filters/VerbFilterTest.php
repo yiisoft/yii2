@@ -36,7 +36,7 @@ class VerbFilterTest extends TestCase
         $request = new Request();
         $this->mockWebApplication([
             'components' => [
-                'request' => $request
+                'request' => $request,
             ],
         ]);
         $controller = new Controller('id', Yii::$app);
@@ -44,7 +44,7 @@ class VerbFilterTest extends TestCase
         $filter = new VerbFilter([
             'actions' => [
                 '*' => ['GET', 'POST', 'Custom'],
-            ]
+            ],
         ]);
 
         $event = new ActionEvent($action);

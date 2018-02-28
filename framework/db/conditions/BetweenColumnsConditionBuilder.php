@@ -13,7 +13,7 @@ use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
- * Class BetweenColumnsConditionBuilder builds objects of [[BetweenColumnsCondition]]
+ * Class BetweenColumnsConditionBuilder builds objects of [[BetweenColumnsCondition]].
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -21,7 +21,6 @@ use yii\db\Query;
 class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
-
 
     /**
      * Method builds the raw SQL from the $expression that will not be additionally

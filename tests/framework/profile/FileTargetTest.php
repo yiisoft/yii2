@@ -54,7 +54,7 @@ class FileTargetTest extends TestCase
         $profiler->end('test-export', ['category' => 'test-category']);
         $profiler->flush();
 
-        $this->assertTrue(file_exists($filename));
+        $this->assertFileExists($filename);
 
         $fileContent = file_get_contents($filename);
         $this->assertContains('[test-category] test-export', $fileContent);

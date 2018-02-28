@@ -20,10 +20,10 @@ namespace yiiunit\framework\web;
 
 use Yii;
 use yii\base\BaseObject;
-use yii\rbac\CheckAccessInterface;
-use yii\rbac\PhpManager;
 use yii\http\Cookie;
 use yii\http\CookieCollection;
+use yii\rbac\CheckAccessInterface;
+use yii\rbac\PhpManager;
 use yii\web\ForbiddenHttpException;
 use yiiunit\TestCase;
 
@@ -356,8 +356,8 @@ class UserTest extends TestCase
             'components' => [
                 'user' => [
                     'identityClass' => UserIdentity::class,
-                    'accessChecker' => AccessChecker::class
-                ]
+                    'accessChecker' => AccessChecker::class,
+                ],
             ],
         ];
 
@@ -395,7 +395,6 @@ class UserTest extends TestCase
         $this->expectException('Exception');
         Yii::$app->getUser()->getIdentity();
     }
-
 }
 
 static $cookiesMock;
@@ -422,7 +421,6 @@ class MockResponse extends \yii\web\Response
 
 class AccessChecker extends BaseObject implements CheckAccessInterface
 {
-
     public function checkAccess($userId, $permissionName, $params = [])
     {
         // Implement checkAccess() method.

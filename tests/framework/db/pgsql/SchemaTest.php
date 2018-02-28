@@ -7,7 +7,6 @@
 
 namespace yiiunit\framework\db\pgsql;
 
-use yii\db\conditions\ExistsConditionBuilder;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Type;
@@ -102,7 +101,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'precision' => null,
             'scale' => null,
             'defaultValue' => null,
-            'dimension' => 1
+            'dimension' => 1,
         ];
         $columns['textarray2_col'] = [
             'type' => 'text',
@@ -115,7 +114,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'precision' => null,
             'scale' => null,
             'defaultValue' => null,
-            'dimension' => 2
+            'dimension' => 2,
         ];
         $columns['json_col'] = [
             'type' => 'json',
@@ -127,8 +126,8 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'size' => null,
             'precision' => null,
             'scale' => null,
-            'defaultValue' => ["a" => 1],
-            'dimension' => 0
+            'defaultValue' => ['a' => 1],
+            'dimension' => 0,
         ];
         $columns['jsonb_col'] = [
             'type' => 'json',
@@ -141,7 +140,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'precision' => null,
             'scale' => null,
             'defaultValue' => null,
-            'dimension' => 0
+            'dimension' => 0,
         ];
         $columns['jsonarray_col'] = [
             'type' => 'json',
@@ -154,7 +153,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'precision' => null,
             'scale' => null,
             'defaultValue' => null,
-            'dimension' => 1
+            'dimension' => 1,
         ];
 
         return $columns;

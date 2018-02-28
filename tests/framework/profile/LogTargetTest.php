@@ -45,7 +45,7 @@ class LogTargetTest extends TestCase
         /* @var $logger LoggerInterface|\PHPUnit_Framework_MockObject_MockObject */
         $logger = $this->getMockBuilder(LoggerInterface::class)
             ->setMethods([
-                'log'
+                'log',
             ])
             ->getMockForAbstractClass();
 

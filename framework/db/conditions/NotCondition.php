@@ -22,7 +22,6 @@ class NotCondition implements ConditionInterface
      */
     private $condition;
 
-
     /**
      * NotCondition constructor.
      *

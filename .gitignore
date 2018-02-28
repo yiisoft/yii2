@@ -38,7 +38,6 @@ phpunit.phar
 # ignore dev installed apps and extensions
 /apps
 /extensions
-/packages
 
 # NPM packages
 /node_modules

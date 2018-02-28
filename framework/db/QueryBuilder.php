@@ -57,6 +57,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @deprecated since 2.0.14. Is not used, will be dropped in 2.1.0.
      */
     protected $conditionBuilders = [];
+
     /**
      * @var array map of condition aliases to condition classes. For example:
      *
@@ -76,6 +77,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @since 2.0.14
      */
     protected $conditionClasses = [];
+
     /**
      * @var string[]|ExpressionBuilderInterface[] maps expression class to expression builder class.
      * For example:
@@ -101,7 +103,6 @@ class QueryBuilder extends \yii\base\BaseObject
      * @since 2.0.14
      */
     protected $expressionBuilders = [];
-
 
     /**
      * Constructor.
@@ -183,8 +184,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * Setter for [[expressionBuilders]] property.
      *
-     * @param string[] $builders array of builders that should be merged with the pre-defined ones
-     * in [[expressionBuilders]] property.
+     * @param string[] $builders array of builder that should be merged with [[expressionBuilders]]
      * @since 2.0.14
      * @see expressionBuilders
      */
@@ -247,7 +247,7 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Builds given $expression
+     * Builds given $expression.
      *
      * @param ExpressionInterface $expression the expression to be built
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
@@ -306,7 +306,7 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Creates an INSERT SQL statement.
-     * For example,
+     * For example,.
      *
      * ```php
      * $sql = $queryBuilder->insert('user', [
@@ -425,10 +425,9 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array|\Generator $rows the rows to be batch inserted into the table
-     * @param array $params the binding parameters. This parameter exists since 2.0.14
      * @return string the batch INSERT SQL statement
      */
-    public function batchInsert($table, $columns, $rows, &$params = [])
+    public function batchInsert($table, $columns, $rows)
     {
         if (empty($rows)) {
             return '';
@@ -457,8 +456,6 @@ class QueryBuilder extends \yii\base\BaseObject
                     $value = 0;
                 } elseif ($value === null) {
                     $value = 'NULL';
-                } elseif ($value instanceof ExpressionInterface) {
-                    $value = $this->buildExpression($value, $params);
                 }
                 $vs[] = $value;
             }
@@ -628,7 +625,6 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $sets = [];
         foreach ($columns as $name => $value) {
-
             $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             if ($value instanceof ExpressionInterface) {
                 $placeholder = $this->buildExpression($value, $params);
@@ -1105,7 +1101,7 @@ class QueryBuilder extends \yii\base\BaseObject
             [$rawQuery, $params] = $this->build($subQuery);
             array_walk(
                 $params,
-                function(&$param) {
+                function (&$param) {
                     $param = $this->db->quoteValue($param);
                 }
             );

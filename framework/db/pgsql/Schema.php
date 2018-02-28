@@ -126,13 +126,13 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     ];
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected $tableQuoteCharacter = '"';
 
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function resolveTableName($name)
     {
@@ -150,7 +150,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function findSchemaNames()
     {
@@ -165,7 +165,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function findTableNames($schema = '')
     {
@@ -183,7 +183,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableSchema($name)
     {
@@ -198,7 +198,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTablePrimaryKey($tableName)
     {
@@ -206,7 +206,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableForeignKeys($tableName)
     {
@@ -214,7 +214,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableIndexes($tableName)
     {
@@ -258,7 +258,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableUniques($tableName)
     {
@@ -266,7 +266,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     protected function loadTableChecks($tableName)
     {
@@ -274,7 +274,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
@@ -312,7 +312,7 @@ SQL;
     }
 
     /**
-     * {@inheritdoc]
+     * {@inheritdoc}
      */
     protected function findViewNames($schema = '')
     {
@@ -586,7 +586,7 @@ SQL;
         $column->precision = $info['numeric_precision'];
         $column->scale = $info['numeric_scale'];
         $column->size = $info['size'] === null ? null : (int) $info['size'];
-        $column->dimension = (int)$info['dimension'];
+        $column->dimension = (int) $info['dimension'];
         if (isset($this->typeMap[$column->dbType])) {
             $column->type = $this->typeMap[$column->dbType];
         } else {

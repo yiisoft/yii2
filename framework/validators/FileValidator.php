@@ -77,6 +77,7 @@ class FileValidator extends Validator
      * @see tooMany for the customized message when too many files are uploaded.
      */
     public $maxFiles = 1;
+
     /**
      * @var int the minimum file count the given attribute can hold.
      * Defaults to 0. Higher value means at least that number of files should be uploaded.
@@ -125,6 +126,7 @@ class FileValidator extends Validator
      * - {limit}: the value of [[maxFiles]]
      */
     public $tooMany;
+
     /**
      * @var string the error message used if the count of multiple uploads less that minFiles.
      * You may use the following tokens in the message:
@@ -135,6 +137,7 @@ class FileValidator extends Validator
      * @since 2.0.14
      */
     public $tooFew;
+
     /**
      * @var string the error message used when the uploaded file has an extension name
      * that is not listed in [[extensions]]. You may use the following tokens in the message:
@@ -224,7 +227,7 @@ class FileValidator extends Validator
             if ($this->maxFiles && $filesCount > $this->maxFiles) {
                 $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
             }
-            
+
             if ($this->minFiles && $this->minFiles > $filesCount) {
                 $this->addError($model, $attribute, $this->tooFew, ['limit' => $this->minFiles]);
             }
@@ -351,7 +354,7 @@ class FileValidator extends Validator
         if (($request = Yii::$app->getRequest()) instanceof \yii\web\Request) {
             $maxFileSize = Yii::$app->getRequest()->getParsedBodyParam('MAX_FILE_SIZE', 0);
             if ($maxFileSize > 0 && $maxFileSize < $limit) {
-                $limit = (int)$maxFileSize;
+                $limit = (int) $maxFileSize;
             }
         }
 

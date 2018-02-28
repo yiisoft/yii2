@@ -7,8 +7,8 @@
 
 namespace yii\helpers;
 
-use yii\console\Markdown as ConsoleMarkdown;
 use yii\base\Model;
+use yii\console\Markdown as ConsoleMarkdown;
 
 /**
  * BaseConsole provides concrete implementation for [[Console]].
@@ -657,7 +657,7 @@ class BaseConsole
     }
 
     /**
-     * Word wrap text with indentation to fit the screen size
+     * Word wrap text with indentation to fit the screen size.
      *
      * If screen size could not be detected, or the indentation is greater than the screen size, the text will not be wrapped.
      *
@@ -768,7 +768,7 @@ class BaseConsole
     }
 
     /**
-     * Prompts the user for input and validates it
+     * Prompts the user for input and validates it.
      *
      * @param string $text prompt string
      * @param array $options the options to validate the input:
@@ -993,7 +993,7 @@ class BaseConsole
     }
 
     /**
-     * Return width of the progressbar
+     * Return width of the progressbar.
      * @param string $prefix an optional string to display before the progress bar.
      * @see updateProgress
      * @return int screen width
@@ -1024,7 +1024,7 @@ class BaseConsole
     }
 
     /**
-     * Calculate $_progressEta, $_progressEtaLastUpdate and $_progressEtaLastDone
+     * Calculate $_progressEta, $_progressEtaLastUpdate and $_progressEtaLastDone.
      * @param int $done the number of items that are completed.
      * @param int $total the total value of items that are to be done.
      * @see updateProgress
@@ -1097,7 +1097,7 @@ class BaseConsole
     }
 
     /**
-     * Return array of the validation errors
+     * Return array of the validation errors.
      * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
      * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
      * only the first error message for each attribute will be shown.

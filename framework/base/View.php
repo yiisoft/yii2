@@ -350,7 +350,7 @@ class View extends Component implements DynamicContentAwareInterface
      * This method is mainly used together with content caching (fragment caching and page caching)
      * when some portions of the content (called *dynamic content*) should not be cached.
      * The dynamic content must be returned by some PHP statements. You can optionally pass
-     * additional parameters that will be available as variables in the PHP statement:
+     * additional parameters that will be available as variables in the PHP statement:.
      *
      * ```php
      * <?= $this->renderDynamic('return foo($myVar);', [
@@ -406,12 +406,12 @@ class View extends Component implements DynamicContentAwareInterface
             if ($cache instanceof DynamicContentAwareInterface) {
                 $cache->addDynamicPlaceholder($placeholder, $statements);
             } else {
-                // TODO: Remove in 2.1
+                // To be removed in 2.1
                 $cache->dynamicPlaceholders[$placeholder] = $statements;
             }
         }
         $this->dynamicPlaceholders[$placeholder] = $statements;
-}
+    }
 
     /**
      * Evaluates the given PHP statements.

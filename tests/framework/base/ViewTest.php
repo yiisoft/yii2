@@ -47,13 +47,17 @@ class ViewTest extends TestCase
         $view = new View();
 
         $exceptionViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'exception.php';
-        file_put_contents($exceptionViewFile, <<<'PHP'
+        file_put_contents(
+            $exceptionViewFile,
+            <<<'PHP'
 <h1>Exception</h1>
 <?php throw new Exception('Test Exception'); ?>
 PHP
 );
         $normalViewFile = $this->testViewPath . DIRECTORY_SEPARATOR . 'no-exception.php';
-        file_put_contents($normalViewFile, <<<'PHP'
+        file_put_contents(
+            $normalViewFile,
+            <<<'PHP'
 <h1>No Exception</h1>
 PHP
         );
@@ -80,14 +84,14 @@ PHP
     public function testRenderDynamic_DynamicPlaceholders()
     {
         Yii::$app->set('cache', new Cache(['handler' => new FileCache(['cachePath' => '@yiiunit/runtime/cache'])]));
-        $statement = "return 1;";
+        $statement = 'return 1;';
         $view = new View();
         if ($view->beginCache(__FUNCTION__, ['duration' => 3])) {
             $view->renderDynamic($statement);
             $view->endCache();
         }
         $this->assertEquals([
-            '<![CDATA[YII-DYNAMIC-0]]>' => $statement
+            '<![CDATA[YII-DYNAMIC-0]]>' => $statement,
         ], $view->dynamicPlaceholders);
     }
 

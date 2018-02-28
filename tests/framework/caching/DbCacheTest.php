@@ -80,7 +80,7 @@ class DbCacheTest extends CacheTestCase
     {
         if ($this->_cacheInstance === null) {
             $this->_cacheInstance = new Cache([
-                'handler' => new DbCache(['db' => $this->getConnection()])
+                'handler' => new DbCache(['db' => $this->getConnection()]),
             ]);
         }
 

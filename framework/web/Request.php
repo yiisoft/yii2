@@ -417,7 +417,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     }
 
     /**
-     * Specifies the message's request target
+     * Specifies the message's request target.
      * @param mixed $requestTarget the message's request target.
      * @since 2.1.0
      */
@@ -465,7 +465,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     public function setMethod($method)
     {
-        $this->_method =  $method;
+        $this->_method = $method;
     }
 
     /**
@@ -609,7 +609,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     }
 
     /**
-     * Returns whether this is a PJAX request
+     * Returns whether this is a PJAX request.
      * @return bool whether this is a PJAX request
      */
     public function getIsPjax()
@@ -627,7 +627,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         if ($userAgent === null) {
             return false;
         }
-        return (stripos($userAgent, 'Shockwave') !== false || stripos($userAgent, 'Flash') !== false);
+        return stripos($userAgent, 'Shockwave') !== false || stripos($userAgent, 'Flash') !== false;
     }
 
     /**
