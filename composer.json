@@ -84,12 +84,6 @@
         "cebe/indent": "~1.0.2",
         "friendsofphp/php-cs-fixer": "~2.2.3"
     },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
-        }
-    ],
     "suggest": {
         "ezyang/htmlpurifier": "required at `yii\\helpers\\HtmlPurifier` for 'html' data format support (e.g. `yii\\i18n\\Formatter:asHtml()`)",
         "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
