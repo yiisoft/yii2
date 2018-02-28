@@ -47,6 +47,7 @@ class Action extends Component
      */
     public $controller;
 
+
     /**
      * Constructor.
      *

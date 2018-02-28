@@ -30,6 +30,7 @@ abstract class BaseManager extends Component implements ManagerInterface
      */
     protected $defaultRoles = [];
 
+
     /**
      * Returns the named auth item.
      * @param string $name the auth item name.
@@ -195,7 +196,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Set default roles.
+     * Set default roles
      * @param array|\Closure $roles either array of roles or a callable returning it
      * @since 2.0.14
      */
@@ -215,7 +216,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Get default roles.
+     * Get default roles
      * @return array default roles
      * @since 2.0.14
      */

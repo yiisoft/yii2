@@ -19,6 +19,7 @@ use yiiunit\TestCase;
  */
 class CorsTest extends TestCase
 {
+
     public function testPreflight()
     {
         $this->mockWebApplication();

@@ -50,6 +50,7 @@ class EmailValidator extends Validator
      */
     public $enableIDN = false;
 
+
     /**
      * {@inheritdoc}
      */
@@ -102,6 +103,7 @@ class EmailValidator extends Validator
 
         return $valid ? null : [$this->message, []];
     }
+
 
     private function idnToAscii($idn)
     {

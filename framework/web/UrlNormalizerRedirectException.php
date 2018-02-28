@@ -31,6 +31,7 @@ class UrlNormalizerRedirectException extends \yii\base\Exception
      */
     public $statusCode;
 
+
     /**
      * @param array|string $url the parameter to be used to generate a valid URL for redirection.
      * This will be used as first parameter for [[\yii\helpers\Url::to()]]

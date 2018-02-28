@@ -29,22 +29,20 @@ class TableTest extends TestCase
                 [
                     ['testcontent1', 'testcontent2', 'testcontent3'],
                     ['testcontent21', 'testcontent22', 'testcontent23'],
-                ],
+                ]
             ],
             [
                 ['key1' => 'test1', 'key2' => 'test2', 'key3' => 'test3'],
                 [
                     ['key1' => 'testcontent1', 'key2' => 'testcontent2', 'key3' => 'testcontent3'],
                     ['key1' => 'testcontent21', 'key2' => 'testcontent22', 'key3' => 'testcontent23'],
-                ],
-            ],
+                ]
+            ]
         ];
     }
 
     /**
      * @dataProvider getTableData
-     * @param mixed $headers
-     * @param mixed $rows
      */
     public function testTable($headers, $rows)
     {
@@ -86,9 +84,7 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE(
-            $expected,
-            $table->setHeaders(['test1', 'test2', 'ｔｅｓｔ３'])
+        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'ｔｅｓｔ３'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent２１', 'testcontent２２', 'testcontent２３'],
@@ -112,9 +108,7 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE(
-            $expected,
-            $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', ['col1', 'col2']],
@@ -138,9 +132,7 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE(
-            $expected,
-            $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', ['col1', 'col2']],
@@ -163,9 +155,7 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE(
-            $expected,
-            $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent_21', 'testcontent__22', 'testcontent___23'],
@@ -226,9 +216,7 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE(
-            $expected,
-            $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 ['testcontent1', 'testcontent2'],
                 ['testcontent21', 'testcontent22', null],
@@ -254,9 +242,7 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE(
-            $expected,
-            $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 [null, null, null],
                 [],

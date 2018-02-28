@@ -49,7 +49,7 @@ class PjaxTest extends TestCase
             [
                 'on init' => function () use (&$initTriggered) {
                     $initTriggered = true;
-                },
+                }
             ]
         );
 

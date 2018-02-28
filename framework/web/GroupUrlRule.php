@@ -71,6 +71,7 @@ class GroupUrlRule extends CompositeUrlRule
      */
     public $ruleConfig = ['class' => 'yii\web\UrlRule'];
 
+
     /**
      * {@inheritdoc}
      */
@@ -98,7 +99,7 @@ class GroupUrlRule extends CompositeUrlRule
                 $rule = [
                     'pattern' => ltrim($this->prefix . '/' . $key, '/'),
                     'route' => ltrim($this->routePrefix . '/' . $rule, '/'),
-                    'verb' => $verb,
+                    'verb' => $verb
                 ];
             } elseif (isset($rule['pattern'], $rule['route'])) {
                 $rule['pattern'] = ltrim($this->prefix . '/' . $rule['pattern'], '/');

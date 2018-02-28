@@ -49,6 +49,7 @@ class RangeValidator extends Validator
      */
     public $allowArray = false;
 
+
     /**
      * {@inheritdoc}
      */

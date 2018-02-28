@@ -7,7 +7,7 @@ use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
 
 /**
- * Class NotConditionBuilder builds objects of [[NotCondition]].
+ * Class NotConditionBuilder builds objects of [[NotCondition]]
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

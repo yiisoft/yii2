@@ -45,10 +45,8 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->batchInsert(
-            'bool_values',
-            ['bool_col'],
-            [
+        $command->batchInsert('bool_values',
+            ['bool_col'], [
                 [true],
                 [false],
             ]

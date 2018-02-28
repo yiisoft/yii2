@@ -79,6 +79,7 @@ class ColumnSchema extends BaseObject
      */
     public $comment;
 
+
     /**
      * Converts the input value according to [[phpType]] after retrieval from the database.
      * If the value is null or an [[Expression]], it will not be converted.
@@ -120,10 +121,9 @@ class ColumnSchema extends BaseObject
                     Schema::TYPE_TEXT,
                     Schema::TYPE_STRING,
                     Schema::TYPE_BINARY,
-                    Schema::TYPE_CHAR,
+                    Schema::TYPE_CHAR
                 ],
-                true
-            )
+                true)
         ) {
             return null;
         }

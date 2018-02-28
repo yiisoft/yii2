@@ -115,6 +115,7 @@ class HostControl extends ActionFilter
      */
     public $fallbackHostInfo = '';
 
+
     /**
      * {@inheritdoc}
      */

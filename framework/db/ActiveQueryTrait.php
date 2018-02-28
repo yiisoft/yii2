@@ -30,6 +30,7 @@ trait ActiveQueryTrait
      */
     public $asArray;
 
+
     /**
      * Sets the [[asArray]] property.
      * @param bool $value whether to return the query results in terms of arrays instead of Active Records.
@@ -112,17 +113,18 @@ trait ActiveQueryTrait
     {
         if ($this->asArray) {
             return $rows;
+        } else {
+            $models = [];
+            /* @var $class ActiveRecord */
+            $class = $this->modelClass;
+            foreach ($rows as $row) {
+                $model = $class::instantiate($row);
+                $modelClass = get_class($model);
+                $modelClass::populateRecord($model, $row);
+                $models[] = $model;
+            }
+            return $models;
         }
-        $models = [];
-        /* @var $class ActiveRecord */
-        $class = $this->modelClass;
-        foreach ($rows as $row) {
-            $model = $class::instantiate($row);
-            $modelClass = get_class($model);
-            $modelClass::populateRecord($model, $row);
-            $models[] = $model;
-        }
-        return $models;
     }
 
     /**

@@ -62,6 +62,7 @@ class UrlRuleTest extends TestCase
         }
     }
 
+
     protected function getTestsForParseRequest()
     {
         // structure of each test

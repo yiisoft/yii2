@@ -14,6 +14,7 @@ use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\helpers\StringHelper;
+use yii\db\ExpressionInterface;
 
 /**
  * QueryBuilder is the query builder for Oracle databases.

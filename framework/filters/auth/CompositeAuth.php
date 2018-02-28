@@ -48,6 +48,7 @@ class CompositeAuth extends AuthMethod
      */
     public $authMethods = [];
 
+
     /**
      * {@inheritdoc}
      */

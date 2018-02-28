@@ -169,8 +169,8 @@ class CacheableWidgetBehavior extends Behavior
     {
         // `$cacheKeyVariations` may be a `string` and needs to be cast to an `array`.
         $cacheKey = array_merge(
-            (array) get_class($this->owner),
-            (array) $this->cacheKeyVariations
+            (array)get_class($this->owner),
+            (array)$this->cacheKeyVariations
         );
 
         return $cacheKey;

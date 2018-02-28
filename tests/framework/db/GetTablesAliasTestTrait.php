@@ -42,7 +42,7 @@ trait GetTablesAliasTestTrait
         $query = $this->createQuery();
         $query->from = [
             '{{profile}}',
-            'user',
+            'user'
         ];
 
         $tables = $query->getTablesUsedInFrom();

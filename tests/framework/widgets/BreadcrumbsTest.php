@@ -70,6 +70,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->assertEquals($expectedHtml, $actualHtml);
     }
 
+
     public function testHomeLink()
     {
         $this->breadcrumbs->homeLink = ['label' => 'home-link'];

@@ -40,6 +40,7 @@ class RateLimit extends BaseObject implements RateLimitInterface
         return $this;
     }
 
+
     public function saveAllowance($request, $action, $allowance, $timestamp)
     {
         return [$action, $allowance, $timestamp];

@@ -112,6 +112,7 @@ class Logger extends Component
      */
     public $dispatcher;
 
+
     /**
      * Initializes the logger by registering [[flush()]] as a shutdown function.
      */
@@ -301,6 +302,7 @@ class Logger extends Component
 
         return array_values($timings);
     }
+
 
     /**
      * Returns the text display of the specified level.

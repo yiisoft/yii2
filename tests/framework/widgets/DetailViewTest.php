@@ -329,7 +329,7 @@ class DetailViewTest extends \yiiunit\TestCase
             'model' => $model,
             'on init' => function () use (&$initTriggered) {
                 $initTriggered = true;
-            },
+            }
         ]);
 
         $this->assertTrue($initTriggered);

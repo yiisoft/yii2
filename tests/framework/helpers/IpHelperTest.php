@@ -6,7 +6,7 @@ use yii\helpers\IpHelper;
 use yiiunit\TestCase;
 
 /**
- * Class IpHelperTest.
+ * Class IpHelperTest
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  */
@@ -16,7 +16,6 @@ class IpHelperTest extends TestCase
      * @dataProvider getIpVersionProvider
      * @param $value
      * @param $expected
-     * @param mixed $message
      */
     public function testGetIpVersion($value, $expected, $message = '')
     {
@@ -37,9 +36,6 @@ class IpHelperTest extends TestCase
 
     /**
      * @dataProvider expandIpv6Provider
-     * @param mixed $value
-     * @param mixed $expected
-     * @param mixed $message
      */
     public function testExpandIpv6($value, $expected, $message = '')
     {
@@ -83,7 +79,7 @@ class IpHelperTest extends TestCase
             ['192.168.1.1', '11000000101010000000000100000001'],
             ['', '00000000000000000000000000000000'],
             ['fa01:0000:0000:0000:0000:0000:0000:0001', '11111010000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001'],
-            ['fa01::1', '11111010000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001'],
+            ['fa01::1', '11111010000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001']
         ];
     }
 

@@ -37,6 +37,7 @@ class JsonParser implements RequestParserInterface
      */
     public $throwException = true;
 
+
     /**
      * Parses a HTTP request body.
      * @param string $rawBody the raw HTTP request body.

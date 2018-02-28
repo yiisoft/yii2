@@ -54,7 +54,6 @@ class TestController extends Controller
         ControllerTest::$actionRuns[] = $this->action->uniqueId;
         return 'test1';
     }
-
     public function actionTest2()
     {
         ControllerTest::$actionRuns[] = $this->action->uniqueId;

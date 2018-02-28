@@ -32,6 +32,7 @@ abstract class Rule extends BaseObject
      */
     public $updatedAt;
 
+
     /**
      * Executes the rule.
      *

@@ -40,6 +40,7 @@ class BaseFileHelper
      */
     public static $mimeAliasesFile = '@yii/helpers/mimeAliases.php';
 
+
     /**
      * Normalizes a file/directory path.
      *
@@ -392,7 +393,7 @@ class BaseFileHelper
     }
 
     /**
-     * Removes a file or symlink in a cross-platform way.
+     * Removes a file or symlink in a cross-platform way
      *
      * @param string $path
      * @return bool
@@ -716,7 +717,7 @@ class BaseFileHelper
         }
 
         $matchOptions = [
-            'filePath' => true,
+            'filePath' => true
         ];
         if ($flags & self::PATTERN_CASE_INSENSITIVE) {
             $matchOptions['caseSensitive'] = false;

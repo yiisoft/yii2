@@ -29,6 +29,7 @@ abstract class DbMutex extends Mutex
      */
     public $db = 'db';
 
+
     /**
      * Initializes generic database table based mutex implementation.
      * @throws InvalidConfigException if [[db]] is invalid.

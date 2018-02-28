@@ -8,7 +8,7 @@ use yii\db\Query;
 
 /**
  * Class BetweenColumnCondition represents a `BETWEEN` condition where
- * values is between two columns. For example:.
+ * values is between two columns. For example:
  *
  * ```php
  * new BetweenColumnsCondition(42, 'BETWEEN', 'min_value', 'max_value')
@@ -36,7 +36,7 @@ use yii\db\Query;
 class BetweenColumnsCondition implements ConditionInterface
 {
     /**
-     * @var string the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
+     * @var string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
      */
     private $operator;
     /**
@@ -59,7 +59,6 @@ class BetweenColumnsCondition implements ConditionInterface
      * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
      * @param string|ExpressionInterface $intervalStartColumn the column name or expression that is a beginning of the interval
      * @param string|ExpressionInterface $intervalEndColumn the column name or expression that is an end of the interval
-     * @param mixed $value
      */
     public function __construct($value, $operator, $intervalStartColumn, $intervalEndColumn)
     {

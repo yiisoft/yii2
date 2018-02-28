@@ -47,6 +47,7 @@ class LinkSorter extends Widget
      */
     public $linkOptions = [];
 
+
     /**
      * Initializes the sorter.
      */

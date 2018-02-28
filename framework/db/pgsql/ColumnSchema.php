@@ -7,7 +7,7 @@ use yii\db\ExpressionInterface;
 use yii\db\JsonExpression;
 
 /**
- * Class ColumnSchema.
+ * Class ColumnSchema
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  */
@@ -89,7 +89,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
     }
 
     /**
-     * Creates instance of ArrayParser.
+     * Creates instance of ArrayParser
      *
      * @return ArrayParser
      */

@@ -43,9 +43,7 @@ class AssetConverterTest extends \yiiunit\TestCase
     public function testConvert()
     {
         $tmpPath = $this->tmpPath;
-        file_put_contents(
-            $tmpPath . '/test.php',
-            <<<EOF
+        file_put_contents($tmpPath . '/test.php', <<<EOF
 <?php
 
 echo "Hello World!\n";
@@ -67,9 +65,7 @@ EOF
     public function testForceConvert()
     {
         $tmpPath = $this->tmpPath;
-        file_put_contents(
-            $tmpPath . '/test.php',
-            <<<'EOF'
+        file_put_contents($tmpPath . '/test.php', <<<'EOF'
 <?php
 
 echo microtime();

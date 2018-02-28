@@ -57,6 +57,7 @@ class ViewAction extends Action
      */
     public $layout;
 
+
     /**
      * Runs the action.
      * This method displays the view requested by the user.

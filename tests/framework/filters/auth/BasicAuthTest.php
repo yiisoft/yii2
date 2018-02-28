@@ -80,7 +80,7 @@ class BasicAuthTest extends AuthTest
     /**
      * This tests checks, that:
      *  - HttpBasicAuth does not call `auth` closure, when user is already authenticated
-     *  - HttpBasicAuth does not switch identity, when the user identity to be set is the same as current user's one.
+     *  - HttpBasicAuth does not switch identity, when the user identity to be set is the same as current user's one
      *
      * @dataProvider tokenProvider
      * @param string|null $token

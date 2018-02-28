@@ -153,7 +153,7 @@ class FileValidatorTest extends TestCase
             'file_2' => [
                 'name' => 'test_up_2.txt',
                 'size' => 1024,
-            ],
+            ]
         ];
         $m = FakedValidationModel::createWithAttributes(
             [
@@ -195,10 +195,8 @@ class FileValidatorTest extends TestCase
         );
         $m->setScenario('validateMultipleFiles');
         $this->assertFalse($m->validate());
-        $this->assertNotFalse(stripos(
-            current($m->getErrors('attr_images')),
-            'Only files with these extensions are allowed'
-        ));
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_images')),
+            'Only files with these extensions are allowed'));
 
         $m = FakedValidationModel::createWithAttributes(
             [
@@ -255,7 +253,7 @@ class FileValidatorTest extends TestCase
                             'type' => 'image/png',
                         ],
                     ]
-                ),
+                )
             ]
         );
 
@@ -282,7 +280,7 @@ class FileValidatorTest extends TestCase
                             'type' => 'image/png',
                         ],
                     ]
-                ),
+                )
             ]
         );
 
@@ -307,7 +305,7 @@ class FileValidatorTest extends TestCase
                             'error' => UPLOAD_ERR_NO_FILE,
                         ],
                     ]
-                ),
+                )
             ]
         );
 

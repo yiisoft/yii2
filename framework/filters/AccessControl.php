@@ -91,6 +91,7 @@ class AccessControl extends ActionFilter
      */
     public $rules = [];
 
+
     /**
      * Initializes the [[rules]] array by instantiating rule objects from configurations.
      */

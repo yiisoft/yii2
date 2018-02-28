@@ -213,7 +213,6 @@ class UserTest extends TestCase
         ]);
         Yii::$app->user->setReturnUrl(null);
     }
-
     public function testLoginRequired()
     {
         $appConfig = [
@@ -357,8 +356,8 @@ class UserTest extends TestCase
             'components' => [
                 'user' => [
                     'identityClass' => UserIdentity::className(),
-                    'accessChecker' => AccessChecker::className(),
-                ],
+                    'accessChecker' => AccessChecker::className()
+                ]
             ],
         ];
 
@@ -394,6 +393,7 @@ class UserTest extends TestCase
         $this->expectException('Exception');
         Yii::$app->getUser()->getIdentity();
     }
+
 }
 
 static $cookiesMock;
@@ -420,6 +420,7 @@ class MockResponse extends \yii\web\Response
 
 class AccessChecker extends BaseObject implements CheckAccessInterface
 {
+
     public function checkAccess($userId, $permissionName, $params = [])
     {
         // Implement checkAccess() method.

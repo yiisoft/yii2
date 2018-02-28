@@ -86,6 +86,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      */
     private $_scenario = self::SCENARIO_DEFAULT;
 
+
     /**
      * Returns the validation rules for attributes.
      *
@@ -360,7 +361,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
             $attributeNames = $this->activeAttributes();
         }
 
-        $attributeNames = (array) $attributeNames;
+        $attributeNames = (array)$attributeNames;
 
         foreach ($this->getActiveValidators() as $validator) {
             $validator->validateAttributes($this, $attributeNames);
@@ -628,7 +629,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
         $lines = [];
         $errors = $showAllErrors ? $this->getErrors() : $this->getFirstErrors();
         foreach ($errors as $es) {
-            $lines = array_merge((array) $es, $lines);
+            $lines = array_merge((array)$es, $lines);
         }
         return $lines;
     }

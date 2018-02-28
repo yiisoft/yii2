@@ -23,6 +23,7 @@ class Response extends Component
      */
     public $exitStatus = 0;
 
+
     /**
      * Sends the response to client.
      */

@@ -392,6 +392,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         }
     }
 
+
     /**
      * Test whether slave connection is recovered when call getSlavePdo() after close().
      *

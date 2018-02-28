@@ -86,6 +86,7 @@ class BaseYii
      */
     public static $container;
 
+
     /**
      * Returns a string representing the current version of the Yii framework.
      * @return string the version of Yii framework
@@ -489,10 +490,8 @@ class BaseYii
     public static function powered()
     {
         return \Yii::t('yii', 'Powered by {yii}', [
-            'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t(
-                'yii',
-                    'Yii Framework'
-            ) . '</a>',
+            'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
+                    'Yii Framework') . '</a>',
         ]);
     }
 

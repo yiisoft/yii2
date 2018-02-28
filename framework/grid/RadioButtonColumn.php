@@ -62,6 +62,7 @@ class RadioButtonColumn extends Column
      */
     public $radioOptions = [];
 
+
     /**
      * {@inheritdoc}
      * @throws \yii\base\InvalidConfigException if [[name]] is not set.

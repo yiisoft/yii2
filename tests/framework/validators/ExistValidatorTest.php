@@ -218,14 +218,14 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
     }
-
+    
     public function testForceMaster()
     {
         $connection = $this->getConnectionWithInvalidSlave();
         ActiveRecord::$db = $connection;
 
         $model = null;
-        $connection->useMaster(function () use (&$model) {
+        $connection->useMaster(function() use (&$model) {
             $model = ValidatorTestMainModel::findOne(2);
         });
 

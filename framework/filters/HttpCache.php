@@ -106,6 +106,7 @@ class HttpCache extends ActionFilter
      */
     public $enabled = true;
 
+
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.

@@ -26,6 +26,7 @@ class ArrayCache extends Cache
 {
     private $_cache;
 
+
     /**
      * {@inheritdoc}
      */

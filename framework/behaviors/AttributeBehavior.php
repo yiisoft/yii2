@@ -91,6 +91,7 @@ class AttributeBehavior extends Behavior
      */
     public $preserveNonEmptyValues = false;
 
+
     /**
      * {@inheritdoc}
      */

@@ -50,6 +50,7 @@ class AssetConverter extends Component implements AssetConverterInterface
      */
     public $forceConvert = false;
 
+
     /**
      * Converts a given asset file into a CSS or JS file.
      * @param string $asset the asset file path, relative to $basePath

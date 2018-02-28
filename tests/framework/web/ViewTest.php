@@ -20,7 +20,7 @@ class ViewTest extends TestCase
     {
         parent::setUp();
     }
-
+    
     public function testRegisterJsVar()
     {
         $this->mockWebApplication([
@@ -36,7 +36,7 @@ class ViewTest extends TestCase
         $view->registerJsVar('username', 'samdark');
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertContains('<script>var username = "samdark";</script></head>', $html);
-
+        
         $view = new View();
         $view->registerJsVar('objectTest', [
             'number' => 42,

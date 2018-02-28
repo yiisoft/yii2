@@ -132,6 +132,7 @@ class View extends \yii\base\View
 
     private $_assetManager;
 
+
     /**
      * Marks the position of an HTML head section.
      */

@@ -164,6 +164,7 @@ class UrlManager extends Component
     private $_hostInfo;
     private $_ruleCache;
 
+
     /**
      * Initializes UrlManager.
      */

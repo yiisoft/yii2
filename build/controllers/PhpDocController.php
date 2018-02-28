@@ -36,6 +36,7 @@ class PhpDocController extends Controller
      */
     public $skipFrameworkRequirements = false;
 
+
     /**
      * Generates `@property` annotations in class files from getters and setters.
      *
@@ -180,7 +181,7 @@ class PhpDocController extends Controller
             $this->setUpExtensionAliases($extensionPath);
 
             list(, $extension) = $matches;
-            Yii::setAlias("@yii/$extension", (string) $root);
+            Yii::setAlias("@yii/$extension", (string)$root);
             if (is_file($autoloadFile = Yii::getAlias("@yii/$extension/vendor/autoload.php"))) {
                 include $autoloadFile;
             }
@@ -203,7 +204,7 @@ class PhpDocController extends Controller
             $this->setUpExtensionAliases($extensionPath);
 
             list(, $appName) = $matches;
-            Yii::setAlias("@app-$appName", (string) $root);
+            Yii::setAlias("@app-$appName", (string)$root);
             if (is_file($autoloadFile = Yii::getAlias("@app-$appName/vendor/autoload.php"))) {
                 include $autoloadFile;
             }
@@ -683,21 +684,16 @@ class PhpDocController extends Controller
             $gets = $this->match(
                 '#\* @return (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
                 '[\s\n]{2,}public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content'],
-                true
-            );
+                $class['content'], true);
             $sets = $this->match(
                 '#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
                 '[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content'],
-                true
-            );
+                $class['content'], true);
             // check for @property annotations in getter and setter
             $properties = $this->match(
                 '#\* @(?<kind>property) (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
                 '[\s\n]{2,}public function [g|s]et(?<name>\w+)\(((?:,? ?\$\w+ ?= ?[^,]+)*|\$\w+(?:, ?\$\w+ ?= ?[^,]+)*)\)#',
-                $class['content']
-            );
+                $class['content']);
             $acrs = array_merge($properties, $gets, $sets);
 
             $props = [];
@@ -812,7 +808,7 @@ class PhpDocController extends Controller
     }
 
     /**
-     * Generate a hash value (message digest).
+     * Generate a hash value (message digest)
      * @param string $string message to be hashed.
      * @return string calculated message digest.
      */

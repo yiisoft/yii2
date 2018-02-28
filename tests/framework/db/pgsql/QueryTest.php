@@ -21,10 +21,8 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->batchInsert(
-            'bool_values',
-            ['bool_col'],
-            [
+        $command->batchInsert('bool_values',
+            ['bool_col'], [
                 [true],
                 [false],
             ]

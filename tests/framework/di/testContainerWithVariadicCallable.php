@@ -4,6 +4,7 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
+
 use yii\di\Container;
 use yiiunit\framework\di\stubs\QuxInterface;
 

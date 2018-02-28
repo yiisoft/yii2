@@ -91,6 +91,7 @@ class Cors extends ActionFilter
         'Access-Control-Expose-Headers' => [],
     ];
 
+
     /**
      * {@inheritdoc}
      */

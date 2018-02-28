@@ -44,6 +44,7 @@ class Block extends Widget
      */
     public $renderInPlace = false;
 
+
     /**
      * Starts recording a block.
      */

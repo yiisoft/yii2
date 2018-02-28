@@ -23,6 +23,7 @@ abstract class DatabaseTestCase extends TestCase
      */
     private $_db;
 
+
     protected function setUp()
     {
         if ($this->driverName === null) {
@@ -129,7 +130,7 @@ abstract class DatabaseTestCase extends TestCase
                 return $sql;
         }
     }
-
+    
     /**
      * @return \yii\db\Connection
      */

@@ -42,6 +42,7 @@ class HttpHeaderAuth extends AuthMethod
      */
     public $pattern;
 
+
     /**
      * {@inheritdoc}
      */

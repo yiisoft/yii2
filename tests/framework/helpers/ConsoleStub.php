@@ -10,7 +10,7 @@ namespace yiiunit\framework\helpers;
 use yii\helpers\Console;
 
 /**
- * Console helper stub for STDIN/STDOUT/STDERR replacement.
+ * Console helper stub for STDIN/STDOUT/STDERR replacement
  *
  * @author Pavel Dovlatov <mysterydragon@yandex.ru>
  */
@@ -30,6 +30,7 @@ class ConsoleStub extends Console
      * @var resource error stream
      */
     public static $errorStream = \STDERR;
+
 
     /**
      * {@inheritdoc}

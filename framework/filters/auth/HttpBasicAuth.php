@@ -86,6 +86,7 @@ class HttpBasicAuth extends AuthMethod
      */
     public $auth;
 
+
     /**
      * {@inheritdoc}
      */

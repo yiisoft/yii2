@@ -42,6 +42,7 @@ class FormatterDateTest extends TestCase
         $this->formatter = null;
     }
 
+
     public function testFormat()
     {
         $value = time();
@@ -549,6 +550,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame($expected, $this->formatter->asDatetime($value, 'yyyy-MM-dd HH:mm:ss'));
     }
 
+
     public function provideTimezones()
     {
         return [
@@ -700,6 +702,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame('12:41:00', $this->formatter->asTime('2014-08-10 12:41:00 UTC'));
         $this->assertSame('1407674460', $this->formatter->asTimestamp('2014-08-10 12:41:00 UTC'));
     }
+
 
     public function testIntlDateOnlyValues()
     {

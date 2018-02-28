@@ -190,6 +190,7 @@ class Validator extends Component
      */
     public $whenClient;
 
+
     /**
      * Creates a validator object.
      * @param string|\Closure $type the validator type. This can be either:

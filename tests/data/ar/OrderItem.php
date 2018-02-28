@@ -40,7 +40,6 @@ class OrderItem extends ActiveRecord
         return $this->hasOne(self::className(), ['item_id' => 'item_id', 'order_id' => 'order_id'])
             ->joinWith('item');
     }
-
     public function getOrderItemCompositeNoJoin()
     {
         return $this->hasOne(self::className(), ['item_id' => 'item_id', 'order_id' => 'order_id']);

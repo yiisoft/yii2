@@ -120,6 +120,7 @@ class AttributesBehavior extends Behavior
      */
     public $preserveNonEmptyValues = false;
 
+
     /**
      * {@inheritdoc}
      */
@@ -151,8 +152,7 @@ class AttributesBehavior extends Behavior
         if (!empty($this->order[$event->name])) {
             $attributes = array_merge(
                 array_intersect((array) $this->order[$event->name], $attributes),
-                array_diff($attributes, (array) $this->order[$event->name])
-            );
+                array_diff($attributes, (array) $this->order[$event->name]));
         }
         foreach ($attributes as $attribute) {
             if ($this->preserveNonEmptyValues && !empty($this->owner->$attribute)) {

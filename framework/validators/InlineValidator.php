@@ -59,6 +59,7 @@ class InlineValidator extends Validator
      */
     public $clientValidate;
 
+
     /**
      * {@inheritdoc}
      */

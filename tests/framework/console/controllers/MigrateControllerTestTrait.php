@@ -38,6 +38,7 @@ trait MigrateControllerTestTrait
      */
     protected $migrationNamespace;
 
+
     public function setUpMigrationPath()
     {
         $this->migrationNamespace = 'yiiunit\runtime\test_migrations';

@@ -29,6 +29,7 @@ class ErrorException extends \ErrorException
      */
     const E_HHVM_FATAL_ERROR = 16777217; // E_ERROR | (1 << 24)
 
+
     /**
      * Constructs the exception.
      * @link http://php.net/manual/en/errorexception.construct.php

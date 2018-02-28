@@ -8,8 +8,8 @@
 namespace yiiunit\framework\db\pgsql;
 
 use yii\base\DynamicModel;
-use yii\db\ArrayExpression;
 use yii\db\Expression;
+use yii\db\ArrayExpression;
 use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
@@ -60,7 +60,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 Schema::TYPE_JSON,
                 $this->json(),
-                'jsonb',
+                "jsonb",
             ],
         ];
 
@@ -97,7 +97,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ['scalar can not be converted to array #2' => ['@>', 'id', new ArrayExpression(false)], '"id" @> \'{}\'', []],
             [['&&', 'price', new ArrayExpression([12, 14], 'float')], '"price" && ARRAY[:qp0, :qp1]::float[]', [':qp0' => 12, ':qp1' => 14]],
             [['@>', 'id', new ArrayExpression([2, 3])], '"id" @> ARRAY[:qp0, :qp1]', [':qp0' => 2, ':qp1' => 3]],
-            'array of arrays' => [['@>', 'id', new ArrayExpression([[1, 2], [3, 4]], 'float', 2)], '"id" @> ARRAY[ARRAY[:qp0, :qp1]::float[], ARRAY[:qp2, :qp3]::float[]\\]::float[][]', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3, ':qp3' => 4]],
+            'array of arrays' => [['@>', 'id', new ArrayExpression([[1,2], [3,4]], 'float', 2)], '"id" @> ARRAY[ARRAY[:qp0, :qp1]::float[], ARRAY[:qp2, :qp3]::float[]\\]::float[][]', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3, ':qp3' => 4]],
             [['@>', 'id', new ArrayExpression([])], '"id" @> \'{}\'', []],
             'array can contain nulls' => [['@>', 'id', new ArrayExpression([null])], '"id" @> ARRAY[:qp0]', [':qp0' => null]],
             'traversable objects are supported' => [['@>', 'id', new ArrayExpression(new TraversableObject([1, 2, 3]))], '[[id]] @> ARRAY[:qp0, :qp1, :qp2]', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
@@ -111,7 +111,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [['=', 'prices', new JsonExpression(['seeds' => 15, 'apples' => 25], 'jsonb')], '[[prices]] = :qp0::jsonb', [':qp0' => '{"seeds":15,"apples":25}']],
             'nested json' => [
                 ['=', 'data', new JsonExpression(['user' => ['login' => 'silverfire', 'password' => 'c4ny0ur34d17?'], 'props' => ['mood' => 'good']])],
-                '"data" = :qp0', [':qp0' => '{"user":{"login":"silverfire","password":"c4ny0ur34d17?"},"props":{"mood":"good"}}'],
+                '"data" = :qp0', [':qp0' => '{"user":{"login":"silverfire","password":"c4ny0ur34d17?"},"props":{"mood":"good"}}']
             ],
             'null value' => [['=', 'jsoncol', new JsonExpression(null)], '"jsoncol" = :qp0', [':qp0' => 'null']],
             'null as array value' => [['=', 'jsoncol', new JsonExpression([null])], '"jsoncol" = :qp0', [':qp0' => '[null]']],
@@ -124,12 +124,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             'array of json expressions' => [
                 ['=', 'colname', new ArrayExpression([new JsonExpression(['a' => null, 'b' => 123, 'c' => [4, 5]]), new JsonExpression([true])])],
                 '"colname" = ARRAY[:qp0, :qp1]',
-                [':qp0' => '{"a":null,"b":123,"c":[4,5]}', ':qp1' => '[true]'],
+                [':qp0' => '{"a":null,"b":123,"c":[4,5]}', ':qp1' => '[true]']
             ],
             'Items in ArrayExpression of type json should be casted to Json' => [
                 ['=', 'colname', new ArrayExpression([['a' => null, 'b' => 123, 'c' => [4, 5]], [true]], 'json')],
                 '"colname" = ARRAY[:qp0, :qp1]::json[]',
-                [':qp0' => '{"a":null,"b":123,"c":[4,5]}', ':qp1' => '[true]'],
+                [':qp0' => '{"a":null,"b":123,"c":[4,5]}', ':qp1' => '[true]']
             ],
             'Two dimension array of text' => [
                 ['=', 'colname', new ArrayExpression([['text1', 'text2'], ['text3', 'text4'], [null, 'text5']], 'text', 2)],

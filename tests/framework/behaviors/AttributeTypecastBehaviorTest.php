@@ -173,7 +173,7 @@ class AttributeTypecastBehaviorTest extends TestCase
     public function testAfterSaveEvent()
     {
         $model = new ActiveRecordAttributeTypecast([
-            'typecastAfterSave' => true,
+            'typecastAfterSave' => true
         ]);
 
         $model->callback = 'insert';

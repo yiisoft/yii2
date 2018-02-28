@@ -269,7 +269,7 @@ _MSG_
                 'Уважаемый Vadim,',
                 [
                     'gender' => null,
-                    'firstname' => 'Vadim',
+                    'firstname' => 'Vadim'
                 ],
             ],
         ];

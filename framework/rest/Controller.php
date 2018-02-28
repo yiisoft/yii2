@@ -41,6 +41,7 @@ class Controller extends \yii\web\Controller
      */
     public $enableCsrfValidation = false;
 
+
     /**
      * {@inheritdoc}
      */

@@ -76,6 +76,7 @@ abstract class MultiFieldSession extends Session
      */
     public $writeCallback;
 
+
     /**
      * Returns a value indicating whether to use custom session storage.
      * This method overrides the parent implementation and always returns true.

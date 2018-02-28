@@ -242,7 +242,7 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Builds given $expression.
+     * Builds given $expression
      *
      * @param ExpressionInterface $expression the expression to be built
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
@@ -1095,7 +1095,7 @@ class QueryBuilder extends \yii\base\BaseObject
             list($rawQuery, $params) = $this->build($subQuery);
             array_walk(
                 $params,
-                function (&$param) {
+                function(&$param) {
                     $param = $this->db->quoteValue($param);
                 }
             );

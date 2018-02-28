@@ -215,8 +215,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
     private function childrenUpdateLocked()
     {
         // install no-op signal handler to prevent termination
-        if (!pcntl_signal(SIGUSR1, function () {
-        }, false)) {
+        if (!pcntl_signal(SIGUSR1, function () {}, false)) {
             $this->log('child 2: cannot install signal handler');
             return 1;
         }

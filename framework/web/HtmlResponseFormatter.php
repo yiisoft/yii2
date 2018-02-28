@@ -24,6 +24,7 @@ class HtmlResponseFormatter extends Component implements ResponseFormatterInterf
      */
     public $contentType = 'text/html';
 
+
     /**
      * Formats the specified response.
      * @param Response $response the response to be formatted.

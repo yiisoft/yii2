@@ -81,6 +81,7 @@ class BaseFormatConverter
         'full' => 0, // IntlDateFormatter::FULL,
     ];
 
+
     /**
      * Converts a date format pattern from [ICU format][] to [php date() function format][].
      *

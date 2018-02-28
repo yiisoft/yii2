@@ -56,6 +56,7 @@ class NumberValidator extends Validator
      */
     public $numberPattern = '/^\s*[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?\s*$/';
 
+
     /**
      * {@inheritdoc}
      */
@@ -124,7 +125,7 @@ class NumberValidator extends Validator
     {
         return is_array($value)
         || (is_object($value) && !method_exists($value, '__toString'))
-        || (!is_object($value) && !is_scalar($value) && $value !== null);
+        || (!is_object($value) && !is_scalar($value) && !is_null($value));
     }
 
     /**

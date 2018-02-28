@@ -24,6 +24,7 @@ class SessionIterator implements \Iterator
      */
     private $_key;
 
+
     /**
      * Constructor.
      */

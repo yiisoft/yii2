@@ -107,6 +107,7 @@ class Pjax extends Widget
      */
     public static $autoIdPrefix = 'p';
 
+
     /**
      * {@inheritdoc}
      */

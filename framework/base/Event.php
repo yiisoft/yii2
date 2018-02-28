@@ -62,6 +62,7 @@ class Event extends BaseObject
      */
     private static $_eventWildcards = [];
 
+
     /**
      * Attaches an event handler to a class-level event.
      *

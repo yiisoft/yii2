@@ -10,6 +10,6 @@ return [
         'email' => 'directory@example.com',
         'name' => 'directory name',
         'address' => 'directory-address1',
-        'status' => 1,
-    ],
+        'status' => 1
+    ]
 ];

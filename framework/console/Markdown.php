@@ -41,6 +41,7 @@ class Markdown extends \cebe\markdown\Parser
         '~', // tilde
     ];
 
+
     /**
      * Renders a code block.
      *

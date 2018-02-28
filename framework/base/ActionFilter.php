@@ -6,7 +6,6 @@
  */
 
 namespace yii\base;
-
 use yii\helpers\StringHelper;
 
 /**
@@ -42,6 +41,7 @@ class ActionFilter extends Behavior
      * @see only
      */
     public $except = [];
+
 
     /**
      * {@inheritdoc}

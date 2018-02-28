@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\rbac;
 
+use yii\base\InvalidParamException;
 use yii\rbac\Item;
 use yii\rbac\Permission;
 use yii\rbac\Role;
@@ -416,6 +417,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertTrue($this->auth->canAddChild($author, $reader));
         $this->assertFalse($this->auth->canAddChild($reader, $author));
     }
+
 
     public function testRemoveAllRules()
     {

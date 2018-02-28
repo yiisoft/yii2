@@ -160,6 +160,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     private $_routeParams = [];
 
+
     /**
      * @return string
      * @since 2.0.11

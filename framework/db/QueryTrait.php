@@ -58,6 +58,7 @@ trait QueryTrait
      */
     public $emulateExecution = false;
 
+
     /**
      * Sets the [[indexBy]] property.
      * @param string|callable $column the name of the column by which the query results should be indexed by.

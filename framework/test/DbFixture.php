@@ -31,6 +31,7 @@ abstract class DbFixture extends Fixture
      */
     public $db = 'db';
 
+
     /**
      * {@inheritdoc}
      */

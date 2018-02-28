@@ -45,6 +45,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         fclose($fp);
     }
 
+
     public function getExpectedColumns()
     {
         $columns = parent::getExpectedColumns();

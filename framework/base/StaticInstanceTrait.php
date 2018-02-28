@@ -24,6 +24,7 @@ trait StaticInstanceTrait
      */
     private static $_instances = [];
 
+
     /**
      * Returns static class instance, which can be used to obtain meta information.
      * @param bool $refresh whether to re-create static instance even, if it is already cached.

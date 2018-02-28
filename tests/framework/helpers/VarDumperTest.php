@@ -147,9 +147,7 @@ RESULT;
         $expectedResult = "unserialize('" . serialize($var) . "')";
         $data[] = [$var, $expectedResult];
 
-        $var = function () {
-            return 2;
-        };
+        $var = function () {return 2;};
         $expectedResult = 'function () {return 2;}';
         $data[] = [$var, $expectedResult];
 
@@ -175,9 +173,7 @@ RESULT;
     public function testExportObjectFallback()
     {
         $var = new \StdClass();
-        $var->testFunction = function () {
-            return 2;
-        };
+        $var->testFunction = function () {return 2;};
         $exportResult = VarDumper::export($var);
         $this->assertNotEmpty($exportResult);
 
@@ -185,9 +181,7 @@ RESULT;
         $slave = new \StdClass();
         $master->slave = $slave;
         $slave->master = $master;
-        $master->function = function () {
-            return true;
-        };
+        $master->function = function () {return true;};
 
         $exportResult = VarDumper::export($master);
         $this->assertNotEmpty($exportResult);

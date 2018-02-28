@@ -79,6 +79,7 @@ class ActiveDataProvider extends BaseDataProvider
      */
     public $db;
 
+
     /**
      * Initializes the DB connection component.
      * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.

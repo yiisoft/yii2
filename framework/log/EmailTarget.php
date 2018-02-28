@@ -57,6 +57,7 @@ class EmailTarget extends Target
      */
     public $mailer = 'mailer';
 
+
     /**
      * {@inheritdoc}
      */

@@ -36,6 +36,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      */
     private $_cookies;
 
+
     /**
      * Constructor.
      * @param array $cookies the cookies that this collection initially contains. This should be

@@ -59,6 +59,7 @@ class OracleMutex extends DbMutex
      */
     public $releaseOnCommit = false;
 
+
     /**
      * Initializes Oracle specific mutex component implementation.
      * @throws InvalidConfigException if [[db]] is not Oracle connection.

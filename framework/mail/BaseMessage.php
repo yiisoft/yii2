@@ -30,6 +30,7 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
      */
     public $mailer;
 
+
     /**
      * Sends this email message.
      * @param MailerInterface $mailer the mailer that should be used to send this message.

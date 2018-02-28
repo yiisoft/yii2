@@ -72,6 +72,7 @@ class ArrayDataProvider extends BaseDataProvider
      */
     public $modelClass;
 
+
     /**
      * {@inheritdoc}
      */

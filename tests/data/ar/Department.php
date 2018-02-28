@@ -11,7 +11,7 @@ namespace yiiunit\data\ar;
 use yii\db\ActiveQuery;
 
 /**
- * Class Department.
+ * Class Department
  *
  * @property int $id
  * @property string $title
@@ -42,6 +42,7 @@ class Department extends ActiveRecord
             ->hasMany(Employee::className(), [
                 'department_id' => 'id',
             ])
-            ->inverseOf('department');
+            ->inverseOf('department')
+        ;
     }
 }

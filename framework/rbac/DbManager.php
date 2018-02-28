@@ -101,6 +101,7 @@ class DbManager extends BaseManager
      */
     protected $parents;
 
+
     /**
      * Initializes the application component.
      * This method overrides the parent implementation by establishing the database connection.

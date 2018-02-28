@@ -34,6 +34,7 @@ class ChainedDependency extends Dependency
      */
     public $dependOnAll = true;
 
+
     /**
      * Evaluates the dependency by generating and saving the data related with dependency.
      * @param CacheInterface $cache the cache component that is currently evaluating this dependency

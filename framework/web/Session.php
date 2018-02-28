@@ -90,9 +90,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     private $_cookieParams = ['httponly' => true];
 
     /**
-     * @var array|null is used for saving session between recreations due to session parameters update.
+     * @var $frozenSessionData array|null is used for saving session between recreations due to session parameters update.
      */
     private $frozenSessionData;
+
 
     /**
      * Initializes the application component.
@@ -932,12 +933,13 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Starts session and restores data from temporary variable.
+     * Starts session and restores data from temporary variable
      * @since 2.0.14
      */
     protected function unfreeze()
     {
         if (null !== $this->frozenSessionData) {
+
             YII_DEBUG ? session_start() : @session_start();
 
             if ($this->getIsActive()) {
@@ -954,7 +956,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Set cache limiter.
+     * Set cache limiter
      *
      * @param string $cacheLimiter
      * @since 2.0.14
@@ -967,7 +969,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Returns current cache limiter.
+     * Returns current cache limiter
      *
      * @return string current cache limiter
      * @since 2.0.14

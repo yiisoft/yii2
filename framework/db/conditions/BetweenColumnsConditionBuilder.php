@@ -8,7 +8,7 @@ use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 /**
- * Class BetweenColumnsConditionBuilder builds objects of [[BetweenColumnsCondition]].
+ * Class BetweenColumnsConditionBuilder builds objects of [[BetweenColumnsCondition]]
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14

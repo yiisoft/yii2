@@ -60,6 +60,7 @@ class Widget extends Component implements ViewContextInterface
      */
     public static $stack = [];
 
+
     /**
      * Initializes the object.
      * This method is called at the end of the constructor.

@@ -108,6 +108,7 @@ class Table extends Widget
      */
     private $_listPrefix = '• ';
 
+
     /**
      * Set table headers.
      *
@@ -181,8 +182,7 @@ class Table extends Widget
             $this->_chars[self::CHAR_TOP_RIGHT]
         );
         // Header
-        $buffer .= $this->renderRow(
-            $this->_headers,
+        $buffer .= $this->renderRow($this->_headers,
             $this->_chars[self::CHAR_LEFT],
             $this->_chars[self::CHAR_MIDDLE],
             $this->_chars[self::CHAR_RIGHT]
@@ -196,12 +196,10 @@ class Table extends Widget
                 $this->_chars[self::CHAR_MID],
                 $this->_chars[self::CHAR_RIGHT_MID]
             );
-            $buffer .= $this->renderRow(
-                $row,
+            $buffer .= $this->renderRow($row,
                 $this->_chars[self::CHAR_LEFT],
                 $this->_chars[self::CHAR_MIDDLE],
-                $this->_chars[self::CHAR_RIGHT]
-            );
+                $this->_chars[self::CHAR_RIGHT]);
         }
 
         $buffer .= $this->renderSeparator(
@@ -346,28 +344,25 @@ class Table extends Widget
      */
     protected function calculateRowHeight($row)
     {
-        $rowsPerCell = array_map(
-            function ($size, $columnWidth) {
-                if (is_array($columnWidth)) {
-                    $rows = 0;
-                    foreach ($columnWidth as $width) {
-                        $rows += ceil($width / ($size - 2));
-                    }
-
-                    return $rows;
+        $rowsPerCell = array_map(function ($size, $columnWidth) {
+            if (is_array($columnWidth)) {
+                $rows = 0;
+                foreach ($columnWidth as $width) {
+                    $rows += ceil($width / ($size - 2));
                 }
 
-                return ceil($columnWidth / ($size - 2));
-            },
-            $this->_columnWidths,
-            array_map(function ($val) {
-                if (is_array($val)) {
-                    $encodings = array_fill(0, count($val), Yii::$app->charset);
-                    return array_map('mb_strwidth', $val, $encodings);
-                }
+                return $rows;
+            }
 
-                return mb_strwidth($val, Yii::$app->charset);
-            }, $row)
+            return ceil($columnWidth / ($size - 2));
+        }, $this->_columnWidths, array_map(function ($val) {
+            if (is_array($val)) {
+                $encodings = array_fill(0, count($val), Yii::$app->charset);
+                return array_map('mb_strwidth', $val, $encodings);
+            }
+
+            return mb_strwidth($val, Yii::$app->charset);
+        }, $row)
         );
 
         return max($rowsPerCell);

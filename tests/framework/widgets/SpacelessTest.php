@@ -54,7 +54,7 @@ class SpacelessTest extends \yiiunit\TestCase
             [
                 'on init' => function () use (&$initTriggered) {
                     $initTriggered = true;
-                },
+                }
             ]
         );
         Spaceless::end();

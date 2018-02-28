@@ -9,8 +9,8 @@ namespace yii\helpers;
 
 use yii\base\Arrayable;
 use yii\base\InvalidArgumentException;
-use yii\base\Model;
 use yii\web\JsExpression;
+use yii\base\Model;
 
 /**
  * BaseJson provides concrete implementation for [[Json]].
@@ -37,6 +37,7 @@ class BaseJson
         'JSON_ERROR_INF_OR_NAN' => 'One or more NAN or INF values in the value to be encoded', // PHP 5.5.0
         'JSON_ERROR_UNSUPPORTED_TYPE' => 'A value of a type that cannot be encoded was given', // PHP 5.5.0
     ];
+
 
     /**
      * Encodes the given value into a JSON string.
@@ -200,7 +201,7 @@ class BaseJson
     }
 
     /**
-     * Return array of the validation errors.
+     * Return array of the validation errors
      * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
      * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
      * only the first error message for each attribute will be shown.

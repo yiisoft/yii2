@@ -252,6 +252,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $this->addCommentOnTable($table, '');
     }
 
+
     /**
      * Gets column definition.
      *

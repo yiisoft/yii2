@@ -104,6 +104,7 @@ class MaskedInput extends InputWidget
      */
     protected $_hashVar;
 
+
     /**
      * Initializes the widget.
      *

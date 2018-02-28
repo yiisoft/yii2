@@ -195,8 +195,7 @@ class LoggerTest extends TestCase
             'anyKey' => ['token', Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1048576],
             'anyKey2' => ['token', Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2097152],
         ];
-        $this->assertEquals(
-            [
+        $this->assertEquals([
             [
                 'info' => 'token',
                 'category' => 'category',
@@ -215,8 +214,7 @@ class LoggerTest extends TestCase
             'anyKey' => [['a', 'b'], Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1048576],
             'anyKey2' => [['a', 'b'], Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2097152],
         ];
-        $this->assertEquals(
-            [
+        $this->assertEquals([
             [
                 'info' => ['a', 'b'],
                 'category' => 'category',
@@ -243,8 +241,7 @@ class LoggerTest extends TestCase
             ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3145728],
             ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4194304],
         ];
-        $this->assertEquals(
-            [
+        $this->assertEquals([
             [
                 'info' => 'firstLevel',
                 'category' => 'firstLevelCategory',
@@ -283,8 +280,7 @@ class LoggerTest extends TestCase
             ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4194304],
             ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3145728],
         ];
-        $this->assertEquals(
-            [
+        $this->assertEquals([
             [
                 'info' => 'firstLevel',
                 'category' => 'firstLevelCategory',
