@@ -108,19 +108,19 @@ class BaseYiiTest extends TestCase
         Yii::$container = new Container();
 
         // Test passing in of normal params combined with DI params.
-        $this->assertTrue(Yii::createObject(function (Singer $singer, $a) {
+        $this->assertNotEmpty(Yii::createObject(function (Singer $singer, $a) {
             return $a === 'a';
         }, ['a']));
 
 
         $singer = new Singer();
         $singer->firstName = 'Bob';
-        $this->assertTrue(Yii::createObject(function (Singer $singer, $a) {
+        $this->assertNotEmpty(Yii::createObject(function (Singer $singer, $a) {
             return $singer->firstName === 'Bob';
         }, [$singer, 'a']));
 
 
-        $this->assertTrue(Yii::createObject(function (Singer $singer, $a = 3) {
+        $this->assertNotEmpty(Yii::createObject(function (Singer $singer, $a = 3) {
             return true;
         }));
     }

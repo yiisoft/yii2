@@ -301,9 +301,6 @@ class ContainerTest extends TestCase
         $this->assertSame($foo, $sameFoo);
     }
 
-    /**
-     * @requires PHP 5.6
-     */
     public function testVariadicConstructor()
     {
         if (\defined('HHVM_VERSION')) {
@@ -312,17 +309,22 @@ class ContainerTest extends TestCase
 
         $container = new Container();
         $container->get('yiiunit\framework\di\stubs\Variadic');
+
+        $this->assertTrue(true, 'Should be not exception above');
     }
 
-    /**
-     * @requires PHP 5.6
-     */
     public function testVariadicCallable()
     {
         if (\defined('HHVM_VERSION')) {
             static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
         }
 
-        require __DIR__ . '/testContainerWithVariadicCallable.php';
+        $container = new Container();
+        $func = function (QuxInterface ...$quxes) {
+            return "That's a whole lot of quxes!";
+        };
+        $container->invoke($func);
+
+        $this->assertTrue(true, 'Should be not exception above');
     }
 }
