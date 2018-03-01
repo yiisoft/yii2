@@ -63,7 +63,7 @@ class FileTargetTest extends TestCase
         $logger = new Logger([
             'targets' => [
                 'file' => [
-                    'class' => FileTarget::class,
+                    '__class' => FileTarget::class,
                     'logFile' => $logFile,
                     'levels' => [LogLevel::WARNING],
                     'maxFileSize' => 1024, // 1 MB

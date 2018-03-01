@@ -26,7 +26,7 @@ use yii\helpers\ArrayHelper;
  *
  * ```php
  * 'session' => [
- *     'class' => \yii\web\DbSession::class,
+ *     '__class' => \yii\web\DbSession::class,
  *     // 'db' => 'mydb',
  *     // 'sessionTable' => 'my_session',
  * ]

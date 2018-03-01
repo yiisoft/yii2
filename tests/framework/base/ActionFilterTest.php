@@ -90,12 +90,12 @@ class ActionFilterTest extends TestCase
     public function actionFilterProvider()
     {
         return [
-            [['class' => 'yii\filters\AccessControl', 'user' => 'yiiunit\framework\base\MockUser']],
-            ['yii\filters\ContentNegotiator'],
-            ['yii\filters\Cors'],
-            ['yii\filters\HttpCache'],
-            ['yii\filters\PageCache'],
-            ['yii\filters\RateLimiter'],
+            [['__class' => \yii\filters\AccessControl::class, 'user' => \yiiunit\framework\base\MockUser::class]],
+            [\yii\filters\ContentNegotiator::class],
+            [\yii\filters\Cors::class],
+            [\yii\filters\HttpCache::class],
+            [\yii\filters\PageCache::class],
+            [\yii\filters\RateLimiter::class],
         ];
     }
 

@@ -47,7 +47,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
      *
      * ```php
      * [
-     *     'class' => \yii\caching\DbDependency::class,
+     *     '__class' => \yii\caching\DbDependency::class,
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
      * ```

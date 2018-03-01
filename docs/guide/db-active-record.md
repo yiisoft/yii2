@@ -106,7 +106,7 @@ below,
 return [
     'components' => [
         'db' => [
-            'class' => 'yii\db\Connection',
+            '__class' => \yii\db\Connection::class,
             'dsn' => 'mysql:host=localhost;dbname=testdb',
             'username' => 'demo',
             'password' => 'demo',

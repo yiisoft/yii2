@@ -57,7 +57,7 @@ use yii\helpers\Console;
  * return [
  *     'controllerMap' => [
  *         'migrate' => [
- *             'class' => 'yii\console\controllers\MigrateController',
+ *             '__class' => 'yii\console\controllers\MigrateController',
  *             'migrationNamespaces' => [
  *                 'app\migrations',
  *                 'some\extension\migrations',
@@ -196,7 +196,7 @@ class MigrateController extends BaseMigrateController
         $this->includeMigrationFile($class);
 
         return Yii::createObject([
-            'class' => $class,
+            '__class' => $class,
             'db' => $this->db,
             'compact' => $this->compact,
         ]);

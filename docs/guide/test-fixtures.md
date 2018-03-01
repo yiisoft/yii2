@@ -130,7 +130,7 @@ class UserProfileTest extends \Codeception\Test\Unit
     {
         return [
             'profiles' => [
-                'class' => UserProfileFixture::class,
+                '__class' => UserProfileFixture::class,
                 // fixture data located in tests/_data/user.php
                 'dataFile' => codecept_data_dir() . 'user.php'
             ],
@@ -312,10 +312,10 @@ While command line options allow us to configure the migration command
 on-the-fly, sometimes we may want to configure the command once for all. For example you can configure
 different migration path as follows:
 
-```
+```php
 'controllerMap' => [
     'fixture' => [
-        'class' => 'yii\console\controllers\FixtureController',
+        '__class' => yii\console\controllers\FixtureController::class,
         'namespace' => 'myalias\some\custom\namespace',
         'globalFixtures' => [
             'some\name\space\Foo',

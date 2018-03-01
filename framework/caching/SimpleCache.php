@@ -54,7 +54,7 @@ abstract class SimpleCache extends Component implements CacheInterface
      *
      * ```php
      * [
-     *     'class' => \yii\serialize\IgbinarySerializer::class
+     *     '__class' => \yii\serialize\IgbinarySerializer::class
      * ]
      * ```
      *

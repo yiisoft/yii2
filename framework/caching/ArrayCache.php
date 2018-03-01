@@ -16,9 +16,9 @@ namespace yii\caching;
  * return [
  *     'components' => [
  *         'cache' => [
- *             'class' => yii\caching\Cache::class,
+ *             '__class' => yii\caching\Cache::class,
  *             'handler' => [
- *                 'class' => yii\caching\ArrayCache::class,
+ *                 '__class' => yii\caching\ArrayCache::class,
  *             ],
  *         ],
  *         // ...

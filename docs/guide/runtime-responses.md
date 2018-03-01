@@ -142,7 +142,7 @@ response objects and send them to end users. You can do so by returning such obj
 public function actionInfo()
 {
     return \Yii::createObject([
-        'class' => 'yii\web\Response',
+        '__class' => \yii\web\Response::class,
         'format' => \yii\web\Response::FORMAT_JSON,
         'data' => [
             'message' => 'hello world',

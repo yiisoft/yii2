@@ -728,12 +728,12 @@ class UrlManagerCreateUrlTest extends TestCase
         /* @var $rules CachedUrlRule[] */
         $rules = [
             Yii::createObject([
-                'class' => CachedUrlRule::class,
+                '__class' => CachedUrlRule::class,
                 'route' => 'user/show',
                 'pattern' => 'user/<name:[\w-]+>',
             ]),
             Yii::createObject([
-                'class' => CachedUrlRule::class,
+                '__class' => CachedUrlRule::class,
                 'route' => '<controller>/<action>',
                 'pattern' => '<controller:\w+>/<action:\w+>',
             ]),
@@ -775,12 +775,12 @@ class UrlManagerCreateUrlTest extends TestCase
         /* @var $rules CachedUrlRule[] */
         $rules = [
             Yii::createObject([
-                'class' => CachedUrlRule::class,
+                '__class' => CachedUrlRule::class,
                 'route' => 'user/show',
                 'pattern' => 'user/<name:[\w-]+>',
             ]),
             Yii::createObject([
-                'class' => CachedUrlRule::class,
+                '__class' => CachedUrlRule::class,
                 'route' => '<controller>/<action>',
                 'pattern' => '<controller:\w+>/<action:\w+>',
             ]),
@@ -821,7 +821,7 @@ class UrlManagerCreateUrlTest extends TestCase
         $cachedUrlManager = $this->getUrlManager([
             'cache' => 'cache',
             'ruleConfig' => [
-                'class' => CachedUrlRule::class,
+                '__class' => CachedUrlRule::class,
             ],
             'rules' => [
                 '/' => 'site/index',

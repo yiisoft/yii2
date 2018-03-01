@@ -94,7 +94,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::class,
+                '__class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_REDIRECT_PERMANENT,
             ],
         ]);
@@ -122,7 +122,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::class,
+                '__class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
             ],
         ]);
@@ -150,7 +150,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::class,
+                '__class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_NOT_FOUND,
             ],
         ]);
@@ -176,7 +176,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::class,
+                '__class' => UrlNormalizer::class,
                 'action' => null,
             ],
         ]);
@@ -204,7 +204,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::class,
+                '__class' => UrlNormalizer::class,
                 'action' => $normalizerAction,
             ],
         ]);
@@ -247,7 +247,7 @@ class UrlRuleTest extends TestCase
             'pattern' => 'post/<page:\d+>-<tag>',
             'route' => 'post/index',
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                '__class' => \yii\web\UrlNormalizer::class,
                 'normalizeTrailingSlash' => false,
             ],
         ]);
@@ -258,7 +258,7 @@ class UrlRuleTest extends TestCase
             'pattern' => 'post/<page:\d+>-<tag>',
             'route' => 'post/index',
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                '__class' => \yii\web\UrlNormalizer::class,
                 'normalizeTrailingSlash' => true,
                 'action' => null,
             ],

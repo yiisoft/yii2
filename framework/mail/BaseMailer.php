@@ -94,8 +94,8 @@ abstract class BaseMailer extends Component implements MailerInterface
     public function getComposer()
     {
         if (!is_object($this->_composer) || $this->_composer instanceof \Closure) {
-            if (is_array($this->_composer) && !isset($this->_composer['class'])) {
-                $this->_composer['class'] = Composer::class;
+            if (is_array($this->_composer) && !isset($this->_composer['__class'])) {
+                $this->_composer['__class'] = Composer::class;
             }
             $this->_composer = Yii::createObject($this->_composer);
         }
@@ -146,15 +146,15 @@ abstract class BaseMailer extends Component implements MailerInterface
     /**
      * Creates a new message instance.
      * The newly created instance will be initialized with the configuration specified by [[messageConfig]].
-     * If the configuration does not specify a 'class', the [[messageClass]] will be used as the class
+     * If the configuration does not specify a '__class', the [[messageClass]] will be used as the class
      * of the new message instance.
      * @return MessageInterface message instance.
      */
     protected function createMessage()
     {
         $config = $this->messageConfig;
-        if (!array_key_exists('class', $config)) {
-            $config['class'] = $this->messageClass;
+        if (!array_key_exists('__class', $config)) {
+            $config['__class'] = $this->messageClass;
         }
         $config['mailer'] = $this;
         return Yii::createObject($config);

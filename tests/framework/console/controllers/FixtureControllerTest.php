@@ -30,7 +30,7 @@ class FixtureControllerTest extends TestCase
         parent::setUp();
 
         $this->_fixtureController = Yii::createObject([
-            'class' => 'yiiunit\framework\console\controllers\FixtureConsoledController',
+            '__class' => \yiiunit\framework\console\controllers\FixtureConsoledController::class,
             'interactive' => false,
             'globalFixtures' => [],
             'namespace' => 'yiiunit\data\console\controllers\fixtures',

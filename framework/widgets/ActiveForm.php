@@ -263,8 +263,8 @@ class ActiveForm extends Widget
         if ($config instanceof \Closure) {
             $config = call_user_func($config, $model, $attribute);
         }
-        if (!isset($config['class'])) {
-            $config['class'] = $this->fieldClass;
+        if (!isset($config['__class'])) {
+            $config['__class'] = $this->fieldClass;
         }
 
         return Yii::createObject(ArrayHelper::merge($config, $options, [

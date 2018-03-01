@@ -26,11 +26,11 @@ use yii\base\InvalidConfigException;
  * $locator = new \yii\di\ServiceLocator;
  * $locator->setComponents([
  *     'db' => [
- *         'class' => \yii\db\Connection::class,
+ *         '__class' => \yii\db\Connection::class,
  *         'dsn' => 'sqlite:path/to/file.db',
  *     ],
  *     'cache' => [
- *         'class' => \yii\caching\DbCache::class,
+ *         '__class' => \yii\caching\DbCache::class,
  *         'db' => 'db',
  *     ],
  * ]);
@@ -153,7 +153,7 @@ class ServiceLocator extends Component
      *
      * // a configuration array
      * $locator->set('db', [
-     *     'class' => \yii\db\Connection::class,
+     *     '__class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -244,11 +244,11 @@ class ServiceLocator extends Component
      * ```php
      * [
      *     'db' => [
-     *         'class' => \yii\db\Connection::class,
+     *         '__class' => \yii\db\Connection::class,
      *         'dsn' => 'sqlite:path/to/file.db',
      *     ],
      *     'cache' => [
-     *         'class' => \yii\caching\DbCache::class,
+     *         '__class' => \yii\caching\DbCache::class,
      *         'db' => 'db',
      *     ],
      * ]

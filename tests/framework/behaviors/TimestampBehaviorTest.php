@@ -40,7 +40,7 @@ class TimestampBehaviorTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -150,7 +150,7 @@ class TimestampBehaviorTest extends TestCase
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'value' => $expression,
             ],
         ];
@@ -178,7 +178,7 @@ class TimestampBehaviorTest extends TestCase
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];
@@ -201,13 +201,13 @@ class TimestampBehaviorTest extends TestCase
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];
         $model = new ActiveRecordTimestamp();
 
-        $this->expectException('yii\base\InvalidCallException');
+        $this->expectException(\yii\base\InvalidCallException::class);
 
         $model->touch('created_at');
     }
@@ -216,7 +216,7 @@ class TimestampBehaviorTest extends TestCase
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];

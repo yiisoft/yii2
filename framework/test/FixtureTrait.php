@@ -48,7 +48,7 @@ trait FixtureTrait
      *     'users' => UserFixture::class,
      *     // "cache" fixture with configuration
      *     'cache' => [
-     *          'class' => CacheFixture::class,
+     *          '__class' => CacheFixture::class,
      *          'host' => 'xxx',
      *     ],
      * ]
@@ -180,14 +180,14 @@ trait FixtureTrait
         foreach ($fixtures as $name => $fixture) {
             if (!is_array($fixture)) {
                 $class = ltrim($fixture, '\\');
-                $fixtures[$name] = ['class' => $class];
+                $fixtures[$name] = ['__class' => $class];
                 $aliases[$class] = is_int($name) ? $class : $name;
-            } elseif (isset($fixture['class'])) {
-                $class = ltrim($fixture['class'], '\\');
+            } elseif (isset($fixture['__class'])) {
+                $class = ltrim($fixture['__class'], '\\');
                 $config[$class] = $fixture;
                 $aliases[$class] = $name;
             } else {
-                throw new InvalidConfigException("You must specify 'class' for the fixture '$name'.");
+                throw new InvalidConfigException("You must specify '__class' for the fixture '$name'.");
             }
         }
 
@@ -201,14 +201,14 @@ trait FixtureTrait
                 unset($instances[$name]);  // unset so that the fixture is added to the last in the next line
                 $instances[$name] = $fixture;
             } else {
-                $class = ltrim($fixture['class'], '\\');
+                $class = ltrim($fixture['__class'], '\\');
                 $name = isset($aliases[$class]) ? $aliases[$class] : $class;
                 if (!isset($instances[$name])) {
                     $instances[$name] = false;
                     $stack[] = $fixture = Yii::createObject($fixture);
                     foreach ($fixture->depends as $dep) {
                         // need to use the configuration provided in test case
-                        $stack[] = isset($config[$dep]) ? $config[$dep] : ['class' => $dep];
+                        $stack[] = isset($config[$dep]) ? $config[$dep] : ['__class' => $dep];
                     }
                 } elseif ($instances[$name] === false) {
                     throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");

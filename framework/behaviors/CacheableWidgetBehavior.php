@@ -30,10 +30,10 @@ use yii\di\Instance;
  * {
  *     return [
  *         [
- *             'class' => CacheableWidgetBehavior::class,
+ *             '__class' => CacheableWidgetBehavior::class,
  *             'cacheDuration' => 0,
  *             'cacheDependency' => [
- *                 'class' => \yii\caching\DbDependency::class,
+ *                 '__class' => \yii\caching\DbDependency::class,
  *                 'sql' => 'SELECT MAX(updated_at) FROM posts',
  *             ],
  *         ],
@@ -66,7 +66,7 @@ class CacheableWidgetBehavior extends Behavior
      *
      * ```php
      * [
-     *     'class' => 'yii\caching\DbDependency',
+     *     '__class' => \yii\caching\DbDependency::class,
      *     'sql' => 'SELECT MAX(updated_at) FROM posts',
      * ]
      * ```

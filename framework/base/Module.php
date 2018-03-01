@@ -82,7 +82,7 @@ class Module extends ServiceLocator
      * [
      *   'account' => \app\controllers\UserController::class,
      *   'article' => [
-     *      'class' => \app\controllers\PostController::class,
+     *      '__class' => \app\controllers\PostController::class,
      *      'pageTitle' => 'something new',
      *   ],
      * ]
@@ -491,10 +491,10 @@ class Module extends ServiceLocator
      * ```php
      * [
      *     'comment' => [
-     *         'class' => \app\modules\comment\CommentModule::class,
+     *         '__class' => \app\modules\comment\CommentModule::class,
      *         'db' => 'db',
      *     ],
-     *     'booking' => ['class' => \app\modules\booking\BookingModule::class],
+     *     'booking' => ['__class' => \app\modules\booking\BookingModule::class],
      * ]
      * ```
      *

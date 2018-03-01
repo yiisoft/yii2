@@ -83,7 +83,7 @@ use yii\helpers\StringHelper;
  * ```php
  * [
  *     'as tree' => [
- *         'class' => Tree::class,
+ *         '__class' => Tree::class,
  *     ],
  * ]
  * ```
@@ -436,7 +436,7 @@ class Component extends BaseObject
      *
      * ```php
      * 'behaviorName' => [
-     *     'class' => BehaviorClass::class,
+     *     '__class' => BehaviorClass::class,
      *     'property1' => 'value1',
      *     'property2' => 'value2',
      * ]

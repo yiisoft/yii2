@@ -134,13 +134,13 @@ class UrlManager extends Component
      * @var array the default configuration of URL rules. Individual rule configurations
      * specified via [[rules]] will take precedence when the same property of the rule is configured.
      */
-    public $ruleConfig = ['class' => UrlRule::class];
+    public $ruleConfig = ['__class' => UrlRule::class];
     /**
      * @var UrlNormalizer|array|false the configuration for [[UrlNormalizer]] used by this UrlManager.
      * If `false` normalization will be skipped.
      * @since 2.0.10
      */
-    public $normalizer = ['class' => UrlNormalizer::class];
+    public $normalizer = ['__class' => UrlNormalizer::class];
 
     /**
      * @var string the cache key for cached rules

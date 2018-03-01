@@ -101,7 +101,7 @@ use yii\caching\CacheInterface;
  * ```php
  * 'components' => [
  *     'db' => [
- *         'class' => \yii\db\Connection::class,
+ *         '__class' => \yii\db\Connection::class,
  *         'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
  *         'username' => 'root',
  *         'password' => '',
@@ -704,11 +704,11 @@ class Connection extends Component
     public function createCommand($sql = null, $params = [])
     {
         $driver = $this->getDriverName();
-        $config = ['class' => 'yii\db\Command'];
-        if ($this->commandClass !== $config['class']) {
-            $config['class'] = $this->commandClass;
+        $config = ['__class' => Command::class];
+        if ($this->commandClass !== $config['__class']) {
+            $config['__class'] = $this->commandClass;
         } elseif (isset($this->commandMap[$driver])) {
-            $config = !is_array($this->commandMap[$driver]) ? ['class' => $this->commandMap[$driver]] : $this->commandMap[$driver];
+            $config = !is_array($this->commandMap[$driver]) ? ['__class' => $this->commandMap[$driver]] : $this->commandMap[$driver];
         }
         $config['db'] = $this;
         $config['sql'] = $sql;
@@ -804,7 +804,7 @@ class Connection extends Component
 
         $driver = $this->getDriverName();
         if (isset($this->schemaMap[$driver])) {
-            $config = !is_array($this->schemaMap[$driver]) ? ['class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
+            $config = !is_array($this->schemaMap[$driver]) ? ['__class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
             $config['db'] = $this;
 
             return $this->_schema = Yii::createObject($config);
@@ -1087,8 +1087,8 @@ class Connection extends Component
             return null;
         }
 
-        if (!isset($sharedConfig['class'])) {
-            $sharedConfig['class'] = get_class($this);
+        if (!isset($sharedConfig['__class'])) {
+            $sharedConfig['__class'] = get_class($this);
         }
 
         $cache = is_string($this->serverStatusCache) ? Yii::$app->get($this->serverStatusCache, false) : $this->serverStatusCache;

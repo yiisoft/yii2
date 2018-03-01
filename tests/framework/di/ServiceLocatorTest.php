@@ -74,7 +74,7 @@ class ServiceLocatorTest extends TestCase
         $container = new ServiceLocator();
         $className = TestClass::class;
         $container->set($className, [
-            'class' => $className,
+            '__class' => $className,
             'prop1' => 10,
             'prop2' => 20,
         ]);
@@ -97,7 +97,7 @@ class ServiceLocatorTest extends TestCase
             'components' => [
                 'captcha' => [
                     'name' => 'foo bar',
-                    'class' => InputWidget::class,
+                    '__class' => InputWidget::class,
                 ],
             ],
         ];

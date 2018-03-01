@@ -17,7 +17,7 @@ namespace yii\filters\auth;
  * {
  *     return [
  *         'basicAuth' => [
- *             'class' => \yii\filters\auth\HttpHeaderAuth::class,
+ *             '__class' => \yii\filters\auth\HttpHeaderAuth::class,
  *         ],
  *     ];
  * }

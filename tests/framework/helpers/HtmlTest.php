@@ -24,14 +24,14 @@ class HtmlTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'request' => [
-                    'class' => 'yii\web\Request',
+                    '__class' => \yii\web\Request::class,
                     'url' => '/test',
                     'scriptUrl' => '/index.php',
                     'hostInfo' => 'http://www.example.com',
                     'enableCsrfValidation' => false,
                 ],
                 'response' => [
-                    'class' => 'yii\web\Response',
+                    '__class' => \yii\web\Response::class,
                 ],
             ],
         ]);
@@ -111,7 +111,7 @@ class HtmlTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'request' => [
-                    'class' => 'yii\web\Request',
+                    '__class' => \yii\web\Request::class,
                     'enableCsrfValidation' => false,
                 ],
             ],
@@ -124,12 +124,12 @@ class HtmlTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'request' => [
-                    'class' => 'yii\web\Request',
+                    '__class' => \yii\web\Request::class,
                     'enableCsrfValidation' => true,
                     'cookieValidationKey' => 'key',
                 ],
                 'response' => [
-                    'class' => 'yii\web\Response',
+                    '__class' => \yii\web\Response::class,
                 ],
             ],
         ]);
@@ -143,7 +143,7 @@ class HtmlTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'request' => [
-                    'class' => 'yii\web\Request',
+                    '__class' => \yii\web\Request::class,
                     'enableCsrfValidation' => true,
                 ],
             ],

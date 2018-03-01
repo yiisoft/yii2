@@ -20,7 +20,7 @@ use yii\web\Request;
  * {
  *     return [
  *         [
- *             'class' => 'yii\filters\AjaxFilter',
+ *             '__class' => 'yii\filters\AjaxFilter',
  *             'only' => ['index']
  *         ],
  *     ];

@@ -1829,7 +1829,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
                 $data = @unserialize($data);
                 if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
                     $cookies[$name] = Yii::createObject([
-                        'class' => \yii\http\Cookie::class,
+                        '__class' => \yii\http\Cookie::class,
                         'name' => $name,
                         'value' => $data[1],
                         'expire' => null,
@@ -1839,7 +1839,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         } else {
             foreach ($this->getCookieParams() as $name => $value) {
                 $cookies[$name] = Yii::createObject([
-                    'class' => \yii\http\Cookie::class,
+                    '__class' => \yii\http\Cookie::class,
                     'name' => $name,
                     'value' => $value,
                     'expire' => null,
@@ -1923,7 +1923,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             }
         } else {
             $files = Yii::createObject([
-                'class' => $this->uploadedFileClass,
+                '__class' => $this->uploadedFileClass,
                 'clientFilename' => $names,
                 'tempFilename' => $tempNames,
                 'clientMediaType' => $types,
@@ -2078,7 +2078,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     {
         $options = $this->csrfCookie;
         return Yii::createObject(array_merge($options, [
-            'class' => \yii\http\Cookie::class,
+            '__class' => \yii\http\Cookie::class,
             'name' => $this->csrfParam,
             'value' => $token,
         ]));

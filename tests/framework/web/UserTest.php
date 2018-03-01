@@ -58,7 +58,7 @@ class UserTest extends TestCase
                     'authTimeout' => 10,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::class,
+                    '__class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                      'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                      'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -114,10 +114,10 @@ class UserTest extends TestCase
                     'autoRenewCookie' => false,
                 ],
                 'response' => [
-                    'class' => MockResponse::class,
+                    '__class' => MockResponse::class,
                 ],
                 'request' => [
-                    'class' => MockRequest::class,
+                    '__class' => MockRequest::class,
                 ],
             ],
         ];
@@ -164,10 +164,10 @@ class UserTest extends TestCase
                     'enableAutoLogin' => true,
                 ],
                 'response' => [
-                    'class' => MockResponse::class,
+                    '__class' => MockResponse::class,
                 ],
                 'request' => [
-                    'class' => MockRequest::class,
+                    '__class' => MockRequest::class,
                 ],
             ],
         ];
@@ -204,9 +204,9 @@ class UserTest extends TestCase
         }
 
         $_SERVER = $server;
-        Yii::$app->set('response', ['class' => 'yii\web\Response']);
+        Yii::$app->set('response', ['__class' => \yii\web\Response::class]);
         Yii::$app->set('request', [
-            'class' => 'yii\web\Request',
+            '__class' => \yii\web\Request::class,
             'scriptFile' => __DIR__ . '/index.php',
             'scriptUrl' => '/index.php',
             'url' => '',
@@ -222,7 +222,7 @@ class UserTest extends TestCase
                     'identityClass' => UserIdentity::class,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::class,
+                    '__class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -335,7 +335,7 @@ class UserTest extends TestCase
                     'identityClass' => UserIdentity::class,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::class,
+                    '__class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',

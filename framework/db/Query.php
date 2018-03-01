@@ -187,7 +187,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
     public function batch($batchSize = 100, $db = null)
     {
         return Yii::createObject([
-            'class' => BatchQueryResult::class,
+            '__class' => BatchQueryResult::class,
             'query' => $this,
             'batchSize' => $batchSize,
             'db' => $db,
@@ -215,7 +215,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
     public function each($batchSize = 100, $db = null)
     {
         return Yii::createObject([
-            'class' => BatchQueryResult::class,
+            '__class' => BatchQueryResult::class,
             'query' => $this,
             'batchSize' => $batchSize,
             'db' => $db,

@@ -166,14 +166,14 @@ The default class is [[yii\grid\DataColumn]], which represents a model attribute
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],
+        ['__class' => yii\grid\SerialColumn::class],
         // Simple columns defined by the data contained in $dataProvider.
         // Data from the model's column will be used.
         'id',
         'username',
         // More complex one.
         [
-            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
+            '__class' => yii\grid\DataColumn::class, // can be omitted, as it is the default
             'value' => function ($data) {
                 return $data->name; // $data['name'] for array data, e.g. using SqlDataProvider.
             },
@@ -195,7 +195,7 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         [
-            'class' => 'yii\grid\SerialColumn', // <-- here
+            '__class' => yii\grid\SerialColumn::class, // <-- here
             // you may configure additional properties here
         ],
 ```
@@ -279,7 +279,7 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         [
-            'class' => 'yii\grid\ActionColumn',
+            '__class' => yii\grid\ActionColumn::class,
             // you may configure additional properties here
         ],
 ```
@@ -339,7 +339,7 @@ echo GridView::widget([
     'columns' => [
         // ...
         [
-            'class' => 'yii\grid\CheckboxColumn',
+            '__class' => yii\grid\CheckboxColumn::class,
             // you may configure additional properties here
         ],
     ],
@@ -363,7 +363,7 @@ Usage is as simple as the following:
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
-        ['class' => 'yii\grid\SerialColumn'], // <-- here
+        ['__class' => yii\grid\SerialColumn::class], // <-- here
         // ...
 ```
 

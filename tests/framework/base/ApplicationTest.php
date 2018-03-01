@@ -30,7 +30,7 @@ class ApplicationTest extends TestCase
             ],
             'components' => [
                 'log' => [
-                    'class' => Logger::class
+                    '__class' => Logger::class
                 ],
             ],
             'bootstrap' => ['log'],
@@ -46,15 +46,15 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'withoutBootstrapInterface' => [
-                    'class' => Component::class
+                    '__class' => Component::class
                 ],
                 'withBootstrapInterface' => [
-                    'class' => BootstrapComponentMock::class
+                    '__class' => BootstrapComponentMock::class
                 ]
             ],
             'modules' => [
                 'moduleX' => [
-                    'class' => Module::class
+                    '__class' => Module::class
                 ]
             ],
             'bootstrap' => [

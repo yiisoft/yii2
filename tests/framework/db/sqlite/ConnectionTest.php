@@ -179,7 +179,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $basePath = \Yii::getAlias('@yiiunit/runtime');
 
         $config = [
-            'class' => 'yii\db\Connection',
+            '__class' => \yii\db\Connection::class,
             'dsn' => "sqlite:$basePath/yii2test.sq3",
         ];
         $this->prepareDatabase($config, $fixture)->close();

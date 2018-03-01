@@ -193,7 +193,7 @@ class BaseYiiTest extends TestCase
         BaseYii::setLogger(null);
         $defaultLogger = BaseYii::getLogger();
         BaseYii::setLogger([
-            'class' => Logger::class,
+            '__class' => Logger::class,
             'flushInterval' => 987,
         ]);
         $logger = BaseYii::getLogger();
@@ -232,7 +232,7 @@ class BaseYiiTest extends TestCase
         BaseYii::setProfiler(null);
         $defaultProfiler = BaseYii::getProfiler();
         BaseYii::setProfiler([
-            'class' => Profiler::class,
+            '__class' => Profiler::class,
         ]);
         $profiler = BaseYii::getProfiler();
         $this->assertNotSame($defaultProfiler, $profiler);

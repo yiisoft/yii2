@@ -81,8 +81,8 @@ class CacheableWidgetBehaviorTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'cache' => [
-                    'class' => \yii\caching\Cache::class,
-                    'handler' => ['class' => \yii\caching\ArrayCache::class],
+                    '__class' => \yii\caching\Cache::class,
+                    'handler' => ['__class' => \yii\caching\ArrayCache::class],
                 ],
             ],
             'params' => [

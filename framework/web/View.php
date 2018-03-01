@@ -433,7 +433,7 @@ class View extends \yii\base\View
             $this->cssFiles[$key] = Html::cssFile($url, $options);
         } else {
             $this->getAssetManager()->bundles[$key] = Yii::createObject([
-                'class' => AssetBundle::class,
+                '__class' => AssetBundle::class,
                 'baseUrl' => '',
                 'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
@@ -501,7 +501,7 @@ class View extends \yii\base\View
             $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
         } else {
             $this->getAssetManager()->bundles[$key] = Yii::createObject([
-                'class' => AssetBundle::class,
+                '__class' => AssetBundle::class,
                 'baseUrl' => '',
                 'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,

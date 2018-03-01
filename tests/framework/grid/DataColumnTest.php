@@ -106,7 +106,7 @@ class DataColumnTest extends \yiiunit\TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -157,7 +157,7 @@ HTML
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],

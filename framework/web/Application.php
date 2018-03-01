@@ -193,11 +193,11 @@ class Application extends \yii\base\Application
     public function coreComponents()
     {
         return array_merge(parent::coreComponents(), [
-            'request' => ['class' => Request::class],
-            'response' => ['class' => Response::class],
-            'session' => ['class' => Session::class],
-            'user' => ['class' => User::class],
-            'errorHandler' => ['class' => ErrorHandler::class],
+            'request' => ['__class' => Request::class],
+            'response' => ['__class' => Response::class],
+            'session' => ['__class' => Session::class],
+            'user' => ['__class' => User::class],
+            'errorHandler' => ['__class' => ErrorHandler::class],
         ]);
     }
 }

@@ -110,7 +110,7 @@ class AuthTest extends \yiiunit\TestCase
     public function testQueryParamAuth($token, $login)
     {
         $_GET['access-token'] = $token;
-        $filter = ['class' => QueryParamAuth::class];
+        $filter = ['__class' => QueryParamAuth::class];
         $this->authOnly($token, $login, $filter, 'query-param-auth');
         $this->authOptional($token, $login, $filter, 'query-param-auth');
         $this->authExcept($token, $login, $filter, 'query-param-auth');
@@ -125,7 +125,7 @@ class AuthTest extends \yiiunit\TestCase
     {
         $_SERVER['PHP_AUTH_USER'] = $token;
         $_SERVER['PHP_AUTH_PW'] = 'whatever, we are testers';
-        $filter = ['class' => HttpBasicAuth::class];
+        $filter = ['__class' => HttpBasicAuth::class];
         $this->authOnly($token, $login, $filter, 'basic-auth');
         $this->authOptional($token, $login, $filter, 'basic-auth');
         $this->authExcept($token, $login, $filter, 'basic-auth');
@@ -141,7 +141,7 @@ class AuthTest extends \yiiunit\TestCase
         $_SERVER['PHP_AUTH_USER'] = $login;
         $_SERVER['PHP_AUTH_PW'] = 'whatever, we are testers';
         $filter = [
-            'class' => HttpBasicAuth::class,
+            '__class' => HttpBasicAuth::class,
             'auth' => function ($username, $password) {
                 if (preg_match('/\d$/', $username)) {
                     return UserIdentity::findIdentity($username);
@@ -163,7 +163,7 @@ class AuthTest extends \yiiunit\TestCase
     public function testHttpHeaderAuth($token, $login)
     {
         Yii::$app->request->setHeader('X-Api-Key', $token);
-        $filter = ['class' => HttpHeaderAuth::class];
+        $filter = ['__class' => HttpHeaderAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
@@ -175,7 +175,7 @@ class AuthTest extends \yiiunit\TestCase
     public function testHttpBearerAuth($token, $login)
     {
         Yii::$app->request->addHeader('Authorization', "Bearer $token");
-        $filter = ['class' => HttpBearerAuth::class];
+        $filter = ['__class' => HttpBearerAuth::class];
         $this->authOnly($token, $login, $filter, 'bearer-auth');
         $this->authOptional($token, $login, $filter, 'bearer-auth');
         $this->authExcept($token, $login, $filter, 'bearer-auth');
@@ -184,10 +184,10 @@ class AuthTest extends \yiiunit\TestCase
     public function authMethodProvider()
     {
         return [
-            ['yii\filters\auth\CompositeAuth'],
-            ['yii\filters\auth\HttpBearerAuth'],
-            ['yii\filters\auth\QueryParamAuth'],
-            ['yii\filters\auth\HttpHeaderAuth'],
+            [\yii\filters\auth\CompositeAuth::class],
+            [\yii\filters\auth\HttpBearerAuth::class],
+            [\yii\filters\auth\QueryParamAuth::class],
+            [\yii\filters\auth\HttpHeaderAuth::class],
         ];
     }
 
@@ -243,7 +243,7 @@ class AuthTest extends \yiiunit\TestCase
     public function testHeaders()
     {
         Yii::$app->request->setHeader('Authorization', "Bearer wrong_token");
-        $filter = ['class' => HttpBearerAuth::class];
+        $filter = ['__class' => HttpBearerAuth::class];
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {

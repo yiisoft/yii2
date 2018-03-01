@@ -16,7 +16,7 @@ namespace yii\grid;
  * 'columns' => [
  *     // ...
  *     [
- *         'class' => \yii\grid\SerialColumn::class,
+ *         '__class' => \yii\grid\SerialColumn::class,
  *         // you may configure additional properties here
  *     ],
  * ]

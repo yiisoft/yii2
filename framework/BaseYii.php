@@ -268,7 +268,7 @@ class BaseYii
      *
      * // create an object using a configuration array
      * $object = Yii::createObject([
-     *     'class' => \yii\db\Connection::class,
+     *     '__class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -332,7 +332,7 @@ class BaseYii
             return self::$_logger;
         }
 
-        return self::$_logger = Instance::ensure(['class' => Logger::class], LoggerInterface::class);
+        return self::$_logger = Instance::ensure(['__class' => Logger::class], LoggerInterface::class);
     }
 
     /**
@@ -347,11 +347,11 @@ class BaseYii
         }
 
         if (is_array($logger)) {
-            if (!isset($logger['class']) && is_object(self::$_logger)) {
+            if (!isset($logger['__class']) && is_object(self::$_logger)) {
                 static::configure(self::$_logger, $logger);
                 return;
             }
-            $logger = array_merge(['class' => Logger::class], $logger);
+            $logger = array_merge(['__class' => Logger::class], $logger);
         } elseif ($logger instanceof \Closure) {
             $logger = call_user_func($logger);
         }
@@ -374,7 +374,7 @@ class BaseYii
         if (self::$_profiler !== null) {
             return self::$_profiler;
         }
-        return self::$_profiler = Instance::ensure(['class' => Profiler::class], ProfilerInterface::class);
+        return self::$_profiler = Instance::ensure(['__class' => Profiler::class], ProfilerInterface::class);
     }
 
     /**
@@ -389,11 +389,11 @@ class BaseYii
         }
 
         if (is_array($profiler)) {
-            if (!isset($profiler['class']) && is_object(self::$_profiler)) {
+            if (!isset($profiler['__class']) && is_object(self::$_profiler)) {
                 static::configure(self::$_profiler, $profiler);
                 return;
             }
-            $profiler = array_merge(['class' => Profiler::class], $profiler);
+            $profiler = array_merge(['__class' => Profiler::class], $profiler);
         } elseif ($profiler instanceof \Closure) {
             $profiler = call_user_func($profiler);
         }

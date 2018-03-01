@@ -34,7 +34,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -280,7 +280,7 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
     {
         return [
             'attributeTypecast' => [
-                'class' => AttributeTypecastBehavior::class,
+                '__class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
                     'name' => AttributeTypecastBehavior::TYPE_STRING,
                     'amount' => AttributeTypecastBehavior::TYPE_INTEGER,

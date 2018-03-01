@@ -57,7 +57,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $config = $databases[$driverAvailable];
 
         $result = [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => $config['dsn'],
         ];
 

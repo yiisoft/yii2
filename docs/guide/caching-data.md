@@ -63,9 +63,9 @@ and accessible. The following code shows how to configure the `cache` applicatio
 ```php
 'components' => [
     'cache' => [
-        'class' => yii\caching\Cache::class,
+        '__class' => yii\caching\Cache::class,
         'handler' => [
-            'class' => yii\caching\MemCache::class,
+            '__class' => yii\caching\MemCache::class,
             'servers' => [
                 [
                     'host' => 'server1',
@@ -93,9 +93,9 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 ```php
 'components' => [
     'cache' => [
-        'class' => yii\caching\Cache::class,
+        '__class' => yii\caching\Cache::class,
         'handler' => [
-            'class' => yii\caching\ApcCache::class,
+            '__class' => yii\caching\ApcCache::class,
         ],
     ],
 ],
@@ -211,9 +211,9 @@ property. For example, in the application configuration you can write the follow
 ```php
 'components' => [
     'cache' => [
-        'class' => 'yii\caching\Cache',
+        '__class' => 'yii\caching\Cache',
         'handler' => [
-            'class' => 'yii\caching\ApcCache',
+            '__class' => 'yii\caching\ApcCache',
             'keyPrefix' => 'myapp',       // a unique cache key prefix
         ],
     ],

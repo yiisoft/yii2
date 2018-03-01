@@ -32,7 +32,7 @@ class MigrateControllerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => 'yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],

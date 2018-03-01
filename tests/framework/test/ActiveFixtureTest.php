@@ -75,7 +75,7 @@ class DataPathDbTestCase extends BaseDbTestCase
     {
         return [
             'customers' => [
-                'class' => CustomDirectoryFixture::class,
+                '__class' => CustomDirectoryFixture::class,
                 'dataFile' => '@app/framework/test/data/customer.php'
             ]
         ];

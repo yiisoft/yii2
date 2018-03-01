@@ -331,12 +331,12 @@ class ComponentTest extends TestCase
 
         $this->assertSame($behavior, $component->detachBehavior('a'));
         $this->assertFalse($component->hasProperty('p'));
-        $this->expectException('yii\base\UnknownMethodException');
+        $this->expectException(\yii\base\UnknownMethodException::class);
         $component->test();
 
         $p = 'as b';
         $component = new NewComponent();
-        $component->$p = ['class' => 'NewBehavior'];
+        $component->$p = ['__class' => 'NewBehavior'];
         $this->assertSame($behavior, $component->getBehavior('a'));
         $this->assertTrue($component->hasProperty('p'));
         $component->test();

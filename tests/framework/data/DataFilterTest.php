@@ -39,7 +39,7 @@ class DataFilterTest extends TestCase
         $this->assertTrue($model instanceof Singer);
 
         $builder->setSearchModel([
-            'class' => Singer::class,
+            '__class' => Singer::class,
             'scenario' => 'search',
         ]);
         $model = $builder->getSearchModel();

@@ -28,9 +28,9 @@ use yii\di\Instance;
  * return [
  *     'components' => [
  *         'cache' => [
- *             'class' => yii\caching\Cache:class,
+ *             '__class' => yii\caching\Cache:class,
  *             'handler' => [
- *                 'class' => yii\caching\DbCache::class,
+ *                 '__class' => yii\caching\DbCache::class,
  *                 // 'db' => 'mydb',
  *                 // 'cacheTable' => 'my_cache',
  *             ],

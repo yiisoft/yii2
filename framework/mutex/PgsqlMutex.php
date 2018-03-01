@@ -19,11 +19,11 @@ use yii\base\InvalidArgumentException;
  * [
  *     'components' => [
  *         'db' => [
- *             'class' => \yii\db\Connection::class,
+ *             '__class' => \yii\db\Connection::class,
  *             'dsn' => 'pgsql:host=127.0.0.1;dbname=demo',
  *         ]
  *         'mutex' => [
- *             'class' => \yii\mutex\PgsqlMutex::class,
+ *             '__class' => \yii\mutex\PgsqlMutex::class,
  *         ],
  *     ],
  * ]

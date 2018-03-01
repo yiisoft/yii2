@@ -17,7 +17,7 @@ namespace yii\filters\auth;
  * {
  *     return [
  *         'bearerAuth' => [
- *             'class' => \yii\filters\auth\HttpBearerAuth::class,
+ *             '__class' => \yii\filters\auth\HttpBearerAuth::class,
  *         ],
  *     ];
  * }

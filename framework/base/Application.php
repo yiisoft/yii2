@@ -268,8 +268,8 @@ abstract class Application extends Module
         foreach ($this->coreComponents() as $id => $component) {
             if (!isset($config['components'][$id])) {
                 $config['components'][$id] = $component;
-            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
-                $config['components'][$id]['class'] = $component['class'];
+            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['__class'])) {
+                $config['components'][$id]['__class'] = $component['__class'];
             }
         }
     }
@@ -348,7 +348,7 @@ abstract class Application extends Module
     protected function registerErrorHandler(&$config)
     {
         if (YII_ENABLE_ERROR_HANDLER) {
-            if (!isset($config['components']['errorHandler']['class'])) {
+            if (!isset($config['components']['errorHandler']['__class'])) {
                 echo "Error: no errorHandler component is configured.\n";
                 exit(1);
             }
@@ -665,13 +665,13 @@ abstract class Application extends Module
     public function coreComponents()
     {
         return [
-            'security' => ['class' => Security::class],
-            'formatter' => ['class' => \yii\i18n\Formatter::class],
-            'i18n' => ['class' => \yii\i18n\I18N::class],
-            'mailer' => ['class' => \yii\swiftmailer\Mailer::class],
-            'assetManager' => ['class' => \yii\web\AssetManager::class],
-            'urlManager' => ['class' => \yii\web\UrlManager::class],
-            'view' => ['class' => \yii\web\View::class],
+            'security' => ['__class' => Security::class],
+            'formatter' => ['__class' => \yii\i18n\Formatter::class],
+            'i18n' => ['__class' => \yii\i18n\I18N::class],
+            'mailer' => ['__class' => \yii\swiftmailer\Mailer::class],
+            'assetManager' => ['__class' => \yii\web\AssetManager::class],
+            'urlManager' => ['__class' => \yii\web\UrlManager::class],
+            'view' => ['__class' => \yii\web\View::class],
         ];
     }
 

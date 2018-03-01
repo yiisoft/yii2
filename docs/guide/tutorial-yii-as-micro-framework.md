@@ -128,7 +128,7 @@ to the application configuration:
 ```php
 'components' => [
     'db' => [
-        'class' => 'yii\db\Connection',
+        '__class' => yii\db\Connection::class,
         'dsn' => 'sqlite:@micro/database.sqlite',
     ],
 ],

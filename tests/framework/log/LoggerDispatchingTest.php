@@ -149,7 +149,7 @@ namespace yiiunit\framework\log {
                 [
                     'targets' => [
                         'syslog' => [
-                            'class' => 'yii\log\SyslogTarget',
+                            '__class' => \yii\log\SyslogTarget::class,
                         ],
                     ],
                 ]

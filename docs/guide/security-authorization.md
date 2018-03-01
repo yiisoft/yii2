@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class,
+                '__class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -70,7 +70,7 @@ You may customize this behavior by configuring the [[yii\filters\AccessControl::
 
 ```php
 [
-    'class' => AccessControl::class,
+    '__class' => AccessControl::class,
     ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('You are not allowed to access this page');
@@ -129,7 +129,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class,
+                '__class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -202,7 +202,7 @@ return [
     // ...
     'components' => [
         'authManager' => [
-            'class' => 'yii\rbac\PhpManager',
+            '__class' => yii\rbac\PhpManager::class,
         ],
         // ...
     ],
@@ -224,7 +224,7 @@ return [
     // ...
     'components' => [
         'authManager' => [
-            'class' => 'yii\rbac\DbManager',
+            '__class' => yii\rbac\DbManager::class,
             // uncomment if you want to cache RBAC items hierarchy
             // 'cache' => 'cache',
         ],
@@ -538,7 +538,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::class,
+            '__class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,
@@ -676,7 +676,7 @@ return [
     // ...
     'components' => [
         'authManager' => [
-            'class' => 'yii\rbac\PhpManager',
+            '__class' => yii\rbac\PhpManager::class,
             'defaultRoles' => ['admin', 'author'],
         ],
         // ...

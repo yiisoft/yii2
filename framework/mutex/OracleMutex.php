@@ -19,12 +19,12 @@ use yii\base\InvalidConfigException;
  * [
  *     'components' => [
  *         'db' => [
- *             'class' => 'yii\db\Connection',
+ *             '__class' => 'yii\db\Connection',
  *             'dsn' => 'oci:dbname=LOCAL_XE',
  *              ...
  *         ]
  *         'mutex' => [
- *             'class' => 'yii\mutex\OracleMutex',
+ *             '__class' => 'yii\mutex\OracleMutex',
  *             'lockMode' => 'NL_MODE',
  *             'releaseOnCommit' => true,
  *              ...

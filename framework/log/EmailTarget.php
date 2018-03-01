@@ -23,7 +23,7 @@ use yii\mail\MailerInterface;
  *     'log' => [
  *          'targets' => [
  *              [
- *                  'class' => \yii\log\EmailTarget::class,
+ *                  '__class' => \yii\log\EmailTarget::class,
  *                  'mailer' => 'mailer',
  *                  'levels' => ['error', 'warning'],
  *                  'message' => [

@@ -45,7 +45,7 @@ return [
     'components' => [
         // ...
         'db' => [
-            'class' => 'yii\db\Connection',
+            '__class' => \yii\db\Connection::class,
             'dsn' => 'mysql:host=localhost;dbname=example',
             'username' => 'root',
             'password' => '',
@@ -78,7 +78,7 @@ property so that Yii can know the actual database type. For example,
 
 ```php
 'db' => [
-    'class' => 'yii\db\Connection',
+    '__class' => yii\db\Connection::class,
     'driverName' => 'mysql',
     'dsn' => 'odbc:Driver={MySQL};Server=localhost;Database=test',
     'username' => 'root',
@@ -475,7 +475,7 @@ component like the following:
 
 ```php
 [
-    'class' => 'yii\db\Connection',
+    '__class' => yii\db\Connection::class,
 
     // configuration for the master
     'dsn' => 'dsn for master server',
@@ -538,7 +538,7 @@ You can also configure multiple masters with multiple slaves. For example,
 
 ```php
 [
-    'class' => 'yii\db\Connection',
+    '__class' => yii\db\Connection::class,
 
     // common configuration for masters
     'masterConfig' => [

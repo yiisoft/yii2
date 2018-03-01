@@ -53,7 +53,7 @@ class InstanceTest extends TestCase
 
         $this->assertInstanceOf(Connection::class, Instance::ensure('db', Connection::class, $container));
         $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection(), Connection::class, $container));
-        $this->assertInstanceOf(Connection::class, Instance::ensure(['class' => Connection::class, 'dsn' => 'test'], Connection::class, $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(['__class' => Connection::class, 'dsn' => 'test'], Connection::class, $container));
     }
 
     /**
@@ -88,7 +88,7 @@ class InstanceTest extends TestCase
 
         $this->assertInstanceOf(Connection::class, Instance::ensure('db', null, $container));
         $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection, null, $container));
-        $this->assertInstanceOf(Connection::class, Instance::ensure(['class' => Connection::class, 'dsn' => 'test'], null, $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(['__class' => Connection::class, 'dsn' => 'test'], null, $container));
     }
 
     public function testEnsure_MinimalSettings()
@@ -100,7 +100,7 @@ class InstanceTest extends TestCase
 
         $this->assertInstanceOf(Connection::class, Instance::ensure('db'));
         $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection()));
-        $this->assertInstanceOf(Connection::class, Instance::ensure(['class' => Connection::class, 'dsn' => 'test']));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(['__class' => Connection::class, 'dsn' => 'test']));
         Yii::$container = new Container();
     }
 

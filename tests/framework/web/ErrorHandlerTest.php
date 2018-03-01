@@ -19,7 +19,7 @@ class ErrorHandlerTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'errorHandler' => [
-                    'class' => 'yiiunit\framework\web\ErrorHandler',
+                    '__class' => \yiiunit\framework\web\ErrorHandler::class,
                     'errorView' => '@yiiunit/data/views/errorHandler.php',
                 ],
             ],

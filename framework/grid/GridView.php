@@ -146,14 +146,14 @@ class GridView extends BaseListView
      *
      * ```php
      * [
-     *     ['class' => \yii\grid\SerialColumn::class],
+     *     ['__class' => \yii\grid\SerialColumn::class],
      *     [
-     *         'class' => \yii\grid\DataColumn::class, // this line is optional
+     *         '__class' => \yii\grid\DataColumn::class, // this line is optional
      *         'attribute' => 'name',
      *         'format' => 'text',
      *         'label' => 'Name',
      *     ],
-     *     ['class' => \yii\grid\CheckboxColumn::class],
+     *     ['__class' => \yii\grid\CheckboxColumn::class],
      * ]
      * ```
      *
@@ -503,7 +503,7 @@ class GridView extends BaseListView
                 $column = $this->createDataColumn($column);
             } else {
                 $column = Yii::createObject(array_merge([
-                    'class' => $this->dataColumnClass ?: DataColumn::class,
+                    '__class' => $this->dataColumnClass ?: DataColumn::class,
                     'grid' => $this,
                 ], $column));
             }
@@ -528,7 +528,7 @@ class GridView extends BaseListView
         }
 
         return Yii::createObject([
-            'class' => $this->dataColumnClass ?: DataColumn::class,
+            '__class' => $this->dataColumnClass ?: DataColumn::class,
             'grid' => $this,
             'attribute' => $matches[1],
             'format' => isset($matches[3]) ? $matches[3] : 'text',

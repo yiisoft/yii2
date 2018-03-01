@@ -890,11 +890,11 @@ the `expressionBuilders` array. It could be done right from the application conf
 
 ```php
 'db' => [
-    'class' => 'yii\db\mysql\Connection',
+    '__class' => yii\db\mysql\Connection::class,
     // ...
     'queryBuilder' => [
         'expressionBuilders' => [
-            'app\db\conditions\AllGreaterCondition' => 'app\db\conditions\AllGreaterConditionBuilder',
+            app\db\conditions\AllGreaterCondition::class => app\db\conditions\AllGreaterConditionBuilder::class,
         ],
     ],
 ],
@@ -911,14 +911,14 @@ If we want to make it possible to create our custom condition using operator for
 
 ```php
 'db' => [
-    'class' => 'yii\db\mysql\Connection',
+    '__class' => yii\db\mysql\Connection::class,
     // ...
     'queryBuilder' => [
         'expressionBuilders' => [
-            'app\db\conditions\AllGreaterCondition' => 'app\db\conditions\AllGreaterConditionBuilder',
+            app\db\conditions\AllGreaterCondition::class => app\db\conditions\AllGreaterConditionBuilder::class,
         ],
         'conditionClasses' => [
-            'ALL>' => 'app\db\conditions\AllGreaterCondition',
+            'ALL>' => app\db\conditions\AllGreaterCondition::class,
         ],
     ],
 ],

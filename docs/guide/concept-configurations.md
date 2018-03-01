@@ -11,7 +11,7 @@ In the following, a configuration is used to create and initialize a database co
 
 ```php
 $config = [
-    'class' => 'yii\db\Connection',
+    '__class' => yii\db\Connection::class,
     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
     'username' => 'root',
     'password' => '',
@@ -41,7 +41,7 @@ The format of a configuration can be formally described as:
 
 ```php
 [
-    'class' => 'ClassName',
+    '__class' => 'ClassName',
     'propertyName' => 'propertyValue',
     'on eventName' => $eventHandler,
     'as behaviorName' => $behaviorConfig,
@@ -67,13 +67,13 @@ Below is an example showing a configuration with initial property values, event 
 
 ```php
 [
-    'class' => \app\components\SearchEngine::class,
+    '__class' => \app\components\SearchEngine::class,
     'apiKey' => 'xxxxxxxx',
     'on search' => function ($event) {
         Yii::info("Keyword searched: " . $event->keyword);
     },
     'as indexer' => [
-        'class' => 'app\components\IndexerBehavior',
+        '__class' => \app\components\IndexerBehavior::class,
         // ... property init values ...
     ],
 ]
@@ -102,22 +102,13 @@ $config = [
     'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'components' => [
         'cache' => [
-            'class' => \yii\caching\FileCache::class,
+            '__class' => \yii\caching\FileCache::class,
         ],
         'mailer' => [
-            'class' => \yii\swiftmailer\Mailer::class,
-        ],
-        'log' => [
-            'class' => \yii\log\Dispatcher::class,
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => \yii\log\FileTarget::class,
-                ],
-            ],
+            '__class' => \yii\swiftmailer\Mailer::class,
         ],
         'db' => [
-            'class' => \yii\db\Connection::class,
+            '__class' => \yii\db\Connection::class,
             'dsn' => 'mysql:host=localhost;dbname=stay2',
             'username' => 'root',
             'password' => '',
@@ -206,22 +197,13 @@ and "require" this file in `web.php` as shown above. The content of `components.
 ```php
 return [
     'cache' => [
-        'class' => \yii\caching\FileCache::class,
+        '__class' => \yii\caching\FileCache::class,
     ],
     'mailer' => [
-        'class' => yii\swiftmailer\Mailer::class,
-    ],
-    'log' => [
-        'class' => \yii\log\Dispatcher::class,
-        'traceLevel' => YII_DEBUG ? 3 : 0,
-        'targets' => [
-            [
-                'class' => \yii\log\FileTarget::class,
-            ],
-        ],
+        '__class' => yii\swiftmailer\Mailer::class,
     ],
     'db' => [
-        'class' => \yii\db\Connection::class,
+        '__class' => \yii\db\Connection::class,
         'dsn' => 'mysql:host=localhost;dbname=stay2',
         'username' => 'root',
         'password' => '',

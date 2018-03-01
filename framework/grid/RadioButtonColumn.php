@@ -20,7 +20,7 @@ use yii\helpers\Html;
  * 'columns' => [
  *     // ...
  *     [
- *         'class' => 'yii\grid\RadioButtonColumn',
+ *         '__class' => \yii\grid\RadioButtonColumn::class,
  *         'radioOptions' => function ($model) {
  *              return [
  *                  'value' => $model['value'],

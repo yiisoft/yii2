@@ -1041,16 +1041,16 @@ class Response extends \yii\base\Response implements ResponseInterface
     {
         return [
             self::FORMAT_HTML => [
-                'class' => HtmlResponseFormatter::class,
+                '__class' => HtmlResponseFormatter::class,
             ],
             self::FORMAT_XML => [
-                'class' => XmlResponseFormatter::class,
+                '__class' => XmlResponseFormatter::class,
             ],
             self::FORMAT_JSON => [
-                'class' => JsonResponseFormatter::class,
+                '__class' => JsonResponseFormatter::class,
             ],
             self::FORMAT_JSONP => [
-                'class' => JsonResponseFormatter::class,
+                '__class' => JsonResponseFormatter::class,
                 'useJsonp' => true,
             ],
         ];

@@ -41,7 +41,7 @@ use yii\db\BaseActiveRecord;
  * {
  *     return [
  *         [
- *             'class' => BlameableBehavior::class,
+ *             '__class' => BlameableBehavior::class,
  *             'createdByAttribute' => 'author_id',
  *             'updatedByAttribute' => 'updater_id',
  *         ],

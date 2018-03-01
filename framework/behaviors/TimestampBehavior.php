@@ -45,7 +45,7 @@ use yii\db\BaseActiveRecord;
  * {
  *     return [
  *         [
- *             'class' => TimestampBehavior::class,
+ *             '__class' => TimestampBehavior::class,
  *             'createdAtAttribute' => 'create_time',
  *             'updatedAtAttribute' => 'update_time',
  *             'value' => new Expression('NOW()'),

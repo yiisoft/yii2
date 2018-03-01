@@ -169,7 +169,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
                 }
 
                 $fileConfig = [
-                    'class' => $request->uploadedFileClass,
+                    '__class' => $request->uploadedFileClass,
                     'clientFilename' => $headers['content-disposition']['filename'],
                     'clientMediaType' => ArrayHelper::getValue($headers, 'content-type', 'application/octet-stream'),
                     'size' => StringHelper::byteLength($value),

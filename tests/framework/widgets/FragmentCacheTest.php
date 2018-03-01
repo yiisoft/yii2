@@ -23,7 +23,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         parent::setUp();
         $this->mockWebApplication();
         Yii::$app->set('cache', [
-            'class' => Cache::class,
+            '__class' => Cache::class,
             'handler' => ArrayCache::class,
         ]);
     }

@@ -211,7 +211,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     public function setPagination($value)
     {
         if (is_array($value)) {
-            $config = ['class' => Pagination::class];
+            $config = ['__class' => Pagination::class];
             if ($this->id !== null) {
                 $config['pageParam'] = $this->id . '-page';
                 $config['pageSizeParam'] = $this->id . '-per-page';
@@ -252,7 +252,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     public function setSort($value)
     {
         if (is_array($value)) {
-            $config = ['class' => Sort::class];
+            $config = ['__class' => Sort::class];
             if ($this->id !== null) {
                 $config['sortParam'] = $this->id . '-sort';
             }

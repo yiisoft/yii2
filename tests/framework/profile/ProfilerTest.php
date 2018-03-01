@@ -33,7 +33,7 @@ class ProfilerTest extends TestCase
 
         $profiler->setTargets([
             [
-                'class' => LogTarget::class,
+                '__class' => LogTarget::class,
                 'logLevel' => 'test',
             ],
         ]);

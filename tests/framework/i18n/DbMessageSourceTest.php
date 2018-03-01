@@ -36,7 +36,7 @@ class DbMessageSourceTest extends I18NTest
         $this->i18n = new I18N([
             'translations' => [
                 'test' => [
-                    'class' => $this->getMessageSourceClass(),
+                    '__class' => $this->getMessageSourceClass(),
                     'db' => static::$db,
                 ],
             ],

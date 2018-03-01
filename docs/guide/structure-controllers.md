@@ -166,7 +166,7 @@ You may configure the [[yii\base\Application::controllerMap|controller map]] in 
 
         // declares "article" controller using a configuration array
         'article' => [
-            'class' => 'app\controllers\PostController',
+            '__class' => app\controllers\PostController::class,
             'enableCsrfValidation' => false,
         ],
     ],
@@ -273,7 +273,7 @@ public function actions()
 
         // declares "view" action using a configuration array
         'view' => [
-            'class' => 'yii\web\ViewAction',
+            '__class' => yii\web\ViewAction::class,
             'viewPrefix' => '',
         ],
     ];

@@ -69,11 +69,11 @@ return [
     'logger' => [
         'targets' => [
             [
-                'class' => \yii\log\DbTarget::class,
+                '__class' => \yii\log\DbTarget::class,
                 'levels' => ['error', 'warning'],
             ],
             [
-                'class' => \yii\log\EmailTarget::class,
+                '__class' => \yii\log\EmailTarget::class,
                 'levels' => ['error'],
                 'categories' => ['yii\db\*'],
                 'message' => [
@@ -138,7 +138,7 @@ under the categories whose names match either `yii\db\*` or `yii\web\HttpExcepti
 
 ```php
 [
-    'class' => \yii\log\FileTarget::class,
+    '__class' => \yii\log\FileTarget::class,
     'levels' => ['error', 'warning'],
     'categories' => [
         'yii\db\*',
@@ -177,7 +177,7 @@ log message with the current user ID (IP address and Session ID are removed for 
 
 ```php
 [
-    'class' => \yii\log\FileTarget::class,
+    '__class' => \yii\log\FileTarget::class,
     'prefix' => function ($message) {
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         $userID = $user ? $user->getId(false) : '-';
@@ -194,7 +194,7 @@ log target configuration specifies that only the value of the `$_SERVER` variabl
 
 ```php
 [
-    'class' => \yii\log\FileTarget::class,
+    '__class' => \yii\log\FileTarget::class,
     'logVars' => ['_SERVER'],
 ]
 ```
@@ -253,7 +253,7 @@ property of individual [log targets](#log-targets), like the following,
 
 ```php
 [
-    'class' => \yii\log\FileTarget::class,
+    '__class' => \yii\log\FileTarget::class,
     'exportInterval' => 100,  // default is 1000
 ]
 ```
@@ -270,7 +270,7 @@ return [
         'flushInterval' => 1,
         'targets' => [
             [
-                'class' => \yii\log\FileTarget::class,
+                '__class' => \yii\log\FileTarget::class,
                 'exportInterval' => 1,
             ],
         ],
@@ -298,10 +298,10 @@ return [
     'logger' => [
         'targets' => [
             'file' => [
-                'class' => \yii\log\FileTarget::class,
+                '__class' => \yii\log\FileTarget::class,
             ],
             'db' => [
-                'class' => \yii\log\DbTarget::class,
+                '__class' => \yii\log\DbTarget::class,
             ],
         ],
     ],

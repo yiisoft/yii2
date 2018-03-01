@@ -25,7 +25,7 @@ use yii\base\ActionFilter;
  * {
  *     return [
  *         [
- *             'class' => \yii\filters\HttpCache::class,
+ *             '__class' => \yii\filters\HttpCache::class,
  *             'only' => ['index'],
  *             'lastModified' => function ($action, $params) {
  *                 $q = new \yii\db\Query();

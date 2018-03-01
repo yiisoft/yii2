@@ -153,7 +153,7 @@ the [[yii\base\Application::modules|modules]] property of the application. The f
 [
     'modules' => [
         'forum' => [
-            'class' => 'app\modules\forum\Module',
+            '__class' => app\modules\forum\Module::class,
             // ... other configurations for the module ...
         ],
     ],
@@ -262,7 +262,7 @@ class Module extends \yii\base\Module
         $this->modules = [
             'admin' => [
                 // you should consider using a shorter namespace here!
-                'class' => 'app\modules\forum\modules\admin\Module',
+                '__class' => app\modules\forum\modules\admin\Module::class,
             ],
         ];
     }

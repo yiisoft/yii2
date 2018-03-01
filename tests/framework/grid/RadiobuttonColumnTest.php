@@ -76,7 +76,7 @@ class RadiobuttonColumnTest extends TestCase
             'options' => ['id' => 'radio-gridview'],
             'columns' => [
                 [
-                    'class' => RadioButtonColumn::class,
+                    '__class' => RadioButtonColumn::class,
                     'radioOptions' => function ($model) {
                         return [
                             'value' => $model['value'],
