@@ -199,10 +199,11 @@ class ServiceLocator extends Component
             $this->_definitions[$id] = $definition;
         } elseif (is_array($definition)) {
             // a configuration array
-            if (isset($definition['class'])) {
+            if (isset($definition['__class']) || isset($definition['class'])) {
+                // @todo remove fallback
                 $this->_definitions[$id] = $definition;
             } else {
-                throw new InvalidConfigException("The configuration for the \"$id\" component must contain a \"class\" element.");
+                throw new InvalidConfigException("The configuration for the \"$id\" component must contain a \"__class\" element.");
             }
         } else {
             throw new InvalidConfigException("Unexpected configuration type for the \"$id\" component: " . gettype($definition));

@@ -77,7 +77,7 @@ use yii\helpers\ArrayHelper;
  *     'dsn' => '...',
  * ]);
  * $container->set(\app\models\UserFinderInterface::class, [
- *     'class' => \app\models\UserFinder::class,
+ *     '__class' => \app\models\UserFinder::class,
  * ]);
  * $container->set('userLister', \app\models\UserLister::class);
  *
@@ -163,8 +163,8 @@ class Container extends Component
             $params = $this->resolveDependencies($this->mergeParams($class, $params));
             $object = call_user_func($definition, $this, $params, $config);
         } elseif (is_array($definition)) {
-            $concrete = $definition['class'];
-            unset($definition['class']);
+            $concrete = $definition['__class'];
+            unset($definition['__class']);
 
             $config = array_merge($definition, $config);
             $params = $this->mergeParams($class, $params);
@@ -218,7 +218,7 @@ class Container extends Component
      * // register an alias name with class configuration
      * // In this case, a "class" element is required to specify the class
      * $container->set('db', [
-     *     'class' => \yii\db\Connection::class,
+     *     '__class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -320,17 +320,17 @@ class Container extends Component
     protected function normalizeDefinition($class, $definition)
     {
         if (empty($definition)) {
-            return ['class' => $class];
+            return ['__class' => $class];
         } elseif (is_string($definition)) {
-            return ['class' => $definition];
+            return ['__class' => $definition];
         } elseif (is_callable($definition, true) || is_object($definition)) {
             return $definition;
         } elseif (is_array($definition)) {
-            if (!isset($definition['class'])) {
+            if (!isset($definition['__class'])) {
                 if (strpos($class, '\\') !== false) {
-                    $definition['class'] = $class;
+                    $definition['__class'] = $class;
                 } else {
-                    throw new InvalidConfigException('A class definition requires a "class" member.');
+                    throw new InvalidConfigException('A class definition requires a "__class" member.');
                 }
             }
 
@@ -594,7 +594,7 @@ class Container extends Component
      * $container->setDefinitions([
      *     'yii\web\Request' => 'app\components\Request',
      *     'yii\web\Response' => [
-     *         'class' => 'app\components\Response',
+     *         '__class' => 'app\components\Response',
      *         'format' => 'json'
      *     ],
      *     'foo\Bar' => function () {
@@ -615,7 +615,7 @@ class Container extends Component
      * ```php
      * $container->setDefinitions([
      *     'foo\Bar' => [
-     *          ['class' => 'app\Bar'],
+     *          ['__class' => 'app\Bar'],
      *          [Instance::of('baz')]
      *      ]
      * ]);

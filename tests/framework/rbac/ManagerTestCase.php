@@ -500,9 +500,9 @@ abstract class ManagerTestCase extends TestCase
         $this->assertFalse($auth->checkAccess($userId, 'Reader', ['action' => 'write']));
 
         // using DI
-        \Yii::$container->set('write_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'write']);
-        \Yii::$container->set('delete_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'delete']);
-        \Yii::$container->set('all_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'all']);
+        \Yii::$container->set('write_rule', ['__class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'write']);
+        \Yii::$container->set('delete_rule', ['__class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'delete']);
+        \Yii::$container->set('all_rule', ['__class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'all']);
 
         $item = $this->createRBACItem($RBACItemType, 'Writer');
         $item->ruleName = 'write_rule';

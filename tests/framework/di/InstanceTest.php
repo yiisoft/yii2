@@ -47,7 +47,7 @@ class InstanceTest extends TestCase
     {
         $container = new Container();
         $container->set('db', [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => 'test',
         ]);
 
@@ -82,7 +82,7 @@ class InstanceTest extends TestCase
     {
         $container = new Container();
         $container->set('db', [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => 'test',
         ]);
 
@@ -94,7 +94,7 @@ class InstanceTest extends TestCase
     public function testEnsure_MinimalSettings()
     {
         Yii::$container->set('db', [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => 'test',
         ]);
 
@@ -108,7 +108,7 @@ class InstanceTest extends TestCase
     {
         $container = new Container();
         $container->set('db', [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => 'test',
         ]);
 
@@ -137,7 +137,7 @@ class InstanceTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => Connection::class,
+                    '__class' => Connection::class,
                     'dsn' => 'test',
                 ],
             ],
@@ -157,11 +157,11 @@ class InstanceTest extends TestCase
     {
         Yii::$container = new Container();
         Yii::$container->set('cache', [
-            'class' => DbCache::class,
+            '__class' => DbCache::class,
             'db' => Instance::of('db'),
         ]);
         Yii::$container->set('db', [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => 'sqlite:path/to/file.db',
         ]);
 
@@ -198,7 +198,7 @@ PHP
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
         Instance::ensure([
-            'class' => Connection::class,
+            '__class' => Connection::class,
         ], Widget::class);
     }
 }

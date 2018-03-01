@@ -61,6 +61,9 @@ Upgrade from Yii 2.0.x
 * `::className()` method calls should be replaced with [native](http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class.class) `::class`.
   When upgrading to Yii 2.1, You should do a global search and replace for `::className()` to `::class`.
   All calls on objects via `->className()` should be replaced by a call to `get_class()`.
+* Dependency injection (DI) layer has been replaced by "yiisoft/di" package. Make sure to update class/object definitions at
+  your code to match the syntax used by it. In particular: you should use '__class' array key instead of 'class' for
+  class name specification.
 * XCache and Zend data cache support was removed. Switch to another caching backends.
 * Rename `InvalidParamException` usage to `InvalidArgumentException`.
 * CAPTCHA package has been moved into separate extension https://github.com/yiisoft/yii2-captcha.

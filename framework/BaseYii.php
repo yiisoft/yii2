@@ -299,14 +299,20 @@ class BaseYii
     {
         if (is_string($type)) {
             return static::$container->get($type, $params);
-        } elseif (is_array($type) && isset($type['class'])) {
-            $class = $type['class'];
-            unset($type['class']);
+        } elseif (is_array($type) && (isset($type['__class']) || isset($type['class']))) {
+            if (isset($type['__class'])) {
+                $class = $type['__class'];
+                unset($type['__class']);
+            } else {
+                // @todo remove fallback
+                $class = $type['class'];
+                unset($type['class']);
+            }
             return static::$container->get($class, $params, $type);
         } elseif (is_callable($type, true)) {
             return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
-            throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
+            throw new InvalidConfigException('Object configuration must be an array containing a "__class" element.');
         }
 
         throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));

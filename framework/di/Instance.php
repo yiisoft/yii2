@@ -111,11 +111,20 @@ class Instance
     public static function ensure($reference, $type = null, $container = null)
     {
         if (is_array($reference)) {
-            $class = isset($reference['class']) ? $reference['class'] : $type;
+            $class = $type;
+            if (isset($reference['__class'])) {
+                $class = $reference['__class'];
+                unset($reference['__class']);
+            }
+            if (isset($reference['class'])) {
+                // @todo remove fallback
+                $class = $reference['class'];
+                unset($reference['class']);
+            }
+
             if (!$container instanceof Container) {
                 $container = Yii::$container;
             }
-            unset($reference['class']);
             $component = $container->get($class, [], $reference);
             if ($type === null || $component instanceof $type) {
                 return $component;

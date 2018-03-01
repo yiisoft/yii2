@@ -102,8 +102,8 @@ class ContainerTest extends TestCase
         $barSetter = BarSetter::class;
 
         $container = new Container();
-        $container->set('foo', ['class' => $fooSetter, 'bar' => Instance::of('bar')]);
-        $container->set('bar', ['class' => $barSetter, 'qux' => Instance::of('qux')]);
+        $container->set('foo', ['__class' => $fooSetter, 'bar' => Instance::of('bar')]);
+        $container->set('bar', ['__class' => $barSetter, 'qux' => Instance::of('qux')]);
         $container->set('qux', $Qux);
         $foo = $container->get('foo');
         $this->assertInstanceOf($fooSetter, $foo);
@@ -133,17 +133,17 @@ class ContainerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'qux' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongApp',
                 ],
                 'qux2' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
             ],
         ]);
         Yii::$container->set('yiiunit\framework\di\stubs\QuxInterface', [
-            'class' => 'yiiunit\framework\di\stubs\Qux',
+            '__class' => 'yiiunit\framework\di\stubs\Qux',
             'a' => 'independent',
         ]);
 
@@ -199,11 +199,11 @@ class ContainerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'qux' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongApp',
                 ],
                 'qux2' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
             ],
@@ -220,11 +220,11 @@ class ContainerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'qux' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongApp',
                 ],
                 'qux2' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
             ],
@@ -254,7 +254,7 @@ class ContainerTest extends TestCase
             'model.order' => Order::class,
             Cat::class => Type::class,
             'test\TraversableInterface' => [
-                ['class' => 'yiiunit\data\base\TraversableObject'],
+                ['__class' => 'yiiunit\data\base\TraversableObject'],
                 [['item1', 'item2']],
             ],
             'qux.using.closure' => function () {
@@ -279,7 +279,7 @@ class ContainerTest extends TestCase
         $container->setSingletons([
             'model.order' => Order::class,
             'test\TraversableInterface' => [
-                ['class' => 'yiiunit\data\base\TraversableObject'],
+                ['__class' => 'yiiunit\data\base\TraversableObject'],
                 [['item1', 'item2']],
             ],
             'qux.using.closure' => function () {
