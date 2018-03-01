@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.14.2 under development
 ------------------------
 
+- Bug #15801: Fixed `has-error` CSS class assignment in `yii\widgets\ActiveField` when attribute name is prefixed with tabular index (FabrizioCaldarelli)
 - Bug #15792: Added missing `yii\db\QueryBuilder::conditionClasses` setter (silverfire)
 
 
@@ -2131,6 +2132,3 @@ Yii Framework 2 Change Log
 
   - [Smarty View Renderer](https://github.com/yiisoft/yii2-smarty)
   - [Twig View Renderer](https://github.com/yiisoft/yii2-twig)
-
-
-
