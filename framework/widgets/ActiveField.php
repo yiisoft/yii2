@@ -931,7 +931,7 @@ class ActiveField extends Component
     protected function addErrorClassIfNeeded(&$options)
     {
         // Get proper attribute name when attribute name is tabular.
-        $attributeName = yii\helpers\BaseHtml::getAttributeName($this->attribute);
+        $attributeName = yii\helpers\Html::getAttributeName($this->attribute);
 
         if ($this->model->hasErrors($attributeName)) {
             Html::addCssClass($options, $this->form->errorCssClass);
