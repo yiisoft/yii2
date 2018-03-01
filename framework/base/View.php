@@ -364,7 +364,7 @@ class View extends Component
     public function renderDynamic($statements, array $params = [])
     {
         if (!empty($params)) {
-            $statements = 'extract(unserialize(\'' . serialize($params) . '\'));' . $statements;
+            $statements = 'extract(unserialize(\'' . str_replace(['\\', '\'' ], ['\\\\', '\\\'' ], serialize($params)) . '\'));' . $statements;
         }
         if (!empty($this->cacheStack)) {
             $n = count($this->dynamicPlaceholders);
