@@ -363,6 +363,13 @@ class Container extends Component
         /* @var $reflection ReflectionClass */
         list($reflection, $dependencies) = $this->getDependencies($class);
 
+        if (isset($config['__construct()'])) {
+            foreach ($config['__construct()'] as $index => $param) {
+                $dependencies[$index] = $param;
+            }
+            unset($config['__construct()']);
+        }
+
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
         }
