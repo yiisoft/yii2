@@ -107,7 +107,7 @@ PHP
             'a' => 'Yii',
             'b' => 'Framework',
             'c' => 'Yii\'s Author',
-            'c' => 'app\\namespace',
+            'd' => 'app\\namespace',
         ]));
     }
 
