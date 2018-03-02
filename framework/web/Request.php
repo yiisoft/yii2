@@ -708,7 +708,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
                 if ($contentType === 'multipart/form-data') {
                     $this->_parsedBody = ArrayHelper::merge($this->_parsedBody, $this->getUploadedFiles());
                 }
-            } elseif (empty($contentType) && $this->getBody()->getSize() === 0) {
+            } elseif (empty($contentType) && ($this->getBody()->getSize() === 0 || $this->getBody()->getSize() === null)) {
                 $this->_parsedBody = null;
             } else {
                 if ($contentType !== 'application/x-www-form-urlencoded') {
