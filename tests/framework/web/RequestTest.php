@@ -662,7 +662,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function testGetBodyParams()
+    public function testGetParsedBody()
     {
         $body = new MemoryStream();
         $body->write('name=value');
@@ -685,6 +685,23 @@ class RequestTest extends TestCase
             $request->withMethod('POST')->getParsedBody();
         } catch (UnsupportedMediaTypeHttpException $postWithoutContentTypeException) {}
         $this->assertTrue(isset($postWithoutContentTypeException));
+    }
+
+    /**
+     * @depends testGetParsedBody
+     */
+    public function testParseEmptyBody()
+    {
+        $request = new Request();
+        $request->setMethod('GET');
+        $request->setBody(new MemoryStream());
+
+        $this->assertNull($request->getParsedBody());
+
+        try {
+            $request->withHeader('Content-Type', 'test/json')->getParsedBody();
+        } catch (UnsupportedMediaTypeHttpException $noContentException) {}
+        $this->assertTrue(isset($noContentException));
     }
 
     /**
@@ -810,7 +827,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @depends testGetBodyParams
+     * @depends testGetParsedBody
      * @dataProvider dataProviderDefaultUploadedFiles
      *
      * @param array $rawFiles

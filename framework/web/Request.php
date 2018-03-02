@@ -652,7 +652,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         $this->setBody($body);
     }
 
-    private $_parsedBody;
+    private $_parsedBody = false;
 
     /**
      * Returns the request parameters given in the request body.
@@ -663,7 +663,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      *
      * Since 2.1.0 body params also include result of [[getUploadedFiles()]].
      *
-     * @return array the request parameters given in the request body.
+     * @return array|null the request parameters given in the request body. A `null` value indicates
+     * the absence of body content.
      * @throws InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
      * @throws UnsupportedMediaTypeHttpException if unable to parse raw body.
      * @see getMethod()
@@ -672,7 +673,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     public function getParsedBody()
     {
-        if ($this->_parsedBody === null) {
+        if ($this->_parsedBody === false) {
             if (isset($_POST[$this->methodParam])) {
                 $this->_parsedBody = $_POST;
                 unset($this->_parsedBody[$this->methodParam]);
@@ -707,6 +708,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
                 if ($contentType === 'multipart/form-data') {
                     $this->_parsedBody = ArrayHelper::merge($this->_parsedBody, $this->getUploadedFiles());
                 }
+            } elseif (empty($contentType) && $this->getBody()->getSize() === 0) {
+                $this->_parsedBody = null;
             } else {
                 if ($contentType !== 'application/x-www-form-urlencoded') {
                     throw new UnsupportedMediaTypeHttpException();
@@ -2226,5 +2229,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         if (is_object($this->_cookies)) {
             $this->_cookies = clone $this->_cookies;
         }
+
+        $this->_parsedBody = false;
     }
 }
