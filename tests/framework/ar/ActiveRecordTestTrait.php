@@ -1073,7 +1073,7 @@ trait ActiveRecordTestTrait
     }
 
     /**
-     * Some PDO implementations(e.g. cubrid) do not support boolean values.
+     * Some PDO implementations do not support boolean values.
      * Make sure this does not affect AR layer.
      */
     public function testBooleanAttribute()

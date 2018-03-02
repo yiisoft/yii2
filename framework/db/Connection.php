@@ -239,7 +239,7 @@ class Connection extends Component
     public $queryCache = 'cache';
     /**
      * @var string the charset used for database connection. The property is only used
-     * for MySQL, PostgreSQL and CUBRID databases. Defaults to null, meaning using default charset
+     * for MySQL and PostgreSQL databases. Defaults to null, meaning using default charset
      * as configured by the database.
      *
      * For Oracle Database, the charset must be specified in the [[dsn]], for example for UTF-8 by appending `;charset=UTF-8`
@@ -279,7 +279,6 @@ class Connection extends Component
         'mysql' => mysql\Schema::class, // MySQL
         'sqlite' => sqlite\Schema::class, // sqlite 3
         'sqlite2' => sqlite\Schema::class, // sqlite 2
-        'cubrid' => cubrid\Schema::class, // CUBRID
     ];
     /**
      * @var string Custom PDO wrapper class. If not set, it will use [[PDO]] or [[\yii\db\mssql\PDO]] when MSSQL is used.
@@ -316,7 +315,6 @@ class Connection extends Component
         'oci' => 'yii\db\Command', // Oracle driver
         'mssql' => 'yii\db\Command', // older MSSQL driver on MS Windows hosts
         'dblib' => 'yii\db\Command', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
-        'cubrid' => 'yii\db\Command', // CUBRID
     ];
     /**
      * @var bool whether to enable [savepoint](http://en.wikipedia.org/wiki/Savepoint).
@@ -689,7 +687,7 @@ class Connection extends Component
         if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES')) {
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
         }
-        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'], true)) {
+        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli'], true)) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
         }
         $this->trigger(self::EVENT_AFTER_OPEN);

@@ -42,7 +42,7 @@ db:
     - tests/full
   script:
     - docker-compose up --build -d
-    - docker-compose run --rm php vendor/bin/phpunit -v --group db --exclude caching,mysql,pgsql,mssql,cubrid,oci
+    - docker-compose run --rm php vendor/bin/phpunit -v --group db --exclude caching,mysql,pgsql
 
 
 mysql:
@@ -71,20 +71,6 @@ pgsql:
     - docker-compose run --rm php vendor/bin/phpunit -v --group pgsql
 
 
-cubrid:
-  stage: test
-  only:
-    - tests/cubrid
-    - tests/extra
-  script:
-    - cd cubrid
-    - docker-compose up --build -d
-    # wait for db (retry X times)
-    - docker-compose run --rm php bash -c 'while [ true ]; do curl cubrid:1523; if [ $? == 56 ]; then break; fi; ((c++)) && ((c==20)) && break; sleep 3; done'
-    - sleep 5
-    - docker-compose run --rm php /project/vendor/bin/phpunit -v --group cubrid
-
-
 mssql:
   stage: test
   only:
@@ -110,5 +96,5 @@ travis:
     - docker-compose up --build -d
     # wait for dbs ...
     - sleep 10
-    - docker-compose run --rm php vendor/bin/phpunit -v --exclude mssql,cubrid,oci,wincache,xcache,zenddata,cubrid
+    - docker-compose run --rm php vendor/bin/phpunit -v --exclude wincache,xcache,zenddata
 

@@ -26,7 +26,6 @@ O Yii fornece suporte Active Record para os seguintes bancos de dados relacionai
 * SQLite 2 e 3: via [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2008 ou superior: via [[yii\db\ActiveRecord]]
 * Oracle: via [[yii\db\ActiveRecord]]
-* CUBRID 9.3 ou superior: via [[yii\db\ActiveRecord]] (observe que devido a um [bug](http://jira.cubrid.org/browse/APIS-658) na extensão PDO do cubrid, o tratamento de aspas não funciona, então você precisa do  CUBRID 9.3 como o cliente, bem como servidor)
 * Sphinx: via [[yii\sphinx\ActiveRecord]], requer a extensão `yii2-sphinx`
 * ElasticSearch: via [[yii\elasticsearch\ActiveRecord]], requer a extensão `yii2-elasticsearch`. Adicionalmente, o Yii também suporta o uso de Active Record com os seguintes bancos de dados NoSQL:
 

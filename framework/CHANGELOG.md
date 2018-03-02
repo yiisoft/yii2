@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Chg: Removed methods marked as deprecated in 2.0.x (samdark)
 - Chg #8452: Packages 'captcha', 'jquery', 'rest', 'mssql' and 'oracle' have been extracted into extensions (klimov-paul)
 - Chg #15383: PJAX support removed (klimov-paul)
+- Chg #15383: CUBRID database support removed (klimov-paul)
 - Chg #14784: Signature of `yii\web\RequestParserInterface::parse()` changed to accept `yii\web\Request` instance as a sole argument (klimov-paul)
 - Chg #10771: Consistent behavior of `run()` method in all framework widgets. All return the result now for better extensibility (pkirill99, cebe)
 - Chg #11397: Minimum required version of PHP is 7.1 now (samdark)

@@ -76,6 +76,8 @@ Upgrade from Yii 2.0.x
   Include it in your composer.json if you use it.
 * Oracle DB package has been moved into separate extension https://github.com/yiisoft/yii2-oracle.
   Include it in your composer.json if you use it.
+* CUBRID support has been removed, package `yii\db\cubrid\*` is no longer available.
+  If you need to use CUBRID further you should create your own integration for it.
 * Masked input field widget was moved into separate extension https://github.com/yiisoft/yii2-maskedinput.
   Include it in your composer.json if you use it.
 * PJAX support has been removed: widget `yii\widget\Pjax`, method `yii\web\Request::getIsPjax()`, PJAX related checks and

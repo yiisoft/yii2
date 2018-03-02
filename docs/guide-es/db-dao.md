@@ -15,7 +15,6 @@ Yii DAO soporta las siguientes bases de datos:
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/): versión 8.4 o superior.
-- [CUBRID](http://www.cubrid.org/): versión 9.3 o superior.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): versión 2008 o superior.
 
@@ -65,7 +64,6 @@ propiedad [[yii\db\Connection::dsn|dsn]]. El formato del DSN varia para cada dif
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
 * PostgreSQL: `pgsql:host=localhost;port=5432;dbname=mydatabase`
-* CUBRID: `cubrid:dbname=demodb;host=localhost;port=33000`
 * MS SQL Server (mediante sqlsrv driver): `sqlsrv:Server=localhost;Database=mydatabase`
 * MS SQL Server (mediante dblib driver): `dblib:host=localhost;dbname=mydatabase`
 * MS SQL Server (mediante mssql driver): `mssql:host=localhost;dbname=mydatabase`
