@@ -328,9 +328,10 @@ class Connection extends Component
      */
     public $enableSavepoint = true;
     /**
-     * @var CacheInterface|string|null the cache object or the ID of the cache application component that is used to store
+     * @var CacheInterface|string|false the cache object or the ID of the cache application component that is used to store
      * the health status of the DB servers specified in [[masters]] and [[slaves]].
-     * This is used only when read/write splitting is enabled or [[masters]] is not empty. To disable set null.
+     * This is used only when read/write splitting is enabled or [[masters]] is not empty.
+     * Set boolean `false` to disabled server status caching.
      */
     public $serverStatusCache = 'cache';
     /**
