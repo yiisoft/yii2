@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Chg #14761: Removed Yii autoloader in favor of Composer's PSR-4 implementation (samdark)
 - Chg #15448: Package "ezyang/htmlpurifier" has been made optional and is not installed by default (klimov-paul)
 - Chg #15481: Moved `yii\BaseYii::powered()` method to `yii\helpers\Html::poweredByYii()` (Kolyunya)
+- Chg #15811: Fix Bug additional parameters on `yii\base\View::renderDynamic()` #12938 while parameters contains single quote (xicond)
 
 2.0.14 under development
 ------------------------
