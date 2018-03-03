@@ -126,4 +126,37 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         return $data;
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15827
+     */
+    public function testIssue15827()
+    {
+        $db = $this->getConnection();
+
+        $inserted = $db->createCommand()->insert('array_and_json_types', [
+            'jsonb_col' => new JsonExpression(['Solution date' => '13.01.2011'])
+        ])->execute();
+        $this->assertSame(1, $inserted);
+
+
+        $found = $db->createCommand(<<<PGSQL
+            SELECT *
+            FROM array_and_json_types
+            WHERE jsonb_col @> '{"Some not existing key": "random value"}'
+PGSQL
+        )->execute();
+        $this->assertSame(0, $found);
+
+        $found = $db->createCommand(<<<PGSQL
+            SELECT *
+            FROM array_and_json_types
+            WHERE jsonb_col @> '{"Solution date": "13.01.2011"}'
+PGSQL
+        )->execute();
+        $this->assertSame(1, $found);
+
+
+        $this->assertSame(1, $db->createCommand()->delete('array_and_json_types')->execute());
+    }
 }
