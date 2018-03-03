@@ -796,7 +796,7 @@ use yii\db\ActiveRecord;
 class Comment extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @return CommentQuery
      */
     public static function find()

@@ -89,7 +89,7 @@ class ImageValidator extends FileValidator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -113,7 +113,7 @@ class ImageValidator extends FileValidator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {

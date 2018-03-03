@@ -146,8 +146,8 @@ class AssetController extends Controller
     {
         if (!is_object($this->_assetManager)) {
             $options = $this->_assetManager;
-            if (empty($options['class'])) {
-                $options['class'] = AssetManager::class;
+            if (empty($options['__class'])) {
+                $options['__class'] = AssetManager::class;
             }
             if (!isset($options['basePath'])) {
                 throw new Exception("Please specify 'basePath' for the 'assetManager' option.");
@@ -327,8 +327,8 @@ class AssetController extends Controller
 
                 return $bundleOrders[$a] > $bundleOrders[$b] ? 1 : -1;
             });
-            if (!isset($target['class'])) {
-                $target['class'] = $name;
+            if (!isset($target['__class'])) {
+                $target['__class'] = $name;
             }
             $targets[$name] = Yii::createObject($target);
         }
@@ -463,7 +463,7 @@ class AssetController extends Controller
         foreach ($targets as $name => $target) {
             if (isset($this->targets[$name])) {
                 $array[$name] = array_merge($this->targets[$name], [
-                    'class' => get_class($target),
+                    '__class' => get_class($target),
                     'sourcePath' => null,
                     'basePath' => $this->targets[$name]['basePath'],
                     'baseUrl' => $this->targets[$name]['baseUrl'],
@@ -720,7 +720,7 @@ return [
     // Asset bundle for compression output:
     'targets' => [
         'all' => [
-            'class' => \yii\web\AssetBundle::class,
+            '__class' => \yii\web\AssetBundle::class,
             'basePath' => '@webroot/assets',
             'baseUrl' => '@web/assets',
             'js' => 'js/all-{hash}.js',
@@ -786,7 +786,7 @@ EOD;
     private function composeBundleConfig($bundle)
     {
         $config = Yii::getObjectVars($bundle);
-        $config['class'] = get_class($bundle);
+        $config['__class'] = get_class($bundle);
         return $config;
     }
 

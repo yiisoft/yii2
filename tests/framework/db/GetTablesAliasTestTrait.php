@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\base\InvalidArgumentException;
 use yii\db\ActiveQuery;
 use yii\db\Query;
 
@@ -17,13 +18,14 @@ trait GetTablesAliasTestTrait
      */
     abstract protected function createQuery();
 
-    public function testGetTableNames_isFromArray()
+    public function testGetTableNames_isFromArrayWithAlias()
     {
         $query = $this->createQuery();
         $query->from = [
-            '{{prf}}' => '{{profile}}',
+            'prf' => 'profile',
             '{{usr}}' => '{{user}}',
             '{{a b}}' => '{{c d}}',
+            'post AS p',
         ];
 
         $tables = $query->getTablesUsedInFrom();
@@ -32,6 +34,23 @@ trait GetTablesAliasTestTrait
             '{{prf}}' => '{{profile}}',
             '{{usr}}' => '{{user}}',
             '{{a b}}' => '{{c d}}',
+            '{{p}}' => '{{post}}',
+        ], $tables);
+    }
+
+    public function testGetTableNames_isFromArrayWithoutAlias()
+    {
+        $query = $this->createQuery();
+        $query->from = [
+            '{{profile}}',
+            'user'
+        ];
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals([
+            '{{profile}}' => '{{profile}}',
+            '{{user}}' => '{{user}}',
         ], $tables);
     }
 
@@ -81,7 +100,7 @@ trait GetTablesAliasTestTrait
     /**
      * @see https://github.com/yiisoft/yii2/issues/14150
      */
-    public function testGetTableAliasFromPrefixedTableName()
+    public function testGetTableNames_isFromPrefixedTableName()
     {
         $query = $this->createQuery();
         $query->from = '{{%order_item}}';
@@ -96,7 +115,7 @@ trait GetTablesAliasTestTrait
     /**
      * @see https://github.com/yiisoft/yii2/issues/14211
      */
-    public function testGetTableAliasFromTableNameWithDatabase()
+    public function testGetTableNames_isFromTableNameWithDatabase()
     {
         $query = $this->createQuery();
         $query->from = 'tickets.workflows';
@@ -106,5 +125,43 @@ trait GetTablesAliasTestTrait
         $this->assertEquals([
             '{{tickets.workflows}}' => '{{tickets.workflows}}',
         ], $tables);
+    }
+
+    public function testGetTableNames_isFromAliasedExpression()
+    {
+        $query = $this->createQuery();
+        $expression = new \yii\db\Expression('(SELECT id FROM user)');
+        $query->from = $expression;
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('To use Expression in from() method, pass it in array format with alias.');
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals(['{{x}}' => $expression], $tables);
+    }
+
+    public function testGetTableNames_isFromAliasedArrayWithExpression()
+    {
+        $query = $this->createQuery();
+        $query->from = ['x' => new \yii\db\Expression('(SELECT id FROM user)')];
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals([
+            '{{x}}' => '(SELECT id FROM user)',
+        ], $tables);
+    }
+
+    public function testGetTableNames_isFromAliasedSubquery()
+    {
+        $query = $this->createQuery();
+        $subQuery = $this->createQuery();
+        $subQuery->from('user');
+        $query->from(['x' => $subQuery]);
+        $expected = ['{{x}}' => $subQuery];
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals($expected, $tables);
     }
 }

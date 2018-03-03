@@ -34,7 +34,7 @@ class CacheControllerTest extends TestCase
         parent::setUp();
 
         $this->_cacheController = Yii::createObject([
-            'class' => 'yiiunit\framework\console\controllers\SilencedCacheController',
+            '__class' => \yiiunit\framework\console\controllers\SilencedCacheController::class,
             'interactive' => false,
         ], [null, null]); //id and module are null
 
@@ -55,7 +55,7 @@ class CacheControllerTest extends TestCase
                 },
                 'session' => 'yii\web\CacheSession', // should be ignored at `actionFlushAll()`
                 'db' => [
-                    'class' => isset($config['class']) ? $config['class'] : 'yii\db\Connection',
+                    '__class' => isset($config['__class']) ? $config['__class'] : \yii\db\Connection::class,
                     'dsn' => $config['dsn'],
                     'username' => isset($config['username']) ? $config['username'] : null,
                     'password' => isset($config['password']) ? $config['password'] : null,

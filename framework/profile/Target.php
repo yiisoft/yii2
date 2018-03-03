@@ -73,7 +73,7 @@ abstract class Target extends Component
     /**
      * Filters the given messages according to their categories.
      * @param array $messages messages to be filtered.
-     * The message structure follows that in [[Logger::messages]].
+     * The message structure follows that in [[Profiler::$messages]].
      * @return array the filtered messages.
      */
     protected function filterMessages($messages)

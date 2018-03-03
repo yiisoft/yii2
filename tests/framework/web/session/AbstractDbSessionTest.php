@@ -57,7 +57,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $config = $databases[$driverAvailable];
 
         $result = [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => $config['dsn'],
         ];
 
@@ -91,6 +91,19 @@ abstract class AbstractDbSessionTest extends TestCase
     public function testReadWrite()
     {
         $session = new DbSession();
+
+        $session->writeSession('test', 'session data');
+        $this->assertEquals('session data', $session->readSession('test'));
+        $session->destroySession('test');
+        $this->assertEquals('', $session->readSession('test'));
+    }
+
+    public function testInitializeWithConfig()
+    {
+        // should produce no exceptions
+        $session = new DbSession([
+            'useCookies' => true,
+        ]);
 
         $session->writeSession('test', 'session data');
         $this->assertEquals('session data', $session->readSession('test'));
@@ -196,5 +209,26 @@ abstract class AbstractDbSessionTest extends TestCase
         $history = $this->runMigrate('down');
         $this->assertEquals(['base'], $history);
         $this->createTableSession();
+    }
+
+    public function testInstantiate()
+    {
+        $oldTimeout = ini_get('session.gc_maxlifetime');
+        // unset Yii::$app->db to make sure that all queries are made against sessionDb
+        Yii::$app->set('sessionDb', Yii::$app->db);
+        Yii::$app->set('db', null);
+
+        $session = new DbSession([
+            'timeout' => 300,
+            'db' => 'sessionDb',
+        ]);
+
+        $this->assertSame(Yii::$app->sessionDb, $session->db);
+        $this->assertSame(300, $session->timeout);
+        $session->close();
+
+        Yii::$app->set('db', Yii::$app->sessionDb);
+        Yii::$app->set('sessionDb', null);
+        ini_set('session.gc_maxlifetime', $oldTimeout);
     }
 }

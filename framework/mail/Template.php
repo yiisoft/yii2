@@ -65,7 +65,7 @@ class Template extends BaseObject implements ViewContextInterface
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getViewPath()
     {

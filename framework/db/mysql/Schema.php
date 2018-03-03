@@ -11,6 +11,7 @@ use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\db\ColumnSchema;
 use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
 use yii\db\Exception;
 use yii\db\Expression;
@@ -25,10 +26,14 @@ use yii\helpers\ArrayHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Schema extends \yii\db\Schema
+class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
+    /**
+     * {@inheritdoc}
+     */
+    public $columnSchemaClass = 'yii\db\mysql\ColumnSchema';
     /**
      * @var bool whether MySQL used is older than 5.1.
      */
@@ -39,7 +44,7 @@ class Schema extends \yii\db\Schema
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
     public $typeMap = [
-        'tinyint' => self::TYPE_SMALLINT,
+        'tinyint' => self::TYPE_TINYINT,
         'bit' => self::TYPE_INTEGER,
         'smallint' => self::TYPE_SMALLINT,
         'mediumint' => self::TYPE_INTEGER,
@@ -67,10 +72,20 @@ class Schema extends \yii\db\Schema
         'timestamp' => self::TYPE_TIMESTAMP,
         'enum' => self::TYPE_STRING,
         'varbinary' => self::TYPE_BINARY,
+        'json' => self::TYPE_JSON,
     ];
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
+     */
+    protected $tableQuoteCharacter = '`';
+    /**
+     * {@inheritdoc}
+     */
+    protected $columnQuoteCharacter = '`';
+
+    /**
+     * {@inheritdoc}
      */
     protected function resolveTableName($name)
     {
@@ -88,7 +103,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function findTableNames($schema = '')
     {
@@ -101,7 +116,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableSchema($name)
     {
@@ -117,7 +132,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTablePrimaryKey($tableName)
     {
@@ -125,7 +140,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableForeignKeys($tableName)
     {
@@ -133,7 +148,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableIndexes($tableName)
     {
@@ -169,7 +184,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableUniques($tableName)
     {
@@ -177,7 +192,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableChecks($tableName)
@@ -186,34 +201,12 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
     {
         throw new NotSupportedException('MySQL does not support default value constraints.');
-    }
-
-    /**
-     * Quotes a table name for use in a query.
-     * A simple table name has no schema prefix.
-     * @param string $name table name
-     * @return string the properly quoted table name
-     */
-    public function quoteSimpleTableName($name)
-    {
-        return strpos($name, '`') !== false ? $name : "`$name`";
-    }
-
-    /**
-     * Quotes a column name for use in a query.
-     * A simple column name has no prefix.
-     * @param string $name column name
-     * @return string the properly quoted column name
-     */
-    public function quoteSimpleColumnName($name)
-    {
-        return strpos($name, '`') !== false || $name === '*' ? $name : "`$name`";
     }
 
     /**
@@ -295,7 +288,7 @@ SQL;
         $column->phpType = $this->getColumnPhpType($column);
 
         if (!$column->isPrimaryKey) {
-            if ($column->type === 'timestamp' && $info['default'] === 'CURRENT_TIMESTAMP') {
+            if (($column->type === 'timestamp' || $column->type ==='datetime') && $info['default'] === 'CURRENT_TIMESTAMP') {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } elseif (isset($type) && $type === 'bit') {
                 $column->defaultValue = bindec(trim($info['default'], 'b\''));
@@ -447,11 +440,11 @@ SQL;
         $sql = $this->getCreateTableSql($table);
         $uniqueIndexes = [];
 
-        $regexp = '/UNIQUE KEY\s+([^\(\s]+)\s*\(([^\(\)]+)\)/mi';
+        $regexp = '/UNIQUE KEY\s+\`(.+)\`\s*\((\`.+\`)+\)/mi';
         if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
-                $indexName = str_replace('`', '', $match[1]);
-                $indexColumns = array_map('trim', explode(',', str_replace('`', '', $match[2])));
+                $indexName = $match[1];
+                $indexColumns = array_map('trim', explode('`,`', trim($match[2], '`')));
                 $uniqueIndexes[$indexName] = $indexColumns;
             }
         }
@@ -460,7 +453,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {

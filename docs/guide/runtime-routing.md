@@ -547,7 +547,7 @@ The following shows an example configuration for the UrlNormalizer:
             'enableStrictParsing' => true,
             'suffix' => '.html',
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                '__class' => yii\web\UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY, // use temporary redirection instead of permanent
             ],
             'rules' => [
@@ -667,7 +667,7 @@ And use the new rule class in the [[yii\web\UrlManager::rules]] configuration:
 'rules' => [
     // ...other rules...
     [
-        'class' => 'app\components\CarUrlRule',
+        '__class' => \app\components\CarUrlRule::class,
         // ...configure other properties...
     ],
 ]
@@ -694,7 +694,7 @@ The following shows an example configuration for the [[yii\web\UrlNormalizer|Url
     'enableStrictParsing' => true,
     'suffix' => '.html',
     'normalizer' => [
-        'class' => 'yii\web\UrlNormalizer',
+        '__class' => yii\web\UrlNormalizer::class,
         // use temporary redirection instead of permanent for debugging
         'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
     ],

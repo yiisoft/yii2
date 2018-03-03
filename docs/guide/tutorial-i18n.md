@@ -102,7 +102,7 @@ method to perform the actual translation work. The component can be configured i
     'i18n' => [
         'translations' => [
             'app*' => [
-                'class' => 'yii\i18n\PhpMessageSource',
+                '__class' => yii\i18n\PhpMessageSource::class,
                 //'basePath' => '@app/messages',
                 //'sourceLanguage' => 'en-US',
                 'fileMap' => [
@@ -416,7 +416,7 @@ while `one` matches `21` or `101`:
 
 These `other`, `few`, `many` and other special argument names vary depending on language. To learn which ones you should
 specify for a particular locale, please refer to "Plural Rules, Cardinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
-Alternatively you can refer to [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+Alternatively you can refer to [rules reference at unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 > Note: The above example Russian message is mainly used as a translated message, not an original message, unless you set
 > the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU` and translating from Russian.
@@ -492,7 +492,7 @@ to the application config:
 'i18n' => [
     'translations' => [
         '*' => [
-            'class' => 'yii\i18n\PhpMessageSource'
+            '__class' => yii\i18n\PhpMessageSource::class
         ],
     ],
 ],
@@ -531,7 +531,7 @@ class Module extends \yii\base\Module
     public function registerTranslations()
     {
         Yii::$app->i18n->translations['modules/users/*'] = [
-            'class' => 'yii\i18n\PhpMessageSource',
+            '__class' => \yii\i18n\PhpMessageSource::class,
             'sourceLanguage' => 'en-US',
             'basePath' => '@app/modules/users/messages',
             'fileMap' => [
@@ -579,7 +579,7 @@ class Menu extends Widget
     {
         $i18n = Yii::$app->i18n;
         $i18n->translations['widgets/menu/*'] = [
-            'class' => 'yii\i18n\PhpMessageSource',
+            '__class' => \yii\i18n\PhpMessageSource::class,
             'sourceLanguage' => 'en-US',
             'basePath' => '@app/widgets/menu/messages',
             'fileMap' => [
@@ -617,7 +617,7 @@ In order to do so, configure the `i18n` [application component](structure-applic
 'i18n' => [
     'translations' => [
         'yii' => [
-            'class' => 'yii\i18n\PhpMessageSource',
+            '__class' => yii\i18n\PhpMessageSource::class,
             'sourceLanguage' => 'en-US',
             'basePath' => '@app/messages'
         ],
@@ -643,12 +643,12 @@ First you need to setup an event handler. This can be done in the application co
     'i18n' => [
         'translations' => [
             'app*' => [
-                'class' => 'yii\i18n\PhpMessageSource',
+                '__class' => yii\i18n\PhpMessageSource::class,
                 'fileMap' => [
                     'app' => 'app.php',
                     'app/error' => 'error.php',
                 ],
-                'on missingTranslation' => ['app\components\TranslationEventHandler', 'handleMissingTranslation']
+                'on missingTranslation' => [app\components\TranslationEventHandler::class, 'handleMissingTranslation']
             ],
         ],
     ],

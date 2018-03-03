@@ -103,8 +103,8 @@ class Composer extends BaseObject
      */
     protected function createView(array $config)
     {
-        if (!array_key_exists('class', $config)) {
-            $config['class'] = View::class;
+        if (!array_key_exists('__class', $config)) {
+            $config['__class'] = View::class;
         }
 
         return Yii::createObject($config);
@@ -120,8 +120,8 @@ class Composer extends BaseObject
     protected function createTemplate($viewName)
     {
         $config = $this->templateConfig;
-        if (!array_key_exists('class', $config)) {
-            $config['class'] = Template::class;
+        if (!array_key_exists('__class', $config)) {
+            $config['__class'] = Template::class;
         }
         if (!array_key_exists('view', $config)) {
             $config['view'] = $this->getView();

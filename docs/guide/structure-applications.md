@@ -120,11 +120,11 @@ For example:
         'demo',
 
         // a class name
-        'app\components\Profiler',
+        app\components\Profiler::class,
 
         // a configuration array
         [
-            'class' => 'app\components\Profiler',
+            '__class' => app\components\Profiler::class,
             'level' => 3,
         ],
 
@@ -202,10 +202,10 @@ called [application components](structure-application-components.md) that you ca
 [
     'components' => [
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            '__class' => yii\caching\FileCache::class,
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => app\models\User::class,
             'enableAutoLogin' => true,
         ],
     ],
@@ -232,9 +232,9 @@ specific controllers. In the following example, `account` will be mapped to
 ```php
 [
     'controllerMap' => [
-        'account' => 'app\controllers\UserController',
+        'account' => app\controllers\UserController::class,
         'article' => [
-            'class' => 'app\controllers\PostController',
+            '__class' => app\controllers\PostController::class,
             'enableCsrfValidation' => false,
         ],
     ],
@@ -295,7 +295,7 @@ being the module IDs. For example:
 
         // a "comment" module specified with a configuration array
         'comment' => [
-            'class' => 'app\modules\comment\CommentModule',
+            '__class' => app\modules\comment\CommentModule::class,
             'db' => 'db',
         ],
     ],

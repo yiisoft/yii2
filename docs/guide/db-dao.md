@@ -15,7 +15,6 @@ Yii DAO supports the following databases out of box:
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
 - [PostgreSQL](http://www.postgresql.org/): version 8.4 or higher
-- [CUBRID](http://www.cubrid.org/): version 9.3 or higher.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
 
@@ -45,7 +44,7 @@ return [
     'components' => [
         // ...
         'db' => [
-            'class' => 'yii\db\Connection',
+            '__class' => \yii\db\Connection::class,
             'dsn' => 'mysql:host=localhost;dbname=example',
             'username' => 'root',
             'password' => '',
@@ -67,7 +66,6 @@ for more details. Below are some examples:
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
 * PostgreSQL: `pgsql:host=localhost;port=5432;dbname=mydatabase`
-* CUBRID: `cubrid:dbname=demodb;host=localhost;port=33000`
 * MS SQL Server (via sqlsrv driver): `sqlsrv:Server=localhost;Database=mydatabase`
 * MS SQL Server (via dblib driver): `dblib:host=localhost;dbname=mydatabase`
 * MS SQL Server (via mssql driver): `mssql:host=localhost;dbname=mydatabase`
@@ -78,7 +76,7 @@ property so that Yii can know the actual database type. For example,
 
 ```php
 'db' => [
-    'class' => 'yii\db\Connection',
+    '__class' => yii\db\Connection::class,
     'driverName' => 'mysql',
     'dsn' => 'odbc:Driver={MySQL};Server=localhost;Database=test',
     'username' => 'root',
@@ -256,6 +254,21 @@ Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
     ['Linda', 25],
 ])->execute();
 ```
+
+Another useful method is [[yii\db\Command::upsert()|upsert()]]. Upsert is an atomic operation that inserts rows into
+a database table if they do not already exist (matching unique constraints), or update them if they do:
+
+```php
+Yii::$app->db->createCommand()->upsert('pages', [
+    'name' => 'Front page',
+    'url' => 'http://example.com/', // url is unique
+    'visits' => 0,
+], [
+    'visits' => new \yii\db\Expression('visits + 1'),
+], $params)->execute();
+```
+
+The code above will either insert a new page record or increment its visit counter atomically.
 
 Note that the aforementioned methods only create the query and you always have to call [[yii\db\Command::execute()|execute()]]
 to actually run them.
@@ -460,7 +473,7 @@ component like the following:
 
 ```php
 [
-    'class' => 'yii\db\Connection',
+    '__class' => yii\db\Connection::class,
 
     // configuration for the master
     'dsn' => 'dsn for master server',
@@ -523,7 +536,7 @@ You can also configure multiple masters with multiple slaves. For example,
 
 ```php
 [
-    'class' => 'yii\db\Connection',
+    '__class' => yii\db\Connection::class,
 
     // common configuration for masters
     'masterConfig' => [

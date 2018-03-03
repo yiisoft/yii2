@@ -779,7 +779,7 @@ class BaseArrayHelper
      * @param array $array the array being checked
      * @param bool $consecutive whether the array keys must be a consecutive sequence
      * in order for the array to be treated as indexed.
-     * @return bool whether the array is associative
+     * @return bool whether the array is indexed
      */
     public static function isIndexed($array, $consecutive = false)
     {

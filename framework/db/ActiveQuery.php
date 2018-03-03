@@ -134,7 +134,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function prepare($builder)
     {
@@ -196,7 +196,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function populate($rows)
     {
@@ -222,7 +222,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
 
-        return $models;
+        return parent::populate($models);
     }
 
     /**
@@ -319,11 +319,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $params = $this->params;
         }
 
-        return $db->createCommand($sql, $params);
+        $command = $db->createCommand($sql, $params);
+        $this->setCommandCache($command);
+
+        return $command;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function queryScalar($selectExpression, $db)
     {
@@ -337,11 +340,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return parent::queryScalar($selectExpression, $db);
         }
 
-        return (new Query())->select([$selectExpression])
+        $command = (new Query())->select([$selectExpression])
             ->from(['c' => "({$this->sql})"])
             ->params($this->params)
-            ->createCommand($db)
-            ->queryScalar();
+            ->createCommand($db);
+        $this->setCommandCache($command);
+
+        return $command->queryScalar();
     }
 
     /**
@@ -609,8 +614,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return;
         }
 
-        list($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
-        list($childTable, $childAlias) = $child->getTableNameAndAlias();
+        [$parentTable, $parentAlias] = $parent->getTableNameAndAlias();
+        [$childTable, $childAlias] = $child->getTableNameAndAlias();
 
         if (!empty($child->link)) {
             if (strpos($parentAlias, '{{') === false) {
@@ -785,7 +790,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function alias($alias)
     {
         if (empty($this->from) || count($this->from) < 2) {
-            list($tableName) = $this->getTableNameAndAlias();
+            [$tableName] = $this->getTableNameAndAlias();
             $this->from = [$alias => $tableName];
         } else {
             $tableName = $this->getPrimaryTableName();
@@ -802,13 +807,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.12
      */
     public function getTablesUsedInFrom()
     {
         if (empty($this->from)) {
-            $this->from = [$this->getPrimaryTableName()];
+            return $this->cleanUpTableNames([$this->getPrimaryTableName()]);
         }
 
         return parent::getTablesUsedInFrom();

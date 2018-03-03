@@ -21,9 +21,9 @@ use yii\base\InvalidConfigException;
  * return [
  *     'components' => [
  *         'cache' => [
- *             'class' => yii\caching\Cache::class,
+ *             '__class' => yii\caching\Cache::class,
  *             'handler' => [
- *                 'class' => yii\caching\ApcCache::class,
+ *                 '__class' => yii\caching\ApcCache::class,
  *             ],
  *         ],
  *         // ...

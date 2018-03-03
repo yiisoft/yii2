@@ -127,7 +127,7 @@ class UrlNormalizerTest extends TestCase
             'enablePrettyUrl' => true,
             'cache' => null,
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                '__class' => \yii\web\UrlNormalizer::class,
                 'action' => null,
             ],
         ];

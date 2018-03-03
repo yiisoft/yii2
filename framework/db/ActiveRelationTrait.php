@@ -7,8 +7,8 @@
 
 namespace yii\db;
 
-use yii\base\InvalidConfigException;
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 
 /**
  * ActiveRelationTrait implements the common methods and properties for active record relational queries.
@@ -177,8 +177,7 @@ trait ActiveRelationTrait
             $method = new \ReflectionMethod($model, 'get' . $name);
             $realName = lcfirst(substr($method->getName(), 3));
             if ($realName !== $name) {
-                throw new InvalidArgumentException('Relation names are case sensitive. ' . get_class($model)
-                    . " has a relation named \"$realName\" instead of \"$name\".");
+                throw new InvalidArgumentException('Relation names are case sensitive. ' . get_class($model) . " has a relation named \"$realName\" instead of \"$name\".");
             }
         }
 

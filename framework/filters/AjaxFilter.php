@@ -20,7 +20,7 @@ use yii\web\Request;
  * {
  *     return [
  *         [
- *             'class' => 'yii\filters\AjaxFilter',
+ *             '__class' => 'yii\filters\AjaxFilter',
  *             'only' => ['index']
  *         ],
  *     ];
@@ -43,7 +43,7 @@ class AjaxFilter extends ActionFilter
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -53,7 +53,7 @@ class AjaxFilter extends ActionFilter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {

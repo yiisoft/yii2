@@ -95,11 +95,11 @@ class Customer extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @return CustomerQuery
      */
     public static function find()
     {
-        return new CustomerQuery(get_called_class());
+        return new CustomerQuery(\get_called_class());
     }
 }

@@ -67,7 +67,6 @@ use yii\validators\IpValidator;
  * @property bool $isHead Whether this is a HEAD request. This property is read-only.
  * @property bool $isOptions Whether this is a OPTIONS request. This property is read-only.
  * @property bool $isPatch Whether this is a PATCH request. This property is read-only.
- * @property bool $isPjax Whether this is a PJAX request. This property is read-only.
  * @property bool $isPost Whether this is a POST request. This property is read-only.
  * @property bool $isPut Whether this is a PUT request. This property is read-only.
  * @property bool $isSecureConnection If the request is sent via secure channel (https). This property is
@@ -235,9 +234,12 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * @since 2.0.13
      */
     public $secureHeaders = [
+        // Common:
         'X-Forwarded-For',
         'X-Forwarded-Host',
         'X-Forwarded-Proto',
+
+        // Microsoft:
         'Front-End-Https',
         'X-Rewrite-Url',
     ];
@@ -250,7 +252,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * @since 2.0.13
      */
     public $ipHeaders = [
-        'X-Forwarded-For',
+        'X-Forwarded-For', // Common
     ];
     /**
      * @var array list of headers to check for determining whether the connection is made via HTTPS.
@@ -262,8 +264,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * @since 2.0.13
      */
     public $secureProtocolHeaders = [
-        'X-Forwarded-Proto' => ['https'],
-        'Front-End-Https' => ['on'],
+        'X-Forwarded-Proto' => ['https'], // Common
+        'Front-End-Https' => ['on'], // Microsoft
     ];
 
     /**
@@ -606,15 +608,6 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     }
 
     /**
-     * Returns whether this is a PJAX request
-     * @return bool whether this is a PJAX request
-     */
-    public function getIsPjax()
-    {
-        return $this->getIsAjax() && $this->hasHeader('x-pjax');
-    }
-
-    /**
      * Returns whether this is an Adobe Flash or Flex request.
      * @return bool whether this is an Adobe Flash or Adobe Flex request.
      */
@@ -659,7 +652,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         $this->setBody($body);
     }
 
-    private $_parsedBody;
+    private $_parsedBody = false;
 
     /**
      * Returns the request parameters given in the request body.
@@ -670,7 +663,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      *
      * Since 2.1.0 body params also include result of [[getUploadedFiles()]].
      *
-     * @return array the request parameters given in the request body.
+     * @return array|null the request parameters given in the request body. A `null` value indicates
+     * the absence of body content.
      * @throws InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
      * @throws UnsupportedMediaTypeHttpException if unable to parse raw body.
      * @see getMethod()
@@ -679,7 +673,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     public function getParsedBody()
     {
-        if ($this->_parsedBody === null) {
+        if ($this->_parsedBody === false) {
             if (isset($_POST[$this->methodParam])) {
                 $this->_parsedBody = $_POST;
                 unset($this->_parsedBody[$this->methodParam]);
@@ -714,6 +708,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
                 if ($contentType === 'multipart/form-data') {
                     $this->_parsedBody = ArrayHelper::merge($this->_parsedBody, $this->getUploadedFiles());
                 }
+            } elseif (empty($contentType) && ($this->getBody()->getSize() === 0 || $this->getBody()->getSize() === null)) {
+                $this->_parsedBody = null;
             } else {
                 if ($contentType !== 'application/x-www-form-urlencoded') {
                     throw new UnsupportedMediaTypeHttpException();
@@ -760,6 +756,15 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     public function getParsedBodyParam($name, $defaultValue = null)
     {
         $params = $this->getParsedBody();
+
+        if (is_object($params)) {
+            // unable to use `ArrayHelper::getValue()` due to different dots in key logic and lack of exception handling
+            try {
+                return $params->{$name};
+            } catch (\Exception $e) {
+                return $defaultValue;
+            }
+        }
 
         return isset($params[$name]) ? $params[$name] : $defaultValue;
     }
@@ -965,7 +970,10 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         if ($this->_hostInfo === null) {
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
-            if ($this->hasHeader('Host')) {
+
+            if ($this->hasHeader('X-Forwarded-Host')) {
+                $this->_hostInfo = $http . '://' . $this->getHeaderLine('X-Forwarded-Host');
+            } elseif ($this->hasHeader('Host')) {
                 $this->_hostInfo = $http . '://' . $this->getHeaderLine('Host');
             } elseif (($serverName = $this->getServerParam('SERVER_NAME')) !== null) {
                 $this->_hostInfo = $http . '://' . $serverName;
@@ -1488,8 +1496,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     public function getPort()
     {
         if ($this->_port === null) {
-            $serverPort = $this->getServerParam('SERVER_PORT');
-            $this->_port = !$this->getIsSecureConnection() && $serverPort === null ? (int) $serverPort : 80;
+            $serverPort = $this->getServerPort();
+            $this->_port = !$this->getIsSecureConnection() && $serverPort !== null ? $serverPort : 80;
         }
 
         return $this->_port;
@@ -1521,8 +1529,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     public function getSecurePort()
     {
         if ($this->_securePort === null) {
-            $serverPort = $this->getServerParam('SERVER_PORT');
-            $this->_securePort = $this->getIsSecureConnection() && $serverPort === null ? (int) $serverPort : 443;
+            $serverPort = $this->getServerPort();
+            $this->_securePort = $this->getIsSecureConnection() && $serverPort !== null ? $serverPort : 443;
         }
 
         return $this->_securePort;
@@ -1824,7 +1832,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
                 $data = @unserialize($data);
                 if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
                     $cookies[$name] = Yii::createObject([
-                        'class' => \yii\http\Cookie::class,
+                        '__class' => \yii\http\Cookie::class,
                         'name' => $name,
                         'value' => $data[1],
                         'expire' => null,
@@ -1834,7 +1842,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         } else {
             foreach ($this->getCookieParams() as $name => $value) {
                 $cookies[$name] = Yii::createObject([
-                    'class' => \yii\http\Cookie::class,
+                    '__class' => \yii\http\Cookie::class,
                     'name' => $name,
                     'value' => $value,
                     'expire' => null,
@@ -1918,7 +1926,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             }
         } else {
             $files = Yii::createObject([
-                'class' => $this->uploadedFileClass,
+                '__class' => $this->uploadedFileClass,
                 'clientFilename' => $names,
                 'tempFilename' => $tempNames,
                 'clientMediaType' => $types,
@@ -2013,7 +2021,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     public function getCsrfToken($regenerate = false)
     {
         if ($this->_csrfToken === null || $regenerate) {
-            if ($regenerate || ($token = $this->loadCsrfToken()) === null) {
+            $token = $this->loadCsrfToken();
+            if ($regenerate || empty($token)) {
                 $token = $this->generateCsrfToken();
             }
             $this->_csrfToken = Yii::$app->security->maskToken($token);
@@ -2072,7 +2081,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     {
         $options = $this->csrfCookie;
         return Yii::createObject(array_merge($options, [
-            'class' => \yii\http\Cookie::class,
+            '__class' => \yii\http\Cookie::class,
             'name' => $this->csrfParam,
             'value' => $token,
         ]));
@@ -2220,5 +2229,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         if (is_object($this->_cookies)) {
             $this->_cookies = clone $this->_cookies;
         }
+
+        $this->_parsedBody = false;
     }
 }

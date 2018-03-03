@@ -18,6 +18,7 @@ Introduction
 Getting Started
 ---------------
 
+* [What do you need to know](start-prerequisites.md)
 * [Installing Yii](start-installation.md)
 * [Running Applications](start-workflow.md)
 * [Saying Hello](start-hello.md)
@@ -129,20 +130,6 @@ Caching
 * [HTTP Caching](caching-http.md)
 
 
-RESTful Web Services
---------------------
-
-* [Quick Start](rest-quick-start.md)
-* [Resources](rest-resources.md)
-* [Controllers](rest-controllers.md)
-* [Routing](rest-routing.md)
-* [Response Formatting](rest-response-formatting.md)
-* [Authentication](rest-authentication.md)
-* [Rate Limiting](rest-rate-limiting.md)
-* [Versioning](rest-versioning.md)
-* [Error Handling](rest-error-handling.md)
-
-
 Development Tools
 -----------------
 
@@ -185,7 +172,6 @@ Widgets
 * [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
 * [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
 * [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
-* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
 * [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
 * [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
 * [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)

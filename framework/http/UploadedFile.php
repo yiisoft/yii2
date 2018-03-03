@@ -152,7 +152,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
                     throw new \RuntimeException('Unable to create file stream due to upload error: ' . $this->getError());
                 }
                 $stream = [
-                    'class' => FileStream::class,
+                    '__class' => FileStream::class,
                     'filename' => $this->tempFilename,
                     'mode' => 'r',
                 ];

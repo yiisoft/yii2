@@ -263,7 +263,7 @@ Pour gérer l'évenement `EVENT_DANCE` déclenché par n'importe laquelle de ces
 
 ```php
 Event::on(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' danse'); // enregistrer le message disant que le chien ou le développeur danse.
+    Yii::debug(get_class($event->sender) . ' danse'); // enregistrer le message disant que le chien ou le développeur danse.
 })
 ```
 

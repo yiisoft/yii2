@@ -185,7 +185,7 @@ class BaseFormatConverter
             'cccc' => 'l',
             'ccccc' => '',
             'cccccc' => '',
-            'a' => 'a',     // am/pm marker
+            'a' => 'A',     // AM/PM marker
             'h' => 'g',     // 12-hour format of an hour without leading zeros 1 to 12h
             'hh' => 'h',    // 12-hour format of an hour with leading zeros, 01 to 12 h
             'H' => 'G',     // 24-hour format of an hour without leading zeros 0 to 23h

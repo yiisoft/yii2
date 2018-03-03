@@ -153,7 +153,7 @@ the [[yii\base\Application::modules|modules]] property of the application. The f
 [
     'modules' => [
         'forum' => [
-            'class' => 'app\modules\forum\Module',
+            '__class' => app\modules\forum\Module::class,
             // ... other configurations for the module ...
         ],
     ],
@@ -175,6 +175,14 @@ For example, if an application uses a module named `forum`, then the route
 only contains the module ID, then the [[yii\base\Module::defaultRoute]] property, which defaults to `default`,
 will determine which controller/action should be used. This means a route `forum` would represent the `default`
 controller in the `forum` module.
+
+URL manager routes should be added before [[yii\web\UrlManager::parseRequest()]] is fired. That means doing it 
+in module's `init()` won't work because module will be initialized when routes were already processed. Thus, routes
+should be added at [bootstrap stage](structure-extensions.md#bootstrapping-classes). It is a also a good practice
+to wrap module's URL rules with [[\yii\web\GroupUrlRule]].  
+
+In case module is used to [version API](rest-versioning.md), routes should be added directly in `urlManager` 
+section of the application config.
 
 
 ### Accessing Modules <span id="accessing-modules"></span>
@@ -254,7 +262,7 @@ class Module extends \yii\base\Module
         $this->modules = [
             'admin' => [
                 // you should consider using a shorter namespace here!
-                'class' => 'app\modules\forum\modules\admin\Module',
+                '__class' => app\modules\forum\modules\admin\Module::class,
             ],
         ];
     }

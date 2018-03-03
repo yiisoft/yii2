@@ -72,7 +72,6 @@ class BaseYiiTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf('Invalid path alias: %s', $erroneousAlias));
         Yii::getAlias($erroneousAlias, true);
-
     }
 
     public function testGetRootAlias()
@@ -95,7 +94,6 @@ class BaseYiiTest extends TestCase
         $this->assertEquals('/yii/gii', Yii::getAlias('@yii/gii'));
         Yii::setAlias('@yii/tii', '/yii/tii');
         $this->assertEquals('/yii/tii', Yii::getAlias('@yii/tii'));
-
     }
 
     public function testGetVersion()
@@ -103,39 +101,65 @@ class BaseYiiTest extends TestCase
         $this->assertTrue((bool) preg_match('~\d+\.\d+(?:\.\d+)?(?:-\w+)?~', \Yii::getVersion()));
     }
 
+    public function testCreateObject()
+    {
+        $object = Yii::createObject([
+            'class' => Singer::class,
+            'firstName' => 'John',
+        ]);
+        $this->assertTrue($object instanceof Singer);
+        $this->assertSame('John', $object->firstName);
+
+        $object = Yii::createObject([
+            '__class' => Singer::class,
+            'firstName' => 'Michael',
+        ]);
+        $this->assertTrue($object instanceof Singer);
+        $this->assertSame('Michael', $object->firstName);
+
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('Object configuration must be an array containing a "__class" element.');
+        $object = Yii::createObject([
+            'firstName' => 'John',
+        ]);
+    }
+
+    /**
+     * @depends testCreateObject
+     */
     public function testCreateObjectCallable()
     {
         Yii::$container = new Container();
 
         // Test passing in of normal params combined with DI params.
-        $this->assertTrue(Yii::createObject(function (Singer $singer, $a) {
+        $this->assertNotEmpty(Yii::createObject(function (Singer $singer, $a) {
             return $a === 'a';
         }, ['a']));
 
 
         $singer = new Singer();
         $singer->firstName = 'Bob';
-        $this->assertTrue(Yii::createObject(function (Singer $singer, $a) {
+        $this->assertNotEmpty(Yii::createObject(function (Singer $singer, $a) {
             return $singer->firstName === 'Bob';
         }, [$singer, 'a']));
 
 
-        $this->assertTrue(Yii::createObject(function (Singer $singer, $a = 3) {
+        $this->assertNotEmpty(Yii::createObject(function (Singer $singer, $a = 3) {
             return true;
         }));
     }
 
     public function testCreateObjectEmptyArrayException()
     {
-        $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('Object configuration must be an array containing a "class" element.');
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('Object configuration must be an array containing a "__class" element.');
 
         Yii::createObject([]);
     }
 
     public function testCreateObjectInvalidConfigException()
     {
-        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectException(\yii\base\InvalidConfigException::class);
         $this->expectExceptionMessage('Unsupported configuration type: ' . gettype(null));
 
         Yii::createObject(null);
@@ -169,7 +193,7 @@ class BaseYiiTest extends TestCase
         BaseYii::setLogger(null);
         $defaultLogger = BaseYii::getLogger();
         BaseYii::setLogger([
-            'class' => Logger::class,
+            '__class' => Logger::class,
             'flushInterval' => 987,
         ]);
         $logger = BaseYii::getLogger();
@@ -208,7 +232,7 @@ class BaseYiiTest extends TestCase
         BaseYii::setProfiler(null);
         $defaultProfiler = BaseYii::getProfiler();
         BaseYii::setProfiler([
-            'class' => Profiler::class,
+            '__class' => Profiler::class,
         ]);
         $profiler = BaseYii::getProfiler();
         $this->assertNotSame($defaultProfiler, $profiler);

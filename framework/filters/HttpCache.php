@@ -25,7 +25,7 @@ use yii\base\ActionFilter;
  * {
  *     return [
  *         [
- *             'class' => \yii\filters\HttpCache::class,
+ *             '__class' => \yii\filters\HttpCache::class,
  *             'only' => ['index'],
  *             'lastModified' => function ($action, $params) {
  *                 $q = new \yii\db\Query();
@@ -190,7 +190,8 @@ class HttpCache extends ActionFilter
                 header_remove('Last-Modified');
                 header_remove('Pragma');
             }
-            session_cache_limiter($this->sessionCacheLimiter);
+
+            Yii::$app->getSession()->setCacheLimiter($this->sessionCacheLimiter);
         }
 
         if ($this->cacheControlHeader !== null) {

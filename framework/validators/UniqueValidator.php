@@ -93,10 +93,15 @@ class UniqueValidator extends Validator
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
+    /**
+     * @var bool whether this validator is forced to always use master DB
+     * @since 2.0.14
+     */
+    public $forceMasterDb =  true;
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -117,7 +122,7 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -135,7 +140,19 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
-        if ($this->modelExists($targetClass, $conditions, $model)) {
+        $db = $targetClass::getDb();
+
+        $modelExists = false;
+
+        if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
+            $db->useMaster(function () use ($targetClass, $conditions, $model, &$modelExists) {
+                $modelExists = $this->modelExists($targetClass, $conditions, $model);
+            });
+        } else {
+            $modelExists = $this->modelExists($targetClass, $conditions, $model);
+        }
+
+        if ($modelExists) {
             if (is_array($targetAttribute) && count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
@@ -181,6 +198,9 @@ class UniqueValidator extends Validator
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
+                
+                // any with relation can't be loaded because related fields are not selected
+                $query->with = null;
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);

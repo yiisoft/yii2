@@ -15,7 +15,7 @@ use yii\console\controllers\CacheController;
 class SilencedCacheController extends CacheController
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function stdout($string)
     {

@@ -1,4 +1,5 @@
-FROM yiisoftware/yii2-php:7.1-apache
+ARG DOCKER_YII2_PHP_IMAGE
+FROM ${DOCKER_YII2_PHP_IMAGE}
 
 # Project source-code
 WORKDIR /project

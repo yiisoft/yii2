@@ -63,9 +63,9 @@ and accessible. The following code shows how to configure the `cache` applicatio
 ```php
 'components' => [
     'cache' => [
-        'class' => yii\caching\Cache::class,
+        '__class' => yii\caching\Cache::class,
         'handler' => [
-            'class' => yii\caching\MemCache::class,
+            '__class' => yii\caching\MemCache::class,
             'servers' => [
                 [
                     'host' => 'server1',
@@ -93,9 +93,9 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 ```php
 'components' => [
     'cache' => [
-        'class' => yii\caching\Cache::class,
+        '__class' => yii\caching\Cache::class,
         'handler' => [
-            'class' => yii\caching\ApcCache::class,
+            '__class' => yii\caching\ApcCache::class,
         ],
     ],
 ],
@@ -211,9 +211,9 @@ property. For example, in the application configuration you can write the follow
 ```php
 'components' => [
     'cache' => [
-        'class' => 'yii\caching\Cache',
+        '__class' => 'yii\caching\Cache',
         'handler' => [
-            'class' => 'yii\caching\ApcCache',
+            '__class' => 'yii\caching\ApcCache',
             'keyPrefix' => 'myapp',       // a unique cache key prefix
         ],
     ],
@@ -319,6 +319,13 @@ $result = Customer::getDb()->cache(function ($db) {
   The query caching described above has the advantage that you may specify flexible cache dependencies
   and are potentially more efficient.
 
+Since 2.0.14 you can use the following shortcuts:
+
+```php
+(new Query())->cache(7200)->all();
+// and
+User::find()->cache(7200)->all();
+```
 
 ### Clearing Cache <span id="clearing-cache">
 

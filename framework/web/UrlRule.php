@@ -19,7 +19,7 @@ use yii\base\InvalidConfigException;
  *
  * ```php
  * 'rules' => [
- *     ['class' => MyUrlRule::class, 'pattern' => '...', 'route' => 'site/index', ...],
+ *     ['__class' => MyUrlRule::class, 'pattern' => '...', 'route' => 'site/index', ...],
  *     // ...
  * ]
  * ```
@@ -189,13 +189,13 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     public function init()
     {
         if ($this->pattern === null) {
-            throw new InvalidConfigException('UrlRule::pattern must be set.');
+            throw new InvalidConfigException('UrlRule::$pattern must be set.');
         }
         if ($this->route === null) {
-            throw new InvalidConfigException('UrlRule::route must be set.');
+            throw new InvalidConfigException('UrlRule::$route must be set.');
         }
         if (is_array($this->normalizer)) {
-            $normalizerConfig = array_merge(['class' => UrlNormalizer::class], $this->normalizer);
+            $normalizerConfig = array_merge(['__class' => UrlNormalizer::class], $this->normalizer);
             $this->normalizer = Yii::createObject($normalizerConfig);
         }
         if ($this->normalizer !== null && $this->normalizer !== false && !$this->normalizer instanceof UrlNormalizer) {

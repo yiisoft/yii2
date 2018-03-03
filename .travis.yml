@@ -30,7 +30,6 @@ env:
   global:
     - DEFAULT_COMPOSER_FLAGS="--prefer-dist --no-interaction --no-progress --optimize-autoloader"
     - TASK_TESTS_PHP=1
-    - TASK_TESTS_JS=0
     - TASK_TESTS_COVERAGE=0
 
 
@@ -46,9 +45,14 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.npm
 
-# try running against postgres 9.3
+# try running against postgres 9.6
 addons:
-  postgresql: "9.3"
+  postgresql: "9.6"
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
   code_climate:
     repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
 
@@ -61,13 +65,6 @@ matrix:
     - php: 7.1
       env: TASK_TESTS_COVERAGE=1
     - php: nightly
-
-    # have a separate branch for javascript tests
-    - language: node_js
-      node_js: 6
-      env: TASK_TESTS_PHP=0 TASK_TESTS_JS=1
-      # overwrite services used for PHP tests
-      services:
 
   allow_failures:
     - php: nightly
@@ -92,12 +89,6 @@ install:
       tests/data/travis/imagick-setup.sh
     fi
 
-  # setup JS test
-  - |
-    if [ $TASK_TESTS_JS == 1 ]; then
-      travis_retry npm install
-    fi
-
 before_script:
   # show some versions and env information
   - php --version
@@ -109,16 +100,12 @@ before_script:
       psql --version
       mysql --version
     fi
-  - |
-    if [ $TASK_TESTS_JS == 1 ]; then
-      node --version
-      npm --version
-    fi
 
   # initialize databases
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
       travis_retry mysql -e 'CREATE DATABASE `yiitest`;';
+      mysql -e "SET GLOBAL sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';";
       mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
       mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
       psql -U postgres -c 'CREATE DATABASE yiitest;';
@@ -144,13 +131,7 @@ script:
   # PHP tests
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
-      vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
-    fi
-
-  # JS tests
-  - |
-    if [ $TASK_TESTS_JS == 1 ]; then
-      npm test
+      vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group wincache,xcache,zenddata
     fi
 
 after_script:

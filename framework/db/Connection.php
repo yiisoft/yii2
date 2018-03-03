@@ -101,7 +101,7 @@ use yii\caching\CacheInterface;
  * ```php
  * 'components' => [
  *     'db' => [
- *         'class' => \yii\db\Connection::class,
+ *         '__class' => \yii\db\Connection::class,
  *         'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
  *         'username' => 'root',
  *         'password' => '',
@@ -118,10 +118,11 @@ use yii\caching\CacheInterface;
  * master available. This property is read-only.
  * @property PDO $masterPdo The PDO instance for the currently active master connection. This property is
  * read-only.
- * @property QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
- * read-only.
+ * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
+ * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
+ * @property string $serverVersion Server version as a string. This property is read-only.
  * @property Connection $slave The currently active slave connection. `null` is returned if there is no slave
  * available and `$fallbackToMaster` is false. This property is read-only.
  * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
@@ -135,19 +136,19 @@ use yii\caching\CacheInterface;
 class Connection extends Component
 {
     /**
-     * @event Event an event that is triggered after a DB connection is established
+     * @event [[yii\base\Event|Event]] an event that is triggered after a DB connection is established
      */
     const EVENT_AFTER_OPEN = 'afterOpen';
     /**
-     * @event Event an event that is triggered right before a top-level transaction is started
+     * @event [[yii\base\Event|Event]] an event that is triggered right before a top-level transaction is started
      */
     const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
     /**
-     * @event Event an event that is triggered right after a top-level transaction is committed
+     * @event [[yii\base\Event|Event]] an event that is triggered right after a top-level transaction is committed
      */
     const EVENT_COMMIT_TRANSACTION = 'commitTransaction';
     /**
-     * @event Event an event that is triggered right after a top-level transaction is rolled back
+     * @event [[yii\base\Event|Event]] an event that is triggered right after a top-level transaction is rolled back
      */
     const EVENT_ROLLBACK_TRANSACTION = 'rollbackTransaction';
 
@@ -238,7 +239,7 @@ class Connection extends Component
     public $queryCache = 'cache';
     /**
      * @var string the charset used for database connection. The property is only used
-     * for MySQL, PostgreSQL and CUBRID databases. Defaults to null, meaning using default charset
+     * for MySQL and PostgreSQL databases. Defaults to null, meaning using default charset
      * as configured by the database.
      *
      * For Oracle Database, the charset must be specified in the [[dsn]], for example for UTF-8 by appending `;charset=UTF-8`
@@ -264,8 +265,8 @@ class Connection extends Component
     public $tablePrefix = '';
     /**
      * @var array mapping between PDO driver names and [[Schema]] classes.
-     * The keys of the array are PDO driver names while the values the corresponding
-     * schema class name or configuration. Please refer to [[Yii::createObject()]] for
+     * The keys of the array are PDO driver names while the values are either the corresponding
+     * schema class names or configurations. Please refer to [[Yii::createObject()]] for
      * details on how to specify a configuration.
      *
      * This property is mainly used by [[getSchema()]] when fetching the database schema information.
@@ -278,11 +279,6 @@ class Connection extends Component
         'mysql' => mysql\Schema::class, // MySQL
         'sqlite' => sqlite\Schema::class, // sqlite 3
         'sqlite2' => sqlite\Schema::class, // sqlite 2
-        'sqlsrv' => mssql\Schema::class, // newer MSSQL driver on MS Windows hosts
-        'oci' => oci\Schema::class, // Oracle driver
-        'mssql' => mssql\Schema::class, // older MSSQL driver on MS Windows hosts
-        'dblib' => mssql\Schema::class, // dblib drivers on GNU/Linux (and maybe other OSes) hosts
-        'cubrid' => cubrid\Schema::class, // CUBRID
     ];
     /**
      * @var string Custom PDO wrapper class. If not set, it will use [[PDO]] or [[\yii\db\mssql\PDO]] when MSSQL is used.
@@ -292,10 +288,34 @@ class Connection extends Component
     /**
      * @var string the class used to create new database [[Command]] objects. If you want to extend the [[Command]] class,
      * you may configure this property to use your extended version of the class.
+     * Since version 2.0.14 [[$commandMap]] is used if this property is set to its default value.
      * @see createCommand
      * @since 2.0.7
+     * @deprecated since 2.0.14. Use [[$commandMap]] for precise configuration.
      */
     public $commandClass = Command::class;
+    /**
+     * @var array mapping between PDO driver names and [[Command]] classes.
+     * The keys of the array are PDO driver names while the values are either the corresponding
+     * command class names or configurations. Please refer to [[Yii::createObject()]] for
+     * details on how to specify a configuration.
+     *
+     * This property is mainly used by [[createCommand()]] to create new database [[Command]] objects.
+     * You normally do not need to set this property unless you want to use your own
+     * [[Command]] class or support DBMS that is not supported by Yii.
+     * @since 2.0.14
+     */
+    public $commandMap = [
+        'pgsql' => 'yii\db\Command', // PostgreSQL
+        'mysqli' => 'yii\db\Command', // MySQL
+        'mysql' => 'yii\db\Command', // MySQL
+        'sqlite' => 'yii\db\sqlite\Command', // sqlite 3
+        'sqlite2' => 'yii\db\sqlite\Command', // sqlite 2
+        'sqlsrv' => 'yii\db\Command', // newer MSSQL driver on MS Windows hosts
+        'oci' => 'yii\db\Command', // Oracle driver
+        'mssql' => 'yii\db\Command', // older MSSQL driver on MS Windows hosts
+        'dblib' => 'yii\db\Command', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
+    ];
     /**
      * @var bool whether to enable [savepoint](http://en.wikipedia.org/wiki/Savepoint).
      * Note that if the underlying DBMS does not support savepoint, setting this property to be true will have no effect.
@@ -667,7 +687,7 @@ class Connection extends Component
         if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES')) {
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
         }
-        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'], true)) {
+        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli'], true)) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
         }
         $this->trigger(self::EVENT_AFTER_OPEN);
@@ -681,12 +701,17 @@ class Connection extends Component
      */
     public function createCommand($sql = null, $params = [])
     {
+        $driver = $this->getDriverName();
+        $config = ['__class' => Command::class];
+        if ($this->commandClass !== $config['__class']) {
+            $config['__class'] = $this->commandClass;
+        } elseif (isset($this->commandMap[$driver])) {
+            $config = !is_array($this->commandMap[$driver]) ? ['__class' => $this->commandMap[$driver]] : $this->commandMap[$driver];
+        }
+        $config['db'] = $this;
+        $config['sql'] = $sql;
         /** @var Command $command */
-        $command = new $this->commandClass([
-            'db' => $this,
-            'sql' => $sql,
-        ]);
-
+        $command = Yii::createObject($config);
         return $command->bindValues($params);
     }
 
@@ -777,7 +802,7 @@ class Connection extends Component
 
         $driver = $this->getDriverName();
         if (isset($this->schemaMap[$driver])) {
-            $config = !is_array($this->schemaMap[$driver]) ? ['class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
+            $config = !is_array($this->schemaMap[$driver]) ? ['__class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
             $config['db'] = $this;
 
             return $this->_schema = Yii::createObject($config);
@@ -793,6 +818,17 @@ class Connection extends Component
     public function getQueryBuilder()
     {
         return $this->getSchema()->getQueryBuilder();
+    }
+
+    /**
+     * Can be used to set [[QueryBuilder]] configuration via Connection configuration array.
+     *
+     * @param array $value the [[QueryBuilder]] properties to be configured.
+     * @since 2.0.14
+     */
+    public function setQueryBuilder($value)
+    {
+        Yii::configure($this->getQueryBuilder(), $value);
     }
 
     /**
@@ -904,6 +940,16 @@ class Connection extends Component
     public function setDriverName($driverName)
     {
         $this->_driverName = strtolower($driverName);
+    }
+
+    /**
+     * Returns a server version as a string comparable by [[\version_compare()]].
+     * @return string server version as a string.
+     * @since 2.0.14
+     */
+    public function getServerVersion()
+    {
+        return $this->getSchema()->getServerVersion();
     }
 
     /**
@@ -1039,8 +1085,8 @@ class Connection extends Component
             return null;
         }
 
-        if (!isset($sharedConfig['class'])) {
-            $sharedConfig['class'] = get_class($this);
+        if (!isset($sharedConfig['__class'])) {
+            $sharedConfig['__class'] = get_class($this);
         }
 
         $cache = is_string($this->serverStatusCache) ? Yii::$app->get($this->serverStatusCache, false) : $this->serverStatusCache;

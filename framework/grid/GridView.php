@@ -126,6 +126,11 @@ class GridView extends BaseListView
      */
     public $showFooter = false;
     /**
+     * @var bool whether to place footer after body in DOM if $showFooter is true
+     * @since 2.0.14
+     */
+    public $placeFooterAfterBody = false;
+    /**
      * @var bool whether to show the grid view if [[dataProvider]] returns no data.
      */
     public $showOnEmpty = true;
@@ -141,14 +146,14 @@ class GridView extends BaseListView
      *
      * ```php
      * [
-     *     ['class' => \yii\grid\SerialColumn::class],
+     *     ['__class' => \yii\grid\SerialColumn::class],
      *     [
-     *         'class' => \yii\grid\DataColumn::class, // this line is optional
+     *         '__class' => \yii\grid\DataColumn::class, // this line is optional
      *         'attribute' => 'name',
      *         'format' => 'text',
      *         'label' => 'Name',
      *     ],
-     *     ['class' => \yii\grid\CheckboxColumn::class],
+     *     ['__class' => \yii\grid\CheckboxColumn::class],
      * ]
      * ```
      *
@@ -286,7 +291,7 @@ class GridView extends BaseListView
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderSection($name)
     {
@@ -307,13 +312,25 @@ class GridView extends BaseListView
         $columnGroup = $this->renderColumnGroup();
         $tableHeader = $this->showHeader ? $this->renderTableHeader() : false;
         $tableBody = $this->renderTableBody();
-        $tableFooter = $this->showFooter ? $this->renderTableFooter() : false;
+
+        $tableFooter = false;
+        $tableFooterAfterBody = false;
+        
+        if ($this->showFooter) {
+            if ($this->placeFooterAfterBody) {
+                $tableFooterAfterBody = $this->renderTableFooter();
+            } else {
+                $tableFooter = $this->renderTableFooter();
+            }	        
+        }
+
         $content = array_filter([
             $caption,
             $columnGroup,
             $tableHeader,
             $tableFooter,
             $tableBody,
+            $tableFooterAfterBody,
         ]);
 
         return Html::tag('table', implode("\n", $content), $this->tableOptions);
@@ -486,7 +503,7 @@ class GridView extends BaseListView
                 $column = $this->createDataColumn($column);
             } else {
                 $column = Yii::createObject(array_merge([
-                    'class' => $this->dataColumnClass ?: DataColumn::class,
+                    '__class' => $this->dataColumnClass ?: DataColumn::class,
                     'grid' => $this,
                 ], $column));
             }
@@ -511,7 +528,7 @@ class GridView extends BaseListView
         }
 
         return Yii::createObject([
-            'class' => $this->dataColumnClass ?: DataColumn::class,
+            '__class' => $this->dataColumnClass ?: DataColumn::class,
             'grid' => $this,
             'attribute' => $matches[1],
             'format' => isset($matches[3]) ? $matches[3] : 'text',

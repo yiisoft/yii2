@@ -259,8 +259,8 @@ class AssetManager extends Component
      */
     protected function loadBundle($name, $config = [], $publish = true)
     {
-        if (!isset($config['class'])) {
-            $config['class'] = $name;
+        if (!isset($config['__class'])) {
+            $config['__class'] = $name;
         }
         /* @var $bundle AssetBundle */
         $bundle = Yii::createObject($config);
@@ -377,8 +377,8 @@ class AssetManager extends Component
         if ($this->_converter === null) {
             $this->_converter = Yii::createObject(AssetConverter::class);
         } elseif (is_array($this->_converter) || is_string($this->_converter)) {
-            if (is_array($this->_converter) && !isset($this->_converter['class'])) {
-                $this->_converter['class'] = AssetConverter::class;
+            if (is_array($this->_converter) && !isset($this->_converter['__class'])) {
+                $this->_converter['__class'] = AssetConverter::class;
             }
             $this->_converter = Yii::createObject($this->_converter);
         }

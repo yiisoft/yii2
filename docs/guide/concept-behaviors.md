@@ -127,14 +127,14 @@ class User extends ActiveRecord
 
             // anonymous behavior, configuration array
             [
-                'class' => MyBehavior::class,
+                '__class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
             // named behavior, configuration array
             'myBehavior4' => [
-                'class' => MyBehavior::class,
+                '__class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ]
@@ -160,7 +160,7 @@ $component->attachBehavior('myBehavior2', MyBehavior::class);
 
 // attach a configuration array
 $component->attachBehavior('myBehavior3', [
-    'class' => MyBehavior::class,
+    '__class' => MyBehavior::class,
     'prop1' => 'value1',
     'prop2' => 'value2',
 ]);
@@ -182,7 +182,7 @@ You may also attach behaviors through [configurations](concept-configurations.md
     'as myBehavior2' => MyBehavior::class,
 
     'as myBehavior3' => [
-        'class' => MyBehavior::class,
+        '__class' => MyBehavior::class,
         'prop1' => 'value1',
         'prop2' => 'value2',
     ],
@@ -272,7 +272,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],

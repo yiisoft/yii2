@@ -37,7 +37,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => 'yii\filters\HttpCache',
+            '__class' => 'yii\filters\HttpCache',
             'only' => ['index'],
             'lastModified' => function ($action, $params) {
                 $q = new \yii\db\Query();
@@ -82,7 +82,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => 'yii\filters\HttpCache',
+            '__class' => 'yii\filters\HttpCache',
             'only' => ['view'],
             'etagSeed' => function ($action, $params) {
                 $post = $this->findModel(\Yii::$app->request->get('id'));

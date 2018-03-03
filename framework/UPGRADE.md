@@ -61,10 +61,27 @@ Upgrade from Yii 2.0.x
 * `::className()` method calls should be replaced with [native](http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class.class) `::class`.
   When upgrading to Yii 2.1, You should do a global search and replace for `::className()` to `::class`.
   All calls on objects via `->className()` should be replaced by a call to `get_class()`.
+* Dependency injection (DI) layer has been replaced by "yiisoft/di" package. Make sure to update class/object definitions at
+  your code to match the syntax used by it. In particular: you should use '__class' array key instead of 'class' for
+  class name specification.
 * XCache and Zend data cache support was removed. Switch to another caching backends.
 * Rename `InvalidParamException` usage to `InvalidArgumentException`.
+* CAPTCHA package has been moved into separate extension https://github.com/yiisoft/yii2-captcha.
+  Include it in your composer.json if you use it.
+* JQuery related code (e.g. `yii.js`, `yiiActiveForm.js`, `yiiGridView.js`) has been moved into separate extension https://github.com/yiisoft/yii2-jquery.
+  Include it in your composer.json if you use it.
+* REST API package has been moved into separate extension https://github.com/yiisoft/yii2-rest.
+  Include it in your composer.json if you use it.
+* MSSQL Server DB package has been moved into separate extension https://github.com/yiisoft/yii2-mssql.
+  Include it in your composer.json if you use it.
+* Oracle DB package has been moved into separate extension https://github.com/yiisoft/yii2-oracle.
+  Include it in your composer.json if you use it.
+* CUBRID support has been removed, package `yii\db\cubrid\*` is no longer available.
+  If you need to use CUBRID further you should create your own integration for it.
 * Masked input field widget was moved into separate extension https://github.com/yiisoft/yii2-maskedinput.
   Include it in your composer.json if you use it.
+* PJAX support has been removed: widget `yii\widget\Pjax`, method `yii\web\Request::getIsPjax()`, PJAX related checks and
+  headers are no longer available. If you wish to use PJAX further you should create your own integration for it.
 * If you've used ApcCache and set `useApcu` in your config, remove the option.
 * During mail view rendering the `$message` variable is no longer set by default to be an instance of `yii\mail\MessageInterface`. Instead it is available via `$this->context->message` expression.
 * `yii\mail\BaseMailer::render()` method has been removed. Make sure you do not use it anywhere in your program.
@@ -157,8 +174,8 @@ Upgrade from Yii 2.0.x
 * Package "ezyang/htmlpurifier" has been made optional and is not installed by default. If you need to use
   `yii\helpers\HtmlPurifier` or `yii\i18n\Formatter::asHtml()` (e.g. 'html' data format), you'll have to install
   this package manually for your project.
-* `yii\BaseYii::powered()` method has been moved to `yii\helpers\Html::poweredByYii()`.
-  Please update all references to this method in you application code.
+* `yii\BaseYii::powered()` method has been removed. Please add "Powered by Yii" link either right into HTML or using
+  `yii\helpers\Html::a()`.
 
 
 Upgrade from Yii 2.0.13
@@ -167,6 +184,46 @@ Upgrade from Yii 2.0.13
 * Constants `IPV6_ADDRESS_LENGTH`, `IPV4_ADDRESS_LENGTH` were moved from `yii\validators\IpValidator` to `yii\helpers\IpHelper`.
   If your application relies on these constants, make sure to update your code to follow the changes.
 
+* `yii\base\Security::compareString()` is now throwing `yii\base\InvalidArgumentException` in case non-strings are compared.
+
+* `yii\db\ExpressionInterface` has been introduced to represent a wider range of SQL expressions. In case you check for
+  `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
+  introduced methods to retrieve the expression content.
+
+* Added JSON support for PostgreSQL and MySQL as well as Arrays support for PostgreSQL in ActiveRecord layer.
+  In case you already implemented such support yourself, please switch to Yii implementation.
+  * For MySQL JSON and PgSQL JSON & JSONB columns Active Record will return decoded JSON (that can be either array or scalar) after data population
+  and expects arrays or scalars to be assigned for further saving them into a database.
+  * For PgSQL Array columns Active Record will return `yii\db\ArrayExpression` object that acts as an array
+  (it implements `ArrayAccess`, `Traversable` and `Countable` interfaces) and expects array or `yii\db\ArrayExpression` to be
+  assigned for further saving it into the database.
+
+  In case this change makes the upgrade process to Yii 2.0.14 too hard in your project, you can [switch off the described behavior](https://github.com/yiisoft/yii2/issues/15716#issuecomment-368143206)
+  Then you can take your time to change your code and then re-enable arrays or JSON support.
+
+* `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PDO parameter type 
+  when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
+  You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
+
+* `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
+  Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
+  space to customization. In case you rely on that property or override any of default condition builders, follow the 
+  special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
+  to update your code.
+
+* Protected method `yii\db\ActiveQueryTrait::createModels()` does not apply indexes as defined in `indexBy` property anymore.  
+  In case you override default ActiveQuery implementation and relied on that behavior, call `yii\db\Query::populate()`
+  method instead to index query results according to the `indexBy` parameter.
+
+* Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
+
+* You can start preparing your application for Yii 2.1 by doing the following:
+
+  - Replace `::className()` calls with `::class` (if you’re running PHP 5.5+).
+  - Replace usages of `yii\base\InvalidParamException` with `yii\base\InvalidArgumentException`.
+  - Replace calls to `Yii::trace()` with `Yii::debug()`.
+  - Remove calls to `yii\BaseYii::powered()`.
+  - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
 
 Upgrade from Yii 2.0.12
 -----------------------

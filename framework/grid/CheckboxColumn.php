@@ -21,7 +21,7 @@ use yii\helpers\Json;
  * 'columns' => [
  *     // ...
  *     [
- *         'class' => \yii\grid\CheckboxColumn::class,
+ *         '__class' => \yii\grid\CheckboxColumn::class,
  *         // you may configure additional properties here
  *     ],
  * ]
@@ -77,7 +77,7 @@ class CheckboxColumn extends Column
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws \yii\base\InvalidConfigException if [[name]] is not set.
      */
     public function init()
@@ -109,7 +109,7 @@ class CheckboxColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderDataCellContent($model, $key, $index)
     {

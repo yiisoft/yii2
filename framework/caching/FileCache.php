@@ -23,9 +23,9 @@ use yii\helpers\FileHelper;
  * return [
  *     'components' => [
  *         'cache' => [
- *             'class' => yii\caching\Cache::class,
+ *             '__class' => yii\caching\Cache::class,
  *             'handler' => [
- *                 'class' => yii\caching\FileCache::class,
+ *                 '__class' => yii\caching\FileCache::class,
  *                 // 'cachePath' => '@runtime/cache',
  *             ],
  *         ],

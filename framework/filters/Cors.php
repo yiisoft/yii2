@@ -25,7 +25,7 @@ use yii\web\Response;
  * {
  *     return [
  *         'corsFilter' => [
- *             'class' => \yii\filters\Cors::class,
+ *             '__class' => \yii\filters\Cors::class,
  *         ],
  *     ];
  * }
@@ -39,7 +39,7 @@ use yii\web\Response;
  * {
  *     return [
  *         'corsFilter' => [
- *             'class' => \yii\filters\Cors::class,
+ *             '__class' => \yii\filters\Cors::class,
  *             'cors' => [
  *                 // restrict access to
  *                 'Origin' => ['http://www.myserver.com', 'https://www.myserver.com'],
@@ -93,7 +93,7 @@ class Cors extends ActionFilter
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -105,6 +105,12 @@ class Cors extends ActionFilter
         $requestCorsHeaders = $this->extractHeaders();
         $responseCorsHeaders = $this->prepareHeaders($requestCorsHeaders);
         $this->addCorsHeaders($this->response, $responseCorsHeaders);
+
+        if ($this->request->isOptions && $this->request->hasHeader('Access-Control-Request-Method')) {
+            // it is CORS preflight request, respond with 200 OK without further processing
+            $this->response->setStatusCode(200);
+            return false;
+        }
 
         return true;
     }

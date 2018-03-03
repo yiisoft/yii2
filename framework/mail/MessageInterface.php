@@ -47,7 +47,7 @@ interface MessageInterface
 
     /**
      * Returns the message sender.
-     * @return string the sender
+     * @return string|array the sender
      */
     public function getFrom();
 
@@ -63,7 +63,7 @@ interface MessageInterface
 
     /**
      * Returns the message recipient(s).
-     * @return array the message recipients
+     * @return string|array the message recipients
      */
     public function getTo();
 
@@ -79,7 +79,7 @@ interface MessageInterface
 
     /**
      * Returns the reply-to address of this message.
-     * @return string the reply-to address of this message.
+     * @return string|array the reply-to address of this message.
      */
     public function getReplyTo();
 
@@ -95,7 +95,7 @@ interface MessageInterface
 
     /**
      * Returns the Cc (additional copy receiver) addresses of this message.
-     * @return array the Cc (additional copy receiver) addresses of this message.
+     * @return string|array the Cc (additional copy receiver) addresses of this message.
      */
     public function getCc();
 
@@ -111,7 +111,7 @@ interface MessageInterface
 
     /**
      * Returns the Bcc (hidden copy receiver) addresses of this message.
-     * @return array the Bcc (hidden copy receiver) addresses of this message.
+     * @return string|array the Bcc (hidden copy receiver) addresses of this message.
      */
     public function getBcc();
 

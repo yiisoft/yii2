@@ -22,7 +22,7 @@ use yii\di\Instance;
  *     'profiler' => [
  *         'targets' => [
  *             [
- *                 'class' => yii\profile\LogTarget::class,
+ *                 '__class' => yii\profile\LogTarget::class,
  *             ],
  *         ],
  *         // ...

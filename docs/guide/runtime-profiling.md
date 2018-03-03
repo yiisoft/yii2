@@ -48,7 +48,7 @@ configure profiling targets via application config:
 return [
     'profiler' => [
         'targets => [
-            'class' => /yii/profile/LogTarget::class,
+            '__class' => /yii/profile/LogTarget::class,
         ],
     ],
 ];

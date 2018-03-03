@@ -82,7 +82,7 @@ class Module extends ServiceLocator
      * [
      *   'account' => \app\controllers\UserController::class,
      *   'article' => [
-     *      'class' => \app\controllers\PostController::class,
+     *      '__class' => \app\controllers\PostController::class,
      *      'pageTitle' => 'something new',
      *   ],
      * ]
@@ -491,10 +491,10 @@ class Module extends ServiceLocator
      * ```php
      * [
      *     'comment' => [
-     *         'class' => \app\modules\comment\CommentModule::class,
+     *         '__class' => \app\modules\comment\CommentModule::class,
      *         'db' => 'db',
      *     ],
-     *     'booking' => ['class' => \app\modules\booking\BookingModule::class],
+     *     'booking' => ['__class' => \app\modules\booking\BookingModule::class],
      * ]
      * ```
      *
@@ -626,14 +626,13 @@ class Module extends ServiceLocator
             $className = substr($id, $pos + 1);
         }
 
-        if (!preg_match('%^[a-z][a-z0-9\\-_]*$%', $className)) {
-            return null;
-        }
-        if ($prefix !== '' && !preg_match('%^[a-z0-9_/]+$%i', $prefix)) {
+        if ($this->isIncorrectClassNameOrPrefix($className, $prefix)) {
             return null;
         }
 
-        $className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';
+        $className = preg_replace_callback('%-([a-z0-9_])%i', function ($matches) {
+                return ucfirst($matches[1]);
+            }, ucfirst($className)) . 'Controller';
         $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {
             return null;
@@ -647,6 +646,25 @@ class Module extends ServiceLocator
         }
 
         return null;
+    }
+
+    /**
+     * Checks if class name or prefix is incorrect
+     *
+     * @param string $className
+     * @param string $prefix
+     * @return bool
+     */
+    private function isIncorrectClassNameOrPrefix($className, $prefix)
+    {
+        if (!preg_match('%^[a-z][a-z0-9\\-_]*$%', $className)) {
+            return true;
+        }
+        if ($prefix !== '' && !preg_match('%^[a-z0-9_/]+$%i', $prefix)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

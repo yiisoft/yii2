@@ -27,6 +27,16 @@ use yii\helpers\Url;
 class ActiveForm extends Widget
 {
     /**
+     * Add validation state class to container tag
+     * @since 2.0.14
+     */
+    const VALIDATION_STATE_ON_CONTAINER = 'container';
+    /**
+     * Add validation state class to input tag
+     * @since 2.0.14
+     */
+    const VALIDATION_STATE_ON_INPUT = 'input';
+    /**
      * @event ActiveFieldEvent an event raised right before rendering an ActiveField.
      * @since 2.1.0
      */
@@ -108,6 +118,13 @@ class ActiveForm extends Widget
      */
     public $validatingCssClass = 'validating';
     /**
+     * @var string where to render validation state class
+     * Could be either "container" or "input".
+     * Default is "container".
+     * @since 2.0.14
+     */
+    public $validationStateOn = self::VALIDATION_STATE_ON_CONTAINER;
+    /**
      * @var bool whether to enable client-side data validation.
      * If [[ActiveField::enableClientValidation]] is set, its value will take precedence for that input field.
      */
@@ -180,6 +197,7 @@ class ActiveForm extends Widget
      */
     public function init()
     {
+        parent::init();
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
@@ -245,8 +263,8 @@ class ActiveForm extends Widget
         if ($config instanceof \Closure) {
             $config = call_user_func($config, $model, $attribute);
         }
-        if (!isset($config['class'])) {
-            $config['class'] = $this->fieldClass;
+        if (!isset($config['__class'])) {
+            $config['__class'] = $this->fieldClass;
         }
 
         return Yii::createObject(ArrayHelper::merge($config, $options, [

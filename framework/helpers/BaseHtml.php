@@ -939,6 +939,9 @@ class BaseHtml
         if (substr($name, -2) !== '[]') {
             $name .= '[]';
         }
+        if (ArrayHelper::isTraversable($selection)) {
+            $selection = array_map('strval', (array)$selection);
+        }
 
         $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
@@ -951,7 +954,7 @@ class BaseHtml
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -1016,6 +1019,10 @@ class BaseHtml
      */
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
+        if (ArrayHelper::isTraversable($selection)) {
+            $selection = array_map('strval', (array)$selection);
+        }
+
         $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
         $encode = ArrayHelper::remove($options, 'encode', true);
@@ -1030,7 +1037,7 @@ class BaseHtml
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -1216,26 +1223,7 @@ class BaseHtml
         $encode = ArrayHelper::remove($options, 'encode', true);
         $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
         unset($options['header']);
-
-        $lines = [];
-        if (!is_array($models)) {
-            $models = [$models];
-        }
-        foreach ($models as $model) {
-            /* @var $model Model */
-            foreach ($model->getErrors() as $errors) {
-                foreach ($errors as $error) {
-                    $line = $encode ? Html::encode($error) : $error;
-                    if (!in_array($line, $lines, true)) {
-                        $lines[] = $line;
-                    }
-                    if (!$showAllErrors) {
-                        break;
-                    }
-                }
-            }
-        }
-
+        $lines = self::collectErrors($models, $encode, $showAllErrors);
         if (empty($lines)) {
             // still render the placeholder for client-side validation use
             $content = '<ul></ul>';
@@ -1245,6 +1233,35 @@ class BaseHtml
         }
 
         return Html::tag('div', $header . $content . $footer, $options);
+    }
+
+    /**
+     * Return array of the validation errors
+     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param $encode boolean, if set to false then the error messages won't be encoded.
+     * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
+     * only the first error message for each attribute will be shown.
+     * @return array of the validation errors
+     * @since 2.0.14
+     */
+    private static function collectErrors($models, $encode, $showAllErrors)
+    {
+        $lines = [];
+        if (!is_array($models)) {
+            $models = [$models];
+        }
+
+        foreach ($models as $model) {
+            $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
+        }
+
+        if ($encode) {
+            for ($i = 0, $linesCount = count($lines); $i < $linesCount; $i++) {
+                $lines[$i] = Html::encode($lines[$i]);
+            }
+        }
+
+        return $lines;
     }
 
     /**
@@ -1261,6 +1278,9 @@ class BaseHtml
      * - tag: this specifies the tag name. If not set, "div" will be used.
      *   See also [[tag()]].
      * - encode: boolean, if set to false then the error message won't be encoded.
+     * - errorSource (since 2.0.14): \Closure|callable, callback that will be called to obtain an error message.
+     *   The signature of the callback must be: `function ($model, $attribute)` and return a string.
+     *   When not set, the `$model->getFirstError()` method will be called.
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1269,7 +1289,12 @@ class BaseHtml
     public static function error($model, $attribute, $options = [])
     {
         $attribute = static::getAttributeName($attribute);
-        $error = $model->getFirstError($attribute);
+        $errorSource = ArrayHelper::remove($options, 'errorSource');
+        if ($errorSource !== null) {
+            $error = call_user_func($errorSource, $model, $attribute);
+        } else {
+            $error = $model->getFirstError($attribute);
+        }
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         $encode = ArrayHelper::remove($options, 'encode', true);
         return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
@@ -1295,6 +1320,8 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
+        self::setActivePlaceholder($model, $attribute, $options);
 
         return static::input($type, $name, $value, $options);
     }
@@ -1335,6 +1362,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This is available since version 2.0.3.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated input tag
      */
@@ -1342,6 +1371,24 @@ class BaseHtml
     {
         self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
+    }
+
+    /**
+     * Generate placeholder from model attribute label.
+     *
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+     * about attribute expression.
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * @since 2.0.14
+     */
+    protected static function setActivePlaceholder($model, $attribute, &$options = [])
+    {
+        if (isset($options['placeholder']) && $options['placeholder'] === true) {
+            $attribute = static::getAttributeName($attribute);
+            $options['placeholder'] = $model->getAttributeLabel($attribute);
+        }
     }
 
     /**
@@ -1376,6 +1423,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This option is available since version 2.0.6.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated input tag
      */
@@ -1389,22 +1438,29 @@ class BaseHtml
      * Generates a file input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
+     * Additionally, if a separate set of HTML options array is defined inside `$options` with a key named `hiddenOptions`,
+     * it will be passed to the `activeHiddenInput` field as its own `$options` parameter.
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * If `hiddenOptions` parameter which is another set of HTML options array is defined, it will be extracted
+     * from `$options` to be used for the hidden input.
      * @return string the generated input tag
      */
     public static function activeFileInput($model, $attribute, $options = [])
     {
-        // add a hidden field so that if a model only has a file field, we can
-        // still use isset($_POST[$modelClass]) to detect if the input is submitted
         $hiddenOptions = ['id' => null, 'value' => ''];
         if (isset($options['name'])) {
             $hiddenOptions['name'] = $options['name'];
         }
+        $hiddenOptions = ArrayHelper::merge($hiddenOptions, ArrayHelper::remove($options, 'hiddenOptions', []));
+        // add a hidden field so that if a model only has a file field, we can
+        // still use isset($_POST[$modelClass]) to detect if the input is submitted.
+        // The hidden input will be assigned its own set of html options via `$hiddenOptions`.
+        // This provides the possibility to interact with the hidden field via client script.
 
         return static::activeHiddenInput($model, $attribute, $hiddenOptions)
             . static::activeInput('file', $model, $attribute, $options);
@@ -1424,6 +1480,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This option is available since version 2.0.6.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated textarea tag
      */
@@ -1440,6 +1498,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
         self::normalizeMaxLength($model, $attribute, $options);
+        self::setActivePlaceholder($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 
@@ -1756,6 +1815,10 @@ class BaseHtml
      */
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
+        if (ArrayHelper::isTraversable($selection)) {
+            $selection = array_map('strval', (array)$selection);
+        }
+
         $lines = [];
         $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
         $encode = ArrayHelper::remove($tagOptions, 'encode', true);
@@ -1795,7 +1858,7 @@ class BaseHtml
                 if (!array_key_exists('selected', $attrs)) {
                     $attrs['selected'] = $selection !== null &&
                         (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($key, $selection));
+                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection));
                 }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {
@@ -1829,6 +1892,7 @@ class BaseHtml
      * @return string the rendering result. If the attributes are not empty, they will be rendered
      * into a string with a leading white space (so that it can be directly appended to the tag name
      * in a tag. If there is no attribute, an empty string will be returned.
+     * @see addCssClass()
      */
     public static function renderTagAttributes($attributes)
     {
@@ -1893,6 +1957,8 @@ class BaseHtml
      *
      * @param array $options the options to be modified.
      * @param string|array $class the CSS class(es) to be added
+     * @see mergeCssClasses()
+     * @see removeCssClass()
      */
     public static function addCssClass(&$options, $class)
     {
@@ -1914,6 +1980,7 @@ class BaseHtml
      * @param array $existingClasses already existing CSS classes.
      * @param array $additionalClasses CSS classes to be added.
      * @return array merge result.
+     * @see addCssClass()
      */
     private static function mergeCssClasses(array $existingClasses, array $additionalClasses)
     {
@@ -1932,6 +1999,7 @@ class BaseHtml
      * Removes a CSS class from the specified options.
      * @param array $options the options to be modified.
      * @param string|array $class the CSS class(es) to be removed
+     * @see addCssClass()
      */
     public static function removeCssClass(&$options, $class)
     {
@@ -2217,21 +2285,5 @@ class BaseHtml
         }
 
         return $pattern;
-    }
-
-    /**
-     * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
-     * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
-     * @since 2.1.0
-     */
-    public static function poweredByYii()
-    {
-        $yiiTitle = Yii::t('yii', 'Yii Framework');
-        $yiiUrl = 'http://www.yiiframework.com/';
-        $yiiLink = static::a($yiiTitle, $yiiUrl , ['rel' => 'external']);
-
-        return Yii::t('yii', 'Powered by {yii}', [
-            'yii' => $yiiLink,
-        ]);
     }
 }

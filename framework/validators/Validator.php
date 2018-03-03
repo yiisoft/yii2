@@ -10,7 +10,6 @@ namespace yii\validators;
 use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
-use yii\captcha\CaptchaValidator;
 
 /**
  * Validator is the base class for all validators.
@@ -23,7 +22,6 @@ use yii\captcha\CaptchaValidator;
  * be referenced using short names. They are listed as follows:
  *
  * - `boolean`: [[BooleanValidator]]
- * - `captcha`: [[\yii\captcha\CaptchaValidator]]
  * - `compare`: [[CompareValidator]]
  * - `date`: [[DateValidator]]
  * - `datetime`: [[DateValidator]]
@@ -61,15 +59,14 @@ class Validator extends Component
      */
     public static $builtInValidators = [
         'boolean' => BooleanValidator::class,
-        'captcha' => CaptchaValidator::class,
         'compare' => CompareValidator::class,
         'date' => DateValidator::class,
         'datetime' => [
-            'class' => DateValidator::class,
+            '__class' => DateValidator::class,
             'type' => DateValidator::TYPE_DATETIME,
         ],
         'time' => [
-            'class' => DateValidator::class,
+            '__class' => DateValidator::class,
             'type' => DateValidator::TYPE_TIME,
         ],
         'default' => DefaultValueValidator::class,
@@ -82,7 +79,7 @@ class Validator extends Component
         'image' => ImageValidator::class,
         'in' => RangeValidator::class,
         'integer' => [
-            'class' => NumberValidator::class,
+            '__class' => NumberValidator::class,
             'integerOnly' => true,
         ],
         'match' => RegularExpressionValidator::class,
@@ -91,7 +88,7 @@ class Validator extends Component
         'safe' => SafeValidator::class,
         'string' => StringValidator::class,
         'trim' => [
-            'class' => FilterValidator::class,
+            '__class' => FilterValidator::class,
             'filter' => 'trim',
             'skipOnArray' => true,
         ],
@@ -211,7 +208,7 @@ class Validator extends Component
 
         if ($type instanceof \Closure || ($model->hasMethod($type) && !isset(static::$builtInValidators[$type]))) {
             // method-based validator
-            $params['class'] = __NAMESPACE__ . '\InlineValidator';
+            $params['__class'] = __NAMESPACE__ . '\InlineValidator';
             $params['method'] = $type;
         } else {
             if (isset(static::$builtInValidators[$type])) {
@@ -220,7 +217,7 @@ class Validator extends Component
             if (is_array($type)) {
                 $params = array_merge($type, $params);
             } else {
-                $params['class'] = $type;
+                $params['__class'] = $type;
             }
         }
 
@@ -228,7 +225,7 @@ class Validator extends Component
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {

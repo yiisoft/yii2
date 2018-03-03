@@ -19,7 +19,7 @@ class ErrorHandlerTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'errorHandler' => [
-                    'class' => 'yiiunit\framework\web\ErrorHandler',
+                    '__class' => \yiiunit\framework\web\ErrorHandler::class,
                     'errorView' => '@yiiunit/data/views/errorHandler.php',
                 ],
             ],
@@ -37,6 +37,17 @@ class ErrorHandlerTest extends TestCase
         $this->assertEquals('Code: 404
 Message: This message is displayed to end user
 Exception: yii\web\NotFoundHttpException', $out);
+    }
+
+    public function testRenderCallStackItem()
+    {
+        $handler = Yii::$app->getErrorHandler();
+        $handler->traceLine = '<a href="netbeans://open?file={file}&line={line}">{html}</a>';
+        $file = \yii\BaseYii::getAlias('@yii/web/Application.php');
+
+        $out = $handler->renderCallStackItem($file, 63, \yii\web\Application::class, null, null, null);
+
+        $this->assertContains('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
     }
 }
 

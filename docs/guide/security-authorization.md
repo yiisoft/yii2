@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class,
+                '__class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -70,7 +70,7 @@ You may customize this behavior by configuring the [[yii\filters\AccessControl::
 
 ```php
 [
-    'class' => AccessControl::class,
+    '__class' => AccessControl::class,
     ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('You are not allowed to access this page');
@@ -129,7 +129,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class,
+                '__class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -202,7 +202,7 @@ return [
     // ...
     'components' => [
         'authManager' => [
-            'class' => 'yii\rbac\PhpManager',
+            '__class' => yii\rbac\PhpManager::class,
         ],
         // ...
     ],
@@ -224,7 +224,9 @@ return [
     // ...
     'components' => [
         'authManager' => [
-            'class' => 'yii\rbac\DbManager',
+            '__class' => yii\rbac\DbManager::class,
+            // uncomment if you want to cache RBAC items hierarchy
+            // 'cache' => 'cache',
         ],
         // ...
     ],
@@ -264,7 +266,7 @@ Building authorization data is all about the following tasks:
 Depending on authorization flexibility requirements the tasks above could be done in different ways.
 If your permissions hierarchy is meant to be changed by developers only, you can use either migrations
 or a console command. Migration pro is that it could be executed along with other migrations. Console
-command pro is that you have a good overview of the hierarchy in the code rathe than it being scattered
+command pro is that you have a good overview of the hierarchy in the code rather than it being scattered
 among multiple migrations.
 
 Either way in the end you'll get the following RBAC hierarchy:
@@ -536,7 +538,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::class,
+            '__class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,
@@ -674,7 +676,7 @@ return [
     // ...
     'components' => [
         'authManager' => [
-            'class' => 'yii\rbac\PhpManager',
+            '__class' => yii\rbac\PhpManager::class,
             'defaultRoles' => ['admin', 'author'],
         ],
         // ...

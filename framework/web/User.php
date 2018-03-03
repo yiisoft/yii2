@@ -166,6 +166,9 @@ class User extends Component
         if ($this->enableAutoLogin && !isset($this->identityCookie['name'])) {
             throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
         }
+        if (!empty($this->accessChecker) && is_string($this->accessChecker)) {
+            $this->accessChecker = Yii::createObject($this->accessChecker);
+        }
     }
 
     private $_identity = false;
@@ -185,8 +188,16 @@ class User extends Component
     {
         if ($this->_identity === false) {
             if ($this->enableSession && $autoRenew) {
-                $this->_identity = null;
-                $this->renewAuthStatus();
+                try {
+                    $this->_identity = null;
+                    $this->renewAuthStatus();
+                } catch (\Exception $e) {
+                    $this->_identity = false;
+                    throw $e;
+                } catch (\Throwable $e) {
+                    $this->_identity = false;
+                    throw $e;
+                }
             } else {
                 return null;
             }
@@ -515,7 +526,7 @@ class User extends Component
             $data = json_decode($value, true);
             if (is_array($data) && isset($data[2])) {
                 $cookie = Yii::createObject(array_merge($this->identityCookie, [
-                    'class' => \yii\http\Cookie::class,
+                    '__class' => \yii\http\Cookie::class,
                     'value' => $value,
                     'expire' => time() + (int) $data[2],
                 ]));
@@ -536,7 +547,7 @@ class User extends Component
     protected function sendIdentityCookie($identity, $duration)
     {
         $cookie = Yii::createObject(array_merge($this->identityCookie, [
-            'class' => \yii\http\Cookie::class,
+            '__class' => \yii\http\Cookie::class,
             'value' => json_encode([
                 $identity->getId(),
                 $identity->getAuthKey(),
@@ -589,7 +600,7 @@ class User extends Component
     protected function removeIdentityCookie()
     {
         Yii::$app->getResponse()->getCookies()->remove(Yii::createObject(array_merge($this->identityCookie, [
-            'class' => \yii\http\Cookie::class,
+            '__class' => \yii\http\Cookie::class,
         ])));
     }
 
@@ -639,6 +650,9 @@ class User extends Component
                 $this->sendIdentityCookie($identity, $duration);
             }
         }
+
+        // regenerate CSRF token
+        Yii::$app->getRequest()->getCsrfToken(true);
     }
 
     /**
