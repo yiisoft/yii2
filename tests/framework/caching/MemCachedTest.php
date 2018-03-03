@@ -29,7 +29,7 @@ class MemCachedTest extends CacheTestCase
 
         // check whether memcached is running and skip tests if not.
         if (!@stream_socket_client('127.0.0.1:11211', $errorNumber, $errorDescription, 0.5)) {
-            $this->markTestSkipped('No redis server running at ' . '127.0.0.1:11211' . ' : ' . $errorNumber . ' - ' . $errorDescription);
+            $this->markTestSkipped('No memcached server running at ' . '127.0.0.1:11211' . ' : ' . $errorNumber . ' - ' . $errorDescription);
         }
 
         if ($this->_cacheInstance === null) {
