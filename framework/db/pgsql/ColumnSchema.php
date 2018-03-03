@@ -83,6 +83,8 @@ class ColumnSchema extends \yii\db\ColumnSchema
                 array_walk_recursive($value, function (&$val, $key) {
                     $val = $this->phpTypecastValue($val);
                 });
+            } elseif ($value === null) {
+                return null;
             }
 
             return $this->deserializeArrayColumnToArrayExpression

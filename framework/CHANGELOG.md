@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #15792: Added missing `yii\db\QueryBuilder::conditionClasses` setter (silverfire)
 - Bug #15822: Fixed `yii\base\Component::off()` not to throw an exception when handler does not exist (silverfire)
 - Bug #15817: Fixed support of deprecated array format type casting in `yii\db\Command::bindValues()` (silverfire)
+- Bug #15804: Fixed `null` values handling for PostgresSQL arrays (silverfire)
 
 
 2.0.14.1 February 24, 2018
