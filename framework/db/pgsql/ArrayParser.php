@@ -102,8 +102,6 @@ class ArrayParser
 
         if (!$isQuoted && $result === 'NULL') {
             $result = null;
-        } elseif ($isQuoted && $result === '{}') {
-            $result = [];
         }
 
         return $result;

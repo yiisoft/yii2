@@ -42,9 +42,6 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
         }
 
         $placeholders = $this->buildPlaceholders($expression, $params);
-        if (empty($placeholders)) {
-            return "'{}'";
-        }
 
         return 'ARRAY[' . implode(', ', $placeholders) . ']' . $this->getTypehint($expression);
     }

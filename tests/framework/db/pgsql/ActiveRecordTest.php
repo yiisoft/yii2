@@ -245,8 +245,8 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
             ]],
             'empty arrays values' => [[
                 'textarray2_col' => [
-                    ['', ''],
-                    new ArrayExpression([[], []], 'text', 2),
+                    [[], []],
+                    new ArrayExpression([], 'text', 2),
                 ],
             ]],
             'arrays packed in classes' => [[
