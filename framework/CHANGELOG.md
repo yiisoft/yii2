@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Enh #15496: CSRF token is now regenerated on changing identity (samdark, rhertogh, makcumka2000)
+- Bug #15783: Regenerate CSRF token only when logging in directly (samdark, makcumka2000)
 
 2.0.13.3 March 21, 2018
 -----------------------
