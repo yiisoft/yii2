@@ -11,7 +11,7 @@ Yii Framework 2 Change Log
 - Bug #15804: Fixed `null` values handling for PostgresSQL arrays (silverfire)
 - Bug #15829: Fixed JSONB support in PostgreSQL 9.4 (silverfire)
 - Bug: Fixed encoding of empty `yii\db\ArrayExpression` for PostgreSQL (silverfire)
-- Big: Fixed table schema retrieving for PostgreSQL when the table name was wrapped in quotes (`"`) (silverfire)
+- Big: Fixed table schema retrieving for PostgreSQL when the table name was wrapped in quotes (silverfire)
 
 
 2.0.14.1 February 24, 2018
