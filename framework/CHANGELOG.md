@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #15822: Fixed `yii\base\Component::off()` not to throw an exception when handler does not exist (silverfire)
 - Bug #15817: Fixed support of deprecated array format type casting in `yii\db\Command::bindValues()` (silverfire)
 - Bug #15804: Fixed `null` values handling for PostgresSQL arrays (silverfire)
+- Bug #15829: Fixed JSONB support in PostgreSQL 9.4 (silverfire)
 - Bug: Fixed encoding of empty `yii\db\ArrayExpression` for PostgreSQL (silverfire)
 - Big: Fixed table schema retrieving for PostgreSQL when the table name was wrapped in quotes (`"`) (silverfire)
 

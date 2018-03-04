@@ -64,7 +64,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
             return new ArrayExpression($value, $this->dbType, $this->dimension);
         }
         if (!$this->disableJsonSupport && in_array($this->dbType, [Schema::TYPE_JSON, Schema::TYPE_JSONB], true)) {
-            return new JsonExpression($value, $this->type);
+            return new JsonExpression($value, $this->dbType);
         }
 
         return $this->typecast($value);

@@ -129,6 +129,13 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             [['3']],
             'expected' => 'INSERT INTO "type" ("int_col") VALUES (3)',
         ];
+        $data['batchInsert casts JSON to JSONB when column is JSONB'] = [
+            '{{%type}}',
+            ['jsonb_col'],
+            [[['a' => true]]],
+            'expected' => 'INSERT INTO "type" ("jsonb_col") VALUES (:qp0::jsonb)',
+            'expectedParams' => [':qp0' => '{"a":true}']
+        ];
 
         return $data;
     }
