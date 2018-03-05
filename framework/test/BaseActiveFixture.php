@@ -84,7 +84,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      *
      * @return array the data to be put into the database
      * @throws InvalidConfigException if the specified data file does not exist.
-     * @see [[loadDataFile]]
+     * @see [[loadData]]
      */
     protected function getData()
     {
