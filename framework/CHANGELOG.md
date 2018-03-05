@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Enh #13702: Added support for PSR-3 'Logger' (klimov-paul)
 - Enh #13706: 'Profiler' layer extracted (klimov-paul)
 - Enh #15410: Added serialization abstraction layer under `yii\serialize\*` namespace (klimov-paul)
+- Enh #608: Added `yii\web\AssetConverter::$isOutdatedCallback` allowing custom check for outdated asset conversion result (klimov-paul)
 - Enh: Objects `yii\helpers\ReplaceArrayValue`, `yii\helpers\UnsetArrayValue` now support restoring after being exported with `var_export()` function (silverfire)
 - Chg: Removed methods marked as deprecated in 2.0.x (samdark)
 - Chg #8452: Packages 'captcha', 'jquery', 'rest', 'mssql' and 'oracle' have been extracted into extensions (klimov-paul)
