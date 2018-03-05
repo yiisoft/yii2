@@ -8,6 +8,7 @@
 namespace yiiunit\framework\db\mysql;
 
 use yii\base\DynamicModel;
+use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
@@ -208,6 +209,10 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]), 'jsonb')],
                 '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)', [':qp0' => 1]
             ],
+            'search by property in JSON column (issue #15838)' => [
+                ['=', new Expression("(jsoncol->>'$.someKey')"), '42'],
+                "(jsoncol->>'$.someKey') = :qp0", [':qp0' => 42]
+            ]
         ]);
     }
 
