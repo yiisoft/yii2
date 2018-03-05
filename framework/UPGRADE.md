@@ -19,13 +19,10 @@ replace `composer` with `php composer.phar` in the following.
 > Tip: Upgrading dependencies of a complex software project always comes at the risk of breaking something, so make sure
 you have a backup (you should be doing this anyway ;) ).
 
-Before upgrading, make sure you have the latest stable version of Composer:
+In case you use [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) instead of the currently recommended
+[asset-packagist.org](https://asset-packagist.org) to install Bower and NPM assets, make sure it is upgraded to the latest version as well. To ensure best stability you should also upgrade composer in this step:
 
     composer self-update
-
-In case you use [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) instead of currently recommended
-[asset-packagist.org](https://asset-packagist.org) to install Bower and NPM assets, make sure it is upgraded to the latest version as well:
-
     composer global require "fxp/composer-asset-plugin:^1.4.1" --no-plugins
 
 The simple way to upgrade Yii, for example to version 2.0.10 (replace this with the version you want) will be running `composer require`:
