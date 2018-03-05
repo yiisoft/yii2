@@ -1485,5 +1485,6 @@ SQL;
     {
         $db = $this->getConnection();
         $db->createCommand()->setSql("SELECT :p1")->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
+        $this->assertTrue(true);
     }
 }
