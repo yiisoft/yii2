@@ -41,20 +41,22 @@ trait FileFixtureTrait
      */
     protected function loadData($file, $throwException = true)
     {
-        if ($file) {
-            if (basename($file) === $file && $this->dataDirectory !== null) {
-                $file = $this->dataDirectory . '/' . $file;
-            }
-
-            $file = Yii::getAlias($file);
-            if (is_file($file)) {
-                return require $file;
-            } elseif ($throwException) {
-                throw new InvalidConfigException("Fixture data file does not exist: {$file}");
-            }
+        if (!$file) {
+            return [];
         }
 
-        return [];
+        if (basename($file) === $file && $this->dataDirectory !== null) {
+            $file = $this->dataDirectory . '/' . $file;
+        }
+
+        $file = Yii::getAlias($file);
+        if (is_file($file)) {
+            return require $file;
+        }
+        
+        if ($throwException) {
+            throw new InvalidConfigException("Fixture data file does not exist: {$file}");
+        }
     }
 
 }
