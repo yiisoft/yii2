@@ -35,10 +35,11 @@ trait FileFixtureTrait
      * The file should return the data array that will be stored in [[data]] after inserting into the database.
      *
      * @param string $file the data file path
+     * @param bool $throwException whether to throw exception if fixture data file does not exist.
      * @return array the data to be put into the database
      * @throws InvalidConfigException if the specified data file does not exist.
      */
-    protected function loadData($file)
+    protected function loadData($file, $throwException = true)
     {
         if ($file === false || $file === null) {
             return [];
@@ -53,7 +54,11 @@ trait FileFixtureTrait
             return require $file;
         }
 
-        throw new InvalidConfigException("Fixture data file does not exist: {$file}");
+        if ($throwException) {
+            throw new InvalidConfigException("Fixture data file does not exist: {$file}");
+        }
+
+        return [];
     }
 
 }
