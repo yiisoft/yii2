@@ -172,7 +172,7 @@ class AccessRule extends Component
             && $this->matchController($action->controller)
             && $this->matchCustom($action)
         ) {
-            return $this->allow ? true : false;
+            return $this->allow;
         }
 
         return null;
