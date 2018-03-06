@@ -8,6 +8,7 @@
 namespace yii\test;
 
 use Yii;
+use yii\base\InvalidConfigException;
 
 /**
  * FileFixtureTrait provides functionalities for loading data fixture from file.
@@ -35,6 +36,7 @@ trait FileFixtureTrait
      *
      * @param string $file the data file path
      * @return array the data to be put into the database
+     * @throws InvalidConfigException if the specified data file does not exist.
      */
     protected function loadData($file)
     {
@@ -51,7 +53,7 @@ trait FileFixtureTrait
             return require $file;
         }
 
-        return [];
+        throw new InvalidConfigException("Fixture data file does not exist: {$file}");
     }
 
 }
