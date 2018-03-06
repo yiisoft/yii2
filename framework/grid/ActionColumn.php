@@ -8,6 +8,8 @@
 namespace yii\grid;
 
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -86,7 +88,8 @@ class ActionColumn extends Column
      * ```
      */
     public $buttons = [];
-    /** @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
+    /**
+     * @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
      * and the values are the boolean true/false or the anonymous function. When the button name is not specified in
      * this array it will be shown by default.
      * The callbacks must use the following signature:
@@ -104,6 +107,10 @@ class ActionColumn extends Column
      *     'update' => \Yii::$app->user->can('update'),
      * ],
      * ```
+     *
+     * Note that visibility of the particular button can be also controlled via 'visible' key in its array configuration.
+     * Usage of [[visibleButtons]] make sense mostly for buttons specified via `Closure`.
+     *
      * @since 2.0.7
      */
     public $visibleButtons = [];
@@ -122,7 +129,7 @@ class ActionColumn extends Column
      */
     public $urlCreator;
     /**
-     * @var array html options to be applied to the [[initDefaultButton()|default button]].
+     * @var array html options to be applied to the array button configuration at [[renderButton()]].
      * @since 2.0.4
      */
     public $buttonOptions = [];
@@ -134,61 +141,47 @@ class ActionColumn extends Column
     public function init()
     {
         parent::init();
-        $this->initDefaultButtons();
+        $this->buttons = ArrayHelper::merge($this->defaultButtons(), $this->buttons);
     }
 
     /**
      * Initializes the default button rendering callbacks.
+     * @since 2.1.0
      */
-    protected function initDefaultButtons()
+    protected function defaultButtons()
     {
-        $this->initDefaultButton('view', 'eye-open');
-        $this->initDefaultButton('update', 'pencil');
-        $this->initDefaultButton('delete', 'trash', [
-            'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-            'data-method' => 'post',
-        ]);
-    }
-
-    /**
-     * Initializes the default button rendering callback for single button.
-     * @param string $name Button name as it's written in template
-     * @param string $iconName The part of Bootstrap glyphicon class that makes it unique
-     * @param array $additionalOptions Array of additional options
-     * @since 2.0.11
-     */
-    protected function initDefaultButton($name, $iconName, $additionalOptions = [])
-    {
-        if (!isset($this->buttons[$name]) && strpos($this->template, '{' . $name . '}') !== false) {
-            $this->buttons[$name] = function ($url, $model, $key) use ($name, $iconName, $additionalOptions) {
-                switch ($name) {
-                    case 'view':
-                        $title = Yii::t('yii', 'View');
-                        break;
-                    case 'update':
-                        $title = Yii::t('yii', 'Update');
-                        break;
-                    case 'delete':
-                        $title = Yii::t('yii', 'Delete');
-                        break;
-                    default:
-                        $title = ucfirst($name);
-                }
-                $options = array_merge([
-                    'title' => $title,
-                    'aria-label' => $title,
-                ], $additionalOptions, $this->buttonOptions);
-                $icon = Html::tag('span', '', ['class' => "glyphicon glyphicon-$iconName"]);
-                return Html::a($icon, $url, $options);
-            };
-        }
+        return [
+            'view' => [
+                'icon' => 'eye-open',
+                'options' => [
+                    'title' => Yii::t('yii', 'View'),
+                    'aria-label' => Yii::t('yii', 'View'),
+                ],
+            ],
+            'update' => [
+                'icon' => 'pencil',
+                'options' => [
+                    'title' => Yii::t('yii', 'Update'),
+                    'aria-label' => Yii::t('yii', 'Update'),
+                ],
+            ],
+            'delete' => [
+                'icon' => 'trash',
+                'options' => [
+                    'title' => Yii::t('yii', 'Delete'),
+                    'aria-label' => Yii::t('yii', 'Delete'),
+                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                    'data-method' => 'post',
+                ],
+            ],
+        ];
     }
 
     /**
      * Creates a URL for the given action and model.
      * This method is called for each button and each row.
      * @param string $action the button name (or action ID)
-     * @param \yii\db\ActiveRecordInterface $model the data model
+     * @param \yii\db\ActiveRecordInterface|array $model the data model
      * @param mixed $key the key associated with the data model
      * @param int $index the current row index
      * @return string the created URL
@@ -213,20 +206,103 @@ class ActionColumn extends Column
         return preg_replace_callback('/\\{([\w\-\/]+)\\}/', function ($matches) use ($model, $key, $index) {
             $name = $matches[1];
 
-            if (isset($this->visibleButtons[$name])) {
-                $isVisible = $this->visibleButtons[$name] instanceof \Closure
-                    ? call_user_func($this->visibleButtons[$name], $model, $key, $index)
-                    : $this->visibleButtons[$name];
-            } else {
-                $isVisible = true;
-            }
-
-            if ($isVisible && isset($this->buttons[$name])) {
-                $url = $this->createUrl($name, $model, $key, $index);
-                return call_user_func($this->buttons[$name], $url, $model, $key);
-            }
-
-            return '';
+            return $this->renderButton($name, $model, $key, $index);
         }, $this->template);
+    }
+
+    /**
+     * Renders button.
+     * @param string $name button name.
+     * @param \yii\db\ActiveRecordInterface|array $model the data model.
+     * @param mixed $key the key associated with the data model.
+     * @param int $index the current row index.
+     * @return string rendered HTML.
+     * @throws InvalidConfigException on invalid button format.
+     * @since 2.1.0
+     */
+    protected function renderButton($name, $model, $key, $index)
+    {
+        if (isset($this->visibleButtons[$name])) {
+            $isVisible = $this->visibleButtons[$name] instanceof \Closure
+                ? call_user_func($this->visibleButtons[$name], $model, $key, $index)
+                : $this->visibleButtons[$name];
+        } else {
+            $isVisible = true;
+        }
+
+        if (!$isVisible || !isset($this->buttons[$name])) {
+            return '';
+        }
+        $button = $this->buttons[$name];
+
+        if ($button instanceof \Closure) {
+            $url = $this->createUrl($name, $model, $key, $index);
+            return call_user_func($button, $url, $model, $key);
+        }
+        if (!is_array($button)) {
+            throw new InvalidConfigException("Button should be either a Closure or array configuration.");
+        }
+
+        $button = array_merge($button, $this->buttonOptions);
+
+        // Visibility :
+        if (isset($button['visible'])) {
+            if ($button['visible'] instanceof \Closure) {
+                if (!call_user_func($button['visible'], $model, $key, $index)) {
+                    return '';
+                }
+            } elseif (!$button['visible']) {
+                return '';
+            }
+        }
+
+        // URL :
+        if (isset($button['url'])) {
+            if (is_string($button['url'])) {
+                $url = $button['url'];
+            } else {
+                $url = call_user_func($button['url'], $name, $model, $key, $index);
+            }
+        } else {
+            $url = $this->createUrl($name, $model, $key, $index);
+        }
+
+        // label :
+        if (isset($button['label'])) {
+            $label = $button['label'];
+
+            if (isset($button['encode'])) {
+                $encodeLabel = $button['encode'];
+                unset($button['encode']);
+            } else {
+                $encodeLabel = true;
+            }
+            if ($encodeLabel) {
+                $label = Html::encode($label);
+            }
+        } else {
+            $label = '';
+        }
+
+        // icon :
+        if (isset($button['icon'])) {
+            $icon = $button['icon'];
+            $label = $this->renderIcon($icon) . (empty($label) ? '' : '&nbsp;' . $label);
+        }
+
+        $options = array_merge(ArrayHelper::getValue($button, 'options', []), $this->buttonOptions);
+
+        return Html::a($label, $url, $options);
+    }
+
+    /**
+     * Renders icon HTML representation.
+     * @param string $iconName name of icon to be rendered.
+     * @return string icon HTML.
+     * @since 2.1.0
+     */
+    protected function renderIcon($iconName)
+    {
+        return Html::tag('span', '', ['class' => "icon icon-$iconName"]);
     }
 }
