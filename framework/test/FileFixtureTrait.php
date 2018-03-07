@@ -52,7 +52,7 @@ trait FileFixtureTrait
         }
 
         $file = Yii::getAlias($file);
-        if ($file && is_file($file)) {
+        if (is_file($file)) {
             $data = require $file;
         } elseif ($throwException) {
             throw new InvalidConfigException("Fixture data file does not exist: {$file}");
