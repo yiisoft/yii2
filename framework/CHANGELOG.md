@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #15840: Fixed regression on load fixture data file (leandrogehlen)
 - Bug: Fixed encoding of empty `yii\db\ArrayExpression` for PostgreSQL (silverfire)
 - Bug: Fixed table schema retrieving for PostgreSQL when the table name was wrapped in quotes (silverfire)
+- Bug #15776: Fixed slow MySQL constraints retrieving (MartijnHols, sergeymakinen)
 
 
 
