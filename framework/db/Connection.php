@@ -730,7 +730,7 @@ class Connection extends Component
 
     /**
      * Returns the currently active transaction.
-     * @return Transaction the currently active transaction. Null if no active transaction.
+     * @return Transaction|null the currently active transaction. Null if no active transaction.
      */
     public function getTransaction()
     {
