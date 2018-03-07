@@ -45,20 +45,20 @@ trait FileFixtureTrait
             return [];
         }
 
-        $data = [];
-
         if (basename($file) === $file && $this->dataDirectory !== null) {
             $file = $this->dataDirectory . '/' . $file;
         }
 
         $file = Yii::getAlias($file);
         if (is_file($file)) {
-            $data = require $file;
-        } elseif ($throwException) {
+            return require $file;
+        }
+        
+        if ($throwException) {
             throw new InvalidConfigException("Fixture data file does not exist: {$file}");
         }
 
-        return $data;
+        return [];
     }
 
 }
