@@ -91,10 +91,6 @@ Upgrade from Yii 2.0.13
 
 * Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
 
-* In order to implement UPSERT queries support, we've added table constraints loading from the DBMS. In some cases the constraints
-  discovery query runs slow. Make sure you have [schema caching](http://www.yiiframework.com/doc-2.0/yii-db-connection.html#$enableSchemaCache-detail),
-  enabled (it is disabled by default).
-
 * You can start preparing your application for Yii 2.1 by doing the following:
 
   - Replace `::className()` calls with `::class` (if you’re running PHP 5.5+).
