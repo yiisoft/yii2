@@ -124,12 +124,11 @@ class BaseObject implements Configurable
         $getter = 'get' . $name;
         if (method_exists($this, $getter)) {
             return $this->$getter();
-        }
-        if (method_exists($this, 'set' . $name)) {
+        } elseif (method_exists($this, 'set' . $name)) {
             throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
+        } else {
+            throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
         }
-
-        throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name);
     }
 
     /**
@@ -150,6 +149,8 @@ class BaseObject implements Configurable
             $this->$setter($value);
         } elseif (method_exists($this, 'get' . $name)) {
             throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
+        } elseif ($this instanceof LooseGetSetInterface) {
+            $this->$name = $value;
         } else {
             throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
         }
