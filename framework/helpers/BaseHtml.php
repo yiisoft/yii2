@@ -1255,6 +1255,11 @@ class BaseHtml
             $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
         }
 
+        // Fix #15858 (FlorinRo) - If there are same message errors for different attributes, array_unique could skip some array key,
+        // so the next for cycle could fail because key missing.
+        // Applying array_values reorder array keys.
+        $lines = array_values($lines);
+
         if ($encode) {
             for ($i = 0, $linesCount = count($lines); $i < $linesCount; $i++) {
                 $lines[$i] = Html::encode($lines[$i]);

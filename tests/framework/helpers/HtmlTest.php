@@ -1320,6 +1320,24 @@ EOD;
     }
 
     /**
+    * Test that attributes that output same errors, return unique message error
+    */
+    public function testCollectError()
+    {
+        $model = new DynamicModel(compact('attr1', 'attr2'));
+
+        $model->addError('attr1', 'error1');
+        $model->addError('attr1', 'error2');
+        $model->addError('attr2', 'error1');
+
+        $this->assertEquals(
+            '<div><p>Please fix the following errors:</p><ul><li>error1</li>
+<li>error2</li></ul></div>',
+            Html::errorSummary($model,['showAllErrors'=>true])
+        );
+    }
+
+    /**
      * Data provider for [[testActiveTextArea()]].
      * @return array test data
      */
