@@ -17,7 +17,7 @@ use yiiunit\TestCase;
 class LooseSetInterfaceTest extends TestCase
 {
     /**
-     * @var NewObject
+     * @var NewLooseObject
      */
     protected $object;
 
@@ -145,7 +145,7 @@ class LooseSetInterfaceTest extends TestCase
 
     public function testObjectProperty()
     {
-        $this->assertInstanceOf(NewObject::class, $this->object->object);
+        $this->assertInstanceOf(NewLooseObject::class, $this->object->object);
         $this->assertEquals('object text', $this->object->object->text);
         $this->object->object->text = 'new text';
         $this->assertEquals('new text', $this->object->object->text);
@@ -154,7 +154,7 @@ class LooseSetInterfaceTest extends TestCase
     public function testReadingWriteOnlyProperty()
     {
         $this->expectException('yii\base\InvalidCallException');
-        $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewObject::writeOnly');
+        $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewLooseObject::writeOnly');
         $this->object->writeOnly;
     }
 }
