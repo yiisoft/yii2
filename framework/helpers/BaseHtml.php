@@ -1256,7 +1256,7 @@ class BaseHtml
         }
 
         if ($encode) {
-            for ($i = 0, $linesCount = count($lines); $i < $linesCount; $i++) {
+            foreach ($lines as $i => $message) {
                 $lines[$i] = Html::encode($lines[$i]);
             }
         }
