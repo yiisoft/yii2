@@ -182,10 +182,14 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      */
     public function getIterator()
     {
-        if ($this->getValue() instanceof QueryInterface) {
+        $value = $this->getValue();
+        if ($value instanceof QueryInterface) {
             throw new InvalidConfigException('The ArrayExpression class can not be iterated when the value is a QueryInterface object');
         }
+        if ($value === null) {
+            $value = [];
+        }
 
-        return new \ArrayIterator($this->getValue());
+        return new \ArrayIterator($value);
     }
 }

@@ -305,7 +305,7 @@ SQL;
             $table->name = $parts[1];
         } else {
             $table->schemaName = $this->defaultSchema;
-            $table->name = $name;
+            $table->name = $parts[0];
         }
 
         $table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;

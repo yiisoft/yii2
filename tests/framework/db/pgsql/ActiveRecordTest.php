@@ -228,6 +228,27 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
                 'jsonb_col' => [[null, 'a', 'b', '\"', '{"af"}']],
                 'jsonarray_col' => [new ArrayExpression([[',', 'null', true, 'false', 'f']], 'json')],
             ]],
+            'null arrays values' => [[
+                'intarray_col' => [
+                    null,
+                ],
+                'textarray2_col' => [
+                    [null, null],
+                    new ArrayExpression([null, null], 'text', 2),
+                ],
+                'json_col' => [
+                    null
+                ],
+                'jsonarray_col' => [
+                    null
+                ],
+            ]],
+            'empty arrays values' => [[
+                'textarray2_col' => [
+                    [[], []],
+                    new ArrayExpression([], 'text', 2),
+                ],
+            ]],
             'arrays packed in classes' => [[
                 'intarray_col' => [
                     new ArrayExpression([1,-2,null,'42'], 'int', 1),
@@ -257,7 +278,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
                 'jsonb_col' => [
                     pi()
                 ],
-            ]]
+            ]],
         ];
     }
 }
