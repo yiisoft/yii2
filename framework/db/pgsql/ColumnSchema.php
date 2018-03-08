@@ -60,8 +60,10 @@ class ColumnSchema extends \yii\db\ColumnSchema
             return $value;
         }
 
-        if (!$this->disableArraySupport && $this->dimension > 0) {
-            return new ArrayExpression($value, $this->dbType, $this->dimension);
+        if ($this->dimension > 0) {
+            return $this->disableArraySupport
+                ? (string) $value
+                : new ArrayExpression($value, $this->dbType, $this->dimension);
         }
         if (!$this->disableJsonSupport && in_array($this->dbType, [Schema::TYPE_JSON, Schema::TYPE_JSONB], true)) {
             return new JsonExpression($value, $this->dbType);
@@ -75,7 +77,10 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public function phpTypecast($value)
     {
-        if (!$this->disableArraySupport && $this->dimension > 0) {
+        if ($this->dimension > 0) {
+            if ($this->disableArraySupport) {
+                return $value;
+            }
             if (!is_array($value)) {
                 $value = $this->getArrayParser()->parse($value);
             }
