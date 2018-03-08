@@ -7,6 +7,7 @@
 
 namespace yii\db\pgsql;
 
+use yii\db\ArrayExpression;
 use yii\db\ExpressionBuilderInterface;
 use yii\db\ExpressionBuilderTrait;
 use yii\db\ExpressionInterface;
@@ -37,8 +38,11 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
             list ($sql, $params) = $this->queryBuilder->build($value, $params);
             return "($sql)" . $this->getTypecast($expression);
         }
-
-        $placeholder = $this->queryBuilder->bindParam(Json::encode($value), $params);
+        if ($value instanceof ArrayExpression) {
+            $placeholder = "array_to_json(" . $this->queryBuilder->buildExpression($value, $params) . ")";
+        } else {
+            $placeholder = $this->queryBuilder->bindParam(Json::encode($value), $params);
+        }
 
         return $placeholder . $this->getTypecast($expression);
     }

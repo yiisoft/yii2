@@ -12,6 +12,7 @@ use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
+use yii\helpers\Json;
 
 /**
  * @group db
@@ -208,6 +209,10 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             'query with type, that is ignored in MySQL' => [
                 ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]), 'jsonb')],
                 '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)', [':qp0' => 1]
+            ],
+            'nested and combined json expression' => [
+                ['=', 'jsoncol', new JsonExpression(new JsonExpression(['a' => 1, 'b' => 2, 'd' => new JsonExpression(['e' => 3])]))],
+                "[[jsoncol]] = :qp0", ['qp0' => '{"a":1,"b":2,"d":{"e":3}}']
             ],
             'search by property in JSON column (issue #15838)' => [
                 ['=', new Expression("(jsoncol->>'$.someKey')"), '42'],
