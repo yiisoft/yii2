@@ -212,7 +212,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ],
             'nested and combined json expression' => [
                 ['=', 'jsoncol', new JsonExpression(new JsonExpression(['a' => 1, 'b' => 2, 'd' => new JsonExpression(['e' => 3])]))],
-                "[[jsoncol]] = :qp0", ['qp0' => '{"a":1,"b":2,"d":{"e":3}}']
+                "[[jsoncol]] = :qp0", [':qp0' => '{"a":1,"b":2,"d":{"e":3}}']
             ],
             'search by property in JSON column (issue #15838)' => [
                 ['=', new Expression("(jsoncol->>'$.someKey')"), '42'],
