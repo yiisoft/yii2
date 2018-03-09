@@ -106,6 +106,8 @@ PHP
         $this->assertEquals('YiiFramework', $view->renderDynamic('return $a . $b;', [
             'a' => 'Yii',
             'b' => 'Framework',
+            'c' => 'Yii\'s Author',
+            'd' => 'app\\namespace',
         ]));
     }
 
