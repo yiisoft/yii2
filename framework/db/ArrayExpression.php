@@ -58,6 +58,10 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
      */
     public function __construct($value, $type = null, $dimension = 1)
     {
+        if ($value instanceof self) {
+            $value = $value->getValue();
+        }
+
         $this->value = $value;
         $this->type = $type;
         $this->dimension = $dimension;
