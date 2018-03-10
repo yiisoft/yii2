@@ -205,7 +205,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ],
             'null value' => [
                 ['=', 'jsoncol', new JsonExpression(null)],
-                '[[jsoncol]] = NULL', []
+                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => 'null']
             ],
             'null as array value' => [
                 ['=', 'jsoncol', new JsonExpression([null])],
