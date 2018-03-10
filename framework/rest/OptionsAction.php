@@ -41,6 +41,6 @@ class OptionsAction extends \yii\base\Action
         $options = $id === null ? $this->collectionOptions : $this->resourceOptions;
         $headers = Yii::$app->getResponse()->getHeaders();
         $headers->set('Allow', implode(', ', $options));
-        $headers->set('Access-Control-Allow-Method', implode(', ', $options));
+        $headers->set('Access-Control-Allow-Methods', implode(', ', $options));
     }
 }
