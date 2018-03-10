@@ -34,6 +34,9 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
     public function build(ExpressionInterface $expression, array &$params = [])
     {
         $value = $expression->getValue();
+        if ($value === null) {
+            return 'NULL';
+        }
 
         if ($value instanceof Query) {
             list ($sql, $params) = $this->queryBuilder->build($value, $params);
@@ -43,6 +46,6 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
         $placeholder = static::PARAM_PREFIX . count($params);
         $params[$placeholder] = Json::encode($value);
 
-        return $placeholder;
+        return "CAST($placeholder AS JSON)";
     }
 }
