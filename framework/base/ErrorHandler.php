@@ -347,7 +347,7 @@ abstract class ErrorHandler extends Component
         if ($exception instanceof Exception) {
             $message = "Exception ({$exception->getName()})";
         } elseif ($exception instanceof ErrorException) {
-            $message = "{$exception->getName()}";
+            $message = (string)$exception->getName();
         } else {
             $message = 'Exception';
         }
