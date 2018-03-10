@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.14.2 under development
 ------------------------
 
-- Bug #15863: Fixed `yii\db\pgsql\JsonExpressionBuilder` to generate SQL `NULL` instead of JSON `null` when the `JsonExpression` value is `NULL` (silverfire)
 - Bug #15783: Regenerate CSRF token only when logging in directly (samdark)
 - Bug #15801: Fixed `has-error` CSS class assignment in `yii\widgets\ActiveField` when attribute name is prefixed with tabular index (FabrizioCaldarelli)
 - Bug #15792: Added missing `yii\db\QueryBuilder::conditionClasses` setter (silverfire)
