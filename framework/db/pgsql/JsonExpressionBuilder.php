@@ -39,7 +39,7 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
             return "($sql)" . $this->getTypecast($expression);
         }
         if ($value instanceof ArrayExpression) {
-            $placeholder = "array_to_json(" . $this->queryBuilder->buildExpression($value, $params) . ")";
+            $placeholder = 'array_to_json(' . $this->queryBuilder->buildExpression($value, $params) . ')';
         } else {
             $placeholder = $this->queryBuilder->bindParam(Json::encode($value), $params);
         }
