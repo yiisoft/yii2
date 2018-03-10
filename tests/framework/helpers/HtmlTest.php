@@ -1320,8 +1320,9 @@ EOD;
     }
 
     /**
-    * Test that attributes that output same errors, return unique message error
-    */
+     * Test that attributes that output same errors, return unique message error
+     * @see https://github.com/yiisoft/yii2/pull/15859
+     */
     public function testCollectError()
     {
         $model = new DynamicModel(compact('attr1', 'attr2'));
@@ -1333,7 +1334,7 @@ EOD;
         $this->assertEquals(
             '<div><p>Please fix the following errors:</p><ul><li>error1</li>
 <li>error2</li></ul></div>',
-            Html::errorSummary($model,['showAllErrors'=>true])
+            Html::errorSummary($model, ['showAllErrors' => true])
         );
     }
 
