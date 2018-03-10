@@ -99,8 +99,31 @@ Upgrade from Yii 2.0.13
   - Remove calls to `yii\BaseYii::powered()`.
   - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
   
-* When hash format condition is used in `yii\db\ActiveRecord::findOne()` and `findAll()`, the array keys (column names) are now limited
-  to the table column names for SQL DBMSs and to the following character set for NoSQL DBMSs: `A-Z0-9a-z$_-`.
+* When hash format condition is used in `yii\db\ActiveRecord::findOne()` and `findAll()`, the array keys (column names)
+  are now limited to the table column names for SQL DBMSs and to the following character set for NoSQL DBMSs:
+  `A-Z0-9a-z$_-`. Then change was made due to possible SQL injection vulnerability when using `ActiveRecord::findOne()`
+   and `ActiveRecord::findAll()`:
+   
+   ```php
+   public function actionView()
+   {
+       $id = Yii::$app->request->get($id);
+       // an array could be passed in $id and it was not filtered properly
+       $model = Post::findOne($id);
+       // ...
+   }
+   ```
+
+   It's not an issue in the default generated code though as ID is filtered by
+   controller code:
+
+   ```php
+   public function actionView($id)
+   {
+       $model = Post::findOne($id);
+       // ...
+   }
+   ```
 
 Upgrade from Yii 2.0.12
 -----------------------

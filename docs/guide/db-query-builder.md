@@ -228,9 +228,10 @@ $query->where(['id' => $userQuery]);
 ```
 
 Using the Hash Format, Yii internally uses parameter binding for values, so in contrast to the [string format](#string-format),
-here you do not have to add parameters manually. However, Yii never escape the column name, so you should never
-embed variable as a column name, especially if the variable value came from end user inputs, because this will make
-your application subject to SQL injection attack. In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
+here you do not have to add parameters manually. However, note that Yii never escapes column names, so if you will pass
+a variable as column name, the application will likely become vulnerable to SQL injection attack. In order to keep
+application secure, either either do not use variables as column names or filter variable against white list.
+In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
 guide article. For example the following code is vulnerable:
 
 ```php
@@ -238,7 +239,7 @@ guide article. For example the following code is vulnerable:
 $column = $request->get('column');
 $value = $request->get('value);
 $query->where([$column => $value]);
-// $value will be encoded and is safe, but $column name is not!
+// $value is safe, but $column name won't be encoded!
 ```
 
 #### Operator Format <span id="operator-format"></span>
@@ -317,9 +318,10 @@ the operator can be one of the following:
   while the second operand a value. For example, `['>', 'age', 10]` will generate `age>10`.
 
 Using the Operator Format, Yii internally uses parameter binding for values, so in contrast to the [string format](#string-format),
-here you do not have to add parameters manually. However, Yii never escape the column name, so you should never
-embed variable as a column name, especially if the variable value came from end user inputs, because this will make
-your application subject to SQL injection attack. In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
+here you do not have to add parameters manually. However, note that Yii never escapes column names, so if you will pass
+a variable as column name, the application will likely become vulnerable to SQL injection attack. In order to keep
+application secure, either either do not use variables as column names or filter variable against white list.
+In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
 guide article. For example the following code is vulnerable:
 
 ```php
@@ -327,7 +329,7 @@ guide article. For example the following code is vulnerable:
 $column = $request->get('column');
 $value = $request->get('value);
 $query->where(['=', $column, $value]);
-// $value will be encoded and is safe, but $column name is not!
+// $value is safe, but $column name won't be encoded!
 ```
 
 #### Object Format <span id="object-format"></span>

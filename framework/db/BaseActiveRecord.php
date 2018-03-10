@@ -148,10 +148,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * Filters array condition before its assignation to a Query filter
+     * Filters array condition before it is assigned to a Query filter
      *
-     * @param array|string|int $condition
-     * @return array|string|int
+     * @param array|string|int $condition condition to filter
+     * @return array|string|int filtered condition
      * @throws InvalidArgumentException in case array contains not safe values
      * @since 2.0.14.2
      * @internal
