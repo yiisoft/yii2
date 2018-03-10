@@ -464,7 +464,8 @@ class IpValidator extends Validator
         foreach ($ranges as $string) {
             list($isRangeNegated, $range) = $this->parseNegatedRange($string);
             if (isset($this->networks[$range])) {
-                foreach ($this->prepareRanges($this->networks[$range]) as &$replacement) {
+                $replacements = $this->prepareRanges($this->networks[$range]);
+                foreach ($replacements as &$replacement) {
                     list($isReplacementNegated, $replacement) = $this->parseNegatedRange($replacement);
                     $result[] = ($isRangeNegated && !$isReplacementNegated ? static::NEGATION_CHAR : '') . $replacement;
                 }
