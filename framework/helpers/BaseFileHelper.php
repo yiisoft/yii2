@@ -460,7 +460,7 @@ class BaseFileHelper
     {
         $dir = self::clearDir($dir);
         $options = self::setBasePath($dir, $options);
-        $list = [[]];
+        $list = [];
         $handle = self::openDir($dir);
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {
@@ -469,15 +469,15 @@ class BaseFileHelper
             $path = $dir . DIRECTORY_SEPARATOR . $file;
             if (static::filterPath($path, $options)) {
                 if (is_file($path)) {
-                    $list[] = [$path];
+                    $list[] = $path;
                 } elseif (is_dir($path) && (!isset($options['recursive']) || $options['recursive'])) {
-                    $list[] = static::findFiles($path, $options);
+                    $list = array_merge($list, static::findFiles($path, $options));
                 }
             }
         }
         closedir($handle);
 
-        return call_user_func_array('array_merge', $list);
+        return $list;
     }
 
     /**
@@ -501,7 +501,7 @@ class BaseFileHelper
     {
         $dir = self::clearDir($dir);
         $options = self::setBasePath($dir, $options);
-        $list = [[]];
+        $list = [];
         $handle = self::openDir($dir);
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {
@@ -509,15 +509,15 @@ class BaseFileHelper
             }
             $path = $dir . DIRECTORY_SEPARATOR . $file;
             if (is_dir($path) && static::filterPath($path, $options)) {
-                $list[] = [$path];
+                $list[] = $path;
                 if (!isset($options['recursive']) || $options['recursive']) {
-                    $list[] = static::findDirectories($path, $options);
+                    $list = array_merge($list, static::findDirectories($path, $options));
                 }
             }
         }
         closedir($handle);
 
-        return call_user_func_array('array_merge', $list);
+        return $list;
     }
 
     /*
