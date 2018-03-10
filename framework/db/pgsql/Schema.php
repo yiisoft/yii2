@@ -438,8 +438,7 @@ SQL;
     {
         $uniqueIndexes = [];
 
-        $rows = $this->getUniqueIndexInformation($table);
-        foreach ($rows as $row) {
+        foreach ($this->getUniqueIndexInformation($table) as $row) {
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
                 $row = array_change_key_case($row, CASE_LOWER);
             }

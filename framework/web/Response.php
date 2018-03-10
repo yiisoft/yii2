@@ -366,8 +366,7 @@ class Response extends \yii\base\Response
             throw new HeadersAlreadySentException($file, $line);
         }
         if ($this->_headers) {
-            $headers = $this->getHeaders();
-            foreach ($headers as $name => $values) {
+            foreach ($this->getHeaders() as $name => $values) {
                 $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
                 // set replace for first occurrence of header but false afterwards to allow multiple
                 $replace = true;
