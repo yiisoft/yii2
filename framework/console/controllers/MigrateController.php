@@ -483,7 +483,7 @@ class MigrateController extends BaseMigrateController
             $property = array_shift($chunks);
 
             foreach ($chunks as $i => &$chunk) {
-                if (strpos($chunk, 'foreignKey') === 0) {
+                if (strncmp($chunk, 'foreignKey', 10) === 0) {
                     preg_match('/foreignKey\((\w*)\s?(\w*)\)/', $chunk, $matches);
                     $foreignKeys[$property] = [
                         'table' => isset($matches[1])
