@@ -602,12 +602,13 @@ class Component extends BaseObject
     {
         $this->ensureBehaviors();
 
-        $eventHandlers = [];
+        $eventHandlers = [[]];
         foreach ($this->_eventWildcards as $wildcard => $handlers) {
             if (StringHelper::matchWildcard($wildcard, $name)) {
-                $eventHandlers = array_merge($eventHandlers, $handlers);
+                $eventHandlers[] = $handlers;
             }
         }
+        $eventHandlers = call_user_func_array('array_merge', $eventHandlers);
 
         if (!empty($this->_events[$name])) {
             $eventHandlers = array_merge($eventHandlers, $this->_events[$name]);
