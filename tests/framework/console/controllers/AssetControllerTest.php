@@ -144,6 +144,43 @@ class AssetControllerTest extends TestCase
     }
 
     /**
+     * Creates test publish config.
+     * @param array[] $bundles asset bundles config.
+     * @param array $config additional config.
+     * @return array config array.
+     */
+    protected function createPublishConfig(array $bundles, array $config = [])
+    {
+        static $classNumber = 0;
+        $classNumber++;
+
+        $config = ArrayHelper::merge($config, [
+            'bundles' => $bundles,
+            'assetManager' => [
+                'basePath' => $this->testAssetsBasePath,
+                'baseUrl' => '',
+            ],
+        ]);
+
+        return $config;
+    }
+
+    /**
+     * Creates test publish config file.
+     * @param string $fileName output file name.
+     * @param array[] $bundles asset bundles config.
+     * @param array $config additional config parameters.
+     * @throws \Exception on failure.
+     */
+    protected function createPublishConfigFile($fileName, array $bundles, array $config = [])
+    {
+        $content = '<?php return ' . var_export($this->createPublishConfig($bundles, $config), true) . ';';
+        if (file_put_contents($fileName, $content) <= 0) {
+            throw new \Exception("Unable to create file '{$fileName}'!");
+        }
+    }
+
+    /**
      * Creates test asset file.
      * @param string $fileRelativeName file name relative to [[testFilePath]]
      * @param string $content file content
@@ -197,7 +234,7 @@ class AssetControllerTest extends TestCase
      * @param  array  $config asset bundle config.
      * @return string class source code.
      */
-    protected function composeAssetBundleClassSource(array &$config)
+    protected function assetBundleClassSource(array &$config)
     {
         $config = array_merge(
             [
@@ -244,7 +281,7 @@ EOL;
      */
     protected function declareAssetBundleClass(array $config)
     {
-        $sourceCode = $this->composeAssetBundleClassSource($config);
+        $sourceCode = $this->assetBundleClassSource($config);
         eval($sourceCode);
 
         return $config['namespace'] . '\\' . $config['class'];
@@ -325,6 +362,63 @@ EOL;
         $compressedJsFileContent = file_get_contents($compressedJsFileName);
         foreach ($jsFiles as $name => $content) {
             $this->assertContains($content, $compressedJsFileContent, "Source of '{$name}' is missing in combined file!");
+        }
+    }
+
+    public function testActionPublish()
+    {
+        $sourcePath = $this->testFilePath . '/resource';
+        // Given :
+        $cssFiles = [
+            'css/test_body.css' => 'body {
+                padding-top: 20px;
+                padding-bottom: 60px;
+            }',
+            'css/test_footer.css' => '.footer {
+                margin: 20px;
+                display: block;
+            }',
+        ];
+        $this->createAssetSourceFiles($cssFiles, $sourcePath);
+
+        $jsFiles = [
+            'js/test_alert.js' => "function test() {
+                alert('Test message');
+            }",
+            'js/test_sum_ab.js' => 'function sumAB(a, b) {
+                return a + b;
+            }',
+        ];
+        $this->createAssetSourceFiles($jsFiles, $sourcePath);
+        $assetBundleClassName = $this->declareAssetBundleClass([
+            'class' => 'PublishAsset',
+            'sourcePath' => $sourcePath,
+            'basePath' => null,
+            'css' => array_keys($cssFiles),
+            'js' => array_keys($jsFiles),
+        ]);
+
+        $bundles = [$assetBundleClassName];
+
+        $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config3.php';
+
+        $this->createPublishConfigFile($configFile, $bundles);
+
+        // When :
+        $controller = $this->createAssetController();
+        $controller->run('publish', [$configFile]);
+
+        /** @var \yii\web\AssetBundle[] $publishedBundles */
+        $publishedBundles = $controller->getAssetManager()->bundles;
+        $assetPath = $publishedBundles[$assetBundleClassName]->basePath;
+
+        $this->assertNotEquals($sourcePath, $assetPath);
+
+        foreach (array_keys($cssFiles) as $cssFile) {
+            $this->assertFileExists($assetPath . '/' . $cssFile);
+        }
+        foreach (array_keys($jsFiles) as $jsFile) {
+            $this->assertFileExists($assetPath . '/' . $jsFile);
         }
     }
 
