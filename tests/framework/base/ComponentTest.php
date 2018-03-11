@@ -102,22 +102,36 @@ class ComponentTest extends TestCase
         $behavior = new NewBehavior();
         $this->component->attachBehavior('a', $behavior);
         $this->assertTrue($this->component->canSetProperty('p2'));
+        $this->assertTrue($this->component->canSetProperty('p'));
         $this->component->detachBehavior('a');
     }
 
+    /**
+     * @expectedException \yii\base\UnknownPropertyException
+     */
     public function testGetProperty()
     {
         $this->assertSame('default', $this->component->Text);
-        $this->expectException('yii\base\UnknownPropertyException');
-        $value2 = $this->component->Caption;
+        $this->component->Caption;
     }
 
+    public function testGetPropertyFromBehavior()
+    {
+        $behavior = new NewBehavior();
+        $behavior->p = $value = 'test';
+        $this->component->attachBehavior('a', $behavior);
+        $this->assertEquals($value, $this->component->p);
+        $this->component->detachBehavior('a');
+    }
+
+    /**
+     * @expectedException \yii\base\UnknownPropertyException
+     */
     public function testSetProperty()
     {
         $value = 'new value';
         $this->component->Text = $value;
         $this->assertEquals($value, $this->component->Text);
-        $this->expectException('yii\base\UnknownPropertyException');
         $this->component->NewMember = $value;
     }
 
@@ -140,9 +154,11 @@ class ComponentTest extends TestCase
         $this->assertTrue(isset($this->component->p2));
     }
 
+    /**
+     * @expectedException \yii\base\UnknownMethodException
+     */
     public function testCallUnknownMethod()
     {
-        $this->expectException('yii\base\UnknownMethodException');
         $this->component->unknownMethod();
     }
 
@@ -160,9 +176,11 @@ class ComponentTest extends TestCase
         $this->assertNull($this->component->getP2());
     }
 
+    /**
+     * @expectedException \yii\base\InvalidCallException
+     */
     public function testUnsetReadonly()
     {
-        $this->expectException('yii\base\InvalidCallException');
         unset($this->component->object);
     }
 
@@ -227,6 +245,10 @@ class ComponentTest extends TestCase
         });
         $this->component->trigger('test');
         $this->assertTrue($eventRaised);
+        $this->component->on('test', function ($event) use (&$eventRaised) {
+            $eventRaised = true;
+        }, null, false);
+        $this->assertTrue($eventRaised);
     }
 
     /**
@@ -236,6 +258,9 @@ class ComponentTest extends TestCase
     {
         $this->assertFalse($this->component->hasEventHandlers('group.click'));
         $this->component->on('group.*', 'foo');
+        $this->assertTrue($this->component->hasEventHandlers('group.click'));
+        $this->assertFalse($this->component->hasEventHandlers('category.click'));
+        $this->component->on('group.*', 'foo', null, false);
         $this->assertTrue($this->component->hasEventHandlers('group.click'));
         $this->assertFalse($this->component->hasEventHandlers('category.click'));
     }
@@ -315,6 +340,9 @@ class ComponentTest extends TestCase
         $this->assertFalse($this->component->eventHandled);
     }
 
+    /**
+     * @expectedException \yii\base\UnknownMethodException
+     */
     public function testAttachBehavior()
     {
         $component = new NewComponent();
@@ -331,7 +359,6 @@ class ComponentTest extends TestCase
 
         $this->assertSame($behavior, $component->detachBehavior('a'));
         $this->assertFalse($component->hasProperty('p'));
-        $this->expectException(\yii\base\UnknownMethodException::class);
         $component->test();
 
         $p = 'as b';
@@ -390,9 +417,11 @@ class ComponentTest extends TestCase
         $this->assertNull($component->getBehavior('b'));
     }
 
+    /**
+     * @expectedException \yii\base\InvalidCallException
+     */
     public function testSetReadOnlyProperty()
     {
-        $this->expectException('\yii\base\InvalidCallException');
         $this->expectExceptionMessage('Setting read-only property: yiiunit\framework\base\NewComponent::object');
         $this->component->object = 'z';
     }
@@ -419,9 +448,11 @@ class ComponentTest extends TestCase
         $this->assertSame(__NAMESPACE__ . '\NewBehavior', get_class($this->component->getBehavior($behaviorName)));
     }
 
+    /**
+     * @expectedException \yii\base\InvalidCallException
+     */
     public function testWriteOnlyProperty()
     {
-        $this->expectException('\yii\base\InvalidCallException');
         $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly');
         $this->component->writeOnly;
     }
@@ -444,6 +475,29 @@ class ComponentTest extends TestCase
         $obj->on('test', [$this, 'handler']);
         $this->assertFalse($obj->off('test', [$this, 'handler2']), 'Trying to remove the handler that is not attached');
         $this->assertTrue($obj->off('test', [$this, 'handler']), 'Trying to remove the attached handler');
+    }
+
+    public function testEnsureBehaviorsWithIntName()
+    {
+        /** @var Component|\PHPUnit_Framework_MockObject_MockObject $componentMock */
+        $componentMock = $this->getMockBuilder(Component::class)->setMethods(['behaviors'])->getMock();
+        $componentMock->expects($this->once())->method('behaviors')->willReturn([1 => NewBehavior::class]);
+        $this->assertTrue($componentMock->hasProperty('p'));
+    }
+
+    public function testEnsureBehaviorsWithExistingName()
+    {
+        $reflectionClass = new \ReflectionClass(Component::class);
+        $reflectionProperty = $reflectionClass->getProperty('_behaviors');
+        $reflectionProperty->setAccessible(true);
+        $reflectionMethod = $reflectionClass->getMethod('attachBehaviorInternal');
+        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->invokeArgs($this->component, ['test', NewBehavior2::class]);
+        $value = $reflectionProperty->getValue($this->component);
+        $this->assertInstanceOf(NewBehavior2::class, $value['test']);
+        $reflectionMethod->invokeArgs($this->component, ['test', NewBehavior::class]);
+        $value = $reflectionProperty->getValue($this->component);
+        $this->assertInstanceOf(NewBehavior::class, $value['test']);
     }
 }
 
@@ -527,6 +581,11 @@ class NewBehavior extends Behavior
 
         return 2;
     }
+}
+
+class NewBehavior2 extends NewBehavior
+{
+
 }
 
 class NewComponent2 extends Component

@@ -134,7 +134,7 @@ class Component extends BaseObject
     public function __get($name)
     {
         $getter = 'get' . $name;
-        if (method_exists($this, $getter)) {
+        if (parent::hasMethod($getter)) {
             // read property, e.g. getName()
             return $this->$getter();
         }
@@ -147,7 +147,7 @@ class Component extends BaseObject
             }
         }
 
-        if (method_exists($this, 'set' . $name)) {
+        if (parent::hasMethod('set' . $name)) {
             throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
         }
 
@@ -175,7 +175,7 @@ class Component extends BaseObject
     public function __set($name, $value)
     {
         $setter = 'set' . $name;
-        if (method_exists($this, $setter)) {
+        if (parent::hasMethod($setter)) {
             // set property
             $this->$setter($value);
 
@@ -202,7 +202,7 @@ class Component extends BaseObject
             }
         }
 
-        if (method_exists($this, 'get' . $name)) {
+        if (parent::hasMethod('get' . $name)) {
             throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
         }
 
@@ -227,7 +227,7 @@ class Component extends BaseObject
     public function __isset($name)
     {
         $getter = 'get' . $name;
-        if (method_exists($this, $getter)) {
+        if (parent::hasMethod($getter)) {
             return $this->$getter() !== null;
         }
 
@@ -259,7 +259,7 @@ class Component extends BaseObject
     public function __unset($name)
     {
         $setter = 'set' . $name;
-        if (method_exists($this, $setter)) {
+        if (parent::hasMethod($setter)) {
             $this->$setter(null);
             return;
         }
@@ -351,7 +351,7 @@ class Component extends BaseObject
      */
     public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
-        if (method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name)) {
+        if (parent::canGetProperty($name, $checkVars)) {
             return true;
         } elseif ($checkBehaviors) {
             $this->ensureBehaviors();
@@ -383,7 +383,7 @@ class Component extends BaseObject
      */
     public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
-        if (method_exists($this, 'set' . $name) || $checkVars && property_exists($this, $name)) {
+        if (parent::canSetProperty($name, $checkVars)) {
             return true;
         } elseif ($checkBehaviors) {
             $this->ensureBehaviors();
@@ -411,7 +411,7 @@ class Component extends BaseObject
      */
     public function hasMethod($name, $checkBehaviors = true)
     {
-        if (method_exists($this, $name)) {
+        if (parent::hasMethod($name)) {
             return true;
         } elseif ($checkBehaviors) {
             $this->ensureBehaviors();
