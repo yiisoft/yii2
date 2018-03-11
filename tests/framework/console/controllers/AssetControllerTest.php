@@ -416,9 +416,11 @@ EOL;
 
         foreach (array_keys($cssFiles) as $cssFile) {
             $this->assertFileExists($assetPath . '/' . $cssFile);
+            $this->assertFileEquals($sourcePath . '/' . $cssFile, $assetPath . '/' . $cssFile);
         }
         foreach (array_keys($jsFiles) as $jsFile) {
             $this->assertFileExists($assetPath . '/' . $jsFile);
+            $this->assertFileEquals($sourcePath . '/' . $jsFile, $assetPath . '/' . $jsFile);
         }
     }
 
