@@ -766,7 +766,11 @@ class Response extends \yii\base\Response
      */
     protected function getDispositionHeaderValue($disposition, $attachmentName)
     {
-        $fallbackName = str_replace(array('%', '/', '\\', '"'), array('_', '_', '_', '\\"'), Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE));
+        $fallbackName = str_replace(
+            ['%', '/', '\\', '"'],
+            ['_', '_', '_', '\\"'],
+            Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)
+        );
         $utfName = rawurlencode(str_replace(['%', '/', '\\'], '', $attachmentName));
 
         $dispositionHeader = "{$disposition}; filename=\"{$fallbackName}\"";
