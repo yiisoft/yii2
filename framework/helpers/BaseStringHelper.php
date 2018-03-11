@@ -310,7 +310,7 @@ class BaseStringHelper
      */
     public static function normalizeNumber($value)
     {
-        $value = "$value";
+        $value = (string)$value;
 
         $localeInfo = localeconv();
         $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;

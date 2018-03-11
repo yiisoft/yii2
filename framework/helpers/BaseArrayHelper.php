@@ -119,8 +119,7 @@ class BaseArrayHelper
         $args = func_get_args();
         $res = array_shift($args);
         while (!empty($args)) {
-            $next = array_shift($args);
-            foreach ($next as $k => $v) {
+            foreach (array_shift($args) as $k => $v) {
                 if ($v instanceof UnsetArrayValue) {
                     unset($res[$k]);
                 } elseif ($v instanceof ReplaceArrayValue) {
