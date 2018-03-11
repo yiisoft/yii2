@@ -8,6 +8,7 @@
 namespace yiiunit\framework\base;
 
 use yii\base\BaseObject;
+use yii\base\InvalidCallException;
 use yiiunit\TestCase;
 
 /**
@@ -64,25 +65,31 @@ class BaseObjectTest extends TestCase
         $this->assertFalse($this->object->canSetProperty('Content'));
     }
 
+    /**
+     * @expectedException \yii\base\UnknownPropertyException
+     */
     public function testGetProperty()
     {
         $this->assertSame('default', $this->object->Text);
-        $this->expectException('yii\base\UnknownPropertyException');
-        $value2 = $this->object->Caption;
+        $this->object->Caption;
     }
 
+    /**
+     * @expectedException \yii\base\UnknownPropertyException
+     */
     public function testSetProperty()
     {
         $value = 'new value';
         $this->object->Text = $value;
         $this->assertEquals($value, $this->object->Text);
-        $this->expectException('yii\base\UnknownPropertyException');
         $this->object->NewMember = $value;
     }
 
+    /**
+     * @expectedException  \yii\base\InvalidCallException
+     */
     public function testSetReadOnlyProperty()
     {
-        $this->expectException('yii\base\InvalidCallException');
         $this->object->object = 'test';
     }
 
@@ -111,15 +118,19 @@ class BaseObjectTest extends TestCase
         $this->assertEmpty($this->object->Text);
     }
 
+    /**
+     * @expectedException  \yii\base\InvalidCallException
+     */
     public function testUnsetReadOnlyProperty()
     {
-        $this->expectException('yii\base\InvalidCallException');
         unset($this->object->object);
     }
 
+    /**
+     * @expectedException \yii\base\UnknownMethodException
+     */
     public function testCallUnknownMethod()
     {
-        $this->expectException('yii\base\UnknownMethodException');
         $this->object->unknownMethod();
     }
 
@@ -149,7 +160,7 @@ class BaseObjectTest extends TestCase
 
     public function testReadingWriteOnlyProperty()
     {
-        $this->expectException('yii\base\InvalidCallException');
+        $this->expectException(InvalidCallException::class);
         $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewObject::writeOnly');
         $this->object->writeOnly;
     }
