@@ -610,7 +610,8 @@ PATTERN;
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
-        // this sequantial assignment is need (due to getUniqueColumns implementation)
+        // this sequantial assignment is needed in order to make sure select is being reset
+        // before using getUniqueColumns() that checks it
         $this->select = [];
         $this->select = $this->getUniqueColumns($columns);
         $this->selectOption = $option;
