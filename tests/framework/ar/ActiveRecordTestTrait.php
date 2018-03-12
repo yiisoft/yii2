@@ -684,6 +684,8 @@ trait ActiveRecordTestTrait
         $order->total = 100;
         $this->assertTrue($order->isNewRecord);
         $customer->link('orders', $order);
+        $this->assertTrue($order->isNewRecord);
+        $order->insert(false);
         $this->afterSave();
         $this->assertCount(3, $customer->orders);
         $this->assertFalse($order->isNewRecord);
@@ -697,9 +699,33 @@ trait ActiveRecordTestTrait
         $customer = $customerClass::findOne(1);
         $this->assertNull($order->customer);
         $order->link('customer', $customer);
+        $this->assertTrue($order->isNewRecord);
+        $order->insert(false);
+        $this->afterSave();
         $this->assertFalse($order->isNewRecord);
         $this->assertEquals(1, $order->customer_id);
         $this->assertEquals(1, $order->customer->primaryKey);
+
+        // multiple belongs to
+        $orderItem = new $orderItemClass;
+        $orderItem->quantity = 5;
+        $orderItem->subtotal = 50;
+        $order = $orderClass::findOne(3);
+        $this->assertCount(1, $order->items);
+        $this->assertCount(1, $order->orderItems);
+        $orderItem->link('order', $order);
+        $item = $itemClass::findOne(1);
+        $orderItem->link('item', $item);
+        $orderItem->insert(false);
+        $this->afterSave();
+        $this->assertFalse($orderItem->isNewRecord);
+        $order->refresh();
+        $this->assertCount(2, $order->items);
+        $this->assertCount(2, $order->orderItems);
+        $orderItem = $orderItemClass::findOne(['order_id' => 3, 'item_id' => 1]);
+        $this->assertInstanceOf($orderItemClass, $orderItem);
+        $this->assertEquals(5, $orderItem->quantity);
+        $this->assertEquals(50, $orderItem->subtotal);
 
         // via model
         $order = $orderClass::findOne(1);

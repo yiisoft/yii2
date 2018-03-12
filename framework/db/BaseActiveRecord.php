@@ -1567,7 +1567,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $foreignModel->$fk = $value;
             }
         }
-        $foreignModel->save(false);
     }
 
     /**
