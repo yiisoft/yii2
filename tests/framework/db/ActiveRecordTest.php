@@ -1731,4 +1731,15 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $orderItem = OrderItem::findOne(1);
         $this->assertInstanceOf(Order::className(), $orderItem->custom);
     }
+
+
+    public function testRefresh_querySetAlias_findRecord()
+    {
+        $customer = new \yiiunit\data\ar\CustomerWithAlias();
+        $customer->id = 1;
+
+        $customer->refresh();
+
+        $this->assertEquals(1, $customer->id);
+    }
 }
