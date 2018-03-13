@@ -4,21 +4,20 @@ Yii Framework 2 Change Log
 2.0.14.2 under development
 ------------------------
 
-- Bug #15858: Fixed `Undefined offset` error calling `yii\helpers\Html::errorSummary()` with the same error messages for different model attributes (FabrizioCaldarelli, silverfire)
-- Bug #15783: Regenerate CSRF token only when logging in directly (samdark)
-- Bug #15801: Fixed `has-error` CSS class assignment in `yii\widgets\ActiveField` when attribute name is prefixed with tabular index (FabrizioCaldarelli)
-- Bug #15792: Added missing `yii\db\QueryBuilder::conditionClasses` setter (silverfire)
-- Bug #15822: Fixed `yii\base\Component::off()` not to throw an exception when handler does not exist (silverfire)
-- Bug #15817: Fixed support of deprecated array format type casting in `yii\db\Command::bindValues()` (silverfire)
-- Bug #15804: Fixed `null` values handling for PostgresSQL arrays (silverfire)
-- Bug #15829: Fixed JSONB support in PostgreSQL 9.4 (silverfire)
-- Bug #15840: Fixed regression on load fixture data file (leandrogehlen)
-- Bug: Fixed encoding of empty `yii\db\ArrayExpression` for PostgreSQL (silverfire)
-- Bug: Fixed table schema retrieving for PostgreSQL when the table name was wrapped in quotes (silverfire)
 - Bug #15776: Fixed slow MySQL constraints retrieving (MartijnHols, berosoboy, sergeymakinen)
+- Bug #15783: Regenerate CSRF token only when logging in directly (samdark)
+- Bug #15792: Added missing `yii\db\QueryBuilder::conditionClasses` setter (silverfire)
+- Bug #15801: Fixed `has-error` CSS class assignment in `yii\widgets\ActiveField` when attribute name is prefixed with tabular index (FabrizioCaldarelli)
+- Bug #15804: Fixed `null` values handling for PostgresSQL arrays (silverfire)
+- Bug #15817: Fixed support of deprecated array format type casting in `yii\db\Command::bindValues()` (silverfire)
+- Bug #15822: Fixed `yii\base\Component::off()` not to throw an exception when handler does not exist (silverfire)
+- Bug #15829: Fixed JSONB support in PostgreSQL 9.4 (silverfire)
 - Bug #15836: Fixed nesting of `yii\db\ArrayExpresiion`, `yii\db\JsonExpression` (silverfire)
 - Bug #15839: Fixed `yii\db\mysql\JsonExpressionBuilder` to cast JSON explicitly (silverfire)
-
+- Bug #15840: Fixed regression on load fixture data file (leandrogehlen)
+- Bug #15858: Fixed `Undefined offset` error calling `yii\helpers\Html::errorSummary()` with the same error messages for different model attributes (FabrizioCaldarelli, silverfire)
+- Bug: Fixed encoding of empty `yii\db\ArrayExpression` for PostgreSQL (silverfire)
+- Bug: Fixed table schema retrieving for PostgreSQL when the table name was wrapped in quotes (silverfire)
 
 
 2.0.14.1 February 24, 2018
