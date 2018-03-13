@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed table schema retrieving for PostgreSQL when the table name was wrapped in quotes (silverfire)
 - Bug #15776: Fixed slow MySQL constraints retrieving (MartijnHols, berosoboy, sergeymakinen)
 - Bug #15836: Fixed nesting of `yii\db\ArrayExpresiion`, `yii\db\JsonExpression` (silverfire)
+- Bug #15839: Fixed `yii\db\mysql\JsonExpressionBuilder` to cast JSON explicitly (silverfire)
 
 
 
