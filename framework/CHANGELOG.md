@@ -1,8 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.14.2 under development
-------------------------
+2.0.14.2 March 13, 2018
+-----------------------
 
 - Bug #15776: Fixed slow MySQL constraints retrieving (MartijnHols, berosoboy, sergeymakinen)
 - Bug #15783: Regenerate CSRF token only when logging in directly (samdark)

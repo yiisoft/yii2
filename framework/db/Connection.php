@@ -127,8 +127,8 @@ use yii\caching\CacheInterface;
  * available and `$fallbackToMaster` is false. This property is read-only.
  * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
  * no slave connection is available and `$fallbackToMaster` is false. This property is read-only.
- * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
- * property is read-only.
+ * @property Transaction|null $transaction The currently active transaction. Null if no active transaction.
+ * This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
