@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #15839: Fixed `yii\db\mysql\JsonExpressionBuilder` to cast JSON explicitly (silverfire)
 - Bug #15840: Fixed regression on load fixture data file (leandrogehlen)
 - Bug #15858: Fixed `Undefined offset` error calling `yii\helpers\Html::errorSummary()` with the same error messages for different model attributes (FabrizioCaldarelli, silverfire)
+- Bug #15863: Fixed saving of `null` attribute value for JSON and Array columns in MySQL and PostgreSQL (silverfire)
 - Bug: Fixed encoding of empty `yii\db\ArrayExpression` for PostgreSQL (silverfire)
 - Bug: Fixed table schema retrieving for PostgreSQL when the table name was wrapped in quotes (silverfire)
 

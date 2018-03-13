@@ -34,6 +34,10 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public function dbTypecast($value)
     {
+        if ($value === null) {
+            return $value;
+        }
+
         if ($value instanceof ExpressionInterface) {
             return $value;
         }
