@@ -320,19 +320,6 @@ Since 2.0.14 you can use the following shortcuts:
 User::find()->cache(7200)->all();
 ```
 
-### Cache Flushing <span id="cache-flushing">
-
-When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
-
-You can flush the cache from the console by calling `yii cache/flush` as well.
- - `yii cache`: lists the available caches in application
- - `yii cache/flush cache1 cache2`: flushes the cache components `cache1`, `cache2` (you can pass multiple component
- names separated with space)
- - `yii cache/flush-all`: flushes all cache components in the application
-
-> Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
-components in your web and console application configs to reach the proper effect.
-
 
 ### Configurations <span id="query-caching-configs"></span>
 
@@ -426,4 +413,18 @@ handler for the column data.
 Some caching storage has size limitation. For example, memcache limits the maximum size
 of each entry to be 1MB. Therefore, if the size of a query result exceeds this limit,
 the caching will fail.
+
+
+## Cache Flushing <span id="cache-flushing">
+
+When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
+
+You can flush the cache from the console by calling `yii cache/flush` as well.
+ - `yii cache`: lists the available caches in application
+ - `yii cache/flush cache1 cache2`: flushes the cache components `cache1`, `cache2` (you can pass multiple component
+ names separated with space)
+ - `yii cache/flush-all`: flushes all cache components in the application
+
+> Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
+components in your web and console application configs to reach the proper effect.
 
