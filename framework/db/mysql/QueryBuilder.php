@@ -291,8 +291,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
-        $definition = $this->getColumnDefinition($table, $column);
-        $definition = trim(preg_replace("/COMMENT '(.*?)'/i", '', $definition));
+        // Strip existing comment which may include escaped quotes
+        $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '',
+            $this->getColumnDefinition($table, $column)));
 
         return 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' CHANGE ' . $this->db->quoteColumnName($column)
