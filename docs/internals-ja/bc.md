@@ -1,152 +1,152 @@
-# Backwards Compatibility
+# 後方互換性
 
-We're strictly not breaking backwards compatibility in patch releases such as `2.x.y.Z` and trying to avoid had to fix
-backwards incompatible changes in minor releases such as `2.x.Y`.
+私たちは `2.x.y.Z` のようなパッチリリースにおいては厳密に後方互換性を保持するように努めるとともに、
+`2.x.Y` のようなマイナーリリースにおいても修正が必要となるような後方互換性の無い変更を避けるように努めています。
 
-Check [Yii Versioning](versions.md) to learn about version numbering. 
+バージョン番号については [Yii バージョン規約](versions.md) を参照して下さい。
 
-## Usage
+## 使用
 
-### Interfaces
+### インターフェイス
 
-Use case | BC?
----------|----
-Type hint with the interface | Yes
-Call the interface method | Yes
-**Implement the interface and...** |
-Implement method | Yes
-Add argument to method implemented | Yes
-Add default value to an argument | Yes
+ユースケース | 後方互換?
+-------------|----------
+インターフェイスのタイプヒント | Yes
+インターフェイス・メソッドの呼び出し | Yes
+**インターフェイスの実装における ...** |
+メソッドの実装 | Yes
+実装済みメソッドへの引数の追加 | Yes
+引数のデフォルト値の追加 | Yes
 
-### Classes
+### クラス
 
-Use case | BC?
----------|----
-Type hint with the class | Yes
-Create a new instance | Yes
-Extend the class | Yes
-Access a public property | Yes
-Call a public method | Yes
-**Extend the class and...** |
-Access a protected property	| Yes
-Call a protected method	| Yes
-Override a public property | Yes
-Override a protected property | Yes
-Override a public method | Yes
-Override a protected method | Yes
-Add a new property | No
-Add a new method | No
-Add an argument to an overridden method	| Yes
-Add a default value to an argument | Yes
-Call a private method (via Reflection) | No
-Access a private property (via Reflection) | No
+ユースケース | 後方互換?
+-------------|----------
+クラスのタイプヒント | Yes
+新しいインスタンスの作成 | Yes
+クラスの拡張 | Yes
+パブリック・プロパティへのアクセス | Yes
+パブリック・メソッドの呼び出し | Yes
+**クラスの拡張における ...** |
+プロテクト・プロパティへのアクセス | Yes
+プロテクト・メソッドの呼び出し | Yes
+パブリック・プロパティのオーバーライド | Yes
+プロテクト・プロパティのオーバーライド | Yes
+パブリック・メソッドのオーバーライド | Yes
+プロテクト・メソッドのオーバーライド | Yes
+新しいプロパティの追加 | No
+新しいメソッドの追加 | No
+オーバーライドされたメソッドへの引数の追加 | Yes
+引数のデフォルト値の追加 | Yes
+プライベート・メソッドの呼び出し(リフレクション経由) | No
+プライベート・プロパティへのアクセス(リフレクション経由) | No
 
 
-## Development
+## 開発
 
-### Changing interfaces
+### インターフェイスの変更
 
-Type of change | BC?
----------------|----
-Remove | No
-Change name or namespace | No
-Add parent interface | Yes if no new methods are added
-Remove parent interface | No
-**Interface methods** | 
-Add method | No
-Remove method | No
-Change name | No
-Move to parent interface | Yes
-Add argument without a default value | No
-Add argument with a default value | No
-Remove argument | Yes (only last ones)
-Add default value to an argument | No
-Remove default value of an argument | No
-Add type hint to an argument | No
-Remove type hint of an argument | No
-Change argument type | No
-Change return type | No
-**Constants** |	 
-Add constant | Yes
-Remove constant | No
-Change value of a constant | Yes except objects that are likely to be serialized. Mandatory to document in UPGRADE.md.
+変更のタイプ | 後方互換?
+-------------|----------
+削除 | No
+名前または名前空間の変更 | No
+親のインターフェイスの追加 | 新しいメソッドが追加されなければ Yes
+親のインターフェイスの削除 | No
+**インターフェイス・メソッド** | 
+メソッドの追加 | No
+メソッドの削除 | No
+名前の変更 | No
+親のインターフェイスへの移動 | Yes
+デフォルト値を持たない引数の追加 | No
+デフォルト値を持つ引数の追加 | No
+引数の削除 | Yes (末尾の一つまたは複数の引数のみ)
+引数のデフォルト値の追加 | No
+引数のデフォルト値の削除 | No
+引数のタイプヒントの追加 | No
+引数のタイプヒントの削除 | No
+引数の型の変更 | No
+戻り値の型の変更 | No
+**定数** |	 
+定数の追加 | Yes
+定数の削除 | No
+定数の値の変更 | シリアライズされる可能性のあるオブジェクトを除いて Yes。UPGRADE.md への記載が必須
 
-### Classes
+### クラス
 
-Type of change | BC?
----------------|----
-Remove | No
-Make final | No
-Make abstract | No
-Change name or namespace | No
-Change parent class | Yes but original parent class must remain an ancestor of the class.
-Add interface | Yes
-Remove interface | No
-**Public Properties** | 
-Add public property | Yes
-Remove public property | No
-Reduce visibility | No
-Move to parent class | Yes
-**Protected Properties** | 	 
-Add protected property | Yes
-Remove protected property | No
-Reduce visibility | No
-Move to parent class | Yes
-**Private Properties** | 
-Add private property | Yes
-Remove private property | Yes
-**Constructors** | 
-Remove constructor | No
-Reduce visibility of a public constructor | No
-Reduce visibility of a protected constructor | No
-Move to parent class | Yes
-**Public Methods** |
-Add public method | Yes
-Remove public method | No
-Change name | No
-Reduce visibility | No
-Move to parent class | Yes
-Add argument without a default value | No
-Add argument with a default value | No
-Remove arguments | Yes, only last ones
-Add default value to an argument | No
-Remove default value of an argument | No
-Add type hint to an argument | No
-Remove type hint of an argument | No
-Change argument type | No
-Change return type | No
-**Protected Methods** | 	 
-Add protected method | Yes
-Remove protected method | No
-Change name | No
-Reduce visibility | No
-Move to parent class | Yes
-Add argument without a default value | No
-Add argument with a default value | No
-Remove arguments | Yes, only last ones
-Add default value to an argument | No
-Remove default value of an argument | No
-Add type hint to an argument | No
-Remove type hint of an argument | No
-Change argument type | No
-Change return type | No
-**Private Methods** | 	 
-Add private method | Yes
-Remove private method | Yes
-Change name | Yes
-Add argument without a default value | Yes
-Add argument with a default value | Yes
-Remove argument | Yes
-Add default value to an argument | Yes
-Remove default value of an argument | Yes
-Add type hint to an argument | Yes
-Remove type hint of an argument | Yes
-Change argument type | Yes
-Change return type | Yes
-**Static Methods** | 
-Turn non static into static | No
-Turn static into non static | No
-**Constants** | 	 
-Add constant | Yes
-Remove constant | No
-Change value of a constant | Yes except objects that are likely to be serialized. Mandatory to document in UPGRADE.md.
+変更のタイプ | 後方互換?
+-------------|----------
+削除 | No
+final への変更 | No
+abstract への変更 | No
+名前または名前空間の変更 | No
+親クラスの変更 | Yes ただし元の親クラスは祖先クラス(祖父母クラスなど)として残らなければならない
+インターフェイスの追加 | Yes
+インターフェイスの削除 | No
+**パブリック・プロパティ** | 
+パブリック・プロパティの追加 | Yes
+パブリック・プロパティの削除 | No
+可視性の低減 | No
+親クラスへの移動 | Yes
+**プロテクト・プロパティ** | 	 
+プロテクト・プロパティの追加 | Yes
+プロテクト・プロパティの削除 | No
+可視性の低減 | No
+親クラスへの移動 | Yes
+**プライベート・プロパティ** | 
+プライベート・プロパティの追加 | Yes
+プライベート・プロパティの削除 | Yes
+**コンストラクター** | 
+コンストラクターの削除 | No
+パブリック・コンストラクターの可視性低減 | No
+プロテクト・コンストラクターの可視性低減 | No
+親クラスへの移動 | Yes
+**パブリック・メソッド** |
+パブリック・メソッドの追加 | Yes
+パブリック・メソッドの削除 | No
+名前の変更 | No
+可視性の低減 | No
+親クラスへの移動 | Yes
+デフォルト値を持たない引数の追加 | No
+デフォルト値を持つ引数の追加 | No
+引数の削除 | Yes (末尾の一つまたは複数の引数のみ)
+引数のデフォルト値の追加 | No
+引数のデフォルト値の削除 | No
+引数のタイプヒントの追加 | No
+引数のタイプヒントの削除 | No
+引数の型の変更 | No
+戻り値の型の変更 | No
+**プロテクト・メソッド** | 	 
+プロテクト・メソッドの追加 | Yes
+プロテクト・メソッドの削除 | No
+名前の変更 | No
+可視性の低減 | No
+親クラスへの移動 | Yes
+デフォルト値を持たない引数の追加 | No
+デフォルト値を持つ引数の追加 | No
+引数の削除 | Yes (末尾の一つまたは複数の引数のみ)
+引数のデフォルト値の追加 | No
+引数のデフォルト値の削除 | No
+引数のタイプヒントの追加 | No
+引数のタイプヒントの削除 | No
+引数の型の変更 | No
+戻り値の型の変更 | No
+**プライベート・メソッド** | 	 
+プライベート・メソッドの追加 | Yes
+プライベート・メソッドの削除 | Yes
+名前の変更 | Yes
+デフォルト値を持たない引数の追加 | Yes
+デフォルト値を持つ引数の追加 | Yes
+引数の削除 | Yes
+引数のデフォルト値の追加 | Yes
+引数のデフォルト値の削除 | Yes
+引数のタイプヒントの追加 | Yes
+引数のタイプヒントの削除 | Yes
+引数の方の変更 | Yes
+戻り値の型の変更 | Yes
+**スタティック・メソッド** | 
+非スタティックなメソッドのスタティックへの変更 | No
+スタティックなメソッドの非スタティックへの変更 | No
+**定数** | 	 
+定数の追加 | Yes
+定数の削除 | No
+定数の値の変更 | シリアライズされる可能性のあるオブジェクトを除いて Yes。UPGRADE.md への記載が必須
