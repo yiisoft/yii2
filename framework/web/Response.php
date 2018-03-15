@@ -8,8 +8,8 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -272,7 +272,7 @@ class Response extends \yii\base\Response
      * This method will set the corresponding status text if `$text` is null.
      * @param int $value the status code
      * @param string $text the status text. If not set, it will be set automatically based on the status code.
-     * @throws InvalidParamException if the status code is invalid.
+     * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      */
     public function setStatusCode($value, $text = null)
@@ -282,7 +282,7 @@ class Response extends \yii\base\Response
         }
         $this->_statusCode = (int) $value;
         if ($this->getIsInvalid()) {
-            throw new InvalidParamException("The HTTP status code is invalid: $value");
+            throw new InvalidArgumentException("The HTTP status code is invalid: $value");
         }
         if ($text === null) {
             $this->statusText = isset(static::$httpStatuses[$this->_statusCode]) ? static::$httpStatuses[$this->_statusCode] : '';
@@ -296,7 +296,7 @@ class Response extends \yii\base\Response
     /**
      * Sets the response status code based on the exception.
      * @param \Exception|\Error $e the exception object.
-     * @throws InvalidParamException if the status code is invalid.
+     * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      * @since 2.0.12
      */
@@ -362,12 +362,11 @@ class Response extends \yii\base\Response
      */
     protected function sendHeaders()
     {
-        if (headers_sent()) {
-            return;
+        if (headers_sent($file, $line)) {
+            throw new HeadersAlreadySentException($file, $line);
         }
         if ($this->_headers) {
-            $headers = $this->getHeaders();
-            foreach ($headers as $name => $values) {
+            foreach ($this->getHeaders() as $name => $values) {
                 $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
                 // set replace for first occurrence of header but false afterwards to allow multiple
                 $replace = true;
@@ -767,7 +766,11 @@ class Response extends \yii\base\Response
      */
     protected function getDispositionHeaderValue($disposition, $attachmentName)
     {
-        $fallbackName = str_replace('"', '\\"', str_replace(['%', '/', '\\'], '_', Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)));
+        $fallbackName = str_replace(
+            ['%', '/', '\\', '"'],
+            ['_', '_', '_', '\\"'],
+            Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)
+        );
         $utfName = rawurlencode(str_replace(['%', '/', '\\'], '', $attachmentName));
 
         $dispositionHeader = "{$disposition}; filename=\"{$fallbackName}\"";
@@ -841,7 +844,7 @@ class Response extends \yii\base\Response
             $url[0] = '/' . ltrim($url[0], '/');
         }
         $url = Url::to($url);
-        if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
+        if (strncmp($url, '/', 1) === 0 && strncmp($url, '//', 2) !== 0) {
             $url = Yii::$app->getRequest()->getHostInfo() . $url;
         }
 
@@ -1051,12 +1054,12 @@ class Response extends \yii\base\Response
         }
 
         if (is_array($this->content)) {
-            throw new InvalidParamException('Response content must not be an array.');
+            throw new InvalidArgumentException('Response content must not be an array.');
         } elseif (is_object($this->content)) {
             if (method_exists($this->content, '__toString')) {
                 $this->content = $this->content->__toString();
             } else {
-                throw new InvalidParamException('Response content must be a string or an object implementing __toString().');
+                throw new InvalidArgumentException('Response content must be a string or an object implementing __toString().');
             }
         }
     }

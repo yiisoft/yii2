@@ -46,9 +46,14 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.npm
 
-# try running against postgres 9.3
+# try running against postgres 9.6
 addons:
-  postgresql: "9.3"
+  postgresql: "9.6"
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
   code_climate:
     repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
 
@@ -69,19 +74,21 @@ matrix:
 
     - php: 5.4
 
-    # Test against HHVM 3.12 LTS version by using trusty
-    - php: hhvm-3.12
+    # Test against HHVM 3.21 LTS version by using trusty
+    - php: hhvm-3.21
       sudo: true
       addons:
         code_climate:
           repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
+        postgresql: "9.6"
         apt:
+          sources:
+            - mysql-5.7-trusty
           packages:
-            - mysql-server-5.6
-            - mysql-client-core-5.6
-            - mysql-client-5.6
+            - mysql-server
       services:
         - mysql
+        - postgresql
 
     # test against the latest HHVM version by using a newer image
     - php: hhvm
@@ -89,12 +96,12 @@ matrix:
       addons:
         code_climate:
           repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
-        postgresql: "9.3"
+        postgresql: "9.6"
         apt:
+          sources:
+            - mysql-5.7-trusty
           packages:
-            - mysql-server-5.6
-            - mysql-client-core-5.6
-            - mysql-client-5.6
+            - mysql-server
       services:
         - mysql
         - postgresql
@@ -121,11 +128,6 @@ install:
   # install composer dependencies
   - travis_retry composer self-update
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - |
-    if [[ $TRAVIS_PHP_VERSION == "hhvm-3.12" ]]; then
-      # remove php-cs-fixer from composer dependencies on hhvm-3.12 - php-cs-fixer requires at least hhvm-3.18
-      composer remove friendsofphp/php-cs-fixer --dev
-    fi
   - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
 
   # setup PHP extension
@@ -166,6 +168,7 @@ before_script:
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
       travis_retry mysql -e 'CREATE DATABASE `yiitest`;';
+      mysql -e "SET GLOBAL sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';";
       mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
       mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
       psql -U postgres -c 'CREATE DATABASE yiitest;';

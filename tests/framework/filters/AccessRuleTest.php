@@ -300,6 +300,32 @@ class AccessRuleTest extends \yiiunit\TestCase
         $rule->allows($action, false, $request);
     }
 
+    public function testMatchRoleSpecial()
+    {
+        $action = $this->mockAction();
+        $request = $this->mockRequest();
+        $authenticated = $this->mockUser('user1');
+        $guest = $this->mockUser('unknown');
+
+        $rule = new AccessRule();
+        $rule->allow = true;
+        $rule->roleParams = function () {
+            $this->assertTrue(false, 'Should not be executed');
+        };
+
+        $rule->roles = ['@'];
+        $this->assertTrue($rule->allows($action, $authenticated, $request));
+        $this->assertNull($rule->allows($action, $guest, $request));
+
+        $rule->roles = ['?'];
+        $this->assertNull($rule->allows($action, $authenticated, $request));
+        $this->assertTrue($rule->allows($action, $guest, $request));
+
+        $rule->roles = ['?', '@'];
+        $this->assertTrue($rule->allows($action, $authenticated, $request));
+        $this->assertTrue($rule->allows($action, $guest, $request));
+    }
+
     public function testMatchRolesAndPermissions()
     {
         $action = $this->mockAction();

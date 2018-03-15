@@ -67,20 +67,20 @@ class BlameableBehavior extends AttributeBehavior
      */
     public $updatedByAttribute = 'updated_by';
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * In case, when the property is `null`, the value of `Yii::$app->user->id` will be used as the value.
      */
     public $value;
-
     /**
      * @var mixed Default value for cases when the user is guest
      * @since 2.0.14
      */
     public $defaultValue;
 
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -95,7 +95,7 @@ class BlameableBehavior extends AttributeBehavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      *
      * In case, when the [[value]] property is `null`, the value of [[defaultValue]] will be used as the value.
      */

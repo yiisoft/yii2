@@ -8,15 +8,17 @@
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
+use yii\helpers\ArrayHelper;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Animal;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\Document;
+use yiiunit\data\ar\Dossier;
 use yiiunit\data\ar\CustomerQuery;
 use yiiunit\data\ar\CustomerWithConstructor;
-use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Dog;
 use yiiunit\data\ar\Item;
 use yiiunit\data\ar\NullValues;
@@ -45,7 +47,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getCustomerClass()
     {
@@ -53,7 +55,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getItemClass()
     {
@@ -61,7 +63,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderClass()
     {
@@ -69,7 +71,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderItemClass()
     {
@@ -85,7 +87,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderWithNullFKClass()
     {
@@ -93,7 +95,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getOrderItemWithNullFKmClass()
     {
@@ -755,7 +757,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // join with ON condition and alias in relation definition
         if ($aliasMethod === 'explicit' || $aliasMethod === 'querysyntax') {
             $relationName = 'books' . ucfirst($aliasMethod) . 'A';
-            $orders = Order::find()->joinWith(["$relationName"])->orderBy('order.id')->all();
+            $orders = Order::find()->joinWith([(string)$relationName])->orderBy('order.id')->all();
             $this->assertCount(3, $orders);
             $this->assertEquals(1, $orders[0]->id);
             $this->assertEquals(2, $orders[1]->id);
@@ -973,6 +975,97 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         OrderItem::$tableName = null;
     }
 
+    public function testOutdatedRelationsAreResetForNewRecords()
+    {
+        $orderItem = new OrderItem();
+        $orderItem->order_id = 1;
+        $orderItem->item_id = 3;
+        $this->assertEquals(1, $orderItem->order->id);
+        $this->assertEquals(3, $orderItem->item->id);
+
+        // Test `__set()`.
+        $orderItem->order_id = 2;
+        $orderItem->item_id = 1;
+        $this->assertEquals(2, $orderItem->order->id);
+        $this->assertEquals(1, $orderItem->item->id);
+
+        // Test `setAttribute()`.
+        $orderItem->setAttribute('order_id', 2);
+        $orderItem->setAttribute('item_id', 2);
+        $this->assertEquals(2, $orderItem->order->id);
+        $this->assertEquals(2, $orderItem->item->id);
+    }
+
+    public function testOutdatedRelationsAreResetForExistingRecords()
+    {
+        $orderItem = OrderItem::findOne(1);
+        $this->assertEquals(1, $orderItem->order->id);
+        $this->assertEquals(1, $orderItem->item->id);
+
+        // Test `__set()`.
+        $orderItem->order_id = 2;
+        $orderItem->item_id = 1;
+        $this->assertEquals(2, $orderItem->order->id);
+        $this->assertEquals(1, $orderItem->item->id);
+
+        // Test `setAttribute()`.
+        $orderItem->setAttribute('order_id', 3);
+        $orderItem->setAttribute('item_id', 1);
+        $this->assertEquals(3, $orderItem->order->id);
+        $this->assertEquals(1, $orderItem->item->id);
+    }
+
+    public function testOutdatedCompositeKeyRelationsAreReset()
+    {
+        $dossier = Dossier::findOne([
+            'department_id' => 1,
+            'employee_id' => 1,
+        ]);
+        $this->assertEquals('John Doe', $dossier->employee->fullName);
+
+        $dossier->department_id = 2;
+        $this->assertEquals('Ann Smith', $dossier->employee->fullName);
+
+        $dossier->employee_id = 2;
+        $this->assertEquals('Will Smith', $dossier->employee->fullName);
+
+        unset($dossier->employee_id);
+        $this->assertNull($dossier->employee);
+
+        $dossier = new Dossier();
+        $this->assertNull($dossier->employee);
+
+        $dossier->employee_id = 1;
+        $dossier->department_id = 2;
+        $this->assertEquals('Ann Smith', $dossier->employee->fullName);
+
+        $dossier->employee_id = 2;
+        $this->assertEquals('Will Smith', $dossier->employee->fullName);
+    }
+
+    public function testOutdatedViaTableRelationsAreReset()
+    {
+        $order = Order::findOne(1);
+        $orderItemIds = ArrayHelper::getColumn($order->items, 'id');
+        sort($orderItemIds);
+        $this->assertSame([1, 2], $orderItemIds);
+
+        $order->id = 2;
+        sort($orderItemIds);
+        $orderItemIds = ArrayHelper::getColumn($order->items, 'id');
+        $this->assertSame([3, 4, 5], $orderItemIds);
+
+        unset($order->id);
+        $this->assertSame([], $order->items);
+
+        $order = new Order();
+        $this->assertSame([], $order->items);
+
+        $order->id = 3;
+        $orderItemIds = ArrayHelper::getColumn($order->items, 'id');
+        $this->assertSame([2], $orderItemIds);
+    }
+
     public function testAlias()
     {
         $query = Order::find();
@@ -1139,6 +1232,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(5, $itemClass::find()->count());
     }
 
+    /**
+     * @requires PHP 5.6
+     */
     public function testCastValues()
     {
         $model = new Type();
@@ -1505,6 +1601,26 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
+     * https://github.com/yiisoft/yii2/pull/13891
+     */
+    public function testIndexByAfterLoadingRelations()
+    {
+        $orderClass = $this->getOrderClass();
+
+        $orderClass::find()->with('customer')->indexBy(function(Order $order) {
+            $this->assertTrue($order->isRelationPopulated('customer'));
+            $this->assertNotEmpty($order->customer->id);
+
+            return $order->customer->id;
+        })->all();
+
+        $orders = $orderClass::find()->with('customer')->indexBy('customer.id')->all();
+        foreach ($orders as $customer_id => $order) {
+            $this->assertEquals($customer_id, $order->customer_id);
+        }
+    }
+
+    /**
      * Verify that {{}} are not going to be replaced in parameters.
      */
     public function testNoTablenameReplacement()
@@ -1611,5 +1727,30 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf(OrderItemWithConstructor::className(), $item);
 
         $this->assertEquals(1, $item->item_id);
+
+        // @see https://github.com/yiisoft/yii2/issues/15540
+        $orders = OrderWithConstructor::find()
+            ->with(['customer.profile', 'orderItems'])
+            ->orderBy('id')
+            ->asArray(true)
+            ->all();
+        $this->assertCount(3, $orders);
+    }
+
+    public function testCustomARRelation()
+    {
+        $orderItem = OrderItem::findOne(1);
+        $this->assertInstanceOf(Order::className(), $orderItem->custom);
+    }
+
+
+    public function testRefresh_querySetAlias_findRecord()
+    {
+        $customer = new \yiiunit\data\ar\CustomerWithAlias();
+        $customer->id = 1;
+
+        $customer->refresh();
+
+        $this->assertEquals(1, $customer->id);
     }
 }

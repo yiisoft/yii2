@@ -10,6 +10,7 @@ namespace yii\db\pgsql;
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
 use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
@@ -25,15 +26,21 @@ use yii\helpers\ArrayHelper;
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
-class Schema extends \yii\db\Schema
+class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ViewFinderTrait;
     use ConstraintFinderTrait;
+
+    const TYPE_JSONB = 'jsonb';
 
     /**
      * @var string the default schema used for the current session.
      */
     public $defaultSchema = 'public';
+    /**
+     * {@inheritdoc}
+     */
+    public $columnSchemaClass = 'yii\db\pgsql\ColumnSchema';
     /**
      * @var array mapping from physical column types (keys) to abstract
      * column types (values)
@@ -113,14 +120,19 @@ class Schema extends \yii\db\Schema
         'unknown' => self::TYPE_STRING,
 
         'uuid' => self::TYPE_STRING,
-        'json' => self::TYPE_STRING,
-        'jsonb' => self::TYPE_STRING,
+        'json' => self::TYPE_JSON,
+        'jsonb' => self::TYPE_JSON,
         'xml' => self::TYPE_STRING,
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected $tableQuoteCharacter = '"';
+
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function resolveTableName($name)
     {
@@ -138,7 +150,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function findSchemaNames()
     {
@@ -153,7 +165,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function findTableNames($schema = '')
     {
@@ -171,7 +183,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableSchema($name)
     {
@@ -186,7 +198,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTablePrimaryKey($tableName)
     {
@@ -194,7 +206,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableForeignKeys($tableName)
     {
@@ -202,7 +214,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableIndexes($tableName)
     {
@@ -246,7 +258,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableUniques($tableName)
     {
@@ -254,7 +266,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableChecks($tableName)
     {
@@ -262,7 +274,7 @@ SQL;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
@@ -293,25 +305,14 @@ SQL;
             $table->name = $parts[1];
         } else {
             $table->schemaName = $this->defaultSchema;
-            $table->name = $name;
+            $table->name = $parts[0];
         }
 
         $table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
     }
 
     /**
-     * Quotes a table name for use in a query.
-     * A simple table name has no schema prefix.
-     * @param string $name table name
-     * @return string the properly quoted table name
-     */
-    public function quoteSimpleTableName($name)
-    {
-        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
-    }
-
-    /**
-     * @inheritdoc
+     * {@inheritdoc]
      */
     protected function findViewNames($schema = '')
     {
@@ -437,8 +438,7 @@ SQL;
     {
         $uniqueIndexes = [];
 
-        $rows = $this->getUniqueIndexInformation($table);
-        foreach ($rows as $row) {
+        foreach ($this->getUniqueIndexInformation($table) as $row) {
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
                 $row = array_change_key_case($row, CASE_LOWER);
             }
@@ -468,14 +468,18 @@ SELECT
     d.nspname AS table_schema,
     c.relname AS table_name,
     a.attname AS column_name,
-    t.typname AS data_type,
+    COALESCE(td.typname, tb.typname, t.typname) AS data_type,
+    COALESCE(td.typtype, tb.typtype, t.typtype) AS type_type,
     a.attlen AS character_maximum_length,
     pg_catalog.col_description(c.oid, a.attnum) AS column_comment,
     a.atttypmod AS modifier,
     a.attnotnull = false AS is_nullable,
     CAST(pg_get_expr(ad.adbin, ad.adrelid) AS varchar) AS column_default,
     coalesce(pg_get_expr(ad.adbin, ad.adrelid) ~ 'nextval',false) AS is_autoinc,
-    array_to_string((select array_agg(enumlabel) from pg_enum where enumtypid=a.atttypid)::varchar[],',') as enum_values,
+    CASE WHEN COALESCE(td.typtype, tb.typtype, t.typtype) = 'e'::char
+        THEN array_to_string((SELECT array_agg(enumlabel) FROM pg_enum WHERE enumtypid = COALESCE(td.oid, tb.oid, a.atttypid))::varchar[], ',')
+        ELSE NULL
+    END AS enum_values,
     CASE atttypid
          WHEN 21 /*int2*/ THEN 16
          WHEN 23 /*int4*/ THEN 32
@@ -502,22 +506,24 @@ SELECT
              information_schema._pg_char_max_length(information_schema._pg_truetypid(a, t), information_schema._pg_truetypmod(a, t))
              AS numeric
     ) AS size,
-    a.attnum = any (ct.conkey) as is_pkey
+    a.attnum = any (ct.conkey) as is_pkey,
+    COALESCE(NULLIF(a.attndims, 0), NULLIF(t.typndims, 0), (t.typcategory='A')::int) AS dimension
 FROM
     pg_class c
     LEFT JOIN pg_attribute a ON a.attrelid = c.oid
     LEFT JOIN pg_attrdef ad ON a.attrelid = ad.adrelid AND a.attnum = ad.adnum
     LEFT JOIN pg_type t ON a.atttypid = t.oid
+    LEFT JOIN pg_type tb ON (a.attndims > 0 OR t.typcategory='A') AND t.typelem > 0 AND t.typelem = tb.oid OR t.typbasetype > 0 AND t.typbasetype = tb.oid
+    LEFT JOIN pg_type td ON t.typndims > 0 AND t.typbasetype > 0 AND tb.typelem = td.oid
     LEFT JOIN pg_namespace d ON d.oid = c.relnamespace
-    LEFT join pg_constraint ct on ct.conrelid=c.oid and ct.contype='p'
+    LEFT JOIN pg_constraint ct ON ct.conrelid = c.oid AND ct.contype = 'p'
 WHERE
-    a.attnum > 0 and t.typname != ''
-    and c.relname = {$tableName}
-    and d.nspname = {$schemaName}
+    a.attnum > 0 AND t.typname != ''
+    AND c.relname = {$tableName}
+    AND d.nspname = {$schemaName}
 ORDER BY
     a.attnum;
 SQL;
-
         $columns = $this->db->createCommand($sql)->queryAll();
         if (empty($columns)) {
             return false;
@@ -539,10 +545,10 @@ SQL;
                     $column->defaultValue = new Expression($column->defaultValue);
                 } elseif ($column->type === 'boolean') {
                     $column->defaultValue = ($column->defaultValue === 'true');
-                } elseif (stripos($column->dbType, 'bit') === 0 || stripos($column->dbType, 'varbit') === 0) {
+                } elseif (strncasecmp($column->dbType, 'bit', 3) === 0 || strncasecmp($column->dbType, 'varbit', 6) === 0) {
                     $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
-                    $column->defaultValue = $matches[1];
+                    $column->defaultValue = $column->phpTypecast($matches[1]);
                 } elseif (preg_match('/^(\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
                     if ($matches[2] === 'NULL') {
                         $column->defaultValue = null;
@@ -565,6 +571,7 @@ SQL;
      */
     protected function loadColumnSchema($info)
     {
+        /** @var ColumnSchema $column */
         $column = $this->createColumnSchema();
         $column->allowNull = $info['is_nullable'];
         $column->autoIncrement = $info['is_autoinc'];
@@ -578,6 +585,7 @@ SQL;
         $column->precision = $info['numeric_precision'];
         $column->scale = $info['numeric_scale'];
         $column->size = $info['size'] === null ? null : (int) $info['size'];
+        $column->dimension = (int)$info['dimension'];
         if (isset($this->typeMap[$column->dbType])) {
             $column->type = $this->typeMap[$column->dbType];
         } else {
@@ -589,7 +597,7 @@ SQL;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns)
     {

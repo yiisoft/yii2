@@ -22,11 +22,15 @@ DROP TABLE IF EXISTS "animal" CASCADE;
 DROP TABLE IF EXISTS "default_pk" CASCADE;
 DROP TABLE IF EXISTS "document" CASCADE;
 DROP TABLE IF EXISTS "comment" CASCADE;
+DROP TABLE IF EXISTS "dossier";
+DROP TABLE IF EXISTS "employee";
+DROP TABLE IF EXISTS "department";
 DROP VIEW IF EXISTS "animal_view";
 DROP TABLE IF EXISTS "T_constraints_4";
 DROP TABLE IF EXISTS "T_constraints_3";
 DROP TABLE IF EXISTS "T_constraints_2";
 DROP TABLE IF EXISTS "T_constraints_1";
+DROP TABLE IF EXISTS "T_upsert";
 
 DROP SCHEMA IF EXISTS "schema1" CASCADE;
 DROP SCHEMA IF EXISTS "schema2" CASCADE;
@@ -122,6 +126,7 @@ CREATE TABLE "null_values" (
 CREATE TABLE "type" (
   int_col integer NOT NULL,
   int_col2 integer DEFAULT '1',
+  tinyint_col smallint DEFAULT '1',
   smallint_col smallint DEFAULT '1',
   char_col char(100) NOT NULL,
   char_col2 varchar(100) DEFAULT 'something',
@@ -135,7 +140,12 @@ CREATE TABLE "type" (
   bool_col2 boolean DEFAULT TRUE,
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   bit_col BIT(8) NOT NULL DEFAULT B'10000010',
-  bigint_col BIGINT
+  bigint_col BIGINT,
+  intarray_col integer[],
+  textarray2_col text[][],
+  json_col json DEFAULT '{"a":1}',
+  jsonb_col jsonb,
+  jsonarray_col json[]
 );
 
 CREATE TABLE "bool_values" (
@@ -146,6 +156,7 @@ CREATE TABLE "bool_values" (
 );
 
 CREATE TABLE "negative_default_values" (
+  tinyint_col smallint default '-123',
   smallint_col smallint default '-123',
   int_col integer default '-123',
   bigint_col bigint default '-123',
@@ -166,7 +177,7 @@ CREATE TABLE "default_pk" (
 CREATE TABLE "document" (
   id serial primary key,
   title varchar(255) not null,
-  content text not null,
+  content text,
   version integer not null default 0
 );
 
@@ -174,6 +185,26 @@ CREATE TABLE "comment" (
   id serial primary key,
   name varchar(255) not null,
   message text not null
+);
+
+CREATE TABLE "department" (
+  id serial not null primary key,
+  title VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE "employee" (
+  id INTEGER NOT NULL not null,
+  department_id INTEGER NOT NULL,
+  first_name VARCHAR(255) NOT NULL,
+  last_name VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id, department_id)
+);
+
+CREATE TABLE "dossier" (
+  id serial not null primary key,
+  department_id INTEGER NOT NULL,
+  employee_id INTEGER NOT NULL,
+  summary VARCHAR(255) NOT NULL
 );
 
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
@@ -224,6 +255,17 @@ INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VA
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+
+INSERT INTO "department" (id, title) VALUES (1, 'IT');
+INSERT INTO "department" (id, title) VALUES (2, 'accounting');
+
+INSERT INTO "employee" (id, department_id, first_name, last_name) VALUES (1, 1, 'John', 'Doe');
+INSERT INTO "employee" (id, department_id, first_name, last_name) VALUES (1, 2, 'Ann', 'Smith');
+INSERT INTO "employee" (id, department_id, first_name, last_name) VALUES (2, 2, 'Will', 'Smith');
+
+INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (1, 1, 1, 'Excellent employee.');
+INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (2, 2, 1, 'Brilliant employee.');
+INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (3, 2, 2, 'Good employee.');
 
 /**
  * (Postgres-)Database Schema for validator tests
@@ -281,6 +323,16 @@ CREATE TABLE "bit_values" (
 
 INSERT INTO "bit_values" (id, val) VALUES (1, '0'), (2, '1');
 
+DROP TABLE IF EXISTS "array_and_json_types" CASCADE;
+CREATE TABLE "array_and_json_types" (
+  id SERIAL NOT NULL PRIMARY KEY,
+  intarray_col INT[],
+  textarray2_col TEXT[][],
+  json_col JSON,
+  jsonb_col JSONB,
+  jsonarray_col JSON[]
+);
+
 CREATE TABLE "T_constraints_1"
 (
     "C_id" INT NOT NULL PRIMARY KEY,
@@ -318,4 +370,17 @@ CREATE TABLE "T_constraints_4"
     "C_col_1" INT NULL,
     "C_col_2" INT NOT NULL,
     CONSTRAINT "CN_constraints_4" UNIQUE ("C_col_1", "C_col_2")
+);
+
+CREATE TABLE "T_upsert"
+(
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "ts" INT NULL,
+    "email" VARCHAR(128) NOT NULL UNIQUE,
+    "recovery_email" VARCHAR(128) NULL,
+    "address" TEXT NULL,
+    "status" SMALLINT NOT NULL DEFAULT 0,
+    "orders" INT NOT NULL DEFAULT 0,
+    "profile_id" INT NULL,
+    UNIQUE ("email", "recovery_email")
 );

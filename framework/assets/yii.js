@@ -253,7 +253,7 @@ window.yii = (function ($) {
 
             $form.trigger('submit');
 
-            $.when($form.data('yiiSubmitFinalizePromise')).then(function () {
+            $.when($form.data('yiiSubmitFinalizePromise')).done(function () {
                 if (newForm) {
                     $form.remove();
                     return;

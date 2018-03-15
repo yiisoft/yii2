@@ -15,6 +15,7 @@ use yii\base\NotSupportedException;
 use yii\caching\Cache;
 use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
+use yii\helpers\StringHelper;
 
 /**
  * Schema is the base class for concrete DBMS-specific schema classes.
@@ -26,6 +27,7 @@ use yii\caching\TagDependency;
  * @property QueryBuilder $queryBuilder The query builder for this connection. This property is read-only.
  * @property string[] $schemaNames All schema names in the database, except system schemas. This property is
  * read-only.
+ * @property string $serverVersion Server version as a string. This property is read-only.
  * @property string[] $tableNames All table names in the database. This property is read-only.
  * @property TableSchema[] $tableSchemas The metadata for all tables in the database. Each array element is an
  * instance of [[TableSchema]] or its child class. This property is read-only.
@@ -48,6 +50,7 @@ abstract class Schema extends BaseObject
     const TYPE_CHAR = 'char';
     const TYPE_STRING = 'string';
     const TYPE_TEXT = 'text';
+    const TYPE_TINYINT = 'tinyint';
     const TYPE_SMALLINT = 'smallint';
     const TYPE_INTEGER = 'integer';
     const TYPE_BIGINT = 'bigint';
@@ -61,6 +64,7 @@ abstract class Schema extends BaseObject
     const TYPE_BINARY = 'binary';
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_MONEY = 'money';
+    const TYPE_JSON = 'json';
     /**
      * Schema cache version, to detect incompatibilities in cached values when the
      * data format of the cache changes.
@@ -83,10 +87,23 @@ abstract class Schema extends BaseObject
         'SQLSTATE[23' => 'yii\db\IntegrityException',
     ];
     /**
-     * @var string column schema class
+     * @var string|array column schema class or class config
      * @since 2.0.11
      */
     public $columnSchemaClass = 'yii\db\ColumnSchema';
+
+    /**
+     * @var string|string[] character used to quote schema, table, etc. names.
+     * An array of 2 characters can be used in case starting and ending characters are different.
+     * @since 2.0.14
+     */
+    protected $tableQuoteCharacter = "'";
+    /**
+     * @var string|string[] character used to quote column names.
+     * An array of 2 characters can be used in case starting and ending characters are different.
+     * @since 2.0.14
+     */
+    protected $columnQuoteCharacter = '"';
 
     /**
      * @var array list of ALL schema names in the database, except system schemas
@@ -104,6 +121,10 @@ abstract class Schema extends BaseObject
      * @var QueryBuilder the query builder for this database
      */
     private $_builder;
+    /**
+     * @var string server version as a string.
+     */
+    private $_serverVersion;
 
 
     /**
@@ -508,7 +529,12 @@ abstract class Schema extends BaseObject
      */
     public function quoteSimpleTableName($name)
     {
-        return strpos($name, "'") !== false ? $name : "'" . $name . "'";
+        if (is_string($this->tableQuoteCharacter)) {
+            $startingCharacter = $endingCharacter = $this->tableQuoteCharacter;
+        } else {
+            list($startingCharacter, $endingCharacter) = $this->tableQuoteCharacter;
+        }
+        return strpos($name, $startingCharacter) !== false ? $name : $startingCharacter . $name . $endingCharacter;
     }
 
     /**
@@ -520,7 +546,48 @@ abstract class Schema extends BaseObject
      */
     public function quoteSimpleColumnName($name)
     {
-        return strpos($name, '"') !== false || $name === '*' ? $name : '"' . $name . '"';
+        if (is_string($this->tableQuoteCharacter)) {
+            $startingCharacter = $endingCharacter = $this->columnQuoteCharacter;
+        } else {
+            list($startingCharacter, $endingCharacter) = $this->columnQuoteCharacter;
+        }
+        return $name === '*' || strpos($name, $startingCharacter) !== false ? $name : $startingCharacter . $name . $endingCharacter;
+    }
+
+    /**
+     * Unquotes a simple table name.
+     * A simple table name should contain the table name only without any schema prefix.
+     * If the table name is not quoted, this method will do nothing.
+     * @param string $name table name.
+     * @return string unquoted table name.
+     * @since 2.0.14
+     */
+    public function unquoteSimpleTableName($name)
+    {
+        if (is_string($this->tableQuoteCharacter)) {
+            $startingCharacter = $this->tableQuoteCharacter;
+        } else {
+            $startingCharacter = $this->tableQuoteCharacter[0];
+        }
+        return strpos($name, $startingCharacter) === false ? $name : substr($name, 1, -1);
+    }
+
+    /**
+     * Unquotes a simple column name.
+     * A simple column name should contain the column name only without any prefix.
+     * If the column name is not quoted or is the asterisk character '*', this method will do nothing.
+     * @param string $name column name.
+     * @return string unquoted column name.
+     * @since 2.0.14
+     */
+    public function unquoteSimpleColumnName($name)
+    {
+        if (is_string($this->columnQuoteCharacter)) {
+            $startingCharacter = $this->columnQuoteCharacter;
+        } else {
+            $startingCharacter = $this->columnQuoteCharacter[0];
+        }
+        return strpos($name, $startingCharacter) === false ? $name : substr($name, 1, -1);
     }
 
     /**
@@ -550,13 +617,15 @@ abstract class Schema extends BaseObject
     {
         static $typeMap = [
             // abstract type => php type
-            'smallint' => 'integer',
-            'integer' => 'integer',
-            'bigint' => 'integer',
-            'boolean' => 'boolean',
-            'float' => 'double',
-            'double' => 'double',
-            'binary' => 'resource',
+            self::TYPE_TINYINT => 'integer',
+            self::TYPE_SMALLINT => 'integer',
+            self::TYPE_INTEGER => 'integer',
+            self::TYPE_BIGINT => 'integer',
+            self::TYPE_BOOLEAN => 'boolean',
+            self::TYPE_FLOAT => 'double',
+            self::TYPE_DOUBLE => 'double',
+            self::TYPE_BINARY => 'resource',
+            self::TYPE_JSON => 'array',
         ];
         if (isset($typeMap[$column->type])) {
             if ($column->type === 'bigint') {
@@ -604,6 +673,19 @@ abstract class Schema extends BaseObject
     {
         $pattern = '/^\s*(SELECT|SHOW|DESCRIBE)\b/i';
         return preg_match($pattern, $sql) > 0;
+    }
+
+    /**
+     * Returns a server version as a string comparable by [[\version_compare()]].
+     * @return string server version as a string.
+     * @since 2.0.14
+     */
+    public function getServerVersion()
+    {
+        if ($this->_serverVersion === null) {
+            $this->_serverVersion = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        }
+        return $this->_serverVersion;
     }
 
     /**

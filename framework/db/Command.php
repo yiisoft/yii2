@@ -100,6 +100,16 @@ class Command extends Component
      * @var string name of the table, which schema, should be refreshed after command execution.
      */
     private $_refreshTableName;
+    /**
+     * @var string|false|null the isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
+     */
+    private $_isolationLevel = false;
+    /**
+     * @var callable a callable (e.g. anonymous function) that is called when [[\yii\db\Exception]] is thrown
+     * when executing the command.
+     */
+    private $_retryHandler;
 
 
     /**
@@ -201,7 +211,7 @@ class Command extends Component
                 $params[$name] = ($value ? 'TRUE' : 'FALSE');
             } elseif ($value === null) {
                 $params[$name] = 'NULL';
-            } elseif (!is_object($value) && !is_resource($value)) {
+            } elseif ((!is_object($value) && !is_resource($value)) || $value instanceof Expression) {
                 $params[$name] = $value;
             }
         }
@@ -337,8 +347,8 @@ class Command extends Component
      * @param array $values the values to be bound. This must be given in terms of an associative
      * array with array keys being the parameter names, and array values the corresponding parameter values,
      * e.g. `[':name' => 'John', ':age' => 25]`. By default, the PDO type of each value is determined
-     * by its PHP type. You may explicitly specify the PDO type by using an array: `[value, type]`,
-     * e.g. `[':name' => 'John', ':profile' => [$profile, \PDO::PARAM_LOB]]`.
+     * by its PHP type. You may explicitly specify the PDO type by using a [[yii\db\PdoValue]] class: `new PdoValue(value, type)`,
+     * e.g. `[':name' => 'John', ':profile' => new PdoValue($profile, \PDO::PARAM_LOB)]`.
      * @return $this the current command being executed
      */
     public function bindValues($values)
@@ -349,9 +359,12 @@ class Command extends Component
 
         $schema = $this->db->getSchema();
         foreach ($values as $name => $value) {
-            if (is_array($value)) {
+            if (is_array($value)) { // TODO: Drop in Yii 2.1
                 $this->_pendingParams[$name] = $value;
                 $this->params[$name] = $value[0];
+            } elseif ($value instanceof PdoValue) {
+                $this->_pendingParams[$name] = [$value->getValue(), $value->getType()];
+                $this->params[$name] = $value->getValue();
             } else {
                 $type = $schema->getPdoType($value);
                 $this->_pendingParams[$name] = [$value, $type];
@@ -490,11 +503,49 @@ class Command extends Component
             return $this->db->quoteSql($column);
         }, $columns);
 
-        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows, $params);
 
         $this->setRawSql($sql);
+        $this->bindValues($params);
 
         return $this;
+    }
+
+    /**
+     * Creates a command to insert rows into a database table if
+     * they do not already exist (matching unique constraints),
+     * or update them if they do.
+     *
+     * For example,
+     *
+     * ```php
+     * $sql = $queryBuilder->upsert('pages', [
+     *     'name' => 'Front page',
+     *     'url' => 'http://example.com/', // url is unique
+     *     'visits' => 0,
+     * ], [
+     *     'visits' => new \yii\db\Expression('visits + 1'),
+     * ], $params);
+     * ```
+     *
+     * The method will properly escape the table and column names.
+     *
+     * @param string $table the table that new rows will be inserted into/updated in.
+     * @param array|Query $insertColumns the column data (name => value) to be inserted into the table or instance
+     * of [[Query]] to perform `INSERT INTO ... SELECT` SQL statement.
+     * @param array|bool $updateColumns the column data (name => value) to be updated if they already exist.
+     * If `true` is passed, the column data will be updated to match the insert column data.
+     * If `false` is passed, no update will be performed if the column data already exists.
+     * @param array $params the parameters to be bound to the command.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function upsert($table, $insertColumns, $updateColumns = true, $params = [])
+    {
+        $sql = $this->db->getQueryBuilder()->upsert($table, $insertColumns, $updateColumns, $params);
+
+        return $this->setSql($sql)->bindValues($params);
     }
 
     /**
@@ -971,6 +1022,36 @@ class Command extends Component
     }
 
     /**
+     * Creates a SQL View.
+     *
+     * @param string $viewName the name of the view to be created.
+     * @param string|Query $subquery the select statement which defines the view.
+     * This can be either a string or a [[Query]] object.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function createView($viewName, $subquery)
+    {
+        $sql = $this->db->getQueryBuilder()->createView($viewName, $subquery);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($viewName);
+    }
+
+    /**
+     * Drops a SQL View.
+     *
+     * @param string $viewName the name of the view to be dropped.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function dropView($viewName)
+    {
+        $sql = $this->db->getQueryBuilder()->dropView($viewName);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($viewName);
+    }
+
+    /**
      * Executes the SQL statement.
      * This method should only be used for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
      * No result set will be returned.
@@ -991,7 +1072,7 @@ class Command extends Component
         try {
             $profile and Yii::beginProfile($rawSql, __METHOD__);
 
-            $this->pdoStatement->execute();
+            $this->internalExecute($rawSql);
             $n = $this->pdoStatement->rowCount();
 
             $profile and Yii::endProfile($rawSql, __METHOD__);
@@ -999,9 +1080,9 @@ class Command extends Component
             $this->refreshTableSchema();
 
             return $n;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $profile and Yii::endProfile($rawSql, __METHOD__);
-            throw $this->db->getSchema()->convertException($e, $rawSql ?: $this->getRawSql());
+            throw $e;
         }
     }
 
@@ -1053,7 +1134,7 @@ class Command extends Component
                 ];
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
-                    Yii::trace('Query result served from cache', 'yii\db\Command::query');
+                    Yii::debug('Query result served from cache', 'yii\db\Command::query');
                     return $result[0];
                 }
             }
@@ -1064,7 +1145,7 @@ class Command extends Component
         try {
             $profile and Yii::beginProfile($rawSql, 'yii\db\Command::query');
 
-            $this->pdoStatement->execute();
+            $this->internalExecute($rawSql);
 
             if ($method === '') {
                 $result = new DataReader($this);
@@ -1077,14 +1158,14 @@ class Command extends Component
             }
 
             $profile and Yii::endProfile($rawSql, 'yii\db\Command::query');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $profile and Yii::endProfile($rawSql, 'yii\db\Command::query');
-            throw $this->db->getSchema()->convertException($e, $rawSql ?: $this->getRawSql());
+            throw $e;
         }
 
         if (isset($cache, $cacheKey, $info)) {
             $cache->set($cacheKey, [$result], $info[1], $info[2]);
-            Yii::trace('Saved query result in cache', 'yii\db\Command::query');
+            Yii::debug('Saved query result in cache', 'yii\db\Command::query');
         }
 
         return $result;
@@ -1114,7 +1195,81 @@ class Command extends Component
     }
 
     /**
-     * Resets [[sql]] and [[params]] properties.
+     * Marks the command to be executed in transaction.
+     * @param string|null $isolationLevel The isolation level to use for this transaction.
+     * See [[Transaction::begin()]] for details.
+     * @return $this this command instance.
+     * @since 2.0.14
+     */
+    protected function requireTransaction($isolationLevel = null)
+    {
+        $this->_isolationLevel = $isolationLevel;
+        return $this;
+    }
+
+    /**
+     * Sets a callable (e.g. anonymous function) that is called when [[Exception]] is thrown
+     * when executing the command. The signature of the callable should be:
+     *
+     * ```php
+     * function (\yii\db\Exception $e, $attempt)
+     * {
+     *     // return true or false (whether to retry the command or rethrow $e)
+     * }
+     * ```
+     *
+     * The callable will recieve a database exception thrown and a current attempt
+     * (to execute the command) number starting from 1.
+     *
+     * @param callable $handler a PHP callback to handle database exceptions.
+     * @return $this this command instance.
+     * @since 2.0.14
+     */
+    protected function setRetryHandler(callable $handler)
+    {
+        $this->_retryHandler = $handler;
+        return $this;
+    }
+
+    /**
+     * Executes a prepared statement.
+     *
+     * It's a wrapper around [[\PDOStatement::execute()]] to support transactions
+     * and retry handlers.
+     *
+     * @param string|null $rawSql the rawSql if it has been created.
+     * @throws Exception if execution failed.
+     * @since 2.0.14
+     */
+    protected function internalExecute($rawSql)
+    {
+        $attempt = 0;
+        while (true) {
+            try {
+                if (
+                    ++$attempt === 1
+                    && $this->_isolationLevel !== false
+                    && $this->db->getTransaction() === null
+                ) {
+                    $this->db->transaction(function () use ($rawSql) {
+                        $this->internalExecute($rawSql);
+                    }, $this->_isolationLevel);
+                } else {
+                    $this->pdoStatement->execute();
+                }
+                break;
+            } catch (\Exception $e) {
+                $rawSql = $rawSql ?: $this->getRawSql();
+                $e = $this->db->getSchema()->convertException($e, $rawSql);
+                if ($this->_retryHandler === null || !call_user_func($this->_retryHandler, $e, $attempt)) {
+                    throw $e;
+                }
+            }
+        }
+    }
+
+    /**
+     * Resets command properties to their initial state.
      *
      * @since 2.0.13
      */
@@ -1124,5 +1279,7 @@ class Command extends Component
         $this->_pendingParams = [];
         $this->params = [];
         $this->_refreshTableName = null;
+        $this->_isolationLevel = false;
+        $this->_retryHandler = null;
     }
 }

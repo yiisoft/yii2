@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\QueryInterface;
 
 /**
  * ExistValidator validates that the attribute value exists in a table.
@@ -57,6 +58,12 @@ class ExistValidator extends Validator
      */
     public $targetAttribute;
     /**
+     * @var string the name of the relation that should be used to validate the existence of the current attribute value
+     * This param overwrites $targetClass and $targetAttribute
+     * @since 2.0.14
+     */
+    public $targetRelation;
+    /**
      * @var string|array|\Closure additional filter to be applied to the DB query used to check the existence of the attribute value.
      * This can be a string or an array representing the additional query condition (refer to [[\yii\db\Query::where()]]
      * on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
@@ -72,10 +79,15 @@ class ExistValidator extends Validator
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
+    /**
+     * @var bool whether this validator is forced to always use master DB
+     * @since 2.0.14
+     */
+    public $forceMasterDb = true;
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -86,13 +98,58 @@ class ExistValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
+        if (!empty($this->targetRelation)) {
+            $this->checkTargetRelationExistence($model, $attribute);
+        } else {
+            $this->checkTargetAttributeExistence($model, $attribute);
+        }
+    }
+
+    /**
+     * Validates existence of the current attribute based on relation name
+     * @param \yii\db\ActiveRecord $model the data model to be validated
+     * @param string $attribute the name of the attribute to be validated.
+     */
+    private function checkTargetRelationExistence($model, $attribute)
+    {
+        $exists = false;
+        /** @var ActiveQuery $relationQuery */
+        $relationQuery = $model->{'get' . ucfirst($this->targetRelation)}();
+
+        if ($this->filter instanceof \Closure) {
+            call_user_func($this->filter, $relationQuery);
+        } elseif ($this->filter !== null) {
+            $relationQuery->andWhere($this->filter);
+        }
+
+        if ($this->forceMasterDb && method_exists($model::getDb(), 'useMaster')) {
+            $model::getDb()->useMaster(function() use ($relationQuery, &$exists) {
+                $exists = $relationQuery->exists();
+            });
+        } else {
+            $exists = $relationQuery->exists();
+        }
+
+
+        if (!$exists) {
+            $this->addError($model, $attribute, $this->message);
+        }
+    }
+
+    /**
+     * Validates existence of the current attribute based on targetAttribute
+     * @param \yii\base\Model $model the data model to be validated
+     * @param string $attribute the name of the attribute to be validated.
+     */
+    private function checkTargetAttributeExistence($model, $attribute)
+    {
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $params = $this->prepareConditions($targetAttribute, $model, $attribute);
-        $conditions[] = $this->targetAttributeJunction == 'or' ? 'or' : 'and';
+        $conditions = [$this->targetAttributeJunction == 'or' ? 'or' : 'and'];
 
         if (!$this->allowArray) {
             foreach ($params as $key => $value) {
@@ -110,11 +167,7 @@ class ExistValidator extends Validator
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $query = $this->createQuery($targetClass, $conditions);
 
-        if (is_array($model->$attribute)) {
-            if ($query->count("DISTINCT [[$targetAttribute]]") != count($model->$attribute)) {
-                $this->addError($model, $attribute, $this->message);
-            }
-        } elseif (!$query->exists()) {
+        if (!$this->valueExists($targetClass, $query, $model->$attribute)) {
             $this->addError($model, $attribute, $this->message);
         }
     }
@@ -167,7 +220,7 @@ class ExistValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -178,17 +231,53 @@ class ExistValidator extends Validator
             throw new InvalidConfigException('The "targetAttribute" property must be configured as a string.');
         }
 
-        $query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
-
-        if (is_array($value)) {
-            if (!$this->allowArray) {
-                return [$this->message, []];
-            }
-
-            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
+        if (is_array($value) && !$this->allowArray) {
+            return [$this->message, []];
         }
 
-        return $query->exists() ? null : [$this->message, []];
+        $query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
+
+        return $this->valueExists($this->targetClass, $query, $value) ? null : [$this->message, []];
+    }
+
+    /**
+     * Check whether value exists in target table
+     *
+     * @param string $targetClass
+     * @param QueryInterface $query
+     * @param mixed $value the value want to be checked
+     * @return bool
+     */
+    private function valueExists($targetClass, $query, $value)
+    {
+        $db = $targetClass::getDb();
+        $exists = false;
+
+        if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
+            $db->useMaster(function ($db) use ($query, $value, &$exists) {
+                $exists = $this->queryValueExists($query, $value);
+            });
+        } else {
+            $exists = $this->queryValueExists($query, $value);
+        }
+
+        return $exists;
+    }
+
+
+    /**
+     * Run query to check if value exists
+     *
+     * @param QueryInterface $query
+     * @param mixed $value the value to be checked
+     * @return bool
+     */
+    private function queryValueExists($query, $value)
+    {
+        if (is_array($value)) {
+            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ;
+        }
+        return $query->exists();
     }
 
     /**

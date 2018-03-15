@@ -28,15 +28,7 @@ class FileHelperTest extends TestCase
             $this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
         }
 
-        // Check if chmod works as expected.
-        $dir = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_chmod';
-        mkdir($dir);
-        chmod($dir, 0700);
-        if ($this->getMode($dir) !== '0700') {
-            /*
-             * Chmod returns true but fileperms does not reflect this.
-             * This happens on remote file systems, also has been seen in vagrant mounts.
-             */
+        if (!$this->isChmodReliable()) {
             $this->markTestInComplete('Unit tests runtime directory should be local!');
         }
 
@@ -46,6 +38,22 @@ class FileHelperTest extends TestCase
         $this->destroyApplication();
     }
 
+    /**
+     * Check if chmod works as expected
+     *
+     * On remote file systems and vagrant mounts chmod returns true
+     * but file permissions are not set properly.
+     */
+    private function isChmodReliable()
+    {
+        $dir = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_chmod';
+        mkdir($dir);
+        chmod($dir, 0700);
+        $mode = $this->getMode($dir);
+        rmdir($dir);
+
+        return $mode === '0700';
+    }
 
     public function tearDown()
     {
@@ -72,7 +80,7 @@ class FileHelperTest extends TestCase
         if (!empty($dirName) && is_dir($dirName)) {
             if ($handle = opendir($dirName)) {
                 while (false !== ($entry = readdir($handle))) {
-                    if ($entry != '.' && $entry != '..') {
+                    if ($entry !== '.' && $entry !== '..') {
                         $item = $dirName . DIRECTORY_SEPARATOR . $entry;
                         if (is_dir($item) === true && !is_link($item)) {
                             $this->removeDir($item);
@@ -111,7 +119,7 @@ class FileHelperTest extends TestCase
         foreach ($items as $name => $content) {
             $itemName = $basePath . DIRECTORY_SEPARATOR . $name;
             if (is_array($content)) {
-                if (isset($content[0], $content[1]) && $content[0] == 'symlink') {
+                if (isset($content[0], $content[1]) && $content[0] === 'symlink') {
                     symlink($content[1], $itemName);
                 } else {
                     mkdir($itemName, 0777, true);
@@ -731,6 +739,12 @@ class FileHelperTest extends TestCase
         $this->assertEquals("..{$ds}a", FileHelper::normalizePath('././..\\a'));
         $this->assertEquals("..{$ds}a", FileHelper::normalizePath('./..\\a/../a'));
         $this->assertEquals("..{$ds}b", FileHelper::normalizePath('./..\\a/../b'));
+
+        // Windows file system may have paths for network shares that start with two backslashes
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
+        // https://github.com/yiisoft/yii2/issues/13034
+        $this->assertEquals('\\\\server\share\path\file', FileHelper::normalizePath('\\\\server\share\path\file', '\\'));
+
     }
 
     public function testLocalizedDirectory()
@@ -867,5 +881,57 @@ class FileHelperTest extends TestCase
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file2.txt');
         $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir2');
         $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir3');
+    }
+
+    public function testFindDirectories()
+    {
+        $dirName = 'test_dir';
+        $this->createFileStructure([
+            $dirName => [
+               'test_sub_dir' => [
+                    'file_1.txt' => 'sub dir file 1 content',
+                ],
+                'second_sub_dir' => [
+                    'file_1.txt' => 'sub dir file 2 content',
+                ],
+            ],
+        ]);
+        $basePath = $this->testFilePath;
+        $dirName = $basePath . DIRECTORY_SEPARATOR . $dirName;
+        $expectedFiles = [
+            $dirName . DIRECTORY_SEPARATOR . 'test_sub_dir',
+            $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir'
+        ];
+
+        $foundFiles = FileHelper::findDirectories($dirName);
+        sort($expectedFiles);
+        sort($foundFiles);
+        $this->assertEquals($expectedFiles, $foundFiles);
+
+        // filter
+        $expectedFiles = [
+            $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir'
+        ];
+        $options = [
+            'filter' => function ($path) {
+                return 'second_sub_dir' === basename($path);
+            },
+        ];
+        $foundFiles = FileHelper::findDirectories($dirName, $options);
+        sort($expectedFiles);
+        sort($foundFiles);
+        $this->assertEquals($expectedFiles, $foundFiles);
+
+        // except
+        $expectedFiles = [
+            $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir'
+        ];
+        $options = [
+            'except' => ['test_sub_dir'],
+        ];
+        $foundFiles = FileHelper::findDirectories($dirName, $options);
+        sort($expectedFiles);
+        sort($foundFiles);
+        $this->assertEquals($expectedFiles, $foundFiles);
     }
 }

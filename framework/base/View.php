@@ -26,7 +26,7 @@ use yii\widgets\FragmentCache;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class View extends Component
+class View extends Component implements DynamicContentAwareInterface
 {
     /**
      * @event Event an event that is triggered by [[beginPage()]].
@@ -86,15 +86,19 @@ class View extends Component
      */
     public $blocks;
     /**
-     * @var array a list of currently active fragment cache widgets. This property
-     * is used internally to implement the content caching feature. Do not modify it directly.
+     * @var array|DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
+     * This property is used internally to implement the dynamic content caching feature. Do not modify it directly.
      * @internal
+     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicContents()]],
+     * [[pushDynamicContent()]], [[popDynamicContent()]] instead.
      */
     public $cacheStack = [];
     /**
      * @var array a list of placeholders for embedding dynamic contents. This property
      * is used internally to implement the content caching feature. Do not modify it directly.
      * @internal
+     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicPlaceholders()]],
+     * [[setDynamicPlaceholders()]], [[addDynamicPlaceholder()]] instead.
      */
     public $dynamicPlaceholders = [];
 
@@ -237,7 +241,7 @@ class View extends Component
         $this->_viewFiles[] = $viewFile;
 
         if ($this->beforeRender($viewFile, $params)) {
-            Yii::trace("Rendering view file: $viewFile", __METHOD__);
+            Yii::debug("Rendering view file: $viewFile", __METHOD__);
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             if (isset($this->renderers[$ext])) {
                 if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
@@ -371,18 +375,36 @@ class View extends Component
     }
 
     /**
-     * Adds a placeholder for dynamic content.
-     * This method is internally used.
-     * @param string $placeholder the placeholder name
-     * @param string $statements the PHP statements for generating the dynamic content
+     * {@inheritdoc}
+     */
+    public function getDynamicPlaceholders()
+    {
+        return $this->dynamicPlaceholders;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDynamicPlaceholders($placeholders)
+    {
+        $this->dynamicPlaceholders = $placeholders;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function addDynamicPlaceholder($placeholder, $statements)
     {
         foreach ($this->cacheStack as $cache) {
-            $cache->dynamicPlaceholders[$placeholder] = $statements;
+            if ($cache instanceof DynamicContentAwareInterface) {
+                $cache->addDynamicPlaceholder($placeholder, $statements);
+            } else {
+                // TODO: Remove in 2.1
+                $cache->dynamicPlaceholders[$placeholder] = $statements;
+            }
         }
         $this->dynamicPlaceholders[$placeholder] = $statements;
-    }
+}
 
     /**
      * Evaluates the given PHP statements.
@@ -393,6 +415,37 @@ class View extends Component
     public function evaluateDynamicContent($statements)
     {
         return eval($statements);
+    }
+
+    /**
+     * Returns a list of currently active dynamic content class instances.
+     * @return DynamicContentAwareInterface[] class instances supporting dynamic contents.
+     * @since 2.0.14
+     */
+    public function getDynamicContents()
+    {
+        return $this->cacheStack;
+    }
+
+    /**
+     * Adds a class instance supporting dynamic contents to the end of a list of currently active
+     * dynamic content class instances.
+     * @param DynamicContentAwareInterface $instance class instance supporting dynamic contents.
+     * @since 2.0.14
+     */
+    public function pushDynamicContent(DynamicContentAwareInterface $instance)
+    {
+        $this->cacheStack[] = $instance;
+    }
+
+    /**
+     * Removes a last class instance supporting dynamic contents from a list of currently active
+     * dynamic content class instances.
+     * @since 2.0.14
+     */
+    public function popDynamicContent()
+    {
+        array_pop($this->cacheStack);
     }
 
     /**

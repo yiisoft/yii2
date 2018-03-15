@@ -56,7 +56,7 @@ class ActiveController extends Controller
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -67,7 +67,7 @@ class ActiveController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function actions()
     {
@@ -106,7 +106,7 @@ class ActiveController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function verbs()
     {

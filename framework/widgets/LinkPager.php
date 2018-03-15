@@ -139,6 +139,8 @@ class LinkPager extends Widget
      */
     public function init()
     {
+        parent::init();
+
         if ($this->pagination === null) {
             throw new InvalidConfigException('The "pagination" property must be set.');
         }

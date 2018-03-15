@@ -8,6 +8,7 @@
 namespace yii\helpers;
 
 use yii\console\Markdown as ConsoleMarkdown;
+use yii\base\Model;
 
 /**
  * BaseConsole provides concrete implementation for [[Console]].
@@ -621,7 +622,7 @@ class BaseConsole
         if (static::isRunningOnWindows()) {
             $output = [];
             exec('mode con', $output);
-            if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
+            if (isset($output[1]) && strpos($output[1], 'CON') !== false) {
                 return $size = [(int) preg_replace('~\D~', '', $output[4]), (int) preg_replace('~\D~', '', $output[3])];
             }
         } else {
@@ -863,7 +864,8 @@ class BaseConsole
      * a list of options to choose from and their explanations.
      *
      * @param string $prompt the prompt message
-     * @param array $options Key-value array of options to choose from
+     * @param array $options Key-value array of options to choose from. Key is what is inputed and used, value is
+     * what's displayed to end user by help command.
      *
      * @return string An option character the user chose
      */
@@ -956,46 +958,16 @@ class BaseConsole
      */
     public static function updateProgress($done, $total, $prefix = null)
     {
-        $width = self::$_progressWidth;
-        if ($width === false) {
-            $width = 0;
-        } else {
-            $screenSize = static::getScreenSize(true);
-            if ($screenSize === false && $width < 1) {
-                $width = 0;
-            } elseif ($width === null) {
-                $width = $screenSize[0];
-            } elseif ($width > 0 && $width < 1) {
-                $width = floor($screenSize[0] * $width);
-            }
-        }
         if ($prefix === null) {
             $prefix = self::$_progressPrefix;
         } else {
             self::$_progressPrefix = $prefix;
         }
-        $width -= static::ansiStrlen($prefix);
-
+        $width = static::getProgressbarWidth($prefix);
         $percent = ($total == 0) ? 1 : $done / $total;
         $info = sprintf('%d%% (%d/%d)', $percent * 100, $done, $total);
-
-        if ($done > $total || $done == 0) {
-            self::$_progressEta = null;
-            self::$_progressEtaLastUpdate = time();
-        } elseif ($done < $total) {
-            // update ETA once per second to avoid flapping
-            if (time() - self::$_progressEtaLastUpdate > 1 && $done > self::$_progressEtaLastDone) {
-                $rate = (time() - (self::$_progressEtaLastUpdate ?: self::$_progressStart)) / ($done - self::$_progressEtaLastDone);
-                self::$_progressEta = $rate * ($total - $done);
-                self::$_progressEtaLastUpdate = time();
-                self::$_progressEtaLastDone = $done;
-            }
-        }
-        if (self::$_progressEta === null) {
-            $info .= ' ETA: n/a';
-        } else {
-            $info .= sprintf(' ETA: %d sec.', self::$_progressEta);
-        }
+        self::setETA($done, $total);
+        $info .= self::$_progressEta === null ? ' ETA: n/a' : sprintf(' ETA: %d sec.', self::$_progressEta);
 
         // Number extra characters outputted. These are opening [, closing ], and space before info
         // Since Windows uses \r\n\ for line endings, there's one more in the case
@@ -1019,6 +991,60 @@ class BaseConsole
             static::stdout("\r$prefix" . "[$status] $info");
         }
         flush();
+    }
+
+    /**
+     * Return width of the progressbar
+     * @param string $prefix an optional string to display before the progress bar.
+     * @see updateProgress
+     * @return int screen width
+     * @since 2.0.14
+     */
+    private static function getProgressbarWidth($prefix)
+    {
+        $width = self::$_progressWidth;
+
+        if ($width === false) {
+            return 0;
+        }
+
+        $screenSize = static::getScreenSize(true);
+        if ($screenSize === false && $width < 1) {
+            return 0;
+        }
+
+        if ($width === null) {
+            $width = $screenSize[0];
+        } elseif ($width > 0 && $width < 1) {
+            $width = floor($screenSize[0] * $width);
+        }
+
+        $width -= static::ansiStrlen($prefix);
+
+        return $width;
+    }
+
+    /**
+     * Calculate $_progressEta, $_progressEtaLastUpdate and $_progressEtaLastDone
+     * @param int $done the number of items that are completed.
+     * @param int $total the total value of items that are to be done.
+     * @see updateProgress
+     * @since 2.0.14
+     */
+    private static function setETA($done, $total)
+    {
+        if ($done > $total || $done == 0) {
+            self::$_progressEta = null;
+            self::$_progressEtaLastUpdate = time();
+            return;
+        }
+
+        if ($done < $total && (time() - self::$_progressEtaLastUpdate > 1 && $done > self::$_progressEtaLastDone)) {
+            $rate = (time() - (self::$_progressEtaLastUpdate ?: self::$_progressStart)) / ($done - self::$_progressEtaLastDone);
+            self::$_progressEta = $rate * ($total - $done);
+            self::$_progressEtaLastUpdate = time();
+            self::$_progressEtaLastDone = $done;
+        }
     }
 
     /**
@@ -1050,5 +1076,46 @@ class BaseConsole
         self::$_progressEta = null;
         self::$_progressEtaLastDone = 0;
         self::$_progressEtaLastUpdate = null;
+    }
+
+    /**
+     * Generates a summary of the validation errors.
+     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
+     *
+     * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
+     *   only the first error message for each attribute will be shown. Defaults to `false`.
+     *
+     * @return string the generated error summary
+     * @since 2.0.14
+     */
+    public static function errorSummary($models, $options = [])
+    {
+        $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
+        $lines = self::collectErrors($models, $showAllErrors);
+
+        return implode(PHP_EOL, $lines);
+    }
+
+    /**
+     * Return array of the validation errors
+     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
+     * only the first error message for each attribute will be shown.
+     * @return array of the validation errors
+     * @since 2.0.14
+     */
+    private static function collectErrors($models, $showAllErrors)
+    {
+        $lines = [];
+        if (!is_array($models)) {
+            $models = [$models];
+        }
+
+        foreach ($models as $model) {
+            $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
+        }
+
+        return $lines;
     }
 }

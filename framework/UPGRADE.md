@@ -5,21 +5,22 @@ This file contains the upgrade notes for Yii 2.0. These notes highlight changes 
 could break your application when you upgrade Yii from one version to another.
 Even though we try to ensure backwards compabitilty (BC) as much as possible, sometimes
 it is not possible or very complicated to avoid it and still create a good solution to
-a problem. You may also want to check out the [versioning policy](https://github.com/yiisoft/yii2/blob/master/docs/internals/versions.md) for further details.
+a problem. You may also want to check out the [versioning policy](https://github.com/yiisoft/yii2/blob/master/docs/internals/versions.md)
+for further details.
 
 Upgrading in general is as simple as updating your dependency in your composer.json and
 running `composer update`. In a big application however there may be more things to consider,
 which are explained in the following.
 
-> Note: This document assumes you have composer [installed globally](http://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer) so that you can run the `composer` command. If you have a `composer.phar` file
-inside of your project you need to replace `composer` with `php composer.phar` in the following.
+> Note: This document assumes you have composer [installed globally](http://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer)
+so that you can run the `composer` command. If you have a `composer.phar` file inside of your project you need to
+replace `composer` with `php composer.phar` in the following.
 
 > Tip: Upgrading dependencies of a complex software project always comes at the risk of breaking something, so make sure
 you have a backup (you should be doing this anyway ;) ).
 
-Before upgrading, make sure you have a global installation of the latest version of the
-[composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
-as well as a stable version of Composer:
+In case you use [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) instead of the currently recommended
+[asset-packagist.org](https://asset-packagist.org) to install Bower and NPM assets, make sure it is upgraded to the latest version as well. To ensure best stability you should also upgrade composer in this step:
 
     composer self-update
     composer global require "fxp/composer-asset-plugin:^1.4.1" --no-plugins
@@ -49,6 +50,65 @@ See the following notes on which changes to consider when upgrading from one ver
 if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
+
+
+Upgrade from Yii 2.0.14
+-----------------------
+
+* Updated dependency to `cebe/markdown` to version `1.2.x`.
+  If you need stick with 1.1.x, you can specify that in your `composer.json` by
+  adding the following line in the `require` section:
+
+  ```json
+  "cebe/markdown": "~1.1.0",
+  ```
+
+Upgrade from Yii 2.0.13
+-----------------------
+
+* Constants `IPV6_ADDRESS_LENGTH`, `IPV4_ADDRESS_LENGTH` were moved from `yii\validators\IpValidator` to `yii\helpers\IpHelper`.
+  If your application relies on these constants, make sure to update your code to follow the changes.
+
+* `yii\base\Security::compareString()` is now throwing `yii\base\InvalidArgumentException` in case non-strings are compared.
+
+* `yii\db\ExpressionInterface` has been introduced to represent a wider range of SQL expressions. In case you check for
+  `instanceof yii\db\Expression` in your code, you might consider changing that to checking for the interface and use the newly
+  introduced methods to retrieve the expression content.
+
+* Added JSON support for PostgreSQL and MySQL as well as Arrays support for PostgreSQL in ActiveRecord layer.
+  In case you already implemented such support yourself, please switch to Yii implementation.
+  * For MySQL JSON and PgSQL JSON & JSONB columns Active Record will return decoded JSON (that can be either array or scalar) after data population
+  and expects arrays or scalars to be assigned for further saving them into a database.
+  * For PgSQL Array columns Active Record will return `yii\db\ArrayExpression` object that acts as an array
+  (it implements `ArrayAccess`, `Traversable` and `Countable` interfaces) and expects array or `yii\db\ArrayExpression` to be
+  assigned for further saving it into the database.
+
+  In case this change makes the upgrade process to Yii 2.0.14 too hard in your project, you can [switch off the described behavior](https://github.com/yiisoft/yii2/issues/15716#issuecomment-368143206)
+  Then you can take your time to change your code and then re-enable arrays or JSON support.
+
+* `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PDO parameter type 
+  when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
+  You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
+
+* `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
+  Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
+  space to customization. In case you rely on that property or override any of default condition builders, follow the 
+  special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
+  to update your code.
+
+* Protected method `yii\db\ActiveQueryTrait::createModels()` does not apply indexes as defined in `indexBy` property anymore.  
+  In case you override default ActiveQuery implementation and relied on that behavior, call `yii\db\Query::populate()`
+  method instead to index query results according to the `indexBy` parameter.
+
+* Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
+
+* You can start preparing your application for Yii 2.1 by doing the following:
+
+  - Replace `::className()` calls with `::class` (if you’re running PHP 5.5+).
+  - Replace usages of `yii\base\InvalidParamException` with `yii\base\InvalidArgumentException`.
+  - Replace calls to `Yii::trace()` with `Yii::debug()`.
+  - Remove calls to `yii\BaseYii::powered()`.
+  - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
 
 Upgrade from Yii 2.0.12
 -----------------------
@@ -492,7 +552,7 @@ new ones save the following code as `convert.php` that should be placed in the s
       $out = var_export($data, true);
       $out = "<?php\nreturn " . $out . ';';
       $out = str_replace(['array (', ')'], ['[', ']'], $out);
-      file_put_contents($fileName, $out);
+      file_put_contents($fileName, $out, LOCK_EX);
   }
 
   $items = [];

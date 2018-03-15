@@ -33,6 +33,7 @@ Yii 開発者ドキュメント
 
 - [プロジェクトの編成](project-organization.md)
 - [Yii のバージョニング](versions.md)
+- [後方互換性](bc.md)
 - [新しいバージョンのリリース](release.md)
 
 その他
@@ -41,3 +42,8 @@ Yii 開発者ドキュメント
 ### 例外の階層
 
 ![Yii フレームワークの例外階層](exception_hierarchy.png)
+
+### データベースのテスト
+
+[こちら](https://gist.github.com/sergeymakinen/0696a5952f160ea28d7b64c3adfecf6f) に、
+Yii がサポートする全てのデータベースのためのテスト環境構成があります。

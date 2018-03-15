@@ -125,7 +125,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parse($rawBody, $contentType)
     {
@@ -219,7 +219,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
         $headers = [];
         $headerParts = preg_split('/\\R/s', $headerContent, -1, PREG_SPLIT_NO_EMPTY);
         foreach ($headerParts as $headerPart) {
-            if (($separatorPos = strpos($headerPart, ':')) === false) {
+            if (strpos($headerPart, ':') === false) {
                 continue;
             }
 
@@ -349,8 +349,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
             return (int) $verboseSize;
         }
         $sizeUnit = trim($verboseSize, '0123456789');
-        $size = str_replace($sizeUnit, '', $verboseSize);
-        $size = trim($size);
+        $size = trim(str_replace($sizeUnit, '', $verboseSize));
         if (!is_numeric($size)) {
             return 0;
         }

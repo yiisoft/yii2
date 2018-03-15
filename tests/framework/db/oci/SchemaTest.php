@@ -24,6 +24,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     {
         $columns = parent::getExpectedColumns();
         unset($columns['enum_col']);
+        unset($columns['json_col']);
         $columns['int_col']['dbType'] = 'NUMBER';
         $columns['int_col']['size'] = 22;
         $columns['int_col']['precision'] = null;
@@ -32,6 +33,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['int_col2']['size'] = 22;
         $columns['int_col2']['precision'] = null;
         $columns['int_col2']['scale'] = 0;
+        $columns['tinyint_col']['dbType'] = 'NUMBER';
+        $columns['tinyint_col']['type'] = 'integer';
+        $columns['tinyint_col']['size'] = 22;
+        $columns['tinyint_col']['precision'] = 3;
+        $columns['tinyint_col']['scale'] = 0;
         $columns['smallint_col']['dbType'] = 'NUMBER';
         $columns['smallint_col']['type'] = 'integer';
         $columns['smallint_col']['size'] = 22;

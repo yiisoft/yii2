@@ -15,7 +15,9 @@ use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\di\stubs\Bar;
+use yiiunit\framework\di\stubs\BarSetter;
 use yiiunit\framework\di\stubs\Foo;
+use yiiunit\framework\di\stubs\FooProperty;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\TestCase;
@@ -95,6 +97,19 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf($Bar, $foo->bar);
         $this->assertInstanceOf($Qux, $foo->bar->qux);
 
+        // predefined property parameters
+        $fooSetter = FooProperty::className();
+        $barSetter = BarSetter::className();
+
+        $container = new Container();
+        $container->set('foo', ['class' => $fooSetter, 'bar' => Instance::of('bar')]);
+        $container->set('bar', ['class' => $barSetter, 'qux' => Instance::of('qux')]);
+        $container->set('qux', $Qux);
+        $foo = $container->get('foo');
+        $this->assertInstanceOf($fooSetter, $foo);
+        $this->assertInstanceOf($barSetter, $foo->bar);
+        $this->assertInstanceOf($Qux, $foo->bar->qux);
+
         // wiring by closure
         $container = new Container();
         $container->set('qux', new Qux());
@@ -155,7 +170,7 @@ class ContainerTest extends TestCase
 
 
         $myFunc = function ($a, NumberValidator $b, $c = 'default') {
-            return[$a, get_class($b), $c];
+            return[$a, \get_class($b), $c];
         };
         $result = Yii::$container->invoke($myFunc, ['a']);
         $this->assertEquals(['a', 'yii\validators\NumberValidator', 'default'], $result);
@@ -291,7 +306,7 @@ class ContainerTest extends TestCase
      */
     public function testVariadicConstructor()
     {
-        if (defined('HHVM_VERSION')) {
+        if (\defined('HHVM_VERSION')) {
             static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
         }
 
@@ -304,7 +319,7 @@ class ContainerTest extends TestCase
      */
     public function testVariadicCallable()
     {
-        if (defined('HHVM_VERSION')) {
+        if (\defined('HHVM_VERSION')) {
             static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
         }
 

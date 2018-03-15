@@ -9,6 +9,7 @@ namespace yii\db\cubrid;
 
 use yii\base\NotSupportedException;
 use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
@@ -23,7 +24,7 @@ use yii\helpers\ArrayHelper;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class Schema extends \yii\db\Schema
+class Schema extends \yii\db\Schema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
@@ -79,9 +80,14 @@ class Schema extends \yii\db\Schema
         'Operation would have caused one or more unique constraint violations' => 'yii\db\IntegrityException',
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected $tableQuoteCharacter = '"';
+
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function findTableNames($schema = '')
     {
@@ -99,7 +105,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableSchema($name)
     {
@@ -148,7 +154,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTablePrimaryKey($tableName)
     {
@@ -165,7 +171,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableForeignKeys($tableName)
     {
@@ -195,7 +201,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableIndexes($tableName)
     {
@@ -203,7 +209,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function loadTableUniques($tableName)
     {
@@ -211,7 +217,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableChecks($tableName)
@@ -220,7 +226,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
@@ -229,33 +235,11 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function releaseSavepoint($name)
     {
         // does nothing as cubrid does not support this
-    }
-
-    /**
-     * Quotes a table name for use in a query.
-     * A simple table name has no schema prefix.
-     * @param string $name table name
-     * @return string the properly quoted table name
-     */
-    public function quoteSimpleTableName($name)
-    {
-        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
-    }
-
-    /**
-     * Quotes a column name for use in a query.
-     * A simple column name has no prefix.
-     * @param string $name column name
-     * @return string the properly quoted column name
-     */
-    public function quoteSimpleColumnName($name)
-    {
-        return strpos($name, '"') !== false || $name === '*' ? $name : '"' . $name . '"';
     }
 
     /**
@@ -360,7 +344,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @see http://www.cubrid.org/manual/91/en/sql/transaction.html#database-concurrency
      */
     public function setTransactionIsolationLevel($level)
@@ -384,7 +368,7 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {

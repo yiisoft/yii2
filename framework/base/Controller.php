@@ -128,7 +128,7 @@ class Controller extends Component implements ViewContextInterface
             throw new InvalidRouteException('Unable to resolve the request: ' . $this->getUniqueId() . '/' . $id);
         }
 
-        Yii::trace('Route to run: ' . $action->getUniqueId(), __METHOD__);
+        Yii::debug('Route to run: ' . $action->getUniqueId(), __METHOD__);
 
         if (Yii::$app->requestedAction === null) {
             Yii::$app->requestedAction = $action;
@@ -377,7 +377,7 @@ class Controller extends Component implements ViewContextInterface
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * These parameters will not be available in the layout.
      * @return string the rendering result.
-     * @throws InvalidParamException if the view file or the layout file does not exist.
+     * @throws InvalidArgumentException if the view file or the layout file does not exist.
      */
     public function render($view, $params = [])
     {
@@ -408,7 +408,7 @@ class Controller extends Component implements ViewContextInterface
      * @param string $view the view name. Please refer to [[render()]] on how to specify a view name.
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
-     * @throws InvalidParamException if the view file does not exist.
+     * @throws InvalidArgumentException if the view file does not exist.
      */
     public function renderPartial($view, $params = [])
     {
@@ -420,7 +420,7 @@ class Controller extends Component implements ViewContextInterface
      * @param string $file the view file to be rendered. This can be either a file path or a [path alias](guide:concept-aliases).
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
-     * @throws InvalidParamException if the view file does not exist.
+     * @throws InvalidArgumentException if the view file does not exist.
      */
     public function renderFile($file, $params = [])
     {
@@ -470,7 +470,7 @@ class Controller extends Component implements ViewContextInterface
     /**
      * Sets the directory that contains the view files.
      * @param string $path the root directory of view files.
-     * @throws InvalidParamException if the directory is invalid
+     * @throws InvalidArgumentException if the directory is invalid
      * @since 2.0.7
      */
     public function setViewPath($path)
@@ -483,7 +483,7 @@ class Controller extends Component implements ViewContextInterface
      * @param View $view the view object to render the layout file.
      * @return string|bool the layout file path, or false if layout is not needed.
      * Please refer to [[render()]] on how to specify this parameter.
-     * @throws InvalidParamException if an invalid path alias is used to specify the layout.
+     * @throws InvalidArgumentException if an invalid path alias is used to specify the layout.
      */
     public function findLayoutFile($view)
     {

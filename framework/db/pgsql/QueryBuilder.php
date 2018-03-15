@@ -7,7 +7,12 @@
 
 namespace yii\db\pgsql;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
+use yii\db\Constraint;
+use yii\db\Expression;
+use yii\db\ExpressionInterface;
+use yii\db\Query;
+use yii\db\PdoValue;
 use yii\helpers\StringHelper;
 
 /**
@@ -55,6 +60,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
+        Schema::TYPE_TINYINT => 'smallint',
         Schema::TYPE_SMALLINT => 'smallint',
         Schema::TYPE_INTEGER => 'integer',
         Schema::TYPE_BIGINT => 'bigint',
@@ -68,32 +74,33 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BINARY => 'bytea',
         Schema::TYPE_BOOLEAN => 'boolean',
         Schema::TYPE_MONEY => 'numeric(19,4)',
+        Schema::TYPE_JSON => 'jsonb',
     ];
+
 
     /**
-     * @var array map of query condition to builder methods.
-     * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
+     * {@inheritdoc}
      */
-    protected $conditionBuilders = [
-        'NOT' => 'buildNotCondition',
-        'AND' => 'buildAndCondition',
-        'OR' => 'buildAndCondition',
-        'BETWEEN' => 'buildBetweenCondition',
-        'NOT BETWEEN' => 'buildBetweenCondition',
-        'IN' => 'buildInCondition',
-        'NOT IN' => 'buildInCondition',
-        'LIKE' => 'buildLikeCondition',
-        'ILIKE' => 'buildLikeCondition',
-        'NOT LIKE' => 'buildLikeCondition',
-        'NOT ILIKE' => 'buildLikeCondition',
-        'OR LIKE' => 'buildLikeCondition',
-        'OR ILIKE' => 'buildLikeCondition',
-        'OR NOT LIKE' => 'buildLikeCondition',
-        'OR NOT ILIKE' => 'buildLikeCondition',
-        'EXISTS' => 'buildExistsCondition',
-        'NOT EXISTS' => 'buildExistsCondition',
-    ];
+    protected function defaultConditionClasses()
+    {
+        return array_merge(parent::defaultConditionClasses(), [
+            'ILIKE' => 'yii\db\conditions\LikeCondition',
+            'NOT ILIKE' => 'yii\db\conditions\LikeCondition',
+            'OR ILIKE' => 'yii\db\conditions\LikeCondition',
+            'OR NOT ILIKE' => 'yii\db\conditions\LikeCondition',
+        ]);
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\ArrayExpression' => 'yii\db\pgsql\ArrayExpressionBuilder',
+            'yii\db\JsonExpression' => 'yii\db\pgsql\JsonExpressionBuilder',
+        ]);
+    }
 
     /**
      * Builds a SQL statement for creating a new index.
@@ -155,7 +162,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have a value 1.
      * @return string the SQL statement for resetting sequence
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      */
     public function resetSequence($tableName, $value = null)
     {
@@ -173,10 +180,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
             return "SELECT SETVAL('$sequence',$value,false)";
         } elseif ($table === null) {
-            throw new InvalidParamException("Table not found: $tableName");
+            throw new InvalidArgumentException("Table not found: $tableName");
         }
 
-        throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
+        throw new InvalidArgumentException("There is not sequence associated with table '$tableName'.");
     }
 
     /**
@@ -240,7 +247,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function insert($table, $columns, &$params)
     {
@@ -248,7 +255,142 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     * @see https://www.postgresql.org/docs/9.5/static/sql-insert.html#SQL-ON-CONFLICT
+     * @see https://stackoverflow.com/questions/1109061/insert-on-duplicate-update-in-postgresql/8702291#8702291
+     */
+    public function upsert($table, $insertColumns, $updateColumns, &$params)
+    {
+        $insertColumns = $this->normalizeTableRowData($table, $insertColumns);
+        if (!is_bool($updateColumns)) {
+            $updateColumns = $this->normalizeTableRowData($table, $updateColumns);
+        }
+        if (version_compare($this->db->getServerVersion(), '9.5', '<')) {
+            return $this->oldUpsert($table, $insertColumns, $updateColumns, $params);
+        }
+
+        return $this->newUpsert($table, $insertColumns, $updateColumns, $params);
+    }
+
+    /**
+     * [[upsert()]] implementation for PostgreSQL 9.5 or higher.
+     * @param string $table
+     * @param array|Query $insertColumns
+     * @param array|bool $updateColumns
+     * @param array $params
+     * @return string
+     */
+    private function newUpsert($table, $insertColumns, $updateColumns, &$params)
+    {
+        $insertSql = $this->insert($table, $insertColumns, $params);
+        list($uniqueNames, , $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns);
+        if (empty($uniqueNames)) {
+            return $insertSql;
+        }
+
+        if ($updateColumns === false) {
+            return "$insertSql ON CONFLICT DO NOTHING";
+        }
+
+        if ($updateColumns === true) {
+            $updateColumns = [];
+            foreach ($updateNames as $name) {
+                $updateColumns[$name] = new Expression('EXCLUDED.' . $this->db->quoteColumnName($name));
+            }
+        }
+        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        return $insertSql . ' ON CONFLICT (' . implode(', ', $uniqueNames) . ') DO UPDATE SET ' . implode(', ', $updates);
+    }
+
+    /**
+     * [[upsert()]] implementation for PostgreSQL older than 9.5.
+     * @param string $table
+     * @param array|Query $insertColumns
+     * @param array|bool $updateColumns
+     * @param array $params
+     * @return string
+     */
+    private function oldUpsert($table, $insertColumns, $updateColumns, &$params)
+    {
+        /** @var Constraint[] $constraints */
+        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
+        if (empty($uniqueNames)) {
+            return $this->insert($table, $insertColumns, $params);
+        }
+
+        /** @var Schema $schema */
+        $schema = $this->db->getSchema();
+        if (!$insertColumns instanceof Query) {
+            $tableSchema = $schema->getTableSchema($table);
+            $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
+            foreach ($insertColumns as $name => $value) {
+                // NULLs and numeric values must be type hinted in order to be used in SET assigments
+                // NVM, let's cast them all
+                if (isset($columnSchemas[$name])) {
+                    $phName = self::PARAM_PREFIX . count($params);
+                    $params[$phName] = $value;
+                    $insertColumns[$name] = new Expression("CAST($phName AS {$columnSchemas[$name]->dbType})");
+                }
+            }
+        }
+        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+        $updateCondition = ['or'];
+        $insertCondition = ['or'];
+        $quotedTableName = $schema->quoteTableName($table);
+        foreach ($constraints as $constraint) {
+            $constraintUpdateCondition = ['and'];
+            $constraintInsertCondition = ['and'];
+            foreach ($constraint->columnNames as $name) {
+                $quotedName = $schema->quoteColumnName($name);
+                $constraintUpdateCondition[] = "$quotedTableName.$quotedName=\"EXCLUDED\".$quotedName";
+                $constraintInsertCondition[] = "\"upsert\".$quotedName=\"EXCLUDED\".$quotedName";
+            }
+            $updateCondition[] = $constraintUpdateCondition;
+            $insertCondition[] = $constraintInsertCondition;
+        }
+        $withSql = 'WITH "EXCLUDED" (' . implode(', ', $insertNames)
+            . ') AS (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ')';
+        if ($updateColumns === false) {
+            $selectSubQuery = (new Query())
+                ->select(new Expression('1'))
+                ->from($table)
+                ->where($updateCondition);
+            $insertSelectSubQuery = (new Query())
+                ->select($insertNames)
+                ->from('EXCLUDED')
+                ->where(['not exists', $selectSubQuery]);
+            $insertSql = $this->insert($table, $insertSelectSubQuery, $params);
+            return "$withSql $insertSql";
+        }
+
+        if ($updateColumns === true) {
+            $updateColumns = [];
+            foreach ($updateNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                if (strrpos($quotedName, '.') === false) {
+                    $quotedName = '"EXCLUDED".' . $quotedName;
+                }
+                $updateColumns[$name] = new Expression($quotedName);
+            }
+        }
+        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        $updateSql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $updates)
+            . ' FROM "EXCLUDED" ' . $this->buildWhere($updateCondition, $params)
+            . ' RETURNING ' . $this->db->quoteTableName($table) .'.*';
+        $selectUpsertSubQuery = (new Query())
+            ->select(new Expression('1'))
+            ->from('upsert')
+            ->where($insertCondition);
+        $insertSelectSubQuery = (new Query())
+            ->select($insertNames)
+            ->from('EXCLUDED')
+            ->where(['not exists', $selectUpsertSubQuery]);
+        $insertSql = $this->insert($table, $insertSelectSubQuery, $params);
+        return "$withSql, \"upsert\" AS ($updateSql) $insertSql";
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function update($table, $columns, $condition, &$params)
     {
@@ -257,8 +399,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
+     *
      * @param string $table the table that data will be saved into.
-     * @param array|\yii\db\Query $columns the column data (name => value) to be saved into the table or instance
+     * @param array|Query $columns the column data (name => value) to be saved into the table or instance
      * of [[yii\db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
      * Passing of [[yii\db\Query|Query]] is available since version 2.0.11.
      * @return array normalized columns
@@ -266,7 +409,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     private function normalizeTableRowData($table, $columns)
     {
-        if ($columns instanceof \yii\db\Query) {
+        if ($columns instanceof Query) {
             return $columns;
         }
 
@@ -274,7 +417,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $columnSchemas = $tableSchema->columns;
             foreach ($columns as $name => $value) {
                 if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && is_string($value)) {
-                    $columns[$name] = [$value, \PDO::PARAM_LOB]; // explicitly setup PDO param type for binary column
+                    $columns[$name] = new PdoValue($value, \PDO::PARAM_LOB); // explicitly setup PDO param type for binary column
                 }
             }
         }
@@ -283,9 +426,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, &$params = [])
     {
         if (empty($rows)) {
             return '';
@@ -302,7 +445,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         foreach ($rows as $row) {
             $vs = [];
             foreach ($row as $i => $value) {
-                if (isset($columns[$i], $columnSchemas[$columns[$i]]) && !is_array($value)) {
+                if (isset($columns[$i], $columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
@@ -316,6 +459,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     $value = 'FALSE';
                 } elseif ($value === null) {
                     $value = 'NULL';
+                } elseif ($value instanceof ExpressionInterface) {
+                    $value = $this->buildExpression($value, $params);
                 }
                 $vs[] = $value;
             }

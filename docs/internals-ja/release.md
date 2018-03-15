@@ -50,13 +50,13 @@
 
 フレームワークのリリースの作成では、下記のコマンドの実行します (アプリケーションは常にフレームワークと一緒にリリースされます)。
 
-    ./build release framework
-    ./build release app-basic
-    ./build release app-advanced
+    ./build/build release framework
+    ./build/build release app-basic
+    ./build/build release app-advanced
 
 エクステンションのリリースの作成では、実行するコマンドは一つだけです (例えば、redis なら)
 
-    ./build release redis
+    ./build/build release redis
 
 リリースコマンドは、デフォルトでは、現在チェックアウトされているブランチを元に新しいマイナーバージョンをリリースします。
 デフォルトと異なるバージョンをリリースするためには、`--version` オプションを使ってバージョンを指定する必要があります。例えば、
