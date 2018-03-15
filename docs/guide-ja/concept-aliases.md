@@ -19,6 +19,9 @@ Yii::setAlias('@foo', '/path/to/foo');
 
 // URL のエイリアス
 Yii::setAlias('@bar', 'http://www.example.com');
+
+// \foo\Bar クラスを保持する具体的なファイルのエイリアス
+Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
 ```
 
 > Note: エイリアスされているファイルパスや URL は、必ずしも実在するファイルまたはリソースを参照しない場合があります。
