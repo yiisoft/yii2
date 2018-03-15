@@ -5,6 +5,8 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #15878: Fixed migration with a comment containing an apostrophe (MarcoMoreno)
+- Bug: Fixed some select columns with alias are removed (alitain)
+
 
 
 2.0.14.2 March 13, 2018
