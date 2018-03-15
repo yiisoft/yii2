@@ -672,7 +672,7 @@ PATTERN;
                     }
                 } elseif (is_int($columnAlias)) {
                     $existsInSelect = in_array($columnDefinition, $unaliasedColumns, true);
-                    $existsInResultSet = in_array($columnDefinition, $result, true);
+                    $existsInResultSet = ($key = array_search($columnDefinition, $result)) !== false && is_int($key) && $result[$key] === $columnDefinition;
                     if ($existsInSelect || $existsInResultSet) {
                         continue;
                     }
