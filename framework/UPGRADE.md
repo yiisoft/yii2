@@ -52,6 +52,17 @@ version B between A and C, you need to follow the instructions
 for both A and B.
 
 
+Upgrade from Yii 2.0.14
+-----------------------
+
+* Updated dependency to `cebe/markdown` to version `1.2.x`.
+  If you need stick with 1.1.x, you can specify that in your `composer.json` by
+  adding the following line in the `require` section:
+
+  ```json
+  "cebe/markdown": "~1.1.0",
+  ```
+
 Upgrade from Yii 2.0.13
 -----------------------
 

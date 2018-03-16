@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.15 under development
 ------------------------
 
-- no changes in this release.
+- Bug #15878: Fixed migration with a comment containing an apostrophe (MarcoMoreno)
 
 
 2.0.14.2 March 13, 2018

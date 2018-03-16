@@ -64,6 +64,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 $this->primaryKey()->comment('test')->after('col_before'),
                 "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test' AFTER `col_before`",
             ],
+            [
+                Schema::TYPE_PK . " COMMENT 'testing \'quote\'' AFTER `col_before`",
+                $this->primaryKey()->comment('testing \'quote\'')->after('col_before'),
+                "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'testing \'quote\'' AFTER `col_before`",
+            ],
         ];
 
         /*
