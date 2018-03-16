@@ -18,7 +18,7 @@ Yii Framework 2 Change Log
 - Bug #15817: Fixed support of deprecated array format type casting in `yii\db\Command::bindValues()` (silverfire)
 - Bug #15822: Fixed `yii\base\Component::off()` not to throw an exception when handler does not exist (silverfire)
 - Bug #15829: Fixed JSONB support in PostgreSQL 9.4 (silverfire)
-- Bug #15836: Fixed nesting of `yii\db\ArrayExpresiion`, `yii\db\JsonExpression` (silverfire)
+- Bug #15836: Fixed nesting of `yii\db\ArrayExpression`, `yii\db\JsonExpression` (silverfire)
 - Bug #15839: Fixed `yii\db\mysql\JsonExpressionBuilder` to cast JSON explicitly (silverfire)
 - Bug #15840: Fixed regression on load fixture data file (leandrogehlen)
 - Bug #15858: Fixed `Undefined offset` error calling `yii\helpers\Html::errorSummary()` with the same error messages for different model attributes (FabrizioCaldarelli, silverfire)

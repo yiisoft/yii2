@@ -160,7 +160,7 @@ Enh #999: 機能拡張の内容説明 (あなたの名前)
 
 ### 6. 修正をコミットする
 
-以下のコマンドを使って、コミットしたいファイルや変更を [staging area](http://gitref.org/basic/#add) に追加します。
+以下のコマンドを使って、コミットしたいファイルや変更を [staging area](http://git.github.io/git-reference/basic/#add) に追加します。
 
 ```
 git add path/to/my/file.php
@@ -195,7 +195,7 @@ git push -u origin 999-name-of-your-branch-goes-here
 つまり、次回 `git push` とタイプしたときには、git は既にどこにプッシュすればよいか知っている、ということです。
 こうしておくと、後でプルリクエストにコミットを追加したくなった場合に便利です。
 
-### 9. upstream に対して [プルリクエスト](http://help.github.com/send-pull-requests/) を発行する
+### 9. upstream に対して [プルリクエスト](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) を発行する
 
 github 上のあなたのリポジトリに入って、"Pull Request" をクリックし、右側にあるブランチを選び、コメントボックスにもう少し詳細を記述します。
 プルリクエストを課題とリンクさせるために、プルコメントのどこかに `#999` という書式で課題番号を記載します。
@@ -224,7 +224,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 ### 注意:
 
 退行 (regression) を早期に発見するために、github 上の Yii コードベースへのマージは、すべて [Travis CI](http://travis-ci.org) に取り上げられて、自動化されたテストにかけられます。
-コアチームとしては、このサービスに過大な負担をかけたくないために、以下の場合にはマージの説明に [`[ci skip]`](http://about.travis-ci.org/docs/user/how-to-skip-a-build/) が含まれるようにしてください。
+コアチームとしては、このサービスに過大な負担をかけたくないために、以下の場合にはマージの説明に [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) が含まれるようにしてください。
 すなわち、プルリクエストが、
 
 * javascript、css または画像ファイルだけに影響する場合
