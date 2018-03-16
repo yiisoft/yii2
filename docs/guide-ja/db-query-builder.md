@@ -149,11 +149,12 @@ $query->from(['u' => $subQuery]);
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
 [[yii\db\Query::where()|where()]] メソッドは、SQL クエリの `WHERE` 句を定義します。
-`WHERE` の条件を指定するために、次の三つの形式から一つを選んで使うことが出来ます。
+`WHERE` の条件を指定するために、次の4つの形式から一つを選んで使うことが出来ます。
 
 - 文字列形式、例えば、`'status=1'`
 - ハッシュ形式、例えば、`['status' => 1, 'type' => 2]`
 - 演算子形式、例えば、`['like', 'name', 'test']`
+- オブジェクト形式、例えば、`new LikeCondition('name', 'LIKE', 'test')`
 
 
 #### 文字列形式 <span id="string-format"></span>
@@ -233,15 +234,22 @@ $query->where(['id' => $userQuery]);
 ここで、各オペランドは、文字列形式、ハッシュ形式、あるいは、再帰的に演算子形式として指定することが出来ます。
 そして、演算子には、次のどれか一つを使うことが出来ます。
 
-- `and`: 二つのオペランドが `AND` を使って結合されます。例えば、`['and', 'id=1', 'id=2']` は `id=1 AND id=2` を生成します。
+- `and`: 複数のオペランドが `AND` を使って結合されます。例えば、`['and', 'id=1', 'id=2']` は `id=1 AND id=2` を生成します。
   オペランドが配列である場合は、ここで説明されている規則に従って文字列に変換されます。
   例えば、`['and', 'type=1', ['or', 'id=1', 'id=2']]` は `type=1 AND (id=1 OR id=2)` を生成します。
   このメソッドは、文字列を引用符で囲ったりエスケープしたりしません。
 
-- `or`: 二つのオペランドが `OR` を使って結合されること以外は `and` 演算子と同じです。
+- `or`: オペランドが `OR` を使って結合されること以外は `and` 演算子と同じです。
+
+- `not`: オペランド1 だけを受け取って `NOT()` で包みます。例えば、`['not', 'id=1']` は `NOT (id=1)` を生成します。
+  オペランド1 は、それ自体も複数の式を表す配列であっても構いません。例えば、`['not', ['status' => 'draft', 'name' => 'example']]` は `NOT ((status='draft') AND (name='example'))` を生成します。
+
 
 - `between`: オペランド 1 はカラム名、オペランド 2 と 3 はカラムの値が属すべき範囲の開始値と終了値としなければなりません。
   例えば、`['between', 'id', 1, 10]` は `id BETWEEN 1 AND 10` を生成します。
+  値が二つのカラムの値の間にあるという条件 (例えば、`11 BETWEEN min_id AND max_id`) を構築する必要がある場合は、
+  [[yii\db\conditions\BetweenColumnsCondition|BetweenColumnsCondition]] を使用しなければなりません。
+  条件定義のオブジェクト形式について更に学習するためには [条件 – オブジェクト形式](#object-format) の節を参照して下さい。
 
 - `not between`: 生成される条件において `BETWEEN` が `NOT BETWEEN` に置き換えられる以外は、`between` と同じです。
 
@@ -284,6 +292,42 @@ $query->where(['id' => $userQuery]);
 
 演算子形式を使う場合、Yii は内部的にパラメータバインディングを使用します。
 従って、[文字列形式](#string-format) とは対照的に、ここでは手動でパラメータを追加する必要はありません。
+
+
+#### Object Format <span id="object-format"></span>
+
+Object Form is available since 2.0.14 and is both most powerful and most complex way to define conditions.
+You need to follow it either if you want to build your own abstraction over query builder or if you want to implement
+your own complex conditions.
+
+Instances of condition classes are immutable. Their only purpose is to store condition data and provide getters
+for condition builders. Condition builder is a class that holds the logic that transforms data 
+stored in condition into the SQL expression.
+
+Internally the formats described above are implicitly converted to object format prior to building raw SQL,
+so it is possible to combine formats in a single condition:
+
+```php
+$query->andWhere(new OrCondition([
+    new InCondition('type', 'in', $types),
+    ['like', 'name', '%good%'],
+    'disabled=false'
+]))
+```
+
+Conversion from operator format into object format is performed according to
+[[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]] property, that maps operators names
+to representative class names:
+
+- `AND`, `OR` -> `yii\db\conditions\ConjunctionCondition`
+- `NOT` -> `yii\db\conditions\NotCondition`
+- `IN`, `NOT IN` -> `yii\db\conditions\InCondition`
+- `BETWEEN`, `NOT BETWEEN` -> `yii\db\conditions\BetweenCondition`
+
+And so on.
+
+Using the object format makes it possible to create your own conditions or to change the way default ones are built.
+See [Adding Custom Conditions and Expressions](#adding-custom-conditions-and-expressions) chapter to learn more.
 
 
 #### 条件を追加する <span id="appending-conditions"></span>
