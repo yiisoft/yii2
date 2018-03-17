@@ -36,9 +36,6 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 - выполните `composer install` для установки зависимостей
   (если [composer у вас установлен глобально](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: если вы видите такие ошибки, как `Problem 1 The requested package bower-asset/jquery could not be found in
-> any version, there may be a typo in the package name.`, необходимо запустить `composer global require "fxp/composer-asset-plugin:^1.4.1"`
-
 Если вы планируете работать с Javascript:
 
 - выполните `npm install` для установки зависимостей и программ тестирования Javascript 
