@@ -285,12 +285,14 @@ This means that it is preferable to use `$module->get('db')` over `Yii::$app->ge
 The user of a module is able to specify a specific component to be used for the module in case a different component
 (configuration) is required.
 
-For example consider this application configuration:
+For example consider partial this application configuration:
 
 ```php
 'components' => [
     'db' => [
         'tablePrefix' => 'main_',
+        'class' => Connection::class,
+        'enableQueryCache' => false
     ],
 ],
 'modules' => [
@@ -298,6 +300,7 @@ For example consider this application configuration:
         'components' => [
             'db' => [
                 'tablePrefix' => 'module_',
+                'class' => Connection::class
             ],
         ],
     ],
@@ -305,6 +308,7 @@ For example consider this application configuration:
 ```
 
 The application database tables will be prefixed with `main_`, while all module tables will be prefixed with `module_`.
+Note that configuration above is not merged; the modules' component for example will have the query cache enabled since that is the default value.
 
 ## Best Practices <span id="best-practices"></span>
 
