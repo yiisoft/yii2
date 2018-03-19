@@ -294,18 +294,16 @@ $query->where(['id' => $userQuery]);
 従って、[文字列形式](#string-format) とは対照的に、ここでは手動でパラメータを追加する必要はありません。
 
 
-#### Object Format <span id="object-format"></span>
+#### オブジェクト形式 <span id="object-format"></span>
 
-Object Form is available since 2.0.14 and is both most powerful and most complex way to define conditions.
-You need to follow it either if you want to build your own abstraction over query builder or if you want to implement
-your own complex conditions.
+オブジェクト形式は 2.0.14 から利用可能な、条件を定義するための最も強力でもあり、最も複雑でもある方法です。
+クエリビルダの上にあなた自身の抽象レイヤを構築したいか、または独自の複雑な条件を実装したいかする場合には、この形式を採用する必要があります。
 
-Instances of condition classes are immutable. Their only purpose is to store condition data and provide getters
-for condition builders. Condition builder is a class that holds the logic that transforms data 
-stored in condition into the SQL expression.
+条件クラスのインスタンスはイミュータブルです。条件クラスのインスタンスは条件データを保持し、条件ビルダーにゲッターを提供することを唯一の目的とします。
+そして、条件ビルダーが、条件クラスのインスタンスに保存されたデータを SQL の式に変換するロジックを持つクラスです。
 
-Internally the formats described above are implicitly converted to object format prior to building raw SQL,
-so it is possible to combine formats in a single condition:
+内部的には、上述の三つの形式は、生の SQL を構築するに先立って、暗黙のうちにオブジェクト形式に変換されます。
+従って、複数の形式を単一の条件に結合することが可能です。
 
 ```php
 $query->andWhere(new OrCondition([
@@ -315,19 +313,18 @@ $query->andWhere(new OrCondition([
 ]))
 ```
 
-Conversion from operator format into object format is performed according to
-[[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]] property, that maps operators names
-to representative class names:
+演算子形式からオブジェクト形式への変換は、演算子の名前とそれを表すクラス名を対応づける
+[[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]] プロパティに従って行われます。
 
 - `AND`, `OR` -> `yii\db\conditions\ConjunctionCondition`
 - `NOT` -> `yii\db\conditions\NotCondition`
 - `IN`, `NOT IN` -> `yii\db\conditions\InCondition`
 - `BETWEEN`, `NOT BETWEEN` -> `yii\db\conditions\BetweenCondition`
 
-And so on.
+等々。
 
-Using the object format makes it possible to create your own conditions or to change the way default ones are built.
-See [Adding Custom Conditions and Expressions](#adding-custom-conditions-and-expressions) chapter to learn more.
+オブジェクト形式を使うことによって、あなた独自の条件を作成したり、デフォルトの条件が作成される方法を変更したりすることが可能になります。
+詳細は [独自の条件や式を追加する](#adding-custom-conditions-and-expressions) の節を参照して下さい。
 
 
 #### 条件を追加する <span id="appending-conditions"></span>
@@ -655,9 +652,11 @@ $query = (new \yii\db\Query())
 ## バッチクエリ <span id="batch-query"></span>
 
 大量のデータを扱う場合は、[[yii\db\Query::all()]] のようなメソッドは適していません。
-なぜなら、それらのメソッドは、全てのデータをメモリ上に読み込むことを必要とするためです。
-必要なメモリ量を低く抑えるために、Yii はいわゆるバッチクエリのサポートを提供しています。
-バッチクエリはデータカーソルを利用して、バッチモードでデータを取得します。
+なぜなら、それらのメソッドは、クエリの結果全てをクライアントのメモリに読み込むことを必要とするためです。
+この問題を解決するために、Yii はバッチクエリのサポートを提供しています。
+クエリ結果はサーバに保持し、クライアントはカーソルを利用して1回に1バッチずつリザルトセットを反復取得するのです。
+
+> Warning: MySQL のバッチクエリの実装には既知の制約と回避策があります。下記を参照して下さい。
 
 バッチクエリは次のようにして使うことが出来ます。
 
@@ -672,9 +671,10 @@ foreach ($query->batch() as $users) {
     // $users は user テーブルから取得した 100 以下の行の配列
 }
 
-// または、一行ずつ反復したい場合は
+// または、一行ずつ反復する場合は
 foreach ($query->each() as $user) {
-    // $user は user テーブルから取得した一つの行を表す
+    // データはサーバから 100 行のバッチで取得される
+    // しかし $user は user テーブルの一つの行を表す
 }
 ```
 
@@ -682,12 +682,11 @@ foreach ($query->each() as $user) {
 このオブジェクトは `Iterator` インタフェイスを実装しており、従って、`foreach` 構文の中で使うことが出来ます。
 初回の反復の際に、データベースに対する SQL クエリが作成されます。データは、その後、反復のたびにバッチモードで取得されます。
 デフォルトでは、バッチサイズは 100 であり、各バッチにおいて 100 行のデータが取得されます。
-`batch()` または `each()` メソッドに最初のパラメータを渡すことによって、バッチサイズを変更することが出来ます。
+バッチサイズは、`batch()` または `each()` メソッドに最初のパラメータを渡すことによって変更することが出来ます。
 
 [[yii\db\Query::all()]] とは対照的に、バッチクエリは一度に 100 行のデータしかメモリに読み込みません。
-データを処理した後、すぐにデータを破棄するようにすれば、バッチクエリの助けを借りてメモリ消費量を削減することが出来ます。
 
-[[yii\db\Query::indexBy()]] によってクエリ結果をあるカラムでインデックスするように指定している場合でも、バッチクエリは正しいインデックスを保持します。
+[[yii\db\Query::indexBy()]] によって、いずれかのカラムでクエリ結果をインデックスするように指定している場合でも、バッチクエリは正しいインデックスを保持します。
 例えば、
 
 ```php
@@ -703,3 +702,240 @@ foreach ($query->each() as $username => $user) {
     // ...
 }
 ```
+
+#### MySQL におけるバッチクエリの制約 <span id="batch-query-mysql"></span>
+
+MySQL のバッチクエリの実装は PDO ドライバのライブラリに依存しています。
+デフォルトでは、MySQL のクエリは [`バッファモード`](http://php.net/manual/ja/mysqlinfo.concepts.buffering.php) で実行されます。
+このことが、カーソルを使ってデータを取得する目的を挫折させます。
+というのは、バッファモードでは、ドライバによってリザルトセット全体がクライアントのメモリに読み込まれることを防止できないからです。
+
+> Note: `libmysqlclient` が使われている場合 (PHP5 ではそれが普通ですが) は、リザルトセットに使用されたメモリは PHP のメモリ使用量としてカウントされません。
+  そのため、一見、バッチクエリが正しく動作するように見えますが、実際には、データセット全体がクライアントのメモリに読み込まれて、クライアントのメモリを使い果たす可能性があります。
+
+バッファモードを無効化してクライアントのメモリ要求量を削減するためには、PDO 接続のプロパティ `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` を `false` に設定しなければなりません。
+しかし、そうすると、データセット全体を取得するまでは、同じ接続を通じては別のクエリを実行できなくなります。
+これによって `ActiveRecord` が必要に応じてテーブルスキーマを取得するためのクエリを実行できなくなる可能性があります。
+これが問題にならない場合 (テーブルスキーマが既にキャッシュされている場合) は、元の接続を非バッファモードに切り替えて、バッチクエリを実行した後に元に戻すということが可能です。
+
+```php
+Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+
+// バッチクエリを実行
+
+Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+```
+
+> Note: MyISAM の場合は、バッチクエリが継続している間、テーブルがロックされて、他の接続からの書き込みアクセスが遅延または拒絶されることがあります。
+  非バッファモードのクエリを使う場合は、カーソルを開いている時間を可能な限り短くするように努めて下さい。
+
+スキーマがキャッシュされていない場合、またはバッチクエリを処理している間に他のクエリを走らせる必要がある場合は、
+独立した非バッファモードのデータベース接続を作成することが出来ます。
+
+```php
+$unbufferedDb = new \yii\db\Connection([
+    'dsn' => Yii::$app->db->dsn,
+    'username' => Yii::$app->db->username,
+    'password' => Yii::$app->db->password,
+    'charset' => Yii::$app->db->charset,
+]);
+$unbufferedDb->open();
+$unbufferedDb->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+```
+
+`$unbufferedDb` が `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` が `false` であること以外は、元のバッファモードの `$db` と同じ PDO 属性を持つことを保証したい場合は、
+[`$db` のディープコピー](https://github.com/yiisoft/yii2/issues/8420#issuecomment-301423833) をしてから、手動で false に設定することを考慮して下さい。
+
+そして、クエリは普通に作成します。新しい接続を使ってバッチクエリを走らせ、結果をバッチで取得、または一つずつ取得します。
+
+```php
+// データを 1000 のバッチで取得
+foreach ($query->batch(1000, $unbufferedDb) as $users) {
+    // ...
+}
+
+
+// データは 1000 のバッチでサーバから取得されるが、一つずつ反復処理される
+foreach ($query->each(1000, $unbufferedDb) as $user) {
+    // ...
+}
+```
+
+リザルトセットが全て取得されて接続が必要なくなったら、接続を閉じることが出来ます。
+
+```php
+$unbufferedDb->close();
+```
+
+> Note: 非バッファモードのクエリは PHP 側でのメモリ消費は少なくなりますが、MySQL サーバの負荷を増加させ得ます。
+  特別に巨大なデータに対するアプリの動作については、あなた自身のコードを設計することが推奨されます。
+  例えば、[整数のキーで範囲を分割して、非バッファモードのクエリでループする](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257) など。
+
+### 独自の条件や式を追加する <span id="adding-custom-conditions-and-expressions"></span>
+
+[条件 – オブジェクト形式](#object-format) の節で触れたように、独自の条件クラスを作成することが可能です。
+例として、特定のカラムが一定の値より小さいことをチェックする条件を作ってみましょう。
+演算子形式を使えば、それは次のようになるでしょう。
+
+```php
+[
+    'and',
+    '>', 'posts', $minLimit,
+    '>', 'comments', $minLimit,
+    '>', 'reactions', $minLimit,
+    '>', 'subscriptions', $minLimit
+]
+```
+
+このような条件を一度に適用できたら良いですね。
+一つのクエリの中で複数回使われる場合には、最適化の効果が大きいでしょう。
+独自の条件オブジェクトを作って、それを実証しましょう。
+
+Yii には、条件を表現するクラスを特徴付ける [[yii\db\conditions\ConditionInterface|ConditionInterface]] があります。
+このインターフェイスは、配列形式から条件を作ることを可能にするための `fromArrayDefinition()` メソッドを実装することを要求します。
+あなたがそれを必要としない場合は、例外を投げるだけのメソッドとして実装しても構いません。
+
+私たち独自の条件クラスを作るのですから、私たちの仕事に最適な API を構築すれば良いのです。
+
+```php
+namespace app\db\conditions;
+
+class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
+{
+    private $columns;
+    private $value;
+
+    /**
+     * @param string[] $columns $value よりも大きくなければならないカラムの配列
+     * @param mixed $value 各カラムと比較する値
+     */
+    public function __construct(array $columns, $value)
+    {
+        $this->columns = $columns;
+        $this->value = $value;
+    }
+    
+    public static function fromArrayDefinition($operator, $operands)
+    {
+        throw new InvalidArgumentException('未実装、あとでやる');
+    }
+    
+    public function getColumns() { return $this->columns; }
+    public function getValue() { return $this->vaule; }
+}
+```
+
+これで条件オブジェクトを作ることが出来ます。
+
+```php
+$conditon = new AllGreaterCondition(['col1', 'col2'], 42);
+```
+
+しかし `QueryBuilder` は、このオブジェクトから SQL 条件式を作る方法を知りません。
+次に、この条件に対する式ビルダを作成する必要があります。
+式ビルダは `build()` メソッドを提供する [[yii\db\ExpressionBuilderInterface]] を実装しなければいけません。
+
+```php
+namespace app\db\conditions;
+
+class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
+{
+    use \yii\db\Condition\ExpressionBuilderTrait; // コンストラクタと `queryBuilder` プロパティを含む。
+
+    /**
+     * @param AllGreaterCondition $condition ビルドすべき条件
+     * @param array $params バインディング・パラメータ
+     */ 
+    public function build(ConditionInterface $condition, &$params)
+    {
+        $value = $condition->getValue();
+        
+        $conditions = [];
+        foreach ($condition->getColumns() as $column) {
+            $conditions[] = new SimpleCondition($column, '>', $value);
+        }
+
+        return $this->queryBuider->buildCondition(new AndCondition($conditions), $params);
+    }
+}
+```
+
+後は、単に [[yii\db\QueryBuilder|QueryBuilder]] に私たちの新しい条件について知らせるだけです – 
+条件のマッピングを `expressionBuilders` 配列に追加します。
+次のように、アプリケーション構成で直接に追加すること出来ます。
+
+```php
+'db' => [
+    'class' => 'yii\db\mysql\Connection',
+    // ...
+    'queryBuilder' => [
+        'expressionBuilders' => [
+            'app\db\conditions\AllGreaterCondition' => 'app\db\conditions\AllGreaterConditionBuilder',
+        ],
+    ],
+],
+```
+
+これで、私たちの新しい条件を `where()` で使用することが出来ます。
+
+```php
+$query->andWhere(new AllGreaterCondition(['posts', 'comments', 'reactions', 'subscriptions'], $minValue));
+```
+
+If we want to make it possible to create our custom condition using operator format, we should declare it in
+[[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]]:
+
+```php
+'db' => [
+    'class' => 'yii\db\mysql\Connection',
+    // ...
+    'queryBuilder' => [
+        'expressionBuilders' => [
+            'app\db\conditions\AllGreaterCondition' => 'app\db\conditions\AllGreaterConditionBuilder',
+        ],
+        'conditionClasses' => [
+            'ALL>' => 'app\db\conditions\AllGreaterCondition',
+        ],
+    ],
+],
+```
+
+And create a real implementation of `AllGreaterCondition::fromArrayDefinition()` method 
+in `app\db\conditions\AllGreaterCondition`:
+
+```php
+namespace app\db\conditions;
+
+class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
+{
+    // ... see the implementation above
+     
+    public static function fromArrayDefinition($operator, $operands)
+    {
+        return new static($operands[0], $operands[1]);
+    }
+}
+```
+    
+After that, we can create our custom condition using shorter operator format:
+
+```php
+$query->andWhere(['ALL>', ['posts', 'comments', 'reactions', 'subscriptions'], $minValue]);
+```
+
+You might notice, that there was two concepts used: Expressions and Conditions. There is a [[yii\db\ExpressionInterface]]
+that should be used to mark objects, that require an Expression Builder class, that implements
+[[yii\db\ExpressionBuilderInterface]] to be built. Also there is a [[yii\db\condition\ConditionInterface]], that extends
+[[yii\db\ExpressionInterface|ExpressionInterface]] and should be used to objects, that can be created from array definition
+as it was shown above, but require builder as well.
+
+To summarise:
+
+- Expression – is a Data Transfer Object (DTO) for a dataset, that can be somehow compiled to some SQL 
+statement (an operator, string, array, JSON, etc).
+- Condition – is an Expression superset, that aggregates multiple Expressions (or scalar values) that can be compiled
+to a single SQL condition.
+
+You can create your own classes that implement [[yii\db\ExpressionInterface|ExpressionInterface]] to hide the complexity
+of transforming data to SQL statements. You will learn more about other examples of Expressions in the
+[next article](db-active-record.md);
