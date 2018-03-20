@@ -190,7 +190,7 @@ end user inputs, because this will make your application subject to SQL injectio
 $query->where("status=$status");
 ```
 
-When using parameter binding, you may call [[yii\db\Query::params()|params()]] or [[yii\db\Query::addParams()|addParams()]]
+When using `parameter binding`, you may call [[yii\db\Query::params()|params()]] or [[yii\db\Query::addParams()|addParams()]]
 to specify parameters separately.
 
 ```php
@@ -227,11 +227,11 @@ $userQuery = (new Query())->select('id')->from('user');
 $query->where(['id' => $userQuery]);
 ```
 
-Using the Hash Format, Yii internally uses parameter binding for values, so in contrast to the [string format](#string-format),
+Using the Hash Format, Yii internally applies parameter binding for values, so in contrast to the [string format](#string-format),
 here you do not have to add parameters manually. However, note that Yii never escapes column names, so if you pass
-a variable as a column name, the application will likely become vulnerable to SQL injection attack. In order to keep
-application secure, either either do not use variables as column names or filter variable against white list.
-In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
+a variable obtained from user side as a column name without any additional checks, the application will become vulnerable
+to SQL injection attack. In order to keep the application secure, either do not use variables as column names or
+filter variable against white list. In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
 guide article. For example the following code is vulnerable:
 
 ```php

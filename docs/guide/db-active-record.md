@@ -230,7 +230,7 @@ $customers = Customer::findAll([
 >     // ...
 > }
 >
-> // explicitly specifying the colum to search, passing a scalar or array here will always result in finding a single record
+> // explicitly specifying the column to search, passing a scalar or array here will always result in finding a single record
 > $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
 >
 > // do NOT use the following code! it is possible to inject an array condition to filter by arbitrary column values!
