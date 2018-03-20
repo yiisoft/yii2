@@ -585,7 +585,7 @@ the access rule:
     'actions' => ['update'],
     'roles' => ['updatePost'],
     'roleParams' => function() {
-        return ['post' => Post::findOne(Yii::$app->request->get('id'))];
+        return ['post' => Post::findOne(['id' => Yii::$app->request->get('id')])];
     },
 ],
 ```

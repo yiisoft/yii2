@@ -9,7 +9,6 @@ namespace yii\db\mysql;
 
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\db\ColumnSchema;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
