@@ -219,6 +219,25 @@ $customers = Customer::findAll([
 ]);
 ```
 
+> Warning: If you need to pass user input to these methods, make sure the input value is scalar or in case of
+> array condition, make sure the array structure can not be changed from the outside:
+>
+> ```php
+> // yii\web\Controller ensures that $id is scalar
+> public function actionView($id)
+> {
+>     $model = Post::findOne($id);
+>     // ...
+> }
+>
+> // explicitly specifying the colum to search, passing a scalar or array here will always result in finding a single record
+> $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+>
+> // do NOT use the following code! it is possible to inject an array condition to filter by arbitrary column values!
+> $model = Post::findOne(Yii::$app->request->get('id'));
+> ```
+
+
 > Note: Neither [[yii\db\ActiveRecord::findOne()]] nor [[yii\db\ActiveQuery::one()]] will add `LIMIT 1` to 
   the generated SQL statement. If your query may return many rows of data, you should call `limit(1)` explicitly
   to improve the performance, e.g., `Customer::find()->limit(1)->one()`.

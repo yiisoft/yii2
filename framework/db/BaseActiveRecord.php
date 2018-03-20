@@ -132,44 +132,19 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     protected static function findByCondition($condition)
     {
         $query = static::find();
-        $condition = static::filterCondition($condition);
 
         if (!ArrayHelper::isAssociative($condition)) {
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
-                $condition = [$primaryKey[0] => $condition];
+                // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
+                $condition = [$primaryKey[0] => is_array($condition) ? array_values($condition) : $condition];
             } else {
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
         }
 
         return $query->andWhere($condition);
-    }
-
-    /**
-     * Filters array condition before it is assigned to a Query filter
-     *
-     * @param array|string|int $condition condition to filter
-     * @return array|string|int filtered condition
-     * @throws InvalidArgumentException in case array contains not safe values
-     * @since 2.0.14.2
-     * @internal
-     */
-    protected static function filterCondition($condition)
-    {
-        if (!is_array($condition)) {
-            return $condition;
-        }
-
-        $result = [];
-        foreach ($condition as $key => $item) {
-            if (is_string($key) && $key !== preg_replace('/([^\w\d_$-]|(--))/', '', $key)) {
-                throw new InvalidArgumentException('Key "' . $key . '" is not a column name and can not be used as a filter');
-            }
-            $result[$key] = self::filterCondition($item);
-        }
-        return $result;
     }
 
     /**
