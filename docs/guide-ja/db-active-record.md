@@ -464,6 +464,34 @@ HTTP リクエストから値をロードしたり、プロパティにアクセ
 > Tip: アクティブレコードのバリデーションや保存の際の属性型キャストを楽にするために
 [[yii\behaviors\AttributeTypecastBehavior]] を使うことが出来ます。
 
+2.0.14 以降、Yii のアクティブレコードは、JSON や多次元配列のような複雑な型をサポートしています。
+
+#### MySQL および PostgreSQL における JSON
+
+データが取得された後、JSON カラムの値は標準的な JSON デコード規則に従って、
+自動的に JSON からデコードされます。
+
+アクティブレコードは、属性値を JSON カラムに保存するために [[yii\db\JsonExpression|JsonExpression]]
+オブジェクトを自動的に生成します。このオブジェクトが [クエリビルダー](db-query-builder.md) レベルで JSON 文字列にエンコードされます。
+
+#### PostgreSQL における配列
+
+データが取得された後、配列カラムの値は PgSQL 記法から自動的に [[yii\db\ArrayExpression|ArrayExpression]] オブジェクトにデコードされます。
+このオブジェクトは PHP の `ArrayAccess` インターフェイスを実装しているため、これを配列として使うこと事が出来ます。
+また、`->getValue()` を呼んで配列そのものを取得することも出来ます。
+
+アクティブレコードは、属性値を配列カラムに保存するために [[yii\db\ArrayExpression|ArrayExpression]]
+オブジェクトを生成します。このオブジェクトが [クエリビルダー](db-query-builder.md) のレベルで配列を表す PgSQL 文字列にエンコードされます。
+
+JSON カラムに対して条件を使用することも出来ます。
+
+```php
+$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
+```
+
+式を構築するシステムについて更に学習するためには [クエリビルダー – 特製の条件や式を追加する](db-query-builder.md#adding-custom-conditions-and-expressions)
+という記事を参照して下さい。
+
 ### 複数の行を更新する <span id="updating-multiple-rows"></span>
 
 上述のメソッドは、すべて、個別のアクティブレコードインスタンスに対して作用し、個別のテーブル行を挿入したり更新したりするものです。
@@ -874,6 +902,42 @@ $items = $order->items;
 ```
 
 
+### 複数のテーブルを経由するリレーション定義の連鎖<span id="multi-table-relations"></span>
+
+さらに、[[yii\db\ActiveQuery::via()|via()]] を使ってリレーション定義を連鎖させ、複数のテーブルを経由するリレーションを定義することも可能です。
+上記の例で考えましょう。そこには `Customer`(顧客)、`Order`(注文) そして `Item`(品目) というクラスがあります。
+`Customer` クラスに、発注された全ての注文によって購入された全ての品目を列挙するリレーションを追加して、
+それに `getPurchasedItems()` という名前を付けることが出来ます。
+リレーション定義の連鎖が次のコードサンプルで示されています。
+
+```php
+class Customer extends ActiveRecord
+{
+    // ...
+
+    public function getPurchasedItems()
+    {
+        // 顧客の購入品目、すなわち、`Item` の 'id' カラムが OrderItem の 'item_id' に合致するもの
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+                    ->via('orderItems');
+    }
+
+    public function getOrderItems()
+    {
+        // 顧客の OrderItems、すなわち、`Order` の `id` カラムが `OrderItem` の 'order_id' に合致するもの
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+                    ->via('orders');
+    }
+
+    public function getOrders()
+    {
+        // 顧客の注文
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```
+
+
 ### レイジーローディングとイーガーローディング <span id="lazy-eager-loading"></span>
 
 [リレーショナルデータにアクセスする](#accessing-relational-data) において、通常のオブジェクトプロパティにアクセスするのと同じようにして、アクティブレコードインスタンスのリレーションプロパティにアクセスすることが出来ることを説明しました。
@@ -1036,6 +1100,10 @@ $customers = Customer::find()
 
 デフォルトでは、[[yii\db\ActiveQuery::joinWith()|joinWith()]] を呼ぶと、リレーションのデータが [イーガーロード](#lazy-eager-loading) されます。
 リレーションのデータを読み取りたくない場合は、第二のパラメータ `$eagerLoading` を `false` に指定することが出来ます。
+
+> Note: たとえイーガーローディングを有効にして [[yii\db\ActiveQuery::joinWith()|joinWith()]] や [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] を使う場合でも、
+  リレーションのデータを取得するのには `JOIN` クエリの結果は**使われません**。
+  その場合でも、やはり、[イーガーローディング](#lazy-eager-loading) の節で説明したように、結合されたリレーションごとに追加のクエリが実行されます。
 
 [[yii\db\ActiveQuery::with()|with()]] と同じように、一つまたは複数のリレーションを結合したり、リレーションクエリをその場でカスタマイズしたり、ネストされたリレーションを結合したりすることが出来ます。
 また、[[yii\db\ActiveQuery::with()|with()]] と [[yii\db\ActiveQuery::joinWith()|joinWith()]] を混ぜて使用することも出来ます。
