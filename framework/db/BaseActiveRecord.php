@@ -132,7 +132,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
-                $condition = [$primaryKey[0] => $condition];
+                // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
+                $condition = [$primaryKey[0] => is_array($condition) ? array_values($condition) : $condition];
             } else {
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
