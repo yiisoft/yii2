@@ -1,11 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.15 under development
-------------------------
+2.0.15 March 20, 2018
+---------------------
 
-- Bug #15878: Fixed migration with a comment containing an apostrophe (MarcoMoreno)
 - Bug #15688: (CVE-2018-7269): Fixed possible SQL injection through `yii\db\ActiveRecord::findOne()`, `::findAll()` (analitic1983, silverfire, cebe)
+- Bug #15878: Fixed migration with a comment containing an apostrophe (MarcoMoreno)
 
 
 2.0.14.2 March 13, 2018
