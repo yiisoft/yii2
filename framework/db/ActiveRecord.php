@@ -9,6 +9,7 @@ namespace yii\db;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -164,7 +165,7 @@ class ActiveRecord extends BaseActiveRecord
      * This method is internally called by [[findOne()]] and [[findAll()]].
      * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
      * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
-     * @throws InvalidConfigException if there is no primary key defined
+     * @throws InvalidConfigException if there is no primary key defined.
      * @internal
      */
     protected static function findByCondition($condition)
@@ -179,13 +180,41 @@ class ActiveRecord extends BaseActiveRecord
                 if (!empty($query->join) || !empty($query->joinWith)) {
                     $pk = static::tableName() . '.' . $pk;
                 }
-                $condition = [$pk => $condition];
+                // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
+                $condition = [$pk => is_array($condition) ? array_values($condition) : $condition];
             } else {
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
+        } elseif (is_array($condition)) {
+            $condition = static::filterCondition($condition);
         }
 
         return $query->andWhere($condition);
+    }
+
+    /**
+     * Filters array condition before it is assiged to a Query filter.
+     *
+     * This method will ensure that an array condition only filters on existing table columns.
+     *
+     * @param array $condition condition to filter.
+     * @return array filtered condition.
+     * @throws InvalidParamException in case array contains unsafe values.
+     * @since 2.0.12.1
+     * @internal
+     */
+    protected static function filterCondition(array $condition)
+    {
+        $result = [];
+        $columnNames = static::getTableSchema()->getColumnNames();
+        foreach ($condition as $key => $value) {
+            if (is_string($key) && !in_array($key, $columnNames, true)) {
+                throw new InvalidParamException('Key "' . $key . '" is not a column name and can not be used as a filter');
+            }
+            $result[$key] = is_array($value) ? array_values($value) : $value;
+        }
+
+        return $result;
     }
 
     /**

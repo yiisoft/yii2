@@ -50,6 +50,49 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+
+Upgrade from Yii 2.0.12
+-----------------------
+
+* When hash format condition (array) is used in `yii\db\ActiveRecord::findOne()` and `findAll()`, the array keys (column names)
+  are now limited to the table column names. This is to prevent SQL injection if input was not filtered properly.
+  You should check all usages of `findOne()` and `findAll()` to ensure that input is filtered correctly.
+  If you need to find models using different keys than the table columns, use `find()->where(...)` instead.
+
+  It's not an issue in the default generated code though as ID is filtered by
+  controller code:
+
+  The following code examples are **not** affected by this issue (examples shown for `findOne()` are valid also for `findAll()`):
+
+  ```php
+  // yii\web\Controller ensures that $id is scalar
+  public function actionView($id)
+  {
+      $model = Post::findOne($id);
+      // ...
+  }
+  ```
+
+  ```php
+  // casting to (int) or (string) ensures no array can be injected (an exception will be thrown so this is not a good practise)
+  $model = Post::findOne((int) Yii::$app->request->get('id'));
+  ```
+
+  ```php
+  // explicitly specifying the colum to search, passing a scalar or array here will always result in finding a single record
+  $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+  ```
+
+  The following code however **is vulnerable**, an attacker could inject an array with an arbitrary condition and even exploit SQL injection:
+
+  ```php
+  $model = Post::findOne(Yii::$app->request->get('id'));
+  ```
+
+  For the above example, the SQL injection part is fixed with the patches provided in this release, but an attacker may still be able to search
+  records by different condition than a primary key search and violate your application business logic. So passing user input directly like this can cause problems and should be avoided.
+
+
 Upgrade from Yii 2.0.11
 -----------------------
 
