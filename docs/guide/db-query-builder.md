@@ -235,7 +235,7 @@ filter variable against white list. In case you need to get column name from use
 guide article. For example the following code is vulnerable:
 
 ```php
-// Vulnarable code:
+// Vulnerable code:
 $column = $request->get('column');
 $value = $request->get('value);
 $query->where([$column => $value]);
@@ -320,12 +320,12 @@ the operator can be one of the following:
 Using the Operator Format, Yii internally uses parameter binding for values, so in contrast to the [string format](#string-format),
 here you do not have to add parameters manually. However, note that Yii never escapes column names, so if you pass
 a variable as a column name, the application will likely become vulnerable to SQL injection attack. In order to keep
-application secure, either either do not use variables as column names or filter variable against white list.
+application secure, either do not use variables as column names or filter variable against white list.
 In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
 guide article. For example the following code is vulnerable:
 
 ```php
-// Vulnarable code:
+// Vulnerable code:
 $column = $request->get('column');
 $value = $request->get('value);
 $query->where(['=', $column, $value]);
