@@ -324,7 +324,7 @@ $query->andWhere(new OrCondition([
 等々。
 
 オブジェクト形式を使うことによって、あなた独自の条件を作成したり、デフォルトの条件が作成される方法を変更したりすることが可能になります。
-詳細は [独自の条件や式を追加する](#adding-custom-conditions-and-expressions) の節を参照して下さい。
+詳細は [特製の条件や式を追加する](#adding-custom-conditions-and-expressions) の節を参照して下さい。
 
 
 #### 条件を追加する <span id="appending-conditions"></span>
@@ -771,9 +771,9 @@ $unbufferedDb->close();
   特別に巨大なデータに対するアプリの動作については、あなた自身のコードを設計することが推奨されます。
   例えば、[整数のキーで範囲を分割して、非バッファモードのクエリでループする](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257) など。
 
-### 独自の条件や式を追加する <span id="adding-custom-conditions-and-expressions"></span>
+### 特製の条件や式を追加する <span id="adding-custom-conditions-and-expressions"></span>
 
-[条件 – オブジェクト形式](#object-format) の節で触れたように、独自の条件クラスを作成することが可能です。
+[条件 – オブジェクト形式](#object-format) の節で触れたように、特製の条件クラスを作成することが可能です。
 例として、特定のカラムが一定の値より小さいことをチェックする条件を作ってみましょう。
 演算子形式を使えば、それは次のようになるでしょう。
 
@@ -789,13 +789,13 @@ $unbufferedDb->close();
 
 このような条件を一度に適用できたら良いですね。
 一つのクエリの中で複数回使われる場合には、最適化の効果が大きいでしょう。
-独自の条件オブジェクトを作って、それを実証しましょう。
+特製の条件オブジェクトを作って、それを実証しましょう。
 
 Yii には、条件を表現するクラスを特徴付ける [[yii\db\conditions\ConditionInterface|ConditionInterface]] があります。
 このインターフェイスは、配列形式から条件を作ることを可能にするための `fromArrayDefinition()` メソッドを実装することを要求します。
 あなたがそれを必要としない場合は、例外を投げるだけのメソッドとして実装しても構いません。
 
-私たち独自の条件クラスを作るのですから、私たちの仕事に最適な API を構築すれば良いのです。
+特製の条件クラスを作るのですから、私たちの仕事に最適な API を構築すれば良いのです。
 
 ```php
 namespace app\db\conditions;
@@ -862,7 +862,7 @@ class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
 
 後は、単に [[yii\db\QueryBuilder|QueryBuilder]] に私たちの新しい条件について知らせるだけです – 
 条件のマッピングを `expressionBuilders` 配列に追加します。
-次のように、アプリケーション構成で直接に追加すること出来ます。
+次のように、アプリケーション構成で直接に追加することが出来ます。
 
 ```php
 'db' => [
@@ -876,14 +876,14 @@ class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
 ],
 ```
 
-これで、私たちの新しい条件を `where()` で使用することが出来ます。
+これで、私たちの新しい条件を `where()` で使用することが出来るようになりました。
 
 ```php
 $query->andWhere(new AllGreaterCondition(['posts', 'comments', 'reactions', 'subscriptions'], $minValue));
 ```
 
-If we want to make it possible to create our custom condition using operator format, we should declare it in
-[[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]]:
+演算子形式を使って私たちの特製の条件を作成することが出来るようにしたい場合は、
+演算子を [[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]] の中で宣言しなければなりません。
 
 ```php
 'db' => [
@@ -900,15 +900,14 @@ If we want to make it possible to create our custom condition using operator for
 ],
 ```
 
-And create a real implementation of `AllGreaterCondition::fromArrayDefinition()` method 
-in `app\db\conditions\AllGreaterCondition`:
+そして、`app\db\conditions\AllGreaterCondition` の中で `AllGreaterCondition::fromArrayDefinition()` メソッドの本当の実装を作成します。
 
 ```php
 namespace app\db\conditions;
 
 class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
 {
-    // ... see the implementation above
+    // ... 上記の実装を参照
      
     public static function fromArrayDefinition($operator, $operands)
     {
@@ -916,26 +915,21 @@ class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
     }
 }
 ```
-    
-After that, we can create our custom condition using shorter operator format:
+
+これ以降は、私たちの特製の条件をより短い演算子形式を使って作成することが出来ます。
 
 ```php
 $query->andWhere(['ALL>', ['posts', 'comments', 'reactions', 'subscriptions'], $minValue]);
 ```
 
-You might notice, that there was two concepts used: Expressions and Conditions. There is a [[yii\db\ExpressionInterface]]
-that should be used to mark objects, that require an Expression Builder class, that implements
-[[yii\db\ExpressionBuilderInterface]] to be built. Also there is a [[yii\db\condition\ConditionInterface]], that extends
-[[yii\db\ExpressionInterface|ExpressionInterface]] and should be used to objects, that can be created from array definition
-as it was shown above, but require builder as well.
+お気付きのことと思いますが、ここには二つの概念があります。Expression(式)と Condition(条件)です。
+[[yii\db\ExpressionInterface]] は、それを構築するために [[yii\db\ExpressionBuilderInterface]] を実装した式ビルダクラスを必要とするオブジェクトを特徴付けるインターフェイスです。
+また [[yii\db\condition\ConditionInterface]] は、[[yii\db\ExpressionInterface|ExpressionInterface]] を拡張して、上述されたように配列形式の定義から作成できるオブジェクトに対して使用されるべきものですが、同様にビルダを必要とするものです。
 
-To summarise:
+要約すると、
 
-- Expression – is a Data Transfer Object (DTO) for a dataset, that can be somehow compiled to some SQL 
-statement (an operator, string, array, JSON, etc).
-- Condition – is an Expression superset, that aggregates multiple Expressions (or scalar values) that can be compiled
-to a single SQL condition.
+- Expression(式) – データセットのためのデータ転送オブジェクトであり、最終的に何らかの SQL 文にコンパイルされる。(演算子、文字列、配列、JSON、等)
+- Condition(条件) – Expression(式) のスーパーセットで、一つの SQL 条件にコンパイルすることが可能な複数の式(またはスカラ値)の集合。
 
-You can create your own classes that implement [[yii\db\ExpressionInterface|ExpressionInterface]] to hide the complexity
-of transforming data to SQL statements. You will learn more about other examples of Expressions in the
-[next article](db-active-record.md);
+[[yii\db\ExpressionInterface|ExpressionInterface]] を実装する独自のクラスを作成して、データを SQL 文に変換することの複雑さを隠蔽することが出来ます。
+[次の記事](db-active-record.md) では、式について、さらに多くの例を学習します。

@@ -489,7 +489,7 @@ JSON カラムに対して条件を使用することも出来ます。
 $query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
 ```
 
-式を構築するシステムについて更に学習するためには [クエリビルダー – 独自の条件や式を追加する](db-query-builder.md#adding-custom-conditions-and-expressions)
+式を構築するシステムについて更に学習するためには [クエリビルダー – 特製の条件や式を追加する](db-query-builder.md#adding-custom-conditions-and-expressions)
 という記事を参照して下さい。
 
 ### 複数の行を更新する <span id="updating-multiple-rows"></span>
