@@ -1,6 +1,12 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.15.1 under development
+--------------------------
+
+- Bug #15931: `yii\db\ActiveRecord::findOne()` now accepts column names prefixed with table name (cebe)
+
+
 2.0.15 March 20, 2018
 ---------------------
 

@@ -1648,6 +1648,17 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         CustomerQuery::$joinWithProfile = false;
     }
 
+    public function testFindOneByColumnName()
+    {
+        $model = Customer::findOne(['id' => 1]);
+        $this->assertEquals(1, $model->id);
+
+        CustomerQuery::$joinWithProfile = true;
+        $model = Customer::findOne(['customer.id' => 1]);
+        $this->assertEquals(1, $model->id);
+        CustomerQuery::$joinWithProfile = false;
+    }
+
     public function illegalValuesForFindByCondition()
     {
         return [
