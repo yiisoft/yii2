@@ -206,7 +206,11 @@ class ActiveRecord extends BaseActiveRecord
     protected static function filterCondition(array $condition)
     {
         $result = [];
+        // valid column names are table column names or column names prefixed with table name
         $columnNames = static::getTableSchema()->getColumnNames();
+        $columnNames = array_merge($columnNames, array_map(function($columnName) {
+            return static::tableName() . ".$columnName";
+        }, $columnNames));
         foreach ($condition as $key => $value) {
             if (is_string($key) && !in_array($key, $columnNames, true)) {
                 throw new InvalidParamException('Key "' . $key . '" is not a column name and can not be used as a filter');
