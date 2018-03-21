@@ -1,7 +1,9 @@
 Yii and Docker
 ==============
 
-For development and deployments Yii applications can be run as Docker containers.
+For development and deployments Yii applications can be run as Docker containers. A container is like a lightweight isolated virtual machine that maps its services to host's ports, ie. a webserver in a container on port 80 is available on port 8888 on your (local)host. 
+
+Containers can solve many issues such as having identical software versions at developer's computer and the server, fast deployments or simulating mutli-server architecture while developing.
 
 You can read more about Docker containers on [docker.com](https://www.docker.com/what-docker).
 
@@ -10,28 +12,79 @@ You can read more about Docker containers on [docker.com](https://www.docker.com
 - `docker`
 - `docker-compose`
 
-Visit the [download page](https://www.docker.com/community-edition) for Docker tools.
+Visit the [download page](https://www.docker.com/community-edition) to get the Docker tooling.
 
-## Resources
+## Installation
 
-PHP-base images for Yii can be found at [yii2-docker](https://github.com/yiisoft/yii2-docker).
-
-
-*TBD:* Docker support for [yii2-app-advanced](https://github.com/yiisoft/yii2-app-advanced/pull/347).
-
-## Setup
-
-After installation of Docker, you should be able to run `docker ps` and see an output similar to
+After installation, you should be able to run `docker ps` and see an output similar to
 
 ```
 CONTAINER ID   IMAGE   COMMAND   CREATED   STATUS   PORTS
 ```
 
+This means your Docker daemon is up and running.
+
+Additionally run `docker-compose version`, your output should look like this
+
+```
+docker-compose version 1.20.0, build unknown
+docker-py version: 3.1.3
+CPython version: 3.6.4
+OpenSSL version: OpenSSL 1.1.0g  2 Nov 2017
+```
+
+With Compose you can configure manage all services required for your application, such as databases and caching.
+
+## Resources
+
+- PHP-base images for Yii can be found at [yii2-docker](https://github.com/yiisoft/yii2-docker)
+- Docker support for [yii2-app-basic](https://github.com/yiisoft/yii2-app-basic#install-with-docker)
+- *TBD:* Docker support for [yii2-app-advanced](https://github.com/yiisoft/yii2-app-advanced/pull/347)
+
 ## Usage
 
-For a quick-start you can run the dockerized framework tests as described [here](https://github.com/yiisoft/yii2/blob/master/tests/README.md#dockerized-testing).
+Basic commands for Docker are
+
+    docker-compose up -d
+    
+to start all services in your stack, in the background
+
+    docker-compose ps
+    
+to list running services
+
+    docker-compose logs -f
+    
+to view logs for all services, continuously
+
+    docker-compose stop
+    
+to stop all services in your stack, gracefully
+
+    docker-copmose kill
+    
+to stop all services in your stack, immediately
+
+    docker-copmose down -v
+    
+to stop and remove all services, **be aware of data loss when not using host-volumes**
+
+To run commands in a container
+
+    docker-composer run --rm php composer install
+    
+runs composer installation in a new container
+
+    docker-compose exec php bash
+    
+executes a bash in a *running* `php` service
+
 
 ## Advanced topics
+
+### Framework tests
+
+You can run the dockerized framework tests as described [here](https://github.com/yiisoft/yii2/blob/master/tests/README.md#dockerized-testing).
 
 ### Database administration tools
 
