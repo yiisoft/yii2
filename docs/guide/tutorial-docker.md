@@ -1,7 +1,7 @@
 Yii and Docker
 ==============
 
-For development and deployments Yii applications can be run as Docker containers. A container is like a lightweight isolated virtual machine that maps its services to host's ports, ie. a webserver in a container on port 80 is available on port 8888 on your (local)host. 
+For development and deployments Yii applications can be run as Docker containers. A container is like a lightweight isolated virtual machine that maps its services to host's ports, i.e. a webserver in a container on port 80 is available on port 8888 on your (local)host. 
 
 Containers can solve many issues such as having identical software versions at developer's computer and the server, fast deployments or simulating mutli-server architecture while developing.
 
@@ -39,7 +39,7 @@ With Compose you can configure manage all services required for your application
 
 - PHP-base images for Yii can be found at [yii2-docker](https://github.com/yiisoft/yii2-docker)
 - Docker support for [yii2-app-basic](https://github.com/yiisoft/yii2-app-basic#install-with-docker)
-- *TBD:* Docker support for [yii2-app-advanced](https://github.com/yiisoft/yii2-app-advanced/pull/347)
+- Docker support for [yii2-app-advanced](https://github.com/yiisoft/yii2-app-advanced/pull/347) is in development
 
 ## Usage
 
@@ -82,13 +82,13 @@ executes a bash in a *running* `php` service
 
 ## Advanced topics
 
-### Framework tests
+### Yii framework tests
 
-You can run the dockerized framework tests as described [here](https://github.com/yiisoft/yii2/blob/master/tests/README.md#dockerized-testing).
+You can run the dockerized framework tests for Yii itself as described [here](https://github.com/yiisoft/yii2/blob/master/tests/README.md#dockerized-testing).
 
 ### Database administration tools
 
-When running MySQL as (`mysql`), you can add for example a PHPmyAdmin container to your stack.
+When running MySQL as (`mysql`), you can add phpMyAdmin container to your stack like the following:
 
 ```
     phpmyadmin:
