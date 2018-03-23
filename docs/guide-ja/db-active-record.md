@@ -209,6 +209,27 @@ $customers = Customer::findAll([
 ]);
 ```
 
+> Warning: これらのメソッドにユーザ入力を渡す必要がある場合は、入力値がスカラ値であること、または、
+> 入力値が配列形式の条件である場合は配列の構造が外部から変更され得ないことを保証して下さい。
+>
+> ```php
+> // yii\web\Controller が $id はスカラ値であることを保証しています
+> public function actionView($id)
+> {
+>     $model = Post::findOne($id);
+>     // ...
+> }
+>
+> // 検索するカラムを明示的に指定する場合。
+> // ここでは、どんなスカラ値または配列を渡しても、単一のレコードを発見する結果になります。
+> $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+>
+> // 次のコードを使用してはいけません!
+> // 配列形式の条件を挿入されて、任意のカラムの値による検索を実行される可能性があります!
+> $model = Post::findOne(Yii::$app->request->get('id'));
+> ```
+
+
 > Note: [[yii\db\ActiveRecord::findOne()]] も [[yii\db\ActiveQuery::one()]] も、生成される SQL 文に `LIMIT 1` を追加しません。
   あなたのクエリが多数のデータ行を返すかもしれない場合は、パフォーマンスを向上させるために、`limit(1)` を明示的に呼ぶべきです。
   例えば `Customer::find()->limit(1)->one()` のように。

@@ -231,11 +231,11 @@ $decodedUserName = Html::decode($userName);
 ラジオとチェックボックスは、メソッドのシグニチャの面で少し異なっています。
 
 ```php
-<?= Html::radio('agree', true, ['label' => '同意します']);
-<?= Html::activeRadio($model, 'agree', ['class' => 'agreement'])
+<?= Html::radio('agree', true, ['label' => '同意します']) ?>
+<?= Html::activeRadio($model, 'agree', ['class' => 'agreement']) ?>
 
-<?= Html::checkbox('agree', true, ['label' => '同意します']);
-<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement'])
+<?= Html::checkbox('agree', true, ['label' => '同意します']) ?>
+<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement']) ?>
 ```
 
 ドロップダウンリストとリストボックスは、次のようにしてレンダリングすることが出来ます。
@@ -336,7 +336,7 @@ echo Html::getAttributeName('dates[0]');
 <style>.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("こんにちは!");', ['defer' => true]);
+<?= Html::script('alert("こんにちは!");', ['defer' => true]) ?>
 
 これは次の HTML を生成します。
 

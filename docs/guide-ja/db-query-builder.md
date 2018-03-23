@@ -181,7 +181,7 @@ $query->where('YEAR(somedate) = 2015');
 $query->where("status=$status");
 ```
 
-パラメータバインディングを使う場合は、[[yii\db\Query::params()|params()]] または [[yii\db\Query::addParams()|addParams()]] を使って、パラメータの指定を分離することが出来ます。
+`パラメータバインディング` を使う場合は、[[yii\db\Query::params()|params()]] または [[yii\db\Query::addParams()|addParams()]] を使って、パラメータの指定を分離することが出来ます。
 
 ```php
 $query->where('status=:status')
@@ -220,7 +220,19 @@ $query->where(['id' => $userQuery]);
 
 ハッシュ形式を使う場合、Yii は内部的にパラメータバインディングを使用します。
 従って、[文字列形式](#string-format) とは対照的に、ここでは手動でパラメータを追加する必要はありません。
+ただし、Yii はカラム名を決してエスケープしないことに注意して下さい。
+従って、ユーザから取得した変数を何ら追加のチェックをすることなくカラム名として渡すと、SQL インジェクション攻撃に対して脆弱になります。
+アプリケーションを安全に保つためには、カラム名として変数を使わないこと、または、変数をホワイトリストによってフィルターすることが必要です。
+カラム名をユーザから取得する必要がある場合は、ガイドの [データをフィルタリングする](output-data-widgets.md#filtering-data) という記事を読んで下さい。
+例えば、次のコードは脆弱です。
 
+```php
+// 脆弱なコード:
+$column = $request->get('column');
+$value = $request->get('value);
+$query->where([$column => $value]);
+// $value は安全です。しかし、$column の名前はエンコードされません。
+```
 
 #### 演算子形式 <span id="operator-format"></span>
 
@@ -292,7 +304,19 @@ $query->where(['id' => $userQuery]);
 
 演算子形式を使う場合、Yii は内部的にパラメータバインディングを使用します。
 従って、[文字列形式](#string-format) とは対照的に、ここでは手動でパラメータを追加する必要はありません。
+ただし、Yii はカラム名を決してエスケープしないことに注意して下さい。
+従って、ユーザから取得した変数を何ら追加のチェックをすることなくカラム名として渡すと、SQL インジェクション攻撃に対して脆弱になります。
+アプリケーションを安全に保つためには、カラム名として変数を使わないこと、または、変数をホワイトリストによってフィルターすることが必要です。
+カラム名をユーザから取得する必要がある場合は、ガイドの [データをフィルタリングする](output-data-widgets.md#filtering-data) という記事を読んで下さい。
+例えば、次のコードは脆弱です。
 
+```php
+// 脆弱なコード:
+$column = $request->get('column');
+$value = $request->get('value);
+$query->where([$column => $value]);
+// $value は安全です。しかし、$column の名前はエンコードされません。
+```
 
 #### オブジェクト形式 <span id="object-format"></span>
 

@@ -11,6 +11,10 @@ Yii においてフォームを使用するときは、主として [[yii\widget
 (入力の検証の詳細については、[入力を検証する](input-validation.md) の節を参照してください)。
 モデルに基づくフォームを作成する場合、最初のステップは、モデルそのものを定義することです。
 モデルは、データベースの何らかのデータを表現するために [アクティブレコード](db-active-record.md) から派生させたクラスか、あるいは、任意の入力、例えばログインフォームの入力を保持するための ([[yii\base\Model]] から派生させた) 汎用的な Model クラスか、どちらかにすることが出来ます。
+
+> Tip: フォームのフィールドがデータベースのカラムと異なっていたり、そのフォーム特有のフォーマット形式やロジックがあったりする場合は、
+> [[yii\base\Model]] を拡張した独自のモデルを作るほうを選んで下さい。
+
 以下の例においては、ログインフォームのために汎用的なモデルを使う方法を示します。
 
 ```php
@@ -59,7 +63,7 @@ $form = ActiveForm::begin([
 この例では、追加の CSS クラスと要素を特定するための ID が渡されて、`<form>` の開始タグに適用されています。
 利用できるオプションの全ては [[yii\widgets\ActiveForm]] の API ドキュメントに記されていますので参照してください。
 
-### ActiveField <span id="activefield"></span>.
+### ActiveField <span id="activefield"></span>
 フォームの中では、フォームの要素を作成するために、ActiveForm ウィジェットの [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] メソッドが呼ばれています。
 このメソッドは、フォームの要素だけでなく、そのラベルも作成し、適用できる JavaScript の検証メソッドがあれば、それも追加します。
 [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] メソッドは、[[yii\widgets\ActiveField]] のインスタンスを返します。
@@ -137,7 +141,7 @@ $items = [
 
 ```php
 $items = Category::find()
-        ->select(['id', 'label'])
+        ->select(['label'])
         ->indexBy('id')
         ->column();
 ```

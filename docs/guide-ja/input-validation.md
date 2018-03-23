@@ -199,6 +199,27 @@ return [
 
 お分かりのように、これらの検証規則は実際には入力を検証しません。そうではなくて、検証される属性の値を処理して書き戻すのです。
 
+ユーザ入力の完全な処理を次のサンプルコードで示します。
+これは、ある属性に整数の値だけが保存されるように保証しようとするものです。
+
+```php
+['age', 'trim'],
+['age', 'default', 'value' => null],
+['age', 'integer', 'min' => 0],
+['age', 'filter', 'filter' => 'intval', 'skipOnEmpty' => true],
+```
+
+上記のコードは入力に対して以下の操作を実行します。
+
+1. 入力値から先頭と末尾のホワイトスペースをトリムします。
+2. 空の入力値がデータベースで `null` として保存されることを保証します。
+   "not set(未設定)" という値と、実際の値である `0` は区別します。
+   `null` が許されない時は、ここで別のデフォルト値を設定することが出来ます。
+3. 空でない場合は、値は 0 以上の整数であることを検証します。
+   通常のバリデータでは [[yii\validators\Validator::$skipOnEmpty|$skipOnEmpty]] が `true` に設定されています。
+4. 例えば、文字列 `'42'` は、整数 `42` にキャストして、値が整数型になることを保証します。
+   デフォルトでは `false` である [[yii\validators\FilterValidator|filter]] バリデータの
+   [[yii\validators\FilterValidator::$skipOnEmpty|$skipOnEmpty]] を`true` に設定しています。
 
 ### 空の入力値を扱う <span id="handling-empty-inputs"></span>
 
@@ -311,7 +332,7 @@ Yii のリリースに含まれている [コアバリデータ](tutorial-core-v
 /**
  * @param string $attribute 現在検証されている属性
  * @param mixed $params 規則に与えられる "params" の値
- * @param \yii\validators\InlineValidator 関係する InlineValidator のインスタンス。
+ * @param \yii\validators\InlineValidator $validator 関係する InlineValidator のインスタンス。
  * このパラメータは、バージョン 2.0.11 以降で利用可能。
  */
 function ($attribute, $params, $validator)
@@ -346,8 +367,8 @@ class MyForm extends Model
 
     public function validateCountry($attribute, $params, $validator)
     {
-        if (!in_array($this->$attribute, ['USA', 'Web'])) {
-            $this->addError($attribute, '国は "USA" または "Web" でなければなりません。');
+        if (!in_array($this->$attribute, ['USA', 'Indonesia'])) {
+            $this->addError($attribute, '国は "USA" または "Indonesia" でなければなりません。');
         }
     }
 }
@@ -379,6 +400,7 @@ class MyForm extends Model
 [インラインバリデータ](#inline-validators) でするのと同じように、属性が検証に失敗した場合は、[[yii\base\Model::addError()]] を呼んでエラーメッセージをモデルに保存します。
 
 例えば、上記のインラインバリデータは、新しい [[components/validators/CountryValidator]] クラスに作りかえることが出来ます。
+この場合、[[yii\validators\Validator::addError()]] を使って特製のメッセージをモデルに設定することが出来ます。
 
 ```php
 namespace app\components;
@@ -389,8 +411,8 @@ class CountryValidator extends Validator
 {
     public function validateAttribute($model, $attribute)
     {
-        if (!in_array($model->$attribute, ['USA', 'Web'])) {
-            $this->addError($model, $attribute, '国は "USA" または "Web" でなければなりません。');
+        if (!in_array($model->$attribute, ['USA', 'Indonesia'])) {
+            $this->addError($model, $attribute, '国は "{coutry1}" または "{coutry2}" でなければなりません。', ['country1' => 'USA', 'country2' => 'Indonesia']);
         }
     }
 }
@@ -520,7 +542,7 @@ $this->addError('childrenCount', $message);
 あるいは、ループを使います。
 
 ```php
-$attributes = ['personalSalary, 'wifeSalary', 'childrenCount'];
+$attributes = ['personalSalary', 'wifeSalary', 'childrenCount'];
 foreach ($attributes as $attribute) {
     $this->addError($attribute, '子どもの数に対して給与が不足しています。');
 }
@@ -768,7 +790,7 @@ JS;
 ```
 
 
-### AJAX 検証 <span id="ajax-validation"></span>
+## AJAX 検証 <span id="ajax-validation"></span>
 
 場合によっては、サーバだけが必要な情報を持っているために、サーバ側でしか検証が実行できないことがあります。
 例えば、ユーザ名がユニークであるか否かを検証するためには、サーバ側で user テーブルを調べることが必要になります。
@@ -791,7 +813,7 @@ echo $form->field($model, 'username', ['enableAjaxValidation' => true]);
 ActiveForm::end();
 ```
 
-フォーム全体に対して AJAX 検証を有効にするためには、フォームのレベルで [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]] を true に設定します。
+フォームの全てのインプットに対して AJAX 検証を有効にするためには、フォームのレベルで [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]] を true に設定します。
 
 ```php
 $form = ActiveForm::begin([
@@ -818,4 +840,6 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 > Info: AJAX 検証を実行するためには、[Deferred 検証](#deferred-validation) を使うことも出来ます。
   しかし、ここで説明された AJAX 検証の機能の方がより体系化されており、コーディングの労力も少なくて済みます。
 
-`enableClientValidation` と `enableAjaxValidation` が両方とも真に設定されているときは、クライアント検証が成功した後でだけ AJAX 検証が起動されます。
+`enableClientValidation` と `enableAjaxValidation` が両方とも `true` に設定されているときは、クライアント検証が成功した後でだけ AJAX 検証のリクエストが起動されます。
+`validateOnChange`, `validateOnBlur` または `validateOnType` が `true` に設定されている単一のフィールドを検証する場合、
+当該フィールドが単独でクライアント・バリデーションを通ったら AJAX リクエストが送信されることに注意して下さい。
