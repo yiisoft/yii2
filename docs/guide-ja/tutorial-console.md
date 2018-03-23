@@ -217,8 +217,8 @@ public function actionIndex()
 
 いくつか使用できる事前定義された定数があります。
 
-- [[yii\console\Controller::EXIT_CODE_NORMAL|Controller::EXIT_CODE_NORMAL]] - 値は `0`
-- [[yii\console\Controller::EXIT_CODE_ERROR|Controller::EXIT_CODE_ERROR]] - 値は `1`
+- [[yii\console\ExitCode::OK]] - 値は `0`
+- [[yii\console\ExitCode::UNSPECIFIED_ERROR]] - 値は `1`
 
 もっと多くのエラーコードの種類がある場合は、コントローラで意味のある定数を定義するのが良いプラクティスです。
 
