@@ -574,7 +574,7 @@ return [
 return [
     'components' => [
         'assetManager' => [
-            'bundles' => require(__DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php')),  
+            'bundles' => require __DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php'),  
         ],
     ],
 ];
@@ -662,17 +662,12 @@ yii asset assets.php config/assets-prod.php
   可使用优秀的工具[grunt](http://gruntjs.com/)来完成这个过程。
 
 
-### Grouping Asset Bundles <span id="grouping-asset-bundles"></span>
 
-In the last subsection, we have explained how to combine all asset bundles into a single one in order to minimize
-the HTTP requests for asset files referenced in an application. This is not always desirable in practice. For example,
-imagine your application has a "front end" as well as a "back end", each of which uses a different set of JavaScript 
-and CSS files. In this case, combining all asset bundles from both ends into a single one does not make sense, 
-because the asset bundles for the "front end" are not used by the "back end" and it would be a waste of network
-bandwidth to send the "back end" assets when a "front end" page is requested.
- 
-To solve the above problem, you can divide asset bundles into groups and combine asset bundles for each group.
-The following configuration shows how you can group asset bundles: 
+### 资源包分组 <span id="grouping-asset-bundles"></span>
+
+上一小节，介绍了如何压缩所有的资源包到一个文件，减少对应用中引用资源文件的 http 请求数，但是在实践中很少这样做。比如，应用有一个“前端”和一个“后端”，每一个都用了一个不同js和css文件集合。在这种情况下，把所有的资源包压缩到一个文件毫无意义，“前端”不会用到“后端”的资源文件，当请求“前端”页面时，“后端”的资源文件也会被发送过来，浪费网络带宽。
+
+为了解决这个问题，可以吧资源包分成若干组，每个组里面有若干个资源包。下面的配置展示了如何对资源包分组：
 
 ```php
 return [
@@ -705,6 +700,8 @@ return [
     ...
 ];
 ```
+
+如上所示，资源包分成了三个组：`allShared`，`allBackEnd` 和 `allFrontEnd`
 
 As you can see, the asset bundles are divided into three groups: `allShared`, `allBackEnd` and `allFrontEnd`.
 They each depends on an appropriate set of asset bundles. For example, `allBackEnd` depends on `app\assets\AdminAsset`.

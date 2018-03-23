@@ -38,13 +38,17 @@ in the array if an end user requests for them via the `expand` query parameter. 
 // returns all fields as declared in fields()
 http://localhost/users
 
-// only returns field id and email, provided they are declared in fields()
+// only returns "id" and "email" fields, provided they are declared in fields()
 http://localhost/users?fields=id,email
 
-// returns all fields in fields() and field profile if it is in extraFields()
+// returns all fields in fields() and field "profile" if it is in extraFields()
 http://localhost/users?expand=profile
 
-// only returns field id, email and profile, provided they are in fields() and extraFields()
+// returns all fields in fields(), "profile" if it is in extraFields() and "author" from profile if
+// it is in extraFields() of profile model
+http://localhost/comments?expand=post.author
+
+// only returns "id" and "email" provided they are in fields() and "profile" if it is in extraFields()
 http://localhost/users?fields=id,email&expand=profile
 ```
 
@@ -244,4 +248,14 @@ will also include the pagination information by the following HTTP headers:
 * `X-Pagination-Per-Page`: The number of resources in each page;
 * `Link`: A set of navigational links allowing client to traverse the resources page by page.
 
+Since collection in REST APIs is a data provider, it shares all data provider features i.e. pagination and sorting.
+
 An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) section.
+
+### Filtering collections <span id="filtering-collections"></span>
+
+Since version 2.0.13 Yii provides a facility to filter collections. An example can be found in the
+[Quick Start](rest-quick-start.md#trying-it-out) guide. In case you're implementing an endpoint yourself,
+filtering could be done as described in
+[Filtering Data Providers using Data Filters](output-data-providers.md#filtering-data-providers-using-data-filters)
+section of Data Providers guide.

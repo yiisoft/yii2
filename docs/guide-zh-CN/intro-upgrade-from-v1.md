@@ -53,7 +53,7 @@ Yii 2.0 里最明显的改动就数命名空间的使用了。几乎每一个核
 你可以直接使用全部核心类而不需要显式包含具体文件。）
 
 
-组件（Component）与对象（Object）
+组件（Component）与对象（BaseObject）
 --------------------
 
 Yii 2.0 把 1.1 中的 `CComponent` 类拆分成了两个类：[[yii\base\Object]] 和 [[yii\base\Component]]。
@@ -74,7 +74,7 @@ Yii 2.0 把 1.1 中的 `CComponent` 类拆分成了两个类：[[yii\base\Object
 以正确配置它自身：
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {

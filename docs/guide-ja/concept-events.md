@@ -209,7 +209,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' が挿入されました');
+    Yii::debug(get_class($event->sender) . ' が挿入されました');
 });
 ```
 
@@ -236,7 +236,7 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 この場合、`$event->sender` は、オブジェクトインスタンスではなく、イベントをトリガするクラスの名前を指すことに注意してください。
 
 > Note: クラスレベルのハンドラは、そのクラスのあらゆるインスタンス、またはあらゆる子クラスのインスタンスがトリガしたイベントに応答
-  してしまうため、よく注意して使わなければなりません。 [[yii\base\Object]] のように、クラスが低レベルの基底クラスの場合は特にそうです。
+  してしまうため、よく注意して使わなければなりません。 [[yii\base\BaseObject]] のように、クラスが低レベルの基底クラスの場合は特にそうです。
 
 クラスレベルのイベントハンドラを取り外すときは、 [[yii\base\Event::off()]] を呼び出します。たとえば:
 
@@ -292,7 +292,7 @@ class Developer extends Component implements DanceEventInterface
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' が躍り上がって喜んだ。'); // 犬または開発者が躍り上がって喜んだことをログに記録。
+    Yii::debug(get_class($event->sender) . ' が躍り上がって喜んだ。'); // 犬または開発者が躍り上がって喜んだことをログに記録。
 });
 ```
 

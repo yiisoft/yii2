@@ -14,11 +14,14 @@ Yii DAO 支持下列现成的数据库：
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): 版本 >= 8.4
-- [CUBRID](http://www.cubrid.org/): 版本 >= 9.3 . (由于PHP PDO 扩展的一个[bug](http://jira.cubrid.org/browse/APIS-658)  引用值会无效,所以你需要在 CUBRID的客户端和服务端都使用 9.3 )
+- [PostgreSQL](http://www.postgresql.org/): 版本 8.4 或更高
+- [CUBRID](http://www.cubrid.org/): 版本 9.3 或更高。
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): 版本>=2005.
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): 版本 2008 或更高。
 
+> Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
+  [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
+  to compile it or use [PDO emulation layer](https://github.com/taq/pdooci).
 
 ## 创建数据库连接 <span id="creating-db-connections"></span>
 
@@ -325,6 +328,9 @@ $count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
             ->queryScalar();
 ```
 
+### 预处理语句
+
+为安全传递查询参数可以使用预处理语句,首先应当使用 `:placeholder` 占位，再将变量绑定到对应占位符：
 
 ## 执行事务 <span id="performing-transactions"></span>
 
@@ -405,6 +411,11 @@ Yii 为四个最常用的隔离级别提供了常量：
 - [[\yii\db\Transaction::REPEATABLE_READ]] - 避免了脏读和不可重复读。
 - [[\yii\db\Transaction::SERIALIZABLE]] - 最强的隔离级别， 避免了上述所有的问题。
 
+> 注意: 你使用的数据库必须支持 `Savepoints` 才能正确地执行，以上代码在所有关系数据中都可以执行，但是只有支持 `Savepoints` 才能保证安全性。
+
+Yii 也支持为事务设置隔离级别 `isolation levels`，当执行事务时会使用数据库默认的隔离级别，你也可以为事务指定隔离级别.
+Yii 提供了以下常量作为常用的隔离级别
+
 除了使用上述的常量来指定隔离级别，
 你还可以使用你的数据库所支持的具有有效语法的字符串。
 比如，在 PostgreSQL 中，
@@ -432,7 +443,6 @@ Yii 为四个最常用的隔离级别提供了常量：
 
 如果你的数据库支持保存点，
 你可以像下面这样嵌套多个事务：
-
 ```php
 Yii::$app->db->transaction(function ($db) {
     // outer transaction
@@ -666,6 +676,10 @@ Yii::$app->db->createCommand()->createTable('post', [
     'text' => 'text',
 ]);
 ```
+
+更多信息请参考[[yii\db\Schema]]
+
+### 修改模式
 
 上面的数组描述要创建的列的名称和类型。
 对于列的类型， 

@@ -192,7 +192,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-   Yii::trace(get_class($event->sender) . ' is inserted');
+   Yii::debug(get_class($event->sender) . ' is inserted');
 });
 ```
 
@@ -214,7 +214,7 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 Note que, neste caso, `$event->sender` refere-se ao nome da classe acionando o evento em vez de uma instância do objeto.
 
-> Observação: Já que um manipulador de nível de classe vai responder a um evento acionado por qualquer instância dessa classe, ou qualquer classe filha, você deve usá-lo com cuidado, especialmente se a classe é uma classe base de baixo nível, tal como [[yii\base\Object]].
+> Observação: Já que um manipulador de nível de classe vai responder a um evento acionado por qualquer instância dessa classe, ou qualquer classe filha, você deve usá-lo com cuidado, especialmente se a classe é uma classe base de baixo nível, tal como [[yii\base\BaseObject]].
 
 Para desvincular um manipulador de evento de nível de classe, chame [[yii\base\Event::off()]]. Por exemplo:
 

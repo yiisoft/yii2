@@ -8,7 +8,7 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * CompositeUrlRule is the base class for URL rule classes that consist of multiple simpler rules.
@@ -19,7 +19,7 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class CompositeUrlRule extends Object implements UrlRuleInterface
+abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
 {
     /**
      * @var UrlRuleInterface[] the URL rules contained in this composite rule.
@@ -40,7 +40,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     abstract protected function createRules();
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -49,7 +49,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parseRequest($manager, $request)
     {
@@ -57,10 +57,10 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
             /* @var $rule UrlRule */
             $result = $rule->parseRequest($manager, $request);
             if (YII_DEBUG) {
-                Yii::trace([
+                Yii::debug([
                     'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                     'match' => $result !== false,
-                    'parent' => self::className()
+                    'parent' => self::className(),
                 ], __METHOD__);
             }
             if ($result !== false) {
@@ -72,7 +72,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createUrl($manager, $route, $params)
     {
@@ -86,6 +86,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
             // create status was not changed - there is no rules configured
             $this->createStatus = UrlRule::CREATE_STATUS_PARSING_ONLY;
         }
+
         return false;
     }
 

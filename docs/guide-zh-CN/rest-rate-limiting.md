@@ -1,11 +1,12 @@
-速率限制
-=============
+限流 (Rate Limiting)
+==================
 
-为防止滥用，你应该考虑增加速率限制到您的 API。
-例如，您可以限制每个用户的 API 的使用是在 10 分钟内最多 100 次的 API 调用。
-如果一个用户在规定的时间内太多的请求被接收，将返回响应状态代码 429 (这意味着过多的请求)。
+为防止滥用，你应该考虑对您的 API 限流。
+例如，您可以限制每个用户 10 分钟内最多调用 API 100 次。
+如果在规定的时间内接收了一个用户大量的请求，将返回响应状态代码 429 (这意味着过多的请求)。
 
-要启用速率限制, [[yii\web\User::identityClass|user identity class]] 应该实现 [[yii\filters\RateLimitInterface]].
+要启用限流, [[yii\web\User::identityClass|user identity class]] 应该实现 [[yii\filters\RateLimitInterface]].
+
 这个接口需要实现以下三个方法：
 
 * `getRateLimit()`: 返回允许的请求的最大数目及时间，例如，`[100, 600]` 表示在 600 秒内最多 100 次的 API 调用。
@@ -58,9 +59,9 @@ public function behaviors()
 当速率限制被激活，默认情况下每个响应将包含以下
 HTTP 头发送目前的速率限制信息：
 
-* `X-Rate-Limit-Limit`: 同一个时间段所允许的请求的最大数目;
-* `X-Rate-Limit-Remaining`: 在当前时间段内剩余的请求的数量;
-* `X-Rate-Limit-Reset`: 为了得到最大请求数所等待的秒数。
+- `X-Rate-Limit-Limit`: 同一个时间段所允许的请求的最大数目;
+- `X-Rate-Limit-Remaining`: 在当前时间段内剩余的请求的数量;
+- `X-Rate-Limit-Reset`: 为了得到最大请求数所等待的秒数。
 
 你可以禁用这些头信息通过配置 [[yii\filters\RateLimiter::enableRateLimitHeaders]] 为 false,
 就像在上面的代码示例所示。

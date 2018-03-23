@@ -9,12 +9,12 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\InvalidCallException;
-use yii\base\Widget;
 use yii\base\Model;
+use yii\base\Widget;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
 
 /**
  * ActiveForm is a widget that builds an interactive HTML form for one or multiple data models.
@@ -26,6 +26,17 @@ use yii\helpers\Json;
  */
 class ActiveForm extends Widget
 {
+    /**
+     * Add validation state class to container tag
+     * @since 2.0.14
+     */
+    const VALIDATION_STATE_ON_CONTAINER = 'container';
+    /**
+     * Add validation state class to input tag
+     * @since 2.0.14
+     */
+    const VALIDATION_STATE_ON_INPUT = 'input';
+
     /**
      * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @see method for specifying the HTTP method for this form.
@@ -96,6 +107,13 @@ class ActiveForm extends Widget
      * @var string the CSS class that is added to a field container when the associated attribute is being validated.
      */
     public $validatingCssClass = 'validating';
+    /**
+     * @var string where to render validation state class
+     * Could be either "container" or "input".
+     * Default is "container".
+     * @since 2.0.14
+     */
+    public $validationStateOn = self::VALIDATION_STATE_ON_CONTAINER;
     /**
      * @var bool whether to enable client-side data validation.
      * If [[ActiveField::enableClientValidation]] is set, its value will take precedence for that input field.
@@ -183,6 +201,7 @@ class ActiveForm extends Widget
      */
     public function init()
     {
+        parent::init();
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
@@ -243,6 +262,7 @@ class ActiveForm extends Widget
             'ajaxDataType' => $this->ajaxDataType,
             'scrollToError' => $this->scrollToError,
             'scrollToErrorOffset' => $this->scrollToErrorOffset,
+            'validationStateOn' => $this->validationStateOn,
         ];
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);
@@ -260,6 +280,7 @@ class ActiveForm extends Widget
             'ajaxDataType' => 'json',
             'scrollToError' => true,
             'scrollToErrorOffset' => 0,
+            'validationStateOn' => self::VALIDATION_STATE_ON_CONTAINER,
         ]);
     }
 
@@ -305,6 +326,7 @@ class ActiveForm extends Widget
         if (!isset($config['class'])) {
             $config['class'] = $this->fieldClass;
         }
+
         return Yii::createObject(ArrayHelper::merge($config, $options, [
             'model' => $model,
             'attribute' => $attribute,
@@ -342,9 +364,9 @@ class ActiveForm extends Widget
         $field = array_pop($this->_fields);
         if ($field instanceof ActiveField) {
             return $field->end();
-        } else {
-            throw new InvalidCallException('Mismatching endField() call.');
         }
+
+        throw new InvalidCallException('Mismatching endField() call.');
     }
 
     /**

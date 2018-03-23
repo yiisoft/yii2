@@ -80,9 +80,13 @@ Yii::configure($object, $config);
 
 ## 使用配置
 
+<<<<<<< HEAD
 Yii 中的配置可以用在很多场景。本章开头我们展示了如何使用 [[Yii::creatObject()]] 
 根据配置信息创建对象。本小节将介绍配置的两种
 主要用法 —— 配置应用与配置小部件。
+=======
+Yii 中的配置可以用在很多场景。本章开头我们展示了如何使用 [[Yii::createObject()]] 根据配置信息创建对象。本小节将介绍配置的两种主要用法 —— 配置应用与配置小部件。
+>>>>>>> upstream/master
 
 
 ### 应用的配置 <span id="application-configurations"></span>
@@ -97,7 +101,7 @@ Yii 中的配置可以用在很多场景。本章开头我们展示了如何使�
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -193,8 +197,8 @@ echo Menu::widget([
 return [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
-    'components' => require(__DIR__ . '/components.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'components' => require __DIR__ . '/components.php',
 ];
 ```
 
@@ -231,17 +235,21 @@ return [
 仅仅需要 “require”，就可以取得一个配置文件的配置内容，像这样：
 
 ```php
-$config = require('path/to/web.php');
+$config = require 'path/to/web.php';
 (new yii\web\Application($config))->run();
 ```
 
 
 ## 默认配置 <span id="default-configurations"></span>
 
+<<<<<<< HEAD
 [[Yii::createObject()]] 方法基于[依赖注入容器](concept-di-container.md)实现。
 使用 [[Yii::creatObject()]] 创建对象时，可以附加一系列**默认配置**到指定类的任何实例。
 默认配置还可以在[入口脚本](runtime-bootstrapping.md)
 中调用 `Yii::$container->set()` 来定义。
+=======
+[[Yii::createObject()]] 方法基于[依赖注入容器](concept-di-container.md)实现。使用 [[Yii::createObject()]] 创建对象时，可以附加一系列**默认配置**到指定类的任何实例。默认配置还可以在[入口脚本](runtime-bootstrapping.md)中调用 `Yii::$container->set()` 来定义。
+>>>>>>> upstream/master
 
 例如，如果你想自定义 [[yii\widgets\LinkPager]] 小部件，以便让分页器最多只显示 5 个翻页按钮（默认是 10 个），
 你可以用下述代码实现：

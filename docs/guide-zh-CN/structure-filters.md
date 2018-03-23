@@ -90,7 +90,7 @@ class ActionTimeFilter extends ActionFilter
     public function afterAction($action, $result)
     {
         $time = microtime(true) - $this->_startTime;
-        Yii::trace("Action '{$action->uniqueId}' spent $time second.");
+        Yii::debug("Action '{$action->uniqueId}' spent $time second.");
         return parent::afterAction($action, $result);
     }
 }

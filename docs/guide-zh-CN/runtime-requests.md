@@ -137,3 +137,4 @@ if ($headers->has('User-Agent')) { /* 这是一个 User-Agent 头 */ }
 $userHost = Yii::$app->request->userHost;
 $userIP = Yii::$app->request->userIP;
 ```
+

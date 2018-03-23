@@ -208,7 +208,7 @@ class Validator extends Component
     {
         $params['attributes'] = $attributes;
 
-        if ($type instanceof \Closure || $model->hasMethod($type)) {
+        if ($type instanceof \Closure || ($model->hasMethod($type) && !isset(static::$builtInValidators[$type]))) {
             // method-based validator
             $params['class'] = __NAMESPACE__ . '\InlineValidator';
             $params['method'] = $type;
@@ -227,7 +227,7 @@ class Validator extends Component
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -248,8 +248,9 @@ class Validator extends Component
     {
         if (is_array($attributes)) {
             $newAttributes = [];
+            $attributeNames = $this->getAttributeNames();
             foreach ($attributes as $attribute) {
-                if (in_array($attribute, $this->getAttributeNames(), true)) {
+                if (in_array($attribute, $attributeNames, true)) {
                     $newAttributes[] = $attribute;
                 }
             }
@@ -315,7 +316,21 @@ class Validator extends Component
      * Validates a value.
      * A validator class can implement this method to support data validation out of the context of a data model.
      * @param mixed $value the data value to be validated.
-     * @return array|null the error message and the parameters to be inserted into the error message.
+     * @return array|null the error message and the array of parameters to be inserted into the error message.
+     * ```php
+     * if (!$valid) {
+     *     return [$this->message, [
+     *         'param1' => $this->param1,
+     *         'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
+     *         'mimeTypes' => implode(', ', $this->mimeTypes),
+     *         'param4' => 'etc...',
+     *     ]];
+     * }
+     *
+     * return null;
+     * ```
+     * for this example `message` template can contain `{param1}`, `{formattedLimit}`, `{mimeTypes}`, `{param4}`
+     *
      * Null should be returned if the data is valid.
      * @throws NotSupportedException if the validator does not supporting data validation without a model
      */
@@ -427,9 +442,9 @@ class Validator extends Component
     {
         if ($this->isEmpty !== null) {
             return call_user_func($this->isEmpty, $value);
-        } else {
-            return $value === null || $value === [] || $value === '';
         }
+
+        return $value === null || $value === [] || $value === '';
     }
 
     /**
@@ -454,13 +469,13 @@ class Validator extends Component
     }
 
     /**
-     * Returns cleaned attribute names without the `!` character at the beginning
+     * Returns cleaned attribute names without the `!` character at the beginning.
      * @return array attribute names.
      * @since 2.0.12
      */
     public function getAttributeNames()
     {
-        return array_map(function($attribute) {
+        return array_map(function ($attribute) {
             return ltrim($attribute, '!');
         }, $this->attributes);
     }

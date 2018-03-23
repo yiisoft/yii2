@@ -64,7 +64,7 @@ $cache = $locator->cache;
 因此我们提供了一个可写的属性，名为 [[yii\di\ServiceLocator::setComponents()|components]]，
 这样就可以配置该属性，或一次性注册多个组件。
 下面的代码展示了如何用一个配置数组，配置一个应用并注册
-"db"，"cache" 和 "search" 三个组件：
+`db`，`cache`，`tz` 和 `search` 组件：
 
 ```php
 return [
@@ -118,4 +118,15 @@ return [
 当你发布一个 Yii 组件封装一些非 Yii 第三方库时，这种替代方法是最好的。
 当您使用如上所示的静态方法来表示构建复杂逻辑的第三方对象时，
 您的组件用户只需要调用静态方法来配置组件。
+
+## Tree traversal <span id="tree-traversal"></span>
+
+Modules allow arbitrary nesting; a Yii application is essentially a tree of modules.
+Since each of these modules is a service locator it makes sense for children to have access to their parent.
+This allows modules to use `$this->get('db')` instead of referencing the root service locator `Yii::$app->get('db')`.
+Added benefit is the option for a developer to override configuration in a module.
+
+Any request for a service to be retrieved from a module will be passed on to its parent in case the module is not able to satisfy it.
+
+Note that configuration from components in a module is never merged with configuration from a component in a parent module. The Service Locator pattern allows us to define named services but one cannot assume servicees with the same name use the same configuration parameters.
 

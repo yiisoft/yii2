@@ -5,7 +5,8 @@
 		convertErrorsToExceptions="true"
 		convertNoticesToExceptions="true"
 		convertWarningsToExceptions="true"
-		stopOnFailure="false">
+		stopOnFailure="false"
+		printerClass="yiiunit\ResultPrinter">
 		<testsuites>
 			<testsuite name="Yii Test Suite">
 				<directory>./tests</directory>

@@ -221,7 +221,7 @@ values are stored in an attribute:
 ```php
 ['age', 'trim'],
 ['age', 'default', 'value' => null],
-['age', 'integer', 'integerOnly' => true, 'min' => 0],
+['age', 'integer', 'min' => 0],
 ['age', 'filter', 'filter' => 'intval', 'skipOnEmpty' => true],
 ```
 
@@ -351,7 +351,7 @@ the method/function is:
 /**
  * @param string $attribute the attribute currently being validated
  * @param mixed $params the value of the "params" given in the rule
- * @param \yii\validators\InlineValidator related InlineValidator instance.
+ * @param \yii\validators\InlineValidator $validator related InlineValidator instance.
  * This parameter is available since version 2.0.11.
  */
 function ($attribute, $params, $validator)
@@ -387,8 +387,8 @@ class MyForm extends Model
 
     public function validateCountry($attribute, $params, $validator)
     {
-        if (!in_array($this->$attribute, ['USA', 'Web'])) {
-            $this->addError($attribute, 'The country must be either "USA" or "Web".');
+        if (!in_array($this->$attribute, ['USA', 'Indonesia'])) {
+            $this->addError($attribute, 'The country must be either "USA" or "Indonesia".');
         }
     }
 }
@@ -422,7 +422,8 @@ fails the validation, call [[yii\base\Model::addError()]] to save the error mess
 with [inline validators](#inline-validators).
 
 
-For example the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
+For example, the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
+In this case we can use [[yii\validators\Validator::addError()]] to set customized message for the model.
 
 ```php
 namespace app\components;
@@ -433,8 +434,8 @@ class CountryValidator extends Validator
 {
     public function validateAttribute($model, $attribute)
     {
-        if (!in_array($model->$attribute, ['USA', 'Web'])) {
-            $this->addError($model, $attribute, 'The country must be either "USA" or "Web".');
+        if (!in_array($model->$attribute, ['USA', 'Indonesia'])) {
+            $this->addError($model, $attribute, 'The country must be either "{country1}" or "{country2}".', ['country1' => 'USA', 'country2' => 'Indonesia']);
         }
     }
 }
@@ -564,7 +565,7 @@ $this->addError('childrenCount', $message);
 Or use a loop:
 
 ```php
-$attributes = ['personalSalary, 'wifeSalary', 'childrenCount'];
+$attributes = ['personalSalary', 'wifeSalary', 'childrenCount'];
 foreach ($attributes as $attribute) {
     $this->addError($attribute, 'Your salary is not enough for children.');
 }
@@ -817,7 +818,7 @@ JS;
 ```
 
 
-### AJAX Validation <span id="ajax-validation"></span>
+## AJAX Validation <span id="ajax-validation"></span>
 
 Some validations can only be done on the server-side, because only the server has the necessary information.
 For example, to validate if a username is unique or not, it is necessary to check the user table on the server-side.
@@ -841,7 +842,7 @@ echo $form->field($model, 'username', ['enableAjaxValidation' => true]);
 ActiveForm::end();
 ```
 
-To enable AJAX validation for the whole form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
+To enable AJAX validation for all inputs of the form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
 to be `true` at the form level:
 
 ```php
@@ -871,4 +872,6 @@ this request by running the validation and returning the errors in JSON format.
   However, the AJAX validation feature described here is more systematic and requires less coding effort.
 
 When both `enableClientValidation` and `enableAjaxValidation` are set to `true`, AJAX validation request will be triggered
-only after the successful client validation.
+only after the successful client validation. Note that in case of validating a single field that happens if either
+`validateOnChange`, `validateOnBlur` or `validateOnType` is set to `true`, AJAX request will be sent when the field in
+question alone successfully passes client validation. 

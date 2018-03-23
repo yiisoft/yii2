@@ -7,9 +7,11 @@
 
 namespace yii\db\mysql;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
+use yii\base\NotSupportedException;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\Query;
 
 /**
  * QueryBuilder is the query builder for MySQL databases.
@@ -30,6 +32,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
+        Schema::TYPE_TINYINT => 'tinyint(3)',
         Schema::TYPE_SMALLINT => 'smallint(6)',
         Schema::TYPE_INTEGER => 'int(11)',
         Schema::TYPE_BIGINT => 'bigint(20)',
@@ -43,8 +46,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BINARY => 'blob',
         Schema::TYPE_BOOLEAN => 'tinyint(1)',
         Schema::TYPE_MONEY => 'decimal(19,4)',
+        Schema::TYPE_JSON => 'json'
     ];
 
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\JsonExpression' => 'yii\db\mysql\JsonExpressionBuilder',
+        ]);
+    }
 
     /**
      * Builds a SQL statement for renaming a column.
@@ -84,7 +98,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @see https://bugs.mysql.com/bug.php?id=48875
      */
     public function createIndex($name, $table, $columns, $unique = false)
@@ -120,6 +134,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function dropUnique($name, $table)
+    {
+        return $this->dropIndex($name, $table);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
+    }
+
+    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
@@ -127,7 +167,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have a value 1.
      * @return string the SQL statement for resetting sequence
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      */
     public function resetSequence($tableName, $value = null)
     {
@@ -143,10 +183,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
             return "ALTER TABLE $tableName AUTO_INCREMENT=$value";
         } elseif ($table === null) {
-            throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is no sequence associated with table '$tableName'.");
+            throw new InvalidArgumentException("Table not found: $tableName");
         }
+
+        throw new InvalidArgumentException("There is no sequence associated with table '$tableName'.");
     }
 
     /**
@@ -162,7 +202,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildLimit($limit, $offset)
     {
@@ -183,7 +223,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function hasLimit($limit)
     {
@@ -192,7 +232,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function hasOffset($offset)
     {
@@ -202,60 +242,58 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function insert($table, $columns, &$params)
+    protected function prepareInsertValues($table, $columns, $params = [])
     {
-        $schema = $this->db->getSchema();
-        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
-            $columnSchemas = $tableSchema->columns;
-        } else {
-            $columnSchemas = [];
-        }
-        $names = [];
-        $placeholders = [];
-        $values = ' DEFAULT VALUES';
-        if ($columns instanceof \yii\db\Query) {
-            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
-        } else {
-            foreach ($columns as $name => $value) {
-                $names[] = $schema->quoteColumnName($name);
-                if ($value instanceof Expression) {
-                    $placeholders[] = $value->expression;
-                    foreach ($value->params as $n => $v) {
-                        $params[$n] = $v;
-                    }
-                } elseif ($value instanceof \yii\db\Query) {
-                    list($sql, $params) = $this->build($value, $params);
-                    $placeholders[] = "($sql)";
-                } else {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $placeholders[] = $phName;
-                    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
-                }
-            }
-            if (empty($names) && $tableSchema !== null) {
+        list($names, $placeholders, $values, $params) = parent::prepareInsertValues($table, $columns, $params);
+        if (!$columns instanceof Query && empty($names)) {
+            $tableSchema = $this->db->getSchema()->getTableSchema($table);
+            if ($tableSchema !== null) {
                 $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
                 foreach ($columns as $name) {
-                    $names[] = $schema->quoteColumnName($name);
+                    $names[] = $this->db->quoteColumnName($name);
                     $placeholders[] = 'DEFAULT';
                 }
             }
         }
-
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
-            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
+        return [$names, $placeholders, $values, $params];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     * @see https://downloads.mysql.com/docs/refman-5.1-en.pdf
+     */
+    public function upsert($table, $insertColumns, $updateColumns, &$params)
+    {
+        $insertSql = $this->insert($table, $insertColumns, $params);
+        list($uniqueNames, , $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns);
+        if (empty($uniqueNames)) {
+            return $insertSql;
+        }
+
+        if ($updateColumns === true) {
+            $updateColumns = [];
+            foreach ($updateNames as $name) {
+                $updateColumns[$name] = new Expression('VALUES(' . $this->db->quoteColumnName($name) . ')');
+            }
+        } elseif ($updateColumns === false) {
+            $name = $this->db->quoteColumnName(reset($uniqueNames));
+            $updateColumns = [$name => new Expression($this->db->quoteTableName($table) . '.' . $name)];
+        }
+        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        return $insertSql . ' ON DUPLICATE KEY UPDATE ' . implode(', ', $updates);
+    }
+
+    /**
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
-        $definition = $this->getColumnDefinition($table, $column);
-        $definition = trim(preg_replace("/COMMENT '(.*?)'/i", '', $definition));
+        // Strip existing comment which may include escaped quotes
+        $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '',
+            $this->getColumnDefinition($table, $column)));
 
         return 'ALTER TABLE ' . $this->db->quoteTableName($table)
             . ' CHANGE ' . $this->db->quoteColumnName($column)
@@ -265,7 +303,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
@@ -274,7 +312,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
@@ -283,7 +321,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function dropCommentFromTable($table)
@@ -320,6 +358,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
             }
         }
+
         return null;
     }
+
 }

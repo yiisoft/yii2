@@ -72,8 +72,8 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 第一行安装了 Composer 的自动加载器，第二行才是 Yii 的自动加载器：
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 你也可以只使用 Composer 的自动加载，而不用 Yii 的自动加载。

@@ -1,13 +1,20 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db;
 
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\Transaction;
 
 abstract class ConnectionTest extends DatabaseTestCase
 {
-
     public function testConstruct()
     {
         $connection = $this->getConnection(false);
@@ -23,7 +30,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection = $this->getConnection(false, false);
 
         $this->assertFalse($connection->isActive);
-        $this->assertEquals(null, $connection->pdo);
+        $this->assertNull($connection->pdo);
 
         $connection->open();
         $this->assertTrue($connection->isActive);
@@ -31,9 +38,9 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $connection->close();
         $this->assertFalse($connection->isActive);
-        $this->assertEquals(null, $connection->pdo);
+        $this->assertNull($connection->pdo);
 
-        $connection = new Connection;
+        $connection = new Connection();
         $connection->dsn = 'unknown::memory:';
         $this->expectException('yii\db\Exception');
         $connection->open();
@@ -44,10 +51,14 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection = $this->getConnection(false, false);
         $connection->open();
         $serialized = serialize($connection);
+
+        $this->assertNotNull($connection->pdo);
+
         $unserialized = unserialize($serialized);
         $this->assertInstanceOf('yii\db\Connection', $unserialized);
+        $this->assertNull($unserialized->pdo);
 
-        $this->assertEquals(123, $unserialized->createCommand("SELECT 123")->queryScalar());
+        $this->assertEquals(123, $unserialized->createCommand('SELECT 123')->queryScalar());
     }
 
     public function testGetDriverName()
@@ -208,9 +219,9 @@ abstract class ConnectionTest extends DatabaseTestCase
     {
         /** @var Connection $connection */
         $connection = $this->getConnection(true);
-        $connection->transaction(function(Connection $db) {
+        $connection->transaction(function (Connection $db) {
             $this->assertNotNull($db->transaction);
-            $db->transaction(function(Connection $db) {
+            $db->transaction(function (Connection $db) {
                 $this->assertNotNull($db->transaction);
                 $db->transaction->rollBack();
             });
@@ -221,7 +232,7 @@ abstract class ConnectionTest extends DatabaseTestCase
     public function testEnableQueryLog()
     {
         $connection = $this->getConnection();
-        foreach(['qlog1', 'qlog2', 'qlog3', 'qlog4'] as $table) {
+        foreach (['qlog1', 'qlog2', 'qlog3', 'qlog4'] as $table) {
             if ($connection->getTableSchema($table, true) !== null) {
                 $connection->createCommand()->dropTable($table)->execute();
             }
@@ -317,7 +328,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         try {
             $connection->createCommand('INSERT INTO qlog1(a) VALUES(:a);', [':a' => 1])->execute();
         } catch (\yii\db\Exception $e) {
-            $this->assertContains('INSERT INTO qlog1(a) VALUES(1);', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string)$e);
+            $this->assertContains('INSERT INTO qlog1(a) VALUES(1);', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string) $e);
             $thrown = true;
         }
         $this->assertTrue($thrown, 'An exception should have been thrown by the command.');
@@ -326,7 +337,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         try {
             $connection->createCommand('SELECT * FROM qlog1 WHERE id=:a ORDER BY nonexistingcolumn;', [':a' => 1])->queryAll();
         } catch (\yii\db\Exception $e) {
-            $this->assertContains('SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string)$e);
+            $this->assertContains('SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string) $e);
             $thrown = true;
         }
         $this->assertTrue($thrown, 'An exception should have been thrown by the command.');
@@ -382,5 +393,93 @@ abstract class ConnectionTest extends DatabaseTestCase
         } else {
             $this->assertNull($conn3->pdo);
         }
+    }
+
+
+    /**
+     * Test whether slave connection is recovered when call getSlavePdo() after close().
+     *
+     * @see https://github.com/yiisoft/yii2/issues/14165
+     */
+    public function testGetPdoAfterClose()
+    {
+        $connection = $this->getConnection();
+        $connection->slaves[] = [
+            'dsn' => $connection->dsn,
+            'username' => $connection->username,
+            'password' => $connection->password,
+        ];
+        $this->assertNotNull($connection->getSlavePdo(false));
+        $connection->close();
+
+        $masterPdo = $connection->getMasterPdo();
+        $this->assertNotFalse($masterPdo);
+        $this->assertNotNull($masterPdo);
+
+        $slavePdo = $connection->getSlavePdo(false);
+        $this->assertNotFalse($slavePdo);
+        $this->assertNotNull($slavePdo);
+        $this->assertNotSame($masterPdo, $slavePdo);
+    }
+
+    public function testServerStatusCacheWorks()
+    {
+        $cache = new ArrayCache();
+        Yii::$app->set('cache', $cache);
+
+        $connection = $this->getConnection(true, false);
+        $connection->masters[] = [
+            'dsn' => $connection->dsn,
+            'username' => $connection->username,
+            'password' => $connection->password,
+        ];
+        $connection->shuffleMasters = false;
+
+        $cacheKey = ['yii\db\Connection::openFromPoolSequentially', $connection->dsn];
+
+        $this->assertFalse($cache->exists($cacheKey));
+        $connection->open();
+        $this->assertFalse($cache->exists($cacheKey), 'Connection was successful – cache must not contain information about this DSN');
+        $connection->close();
+
+        $cacheKey = ['yii\db\Connection::openFromPoolSequentially', 'host:invalid'];
+        $connection->masters[0]['dsn'] = 'host:invalid';
+        try {
+            $connection->open();
+        } catch (InvalidConfigException $e) {
+        }
+        $this->assertTrue($cache->exists($cacheKey), 'Connection was not successful – cache must contain information about this DSN');
+        $connection->close();
+    }
+
+    public function testServerStatusCacheCanBeDisabled()
+    {
+        $cache = new ArrayCache();
+        Yii::$app->set('cache', $cache);
+
+        $connection = $this->getConnection(true, false);
+        $connection->masters[] = [
+            'dsn' => $connection->dsn,
+            'username' => $connection->username,
+            'password' => $connection->password,
+        ];
+        $connection->shuffleMasters = false;
+        $connection->serverStatusCache = false;
+
+        $cacheKey = ['yii\db\Connection::openFromPoolSequentially', $connection->dsn];
+
+        $this->assertFalse($cache->exists($cacheKey));
+        $connection->open();
+        $this->assertFalse($cache->exists($cacheKey), 'Caching is disabled');
+        $connection->close();
+
+        $cacheKey = ['yii\db\Connection::openFromPoolSequentially', 'host:invalid'];
+        $connection->masters[0]['dsn'] = 'host:invalid';
+        try {
+            $connection->open();
+        } catch (InvalidConfigException $e) {
+        }
+        $this->assertFalse($cache->exists($cacheKey), 'Caching is disabled');
+        $connection->close();
     }
 }

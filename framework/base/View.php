@@ -26,7 +26,7 @@ use yii\widgets\FragmentCache;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class View extends Component
+class View extends Component implements DynamicContentAwareInterface
 {
     /**
      * @event Event an event that is triggered by [[beginPage()]].
@@ -86,15 +86,19 @@ class View extends Component
      */
     public $blocks;
     /**
-     * @var array a list of currently active fragment cache widgets. This property
-     * is used internally to implement the content caching feature. Do not modify it directly.
+     * @var array|DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
+     * This property is used internally to implement the dynamic content caching feature. Do not modify it directly.
      * @internal
+     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicContents()]],
+     * [[pushDynamicContent()]], [[popDynamicContent()]] instead.
      */
     public $cacheStack = [];
     /**
      * @var array a list of placeholders for embedding dynamic contents. This property
      * is used internally to implement the content caching feature. Do not modify it directly.
      * @internal
+     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicPlaceholders()]],
+     * [[setDynamicPlaceholders()]], [[addDynamicPlaceholder()]] instead.
      */
     public $dynamicPlaceholders = [];
 
@@ -237,7 +241,7 @@ class View extends Component
         $this->_viewFiles[] = $viewFile;
 
         if ($this->beforeRender($viewFile, $params)) {
-            Yii::trace("Rendering view file: $viewFile", __METHOD__);
+            Yii::debug("Rendering view file: $viewFile", __METHOD__);
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             if (isset($this->renderers[$ext])) {
                 if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
@@ -319,6 +323,8 @@ class View extends Component
      * @param string $_file_ the view file.
      * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @return string the rendering result
+     * @throws \Exception
+     * @throws \Throwable
      */
     public function renderPhpFile($_file_, $_params_ = [])
     {
@@ -327,7 +333,7 @@ class View extends Component
         ob_implicit_flush(false);
         extract($_params_, EXTR_OVERWRITE);
         try {
-            require($_file_);
+            require $_file_;
             return ob_get_clean();
         } catch (\Exception $e) {
             while (ob_get_level() > $_obInitialLevel_) {
@@ -364,22 +370,41 @@ class View extends Component
 
             return $placeholder;
         }
+
         return $this->evaluateDynamicContent($statements);
     }
 
     /**
-     * Adds a placeholder for dynamic content.
-     * This method is internally used.
-     * @param string $placeholder the placeholder name
-     * @param string $statements the PHP statements for generating the dynamic content
+     * {@inheritdoc}
+     */
+    public function getDynamicPlaceholders()
+    {
+        return $this->dynamicPlaceholders;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDynamicPlaceholders($placeholders)
+    {
+        $this->dynamicPlaceholders = $placeholders;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function addDynamicPlaceholder($placeholder, $statements)
     {
         foreach ($this->cacheStack as $cache) {
-            $cache->dynamicPlaceholders[$placeholder] = $statements;
+            if ($cache instanceof DynamicContentAwareInterface) {
+                $cache->addDynamicPlaceholder($placeholder, $statements);
+            } else {
+                // TODO: Remove in 2.1
+                $cache->dynamicPlaceholders[$placeholder] = $statements;
+            }
         }
         $this->dynamicPlaceholders[$placeholder] = $statements;
-    }
+}
 
     /**
      * Evaluates the given PHP statements.
@@ -393,8 +418,40 @@ class View extends Component
     }
 
     /**
+     * Returns a list of currently active dynamic content class instances.
+     * @return DynamicContentAwareInterface[] class instances supporting dynamic contents.
+     * @since 2.0.14
+     */
+    public function getDynamicContents()
+    {
+        return $this->cacheStack;
+    }
+
+    /**
+     * Adds a class instance supporting dynamic contents to the end of a list of currently active
+     * dynamic content class instances.
+     * @param DynamicContentAwareInterface $instance class instance supporting dynamic contents.
+     * @since 2.0.14
+     */
+    public function pushDynamicContent(DynamicContentAwareInterface $instance)
+    {
+        $this->cacheStack[] = $instance;
+    }
+
+    /**
+     * Removes a last class instance supporting dynamic contents from a list of currently active
+     * dynamic content class instances.
+     * @since 2.0.14
+     */
+    public function popDynamicContent()
+    {
+        array_pop($this->cacheStack);
+    }
+
+    /**
      * Begins recording a block.
-     * This method is a shortcut to beginning [[Block]]
+     *
+     * This method is a shortcut to beginning [[Block]].
      * @param string $id the block ID.
      * @param bool $renderInPlace whether to render the block content in place.
      * Defaults to false, meaning the captured block will not be displayed.
@@ -419,6 +476,7 @@ class View extends Component
 
     /**
      * Begins the rendering of content that is to be decorated by the specified view.
+     *
      * This method can be used to implement nested layout. For example, a layout can be embedded
      * in another layout file specified as '@app/views/layouts/base.php' like the following:
      *
@@ -453,6 +511,7 @@ class View extends Component
 
     /**
      * Begins fragment caching.
+     *
      * This method will display cached content if it is available.
      * If not, it will start caching and would expect an [[endCache()]]
      * call to end the cache and save the content into cache.
@@ -481,6 +540,7 @@ class View extends Component
 
             return false;
         }
+
         return true;
     }
 

@@ -358,8 +358,8 @@ class MyForm extends Model
 
     public function validateCountry($attribute, $params)
     {
-        if (!in_array($this->$attribute, ['USA', 'Web'])) {
-            $this->addError($attribute, 'Страна должна быть либо "USA" или "Web".');
+        if (!in_array($this->$attribute, ['USA', 'Indonesia'])) {
+            $this->addError($attribute, 'Страна должна быть либо "USA" или "Indonesia".');
         }
     }
 }
@@ -384,7 +384,9 @@ class MyForm extends Model
 Вы можете реализовать свою логику проверки путем переопределения метода
 [[yii\validators\Validator::validateAttribute()]]. Если атрибут не прошел проверку, вызвать
 [[yii\base\Model::addError()]],
-чтобы сохранить сообщение об ошибке в модели, как это делают [встроенные валидаторы](#inline-validators). Например:
+чтобы сохранить сообщение об ошибке в модели, как это делают [встроенные валидаторы](#inline-validators).
+
+Валидация может быть помещена в отдельный класс [[components/validators/CountryValidator]]. В этом случае можно использовать метод  [[yii\validators\Validator::addError()]] для того, чтобы добавить своё сообщение об ошибке в модель:
 
 ```php
 namespace app\components;
@@ -395,8 +397,8 @@ class CountryValidator extends Validator
 {
     public function validateAttribute($model, $attribute)
     {
-        if (!in_array($model->$attribute, ['USA', 'Web'])) {
-            $this->addError($model, $attribute, 'Страна должна быть либо "USA" или "Web".');
+        if (!in_array($model->$attribute, ['USA', 'Indonesia'])) {
+            $this->addError($model, $attribute, 'Страна должна быть либо "{country1}" либо "{country2}".', ['country1' => 'USA', 'country2' => 'Indonesia']);
         }
     }
 }
@@ -467,7 +469,7 @@ class LoginForm extends Model
 
 HTML-форма построена с помощью следующего кода, содержит поля для ввода `username` и `password`.
 Если вы отправите форму, не вводя ничего, вы получите сообщения об ошибках, требующих ввести данные.
-Сообщения появиться сразу, без обращения к серверу.
+Сообщения появятся сразу, без обращения к серверу.
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
@@ -598,7 +600,7 @@ JS;
 ```
 
 > Note: метод `resolve()` должен быть вызван после того, как атрибут был проверен.
-В противном случае основная проверки формы не будет завершена.
+В противном случае основная проверка формы не будет завершена.
 
 Для простоты работы с массивом `deferred`, существует упрощенный метод `add()`, который автоматически создает Отложенный объект и добавляет его в `deferred` массив. Используя этот метод, вы можете упростить пример выше, следующим образом:
 

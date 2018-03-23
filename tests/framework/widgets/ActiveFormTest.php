@@ -1,6 +1,8 @@
 <?php
 /**
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
@@ -31,14 +33,14 @@ class ActiveFormTest extends \yiiunit\TestCase
         ActiveForm::end();
         ob_end_clean();
 
-        $this->assertEqualsWithoutLE(<<<EOF
+        $this->assertEqualsWithoutLE(<<<'EOF'
 <div class="form-group field-dynamicmodel-name">
 <input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]" required>
 </div>
 EOF
 , (string) $form->field($model, 'name', $o)->input('email', ['required' => true]));
 
-        $this->assertEqualsWithoutLE(<<<EOF
+        $this->assertEqualsWithoutLE(<<<'EOF'
 <div class="form-group field-dynamicmodel-name">
 <input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]">
 </div>
@@ -46,13 +48,12 @@ EOF
             , (string) $form->field($model, 'name', $o)->input('email', ['required' => false]));
 
 
-        $this->assertEqualsWithoutLE(<<<EOF
+        $this->assertEqualsWithoutLE(<<<'EOF'
 <div class="form-group field-dynamicmodel-name">
 <input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]" required="test">
 </div>
 EOF
             , (string) $form->field($model, 'name', $o)->input('email', ['required' => 'test']));
-
     }
 
     public function testIssue5356()
@@ -67,7 +68,7 @@ EOF
         ob_end_clean();
 
         // https://github.com/yiisoft/yii2/issues/5356
-        $this->assertEqualsWithoutLE(<<<EOF
+        $this->assertEqualsWithoutLE(<<<'EOF'
 <div class="form-group field-dynamicmodel-categories">
 <input type="hidden" name="DynamicModel[categories]" value=""><select id="dynamicmodel-categories" class="form-control" name="DynamicModel[categories][]" multiple size="4">
 <option value="0">apple</option>
@@ -94,7 +95,7 @@ EOF
 
         $this->assertEquals($obLevel, ob_get_level(), 'Output buffers not closed correctly.');
 
-        $this->assertEqualsWithoutLE(<<<HTML
+        $this->assertEqualsWithoutLE(<<<'HTML'
 <form id="someform" action="/someform" method="post">
 <div class="form-group field-dynamicmodel-name">
 <label class="control-label" for="dynamicmodel-name">Name</label>
@@ -105,7 +106,6 @@ EOF
 </form>
 HTML
 , $content);
-
     }
 
     public function testRegisterClientScript()
@@ -116,7 +116,7 @@ HTML
         $model = new DynamicModel(['name']);
         $model->addRule(['name'], 'required');
 
-        $view = $this->getMock(View::className());
+        $view = $this->getMockBuilder(View::className())->getMock();
         $view->method('registerJs')->with($this->matches("jQuery('#w0').yiiActiveForm([], {\"validateOnSubmit\":false});"));
         $view->method('registerAssetBundle')->willReturn(true);
 
@@ -133,5 +133,54 @@ HTML
         $form->field($model, 'name');
         $form::end();
         ob_get_clean();
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15536
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        ob_start();
+        $form = ActiveForm::begin(
+            [
+                'action' => '/something',
+                'enableClientScript' => false,
+                'on init' => function () use (&$initTriggered) {
+                    $initTriggered = true;
+                }
+            ]
+        );
+        ActiveForm::end();
+        ob_end_clean();
+        $this->assertTrue($initTriggered);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15476
+     */
+    public function testValidationStateOnInput()
+    {
+        $model = new DynamicModel(['name']);
+        $model->addError('name', 'I have an error!');
+        ob_start();
+        $form = ActiveForm::begin([
+            'action' => '/something',
+            'enableClientScript' => false,
+            'validationStateOn' => ActiveForm::VALIDATION_STATE_ON_INPUT,
+        ]);
+        ActiveForm::end();
+        ob_end_clean();
+
+        $this->assertEqualsWithoutLE(<<<'EOF'
+<div class="form-group field-dynamicmodel-name">
+<label class="control-label" for="dynamicmodel-name">Name</label>
+<input type="text" id="dynamicmodel-name" class="form-control has-error" name="DynamicModel[name]" aria-invalid="true">
+
+<div class="help-block">I have an error!</div>
+</div>
+EOF
+        , (string) $form->field($model, 'name'));
+
     }
 }

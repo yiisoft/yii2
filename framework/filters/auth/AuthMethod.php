@@ -10,10 +10,11 @@ namespace yii\filters\auth;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
-use yii\web\UnauthorizedHttpException;
-use yii\web\User;
+use yii\helpers\StringHelper;
 use yii\web\Request;
 use yii\web\Response;
+use yii\web\UnauthorizedHttpException;
+use yii\web\User;
 
 /**
  * AuthMethod is a base class implementing the [[AuthInterface]] interface.
@@ -47,16 +48,16 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
-        $response = $this->response ? : Yii::$app->getResponse();
+        $response = $this->response ?: Yii::$app->getResponse();
 
         try {
             $identity = $this->authenticate(
-                $this->user ? : Yii::$app->getUser(),
-                $this->request ? : Yii::$app->getRequest(),
+                $this->user ?: Yii::$app->getUser(),
+                $this->request ?: Yii::$app->getRequest(),
                 $response
             );
         } catch (UnauthorizedHttpException $e) {
@@ -69,22 +70,23 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
 
         if ($identity !== null || $this->isOptional($action)) {
             return true;
-        } else {
-            $this->challenge($response);
-            $this->handleFailure($response);
-            return false;
         }
+
+        $this->challenge($response);
+        $this->handleFailure($response);
+
+        return false;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function challenge($response)
     {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function handleFailure($response)
     {
@@ -103,10 +105,11 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     {
         $id = $this->getActionId($action);
         foreach ($this->optional as $pattern) {
-            if (fnmatch($pattern, $id)) {
+            if (StringHelper::matchWildcard($pattern, $id)) {
                 return true;
             }
         }
+
         return false;
     }
 }

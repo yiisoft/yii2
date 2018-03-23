@@ -12,3 +12,4 @@ Yii powered application as secure as possible, Yii has included several excellen
 * [Views security](structure-views.md#security)
 * [Auth Clients](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
 * [Best Practices](security-best-practices.md)
+* [Trusted proxies and headers](runtime-requests.md#trusted-proxies)

@@ -72,8 +72,8 @@ the [entry script](structure-entry-scripts.md) of the [Basic Project Template](s
 line installs the Composer autoloader, while the second line installs the Yii autoloader:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 You may use the Composer autoloader alone without the Yii autoloader. However, by doing so, the performance

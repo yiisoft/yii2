@@ -8,15 +8,16 @@
 namespace yii\filters;
 
 use Closure;
-use yii\base\Component;
 use yii\base\Action;
-use yii\base\InvalidConfigException;
-use yii\web\User;
-use yii\web\Request;
+use yii\base\Component;
 use yii\base\Controller;
+use yii\base\InvalidConfigException;
+use yii\helpers\StringHelper;
+use yii\web\Request;
+use yii\web\User;
 
 /**
- * This class represents an access rule defined by the [[AccessControl]] action filter
+ * This class represents an access rule defined by the [[AccessControl]] action filter.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -54,13 +55,26 @@ class AccessRule extends Component
      * - `?`: matches a guest user (not authenticated yet)
      * - `@`: matches an authenticated user
      *
-     * If you are using RBAC (Role-Based Access Control), you may also specify role or permission names.
+     * If you are using RBAC (Role-Based Access Control), you may also specify role names.
      * In this case, [[User::can()]] will be called to check access.
      *
-     * If this property is not set or empty, it means this rule applies to all roles.
+     * Note that it is preferred to check for permissions instead.
+     *
+     * If this property is not set or empty, it means this rule applies regardless of roles.
+     * @see $permissions
      * @see $roleParams
      */
     public $roles;
+    /** 
+     * @var array list of RBAC (Role-Based Access Control) permissions that this rules applies to.
+     * [[User::can()]] will be called to check access.
+     * 
+     * If this property is not set or empty, it means this rule applies regardless of permissions.
+     * @since 2.0.12
+     * @see $roles
+     * @see $roleParams
+     */
+    public $permissions;
     /**
      * @var array|Closure parameters to pass to the [[User::can()]] function for evaluating
      * user permissions in [[$roles]].
@@ -123,8 +137,12 @@ class AccessRule extends Component
     public $matchCallback;
     /**
      * @var callable a callback that will be called if this rule determines the access to
-     * the current action should be denied. If not set, the behavior will be determined by
-     * [[AccessControl]].
+     * the current action should be denied. This is the case when this rule matches
+     * and [[$allow]] is set to `false`.
+     *
+     * If not set, the behavior will be determined by [[AccessControl]],
+     * either using [[AccessControl::denyAccess()]]
+     * or [[AccessControl::$denyCallback]], if configured.
      *
      * The signature of the callback should be as follows:
      *
@@ -133,6 +151,7 @@ class AccessRule extends Component
      * ```
      *
      * where `$rule` is this rule, and `$action` is the current [[Action|action]] object.
+     * @see AccessControl::$denyCallback
      */
     public $denyCallback;
 
@@ -180,7 +199,7 @@ class AccessRule extends Component
 
         $id = $controller->getUniqueId();
         foreach ($this->controllers as $pattern) {
-            if (fnmatch($pattern, $id)) {
+            if (StringHelper::matchWildcard($pattern, $id)) {
                 return true;
             }
         }
@@ -195,18 +214,26 @@ class AccessRule extends Component
      */
     protected function matchRole($user)
     {
-        if (empty($this->roles)) {
+        $items = empty($this->roles) ? [] : $this->roles;
+
+        if (!empty($this->permissions)) {
+            $items = array_merge($items, $this->permissions);
+        }
+
+        if (empty($items)) {
             return true;
         }
+
         if ($user === false) {
             throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
         }
-        foreach ($this->roles as $role) {
-            if ($role === '?') {
+
+        foreach ($items as $item) {
+            if ($item === '?') {
                 if ($user->getIsGuest()) {
                     return true;
                 }
-            } elseif ($role === '@') {
+            } elseif ($item === '@') {
                 if (!$user->getIsGuest()) {
                     return true;
                 }
@@ -214,7 +241,7 @@ class AccessRule extends Component
                 if (!isset($roleParams)) {
                     $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
                 }
-                if ($user->can($role, $roleParams)) {
+                if ($user->can($item, $roleParams)) {
                     return true;
                 }
             }

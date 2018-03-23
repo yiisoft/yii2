@@ -25,10 +25,10 @@
 
 ```php
 // install Composer autoloader （安装 Composer 自动加载器）
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // include Yii class file （加载 Yii 的类文件）
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 ### 使用下载的类库 <span id="using-downloaded-libs"></span>
@@ -100,9 +100,9 @@ on Composer and solution to possible issues popping up during the installation.
 之后，你需要修改该第三方应用的入口脚本，在开头位置添加 Yii 的引入代码：
 
 ```php
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
-$yiiConfig = require(__DIR__ . '/../config/yii/web.php');
+$yiiConfig = require __DIR__ . '/../config/yii/web.php';
 new yii\web\Application($yiiConfig); // 千万别在这调用 run() 方法。（笑）
 ```
 
@@ -135,14 +135,14 @@ Yii 2 独占功能的支持来增强这个系统。下面我们就来详细描�
 
 ```php
 // 导入下面会详细说明的定制 Yii 类文件。
-require(__DIR__ . '/../components/Yii.php');
+require __DIR__ . '/../components/Yii.php';
 
 // Yii 2 应用的配置文件
-$yii2Config = require(__DIR__ . '/../config/yii2/web.php');
+$yii2Config = require __DIR__ . '/../config/yii2/web.php';
 new yii\web\Application($yii2Config); // Do NOT call run()
 
 // Yii 1 应用的配置文件
-$yii1Config = require(__DIR__ . '/../config/yii1/main.php');
+$yii1Config = require __DIR__ . '/../config/yii1/main.php';
 Yii::createWebApplication($yii1Config)->run();
 ```
 
@@ -151,10 +151,10 @@ Yii::createWebApplication($yii1Config)->run();
 
 ```php
 $yii2path = '/path/to/yii2';
-require($yii2path . '/BaseYii.php'); // Yii 2.x
+require $yii2path . '/BaseYii.php'; // Yii 2.x
 
 $yii1path = '/path/to/yii1';
-require($yii1path . '/YiiBase.php'); // Yii 1.x
+require $yii1path . '/YiiBase.php'; // Yii 1.x
 
 class Yii extends \yii\BaseYii
 {

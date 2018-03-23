@@ -30,9 +30,9 @@ getter 方法 `getLabel()` 和 setter 方法 `setLabel()` 操作的是 `label` �
 ```php
 namespace app\components;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extend BaseObject
 {
     private $_label;
 

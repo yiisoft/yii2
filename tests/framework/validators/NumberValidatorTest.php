@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -55,13 +60,13 @@ class NumberValidatorTest extends TestCase
 
     public function testEnsureMessageOnInit()
     {
-        $val = new NumberValidator;
-        $this->assertTrue(is_string($val->message));
-        $this->assertTrue(is_null($val->max));
+        $val = new NumberValidator();
+        $this->assertInternalType('string', $val->message);
+        $this->assertTrue($val->max === null);
         $val = new NumberValidator(['min' => -1, 'max' => 20, 'integerOnly' => true]);
-        $this->assertTrue(is_string($val->message));
-        $this->assertTrue(is_string($val->tooSmall));
-        $this->assertTrue(is_string($val->tooBig));
+        $this->assertInternalType('string', $val->message);
+        $this->assertInternalType('string', $val->tooSmall);
+        $this->assertInternalType('string', $val->tooBig);
     }
 
     public function testValidateValueSimple()
@@ -128,7 +133,8 @@ class NumberValidatorTest extends TestCase
     {
         $val = new NumberValidator(['min' => 1]);
         $this->assertTrue($val->validate(1));
-        $this->assertFalse($val->validate(-1));
+        $this->assertFalse($val->validate(-1, $error));
+        $this->assertContains('the input value must be no less than 1.', $error);
         $this->assertFalse($val->validate('22e-12'));
         $this->assertTrue($val->validate(PHP_INT_MAX + 1));
         $val = new NumberValidator(['min' => 1], ['integerOnly' => true]);
@@ -210,7 +216,6 @@ class NumberValidatorTest extends TestCase
         $model->attr_number = new \stdClass();
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
-
     }
 
     public function testValidateAttributeWithLocaleWhereDecimalPointIsComma()
@@ -234,7 +239,7 @@ class NumberValidatorTest extends TestCase
     {
         $val = new NumberValidator([
             'tooSmall' => '{attribute} is to small.',
-            'min' => 5
+            'min' => 5,
         ]);
         $model = new FakedValidationModel();
         $model->attr_number = 0;
@@ -246,7 +251,7 @@ class NumberValidatorTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/3118
+     * @see https://github.com/yiisoft/yii2/issues/3118
      */
     public function testClientValidateComparison()
     {
@@ -292,5 +297,46 @@ class NumberValidatorTest extends TestCase
         $val = new NumberValidator();
         $value = new \stdClass();
         $this->assertFalse($val->validate($value));
+    }
+
+    public function testValidateResource()
+    {
+        $val = new NumberValidator();
+        $fp = fopen('php://stdin', 'r');
+        $this->assertFalse($val->validate($fp));
+
+        $model = new FakedValidationModel();
+        $model->attr_number = $fp;
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+
+        fclose($fp);
+    }
+
+    public function testValidateToString()
+    {
+        $val = new NumberValidator();
+        $object = new TestClass('10');
+        $this->assertTrue($val->validate($object));
+
+        $model = new FakedValidationModel();
+        $model->attr_number = $object;
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+    }
+}
+
+class TestClass
+{
+    public $foo;
+
+    public function __construct($foo)
+    {
+        $this->foo = $foo;
+    }
+
+    public function __toString()
+    {
+        return $this->foo;
     }
 }

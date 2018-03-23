@@ -215,6 +215,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
             $text = preg_replace('~\R\R+~mu', "\n\n", $text);
             $message->setTextBody($text);
         }
+
         return $message;
     }
 
@@ -301,9 +302,9 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
         $output = $this->getView()->render($view, $params, $this);
         if ($layout !== false) {
             return $this->getView()->render($layout, ['content' => $output, 'message' => $this->_message], $this);
-        } else {
-            return $output;
         }
+
+        return $output;
     }
 
     /**
@@ -354,6 +355,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
         if ($this->_viewPath === null) {
             $this->setViewPath('@app/mail');
         }
+
         return $this->_viewPath;
     }
 

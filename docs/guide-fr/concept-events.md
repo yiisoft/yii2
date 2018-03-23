@@ -186,7 +186,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' is inserted');
+    Yii::debug(get_class($event->sender) . ' is inserted');
 });
 ```
 
@@ -208,7 +208,7 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 Notez que, dans ce cas, `$event->sender` fait référence au nom de la classe qui a déclenché l'événement plutôt qu'à une instance de classe.
 
-> Note: comme les gestionnaires attachés au niveau de la classe répondent aux événements déclenchés par n'importe quelle instance de cette classe, ou de ses classes filles, vous devez utiliser cette fonctionnalité avec précaution, en particulier si la classe est une classe de bas niveau comme la classe [[yii\base\Object]].
+> Note: comme les gestionnaires attachés au niveau de la classe répondent aux événements déclenchés par n'importe quelle instance de cette classe, ou de ses classes filles, vous devez utiliser cette fonctionnalité avec précaution, en particulier si la classe est une classe de bas niveau comme la classe [[yii\base\BaseObject]].
 
 Pour détacher un gestionnaire attaché au niveau de la classe, appelez  [[yii\base\Event::off()]]. Par exemple :
 
@@ -263,7 +263,7 @@ Pour gérer l'évenement `EVENT_DANCE` déclenché par n'importe laquelle de ces
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
+    Yii::debug(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
 });
 ```
 

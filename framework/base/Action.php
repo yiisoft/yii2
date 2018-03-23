@@ -43,7 +43,7 @@ class Action extends Component
      */
     public $id;
     /**
-     * @var Controller|\yii\web\Controller the controller that owns this action
+     * @var Controller|\yii\web\Controller|\yii\console\Controller the controller that owns this action
      */
     public $controller;
 
@@ -86,7 +86,7 @@ class Action extends Component
             throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
         }
         $args = $this->controller->bindActionParams($this, $params);
-        Yii::trace('Running action: ' . get_class($this) . '::run()', __METHOD__);
+        Yii::debug('Running action: ' . get_class($this) . '::run()', __METHOD__);
         if (Yii::$app->requestedParams === null) {
             Yii::$app->requestedParams = $args;
         }
@@ -95,9 +95,9 @@ class Action extends Component
             $this->afterRun();
 
             return $result;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**

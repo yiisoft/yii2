@@ -41,7 +41,7 @@ mv composer.phar /usr/local/bin/composer
 
 Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下命令即可安装 Yii ：
 
-    composer global require "fxp/composer-asset-plugin:^1.3.1"
+    composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 第一条命令安装 [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)，
@@ -199,7 +199,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

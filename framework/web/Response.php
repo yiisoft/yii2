@@ -8,15 +8,15 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
-use yii\helpers\Inflector;
-use yii\helpers\Url;
 use yii\helpers\FileHelper;
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use yii\helpers\Url;
 
 /**
- * The web Response class represents an HTTP response
+ * The web Response class represents an HTTP response.
  *
  * It holds the [[headers]], [[cookies]] and [[content]] that is to be sent to the client.
  * It also controls the HTTP [[statusCode|status code]].
@@ -272,7 +272,7 @@ class Response extends \yii\base\Response
      * This method will set the corresponding status text if `$text` is null.
      * @param int $value the status code
      * @param string $text the status text. If not set, it will be set automatically based on the status code.
-     * @throws InvalidParamException if the status code is invalid.
+     * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      */
     public function setStatusCode($value, $text = null)
@@ -282,20 +282,21 @@ class Response extends \yii\base\Response
         }
         $this->_statusCode = (int) $value;
         if ($this->getIsInvalid()) {
-            throw new InvalidParamException("The HTTP status code is invalid: $value");
+            throw new InvalidArgumentException("The HTTP status code is invalid: $value");
         }
         if ($text === null) {
             $this->statusText = isset(static::$httpStatuses[$this->_statusCode]) ? static::$httpStatuses[$this->_statusCode] : '';
         } else {
             $this->statusText = $text;
         }
+
         return $this;
     }
 
     /**
      * Sets the response status code based on the exception.
      * @param \Exception|\Error $e the exception object.
-     * @throws InvalidParamException if the status code is invalid.
+     * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      * @since 2.0.12
      */
@@ -306,6 +307,7 @@ class Response extends \yii\base\Response
         } else {
             $this->setStatusCode(500);
         }
+
         return $this;
     }
 
@@ -317,8 +319,9 @@ class Response extends \yii\base\Response
     public function getHeaders()
     {
         if ($this->_headers === null) {
-            $this->_headers = new HeaderCollection;
+            $this->_headers = new HeaderCollection();
         }
+
         return $this->_headers;
     }
 
@@ -355,16 +358,15 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Sends the response headers to the client
+     * Sends the response headers to the client.
      */
     protected function sendHeaders()
     {
-        if (headers_sent()) {
-            return;
+        if (headers_sent($file, $line)) {
+            throw new HeadersAlreadySentException($file, $line);
         }
         if ($this->_headers) {
-            $headers = $this->getHeaders();
-            foreach ($headers as $name => $values) {
+            foreach ($this->getHeaders() as $name => $values) {
                 $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
                 // set replace for first occurrence of header but false afterwards to allow multiple
                 $replace = true;
@@ -396,7 +398,7 @@ class Response extends \yii\base\Response
         }
         foreach ($this->getCookies() as $cookie) {
             $value = $cookie->value;
-            if ($cookie->expire != 1  && isset($validationKey)) {
+            if ($cookie->expire != 1 && isset($validationKey)) {
                 $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
             }
             setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
@@ -404,7 +406,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Sends the response content to the client
+     * Sends the response content to the client.
      */
     protected function sendContent()
     {
@@ -418,7 +420,7 @@ class Response extends \yii\base\Response
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
         if (is_array($this->stream)) {
-            list ($handle, $begin, $end) = $this->stream;
+            list($handle, $begin, $end) = $this->stream;
             fseek($handle, $begin);
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
                 if ($pos + $chunkSize > $end) {
@@ -626,10 +628,11 @@ class Response extends \yii\base\Response
      */
     protected function getHttpRange($fileSize)
     {
-        if (!isset($_SERVER['HTTP_RANGE']) || $_SERVER['HTTP_RANGE'] === '-') {
+        $rangeHeader = Yii::$app->getRequest()->getHeaders()->get('Range', '-');
+        if ($rangeHeader === '-') {
             return [0, $fileSize - 1];
         }
-        if (!preg_match('/^bytes=(\d*)-(\d*)$/', $_SERVER['HTTP_RANGE'], $matches)) {
+        if (!preg_match('/^bytes=(\d*)-(\d*)$/', $rangeHeader, $matches)) {
             return false;
         }
         if ($matches[1] === '') {
@@ -647,9 +650,9 @@ class Response extends \yii\base\Response
         }
         if ($start < 0 || $start > $end) {
             return false;
-        } else {
-            return [$start, $end];
         }
+
+        return [$start, $end];
     }
 
     /**
@@ -738,7 +741,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Returns Content-Disposition header value that is safe to use with both old and new browsers
+     * Returns Content-Disposition header value that is safe to use with both old and new browsers.
      *
      * Fallback name:
      *
@@ -763,13 +766,18 @@ class Response extends \yii\base\Response
      */
     protected function getDispositionHeaderValue($disposition, $attachmentName)
     {
-        $fallbackName = str_replace('"', '\\"', str_replace(['%', '/', '\\'], '_', Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)));
+        $fallbackName = str_replace(
+            ['%', '/', '\\', '"'],
+            ['_', '_', '_', '\\"'],
+            Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)
+        );
         $utfName = rawurlencode(str_replace(['%', '/', '\\'], '', $attachmentName));
 
         $dispositionHeader = "{$disposition}; filename=\"{$fallbackName}\"";
         if ($utfName !== $fallbackName) {
             $dispositionHeader .= "; filename*=utf-8''{$utfName}";
         }
+
         return $dispositionHeader;
     }
 
@@ -820,7 +828,7 @@ class Response extends \yii\base\Response
      * into an absolute one by prepending it with the host info of the current request.
      *
      * @param int $statusCode the HTTP status code. Defaults to 302.
-     * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
+     * See <https://tools.ietf.org/html/rfc2616#section-10>
      * for details about HTTP status code
      * @param bool $checkAjax whether to specially handle AJAX (and PJAX) requests. Defaults to true,
      * meaning if the current request is an AJAX or PJAX request, then calling this method will cause the browser
@@ -836,7 +844,7 @@ class Response extends \yii\base\Response
             $url[0] = '/' . ltrim($url[0], '/');
         }
         $url = Url::to($url);
-        if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
+        if (strncmp($url, '/', 1) === 0 && strncmp($url, '//', 2) !== 0) {
             $url = Yii::$app->getRequest()->getHostInfo() . $url;
         }
 
@@ -887,6 +895,7 @@ class Response extends \yii\base\Response
 
     /**
      * Returns the cookie collection.
+     *
      * Through the returned cookie collection, you add or remove cookies as follows,
      *
      * ```php
@@ -907,8 +916,9 @@ class Response extends \yii\base\Response
     public function getCookies()
     {
         if ($this->_cookies === null) {
-            $this->_cookies = new CookieCollection;
+            $this->_cookies = new CookieCollection();
         }
+
         return $this->_cookies;
     }
 
@@ -998,9 +1008,15 @@ class Response extends \yii\base\Response
     protected function defaultFormatters()
     {
         return [
-            self::FORMAT_HTML => 'yii\web\HtmlResponseFormatter',
-            self::FORMAT_XML => 'yii\web\XmlResponseFormatter',
-            self::FORMAT_JSON => 'yii\web\JsonResponseFormatter',
+            self::FORMAT_HTML => [
+                'class' => 'yii\web\HtmlResponseFormatter',
+            ],
+            self::FORMAT_XML => [
+                'class' => 'yii\web\XmlResponseFormatter',
+            ],
+            self::FORMAT_JSON => [
+                'class' => 'yii\web\JsonResponseFormatter',
+            ],
             self::FORMAT_JSONP => [
                 'class' => 'yii\web\JsonResponseFormatter',
                 'useJsonp' => true,
@@ -1038,12 +1054,12 @@ class Response extends \yii\base\Response
         }
 
         if (is_array($this->content)) {
-            throw new InvalidParamException('Response content must not be an array.');
+            throw new InvalidArgumentException('Response content must not be an array.');
         } elseif (is_object($this->content)) {
             if (method_exists($this->content, '__toString')) {
                 $this->content = $this->content->__toString();
             } else {
-                throw new InvalidParamException('Response content must be a string or an object implementing __toString().');
+                throw new InvalidArgumentException('Response content must be a string or an object implementing __toString().');
             }
         }
     }

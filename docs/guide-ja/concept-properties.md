@@ -14,10 +14,10 @@ $object->label = trim($label);
 `label` プロパティに、最初の文字を大文字にしなければならない、といった新たな要件が発生したら、 `label` に値を代入するすべてのコードを変更しなければなりません。
 コードの繰り返しはバグを誘発するので、できれば避けたいところです。
 
-この問題を解決するために、Yii は *getter* メソッドと *setter* メソッドをベースにしたプロパティ定義をサポートする、 [[yii\base\Object]] 基底クラスを提供します。
-クラスがその機能を必要とするなら、 [[yii\base\Object]] またはその子クラスを継承しましょう。
+この問題を解決するために、Yii は *getter* メソッドと *setter* メソッドをベースにしたプロパティ定義をサポートする、 [[yii\base\BaseObject]] 基底クラスを提供します。
+クラスがその機能を必要とするなら、 [[yii\base\BaseObject]] またはその子クラスを継承しましょう。
 
-> Note: Yiiのフレームワークのほぼすべてのコアクラスは、 [[yii\base\Object]] またはその子クラスを継承しています。
+> Note: Yiiのフレームワークのほぼすべてのコアクラスは、 [[yii\base\BaseObject]] またはその子クラスを継承しています。
   これは、コアクラスに getter または setter があれば、それをプロパティのように使用できることを意味します。
 
 getter メソッドは、名前が `get` で始まるメソッドで、setter メソッドは、`set` で始まるメソッドです。
@@ -27,9 +27,9 @@ getter メソッドは、名前が `get` で始まるメソッドで、setter �
 ```php
 namespace app\components;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     private $_label;
 
@@ -73,7 +73,7 @@ getter と setter で定義されたプロパティには、いくつかの特�
   getter または setter メソッドの定義によって決めることは出来ません。
 * プロパティは、 *静的でない* getter および setter によってのみ定義することが出来ます。静的なメソッドは同様には扱われません。
 * 通常の `property_exists()` の呼び出しでは、マジック・プロパティが存在するかどうかを知ることは出来ません。
-  それぞれ、[[yii\base\Object::canGetProperty()|canGetProperty()]] または [[yii\base\Object::canSetProperty()|canSetProperty()]] を呼び出さなければなりません。
+  それぞれ、[[yii\base\BaseObject::canGetProperty()|canGetProperty()]] または [[yii\base\BaseObject::canSetProperty()|canSetProperty()]] を呼び出さなければなりません。
 
 このガイドの冒頭で説明した問題に戻ると、 `label` に値が代入されているあらゆる箇所で `trim()` を呼ぶのではなく、もう `setLabel()` という setter の内部だけで `trim()` を呼べば済むのです。
 さらに、新しい要求でラベルの先頭を大文字にする必要が発生しても、他のいっさいのコードに触れることなく、すぐに `setLabel()` メソッドを変更することができます。一箇所の変更は、すべての `label` への代入に普遍的に作用します。

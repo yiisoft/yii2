@@ -111,8 +111,8 @@ Yii はさまざまなキャッシュストレージをサポートしていま�
 分散型のアプリケーションでキャッシュを扱うときには最速の一つとして考えることができます (例えば、複数台のサーバで、ロードバランサがある、などの場合) 。
 * [[yii\redis\Cache]]: [Redis](http://redis.io/) の key-value ストアに基づいてキャッシュコンポーネントを実装しています。(Redis の バージョン 2.6.12 以降が必要です) 。
 * [[yii\caching\WinCache]]: PHP の [WinCache](http://iis.net/downloads/microsoft/wincache-extension) ([関連リンク](http://php.net/manual/ja/book.wincache.php)) 拡張モジュールを使用します。
-* [[yii\caching\XCache]]: PHP の [XCache](http://xcache.lighttpd.net/) 拡張モジュールを使用します。
-* [[yii\caching\ZendDataCache]]: キャッシュメディアして [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) を使用します。
+* [[yii\caching\XCache]] _(deprecated)_: PHP の [XCache](http://xcache.lighttpd.net/) 拡張モジュールを使用します。
+* [[yii\caching\ZendDataCache]] _(deprecated)_: キャッシュメディアして [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) を使用します。
 
 > Tip: 同じアプリケーション内で異なるキャッシュを使用することもできます。一般的なやり方として、小さくとも常に使用されるデータ (例えば、統計データ) を格納する場合はメモリベースのキャッシュストレージを使用し、大きくて使用頻度の低いデータ (例えば、ページコンテント) を格納する場合はファイルベース、またはデータベースのキャッシュストレージを使用します  。
 
@@ -277,19 +277,13 @@ $result = Customer::getDb()->cache(function ($db) {
 > Info: いくつかの DBMS (例えば [MySQL](http://dev.mysql.com/doc/refman/5.1/ja/query-cache.html)) でもデータベースのサーバサイドのクエリキャッシュをサポートしています。
   どちらのクエリキャッシュメカニズムも選べますが、前述した Yii のクエリキャッシュにはキャッシュの依存を柔軟に指定できるという利点があり、潜在的にはより効率的でしょう。
 
+2.0.14 以降は、下記のショートカットを使用することが出来ます。
 
-### キャッシュのフラッシュ <span id="cache-flushing">
-
-保存されている全てのキャッシュデータを無効化する必要がある場合は、[[yii\caching\Cache::flush()]] を呼ぶことが出来ます。
-
-コンソールから `yii cache/flush` を呼ぶことによっても、キャッシュをフラッシュすることが出来ます。
- - `yii cache`: アプリケーションで利用可能なキャッシュのリストを表示します。
- - `yii cache/flush cache1 cache2`: キャッシュコンポーネント `cache1` と `cache2` をフラッシュします
-(複数のコンポーネント名をスペースで区切って渡すことが出来ます)
- - `yii cache/flush-all`: アプリケーションの全てのキャッシュコンポーネントをフラッシュします。
-
-> Info: デフォルトでは、コンソールアプリケーションは独立した構成情報ファイルを使用します。
-正しい結果を得るためには、ウェブとコンソールのアプリケーション構成で同じキャッシュコンポーネントを使用していることを確認してください。
+```php
+(new Query())->cache(7200)->all();
+// および
+User::find()->cache(7200)->all();
+```
 
 
 ### 構成 <span id="query-caching-configs"></span>
@@ -376,3 +370,18 @@ $result = $db->cache(function ($db) {
 例えば、いくつかの DBMS において BLOB 型のカラムを用いる場合、クエリ結果はカラムデータに対するリソースハンドラを返します。
 
 いくつかのキャッシュストレージはサイズに制約があります。例えば Memcache では、各エントリのサイズは 1MB が上限値です。そのためクエリ結果のサイズがこの制約を越える場合、キャッシュは失敗します。
+
+
+### キャッシュのフラッシュ <span id="cache-flushing">
+
+保存されている全てのキャッシュデータを無効化する必要がある場合は、[[yii\caching\Cache::flush()]] を呼ぶことが出来ます。
+
+コンソールから `yii cache/flush` を呼ぶことによっても、キャッシュをフラッシュすることが出来ます。
+ - `yii cache`: アプリケーションで利用可能なキャッシュのリストを表示します。
+ - `yii cache/flush cache1 cache2`: キャッシュコンポーネント `cache1` と `cache2` をフラッシュします
+(複数のコンポーネント名をスペースで区切って渡すことが出来ます)
+ - `yii cache/flush-all`: アプリケーションの全てのキャッシュコンポーネントをフラッシュします。
+
+> Info: デフォルトでは、コンソールアプリケーションは独立した構成情報ファイルを使用します。
+正しい結果を得るためには、ウェブとコンソールのアプリケーション構成で同じキャッシュコンポーネントを使用していることを確認してください。
+

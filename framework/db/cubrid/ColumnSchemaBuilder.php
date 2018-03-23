@@ -18,7 +18,7 @@ use yii\db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function buildUnsignedString()
     {
@@ -26,7 +26,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function buildAfterString()
     {
@@ -36,7 +36,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function buildFirstString()
     {
@@ -44,7 +44,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function buildCommentString()
     {
@@ -52,7 +52,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __toString()
     {
@@ -66,6 +66,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
             default:
                 $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}{pos}';
         }
+
         return $this->buildCompleteString($format);
     }
 }

@@ -8,9 +8,9 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\base\InvalidConfigException;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -342,6 +342,27 @@ class View extends \yii\base\View
     }
 
     /**
+     * Registers CSRF meta tags.
+     * They are rendered dynamically to retrieve a new CSRF token for each request.
+     *
+     * ```php
+     * $view->registerCsrfMetaTags();
+     * ```
+     *
+     * The above code will result in `<meta name="csrf-param" content="[yii\web\Request::$csrfParam]">`
+     * and `<meta name="csrf-token" content="tTNpWKpdy-bx8ZmIq9R72...K1y8IP3XGkzZA==">` added to the page.
+     *
+     * Note: Hidden CSRF input of ActiveForm will be automatically refreshed by calling `window.yii.refreshCsrfToken()`
+     * from `yii.js`.
+     *
+     * @since 2.0.13
+     */
+    public function registerCsrfMetaTags()
+    {
+        $this->metaTags['csrf_meta_tags'] = $this->renderDynamic('return yii\helpers\Html::csrfMetaTags();');
+    }
+
+    /**
      * Registers a link tag.
      *
      * For example, a link tag for a custom [favicon](http://www.w3.org/2005/10/howto-favicon)
@@ -386,6 +407,11 @@ class View extends \yii\base\View
 
     /**
      * Registers a CSS file.
+     *
+     * This method should be used for simple registration of CSS files. If you want to use features of
+     * [[AssetManager]] like appending timestamps to the URL and file publishing options, use [[AssetBundle]]
+     * and [[registerAssetBundle()]] instead.
+     *
      * @param string $url the CSS file to be registered.
      * @param array $options the HTML attributes for the link tag. Please refer to [[Html::cssFile()]] for
      * the supported options. The following options are specially handled and are not treated as HTML attributes:
@@ -411,7 +437,7 @@ class View extends \yii\base\View
                 'baseUrl' => '',
                 'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
-                'depends' => (array)$depends,
+                'depends' => (array) $depends,
             ]);
             $this->registerAssetBundle($key);
         }
@@ -446,6 +472,11 @@ class View extends \yii\base\View
 
     /**
      * Registers a JS file.
+     *
+     * This method should be used for simple registration of JS files. If you want to use features of
+     * [[AssetManager]] like appending timestamps to the URL and file publishing options, use [[AssetBundle]]
+     * and [[registerAssetBundle()]] instead.
+     *
      * @param string $url the JS file to be registered.
      * @param array $options the HTML attributes for the script tag. The following options are specially handled
      * and are not treated as HTML attributes:
@@ -479,10 +510,35 @@ class View extends \yii\base\View
                 'baseUrl' => '',
                 'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,
-                'depends' => (array)$depends,
+                'depends' => (array) $depends,
             ]);
             $this->registerAssetBundle($key);
         }
+    }
+
+    /**
+     * Registers a JS code block defining a variable. The name of variable will be
+     * used as key, preventing duplicated variable names.
+     *
+     * @param string $name Name of the variable
+     * @param array|string $value Value of the variable
+     * @param int $position the position in a page at which the JavaScript variable should be inserted.
+     * The possible values are:
+     *
+     * - [[POS_HEAD]]: in the head section. This is the default value.
+     * - [[POS_BEGIN]]: at the beginning of the body section.
+     * - [[POS_END]]: at the end of the body section.
+     * - [[POS_LOAD]]: enclosed within jQuery(window).load().
+     *   Note that by using this position, the method will automatically register the jQuery js file.
+     * - [[POS_READY]]: enclosed within jQuery(document).ready().
+     *   Note that by using this position, the method will automatically register the jQuery js file.
+     *
+     * @since 2.0.14
+     */
+    public function registerJsVar($name, $value, $position = self::POS_HEAD)
+    {
+        $js = sprintf('var %s = %s;', $name, \yii\helpers\Json::htmlEncode($value));
+        $this->registerJs($js, $position, $name);
     }
 
     /**
@@ -510,7 +566,7 @@ class View extends \yii\base\View
             $lines[] = implode("\n", $this->jsFiles[self::POS_HEAD]);
         }
         if (!empty($this->js[self::POS_HEAD])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]), ['type' => 'text/javascript']);
+            $lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]));
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -528,7 +584,7 @@ class View extends \yii\base\View
             $lines[] = implode("\n", $this->jsFiles[self::POS_BEGIN]);
         }
         if (!empty($this->js[self::POS_BEGIN])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POS_BEGIN]), ['type' => 'text/javascript']);
+            $lines[] = Html::script(implode("\n", $this->js[self::POS_BEGIN]));
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -562,19 +618,19 @@ class View extends \yii\base\View
                 $scripts[] = implode("\n", $this->js[self::POS_LOAD]);
             }
             if (!empty($scripts)) {
-                $lines[] = Html::script(implode("\n", $scripts), ['type' => 'text/javascript']);
+                $lines[] = Html::script(implode("\n", $scripts));
             }
         } else {
             if (!empty($this->js[self::POS_END])) {
-                $lines[] = Html::script(implode("\n", $this->js[self::POS_END]), ['type' => 'text/javascript']);
+                $lines[] = Html::script(implode("\n", $this->js[self::POS_END]));
             }
             if (!empty($this->js[self::POS_READY])) {
-                $js = "jQuery(document).ready(function () {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
-                $lines[] = Html::script($js, ['type' => 'text/javascript']);
+                $js = "jQuery(function ($) {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
+                $lines[] = Html::script($js);
             }
             if (!empty($this->js[self::POS_LOAD])) {
                 $js = "jQuery(window).on('load', function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
-                $lines[] = Html::script($js, ['type' => 'text/javascript']);
+                $lines[] = Html::script($js);
             }
         }
 

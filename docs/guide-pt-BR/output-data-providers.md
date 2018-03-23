@@ -228,7 +228,7 @@ class CsvDataProvider extends BaseDataProvider
   protected $fileObject; // SplFileObject é muito conveniente para procurar uma linha específica em um arquivo
   
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function init()
   {
@@ -239,7 +239,7 @@ class CsvDataProvider extends BaseDataProvider
   }
 
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   protected function prepareModels()
   {
@@ -265,7 +265,7 @@ class CsvDataProvider extends BaseDataProvider
   }
 
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   protected function prepareKeys($models)
   {
@@ -285,7 +285,7 @@ class CsvDataProvider extends BaseDataProvider
   }
 
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   protected function prepareTotalCount()
   {

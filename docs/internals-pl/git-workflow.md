@@ -38,8 +38,6 @@ Poniższe kroki nie są wymagane, jeśli chcesz pracować tylko nad tłumaczenia
 
 - uruchom `composer install`, aby zainstalować wymagane zależności (zakładając, że masz [composera zainstalowanego globalnie](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: Jeśli otrzymujesz błędu typu `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` (`Problem 1 Wymagany pakiet bower-asset/jquery nie mógł być znaleziony w jakiejkolwiek wersji, być może w nazwie pakietu jest literówka.`), musisz uruchomić komendę `composer global require "fxp/composer-asset-plugin:^1.3.1"`
-
 Jeśli zamierzasz pracować z JavaScript:
 
 - uruchom `npm install`, aby zainstalować narzędzia testerskie JavaScript i ich zależności (zakładając, że masz [zainstalowane Node.js i NPM]
@@ -160,7 +158,7 @@ W przypadku drobnych zmian, np. literówek i poprawek dokumentacji, nie ma potrz
 
 ### 6. Zatwierdź swoje modyfikacje
 
-Dodaj swoje pliki/zmiany, które chcesz zatwierdzić do [kolejki oczekujących](http://gitref.org/basic/#add) za pomocą
+Dodaj swoje pliki/zmiany, które chcesz zatwierdzić do [kolejki oczekujących](http://git.github.io/git-reference/basic/#add) za pomocą
 
 ```
 git add sciezka/do/mojego/pliku.php
@@ -195,7 +193,7 @@ Parametr `-u` spowoduje, że Twoja gałąź zostanie automatycznie wysłana i po
 razem, kiedy napiszesz `git push`, będzie wiedział, gdzie ją wysłać. Ułatwia to pracę w przypadku, gdy chcesz zatwierdzić więcej 
 modyfikacji w pojedynczej prośbie o dołączenie kodu.
 
-### 9. Otwórz [prośbę o połączenie kodu](http://help.github.com/send-pull-requests/) z upstream.
+### 9. Otwórz [prośbę o połączenie kodu](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) z upstream.
 
 Przejdź do swojego repozytorium na GitHubie i kliknij "Pull Request", wybierz swoją gałąź po prawej stronie i podaj dodatkowe 
 szczegóły w polu komentarza. Aby połączyć wysyłaną prośbę ze zgłoszeniem umieść gdziekolwiek w komentarzu `#999`, gdzie 999 jest 
@@ -227,7 +225,7 @@ git push origin --delete 999-nazwa-twojej-galezi-w-tym-miejscu
 
 W celu wczesnego wykrycia ewentualnych problemów z integracją, każde żądanie scalenia głównego kodu Yii na GitHubie jest 
 weryfikowane przez automatyczne testy [Travis CI](http://travis-ci.org). Ponieważ ekipa głównych programistów stara się nie 
-nadużywać tej usługi, [`[ci skip]`](http://about.travis-ci.org/docs/user/how-to-skip-a-build/) jest dodawane przy komentarzu 
+nadużywać tej usługi, [`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) jest dodawane przy komentarzu 
 scalenia kodu, jeśli żądanie:
 
 * dotyczy jedynie javascript, css lub plików obrazków,

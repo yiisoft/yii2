@@ -14,7 +14,7 @@
 ## ステータスコード <span id="status-code"></span>
 
 レスポンスを作成するときに最初にすることの一つは、リクエストが成功裡に処理されたかどうかを記述することです。
-そのためには、[[yii\web\Response::statusCode]] プロパティに有効な [HTTP ステータスコード](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) の一つを設定します。
+そのためには、[[yii\web\Response::statusCode]] プロパティに有効な [HTTP ステータスコード](https://tools.ietf.org/html/rfc2616#section-10) の一つを設定します。
 例えば、下記のように、リクエストの処理が成功したことを示すために、ステータスコードを 200 に設定します。
 
 ```php
