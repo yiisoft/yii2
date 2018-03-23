@@ -88,7 +88,7 @@ PHP
         }
         $this->assertEquals([
             '<![CDATA[YII-DYNAMIC-0]]>' => $statement
-        ], $view->dynamicPlaceholders);
+        ], $view->getDynamicPlaceholders());
     }
 
     public function testRenderDynamic_StatementWithThisVariable()
