@@ -158,9 +158,6 @@ Konfigurowanie serwerów WWW <span id="configuring-web-servers"></span>
 Aplikacja zainstalowana według powyższych instrukcji powinna działać bezproblemowo zarówno na 
 [serwerze HTTP Apache](http://httpd.apache.org) jak i [serwerze HTTP Nginx](http://nginx.org), na systemie 
 operacyjnym Windows, Mac OS X oraz Linux, posiadającym zainstalowane PHP 5.4 lub wyższe.
-Yii 2.0 jest również kompatybilne z [facebookowym HHVM](http://hhvm.com). 
-Są jednak przypadki, gdzie Yii zachowuje się inaczej w HHVM niż w natywnym PHP, dlatego powinieneś zachować 
-szczególną ostrożność używając HHVM.
 
 Na serwerze produkcyjnym możesz skonfigurować swój host tak, aby aplikacja była dostępna pod adresem `http://www.example.com/index.php` zamiast 
 `http://www.example.com/basic/web/index.php`.

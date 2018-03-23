@@ -148,10 +148,7 @@ Configurando os Servidores Web <span id="configuring-web-servers"></span>
 
 A aplicação instalada de acordo com as instruções acima deve funcionar imediatamente 
 com um [Servidor HTTP Apache](http://httpd.apache.org/) ou um [Servidor HTTP Nginx](http://nginx.org/),
-no Windows, Mac OS X ou Linux usando PHP 5.4 ou superior. O Yii 2.0 também é compatível
-com o [HHVM](http://hhvm.com/) do Facebook, no entanto, existem alguns casos extremos
-que o HHVM se comporta diferente no PHP nativo, então, terá que tomar um cuidado 
-extra quando usar o HHVM.
+no Windows, Mac OS X ou Linux usando PHP 5.4 ou superior.
 
 Em um servidor de produção, você pode querer configurar o seu servidor Web de
 modo que a aplicação possa ser acessada pela URL `http://www.example.com/index.php`
