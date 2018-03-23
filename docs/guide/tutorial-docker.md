@@ -61,17 +61,17 @@ to view logs for all services, continuously
     
 to stop all services in your stack, gracefully
 
-    docker-copmose kill
+    docker-compose kill
     
 to stop all services in your stack, immediately
 
-    docker-copmose down -v
+    docker-compose down -v
     
 to stop and remove all services, **be aware of data loss when not using host-volumes**
 
 To run commands in a container
 
-    docker-composer run --rm php composer install
+    docker-compose run --rm php composer install
     
 runs composer installation in a new container
 
