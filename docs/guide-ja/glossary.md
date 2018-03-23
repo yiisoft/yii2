@@ -1,73 +1,73 @@
 # A
 
-## alias �G�C���A�X
+## alias エイリアス
 
-�G�C���A�X�́A�N���X��f�B���N�g�����������߂� Yii �ɂ���ėp�����镶����ł��B�Ⴆ�� `@app/vendor`�B
+エイリアスは、クラスやディレクトリを示すために Yii によって用いられる文字列です。例えば `@app/vendor`。
 
-## application �A�v���P�[�V����
+## application アプリケーション
 
-�A�v���P�[�V������ HTTP ���N�G�X�g�����̂��߂̒��S�I�ȃI�u�W�F�N�g�ł��B
-�����ɕ����鐔�����̃R���|�[�l���g�ɂ���āA���N�G�X�g��������擾���A�X�ɏ�����i�߂邽�߂ɂ����K�؂ȃR���g���[���ɑ��v���܂��B
+アプリケーションは HTTP リクエスト処理のための中心的なオブジェクトです。
+内部に抱える数多くのコンポーネントによって、リクエストから情報を取得し、更に処理を進めるためにそれを適切なコントローラに送致します。
 
-�A�v���P�[�V�����E�I�u�W�F�N�g�̓G���g���E�X�N���v�g�ɂ���ăV���O���g���Ƃ��ăC���X�^���X������܂��B
-�A�v���P�[�V�����E�V���O���g���͂ǂ̏ꏊ����ł� `\Yii::$app` �Ƃ��ăA�N�Z�X�\�ł��B
+アプリケーション・オブジェクトはエントリ・スクリプトによってシングルトンとしてインスタンス化されます。
+アプリケーション・シングルトンはどの場所からでも `\Yii::$app` としてアクセス可能です。
 
-## assets �A�Z�b�g
+## assets アセット
 
-�A�Z�b�g�Ƃ̓��\�[�X�E�t�@�C�����w���������̂ł��B
-�T�^�I�ɂ� JavaScript �܂��� CSS ���܂ރt�@�C���ł����AHTTP �ɂ���ăA�N�Z�X�\�Ȃ��̂Ȃ牽�ł��\���܂���Bt or CSS code but can be anything else that is accessed via HTTP.
+アセットとはリソース・ファイルを指し示すものです。
+典型的には JavaScript または CSS を含むファイルですが、HTTP によってアクセス可能なものなら何でも構いません。
 
-## attribute ����
+## attribute 属性
 
-�����́A**�r�W�l�X�E�f�[�^** ��ۑ����郂�f���̃v���p�e�B (�N���X�̃����o�ϐ��A�܂��́A`__get()`/`__set()` �ɂ���Ē�`�����}�W�b�N�E�v���p�e�B) �ł��B
+属性は、**ビジネス・データ** を保存するモデルのプロパティ (クラスのメンバ変数、または、`__get()`/`__set()` によって定義されるマジック・プロパティ) です。
 
 # B
 
-## bundle �o���h��
+## bundle バンドル
 
-�o���h���́AYii 1.1 �ł́u�p�b�P�[�W�v�Ƃ��Ēm���Ă��܂������A
-��Q�̃A�Z�b�g�ƁA�A�Z�b�g�̈ꗗ�ƈˑ��֌W���L�q����\���t�@�C���ł��B
+バンドルは、Yii 1.1 では「パッケージ」として知られていましたが、
+一群のアセットと、アセットの一覧と依存関係を記述する構成ファイルです。
 
 # C
 
-## configuration �\��
+## configuration 構成
 
-�\���Ƃ������t�́A�I�u�W�F�N�g�̃v���p�e�B��ݒ肷��v���Z�X�A�܂��́A�I�u�W�F�N�g��N���X�̂��߂̐ݒ��ۑ�����\���t�@�C�����w�������܂��B
+構成という言葉は、オブジェクトのプロパティを設定するプロセス、または、オブジェクトやクラスのための設定を保存する構成ファイルを指し示します。
 
 # E
 
-## extension �G�N�X�e���V����
+## extension エクステンション
 
-�G�N�X�e���V�����́A�A�v���P�[�V�����ɋ@�\��ǉ����邽�߂́A��Z�b�g�ƂȂ����N���X�A�A�Z�b�g�o���h���A�\���t�@�C���ł��B
+エクステンションは、アプリケーションに機能を追加するための、一セットとなったクラス、アセットバンドル、構成ファイルです。
 
 # I
 
-## installation �C���X�g���[�V����
+## installation インストレーション
 
-�C���X�g���[�V�����́A���������ɏ]������A���ʂɗp�ӂ��ꂽ�X�N���v�g�����s�����肵�āA���������삷��悤�ɏ�������v���Z�X���w���܂��B
-Yii �̏ꍇ�́A�p�[�~�b�V������ݒ肷�邱�ƁA����сA�\�t�g�E�F�A�̕K�v�����𖞂������Ƃ��w���܂��B
+インストレーションは、説明文書に従ったり、特別に用意されたスクリプトを実行したりして、何かが動作するように準備するプロセスを指します。
+Yii の場合は、パーミッションを設定すること、および、ソフトウェアの必要条件を満たすことを指します。
 
 # M
 
-## module ���W���[��
+## module モジュール
 
-���W���[���́A���ꎩ�̂Ƀ��f���A�r���[�A�R���g���[���Ȃǂ� MVC �v�f���܂݁A���C���̃A�v���P�[�V�����̒��Ŏg�p���邱�Ƃ��o���鉺�ʃA�v���P�[�V�����ł��B
-���̏ꍇ�A�ʏ�A���C���̃A�v���P�[�V�����͎����̃R���g���[���ŏ���������ɁA���W���[���Ƀ��N�G�X�g���t�H���[�h���܂��B
+モジュールは、それ自体にモデル、ビュー、コントローラなどの MVC 要素を含み、メインのアプリケーションの中で使用することが出来る下位アプリケーションです。
+その場合、通常、メインのアプリケーションは自分のコントローラで処理する代りに、モジュールにリクエストをフォワードします。
 
 # N
 
-## namespace ���O���
+## namespace 名前空間
 
-���O��Ԃ� Yii 2 �ŐϋɓI�Ɏg�p����Ă��� [PHP ����@�\�̂ЂƂ�](http://php.net/manual/ja/language.namespaces.php) �ł��B
+名前空間は Yii 2 で積極的に使用されている [PHP 言語機能のひとつ](http://php.net/manual/ja/language.namespaces.php) です。
 
 # P
 
-## package �p�b�P�[�W
+## package パッケージ
 
-[�o���h��](#bundle) ���Q�ƁB
+[バンドル](#bundle) を参照。
 
 # V
 
-## vendor �x���_
+## vendor ベンダ
 
-�x���_�́A�G�N�X�e���V�����A���W���[���A���C�u�����̌`���ŃR�[�h��񋟂��Ă���A�g�D�܂��͌l�̊J���҂ł��B
+ベンダは、エクステンション、モジュール、ライブラリの形式でコードを提供している、組織または個人の開発者です。

@@ -1,151 +1,151 @@
-�N���C�A���g�T�C�h�� ActiveForm ���g������
+クライアントサイドで ActiveForm を拡張する
 ==========================================
 
-[[yii\widgets\ActiveForm]] �E�B�W�F�b�g�́A�N���C�A���g�o���f�[�V�����̂��߂Ɏg����A�� JavaScript ���\�b�h������Ă��܂��B
-���̎����͔��ɏ_��ŁA�l�X�ȕ��@�Ŋg�����邱�Ƃ��\�ɂȂ��Ă��܂��B
-���L�ł���ɂ��ĉ�����܂��B
+[[yii\widgets\ActiveForm]] ウィジェットは、クライアントバリデーションのために使う一連の JavaScript メソッドを備えています。
+その実装は非常に柔軟で、様々な方法で拡張することが可能になっています。
+下記でそれについて解説します。
 
-## ActiveForm �C�x���g
+## ActiveForm イベント
 
-ActiveForm �́A��A�̐�p�̃C�x���g�𔭐������܂��B
-���̂悤�ȃR�[�h���g���āA�����̃C�x���g���w�ǂ��ď������邱�Ƃ��o���܂��B
+ActiveForm は、一連の専用のイベントを発生させます。
+次のようなコードを使って、これらのイベントを購読して処理することが出来ます。
 
 ```javascript
 $('#contact-form').on('beforeSubmit', function (e) {
-	if (!confirm("�S�ăI�[�P�[�B���M���܂���?")) {
+	if (!confirm("全てオーケー。送信しますか?")) {
 		return false;
 	}
 	return true;
 });
 ```
 
-�ȉ��A���p�ł���C�x���g�����Ă����܂��傤�B
+以下、利用できるイベントを見ていきましょう。
 
 ### `beforeValidate`
 
-`beforeValidate` �́A�t�H�[���S�̂����؂���O�Ƀg���K�[����܂��B
+`beforeValidate` は、フォーム全体を検証する前にトリガーされます。
 
-�C�x���g�n���h���̃V�O�j�`���͈ȉ��̒ʂ�:
+イベントハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, messages, deferreds)
 ```
 
-�����͈ȉ��̒ʂ�:
+引数は以下の通り:
 
-- `event`: �C�x���g�̃I�u�W�F�N�g�B
-- `messages`: �A�z�z��ŁA�L�[�͑����� ID�A�l�͑Ή����鑮���̃G���[���b�Z�[�W�̔z��ł��B
-- `deferreds`: Deferred �I�u�W�F�N�g�̔z��B`deferreds.add(callback)` ���g���āA�V���� deferrd �Ȍ��؂�ǉ����邱�Ƃ��o���܂��B
+- `event`: イベントのオブジェクト。
+- `messages`: 連想配列で、キーは属性の ID、値は対応する属性のエラーメッセージの配列です。
+- `deferreds`: Deferred オブジェクトの配列。`deferreds.add(callback)` を使って、新しい deferrd な検証を追加することが出来ます。
 
-�n���h�����^�U�l `false` ��Ԃ��ƁA���̃C�x���g�ɑ����t�H�[���̌��؂͒��~����܂��B
-���̌��ʁA`afterValidate` �C�x���g���g���K�[����܂���B
+ハンドラが真偽値 `false` を返すと、このイベントに続くフォームの検証は中止されます。
+その結果、`afterValidate` イベントもトリガーされません。
 
 ### `afterValidate`
 
-`afterValidate` �C�x���g�́A�t�H�[���S�̂����؂�����Ńg���K�[����܂��B
+`afterValidate` イベントは、フォーム全体を検証した後でトリガーされます。
 
-�C�x���g�n���h���̃V�O�j�`���͈ȉ��̒ʂ�:
+イベントハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, messages, errorAttributes)
 ```
 
-�����͈ȉ��̒ʂ�:
+引数は以下の通り:
 
-- `event`: �C�x���g�̃I�u�W�F�N�g�B
-- `messages`: �A�z�z��ŁA�L�[�͑����� ID�A�l�͑Ή����鑮���̃G���[���b�Z�[�W�̔z��ł��B
-- `errorAttributes`: ���؃G���[�����鑮���̔z��B���̈����̍\���ɂ��Ă� `attributeDefaults` ���Q�Ƃ��ĉ������B
+- `event`: イベントのオブジェクト。
+- `messages`: 連想配列で、キーは属性の ID、値は対応する属性のエラーメッセージの配列です。
+- `errorAttributes`: 検証エラーがある属性の配列。この引数の構造については `attributeDefaults` を参照して下さい。
 
 ### `beforeValidateAttribute`
 
-`beforeValidateAttribute` �C�x���g�́A���������؂���O�Ƀg���K�[����܂��B
+`beforeValidateAttribute` イベントは、属性を検証する前にトリガーされます。
 
-�C�x���g�n���h���̃V�O�j�`���͈ȉ��̒ʂ�:
+イベントハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, attribute, messages, deferreds)
 ```
      
-�����͈ȉ��̒ʂ�:
+引数は以下の通り:
 
-- `event`: �C�x���g�̃I�u�W�F�N�g�B
-- `attribute`: ���؂���鑮���B���̈����̍\���ɂ��Ă� `attributeDefaults` ���Q�Ƃ��ĉ������B
-- `messages`: �w�肳�ꂽ�����ɑ΂��錟�؃G���[���b�Z�[�W��ǉ����邱�Ƃ��o����z��B
-- `deferreds`: Deferred �I�u�W�F�N�g�̔z��B`deferreds.add(callback)` ���g���āA�V���� deferrd �Ȍ��؂�ǉ����邱�Ƃ��o���܂��B
+- `event`: イベントのオブジェクト。
+- `attribute`: 検証される属性。この引数の構造については `attributeDefaults` を参照して下さい。
+- `messages`: 指定された属性に対する検証エラーメッセージを追加することが出来る配列。
+- `deferreds`: Deferred オブジェクトの配列。`deferreds.add(callback)` を使って、新しい deferrd な検証を追加することが出来ます。
 
-�n���h�����^�U�l `false` ��Ԃ��ƁA�w�肳�ꂽ�����̌��؂͒��~����܂��B
-���̌��ʁA`afterValidateAttribute` �C�x���g���g���K�[����܂���B
+ハンドラが真偽値 `false` を返すと、指定された属性の検証は中止されます。
+その結果、`afterValidateAttribute` イベントもトリガーされません。
 
 ### `afterValidateAttribute`
 
-`afterValidateAttribute` �C�x���g�́A�t�H�[���S�̂���ъe�����̌��؂̌�Ƀg���K�[����܂��B
+`afterValidateAttribute` イベントは、フォーム全体および各属性の検証の後にトリガーされます。
 
-�C�x���g�n���h���̃V�O�j�`���͈ȉ��̒ʂ�:
+イベントハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, attribute, messages)
 ```
 
-�����͈ȉ��̒ʂ�:
+引数は以下の通り:
 
-- `event`: �C�x���g�̃I�u�W�F�N�g�B
-- `attribute`: ���؂���鑮���B���̈����̍\���ɂ��Ă� `attributeDefaults` ���Q�Ƃ��ĉ������B
-- `messages`: �w�肳�ꂽ�����ɑ΂���ǉ��̌��؃G���[���b�Z�[�W��ǉ����邱�Ƃ��o����z��B
+- `event`: イベントのオブジェクト。
+- `attribute`: 検証される属性。この引数の構造については `attributeDefaults` を参照して下さい。
+- `messages`: 指定された属性に対する追加の検証エラーメッセージを追加することが出来る配列。
 
 ### `beforeSubmit`
 
-`beforeSubmit` �C�x���g�́A�S�Ă̌��؂��ʂ�����A�t�H�[���𑗐M����O�Ƀg���K�[����܂��B
+`beforeSubmit` イベントは、全ての検証が通った後、フォームを送信する前にトリガーされます。
 
-�C�x���g�n���h���̃V�O�j�`���͈ȉ��̒ʂ�:
+イベントハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event)
 ```
 
-�����͈ȉ��̒ʂ�:
+引数は以下の通り:
 
-- `event`: �C�x���g�̃I�u�W�F�N�g�B
+- `event`: イベントのオブジェクト。
 
-�n���h�����^�U�l `false` ��Ԃ��ƁA�t�H�[���̑��M�͒��~����܂��B
+ハンドラが真偽値 `false` を返すと、フォームの送信は中止されます。
 
 ### `ajaxBeforeSend`
          
-`ajaxBeforeSend` �C�x���g�́AAJAX �x�[�X�̌��؂̂��߂� AJAX ���N�G�X�g�𑗐M����O�Ƀg���K�[����܂��B
+`ajaxBeforeSend` イベントは、AJAX ベースの検証のための AJAX リクエストを送信する前にトリガーされます。
 
-�C�x���g�n���h���̃V�O�j�`���͈ȉ��̒ʂ�:
+イベントハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, jqXHR, settings)
 ```
 
-�����͈ȉ��̒ʂ�:
+引数は以下の通り:
 
-- `event`: �C�x���g�̃I�u�W�F�N�g�B
-- `jqXHR`: jqXHR �̃I�u�W�F�N�g�B
-- `settings`: AJAX ���N�G�X�g�̐ݒ�B
+- `event`: イベントのオブジェクト。
+- `jqXHR`: jqXHR のオブジェクト。
+- `settings`: AJAX リクエストの設定。
 
 ### `ajaxComplete`
 
-`ajaxComplete` �C�x���g��AJAX �x�[�X�̌��؂̂��߂� AJAX ���N�G�X�g������������Ƀg���K�[����܂��B
+`ajaxComplete` イベントはAJAX ベースの検証のための AJAX リクエストが完了した後にトリガーされます。
 
-�C�x���g�n���h���̃V�O�j�`���͈ȉ��̒ʂ�:
+イベントハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, jqXHR, textStatus)
 ```
 
-�����͈ȉ��̒ʂ�:
+引数は以下の通り:
 
-- `event`: �C�x���g�̃I�u�W�F�N�g�B
-- `jqXHR`: jqXHR �̃I�u�W�F�N�g�B
-- `textStatus`: ���N�G�X�g�̏�� ("success", "notmodified", "error", "timeout",
-"abort", �܂��� "parsererror")�B
+- `event`: イベントのオブジェクト。
+- `jqXHR`: jqXHR のオブジェクト。
+- `textStatus`: リクエストの状態 ("success", "notmodified", "error", "timeout",
+"abort", または "parsererror")。
 
-## AJAX �Ńt�H�[���𑗐M����
+## AJAX でフォームを送信する
 
-����(�o���f�[�V����)�́A�N���C�A���g�T�C�h�܂��� AJAX ���N�G�X�g�ɂ���čs�����Ƃ��o���܂����A
-�t�H�[���̑��M���̂��̂̓f�t�H���g�ł͒ʏ�̃��N�G�X�g�Ƃ��Ď��s����܂��B
-�t�H�[���� AJAX �ő��M�������ꍇ�́A���̂悤�ɁA�t�H�[���� `beforeSubmit` �C�x���g���������邱�Ƃɂ���ĒB�����邱�Ƃ��o���܂��B
+検証(バリデーション)は、クライアントサイドまたは AJAX リクエストによって行うことが出来ますが、
+フォームの送信そのものはデフォルトでは通常のリクエストとして実行されます。
+フォームを AJAX で送信したい場合は、次のように、フォームの `beforeSubmit` イベントを処理することによって達成することが出来ます。
 
 ```javascript
 var $form = $('#formId');
@@ -156,26 +156,26 @@ $form.on('beforeSubmit', function() {
         type: 'POST',
         data: data,
         success: function (data) {
-            // ���������Ƃ��̎���
+            // 成功したときの実装
         },
         error: function(jqXHR, errMsg) {
             alert(errMsg);
         }
      });
-     return false; // �f�t�H���g�̑��M��}�~
+     return false; // デフォルトの送信を抑止
 });
 ```
 
-jQuery �� `ajax()` �֐��ɂ��čX�Ɋw�K���邽�߂ɂ́A[jQuery documentation](https://api.jquery.com/jQuery.ajax/) ���Q�Ƃ��ĉ������B
+jQuery の `ajax()` 関数について更に学習するためには、[jQuery documentation](https://api.jquery.com/jQuery.ajax/) を参照して下さい。
 
 
-## �t�B�[���h�𓮓I�ɒǉ�����
+## フィールドを動的に追加する
 
-���݂̃E�F�u�E�A�v���P�[�V�����ł́A���[�U�ɑ΂��ĕ\��������Ńt�H�[����ύX����K�v������ꍇ���悭����܂��B
-�Ⴆ�΁A"�ǉ�"�A�C�R�����N���b�N����ƃt�B�[���h���ǉ������ꍇ�Ȃǂł��B
-���̂悤�ȃt�B�[���h�ɑ΂���N���C�A���g�E�o���f�[�V������L���ɂ��邽�߂ɂ́A�t�B�[���h�� ActiveForm JavaScript �v���O�C���ɓo�^���Ȃ���΂Ȃ�܂���B
+現在のウェブ・アプリケーションでは、ユーザに対して表示した後でフォームを変更する必要がある場合がよくあります。
+例えば、"追加"アイコンをクリックするとフィールドが追加される場合などです。
+このようなフィールドに対するクライアント・バリデーションを有効にするためには、フィールドを ActiveForm JavaScript プラグインに登録しなければなりません。
 
-�t�B�[���h���̂��̂�ǉ����āA�����āA�o���f�[�V�����̃��X�g�ɒǉ����Ȃ���΂Ȃ�܂���B
+フィールドそのものを追加して、そして、バリデーションのリストに追加しなければなりません。
 
 ```javascript
 $('#contact-form').yiiActiveForm('add', {
@@ -190,7 +190,7 @@ $('#contact-form').yiiActiveForm('add', {
 });
 ```
 
-�t�B�[���h���o���f�[�V�����̃��X�g����폜���Č��؂���Ȃ��悤�ɂ��邽�߂ɂ́A���̂悤�ɂ��܂��B
+フィールドをバリデーションのリストから削除して検証されないようにするためには、次のようにします。
 
 ```javascript
 $('#contact-form').yiiActiveForm('remove', 'address');
