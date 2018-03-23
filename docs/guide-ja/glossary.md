@@ -15,7 +15,7 @@
 ## assets アセット
 
 アセットとはリソース・ファイルを指し示すものです。
-典型的には JavaScript または CSS を含むファイルですが、HTTP によってアクセス可能なものなら何でも構いません。t or CSS code but can be anything else that is accessed via HTTP.
+典型的には JavaScript または CSS を含むファイルですが、HTTP によってアクセス可能なものなら何でも構いません。
 
 ## attribute 属性
 
