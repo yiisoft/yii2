@@ -93,6 +93,21 @@ echo Yii::$app->formatter->asDate('now', 'yyyy-MM-dd'); // 2014-10-06
 echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 ```
 
+> Info: PHP 形式の書式の文字の中には ICU でサポートされておらず、従って PHP intl エクステンションでもサポートされていないため、Yii のフォーマッタで使用できないものがあります。
+> それらの文字のほとんどのもの (`w`, `t`, `L`, `B`, `u`, `I`, `Z`) は、日付の書式としては大して有用ではなく、
+> むしろ日数の計算をするのに使われるものです。
+> しかし、`S` と `U` は有用かも知れません。これらの動作は次のようにして達成することが出来ます。
+>
+> - `S` は、月の何日目かを示す英語の序数接尾詞序詞 (すなわ st, nd, rd または th ) ですが、これの代りに以下のような代替手段が使用出来ます。
+>
+>   ```php
+>   $f = Yii::$app->formatter;
+>   $d = $f->asOrdinal($f->asDate('2017-05-15', 'php:j'));
+>   echo "On the $d day of the month.";  // "On the 15th day of the month." と表示
+>   ```
+>
+> - `U`、すなわち Unix エポックに対しては、[[yii\i18n\Formatter::asTimestamp()|timestamp]] 形式を使うことが出来ます。
+
 複数の言語をサポートする必要があるアプリケーションを扱う場合には、ロケールごとに異なる日付と時刻のフォーマットを指定しなければならないことがよくあります。
 この仕事を単純化するためには、(`long`、`short` などの) フォーマットのショートカットを代りに使うことが出来ます。
 フォーマッタは、現在アクティブな [[yii\i18n\Formatter::locale|locale]] に従って、フォーマットのショートカットを適切なフォーマットに変換します。
@@ -142,6 +157,9 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 > echo Yii::$app->formatter->asTime('2014-10-06 12:41:00'); // 21:41:00
 > echo Yii::$app->formatter->asTime('2014-10-06 21:41:00 JST'); // 21:41:00
 > ```
+
+フォーマッタ・コンポーネントに対して [[yii\i18n\Formatter::timeZone|タイムゾーン]] が明示的に設定されていない場合は、
+[[yii\base\Application::timeZone|アプリケーションで設定されたタイムゾーン]] (PHP の構成で設定されたタイムゾーンと同じ) が使用されます。
 
 > Note: タイムゾーンは世界中のさまざまな政府によって作られる規則に従うものであり、頻繁に変更されるものであるため、あなたのシステムにインストールされたタイムゾーンのデータベースが最新の情報を持っていない可能性が大いにあります。
 > タイムゾーンデータベースの更新についての詳細は、[ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) で参照することが出来ます。
