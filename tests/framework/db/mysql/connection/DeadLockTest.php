@@ -41,7 +41,6 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
         if (!\function_exists('posix_kill')) {
             $this->markTestSkipped('posix_kill() is not available');
         }
-        // HHVM does not support this (?)
         if (!\function_exists('pcntl_sigtimedwait')) {
             $this->markTestSkipped('pcntl_sigtimedwait() is not available');
         }

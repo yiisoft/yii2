@@ -99,7 +99,7 @@ http://localhost/basic/web/index.php
 
 > Info: 如果你现在只是要试用 Yii 而不是将其部署到生产环境中，本小节可以跳过。
 
-通过上述方法安装的应用程序在 Windows，Max OS X，Linux 中的 [Apache HTTP 服务器](http://httpd.apache.org/)或 [Nginx HTTP 服务器](http://nginx.org/)且PHP版本为5.4或更高都可以直接运行。Yii 2.0 也兼容 Facebook 公司的 [HHVM](http://hhvm.com/)，由于 HHVM 和标准 PHP 在边界案例上有些地方略有不同，在使用 HHVM 时需稍作处理。
+通过上述方法安装的应用程序在 Windows，Max OS X，Linux 中的 [Apache HTTP 服务器](http://httpd.apache.org/)或 [Nginx HTTP 服务器](http://nginx.org/)且PHP版本为5.4或更高都可以直接运行。
 
 在生产环境的服务器上，你可能会想配置服务器让应用程序可以通过 URL `http://www.example.com/index.php` 访问而不是 `http://www.example.com/basic/web/index.php`。这种配置需要将 Web 服务器的文档根目录指向 `basic/web` 目录。可能你还会想隐藏掉 URL 中的 `index.php`，具体细节在 [URL 解析和生成](runtime-url-handling.md)一章中有介绍，你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
 

@@ -19,10 +19,6 @@ class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
 {
     protected function setUp()
     {
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('HHVMs PgSQL implementation does not seem to support blob columns in the way they are used here.');
-        }
-
         parent::setUp();
     }
 
