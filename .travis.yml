@@ -131,7 +131,7 @@ script:
   # PHP tests
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
-      vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group wincache,xcache,zenddata
+      vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group wincache,xcache
     fi
 
 after_script:
