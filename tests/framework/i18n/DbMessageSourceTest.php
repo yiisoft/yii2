@@ -9,6 +9,7 @@ namespace yiiunit\framework\i18n;
 
 use Yii;
 use yii\base\Event;
+use yii\console\ExitCode;
 use yii\db\Connection;
 use yii\i18n\DbMessageSource;
 use yii\i18n\I18N;
@@ -66,7 +67,7 @@ class DbMessageSourceTest extends I18NTest
         ob_start();
         $result = Yii::$app->runAction($route, $params);
         echo 'Result is ' . $result;
-        if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
+        if ($result !== ExitCode::OK) {
             ob_end_flush();
         } else {
             ob_end_clean();
