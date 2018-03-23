@@ -44,8 +44,8 @@ http://localhost/users?fields=id,email
 // returns all fields in fields() and field "profile" if it is in extraFields()
 http://localhost/users?expand=profile
 
-// returns all fields in fields(), "profile" if it is in extraFields() and "author" from profile if
-// it is in extraFields() of profile model
+// returns all fields in fields() and "author" from post if
+// it is in extraFields() of post model
 http://localhost/comments?expand=post.author
 
 // only returns "id" and "email" provided they are in fields() and "profile" if it is in extraFields()
