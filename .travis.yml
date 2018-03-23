@@ -71,7 +71,7 @@ matrix:
 
 install:
   - |
-    if [[ $TASK_TESTS_COVERAGE != 1]]; then
+    if [[ $TASK_TESTS_COVERAGE != 1 ]]; then
       # disable xdebug for performance reasons when code coverage is not needed
       phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
