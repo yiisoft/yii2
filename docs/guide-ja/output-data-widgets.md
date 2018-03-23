@@ -6,7 +6,7 @@ Yii はデータを表示するために使うことが出来る一連の [ウ�
 それに対して、[ListView](#list-view) と [GridView](#grid-view) は、複数のデータレコードをリストまたはテーブルで表示することが出来るもので、ページネーション、並べ替え、フィルタリングなどの機能を提供するものです。
 
 
-DetailView <a name="detail-view"></a>
+DetailView <span id="detail-view"></span>
 ----------
 
 DetailView は単一のデータ [[yii\widgets\DetailView::$model|モデル]] の詳細を表示します。
@@ -58,7 +58,7 @@ echo DetailView::widget([
 ]);
 ```
 
-ListView <a name="list-view"></a>
+ListView <span id="list-view"></span>
 --------
 
 [[yii\widgets\ListView|ListView]] ウィジェットは、[データプロバイダ](output-data-providers.md) からのデータを表示するのに使用されます。
@@ -122,7 +122,7 @@ echo ListView::widget([
 このようにすると、これらをビューで変数として利用できるようになります。
 
 
-GridView <a name="grid-view"></a>
+GridView <span id="grid-view"></span>
 --------
 
 データグリッドすなわち [[yii\grid\GridView|GridView]] は Yii の最も強力なウィジェットの一つです。
@@ -152,7 +152,7 @@ echo GridView::widget([
 上記のコードは、最初にデータプロバイダを作成し、次に GridView を使って、データプロバイダから受け取る全ての行の全ての属性を表示するものです。
 表示されるテーブルには、特に何も設定しなくても、並べ替えとページネーションの機能が装備されます。
 
-### グリッドのカラム
+### グリッドのカラム <span id="grid-columns"></span>
 
 グリッドのテーブルのカラムは [[yii\grid\Column]] クラスとして表現され、GridView の構成情報の [[yii\grid\GridView::columns|columns]] プロパティで構成されます。
 カラムは、タイプや設定の違いに応じて、データをさまざまな形で表現することが出来ます。
@@ -180,7 +180,7 @@ echo GridView::widget([
 
 構成情報の [[yii\grid\GridView::columns|columns]] の部分が指定されない場合は、Yii は、データプロバイダのモデルの表示可能な全てのカラムを表示しようとすることに注意してください。
 
-### カラムクラス
+### カラムクラス <span id="column-classes"></span>
 
 グリッドのカラムは、いろいろなカラムクラスを使うことでカスタマイズすることが出来ます。
 
@@ -250,7 +250,7 @@ echo GridView::widget([
 データカラムを構成するためには、ショートカット形式を使うことも出来ます。
 それについては、[[yii\grid\GridView::columns|columns]] の API ドキュメントで説明されています。
 
-#### アクションカラム
+#### アクションカラム <span id="action-column"></span>
 
 [[yii\grid\ActionColumn|アクションカラム]] は、各行について、更新や削除などのアクションボタンを表示します。
 
@@ -309,7 +309,7 @@ echo GridView::widget([
   ```
 
 
-#### チェックボックスカラム
+#### チェックボックスカラム <span id="checkbox-column"></span>
 
 [[yii\grid\CheckboxColumn|チェックボックスカラム]] はチェックボックスのカラムを表示します。
 
@@ -335,7 +335,7 @@ var keys = $('#grid').yiiGridView('getSelectedRows');
 // keys は選択された行と関連付けられたキーの配列
 ```
 
-#### シリアルカラム
+#### シリアルカラム <span id="serial-column"></span>
 
 [[yii\grid\SerialColumn|シリアルカラム]] は、`1` から始まる行番号を表示します。
 
@@ -350,13 +350,13 @@ echo GridView::widget([
 ```
 
 
-### データを並べ替える
+### データを並べ替える <span id="sorting-data"></span>
 
 > Note: このセクションはまだ執筆中です。
 >
 > - https://github.com/yiisoft/yii2/issues/1576
 
-### データをフィルタリングする
+### データをフィルタリングする <span id="filtering-data"></span>
 
 データをフィルタリングするためには、GridView は検索基準を表す [モデル](structure-models.md) を必要とします。
 検索基準は、通常は、グリッドビューのテーブルのフィルタのフィールドから取得されます。
@@ -444,7 +444,7 @@ echo GridView::widget([
 ```
 
 
-### 独立したフィルタ・フォーム
+### 独立したフィルタ・フォーム <span id="separate-filter-form"></span>
 
 たいていの場合はグリッドビューのヘッダのフィルタで十分でしょう。
 しかし、独立したフィルタのフォームが必要な場合でも、簡単に追加することができます。
@@ -525,7 +525,7 @@ $query->andFilterWhere(['>=', 'creation_date', $this->createdFrom])
 ```
 
 
-### モデルのリレーションを扱う
+### モデルのリレーションを扱う <span id="working-with-model-relations"></span>
 
 GridView でアクティブレコードを表示するときに、リレーションのカラムの値、例えば、単に投稿者の `id` というのではなく、投稿者の名前を表示するという場合に遭遇するかも知れません。
 `Post` モデルが `author` という名前のリレーションを持っていて、その投稿者のモデルが `name` という属性を持っているなら、[[yii\grid\GridView::$columns]] の属性名を `author.name` と定義します。
@@ -613,7 +613,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 
 > Info: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブレコード - リレーションを使ってテーブルを結合する](db-active-record.md#joining-with-relations) を参照してください。
 
-#### SQL ビューを使って、データのフィルタリング・並べ替え・表示をする
+#### SQL ビューを使って、データのフィルタリング・並べ替え・表示をする <span id="using-sql-views"></span>
 
 もう一つ別に、もっと高速で便利な手法があります。SQL ビューです。
 例えば、ユーザとユーザのプロファイルを一緒にグリッドビューに表示する必要がある場合、次のような SQL ビューを作成することが出来ます。
@@ -684,7 +684,7 @@ class UserView extends ActiveRecord
 従って、`isActive` や `isDeleted` などのような UI に影響するメソッドがある場合は、それらをこのクラスの中に複製する必要があります。
 
 
-### 一つのページに複数のグリッドビュー
+### 一つのページに複数のグリッドビュー <span id="multiple-gridviews"></span>
 
 一つのページで二つ以上のグリッドビューを使うことが出来ますが、お互いが干渉しないように、追加の構成がいくつか必要になります。
 グリッドビューの複数のインスタンスを使う場合は、並べ替えとページネーションのリンクが違うパラメータ名を持って生成されるように構成して、それぞれのグリッドビューが独立した並べ替えとページネーションを持つことが出来るようにしなければなりません。
@@ -712,7 +712,7 @@ echo GridView::widget([
 ]);
 ```
 
-### GridView を Pjax とともに使う
+### GridView を Pjax とともに使う <span id="using-gridview-with-pjax"></span>
 
 [[yii\widgets\Pjax|Pjax]] ウィジェットを使うと、ページ全体をリロードせずに、ページの一部分だけを更新することが出来ます。
 これを使うと、フィルタを使うときに、[[yii\grid\GridView|GridView]] の中身だけを更新することが出来ます。
@@ -735,9 +735,9 @@ Pjax::end();
 この問題を防止するためには、[[yii\grid\ActionColumn::$buttons|ActionColumn::$buttons]]
 プロパティを編集して `data-pjax="0"` という HTML 属性を追加します。
 
-#### Gii における Pjax を伴う GridView
+#### Gii における Pjax を伴う GridView/ListView
 
-バージョン 2.0.5 以降、[Gii](start-gii.md) では `$enablePjax` というオプションがウェブインターフェイスまたはコマンドラインで使用可能になっています。
+バージョン 2.0.5 以降、[Gii](start-gii.md) の CRUD ジェネレータでは `$enablePjax` というオプションがウェブインターフェイスまたはコマンドラインで使用可能になっています。
 
 ```php
 yii gii/crud --controllerClass="backend\\controllers\PostController" \

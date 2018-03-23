@@ -7,7 +7,8 @@ Yii は、RESTful ウェブサービス API を実装する仕事を簡単にす
 * [アクティブレコード](db-active-record.md) のための共通 API をサポートした迅速なプロトタイプ作成
 * レスポンス形式のネゴシエーション (デフォルトで JSON と XML をサポート)
 * 出力フィールドの選択をサポートした、カスタマイズ可能なオブジェクトのシリアライゼーション
-* コレクションデータとバリデーションエラーの適切な書式設定
+* コレクションデータと検証エラーの適切な書式設定
+* コレクションのページネーション、フィルタリングおよびソーティング
 * [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) のサポート
 * HTTP 動詞を適切にチェックする効率的なルーティング
 * `OPTIONS` および `HEAD` 動詞のサポートを内蔵
@@ -187,6 +188,11 @@ Content-Type: application/json; charset=UTF-8
 > Info: 気がついたかも知れませんが、`http://localhost/users` の結果は、いくつかの公開すべきでないフィールド、例えば `password_hash` や `auth_key` を含んでいます。
 > 当然ながら、これらが API の結果に出現することは避けたいでしょう。
 > [リソース](rest-resources.md) の節で説明されているように、これらのフィールドを除外することは出来ますし、また、除外しなければなりません。
+
+さらに、`http://localhost/users?sort=email` や `http://localhost/users?sort=-email` のように、コレクションをソートすることも出来ます。
+`http://localhost/users?filter[id]=10` や `http://localhost/users?filter[email][like]=gmail.com` のように、
+コレクションをフィルタリングすることも、データフィルターを使って実装することが出来ます。
+詳細は、[リソース](rest-resources.md#filtering-collections) の節を参照して下さい。
 
 
 ## まとめ <span id="summary"></span>

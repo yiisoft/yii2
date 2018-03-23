@@ -327,3 +327,61 @@ class CsvDataProvider extends BaseDataProvider
     }
 }
 ```
+
+## データフィルタを使ってデータプロバイダをフィルタリングする <span id="filtering-data-providers-using-data-filters"></span>
+
+[データをフィルタリングする](output-data-widgets.md#filtering-data) や [独立したフィルタ・フォーム](output-data-widgets.md#separate-filter-form) で述べられているように、
+アクティブデータプロバイダの条件を手作業で構築することも可能ですが、
+柔軟なフィルタ条件を必要とする場合には、Yii が持っているデータフィルタが非常に役に立ちます。
+データフィルタは次のようにして使うことが出来ます。
+
+```php
+$filter = new ActiveDataFilter([
+    'searchModel' => 'app\models\PostSearch'
+]);
+
+$filterCondition = null;
+
+// どのようなソースからでもフィルタをロードすることが出来ます。
+// 例えば、リクエスト・ボディの JSON からロードしたい場合は、
+// 下記のように Yii::$app->request->getBodyParams() を使います。
+if ($filter->load(\Yii::$app->request->get())) { 
+    $filterCondition = $filter->build();
+    if ($filterCondition === false) {
+        // シリアライザがエラーを抽出するだろう
+        return $filter;
+    }
+}
+
+$query = Post::find();
+if ($filterCondition !== null) {
+    $query->andWhere($filterCondition);
+}
+
+return new ActiveDataProvider([
+    'query' => $query,
+]);
+```
+
+`PostSearch` モデルは、どういうプロパティと値がフィルタリングに使用できるかを定義するという目的のために使用されています。
+
+```php
+use yii\base\Model;
+
+class PostSearch extends Model 
+{
+    public $id;
+    public $title;
+    
+    public function rules()
+    {
+        return [
+            ['id', 'integer'],
+            ['title', 'string', 'min' => 2, 'max' => 200],            
+        ];
+    }
+}
+```
+
+データフィルタは極めて柔軟で、どのようにして条件が構築されるか、また、どんな演算子が許容されるかをカスタマイズすることが可能です。
+詳細は API リファレンスで [[\yii\data\DataFilter]] を参照して下さい。

@@ -33,13 +33,19 @@ Yii はこのプロセスを二つのステップに分けます。
 // fields() に宣言されている全てのフィールドを返す。
 http://localhost/users
 
-// id と email のフィールドだけを返す (ただし、fields() で宣言されているなら) 。
+// "id" と "email" のフィールドだけを返す (ただし、fields() で宣言されているなら) 。
 http://localhost/users?fields=id,email
 
-// fields() の全てのフィールドと profile のフィールドを返す (ただし、profile が extraFields() で宣言されているなら)。
+// fields() の全てのフィールドと "profile" のフィールドを返す (ただし、"profile" が extraFields() で宣言されているなら)。
 http://localhost/users?expand=profile
 
-// id、email、profile のフィールドだけを返す (ただし、それらが fields() と extraFields() で宣言されているなら)。
+// fields() の全てのフィールドと post の "author" フィールドを返す
+// (ただし、"author" が post モデルの extraFields() にあれば）。
+http://localhost/comments?expand=post.author
+
+// "id"、"email"、"profile" のフィールドだけを返す
+// (ただし、"id" と "email" が fields() で宣言されており、
+// "profile" が extraFields() で宣言されているなら)。
 http://localhost/users?fields=id,email&expand=profile
 ```
 
@@ -237,4 +243,11 @@ class PostController extends Controller
 * `X-Pagination-Per-Page`: 各ページのリソース数
 * `Link`: クライアントがリソースをページごとにたどることが出来るようにするための一群のナビゲーションリンク
 
+REST API におけるコレクションはデータプロバイダであるため、データプロバイダの全ての機能、すなわち、ページネーションやソーティングを共有しています。
+
 その一例を [クイックスタート](rest-quick-start.md#trying-it-out) の節で見ることが出来ます。
+
+バージョン 2.0.13 以降、Yii はコレクションをフィルターする便利な機能を提供しています。
+その一例を [クイックスタート](rest-quick-start.md#trying-it-out) のガイドに見ることが出来ます。
+エンドポイントをあなた自身が実装しようとしている場合、フィルタリングは
+データプロバイダのガイドの [データフィルタを使ってデータプロバイダをフィルタリングする](output-data-providers.md#filtering-data-providers-using-data-filters) の節で述べられている方法で行うことが出来ます。
