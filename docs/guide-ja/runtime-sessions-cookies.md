@@ -170,6 +170,31 @@ CREATE TABLE session
 > Note: php.ini の `session.hash_function` の設定によっては、`id` カラムの長さを修正する必要があるかも知れません。
   例えば、`session.hash_function=sha256` である場合は、40 の代りに 64 の長さを使わなければなりません。
 
+別の方法として、次のマイグレーションを使ってこれを達成することも出来ます。
+
+```php
+<?php
+
+use yii\db\Migration;
+
+class m170529_050554_create_table_session extends Migration
+{
+    public function up()
+    {
+        $this->createTable('{{%session}}', [
+            'id' => $this->char(64)->notNull(),
+            'expire' => $this->integer(),
+            'data' => $this->binary()
+        ]);
+        $this->addPrimaryKey('pk-id', '{{%session}}', 'id');
+    }
+
+    public function down()
+    {
+        $this->dropTable('{{%session}}');
+    }
+}
+```
 
 ### フラッシュデータ <span id="flash-data"></span>
 
