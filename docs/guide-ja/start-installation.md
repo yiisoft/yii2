@@ -110,6 +110,32 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 * もっと洗練された、チーム開発環境により適したアプリケーションから開始したい場合は、 [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) をインストールすることを考慮することが出来ます。
 
 
+アセットをインストールする <span id="installing-assets"></span>
+--------------------------
+
+Yii は、アセット (CSS および JavaScript) ライブラリのインストールについて
+[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.org/) のパッケージに依存しています。
+Yii はこれらのライブラリを取得するのに Composer を使って、PHP と CSS/JavaScript のパッケージバージョンを同時に解決できるようにしています。
+このことは、[asset-packagist.org](https://asset-packagist.org) または [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) を使用することによって達成されます。
+詳細は [アセットのドキュメント](structure-assets.md) を参照して下さい。
+
+あなたは、アセットの管理をネイティブの Bower/NPM クライアントで行ったり、CND を使ったり、アセットのインストールを完全に避けたりしたいかも知れません。
+Composer によるアセットのインストールを抑止するためには、`composer.json` に次の記述を追加して下さい。
+
+```json
+"replace": {
+    "bower-asset/jquery": ">=1.11.0",
+    "bower-asset/inputmask": ">=3.2.0",
+    "bower-asset/punycode": ">=1.3.0",
+    "bower-asset/yii2-pjax": ">=2.0.0"
+},
+```
+
+> Note: Composer によるアセットのインストールをバイパスする場合は、アセットのインストールとバージョン衝突の解決について
+> あなたが責任を持たなければなりません。
+> さまざまなエクステンションに由来するアセットファイル間で不整合が生じうることを覚悟して下さい。
+
+
 インストールを検証する <span id="verifying-installation"></span>
 ----------------------
 

@@ -128,7 +128,7 @@ $userHost = Yii::$app->request->userHost;
 $userIP = Yii::$app->request->userIP;
 ```
 
-## 信頼済みプロキシとヘッダ <span id="trusted-proxies"></span>
+## 信頼できるプロキシとヘッダ <span id="trusted-proxies"></span>
 
 前の節でホストや IP アドレスなどのユーザ情報を取得する方法を説明しました。
 単一のウェブサーバがウェブサイトをホストしている通常の環境では、このままで動作します。
@@ -136,7 +136,7 @@ $userIP = Yii::$app->request->userIP;
 なぜなら、その場合、直接のクライアントはプロキシになっており、ユーザの IP アドレスはプロキシがセットするヘッダによって Yii アプリケーションに渡されるからです。
 
 明示的に信頼したプロキシ以外は、プロキシによって提供されるヘッダを盲目的に信頼してはいけません。
-2.0.13 以降、Yii は `request` コンポーネントの以下のプロパティによって、信頼済みプロキシを構成することが出来るようになっています。
+2.0.13 以降、Yii は `request` コンポーネントの以下のプロパティによって、信頼できるプロキシの情報を構成することが出来るようになっています。
 [[yii\web\Request::trustedHosts|trustedHosts]]、
 [[yii\web\Request::secureHeaders|secureHeaders]]、 
 [[yii\web\Request::ipHeaders|ipHeaders]] および
@@ -186,6 +186,6 @@ $userIP = Yii::$app->request->userIP;
 ```
 
 上記の構成によって、`secureHeaders` としてリストされているヘッダはリクエストから除去され、
-信頼済みプロキシからのリクエストである場合にのみ、`X-ProxyUser-Ip` と `Front-End-Https` ヘッダが受け入れられます。
+信頼できるプロキシからのリクエストである場合にのみ、`X-ProxyUser-Ip` と `Front-End-Https` ヘッダが受け入れられます。
 その場合、前者は `ipHeaders` で構成されているようにユーザの IP を読み出すために使用され、
 後者は [[yii\web\Request::getIsSecureConnection()]] の結果を決定するために使用されます。
