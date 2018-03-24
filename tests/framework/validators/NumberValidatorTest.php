@@ -309,8 +309,6 @@ class NumberValidatorTest extends TestCase
         $model->attr_number = $fp;
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
-
-        fclose($fp);
     }
 
     public function testValidateToString()
