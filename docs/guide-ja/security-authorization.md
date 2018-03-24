@@ -104,6 +104,10 @@ ACF が権限のチェックを実行するときには、規則を一つずつ�
    その他のロール名を使うと、[[yii\web\User::can()]] の呼び出しが惹起されますが、そのためには、RBAC (次の節で説明します) を有効にする必要があります。
    このオプションが空であるか指定されていない場合は、規則が全てのロールに適用されることを意味します。
 
+ * [[yii\filters\AccessRule::roleParams|roleParams]]: [[yii\web\User::can()]] に渡されるパラメータを指定します。
+   パラメータがどのように使われるかは、RBAC 規則を説明する後の節を参照して下さい。
+   このオプションが空であるか設定されていない場合は、パラメータは渡されません。
+
  * [[yii\filters\AccessRule::ips|ips]]: どの [[yii\web\Request::userIP|クライアントの IP アドレス]] にこの規則が適用されるかを指定します。
 IP アドレスは、最後にワイルドカード `*` を含むことが出来て、同じプレフィクスを持つ IP アドレスに合致させることが出来ます。
 例えば、'192.168.*' は、'192.168.' のセグメントに属する全ての IP アドレスに合致します。
@@ -224,6 +228,8 @@ return [
     'components' => [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
+            // RBAC アイテムの階層をキャッシュしたい場合はコメントを外す
+            // 'cache' => 'cache',
         ],
         // ...
     ],
@@ -263,8 +269,80 @@ return [
 - ロールをユーザに割り当てる
 
 権限付与に要求される柔軟性の程度によって、上記のタスクのやりかたも異なってきます。
+許可の階層構造が開発者によってのみ変更されることを意図する場合は、
+マイグレーションまたはコンソールコマンドを使うことが出来ます。
+マイグレーションを使う場合の利点は、他のマイグレーションと一緒に実行できることです。
+コンソールコマンドを使う場合の利点は、階層構造の全体が、複数のマイグレーションに分散することなく、
+コード中に見やすい形で保たれることです。
 
-権限の階層が全く変化せず、決った数のユーザしか存在しない場合は、`authManager` が提供する API によって権限付与データを一回だけ初期設定する [コンソールコマンド](tutorial-console.md#create-command) を作ることが出来ます。
+どちらの方法でも、結局は次のような RBAC 階層を得ることになります。
+
+![単純な RBAC 階層](images/rbac-hierarchy-1.png "単純な RBAC 階層")
+
+許可の階層構造が動的に形成される必要がある場合は、UI またはコンソールコマンドが必要になります。
+階層構造そのものを構築するために使用される API には違いはありません。
+#### マイグレーションを使う
+
+[マイグレーション](db-migrations.md) を使って、`authManager` が提供する API によって階層を初期化したり変更したりすることが出来ます。
+
+`./yii migrate/create init_rbac` を使って新しいマイグレーションを作成し、階層の作成を実装します。
+
+```php
+<?php
+use yii\db\Migration;
+
+class m170124_084304_init_rbac extends Migration
+{
+    public function up()
+    {
+        $auth = Yii::$app->authManager;
+
+        // "createPost" という許可を追加する
+        $createPost = $auth->createPermission('createPost');
+        $createPost->description = '記事を投稿';
+        $auth->add($createPost);
+
+        // "updatePost" という許可を追加する
+        $updatePost = $auth->createPermission('updatePost');
+        $updatePost->description = '記事を更新';
+        $auth->add($updatePost);
+
+        // "author" ロールを追加し、このロールに "createPost" の許可を付与する
+        $author = $auth->createRole('author');
+        $auth->add($author);
+        $auth->addChild($author, $createPost);
+
+        // "admin" ロールを追加し、このロールに "updatePost" の許可を付与する
+        // 同時に、"author" ロールが持つ許可も付与する
+        $admin = $auth->createRole('admin');
+        $auth->add($admin);
+        $auth->addChild($admin, $updatePost);
+        $auth->addChild($admin, $author);
+
+        // ロールをユーザに割り当てる。1 と 2 は IdentityInterface::getId() によって返される ID
+        // IdentityInterface::getId() は、通常は User モデルの中で実装される
+        $auth->assign($author, 2);
+        $auth->assign($admin, 1);
+    }
+    
+    public function down()
+    {
+        $auth = Yii::$app->authManager;
+
+        $auth->removeAll();
+    }
+}
+```
+
+> どのユーザにどのロールを割り当てるかをハードコードしたくない場合は、
+  マイグレーションに `->assign()` の呼び出しを書かないで下さい。
+  その代りに、ロールの割り当てを管理する UI またはコンソールコマンドを作成して下さい。
+
+マイグレーションは `yii migrate` を使って適用することが出来ます。
+
+### コンソールコマンドを使う
+
+許可の階層が全く変化せず、決った数のユーザしか存在しない場合は、`authManager` が提供する API によって権限付与データを一回だけ初期設定する [コンソールコマンド](tutorial-console.md#create-command) を作ることが出来ます。
 
 ```php
 <?php
@@ -278,8 +356,9 @@ class RbacController extends Controller
     public function actionInit()
     {
         $auth = Yii::$app->authManager;
+        $auth->removeAll();
 
-        // "createPost" という許可を追加
+        // "createPost" という許可を追加する
         $createPost = $auth->createPermission('createPost');
         $createPost->description = '記事を投稿';
         $auth->add($createPost);
@@ -289,13 +368,13 @@ class RbacController extends Controller
         $updatePost->description = '記事を更新';
         $auth->add($updatePost);
 
-        // "author" というロールを追加し、このロールに "createPost" 許可を与える
+        // "author" というロールを追加し、このロールに "createPost" の許可を付与する
         $author = $auth->createRole('author');
         $auth->add($author);
         $auth->addChild($author, $createPost);
 
-        // "admin" というロールを追加し、このロールに "updatePost" 許可を与える
-        // 同時に、"author" ロールの持つ許可も与える
+        // "admin" というロールを追加し、このロールに "updatePost" 許可を付与する
+        // 同時に、"author" ロールが持つ許可も付与する
         $admin = $auth->createRole('admin');
         $auth->add($admin);
         $auth->addChild($admin, $updatePost);
@@ -312,9 +391,17 @@ class RbacController extends Controller
 > Note: アドバンストテンプレートを使おうとするときは、`RbacController` を `console/controllers`
 ディレクトリの中に置いて、名前空間を `console\controllers` に変更する必要があります。
 
-`yii rbac/init` によってコマンドを実行した後には、次の権限階層が得られます。
+上記のコマンドは、コンソールから次のようにして実行することが出来ます。
 
-![単純な RBAC 階層](images/rbac-hierarchy-1.png "単純な RBAC 階層")
+```
+yii rbac/init
+```
+
+> どのユーザにどのロールを割り当てるかをハードコードしたくない場合は、
+  コマンドに `->assign()` の呼び出しを書かないで下さい。
+  その代りに、ロールの割り当てを管理する UI またはコンソールコマンドを作成して下さい。
+
+## ロールをユーザに割り当てる
 
 投稿者 (author) は記事を投稿することが出来、管理者 (admin) は記事を更新することに加えて投稿者が出来る全てのことが出来ます。
 
@@ -358,6 +445,7 @@ public function signup()
 namespace app\rbac;
 
 use yii\rbac\Rule;
+use app\models\Post;
 
 /**
  * authorID がパラメータで渡されたユーザと一致するかチェックする
@@ -487,6 +575,34 @@ public function behaviors()
 
 全ての CRUD 操作がまとめて管理される場合は、`managePost` のような単一の許可を使い、
 [[yii\web\Controller::beforeAction()]] の中でそれをチェックするのが良いアイデアです。
+
+上記の例では、アクションにアクセスするために必要と指定されたロールについて、パラメータは渡されていません。
+しかし、`updatePost` 許可の場合は、それが正しく動作するためには `post` パラメータを渡す必要があります。
+アクセス規則の中で [[yii\filters\AccessRule::roleParams|roleParams]] を指定することによって、[[yii\web\User::can()]] にパラメータを渡すことが出来ます。
+
+```php
+[
+    'allow' => true,
+    'actions' => ['update'],
+    'roles' => ['updatePost'],
+    'roleParams' => function() {
+        return ['post' => Post::findOne(['id' => Yii::$app->request->get('id')])];
+    },
+],
+```
+
+上記の例では、[[yii\filters\AccessRule::roleParams|roleParams]] はアクセス規則がチェックされるときに評価されるクロージャになっています。
+従って、モデルは必要になったときだけロードされます。
+ロール・パラメータの作成が簡単な操作である場合は、次のように、単に配列を指定しても構いません。
+
+```php
+[
+    'allow' => true,
+    'actions' => ['update'],
+    'roles' => ['updatePost'],
+    'roleParams' => ['postId' => Yii::$app->request->get('id')];
+],
+```
 
 ### デフォルトロールを使う <span id="using-default-roles"></span>
 

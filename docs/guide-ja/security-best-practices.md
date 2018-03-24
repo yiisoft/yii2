@@ -2,6 +2,8 @@
 ================================
 
 下記において、一般的なセキュリティの指針を復習し、Yii を使ってアプリケーションを開発するときに脅威を回避する方法を説明します。
+これらの原則のほとんどのものは Yii に固有のものではなく、ウェブサイトまたはソフトウェアの開発一般に適用されるものです。
+従って、これらの原則の背後にある一般的な考え方について、さらに参照すべき文書へのリンクをも含んでいます。
 
 基本的な指針
 ------------
@@ -27,6 +29,11 @@ if (!in_array($sortBy, ['title', 'created_at', 'status'])) {
 
 Yii においては、たいていの場合、同様のチェックを行うために [フォームのバリデーション](input-validation.md) を使うことになるでしょう。
 
+このトピックについて更に読むべき文書:
+
+- <https://www.owasp.org/index.php/Data_Validation>
+- <https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet>
+
 
 ### 出力をエスケープする
 
@@ -34,6 +41,13 @@ Yii においては、たいていの場合、同様のチェックを行うた�
 つまり、HTML のコンテキストでは、`<` や `>` などの特殊な文字をエスケープしなければなりません。
 JavaScript や SQL のコンテキストでは、対象となる文字は別のセットになります。
 全てを手動でエスケープするのは間違いを生じやすいことですから、Yii は異なるコンテキストに応じたエスケープを実行するためのさまざまなツールを提供しています。
+
+このトピックについて更に読むべき文書:
+
+- <https://www.owasp.org/index.php/Command_Injection>
+- <https://www.owasp.org/index.php/Code_Injection>
+- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+
 
 SQL インジェクションを回避する
 ------------------------------
@@ -100,6 +114,10 @@ $rowCount = $connection->createCommand($sql)->queryScalar();
 
 この文法の詳細は、[テーブルとカラムの名前を引用符で囲む](db-dao.md#quoting-table-and-column-names) で読むことが出来ます。
 
+このトピックについて更に読むべき文書:
+
+- <https://www.owasp.org/index.php/SQL_Injection>
+
 
 XSS を回避する
 --------------
@@ -127,6 +145,11 @@ HTML である場合は、HtmlPurifier から助けを得ることが出来ま�
 ```
 
 HtmlPurifier の処理は非常に重いので、キャッシュを追加することを検討してください。
+
+このトピックについて更に読むべき文書:
+
+- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+
 
 CSRF を回避する
 ---------------
@@ -189,6 +212,44 @@ class SiteController extends Controller
 }
 ```
 
+[スタンドアロンアクション](structure-controllers.md#standalone-actions) における CSRF 検証の無効化は `init()` メソッドの中で行わなければなりません。
+このコードは `beforeRun()` メソッドに置いてはいけません。そこでは効果がありません。
+
+```php
+<?php
+
+namespace app\components;
+
+use yii\base\Action;
+
+class ContactAction extends Action
+{
+    public function init()
+    {
+        parent::init();
+        $this->controller->enableCsrfValidation = false;
+    }
+
+    public function run()
+    {
+          $model = new ContactForm();
+          $request = Yii::$app->request;
+          if ($request->referrer === 'yiipowered.com'
+              && $model->load($request->post())
+              && $model->validate()
+          ) {
+              $model->sendEmail();
+          }
+    }
+}
+```
+
+> Warning: CSRF を無効化すると、あらゆるサイトから POST リクエストをあなたのサイトに送信することが出来るようになります。
+  その場合には、IP アドレスや秘密のトークンをチェックするなど、追加の検証を実装することが重要です。
+
+このトピックについて更に読むべき文書:
+
+- <https://www.owasp.org/index.php/CSRF>
 
 ファイルの曝露を回避する
 ------------------------
@@ -206,19 +267,26 @@ class SiteController extends Controller
 しかし、実際の所、これらの饒舌なエラー情報は、攻撃者にとっても、データベース構造、構成情報の値、コードの断片などを曝露してくれる重宝なものです。
 本番でのアプリケーションにおいては、決して `index.php` の `YII_DEBUG` を `true` にして走らせてはいけません。
 
-本番環境では Gii を決して有効にしてはいけません。
-Gii を使うと、データベース構造とコードに関する情報を得ることが出来るだけでなく、コードを Gii によって生成したもので書き換えることすら出来てしまいます。
+本番環境では Gii やデバッグツールバーを決して有効にしてはいけません。
+これらを有効にすると、データベース構造とコードに関する情報を得ることが出来るだけでなく、コードを Gii によって生成したもので書き換えることすら出来てしまいます。
 
 デバッグツールバーは本当に必要でない限り本番環境では使用を避けるべきです。
 これはアプリケーションと構成情報の全ての詳細を曝露することが出来ます。
 どうしても必要な場合は、あなたの IP だけに適切にアクセス制限されていることを再度チェックしてください。
+
+このトピックについて更に読むべき文書:
+
+- <https://www.owasp.org/index.php/Exception_Handling>
+- <https://www.owasp.org/index.php/Top_10_2007-Information_Leakage>
+
 
 TLS によるセキュアな接続を使う
 ------------------------------
 
 Yii が提供する機能には、クッキーや PHP セッションに依存するものがあります。
 これらのものは、接続が侵害された場合には、脆弱性となり得ます。
-アプリケーションが TLS によるセキュアな接続を使用している場合は、この危険性を減少させることが出来ます。
+アプリケーションが TLS (しばしば [SSL](https://ja.wikipedia.org/wiki/Transport_Layer_Security) と呼ばれます)
+によるセキュアな接続を使用している場合は、この危険性を減少させることが出来ます。
 
 その設定の仕方については、あなたのウェブサーバのドキュメントの指示を参照してください。
 H5BP プロジェクトが提供する構成例を参考にすることも出来ます。

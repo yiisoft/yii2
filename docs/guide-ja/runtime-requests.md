@@ -127,3 +127,65 @@ if ($headers->has('User-Agent')) { /* User-Agent ヘッダが在る */ }
 $userHost = Yii::$app->request->userHost;
 $userIP = Yii::$app->request->userIP;
 ```
+
+## 信頼できるプロキシとヘッダ <span id="trusted-proxies"></span>
+
+前の節でホストや IP アドレスなどのユーザ情報を取得する方法を説明しました。
+単一のウェブサーバがウェブサイトをホストしている通常の環境では、このままで動作します。
+しかし、Yii アプリケーションがリバースプロキシの背後で動作している場合は、この情報を読み出すために構成情報を追加する必要があります。
+なぜなら、その場合、直接のクライアントはプロキシになっており、ユーザの IP アドレスはプロキシがセットするヘッダによって Yii アプリケーションに渡されるからです。
+
+明示的に信頼したプロキシ以外は、プロキシによって提供されるヘッダを盲目的に信頼してはいけません。
+2.0.13 以降、Yii は `request` コンポーネントの以下のプロパティによって、信頼できるプロキシの情報を構成することが出来るようになっています。
+[[yii\web\Request::trustedHosts|trustedHosts]]、
+[[yii\web\Request::secureHeaders|secureHeaders]]、 
+[[yii\web\Request::ipHeaders|ipHeaders]] および
+[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]]
+
+以下は、リバースプロキシアレイの背後で動作するアプリケーションのための、request の構成例です
+(リバースプロキシアレイは `10.0.2.0/24` のネットワークに設置されているとします)。
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '10.0.2.0/24',
+    ],
+],
+```
+
+プロキシは、デフォルトでは、IP を `X-Forwarded-For` ヘッダで送信し、
+プロトコル (`http` または `https`) を `X-Forwarded-Proto` で送信します。
+
+あなたのプロキシが異なるヘッダを使っている場合は、request の構成情報を使って調整することが出来ます。
+例えば、
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '10.0.2.0/24' => [
+            'X-ProxyUser-Ip',
+            'Front-End-Https',
+        ],
+    ],
+    'secureHeaders' => [
+        'X-Forwarded-For',
+        'X-Forwarded-Host',
+        'X-Forwarded-Proto',
+        'X-Proxy-User-Ip',
+        'Front-End-Https',
+    ],
+    'ipHeaders' => [
+        'X-Proxy-User-Ip',
+    ],
+    'secureProtocolHeaders' => [
+        'Front-End-Https' => ['on']
+    ],
+],
+```
+
+上記の構成によって、`secureHeaders` としてリストされているヘッダはリクエストから除去され、
+信頼できるプロキシからのリクエストである場合にのみ、`X-ProxyUser-Ip` と `Front-End-Https` ヘッダが受け入れられます。
+その場合、前者は `ipHeaders` で構成されているようにユーザの IP を読み出すために使用され、
+後者は [[yii\web\Request::getIsSecureConnection()]] の結果を決定するために使用されます。

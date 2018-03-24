@@ -56,7 +56,7 @@ class EntryForm extends Model
 * `name` と `email` は、ともに値を要求される
 * `email` のデータは構文的に有効なメールアドレスでなければならない
 
-ユーザによって入力されたデータを `EntryForm` オブジェクトに投入した後、[[yii\base\Model::validate()|validate()]] を呼んでデータ検証ルーチンを始動することが出来ます。
+ユーザによって入力されたデータを `EntryForm` オブジェクトに投入した後、[[yii\base\Model::validate()|validate()]] メソッドを呼んでデータ検証ルーチンを始動することが出来ます。
 データ検証が失敗すると [[yii\base\Model::hasErrors|hasErrors]] プロパティが `true` に設定されます。
 そして、[[yii\base\Model::getErrors|errors]] を通じて、どのような検証エラーが発生したかを知ることが出来ます。
 
