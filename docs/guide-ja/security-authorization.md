@@ -591,9 +591,9 @@ public function behaviors()
 ],
 ```
 
-In the above example, [[yii\filters\AccessRule::roleParams|roleParams]] is a Closure that will be evaluated when
-the access rule is checked, so the model will only be loaded when needed.
-If the creation of role parameters is a simple operation, you may just specify an array, like so:
+上記の例では、[[yii\filters\AccessRule::roleParams|roleParams]] はアクセス規則がチェックされるときに評価されるクロージャになっています。
+従って、モデルは必要になったときだけロードされます。
+ロール・パラメータの作成が簡単な操作である場合は、次のように、単に配列を指定しても構いません。
 
 ```php
 [
