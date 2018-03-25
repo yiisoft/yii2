@@ -165,6 +165,15 @@ yii <module_id>/<command>/<sub_command>
 ルートがモジュール ID だけを含む場合は、[[yii\base\Module::defaultRoute]] プロパティ (デフォルト値は `default` です) が、どのコントローラ/アクションが使用されるべきかを決定します。
 これは、`forum` というルートは `forum` モジュール内の `default` コントローラを表すという意味です。
 
+モジュールのための URL マネージャの規則は [[yii\web\UrlManager::parseRequest()]] が起動される前に追加されなくてはなりません。
+すなわち、モジュールの `init()` の中で規則を追加しても動作しない、ということです。
+なぜなら、モジュールの初期化はルートの処理が済んだ後になるからです。
+従って、RUL 規則は [ブートストラップ段階](structure-extensions.md#bootstrapping-classes) で追加される必要があります。
+また、モジュールの URL 規則を [[\yii\web\GroupUrlRule]] に入れるのも良い方法です。
+
+モジュールが [バージョン管理された API](rest-versioning.md) で使用される場合は、その URL 規則はアプリケーション構成情報の
+`urlManager` のセクションに直接に追加されなければなりません。
+
 
 ### モジュールにアクセスする <span id="accessing-modules"></span>
 
@@ -259,6 +268,38 @@ class Module extends \yii\base\Module
 [[yii\base\Application::loadedModules]] プロパティがロードされた全てのモジュールのリストを保持しています。
 このリストには、直接の子と孫以下の両方のモジュールが含まれ、クラス名によってインデックスされています。
 
+## モジュール内からコンポーネントにアクセスする
+
+バージョン 2.0.13 以降、モジュールは [ツリー走査](concept-service-locator.md#tree-traversal) をサポートしています。
+これによって、モジュールの開発者は(アプリケーション)コンポーネントを参照するのに、サービスロケータとして自身のモジュールを使うことが出来るようになりました。
+これが意味することは、`Yii::$app->get('db')` よりも `$module->get('db')` を使う方が良い、ということです。
+モジュールのユーザは、異なるコンポーネント(構成)が要求される場合は、モジュールで使用する特定のコンポーネントを指定することが出来ます。
+
+例えば、次のような部分的なアプリケーション構成が可能です。
+
+```php
+'components' => [
+    'db' => [
+        'tablePrefix' => 'main_',
+        'class' => Connection::class,
+        'enableQueryCache' => false
+    ],
+],
+'modules' => [
+    'mymodule' => [
+        'components' => [
+            'db' => [
+                'tablePrefix' => 'module_',
+                'class' => Connection::class
+            ],
+        ],
+    ],
+],
+```
+
+アプリケーションのデータベーステーブルは `main_` という接頭辞を持つ一方で、
+モジュールのデータベーステーブルは `module_` という接頭辞を持ちます。
+上記の構成はマージされないということに注意して下さい。例えば、モジュールのコンポーネントではクエリキャッシュはデフォルト値に従って有効なままになります。
 
 ## ベストプラクティス <span id="best-practices"></span>
 

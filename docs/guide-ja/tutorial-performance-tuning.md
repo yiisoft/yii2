@@ -175,6 +175,12 @@ Composer のオートローダは、ほとんどのサードパーティのク�
 composer dumpautoload -o
 ```
 
+さらに加えて、
+[authoritative class maps](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps)
+および [APCu cache](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-b-apcu-cache) の使用を検討して下さい。
+ただし、この二つの最適化があなたの特定のケースに適切である場合もあれば、そうでない場合もあります。
+
+
 ## オフラインでデータを処理する <span id="processing-data-offline"></span>
 
 リクエストが何らかのリソース集約的な操作を必要とするものである場合は、そういう操作が終るまでユーザを待たせずに、オフラインモードで操作を実行する方策を考えるべきです。
