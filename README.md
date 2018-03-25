@@ -22,7 +22,7 @@ The framework is easy to adjust to meet your needs, because Yii has been designe
 * doc：文档翻译分支
 * api：api 翻译分支
 
-官方新版本发布：
+## 官方新版本发布
 doc branch: 
 ```
 git merge upstream/master
