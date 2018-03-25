@@ -307,11 +307,7 @@ SQL;
 
     public function testBatchInsertWithYield()
     {
-        if (PHP_VERSION_ID < 50500) {
-            $this->markTestSkipped('The yield function is only supported with php 5.5 =< version');
-        } else {
-            include __DIR__ . '/testBatchInsertWithYield.php';
-        }
+        include __DIR__ . '/testBatchInsertWithYield.php';
     }
 
     /**

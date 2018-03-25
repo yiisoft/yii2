@@ -104,11 +104,6 @@ class EmailValidator extends Validator
 
     private function idnToAscii($idn)
     {
-        if (PHP_VERSION_ID < 50600) {
-            // TODO: drop old PHP versions support
-            return idn_to_ascii($idn);
-        }
-
         return idn_to_ascii($idn, 0, INTL_IDNA_VARIANT_UTS46);
     }
 }

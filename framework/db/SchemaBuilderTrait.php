@@ -293,16 +293,6 @@ trait SchemaBuilderTrait
      */
     public function json()
     {
-        /*
-         * TODO Remove in Yii 2.1
-         *
-         * Disabled due to bug in MySQL extension
-         * @link https://bugs.php.net/bug.php?id=70384
-         */
-        if (version_compare(PHP_VERSION, '5.6', '<') && $this->getDb()->getDriverName() === 'mysql') {
-            throw new \yii\base\Exception('JSON column type is not supported in PHP < 5.6');
-        }
-
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_JSON);
     }
 }

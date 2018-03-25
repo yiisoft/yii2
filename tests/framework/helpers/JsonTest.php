@@ -201,11 +201,7 @@ class JsonTest extends TestCase
             Json::encode($data);
             fclose($fp);
         } catch (\yii\base\InvalidArgumentException $e) {
-            if (PHP_VERSION_ID >= 50500) {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
-            } else {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
-            }
+            $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
         }
     }
 

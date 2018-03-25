@@ -252,7 +252,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function formName()
     {
         $reflector = new ReflectionClass($this);
-        if (PHP_VERSION_ID >= 70000 && $reflector->isAnonymous()) {
+        if ($reflector->isAnonymous()) {
             throw new InvalidConfigException('The "formName()" method should be explicitly defined for anonymous models');
         }
         return $reflector->getShortName();
