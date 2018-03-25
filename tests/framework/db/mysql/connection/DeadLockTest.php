@@ -267,12 +267,9 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     private function setErrorHandler()
     {
-        if (PHP_VERSION_ID < 70000) {
-            // TODO: Is it really unnecessary for PHP versions >= 7.0? Why?
-            set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-                throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
-            });
-        }
+        set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+            throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
+        });
     }
 
     /**
