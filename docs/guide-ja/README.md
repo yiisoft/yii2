@@ -8,8 +8,8 @@ All Rights Reserved.
 2014 (c) Yii Software LLC.
 
 
-前書き
-------
+導入
+----
 
 * [Yii について](intro-yii.md)
 * [バージョン 1.1 からのアップグレード](intro-upgrade-from-v1.md)
@@ -18,6 +18,7 @@ All Rights Reserved.
 始めよう
 --------
 
+* [何を知っている必要があるか](start-prerequisites.md)
 * [Yii をインストールする](start-installation.md)
 * [アプリケーションを走らせる](start-workflow.md)
 * [こんにちは、と言う](start-hello.md)
@@ -30,7 +31,7 @@ All Rights Reserved.
 アプリケーションの構造
 ----------------------
 
-* [概要](structure-overview.md)
+* [アプリケーションの構造の概要](structure-overview.md)
 * [エントリスクリプト](structure-entry-scripts.md)
 * [アプリケーション](structure-applications.md)
 * [アプリケーションコンポーネント](structure-application-components.md)
@@ -47,7 +48,7 @@ All Rights Reserved.
 リクエストの処理
 ----------------
 
-* [概要](runtime-overview.md)
+* [リクエストの処理の概要](runtime-overview.md)
 * [ブートストラップ](runtime-bootstrapping.md)
 * [ルーティングと URL 生成](runtime-routing.md)
 * [リクエスト](runtime-requests.md)
@@ -92,6 +93,7 @@ All Rights Reserved.
 * [ファイルをアップロードする](input-file-upload.md)
 * [表形式インプットのデータ収集](input-tabular-input.md)
 * [複数のモデルのデータを取得する](input-multiple-models.md)
+* [クライアントサイドで ActiveForm を拡張する](input-form-javascript.md)
 
 
 データの表示
@@ -109,7 +111,7 @@ All Rights Reserved.
 セキュリティ
 ------------
 
-* [概要](security-overview.md)
+* [セキュリティの概要](security-overview.md)
 * [認証](security-authentication.md)
 * [権限付与](security-authorization.md)
 * [パスワードを扱う](security-passwords.md)
@@ -121,7 +123,7 @@ All Rights Reserved.
 キャッシュ
 ----------
 
-* [概要](caching-overview.md)
+* [キャッシュの概要](caching-overview.md)
 * [データキャッシュ](caching-data.md)
 * [フラグメントキャッシュ](caching-fragment.md)
 * [ページキャッシュ](caching-page.md)
@@ -147,12 +149,13 @@ RESTful ウェブサービス
 
 * [デバッグツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
 * [Gii を使ってコードを生成する](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md)
+* [API ドキュメントを生成する](https://github.com/yiisoft/yii2-apidoc)
 
 
 テスト
 ------
 
-* [概要](test-overview.md)
+* [テストの概要](test-overview.md)
 * [テスト環境の構築](test-environment-setup.md)
 * [単体テスト](test-unit.md)
 * [機能テスト](test-functional.md)
@@ -173,6 +176,7 @@ RESTful ウェブサービス
 * [共有ホスティング環境](tutorial-shared-hosting.md)
 * [テンプレートエンジン](tutorial-template-engines.md)
 * [サードパーティのコードを扱う](tutorial-yii-integration.md)
+* [Yii をマイクロ・フレームワークとして使う](tutorial-yii-as-micro-framework.md)
 
 
 ウィジェット
@@ -193,7 +197,8 @@ RESTful ウェブサービス
 ヘルパ
 ------
 
-* [概要](helper-overview.md)
+* [ヘルパの概要](helper-overview.md)
 * [配列ヘルパ](helper-array.md)
 * [Html ヘルパ](helper-html.md)
 * [Url ヘルパ](helper-url.md)
+

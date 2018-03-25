@@ -3,7 +3,8 @@
 
 フィクスチャはテストの重要な部分です。
 フィクスチャの主な目的は、テストを期待されている方法で繰り返して実行できるように、環境を固定された既知の状態に設定することです。
-Yii は、フィクスチャを正確に定義して容易に使うことを可能にするフィクスチャフレームワークを提供しています。
+Yii は、Codeception でテストを実行する場合でも、単独でテストを実行する場合でも、
+フィクスチャを正確に定義して容易に使うことが出来るように、フィクスチャフレームワークを提供しています。
 
 Yii のフィクスチャフレームワークにおける鍵となる概念は、いわゆる *フィクスチャオブジェクト* です。
 フィクスチャオブジェクトはテスト環境のある特定の側面を表現するもので、[[yii\test\Fixture]] またはその子クラスのインスタンスです。
@@ -15,8 +16,7 @@ Yii のフィクスチャフレームワークにおける鍵となる概念は�
 そしてフィクスチャがアンロードされるときには、依存するフィクスチャはそのフィクスチャの後にアンロードされます。
 
 
-フィクスチャを定義する
-----------------------
+## フィクスチャを定義する
 
 フィクスチャを定義するためには、[[yii\test\Fixture]] または [[yii\test\ActiveFixture]] を拡張して新しいクラスを作ります。
 前者は汎用目的のフィクスチャに最も適しています。
@@ -104,29 +104,35 @@ class UserProfileFixture extends ActiveFixture
 DB と関係しないフィクスチャ (例えば、何らかのファイルやディレクトリに関するフィクスチャ) を定義するためには、より汎用的な基底クラス [[yii\test\Fixture]] から拡張して、[[yii\test\Fixture::load()|load()]] と [[yii\test\Fixture::unload()|unload()]] のメソッドをオーバーライドすることが出来ます。
 
 
-フィクスチャを使用する
-----------------------
+## フィクスチャを使用する
 
-[Codeception](http://codeception.com/) を使ってコードをテストしている場合は、フィクスチャのローディングとアクセスを内蔵でサポートしている `yii2-codeception` を使用することを検討すべきです。
+[Codeception](http://codeception.com/) を使ってコードをテストしている場合は、フィクスチャのローディングとアクセスについては、
+内蔵されているサポートを使用することが出来ます。
+
 その他のテストフレームワークを使っている場合は、テストケースで [[yii\test\FixtureTrait]] を使って同じ目的を達することが出来ます。
 
-次に `yii2-codeception` を使って `UserProfile` 単体テストを書く方法を説明します。
+次に、Codeception を使って `UserProfile` 単体テストクラスを書く方法を説明します。
 
-[[yii\codeception\DbTestCase]] または [[yii\codeception\TestCase]] を拡張する単体テストクラスにおいて、どのフィクスチャを使用したいかを [[yii\test\FixtureTrait::fixtures()|fixtures()]] メソッドの中で宣言します。
+`\Codeception\Test\Unit` を拡張するあなたの単体テストクラスにおいて、 `_fixtures()` メソッドの中で使いたいフィクスチャを宣言するか、
+または、アクターの `haveFixtures()` メソッドを直接に使用します。
 例えば、
 
 ```php
 namespace app\tests\unit\models;
 
-use yii\codeception\DbTestCase;
+
 use app\tests\fixtures\UserProfileFixture;
 
-class UserProfileTest extends DbTestCase
-{
-    public function fixtures()
+class UserProfileTest extends \Codeception\Test\Unit
+{   
+    public function _fixtures()
     {
         return [
-            'profiles' => UserProfileFixture::className(),
+            'profiles' => [
+                'class' => UserProfileFixture::className(),
+                // フィクスチャデータは tests/_data/user.php に配置されている
+                'dataFile' => codecept_data_dir() . 'user.php'
+            ],
         ];
     }
 
@@ -134,55 +140,35 @@ class UserProfileTest extends DbTestCase
 }
 ```
 
-`fixtures()` メソッドにリストされたメソッドは、テストケースの中のどのテストメソッドが走る前にも自動的にロードされ、テストメソッドが完了した後にアンロードされます。
-前に説明したように、フィクスチャがロードされるときには、それが依存するフィクスチャのすべてが最初に自動的にロードされます。
+`_fixtures()` メソッドにリストされたフィクスチャは、テストが実行される前に自動的にロードされます。
+前に説明したように、フィクスチャがロードされるときには、それが依存するフィクスチャのすべてが自動的に先にロードされます。
 上の例では、`UserProfileFixture` は `UserFixture` に依存しているので、テストクラスのどのテストメソッドを走らせるときでも、二つのフィクスチャが連続してロードされます。
 すなわち、最初に `UserFixture` がロードされ、次に `UserProfileFixture` がロードされます。
 
-`fixtures()` でフィクスチャを指定するときは、クラス名あるいはフィクスチャを指す構成情報配列を使うことが出来ます。
+`_fixtures()` でフィクスチャを指定するときも、`haveFixtures()` でフィクスチャを指定するときも、
+クラス名あるいはフィクスチャを指す構成情報配列を使うことが出来ます。
 構成情報配列を使うと、フィクスチャがロードされるときのフィクスチャのプロパティをカスタマイズすることが出来ます。
 
 また、フィクスチャにエイリアスを割り当てることも出来ます。
 上記の例では、`UserProfileFixture` に `profiles` というエイリアスが与えられています。
 そうすると、テストメソッドの中でエイリアスを使ってフィクスチャオブジェクトにアクセスすることが出来るようになります。
-例えば、`$this->profiles` が `UserProfileFixture` を返すことになります。
+例えば、
+
+```php
+$profile = $I->grabFixture('profiles', 'user1');
+```
+は `UserProfileFixture` オブジェクトを返します。
 
 さらには、`UserProfileFixture` は `ActiveFixture` を拡張するものですので、フィクスチャによって提供されたデータに対して、次の構文を使ってアクセスすることも出来ます。
 
 ```php
-// 'user1' というエイリアスのデータ行を返す
-$row = $this->profiles['user1'];
 // 'user1' というエイリアスのデータ行に対応する UserProfileModel を返す
-$profile = $this->profiles('user1');
+$profile = $I->grabFixture('profiles', 'user1');
 // フィクスチャにある全てのデータ行をたどる
-foreach ($this->profiles as $row) ...
+foreach ($I->grabFixture('profiles') as $profile) ...
 ```
 
-> Info: `$this->profiles` は依然として `UserProfileFixture` という型です。
-> 上記のアクセス機能は PHP マジックメソッドによって実装されています。
-
-
-グローバルフィクスチャを定義して使用する
-----------------------------------------
-
-上記で説明されたフィクスチャは主として個別のテストケースによって使われます。
-たいていの場合、全てまたは多くのテストケースに適用されるグローバルなフィクスチャもいくつか必要になります。
-一例は、[[yii\test\InitDbFixture]] で、これは二つのことをします。
-
-* `@app/tests/fixtures/initdb.php` に配置されたスクリプトを実行して、いくつかの共通の初期化作業を行う。
-* 他の DB フィクスチャをロードする前に、データベースの整合性チェックを無効化し、他の DB フィクスチャがアンロードされた後で、それを再び有効化する。
-
-グローバルフィクスチャの使い方は、グローバルでないフィクスチャと同じです。
-違うところは、グローバルフィクスチャは `fixtures()` ではなく [[yii\codeception\TestCase::globalFixtures()]] で宣言するという点です。
-テストケースがフィクスチャをロードするときは、最初にグローバルフィクスチャをロードし、次にグローバルでないものをロードします。
-
-デフォルトでは、[[yii\codeception\DbTestCase]] は `InitDbFixture` を `globalFixtures()` メソッドの中で既に宣言しています。
-このことは、どのテストの前にも何らかの初期化作業をしたい場合は、`@app/tests/fixtures/initdb.php` だけを触ればよいことを意味します。
-その必要がなければ、単にそれぞれの個別テストケースとそれに対応するフィクスチャの開発に専念することが出来ます。
-
-
-フィクスチャクラスとデータファイルを編成する
---------------------------------------------
+## フィクスチャクラスとデータファイルを編成する
 
 デフォルトでは、フィクスチャクラスは対応するデータファイルを探すときに、フィクスチャのクラスファイルを含むフォルダのサブフォルダである `data` フォルダの中を見ます。
 簡単なプロジェクトではこの規約に従うことができます。
@@ -211,56 +197,28 @@ data\
 
 
 > Note: 上の例では、フィクスチャファイルには例示目的だけの名前が付けられています。
-> 実際の現場では、フィクスチャクラスの拡張元である基底クラスに従って名前を付けるべきです。
+> 実際の仕事では、フィクスチャクラスがどのフィクスチャクラスを拡張したものであるかに従って名前を付けるべきです。
 > 例えば、DB フィクスチャを [[yii\test\ActiveFixture]] から拡張している場合は、DB テーブルの名前をフィクスチャのデータファイル名として使うべきです。
 > MongoDB フィクスチャを [[yii\mongodb\ActiveFixture]] から拡張している場合は、コレクション名をファイル名として使うべきです。
 
 同様な階層は、フィクスチャクラスファイルを編成するのにも使うことが出来ます。
 `data` をルートディレクトリとして使うのでなく、データファイルとの衝突を避けるために `fixtures` をルートディレクトリとして使うのが良いでしょう。
 
+## `yii fixture` でフィクスチャを管理する
 
-まとめ
-------
+Yii は `yii fixture` コマンドラインツールでフィクスチャをサポートしています。以下の機能をサポートしています。
 
-以上、フィクスチャを定義して使用する方法を説明しました。
-下記に、DB に関連したユニットテストを走らせる場合の典型的なワークフローをまとめておきます。
+* 異なるストレージ (RDBMS、NoSQL など) へのフィクスチャのロード
+* 様々な方法でのフィクスチャのアンロード (通常はストレージをクリア)
+* フィクスチャの自動生成およびランダムデータの投入
 
-1. `yii migrate` ツールを使って、テストのデータベースを最新版にアップグレードする
-2. テストケースを走らせる
-   - フィクスチャをロードする - 関係する DB テーブルをクリーンアップし、フィクスチャデータを投入する
-   - 実際のテストを実行する
-   - フィクスチャをアンロードする
-3. 全てのテストが完了するまで、ステップ 2 を繰り返す
+### フィクスチャのデータ形式
 
-
-(以下は削除または大幅に改稿される可能性が高いので、当面、翻訳を見合わせます)
-
-**To be cleaned up below**
-
-Managing Fixtures
-=================
-
-> Note: This section is under development.
->
-> todo: this tutorial may be merged with the above part of test-fixtures.md
-
-Fixtures are important part of testing. Their main purpose is to populate you with data that needed by testing
-different cases. With this data using your tests becoming more efficient and useful.
-
-Yii supports fixtures via the `yii fixture` command line tool. This tool supports:
-
-* Loading fixtures to different storage such as: RDBMS, NoSQL, etc;
-* Unloading fixtures in different ways (usually it is clearing storage);
-* Auto-generating fixtures and populating it with random data.
-
-Fixtures format
----------------
-
-Fixtures are objects with different methods and configurations, refer to official [documentation](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixtures.md) on them.
-Lets assume we have fixtures data to load:
+次のようなフィクスチャデータをロードするとしましょう。
 
 ```
-#users.php file under fixtures data path, by default @tests\unit\fixtures\data
+# users.php ファイル
+# フィクスチャデータパス (デフォルトでは @tests\unit\fixtures\data) に保存されている
 
 return [
     [
@@ -279,81 +237,93 @@ return [
     ],
 ];
 ```
-If we are using fixture that loads data into database then these rows will be applied to `users` table. If we are using nosql fixtures, for example `mongodb`
-fixture, then this data will be applied to `users` mongodb collection. In order to learn about implementing various loading strategies and more, refer to official [documentation](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixtures.md).
-Above fixture example was auto-generated by `yii2-faker` extension, read more about it in these [section](#auto-generating-fixtures).
-Fixture classes name should not be plural.
 
-Loading fixtures
-----------------
+データベースにデータをロードするフィクチャを使う場合は、これらの行が `users` テーブルに対して適用されます。
+NoSQL フィクスチャ、例えば `mongodb` フィクチャを使う場合は、このデータは `users` コレクションに対して適用されます。
+さまざまなロード戦略を実装する方法などについて公式 [ドキュメント](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixtures.md)を参照して下さい。
+上記のフィクスチャのサンプルは `yii2-faker` エクステンションによって生成されました。これについての詳細は、[自動生成の節](#auto-generating-fixtures) を参照して下さい。
 
-Fixture classes should be suffixed by `Fixture` class. By default fixtures will be searched under `tests\unit\fixtures` namespace, you can
-change this behavior with config or command options. You can exclude some fixtures due load or unload by specifying `-` before its name like `-User`.
+フィクスチャクラスの名前は複数形であってはいけません。
 
-To load fixture, run the following command:
+### フィクスチャをロードする
+
+フィクスチャクラスは `Fixture` という接尾辞を持たなければいけません。
+デフォルトでは、フィクスチャは `tests\unit\fixtures` 名前空間の下で探されます。
+この挙動は構成またはコマンドオプションによって変更することが出来ます。
+`-User` のように名前の前に `-` を指定することで、ロードまたはアンロードから除外するフィクスチャを指定することが出来ます。
+
+フィクスチャをロードするためには、次のコマンドを実行します。
+
+> Note: データをロードする前に、アンロードのシーケンスが実行されます。これによって、通常は、前に実行されたフィクスチャによって挿入された
+  既存のデータが全てクリーンアップされることになります。
 
 ```
 yii fixture/load <fixture_name>
 ```
 
-The required `fixture_name` parameter specifies a fixture name which data will be loaded. You can load several fixtures at once.
-Below are correct formats of this command:
+要求される `fixture_name` パラメータが、データがロードされるフィクスチャの名前を指定するものです。
+いくつかのフィクスチャを一度にロードすることが出来ます。
+下記はこのコマンドの正しい形式です。
 
 ```
-// load `User` fixture
+// `User` フィクスチャをロードする
 yii fixture/load User
 
-// same as above, because default action of "fixture" command is "load"
+// 上記と同じ、"fixture" コマンドのデフォルトのアクションは "load" であるため
 yii fixture User
 
-// load several fixtures
+// いくつかのフィクスチャをロードする
 yii fixture "User, UserProfile"
 
-// load all fixtures
+// 全てのフィクスチャをロードする
 yii fixture/load "*"
 
-// same as above
+// 同上
 yii fixture "*"
 
-// load all fixtures except ones
+// 一つを除いて全てのフィクスチャをロードする
 yii fixture "*, -DoNotLoadThisOne"
 
-// load fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
+// 異なる名前空間からフィクスチャをロードする
+// デフォルトの名前空間は tests\unit\fixtures
 yii fixture User --namespace='alias\my\custom\namespace'
 
-// load global fixture `some\name\space\CustomFixture` before other fixtures will be loaded.
-// By default this option is set to `InitDbFixture` to disable/enable integrity checks. You can specify several
-// global fixtures separated by comma.
+// 他のフィクスチャをロードする前に、グローバルフィクスチャ
+// `some\name\space\CustomFixture` をロードする。
+// デフォルトでは、このオプションが `InitDbFixture` について適用され、
+// 整合性チェックが無効化/有効化されます。
+// カンマで区切って複数のグローバルフィクスチャを指定することが出来ます。
 yii fixture User --globalFixtures='some\name\space\Custom'
 ```
 
-Unloading fixtures
-------------------
+### フィクスチャをアンロードする
 
-To unload fixture, run the following command:
+フィクスチャをアンロードするためには、次のコマンドを実行します。
 
 ```
-// unload Users fixture, by default it will clear fixture storage (for example "users" table, or "users" collection if this is mongodb fixture).
+// Users フィクスチャをアンロードする。
+// デフォルトではフィクスチャのストレージをクリアします。
+// 例えば、"users" テーブル、または、mongodb フィクスチャなら "users" コレクションがクリアされます。
 yii fixture/unload User
 
-// Unload several fixtures
+// いくつかのフィクスチャをアンロードする
 yii fixture/unload "User, UserProfile"
 
-// unload all fixtures
+// すべてのフィクスチャをアンロードする
 yii fixture/unload "*"
 
-// unload all fixtures except ones
+// 一つを除いて全てのフィクスチャをアンロードする
 yii fixture/unload "*, -DoNotUnloadThisOne"
 
 ```
 
-Same command options like: `namespace`, `globalFixtures` also can be applied to this command.
+このコマンドでも、`namespace` や `globalFixtures` という同じオプションを適用することが出来ます。
 
-Configure Command Globally
---------------------------
-While command line options allow us to configure the migration command
-on-the-fly, sometimes we may want to configure the command once for all. For example you can configure
-different migration path as follows:
+### コマンドをグローバルに構成する
+
+コマンドラインオプションはフィクスチャコマンドをその場で構成することを可能にするものですが、
+コマンドを一度だけ構成して済ませたい場合もあります。
+例えば、次のように、異なるフィクスチャのパスを構成することが出来ます。
 
 ```
 'controllerMap' => [
@@ -368,9 +338,21 @@ different migration path as follows:
 ]
 ```
 
-Auto-generating fixtures
-------------------------
+### フィクスチャを自動生成する
 
-Yii also can auto-generate fixtures for you based on some template. You can generate your fixtures with different data on different languages and formats.
-These feature is done by [Faker](https://github.com/fzaninotto/Faker) library and `yii2-faker` extension.
-See extension [guide](https://github.com/yiisoft/yii2-faker) for more docs.
+Yii は、あなたの代りに、何らかのテンプレートに従ってフィクスチャを自動生成することが出来ます。
+さまざまなデータで、また、いろいろな言語と形式で、フィクスチャを生成することが出来ます。
+この機能は、[Faker](https://github.com/fzaninotto/Faker) ライブラリと `yii2-faker` エクステンションによって実現されています。
+詳細については、エクステンションの [ガイド](https://github.com/yiisoft/yii2-faker/tree/master/docs/guide-ja) を参照して下さい。.
+
+## まとめ
+
+以上、フィクスチャを定義して使用する方法を説明しました。
+下記に、DB に関連した単体テストを走らせる場合の典型的なワークフローをまとめておきます。
+
+1. `yii migrate` ツールを使って、テストのデータベースを最新版にアップグレードする
+2. テストケースを走らせる
+   - フィクスチャをロードする - 関係する DB テーブルをクリーンアップし、フィクスチャデータを投入する
+   - 実際のテストを実行する
+   - フィクスチャをアンロードする
+3. 全てのテストが完了するまで、ステップ 2 を繰り返す

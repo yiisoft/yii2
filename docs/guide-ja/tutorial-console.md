@@ -102,6 +102,54 @@ exit($exitCode);
 > yii <route> --appconfig=path/to/config.php ...
 > ```
 
+コンソールコマンドの補完 <span id="console-command-completion"></span>
+---------------
+
+シェルで作業をしている場合、コマンド引数の自動補完は便利なものです。
+2.0.11 以降、`./yii` コマンドは、内蔵で Bash および ZSH のために補完をサポートしています。
+
+### Bash の補完
+
+bash completion がインストールされていることを確認して下さい。
+ほとんどの bash のインストレーションでは、デフォルトで利用可能になっています。
+
+補完スクリプトを `/etc/bash_completion.d/` に置いて下さい。
+
+     curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/bash/yii -o /etc/bash_completion.d/yii
+
+一時的な利用の場合は、ファイルをカレントディレクトリに置いて、`source yii` でカレントセッションに読み込みます。
+グローバルにインストールした場合は、ターミナルを再起動するか、`source ~/.bashrc` を実行して、有効化する必要があります。
+
+あなたの環境で補完スクリプトを読み込む他の方法については、
+[Bash マニュアル](https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html) を参照して下さい。
+
+### ZSH の補完
+
+補完のためのディレクトリ、例えば `~/.zsh/completion/` に補完スクリプトを置いて下さい。
+
+```
+mkdir -p ~/.zsh/completion
+curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/zsh/_yii -o ~/.zsh/completion/_yii
+```
+
+そのディレクトリを `$fpath` に追加します。例えば `~/.zshrc` に次の記述を追加します。
+
+```
+fpath=(~/.zsh/completion $fpath)
+```
+
+`compinit` がロードされていることを確認して下さい。そうでなければ、`~/.zshrc` の中でロードします。
+
+```
+autoload -Uz compinit && compinit -i
+```
+
+そしてシェルをリロードします。
+
+```
+exec $SHELL -l
+```
+
 
 あなた自身のコンソールコマンドを作成する <span id="create-command"></span>
 ----------------------------------------
@@ -215,12 +263,21 @@ public function actionIndex()
 }
 ```
 
-いくつか使用できる事前定義された定数があります。
+いくつか使用できる事前定義された定数があります。それらは [[yii\console\ExitCode]] クラスで定義されています。
 
-- [[yii\console\Controller::EXIT_CODE_NORMAL|Controller::EXIT_CODE_NORMAL]] - 値は `0`
-- [[yii\console\Controller::EXIT_CODE_ERROR|Controller::EXIT_CODE_ERROR]] - 値は `1`
+```php
+public function actionIndex()
+{
+    if (/* 何らかの問題が発生 */) {
+        echo "A problem occurred!\n";
+        return ExitCode::UNSPECIFIED_ERROR;
+    }
+    // 何かをする
+    return ExitCode::OK;
+}
+```
 
-もっと多くのエラーコードの種類がある場合は、コントローラで意味のある定数を定義するのが良いプラクティスです。
+もっと詳細なエラーコードを必要とする場合は、コントローラで詳細な定数を定義するのが良いプラクティスです。
 
 ### 書式設定と色
 
@@ -240,3 +297,20 @@ $this->stdout("Hello?\n", Console::BOLD);
 $name = $this->ansiFormat('Alex', Console::FG_YELLOW);
 echo "Hello, my name is $name.";
 ```
+
+### 表形式
+
+バージョン 2.0.13 以降、表形式のデータをコンソールに表示するウィジェットが追加されています。
+次のようにして使うことが出来ます。
+
+```php
+echo Table::widget([
+    'headers' => ['Project', 'Status', 'Participant'],
+    'rows' => [
+        ['Yii', 'OK', '@samdark'],
+        ['Yii', 'OK', '@cebe'],
+    ],
+]);
+```
+
+詳細については [[yii\console\widgets\Table|API リファレンス]] を参照して下さい。

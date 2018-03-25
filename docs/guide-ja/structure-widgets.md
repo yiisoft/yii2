@@ -33,9 +33,7 @@ use yii\jui\DatePicker;
     'model' => $model,
     'attribute' => 'from_date',
     'language' => 'ja',
-    'clientOptions' => [
-        'dateFormat' => 'yy-mm-dd',
-    ],
+    'dateFormat' => 'php:Y-m-d',
 ]) ?>
 ```
 

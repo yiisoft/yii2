@@ -40,6 +40,7 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        ['css/print.css', 'media' => 'print'],
     ];
     public $js = [
     ];
@@ -66,16 +67,17 @@ class AppAsset extends AssetBundle
 * [[yii\web\AssetBundle::baseUrl|baseUrl]]: [[yii\web\AssetBundle::basePath|basePath]] ディレクトリに対応する URL を指定します。
   [[yii\web\AssetBundle::basePath|basePath]] と同じように、[[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティをセットした場合は、[アセットマネージャ](#asset-manager) がアセットを発行して、その結果、このプロパティを上書きします。
   [パスエイリアス](concept-aliases.md) をここで使うことが出来ます。
-* [[yii\web\AssetBundle::js|js]]: このバンドルに含まれる JavaScript ファイルをリストする配列です。
+* [[yii\web\AssetBundle::css|css]]: このバンドルに含まれている CSS ファイルをリストする配列です。
   ディレクトリの区切りとしてフォワードスラッシュ "/" だけを使わなければならないことに注意してください。
+  それぞれのファイルは、個別に、パス文字列、または、パス文字列と属性のタグと値を一緒に含む配列によって指定することが出来ます。
+* [[yii\web\AssetBundle::js|js]]: このバンドルに含まれる JavaScript ファイルをリストする配列です。
+  この配列の形式は、[[yii\web\AssetBundle::css|css]] の配列の形式と同じです。
   それぞれの JavaScript ファイルは、以下の二つの形式のどちらかによって指定することが出来ます。
   - ローカルの JavaScript ファイルを表す相対パス (例えば `js/main.js`)。
     実際のファイルのパスは、この相対パスの前に [[yii\web\AssetManager::basePath]] を付けることによって決定されます。
     また、実際の URL は、この相対パスの前に [[yii\web\AssetManager::baseUrl]] を付けることによって決定されます。
   - 外部の JavaScript ファイルを表す絶対 URL。
     例えば、`http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` や `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` など。
-* [[yii\web\AssetBundle::css|css]]: このバンドルに含まれる CSS ファイルをリストする配列です。
-  この配列の形式は、[[yii\web\AssetBundle::js|js]] の形式と同じです。
 * [[yii\web\AssetBundle::depends|depends]]: このバンドルが依存しているアセットバンドルの名前をリストする配列です
    (バンドルの依存関係については、すぐ後で説明します)。
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: このバンドルにある *全て* の JavaScript ファイルについて、それを登録するときに呼ばれる [[yii\web\View::registerJsFile()]] メソッドに渡されるオプションを指定します。
@@ -126,7 +128,8 @@ class AppAsset extends AssetBundle
 これらのプロパティの値は、[ビュー](structure-views.md) が CSS と JavaScript ファイルをインクルードするために、[[yii\web\View::registerCssFile()]] および [[yii\web\View::registerJsFile()]] メソッドを呼ぶときに、それぞれ、オプションとして引き渡されます。
 
 > Note: バンドルクラスでセットしたオプションは、バンドルの中の *全て* の CSS/JavaScript ファイルに適用されます。
-  いろいろなファイルに別々のオプションを使用したい場合は、別々のアセットバンドルを作成して、個々のバンドルの中では、一組のオプションを使うようにしなければなりません。
+  いろいろなファイルに別々のオプションを使用したい場合は、上述した [[yii\web\AssetBundle::css|css] の形式を使うか、
+または、別々のアセットバンドルを作成して、個々のバンドルの中では、一組のオプションを使うようにしなければなりません。
 
 例えば、IE9 以下のブラウザに対して CSS ファイルを条件的にインクルードするために、次のオプションを使うことが出来ます。
 
@@ -173,8 +176,8 @@ class FontAwesomeAsset extends AssetBundle
     ]; 
     public $publishOptions = [
         'only' => [
-            'fonts/',
-            'css/',
+            'fonts/*',
+            'css/*',
         ]
     ];
 }  
@@ -184,14 +187,85 @@ class FontAwesomeAsset extends AssetBundle
 発行オプション `only` を指定して、`fonts` と `css` サブディレクトリだけが発行されるようにしています。
 
 
-### Bower と NPM のアセット <span id="bower-npm-assets"></span>
+### Bower と NPM のアセットのインストール <span id="bower-npm-assets"></span>
 
 ほとんどの JavaScript/CSS パッケージは、[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.org/) によって管理されています。
-あなたのアプリケーションやエクステンションがそのようなパッケージを使っている場合は、以下のステップに従って、ライブラリの中のアセットを管理することが推奨されます。
+PHP の世界には PHP の依存を管理する Composer がありますが、PHP のパッケージと全く同じように
+`composer.json` を使って Bower のパッケージも NPM のパッケージもロードすることが可能です。
+
+このことを達成するために Composer の構成を少し修正しなければなりません。二つの方法があります。
+
+___
+
+##### asset-packagist レポジトリを使う
+
+この方法は NPM または Bower のパッケージを必要とするプロジェクトの大半の要求を満たすことが出来ます。
+
+> Note: 2.0.13 以降、ベーシック・アプリケーション・テンプレートとアドバンスト・アプリケーション・テンプレートはともに、
+  デフォルトで asset-packagist を使うように前もって構成されていますので、
+  この節は読み飛ばすことが出来ます。
+
+プロジェクトの `composer.json` に、下記を追加します。
+
+```json
+"repositories": [
+    {
+        "type": "composer",
+        "url": "https://asset-packagist.org"
+    }
+]
+```
+
+[アプリケーション構成情報](concept-configurations.md) の `@npm` と `@bower` の [エイリアス](concept-aliases.md) を修正します。
+
+```php
+$config = [
+    ...
+    'aliases' => [
+        '@bower' => '@vendor/bower-asset',
+        '@npm'   => '@vendor/npm-asset',
+    ],
+    ...
+];
+```
+
+asset-packagist がどのようにして動作するのかは、[asset-packagist.org のサイト](https://asset-packagist.org) に説明があります。
+
+##### fxp/composer-asset-plugin を使う
+
+asset-packagist と異なって、composer-asset-plugin はアプリケーション構成の変更を少しも要求しません。
+その代りに、次のコマンドを実行して特別な Composer プラグインをグローバルにインストールすることが要求されます。
+
+```bash
+composer global require "fxp/composer-asset-plugin:^1.4.1"
+```
+
+このコマンドによって [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) がグローバルにインストールされ、
+Bower と NPM パッケージの依存関係を Composer によって管理することが出来るようになります。
+プラグインがインストールされた後は、あなたのコンピュータ上の全てのプロジェクトが `composer.json` を通じて Bower と NPM パッケージをサポートすることが出来ます。
+
+Yii を使ってこれらのアセットを発行したい場合は、プロジェクトの `composer.json` に下記を追加して、
+インストールされるパッケージが配置されるディレクトリを調整します。
+
+```json
+"extra": {
+    "asset-installer-paths": {
+        "npm-asset-library": "vendor/npm",
+        "bower-asset-library": "vendor/bower"
+    }
+}
+```
+
+> Note: `fxp/composer-asset-plugin` は、asset-packagist に比べて、`composer update` コマンドを著しく遅くします。
+ 
+____
+ 
+Composer で Bower と NPM をサポートできるように構成した後は:
 
 1. アプリケーションまたはエクステンションの `composer.json` ファイルを修正して、パッケージを `require` のエントリに入れます。
    ライブラリを参照するのに、`bower-asset/PackageName` (Bower パッケージ) または `npm-asset/PackageName` (NPM パッケージ) を使わなければなりません。
-2. アセットバンドルクラスを作成して、アプリケーションまたはエクステンションで使う予定の JavaScript/CSS ファイルをリストに挙げます。
+2. `composer update` を実行します。
+3. アセットバンドルクラスを作成して、アプリケーションまたはエクステンションで使う予定の JavaScript/CSS ファイルをリストに挙げます。
    [[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティは、`@bower/PackageName` または `@npm/PackageName` としなければなりません。
    これは、Composer が Bower または NPM パッケージを、このエイリアスに対応するディレクトリにインストールするためです。
 
@@ -426,6 +500,30 @@ return [
 
 上記の構成によって、アセットマネージャはアセットバンドルを発行するときにソースパスへのシンボリックリンクを作成するようになります。
 この方がファイルのコピーより速く、また、発行されたアセットが常に最新であることを保証することも出来ます。
+
+
+### キャッシュの廃棄 <span id="cache-busting"></span>
+
+運用モードで動作しているウェブ・アプリケーションでは、アセットなどの静的なリソースに対する HTTP キャッシュを有効にするのが通例です。
+この慣行の難点は、アセットを修正して運用サーバに配備したときに、ユーザのクライアントが HTTP キャッシュのせいで古いバージョンを使い続けるおそれが常にあるという点です。
+この難点を克服するために、キャッシュ廃棄機能を使うことが出来ます。
+これはバージョン 2.0.3 で導入された機能で、[[yii\web\AssetManager]]　を下記のように構成することで有効になります。
+  
+```php
+return [
+    // ...
+    'components' => [
+        'assetManager' => [
+            'appendTimestamp' => true,
+        ],
+    ],
+];
+```
+
+このようにすると、全ての発行されたアセットの URL の末尾に最終更新日時のタイムスタンプが追加されます。
+例えば、`yii.js` に対する URL は `/assets/5515a87c/yii.js?v=1423448645"` のようなものになります。
+パラメータ `v` が `yii.js` ファイルの最終更新日時のタイムスタンプを表しています。
+これで、あなたがアセットを修正したときには、その URL も変更され、クライアントに最新バージョンのアセットを強制的に取得させることが出来ます。
 
 
 ## よく使われるアセットバンドル <span id="common-asset-bundles"></span>

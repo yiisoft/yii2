@@ -188,7 +188,8 @@ function foo($model, $attribute) {
 ```
 
 > Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
-
+  データベーススキーマによるデフォルト値は、モデルの [loadDefaultValues()](db-active-record.md#default-attribute-values)
+  によってロードすることが出来ます。
 
 ## [[yii\validators\NumberValidator|double]] <span id="double"></span>
 
@@ -681,3 +682,7 @@ IPv4 アドレス `192.168.10.128` も、制約の前にリストされている
   IDN のバリデーションを使用するためには、`intl` PHP 拡張をインストールして有効化する必要があることに注意してください。
   そうしないと、例外が投げられます。
 
+> Note: このバリデータは URL スキームとホスト部分が正しいものであることを検証します。
+  URL の残りの部分はチェックしません。また、XSS や他の攻撃に対して防御するように設計されてもいません。
+  アプリケーション開発における脅威に対する防御について更に学習するために
+[セキュリティのベストプラクティス](security-best-practices.md) を参照して下さい。
