@@ -16,6 +16,29 @@ The framework is easy to adjust to meet your needs, because Yii has been designe
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Code Climate](https://img.shields.io/codeclimate/github/yiisoft/yii2.svg)](https://codeclimate.com/github/yiisoft/yii2)
 
+分支说明
+-------
+* master：主分支
+* doc：文档翻译分支
+* api：api 翻译分支
+
+官方新版本发布：
+doc branch: 
+```
+git merge upstream/master
+```
+api branch: 
+```
+git merge upstream/master
+```
+master branch: 
+```
+git merge doc
+git merge api
+```
+
+
+
 Installation
 ------------
 
