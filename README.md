@@ -36,7 +36,7 @@ master branch:
 git merge doc
 git merge api
 ```
-
+> 注意：禁止提交 pull request 至 master 分支，文档修改请提交至 doc 分支，api 修改请提交至 api 分支。
 
 
 Installation
