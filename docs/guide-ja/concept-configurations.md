@@ -249,7 +249,7 @@ $config = require 'path/to/web.php';
 ## 環境定数 <span id="environment-constants"></span>
 
 構成情報は、多くの場合、アプリケーションが実行される環境に応じて変化します。たとえば、
-開発環境では `mydb_dev` という名前のデータベースを使用し、本番サーバー上では `mydb_prod` データベースを
+開発環境では `mydb_dev` という名前のデータベースを使用し、本番サーバ上では `mydb_prod` データベースを
 使用したいかもしれません。環境の切り替えを容易にするために、Yii は、あなたのアプリケーションの
 [エントリスクリプト](structure-entry-scripts.md) で定義可能な `YII_ENV` という名前の定数を提供します。
 たとえば:

@@ -93,7 +93,7 @@ All Rights Reserved.
 * [ファイルをアップロードする](input-file-upload.md)
 * [表形式インプットのデータ収集](input-tabular-input.md)
 * [複数のモデルのデータを取得する](input-multiple-models.md)
-* [クライアントサイドで ActiveForm を拡張する](input-form-javascript.md)
+* [クライアント・サイドで ActiveForm を拡張する](input-form-javascript.md)
 
 
 データの表示

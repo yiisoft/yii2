@@ -116,12 +116,12 @@ Yii のアプリケーションがユーザリクエストを処理出来るの�
 * [[yii\base\Application::request|request]]: エンドユーザから受信したリクエストを表現します。
   詳細は [リクエスト](runtime-requests.md) の節を参照してください。
 * [[yii\web\Session|session]]: セッション情報を表現します。
-  このコンポーネントは、[[yii\web\Application|ウェブアプリケーション]] においてのみ利用できます。
+  このコンポーネントは、[[yii\web\Application|ウェブ・アプリケーション]] においてのみ利用できます。
   詳細は [セッションとクッキー](runtime-sessions-cookies.md) の節を参照してください。
 * [[yii\web\UrlManager|urlManager]]: URL の解析と生成をサポートします。
   詳細は [ルーティング と URL 生成](runtime-routing.md) の節を参照してください。
 * [[yii\web\User|user]]: ユーザの認証情報を表現します。
-  このコンポーネントは、[[yii\web\Application|ウェブアプリケーション]] においてのみ利用できます。
+  このコンポーネントは、[[yii\web\Application|ウェブ・アプリケーション]] においてのみ利用できます。
   詳細は [認証](security-authentication.md) の節を参照してください。
 * [[yii\web\View|view]]: ビューのレンダリングをサポートします。
   詳細は [ビュー](structure-views.md) の節を参照してください。

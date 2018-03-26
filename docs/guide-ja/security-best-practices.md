@@ -322,7 +322,7 @@ H5BP プロジェクトが提供する構成例を参考にすることも出来
 サーバの構成にアクセスする権限がない場合は、このような攻撃に対して防御するために、[[yii\filters\HostControl]] フィルタを設定することが出来ます。
 
 ```php
-// ウェブアプリケーション構成ファイル
+// ウェブ・アプリケーション構成ファイル
 return [
     'as hostControl' => [
         'class' => 'yii\filters\HostControl',

@@ -197,7 +197,7 @@ Content-Type: application/json; charset=UTF-8
 
 ## まとめ <span id="summary"></span>
 
-Yii の RESTful API フレームワークを使う場合は、API エンドポイントをコントローラアクションの形式で実装します。
+Yii の RESTful API フレームワークを使う場合は、API エンドポイントをコントローラ・アクションの形式で実装します。
 そして、コントローラを使って、単一タイプのリソースに対するエンドポイントを実装するアクションを編成します。
 
 リソースは [[yii\base\Model]] クラスを拡張するデータモデルとして表現されます。

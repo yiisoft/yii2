@@ -53,7 +53,7 @@ Content-Type: application/json; charset=UTF-8
 ]
 ```
 
-舞台裏では、RESTful API コントローラアクションが実行される前に、[[yii\filters\ContentNegotiator]] フィルタがリクエストの `Accept` HTTP ヘッダをチェックして、[[yii\web\Response::format|レスポンス形式]] を `'json'` に設定します。
+舞台裏では、RESTful API コントローラ・アクションが実行される前に、[[yii\filters\ContentNegotiator]] フィルタがリクエストの `Accept` HTTP ヘッダをチェックして、[[yii\web\Response::format|レスポンス形式]] を `'json'` に設定します。
 アクションが実行されて、その結果のリソースのオブジェクトまたはコレクションが返されると、[[yii\rest\Serializer]] が結果を配列に変換します。
 そして最後に、[[yii\web\JsonResponseFormatter]] が配列を JSON 文字列に変換して、それをレスポンスボディに入れます。
 

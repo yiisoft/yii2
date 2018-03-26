@@ -1,7 +1,7 @@
 フィルタ
 ========
 
-フィルタは、[コントローラアクション](structure-controllers.md#actions) の前 および/または 後に走るオブジェクトです。
+フィルタは、[コントローラ・アクション](structure-controllers.md#actions) の前 および/または 後に走るオブジェクトです。
 例えば、アクセスコントロールフィルタはアクションの前に走って、アクションが特定のエンドユーザだけにアクセスを許可するものであることを保証します。
 また、コンテント圧縮フィルタはアクションの後に走って、レスポンスのコンテントをエンドユーザに送出する前に圧縮します。
 
@@ -36,7 +36,7 @@ public function behaviors()
 また、[[yii\base\ActionFilter::except|except]] プロパティを構成して、いくつかのアクションをフィルタされないように除外することも可能です。
 
 コントローラのほかに、[モジュール](structure-modules.md) または [アプリケーション](structure-applications.md) でもフィルタを宣言することが出来ます。
-そのようにした場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティを上で説明したように構成しない限り、そのフィルタは、モジュールまたはアプリケーションに属する *全て* のコントローラアクションに適用されます。
+そのようにした場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティを上で説明したように構成しない限り、そのフィルタは、モジュールまたはアプリケーションに属する *全て* のコントローラ・アクションに適用されます。
 
 > Note: モジュールやアプリケーションでフィルタを宣言する場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティでは、アクション ID ではなく、[ルート](structure-controllers.md#routes) を使わなければなりません。
 なぜなら、モジュールやアプリケーションのスコープでは、アクション ID だけでは完全にアクションを指定することが出来ないからです。
@@ -307,7 +307,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-クロスオリジンリソース共有 [CORS](https://developer.mozilla.org/ja/docs/HTTP_access_control) とは、ウェブページにおいて、さまざまなリソース (例えば、フォントや JavaScript など) を、それを生成するドメイン以外のドメインからリクエストすることを可能にするメカニズムです。
+クロスオリジンリソース共有 [CORS](https://developer.mozilla.org/ja/docs/HTTP_access_control) とは、ウェブ・ページにおいて、さまざまなリソース (例えば、フォントや JavaScript など) を、それを生成するドメイン以外のドメインからリクエストすることを可能にするメカニズムです。
 特に言えば、JavaScript の AJAX 呼出しが使用することが出来る XMLHttpRequest メカニズムです。
 このような「クロスドメイン｣のリクエストは、このメカニズムに拠らなければ、同一生成元のセキュリティポリシーによって、ウェブブラウザから禁止されるはずのものです。
 CORS は、ブラウザとサーバが交信して、クロスドメインのリクエストを許可するか否かを決定する方法を定義するものです。

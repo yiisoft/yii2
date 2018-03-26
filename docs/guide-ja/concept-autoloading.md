@@ -22,7 +22,7 @@ Yii のクラスオートローダーを使用するには、自分のクラス�
 $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 ```
 たとえば、クラス名と名前空間が `foo\bar\MyClass` であれば、対応するクラスファイルのパスの [エイリアス](concept-aliases.md) は、
-`@foo/bar/MyClass.php` になります。このエイリアスがファイルパスとして解決できるようにするためには、`@foo` または `@foo/bar`
+`@foo/bar/MyClass.php` になります。このエイリアスがファイル・パスとして解決できるようにするためには、`@foo` または `@foo/bar`
 のどちらかが、 [ルートエイリアス](concept-aliases.md#defining-aliases) でなければなりません。
 
 [ベーシックプロジェクトテンプレート](start-installation.md) を使用している場合、最上位の名前空間 `app` の下にクラスを置くことができ、

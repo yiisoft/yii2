@@ -7,7 +7,7 @@
 
 > Info: ガイドの中で「アプリケーション」という言葉は、文脈に応じて、アプリケーションオブジェクトを意味したり、アプリケーションシステムを意味したりします。
 
-二種類のアプリケーション、すなわち、[[yii\web\Application|ウェブアプリケーション]] と [[yii\console\Application|コンソールアプリケーション]] があります。
+二種類のアプリケーション、すなわち、[[yii\web\Application|ウェブ・アプリケーション]] と [[yii\console\Application|コンソールアプリケーション]] があります。
 名前が示すように、前者は主にウェブのリクエストを処理し、後者はコンソールコマンドのリクエストを処理します。
 
 
@@ -164,8 +164,8 @@ if (YII_ENV_DEV) {
 
 #### [[yii\web\Application::catchAll|catchAll]] <span id="catchAll"></span>
 
-このプロパティは [[yii\web\Application|ウェブアプリケーション]] においてのみサポートされます。
-これは、全てのユーザリクエストを処理すべき [コントローラアクション](structure-controllers.md) を指定するものです。
+このプロパティは [[yii\web\Application|ウェブ・アプリケーション]] においてのみサポートされます。
+これは、全てのユーザリクエストを処理すべき [コントローラ・アクション](structure-controllers.md) を指定するものです。
 これは主としてアプリケーションがメンテナンスモードにあって、入ってくる全てのリクエストを単一のアクションで処理する必要があるときに使われます。
 
 構成情報は配列の形を取り、最初の要素はアクションのルートを指定します。
@@ -374,7 +374,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 例えば、`help`、`post/create`、`admin/post/create` などです。
 アクション ID が与えられていない場合は、[[yii\base\Controller::defaultAction]] で指定されるデフォルト値を取ります。
 
-[[yii\web\Application|ウェブアプリケーション]] では、このプロパティのデフォルト値は `'site'` であり、その意味するところは、`SiteController` コントローラとそのデフォルトアクションが使用されるべきである、ということです。
+[[yii\web\Application|ウェブ・アプリケーション]] では、このプロパティのデフォルト値は `'site'` であり、その意味するところは、`SiteController` コントローラとそのデフォルトアクションが使用されるべきである、ということです。
 結果として、ルートを指定せずにアプリケーションにアクセスすると、`app\controllers\SiteController::actionIndex()` の結果が表示されます。
 
 [[yii\console\Application|コンソールアプリケーション]] では、デフォルト値は `'help'` であり、コアコマンドの [[yii\console\controllers\HelpController::actionIndex()]] が使用されるべきであるという意味です。
@@ -517,7 +517,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 
 ### [[yii\base\Application::EVENT_BEFORE_ACTION|EVENT_BEFORE_ACTION]] <span id="beforeAction"></span>
 
-このイベントは、[コントローラアクション](structure-controllers.md) を実行する *前* に毎回トリガされます。
+このイベントは、[コントローラ・アクション](structure-controllers.md) を実行する *前* に毎回トリガされます。
 実際のイベント名は `beforeAction` です。
 
 イベントのパラメータは [[yii\base\ActionEvent]] のインスタンスです。
@@ -542,7 +542,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 
 ### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <span id="afterAction"></span>
 
-このイベントは、[コントローラアクション](structure-controllers.md) を実行した *後* に毎回トリガされます。
+このイベントは、[コントローラ・アクション](structure-controllers.md) を実行した *後* に毎回トリガされます。
 実際のイベント名は `afterAction` です。
 
 イベントのパラメータは [[yii\base\ActionEvent]] のインスタンスです。

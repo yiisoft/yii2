@@ -59,7 +59,7 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 最悪の場合として、ライブラリが全てのクラスファイルを明示的にインクルードすることを要求している場合は、次の方法を使ってクラスを必要に応じてインクルードすることが出来るようになります。
 
 * ライブラリに含まれるクラスを特定する。
-* アプリケーションの [エントリスクリプト](structure-entry-scripts.md) において、クラスと対応するファイルパスを `Yii::$classMap` としてリストアップする。
+* アプリケーションの [エントリスクリプト](structure-entry-scripts.md) において、クラスと対応するファイル・パスを `Yii::$classMap` としてリストアップする。
 例えば、
 ```php
 Yii::$classMap['Class1'] = 'path/to/Class1.php';

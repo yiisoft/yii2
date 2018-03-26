@@ -84,7 +84,7 @@ use yii\widgets\ActiveForm;
 
 ## 繋ぎ合せる <span id="wiring-up"></span>
 
-そして、コントローラアクションの中で、モデルとビューを繋ぎ合せるコードを書いて、ファイルのアップロードを実装します。
+そして、コントローラ・アクションの中で、モデルとビューを繋ぎ合せるコードを書いて、ファイルのアップロードを実装します。
 
 ```php
 namespace app\controllers;
@@ -176,7 +176,7 @@ use yii\widgets\ActiveForm;
 <?php ActiveForm::end() ?>
 ```
 
-そして、最後に、コントローラアクションの中では、`UploadedFile::getInstance()` の代りに `UploadedFile::getInstances()` を呼んで、`UploadedFile` インスタンスの配列を `UploadForm::imageFiles` に代入しなければなりません。
+そして、最後に、コントローラ・アクションの中では、`UploadedFile::getInstance()` の代りに `UploadedFile::getInstances()` を呼んで、`UploadedFile` インスタンスの配列を `UploadForm::imageFiles` に代入しなければなりません。
 
 ```php
 namespace app\controllers;
