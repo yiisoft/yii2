@@ -1522,7 +1522,7 @@ EOD;
                 ['[0]ИІК[0]', 'ИІК'],
             ]);
         } else {
-            $this->markTestIncomplete("Unicode characters check skipped for 'nightly' PHP version.");
+            $this->markTestIncomplete("Unicode characters check skipped for 'nightly' PHP version because \w does not work with these as expected. Check later with stable version.");
         }
 
         return $data;
