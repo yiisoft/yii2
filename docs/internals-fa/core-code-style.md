@@ -248,7 +248,7 @@ if (!$model && null === $event)
     throw new Exception('test');
 ```
 
-- بعد از return از else استفاده نکنید
+<p dir='rtl' align='right'>بعد از return از else استفاده نکنید</p>
 
 ```php
 $result = $this->getResult();
