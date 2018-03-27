@@ -17,6 +17,8 @@ use yii\validators\UniqueValidator;
 /**
  * SluggableBehavior automatically fills the specified attribute with a value that can be used a slug in a URL.
  *
+ * Note: This behavior depends on php-intl extension installed.
+ *
  * To use SluggableBehavior, insert the following code to your ActiveRecord class:
  *
  * ```php
