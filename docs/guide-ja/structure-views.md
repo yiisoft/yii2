@@ -2,7 +2,7 @@
 ======
 
 ビューは [MVC](http://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
-ビューはエンドユーザにデータを表示することに責任を持つコードです。
+ビューはエンド・ユーザにデータを表示することに責任を持つコードです。
 ウェブ・アプリケーションにおいては、ビューは、通常、主として HTML コードと表示目的の PHP コードを含む PHP スクリプトファイルである、*ビューテンプレート* の形式で作成されます。
 そして、ビューテンプレートを管理する [[yii\web\View|ビュー]] [アプリケーション・コンポーネント](structure-application-components.md) が、ビューの構築とレンダリングを助けるためによく使われるメソッドを提供します。
 なお、簡潔さを重視して、ビューテンプレートまたはビューテンプレートファイルを単にビューと呼ぶことがよくあります。
@@ -47,7 +47,7 @@ $this->title = 'ログイン';
 
 ### セキュリティ <span id="security"></span>
 
-HTML ページを生成するビューを作成するときは、エンドユーザから受け取るデータを表示する前にエンコード および/または フィルタすることが重要です。
+HTML ページを生成するビューを作成するときは、エンド・ユーザから受け取るデータを表示する前にエンコード および/または フィルタすることが重要です。
 そうしなければ、あなたのアプリケーションは [クロスサイトスクリプティング](http://ja.wikipedia.org/wiki/%E3%82%AF%E3%83%AD%E3%82%B9%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0) 攻撃をこうむるおそれがあります。
 
 平文テキストを表示するためには、まず [[yii\helpers\Html::encode()]] を呼んでエンコードします。
@@ -119,7 +119,7 @@ methodName($view, $params = [])
 * [[yii\base\Controller::renderPartial()|renderPartial()]]: [名前付きビュー](#named-views) をレイアウトなしでレンダリングする。
 * [[yii\web\Controller::renderAjax()|renderAjax()]]: [名前付きビュー](#named-views) をレイアウトなしでレンダリングし、登録されている全ての JS/CSS スクリプトおよびファイルを注入する。
   通常、AJAX ウェブリクエストに対するレスポンスにおいて使用される。
-* [[yii\base\Controller::renderFile()|renderFile()]]: ビューファイルのパスまたは [エイリアス](concept-aliases.md) の形式で指定されたビューをレンダリングする。
+* [[yii\base\Controller::renderFile()|renderFile()]]: ビュー・ファイルのパスまたは [エイリアス](concept-aliases.md) の形式で指定されたビューをレンダリングする。
 * [[yii\base\Controller::renderContent()|renderContent()]]: 静的な文字列をレンダリングして、現在適用可能な [レイアウト](#layouts) に埋め込む。このメソッドは バージョン 2.0.1 以降で使用可能。
 
 例えば、
@@ -155,7 +155,7 @@ class PostController extends Controller
 [ウィジェット](structure-widgets.md) の中では、ビューをレンダリングするために、次のウィジェットメソッドを使用することが出来ます。
 
 * [[yii\base\Widget::render()|render()]]: [名前付きビュー](#named-views) をレンダリングする。
-* [[yii\base\Widget::renderFile()|renderFile()]]: ビューファイルのパスまたは [エイリアス](concept-aliases.md) の形式で指定されたビューをレンダリングする。
+* [[yii\base\Widget::renderFile()|renderFile()]]: ビュー・ファイルのパスまたは [エイリアス](concept-aliases.md) の形式で指定されたビューをレンダリングする。
 
 例えば、
 
@@ -187,9 +187,9 @@ class ListWidget extends Widget
 * [[yii\base\View::render()|render()]]: [名前付きビュー](#named-views) をレンダリングする。
 * [[yii\web\View::renderAjax()|renderAjax()]]: [名前付きビュー](#named-views) をレンダリングし、登録されている全ての JS/CSS スクリプトおよびファイルを注入する。
   通常、AJAX ウェブリクエストに対するレスポンスにおいて使用される。
-* [[yii\base\View::renderFile()|renderFile()]]: ビューファイルのパスまたは [エイリアス](concept-aliases.md) の形式で指定されたビューをレンダリングする。
+* [[yii\base\View::renderFile()|renderFile()]]: ビュー・ファイルのパスまたは [エイリアス](concept-aliases.md) の形式で指定されたビューをレンダリングする。
 
-例えば、ビューの中の次のコードは、現在レンダリングされているビューと同じディレクトリにある `_overview.php` というビューファイルをレンダリングします。
+例えば、ビューの中の次のコードは、現在レンダリングされているビューと同じディレクトリにある `_overview.php` というビュー・ファイルをレンダリングします。
 ビューでは `$this` が [[yii\base\View|ビュー]] コンポーネントを参照することを思い出してください。
 
 ```php
@@ -203,35 +203,35 @@ class ListWidget extends Widget
 例えば、
 
 ```php
-// ビューファイル "@app/views/site/license.php" を表示
+// ビュー・ファイル "@app/views/site/license.php" を表示
 echo \Yii::$app->view->renderFile('@app/views/site/license.php');
 ```
 
 
 ### 名前付きビュー <span id="named-views"></span>
 
-ビューをレンダリングするとき、ビューを指定するのには、ビューの名前か、ビューファイルのパス/エイリアスか、どちらかを使うことが出来ます。
+ビューをレンダリングするとき、ビューを指定するのには、ビューの名前か、ビュー・ファイルのパス/エイリアスか、どちらかを使うことが出来ます。
 たいていの場合は、より簡潔で柔軟な前者を使います。
 名前を使って指定されるビューを *名前付きビュー* と呼びます。
 
-ビューの名前は、以下の規則に従って、対応するビューファイルのパスに解決されます。
+ビューの名前は、以下の規則に従って、対応するビュー・ファイルのパスに解決されます。
 
 * ビュー名はファイル拡張子を省略することが出来ます。その場合、`.php` が拡張子として使われます。
   例えば、`about` というビュー名は `about.php` というファイル名に対応します。
-* ビュー名が二つのスラッシュ (`//`) で始まる場合は、対応するビューファイルのパスは `@app/views/ViewName` となります。
-  つまり、ビューファイルは [[yii\base\Application::viewPath|アプリケーションのビューパス]] の下で探されます。
+* ビュー名が二つのスラッシュ (`//`) で始まる場合は、対応するビュー・ファイルのパスは `@app/views/ViewName` となります。
+  つまり、ビュー・ファイルは [[yii\base\Application::viewPath|アプリケーションのビューパス]] の下で探されます。
   例えば、`//site/about` は `@app/views/site/about.php` へと解決されます。
-* ビュー名が一つのスラッシュ (`/`) で始まる場合は、ビューファイルのパスは、ビュー名の前に、現在アクティブな [モジュール](structure-modules.md) の [[yii\base\Module::viewPath|ビューパス]] を置くことによって形成されます。
+* ビュー名が一つのスラッシュ (`/`) で始まる場合は、ビュー・ファイルのパスは、ビュー名の前に、現在アクティブな [モジュール](structure-modules.md) の [[yii\base\Module::viewPath|ビューパス]] を置くことによって形成されます。
   アクティブなモジュールが無い場合は、`@app/views/ViewName` が使用されます。
   例えば、`/user/create` は、現在アクティブなモジュールが `user` である場合は、`@app/modules/user/views/user/create.php` へと解決されます。
-  アクティブなモジュールが無い場合は、ビューファイルのパスは `@app/views/user/create.php` となります。
-* ビューが [[yii\base\View::context|コンテキスト]] を伴ってレンダリングされ、そのコンテキストが [[yii\base\ViewContextInterface]] を実装している場合は、ビューファイルのパスは、コンテキストの [[yii\base\ViewContextInterface::getViewPath()|ビューパス]] をビュー名の前に置くことによって形成されます。
+  アクティブなモジュールが無い場合は、ビュー・ファイルのパスは `@app/views/user/create.php` となります。
+* ビューが [[yii\base\View::context|コンテキスト]] を伴ってレンダリングされ、そのコンテキストが [[yii\base\ViewContextInterface]] を実装している場合は、ビュー・ファイルのパスは、コンテキストの [[yii\base\ViewContextInterface::getViewPath()|ビューパス]] をビュー名の前に置くことによって形成されます。
   これは、主として、コントローラとウィジェットの中でレンダリングされるビューに当てはまります。
   例えば、コンテキストが `SiteController` コントローラである場合、`about` は `@app/views/site/about.php` へと解決されます。
-* あるビューが別のビューの中でレンダリングされる場合は、後者のビューファイルを含んでいるディレクトリが前者のビュー名の前に置かれて、実際のビューファイルのパスが形成されます。
+* あるビューが別のビューの中でレンダリングされる場合は、後者のビュー・ファイルを含んでいるディレクトリが前者のビュー名の前に置かれて、実際のビュー・ファイルのパスが形成されます。
   例えば、`item` は、`@app/views/post/index.php` というビューの中でレンダリングされる場合、`@app/views/post/item` へと解決されます。
 
-上記の規則によって、コントローラ `app\controllers\PostController` の中で `$this->render('view')` を呼ぶと、実際には、ビューファイル `@app/views/post/view.php` がレンダリングされ、一方、そのビューの中で `$this->render('_overview')` を呼ぶと、ビューファイル `@app/views/post/_overview.php` がレンダリングされることになります。
+上記の規則によって、コントローラ `app\controllers\PostController` の中で `$this->render('view')` を呼ぶと、実際には、ビュー・ファイル `@app/views/post/view.php` がレンダリングされ、一方、そのビューの中で `$this->render('_overview')` を呼ぶと、ビュー・ファイル `@app/views/post/_overview.php` がレンダリングされることになります。
 
 
 ### ビューの中でデータにアクセスする <span id="accessing-data-in-views"></span>
@@ -593,7 +593,7 @@ $this->registerLinkTag([
 ## ビューのイベント <span id="view-events"></span>
 
 [[yii\base\View|ビューコンポーネント]] はビューをレンダリングする過程においていくつかのイベントをトリガします。
-これらのイベントに反応することによって、ビューにコンテントを注入したり、エンドユーザに送信される前にレンダリング結果を加工したりすることが出来ます。
+これらのイベントに反応することによって、ビューにコンテントを注入したり、エンド・ユーザに送信される前にレンダリング結果を加工したりすることが出来ます。
 
 - [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: コントローラでファイルをレンダリングする前にトリガされます。
   このイベントのハンドラは、[[yii\base\ViewEvent::isValid]] を `false` にセットして、レンダリングのプロセスをキャンセルすることが出来ます。
@@ -661,7 +661,7 @@ http://localhost/index.php?r=site%2Fpage&view=about
 
 ## ベストプラクティス <span id="best-practices"></span>
 
-ビューはエンドユーザが望む形式でモデルを表現することに対して責任を持ちます。一般的に、ビューは
+ビューはエンド・ユーザが望む形式でモデルを表現することに対して責任を持ちます。一般的に、ビューは
 
 * 主として表示目的のコードを含むべきです。例えば、HTML、または、データをたどって書式化してレンダリングする簡単な PHP コードなど。
 * DB クエリを実行するコードは含むべきではありません。そのようなコードはモデルの中で実行されるべきです。
@@ -675,5 +675,5 @@ http://localhost/index.php?r=site%2Fpage&view=about
 * 共通の表示セクション (ページのヘッダやフッタなど) を表すために [レイアウト](#layouts) を使う。
 * 複雑なビューはいくつかの小さなビューに分割する。既に説明したレンダリングのメソッドを使えば、小さなビューをレンダリングして大きなビューを組み上げることが出来る。
 * ビューの構成要素として [ウィジェット](structure-widgets.md) を使う。
-* ビューでデータを変換し書式化するためのヘルパクラスを作成して使う。
+* ビューでデータを変換し書式化するためのヘルパ・クラスを作成して使う。
 

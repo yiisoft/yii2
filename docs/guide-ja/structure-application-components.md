@@ -102,7 +102,7 @@ Yii のアプリケーションがユーザリクエストを処理出来るの�
   詳細は [データアクセスオブジェクト](db-dao.md) のセクションを参照してください。
 * [[yii\base\Application::errorHandler|errorHandler]]: PHP のエラーと例外を処理します。
   詳細は [エラー処理](runtime-handling-errors.md) のセクションを参照してください。
-* [[yii\i18n\Formatter|formatter]]: エンドユーザに表示されるデータに書式を設定します。
+* [[yii\i18n\Formatter|formatter]]: エンド・ユーザに表示されるデータに書式を設定します。
   例えば、数字が3桁ごとの区切りを使って表示されたり、日付が長い書式で表示されたりします。
   詳細は [データの書式設定](output-formatting.md) のセクションを参照してください。
 * [[yii\i18n\I18N|i18n]]: メッセージの翻訳と書式設定をサポートします。
@@ -111,9 +111,9 @@ Yii のアプリケーションがユーザリクエストを処理出来るの�
   詳細は [ロギング](runtime-logging.md) のセクションを参照してください。
 * [[yii\swiftmailer\Mailer|mailer]]: メールの作成と送信をサポートします。
   詳細は [メール](tutorial-mailing.md) のセクションを参照してください。
-* [[yii\base\Application::response|response]]: エンドユーザに送信されるレスポンスを表現します。
+* [[yii\base\Application::response|response]]: エンド・ユーザに送信されるレスポンスを表現します。
   詳細は [レスポンス](runtime-responses.md) のセクションを参照してください。
-* [[yii\base\Application::request|request]]: エンドユーザから受信したリクエストを表現します。
+* [[yii\base\Application::request|request]]: エンド・ユーザから受信したリクエストを表現します。
   詳細は [リクエスト](runtime-requests.md) のセクションを参照してください。
 * [[yii\web\Session|session]]: セッション情報を表現します。
   このコンポーネントは、[[yii\web\Application|ウェブ・アプリケーション]] においてのみ利用できます。

@@ -382,7 +382,7 @@ WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 #### フィルタ条件 <span id="filter-conditions"></span>
 
 ユーザの入力に基づいて `WHERE` の条件を構築する場合、普通は、空の入力値は無視したいものです。
-例えば、ユーザ名とメール・アドレスによる検索が可能な検索フォームにおいては、ユーザが username/email のインプットフィールドに何も入力しなかった場合は、username/email の条件を無視したいでしょう。
+例えば、ユーザ名とメール・アドレスによる検索が可能な検索フォームにおいては、ユーザが username/email のインプット・フィールドに何も入力しなかった場合は、username/email の条件を無視したいでしょう。
 [[yii\db\Query::filterWhere()|filterWhere()]] メソッドを使うことによって、この目的を達することが出来ます。
 
 ```php

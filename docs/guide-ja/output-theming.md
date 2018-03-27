@@ -5,16 +5,16 @@
 テーマを使うとアプリケーションのルックアンドフィールを体系的に変更することが出来ます。
 
 テーマを使うためには、`view` アプリケーション・コンポーネントの [[yii\base\View::theme|theme]] プロパティを構成しなければなりません。
-このプロパティが、ビューファイルが置換される方法を管理する [[yii\base\Theme]] オブジェクトを構成します。
+このプロパティが、ビュー・ファイルが置換される方法を管理する [[yii\base\Theme]] オブジェクトを構成します。
 指定しなければならない [[yii\base\Theme]] のプロパティは主として以下のものです。
 
 - [[yii\base\Theme::basePath]]: テーマのリソース (CSS、JS、画像など) を含むベースディレクトリを指定します。
 - [[yii\base\Theme::baseUrl]]: テーマのリソースのベース URL を指定します。
-- [[yii\base\Theme::pathMap]]: ビューファイルの置換の規則を指定します。
+- [[yii\base\Theme::pathMap]]: ビュー・ファイルの置換の規則を指定します。
   詳細は後述する項で説明します。
 
-例えば、`SiteController` で `$this->render('about')` を呼び出すと、ビューファイル `@app/views/site/about.php` をレンダリングすることになります。
-しかし、下記のようにアプリケーション構成情報でテーマを有効にすると、代りに、ビューファイル `@app/themes/basic/site/about.php` がレンダリングされます。
+例えば、`SiteController` で `$this->render('about')` を呼び出すと、ビュー・ファイル `@app/views/site/about.php` をレンダリングすることになります。
+しかし、下記のようにアプリケーション構成情報でテーマを有効にすると、代りに、ビュー・ファイル `@app/themes/basic/site/about.php` がレンダリングされます。
 
 ```php
 return [
@@ -36,7 +36,7 @@ return [
   ビューの置換を行う際に、パスエイリアスは実際のファイル・パスまたは URL に変換されます。
 
 [[yii\base\View::theme]] プロパティを通じて [[yii\base\Theme]] オブジェクトにアクセスすることが出来ます。
-例えば、ビューファイルの中では `$this` がビューオブジェクトを指すので、次のようなコードを書くことが出来ます。
+例えば、ビュー・ファイルの中では `$this` がビューオブジェクトを指すので、次のようなコードを書くことが出来ます。
 
 ```php
 $theme = $this->theme;
@@ -48,7 +48,7 @@ $url = $theme->getUrl('img/logo.gif');
 $file = $theme->getPath('img/logo.gif');
 ```
 
-[[yii\base\Theme::pathMap]] プロパティが、ビューファイルがどのように置換されるべきかを制御します。
+[[yii\base\Theme::pathMap]] プロパティが、ビュー・ファイルがどのように置換されるべきかを制御します。
 このプロパティは「キー・値」ペアの配列を取ります。
 キーは置き換えられる元のビューのパスであり、値は対応するテーマのビューのパスです。
 置換は部分一致に基づいて行われます。
@@ -102,4 +102,4 @@ $file = $theme->getPath('img/logo.gif');
 
 この場合、ビュー `@app/views/site/index.php` には、どちらのテーマファイルが存在するかに従って、`@app/themes/christmas/site/index.php` か `@app/themes/basic/site/index.php` か、どちらかのテーマが適用されます。
 テーマファイルが両方とも存在する場合は、最初のものが優先されます。
-実際の場面では、ほとんどのテーマビューファイルを `@app/themes/basic` に保管し、その中のいくつかを `@app/themes/christmas` でカスタマイズすることになるでしょう。
+実際の場面では、ほとんどのテーマビュー・ファイルを `@app/themes/basic` に保管し、その中のいくつかを `@app/themes/christmas` でカスタマイズすることになるでしょう。

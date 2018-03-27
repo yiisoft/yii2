@@ -112,7 +112,7 @@ if ($headers->has('User-Agent')) { /* User-Agent ヘッダが在る */ }
 * [[yii\web\Request::acceptableLanguages|acceptableLanguages]]: ユーザが受け入れ可能な言語を返します。
 返される言語は優先レベルによって順序付けられます。最初の要素が最も優先度の高い言語を表します。
 
-あなたのアプリケーションが複数の言語をサポートしており、エンドユーザが最も優先する言語でページを表示したいと思う場合は、言語ネゴシエーションメソッド [[yii\web\Request::getPreferredLanguage()]] を使うことが出来ます。
+あなたのアプリケーションが複数の言語をサポートしており、エンド・ユーザが最も優先する言語でページを表示したいと思う場合は、言語ネゴシエーションメソッド [[yii\web\Request::getPreferredLanguage()]] を使うことが出来ます。
 このメソッドはアプリケーションによってサポートされている言語のリストを引数として取り、 [[yii\web\Request::acceptableLanguages|acceptableLanguages]] と比較して、最も適切な言語を返します。
 
 > Tip: [[yii\filters\ContentNegotiator|ContentNegotiator]] フィルタを使用して、レスポンスにおいてどのコンテントタイプと言語を使うべきかを動的に決定することも出来ます。

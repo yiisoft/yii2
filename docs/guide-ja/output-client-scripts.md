@@ -1,5 +1,5 @@
-クライアントスクリプトを扱う
-============================
+クライアント・スクリプトを扱う
+==============================
 
 今日のウェブ・アプリケーションでは、静的な HTML ページがレンダリングされてブラウザに送信されるだけでなく、
 JavaScript によって、既存の要素を操作したり、新しいコンテントを AJAX でロードしたりして、ブラウザに表示されるページを修正します。
@@ -7,16 +7,17 @@ JavaScript によって、既存の要素を操作したり、新しいコンテ
 
 ## スクリプトを登録する <span id="register-scripts"></span>
 
-[[yii\web\View]] オブジェクトを扱う際には、フロントエンドスクリプトを動的に登録することが出来ます。
+[[yii\web\View]] オブジェクトを扱う際には、フロントエンド・スクリプトを動的に登録することが出来ます。
 このための専用のメソッドが二つあります。
 
-- インラインスクリプトのための [[yii\web\View::registerJs()|registerJs()]]
+- インライン・スクリプトのための [[yii\web\View::registerJs()|registerJs()]]
 - 外部スクリプトのための [[yii\web\View::registerJsFile()|registerJsFile()]]
-### インラインスクリプトを登録する <span id="inline-scripts"></span>
 
-インラインスクリプトは、設定や、動的に生成されるコードのために有用なものです。
-また、[ウィジェット](structure-widgets.md) に含まれる再利用可能なフロントエンドコードによって生成されるコード断片もインラインスクリプトです。
-インラインスクリプトを追加するためのメソッド [[yii\web\View::registerJs()|registerJs()]] は、次のようにして使うことが出来ます。
+### インライン・スクリプトを登録する <span id="inline-scripts"></span>
+
+インライン・スクリプトは、設定や、動的に生成されるコードのために有用なものです。
+また、[ウィジェット](structure-widgets.md) に含まれる再利用可能なフロントエンド・コードによって生成されるコード断片もインライン・スクリプトです。
+インライン・スクリプトを追加するためのメソッド [[yii\web\View::registerJs()|registerJs()]] は、次のようにして使うことが出来ます。
 
 ```php
 $this->registerJs(
@@ -39,12 +40,12 @@ $this->registerJs(
 - [[yii\web\View::POS_LOAD|View::POS_LOAD]] - [ドキュメントの `load` イベント](http://learn.jquery.com/using-jquery-core/document-ready/) でコードを実行するための指定。
   上記と同じく、これを指定すると、[[yii\web\JqueryAsset|jQuery]] が自動的に登録されます。
 
-最後の引数は、スクリプトのコードブロックを一意に特定するために使われるスクリプトのユニークな ID です。
+最後の引数は、スクリプトのコード・ブロックを一意に特定するために使われるスクリプトのユニークな ID です。
 同じ ID のスクリプトが既にある場合は、新しいものを追加するのでなく、それを置き換えます。
 ID を指定しない場合は、JS コードそれ自身が ID として扱われます。
 この ID によって、同じコードが複数回登録されるのを防止します。
 
-### スクリプトファイルを登録する <span id="script-files"></span>
+### スクリプト・ファイルを登録する <span id="script-files"></span>
 
 [[yii\web\View::registerJsFile()|registerJsFile()]] の引数は、[[yii\web\View::registerCssFile()|registerCssFile()]] の引数と同様なものです。
 以下に示す例では、`main.js` ファイルを、[[yii\web\JqueryAsset]] への依存関係とともに、登録します。
@@ -65,7 +66,7 @@ $this->registerJsFile(
 ただし、外部 JS ファイルを登録するのには、 [[yii\web\View::registerJsFile()|registerJsFile()]] を使わずに、[アセット・バンドル](structure-assets.md) を使うことが強く推奨されます。
 なぜなら、そうする方が、柔軟性も高く、依存関係の構成も粒度を細かく出来るからです。
 また、アセット・バンドルを使えば、複数の JS ファイルを結合して圧縮すること
-(アクセスの多いウェブサイトではそうすることが望まれます) が可能になります。
+(アクセスの多いウェブ・サイトではそうすることが望まれます) が可能になります。
 
 ## CSS を登録する <span id="register-css"></span>
 
@@ -116,7 +117,7 @@ $this->registerCssFile("@web/css/themes/black-and-white.css", [
 
 外部 CSS ファイルを登録するのには、 [[yii\web\View::registerCssFile()|registerCssFile()]] を使わずに、[アセット・バンドル](structure-assets.md) を使うことが強く推奨されます。
 アセット・バンドルを使えば、複数の CSS ファイルを結合して圧縮すること
-(アクセスの多いウェブサイトではそうすることが望まれます) が可能になります。
+(アクセスの多いウェブ・サイトではそうすることが望まれます) が可能になります。
 また、アプリケーションの全てのアセットの依存関係を一ヶ所で構成することが出来るため、
 より大きな柔軟性を得ることが出来ます。
 
@@ -131,17 +132,17 @@ $this->registerCssFile("@web/css/themes/black-and-white.css", [
 \frontend\assets\AppAsset::register($this);
 ```
 
-上記のコードでは、ビューファイルのコンテキストにおいて、`AppAsset` バンドルが (`$this` で表される) 現在のビューに対して登録されています。
+上記のコードでは、ビュー・ファイルのコンテキストにおいて、`AppAsset` バンドルが (`$this` で表される) 現在のビューに対して登録されています。
 ウィジェットの中からアセット・バンドルを登録するときは、ウィジェットの [[yii\base\Widget::$view|$view]]
 を代りに渡します (`$this->view`)。
 
 
 ## 動的な Javascript を生成する <span id="dynamic-js"></span>
 
-ビューファイルでは、HTML コードが直接に書き出されのではなく、ビューの変数に依存して、PHP のコードによって生成されることがよくあります。
+ビュー・ファイルでは、HTML コードが直接に書き出されのではなく、ビューの変数に依存して、PHP のコードによって生成されることがよくあります。
 生成された HTML を Javascript によって操作するためには、JS コードも同様に動的な部分を含まなければなりません。
 例えば、jQuery セレクタの ID などがそうです。
-、ビューの変数にIn view files often the HTML code is not written out directl
+
 PHP の変数を JS コードに挿入するためには、変数の値を適切にエスケープする必要があります。
 JS コードを専用の JS ファイルの中に置くのではなく、HTML に挿入する場合は特にそうです。
 Yii は、この目的のために、[[yii\helpers\Json|Json]] ヘルパの [[yii\helpers\Json::htmlEncode()|htmlEncode()]] メソッドを提供しています。
@@ -150,7 +151,7 @@ Yii は、この目的のために、[[yii\helpers\Json|Json]] ヘルパの [[yi
 ### グローバルな JavaScript の構成情報を登録する <span id="js-configuration"></span>
 
 この例では、配列を使って、グローバルな構成情報のパラメータをアプリケーションの
-PHP のパートから JS のフロントエンドコードに渡します。
+PHP のパートから JS のフロントエンド・コードに渡します。
 
 ```php
 $options = [
@@ -192,8 +193,8 @@ JS
 );
 ```
 
-上記のサンプルコードは、可読性を高めるために、PHP の [ヒアドキュメント構文](http://php.net/manual/ja/language.types.string.php#language.types.string.syntax.heredoc) を使っています。
-また、ヒアドキュメントは、たいていの IDE で、より良い構文ハイライトが可能にしてくれるので、
+上記のサンプル・コードは、可読性を高めるために、PHP の [ヒアドキュメント構文](http://php.net/manual/ja/language.types.string.php#language.types.string.syntax.heredoc) を使っています。
+また、ヒアドキュメントは、たいていの IDE で、より良い構文ハイライトが可能になるので、
 インライン JavaScript、特に一行に収まらないものを書くときに推奨される方法です。
 変数 `$message` は PHP で生成され、[[yii\helpers\Json::htmlEncode|Json::htmlEncode]] のおかげで、適切な JS 構文の文字列を含むものになります。
 それを JavaScript コードに挿入して、`alert()` の関数呼び出しに動的な文字列を渡すことが出来ます。

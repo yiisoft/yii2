@@ -128,8 +128,8 @@ public function actionError()
 }
 ```
 
-次に `views/site/error.php` に配置されるビューファイルを作成しなければなりません。
-エラーアクションが [[yii\web\ErrorAction]] として定義されている場合は、このビューファイルの中で次の変数にアクセスすることが出来ます。
+次に `views/site/error.php` に配置されるビュー・ファイルを作成しなければなりません。
+エラーアクションが [[yii\web\ErrorAction]] として定義されている場合は、このビュー・ファイルの中で次の変数にアクセスすることが出来ます。
 
 * `name`: エラーの名前。
 * `message`: エラー・メッセージ。

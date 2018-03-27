@@ -1,7 +1,7 @@
 コントローラ
 ============
 
-リソースクラスを作成して、リソースデータをどのようにフォーマットすべきかを指定したら、次は、RESTful API を通じてエンドユーザにリソースを公開するコントローラ・アクションを作成します。
+リソースクラスを作成して、リソースデータをどのようにフォーマットすべきかを指定したら、次は、RESTful API を通じてエンド・ユーザにリソースを公開するコントローラ・アクションを作成します。
 
 Yii は、RESTful アクションを作成する仕事を簡単にするための二つの基底コントローラクラスを提供しています。
 すなわち、[[yii\rest\Controller]] と [[yii\rest\ActiveController]] です。
@@ -135,7 +135,7 @@ public function actions()
     // "delete" と "create" のアクションを無効にする
     unset($actions['delete'], $actions['create']);
 
-    // データプロバイダの準備を "prepareDataProvider()" メソッドでカスタマイズする
+    // データ・プロバイダの準備を "prepareDataProvider()" メソッドでカスタマイズする
     $actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
 
     return $actions;
@@ -143,7 +143,7 @@ public function actions()
 
 public function prepareDataProvider()
 {
-    // "index" アクションのためにデータプロバイダを準備して返す
+    // "index" アクションのためにデータ・プロバイダを準備して返す
 }
 ```
 
@@ -159,7 +159,7 @@ RESTful API によってリソースを公開するときには、たいてい�
 /**
  * 現在のユーザの特権をチェックする。
  *
- * 現在のユーザが指定されたデータモデルに対して指定されたアクションを実行する特権を
+ * 現在のユーザが指定されたデータ・モデルに対して指定されたアクションを実行する特権を
  * 有するか否かをチェックするためには、このメソッドをオーバーライドしなければなりません。
  * ユーザが権限をもたない場合は、[[ForbiddenHttpException]] が投げられなければなりません。
  *

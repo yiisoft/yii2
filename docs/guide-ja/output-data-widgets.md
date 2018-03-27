@@ -1,9 +1,9 @@
-データウィジェット
-==================
+データ・ウィジェット
+====================
 
 Yii はデータを表示するために使うことが出来る一連の [ウィジェット](structure-widgets.md) を提供しています。
 [DetailView](#detail-view) は、単一のレコードのデータを表示するのに使うことが出来ます。
-それに対して、[ListView](#list-view) と [GridView](#grid-view) は、複数のデータレコードをリストまたはテーブルで表示することが出来るもので、ページネーション、並べ替え、フィルタリングなどの機能を提供するものです。
+それに対して、[ListView](#list-view) と [GridView](#grid-view) は、複数のデータ・レコードをリストまたはテーブルで表示することが出来るもので、ページネーション、並べ替え、フィルタリングなどの機能を提供するものです。
 
 
 DetailView <span id="detail-view"></span>
@@ -12,7 +12,7 @@ DetailView <span id="detail-view"></span>
 DetailView は単一のデータ [[yii\widgets\DetailView::$model|モデル]] の詳細を表示します。
 
 モデルを標準的な書式で表示する場合 (例えば、全てのモデル属性をそれぞれテーブルの一行として表示する場合) に最も適しています。
-モデルは [[\yii\base\Model]] またはそのサブクラス、例えば [アクティブレコード](db-active-record.md) のインスタンスか、連想配列かのどちらかにすることが出来ます。
+モデルは [[\yii\base\Model]] またはそのサブ・クラス、例えば [アクティブレコード](db-active-record.md) のインスタンスか、連想配列かのどちらかにすることが出来ます。
  
 DetailView は [[yii\widgets\DetailView::$attributes]] プロパティを使って、モデルのどの属性が表示されるべきか、また、どういうフォーマットで表示されるべきかを決定します。
 利用できるフォーマットのオプションについては、[フォーマッタのセクション](output-formatting.md) を参照してください。
@@ -61,9 +61,9 @@ echo DetailView::widget([
 ListView <span id="list-view"></span>
 --------
 
-[[yii\widgets\ListView|ListView]] ウィジェットは、[データプロバイダ](output-data-providers.md) からのデータを表示するのに使用されます。
-各データモデルは指定された [[yii\widgets\ListView::$itemView|ビューファイル]] を使って表示されます。
-ListView は、特に何もしなくても、ページネーション、並べ替え、フィルタリングなどの機能を提供してくれますので、エンドユーザに情報を表示するためにも、データ管理 UI を作成するためにも、非常に便利なウィジェットです。
+[[yii\widgets\ListView|ListView]] ウィジェットは、[データ・プロバイダ](output-data-providers.md) からのデータを表示するのに使用されます。
+各データ・モデルは指定された [[yii\widgets\ListView::$itemView|ビュー・ファイル]] を使って表示されます。
+ListView は、特に何もしなくても、ページネーション、並べ替え、フィルタリングなどの機能を提供してくれますので、エンド・ユーザに情報を表示するためにも、データ管理 UI を作成するためにも、非常に便利なウィジェットです。
 
 典型的な使用方法は以下の通りです。
 
@@ -98,14 +98,14 @@ use yii\helpers\HtmlPurifier;
 </div>
 ```
 
-上記のビューファイルでは、現在のデータモデルを `$model` としてアクセスすることが出来ます。
+上記のビュー・ファイルでは、現在のデータ・モデルを `$model` としてアクセスすることが出来ます。
 追加で次のものを利用することも出来ます。
 
-- `$key`: mixed - データアイテムと関連付けられたキーの値。
-- `$index`: integer - データプロバイダによって返されるアイテムの配列の 0 から始まるインデックス。
+- `$key`: mixed - データ・アイテムと関連付けられたキーの値。
+- `$index`: integer - データ・プロバイダによって返されるアイテムの配列の 0 から始まるインデックス。
 - `$widget`: ListView - ウィジェットのインスタンス。
 
-追加のデータを各ビューに渡す必要がある場合は、次のように、[[yii\widgets\ListView::$viewParams|$viewParams]] を使って「キー - 値」のペアを渡すことが出来ます。
+追加のデータを各ビューに渡す必要がある場合は、次のように、[[yii\widgets\ListView::$viewParams|$viewParams]] を使って「キー・値」のペアを渡すことが出来ます。
 
 ```php
 echo ListView::widget([
@@ -125,11 +125,11 @@ echo ListView::widget([
 GridView <span id="grid-view"></span>
 --------
 
-データグリッドすなわち [[yii\grid\GridView|GridView]] は Yii の最も強力なウィジェットの一つです。
+データ・グリッドすなわち [[yii\grid\GridView|GridView]] は Yii の最も強力なウィジェットの一つです。
 これは、システムの管理セクションを素速く作らねばならない時に、この上なく便利なものです。
-このウィジェットは [データプロバイダ](output-data-providers.md) からデータを受けて、テーブルの形式で、行ごとに一組の [[yii\grid\GridView::columns|カラム]] を使ってデータを表示します。
+このウィジェットは [データ・プロバイダ](output-data-providers.md) からデータを受けて、テーブルの形式で、行ごとに一組の [[yii\grid\GridView::columns|カラム]] を使ってデータを表示します。
 
-テーブルの各行が一つのデータアイテムを表します。そして、一つのカラムは通常はアイテムの一属性を表します
+テーブルの各行が一つのデータ・アイテムを表します。そして、一つのカラムは通常はアイテムの一属性を表します
 (カラムの中に、複数の属性を組み合わせた複雑な式に対応するものや、静的なテキストを表すものを含めることも出来ます)。
 
 GridView を使うために必要な最小限のコードは次のようなものです。
@@ -149,7 +149,7 @@ echo GridView::widget([
 ]);
 ```
 
-上記のコードは、最初にデータプロバイダを作成し、次に GridView を使って、データプロバイダから受け取る全ての行の全ての属性を表示するものです。
+上記のコードは、最初にデータ・プロバイダを作成し、次に GridView を使って、データ・プロバイダから受け取る全ての行の全ての属性を表示するものです。
 表示されるテーブルには、特に何も設定しなくても、並べ替えとページネーションの機能が装備されます。
 
 ### グリッドのカラム <span id="grid-columns"></span>
@@ -178,7 +178,7 @@ echo GridView::widget([
 ]);
 ```
 
-構成情報の [[yii\grid\GridView::columns|columns]] の部分が指定されない場合は、Yii は、データプロバイダのモデルの表示可能な全てのカラムを表示しようとすることに注意してください。
+構成情報の [[yii\grid\GridView::columns|columns]] の部分が指定されない場合は、Yii は、データ・プロバイダのモデルの表示可能な全てのカラムを表示しようとすることに注意してください。
 
 ### カラムクラス <span id="column-classes"></span>
 
@@ -284,7 +284,7 @@ echo GridView::widget([
   }
   ```
 
-  上記のコードで、`$url` はカラムがボタンのために生成する URL、`$model` は現在の行に表示されるモデルオブジェクト、そして `$key` はデータプロバイダの配列の中にあるモデルのキーです。
+  上記のコードで、`$url` はカラムがボタンのために生成する URL、`$model` は現在の行に表示されるモデルオブジェクト、そして `$key` はデータ・プロバイダの配列の中にあるモデルのキーです。
 
 - [[yii\grid\ActionColumn::urlCreator|urlCreator]] は、指定されたモデルの情報を使って、ボタンの URL を生成するコールバックです。
   コールバックのシグニチャは [[yii\grid\ActionColumn::createUrl()]] のそれと同じでなければなりません。
@@ -362,7 +362,7 @@ echo GridView::widget([
 検索基準は、通常は、グリッドビューのテーブルのフィルタのフィールドから取得されます。
 [アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデルクラスを作成するのが一般的なプラクティスです (あなたに代って [Gii](start-gii.md) が生成してくれます)。
 このクラスが、グリッドビューのテーブルに表示されるフィルタコントロールのための検証規則を定義し、
-検索基準に従って修正されたクエリを持つデータプロバイダを返す `search()` メソッドを提供します。
+検索基準に従って修正されたクエリを持つデータ・プロバイダを返す `search()` メソッドを提供します。
 
 `Post` モデルに対して検索機能を追加するために、次の例のようにして、`PostSearch` モデルを作成することが出来ます。
 
@@ -419,7 +419,7 @@ class PostSearch extends Post
 > Tip: フィルタのクエリを構築する方法を学ぶためには、[クエリ・ビルダ](db-query-builder.md)、
 > 中でも特に [フィルタ条件](db-query-builder.md#filter-conditions) を参照してください。
 
-この `search()` メソッドをコントローラで使用して、GridView のためのデータプロバイダを取得することが出来ます。
+この `search()` メソッドをコントローラで使用して、GridView のためのデータ・プロバイダを取得することが出来ます。
 
 ```php
 $searchModel = new PostSearch();
@@ -533,7 +533,7 @@ GridView でアクティブレコードを表示するときに、リレーシ�
 ただし、並べ替えとフィルタリングは、デフォルトでは有効になりません。
 これらの機能を追加するためには、前の項で導入した `PostSearch` モデルを修正しなければなりません。
 
-リレーションのカラムによる並べ替えを有効にするためには、リレーションのテーブルを結合し、データプロバイダの Sort コンポーネントに並べ替えの規則を追加します。
+リレーションのカラムによる並べ替えを有効にするためには、リレーションのテーブルを結合し、データ・プロバイダの Sort コンポーネントに並べ替えの規則を追加します。
 
 ```php
 $query = Post::find();
@@ -688,7 +688,7 @@ class UserView extends ActiveRecord
 
 一つのページで二つ以上のグリッドビューを使うことが出来ますが、お互いが干渉しないように、追加の構成がいくつか必要になります。
 グリッドビューの複数のインスタンスを使う場合は、並べ替えとページネーションのリンクが違うパラメータ名を持って生成されるように構成して、それぞれのグリッドビューが独立した並べ替えとページネーションを持つことが出来るようにしなければなりません。
-そのためには、データプロバイダの [[yii\data\BaseDataProvider::$sort|sort]] と [[yii\data\BaseDataProvider::$pagination|pagination]] インスタンスの [[yii\data\Sort::sortParam|sortParam]] と [[yii\data\Pagination::pageParam|pageParam]] を設定します。
+そのためには、データ・プロバイダの [[yii\data\BaseDataProvider::$sort|sort]] と [[yii\data\BaseDataProvider::$pagination|pagination]] インスタンスの [[yii\data\Sort::sortParam|sortParam]] と [[yii\data\Pagination::pageParam|pageParam]] を設定します。
 
 `Post` と `User` のリストを表示するために、二つのプロバイダ、`$userProvider` と `$postProvider` を準備済みであると仮定します。
 

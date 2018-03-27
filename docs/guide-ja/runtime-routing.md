@@ -202,7 +202,7 @@ echo Url::to('@example');
 echo Url::to('/images/logo.gif', true);
 ```
 
-`to()` メソッドの他にも、[[yii\helpers\Url]]` ヘルパクラスは、便利な URL 生成メソッドをいくつか提供しています。
+`to()` メソッドの他にも、[[yii\helpers\Url]]` ヘルパ・クラスは、便利な URL 生成メソッドをいくつか提供しています。
 例えば、
 
 ```php

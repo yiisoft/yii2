@@ -2,7 +2,7 @@
 ==========
 
 モジュールは、[モデル](structure-models.md)、[ビュー](structure-views.md)、[コントローラ](structure-controllers.md)、およびその他の支援コンポーネントから構成される自己充足的なソフトウェアのユニットです。
-モジュールが [アプリケーション](structure-applications.md) にインストールされている場合、エンドユーザはモジュールのコントローラにアクセスする事が出来ます。
+モジュールが [アプリケーション](structure-applications.md) にインストールされている場合、エンド・ユーザはモジュールのコントローラにアクセスする事が出来ます。
 これらのことを理由として、モジュールは小さなアプリケーションと見なされることがよくあります。
 しかし、モジュールは単独では配備できず、アプリケーションの中に存在しなければならないという点で [アプリケーション](structure-applications.md) とは異なります。
 
@@ -20,9 +20,9 @@ forum/
         DefaultController.php    デフォルトのコントローラクラス・ファイル
     models/                      モデルクラス・ファイルを含む
     views/                       コントローラのビューとレイアウトのファイルを含む
-        layouts/                 レイアウトのビューファイルを含む
-        default/                 DefaultController のためのビューファイルを含む
-            index.php            index ビューファイル
+        layouts/                 レイアウトのビュー・ファイルを含む
+        default/                 DefaultController のためのビュー・ファイルを含む
+            index.php            index ビュー・ファイル
 ```
 
 

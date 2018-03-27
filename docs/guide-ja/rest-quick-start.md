@@ -200,7 +200,7 @@ Content-Type: application/json; charset=UTF-8
 Yii の RESTful API フレームワークを使う場合は、API エンドポイントをコントローラ・アクションの形式で実装します。
 そして、コントローラを使って、単一タイプのリソースに対するエンドポイントを実装するアクションを編成します。
 
-リソースは [[yii\base\Model]] クラスを拡張するデータモデルとして表現されます。
+リソースは [[yii\base\Model]] クラスを拡張するデータ・モデルとして表現されます。
 データベース (リレーショナルまたは NoSQL) を扱っている場合は、[[yii\db\ActiveRecord|ActiveRecord]] を使ってリソースを表現することが推奨されます。
 
 [[yii\rest\UrlRule]] を使って API エンドポイントへのルーティングを簡単にすることが出来ます。
