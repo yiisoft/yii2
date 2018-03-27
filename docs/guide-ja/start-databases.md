@@ -51,7 +51,7 @@ DB 接続を構成する <span id="configuring-db-connection"></span>
 -----------------
 
 先に進む前に、[PDO](http://www.php.net/manual/en/book.pdo.php) PHP 拡張および使用しているデータベースの PDO ドライバ (例えば、MySQL のための `pdo_mysql`) の両方をインストール済みであることを確認してください。
-アプリケーションがリレーショナルデータベースを使う場合、これは基本的な必要条件です。
+アプリケーションがリレーショナル・データベースを使う場合、これは基本的な必要条件です。
 
 これらがインストール済みなら、`config/db.php` というファイルを開いて、あなたのデータベースに適合するようにパラメータを変更してください。
 デフォルトでは、このファイルは下記の記述を含んでいます。
@@ -113,7 +113,7 @@ use app\models\Country;
 // country テーブルから全ての行を取得して "name" 順に並べる
 $countries = Country::find()->orderBy('name')->all();
 
-// プライマリキーが "US" である行を取得する
+// プライマリ・キーが "US" である行を取得する
 $country = Country::findOne('US');
 
 // "United States" を表示する

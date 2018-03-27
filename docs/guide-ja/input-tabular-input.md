@@ -54,7 +54,7 @@ class SettingsController extends Controller
 }
 ```
 
-上記のコードでは、データベースからモデルを読み出すときに [[yii\db\ActiveQuery::indexBy()|indexBy()]] を使って、モデルのプライマリキーでインデックスされた配列にデータを投入しています。
+上記のコードでは、データベースからモデルを読み出すときに [[yii\db\ActiveQuery::indexBy()|indexBy()]] を使って、モデルのプライマリ・キーでインデックスされた配列にデータを投入しています。
 このインデックスが、後で、フォームフィールドを特定するために使われます。
 [[yii\base\Model::loadMultiple()|Model::loadMultiple()]] が POST から来るフォームデータを複数のモデルに代入し、[[yii\base\Model::validateMultiple()|Model::validateMultiple()]] が全てのモデルを一度に検証します。
 保存するときには、`validateMultiple()` を使ってモデルの検証を済ませていますので、[[yii\db\ActiveRecord::save()|save()]] のパラメータに `false` を渡して、二度目の検証を実行しないようにしています。

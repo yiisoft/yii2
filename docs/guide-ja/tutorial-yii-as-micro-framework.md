@@ -149,9 +149,9 @@ micro-app/
 
 > Info: ここでは話を簡単にするために sqlite データベースを使用します。他のオプションについては [データベースのガイド](db-dao.md) を参照してください。
 
-次に、[データベースマイグレーション](db-migrations.md) を作成して、記事のテーブルを作成します。
+次に、[データベース・マイグレーション](db-migrations.md) を作成して、記事のテーブルを作成します。
 既に述べたように、独立した構成情報ファイルがあることを確認してください。下記のコンソールコマンドを実行するためには、それが必要です。
-次のコマンドを実行すると、データベースマイグレーションファイルが作成され、そして、マイグレーションがデータベースに適用されます。
+次のコマンドを実行すると、データベース・マイグレーションファイルが作成され、そして、マイグレーションがデータベースに適用されます。
 
     vendor/bin/yii migrate/create --appconfig=config.php create_post_table --fields="title:string,body:text"
     vendor/bin/yii migrate/up --appconfig=config.php

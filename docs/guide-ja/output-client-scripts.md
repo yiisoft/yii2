@@ -62,9 +62,9 @@ $this->registerJsFile(
 
 これによって、アプリケーションの [base URL](concept-aliases.md#predefined-aliases) の下に配置されている `/js/main.js` スクリプトを読み込むタグが追加されます。
 
-ただし、外部 JS ファイルを登録するのには、 [[yii\web\View::registerJsFile()|registerJsFile()]] を使わずに、[アセットバンドル](structure-assets.md) を使うことが強く推奨されます。
+ただし、外部 JS ファイルを登録するのには、 [[yii\web\View::registerJsFile()|registerJsFile()]] を使わずに、[アセット・バンドル](structure-assets.md) を使うことが強く推奨されます。
 なぜなら、そうする方が、柔軟性も高く、依存関係の構成も粒度を細かく出来るからです。
-また、アセットバンドルを使えば、複数の JS ファイルを結合して圧縮すること
+また、アセット・バンドルを使えば、複数の JS ファイルを結合して圧縮すること
 (アクセスの多いウェブサイトではそうすることが望まれます) が可能になります。
 
 ## CSS を登録する <span id="register-css"></span>
@@ -108,31 +108,31 @@ $this->registerCssFile("@web/css/themes/black-and-white.css", [
   この例における `@web` in this example is an [アプリケーションのベース URL に対するエイリアス](concept-aliases.md#predefined-aliases) です。
 * 二番目の引数は、結果として出力される `<link>` タグの HTML 属性を指定するものです。
   ただし、`depends` というオプションは特別な処理を受けます。
-  これは、この CSS ファイルが依存するアセットバンドルを指定するものです。
-  この例の場合は、[[yii\bootstrap\BootstrapAsset|BootstrapAsset]] が依存するアセットバンドルです。
+  これは、この CSS ファイルが依存するアセット・バンドルを指定するものです。
+  この例の場合は、[[yii\bootstrap\BootstrapAsset|BootstrapAsset]] が依存するアセット・バンドルです。
   これは、この CSS ファイルが [[yii\bootstrap\BootstrapAsset|BootstrapAsset]] に属する CSS ファイルの*後に*追加されることを意味します。
 * 最後の引数はこの CSS ファイルを特定する ID を指定するものです。
   省略された場合は、CSS ファイルの URL が代りに ID として使用されます。
 
-外部 CSS ファイルを登録するのには、 [[yii\web\View::registerCssFile()|registerCssFile()]] を使わずに、[アセットバンドル](structure-assets.md) を使うことが強く推奨されます。
-アセットバンドルを使えば、複数の CSS ファイルを結合して圧縮すること
+外部 CSS ファイルを登録するのには、 [[yii\web\View::registerCssFile()|registerCssFile()]] を使わずに、[アセット・バンドル](structure-assets.md) を使うことが強く推奨されます。
+アセット・バンドルを使えば、複数の CSS ファイルを結合して圧縮すること
 (アクセスの多いウェブサイトではそうすることが望まれます) が可能になります。
 また、アプリケーションの全てのアセットの依存関係を一ヶ所で構成することが出来るため、
 より大きな柔軟性を得ることが出来ます。
 
 
-## アセットバンドルを登録する <span id="asset-bundles"></span>
+## アセット・バンドルを登録する <span id="asset-bundles"></span>
 
-既に述べたように、CSS ファイルと JavaScript ファイルを直接に登録する代りにアセットバンドルを使うことが推奨されます。
-アセットバンドルを定義する方法の詳細は、ガイドの [アセット](structure-assets.md) のセクションで知ることが出来ます。
-既に定義されているアセットバンドルの使い方は、次のように非常に単純明快です。
+既に述べたように、CSS ファイルと JavaScript ファイルを直接に登録する代りにアセット・バンドルを使うことが推奨されます。
+アセット・バンドルを定義する方法の詳細は、ガイドの [アセット](structure-assets.md) のセクションで知ることが出来ます。
+既に定義されているアセット・バンドルの使い方は、次のように非常に単純明快です。
 
 ```php
 \frontend\assets\AppAsset::register($this);
 ```
 
 上記のコードでは、ビューファイルのコンテキストにおいて、`AppAsset` バンドルが (`$this` で表される) 現在のビューに対して登録されています。
-ウィジェットの中からアセットバンドルを登録するときは、ウィジェットの [[yii\base\Widget::$view|$view]]
+ウィジェットの中からアセット・バンドルを登録するときは、ウィジェットの [[yii\base\Widget::$view|$view]]
 を代りに渡します (`$this->view`)。
 
 

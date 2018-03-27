@@ -90,7 +90,7 @@ $query = (new Query())->from('post')->where(['status' => 1]);
 > Note: クエリが既に `orderBy` 句を指定しているものである場合、(`sort` の構成を通して) エンドユーザによって与えられる並べ替えの指定は、既存の `orderBy` 句に追加されます。
 一方、`limit` と `offset` の句が存在している場合は、(`pagenation` の構成を通して) エンドユーザによって指定されるページネーションのリクエストによって上書きされます。
 
-デフォルトでは、[[yii\data\ActiveDataProvider]] はデータベース接続として `db` アプリケーションコンポーネントを使用します。
+デフォルトでは、[[yii\data\ActiveDataProvider]] はデータベース接続として `db` アプリケーション・コンポーネントを使用します。
 [[yii\data\ActiveDataProvider::db]] プロパティを構成すれば、別のデータベース接続を使用することが出来ます。
 
 
@@ -189,11 +189,11 @@ $provider = new ActiveDataProvider([
 // Post オブジェクトの配列を返す
 $posts = $provider->getModels();
 
-// $post に対応するプライマリキーの値を返す
+// $post に対応するプライマリ・キーの値を返す
 $ids = $provider->getKeys();
 ```
 
-上記の例では、[[yii\data\ActiveDataProvider]] に対して [[yii\db\ActiveQuery]] オブジェクトを供給していますから、キーとしてプライマリキーの値を返すのが理にかなっています。
+上記の例では、[[yii\data\ActiveDataProvider]] に対して [[yii\db\ActiveQuery]] オブジェクトを供給していますから、キーとしてプライマリ・キーの値を返すのが理にかなっています。
 キーの値の計算方法を明示的に指定するために、[[yii\data\ActiveDataProvider::key]] にカラム名を設定したり、キーの値を計算するコーラブルを設定したりすることも出来ます。
 例えば、
 

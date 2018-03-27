@@ -162,7 +162,7 @@ class SiteController extends Controller
 RBAC と他のもっと伝統的なアクセス制御スキーマとの比較に関する詳細については、[Wiki 記事](http://ja.wikipedia.org/wiki/%E3%83%AD%E3%83%BC%E3%83%AB%E3%83%99%E3%83%BC%E3%82%B9%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E5%88%B6%E5%BE%A1) を参照してください。
 
 Yii は、[NIST RBAC モデル](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf) に従って、一般的階層型 RBAC を実装しています。
-RBAC の機能は、[[yii\rbac\ManagerInterface|authManager]] [アプリケーションコンポーネント](structure-application-components.md) を通じて提供されます。
+RBAC の機能は、[[yii\rbac\ManagerInterface|authManager]] [アプリケーション・コンポーネント](structure-application-components.md) を通じて提供されます。
 
 RBAC を使用することには、二つの作業が含まれます。
 最初の作業は、RBAC 権限付与データを作り上げることであり、第二の作業は、権限付与データを使って必要とされる場所でアクセスチェックを実行することです。
@@ -189,7 +189,7 @@ Yii は、一般的な *半順序* 階層を実装していますが、これは
 
 ### RBAC を構成する <span id="configuring-rbac"></span>
 
-権限付与データを定義してアクセスチェックを実行する前に、[[yii\base\Application::authManager|authManager]] アプリケーションコンポーネントを構成する必要があります。
+権限付与データを定義してアクセスチェックを実行する前に、[[yii\base\Application::authManager|authManager]] アプリケーション・コンポーネントを構成する必要があります。
 Yii は二種類の権限付与マネージャを提供しています。すなわち、[[yii\rbac\PhpManager]] と [[yii\rbac\DbManager]] です。
 前者は権限付与データを保存するのに PHP スクリプトファイルを使いますが、後者は権限付与データをデータベースに保存します。
 あなたのアプリケーションが非常に動的なロールと許可の管理を必要とするのでなければ、前者を使うことを考慮するのが良いでしょう。

@@ -8,7 +8,7 @@ Yii はセッションとクッキーをオブジェクトとしてカプセル�
 
 ## セッション <span id="sessions"></span>
 
-[リクエスト](runtime-requests.md) や [レスポンス](runtime-responses.md) と同じように、デフォルトでは [[yii\web\Session]] のインスタンスである `session` [アプリケーションコンポーネント] によって、セッションにアクセスすることが出来ます。
+[リクエスト](runtime-requests.md) や [レスポンス](runtime-responses.md) と同じように、デフォルトでは [[yii\web\Session]] のインスタンスである `session` [アプリケーション・コンポーネント] によって、セッションにアクセスすることが出来ます。
 
 
 ### セッションのオープンとクローズ <span id="opening-closing-sessions"></span>
@@ -143,7 +143,7 @@ return [
     'components' => [
         'session' => [
             'class' => 'yii\web\DbSession',
-            // 'db' => 'mydb',  // DB 接続のアプリケーションコンポーネント ID。デフォルトは 'db'。
+            // 'db' => 'mydb',  // DB 接続のアプリケーション・コンポーネント ID。デフォルトは 'db'。
             // 'sessionTable' => 'my_session', // セッションテーブル名。デフォルトは 'session'。
         ],
     ],
@@ -201,7 +201,7 @@ class m170529_050554_create_table_session extends Migration
 フラッシュデータは特殊な種類のセッションデータで、あるリクエストの中で設定されると、次のリクエストの間においてのみ読み出すことが出来て、その後は自動的に削除されるものです。
 フラッシュデータが最もよく使われるのは、エンドユーザに一度だけ表示されるべきメッセージ、例えば、ユーザのフォーム送信が成功した後に表示される確認メッセージなどを実装するときです。
 
-`session` アプリケーションコンポーネントによって、フラッシュデータを設定し、アクセスすることが出来ます。例えば、
+`session` アプリケーション・コンポーネントによって、フラッシュデータを設定し、アクセスすることが出来ます。例えば、
 
 ```php
 $session = Yii::$app->session;

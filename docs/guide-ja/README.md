@@ -34,7 +34,7 @@ All Rights Reserved.
 * [アプリケーションの構造の概要](structure-overview.md)
 * [エントリ・スクリプト](structure-entry-scripts.md)
 * [アプリケーション](structure-applications.md)
-* [アプリケーションコンポーネント](structure-application-components.md)
+* [アプリケーション・コンポーネント](structure-application-components.md)
 * [コントローラ](structure-controllers.md)
 * [モデル](structure-models.md)
 * [ビュー](structure-views.md)
@@ -75,8 +75,8 @@ All Rights Reserved.
 データベースの取り扱い
 ----------------------
 
-* [データアクセスオブジェクト](db-dao.md): データベースへの接続、基本的なクエリ、トランザクション、および、スキーマ操作
-* [クエリビルダ](db-query-builder.md): シンプルな抽象レイヤを使ってデータベースに対してクエリを行う
+* [データベース・アクセス・オブジェクト](db-dao.md): データベースへの接続、基本的なクエリ、トランザクション、および、スキーマ操作
+* [クエリ・ビルダ](db-query-builder.md): シンプルな抽象レイヤを使ってデータベースに対してクエリを行う
 * [アクティブレコード](db-active-record.md): アクティブレコード ORM、レコードの読み出しと操作、リレーションの定義
 * [マイグレーション](db-migrations.md): チーム開発環境においてデータベースにバージョンコントロールを適用
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ja/README.md)

@@ -76,22 +76,22 @@ Yii は [モデル・ビュー・コントローラ (MVC)](http://wikipedia.org/
 [ウィジェット](structure-widgets.md) は、複雑で動的なユーザ・インタフェイス要素を構築するために、[ビュー](structure-views.md) の中で使われます。
 
 
-リクエストのライフサイクル <span id="request-lifecycle"></span>
+リクエストのライフ・サイクル <span id="request-lifecycle"></span>
 --------------------------
 
 次の図は、アプリケーションがどのようにリクエストを処理するかを示すものです。
 
-![リクエストのライフサイクル](images/request-lifecycle.png)
+![リクエストのライフ・サイクル](images/request-lifecycle.png)
 
 1. ユーザが [エントリ・スクリプト](structure-entry-scripts.md) `web/index.php` に対してリクエストを出します。
 2. エントリ・スクリプトはアプリケーションの [構成情報](concept-configurations.md) を読み出して、リクエストを処理する [アプリケーション](structure-applications.md) のインスタンスを作成します。
-3. アプリケーションは、[リクエスト](runtime-requests.md) アプリケーションコンポーネントの助力を得て、リクエストされた [ルート](runtime-routing.md) を解決します。
+3. アプリケーションは、[リクエスト](runtime-requests.md) アプリケーション・コンポーネントの助力を得て、リクエストされた [ルート](runtime-routing.md) を解決します。
 4. アプリケーションがリクエストを処理する [コントローラ](structure-controllers.md) のインスタンスを作成します。
 5. コントローラが [アクション](structure-controllers.md) のインスタンスを作成し、アクションのためのフィルタを実行します。
 6. 一つでもフィルタが失敗したときは、アクションはキャンセルされます。
 7. すべてのフィルタを通ったとき、アクションが実行されます。
 8. アクションはデータモデルを、おそらくはデータベースから、読み出します。
 9. アクションはデータモデルをビューに提供して、ビューをレンダリングします。
-10. レンダリング結果が [レスポンス](runtime-responses.md) アプリケーションコンポーネントに返されます。
+10. レンダリング結果が [レスポンス](runtime-responses.md) アプリケーション・コンポーネントに返されます。
 11. レスポンスコンポーネントがレンダリング結果をユーザのブラウザに送信します。
 

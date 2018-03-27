@@ -188,7 +188,7 @@ function foo($model, $attribute) {
 ```
 
 > Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) のセクションでカバーされています。
-  データベーススキーマによるデフォルト値は、モデルの [loadDefaultValues()](db-active-record.md#default-attribute-values)
+  データベース・スキーマによるデフォルト値は、モデルの [loadDefaultValues()](db-active-record.md#default-attribute-values)
   によってロードすることが出来ます。
 
 ## [[yii\validators\NumberValidator|double]] <span id="double"></span>
@@ -227,26 +227,26 @@ function foo($model, $attribute) {
 - `rule`: 検証規則を指定する配列。
   配列の最初の要素がバリデータのクラス名かエイリアスを指定します。
   配列の残りの「名前・値」のペアが、バリデータオブジェクトを構成するのに使われます。
-- `allowMessageFromRule`: 埋め込まれた検証規則によって返されるエラーメッセージを使うかどうか。
-  デフォルト値は `true` です。これが `false` の場合は、`message` をエラーメッセージとして使います。
+- `allowMessageFromRule`: 埋め込まれた検証規則によって返されるエラー・メッセージを使うかどうか。
+  デフォルト値は `true` です。これが `false` の場合は、`message` をエラー・メッセージとして使います。
 
-> Note: 属性が配列でない場合は、検証が失敗したと見なされ、`message` がエラーメッセージとして返されます。
+> Note: 属性が配列でない場合は、検証が失敗したと見なされ、`message` がエラー・メッセージとして返されます。
 
 
 ## [[yii\validators\EmailValidator|email]] <span id="email"></span>
 
 ```php
 [
-    // "email" が有効なメールアドレスであるかどうかチェック
+    // "email" が有効なメール・アドレスであるかどうかチェック
     ['email', 'email'],
 ]
 ```
 
-このバリデータは、入力値が有効なメールアドレスであるかどうかをチェックします。
+このバリデータは、入力値が有効なメール・アドレスであるかどうかをチェックします。
 
-- `allowName`: メールアドレスに表示名 (例えば、`John Smith <john.smith@example.com>`) を許容するか否か。デフォルト値は `false`。
+- `allowName`: メール・アドレスに表示名 (例えば、`John Smith <john.smith@example.com>`) を許容するか否か。デフォルト値は `false`。
 - `checkDNS`: メールのドメインが存在して A または MX レコードを持っているかどうかをチェックするか否か。
-  このチェックは、メールアドレスが実際には有効なものでも、一時的な DNS の問題によって失敗する場合があることに注意してください。
+  このチェックは、メール・アドレスが実際には有効なものでも、一時的な DNS の問題によって失敗する場合があることに注意してください。
   デフォルト値は `false`。
 - `enableIDN`: 検証のプロセスが IDN (国際化ドメイン名) を考慮に入れるか否か。
   デフォルト値は `false`。
@@ -264,15 +264,15 @@ function foo($model, $attribute) {
     ['a1', 'exist', 'targetAttribute' => 'a2'],
 
     // a1 の値が "a1" のカラム、a2 の値が "a2" のカラムに存在する必要がある
-    // 両者はともにエラーメッセージを受け取る
+    // 両者はともにエラー・メッセージを受け取る
     [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1', 'a2']],
 
     // a1 の値が "a1" のカラム、a2 の値が "a2" のカラムに存在する必要がある
-    // a1 のみがエラーメッセージを受け取る
+    // a1 のみがエラー・メッセージを受け取る
     ['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],
 
     // a2 の値が "a2" のカラム、a1 の値が "a3" のカラムに存在する必要がある
-    // a1 がエラーメッセージを受け取る
+    // a1 がエラー・メッセージを受け取る
     ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 
     // a1 の値が "a1" のカラムに存在する必要がある
@@ -630,15 +630,15 @@ IPv4 アドレス `192.168.10.128` も、制約の前にリストされている
     ['a1', 'unique', 'targetAttribute' => 'a2'],
 
     // a1 の値が "a1" のカラム、a2 の値が "a2" のカラムにおいてユニークである必要がある
-    // 両者はともにエラーメッセージを受け取る
+    // 両者はともにエラー・メッセージを受け取る
     [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1', 'a2']],
 
     // a1 の値が "a1" のカラム、a2 の値が "a2" のカラムにおいてユニークである必要がある
-    // a1 のみがエラーメッセージを受け取る
+    // a1 のみがエラー・メッセージを受け取る
     ['a1', 'unique', 'targetAttribute' => ['a1', 'a2']],
 
     // a2 の値が "a2" のカラム、a1 の値が "a3" のカラムにおいてユニークである必要がある
-    // a1 がエラーメッセージを受け取る
+    // a1 がエラー・メッセージを受け取る
     ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 ]
 ```

@@ -69,7 +69,7 @@ as `app\models\User`, the controller knows which model can be used for fetching 
 
 ## JSON の入力を可能にする <span id="enabling-json-input"></span>
 
-API が JSON 形式で入力データを受け取ることが出来るように、`request` [アプリケーションコンポーネント](structure-application-components.md) の [[yii\web\Request::$parsers|parsers]] プロパティを構成して、JSON 入力のために [[yii\web\JsonParser]] を使うようにします。
+API が JSON 形式で入力データを受け取ることが出来るように、`request` [アプリケーション・コンポーネント](structure-application-components.md) の [[yii\web\Request::$parsers|parsers]] プロパティを構成して、JSON 入力のために [[yii\web\JsonParser]] を使うようにします。
 
 ```php
 'request' => [

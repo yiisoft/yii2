@@ -4,7 +4,7 @@
 ビューは [MVC](http://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
 ビューはエンドユーザにデータを表示することに責任を持つコードです。
 ウェブ・アプリケーションにおいては、ビューは、通常、主として HTML コードと表示目的の PHP コードを含む PHP スクリプトファイルである、*ビューテンプレート* の形式で作成されます。
-そして、ビューテンプレートを管理する [[yii\web\View|ビュー]] [アプリケーションコンポーネント](structure-application-components.md) が、ビューの構築とレンダリングを助けるためによく使われるメソッドを提供します。
+そして、ビューテンプレートを管理する [[yii\web\View|ビュー]] [アプリケーション・コンポーネント](structure-application-components.md) が、ビューの構築とレンダリングを助けるためによく使われるメソッドを提供します。
 なお、簡潔さを重視して、ビューテンプレートまたはビューテンプレートファイルを単にビューと呼ぶことがよくあります。
 
 
@@ -199,7 +199,7 @@ class ListWidget extends Widget
 
 ### 他の場所でのレンダリング <span id="rendering-in-other-places"></span>
 
-場所がどこであれ、`Yii::$app->view` という式によって [[yii\base\View|ビュー]] アプリケーションコンポーネントにアクセスすることが出来ますから、前述の [[yii\base\View|ビュー]] コンポーネントメソッドを使ってビューをレンダリングすることが出来ます。
+場所がどこであれ、`Yii::$app->view` という式によって [[yii\base\View|ビュー]] アプリケーション・コンポーネントにアクセスすることが出来ますから、前述の [[yii\base\View|ビュー]] コンポーネントメソッドを使ってビューをレンダリングすることが出来ます。
 例えば、
 
 ```php
@@ -487,7 +487,7 @@ class PostController extends Controller
 ## ビューコンポーネントを使う <span id="using-view-components"></span>
 
 [[yii\base\View|ビューコンポーネント]] はビューに関連する多くの機能を提供します。
-ビューコンポーネントは、[[yii\base\View]] またはその子クラスの個別のインスタンスを作成することによっても取得できますが、たいていの場合は、`view` アプリケーションコンポーネントを主として使うことになるでしょう。
+ビューコンポーネントは、[[yii\base\View]] またはその子クラスの個別のインスタンスを作成することによっても取得できますが、たいていの場合は、`view` アプリケーション・コンポーネントを主として使うことになるでしょう。
 このコンポーネントは [アプリケーションの構成情報](structure-applications.md#application-configurations) の中で、次のようにして構成することが出来ます。
 
 ```php
@@ -507,7 +507,7 @@ class PostController extends Controller
 * [テーマ](output-theming.md): ウェブサイトのテーマを開発し変更することを可能にします。
 * [フラグメントキャッシュ](caching-fragment.md): ウェブ・ページの中の断片をキャッシュすることを可能にします。
 * [クライアントスクリプトの取り扱い](output-client-scripts.md): CSS と JavaScript の登録とレンダリングをサポートします。
-* [アセットバンドルの取り扱い](structure-assets.md): [アセットバンドル](structure-assets.md) の登録とレンダリングをサポートします。
+* [アセット・バンドルの取り扱い](structure-assets.md): [アセット・バンドル](structure-assets.md) の登録とレンダリングをサポートします。
 * [代替のテンプレートエンジン](tutorial-template-engines.md): [Twig](http://twig.sensiolabs.org/)、[Smarty](http://www.smarty.net/) など、他のテンプレートエンジンを使用することを可能にします。
 
 次に挙げるマイナーではあっても有用な諸機能は、ウェブ・ページを開発するときに頻繁に使用するでしょう。

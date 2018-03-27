@@ -111,8 +111,8 @@ Yii はさまざまなキャッシュ・ストレージをサポートしてい�
 分散型のアプリケーションでキャッシュを扱うときには最速の一つとして考えることができます (例えば、複数台のサーバで、ロード・バランサがある、などの場合) 。
 * [[yii\redis\Cache]]: [Redis](http://redis.io/) の key-value ストアに基づいてキャッシュ・コンポーネントを実装しています。(Redis の バージョン 2.6.12 以降が必要とされます) 。
 * [[yii\caching\WinCache]]: PHP の [WinCache](http://iis.net/downloads/microsoft/wincache-extension) ([関連リンク](http://php.net/manual/ja/book.wincache.php)) 拡張モジュールを使用します。
-* [[yii\caching\XCache]] _(deprecated)_: PHP の [XCache](http://xcache.lighttpd.net/) 拡張モジュールを使用します。
-* [[yii\caching\ZendDataCache]] _(deprecated)_: キャッシュ・メディアして [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) を使用します。
+* [[yii\caching\XCache]] _(非推奨)_: PHP の [XCache](http://xcache.lighttpd.net/) 拡張モジュールを使用します。
+* [[yii\caching\ZendDataCache]] _(非推奨)_: キャッシュ・メディアして [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) を使用します。
 
 > Tip: 同じアプリケーション内で異なるキャッシュを使用することもできます。一般的なやり方として、小さくとも常に使用されるデータ (例えば、統計データ) を格納する場合はメモリ・ベースのキャッシュ・ストレージを使用し、大きくて使用頻度の低いデータ (例えば、ページ・コンテント) を格納する場合はファイル・ベース、またはデータベースのキャッシュ・ストレージを使用します  。
 

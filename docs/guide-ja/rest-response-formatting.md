@@ -8,7 +8,7 @@ RESTful API のリクエストを処理するとき、アプリケーション�
 2. リソースオブジェクトを配列に変換します。
    [リソース](rest-resources.md) のセクションで説明したように、この作業は [[yii\rest\Serializer]] によって実行されます。
 3. 配列をコンテントネゴシエーションのステップで決定された形式の文字列に変換します。
-   この作業は、`response` [アプリケーションコンポーネント](structure-application-components.md) の [[yii\web\Response::formatters|formatters]] プロパティに登録された [[yii\web\ResponseFormatterInterface|レスポンスフォーマッタ]] によって実行されます。
+   この作業は、`response` [アプリケーション・コンポーネント](structure-application-components.md) の [[yii\web\Response::formatters|formatters]] プロパティに登録された [[yii\web\ResponseFormatterInterface|レスポンスフォーマッタ]] によって実行されます。
 
 ## コンテントネゴシエーション <span id="content-negotiation"></span>
 

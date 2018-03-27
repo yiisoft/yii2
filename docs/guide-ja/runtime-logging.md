@@ -55,10 +55,10 @@ Yii::debug('平均収益の計算を開始', __METHOD__);
 
 ログターゲットは [[yii\log\Target]] クラスまたはその子クラスのインスタンスです。
 ログターゲットは、ログメッセージを重大性レベルとカテゴリによってフィルタして、何らかの媒体にエクスポートします。
-例えば、[[yii\log\DbTarget|データベースターゲット]] は、フィルタされたログメッセージをデータベーステーブルにエクスポートし、[[yii\log\EmailTarget|メールターゲット]] は、ログメッセージを指定されたメールアドレスにエクスポートします。
+例えば、[[yii\log\DbTarget|データベースターゲット]] は、フィルタされたログメッセージをデータベーステーブルにエクスポートし、[[yii\log\EmailTarget|メールターゲット]] は、ログメッセージを指定されたメール・アドレスにエクスポートします。
 
 一つのアプリケーションの中で複数のログターゲットを登録することが出来ます。
-そのためには、次のように、アプリケーションの構成情報の中で、`log` [アプリケーションコンポーネント](structure-application-components.md) によってログターゲットを構成します。
+そのためには、次のように、アプリケーションの構成情報の中で、`log` [アプリケーション・コンポーネント](structure-application-components.md) によってログターゲットを構成します。
 
 ```php
 return [
@@ -94,13 +94,13 @@ return [
 上記のコードでは、二つのログターゲットが [[yii\log\Dispatcher::targets]] プロパティに登録されています。
 
 * 最初のターゲットは、エラーと警告のメッセージを選択して、データベーステーブルに保存します。
-* 第二のターゲットは、名前が `yii\db\` で始まるカテゴリのエラーメッセージを選んで、`admin@example.com` と `developer@example.com` の両方にメールで送信します。
+* 第二のターゲットは、名前が `yii\db\` で始まるカテゴリのエラー・メッセージを選んで、`admin@example.com` と `developer@example.com` の両方にメールで送信します。
 
 Yii は下記のログターゲットをあらかじめ内蔵しています。
 その構成方法と使用方法を学ぶためには、これらのクラスの API ドキュメントを参照してください。
 
 * [[yii\log\DbTarget]]: ログメッセージをデータベーステーブルに保存する。
-* [[yii\log\EmailTarget]]: ログメッセージを事前に指定されたメールアドレスに送信する。
+* [[yii\log\EmailTarget]]: ログメッセージを事前に指定されたメール・アドレスに送信する。
 * [[yii\log\FileTarget]]: ログメッセージをファイルに保存する。
 * [[yii\log\SyslogTarget]]: ログメッセージを PHP 関数 `syslog()` を呼んでシステムログに保存する。
 
@@ -149,8 +149,8 @@ Yii は下記のログターゲットをあらかじめ内蔵しています。
 ]
 ```
 
-> Info: HTTP 例外が [エラーハンドラ](runtime-handling-errors.md) によって捕捉されたときは、`yii\web\HttpException:ErrorCode` という書式のカテゴリ名でエラーメッセージがログに記録されます。
-  例えば、[[yii\web\NotFoundHttpException]] は、`yii\web\HttpException:404` というカテゴリのエラーメッセージを発生させます。
+> Info: HTTP 例外が [エラーハンドラ](runtime-handling-errors.md) によって捕捉されたときは、`yii\web\HttpException:ErrorCode` という書式のカテゴリ名でエラー・メッセージがログに記録されます。
+  例えば、[[yii\web\NotFoundHttpException]] は、`yii\web\HttpException:404` というカテゴリのエラー・メッセージを発生させます。
 
 
 ### メッセージの書式設定 <span id="message-formatting"></span>
