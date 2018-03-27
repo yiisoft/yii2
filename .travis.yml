@@ -107,6 +107,9 @@ matrix:
         - postgresql
 
     - php: nightly
+      services:
+        - mysql
+        - postgresql
 
     # have a separate branch for javascript tests
     - language: node_js
@@ -117,9 +120,6 @@ matrix:
 
   allow_failures:
     - php: nightly
-      services:
-        - mysql
-        - postgresql
 
 install:
   - |
