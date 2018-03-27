@@ -149,7 +149,10 @@ install:
 
 before_script:
   # Disable the HHVM JIT for faster Unit Testing
-  - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini; fi
+  - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
+      echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini;
+      echo 'session.gc_probability = 0' >> /etc/hhvm/php.ini;
+    fi
 
   # show some versions and env information
   - php --version
