@@ -24,10 +24,6 @@ class UrlTest extends TestCase
 {
     protected function setUp()
     {
-        if (getenv('TRAVIS') == 'true' && \defined('HHVM_VERSION')) {
-            $this->markTestSkipped('Can not reliably test session-related things with Travis and HHVM.');
-        }
-
         parent::setUp();
         $this->mockApplication([
             'components' => [
