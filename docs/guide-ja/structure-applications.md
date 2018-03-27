@@ -3,7 +3,7 @@
 
 アプリケーションは Yii アプリケーションシステム全体の構造とライフサイクルを統制するオブジェクトです。
 全ての Yii アプリケーションシステムは、それぞれ、単一のアプリケーションオブジェクトを持ちます。
-アプリケーションオブジェクトは、[エントリスクリプト](structure-entry-scripts.md) において作成され、`\Yii::$app` という式でグローバルにアクセスすることが出来るオブジェクトです。
+アプリケーションオブジェクトは、[エントリ・スクリプト](structure-entry-scripts.md) において作成され、`\Yii::$app` という式でグローバルにアクセスすることが出来るオブジェクトです。
 
 > Info: ガイドの中で「アプリケーション」という言葉は、文脈に応じて、アプリケーションオブジェクトを意味したり、アプリケーションシステムを意味したりします。
 
@@ -13,7 +13,7 @@
 
 ## アプリケーションの構成情報 <span id="application-configurations"></span>
 
-[エントリスクリプト](structure-entry-scripts.md) は、アプリケーションを作成するときに、下記のように、[構成情報](concept-configurations.md) を読み込んで、それをアプリケーションに適用します。
+[エントリ・スクリプト](structure-entry-scripts.md) は、アプリケーションを作成するときに、下記のように、[構成情報](concept-configurations.md) を読み込んで、それをアプリケーションに適用します。
 
 ```php
 require __DIR__ . '/../vendor/autoload.php';
@@ -141,9 +141,9 @@ $config = require __DIR__ . '/../config/web.php';
 > ```
 
 ブートストラップの過程で、各コンポーネントのインスタンスが作成されます。
-そして、コンポーネントクラスが [[yii\base\BootstrapInterface]] を実装している場合は、その [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] メソッドも呼び出されます。
+そして、コンポーネント・クラスが [[yii\base\BootstrapInterface]] を実装している場合は、その [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] メソッドも呼び出されます。
 
-もう一つの実用的な例が [ベーシックプロジェクトテンプレート](start-installation.md) のアプリケーションの構成情報の中にあります。
+もう一つの実用的な例が [ベーシック・プロジェクト・テンプレート](start-installation.md) のアプリケーションの構成情報の中にあります。
 そこでは、アプリケーションが開発環境で走るときには `debug` モジュールと `gii` モジュールがブートストラップコンポーネントとして構成されています。
 
 ```php
@@ -211,7 +211,7 @@ if (YII_ENV_DEV) {
 どのようなコンポーネントでもアプリケーションに登録することが出来ます。
 そして登録されたコンポーネントは、後で、`\Yii::$app->componentID` という式を使ってグローバルにアクセスすることが出来ます。
 
-詳細は [アプリケーションコンポーネント](structure-application-components.md) の節を読んでください。
+詳細は [アプリケーションコンポーネント](structure-application-components.md) のセクションを読んでください。
 
 
 #### [[yii\base\Application::controllerMap|controllerMap]] <span id="controllerMap"></span>
@@ -264,7 +264,7 @@ if (YII_ENV_DEV) {
 言語を指定するのには、[IETF 言語タグ](http://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従うことが推奨されます。
 例えば、`en` は英語を意味し、`en-US` はアメリカ合衆国の英語を意味します。
 
-このプロパティに関する詳細は [国際化](tutorial-i18n.md) の節で読むことが出来ます。
+このプロパティに関する詳細は [国際化](tutorial-i18n.md) のセクションで読むことが出来ます。
 
 
 #### [[yii\base\Application::modules|modules]] <span id="modules"></span>
@@ -289,7 +289,7 @@ if (YII_ENV_DEV) {
 ]
 ```
 
-詳細は [モジュール](structure-modules.md) の節を参照してください。
+詳細は [モジュール](structure-modules.md) のセクションを参照してください。
 
 
 #### [[yii\base\Application::name|name]] <span id="name"></span>
@@ -333,7 +333,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 [language](#language) プロパティと同様に、このプロパティは [IETF 言語タグ](http://ja.wikipedia.org/wiki/IETF%E8%A8%80%E8%AA%9E%E3%82%BF%E3%82%B0) に従って構成しなければなりません。
 例えば、`en` は英語を意味し、`en-US` はアメリカ合衆国の英語を意味します。
 
-このプロパティに関する詳細は [国際化](tutorial-i18n.md) の節で読むことが出来ます。
+このプロパティに関する詳細は [国際化](tutorial-i18n.md) のセクションで読むことが出来ます。
 
 
 #### [[yii\base\Application::timeZone|timeZone]] <span id="timeZone"></span>
@@ -473,7 +473,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 ## アプリケーションのイベント <span id="application-events"></span>
 
 アプリケーションはリクエストを処理するライフサイクルの中でいくつかのイベントをトリガします。
-これらのイベントに対して、下記のようにして、アプリケーションの構成情報の中でイベントハンドラをアタッチすることが出来ます。
+これらのイベントに対して、下記のようにして、アプリケーションの構成情報の中でイベント・ハンドラをアタッチすることが出来ます。
 
 ```php
 [
@@ -483,9 +483,9 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 ]
 ```
 
-`on eventName` という構文の使い方については、[構成情報](concept-configurations.md#configuration-format) の節で説明されています。
+`on eventName` という構文の使い方については、[構成情報](concept-configurations.md#configuration-format) のセクションで説明されています。
 
-別の方法として、アプリケーションのインスタンスが生成された後、[ブートストラップの過程](runtime-bootstrapping.md) の中でイベントハンドラをアタッチすることも出来ます。
+別の方法として、アプリケーションのインスタンスが生成された後、[ブートストラップの過程](runtime-bootstrapping.md) の中でイベント・ハンドラをアタッチすることも出来ます。
 例えば、
 
 ```php
@@ -501,7 +501,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 
 このイベントがトリガされるときには、アプリケーションのインスタンスは既に構成されて初期化されています。
 ですから、イベントメカニズムを使って、リクエスト処理のプロセスに干渉するカスタムコードを挿入するのには、ちょうど良い場所です。
-例えば、このイベントハンドラの中で、何らかのパラメータに基づいて [[yii\base\Application::language]] プロパティを動的にセットすることが出来ます。
+例えば、このイベント・ハンドラの中で、何らかのパラメータに基づいて [[yii\base\Application::language]] プロパティを動的にセットすることが出来ます。
 
 
 ### [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] <span id="afterRequest"></span>
@@ -521,7 +521,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 実際のイベント名は `beforeAction` です。
 
 イベントのパラメータは [[yii\base\ActionEvent]] のインスタンスです。
-イベントハンドラは、[[yii\base\ActionEvent::isValid]] プロパティを `false` にセットして、アクションの実行を中止することが出来ます。
+イベント・ハンドラは、[[yii\base\ActionEvent::isValid]] プロパティを `false` にセットして、アクションの実行を中止することが出来ます。
 例えば、
 
 ```php
@@ -537,7 +537,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 
 同じ `beforeAction` イベントが、[モジュール](structure-modules.md) と [コントローラ](structure-controllers.md) からもトリガされることに注意してください。
 アプリケーションオブジェクトが最初にこのイベントをトリガし、次に (もし有れば) モジュールが、そして最後にコントローラがこのイベントをトリガします。
-イベントハンドラが [[yii\base\ActionEvent::isValid]] を `false` にセットすると、後続のイベントはトリガされません。
+イベント・ハンドラが [[yii\base\ActionEvent::isValid]] を `false` にセットすると、後続のイベントはトリガされません。
 
 
 ### [[yii\base\Application::EVENT_AFTER_ACTION|EVENT_AFTER_ACTION]] <span id="afterAction"></span>
@@ -546,7 +546,7 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 実際のイベント名は `afterAction` です。
 
 イベントのパラメータは [[yii\base\ActionEvent]] のインスタンスです。
-[[yii\base\ActionEvent::result]] プロパティを通じて、イベントハンドラはアクションの結果にアクセスしたり、またはアクションの結果を修正したり出来ます。
+[[yii\base\ActionEvent::result]] プロパティを通じて、イベント・ハンドラはアクションの結果にアクセスしたり、またはアクションの結果を修正したり出来ます。
 例えば、
 
 ```php
@@ -569,19 +569,19 @@ Yii リリースに含まれているコアコマンドを有効にすべきか�
 
 ![アプリケーションのライフサイクル](images/application-lifecycle.png)
 
-[エントリスクリプト](structure-entry-scripts.md) が実行されて、リクエストが処理されるとき、アプリケーションは次のようなライフサイクルを経ます。
+[エントリ・スクリプト](structure-entry-scripts.md) が実行されて、リクエストが処理されるとき、アプリケーションは次のようなライフサイクルを経ます。
 
-1. エントリスクリプトがアプリケーションの構成情報を配列として読み出す。
-2. エントリスクリプトがアプリケーションの新しいインスタンスを作成する。
+1. エントリ・スクリプトがアプリケーションの構成情報を配列として読み出す。
+2. エントリ・スクリプトがアプリケーションの新しいインスタンスを作成する。
   * [[yii\base\Application::preInit()|preInit()]] が呼び出されて、[[yii\base\Application::basePath|basePath]] のような、優先度の高いアプリケーションプロパティを構成する。
   * [[yii\base\Application::errorHandler|エラーハンドラ]] を登録する。
   * アプリケーションのプロパティを構成する。
   * [[yii\base\Application::init()|init()]] が呼ばれ、そこから更に、ブートストラップコンポーネントを走らせるために、[[yii\base\Application::bootstrap()|bootstrap()]] が呼ばれる。
-3. エントリスクリプトが [[yii\base\Application::run()]] を呼んで、アプリケーションを走らせる。
+3. エントリ・スクリプトが [[yii\base\Application::run()]] を呼んで、アプリケーションを走らせる。
   * [[yii\base\Application::EVENT_BEFORE_REQUEST|EVENT_BEFORE_REQUEST]] イベントをトリガする。
   * リクエストを処理する: リクエストを [ルート](runtime-routing.md) とそれに結び付くパラメータとして解決する。
     ルートによって指定されたモジュール、コントローラ、および、アクションを作成する。
     そしてアクションを実行する。
   * [[yii\base\Application::EVENT_AFTER_REQUEST|EVENT_AFTER_REQUEST]] イベントをトリガする。
   * エンドユーザにレスポンスを送信する。
-4. エントリスクリプトがアプリケーションから終了ステータスを受け取り、リクエストの処理を完了する。
+4. エントリ・スクリプトがアプリケーションから終了ステータスを受け取り、リクエストの処理を完了する。

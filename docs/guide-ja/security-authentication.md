@@ -189,10 +189,10 @@ Yii::$app->user->logout();
 [[yii\web\User]] クラスは、ログインとログアウトのプロセスで、いくつかのイベントを発生させます。
 
 * [[yii\web\User::EVENT_BEFORE_LOGIN|EVENT_BEFORE_LOGIN]]: [[yii\web\User::login()]] の開始時に発生します。
-  イベントハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを `false` にセットした場合は、ログインのプロセスがキャンセルされます。
+  イベント・ハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを `false` にセットした場合は、ログインのプロセスがキャンセルされます。
 * [[yii\web\User::EVENT_AFTER_LOGIN|EVENT_AFTER_LOGIN]]: ログインが成功した時に発生します。
 * [[yii\web\User::EVENT_BEFORE_LOGOUT|EVENT_BEFORE_LOGOUT]]: [[yii\web\User::logout()]] の開始時に発生します。
-  イベントハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを `false` にセットした場合は、ログアウトのプロセスがキャンセルされます。
+  イベント・ハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを `false` にセットした場合は、ログアウトのプロセスがキャンセルされます。
 * [[yii\web\User::EVENT_AFTER_LOGOUT|EVENT_AFTER_LOGOUT]]: ログアウトが成功した時に発生します。
 
 これらのイベントに反応して、ログイン監査、オンラインユーザ統計などの機能を実装することが出来ます。

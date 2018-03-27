@@ -15,7 +15,7 @@ DetailView は単一のデータ [[yii\widgets\DetailView::$model|モデル]] �
 モデルは [[\yii\base\Model]] またはそのサブクラス、例えば [アクティブレコード](db-active-record.md) のインスタンスか、連想配列かのどちらかにすることが出来ます。
  
 DetailView は [[yii\widgets\DetailView::$attributes]] プロパティを使って、モデルのどの属性が表示されるべきか、また、どういうフォーマットで表示されるべきかを決定します。
-利用できるフォーマットのオプションについては、[フォーマッタの節](output-formatting.md) を参照してください。
+利用できるフォーマットのオプションについては、[フォーマッタのセクション](output-formatting.md) を参照してください。
 
 次に DetailView の典型的な用例を示します。
 
@@ -245,7 +245,7 @@ echo GridView::widget([
 二番目のカラムの定義では、`date` が [[\yii\i18n\Formatter::asDate()]] に対応します。
 カラムの値が、ここでも、最初の引数として渡され、'php:Y-m-d' が二番目の引数の値として渡されます。
 
-利用できるフォーマッタの一覧については、[データのフォーマット](output-formatting.md) の節を参照してください。
+利用できるフォーマッタの一覧については、[データのフォーマット](output-formatting.md) のセクションを参照してください。
 
 データカラムを構成するためには、ショートカット形式を使うことも出来ます。
 それについては、[[yii\grid\GridView::columns|columns]] の API ドキュメントで説明されています。
@@ -737,7 +737,7 @@ Pjax::end();
 
 #### Gii における Pjax を伴う GridView/ListView
 
-バージョン 2.0.5 以降、[Gii](start-gii.md) の CRUD ジェネレータでは `$enablePjax` というオプションがウェブインターフェイスまたはコマンドラインで使用可能になっています。
+バージョン 2.0.5 以降、[Gii](start-gii.md) の CRUD ジェネレータでは `$enablePjax` というオプションがウェブインタフェイスまたはコマンドラインで使用可能になっています。
 
 ```php
 yii gii/crud --controllerClass="backend\\controllers\PostController" \

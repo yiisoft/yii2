@@ -25,7 +25,7 @@ Yii はアセットを *アセットバンドル* を単位として管理しま
 アセットバンドルクラスは [オートロード可能](concept-autoloading.md) でなければなりません。
 アセットバンドルクラスは、通常、アセットがどこに置かれているか、バンドルがどういう CSS や JavaScript のファイルを含んでいるか、そして、バンドルが他のバンドルにどのように依存しているかを定義します。
 
-以下のコードは [ベーシックプロジェクトテンプレート](start-installation.md) によって使用されているメインのアセットバンドルを定義するものです。
+以下のコードは [ベーシック・プロジェクト・テンプレート](start-installation.md) によって使用されているメインのアセットバンドルを定義するものです。
 
 ```php
 <?php
@@ -203,7 +203,7 @@ ___
 
 > Note: 2.0.13 以降、ベーシック・アプリケーション・テンプレートとアドバンスト・アプリケーション・テンプレートはともに、
   デフォルトで asset-packagist を使うように前もって構成されていますので、
-  この節は読み飛ばすことが出来ます。
+  このセクションは読み飛ばすことが出来ます。
 
 プロジェクトの `composer.json` に、下記を追加します。
 
@@ -534,7 +534,7 @@ return [
 - [[yii\web\YiiAsset]]: 主として `yii.js` ファイルをインクルードするためのバンドルです。
   このファイルはモジュール化された JavaScript のコードを編成するメカニズムを実装しています。
   また、`data-method` と `data-confirm` の属性に対する特別なサポートや、その他の有用な機能を提供します。
-  `yii.js` に関する詳細な情報は [クライアントスクリプトの節](output-client-scripts.md#yii.js) にあります。
+  `yii.js` に関する詳細な情報は [クライアントスクリプトのセクション](output-client-scripts.md#yii.js) にあります。
 - [[yii\web\JqueryAsset]]: jQuery の bower パッケージから `jquery.js` ファイルをインクルードします。
 - [[yii\bootstrap\BootstrapAsset]]: Twitter Bootstrap フレームワークから CSS ファイルをインクルードします。
 - [[yii\bootstrap\BootstrapPluginAsset]]: Bootstrap JavaScript プラグインをサポートするために、Twitter Bootstrap フレームワークから JavaScript ファイルをインクルードします。

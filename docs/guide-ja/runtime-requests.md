@@ -3,7 +3,7 @@
 
 アプリケーションに対するリクエストは、リクエストのパラメータ、HTTP ヘッダ、クッキーなどの情報を提供する [[yii\web\Request]] オブジェクトの形で表されます。
 与えられたリクエストに対応するリクエストオブジェクトには、デフォルトでは [[yii\web\Request]] のインスタンスである `request` [アプリケーションコンポーネント](structure-application-components.md) を通じてアクセスすることが出来ます。
-この節では、アプリケーションの中でこのコンポーネントをどのように利用できるかを説明します。
+このセクションでは、アプリケーションの中でこのコンポーネントをどのように利用できるかを説明します。
 
 
 ## リクエストのパラメータ <span id="request-parameters"></span>
@@ -80,9 +80,9 @@ if ($request->isPut)  { /* リクエストメソッドは PUT */ }
 * [[yii\web\Request::absoluteUrl|absoluteUrl]]: `http://example.com/admin/index.php/product?id=100` を返します。
   ホスト情報の部分を含んだ URL です。
 * [[yii\web\Request::hostInfo|hostInfo]]: `http://example.com` を返します。URL のホスト情報の部分です。
-* [[yii\web\Request::pathInfo|pathInfo]]: `/product` を返します。エントリスクリプトの後、疑問符 (クエリ文字列) の前の部分です。
+* [[yii\web\Request::pathInfo|pathInfo]]: `/product` を返します。エントリ・スクリプトの後、疑問符 (クエリ文字列) の前の部分です。
 * [[yii\web\Request::queryString|queryString]]: `id=100` を返します。疑問符の後の部分です。
-* [[yii\web\Request::baseUrl|baseUrl]]: `/admin` を返します。ホスト情報の後、かつ、エントリスクリプトの前の部分です。
+* [[yii\web\Request::baseUrl|baseUrl]]: `/admin` を返します。ホスト情報の後、かつ、エントリ・スクリプトの前の部分です。
 * [[yii\web\Request::scriptUrl|scriptUrl]]: `/admin/index.php` を返します。パス情報とクエリ文字列を省略した URL です。
 * [[yii\web\Request::serverName|serverName]]: `example.com` を返します。URL の中のホスト名です。
 * [[yii\web\Request::serverPort|serverPort]]: 80 を返します。ウェブサーバによって使用されているポートです。
@@ -130,7 +130,7 @@ $userIP = Yii::$app->request->userIP;
 
 ## 信頼できるプロキシとヘッダ <span id="trusted-proxies"></span>
 
-前の節でホストや IP アドレスなどのユーザ情報を取得する方法を説明しました。
+前のセクションでホストや IP アドレスなどのユーザ情報を取得する方法を説明しました。
 単一のウェブサーバがウェブサイトをホストしている通常の環境では、このままで動作します。
 しかし、Yii アプリケーションがリバースプロキシの背後で動作している場合は、この情報を読み出すために構成情報を追加する必要があります。
 なぜなら、その場合、直接のクライアントはプロキシになっており、ユーザの IP アドレスはプロキシがセットするヘッダによって Yii アプリケーションに渡されるからです。

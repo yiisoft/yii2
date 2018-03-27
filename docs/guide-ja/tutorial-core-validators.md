@@ -187,7 +187,7 @@ function foo($model, $attribute) {
 }
 ```
 
-> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
+> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) のセクションでカバーされています。
   データベーススキーマによるデフォルト値は、モデルの [loadDefaultValues()](db-active-record.md#default-attribute-values)
   によってロードすることが出来ます。
 
@@ -341,7 +341,7 @@ function foo($model, $attribute) {
   デフォルト値は `true` であり、そのようなチェックが行われることを意味します。
 
 `FileValidator` は [[yii\web\UploadedFile]] と一緒に使用されます。
-ファイルのアップロードおよびアップロードされたファイルの検証の実行に関する完全な説明は、[ファイルをアップロードする](input-file-upload.md) の節を参照してください。
+ファイルのアップロードおよびアップロードされたファイルの検証の実行に関する完全な説明は、[ファイルをアップロードする](input-file-upload.md) のセクションを参照してください。
 
 
 ## [[yii\validators\FilterValidator|filter]] <span id="filter"></span>
@@ -568,7 +568,7 @@ IPv4 アドレス `192.168.10.128` も、制約の前にリストされている
   一方、このプロパティが `false` であるときは、値が空か否かの判断に緩い規則を使います。
   `requiredValue` が設定されている場合、このプロパティが `true` であるときは、入力値と `requiredValue` を比較するときに型のチェックを行います。
 
-> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
+> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) のセクションでカバーされています。
 
 
 ## [[yii\validators\SafeValidator|safe]] <span id="safe"></span>

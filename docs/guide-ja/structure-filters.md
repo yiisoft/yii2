@@ -127,7 +127,7 @@ public function behaviors()
 }
 ```
 
-アクセスコントロール一般についての詳細は [権限](security-authorization.md) の節を参照してください。
+アクセスコントロール一般についての詳細は [権限](security-authorization.md) のセクションを参照してください。
 
 
 ### 認証メソッドフィルタ <span id="auth-method-filters"></span>
@@ -154,7 +154,7 @@ public function behaviors()
 ```
 
 認証メソッドフィルタは RESTful API を実装するときに使われるのが通例です。
-詳細については、RESTful の [認証](rest-authentication.md) の節を参照してください。
+詳細については、RESTful の [認証](rest-authentication.md) のセクションを参照してください。
 
 
 ### [[yii\filters\ContentNegotiator|ContentNegotiator]] <span id="content-negotiator"></span>
@@ -237,7 +237,7 @@ public function behaviors()
 }
 ```
 
-HttpCache に関する詳細は [HTTP キャッシュ](caching-http.md) の節を参照してください。
+HttpCache に関する詳細は [HTTP キャッシュ](caching-http.md) のセクションを参照してください。
 
 
 ### [[yii\filters\PageCache|PageCache]] <span id="page-cache"></span>
@@ -269,14 +269,14 @@ public function behaviors()
 }
 ```
 
-PageCache の使用に関する詳細は [ページキャッシュ](caching-page.md) の節を参照してください。
+PageCache の使用に関する詳細は [ページキャッシュ](caching-page.md) のセクションを参照してください。
 
 
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 RateLimiter は [リーキーバケットアルゴリズム](http://ja.wikipedia.org/wiki/%E3%83%AA%E3%83%BC%E3%82%AD%E3%83%BC%E3%83%90%E3%82%B1%E3%83%83%E3%83%88) に基づいてレート制限のアルゴリズムを実装するものです。
 主として RESTful API を実装するときに使用されます。
-このフィルタの使用に関する詳細は [レート制限](rest-rate-limiting.md) の節を参照してください。
+このフィルタの使用に関する詳細は [レート制限](rest-rate-limiting.md) のセクションを参照してください。
 
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
@@ -328,7 +328,7 @@ public function behaviors()
 }
 ```
 
-あなたの API の [[yii\rest\ActiveController]] クラスに CORS フィルタを追加したい場合は、[REST コントローラ](rest-controllers.md#cors) の節も参照して下さい。
+あなたの API の [[yii\rest\ActiveController]] クラスに CORS フィルタを追加したい場合は、[REST コントローラ](rest-controllers.md#cors) のセクションも参照して下さい。
 
 Cors のフィルタリングは [[yii\filters\Cors::$cors|$cors]] プロパティを使ってチューニングすることが出来ます。
 

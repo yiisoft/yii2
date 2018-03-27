@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 また、配列の要素にアクセスするようして、属性にアクセスすることも出来ます。
-これは、[[yii\base\Model]] が [ArrayAccess インターフェイス](http://php.net/manual/ja/class.arrayaccess.php) と [Traversable インターフェイス](http://jp2.php.net/manual/ja/class.traversable.php) をサポートしている恩恵です。
+これは、[[yii\base\Model]] が [ArrayAccess インタフェイス](http://php.net/manual/ja/class.arrayaccess.php) と [Traversable インタフェイス](http://jp2.php.net/manual/ja/class.traversable.php) をサポートしている恩恵です。
 
 ```php
 $model = new \app\models\ContactForm;
@@ -266,7 +266,7 @@ public function rules()
 
 一つの規則は、一つまたは複数の属性を検証するために使うことが出来ます。
 また、一つの属性は、一つまたは複数の規則によって検証することが出来ます。
-検証規則をどのように宣言するかについての詳細は [入力を検証する](input-validation.md) の節を参照してください。
+検証規則をどのように宣言するかについての詳細は [入力を検証する](input-validation.md) のセクションを参照してください。
 
 時として、特定の [シナリオ](#scenarios) にのみ適用される規則が必要になるでしょう。
 そのためには、下記のように、規則に `on` プロパティを指定することが出来ます。
@@ -329,7 +329,7 @@ public function scenarios()
 ```
 
 > Info: 一括代入が安全な属性に対してのみ適用されるのは、エンドユーザの入力データがどの属性を修正することが出来るか、ということを制御する必要があるからです。
-  例えば、`User` モデルに、ユーザに割り当てられた権限を決定する `permission` という属性がある場合、この属性が修正できるのは、管理者がバックエンドのインターフェイスを通じてする時だけに制限したいでしょう。
+  例えば、`User` モデルに、ユーザに割り当てられた権限を決定する `permission` という属性がある場合、この属性が修正できるのは、管理者がバックエンドのインタフェイスを通じてする時だけに制限したいでしょう。
 
 [[yii\base\Model::scenarios()]] のデフォルトの実装は [[yii\base\Model::rules()]] に現われる全てのシナリオと属性を返すものです。
 従って、このメソッドをオーバーライドしない場合は、アクティブな検証規則のどれかに出現する限り、その属性は安全である、ということになります。
@@ -497,7 +497,7 @@ public function fields()
 * モデルを使用するそれぞれの [アプリケーション](structure-applications.md) または [モジュール](structure-modules.md) において、対応する基底モデルクラスから拡張した具体的なモデルクラスを定義します。
   この具体的なモデルクラスが、そのアプリケーションやモジュールに固有の規則やロジックを含むべきです。
 
-例えば、[アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) の中で、基底モデルクラス `common\models\Post` を定義することが出来ます。
+例えば、[アドバンスト・プロジェクト・テンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) の中で、基底モデルクラス `common\models\Post` を定義することが出来ます。
 次に、フロントエンドアプリケーションにおいては、`common\models\Post` から拡張した具体的なモデルクラス `frontend\models\Post` を定義して使います。
 また、バックエンドアプリケーションにおいても、同様に、`backend\models\Post` を定義します。
 この戦略を取ると、`frontend\models\Post` の中のコードはフロントエンドアプリケーション固有のものであると保証することが出来ます。

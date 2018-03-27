@@ -13,7 +13,7 @@ MVC の枠組の中では、リソースは [モデル](structure-models.md) と
 * [[yii\db\ActiveRecord]] は DB データのアクセスと操作に対する強力なサポートを提供しています。
   リソースデータがデータベースに保存されているときは、アクティブレコードが最適の選択です。
 
-この節では、主として、[[yii\base\Model]] クラス (またはその子クラス) から拡張したリソースクラスにおいて、RESTful API を通じて返すことが出来るデータを指定する方法を説明します。
+このセクションでは、主として、[[yii\base\Model]] クラス (またはその子クラス) から拡張したリソースクラスにおいて、RESTful API を通じて返すことが出来るデータを指定する方法を説明します。
 リソースクラスが [[yii\base\Model]] から拡張したものでない場合は、全てのパブリックなメンバ変数が返されます。
 
 
@@ -245,9 +245,9 @@ class PostController extends Controller
 
 REST API におけるコレクションはデータプロバイダであるため、データプロバイダの全ての機能、すなわち、ページネーションやソーティングを共有しています。
 
-その一例を [クイックスタート](rest-quick-start.md#trying-it-out) の節で見ることが出来ます。
+その一例を [クイックスタート](rest-quick-start.md#trying-it-out) のセクションで見ることが出来ます。
 
 バージョン 2.0.13 以降、Yii はコレクションをフィルターする便利な機能を提供しています。
 その一例を [クイックスタート](rest-quick-start.md#trying-it-out) のガイドに見ることが出来ます。
 エンドポイントをあなた自身が実装しようとしている場合、フィルタリングは
-データプロバイダのガイドの [データフィルタを使ってデータプロバイダをフィルタリングする](output-data-providers.md#filtering-data-providers-using-data-filters) の節で述べられている方法で行うことが出来ます。
+データプロバイダのガイドの [データフィルタを使ってデータプロバイダをフィルタリングする](output-data-providers.md#filtering-data-providers-using-data-filters) のセクションで述べられている方法で行うことが出来ます。

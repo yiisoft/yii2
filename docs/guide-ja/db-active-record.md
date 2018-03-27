@@ -169,7 +169,7 @@ $customers = Customer::find()
 上記において、`$customer` は `Customer` オブジェクトであり、`$customers` は `Customer` オブジェクトの配列です。
 全てこれらには `customer` テーブルから取得されたデータが投入されます。
 
-> Info: [[yii\db\ActiveQuery]] は [[yii\db\Query]] から拡張しているため、[クエリビルダ](db-query-builder.md) の節で説明されたクエリ構築メソッドとクエリメソッドの *全て* を使うことが出来ます。
+> Info: [[yii\db\ActiveQuery]] は [[yii\db\Query]] から拡張しているため、[クエリビルダ](db-query-builder.md) のセクションで説明されたクエリ構築メソッドとクエリメソッドの *全て* を使うことが出来ます。
 
 プライマリキーの値や一群のカラムの値でクエリをすることはよく行われる仕事ですので、Yii はこの目的のために、二つのショートカットメソッドを提供しています。
 
@@ -294,7 +294,7 @@ class Customer extends ActiveRecord
 
 > Tip: 上記は、一般にデータの変換を達成するための簡単な方法を示すためのものです。
 > 日付の値については、Yii は、[DateValidator](tutorial-core-validators.md#date) と DatePicker ウィジェットを使用するという、より良い方法を提供しています。
-> DatePicker については、[JUI ウィジェットの節](widget-jui#datepicker-date-input) で説明されています。
+> DatePicker については、[JUI ウィジェットのセクション](widget-jui#datepicker-date-input) で説明されています。
 
 
 ### データを配列に取得する <span id="data-in-arrays"></span>
@@ -498,7 +498,7 @@ HTTP リクエストから値をロードしたり、プロパティにアクセ
 #### PostgreSQL における配列
 
 データが取得された後、配列カラムの値は PgSQL 記法から自動的に [[yii\db\ArrayExpression|ArrayExpression]] オブジェクトにデコードされます。
-このオブジェクトは PHP の `ArrayAccess` インターフェイスを実装しているため、これを配列として使うこと事が出来ます。
+このオブジェクトは PHP の `ArrayAccess` インタフェイスを実装しているため、これを配列として使うこと事が出来ます。
 また、`->getValue()` を呼んで配列そのものを取得することも出来ます。
 
 アクティブレコードは、属性値を配列カラムに保存するために [[yii\db\ArrayExpression|ArrayExpression]]
@@ -651,7 +651,7 @@ try {
 
 > Note: 上記のコードでは、PHP 5.x と PHP 7.x との互換性のために、二つの
 > catch ブロックを持っています。`\Exception` は PHP 7.0 以降では、
-> [`\Throwable` インターフェイス](http://php.net/manual/ja/class.throwable.php) を実装しています。
+> [`\Throwable` インタフェイス](http://php.net/manual/ja/class.throwable.php) を実装しています。
 > 従って、あなたのアプリケーションが PHP 7.0 以上しか使わない場合は、`\Exception` の部分を省略することが出来ます。
 
 第二の方法は、トランザクションのサポートが必要な DB 操作を [[yii\db\ActiveRecord::transactions()]] メソッドに列挙するという方法です。
@@ -1124,7 +1124,7 @@ $customers = Customer::find()
 
 > Note: たとえイーガーローディングを有効にして [[yii\db\ActiveQuery::joinWith()|joinWith()]] や [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] を使う場合でも、
   リレーションのデータを取得するのには `JOIN` クエリの結果は**使われません**。
-  その場合でも、やはり、[イーガーローディング](#lazy-eager-loading) の節で説明したように、結合されたリレーションごとに追加のクエリが実行されます。
+  その場合でも、やはり、[イーガーローディング](#lazy-eager-loading) のセクションで説明したように、結合されたリレーションごとに追加のクエリが実行されます。
 
 [[yii\db\ActiveQuery::with()|with()]] と同じように、一つまたは複数のリレーションを結合したり、リレーションクエリをその場でカスタマイズしたり、ネストされたリレーションを結合したりすることが出来ます。
 また、[[yii\db\ActiveQuery::with()|with()]] と [[yii\db\ActiveQuery::joinWith()|joinWith()]] を混ぜて使用することも出来ます。
@@ -1362,7 +1362,7 @@ class Comment extends \yii\mongodb\ActiveRecord
 $customers = Customer::find()->with('comments')->all();
 ```
 
-この節で説明されたリレーショナルクエリ機能のほとんどを使用することが出来ます。
+このセクションで説明されたリレーショナルクエリ機能のほとんどを使用することが出来ます。
 
 > Note: [[yii\db\ActiveQuery::joinWith()]] の使用は、データベース間の JOIN クエリをサポートしているデータベースに限定されます。
   この理由により、上記の例では `joinWith` メソッドは使用することが出来ません。

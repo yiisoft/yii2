@@ -90,7 +90,7 @@ use yii\helpers\HtmlPurifier;
   `PostCommentController` の場合は、ディレクトリは `@app/views/post-comment` です。
   また、コントローラがモジュールに属する場合は、ディレクトリは [[yii\base\Module::basePath|モジュールディレクトリ]] の下の `views/ControllerID` です。
 * [ウィジェット](structure-widgets.md) で表示されるビューは、デフォルトでは、`WidgetPath/views` ディレクトリの下に置かれるべきものです。
-  ここで、`WidgetPath` は、ウィジェットのクラスファイルを含んでいるディレクトリを指します。
+  ここで、`WidgetPath` は、ウィジェットのクラス・ファイルを含んでいるディレクトリを指します。
 * 他のオブジェクトによって表示されるビューについても、ウィジェットの場合と同じ規約に従うことが推奨されます。
 
 これらのデフォルトのビューディレクトリは、コントローラやウィジェットの [[yii\base\ViewContextInterface::getViewPath()]] メソッドをオーバーライドすることでカスタマイズすることが可能です。
@@ -502,7 +502,7 @@ class PostController extends Controller
 ]
 ```
 
-ビューコンポーネントは、次に挙げるビュー関連の有用な機能を提供します。それぞれについては、独立の節で更に詳細に説明されます。
+ビューコンポーネントは、次に挙げるビュー関連の有用な機能を提供します。それぞれについては、独立のセクションで更に詳細に説明されます。
 
 * [テーマ](output-theming.md): ウェブサイトのテーマを開発し変更することを可能にします。
 * [フラグメントキャッシュ](caching-fragment.md): ウェブ・ページの中の断片をキャッシュすることを可能にします。

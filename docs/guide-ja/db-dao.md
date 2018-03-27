@@ -91,7 +91,7 @@ ODBC 経由でデータベースに接続しようとする場合は、[[yii\db\
 > Info: DB 接続のインスタンスを作成するとき、実際のデータベース接続は、最初の SQL を実行するか、[[yii\db\Connection::open()|open()]] メソッドを明示的に呼ぶかするまでは確立されません。
 
 > Tip: 時として、何らかの環境変数を初期化するために、データベース接続を確立した直後に何かクエリを実行したい場合があるでしょう (例えば、タイムゾーンや文字セットを設定するなどです)。
-> そうするために、データベース接続の [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] イベントに対するイベントハンドラを登録することが出来ます。
+> そうするために、データベース接続の [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] イベントに対するイベント・ハンドラを登録することが出来ます。
 > 以下のように、アプリケーションの構成情報に直接にハンドラを登録してください。
 > 
 > ```php
@@ -364,7 +364,7 @@ try {
 
 > Note: 上記のコードでは、PHP 5.x と PHP 7.x との互換性のために、二つの
 > catch ブロックを持っています。`\Exception` は PHP 7.0 以降では、
-> [`\Throwable` インターフェイス](http://php.net/manual/ja/class.throwable.php) を実装しています。
+> [`\Throwable` インタフェイス](http://php.net/manual/ja/class.throwable.php) を実装しています。
 > 従って、あなたのアプリケーションが PHP 7.0 以上しか使わない場合は、`\Exception` の部分を省略することが出来ます。
 
 

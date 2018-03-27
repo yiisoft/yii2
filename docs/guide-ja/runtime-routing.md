@@ -43,7 +43,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 例えば、`/index.php?r=post/view&id=100` という URL は、`post/view` というルートと、`id` というクエリパラメータが 100 であることを表します。
 デフォルトの URL 形式は、[[yii\web\UrlManager|URL マネージャ]] についての構成を何も必要とせず、ウェブサーバの設定がどのようなものでも動作します。
 
-綺麗な URL 形式は、エントリスクリプトの名前に続く追加のパスを使用して、ルートとそれに結び付けられたクエリパラメータを表します。
+綺麗な URL 形式は、エントリ・スクリプトの名前に続く追加のパスを使用して、ルートとそれに結び付けられたクエリパラメータを表します。
 例えば、`/index.php/post/100` という URL の追加のパスは `/post/100` ですが、適切な [[yii\web\UrlManager::rules|URL 規則]] があれば、この追加のパスが `post/view` というルートと `id` のクエリパラメータ `100` を表すものとすることが出来ます。
 綺麗な URL 形式を使用するためには、URL をどのように表現すべきかという実際の要求に従って、一連の [[yii\web\UrlManager::rules|URL 規則]] を設計する必要があります。
 
@@ -246,7 +246,7 @@ echo Url::previous();
 [[yii\web\UrlManager::enablePrettyUrl|enablePrettyUrl]] プロパティは、綺麗な URL 形式の有効/無効を切り替えますので、必須です。
 その他のプロパティはオプションですが、上記で示されている構成が最もよく用いられているものです。
 
-* [[yii\web\UrlManager::showScriptName|showScriptName]]: このプロパティは、生成される URL にエントリスクリプトを含めるべきかどうかを決定します。
+* [[yii\web\UrlManager::showScriptName|showScriptName]]: このプロパティは、生成される URL にエントリ・スクリプトを含めるべきかどうかを決定します。
   例えば、このプロパティを `false` にすると、`/index.php/post/100` という URL を生成する代りに、`/post/100` という URL を生成することが出来ます。
 * [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: このプロパティは、厳密なリクエスト解析を有効にするかどうかを決定します。
   厳密な解析が有効にされた場合、リクエストされた URL が有効なリクエストとして扱われるためには、それが [[yii\web\UrlManager::rules|rules]] の少なくとも一つに合致しなければなりません。
@@ -255,8 +255,8 @@ echo Url::previous();
 * [[yii\web\UrlManager::rules|rules]]: このプロパティが URL を解析および生成するための一連の規則を含みます。
   このプロパティが、アプリケーションの固有の要求を満たす形式を持つ URL を生成するために、あなたが主として使うプロパティです。
 
-> Note: 生成された URL からエントリスクリプト名を隠すためには、[[yii\web\UrlManager::showScriptName|showScriptName]] を `false` に設定するだけでなく、ウェブサーバを構成して、リクエストされた URL が PHP スクリプトを明示的に指定していない場合でも、正しい PHP スクリプトを特定出来るようにする必要があります。
-もしあなたが Apache または nginx ウェブサーバを使うつもりなら、[インストール](start-installation.md#recommended-apache-configuration) の節で説明されている推奨設定を参照することが出来ます。
+> Note: 生成された URL からエントリ・スクリプト名を隠すためには、[[yii\web\UrlManager::showScriptName|showScriptName]] を `false` に設定するだけでなく、ウェブサーバを構成して、リクエストされた URL が PHP スクリプトを明示的に指定していない場合でも、正しい PHP スクリプトを特定出来るようにする必要があります。
+もしあなたが Apache または nginx ウェブサーバを使うつもりなら、[インストール](start-installation.md#recommended-apache-configuration) のセクションで説明されている推奨設定を参照することが出来ます。
 
 
 ### URL 規則 <span id="url-rules"></span>
@@ -426,8 +426,8 @@ URL 規則のパターンには、ウェブサーバ名を含むことが出来�
 記法は上記と同じです、ただ、`http:` の部分を省略します。
 例えば、`'//www.example.com/login' => 'site/login'`。
 
-> Note: サーバ名を持つ規則は、そのパターンに、エントリスクリプトのサブフォルダを**含まない**ようにすべきです。
-例えば、アプリケーションのエントリスクリプトが `http://www.example.com/sandbox/blog/index.php` である場合は、
+> Note: サーバ名を持つ規則は、そのパターンに、エントリ・スクリプトのサブフォルダを**含まない**ようにすべきです。
+例えば、アプリケーションのエントリ・スクリプトが `http://www.example.com/sandbox/blog/index.php` である場合は、
 `http://www.example.com/sandbox/blog/posts` ではなく、`http://www.example.com/posts` というパターンを使うべきです。
 こうすれば、アプリケーションをどのようなディレクトリに配置しても、URL 規則を変更する必要がなくなります。
 Yii はアプリケーションのベース URL を自動的に検出します。
@@ -509,7 +509,7 @@ RESTful API を実装するときは、使用されている HTTP メソッド�
 
 > Tip: RESTful API のルーティングを簡単にするために、Yii は特別な URL 規則クラス [[yii\rest\UrlRule]] を提供しています。
   これは非常に効率的なもので、コントローラ ID の自動的な複数形化など、いくつかの素敵な機能をサポートするものです。
-  詳細については、RESTful API 開発についての [ルーティング](rest-routing.md) の節を参照してください。
+  詳細については、RESTful API 開発についての [ルーティング](rest-routing.md) のセクションを参照してください。
 
 
 ### 規則を動的に追加する <span id="adding-rules"></span>

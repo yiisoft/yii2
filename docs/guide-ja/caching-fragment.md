@@ -167,5 +167,5 @@ if ($this->beginCache($id1)) {
 この PHP コードの戻り値が、ダイナミック・コンテントとして扱われます。
 囲んでいる断片がキャッシュから提供されるか否かにかかわらず、同じ PHP コードがすべてのリクエストに対して実行されます。
 
-> Note: バージョン 2.0.14 以降、[[yii\base\DynamicContentAwareInterface]] インターフェイスとその [[yii\base\DynamicContentAwareTrait]] トレイトによって、ダイナミック・コンテント API が公開されています。.
+> Note: バージョン 2.0.14 以降、[[yii\base\DynamicContentAwareInterface]] インタフェイスとその [[yii\base\DynamicContentAwareTrait]] トレイトによって、ダイナミック・コンテント API が公開されています。.
 その一例としては、 [[yii\widgets\FragmentCache]] クラスを参照して下さい。

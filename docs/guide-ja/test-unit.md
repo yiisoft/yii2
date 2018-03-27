@@ -18,7 +18,7 @@ Yii における単体テストは、PHPUnit と Codeception (こちらはオプ
 ["テスト" のガイド](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/start-testing.md) を参照して下さい。
 
 ベーシックテンプレートでプロジェクトを開始した場合は、
-check its [README の "testing" の節](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing) を参照して下さい。
+check its [README の "testing" のセクション](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing) を参照して下さい。
 
 ## フレームワークの単体テスト
 

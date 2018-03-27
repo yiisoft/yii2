@@ -32,7 +32,7 @@ All Rights Reserved.
 ----------------------
 
 * [アプリケーションの構造の概要](structure-overview.md)
-* [エントリスクリプト](structure-entry-scripts.md)
+* [エントリ・スクリプト](structure-entry-scripts.md)
 * [アプリケーション](structure-applications.md)
 * [アプリケーションコンポーネント](structure-application-components.md)
 * [コントローラ](structure-controllers.md)
@@ -68,7 +68,7 @@ All Rights Reserved.
 * [構成情報](concept-configurations.md)
 * [エイリアス](concept-aliases.md)
 * [クラスのオートロード](concept-autoloading.md)
-* [サービスロケータ](concept-service-locator.md)
+* [サービス・ロケータ](concept-service-locator.md)
 * [依存注入コンテナ](concept-di-container.md)
 
 
@@ -166,7 +166,7 @@ RESTful ウェブサービス
 スペシャルトピック
 ------------------
 
-* [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md)
+* [アドバンスト・プロジェクト・テンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md)
 * [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
 * [コンソールコマンド](tutorial-console.md)
 * [コアバリデータ](tutorial-core-validators.md)

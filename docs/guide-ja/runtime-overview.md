@@ -3,8 +3,8 @@
 
 Yii のアプリケーションがリクエストを処理するときは、毎回、同じようなワークフローになります。
 
-1. ユーザが [エントリスクリプト](structure-entry-scripts.md) `web/index.php` にリクエストをします。
-2. エントリスクリプトは、アプリケーションの [構成情報](concept-configurations.md) をロードして、リクエストを処理するための [アプリケーション](structure-applications.md) のインスタンスを作成します。
+1. ユーザが [エントリ・スクリプト](structure-entry-scripts.md) `web/index.php` にリクエストをします。
+2. エントリ・スクリプトは、アプリケーションの [構成情報](concept-configurations.md) をロードして、リクエストを処理するための [アプリケーション](structure-applications.md) のインスタンスを作成します。
 3. アプリケーションは、[リクエスト](runtime-requests.md) アプリケーションコンポーネントの助けを借りて、リクエストされた [ルート](runtime-routing.md) を解決します。
 4. アプリケーションはリクエストを処理するための [コントローラ](structure-controllers.md) のインスタンスを作成します。
 5. コントローラは [アクション](structure-controllers.md) のインスタンスを作成して、アクションのためのフィルタを実行します。
@@ -19,4 +19,4 @@ Yii のアプリケーションがリクエストを処理するときは、毎�
 
 ![リクエストのライフサイクル](images/request-lifecycle.png)
 
-この節では、これらのステップのいくつかについて、どのように動作するかを詳細に説明します。
+このセクションでは、これらのステップのいくつかについて、どのように動作するかを詳細に説明します。

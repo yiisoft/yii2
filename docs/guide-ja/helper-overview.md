@@ -1,7 +1,7 @@
 ヘルパ
 ======
 
-> Note: この節はまだ執筆中です。
+> Note: このセクションはまだ執筆中です。
 
 Yii は、一般的なコーディングのタスク、例えば、文字列や配列の操作、HTML コードの生成などを手助けする多くのクラスを提供しています。
 これらのヘルパクラスは `yii\helpers` 名前空間の下に編成されており、すべてスタティックなクラス (すなわち、スタティックなプロパティとメソッドのみを含み、インスタンス化すべきでないクラス) です。
@@ -65,7 +65,7 @@ class ArrayHelper extends BaseArrayHelper
 あなたのクラスを `ArrayHelper.php` という名前のファイルに保存します。
 このファイルはどこに置いても構いません。例えば、`@app/components` に置くことにしましょう。
 
-次に、アプリケーションの [エントリスクリプト](structure-entry-scripts.md) で、次のコード行を `yii.php` ファイルをインクルードする行の後に追加して、[Yii クラスオートローダ](concept-autoloading.md) に、フレームワークから本来のヘルパクラスをロードする代りに、あなたのカスタムクラスをロードすべきことを教えます。
+次に、アプリケーションの [エントリ・スクリプト](structure-entry-scripts.md) で、次のコード行を `yii.php` ファイルをインクルードする行の後に追加して、[Yii クラスオートローダ](concept-autoloading.md) に、フレームワークから本来のヘルパクラスをロードする代りに、あなたのカスタムクラスをロードすべきことを教えます。
 
 ```php
 Yii::$classMap['yii\helpers\ArrayHelper'] = '@app/components/ArrayHelper.php';

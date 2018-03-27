@@ -15,4 +15,4 @@
 アドバンストテンプレートで開発をしている場合は、テスト実行の詳細について、
 ["テスト" のガイド](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/start-testing.md) を参照して下さい。
 
-ベーシックテンプレートで開発をしている場合は、[README の "testing" の節](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing) を参照して下さい。
+ベーシックテンプレートで開発をしている場合は、[README の "testing" のセクション](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing) を参照して下さい。

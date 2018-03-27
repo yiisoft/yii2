@@ -74,7 +74,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 3. 指示に従って、依存するエクステンションを全てダウンロードしインストールする。
 
 エクステンションがクラスオートローダを持っていなくても、[PSR-4 標準](http://www.php-fig.org/psr/psr-4/) に従っている場合は、Yii によって提供されているクラスオートローダを使ってエクステンションのクラスをオートロードすることが出来ます。
-必要なことは、エクステンションのルートディレクトリのための [ルートエイリアス](concept-aliases.md#defining-aliases) を宣言することだけです。
+必要なことは、エクステンションのルートディレクトリのための [ルート・エイリアス](concept-aliases.md#defining-aliases) を宣言することだけです。
 例えば、エクステンションを `vendor/mycompany/myext` というディレクトリにインストールしたと仮定します。
 そして、エクステンションのクラスは `myext` 名前空間の下にあるとします。
 その場合、アプリケーションの構成情報に下記のコードを含めます。
@@ -202,7 +202,7 @@ Yii は [Composer アセットプラグイン](https://github.com/francoispluchi
 Composer が Bower または NPM のパッケージをインストールする場合は、デフォルトでは、それぞれ、`@vendor/bower/PackageName` および `@vendor/npm/Packages` というディレクトリの下にパッケージの内容がインストールされます。
 この二つのディレクトリは、`@bower/PackageName` および `@npm/PackageName` という短いエイリアスを使って参照することも可能です。
 
-アセット管理に関する詳細については、[アセット](structure-assets.md#bower-npm-assets) の節を参照してください。
+アセット管理に関する詳細については、[アセット](structure-assets.md#bower-npm-assets) のセクションを参照してください。
 
 
 #### クラスのオートロード <span id="class-autoloading"></span>
@@ -248,7 +248,7 @@ Composer が Bower または NPM のパッケージをインストールする�
 
 場合によっては、アプリケーションが [ブートストラップ](runtime-bootstrapping.md) の段階にある間に、エクステンションに何らかのコードを実行させたい場合があるでしょう。
 例えば、エクステンションをアプリケーションの `beginRequest` イベントに反応させて、何らかの環境設定を調整したいことがあります。
-エクステンションのユーザに対して、エクステンションの中にあるイベントハンドラを `beginRequest` イベントに明示的にアタッチするように指示することも出来ますが、より良い方法は、それを自動的に行うことです。
+エクステンションのユーザに対して、エクステンションの中にあるイベント・ハンドラを `beginRequest` イベントに明示的にアタッチするように指示することも出来ますが、より良い方法は、それを自動的に行うことです。
 
 この目的を達するためには、[[yii\base\BootstrapInterface]] を実装する、いわゆる *ブートストラップクラス* を作成します。
 例えば、
@@ -311,7 +311,7 @@ class MyBootstrapClass implements BootstrapInterface
 - [アセットバンドル](structure-assets.md) を宣言し、アセット発行メカニズムに頼って、アセットバンドルにリストされているファイルをウェブからアクセス出来るフォルダに自動的にコピーする。
 
 あなたのエクステンションが他の人々にとって一層使いやすいものになるように、第二の方法をとることを推奨します。
-アセットの取り扱い一般に関する詳細は [アセット](structure-assets.md) の節を参照してください。
+アセットの取り扱い一般に関する詳細は [アセット](structure-assets.md) のセクションを参照してください。
 
 
 #### 国際化と地域化 <span id="i18n-l10n"></span>
@@ -324,7 +324,7 @@ class MyBootstrapClass implements BootstrapInterface
   開発者に向けられたメッセージ (内部的な例外のメッセージなど) は翻訳される必要はありません。
 - エクステンションが数値や日付などを表示する場合は、[[yii\i18n\Formatter]] を適切な書式化の規則とともに使って書式設定すべきです。
 
-詳細については、[国際化](tutorial-i18n.md) の節を参照してください。
+詳細については、[国際化](tutorial-i18n.md) のセクションを参照してください。
 
 
 #### テスト <span id="testing"></span>
@@ -335,7 +335,7 @@ class MyBootstrapClass implements BootstrapInterface
 手作業のテストに頼るのではなく、あなたのエクステンションのコードをカバーするさまざまなテストケースを作成することが推奨されます。
 あなたのエクステンションの新しいバージョンを公開する前には、毎回、それらのテストケースを走らせるだけで、全てが良い状態にあることを確認することが出来ます。
 Yii はテストのサポートを提供しており、それよって、単体テスト、機能テスト、承認テストを書くことが一層簡単に出来るようになっています。
-詳細については、[テスト](test-overview.md) の節を参照してください。
+詳細については、[テスト](test-overview.md) のセクションを参照してください。
 
 
 #### バージョン管理 <span id="versioning"></span>
@@ -362,7 +362,7 @@ Yii はテストのサポートを提供しており、それよって、単体�
   このファイルは Markdown 形式で書いて `upgrade.md` と名付けることが出来ます。
 * チュートリアル、デモ、スクリーンショットなど: あなたのエクステンションが readme ファイルでは十分にカバーできないほど多くの機能を提供するものである場合は、これらが必要になります。
 * API ドキュメント: あなたのコードは、他の人々が読んで理解することがより一層容易に出来るように、十分な解説を含むべきです。
-  [BaseObject のクラスファイル](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php) を参照すると、コードに解説を加える方法を学ぶことが出来ます。
+  [BaseObject のクラス・ファイル](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php) を参照すると、コードに解説を加える方法を学ぶことが出来ます。
 
 > Info: コードのコメントを Markdown 形式で書くことが出来ます。
   `yiisoft/yii2-apidoc` エクステンションが、コードのコメントに基づいて綺麗な API ドキュメントを生成するツールを提供しています。

@@ -49,7 +49,7 @@ class UploadForm extends Model
 `upload()` メソッドは検証を実行して、アップロードされたファイルをサーバに保存します。
 
 `file` バリデータによって、ファイル拡張子、サイズ、MIME タイプなどをチェックすることが出来ます。
-詳細については、[コアバリデータ](tutorial-core-validators.md#file) の節を参照してください。
+詳細については、[コアバリデータ](tutorial-core-validators.md#file) のセクションを参照してください。
 
 > Tip: 画像をアップロードしようとする場合は、`image` バリデータを代りに使うことを考慮しても構いません。
 `image` バリデータは [[yii\validators\ImageValidator]] によって実装されており、属性が有効な画像、すなわち、保存したり [Imagine エクステンション](https://github.com/yiisoft/yii2-imagine) を使って処理したりすることが可能な有効な画像を、受け取ったかどうかを検証します。

@@ -10,7 +10,7 @@ Yii は、RESTful アクションを作成する仕事を簡単にするため�
 そうすれば、最小限のコードで強力な RESTful API を作成することが出来ます。
 
 [[yii\rest\Controller]] と [[yii\rest\ActiveController]] は、ともに、下記の機能を提供します。
-これらのいくつかについては、後続の節で詳細に説明します。
+これらのいくつかについては、後続のセクションで詳細に説明します。
 
 * HTTP メソッドのバリデーション
 * [コンテントネゴシエーションとデータの書式設定](rest-response-formatting.md)
@@ -47,12 +47,12 @@ public function actionView($id)
 具体的に言うと、次のフィルタがリストされた順に従って実行されます。
 
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: コンテントネゴシエーションをサポート。
-  [レスポンス形式の設定](rest-response-formatting.md) の節で説明します。
+  [レスポンス形式の設定](rest-response-formatting.md) のセクションで説明します。
 * [[yii\filters\VerbFilter|verbFilter]]: HTTP メソッドのバリデーションをサポート。
 * [[yii\filters\auth\AuthMethod|authenticator]]: ユーザ認証をサポート。
-  [認証](rest-authentication.md) の節で説明します。
+  [認証](rest-authentication.md) のセクションで説明します。
 * [[yii\filters\RateLimiter|rateLimiter]]: レート制限をサポート。
-  [レート制限](rest-rate-limiting.md) の節で説明します。
+  [レート制限](rest-rate-limiting.md) のセクションで説明します。
 
 これらの名前付きのフィルタは、[[yii\rest\Controller::behaviors()|behaviors()]] メソッドで宣言されます。
 このメソッドをオーバーライドして、個々のフィルタを構成したり、どれかを無効にしたり、あなた自身のフィルタを追加したりすることが出来ます。

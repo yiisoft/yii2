@@ -8,7 +8,7 @@
 ほとんどの場合は、主として、デフォルトでは [[yii\web\Response]] のインスタンスである `response` [アプリケーションコンポーネント](structure-application-components.md) を使用すべきです。
 しかしながら、Yii は、以下で説明するように、あなた自身のレスポンスオブジェクトを作成してエンドユーザに送信することも許容しています。
 
-この節では、レスポンスを構成してエンドユーザに送信する方法を説明します。
+このセクションでは、レスポンスを構成してエンドユーザに送信する方法を説明します。
 
 
 ## ステータスコード <span id="status-code"></span>
@@ -193,7 +193,7 @@ public function actionOld()
 > Info: Yii には `yii.js` という JavaScript ファイルが付属しています。
   これは、よく使われる一連の JavaScript 機能を提供するもので、その中には `X-Redirect` ヘッダに基づくブラウザのリダイレクトも含まれています。
   従って、あなたが ([[yii\web\YiiAsset]] アセットバンドルを登録して) この JavaScript ファイルを使うつもりなら、AJAX のリダイレクトをサポートするためには、何も書く必要がなくなります。
-  `yii.js` に関する更なる情報は [クライアントスクリプトの節](output-client-scripts.md#yii.js) にあります。
+  `yii.js` に関する更なる情報は [クライアントスクリプトのセクション](output-client-scripts.md#yii.js) にあります。
 
 
 ## ファイルを送信する <span id="sending-files"></span>

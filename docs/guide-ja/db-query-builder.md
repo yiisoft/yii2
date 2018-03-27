@@ -261,7 +261,7 @@ $query->where([$column => $value]);
   例えば、`['between', 'id', 1, 10]` は `id BETWEEN 1 AND 10` を生成します。
   値が二つのカラムの値の間にあるという条件 (例えば、`11 BETWEEN min_id AND max_id`) を構築する必要がある場合は、
   [[yii\db\conditions\BetweenColumnsCondition|BetweenColumnsCondition]] を使用しなければなりません。
-  条件定義のオブジェクト形式について更に学習するためには [条件 – オブジェクト形式](#object-format) の節を参照して下さい。
+  条件定義のオブジェクト形式について更に学習するためには [条件 – オブジェクト形式](#object-format) のセクションを参照して下さい。
 
 - `not between`: 生成される条件において `BETWEEN` が `NOT BETWEEN` に置き換えられる以外は、`between` と同じです。
 
@@ -348,7 +348,7 @@ $query->andWhere(new OrCondition([
 等々。
 
 オブジェクト形式を使うことによって、あなた独自の条件を作成したり、デフォルトの条件が作成される方法を変更したりすることが可能になります。
-詳細は [特製の条件や式を追加する](#adding-custom-conditions-and-expressions) の節を参照して下さい。
+詳細は [特製の条件や式を追加する](#adding-custom-conditions-and-expressions) のセクションを参照して下さい。
 
 
 #### 条件を追加する <span id="appending-conditions"></span>
@@ -797,7 +797,7 @@ $unbufferedDb->close();
 
 ### 特製の条件や式を追加する <span id="adding-custom-conditions-and-expressions"></span>
 
-[条件 – オブジェクト形式](#object-format) の節で触れたように、特製の条件クラスを作成することが可能です。
+[条件 – オブジェクト形式](#object-format) のセクションで触れたように、特製の条件クラスを作成することが可能です。
 例として、特定のカラムが一定の値より小さいことをチェックする条件を作ってみましょう。
 演算子形式を使えば、それは次のようになるでしょう。
 
@@ -816,7 +816,7 @@ $unbufferedDb->close();
 特製の条件オブジェクトを作って、それを実証しましょう。
 
 Yii には、条件を表現するクラスを特徴付ける [[yii\db\conditions\ConditionInterface|ConditionInterface]] があります。
-このインターフェイスは、配列形式から条件を作ることを可能にするための `fromArrayDefinition()` メソッドを実装することを要求します。
+このインタフェイスは、配列形式から条件を作ることを可能にするための `fromArrayDefinition()` メソッドを実装することを要求します。
 あなたがそれを必要としない場合は、例外を投げるだけのメソッドとして実装しても構いません。
 
 特製の条件クラスを作るのですから、私たちの仕事に最適な API を構築すれば良いのです。
@@ -947,7 +947,7 @@ $query->andWhere(['ALL>', ['posts', 'comments', 'reactions', 'subscriptions'], $
 ```
 
 お気付きのことと思いますが、ここには二つの概念があります。Expression(式)と Condition(条件)です。
-[[yii\db\ExpressionInterface]] は、それを構築するために [[yii\db\ExpressionBuilderInterface]] を実装した式ビルダクラスを必要とするオブジェクトを特徴付けるインターフェイスです。
+[[yii\db\ExpressionInterface]] は、それを構築するために [[yii\db\ExpressionBuilderInterface]] を実装した式ビルダクラスを必要とするオブジェクトを特徴付けるインタフェイスです。
 また [[yii\db\condition\ConditionInterface]] は、[[yii\db\ExpressionInterface|ExpressionInterface]] を拡張して、上述されたように配列形式の定義から作成できるオブジェクトに対して使用されるべきものですが、同様にビルダを必要とするものです。
 
 要約すると、

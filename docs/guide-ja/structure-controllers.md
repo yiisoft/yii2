@@ -82,7 +82,7 @@ ModuleID/ControllerID/ActionID
 ```
 
 ですから、ユーザが `http://hostname/index.php?r=site/index` という URL でリクエストをした場合は、`site` コントローラの中の `index` アクションが実行されます。
-ルートがどのようにしてアクションとして解決されるかについての詳細は、[ルーティングと URL 生成](runtime-routing.md) の節を参照してください。
+ルートがどのようにしてアクションとして解決されるかについての詳細は、[ルーティングと URL 生成](runtime-routing.md) のセクションを参照してください。
 
 
 ## コントローラを作成する <span id="creating-controllers"></span>
@@ -357,7 +357,7 @@ public function actionView(array $id, $version = null)
 リクエストが `http://hostname/index.php?r=post/view&id=123` である場合も、スカラ値 `'123'` が自動的に配列に変換されるため、`$id` パラメータは引き続き同じ配列値を受け取ります。
 
 上記の例は主としてウェブ・アプリケーションでのアクションパラメータの動作を示すものです。
-コンソールアプリケーションについては、[コンソールコマンド](tutorial-console.md) の節で詳細を参照してください。
+コンソールアプリケーションについては、[コンソールコマンド](tutorial-console.md) のセクションで詳細を参照してください。
 
 
 ### デフォルトアクション <span id="default-action"></span>

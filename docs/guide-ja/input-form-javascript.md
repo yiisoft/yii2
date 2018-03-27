@@ -23,9 +23,9 @@ $('#contact-form').on('beforeSubmit', function (e) {
 
 ### `beforeValidate`
 
-`beforeValidate` は、フォーム全体を検証する前にトリガーされます。
+`beforeValidate` は、フォーム全体を検証する前にトリガされます。
 
-イベントハンドラのシグニチャは以下の通り:
+イベント・ハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, messages, deferreds)
@@ -38,13 +38,13 @@ function (event, messages, deferreds)
 - `deferreds`: Deferred オブジェクトの配列。`deferreds.add(callback)` を使って、新しい deferrd な検証を追加することが出来ます。
 
 ハンドラが真偽値 `false` を返すと、このイベントに続くフォームの検証は中止されます。
-その結果、`afterValidate` イベントもトリガーされません。
+その結果、`afterValidate` イベントもトリガされません。
 
 ### `afterValidate`
 
-`afterValidate` イベントは、フォーム全体を検証した後でトリガーされます。
+`afterValidate` イベントは、フォーム全体を検証した後でトリガされます。
 
-イベントハンドラのシグニチャは以下の通り:
+イベント・ハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, messages, errorAttributes)
@@ -58,9 +58,9 @@ function (event, messages, errorAttributes)
 
 ### `beforeValidateAttribute`
 
-`beforeValidateAttribute` イベントは、属性を検証する前にトリガーされます。
+`beforeValidateAttribute` イベントは、属性を検証する前にトリガされます。
 
-イベントハンドラのシグニチャは以下の通り:
+イベント・ハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, attribute, messages, deferreds)
@@ -74,13 +74,13 @@ function (event, attribute, messages, deferreds)
 - `deferreds`: Deferred オブジェクトの配列。`deferreds.add(callback)` を使って、新しい deferrd な検証を追加することが出来ます。
 
 ハンドラが真偽値 `false` を返すと、指定された属性の検証は中止されます。
-その結果、`afterValidateAttribute` イベントもトリガーされません。
+その結果、`afterValidateAttribute` イベントもトリガされません。
 
 ### `afterValidateAttribute`
 
-`afterValidateAttribute` イベントは、フォーム全体および各属性の検証の後にトリガーされます。
+`afterValidateAttribute` イベントは、フォーム全体および各属性の検証の後にトリガされます。
 
-イベントハンドラのシグニチャは以下の通り:
+イベント・ハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, attribute, messages)
@@ -94,9 +94,9 @@ function (event, attribute, messages)
 
 ### `beforeSubmit`
 
-`beforeSubmit` イベントは、全ての検証が通った後、フォームを送信する前にトリガーされます。
+`beforeSubmit` イベントは、全ての検証が通った後、フォームを送信する前にトリガされます。
 
-イベントハンドラのシグニチャは以下の通り:
+イベント・ハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event)
@@ -110,9 +110,9 @@ function (event)
 
 ### `ajaxBeforeSend`
          
-`ajaxBeforeSend` イベントは、AJAX ベースの検証のための AJAX リクエストを送信する前にトリガーされます。
+`ajaxBeforeSend` イベントは、AJAX ベースの検証のための AJAX リクエストを送信する前にトリガされます。
 
-イベントハンドラのシグニチャは以下の通り:
+イベント・ハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, jqXHR, settings)
@@ -126,9 +126,9 @@ function (event, jqXHR, settings)
 
 ### `ajaxComplete`
 
-`ajaxComplete` イベントはAJAX ベースの検証のための AJAX リクエストが完了した後にトリガーされます。
+`ajaxComplete` イベントはAJAX ベースの検証のための AJAX リクエストが完了した後にトリガされます。
 
-イベントハンドラのシグニチャは以下の通り:
+イベント・ハンドラのシグニチャは以下の通り:
 
 ```javascript
 function (event, jqXHR, textStatus)
