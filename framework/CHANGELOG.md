@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
-- no changes in this release.
+- Bug #15988: Fixed bash completion (alekciy)
 
 2.0.15.1 March 21, 2018
 -----------------------
