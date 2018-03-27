@@ -85,6 +85,24 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ];
         }
 
+        /**
+         * @link https://github.com/yiisoft/yii2/issues/14834
+         */
+        $sqlModes = $this->getConnection(false)->createCommand('SELECT @@sql_mode')->queryScalar();
+        $sqlModes = explode(',', $sqlModes);
+        if (in_array('NO_ZERO_DATE', $sqlModes, true)) {
+            $this->markTestIncomplete(
+                "MySQL doesn't allow the 'TIMESTAMP' column definition when the NO_ZERO_DATE mode enabled. " .
+                "This definition test was skipped."
+            );
+        } else {
+            $columns[] = [
+                Schema::TYPE_TIMESTAMP,
+                $this->timestamp(),
+                'timestamp',
+            ];
+        }
+
         return array_merge(parent::columnTypes(), $columns);
     }
 
