@@ -216,8 +216,8 @@ if (YII_ENV_DEV) {
 
 #### [[yii\base\Application::controllerMap|controllerMap]] <span id="controllerMap"></span>
 
-このプロパティは、コントローラ ID を任意のコントローラクラスに割り付けることを可能にするものです。
-デフォルトでは、Yii は [規約](#controllerNamespace) に基づいてコントローラ ID をコントローラクラスに割り付けます
+このプロパティは、コントローラ ID を任意のコントローラ・クラスに割り付けることを可能にするものです。
+デフォルトでは、Yii は [規約](#controllerNamespace) に基づいてコントローラ ID をコントローラ・クラスに割り付けます
 (例えば、`post` という ID は `app\controllers\PostController` に割り付けられます)。
 このプロパティを構成することによって、特定のコントローラに対する規約を破ることが出来ます。
 下記の例では、`account` は `app\controllers\UserController` に割り付けられ、`article` は `app\controllers\PostController` に割り付けられることになります。
@@ -234,19 +234,19 @@ if (YII_ENV_DEV) {
 ]
 ```
 
-このプロパティの配列のキーはコントローラ ID を表し、配列の値は対応するコントローラクラスの名前または [構成情報](concept-configurations.md) を表します。
+このプロパティの配列のキーはコントローラ ID を表し、配列の値は対応するコントローラ・クラスの名前または [構成情報](concept-configurations.md) を表します。
 
 
 #### [[yii\base\Application::controllerNamespace|controllerNamespace]] <span id="controllerNamespace"></span>
 
-このプロパティは、コントローラクラスが配置されるべきデフォルトの名前空間を指定するものです。
+このプロパティは、コントローラ・クラスが配置されるべきデフォルトの名前空間を指定するものです。
 デフォルト値は `app\controllers` です。
 コントローラ ID が `post` である場合、規約によって対応するコントローラの (名前空間を略した) クラス名は `PostController` となり、完全修飾クラス名は `app\controllers\PostController` となります。
 
-コントローラクラスは、この名前空間に対応するディレクトリのサブディレクトリに配置されても構いません。
+コントローラ・クラスは、この名前空間に対応するディレクトリのサブディレクトリに配置されても構いません。
 例えば、コントローラ ID として `admin/post` を仮定すると、対応するコントローラの完全修飾クラス名は `app\controllers\admin\PostController` となります。
 
-重要なことは、完全修飾されたコントローラクラスが [オートロード可能](concept-autoloading.md) でなければならず、コントローラクラスの実際の名前空間がこのプロパティと合致していなければならない、ということです。
+重要なことは、完全修飾されたコントローラ・クラスが [オートロード可能](concept-autoloading.md) でなければならず、コントローラ・クラスの実際の名前空間がこのプロパティと合致していなければならない、ということです。
 そうでないと、アプリケーションにアクセスしたときに "ページがみつかりません" というエラーを受け取ることになります。
 
 上で説明された規約を破りたい場合は、[controllerMap](#controllerMap) プロパティを構成することが出来ます。

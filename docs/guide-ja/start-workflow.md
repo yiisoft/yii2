@@ -63,7 +63,7 @@ basic/                  アプリケーションのベースパス
 
 Yii は [モデル・ビュー・コントローラ (MVC)](http://wikipedia.org/wiki/Model-view-controller) アーキテクチャパターンを実装していますが、それが上記のディレクトリ構成にも反映されています。
 `models` ディレクトリが全ての [モデルクラス](structure-models.md) を格納し、`views` ディレクトリが全ての [ビュースクリプト](structure-views.md) を格納し、
-`controllers` ディレクトリが全ての [コントローラクラス](structure-controllers.md) を格納しています。
+`controllers` ディレクトリが全ての [コントローラ・クラス](structure-controllers.md) を格納しています。
 
 次の図がアプリケーションの静的な構造を示すものです。
 

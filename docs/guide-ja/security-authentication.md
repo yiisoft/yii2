@@ -2,7 +2,7 @@
 ====
 
 認証は、ユーザが誰であるかを確認するプロセスです。
-通常は、識別子 (ユーザ名やメール・アドレスなど) と秘密のトークン (パスワードやアクセストークンなど) を使って、ユーザがそうであると主張する通りのユーザであるか否かを判断します。
+通常は、識別子 (ユーザ名やメール・アドレスなど) と秘密のトークン (パスワードやアクセス・トークンなど) を使って、ユーザがそうであると主張する通りのユーザであるか否かを判断します。
 認証がログイン機能の基礎となります。
 
 Yii はさまざまなコンポーネントを結び付けてログインをサポートする認証フレームワークを提供しています。
@@ -35,7 +35,7 @@ return [
 
 * [[yii\web\IdentityInterface::findIdentity()|findIdentity()]]: 指定されたユーザ ID を使ってユーザ識別情報クラスのインスタンスを探します。
   セッションを通じてログイン状態を保持する必要がある場合に、このメソッドが使用されます。
-* [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]: 指定されたアクセストークンを使ってユーザ識別情報クラスのインスタンスを探します。
+* [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]: 指定されたアクセス・トークンを使ってユーザ識別情報クラスのインスタンスを探します。
   単一の秘密のトークンでユーザを認証する必要がある場合 (ステートレスな RESTful アプリケーションなどの場合) に、このメソッドが使用されます。
 * [[yii\web\IdentityInterface::getId()|getId()]]: ユーザ識別情報クラスのインスタンスによって表されるユーザの ID を返します。
 * [[yii\web\IdentityInterface::getAuthKey()|getAuthKey()]]: クッキーベースのログインを検証するのに使用されるキーを返します。

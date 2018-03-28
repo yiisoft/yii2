@@ -117,9 +117,9 @@ class SiteController extends Controller
 フォワードスラッシュは、複数レベルのサブディレクトリの区切り文字として使われます (例えば、`panels/admin`)。
 
 
-### コントローラクラスの命名規則 <span id="controller-class-naming"></span>
+### コントローラ・クラスの命名規則 <span id="controller-class-naming"></span>
 
-コントローラクラスの名前は下記の手順に従ってコントローラ ID から導出することが出来ます。
+コントローラ・クラスの名前は下記の手順に従ってコントローラ ID から導出することが出来ます。
 
 1. ハイフンで区切られた各単語の最初の文字を大文字に変える。
    コントローラ ID がスラッシュを含む場合、この規則は ID の最後のスラッシュの後ろの部分にのみ適用されることに注意。
@@ -134,8 +134,8 @@ class SiteController extends Controller
 * `admin/post-comment` は `app\controllers\admin\PostCommentController` になる。
 * `adminPanels/post-comment` は `app\controllers\adminPanels\PostCommentController` になる。
 
-コントローラクラスは [オートロード可能](concept-autoloading.md) でなければなりません。
-この理由により、上記の例の `aritcle` コントローラクラスは [エイリアス](concept-aliases.md) が `@app/controllers/ArticleController.php` であるファイルに保存されるべきものとなります。
+コントローラ・クラスは [オートロード可能](concept-autoloading.md) でなければなりません。
+この理由により、上記の例の `aritcle` コントローラ・クラスは [エイリアス](concept-aliases.md) が `@app/controllers/ArticleController.php` であるファイルに保存されるべきものとなります。
 一方、`admin/post-comment` コントローラは `@app/controllers/admin/PostCommentController.php` というエイリアスのファイルに保存されるべきものとなります。
 
 > Info: 最後の例である `admin/post-comment` は、どうすれば [[yii\base\Application::controllerNamespace|コントローラ名前空間]] のサブディレクトリにコントローラを置くことが出来るかを示しています。
@@ -183,7 +183,7 @@ class SiteController extends Controller
 
 ## アクションを作成する <span id="creating-actions"></span>
 
-アクションは、コントローラクラスの中にいわゆる *アクションメソッド* を定義するだけで簡単に作成することが出来ます。
+アクションは、コントローラ・クラスの中にいわゆる *アクションメソッド* を定義するだけで簡単に作成することが出来ます。
 アクションメソッドとは、`action` という語で始まる名前を持つ *public* メソッドのことです。
 アクションメソッドの返り値がエンド・ユーザに送信されるレスポンスデータを表します。
 次のコードは、`index` と `hello-world` という二つのアクションを定義するものです。
@@ -218,7 +218,7 @@ class SiteController extends Controller
 例えば、`view`、`update2`、`comment-post` は全て有効なアクション ID ですが、`view?`、`Update` はそうではありません。
 
 アクションは二つの方法、すなわち、インラインアクションまたはスタンドアロンアクションとして作成することが出来ます。
-インラインアクションはコントローラクラスのメソッドとして定義されるものであり、一方、スタンドアロンアクションは [[yii\base\Action]] またはその子クラスを拡張するクラスです。
+インラインアクションはコントローラ・クラスのメソッドとして定義されるものであり、一方、スタンドアロンアクションは [[yii\base\Action]] またはその子クラスを拡張するクラスです。
 インラインアクションは作成するのにより少ない労力を要するため、通常は、アクションを再利用する意図がない場合に推奨されます。
 もう一方のスタンドアロンアクションは、主として、さまざまなコントローラの中で使われることや、[エクステンション](structure-extensions.md) として再配布されることを目的として作成されます。
 
@@ -247,7 +247,7 @@ class SiteController extends Controller
 
 ### スタンドアロンアクション <span id="standalone-actions"></span>
 
-スタンドアロンアクションは、[[yii\base\Action]] またはその子クラスを拡張するアクションクラスの形で定義されるものです。
+スタンドアロンアクションは、[[yii\base\Action]] またはその子クラスを拡張するアクション・クラスの形で定義されるものです。
 例えば、Yii のリリースに [[yii\web\ViewAction]] と [[yii\web\ErrorAction]] が含まれていますが、これらは両方ともスタンドアロンアクションです。
 
 スタンドアロンアクションを使用するためには、下記のように、コントローラの [[yii\base\Controller::actions()]] メソッドをオーバーライドして、*アクションマップ* の中でスタンドアロンアクションを宣言しなければなりません。
@@ -271,7 +271,7 @@ public function actions()
 ご覧のように、`actions()` メソッドは、キーがアクション ID であり、値が対応するアクションのクラス名または [構成情報](concept-configurations.md) である配列を返さなければなりません。
 インラインアクションと違って、スタンドアロンアクションのアクション ID は、`actions()` メソッドにおいて宣言される限りにおいて、任意の文字を含むことが出来ます。
 
-スタンドアロンアクションクラスを作成するためには、[[yii\base\Action]] またはその子クラスを拡張して、`run()` という名前の public メソッドを実装しなければなりません。
+スタンドアロンアクション・クラスを作成するためには、[[yii\base\Action]] またはその子クラスを拡張して、`run()` という名前の public メソッドを実装しなければなりません。
 `run()` メソッドの役割はアクションメソッドのそれと似たようなものです。例えば、
 
 ```php
@@ -366,7 +366,7 @@ public function actionView(array $id, $version = null)
 [ルート](#routes) がコントローラ ID のみを含む場合は、指定されたコントローラのデフォルトアクションがリクエストされたことを意味します。
 
 デフォルトでは、デフォルトアクションは `index` と設定されます。
-このデフォルト値を変更したい場合は、以下のように、コントローラクラスでこのプロパティをオーバーライドするだけです。
+このデフォルト値を変更したい場合は、以下のように、コントローラ・クラスでこのプロパティをオーバーライドするだけです。
 
 ```php
 namespace app\controllers;

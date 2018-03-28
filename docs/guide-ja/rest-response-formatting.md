@@ -4,16 +4,16 @@
 RESTful API のリクエストを処理するとき、アプリケーションは、通常、レスポンス形式の設定に関して次のステップを踏みます。
 
 1. レスポンス形式に影響するさまざまな要因、例えば、メディアタイプ、言語、バージョンなどを決定します。
-   このプロセスは [コンテントネゴシエーション](http://en.wikipedia.org/wiki/Content_negotiation) としても知られるものです。
+   このプロセスは [コンテント・ネゴシエーション](http://en.wikipedia.org/wiki/Content_negotiation) としても知られるものです。
 2. リソースオブジェクトを配列に変換します。
    [リソース](rest-resources.md) のセクションで説明したように、この作業は [[yii\rest\Serializer]] によって実行されます。
-3. 配列をコンテントネゴシエーションのステップで決定された形式の文字列に変換します。
+3. 配列をコンテント・ネゴシエーションのステップで決定された形式の文字列に変換します。
    この作業は、`response` [アプリケーション・コンポーネント](structure-application-components.md) の [[yii\web\Response::formatters|formatters]] プロパティに登録された [[yii\web\ResponseFormatterInterface|レスポンスフォーマッタ]] によって実行されます。
 
-## コンテントネゴシエーション <span id="content-negotiation"></span>
+## コンテント・ネゴシエーション <span id="content-negotiation"></span>
 
-Yii は [[yii\filters\ContentNegotiator]] フィルタによってコンテントネゴシエーションをサポートします。
-RESTful API の基底コントローラクラス [[yii\rest\Controller]] は `contentNegotiator` という名前でこのフィルタを持っています。
+Yii は [[yii\filters\ContentNegotiator]] フィルタによってコンテント・ネゴシエーションをサポートします。
+RESTful API の基底コントローラ・クラス [[yii\rest\Controller]] は `contentNegotiator` という名前でこのフィルタを持っています。
 このフィルタは、レスポンス形式のネゴシエーションと同時に言語のネゴシエーションも提供します。
 例えば、RESTful API リクエストが下記のヘッダを含んでいるとします。
 
@@ -55,10 +55,10 @@ Content-Type: application/json; charset=UTF-8
 
 舞台裏では、RESTful API コントローラ・アクションが実行される前に、[[yii\filters\ContentNegotiator]] フィルタがリクエストの `Accept` HTTP ヘッダをチェックして、[[yii\web\Response::format|レスポンス形式]] を `'json'` に設定します。
 アクションが実行されて、その結果のリソースのオブジェクトまたはコレクションが返されると、[[yii\rest\Serializer]] が結果を配列に変換します。
-そして最後に、[[yii\web\JsonResponseFormatter]] が配列を JSON 文字列に変換して、それをレスポンスボディに入れます。
+そして最後に、[[yii\web\JsonResponseFormatter]] が配列を JSON 文字列に変換して、それをレスポンス・ボディに入れます。
 
 デフォルトでは、RESTful API は JSON と XML の両方の形式をサポートします。
-新しい形式をサポートするためには、下記のように、API コントローラクラスの中で `contentNegotiator` フィルタの [[yii\filters\ContentNegotiator::formats|formats]] プロパティを構成しなければなりません。
+新しい形式をサポートするためには、下記のように、API コントローラ・クラスの中で `contentNegotiator` フィルタの [[yii\filters\ContentNegotiator::formats|formats]] プロパティを構成しなければなりません。
 
 ```php
 use yii\web\Response;
@@ -82,7 +82,7 @@ public function behaviors()
 前者は主としてリソースオブジェクトによって実装され、後者はリソースコレクションによって実装されています。
 
 [[yii\rest\Controller::serializer]] プロパティに構成情報配列をセットしてシリアライザを構成することが出来ます。
-例えば、場合によっては、クライアントの開発作業を単純化するために、ページネーション情報をレスポンスボディに直接に含ませたいことがあるでしょう。
+例えば、場合によっては、クライアントの開発作業を単純化するために、ページネーション情報をレスポンス・ボディに直接に含ませたいことがあるでしょう。
 そうするためには、[[yii\rest\Serializer::collectionEnvelope]] プロパティを次のように構成します。
 
 ```php

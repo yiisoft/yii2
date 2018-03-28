@@ -16,8 +16,8 @@
 ```
 forum/
     Module.php                   モジュールクラス・ファイル
-    controllers/                 コントローラクラス・ファイルを含む
-        DefaultController.php    デフォルトのコントローラクラス・ファイル
+    controllers/                 コントローラ・クラス・ファイルを含む
+        DefaultController.php    デフォルトのコントローラ・クラス・ファイル
     models/                      モデルクラス・ファイルを含む
     views/                       コントローラのビューとレイアウトのファイルを含む
         layouts/                 レイアウトのビュー・ファイルを含む
@@ -78,7 +78,7 @@ return [
 
 ### モジュール内のコントローラ <span id="controllers-in-modules"></span>
 
-モジュールの中でコントローラを作成するときは、コントローラクラスをモジュールクラスの名前空間の `controllers` サブ名前空間に置くことが規約です。
+モジュールの中でコントローラを作成するときは、コントローラ・クラスをモジュールクラスの名前空間の `controllers` サブ名前空間に置くことが規約です。
 このことは、同時に、コントローラのクラス・ファイルをモジュールの [[yii\base\Module::basePath|ベースパス]] 内の `controllers` ディレクトリに置くべきことをも意味します。
 例えば、前の項で示された `forum` モジュールの中で `post` コントローラを作成するためには、次のようにしてコントローラを宣言しなければなりません。
 
@@ -93,7 +93,7 @@ class PostController extends Controller
 }
 ```
 
-コントローラクラスの名前空間は、[[yii\base\Module::controllerNamespace]] プロパティを構成してカスタマイズすることが出来ます。
+コントローラ・クラスの名前空間は、[[yii\base\Module::controllerNamespace]] プロパティを構成してカスタマイズすることが出来ます。
 いくつかのコントローラがこの名前空間の外にある場合でも、[[yii\base\Module::controllerMap]] プロパティを構成することによって、それらをアクセス可能にすることが出来ます。
 これは、[アプリケーションでのコントローラマップ](structure-applications.md#controller-map) の場合と同様です。
 
@@ -103,7 +103,7 @@ class PostController extends Controller
 モジュール内のビューは、モジュールの [[yii\base\Module::basePath|ベースパス]] 内の `views` ディレクトリに置かれなくてはなりません。
 モジュール内のコントローラによってレンダリングされるビューは、ディレクトリ `views/ControllerID` の下に置きます。
 ここで、`ControllerID` は [コントローラ ID](structure-controllers.md#routes) を指します。
-例えば、コントローラクラスが `PostController` である場合、ディレクトリはモジュールの [[yii\base\Module::basePath|ベースパス]] の中の `views/post` となります。
+例えば、コントローラ・クラスが `PostController` である場合、ディレクトリはモジュールの [[yii\base\Module::basePath|ベースパス]] の中の `views/post` となります。
 
 モジュールは、そのモジュールのコントローラによってレンダリングされるビューに適用される [レイアウト](structure-views.md#layouts) を指定することが出来ます。
 レイアウトは、デフォルトでは `views/layouts` ディレクトリに置かれなければならず、また、[[yii\base\Module::layout]] プロパティがレイアウトの名前を指すように構成しなければなりません。

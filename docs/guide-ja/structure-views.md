@@ -86,7 +86,7 @@ use yii\helpers\HtmlPurifier;
 
 * コントローラによって表示されるビューは、デフォルトでは、ディレクトリ `@app/views/ControllerID` の下に置かれるべきものです。
   ここで、`ControllerID` は [コントローラ ID](structure-controllers.md#routes) を指します。
-  例えば、コントローラクラスが `PostController` である場合、ディレクトリは `@app/views/post` となります。
+  例えば、コントローラ・クラスが `PostController` である場合、ディレクトリは `@app/views/post` となります。
   `PostCommentController` の場合は、ディレクトリは `@app/views/post-comment` です。
   また、コントローラがモジュールに属する場合は、ディレクトリは [[yii\base\Module::basePath|モジュールディレクトリ]] の下の `views/ControllerID` です。
 * [ウィジェット](structure-widgets.md) で表示されるビューは、デフォルトでは、`WidgetPath/views` ディレクトリの下に置かれるべきものです。

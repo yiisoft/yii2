@@ -116,7 +116,7 @@ if ($headers->has('User-Agent')) { /* User-Agent ヘッダが在る */ }
 このメソッドはアプリケーションによってサポートされている言語のリストを引数として取り、 [[yii\web\Request::acceptableLanguages|acceptableLanguages]] と比較して、最も適切な言語を返します。
 
 > Tip: [[yii\filters\ContentNegotiator|ContentNegotiator]] フィルタを使用して、レスポンスにおいてどのコンテントタイプと言語を使うべきかを動的に決定することも出来ます。
-このフィルタは、上記で説明したプロパティとメソッドの上に、コンテントネゴシエーションを実装しています。
+このフィルタは、上記で説明したプロパティとメソッドの上に、コンテント・ネゴシエーションを実装しています。
 
 
 ## クライアント情報 <span id="client-information"></span>

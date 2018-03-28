@@ -30,7 +30,7 @@ public function behaviors()
 }
 ```
 
-デフォルトでは、コントローラクラスの中で宣言されたフィルタは、そのコントローラの *全て* のアクションに適用されます。
+デフォルトでは、コントローラ・クラスの中で宣言されたフィルタは、そのコントローラの *全て* のアクションに適用されます。
 しかし、[[yii\base\ActionFilter::only|only]] プロパティを構成することによって、フィルタがどのアクションに適用されるべきかを明示的に指定することも出来ます。
 上記の例では、 `HttpCache` フィルタは、`index` と `view` のアクションに対してのみ適用されています。
 また、[[yii\base\ActionFilter::except|except]] プロパティを構成して、いくつかのアクションをフィルタされないように除外することも可能です。
@@ -136,7 +136,7 @@ public function behaviors()
 [OAuth 2](http://oauth.net/2/) など、様々なメソッドを使ってユーザを認証するために使われるものです。
 これらのフィルタクラスはすべて `yii\filters\auth` 名前空間の下にあります。
 
-次の例は、[[yii\filters\auth\HttpBasicAuth]] の使い方を示すもので、HTTP Basic 認証に基づくアクセストークンを使ってユーザを認証しています。
+次の例は、[[yii\filters\auth\HttpBasicAuth]] の使い方を示すもので、HTTP Basic 認証に基づくアクセス・トークンを使ってユーザを認証しています。
 これを動作させるためには、あなたの [[yii\web\User::identityClass|ユーザアイデンティティクラス]]
 が [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] メソッドを実装していなければならないことに注意してください。
 
