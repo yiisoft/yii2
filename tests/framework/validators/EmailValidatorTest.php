@@ -24,87 +24,89 @@ class EmailValidatorTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testValidateValue()
-    {
-        $validator = new EmailValidator();
-
-        $this->assertTrue($validator->validate('sam@rmcreative.ru'));
-        $this->assertTrue($validator->validate('5011@gmail.com'));
-        $this->assertTrue($validator->validate('Abc.123@example.com'));
-        $this->assertTrue($validator->validate('user+mailbox/department=shipping@example.com'));
-        $this->assertTrue($validator->validate('!#$%&\'*+-/=?^_`.{|}~@example.com'));
-        $this->assertFalse($validator->validate('rmcreative.ru'));
-        $this->assertFalse($validator->validate('Carsten Brandt <mail@cebe.cc>'));
-        $this->assertFalse($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
-        $this->assertFalse($validator->validate('<mail@cebe.cc>'));
-        $this->assertFalse($validator->validate('info@örtliches.de'));
-        $this->assertFalse($validator->validate('sam@рмкреатиф.ru'));
-        $this->assertFalse($validator->validate('ex..ample@example.com'));
-        $this->assertFalse($validator->validate(['developer@yiiframework.com']));
-
-        $validator->allowName = true;
-
-        $this->assertTrue($validator->validate('sam@rmcreative.ru'));
-        $this->assertTrue($validator->validate('5011@gmail.com'));
-        $this->assertFalse($validator->validate('rmcreative.ru'));
-        $this->assertTrue($validator->validate('Carsten Brandt <mail@cebe.cc>'));
-        $this->assertTrue($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
-        $this->assertTrue($validator->validate('<mail@cebe.cc>'));
-        $this->assertFalse($validator->validate('info@örtliches.de'));
-        $this->assertFalse($validator->validate('üñîçøðé@üñîçøðé.com'));
-        $this->assertFalse($validator->validate('sam@рмкреатиф.ru'));
-        $this->assertFalse($validator->validate('Informtation info@oertliches.de'));
-        $this->assertTrue($validator->validate('test@example.com'));
-        $this->assertTrue($validator->validate('John Smith <john.smith@example.com>'));
-        $this->assertTrue($validator->validate('"This name is longer than 64 characters. Blah blah blah blah blah" <shortmail@example.com>'));
-        $this->assertFalse($validator->validate('John Smith <example.com>'));
-        $this->assertFalse($validator->validate('Short Name <localPartMoreThan64Characters-blah-blah-blah-blah-blah-blah-blah-blah@example.com>'));
-        $this->assertFalse($validator->validate('Short Name <domainNameIsMoreThan254Characters@example-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah.com>'));
-        $this->assertFalse($validator->validate(['developer@yiiframework.com']));
+    public function emailProvider() {
+        return [
+            // valid, requiresIDN, hasName, email
+            [false, false, false, 'ex..ample@example.com'],
+            [false, false, false, 'Information info@oertliches.de'],
+            [false, false, false, 'rmcreative.ru'],
+            [false, false, false, ['developer@yiiframework.com']],
+            [false, false, true, 'John Smith <example.com>'],
+            [false, false, true, 'Short Name <domainNameIsMoreThan254Characters@example-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah.com>'],
+            [false, false, true, 'Short Name <localPartMoreThan64Characters-blah-blah-blah-blah-blah-blah-blah-blah@example.com>'],
+            [true, false, false, '!#$%&\'*+-/=?^_`.{|}~@example.com'],
+            [true, false, false, '5011@gmail.com'],
+            [true, false, false, 'Abc.123@example.com'],
+            [true, false, false, 'sam@rmcreative.ru'],
+            [true, false, false, 'test-@example.com'],
+            [true, false, false, 'test@example.com'],
+            [true, false, false, 'user+mailbox/department=shipping@example.com'],
+            [true, false, true, '"Carsten Brandt" <mail@cebe.cc>'],
+            [true, false, true, '"This name is longer than 64 characters. Blah blah blah blah blah" <shortmail@example.com>'],
+            [true, false, true, '"Такое имя достаточно длинное, но оно все равно может пройти валидацию" <shortmail@example.com>'],
+            [true, false, true, '<mail@cebe.cc>'],
+            [true, false, true, 'Carsten Brandt <mail@cebe.cc>'],
+            [true, false, true, 'example@xn--zcack7ayc9a.de'],
+            [true, false, true, 'John Smith <john.smith@example.com>'],
+            [true, true, false, 'example@äüößìà.de'],
+            [true, true, false, 'info@örtliches.de'],
+            [true, true, false, 'sam@рмкреатиф.ru'],
+            [true, true, false, 'üñîçøðé@üñîçøðé.com'],
+            [true, true, true, 'Information <info@örtliches.de>'],
+            [true, true, true, 'üñîçøðé 日本国 <üñîçøðé@üñîçøðé.com>'],
+            [true, true, false, 'после-преобразования-в-idn-тут-будет-больше-чем-64-символа@пример.com'],
+            [true, true, true, 'Короткое имя <после-преобразования-в-idn-тут-будет-больше-чем-64-символа@пример.com>'],
+            [false, true, true, 'Короткое имя <тест@это-доменное-имя.после-преобразования-в-idn.будет-содержать-больше-254-символов.бла-бла-бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.com>']
+        ];
     }
 
-    public function testValidateValueIdn()
+    /**
+     * Each email is tested multiple times with different configurations
+     * @dataProvider emailProvider
+     * @param $email
+     * @param $valid
+     * @param $requiresIdn
+     * @param $hasName
+     */
+    public function testValidateValue($valid, $requiresIdn, $hasName, $email)
     {
-        if (!function_exists('idn_to_ascii')) {
-            $this->markTestSkipped('Intl extension required');
-
-            return;
-        }
         $validator = new EmailValidator();
-        $validator->enableIDN = true;
 
-        $this->assertTrue($validator->validate('5011@example.com'));
-        $this->assertTrue($validator->validate('example@äüößìà.de'));
-        $this->assertTrue($validator->validate('example@xn--zcack7ayc9a.de'));
-        $this->assertTrue($validator->validate('info@örtliches.de'));
-        $this->assertTrue($validator->validate('sam@рмкреатиф.ru'));
-        $this->assertTrue($validator->validate('sam@rmcreative.ru'));
-        $this->assertTrue($validator->validate('5011@gmail.com'));
-        $this->assertTrue($validator->validate('üñîçøðé@üñîçøðé.com'));
-        $this->assertFalse($validator->validate('rmcreative.ru'));
-        $this->assertFalse($validator->validate('Carsten Brandt <mail@cebe.cc>'));
-        $this->assertFalse($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
-        $this->assertFalse($validator->validate('<mail@cebe.cc>'));
+        /**
+         * Validation should fail if the email requires IDN or contains a name or if it's invalid.
+         */
+        $result = $validator->validate($email, $error);
+        $this->assertEquals($valid && !$requiresIdn && !$hasName, $result, $error);
 
         $validator->allowName = true;
 
-        $this->assertTrue($validator->validate('info@örtliches.de'));
-        $this->assertTrue($validator->validate('Informtation <info@örtliches.de>'));
-        $this->assertFalse($validator->validate('Informtation info@örtliches.de'));
-        $this->assertTrue($validator->validate('sam@рмкреатиф.ru'));
-        $this->assertTrue($validator->validate('sam@rmcreative.ru'));
-        $this->assertTrue($validator->validate('5011@gmail.com'));
-        $this->assertFalse($validator->validate('rmcreative.ru'));
-        $this->assertTrue($validator->validate('Carsten Brandt <mail@cebe.cc>'));
-        $this->assertTrue($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
-        $this->assertTrue($validator->validate('üñîçøðé 日本国 <üñîçøðé@üñîçøðé.com>'));
-        $this->assertTrue($validator->validate('<mail@cebe.cc>'));
-        $this->assertTrue($validator->validate('test@example.com'));
-        $this->assertTrue($validator->validate('John Smith <john.smith@example.com>'));
-        $this->assertTrue($validator->validate('"Такое имя достаточно длинное, но оно все равно может пройти валидацию" <shortmail@example.com>'));
-        $this->assertFalse($validator->validate('John Smith <example.com>'));
-        $this->assertFalse($validator->validate('Короткое имя <после-преобразования-в-idn-тут-будет-больше-чем-64-символа@пример.com>'));
-        $this->assertFalse($validator->validate('Короткое имя <тест@это-доменное-имя.после-преобразования-в-idn.будет-содержать-больше-254-символов.бла-бла-бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.com>'));
+        /**
+         * Validation should fail if the email requires IDN or is invalid.
+         */
+
+        $result = $validator->validate($email, $error);
+        $this->assertEquals($valid && !$requiresIdn, $result, $error);
+
+
+        if ($requiresIdn && !function_exists('idn_to_ascii')) {
+            $this->markTestSkipped('Intl extension required');
+            return;
+        }
+
+        $validator->enableIDN = true;
+
+        /**
+         * Validation should fail if the email is invalid.
+         */
+        $this->assertEquals($valid, $validator->validate($email), $error);
+
+        $validator->allowName = false;
+
+        /**
+         * Validation should fail if the email is invalid or contains a name.
+         */
+        $result = $validator->validate($email, $error);
+        $this->assertEquals($valid && !$hasName, $result, $error);
     }
 
     public function testValidateValueMx()
