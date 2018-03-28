@@ -113,7 +113,7 @@ IP アドレスは、最後にワイルドカード `*` を含むことが出来
 例えば、'192.168.*' は、'192.168.' のセグメントに属する全ての IP アドレスに合致します。
 このオプションが空であるか指定されていない場合は、規則が全ての IP アドレスに適用されることを意味します。
 
- * [[yii\filters\AccessRule::verbs|verbs]]: どのリクエストメソッド (HTTP 動詞、例えば `GET` や `POST`) にこの規則が適用されるかを指定します。
+ * [[yii\filters\AccessRule::verbs|verbs]]: どのリクエスト・メソッド (HTTP 動詞、例えば `GET` や `POST`) にこの規則が適用されるかを指定します。
 比較は大文字と小文字を区別しません。
 
  * [[yii\filters\AccessRule::matchCallback|matchCallback]]: この規則が適用されるべきか否かを決定するために呼び出されるべき PHP コーラブルを指定します。
@@ -214,7 +214,7 @@ return [
 これで `authManager` は `\Yii::$app->authManager` によってアクセスすることが出来るようになります。
 
 デフォルトでは、[[yii\rbac\PhpManager]] は RBAC データを `@app/rbac/` ディレクトリの下のファイルに保存します。
-権限の階層をオンラインで変更する必要がある場合は、必ず、ウェブサーバのプロセスがこのディレクトリとその中の全てのファイルに対する書き込み権限を有するようにしてください。
+権限の階層をオンラインで変更する必要がある場合は、必ず、ウェブ・サーバのプロセスがこのディレクトリとその中の全てのファイルに対する書き込み権限を有するようにしてください。
 
 
 #### `DbManager` を使用する <span id="using-db-manager"></span>
@@ -239,7 +239,7 @@ return [
 > Note: yii2-basic-app テンプレートを使おうとする場合は、`config/web.php` に加えて、`config/console.php` 構成ファイルにおいても `uathManager` を宣言する必要があります。
 > yii2-advanced-app の場合は、`authManager` は `common/config/main.php` で一度だけ宣言されなければなりません。
 
-`DbManager` は四つのデータベーステーブルを使ってデータを保存します。
+`DbManager` は四つのデータベース・テーブルを使ってデータを保存します。
 
 - [[yii\rbac\DbManager::$itemTable|itemTable]]: 権限アイテムを保存するためのテーブル。デフォルトは "auth_item"。
 - [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: 権限アイテムの階層を保存するためのテーブル。デフォルトは "auth_item_child"。
@@ -533,7 +533,7 @@ Jane の場合は、彼女が管理者であるため、少し簡単になりま
 
 コントローラ内で権限付与を実装するのには、いくつかの方法があります。
 追加と削除に対するアクセス権を分離する細分化された許可が必要な場合は、それぞれのアクションに対してアクセス権をチェックする必要があります。
-各アクションメソッドの中で上記の条件を使用するか、または [[yii\filters\AccessControl]] を使います。
+各アクション・メソッドの中で上記の条件を使用するか、または [[yii\filters\AccessControl]] を使います。
 
 ```php
 public function behaviors()

@@ -226,7 +226,7 @@ function foo($model, $attribute) {
 
 - `rule`: 検証規則を指定する配列。
   配列の最初の要素がバリデータのクラス名かエイリアスを指定します。
-  配列の残りの「名前・値」のペアが、バリデータオブジェクトを構成するのに使われます。
+  配列の残りの「名前・値」のペアが、バリデータ・オブジェクトを構成するのに使われます。
 - `allowMessageFromRule`: 埋め込まれた検証規則によって返されるエラー・メッセージを使うかどうか。
   デフォルト値は `true` です。これが `false` の場合は、`message` をエラー・メッセージとして使います。
 
@@ -328,7 +328,7 @@ function foo($model, $attribute) {
   例えば `image/*` は、`image/` で始まる全ての MIME タイプ (`image/jpeg`, `image/png` など) を通します。
   MIME タイプ名は大文字と小文字を区別しません。
   デフォルト値は `null` であり、すべての MIME タイプが許可されることを意味します。
-  MIME タイプの詳細については、[一般的なメディアタイプ](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) を参照してください。
+  MIME タイプの詳細については、[一般的なメディア・タイプ](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) を参照してください。
 - `minSize`: アップロードされるファイルに要求される最小限のバイト数。
   デフォルト値は `null` であり、下限値が無いことを意味します。
 - `maxSize`: アップロードされるファイルに許可される最大限のバイト数。

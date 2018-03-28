@@ -155,7 +155,7 @@ return [
 翻訳メッセージを格納するのには、PHP ファイル以外に、次のメッセージソースを使うことも可能です。
 
 - [[yii\i18n\GettextMessageSource]] - 翻訳メッセージを保持するのに GNU Gettext の MO ファイルまたは PO ファイルを使用する
-- [[yii\i18n\DbMessageSource]] - 翻訳メッセージを保存するのにデータベーステーブルを使用する
+- [[yii\i18n\DbMessageSource]] - 翻訳メッセージを保存するのにデータベース・テーブルを使用する
 
 
 ## メッセージのフォーマット <span id="message-formatting"></span>

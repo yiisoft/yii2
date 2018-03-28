@@ -28,7 +28,7 @@
   このコマンドについてさらに学習するためには、[国際化のセクション](tutorial-i18n.md#message-command) を参照してください。
 - [[yii\console\controllers\MigrateController|MigrateController]] - アプリケーションのマイグレーションを管理します。
   データベースのマイグレーションについては、[データベースのマイグレーションのセクション](db-migrations.md) で詳しく説明されています。
-- [[yii\console\controllers\ServeController|ServeController]] - PHP の内蔵ウェブサーバを走らせることが出来ます。
+- [[yii\console\controllers\ServeController|ServeController]] - PHP の内蔵ウェブ・サーバを走らせることが出来ます。
 
 
 使用方法 <span id="usage"></span>
@@ -41,7 +41,7 @@ yii <route> [--option1=value1 --option2=value2 ... argument1 argument2 ...]
 ```
 
 上記において、`<route>` はコントローラ・アクションへのルートを示すものです。
-オプション (options) はクラスのプロパティに代入され、引数 (arguments) はアクションメソッドのパラメータとなります。
+オプション (options) はクラスのプロパティに代入され、引数 (arguments) はアクション・メソッドのパラメータとなります。
 
 例えば、[[yii\console\controllers\MigrateController::$migrationTable|MigrateController::$migrationTable]] として `migrations` を指定し、マイグレーションの上限を 5 と指定して [[yii\console\controllers\MigrateController::actionUp()|MigrateController::actionUp()]] を呼び出すためには、次のようにします。
 
@@ -50,7 +50,7 @@ yii migrate/up 5 --migrationTable=migrations
 ```
 
 > Note: コンソールで `*` を使う場合は、`"*"` として引用符号で囲むことを忘れないでください。
-> これは、`*` をカレントディレクトリの全てのファイル名に置き換えられるシェルのグロブとして実行してしまうことを避けるためです。
+> これは、`*` をカレント・ディレクトリの全てのファイル名に置き換えられるシェルのグロブとして実行してしまうことを避けるためです。
 
 
 エントリ・スクリプト <span id="entry-script"></span>
@@ -117,7 +117,7 @@ bash completion がインストールされていることを確認して下さ�
 
      curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/bash/yii -o /etc/bash_completion.d/yii
 
-一時的な利用の場合は、ファイルをカレントディレクトリに置いて、`source yii` でカレントセッションに読み込みます。
+一時的な利用の場合は、ファイルをカレント・ディレクトリに置いて、`source yii` でカレント・セッションに読み込みます。
 グローバルにインストールした場合は、ターミナルを再起動するか、`source ~/.bashrc` を実行して、有効化する必要があります。
 
 あなたの環境で補完スクリプトを読み込む他の方法については、
@@ -161,7 +161,7 @@ exec $SHELL -l
 各アクションの中で、その特定のサブコマンドのための適切なタスクを実装するコードを書きます。
 
 コマンドを実行するときは、コントローラのアクションに対するルートを指定する必要があります。
-例えば、ルート `migrate/create` は、[[yii\console\controllers\MigrateController::actionCreate()|MigrateController::actionCreate()]] アクションメソッドに対応するサブコマンドを呼び出します。
+例えば、ルート `migrate/create` は、[[yii\console\controllers\MigrateController::actionCreate()|MigrateController::actionCreate()]] アクション・メソッドに対応するサブコマンドを呼び出します。
 実行時に提供されたルートにアクション ID が含まれない場合は、(ウェブのコントローラの場合と同じように) デフォルトのアクションが実行されます。
 
 ### オプション
@@ -214,7 +214,7 @@ class HelloController extends Controller
 ### 引数
 
 オプションに加えてに、コマンドは引数を取ることも出来ます。
-引数は、リクエストされたサブコマンドに対応するアクションメソッドへのパラメータとして渡されます。
+引数は、リクエストされたサブコマンドに対応するアクション・メソッドへのパラメータとして渡されます。
 最初の引数は最初のパラメータに対応し、二番目の引数は二番目のパラメータに対応し、以下同様です。
 コマンドが呼び出されたときに十分な数の引数が提供されなかったときは、対応するパラメータは、定義されていれば、宣言されているデフォルト値をとります。
 デフォルト値が設定されておらず、実行時に値が提供されなかった場合は、コマンドはエラーで終了します。
@@ -249,7 +249,7 @@ class ExampleController extends \yii\console\Controller
 返される数値がエラーコードであり、それによってエラーに関する詳細を見出すことが出来る場合もあります。
 例えば、`1` は一般的な未知のエラーを示すものとし、`2` 以上の全てのコードは特定のエラー、例えば、入力エラー、ファイルが見つからない、等々を示すものとすることが出来ます。
 
-コンソールコマンドに終了コードを返させるためには、単にコントローラのアクションメソッドで整数を返すようにします。
+コンソールコマンドに終了コードを返させるためには、単にコントローラのアクション・メソッドで整数を返すようにします。
 
 ```php
 public function actionIndex()

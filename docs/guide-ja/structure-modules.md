@@ -95,7 +95,7 @@ class PostController extends Controller
 
 コントローラ・クラスの名前空間は、[[yii\base\Module::controllerNamespace]] プロパティを構成してカスタマイズすることが出来ます。
 いくつかのコントローラがこの名前空間の外にある場合でも、[[yii\base\Module::controllerMap]] プロパティを構成することによって、それらをアクセス可能にすることが出来ます。
-これは、[アプリケーションでのコントローラマップ](structure-applications.md#controller-map) の場合と同様です。
+これは、[アプリケーションでのコントローラ・マップ](structure-applications.md#controller-map) の場合と同様です。
 
 
 ### モジュール内のビュー <span id="views-in-modules"></span>
@@ -114,7 +114,7 @@ class PostController extends Controller
 
 [コンソール](tutorial-console.md) モードで使用する事が出来るコマンドをmodeコマンドをモジュール内で宣言することも可能です。
 
-あなたのコマンドがコマンドラインユーティリティから見えるようにするためには、Yii がコンソールモードで実行されたときに
+あなたのコマンドがコマンドラインユーティリティから見えるようにするためには、Yii がコンソール・モードで実行されたときに
 [[yii\base\Module::controllerNamespace]] を変更して、コマンドの名前空間を指し示すようにする必要があります。
 
 それを達成する一つの方法は、モジュールの `init()` メソッドの中で Yii アプリケーションのインスタンスの型を調べるという方法です。
@@ -297,8 +297,8 @@ class Module extends \yii\base\Module
 ],
 ```
 
-アプリケーションのデータベーステーブルは `main_` という接頭辞を持つ一方で、
-モジュールのデータベーステーブルは `module_` という接頭辞を持ちます。
+アプリケーションのデータベース・テーブルは `main_` という接頭辞を持つ一方で、
+モジュールのデータベース・テーブルは `module_` という接頭辞を持ちます。
 上記の構成はマージされないということに注意して下さい。例えば、モジュールのコンポーネントではクエリキャッシュはデフォルト値に従って有効なままになります。
 
 ## ベストプラクティス <span id="best-practices"></span>

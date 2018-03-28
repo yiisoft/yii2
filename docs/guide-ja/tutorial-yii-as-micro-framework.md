@@ -119,8 +119,8 @@ micro-app/
     └── SiteController.php
 ```
 
-まだウェブサーバをセットアップしていない場合は、[ウェブサーバの構成ファイル例](start-installation.md#configuring-web-servers) を参照すると良いでしょう。
-もう一つのオプションは、PHP の内蔵ウェブサーバを利用する `yii serve` コマンドを使うことです。`micro-app/` ディレクトリから、次のコマンドを実行します。
+まだウェブ・サーバをセットアップしていない場合は、[ウェブ・サーバの構成ファイル例](start-installation.md#configuring-web-servers) を参照すると良いでしょう。
+もう一つのオプションは、PHP の内蔵ウェブ・サーバを利用する `yii serve` コマンドを使うことです。`micro-app/` ディレクトリから、次のコマンドを実行します。
 
     vendor/bin/yii serve --docroot=./web
 

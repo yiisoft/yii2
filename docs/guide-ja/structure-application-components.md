@@ -99,7 +99,7 @@ Yii のアプリケーションがユーザリクエストを処理出来るの�
   詳細は [アセット](structure-assets.md) のセクションを参照してください。
 * [[yii\db\Connection|db]]: データベース接続を表します。これを通じて、DB クエリを実行することが出来ます。
   このコンポーネントを構成するときは、コンポーネントのクラスはもちろん、[[yii\db\Connection::dsn]] のような必須のコンポーネントプロパティを指定しなければならないことに注意してください。
-  詳細は [データアクセスオブジェクト](db-dao.md) のセクションを参照してください。
+  詳細は [データアクセス・オブジェクト](db-dao.md) のセクションを参照してください。
 * [[yii\base\Application::errorHandler|errorHandler]]: PHP のエラーと例外を処理します。
   詳細は [エラー処理](runtime-handling-errors.md) のセクションを参照してください。
 * [[yii\i18n\Formatter|formatter]]: エンド・ユーザに表示されるデータに書式を設定します。
@@ -107,7 +107,7 @@ Yii のアプリケーションがユーザリクエストを処理出来るの�
   詳細は [データの書式設定](output-formatting.md) のセクションを参照してください。
 * [[yii\i18n\I18N|i18n]]: メッセージの翻訳と書式設定をサポートします。
   詳細は [国際化](tutorial-i18n.md) のセクションを参照してください。
-* [[yii\log\Dispatcher|log]]: ログターゲットを管理します。
+* [[yii\log\Dispatcher|log]]: ログ・ターゲットを管理します。
   詳細は [ロギング](runtime-logging.md) のセクションを参照してください。
 * [[yii\swiftmailer\Mailer|mailer]]: メールの作成と送信をサポートします。
   詳細は [メール](tutorial-mailing.md) のセクションを参照してください。

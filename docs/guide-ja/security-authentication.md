@@ -45,7 +45,7 @@ return [
 特定のメソッドが必要でない場合は、中身を空にして実装しても構いません。
 例えば、あなたのアプリケーションが純粋なステートレス RESTful アプリケーションであるなら、実装する必要があるのは [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] と [[yii\web\IdentityInterface::getId()|getId()]] だけであり、他のメソッドは全て中身を空にしておくことが出来ます。
 
-次の例では、[[yii\web\User::identityClass|ユーザ識別情報クラス]] は、`user` データベーステーブルと関連付けられた [アクティブレコード](db-active-record.md) クラスとして実装されています。
+次の例では、[[yii\web\User::identityClass|ユーザ識別情報クラス]] は、`user` データベース・テーブルと関連付けられた [アクティブレコード](db-active-record.md) クラスとして実装されています。
 
 ```php
 <?php

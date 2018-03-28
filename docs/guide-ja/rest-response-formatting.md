@@ -3,12 +3,12 @@
 
 RESTful API のリクエストを処理するとき、アプリケーションは、通常、レスポンス形式の設定に関して次のステップを踏みます。
 
-1. レスポンス形式に影響するさまざまな要因、例えば、メディアタイプ、言語、バージョンなどを決定します。
+1. レスポンス形式に影響するさまざまな要因、例えば、メディア・タイプ、言語、バージョンなどを決定します。
    このプロセスは [コンテント・ネゴシエーション](http://en.wikipedia.org/wiki/Content_negotiation) としても知られるものです。
-2. リソースオブジェクトを配列に変換します。
+2. リソース・オブジェクトを配列に変換します。
    [リソース](rest-resources.md) のセクションで説明したように、この作業は [[yii\rest\Serializer]] によって実行されます。
 3. 配列をコンテント・ネゴシエーションのステップで決定された形式の文字列に変換します。
-   この作業は、`response` [アプリケーション・コンポーネント](structure-application-components.md) の [[yii\web\Response::formatters|formatters]] プロパティに登録された [[yii\web\ResponseFormatterInterface|レスポンスフォーマッタ]] によって実行されます。
+   この作業は、`response` [アプリケーション・コンポーネント](structure-application-components.md) の [[yii\web\Response::formatters|formatters]] プロパティに登録された [[yii\web\ResponseFormatterInterface|レスポンス・フォーマッタ]] によって実行されます。
 
 ## コンテント・ネゴシエーション <span id="content-negotiation"></span>
 
@@ -79,7 +79,7 @@ public function behaviors()
 
 上記で説明したように、[[yii\rest\Serializer]] が、リソースのオブジェクトやコレクションを配列に変換する際に、中心的な役割を果たします。
 `Serializer` は、[[yii\base\Arrayable]] および [[yii\data\DataProviderInterface]] のインタフェイスを実装したオブジェクトを認識します。
-前者は主としてリソースオブジェクトによって実装され、後者はリソースコレクションによって実装されています。
+前者は主としてリソース・オブジェクトによって実装され、後者はリソース・コレクションによって実装されています。
 
 [[yii\rest\Controller::serializer]] プロパティに構成情報配列をセットしてシリアライザを構成することが出来ます。
 例えば、場合によっては、クライアントの開発作業を単純化するために、ページネーション情報をレスポンス・ボディに直接に含ませたいことがあるでしょう。
@@ -162,7 +162,7 @@ JSON 形式のレスポンスを生成する [[yii\web\JsonResponseFormatter|Jso
     'formatters' => [
         \yii\web\Response::FORMAT_JSON => [
             'class' => 'yii\web\JsonResponseFormatter',
-            'prettyPrint' => YII_DEBUG, // デバッグモードでは "きれい" な出力を使用
+            'prettyPrint' => YII_DEBUG, // デバッグ・モードでは "きれい" な出力を使用
             'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
             // ...
         ],

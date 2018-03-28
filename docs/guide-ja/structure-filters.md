@@ -211,7 +211,7 @@ use yii\web\Response;
 ];
 ```
 
-> Info: 望ましいコンテントタイプと言語がリクエストから決定できない場合は、[[formats]] および [[languages]] に挙げられている最初の形式と言語が使用されます。
+> Info: 望ましいコンテント・タイプと言語がリクエストから決定できない場合は、[[formats]] および [[languages]] に挙げられている最初の形式と言語が使用されます。
 
 
 
@@ -281,7 +281,7 @@ RateLimiter は [リーキーバケットアルゴリズム](http://ja.wikipedia
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
 
-VerbFilter は、HTTP リクエストメソッド (HTTP 動詞) がリクエストされたアクションによって許可されているかどうかをチェックするものです。
+VerbFilter は、HTTP リクエスト・メソッド (HTTP 動詞) がリクエストされたアクションによって許可されているかどうかをチェックするものです。
 許可されていない場合は、HTTP 405 例外を投げます。
 次の例では、VerbFilter が宣言されて、CRUD アクションに対して許可されるメソッドの典型的なセットを指定しています。
 
