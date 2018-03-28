@@ -18,7 +18,7 @@ forum/
     Module.php                   モジュールクラス・ファイル
     controllers/                 コントローラ・クラス・ファイルを含む
         DefaultController.php    デフォルトのコントローラ・クラス・ファイル
-    models/                      モデルクラス・ファイルを含む
+    models/                      モデル・クラス・ファイルを含む
     views/                       コントローラのビューとレイアウトのファイルを含む
         layouts/                 レイアウトのビュー・ファイルを含む
         default/                 DefaultController のためのビュー・ファイルを含む
