@@ -109,10 +109,18 @@ class EmailValidator extends Validator
     {
         if (PHP_VERSION_ID < 50600) {
             // TODO: drop old PHP versions support
-            return idn_to_ascii($idn);
+            $result =  idn_to_ascii($idn);
+            if ($result === false) {
+                return $idn;
+            }
+            return $result;
         }
 
-        return idn_to_ascii($idn, 0, INTL_IDNA_VARIANT_UTS46);
+        $result = idn_to_ascii($idn, 0, INTL_IDNA_VARIANT_UTS46);
+        if ($result === false) {
+            return $idn;
+        }
+        return $result;
     }
 
     /**

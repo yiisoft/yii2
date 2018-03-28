@@ -98,8 +98,8 @@ class EmailValidatorTest extends TestCase
         /**
          * Validation should fail if the email is invalid.
          */
-        $this->assertEquals($valid, $validator->validate($email), $error);
-
+        $result = $validator->validate($email, $error);
+        $this->assertEquals($valid, $result, $error);
         $validator->allowName = false;
 
         /**
