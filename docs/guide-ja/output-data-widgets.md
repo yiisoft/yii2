@@ -180,7 +180,7 @@ echo GridView::widget([
 
 構成情報の [[yii\grid\GridView::columns|columns]] の部分が指定されない場合は、Yii は、データ・プロバイダのモデルの表示可能な全てのカラムを表示しようとすることに注意してください。
 
-### カラムクラス <span id="column-classes"></span>
+### カラム・クラス <span id="column-classes"></span>
 
 グリッドのカラムは、いろいろなカラムクラスを使うことでカスタマイズすることが出来ます。
 
@@ -194,9 +194,9 @@ echo GridView::widget([
         ],
 ```
 
-Yii によって提供されるカラムクラスを以下で見ていきますが、それらに加えて、あなた自身のカラムクラスを作成することも出来ます。
+Yii によって提供されるカラムクラスを以下で見ていきますが、それらに加えて、あなた自身のカラム・クラスを作成することも出来ます。
 
-全てのカラムクラスは [[yii\grid\Column]] を拡張するものですので、グリッドのカラムを構成するときに設定できる共通のオプションがいくつかあります。
+全てのカラム・クラスは [[yii\grid\Column]] を拡張するものですので、グリッドのカラムを構成するときに設定できる共通のオプションがいくつかあります。
 
 
 - [[yii\grid\Column::header|header]] によって、ヘッダ行のコンテントを設定することが出来ます。
@@ -218,12 +218,12 @@ Yii によって提供されるカラムクラスを以下で見ていきます�
 - [[yii\grid\Column::contentOptions|contentOptions]]
 
 
-#### データカラム <span id="data-column"></span>
+#### データ・カラム <span id="data-column"></span>
 
-[[yii\grid\DataColumn|データカラム]] は、データの表示と並べ替えに使用されます。
+[[yii\grid\DataColumn|データ・カラム]] は、データの表示と並べ替えに使用されます。
 これがデフォルトのカラムタイプですので、これを使用するときはクラスの指定を省略することが出来ます。
 
-データカラムの主要な設定項目は、その [[yii\grid\DataColumn::format|format]] プロパティです。
+データ・カラムの主要な設定項目は、その [[yii\grid\DataColumn::format|format]] プロパティです。
 その値が、デフォルトでは [[\yii\i18n\Formatter|Formatter]] である `formatter` [アプリケーション・コンポーネント](structure-application-components.md) のメソッドに対応します。
 
 ```php
@@ -250,9 +250,9 @@ echo GridView::widget([
 データカラムを構成するためには、ショートカット形式を使うことも出来ます。
 それについては、[[yii\grid\GridView::columns|columns]] の API ドキュメントで説明されています。
 
-#### アクションカラム <span id="action-column"></span>
+#### アクション・カラム <span id="action-column"></span>
 
-[[yii\grid\ActionColumn|アクションカラム]] は、各行について、更新や削除などのアクションボタンを表示します。
+[[yii\grid\ActionColumn|アクション・カラム]] は、各行について、更新や削除などのアクションボタンを表示します。
 
 ```php
 echo GridView::widget([
@@ -268,8 +268,8 @@ echo GridView::widget([
 
 - [[yii\grid\ActionColumn::controller|controller]] は、アクションを処理すべきコントローラの ID です。
   設定されていない場合は、現在アクティブなコントローラが使われます。
-- [[yii\grid\ActionColumn::template|template]] は、アクションカラムの各セルを構成するのに使用されるテンプレートを定義します。
-  波括弧に囲まれたトークンは、コントローラのアクション ID として扱われます (アクションカラムのコンテキストでは *ボタンの名前* とも呼ばれます)。
+- [[yii\grid\ActionColumn::template|template]] は、アクション・カラムの各セルを構成するのに使用されるテンプレートを定義します。
+  波括弧に囲まれたトークンは、コントローラのアクション ID として扱われます (アクション・カラムのコンテキストでは *ボタンの名前* とも呼ばれます)。
   これらは、[[yii\grid\ActionColumn::$buttons|buttons]] によって定義される、対応するボタン表示コールバックによって置き換えられます。
   例えば、`{view}` というトークンは、`buttons['view']` のコールバックの結果によって置き換えられます。
   コールバックが見つからない場合は、トークンは空文字列によって置き換えられます。
@@ -309,9 +309,9 @@ echo GridView::widget([
   ```
 
 
-#### チェックボックスカラム <span id="checkbox-column"></span>
+#### チェックボックス・カラム <span id="checkbox-column"></span>
 
-[[yii\grid\CheckboxColumn|チェックボックスカラム]] はチェックボックスのカラムを表示します。
+[[yii\grid\CheckboxColumn|チェックボックス・カラム]] はチェックボックスのカラムを表示します。
 
 GridView に CheckboxColumn を追加するためには、以下のようにして、[[yii\grid\GridView::$columns|columns]] 構成情報にカラムを追加します。
 
@@ -335,7 +335,7 @@ var keys = $('#grid').yiiGridView('getSelectedRows');
 // keys は選択された行と関連付けられたキーの配列
 ```
 
-#### シリアルカラム <span id="serial-column"></span>
+#### シリアル・カラム <span id="serial-column"></span>
 
 [[yii\grid\SerialColumn|シリアルカラム]] は、`1` から始まる行番号を表示します。
 
@@ -361,7 +361,7 @@ echo GridView::widget([
 データをフィルタリングするためには、GridView は検索基準を表す [モデル](structure-models.md) を必要とします。
 検索基準は、通常は、グリッドビューのテーブルのフィルタのフィールドから取得されます。
 [アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデルクラスを作成するのが一般的なプラクティスです (あなたに代って [Gii](start-gii.md) が生成してくれます)。
-このクラスが、グリッドビューのテーブルに表示されるフィルタコントロールのための検証規則を定義し、
+このクラスが、グリッドビューのテーブルに表示されるフィルタ・コントロールのための検証規則を定義し、
 検索基準に従って修正されたクエリを持つデータ・プロバイダを返す `search()` メソッドを提供します。
 
 `Post` モデルに対して検索機能を追加するために、次の例のようにして、`PostSearch` モデルを作成することが出来ます。
@@ -487,7 +487,7 @@ use yii\widgets\ActiveForm;
 ```
 
 > Note: Gii を使って CRUD コードを生成する場合、デフォルトで、独立したフィルタ・フォーム (`_search.php`) が生成されます。
-  ただし、`index.php` ビューの中ではコメントアウトされています。
+  ただし、`index.php` ビューの中ではコメント・アウトされています。
   コメントを外せば、すぐに使うことが出来ます。
 
 独立したフィルタ・フォームは、グリッドビューに表示されないフィールドによってフィルタをかけたり、
@@ -680,7 +680,7 @@ class UserView extends ActiveRecord
 
 - 並べ替えとフィルタリングの条件をいろいろと定義する必要はありません。全てそのままで動きます。
 - データサイズが小さく、実行される SQL クエリの数が少ない (通常なら全てのリレーションについて一つずつ必要になる追加のクエリが要らない) ため、非常に高速になり得ます。
-- これは SQL ビューにかぶせた単純な UI に過ぎないもので、エンティティに含まれるドメインロジックを欠いています。
+- これは SQL ビューにかぶせた単純な UI に過ぎないもので、エンティティに含まれるドメイン・ロジックを欠いています。
 従って、`isActive` や `isDeleted` などのような UI に影響するメソッドがある場合は、それらをこのクラスの中に複製する必要があります。
 
 
@@ -737,7 +737,7 @@ Pjax::end();
 
 #### Gii における Pjax を伴う GridView/ListView
 
-バージョン 2.0.5 以降、[Gii](start-gii.md) の CRUD ジェネレータでは `$enablePjax` というオプションがウェブインタフェイスまたはコマンドラインで使用可能になっています。
+バージョン 2.0.5 以降、[Gii](start-gii.md) の CRUD ジェネレータでは `$enablePjax` というオプションがウェブ・インタフェイスまたはコマンドラインで使用可能になっています。
 
 ```php
 yii gii/crud --controllerClass="backend\\controllers\PostController" \

@@ -57,13 +57,13 @@ $config = require __DIR__ . '/../config/web.php';
 これは、アプリケーションシステムの全ての保護されたソース・コードを収容するディレクトリです。
 通常、このディレクトリの下に、MVC パターンに対応するソース・コードを収容した `models`、`views`、`controllers` などのサブディレクトリがあります。
 
-[[yii\base\Application::basePath|basePath]] プロパティの構成には、ディレクトリパスを使っても、[パスエイリアス](concept-aliases.md) を使っても構いません。
+[[yii\base\Application::basePath|basePath]] プロパティの構成には、ディレクトリパスを使っても、[パス・エイリアス](concept-aliases.md) を使っても構いません。
 どちらの形式においても、対応するディレクトリが存在しなければなりません。
 さもなくば、例外が投げられます。
 パスは `realpath()` 関数を呼び出して正規化されます。
 
 [[yii\base\Application::basePath|basePath]] プロパティは、しばしば、他の重要なパス (例えば、runtime のパス) を派生させるために使われます。
-このため、`basePath` を示す `@app` というパスエイリアスが、あらかじめ定義されています。
+このため、`basePath` を示す `@app` というパス・エイリアスが、あらかじめ定義されています。
 その結果、派生的なパスはこのエイリアスを使って形成することが出来ます
 (例えば、runtime ディレクトリを示す `@app/runtime` など)。
 
@@ -419,7 +419,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 このプロパティは、[ビュー](structure-views.md) をレンダリングするときに使われるべきデフォルトのレイアウトを指定するものです。
 デフォルト値は `'main'` であり、[レイアウトパス](#layoutPath) の下にある `main.php` というファイルが使われるべきことを意味します。
-[レイアウトパス](#layoutPath) と [ビューパス](#viewPath) の両方がデフォルト値を取る場合、デフォルトのレイアウトファイルは `@app/views/layouts/main.php` というパスエイリアスとして表すことが出来ます。
+[レイアウトパス](#layoutPath) と [ビューパス](#viewPath) の両方がデフォルト値を取る場合、デフォルトのレイアウトファイルは `@app/views/layouts/main.php` というパス・エイリアスとして表すことが出来ます。
 
 滅多には無いことですが、レイアウトをデフォルトで無効にしたい場合は、このプロパティを `false` として構成することが出来ます。
 
@@ -428,7 +428,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 
 このプロパティは、レイアウトファイルが捜されるべきパスを指定するものです。
 デフォルト値は、[ビューパス](#viewPath) の下の `layouts` サブディレクトリです。
-[ビューパス](#viewPath) がデフォルト値を取る場合、デフォルトのレイアウトパスは `@app/views/layouts` というパスエイリアスとして表すことが出来ます。
+[ビューパス](#viewPath) がデフォルト値を取る場合、デフォルトのレイアウトパスは `@app/views/layouts` というパス・エイリアスとして表すことが出来ます。
 
 このプロパティはディレクトリまたはパス [エイリアス](concept-aliases.md) として構成することが出来ます。
 
@@ -442,7 +442,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 ランタイムパスは、アプリケーションを実行するプロセスによって書き込みが可能なものでなければならないことに注意してください。
 そして、この下にある一時的ファイルは秘匿を要する情報を含みうるものですので、ランタイムパスはエンド・ユーザによるアクセスから保護されなければなりません。
 
-このパスに簡単にアクセスできるように、Yii は `@runtime` というパスエイリアスを事前に定義しています。
+このパスに簡単にアクセスできるように、Yii は `@runtime` というパス・エイリアスを事前に定義しています。
 
 
 #### [[yii\base\Application::viewPath|viewPath]] <span id="viewPath"></span>
@@ -461,7 +461,7 @@ Yii フレームワークを含めて、あなたのアプリケーションに�
 このプロパティはディレクトリまたはパス [エイリアス](concept-aliases.md) として構成することが出来ます。
 このプロパティを修正するときは、必ず、Composer の構成もそれに合せて修正してください。
 
-このパスに簡単にアクセスできるように、Yii は `@vendor` というパスエイリアスを事前に定義しています。
+このパスに簡単にアクセスできるように、Yii は `@vendor` というパス・エイリアスを事前に定義しています。
 
 
 #### [[yii\console\Application::enableCoreCommands|enableCoreCommands]] <span id="enableCoreCommands"></span>

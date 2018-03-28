@@ -59,14 +59,14 @@ class AppAsset extends AssetBundle
 * [[yii\web\AssetBundle::sourcePath|sourcePath]]: このバンドルのアセットファイルを含むルートディレクトリを指定します。
   ルートディレクトリがウェブからアクセス可能でない場合に、このプロパティをセットしなければなりません。
   そうでない場合は、代りに、[[yii\web\AssetBundle::basePath|basePath]] と [[yii\web\AssetBundle::baseUrl|baseUrl]] のプロパティをセットしなければなりません。
-  [パスエイリアス](concept-aliases.md) をここで使うことが出来ます。
+  [パス・エイリアス](concept-aliases.md) をここで使うことが出来ます。
 * [[yii\web\AssetBundle::basePath|basePath]]: このバンドルのアセットファイルを含むウェブからアクセス可能なディレクトリを指定します。
   [[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティをセットした場合は、[アセットマネージャ](#asset-manager) がバンドルに含まれるファイルをウェブからアクセス可能なディレクトリに発行して、その結果、このプロパティを上書きします。
   アセットファイルが既にウェブからアクセス可能なディレクトリにあり、アセットの発行が必要でない場合に、このプロパティをセットしなければなりません。
-  [パスエイリアス](concept-aliases.md) をここで使うことが出来ます。
+  [パス・エイリアス](concept-aliases.md) をここで使うことが出来ます。
 * [[yii\web\AssetBundle::baseUrl|baseUrl]]: [[yii\web\AssetBundle::basePath|basePath]] ディレクトリに対応する URL を指定します。
   [[yii\web\AssetBundle::basePath|basePath]] と同じように、[[yii\web\AssetBundle::sourcePath|sourcePath]] プロパティをセットした場合は、[アセットマネージャ](#asset-manager) がアセットを発行して、その結果、このプロパティを上書きします。
-  [パスエイリアス](concept-aliases.md) をここで使うことが出来ます。
+  [パス・エイリアス](concept-aliases.md) をここで使うことが出来ます。
 * [[yii\web\AssetBundle::css|css]]: このバンドルに含まれている CSS ファイルをリストする配列です。
   ディレクトリの区切りとしてフォワードスラッシュ "/" だけを使わなければならないことに注意してください。
   それぞれのファイルは、個別に、パス文字列、または、パス文字列と属性のタグと値を一緒に含む配列によって指定することが出来ます。
@@ -728,8 +728,8 @@ yii asset/template assets.php
 <?php
 /**
  * "yii asset" コンソールコマンドのための構成情報ファイル
- * コンソール環境では、'@webroot' や '@web' のように、存在しないパスエイリアスがあり得ることに注意してください。
- * これらの欠落したパスエイリアスは手作業で定義してください。
+ * コンソール環境では、'@webroot' や '@web' のように、存在しないパス・エイリアスがあり得ることに注意してください。
+ * これらの欠落したパス・エイリアスは手作業で定義してください。
  */
 return [
     // JavaScript ファイルの圧縮のためのコマンド/コールバックを調整。
@@ -763,7 +763,7 @@ return [
 `targets` オプションでは、バンドルがどのようにグループに分割されるかを指定しなければなりません。
 既に述べたように、一つまたは複数のグループを定義することが出来ます。
 
-> Note: パスエイリアス `@webroot` および `@web` はコンソールアプリケーションでは利用できませんので、これらは構成情報の中で明示的に定義しなければなりません。
+> Note: パス・エイリアス `@webroot` および `@web` はコンソールアプリケーションでは利用できませんので、これらは構成情報の中で明示的に定義しなければなりません。
 
 JavaScript ファイルは結合され、圧縮されて `js/all-{hash}.js` に保存されます。ここで {hash} は、結果として作られたファイルのハッシュで置き換えられるものです。
 

@@ -393,7 +393,7 @@ class PostController extends Controller
 第二のステップでは、最初のステップで決定されたレイアウトの値とコンテキストモジュールに従って、実際のレイアウトファイルを決定します。
 レイアウトの値は下記のいずれかであり得ます。
 
-- パスエイリアス (例えば、`@app/views/layouts/main`)。
+- パス・エイリアス (例えば、`@app/views/layouts/main`)。
 - 絶対パス (例えば、`/main`): すなわち、スラッシュで始まるレイアウトの値の場合。
   実際のレイアウトファイルはアプリケーションの [[yii\base\Application::layoutPath|レイアウトパス]] (デフォルトでは `@app/views/layouts`) の下で探される。
 - 相対パス (例えば、`main`): 実際のレイアウトファイルはコンテキストモジュールの [[yii\base\Module::layoutPath|レイアウトパス]] (デフォルトでは [[yii\base\Module::basePath|モジュールディレクトリ]] の下の `views/layouts` ディレクトリ) の下で探される。

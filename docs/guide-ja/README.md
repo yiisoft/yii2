@@ -78,7 +78,7 @@ All Rights Reserved.
 * [データベース・アクセス・オブジェクト](db-dao.md): データベースへの接続、基本的なクエリ、トランザクション、および、スキーマ操作
 * [クエリ・ビルダ](db-query-builder.md): シンプルな抽象レイヤを使ってデータベースに対してクエリを行う
 * [アクティブレコード](db-active-record.md): アクティブレコード ORM、レコードの読み出しと操作、リレーションの定義
-* [マイグレーション](db-migrations.md): チーム開発環境においてデータベースにバージョンコントロールを適用
+* [マイグレーション](db-migrations.md): チーム開発環境においてデータベースにバージョン・コントロールを適用
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ja/README.md)
 * [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide-ja/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ja/README.md)
@@ -104,7 +104,7 @@ All Rights Reserved.
 * [並べ替え](output-sorting.md)
 * [データ・プロバイダ](output-data-providers.md)
 * [データ・ウィジェット](output-data-widgets.md)
-* [クライアントスクリプトを扱う](output-client-scripts.md)
+* [クライアント・スクリプトを扱う](output-client-scripts.md)
 * [テーマ](output-theming.md)
 
 
@@ -117,23 +117,23 @@ All Rights Reserved.
 * [パスワードを扱う](security-passwords.md)
 * [暗号化](security-cryptography.md)
 * [認証クライアント](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ja/README.md)
-* [ベストプラクティス](security-best-practices.md)
+* [ベスト・プラクティス](security-best-practices.md)
 
 
 キャッシュ
 ----------
 
 * [キャッシュの概要](caching-overview.md)
-* [データキャッシュ](caching-data.md)
-* [フラグメントキャッシュ](caching-fragment.md)
-* [ページキャッシュ](caching-page.md)
+* [データ・キャッシュ](caching-data.md)
+* [フラグメント・キャッシュ](caching-fragment.md)
+* [ページ・キャッシュ](caching-page.md)
 * [HTTP キャッシュ](caching-http.md)
 
 
 RESTful ウェブサービス
 ----------------------
 
-* [クイックスタート](rest-quick-start.md)
+* [クイック・スタート](rest-quick-start.md)
 * [リソース](rest-resources.md)
 * [コントローラ](rest-controllers.md)
 * [ルーティング](rest-routing.md)
@@ -147,7 +147,7 @@ RESTful ウェブサービス
 開発ツール
 ----------
 
-* [デバッグツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
+* [デバッグ・ツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
 * [Gii を使ってコードを生成する](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md)
 * [API ドキュメントを生成する](https://github.com/yiisoft/yii2-apidoc)
 
@@ -163,18 +163,18 @@ RESTful ウェブサービス
 * [フィクスチャ](test-fixtures.md)
 
 
-スペシャルトピック
-------------------
+スペシャル・トピック
+--------------------
 
 * [アドバンスト・プロジェクト・テンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md)
 * [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
-* [コンソールコマンド](tutorial-console.md)
+* [コンソール・コマンド](tutorial-console.md)
 * [コア・バリデータ](tutorial-core-validators.md)
 * [国際化](tutorial-i18n.md)
 * [メール送信](tutorial-mailing.md)
-* [パフォーマンスチューニング](tutorial-performance-tuning.md)
+* [パフォーマンス・チューニング](tutorial-performance-tuning.md)
 * [共有ホスティング環境](tutorial-shared-hosting.md)
-* [テンプレートエンジン](tutorial-template-engines.md)
+* [テンプレート・エンジン](tutorial-template-engines.md)
 * [サードパーティのコードを扱う](tutorial-yii-integration.md)
 * [Yii をマイクロ・フレームワークとして使う](tutorial-yii-as-micro-framework.md)
 

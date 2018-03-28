@@ -241,9 +241,9 @@ http://hostname/index.php?r=country%2Findex&page=2
   これを反映して、国の SELECT クエリは `LIMIT 5 OFFSET 0` という句を伴うことになります。
   その結果、最初の5つの国が取得されて表示されます。
 * [[yii\widgets\LinkPager|LinkPager]] ウィジェットは、[[yii\data\Pagination::createUrl()|Pagination]] によって作成された URL を使ってページボタンをレンダリングします。
-  URL は、別々のページ番号を表現する `page` というクエリパラメータを含んだものになります。
+  URL は、別々のページ番号を表現する `page` というクエリ・パラメータを含んだものになります。
 * ページボタン "2" をクリックすると、`country/index` のルートに対する新しいリクエストが発行され、処理されます。
-  [[yii\data\Pagination|Pagination]] が URL から `page` クエリパラメータを読み取って、カレントページ番号を 2 にセットします。
+  [[yii\data\Pagination|Pagination]] が URL から `page` クエリ・パラメータを読み取って、カレントページ番号を 2 にセットします。
   こうして、新しい国のクエリは `LIMIT 5 OFFSET 5` という句を持ち、次の5つの国を表示のために返すことになります。
 
 

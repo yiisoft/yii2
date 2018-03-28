@@ -40,7 +40,7 @@ $articles = Article::find()
 上記の例では、[[yii\data\Sort|Sort]] オブジェクトに対して二つの属性が宣言されています。
 すなわち、`age` と `name` です。
 
-`age` 属性は `Article` アクティブレコードクラスの `age` 属性に対応する *単純な* 属性です。
+`age` 属性は `Article` アクティブレコード・クラスの `age` 属性に対応する *単純な* 属性です。
 これは、次の宣言と等価です。
 
 ```php
@@ -84,6 +84,6 @@ echo $sort->link('name') . ' | ' . $sort->link('age');
 echo $sort->createUrl('age');
 ```
 
-[[yii\data\Sort]] は、リクエストの `sort` クエリパラメータをチェックして、どの属性による並べ替えがリクエストされたかを判断します。
-このクエリパラメータが存在しない場合のデフォルトの並べ替え方法は [[yii\data\Sort::defaultOrder]] によって指定することが出来ます。
-また、[[yii\data\Sort::sortParam|sortParam]] プロパティを構成して、このクエリパラメータの名前をカスタマイズすることも出来ます。
+[[yii\data\Sort]] は、リクエストの `sort` クエリ・パラメータをチェックして、どの属性による並べ替えがリクエストされたかを判断します。
+このクエリ・パラメータが存在しない場合のデフォルトの並べ替え方法は [[yii\data\Sort::defaultOrder]] によって指定することが出来ます。
+また、[[yii\data\Sort::sortParam|sortParam]] プロパティを構成して、このクエリ・パラメータの名前をカスタマイズすることも出来ます。
