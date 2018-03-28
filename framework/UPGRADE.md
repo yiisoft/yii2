@@ -153,6 +153,9 @@ Upgrade from Yii 2.0.13
   - Remove calls to `yii\BaseYii::powered()`.
   - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
 
+* In case you aren't using CSRF cookies (REST APIs etc.) you should turn them off explicitly by setting
+  `\yii\web\Request::$enableCsrfCookie` to `false` in your config file. 
+
 Upgrade from Yii 2.0.12
 -----------------------
 
