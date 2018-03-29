@@ -21,16 +21,23 @@ use yii\web\JsExpression;
 class EmailValidator extends Validator
 {
     /**
-     * @var string the regular expression used to validate the attribute value.
-     * @see http://www.regular-expressions.info/email.html
+     * @var string the partial regular expression for matching the domain part of an email address.
      */
-    public $pattern = '/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/';
+    public $domainPattern = '[[:alnum:]]([[:alnum:]-]*[[:alnum:]])?(\.([[:alnum:]][[:alnum:]-]*)?[[:alnum:]])*';
     /**
-     * @var string the regular expression used to validate email addresses with the name part.
-     * This property is used only when [[allowName]] is true.
-     * @see allowName
+     * @var string the partial regular expression for matching the local part of an email address.
      */
-    public $fullPattern = '/^[^@]*<[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$/';
+    public $localPattern = '[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*';
+
+    /**
+     * @var string the regular expression for splitting an email into name, local and domain parts.
+     */
+    public $splitPattern = '/^(?P<name>.*?)(?P<open><?)(?P<local>[^<]+)@(?P<domain>.+?)(?P<close>>?)$/i';
+    /**
+     * @var string the partial regular expression for matching a name part of an email address.
+     */
+    public $namePattern = '[^@]*';
+
     /**
      * @var bool whether to allow name in the email address (e.g. "John Smith <john.smith@example.com>"). Defaults to false.
      * @see fullPattern
@@ -65,43 +72,68 @@ class EmailValidator extends Validator
         }
     }
 
+    public function getPattern()
+    {
+        $parts = [
+            '{name}' => "(?P<name>{$this->namePattern})",
+            '{local}' => "(?P<local>{$this->localPattern})",
+            '{domain}' => "(?P<domain>{$this->domainPattern})"
+        ];
+
+        if ($this->allowName) {
+            return strtr('/(?J)^{name}<{local}@{domain}>$|^{local}@{domain}$/', $parts);
+        }
+        return strtr('/^{local}@{domain}$/', $parts);
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function validateValue($value)
     {
+        $fail = [$this->message, []];
         if (!is_string($value)) {
-            $valid = false;
-        } elseif (!preg_match('/^(?P<name>(?:"?([^"]*)"?\s)?)(?:\s+)?(?:(?P<open><?)((?P<local>.+)@(?P<domain>[^>]+))(?P<close>>?))$/i', $value, $matches)) {
-            $valid = false;
-        } else {
-            if ($this->enableIDN) {
-                $matches['local'] = $this->idnToAscii($matches['local']);
-                $matches['domain'] = $this->idnToAscii($matches['domain']);
-                $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
-            }
-
-            if (strlen($matches['local']) > 64) {
-                // The maximum total length of a user name or other local-part is 64 octets. RFC 5322 section 4.5.3.1.1
-                // http://tools.ietf.org/html/rfc5321#section-4.5.3.1.1
-                $valid = false;
-            } elseif (strlen($matches['local'] . '@' . $matches['domain']) > 254) {
-                // There is a restriction in RFC 2821 on the length of an address in MAIL and RCPT commands
-                // of 254 characters. Since addresses that do not fit in those fields are not normally useful, the
-                // upper limit on address lengths should normally be considered to be 254.
-                //
-                // Dominic Sayers, RFC 3696 erratum 1690
-                // http://www.rfc-editor.org/errata_search.php?eid=1690
-                $valid = false;
-            } else {
-                $valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
-                if ($valid && $this->checkDNS) {
-                    $valid = checkdnsrr($matches['domain'] . '.', 'MX') || checkdnsrr($matches['domain'] . '.', 'A');
-                }
-            }
+            return $fail;
         }
 
-        return $valid ? null : [$this->message, []];
+        if (!preg_match($this->splitPattern, $value, $matches)) {
+            return $fail;
+        }
+
+        if ($this->enableIDN) {
+            $matches['local'] = $this->idnToAscii($matches['local']);
+            $matches['domain'] = $this->idnToAscii($matches['domain']);
+            $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
+        }
+
+        if (strlen($matches['local']) > 64) {
+            // The maximum total length of a user name or other local-part is 64 octets. RFC 5322 section 4.5.3.1.1
+            // http://tools.ietf.org/html/rfc5321#section-4.5.3.1.1
+            return $fail;
+        }
+
+        if (strlen($matches['local'] . '@' . $matches['domain']) > 254) {
+            // There is a restriction in RFC 2821 on the length of an address in MAIL and RCPT commands
+            // of 254 characters. Since addresses that do not fit in those fields are not normally useful, the
+            // upper limit on address lengths should normally be considered to be 254.
+            //
+            // Dominic Sayers, RFC 3696 erratum 1690
+            // http://www.rfc-editor.org/errata_search.php?eid=1690
+            return $fail;
+        }
+
+        if (!preg_match($this->getPattern(), $value, $matches)) {
+            return $fail;
+        }
+
+        if ($this->checkDNS
+            && !(checkdnsrr($matches['domain'] . '.', 'MX') || checkdnsrr($matches['domain'] . '.', 'A'))
+        ) {
+            return $fail;
+        }
+
+        // Valid!
+        return;
     }
 
 

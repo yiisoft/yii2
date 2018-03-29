@@ -28,6 +28,7 @@ class EmailValidatorTest extends TestCase
         return [
             // valid, requiresIDN, hasName, email
             [false, false, false, 'ex..ample@example.com'],
+            [true, false, false, 'a.b.c.d.e@f.g.h.i.com'],
             [false, false, false, 'Information info@oertliches.de'],
             [false, false, false, 'rmcreative.ru'],
             [false, false, false, ['developer@yiiframework.com']],
@@ -46,7 +47,7 @@ class EmailValidatorTest extends TestCase
             [true, false, true, '"Такое имя достаточно длинное, но оно все равно может пройти валидацию" <shortmail@example.com>'],
             [true, false, true, '<mail@cebe.cc>'],
             [true, false, true, 'Carsten Brandt <mail@cebe.cc>'],
-            [true, false, true, 'example@xn--zcack7ayc9a.de'],
+            [true, false, false, 'example@xn--zcack7ayc9a.de'],
             [true, false, true, 'John Smith <john.smith@example.com>'],
             [true, true, false, 'example@äüößìà.de'],
             [true, true, false, 'info@örtliches.de'],
