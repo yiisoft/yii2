@@ -65,7 +65,7 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 但是其他的安装方式也存在：
 
 * 如果你只想安装核心框架，然后从零开始构建整个属于你自己的应用程序模版，可以参考[从头构建自定义模版](tutorial-start-from-scratch.md)一节的介绍。
-* 如果你要开发一个更复杂的应用，可以更好地适用于团队开发环境的，可以考虑安装[高级应用模版](tutorial-advanced-app.md)。
+* 如果你要开发一个更复杂的应用，可以更好地适用于团队开发环境的，可以考虑安装[高级应用模版](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)。
 
 
 验证安装的结果 <span id="verifying-installation"></span>
