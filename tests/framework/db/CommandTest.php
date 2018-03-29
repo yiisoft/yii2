@@ -307,7 +307,19 @@ SQL;
 
     public function testBatchInsertWithYield()
     {
-        include __DIR__ . '/testBatchInsertWithYield.php';
+        $rows = call_user_func(function () {
+            if (false) {
+                yield [];
+            }
+        });
+
+        $command = $this->getConnection()->createCommand();
+        $command->batchInsert(
+            '{{customer}}',
+            ['email', 'name', 'address'],
+            $rows
+        );
+        $this->assertEquals(0, $command->execute());
     }
 
     /**
