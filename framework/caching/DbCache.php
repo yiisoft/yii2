@@ -205,6 +205,8 @@ class DbCache extends Cache
 
             return true;
         } catch (\Exception $e) {
+            Yii::warning("Unable to update or insert cache data: {$e->getMessage()}", __METHOD__);
+
             return false;
         }
     }
@@ -234,6 +236,8 @@ class DbCache extends Cache
 
             return true;
         } catch (\Exception $e) {
+            Yii::warning("Unable to insert cache data: {$e->getMessage()}", __METHOD__);
+
             return false;
         }
     }
