@@ -13,7 +13,7 @@ mkdir micro-app
 cd micro-app
 ```
 
-> Note: A little bit of Composer knowledge is required to continue. If you don't know how to use composer yet, please take time to read [Composer Guide](https://getcomposer.org/doc/00-intro.md).
+> 注意：需要一些 Composer 的知识才能继续。如果您还不知道如何使用 composer，请花些时间阅读 [Composer 指南](https://getcomposer.org/doc/00-intro.md)。
 
 使用您最喜爱的编辑器在 `micro-app` 目录下创建 `composer.json` 文件并添加以下内容：
 
@@ -70,8 +70,8 @@ return [
 ];
 ```
 
-> Info: Even though the configuration could be kept in the `index.php` file it is recommended
-> to have it separately. This way it can be used for console application also as it is shown below.
+> 信息：尽管配置可以保存在 `index.php` 文件中，建议单独使用它。
+> 这样它也可以用于控制台应用程序，如下所示。
 
 您的项目现在已经准备进行编码了。尽管由您决定项目目录结构，只要您遵守命名空间即可。
 
@@ -111,22 +111,22 @@ micro-app/
     └── SiteController.php
 ```
 
-If you have not set up the web server yet, you may want to take a look at [web server configuration file examples](start-installation.md#configuring-web-servers).
-Another options is to use the `yii serve` command which will use the PHP build-in web server. You can run
-it from the `micro-app/` directory via:
+如果您尚未设置 Web 服务器，则可能需要查看[Web服务器配置文件示例](start-installation.md#configuring-web-servers)。
+另一种选择是使用 `yii serve` 命令，它将使用 PHP 内置 web 服务器。
+您可以通过以下方式从 `micro-app /` 目录运行它：
 
     vendor/bin/yii serve --docroot=./web
 
-Opening the application URL in a browser should now print "Hello World!" which has been returned in the `SiteController::actionIndex()`.
+在浏览器中打开应用程序URL现在应该打印出“Hello World！”，它已经在 `SiteController::actionIndex()` 中返回。
 
-> Info: In our example, we have changed default application namespace `app` to `micro` to demonstrate
-> that you are not tied to that name (in case you thought you were), then adjusted
-> [[yii\base\Application::$controllerNamespace|controllers namespace]] and set the correct alias.
+> 信息：在我们的示例中，我们已将默认应用程序名称空间 `app` 更改为 `micro`，
+> 以表明您不受此名称的限制（如果您是这样认为），
+> 然后调整 [[yii\base\Application::$controllerNamespace|controllers namespace]] 并设置正确的别名。
 
 
 ## 创建一个 REST API
 
-为了演示我们的“微框架”的用法，我们将为 posts 创建一个简单的 REST API。
+为了演示我们的“微框架”的用法，我们将为帖子创建一个简单的 REST API。
 
 为了这个 API 来操作一些数据，我们首先需要一个数据库。 添加数据库连接配置
 到应用程序配置：
@@ -140,17 +140,17 @@ Opening the application URL in a browser should now print "Hello World!" which h
 ],
 ```
 
-> Info: We use an sqlite database here for simplicity. Please refer to the [Database guide](db-dao.md) for more options.
+> 信息：为了简单，我们在这里使用了一个 sqlite 数据库 请参阅[数据库指南](db-dao.md) 以获取更多选项。
 
-Next we create a [database migration](db-migrations.md) to create a post table.
-Make sure you have a separate configuration file as explained above, we need it to run the console commands below.
-Running the following commands will
-create a database migration file and apply the migration to the database:
+接下来我们创建一个[数据库迁移](db-migrations.md)来创建一个帖子表。
+确保你有一个单独的配置文件，如上所述，我们需要它来运行下面的控制台命令。
+运行以下命令将创建数据库迁移文件
+并将迁移应用到数据库：
 
     vendor/bin/yii migrate/create --appconfig=config.php create_post_table --fields="title:string,body:text"
     vendor/bin/yii migrate/up --appconfig=config.php
 
-Create directory `models` and a `Post.php` file in that directory. This is the code for the model:
+在该目录中创建目录 `models` 和 `Post.php` 文件。以下是模型的代码：
 
 ```php
 <?php
@@ -168,8 +168,8 @@ class Post extends ActiveRecord
 }
 ```
 
-> Info: The model created here is an ActiveRecord class, which represents the data from the `post` table.
-> Please refer to the [active record guide](db-active-record.md) for more information.
+> 信息：这里创建的模型是一个 ActiveRecord 类，它代表 `post` 表中的数据。
+> 有关更多信息，请参阅[活动记录指南](db-active-record.md)。
 
 我们要通过 API 发布帖子，请在 `controllers` 中添加 `PostController`：
 
@@ -196,16 +196,16 @@ class PostController extends ActiveController
 
 此时我们的 API 将提供以下 URL ：
 
-- `/index.php?r=post` - list all posts
-- `/index.php?r=post/view&id=1` - show post with ID 1
-- `/index.php?r=post/create` - create a post
-- `/index.php?r=post/update&id=1` - update post with ID 1
-- `/index.php?r=post/delete&id=1` - delete post with ID 1
+- `/index.php?r=post` - 列出所有帖子
+- `/index.php?r=post/view&id=1` - 显示 ID 为 1 的帖子
+- `/index.php?r=post/create` - 创建一个帖子
+- `/index.php?r=post/update&id=1` - 更新 ID 为 1 的帖子
+- `/index.php?r=post/delete&id=1` - 删除 ID 为 1 的帖子
 
 从这里开始，您可能需要查看以下指南以进一步开发您的应用程序：
 
-- The API currently only understands urlencoded form data as input, to make it a real JSON API, you
-  need to configure [[yii\web\JsonParser]].
+- 该 API 目前仅将 urlencoded 表单数据理解为输入，若使其成为真正的 JSON API，
+  您需要配置 [[yii\web\JsonParser]]。
 - 为了使 URL 更加友好，您需要配置路由。
   请参阅 [关于REST路由的指南](rest-routing.md) 了解如何执行此操作。
 - 请参阅 [预览](start-looking-ahead.md) 部分获取更多参考。
