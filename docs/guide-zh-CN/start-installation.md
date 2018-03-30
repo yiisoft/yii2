@@ -10,7 +10,7 @@
 
 在本章节和以后的章节，我们将会介绍如何去安装Yii和所谓的*基本的应用程序模板*和如何去实现这个模板上的新特性。
 Yii当然也提供了其它模板叫
-[高级的应用程序模板](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)，
+[高级的应用程序模板](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-zh-CN/README.md)，
 它是更好应用于在一个团队开发环境中去开发多层级的应用程序。
 
 > 信息：这个基本的应用程序模板是适合于开发90%的Web应用程序。
@@ -21,7 +21,7 @@ Yii当然也提供了其它模板叫
 通过 Composer 安装 <span id="installing-via-composer"></span>
 -----------------------
 
-### Installing Composer
+### 安装 Composer
 
 如果还没有安装 Composer，你可以按 [getcomposer.org](https://getcomposer.org/download/) 中的方法安装。
 在 Linux 和 Mac OS X 中可以运行如下命令：
@@ -33,33 +33,51 @@ mv composer.phar /usr/local/bin/composer
 
 在 Windows 中，你需要下载并运行 [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe)。
 
-如果遇到任何问题或者想更深入地学习 Composer，请参考 [Composer 文档（英文）](https://getcomposer.org/doc/)，
-[Composer 中文](https://github.com/5-say/composer-doc-cn)。
-
+如果遇到任何问题或者想更深入地学习 Composer，
+请参考 [Composer 文档（英文）](https://getcomposer.org/doc/)。
 如果你已经安装有 Composer 请确保使用的是最新版本，
 你可以用 `composer self-update` 命令更新 Composer 为最新版本。
 
-Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下命令即可安装 Yii ：
+In this guide all composer commands assume you have installed composer [globally](https://getcomposer.org/doc/00-intro.md#globally)
+so that it is available as the `composer` command. If you are using the `composer.phar` in the local directory instead,
+you have to adjust the example commands accordingly.
 
-    composer global require "fxp/composer-asset-plugin:^1.4.1"
-    composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+If you had Composer already installed before, make sure you use an up to date version. You can update Composer
+by running `composer self-update`.
 
-第一条命令安装 [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)，
-它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局生效，一劳永逸。
-第二条命令会将 Yii 安装在名为 `basic` 的目录中。如果你想使用其它目录名称，你可以选择其他目录名称。
+> Note: During the installation of Yii, Composer will need to request a lot of information from the Github API.
+> The number of requests depends on the number of dependencies your application has and may be bigger than the
+> **Github API rate limit**. If you hit this limit, Composer may ask for your Github login credentials to obtain
+> a Github API access token. On fast connections you may hit this limit earlier than Composer can handle so we
+> recommend to configure the access token before installing Yii.
+> Please refer to the [Composer documentation about Github API tokens](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
+> for instructions on how to do this.
 
-> 注意：在安装过程中 Composer 可能会询问你 GitHub 账户的认证信息，因为可能在使用中超过了 GitHub API （对匿名用户的）使用限制。因为 Composer 需要为所有扩展包从 GitHub 
-> 中获取大量信息，所以超限非常正常。（译注：也意味着作为程序猿没有 GitHub 账号，就真不能愉快地玩耍了）登陆 GitHub 之后可以得到更高的 API 限额，这样 Composer 才能正常运行。更多细节请参考 [Composer 
-> 文档](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)（该段 Composer中文文档[期待您的参与](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)）。
+### Installing Yii <span id="installing-from-composer"></span>
 
-> 提示：如果你想安装 Yii 的最新开发版本，可以使用以下命令代替，
-> 它添加了一个 [stability 选项](https://getcomposer.org/doc/04-schema.md#minimum-stability)（[中文版](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/04-schema.md#minimum-stability)）:
+With Composer installed, you can install Yii application template by running the following command
+under a Web-accessible folder:
+
+```bash
+composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+```
+
+This will install the latest stable version of Yii application template in a directory named `basic`.
+You can choose a different directory name if you want.
+
+> Info: If the `composer create-project` command fails you may also refer to the 
+> [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
+> for common errors. When you have fixed the error, you can resume the aborted installation
+> by running `composer update` inside of the `basic` directory.
+
+> Tip: If you want to install the latest development version of Yii, you may use the following command instead,
+> which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
 > ```bash
 > composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 > ```
 >
-> 注意，Yii 的开发版(dev 版)不应该用于生产环境中，它可能会破坏运行中的代码。
+> Note that the development version of Yii should not be used for production as it may break your running code.
 
 
 通过归档文件安装 <span id="installing-from-archive-file"></span>
@@ -79,7 +97,7 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 
 
 其他安装方式 <span id="other-installation-options"></span>
---------------------------
+----------
 
 上文介绍了两种安装 Yii 的方法，
 安装的同时也会创建一个立即可用的 Web 应用程序。
@@ -90,11 +108,35 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 * 如果你只想安装核心框架，然后从零开始构建整个属于你自己的应用程序模版，
   可以参考[从头构建自定义模版](tutorial-start-from-scratch.md)一节的介绍。
 * 如果你要开发一个更复杂的应用，可以更好地适用于团队开发环境的，
-  你可以考虑安装[高级应用模版](tutorial-advanced-app.md)。
+  你可以考虑安装[高级应用模版](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-zh-CN/README.md)。
+
+
+Installing Assets <span id="installing-assets"></span>
+-----------------
+
+Yii relies on [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) packages for the asset (CSS and JavaScript) libraries installation.
+It uses Composer to obtain these libraries, allowing PHP and CSS/JavaScript package versions to resolve at the same time.
+This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
+Please refer to [Assets documentation](structure-assets.md) for more details.
+
+You may want to either manage your assets via native Bower/NPM client, use CDN or avoid assets installation entirely.
+In order to prevent assets installation via Composer, add the following lines to your 'composer.json':
+
+```json
+"replace": {
+    "bower-asset/jquery": ">=1.11.0",
+    "bower-asset/inputmask": ">=3.2.0",
+    "bower-asset/punycode": ">=1.3.0",
+    "bower-asset/yii2-pjax": ">=2.0.0"
+},
+```
+
+> Note: in case of bypassing asset installation via Composer, you are responsible for the assets installation and resolving
+> version collisions. Be prepared for possible inconsistencies among asset files from different extensions.
 
 
 验证安装的结果 <span id="verifying-installation"></span>
---------------------------
+------------
 
 当安装完成之后，
 或配置你的Web服务器(看下面的文章)或使用[内置Web Server](https://secure.php.net/manual/en/features.commandline.webserver.php)，
@@ -161,6 +203,8 @@ URL `http://www.example.com/index.php` 访问而不是 `http://www.example.com/b
 没有修改其 Web 服务器配置的权限，你依然可以通过调整应用的结构来提升安全性。
 详情请参考[共享主机环境](tutorial-shared-hosting.md) 一章。
 
+> Info: If you are running your Yii application behind a reverse proxy, you might need to configure
+> [Trusted proxies and headers](runtime-requests.md#trusted-proxies) in the request component.
 
 ### 推荐使用的 Apache 配置 <span id="recommended-apache-configuration"></span>
 
@@ -180,6 +224,9 @@ DocumentRoot "path/to/basic/web"
     # 如果请求的不是真实文件或目录，分发请求至 index.php
     RewriteRule . index.php
 
+    # if $showScriptName is false in UrlManager, do not allow accessing URLs with script name
+    RewriteRule ^index.php/ - [L,R=404]
+    
     # ...其它设置...
 </Directory>
 ```
@@ -217,6 +264,11 @@ server {
     #}
     #error_page 404 /404.html;
 
+    # deny accessing php files for the /assets directory
+    location ~ ^/assets/.*\.php$ {
+        deny all;
+    }
+    
     location ~ \.php$ {
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
