@@ -192,22 +192,23 @@ class DbCache extends Cache
      */
     protected function setValue($key, $value, $duration)
     {
-        $result = $this->db->noCache(function (Connection $db) use ($key, $value, $duration) {
-            $command = $db->createCommand()
-                ->update($this->cacheTable, [
+        try {
+            $this->db->noCache(function (Connection $db) use ($key, $value, $duration) {
+                $db->createCommand()->upsert($this->cacheTable, [
+                    'id' => $key,
                     'expire' => $duration > 0 ? $duration + time() : 0,
                     'data' => new PdoValue($value, \PDO::PARAM_LOB),
-                ], ['id' => $key]);
-            return $command->execute();
-        });
+                ])->execute();
+            });
 
-        if ($result) {
             $this->gc();
 
             return true;
-        }
+        } catch (\Exception $e) {
+            Yii::warning("Unable to update or insert cache data: {$e->getMessage()}", __METHOD__);
 
-        return $this->addValue($key, $value, $duration);
+            return false;
+        }
     }
 
     /**
@@ -235,6 +236,8 @@ class DbCache extends Cache
 
             return true;
         } catch (\Exception $e) {
+            Yii::warning("Unable to insert cache data: {$e->getMessage()}", __METHOD__);
+
             return false;
         }
     }

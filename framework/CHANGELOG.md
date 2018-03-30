@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
 - Bug #15988: Fixed bash completion (alekciy)
 
 2.0.15.1 March 21, 2018
