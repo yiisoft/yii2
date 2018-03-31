@@ -10,9 +10,9 @@
 - [Codeception for Yii framework](http://codeception.com/for/yii)
 - [Codeception Acceptance Tests](http://codeception.com/docs/03-AcceptanceTests)
 
-## ベーシックテンプレート、アドバンストテンプレートのテストを実行する
+## ベーシック・テンプレート、アドバンスト・テンプレートのテストを実行する
 
-アドバンストテンプレートで開発をしている場合は、テスト実行の詳細について、
+アドバンスト・テンプレートで開発をしている場合は、テスト実行の詳細について、
 ["テスト" のガイド](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/start-testing.md) を参照して下さい。
 
-ベーシックテンプレートで開発をしている場合は、[README の "testing" のセクション](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing) を参照して下さい。
+ベーシック・テンプレートで開発をしている場合は、[README の "testing" のセクション](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing) を参照して下さい。
