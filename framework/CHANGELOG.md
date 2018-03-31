@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug: Handle case when `X-Forwarded-Host` header have multiple hosts separated with a comma.
 - Bug #15988: Fixed bash completion (alekciy)
 
 2.0.15.1 March 21, 2018
