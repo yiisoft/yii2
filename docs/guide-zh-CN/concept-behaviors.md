@@ -1,5 +1,5 @@
 行为
-=========
+===
 
 行为是 [[yii\base\Behavior]] 或其子类的实例。
 行为，也称为 [mixins](http://en.wikipedia.org/wiki/Mixin)，
@@ -9,8 +9,8 @@
 此外，行为通过组件能响应被触发的[事件](basic-events.md)，从而自定义或调整组件正常执行的代码。
 
 
-定义行为
------------
+定义行为 <span id="defining-behaviors"></span>
+------
 
 要定义行为，通过继承 [[yii\base\Behavior]] 或其子类来建立一个类。如：
 
@@ -54,7 +54,7 @@ class MyBehavior extends Behavior
 need to override [[yii\base\Behavior::canGetProperty()]] and/or [[yii\base\Behavior::canSetProperty()]] as well.
 
 处理事件
--------------
+-------
 
 如果要让行为响应对应组件的事件触发，
 就应覆写 [[yii\base\Behavior::events()]] 方法，如：
@@ -192,8 +192,8 @@ $component->attachBehaviors([
 详情请参考
 [配置](concept-configurations.md#configuration-format)章节。
 
-使用行为
----------------
+使用行为 <span id="using-behaviors"></span>
+-------
 
 使用行为，必须像前文描述的一样先把它附加到 [[yii\base\Component|component]] 类或其子类。一旦行为附加到组件，就可以直接使用它。
 
@@ -233,8 +233,8 @@ $behaviors = $component->getBehaviors();
 ```
 
 
-移除行为
-------------
+移除行为 <span id="detaching-behaviors"></span>
+-------
 
 要移除行为，可以调用 [[yii\base\Component::detachBehavior()]] 方法用行为相关联的名字实现：
 
@@ -249,8 +249,8 @@ $component->detachBehaviors();
 ```
 
 
-使用 `TimestampBehavior`
-----------------------------
+使用 `TimestampBehavior` <span id="using-timestamp-behavior"></span>
+-----------------------
 
 最后以 [[yii\behaviors\TimestampBehavior]] 的讲解来结尾，
 这个行为支持在 [[yii\db\ActiveRecord|Active Record]] 
@@ -291,10 +291,10 @@ class User extends ActiveRecord
   `created_at` 和 `updated_at` 属性；
 * 当记录更新时，行为将当前时间戳赋值给 `updated_at` 属性。
 
-> 注意：For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
+> 注意：对于上述实现使用MySQL数据库，请将列 (`created_at`, `updated_at`) 定义为 int(11) 作为 UNIX 时间戳。
 
-With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
-filled with the current UNIX timestamp:
+有了以上这段代码，如果你有一个 `User` 对象并且试图保存它，你会发现它的 `created_at` 和 `updated_at`
+被当前的UNIX时间戳自动填充：
 
 ```php
 $user = new User;
@@ -312,26 +312,26 @@ $user->touch('login_time');
 ```
 
 其它行为
----------------
+-------
 
-There are several built-in and external behaviors available:
+有几种内置和外部行为可用：
 
-- [[yii\behaviors\BlameableBehavior]] - automatically fills the specified attributes with the current user ID.
-- [[yii\behaviors\SluggableBehavior]] - automatically fills the specified attribute with a value that can be used
-  as a slug in a URL.
-- [[yii\behaviors\AttributeBehavior]] - automatically assigns a specified value to one or multiple attributes of
-  an ActiveRecord object when certain events happen.
-- [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - provides methods to soft-delete
-  and soft-restore ActiveRecord i.e. set flag or status which marks record as deleted.
-- [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - allows managing records order in an
-  integer field by providing reordering methods.
+- [[yii\behaviors\BlameableBehavior]] - 使用当前用户 ID 自动填充指定的属性。
+- [[yii\behaviors\SluggableBehavior]] - 自动填充指定的属性，其值可以在 URL
+  中用作 slug。
+- [[yii\behaviors\AttributeBehavior]] - 在发生特定事件时自动为 ActiveRecord 对象的一个或多个属性
+  指定一个指定的值。
+- [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - 提供软删除和软恢复 ActiveRecord 的
+  方法。即将记录标记为已删除的设置标记或状态。
+- [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - 允许通过提供重新排序方法来
+  管理整数字段中的记录顺序。
 
 比较行为与 Traits <span id="comparison-with-traits"></span>
 ----------------------
 
-While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
-properties and methods to the primary class, they differ in many aspects. As explained below, they
-both have pros and cons. They are more like complements to each other rather than alternatives.
+虽然行为类似于 [traits](http://www.php.net/traits)，它们都将自己的属性和方法“注入”到主类中，
+但它们在许多方面有所不同。如下所述，他们都有优点和缺点。
+它们更像互补类而非替代类。
 
 
 ### 使用行为的原因 <span id="pros-for-behaviors"></span>
@@ -342,7 +342,7 @@ both have pros and cons. They are more like complements to each other rather tha
 行为无须修改组件类就可动态附加到组件或移除。
 要使用 traits，必须修改使用它的类。
 
-Behaviors are configurable while traits are not.
+行为是可配置的，而 traits 则不可行。
 
 Behaviors can customize the code execution of a component by responding to its events.
 
@@ -354,7 +354,7 @@ properties or methods.
 
 ### 使用 Traits 的原因 <span id="pros-for-traits"></span>
 
-Traits are much more efficient than behaviors as behaviors are objects that take both time and memory.
+Traits 比行为更有效，因为行为是既需要时间又需要内存的对象。
 
-IDEs are more friendly to traits as they are a native language construct.
+因为 IDE 是一种本地语言结构，所以它们对 Traits 更友好。
 

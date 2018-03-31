@@ -1,5 +1,5 @@
 依赖注入容器
-==============================
+==========
 
 依赖注入（Dependency Injection，DI）容器就是一个对象，它知道怎样初始化并配置对象及其依赖的所有对象。
 [Martin 的文章](http://martinfowler.com/articles/injection.html) 已经解释了 DI 容器为什么很有用。
@@ -7,7 +7,7 @@
 
 
 依赖注入 <span id="dependency-injection"></span>
---------------------
+-------
 
 Yii 通过 [[yii\di\Container]] 类提供 DI 容器特性。
 它支持如下几种类型的依赖注入：
@@ -40,7 +40,7 @@ $foo = new Foo($bar);
 ```
 
 
-### Method Injection <span id="method-injection"></span>
+### 方法注入 <span id="method-injection"></span>
 
 Usually the dependencies of a class are passed to the constructor and are available inside of the class during the whole lifecycle.
 With Method Injection it is possible to provide a dependency that is only needed by a single method of the class
@@ -126,7 +126,7 @@ $container->set('Foo', function () {
 $foo = $container->get('Foo');
 ```
 
-To hide the complex logic for building a new object, you may use a static class method as callable. For example,
+要省略构建新对象的复杂逻辑，可以使用静态类方法作为可调用的方法。例如，
 
 ```php
 class FooBuilder
@@ -144,7 +144,7 @@ $container->set('Foo', ['app\helper\FooBuilder', 'build']);
 $foo = $container->get('Foo');
 ```
 
-By doing so, the person who wants to configure the `Foo` class no longer needs to be aware of how it is built.
+这样做的话，想要配置 `Foo` 类的人不再需要知道它是如何构建的。
 
 
 注册依赖关系 <span id="registering-dependencies"></span>
@@ -372,10 +372,10 @@ class HotelController extends Controller
 现在如果你再次访问这个控制器，一个 `app\components\BookingService` 
 的实例就会被创建并被作为第三个参数注入到控制器的构造器中。
 
-Advanced Practical Usage <span id="advanced-practical-usage"></span>
----------------
+高级实用性 <span id="advanced-practical-usage"></span>
+---------
 
-Say we work on API application and have:
+比如说我们在 API 应用方面工作：
 
 - `app\components\Request` class that extends `yii\web\Request` and provides additional functionality
 - `app\components\Response` class that extends `yii\web\Response` and should have `format` property 
@@ -404,7 +404,7 @@ It is possible to configure multiple definitions at once, passing configuration 
 Iterating over the configuration array, the methods will call [[yii\di\Container::set()|set()]]
 or [[yii\di\Container::setSingleton()|setSingleton()]] respectively for each item.
 
-The configuration array format is:
+配置数组格式为：
 
  - `key`: class name, interface name or alias name. The key will be passed to the
  [[yii\di\Container::set()|set()]] method as a first argument `$class`.
@@ -412,7 +412,7 @@ The configuration array format is:
  documentation for the `$definition` parameter. Will be passed to the [[set()]] method as
  the second argument `$definition`.
 
-For example, let's configure our container to follow the aforementioned requirements:
+例如，让我们配置我们的容器以遵循上述要求：
 
 ```php
 $container->setDefinitions([
@@ -447,7 +447,7 @@ a third argument. To set the constructor parameters, you may use the following c
  - `value`: array of two elements. The first element will be passed to the [[yii\di\Container::set()|set()]] method as the
  second argument `$definition`, the second one — as `$params`.
 
-Let's modify our example:
+让我们来修改我们的例子：
 
 ```php
 $container->setDefinitions([
@@ -473,8 +473,8 @@ You might notice `Instance::of('tempFileStorage')` notation. It means, that the 
 will implicitly provide a dependency registered with the name of `tempFileStorage` and pass it as the first argument 
 of `app\storage\DocumentsWriter` constructor.
 
-> 注意：[[yii\di\Container::setDefinitions()|setDefinitions()]] and [[yii\di\Container::setSingletons()|setSingletons()]]
-  methods are available since version 2.0.11.
+> 注意：[[yii\di\Container::setDefinitions()|setDefinitions()]] 和 [[yii\di\Container::setSingletons()|setSingletons()]]
+  方法从版本 2.0.11 开始可用。
   
 Another step on configuration optimization is to register some dependencies as singletons. 
 A dependency registered via [[yii\di\Container::set()|set()]] will be instantiated each time it is needed.
@@ -531,6 +531,4 @@ $reader = $container->get('app\storage\DocumentsReader');
 Yii 在依赖住入（DI）容器之上实现了它的[服务定位器](concept-service-locator.md)。
 当一个服务定位器尝试创建一个新的对象实例时，它会把调用转发到 DI 容器。
 后者将会像前文所述那样自动解决依赖关系。
-
-
 
