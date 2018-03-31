@@ -1,21 +1,21 @@
 Yii をインストールする
 ======================
 
-Yii は二つの方法でインストールすることが出来ます。すなわち、[Composer](https://getcomposer.org/) を使うか、アーカイブファイルをダウンロードするかです。
+Yii は二つの方法でインストールすることが出来ます。すなわち、[Composer](https://getcomposer.org/) を使うか、アーカイブ・ファイルをダウンロードするかです。
 前者がお薦めの方法です。と言うのは、一つのコマンドを走らせるだけで、新しい [エクステンション](structure-extensions.md) をインストールしたり、Yii をアップデートしたりすることが出来るからです。
 
-Yii の標準的なインストールを実行すると、フレームワークとプロジェクトテンプレートの両方がダウンロードされてインストールされます。
-プロジェクトテンプレートは、いくつかの基本的な機能、例えば、ログインやコンタクトフォームなどを実装した、動作する Yii アプリケーションです。
+Yii の標準的なインストールを実行すると、フレームワークとプロジェクト・テンプレートの両方がダウンロードされてインストールされます。
+プロジェクト・テンプレートは、いくつかの基本的な機能、例えば、ログインやコンタクト・フォームなどを実装した、動作する Yii アプリケーションです。
 そのコードは推奨される方法に従って編成されています。
-そのため、プロジェクトテンプレートは、あなたのプロジェクトのための良い開始点としての役割を果たしうるものです。
+そのため、プロジェクト・テンプレートは、あなたのプロジェクトのための良い開始点としての役割を果たしうるものです。
 
-この節と後続のいくつかの節においては、いわゆる *ベーシックプロジェクトテンプレート* とともに Yii をインストールする方法、および、このテンプレート上に新しい機能を実装する方法を説明します。
-Yii はもう一つ、[アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) と呼ばれるテンプレートも提供しています。
+ここから続くいくつかのセクションにおいては、いわゆる *ベーシック・プロジェクト・テンプレート* とともに Yii をインストールする方法、および、このテンプレート上に新しい機能を実装する方法を説明します。
+Yii はもう一つ、[アドバンスト・プロジェクト・テンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) と呼ばれるテンプレートも提供しています。
 こちらは、チーム開発環境において多層構造のアプリケーションを開発するときに使用する方が望ましいものです。
 
-> Info: ベーシックプロジェクトテンプレートは、ウェブアプリケーションの 90 パーセントを開発するのに適したものです。
-  アドバンストプロジェクトテンプレートとの主な違いは、コードがどのように編成されているかという点にあります。
-  あなたが Yii は初めてだという場合は、シンプルでありながら十分な機能を持っているベーシックプロジェクトテンプレートに留まることを強く推奨します。
+> Info: ベーシック・プロジェクト・テンプレートは、ウェブ・アプリケーションの 90 パーセントを開発するのに適したものです。
+  アドバンスト・プロジェクト・テンプレートとの主な違いは、コードがどのように編成されているかという点にあります。
+  あなたが Yii は初めてだという場合は、シンプルでありながら十分な機能を持っているベーシック・プロジェクト・テンプレートに留まることを強く推奨します。
 
 
 Composer によるインストール <span id="installing-via-composer"></span>
@@ -33,8 +33,8 @@ mv composer.phar /usr/local/bin/composer
 
 Windows では、[Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe) をダウンロードして実行します。
 
-何か問題が生じたときは、[Composer ドキュメントのトラブル・シューティングの節](https://getcomposer.org/doc/articles/troubleshooting.md) を参照してください。
-Composer は初めてだという場合は、少なくとも、Composer ドキュメントの [基本的な使い方の節](https://getcomposer.org/doc/01-basic-usage.md) も参照することを推奨します。
+何か問題が生じたときは、[Composer ドキュメントのトラブル・シューティングのセクション](https://getcomposer.org/doc/articles/troubleshooting.md) を参照してください。
+Composer は初めてだという場合は、少なくとも、Composer ドキュメントの [基本的な使い方のセクション](https://getcomposer.org/doc/01-basic-usage.md) も参照することを推奨します。
 
 このガイドでは、composer のコマンドの全ては、あなたが composer を [グローバル](https://getcomposer.org/doc/00-intro.md#globally) にインストールし、`composer` コマンドとして使用できるようにしているものと想定しています。
 そうではなく、ローカル・ディレクトリにある `composer.phar` を使おうとする場合は、例に出てくるコマンドをそれに合せて修正しなければなりません。
@@ -59,7 +59,7 @@ composer global require "fxp/composer-asset-plugin:~1.3.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-最初のコマンドは [composer アセットプラグイン](https://github.com/francoispluchino/composer-asset-plugin/) をインストールします。
+最初のコマンドは [composer アセット・プラグイン](https://github.com/francoispluchino/composer-asset-plugin/) をインストールします。
 これにより、Composer を通じて bower と npm の依存パッケージを管理することが出来るようになります。
 このコマンドは一度だけ実行すれば十分です。
 第二のコマンドは `basic` という名前のディレクトリに Yii の最新の安定版をインストールします。
@@ -67,7 +67,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 > Info: `composer create-project` コマンドが失敗するときは、composer asset plugin が正しくインストール出来ているかどうかを確認して下さい。
 > `composer global show` を実行することで確認することが出来ます。このコマンドの出力に `fxp/composer-asset-plugin` のエントリが含まれていなければなりません。.
-> よくあるエラーについては、[Composer ドキュメントのトラブル・シューティングの節](https://getcomposer.org/doc/articles/troubleshooting.md)
+> よくあるエラーについては、[Composer ドキュメントのトラブル・シューティングのセクション](https://getcomposer.org/doc/articles/troubleshooting.md)
 > も参照して下さい。
 > エラーを修正した後は、`basic` ディレクトリの中で `composer update` を実行して、中断されたインストールを再開することが出来ます。
 
@@ -80,12 +80,12 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 > 開発バージョンは動いているあなたのコードを動かなくするかもしれませんので、本番環境では使うべきでないことに注意してください。
 
 
-アーカイブファイルからインストールする <span id="installing-from-archive-file"></span>
---------------------------------------
+アーカイブ・ファイルからインストールする <span id="installing-from-archive-file"></span>
+----------------------------------------
 
-アーカイブファイルから Yii をインストールするには、三つの手順を踏みます。
+アーカイブ・ファイルから Yii をインストールするには、三つの手順を踏みます。
 
-1. [yiiframework.com](http://www.yiiframework.com/download/) からアーカイブファイルをダウンロードする。
+1. [yiiframework.com](http://www.yiiframework.com/download/) からアーカイブ・ファイルをダウンロードする。
 2. ダウンロードしたファイルをウェブからアクセスできるフォルダーに展開する。
 3. `config/web.php` ファイルを編集して、`cookieValidationKey` という構成情報の項目に秘密キーを入力する
    (Composer を使って Yii をインストールするときは、これは自動的に実行されます)。
@@ -96,18 +96,18 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
    ```
 
 
-他のインストールオプション <span id="other-installation-options"></span>
---------------------------
+他のインストール・オプション <span id="other-installation-options"></span>
+----------------------------
 
-上記のインストール方法の説明は Yii のインストールの仕方を示すものですが、それは同時に、直ちに動作する基本的なウェブアプリケーションを作成するものでもあります。
+上記のインストール方法の説明は Yii のインストールの仕方を示すものですが、それは同時に、直ちに動作する基本的なウェブ・アプリケーションを作成するものでもあります。
 これは、規模の大小に関わらず、ほとんどのプロジェクトを開始するのに良い方法です。
 特に、Yii の学習を始めたばかりの場合には、この方法が適しています。
 
-しかし、他のインストールオプションも利用可能です。
+しかし、他のインストール・オプションも利用可能です。
 
 * コアフレームワークだけをインストールし、アプリケーション全体を一から構築したい場合は、[アプリケーションを一から構築する](tutorial-start-from-scratch.md)
   で説明されている指示に従うことが出来ます。
-* もっと洗練された、チーム開発環境により適したアプリケーションから開始したい場合は、 [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) をインストールすることを考慮することが出来ます。
+* もっと洗練された、チーム開発環境により適したアプリケーションから開始したい場合は、 [アドバンスト・プロジェクト・テンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) をインストールすることを考慮することが出来ます。
 
 
 アセットをインストールする <span id="installing-assets"></span>
@@ -133,15 +133,15 @@ Composer によるアセットのインストールを抑止するためには�
 
 > Note: Composer によるアセットのインストールをバイパスする場合は、アセットのインストールとバージョン衝突の解決について
 > あなたが責任を持たなければなりません。
-> さまざまなエクステンションに由来するアセットファイル間で不整合が生じうることを覚悟して下さい。
+> さまざまなエクステンションに由来するアセット・ファイル間で不整合が生じうることを覚悟して下さい。
 
 
 インストールを検証する <span id="verifying-installation"></span>
 ----------------------
 
-インストール完了後、あなたのウェブサーバを構成してください (次の説を参照してください)。
+インストール完了後、あなたのウェブ・サーバを構成してください (次の説を参照してください)。
 あるいは、プロジェクトの `web` ディレクトリで次のコマンドを実行して、
-[PHP の内蔵ウェブサーバ](https://secure.php.net/manual/ja/features.commandline.webserver.php) を使ってください。
+[PHP の内蔵ウェブ・サーバ](https://secure.php.net/manual/ja/features.commandline.webserver.php) を使ってください。
 
 ```bash
 php yii serve
@@ -180,8 +180,8 @@ Yii の最低必要条件を満たすように PHP のインストールを構�
 また、アプリケーションがデータベースを必要とする場合は、[PDO PHP 拡張](http://www.php.net/manual/ja/pdo.installation.php) および対応するデータベースドライバ (MySQL データベースのための `pdo_mysql` など) をインストールしなければなりません。
 
 
-ウェブサーバを構成する <span id="configuring-web-servers"></span>
-----------------------
+ウェブ・サーバを構成する <span id="configuring-web-servers"></span>
+------------------------
 
 > Info: もし Yii の試運転をしているだけで、本番サーバに配備する意図がないのであれば、当面、この項は飛ばしても構いません。
 
@@ -189,21 +189,21 @@ Yii の最低必要条件を満たすように PHP のインストールを構�
 Yii 2.0 は、また、facebook の [HHVM](http://hhvm.com/) とも互換性があります。
 ただし HHVM がネイティブの PHP とは異なる振舞いをする特殊なケースもいくつかありますので、HHVM を使うときはいくらか余分に注意を払う必要があります。
 
-本番用のサーバでは、`http://www.example.com/basic/web/index.php` の代りに `http://www.example.com/index.php` という URL でアプリケーションにアクセス出来るようにウェブサーバを設定したいでしょう。
-そういう設定をするためには、ウェブサーバのドキュメントルートを `basic/web` フォルダに向けることが必要になります。
-また、[ルーティングと URL 生成](runtime-routing.md) の節で述べられているように、URL から `index.php` を隠したいとも思うでしょう。
-この節では、これらの目的を達するために Apache または Nginx サーバをどのように設定すれば良いかを学びます。
+本番用のサーバでは、`http://www.example.com/basic/web/index.php` の代りに `http://www.example.com/index.php` という URL でアプリケーションにアクセス出来るようにウェブ・サーバを設定したいでしょう。
+そういう設定をするためには、ウェブ・サーバのドキュメントルートを `basic/web` フォルダに向けることが必要になります。
+また、[ルーティングと URL 生成](runtime-routing.md) のセクションで述べられているように、URL から `index.php` を隠したいとも思うでしょう。
+このセクションでは、これらの目的を達するために Apache または Nginx サーバをどのように設定すれば良いかを学びます。
 
-> Info: `basic/web` をドキュメントルートに設定することは、`basic/web` の兄弟ディレクトリに保存されたプライベートなアプリケーションコードや公開できないデータファイルにエンドユーザがアクセスすることを防止することにもなります。
+> Info: `basic/web` をドキュメント・ルートに設定することは、`basic/web` の兄弟ディレクトリに保存されたプライベートなアプリケーション・コードや公開できないデータ・ファイルにエンド・ユーザがアクセスすることを防止することにもなります。
 `basic/web` 以外のフォルダに対するアクセスを拒否することはセキュリティ強化の一つです。
 
-> Info: あなたがウェブサーバの設定を修正する権限を持たない共用ホスティング環境でアプリケーションが走る場合であっても、セキュリティ強化のためにアプリケーションの構造を調整することがまだ出来ます。
-詳細については、[共有ホスティング環境](tutorial-shared-hosting.md) の節を参照してください。
+> Info: あなたがウェブ・サーバの設定を修正する権限を持たない共用ホスティング環境でアプリケーションが走る場合であっても、セキュリティ強化のためにアプリケーションの構造を調整することがまだ出来ます。
+詳細については、[共有ホスティング環境](tutorial-shared-hosting.md) のセクションを参照してください。
 
 
 ### 推奨される Apache の構成 <span id="recommended-apache-configuration"></span>
 
-下記の設定を Apache の `httpd.conf` ファイルまたはバーチャルホスト設定の中で使います。
+下記の設定を Apache の `httpd.conf` ファイルまたはバーチャル・ホスト設定の中で使います。
 `path/to/basic/web` の部分を `basic/web` の実際のパスに置き換えなければならないことに注意してください。
 
 ```apache
@@ -275,6 +275,6 @@ server {
 }
 ```
 
-この構成を使う場合は、多数の不要な `stat()` システムコールを避けるために、`php.ini` ファイルで `cgi.fix_pathinfo=0` を同時に設定しておくべきです。
+この構成を使う場合は、多数の不要な `stat()` システム・コールを避けるために、`php.ini` ファイルで `cgi.fix_pathinfo=0` を同時に設定しておくべきです。
 
 また、HTTPS サーバを走らせている場合には、安全な接続であることを Yii が正しく検知できるように、`fastcgi_param HTTPS on;` を追加しなければならないことにも注意を払ってください。

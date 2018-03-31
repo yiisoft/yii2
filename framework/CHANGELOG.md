@@ -5,6 +5,8 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug: Handle case when `X-Forwarded-Host` header have multiple hosts separated with a comma.
+- Bug #16010: Fixed `yii\filters\ContentNegotiator` behavior when GET parameters contain an array (rugabarbo)
+- Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
 - Bug #15988: Fixed bash completion (alekciy)
 
 2.0.15.1 March 21, 2018

@@ -1,7 +1,7 @@
 データのフォーマット
 ====================
 
-ユーザにとってより読みやすい形式でデータを表示するために、`formatter` [アプリケーションコンポーネント](structure-application-components.md) を使ってデータをフォーマットすることが出来ます。
+ユーザにとってより読みやすい形式でデータを表示するために、`formatter` [アプリケーション・コンポーネント](structure-application-components.md) を使ってデータをフォーマットすることが出来ます。
 デフォルトでは、フォーマッタは [[yii\i18n\Formatter]] によって実装されており、これが、日付/時刻、数字、通貨、その他のよく使われる形式にデータをフォーマットする一連のメソッドを提供します。
 このフォーマッタは次のようにして使うことが出来ます。
 
@@ -34,13 +34,13 @@ echo $formatter->asDate(null);
 // 出力: January 1, 2014
 echo Yii::$app->formatter->format('2014-01-01', 'date'); 
 
-// 配列を使ってフォーマットメソッドのパラメータを指定することも出来ます。
+// 配列を使ってフォーマット・メソッドのパラメータを指定することも出来ます。
 // `2` は asPercent() メソッドの $decimals パラメータの値です。
 // 出力: 12.50%
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
-> Note: フォーマッタコンポーネントは、エンドユーザへの表示用に値をフォーマットすることを目的に設計されています。
+> Note: フォーマッタ・コンポーネントは、エンド・ユーザへの表示用に値をフォーマットすることを目的に設計されています。
 > ユーザの入力を機械が読み取れる形式にフォーマットしたい場合、また、日付を機械が読み取れる形式にフォーマットしたいだけ、という場合には、
 > フォーマッタは適切なツールではありません。
 > 日付と数値についてユーザ入力を変換するためには、それぞれ、[[yii\validators\DateValidator]] と [[yii\validators\NumberValidator]]
@@ -162,7 +162,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 [[yii\base\Application::timeZone|アプリケーションで設定されたタイムゾーン]] (PHP の構成で設定されたタイムゾーンと同じ) が使用されます。
 
 > Note: タイムゾーンは世界中のさまざまな政府によって作られる規則に従うものであり、頻繁に変更されるものであるため、あなたのシステムにインストールされたタイムゾーンのデータベースが最新の情報を持っていない可能性が大いにあります。
-> タイムゾーンデータベースの更新についての詳細は、[ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) で参照することが出来ます。
+> タイムゾーン・データベースの更新についての詳細は、[ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) で参照することが出来ます。
 > [PHP 環境を国際化のために設定する](tutorial-i18n.md#setup-environment) も参照してください。
 
 

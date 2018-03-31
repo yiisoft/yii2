@@ -1,22 +1,22 @@
-データプロバイダ
+データ・プロバイダ
 ================
 
-[ページネーション](output-pagination.md) と [並べ替え](output-sorting.md) の節において、エンドユーザが特定のページのデータを選んで表示し、いずれかのカラムによってデータを並べ替えることが出来るようにする方法を説明しました。
-データのページネーションと並べ替えは非常によくあるタスクですから、Yii はこれをカプセル化した一連の *データプロバイダ* を提供しています。
+[ページネーション](output-pagination.md) と [並べ替え](output-sorting.md) のセクションにおいて、エンド・ユーザが特定のページのデータを選んで表示し、いずれかのカラムによってデータを並べ替えることが出来るようにする方法を説明しました。
+データのページネーションと並べ替えは非常によくあるタスクですから、Yii はこれをカプセル化した一連の *データ・プロバイダ* を提供しています。
 
-データプロバイダは [[yii\data\DataProviderInterface]] を実装するクラスであり、主として、ページ分割され並べ替えられたデータの取得をサポートするものです。
-通常は、[データウィジェット](output-data-widgets.md) と共に使用して、エンドユーザが対話的にデータのページネーションと並べ替えをすることが出来るようにします。
+データ・プロバイダは [[yii\data\DataProviderInterface]] を実装するクラスであり、主として、ページ分割され並べ替えられたデータの取得をサポートするものです。
+通常は、[データ・ウィジェット](output-data-widgets.md) と共に使用して、エンド・ユーザが対話的にデータのページネーションと並べ替えをすることが出来るようにします。
 
-Yii のリリースには次のデータプロバイダのクラスが含まれています。
+Yii のリリースには次のデータ・プロバイダのクラスが含まれています。
 
 * [[yii\data\ActiveDataProvider]]: [[yii\db\Query]] または [[yii\db\ActiveQuery]] を使ってデータベースからデータを取得して、配列または [アクティブレコード](db-active-record.md) インスタンスの形式でデータを返します。
 * [[yii\data\SqlDataProvider]]: SQL 文を実行して、データベースのデータを配列として返します。
 * [[yii\data\ArrayDataProvider]]: 大きな配列を受け取り、ページネーションと並べ替えの指定に基づいて、一部分を切り出して返します。
 
-これら全てのデータプロバイダの使用方法は、次の共通のパターンを持っています。
+これら全てのデータ・プロバイダの使用方法は、次の共通のパターンを持っています。
 
 ```php
-// ページネーションと並べ替えのプロパティを構成してデータプロバイダを作成する
+// ページネーションと並べ替えのプロパティを構成してデータ・プロバイダを作成する
 $provider = new XyzDataProvider([
     'pagination' => [...],
     'sort' => [...],
@@ -25,18 +25,18 @@ $provider = new XyzDataProvider([
 // ページ分割されて並べ替えられたデータを取得する
 $models = $provider->getModels();
 
-// 現在のページにあるデータアイテムの数を取得する
+// 現在のページにあるデータ・アイテムの数を取得する
 $count = $provider->getCount();
 
-// 全ページ分のデータアイテムの総数を取得する
+// 全ページ分のデータ・アイテムの総数を取得する
 $totalCount = $provider->getTotalCount();
 ```
 
-データプロバイダのページネーションと並べ替えの振る舞いを指定するためには、その [[yii\data\BaseDataProvider::pagination|pagination]] と [[yii\data\BaseDataProvider::sort|sort]] のプロパティを構成します。
+データ・プロバイダのページネーションと並べ替えの振る舞いを指定するためには、その [[yii\data\BaseDataProvider::pagination|pagination]] と [[yii\data\BaseDataProvider::sort|sort]] のプロパティを構成します。
 二つのプロパティは、それぞれ、[[yii\data\Pagination]] と [[yii\data\Sort]] の構成情報に対応します。
 これらを `false` に設定して、ページネーションや並べ替えの機能を無効にすることも出来ます。
 
-[データウィジェット](output-data-widgets.md)、例えば [[yii\grid\GridView]] は、`dataProvider` という名前のプロパティを持っており、これにデータプロバイダのインスタンスを受け取らせて、それが提供するデータを表示させることが出来ます。
+[データ・ウィジェット](output-data-widgets.md)、例えば [[yii\grid\GridView]] は、`dataProvider` という名前のプロパティを持っており、これにデータ・プロバイダのインスタンスを受け取らせて、それが提供するデータを表示させることが出来ます。
 例えば、
 
 ```php
@@ -45,11 +45,11 @@ echo yii\grid\GridView::widget([
 ]);
 ```
 
-これらのデータプロバイダの主たる相異点は、データソースがどのように指定されるかという点にあります。
-次に続く項において、各データプロバイダの詳細な使用方法を説明します。
+これらのデータ・プロバイダの主たる相異点は、データソースがどのように指定されるかという点にあります。
+次に続く項において、各データ・プロバイダの詳細な使用方法を説明します。
 
 
-## アクティブデータプロバイダ <span id="active-data-provider"></span> 
+## アクティブ・データ・プロバイダ <span id="active-data-provider"></span> 
 
 [[yii\data\ActiveDataProvider]] を使用するためには、その [[yii\data\ActiveDataProvider::query|query]] プロパティを構成しなければなりません。
 これは、[[yii\db\Query]] または [[yii\db\ActiveQuery]] のオブジェクトを取ることが出来ます。
@@ -87,17 +87,17 @@ use yii\db\Query;
 $query = (new Query())->from('post')->where(['status' => 1]); 
 ```
 
-> Note: クエリが既に `orderBy` 句を指定しているものである場合、(`sort` の構成を通して) エンドユーザによって与えられる並べ替えの指定は、既存の `orderBy` 句に追加されます。
-一方、`limit` と `offset` の句が存在している場合は、(`pagenation` の構成を通して) エンドユーザによって指定されるページネーションのリクエストによって上書きされます。
+> Note: クエリが既に `orderBy` 句を指定しているものである場合、(`sort` の構成を通して) エンド・ユーザによって与えられる並べ替えの指定は、既存の `orderBy` 句に追加されます。
+一方、`limit` と `offset` の句が存在している場合は、(`pagenation` の構成を通して) エンド・ユーザによって指定されるページネーションのリクエストによって上書きされます。
 
-デフォルトでは、[[yii\data\ActiveDataProvider]] はデータベース接続として `db` アプリケーションコンポーネントを使用します。
+デフォルトでは、[[yii\data\ActiveDataProvider]] はデータベース接続として `db` アプリケーション・コンポーネントを使用します。
 [[yii\data\ActiveDataProvider::db]] プロパティを構成すれば、別のデータベース接続を使用することが出来ます。
 
 
-## SQL データプロバイダ <span id="sql-data-provider"></span>
+## SQL データ・プロバイダ <span id="sql-data-provider"></span>
 
 [[yii\data\SqlDataProvider]] は、生の SQL 文を使用して、必要なデータを取得します。
-このデータプロバイダは、[[yii\data\SqlDataProvider::sort|sort]] と [[yii\data\SqlDataProvider::pagination|pagination]] の指定に基づいて、SQL 文の `ORDER BY` と `OFFSET/LIMIT` の句を修正し、指定された順序に並べ替えられたデータを要求されたページの分だけ取得します。
+このデータ・プロバイダは、[[yii\data\SqlDataProvider::sort|sort]] と [[yii\data\SqlDataProvider::pagination|pagination]] の指定に基づいて、SQL 文の `ORDER BY` と `OFFSET/LIMIT` の句を修正し、指定された順序に並べ替えられたデータを要求されたページの分だけ取得します。
 
 [[yii\data\SqlDataProvider]] を使用するためには、[[yii\data\SqlDataProvider::sql|sql]] プロパティだけでなく、[[yii\data\SqlDataProvider::totalCount|totalCount]] プロパティを指定しなければなりません。
 例えば、
@@ -130,14 +130,14 @@ $models = $provider->getModels();
 ```
 
 > Info: [[yii\data\SqlDataProvider::totalCount|totalCount]] プロパティは、データにページネーションを適用しなければならない場合にだけ要求されます。
-  これは、[[yii\data\SqlDataProvider::sql|sql]] によって指定される SQL 文は、現在要求されているページのデータだけを返すように、データプロバイダによって修正されてしまうからです。
-  データプロバイダは、総ページ数を正しく計算するためには、データアイテムの総数を知る必要があります。
+  これは、[[yii\data\SqlDataProvider::sql|sql]] によって指定される SQL 文は、現在要求されているページのデータだけを返すように、データ・プロバイダによって修正されてしまうからです。
+  データ・プロバイダは、総ページ数を正しく計算するためには、データ・アイテムの総数を知る必要があります。
 
 
-## 配列データプロバイダ <span id="array-data-provider"></span>
+## 配列データ・プロバイダ <span id="array-data-provider"></span>
 
 [[yii\data\ArrayDataProvider]] は、一つの大きな配列を扱う場合に最も適しています。
-このデータプロバイダによって、一つまたは複数のカラムで並べ替えた配列データの 1 ページ分を返すことが出来ます。
+このデータ・プロバイダによって、一つまたは複数のカラムで並べ替えた配列データの 1 ページ分を返すことが出来ます。
 [[yii\data\ArrayDataProvider]] を使用するためには、全体の大きな配列として [[yii\data\ArrayDataProvider::allModels|allModels]] プロパティを指定しなければなりません。
 この大きな配列の要素は、連想配列 (例えば [DAO](db-dao.md) のクエリ結果) またはオブジェクト (例えば [アクティブレコード](db-active-record.md) インスタンス) とすることが出来ます。
 例えば、
@@ -166,15 +166,15 @@ $provider = new ArrayDataProvider([
 $rows = $provider->getModels();
 ``` 
 
-> Note: [アクティブデータプロバイダ](#active-data-provider) および [SQL データプロバイダ](#sql-data-provider) と比較すると、配列データプロバイダは効率の面では劣ります。
+> Note: [アクティブ・データ・プロバイダ](#active-data-provider) および [SQL データ・プロバイダ](#sql-data-provider) と比較すると、配列データ・プロバイダは効率の面では劣ります。
   何故なら、*全ての* データをメモリにロードしなければならないからです。
 
 
 ## データのキーを扱う <span id="working-with-keys"></span>
 
-データプロバイダによって返されたデータアイテムを使用する場合、各データアイテムを一意のキーで特定しなければならないことがよくあります。
-例えば、データアイテムが顧客情報を表す場合、顧客 ID を各顧客データのキーとして使用したいでしょう。
-データプロバイダは、[[yii\data\DataProviderInterface::getModels()]] によって返されたデータアイテムに対応するそのようなキーのリストを返すことが出来ます。
+データ・プロバイダによって返されたデータ・アイテムを使用する場合、各データ・アイテムを一意のキーで特定しなければならないことがよくあります。
+例えば、データ・アイテムが顧客情報を表す場合、顧客 ID を各顧客データのキーとして使用したいでしょう。
+データ・プロバイダは、[[yii\data\DataProviderInterface::getModels()]] によって返されたデータ・アイテムに対応するそのようなキーのリストを返すことが出来ます。
 例えば、
 
 ```php
@@ -189,11 +189,11 @@ $provider = new ActiveDataProvider([
 // Post オブジェクトの配列を返す
 $posts = $provider->getModels();
 
-// $post に対応するプライマリキーの値を返す
+// $post に対応するプライマリ・キーの値を返す
 $ids = $provider->getKeys();
 ```
 
-上記の例では、[[yii\data\ActiveDataProvider]] に対して [[yii\db\ActiveQuery]] オブジェクトを供給していますから、キーとしてプライマリキーの値を返すのが理にかなっています。
+上記の例では、[[yii\data\ActiveDataProvider]] に対して [[yii\db\ActiveQuery]] オブジェクトを供給していますから、キーとしてプライマリ・キーの値を返すのが理にかなっています。
 キーの値の計算方法を明示的に指定するために、[[yii\data\ActiveDataProvider::key]] にカラム名を設定したり、キーの値を計算するコーラブルを設定したりすることも出来ます。
 例えば、
 
@@ -214,18 +214,18 @@ $provider = new ActiveDataProvider([
 ```
 
 
-## カスタムデータプロバイダを作成する <span id="custom-data-provider"></span>
+## カスタム・データ・プロバイダを作成する <span id="custom-data-provider"></span>
 
-あなた自身のカスタムデータプロバイダクラスを作成するためには、[[yii\data\DataProviderInterface]] を実装しなければなりません。
+あなた自身のカスタム・データ・プロバイダ・クラスを作成するためには、[[yii\data\DataProviderInterface]] を実装しなければなりません。
 [[yii\data\BaseDataProvider]] を拡張するのが比較的簡単な方法です。
-そうすれば、データプロバイダのコアのロジックに集中することが出来ます。
+そうすれば、データ・プロバイダのコアのロジックに集中することが出来ます。
 具体的に言えば、実装する必要があるのは、主として次のメソッドです。
                                                    
-- [[yii\data\BaseDataProvider::prepareModels()|prepareModels()]]: 現在のページで利用できるデータモデルを準備して、それを配列として返します。
-- [[yii\data\BaseDataProvider::prepareKeys()|prepareKeys()]]: 現在利用できるデータモデルの配列を受け取って、それと関連付けられるキーの配列を返します。
-- [[yii\data\BaseDataProvider::prepareTotalCount()|prepareTotalCount]]: データプロバイダにあるデータモデルの総数を示す値を返します。
+- [[yii\data\BaseDataProvider::prepareModels()|prepareModels()]]: 現在のページで利用できるデータ・モデルを準備して、それを配列として返します。
+- [[yii\data\BaseDataProvider::prepareKeys()|prepareKeys()]]: 現在利用できるデータ・モデルの配列を受け取って、それと関連付けられるキーの配列を返します。
+- [[yii\data\BaseDataProvider::prepareTotalCount()|prepareTotalCount]]: データ・プロバイダにあるデータ・モデルの総数を示す値を返します。
 
-下記は、CSV ファイルを効率的に読み出すデータプロバイダのサンプルです。
+下記は、CSV ファイルを効率的に読み出すデータ・プロバイダのサンプルです。
 
 ```php
 <?php
@@ -328,12 +328,12 @@ class CsvDataProvider extends BaseDataProvider
 }
 ```
 
-## データフィルタを使ってデータプロバイダをフィルタリングする <span id="filtering-data-providers-using-data-filters"></span>
+## データ・フィルタを使ってデータ・プロバイダをフィルタリングする <span id="filtering-data-providers-using-data-filters"></span>
 
 [データをフィルタリングする](output-data-widgets.md#filtering-data) や [独立したフィルタ・フォーム](output-data-widgets.md#separate-filter-form) で述べられているように、
-アクティブデータプロバイダの条件を手作業で構築することも可能ですが、
-柔軟なフィルタ条件を必要とする場合には、Yii が持っているデータフィルタが非常に役に立ちます。
-データフィルタは次のようにして使うことが出来ます。
+アクティブ・データ・プロバイダの条件を手作業で構築することも可能ですが、
+柔軟なフィルタ条件を必要とする場合には、Yii が持っているデータ・フィルタが非常に役に立ちます。
+データ・フィルタは次のようにして使うことが出来ます。
 
 ```php
 $filter = new ActiveDataFilter([
@@ -383,5 +383,5 @@ class PostSearch extends Model
 }
 ```
 
-データフィルタは極めて柔軟で、どのようにして条件が構築されるか、また、どんな演算子が許容されるかをカスタマイズすることが可能です。
+データ・フィルタは極めて柔軟で、どのようにして条件が構築されるか、また、どんな演算子が許容されるかをカスタマイズすることが可能です。
 詳細は API リファレンスで [[\yii\data\DataFilter]] を参照して下さい。
