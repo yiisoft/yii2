@@ -113,6 +113,10 @@ class CheckboxColumn extends Column
      */
     protected function renderDataCellContent($model, $key, $index)
     {
+        if ($this->content !== null) {
+            return call_user_func($this->content, $model, $key, $index, $this);
+        }
+
         if ($this->checkboxOptions instanceof Closure) {
             $options = call_user_func($this->checkboxOptions, $model, $key, $index, $this);
         } else {
