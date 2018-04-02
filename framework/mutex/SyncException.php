@@ -13,7 +13,7 @@ use yii\base\Exception;
  * Synchronize Exception
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
- * @since (unknown yet)
+ * @since 2.1
  */
 class SyncException extends Exception
 {

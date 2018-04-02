@@ -111,24 +111,17 @@ abstract class Mutex extends Component
      * @param callable $callback a valid PHP callback that performs the job. Accepts mutex instance as parameter.
      * @param bool $throw whether to throw an exception when the lock is not acquired.
      * @return mixed result of callback function, or null when the lock is not acquired.
-     * @throws \Exception|\Throwable if there is any exception thrown from the callback.
      * @throws SyncException when the lock is not acquired.
-     * @since (unknown yet)
+     * @since 2.1
      */
     public function sync($name, $timeout, callable $callback, $throw = true)
     {
         if ($this->acquire($name, $timeout)) {
             try {
                 $result = call_user_func($callback, $this);
-            } catch (\Exception $e) {
+            } finally {
                 $this->release($name);
-                throw $e;
-            } catch (\Throwable $e) {
-                $this->release($name);
-                throw $e;
             }
-            // TODO: use "finally" keyword when miminum required PHP version is >= 5.5
-            $this->release($name);
             return $result;
         }
         if ($throw) {
