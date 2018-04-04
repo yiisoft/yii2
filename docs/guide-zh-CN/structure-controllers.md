@@ -361,9 +361,9 @@ class PostController extends Controller
 * `http://hostname/index.php?r=post/view`: 会抛出[[yii\web\BadRequestHttpException]] 异常
   因为请求没有提供参数给必须赋值参数`$id`；
 * `http://hostname/index.php?r=post/view&id[]=123`: 会抛出[[yii\web\BadRequestHttpException]] 异常
-  因为`$id` 参数收到数组值 `['123']`而不是字符串.
+  因为 `$id` 参数收到数组值 `['123']` 而不是字符串.
 
-如果想让动作参数接收数组值，需要指定$id为`array`，如下所示：
+如果你想要一个动作参数来接受数组值，你应该使用 `array` 来提示它，如下所示：
 
 ```php
 public function actionView(array $id, $version = null)
@@ -372,9 +372,9 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-现在如果请求为 `http://hostname/index.php?r=post/view&id[]=123`, 参数 `$id` 会使用数组值`['123']`，
+现在如果请求为 `http://hostname/index.php?r=post/view&id[]=123`, 参数 `$id` 会使用数组值 `['123']`，
 如果请求为 `http://hostname/index.php?r=post/view&id=123`，
-参数 `$id` 会获取相同数组值，因为无类型的`'123'`会自动转成数组。
+参数 `$id` 会获取相同数组值，因为无类型的 `'123'` 会自动转成数组。
 
 上述例子主要描述网页应用的操作参数，对于控制台应用，
 更多详情请参阅[控制台命令](tutorial-console.md)。
