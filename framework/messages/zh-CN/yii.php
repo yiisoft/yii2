@@ -33,6 +33,7 @@ return [
     'Home' => '首页',
     'Invalid data received for parameter "{param}".' => '"{param}"参数接收到无效的数据。',
     'Login Required' => '需要登录',
+    'Method Not Allowed. This URL can only handle the following request methods: {methods}.' => '方法不被允许。该URL只允许使用以下请求方法：{methods}。',
     'Missing required arguments: {params}' => '函数缺少参数：{params}',
     'Missing required parameters: {params}' => '缺少参数：{params}',
     'No' => '否',
