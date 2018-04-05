@@ -102,7 +102,7 @@ class VerbFilter extends Behavior
             $event->isValid = false;
             // https://tools.ietf.org/html/rfc2616#section-14.7
             Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $allowed));
-            throw new MethodNotAllowedHttpException('Method Not Allowed. This URL can only handle the following request methods: ' . implode(', ', $allowed) . '.');
+            throw new MethodNotAllowedHttpException(Yii::t('yii', 'Method Not Allowed. This URL can only handle the following request methods: {methods}.', ['methods' => implode(', ', $allowed)]));
         }
 
         return $event->isValid;
