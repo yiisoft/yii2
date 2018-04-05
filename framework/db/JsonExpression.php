@@ -7,6 +7,8 @@
 
 namespace yii\db;
 
+use yii\base\InvalidConfigException;
+
 /**
  * Class JsonExpression represents data that should be encoded to JSON.
  *
@@ -19,7 +21,7 @@ namespace yii\db;
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
  */
-class JsonExpression implements ExpressionInterface
+class JsonExpression implements ExpressionInterface, \JsonSerializable
 {
     const TYPE_JSON = 'json';
     const TYPE_JSONB = 'jsonb';
@@ -49,6 +51,10 @@ class JsonExpression implements ExpressionInterface
      */
     public function __construct($value, $type = null)
     {
+        if ($value instanceof self) {
+            $value = $value->getValue();
+        }
+
         $this->value = $value;
         $this->type = $type;
     }
@@ -69,5 +75,24 @@ class JsonExpression implements ExpressionInterface
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 2.0.14.2
+     * @throws InvalidConfigException when JsonExpression contains QueryInterface object
+     */
+    public function jsonSerialize()
+    {
+        $value = $this->getValue();
+        if ($value instanceof QueryInterface) {
+            throw new InvalidConfigException('The JsonExpression class can not be serialized to JSON when the value is a QueryInterface object');
+        }
+
+        return $value;
     }
 }

@@ -224,6 +224,8 @@ class DbCache extends SimpleCache
 
             return true;
         } catch (\Exception $e) {
+            Yii::warning("Unable to insert cache data: {$e->getMessage()}", __METHOD__);
+
             return false;
         }
     }

@@ -1,8 +1,8 @@
 Gii でコードを生成する
 ======================
 
-この節では、[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) を使って、ウェブサイトの一般的な機能のいくつかを実装するコードを自動的に生成する方法を説明します。
-Gii を使ってコードを自動生成することは、Gii のウェブページに表示される指示に対して正しい情報を入力するだけのことです。
+このセクションでは、[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) を使って、ウェブ・サイトの一般的な機能のいくつかを実装するコードを自動的に生成する方法を説明します。
+Gii を使ってコードを自動生成することは、Gii のウェブ・ページに表示される指示に対して正しい情報を入力するだけのことです。
 
 このチュートリアルを通じて、次のことを学びます。
 
@@ -32,7 +32,7 @@ if (YII_ENV_DEV) {
 
 上記の構成情報は、[開発環境](concept-configurations.md#environment-constants) において、アプリケーションは `gii` という名前のモジュールをインクルードすべきこと、そして `gii` は [[yii\gii\Module]] というクラスであることを記述しています。
 
-アプリケーションの [エントリスクリプト](structure-entry-scripts.md) である `web/index.php` をチェックすると、次の行があることに気付くでしょう。
+アプリケーションの [エントリ・スクリプト](structure-entry-scripts.md) である `web/index.php` をチェックすると、次の行があることに気付くでしょう。
 これは本質的には `YII_ENV_DEV` を `true` に設定するものです。
 
 ```php
@@ -63,7 +63,7 @@ http://hostname/index.php?r=gii
 ------------------------------------
 
 Gii を使ってアクティブレコードのクラスを生成するためには、"Model Generator" を選びます
-(Gii のインデックスページのリンクをクリックして下さい)。
+(Gii のインデックス・ページのリンクをクリックして下さい)。
 そして、次のようにフォームに入力します。
 
 * Table Name: `country`
@@ -72,8 +72,8 @@ Gii を使ってアクティブレコードのクラスを生成するために�
 ![Model Generator](images/start-gii-model.png)
 
 次に、"Preview" ボタンをクリックします。
-そうすると、結果として作成されるクラスファイルのリストに `models/Country.php` が挙ってきます。
-クラスファイルの名前をクリックすると、内容をプレビューすることが出来ます。
+そうすると、結果として作成されるクラス・ファイルのリストに `models/Country.php` が挙ってきます。
+クラス・ファイルの名前をクリックすると、内容をプレビューすることが出来ます。
 
 Gii を使うときに、既に同じファイルを作成していて、それを上書きしようとしている場合は、ファイル名の隣の `diff` ボタンをクリックして、生成されようとしているコードと既存のバージョンの違いを見てください。
 
@@ -89,8 +89,8 @@ Gii を使うときに、既に同じファイルを作成していて、それ�
 CRUD コードを生成する <span id="generating-crud"></span>
 ---------------------
 
-CRUD は Create(作成)、Read(読出し)、Update(更新)、そして Delete(削除) を意味しており、ほとんどのウェブサイトでデータを扱うときによく用いられる4つのタスクを表しています。
-Gii を使って CRUD 機能を作成するためには、"CRUD Generator" を選びます (Gii のインデックスページのリンクをクリックしてください) 。
+CRUD は Create(作成)、Read(読出し)、Update(更新)、そして Delete(削除) を意味しており、ほとんどのウェブ・サイトでデータを扱うときによく用いられる4つのタスクを表しています。
+Gii を使って CRUD 機能を作成するためには、"CRUD Generator" を選びます (Gii のインデックス・ページのリンクをクリックしてください) 。
 「国リスト」のサンプルのためには、表示されたフォームに以下のように入力します。
 
 * Model Class: `app\models\Country`
@@ -104,7 +104,7 @@ Gii を使って CRUD 機能を作成するためには、"CRUD Generator" を�
 
 ![CRUD Generator のプレビュー](images/start-gii-crud-preview.png)
 
-以前に（ガイドのデータベースの節で）`controllers/CountryController.php` と `views/country/index.php` のファイルを作成していた場合は、それらを置き換えるために "overwrite" のチェックボックスをチェックしてください。
+以前に（ガイドのデータベースのセクションで）`controllers/CountryController.php` と `views/country/index.php` のファイルを作成していた場合は、それらを置き換えるために "overwrite" のチェックボックスをチェックしてください。
 (以前のバージョンは フル機能の CRUD をサポートしていません。)
 
 
@@ -117,13 +117,13 @@ Gii を使って CRUD 機能を作成するためには、"CRUD Generator" を�
 http://hostname/index.php?r=country%2Findex
 ```
 
-データグリッドがデータベーステーブルから取得した国を表示しているページが表示されます。
+データ・グリッドがデータベース・テーブルから取得した国を表示しているページが表示されます。
 グリッドをソートしたり、カラムのヘッダに検索条件を入力してグリッドにフィルタを適用したりすることが出来ます。
 
 グリッドに表示されているそれぞれの国について、詳細を見たり、更新したり、または削除したりすることが出来ます。
 また、グリッドの上にある "Create Country" ボタンをクリックすると、新しい国データを作成するためのフォームが利用に供されます。
 
-![国リストのデータグリッド](images/start-gii-country-grid.png)
+![国リストのデータ・グリッド](images/start-gii-country-grid.png)
 
 ![国データを更新する](images/start-gii-country-update.png)
 
@@ -136,10 +136,10 @@ http://hostname/index.php?r=country%2Findex
 
 > Info: Gii は非常にカスタマイズしやすく拡張しやすいコード生成ツールとして設計されています。
   これを賢く使うと、アプリケーションの開発速度を大いに高めることが出来ます。
-  詳細については、[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) の節を参照してください。
+  詳細については、[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) のセクションを参照してください。
 
 
 まとめ <span id="summary"></span>
 ------
 
-この節では、Gii を使ってコードを生成して、データベーステーブルに保存されているコンテントのための完全な CRUD 機能を実装する方法を学びました。
+このセクションでは、Gii を使ってコードを生成して、データベース・テーブルに保存されているコンテントのための完全な CRUD 機能を実装する方法を学びました。

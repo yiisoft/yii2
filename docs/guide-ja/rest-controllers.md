@@ -1,19 +1,19 @@
 コントローラ
 ============
 
-リソースクラスを作成して、リソースデータをどのようにフォーマットすべきかを指定したら、次は、RESTful API を通じてエンドユーザにリソースを公開するコントローラアクションを作成します。
+リソース・クラスを作成して、リソース・データをどのようにフォーマットすべきかを指定したら、次は、RESTful API を通じてエンド・ユーザにリソースを公開するコントローラ・アクションを作成します。
 
-Yii は、RESTful アクションを作成する仕事を簡単にするための二つの基底コントローラクラスを提供しています。
+Yii は、RESTful アクションを作成する仕事を簡単にするための二つの基底コントローラ・クラスを提供しています。
 すなわち、[[yii\rest\Controller]] と [[yii\rest\ActiveController]] です。
 二つのコントローラの違いは、後者は [アクティブレコード](db-active-record.md) として表現されるリソースの扱いに特化した一連のアクションをデフォルトで提供する、という点にあります。
-従って、あなたが [アクティブレコード](db-active-record.md) を使っていて、提供される組み込みのアクションに満足できるのであれば、コントローラクラスを [[yii\rest\ActiveController]] から拡張することを検討すると良いでしょう。
+従って、あなたが [アクティブレコード](db-active-record.md) を使っていて、提供される組み込みのアクションに満足できるのであれば、コントローラ・クラスを [[yii\rest\ActiveController]] から拡張することを検討すると良いでしょう。
 そうすれば、最小限のコードで強力な RESTful API を作成することが出来ます。
 
 [[yii\rest\Controller]] と [[yii\rest\ActiveController]] は、ともに、下記の機能を提供します。
-これらのいくつかについては、後続の節で詳細に説明します。
+これらのいくつかについては、後続のセクションで詳細に説明します。
 
 * HTTP メソッドのバリデーション
-* [コンテントネゴシエーションとデータの書式設定](rest-response-formatting.md)
+* [コンテント・ネゴシエーションとデータの書式設定](rest-response-formatting.md)
 * [認証](rest-authentication.md)
 * [レート制限](rest-rate-limiting.md)
 
@@ -23,14 +23,14 @@ Yii は、RESTful アクションを作成する仕事を簡単にするため�
 * リクエストされたアクションとリソースに対するユーザへの権限付与
 
 
-## コントローラクラスを作成する <span id="creating-controller"></span>
+## コントローラ・クラスを作成する <span id="creating-controller"></span>
 
-新しいコントローラクラスを作成する場合、コントローラクラスの命名規約は、リソースの型の名前を単数形で使う、というものです。
+新しいコントローラ・クラスを作成する場合、コントローラ・クラスの命名規約は、リソースの型の名前を単数形で使う、というものです。
 例えば、ユーザの情報を提供するコントローラは `UserController` と名付けることが出来ます。
 
-新しいアクションを作成する仕方はウェブアプリケーションの場合とほぼ同じです。
+新しいアクションを作成する仕方はウェブ・アプリケーションの場合とほぼ同じです。
 唯一の違いは、`render()` メソッドを呼んでビューを使って結果を表示する代りに、RESTful アクションの場合はデータを直接に返す、という点です。
-[[yii\rest\Controller::serializer|シリアライザ]] と [[yii\web\Response|レスポンスオブジェクト]] が、元のデータからリクエストされた形式への変換を処理します。
+[[yii\rest\Controller::serializer|シリアライザ]] と [[yii\web\Response|レスポンス・オブジェクト]] が、元のデータからリクエストされた形式への変換を処理します。
 例えば、
 
 ```php
@@ -46,13 +46,13 @@ public function actionView($id)
 [[yii\rest\Controller]] によって提供される RESTful API 機能のほとんどは [フィルタ](structure-filters.md) の形で実装されています。
 具体的に言うと、次のフィルタがリストされた順に従って実行されます。
 
-* [[yii\filters\ContentNegotiator|contentNegotiator]]: コンテントネゴシエーションをサポート。
-  [レスポンス形式の設定](rest-response-formatting.md) の節で説明します。
+* [[yii\filters\ContentNegotiator|contentNegotiator]]: コンテント・ネゴシエーションをサポート。
+  [レスポンス形式の設定](rest-response-formatting.md) のセクションで説明します。
 * [[yii\filters\VerbFilter|verbFilter]]: HTTP メソッドのバリデーションをサポート。
 * [[yii\filters\auth\AuthMethod|authenticator]]: ユーザ認証をサポート。
-  [認証](rest-authentication.md) の節で説明します。
+  [認証](rest-authentication.md) のセクションで説明します。
 * [[yii\filters\RateLimiter|rateLimiter]]: レート制限をサポート。
-  [レート制限](rest-rate-limiting.md) の節で説明します。
+  [レート制限](rest-rate-limiting.md) のセクションで説明します。
 
 これらの名前付きのフィルタは、[[yii\rest\Controller::behaviors()|behaviors()]] メソッドで宣言されます。
 このメソッドをオーバーライドして、個々のフィルタを構成したり、どれかを無効にしたり、あなた自身のフィルタを追加したりすることが出来ます。
@@ -74,10 +74,10 @@ public function behaviors()
 
 ### CORS <span id="cors"></span>
 
-コントローラに [CORS (クロスオリジンリソース共有)](structure-filters.md#cors) フィルタを追加するのは、上記の他のフィルタを追加するのより、若干複雑になります。
+コントローラに [CORS (クロス・オリジン・リソース共有)](structure-filters.md#cors) フィルタを追加するのは、上記の他のフィルタを追加するのより、若干複雑になります。
 と言うのは、CORS フィルタは認証メソッドより前に適用されなければならないため、他のフィルタとは少し異なるアプローチが必要だからです。
 また、ブラウザが認証クレデンシャルを送信する必要なく、リクエストが出来るかどうかを前もって安全に判断できるように、
-[CORS プリフライトリクエスト](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests) の認証を無効にする必要もあります。
+[CORS プリフライト・リクエスト](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests) の認証を無効にする必要もあります。
 下記のコードは、[[yii\rest\ActiveController]] を拡張した既存のコントローラに [[yii\filters\Cors]] フィルタを追加するのに必要なコードを示しています。
 
 ```php
@@ -98,7 +98,7 @@ public function behaviors()
     
     // 認証フィルタを再度追加する
     $behaviors['authenticator'] = $auth;
-    // CORS プリフライトリクエスト (HTTP OPTIONS メソッド) の認証を回避する
+    // CORS プリフライト・リクエスト (HTTP OPTIONS メソッド) の認証を回避する
     $behaviors['authenticator']['except'] = ['options'];
 
     return $behaviors;
@@ -108,8 +108,8 @@ public function behaviors()
 
 ## `ActiveController` を拡張する <span id="extending-active-controller"></span>
 
-コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソースクラスの名前を [[yii\rest\ActiveController::modelClass|modelClass]] プロパティにセットしなければなりません。
-リソースクラスは [[yii\db\ActiveRecord]] から拡張しなければなりません。
+コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソース・クラスの名前を [[yii\rest\ActiveController::modelClass|modelClass]] プロパティにセットしなければなりません。
+リソース・クラスは [[yii\db\ActiveRecord]] から拡張しなければなりません。
 
 
 ### アクションをカスタマイズする <span id="customizing-actions"></span>
@@ -135,7 +135,7 @@ public function actions()
     // "delete" と "create" のアクションを無効にする
     unset($actions['delete'], $actions['create']);
 
-    // データプロバイダの準備を "prepareDataProvider()" メソッドでカスタマイズする
+    // データ・プロバイダの準備を "prepareDataProvider()" メソッドでカスタマイズする
     $actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
 
     return $actions;
@@ -143,14 +143,14 @@ public function actions()
 
 public function prepareDataProvider()
 {
-    // "index" アクションのためにデータプロバイダを準備して返す
+    // "index" アクションのためにデータ・プロバイダを準備して返す
 }
 ```
 
-どういう構成オプションが利用できるかを学ぶためには、個々のアクションクラスのリファレンスを参照してください。
+どういう構成オプションが利用できるかを学ぶためには、個々のアクション・クラスのリファレンスを参照してください。
 
 
-### アクセスチェックを実行する <span id="performing-access-check"></span>
+### アクセス・チェックを実行する <span id="performing-access-check"></span>
 
 RESTful API によってリソースを公開するときには、たいてい、現在のユーザがリクエストしているリソースにアクセスしたり操作したりする許可を持っているか否かをチェックする必要があります。
 これは、[[yii\rest\ActiveController]] を使う場合は、[[yii\rest\ActiveController::checkAccess()|checkAccess()]] メソッドを次のようにオーバーライドすることによって出来ます。
@@ -159,7 +159,7 @@ RESTful API によってリソースを公開するときには、たいてい�
 /**
  * 現在のユーザの特権をチェックする。
  *
- * 現在のユーザが指定されたデータモデルに対して指定されたアクションを実行する特権を
+ * 現在のユーザが指定されたデータ・モデルに対して指定されたアクションを実行する特権を
  * 有するか否かをチェックするためには、このメソッドをオーバーライドしなければなりません。
  * ユーザが権限をもたない場合は、[[ForbiddenHttpException]] が投げられなければなりません。
  *
@@ -180,6 +180,6 @@ public function checkAccess($action, $model = null, $params = [])
 ```
 
 `checkAccess()` メソッドは [[yii\rest\ActiveController]] のデフォルトのアクションから呼ばれます。
-新しいアクションを作成して、それに対してもアクセスチェックをしたい場合は、新しいアクションの中からこのメソッドを明示的に呼び出さなければなりません。
+新しいアクションを作成して、それに対してもアクセス・チェックをしたい場合は、新しいアクションの中からこのメソッドを明示的に呼び出さなければなりません。
 
-> Tip: [ロールベースアクセス制御 (RBAC) コンポーネント](security-authorization.md) を使って `checkAccess()` を実装することも可能です。
+> Tip: [ロール・ベース・アクセス制御 (RBAC) コンポーネント](security-authorization.md) を使って `checkAccess()` を実装することも可能です。
