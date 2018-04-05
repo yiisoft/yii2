@@ -194,6 +194,7 @@ class Cors extends ActionFilter
      */
     protected function prepareAllowHeaders($type, $requestHeaders, &$responseHeaders)
     {
+        $requestHeaders['Access-Control-Request-Headers']='authorization';
         $requestHeaderField = 'Access-Control-Request-' . $type;
         $responseHeaderField = 'Access-Control-Allow-' . $type;
         if (!isset($requestHeaders[$requestHeaderField], $this->cors[$requestHeaderField])) {
