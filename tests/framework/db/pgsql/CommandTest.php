@@ -119,7 +119,53 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             'expected' => 'INSERT INTO "type" ("intarray_col") VALUES (ARRAY[:qp0, :qp1, :qp2]::int[])',
             'expectedParams' => [':qp0' => 1, ':qp1' => null, ':qp2' => 3]
         ];
+        $data['batchInsert casts string to int according to the table schema'] = [
+            '{{%type}}',
+            ['int_col'],
+            [['3']],
+            'expected' => 'INSERT INTO "type" ("int_col") VALUES (3)',
+        ];
+        $data['batchInsert casts JSON to JSONB when column is JSONB'] = [
+            '{{%type}}',
+            ['jsonb_col'],
+            [[['a' => true]]],
+            'expected' => 'INSERT INTO "type" ("jsonb_col") VALUES (:qp0::jsonb)',
+            'expectedParams' => [':qp0' => '{"a":true}']
+        ];
 
         return $data;
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15827
+     */
+    public function testIssue15827()
+    {
+        $db = $this->getConnection();
+
+        $inserted = $db->createCommand()->insert('array_and_json_types', [
+            'jsonb_col' => new JsonExpression(['Solution date' => '13.01.2011'])
+        ])->execute();
+        $this->assertSame(1, $inserted);
+
+
+        $found = $db->createCommand(<<<PGSQL
+            SELECT *
+            FROM array_and_json_types
+            WHERE jsonb_col @> '{"Some not existing key": "random value"}'
+PGSQL
+        )->execute();
+        $this->assertSame(0, $found);
+
+        $found = $db->createCommand(<<<PGSQL
+            SELECT *
+            FROM array_and_json_types
+            WHERE jsonb_col @> '{"Solution date": "13.01.2011"}'
+PGSQL
+        )->execute();
+        $this->assertSame(1, $found);
+
+
+        $this->assertSame(1, $db->createCommand()->delete('array_and_json_types')->execute());
     }
 }

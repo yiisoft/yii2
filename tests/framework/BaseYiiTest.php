@@ -104,7 +104,7 @@ class BaseYiiTest extends TestCase
     public function testCreateObject()
     {
         $object = Yii::createObject([
-            'class' => Singer::class,
+            '__class' => Singer::class,
             'firstName' => 'John',
         ]);
         $this->assertTrue($object instanceof Singer);

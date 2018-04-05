@@ -1,10 +1,10 @@
 Html ヘルパ
 ===========
 
-全てのウェブアプリケーションは大量の HTML マークアップを生成します。
+全てのウェブ・アプリケーションは大量の HTML マークアップを生成します。
 マークアップが静的な場合は、[PHP と HTML を一つのファイルに混ぜる](http://php.net/manual/ja/language.basic-syntax.phpmode.php) ことによって効率よく生成することが可能ですが、マークアップを動的にするとなると、何らかの助けが無ければ、処理がトリッキーになってきます。
 Yii はそのような手助けを Html ヘルパの形式で提供します。
-これは、よく使われる HTML タグとそのオプションやコンテントを処理するための一連のスタティックメソッドを提供するものです。
+これは、よく使われる HTML タグとそのオプションやコンテントを処理するための一連のスタティック・メソッドを提供するものです。
 
 > Note: あなたのマークアップがおおむね静的なものである場合は、HTML を直接に使用する方が適切です。
 > 何でもかんでも Html ヘルパの呼び出しでラップする必要はありません。
@@ -162,7 +162,7 @@ $decodedUserName = Html::decode($userName);
 フォームのマークアップを扱う仕事は、極めて面倒くさく、エラーを生じがちなものです。
 このため、フォームのマークアップの仕事を助けるための一群のメソッドがあります。
 
-> Note: モデルを扱っており、バリデーションが必要である場合は、[[yii\widgets\ActiveForm|ActiveForm]] を使うことを検討してください。
+> Note: モデルを扱っており、検証が必要である場合は、[[yii\widgets\ActiveForm|ActiveForm]] を使うことを検討してください。
 
 
 ### フォームを作成する <span id="creating-forms"></span>
@@ -177,10 +177,10 @@ $decodedUserName = Html::decode($userName);
 これは [[yii\helpers\Url::to()|Url::to()]] によって受け入れられる Yii のルートおよびパラメータの形式で指定することが出来ます。
 第二の引数は使われるメソッドです。`post` がデフォルトです。
 第三の引数はフォームタグのオプションの配列です。
-上記の場合では、POST リクエストにおけるフォームデータのエンコーディング方法を `multipart/form-data` に変更しています。
+上記の場合では、POST リクエストにおけるフォーム・データのエンコーディング方法を `multipart/form-data` に変更しています。
 これはファイルをアップロードするために必要とされます。
 
-フォームタグを閉じるのは簡単です。
+フォーム・タグを閉じるのは簡単です。
 
 ```php
 <?= Html::endForm() ?>
@@ -198,14 +198,14 @@ $decodedUserName = Html::decode($userName);
 ```
 
 最初の引数は、三つのメソッドのどれでも、ボタンのタイトルであり、第二の引数はオプションです。
-タイトルはエンコードされませんので、エンドユーザからデータを取得する場合は [[yii\helpers\Html::encode()|Html::encode()]] を使ってエンコードしてください。
+タイトルはエンコードされませんので、エンド・ユーザからデータを取得する場合は [[yii\helpers\Html::encode()|Html::encode()]] を使ってエンコードしてください。
 
 
-### インプットフィールド <span id="input-fields"></span>
+### インプット・フィールド <span id="input-fields"></span>
 
 インプットのメソッドには二つのグループがあります。
-一つは `active` から始まるものでアクティブインプットと呼ばれます。もう一方は `active` から始まらないものです。
-アクティブインプットは、データを指定されたモデルと属性から取得しますが、通常のインプットでは、データは直接に指定されます。
+一つは `active` から始まるものでアクティブ・インプットと呼ばれます。もう一方は `active` から始まらないものです。
+アクティブ・インプットは、データを指定されたモデルと属性から取得しますが、通常のインプットでは、データは直接に指定されます。
 
 最も汎用的なメソッドは以下のものです。
 
@@ -231,14 +231,14 @@ $decodedUserName = Html::decode($userName);
 ラジオとチェックボックスは、メソッドのシグニチャの面で少し異なっています。
 
 ```php
-<?= Html::radio('agree', true, ['label' => '同意します']);
-<?= Html::activeRadio($model, 'agree', ['class' => 'agreement'])
+<?= Html::radio('agree', true, ['label' => '同意します']) ?>
+<?= Html::activeRadio($model, 'agree', ['class' => 'agreement']) ?>
 
-<?= Html::checkbox('agree', true, ['label' => '同意します']);
-<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement'])
+<?= Html::checkbox('agree', true, ['label' => '同意します']) ?>
+<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement']) ?>
 ```
 
-ドロップダウンリストとリストボックスは、次のようにしてレンダリングすることが出来ます。
+ドロップダウン・リストとリスト・ボックスは、次のようにしてレンダリングすることが出来ます。
 
 ```php
 <?= Html::dropDownList('list', $currentUserId, ArrayHelper::map($userModels, 'id', 'name')) ?>
@@ -251,14 +251,14 @@ $decodedUserName = Html::decode($userName);
 最初の引数はインプットの名前、第二の引数は現在選択されている値です。
 そして第三の引数は「キー-値」のペアであり、配列のキーはリストの値、配列の値はリストのラベルです。
 
-複数の選択肢を選択できるようにしたい場合は、チェックボックスリストが最適です。
+複数の選択肢を選択できるようにしたい場合は、チェックボックス・リストが最適です。
 
 ```php
 <?= Html::checkboxList('roles', [16, 42], ArrayHelper::map($roleModels, 'id', 'name')) ?>
 <?= Html::activeCheckboxList($user, 'role', ArrayHelper::map($roleModels, 'id', 'name')) ?>
 ```
 
-そうでない場合は、ラジオリストを使います。
+そうでない場合は、ラジオ・リストを使います。
 
 ```php
 <?= Html::radioList('roles', [16, 42], ArrayHelper::map($roleModels, 'id', 'name')) ?>
@@ -291,7 +291,7 @@ $decodedUserName = Html::decode($userName);
 
 ### インプットの名前と値 <span id="input-names-and-values"></span>
 
-モデルに基づいてインプットフィールドの名前、ID、値を取得するメソッドがあります。
+モデルに基づいてインプット・フィールドの名前、ID、値を取得するメソッドがあります。
 これらは主として内部的に使用されるものですが、場合によっては重宝します。
 
 ```php
@@ -336,7 +336,7 @@ echo Html::getAttributeName('dates[0]');
 <style>.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("こんにちは!");', ['defer' => true]);
+<?= Html::script('alert("こんにちは!");', ['defer' => true]) ?>
 
 これは次の HTML を生成します。
 
@@ -383,7 +383,7 @@ CSS と同じように、最初の引数はインクルードされるファイ�
 ```
 
 最初の引数はタイトルです。
-これはエンコードされませんので、エンドユーザから取得したデータを使う場合は、`Html::encode()` でエンコードする必要があります。
+これはエンコードされませんので、エンド・ユーザから取得したデータを使う場合は、`Html::encode()` でエンコードする必要があります。
 第二の引数が、`<a` タグの `href` に入ることになるものです。
 どのような値が受け入れられるかについて、詳細は [Url::to()](helper-url.md) を参照してください。
 第三の引数は、タグのプロパティの配列です。

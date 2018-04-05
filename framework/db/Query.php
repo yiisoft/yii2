@@ -610,6 +610,8 @@ PATTERN;
         } elseif (!is_array($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
+        // this sequantial assignment is needed in order to make sure select is being reset
+        // before using getUniqueColumns() that checks it
         $this->select = [];
         $this->select = $this->getUniqueColumns($columns);
         $this->selectOption = $option;
@@ -668,7 +670,7 @@ PATTERN;
                     if ($existsInSelect) {
                         continue;
                     }
-                } elseif (is_integer($columnAlias)) {
+                } elseif (is_int($columnAlias)) {
                     $existsInSelect = in_array($columnDefinition, $unaliasedColumns, true);
                     $existsInResultSet = in_array($columnDefinition, $result, true);
                     if ($existsInSelect || $existsInResultSet) {
@@ -691,7 +693,7 @@ PATTERN;
         $result = [];
         if (is_array($this->select)) {
             foreach ($this->select as $name => $value) {
-                if (is_integer($name)) {
+                if (is_int($name)) {
                     $result[] = $value;
                 }
             }

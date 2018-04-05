@@ -43,6 +43,6 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
         $placeholder = static::PARAM_PREFIX . count($params);
         $params[$placeholder] = Json::encode($value);
 
-        return $placeholder;
+        return "CAST($placeholder AS JSON)";
     }
 }

@@ -806,7 +806,11 @@ class Response extends \yii\base\Response implements ResponseInterface
      */
     protected function getDispositionHeaderValue($disposition, $attachmentName)
     {
-        $fallbackName = str_replace('"', '\\"', str_replace(['%', '/', '\\'], '_', Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)));
+        $fallbackName = str_replace(
+            ['%', '/', '\\', '"'],
+            ['_', '_', '_', '\\"'],
+            Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)
+        );
         $utfName = rawurlencode(str_replace(['%', '/', '\\'], '', $attachmentName));
 
         $dispositionHeader = "{$disposition}; filename=\"{$fallbackName}\"";
@@ -880,7 +884,7 @@ class Response extends \yii\base\Response implements ResponseInterface
             $url[0] = '/' . ltrim($url[0], '/');
         }
         $url = Url::to($url);
-        if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
+        if (strncmp($url, '/', 1) === 0 && strncmp($url, '//', 2) !== 0) {
             $url = Yii::$app->getRequest()->getHostInfo() . $url;
         }
 

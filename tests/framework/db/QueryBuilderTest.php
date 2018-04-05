@@ -720,7 +720,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_TIMESTAMP,
                 $this->timestamp(),
                 [
-                    'mysql' => 'timestamp',
+                    /**
+                     * MySQL has its own TIMESTAMP test realization
+                     * @see \yiiunit\framework\db\mysql\QueryBuilderTest::columnTypes()
+                     */
+
                     'postgres' => 'timestamp(0)',
                     'sqlite' => 'timestamp',
                 ],
