@@ -967,7 +967,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             $http = $secure ? 'https' : 'http';
 
             if ($this->hasHeader('X-Forwarded-Host')) {
-                $this->_hostInfo = $http . '://' . $this->getHeaderLine('X-Forwarded-Host');
+                $this->_hostInfo = $http . '://' . trim(explode(',', $this->getHeaderLine('X-Forwarded-Host'))[0]);
             } elseif ($this->hasHeader('Host')) {
                 $this->_hostInfo = $http . '://' . $this->getHeaderLine('Host');
             } elseif (($serverName = $this->getServerParam('SERVER_NAME')) !== null) {

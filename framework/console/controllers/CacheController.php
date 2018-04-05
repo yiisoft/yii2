@@ -300,6 +300,6 @@ class CacheController extends Controller
      */
     private function canBeCleared($className)
     {
-        return !is_a($className, ApcCache::class, true) || php_sapi_name() !== 'cli';
+        return !is_a($className, ApcCache::class, true) || PHP_SAPI !== 'cli';
     }
 }

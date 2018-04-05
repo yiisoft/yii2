@@ -359,7 +359,10 @@ class Command extends Component
 
         $schema = $this->db->getSchema();
         foreach ($values as $name => $value) {
-            if ($value instanceof PdoValue) {
+            if (is_array($value)) { // TODO: Drop in Yii 2.1
+                $this->_pendingParams[$name] = $value;
+                $this->params[$name] = $value[0];
+            } elseif ($value instanceof PdoValue) {
                 $this->_pendingParams[$name] = [$value->getValue(), $value->getType()];
                 $this->params[$name] = $value->getValue();
             } else {

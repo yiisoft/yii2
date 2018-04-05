@@ -41,4 +41,3 @@ class ContentNegotiatorTest extends TestCase
         Yii::$app->request->setAcceptableContentTypes(['application/xml' => ['q' => 1, 'version' => '2.0']]);
         $filter->negotiate();
     }
-}
