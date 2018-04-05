@@ -13,7 +13,7 @@ use yii\jui\DatePicker;
 ```
 
 数多くのウィジェットが Yii にバンドルされています。
-例えば、[[yii\widgets\ActiveForm|アクティブ・フォーム]] や、[[yii\widgets\Menu|メニュー]]、[jQuery UI ウィジェット](widget-jui.md)、[Twitter Bootstrap ウィジェット](widget-bootstrap.md) などです。
+例えば、[[yii\widgets\ActiveForm|アクティブ・フォーム]] や、[[yii\widgets\Menu|メニュー]]、[jQuery UI ウィジェット](https://www.yiiframework.com/extension/yiisoft/yii2-jui)、[Twitter Bootstrap ウィジェット](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap) などです。
 下記では、ウィジェットに関する基本的な知識の手引きをします。
 特定のウィジェットの使い方について学ぶ必要がある場合は、クラス API ドキュメントを参照してください。
 
