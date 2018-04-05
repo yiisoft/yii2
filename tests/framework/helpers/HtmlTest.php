@@ -1320,6 +1320,25 @@ EOD;
     }
 
     /**
+     * Test that attributes that output same errors, return unique message error
+     * @see https://github.com/yiisoft/yii2/pull/15859
+     */
+    public function testCollectError()
+    {
+        $model = new DynamicModel(compact('attr1', 'attr2'));
+
+        $model->addError('attr1', 'error1');
+        $model->addError('attr1', 'error2');
+        $model->addError('attr2', 'error1');
+
+        $this->assertEquals(
+            '<div><p>Please fix the following errors:</p><ul><li>error1</li>
+<li>error2</li></ul></div>',
+            Html::errorSummary($model, ['showAllErrors' => true])
+        );
+    }
+
+    /**
      * Data provider for [[testActiveTextArea()]].
      * @return array test data
      */
@@ -1482,24 +1501,31 @@ EOD;
      */
     public function validAttributeNamesProvider()
     {
-        return [
+        $data = [
             ['asd]asdf.asdfa[asdfa', 'asdf.asdfa'],
             ['a', 'a'],
             ['[0]a', 'a'],
             ['a[0]', 'a'],
             ['[0]a[0]', 'a'],
             ['[0]a.[0]', 'a.'],
-
-            // Unicode checks.
-            ['ä', 'ä'],
-            ['ä', 'ä'],
-            ['asdf]öáöio..[asdfasdf', 'öáöio..'],
-            ['öáöio', 'öáöio'],
-            ['[0]test.ööößß.d', 'test.ööößß.d'],
-            ['ИІК', 'ИІК'],
-            [']ИІК[', 'ИІК'],
-            ['[0]ИІК[0]', 'ИІК'],
         ];
+
+        if (getenv('TRAVIS_PHP_VERSION') !== 'nightly') {
+            $data = array_merge($data, [
+                ['ä', 'ä'],
+                ['ä', 'ä'],
+                ['asdf]öáöio..[asdfasdf', 'öáöio..'],
+                ['öáöio', 'öáöio'],
+                ['[0]test.ööößß.d', 'test.ööößß.d'],
+                ['ИІК', 'ИІК'],
+                [']ИІК[', 'ИІК'],
+                ['[0]ИІК[0]', 'ИІК'],
+            ]);
+        } else {
+            $this->markTestIncomplete("Unicode characters check skipped for 'nightly' PHP version because \w does not work with these as expected. Check later with stable version.");
+        }
+
+        return $data;
     }
 
     /**

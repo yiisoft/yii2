@@ -1,8 +1,8 @@
 ウィジェット
 ============
 
-ウィジェットは、[ビュー](structure-views.md) で使用される再利用可能な構成ブロックで、複雑かつ構成可能なユーザインタフェイス要素をオブジェクト指向のやり方で作成するためのものです。
-例えば、日付選択ウィジェットを使うと、入力として日付を選択することを可能にする素敵なデイトピッカーを生成することが出来ます。
+ウィジェットは、[ビュー](structure-views.md) で使用される再利用可能な構成ブロックで、複雑かつ構成可能なユーザ・インタフェイス要素をオブジェクト指向のやり方で作成するためのものです。
+例えば、日付選択ウィジェットを使うと、入力として日付を選択することを可能にする素敵なデイト・ピッカーを生成することが出来ます。
 このとき、あなたがしなければならないことは、次のようなコードをビューに挿入することだけです:
 
 ```php
@@ -13,7 +13,7 @@ use yii\jui\DatePicker;
 ```
 
 数多くのウィジェットが Yii にバンドルされています。
-例えば、[[yii\widgets\ActiveForm|アクティブフォーム]] や、[[yii\widgets\Menu|メニュー]]、[jQuery UI ウィジェット](widget-jui.md)、[Twitter Bootstrap ウィジェット](widget-bootstrap.md) などです。
+例えば、[[yii\widgets\ActiveForm|アクティブ・フォーム]] や、[[yii\widgets\Menu|メニュー]]、[jQuery UI ウィジェット](https://www.yiiframework.com/extension/yiisoft/yii2-jui)、[Twitter Bootstrap ウィジェット](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap) などです。
 下記では、ウィジェットに関する基本的な知識の手引きをします。
 特定のウィジェットの使い方について学ぶ必要がある場合は、クラス API ドキュメントを参照してください。
 
@@ -33,15 +33,13 @@ use yii\jui\DatePicker;
     'model' => $model,
     'attribute' => 'from_date',
     'language' => 'ja',
-    'clientOptions' => [
-        'dateFormat' => 'yy-mm-dd',
-    ],
+    'dateFormat' => 'php:Y-m-d',
 ]) ?>
 ```
 
 ウィジェットの中には、コンテントのブロックを受け取ることが出来るものもあります。
 その場合、コンテントのブロックは [[yii\base\Widget::begin()]] と [[yii\base\Widget::end()]] の呼び出しで囲むようにしなければなりません。
-例えば、次のコードは [[yii\widgets\ActiveForm]] ウィジェットを使ってログインフォームを生成するものです。
+例えば、次のコードは [[yii\widgets\ActiveForm]] ウィジェットを使ってログイン・フォームを生成するものです。
 このウィジェットは、`begin()` と `end()` が呼ばれる場所で、それぞれ、開始と終了の `<form>` タグを生成します。
 その間に置かれたものは全てそのままレンダリングされます。
 
@@ -68,7 +66,7 @@ use yii\helpers\Html;
 返されたウィジェットのインスタンスを使って、ウィジェットのコンテントを構築することが出来ます。
 
 > Note: いくつかのウィジェットは、[[yii\base\Widget::end()]] が呼ばれるときに内包されるコンテンツを調整するため、[出力バッファリング](http://php.net/manual/ja/book.outcontrol.php) を使用します。
-> この理由から、[[yii\base\Widget::begin()]] と [[yii\base\Widget::end()]] の呼び出しは、同じビューファイルの中で発生するものと想定されています。
+> この理由から、[[yii\base\Widget::begin()]] と [[yii\base\Widget::end()]] の呼び出しは、同じビュー・ファイルの中で発生するものと想定されています。
 > この規則に従わない場合は、予期しない出力結果が生じ得ます。
 
 
@@ -80,7 +78,7 @@ use yii\helpers\Html;
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
 ```
 
-詳細については [依存注入コンテナのガイドの "実際の使いかた" の節](concept-di-container.md#practical-usage) を参照してください。
+詳細については [依存注入コンテナのガイドの "実際の使いかた" のセクション](concept-di-container.md#practical-usage) を参照してください。
 
 
 ## ウィジェットを作成する <span id="creating-widgets"></span>
@@ -180,22 +178,22 @@ public function run()
 ```
 
 デフォルトでは、ウィジェット用のビューは `WidgetPath/views` ディレクトリの中のファイルに保存すべきものです。
-ここで `WidgetPath` はウィジェットのクラスファイルを含むディレクトリを指します。
-したがって、上記の例では、ウィジェットクラスが `@app/components` に配置されていると仮定すると、`@app/components/views/hello.php` というビューファイルがレンダリングされることになります。
-[[yii\base\Widget::getViewPath()]] メソッドをオーバーライドして、ウィジェットのビューファイルを含むディレクトリをカスタマイズすることが出来ます。
+ここで `WidgetPath` はウィジェットのクラス・ファイルを含むディレクトリを指します。
+したがって、上記の例では、ウィジェット・クラスが `@app/components` に配置されていると仮定すると、`@app/components/views/hello.php` というビュー・ファイルがレンダリングされることになります。
+[[yii\base\Widget::getViewPath()]] メソッドをオーバーライドして、ウィジェットのビュー・ファイルを含むディレクトリをカスタマイズすることが出来ます。
 
 
-## ベストプラクティス <span id="best-practices"></span>
+## ベスト・プラクティス <span id="best-practices"></span>
 
 ウィジェットはビューのコードを再利用するためのオブジェクト指向の方法です。
 
 ウィジェットを作成するときでも、MVC パターンに従うべきです。
-一般的に言うと、ロジックはウィジェットクラスに保持し、表現は [ビュー](structure-views.md) に保持すべきです。
+一般的に言うと、ロジックはウィジェット・クラスに保持し、表現は [ビュー](structure-views.md) に保持すべきです。
 
 ウィジェットは自己完結的に設計されるべきです。
 言い換えると、ウィジェットを使うときに、他に何もしないでもビューに挿入することが出来るようにすべきです。
 この要求は、ウィジェットが CSS、JavaScript、画像などの外部リソースを必要とする場合は、扱いにくい問題になり得ます。
-幸いなことに、Yii はこの問題を解決するのに利用することが出来る [アセットバンドル](structure-assets.md) のサポートを提供しています。
+幸いなことに、Yii はこの問題を解決するのに利用することが出来る [アセット・バンドル](structure-assets.md) のサポートを提供しています。
 
-ウィジェットがビューコードだけを含む場合は、[ビュー](structure-views.md) と非常に似たものになります。
+ウィジェットがビュー・コードだけを含む場合は、[ビュー](structure-views.md) と非常に似たものになります。
 実際のところ、この場合、両者の唯一の違いは、ウィジェットが再配布可能なクラスである一方で、ビューはアプリケーション内に保持することが望ましい素の PHP スクリプトである、というぐらいの事です。
