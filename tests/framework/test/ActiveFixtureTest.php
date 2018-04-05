@@ -92,7 +92,7 @@ class TruncateTestCase extends BaseDbTestCase
     {
         return [
             'animals' => [
-                'class' => AnimalFixture::class,
+                '__class' => AnimalFixture::class,
             ]
         ];
     }
