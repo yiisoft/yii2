@@ -74,7 +74,7 @@ trait MutexTestTrait
         $mutexTwo = $this->createMutex();
 
         $this->assertTrue($mutexOne->acquire(self::$mutexName));
-        $this->expectException(SyncException::class);
+        $this->expectException('yii\mutex\SyncException');
         $mutexTwo->sync(self::$mutexName, 0, function () {
             return true;
         });
