@@ -15,7 +15,7 @@ use yii\base\Component;
  * This is achieved by using a "lock" mechanism. Each possibly concurrent thread cooperates by acquiring
  * a lock before accessing the corresponding data.
  *
- * Usage example:
+ * Usage examples:
  *
  * ```
  * if ($mutex->acquire($mutexName)) {
@@ -23,6 +23,12 @@ use yii\base\Component;
  * } else {
  *     // execution is blocked!
  * }
+ * ```
+ *
+ * ```
+ * $mutex->sync($mutexName, 10, function () {
+ *     // business logic execution with synchronization
+ * }));
  * ```
  *
  * This is a base class, which should be extended in order to implement the actual lock mechanism.
@@ -95,6 +101,33 @@ abstract class Mutex extends Component
         }
 
         return false;
+    }
+
+    /**
+     * Executes callback with mutex synchronization.
+     *
+     * @param string $name of the lock to be acquired. Must be unique.
+     * @param int $timeout time (in seconds) to wait for lock to be released.
+     * @param callable $callback a valid PHP callback that performs the job. Accepts mutex instance as parameter.
+     * @param bool $throw whether to throw an exception when the lock is not acquired.
+     * @return mixed result of callback function, or null when the lock is not acquired.
+     * @throws SyncException when the lock is not acquired.
+     * @since 2.1
+     */
+    public function sync($name, $timeout, callable $callback, $throw = true)
+    {
+        if ($this->acquire($name, $timeout)) {
+            try {
+                $result = call_user_func($callback, $this);
+            } finally {
+                $this->release($name);
+            }
+            return $result;
+        }
+        if ($throw) {
+            throw new SyncException('Cannot acquire the lock.');
+        }
+        return null;
     }
 
     /**
