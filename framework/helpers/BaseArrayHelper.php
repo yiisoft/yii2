@@ -119,8 +119,7 @@ class BaseArrayHelper
         $args = func_get_args();
         $res = array_shift($args);
         while (!empty($args)) {
-            $next = array_shift($args);
-            foreach ($next as $k => $v) {
+            foreach (array_shift($args) as $k => $v) {
                 if ($v instanceof UnsetArrayValue) {
                     unset($res[$k]);
                 } elseif ($v instanceof ReplaceArrayValue) {
@@ -938,7 +937,7 @@ class BaseArrayHelper
                 continue;
             }
 
-            if (!key_exists($globalKey, $array)) {
+            if (!array_key_exists($globalKey, $array)) {
                 continue;
             }
             if ($localKey === null) {

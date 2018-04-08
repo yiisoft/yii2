@@ -171,6 +171,10 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     protected function negotiateContentType($request, $response)
     {
         if (!empty($this->formatParam) && ($format = $request->get($this->formatParam)) !== null) {
+            if (is_array($format)) {
+                throw new BadRequestHttpException("Invalid data received for GET parameter '{$this->formatParam}'.");
+            }
+
             if (in_array($format, $this->formats)) {
                 $response->format = $format;
                 $response->acceptMimeType = null;
@@ -217,6 +221,10 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     protected function negotiateLanguage($request)
     {
         if (!empty($this->languageParam) && ($language = $request->get($this->languageParam)) !== null) {
+            if (is_array($language)) {
+                // If an array received, then skip it and use the first of supported languages
+                return reset($this->languages);
+            }
             if (isset($this->languages[$language])) {
                 return $this->languages[$language];
             }

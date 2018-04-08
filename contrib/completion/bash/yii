@@ -42,7 +42,7 @@ _yii()
         ;;
         option)
             # fetch available options from ./yii help/list-action-options command
-            opts=$($yii help/list-action-options $command 2> /dev/null | grep -o '^--[a-zA-Z0-9]*')
+            opts=$($yii help/list-action-options $command 2> /dev/null | grep -o '^--[a-zA-Z0-9\-]*')
         ;;
         value)
             # TODO allow normal file completion after an option, e.g. --migrationPath=...

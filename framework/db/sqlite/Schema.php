@@ -451,6 +451,6 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     private function isSystemIdentifier($identifier)
     {
-        return strpos($identifier, 'sqlite_') === 0;
+        return strncmp($identifier, 'sqlite_', 7) === 0;
     }
 }

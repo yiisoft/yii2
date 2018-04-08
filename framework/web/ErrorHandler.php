@@ -232,7 +232,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function getTypeUrl($class, $method)
     {
-        if (strpos($class, 'yii\\') !== 0) {
+        if (strncmp($class, 'yii\\', 4) !== 0) {
             return null;
         }
 
