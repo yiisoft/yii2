@@ -32,7 +32,7 @@ Yii提供了一个强大的日志框架，这个框架具有高度的可定制�
 Yii::trace('start calculating average revenue');
 ```
 
-> 注意：日志消息可以是字符串，也可以是复杂的数据，诸如数组或者对象。
+> Note: 日志消息可以是字符串，也可以是复杂的数据，诸如数组或者对象。
 [log targets](#log-targets) 的义务是正确处理日志消息。默认情况下，
 假如一条日志消息不是一个字符串，它将被导出为一个字符串，通过调用 [[yii\helpers\VarDumper::export()]]。
 
@@ -50,7 +50,7 @@ Yii::trace('start calculating average revenue', __METHOD__);
 例如，假如上面那行代码在这个方法内被调用，则它将等于字符串
 `'app\controllers\RevenueController::calculate'`。
 
-> 注意：上面所描述的日志方法实际上是 [[yii\log\Logger|logger object]] 对象（一个通过表达式 `Yii::getLogger()` 可访问的单例）
+> Note: 上面所描述的日志方法实际上是 [[yii\log\Logger|logger object]] 对象（一个通过表达式 `Yii::getLogger()` 可访问的单例）
 的方法 [[yii\log\Logger::log()|log()]] 的一个快捷方式。当足够的消息被记录或者当应用结束时，
 日志对象将会调用一个 [[yii\log\Dispatcher|message dispatcher]]
 调度对象将已经记录的日志消息发送到已注册的 [log targets](#log-targets) 目标中。
@@ -94,7 +94,7 @@ return [
 ];
 ```
 
-> 注意：`log` 组件必须在 [bootstrapping](runtime-bootstrapping.md) 期间就被加载，以便于它能够及时调度日志消息到目标里。
+> Note: `log` 组件必须在 [bootstrapping](runtime-bootstrapping.md) 期间就被加载，以便于它能够及时调度日志消息到目标里。
 这是为什么在上面的代码中，它被列在 `bootstrap` 数组中的原因。
 
 在上面的代码中，在 [[yii\log\Dispatcher::targets]] 属性里有两个日志目标被注册：
@@ -162,7 +162,7 @@ Yii配备了以下的内建日志目标。请参考关于这些类的API文档�
 ]
 ```
 
-> 注意：当一个HTTP异常通过 [error handler](runtime-handling-errors.md) 被捕获的时候，一个错误消息将以 `yii\web\HttpException:ErrorCode`
+> Note: 当一个HTTP异常通过 [error handler](runtime-handling-errors.md) 被捕获的时候，一个错误消息将以 `yii\web\HttpException:ErrorCode`
   这样的格式的分类名被记录下来。例如，[[yii\web\NotFoundHttpException]] 将会引发一个分类是 `yii\web\HttpException:404` 的
   错误消息。
 
@@ -238,7 +238,7 @@ return [
 将被追加最多3个调用堆栈层级；假如 `YII_DEBUG` 关闭，
 那么将没有调用堆栈信息被包含。
 
-> 注意：获得调用堆栈信息并不是不重要。因此，
+> Note: 获得调用堆栈信息并不是不重要。因此，
 你应该只在开发或者调试一个应用的时候使用这个特性。
 
 
@@ -262,7 +262,7 @@ return [
 ];
 ```
 
-> 注意：当应用结束的时候，消息刷新也会发生，这样才能确保日志目标能够接收完整的日志消息。
+> Note: 当应用结束的时候，消息刷新也会发生，这样才能确保日志目标能够接收完整的日志消息。
 
 当 [[yii\log\Logger|logger object]] 对象刷新日志消息到 [log targets](#log-targets) 的时候，它们并
 不能立即获取导出的消息。相反，消息导出仅仅在一个日志目标累积了一定数量的过滤消息的时候才会发生。你可以通过配置
@@ -299,7 +299,7 @@ return [
 ];
 ```
 
-> 注意：频繁的消息刷新和导出将降低你到应用性能。
+> Note: 频繁的消息刷新和导出将降低你到应用性能。
 
 
 ### 切换日志目标 <span id="toggling-log-targets"></span>

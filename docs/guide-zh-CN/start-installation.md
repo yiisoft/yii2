@@ -48,11 +48,11 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局生效，一劳永逸。
 第二条命令会将 Yii 安装在名为 `basic` 的目录中。如果你想使用其它目录名称，你可以选择其他目录名称。
 
-> 注意：在安装过程中 Composer 可能会询问你 GitHub 账户的认证信息，因为可能在使用中超过了 GitHub API （对匿名用户的）使用限制。因为 Composer 需要为所有扩展包从 GitHub 
+> Note: 在安装过程中 Composer 可能会询问你 GitHub 账户的认证信息，因为可能在使用中超过了 GitHub API （对匿名用户的）使用限制。因为 Composer 需要为所有扩展包从 GitHub
 > 中获取大量信息，所以超限非常正常。（译注：也意味着作为程序猿没有 GitHub 账号，就真不能愉快地玩耍了）登陆 GitHub 之后可以得到更高的 API 限额，这样 Composer 才能正常运行。更多细节请参考 [Composer 
 > 文档](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)（该段 Composer中文文档[期待您的参与](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)）。
 
-> 提示：如果你想安装 Yii 的最新开发版本，可以使用以下命令代替，
+> Tip: 如果你想安装 Yii 的最新开发版本，可以使用以下命令代替，
 > 它添加了一个 [stability 选项](https://getcomposer.org/doc/04-schema.md#minimum-stability)（[中文版](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/04-schema.md#minimum-stability)）:
 >
 > ```bash
@@ -104,7 +104,7 @@ Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下
 php yii serve
 ```
 
-> 注意：默认情况下Https-server将监听8080。可是如果这个端口已经使用或者你想通过这个方式运行多个应用程序，你可以指定使用哪些端口。
+> Note: 默认情况下Https-server将监听8080。可是如果这个端口已经使用或者你想通过这个方式运行多个应用程序，你可以指定使用哪些端口。
 只加上 --port 参数：
 
 ```bash
@@ -138,7 +138,7 @@ http://localhost:8080/
 配置 Web 服务器 <span id="configuring-web-servers"></span>
 -----------------------
 
-> 提示：如果你现在只是要试用 Yii 而不是将其部署到生产环境中，
+> Tip: 如果你现在只是要试用 Yii 而不是将其部署到生产环境中，
   本小节可以跳过。
 
 通过上述方法安装的应用程序在 Windows，Max OS X，

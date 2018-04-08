@@ -60,7 +60,7 @@ class UserController extends ActiveController
 上面的配置主要是为`user`控制器增加一个 URL 规则。这样，
 用户的数据就能通过美化的 URL 和有意义的 http 动词进行访问和操作。
 
-> 注意：Yii will automatically pluralize controller names for use in endpoints (see [Trying it Out](#trying-it-out) section below).
+> Note: Yii will automatically pluralize controller names for use in endpoints (see [Trying it Out](#trying-it-out) section below).
 > You can configure this using the [[yii\rest\UrlRule::$pluralize]] property.
 
 
@@ -172,7 +172,7 @@ Content-Type: application/json; charset=UTF-8
 {"id":1,"username":"example","email":"user@example.com","created_at":1414674789,"updated_at":1414674789}
 ```
 
-> 提示：你还可以通过 Web 浏览器中输入 URL `http://localhost/users` 来访问你的 API。
+> Tip: 你还可以通过 Web 浏览器中输入 URL `http://localhost/users` 来访问你的 API。
   尽管如此，你可能需要一些浏览器插件来发送特定的 headers 请求。
 
 如你所见，在 headers 响应，有关于总数，页数的信息，等等。

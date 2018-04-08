@@ -177,7 +177,7 @@ $customers = Customer::find()
 上述代码中，`$customer` 是个 `Customer` 对象，而 `$customers` 是个以 `Customer` 对象为元素的数组。
 它们两都是以 `customer` 表中取回的数据结果集填充的。
 
-> 提示：由于 [[yii\db\ActiveQuery]] 继承 [[yii\db\Query]]，你可以使用 [查询生成器](db-query-builder.md) 章节里所描述的所有查询方法。
+> Tip: 由于 [[yii\db\ActiveQuery]] 继承 [[yii\db\Query]]，你可以使用 [查询生成器](db-query-builder.md) 章节里所描述的所有查询方法。
 
 
 根据主键获取数据行是比较常见的操作，所以 Yii 
@@ -219,7 +219,7 @@ $customers = Customer::findAll([
 ]);
 ```
 
-> 提示：[[yii\db\ActiveRecord::findOne()]] 和 [[yii\db\ActiveQuery::one()]] 都不会添加 `LIMIT 1` 到
+> Tip: [[yii\db\ActiveRecord::findOne()]] 和 [[yii\db\ActiveQuery::one()]] 都不会添加 `LIMIT 1` 到
   生成的 SQL 语句中。如果你的查询会返回很多行的数据，
   你明确的应该加上 `limit(1)` 来提高性能，比如 `Customer::find()->limit(1)->one()`。
 
@@ -249,7 +249,7 @@ $id = $customer->id;
 $email = $customer->email;
 ```
 
-> 提示：AR 的属性以区分大小写的方式为相关联的表列命名的。
+> Tip: AR 的属性以区分大小写的方式为相关联的表列命名的。
   Yii 会自动为关联表的每一列定义 AR 中的一个属性。
   您不应该重新声明任何属性。
 
@@ -287,7 +287,7 @@ class Customer extends ActiveRecord
 现在你的 PHP 代码中，你可以访问 `$ customer-> birthdayText`，
 来以 `'YYYY/MM/DD'` 的格式输入和显示客户生日，而不是访问`$ customer-> birthday`。
 
-> 提示：上述示例显示了以不同格式转换数据的通用方法。如果你正在使用
+> Tip: 上述示例显示了以不同格式转换数据的通用方法。如果你正在使用
 > 日期值，您可以使用 [DateValidator](tutorial-core-validators.md#date) 和 [[yii\jui\DatePicker|DatePicker]] 来操作，
 > 这将更易用，更强大。
 
@@ -306,7 +306,7 @@ $customers = Customer::find()
     ->all();
 ```
 
-> 提示：虽然这种方法可以节省内存并提高性能，但它更靠近较低的 DB 抽象层
+> Tip: 虽然这种方法可以节省内存并提高性能，但它更靠近较低的 DB 抽象层
   你将失去大部分的 AR 提供的功能。 一个非常重要的区别在于列值的数据类型。
   当您在 AR 实例中返回数据时，列值将根据实际列类型，自动类型转换；
   然而，当您以数组返回数据时，列值将为
@@ -379,7 +379,7 @@ public function save($runValidation = true, $attributeNames = null)
 }
 ```
 
-> 提示：你可以直接调用 [[yii\db\ActiveRecord::insert()|insert()]] 或者 [[yii\db\ActiveRecord::update()|update()]]
+> Tip: 你可以直接调用 [[yii\db\ActiveRecord::insert()|insert()]] 或者 [[yii\db\ActiveRecord::update()|update()]]
   方法来插入或更新一条记录。
   
 
@@ -393,7 +393,7 @@ public function save($runValidation = true, $attributeNames = null)
 只有当验证通过时，它才会真正地保存数据; 否则将简单地返回`false`，
 您可以检查 [[yii\db\ActiveRecord::errors|errors]] 属性来获取验证过程的错误消息。
 
-> 提示：如果你确定你的数据不需要验证（比如说数据来自可信的场景），
+> Tip: 如果你确定你的数据不需要验证（比如说数据来自可信的场景），
   你可以调用 `save(false)` 来跳过验证过程。
 
 
@@ -488,7 +488,7 @@ $customer->loadDefaultValues();
 值绑定到具有正确类型的。但是，ActiveRecord 实例的属性值不会
 在保存过程中转换。
 
-> 提示： 你可以使用 [[yii\behaviors\AttributeTypecastBehavior]] 来简化属性的类型转换
+> Tip:  你可以使用 [[yii\behaviors\AttributeTypecastBehavior]] 来简化属性的类型转换
   在 ActiveRecord 验证或者保存过程中。
 
 
@@ -528,7 +528,7 @@ $customer->delete();
 Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 ```
 
-> 提示：不要随意使用 [[yii\db\ActiveRecord::deleteAll()|deleteAll()]] 它真的会
+> Tip: 不要随意使用 [[yii\db\ActiveRecord::deleteAll()|deleteAll()]] 它真的会
   清空你表里的数据，因为你指不定啥时候犯二。
 
 
@@ -596,7 +596,7 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
    [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] 事件。
 
 
-> 提示：调用以下方法则不会启动上述的任何生命周期，
+> Tip: 调用以下方法则不会启动上述的任何生命周期，
 > 因为这些方法直接操作数据库，而不是基于 AR 模型：
 >
 > - [[yii\db\ActiveRecord::updateAll()]] 
@@ -642,7 +642,7 @@ try {
 }
 ```
 
-> 提示：在上面的代码中，我们有两个catch块用于兼容
+> Tip: 在上面的代码中，我们有两个catch块用于兼容
 > PHP 5.x 和 PHP 7.x。 `\Exception` 继承于 [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
 > 由于 PHP 7.0 的改动，如果您的应用程序仅使用 PHP 7.0 及更高版本，您可以跳过 `\Exception` 部分。
 
@@ -812,7 +812,7 @@ $customer = Customer::findOne(123);
 $orders = $customer->orders;
 ```
 
-> 提示：当你通过 getter 方法 `getXyz()` 声明了一个叫 `xyz` 的关联属性，你就可以像
+> Tip: 当你通过 getter 方法 `getXyz()` 声明了一个叫 `xyz` 的关联属性，你就可以像
   [属性](concept-properties.md) 那样访问 `xyz`。注意这个命名是区分大小写的。
   
 如果使用 [[yii\db\ActiveRecord::hasMany()|hasMany()]] 声明关联关系，则访问此关联属性
@@ -825,7 +825,7 @@ $orders = $customer->orders;
 SQL 语句。要强制重新执行 SQL 语句，你应该先 unset 这个关联属性，
 如：`unset（$ customer-> orders）`。
 
-> 提示：虽然这个概念跟 这个 [属性](concept-properties.md) 特性很像，
+> Tip: 虽然这个概念跟 这个 [属性](concept-properties.md) 特性很像，
 > 但是还是有一个很重要的区别。普通对象属性的属性值与其定义的 getter 方法的类型是相同的。
 > 而关联方法返回的是一个 [[yii\db\ActiveQuery]] 活动查询生成器的实例。只有当访问关联属性的的时候，
 > 才会返回 [[yii\db\ActiveRecord]] AR 实例，或者 AR 实例组成的数组。
@@ -1020,7 +1020,7 @@ $items = $customers[0]->orders[0]->items;
 那就是, 当你调用 [[yii\db\ActiveQuery::with()|with()]] 来 with `a.b.c.d`, 你将即时加载
 `a`, `a.b`, `a.b.c` and `a.b.c.d`。
 
-> 提示：一般来说，当即时加载 `N` 个关联，另有 `M` 个关联
+> Tip: 一般来说，当即时加载 `N` 个关联，另有 `M` 个关联
   通过 [连接表](#junction-table) 声明，则会有 `N+M+1` 条 SQL 语句被执行。
   请注意这样的的嵌套关联 `a.b.c.d` 算四个关联。
 
@@ -1045,7 +1045,7 @@ $customers = Customer::find()->with([
 它用于表示这个自定义的关联执行关联查询的 [[yii\db\ActiveQuery]] 对象。
 在上面的代码示例中，我们通过附加一个关于订单状态的附加条件来修改关联查询。
 
-> 提示：如果你在即时加载的关联中调用 [[yii\db\Query::select()|select()]] 方法，你要确保
+> Tip: 如果你在即时加载的关联中调用 [[yii\db\Query::select()|select()]] 方法，你要确保
 > 在关联声明中引用的列必须被 select。否则，相应的模型（Models）可能
 > 无法加载。例如，
 >
@@ -1058,7 +1058,7 @@ $customers = Customer::find()->with([
 
 ### 关联关系的 JOIN 查询 <span id="joining-with-relations"></span>
 
-> 提示：这小节的内容仅仅适用于关系数据库，
+> Tip: 这小节的内容仅仅适用于关系数据库，
   比如 MySQL，PostgreSQL 等等。
 
 到目前为止，我们所介绍的关联查询，仅仅是使用主表列
@@ -1080,7 +1080,7 @@ $customers = Customer::find()
     ->all();
 ```
 
-> 提示：在构建涉及 JOIN SQL 语句的连接查询时，清除列名的歧义很重要。
+> Tip: 在构建涉及 JOIN SQL 语句的连接查询时，清除列名的歧义很重要。
   通常的做法是将表名称作为前缀加到对应的列名称前。
 
 但是，更好的方法是通过调用 [[yii\db\ActiveQuery::joinWith()]] 来利用已存在的关联声明：
@@ -1132,7 +1132,7 @@ $customers = Customer::find()->joinWith([
 以上查询取出 *所有* 客户，并为每个客户取回所有活跃订单。
 港真，这与我们之前的例子不同，后者仅取出至少有一个活跃订单的客户。
 
-> 提示：当通过 [[yii\db\ActiveQuery::onCondition()|onCondition()]] 修改 [[yii\db\ActiveQuery]] 时，
+> Tip: 当通过 [[yii\db\ActiveQuery::onCondition()|onCondition()]] 修改 [[yii\db\ActiveQuery]] 时，
   如果查询涉及到 JOIN 查询，那么条件将被放在 `ON` 部分。如果查询不涉及
   JOIN ，条件将自动附加到查询的 `WHERE` 部分。
   因此，它可以只包含 包含了关联表的列 的条件。（译者注：意思是 onCondition() 中可以只写关联表的列，主表的列写不写都行）
@@ -1242,7 +1242,7 @@ $customer2 = $order->customer;
 echo $customer2 === $customer ? 'same' : 'not the same';
 ```
 
-> 提示：反向关联不能用在有 [连接表](#junction-table) 关联声明中。
+> Tip: 反向关联不能用在有 [连接表](#junction-table) 关联声明中。
   也就是说，如果一个关联关系通过 [[yii\db\ActiveQuery::via()|via()]] 或 [[yii\db\ActiveQuery::viaTable()|viaTable()]] 声明，
   你就不能再调用 [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] 了。
 
@@ -1281,7 +1281,7 @@ $order->link('customer', $customer);
 为 `Customer` 实例的 `id` 属性的值，然后保存
 到数据库。
 
-> 提示：你不能 link() 两个新的 AR 实例。（译者注：其中的一个必须是数据库中查询出来的）
+> Tip: 你不能 link() 两个新的 AR 实例。（译者注：其中的一个必须是数据库中查询出来的）
 
 当一个关联关系通过 [连接表](#junction-table) 定义时，此 [[yii\db\ActiveRecord::link()|link()]] 方法更能体现在党的领导下的中国特色社会主义的优越性。
 例如，你可以使用以下代码 link() `Order` 实例
@@ -1293,7 +1293,7 @@ $order->link('items', $item);
 
 上述代码会自动在 `order_item` 关联表中插入一行，以关联 order 和 item 这两个数据记录。
 
-> 提示：[[yii\db\ActiveRecord::link()|link()]] 方法在保存相应的 AR 实例时，
+> Tip: [[yii\db\ActiveRecord::link()|link()]] 方法在保存相应的 AR 实例时，
   将不会执行任何数据验证。在调用此方法之前，
   您应当验证所有的输入数据。
 
@@ -1356,7 +1356,7 @@ $customers = Customer::find()->with('comments')->all();
 
 本节中描述的大多数关联查询功能，你都可以抄一抄。
  
-> 提示：[[yii\db\ActiveQuery::joinWith()|joinWith()]] 这个功能限制于某些数据库是否支持跨数据库 JOIN 查询。
+> Tip: [[yii\db\ActiveQuery::joinWith()|joinWith()]] 这个功能限制于某些数据库是否支持跨数据库 JOIN 查询。
   因此，你再上述的代码里就不能用此方法了，因为 MongoDB 不知道 JOIN 查询。
 
 
@@ -1410,7 +1410,7 @@ class CommentQuery extends ActiveQuery
 }
 ```
 
-> 提示：作为 [[yii\db\ActiveQuery::onCondition()|onCondition()]] 方法的替代方案，你应当
+> Tip: 作为 [[yii\db\ActiveQuery::onCondition()|onCondition()]] 方法的替代方案，你应当
   调用 [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] 或 [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] 方法来附加新增的条件，不然在一个新定义的查询方法，已存在的条件可能会被覆盖。
 
 然后你就可以先下面这样构建你的查询了：
@@ -1420,7 +1420,7 @@ $comments = Comment::find()->active()->all();
 $inactiveComments = Comment::find()->active(false)->all();
 ```
 
-> 提示：在大型项目中，建议您使用自定义查询类来容纳大多数与查询相关的代码，
+> Tip: 在大型项目中，建议您使用自定义查询类来容纳大多数与查询相关的代码，
   以使 AR 类保持简洁。
 
 您还可以在 `Comment` 关联关系的定义中或在执行关联查询时，使用刚刚新建查询构建方法：
@@ -1452,7 +1452,7 @@ $customers = Customer::find()->joinWith([
 ])->all();
 ```
 
-> 提示：在 Yii 1.1 中，有个概念叫做 *命名范围*。命名范围在 Yii 2.0 中不再支持，
+> Tip: 在 Yii 1.1 中，有个概念叫做 *命名范围*。命名范围在 Yii 2.0 中不再支持，
   你依然可以使用自定义查询类、查询方法来达到一样的效果。
 
 

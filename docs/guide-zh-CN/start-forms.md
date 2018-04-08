@@ -128,7 +128,7 @@ class SiteController extends Controller
 如果没填表单就提交，或数据包含错误（译者：如 email 格式不对），
 `entry` 视图将会渲染输出，连同表单一起输出的还有验证错误的详细信息。
 
-> 注意：在这个简单例子里我们只是呈现了有效数据的确认页面。
+> Note: 在这个简单例子里我们只是呈现了有效数据的确认页面。
   实践中你应该考虑使用 [[yii\web\Controller::refresh()|refresh()]] 
   或 [[yii\web\Controller::redirect()|redirect()]] 去避免[表单重复提交问题](http://en.wikipedia.org/wiki/Post/Redirect/Get)。
 
@@ -214,7 +214,7 @@ http://hostname/index.php?r=site/entry
 如果用户浏览器禁用了 JavaScript， 
 服务器端仍然会像 `actionEntry()` 方法里这样验证一遍数据。这保证了任何情况下用户提交的数据都是有效的。
 
-> 警告：客户端验证是提高用户体验的手段。
+> Warning: 客户端验证是提高用户体验的手段。
   无论它是否正常启用，服务端验证则都是必须的，请不要忽略它。
 
 输入框的文字标签是 `field()` 方法生成的，内容就是模型中该数据的属性名。

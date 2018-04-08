@@ -114,7 +114,7 @@ class AppAsset extends AssetBundle
 由于它们的资源和源代码都在不能Web访问的目录下，
 在定义资源包类时必须指定[[yii\web\AssetBundle::sourcePath|sourcePath]]属性。
 
-> 注意：[[yii\web\AssetBundle::sourcePath|source path]] 属性不要用`@webroot/assets`，该路径默认为
+> Note: [[yii\web\AssetBundle::sourcePath|source path]] 属性不要用`@webroot/assets`，该路径默认为
   [[yii\web\AssetManager|asset manager]]资源管理器将源资源发布后存储资源的路径，
   该路径的所有内容会认为是临时文件，
   可能会被删除。
@@ -142,7 +142,7 @@ class AppAsset extends AssetBundle
 这些属性值会分别传递给 [[yii\web\View::registerCssFile()]] 和 [[yii\web\View::registerJsFile()]] 方法，
 在[视图](structure-views.md) 调用这些方法包含CSS和JavaScript文件时。
 
-> 注意：在资源包类中设置的选项会应用到该包中 *每个* CSS/JavaScript 文件，
+> Note: 在资源包类中设置的选项会应用到该包中 *每个* CSS/JavaScript 文件，
   如果想对每个文件使用不同的选项，
   应创建不同的资源包并在每个包中使用一个选项集。
 
@@ -216,7 +216,7 @@ the `only` publishing option, only the `fonts` and `css` subdirectories will be 
    应设置 [[yii\web\AssetBundle::sourcePath|sourcePath]] 属性为`@bower/PackageName` 或 `@npm/PackageName`，
    因为根据别名Composer会安装Bower或NPM包到对应的目录下。
 
-> 注意：一些包会将它们分布式文件放到一个子目录中，对于这种情况，应指定子目录作为
+> Note: 一些包会将它们分布式文件放到一个子目录中，对于这种情况，应指定子目录作为
   [[yii\web\AssetBundle::sourcePath|sourcePath]]属性值，
   例如，[[yii\web\JqueryAsset]]使用 `@bower/jquery/dist` 而不是 `@bower/jquery`。
 
@@ -275,7 +275,7 @@ return [
 数组的键应为资源包的类名（最开头不要反斜杠），
 数组的值为对应的[配置数组](concept-configurations.md).
 
-> 提示：可以根据条件判断使用哪个资源，如下示例为如何在开发环境用`jquery.js`，
+> Tip: 可以根据条件判断使用哪个资源，如下示例为如何在开发环境用`jquery.js`，
 > 否则用`jquery.min.js`：
 >
 > ```php
@@ -334,7 +334,7 @@ return [
 （如果有的话前缀为 [[yii\web\AssetBundle::sourcePath]]），对应的值为替换原来的资源。
 例如，资源文件`my/path/to/jquery.js` 匹配键 `jquery.js`.
 
-> 注意：只有相对相对路径指定的资源对应到资源部署，替换的资源路径可以为绝对路径，
+> Note: 只有相对相对路径指定的资源对应到资源部署，替换的资源路径可以为绝对路径，
   也可为和[[yii\web\AssetManager::basePath]]相关的路径。
 
 
@@ -635,7 +635,7 @@ return [
 在`targets`选项中应指定这些包如何分组，
 如前述的可以指定一个或多个组。
 
-> 注意：由于在控制台应用别名 `@webroot` and `@web` 不可用，
+> Note: 由于在控制台应用别名 `@webroot` and `@web` 不可用，
 应在配置中明确指定它们。
 
 JavaScript文件会被合并压缩后写入到`js/all-{hash}.js`文件，
