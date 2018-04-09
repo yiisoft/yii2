@@ -244,7 +244,7 @@ class SiteController extends Controller
 
 例如`index` 转成 `actionIndex`, `hello-world` 转成 `actionHelloWorld`。
 
-> 注意：操作方法的名字*大小写敏感*，如果方法名称为`ActionIndex`不会认为是操作方法，
+> Note: 操作方法的名字*大小写敏感*，如果方法名称为`ActionIndex`不会认为是操作方法，
   所以请求`index`操作会返回一个异常，
   也要注意操作方法必须是公有的，
   私有或者受保护的方法不能定义成内联操作。

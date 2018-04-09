@@ -31,7 +31,7 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 接下来，你需要修改 `composer.json` 以配置你自己的模板。修改 `name`, `description`, `keywords`, `homepage`, `license`, 和 `support` 的值来描述你自己的模板。
 同样，调整 `require`, `require-dev`, `suggest` 和其他的参数来匹配你模板的环境需求。
 
-> 注意：在 `composer.json` 文件中，使用 `extra` 下的 `writeable` 参数来指定使用模板创建的应用程序后
+> Note: 在 `composer.json` 文件中，使用 `extra` 下的 `writeable` 参数来指定使用模板创建的应用程序后
 > 需要设置文件权限的文件列表。
 
 接下来，真正的修改你的应用程序默认的目录结构和内容。最后，更新 README 文件以符合你的模板。

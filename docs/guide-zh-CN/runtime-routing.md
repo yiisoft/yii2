@@ -266,7 +266,7 @@ The rest of the properties are optional. However, their configuration shown abov
   URLs. It is the main property that you should work with in order to create URLs whose format satisfies your
   particular application requirement.
 
-> 注意：In order to hide the entry script name in the created URLs, besides setting
+> Note: In order to hide the entry script name in the created URLs, besides setting
   [[yii\web\UrlManager::showScriptName|showScriptName]] to be false, you may also need to configure your Web server
   so that it can correctly identify which PHP script should be executed when a requested URL does not explicitly 
   specify one. If you are using Apache Web server, you may refer to the recommended configuration as described in the
@@ -331,7 +331,7 @@ of `<ParamName:RegExp>`, where `ParamName` specifies the parameter name and `Reg
 expression used to match parameter values. If `RegExp` is not specified, it means the parameter value should be
 a string without any slash.
 
-> 注意：You can only specify regular expressions for parameters. The rest part of a pattern is considered as plain text.
+> Note: You can only specify regular expressions for parameters. The rest part of a pattern is considered as plain text.
 
 When a rule is used to parse a URL, it will fill the associated parameters with values matching the corresponding
 parts of the URL, and these parameters will be made available in `$_GET` later by the `request` application component.
@@ -474,9 +474,9 @@ the following in the application configuration:
 The above configuration will allow the [[yii\web\UrlManager|URL manager]] to recognize requested URLs and also create
 URLs with `.html` as their suffix.
 
-> 提示：You may set `/` as the URL suffix so that the URLs all end with a slash.
+> Tip: You may set `/` as the URL suffix so that the URLs all end with a slash.
 
-> 注意：When you configure a URL suffix, if a requested URL does not have the suffix, it will be considered as
+> Note: When you configure a URL suffix, if a requested URL does not have the suffix, it will be considered as
   an unrecognized URL. This is a recommended practice for SEO (search engine optimization).
   
 Sometimes you may want to use different suffixes for different URLs. This can be achieved by configuring the
@@ -522,10 +522,10 @@ be parsed into `post/create`, while a request for `GET post/100` will be parsed 
 ]
 ```
 
-> 注意：If a URL rule contains HTTP method(s) in its pattern, the rule will only be used for parsing purpose.
+> Note: If a URL rule contains HTTP method(s) in its pattern, the rule will only be used for parsing purpose.
   It will be skipped when the [[yii\web\UrlManager|URL manager]] is called to create URLs.
 
-> 提示：To simplify the routing of RESTful APIs, Yii provides a special URL rule class [[yii\rest\UrlRule]]
+> Tip: To simplify the routing of RESTful APIs, Yii provides a special URL rule class [[yii\rest\UrlRule]]
   which is very efficient and supports some fancy features such as automatic pluralization of controller IDs.
   For more details, please refer to the [Routing](rest-routing.md) section about developing RESTful APIs.
 

@@ -67,7 +67,7 @@ use yii\helpers\Html;
 注意和调用 [[yii\base\Widget::widget()]] 返回渲染结果不同，
 调用 [[yii\base\Widget::begin()]] 方法返回一个可组建小部件内容的小部件实例。
 
-> 注意：当调用 [[yii\base\Widget::end()]] 的时候，一些小部件将使用 [输出缓冲](http://php.net/manual/en/book.outcontrol.php)
+> Note: 当调用 [[yii\base\Widget::end()]] 的时候，一些小部件将使用 [输出缓冲](http://php.net/manual/en/book.outcontrol.php)
 > 来调整封闭的内容。因此，当调用 [[yii\base\Widget::begin()]] 和
 > [[yii\base\Widget::end()]] 时，最好在同一个视图文件里。
 > 不遵循这个规则可能会导致意外的输出。

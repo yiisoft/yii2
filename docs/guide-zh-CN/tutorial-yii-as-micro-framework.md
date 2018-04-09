@@ -13,7 +13,7 @@ mkdir micro-app
 cd micro-app
 ```
 
-> 注意：需要一些 Composer 的知识才能继续。如果您还不知道如何使用 composer，请花些时间阅读 [Composer 指南](https://getcomposer.org/doc/00-intro.md)。
+> Note: 需要一些 Composer 的知识才能继续。如果您还不知道如何使用 composer，请花些时间阅读 [Composer 指南](https://getcomposer.org/doc/00-intro.md)。
 
 使用您最喜爱的编辑器在 `micro-app` 目录下创建 `composer.json` 文件并添加以下内容：
 

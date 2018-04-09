@@ -31,7 +31,7 @@ WHERE `last_name` = :last_name
 LIMIT 10
 ```
 
-> 提示：你平时更多的时候会使用 [[yii\db\Query]] 而不是 [yii\db\QueryBuilder]]。
+> Tip: 你平时更多的时候会使用 [[yii\db\Query]] 而不是 [yii\db\QueryBuilder]]。
   当你调用其中一个查询方法时，后者将会被前者隐式的调用。[[yii\db\QueryBuilder]]主要负责将
   DBMS 不相关的 [[yii\db\Query]] 对象转换成 DBMS 相关的 SQL 语句（例如，
   以不同的方式引用表或字段名称）。
@@ -278,7 +278,7 @@ you do not have to add parameters manually.
   当使用转义映射（又或者没有提供第三个操作数的时候），第二个操作数的值的前后
   将会被加上百分号。
 
-> 注意：当使用 PostgreSQL 的时候你还可以使用 [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)，
+> Note: 当使用 PostgreSQL 的时候你还可以使用 [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)，
 > 该方法对大小写不敏感。
 
 - `or like`: 用法和 `like` 操作符类似，区别在于当第二个操作数为数组时，
@@ -345,7 +345,7 @@ $query->filterWhere([
 将忽略在条件当中的[hash format](#hash-format)的空值。所以如果 `$email` 为空而 `$username` 
 不为空，那么上面的代码最终将生产如下 SQL `...WHERE username=:username`。 
 
-> 提示：当一个值为 null、空数组、空字符串或者一个只包含空白字符时，那么它将被判定为空值。
+> Tip: 当一个值为 null、空数组、空字符串或者一个只包含空白字符时，那么它将被判定为空值。
 
 类似于 [yii\db\Query::andWhere()|andWhere()]] 和 [[yii\db\Query::orWhere()|orWhere()]],
 你可以使用 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] 和 [[yii\db\Query::orFilterWhere()|orFilterWhere()]] 方法
@@ -388,7 +388,7 @@ PHP 的常量 `SORT_ASC` 指的是升序排列，`SORT_DESC` 指的则是降序�
 $query->orderBy('id ASC, name DESC');
 ```
 
-> 注意：当 `ORDER BY` 语句包含一些 DB 表达式的时候，你应该使用数组的格式。
+> Note: 当 `ORDER BY` 语句包含一些 DB 表达式的时候，你应该使用数组的格式。
 
 你可以调用 [yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `ORDER BY` 片断添加额外的子句。
 例如，
@@ -415,7 +415,7 @@ $query->groupBy(['id', 'status']);
 $query->groupBy('id, status');
 ```
 
-> 注意：当 `GROUP BY` 语句包含一些 DB 表达式的时候，你应该使用数组的格式。
+> Note: 当 `GROUP BY` 语句包含一些 DB 表达式的时候，你应该使用数组的格式。
 
 你可以调用 [yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `GROUP BY` 
 子句添加额外的字段。例如，
@@ -460,7 +460,7 @@ $query->limit(10)->offset(20);
 
 如果你指定了一个无效的 limit 或者 offset（例如，一个负数），那么它将会被忽略掉。
 
-> 提示：在不支持 `LIMIT` 和 `OFFSET` 的 DBMS 中（例如，MSSQL），
+> Tip: 在不支持 `LIMIT` 和 `OFFSET` 的 DBMS 中（例如，MSSQL），
   查询构建器将生成一条模拟 `LIMIT`/`OFFSET` 行为的 SQL 语句。
 
 
@@ -560,7 +560,7 @@ $row = (new \yii\db\Query())
     ->one();
 ```
 
-> 注意：[[yii\db\Query::one()|one()]] 方法只返回查询结果当中的第一条数据，
+> Note: [[yii\db\Query::one()|one()]] 方法只返回查询结果当中的第一条数据，
   条件语句中不会加上 `LIMIT 1` 条件。如果你清楚的知道查询将会只返回一行或几行数据
   （例如， 如果你是通过某些主键来查询的），这很好也提倡这样做。但是，如果查询结果
   有机会返回大量的数据时，那么你应该显示调用 `limit(1)` 方法，以改善性能。
@@ -634,7 +634,7 @@ $query = (new \yii\db\Query())
 该匿名函数将带有一个包含了当前行的数据的 `$row` 参数，并且返回用作当前行索引的
 标量值（译者注：就是简单的数值或者字符串，而不是其他复杂结构，例如数组）。
 
-> 注意：In contrast to query methods like [[yii\db\Query::groupBy()|groupBy()]] or [[yii\db\Query::orderBy()|orderBy()]]
+> Note: In contrast to query methods like [[yii\db\Query::groupBy()|groupBy()]] or [[yii\db\Query::orderBy()|orderBy()]]
 > which are converted to SQL and are part of the query, this method works after the data has been fetched from the database.
 > That means that only those column names can be used that have been part of SELECT in your query.
 > Also if you selected a column with table prefix, e.g. `customer.id`, the result set will only contain `id` so you have to call

@@ -199,7 +199,7 @@ $container->set('db', function ($container, $params, $config) {
 $container->set('pageCache', new FileCache);
 ```
 
-> 提示：如果依赖关系名称和依赖关系的定义相同，
+> Tip: 如果依赖关系名称和依赖关系的定义相同，
   则不需要通过 DI 容器注册该依赖关系。
 
 通过 `set()` 注册的依赖关系，在每次使用时都会产生一个新实例。
@@ -336,7 +336,7 @@ echo \yii\widgets\LinkPager::widget();
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 ```
 
-> 注意：Properties given in the widget call will always override the definition in the DI container.
+> Note: Properties given in the widget call will always override the definition in the DI container.
 > Even if you specify an array, e.g. `'options' => ['id' => 'mypager']` these will not be merged
 > with other options but replace them.
 
@@ -431,7 +431,7 @@ $reader = $container->get('app\storage\DocumentsReader);
 // Will create DocumentReader object with its dependencies as described in the config 
 ```
 
-> 提示：Container may be configured in declarative style using application configuration since version 2.0.11. 
+> Tip: Container may be configured in declarative style using application configuration since version 2.0.11.
 Check out the [Application Configurations](concept-configurations.md#application-configurations) subsection of
 the [Configurations](concept-configurations.md) guide article.
 
@@ -473,7 +473,7 @@ You might notice `Instance::of('tempFileStorage')` notation. It means, that the 
 will implicitly provide a dependency registered with the name of `tempFileStorage` and pass it as the first argument 
 of `app\storage\DocumentsWriter` constructor.
 
-> 注意：[[yii\di\Container::setDefinitions()|setDefinitions()]] and [[yii\di\Container::setSingletons()|setSingletons()]]
+> Note: [[yii\di\Container::setDefinitions()|setDefinitions()]] and [[yii\di\Container::setSingletons()|setSingletons()]]
   methods are available since version 2.0.11.
   
 Another step on configuration optimization is to register some dependencies as singletons. 

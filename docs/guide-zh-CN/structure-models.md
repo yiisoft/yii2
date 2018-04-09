@@ -490,7 +490,7 @@ public function fields()
 }
 ```
 
-> 警告：由于模型的所有属性会被包含在导出数组，最好检查数据确保没包含敏感数据，
+> Warning: 由于模型的所有属性会被包含在导出数组，最好检查数据确保没包含敏感数据，
 > 如果有敏感数据，应覆盖 `fields()` 方法过滤掉，
 > 在上述列子中，我们选择过滤掉
 > `auth_key`, `password_hash` and `password_reset_token`。

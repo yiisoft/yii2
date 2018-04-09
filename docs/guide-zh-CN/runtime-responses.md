@@ -152,7 +152,7 @@ public function actionInfo()
 }
 ```
 
-> 注意：如果创建你自己的响应对象，将不能在应用配置中设置 `response` 组件，尽管如此，
+> Note: 如果创建你自己的响应对象，将不能在应用配置中设置 `response` 组件，尽管如此，
   可使用 [依赖注入](concept-di-container.md) 
   应用通用配置到你新的响应对象。
 

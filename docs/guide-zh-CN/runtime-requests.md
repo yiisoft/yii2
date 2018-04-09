@@ -123,7 +123,7 @@ if ($headers->has('User-Agent')) { /* 这是一个 User-Agent 头 */ }
 这个方法通过 [[yii\web\Request::acceptableLanguages|acceptableLanguages]] 
 在你的应用中所支持的语言列表里进行比较筛选，返回最适合的语言。
 
-> 提示：你也可以使用 [[yii\filters\ContentNegotiator|ContentNegotiator]] 
+> Tip: 你也可以使用 [[yii\filters\ContentNegotiator|ContentNegotiator]]
   过滤器进行动态确定哪些内容类型和语言应该在响应中使用。
   这个过滤器实现了上面介绍的内容协商的属性和方法。
 
