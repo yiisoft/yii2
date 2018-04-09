@@ -161,7 +161,7 @@ Pjax::end();
 
 В `jQuery.serializeArray()` имеются определённые проблемы
 [при работе с файлами](https://github.com/jquery/jquery/issues/2321) и
-[значениями кнопом типа submit](https://github.com/jquery/jquery/issues/2321).
+[значениями кнопок типа submit](https://github.com/jquery/jquery/issues/2321).
 Они не будут исправлены и признаны устаревшими в пользу класса`FormData` из HTML5.
 
 Это означет, что поддержка файлов и значений submit-кнопок через AJAX или виджет
