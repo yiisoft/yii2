@@ -50,8 +50,8 @@ class MyBehavior extends Behavior
 
 > Tip: 在行为内部可以通过 [[yii\base\Behavior::owner]] 属性访问行为已附加的组件。
 
-> Note: In case [[yii\base\Behavior::__get()]] and/or [[yii\base\Behavior::__set()]] method of behavior is overridden you
-need to override [[yii\base\Behavior::canGetProperty()]] and/or [[yii\base\Behavior::canSetProperty()]] as well.
+> Note: 如果 [[yii\base\Behavior::__get()]] 和/或 [[yii\base\Behavior::__set()]] 行为方法被覆盖，
+> 则需要覆盖 [[yii\base\Behavior::canGetProperty()]] 和/或 [[yii\base\Behavior::canSetProperty()]]。
 
 处理事件
 -------
@@ -242,7 +242,7 @@ $behaviors = $component->getBehaviors();
 $component->detachBehavior('myBehavior1');
 ```
 
-也可以移除**全部**行为：
+也可以移除*全部*行为：
 
 ```php
 $component->detachBehaviors();
@@ -344,12 +344,12 @@ $user->touch('login_time');
 
 行为是可配置的，而 traits 则不可行。
 
-Behaviors can customize the code execution of a component by responding to its events.
+行为可以通过响应事件来定制组件的代码执行。
 
-When there can be name conflicts among different behaviors attached to the same component, the conflicts are
-automatically resolved by prioritizing the behavior attached to the component first.
-Name conflicts caused by different traits requires manual resolution by renaming the affected
-properties or methods.
+当附属于同一组件的不同行为之间可能存在名称冲突时，
+通过优先考虑附加到该组件的行为，
+自动解决冲突。由不同 traits 引起的名称冲突需要通过
+重命名受影响的属性或方法进行手动解决。
 
 
 ### 使用 Traits 的原因 <span id="pros-for-traits"></span>
