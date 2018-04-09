@@ -34,7 +34,7 @@ $name = $request->post('name', '');
 // 等价于: $name = isset($_POST['name']) ? $_POST['name'] : '';
 ```
 
-> 信息：建议你像上面那样通过 `request` 组件来获取请求参数，而不是
+> Info: 建议你像上面那样通过 `request` 组件来获取请求参数，而不是
 直接访问 `$_GET` 和 `$_POST`。
 这使你更容易编写测试用例，因为你可以伪造数据来创建一个模拟请求组件。
 
@@ -52,7 +52,7 @@ $params = $request->bodyParams;
 $param = $request->getBodyParam('id');
 ```
 
-> 信息：不同于 `GET` 参数，`POST`，`PUT`，`PATCH` 等等这些提交上来的参数是在请求体中被发送的。
+> Info: 不同于 `GET` 参数，`POST`，`PUT`，`PATCH` 等等这些提交上来的参数是在请求体中被发送的。
 当你通过上面介绍的方法访问这些参数的时候，`request` 组件会解析这些参数。
 你可以通过配置 [[yii\web\Request::parsers]] 属性来自定义怎样解析这些参数。
   
@@ -123,7 +123,7 @@ if ($headers->has('User-Agent')) { /* 这是一个 User-Agent 头 */ }
 这个方法通过 [[yii\web\Request::acceptableLanguages|acceptableLanguages]] 
 在你的应用中所支持的语言列表里进行比较筛选，返回最适合的语言。
 
-> 提示：你也可以使用 [[yii\filters\ContentNegotiator|ContentNegotiator]] 
+> Tip: 你也可以使用 [[yii\filters\ContentNegotiator|ContentNegotiator]] 
   过滤器进行动态确定哪些内容类型和语言应该在响应中使用。
   这个过滤器实现了上面介绍的内容协商的属性和方法。
 

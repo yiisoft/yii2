@@ -77,7 +77,7 @@
 这是因为 [[yii\rest\UrlRule]] 能够为他们使用的末端全自动复数化控制器 ID。
 您可以通过设置 [[yii\rest\UrlRule::pluralize]] 为 false 来禁用此行为。
 
-> 信息：控制器的 ID 复数化由 [[yii\helpers\Inflector::pluralize()]] 完成。该方法遵循
+> Info: 控制器的 ID 复数化由 [[yii\helpers\Inflector::pluralize()]] 完成。该方法遵循
   特定的规则. 举个例子, 单词 `box` 会被复数化为 `boxes` 而不是 `boxs`。
 
 如果自动复数化不能满足你的需求，你也可以配置

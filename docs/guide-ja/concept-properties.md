@@ -17,8 +17,8 @@ $object->label = trim($label);
 この問題を解決するために、Yii は *getter* メソッドと *setter* メソッドをベースにしたプロパティ定義をサポートする、 [[yii\base\BaseObject]] 基底クラスを提供します。
 クラスがその機能を必要とするなら、 [[yii\base\BaseObject]] またはその子クラスを継承しましょう。
 
-> Note: Yiiのフレームワークのほぼすべてのコアクラスは、 [[yii\base\BaseObject]] またはその子クラスを継承しています。
-  これは、コアクラスに getter または setter があれば、それをプロパティのように使用できることを意味します。
+> Note: Yiiのフレームワークのほぼすべてのコア・クラスは、 [[yii\base\BaseObject]] またはその子クラスを継承しています。
+  これは、コア・クラスに getter または setter があれば、それをプロパティのように使用できることを意味します。
 
 getter メソッドは、名前が `get` で始まるメソッドで、setter メソッドは、`set` で始まるメソッドです。
 `get` または `set` 接頭辞の後の名前で、プロパティ名を定義します。次のコードに示すように、たとえば、`getLabel()` という getter と `setLabel()` という setter は、

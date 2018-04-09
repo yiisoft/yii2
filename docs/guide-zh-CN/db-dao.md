@@ -60,7 +60,7 @@ return [
 
 之后你就可以通过语句 `Yii::$app->db` 来使用数据库连接了。
 
-> 提示：如果你的应用需要访问多个数据库，你可以配置多个 DB 应用组件。
+> Tip: 如果你的应用需要访问多个数据库，你可以配置多个 DB 应用组件。
 
 配置数据库连接时， 你应该总是通过 [[yii\db\Connection::dsn|dsn]] 属性来指明它的数据源名称 (DSN) 。
 不同的数据库有着不同的 DSN 格式。
@@ -95,11 +95,11 @@ return [
 你常常需要配置 [[yii\db\Connection::username|username]] 和 [[yii\db\Connection::password|password]]。
 请参考 [[yii\db\Connection]] 来获取完整的可配置属性列表。
 
-> 信息：当你实例化一个 DB Connection 时，
+> Info: 当你实例化一个 DB Connection 时，
 直到你第一次执行 SQL 或者你明确地调用 [[yii\db\Connection::open()|open()]] 方法时，
 才建立起实际的数据库连接。
 
-> 提示：有时你可能想要在建立起数据库连接时立即执行一些语句来初始化一些环境变量 (比如设置时区或者字符集),
+> Tip: 有时你可能想要在建立起数据库连接时立即执行一些语句来初始化一些环境变量 (比如设置时区或者字符集),
 > 你可以通过为数据库连接的 [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] 事件注册一个事件处理器来达到目的。
 > 你可以像这样直接在应用配置中注册处理器：
 >
@@ -147,7 +147,7 @@ $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
 
-> 注意：为了保持精度，
+> Note: 为了保持精度，
 > 即使对应的数据库列类型为数值型，
 > 所有从数据库取得的数据都被表现为字符串。
 
@@ -428,12 +428,12 @@ Yii 提供了以下常量作为常用的隔离级别
 在本文写作之时，
 只有 MSSQL 和 SQLite 受这些限制的影响。
 
-> 注意：SQLite 只支持两种隔离级别，
+> Note: SQLite 只支持两种隔离级别，
 所以你只能使用 `READ UNCOMMITTED` 和 `SERIALIZABLE`。
 使用其他级别将导致异常的抛出。
 
 
-> 注意：PostgreSQL 不支持在事务开启前设定隔离级别，
+> Note: PostgreSQL 不支持在事务开启前设定隔离级别，
 因此，你不能在开启事务时直接指定隔离级别。
 你必须在事务开始后再调用 [[yii\db\Transaction::setIsolationLevel()]]。
 
@@ -535,7 +535,7 @@ $rows = Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 
-> 信息：通过调用 [[yii\db\Command::execute()]] 来执行的语句都被视为写操作，
+> Info: 通过调用 [[yii\db\Command::execute()]] 来执行的语句都被视为写操作，
   而其他所有通过调用 [[yii\db\Command]] 中任一 "query" 方法来执行的语句都被视为读操作。
   你可以通过 `Yii::$app->db->slave` 来获取当前有效的从库连接。
 
@@ -550,7 +550,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 一个“挂掉的”服务器将会被记住，
 因此，在一个 yii\db\Connection::serverRetryInterval 内将不再试着连接该服务器。
 
-> 信息：在上面的配置中，
+> Info: 在上面的配置中，
   每个从库都共同地指定了 10 秒的连接超时时间，
   这意味着，如果一个从库在 10 秒内不能被连接上，
   它将被视为“挂掉的”。
@@ -604,7 +604,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 唯一的差别是，
 如果没有主库可用，将抛出一个异常。
 
-> 注意： 当你使用 [[yii\db\Connection::masters|masters]] 属性来配置一个或多个主库时，
+> Note: 当你使用 [[yii\db\Connection::masters|masters]] 属性来配置一个或多个主库时，
   所有其他指定数据库连接的属性 (例如 `dsn`, `username`, `password`) 与 `Connection` 对象本身将被忽略。
 
 默认情况下，

@@ -72,4 +72,4 @@ echo $pagination->createUrl(100);
 echo $pagination->createUrl(101);
 ```
 
-> 提示：创建分页对象时，你可以通过配置 [[yii\data\Pagination::pageParam|pageParam]] 属性来自定义查询参数 `page` 的名字。
+> Tip: 创建分页对象时，你可以通过配置 [[yii\data\Pagination::pageParam|pageParam]] 属性来自定义查询参数 `page` 的名字。

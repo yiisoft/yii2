@@ -191,7 +191,7 @@ $module = MyModuleClass::getInstance();
 如果模块没有被请求，该方法会返回空，注意不需要手动创建一个模块类，
 因为手动创建的和Yii处理请求时自动创建的不同。
 
-> 信息：当开发模块时，你不能假定模块使用固定的ID，
+> Info: 当开发模块时，你不能假定模块使用固定的ID，
   因为在应用或其他没模块中，模块可能会对应到任意的ID，
   为了获取模块ID，应使用上述代码获取模块实例，
   然后通过`$module->id`获取模块ID。
@@ -265,7 +265,7 @@ class Module extends \yii\base\Module
 例如`forum/admin/dashboard/index` 代表
 在模块`forum`中子模块`admin`中`dashboard`控制器的`index`操作。
 
-> 信息：[[yii\base\Module::getModule()|getModule()]] 方法只返回子模块的直属的
+> Info: [[yii\base\Module::getModule()|getModule()]] 方法只返回子模块的直属的
 父模块。 [[yii\base\Application::loadedModules]] 保存了已加所有载模块的属性, 包括两者的子模块和
 嵌套模块，并用他们的类名进行索引。
 

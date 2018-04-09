@@ -35,7 +35,7 @@ Yii 提供了一整套的迁移命令行工具，通过这些工具你可以：
 在这一章节，我们将详细的介绍如何使用这些工具来完成各种各样的任务。
 你也可以通过 `yii help migrate` 命令来获取每一种工具的具体使用方法。
 
-> 注意：迁移不仅仅只作用于数据库表，
+> Note: 迁移不仅仅只作用于数据库表，
   它同样会调整现有的数据来适应新的表单、创建 RBAC 分层、又或者是清除缓存。
 
 
@@ -55,7 +55,7 @@ yii migrate/create <name>
 yii migrate/create create_news_table
 ```
 
-> 注意：因为 `name` 参数会被用来生成迁移的类名的一部分，
+> Note: 因为 `name` 参数会被用来生成迁移的类名的一部分，
   所以该参数应当只包含字母、数字和下划线。
 
 如上命令将会在 `@app/migrations` 目录下创建一个新的名为 `m150101_185401_create_news_table.php` 的 PHP 类文件。
@@ -129,7 +129,7 @@ class m150101_185401_create_news_table extends \yii\db\Migration
 }
 ```
 
-> 注意：并不是所有迁移都是可恢复的。例如，如果 `up()` 方法删除了表中的一行数据，
+> Note: 并不是所有迁移都是可恢复的。例如，如果 `up()` 方法删除了表中的一行数据，
   这将无法通过 `down()`  方法来恢复这条数据。有时候，你也许只是懒得去执行 `down()` 方法了，
   因为它在恢复数据库迁移方面并不是那么的通用。在这种情况下，
   你应当在 `down()` 方法中返回 `false` 来表明这个 migration 是无法恢复的。
@@ -149,7 +149,7 @@ migration 的基类 [[yii\db\Migration]] 通过 [[yii\db\Migration::db|db]] 属�
 在使用抽象类型的时候，你可以添加额外的约束条件。在上面的例子当中，
 `NOT NULL` 被添加到 `Schema::TYPE_STRING` 当中来指定该字段不能为空。
 
-> 提示：抽象类型和实体类型之间的映射关系是由每个具体的 `QueryBuilder` 
+> Tip: 抽象类型和实体类型之间的映射关系是由每个具体的 `QueryBuilder` 
   类当中的 [[yii\db\QueryBuilder::$typeMap|$typeMap]] 属性所指定的。
   
 Since version 2.0.6, you can make use of the newly introduced schema builder which provides more convenient way of defining column schema.
@@ -296,7 +296,7 @@ class m150811_220037_create_post extends Migration
 }
 ```
 
-> 注意：primary key is added automatically and is named `id` by default. If you want to use another name you may
+> Note: primary key is added automatically and is named `id` by default. If you want to use another name you may
 > specify it explicitly like `--fields="name:primaryKey"`.
 
 #### Foreign keys
@@ -647,7 +647,7 @@ class m150101_185401_create_news_table extends Migration
 在上面的例子当中，我们在 `safeUp()` 方法当中首先创建了一张表，然后插入了一条数据；而在 `safeDown()` 方法当中，
 我们首先删除那一行数据，然后才删除那张表。
 
-> 注意：并不是所有的数据库都支持事务。有些数据库查询也是不能被放倒事务里面的。
+> Note: 并不是所有的数据库都支持事务。有些数据库查询也是不能被放倒事务里面的。
   在 [implicit commit](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html) 章节当中有相关的例子可以参考。
   如果遇到这种情况的话，那么你应该使用 `up()` 和 `down()` 方法进行替代。
 
@@ -689,11 +689,11 @@ class m150101_185401_create_news_table extends Migration
 * [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]]: adding comment to table
 * [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]]: dropping comment from table
 
-> 提示：[[yii\db\Migration]] 并没有提供数据库的查询方法。
+> Tip: [[yii\db\Migration]] 并没有提供数据库的查询方法。
   这是因为通常你是不需要去数据库把数据一行一行查出来再显示出来的。
   另外一个原因是你完全可以使用强大的 [Query Builder 查询构建器](db-query-builder.md) 来构建和查询。  
 
-> 注意：When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
+> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
 > for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
 > to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
 > So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
@@ -714,14 +714,14 @@ yii migrate
 如果其中任意一个迁移提交失败了，
 那么这条命令将会退出并停止剩下的那些还未执行的迁移。
 
-> 提示：In case you don't have command line at your server you may try [web shell](https://github.com/samdark/yii2-webshell)
+> Tip: In case you don't have command line at your server you may try [web shell](https://github.com/samdark/yii2-webshell)
 > extension.
 
 对于每一个成功提交的迁移，这条命令都会在一个叫做 `migration` 
 的数据库表中插入一条包含应用程序成功提交迁移的记录，
 该记录将帮助迁移工具判断哪些迁移已经提交，哪些还没有提交。
 
-> 提示：迁移工具将会自动在数据库当中创建 `migration` 表，
+> Tip: 迁移工具将会自动在数据库当中创建 `migration` 表，
   该数据库是在该命令的 [[yii\console\controllers\MigrateController::db|db]] 选项当中指定的。
   默认情况下，是由 `db` [application component](structure-application-components.md) 指定的。
   
@@ -758,7 +758,7 @@ yii migrate/down     # revert the most recently applied migration 还原最近�
 yii migrate/down 3   # revert the most 3 recently applied migrations 还原最近三次提交的迁移
 ```
 
-> 注意：并不是所有的迁移都能被还原。
+> Note: 并不是所有的迁移都能被还原。
   尝试还原这类迁移将可能导致报错甚至是终止所有的还原进程。
 
 
@@ -772,7 +772,7 @@ yii migrate/redo        # redo the last applied migration 重做最近一次提�
 yii migrate/redo 3      # redo the last 3 applied migrations 重做最近三次提交的迁移
 ```
 
-> 注意：如果一个迁移是不能被还原的，那么你将无法对它进行重做。
+> Note: 如果一个迁移是不能被还原的，那么你将无法对它进行重做。
 
 
 ## 列出迁移 <span id="listing-migrations"></span>
@@ -919,7 +919,7 @@ class m150101_185401_create_news_table extends Migration
 如果有多个迁移都使用到了同一个数据库，那么建议你创建一个迁移的基类，里面包含上述的 `init()` 代码。
 然后每个迁移类都继承这个基类就可以了。
 
-> 提示：除了在 [[yii\db\Migration::db|db]] 参数当中进行设置以外， 
+> Tip: 除了在 [[yii\db\Migration::db|db]] 参数当中进行设置以外， 
   你还可以通过在迁移类中创建新的数据库连接来操作不同的数据库。
   然后通过这些连接再使用 [DAO 方法](db-dao.md) 来操作不同的数据库。
 
@@ -934,3 +934,4 @@ yii migrate --migrationPath=@app/migrations/db2 --db=db2
 
 第一条命令将会把 `@app/migrations/db1` 目录下的迁移提交到 `db1` 数据库当中，
 第二条命令则会把 `@app/migrations/db2` 下的迁移提交到 `db2` 数据库当中，以此类推。
+

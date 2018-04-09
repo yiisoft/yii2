@@ -1,6 +1,6 @@
 <p align="center">
     <a href="http://www.yiiframework.com/" target="_blank">
-        <img src="http://static.yiiframework.com/files/logo/yii.png" width="400" alt="Yii Framework" />
+        <img src="https://www.yiiframework.com/files/logo/yii.png" width="400" alt="Yii Framework" />
     </a>
 </p>
 
@@ -44,25 +44,25 @@ Installation
 
 - The minimum required PHP version of Yii is PHP 5.4.
 - It works best with PHP 7.
-- [Follow the Definitive Guide](http://www.yiiframework.com/doc-2.0/guide-start-installation.html)
+- [Follow the Definitive Guide](https://www.yiiframework.com/doc-2.0/guide-start-installation.html)
 in order to get step by step instructions.
 
 Documentation
 -------------
 
-- A [Definitive Guide](http://www.yiiframework.com/doc-2.0/guide-index.html) and 
-a [Class Reference](http://www.yiiframework.com/doc-2.0/index.html) cover every detail
+- A [Definitive Guide](https://www.yiiframework.com/doc/guide/2.0) and 
+a [Class Reference](https://www.yiiframework.com/doc/api/2.0) cover every detail
 of the framework.
-- There is a [PDF version](http://stuff.cebe.cc/yii2-guide.en.pdf) of the Definitive Guide
+- There is a [PDF version](https://www.yiiframework.com/doc/download/yii-guide-2.0-en.pdf) of the Definitive Guide
 and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which is updated every 15 minutes.
-- For Yii 1.1 users, there is [Upgrading from Yii 1.1](docs/guide/intro-upgrade-from-v1.md)
+- For Yii 1.1 users, there is [Upgrading from Yii 1.1](https://www.yiiframework.com/doc/guide/2.0/en/intro-upgrade-from-v1)
 to get an idea of what has changed in 2.0.
 
 Community
 ---------
 
-- Participate in [discussions at forums](http://www.yiiframework.com/forum/).
-- [Community Slack](https://join.slack.com/t/yii/shared_invite/MjIxMjMxMTk5MTU1LTE1MDE3MDAwMzMtM2VkMTMyMjY1Ng) and [Chat in IRC](http://www.yiiframework.com/chat/).
+- Participate in [discussions at forums](https://www.yiiframework.com/forum/).
+- [Community Slack](https://join.slack.com/t/yii/shared_invite/MjIxMjMxMTk5MTU1LTE1MDE3MDAwMzMtM2VkMTMyMjY1Ng) and [Chat in IRC](https://www.yiiframework.com/chat/).
 - Follow us on [Facebook](https://www.facebook.com/groups/yiitalk/), [Twitter](https://twitter.com/yiiframework)
 and [GitHub](https://github.com/yiisoft/yii2).
 - Check [other communities](https://github.com/yiisoft/yii2/wiki/communities).
@@ -81,7 +81,7 @@ You may join us and:
 
 ### Reporting Security issues
 
-Please refer to a [special page at the website](http://www.yiiframework.com/security/)
+Please refer to a [special page at the website](https://www.yiiframework.com/security/)
 describing proper workflow for security issue reports.
 
 ### Directory Structure
@@ -100,7 +100,7 @@ Acknowledging or citing Yii 2 is as important as direct contributions.
 **In presentations**
 
 If you are giving a presentation or talk featuring work that makes use of Yii 2 and would like to acknowledge it,
-we suggest using [our logo](http://www.yiiframework.com/logo/) on your title slide.
+we suggest using [our logo](https://www.yiiframework.com/logo/) on your title slide.
 
 **In projects**
 

@@ -1,9 +1,9 @@
 フィルタ
 ========
 
-フィルタは、[コントローラアクション](structure-controllers.md#actions) の前 および/または 後に走るオブジェクトです。
-例えば、アクセスコントロールフィルタはアクションの前に走って、アクションが特定のエンドユーザだけにアクセスを許可するものであることを保証します。
-また、コンテント圧縮フィルタはアクションの後に走って、レスポンスのコンテントをエンドユーザに送出する前に圧縮します。
+フィルタは、[コントローラ・アクション](structure-controllers.md#actions) の前 および/または 後に走るオブジェクトです。
+例えば、アクセス・コントロール・フィルタはアクションの前に走って、アクションが特定のエンド・ユーザだけにアクセスを許可するものであることを保証します。
+また、コンテント圧縮フィルタはアクションの後に走って、レスポンスのコンテントをエンド・ユーザに送出する前に圧縮します。
 
 一つのフィルタは、前フィルタ (アクションの *前* に適用されるフィルタのロジック) および/または 後フィルタ (アクションの *後* に適用されるロジック) から構成することが出来ます。
 
@@ -30,13 +30,13 @@ public function behaviors()
 }
 ```
 
-デフォルトでは、コントローラクラスの中で宣言されたフィルタは、そのコントローラの *全て* のアクションに適用されます。
+デフォルトでは、コントローラ・クラスの中で宣言されたフィルタは、そのコントローラの *全て* のアクションに適用されます。
 しかし、[[yii\base\ActionFilter::only|only]] プロパティを構成することによって、フィルタがどのアクションに適用されるべきかを明示的に指定することも出来ます。
 上記の例では、 `HttpCache` フィルタは、`index` と `view` のアクションに対してのみ適用されています。
 また、[[yii\base\ActionFilter::except|except]] プロパティを構成して、いくつかのアクションをフィルタされないように除外することも可能です。
 
 コントローラのほかに、[モジュール](structure-modules.md) または [アプリケーション](structure-applications.md) でもフィルタを宣言することが出来ます。
-そのようにした場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティを上で説明したように構成しない限り、そのフィルタは、モジュールまたはアプリケーションに属する *全て* のコントローラアクションに適用されます。
+そのようにした場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティを上で説明したように構成しない限り、そのフィルタは、モジュールまたはアプリケーションに属する *全て* のコントローラ・アクションに適用されます。
 
 > Note: モジュールやアプリケーションでフィルタを宣言する場合、[[yii\base\ActionFilter::only|only]] と [[yii\base\ActionFilter::except|except]] のプロパティでは、アクション ID ではなく、[ルート](structure-controllers.md#routes) を使わなければなりません。
 なぜなら、モジュールやアプリケーションのスコープでは、アクション ID だけでは完全にアクションを指定することが出来ないからです。
@@ -98,7 +98,7 @@ Yii はよく使われる一連のフィルタを提供しており、それら�
 
 ### [[yii\filters\AccessControl|AccessControl]] <span id="access-control"></span>
 
-AccessControl は、一組の [[yii\filters\AccessControl::rules|規則]] に基づいて、シンプルなアクセスコントロールを提供するものです。
+AccessControl は、一組の [[yii\filters\AccessControl::rules|規則]] に基づいて、シンプルなアクセス・コントロールを提供するものです。
 具体的に言うと、アクションが実行される前に、AccessControl はリストされた規則を調べて、現在のコンテキスト変数 (例えば、ユーザの IP アドレスや、ユーザのログイン状態など) に最初に合致するものを見つけます。
 そして、合致した規則によって、リクエストされたアクションの実行を許可するか拒否するかを決定します。
 合致する規則がなかった場合は、アクセスは拒否されます。
@@ -127,17 +127,17 @@ public function behaviors()
 }
 ```
 
-アクセスコントロール一般についての詳細は [権限](security-authorization.md) の節を参照してください。
+アクセス・コントロール一般についての詳細は [権限](security-authorization.md) のセクションを参照してください。
 
 
-### 認証メソッドフィルタ <span id="auth-method-filters"></span>
+### 認証メソッド・フィルタ <span id="auth-method-filters"></span>
 
-認証メソッドフィルタは、[HTTP Basic 認証](http://ja.wikipedia.org/wiki/Basic%E8%AA%8D%E8%A8%BC)、
+認証メソッド・フィルタは、[HTTP Basic 認証](http://ja.wikipedia.org/wiki/Basic%E8%AA%8D%E8%A8%BC)、
 [OAuth 2](http://oauth.net/2/) など、様々なメソッドを使ってユーザを認証するために使われるものです。
-これらのフィルタクラスはすべて `yii\filters\auth` 名前空間の下にあります。
+これらのフィルタ・クラスはすべて `yii\filters\auth` 名前空間の下にあります。
 
-次の例は、[[yii\filters\auth\HttpBasicAuth]] の使い方を示すもので、HTTP Basic 認証に基づくアクセストークンを使ってユーザを認証しています。
-これを動作させるためには、あなたの [[yii\web\User::identityClass|ユーザアイデンティティクラス]]
+次の例は、[[yii\filters\auth\HttpBasicAuth]] の使い方を示すもので、HTTP Basic 認証に基づくアクセス・トークンを使ってユーザを認証しています。
+これを動作させるためには、あなたの [[yii\web\User::identityClass|ユーザ・アイデンティティ・クラス]]
 が [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] メソッドを実装していなければならないことに注意してください。
 
 ```php
@@ -153,8 +153,8 @@ public function behaviors()
 }
 ```
 
-認証メソッドフィルタは RESTful API を実装するときに使われるのが通例です。
-詳細については、RESTful の [認証](rest-authentication.md) の節を参照してください。
+認証メソッド・フィルタは RESTful API を実装するときに使われるのが通例です。
+詳細については、RESTful の [認証](rest-authentication.md) のセクションを参照してください。
 
 
 ### [[yii\filters\ContentNegotiator|ContentNegotiator]] <span id="content-negotiator"></span>
@@ -186,8 +186,8 @@ public function behaviors()
 }
 ```
 
-レスポンス形式と言語は [アプリケーションのライフサイクル](structure-applications.md#application-lifecycle) のもっと早い段階で決定される必要があることがよくあります。
-このため、ContentNegotiator はフィルタの他に、[ブートストラップコンポーネント](structure-applications.md#bootstrap) としても使うことができるように設計されています。
+レスポンス形式と言語は [アプリケーションのライフ・サイクル](structure-applications.md#application-lifecycle) のもっと早い段階で決定される必要があることがよくあります。
+このため、ContentNegotiator はフィルタの他に、[ブートストラップ・コンポーネント](structure-applications.md#bootstrap) としても使うことができるように設計されています。
 例えば、次のように、ContentNegotiator を [アプリケーションの構成情報](structure-applications.md#application-configurations) の中で構成することが出来ます。
 
 ```php
@@ -211,13 +211,13 @@ use yii\web\Response;
 ];
 ```
 
-> Info: 望ましいコンテントタイプと言語がリクエストから決定できない場合は、[[formats]] および [[languages]] に挙げられている最初の形式と言語が使用されます。
+> Info: 望ましいコンテント・タイプと言語がリクエストから決定できない場合は、[[formats]] および [[languages]] に挙げられている最初の形式と言語が使用されます。
 
 
 
 ### [[yii\filters\HttpCache|HttpCache]] <span id="http-cache"></span>
 
-HttpCache は `Last-Modified` および `Etag` の HTTP ヘッダを利用して、クライアント側のキャッシュを実装するものです。
+HttpCache は `Last-Modified` および `Etag` の HTTP ヘッダを利用して、クライアント・サイドのキャッシュを実装するものです。
 
 ```php
 use yii\filters\HttpCache;
@@ -237,14 +237,14 @@ public function behaviors()
 }
 ```
 
-HttpCache に関する詳細は [HTTP キャッシュ](caching-http.md) の節を参照してください。
+HttpCache に関する詳細は [HTTP キャッシュ](caching-http.md) のセクションを参照してください。
 
 
 ### [[yii\filters\PageCache|PageCache]] <span id="page-cache"></span>
 
-PageCache はサーバ側におけるページ全体のキャッシュを実装するものです。
+PageCache はサーバ・サイドにおけるページ全体のキャッシュを実装するものです。
 次の例では、PageCache が `index` アクションに適用されて、最大 60 秒間、または、`post` テーブルのエントリ数が変化するまでの間、ページ全体をキャッシュしています。
-さらに、このページキャッシュは、選択されたアプリケーションの言語に従って、違うバージョンのページを保存するようにしています。
+さらに、このページ・キャッシュは、選択されたアプリケーションの言語に従って、違うバージョンのページを保存するようにしています。
 
 ```php
 use yii\filters\PageCache;
@@ -269,19 +269,19 @@ public function behaviors()
 }
 ```
 
-PageCache の使用に関する詳細は [ページキャッシュ](caching-page.md) の節を参照してください。
+PageCache の使用に関する詳細は [ページ・キャッシュ](caching-page.md) のセクションを参照してください。
 
 
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
-RateLimiter は [リーキーバケットアルゴリズム](http://ja.wikipedia.org/wiki/%E3%83%AA%E3%83%BC%E3%82%AD%E3%83%BC%E3%83%90%E3%82%B1%E3%83%83%E3%83%88) に基づいてレート制限のアルゴリズムを実装するものです。
+RateLimiter は [リーキー・バケット・アルゴリズム](http://ja.wikipedia.org/wiki/%E3%83%AA%E3%83%BC%E3%82%AD%E3%83%BC%E3%83%90%E3%82%B1%E3%83%83%E3%83%88) に基づいてレート制限のアルゴリズムを実装するものです。
 主として RESTful API を実装するときに使用されます。
-このフィルタの使用に関する詳細は [レート制限](rest-rate-limiting.md) の節を参照してください。
+このフィルタの使用に関する詳細は [レート制限](rest-rate-limiting.md) のセクションを参照してください。
 
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
 
-VerbFilter は、HTTP リクエストメソッド (HTTP 動詞) がリクエストされたアクションによって許可されているかどうかをチェックするものです。
+VerbFilter は、HTTP リクエスト・メソッド (HTTP 動詞) がリクエストされたアクションによって許可されているかどうかをチェックするものです。
 許可されていない場合は、HTTP 405 例外を投げます。
 次の例では、VerbFilter が宣言されて、CRUD アクションに対して許可されるメソッドの典型的なセットを指定しています。
 
@@ -307,10 +307,10 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-クロスオリジンリソース共有 [CORS](https://developer.mozilla.org/ja/docs/HTTP_access_control) とは、ウェブページにおいて、さまざまなリソース (例えば、フォントや JavaScript など) を、それを生成するドメイン以外のドメインからリクエストすることを可能にするメカニズムです。
+クロス・オリジン・リソース共有 [CORS](https://developer.mozilla.org/ja/docs/HTTP_access_control) とは、ウェブ・ページにおいて、さまざまなリソース (例えば、フォントや JavaScript など) を、それを生成するドメイン以外のドメインからリクエストすることを可能にするメカニズムです。
 特に言えば、JavaScript の AJAX 呼出しが使用することが出来る XMLHttpRequest メカニズムです。
-このような「クロスドメイン｣のリクエストは、このメカニズムに拠らなければ、同一生成元のセキュリティポリシーによって、ウェブブラウザから禁止されるはずのものです。
-CORS は、ブラウザとサーバが交信して、クロスドメインのリクエストを許可するか否かを決定する方法を定義するものです。
+このような「クロス・ドメイン｣のリクエストは、このメカニズムに拠らなければ、同一生成元のセキュリティ・ポリシーによって、ウェブ・ブラウザから禁止されるはずのものです。
+CORS は、ブラウザとサーバが交信して、クロス・ドメインのリクエストを許可するか否かを決定する方法を定義するものです。
 
 [[yii\filters\Cors|Cors フィルタ]] は、CORS ヘッダが常に送信されることを保証するために、Authentication / Authorization のフィルタよりも前に定義されなければなりません。
 
@@ -328,7 +328,7 @@ public function behaviors()
 }
 ```
 
-あなたの API の [[yii\rest\ActiveController]] クラスに CORS フィルタを追加したい場合は、[REST コントローラ](rest-controllers.md#cors) の節も参照して下さい。
+あなたの API の [[yii\rest\ActiveController]] クラスに CORS フィルタを追加したい場合は、[REST コントローラ](rest-controllers.md#cors) のセクションも参照して下さい。
 
 Cors のフィルタリングは [[yii\filters\Cors::$cors|$cors]] プロパティを使ってチューニングすることが出来ます。
 
@@ -340,7 +340,7 @@ Cors のフィルタリングは [[yii\filters\Cors::$cors|$cors]] プロパテ�
   全てのヘッダを意味する `['*']` または特定のヘッダを示す `['X-Request-With']` が設定可能。デフォルトは `['*']`。
 * `cors['Access-Control-Allow-Credentials']`: 現在のリクエストをクレデンシャルを使ってすることが出来るかどうかを定義。
   `true`、`false` または `null` (設定なし) が設定可能。デフォルトは `null`。
-* `cors['Access-Control-Max-Age']`: プリフライトリクエストの寿命を定義。デフォルトは `86400`。
+* `cors['Access-Control-Max-Age']`: プリフライト・リクエストの寿命を定義。デフォルトは `86400`。
 
 次の例は、生成元 `http://www.myserver.net` に対する `GET`、`HEAD` および `OPTIONS` のメソッドによる CORS を許可するものです。
 

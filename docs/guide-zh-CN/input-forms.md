@@ -19,7 +19,7 @@
 
 在客户端显示的表单，大多数情况下都有一个相应的[模型](structure-models.md),用来在服务器上验证其输入的数据(可在[输入验证](input-validation.md)一节获取关于验证的细节)。当创建一个基于模型的表单时，第一步是定义模型本身。该模型可以是一个基于[活动记录](db-active-record.md)的类，表示数据库中的数据，也可以是一个基于通用模型的类（继承自[[yii\base\Model]]），来获取任意的输入数据，如登录表单。
 
-> Tip: 如果一个表单的输入域与数据库的字段不匹配，或者它存在只适用于它的特殊的格式或者方法，则最好为它创建一个单独的继承自[[yii\base\Model]]的模型。
+> Tip:  如果一个表单的输入域与数据库的字段不匹配，或者它存在只适用于它的特殊的格式或者方法，则最好为它创建一个单独的继承自[[yii\base\Model]]的模型。
 
 在接下来的例子中，我们展示了通用模型如何用于登录表单：
 
@@ -89,7 +89,7 @@ input 输入框的 name 属性会自动地根据 [[yii\base\Model::formName()|fo
 例如，对于在上面的例子中 `username` 输入字段的 name 属性将是 `LoginForm[username]`。
 这种命名规则使所有属性的数组的登录表单在服务器端的 `$_POST['LoginForm']` 数组中是可用的。
 
-> 提示：If you have only one model in a form and want to simplify the input names you may skip the array part by
+> Tip: If you have only one model in a form and want to simplify the input names you may skip the array part by
 > overriding the [[yii\base\Model::formName()|formName()]] method of the model to return an empty string.
 > This can be useful for filter models used in the [GridView](output-data-widgets.md#grid-view) to create nicer URLs.
 
@@ -116,12 +116,12 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 [[yii\helpers\Html::submitButton()|Html::submitButton()]]。
 
 
-> 提示：如果你正在你的应用程序中使用 Twitter Bootstrap CSS 你可以使用[[yii\bootstrap\ActiveForm]] 
+> Tip: 如果你正在你的应用程序中使用 Twitter Bootstrap CSS 你可以使用[[yii\bootstrap\ActiveForm]] 
 > 来代替 [[yii\widgets\ActiveForm]]。
 > 前者继承自后者并在生成表单字段时使用 Bootstrap 特有的样式。
 
 
-> 提示：为了设计带星号的表单字段，你可以使用下面的 CSS：
+> Tip: 为了设计带星号的表单字段，你可以使用下面的 CSS：
 >
 > ```css
 > div.required label:after {
@@ -179,7 +179,7 @@ Pjax::begin([
     ActiveForm::end();
 Pjax::end();
 ```
-> 提示：Be careful with the links inside the [[yii\widgets\Pjax|Pjax]] widget since
+> Tip: Be careful with the links inside the [[yii\widgets\Pjax|Pjax]] widget since
 > the response  will also be rendered inside the widget. To prevent this, use the
 > `data-pjax="0"` HTML attribute.
 
