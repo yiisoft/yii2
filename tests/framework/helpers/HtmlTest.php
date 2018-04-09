@@ -1501,24 +1501,31 @@ EOD;
      */
     public function validAttributeNamesProvider()
     {
-        return [
+        $data = [
             ['asd]asdf.asdfa[asdfa', 'asdf.asdfa'],
             ['a', 'a'],
             ['[0]a', 'a'],
             ['a[0]', 'a'],
             ['[0]a[0]', 'a'],
             ['[0]a.[0]', 'a.'],
-
-            // Unicode checks.
-            ['ä', 'ä'],
-            ['ä', 'ä'],
-            ['asdf]öáöio..[asdfasdf', 'öáöio..'],
-            ['öáöio', 'öáöio'],
-            ['[0]test.ööößß.d', 'test.ööößß.d'],
-            ['ИІК', 'ИІК'],
-            [']ИІК[', 'ИІК'],
-            ['[0]ИІК[0]', 'ИІК'],
         ];
+
+        if (getenv('TRAVIS_PHP_VERSION') !== 'nightly') {
+            $data = array_merge($data, [
+                ['ä', 'ä'],
+                ['ä', 'ä'],
+                ['asdf]öáöio..[asdfasdf', 'öáöio..'],
+                ['öáöio', 'öáöio'],
+                ['[0]test.ööößß.d', 'test.ööößß.d'],
+                ['ИІК', 'ИІК'],
+                [']ИІК[', 'ИІК'],
+                ['[0]ИІК[0]', 'ИІК'],
+            ]);
+        } else {
+            $this->markTestIncomplete("Unicode characters check skipped for 'nightly' PHP version because \w does not work with these as expected. Check later with stable version.");
+        }
+
+        return $data;
     }
 
     /**
@@ -1542,12 +1549,7 @@ EOD;
      */
     public function testAttributeNameValidation($name, $expected)
     {
-        if (!isset($expected)) {
-            $this->expectException('yii\base\InvalidParamException');
-            Html::getAttributeName($name);
-        } else {
-            $this->assertEquals($expected, Html::getAttributeName($name));
-        }
+        $this->assertEquals($expected, Html::getAttributeName($name));
     }
 
     /**
@@ -1557,7 +1559,7 @@ EOD;
      */
     public function testAttributeNameException($name)
     {
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidArgumentException');
         Html::getAttributeName($name);
     }
 
@@ -1590,10 +1592,10 @@ EOD;
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Attribute name must contain word characters only.
      */
-    public function testGetAttributeValueInvalidParamException()
+    public function testGetAttributeValueInvalidArgumentException()
     {
         $model = new HtmlTestModel();
         Html::getAttributeValue($model, '-');
@@ -1625,20 +1627,20 @@ EOD;
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Attribute name must contain word characters only.
      */
-    public function testGetInputNameInvalidParamExceptionAttribute()
+    public function testGetInputNameInvalidArgumentExceptionAttribute()
     {
         $model = new HtmlTestModel();
         Html::getInputName($model, '-');
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessageRegExp /(.*)formName\(\) cannot be empty for tabular inputs.$/
      */
-    public function testGetInputNameInvalidParamExceptionFormName()
+    public function testGetInputNameInvalidArgumentExceptionFormName()
     {
         $model = $this->getMockBuilder('yii\\base\\Model')->getMock();
         $model->method('formName')->willReturn('');

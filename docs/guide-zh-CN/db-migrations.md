@@ -934,3 +934,4 @@ yii migrate --migrationPath=@app/migrations/db2 --db=db2
 
 第一条命令将会把 `@app/migrations/db1` 目录下的迁移提交到 `db1` 数据库当中，
 第二条命令则会把 `@app/migrations/db2` 下的迁移提交到 `db2` 数据库当中，以此类推。
+

@@ -108,6 +108,9 @@ Yii supports a wide range of cache storage. The following is a summary:
   server, no dedicated load balancers, etc.).
 * [[yii\caching\DbCache]]: uses a database table to store cached data. To use this cache, you must
   create a table as specified in [[yii\caching\DbCache::cacheTable]].
+* [[yii\caching\ArrayCache]]: provides caching for the current request only by storing the values in an array.
+  For enhanced performance of ArrayCache, you can disable serialization of the stored data by setting
+  [[yii\caching\ArrayCache::$serializer]] to `false`.
 * [[yii\caching\DummyCache]]: serves as a cache placeholder which does no real caching.
   The purpose of this component is to simplify the code that needs to check the availability of cache.
   For example, during development or if the server doesn't have actual cache support, you may configure

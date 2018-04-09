@@ -279,7 +279,7 @@ $count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
 ```
 
 
-### Usadno Prefijos de Tabla <span id="using-table-prefix"></span>
+### Usando Prefijos de Tabla <span id="using-table-prefix"></span>
 
 Si la mayoría de tus tablas de BD utilizan algún prefijo común en sus tablas, puedes usar la función de prefijo de tabla soportado
 por Yii DAO.

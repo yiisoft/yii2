@@ -40,7 +40,7 @@ echo Yii::$app->formatter->format('2014-01-01', 'date');
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
-> Note: `formatter` 组件用来格式化最终展示给用户的数据. 
+> Note: `formatter` 组件用来格式化最终展示给用户的数据。 
 > 如果你想要将用户的输入进行格式化或者只是将一些别的日期数据进行格式化（这里的格式化说的是机器可读的格式化），不要使用这个组件，
 > 而应该使用 [[yii\validators\DateValidator]] 和 [[yii\validators\NumberValidator]] 进行用户输入格式化
 > 关于日期格式化，戳这里 [date()](http://php.net/manual/en/function.date.php)

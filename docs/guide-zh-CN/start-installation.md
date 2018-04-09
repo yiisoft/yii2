@@ -55,29 +55,29 @@ by running `composer self-update`.
 
 ### Installing Yii <span id="installing-from-composer"></span>
 
-With Composer installed, you can install Yii application template by running the following command
-under a Web-accessible folder:
+安装 Composer 后，您可以通过在 Web 可访问的文件夹下运行以下命令来
+安装Yii应用程序模板：
 
 ```bash
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-This will install the latest stable version of Yii application template in a directory named `basic`.
-You can choose a different directory name if you want.
+这将在一个名为 `basic` 的目录中安装Yii应用程序模板的最新稳定版本。
+如果需要，您可以选择不同的目录名称。
 
 > Info: If the `composer create-project` command fails you may also refer to the 
 > [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
 > for common errors. When you have fixed the error, you can resume the aborted installation
 > by running `composer update` inside of the `basic` directory.
 
-> Tip: If you want to install the latest development version of Yii, you may use the following command instead,
-> which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
+> Tip: 如果你想安装 Yii 的最新开发版本，可以使用以下命令代替，
+> 它添加了一个 [stability 选项](https://getcomposer.org/doc/04-schema.md#minimum-stability)：
 >
 > ```bash
 > composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 > ```
 >
-> Note that the development version of Yii should not be used for production as it may break your running code.
+> 请注意，Yii的开发版本不应该用于生产，因为它可能会破坏您的运行代码。
 
 
 通过归档文件安装 <span id="installing-from-archive-file"></span>

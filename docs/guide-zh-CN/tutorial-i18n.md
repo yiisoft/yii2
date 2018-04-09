@@ -253,7 +253,7 @@ echo \Yii::t('app', 'Today is {0, date, short}', time());
 echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
 ```
 
-[格式化参考](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html)。
+[格式化参考](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details)。
 
 
 #### 时间 <span id="time"></span>
@@ -276,7 +276,7 @@ echo \Yii::t('app', 'It is {0, time, short}', time());
 echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
 ```
 
-[格式化参考](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html)。
+[格式化参考](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details)。
 
 
 #### 拼写 <span id="spellout"></span>
