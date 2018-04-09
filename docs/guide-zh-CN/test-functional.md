@@ -1,7 +1,7 @@
 功能测试
 ================
 
-> 注意：这部分正在开发中。
+> Note: 这部分正在开发中。
 
 - http://codeception.com/docs/05-FunctionalTests
 

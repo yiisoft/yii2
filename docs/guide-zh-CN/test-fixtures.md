@@ -40,7 +40,7 @@ class UserFixture extends ActiveFixture
 > 或 [[yii\test\ActiveFixture::modelClass]] 属性来指定具体的表。如果是后者，
 > 表名会从 `modleClass` 指定的 `ActiveRecord` 中获取。
 
-> 注意：[[yii\test\ActiveFixture]] 仅限于 SQL 数据库，对于 NoSQL 数据库，
+> Note: [[yii\test\ActiveFixture]] 仅限于 SQL 数据库，对于 NoSQL 数据库，
 > Yii 提供以下 `ActiveFixture` 类：
 >
 > - Mongo DB: [[yii\mongodb\ActiveFixture]]
@@ -213,7 +213,7 @@ data\
 
 这样，你就可以避免在测试用例之间产生冲突，并根据你的需要使用它们。
 
-> 注意：在以上的例子中，Fixture 文件只用于示例目的。在真实的环境下，你需要根据你的 Fixture 类继承的基类来决定它们的命名。
+> Note: 在以上的例子中，Fixture 文件只用于示例目的。在真实的环境下，你需要根据你的 Fixture 类继承的基类来决定它们的命名。
 比如，如果你从 [[yii\test\ActiveFixture]] 继承了一个 DB Fixture，
 你需要用数据库表名字作为 Fixture 的数据文件名；如果你从 [[yii\mongodb\ActiveFixture]] 继承了一个 MongoDB Fixture，
 你需要使用 collection 名作为文件名。
@@ -225,7 +225,7 @@ data\
 总结
 -------
 
-> 注意：本节内容正在开发中。
+> Note: 本节内容正在开发中。
 
 在上面，我们描述了如何定义和使用 Fixture，在下面，我们将总结出一个
 标准地运行与 DB 有关的单元测试的规范工作流程：

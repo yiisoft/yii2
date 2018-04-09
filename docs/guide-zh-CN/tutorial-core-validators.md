@@ -38,7 +38,7 @@ public function rules()
 - `strict`：是否要求待测输入必须严格匹配 `trueValue` 或 `falseValue`。默认为 `false`。
 
 
-> 注意：因为通过 HTML 表单传递的输入数据都是字符串类型，所以一般情况下你都需要保持
+> Note: 因为通过 HTML 表单传递的输入数据都是字符串类型，所以一般情况下你都需要保持
   [[yii\validators\BooleanValidator::strict|strict]] 属性为假。
 
 
@@ -241,7 +241,7 @@ function foo($model, $attribute) {
 - `allowMessageFromRule`：是否使用规则中指定的验证器返回的错误信息。默认值为 `true`。
   如果设置为 `false`，将使用 `message` 作为错误信息。
 
-> 注意：如果被验证的值不是一个数组，将被认为验证失败，
+> Note: 如果被验证的值不是一个数组，将被认为验证失败，
   并且返回 `message` 设定的错误信息。
   
   
@@ -566,7 +566,7 @@ IPv4 地址 `192.168.10.128` 同样时允许的，因为这条规则在约束规
   该验证器会用一个更加宽松的规则检验输入值是否为空。
   当设置了 `requiredValue` 属性时，若该属性为 true，输入值与 `requiredValue` 的比对会同时检查数据类型。
 
-> 注意：如何判断待测值是否为空，被写在另外一个话题的
+> Note: 如何判断待测值是否为空，被写在另外一个话题的
   [处理空输入](input-validation.md#handling-empty-inputs)章节。
 
 

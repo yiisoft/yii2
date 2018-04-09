@@ -18,7 +18,7 @@ Yii::setAlias('@foo', '/path/to/foo');
 Yii::setAlias('@bar', 'http://www.example.com');
 ```
 
-> 注意：别名所指向的文件路径或 URL 不一定是真实存在的文件或资源。
+> Note: 别名所指向的文件路径或 URL 不一定是真实存在的文件或资源。
 
 可以通过在一个别名后面加斜杠 `/` 和一至多个路径分段生成新别名（无需调用 [[Yii::setAlias()]]）。
 们把通过 [[Yii::setAlias()]] 定义的别名称为**根别名**，
@@ -62,7 +62,7 @@ echo Yii::getAlias('@foo/bar/file.php');  // 输出：/path/to/foo/bar/file.php
 由衍生别名所解析出的文件路径和 URL 
 是通过替换掉衍生别名中的根别名部分得到的。
 
-> 注意：[[Yii::getAlias()]] 并不检查结果路径/URL 所指向的资源是否真实存在。
+> Note: [[Yii::getAlias()]] 并不检查结果路径/URL 所指向的资源是否真实存在。
 
 
 根别名可能也会包含斜杠 `/`。

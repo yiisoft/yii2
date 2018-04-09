@@ -1,5 +1,5 @@
 片段缓存
-================
+=======
 
 片段缓存指的是缓存页面内容中的某个片段。例如，一个页面显示了逐年销售额的摘要表格，
 可以把表格缓存下来，以消除每次请求都要重新生成表格的耗时。
@@ -47,7 +47,7 @@ if ($this->beginCache($id, ['duration' => 3600])) {
 }
 ```
 
-If the option is not set, it will take the default value 60, which means the cached content will expire in 60 seconds.
+如果该选项未设置，则它将采用默认值 60，这意味着缓存的内容将在 60 秒后过期。
 
 
 ### 依赖 <span id="dependencies"></span>
@@ -175,3 +175,5 @@ if ($this->beginCache($id1)) {
 代码的返回值被看作是动态内容。这段代码将在每次请求时都执行，
 无论其外层的片段缓存是否被存储。
 
+> Note: 从版本 2.0.14 开始，动态内容 API 通过 [[yii\base\DynamicContentAwareInterface]] 接口及其 [[yii\base\DynamicContentAwareTrait]] 特质开放。
+  举个例子，你可以参考 [[yii\widgets\FragmentCache]] 类。

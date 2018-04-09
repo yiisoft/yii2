@@ -6,7 +6,7 @@ Html 帮助类
 这种做法是非常高效的。但是，如果这些超文本标记是动态生成的，那么如果没有额外的辅助工具，这个过程将会变得复杂。
 Yii 通过 HTML  帮助类来提供生成超文本标记的方法。这个帮助类包含有一系列的用于处理通用的 HTML 标签和其属性以及内容的静态方法。
 
-> 注意：如果你的超文本标记接近静态的，那么最好是直接使用 HTML。
+> Note: 如果你的超文本标记接近静态的，那么最好是直接使用 HTML。
 没有必要把所有的超文本标记都用 HTML 辅助类来生成。
 
 
@@ -166,7 +166,7 @@ $decodedUserName = Html::decode($userName);
 处理表单标签是大量的重复性劳动并且易错。因此，
 Yii 也提供了一系列的方法来辅助处理表单标签。
 
-> 注意： 考虑在处理 models 以及需要验证的情形下，使用 [[yii\widgets\ActiveForm|ActiveForm]] 组件。
+> Note: 考虑在处理 models 以及需要验证的情形下，使用 [[yii\widgets\ActiveForm|ActiveForm]] 组件。
 
 
 ### 创建表单 <span id="creating-forms"></span>

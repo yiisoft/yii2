@@ -89,7 +89,7 @@ input 输入框的 name 属性会自动地根据 [[yii\base\Model::formName()|fo
 例如，对于在上面的例子中 `username` 输入字段的 name 属性将是 `LoginForm[username]`。
 这种命名规则使所有属性的数组的登录表单在服务器端的 `$_POST['LoginForm']` 数组中是可用的。
 
-> 提示：If you have only one model in a form and want to simplify the input names you may skip the array part by
+> Tip: If you have only one model in a form and want to simplify the input names you may skip the array part by
 > overriding the [[yii\base\Model::formName()|formName()]] method of the model to return an empty string.
 > This can be useful for filter models used in the [GridView](output-data-widgets.md#grid-view) to create nicer URLs.
 
@@ -116,12 +116,12 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 [[yii\helpers\Html::submitButton()|Html::submitButton()]]。
 
 
-> 提示：如果你正在你的应用程序中使用 Twitter Bootstrap CSS 你可以使用[[yii\bootstrap\ActiveForm]] 
+> Tip: 如果你正在你的应用程序中使用 Twitter Bootstrap CSS 你可以使用[[yii\bootstrap\ActiveForm]] 
 > 来代替 [[yii\widgets\ActiveForm]]。
 > 前者继承自后者并在生成表单字段时使用 Bootstrap 特有的样式。
 
 
-> 提示：为了设计带星号的表单字段，你可以使用下面的 CSS：
+> Tip: 为了设计带星号的表单字段，你可以使用下面的 CSS：
 >
 > ```css
 > div.required label:after {
@@ -179,7 +179,7 @@ Pjax::begin([
     ActiveForm::end();
 Pjax::end();
 ```
-> 提示：Be careful with the links inside the [[yii\widgets\Pjax|Pjax]] widget since
+> Tip: Be careful with the links inside the [[yii\widgets\Pjax|Pjax]] widget since
 > the response  will also be rendered inside the widget. To prevent this, use the
 > `data-pjax="0"` HTML attribute.
 

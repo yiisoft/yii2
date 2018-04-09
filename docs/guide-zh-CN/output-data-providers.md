@@ -91,7 +91,7 @@ use yii\db\Query;
 $query = (new Query())->from('post')->where(['status' => 1]);
 ```
 
-> 注意：假如查询已经指定了 `orderBy` 从句，则终端用户给定的新的排序说明（通过 `sort` 来配置的）
+> Note: 假如查询已经指定了 `orderBy` 从句，则终端用户给定的新的排序说明（通过 `sort` 来配置的）
   将被添加到已经存在的从句中。任何已经存在的 `limit` 和 `offset` 从句都将被终端用户所请求的分页
   （通过 `pagination` 所配置的）所重写。
 
@@ -175,7 +175,7 @@ $provider = new ArrayDataProvider([
 $rows = $provider->getModels();
 ```
 
-> 注意：数组数据提供者与 [Active Data Provider](#active-data-provider) 和 [SQL Data Provider](#sql-data-provider) 这两者进行比较的话，
+> Note: 数组数据提供者与 [Active Data Provider](#active-data-provider) 和 [SQL Data Provider](#sql-data-provider) 这两者进行比较的话，
   会发现数组数据提供者没有后面那两个高效，这是因为数组数据提供者需要加载*所有*的数据到内存中。
 
 

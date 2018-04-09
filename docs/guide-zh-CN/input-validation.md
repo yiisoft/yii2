@@ -96,7 +96,7 @@ public function rules()
 方法里的激活特性，且它还必须与一或多个声明自
 `rules()` 里的激活规则相关联才会被验证。
 
-> 注意：It is handy to give names to rules i.e.
+> Note: It is handy to give names to rules i.e.
 > ```php
 > public function rules()
 > {
@@ -255,7 +255,7 @@ return [
     }]
 ```
 
-> 注意：对于绝大多数验证器而言，若其 [[yii\base\Validator::skipOnEmpty]] 属性为默认值
+> Note: 对于绝大多数验证器而言，若其 [[yii\base\Validator::skipOnEmpty]] 属性为默认值
   true，则它们不会对空值进行任何处理。也就是当他们的关联特性接收到空值时，相关验证会被直接略过。在
   [核心验证器](tutorial-core-validators.md) 之中，只有 `captcha`（验证码），`default`（默认值），
  `filter`（滤镜），`required`（必填），以及 `trim`（去首尾空格），这几个验证器会处理空输入。
@@ -279,7 +279,7 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> 注意：不是所有的验证器都支持这种形式的验证。比如 [unique（唯一性）](tutorial-core-validators.md#unique)核心验证器就就是一个例子，
+> Note: 不是所有的验证器都支持这种形式的验证。比如 [unique（唯一性）](tutorial-core-validators.md#unique)核心验证器就就是一个例子，
   它的设计初衷就是只作用于模型类内部的。
 
 若你需要针对一系列值执行多项验证，你可以使用 [[yii\base\DynamicModel]]
@@ -386,7 +386,7 @@ class MyForm extends Model
 }
 ```
 
-> 注意：缺省状态下，行内验证器不会在关联特性的输入值为空或该特性已经在其他验证中失败的情况下起效。
+> Note: 缺省状态下，行内验证器不会在关联特性的输入值为空或该特性已经在其他验证中失败的情况下起效。
   若你想要确保该验证器始终启用的话，你可以在定义规则时，酌情将 
   [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] 以及
   [[yii\validators\Validator::skipOnError|skipOnError]]属性设为 false，比如，
@@ -462,7 +462,7 @@ class EntryForm extends Model
 因为，它可以让用户更快速的得到错误信息，也因此可以提供更好的用户体验。
 你可以使用或自己实现除服务器端验证之外，**还能额外**客户端验证功能的验证器。
 
-> 信息：尽管客户端验证为加分项，但它不是必须项。它存在的主要意义在于给用户提供更好的客户体验。
+> Info: 尽管客户端验证为加分项，但它不是必须项。它存在的主要意义在于给用户提供更好的客户体验。
   正如“永远不要相信来自终端用户的输入信息”，也同样永远不要相信客户端验证。基于这个理由，
   你应该始终如前文所描述的那样，通过调用 [[yii\base\Model::validate()]] 
   方法执行服务器端验证。
@@ -582,7 +582,7 @@ JS;
 }
 ```
 
-> 提示：上述代码主要是演示了如何支持客户端验证。在具体实践中，
+> Tip: 上述代码主要是演示了如何支持客户端验证。在具体实践中，
 > 你可以使用 [in](tutorial-core-validators.md#in) 核心验证器来达到同样的目的。
 > 比如这样的验证规则：
 >
@@ -592,7 +592,7 @@ JS;
 > ]
 > ```
 
-> 提示：If you need to work with client validation manually i.e. dynamically add fields or do some custom UI logic, refer
+> Tip: If you need to work with client validation manually i.e. dynamically add fields or do some custom UI logic, refer
 > to [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
 > in Yii 2.0 Cookbook.
 
@@ -643,7 +643,7 @@ JS;
 }
 ```
 
-> 注意：The `resolve()` method must be called after the attribute has been validated. Otherwise the main form
+> Note: The `resolve()` method must be called after the attribute has been validated. Otherwise the main form
   validation will not complete.
 
 For simplicity, the `deferred` array is equipped with a shortcut method `add()` which automatically creates a Deferred
@@ -706,7 +706,7 @@ $form = ActiveForm::begin([
 ]);
 ```
 
-> 注意：When the `enableAjaxValidation` property is configured at both the input field level and the form level,
+> Note: When the `enableAjaxValidation` property is configured at both the input field level and the form level,
   the former will take precedence.
 
 You also need to prepare the server so that it can handle the AJAX validation requests.
@@ -722,7 +722,7 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 The above code will check whether the current request is an AJAX. If yes, it will respond to
 this request by running the validation and returning the errors in JSON format.
 
-> 信息：You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
+> Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
   However, the AJAX validation feature described here is more systematic and requires less coding effort.
 
 When both `enableClientValidation` and `enableAjaxValidation` are set to true, AJAX validation request will be triggered
