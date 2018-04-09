@@ -139,7 +139,7 @@ class User extends ActiveRecord implements IdentityInterface
 }
 ```
 
-> 注意：不要混淆 `user` 认证类和用户组件 [[yii\web\User]]。前者是实现
+> Note: 不要混淆 `user` 认证类和用户组件 [[yii\web\User]]。前者是实现
   认证逻辑的类，通常用关联了
   持久性存储的用户信息的AR模型 [Active Record](db-active-record.md) 实现。后者是负责管理用户认证状态的
   应用组件。

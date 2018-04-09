@@ -46,7 +46,7 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 });
 ```
 
-> 注意：[[yii\caching\Cache::getOrSet()|getOrSet()]] 方法也支持缓存持续性和缓存依赖。
+> Note: [[yii\caching\Cache::getOrSet()|getOrSet()]] 方法也支持缓存持续性和缓存依赖。
   请看[缓存过期](#cache-expiration) 和 [缓存依赖](#cache-dependencies) 来了解详细信息。
 
 
@@ -95,7 +95,7 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 ],
 ```
 
-> 提示：你可以注册多个缓存组件，很多依赖缓存的类默认调用
+> Tip: 你可以注册多个缓存组件，很多依赖缓存的类默认调用
 名为 `cache` 的组件（例如 [[yii\web\UrlManager]]）。
 
 
@@ -134,7 +134,7 @@ Yii 支持一系列缓存存储器，概况如下：
   作为底层缓存媒介。
 
 
-> 提示：你可以在同一个应用程序中使用不同的缓存存储器。一个常见的策略是使用基于内存的缓存存储器
+> Tip: 你可以在同一个应用程序中使用不同的缓存存储器。一个常见的策略是使用基于内存的缓存存储器
   存储小而常用的数据（例如：统计数据），使用基于文件或数据库的缓存存储器
   存储大而不太常用的数据（例如：网页内容）。
 
@@ -157,9 +157,9 @@ Yii 支持一系列缓存存储器，概况如下：
 * [[yii\caching\Cache::delete()|delete()]]：通过一个键，删除缓存中对应的值。
 * [[yii\caching\Cache::flush()|flush()]]：删除缓存中的所有数据。
 
-> 注意：千万别直接用`false`布尔值当做数据项缓存，因为[[yii\caching\Cache::get()|get()]]方法用
-`false`作为返回值来表名对应的缓存项不存在。
-你可以把`false`放到一个数组里然后缓存这个数组来避免上述的混淆问题。 
+> Note: 千万别直接用 `false` 布尔值当做数据项缓存，因为 [[yii\caching\Cache::get()|get()]] 方法用
+`false` 作为返回值来表名对应的缓存项不存在。
+你可以把 `false` 放到一个数组里然后缓存这个数组来避免上述的混淆问题。 
 
 有些缓存存储器如 MemCache，APC 支持以批量模式取回缓存值，这样可以节省取回缓存数据的开支。 
 [[yii\caching\Cache::multiGet()|multiGet()]]
@@ -198,7 +198,7 @@ $value2 = $cache['var2'];  // 等价于： $value2 = $cache->get('var2');
 
 如你所见，该键包含了可唯一指定一个数据库表所需的所有必要信息。
 
-> 注意：通过 [[yii\caching\Cache::multiSet()|multiSet()]] 或者 [[yii\caching\Cache::multiAdd()|multiAdd()]] 方法缓存的数据项的键，它的类型只能是字符串或整型，
+> Note: 通过 [[yii\caching\Cache::multiSet()|multiSet()]] 或者 [[yii\caching\Cache::multiAdd()|multiAdd()]] 方法缓存的数据项的键，它的类型只能是字符串或整型，
 如果你想使用较为复杂的键，可以通过
 [[yii\caching\Cache::set()|set()]] 或者 [[yii\caching\Cache::add()|add()]] 方法来存储。
 
@@ -279,7 +279,7 @@ $data = $cache->get($key);
 - [[yii\caching\TagDependency]]：将缓存的数据项与一个或多个标签相关联。 您可以通过调用
   [[yii\caching\TagDependency::invalidate()]] 来检查指定标签的缓存数据项是否有效。
 
-> 注意：避免对带有缓存依赖的缓存项使用 [[yii\caching\Cache::exists()|exists()]] 方法，
+> Note: 避免对带有缓存依赖的缓存项使用 [[yii\caching\Cache::exists()|exists()]] 方法，
 因为它不检测缓存依赖（如果有的话）是否有效，所以调用 [[yii\caching\Cache::get()|get()]]
 可能返回 `false` 而调用 [[yii\caching\Cache::exists()|exists()]] 却返回 `true`。
   
@@ -310,7 +310,7 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> 信息：有些 DBMS （例如：[MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)）
+> Info: 有些 DBMS （例如：[MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)）
 也支持数据库服务器端的查询缓存。
 你可以选择使用任一查询缓存机制。
 上文所述的查询缓存的好处在于你可以指定更灵活的缓存依赖因此可能更加高效。
@@ -428,6 +428,6 @@ $result = $db->cache(function ($db) {
  (可以传递多个用空格分开的缓存组件）
  - `yii cache/flush-all`: 冲刷应用中所有的缓存组件
 
-> 信息：默认情况下，控制台应用使用独立的配置文件。
+> Info: 默认情况下，控制台应用使用独立的配置文件。
 所以，为了上述命令发挥作用，请确保Web应用和控制台应用配置相同的缓存组件。
 

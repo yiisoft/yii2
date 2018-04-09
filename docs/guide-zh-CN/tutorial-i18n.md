@@ -167,7 +167,7 @@ In case of a single positional parameter its value could be specified without wr
 echo \Yii::t('app', 'Price: {0}', $price);
 ```
 
-> 提示：大多数情况下你应该使用名称占位符。
+> Tip: 大多数情况下你应该使用名称占位符。
 > 这是因为参数名称可以让翻译者更好的理解要被翻译的消息。
 
 
@@ -182,7 +182,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 ```
 
-> 注意：参数的格式化需要安装 [intl PHP 扩展](http://www.php.net/manual/en/intro.intl.php)。
+> Note: 参数的格式化需要安装 [intl PHP 扩展](http://www.php.net/manual/en/intro.intl.php)。
 
 可以使用缩写的形式或完整的形式来格式化占位符：
 
@@ -191,7 +191,7 @@ short form: {PlaceholderName, ParameterType}
 full form: {PlaceholderName, ParameterType, ParameterStyle}
 ```
 
-> 注意：If you need to use special characters such as `{`, `}`, `'`, `#`, wrap them in `'`:
+> Note: If you need to use special characters such as `{`, `}`, `'`, `#`, wrap them in `'`:
 > 
 ```php
 echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count,plural,other{''count'' value is # '#{}'}}", ['count' => 3]);
@@ -369,7 +369,7 @@ echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are 
 而不是一个原始消息，除非设置应用程序的
 [[yii\base\Application::$sourceLanguage|源语言]] 为 `ru-RU`。
 
-> 注意：The above example Russian message is mainly used as a translated message, not an original message, unless you set
+> Note: The above example Russian message is mainly used as a translated message, not an original message, unless you set
 > the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU` and translating from Russian.
 >
 > When a translation is not found for an original message specified in `Yii::t()` call, the plural rules for the
@@ -554,7 +554,7 @@ class Menu extends Widget
 你可以简单地使用类映射的同名文件而不是使用 `fileMap` 。
 现在你直接可以使用 `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` 。
 
-> 提示：对于小部件也可以使用 i18n 视图，并一样以控制器的规则来应用它们。
+> Tip: 对于小部件也可以使用 i18n 视图，并一样以控制器的规则来应用它们。
 
 
 ### 翻译框架信息
@@ -625,7 +625,7 @@ class TranslationEventHandler
 
 如果 [[yii\i18n\MissingTranslationEvent::translatedMessage]] 是由事件处理程序设置，它将显示翻译结果。
 
-> 注意：每个消息源会单独处理它缺少的翻译。如果是使用多个消息源，并希望他们把缺少的翻译以同样的方式来处理，
+> Note: 每个消息源会单独处理它缺少的翻译。如果是使用多个消息源，并希望他们把缺少的翻译以同样的方式来处理，
 > 你应该给它们每一个消息源指定相应的事件处理程序。
 
 
@@ -677,7 +677,7 @@ Also, you may use options to dynamically change parameters for extraction.
 每当你调用 [[yii\base\View::renderFile()]] 或任何其它方法 (如 [[yii\base\Controller::render()]]) 来渲染 `views/site/index.php` 视图，
 它最终会使用所翻译的 `views/site/ru-RU/index.php`。
 
-> 注意：如果 [[yii\base\Application::$language|目标语言]] 跟 [[yii\base\Application::$sourceLanguage|源语言]] 相同，
+> Note: 如果 [[yii\base\Application::$language|目标语言]] 跟 [[yii\base\Application::$sourceLanguage|源语言]] 相同，
 在翻译视图的存在下，将呈现原始视图。
 
 

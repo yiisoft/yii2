@@ -13,7 +13,7 @@ Yii当然也提供了其它模板叫
 [高级的应用程序模板](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-zh-CN/README.md)，
 它是更好应用于在一个团队开发环境中去开发多层级的应用程序。
 
-> 信息：这个基本的应用程序模板是适合于开发90%的Web应用程序。
+> Info: 这个基本的应用程序模板是适合于开发90%的Web应用程序。
   它不同于高级的应用程序模板主要地在如何使它们的代码是有组织的。
   如果你是刚接触Yii，我们强烈建议你坚持使用简单并有足够的功能的基础的应用程序模板。
 
@@ -146,7 +146,7 @@ In order to prevent assets installation via Composer, add the following lines to
 php yii serve
 ```
 
-> 注意：默认情况下Https-server将监听8080。可是如果这个端口已经使用或者你想通过这个方式运行多个应用程序，你可以指定使用哪些端口。
+> Note: 默认情况下Https-server将监听8080。可是如果这个端口已经使用或者你想通过这个方式运行多个应用程序，你可以指定使用哪些端口。
 只加上 --port 参数：
 
 ```bash
@@ -180,7 +180,7 @@ http://localhost:8080/
 配置 Web 服务器 <span id="configuring-web-servers"></span>
 -----------------------
 
-> 提示：如果你现在只是要试用 Yii 而不是将其部署到生产环境中，
+> Tip: 如果你现在只是要试用 Yii 而不是将其部署到生产环境中，
   本小节可以跳过。
 
 通过上述方法安装的应用程序在 Windows，Max OS X，
@@ -195,11 +195,11 @@ URL `http://www.example.com/index.php` 访问而不是 `http://www.example.com/b
 可能你还会想隐藏掉 URL 中的 `index.php`，具体细节在 [URL 解析和生成](runtime-url-handling.md)一章中有介绍，
 你将学到如何配置 Apache 或 Nginx 服务器实现这些目标。
 
-> 信息：将 `basic/web` 设置为文档根目录(document root)，可以防止终端用户访问 `basic/web` 相邻目录中
+> Info: 将 `basic/web` 设置为文档根目录(document root)，可以防止终端用户访问 `basic/web` 相邻目录中
 的私有应用代码和敏感数据文件。
 禁止对其他目录的访问是一个不错的安全改进。
 
-> 信息：如果你的应用程序将来要运行在共享虚拟主机环境中，
+> Info: 如果你的应用程序将来要运行在共享虚拟主机环境中，
 没有修改其 Web 服务器配置的权限，你依然可以通过调整应用的结构来提升安全性。
 详情请参考[共享主机环境](tutorial-shared-hosting.md) 一章。
 

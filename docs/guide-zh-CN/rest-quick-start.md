@@ -60,7 +60,7 @@ class UserController extends ActiveController
 上面的配置主要是为`user`控制器增加一个 URL 规则。这样，
 用户的数据就能通过美化的 URL 和有意义的 http 动词进行访问和操作。
 
-> 注意：Yii will automatically pluralize controller names for use in endpoints (see [Trying it Out](#trying-it-out) section below).
+> Note: Yii will automatically pluralize controller names for use in endpoints (see [Trying it Out](#trying-it-out) section below).
 > You can configure this using the [[yii\rest\UrlRule::$pluralize]] property.
 
 
@@ -77,7 +77,7 @@ class UserController extends ActiveController
 ]
 ```
 
-> 信息：上述配置是可选的。若未按上述配置，API 将仅可以分辨 
+> Info: 上述配置是可选的。若未按上述配置，API 将仅可以分辨 
   `application/x-www-form-urlencoded` 和 `multipart/form-data` 输入格式。
 
 
@@ -172,7 +172,7 @@ Content-Type: application/json; charset=UTF-8
 {"id":1,"username":"example","email":"user@example.com","created_at":1414674789,"updated_at":1414674789}
 ```
 
-> 提示：你还可以通过 Web 浏览器中输入 URL `http://localhost/users` 来访问你的 API。
+> Tip: 你还可以通过 Web 浏览器中输入 URL `http://localhost/users` 来访问你的 API。
   尽管如此，你可能需要一些浏览器插件来发送特定的 headers 请求。
 
 如你所见，在 headers 响应，有关于总数，页数的信息，等等。
@@ -183,7 +183,7 @@ Content-Type: application/json; charset=UTF-8
 例如：URL `http://localhost/users?fields=id,email` 将只返回 `id` 和 `email` 字段。
 
 
-> 信息：你可能已经注意到了 `http://localhost/users` 的结果包括一些敏感字段，
+> Info: 你可能已经注意到了 `http://localhost/users` 的结果包括一些敏感字段，
 > 例如 `password_hash`, `auth_key` 你肯定不希望这些出现在你的 API 结果中。
 > 你应该在 [响应格式](rest-response-formatting.md) 部分中过滤掉这些字段。
 

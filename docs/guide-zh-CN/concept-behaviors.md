@@ -48,9 +48,9 @@ class MyBehavior extends Behavior
 
 因为这是一个行为类，当它附加到一个组件时，该组件也将具有 `prop1` 和 `prop2` 属性和 `foo()` 方法。
 
-> 提示：在行为内部可以通过 [[yii\base\Behavior::owner]] 属性访问行为已附加的组件。
+> Tip: 在行为内部可以通过 [[yii\base\Behavior::owner]] 属性访问行为已附加的组件。
 
-> 注意：In case [[yii\base\Behavior::__get()]] and/or [[yii\base\Behavior::__set()]] method of behavior is overridden you
+> Note: In case [[yii\base\Behavior::__get()]] and/or [[yii\base\Behavior::__set()]] method of behavior is overridden you
 need to override [[yii\base\Behavior::canGetProperty()]] and/or [[yii\base\Behavior::canSetProperty()]] as well.
 
 处理事件
@@ -291,7 +291,7 @@ class User extends ActiveRecord
   `created_at` 和 `updated_at` 属性；
 * 当记录更新时，行为将当前时间戳赋值给 `updated_at` 属性。
 
-> 注意：对于上述实现使用MySQL数据库，请将列 (`created_at`, `updated_at`) 定义为 int(11) 作为 UNIX 时间戳。
+> Note: 对于上述实现使用MySQL数据库，请将列 (`created_at`, `updated_at`) 定义为 int(11) 作为 UNIX 时间戳。
 
 有了以上这段代码，如果你有一个 `User` 对象并且试图保存它，你会发现它的 `created_at` 和 `updated_at`
 被当前的UNIX时间戳自动填充：

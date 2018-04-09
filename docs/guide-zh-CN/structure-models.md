@@ -17,7 +17,7 @@
 `Model` 类也是更多高级模型如[Active Record 活动记录](db-active-record.md)的基类，
 更多关于这些高级模型的详情请参考相关手册。
 
-> 信息：模型并不强制一定要继承[[yii\base\Model]]，但是由于很多组件支持[[yii\base\Model]]，
+> Info: 模型并不强制一定要继承[[yii\base\Model]]，但是由于很多组件支持[[yii\base\Model]]，
   最好使用它做为模型基类。
 
 
@@ -147,7 +147,7 @@ public function attributeLabels()
 甚至可以根据条件定义标签，例如通过使用模型的 [scenario场景](#scenarios)，
 可对相同的属性返回不同的标签。
 
-> 信息：属性标签是 [视图](structure-views.md)一部分，
+> Info: 属性标签是 [视图](structure-views.md)一部分，
   但是在模型中声明标签通常非常方便，并可形成非常简洁可重用代码。
 
 
@@ -195,7 +195,7 @@ class User extends ActiveRecord
 }
 ```
 
-> 信息：在上述和下述的例子中，模型类都是继承[[yii\db\ActiveRecord]]，
+> Info: 在上述和下述的例子中，模型类都是继承[[yii\db\ActiveRecord]]，
   因为多场景的使用通常发生在[Active Record](db-active-record.md) 类中.
 
 `scenarios()` 方法返回一个数组，数组的键为场景名，值为对应的 *active attributes活动属性*。
@@ -345,7 +345,7 @@ public function scenarios()
 }
 ```
 
-> 信息：块赋值只应用在安全属性上，
+> Info: 块赋值只应用在安全属性上，
   因为你想控制哪些属性会被终端用户输入数据所修改，
   例如，如果 `User` 模型有一个`permission`属性对应用户的权限，
   你可能只想让这个属性在后台界面被管理员修改。
@@ -490,7 +490,7 @@ public function fields()
 }
 ```
 
-> 警告：由于模型的所有属性会被包含在导出数组，最好检查数据确保没包含敏感数据，
+> Warning: 由于模型的所有属性会被包含在导出数组，最好检查数据确保没包含敏感数据，
 > 如果有敏感数据，应覆盖 `fields()` 方法过滤掉，
 > 在上述列子中，我们选择过滤掉
 > `auth_key`, `password_hash` and `password_reset_token`。

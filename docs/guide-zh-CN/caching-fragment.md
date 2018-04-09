@@ -175,5 +175,5 @@ if ($this->beginCache($id1)) {
 代码的返回值被看作是动态内容。这段代码将在每次请求时都执行，
 无论其外层的片段缓存是否被存储。
 
-> 注意：从版本 2.0.14 开始，动态内容 API 通过 [[yii\base\DynamicContentAwareInterface]] 接口及其 [[yii\base\DynamicContentAwareTrait]] 特质开放。
+> Note: 从版本 2.0.14 开始，动态内容 API 通过 [[yii\base\DynamicContentAwareInterface]] 接口及其 [[yii\base\DynamicContentAwareTrait]] 特质开放。
   举个例子，你可以参考 [[yii\widgets\FragmentCache]] 类。
