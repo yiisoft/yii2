@@ -66,7 +66,7 @@ throw new NotFoundHttpException();
 错误处理器会显示异常以及详细的函数调用栈和源代码行数来帮助调试，
 当`YII_DEBUG` 为 false，只有错误信息会被显示以防止应用的敏感信息泄漏。
 
-> 信息：如果异常是继承 [[yii\base\UserException]]，
+> Info: 如果异常是继承 [[yii\base\UserException]]，
   不管`YII_DEBUG`为何值，函数调用栈信息都不会显示，
   这是因为这种错误会被认为是用户产生的错误，开发人员不需要去修正。
 

@@ -77,7 +77,7 @@ class UserController extends ActiveController
 ]
 ```
 
-> 信息：上述配置是可选的。若未按上述配置，API 将仅可以分辨 
+> Info: 上述配置是可选的。若未按上述配置，API 将仅可以分辨 
   `application/x-www-form-urlencoded` 和 `multipart/form-data` 输入格式。
 
 
@@ -183,7 +183,7 @@ Content-Type: application/json; charset=UTF-8
 例如：URL `http://localhost/users?fields=id,email` 将只返回 `id` 和 `email` 字段。
 
 
-> 信息：你可能已经注意到了 `http://localhost/users` 的结果包括一些敏感字段，
+> Info: 你可能已经注意到了 `http://localhost/users` 的结果包括一些敏感字段，
 > 例如 `password_hash`, `auth_key` 你肯定不希望这些出现在你的 API 结果中。
 > 你应该在 [响应格式](rest-response-formatting.md) 部分中过滤掉这些字段。
 

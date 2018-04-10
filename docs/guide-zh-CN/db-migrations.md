@@ -149,7 +149,7 @@ migration 的基类 [[yii\db\Migration]] 通过 [[yii\db\Migration::db|db]] 属�
 在使用抽象类型的时候，你可以添加额外的约束条件。在上面的例子当中，
 `NOT NULL` 被添加到 `Schema::TYPE_STRING` 当中来指定该字段不能为空。
 
-> Tip: 抽象类型和实体类型之间的映射关系是由每个具体的 `QueryBuilder`
+> Tip: 抽象类型和实体类型之间的映射关系是由每个具体的 `QueryBuilder` 
   类当中的 [[yii\db\QueryBuilder::$typeMap|$typeMap]] 属性所指定的。
   
 Since version 2.0.6, you can make use of the newly introduced schema builder which provides more convenient way of defining column schema.
@@ -919,7 +919,7 @@ class m150101_185401_create_news_table extends Migration
 如果有多个迁移都使用到了同一个数据库，那么建议你创建一个迁移的基类，里面包含上述的 `init()` 代码。
 然后每个迁移类都继承这个基类就可以了。
 
-> Tip: 除了在 [[yii\db\Migration::db|db]] 参数当中进行设置以外，
+> Tip: 除了在 [[yii\db\Migration::db|db]] 参数当中进行设置以外， 
   你还可以通过在迁移类中创建新的数据库连接来操作不同的数据库。
   然后通过这些连接再使用 [DAO 方法](db-dao.md) 来操作不同的数据库。
 
@@ -934,3 +934,4 @@ yii migrate --migrationPath=@app/migrations/db2 --db=db2
 
 第一条命令将会把 `@app/migrations/db1` 目录下的迁移提交到 `db1` 数据库当中，
 第二条命令则会把 `@app/migrations/db2` 下的迁移提交到 `db2` 数据库当中，以此类推。
+

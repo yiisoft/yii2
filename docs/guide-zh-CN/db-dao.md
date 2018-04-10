@@ -95,7 +95,7 @@ return [
 你常常需要配置 [[yii\db\Connection::username|username]] 和 [[yii\db\Connection::password|password]]。
 请参考 [[yii\db\Connection]] 来获取完整的可配置属性列表。
 
-> 信息：当你实例化一个 DB Connection 时，
+> Info: 当你实例化一个 DB Connection 时，
 直到你第一次执行 SQL 或者你明确地调用 [[yii\db\Connection::open()|open()]] 方法时，
 才建立起实际的数据库连接。
 
@@ -535,7 +535,7 @@ $rows = Yii::$app->db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 ```
 
-> 信息：通过调用 [[yii\db\Command::execute()]] 来执行的语句都被视为写操作，
+> Info: 通过调用 [[yii\db\Command::execute()]] 来执行的语句都被视为写操作，
   而其他所有通过调用 [[yii\db\Command]] 中任一 "query" 方法来执行的语句都被视为读操作。
   你可以通过 `Yii::$app->db->slave` 来获取当前有效的从库连接。
 
@@ -550,7 +550,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 一个“挂掉的”服务器将会被记住，
 因此，在一个 yii\db\Connection::serverRetryInterval 内将不再试着连接该服务器。
 
-> 信息：在上面的配置中，
+> Info: 在上面的配置中，
   每个从库都共同地指定了 10 秒的连接超时时间，
   这意味着，如果一个从库在 10 秒内不能被连接上，
   它将被视为“挂掉的”。
@@ -604,7 +604,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 唯一的差别是，
 如果没有主库可用，将抛出一个异常。
 
-> Note:  当你使用 [[yii\db\Connection::masters|masters]] 属性来配置一个或多个主库时，
+> Note: 当你使用 [[yii\db\Connection::masters|masters]] 属性来配置一个或多个主库时，
   所有其他指定数据库连接的属性 (例如 `dsn`, `username`, `password`) 与 `Connection` 对象本身将被忽略。
 
 默认情况下，

@@ -60,7 +60,7 @@ $message->setTo(Yii::$app->params['adminEmail'])
     ->send();
 ```
 
-> Note: 每个 “mailer” 的扩展也有两个主要类别：“Mailer”
+> Note: 每个 “mailer” 的扩展也有两个主要类别：“Mailer” 
   和 “Message”。 “Mailer” 总是知道类名和具体的 “Message”。
   不要试图直接实例 “Message” 对象 - 而是始终使用 `compose()` 方法。
 

@@ -50,12 +50,12 @@ yii <route> [--option1=value1 --option2=value2 ... argument1 argument2 ...]
 yii migrate/up 5 --migrationTable=migrations
 ```
 
-> **注意**: 当在控制台使用 `*` 时, 不要忘记像 `"*"` 一样用引号来引起来，
+> Note: 当在控制台使用 `*` 时, 不要忘记像 `"*"` 一样用引号来引起来，
 > 为了防止在 shell 中执行命令时被当成当前目录下的所有文件名。
 
 
 入口脚本 <span id="entry-script"></span>
-----------------
+-------
 
 控制台应用程序的入口脚本相当于用于 Web 应用程序的 `index.php` 入口文件。
 控制台入口脚本通常被称为 `yii`，位于应用程序的根目录。
@@ -69,6 +69,7 @@ yii migrate/up 5 --migrationTable=migrations
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
@@ -106,8 +107,55 @@ exit($exitCode);
 > ```
 
 
+控制台命令完成 <span id="console-command-completion"></span>
+------------
+
+自动完成命令参数在使用 shell 时非常有用。 
+从版本 2.0.11 开始，`./yii` 命令为 Bash 和 ZSH 提供了自动完成功能。
+
+### Bash 完成
+
+确保安装完毕。对于大多数安装，它默认是可用的。
+
+放置完成脚本在 `/etc/bash_completion.d/`：
+
+     curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/bash/yii -o /etc/bash_completion.d/yii
+
+对于临时使用，您可以将文件放入当前目录，并通过 `source yii` 将其包含在当前会话中。
+如果全局安装，您可能需要重新启动终端或`source ~/.bashrc` 来激活它。
+
+查看 [Bash 手册](https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html) 
+了解将完成脚本添加到您的环境的其他方法。
+
+### ZSH 完成
+
+将完成脚本放入完成目录中，例如使用 `~/.zsh/completion/`
+
+```
+mkdir -p ~/.zsh/completion
+curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/zsh/_yii -o ~/.zsh/completion/_yii
+```
+
+将目录包含在 `$fpath` 中，例如，通过将其添加到 `~/.zshrc` 中
+
+```
+fpath=(~/.zsh/completion $fpath)
+```
+
+确保 `compinit` 被加载或通过在 `~/.zshrc` 中加入完成
+
+```
+autoload -Uz compinit && compinit -i
+```
+
+然后重新加载您的 shell
+
+```
+exec $SHELL -l
+```
+
 创建你自己的控制台命令 <span id="create-command"></span>
-----------------------
+------------------
 
 ### 控制台的控制器和行为
 
@@ -126,15 +174,15 @@ exit($exitCode);
 当运行一个命令，你可以指定使用语法 `--OptionName=OptionValue` 选项的值。
 这将分配 `OptionValue` 到控制器类的 `OptionName` 属性。
 
-If the default value of an option is of an array type and you set this option while running the command,
-the option value will be converted into an array by splitting the input string on any commas.
+如果选项的默认值是数组类型，并且在运行该命令时设置了该选项，
+通过在任何逗号分割输入字符串将选项值转换为数组。
 
-### Options Aliases
+### 选项别名
 
-Since version 2.0.8 console command provides [[yii\console\Controller::optionAliases()]] method to add
-aliases for options.
+从版本 2.0.8 起控制台命令提供 [[yii\console\Controller::optionAliases()]]
+方法来为选项添加别名。
 
-To define an alias, override [[yii\console\Controller::optionAliases()]] in your controller, for example:
+要定义别名，请在控制器中覆盖 [[yii\console\Controller::optionAliases()]]，例如：
 
 ```php
 namespace app\commands;
@@ -162,7 +210,7 @@ class HelloController extends Controller
 }
 ```
 
-Now, you can use the following syntax to run the command:
+现在，您可以使用以下语法来运行该命令：
 
 ```
 ./yii hello -m=hello
@@ -219,10 +267,19 @@ public function actionIndex()
 }
 ```
 
-你可以使用一些预定义的常数：
+有一些预定义的常量可以使用。在类 [[yii\console\ExitCode]] 中被定义：
 
-- `Controller::EXIT_CODE_NORMAL` 值为 `0`;
-- `Controller::EXIT_CODE_ERROR` 值为 `1`.
+```php
+public function actionIndex()
+{
+    if (/* some problem */) {
+        echo "A problem occurred!\n";
+        return ExitCode::UNSPECIFIED_ERROR;
+    }
+    // do something
+    return ExitCode::OK;
+}
+```
 
 为控制器定义有意义的常量，以防有更多的错误代码类型，这会是一个很好的实践。
 
@@ -243,3 +300,19 @@ $this->stdout("Hello?\n", Console::BOLD);
 $name = $this->ansiFormat('Alex', Console::FG_YELLOW);
 echo "Hello, my name is $name.";
 ```
+
+### 表格
+
+从版本 2.0.13 开始，有一个小部件允许您在控制台中格式化表数据。使用方法如下：
+
+```php
+echo Table::widget([
+    'headers' => ['Project', 'Status', 'Participant'],
+    'rows' => [
+        ['Yii', 'OK', '@samdark'],
+        ['Yii', 'OK', '@cebe'],
+    ],
+]);
+```
+
+有关详细信息，请参阅 [[yii\console\widgets\Table|API documentation]].

@@ -488,7 +488,7 @@ $customer->loadDefaultValues();
 值绑定到具有正确类型的。但是，ActiveRecord 实例的属性值不会
 在保存过程中转换。
 
-> Tip:  你可以使用 [[yii\behaviors\AttributeTypecastBehavior]] 来简化属性的类型转换
+> Tip: 你可以使用 [[yii\behaviors\AttributeTypecastBehavior]] 来简化属性的类型转换
   在 ActiveRecord 验证或者保存过程中。
 
 

@@ -1,9 +1,9 @@
 类自动加载（Autoloading）
-=================
+======================
 
 Yii 依靠[类自动加载机制](http://www.php.net/manual/en/language.oop5.autoload.php)来定位和包含所需的类文件。
 它提供一个高性能且完美支持[PSR-4 标准](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md)
-（[中文汉化](https://github.com/hfcorriez/fig-standards/blob/zh_CN/%E6%8E%A5%E5%8F%97/PSR-4-autoloader.md)）的自动加载器。
+的自动加载器。
 该自动加载器会在引入框架文件 `Yii.php` 时安装好。
 
 > Note: 为了简化叙述，本篇文档中我们只会提及类的自动加载。
@@ -11,7 +11,7 @@ Yii 依靠[类自动加载机制](http://www.php.net/manual/en/language.oop5.aut
 
 
 使用 Yii 自动加载器 <span id="using-yii-autoloader"></span>
-------------------------
+-----------------
 
 要使用 Yii  的类自动加载器，你需要在创建和命名类的时候遵循两个简单的规则：
 
@@ -37,11 +37,11 @@ $classFile = Yii::getAlias('@' . str_replace('\\', '/', $className) . '.php');
 因此，你可以把前端的类放在 `frontend` 命名空间，而后端的类放在 `backend`。 
 这样这些类就可以被 Yii 自动加载了。
 
-To add a custom namespace to the autoloader you need to define an alias for the base directory of the namespace using [[Yii::setAlias()]].
-For example to load classes in the `foo` namespace that are located in the `path/to/foo` directory you will call `Yii::setAlias('@foo', 'path/to/foo')`.
+要将自定义命名空间添加到自动加载器，您需要使用 [[Yii::setAlias()]] 为命名空间的根目录定义别名。
+例如，要加载位于 `path/to/foo` 目录中 `foo` 命名空间中的类，您将调用 `Yii::setAlias('@foo', 'path/to/foo')`。
 
 类映射表（Class Map） <span id="class-map"></span>
----------
+------------------
 
 Yii 类自动加载器支持**类映射表**功能，该功能会建立一个从类的名字到类文件路径的映射。
 当自动加载器加载一个文件时，他首先检查映射表里有没有该类。
@@ -80,7 +80,7 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 不过这样做的话，类的加载效率会下降，
 且你必须遵循 Composer 所设定的规则，从而让你的类满足可以被自动加载的要求。
 
-> 信息：若你不想要使用 Yii 的自动加载器，你必须创建一个你自己版本的 `Yii.php` 文件，
+> Info: 若你不想要使用 Yii 的自动加载器，你必须创建一个你自己版本的 `Yii.php` 文件，
 并把它包含进你的[入口脚本](structure-entry-scripts.md)里。
 
 
@@ -88,7 +88,7 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 -----------------------------
 
 Yii 自动加载器支持自动加载[扩展](structure-extensions.md)的类。唯一的要求是它需要在 `composer.json` 文件里正确地定义 `autoload` 部分。
-请参考 [Composer 文档（英文）](https://getcomposer.org/doc/04-schema.md#autoload)
-（[中文汉化](https://github.com/5-say/composer-doc-cn/blob/master/cn-introduction/04-schema.md#autoload)），来了解如何正确描述 `autoload` 的更多细节。
+请参考 [Composer 文档](https://getcomposer.org/doc/04-schema.md#autoload)，
+来了解如何正确描述 `autoload` 的更多细节。
 
 在你不使用 Yii 的自动加载器时，Composer 的自动加载器仍然可以帮你自动加载扩展内的类。

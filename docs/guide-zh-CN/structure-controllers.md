@@ -144,7 +144,7 @@ class SiteController extends Controller
 为`@app/controllers/ArticleController.php`的文件中定义，
 控制器`admin/post-comment`应在`@app/controllers/admin/PostCommentController.php`文件中。
 
-> 信息：最后一个示例 `admin/post-comment` 表示你可以将控制器放在
+> Info: 最后一个示例 `admin/post-comment` 表示你可以将控制器放在
   [[yii\base\Application::controllerNamespace|controller namespace]]控制器命名空间下的子目录中，
   在你不想用 [模块](structure-modules.md) 的情况下给控制器分类，这种方式很有用。
 
@@ -361,9 +361,9 @@ class PostController extends Controller
 * `http://hostname/index.php?r=post/view`: 会抛出[[yii\web\BadRequestHttpException]] 异常
   因为请求没有提供参数给必须赋值参数`$id`；
 * `http://hostname/index.php?r=post/view&id[]=123`: 会抛出[[yii\web\BadRequestHttpException]] 异常
-  因为`$id` 参数收到数字值 `['123']`而不是字符串.
+  因为 `$id` 参数收到数组值 `['123']` 而不是字符串.
 
-如果想让动作参数接收数组值，需要指定$id为`array`，如下所示：
+如果你想要一个动作参数来接受数组值，你应该使用 `array` 来提示它，如下所示：
 
 ```php
 public function actionView(array $id, $version = null)
@@ -372,9 +372,9 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-现在如果请求为 `http://hostname/index.php?r=post/view&id[]=123`, 参数 `$id` 会使用数组值`['123']`，
+现在如果请求为 `http://hostname/index.php?r=post/view&id[]=123`, 参数 `$id` 会使用数组值 `['123']`，
 如果请求为 `http://hostname/index.php?r=post/view&id=123`，
-参数 `$id` 会获取相同数组值，因为无类型的`'123'`会自动转成数组。
+参数 `$id` 会获取相同数组值，因为无类型的 `'123'` 会自动转成数组。
 
 上述例子主要描述网页应用的操作参数，对于控制台应用，
 更多详情请参阅[控制台命令](tutorial-console.md)。

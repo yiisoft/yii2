@@ -48,7 +48,7 @@ class EntryForm extends Model
 该类继承自Yii 提供的一个基类 [[yii\base\Model]]，
 该基类通常用来表示数据。
 
-> 信息：[[yii\base\Model]] 被用于普通模型类的父类并与数据表**无关**。[[yii\db\ActiveRecord]] 
+> Info: [[yii\base\Model]] 被用于普通模型类的父类并与数据表**无关**。[[yii\db\ActiveRecord]] 
   通常是普通模型类的父类但与数据表有关联（译注：[[yii\db\ActiveRecord]] 类其实也是继承自 [[yii\base\Model]]，增加了数据库处理）。
 
 `EntryForm` 类包含 `name` 和 `email` 两个公共成员，
@@ -119,7 +119,7 @@ class SiteController extends Controller
 如果模型被成功填充数据（也就是说用户已经提交了 HTML 表单），
 操作将调用 [[yii\base\Model::validate()|validate()]] 去确保用户提交的是有效数据。
 
-> 信息：表达式 `Yii::$app` 代表[应用](structure-applications.md)实例，它是一个全局可访问的单例。
+> Info: 表达式 `Yii::$app` 代表[应用](structure-applications.md)实例，它是一个全局可访问的单例。
   同时它也是一个[服务定位器](concept-service-locator.md)，
   能提供 `request`，`response`，`db` 等等特定功能的组件。
   在上面的代码里就是使用 `request` 组件来访问应用实例收到的 `$_POST` 数据。
@@ -228,7 +228,7 @@ http://hostname/index.php?r=site/entry
 <?= $form->field($model, 'email')->label('自定义 Email') ?>
 ```
 
-> 信息：Yii 提供了相当多类似的小部件去帮你生成复杂且动态的视图。
+> Info: Yii 提供了相当多类似的小部件去帮你生成复杂且动态的视图。
   在后面你还会了解到自己写小部件是多么简单。
   你可能会把自己的很多视图代码转化成小部件以提高重用，加快开发效率。
 

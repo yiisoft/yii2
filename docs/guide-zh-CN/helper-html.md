@@ -166,7 +166,7 @@ $decodedUserName = Html::decode($userName);
 处理表单标签是大量的重复性劳动并且易错。因此，
 Yii 也提供了一系列的方法来辅助处理表单标签。
 
-> Note:  考虑在处理 models 以及需要验证的情形下，使用 [[yii\widgets\ActiveForm|ActiveForm]] 组件。
+> Note: 考虑在处理 models 以及需要验证的情形下，使用 [[yii\widgets\ActiveForm|ActiveForm]] 组件。
 
 
 ### 创建表单 <span id="creating-forms"></span>

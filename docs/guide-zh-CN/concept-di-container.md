@@ -1,5 +1,5 @@
 依赖注入容器
-==============================
+==========
 
 依赖注入（Dependency Injection，DI）容器就是一个对象，它知道怎样初始化并配置对象及其依赖的所有对象。
 [Martin 的文章](http://martinfowler.com/articles/injection.html) 已经解释了 DI 容器为什么很有用。
@@ -7,13 +7,13 @@
 
 
 依赖注入 <span id="dependency-injection"></span>
---------------------
+-------
 
 Yii 通过 [[yii\di\Container]] 类提供 DI 容器特性。
 它支持如下几种类型的依赖注入：
 
 * 构造方法注入;
-* Method injection;
+* 方法注入;
 * Setter 和属性注入;
 * PHP 回调注入.
 
@@ -40,13 +40,13 @@ $foo = new Foo($bar);
 ```
 
 
-### Method Injection <span id="method-injection"></span>
+### 方法注入 <span id="method-injection"></span>
 
-Usually the dependencies of a class are passed to the constructor and are available inside of the class during the whole lifecycle.
-With Method Injection it is possible to provide a dependency that is only needed by a single method of the class
-and passing it to the constructor may not be possible or may cause too much overhead in the majority of use cases.
+通常，类的依赖关系传递给构造函数，并且在整个生命周期中都可以在类内部使用。
+通过方法注入，可以提供仅由类的单个方法需要的依赖关系，
+并将其传递给构造函数可能不可行，或者可能会在大多数用例中导致太多开销。
 
-A class method can be defined like the `doSomething()` method in the following example:
+类方法可以像下面例子中的 `doSomething()` 方法一样定义：
 
 ```php
 class MyClass extends \yii\base\Component
@@ -63,7 +63,7 @@ class MyClass extends \yii\base\Component
 }
 ```
 
-You may call that method either by passing an instance of `\my\heavy\Dependency` yourself or using [[yii\di\Container::invoke()]] like the following:
+你可以自己通过一个实例 `\my\heavy\Dependency` 调用这个方法或使用 [[yii\di\Container::invoke()]] 如下：
 
 ```php
 $obj = new MyClass(/*...*/);
@@ -103,18 +103,18 @@ $container->get('Foo', [], [
 ]);
 ```
 
-> 信息：The [[yii\di\Container::get()]] method takes its third parameter as a configuration array that should
-  be applied to the object being created. If the class implements the [[yii\base\Configurable]] interface (e.g.
-  [[yii\base\BaseObject]]), the configuration array will be passed as the last parameter to the class constructor;
-  otherwise, the configuration will be applied *after* the object is created.
+> Info: [[yii\di\Container::get()]] 方法将其第三个参数作为配置数组应用于正在创建的对象。
+  如果该类实现 [[yii\base\Configurable]] 接口（例如
+  [[yii\base\BaseObject]]），则配置数组将作为最后一个参数传递给类构造函数；
+  否则，将在创建对象*后*应用该配置。
 
 
 ### PHP 回调注入 <span id="php-callable-injection"></span>
 
-In this case, the container will use a registered PHP callable to build new instances of a class.
-Each time when [[yii\di\Container::get()]] is called, the corresponding callable will be invoked.
-The callable is responsible to resolve the dependencies and inject them appropriately to the newly
-created objects. For example,
+在这种情况下，容器将使用已注册的 PHP 回调来构建类的新实例。
+每次调用 [[yii\di\Container::get()]] ，相应的回调将被调用。
+调用方负责解析依赖项，并适当地将它们注入到新创建的对象中。
+例如,
 
 ```php
 $container->set('Foo', function () {
@@ -126,7 +126,7 @@ $container->set('Foo', function () {
 $foo = $container->get('Foo');
 ```
 
-To hide the complex logic for building a new object, you may use a static class method as callable. For example,
+要省略构建新对象的复杂逻辑，可以使用静态类方法作为可调用的方法。例如，
 
 ```php
 class FooBuilder
@@ -144,7 +144,7 @@ $container->set('Foo', ['app\helper\FooBuilder', 'build']);
 $foo = $container->get('Foo');
 ```
 
-By doing so, the person who wants to configure the `Foo` class no longer needs to be aware of how it is built.
+这样做的话，想要配置 `Foo` 类的人不再需要知道它是如何构建的。
 
 
 注册依赖关系 <span id="registering-dependencies"></span>
@@ -336,9 +336,9 @@ echo \yii\widgets\LinkPager::widget();
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 ```
 
-> Note: Properties given in the widget call will always override the definition in the DI container.
-> Even if you specify an array, e.g. `'options' => ['id' => 'mypager']` these will not be merged
-> with other options but replace them.
+> Note: 在部件调用中给出的属性将始终覆盖DI容器中的定义。
+> 即使您指定了一个数组，例如 `'options' => ['id' => 'mypager']` 这些将不会与其他选项合并，
+> 而是替换它们。
 
 另一个例子是借用 DI 容器中自动构造方法注入带来的好处。
 假设你的控制器类依赖一些其他对象，例如一个旅馆预订服务。
@@ -372,10 +372,10 @@ class HotelController extends Controller
 现在如果你再次访问这个控制器，一个 `app\components\BookingService` 
 的实例就会被创建并被作为第三个参数注入到控制器的构造器中。
 
-Advanced Practical Usage <span id="advanced-practical-usage"></span>
----------------
+高级实用性 <span id="advanced-practical-usage"></span>
+---------
 
-Say we work on API application and have:
+比如说我们在 API 应用方面工作：
 
 - `app\components\Request` class that extends `yii\web\Request` and provides additional functionality
 - `app\components\Response` class that extends `yii\web\Response` and should have `format` property 
@@ -404,7 +404,7 @@ It is possible to configure multiple definitions at once, passing configuration 
 Iterating over the configuration array, the methods will call [[yii\di\Container::set()|set()]]
 or [[yii\di\Container::setSingleton()|setSingleton()]] respectively for each item.
 
-The configuration array format is:
+配置数组格式为：
 
  - `key`: class name, interface name or alias name. The key will be passed to the
  [[yii\di\Container::set()|set()]] method as a first argument `$class`.
@@ -412,7 +412,7 @@ The configuration array format is:
  documentation for the `$definition` parameter. Will be passed to the [[set()]] method as
  the second argument `$definition`.
 
-For example, let's configure our container to follow the aforementioned requirements:
+例如，让我们配置我们的容器以遵循上述要求：
 
 ```php
 $container->setDefinitions([
@@ -431,7 +431,7 @@ $reader = $container->get('app\storage\DocumentsReader);
 // Will create DocumentReader object with its dependencies as described in the config 
 ```
 
-> Tip: Container may be configured in declarative style using application configuration since version 2.0.11.
+> Tip: Container may be configured in declarative style using application configuration since version 2.0.11. 
 Check out the [Application Configurations](concept-configurations.md#application-configurations) subsection of
 the [Configurations](concept-configurations.md) guide article.
 
@@ -447,7 +447,7 @@ a third argument. To set the constructor parameters, you may use the following c
  - `value`: array of two elements. The first element will be passed to the [[yii\di\Container::set()|set()]] method as the
  second argument `$definition`, the second one — as `$params`.
 
-Let's modify our example:
+让我们来修改我们的例子：
 
 ```php
 $container->setDefinitions([
@@ -469,21 +469,21 @@ $reader = $container->get('app\storage\DocumentsReader);
 // Will behave exactly the same as in the previous example.
 ```
 
-You might notice `Instance::of('tempFileStorage')` notation. It means, that the [[yii\di\Container|Container]]
-will implicitly provide a dependency registered with the name of `tempFileStorage` and pass it as the first argument 
-of `app\storage\DocumentsWriter` constructor.
+你可能会注意到 `Instance::of('tempFileStorage')` 符号。这意味着，[[yii\di\Container|Container]]
+将隐含地提供一个用 `tempFileStorage` 名称注册的依赖项， 
+并将其作为 `app\storage\DocumentsWriter` 构造函数的第一个参数传递。
 
-> Note: [[yii\di\Container::setDefinitions()|setDefinitions()]] and [[yii\di\Container::setSingletons()|setSingletons()]]
-  methods are available since version 2.0.11.
+> Note: [[yii\di\Container::setDefinitions()|setDefinitions()]] 和 [[yii\di\Container::setSingletons()|setSingletons()]]
+  方法从版本 2.0.11 开始可用。
   
-Another step on configuration optimization is to register some dependencies as singletons. 
-A dependency registered via [[yii\di\Container::set()|set()]] will be instantiated each time it is needed.
-Some classes do not change the state during runtime, therefore they may be registered as singletons
-in order to increase the application performance. 
+配置优化的另一个步骤是将某些依赖项注册为单例。
+通过 [[yii\di\Container::set()|set()]] 注册的依赖项将在每次需要时实例化。
+某些类在运行时不会更改状态，
+因此它们可能会被注册为单例以提高应用程序的性能。
 
-A good example could be `app\storage\FileStorage` class, that executes some operations on file system with a simple 
-API (e.g. `$fs->read()`, `$fs->write()`). These operations do not change the internal class state, so we can
-create its instance once and use it multiple times.
+一个很好的例子可以是 `app\storage\FileStorage` 类，它用一个简单的 API 
+（例如 `$fs->read()`，`$fs->write()`）在文件系统上执行一些操作。
+这些操作不会更改内部类的状态，因此我们可以创建一次实例并多次使用它。
 
 ```php
 $container->setSingletons([
@@ -531,6 +531,4 @@ $reader = $container->get('app\storage\DocumentsReader');
 Yii 在依赖住入（DI）容器之上实现了它的[服务定位器](concept-service-locator.md)。
 当一个服务定位器尝试创建一个新的对象实例时，它会把调用转发到 DI 容器。
 后者将会像前文所述那样自动解决依赖关系。
-
-
 

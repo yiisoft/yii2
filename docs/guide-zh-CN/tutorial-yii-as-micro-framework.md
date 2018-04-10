@@ -70,7 +70,7 @@ return [
 ];
 ```
 
-> 信息：尽管配置可以保存在 `index.php` 文件中，建议单独使用它。
+> Info: 尽管配置可以保存在 `index.php` 文件中，建议单独使用它。
 > 这样它也可以用于控制台应用程序，如下所示。
 
 您的项目现在已经准备进行编码了。尽管由您决定项目目录结构，只要您遵守命名空间即可。
@@ -119,7 +119,7 @@ micro-app/
 
 在浏览器中打开应用程序URL现在应该打印出“Hello World！”，它已经在 `SiteController::actionIndex()` 中返回。
 
-> 信息：在我们的示例中，我们已将默认应用程序名称空间 `app` 更改为 `micro`，
+> Info: 在我们的示例中，我们已将默认应用程序名称空间 `app` 更改为 `micro`，
 > 以表明您不受此名称的限制（如果您是这样认为），
 > 然后调整 [[yii\base\Application::$controllerNamespace|controllers namespace]] 并设置正确的别名。
 
@@ -140,7 +140,7 @@ micro-app/
 ],
 ```
 
-> 信息：为了简单，我们在这里使用了一个 sqlite 数据库 请参阅[数据库指南](db-dao.md) 以获取更多选项。
+> Info: 为了简单，我们在这里使用了一个 sqlite 数据库 请参阅[数据库指南](db-dao.md) 以获取更多选项。
 
 接下来我们创建一个[数据库迁移](db-migrations.md)来创建一个帖子表。
 确保你有一个单独的配置文件，如上所述，我们需要它来运行下面的控制台命令。
@@ -168,7 +168,7 @@ class Post extends ActiveRecord
 }
 ```
 
-> 信息：这里创建的模型是一个 ActiveRecord 类，它代表 `post` 表中的数据。
+> Info: 这里创建的模型是一个 ActiveRecord 类，它代表 `post` 表中的数据。
 > 有关更多信息，请参阅[活动记录指南](db-active-record.md)。
 
 我们要通过 API 发布帖子，请在 `controllers` 中添加 `PostController`：

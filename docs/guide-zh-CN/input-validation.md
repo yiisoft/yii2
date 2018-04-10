@@ -462,7 +462,7 @@ class EntryForm extends Model
 因为，它可以让用户更快速的得到错误信息，也因此可以提供更好的用户体验。
 你可以使用或自己实现除服务器端验证之外，**还能额外**客户端验证功能的验证器。
 
-> 信息：尽管客户端验证为加分项，但它不是必须项。它存在的主要意义在于给用户提供更好的客户体验。
+> Info: 尽管客户端验证为加分项，但它不是必须项。它存在的主要意义在于给用户提供更好的客户体验。
   正如“永远不要相信来自终端用户的输入信息”，也同样永远不要相信客户端验证。基于这个理由，
   你应该始终如前文所描述的那样，通过调用 [[yii\base\Model::validate()]] 
   方法执行服务器端验证。
@@ -722,7 +722,7 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 The above code will check whether the current request is an AJAX. If yes, it will respond to
 this request by running the validation and returning the errors in JSON format.
 
-> 信息：You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
+> Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
   However, the AJAX validation feature described here is more systematic and requires less coding effort.
 
 When both `enableClientValidation` and `enableAjaxValidation` are set to true, AJAX validation request will be triggered

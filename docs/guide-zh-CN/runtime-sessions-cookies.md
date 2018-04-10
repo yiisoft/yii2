@@ -69,7 +69,7 @@ foreach ($session as $name => $value) ...
 foreach ($_SESSION as $name => $value) ...
 ```
 
-> 信息：当使用 `session` 组件访问 session 数据时候，
+> Info: 当使用 `session` 组件访问 session 数据时候，
   如果 session 没有开启会自动开启，
   这和通过 `$_SESSION` 不同，`$_SESSION` 要求先执行 `session_start()`。
 

@@ -23,15 +23,21 @@ if ($data === false) {
 // 这儿 $data 可以使用了。
 ```
 
-从2.0.11版本开始, [缓存组件](#cache-components) 提供了[[yii\caching\Cache::getOrSet()|getOrSet()]] 方法来简化数据的取回、计算和存储。下面的代码逻辑和上一个例子是完全一样的:
+从2.0.11版本开始, [缓存组件](#cache-components) 
+提供了[[yii\caching\Cache::getOrSet()|getOrSet()]] 方法来简化数据的取回、计算和存储。
+下面的代码逻辑和上一个例子是完全一样的:
 
 ```php
 $data = $cache->getOrSet($key, function () {
     return $this->calculateSomething();
 });
 ```
-当缓存中有关联$key的数据时，将返回这个缓存的值。否则就执行匿名函数来计算出将要缓存的数据并返回它。
-如果匿名函数需要作用域外的数据时，可以使用`use`语句把这些数据传递到匿名函数中。例如：
+
+当缓存中有关联$key的数据时，将返回这个缓存的值。
+否则就执行匿名函数来计算出将要缓存的数据并返回它。
+
+如果匿名函数需要作用域外的数据时，可以使用`use`语句把这些数据传递到匿名函数中。
+例如：
 
 ```php
 $user_id = 42;
@@ -40,7 +46,8 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 });
 ```
 
-> Note: [[yii\caching\Cache::getOrSet()|getOrSet()]] 方法也支持缓存持续性和缓存依赖。请看[缓存过期](#cache-expiration) 和 [缓存依赖](#cache-dependencies) 来了解详细信息。
+> Note: [[yii\caching\Cache::getOrSet()|getOrSet()]] 方法也支持缓存持续性和缓存依赖。
+  请看[缓存过期](#cache-expiration) 和 [缓存依赖](#cache-dependencies) 来了解详细信息。
 
 
 ## 缓存组件 <span id="cache-components"></span>
@@ -101,7 +108,10 @@ Yii 支持一系列缓存存储器，概况如下：
  （例如：单一服务器，没有独立的负载均衡器等）最快的缓存方案。
 * [[yii\caching\DbCache]]：使用一个数据库的表存储缓存数据。要使用这个缓存，
   你必须创建一个与 [[yii\caching\DbCache::cacheTable]] 对应的表。
-* [[yii\caching\DummyCache]]: 仅作为一个缓存占位符，不实现任何真正的缓存功能。
+* [[yii\caching\ArrayCache]]: 仅通过将值存储在数组中来为当前请求提供缓存。
+  为了增强 ArrayCache 的性能，您可以通过将
+  [[yii\caching\ArrayCache::$serializer]] 设置为 `false` 来禁用已存储数据的序列化。
+* [[yii\caching\DummyCache]]：仅作为一个缓存占位符，不实现任何真正的缓存功能。
   这个组件的目的是为了简化那些需要查询缓存有效性的代码。例如，
   在开发中如果服务器没有实际的缓存支持，用它配置一个缓存组件。
   一个真正的缓存服务启用后，可以再切换为使用相应的缓存组件。
@@ -137,16 +147,19 @@ Yii 支持一系列缓存存储器，概况如下：
   如果该项数据不存在于缓存中或者已经过期/失效，则返回值 false。
 * [[yii\caching\Cache::set()|set()]]：将一个由键指定的数据项存放到缓存中。
 * [[yii\caching\Cache::add()|add()]]：如果缓存中未找到该键，则将指定数据存放到缓存中。
-* [[yii\caching\Cache::getOrSet()|getOrSet()]]：返回由键指定的缓存项，或者执行回调函数，把函数的返回值用键来关联存储到缓存中，最后返回这个函数的返回值。  
+* [[yii\caching\Cache::getOrSet()|getOrSet()]]：返回由键指定的缓存项，或者执行回调函数，把函数的返回值用键来关联存储到缓存中，
+  最后返回这个函数的返回值。  
 * [[yii\caching\Cache::multiGet()|multiGet()]]：由指定的键获取多个缓存数据项。
 * [[yii\caching\Cache::multiSet()|multiSet()]]：一次存储多个数据项到缓存中，每个数据都由一个键来指明。
-* [[yii\caching\Cache::multiAdd()|multiAdd()]]：一次存储多个数据项到缓存中，每个数据都由一个键来指明。如果某个键已经存在，则略过该数据项不缓存。
+* [[yii\caching\Cache::multiAdd()|multiAdd()]]：一次存储多个数据项到缓存中，每个数据都由一个键来指明。
+  如果某个键已经存在，则略过该数据项不缓存。
 * [[yii\caching\Cache::exists()|exists()]]：返回一个值，指明某个键是否存在于缓存中。
 * [[yii\caching\Cache::delete()|delete()]]：通过一个键，删除缓存中对应的值。
 * [[yii\caching\Cache::flush()|flush()]]：删除缓存中的所有数据。
 
-> Note: 千万别直接用`false`布尔值当做数据项缓存，因为[[yii\caching\Cache::get()|get()]]方法用
-`false`作为返回值来表名对应的缓存项不存在。你可以把`false`放到一个数组里然后缓存这个数组来避免上述的混淆问题。 
+> Note: 千万别直接用 `false` 布尔值当做数据项缓存，因为 [[yii\caching\Cache::get()|get()]] 方法用
+`false` 作为返回值来表名对应的缓存项不存在。
+你可以把 `false` 放到一个数组里然后缓存这个数组来避免上述的混淆问题。 
 
 有些缓存存储器如 MemCache，APC 支持以批量模式取回缓存值，这样可以节省取回缓存数据的开支。 
 [[yii\caching\Cache::multiGet()|multiGet()]]
@@ -185,9 +198,9 @@ $value2 = $cache['var2'];  // 等价于： $value2 = $cache->get('var2');
 
 如你所见，该键包含了可唯一指定一个数据库表所需的所有必要信息。
 
-> Note: 通过[[yii\caching\Cache::multiSet()|multiSet()]]或者[[yii\caching\Cache::multiAdd()|multiAdd()]]方法缓存的数据项的键，它的类型只能是字符串或整型，
+> Note: 通过 [[yii\caching\Cache::multiSet()|multiSet()]] 或者 [[yii\caching\Cache::multiAdd()|multiAdd()]] 方法缓存的数据项的键，它的类型只能是字符串或整型，
 如果你想使用较为复杂的键，可以通过
-[[yii\caching\Cache::set()|set()]]或者[[yii\caching\Cache::add()|add()]]方法来存储。
+[[yii\caching\Cache::set()|set()]] 或者 [[yii\caching\Cache::add()|add()]] 方法来存储。
 
 当同一个缓存存储器被用于多个不同的应用时，应该为每个应用指定一个唯一的缓存键前缀以避免缓存键冲突。
 可以通过配置 [[yii\caching\Cache::keyPrefix]] 属性实现。
@@ -226,8 +239,9 @@ if ($data === false) {
 }
 ```
 
-从2.0.11开始，如果想自定义缓存的持续时间，你可以在缓存组件配置中设置[[yii\caching\Cache::$defaultDuration|defaultDuration]]成员属性的值。
-这样设置会覆盖默认的缓存持续时间，且在使用[[yii\caching\Cache::set()|set()]]方法时不必每次都传递$duration参数。
+从 2.0.11 开始，如果想自定义缓存的持续时间，你可以在缓存组件配置中设置 [[yii\caching\Cache::$defaultDuration|defaultDuration]] 成员属性的值。
+这样设置会覆盖默认的缓存持续时间，且在使用 [[yii\caching\Cache::set()|set()]] 
+方法时不必每次都传递 `$duration` 参数。
 
 
 ### 缓存依赖 <span id="cache-dependencies"></span>
@@ -262,10 +276,12 @@ $data = $cache->get($key);
 - [[yii\caching\DbDependency]]：如果指定 SQL 语句的查询结果发生了变化，则依赖改变。
 - [[yii\caching\ExpressionDependency]]：如果指定的 PHP 表达式执行结果发生变化，则依赖改变。
 - [[yii\caching\FileDependency]]：如果文件的最后修改时间发生变化，则依赖改变。
-- [[yii\caching\TagDependency]]: associates a cached data item with one or multiple tags. You may invalidate
-  the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
+- [[yii\caching\TagDependency]]：将缓存的数据项与一个或多个标签相关联。 您可以通过调用
+  [[yii\caching\TagDependency::invalidate()]] 来检查指定标签的缓存数据项是否有效。
 
-> Note: 避免对带有缓存依赖的缓存项使用 [[yii\caching\Cache::exists()|exists()]] 方法，因为它不检测缓存依赖（如果有的话）是否有效，所以调用[[yii\caching\Cache::get()|get()]]可能返回`false`而调用[[yii\caching\Cache::exists()|exists()]]却返回`true`。
+> Note: 避免对带有缓存依赖的缓存项使用 [[yii\caching\Cache::exists()|exists()]] 方法，
+因为它不检测缓存依赖（如果有的话）是否有效，所以调用 [[yii\caching\Cache::get()|get()]]
+可能返回 `false` 而调用 [[yii\caching\Cache::exists()|exists()]] 却返回 `true`。
   
 
 ## 查询缓存 <span id="query-caching"></span>
@@ -279,8 +295,8 @@ $data = $cache->get($key);
 ```php
 $result = $db->cache(function ($db) {
 
-    // the result of the SQL query will be served from the cache
-    // if query caching is enabled and the query result is found in the cache
+    // SQL 查询的结果将从缓存中提供
+    // 如果启用查询缓存并且在缓存中找到查询结果
     return $db->createCommand('SELECT * FROM customer WHERE id=1')->queryOne();
 
 });
@@ -294,98 +310,69 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> 信息：有些 DBMS （例如：[MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)）
+> Info: 有些 DBMS （例如：[MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html)）
 也支持数据库服务器端的查询缓存。
 你可以选择使用任一查询缓存机制。
 上文所述的查询缓存的好处在于你可以指定更灵活的缓存依赖因此可能更加高效。
 
+自 2.0.14 以后，您可以使用以下快捷方法：
 
-### 缓存冲刷 <span id="cache-flushing">
-
-当你想让所有的缓存数据失效时，可以调用[[yii\caching\Cache::flush()]]。
-
-冲刷缓存数据，你还可以从控制台调用`yii cache/flush`。
- - `yii cache`: 列出应用中可用的缓存组件
- - `yii cache/flush cache1 cache2`: 冲刷缓存组件`cache1`, `cache2` (可以传递多个用空格分开的缓存组件）
- - `yii cache/flush-all`: 冲刷应用中所有的缓存组件
-
-> 信息：默认情况下，控制台应用使用独立的配置文件。所以，为了上述命令发挥作用，请确保Web应用和控制台应用配置相同的缓存组件。
+```php
+(new Query())->cache(7200)->all();
+// and
+User::find()->cache(7200)->all();
+```
 
 
 ### 配置 <span id="query-caching-configs"></span>
 
-Query caching has three global configurable options through [[yii\db\Connection]]:
+查询缓存通过 [[yii\db\Connection]] 有三个全局可配置选项：
 
-* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: whether to turn on or off query caching.
-  It defaults to true. Note that to effectively turn on query caching, you also need to have a valid
-  cache, as specified by [[yii\db\Connection::queryCache|queryCache]].
-* [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
-  that a query result can remain valid in the cache. You can use 0 to indicate a query result should
-  remain in the cache forever. This property is the default value used when [[yii\db\Connection::cache()]]
-  is called without specifying a duration.
-* [[yii\db\Connection::queryCache|queryCache]]: 缓存应用组件的 ID。默认为 `'cache'`。
+* [[yii\db\Connection::enableQueryCache|enableQueryCache]]：是否打开或关闭查询缓存。
+  它默认为 `true`。 请注意，要有效打开查询缓存，
+  您还需要有一个由 [[yii\db\Connection::queryCache|queryCache]] 所指定的有效缓存。
+* [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]：这表示查询结果在缓存中保持有效的秒数。 
+  您可以使用 0 来表示查询结果永久保留在缓存中。
+  该属性是在未指定持续时间的情况下调用 [[yii\db\Connection::cache()]]
+  使用的默认值。
+* [[yii\db\Connection::queryCache|queryCache]]：缓存应用组件的 ID。默认为 `'cache'`。
   只有在设置了一个有效的缓存应用组件时，查询缓存才会有效。
 
 
-### Usages <span id="query-caching-usages"></span>
+### 使用 <span id="query-caching-usages"></span>
 
-You can use [[yii\db\Connection::cache()]] if you have multiple SQL queries that need to take advantage of
-query caching. The usage is as follows,
+如果您有多个需要利用查询缓存的 SQL 查询，则可以使用 [[yii\db\Connection::cache()]]。
+用法如下，
 
 ```php
-$duration = 60;     // cache query results for 60 seconds.
-$dependency = ...;  // optional dependency
+$duration = 60;     // 缓存查询结果 60 秒。
+$dependency = ...;  // 可选的依赖关系
 
 $result = $db->cache(function ($db) {
 
-    // ... perform SQL queries here ...
+    // ... 在这里执行 SQL 查询 ...
 
     return $result;
 
 }, $duration, $dependency);
 ```
 
-Any SQL queries in the anonymous function will be cached for the specified duration with the specified dependency.
-If the result of a query is found valid in the cache, the query will be skipped and the result will be served
-from the cache instead. If you do not specify the `$duration` parameter, the value of
-[[yii\db\Connection::queryCacheDuration|queryCacheDuration]] will be used instead.
+在匿名函数里的任何一个 SQL 查询都将使用指定的依赖项缓存指定的持续时间
+如果一个 SQL 查询的结果在缓存中有效，那么这个 SQl 语句将会被跳过而它的查询结果会直接从缓存中读取。
+如果你没有指明 `$duration` 参数，
+那么使用 [[yii\db\Connection::queryCacheDuration|queryCacheDuration]] 属性。
 
-* [[yii\db\Connection::enableQueryCache|enableQueryCache]]：是否开启或关闭查询缓存，默认是`true`。注意，为了有效的开启查询缓存，你还需要配置一个由[[yii\db\Connection::queryCache|queryCache]]属性指定的缓存组件。
-* [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]： 这表示查询结果能够保持有效的秒数，设置为0的话，则会在缓存组件中永久缓存。这也是调用[[yii\db\Connection::cache()]]而没有指明缓存持续时间时的默认值。
-* [[yii\db\Connection::queryCache|queryCache]]: 缓存应用组件的 ID。默认为 `'cache'`。
-  只有在设置了一个有效的缓存应用组件时，查询缓存才会有效。
-
-
-### 用法 <span id="query-caching-usages"></span>
-
-如果一次有多个SQL查询想利用查询缓存，你可以用[[yii\db\Connection::cache()]] 。用法如下，
-
-```php
-$duration = 60;     // cache query results for 60 seconds.
-$dependency = ...;  // optional dependency
-
-$result = $db->cache(function ($db) {
-
-    // ... perform SQL queries here ...
-
-    return $result;
-
-}, $duration, $dependency);
-```
-
-在匿名函数里的任何一个SQL查询都会伴随指定的duration和dependency来生成缓存。
-如果一个SQL查询的结果在缓存中有效，那么这个SQl语句将会被跳过而它的查询结果会直接从缓存中读取。如果你没有指明`$duration`参数，那么使用[[yii\db\Connection::queryCacheDuration|queryCacheDuration]]属性。
-
-有时在`cache()`里，你可能不想缓存某些特殊的查询，这时你可以用[[yii\db\Connection::noCache()]]。
+有时在`cache()`里，你可能不想缓存某些特殊的查询，
+这时你可以用[[yii\db\Connection::noCache()]]。
 
 ```php
 $result = $db->cache(function ($db) {
 
-    // SQL queries that use query caching
+    // 使用查询缓存的 SQL 查询
 
     $db->noCache(function ($db) {
 
-        // SQL queries that do not use query caching
+        // 不使用查询缓存的 SQL 查询
 
     });
 
@@ -395,21 +382,22 @@ $result = $db->cache(function ($db) {
 });
 ```
 
-如果仅仅想缓存一个单独的查询，那么在建立查询命令时可以使用[[yii\db\Command::cache()]]。例如，
+如果您只想为单个查询使用查询缓存，则可以在构建命令时调用 [[yii\db\Command::cache()]]。
+例如，
 
 ```php
-// use query caching and set query cache duration to be 60 seconds
+// 使用查询缓存并将查询缓存持续时间设置为 60 秒
 $customer = $db->createCommand('SELECT * FROM customer WHERE id=1')->cache(60)->queryOne();
 ```
 
-也可以用[[yii\db\Command::noCache()]]来单独设置某些查询命令不缓存。例如，
+您还可以使用 [[yii\db\Command::noCache()]] 禁用单个命令的查询缓存。例如，
 
 ```php
 $result = $db->cache(function ($db) {
 
-    // SQL queries that use query caching
+    // 使用查询缓存的 SQL 查询
 
-    // do not use query caching for this command
+    // 对此命令不使用查询缓存
     $customer = $db->createCommand('SELECT * FROM customer WHERE id=1')->noCache()->queryOne();
 
     // ...
@@ -428,4 +416,18 @@ $result = $db->cache(function ($db) {
 有些缓存存储器有大小限制。例如，memcache 限制每条数据最大为 1MB。
 因此，如果查询结果的大小超出了该限制，
 则会导致缓存失败。
+
+
+### 缓存冲刷 <span id="cache-flushing">
+
+当你想让所有的缓存数据失效时，可以调用[[yii\caching\Cache::flush()]]。
+
+冲刷缓存数据，你还可以从控制台调用`yii cache/flush`。
+ - `yii cache`: 列出应用中可用的缓存组件
+ - `yii cache/flush cache1 cache2`: 冲刷缓存组件`cache1`, `cache2` 
+ (可以传递多个用空格分开的缓存组件）
+ - `yii cache/flush-all`: 冲刷应用中所有的缓存组件
+
+> Info: 默认情况下，控制台应用使用独立的配置文件。
+所以，为了上述命令发挥作用，请确保Web应用和控制台应用配置相同的缓存组件。
 
