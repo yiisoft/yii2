@@ -245,8 +245,6 @@ abstract class Application extends Module
         if (isset($config['timeZone'])) {
             $this->setTimeZone($config['timeZone']);
             unset($config['timeZone']);
-        } elseif (!ini_get('date.timezone')) {
-            $this->setTimeZone('UTC');
         }
 
         if (isset($config['container'])) {
