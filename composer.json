@@ -98,7 +98,10 @@
         ]
     },
     "autoload-dev": {
-        "psr-4": {"yiiunit\\": "tests/"}
+        "psr-4": {
+            "yiiunit\\": "tests/",
+            "yii\\build\\": "build/"
+        }
     },
     "config": {
         "platform": {"php": "7.1"}
