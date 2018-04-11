@@ -1,10 +1,12 @@
 # 何を知っている必要があるか
 
-Yii の学習曲線は他の PHP フレームワークほど急峻ではありませんが、それでもいくつかは事前に必要とされる知識があります。
+Yii の学習曲線は他の PHP フレームワークほど急峻ではありませんが、それでも Yii を使い始める前に学習すべき事がいくつかはあります。
 
 ## PHP
 
 Yii は PHP フレームワークですから、必ず [言語リファレンスを読んで理解する](http://php.net/manual/ja/langref.php) ようにして下さい。
+Yii を使って開発するときはオブジェクト指向でコードを書くことになりますから、必ず、
+[クラスとオブジェクト](https://secure.php.net/manual/ja/language.oop5.basic.php) および [名前空間](https://secure.php.net/manual/ja/language.namespaces.php) には慣れ親しんでおいて下さい。
 
 ## オブジェクト指向プログラミング
 
@@ -15,6 +17,7 @@ Yii は PHP フレームワークですから、必ず [言語リファレンス
 
 ## コマンドラインと Composer
 
-Yii は業界標準の PHP パッケージ管理ソフトである [Composer](https://getcomposer.org/) を広範囲に使用していますので、必ずそのガイドを読んで理解して下さい。
+Yii は業界標準の PHP パッケージ管理ソフトである [Composer](https://getcomposer.org/) を広範囲に使用していますので、
+必ずその [ガイド](https://getcomposer.org/doc/01-basic-usage.md) を読んで理解して下さい。
 あなたがコマンドラインの使用に慣れていないのであれば、今こそ使い始めてみるべき時です。
 いったん基礎を学習すれば、二度とコマンドラインなしで仕事をしようとは思わなくなりますよ。
