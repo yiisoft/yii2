@@ -2,7 +2,7 @@
 ========
 
 Yii 包含了一个建立在 PHP PDO 之上的数据访问层 (DAO)。DAO为不同的数据库提供了一套统一的API。
-其中```ActiveRecord``` 提供了数据库与模型(MVC 中的 M,Model) 的交互，```QueryBuilder``` 用于创建动态的查询语句。
+其中 `ActiveRecord` 提供了数据库与模型(MVC 中的 M,Model) 的交互，`QueryBuilder` 用于创建动态的查询语句。
 DAO提供了简单高效的SQL查询，可以用在与数据库交互的各个地方.
 
 使用 Yii DAO 时，你主要需要处理纯 SQL 语句和 PHP 数组。因此，这是访问数据库最高效的方法。
@@ -14,11 +14,14 @@ Yii DAO 支持下列现成的数据库：
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): 版本 >= 8.4
-- [CUBRID](http://www.cubrid.org/): 版本 >= 9.3 . (由于PHP PDO 扩展的一个[bug](http://jira.cubrid.org/browse/APIS-658)  引用值会无效,所以你需要在 CUBRID的客户端和服务端都使用 9.3 )
+- [PostgreSQL](http://www.postgresql.org/): 版本 8.4 或更高
+- [CUBRID](http://www.cubrid.org/): 版本 9.3 或更高。
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): 版本>=2005.
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): 版本 2008 或更高。
 
+> Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
+  [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
+  to compile it or use [PDO emulation layer](https://github.com/taq/pdooci).
 
 ## 创建数据库连接 <span id="creating-db-connections"></span>
 
@@ -144,7 +147,7 @@ $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
 
-> 注意: 为了保持精度，
+> Note: 为了保持精度，
 > 即使对应的数据库列类型为数值型，
 > 所有从数据库取得的数据都被表现为字符串。
 
@@ -325,6 +328,9 @@ $count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
             ->queryScalar();
 ```
 
+### 预处理语句
+
+为安全传递查询参数可以使用预处理语句,首先应当使用 `:placeholder` 占位，再将变量绑定到对应占位符：
 
 ## 执行事务 <span id="performing-transactions"></span>
 
@@ -405,6 +411,11 @@ Yii 为四个最常用的隔离级别提供了常量：
 - [[\yii\db\Transaction::REPEATABLE_READ]] - 避免了脏读和不可重复读。
 - [[\yii\db\Transaction::SERIALIZABLE]] - 最强的隔离级别， 避免了上述所有的问题。
 
+> 注意: 你使用的数据库必须支持 `Savepoints` 才能正确地执行，以上代码在所有关系数据中都可以执行，但是只有支持 `Savepoints` 才能保证安全性。
+
+Yii 也支持为事务设置隔离级别 `isolation levels`，当执行事务时会使用数据库默认的隔离级别，你也可以为事务指定隔离级别.
+Yii 提供了以下常量作为常用的隔离级别
+
 除了使用上述的常量来指定隔离级别，
 你还可以使用你的数据库所支持的具有有效语法的字符串。
 比如，在 PostgreSQL 中，
@@ -417,12 +428,12 @@ Yii 为四个最常用的隔离级别提供了常量：
 在本文写作之时，
 只有 MSSQL 和 SQLite 受这些限制的影响。
 
-> 注意: SQLite 只支持两种隔离级别，
+> Note: SQLite 只支持两种隔离级别，
 所以你只能使用 `READ UNCOMMITTED` 和 `SERIALIZABLE`。
 使用其他级别将导致异常的抛出。
 
 
-> 注意: PostgreSQL 不支持在事务开启前设定隔离级别，
+> Note: PostgreSQL 不支持在事务开启前设定隔离级别，
 因此，你不能在开启事务时直接指定隔离级别。
 你必须在事务开始后再调用 [[yii\db\Transaction::setIsolationLevel()]]。
 
@@ -432,7 +443,6 @@ Yii 为四个最常用的隔离级别提供了常量：
 
 如果你的数据库支持保存点，
 你可以像下面这样嵌套多个事务：
-
 ```php
 Yii::$app->db->transaction(function ($db) {
     // outer transaction
@@ -594,7 +604,7 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 唯一的差别是，
 如果没有主库可用，将抛出一个异常。
 
-> 注意： 当你使用 [[yii\db\Connection::masters|masters]] 属性来配置一个或多个主库时，
+> Note: 当你使用 [[yii\db\Connection::masters|masters]] 属性来配置一个或多个主库时，
   所有其他指定数据库连接的属性 (例如 `dsn`, `username`, `password`) 与 `Connection` 对象本身将被忽略。
 
 默认情况下，
@@ -666,6 +676,10 @@ Yii::$app->db->createCommand()->createTable('post', [
     'text' => 'text',
 ]);
 ```
+
+更多信息请参考[[yii\db\Schema]]
+
+### 修改模式
 
 上面的数组描述要创建的列的名称和类型。
 对于列的类型， 

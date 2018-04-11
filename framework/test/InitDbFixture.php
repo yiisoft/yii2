@@ -30,7 +30,7 @@ class InitDbFixture extends DbFixture
 {
     /**
      * @var string the init script file that should be executed when loading this fixture.
-     * This should be either a file path or path alias. Note that if the file does not exist,
+     * This should be either a file path or [path alias](guide:concept-aliases). Note that if the file does not exist,
      * no error will be raised.
      */
     public $initScript = '@app/tests/fixtures/initdb.php';
@@ -44,7 +44,7 @@ class InitDbFixture extends DbFixture
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeLoad()
     {
@@ -52,7 +52,7 @@ class InitDbFixture extends DbFixture
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterLoad()
     {
@@ -60,18 +60,18 @@ class InitDbFixture extends DbFixture
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function load()
     {
         $file = Yii::getAlias($this->initScript);
         if (is_file($file)) {
-            require($file);
+            require $file;
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeUnload()
     {
@@ -79,7 +79,7 @@ class InitDbFixture extends DbFixture
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function afterUnload()
     {

@@ -9,8 +9,8 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * Session provides session data management and the related configurations.
@@ -47,6 +47,7 @@ use yii\base\InvalidParamException;
  *
  * @property array $allFlashes Flash messages (key => message or key => [message1, message2]). This property
  * is read-only.
+ * @property string $cacheLimiter Current cache limiter. This property is read-only.
  * @property array $cookieParams The session cookie parameters. This property is read-only.
  * @property int $count The number of session variables. This property is read-only.
  * @property string $flash The key identifying the flash message. Note that flash messages and normal session
@@ -88,6 +89,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
      */
     private $_cookieParams = ['httponly' => true];
+    /**
+     * @var $frozenSessionData array|null is used for saving session between recreations due to session parameters update.
+     */
+    private $frozenSessionData;
 
 
     /**
@@ -129,7 +134,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
         $this->setCookieParamsInternal();
 
-        @session_start();
+        YII_DEBUG ? session_start() : @session_start();
 
         if ($this->getIsActive()) {
             Yii::info('Session started', __METHOD__);
@@ -190,6 +195,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Frees all session variables and destroys all data registered to a session.
+     *
+     * This method has no effect when session is not [[getIsActive()|active]].
+     * Make sure to call [[open()]] before calling it.
+     * @see open()
+     * @see isActive
      */
     public function destroy()
     {
@@ -270,9 +280,16 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Updates the current session ID with a newly generated one .
+     * Updates the current session ID with a newly generated one.
+     *
      * Please refer to <http://php.net/session_regenerate_id> for more details.
+     *
+     * This method has no effect when session is not [[getIsActive()|active]].
+     * Make sure to call [[open()]] before calling it.
+     *
      * @param bool $deleteOldSession Whether to delete the old associated session file or not.
+     * @see open()
+     * @see isActive
      */
     public function regenerateID($deleteOldSession = false)
     {
@@ -305,7 +322,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setName($value)
     {
+        $this->freeze();
         session_name($value);
+        $this->unfreeze();
     }
 
     /**
@@ -321,8 +340,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Sets the current session save path.
      * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
-     * @param string $value the current session save path. This can be either a directory name or a path alias.
-     * @throws InvalidParamException if the path is not a valid directory
+     * @param string $value the current session save path. This can be either a directory name or a [path alias](guide:concept-aliases).
+     * @throws InvalidArgumentException if the path is not a valid directory
      */
     public function setSavePath($value)
     {
@@ -330,7 +349,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if (is_dir($path)) {
             session_save_path($path);
         } else {
-            throw new InvalidParamException("Session save path is not a valid directory: $value");
+            throw new InvalidArgumentException("Session save path is not a valid directory: $value");
         }
     }
 
@@ -348,7 +367,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * The cookie parameters passed to this method will be merged with the result
      * of `session_get_cookie_params()`.
      * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httponly`.
-     * @throws InvalidParamException if the parameters are incomplete.
+     * @throws InvalidArgumentException if the parameters are incomplete.
      * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
      */
     public function setCookieParams(array $value)
@@ -359,7 +378,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Sets the session cookie parameters.
      * This method is called by [[open()]] when it is about to open the session.
-     * @throws InvalidParamException if the parameters are incomplete.
+     * @throws InvalidArgumentException if the parameters are incomplete.
      * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
      */
     private function setCookieParamsInternal()
@@ -368,7 +387,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if (isset($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly'])) {
             session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
         } else {
-            throw new InvalidParamException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
+            throw new InvalidArgumentException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
         }
     }
 
@@ -383,13 +402,14 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             return false;
         } elseif (ini_get('session.use_only_cookies') === '1') {
             return true;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
      * Sets the value indicating whether cookies should be used to store session IDs.
+     *
      * Three states are possible:
      *
      * - true: cookies and only cookies will be used to store session IDs.
@@ -400,6 +420,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setUseCookies($value)
     {
+        $this->freeze();
         if ($value === false) {
             ini_set('session.use_cookies', '0');
             ini_set('session.use_only_cookies', '0');
@@ -410,6 +431,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             ini_set('session.use_cookies', '1');
             ini_set('session.use_only_cookies', '0');
         }
+        $this->unfreeze();
     }
 
     /**
@@ -422,17 +444,19 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * @param float $value the probability (percentage) that the GC (garbage collection) process is started on every session initialization.
-     * @throws InvalidParamException if the value is not between 0 and 100.
+     * @throws InvalidArgumentException if the value is not between 0 and 100.
      */
     public function setGCProbability($value)
     {
+        $this->freeze();
         if ($value >= 0 && $value <= 100) {
             // percent * 21474837 / 2147483647 ≈ percent * 0.01
             ini_set('session.gc_probability', floor($value * 21474836.47));
             ini_set('session.gc_divisor', 2147483647);
         } else {
-            throw new InvalidParamException('GCProbability must be a value between 0 and 100.');
+            throw new InvalidArgumentException('GCProbability must be a value between 0 and 100.');
         }
+        $this->unfreeze();
     }
 
     /**
@@ -448,7 +472,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setUseTransparentSessionID($value)
     {
+        $this->freeze();
         ini_set('session.use_trans_sid', $value ? '1' : '0');
+        $this->unfreeze();
     }
 
     /**
@@ -465,7 +491,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setTimeout($value)
     {
+        $this->freeze();
         ini_set('session.gc_maxlifetime', $value);
+        $this->unfreeze();
     }
 
     /**
@@ -549,7 +577,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function getIterator()
     {
         $this->open();
-        return new SessionIterator;
+        return new SessionIterator();
     }
 
     /**
@@ -610,13 +638,13 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             unset($_SESSION[$key]);
 
             return $value;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
-     * Removes all session variables
+     * Removes all session variables.
      */
     public function removeAll()
     {
@@ -685,9 +713,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             }
 
             return $value;
-        } else {
-            return $defaultValue;
         }
+
+        return $defaultValue;
     }
 
     /**
@@ -888,5 +916,68 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         $this->open();
         unset($_SESSION[$offset]);
+    }
+
+    /**
+     * If session is started it's not possible to edit session ini settings. In PHP7.2+ it throws exception.
+     * This function saves session data to temporary variable and stop session.
+     * @since 2.0.14
+     */
+    protected function freeze()
+    {
+        if ($this->getIsActive()) {
+            if (isset($_SESSION)) {
+                $this->frozenSessionData = $_SESSION;
+            }
+            $this->close();
+            Yii::info('Session frozen', __METHOD__);
+        }
+    }
+
+    /**
+     * Starts session and restores data from temporary variable
+     * @since 2.0.14
+     */
+    protected function unfreeze()
+    {
+        if (null !== $this->frozenSessionData) {
+
+            YII_DEBUG ? session_start() : @session_start();
+
+            if ($this->getIsActive()) {
+                Yii::info('Session unfrozen', __METHOD__);
+            } else {
+                $error = error_get_last();
+                $message = isset($error['message']) ? $error['message'] : 'Failed to unfreeze session.';
+                Yii::error($message, __METHOD__);
+            }
+
+            $_SESSION = $this->frozenSessionData;
+            $this->frozenSessionData = null;
+        }
+    }
+
+    /**
+     * Set cache limiter
+     *
+     * @param string $cacheLimiter
+     * @since 2.0.14
+     */
+    public function setCacheLimiter($cacheLimiter)
+    {
+        $this->freeze();
+        session_cache_limiter($cacheLimiter);
+        $this->unfreeze();
+    }
+
+    /**
+     * Returns current cache limiter
+     *
+     * @return string current cache limiter
+     * @since 2.0.14
+     */
+    public function getCacheLimiter()
+    {
+        return session_cache_limiter();
     }
 }

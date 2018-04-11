@@ -1,16 +1,22 @@
 创建表单
 ========
 
-在 Yii 中使用表单的主要方式是通过 [[yii\widgets\ActiveForm]]。如果是基于
-模型的表单应首选这种方式。此外，在 [[yii\helpers\Html]]中也有一些实用的
-方法用于添加按钮和帮助文本。
+基于活动记录（ActiveRecord）的表单：ActiveForm
+-----------------------
+在yii中使用表单的主要方式是通过 [[yii\widgets\ActiveForm]]。
+当某个表单是基于一个模型时，应该首选这种方式。
+此外，在 [[yii\helpers\Html]] 中有很多实用的方法为表单添加按钮和帮助文档。
 
-在客户端上显示的表单，大多数情况下有一个相应的[模型](structure-models.md)，用来验证其输入的服务器数据
-(可在 [输入验证](input-validation.md) 一节获取关于验证的细节)。
-当创建基于模型的表单时，第一步是定义模型本身。该模式可以是一个基于[活动记录](db-active-record.md)的类，
-表示数据库中的数据，也可以是一个基于通用模型的类（继承自 [[yii\base\Model]] ），
-来获取任意的输入数据，如登录表单。在下面的例子中，我们展示了一个用来做
-登录表单的通用模型：
+在客户端显示的表单，大多数情况下都有一个相应的[模型](structure-models.md)，
+用来在服务器上验证其输入的数据（可在[输入验证](input-validation.md)一节获取关于验证的细节）。
+当创建一个基于模型的表单时，第一步是定义模型本身。该模型可以是一个基于[活动记录](db-active-record.md)的类，
+表示数据库中的数据，也可以是一个基于通用模型的类（继承自[[yii\base\Model]]），
+来获取任意的输入数据，如登录表单。
+
+> Tip: 如果一个表单的输入域与数据库的字段不匹配，或者它存在只适用于它的特殊的格式或者方法，
+> 则最好为它创建一个单独的继承自 [[yii\base\Model]] 的模型。
+
+在接下来的例子中，我们展示了通用模型如何用于登录表单：
 
 ```php
 <?php
@@ -52,6 +58,7 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end() ?>
 ```
 
+### 用 `begin()` 和 `end()` 包裹 <span id="wrapping-with-begin-and-end"></span>
 在上面的代码中，[[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] 不仅创建了一个表单实例，同时也标志着表单的开始。
 放在 [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] 与 [[yii\widgets\ActiveForm::end()|ActiveForm::end()]]
 之间的所有内容都被包裹在 HTML 的 `<form>` 标签中。
@@ -59,6 +66,7 @@ $form = ActiveForm::begin([
 一个额外的 CSS 类和 ID 会在 `<form>` 标签中使用。要查看所有可用的选项，
 请参阅 API 文档的 [[yii\widgets\ActiveForm]]。
 
+### ActiveField <span id="activefield"></span>
 为了在表单中创建表单元素与元素的标签，以及任何适用的 JavaScript 验证，[[yii\widgets\ActiveForm::field()|ActiveForm::field()]]
 方法在调用时，会返回一个 [[yii\widgets\ActiveField]] 的实例。
 直接输出该方法时，结果是一个普通的（文本）输入。要自定义输出，可以附加上 [[yii\widgets\ActiveField|ActiveField]] 
@@ -78,9 +86,9 @@ input 输入框的 name 属性会自动地根据 [[yii\base\Model::formName()|fo
 例如，对于在上面的例子中 `username` 输入字段的 name 属性将是 `LoginForm[username]`。
 这种命名规则使所有属性的数组的登录表单在服务器端的 `$_POST['LoginForm']` 数组中是可用的。
 
-> Tip: If you have only one model in a form and want to simplify the input names you may skip the array part by
-> overriding the [[yii\base\Model::formName()|formName()]] method of the model to return an empty string.
-> This can be useful for filter models used in the [GridView](output-data-widgets.md#grid-view) to create nicer URLs.
+> Tip: 如果在表单中只有一个模型并且想要简化输入名称，则可以通过覆盖模型的
+> [[yii\base\Model::formName()|formName()]] 方法来返回一个空字符串。
+> 这对于 [GridView](output-data-widgets.md#grid-view) 中使用的过滤器模型来创建更好的URL很有用。
 
 指定模型的属性可以以更复杂的方式来完成。例如，当上传时，多个文件
 或选择多个项目的属性，可能需要一个数组值，你可以通过附加 `[]` 来
@@ -105,12 +113,12 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 [[yii\helpers\Html::submitButton()|Html::submitButton()]]。
 
 
-> 提示: 如果你正在你的应用程序中使用 Twitter Bootstrap CSS 你可以使用[[yii\bootstrap\ActiveForm]] 
+> Tip: 如果你正在你的应用程序中使用 Twitter Bootstrap CSS 你可以使用[[yii\bootstrap\ActiveForm]] 
 > 来代替 [[yii\widgets\ActiveForm]]。
 > 前者继承自后者并在生成表单字段时使用 Bootstrap 特有的样式。
 
 
-> 提示：为了设计带星号的表单字段，你可以使用下面的 CSS：
+> Tip: 为了设计带星号的表单字段，你可以使用下面的 CSS：
 >
 > ```css
 > div.required label:after {
@@ -122,34 +130,85 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 创建下拉列表 <span id="creating-activeform-dropdownlist"></span>
 ------------
 
-可以使用 ActiveForm 的 [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail)
-方法来创建一个下拉列表：
+有三种类型的列表：
+* 下拉列表
+* 单选列表
+* 复选框列表
+
+要创建一个列表，你必须准备这些项目。可以手动完成：
 
 ```php
-use app\models\ProductCategory;
+$items = [
+    1 => 'item 1', 
+    2 => 'item 2'
+]
+```
 
-/* @var $this yii\web\View */
+或从 DB 中检索：
+
+```php
+$items = Category::find()
+        ->select(['label'])
+        ->indexBy('id')
+        ->column();
+```
+
+这些 `$items` 必须由不同的列表小部件处理。
+表单域（和当前活动项目）的值将由
+`$model` 属性的当前值自动设置。
+
+#### 创建一个下拉列表 <span id="creating-activeform-dropdownlist"></span>
+
+我们可以使用 ActiveField [[\yii\widgets\ActiveField::dropDownList()]] 方法创建一个下拉列表：
+
+```php
 /* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\Product */
 
-echo $form->field($model, 'product_category')->dropdownList(
-    ProductCategory::find()->select(['category_name', 'id'])->indexBy('id')->column(),
+echo $form->field($model, 'category')->dropdownList([
+        1 => 'item 1', 
+        2 => 'item 2'
+    ],
     ['prompt'=>'Select Category']
 );
 ```
 
-模型字段的值将被自动预先选定。
+#### 创建一个单选列表 <span id="creating-activeform-radioList"></span>
 
-Working with Pjax <span id="working-with-pjax"></span>
+我们可以使用 ActiveField [[\yii\widgets\ActiveField::radioList()]] 方法创建一个单选列表：
+
+```php
+/* @var $form yii\widgets\ActiveForm */
+
+echo $form->field($model, 'category')->radioList([
+    1 => 'radio 1', 
+    2 => 'radio 2'
+]);
+```
+
+#### 创建一个复选框列表 <span id="creating-activeform-checkboxList"></span>
+
+我们可以使用 ActiveField [[\yii\widgets\ActiveField::checkboxList()]] 方法创建一个复选框列表：
+
+```php
+/* @var $form yii\widgets\ActiveForm */
+
+echo $form->field($model, 'category')->checkboxList([
+    1 => 'checkbox 1', 
+    2 => 'checkbox 2'
+]);
+```
+
+
+与 Pjax 一起工作 <span id="working-with-pjax"></span>
 -----------------------
 
-The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
-page instead of reloading the entire page. You can use it to update only the form
-and replace its contents after the submission.
+[[yii\widgets\Pjax|Pjax]] 小部件允许您更新某个部分
+而不是重新加载整个页面。
+您可以使用它来仅更新表单并在提交后更换其内容。
 
-You can configure [[yii\widgets\Pjax::$formSelector|$formSelector]] to specify
-which form submission may trigger pjax. If not set, all forms with `data-pjax`
-attribute within the enclosed content of Pjax will trigger pjax requests.
+你可以配置 [[yii\widgets\Pjax::$formSelector|$formSelector]]
+来指定表单提交可能会触发 pjax。如果没有设置，所有封装 Pjax 内容的 `data-pjax`
+属性的表单都会触发 pjax 请求。
 
 ```php
 use yii\widgets\Pjax;
@@ -168,28 +227,27 @@ Pjax::begin([
     ActiveForm::end();
 Pjax::end();
 ```
-> Tip: Be careful with the links inside the [[yii\widgets\Pjax|Pjax]] widget since
-> the response  will also be rendered inside the widget. To prevent this, use the
-> `data-pjax="0"` HTML attribute.
+> Tip: 请小心处理 [[yii\widgets\Pjax|Pjax]] 小部件中的链接，
+> 因为响应也将在小部件内呈现。为了防止这种情况，
+> 使用 `data-pjax="0"` HTML 属性。
 
-#### Values in Submit Buttons and File Upload
+#### 提交按钮和文件上传中的值
 
-There are known issues using `jQuery.serializeArray()` when dealing with
-[[https://github.com/jquery/jquery/issues/2321|files]] and
-[[https://github.com/jquery/jquery/issues/2321|submit button values]] which
-won't be solved and are instead deprecated in favor of the `FormData` class
-introduced in HTML5.
+在处理 [[https://github.com/jquery/jquery/issues/2321|files]] 和
+[[https://github.com/jquery/jquery/issues/2321|submit button values]] 
+时使用 `jQuery.serializeArray()` 
+有已知的问题，这将不会被解决，而是被弃用，
+以支持 HTML5 中引入的 FormData 类。
 
-That means the only official support for files and submit button values with
-ajax or using the [[yii\widgets\Pjax|Pjax]] widget depends on the
-[[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|browser support]]
-for the `FormData` class.
+这意味着对 ajax 或使用  [[yii\widgets\Pjax|Pjax]]
+小部件的文件和提交按钮值的唯一官方支持取决于
+`FormData` 类的
+[[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|浏览器支持]]。
 
 延伸阅读 <span id="further-reading"></span>
 ---------------
 
-下一节 [输入验证](input-validation.md) 处理提交的表单数据的服务器端验证，
-以及 ajax- 和客户端验证。
+下一节 [输入验证](input-validation.md) 处理提交的表单数据的服务器端验证，以及 ajax 和客户端验证。
 
 要学会有关表格的更复杂的用法，你可以查看以下几节：
 

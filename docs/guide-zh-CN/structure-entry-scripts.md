@@ -3,7 +3,7 @@
 
 入口脚本是应用启动流程中的第一环，
 一个应用（不管是网页应用还是控制台应用）只有一个入口脚本。
-终端用户的请求通过入口脚本实例化应用并将将请求转发到应用。
+终端用户的请求通过入口脚本实例化应用并将请求转发到应用。
 
 Web 应用的入口脚本必须放在终端用户能够访问的目录下，
 通常命名为 `index.php`，
@@ -34,13 +34,13 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // 注册 Composer 自动加载器
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // 包含 Yii 类文件
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // 加载应用配置
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // 创建、配置、运行一个应用
 (new yii\web\Application($config))->run();
@@ -63,15 +63,16 @@ $config = require(__DIR__ . '/../config/web.php');
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // 注册 Composer 自动加载器
-require(__DIR__ . '/vendor/autoload.php');
+require __DIR__ . '/vendor/autoload.php';
 
 // 包含 Yii 类文件
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
 // 加载应用配置
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -83,11 +84,11 @@ exit($exitCode);
 
 入口脚本是定义全局常量的最好地方，Yii 支持以下三个常量：
 
-* `YII_DEBUG`：标识应用是否运行在调试模式。当在调试模式下，
-  应用会保留更多日志信息，如果抛出异常，会显示详细的错误调用堆栈。
+* `YII_DEBUG`：标识应用是否运行在调试模式。当在调试模式下，应用会保留更多日志信息，
+  如果抛出异常，会显示详细的错误调用堆栈。
   因此，调试模式主要适合在开发阶段使用，`YII_DEBUG` 默认值为 false。
-* `YII_ENV`：标识应用运行的环境，
-  详情请查阅[配置](concept-configurations.md#environment-constants)章节。
+* `YII_ENV`：标识应用运行的环境，详情请查阅
+  [配置](concept-configurations.md#environment-constants)章节。
   `YII_ENV` 默认值为 `'prod'`，表示应用运行在线上产品环境。
 * `YII_ENABLE_ERROR_HANDLER`：标识是否启用 Yii 提供的错误处理，
   默认为 true。
@@ -110,3 +111,4 @@ if (!defined('YII_DEBUG')) {
 
 常量定义应该在入口脚本的开头，这样包含其他 PHP 文件时，
 常量就能生效。
+

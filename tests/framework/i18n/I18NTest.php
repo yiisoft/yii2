@@ -39,8 +39,8 @@ class I18NTest extends TestCase
                 'test' => [
                     'class' => $this->getMessageSourceClass(),
                     'basePath' => '@yiiunit/data/i18n/messages',
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -77,8 +77,8 @@ class I18NTest extends TestCase
                         'test' => 'test.php',
                         'foo' => 'test.php',
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $msg = 'The dog runs fast.';
@@ -99,7 +99,7 @@ class I18NTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/7964
+     * @see https://github.com/yiisoft/yii2/issues/7964
      */
     public function testSourceLanguageFallback()
     {
@@ -113,8 +113,8 @@ class I18NTest extends TestCase
                             'foo' => 'test.php',
                         ],
                     ]
-                )
-            ]
+                ),
+            ],
         ]);
 
         $msg = 'The dog runs fast.';
@@ -141,8 +141,8 @@ class I18NTest extends TestCase
 
     public function testTranslateParams2()
     {
-        if (!extension_loaded("intl")) {
-            $this->markTestSkipped("intl not installed. Skipping.");
+        if (!extension_loaded('intl')) {
+            $this->markTestSkipped('intl not installed. Skipping.');
         }
         $msg = 'His name is {name} and his speed is about {n, number} km/h.';
         $params = [
@@ -165,7 +165,8 @@ class I18NTest extends TestCase
 
     /**
      * When translation is missing source language should be used for formatting.
-     * https://github.com/yiisoft/yii2/issues/2209
+     *
+     * @see https://github.com/yiisoft/yii2/issues/2209
      */
     public function testMissingTranslationFormatting()
     {
@@ -173,7 +174,7 @@ class I18NTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/7093
+     * @see https://github.com/yiisoft/yii2/issues/7093
      */
     public function testRussianPlurals()
     {
@@ -194,7 +195,7 @@ class I18NTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/2519
+     * @see https://github.com/yiisoft/yii2/issues/2519
      */
     public function testMissingTranslationEvent()
     {
@@ -225,7 +226,7 @@ class I18NTest extends TestCase
     {
         return [
             ['en-GB'],
-            ['en']
+            ['en'],
         ];
     }
 
@@ -267,11 +268,20 @@ class I18NTest extends TestCase
 
     /**
      * Formatting a message that contains params but they are not provided.
-     * https://github.com/yiisoft/yii2/issues/10884
+     * @see https://github.com/yiisoft/yii2/issues/10884
      */
     public function testFormatMessageWithNoParam()
     {
         $message = 'Incorrect password (length must be from {min, number} to {max, number} symbols).';
         $this->assertEquals($message, $this->i18n->format($message, ['attribute' => 'password'], 'en'));
+    }
+
+    public function testFormatMessageWithDottedParameters()
+    {
+        $message = 'date: {dt.test}';
+        $this->assertEquals('date: 1510147434', $this->i18n->format($message, ['dt.test' => 1510147434], 'en'));
+
+        $message = 'date: {dt.test,date}';
+        $this->assertEquals('date: Nov 8, 2017', $this->i18n->format($message, ['dt.test' => 1510147434], 'en'));
     }
 }

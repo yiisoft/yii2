@@ -19,9 +19,9 @@ $config = [
 
 $db = Yii::createObject($config);
 ```
-[[Yiiの::CreateObject()]] メソッドは引数に構成情報の配列を受け取り、構成情報で名前指定されたクラスをインスタンス化してオブジェクトを作成します。
-オブジェクトがインスタンス化されるとき、その他の設定は、
-オブジェクトのプロパティ、イベントハンドラ、およびビヘイビアを初期化するのに使われます。
+[[Yii::createObject()]] メソッドは引数に構成情報の配列を受け取り、構成情報で名前指定されたクラスをインスタンス化してオブジェクトを作成します。
+オブジェクトがインスタンス化されるとき、その他の設定を使って、
+オブジェクトのプロパティ、イベント・ハンドラ、およびビヘイビアが初期化されます。
 
 すでにオブジェクトがある場合は、構成情報配列でオブジェクトのプロパティを初期化するのに [[Yii::configure()]] を使用することができます:
 
@@ -49,15 +49,15 @@ Yii::configure($object, $config);
 
 * `class` 要素は、作成されるオブジェクトの完全修飾クラス名を指定します。
 * `propertyName` 要素は、名前で指定されたプロパティの初期値を指定します。キーはプロパティ名で、値はそれに対応する初期値です。
-  パブリックメンバ変数と getter/setter によって定義されている [プロパティ](concept-properties.md) のみを設定することができます。
+  パブリック・メンバ変数と getter/setter によって定義されている [プロパティ](concept-properties.md) のみを設定することができます。
 * `on eventName` 要素は、どのようなハンドラがオブジェクトの [イベント](concept-events.md) にアタッチされるかを指定します。
-  配列のキーが `on` に続けてイベント名という書式になることに注意してください。サポートされているイベントハンドラの形式については、
+  配列のキーが `on` に続けてイベント名という書式になることに注意してください。サポートされているイベント・ハンドラの形式については、
   [イベント](concept-events.md) のセクションを参照してください。
 * `as behaviorName` 要素は、どのような [ビヘイビア](concept-behaviors.md) がオブジェクトにアタッチされるかを指定します。
-  配列のキーが `as` に続けてビヘイビア名という書式になり、 `$behaviorConfig` で示される値が、ここで説明する一般的な構成情報のような、
+  配列のキーが `as` に続けてビヘイビア名という書式になり、`$behaviorConfig` で示される値が、ここで説明する一般的な構成情報のような、
   ビヘイビアを作成するための構成情報になることに注意してください。
 
-下記は、初期プロパティ値、イベントハンドラ、およびビヘイビアでの構成を示した例です:
+下記は、初期プロパティ値、イベント・ハンドラ、およびビヘイビアでの構成を示した例です:
 
 ```php
 [
@@ -74,10 +74,10 @@ Yii::configure($object, $config);
 ```
 
 
-## 構成情報の使用 <span id="using-configurations"></span>
+## 構成情報を使用する <span id="using-configurations"></span>
 
 構成情報は Yii の多くの場所で使用されています。このセクションの冒頭では、 [[Yii::createObject()]]
-を使って、構成情報に応じてオブジェクトを作成する方法を示しました。このサブセクションでは、
+を使って、構成情報に応じてオブジェクトを作成する方法を示しました。このサブ・セクションでは、
 アプリケーションの構成とウィジェットの構成という、2つの主要な構成情報の用途を説明します。
 
 
@@ -86,14 +86,14 @@ Yii::configure($object, $config);
 [アプリケーション](structure-applications.md) の構成は、おそらく Yii の中で最も複雑な配列のひとつです。
 それは [[yii\web\Application|アプリケーション]] クラスが、設定可能なプロパティとイベントを数多く持つためです。
 さらに重要なことは、その [[yii\web\Application::components|components]] プロパティが、アプリケーションに登録されている
-コンポーネント生成用の構成情報配列を受け取ることができることです。以下は、 [ベーシックプロジェクトテンプレート](start-basic.md)
+コンポーネントの生成用の構成情報配列を受け取ることができることです。以下は、 [ベーシック・プロジェクト・テンプレート](start-basic.md)
 のアプリケーション構成ファイルの概要です。
 
 ```php
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -121,14 +121,14 @@ $config = [
 ];
 ```
 
-この構成情報には、 `class` キーがありません。それは、[エントリスクリプト](structure-entry-scripts.md) で以下のように、
+この構成情報には、 `class` キーがありません。それは、[エントリ・スクリプト](structure-entry-scripts.md) で以下のように、
 クラス名が既に与えられて使用されているためです。
 
 ```php
 (new yii\web\Application($config))->run();
 ```
 
-アプリケーションの `components` プロパティ構成の詳細については、 [アプリケーション](structure-applications.md) セクションと [サービスロケータ](concept-service-locator.md) セクションにあります。
+アプリケーションの `components` プロパティ構成の詳細については、 [アプリケーション](structure-applications.md) のセクションと [サービス・ロケータ](concept-service-locator.md) のセクションにあります。
 
 バージョン 2.0.11 以降では、アプリケーション構成で `container` プロパティを使って [依存注入コンテナ](concept-di-container.md) を構成することがサポートされています。
 
@@ -136,7 +136,7 @@ $config = [
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'container' => [
         'definitions' => [
             'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
@@ -149,7 +149,7 @@ $config = [
 ```
 
 `definitions` と `singletons` の構成情報配列に使用できる値とその実例についてさらに知るためには、
-[依存注入コンテナ](concept-di-container.md)の記事の [高度な実際の使用方法](concept-di-container.md#advanced-practical-usage) の節を読んでください。
+[依存注入コンテナ](concept-di-container.md) の記事の [高度な実際の使用方法](concept-di-container.md#advanced-practical-usage) のセクションを読んでください。
 
 ### ウィジェットの構成 <span id="widget-configurations"></span>
 
@@ -185,8 +185,8 @@ echo Menu::widget([
 return [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
-    'components' => require(__DIR__ . '/components.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'components' => require __DIR__ . '/components.php',
 ];
 ```
 `components` の構成もまた複雑になるため、上記のように、 `components.php` と呼ぶ別のファイルにそれを格納し `web.php` でそのファイルを "require" しています。
@@ -222,7 +222,7 @@ return [
 構成情報ファイルに格納されている構成情報を取得するには、以下のように、それを "require" するだけです:
 
 ```php
-$config = require('path/to/web.php');
+$config = require 'path/to/web.php';
 (new yii\web\Application($config))->run();
 ```
 
@@ -234,7 +234,7 @@ $config = require('path/to/web.php');
 いわゆる *デフォルト設定* のセットを指定することができます。デフォルト設定は、
 [ブートストラップ](runtime-bootstrapping.md) コード内の `Yii::$container->set()` を呼び出すことで指定することができます。
 
-たとえばあなたが、すべてのリンクページャーが最大で5つのページボタン (デフォルト値は10) を伴って表示されるよう
+たとえばあなたが、すべてのリンク・ページャが最大で5つのページ・ボタン (デフォルト値は10) を伴って表示されるよう
 [[yii\widgets\LinkPager]] をカスタマイズしたいとき、その目標を達成するには次のコードを使用することができます。
 
 ```php
@@ -243,15 +243,15 @@ $config = require('path/to/web.php');
 ]);
 ```
 
-デフォルト設定を使用しなければ、あなたは、リンクページャーを使うすべての箇所で `maxButtonCount` を設定しなければなりません。
+デフォルト設定を使用しなければ、あなたは、リンク・ページャを使うすべての箇所で `maxButtonCount` を設定しなければなりません。
 
 
 ## 環境定数 <span id="environment-constants"></span>
 
 構成情報は、多くの場合、アプリケーションが実行される環境に応じて変化します。たとえば、
-開発環境では `mydb_dev` という名前のデータベースを使用し、本番サーバー上では `mydb_prod` データベースを
+開発環境では `mydb_dev` という名前のデータベースを使用し、本番サーバ上では `mydb_prod` データベースを
 使用したいかもしれません。環境の切り替えを容易にするために、Yii は、あなたのアプリケーションの
-[エントリスクリプト](structure-entry-scripts.md) で定義可能な `YII_ENV` という名前の定数を提供します。
+[エントリ・スクリプト](structure-entry-scripts.md) で定義可能な `YII_ENV` という名前の定数を提供します。
 たとえば:
 
 ```php

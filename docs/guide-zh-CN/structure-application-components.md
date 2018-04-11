@@ -19,8 +19,8 @@
 第一次使用以上表达式时候会创建应用组件实例，
 后续再访问会返回此实例，无需再次创建。
 
-应用组件可以是任意对象，可以在 
-[应用主体配置](structure-applications.md#application-configurations)配置 [[yii\base\Application::components]] 属性 .
+应用组件可以是任意对象，可以在 [应用主体配置](structure-applications.md#application-configurations)配置
+[[yii\base\Application::components]] 属性。
 例如：
 
 ```php
@@ -45,7 +45,7 @@
 ]
 ```
 
-> 补充：请谨慎注册太多应用组件，
+> Info: 请谨慎注册太多应用组件，
   应用组件就像全局变量，
   使用太多可能加大测试和维护的难度。
   一般情况下可以在需要时再创建本地组件。
@@ -58,13 +58,22 @@
 有时你想在每个请求处理过程都实例化某个组件即便它不会被访问，
 可以将该组件ID加入到应用主体的 [[yii\base\Application::bootstrap|bootstrap]] 属性中。
 
+你还可以使用闭包来引导启动自定义的组件。不需要直接返回一个实例化的组件。
+在应用主体 [[yii\base\Application]] 实例化后，闭包也会被调用。
+
 例如, 如下的应用主体配置保证了 `log` 组件一直被加载。
 
 ```php
 [
     'bootstrap' => [
-        // 将 log 组件 ID 加入引导让它始终载入
         'log',
+        function($app){
+            return new ComponentX();
+        },
+        function($app){
+            // 可以写自定义的代码
+           return;
+        }
     ],
     'components' => [
         'log' => [
@@ -77,14 +86,15 @@
 
 ## 核心应用组件 <span id="core-application-components"></span>
 
-Yii 定义了一组固定ID和默认配置的 *核心* 组件，例如 [[yii\web\Application::request|request]] 组件
+Yii 定义了一组固定ID和默认配置的 *核心* 组件，
+例如 [[yii\web\Application::request|request]] 组件
 用来收集用户请求并解析 [路由](runtime-routing.md)；
 [[yii\base\Application::db|db]] 代表一个可以执行数据库操作的数据库连接。
 通过这些组件，Yii应用主体能处理用户请求。
 
-下面是预定义的核心应用组件列表，可以和普通应用组件一样配置和自定义它们。
-当你配置一个核心组件，
-不指定它的类名的话就会使用Yii默认指定的类。
+下面是预定义的核心应用组件列表，
+可以和普通应用组件一样配置和自定义它们。
+当你配置一个核心组件，不指定它的类名的话就会使用Yii默认指定的类。
 
 * [[yii\web\AssetManager|assetManager]]: 管理资源包和资源发布，
   详情请参考 [管理资源](output-assets.md) 一节。
@@ -94,9 +104,9 @@ Yii 定义了一组固定ID和默认配置的 *核心* 组件，例如 [[yii\web
   详情请参考 [数据访问对象](db-dao.md) 一节。
 * [[yii\base\Application::errorHandler|errorHandler]]: 处理 PHP 错误和异常，
   详情请参考 [错误处理](tutorial-handling-errors.md) 一节。
-* [[yii\i18n\Formatter|formatter]]: 格式化输出显示给终端用户的数据，
-  例如数字可能要带分隔符，
-  日期使用长格式。详情请参考 [格式化输出数据](output-formatting.md) 一节。
+* [[yii\i18n\Formatter|formatter]]: 格式化输出显示给终端用户的数据，例如数字可能要带分隔符，
+  日期使用长格式。
+  详情请参考 [格式化输出数据](output-formatting.md) 一节。
 * [[yii\i18n\I18N|i18n]]: 支持信息翻译和格式化。
   详情请参考 [国际化](tutorial-i18n.md) 一节。
 * [[yii\log\Dispatcher|log]]: 管理日志对象。

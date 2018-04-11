@@ -4,9 +4,9 @@
 Yii中的资源是和Web页面相关的文件，可为CSS文件，JavaScript文件，图片或视频等，
 资源放在Web可访问的目录下，直接被Web服务器调用。
 
-通过程序自动管理资源更好一点，例如，
-当你在页面中使用 [[yii\jui\DatePicker]] 小部件时，
-它会自动包含需要的CSS和JavaScript文件，而不是要求你手工去找到这些文件并包含，
+通过程序自动管理资源更好一点，例如，当你在页面中使用 [[yii\jui\DatePicker]] 小部件时，
+它会自动包含需要的CSS和JavaScript文件，
+而不是要求你手工去找到这些文件并包含，
 当你升级小部件时，它会自动使用新版本的资源文件，
 在本教程中，我们会详述Yii提供的强大的资源管理功能。
 
@@ -65,56 +65,56 @@ class AppAsset extends AssetBundle
   如果你的资源文件在一个Web可访问目录下，应设置该属性，这样就不用再发布了。
   [路径别名](concept-aliases.md) 可在此处使用。
 * [[yii\web\AssetBundle::baseUrl|baseUrl]]: 指定对应到[[yii\web\AssetBundle::basePath|basePath]]目录的URL，
-  和 [[yii\web\AssetBundle::basePath|basePath]] 类似，如果你指定 [[yii\web\AssetBundle::sourcePath|sourcePath]] 属性，
-  [资源管理器](#asset-manager) 会发布这些资源并覆盖该属性，
-  [路径别名](concept-aliases.md) 可在此处使用。
+  和 [[yii\web\AssetBundle::basePath|basePath]] 类似，
+  如果你指定 [[yii\web\AssetBundle::sourcePath|sourcePath]] 属性，
+  [资源管理器](#asset-manager) 会发布这些资源并覆盖该属性，[路径别名](concept-aliases.md) 可在此处使用。
 * [[yii\web\AssetBundle::js|js]]: 一个包含该资源包JavaScript文件的数组，
   注意正斜杠"/"应作为目录分隔符，
   每个JavaScript文件可指定为以下两种格式之一：
-  - 相对路径表示为本地JavaScript文件 (如 `js/main.js`)，
-    文件实际的路径在该相对路径前加上
-    [[yii\web\AssetManager::basePath]]，文件实际的URL在该路径前加上[[yii\web\AssetManager::baseUrl]]。
+  - 相对路径表示为本地JavaScript文件 (如 `js/main.js`)，文件实际的路径在该相对路径前加上
+    [[yii\web\AssetManager::basePath]]，文件实际的URL
+    在该路径前加上[[yii\web\AssetManager::baseUrl]]。
   - 绝对URL地址表示为外部JavaScript文件，如
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` 或 
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 * [[yii\web\AssetBundle::css|css]]: 一个包含该资源包CSS文件的数组，
   该数组格式和 [[yii\web\AssetBundle::js|js]] 相同。
-* [[yii\web\AssetBundle::depends|depends]]: 一个列出该资源包
-  依赖的其他资源包（后两节有详细介绍）。
+* [[yii\web\AssetBundle::depends|depends]]: 一个列出该资源包依赖的
+  其他资源包（后两节有详细介绍）。
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: 当调用[[yii\web\View::registerJsFile()]]注册该包 *每个* JavaScript文件时，
   指定传递到该方法的选项。
 * [[yii\web\AssetBundle::cssOptions|cssOptions]]: 当调用[[yii\web\View::registerCssFile()]]注册该包 *每个* css文件时，
   指定传递到该方法的选项。
 * [[yii\web\AssetBundle::publishOptions|publishOptions]]: 当调用[[yii\web\AssetManager::publish()]]发布该包资源文件到Web目录时
-  指定传递到该方法的选项，
-  仅在指定了[[yii\web\AssetBundle::sourcePath|sourcePath]]属性时使用。
+  指定传递到该方法的选项，仅在指定了
+  [[yii\web\AssetBundle::sourcePath|sourcePath]]属性时使用。
 
 
 ### 资源位置 <span id="asset-locations"></span>
 
 资源根据它们的位置可以分为：
 
-* 源资源: 资源文件和PHP源代码放在一起，不能被Web直接访问，
-  为了使用这些源资源，它们要拷贝到一个可Web访问的Web目录中
+* 源资源: 资源文件和PHP源代码放在一起，不能被Web直接访问，为了使用这些源资源，
+  它们要拷贝到一个可Web访问的Web目录中
   成为发布的资源，这个过程称为*发布资源*，随后会详细介绍。
 * 发布资源: 资源文件放在可通过Web直接访问的Web目录中；
-* 外部资源: 资源文件放在与你的Web应用不同的
-  Web服务器上；
+* 外部资源: 资源文件放在与你的Web应用不同
+  的Web服务器上；
 
 当定义资源包类时候，如果你指定了[[yii\web\AssetBundle::sourcePath|sourcePath]] 属性，
-就表示任何使用相对路径的资源会被当作源资源；如果没有指定该属性，
-就表示这些资源为发布资源（因此应指定[[yii\web\AssetBundle::basePath|basePath]] 和
+就表示任何使用相对路径的资源会被当作源资源；
+如果没有指定该属性，就表示这些资源为发布资源（因此应指定[[yii\web\AssetBundle::basePath|basePath]] 和
 [[yii\web\AssetBundle::baseUrl|baseUrl]] 让Yii知道它们的位置）。
 
-推荐将资源文件放到Web目录以避免不必要的发布资源过程，
-这就是之前的例子：指定
-[[yii\web\AssetBundle::basePath|basePath]] 而不是 [[yii\web\AssetBundle::sourcePath|sourcePath]].
+推荐将资源文件放到Web目录以避免不必要的发布资源过程，这就是之前的例子：指定
+[[yii\web\AssetBundle::basePath|basePath]] 
+而不是 [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
 对于 [扩展](structure-extensions.md)来说，
 由于它们的资源和源代码都在不能Web访问的目录下，
 在定义资源包类时必须指定[[yii\web\AssetBundle::sourcePath|sourcePath]]属性。
 
-> Note: [[yii\web\AssetBundle::sourcePath|source path]] 属性不要用`@webroot/assets`，该路径默认为
+> Note: [[yii\web\AssetBundle::sourcePath|source path]] 属性不要用 `@webroot/assets`，该路径默认为
   [[yii\web\AssetManager|asset manager]]资源管理器将源资源发布后存储资源的路径，
   该路径的所有内容会认为是临时文件，
   可能会被删除。
@@ -128,7 +128,7 @@ class AppAsset extends AssetBundle
 我们称这种资源先后次序称为资源依赖。
 
 资源依赖主要通过[[yii\web\AssetBundle::depends]] 属性来指定，
-在`AppAsset` 示例中，资源包依赖其他两个资源包：
+在`AppAsset` 示例中，资源包依赖其他两个资源包： 
 [[yii\web\YiiAsset]] 和 [[yii\bootstrap\BootstrapAsset]]
 也就是该资源包的CSS和JavaScript文件要在这两个依赖包的文件包含 *之后* 才包含。
 
@@ -166,8 +166,8 @@ public $cssOptions = ['condition' => 'lte IE9'];
 public $cssOptions = ['noscript' => true];
 ```
 
-为使JavaScript文件包含在页面head区域
-（JavaScript文件默认包含在body的结束处）使用以下选项：
+为使JavaScript文件包含在页面head区域（JavaScript文件默认包含在body的结束处）
+使用以下选项：
 
 ```php
 public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
@@ -205,9 +205,9 @@ the `only` publishing option, only the `fonts` and `css` subdirectories will be 
 
 ### Bower 和 NPM 资源 <span id="bower-npm-assets"></span>
 
-大多数 JavaScript/CSS 包通过[Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.org/)管理，
-如果你的应用或扩展使用这些包，
-推荐你遵循以下步骤来管理库中的资源：
+大多数 JavaScript/CSS 包通过[Bower](http://bower.io/) 和/或 
+[NPM](https://www.npmjs.org/)管理，
+如果你的应用或扩展使用这些包，推荐你遵循以下步骤来管理库中的资源：
 
 1. 修改应用或扩展的 `composer.json` 文件将包列入`require` 中，
    应使用`bower-asset/PackageName` (Bower包) 
@@ -574,7 +574,7 @@ return [
 return [
     'components' => [
         'assetManager' => [
-            'bundles' => require(__DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php')),  
+            'bundles' => require __DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php'),  
         ],
     ],
 ];
@@ -662,17 +662,12 @@ yii asset assets.php config/assets-prod.php
   可使用优秀的工具[grunt](http://gruntjs.com/)来完成这个过程。
 
 
-### Grouping Asset Bundles <span id="grouping-asset-bundles"></span>
 
-In the last subsection, we have explained how to combine all asset bundles into a single one in order to minimize
-the HTTP requests for asset files referenced in an application. This is not always desirable in practice. For example,
-imagine your application has a "front end" as well as a "back end", each of which uses a different set of JavaScript 
-and CSS files. In this case, combining all asset bundles from both ends into a single one does not make sense, 
-because the asset bundles for the "front end" are not used by the "back end" and it would be a waste of network
-bandwidth to send the "back end" assets when a "front end" page is requested.
- 
-To solve the above problem, you can divide asset bundles into groups and combine asset bundles for each group.
-The following configuration shows how you can group asset bundles: 
+### 资源包分组 <span id="grouping-asset-bundles"></span>
+
+上一小节，介绍了如何压缩所有的资源包到一个文件，减少对应用中引用资源文件的 http 请求数，但是在实践中很少这样做。比如，应用有一个“前端”和一个“后端”，每一个都用了一个不同js和css文件集合。在这种情况下，把所有的资源包压缩到一个文件毫无意义，“前端”不会用到“后端”的资源文件，当请求“前端”页面时，“后端”的资源文件也会被发送过来，浪费网络带宽。
+
+为了解决这个问题，可以吧资源包分成若干组，每个组里面有若干个资源包。下面的配置展示了如何对资源包分组：
 
 ```php
 return [
@@ -705,6 +700,8 @@ return [
     ...
 ];
 ```
+
+如上所示，资源包分成了三个组：`allShared`，`allBackEnd` 和 `allFrontEnd`
 
 As you can see, the asset bundles are divided into three groups: `allShared`, `allBackEnd` and `allFrontEnd`.
 They each depends on an appropriate set of asset bundles. For example, `allBackEnd` depends on `app\assets\AdminAsset`.

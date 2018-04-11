@@ -1,12 +1,12 @@
 文件上传
 ============
 
-在Yii里上传文件通常使用[[yii\web\UploadedFile]]类，
+在Yii里上传文件通常使用 [[yii\web\UploadedFile]] 类，
 它把每个上传的文件封装成 `UploadedFile` 对象。
-结合[[yii\widgets\ActiveForm]]和[models](structure-models.md)，你可以轻松实现安全的上传文件机制。
+结合 [[yii\widgets\ActiveForm]] 和 [models](structure-models.md)，你可以轻松实现安全的上传文件机制。
 
 
-##创建模型 <span id="creating-models"></span>
+## 创建模型 <span id="creating-models"></span>
 
 和普通的文本输入框类似，当要上传一个文件时，你需要创建一个模型类并且用其中的某个属性来接收上传的文件实例。
 你还需要声明一条验证规则以验证上传的文件。
@@ -44,19 +44,19 @@ class UploadForm extends Model
 }
 ```
 
-在以上代码里，`imageFile` 属性用于接收上传的文件实例。它对应一条`file` 验证规则，
+在以上代码里，`imageFile` 属性用于接收上传的文件实例。它对应一条 `file` 验证规则，
 该规则使用 [[yii\validators\FileValidator]] 来确保只上传扩展名为 `png` 或 `jpg` 的文件。
 `upload()` 方法会执行该验证并且把上传的文件保存在服务器上。
 
 通过 `file` 验证器，你可以检查文件的扩展名，大小，MIME类型等等。详情请查阅
 [Core Validatators](tutorial-core-validators.md#file) 章节。
 
->提示: 如果你要上传的是一张图片，可以考虑使用`image`验证器。
-`image` 验证器是通过[[yii\validators\ImageValidator]]实现验证的，确保对应的模型属性
-收到的文件是有效的图片文件，然后才保存，或者使用扩展类[Imagine Extension](https://github.com/yiisoft/yii2-imagine)进行处理.
+> Tip: 如果你要上传的是一张图片，可以考虑使用 `image` 验证器。
+`image` 验证器是通过 [[yii\validators\ImageValidator]] 实现验证的，确保对应的模型属性
+收到的文件是有效的图片文件，然后才保存，或者使用扩展类 [Imagine Extension](https://github.com/yiisoft/yii2-imagine) 进行处理.
 
 
-##渲染文件输入 <span id="rendering-file-input"></span>
+## 渲染文件输入 <span id="rendering-file-input"></span>
 
 接下来，在视图里创建一个文件输入控件
 
@@ -77,8 +77,8 @@ use yii\widgets\ActiveForm;
 需要注意的是要记得在表单选项里加入 `enctype` 属性以确保文件能被正常上传。
 `fileInput()` 方法会渲染一个 `<input type="file">` 标签，让用户可以选择一个文件上传。
 
-> Tip: since version 2.0.8, [[yii\web\widgets\ActiveField::fileInput|fileInput]] adds `enctype` option to the form
-  automatically when file input field is used.
+> Tip: 自2.0.8版本开始，当使用文件输入字段时，[[yii\web\widgets\ActiveField::fileInput|fileInput]]
+  会自动向表单添加 `enctype` 选项。
 
 ## 视图和模型的连接 <span id="wiring-up"></span>
 
@@ -121,10 +121,10 @@ class SiteController extends Controller
 将前面所述的代码做一些调整，也可以一次性上传多个文件。
 
 首先你得调整模型类，在 `file` 验证规则里增加一个 `maxFiles` 选项，用以限制一次上传文件的最大数量。
-`upload()`方法也得修改,以便一个一个地保存上传的文件。Setting `maxFiles` to `0` means there is no limit on the number of files
-that can be uploaded simultaneously. The maximum number of files allowed to be uploaded simultaneously is also limited
-with PHP directive [`max_file_uploads`](http://php.net/manual/en/ini.core.php#ini.max-file-uploads),
-which defaults to 20. The `upload()` method should also be updated to save the uploaded files one by one.
+`upload()`方法也得修改,以便一个一个地保存上传的文件。将 `maxFiles` 设置为 `0` 意味着可以同时上传的文件数量没有限制。
+允许同时上传的文件的最大数量也受到 PHP 指令
+[`max_file_uploads`](http://php.net/manual/en/ini.core.php#ini.max-file-uploads)的限制，
+默认为20。还应该更新 `upload()` 方法以逐个保存上传的文件。
 
 ```php
 namespace app\models;
@@ -160,7 +160,7 @@ class UploadForm extends Model
 }
 ```
 
-在视图文件里，你需要把 `multiple` 选项添加到`fileInput()`函数调用里，
+在视图文件里，你需要把 `multiple` 选项添加到 `fileInput()` 函数调用里，
 这样文件输入控件就可以接收多个文件。
 
 ```php

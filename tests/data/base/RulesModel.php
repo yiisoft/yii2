@@ -1,10 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\data\base;
 
 use yii\base\Model;
 
 /**
- * model to test different rules combinations in ModelTest
+ * Model to test different rules combinations in ModelTest.
  */
 class RulesModel extends Model
 {

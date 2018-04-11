@@ -1,27 +1,27 @@
 レスポンス
 ==========
 
-アプリケーションは [リクエスト](runtime-requests.md) の処理を完了すると、[[yii\web\Response|レスポンス]] オブジェクトを生成して、エンドユーザに送信します。
-レスポンスオブジェクトは、HTTP ステータスコード、HTTP ヘッダ、HTTP ボディなどの情報を含みます。
-ウェブアプリケーション開発の最終的な目的は、本質的には、さまざまなリクエストに対してそのようなレスポンスオブジェクトを作成することにあります。
+アプリケーションは [リクエスト](runtime-requests.md) の処理を完了すると、[[yii\web\Response|レスポンス]]・オブジェクトを生成して、エンド・ユーザに送信します。
+レスポンス・オブジェクトは、HTTP ステータス・コード、HTTP ヘッダ、HTTP ボディなどの情報を含みます。
+ウェブ・アプリケーション開発の最終的な目的は、本質的には、さまざまなリクエストに対してそのようなレスポンス・オブジェクトを作成することにあります。
 
-ほとんどの場合は、主として、デフォルトでは [[yii\web\Response]] のインスタンスである `response` [アプリケーションコンポーネント](structure-application-components.md) を使用すべきです。
-しかしながら、Yii は、以下で説明するように、あなた自身のレスポンスオブジェクトを作成してエンドユーザに送信することも許容しています。
+ほとんどの場合は、主として、デフォルトでは [[yii\web\Response]] のインスタンスである `response` [アプリケーション・コンポーネント](structure-application-components.md) を使用すべきです。
+しかしながら、Yii は、以下で説明するように、あなた自身のレスポンス・オブジェクトを作成してエンド・ユーザに送信することも許容しています。
 
-この節では、レスポンスを構成してエンドユーザに送信する方法を説明します。
+このセクションでは、レスポンスを構成してエンド・ユーザに送信する方法を説明します。
 
 
-## ステータスコード <span id="status-code"></span>
+## ステータス・コード <span id="status-code"></span>
 
 レスポンスを作成するときに最初にすることの一つは、リクエストが成功裡に処理されたかどうかを記述することです。
-そのためには、[[yii\web\Response::statusCode]] プロパティに有効な [HTTP ステータスコード](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) の一つを設定します。
-例えば、下記のように、リクエストの処理が成功したことを示すために、ステータスコードを 200 に設定します。
+そのためには、[[yii\web\Response::statusCode]] プロパティに有効な [HTTP ステータス・コード](https://tools.ietf.org/html/rfc2616#section-10) の一つを設定します。
+例えば、下記のように、リクエストの処理が成功したことを示すために、ステータス・コードを 200 に設定します。
 
 ```php
 Yii::$app->response->statusCode = 200;
 ```
 
-ただし、たいていの場合、ステータスコードを明示的に設定する必要はありません。
+ただし、たいていの場合、ステータス・コードを明示的に設定する必要はありません。
 これは、[[yii\web\Response::statusCode]] のデフォルト値が 200 であるからです。
 そして、リクエストが失敗したことを示したいときは、下記のように、適切な HTTP 例外を投げることが出来ます。
 
@@ -29,24 +29,24 @@ Yii::$app->response->statusCode = 200;
 throw new \yii\web\NotFoundHttpException;
 ```
 
-[エラーハンドラ](runtime-handling-errors.md) は、例外をキャッチすると、例外からステータスコードを抽出してレスポンスに割り当てます。
+[エラー・ハンドラ](runtime-handling-errors.md) は、例外をキャッチすると、例外からステータス・コードを抽出してレスポンスに割り当てます。
 上記の [[yii\web\NotFoundHttpException]] の場合は、HTTP ステータス 404 と関連付けられています。
 次の HTTP 例外が Yii によって事前定義されています。
 
-* [[yii\web\BadRequestHttpException]]: ステータスコード 400
-* [[yii\web\ConflictHttpException]]: ステータスコード 409
-* [[yii\web\ForbiddenHttpException]]: ステータスコード 403
-* [[yii\web\GoneHttpException]]: ステータスコード 410
-* [[yii\web\MethodNotAllowedHttpException]]: ステータスコード 405
-* [[yii\web\NotAcceptableHttpException]]: ステータスコード 406 
-* [[yii\web\NotFoundHttpException]]: ステータスコード 404
-* [[yii\web\ServerErrorHttpException]]: ステータスコード 500
-* [[yii\web\TooManyRequestsHttpException]]: ステータスコード 429
-* [[yii\web\UnauthorizedHttpException]]: ステータスコード 401
-* [[yii\web\UnsupportedMediaTypeHttpException]]: ステータスコード 415
+* [[yii\web\BadRequestHttpException]]: ステータス・コード 400
+* [[yii\web\ConflictHttpException]]: ステータス・コード 409
+* [[yii\web\ForbiddenHttpException]]: ステータス・コード 403
+* [[yii\web\GoneHttpException]]: ステータス・コード 410
+* [[yii\web\MethodNotAllowedHttpException]]: ステータス・コード 405
+* [[yii\web\NotAcceptableHttpException]]: ステータス・コード 406 
+* [[yii\web\NotFoundHttpException]]: ステータス・コード 404
+* [[yii\web\ServerErrorHttpException]]: ステータス・コード 500
+* [[yii\web\TooManyRequestsHttpException]]: ステータス・コード 429
+* [[yii\web\UnauthorizedHttpException]]: ステータス・コード 401
+* [[yii\web\UnsupportedMediaTypeHttpException]]: ステータス・コード 415
 
 投げたい例外が上記のリストに無い場合は、[[yii\web\HttpException]] から拡張したものを作成することが出来ます。
-あるいは、ステータスコードを指定して [[yii\web\HttpException]] を直接に投げることも出来ます。
+あるいは、ステータス・コードを指定して [[yii\web\HttpException]] を直接に投げることも出来ます。
 例えば、
 
 ```php
@@ -56,7 +56,7 @@ throw new \yii\web\HttpException(402);
 
 ## HTTP ヘッダ <span id="http-headers"></span> 
 
-`response` コンポーネントの [[yii\web\Response::headers|ヘッダコレクション]] を操作することによって、HTTP ヘッダを送信することが出来ます。
+`response` コンポーネントの [[yii\web\Response::headers|ヘッダ・コレクション]] を操作することによって、HTTP ヘッダを送信することが出来ます。
 例えば、
 
 ```php
@@ -76,9 +76,9 @@ $values = $headers->remove('Pragma');
   そして、新しく登録されたヘッダは、[[yii\web\Response::send()]] メソッドが呼ばれるまで送信されません。
 
 
-## レスポンスボディ <span id="response-body"></span>
+## レスポンス・ボディ <span id="response-body"></span>
 
-ほとんどのレスポンスは、エンドユーザに対して表示したい内容を示すボディを持っていなければなりません。
+ほとんどのレスポンスは、エンド・ユーザに対して表示したい内容を示すボディを持っていなければなりません。
 
 既にフォーマットされたボディの文字列を持っている場合は、それをレスポンスの [[yii\web\Response::content]] プロパティに割り付けることが出来ます。
 例えば、
@@ -87,7 +87,7 @@ $values = $headers->remove('Pragma');
 Yii::$app->response->content = 'hello world!';
 ```
 
-データをエンドユーザに送信する前にフォーマットする必要がある場合は、[[yii\web\Response::format|format]] と [[yii\web\Response::data|data]] の両方のプロパティをセットしなければなりません。
+データをエンド・ユーザに送信する前にフォーマットする必要がある場合は、[[yii\web\Response::format|format]] と [[yii\web\Response::data|data]] の両方のプロパティをセットしなければなりません。
 [[yii\web\Response::format|format]] プロパティは [[yii\web\Response::data|data]] がどの形式でフォーマットされるべきかを指定するものです。
 例えば、
 
@@ -107,7 +107,7 @@ Yii は下記の形式を初めからサポートしています。
 * [[yii\web\Response::FORMAT_JSONP|JSONP]]: [[yii\web\JsonResponseFormatter]] によって実装
 * [[yii\web\Response::FORMAT_RAW|RAW]]: 書式を何も適用せずにレスポンスを送信したいときは、このフォーマットを使用
 
-レスポンスボディは、上記のように、明示的に設定することも出来ますが、たいていの場合は、[アクション](structure-controllers.md) メソッドの返り値によって暗黙のうちに設定することが出来ます。
+レスポンス・ボディは、上記のように、明示的に設定することも出来ますが、たいていの場合は、[アクション](structure-controllers.md) メソッドの返り値によって暗黙のうちに設定することが出来ます。
 よくあるユースケースは下記のようなものになります。
 
 ```php
@@ -118,9 +118,9 @@ public function actionIndex()
 ```
 
 上記の `index` アクションは、`index` ビューのレンダリング結果を返しています。
-返された値は `response` コンポーネントによって受け取られ、フォーマットされてエンドユーザに送信されます。
+返された値は `response` コンポーネントによって受け取られ、フォーマットされてエンド・ユーザに送信されます。
 
-デフォルトのレスポンス形式が [[yii\web\Response::FORMAT_HTML|HTML]] であるため、アクションメソッドの中では文字列を返すだけにすべきです。
+デフォルトのレスポンス形式が [[yii\web\Response::FORMAT_HTML|HTML]] であるため、アクション・メソッドの中では文字列を返すだけにすべきです。
 別のレスポンス形式を使いたい場合は、データを返す前にレスポンス形式を設定しなければなりません。
 例えば、
 
@@ -135,8 +135,8 @@ public function actionInfo()
 }
 ```
 
-既に述べたように、デフォルトの `response` アプリケーションコンポーネントを使う代りに、自分自身のレスポンスオブジェクトを作成してエンドユーザに送信することも出来ます。
-そうするためには、次のように、アクションメソッドの中でそのようなオブジェクトを返します。
+既に述べたように、デフォルトの `response` アプリケーション・コンポーネントを使う代りに、自分自身のレスポンス・オブジェクトを作成してエンド・ユーザに送信することも出来ます。
+そうするためには、次のように、アクション・メソッドの中でそのようなオブジェクトを返します。
 
 ```php
 public function actionInfo()
@@ -152,8 +152,8 @@ public function actionInfo()
 }
 ```
 
-> Note: 自分自身のレスポンスオブジェクトを作成しようとする場合は、アプリケーションの構成情報で `response` コンポーネントのために設定した構成情報を利用することは出来ません。
-  しかし、 [依存の注入](concept-di-container.md) を使えば、 共通の構成情報をあなたの新しいレスポンスオブジェクトに適用することが出来ます。
+> Note: 自分自身のレスポンス・オブジェクトを作成しようとする場合は、アプリケーションの構成情報で `response` コンポーネントのために設定した構成情報を利用することは出来ません。
+  しかし、 [依存の注入](concept-di-container.md) を使えば、 共通の構成情報をあなたの新しいレスポンス・オブジェクトに適用することが出来ます。
 
 
 ## ブラウザのリダイレクト <span id="browser-redirection"></span>
@@ -162,8 +162,8 @@ public function actionInfo()
 この機能は通常よく使われるものであるため、Yii はこれについて特別のサポートを提供しています。
 
 [[yii\web\Response::redirect()]] メソッドを呼ぶことによって、ユーザのブラウザをある URL にリダイレクトすることが出来ます。
-このメソッドは与えられた URL を持つ適切な `Location` ヘッダを設定して、レスポンスオブジェクトそのものを返します。
-アクションメソッドの中では、そのショートカット版である [[yii\web\Controller::redirect()]] を呼ぶことが出来ます。
+このメソッドは与えられた URL を持つ適切な `Location` ヘッダを設定して、レスポンス・オブジェクトそのものを返します。
+アクション・メソッドの中では、そのショートカット版である [[yii\web\Controller::redirect()]] を呼ぶことが出来ます。
 例えば、
 
 ```php
@@ -173,27 +173,27 @@ public function actionOld()
 }
 ```
 
-上記のコードでは、アクションメソッドが `redirect()` メソッドの結果を返しています。
-前に説明したように、アクションメソッドによって返されるレスポンスオブジェクトが、エンドユーザに送信されるレスポンスとして使用されることになります。
+上記のコードでは、アクション・メソッドが `redirect()` メソッドの結果を返しています。
+前に説明したように、アクション・メソッドによって返されるレスポンス・オブジェクトが、エンド・ユーザに送信されるレスポンスとして使用されることになります。
 
-アクションメソッド以外の場所では、[[yii\web\Response::redirect()]] を直接に呼び出し、メソッドチェーンで [[yii\web\Response::send()]] メソッドを呼んで、レスポンスに余計なコンテントが追加されないことを保証しなければなりません。
+アクション・メソッド以外の場所では、[[yii\web\Response::redirect()]] を直接に呼び出し、メソッド・チェーンで [[yii\web\Response::send()]] メソッドを呼んで、レスポンスに余計なコンテントが追加されないことを保証しなければなりません。
 
 ```php
 \Yii::$app->response->redirect('http://example.com/new', 301)->send();
 ```
 
-> Info: デフォルトでは、[[yii\web\Response::redirect()]] メソッドはレスポンスのステータスコードを 302 にセットします。
+> Info: デフォルトでは、[[yii\web\Response::redirect()]] メソッドはレスポンスのステータス・コードを 302 にセットします。
 これはブラウザに対して、リクエストされているリソースが *一時的に* 異なる URI に配置されていることを示すものです。
-ブラウザに対してリソースが *恒久的に* 配置替えされたことを教えるためには、ステータスコード 301 を渡すことが出来ます。
+ブラウザに対してリソースが *恒久的に* 配置替えされたことを教えるためには、ステータス・コード 301 を渡すことが出来ます。
 
 現在のリクエストが AJAX リクエストである場合は、`Location` ヘッダを送っても自動的にブラウザをリダイレクトすることにはなりません。
 この問題を解決するために、[[yii\web\Response::redirect()]] メソッドは `X-Redirect` ヘッダにリダイレクト先 URL を値としてセットします。
-そして、クライアントサイドで、このヘッダの値を読み、それに応じてブラウザをリダイレクトする JavaScript を書くことが出来ます。
+そして、クライアント・サイドで、このヘッダの値を読み、それに応じてブラウザをリダイレクトする JavaScript を書くことが出来ます。
 
 > Info: Yii には `yii.js` という JavaScript ファイルが付属しています。
   これは、よく使われる一連の JavaScript 機能を提供するもので、その中には `X-Redirect` ヘッダに基づくブラウザのリダイレクトも含まれています。
-  従って、あなたが ([[yii\web\YiiAsset]] アセットバンドルを登録して) この JavaScript ファイルを使うつもりなら、AJAX のリダイレクトをサポートするためには、何も書く必要がなくなります。
-  `yii.js` に関する更なる情報は [クライアントスクリプトの節](output-client-scripts.md#yii.js) にあります。
+  従って、あなたが ([[yii\web\YiiAsset]] アセット・バンドルを登録して) この JavaScript ファイルを使うつもりなら、AJAX のリダイレクトをサポートするためには、何も書く必要がなくなります。
+  `yii.js` に関する更なる情報は [クライアント・スクリプトのセクション](output-client-scripts.md#yii.js) にあります。
 
 
 ## ファイルを送信する <span id="sending-files"></span>
@@ -203,11 +203,11 @@ Yii はさまざまなファイル送信の必要をサポートするための�
 
 * [[yii\web\Response::sendFile()]]: 既存のファイルをクライアントに送信する
 * [[yii\web\Response::sendContentAsFile()]]: テキストの文字列をファイルとしてクライアントに送信する
-* [[yii\web\Response::sendStreamAsFile()]]: 既存のファイルストリームをファイルとしてクライアントに送信する
+* [[yii\web\Response::sendStreamAsFile()]]: 既存のファイル・ストリームをファイルとしてクライアントに送信する
 
-これらのメソッドは同じメソッドシグニチャを持ち、返り値としてレスポンスオブジェクトを返します。
+これらのメソッドは同じメソッド・シグニチャを持ち、返り値としてレスポンス・オブジェクトを返します。
 送信しようとしているファイルが非常に大きなものである場合は、メモリ効率の良い [[yii\web\Response::sendStreamAsFile()]] の使用を検討すべきです。
-次の例は、コントローラアクションでファイルを送信する方法を示すものです。
+次の例は、コントローラ・アクションでファイルを送信する方法を示すものです。
 
 ```php
 public function actionDownload()
@@ -216,17 +216,17 @@ public function actionDownload()
 }
 ```
 
-ファイル送信メソッドをアクションメソッド以外の場所で呼ぶ場合は、その後で [[yii\web\Response::send()]] メソッドも呼んで、レスポンスに余計なコンテントが追加されないことを保証しなければなりません。
+ファイル送信メソッドをアクション・メソッド以外の場所で呼ぶ場合は、その後で [[yii\web\Response::send()]] メソッドも呼んで、レスポンスに余計なコンテントが追加されないことを保証しなければなりません。
 
 ```php
 \Yii::$app->response->sendFile('path/to/file.txt')->send();
 ```
 
-ウェブサーバには、*X-Sendfile* と呼ばれる特別なファイル送信をサポートするものがあります。
-アイデアとしては、ファイルに対するリクエストをウェブサーバにリダイレクトして、ウェブサーバに直接にファイルを送信させる、というものです。
-その結果として、ウェブサーバがファイルを送信している間でも、ウェブアプリケーションは早期に終了することが出来るようになります。
+ウェブ・サーバには、*X-Sendfile* と呼ばれる特別なファイル送信をサポートするものがあります。
+アイデアとしては、ファイルに対するリクエストをウェブ・サーバにリダイレクトして、ウェブ・サーバに直接にファイルを送信させる、というものです。
+その結果として、ウェブ・サーバがファイルを送信している間でも、ウェブ・アプリケーションは早期に終了することが出来るようになります。
 この機能を使うために、[[yii\web\Response::xSendFile()]] を呼ぶことが出来ます。
-次のリストは、よく使われるいくつかのウェブサーバにおいて `X-Sendfile` 機能を有効にする方法を要約するものです。
+次のリストは、よく使われるいくつかのウェブ・サーバにおいて `X-Sendfile` 機能を有効にする方法を要約するものです。
 
 - Apache: [X-Sendfile](http://tn123.org/mod_xsendfile)
 - Lighttpd v1.4: [X-LIGHTTPD-send-file](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
@@ -237,18 +237,18 @@ public function actionDownload()
 
 ## レスポンスを送信する <span id="sending-response"></span>
 
-レスポンスの中のコンテントは、[[yii\web\Response::send()]] メソッドが呼ばれるまでは、エンドユーザに向けて送信されません。
+レスポンスの中のコンテントは、[[yii\web\Response::send()]] メソッドが呼ばれるまでは、エンド・ユーザに向けて送信されません。
 デフォルトでは、このメソッドは [[yii\base\Application::run()]] の最後で自動的に呼ばれます。
 しかし、このメソッドを明示的に呼んで、強制的にレスポンスを即座に送信することも可能です。
 
 [[yii\web\Response::send()]] メソッドは次のステップを踏んでレスポンスを送出します。
 
 1. [[yii\web\Response::EVENT_BEFORE_SEND]] イベントをトリガする。
-2. [[yii\web\Response::prepare()]] を呼んで [[yii\web\Response::data|レスポンスデータ]] を
-   [[yii\web\Response::content|レスポンスコンテント]] としてフォーマットする。
+2. [[yii\web\Response::prepare()]] を呼んで [[yii\web\Response::data|レスポンス・データ]] を
+   [[yii\web\Response::content|レスポンス・コンテント]] としてフォーマットする。
 3. [[yii\web\Response::EVENT_AFTER_PREPARE]] イベントをトリガする。
 4. [[yii\web\Response::sendHeaders()]] を呼んで、登録された HTTP ヘッダを送出する。
-5. [[yii\web\Response::sendContent()]] を呼んで、レスポンスのボディコンテントを送出する。
+5. [[yii\web\Response::sendContent()]] を呼んで、レスポンスのボディ・コンテントを送出する。
 6. [[yii\web\Response::EVENT_AFTER_SEND]] イベントをトリガする。
 
 [[yii\web\Response::send()]] メソッドが一度呼び出された後では、このメソッドに対する更なる呼び出しは無視されます。

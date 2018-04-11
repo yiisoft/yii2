@@ -333,7 +333,7 @@ echo GridView::widget([
 
 ### 数据排序
 
-> 注意：这部分正在开发中。
+> Note: 这部分正在开发中。
 >
 > - https://github.com/yiisoft/yii2/issues/1576
 
@@ -557,7 +557,7 @@ public function rules()
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> 信息：在上面的代码中，我们使用相同的字符串作为关联名称和表别名；
+> Info: 在上面的代码中，我们使用相同的字符串作为关联名称和表别名；
 > 然而，当你的表别名和关联名称不相同的时候，你得注意在哪使用你的别名，在哪使用你的关联名称。
 > 一个简单的规则是在每个构建数据库查询的地方使用别名，而在所有其他和定义相关的诸如：
 >`attributes()` 和 `rules()` 等地方使用关联名称。
@@ -592,7 +592,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > $dataProvider->sort->defaultOrder = ['author.name' => SORT_ASC];
 > ```
 
-> 信息：更多关于 `joinWith` 和在后台执行查询的相关信息，
+> Info: 更多关于 `joinWith` 和在后台执行查询的相关信息，
 > 可以查看 [active record docs on joining with relations](db-active-record.md#joining-with-relations)。
 
 #### SQL视图用于过滤、排序和显示数据

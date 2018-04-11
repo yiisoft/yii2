@@ -1,14 +1,17 @@
 <?php
 /**
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\log;
 
+use Yii;
 use yii\helpers\FileHelper;
 use yii\log\Dispatcher;
+use yii\log\FileTarget;
 use yii\log\Logger;
-use Yii;
 use yiiunit\TestCase;
 
 /**
@@ -26,12 +29,30 @@ class FileTargetTest extends TestCase
     {
         return [
             [true],
-            [false]
+            [false],
         ];
     }
 
     /**
+     * Tests that log directory isn't created during init process
+     * @see https://github.com/yiisoft/yii2/issues/15662
+     */
+    public function testInit()
+    {
+        $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
+        FileHelper::removeDirectory(dirname($logFile));
+        new FileTarget([
+            'logFile' => Yii::getAlias('@yiiunit/runtime/log/filetargettest.log'),
+        ]);
+        $this->assertFileNotExists(
+            dirname($logFile),
+            'Log directory should not be created during init process'
+        );
+    }
+
+    /**
      * @dataProvider booleanDataProvider
+     * @param bool $rotateByCopy
      */
     public function testRotate($rotateByCopy)
     {
@@ -50,9 +71,9 @@ class FileTargetTest extends TestCase
                     'maxFileSize' => 1024, // 1 MB
                     'maxLogFiles' => 1, // one file for rotation and one normal log file
                     'logVars' => [],
-                    'rotateByCopy' => $rotateByCopy
-                ]
-            ]
+                    'rotateByCopy' => $rotateByCopy,
+                ],
+            ],
         ]);
 
         // one file

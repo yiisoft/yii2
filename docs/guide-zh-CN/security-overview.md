@@ -1,14 +1,15 @@
-Security
-========
+安全（Security）
+==============
 
-Good security is vital to the health and success of any application. Unfortunately, many developers cut corners when it
-comes to security, either due to a lack of understanding or because implementation is too much of a hurdle. To make your
-Yii powered application as secure as possible, Yii has included several excellent and easy to use security features.
+良好的安全性对于任何应用的健康和成功都至关重要。
+不幸的是，许多开发人员在安全方面偷工减料，要么是由于缺乏理解，要么是由于实现过于困难。 
+为了尽可能保证您的 Yii 应用程序的安全，Yii 包含了一些优秀且易于使用的安全功能。
 
-* [Authentication](security-authentication.md)
-* [Authorization](security-authorization.md)
-* [Working with Passwords](security-passwords.md)
-* [Cryptography](security-cryptography.md)
-* [Views security](structure-views.md#security)
-* [Auth Clients](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
-* [Best Practices](security-best-practices.md)
+* [认证](security-authentication.md)
+* [授权](security-authorization.md)
+* [使用密码](security-passwords.md)
+* [加密](security-cryptography.md)
+* [视图安全](structure-views.md#security)
+* [身份验证客户端](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
+* [最佳实践](security-best-practices.md)
+* [受信任的代理和头文件](runtime-requests.md#trusted-proxies)

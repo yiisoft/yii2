@@ -8,8 +8,8 @@
 namespace yii\filters;
 
 use Yii;
-use yii\base\ActionFilter;
 use yii\base\Action;
+use yii\base\ActionFilter;
 
 /**
  * HttpCache implements client-side caching by utilizing the `Last-Modified` and `ETag` HTTP headers.
@@ -165,19 +165,19 @@ class HttpCache extends ActionFilter
      */
     protected function validateCache($lastModified, $etag)
     {
-        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
+        if (Yii::$app->request->headers->has('If-None-Match')) {
             // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
             // http://tools.ietf.org/html/rfc7232#section-3.3
             return $etag !== null && in_array($etag, Yii::$app->request->getETags(), true);
-        } elseif (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-            return $lastModified !== null && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified;
-        } else {
-            return false;
+        } elseif (Yii::$app->request->headers->has('If-Modified-Since')) {
+            return $lastModified !== null && @strtotime(Yii::$app->request->headers->get('If-Modified-Since')) >= $lastModified;
         }
+
+        return false;
     }
 
     /**
-     * Sends the cache control header to the client
+     * Sends the cache control header to the client.
      * @see cacheControlHeader
      */
     protected function sendCacheControlHeader()
@@ -189,7 +189,8 @@ class HttpCache extends ActionFilter
                 header_remove('Last-Modified');
                 header_remove('Pragma');
             }
-            session_cache_limiter($this->sessionCacheLimiter);
+
+            Yii::$app->getSession()->setCacheLimiter($this->sessionCacheLimiter);
         }
 
         $headers = Yii::$app->getResponse()->getHeaders();
@@ -206,7 +207,7 @@ class HttpCache extends ActionFilter
      */
     protected function generateEtag($seed)
     {
-        $etag =  '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
+        $etag = '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
         return $this->weakEtag ? 'W/' . $etag : $etag;
     }
 }

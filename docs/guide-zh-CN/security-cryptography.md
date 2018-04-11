@@ -1,66 +1,66 @@
-Cryptography
-============
+加密（Cryptography）
+==================
 
-In this section we'll review the following security aspects:
+在本节中，我们将回顾以下安全问题：
 
-- Generating random data
-- Encryption and Decryption
-- Confirming Data Integrity
+- 生成随机数据
+- 加密和解密
+- 确认数据完整性
 
-Generating Pseudorandom Data
+生成伪随机数据（Generating Pseudorandom Data）
 ----------------------------
 
-Pseudorandom data is useful in many situations. For example when resetting a password via email you need to generate a
-token, save it to the database, and send it via email to end user which in turn will allow them to prove ownership of
-that account. It is very important that this token be unique and hard to guess, else there is a possibility that attacker
-can predict the token's value and reset the user's password.
+伪随机数据在很多情况下都很有用。 例如，当通过电子邮件重置密码时，
+您需要生成一个令牌，将其保存到数据库中，并通过电子邮件发送给最终用户，
+这反过来又会允许他们证明该帐户的所有权。
+这个令牌是独一无二且难以猜测的，否则攻击者可能会预测令牌的值并重置用户的密码。
 
-Yii security helper makes generating pseudorandom data simple:
+Yii 安全助手类简单生成伪随机数据：
 
 
 ```php
 $key = Yii::$app->getSecurity()->generateRandomString();
 ```
 
-Encryption and Decryption
+加密和解密（Encryption and Decryption）
 -------------------------
 
-Yii provides convenient helper functions that allow you to encrypt/decrypt data using a secret key. The data is passed through the encryption function so that only the person which has the secret key will be able to decrypt it.
-For example, we need to store some information in our database but we need to make sure only the user who has the secret key can view it (even if the application database is compromised):
+Yii 提供了便利的帮助功能，使您可以使用密钥 加密/解密 数据。 数据通过加密功能传递，以便只有拥有密钥的人才能解密。
+例如，我们需要在数据库中存储一些信息，但我们需要确保只有拥有密钥的用户才能查看它（即使应用程序数据库已被泄露）：
 
 
 ```php
-// $data and $secretKey are obtained from the form
+// $data 和 $secretKey 从表单中获得
 $encryptedData = Yii::$app->getSecurity()->encryptByPassword($data, $secretKey);
-// store $encryptedData to database
+// 将 $encryptedData 存储到数据库
 ```
 
-Subsequently when user wants to read the data:
+随后当用户想要读取数据时：
 
 ```php
-// $secretKey is obtained from user input, $encryptedData is from the database
+// $secretKey 从用户输入获得，$encryptedData 来自数据库
 $data = Yii::$app->getSecurity()->decryptByPassword($encryptedData, $secretKey);
 ```
 
-It's also possible to use key instead of password via [[\yii\base\Security::encryptByKey()]] and
-[[\yii\base\Security::decryptByKey()]].
+也可以通过 [[\yii\base\Security::encryptByKey()]] 和
+[[\yii\base\Security::decryptByKey()]] 使用密钥而不是密码。
 
-Confirming Data Integrity
+确认数据完整性（Confirming Data Integrity）
 -------------------------
 
-There are situations in which you need to verify that your data hasn't been tampered with by a third party or even corrupted in some way. Yii provides an easy way to confirm data integrity in the form of two helper functions.
+在某些情况下，您需要验证您的数据未被第三方篡改甚至以某种方式损坏。 Yii 提供了一种简单的方法用两个帮助功能的类确认数据完整性的。
 
-Prefix the data with a hash generated from the secret key and data
+用密钥和数据生成的哈希前缀数据
 
 
 ```php
-// $secretKey our application or user secret, $genuineData obtained from a reliable source
+// $secretKey 是我们的应用程序或用户密钥，$genuineData 是从可靠来源获得的
 $data = Yii::$app->getSecurity()->hashData($genuineData, $secretKey);
 ```
 
-Checks if the data integrity has been compromised
+检查数据完整性是否受到损害
 
 ```php
-// $secretKey our application or user secret, $data obtained from an unreliable source
+// $secretKey 我们的应用程序或用户密钥，$data 从不可靠的来源获得
 $data = Yii::$app->getSecurity()->validateData($data, $secretKey);
 ```

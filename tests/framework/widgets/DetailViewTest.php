@@ -1,6 +1,8 @@
 <?php
 /**
- * @author Bennet Klarhoelter <boehsermoe@me.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
@@ -164,7 +166,7 @@ class DetailViewTest extends \yiiunit\TestCase
                 'label' => 'Id',
                 'value' => 'Displayed id',
                 'visible' => true,
-            ]
+            ],
         ], $this->detailView->attributes);
         $this->assertEquals(5, $model->getDisplayedIdCallCount());
     }
@@ -211,13 +213,13 @@ class DetailViewTest extends \yiiunit\TestCase
                 'attribute' => 'id',
                 'format' => 'text',
                 'label' => 'Id',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'attribute' => 'text',
                 'format' => 'text',
                 'label' => 'Text',
-                'value' => 'I`m arrayable'
+                'value' => 'I`m arrayable',
             ],
         ];
 
@@ -239,13 +241,13 @@ class DetailViewTest extends \yiiunit\TestCase
                 'attribute' => 'id',
                 'format' => 'text',
                 'label' => 'Id',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'attribute' => 'text',
                 'format' => 'text',
                 'label' => 'Text',
-                'value' => 'I`m an object'
+                'value' => 'I`m an object',
             ],
         ];
 
@@ -267,19 +269,19 @@ class DetailViewTest extends \yiiunit\TestCase
                 'attribute' => 'id',
                 'format' => 'text',
                 'label' => 'Id',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'attribute' => 'text',
                 'format' => 'text',
                 'label' => 'Text',
-                'value' => 'I`m an array'
+                'value' => 'I`m an array',
             ],
         ];
 
         $model = [
             'id' => 1,
-            'text' => 'I`m an array'
+            'text' => 'I`m an array',
         ];
 
         $this->detailView = new DetailView([
@@ -307,15 +309,35 @@ class DetailViewTest extends \yiiunit\TestCase
             ],
         ]);
 
-        foreach ($this->detailView->attributes as $index=>$attribute) {
+        foreach ($this->detailView->attributes as $index => $attribute) {
             $a = $this->detailView->renderAttribute($attribute, $index);
             $this->assertEquals($expectedValue, $a);
         }
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15536
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        $model = new ModelMock();
+        $model->id = 1;
+        $model->text = 'I`m an object';
+
+        $this->detailView = new DetailView([
+            'model' => $model,
+            'on init' => function () use (&$initTriggered) {
+                $initTriggered = true;
+            }
+        ]);
+
+        $this->assertTrue($initTriggered);
+    }
 }
 
 /**
- * Helper Class
+ * Helper Class.
  */
 class ArrayableMock implements Arrayable
 {
@@ -327,7 +349,7 @@ class ArrayableMock implements Arrayable
 }
 
 /**
- * Helper Class
+ * Helper Class.
  */
 class ModelMock extends Model
 {
@@ -361,17 +383,17 @@ class ModelMock extends Model
 }
 
 /**
- * Used for testing attributes containing non-English characters
+ * Used for testing attributes containing non-English characters.
  */
 class UnicodeAttributesModelMock extends Model
 {
     /**
-     * Product's ID (Russian)
+     * Product's ID (Russian).
      * @var mixed
      */
     public $ИдентификаторТовара;
     /**
-     * ID (Greek)
+     * ID (Greek).
      * @var mixed
      */
     public $το_αναγνωριστικό_του;

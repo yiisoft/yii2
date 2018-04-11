@@ -1,7 +1,7 @@
 收发邮件
 ========
 
-> 注意：本节正在开发中。
+> Note: 本节正在开发中。
 
 Yii 支持组成和发送电子邮件。然而，该框架提供的只有内容组成功能和基本接口。
 实际的邮件发送机制可以通过扩展提供，
@@ -60,7 +60,7 @@ $message->setTo(Yii::$app->params['adminEmail'])
     ->send();
 ```
 
-> 注意：每个 “mailer” 的扩展也有两个主要类别：“Mailer” 
+> Note: 每个 “mailer” 的扩展也有两个主要类别：“Mailer” 
   和 “Message”。 “Mailer” 总是知道类名和具体的 “Message”。
   不要试图直接实例 “Message” 对象 - 而是始终使用 `compose()` 方法。
 
@@ -211,12 +211,12 @@ Yii::$app->mailer->compose('embed-email', ['imageFileName' => '/path/to/image.jp
 如果开启这个选项，会把邮件信息保存在本地文件而不是发送它们。
 这些文件保存在 `yii\mail\BaseMailer::fileTransportPath` 中，默认在 '@runtime/mail' 。
 
-> 提示: 你可以保存这些信息到本地文件或者把它们发送出去，但不能同时两者都做。
+> Tip: 你可以保存这些信息到本地文件或者把它们发送出去，但不能同时两者都做。
 
 邮件信息文件可以在一个普通的文本编辑器中打开，这样你就可以浏览实际的邮件标题，内容等。
 这种机制可以用来调试应用程序或运行单元测试。
 
-> 提示: 该邮件信息文件是会被 `\yii\mail\MessageInterface::toString()` 转成字符串保存的，
+> Tip: 该邮件信息文件是会被 `\yii\mail\MessageInterface::toString()` 转成字符串保存的，
   它依赖于实际在应用程序中使用的邮件扩展。
 
 
