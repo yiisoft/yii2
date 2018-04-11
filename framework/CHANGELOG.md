@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
 - Bug #15988: Fixed bash completion (alekciy)
 - Bug #15117: Fixed `yii\db\Schema::getTableMetadata` cache refreshing (boboldehampsink)
+- Bug #15875: afterSave for new models flushes unsaved data (shirase)
 
 2.0.15.1 March 21, 2018
 -----------------------
