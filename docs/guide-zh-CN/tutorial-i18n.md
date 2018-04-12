@@ -124,7 +124,7 @@ echo \Yii::t('app', 'This is a string to translate!');
 
 #### 3. 让译员翻译消息并将它们存储在消息源中（Let the translators translate messages and store them in the message source(s)）
 
-The [[yii\i18n\PhpMessageSource]] 类使用PHP文件和一个简单的 PHP 数组来存储消息转换。
+[[yii\i18n\PhpMessageSource]] 类使用PHP文件和一个简单的 PHP 数组来存储消息转换。
 这些文件包含 `源语言` 中的消息到 `目标语言` 中的翻译的映射。
 
 > Info: 您可以使用 [`message` 命令](#message-command) 自动生成这些 PHP 文件，
