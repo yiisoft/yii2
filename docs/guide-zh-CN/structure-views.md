@@ -80,7 +80,7 @@ use yii\helpers\HtmlPurifier;
 </div>
 ```
 
-> 技巧：HTMLPurifier在保证输出数据安全上做的不错，但性能不佳，如果你的应用需要高性能可考虑
+> Tip: HTMLPurifier在保证输出数据安全上做的不错，但性能不佳，如果你的应用需要高性能可考虑
   [缓存](caching-overview.md) 过滤后的结果。
 
 
