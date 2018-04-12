@@ -701,10 +701,8 @@ return [
 ```
 
 如上所示，资源包分成了三个组：`allShared`，`allBackEnd` 和 `allFrontEnd`
-
-正如你所看到的，资源包被分成三个组：`allShared`，`allBackEnd` 和 `allFrontEnd`。
 它们每个都依赖各自的资源包集合。 比如， `allBackEnd` 依赖 `app\assets\AdminAsset`。
-对该种配置运行 `asset` 命令时，将会根据上述配置合并资源包。
+当对该配置运行 `asset` 命令时，将会根据各自依赖合并资源包。
 
 > Info: 你也可以把某个分组的 `depends` 配置留空。 这样做得话，
 这个分组将会依赖剩余的资源包，剩余资源包是指不被其他分组依赖的那些资源包。
