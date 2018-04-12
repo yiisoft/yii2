@@ -47,7 +47,7 @@ use yii\base\InvalidConfigException;
  *
  * @property array $allFlashes Flash messages (key => message or key => [message1, message2]). This property
  * is read-only.
- * @property string $cacheLimiter Current cache limiter.
+ * @property string $cacheLimiter Current cache limiter. This property is read-only.
  * @property array $cookieParams The session cookie parameters.
  * @property int $count The number of session variables. This property is read-only.
  * @property string $flash The key identifying the flash message. Note that flash messages and normal session
