@@ -32,6 +32,7 @@ parameter to the [[yii\base\View::beginCache()|beginCache()]] method. Behind the
 will be used to configure a [[yii\widgets\FragmentCache]] widget which implements the actual fragment caching
 functionality.
 
+
 ### Duration <span id="duration"></span>
 
 Perhaps the most commonly used option of fragment caching is [[yii\widgets\FragmentCache::duration|duration]].
