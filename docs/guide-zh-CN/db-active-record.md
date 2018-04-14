@@ -219,6 +219,25 @@ $customers = Customer::findAll([
 ]);
 ```
 
+> 注：如果你需要将用户输入传递给这些方法，请确保输入值是标量或者是
+> 数组条件，确保数组结构不能被外部所改变：
+>
+> ```php
+> // yii\web\Controller 确保了 $id 是标量
+> public function actionView($id)
+> {
+>     $model = Post::findOne($id);
+>     // ...
+> }
+>
+> // 明确了指定要搜索的列，在此处传递标量或数组将始终只是查找出单个记录而已
+> $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+>
+> // 不要使用下面的代码！可以注入一个数组条件来匹配任意列的值！
+> $model = Post::findOne(Yii::$app->request->get('id'));
+> ```
+
+
 > Tip: [[yii\db\ActiveRecord::findOne()]] 和 [[yii\db\ActiveQuery::one()]] 都不会添加 `LIMIT 1` 到
   生成的 SQL 语句中。如果你的查询会返回很多行的数据，
   你明确的应该加上 `limit(1)` 来提高性能，比如 `Customer::find()->limit(1)->one()`。
@@ -490,9 +509,35 @@ $customer->loadDefaultValues();
 
 > Tip: 你可以使用 [[yii\behaviors\AttributeTypecastBehavior]] 来简化属性的类型转换
   在 ActiveRecord 验证或者保存过程中。
+  
+从2.0.14开始，Yii ActiveRecord 支持了更多的复杂数据类型，例如 JSON 或多维数组。
+
+#### MySQL 和 PostgreSQL 的 JSON 类型 in MySQL and PostgreSQL
+
+（在 ActiveRecord 的）数据填充后，基于 JSON 标准解码规则，来自 JSON 列的值将自动解码。
 
 
-### Updating Multiple Rows <span id="updating-multiple-rows"></span>
+另一方面，为了将属性值保存到 JSON 列中，ActiveRecord 会自动创建一个 [[yii\db\JsonExpression|JsonExpression]] 对象，
+这对象将在 [QueryBuilder](db-query-builder.md) 层被编码成 JSON 字符串。
+
+#### PostgreSQL 的数组类型
+
+（在 ActiveRecord 的）数据填充后，来自 Array 列的值将自动从 PgSQL 的编码值解码为 一个 [[yii\db\ArrayExpression|ArrayExpression]]
+对象。它继承于 PHP 的 `ArrayAccess` 接口，所以你可以把它当作一个数组用，或者调用 `->getValue()` 来获取数组本身。
+
+另一方面，为了将属性值保存到数组列，ActiveRecord 会自动创建一个 [[yii\db\ArrayExpression|ArrayExpression]] 对象，
+这对象将在 [QueryBuilder](db-query-builder.md) 中被编码成数组的 PgSQL 字符串表达式。
+
+你还可以这样使用 JSON 列的条件：
+
+```php
+$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
+```
+
+要详细了解表达式构建系统，可以访问 [查询构建器 – 增加自定义条件和语句](db-query-builder.md#adding-custom-conditions-and-expressions)
+文章。
+
+### 更新多个数据行 <span id="updating-multiple-rows"></span>
 
 上述方法都可以用于单个 AR 实例，以插入或更新单条
 表数据行。 要同时更新多个数据行，你应该调用 [[yii\db\ActiveRecord::updateAll()|updateAll()]]
@@ -936,6 +981,41 @@ $items = $order->items;
 ```
 
 
+### 通过多个（中间表）表来连接关联声明 <span id="multi-table-relations"></span>
+
+通过使用 [[yii\db\ActiveQuery::via()|via()]] 方法，它还可以通过多个表来定义关联声明。
+再考虑考虑上面的例子，我们有 `Customer`, `Order`, 和 `Item` 类。
+我们可以添加一个关联关系到 `Customer` 类，这个关联可以列出了 `Customer`（客户） 的订单下放置的所有 `Item`（商品），
+这个关联命名为 `getPurchasedItems（）`，关联声明如下代码示例所示：
+
+```php
+class Customer extends ActiveRecord
+{
+    // ...
+
+    public function getPurchasedItems()
+    {
+        // 客户的商品，将 Item 中的 'id' 列与 OrderItem 中的 'item_id' 相匹配
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+                    ->via('orderItems');
+    }
+
+    public function getOrderItems()
+    {
+        // 客户订单中的商品，将 `Order` 的 'id' 列和 OrderItem 的 'order_id' 列相匹配
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+                    ->via('orders');
+    }
+
+    public function getOrders()
+    {
+        // 见上述列子
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```
+
+
 ### 延迟加载和即时加载（又称惰性加载与贪婪加载） <span id="lazy-eager-loading"></span>
 
 在 [访问关联数据](#accessing-relational-data) 中，我们解释说可以像问正常的对象属性那样
@@ -1009,10 +1089,10 @@ $orders= $customers[0]->orders;
 // 没有任何的 SQL 执行
 $country = $customers[0]->country;
 
-// eager loading "orders" and the nested relation "orders.items"
+// 即时加载“订单”和嵌套关系“orders.items”
 $customers = Customer::find()->with('orders.items')->all();
-// access the items of the first order of the first customer
-// no SQL executed
+// 访问第一个客户的第一个订单中的商品
+// 没有 SQL 查询执行
 $items = $customers[0]->orders[0]->items;
 ```
 
@@ -1100,6 +1180,8 @@ $customers = Customer::find()
 
 调用 [[yii\db\ActiveQuery::joinWith()|joinWith()]] 方法会默认 [即时加载](#lazy-eager-loading) 相应的关联数据。
 如果你不需要那些关联数据，你可以指定它的第二个参数 $eagerLoading` 为 `false`。
+
+> 提示：即使在启用即时加载的情况下使用 [[yii\db\ActiveQuery::joinWith()|joinWith()]] 或 [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]]，相应的关联数据也**不会**从这个 `JOIN` 查询的结果中填充。 因此，每个连接关系还有一个额外的查询，正如 [即时加载](#lazy-eager-loading) 部分所述。
 
 和 [[yii\db\ActiveQuery::with()|with()]] 一样，你可以 join 多个关联表；你可以动态的自定义
 你的关联查询；你可以使用嵌套关联进行 join。你也可以将 [[yii\db\ActiveQuery::with()|with()]]
