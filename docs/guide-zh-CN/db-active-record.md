@@ -219,6 +219,25 @@ $customers = Customer::findAll([
 ]);
 ```
 
+> Warning: If you need to pass user input to these methods, make sure the input value is scalar or in case of
+> array condition, make sure the array structure can not be changed from the outside:
+>
+> ```php
+> // yii\web\Controller ensures that $id is scalar
+> public function actionView($id)
+> {
+>     $model = Post::findOne($id);
+>     // ...
+> }
+>
+> // explicitly specifying the column to search, passing a scalar or array here will always result in finding a single record
+> $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+>
+> // do NOT use the following code! it is possible to inject an array condition to filter by arbitrary column values!
+> $model = Post::findOne(Yii::$app->request->get('id'));
+> ```
+
+
 > Tip: [[yii\db\ActiveRecord::findOne()]] 和 [[yii\db\ActiveQuery::one()]] 都不会添加 `LIMIT 1` 到
   生成的 SQL 语句中。如果你的查询会返回很多行的数据，
   你明确的应该加上 `limit(1)` 来提高性能，比如 `Customer::find()->limit(1)->one()`。
@@ -490,7 +509,33 @@ $customer->loadDefaultValues();
 
 > Tip: 你可以使用 [[yii\behaviors\AttributeTypecastBehavior]] 来简化属性的类型转换
   在 ActiveRecord 验证或者保存过程中。
+  
+Since 2.0.14, Yii ActiveRecord supports complex data types, such as JSON or multidimensional arrays.
 
+#### JSON in MySQL and PostgreSQL
+
+After data population, the value from JSON column will be automatically decoded from JSON according to standard JSON
+decoding rules.
+
+To save attribute value to a JSON column, ActiveRecord will automatically create a [[yii\db\JsonExpression|JsonExpression]] object
+that will be encoded to a JSON string on [QueryBuilder](db-query-builder.md) level.
+
+#### Arrays in PostgreSQL
+
+After data population, the value from Array column will be automatically decoded from PgSQL notation to an [[yii\db\ArrayExpression|ArrayExpression]]
+object. It implements PHP `ArrayAccess` interface, so you can use it as an array, or call `->getValue()` to get the array itself.
+
+To save attribute value to an array column, ActiveRecord will automatically create an [[yii\db\ArrayExpression|ArrayExpression]] object
+that will be encoded by [QueryBuilder](db-query-builder.md) to an PgSQL string representation of array.
+
+You can also use conditions for JSON columns:
+
+```php
+$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
+```
+
+To learn more about expressions building system read the [Query Builder – Adding custom Conditions and Expressions](db-query-builder.md#adding-custom-conditions-and-expressions)
+article.
 
 ### Updating Multiple Rows <span id="updating-multiple-rows"></span>
 
@@ -936,6 +981,41 @@ $items = $order->items;
 ```
 
 
+### Chaining relation definitions via multiple tables <span id="multi-table-relations"></span>
+
+Its further possible to define relations via multiple tables by chaining relation definitions using [[yii\db\ActiveQuery::via()|via()]].
+Considering the examples above, we have classes `Customer`, `Order`, and `Item`.
+We can add a relation to the `Customer` class that lists all items from all the orders they placed,
+and name it `getPurchasedItems()`, the chaining of relations is show in the following code example:
+
+```php
+class Customer extends ActiveRecord
+{
+    // ...
+
+    public function getPurchasedItems()
+    {
+        // customer's items, matching 'id' column of `Item` to 'item_id' in OrderItem
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+                    ->via('orderItems');
+    }
+
+    public function getOrderItems()
+    {
+        // customer's order items, matching 'id' column of `Order` to 'order_id' in OrderItem
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+                    ->via('orders');
+    }
+
+    public function getOrders()
+    {
+        // same as above
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```
+
+
 ### 延迟加载和即时加载（又称惰性加载与贪婪加载） <span id="lazy-eager-loading"></span>
 
 在 [访问关联数据](#accessing-relational-data) 中，我们解释说可以像问正常的对象属性那样
@@ -1100,6 +1180,8 @@ $customers = Customer::find()
 
 调用 [[yii\db\ActiveQuery::joinWith()|joinWith()]] 方法会默认 [即时加载](#lazy-eager-loading) 相应的关联数据。
 如果你不需要那些关联数据，你可以指定它的第二个参数 $eagerLoading` 为 `false`。
+
+> Note: Even when using [[yii\db\ActiveQuery::joinWith()|joinWith()]] or [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] with eager loading enabled the related data will **not** be populated from the result of the `JOIN` query. So there's still an extra query for each joined relation as explained in the section on [eager loading](#lazy-eager-loading).
 
 和 [[yii\db\ActiveQuery::with()|with()]] 一样，你可以 join 多个关联表；你可以动态的自定义
 你的关联查询；你可以使用嵌套关联进行 join。你也可以将 [[yii\db\ActiveQuery::with()|with()]]
