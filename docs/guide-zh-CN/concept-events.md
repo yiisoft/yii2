@@ -102,7 +102,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 触发事件（Triggering Events） <span id="triggering-events"></span>
 --------------------------
 
-事件通过调用 [[yii\base\Component::trigger()]] 方法触发，此方法须传递**事件名**，
+事件通过调用 [[yii\base\Component::trigger()]] 方法触发，此方法须传递*事件名*，
 还可以传递一个事件对象，用来传递参数到事件处理器。如：
 
 ```php
@@ -197,10 +197,10 @@ $foo->off(Foo::EVENT_HELLO);
 类级别的事件处理器（Class-Level Event Handlers） <span id="class-level-event-handlers"></span>
 -------------------------------------------
 
-以上部分，我们叙述了在**实例级别**如何附加处理器到事件。
-有时想要一个类的所有实例而不是一个指定的实例都响应一个被触发的事件，
+以上部分，我们叙述了在*实例级别*如何附加处理器到事件。
+有时想要一个类的*所有*实例而不是一个指定的实例都响应一个被触发的事件，
 并不是一个个附加事件处理器到每个实例，
-而是通过调用静态方法 [[yii\base\Event::on()]] 在**类级别**附加处理器。
+而是通过调用静态方法 [[yii\base\Event::on()]] 在*类级别*附加处理器。
 
 例如，[活动记录](db-active-record.md)对象要在每次往数据库新增一条新记录时触发一个 
 [[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 事件。
@@ -222,7 +222,7 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 
 当对象触发事件时，它首先调用实例级别的处理器，然后才会调用类级别处理器。
 
-可调用静态方法[[yii\base\Event::trigger()]]来触发一个**类级别**事件。
+可调用静态方法[[yii\base\Event::trigger()]]来触发一个*类级别*事件。
 类级别事件不与特定对象相关联。因此，它只会引起类级别事件处理器的调用。
 如：
 
@@ -401,9 +401,9 @@ Event::on('*', '*', function ($event) {
 > Note: 事件处理程序设置的使用通配符可能会降低应用程序的性能。
   如果可能，最好避免。
 
-为了分离由通配符模式指定的事件处理程序，您应该在
+为了移除由通配符模式指定的事件处理程序，您应该在
 [[yii\base\Component::off()]] 或 [[yii\base\Event::off()]] 调用中重复相同的模式。
-请记住，在分离事件处理程序期间传递通配符将分离为此通配符指定的处理程序，
+请记住，在移除事件处理程序期间传递通配符将移除为此通配符指定的处理程序，
 而为常规事件名称附加的处理程序将保留，即使它们与模式匹配。 例如：
 
 ```php
@@ -421,7 +421,7 @@ $foo->on('*', function ($event) {
     echo 'wildcard-handler'
 });
 
-// 仅分离通配符处理程序！
+// 仅移除通配符处理程序！
 $foo->off('*');
 
 $foo->trigger('event.hello'); // 输出：'direct-handler'
