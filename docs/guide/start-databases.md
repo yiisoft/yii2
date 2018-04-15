@@ -129,7 +129,7 @@ $country->save();
 ```
 
 > Info: Active Record is a powerful way to access and manipulate database data in an object-oriented fashion.
-You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Data Access Objects](db-dao.md).
+You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Database Access Objects](db-dao.md).
 
 
 Creating an Action <span id="creating-action"></span>
@@ -257,7 +257,7 @@ Summary <span id="summary"></span>
 In this section, you learned how to work with a database. You also learned how to fetch and display
 data in pages with the help of [[yii\data\Pagination]] and [[yii\widgets\LinkPager]].
 
-In the next section, you will learn how to use the powerful code generation tool, called [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md),
+In the next section, you will learn how to use the powerful code generation tool, called [Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide),
 to help you rapidly implement some commonly required features, such as the Create-Read-Update-Delete (CRUD)
 operations for working with the data in a database table. As a matter of fact, the code you have just written can all
 be automatically generated in Yii using the Gii tool.
