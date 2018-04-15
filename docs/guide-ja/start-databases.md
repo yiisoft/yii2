@@ -2,13 +2,13 @@
 ==================
 
 このセクションでは、`country` という名前のデータベース・テーブルから読み出した国データを表示する新しいページの作り方を説明します。
-この目的を達するために、データベース接続を構成し、[アクティブレコード](db-active-record.md) クラスを作成し、[アクション](structure-controllers.md) を定義し、そして [ビュー](structure-views.md) を作成します。
+この目的を達するために、データベース接続を構成し、[アクティブ・レコード](db-active-record.md) クラスを作成し、[アクション](structure-controllers.md) を定義し、そして [ビュー](structure-views.md) を作成します。
 
 このチュートリアルを通じて、次のことを学びます。
 
 * DB 接続を構成する方法
-* アクティブレコードのクラスを定義する方法
-* アクティブレコードのクラスを使ってデータを検索する方法
+* アクティブ・レコードのクラスを定義する方法
+* アクティブ・レコードのクラスを使ってデータを検索する方法
 * 改ページを伴う仕方でビューにデータを表示する方法
 
 このセクションを完了するためには、データベースを使うことについて基本的な知識と経験が無ければならないことに注意してください。
@@ -19,7 +19,7 @@
 ----------------------
 
 まず初めに、`yii2basic` という名前のデータベースを作成してください。このデータベースからアプリケーションにデータを読み出すことになります。
-Yii は多数のデータベース製品に対するサポートを内蔵していますので、作成するデータベースは、SQLite、MySQL、PosttreSQL、MSSQL または Oracle から選ぶことが出来ます。
+Yii は多数のデータベース製品に対するサポートを内蔵しており、作成するデータベースは、SQLite、MySQL、PosttreSQL、MSSQL または Oracle から選ぶことが出来ます。
 以下の説明では、話を単純にするために、MySQL を前提とします。
 
 次に、データベースに `country` という名前のテーブルを作り、いくつかのサンプル・データを挿入します。
@@ -68,7 +68,7 @@ return [
 ];
 ```
 
-この `config/db.php` というファイルは典型的なファイルベースの [構成情報](concept-configurations.md) ツールです。
+この `config/db.php` というファイルは典型的なファイル・ベースの [構成情報](concept-configurations.md) ツールです。
 この構成情報ファイルが、背後のデータベースに対する SQL クエリの実行を可能にする [[yii\db\Connection]] インスタンスの作成と初期化に必要なパラメータを指定するものです。
 
 上記のようにして構成された DB 接続は、アプリケーション・コードの中で `Yii::$app->db` という式でアクセスすることが出来ます。
@@ -76,6 +76,7 @@ return [
 > Info: `config/db.php` は、メインのアプリケーション構成情報ファイルである `config/web.php` によってインクルードされます。
   この `config/web.php` が [アプリケーション](structure-applications.md) インスタンスが初期化される仕方を指定するものです。
   詳しい情報については、[構成情報](concept-configurations.md) のセクションを参照してください。
+
 Yii がサポートを内蔵していないデータベースを扱う必要がある場合は、以下のエクステンションの利用を検討してください。
 
 - [Informix](https://github.com/edgardmessias/yii2-informix)
@@ -83,10 +84,10 @@ Yii がサポートを内蔵していないデータベースを扱う必要が�
 - [Firebird](https://github.com/edgardmessias/yii2-firebird)
 
 
-アクティブレコードを作成する <span id="creating-active-record"></span>
-----------------------------
+アクティブ・レコードを作成する <span id="creating-active-record"></span>
+------------------------------
 
-`country` テーブルの中のデータを表現し取得するために、[アクティブレコード](db-active-record.md) から派生した `Country` という名前のクラスを作成し、それを `models/Country.php` というファイルに保存します。
+`country` テーブルの中のデータを表現し取得するために、[アクティブ・レコード](db-active-record.md) から派生した `Country` という名前のクラスを作成し、それを `models/Country.php` というファイルに保存します。
 
 ```php
 <?php
@@ -124,8 +125,8 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Info: アクティブレコードは、オブジェクト指向の流儀でデータベースのデータにアクセスし、操作する強力な方法です。
-[アクティブレコード](db-active-record.md) のセクションで、詳細な情報を得ることが出来ます。
+> Info: アクティブ・レコードは、オブジェクト指向の流儀でデータベースのデータにアクセスし、操作する強力な方法です。
+[アクティブ・レコード](db-active-record.md) のセクションで、詳細な情報を得ることが出来ます。
 もう一つの方法として、[データベース・アクセス・オブジェクト](db-dao.md) と呼ばれる、より低レベルなデータ・アクセス方法を使ってデータベースを操作することも出来ます。
 
 
@@ -173,7 +174,7 @@ class CountryController extends Controller
 上記のコードを `controllers/CountryController.php` というファイルに保存します。
 
 `index` アクションは `Country::find()` を呼び出します。
-このアクティブレコードのメソッドは DB クエリを構築して、`country` テーブルから全てのデータを読み出します。
+このアクティブ・レコードのメソッドは DB クエリを構築して、`country` テーブルから全てのデータを読み出します。
 一回のリクエストで返される国の数を制限するために、クエリは [[yii\data\Pagination]] オブジェクトの助けを借りてページ付けされます。
 `Pagination` オブジェクトは二つの目的に奉仕します。
 
@@ -235,14 +236,14 @@ http://hostname/index.php?r=country%2Findex
 http://hostname/index.php?r=country%2Findex&page=2
 ```
 
-舞台裏では、[[yii\data\Pagination|Pagination]] が、データセットをページ付けするのに必要な全ての機能を提供しています。
+舞台裏では、[[yii\data\Pagination|Pagination]] が、データ・セットをページ付けするのに必要な全ての機能を提供しています。
 
 * 初期状態では、[[yii\data\Pagination|Pagination]] は、1ページ目を表しています。
   これを反映して、国の SELECT クエリは `LIMIT 5 OFFSET 0` という句を伴うことになります。
   その結果、最初の5つの国が取得されて表示されます。
 * [[yii\widgets\LinkPager|LinkPager]] ウィジェットは、[[yii\data\Pagination::createUrl()|Pagination]] によって作成された URL を使ってページ・ボタンをレンダリングします。
   URL は、別々のページ番号を表現する `page` というクエリ・パラメータを含んだものになります。
-* ページボタン "2" をクリックすると、`country/index` のルートに対する新しいリクエストが発行され、処理されます。
+* ページ・ボタン "2" をクリックすると、`country/index` のルートに対する新しいリクエストが発行され、処理されます。
   [[yii\data\Pagination|Pagination]] が URL から `page` クエリ・パラメータを読み取って、カレント・ページ番号を 2 にセットします。
   こうして、新しい国のクエリは `LIMIT 5 OFFSET 5` という句を持ち、次の5つの国を表示のために返すことになります。
 
@@ -253,6 +254,6 @@ http://hostname/index.php?r=country%2Findex&page=2
 このセクションでは、データベースを扱う方法を学びました。
 また、[[yii\data\Pagination]] と [[yii\widgets\LinkPager]] の助けを借りて、ページ付けされたデータを取得し表示する方法も学びました。
 
-次のセクションでは、[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) と呼ばれる強力なコード生成ツールを使う方法を学びます。
-このツールは、データベース・テーブルのデータを取り扱うための「作成・読出し・更新・削除 (CRUD)」操作のような、通常必要とされることが多いいくつかの機能の迅速な実装を手助けしてくれるものです。
+次のセクションでは、[Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide) と呼ばれる強力なコード生成ツールを使う方法を学びます。
+このツールは、データベース・テーブルのデータを取り扱うための「作成・読出し・更新・削除 (CRUD)」操作のような、通常必要とされることが多い諸機能の迅速な実装を手助けしてくれるものです。
 実際のところ、あなたがたった今書いたばかりのコードは、Gii ツールを使えば、全部、Yii が自動的に生成してくれるものです。

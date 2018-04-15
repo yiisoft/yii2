@@ -1,13 +1,13 @@
 Gii でコードを生成する
 ======================
 
-このセクションでは、[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) を使って、ウェブ・サイトの一般的な機能のいくつかを実装するコードを自動的に生成する方法を説明します。
+このセクションでは、[Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide) を使って、ウェブ・サイトの一般的な機能のいくつかを実装するコードを自動的に生成する方法を説明します。
 Gii を使ってコードを自動生成することは、Gii のウェブ・ページに表示される指示に対して正しい情報を入力するだけのことです。
 
 このチュートリアルを通じて、次のことを学びます。
 
 * アプリケーションで Gii を有効にする方法
-* Gii を使って、アクティブレコードのクラスを生成する方法
+* Gii を使って、アクティブ・レコードのクラスを生成する方法
 * Gii を使って、DB テーブルの CRUD 操作を実装するコードを生成する方法
 * Gii によって生成されるコードをカスタマイズする方法
 
@@ -15,7 +15,7 @@ Gii を使ってコードを自動生成することは、Gii のウェブ・ペ
 Gii を開始する <span id="starting-gii"></span>
 --------------
 
-[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) は Yii の [モジュール](structure-modules.md) として提供されています。
+[Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide) は Yii の [モジュール](structure-modules.md) として提供されています。
 Gii は、アプリケーションの [[yii\base\Application::modules|modules]] プロパティの中で構成することで有効にすることが出来ます。
 アプリケーションを生成した仕方にもよりますが、`config/web.php` の構成情報ファイルの中に、多分、下記のコードが既に提供されているでしょう。
 
@@ -59,10 +59,10 @@ http://hostname/index.php?r=gii
 ![Gii](images/start-gii.png)
 
 
-アクティブレコードのクラスを生成する <span id="generating-ar"></span>
+アクティブ・レコードのクラスを生成する <span id="generating-ar"></span>
 ------------------------------------
 
-Gii を使ってアクティブレコードのクラスを生成するためには、"Model Generator" を選びます
+Gii を使ってアクティブ・レコードのクラスを生成するためには、"Model Generator" を選びます
 (Gii のインデックス・ページのリンクをクリックして下さい)。
 そして、次のようにフォームに入力します。
 
@@ -136,7 +136,7 @@ http://hostname/index.php?r=country%2Findex
 
 > Info: Gii は非常にカスタマイズしやすく拡張しやすいコード生成ツールとして設計されています。
   これを賢く使うと、アプリケーションの開発速度を大いに高めることが出来ます。
-  詳細については、[Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md) のセクションを参照してください。
+  詳細については、[Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide) のセクションを参照してください。
 
 
 まとめ <span id="summary"></span>
