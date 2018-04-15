@@ -267,7 +267,7 @@ $result = $db->cache(function ($db) {
 
 });
 ```
-クエリ・キャッシュは [DAO](db-dao.md) だけではなく [アクティブレコード](db-active-record.md) でも使用することができます。
+クエリ・キャッシュは [DAO](db-dao.md) だけではなく [アクティブ・レコード](db-active-record.md) でも使用することができます。
 
 ```php
 $result = Customer::getDb()->cache(function ($db) {

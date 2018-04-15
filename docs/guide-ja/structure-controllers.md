@@ -385,10 +385,10 @@ class SiteController extends Controller
 ```
 
 
-## コントローラのライフ・サイクル <span id="controller-lifecycle"></span>
+## コントローラのライフサイクル <span id="controller-lifecycle"></span>
 
 リクエストを処理するときに、[アプリケーション](structure-applications.md) はリクエストされた [ルート](#routes) に基いてコントローラを作成します。
-そして、次に、コントローラはリクエストに応じるために以下のライフ・サイクルを経過します。
+そして、次に、コントローラはリクエストに応じるために以下のライフサイクルを経過します。
 
 1. コントローラが作成され構成された後、[[yii\base\Controller::init()]] メソッドが呼ばれる。
 2. コントローラは、リクエストされたアクション ID に基いて、アクション・オブジェクトを作成する。

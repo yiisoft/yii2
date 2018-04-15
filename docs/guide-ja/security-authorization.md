@@ -601,7 +601,7 @@ public function behaviors()
     'allow' => true,
     'actions' => ['update'],
     'roles' => ['updatePost'],
-    'roleParams' => ['postId' => Yii::$app->request->get('id')];
+    'roleParams' => ['postId' => Yii::$app->request->get('id')],
 ],
 ```
 

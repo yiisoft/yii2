@@ -297,7 +297,7 @@ class MyBootstrapClass implements BootstrapInterface
 
 - DB スキーマを操作するために、平文の SQL ファイルを使うのではなく、[マイグレーション](db-migrations.md) を提供する。
 - マイグレーションがさまざまな DBMS に適用可能なものになるように試みる。
-- マイグレーションの中では [アクティブレコード](db-active-record.md) の使用を避ける。
+- マイグレーションの中では [アクティブ・レコード](db-active-record.md) の使用を避ける。
 
 
 #### アセットを使う <span id="using-assets"></span>
@@ -390,7 +390,7 @@ Yii は下記のコア・エクステンションを提供しています。こ�
   このエクステンションは、より詳細なデバッグ情報を表示する一連のスタンドアロン・ページも提供します。
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
   [Elasticsearch](http://www.elasticsearch.org/) の使用に対するサポートを提供します。
-  基本的なクエリ/サーチのサポートを含むだけでなく、Elasticsearch にアクティブレコードを保存することを可能にする [アクティブレコード](db-active-record.md) パターンをも実装しています。
+  基本的なクエリ/サーチのサポートを含むだけでなく、Elasticsearch にアクティブ・レコードを保存することを可能にする [アクティブ・レコード](db-active-record.md) パターンをも実装しています。
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker):
   ダミー・データを作る [Faker](https://github.com/fzaninotto/Faker) を使うためのサポートを提供します。
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
@@ -403,15 +403,15 @@ Yii は下記のコア・エクステンションを提供しています。こ�
   [JQuery UI](http://jqueryui.com/) のインタラクションとウィジェットをカプセル化した一連のウィジェットを提供します。
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
   [MongoDB](http://www.mongodb.org/) の使用に対するサポートを提供します。
-  基本的なクエリ、アクティブレコード、マイグレーション、キャッシュ、コード生成などの機能を含みます。
+  基本的なクエリ、アクティブ・レコード、マイグレーション、キャッシュ、コード生成などの機能を含みます。
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
   [redis](http://redis.io/) の使用に対するサポートを提供します。
-  基本的なクエリ、アクティブレコード、キャッシュなどの機能を含みます。
+  基本的なクエリ、アクティブ・レコード、キャッシュなどの機能を含みます。
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
   [Smarty](http://www.smarty.net/) に基づいたテンプレート・エンジンを提供します。
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
   [Sphinx](http://sphinxsearch.com) の使用に対するサポートを提供します。
-  基本的なクエリ、アクティブレコード、コード生成などの機能を含みます。
+  基本的なクエリ、アクティブ・レコード、コード生成などの機能を含みます。
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
   [swiftmailer](http://swiftmailer.org/) に基づいたメール送信機能を提供します。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):

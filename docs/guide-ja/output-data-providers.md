@@ -9,7 +9,7 @@
 
 Yii のリリースには次のデータ・プロバイダのクラスが含まれています。
 
-* [[yii\data\ActiveDataProvider]]: [[yii\db\Query]] または [[yii\db\ActiveQuery]] を使ってデータベースからデータを取得して、配列または [アクティブレコード](db-active-record.md) インスタンスの形式でデータを返します。
+* [[yii\data\ActiveDataProvider]]: [[yii\db\Query]] または [[yii\db\ActiveQuery]] を使ってデータベースからデータを取得して、配列または [アクティブ・レコード](db-active-record.md) インスタンスの形式でデータを返します。
 * [[yii\data\SqlDataProvider]]: SQL 文を実行して、データベースのデータを配列として返します。
 * [[yii\data\ArrayDataProvider]]: 大きな配列を受け取り、ページネーションと並べ替えの指定に基づいて、一部分を切り出して返します。
 
@@ -54,7 +54,7 @@ echo yii\grid\GridView::widget([
 [[yii\data\ActiveDataProvider]] を使用するためには、その [[yii\data\ActiveDataProvider::query|query]] プロパティを構成しなければなりません。
 これは、[[yii\db\Query]] または [[yii\db\ActiveQuery]] のオブジェクトを取ることが出来ます。
 前者であれば、返されるデータは配列になります。
-後者であれば、返されるデータは配列または [アクティブレコード](db-active-record.md) インスタンスとすることが出来ます。
+後者であれば、返されるデータは配列または [アクティブ・レコード](db-active-record.md) インスタンスとすることが出来ます。
 例えば、
 
 ```php
@@ -139,7 +139,7 @@ $models = $provider->getModels();
 [[yii\data\ArrayDataProvider]] は、一つの大きな配列を扱う場合に最も適しています。
 このデータ・プロバイダによって、一つまたは複数のカラムで並べ替えた配列データの 1 ページ分を返すことが出来ます。
 [[yii\data\ArrayDataProvider]] を使用するためには、全体の大きな配列として [[yii\data\ArrayDataProvider::allModels|allModels]] プロパティを指定しなければなりません。
-この大きな配列の要素は、連想配列 (例えば [DAO](db-dao.md) のクエリ結果) またはオブジェクト (例えば [アクティブレコード](db-active-record.md) インスタンス) とすることが出来ます。
+この大きな配列の要素は、連想配列 (例えば [DAO](db-dao.md) のクエリ結果) またはオブジェクト (例えば [アクティブ・レコード](db-active-record.md) インスタンス) とすることが出来ます。
 例えば、
 
 ```php

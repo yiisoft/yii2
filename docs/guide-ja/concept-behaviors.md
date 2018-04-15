@@ -251,10 +251,10 @@ $component->detachBehaviors();
 ------------------------------
 
 しめくくりに、[[yii\behaviors\TimestampBehavior]] を見てみましょう。このビヘイビアは、
-`insert()`、`update()` または `save()` のメソッドを通じて [[yii\db\ActiveRecord|アクティブレコード]] モデルが保存されるときに、
+`insert()`、`update()` または `save()` のメソッドを通じて [[yii\db\ActiveRecord|アクティブ・レコード]] モデルが保存されるときに、
 タイムスタンプ属性の自動的な更新をサポートします。
 
-まず、使用しようと考えている [[yii\db\ActiveRecord|アクティブレコード]] クラスに、このビヘイビアをアタッチします:
+まず、使用しようと考えている [[yii\db\ActiveRecord|アクティブ・レコード]] クラスに、このビヘイビアをアタッチします:
 
 ```php
 namespace app\models\User;

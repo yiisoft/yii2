@@ -186,7 +186,7 @@ public function behaviors()
 }
 ```
 
-レスポンス形式と言語は [アプリケーションのライフ・サイクル](structure-applications.md#application-lifecycle) のもっと早い段階で決定される必要があることがよくあります。
+レスポンス形式と言語は [アプリケーションのライフサイクル](structure-applications.md#application-lifecycle) のもっと早い段階で決定される必要があることがよくあります。
 このため、ContentNegotiator はフィルタの他に、[ブートストラップ・コンポーネント](structure-applications.md#bootstrap) としても使うことができるように設計されています。
 例えば、次のように、ContentNegotiator を [アプリケーションの構成情報](structure-applications.md#application-configurations) の中で構成することが出来ます。
 
