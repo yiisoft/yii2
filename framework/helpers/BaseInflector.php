@@ -407,7 +407,7 @@ class BaseInflector
      */
     public static function id2camel($id, $separator = '-')
     {
-        return str_replace(' ', '', ucwords(implode(' ', explode($separator, $id))));
+        return str_replace(' ', '', ucwords(str_replace($separator, ' ', $id)));
     }
 
     /**
