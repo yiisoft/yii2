@@ -52,7 +52,7 @@ version B between A and C, you need to follow the instructions
 for both A and B.
 
 
-Upgrade from Yii 2.0.14
+Upgrade from Yii 2.0.15
 -----------------------
 
 * Updated dependency to `cebe/markdown` to version `1.2.x`.
@@ -62,6 +62,49 @@ Upgrade from Yii 2.0.14
   ```json
   "cebe/markdown": "~1.1.0",
   ```
+
+
+Upgrade from Yii 2.0.14
+-----------------------
+
+* When hash format condition (array) is used in `yii\db\ActiveRecord::findOne()` and `findAll()`, the array keys (column names)
+  are now limited to the table column names. This is to prevent SQL injection if input was not filtered properly.
+  You should check all usages of `findOne()` and `findAll()` to ensure that input is filtered correctly.
+  If you need to find models using different keys than the table columns, use `find()->where(...)` instead.
+
+  It's not an issue in the default generated code though as ID is filtered by
+  controller code:
+
+  The following code examples are **not** affected by this issue (examples shown for `findOne()` are valid also for `findAll()`):
+
+  ```php
+  // yii\web\Controller ensures that $id is scalar
+  public function actionView($id)
+  {
+      $model = Post::findOne($id);
+      // ...
+  }
+  ```
+
+  ```php
+  // casting to (int) or (string) ensures no array can be injected (an exception will be thrown so this is not a good practise)
+  $model = Post::findOne((int) Yii::$app->request->get('id'));
+  ```
+
+  ```php
+  // explicitly specifying the colum to search, passing a scalar or array here will always result in finding a single record
+  $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+  ```
+
+  The following code however **is vulnerable**, an attacker could inject an array with an arbitrary condition and even exploit SQL injection:
+
+  ```php
+  $model = Post::findOne(Yii::$app->request->get('id'));
+  ```
+
+  For the above example, the SQL injection part is fixed with the patches provided in this release, but an attacker may still be able to search
+  records by different condition than a primary key search and violate your application business logic. So passing user input directly like this can cause problems and should be avoided.
+
 
 Upgrade from Yii 2.0.13
 -----------------------
@@ -109,6 +152,9 @@ Upgrade from Yii 2.0.13
   - Replace calls to `Yii::trace()` with `Yii::debug()`.
   - Remove calls to `yii\BaseYii::powered()`.
   - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
+
+* In case you aren't using CSRF cookies (REST APIs etc.) you should turn them off explicitly by setting
+  `\yii\web\Request::$enableCsrfCookie` to `false` in your config file. 
 
 Upgrade from Yii 2.0.12
 -----------------------
@@ -190,7 +236,7 @@ Upgrade from Yii 2.0.12
   However, this change may affect your application if you have code that uses method `yii\base\Module::has()` in order
   to check existence of the component exactly in this specific module. In this case make sure the logic is not corrupted.
 
-* If you are using "asset" command to compress assets and your web applicaiton `assetManager` has `linkAssets` turned on,
+* If you are using "asset" command to compress assets and your web application `assetManager` has `linkAssets` turned on,
   make sure that "asset" command config has `linkAssets` turned on as well.
 
 

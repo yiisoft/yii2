@@ -37,12 +37,9 @@ The following steps are not necessary if you want to work only on translations o
 
 - run `composer install` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.4.1"`
-
 If you are going to work with JavaScript:
 
-- run `npm install` to install JavaScript testing tools and dependencies (assuming you have [Node.js and NPM installed]
-(https://nodejs.org/en/download/package-manager/)).
+- run `npm install` to install JavaScript testing tools and dependencies (assuming you have [Node.js and NPM installed](https://nodejs.org/en/download/package-manager/)).
 
 > Note: JavaScript tests depend on [jsdom](https://github.com/tmpvar/jsdom) library which requires Node.js 4 or newer.
 Using of Node.js 6 or 7 is more preferable.
@@ -157,7 +154,7 @@ For very small fixes, e.g. typos and documentation changes, there is no need to 
 
 ### 6. Commit your changes
 
-add the files/changes you want to commit to the [staging area](http://gitref.org/basic/#add) with
+add the files/changes you want to commit to the [staging area](http://git.github.io/git-reference/basic/#add) with
 
 ```
 git add path/to/my/file.php
@@ -192,7 +189,7 @@ The `-u` parameter ensures that your branch will now automatically push and pull
 if you type `git push` the next time it will know where to push to. This is useful if you want to later add more commits
 to the pull request.
 
-### 9. Open a [pull request](http://help.github.com/send-pull-requests/) against upstream.
+### 9. Open a [pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) against upstream.
 
 Go to your repository on GitHub and click "Pull Request", choose your branch on the right and enter some more details
 in the comment box. To link the pull request to the issue put anywhere in the pull comment `#999` where 999 is the
@@ -222,7 +219,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 
 To detect regressions early every merge to the Yii codebase on GitHub will be picked up by
 [Travis CI](http://travis-ci.org) for an automated testrun. As core team doesn't wish to overtax this service,
-[`[ci skip]`](http://about.travis-ci.org/docs/user/how-to-skip-a-build/) will be included to the merge description if
+[`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) will be included to the merge description if
 the pull request:
 
 * affect javascript, css or image files only,

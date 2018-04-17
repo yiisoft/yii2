@@ -1,9 +1,27 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.15 under development
+2.0.16 under development
 ------------------------
 
+- Bug #16006: Handle case when `X-Forwarded-Host` header have multiple hosts separated with a comma (pgaultier)
+- Bug #16010: Fixed `yii\filters\ContentNegotiator` behavior when GET parameters contain an array (rugabarbo)
+- Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
+- Bug #15988: Fixed bash completion (alekciy)
+- Bug #15117: Fixed `yii\db\Schema::getTableMetadata` cache refreshing (boboldehampsink)
+- Bug #16073: Fixed regression in Oracle `IN` condition builder for more than 1000 items (cebe)
+
+
+2.0.15.1 March 21, 2018
+-----------------------
+
+- Bug #15931: `yii\db\ActiveRecord::findOne()` now accepts column names prefixed with table name (cebe)
+
+
+2.0.15 March 20, 2018
+---------------------
+
+- Bug #15688: (CVE-2018-7269): Fixed possible SQL injection through `yii\db\ActiveRecord::findOne()`, `::findAll()` (analitic1983, silverfire, cebe)
 - Bug #15878: Fixed migration with a comment containing an apostrophe (MarcoMoreno)
 
 
@@ -18,7 +36,7 @@ Yii Framework 2 Change Log
 - Bug #15817: Fixed support of deprecated array format type casting in `yii\db\Command::bindValues()` (silverfire)
 - Bug #15822: Fixed `yii\base\Component::off()` not to throw an exception when handler does not exist (silverfire)
 - Bug #15829: Fixed JSONB support in PostgreSQL 9.4 (silverfire)
-- Bug #15836: Fixed nesting of `yii\db\ArrayExpresiion`, `yii\db\JsonExpression` (silverfire)
+- Bug #15836: Fixed nesting of `yii\db\ArrayExpression`, `yii\db\JsonExpression` (silverfire)
 - Bug #15839: Fixed `yii\db\mysql\JsonExpressionBuilder` to cast JSON explicitly (silverfire)
 - Bug #15840: Fixed regression on load fixture data file (leandrogehlen)
 - Bug #15858: Fixed `Undefined offset` error calling `yii\helpers\Html::errorSummary()` with the same error messages for different model attributes (FabrizioCaldarelli, silverfire)

@@ -1,35 +1,35 @@
 認証
 ====
 
-ウェブアプリケーションとは異なり、RESTful API は通常はステートレスです。
+ウェブ・アプリケーションとは異なり、RESTful API は通常はステート・レスです。
 これは、セッションやクッキーは使用すべきでないことを意味します。
 従って、ユーザの認証ステータスをセッションやクッキーで保持することが出来ないため、全てのリクエストに何らかの認証情報を付加する必要があります。
-通常使われるのは、ユーザを認証するための秘密のアクセストークンを全てのリクエストとともに送信する方法です。
-アクセストークンはユーザを一意に特定して認証することが出来るものですので、**API リクエストは、中間者攻撃 (man-in-the-middle attack) を防止するために、常に HTTPS 経由で送信されなければなりません**。
+通常使われるのは、ユーザを認証するための秘密のアクセス・トークンを全てのリクエストとともに送信する方法です。
+アクセス・トークンはユーザを一意に特定して認証することが出来るものですので、**API リクエストは、中間者攻撃 (man-in-the-middle attack) を防止するために、常に HTTPS 経由で送信されなければなりません**。
 
-アクセストークンを送信するには、いくつかの異なる方法があります。
+アクセス・トークンを送信するには、いくつかの異なる方法があります。
 
-* [HTTP Basic 認証](http://ja.wikipedia.org/wiki/Basic%E8%AA%8D%E8%A8%BC): アクセストークンはユーザ名として送信されます。
-  この方法は、アクセストークンを API コンシューマ側で安全に保存することが出来る場合、例えば API コンシューマがサーバ上で走るプログラムである場合などにのみ使用されるべきです。
-* クエリパラメータ: アクセストークンは API の URL、例えば、`https://example.com/users?access-token=xxxxxxxx` でクエリパラメータとして送信されます。
-  ほとんどのウェブサーバはクエリパラメータをサーバのログに記録するため、この手法は、アクセストークンを HTTP ヘッダを使って送信することができない `JSONP` リクエストに応答するために主として使用されるべきです。
-* [OAuth 2](http://oauth.net/2/): OAuth2 プロトコルに従って、アクセストークンはコンシューマによって権限付与サーバから取得され、[HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750) 経由で API サーバに送信されます。
+* [HTTP Basic 認証](http://ja.wikipedia.org/wiki/Basic%E8%AA%8D%E8%A8%BC): アクセス・トークンはユーザ名として送信されます。
+  この方法は、アクセス・トークンを API コンシューマ側で安全に保存することが出来る場合、例えば API コンシューマがサーバ上で走るプログラムである場合などにのみ使用されるべきです。
+* クエリ・パラメータ: アクセス・トークンは API の URL、例えば、`https://example.com/users?access-token=xxxxxxxx` でクエリ・パラメータとして送信されます。
+  ほとんどのウェブ・サーバはクエリ・パラメータをサーバのログに記録するため、この手法は、アクセス・トークンを HTTP ヘッダを使って送信することができない `JSONP` リクエストに応答するために主として使用されるべきです。
+* [OAuth 2](http://oauth.net/2/): OAuth2 プロトコルに従って、アクセス・トークンはコンシューマによって権限付与サーバから取得され、[HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750) 経由で API サーバに送信されます。
 
 Yii は上記の全ての認証方法をサポートしています。新しい認証方法を作成することも簡単に出来ます。
 
 あなたの API に対して認証を有効にするためには、次のステップを実行します。
 
-1. `user` [アプリケーションコンポーネント](structure-application-components.md) を構成します。
+1. `user` [アプリケーション・コンポーネント](structure-application-components.md) を構成します。
    - [[yii\web\User::enableSession|enableSession]] プロパティを `false` に設定します。
    - [[yii\web\User::loginUrl|loginUrl]] プロパティを `null` に設定し、ログインページにリダイレクトする代りに HTTP 403 エラーを表示します。
-2. REST コントローラクラスにおいて、`authenticator` ビヘイビアを構成することによって、どの認証方法を使用するかを指定します。
-3. [[yii\web\User::identityClass|ユーザアイデンティティクラス]] において [[yii\web\IdentityInterface::findIdentityByAccessToken()]] を実装します。
+2. REST コントローラ・クラスにおいて、`authenticator` ビヘイビアを構成することによって、どの認証方法を使用するかを指定します。
+3. [[yii\web\User::identityClass|ユーザ・アイデンティティ・クラス]] において [[yii\web\IdentityInterface::findIdentityByAccessToken()]] を実装します。
 
-ステップ 1 は必須ではありませんが、ステートレスであるべき RESTful API のために推奨されます。
+ステップ 1 は必須ではありませんが、ステート・レスであるべき RESTful API のために推奨されます。
 [[yii\web\User::enableSession|enableSession]] が `false` である場合、ユーザの認証ステータスがセッションを使ってリクエストをまたいで存続することはありません。
 その代りに、すべてのリクエストに対して認証が実行されます。このことは、ステップ 2 と 3 によって達成されます。
 
-> Tip: RESTful API をアプリケーションの形式で開発する場合は、アプリケーションの構成情報で `user` アプリケーションコンポーネント(structure-application-components.md) の [[yii\web\User::enableSession|enableSession]] プロパティを構成することが出来ます。
+> Tip: RESTful API をアプリケーションの形式で開発する場合は、アプリケーションの構成情報で `user` アプリケーション・コンポーネント(structure-application-components.md) の [[yii\web\User::enableSession|enableSession]] プロパティを構成することが出来ます。
 > RESTful API をモジュールとして開発する場合は、次のように、モジュールの `init()` メソッドに一行を追加することが出来ます。
 > ```php
 > public function init()
@@ -81,7 +81,7 @@ public function behaviors()
 
 
 `findIdentityByAccessToken()` の実装はアプリケーション固有のものです。
-例えば、各ユーザが一つだけアクセストークンを持ち得るような単純なシナリオでは、アクセストークンをユーザのテーブルの `access_token` カラムに保存することが出来ます。
+例えば、各ユーザが一つだけアクセス・トークンを持ち得るような単純なシナリオでは、アクセス・トークンをユーザのテーブルの `access_token` カラムに保存することが出来ます。
 そうすれば、次のように、`findIdentityByAccessToken()` メソッドを `User` クラスにおいて簡単に実装することが出来ます。
 
 ```php

@@ -16,7 +16,7 @@ echo Html::encode('Test > test');
 ```
 
 > Note: 为了支持 [自定义助手类](#customizing-helper-classes)，Yii 将每一个助手类
-  分隔成两个类：一个基类 (例如 `BaseArrayHelper`) 和一个具体的类 (例如 `ArrayHelper`).
+  分隔成两个类：一个基类 (例如 `BaseArrayHelper`) 和一个具体的类 (例如 `ArrayHelper`)。
   当使用助手类时，应该仅使用具体的类版本而不使用基类。
 
 

@@ -8,6 +8,7 @@
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
+use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Animal;
@@ -1656,6 +1657,48 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $model = Customer::findOne(1);
         $this->assertTrue($model->refresh());
         CustomerQuery::$joinWithProfile = false;
+    }
+
+    public function testFindOneByColumnName()
+    {
+        $model = Customer::findOne(['id' => 1]);
+        $this->assertEquals(1, $model->id);
+
+        CustomerQuery::$joinWithProfile = true;
+        $model = Customer::findOne(['customer.id' => 1]);
+        $this->assertEquals(1, $model->id);
+        CustomerQuery::$joinWithProfile = false;
+    }
+
+    public function illegalValuesForFindByCondition()
+    {
+        return [
+            [['id' => ['`id`=`id` and 1' => 1]]],
+            [['id' => [
+                'legal' => 1,
+                '`id`=`id` and 1' => 1,
+            ]]],
+            [['id' => [
+                'nested_illegal' => [
+                    'false or 1=' => 1
+                ]
+            ]]],
+            [
+                [['true--' => 1]]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider illegalValuesForFindByCondition
+     */
+    public function testValueEscapingInFindByCondition($filterWithInjection)
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessageRegExp('/^Key "(.+)?" is not a column name and can not be used as a filter$/');
+        /** @var Query $query */
+        $query = $this->invokeMethod(new Customer(), 'findByCondition', $filterWithInjection);
+        Customer::getDb()->queryBuilder->build($query);
     }
 
     /**

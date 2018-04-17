@@ -585,7 +585,7 @@ the access rule:
     'actions' => ['update'],
     'roles' => ['updatePost'],
     'roleParams' => function() {
-        return ['post' => Post::findOne(Yii::$app->request->get('id'))];
+        return ['post' => Post::findOne(['id' => Yii::$app->request->get('id')])];
     },
 ],
 ```
@@ -599,7 +599,7 @@ If the creation of role parameters is a simple operation, you may just specify a
     'allow' => true,
     'actions' => ['update'],
     'roles' => ['updatePost'],
-    'roleParams' => ['postId' => Yii::$app->request->get('id')];
+    'roleParams' => ['postId' => Yii::$app->request->get('id')],
 ],
 ```
 
