@@ -470,20 +470,20 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param callable $callable a PHP callback for customizing the relation associated with the junction ActiveQuery in `via`.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return ActiveQueryInterface ActiveQuery type of end-side model
-     * @since 2.0.14.2
+     * @since 2.0.16
      * @see hasOne()
      * @see hasMany()
      */
     public function viaRelation($via, $relationName, callable $callable = null)
     {
         $relation = $this->getRelation($via);
-        /* @var $modelClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $modelClass */
         $modelClass = $relation->modelClass;
         $target = $modelClass::instance();
         /** @var ActiveQuery $relationQuery */
         $relationQuery = $target->getRelation($relationName);
-        $relationQuery->primaryModel = $this;
-        return $relationQuery->via($via, $callable);
+        $query = $this->createRelationQuery($relationQuery->modelClass, $relationQuery->link, $relationQuery->multiple);
+        return $query->via($via, $callable);
     }
 
     /**
