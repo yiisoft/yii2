@@ -1,10 +1,10 @@
-Url 帮助类
-==========
+Url 助手类（Url Helper）
+=====================
 
 Url 帮助类提供一系列的静态方法来帮助管理 URL。
 
 
-## 获得通用 URL <span id="getting-common-urls"></span>
+## 获得通用 URL（Getting Common URLs） <span id="getting-common-urls"></span>
 
 有两种获取通用 URLS 的方法 ：当前请求的 home URL 和 base URL 。
 为了获取 home URL ，使用如下代码：
@@ -29,7 +29,7 @@ $httpsAbsoluteBaseUrl = Url::base('https');
 这个方法的调用方式和 `Url::home()` 的完全一样。
 
 
-## 创建 URLs <span id="creating-urls"></span>
+## 创建 URLs（Creating URLs） <span id="creating-urls"></span>
 
 为了创建一个给定路由的 URL 地址，请使用 `Url::toRoute()`方法。 这个方法使用 [[\yii\web\UrlManager]] 
 来创建一个 URL ：
@@ -75,7 +75,7 @@ echo Url::toRoute('site/index');
 // /index.php?r=site/index&src=ref1#name
 echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index.php?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
+// /index.php?r=post/edit&id=100     假设别名 "@postEdit" 被定义为 "post/edit"
 echo Url::toRoute(['@postEdit', 'id' => 100]);
 
 // http://www.example.com/index.php?r=site/index
@@ -111,10 +111,10 @@ echo Url::to(['site/index']);
 // /index.php?r=site/index&src=ref1#name
 echo Url::to(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index.php?r=post/edit&id=100     assume the alias "@postEdit" is defined as "post/edit"
+// /index.php?r=post/edit&id=100     假设别名 "@postEdit" 被定义为 "post/edit"
 echo Url::to(['@postEdit', 'id' => 100]);
 
-// the currently requested URL
+// 当前请求的 URL
 echo Url::to();
 
 // /images/logo.gif
@@ -135,7 +135,7 @@ echo Url::to('@web/images/logo.gif', 'https');
 例如：
 
 ```php
-// assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
+// 假设 $_GET = ['id' => 123, 'src' => 'google']，当前路由为 "post/view"
 
 // /index.php?r=post/view&id=123&src=google
 echo Url::current();
@@ -147,19 +147,19 @@ echo Url::current(['id' => 100]);
 ```
 
 
-## 记住 URLs <span id="remember-urls"></span>
+## 记住 URLs（Remember URLs） <span id="remember-urls"></span>
 
 有时，你需要记住一个 URL 并在后续的请求处理中使用它。
 你可以用以下方式达到这个目的：
  
 ```php
-// Remember current URL 
+// 记住当前 URL 
 Url::remember();
 
-// Remember URL specified. See Url::to() for argument format.
+// 记住指定的 URL。参数格式请参阅 Url::to()。
 Url::remember(['product/view', 'id' => 42]);
 
-// Remember URL specified with a name given
+// 记住用给定名称指定的 URL
 Url::remember(['product/view', 'id' => 42], 'product');
 ```
 
@@ -170,7 +170,7 @@ $url = Url::previous();
 $productUrl = Url::previous('product');
 ```
                         
-## 检查相对 URLs <span id="checking-relative-urls"></span>
+## 检查相对 URLs（Checking Relative URLs） <span id="checking-relative-urls"></span>
 
 你可以用如下代码检测一个 URL 是否是相对的（比如，包含主机信息部分）。
                              
