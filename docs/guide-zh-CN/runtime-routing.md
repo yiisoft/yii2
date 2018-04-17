@@ -1,7 +1,7 @@
 路由
 =======
 
-当[入口脚本](structure-entry-scripts.md)在调用 [[yii\web\Application::run()|run()]] 
+当[入口脚本](structure-entry-scripts.md)在调用 [[yii\web\Application::run()|run()]]
 方法时，它进行的第一个操作就是解析输入的请求，然后实例化对应的[控制器动作](structure-controllers.md)处理这个请求。
 该过程就被称为*引导路由（routing）*。
 路由相反的操作会将给定的路由和参数生成一个可访问的URL地址，
@@ -437,6 +437,9 @@ echo Url::previous();
 
 > Note: 如果 [[yii\web\UrlRule::$pattern|pattern]] 中只存在可选参数和 `/`，只有所有参数被忽略时第一个参数才被忽略。
 
+
+> Note: If [[yii\web\UrlRule::$pattern|pattern]] contains only optional parameters and slashes, first parameter could be omitted 
+  only if all other parameters are omitted.
 
 
 ### 带服务名称的规则 <span id="rules-with-server-names"></span>

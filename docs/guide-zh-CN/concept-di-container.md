@@ -373,7 +373,7 @@ class HotelController extends Controller
 的实例就会被创建并被作为第三个参数注入到控制器的构造器中。
 
 高级实用性（Advanced Practical Usage） <span id="advanced-practical-usage"></span>
------------------------------------
+------------------------------------
 
 比如说我们在 API 应用方面工作：
 
