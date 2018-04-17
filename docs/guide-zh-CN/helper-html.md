@@ -1,5 +1,5 @@
-Html 帮助类
-===========
+Html 帮助类（Html helper）
+=======================
 
 任何一个 web 应用程序会生成很多 HTMl 超文本标记。如果超文本标记是静态的，
 那么[将 PHP 和 HTML 混合在一个文件里](http://php.net/manual/en/language.basic-syntax.phpmode.php)
@@ -10,13 +10,13 @@ Yii 通过 HTML  帮助类来提供生成超文本标记的方法。这个帮助
 没有必要把所有的超文本标记都用 HTML 辅助类来生成。
 
 
-## 基础 <span id="basics"></span>
+## 基础（Basics） <span id="basics"></span>
 
 由于通过字符串连接来生成动态的 HTML 会很容易变得凌乱，
 Yii 提供了一系列的静态方法来操作标签配置并基于这些配置来创建对应的标签。
 
 
-### 生成标签 <span id="generating-tags"></span>
+### 生成标签（Generating Tags） <span id="generating-tags"></span>
 
 生成一个标签的代码类似如下：
 
@@ -56,7 +56,7 @@ Yii 提供了一系列的静态方法来操作标签配置并基于这些配置�
       生成 `params='{"id":1,"name":"yii"}'`。
 
 
-### 生成 CSS 类和样式 <span id="forming-css"></span>
+### 生成 CSS 类和样式（Forming CSS Classes and Styles） <span id="forming-css"></span>
 
 当开始构造一个 HTML 标签的属性时，我们经常需要对默认的属性进行修改。
 为了添加或者删除 CSS 类，你可以使用如下代码：
@@ -84,7 +84,7 @@ echo Html::tag('div', 'Save', $options);
 // renders '<div class="btn btn-default">Save</div>'
 ```
 
-While adding or removing classes you may use the array format as well:
+在添加或删除类时，您也可以使用数组格式：
 
 ```php
 $options = ['class' => 'btn'];
@@ -97,7 +97,7 @@ echo Html::tag('div', 'Save', $options);
 // renders '<div class="btn btn-success btn-lg">Save</div>'
 ```
 
-`Html::addCssClass()` prevents duplicating classes, so you don't need to worry that the same class may appear twice:
+`Html::addCssClass()` 防止重复类，所以你不必担心同一个类可能会出现两次：
 
 ```php
 $options = ['class' => 'btn btn-default'];
@@ -108,8 +108,8 @@ echo Html::tag('div', 'Save', $options);
 // renders '<div class="btn btn-default">Save</div>'
 ```
 
-If the CSS class option is specified via the array format, you may use a named key to mark the logical purpose of the class.
-In this case, a class with the same key in the array format will be ignored in `Html::addCssClass()`:
+如果通过数组格式指定 CSS 类选项，则可以使用命名键来标记该类的逻辑用途。
+在这种情况下，在 `Html::addCssClass()` 类中会忽略数组格式中具有相同键：
 
 ```php
 $options = [
@@ -119,13 +119,13 @@ $options = [
     ]
 ];
 
-Html::addCssClass($options, ['theme' => 'btn-success']); // 'theme' key is already taken
+Html::addCssClass($options, ['theme' => 'btn-success']); // 'theme' 键已被使用
 
 echo Html::tag('div', 'Save', $options);
 // renders '<div class="btn btn-default">Save</div>'
 ```
 
-CSS styles can be setup in similar way using `style` attribute:
+可以使用 `style` 属性以类似的方式设置 CSS 样式：
 
 ```php
 $options = ['style' => ['width' => '100px', 'height' => '100px']];
@@ -144,7 +144,7 @@ Html::removeCssStyle($options, ['width', 'height']);
 如果只想移除一个属性，你可以直接传递一个字符串。
 
 
-### 标签内容的转码和解码 <span id="encoding-and-decoding-content"></span>
+### 标签内容的转码和解码（Encoding and Decoding Content） <span id="encoding-and-decoding-content"></span>
 
 为了让内容能够正确安全的显示，一些 HTML 特殊字符应该被转码。在 PHP 中，
 这个操作由 [htmlspecialchars](http://www.php.net/manual/en/function.htmlspecialchars.php) 和
@@ -161,7 +161,7 @@ $decodedUserName = Html::decode($userName);
 ```
 
 
-## 表单 <span id="forms"></span>
+## 表单（Forms） <span id="forms"></span>
 
 处理表单标签是大量的重复性劳动并且易错。因此，
 Yii 也提供了一系列的方法来辅助处理表单标签。
@@ -169,7 +169,7 @@ Yii 也提供了一系列的方法来辅助处理表单标签。
 > Note: 考虑在处理 models 以及需要验证的情形下，使用 [[yii\widgets\ActiveForm|ActiveForm]] 组件。
 
 
-### 创建表单 <span id="creating-forms"></span>
+### 创建表单（Creating Forms） <span id="creating-forms"></span>
 
 表单可以用类似如下代码，使用 [[yii\helpers\Html::beginForm()|beginForm()]] 方法开启：
 
@@ -189,7 +189,7 @@ Yii 也提供了一系列的方法来辅助处理表单标签。
 ```
 
 
-### 按钮 <span id="buttons"></span>
+### 按钮（Buttons） <span id="buttons"></span>
 
 你可以用如下代码生成按钮：
 
@@ -203,7 +203,7 @@ Yii 也提供了一系列的方法来辅助处理表单标签。
 那么请自行用 [[yii\helpers\Html::encode()|Html::encode()]] 方法进行转码。
 
 
-### 输入栏 <span id="input-fields"></span>
+### 输入栏（Input Fields） <span id="input-fields"></span>
 
 input 相关的方法有两组：以 `active` 开头的被称为 active inputs，
 另一组则不以其开头。active inputs 依据指定的模型和属性获取数据，
@@ -250,8 +250,7 @@ Dropdown list 和 list box 将会如下渲染：
 <?= Html::activeListBox($users, 'id', ArrayHelper::map($userModels, 'id', 'name')) ?>
 ```
 
-第一个参数是 input 的名称，第二个是当前选中的值，第三个则是一个下标为列表值，
-值为列表标签的名值对数组。
+第一个参数是 input 的名称，第二个是当前选中的值，第三个则是一个下标为列表值，值为列表标签的名值对数组。
 
 如果你需要使用多项选择， checkbox list 应该能够符合你的需求：
 
@@ -268,10 +267,9 @@ Dropdown list 和 list box 将会如下渲染：
 ```
 
 
-### Labels 和 Errors <span id="labels-and-errors"></span>
+### Labels 和 Errors（Labels and Errors） <span id="labels-and-errors"></span>
 
-如同 inputs 一样，Yii 也提供了两个方法用于生成表单 label 。
-带 ative  方法用于从 model 中取数据，另外一个则是直接接收数据。
+如同 inputs 一样，Yii 也提供了两个方法用于生成表单 label。带 ative  方法用于从 model 中取数据，另外一个则是直接接收数据。
 
 ```php
 <?= Html::label('User name', 'username', ['class' => 'label username']) ?>
@@ -291,7 +289,7 @@ Dropdown list 和 list box 将会如下渲染：
 ```
 
 
-### Input 的名和值 <span id="input-names-and-values"></span>
+### Input 的名和值（Input Names and Values） <span id="input-names-and-values"></span>
 
 Yii 提供了方法用于从 model 中获取 input 的名称，ids，值。这些主要用于内部调用，
 但是有时候你也需要使用它们：
@@ -310,9 +308,7 @@ echo Html::getAttributeValue($post, 'title');
 echo Html::getAttributeValue($post, '[0]authors[0]');
 ```
 
-在上面的例子中，第一个参数为模型，而第二个参数是属性表达式。
-在最简单的表单中，这个属性表达式就是属性名称，但是在一些多行输入的时候，
-它也可以是属性名以数组下标前缀或者后缀（也可能是同时）。
+在上面的例子中，第一个参数为模型，而第二个参数是属性表达式。在最简单的表单中，这个属性表达式就是属性名称，但是在一些多行输入的时候，它也可以是属性名以数组下标前缀或者后缀（也可能是同时）。
 
 - `[0]content` 代表多行输入时第一个 model 的 content 属性的数据值。
 - `dates[0]` 代表 dates 属性的第一个数组元素。
@@ -326,7 +322,7 @@ echo Html::getAttributeName('dates[0]');
 ```
 
 
-## 样式表和脚本 <span id="styles-and-scripts"></span>
+## 样式表和脚本（Styles and Scripts） <span id="styles-and-scripts"></span>
 
 Yii 提供两个方法用于生成包含内联样式和脚本代码的标签。
 
@@ -374,7 +370,7 @@ generates
 同 `cssFile` 一样，你可以指定 `condtion` 配置项。
 
 
-## 超链接 <span id="hyperlinks"></span>
+## 超链接（Hyperlinks） <span id="hyperlinks"></span>
 
 有一个方法可以用于便捷的生成超链接：
 
@@ -384,7 +380,8 @@ generates
 
 第一个参数是超链接的标题。它不会被转码，所以如果是用户输入数据，
 你需要使用 `Html::encode()` 方法进行转码。第二个参数是 `<a` 标签的 `href` 属性的值。
-关于该参数能够接受的更详细的数据值，请参阅 [Url::to()](helper-url.md)。第三个参数是标签的属性数组。
+关于该参数能够接受的更详细的数据值，请参阅 [Url::to()](helper-url.md)。
+第三个参数是标签的属性数组。
 
 在需要的时候，你可以用如下代码生成 `mailto` 链接：
 
@@ -393,7 +390,7 @@ generates
 ```
 
 
-## 图片 <span id="images"></span>
+## 图片（Images） <span id="images"></span>
 
 为了生成图片标签，你可以如下做：
 
@@ -405,11 +402,10 @@ generates
 <img src="http://example.com/images/logo.png" alt="My logo" />
 ```
 
-除了 [aliases](concept-aliases.md) 之外，第一个参数可以接受 路由，查询，URLs。
-同 [Url::to()](helper-url.md) 一样。
+除了 [aliases](concept-aliases.md) 之外，第一个参数可以接受 路由，查询，URLs。同 [Url::to()](helper-url.md) 一样。
 
 
-## 列表 <span id="lists"></span>
+## 列表（Lists） <span id="lists"></span>
 
 无序列表可以如下生成：
 

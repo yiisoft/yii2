@@ -1,5 +1,5 @@
-更上一层楼
-=============
+更上一层楼（Looking Ahead）
+========================
 
 通篇阅读完整个“入门”部分，你就完成了一个完整 Yii 应用的创建。在此过程中你学到了如何实现一些常用功能，
 例如通过 HTML 表单从用户那获取数据，从数据库中获取数据并以分页形式显示。
@@ -22,14 +22,15 @@
       但它们往往覆盖了更广泛的话题，并常常提供解决方案，
       所以它们也很有用。
     - 书籍
-* [扩展](http://www.yiiframework.com/extensions/):Yii 拥有数以千计用户提供的扩展，这些扩展能非常方便的插入到应用中，
+* [扩展](http://www.yiiframework.com/extensions/)：Yii 拥有数以千计用户提供的扩展，这些扩展能非常方便的插入到应用中，
   使你的应用开发过程更加方便快捷。
 * 社区
     - 官方论坛：<http://www.yiiframework.com/forum/>
     - IRC 聊天室：Freenode 网络上的 #yii 频道 (<irc://irc.freenode.net/yii>)
-    - Gitter chat: <https://gitter.im/yiisoft/yii2>
+    - Slack chanel：<https://yii.slack.com>
+    - Gitter chat：<https://gitter.im/yiisoft/yii2>
     - GitHub：<https://github.com/yiisoft/yii2>
     - Facebook：<https://www.facebook.com/groups/yiitalk/>
     - Twitter：<https://twitter.com/yiiframework>
     - LinkedIn：<https://www.linkedin.com/groups/yii-framework-1483367>
-    - Stackoverflow: <http://stackoverflow.com/questions/tagged/yii2>
+    - Stackoverflow：<http://stackoverflow.com/questions/tagged/yii2>
