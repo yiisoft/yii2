@@ -1,17 +1,17 @@
-引入第三方代码
-=============================
+引入第三方代码（Working with Third-Party Code）
+=============================================
 
 有时，你可能会需要在 Yii 应用中使用第三方的代码。又或者是你想要在第三方系统中把 Yii 作为类库引用。
 在下面这个板块中，我们向你展示如何实现这些目标。
 
 
-## 在 Yii 中使用第三方类库 <span id="using-libs-in-yii"></span>
-----------------------------------
+## 在 Yii 中使用第三方类库（Using Third-Party Libraries in Yii） <span id="using-libs-in-yii"></span>
+--------------------------------------------------------------
 
 要想在 Yii 应用中使用第三方类库，
 你主要需要确保这些库中的类文件都可以被正常导入或可以被自动加载。
 
-### 使用 Composer 包 <span id="using-composer-packages"></span>
+### 使用 Composer 包（Using Composer Packages） <span id="using-composer-packages"></span>
 
 目前很多第三方的类库都以 [Composer](https://getcomposer.org/) 包的形式发布。
 你只需要以下两个简单的步骤即可安装他们：
@@ -31,7 +31,7 @@ require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
-### 使用下载的类库 <span id="using-downloaded-libs"></span>
+### 使用下载的类库（Using Downloaded Libraries） <span id="using-downloaded-libs"></span>
 
 若你的类库并未发布为一个 Composer 包，你可以参考以下安装说明来安装它。
 在大多数情况下，你需要预先下载一个发布文件，并把它解压缩到`BasePath/vendor` 目录，
@@ -64,15 +64,14 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 * 找出该库内包含哪些类。
 * 在应用的[入口脚本](structure-entry-scripts.md)里的 `Yii::$classMap` 数组中列出这些类，和他们各自对应的文件路径。
   举例来说，
-
 ```php
 Yii::$classMap['Class1'] = 'path/to/Class1.php';
 Yii::$classMap['Class2'] = 'path/to/Class2.php';
 ```
 
 
-## 在第三方系统内使用 Yii <span id="using-yii-in-others"></span>
---------------------------------
+## 在第三方系统内使用 Yii（Using Yii in Third-Party Systems） <span id="using-yii-in-others"></span>
+-----------------------------------------------------------
 
 因为 Yii 提供了很多牛逼的功能，有时，你可能会想要使用它们中的一些功能用来支持开发或完善某些第三方的系统，
 比如：WordPress，Joomla，或是用其他 PHP 框架开发的应用程序。
@@ -119,8 +118,8 @@ new yii\web\Application($yiiConfig); // 千万别在这调用 run() 方法。（
 比如，创建 AR 类，并用它们来操作数据库。
 
 
-## 配合使用 Yii 2 和 Yii 1 <span id="using-both-yii2-yii1"></span>
-----------------------
+## 配合使用 Yii 2 和 Yii 1（Using Yii 2 with Yii 1） <span id="using-both-yii2-yii1"></span>
+--------------------------------------------------
 
 如果你之前使用 Yii 1，大概你也有正在运行的 Yii 1 应用吧。
 不必用 Yii 2 重写整个应用，你也可以通过增添对哪些

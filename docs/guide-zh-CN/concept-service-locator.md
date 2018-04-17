@@ -1,5 +1,5 @@
-服务定位器
-===============
+服务定位器（Service Locator）
+==========================
 
 服务定位器是一个了解如何提供各种应用所需的服务（或组件）的对象。在服务定位器中，
 每个组件都只有一个单独的实例，并通过ID 唯一地标识。
@@ -7,8 +7,8 @@
 
 在 Yii 中，服务定位器是 [[yii\di\ServiceLocator]] 或其子类的一个实例。
 
-最常用的服务定位器是**application（应用）**对象，可以通过 `\Yii::$app` 访问。
-它所提供的服务被称为**application components（应用组件）**，
+最常用的服务定位器是*application（应用）*对象，可以通过 `\Yii::$app` 访问。
+它所提供的服务被称为*application components（应用组件）*，
 比如：`request`、`response`、`urlManager` 组件。可以通过服务定位器所提供的功能，
 非常容易地配置这些组件，或甚至是用你自己的实现替换掉他们。
 
@@ -119,14 +119,13 @@ return [
 当您使用如上所示的静态方法来表示构建复杂逻辑的第三方对象时，
 您的组件用户只需要调用静态方法来配置组件。
 
-## Tree traversal <span id="tree-traversal"></span>
+## 遍历树（Tree traversal） <span id="tree-traversal"></span>
 
-Modules allow arbitrary nesting; a Yii application is essentially a tree of modules.
-Since each of these modules is a service locator it makes sense for children to have access to their parent.
-This allows modules to use `$this->get('db')` instead of referencing the root service locator `Yii::$app->get('db')`.
-Added benefit is the option for a developer to override configuration in a module.
+模块允许任意嵌套; Yii 应用程序本质上是一个模块树。
+由于这些模块中的每一个都是服务定位器，所以子模块有权限访问其父模块。
+这允许模块使用 `$this->get('db')` 而不是引用根服务定位器 `Yii::$app->get('db')`。
+增加的好处是开发人员可以覆盖模块中的配置。
 
-Any request for a service to be retrieved from a module will be passed on to its parent in case the module is not able to satisfy it.
+如果模块无法满足要求，则从模块中检索服务的请求将被传递给它的父模块。
 
-Note that configuration from components in a module is never merged with configuration from a component in a parent module. The Service Locator pattern allows us to define named services but one cannot assume servicees with the same name use the same configuration parameters.
-
+请注意，模块中组件的配置决不会与来自父模块中组件的配置合并。Service Locator 模式允许我们定义命名服务，但不能假定具有相同名称的服务使用相同的配置参数。
