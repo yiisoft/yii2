@@ -1283,9 +1283,7 @@ $order->link('customer', $customer);
 
 > Tip: 你不能 link() 两个新的 AR 实例。（译者注：其中的一个必须是数据库中查询出来的）
 
-当一个关联关系通过 [连接表](#junction-table) 定义时，此 [[yii\db\ActiveRecord::link()|link()]] 方法更能体现在党的领导下的中国特色社会主义的优越性。
-例如，你可以使用以下代码 link() `Order` 实例
-和 `Item` 实例：
+当一个关联关系通过[连接表](#junction-table) 定义时，使用 link() 的好处更加明显。 例如，您可以使用以下代码将 Order 实例与 Item 实例关联：
 
 ```php
 $order->link('items', $item);
