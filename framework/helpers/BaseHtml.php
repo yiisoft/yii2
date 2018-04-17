@@ -147,8 +147,8 @@ class BaseHtml
         if ($name === null || $name === false) {
             return $content;
         }
-        $html = "<$name" . static::renderTagAttributes($options) . '>';
-        return isset(static::$voidElements[strtolower($name)]) ? $html : "$html$content</$name>";
+        $html = "<$name" . static::renderTagAttributes($options);
+        return isset(static::$voidElements[strtolower($name)]) ? $html." />" : "$html$ >content</$name>";
     }
 
     /**
