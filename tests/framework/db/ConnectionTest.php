@@ -434,4 +434,20 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertNotNull($slavePdo);
         $this->assertNotSame($masterPdo, $slavePdo);
     }
+
+    public function testDSNConfig()
+    {
+        $dsn = [
+            'driver' => 'mysql',
+            'host' => '127.0.0.1',
+            'dbname' => 'yiitest'
+        ];
+
+        $connection = new Connection(['dsn' => $dsn]);
+        $this->assertEquals('mysql:host=127.0.0.1;dbname=yiitest', $connection->dsn);
+
+        unset($dsn['driver']);
+        $this->expectException('yii\base\InvalidConfigException');
+        $connection = new Connection(['dsn' => $dsn]);
+    }
 }
