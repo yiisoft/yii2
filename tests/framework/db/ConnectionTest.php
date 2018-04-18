@@ -482,4 +482,20 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertFalse($cache->exists($cacheKey), 'Caching is disabled');
         $connection->close();
     }
+
+    public function testDSNConfig()
+    {
+        $dsn = [
+            'driver' => 'mysql',
+            'host' => '127.0.0.1',
+            'dbname' => 'yiitest'
+        ];
+
+        $connection = new Connection(['dsn' => $dsn]);
+        $this->assertEquals('mysql:host=127.0.0.1;dbname=yiitest', $connection->dsn);
+
+        unset($dsn['driver']);
+        $this->expectException('yii\base\InvalidConfigException');
+        $connection = new Connection(['dsn' => $dsn]);
+    }
 }
