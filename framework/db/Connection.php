@@ -1158,14 +1158,15 @@ class Connection extends Component
     private function buildDSN(array $config)
     {
         if (isset($config['driver'])) {
+            $parts = [];
             $driver = $config['driver'];
             unset($config['driver']);
 
-            $config = array_map(function($key, $value) {
-                return "$key=$value";
-            }, array_keys($config), array_values($config));
+            foreach ($config as $key => $value) {
+                $parts[] = "$key=$value";
+            }
 
-            return "$driver:" . implode(';', $config);
+            return "$driver:" . implode(';', $parts);
         } else {
             throw new InvalidConfigException("Connection 'driver' must be set.");
         }
