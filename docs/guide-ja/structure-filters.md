@@ -57,7 +57,7 @@ public function behaviors()
 
 ## フィルタを作成する <span id="creating-filters"></span>
 
-新しいアクションフィルタを作成するためには、[[yii\base\ActionFilter]] を拡張して、[[yii\base\ActionFilter::beforeAction()|beforeAction()]] および/または [[yii\base\ActionFilter::afterAction()|afterAction()]] メソッドをオーバーライドします。
+新しいアクション・フィルタを作成するためには、[[yii\base\ActionFilter]] を拡張して、[[yii\base\ActionFilter::beforeAction()|beforeAction()]] および/または [[yii\base\ActionFilter::afterAction()|afterAction()]] メソッドをオーバーライドします。
 前者はアクションが走る前に実行され、後者は走った後に実行されます。
 [[yii\base\ActionFilter::beforeAction()|beforeAction()]] の返り値が、アクションが実行されるべきか否かを決定します。
 返り値が `false` である場合、このフィルタの後に続くフィルタはスキップされ、アクションは実行を中止されます。

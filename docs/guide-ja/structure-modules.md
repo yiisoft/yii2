@@ -79,7 +79,7 @@ return [
 ### モジュール内のコントローラ <span id="controllers-in-modules"></span>
 
 モジュールの中でコントローラを作成するときは、コントローラ・クラスをモジュール・クラスの名前空間の `controllers` サブ名前空間に置くことが規約です。
-このことは、同時に、コントローラのクラス・ファイルをモジュールの [[yii\base\Module::basePath|ベースパス]] 内の `controllers` ディレクトリに置くべきことをも意味します。
+このことは、同時に、コントローラのクラス・ファイルをモジュールの [[yii\base\Module::basePath|ベース・パス]] 内の `controllers` ディレクトリに置くべきことをも意味します。
 例えば、前の項で示された `forum` モジュールの中で `post` コントローラを作成するためには、次のようにしてコントローラを宣言しなければなりません。
 
 ```php
@@ -100,10 +100,10 @@ class PostController extends Controller
 
 ### モジュール内のビュー <span id="views-in-modules"></span>
 
-モジュール内のビューは、モジュールの [[yii\base\Module::basePath|ベースパス]] 内の `views` ディレクトリに置かれなくてはなりません。
+モジュール内のビューは、モジュールの [[yii\base\Module::basePath|ベース・パス]] 内の `views` ディレクトリに置かれなくてはなりません。
 モジュール内のコントローラによってレンダリングされるビューは、ディレクトリ `views/ControllerID` の下に置きます。
 ここで、`ControllerID` は [コントローラ ID](structure-controllers.md#routes) を指します。
-例えば、コントローラ・クラスが `PostController` である場合、ディレクトリはモジュールの [[yii\base\Module::basePath|ベースパス]] の中の `views/post` となります。
+例えば、コントローラ・クラスが `PostController` である場合、ディレクトリはモジュールの [[yii\base\Module::basePath|ベース・パス]] の中の `views/post` となります。
 
 モジュールは、そのモジュールのコントローラによってレンダリングされるビューに適用される [レイアウト](structure-views.md#layouts) を指定することが出来ます。
 レイアウトは、デフォルトでは `views/layouts` ディレクトリに置かれなければならず、また、[[yii\base\Module::layout]] プロパティがレイアウトの名前を指すように構成しなければなりません。
@@ -112,9 +112,9 @@ class PostController extends Controller
 
 ### モジュール内のコンソールコマンド <span id="console-commands-in-modules"></span>
 
-[コンソール](tutorial-console.md) モードで使用する事が出来るコマンドをmodeコマンドをモジュール内で宣言することも可能です。
+[コンソール](tutorial-console.md) モードで使用する事が出来るコマンドをモジュール内で宣言することも可能です。
 
-あなたのコマンドがコマンドラインユーティリティから見えるようにするためには、Yii がコンソール・モードで実行されたときに
+あなたのコマンドがコマンド・ライン・ユーティリティから見えるようにするためには、Yii がコンソール・モードで実行されたときに
 [[yii\base\Module::controllerNamespace]] を変更して、コマンドの名前空間を指し示すようにする必要があります。
 
 それを達成する一つの方法は、モジュールの `init()` メソッドの中で Yii アプリケーションのインスタンスの型を調べるという方法です。
@@ -139,7 +139,7 @@ yii <module_id>/<command>/<sub_command>
 ## モジュールを使う <span id="using-modules"></span>
 
 アプリケーションの中でモジュールを使うためには、アプリケーションの [[yii\base\Application::modules|modules]] プロパティのリストにそのモジュールを載せてアプリケーションを構成するだけで大丈夫です。
-次のコードは、[アプリケーションの構成情報](structure-applications.md#application-configurations) の中で `forum` モジュールを使うようにするものです。
+[アプリケーションの構成情報](structure-applications.md#application-configurations) の中の次のコードは、`forum` モジュールを使うようにするものです。
 
 ```php
 [
@@ -162,7 +162,7 @@ yii <module_id>/<command>/<sub_command>
 アプリケーションの中のコントローラをアクセスするのと同じように、[ルート](structure-controllers.md#routes) がモジュールの中のコントローラを指し示すために使われます。
 モジュール内のコントローラのルートは、モジュール ID で始まり、[コントローラ ID](structure-controllers.md#controller-ids)、[アクション ID](structure-controllers.md#action-ids) と続くものでなければなりません。
 例えば、アプリケーションが `forum` という名前のモジュールを使用している場合、`forum/post/index` というルートは、`forum` モジュール内の `post` コントローラの `index` アクションを表します。
-ルートがモジュール ID だけを含む場合は、[[yii\base\Module::defaultRoute]] プロパティ (デフォルト値は `default` です) が、どのコントローラ/アクションが使用されるべきかを決定します。
+ルートがモジュール ID だけを含む場合は、[[yii\base\Module::defaultRoute]] プロパティ (デフォルト値は `default` です) が、どのコントローラ・アクションが使用されるべきかを決定します。
 これは、`forum` というルートは `forum` モジュール内の `default` コントローラを表すという意味です。
 
 モジュールのための URL マネージャの規則は [[yii\web\UrlManager::parseRequest()]] が起動される前に追加されなくてはなりません。
@@ -216,7 +216,7 @@ $maxPostCount = $module->params['maxPostCount'];
 
 ### モジュールをブートストラップする <span id="bootstrapping-modules"></span>
 
-いくつかのモジュールは、全てのリクエストで毎回走らせる必要があります。[[yii\debug\Module|デバッグ]] モジュールがその一例です。
+いくつかのモジュールは、全てのリクエストで毎回走らせる必要があります。[[yii\debug\Module|デバッグ]]・モジュールがその一例です。
 そうするためには、そのようなモジュールをアプリケーションの [[yii\base\Application::bootstrap|bootstrap]] プロパティのリストに挙げます。
 
 例えば、次のアプリケーションの構成情報は、`debug` モジュールが常にロードされることを保証するものです。
@@ -299,7 +299,7 @@ class Module extends \yii\base\Module
 
 アプリケーションのデータベース・テーブルは `main_` という接頭辞を持つ一方で、
 モジュールのデータベース・テーブルは `module_` という接頭辞を持ちます。
-上記の構成はマージされないということに注意して下さい。例えば、モジュールのコンポーネントではクエリキャッシュはデフォルト値に従って有効なままになります。
+上記の構成はマージされないということに注意して下さい。例えば、モジュールのコンポーネントではクエリ・キャッシュはデフォルト値に従って有効なままになります。
 
 ## ベスト・プラクティス <span id="best-practices"></span>
 
