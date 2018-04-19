@@ -599,7 +599,7 @@ If the creation of role parameters is a simple operation, you may just specify a
     'allow' => true,
     'actions' => ['update'],
     'roles' => ['updatePost'],
-    'roleParams' => ['postId' => Yii::$app->request->get('id')];
+    'roleParams' => ['postId' => Yii::$app->request->get('id')],
 ],
 ```
 
