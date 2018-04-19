@@ -87,7 +87,7 @@ details.
 ## Creating Widgets <span id="creating-widgets"></span>
 
 To create a widget, extend from [[yii\base\Widget]] and override the [[yii\base\Widget::init()]] and/or
-[[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that normalizes the widget
+[[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that initializes the widget
 properties, while the `run()` method should contain the code that generates the rendering result of the widget.
 The rendering result may be directly "echoed" or returned as a string by `run()`.
 
