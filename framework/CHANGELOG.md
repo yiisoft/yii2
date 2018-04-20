@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #15988: Fixed bash completion (alekciy)
 - Bug #15117: Fixed `yii\db\Schema::getTableMetadata` cache refreshing (boboldehampsink)
 - Bug #16073: Fixed regression in Oracle `IN` condition builder for more than 1000 items (cebe)
+- Bug #16120: FileCache: rebuild cache file before touch when different file owner (Slamdunk)
 
 
 2.0.15.1 March 21, 2018
