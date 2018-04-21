@@ -14,7 +14,6 @@ use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
-use yii\helpers\Url;
 use yii\http\CookieCollection;
 use yii\http\MemoryStream;
 use yii\http\MessageTrait;
@@ -879,7 +878,7 @@ class Response extends \yii\base\Response implements ResponseInterface
             // ensure the route is absolute
             $url[0] = '/' . ltrim($url[0], '/');
         }
-        $url = Url::to($url);
+        $url = Yii::$app->getUrlManager()->to($url);
         if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
             $url = Yii::$app->getRequest()->getHostInfo() . $url;
         }

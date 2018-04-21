@@ -12,7 +12,6 @@ use Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 /**
  * Menu displays a multi-level menu using nested HTML lists.
@@ -238,7 +237,7 @@ class Menu extends Widget
             $template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 
             return strtr($template, [
-                '{url}' => Html::encode(Url::to($item['url'])),
+                '{url}' => Html::encode(Yii::$app->getUrlManager()->to($item['url'])),
                 '{label}' => $item['label'],
             ]);
         }

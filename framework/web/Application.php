@@ -9,7 +9,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidRouteException;
-use yii\helpers\Url;
 
 /**
  * Application is the base class for all web application classes.
@@ -89,8 +88,8 @@ class Application extends \yii\base\Application
                     }
                     $url += $request->getQueryParams();
                 }
-
-                return $this->getResponse()->redirect(Url::to($url, $e->scheme), $e->statusCode);
+                $url = Yii::$app->getUrlManager()->to($url, $e->scheme);
+                return $this->getResponse()->redirect($url, $e->statusCode);
             }
         } else {
             $route = $this->catchAll[0];

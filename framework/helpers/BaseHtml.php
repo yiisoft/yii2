@@ -236,7 +236,7 @@ class BaseHtml
         if (!isset($options['rel'])) {
             $options['rel'] = 'stylesheet';
         }
-        $options['href'] = Url::to($url);
+        $options['href'] = Yii::$app->getUrlManager()->to($url);
 
         if (isset($options['condition'])) {
             $condition = $options['condition'];
@@ -267,7 +267,7 @@ class BaseHtml
      */
     public static function jsFile($url, $options = [])
     {
-        $options['src'] = Url::to($url);
+        $options['src'] = Yii::$app->getUrlManager()->to($url);
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
@@ -329,7 +329,7 @@ class BaseHtml
      */
     public static function beginForm($action = '', $method = 'post', $options = [])
     {
-        $action = Url::to($action);
+        $action = Yii::$app->getUrlManager()->to($action);
 
         $hiddenInputs = [];
 
@@ -409,7 +409,7 @@ class BaseHtml
     public static function a($text, $url = null, $options = [])
     {
         if ($url !== null) {
-            $options['href'] = Url::to($url);
+            $options['href'] = Yii::$app->getUrlManager()->to($url);
         }
 
         return static::tag('a', $text, $options);
@@ -448,12 +448,13 @@ class BaseHtml
      */
     public static function img($src, $options = [])
     {
-        $options['src'] = Url::to($src);
+        $urlManager = Yii::$app->getUrlManager();
+        $options['src'] = $urlManager->to($src);
 
         if (isset($options['srcset']) && is_array($options['srcset'])) {
             $srcset = [];
             foreach ($options['srcset'] as $descriptor => $url) {
-                $srcset[] = Url::to($url) . ' ' . $descriptor;
+                $srcset[] = $urlManager->to($url) . ' ' . $descriptor;
             }
             $options['srcset'] = implode(',', $srcset);
         }

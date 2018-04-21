@@ -9,7 +9,6 @@ namespace yii\grid;
 
 use Yii;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 /**
  * ActionColumn is a column for the [[GridView]] widget that displays buttons for viewing and manipulating the items.
@@ -202,7 +201,7 @@ class ActionColumn extends Column
         $params = is_array($key) ? $key : ['id' => (string) $key];
         $params[0] = $this->controller ? $this->controller . '/' . $action : $action;
 
-        return Url::toRoute($params);
+        return Yii::$app->getUrlManager()->toRoute($params);
     }
 
     /**

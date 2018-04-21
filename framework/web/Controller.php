@@ -9,7 +9,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InlineAction;
-use yii\helpers\Url;
 
 /**
  * Controller is the base class of web controllers.
@@ -206,7 +205,11 @@ class Controller extends \yii\base\Controller
      */
     public function redirect($url, $statusCode = 302, $checkAjax = true)
     {
-        return Yii::$app->getResponse()->redirect(Url::to($url), $statusCode, $checkAjax);
+        return Yii::$app->getResponse()->redirect(
+            Yii::$app->getUrlManager()->to($url),
+            $statusCode,
+            $checkAjax
+        );
     }
 
     /**
