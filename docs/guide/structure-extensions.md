@@ -446,9 +446,13 @@ You don't need to install them for Yii 2.0, since they are included in the core 
 
 - [yiisoft/yii2-captcha](https://www.yiiframework.com/extension/yiisoft/yii2-captcha):
   provides an CAPTCHA.
+- [yiisoft/yii2-jquery](https://www.yiiframework.com/extension/yiisoft/yii2-jquery):
+  provides a support for [jQuery](https://jquery.com/).
 - [yiisoft/yii2-maskedinput](https://www.yiiframework.com/extension/yiisoft/yii2-maskedinput):
   provides a masked input widget based on [jQuery Input Mask plugin](http://robinherbots.github.io/Inputmask/).
 - [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql):
   provides the support for using [MSSQL](https://www.microsoft.com/sql-server/).
 - [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle):
   provides the support for using [Oracle](https://www.oracle.com/).
+- [yiisoft/yii2-rest](https://www.yiiframework.com/extension/yiisoft/yii2-rest):
+  provides a support for the REST API.
