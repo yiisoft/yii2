@@ -373,7 +373,7 @@ Yii はテストのサポートを提供しており、それよって、単体�
 
 ## コア・エクステンション <span id="core-extensions"></span>
 
-Yii は下記のコア・エクステンションを提供しています。これらは Yii 開発チームによって開発され保守されているものです。
+Yii は下記のコア・エクステンション (または ["公式エクステンション"](https://www.yiiframework.com/extensions/official)) を提供しています。これらは Yii 開発チームによって開発され保守されているものです。
 全て [Packagist](https://packagist.org/) に登録され、[エクステンションを使う](#using-extensions) の項で説明したように、簡単にインストールすることが出来ます。
 
 - [yiisoft/yii2-apidoc](https://github.com/yiisoft/yii2-apidoc):
@@ -382,7 +382,7 @@ Yii は下記のコア・エクステンションを提供しています。こ�
   Facebook OAuth2 クライアント、GitHub OAuth2 クライアントなど、よく使われる一連の auth クライアントを提供します。
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
   [Bootstrap](http://getbootstrap.com/) のコンポーネントとプラグインをカプセル化した一連のウィジェットを提供します。
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception):
+- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception) (非推奨):
   [Codeception](http://codeception.com/) に基づくテストのサポートを提供します。
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
   Yii アプリケーションのデバッグのサポートを提供します。
@@ -404,9 +404,14 @@ Yii は下記のコア・エクステンションを提供しています。こ�
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
   [MongoDB](http://www.mongodb.org/) の使用に対するサポートを提供します。
   基本的なクエリ、アクティブ・レコード、マイグレーション、キャッシュ、コード生成などの機能を含みます。
+- [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue):
+  キューによるタスクの非同期実行のサポートを提供します。
+  データベース、Redis、RabbitMQ、AMQP、Beanstalk および Gearman によるキューをサポートしています。
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
   [redis](http://redis.io/) の使用に対するサポートを提供します。
   基本的なクエリ、アクティブ・レコード、キャッシュなどの機能を含みます。
+- [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell):
+  [psysh](http://psysh.org/) に基づくイタラクティブなシェルを提供します。
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
   [Smarty](http://www.smarty.net/) に基づいたテンプレート・エンジンを提供します。
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
@@ -416,3 +421,19 @@ Yii は下記のコア・エクステンションを提供しています。こ�
   [swiftmailer](http://swiftmailer.org/) に基づいたメール送信機能を提供します。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
   [Twig](http://twig.sensiolabs.org/) に基づいたテンプレート・あエンジンを提供します。
+
+下記の公式エクステンションは Yii 2.1 以上のためのものです。
+これらは、Yii 2.0 ではコア・フレームワークに含まれていますので、インストールする必要はありません。.
+
+- [yiisoft/yii2-captcha](https://www.yiiframework.com/extension/yiisoft/yii2-captcha):
+  CAPTCHA を提供します。
+- [yiisoft/yii2-jquery](https://www.yiiframework.com/extension/yiisoft/yii2-jquery):
+  [jQuery](https://jquery.com/) のサポートを提供します。
+- [yiisoft/yii2-maskedinput](https://www.yiiframework.com/extension/yiisoft/yii2-maskedinput):
+  [jQuery Input Mask plugin](http://robinherbots.github.io/Inputmask/) に基づいて、マスクト・インプットを提供します。
+- [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql):
+  [MSSQL](https://www.microsoft.com/sql-server/) を使うためのサポートを提供します。
+- [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle):
+  [Oracle](https://www.oracle.com/) を使うためのサポートを提供します。
+- [yiisoft/yii2-rest](https://www.yiiframework.com/extension/yiisoft/yii2-rest):
+  REST API に対するサポートを提供します。
