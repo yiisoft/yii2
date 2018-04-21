@@ -13,7 +13,6 @@ use yii\db\ArrayExpression;
 use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
-use yii\helpers\Json;
 use yiiunit\data\base\TraversableObject;
 
 /**
