@@ -37,7 +37,8 @@ Yii 2.0 は PHP 5.4 以上を必要とします。PHP 5.4 は、Yii 1.1 によ�
 - [遅延静的束縛(Late Static Bindings)](http://php.net/manual/ja/language.oop5.late-static-bindings.php)。
 - [日付と時刻](http://php.net/manual/ja/book.datetime.php)。
 - [トレイト](http://php.net/manual/ja/language.oop5.traits.php)。
-- [国際化(intl)](http://php.net/manual/ja/book.intl.php)。Yii 2.0 は国際化の機能をサポートするために `intl` PHP 拡張を利用しています。
+- [国際化(intl)](http://php.net/manual/ja/book.intl.php)。
+  Yii 2.0 は国際化の機能をサポートするために `intl` PHP 拡張を利用しています。
 
 
 名前空間
@@ -57,9 +58,11 @@ Yii 2.0 での最も顕著な変更は名前空間の使用です。
 
 Yii 2.0 は、1.1 の `CComponent` クラスを二つのクラス、すなわち、[[yii\base\BaseObject]] と [[yii\base\Component]] に分割しました。
 [[yii\base\BaseObject|BaseObject]] クラスは、ゲッターとセッターを通じて [オブジェクト・プロパティ](concept-properties.md) を定義することを可能にする、軽量な基底クラスです。
-[[yii\base\Component|Component]] クラスは [[yii\base\BaseObject|BaseObject]] からの拡張であり、[イベント](concept-events.md) と [ビヘイビア](concept-behaviors.md) をサポートします。
+[[yii\base\Component|Component]] クラスは [[yii\base\BaseObject|BaseObject]] からの拡張であり、
+[イベント](concept-events.md) と [ビヘイビア](concept-behaviors.md) をサポートします。
 
-あなたのクラスがイベントやビヘイビアの機能を必要としない場合は、[[yii\base\BaseObject|BaseObject]] を基底クラスとして使うことを考慮すべきです。
+あなたのクラスがイベントやビヘイビアの機能を必要としない場合は、[[yii\base\BaseObject|BaseObject]]
+を基底クラスとして使うことを考慮すべきです。
 基本的なデータ構造を表すクラスに対して、通常、このことが当てはまります。
 
 
@@ -67,7 +70,8 @@ Yii 2.0 は、1.1 の `CComponent` クラスを二つのクラス、すなわち
 ------------------
 
 [[yii\base\BaseObject|BaseObject]] クラスはオブジェクトを構成するための統一された方法を導入しています。
-[[yii\base\BaseObject|BaseObject]] の全ての派生クラスは、コンストラクタが必要な場合には、インスタンスが正しく構成されるように、コンストラクタを以下のようにして宣言しなければなりません。
+[[yii\base\BaseObject|BaseObject]] の全ての派生クラスは、コンストラクタが必要な場合には、インスタンスが正しく構成されるように、
+コンストラクタを以下のようにして宣言しなければなりません。
 
 ```php
 class MyClass extends \yii\base\BaseObject
@@ -90,9 +94,11 @@ class MyClass extends \yii\base\BaseObject
 
 上記のように、コンストラクタは最後のパラメータとして構成情報の配列を取らなければなりません。
 構成情報の配列に含まれる「名前・値」のペアが、コンストラクタの最後でプロパティを構成します。
-[[yii\base\BaseObject::init()|init()]] メソッドをオーバーライドして、構成情報が適用された後に行うべき初期化処理を行うことが出来ます。
+[[yii\base\BaseObject::init()|init()]] メソッドをオーバーライドして、
+構成情報が適用された後に行うべき初期化処理を行うことが出来ます。
 
-この規約に従うことによって、構成情報配列を使って新しいオブジェクトを生成して構成することが出来るようになります。
+この規約に従うことによって、構成情報配列を使って新しいオブジェクトを生成して構成することが
+出来るようになります。
 
 ```php
 $object = Yii::createObject([
@@ -108,8 +114,7 @@ $object = Yii::createObject([
 イベント
 --------
 
-Yii 1 では、イベントは `on` メソッド (例えば、`onBeforeSave`) を定義することによって作成されました。
-Yii 2 では、どのようなイベント名でも使うことが出来るようになりました。
+Yii 1 では、イベントは `on` メソッド (例えば、`onBeforeSave`) を定義することによって作成されました。Yii 2 では、どのようなイベント名でも使うことが出来るようになりました。
 [[yii\base\Component::trigger()|trigger()]] メソッドを呼んでイベントを発生させます。
 
 ```php
@@ -155,10 +160,8 @@ Yii 2 のビューについての最も顕著な変更は、ビューの中の `
 *ビュー*・オブジェクトは [[yii\web\View]] という型であり、MVC パターンのビューの部分を表すものです。
 ビューにおいてコントローラやウィジェットにアクセスしたい場合は、`$this->context` を使うことが出来ます。
 
-パーシャル・ビューを別のビューの中でレンダリングするためには、`$this->renderPartial()` ではなく、`$this->render()` を使います。
-さらに、`render` の呼び出しは、2.0 では明示的に echo しなくてはなりません。
-と言うのは、`render()` メソッドは、レンダリング結果を返すものであり、それを直接に表示するものではないからです。
-例えば、
+パーシャル・ビューを別のビューの中でレンダリングするためには、`$this->renderPartial()` ではなく、`$this->render()` を使います。さらに、`render` の呼び出しは、2.0 では明示的に echo しなくてはなりません。
+と言うのは、`render()` メソッドは、レンダリング結果を返すものであり、それを直接に表示するものではないからです。例えば、
 
 ```php
 echo $this->render('_item', ['item' => $item]);
@@ -166,20 +169,19 @@ echo $this->render('_item', ['item' => $item]);
 
 PHP を主たるテンプレート言語として使う以外に、Yii 2.0 は人気のある二つのテンプレート・エンジン、Smarty と Twig に対する正式なサポートを備えています。
 Prado テンプレート・エンジンはもはやサポートされていません。
-これらのテンプレート・エンジンを使うためには、`view` アプリケーション・コンポーネントを構成して [[yii\base\View::$renderers|View::$renderers]] プロパティをセットする必要があります。
+これらのテンプレート・エンジンを使うためには、`view` アプリケーション・コンポーネントを構成して
+[[yii\base\View::$renderers|View::$renderers]] プロパティをセットする必要があります。
 詳細は [テンプレート・エンジン](tutorial-template-engines.md) のセクションを参照してください。
 
 
 モデル
 ------
 
-Yii 2.0 は  1.1 における `CModel` と同様な [[yii\base\Model]] を基底モデルとして使います。
-`CFormModel` というクラスは完全に廃止されました。
+Yii 2.0 は  1.1 における `CModel` と同様な [[yii\base\Model]] を基底モデルとして使います。`CFormModel` というクラスは完全に廃止されました。
 Yii 2 では、それの代りに [[yii\base\Model]] を拡張して、フォームのモデル・クラスを作成しなければなりません。
 
 Yii 2.0 は サポートされるシナリオを宣言するための [[yii\base\Model::scenarios()|scenarios()]] という新しいメソッドを導入しました。
-このメソッドを使って、どのシナリオの下で、ある属性が検証される必要があるか、また、安全とみなされるか否か、などを宣言します。
-例えば、
+このメソッドを使って、どのシナリオの下で、ある属性が検証される必要があるか、また、安全とみなされるか否か、などを宣言します。例えば、
 
 ```php
 public function scenarios()
@@ -193,13 +195,13 @@ public function scenarios()
 
 上記では二つのシナリオ、すなわち、`backend` と `frontend` が宣言されています。
 `backend` シナリオでは、`email` と `role` の属性が両方とも安全であり、一括代入が可能です。
-`frontend` シナリオでは、`email` は一括代入が可能ですが、`role` は不可能です。
-`email` と `role` は、両方とも、規則を使って検証されなければなりません。
+`frontend` シナリオでは、`email` は一括代入が可能ですが、`role` は不可能です。`email` と `role` は、両方とも、規則を使って検証されなければなりません。
 
 [[yii\base\Model::rules()|rules()]] メソッドが、Yii 1.1 に引き続き、検証規則を宣言するために使われます。
 [[yii\base\Model::scenarios()|scenarios()]] が導入されたことにより、`unsafe` バリデータが無くなったことに注意してください。
 
-ほとんどの場合、すなわち、[[yii\base\Model::rules()|rules()]] メソッドが存在しうるシナリオを完全に指定しており、そして `unsafe` な属性を宣言する必要が無い場合であれば、[[yii\base\Model::scenarios()|scenarios()]] をオーバーライドする必要はありません。
+ほとんどの場合、すなわち、[[yii\base\Model::rules()|rules()]] メソッドが存在しうるシナリオを完全に指定しており、
+そして `unsafe` な属性を宣言する必要が無い場合であれば、[[yii\base\Model::scenarios()|scenarios()]] をオーバーライドする必要はありません。
 
 モデルについての詳細を学習するためには、[モデル](structure-models.md) のセクションを参照してください。
 
@@ -207,11 +209,11 @@ public function scenarios()
 コントローラ
 ------------
 
-Yii 2.0 は [[yii\web\Controller]] を基底のコントローラ・クラスとして使います。
-これは Yii 1.1 における`CController` と同様なクラスです。
+Yii 2.0 は [[yii\web\Controller]] を基底のコントローラ・クラスとして使います。これは Yii 1.1 における`CController` と同様なクラスです。
 [[yii\base\Action]] がアクション・クラスの基底クラスです。
 
-コントローラに関して、あなたのコードに最も顕著な影響を及ぼす変更点は、コントローラのアクションは表示したいコンテントを、エコーするのでなく、返さなければならなくなった、ということです。
+コントローラに関して、あなたのコードに最も顕著な影響を及ぼす変更点は、
+コントローラのアクションは表示したいコンテントを、エコーするのでなく、返さなければならなくなった、ということです。
 
 ```php
 public function actionView($id)
@@ -234,7 +236,8 @@ public function actionView($id)
 Yii 2.0 は [[yii\base\Widget]] を基底のウィジェット・クラスとして使用します。これは Yii 1.1 の `CWidget` と同様なクラスです。
 
 いろんな IDE においてフレームワークに対するより良いサポートを得るために、Yii 2.0 はウィジェットを使うための新しい構文を導入しました。
-スタティックなメソッド [[yii\base\Widget::begin()|begin()]]、[[yii\base\Widget::end()|end()]]、そして [[yii\base\Widget::widget()|widget()]] が導入されました。以下のようにして使います。
+スタティックなメソッド [[yii\base\Widget::begin()|begin()]]、[[yii\base\Widget::end()|end()]]、そして [[yii\base\Widget::widget()|widget()]] が導入されました。
+以下のようにして使います。
 
 ```php
 use yii\widgets\Menu;
@@ -292,7 +295,8 @@ Yii 2.0 はコメント・ブロックからコマンドのヘルプ情報を自
 Yii 2.0 は [PECL intl PHP モジュール](http://pecl.php.net/package/intl) に賛同して、内蔵の日付フォーマッタと数字フォーマッタの部品を取り除きました。
 
 メッセージは `i18n` アプリケーション・コンポーネント経由で翻訳されるようになりました。
-このコンポーネントは一連のメッセージ・ソースを管理するもので、メッセージのカテゴリに基づいて異なるメッセージ・ソースを使うことを可能にするものです。
+このコンポーネントは一連のメッセージ・ソースを管理するもので、
+メッセージのカテゴリに基づいて異なるメッセージ・ソースを使うことを可能にするものです。
 
 詳細については [国際化](tutorial-i18n.md) のセクションを参照してください。
 
@@ -300,8 +304,7 @@ Yii 2.0 は [PECL intl PHP モジュール](http://pecl.php.net/package/intl) �
 アクション・フィルタ
 --------------------
 
-アクション・フィルタはビヘイビアによって実装されるようになりました。
-新しいカスタム・フィルタを定義するためには、[[yii\base\ActionFilter]] を拡張します。
+アクション・フィルタはビヘイビアによって実装されるようになりました。新しいカスタム・フィルタを定義するためには、[[yii\base\ActionFilter]] を拡張します。
 フィルタを使うためには、そのフィルタ・クラスをビヘイビアとしてコントローラにアタッチします。
 例えば、[[yii\filters\AccessControl]] フィルタを使うためには、コントローラに次のコードを書くことになります。
 
@@ -329,7 +332,8 @@ Yii 2.0 は、*アセット・バンドル* と呼ばれる新しい概念を導
 
 アセット・バンドルは、あるディレクトリの下に集められた一群のアセット・ファイル (例えば、JavaScript ファイル、CSS ファイル、イメージ・ファイルなど) です。
 それぞれのアセット・バンドルは [[yii\web\AssetBundle]] を拡張したクラスとして表わされます。
-アセット・バンドルを [[yii\web\AssetBundle::register()]] を通じて登録することによって、そのバンドルに含まれるアセットにウェブ経由でアクセスできるようになります。
+アセット・バンドルを [[yii\web\AssetBundle::register()]] を通じて登録することによって、
+そのバンドルに含まれるアセットにウェブ経由でアクセスできるようになります。
 Yii 1 とは異なり、バンドルを登録したページは、そのバンドルで指定されている JavaScript と CSS ファイルへの参照を自動的に含むようになります。
 
 詳細については [アセット](structure-assets.md) のセクションを参照してください。
@@ -347,7 +351,6 @@ Yii 2.0 はよく使われるスタティックなヘルパ・クラスを数多
 * [[yii\helpers\Json]]
 
 詳細については、[ヘルパの概要](helper-overview.md) のセクションを参照してください。
-
 
 フォーム
 --------
@@ -400,8 +403,7 @@ $rows = $command->queryAll();
 Yii 2.0 は [アクティブ・レコード](db-active-record.md) に数多くの変更を導入しました。
 最も顕著な違いは、クエリの構築方法とリレーショナル・クエリの処理の二つです。
 
-1.1 の `CDbCriteria` クラスは Yii 2 では [[yii\db\ActiveQuery]] に置き換えられました。
-このクラスは [[yii\db\Query]] を拡張したものであり、従って全てのクエリ構築メソッドを継承します。
+1.1 の `CDbCriteria` クラスは Yii 2 では [[yii\db\ActiveQuery]] に置き換えられました。このクラスは [[yii\db\Query]] を拡張したものであり、従って全てのクエリ構築メソッドを継承します。
 以下のように、[[yii\db\ActiveRecord::find()]] を呼んでクエリの構築を開始します。
 
 ```php
@@ -413,8 +415,7 @@ $customers = Customer::find()
 ```
 
 リレーションを宣言するために必要なことは、[[yii\db\ActiveQuery|ActiveQuery]] オブジェクトを返す getter メソッドを定義するだけのことです。
-getter によって定義されたプロパティの名前がリレーションの名前を表します。
-例えば、以下のコードは `orders` リレーションを宣言するものです
+getter によって定義されたプロパティの名前がリレーションの名前を表します。例えば、以下のコードは `orders` リレーションを宣言するものです
 (1.1 では `relations()` という一個の中枢でリレーションを宣言しなければなりませんでした)。
 
 ```php
@@ -458,8 +459,7 @@ public function init()
 }
 ```
 
-1.1 では、アクティブ・レコード・クラスのコンストラクタをオーバーライドすることについて、いくつか問題がありました。
-バージョン 2.0 では、もう問題はありません。
+1.1 では、アクティブ・レコード・クラスのコンストラクタをオーバーライドすることについて、いくつか問題がありました。バージョン 2.0 では、もう問題はありません。
 コンストラクタにパラメータを追加する場合は、[[yii\db\ActiveRecord::instantiate()]] をオーバーライドする必要があるかもしれないことに注意してください。
 
 アクティブ・レコードについては、他にも多くの変更と機能強化がなされています。
@@ -526,7 +526,8 @@ Yii 2 の URL 管理は 1.1 のそれと似たようなものです。
 
 詳細については [ルーティングと URL 生成](runtime-routing.md) のセクションを参照してください。
 
-ルートの命名規約における重要な変更は、コントローラとアクションのキャメル・ケースの名前が各単語をハイフンで分けた小文字の名前になるようになった、という点です。
+ルートの命名規約における重要な変更は、コントローラとアクションのキャメル・ケースの名前が
+各単語をハイフンで分けた小文字の名前になるようになった、という点です。
 例えば、`CamelCaseController` のコントローラ ID は `camel-case` となります。
 詳細については、[コントローラ ID](structure-controllers.md#controller-ids) と [アクション ID](structure-controllers.md#action-ids) のセクションを参照してください。
 
