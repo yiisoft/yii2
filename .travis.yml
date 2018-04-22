@@ -32,6 +32,7 @@ env:
     - TASK_TESTS_PHP=1
     - TASK_TESTS_JS=0
     - TASK_TESTS_COVERAGE=0
+    - TRAVIS_SECOND_USER=travis_two
 
 
 services:
@@ -146,6 +147,9 @@ install:
     if [ $TASK_TESTS_JS == 1 ]; then
       travis_retry npm install
     fi
+
+  # Needed for FileCacheTest
+  - sudo useradd $TRAVIS_SECOND_USER --gid $(id -g) -M
 
 before_script:
   #
