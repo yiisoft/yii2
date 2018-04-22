@@ -45,7 +45,7 @@ return [
 特定のメソッドが必要でない場合は、中身を空にして実装しても構いません。
 例えば、あなたのアプリケーションが純粋なステート・レス RESTful アプリケーションであるなら、実装する必要があるのは [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] と [[yii\web\IdentityInterface::getId()|getId()]] だけであり、他のメソッドは全て中身を空にしておくことが出来ます。
 
-次の例では、[[yii\web\User::identityClass|ユーザ識別情報クラス]] は、`user` データベース・テーブルと関連付けられた [アクティブレコード](db-active-record.md) クラスとして実装されています。
+次の例では、[[yii\web\User::identityClass|ユーザ識別情報クラス]] は、`user` データベース・テーブルと関連付けられた [アクティブ・レコード](db-active-record.md) クラスとして実装されています。
 
 ```php
 <?php
@@ -131,7 +131,7 @@ class User extends ActiveRecord implements IdentityInterface
 ```
 
 > Note: ユーザ識別情報クラスである `User` と [[yii\web\User]] を混同してはいけません。
-  前者は認証のロジックを実装するクラスであり、普通は、ユーザの認証情報を保存する何らかの持続的ストレージと関連付けられた [アクティブレコード](db-active-record.md) クラスとして実装されます。
+  前者は認証のロジックを実装するクラスであり、普通は、ユーザの認証情報を保存する何らかの持続的ストレージと関連付けられた [アクティブ・レコード](db-active-record.md) クラスとして実装されます。
   後者はユーザの認証状態の管理に責任を持つアプリケーション・コンポーネントです。
 
 

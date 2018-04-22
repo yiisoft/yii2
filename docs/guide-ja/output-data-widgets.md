@@ -12,7 +12,7 @@ DetailView <span id="detail-view"></span>
 DetailView は単一のデータ [[yii\widgets\DetailView::$model|モデル]] の詳細を表示します。
 
 モデルを標準的な書式で表示する場合 (例えば、全てのモデル属性をそれぞれテーブルの一行として表示する場合) に最も適しています。
-モデルは [[\yii\base\Model]] またはそのサブ・クラス、例えば [アクティブレコード](db-active-record.md) のインスタンスか、連想配列かのどちらかにすることが出来ます。
+モデルは [[\yii\base\Model]] またはそのサブ・クラス、例えば [アクティブ・レコード](db-active-record.md) のインスタンスか、連想配列かのどちらかにすることが出来ます。
  
 DetailView は [[yii\widgets\DetailView::$attributes]] プロパティを使って、モデルのどの属性が表示されるべきか、また、どういうフォーマットで表示されるべきかを決定します。
 利用できるフォーマットのオプションについては、[フォーマッタのセクション](output-formatting.md) を参照してください。
@@ -360,7 +360,7 @@ echo GridView::widget([
 
 データをフィルタリングするためには、GridView は検索基準を表す [モデル](structure-models.md) を必要とします。
 検索基準は、通常は、グリッドビューのテーブルのフィルタのフィールドから取得されます。
-[アクティブレコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデル・クラスを作成するのが一般的なプラクティスです (あなたに代って [Gii](start-gii.md) が生成してくれます)。
+[アクティブ・レコード](db-active-record.md) を使用している場合は、必要な機能を提供する検索用のモデル・クラスを作成するのが一般的なプラクティスです (あなたに代って [Gii](start-gii.md) が生成してくれます)。
 このクラスが、グリッドビューのテーブルに表示されるフィルタ・コントロールのための検証規則を定義し、
 検索基準に従って修正されたクエリを持つデータ・プロバイダを返す `search()` メソッドを提供します。
 
@@ -527,7 +527,7 @@ $query->andFilterWhere(['>=', 'creation_date', $this->createdFrom])
 
 ### モデルのリレーションを扱う <span id="working-with-model-relations"></span>
 
-GridView でアクティブレコードを表示するときに、リレーションのカラムの値、例えば、単に投稿者の `id` というのではなく、投稿者の名前を表示するという場合に遭遇するかも知れません。
+GridView でアクティブ・レコードを表示するときに、リレーションのカラムの値、例えば、単に投稿者の `id` というのではなく、投稿者の名前を表示するという場合に遭遇するかも知れません。
 `Post` モデルが `author` という名前のリレーションを持っていて、その投稿者のモデルが `name` という属性を持っているなら、[[yii\grid\GridView::$columns]] の属性名を `author.name` と定義します。
 そうすれば、GridView が投稿者の名前を表示するようになります。
 ただし、並べ替えとフィルタリングは、デフォルトでは有効になりません。
@@ -611,7 +611,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > $dataProvider->sort->defaultOrder = ['author.name' => SORT_ASC];
 > ```
 
-> Info: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブレコード - リレーションを使ってテーブルを結合する](db-active-record.md#joining-with-relations) を参照してください。
+> Info: `joinWith` およびバックグラウンドで実行されるクエリの詳細については、[アクティブ・レコード - リレーションを使ってテーブルを結合する](db-active-record.md#joining-with-relations) を参照してください。
 
 #### SQL ビューを使って、データのフィルタリング・並べ替え・表示をする <span id="using-sql-views"></span>
 
@@ -673,7 +673,7 @@ class UserView extends ActiveRecord
 }
 ```
 
-このようにした後は、この UserView アクティブレコードを検索用のモデルとともに使うことが出来ます。
+このようにした後は、この UserView アクティブ・レコードを検索用のモデルとともに使うことが出来ます。
 並べ替えやフィルタリングの属性を追加で定義する必要はありません。
 全ての属性がそのままで動作します。
 この手法にはいくつかの長所と短所があることに注意してください。
