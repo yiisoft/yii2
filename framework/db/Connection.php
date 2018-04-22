@@ -110,6 +110,24 @@ use yii\caching\CacheInterface;
  * ],
  * ```
  *
+ * The [[dsn]] property can be defined via configuration array:
+ *
+ * * ```php
+ * 'components' => [
+ *     'db' => [
+ *         '__class' => \yii\db\Connection::class,
+ *         'dsn' => [
+ *             'driver' => 'mysql',
+ *             'host' => '127.0.0.1',
+ *             'dbname' => 'demo'
+ *          ],
+ *         'username' => 'root',
+ *         'password' => '',
+ *         'charset' => 'utf8',
+ *     ],
+ * ],
+ * ```
+ *
  * @property string $driverName Name of the DB driver.
  * @property bool $isActive Whether the DB connection is established. This property is read-only.
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
