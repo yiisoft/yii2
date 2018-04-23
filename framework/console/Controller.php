@@ -176,6 +176,8 @@ class Controller extends \yii\base\Controller
             if (!isset($args[$i])) {
                 if ($param->isDefaultValueAvailable()) {
                     $args[$i] = $param->getDefaultValue();
+                } elseif ($class = $param->getClass()) {
+                    $args[$i] = Yii::$container->get($class->name);
                 } else {
                     $missing[] = $param->getName();
                 }

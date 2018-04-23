@@ -140,6 +140,8 @@ class Controller extends \yii\base\Controller
                 unset($params[$name]);
             } elseif ($param->isDefaultValueAvailable()) {
                 $args[] = $actionParams[$name] = $param->getDefaultValue();
+            } elseif ($class = $param->getClass()) {
+                $args[] = Yii::$container->get($class->name);
             } else {
                 $missing[] = $name;
             }
