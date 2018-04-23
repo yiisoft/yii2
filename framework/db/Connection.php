@@ -112,7 +112,7 @@ use yii\caching\CacheInterface;
  *
  * The [[dsn]] property can be defined via configuration array:
  *
- * * ```php
+ * ```php
  * 'components' => [
  *     'db' => [
  *         '__class' => \yii\db\Connection::class,
@@ -171,12 +171,26 @@ class Connection extends Component
     const EVENT_ROLLBACK_TRANSACTION = 'rollbackTransaction';
 
     /**
-     * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
+     * @var string|array the Data Source Name, or DSN, contains the information required to connect to the database.
      * Please refer to the [PHP manual](http://php.net/manual/en/pdo.construct.php) on
      * the format of the DSN string.
      *
      * For [SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a [path alias](guide:concept-aliases)
      * for specifying the database path, e.g. `sqlite:@app/data/db.sql`.
+     *
+     * Since version 2.1.0 an array can be passed to contruct a DSN string.
+     * The `driver` array key is used as the driver prefix of the DSN,
+     * all further key-value pairs are rendered as `key=value` and concatenated by `;`. For example:
+     *
+     * ```php
+     * 'dsn' => [
+     *     'driver' => 'mysql',
+     *     'host' => '127.0.0.1',
+     *     'dbname' => 'demo'
+     * ],
+     * ```
+     *
+     * Will result in the DSN string `mysql:host=127.0.0.1;dbname=demo`.
      *
      * @see charset
      */
@@ -444,6 +458,7 @@ class Connection extends Component
      */
     private $_queryCacheInfo = [];
 
+
     /**
     * {@inheritdoc}
     */
@@ -452,6 +467,7 @@ class Connection extends Component
        if (is_array($this->dsn)) {
            $this->dsn = $this->buildDSN($this->dsn);
        }
+       parent::init();
     }
 
     /**
@@ -1146,18 +1162,17 @@ class Connection extends Component
     private function buildDSN(array $config)
     {
         if (isset($config['driver'])) {
-            $parts = [];
             $driver = $config['driver'];
             unset($config['driver']);
 
+            $parts = [];
             foreach ($config as $key => $value) {
                 $parts[] = "$key=$value";
             }
 
             return "$driver:" . implode(';', $parts);
-        } else {
-            throw new InvalidConfigException("Connection 'driver' must be set.");
         }
+        throw new InvalidConfigException("Connection DSN 'driver' must be set.");
     }
 
     /**
