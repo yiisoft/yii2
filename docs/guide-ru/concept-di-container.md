@@ -199,7 +199,7 @@ $reader = $container->get('app\storage\DocumentsReader');
 ```
 
 Вы могли заметить вызов `Instance::of('tempFileStorage')`. Он означает, что [[yii\di\Container|Container]]
-наявно предоставит зависимость, зарегистрированную с именем `tempFileStorage` и передаст её первым аргументом 
+неявно предоставит зависимость, зарегистрированную с именем `tempFileStorage` и передаст её первым аргументом 
 в конструктор `app\storage\DocumentsWriter`.
 
 > Note: Методы [[yii\di\Container::setDefinitions()|setDefinitions()]] и [[yii\di\Container::setSingletons()|setSingletons()]]
