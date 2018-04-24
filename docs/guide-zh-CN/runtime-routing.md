@@ -1,33 +1,33 @@
 路由
 =======
 
-当[入口脚本](structure-entry-scripts.md)在调用 [[yii\web\Application::run()|run()]] 
-方法时，它进行的第一个操作就是解析输入的请求，然后实例化对应的[控制器操作](structure-controllers.md)处理这个请求。
-该过程就被称为**引导路由（routing）**。
+当[入口脚本](structure-entry-scripts.md)在调用 [[yii\web\Application::run()|run()]]
+方法时，它进行的第一个操作就是解析输入的请求，然后实例化对应的[控制器动作](structure-controllers.md)处理这个请求。
+该过程就被称为*引导路由（routing）*。
+路由相反的操作会将给定的路由和参数生成一个可访问的URL地址，
+这个操作叫做*创建URL*。
+创建出来的URL被请求的时候，路由处理器可以解析成原始的路由信息和参数。
 
-The reverse process of routing is called *URL creation*, which creates a URL from a given route
-and the associated query parameters. When the created URL is later requested, the routing process can resolve it 
-back into the original route and query parameters.
-  
-The central piece responsible for routing and URL creation is the [[yii\web\UrlManager|URL manager]],
-which is registered as the `urlManager` [application component](structure-application-components.md). The [[yii\web\UrlManager|URL manager]]
-provides the [[yii\web\UrlManager::parseRequest()|parseRequest()]] method to parse an incoming request into
-a route and the associated query parameters and the [[yii\web\UrlManager::createUrl()|createUrl()]] method to
-create a URL from a given route and its associated query parameters.
+
+负责路由解析和创建URL的组件是 [[yii\web\UrlManager|URL管理器]],
+URL管理器在[程序组件](structure-application-components.md)中被注册成 `urlManager`。
+[[yii\web\UrlManager|URL管理器]] 提供方法 [[yii\web\UrlManager::parseRequest()|parseRequest()]] 来
+解析请求的URL并返回路由信息和参数，
+方法 [[yii\web\UrlManager::createUrl()|createUrl()]] 用来根据提供的路由和参数创建一个可访问的URL。
  
-By configuring the `urlManager` component in the application configuration, you can let your application 
-recognize arbitrary URL formats without modifying your existing application code. For example, you can 
-use the following code to create a URL for the `post/view` action:
+在程序配置中配置 `urlManager` 组件，可以让你的应用不改变现有代码的情况下
+识别任意的URL格式。
+例如使用下面的代码创建一个到 `post/view` 控制器的 URL：
 
 ```php
 use yii\helpers\Url;
 
-// Url::to() calls UrlManager::createUrl() to create a URL
+// Url::to() 将调用 UrlManager::createUrl() 来创建URL
 $url = Url::to(['post/view', 'id' => 100]);
 ```
 
-Depending on the `urlManager` configuration, the created URL may look like one of the following (or other format). 
-And if the created URL is requested later, it will still be parsed back into the original route and query parameter value.
+根据 `urlManager` 中的配置，创建出来的URL可能看起来像是以下的一种格式（或者其它的格式）。
+如果此URL被访问，将被解析成原来的路由和参数。
 
 ```
 /index.php?r=post%2Fview&id=100
@@ -38,62 +38,62 @@ And if the created URL is requested later, it will still be parsed back into the
 
 ## URL 格式化 <span id="url-formats"></span>
 
-The [[yii\web\UrlManager|URL manager]] supports two URL formats:
+[[yii\web\UrlManager|URL管理器]]提供两种URL格式：
 
-- the default URL format;
-- the pretty URL format.
+- 默认URL格式；
+- 美化URL格式。
 
-The default URL format uses a query parameter named `r` to represent the route and normal query parameters 
-to represent the query parameters associated with the route. For example, the URL `/index.php?r=post/view&id=100` represents 
-the route `post/view` and the `id` query parameter 100. The default URL format does not require any configuration of 
-the [[yii\web\UrlManager|URL manager]] and works in any Web server setup.
+默认URL格式试用一个参数`r`表示路由，
+并且试用一般的参数格式表示请求参数。例如，`/index.php?r=post/view&id=100`表示路由为`post/view`，参数`id`为100。
+默认URL格式不需要为[[yii\web\UrlManager|URL管理器]]做任何配置，
+并且在任何Web服务器都可以正常试用。
 
-The pretty URL format uses the extra path following the entry script name to represent the route and the associated 
-query parameters. For example, the extra path in the URL `/index.php/post/100` is `/post/100` which may represent
-the route `post/view` and the `id` query parameter 100 with a proper [[yii\web\UrlManager::rules|URL rule]]. To use
-the pretty URL format, you will need to design a set of [[yii\web\UrlManager::rules|URL rules]] according to the actual
-requirement about how the URLs should look like.
+美化URL格式在脚本名称后面使用更多的路径信息表示路由和参数信息。
+例如，用适当的[[yii\web\UrlManager::rules|URL规则]]，`/index.php/post/100`中附加的路径信息`/post/100`表示
+路由为`post/view`，参数`id`为100。
+要试用美化的URL格式，你需要根据实际的需求
+设计一组[[yii\web\UrlManager::rules|URL规则]]来规定URL的样式。
  
-You may switch between the two URL formats by toggling the [[yii\web\UrlManager::enablePrettyUrl|enablePrettyUrl]] 
-property of the [[yii\web\UrlManager|URL manager]] without changing any other application code.
+你可以仅设置[[yii\web\UrlManager|URL管理器]]中的[[yii\web\UrlManager::enablePrettyUrl|开启美化URL]]来切换两种URL格式，
+而不必改动任何程序代码。
 
 
 ## 路由 <span id="routing"></span>
 
-Routing involves two steps:
+路由处理包含两个步骤：
 
-- the incoming request is parsed into a route and the associated query parameters;
-- a [controller action](structure-controllers.md#actions) corresponding to the parsed route
-is created to handle the request.
+- 请求被解析成一个路由和关联的参数；
+- 路由相关的一个[控制器动作](structure-controllers.md#actions)被创建出来处理这个请求。
 
-When using the default URL format, parsing a request into a route is as simple as getting the value of a `GET`
-query parameter named `r`. 
 
-When using the pretty URL format, the [[yii\web\UrlManager|URL manager]] will examine the registered
-[[yii\web\UrlManager::rules|URL rules]] to find matching one that can resolve the request into a route. 
-If such a rule cannot be found, a [[yii\web\NotFoundHttpException]] exception will be thrown. 
+如果使用默认URL格式，解析请求到路由只是简单的从`GET`请求中得到命名为`r`的参数。
 
-Once the request is parsed into a route, it is time to create the controller action identified by the route.
-The route is broken down into multiple parts by the slashes in it. For example, `site/index` will be
-broken into `site` and `index`. Each part is an ID which may refer to a module, a controller or an action.
-Starting from the first part in the route, the application takes the following steps to create modules (if any),
-controller and action:
 
-1. Set the application as the current module.
-2. Check if the [[yii\base\Module::controllerMap|controller map]] of the current module contains the current ID.
-   If so, a controller object will be created according to the controller configuration found in the map,
-   and Step 5 will be taken to handle the rest part of the route.
-3. Check if the ID refers to a module listed in the [[yii\base\Module::modules|modules]] property of
-   the current module. If so, a module is created according to the configuration found in the module list,
-   and Step 2 will be taken to handle the next part of the route under the context of the newly created module.
-4. Treat the ID as a [controller ID](structure-controllers.md#controller-ids) and create a controller object. Do the next step with the rest part of
-   the route.
-5. The controller looks for the current ID in its [[yii\base\Controller::actions()|action map]]. If found,
-   it creates an action according to the configuration found in the map. Otherwise, the controller will
-   attempt to create an inline action which is defined by an action method corresponding to the current [action ID](structure-controllers.md#action-ids).
+当试用美化URL格式时，[[yii\web\UrlManager|URL管理器]]将检查注册的[[yii\web\UrlManager::rules|URL规则]]，
+找到一条可以匹配的将请求转到路由的规则。
+如果找不到任何匹配的规则，系统将抛出[[yii\web\NotFoundHttpException]]异常。
 
-Among the above steps, if any error occurs, a [[yii\web\NotFoundHttpException]] will be thrown, indicating
-the failure of the routing process.
+一旦请求解析成路由，系统将马上根据路由信息创建一个控制器动作。
+路由信息根据`/`分解成多个部分。例如，`site/index`将被分解成`site`和`index`两部分。
+每个部分都可能被认为是一个模块、控制器或动作的ID。
+从路由的第一个部分开始，系统将执行以下步骤创建所需模块（如果有模块的话）、控制器和动作：
+
+
+1. 设置应用系统作为当前的模块。
+2. 检查当前模块中的[[yii\base\Module::controllerMap|控制器映射]]是否存在当前ID。
+   如果存在，根据控制器映射中的定义创建一个控制器实例，
+   跳到步骤5处理路由剩下的部分。
+3. 检查ID是否为当前模块下[[yii\base\Module::modules|modules]]定义的子模块
+   如果是，创建对应子模块，
+   跳到步骤2使用刚创建的子模块处理路由下一部分。
+4. 将ID作为一个[控制器ID](structure-controllers.md#controller-ids)并创建一个控制器实例，
+   并用来处理路由剩下的部分。
+5. 控制器在自己的[[yii\base\Controller::actions()|动作映射]]中查找当前ID。
+   如果找到，根据映射中的定义创建一个动作。
+   如果没找到，控制器将尝试根据[动作ID](structure-controllers.md#action-ids)定义的动作方法创建一个行内动作。
+
+在上面的步骤中，如果出现任何错误，系统将抛出一个[[yii\web\NotFoundHttpException]]异常，
+表示路由处理程序出现的错误信息。
 
 
 ### 缺省路由 <span id="default-route"></span>
@@ -110,17 +110,17 @@ return [
 ];
 ```
 
-Similar to the default route of the application, there is also a default route for modules, so for example if there
-is a `user` module and the request is parsed into the route `user` the module's [[yii\base\Module::defaultRoute|defaultRoute]]
-is used to determine the controller. By default the controller name is `default`. If no action is specified in [[yii\base\Module::defaultRoute|defaultRoute]],
-the [[yii\base\Controller::defaultAction|defaultAction]] property of the controller is used to determine the action.
-In this example, the full route would be `user/default/index`.
+和应用系统中的缺省路由类似，模块中也存在一个缺省路由，所以如果
+有一个`user`模块，当请求到`user`模块时，模块的[[yii\base\Module::defaultRoute|缺省路由]]
+被用来决定缺省的控制器。默认的缺省控制器名称是`default`。如果在[[yii\base\Module::defaultRoute|缺省路由]]中没有指定任何动作，
+[[yii\base\Controller::defaultAction|缺省动作]]将被用来决定缺省的动作。
+在这个例子中，完整的路由应该是`user/default/index`。
 
 
 ### `catchAll` 路由（全拦截路由） <span id="catchall-route"></span>
 
-有时候，你会想要将你的 Web
-应用临时调整到维护模式，所有的请求下都会显示相同的信息页。当然，要实现这一点有很多种方法。这里面最简单快捷的方法就是在应用配置中设置下
+有时候，你会想要将你的 Web应用临时调整到维护模式，所有的请求下都会显示相同的信息页。
+当然，要实现这一点有很多种方法。这里面最简单快捷的方法就是在应用配置中设置
 [[yii\web\Application::catchAll]] 属性：
 
 ```php
@@ -130,123 +130,123 @@ return [
 ];
 ```
 
-With the above configuration, the `site/offline` action will be used to handle all incoming requests.
+根据上面的配置，`site/offline`控制器将被用来处理所有的请求。
 
-The `catchAll` property should take an array whose first element specifies a route, and
-the rest of the elements (name-value pairs) specify the parameters to be [bound to the action](structure-controllers.md#action-parameters).
+`catchAll`属性应该配置成一个数组，第一个元素为路由，
+剩下的元素为键值对格式的[动作的参数](structure-controllers.md#action-parameters)。
 
-> Info: The [debug toolbar](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md) in development environment
-> will not work when this property is enabled.
+> Info: 如果此属性被设置，开发环境中的[调试工具条](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
+> 将被停用。
 
 
 ## 创建 URLs <span id="creating-urls"></span>
 
-Yii provides a helper method [[yii\helpers\Url::to()]] to create various kinds of URLs from given routes and 
-their associated query parameters. For example,
+Yii提供了一个助手方法[[yii\helpers\Url::to()]]，用来根据提供的路由和参数创建各种各样的URL。 
+例如：
 
 ```php
 use yii\helpers\Url;
 
-// creates a URL to a route: /index.php?r=post%2Findex
+// 创建一个普通的路由URL：/index.php?r=post%2Findex
 echo Url::to(['post/index']);
 
-// creates a URL to a route with parameters: /index.php?r=post%2Fview&id=100
+// 创建一个带路由参数的URL：/index.php?r=post%2Fview&id=100
 echo Url::to(['post/view', 'id' => 100]);
 
-// creates an anchored URL: /index.php?r=post%2Fview&id=100#content
+// 创建一个带锚定的URL：/index.php?r=post%2Fview&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// creates an absolute URL: http://www.example.com/index.php?r=post%2Findex
+// 创建一个绝对路径URL：http://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], true);
 
-// creates an absolute URL using the https scheme: https://www.example.com/index.php?r=post%2Findex
+// 创建一个带https协议的绝对路径URL：https://www.example.com/index.php?r=post%2Findex
 echo Url::to(['post/index'], 'https');
 ```
 
-Note that in the above example, we assume the default URL format is being used. If the pretty URL format is enabled,
-the created URLs will be different, according to the [[yii\web\UrlManager::rules|URL rules]] in use. 
+注意上面的例子中，我们假定使用默认的URL格式。如果启用美化的URL格式，
+创建出来的URL根据使用的[[yii\web\UrlManager::rules|URL规则]]可能有所不同。
 
-The route passed to the [[yii\helpers\Url::to()]] method is context sensitive. It can be either a *relative* route
-or an *absolute* route which will be normalized according to the following rules:
+方法[[yii\helpers\Url::to()]]传入的路由是上下文相关的。
+根据以下规则确认传入的路由是一个*相对的*路由还是*绝对的*路由：
 
-- If the route is an empty string, the currently requested [[yii\web\Controller::route|route]] will be used;
-- If the route contains no slashes at all, it is considered to be an action ID of the current controller 
-  and will be prepended with the [[\yii\web\Controller::uniqueId|uniqueId]] value of the current controller;
-- If the route has no leading slash, it is considered to be a route relative to the current module and 
-  will be prepended with the [[\yii\base\Module::uniqueId|uniqueId]] value of the current module.
+- 如果路由是一个空字符串，则使用当前请求的[[yii\web\Controller::route|路由]]；
+- 如果路由中不存在`/`，则被认为是一个当前控制器下的动作ID，
+  且路由被附加到当前控制器的[[\yii\web\Controller::uniqueId|唯一ID]]后面；
+- 如果路由不以`/`开头，被认为是当前模块下的路由，
+  路由将被附加到当前模块的[[\yii\base\Module::uniqueId|唯一ID]]后面。
 
-Starting from version 2.0.2, you may specify a route in terms of an [alias](concept-aliases.md). If this is the case,
-the alias will first be converted into the actual route which will then be turned into an absolute route according
-to the above rules.
+从版本 2.0.2 开始，你可以使用根据[别名](concept-aliases.md)中定义的别名路由。如果是这种情况，
+别名将首先被转化为实际的路由，然后根据上面的规则转化成一个绝对路由。
 
-For example, assume the current module is `admin` and the current controller is `post`,
+
+例如，假设当前的模块为`admin`，当前控制器为`post`，
 
 ```php
 use yii\helpers\Url;
 
-// currently requested route: /index.php?r=admin%2Fpost%2Findex
+// 当前请求路由：/index.php?r=admin%2Fpost%2Findex
 echo Url::to(['']);
 
-// a relative route with action ID only: /index.php?r=admin%2Fpost%2Findex
+// 只有动作ID的相对路由：/index.php?r=admin%2Fpost%2Findex
 echo Url::to(['index']);
 
-// a relative route: /index.php?r=admin%2Fpost%2Findex
+// 相对路由：/index.php?r=admin%2Fpost%2Findex
 echo Url::to(['post/index']);
 
-// an absolute route: /index.php?r=post%2Findex
+// 绝对路由：/index.php?r=post%2Findex
 echo Url::to(['/post/index']);
 
-// /index.php?r=post%2Findex     assume the alias "@posts" is defined as "/post/index"
+// 假设有一个"/post/index"的别名"@posts"：/index.php?r=post%2Findex
 echo Url::to(['@posts']);
 ```
 
-The [[yii\helpers\Url::to()]] method is implemented by calling the [[yii\web\UrlManager::createUrl()|createUrl()]] 
-and [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] methods of the [[yii\web\UrlManager|URL manager]].
-In the next few subsections, we will explain how to configure the [[yii\web\UrlManager|URL manager]] to customize
-the format of the created URLs.
+方法 [[yii\helpers\Url::to()]] 实际上调用了 [[yii\web\UrlManager|URL管理器]] 中的 [[yii\web\UrlManager::createUrl()|createUrl()]] 方法
+和 [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] 方法。
+下面的介绍中，我们将介绍如何配置 [[yii\web\UrlManager|URL管理器]] 来创建自定义的 URL 格式。
 
-The [[yii\helpers\Url::to()]] method also supports creating URLs that are NOT related with particular routes.
-Instead of passing an array as its first parameter, you should pass a string in this case. For example,
+
+方法 [[yii\helpers\Url::to()]] 同时支持创建和任何路由不相关的 URL。
+这种情况下，第一个参数不再传入一个数组，而是传入一个字符串。例如：
  
 ```php
 use yii\helpers\Url;
 
-// currently requested URL: /index.php?r=admin%2Fpost%2Findex
+// 当前请求URL：/index.php?r=admin%2Fpost%2Findex
 echo Url::to();
 
-// an aliased URL: http://example.com
+// 设定了别名的URL：http://example.com
 Yii::setAlias('@example', 'http://example.com/');
 echo Url::to('@example');
 
-// an absolute URL: http://example.com/images/logo.gif
+// 绝对URL：http://example.com/images/logo.gif
 echo Url::to('/images/logo.gif', true);
 ```
 
-Besides the `to()` method, the [[yii\helpers\Url]] helper class also provides several other convenient URL creation 
-methods. For example,
+除了 `to()` 方法，[[yii\helpers\Url]] 助手类同时提供了多个其它创建 URL 的方法。
+例如：
 
 ```php
 use yii\helpers\Url;
 
-// home page URL: /index.php?r=site%2Findex
+// 主页URL：/index.php?r=site%2Findex
 echo Url::home();
 
-// the base URL, useful if the application is deployed in a sub-folder of the Web root
+// 根URL，如果程序部署到一个Web目录下的子目录时非常有用
 echo Url::base();
 
-// the canonical URL of the currently requested URL
-// see https://en.wikipedia.org/wiki/Canonical_link_element
+// 当前请求的权威规范URL
+// 参考 https://en.wikipedia.org/wiki/Canonical_link_element
 echo Url::canonical();
 
-// remember the currently requested URL and retrieve it back in later requests
+// 记住当前请求的URL并在以后获取
 Url::remember();
 echo Url::previous();
 ```
 
 
-## Using Pretty URLs <span id="using-pretty-urls"></span>
+## 使用美化的 URL <span id="using-pretty-urls"></span>
 
-To use pretty URLs, configure the `urlManager` component in the application configuration like the following:
+要使用美化的URL，像下面这样在应用配置中配置`urlManager`组件：
 
 ```php
 [
@@ -263,47 +263,47 @@ To use pretty URLs, configure the `urlManager` component in the application conf
 ]
 ```
 
-The [[yii\web\UrlManager::enablePrettyUrl|enablePrettyUrl]] property is mandatory as it toggles the pretty URL format.
-The rest of the properties are optional. However, their configuration shown above is most commonly used.
+[[yii\web\UrlManager::enablePrettyUrl|开启美化URL]] 属性被用来切换是否启用美化URL格式。
+虽然除了[[yii\web\UrlManager::enablePrettyUrl|开启美化URL]] 属性以外其它属性都是可选的，但是上面的配置是最常用到的。
 
-* [[yii\web\UrlManager::showScriptName|showScriptName]]: this property determines whether the entry script
-  should be included in the created URLs. For example, instead of creating a URL `/index.php/post/100`,
-  by setting this property to be false, a URL `/post/100` will be generated. 
-* [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: this property determines whether to enable
-  strict request parsing. If strict parsing is enabled, the incoming requested URL must match at least one of 
-  the [[yii\web\UrlManager::rules|rules]] in order to be treated as a valid request, or a [[yii\web\NotFoundHttpException]] 
-  will be thrown. If strict parsing is disabled, when none of the [[yii\web\UrlManager::rules|rules]] matches
-  the requested URL, the path info part of the URL will be treated as the requested route. 
-* [[yii\web\UrlManager::rules|rules]]: this property contains a list of rules specifying how to parse and create
-  URLs. It is the main property that you should work with in order to create URLs whose format satisfies your
-  particular application requirement.
-
-> Note: In order to hide the entry script name in the created URLs, besides setting
-  [[yii\web\UrlManager::showScriptName|showScriptName]] to be false, you may also need to configure your Web server
-  so that it can correctly identify which PHP script should be executed when a requested URL does not explicitly 
-  specify one. If you are using Apache Web server, you may refer to the recommended configuration as described in the
-  [Installation](start-installation.md#recommended-apache-configuration) section.
+* [[yii\web\UrlManager::showScriptName|是否显示脚本名称]]：
+  此属性决定创建的URL中是否包含入口脚本名称。
+  例如，默认的 `/index.php/post/100`，开启此属性后将创建成 `/post/100`。
+* [[yii\web\UrlManager::enableStrictParsing|是否开启严格解析]]：此属性决定是否开启严格的请求解析。
+  如果设置为启用，请求的URL必须至少匹配 [[yii\web\UrlManager::rules|规则]] 中设定的一条规则作为正确请求，
+  否则系统将抛出 [[yii\web\NotFoundHttpException]] 异常。
+  如果严格解析被关闭，当 [[yii\web\UrlManager::rules|规则]] 中没有任何一条匹配时，
+  请求URL中的路径信息将被作为请求路由使用。
+* [[yii\web\UrlManager::rules|规则]]：此属性包含一个规则列表，用来规定如何解析和创建URL。
+  这是一个主要属性，你应该根据特定的应用环境配置此属性用来生成特定格式的URL。
 
 
-### URL Rules <span id="url-rules"></span>
+> Note: 如果你想在URL中隐藏入口脚本名称，除了要设置 [[yii\web\UrlManager::showScriptName|showScriptName]] 为 false，
+  同时应该配置 Web 服务，处理当请求 URL 没有特殊指定入口脚本时确定要执行哪个PHP文件，
+  如果你试用 Apache Web server，你可以参考[安装](start-installation.md#recommended-apache-configuration)中推荐的配置。
 
-A URL rule is an instance of [[yii\web\UrlRule]] or its child class. Each URL rule consists of a pattern used 
-for matching the path info part of URLs, a route, and a few query parameters. A URL rule can be used to parse a request
-if its pattern matches the requested URL. A URL rule can be used to create a URL if its route and query parameter 
-names match those that are given. 
 
-When the pretty URL format is enabled, the [[yii\web\UrlManager|URL manager]] uses the URL rules declared in its
-[[yii\web\UrlManager::rules|rules]] property to parse incoming requests and create URLs. In particular,
-to parse an incoming request, the [[yii\web\UrlManager|URL manager]] examines the rules in the order they are
-declared and looks for the *first* rule that matches the requested URL. The matching rule is then used to
-parse the URL into a route and its associated parameters. Similarly, to create a URL, the [[yii\web\UrlManager|URL manager]] 
-looks for the first rule that matches the given route and parameters and uses that to create a URL.
 
-You can configure [[yii\web\UrlManager::rules]] as an array with keys being the patterns and values the corresponding
-routes. Each pattern-route pair constructs a URL rule. For example, the following [[yii\web\UrlManager::rules|rules]]
-configuration declares two URL rules. The first rule matches a URL `posts` and maps it into the route `post/index`.
-The second rule matches a URL matching the regular expression `post/(\d+)` and maps it into the route `post/view` and 
-a parameter named `id`.
+
+### URL规则 <span id="url-rules"></span>
+
+一个URL规则是类 [[yii\web\UrlRule]] 或子类的一个实例。每个URL规则包含一个匹配URL中的路径、路由和少量参数的规则。
+如果请求地址匹配一个URL规则，则此规则可以用来解析此请求。
+如果生成URL时路由和参数符合一个URL规则，则此规则可以用来生成此URL。
+
+
+如果开启了美化URL格式，[[yii\web\UrlManager|URL管理器]]使用定义的[[yii\web\UrlManager::rules|规则]]解析请求和创建URL。
+尤其注意，[[yii\web\UrlManager|URL管理器]]按照规则中定义的顺序依次检测请求地址，
+当找到*第一条*匹配的规则时停止。
+匹配到的规则将被用来解析请求URL到指定的路由和参数。
+同样的，创建URL的时候，[[yii\web\UrlManager|URL管理器]] 查找
+第一条匹配的的规则并用来生成URL。
+
+你可以配置 [[yii\web\UrlManager::rules]] 为一个数组，键为匹配规则，值为路由。
+每条键值对为一条URL规则。例如，下面的 [[yii\web\UrlManager::rules|规则]]
+配置了两条URL规则。第一条规则匹配URL `posts` 映射到路由 `post/index`。
+第二条规则匹配符合正则表达式 `post/(\d+)` 的URL并映射到路由 `post/view`，同时包含
+一个参数 `id`。
 
 ```php
 [
@@ -312,17 +312,17 @@ a parameter named `id`.
 ]
 ```
 
-> Info: The pattern in a rule is used to match the path info part of a URL. For example, the path info of 
-  `/index.php/post/100?source=ad` is `post/100` (the leading and ending slashes are ignored) which matches
-  the pattern `post/(\d+)`.
+> Info: 规则中的匹配模式用来匹配URL中的路径信息。例如，
+  `/index.php/post/100?source=ad`中的路径信息为 `post/100`（开始和结尾处的 `/` 将被忽略）和模式 `post/(\d+)` 匹配。
 
-Besides declaring URL rules as pattern-route pairs, you may also declare them as configuration arrays. Each configuration
-array is used to configure a single URL rule object. This is often needed when you want to configure other
-properties of a URL rule. For example,
+
+除了定义 URL 规则外，你还可以将规则定义为配置数组。
+每个配置数组用来配置一个单独的 URL 规则对象。如果你需要配置 URL 规则的其它参数时可以这样用。
+例如：
 
 ```php
 [
-    // ...other url rules...
+    // ...其它 URL 规则...
     
     [
         'pattern' => 'posts',
@@ -332,25 +332,25 @@ properties of a URL rule. For example,
 ]
 ```
 
-By default if you do not specify the `class` option for a rule configuration, it will take the default
-class [[yii\web\UrlRule]].
+如果你在URL规则中不配置 `class` 选项，默认将使用类 [[yii\web\UrlRule]]。
 
 
-### Named Parameters <span id="named-parameters"></span>
 
-A URL rule can be associated with a few named query parameters which are specified in the pattern in the format
-of `<ParamName:RegExp>`, where `ParamName` specifies the parameter name and `RegExp` is an optional regular 
-expression used to match parameter values. If `RegExp` is not specified, it means the parameter value should be
-a string without any slash.
+### 命名参数 <span id="named-parameters"></span>
 
-> Note: You can only specify regular expressions for parameters. The rest part of a pattern is considered as plain text.
+一条URL规则可以对匹配模式中的参数设置格式为 `<ParamName:RegExp>` 的命名，
+其中 `ParamName` 指定参数的名称，`RegExp` 是可选的用来匹配参数值得正则表达式。
+如果没有设置 `RegExp`，表示参数值为不包含 `/` 的字符串。
 
-When a rule is used to parse a URL, it will fill the associated parameters with values matching the corresponding
-parts of the URL, and these parameters will be made available in `$_GET` later by the `request` application component.
-When the rule is used to create a URL, it will take the values of the provided parameters and insert them at the 
-places where the parameters are declared.
 
-Let's use some examples to illustrate how named parameters work. Assume we have declared the following three URL rules:
+> Note: 你可以仅针对参数设置正则表达式，其余部分设置普通文本。
+
+当一条规则用来匹配URL时，符合匹配规则的相关的参数值被填充到规则中，
+并且这些参数可以在 `request` 组件中使用 `$_GET` 获取到。
+当规则用来创建 URL 时，
+提供的参数值将被插入到规则定义的指定位置。
+
+让我们使用一些例子来说明命名参数是如何工作的。假设我们定义了以下三条 URL 规则：
 
 ```php
 [
@@ -360,33 +360,33 @@ Let's use some examples to illustrate how named parameters work. Assume we have 
 ]
 ```
 
-When the rules are used to parse URLs:
+当规则用来解析 URL 时：
 
-- `/index.php/posts` is parsed into the route `post/index` using the second rule;
-- `/index.php/posts/2014/php` is parsed into the route `post/index`, the `year` parameter whose value is 2014
-  and the `category` parameter whose value is `php` using the first rule;
-- `/index.php/post/100` is parsed into the route `post/view` and the `id` parameter whose value is 100 using
-  the third rule;
-- `/index.php/posts/php` will cause a [[yii\web\NotFoundHttpException]] when [[yii\web\UrlManager::enableStrictParsing]]
-  is `true`, because it matches none of the patterns. If [[yii\web\UrlManager::enableStrictParsing]] is `false` (the
-  default value), the path info part `posts/php` will be returned as the route.
- 
-And when the rules are used to create URLs:
+- 根据第二条规则，`/index.php/posts` 被解析成路由 `post/index`；
+- 根据第一条规则，`/index.php/posts/2014/php` 被解析成路由 `post/index`，
+  参数 `year` 的值是 2014，参数 `category` 的值是 `php`；
+- 根据第三条规则，`/index.php/post/100` 被解析成路由 `post/view`，
+  参数 `id` 的值是 100；
+- 当[[yii\web\UrlManager::enableStrictParsing]] 设置为 `true` 时，`/index.php/posts/php` 将导致一个[[yii\web\NotFoundHttpException]] 异常，
+  因为无法匹配任何规则。如果 [[yii\web\UrlManager::enableStrictParsing]] 设为 `false`（默认值），
+  路径部分 `posts/php` 将被作为路由。
 
-- `Url::to(['post/index'])` creates `/index.php/posts` using the second rule;
-- `Url::to(['post/index', 'year' => 2014, 'category' => 'php'])` creates `/index.php/posts/2014/php` using the first rule;
-- `Url::to(['post/view', 'id' => 100])` creates `/index.php/post/100` using the third rule;
-- `Url::to(['post/view', 'id' => 100, 'source' => 'ad'])` creates `/index.php/post/100?source=ad` using the third rule.
-  Because the `source` parameter is not specified in the rule, it is appended as a query parameter in the created URL.
-- `Url::to(['post/index', 'category' => 'php'])` creates `/index.php/post/index?category=php` using none of the rules.
-  Note that since none of the rules applies, the URL is created by simply appending the route as the path info
-  and all parameters as the query string part.
+当规则用来生成 URL 时：
+
+- 根据第二条规则 `Url::to(['post/index'])` 生成 `/index.php/posts`；
+- 根据第一条规则 `Url::to(['post/index', 'year' => 2014, 'category' => 'php'])` 生成 `/index.php/posts/2014/php`；
+- 根据第三条规则 `Url::to(['post/view', 'id' => 100])` 生成 `/index.php/post/100`；
+- 根据第三条规则 `Url::to(['post/view', 'id' => 100, 'source' => 'ad'])` 生成 `/index.php/post/100?source=ad`。
+  因为参数 `source` 在规则中没有指定，将被作为普通请求参数附加到生成的 URL 后面。
+- `Url::to(['post/index', 'category' => 'php'])` 生成 `/index.php/post/index?category=php`。
+  注意因为没有任何规则适用，将把路由信息当做路径信息来生成URL，
+  并且所有参数作为请求查询参数附加到 URL 后面。
    
 
-### Parameterizing Routes <span id="parameterizing-routes"></span>
+### 参数化路由 <span id="parameterizing-routes"></span>
 
-You can embed parameter names in the route of a URL rule. This allows a URL rule to be used for matching multiple
-routes. For example, the following rules embed `controller` and `action` parameters in the routes.
+你可以在 URL 规则中嵌入参数名称，这样可以允许一个 URL 规则用来匹配多个路由。
+例如，下面的规则在路由中嵌入了 `controller` 和 `action` 两个参数。
 
 ```php
 'rules' => [
@@ -397,27 +397,27 @@ routes. For example, the following rules embed `controller` and `action` paramet
 ]
 ```
 
-To parse a URL `/index.php/comment/100/update`, the second rule will apply, which sets the `controller` parameter to
-be `comment` and `action` parameter to be `update`. The route `<controller>/<action>` is thus resolved as `comment/update`.
+解析 URL `/index.php/comment/100/update` 时，第二条规则适用，设置参数 `controller` 为 `comment`，
+设置参数 `action` 为 `update`。自然的，路由 `<controller>/<action>` 变成了 `comment/update`。
 
-Similarly, to create a URL for the route `comment/index`, the last rule will apply, which creates a URL `/index.php/comments`.
+同样的，根据路由 `comment/index` 创建 URL 时，最后一条规则适用，将生成 URL `/index.php/comments`。
 
-> Info: By parameterizing routes, it is possible to greatly reduce the number of URL rules, which can significantly
-  improve the performance of [[yii\web\UrlManager|URL manager]].
+> Info: 使用参数化的路由，可以显著的减少 URL 规则的数量，
+  可以显著提高[[yii\web\UrlManager|URL管理器]]的效率。
 
-### Default Parameter Values <span id="default-parameter-values"></span>
+### 默认参数值 <span id="default-parameter-values"></span>
 
-By default, all parameters declared in a rule are required. If a requested URL does not contain a particular parameter, 
-or if a URL is being created without a particular parameter, the rule will not apply. To make some of the parameters
-optional, you can configure the [[yii\web\UrlRule::defaults|defaults]] property of a rule. Parameters listed in this 
-property are optional and will take the specified values when they are not provided. 
+默认的，所有规则中定义的参数都是必须的。如果一个请求 URL 不存在其中一个参数，
+或者创建URL时没有指定其中一个参数，则无法应用此规则。
+如果需要设置某些参数为可选的，必须设置规则的[[yii\web\UrlRule::defaults|默认值]]属性。
+此属性中列出的参数将变成可选的且在没有指定时会使用此处设置的默认值。
 
-In the following rule declaration, the `page` and `tag` parameters are both optional and will take the value of 1 and 
-empty string, respectively, when they are not provided. 
+下面设置的规则中，参数 `page` 和 `tag` 都是可选的，当没有指定时将分别使用值 1 和空字符串。
+
 
 ```php
 [
-    // ...other rules...
+    // ...其它规则...
     [
         'pattern' => 'posts/<page:\d+>/<tag>',
         'route' => 'post/index',
@@ -426,24 +426,27 @@ empty string, respectively, when they are not provided.
 ]
 ```
 
-The above rule can be used to parse or create any of the following URLs:
+上面的规则可以用来解析或创建下面的 URL：
 
-* `/index.php/posts`: `page` is 1, `tag` is ''.
-* `/index.php/posts/2`: `page` is 2, `tag` is ''.
-* `/index.php/posts/2/news`: `page` is 2, `tag` is `'news'`.
-* `/index.php/posts/news`: `page` is 1, `tag` is `'news'`.
+* `/index.php/posts`：`page` 为 1，`tag` 为 ''。
+* `/index.php/posts/2`：`page` 为 2，`tag` 为 ''。
+* `/index.php/posts/2/news`：`page` 为 2，`tag`为 `'news'`。
+* `/index.php/posts/news`：`page` 为 1，`tag` 为 `'news'`。
 
-Without using optional parameters, you would have to create 4 rules to achieve the same result.
+如果不使用可选参数，你必须创建 4 条规则才可以实现相同的效果。
+
+> Note: 如果 [[yii\web\UrlRule::$pattern|pattern]] 中只存在可选参数和 `/`，只有所有参数被忽略时第一个参数才被忽略。
+
 
 > Note: If [[yii\web\UrlRule::$pattern|pattern]] contains only optional parameters and slashes, first parameter could be omitted 
   only if all other parameters are omitted.
 
 
-### Rules with Server Names <span id="rules-with-server-names"></span>
+### 带服务名称的规则 <span id="rules-with-server-names"></span>
 
-It is possible to include Web server names in the patterns of URL rules. This is mainly useful when your application 
-should behave differently for different Web server names. For example, the following rules will parse the URL 
-`http://admin.example.com/login` into the route `admin/user/login` and `http://www.example.com/login` into `site/login`.
+可以在URL规则中设置Web服务的名称，如果你需要使你的应用程序在不同的Web服务名称下表现不同的话。
+例如，下面的规则将URL`http://admin.example.com/login`解析成路由`admin/user/login`，
+URL`http://www.example.com/login`解析成路由`site/login`。
 
 ```php
 [
@@ -452,8 +455,8 @@ should behave differently for different Web server names. For example, the follo
 ]
 ```
 
-You can also embed parameters in the server names to extract dynamic information from them. For example, the following rule
-will parse the URL `http://en.example.com/posts` into the route `post/index` and the parameter `language=en`.
+你还可以在服务名称中嵌入参数用来动态的提取服务名称。例如，下面的规则
+将URL`http://en.example.com/posts`解析成路由`post/index`且参数`language=en`。
 
 ```php
 [
@@ -461,20 +464,20 @@ will parse the URL `http://en.example.com/posts` into the route `post/index` and
 ]
 ```
 
-Since version 2.0.11, you may also use protocol relative patterns that work for both, `http` and `https`.
-The syntax is the same as above but skipping the `http:` part, e.g.: `'//www.example.com/login' => 'site/login'`.
+从版本 2.0.11 开始，你还可以使用不带协议类型的模式来同时匹配 `http` 和 `https`。
+规则语法和上面相比只是忽略掉 `http:` 部分，例如：`'//www.example.com/login' => 'site/login'`。
 
-> Note: Rules with server names should **not** include the subfolder of the entry script in their patterns. For example, if the applications entry script is at `http://www.example.com/sandbox/blog/index.php`, then you should use the pattern
-  `http://www.example.com/posts` instead of `http://www.example.com/sandbox/blog/posts`. This will allow your application
-  to be deployed under any directory without the need to change your url rules. Yii will automatically detect the base url of the application.
+> Note: 带服务名称的规则**不应该**包含任何子目录。例如，如果程序入口脚本在 `http://www.example.com/sandbox/blog/index.php`，
+  应该使用 `http://www.example.com/posts` 代替 `http://www.example.com/sandbox/blog/posts`。
+  这样才可以将你的应用部署到任何目录而不需要更改 URL 规则。Yii 将会自动的检测应用程序所在的根目录。
 
 
-### URL Suffixes <span id="url-suffixes"></span>
+### URL 后缀 <span id="url-suffixes"></span>
 
-You may want to add suffixes to the URLs for various purposes. For example, you may add `.html` to the URLs so that they
-look like URLs for static HTML pages; you may also add `.json` to the URLs to indicate the expected content type
-of the response. You can achieve this goal by configuring the [[yii\web\UrlManager::suffix]] property like
-the following in the application configuration:
+你可能因为各种目的需要在 URL 后面添加后缀。例如，你可以在URL后面添加 `.html` 让其看起来像是一个 HTML 页面；
+也可以添加 `.json` 用来表明需要的返回值内容类型。
+可以参考下面的系统配置，
+通过设置 [[yii\web\UrlManager::suffix]] 属性来达到此目的:
 
 ```php
 [
@@ -492,18 +495,18 @@ the following in the application configuration:
 ]
 ```
 
-The above configuration will allow the [[yii\web\UrlManager|URL manager]] to recognize requested URLs and also create
-URLs with `.html` as their suffix.
+上面的配置允许[[yii\web\UrlManager|URL管理器]]识别或生成带 `.html` 后缀的 URL。
 
-> Tip: You may set `/` as the URL suffix so that the URLs all end with a slash.
 
-> Note: When you configure a URL suffix, if a requested URL does not have the suffix, it will be considered as
-  an unrecognized URL. This is a recommended practice for SEO (search engine optimization).
+> Tip: 你可以设置URL后缀为 `/` 让所有的 URL 以斜线结束。
+
+> Note: 当你配置 URL 后缀时，如果请求的 URL 没有此后缀，系统将认为此 URL 无法识别。
+  这是 SEO（搜索引擎优化）的最佳实践。
   
-Sometimes you may want to use different suffixes for different URLs. This can be achieved by configuring the
-[[yii\web\UrlRule::suffix|suffix]] property of individual URL rules. When a URL rule has this property set, it will
-override the suffix setting at the [[yii\web\UrlManager|URL manager]] level. For example, the following configuration
-contains a customized URL rule which uses `.json` as its suffix instead of the global one `.html`.
+有时你可能需要在不同的URL使用不同的后缀。可以通过在不同的URL规则下不同的设置[[yii\web\UrlRule::suffix|后缀]]属性。
+URL规则中此属性将覆盖在[[yii\web\UrlManager|URL管理器]]中设置的值。
+例如，下面的配置中全局使用 `.html` 后缀，但是定义了一个自定义的使用 `.json` 为后缀的规则。
+
 
 ```php
 [
@@ -525,13 +528,13 @@ contains a customized URL rule which uses `.json` as its suffix instead of the g
 ]
 ```
 
-### HTTP Methods <span id="http-methods"></span>
+### HTTP 方法 <span id="http-methods"></span>
 
-When implementing RESTful APIs, it is commonly needed that the same URL be parsed into different routes according to
-the HTTP methods being used. This can be easily achieved by prefixing the supported HTTP methods to the patterns of
-the rules. If a rule supports multiple HTTP methods, separate the method names with commas. For example, the following
-rules have the same pattern `post/<id:\d+>` with different HTTP method support. A request for `PUT post/100` will
-be parsed into `post/update`, while a request for `GET post/100` will be parsed into `post/view`.
+当使用 RESTful 接口时，经常需要根据 HTTP 请求方法将同样的URL解析到不同的路由。
+可以容易的通过将支持的 HTTP 方法设置为 URL 规则的前缀来实现这个目的。
+如果一个规则需要支持多种 HTTP 方法，可以将方法名称用逗号隔开。
+例如，下面的规则有相同的模式 `post/<id:\d+>` 但是支持不同的 HTTP 方法。
+一个 `PUT post/100` 请求将被解析到 `post/update`，`GET post/100` 请求将被解析到 `post/view`。
 
 ```php
 'rules' => [
@@ -541,43 +544,43 @@ be parsed into `post/update`, while a request for `GET post/100` will be parsed 
 ]
 ```
 
-> Note: If a URL rule contains HTTP method(s) in its pattern, the rule will only be used for parsing purpose unless `GET` is among the specified verbs.
-  It will be skipped when the [[yii\web\UrlManager|URL manager]] is called to create URLs.
+> Note: 如果一个 URL 规则包含 HTTP 方法，这个规则将只能用来解析请求，除非 `GET` 请求明确被指定在 HTTP 方法中，
+  否则创建 URL 时此规则将被[[yii\web\UrlManager|URL管理器]]忽略。
 
-> Tip: To simplify the routing of RESTful APIs, Yii provides a special URL rule class [[yii\rest\UrlRule]]
-  which is very efficient and supports some fancy features such as automatic pluralization of controller IDs.
-  For more details, please refer to the [Routing](rest-routing.md) section in the RESTful APIs chapter.
+> Tip: 为了简化 RESTful 接口的路由定义，Yii 提供了一个特殊的URL规则类 [[yii\rest\UrlRule]]
+  支持高效的且支持一些设想中的功能，像自动多元化控制器 ID。
+  更多信息，请参考 RESTful 接口说明中的[路由](rest-routing.md)章节。
 
 
-### Adding Rules Dynamically <span id="adding-rules"></span>
+### 动态添加规则 <span id="adding-rules"></span>
 
-URL rules can be dynamically added to the [[yii\web\UrlManager|URL manager]]. This is often needed by redistributable
-[modules](structure-modules.md) which want to manage their own URL rules. In order for the dynamically added rules
-to take effect during the routing process, you should add them during the [bootstrapping](runtime-bootstrapping.md)
-stage of the application. For modules, this means they should implement [[yii\base\BootstrapInterface]] and add the rules in the
-[[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method like the following:
+URL规则可以动态添加到[[yii\web\UrlManager|URL管理器]]。如果[模块](structure-modules.md)需要管理自己的URL规则时很有必要。
+如果需要使路由处理过程中动态添加的规则可用，
+你应该在应用程序[启动引导](runtime-bootstrapping.md)时添加。
+对模块来说，需要实现 [[yii\base\BootstrapInterface]] 接口的 [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] 方法，
+类似下面这样动态添加规则：
 
 ```php
 public function bootstrap($app)
 {
     $app->getUrlManager()->addRules([
-        // rule declarations here
+        // 规则在这里定义
     ], false);
 }
 ```
 
-Note that you should also list these modules in [[yii\web\Application::bootstrap]] so that they can participate the
-[bootstrapping](runtime-bootstrapping.md) process.
+注意你需要同时在 [[yii\web\Application::bootstrap]] 中指定这些模块，这样模块才可以参与到
+[启动引导](runtime-bootstrapping.md)过程中。
 
 
-### Creating Rule Classes <span id="creating-rules"></span>
+### 创建规则类 <span id="creating-rules"></span>
 
-Despite the fact that the default [[yii\web\UrlRule]] class is flexible enough for the majority of projects, there
-are situations when you have to create your own rule classes. For example, in a car dealer Web site, you may want
-to support the URL format like `/Manufacturer/Model`, where both `Manufacturer` and `Model` must match some data
-stored in a database table. The default rule class will not work here because it relies on statically declared patterns.
+尽管默认的 [[yii\web\UrlRule]] 类已经足够灵活可以处理大部分项目了，
+有时还是会需要创建一个自定义的规则类。例如，在一个汽车经销网站，你可能会需要使用
+这样的URL格式 `/Manufacturer/Model`，`Manufacturer` 和 `Model` 必须同时匹配保存在数据库中的一些数据。
+默认的规则类只能使用静态定义而无法适应此种情况。
 
-We can create the following URL rule class to solve this problem.
+我们可以创建一个自定义的 URL 规则类来解决这个问题。
 
 ```php
 <?php
@@ -605,41 +608,41 @@ class CarUrlRule extends BaseObject implements UrlRuleInterface
     {
         $pathInfo = $request->getPathInfo();
         if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
-            // check $matches[1] and $matches[3] to see
-            // if they match a manufacturer and a model in the database.
-            // If so, set $params['manufacturer'] and/or $params['model']
-            // and return ['car/index', $params]
+            // 检查 $matches[1] 和 $matches[3]
+            // 确认是否匹配到一个数据库中保存的厂家和型号。
+            // 如果匹配，设置参数 $params['manufacturer'] 和 / 或 $params['model']
+            // 返回 ['car/index', $params]
         }
-        return false; // this rule does not apply
+        return false; // 本规则不会起作用
     }
 }
 ```
 
-And use the new rule class in the [[yii\web\UrlManager::rules]] configuration:
+在 [[yii\web\UrlManager::rules]] 配置中设置新定义的规则类：
 
 ```php
 'rules' => [
-    // ...other rules...
+    // ...其它规则...
     [
         'class' => 'app\components\CarUrlRule',
-        // ...configure other properties...
+        // ...配置其它参数...
     ],
 ]
 ```
 
 
-## URL normalization <span id="url-normalization"></span>
+## URL规范化 <span id="url-normalization"></span>
 
-Since version 2.0.10 [[yii\web\UrlManager|UrlManager]] can be configured to use [[yii\web\UrlNormalizer|UrlNormalizer]] for dealing
-with variations of the same URL, for example with and without a trailing slash. Because technically `http://example.com/path`
-and `http://example.com/path/` are different URLs, serving the same content for both of them can degrade SEO ranking.
-By default normalizer collapses consecutive slashes, adds or removes trailing slashes depending on whether the
-suffix has a trailing slash or not, and redirects to the normalized version of the URL using [permanent redirection](https://en.wikipedia.org/wiki/HTTP_301).
-The normalizer can be configured globally for the URL manager or individually for each rule - by default each rule will use the normalizer
-from URL manager. You can set [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] to `false` to disable normalization
-for particular URL rule.
+从 2.0.10 版开始[[yii\web\UrlManager|Url管理器]]可以配置用[[yii\web\UrlNormalizer|URL规范器]]来处理
+相同URL的不同格式，例如是否带结束斜线。因为技术上来说 `http://example.com/path`
+和 `http://example.com/path/` 是完全不同的 URL，两个地址返回相同的内容会导致SEO排名降低。
+默认情况下 URL 规范器会合并连续的斜线，根据配置决定是否添加或删除结尾斜线，
+并且会使用[永久重定向](https://en.wikipedia.org/wiki/HTTP_301)将地址重新跳转到规范化后的URL。
+URL规范器可以针对URL管理器全局配置，也可以针对规则单独配置 - 默认每个规则都使用URL管理器中的规范器。
+你可以针对特定的URL规则设置 [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] 为 `false` 来关闭规范化。
 
-The following shows an example configuration for the [[yii\web\UrlNormalizer|UrlNormalizer]]:
+
+下面的例子显示了一个[[yii\web\UrlNormalizer|URL规范器]]的配置：
 
 ```php
 'urlManager' => [
@@ -649,22 +652,22 @@ The following shows an example configuration for the [[yii\web\UrlNormalizer|Url
     'suffix' => '.html',
     'normalizer' => [
         'class' => 'yii\web\UrlNormalizer',
-        // use temporary redirection instead of permanent for debugging
+        // 调试时使用临时跳转代替永久跳转
         'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
     ],
     'rules' => [
-        // ...other rules...
+        // ...其它规则...
         [
             'pattern' => 'posts',
             'route' => 'post/index',
             'suffix' => '/',
-            'normalizer' => false, // disable normalizer for this rule
+            'normalizer' => false, // 针对此规则关闭规范器
         ],
         [
             'pattern' => 'tags',
             'route' => 'tag/index',
             'normalizer' => [
-                // do not collapse consecutive slashes for this rule
+                // 针对此规则不合并连续的斜线
                 'collapseSlashes' => false,
             ],
         ],
@@ -672,8 +675,8 @@ The following shows an example configuration for the [[yii\web\UrlNormalizer|Url
 ]
 ```
 
-> Note: by default [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] is disabled. You need to explicitly
-  configure it in order to enable URL normalization.
+> Note: 默认 [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] 规范器是关闭的。你需要明确配置其开启
+  来启用 URL 规范化。
 
 
 
@@ -684,10 +687,10 @@ The following shows an example configuration for the [[yii\web\UrlNormalizer|Url
 
 通过使用参数化路由，您可以减少 URL 规则的数量，这可以显着提高性能。
 
-当解析或创建URL时，[[yii\web\UrlManager|URL manager]] 按照它们声明的顺序检查URL规则。
-因此，您可以考虑调整URL规则的顺序，以便在较少使用的规则之前放置更具体和/或更常用的规则。
+当解析或创建URL时，[[yii\web\UrlManager|URL manager]] 按照它们声明的顺序检查 URL 规则。
+因此，您可以考虑调整 URL 规则的顺序，以便在较少使用的规则之前放置更具体和/或更常用的规则。
 
-If some URL rules share the same prefix in their patterns or routes, you may consider using [[yii\web\GroupUrlRule]]
-so that they can be more efficiently examined by [[yii\web\UrlManager|URL manager]] as a group. This is often the case
-when your application is composed by modules, each having its own set of URL rules with module ID as their common prefixes.
+如果多个 URL 规则使用相同的前缀，你可以考虑使用 [[yii\web\GroupUrlRule]]，
+这样作为一个组合，[[yii\web\UrlManager|URL管理器]]会更高效。
+特别是当应用程序由模块组合而成时，每个模块都有各自的 URL 规则且都有各自的模块 ID 作为前缀。
 

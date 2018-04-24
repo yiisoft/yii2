@@ -1,14 +1,14 @@
-数组助手类
-===========
+数组助手类（ArrayHelper）
+======================
 
 除了[PHP中丰富的数组函数集](http://php.net/manual/zh/book.array.php)，
 Yii 数组助手类提供了额外的静态方法，让你更高效地处理数组。
 
 
-## 获取值 <span id="getting-values"></span>
+## 获取值（Getting Values） <span id="getting-values"></span>
 
 用原生PHP从一个对象、数组、或者包含这两者的一个复杂数据结构中获取数据是非常繁琐的。
-你首先得使用`isset` 检查 key 是否存在, 然后如果存在你就获取它，如果不存在，
+你首先得使用 `isset` 检查 key 是否存在, 然后如果存在你就获取它，如果不存在，
 则提供一个默认返回值：
 
 ```php
@@ -53,18 +53,69 @@ $fullName = ArrayHelper::getValue($user, function ($user, $defaultValue) {
 $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
 ```
 
-对于取到值后想要立即从数组中删除的情况，你可以使用 `remove` 方法：
+
+## 设定值（Setting values） <span id="setting-values"></span>
+
+```php
+$array = [
+    'key' => [
+        'in' => ['k' => 'value']
+    ]
+];
+
+ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);
+// 在 `$array` 中写入值的路径可以被指定为一个数组
+ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);
+```
+
+结果，`$array['key']['in']` 的初始值将被新值覆盖
+
+```php
+[
+    'key' => [
+        'in' => ['arr' => 'val']
+    ]
+]
+```
+
+如果路径包含一个不存在的键，它将被创建
+
+```php
+// 如果 `$array['key']['in']['arr0']` 不为空，则该值将被添加到数组中
+ArrayHelper::setValue($array, 'key.in.arr0.arr1', 'val');
+
+// 如果你想完全覆盖值 `$array['key']['in']['arr0']`
+ArrayHelper::setValue($array, 'key.in.arr0', ['arr1' => 'val']);
+```
+
+结果将是
+
+```php
+[
+    'key' => [
+        'in' => [
+            'k' => 'value',
+            'arr0' => ['arr1' => 'val']
+        ]
+    ]
+]
+```
+
+
+## 从数组中获取值（Take a value from an array） <span id="removing-values"></span>
+
+如果你想获得一个值，然后立即从数组中删除它，你可以使用 `remove` 方法：
 
 ```php
 $array = ['type' => 'A', 'options' => [1, 2]];
 $type = ArrayHelper::remove($array, 'type');
 ```
 
-执行了上述代码之后， `$array` 将包含 `['options' => [1, 2]]` 并且 `$type` 将会是 `A` 。
-注意和 `getValue` 方法不同的是，`remove` 方法只支持简单键名。 
+执行代码后，`$array` 将包含 `['options' => [1, 2]]` 且 `$type` 将包含 `A`。
+请注意，与 `getValue` 方法不同，`remove` 仅支持简单的键名称。
 
 
-## 检查键名的存在<span id="checking-existence-of-keys"></span>
+## 检查键名的存在（Checking Existence of Keys） <span id="checking-existence-of-keys"></span>
 
 `ArrayHelper::keyExists` 工作原理和[array_key_exists](http://php.net/manual/en/function.array-key-exists.php)差不多，除了
 它还可支持大小写不敏感的键名比较，比如：
@@ -83,7 +134,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 }
 ```
 
-## 检索列 <span id="retrieving-columns"></span>
+## 检索列（Retrieving Columns） <span id="retrieving-columns"></span>
 
 通常你要从多行数据或者多个对象构成的数组中获取某列的值，一个普通的例子是获取id值列表。
 
@@ -107,20 +158,20 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 ```
 
 
-## 重建数组索引 <span id="reindexing-arrays"></span>
+## 重建数组索引（Re-indexing Arrays） <span id="reindexing-arrays"></span>
 
 按一个指定的键名重新索引一个数组，可以用 `index` 方法。输入的数组应该是多维数组或者是一个对象数组。
 键名（译者注：第二个参数）可以是子数组的键名、对象的属性名，
 也可以是一个返回给定元素数组键值的匿名函数。
 
-The `$groups` attribute is an array of keys, that will be used to group the input array into one or more sub-arrays
-based on keys specified.
+`$groups` 属性是一个键数组，
+它将根据指定的键将输入数组分组为一个或多个子数组。
 
-If the `$key` attribute or its value for the particular element is null and `$groups` is not defined, the array
-element will be discarded. Otherwise, if `$groups` is specified, array element will be added to the result array
-without any key.
+如果 `$key` 属性或其特定元素的值为 null，并且未定义 `$groups`，
+则数组元素将被丢弃。否则，如果指定了 `$groups`，
+则数组元素将被添加到没有任何键的结果数组中。
 
-For example:
+例如：
 
 ```php
 $array = [
@@ -131,17 +182,17 @@ $array = [
 $result = ArrayHelper::index($array, 'id');
 ```
 
-The result will be an associative array, where the key is the value of `id` attribute
+结果将是一个关联数组，其中键是 `id` 属性的值
 
 ```php
 [
     '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
     '345' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
-    // The second element of an original array is overwritten by the last element because of the same id
+    // 原始数组的第二个元素由于相同的 ID 而被最后一个元素覆盖
 ]
 ```
 
-Anonymous function, passed as a `$key`, gives the same result.
+匿名函数作为 `$key` 传递，给出了相同的结果。
 
 ```php
 $result = ArrayHelper::index($array, function ($element) {
@@ -149,13 +200,13 @@ $result = ArrayHelper::index($array, function ($element) {
 });
 ```
 
-Passing `id` as a third argument will group `$array` by `id`:
+传递 `id` 作为第三个参数将 `id` 分配给 `$ array`：
 
 ```php
 $result = ArrayHelper::index($array, null, 'id');
 ```
 
-The result will be a multidimensional array grouped by `id` on the first level and not indexed on the second level:
+结果将是一个多维数组，它由第一级的 `id` 分组，并且不在第二级索引：
 
 ```php
 [
@@ -169,7 +220,7 @@ The result will be a multidimensional array grouped by `id` on the first level a
 ]
 ```
 
-An anonymous function can be used in the grouping array as well:
+匿名函数也可用于分组数组中：
 
 ```php
 $result = ArrayHelper::index($array, 'data', [function ($element) {
@@ -177,8 +228,8 @@ $result = ArrayHelper::index($array, 'data', [function ($element) {
 }, 'device']);
 ```
 
-The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level and
-indexed by `data` on the third level:
+结果将是一个多维数组，由第一级的 `id` 分组，第二级的 `device` 和第三级的
+`data` 索引：
 
 ```php
 [
@@ -198,10 +249,10 @@ indexed by `data` on the third level:
 ]
 ```
 
-## 建立哈希表 <span id="building-maps"></span>
+## 建立哈希表（Building Maps） <span id="building-maps"></span>
 
-为了从一个多维数组或者一个对象数组中建立一个映射表(键值对)，你可以使用
-`map`方法.`$from` 和 `$to` 参数分别指定了欲构建的映射表的键名和属性名。
+为了从一个多维数组或者一个对象数组中建立一个映射表（键值对），你可以使用
+`map` 方法。`$from` 和 `$to` 参数分别指定了欲构建的映射表的键名和属性名。
 根据需要，你可以按照一个分组字段 `$group` 将映射表进行分组，例如，
 
 ```php
@@ -233,7 +284,7 @@ $result = ArrayHelper::map($array, 'id', 'name', 'class');
 ```
 
 
-## 多维排序 <span id="multidimensional-sorting"></span>
+## 多维排序（Multidimensional Sorting） <span id="multidimensional-sorting"></span>
 
 `multisort` 方法可用来对嵌套数组或者对象数组进行排序，可按一到多个键名排序，比如，
 
@@ -273,7 +324,7 @@ ArrayHelper::multisort($data, function($item) {
 [sort()](http://php.net/manual/zh/function.sort.php) 函数时传递的值一样。
 
 
-## 检测数组类型 <span id="detecting-array-types"></span> 
+## 检测数组类型（Detecting Array Types） <span id="detecting-array-types"></span> 
 
 想知道一个数组是索引数组还是联合数组很方便，这有个例子：
 
@@ -288,7 +339,7 @@ echo ArrayHelper::isAssociative($associative);
 ```
 
 
-## HTML 编码和解码值 <span id="html-encoding-values"></span>
+## HTML 编码和解码值（HTML Encoding and Decoding Values） <span id="html-encoding-values"></span>
 
 为了将字符串数组中的特殊字符做 HTML 编解码，你可以使用下列方法：
 
@@ -301,30 +352,77 @@ $decoded = ArrayHelper::htmlDecode($data);
 编码将默认使用应用程序的字符集，你可以通过第三个参数指定该字符集。
 
 
-## 合并数组 <span id="merging-arrays"></span>
+## 合并数组（Merging Arrays） <span id="merging-arrays"></span>
+
+您可以使用 [[yii\helpers\ArrayHelper::merge()|ArrayHelper::merge()]] 将两个或多个数组合并成一个递归的数组。
+如果每个数组都有一个具有相同字符串键值的元素，则后者将覆盖前者
+（不同于 [array_merge_recursive()](http://php.net/manual/en/function.array-merge-recursive.php)）。
+如果两个数组都有一个数组类型的元素并且具有相同的键，则将执行递归合并。
+对于整数键的元素，来自后一个数组的元素将被附加到前一个数组。
+您可以使用 [[yii\helpers\UnsetArrayValue]] 对象来取消前一个数组的值或
+[[yii\helpers\ReplaceArrayValue]] 以强制替换先前的值而不是递归合并。
+
+例如：
 
 ```php
-  /**
-    * 将两个或者多个数组递归式的合并为一个数组。
-    * 如果每个数组有一个元素的键名相同，
-    * 那么后面元素的将覆盖前面的元素（不同于 array_merge_recursive）。
-    * 如果两个数组都有相同键名的数组元素（译者注：嵌套数组）
-    * 则将引发递归合并。
-    * 对数值型键名的元素，后面数组中的这些元素会被追加到前面数组中。
-    * @param array $a 被合并的数组
-    * @param array $b 合并的数组，你可以在第三、第四个
-    * 参数中指定另外的合并数组，等等
-    * @return 合并的结果数组 (原始数组不会被改变)
-    */
-    public static function merge($a, $b)
+$array1 = [
+    'name' => 'Yii',
+    'version' => '1.1',
+    'ids' => [
+        1,
+    ],
+    'validDomains' => [
+        'example.com',
+        'www.example.com',
+    ],
+    'emails' => [
+        'admin' => 'admin@example.com',
+        'dev' => 'dev@example.com',
+    ],
+];
+
+$array2 = [
+    'version' => '2.0',
+    'ids' => [
+        2,
+    ],
+    'validDomains' => new \yii\helpers\ReplaceArrayValue([
+        'yiiframework.com',
+        'www.yiiframework.com',
+    ]),
+    'emails' => [
+        'dev' => new \yii\helpers\UnsetArrayValue(),
+    ],
+];
+
+$result = ArrayHelper::merge($array1, $array2);
+```
+
+结果将是：
+
+```php
+[
+    'name' => 'Yii',
+    'version' => '2.0',
+    'ids' => [
+        1,
+        2,
+    ],
+    'validDomains' => [
+        'yiiframework.com',
+        'www.yiiframework.com',
+    ],
+    'emails' => [
+        'admin' => 'admin@example.com',
+    ],
+]
 ```
 
 
+## 对象转换为数组（Converting Objects to Arrays） <span id="converting-objects-to-arrays"></span>
 
-## 对象转换为数组 <span id="converting-objects-to-arrays"></span>
-
-你经常要将一个对象或者对象的数组转换成一个数组，常见的情形是，为了通过REST API提供数据数组（或其他使用方式），
-将AR模型(活动记录模型)转换成数组。如下代码可完成这个工作：
+你经常要将一个对象或者对象的数组转换成一个数组，常见的情形是，为了通过 REST API 提供数据数组（或其他使用方式），
+将 AR 模型（活动记录模型）转换成数组。如下代码可完成这个工作：
 
 ```php
 $posts = Post::find()->limit(10)->all();
@@ -344,7 +442,7 @@ $data = ArrayHelper::toArray($posts, [
 
 第一个参数包含我们想要转换的数据，在本例中，我们要转换一个叫 `Post` 的 AR 模型。
 
-第二个参数是每个类的转换映射表，我们在此设置了一个`Post` 模型的映射。
+第二个参数是每个类的转换映射表，我们在此设置了一个 `Post` 模型的映射。
 每个映射数组包含一组的映射，每个映射可以是：
 
 - 一个要包含的照原样的字段名（和类中属性的名称一致）；
@@ -363,16 +461,16 @@ $data = ArrayHelper::toArray($posts, [
 ]
 ```
 
-也可以在一个特定的类中实现[[yii\base\Arrayable|Arrayable]]接口，
+也可以在一个特定的类中实现 [[yii\base\Arrayable|Arrayable]] 接口，
 从而为其对象提供默认的转换成数组的方法。
 
-## Testing against Arrays <span id="testing-arrays"></span>
+## 测试阵列（Testing against Arrays） <span id="testing-arrays"></span>
 
-Often you need to check if an element is in an array or a set of elements is a subset of another.
-While PHP offers `in_array()`, this does not support subsets or `\Traversable` objects.
+通常你需要检查一个元素是否在数组中，或者一组元素是另一个元素的子集。
+虽然PHP提供 `in_array()`，这不支持子集或 `\Traversable` 对象。
 
-To aid these kinds of tests, [[yii\base\ArrayHelper]] provides [[yii\base\ArrayHelper::isIn()|isIn()]]
-and [[yii\base\ArrayHelper::isSubset()|isSubset()]] with the same signature as [[in_array()]].
+为了支持这些测试，[[yii\base\ArrayHelper]] 提供了 [[yii\base\ArrayHelper::isIn()|isIn()]]
+和 [[yii\base\ArrayHelper::isSubset()|isSubset()]] 与 [[in_array()]] 签名相同。
 
 ```php
 // true
