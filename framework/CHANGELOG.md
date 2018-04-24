@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
 - Bug #15988: Fixed bash completion (alekciy)
 - Bug #15117: Fixed `yii\db\Schema::getTableMetadata` cache refreshing (boboldehampsink)
+- Bug #15875: afterSave for new models flushes unsaved data (shirase)
 - Bug #16073: Fixed regression in Oracle `IN` condition builder for more than 1000 items (cebe)
 - Bug #16120: FileCache: rebuild cache file before touch when different file owner (Slamdunk)
 - Bug #16091: Make `yii\test\InitDbFixture` work with non-SQL DBMS (cebe)
