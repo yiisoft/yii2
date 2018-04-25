@@ -9,7 +9,7 @@ Yii DAO を使うときは、主として素の SQL と PHP 配列を扱う必�
 結果として、Yii DAO はデータベースにアクセスする方法としては最も効率的なものになります。
 しかし、SQL の構文はデータベースによってさまざまに異なる場合がありますので、Yii DAO を使用するということは、特定のデータベースに依存しないアプリケーションを作るためには追加の労力が必要になる、ということをも同時に意味します。
 
-Yii は下記の DBMS のサポートを内蔵しています。
+Yii 2.0 では、DAO は下記の DBMS のサポートを内蔵しています。
 
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
@@ -18,6 +18,12 @@ Yii は下記の DBMS のサポートを内蔵しています。
 - [CUBRID](http://www.cubrid.org/): バージョン 9.3 以上。
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2008 以上。
+
+> Info: Yii 2.1 以降では、CUBRID、Oracle および MSSQL に対する DAO サポートは、フレームワーク内蔵のコア・コンポーネント
+  としては提供されていません。それらは、独立した [エクステンション](structure-extensions.md) としてインストールされる
+  必要があります。[yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) および
+  [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql) が
+  [公式エクステンション](https://www.yiiframework.com/extensions/official) として提供されています。
 
 > Note: PHP 7 用の pdo_oci の新しいバージョンは、現在、ソース・コードとしてのみ存在します。
   [コミュニティによる説明](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268) に従ってコンパイルするか、
