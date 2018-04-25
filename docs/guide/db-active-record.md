@@ -88,6 +88,7 @@ class Customer extends ActiveRecord
 ```
 
 ### Active records are called "models"
+
 Active Record instances are considered as [models](structure-models.md). For this reason, we usually put Active Record
 classes under the `app\models` namespace (or other namespaces for keeping model classes). 
 
