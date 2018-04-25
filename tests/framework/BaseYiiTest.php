@@ -39,6 +39,39 @@ class BaseYiiTest extends TestCase
         Yii::setProfiler(null);
     }
 
+    public function testEnv()
+    {
+        $this->assertEquals('default', Yii::getEnv('foo', 'default'));
+
+        putenv('foo=bar');
+        $this->assertEquals('bar', Yii::getEnv('foo'));
+
+        putenv('foo="bar"');
+        $this->assertEquals('bar', Yii::getEnv('foo'));
+
+        putenv('foo=true');
+        $this->assertTrue(Yii::getEnv('foo'));
+        putenv('foo=(true)');
+        $this->assertTrue(Yii::getEnv('foo'));
+
+        putenv('foo=false');
+        $this->assertFalse(Yii::getEnv('foo'));
+        putenv('foo=(false)');
+        $this->assertFalse(Yii::getEnv('foo'));
+
+        putenv('foo=');
+        $this->assertEquals('', Yii::getEnv('foo'));
+        putenv('foo=empty');
+        $this->assertEquals('', Yii::getEnv('foo'));
+        putenv('foo=(empty)');
+        $this->assertEquals('', Yii::getEnv('foo'));
+
+        putenv('foo=null');
+        $this->assertEquals('', Yii::getEnv('foo'));
+        putenv('foo=(null)');
+        $this->assertEquals('', Yii::getEnv('foo'));
+    }
+
     public function testAlias()
     {
         $this->assertEquals(YII2_PATH, Yii::getAlias('@yii'));

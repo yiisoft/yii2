@@ -95,6 +95,40 @@ class BaseYii
     }
 
     /**
+    * Returns the value of an environment variable.
+    * @param string $key the var name
+    * @param mixed $default the default result value
+    * @return mixed
+    */
+   public static function getEnv($key, $default = null)
+   {
+       $value = getenv($key);
+       if ($value === false) {
+            return $default;
+       }
+
+       switch (strtolower($value)) {
+           case 'true':
+           case '(true)':
+               return true;
+           case 'false':
+           case '(false)':
+               return false;
+           case 'empty':
+           case '(empty)':
+               return '';
+           case 'null':
+           case '(null)':
+               return;
+       }
+
+       if (($length = strlen($value)) > 1 && $value[0] === '"' && $value[$length - 1] === '"') {
+           return substr($value, 1, -1);
+       }
+       return $value;
+   }
+
+    /**
      * Translates a path alias into an actual path.
      *
      * The translation is done according to the following procedure:
