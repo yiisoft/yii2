@@ -88,17 +88,19 @@ class Customer extends ActiveRecord
 ```
 
 ### アクティブ・レコードは「モデル」と呼ばれる
-
 アクティブ・レコードのインスタンスは [モデル](structure-models.md) であると見なされます。
 この理由により、私たちは通常 `app\models` 名前空間 (あるいはモデル・クラスを保管するための他の名前空間) の下にアクティブ・レコード・クラスを置きます。
 
-[[yii\db\ActiveRecord]] は [[yii\base\Model]] から拡張していますので、属性、検証規則、データのシリアル化など、[モデル](structure-models.md) が持つ *全ての* 機能を継承しています。
+[[yii\db\ActiveRecord]] は [[yii\base\Model]] から拡張していますので、属性、検証規則、データのシリアル化など、
+[モデル](structure-models.md) が持つ *全ての* 機能を継承しています。
 
 
 ## データベースに接続する <span id="db-connection"></span>
 
-デフォルトでは、アクティブ・レコードは、`db` [アプリケーション・コンポーネント](structure-application-components.md) を [[yii\db\Connection|DB 接続]] として使用して、データベースのデータにアクセスしたり操作したりします。
-[データベース・アクセス・オブジェクト](db-dao.md) で説明したように、次のようにして、アプリケーションの構成情報ファイルの中で `db` コンポーネントを構成することが出来ます。
+デフォルトでは、アクティブ・レコードは、`db` [アプリケーション・コンポーネント](structure-application-components.md) を
+[[yii\db\Connection|DB 接続]] として使用して、データベースのデータにアクセスしたり操作したりします。
+[データベース・アクセス・オブジェクト](db-dao.md) で説明したように、次のようにして、アプリケーションの構成情報ファイルの中で
+`db` コンポーネントを構成することが出来ます。
 
 ```php
 return [
@@ -113,7 +115,8 @@ return [
 ];
 ```
 
-`db` コンポーネントとは異なるデータベース接続を使いたい場合は、[[yii\db\ActiveRecord::getDb()|getDb()]] メソッドをオーバーライドしなければなりません。
+`db` コンポーネントとは異なるデータベース接続を使いたい場合は、[[yii\db\ActiveRecord::getDb()|getDb()]]
+メソッドをオーバーライドしなければなりません。
 
 ```php
 class Customer extends ActiveRecord
@@ -128,6 +131,7 @@ class Customer extends ActiveRecord
 }
 ```
 
+
 ## データをクエリする <span id="querying-data"></span>
 
 アクティブ・レコード・クラスを宣言した後、それを使って対応するデータベース・テーブルからデータをクエリすることが出来ます。
@@ -138,7 +142,8 @@ class Customer extends ActiveRecord
 3. [クエリ・メソッド](db-query-builder.md#query-methods) を呼んで、アクティブ・レコードのインスタンスの形でデータを取得する。
 
 ご覧のように、このプロセスは [クエリ・ビルダ](db-query-builder.md) による手続きと非常によく似ています。
-唯一の違いは、`new` 演算子を使ってクエリ・オブジェクトを生成する代りに、[[yii\db\ActiveQuery]] クラスであるクエリ・オブジェクトを返す [[yii\db\ActiveRecord::find()]] を呼ぶ、という点です。
+唯一の違いは、`new` 演算子を使ってクエリ・オブジェクトを生成する代りに、[[yii\db\ActiveQuery]] クラスであるクエリ・オブジェクトを返す
+[[yii\db\ActiveRecord::find()]] を呼ぶ、という点です。
 
 以下の例は、アクティブ・クエリを使ってデータをクエリする方法を示すものです。
 
@@ -172,9 +177,11 @@ $customers = Customer::find()
 上記において、`$customer` は `Customer` オブジェクトであり、`$customers` は `Customer` オブジェクトの配列です。
 全てこれらには `customer` テーブルから取得されたデータが投入されます。
 
-> Info: [[yii\db\ActiveQuery]] は [[yii\db\Query]] から拡張しているため、[クエリ・ビルダ](db-query-builder.md) のセクションで説明されたクエリ構築メソッドとクエリ・メソッドの *全て* を使うことが出来ます。
+> Info: [[yii\db\ActiveQuery]] は [[yii\db\Query]] から拡張しているため、[クエリ・ビルダ](db-query-builder.md)
+  のセクションで説明されたクエリ構築メソッドとクエリ・メソッドの *全て* を使うことが出来ます。
 
-プライマリ・キーの値や一群のカラムの値でクエリをすることはよく行われる仕事ですので、Yii はこの目的のために、二つのショートカット・メソッドを提供しています。
+プライマリ・キーの値や一群のカラムの値でクエリをすることはよく行われる仕事ですので、Yii はこの目的のために、
+二つのショートカット・メソッドを提供しています。
 
 - [[yii\db\ActiveRecord::findOne()]]: クエリ結果の最初の行を一つのアクティブ・レコード・インスタンスに投入して返す。
 - [[yii\db\ActiveRecord::findAll()]]: *全ての* クエリ結果をアクティブ・レコード・インスタンスの配列に投入して返す。
@@ -223,12 +230,10 @@ $customers = Customer::findAll([
 >     // ...
 > }
 >
-> // 検索するカラムを明示的に指定する場合。
-> // ここでは、どんなスカラ値または配列を渡しても、単一のレコードを発見する結果になります。
+> // 検索するカラムを明示的に指定する場合。ここでは、どんなスカラ値または配列を渡しても、単一のレコードを発見する結果になります。
 > $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
 >
-> // 次のコードを使用してはいけません!
-> // 配列形式の条件を挿入されて、任意のカラムの値による検索を実行される可能性があります!
+> // 次のコードを使用してはいけません! 任意のカラムの値による検索が可能な配列形式の条件を挿入される可能性があります!
 > $model = Post::findOne(Yii::$app->request->get('id'));
 > ```
 
@@ -245,15 +250,16 @@ $customers = Customer::findAll([
 $sql = 'SELECT * FROM customer WHERE status=:status';
 $customers = Customer::findBySql($sql, [':status' => Customer::STATUS_INACTIVE])->all();
 ```
-[[yii\db\ActiveRecord::findBySql()|findBySql()]] を呼んだ後は、追加でクエリ構築メソッドを呼び出してはいけません。呼んでも無視されます。
+
+[[yii\db\ActiveRecord::findBySql()|findBySql()]] を呼んだ後は、追加でクエリ構築メソッドを呼び出してはいけません。
+呼んでも無視されます。
 
 
 ## データにアクセスする <span id="accessing-data"></span>
 
 既に述べたように、データベースから取得されたデータはアクティブ・レコードのインスタンスに投入されます。
 そして、クエリ結果の各行がアクティブ・レコードの一つのインスタンスに対応します。
-アクティブ・レコード・インスタンスの属性にアクセスすることによって、カラムの値にアクセスすることが出来ます。
-例えば、
+アクティブ・レコード・インスタンスの属性にアクセスすることによって、カラムの値にアクセスすることが出来ます。例えば、
 
 ```php
 // "id" と "email" は "customer" テーブルのカラム名
@@ -266,15 +272,19 @@ $email = $customer->email;
   Yii は、関連付けられたテーブルの全てのカラムに対して、アクティブ・レコードの属性を自動的に定義します。
   これらの属性は、すべて、再宣言してはいけません。
 
-アクティブ・レコードの属性はテーブルのカラムに従って命名されるため、テーブルのカラム名がアンダースコアで単語を分ける方法で命名されている場合は、`$customer->first_name` のような属性名を使って PHP コードを書くことになります。
+アクティブ・レコードの属性はテーブルのカラムに従って命名されるため、
+テーブルのカラム名がアンダースコアで単語を分ける方法で命名されている場合は、
+`$customer->first_name` のような属性名を使って PHP コードを書くことになります。
 コード・スタイルの一貫性が気になるのであれば、テーブルのカラム名を (例えば camelCase を使う名前に) 変更しなければなりません。
 
 
 ### データ変換 <span id="data-transformation"></span>
 
 入力または表示されるデータの形式が、データベースにデータを保存するときに使われるものと異なる場合がよくあります。
-例えば、データベースでは顧客の誕生日を UNIX タイムスタンプで保存している (まあ、あまり良い設計ではありませんが) けれども、ほとんどの場合において誕生日を `'YYYY/MM/DD'` という形式の文字列として操作したい、というような場合です。
-この目的を達するために、次のように、`Customer` アクティブ・レコード・クラスにおいて *データ変換* メソッドを定義することが出来ます。
+例えば、データベースでは顧客の誕生日を UNIX タイムスタンプで保存している (まあ、あまり良い設計ではありませんが)
+けれども、ほとんどの場合において誕生日を `'YYYY/MM/DD'` という形式の文字列として操作したい、というような場合です。
+この目的を達するために、次のように、`Customer` アクティブ・レコード・クラスにおいて *データ変換*
+メソッドを定義することが出来ます。
 
 ```php
 class Customer extends ActiveRecord
@@ -293,7 +303,8 @@ class Customer extends ActiveRecord
 }
 ```
 
-このようにすれば、PHP コードにおいて、`$customer->birthday` にアクセスする代りに、`$customer->birthdayText` にアクセスすれば、顧客の誕生日を `'YYYY/MM/DD'` の形式で入力および表示することが出来ます。
+このようにすれば、PHP コードにおいて、`$customer->birthday` にアクセスする代りに、`$customer->birthdayText` にアクセスすれば、
+顧客の誕生日を `'YYYY/MM/DD'` の形式で入力および表示することが出来ます。
 
 > Tip: 上記は、一般にデータの変換を達成するための簡単な方法を示すためのものです。
 > 日付の値については、Yii は、[DateValidator](tutorial-core-validators.md#date) と DatePicker ウィジェットを使用するという、より良い方法を提供しています。
@@ -302,7 +313,8 @@ class Customer extends ActiveRecord
 
 ### データを配列に取得する <span id="data-in-arrays"></span>
 
-データをアクティブ・レコード・オブジェクトの形で取得するのは便利であり柔軟ですが、大きなメモリ使用量を要するために、大量のデータを取得しなければならない場合は、必ずしも望ましい方法ではありません。
+データをアクティブ・レコード・オブジェクトの形で取得するのは便利であり柔軟ですが、大きなメモリ使用量を要するために、
+大量のデータを取得しなければならない場合は、必ずしも望ましい方法ではありません。
 そういう場合は、クエリ・メソッドを実行する前に [[yii\db\ActiveQuery::asArray()|asArray()]] を呼ぶことによって、PHP 配列を使ってデータを取得することが出来ます。
 
 ```php
@@ -313,8 +325,8 @@ $customers = Customer::find()
     ->all();
 ```
 
-> Note: このメソッドはメモリを節約してパフォーマンスを向上させますが、低レベルの DB 抽象レイヤに近いものであり、あなたはアクティブ・レコードの機能のほとんどを失うことになります。
-  非常に重要な違いが、カラムの値のデータ型に現れます。
+> Note: このメソッドはメモリを節約してパフォーマンスを向上させますが、低レベルの DB 抽象レイヤに近いものであり、
+  あなたはアクティブ・レコードの機能のほとんどを失うことになります。非常に重要な違いが、カラムの値のデータ型に現れます。
   アクティブ・レコード・インスタンスとしてデータを返す場合、カラムの値は実際のカラムの型に従って自動的に型キャストされます。
   一方、配列としてデータを返す場合は、実際のカラムの型に関係なく、カラムの値は文字列になります。
   なぜなら、何も処理をしない場合の PDO の結果は文字列だからです。
@@ -322,19 +334,20 @@ $customers = Customer::find()
 
 ### データをバッチ・モードで取得する <span id="data-in-batches"></span>
 
-[クエリ・ビルダ](db-query-builder.md) において、大量のデータをデータベースから検索する場合に、メモリ使用量を最小化するために *バッチ・クエリ* を使うことが出来るということを説明しました。
-おなじテクニックをアクティブ・レコードでも使うことが出来ます。
-例えば、
+[クエリ・ビルダ](db-query-builder.md) において、大量のデータをデータベースから検索する場合に、メモリ使用量を最小化するために
+*バッチ・クエリ* を使うことが出来るということを説明しました。おなじテクニックをアクティブ・レコードでも使うことが出来ます。例えば、
 
 ```php
 // 一度に 10 人の顧客を読み出す
 foreach (Customer::find()->batch(10) as $customers) {
     // $customers は 10 以下の Customer オブジェクトの配列
 }
+
 // 一度に 10 人の顧客を読み出して、一人ずつ反復する
 foreach (Customer::find()->each(10) as $customer) {
     // $customer は Customer オブジェクト
 }
+
 // イーガー・ローディングをするバッチ・クエリ
 foreach (Customer::find()->with('orders')->each() as $customer) {
     // $customer は 'orders' リレーションを投入された Customer オブジェクト
@@ -352,6 +365,7 @@ foreach (Customer::find()->with('orders')->each() as $customer) {
 
 例えば、
 
+```php
 // 新しいデータ行を挿入する
 $customer = new Customer();
 $customer->name = 'James';
@@ -364,11 +378,13 @@ $customer->email = 'james@newexample.com';
 $customer->save();
 ```
 
-[[yii\db\ActiveRecord::save()|save()]] メソッドは、アクティブ・レコード・インスタンスの状態に従って、データ行を挿入するか、または、更新することが出来ます。
-インスタンスが `new` 演算子によって新しく作成されたものである場合は、[[yii\db\ActiveRecord::save()|save()]] を呼び出すと、新しい行が挿入されます。
-インスタンスがクエリ・メソッドの結果である場合は、[[yii\db\ActiveRecord::save()|save()]] を呼び出すと、そのインスタンスと関連付けられた行が更新されます。
+[[yii\db\ActiveRecord::save()|save()]] メソッドは、アクティブ・レコード・インスタンスの状態に従って、データ行を挿入するか、
+または、更新することが出来ます。インスタンスが `new` 演算子によって新しく作成されたものである場合は、
+[[yii\db\ActiveRecord::save()|save()]] を呼び出すと、新しい行が挿入されます。インスタンスがクエリ・メソッドの結果である場合は、
+[[yii\db\ActiveRecord::save()|save()]] を呼び出すと、そのインスタンスと関連付けられた行が更新されます。
 
-アクティブ・レコード・インスタンスの二つの状態は、その [[yii\db\ActiveRecord::isNewRecord|isNewRecord]] プロパティの値をチェックすることによって区別することが出来ます。
+アクティブ・レコード・インスタンスの二つの状態は、その [[yii\db\ActiveRecord::isNewRecord|isNewRecord]]
+プロパティの値をチェックすることによって区別することが出来ます。
 下記のように、このプロパティは [[yii\db\ActiveRecord::save()|save()]] によっても内部的に使用されています。
 
 ```php
@@ -382,19 +398,22 @@ public function save($runValidation = true, $attributeNames = null)
 }
 ```
 
-> Tip: [[yii\db\ActiveRecord::insert()|insert()]] または [[yii\db\ActiveRecord::update()|update()]] を直接に呼んで、行を挿入または更新することも出来ます。
+> Tip: [[yii\db\ActiveRecord::insert()|insert()]] または [[yii\db\ActiveRecord::update()|update()]] を直接に呼んで、
+  行を挿入または更新することも出来ます。
 
 
 ### データの検証 <span id="data-validation"></span>
 
 [[yii\db\ActiveRecord]] は [[yii\base\Model]] を拡張したものですので、同じ [データ検証](input-validation.md) 機能を共有しています。
-[[yii\db\ActiveRecord::rules()|rules()]] メソッドをオーバーライドすることによって検証規則を宣言し、[[yii\db\ActiveRecord::validate()|validate()]] メソッドを呼ぶことによってテータの検証を実行することが出来ます。
+[[yii\db\ActiveRecord::rules()|rules()]] メソッドをオーバーライドすることによって検証規則を宣言し、
+[[yii\db\ActiveRecord::validate()|validate()]] メソッドを呼ぶことによってテータの検証を実行することが出来ます。
 
 [[yii\db\ActiveRecord::save()|save()]] を呼ぶと、デフォルトでは [[yii\db\ActiveRecord::validate()|validate()]] が自動的に呼ばれます。
 検証が通った時だけ、実際にデータが保存されます。
 検証が通らなかった時は単に `false` が返され、[[yii\db\ActiveRecord::errors|errors]] プロパティをチェックして検証エラー・メッセージを取得することが出来ます。
 
-> Tip: データが検証を必要としないことが確実である場合 (例えば、データが信頼できるソースに由来するものである場合) は、検証をスキップするために `save(false)` を呼ぶことが出来ます。
+> Tip: データが検証を必要としないことが確実である場合 (例えば、データが信頼できるソースに由来するものである場合) は、
+  検証をスキップするために `save(false)` を呼ぶことが出来ます。
 
 
 ### 一括代入 <span id="massive-assignment"></span>
@@ -418,8 +437,7 @@ $customer->save();
 
 ### カウンタを更新する <span id="updating-counters"></span>
 
-データベース・テーブルのあるカラムの値を増加・減少させるのは、よくある仕事です。
-私たちはそのようなカラムをカウンタ・カラムと呼んでいます。
+データベース・テーブルのあるカラムの値を増加・減少させるのは、よくある仕事です。私たちはそのようなカラムをカウンタ・カラムと呼んでいます。
 [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] を使って一つまたは複数のカウンタ・カラムを更新することが出来ます。
 例えば、
 
@@ -438,19 +456,22 @@ $post->updateCounters(['view_count' => 1]);
 
 [[yii\db\ActiveRecord::save()|save()]] を呼んでアクティブ・レコード・インスタンスを保存すると、*ダーティな属性* だけが保存されます。
 属性は、DB からロードされた後、または、最後に保存された後にその値が変更されると、*ダーティ* であると見なされます。
-ただし、データ検証は、アクティブ・レコード・インスタンスがダーティな属性を持っているかどうかに関係なく実施されることに注意してください。
+ただし、データ検証は、アクティブ・レコード・インスタンスがダーティな属性を持っているかどうかに関係なく実施される
+ことに注意してください。
 
 アクティブ・レコードはダーティな属性のリストを自動的に保守します。
 そうするために、一つ前のバージョンの属性値を保持して、最新のバージョンと比較します。
 [[yii\db\ActiveRecord::getDirtyAttributes()]] を呼ぶと、現在ダーティである属性を取得することが出来ます。
 また、[[yii\db\ActiveRecord::markAttributeDirty()]] を呼んで、ある属性をダーティであると明示的にマークすることも出来ます。
 
-最新の修正を受ける前の属性値を知りたい場合は、[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]] または [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]] を呼ぶことが出来ます。
+最新の修正を受ける前の属性値を知りたい場合は、[[yii\db\ActiveRecord::getOldAttributes()|getOldAttributes()]]
+または [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]] を呼ぶことが出来ます。
 
 > Note: 新旧の値は `===` 演算子を使って比較されるため、同じ値を持っていても型が違うとダーティであると見なされます。
 > このことは、モデルが HTML フォームからユーザの入力を受け取るときにしばしば生じます。
 > HTML フォームでは全ての値が文字列として表現されるからです。
-> 入力値が正しい型、例えば整数値となることを保証するために、`['attributeName', 'filter', 'filter' => 'intval']` のように [検証フィルタ](input-validation.md#data-filtering) を適用することが出来ます。
+> 入力値が正しい型、例えば整数値となることを保証するために、`['attributeName', 'filter', 'filter' => 'intval']` のように
+> [検証フィルタ](input-validation.md#data-filtering) を適用することが出来ます。
 > このフィルタは、[intval()](http://php.net/manual/ja/function.intval.php), [floatval()](http://php.net/manual/ja/function.floatval.php),
 > [boolval](http://php.net/manual/ja/function.boolval.php) など、PHP の全てのタイプキャスト関数で動作します。
 
@@ -458,7 +479,8 @@ $post->updateCounters(['view_count' => 1]);
 
 あなたのテーブルのカラムの中には、データベースでデフォルト値が定義されているものがあるかも知れません。
 そして、場合によっては、アクティブ・レコード・インスタンスのウェブ・フォームに、そういうデフォルト値をあらかじめ投入したいことがあるでしょう。
-同じデフォルト値を繰り返して書くことを避けるために、[[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]] を呼んで、DB で定義されたデフォルト値を対応するアクティブ・レコードの属性に投入することが出来ます。
+同じデフォルト値を繰り返して書くことを避けるために、[[yii\db\ActiveRecord::loadDefaultValues()|loadDefaultValues()]]
+を呼んで、DB で定義されたデフォルト値を対応するアクティブ・レコードの属性に投入することが出来ます。
 
 ```php
 $customer = new Customer();
@@ -471,8 +493,7 @@ $customer->loadDefaultValues();
 
 [[yii\db\ActiveRecord]] は、クエリの結果を投入されるときに、[データベース・テーブル・スキーマ](db-dao.md#database-schema)
 からの情報を使って、自動的な型キャストを実行します。これによって、整数として宣言されているテーブルカラムから取得されるデータを
-アクティブ・レコードのインスタンスでも PHP の integer として投入し、
-真偽値として宣言されているデータを boolean として投入することが出来るようになっています。
+アクティブ・レコードのインスタンスでも PHP の integer として投入し、真偽値として宣言されているデータを boolean として投入することが出来るようになっています。
 しかしながら、型キャストのメカニズムには、いくつかの制約があります。
 
 * 浮動小数点数値は変換されず、文字列として表されます。そうしないと精度が失われるおそれがあるからです。
@@ -482,11 +503,12 @@ $customer->loadDefaultValues();
 
 属性の型キャストは、アクティブ・レコードのインスタンスにクエリの結果から値を投入するときだけしか実行されないことに注意してください。
 HTTP リクエストから値をロードしたり、プロパティにアクセスして直接に値を設定したりするときには、自動的な変換は行われません。
-また、アクティブ・レコードのデータ保存のための SQL 文を準備する際にもテーブル・スキーマが使用されて、値が正しい型でクエリにバインドされることを保証します。
+また、アクティブ・レコードのデータ保存のための SQL 文を準備する際にもテーブル・スキーマが使用されて、
+値が正しい型でクエリにバインドされることを保証します。
 しかし、アクティブ・レコードのインスタンスの属性値は保存の過程において変換されることはありません。
 
 > Tip: アクティブ・レコードの検証や保存の際の属性型キャストを楽にするために
-[[yii\behaviors\AttributeTypecastBehavior]] を使うことが出来ます。
+  [[yii\behaviors\AttributeTypecastBehavior]] を使うことが出来ます。
 
 2.0.14 以降、Yii のアクティブ・レコードは、JSON や多次元配列のような複雑な型をサポートしています。
 
@@ -501,8 +523,7 @@ HTTP リクエストから値をロードしたり、プロパティにアクセ
 #### PostgreSQL における配列
 
 データが取得された後、配列カラムの値は PgSQL 記法から自動的に [[yii\db\ArrayExpression|ArrayExpression]] オブジェクトにデコードされます。
-このオブジェクトは PHP の `ArrayAccess` インタフェイスを実装しているため、これを配列として使うこと事が出来ます。
-また、`->getValue()` を呼んで配列そのものを取得することも出来ます。
+このオブジェクトは PHP の `ArrayAccess` インタフェイスを実装しているため、これを配列として使うこと事が出来ます。また、`->getValue()` を呼んで配列そのものを取得することも出来ます。
 
 アクティブ・レコードは、属性値を配列カラムに保存するために [[yii\db\ArrayExpression|ArrayExpression]]
 オブジェクトを生成します。このオブジェクトが [クエリ・ビルダ](db-query-builder.md) のレベルで配列を表す PgSQL 文字列にエンコードされます。
@@ -519,14 +540,16 @@ $query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
 ### 複数の行を更新する <span id="updating-multiple-rows"></span>
 
 上述のメソッドは、すべて、個別のアクティブ・レコード・インスタンスに対して作用し、個別のテーブル行を挿入したり更新したりするものです。
-複数の行を同時に更新するためには、代りに、スタティックなメソッドである [[yii\db\ActiveRecord::updateAll()|updateAll()]] を呼ばなければなりません。
+複数の行を同時に更新するためには、代りに、スタティックなメソッドである [[yii\db\ActiveRecord::updateAll()|updateAll()]]
+を呼ばなければなりません。
 
 ```php
 // UPDATE `customer` SET `status` = 1 WHERE `email` LIKE `%@example.com`
 Customer::updateAll(['status' => Customer::STATUS_ACTIVE], ['like', 'email', '@example.com']);
 ```
 
-同様に、[[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] を呼んで、複数の行のカウンタカラムを同時に更新することが出来ます。
+同様に、[[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] を呼んで、
+複数の行のカウンタカラムを同時に更新することが出来ます。
 
 ```php
 // UPDATE `customer` SET `age` = `age` + 1
