@@ -1186,9 +1186,9 @@ $customers = Customer::find()
   リレーションのデータを取得するのには `JOIN` クエリの結果は**使われません**。
   その場合でも、やはり、[イーガー・ローディング](#lazy-eager-loading) のセクションで説明したように、結合されたリレーションごとに追加のクエリが実行されます。
 
-[[yii\db\ActiveQuery::with()|with()]] と同じように、一つまたは複数のリレーションを結合したり、リレーションクエリをその場でカスタマイズしたり、ネストされたリレーションを結合したりすることが出来ます。
-また、[[yii\db\ActiveQuery::with()|with()]] と [[yii\db\ActiveQuery::joinWith()|joinWith()]] を混ぜて使用することも出来ます。
-例えば、
+[[yii\db\ActiveQuery::with()|with()]] と同じように、一つまたは複数のリレーションを結合したり、
+リレーションクエリをその場でカスタマイズしたり、ネストされたリレーションを結合したりすることが出来ます。
+また、[[yii\db\ActiveQuery::with()|with()]] と [[yii\db\ActiveQuery::joinWith()|joinWith()]] を混ぜて使用することも出来ます。例えば、
 
 ```php
 $customers = Customer::find()->joinWith([
@@ -1217,14 +1217,14 @@ $customers = Customer::find()->joinWith([
 上記のクエリは *全ての* 顧客を返し、各顧客について全てのアクティブな注文を返します。
 これは、少なくとも一つのアクティブな注文を持つ顧客を全て返す、という以前の例とは異なっていることに注意してください。
 
-> Info: [[yii\db\ActiveQuery]] が [[yii\db\ActiveQuery::onCondition()|onCondition()]] によって条件を指定された場合、クエリが JOIN 句を含む場合は、条件は `ON` の部分に置かれます。
+> Info: [[yii\db\ActiveQuery]] が [[yii\db\ActiveQuery::onCondition()|onCondition()]] によって条件を指定された場合、
+  クエリが JOIN 句を含む場合は、条件は `ON` の部分に置かれます。
   クエリが JOIN 句を含まない場合は、条件は自動的に `WHERE` の部分に追加されます。
   このようにして、リレーションのテーブルのカラムを含む条件だけが `ON` の部分に置かれます。
 
 #### リレーションのテーブルのエイリアス <span id="relation-table-aliases"></span>
 
-前に注意したように、クエリに JOIN を使うときは、カラム名の曖昧さを解消する必要があります。
-そのために、テーブルにエイリアスを定義することがよくあります。
+前に注意したように、クエリに JOIN を使うときは、カラム名の曖昧さを解消する必要があります。そのために、テーブルにエイリアスを定義することがよくあります。
 リレーションのテーブルのためにエイリアスを設定することは、リレーショナル・クエリを次のようにカスタマイズすることによっても可能です。
 
 ```php
@@ -1236,8 +1236,7 @@ $query->joinWith([
 ```
 
 しかし、これでは非常に複雑ですし、リレーションオブジェクトのテーブル名をハードコーディングしたり、`Order::tableName()` を呼んだりしなければなりません。
-バージョン 2.0.7 以降、Yii はこれに対するショートカットを提供しています。
-今では、次のようにしてリレーションのテーブルのエイリアスを定義して使うことが出来ます。
+バージョン 2.0.7 以降、Yii はこれに対するショートカットを提供しています。今では、次のようにしてリレーションのテーブルのエイリアスを定義して使うことが出来ます。
 
 ```php
 // orders リレーションを JOIN し、結果を orders.id でソートする
@@ -1298,7 +1297,19 @@ echo $customer2 === $customer ? '同じ' : '異なる';
 実際、二つは同じ顧客データを含んでいますが、オブジェクトとしては異なります。
 `$order->customer` にアクセスするときに追加の SQL 文が実行されて、新しいオブジェクトである `$customer2` にデータが投入されます。
 
-上記の例において、冗長な最後の SQL 文の実行を避けるためには、下に示すように、[[yii\db\ActiveQuery::inverseOf()|inverseOf()]] メソッドを呼ぶことによって、`customer` が `orders` の *逆リレーション* であることを Yii に教えておかなければなりません。
+上記の例において、冗長な最後の SQL 文の実行を避けるためには、下に示すように、
+[[yii\db\ActiveQuery::inverseOf()|inverseOf()]]メソッドを呼ぶことによって、`customer` が
+`orders` の *逆リレーション* であることを Yii に教えておかなければなりません。
+
+```php
+class Customer extends ActiveRecord
+{
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+    }
+}
+```
 
 このようにリレーションの宣言を修正すると、次の結果を得ることが出来ます。
 
@@ -1317,7 +1328,8 @@ echo $customer2 === $customer ? '同じ' : '異なる';
 ```
 
 > Note: 逆リレーションは [中間テーブル](#junction-table) を含むリレーションについては宣言することが出来ません。
-  つまり、リレーションが [[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]] によって定義されている場合は、[[yii\db\ActiveQuery::inverseOf()|inverseOf()]] を追加で呼んではいけません。
+  つまり、リレーションが [[yii\db\ActiveQuery::via()|via()]] または [[yii\db\ActiveQuery::viaTable()|viaTable()]]
+  によって定義されている場合は、[[yii\db\ActiveQuery::inverseOf()|inverseOf()]] を追加で呼んではいけません。
 
 
 ## リレーションを保存する <span id="saving-relations"></span>
@@ -1348,13 +1360,16 @@ $order->subtotal = 100;
 $order->link('customer', $customer);
 ```
 
-[[yii\db\ActiveRecord::link()|link()]] メソッドは、リレーション名と、リレーションを確立する対象のアクティブ・レコード・インスタンスを指定することを要求します。
+[[yii\db\ActiveRecord::link()|link()]] メソッドは、リレーション名と、リレーションを確立する対象の
+アクティブ・レコード・インスタンスを指定することを要求します。
 このメソッドは、二つのアクティブ・レコード・インスタンスをリンクする属性の値を修正して、それをデータベースに書き込みます。
-上記の例では、`Order` インスタンスの `customer_id` 属性を `Customer` インスタンスの `id` 属性の値になるようにセットして、それをデータベースに保存します。
+上記の例では、`Order` インスタンスの `customer_id` 属性を `Customer` インスタンスの `id`
+属性の値になるようにセットして、それをデータベースに保存します。
 
 > Note: 二つの新規作成されたアクティブ・レコード・インスタンスをリンクすることは出来ません。
 
-[[yii\db\ActiveRecord::link()|link()]] を使用することの利点は、リレーションが [中間テーブル](#junction-table) によって定義されている場合に、さらに明白になります。
+[[yii\db\ActiveRecord::link()|link()]] を使用することの利点は、リレーションが [中間テーブル](#junction-table)
+によって定義されている場合に、さらに明白になります。
 例えば、一つの `Order` インスタンスと一つの`Item` インスタンスをリンクするのに、次のコードを使うことが出来ます。
 
 ```php
@@ -1363,30 +1378,32 @@ $order->link('items', $item);
 
 上記のコードによって、`order_item` 中間テーブルに、注文と商品を関連付けるための行が自動的に挿入されます。
 
-> Info: [[yii\db\ActiveRecord::link()|link()]] メソッドは、影響を受けるアクティブ・レコード・インスタンスを保存する際に、データ検証を実行しません。
+> Info: [[yii\db\ActiveRecord::link()|link()]] メソッドは、
+  影響を受けるアクティブ・レコード・インスタンスを保存する際に、データ検証を実行しません。
   このメソッドを呼ぶ前にすべての入力値を検証することはあなたの責任です。
 
 [[yii\db\ActiveRecord::link()|link()]] の逆の操作が [[yii\db\ActiveRecord::unlink()|unlink()]] です。
-これは、既存の二つのアクティブ・レコード・インスタンスのリレーションを破棄します。
-例えば、
+これは、既存の二つのアクティブ・レコード・インスタンスのリレーションを破棄します。例えば、
 
 ```php
 $customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 
-デフォルトでは、[[yii\db\ActiveRecord::unlink()|unlink()]] メソッドは、既存のリレーションを指定している外部キーの値を `null` に設定します。
+デフォルトでは、[[yii\db\ActiveRecord::unlink()|unlink()]] メソッドは、
+既存のリレーションを指定している外部キーの値を `null` に設定します。
 ただし、`$delete` パラメータを `true` にしてメソッドに渡して、その外部キーを含むテーブル行を削除するという方法を選ぶことも出来ます。
 
-リレーションに中間テーブルが含まれている場合は、[[yii\db\ActiveRecord::unlink()|unlink()]] を呼ぶと、中間テーブルにある外部キーがクリアされるか、または、`$delete` が `true` であるときは、中間テーブルにある対応する行が削除されるかします。
+リレーションに中間テーブルが含まれている場合は、[[yii\db\ActiveRecord::unlink()|unlink()]] を呼ぶと、
+中間テーブルにある外部キーがクリアされるか、または、`$delete` が `true` であるときは、
+中間テーブルにある対応する行が削除されるかします。
 
 
 ## DBMS 間のリレーション <span id="cross-database-relations"></span> 
 
 アクティブ・レコードは、異なるデータベースをバックエンドに持つアクティブ・レコードの間でリレーションを宣言することを可能にしています。
 データベースは異なるタイプ (例えば、MySQL と PostgreSQL、または、MS SQL と MongoDB) であってもよく、別のサーバで動作していても構いません。
-同じ構文を使ってリレーショナル・クエリを実行することが出来ます。
-例えば、
+同じ構文を使ってリレーショナル・クエリを実行することが出来ます。例えば、
 
 ```php
 // Customer はリレーショナル・データベース (例えば MySQL) の "customer" テーブルと関連付けられている
@@ -1425,15 +1442,14 @@ $customers = Customer::find()->with('comments')->all();
 このセクションで説明されたリレーショナル・クエリ機能のほとんどを使用することが出来ます。
 
 > Note: [[yii\db\ActiveQuery::joinWith()]] の使用は、データベース間の JOIN クエリをサポートしているデータベースに限定されます。
-  この理由により、上記の例では `joinWith` メソッドは使用することが出来ません。
-  MongoDB は JOIN をサポートしていないからです。
+  この理由により、上記の例では `joinWith` メソッドは使用することが出来ません。MongoDB は JOIN をサポートしていないからです。
 
 
 ## クエリ・クラスをカスタマイズする <span id="customizing-query-classes"></span>
 
 デフォルトでは、全てのアクティブ・レコードのクエリは [[yii\db\ActiveQuery]] によってサポートされます。
-カスタマイズされたクエリ・クラスをアクティブ・レコードで使用するためには、[[yii\db\ActiveRecord::find()]] メソッドをオーバーライドして、カスタマイズされたクエリ・クラスのインスタンスを返すようにしなければなりません。
-例えば、
+カスタマイズされたクエリ・クラスをアクティブ・レコードで使用するためには、[[yii\db\ActiveRecord::find()]]
+メソッドをオーバーライドして、カスタマイズされたクエリ・クラスのインスタンスを返すようにしなければなりません。例えば、
  
 ```php
 // file Comment.php
@@ -1450,10 +1466,10 @@ class Comment extends ActiveRecord
 }
 ```
 
-このようにすると、`Comment` のクエリを実行したり (例えば `find()` や `findOne()` を呼んだり)、`Comment` とのリレーションを定義したり (例えば `hasOne()` を定義したり) する際には、いつでも、`AcctiveQuery` の代りに `CommentQuery` のインスタンスを使用することになります。
+このようにすると、`Comment` のクエリを実行したり (例えば `find()` や `findOne()` を呼んだり)、`Comment` とのリレーションを定義したり (例えば `hasOne()` を定義したり)
+する際には、いつでも、`AcctiveQuery` の代りに `CommentQuery` のインスタンスを使用することになります。
 
-さて、`CommentQuery` クラスを定義しなければならない訳ですが、このクラスをさまざまな創造的方法でカスタマイズして、
-あなたのクエリ構築作業を楽しいものにすることが出来ます。例えば、
+さて、`CommentQuery` クラスを定義しなければならない訳ですが、このクラスをさまざまな創造的方法でカスタマイズして、あなたのクエリ構築作業を楽しいものにすることが出来ます。例えば、
 
 ```php
 // file CommentQuery.php
