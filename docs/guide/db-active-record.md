@@ -1182,7 +1182,9 @@ the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery
 Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
 If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as `false`. 
 
-> Note: Even when using [[yii\db\ActiveQuery::joinWith()|joinWith()]] or [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] with eager loading enabled the related data will **not** be populated from the result of the `JOIN` query. So there's still an extra query for each joined relation as explained in the section on [eager loading](#lazy-eager-loading).
+> Note: Even when using [[yii\db\ActiveQuery::joinWith()|joinWith()]] or [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]]
+  with eager loading enabled the related data will **not** be populated from the result of the `JOIN` query. So there's
+  still an extra query for each joined relation as explained in the section on [eager loading](#lazy-eager-loading).
 
 Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
 queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
@@ -1494,7 +1496,8 @@ class CommentQuery extends ActiveQuery
 ```
 
 > Note: Instead of calling [[yii\db\ActiveQuery::onCondition()|onCondition()]], you usually should call
-  [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] or [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] to append additional conditions when defining new query building methods so that any existing conditions are not overwritten.
+  [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] or [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]]
+  to append additional conditions when defining new query building methods so that any existing conditions are not overwritten.
 
 This allows you to write query building code like the following:
 
