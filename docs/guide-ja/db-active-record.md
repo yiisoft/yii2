@@ -1496,8 +1496,8 @@ class CommentQuery extends ActiveQuery
 ```
 
 > Note: 新しいクエリ構築メソッドを定義するときには、通常は、既存のどの条件も上書きしないように、
-[[yii\db\ActiveQuery::onCondition()|onCondition()]] ではなく、[[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]]
-または [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] を呼んで条件を追加しなければなりません。
+  [[yii\db\ActiveQuery::onCondition()|onCondition()]] ではなく、[[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]]
+  または [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] を呼んで条件を追加しなければなりません。
 
 このようにすると、次のようなクエリ構築のコードを書くことが出来るようになります。
 
@@ -1506,8 +1506,8 @@ $comments = Comment::find()->active()->all();
 $inactiveComments = Comment::find()->active(false)->all();
 ```
 
-
-> Tip: 大きなプロジェクトでは、アクティブ・レコード・クラスをクリーンに保つことが出来るように、クエリ関連のコードのほとんどをカスタマイズされたクエリ・クラスに保持することが推奨されます。
+> Tip: 大きなプロジェクトでは、アクティブ・レコード・クラスをクリーンに保つことが出来るように、
+  クエリ関連のコードのほとんどをカスタマイズされたクエリ・クラスに保持することが推奨されます。
 
 この新しいクエリ構築メソッドは、`Comment` に関するリレーションを定義するときや、リレーショナル・クエリを実行するときにも使用することが出来ます。
 
@@ -1538,14 +1538,14 @@ $customers = Customer::find()->with([
 ])->all();
 ```
 
-> Info: Yii 1.1 には、*スコープ* と呼ばれる概念がありました。
-  Yii 2.0 では、スコープはもはや直接にはサポートされません。
+> Info: Yii 1.1 には、*スコープ* と呼ばれる概念がありました。 Yii 2.0 では、スコープはもはや直接にはサポートされません。
   同じ目的を達するためには、カスタマイズされたクエリ・クラスとクエリ・メソッドを使わなければなりません。
 
 
 ## 追加のフィールドを選択する
 
-アクティブ・レコードのインスタンスにクエリ結果からデータが投入されるときは、受け取ったデータセットのカラムの値が対応する属性に入れられます。
+アクティブ・レコードのインスタンスにクエリ結果からデータが投入されるときは、
+受け取ったデータセットのカラムの値が対応する属性に入れられます。
 
 クエリ結果から追加のカラムや値を取得して、アクティブ・レコードの内部に格納することが出来ます。
 例えば、ホテルの客室の情報を含む `room` という名前のテーブルがあるとしましょう。
@@ -1624,7 +1624,8 @@ $room->height = 2;
 $room->volume; // まだ指定されていないため、この値は `null` になります。
 ```
 
-[[yii\db\BaseActiveRecord::__get()|__get()]] と [[yii\db\BaseActiveRecord::__set()|__set()]] のマジック・メソッドを使用すれば、プロパティの動作をエミュレートすることが出来ます。
+[[yii\db\BaseActiveRecord::__get()|__get()]] と [[yii\db\BaseActiveRecord::__set()|__set()]] のマジック・メソッドを使用すれば、
+プロパティの動作をエミュレートすることが出来ます。
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1655,7 +1656,8 @@ class Room extends \yii\db\ActiveRecord
 }
 ```
 
-このようにすると、SELECT クエリによって容積が提供されていない場合に、モデルの他の属性を使って容積を自動的に計算することが出来ます。
+このようにすると、SELECT クエリによって容積が提供されていない場合に、
+モデルの他の属性を使って容積を自動的に計算することが出来ます。
 
 集約フィールドも、同じように、定義されたリレーションを使って計算することが出来ます。
 
