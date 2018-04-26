@@ -357,7 +357,7 @@ class m160328_040430_create_post_table extends Migration
 
 Ключевое слово `foreignKey` может принимать в скобках параметр, который будет использован в качестве имени таблицы для внешнего ключа. Если параметр не был передан, то имя таблицы будет извлечено из названия поля.
 
-В приведенном выше примере `author_id:integer:notNull:foreignKey(user)` будет генерировать поле `author_id` с внешним ключом на таблицу `user`, а `category_id:integer:defaultValue(1):foreignKey` сгенерирует поле `author_id` с внешним ключом на таблицу `category`.
+В приведенном выше примере `author_id:integer:notNull:foreignKey(user)` будет генерировать поле `author_id` с внешним ключом на таблицу `user`, а `category_id:integer:defaultValue(1):foreignKey` сгенерирует поле `category_id` с внешним ключом на таблицу `category`.
 
 Начиная с версии 2.0.11, ключевое слово `foreignKey` может принимать второй параметр, который следует указывать через пробел.
 Этот параметр будет использован в качестве имени поля внешнего ключа.
@@ -817,7 +817,7 @@ yii migrate/create 'app\\migrations\\createUserTable'
 ```
 
 > Замечание: миграции заданные через [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] не могут содержать
-  пространство имен, миграции, объявленные с пространством имен могут быть применены только используя свойство [[yii\console\controllers\MigrateController::migrationNamespaces]].
+  пространство имен, миграции, объявленные с пространством имен, могут быть применены только используя свойство [[yii\console\controllers\MigrateController::migrationNamespaces]].
 
 
 ### Отдельностоящие Миграции <span id="separated-migrations"></span>
