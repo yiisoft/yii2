@@ -1496,9 +1496,8 @@ class CommentQuery extends ActiveQuery
 ```
 
 > Note: 新しいクエリ構築メソッドを定義するときには、通常は、既存のどの条件も上書きしないように、
-[[yii\db\ActiveQuery::onCondition()|onCondition()]] ではなく、
-[[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] または [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]]
-を呼んで条件を追加しなければなりません。
+[[yii\db\ActiveQuery::onCondition()|onCondition()]] ではなく、[[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]]
+または [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] を呼んで条件を追加しなければなりません。
 
 このようにすると、次のようなクエリ構築のコードを書くことが出来るようになります。
 
