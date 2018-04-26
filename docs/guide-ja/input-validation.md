@@ -1,12 +1,12 @@
 入力を検証する
 ==============
 
-経験則として言えることは、エンド・ユーザから受信したデータは決して信用せず、利用する前に検証しなければならない、ということです。
+経験則として言えることは、エンド・ユーザから受信したデータは決して信用せず、
+利用する前に検証しなければならない、ということです。
 
 [モデル](structure-models.md) にユーザの入力が投入されたら、モデルの [[yii\base\Model::validate()]] メソッドを呼んで入力を検証することが出来ます。
 このメソッドは検証が成功したか否かを示す真偽値を返します。
-検証が失敗した場合は、[[yii\base\Model::errors]] プロパティからエラー・メッセージを取得することが出来ます。
-例えば、
+検証が失敗した場合は、[[yii\base\Model::errors]] プロパティからエラー・メッセージを取得することが出来ます。例えば、
 
 ```php
 $model = new \app\models\ContactForm();
@@ -23,6 +23,7 @@ if ($model->validate()) {
     $errors = $model->errors;
 }
 ```
+
 
 ## 規則を宣言する <span id="declaring-rules"></span>
 
@@ -43,12 +44,14 @@ public function rules()
 }
 ```
 
-[[yii\base\Model::rules()|rules()]] メソッドは規則の配列を返すべきものですが、その配列の各要素は次の形式の配列でなければなりません。
+[[yii\base\Model::rules()|rules()]] メソッドは規則の配列を返すべきものですが、
+その配列の各要素は次の形式の配列でなければなりません。
 
 ```php
 [
     // 必須。この規則によって検証されるべき属性を指定する。
-    // 属性が一つだけの場合は、配列の中に入れずに、属性の名前を直接に書いてもよい。
+    // 属性が一つだけの場合は、属性の名前を直接に書いてもよい。
+    // (配列の中に入れずに)
     ['属性1', '属性2', ...],
 
     // 必須。この規則のタイプを指定する。
@@ -71,11 +74,12 @@ public function rules()
 
 * コア・バリデータのエイリアス。例えば、`required`、`in`、`date`、等々。
   コア・バリデータの完全なリストは [コア・バリデータ](tutorial-core-validators.md) を参照してください。
-* モデル・クラス内のバリデーション・メソッドの名前、または無名関数。詳細は、[インライン・バリデータ](#inline-validators) の項を参照してください。
-* 完全修飾のバリデータ・クラス名。詳細は [スタンドアロン・バリデータ](#standalone-validators) の項を参照してください。
+* モデル・クラス内のバリデーション・メソッドの名前、または無名関数。
+  詳細は、[インライン・バリデータ](#inline-validators) の項を参照してください。
+* 完全修飾のバリデータ・クラス名。詳細は [スタンドアロン・バリデータ](#standalone-validators) 
+  の項を参照してください。
 
-一つの規則は、一つまたは複数の属性を検証するために使用することが出来ます。
-そして、一つの属性は、一つまたは複数の規則によって検証され得ます。
+一つの規則は、一つまたは複数の属性を検証するために使用することが出来ます。そして、一つの属性は、一つまたは複数の規則によって検証され得ます。
 `on` オプションを指定することで、規則を特定の [シナリオ](structure-models.md#scenarios) においてのみ適用することが出来ます。
 `on` オプションを指定しない場合は、規則が全てのシナリオに適用されることになります。
 
@@ -88,7 +92,9 @@ public function rules()
 3. 全てのアクティブな規則を一つずつ使って、その規則に関連付けられた全てのアクティブな属性を一つずつ検証します。
    検証規則はリストに挙げられている順に評価されます。
 
-属性は、上記の検証のステップに従って、`scenarios()` でアクティブな属性であると宣言されており、かつ、`rules()` で宣言された一つまたは複数のアクティブな規則と関連付けられている場合に、また、その場合に限って、検証されます。
+属性は、上記の検証のステップに従って、`scenarios()` でアクティブな属性であると宣言されており、
+かつ、`rules()` で宣言された一つまたは複数のアクティブな規則と関連付けられている場合に、
+また、その場合に限って、検証されます。
 
 > Note: 規則に名前を付けると便利です。すなわち、
 >
@@ -116,9 +122,11 @@ public function rules()
 ### エラー・メッセージをカスタマイズする <span id="customizing-error-messages"></span>
 
 たいていのバリデータはデフォルトのエラー・メッセージを持っていて、属性の検証が失敗した場合にそれを検証の対象であるモデルに追加します。
-例えば、[[yii\validators\RequiredValidator|required]] バリデータは、このバリデータを使って `username` 属性を検証したとき、規則に合致しない場合は「ユーザ名は空ではいけません。」というエラー・メッセージをモデルに追加します。
+例えば、[[yii\validators\RequiredValidator|required]] バリデータは、このバリデータを使って `username` 属性を検証したとき、
+規則に合致しない場合は「ユーザ名は空ではいけません。」というエラー・メッセージをモデルに追加します。
 
-規則のエラー・メッセージは、次に示すように、規則を宣言するときに `message` プロパティを指定することによってカスタマイズすることが出来ます。
+規則のエラー・メッセージは、次に示すように、規則を宣言するときに `message`
+プロパティを指定することによってカスタマイズすることが出来ます。
 
 ```php
 public function rules()
@@ -130,24 +138,30 @@ public function rules()
 ```
 
 バリデータの中には、検証を失敗させたさまざまな原因をより詳しく説明するための追加のエラー・メッセージをサポートしているものがあります。
-例えば、[[yii\validators\NumberValidator|number]] バリデータは、検証される値が大きすぎたり小さすぎたりしたときに、検証の失敗を説明するために、それぞれ、[[yii\validators\NumberValidator::tooBig|tooBig]] および [[yii\validators\NumberValidator::tooSmall|tooSmall]] のメッセージをサポートしています。
+例えば、[[yii\validators\NumberValidator|number]] バリデータは、検証される値が大きすぎたり小さすぎたりしたときに、
+検証の失敗を説明するために、それぞれ、[[yii\validators\NumberValidator::tooBig|tooBig]] および
+[[yii\validators\NumberValidator::tooSmall|tooSmall]] のメッセージをサポートしています。
 これらのエラー・メッセージも、バリデータの他のプロパティと同様、検証規則の中で構成することが出来ます。
 
 
 ### 検証のイベント <span id="validation-events"></span>
 
-[[yii\base\Model::validate()]] は、呼び出されると、検証のプロセスをカスタマイズするためにオーバーライドできる二つのメソッドを呼び出します。
+[[yii\base\Model::validate()]] は、呼び出されると、
+検証のプロセスをカスタマイズするためにオーバーライドできる二つのメソッドを呼び出します。
 
 * [[yii\base\Model::beforeValidate()]]: デフォルトの実装は [[yii\base\Model::EVENT_BEFORE_VALIDATE]] イベントをトリガするものです。
-  このメソッドをオーバーライドするか、または、イベントに反応して、検証が実行される前に、何らかの前処理 (例えば入力されたデータの正規化) をすることが出来ます。
+  このメソッドをオーバーライドするか、または、イベントに反応して、検証が実行される前に、
+  何らかの前処理 (例えば入力されたデータの正規化) をすることが出来ます。
   このメソッドは、検証を続行すべきか否かを示す真偽値を返さなくてはなりません。
 * [[yii\base\Model::afterValidate()]]: デフォルトの実装は [[yii\base\Model::EVENT_AFTER_VALIDATE]] イベントをトリガするものです。
-  このメソッドをオーバーライドするか、または、イベントに反応して、検証が完了した後に、何らかの後処理をすることが出来ます。
+  このメソッドをオーバーライドするか、または、イベントに反応して、検証が完了した後に、
+  何らかの後処理をすることが出来ます。
 
 
 ### 条件付きの検証 <span id="conditional-validation"></span>
 
-特定の条件が満たされる場合に限って属性を検証したい場合、例えば、ある属性の検証が他の属性の値に依存する場合には、[[yii\validators\Validator::when|when]] プロパティを使って、そのような条件を定義することが出来ます。
+特定の条件が満たされる場合に限って属性を検証したい場合、例えば、ある属性の検証が他の属性の値に依存する場合には、
+[[yii\validators\Validator::when|when]] プロパティを使って、そのような条件を定義することが出来ます。
 例えば、
 
 ```php
@@ -183,10 +197,10 @@ function ($model, $attribute)
 ### データのフィルタリング <span id="data-filtering"></span>
 
 ユーザ入力をフィルタまたは前処理する必要があることがよくあります。
-例えば、`username` の入力値の前後にある空白を除去したいというような場合です。
-この目的を達するために検証規則を使うことが出来ます。
+例えば、`username` の入力値の前後にある空白を除去したいというような場合です。この目的を達するために検証規則を使うことが出来ます。
 
-次の例では、入力値の前後にある空白を除去して、空の入力値を null に変換することを、[trim](tutorial-core-validators.md#trim) および [default](tutorial-core-validators.md#default) のコア・バリデータで行っています。
+次の例では、入力値の前後にある空白を除去して、空の入力値を null に変換することを、
+[trim](tutorial-core-validators.md#trim) および [default](tutorial-core-validators.md#default) のコア・バリデータで行っています。
 
 ```php
 return [
@@ -195,9 +209,11 @@ return [
 ];
 ```
 
-もっと汎用的な [filter](tutorial-core-validators.md#filter) バリデータを使って、もっと複雑なデータ・フィルタリングをすることも出来ます。
+もっと汎用的な [filter](tutorial-core-validators.md#filter) バリデータを使って、
+もっと複雑なデータ・フィルタリングをすることも出来ます。
 
-お分かりのように、これらの検証規則は実際には入力を検証しません。そうではなくて、検証される属性の値を処理して書き戻すのです。
+お分かりのように、これらの検証規則は実際には入力を検証しません。
+そうではなくて、検証される属性の値を処理して書き戻すのです。
 
 ユーザ入力の完全な処理を次のサンプル・コードで示します。
 これは、ある属性に整数の値だけが保存されるように保証しようとするものです。
@@ -213,8 +229,7 @@ return [
 
 1. 入力値から先頭と末尾のホワイト・スペースをトリムします。
 2. 空の入力値がデータベースで `null` として保存されることを保証します。
-   "not set(未設定)" という値と、実際の値である `0` は区別します。
-   `null` が許されない時は、ここで別のデフォルト値を設定することが出来ます。
+   "not set(未設定)" という値と、実際の値である `0` は区別します。`null` が許されない時は、ここで別のデフォルト値を設定することが出来ます。
 3. 空でない場合は、値は 0 以上の整数であることを検証します。
    通常のバリデータでは [[yii\validators\Validator::$skipOnEmpty|$skipOnEmpty]] が `true` に設定されています。
 4. 例えば、文字列 `'42'` は、整数 `42` にキャストして、値が整数型になることを保証します。
@@ -224,8 +239,7 @@ return [
 ### 空の入力値を扱う <span id="handling-empty-inputs"></span>
 
 HTML フォームから入力データが送信されたとき、入力値が空である場合には何らかのデフォルト値を割り当てなければならないことがよくあります。
-[default](tutorial-core-validators.md#default) バリデータを使ってそうすることが出来ます。
-例えば、
+[default](tutorial-core-validators.md#default) バリデータを使ってそうすることが出来ます。例えば、
 
 ```php
 return [
@@ -238,27 +252,27 @@ return [
 ```
 
 デフォルトでは、入力値が空であると見なされるのは、それが、空文字列であるか、空配列であるか、null であるときです。
-空を検知するこのデフォルトのロジックは、[[yii\validators\Validator::isEmpty]] プロパティを PHP コーラブルで構成することによって、カスタマイズすることが出来ます。
-例えば、
+空を検知するこのデフォルトのロジックは、[[yii\validators\Validator::isEmpty]] プロパティを PHP コーラブルで構成することによって、
+カスタマイズすることが出来ます。例えば、
 
 ```php
-return [
     ['agree', 'required', 'isEmpty' => function ($value) {
         return empty($value);
-    }],
-];
+    }]
 ```
 
-> Note: たいていのバリデータは、[[yii\validators\Validator::skipOnEmpty]] プロパティがデフォルト値 `true` を取っている場合は、空の入力値を処理しません。
-  そのようなバリデータは、関連付けられた属性が空の入力値を受け取ったときは、検証の過程ではスキップされるだけになります。
-  [コア・バリデータ](tutorial-core-validators.md) の中では、`captcha`、`default`、`filter`、`required`、そして `trim` だけが空の入力値を処理します。
+> Note: たいていのバリデータは、[[yii\validators\Validator::skipOnEmpty]] プロパティがデフォルト値 `true` を取っている場合は、
+  空の入力値を処理しません。そのようなバリデータは、関連付けられた属性が空の入力値を受け取ったときは、
+  検証の過程ではスキップされるだけになります。[コア・バリデータ](tutorial-core-validators.md) の中では、
+  `captcha`、`default`、`filter`、`required`、そして `trim` だけが空の入力値を処理します。
 
 
 ## その場限りの検証 <span id="ad-hoc-validation"></span>
 
 時として、何らかのモデルに結び付けられていない値に対する *その場限りの検証* を実行しなければならない場合があります。
 
-実行する必要がある検証が一種類 (例えば、メール・アドレスの検証) だけである場合は、使いたいバリデータの [[yii\validators\Validator::validate()|validate()]] メソッドを次のように呼び出すことが出来ます。
+実行する必要がある検証が一種類 (例えば、メール・アドレスの検証) だけである場合は、
+使いたいバリデータの [[yii\validators\Validator::validate()|validate()]] メソッドを次のように呼び出すことが出来ます。
 
 ```php
 $email = 'test@example.com';
@@ -293,7 +307,9 @@ public function actionSearch($name, $email)
 }
 ```
 
-[[yii\base\DynamicModel::validateData()]] メソッドは `DynamicModel` のインスタンスを作成し、与えられた値 (この例では `name` と `email`) を使って属性を定義し、そして、与えられた規則で [[yii\base\Model::validate()]] を呼び出します。
+[[yii\base\DynamicModel::validateData()]] メソッドは `DynamicModel` のインスタンスを作成し、
+与えられた値 (この例では `name` と `email`) を使って属性を定義し、そして、与えられた規則で
+[[yii\base\Model::validate()]] を呼び出します。
 
 別の選択肢として、次のように、もっと「クラシック」な構文を使って、その場限りのデータ検証を実行することも出来ます。
 
@@ -313,8 +329,11 @@ public function actionSearch($name, $email)
 }
 ```
 
-検証を実行した後は、通常のモデルで行うのと同様に、検証が成功したか否かを [[yii\base\DynamicModel::hasErrors()|hasErrors()]] メソッドを呼んでチェックして、[[yii\base\DynamicModel::errors|errors]] プロパティから検証エラーを取得することが出来ます。
-また、このモデルのインスタンスによって定義された動的な属性に対しても、例えば `$model->name` や `$model->email` のようにして、アクセスすることが出来ます。
+検証を実行した後は、通常のモデルで行うのと同様に、検証が成功したか否かを
+[[yii\base\DynamicModel::hasErrors()|hasErrors()]] メソッドを呼んでチェックして、
+[[yii\base\DynamicModel::errors|errors]] プロパティから検証エラーを取得することが出来ます。
+また、このモデルのインスタンスによって定義された動的な属性に対しても、例えば `$model->name` や
+`$model->email` のようにして、アクセスすることが出来ます。
 
 
 ## バリデータを作成する <span id="creating-validators"></span>
@@ -338,7 +357,8 @@ Yii のリリースに含まれている [コア・バリデータ](tutorial-cor
 function ($attribute, $params, $validator)
 ```
 
-属性が検証に失敗した場合は、メソッド/関数 は [[yii\base\Model::addError()]] を呼んでエラー・メッセージをモデルに保存し、後で読み出してエンド・ユーザに表示することが出来るようにしなければなりません。
+属性が検証に失敗した場合は、メソッド/関数 は [[yii\base\Model::addError()]] を呼んでエラー・メッセージをモデルに保存し、
+後で読み出してエンド・ユーザに表示することが出来るようにしなければなりません。
 
 下記にいくつかの例を示します。
 
@@ -382,9 +402,10 @@ class MyForm extends Model
 > $validator->addError($this, $attribute, 'The value "{value}" is not acceptable for {attribute}.');
 > ```
 
-> Note: デフォルトでは、インライン・バリデータは、関連付けられている属性が空の入力値を受け取ったり、既に何らかの検証規則に失敗したりしている場合には、適用されません。
-> 規則が常に適用されることを保証したい場合は、規則の宣言において [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] および/または [[yii\validators\Validator::skipOnError|skipOnError]] のプロパティを false に設定することが出来ます。
-> 例えば、
+> Note: デフォルトでは、インライン・バリデータは、関連付けられている属性が空の入力値を受け取ったり、
+> 既に何らかの検証規則に失敗したりしている場合には、適用されません。規則が常に適用されることを保証したい場合は、
+> 規則の宣言において [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] および/または
+> [[yii\validators\Validator::skipOnError|skipOnError]] のプロパティを false に設定することが出来ます。例えば、
 >
 > ```php
 > [
@@ -397,7 +418,9 @@ class MyForm extends Model
 
 スタンドアロン・バリデータは、[[yii\validators\Validator]] またはその子クラスを拡張するクラスです。
 [[yii\validators\Validator::validateAttribute()]] メソッドをオーバーライドすることによって、その検証ロジックを実装することが出来ます。
-[インライン・バリデータ](#inline-validators) でするのと同じように、属性が検証に失敗した場合は、[[yii\base\Model::addError()]] を呼んでエラー・メッセージをモデルに保存します。
+[インライン・バリデータ](#inline-validators) でするのと同じように、属性が検証に失敗した場合は、
+[[yii\base\Model::addError()]] を呼んでエラー・メッセージをモデルに保存します。
+
 
 例えば、上記のインライン・バリデータは、新しい [[components/validators/CountryValidator]] クラスに作りかえることが出来ます。
 この場合、[[yii\validators\Validator::addError()]] を使って特製のメッセージをモデルに設定することが出来ます。
@@ -418,11 +441,10 @@ class CountryValidator extends Validator
 }
 ```
 
-
-あなたのバリデータで、モデルを使わない値の検証をサポートしたい場合は、[[yii\validators\Validator::validate()]] もオーバーライドしなければなりません。
-または、`validateAttribute()` と `validate()` の代りに、[[yii\validators\Validator::validateValue()]] をオーバーライドしても構いません。
+あなたのバリデータで、モデルを使わない値の検証をサポートしたい場合は、[[yii\validators\Validator::validate()]]
+もオーバーライドしなければなりません。または、`validateAttribute()` と `validate()` の代りに、
+[[yii\validators\Validator::validateValue()]] をオーバーライドしても構いません。
 と言うのは、前の二つは、デフォルトでは、`validateValue()` を呼び出すことによって実装されているからです。
-
 
 次の例は、上記のバリデータ・クラスをあなたのモデルの中でどのように使用することが出来るかを示すものです。
 
@@ -449,6 +471,7 @@ class EntryForm extends Model
     }
 }
 ```
+
 
 ## 複数の属性の検証 <span id="multiple-attributes-validation"></span>
 
@@ -555,15 +578,13 @@ foreach ($attributes as $attribute) {
 $this->addError('*', '子どもの数に対して給与が不足しています。');
 ```
 
-結果として、フォームのフィールドの近くにはこのエラー・メッセージは表示されません。
-これを表示するためには、ビューにエラー・サマリを含めます。
+結果として、フォームのフィールドの近くにはこのエラー・メッセージは表示されません。これを表示するためには、ビューにエラー・サマリを含めます。
 
 ```php
 <?= $form->errorSummary($model) ?>
 ```
 
 > Note: 複数の属性を一度に検証するバリデータを作成する方法が [community cookbook](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-validator-multiple-attributes.md) で分り易く解説されています。.
-
 
 ## クライアント・サイドでの検証 <span id="client-side-validation"></span>
 
@@ -619,7 +640,8 @@ class LoginForm extends Model
 ```
 
 次のコードによって構築される HTML フォームは、`username` と `password` の二つの入力フィールドを含みます。
-何も入力せずにこのフォームを送信すると、何かを入力するように要求するエラー・メッセージが、サーバと少しも交信することなく、ただちに表示されることに気付くでしょう。
+何も入力せずにこのフォームを送信すると、何かを入力するように要求するエラー・メッセージが、
+サーバと少しも交信することなく、ただちに表示されることに気付くでしょう。
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
@@ -629,18 +651,21 @@ class LoginForm extends Model
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
 
-舞台裏では、[[yii\widgets\ActiveForm]] がモデルで宣言されている検証規則を読んで、クライアント・サイドの検証をサポートするバリデータのために、適切な JavaScript コードを生成します。
+舞台裏では、[[yii\widgets\ActiveForm]] がモデルで宣言されている検証規則を読んで、
+クライアント・サイドの検証をサポートするバリデータのために、適切な JavaScript コードを生成します。
 ユーザが入力フィールドの値を変更したりフォームを送信したりすると、クライアント・サイドの検証の JavaScript が起動されます。
 
-クライアント・サイドの検証を完全に無効にしたい場合は、[[yii\widgets\ActiveForm::enableClientValidation]] プロパティを `false` に設定することが出来ます。
-また、個々の入力フィールドごとにクライアント・サイドの検証を無効にしたい場合には、入力フィールドの [[yii\widgets\ActiveField::enableClientValidation]] プロパティを false に設定することが出来ます。
+クライアント・サイドの検証を完全に無効にしたい場合は、[[yii\widgets\ActiveForm::enableClientValidation]]
+プロパティを `false` に設定することが出来ます。
+また、個々の入力フィールドごとにクライアント・サイドの検証を無効にしたい場合には、
+入力フィールドの [[yii\widgets\ActiveField::enableClientValidation]] プロパティを false に設定することが出来ます。
 `eanbleClientValidation` が入力フィールドのレベルとフォームのレベルの両方で構成されている場合は前者が優先されます。
 
-> Info: バージョン 2.0.11 以降、[[yii\validators\Validator]] を拡張する全てのバリデータは、
-> クライアント・サイドのオプションを独立したメソッド - [[yii\validators\Validator::getClientOptions()]] から受け取るようになりました。
-> これを使うと、次のことが可能になります。
+> Info: バージョン 2.0.11 以降、[[yii\validators\Validator]] を拡張する全てのバリデータは、クライアント・サイドのオプションを
+> 独立したメソッド - [[yii\validators\Validator::getClientOptions()]] から受け取るようになりました。これを使うと、次のことが可能になります。
 >
-> - 独自のクライアント・サイド検証を実装しながら、サーバ・サイド検証のオプションとの同期はそのまま残す
+> - 独自のクライアント・サイド検証を実装しながら、
+>   サーバ・サイド検証のオプションとの同期はそのまま残す
 > - 特殊な要求に合うように拡張またはカスタマイズする
 >
 > ```php
@@ -655,7 +680,9 @@ class LoginForm extends Model
 
 ### クライアント・サイドの検証を実装する <span id="implementing-client-side-validation"></span>
 
-クライアント・サイドの検証をサポートするバリデータを作成するためには、クライアント・サイドでの検証を実行する JavaScript コードを返す [[yii\validators\Validator::clientValidateAttribute()]] メソッドを実装しなければなりません。
+クライアント・サイドの検証をサポートするバリデータを作成するためには、
+クライアント・サイドでの検証を実行する JavaScript コードを返す 
+[[yii\validators\Validator::clientValidateAttribute()]] メソッドを実装しなければなりません。
 その JavaScript の中では、次の事前定義された変数を使用することが出来ます。
 
 - `attribute`: 検証される属性の名前。
@@ -712,7 +739,8 @@ JS;
 > ```
 
 > Tip: クライアント・サイドの検証を手動で操作する必要がある場合、すなわち、動的にフィールドを追加したり、何か特殊な UI ロジックを実装する場合は、
-> Yii 2.0 Cookbook の [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md) を参照してください。
+> Yii 2.0 Cookbook の [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
+> を参照してください。
 
 ### Deferred 検証 <span id="deferred-validation"></span>
 
@@ -764,8 +792,8 @@ JS;
 > Note: 属性が検証された後に、`resolve()` メソッドを呼び出さなければなりません。
   そうしないと、主たるフォームの検証が完了しません。
 
-簡潔に記述できるように、`deferred` 配列はショートカット・メソッド `add()` を装備しており、このメソッドを使うと、自動的に Deferred オブジェクトを作成して `deferred` 配列に追加することが出来ます。
-このメソッドを使えば、上記の例は次のように簡潔に記すことが出来ます。
+簡潔に記述できるように、`deferred` 配列はショートカット・メソッド `add()` を装備しており、このメソッドを使うと、自動的に Deferred オブジェクトを作成して
+`deferred` 配列に追加することが出来ます。このメソッドを使えば、上記の例は次のように簡潔に記すことが出来ます。
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -797,7 +825,8 @@ JS;
 このような場合には、AJAX ベースの検証を使うことが出来ます。
 AJAX 検証は、通常のクライアント・サイドでの検証と同じユーザ体験を保ちながら、入力値を検証するためにバックグラウンドで AJAX リクエストを発行します。
 
-単一のインプット・フィールドに対して AJAX 検証を有効にするためには、そのフィールドの [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]] プロパティを true に設定し、フォームに一意の `id` を指定します。
+単一のインプット・フィールドに対して AJAX 検証を有効にするためには、そのフィールドの
+[[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]] プロパティを true に設定し、フォームに一意の `id` を指定します。
 
 ```php
 use yii\widgets\ActiveForm;
@@ -813,7 +842,8 @@ echo $form->field($model, 'username', ['enableAjaxValidation' => true]);
 ActiveForm::end();
 ```
 
-フォームの全てのインプットに対して AJAX 検証を有効にするためには、フォームのレベルで [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]] を true に設定します。
+フォームの全てのインプットに対して AJAX 検証を有効にするためには、フォームのレベルで
+[[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]] を true に設定します。
 
 ```php
 $form = ActiveForm::begin([
@@ -822,7 +852,8 @@ $form = ActiveForm::begin([
 ]);
 ```
 
-> Note: `enableAjaxValidation` プロパティがインプット・フィールドのレベルとフォームのレベルの両方で構成された場合は、前者が優先されます。
+> Note: `enableAjaxValidation` プロパティがインプット・フィールドのレベルとフォームのレベルの両方で構成された場合は、
+  前者が優先されます。
 
 また、サーバ・サイドでは、AJAX 検証のリクエストを処理できるように準備しておく必要があります。
 これは、コントローラのアクションにおいて、次のようなコード断片を使用することで達成できます。
@@ -840,6 +871,7 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 > Info: AJAX 検証を実行するためには、[Deferred 検証](#deferred-validation) を使うことも出来ます。
   しかし、ここで説明された AJAX 検証の機能の方がより体系化されており、コーディングの労力も少なくて済みます。
 
-`enableClientValidation` と `enableAjaxValidation` が両方とも `true` に設定されているときは、クライアント検証が成功した後でだけ AJAX 検証のリクエストが起動されます。
+`enableClientValidation` と `enableAjaxValidation` が両方とも `true` に設定されているときは、
+クライアント検証が成功した後でだけ AJAX 検証のリクエストが起動されます。
 `validateOnChange`, `validateOnBlur` または `validateOnType` が `true` に設定されている単一のフィールドを検証する場合、
 当該フィールドが単独でクライアント検証を通ったら AJAX リクエストが送信されることに注意して下さい。
