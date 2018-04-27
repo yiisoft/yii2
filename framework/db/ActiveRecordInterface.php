@@ -241,6 +241,12 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * See the following code for usage examples:
      *
      * ```php
+     * // find all the customers
+     * $customers = Customer::findAll();
+     *
+     * // the above code is equivalent to:
+     * $customers = Customer::find()->all();
+     *
      * // find the customers whose primary key value is 10
      * $customers = Customer::findAll(10);
      *
@@ -281,7 +287,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * @param mixed $condition primary key value or a set of column values
      * @return array an array of ActiveRecord instance, or an empty array if nothing matches.
      */
-    public static function findAll($condition);
+    public static function findAll($condition = null);
 
     /**
      * Updates records using the provided attribute values and conditions.
