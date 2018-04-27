@@ -156,7 +156,8 @@ class SiteController extends Controller
 ## ロール・ベース・アクセス制御 (RBAC) <span id="rbac"></span>
 
 ロール・ベース・アクセス制御 (RBAC) は、単純でありながら強力な集中型のアクセス制御を提供します。
-RBAC と他のもっと伝統的なアクセス制御スキーマとの比較に関する詳細については、[Wiki 記事](http://ja.wikipedia.org/wiki/%E3%83%AD%E3%83%BC%E3%83%AB%E3%83%99%E3%83%BC%E3%82%B9%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E5%88%B6%E5%BE%A1) を参照してください。
+RBAC と他のもっと伝統的なアクセス制御スキーマとの比較に関する詳細については、
+[Wiki 記事](http://ja.wikipedia.org/wiki/%E3%83%AD%E3%83%BC%E3%83%AB%E3%83%99%E3%83%BC%E3%82%B9%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E5%88%B6%E5%BE%A1) を参照してください。
 
 Yii は、[NIST RBAC モデル](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf) に従って、一般的階層型 RBAC を実装しています。
 RBAC の機能は、[[yii\rbac\ManagerInterface|authManager]] [アプリケーション・コンポーネント](structure-application-components.md) を通じて提供されます。
@@ -178,15 +179,15 @@ RBAC を使用することには、二つの作業が含まれます。
 例えば、「記事更新」の許可は、現在のユーザが記事の作成者であるかどうかをチェックする規則を持つことが出来ます。
 そして、アクセス・チェックのときに、ユーザが記事の作成者でない場合は、彼/彼女は「記事更新」の許可を持っていないと見なすことが出来ます。
 
-ロールおよび許可は、ともに、階層的に構成することが出来ます。
-具体的に言えば、一つのロールは他のロールと許可を含むことが出来、許可は他の許可を含むことが出来ます。
-Yii は、一般的な *半順序* 階層を実装していますが、これはその特殊形として *木* 階層を含むものです。
+ロールおよび許可は、ともに、階層的に構成することが出来ます。具体的に言えば、一つのロールは他のロールと許可を含むことが出来、
+許可は他の許可を含むことが出来ます。Yii は、一般的な *半順序* 階層を実装していますが、これはその特殊形として *木* 階層を含むものです。
 ロールは許可を含むことが出来ますが、許可はロールを含むことが出来ません。
 
 
 ### RBAC を構成する <span id="configuring-rbac"></span>
 
-権限付与データを定義してアクセス・チェックを実行する前に、[[yii\base\Application::authManager|authManager]] アプリケーション・コンポーネントを構成する必要があります。
+権限付与データを定義してアクセス・チェックを実行する前に、
+[[yii\base\Application::authManager|authManager]] アプリケーション・コンポーネントを構成する必要があります。
 Yii は二種類の権限付与マネージャを提供しています。すなわち、[[yii\rbac\PhpManager]] と [[yii\rbac\DbManager]] です。
 前者は権限付与データを保存するのに PHP スクリプト・ファイルを使いますが、後者は権限付与データをデータベースに保存します。
 あなたのアプリケーションが非常に動的なロールと許可の管理を必要とするのでなければ、前者を使うことを考慮するのが良いでしょう。
@@ -218,7 +219,6 @@ return [
 
 次のコードは、アプリケーションの構成情報で [[yii\rbac\DbManager]] クラスを使って `authManager` を構成する方法を示すものです。
 
-
 ```php
 return [
     // ...
@@ -232,8 +232,8 @@ return [
     ],
 ];
 ```
-
-> Note: yii2-basic-app テンプレートを使おうとする場合は、`config/web.php` に加えて、`config/console.php` 構成ファイルにおいても `authManager` を宣言する必要があります。
+> Note: yii2-basic-app テンプレートを使おうとする場合は、`config/web.php` に加えて、
+  `config/console.php` 構成ファイルにおいても `authManager` を宣言する必要があります。
 > yii2-advanced-app の場合は、`authManager` は `common/config/main.php` で一度だけ宣言されなければなりません。
 
 `DbManager` は四つのデータベース・テーブルを使ってデータを保存します。
@@ -243,14 +243,12 @@ return [
 - [[yii\rbac\DbManager::$assignmentTable|assignmentTable]]: 権限アイテムの割り当てを保存するためのテーブル。デフォルトは "auth_assignment"。
 - [[yii\rbac\DbManager::$ruleTable|ruleTable]]: 規則を保存するためのテーブル。デフォルトは "auth_rule"。
 
-先に進む前にこれらのテーブルをデータベースに作成する必要があります。
-そのためには、`@yii/rbac/migrations` に保存されているマイグレーションを使うことが出来ます。
+先に進む前にこれらのテーブルをデータベースに作成する必要があります。そのためには、`@yii/rbac/migrations` に保存されているマイグレーションを使うことが出来ます。
 
 `yii migrate --migrationPath=@yii/rbac/migrations`
 
 異なる名前空間のマイグレーションを扱う方法の詳細については
 [分離されたマイグレーション](db-migrations.md#separated-migrations) のセクションを参照して下さい。
-
 
 これで `authManager` は `\Yii::$app->authManager` によってアクセスすることが出来るようになります。
 
@@ -269,8 +267,7 @@ return [
 許可の階層構造が開発者によってのみ変更されることを意図する場合は、
 マイグレーションまたはコンソールコマンドを使うことが出来ます。
 マイグレーションを使う場合の利点は、他のマイグレーションと一緒に実行できることです。
-コンソール・コマンドを使う場合の利点は、階層構造の全体が、複数のマイグレーションに分散することなく、
-コード中に見やすい形で保たれることです。
+コンソール・コマンドを使う場合の利点は、階層構造の全体が、複数のマイグレーションに分散することなく、コード中に見やすい形で保たれることです。
 
 どちらの方法でも、結局は次のような RBAC 階層を得ることになります。
 
@@ -281,7 +278,8 @@ return [
 
 #### マイグレーションを使う
 
-[マイグレーション](db-migrations.md) を使って、`authManager` が提供する API によって階層を初期化したり変更したりすることが出来ます。
+[マイグレーション](db-migrations.md) を使って、
+`authManager` が提供する API によって階層を初期化したり変更したりすることが出来ます。
 
 `./yii migrate/create init_rbac` を使って新しいマイグレーションを作成し、階層の作成を実装します。
 
@@ -332,15 +330,16 @@ class m170124_084304_init_rbac extends Migration
 }
 ```
 
-> どのユーザにどのロールを割り当てるかをハードコードしたくない場合は、
-  マイグレーションに `->assign()` の呼び出しを書かないで下さい。
+> どのユーザにどのロールを割り当てるかをハードコードしたくない場合は、マイグレーションに `->assign()` の呼び出しを書かないで下さい。
   その代りに、ロールの割り当てを管理する UI またはコンソール・コマンドを作成して下さい。
 
 マイグレーションは `yii migrate` を使って適用することが出来ます。
 
 ### コンソール・コマンドを使う
 
-許可の階層が全く変化せず、決った数のユーザしか存在しない場合は、`authManager` が提供する API によって権限付与データを一回だけ初期設定する [コンソール・コマンド](tutorial-console.md#create-command) を作ることが出来ます。
+許可の階層が全く変化せず、決った数のユーザしか存在しない場合は、
+`authManager` が提供する API によって権限付与データを一回だけ初期設定する [コンソール・コマンド](tutorial-console.md#create-command)
+を作ることが出来ます。
 
 ```php
 <?php
@@ -387,7 +386,7 @@ class RbacController extends Controller
 ```
 
 > Note: アドバンスト・テンプレートを使おうとするときは、`RbacController` を `console/controllers`
-ディレクトリの中に置いて、名前空間を `console\controllers` に変更する必要があります。
+  ディレクトリの中に置いて、名前空間を `console\controllers` に変更する必要があります。
 
 上記のコマンドは、コンソールから次のようにして実行することが出来ます。
 
@@ -395,8 +394,7 @@ class RbacController extends Controller
 yii rbac/init
 ```
 
-> どのユーザにどのロールを割り当てるかをハードコードしたくない場合は、
-  コマンドに `->assign()` の呼び出しを書かないで下さい。
+> どのユーザにどのロールを割り当てるかをハードコードしたくない場合は、  コマンドに `->assign()` の呼び出しを書かないで下さい。
   その代りに、ロールの割り当てを管理する UI またはコンソール・コマンドを作成して下さい。
 
 ## ロールをユーザに割り当てる
@@ -404,7 +402,8 @@ yii rbac/init
 投稿者 (author) は記事を投稿することが出来、管理者 (admin) は記事を更新することに加えて投稿者が出来る全てのことが出来ます。
 
 あなたのアプリケーションがユーザ自身によるユーザ登録を許している場合は、新しく登録されたユーザに一度はロールを割り当てる必要があります。
-例えば、アドバンスト・プロジェクト・テンプレートにおいては、登録したユーザの全てを「投稿者」にするために、`frontend\models\SignupForm::signup()` を次のように修正しなければなりません。
+例えば、アドバンスト・プロジェクト・テンプレートにおいては、登録したユーザの全てを「投稿者」にするために、
+`frontend\models\SignupForm::signup()` を次のように修正しなければなりません。
 
 ```php
 public function signup()
@@ -429,15 +428,15 @@ public function signup()
 }
 ```
 
-動的に更新される権限付与データを持つ複雑なアクセス制御を必要とするアプリケーションについては、`authManager` が提供する API を使って、特別なユーザ・インタフェイス (つまり、管理パネル) を開発する必要があるでしょう。
+動的に更新される権限付与データを持つ複雑なアクセス制御を必要とするアプリケーションについては、
+`authManager` が提供する API を使って、特別なユーザ・インタフェイス (つまり、管理パネル) を開発する必要があるでしょう。
 
 
 ### 規則を使う <span id="using-rules"></span>
 
-既に述べたように、規則がロールと許可に制約を追加します。
-規則は [[yii\rbac\Rule]] を拡張したクラスであり、[[yii\rbac\Rule::execute()|execute()]] メソッドを実装しなければなりません。
-前に作った権限階層においては、投稿者は自分自身の記事を編集することが出来ませんでした。これを修正しましょう。
-最初に、ユーザが記事の投稿者であることを確認する規則が必要です。
+既に述べたように、規則がロールと許可に制約を追加します。規則は [[yii\rbac\Rule]] を拡張したクラスであり、
+[[yii\rbac\Rule::execute()|execute()]] メソッドを実装しなければなりません。前に作った権限階層においては、投稿者は自分自身の記事を編集することが出来ませんでした。
+これを修正しましょう。最初に、ユーザが記事の投稿者であることを確認する規則が必要です。
 
 ```php
 namespace app\rbac;
@@ -492,6 +491,7 @@ $auth->addChild($author, $updateOwnPost);
 
 ![規則を持つ RBAC 階層](images/rbac-hierarchy-2.png "規則を持つ RBAC 階層")
 
+
 ### アクセス・チェック <span id="access-check"></span>
 
 権限付与データが準備できてしまえば、アクセス・チェックは [[yii\rbac\ManagerInterface::checkAccess()]] メソッドを呼ぶだけの簡単な仕事です。
@@ -518,10 +518,10 @@ if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
 
 現在のユーザが John であるとすると、次の経路をたどります。
 
+
 ![アクセス・チェック](images/rbac-access-check-2.png "アクセス・チェック")
 
-`updatePost` からスタートして、`updateOwnPost` を通過します。
-通過するためには、`AuthorRule` が `execute` メソッドで `true` を返さなければなりません。
+`updatePost` からスタートして、`updateOwnPost` を通過します。通過するためには、`AuthorRule` が `execute` メソッドで `true` を返さなければなりません。
 `execute` メソッドは `can` メソッドの呼び出しから `$params` を受け取りますので、その値は `['post' => $post]` です。
 すべて OK であれば、John に割り当てられている `author` に到達します。
 
@@ -576,7 +576,8 @@ public function behaviors()
 
 上記の例では、アクションにアクセスするために必要と指定されたロールについて、パラメータは渡されていません。
 しかし、`updatePost` 許可の場合は、それが正しく動作するためには `post` パラメータを渡す必要があります。
-アクセス規則の中で [[yii\filters\AccessRule::roleParams|roleParams]] を指定することによって、[[yii\web\User::can()]] にパラメータを渡すことが出来ます。
+アクセス規則の中で [[yii\filters\AccessRule::roleParams|roleParams]] を指定することによって、
+[[yii\web\User::can()]] にパラメータを渡すことが出来ます。
 
 ```php
 [
@@ -645,7 +646,11 @@ class UserGroupRule extends Rule
         return false;
     }
 }
+```
 
+次に、[前のセクション](#generating-rbac-data) で説明したように、あなた独自のコマンド/マイグレーションを作成します。
+
+```php
 $auth = Yii::$app->authManager;
 
 $rule = new \app\rbac\UserGroupRule;
@@ -663,8 +668,10 @@ $auth->addChild($admin, $author);
 // ... $admin の子として許可を追加 ...
 ```
 
-上記において、"author" が "admin" の子として追加されているため、規則クラスの `execute()` メソッドを実装する時には、この階層関係にも配慮しなければならないことに注意してください。
-このために、ロール名が "author" である場合には、`execute()` メソッドは、ユーザのグループが 1 または 2 である (ユーザが "admin" グループまたは "author" グループに属している) ときに true を返しています。
+上記において、"author" が "admin" の子として追加されているため、規則クラスの `execute()` メソッドを実装する時には、
+この階層関係にも配慮しなければならないことに注意してください。
+このために、ロール名が "author" である場合には、`execute()` メソッドは、ユーザのグループが 1 または 2 である
+(ユーザが "admin" グループまたは "author" グループに属している) ときに true を返しています。
 
 次に、`authManager` の構成情報で、この二つのロールを [[yii\rbac\BaseManager::$defaultRoles]] としてリストします。
 
@@ -683,4 +690,5 @@ return [
 
 このようにすると、アクセス・チェックを実行すると、`admin` と `author` の両方のロールは、それらと関連付けられた規則を評価することによってチェックされるようになります。
 規則が true を返せば、そのロールが現在のユーザに適用されることになります。
-上述の規則の実装に基づいて言えば、ユーザの `group` の値が 1 であれば `admin` ロールがユーザに適用され、`group` の値が 2 であれば `author` ロールが適用されるということを意味します。
+上述の規則の実装に基づいて言えば、ユーザの `group` の値が 1 であれば `admin` ロールがユーザに適用され、
+`group` の値が 2 であれば `author` ロールが適用されるということを意味します。
