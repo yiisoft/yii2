@@ -646,6 +646,12 @@ class UserGroupRule extends Rule
         return false;
     }
 }
+```
+
+```php
+/*
+* Create your own command/migration like the section above
+*/
 
 $auth = Yii::$app->authManager;
 
