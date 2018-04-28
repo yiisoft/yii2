@@ -157,7 +157,7 @@ $container->setDefinitions([
     }
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader');
 // Создаст объект DocumentReader со всеми зависимостями 
 ```
 
