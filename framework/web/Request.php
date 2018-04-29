@@ -967,7 +967,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             $http = $secure ? 'https' : 'http';
 
             if ($this->hasHeader('X-Forwarded-Host')) {
-                $this->_hostInfo = $http . '://' . $this->getHeaderLine('X-Forwarded-Host');
+                $this->_hostInfo = $http . '://' . trim(explode(',', $this->getHeaderLine('X-Forwarded-Host'))[0]);
             } elseif ($this->hasHeader('Host')) {
                 $this->_hostInfo = $http . '://' . $this->getHeaderLine('Host');
             } elseif (($serverName = $this->getServerParam('SERVER_NAME')) !== null) {
@@ -1067,7 +1067,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             } elseif (isset($serverParams['PHP_SELF']) && ($pos = strpos($serverParams['PHP_SELF'], '/' . $scriptName)) !== false) {
                 $this->_scriptUrl = substr($serverParams['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
             } elseif (!empty($serverParams['DOCUMENT_ROOT']) && strpos($scriptFile, $serverParams['DOCUMENT_ROOT']) === 0) {
-                $this->_scriptUrl = str_replace('\\', '/', str_replace($serverParams['DOCUMENT_ROOT'], '', $scriptFile));
+                $this->_scriptUrl = str_replace([$serverParams['DOCUMENT_ROOT'], '\\'], ['', '/'], $scriptFile);
             } else {
                 throw new InvalidConfigException('Unable to determine the entry script URL.');
             }
@@ -1464,7 +1464,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
          * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
          */
         $auth_token = $this->getHeader('HTTP_AUTHORIZATION') ?: $this->getHeader('REDIRECT_HTTP_AUTHORIZATION');
-        if ($auth_token !== [] && strpos(strtolower($auth_token[0]), 'basic') === 0) {
+        if ($auth_token !== [] && strncasecmp($auth_token[0], 'basic', 5) === 0) {
             $parts = array_map(function ($value) {
                 return strlen($value) === 0 ? null : $value;
             }, explode(':', base64_decode(mb_substr($auth_token[0], 6)), 2));

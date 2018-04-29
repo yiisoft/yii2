@@ -75,14 +75,14 @@ Key Concepts
 Working with Databases
 ----------------------
 
-* [Data Access Objects](db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
+* [Database Access Objects](db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
 * [Query Builder](db-query-builder.md): Querying the database using a simple abstraction layer
 * [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
 * [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
-* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
-* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
-* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
-* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
+* [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx/doc/guide)
+* [Redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis/doc/guide)
+* [MongoDB](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb/doc/guide)
+* [ElasticSearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch/doc/guide)
 
 
 Getting Data from Users
@@ -116,7 +116,7 @@ Security
 * [Authorization](security-authorization.md)
 * [Working with Passwords](security-passwords.md)
 * [Cryptography](security-cryptography.md)
-* [Auth Clients](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
+* [Auth Clients](https://www.yiiframework.com/extension/yiisoft/yii2-authclient/doc/guide)
 * [Best Practices](security-best-practices.md)
 
 
@@ -133,9 +133,9 @@ Caching
 Development Tools
 -----------------
 
-* [Debug Toolbar and Debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
-* [Generating Code using Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
-* [Generating API Documentation](https://github.com/yiisoft/yii2-apidoc)
+* [Debug Toolbar and Debugger](https://www.yiiframework.com/extension/yiisoft/yii2-debug/doc/guide)
+* [Generating Code using Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide)
+* [Generating API Documentation](https://www.yiiframework.com/extension/yiisoft/yii2-apidoc)
 
 
 Testing
@@ -152,10 +152,11 @@ Testing
 Special Topics
 --------------
 
-* [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
+* [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide)
 * [Building Application from Scratch](tutorial-start-from-scratch.md)
 * [Console Commands](tutorial-console.md)
 * [Core Validators](tutorial-core-validators.md)
+* [Docker](tutorial-docker.md)
 * [Internationalization](tutorial-i18n.md)
 * [Mailing](tutorial-mailing.md)
 * [Performance Tuning](tutorial-performance-tuning.md)
@@ -168,15 +169,16 @@ Special Topics
 Widgets
 -------
 
-* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
-* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
-* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
-* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
-* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
-* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
-* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
-* [Bootstrap Widgets](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
-* [jQuery UI Widgets](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
+* [[yii\grid\GridView|GridView]]
+* [[yii\widgets\ListView|ListView]]
+* [[yii\widgets\DetailView|DetailView]]
+* [[yii\widgets\ActiveForm|ActiveForm]]
+* [[yii\widgets\Pjax|Pjax]]
+* [[yii\widgets\Menu|Menu]]
+* [[yii\widgets\LinkPager|LinkPager]]
+* [[yii\widgets\LinkSorter|LinkSorter]]
+* [Bootstrap Widgets](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap/doc/guide)
+* [jQuery UI Widgets](https://www.yiiframework.com/extension/yiisoft/yii2-jui/doc/guide)
 
 
 Helpers

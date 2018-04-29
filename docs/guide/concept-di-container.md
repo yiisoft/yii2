@@ -247,7 +247,7 @@ and then automatically resolve those dependencies recursively.
 The following code shows a more sophisticated example. The `UserLister` class depends on an object implementing
 the `UserFinderInterface` interface; the `UserFinder` class implements this interface and depends on
 a `Connection` object. All these dependencies are declared through type hinting of the class constructor parameters.
-With property dependency registration, the DI container is able to resolve these dependencies automatically
+With proper dependency registration, the DI container is able to resolve these dependencies automatically
 and creates a new `UserLister` instance with a simple call of `get('userLister')`.
 
 ```php

@@ -28,6 +28,10 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public function dbTypecast($value)
     {
+        if ($value === null) {
+            return $value;
+        }
+
         if ($value instanceof ExpressionInterface) {
             return $value;
         }
@@ -36,7 +40,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
             return new ArrayExpression($value, $this->dbType, $this->dimension);
         }
         if (in_array($this->dbType, [Schema::TYPE_JSON, Schema::TYPE_JSONB], true)) {
-            return new JsonExpression($value, $this->type);
+            return new JsonExpression($value, $this->dbType);
         }
 
         return $this->typecast($value);
@@ -55,6 +59,8 @@ class ColumnSchema extends \yii\db\ColumnSchema
                 array_walk_recursive($value, function (&$val, $key) {
                     $val = $this->phpTypecastValue($val);
                 });
+            } elseif ($value === null) {
+                return null;
             }
 
             return new ArrayExpression($value, $this->dbType, $this->dimension);

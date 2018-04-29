@@ -1,30 +1,31 @@
-クイックスタート
-================
+クイック・スタート
+==================
 
 Yii は、RESTful ウェブサービス API を実装する仕事を簡単にするために、一揃いのツールを提供しています。
 具体的に言えば、RESTful API に関する次の機能をサポートしています。
 
-* [アクティブレコード](db-active-record.md) のための共通 API をサポートした迅速なプロトタイプ作成
+* [アクティブ・レコード](db-active-record.md) のための共通 API をサポートした迅速なプロトタイプ作成
 * レスポンス形式のネゴシエーション (デフォルトで JSON と XML をサポート)
 * 出力フィールドの選択をサポートした、カスタマイズ可能なオブジェクトのシリアライゼーション
-* コレクションデータとバリデーションエラーの適切な書式設定
+* コレクション・データと検証エラーの適切な書式設定
+* コレクションのページネーション、フィルタリングおよびソーティング
 * [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) のサポート
 * HTTP 動詞を適切にチェックする効率的なルーティング
 * `OPTIONS` および `HEAD` 動詞のサポートを内蔵
 * 認証と権限付与
-* データキャッシュと HTTP キャッシュ
+* データ・キャッシュと HTTP キャッシュ
 * レート制限
 
 
 以下においては、例を使って、どのようにして最小限のコーディング労力で一組の RESTful API を構築することが出来るかを説明します。
 
 ユーザのデータを RESTful API によって公開したいと仮定しましょう。
-ユーザのデータは `user` という DB テーブルに保存されており、それにアクセスするための [アクティブレコード](db-active-record.md) クラス `app\models\User` が既に作成済みであるとします。
+ユーザのデータは `user` という DB テーブルに保存されており、それにアクセスするための [アクティブ・レコード](db-active-record.md) クラス `app\models\User` が既に作成済みであるとします。
 
 
 ## コントローラを作成する <span id="creating-controller"></span>
 
-最初に、[コントローラ](structure-controllers.md) クラス `app\controllers\UserController` を次のようにして作成します。
+最初に、[コントローラ](structure-controllers.md)・クラス `app\controllers\UserController` を次のようにして作成します。
 
 ```php
 namespace app\controllers;
@@ -37,7 +38,7 @@ class UserController extends ActiveController
 }
 ```
 
-このコントローラクラスは、よく使用される一揃いの RESTful アクションを実装した [[yii\rest\ActiveController]] を拡張するものです。
+このコントローラ・クラスは、よく使用される一揃いの RESTful アクションを実装した [[yii\rest\ActiveController]] を拡張するものです。
 [[yii\rest\ActiveController::modelClass|modelClass]] を `app\models\User` と指定することによって、データの取得と操作にどのモデルが使用できるかをコントローラに教えてやります。
 The controller class extends from [[yii\rest\ActiveController]], which implements a common set of RESTful actions.
 By specifying [[yii\rest\ActiveController::modelClass|modelClass]]
@@ -62,13 +63,13 @@ as `app\models\User`, the controller knows which model can be used for fetching 
 上記の構成情報は、主として、`user` コントローラの URL 規則を追加して、ユーザのデータが綺麗な URL と意味のある HTTP 動詞によってアクセスおよび操作できるようにするものです。
 
 
-> Info: Yii はコントローラの名前を自動的に複数形にしてエンドポイントとして使用します (下の「試してみる」(#trying-it-out) を参照してください)。
+> Info: Yii はコントローラの名前を自動的に複数形にしてエンド・ボイントとして使用します (下の「試してみる」(#trying-it-out) を参照してください)。
 > この振る舞いは [[yii\rest\UrlRule::$pluralize]] プロパティを使って構成することが可能です。
 
 
 ## JSON の入力を可能にする <span id="enabling-json-input"></span>
 
-API が JSON 形式で入力データを受け取ることが出来るように、`request` [アプリケーションコンポーネント](structure-application-components.md) の [[yii\web\Request::$parsers|parsers]] プロパティを構成して、JSON 入力のために [[yii\web\JsonParser]] を使うようにします。
+API が JSON 形式で入力データを受け取ることが出来るように、`request` [アプリケーション・コンポーネント](structure-application-components.md) の [[yii\web\Request::$parsers|parsers]] プロパティを構成して、JSON 入力のために [[yii\web\JsonParser]] を使うようにします。
 
 ```php
 'request' => [
@@ -94,8 +95,8 @@ API が JSON 形式で入力データを受け取ることが出来るように�
 * `HEAD /users/123`: ユーザ 123 の概要を示す
 * `PATCH /users/123` と `PUT /users/123`: ユーザ 123 を更新する
 * `DELETE /users/123`: ユーザ 123 を削除する
-* `OPTIONS /users`: エンドポイント `/users` に関してサポートされている動詞を示す
-* `OPTIONS /users/123`: エンドポイント `/users/123` に関してサポートされている動詞を示す
+* `OPTIONS /users`: エンド・ボイント `/users` に関してサポートされている動詞を示す
+* `OPTIONS /users/123`: エンド・ボイント `/users/123` に関してサポートされている動詞を示す
 
 作成した API は、次のように、`curl` コマンドでアクセスすることが出来ます。
 
@@ -127,7 +128,7 @@ Content-Type: application/json; charset=UTF-8
 ]
 ```
 
-受入れ可能なコンテントタイプを `application/xml` に変更してみてください。
+受入れ可能なコンテント・タイプを `application/xml` に変更してみてください。
 すると、結果が XML 形式で返されます。
 
 ```
@@ -173,10 +174,10 @@ Content-Type: application/json; charset=UTF-8
 {"id":1,"username":"example","email":"user@example.com","created_at":1414674789,"updated_at":1414674789}
 ```
 
-> Tip: URL `http://localhost/users` を入力すれば、ウェブブラウザ経由で API にアクセスすることも出来ます。
-  ただし、特殊なリクエストヘッダを送信するためには、何らかのブラウザプラグインが必要になるでしょう。
+> Tip: URL `http://localhost/users` を入力すれば、ウェブ・ブラウザ経由で API にアクセスすることも出来ます。
+  ただし、特殊なリクエスト・ヘッダを送信するためには、何らかのブラウザプラグインが必要になるでしょう。
 
-ご覧のように、レスポンスヘッダの中には、総ユーザ数やページ数などの情報が書かれています。
+ご覧のように、レスポンス・ヘッダの中には、総ユーザ数やページ数などの情報が書かれています。
 また、データの他のページへナビゲートすることを可能にするリンクもあります。
 例えば、`http://localhost/users?page=2` にアクセスすれば、ユーザのデータの次のページを取得することが出来ます。
 
@@ -186,17 +187,22 @@ Content-Type: application/json; charset=UTF-8
 
 > Info: 気がついたかも知れませんが、`http://localhost/users` の結果は、いくつかの公開すべきでないフィールド、例えば `password_hash` や `auth_key` を含んでいます。
 > 当然ながら、これらが API の結果に出現することは避けたいでしょう。
-> [リソース](rest-resources.md) の節で説明されているように、これらのフィールドを除外することは出来ますし、また、除外しなければなりません。
+> [リソース](rest-resources.md) のセクションで説明されているように、これらのフィールドを除外することは出来ますし、また、除外しなければなりません。
+
+さらに、`http://localhost/users?sort=email` や `http://localhost/users?sort=-email` のように、コレクションをソートすることも出来ます。
+`http://localhost/users?filter[id]=10` や `http://localhost/users?filter[email][like]=gmail.com` のように、
+コレクションをフィルタリングすることも、データ・フィルターを使って実装することが出来ます。
+詳細は、[リソース](rest-resources.md#filtering-collections) のセクションを参照して下さい。
 
 
 ## まとめ <span id="summary"></span>
 
-Yii の RESTful API フレームワークを使う場合は、API エンドポイントをコントローラアクションの形式で実装します。
-そして、コントローラを使って、単一タイプのリソースに対するエンドポイントを実装するアクションを編成します。
+Yii の RESTful API フレームワークを使う場合は、API エンド・ボイントをコントローラ・アクションの形式で実装します。
+そして、コントローラを使って、単一タイプのリソースに対するエンド・ボイントを実装するアクションを編成します。
 
-リソースは [[yii\base\Model]] クラスを拡張するデータモデルとして表現されます。
+リソースは [[yii\base\Model]] クラスを拡張するデータ・モデルとして表現されます。
 データベース (リレーショナルまたは NoSQL) を扱っている場合は、[[yii\db\ActiveRecord|ActiveRecord]] を使ってリソースを表現することが推奨されます。
 
-[[yii\rest\UrlRule]] を使って API エンドポイントへのルーティングを簡単にすることが出来ます。
+[[yii\rest\UrlRule]] を使って API エンド・ボイントへのルーティングを簡単にすることが出来ます。
 
 これは要求されてはいませんが、RESTful API は、保守を容易にするために、ウェブのフロントエンドやバックエンドとは別の独立したアプリケーションとして開発することが推奨されます。

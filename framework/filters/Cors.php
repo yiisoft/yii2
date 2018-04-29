@@ -139,8 +139,7 @@ class Cors extends ActionFilter
     public function extractHeaders()
     {
         $headers = [];
-        $requestHeaders = array_keys($this->cors);
-        foreach ($requestHeaders as $headerField) {
+        foreach (array_keys($this->cors) as $headerField) {
             $headerData = $this->request->getHeaderLine($headerField);
             if ($headerData !== null) {
                 $headers[$headerField] = $headerData;

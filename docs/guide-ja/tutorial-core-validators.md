@@ -1,9 +1,9 @@
-コアバリデータ
-==============
+コア・バリデータ
+================
 
-Yii は、一般的に使われる一連のコアバリデータを提供しています。
-コアバリデータは、主として、`yii\validators` 名前空間の下にあります。
-長ったらしいバリデータクラス名を使う代りに、*エイリアス* を使って使用するコアバリデータを指定することが出来ます。
+Yii は、一般的に使われる一連のコア・バリデータを提供しています。
+コア・バリデータは、主として、`yii\validators` 名前空間の下にあります。
+長ったらしいバリデータ・クラス名を使う代りに、*エイリアス* を使って使用するコア・バリデータを指定することが出来ます。
 例えば、[[yii\validators\RequiredValidator]] クラスを参照するのに `required` というエイリアスを使うことが出来ます。
 
 ```php
@@ -15,9 +15,9 @@ public function rules()
 }
 ```
 
-[[yii\validators\Validator::builtInValidators]] プロパティがサポートされている全てのコアバリデータのエイリアスを宣言しています。
+[[yii\validators\Validator::builtInValidators]] プロパティがサポートされている全てのコア・バリデータのエイリアスを宣言しています。
 
-以下では、全てのコアバリデータについて、主な使用方法とプロパティを説明します。
+以下では、全てのコア・バリデータについて、主な使用方法とプロパティを説明します。
 
 
 ## [[yii\validators\BooleanValidator|boolean]] <span id="boolean"></span>
@@ -110,7 +110,7 @@ compare バリデータは、文字列や数値を比較するためにしか使
 バリデータは指定された順序に従って実行されますので、まず最初に、`fromDate` と `toDate` に入力された値が有効な日付であることが確認されます。
 そして、有効な日付であった場合は、機械が読める形式に変換されます。
 その後に、これらの二つの値が compare バリデータによって比較されます。
-現在、date バリデータはクライアント側のバリデーションを提供していませんので、これはサーバ側でのみ動作します。
+現在、date バリデータはクライアント・サイドのバリデーションを提供していませんので、これはサーバ・サイドでのみ動作します。
 そのため、compare バリデータについても、[[yii\validators\CompareValidator::$enableClientValidation|$enableClientValidation]] は `false` に設定されています。
 
 
@@ -141,15 +141,15 @@ compare バリデータは、文字列や数値を比較するためにしか使
   その場合は、元の値は検証実行後にタイムスタンプで上書きされます。
   [DatePicker で日付の入力を扱う](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ja/topics-date-picker.md) に使用例がありますので、参照してください。
 
-  バージョン 2.0.4 以降では、[[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] と [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]] を使って、この属性に対するフォーマットとタイムゾーンを指定することが出来ます。
+  バージョン 2.0.4 以降では、[[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] と [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]] を使って、この属性に対するフォーマットとタイム・ゾーンを指定することが出来ます。
 
 `timestampAttribute` を使う場合、入力値が UNIX タイムスタンプに変換されること、そして、UNIX タイムスタンプは定義により UTC であることに注意して下さい。
-すなわち、[[yii\validators\DateValidator::timeZone|入力のタイムゾーン]] から UTC への変換が実行されます。
+すなわち、[[yii\validators\DateValidator::timeZone|入力のタイム・ゾーン]] から UTC への変換が実行されます。
 
 - バージョン 2.0.4 以降では、タイムスタンプの [[yii\validators\DateValidator::$min|最小値]] または  [[yii\validators\DateValidator::$max|最大値]] を指定することも出来ます。
 
 入力が必須でない場合には、date バリデータに加えて、default バリデータ (デフォルト値フィルタ) を追加すれば、空の入力値が `null` として保存されることを保証することが出来ます。
-そうしないと、データベースに `0000-00-00` という日付が保存されたり、デートピッカーの入力フィールドが `1970-01-01` になったりしてしまいます。
+そうしないと、データベースに `0000-00-00` という日付が保存されたり、デート・ピッカーの入力フィールドが `1970-01-01` になったりしてしまいます。
 
 ```php
     [['from_date', 'to_date'], 'default', 'value' => null],
@@ -187,8 +187,9 @@ function foo($model, $attribute) {
 }
 ```
 
-> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
-
+> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) のセクションでカバーされています。
+  データベース・スキーマによるデフォルト値は、モデルの [loadDefaultValues()](db-active-record.md#default-attribute-values)
+  によってロードすることが出来ます。
 
 ## [[yii\validators\NumberValidator|double]] <span id="double"></span>
 
@@ -225,31 +226,31 @@ function foo($model, $attribute) {
 
 - `rule`: 検証規則を指定する配列。
   配列の最初の要素がバリデータのクラス名かエイリアスを指定します。
-  配列の残りの「名前・値」のペアが、バリデータオブジェクトを構成するのに使われます。
-- `allowMessageFromRule`: 埋め込まれた検証規則によって返されるエラーメッセージを使うかどうか。
-  デフォルト値は `true` です。これが `false` の場合は、`message` をエラーメッセージとして使います。
+  配列の残りの「名前・値」のペアが、バリデータ・オブジェクトを構成するのに使われます。
+- `allowMessageFromRule`: 埋め込まれた検証規則によって返されるエラー・メッセージを使うかどうか。
+  デフォルト値は `true` です。これが `false` の場合は、`message` をエラー・メッセージとして使います。
 
-> Note: 属性が配列でない場合は、検証が失敗したと見なされ、`message` がエラーメッセージとして返されます。
+> Note: 属性が配列でない場合は、検証が失敗したと見なされ、`message` がエラー・メッセージとして返されます。
 
 
 ## [[yii\validators\EmailValidator|email]] <span id="email"></span>
 
 ```php
 [
-    // "email" が有効なメールアドレスであるかどうかチェック
+    // "email" が有効なメール・アドレスであるかどうかチェック
     ['email', 'email'],
 ]
 ```
 
-このバリデータは、入力値が有効なメールアドレスであるかどうかをチェックします。
+このバリデータは、入力値が有効なメール・アドレスであるかどうかをチェックします。
 
-- `allowName`: メールアドレスに表示名 (例えば、`John Smith <john.smith@example.com>`) を許容するか否か。デフォルト値は `false`。
+- `allowName`: メール・アドレスに表示名 (例えば、`John Smith <john.smith@example.com>`) を許容するか否か。デフォルト値は `false`。
 - `checkDNS`: メールのドメインが存在して A または MX レコードを持っているかどうかをチェックするか否か。
-  このチェックは、メールアドレスが実際には有効なものでも、一時的な DNS の問題によって失敗する場合があることに注意してください。
+  このチェックは、メール・アドレスが実際には有効なものでも、一時的な DNS の問題によって失敗する場合があることに注意してください。
   デフォルト値は `false`。
 - `enableIDN`: 検証のプロセスが IDN (国際化ドメイン名) を考慮に入れるか否か。
   デフォルト値は `false`。
-  IDN のバリデーションを使用するためには、`intl` PHP 拡張をインストールして有効化する必要があることに注意してください。そうしないと、例外が投げられます。
+  IDN の検証を使用するためには、`intl` PHP 拡張をインストールして有効化する必要があることに注意してください。そうしないと、例外が投げられます。
 
 
 ## [[yii\validators\ExistValidator|exist]] <span id="exist"></span>
@@ -263,15 +264,15 @@ function foo($model, $attribute) {
     ['a1', 'exist', 'targetAttribute' => 'a2'],
 
     // a1 の値が "a1" のカラム、a2 の値が "a2" のカラムに存在する必要がある
-    // 両者はともにエラーメッセージを受け取る
+    // 両者はともにエラー・メッセージを受け取る
     [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1', 'a2']],
 
     // a1 の値が "a1" のカラム、a2 の値が "a2" のカラムに存在する必要がある
-    // a1 のみがエラーメッセージを受け取る
+    // a1 のみがエラー・メッセージを受け取る
     ['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],
 
     // a2 の値が "a2" のカラム、a1 の値が "a3" のカラムに存在する必要がある
-    // a1 がエラーメッセージを受け取る
+    // a1 がエラー・メッセージを受け取る
     ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 
     // a1 の値が "a1" のカラムに存在する必要がある
@@ -280,14 +281,14 @@ function foo($model, $attribute) {
 ]
 ```
 
-このバリデータは、入力値が [アクティブレコード](db-active-record.md) の属性によって表されるテーブルのカラムに存在するかどうかをチェックします。
-`targetAttribute` を使って [アクティブレコード](db-active-record.md) の属性を指定し、`targetClass` によって対応するクラスを指定することが出来ます。
+このバリデータは、入力値が [アクティブ・レコード](db-active-record.md) の属性によって表されるテーブルのカラムに存在するかどうかをチェックします。
+`targetAttribute` を使って [アクティブ・レコード](db-active-record.md) の属性を指定し、`targetClass` によって対応するクラスを指定することが出来ます。
 これらを指定しない場合は、検証されるモデルの属性とクラスの値が使用されます。
 
 このバリデータは、一つまたは複数のカラムに対する検証に使用することが出来ます
 (複数のカラムに対する検証の場合は、それらの属性の組み合せが存在しなければならないことを意味します)。
 
-- `targetClass`: 検証される入力値を探すために使用される [アクティブレコード](db-active-record.md) クラスの名前。
+- `targetClass`: 検証される入力値を探すために使用される [アクティブ・レコード](db-active-record.md) クラスの名前。
   設定されていない場合は、現在検証されているモデルのクラスが使用されます。
 - `targetAttribute`: `targetClass` において、入力値の存在を検証するために使用される属性の名前。
   設定されていない場合は、現在検証されている属性の名前が使用されます。
@@ -327,7 +328,7 @@ function foo($model, $attribute) {
   例えば `image/*` は、`image/` で始まる全ての MIME タイプ (`image/jpeg`, `image/png` など) を通します。
   MIME タイプ名は大文字と小文字を区別しません。
   デフォルト値は `null` であり、すべての MIME タイプが許可されることを意味します。
-  MIME タイプの詳細については、[一般的なメディアタイプ](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) を参照してください。
+  MIME タイプの詳細については、[一般的なメディア・タイプ](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types) を参照してください。
 - `minSize`: アップロードされるファイルに要求される最小限のバイト数。
   デフォルト値は `null` であり、下限値が無いことを意味します。
 - `maxSize`: アップロードされるファイルに許可される最大限のバイト数。
@@ -340,7 +341,7 @@ function foo($model, $attribute) {
   デフォルト値は `true` であり、そのようなチェックが行われることを意味します。
 
 `FileValidator` は [[yii\http\UploadedFile]] と一緒に使用されます。
-ファイルのアップロードおよびアップロードされたファイルの検証の実行に関する完全な説明は、[ファイルをアップロードする](input-file-upload.md) の節を参照してください。
+ファイルのアップロードおよびアップロードされたファイルの検証の実行に関する完全な説明は、[ファイルをアップロードする](input-file-upload.md) のセクションを参照してください。
 
 
 ## [[yii\validators\FilterValidator|filter]] <span id="filter"></span>
@@ -567,7 +568,7 @@ IPv4 アドレス `192.168.10.128` も、制約の前にリストされている
   一方、このプロパティが `false` であるときは、値が空か否かの判断に緩い規則を使います。
   `requiredValue` が設定されている場合、このプロパティが `true` であるときは、入力値と `requiredValue` を比較するときに型のチェックを行います。
 
-> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) の節でカバーされています。
+> Info: 値が空であるか否かを決定する方法については、独立したトピックとして、[空の入力値を扱う](input-validation.md#handling-empty-inputs) のセクションでカバーされています。
 
 
 ## [[yii\validators\SafeValidator|safe]] <span id="safe"></span>
@@ -614,7 +615,7 @@ IPv4 アドレス `192.168.10.128` も、制約の前にリストされている
 ```
 
 このバリデータはデータの検証を実行しません。
-その代りに、入力値の前後にあるホワイトスペースをトリムします。
+その代りに、入力値の前後にあるホワイト・スペースをトリムします。
 入力値が配列であるときは、このバリデータによって無視されることに注意してください。
 
 
@@ -629,24 +630,24 @@ IPv4 アドレス `192.168.10.128` も、制約の前にリストされている
     ['a1', 'unique', 'targetAttribute' => 'a2'],
 
     // a1 の値が "a1" のカラム、a2 の値が "a2" のカラムにおいてユニークである必要がある
-    // 両者はともにエラーメッセージを受け取る
+    // 両者はともにエラー・メッセージを受け取る
     [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1', 'a2']],
 
     // a1 の値が "a1" のカラム、a2 の値が "a2" のカラムにおいてユニークである必要がある
-    // a1 のみがエラーメッセージを受け取る
+    // a1 のみがエラー・メッセージを受け取る
     ['a1', 'unique', 'targetAttribute' => ['a1', 'a2']],
 
     // a2 の値が "a2" のカラム、a1 の値が "a3" のカラムにおいてユニークである必要がある
-    // a1 がエラーメッセージを受け取る
+    // a1 がエラー・メッセージを受け取る
     ['a1', 'unique', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 ]
 ```
 
 このバリデータは、入力値がテーブルのカラムにおいてユニークであるかどうかをチェックします。
-[アクティブレコード](db-active-record.md) モデルの属性に対してのみ働きます。
-一つのカラムに対するバリデーションか、複数のカラムに対するバリデーションか、どちらかをサポートします。
+[アクティブ・レコード](db-active-record.md) モデルの属性に対してのみ働きます。
+一つのカラムに対する検証か、複数のカラムに対する検証か、どちらかをサポートします。
 
-- `targetClass`: 検証される入力値を探すために使用される [アクティブレコード](db-active-record.md) クラスの名前。
+- `targetClass`: 検証される入力値を探すために使用される [アクティブ・レコード](db-active-record.md) クラスの名前。
   設定されていない場合は、現在検証されているモデルのクラスが使用されます。
 - `targetAttribute`: `targetClass` において、入力値がユニークであることを検証するために使用される属性の名前。
   設定されていない場合は、現在検証されている属性の名前が使用されます。
@@ -678,6 +679,10 @@ IPv4 アドレス `192.168.10.128` も、制約の前にリストされている
   デフォルト値は `null` であり、入力値を修正しないことを意味します。
 - `enableIDN`: バリデータが IDN (国際化ドメイン名) を考慮すべきか否か。
   デフォルト値は `false`。
-  IDN のバリデーションを使用するためには、`intl` PHP 拡張をインストールして有効化する必要があることに注意してください。
+  IDN の検証を使用するためには、`intl` PHP 拡張をインストールして有効化する必要があることに注意してください。
   そうしないと、例外が投げられます。
 
+> Note: このバリデータは URL スキームとホスト部分が正しいものであることを検証します。
+  URL の残りの部分はチェックしません。また、XSS や他の攻撃に対して防御するように設計されてもいません。
+  アプリケーション開発における脅威に対する防御について更に学習するために
+[セキュリティのベスト・プラクティス](security-best-practices.md) を参照して下さい。

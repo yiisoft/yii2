@@ -33,6 +33,10 @@ class DevController extends Controller
      */
     public $useHttp = false;
     /**
+     * @var bool whether to use --no-progress option when running composer
+     */
+    public $composerNoProgress = false;
+    /**
      * @var array
      */
     public $apps = [
@@ -178,7 +182,11 @@ class DevController extends Controller
         // composer update
         $this->stdout("updating composer for app '$app'...\n", Console::BOLD);
         chdir($appDir);
-        passthru('composer update --prefer-dist');
+        $command = 'composer update --prefer-dist';
+        if ($this->composerNoProgress) {
+            $command .= ' --no-progress';
+        }
+        passthru($command);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
         // link directories
@@ -229,7 +237,11 @@ class DevController extends Controller
         // composer update
         $this->stdout("updating composer for extension '$extension'...\n", Console::BOLD);
         chdir($extensionDir);
-        passthru('composer update --prefer-dist');
+        $command = 'composer update --prefer-dist';
+        if ($this->composerNoProgress) {
+            $command .= ' --no-progress';
+        }
+        passthru($command);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
         // link directories
@@ -248,6 +260,7 @@ class DevController extends Controller
         $options = parent::options($actionID);
         if (\in_array($actionID, ['ext', 'app', 'all'], true)) {
             $options[] = 'useHttp';
+            $options[] = 'composerNoProgress';
         }
 
         return $options;

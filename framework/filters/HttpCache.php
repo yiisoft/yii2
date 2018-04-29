@@ -17,7 +17,7 @@ use yii\base\ActionFilter;
  * It is an action filter that can be added to a controller and handles the `beforeAction` event.
  *
  * To use HttpCache, declare it in the `behaviors()` method of your controller class.
- * In the following example the filter will be applied to the `list`-action and
+ * In the following example the filter will be applied to the `index` action and
  * the Last-Modified header will contain the date of the last update to the user table in the database.
  *
  * ```php

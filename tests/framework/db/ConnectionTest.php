@@ -8,6 +8,8 @@
 namespace yiiunit\framework\db;
 
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\Transaction;
 
@@ -449,5 +451,66 @@ abstract class ConnectionTest extends DatabaseTestCase
         unset($dsn['driver']);
         $this->expectException('yii\base\InvalidConfigException');
         $connection = new Connection(['dsn' => $dsn]);
+    }
+
+    public function testServerStatusCacheWorks()
+    {
+        $cache = new ArrayCache();
+        Yii::$app->set('cache', $cache);
+
+        $connection = $this->getConnection(true, false);
+        $connection->masters[] = [
+            'dsn' => $connection->dsn,
+            'username' => $connection->username,
+            'password' => $connection->password,
+        ];
+        $connection->shuffleMasters = false;
+
+        $cacheKey = ['yii\db\Connection::openFromPoolSequentially', $connection->dsn];
+
+        $this->assertFalse($cache->exists($cacheKey));
+        $connection->open();
+        $this->assertFalse($cache->exists($cacheKey), 'Connection was successful – cache must not contain information about this DSN');
+        $connection->close();
+
+        $cacheKey = ['yii\db\Connection::openFromPoolSequentially', 'host:invalid'];
+        $connection->masters[0]['dsn'] = 'host:invalid';
+        try {
+            $connection->open();
+        } catch (InvalidConfigException $e) {
+        }
+        $this->assertTrue($cache->exists($cacheKey), 'Connection was not successful – cache must contain information about this DSN');
+        $connection->close();
+    }
+
+    public function testServerStatusCacheCanBeDisabled()
+    {
+        $cache = new ArrayCache();
+        Yii::$app->set('cache', $cache);
+
+        $connection = $this->getConnection(true, false);
+        $connection->masters[] = [
+            'dsn' => $connection->dsn,
+            'username' => $connection->username,
+            'password' => $connection->password,
+        ];
+        $connection->shuffleMasters = false;
+        $connection->serverStatusCache = false;
+
+        $cacheKey = ['yii\db\Connection::openFromPoolSequentially', $connection->dsn];
+
+        $this->assertFalse($cache->exists($cacheKey));
+        $connection->open();
+        $this->assertFalse($cache->exists($cacheKey), 'Caching is disabled');
+        $connection->close();
+
+        $cacheKey = ['yii\db\Connection::openFromPoolSequentially', 'host:invalid'];
+        $connection->masters[0]['dsn'] = 'host:invalid';
+        try {
+            $connection->open();
+        } catch (InvalidConfigException $e) {
+        }
+        $this->assertFalse($cache->exists($cacheKey), 'Caching is disabled');
+        $connection->close();
     }
 }

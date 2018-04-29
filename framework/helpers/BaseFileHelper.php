@@ -367,7 +367,7 @@ class BaseFileHelper
         if (!is_dir($dir)) {
             return;
         }
-        if (isset($options['traverseSymlinks']) && $options['traverseSymlinks'] || !is_link($dir)) {
+        if (!empty($options['traverseSymlinks']) || !is_link($dir)) {
             if (!($handle = opendir($dir))) {
                 return;
             }

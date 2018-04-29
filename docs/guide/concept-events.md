@@ -403,7 +403,7 @@ Event::on('*', '*', function ($event) {
 
 In order to detach event handler specified by wildcard pattern, you should repeat same pattern at
 [[yii\base\Component::off()]] or [[yii\base\Event::off()]] invocation. Keep in mind that passing wildcard
-during detaching of event handler will detach ony the handler specified for this wildcard, while handlers
+during detaching of event handler will detach only the handler specified for this wildcard, while handlers
 attached for regular event names will remain even if they match the pattern. For example:
 
 ```php

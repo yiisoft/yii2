@@ -52,6 +52,56 @@ $fullName = ArrayHelper::getValue($user, function ($user, $defaultValue) {
 $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
 ```
 
+## 値を設定する <span id="setting-values"></span>
+
+```php
+$array = [
+    'key' => [
+        'in' => ['k' => 'value']
+    ]
+];
+
+ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);
+// `$array` で値を書くためのパスは配列として指定することも出来ます
+ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);
+```
+
+結果として、`$array['key']['in']` の初期値は新しい値によって上書きされます。
+
+```php
+[
+    'key' => [
+        'in' => ['arr' => 'val']
+    ]
+]
+```
+
+パスが存在しないキーを含んでいる場合は、キーが作成されます。
+
+```php
+// `$array['key']['in']['arr0']` が空でなければ、値が配列に追加される
+ArrayHelper::setValue($array, 'key.in.arr0.arr1', 'val');
+
+// `$array['key']['in']['arr0']` の値を完全に上書きしたい場合は
+ArrayHelper::setValue($array, 'key.in.arr0', ['arr1' => 'val']);
+```
+
+結果は以下のようになります
+
+```php
+[
+    'key' => [
+        'in' => [
+            'k' => 'value',
+            'arr0' => ['arr1' => 'val']
+        ]
+    ]
+]
+```
+
+
+## 配列から値を取り除く <span id="removing-values"></span>
+
 値を取得して、その直後にそれを配列から削除したい場合は、`remove` メソッドを使うことが出来ます。
 
 ```php
@@ -197,7 +247,7 @@ $result = ArrayHelper::index($array, 'data', [function ($element) {
 
 ## マップを作成する <span id="building-maps"></span>
 
-多次元配列またはオブジェクトの配列からマップ (キー-値 のペア) を作成するためには `map` メソッドを使うことが出来ます。
+多次元配列またはオブジェクトの配列からマップ (キー・値 のペア) を作成するためには `map` メソッドを使うことが出来ます。
 `$from` と `$to` のパラメータで、マップを構成するキー名またはプロパティ名を指定します。
 オプションで、グループ化のためのフィールド `$group` に従って、マップをグループ化することも出来ます。
 例えば、
@@ -369,7 +419,7 @@ $result = ArrayHelper::merge($array1, $array2);
 ## オブジェクトを配列に変換する <span id="converting-objects-to-arrays"></span>
 
 オブジェクトまたはオブジェクトの配列を配列に変換する必要があることがよくあります。
-最もよくあるのは、REST API によってデータ配列を提供するなどの目的で、アクティブレコードモデルを変換する場合です。
+最もよくあるのは、REST API によってデータ配列を提供するなどの目的で、アクティブ・レコード・モデルを変換する場合です。
 そうするために、次のコードを使うことが出来ます。
 
 ```php
