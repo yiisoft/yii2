@@ -77,12 +77,12 @@ All Rights Reserved.
 
 * [データベース・アクセス・オブジェクト](db-dao.md): データベースへの接続、基本的なクエリ、トランザクション、および、スキーマ操作
 * [クエリ・ビルダ](db-query-builder.md): シンプルな抽象レイヤを使ってデータベースに対してクエリを行う
-* [アクティブレコード](db-active-record.md): アクティブレコード ORM、レコードの読み出しと操作、リレーションの定義
+* [アクティブ・レコード](db-active-record.md): アクティブ・レコード ORM、レコードの読み出しと操作、リレーションの定義
 * [マイグレーション](db-migrations.md): チーム開発環境においてデータベースにバージョン・コントロールを適用
-* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ja/README.md)
-* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide-ja/README.md)
-* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ja/README.md)
-* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide-ja/README.md)
+* [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx/doc/guide)
+* [Redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis/doc/guide)
+* [MongoDB](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb/doc/guide)
+* [ElasticSearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch/doc/guide)
 
 
 ユーザからのデータ取得
@@ -116,7 +116,7 @@ All Rights Reserved.
 * [権限付与](security-authorization.md)
 * [パスワードを扱う](security-passwords.md)
 * [暗号化](security-cryptography.md)
-* [認証クライアント](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ja/README.md)
+* [認証クライアント](https://www.yiiframework.com/extension/yiisoft/yii2-authclient/doc/guide)
 * [ベスト・プラクティス](security-best-practices.md)
 
 
@@ -130,8 +130,8 @@ All Rights Reserved.
 * [HTTP キャッシュ](caching-http.md)
 
 
-RESTful ウェブサービス
-----------------------
+RESTful ウェブ・サービス
+------------------------
 
 * [クイック・スタート](rest-quick-start.md)
 * [リソース](rest-resources.md)
@@ -147,9 +147,9 @@ RESTful ウェブサービス
 開発ツール
 ----------
 
-* [デバッグ・ツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
-* [Gii を使ってコードを生成する](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md)
-* [API ドキュメントを生成する](https://github.com/yiisoft/yii2-apidoc)
+* [デバッグ・ツールバーとデバッガ](https://www.yiiframework.com/extension/yiisoft/yii2-debug/doc/guide)
+* [Gii を使ってコードを生成する](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide)
+* [API ドキュメントを生成する](https://www.yiiframework.com/extension/yiisoft/yii2-apidoc)
 
 
 テスト
@@ -166,7 +166,7 @@ RESTful ウェブサービス
 スペシャル・トピック
 --------------------
 
-* [アドバンスト・プロジェクト・テンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md)
+* [アドバンスト・プロジェクト・テンプレート](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide)
 * [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
 * [コンソール・コマンド](tutorial-console.md)
 * [コア・バリデータ](tutorial-core-validators.md)
@@ -182,16 +182,16 @@ RESTful ウェブサービス
 ウィジェット
 ------------
 
-* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
-* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
-* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
-* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
-* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
-* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
-* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
-* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
-* [Bootstrap ウィジェット](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ja/README.md)
-* [jQuery UI ウィジェット](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ja/README.md)
+* [[yii\grid\GridView|GridView]]
+* [[yii\widgets\ListView|ListView]]
+* [[yii\widgets\DetailView|DetailView]]
+* [[yii\widgets\ActiveForm|ActiveForm]]
+* [[yii\widgets\Pjax|Pjax]]
+* [[yii\widgets\Menu|Menu]]
+* [[yii\widgets\LinkPager|LinkPager]]
+* [[yii\widgets\LinkSorter|LinkSorter]]
+* [Bootstrap ウィジェット](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap/doc/guide)
+* [jQuery UI ウィジェット](https://www.yiiframework.com/extension/yiisoft/yii2-jui/doc/guide)
 
 
 ヘルパ

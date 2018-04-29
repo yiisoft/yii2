@@ -114,7 +114,7 @@ class AppAsset extends AssetBundle
 由于它们的资源和源代码都在不能Web访问的目录下，
 在定义资源包类时必须指定[[yii\web\AssetBundle::sourcePath|sourcePath]]属性。
 
-> 注意：[[yii\web\AssetBundle::sourcePath|source path]] 属性不要用`@webroot/assets`，该路径默认为
+> Note: [[yii\web\AssetBundle::sourcePath|source path]] 属性不要用 `@webroot/assets`，该路径默认为
   [[yii\web\AssetManager|asset manager]]资源管理器将源资源发布后存储资源的路径，
   该路径的所有内容会认为是临时文件，
   可能会被删除。
@@ -142,7 +142,7 @@ class AppAsset extends AssetBundle
 这些属性值会分别传递给 [[yii\web\View::registerCssFile()]] 和 [[yii\web\View::registerJsFile()]] 方法，
 在[视图](structure-views.md) 调用这些方法包含CSS和JavaScript文件时。
 
-> 注意：在资源包类中设置的选项会应用到该包中 *每个* CSS/JavaScript 文件，
+> Note: 在资源包类中设置的选项会应用到该包中 *每个* CSS/JavaScript 文件，
   如果想对每个文件使用不同的选项，
   应创建不同的资源包并在每个包中使用一个选项集。
 
@@ -173,10 +173,10 @@ public $cssOptions = ['noscript' => true];
 public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 ```
 
-By default, when an asset bundle is being published, all contents in the directory specified by [[yii\web\AssetBundle::sourcePath]]
-will be published. You can customize this behavior by configuring the [[yii\web\AssetBundle::publishOptions|publishOptions]] 
-property. For example, to publish only one or a few subdirectories of [[yii\web\AssetBundle::sourcePath]], 
-you can do the following in the asset bundle class:
+默认情况下，当发布资源包时，所有在 [[yii\web\AssetBundle::sourcePath]] 目录里的内容都会发布。
+你可以通过配置 [[yii\web\AssetBundle::publishOptions|publishOptions]] 属性来自定义这种行为。
+比如，为了只发布[[yii\web\AssetBundle::sourcePath]]其中的某些内容或子目录里的内容，
+可以在资源类中试试下面的做法：
 
 ```php
 <?php
@@ -199,8 +199,8 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-The above example defines an asset bundle for the ["fontawesome" package](http://fontawesome.io/). By specifying 
-the `only` publishing option, only the `fonts` and `css` subdirectories will be published.
+上述的代码为 ["fontawesome" package](http://fontawesome.io/) 定义了资源包。
+通过配置发布选项的 only 下标，只有 `fonts` 和 `css` 子目录会发布。
 
 
 ### Bower 和 NPM 资源 <span id="bower-npm-assets"></span>
@@ -216,7 +216,7 @@ the `only` publishing option, only the `fonts` and `css` subdirectories will be 
    应设置 [[yii\web\AssetBundle::sourcePath|sourcePath]] 属性为`@bower/PackageName` 或 `@npm/PackageName`，
    因为根据别名Composer会安装Bower或NPM包到对应的目录下。
 
-> 注意：一些包会将它们分布式文件放到一个子目录中，对于这种情况，应指定子目录作为
+> Note: 一些包会将它们分布式文件放到一个子目录中，对于这种情况，应指定子目录作为
   [[yii\web\AssetBundle::sourcePath|sourcePath]]属性值，
   例如，[[yii\web\JqueryAsset]]使用 `@bower/jquery/dist` 而不是 `@bower/jquery`。
 
@@ -231,8 +231,7 @@ use app\assets\AppAsset;
 AppAsset::register($this);  // $this 代表视图对象
 ```
 
-> 信息：The [[yii\web\AssetBundle::register()]] method returns an asset bundle object containing the information
-  about the published assets, such as [[yii\web\AssetBundle::basePath|basePath]] or [[yii\web\AssetBundle::baseUrl|baseUrl]].
+> Info: [[yii\web\AssetBundle::register()]] 方法返回资源包对象，该对象包含了发布资源的信息比如 [[yii\web\AssetBundle::basePath|basePath]] 或 [[yii\web\AssetBundle::baseUrl|baseUrl]]。
 
 如果在其他地方注册资源包，应提供视图对象，如在 [小部件](structure-widgets.md) 类中注册资源包，
 可以通过 `$this->view` 获取视图对象。
@@ -275,7 +274,7 @@ return [
 数组的键应为资源包的类名（最开头不要反斜杠），
 数组的值为对应的[配置数组](concept-configurations.md).
 
-> 提示：可以根据条件判断使用哪个资源，如下示例为如何在开发环境用`jquery.js`，
+> Tip: 可以根据条件判断使用哪个资源，如下示例为如何在开发环境用`jquery.js`，
 > 否则用`jquery.min.js`：
 >
 > ```php
@@ -334,7 +333,7 @@ return [
 （如果有的话前缀为 [[yii\web\AssetBundle::sourcePath]]），对应的值为替换原来的资源。
 例如，资源文件`my/path/to/jquery.js` 匹配键 `jquery.js`.
 
-> 注意：只有相对相对路径指定的资源对应到资源部署，替换的资源路径可以为绝对路径，
+> Note: 只有相对相对路径指定的资源对应到资源部署，替换的资源路径可以为绝对路径，
   也可为和[[yii\web\AssetManager::basePath]]相关的路径。
 
 
@@ -367,12 +366,12 @@ return [
 这比拷贝文件方式快并能确保发布的资源一直为最新的。
 
 
-### Cache Busting <span id="cache-busting"></span>
+### 打破缓存 <span id="cache-busting"></span>
 
-For Web application running in production mode, it is a common practice to enable HTTP caching for assets and other
-static resources. A drawback of this practice is that whenever you modify an asset and deploy it to production, a user
-client may still use the old version due to the HTTP caching. To overcome this drawback, you may use the cache busting
-feature, which was introduced in version 2.0.3, by configuring [[yii\web\AssetManager]] like the following:
+对于运行在生产模式的 Web 应用来说，通常的做法是为资源包和其他静态资源开启 http 缓存。
+但这种做法有个不好的地方就是，当你更新某个资源并部署到生产环境时，
+用户的客户端可能由于 http 缓存而仍然使用旧版本的资源。
+为了克服该不足，你可以试试打破缓存特性，它由2.0.3版本引入，只需如下配置 [[yii\web\AssetManager]] 即可：
   
 ```php
 return [
@@ -385,10 +384,10 @@ return [
 ];
 ```
 
-By doing so, the URL of every published asset will be appended with its last modification timestamp. For example,
-the URL to `yii.js` may look like `/assets/5515a87c/yii.js?v=1423448645"`, where the parameter `v` represents the
-last modification timestamp of the `yii.js` file. Now if you modify an asset, its URL will be changed, too, which causes
-the client to fetch the latest version of the asset.
+通过上述配置后，每个发布资源的 url 都会添加一个最后更新时间戳信息。
+比如，`yii.js` 的 url 可能是 `/assets/5515a87c/yii.js?v=1423448645"`这样的，
+这里的参数 v 表示 `yii.js` 文件的最后更新时间戳。
+现在一旦你更新了某个资源，它的 URL 也会改变进而强制客户端获取该资源的最新版本。
 
 
 ## 常用资源包 <span id="common-asset-bundles"></span>
@@ -476,7 +475,7 @@ return [
 数组的值为目标资源文件扩展名和执行资源转换的命令，
 命令中的标记 `{from}` 和`{to}`会分别被源资源文件路径和目标资源文件路径替代。
 
-> 信息：除了以上方式，也有其他的方式来处理扩展语法资源，
+> Info: 除了以上方式，也有其他的方式来处理扩展语法资源，
   例如，可使用编译工具如[grunt](http://gruntjs.com/)
   来监控并自动转换扩展语法资源，此时，
   应使用资源包中编译后的CSS/Javascript文件而不是原始文件。
@@ -488,7 +487,7 @@ return [
 通常的方式是在页面中合并并压缩多个CSS/JavaScript 文件为一个或很少的几个文件，
 并使用压缩后的文件而不是原始文件。
  
-> 信息：合并和压缩资源通常在应用在产品上线模式，
+> Info: 合并和压缩资源通常在应用在产品上线模式，
   在开发模式下使用原始的CSS/JavaScript更方便调试。
 
 接下来介绍一种合并和压缩资源文件
@@ -522,7 +521,7 @@ return [
 已合并的CSS和Javascipt文件会更大，因此会增加文件传输时间，在这个示例中，
 我们使用第一种方式，也就是用一个组包含所有包。
 
-> 信息：将资源包分组并不是无价值的，通常要求分析现实中不同页面各种资源的数据量，
+> Info: 将资源包分组并不是无价值的，通常要求分析现实中不同页面各种资源的数据量，
   开始时为简便使用一个组。
 
 在所有包中使用工具(例如 [Closure Compiler](https://developers.google.com/closure/compiler/), 
@@ -635,7 +634,7 @@ return [
 在`targets`选项中应指定这些包如何分组，
 如前述的可以指定一个或多个组。
 
-> 注意：由于在控制台应用别名 `@webroot` and `@web` 不可用，
+> Note: 由于在控制台应用别名 `@webroot` and `@web` 不可用，
 应在配置中明确指定它们。
 
 JavaScript文件会被合并压缩后写入到`js/all-{hash}.js`文件，
@@ -658,7 +657,7 @@ yii asset assets.php config/assets-prod.php
 如最后一小节所描述的。
 
 
-> 信息：使用`asset` 命令并不是唯一一种自动合并和压缩过程的方法，
+> Info: 使用`asset` 命令并不是唯一一种自动合并和压缩过程的方法，
   可使用优秀的工具[grunt](http://gruntjs.com/)来完成这个过程。
 
 
@@ -678,7 +677,7 @@ return [
             'js' => 'js/all-shared-{hash}.js',
             'css' => 'css/all-shared-{hash}.css',
             'depends' => [
-                // Include all assets shared between 'backend' and 'frontend'
+                // 包含由'backend' 和 'frontend' 共享的资源包
                 'yii\web\YiiAsset',
                 'app\assets\SharedAsset',
             ],
@@ -687,14 +686,14 @@ return [
             'js' => 'js/all-{hash}.js',
             'css' => 'css/all-{hash}.css',
             'depends' => [
-                // Include only 'backend' assets:
+                // 只包含 'backend' 资源:
                 'app\assets\AdminAsset'
             ],
         ],
         'allFrontEnd' => [
             'js' => 'js/all-{hash}.js',
             'css' => 'css/all-{hash}.css',
-            'depends' => [], // Include all remaining assets
+            'depends' => [], // 包含所有的剩余资源
         ],
     ],
     ...
@@ -702,10 +701,8 @@ return [
 ```
 
 如上所示，资源包分成了三个组：`allShared`，`allBackEnd` 和 `allFrontEnd`
+它们每个都依赖各自的资源包集合。 比如， `allBackEnd` 依赖 `app\assets\AdminAsset`。
+当对该配置运行 `asset` 命令时，将会根据各自依赖合并资源包。
 
-As you can see, the asset bundles are divided into three groups: `allShared`, `allBackEnd` and `allFrontEnd`.
-They each depends on an appropriate set of asset bundles. For example, `allBackEnd` depends on `app\assets\AdminAsset`.
-When running `asset` command with this configuration, it will combine asset bundles according to the above specification.
-
-> 信息：You may leave the `depends` configuration empty for one of the target bundle. By doing so, that particular
-  asset bundle will depend on all of the remaining asset bundles that other target bundles do not depend on.
+> Info: 你也可以把某个分组的 `depends` 配置留空。 这样做得话，
+这个分组将会依赖剩余的资源包，剩余资源包是指不被其他分组依赖的那些资源包。

@@ -175,7 +175,7 @@ class Post extends ActiveRecord
 ```
 
 > Info: ここで作成されたモデルは ActiveRecord クラスのもので、`post` テーブルのデータを表します。
-> 詳細な情報は [アクティブレコードのガイド](db-active-record.md) を参照してください。
+> 詳細な情報は [アクティブ・レコードのガイド](db-active-record.md) を参照してください。
 
 私たちの API で記事データへのアクセスを提供するために、`controllers` に `PostController` を追加します。
 

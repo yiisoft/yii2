@@ -4,7 +4,8 @@
 ページ・キャッシュはサーバ・サイドでページ全体のコンテントをキャッシュするものです。
 後で再び同じページがリクエストされた場合に、その内容を一から生成するのではなく、キャッシュから提供します。
 
-ページ・キャッシュは [[yii\filters\PageCache]] という [アクション・フィルタ](structure-filters.md) によってサポートされています。これは、コントローラ・クラスで以下のように使用することができます：
+ページ・キャッシュは [[yii\filters\PageCache]] という [アクション・フィルタ](structure-filters.md) によってサポートされています。
+これは、コントローラ・クラスで以下のように使用することができます：
 
 ```php
 public function behaviors()
@@ -34,4 +35,6 @@ public function behaviors()
 それらは両方とも `duration`、`dependencies`、`variations`、そして `enabled` などのオプションをサポートしています。
 主な違いとしては、ページ・キャッシュは [アクション・フィルタ](structure-filters.md) として、フラグメント・キャッシュは [ウィジェット](structure-widgets.md) として実装されているということです。
 
-[フラグメント・キャッシュ](caching-fragment.md) も、[ダイナミック・コンテント](caching-fragment.md#dynamic-content) も、ページ・キャッシュと併用することができます。
+[フラグメント・キャッシュ](caching-fragment.md) も、[ダイナミック・コンテント](caching-fragment.md#dynamic-content) も、
+ページ・キャッシュと併用することができます。
+

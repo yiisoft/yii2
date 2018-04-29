@@ -5,7 +5,8 @@
 レスポンス・オブジェクトは、HTTP ステータス・コード、HTTP ヘッダ、HTTP ボディなどの情報を含みます。
 ウェブ・アプリケーション開発の最終的な目的は、本質的には、さまざまなリクエストに対してそのようなレスポンス・オブジェクトを作成することにあります。
 
-ほとんどの場合は、主として、デフォルトでは [[yii\web\Response]] のインスタンスである `response` [アプリケーション・コンポーネント](structure-application-components.md) を使用すべきです。
+ほとんどの場合は、主として、デフォルトでは [[yii\web\Response]] のインスタンスである `response`
+[アプリケーション・コンポーネント](structure-application-components.md) を使用すべきです。
 しかしながら、Yii は、以下で説明するように、あなた自身のレスポンス・オブジェクトを作成してエンド・ユーザに送信することも許容しています。
 
 このセクションでは、レスポンスを構成してエンド・ユーザに送信する方法を説明します。
@@ -14,7 +15,8 @@
 ## ステータス・コード <span id="status-code"></span>
 
 レスポンスを作成するときに最初にすることの一つは、リクエストが成功裡に処理されたかどうかを記述することです。
-そのためには、[[yii\web\Response::statusCode]] プロパティに有効な [HTTP ステータス・コード](https://tools.ietf.org/html/rfc2616#section-10) の一つを設定します。
+そのためには、[[yii\web\Response::statusCode]] プロパティに有効な
+[HTTP ステータス・コード](https://tools.ietf.org/html/rfc2616#section-10) の一つを設定します。
 例えば、下記のように、リクエストの処理が成功したことを示すために、ステータス・コードを 200 に設定します。
 
 ```php
@@ -46,8 +48,7 @@ throw new \yii\web\NotFoundHttpException;
 * [[yii\web\UnsupportedMediaTypeHttpException]]: ステータス・コード 415
 
 投げたい例外が上記のリストに無い場合は、[[yii\web\HttpException]] から拡張したものを作成することが出来ます。
-あるいは、ステータス・コードを指定して [[yii\web\HttpException]] を直接に投げることも出来ます。
-例えば、
+あるいは、ステータス・コードを指定して [[yii\web\HttpException]] を直接に投げることも出来ます。例えば、
 
 ```php
 throw new \yii\web\HttpException(402);
@@ -97,8 +98,7 @@ $response->format = \yii\web\Response::FORMAT_JSON;
 $response->data = ['message' => 'hello world'];
 ```
 
-Yii は下記の形式を初めからサポートしています。
-それぞれ、[[yii\web\ResponseFormatterInterface|フォーマッタ]] クラスとして実装されています。
+Yii は下記の形式を初めからサポートしています。それぞれ、[[yii\web\ResponseFormatterInterface|フォーマッタ]] クラスとして実装されています。
 [[yii\web\Response::formatters]] プロパティを構成することで、これらのフォーマッタをカスタマイズしたり、新しいフォーマッタを追加したりすることが出来ます。
 
 * [[yii\web\Response::FORMAT_HTML|HTML]]: [[yii\web\HtmlResponseFormatter]] によって実装
@@ -152,7 +152,8 @@ public function actionInfo()
 }
 ```
 
-> Note: 自分自身のレスポンス・オブジェクトを作成しようとする場合は、アプリケーションの構成情報で `response` コンポーネントのために設定した構成情報を利用することは出来ません。
+> Note: 自分自身のレスポンス・オブジェクトを作成しようとする場合は、アプリケーションの構成情報で
+  `response` コンポーネントのために設定した構成情報を利用することは出来ません。
   しかし、 [依存の注入](concept-di-container.md) を使えば、 共通の構成情報をあなたの新しいレスポンス・オブジェクトに適用することが出来ます。
 
 
@@ -163,8 +164,7 @@ public function actionInfo()
 
 [[yii\web\Response::redirect()]] メソッドを呼ぶことによって、ユーザのブラウザをある URL にリダイレクトすることが出来ます。
 このメソッドは与えられた URL を持つ適切な `Location` ヘッダを設定して、レスポンス・オブジェクトそのものを返します。
-アクション・メソッドの中では、そのショートカット版である [[yii\web\Controller::redirect()]] を呼ぶことが出来ます。
-例えば、
+アクション・メソッドの中では、そのショートカット版である [[yii\web\Controller::redirect()]] を呼ぶことが出来ます。例えば、
 
 ```php
 public function actionOld()
@@ -176,7 +176,8 @@ public function actionOld()
 上記のコードでは、アクション・メソッドが `redirect()` メソッドの結果を返しています。
 前に説明したように、アクション・メソッドによって返されるレスポンス・オブジェクトが、エンド・ユーザに送信されるレスポンスとして使用されることになります。
 
-アクション・メソッド以外の場所では、[[yii\web\Response::redirect()]] を直接に呼び出し、メソッド・チェーンで [[yii\web\Response::send()]] メソッドを呼んで、レスポンスに余計なコンテントが追加されないことを保証しなければなりません。
+アクション・メソッド以外の場所では、[[yii\web\Response::redirect()]] を直接に呼び出し、
+メソッド・チェーンで [[yii\web\Response::send()]] メソッドを呼んで、レスポンスに余計なコンテントが追加されないことを保証しなければなりません。
 
 ```php
 \Yii::$app->response->redirect('http://example.com/new', 301)->send();
@@ -188,13 +189,13 @@ public function actionOld()
 
 現在のリクエストが AJAX リクエストである場合は、`Location` ヘッダを送っても自動的にブラウザをリダイレクトすることにはなりません。
 この問題を解決するために、[[yii\web\Response::redirect()]] メソッドは `X-Redirect` ヘッダにリダイレクト先 URL を値としてセットします。
-そして、クライアント・サイドで、このヘッダの値を読み、それに応じてブラウザをリダイレクトする JavaScript を書くことが出来ます。
+そして、クライアント・サイドで、このヘッダの値を読み、
+それに応じてブラウザをリダイレクトする JavaScript を書くことが出来ます。
 
 > Info: Yii には `yii.js` という JavaScript ファイルが付属しています。
   これは、よく使われる一連の JavaScript 機能を提供するもので、その中には `X-Redirect` ヘッダに基づくブラウザのリダイレクトも含まれています。
   従って、あなたが ([[yii\web\YiiAsset]] アセット・バンドルを登録して) この JavaScript ファイルを使うつもりなら、AJAX のリダイレクトをサポートするためには、何も書く必要がなくなります。
   `yii.js` に関する更なる情報は [クライアント・スクリプトのセクション](output-client-scripts.md#yii.js) にあります。
-
 
 ## ファイルを送信する <span id="sending-files"></span>
 
@@ -216,7 +217,8 @@ public function actionDownload()
 }
 ```
 
-ファイル送信メソッドをアクション・メソッド以外の場所で呼ぶ場合は、その後で [[yii\web\Response::send()]] メソッドも呼んで、レスポンスに余計なコンテントが追加されないことを保証しなければなりません。
+ファイル送信メソッドをアクション・メソッド以外の場所で呼ぶ場合は、その後で [[yii\web\Response::send()]] メソッドも呼んで、
+レスポンスに余計なコンテントが追加されないことを保証しなければなりません。
 
 ```php
 \Yii::$app->response->sendFile('path/to/file.txt')->send();
