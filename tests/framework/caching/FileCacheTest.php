@@ -67,7 +67,7 @@ class FileCacheTest extends CacheTestCase
 
         $cacheValue = uniqid('value_');
         $cachePublicKey = uniqid('key_');
-        $cacheInternalKey = $cache->buildKey($cachePublicKey);
+        $cacheInternalKey = $this->invokeMethod($cache, 'buildKey', [$cachePublicKey]);
 
         static::$time = \time();
         $this->assertTrue($cache->set($cachePublicKey, $cacheValue, 2));
