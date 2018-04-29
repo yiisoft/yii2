@@ -369,13 +369,13 @@ class BaseInflector
      */
     public static function camel2words($name, $ucwords = true)
     {
-        $label = strtolower(trim(str_replace([
+        $label = mb_strtolower(trim(str_replace([
             '-',
             '_',
             '.',
-        ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
+        ], ' ', preg_replace('/(\p{Lu})/u', ' \0', $name))));
 
-        return $ucwords ? ucwords($label) : $label;
+        return $ucwords ? mb_convert_case($label, MB_CASE_TITLE) : $label;
     }
 
     /**
