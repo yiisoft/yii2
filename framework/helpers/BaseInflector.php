@@ -375,7 +375,7 @@ class BaseInflector
             '.',
         ], ' ', preg_replace('/(\p{Lu})/u', ' \0', $name))));
 
-        return $ucwords ? mb_convert_case($label, MB_CASE_TITLE) : $label;
+        return $ucwords ? mb_convert_case($label, MB_CASE_TITLE, 'UTF-8') : $label;
     }
 
     /**
