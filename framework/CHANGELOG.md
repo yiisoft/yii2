@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #16073: Fixed regression in Oracle `IN` condition builder for more than 1000 items (cebe)
 - Bug #16120: FileCache: rebuild cache file before touch when different file owner (Slamdunk)
 - Bug #16091: Make `yii\test\InitDbFixture` work with non-SQL DBMS (cebe)
+- Bug #16039: Fixed implicit conversion from `char` to `varbinnary` in MSSQL (vsivsivsi)
 
 
 2.0.15.1 March 21, 2018
