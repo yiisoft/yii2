@@ -8,12 +8,14 @@ Yii Framework 2 Change Log
 - Bug #16010: Fixed `yii\filters\ContentNegotiator` behavior when GET parameters contain an array (rugabarbo)
 - Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
 - Bug #15988: Fixed bash completion (alekciy)
+- Bug #15798: Fixed render `yii\grid\RadioButtonColumn::$content` and `yii\grid\CheckboxColumn::$content` (lesha724)
 - Bug #15117: Fixed `yii\db\Schema::getTableMetadata` cache refreshing (boboldehampsink)
 - Bug #15875: afterSave for new models flushes unsaved data (shirase)
 - Bug #16073: Fixed regression in Oracle `IN` condition builder for more than 1000 items (cebe)
 - Bug #16120: FileCache: rebuild cache file before touch when different file owner (Slamdunk)
 - Bug #16091: Make `yii\test\InitDbFixture` work with non-SQL DBMS (cebe)
 - Bug #16184: Fixed `yii\base\Widget` to access `stack` property with `self` instead of `static` (yanggs07)
+- Bug #16039: Fixed implicit conversion from `char` to `varbinnary` in MSSQL (vsivsivsi)
 
 
 2.0.15.1 March 21, 2018
