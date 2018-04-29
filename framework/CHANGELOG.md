@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #16010: Fixed `yii\filters\ContentNegotiator` behavior when GET parameters contain an array (rugabarbo)
 - Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
 - Bug #15988: Fixed bash completion (alekciy)
+- Bug #15798: Fixed render `yii\grid\RadioButtonColumn::$content` and `yii\grid\CheckboxColumn::$content` (lesha724)
 
 2.0.15.1 March 21, 2018
 -----------------------
