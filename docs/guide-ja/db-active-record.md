@@ -997,21 +997,21 @@ class Customer extends ActiveRecord
     public function getPurchasedItems()
     {
         // 顧客の購入品目、すなわち、`Item` の 'id' カラムが OrderItem の 'item_id' に合致するもの
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
                     ->via('orderItems');
     }
 
     public function getOrderItems()
     {
         // 顧客の OrderItems、すなわち、`Order` の `id` カラムが `OrderItem` の 'order_id' に合致するもの
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id'])
                     ->via('orders');
     }
 
     public function getOrders()
     {
         // 顧客の注文
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1306,7 +1306,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
     }
 }
 ```

@@ -305,10 +305,10 @@ Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE
 
 ```php
 // trigger event for Dog class
-Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Dog::class, DanceEventInterface::EVENT_DANCE);
 
 // trigger event for Developer class
-Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Developer::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 但是请注意, 你不能让所有实现这个接口的类都触发事件：

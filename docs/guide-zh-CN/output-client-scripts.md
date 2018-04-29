@@ -30,7 +30,7 @@ $this->registerJs("var options = ".json_encode($options).";", View::POS_END, 'my
 外部脚本的引入使用像下面这样：
 
 ```php
-$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ```
 
 [[yii\web\View::registerJsFile()|registerJsFile()]] 中参数的使用与 
@@ -77,7 +77,7 @@ body { background: #f00; }
 
 ```php
 $this->registerCssFile("http://example.com/css/themes/black-and-white.css", [
-    'depends' => [BootstrapAsset::className()],
+    'depends' => [BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```

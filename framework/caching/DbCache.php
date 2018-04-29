@@ -192,7 +192,7 @@ class DbCache extends SimpleCache
 
             $this->gc();
 
-            return $this->addValue($key, $value, $ttl);
+            return true;
         } catch (\Exception $e) {
             Yii::warning("Unable to update or insert cache data: {$e->getMessage()}", __METHOD__);
 

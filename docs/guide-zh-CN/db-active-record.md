@@ -831,7 +831,7 @@ class Order extends ActiveRecord
   一个客户可以有很多订单，而每个订单只有一个客户。
 - 相关联 Active Record 类名：用来指定为 [[yii\db\ActiveRecord::hasMany()|hasMany()]] 或者 
   [[yii\db\ActiveRecord::hasOne()|hasOne()]] 方法的第一个参数。
-  推荐的做法是调用 `Xyz::className()` 来获取类名称的字符串，以便您
+  推荐的做法是调用 `Xyz::class` 来获取类名称的字符串，以便您
   可以使用 IDE 的自动补全，以及让编译阶段的错误检测生效。
 - 两组数据的关联列：用以指定两组数据相关的列（hasOne()/hasMany() 的第二个参数）。
   数组的值填的是主数据的列（当前要声明关联的 Active Record 类为主数据），
@@ -996,21 +996,21 @@ class Customer extends ActiveRecord
     public function getPurchasedItems()
     {
         // 客户的商品，将 Item 中的 'id' 列与 OrderItem 中的 'item_id' 相匹配
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
                     ->via('orderItems');
     }
 
     public function getOrderItems()
     {
         // 客户订单中的商品，将 `Order` 的 'id' 列和 OrderItem 的 'order_id' 列相匹配
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id'])
                     ->via('orders');
     }
 
     public function getOrders()
     {
         // 见上述列子
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1523,7 +1523,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getComments()
     {
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1684,7 +1684,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1715,7 +1715,7 @@ class Customer extends \yii\db\ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 
     /**
