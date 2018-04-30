@@ -160,12 +160,12 @@ class Cors extends ActionFilter
         $responseHeaders = [];
         // handle Origin
         if (isset($requestHeaders['Origin'], $this->cors['Origin'])) {
-            if (in_array($requestHeaders['Origin'], $this->cors['Origin'])) {
+            if (in_array($requestHeaders['Origin'], $this->cors['Origin'], true)) {
                 $responseHeaders['Access-Control-Allow-Origin'] = $requestHeaders['Origin'];
             }
 
-            if (in_array('*', $this->cors['Origin'])) {
-                // Per CORS standard(https://fetch.spec.whatwg.org), wildcard origins shouldn't be used together with credentails.
+            if (in_array('*', $this->cors['Origin'], true)) {
+                // Per CORS standard(https://fetch.spec.whatwg.org), wildcard origins shouldn't be used together with credentials
                 if (isset($this->cors['Access-Control-Allow-Credentials']) && $this->cors['Access-Control-Allow-Credentials']) {
                     if (YII_DEBUG) {
                         throw new Exception("Allowing credentials for wildcard origins is insecure. Please specify more restrictive origins or set 'credentials' to false in your CORS configuration.");
