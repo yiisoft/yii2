@@ -42,4 +42,26 @@ class CorsTest extends TestCase
         $request->headers->remove('Access-Control-Request-Method');
         $this->assertTrue($cors->beforeAction($action));
     }
+
+    public function testWildcardOrigin()
+    {
+        $this->mockWebApplication();
+        $controller = new Controller('id', Yii::$app);
+        $action = new Action('test', $controller);
+        $request = new Request();
+
+        $cors = new Cors([
+            'cors' => [
+                'Origin' => ['*',],
+                'Access-Control-Allow-Credentials' => false,
+            ],
+        ]);
+        $cors->request = $request;
+
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['HTTP_ORIGIN'] = 'http://foo.com';
+        $this->assertTrue($cors->beforeAction($action));
+        $this->assertEquals('*', $cors->response->getHeaders()->get('access-control-allow-origin'));
+    }
+
 }
