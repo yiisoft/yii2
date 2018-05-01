@@ -53,6 +53,8 @@ Before proceeding, make sure you have installed both the [PDO](http://www.php.ne
 the PDO driver for the database you are using (e.g. `pdo_mysql` for MySQL). This is a basic requirement
 if your application uses a relational database.
 
+> Note: If you are using PostgreSQL, make sure you have the schema on public.
+
 With those installed, open the file `config/db.php` and change the parameters to be correct for your database. By default,
 the file contains the following:
 
