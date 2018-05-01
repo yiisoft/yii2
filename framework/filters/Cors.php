@@ -165,7 +165,7 @@ class Cors extends ActionFilter
             }
 
             if (in_array('*', $this->cors['Origin'], true)) {
-                // Per CORS standard(https://fetch.spec.whatwg.org), wildcard origins shouldn't be used together with credentials
+                // Per CORS standard (https://fetch.spec.whatwg.org), wildcard origins shouldn't be used together with credentials
                 if (isset($this->cors['Access-Control-Allow-Credentials']) && $this->cors['Access-Control-Allow-Credentials']) {
                     if (YII_DEBUG) {
                         throw new Exception("Allowing credentials for wildcard origins is insecure. Please specify more restrictive origins or set 'credentials' to false in your CORS configuration.");
@@ -173,7 +173,7 @@ class Cors extends ActionFilter
                         Yii::error("Allowing credentials for wildcard origins is insecure. Please specify more restrictive origins or set 'credentials' to false in your CORS configuration.", __METHOD__);
                     }
                 } else {
-                    $responseHeaders['Access-Control-Allow-Origin'] = "*";
+                    $responseHeaders['Access-Control-Allow-Origin'] = '*';
                 }
             }
         }
