@@ -115,9 +115,6 @@ class OptimisticLockBehaviorTest extends TestCase
         $request->setBodyParams(['version' => 5]);
         Yii::$app->set('request', $request);
 
-        ActiveRecordLockVersion::$behaviors = [
-            OptimisticLockBehavior::className(),
-        ];
         $model = new ActiveRecordLockVersion();
         $model->save(false);
 

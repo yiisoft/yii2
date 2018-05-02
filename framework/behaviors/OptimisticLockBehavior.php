@@ -153,6 +153,6 @@ class OptimisticLockBehavior extends \yii\behaviors\AttributeBehavior
         }
         $lock = $this->getLockAttribute();
         $version = $owner->$lock ?: 0;
-        $owner->updateAttributes(array_fill_keys((array) $lock, $version + 1));
+        $owner->updateAttributes([$lock => $version + 1]);
     }
 }
