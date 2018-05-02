@@ -171,6 +171,26 @@ class OptimisticLockBehaviorTest extends TestCase
 
         $this->assertTrue($thrown, 'A StaleObjectException exception should have been thrown.');
 
+        // save stale data by sending an 'invalid' version number
+
+        $request->setBodyParams(['version' => 'yii']);
+        Yii::$app->set('request', $request);
+
+        $thrown = false;
+
+        try {
+            $model->save(false);
+        } catch (\yii\db\StaleObjectException $e) {
+            $this->assertContains('The object being updated is outdated.', $e->getMessage());
+            $thrown = true;
+        }
+
+        $this->assertTrue($thrown, 'A StaleObjectException exception should have been thrown.');
+
+        // the behavior should set version to 0 when user input is not a valid number.
+
+        $this->assertEquals(0, $model->version, 'updated version should equal 0');
+
         // a successful update by sending the correct version
 
         $request->setBodyParams(['version' => '1']);
