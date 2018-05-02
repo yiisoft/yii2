@@ -81,7 +81,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         // upgrade model
 
-        $model->upgrade(false);
+        $model->upgrade();
 
         $this->assertEquals(1, $model->version, 'updated version should equal 1');
 
@@ -135,7 +135,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         // upgrade model
 
-        $model->upgrade(false);
+        $model->upgrade();
 
         $this->assertEquals(1, $model->version, 'updated version should equal 1');
 
@@ -211,7 +211,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         // upgrade model version to 1
 
-        $model->upgrade(false);
+        $model->upgrade();
 
         // delete stale data without sending version
 
