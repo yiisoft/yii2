@@ -1,13 +1,15 @@
 配列ヘルパ
 ==========
 
-[PHP の充実した配列関数](http://php.net/manual/ja/book.array.php) への追加として、Yii の配列ヘルパは、配列をさらに効率的に扱うことを可能にするスタティックなメソッドを提供しています。
+[PHP の充実した配列関数](http://php.net/manual/ja/book.array.php) への追加として、
+Yii の配列ヘルパは、配列をさらに効率的に扱うことを可能にするスタティックなメソッドを提供しています。
 
 
 ## 値を取得する <span id="getting-values"></span>
 
 配列、オブジェクト、またはその両方から成る複雑な構造から標準的な PHP を使って値を取得することは、非常に面倒くさい仕事です。
-最初に `isset` でキーの存在をチェックしなければならず、次に、キーが存在していれば値を取得し、存在していなければ、デフォルト値を提供しなければなりません。
+最初に `isset` でキーの存在をチェックしなければならず、次に、キーが存在していれば値を取得し、存在していなければ、
+デフォルト値を提供しなければなりません。
 
 ```php
 class User
@@ -45,12 +47,12 @@ $fullName = ArrayHelper::getValue($user, function ($user, $defaultValue) {
 });
 ```
 
-三番目のオプションの引数はデフォルト値であり、指定されない場合は `null` となります。
-以下のようにして使用します。
+三番目のオプションの引数はデフォルト値であり、指定されない場合は `null` となります。以下のようにして使用します。
 
 ```php
 $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
 ```
+
 
 ## 値を設定する <span id="setting-values"></span>
 
@@ -115,8 +117,8 @@ $type = ArrayHelper::remove($array, 'type');
 
 ## キーの存在をチェックする <span id="checking-existence-of-keys"></span>
 
-`ArrayHelper::keyExists` は、大文字と小文字を区別しないキーの比較をサポートすることを除いて、[array_key_exists](http://php.net/manual/ja/function.array-key-exists.php) と同じ動作をします。
-例えば、
+`ArrayHelper::keyExists` は、大文字と小文字を区別しないキーの比較をサポートすることを除いて、
+[array_key_exists](http://php.net/manual/ja/function.array-key-exists.php) と同じ動作をします。例えば、
 
 ```php
 $data1 = [
@@ -134,8 +136,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 
 ## カラムを取得する <span id="retrieving-columns"></span>
 
-データ行またはオブジェクトの配列から、あるカラムの値を取得する必要があることがよくあります。
-良くある例は、ID のリストの取得です。
+データ行またはオブジェクトの配列から、あるカラムの値を取得する必要があることがよくあります。良くある例は、ID のリストの取得です。
 
 ```php
 $array = [
@@ -147,7 +148,8 @@ $ids = ArrayHelper::getColumn($array, 'id');
 
 結果は `['123', '345']` となります。
 
-追加の変形が要求されたり、値の取得方法が複雑であったりする場合は、無名関数を二番目の引数として指定することが出来ます。
+追加の変形が要求されたり、値の取得方法が複雑であったりする場合は、
+無名関数を二番目の引数として指定することが出来ます。
 
 ```php
 $result = ArrayHelper::getColumn($array, function ($element) {
@@ -162,10 +164,12 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 入力値は、多次元配列であるか、オブジェクトの配列でなければなりません。
 `$key` は、サブ配列のキーの名前、オブジェクトのプロパティの名前、または、キーとして使用される値を返す無名関数とすることが出来ます。
 
-`$groups` 属性はキーの配列であり、入力値の配列を一つまたは複数のサブ配列にグループ化するために使用されます。
+`$groups` 属性はキーの配列であす。これは、入力値の配列を一つまたは複数のサブ配列にグループ化するために
+キーとして使用されます。
 
 特定の要素の `$key` 属性またはその値が `null` であるとき、`$groups` が定義されていない場合は、その要素は破棄されて、結果には入りません。
-そうではなく、`$groups` が指定されている場合は、配列の要素はキー無しで結果の配列に追加されます。
+そうではなく、`$groups` が指定されている場合は、
+配列の要素はキー無しで結果の配列に追加されます。
 
 例えば、
 
@@ -224,7 +228,8 @@ $result = ArrayHelper::index($array, 'data', [function ($element) {
 }, 'device']);
 ```
 
-結果は、最初のレベルが `id` でグループ化され、第2のレベルが `device` でグループ化され、第3のレベルが `data` でインデックスされた連想配列になります。
+結果は、最初のレベルが `id` でグループ化され、第2のレベルが `device` でグループ化され、
+第3のレベルが `data` でインデックスされた連想配列になります。
 
 ```php
 [
@@ -244,13 +249,11 @@ $result = ArrayHelper::index($array, 'data', [function ($element) {
 ]
 ```
 
-
 ## マップを作成する <span id="building-maps"></span>
 
 多次元配列またはオブジェクトの配列からマップ (キー・値 のペア) を作成するためには `map` メソッドを使うことが出来ます。
 `$from` と `$to` のパラメータで、マップを構成するキー名またはプロパティ名を指定します。
-オプションで、グループ化のためのフィールド `$group` に従って、マップをグループ化することも出来ます。
-例えば、
+オプションで、グループ化のためのフィールド `$group` に従って、マップをグループ化することも出来ます。例えば、
 
 ```php
 $array = [
@@ -283,8 +286,7 @@ $result = ArrayHelper::map($array, 'id', 'name', 'class');
 
 ## 多次元配列の並べ替え <span id="multidimensional-sorting"></span>
 
-`multisort` メソッドは、オブジェクトの配列または入れ子にされた配列を、一つまたは複数のキーによって並べ替えることを手助けします。
-例えば、
+`multisort` メソッドは、オブジェクトの配列または入れ子にされた配列を、一つまたは複数のキーによって並べ替えることを手助けします。例えば、
 
 ```php
 $data = [
@@ -318,7 +320,8 @@ ArrayHelper::multisort($data, function($item) {
 一つのキーによる並べ替えの場合は、`SORT_ASC` か `SORT_DESC` のいずれかです。
 複数の値による並べ替えの場合は、並べ替えの順序の配列を渡して、値ごとに違う順序で並べ替えることが出来ます。
 
-最後の引数は並べ替えのフラグで、PHP の [sort()](http://php.net/manual/ja/function.sort.php) 関数に渡されるのと同じ値を取ることが出来ます。
+最後の引数は並べ替えのフラグで、
+PHP の [sort()](http://php.net/manual/ja/function.sort.php) 関数に渡されるのと同じ値を取ることが出来ます。
 
 
 ## 配列の型を検出する <span id="detecting-array-types"></span>
@@ -345,15 +348,15 @@ $encoded = ArrayHelper::htmlEncode($data);
 $decoded = ArrayHelper::htmlDecode($data);
 ```
 
-デフォルトでは、値だけがエンコードされます。
-二番目の引数を `false` として渡すことによって、配列のキーもエンコードすることが出来ます。
+デフォルトでは、値だけがエンコードされます。二番目の引数を `false` として渡すことによって、配列のキーもエンコードすることが出来ます。
 エンコードにはアプリケーションの文字セットが使用されますが、三番目の引数によってそれを変更することも出来ます。
 
 
 ## 配列をマージする <span id="merging-arrays"></span>
 
 [[yii\helpers\ArrayHelper::merge()|ArrayHelper::merge()]] を使って、二つまたはそれ以上の配列を再帰的に一つの配列にマージすることが出来ます。
-各配列に同じ文字列のキー値を持つ要素がある場合は、([array_merge_recursive()](http://php.net/manual/ja/function.array-merge-recursive.php) とは違って)後のものが前のものを上書きします。
+各配列に同じ文字列のキー値を持つ要素がある場合は、
+([array_merge_recursive()](http://php.net/manual/ja/function.array-merge-recursive.php) とは違って)後のものが前のものを上書きします。
 両方の配列が、同じキーを持つ配列型の要素を持っている場合は、再帰的なマージが実行されます。
 添字型の要素については、後の配列の要素が前の配列の要素の後に追加されます。
 [[yii\helpers\UnsetArrayValue]] オブジェクトを使って前の配列にある値を非設定に指定したり、
@@ -419,8 +422,7 @@ $result = ArrayHelper::merge($array1, $array2);
 ## オブジェクトを配列に変換する <span id="converting-objects-to-arrays"></span>
 
 オブジェクトまたはオブジェクトの配列を配列に変換する必要があることがよくあります。
-最もよくあるのは、REST API によってデータ配列を提供するなどの目的で、アクティブ・レコード・モデルを変換する場合です。
-そうするために、次のコードを使うことが出来ます。
+最もよくあるのは、REST API によってデータ配列を提供するなどの目的で、アクティブ・レコード・モデルを変換する場合です。そうするために、次のコードを使うことが出来ます。
 
 ```php
 $posts = Post::find()->limit(10)->all();
@@ -440,8 +442,7 @@ $data = ArrayHelper::toArray($posts, [
 
 最初の引数が変換したいデータです。この例では、`Post` AR モデルを変換しようとしています。
 
-二番目の引数は、クラスごとの変換マップです。
-ここでは、`Post` モデルの変換マップを設定しています。
+二番目の引数は、クラスごとの変換マップです。ここでは、`Post` モデルの変換マップを設定しています。
 変換マップの配列が、一連のマップを含んでいます。各マップは以下のいずれかの形式を取ります。
 
 - フィールド名 - そのままインクルードされる。
@@ -460,7 +461,8 @@ $data = ArrayHelper::toArray($posts, [
 ]
 ```
 
-特定のクラスについて、配列に変換するデフォルトの方法を提供するためには、そのクラスの [[yii\base\Arrayable|Arrayable]] インタフェイスを実装することが出来ます。
+特定のクラスについて、配列に変換するデフォルトの方法を提供するためには、
+そのクラスの [[yii\base\Arrayable|Arrayable]] インタフェイスを実装することが出来ます。
 
 ## 配列の中にあるかどうか調べる <span id="testing-arrays"></span>
 
@@ -479,5 +481,4 @@ ArrayHelper::isIn('a', new ArrayObject(['a']));
 
 // true
 ArrayHelper::isSubset(new ArrayObject(['a', 'c']), new ArrayObject(['a', 'b', 'c']));
-
 ```
