@@ -30,6 +30,7 @@ class UrlTest extends TestCase
             'components' => [
                 'request' => [
                     'class' => 'yii\web\Request',
+                    'cookieValidationKey' => '123',
                     'scriptUrl' => '/base/index.php',
                     'hostInfo' => 'http://example.com/',
                     'url' => '/base/index.php&r=site%2Fcurrent&id=42',

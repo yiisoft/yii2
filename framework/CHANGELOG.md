@@ -1,6 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.13.4 under development
+-----------------------
+
+- Enh #15496: CSRF token is now regenerated on changing identity (samdark, rhertogh, makcumka2000)
+
 2.0.13.3 March 21, 2018
 -----------------------
 
