@@ -53,7 +53,7 @@ public function actionView($id)
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: обеспечивает согласование содержимого, более подробно описан 
   в разделе [Форматирование ответа](rest-response-formatting.md);
 * [[yii\filters\VerbFilter|verbFilter]]: обеспечивает проверку HTTP-метода;
-* [[yii\filters\AuthMethod|authenticator]]: обеспечивает аутентификацию пользователя, более подробно описан 
+* [[yii\filters\auth\AuthMethod|authenticator]]: обеспечивает аутентификацию пользователя, более подробно описан
   в разделе [Аутентификация](rest-authentication.md);
 * [[yii\filters\RateLimiter|rateLimiter]]: обеспечивает ограничение частоты запросов, более подробно описан 
   в разделе [Ограничение частоты запросов](rest-rate-limiting.md).
@@ -80,7 +80,7 @@ public function behaviors()
 ## Наследование от `ActiveController` <span id="extending-active-controller"></span>
 
 Если ваш класс контроллера наследуется от [[yii\rest\ActiveController]], вам следует установить
-значение его свойства [[yii\rest\ActiveController::modelClass||modelClass]] равным имени класса ресурса,
+значение его свойства [[yii\rest\ActiveController::modelClass|modelClass]] равным имени класса ресурса,
 который вы планируете обслуживать с помощью этого контроллера. Класс ресурса должен быть унаследован от [[yii\db\ActiveRecord]].
 
 
@@ -136,7 +136,7 @@ public function prepareDataProvider()
  * Если у пользователя нет доступа, следует выбросить исключение [[ForbiddenHttpException]].
  *
  * @param string $action ID действия, которое надо выполнить
- * @param \yii\base\Model $model модель, к которой нужно получить доступ. Если null, это означает, что модель, к которой нужно получить доступ, отсутствует.
+ * @param \yii\base\Model $model модель, к которой нужно получить доступ. Если `null`, это означает, что модель, к которой нужно получить доступ, отсутствует.
  * @param array $params дополнительные параметры
  * @throws ForbiddenHttpException если у пользователя нет доступа
  */
@@ -144,6 +144,10 @@ public function checkAccess($action, $model = null, $params = [])
 {
     // проверить, имеет ли пользователь доступ к $action и $model
     // выбросить ForbiddenHttpException, если доступ следует запретить
+    if ($action === 'update' || $action === 'delete') {
+        if ($model->author_id !== \Yii::$app->user->id)
+            throw new \yii\web\ForbiddenHttpException(sprintf('You can only %s articles that you\'ve created.', $action));
+    }
 }
 ```
 

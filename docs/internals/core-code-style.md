@@ -1,5 +1,5 @@
-Yii2 Core framework code style
-==============================
+Yii 2 Core Framework Code Style
+===============================
 
 The following code style is used for Yii 2.x core and official extensions development. If you want to pull-request code
 into the core, consider using it. We aren't forcing you to use this code style for your application. Feel free to choose
@@ -7,8 +7,7 @@ what suits you better.
 
 You can get a config for CodeSniffer here: https://github.com/yiisoft/yii2-coding-standards
 
-1. Overview
------------
+## 1. Overview
 
 Overall we're using [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)
 compatible style so everything that applies to
@@ -26,8 +25,7 @@ style as well.
 - Property names MUST start with an initial underscore if they are private.
 - Always use `elseif` instead of `else if`.
 
-2. Files
---------
+## 2. Files
 
 ### 2.1. PHP Tags
 
@@ -40,20 +38,18 @@ style as well.
 
 PHP code MUST use only UTF-8 without BOM.
 
-3. Class Names
---------------
+## 3. Class Names
 
 Class names MUST be declared in `StudlyCaps`. For example, `Controller`, `Model`.
 
-4. Classes
-----------
+## 4. Classes
 
 The term "class" refers to all classes and interfaces here.
 
 - Classes should be named using `CamelCase`.
 - The brace should always be written on the line underneath the class name.
 - Every class must have a documentation block that conforms to the PHPDoc.
-- All code in a class must be indented with a single tab.
+- All code in a class must be indented with 4 spaces.
 - There should be only one class in a single PHP file.
 - All classes should be namespaced.
 - Class name should match file name. Class namespace should match directory structure.
@@ -62,7 +58,7 @@ The term "class" refers to all classes and interfaces here.
 /**
  * Documentation
  */
-class MyClass extends \yii\Object implements MyInterface
+class MyClass extends \yii\base\BaseObject implements MyInterface
 {
     // code
 }
@@ -87,9 +83,10 @@ class Foo
 - Public and protected variables should be declared at the top of the class before any method declarations.
   Private variables should also be declared at the top of the class but may be added right before the methods
   that are dealing with them in cases where they are only related to a small subset of the class methods.
-- The order of property declaration in a class should be ascending from public over protected to private.
+- The order of property declaration in a class should be ascending based on their visibility: from public over protected to private.
+- There are no strict rules for ordering properties that have the same visibility.
 - For better readability there should be no blank lines between property declarations and two blank lines
-  between property and method declaration sections.
+  between property and method declaration sections. One blank line should be added between the different visibility groups.
 - Private variables should be named like `$_varName`.
 - Public class members and standalone variables should be named using `$camelCase`
   with first letter lowercase.
@@ -101,9 +98,18 @@ For example:
 <?php
 class Foo
 {
-    public $publicProp;
+    public $publicProp1;
+    public $publicProp2;
+
     protected $protectedProp;
+
     private $_privateProp;
+
+
+    public function someMethod()
+    {
+        // ...
+    }
 }
 ```
 
@@ -115,7 +121,7 @@ class Foo
   `public` modifiers. `var` is not allowed.
 - Opening brace of a function should be on the line after the function declaration.
 
-```
+```php
 /**
  * Documentation
  */
@@ -132,9 +138,29 @@ class Foo
 }
 ```
 
-### 4.4 Doc blocks
+### 4.4 PHPDoc blocks
 
-`@param`, `@var`, `@property` and `@return` must declare types as `boolean`, `integer`, `string`, `array` or `null`. You can use a class names as well such as `Model` or `ActiveRecord`. For a typed arrays use `ClassName[]`.
+ - `@param`, `@var`, `@property` and `@return` must declare types as `bool`, `int`, `string`, `array` or `null`.
+   You can use a class names as well such as `Model` or `ActiveRecord`.
+ - For a typed arrays use `ClassName[]`.
+ - The first line of the PHPDoc must describe the purpose of the method.
+ - If method checks something (`isActive`, `hasClass`, etc) the first line should start with `Checks whether`.
+ - `@return` should explicitly describe what exactly will be returned.
+
+```php
+/**
+ * Checks whether the IP is in subnet range
+ *
+ * @param string $ip an IPv4 or IPv6 address
+ * @param int $cidr the CIDR lendth
+ * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
+ * @return bool whether the IP is in subnet range
+ */
+ private function inRange($ip, $cidr, $range)
+ {
+   // ...
+ }
+```
 
 ### 4.5 Constructors
 
@@ -226,7 +252,7 @@ Use the following format for associative arrays:
 
 ```php
 $config = [
-    'name'  => 'Yii',
+    'name' => 'Yii',
     'options' => ['usePHP' => true],
 ];
 ```
@@ -260,9 +286,9 @@ Use [guard conditions](http://refactoring.com/catalog/replaceNestedConditionalWi
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 } else {
-  // process result
+    // process result
 }
 ```
 
@@ -271,7 +297,7 @@ is better as
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+   return true;
 }
 
 // process result
@@ -341,7 +367,7 @@ Documentation
 - All class files must contain a "file-level" docblock at the top of each file
   and a "class-level" docblock immediately above each class.
 - There is no need to use `@return` if method does return nothing.
-- All virtual properties in classes that extend from `yii\base\Object`
+- All virtual properties in classes that extend from `yii\base\BaseObject`
   are documented with an `@property` tag in the class doc block.
   These annotations are automatically generated from the `@return` or `@param`
   tag in the corresponding getter or setter by running `./build php-doc` in the build directory.
@@ -386,7 +412,7 @@ Documentation
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends \yii\base\Object
+class Component extends \yii\base\BaseObject
 ```
 
 
@@ -422,10 +448,10 @@ As you can see in the examples above we use markdown to format the phpDoc commen
 
 There is additional syntax for cross linking between classes, methods and properties in the documentation:
 
-- `'[[canSetProperty]] ` will create a link to the `canSetProperty` method or property of the same class.
-- `'[[Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in the same namespace.
-- `'[[yii\base\Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in namespace `yii\base`.
-- `'[[Component]]` will create a link to the `Component` class in the same namespace. Adding namespace to the class name is also possible here.
+- `[[canSetProperty]]` will create a link to the `canSetProperty` method or property of the same class.
+- `[[Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in the same namespace.
+- `[[yii\base\Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in namespace `yii\base`.
+- `[[Component]]` will create a link to the `Component` class in the same namespace. Adding namespace to the class name is also possible here.
 
 To give one of the above mentioned links another label than the class or method name you can use the syntax shown in the following example:
 
@@ -465,7 +491,7 @@ Always use `static` except the following cases:
 
 - accessing constants MUST be done via `self`: `self::MY_CONSTANT`
 - accessing private static properties MUST be done via `self`: `self::$_events`
-- It is allowed to use `self` for recursion to call current implementation again instead of extending classes implementation.
+- It is allowed to use `self` for method calls where it makes sense such as recursive call to current implementation instead of extending classes implementation.
 
 ### value for "don't do something"
 
@@ -476,3 +502,6 @@ Properties allowing to configure component not to do something should accept val
 - use lower case
 - use plural form for nouns which represent objects (e.g. validators)
 - use singular form for names representing relevant functionality/features (e.g. web)
+- prefer single word namespaces
+- if single word isn't suitable, use camelCase
+

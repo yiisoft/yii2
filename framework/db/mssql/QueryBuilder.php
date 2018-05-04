@@ -7,9 +7,9 @@
 
 namespace yii\db\mssql;
 
-use yii\base\InvalidParamException;
-use yii\base\NotSupportedException;
-use yii\db\Query;
+use yii\base\InvalidArgumentException;
+use yii\db\Constraint;
+use yii\db\Expression;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
@@ -24,27 +24,42 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int IDENTITY PRIMARY KEY',
+        Schema::TYPE_UPK => 'int IDENTITY PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigint IDENTITY PRIMARY KEY',
-        Schema::TYPE_STRING => 'varchar(255)',
-        Schema::TYPE_TEXT => 'text',
+        Schema::TYPE_UBIGPK => 'bigint IDENTITY PRIMARY KEY',
+        Schema::TYPE_CHAR => 'nchar(1)',
+        Schema::TYPE_STRING => 'nvarchar(255)',
+        Schema::TYPE_TEXT => 'nvarchar(max)',
+        Schema::TYPE_TINYINT => 'tinyint',
         Schema::TYPE_SMALLINT => 'smallint',
         Schema::TYPE_INTEGER => 'int',
         Schema::TYPE_BIGINT => 'bigint',
         Schema::TYPE_FLOAT => 'float',
         Schema::TYPE_DOUBLE => 'float',
-        Schema::TYPE_DECIMAL => 'decimal',
+        Schema::TYPE_DECIMAL => 'decimal(18,0)',
         Schema::TYPE_DATETIME => 'datetime',
-        Schema::TYPE_TIMESTAMP => 'timestamp',
+        Schema::TYPE_TIMESTAMP => 'datetime',
         Schema::TYPE_TIME => 'time',
         Schema::TYPE_DATE => 'date',
-        Schema::TYPE_BINARY => 'binary(1)',
+        Schema::TYPE_BINARY => 'varbinary(max)',
         Schema::TYPE_BOOLEAN => 'bit',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'yii\db\conditions\InCondition' => 'yii\db\mssql\conditions\InConditionBuilder',
+            'yii\db\conditions\LikeCondition' => 'yii\db\mssql\conditions\LikeConditionBuilder',
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
@@ -53,19 +68,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return $orderBy === '' ? $sql : $sql . $this->separator . $orderBy;
         }
 
-        if ($this->isOldMssql()) {
+        if (version_compare($this->db->getSchema()->getServerVersion(), '11', '<')) {
             return $this->oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
-        } else {
-            return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         }
+
+        return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
     }
 
     /**
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2012 or newer.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
-     * @param integer $limit the limit number. See [[Query::limit]] for more details.
-     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
+     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
+     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
     protected function newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
@@ -90,9 +105,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
-     * @param integer $limit the limit number. See [[Query::limit]] for more details.
-     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
+     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
+     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
     protected function oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
@@ -163,29 +178,116 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
-     * @return string the SQL statement for checking integrity
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     * {@inheritdoc}
      */
-    public function checkIntegrity($check = true, $schema = '', $table = '')
+    public function addDefaultValue($name, $table, $column, $value)
     {
-        if ($schema !== '') {
-            $table = "{$schema}.{$table}";
-        }
-        $table = $this->db->quoteTableName($table);
-        if ($this->db->getTableSchema($table) === null) {
-            throw new InvalidParamException("Table not found: $table");
-        }
-        $enable = $check ? 'CHECK' : 'NOCHECK';
-
-        return "ALTER TABLE {$table} {$enable} CONSTRAINT ALL";
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+            . $this->db->quoteColumnName($name) . ' DEFAULT ' . $this->db->quoteValue($value) . ' FOR '
+            . $this->db->quoteColumnName($column);
     }
 
     /**
-     * Returns an array of column names given model name
+     * {@inheritdoc}
+     */
+    public function dropDefaultValue($name, $table)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+    }
+
+    /**
+     * Creates a SQL statement for resetting the sequence value of a table's primary key.
+     * The sequence will be reset such that the primary key of the next new row inserted
+     * will have the specified value or 1.
+     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
+     * @return string the SQL statement for resetting sequence
+     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
+     */
+    public function resetSequence($tableName, $value = null)
+    {
+        $table = $this->db->getTableSchema($tableName);
+        if ($table !== null && $table->sequenceName !== null) {
+            $tableName = $this->db->quoteTableName($tableName);
+            if ($value === null) {
+                $key = $this->db->quoteColumnName(reset($table->primaryKey));
+                $value = "(SELECT COALESCE(MAX({$key}),0) FROM {$tableName})+1";
+            } else {
+                $value = (int) $value;
+            }
+
+            return "DBCC CHECKIDENT ('{$tableName}', RESEED, {$value})";
+        } elseif ($table === null) {
+            throw new InvalidArgumentException("Table not found: $tableName");
+        }
+
+        throw new InvalidArgumentException("There is not sequence associated with table '$tableName'.");
+    }
+
+    /**
+     * Builds a SQL statement for enabling or disabling integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
+     * @param string $schema the schema of the tables.
+     * @param string $table the table name.
+     * @return string the SQL statement for checking integrity
+     */
+    public function checkIntegrity($check = true, $schema = '', $table = '')
+    {
+        $enable = $check ? 'CHECK' : 'NOCHECK';
+        $schema = $schema ?: $this->db->getSchema()->defaultSchema;
+        $tableNames = $this->db->getTableSchema($table) ? [$table] : $this->db->getSchema()->getTableNames($schema);
+        $viewNames = $this->db->getSchema()->getViewNames($schema);
+        $tableNames = array_diff($tableNames, $viewNames);
+        $command = '';
+
+        foreach ($tableNames as $tableName) {
+            $tableName = $this->db->quoteTableName("{$schema}.{$tableName}");
+            $command .= "ALTER TABLE $tableName $enable CONSTRAINT ALL; ";
+        }
+
+        return $command;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+    }
+
+    /**
+     * Returns an array of column names given model name.
      *
      * @param string $modelClass name of the model class
      * @return array|null array of column names
@@ -195,81 +297,124 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$modelClass) {
             return null;
         }
-        /* @var $model \yii\db\ActiveRecord */
-        $model = new $modelClass;
-        $schema = $model->getTableSchema();
-        $columns = array_keys($schema->columns);
+        /* @var $modelClass \yii\db\ActiveRecord */
+        $schema = $modelClass::getTableSchema();
+        return array_keys($schema->columns);
+    }
+
+    /**
+     * @return bool whether the version of the MSSQL being used is older than 2012.
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     * @deprecated 2.0.14 Use [[Schema::getServerVersion]] with [[\version_compare()]].
+     */
+    protected function isOldMssql()
+    {
+        return version_compare($this->db->getSchema()->getServerVersion(), '11', '<');
+    }
+
+    /**
+     * {@inheritdoc}
+     * @since 2.0.8
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END';
+    }
+
+    /**
+     * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
+     * @param string $table the table that data will be saved into.
+     * @param array $columns the column data (name => value) to be saved into the table.
+     * @return array normalized columns
+     */
+    private function normalizeTableRowData($table, $columns, &$params)
+    {
+        if (($tableSchema = $this->db->getSchema()->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+            foreach ($columns as $name => $value) {
+                // @see https://github.com/yiisoft/yii2/issues/12599
+                if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && (is_string($value) || $value === null)) {
+                    $exParams = [];
+                    $phName = $this->bindParam($value, $exParams);
+                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", $exParams);
+                }
+            }
+        }
+
         return $columns;
     }
 
     /**
-     * @var boolean whether MSSQL used is old.
+     * {@inheritdoc}
      */
-    private $_oldMssql;
-
-    /**
-     * @return boolean whether the version of the MSSQL being used is older than 2012.
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     */
-    protected function isOldMssql()
+    public function insert($table, $columns, &$params)
     {
-        if ($this->_oldMssql === null) {
-            $pdo = $this->db->getSlavePdo();
-            $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
-            $this->_oldMssql = $version[0] < 11;
-        }
-        return $this->_oldMssql;
+        return parent::insert($table, $this->normalizeTableRowData($table, $columns, $params), $params);
     }
 
     /**
-     * Builds SQL for IN condition
-     *
-     * @param string $operator
-     * @param array $columns
-     * @param Query $values
-     * @param array $params
-     * @return string SQL
-     * @throws NotSupportedException
+     * {@inheritdoc}
+     * @see https://docs.microsoft.com/en-us/sql/t-sql/statements/merge-transact-sql
+     * @see http://weblogs.sqlteam.com/dang/archive/2009/01/31/UPSERT-Race-Condition-With-MERGE.aspx
      */
-    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
+    public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        if (is_array($columns)) {
-            throw new NotSupportedException(__METHOD__ . ' is not supported by MSSQL.');
+        /** @var Constraint[] $constraints */
+        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
+        if (empty($uniqueNames)) {
+            return $this->insert($table, $insertColumns, $params);
         }
-        return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
-    }
 
-    /**
-     * Builds SQL for IN condition
-     *
-     * @param string $operator
-     * @param array $columns
-     * @param array $values
-     * @param array $params
-     * @return string SQL
-     */
-    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
-    {
-        $quotedColumns = [];
-        foreach ($columns as $i => $column) {
-            $quotedColumns[$i] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
-        }
-        $vss = [];
-        foreach ($values as $value) {
-            $vs = [];
-            foreach ($columns as $i => $column) {
-                if (isset($value[$column])) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $params[$phName] = $value[$column];
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
-                } else {
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
-                }
+        $onCondition = ['or'];
+        $quotedTableName = $this->db->quoteTableName($table);
+        foreach ($constraints as $constraint) {
+            $constraintCondition = ['and'];
+            foreach ($constraint->columnNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                $constraintCondition[] = "$quotedTableName.$quotedName=[EXCLUDED].$quotedName";
             }
-            $vss[] = '(' . implode($operator === 'IN' ? ' AND ' : ' OR ', $vs) . ')';
+            $onCondition[] = $constraintCondition;
+        }
+        $on = $this->buildCondition($onCondition, $params);
+        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+        $mergeSql = 'MERGE ' . $this->db->quoteTableName($table) . ' WITH (HOLDLOCK) '
+            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNames) . ') '
+            . "ON ($on)";
+        $insertValues = [];
+        foreach ($insertNames as $name) {
+            $quotedName = $this->db->quoteColumnName($name);
+            if (strrpos($quotedName, '.') === false) {
+                $quotedName = '[EXCLUDED].' . $quotedName;
+            }
+            $insertValues[] = $quotedName;
+        }
+        $insertSql = 'INSERT (' . implode(', ', $insertNames) . ')'
+            . ' VALUES (' . implode(', ', $insertValues) . ')';
+        if ($updateColumns === false) {
+            return "$mergeSql WHEN NOT MATCHED THEN $insertSql;";
         }
 
-        return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
+        if ($updateColumns === true) {
+            $updateColumns = [];
+            foreach ($updateNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                if (strrpos($quotedName, '.') === false) {
+                    $quotedName = '[EXCLUDED].' . $quotedName;
+                }
+                $updateColumns[$name] = new Expression($quotedName);
+            }
+        }
+        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        $updateSql = 'UPDATE SET ' . implode(', ', $updates);
+        return "$mergeSql WHEN MATCHED THEN $updateSql WHEN NOT MATCHED THEN $insertSql;";
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function update($table, $columns, $condition, &$params)
+    {
+        return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
     }
 }

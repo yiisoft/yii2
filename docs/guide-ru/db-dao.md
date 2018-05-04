@@ -15,11 +15,14 @@ Yii DAO из коробки поддерживает следующие базы
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)
+- [PostgreSQL](http://www.postgresql.org/): версии 8.4 или выше.
 - [CUBRID](http://www.cubrid.org/): версии 9.3 или выше.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): версии 2008 или выше.
 
+
+> Note: Новая версия pdo_oci для PHP 7 на данный момент существует только в форме исходного кода. Используйте
+  [инструкции сообщества по компиляции](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268).
 
 ## Создание подключения к базе данных <span id="creating-db-connections"></span>
 
@@ -155,7 +158,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
 
 * [[yii\db\Command::bindValue()|bindValue()]]: привязка одного параметра по значению 
 * [[yii\db\Command::bindValues()|bindValues()]]: привязка нескольких параметров в одном вызове
-* [[yii\db\Command::bindParam()|bindParam()]]: похоже на [[yii\db\Command::bindValue()|bindValue()]] но привязка
+* [[yii\db\Command::bindParam()|bindParam()]]: похоже на [[yii\db\Command::bindValue()|bindValue()]], но привязка
   происходит по ссылке.
 
 Следующий пример показывает альтернативный путь привязки параметров:
@@ -257,7 +260,7 @@ Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
 * `[[column name]]`: заключайте имя столбца в двойные квадратные скобки; 
 * `{{table name}}`: заключайте имя таблицы в двойные фигурные скобки.
 
-Yii DAO будет автоматический преобразовывать подобные конструкции в SQL в правильно экранированные имена таблиц и столбцов.
+Yii DAO будет автоматически преобразовывать подобные конструкции в SQL в правильно экранированные имена таблиц и столбцов.
 Например,
 
 ```php
@@ -287,7 +290,7 @@ return [
 ```
 
 Затем в коде, когда вам нужно ссылаться на таблицу, имя которой содержит такой префикс, используйте синтаксис `{{%table name}}`.
-Символ процента будет автоматический заменён на префикс таблицы, который вы указали во время конфигурации соединения с
+Символ процента будет автоматически заменён на префикс таблицы, который вы указали во время конфигурации соединения с
 базой данных. Например,
 
 ```php
@@ -313,7 +316,7 @@ Yii::$app->db->transaction(function($db) {
 });
 ```
 
-Код выше эквивалентен приведённму ниже. Разница в том, что в данном случае мы получаем больше контроля над обработкой
+Код выше эквивалентен приведённому ниже. Разница в том, что в данном случае мы получаем больше контроля над обработкой
 ошибок:
 
 ```php
@@ -326,14 +329,17 @@ try {
     // ... executing other SQL statements ...
     
     $transaction->commit();
-    
 } catch(\Exception $e) {
-
     $transaction->rollBack();
-    
     throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
 }
 ```
+
+> Note: в коде выше ради совместимости с PHP 5.x и PHP 7.x использованы два блока catch. 
+> `\Exception` реализует интерфейс [`\Throwable` interface](http://php.net/manual/ru/class.throwable.php)
+> начиная с PHP 7.0. Если вы используете только PHP 7 и новее, можете пропустить блок с `\Exception`.
 
 При вызове метода [[yii\db\Connection::beginTransaction()|beginTransaction()]], будет запущена новая транзакция.
 Транзакция представлена объектом [[yii\db\Transaction]] сохранённым в переменной `$transaction`. Потом, запросы будут
@@ -354,7 +360,7 @@ Yii::$app->db->transaction(function ($db) {
     ....
 }, $isolationLevel);
  
-// or alternatively
+// или
 
 $transaction = Yii::$app->db->beginTransaction($isolationLevel);
 ```
@@ -366,8 +372,8 @@ Yii предоставляет четыре константы для наибо
 - [[\yii\db\Transaction::REPEATABLE_READ]] - предотвращает «Грязное» чтение и не повторяющееся чтение.
 - [[\yii\db\Transaction::SERIALIZABLE]] - высший уровень, предотвращает все вышеуказанные проблемы.
 
-Помимо использования приведённых выше констант для задания уровня изоляции, вы можете также использовать строки с
-поддерживаемые вашим СУБД. Например, в PostgreSQL, вы можете использовать `SERIALIZABLE READ ONLY DEFERRABLE`.
+Помимо использования приведённых выше констант для задания уровня изоляции, вы можете, также, использовать строки
+поддерживаемые вашей СУБД. Например, в PostgreSQL, вы можете использовать `SERIALIZABLE READ ONLY DEFERRABLE`.
 
 Заметьте что некоторые СУБД допускают настраивать уровень изоляции только для всего соединения. Следующие транзакции
 будут получать тот же уровень изоляции, даже если вы его не укажете. При использовании этой функции может потребоваться
@@ -390,10 +396,10 @@ Yii предоставляет четыре константы для наибо
 
 ```php
 Yii::$app->db->transaction(function ($db) {
-    // outer transaction
+    // внешняя транзакция
     
     $db->transaction(function ($db) {
-        // inner transaction
+        // внутренняя транзакция
     });
 });
 ```
@@ -412,11 +418,17 @@ try {
         $innerTransaction->commit();
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
+    } catch (\Throwable $e) {
+        $innerTransaction->rollBack();
+        throw $e;
     }
 
     $outerTransaction->commit();
 } catch (\Exception $e) {
     $outerTransaction->rollBack();
+} catch (\Throwable $e) {
+    $innerTransaction->rollBack();
+    throw $e;
 }
 ```
 
@@ -462,7 +474,7 @@ try {
 
 Вышеуказанная конфигурация определяет систему с одним мастером и несколькими подчинёнными. Один из подчинённых
 будет подключен и использован для чтения, в то время как мастер будет использоваться для запросов записи.
-Такое разделение чтения и записи будет осуществлено автоматический с указанной конфигурацией. Например,
+Такое разделение чтения и записи будет осуществлено автоматически с указанной конфигурацией. Например,
 
 ```php
 // создание экземпляра соединения, использующего вышеуказанную конфигурацию
@@ -556,6 +568,9 @@ try {
     $transaction->commit();
 } catch(\Exception $e) {
     $transaction->rollBack();
+    throw $e;
+} catch (\Throwable $e) {
+    $innerTransaction->rollBack();
     throw $e;
 }
 ```

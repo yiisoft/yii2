@@ -18,11 +18,11 @@
 и применит её к приложению, например:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // загрузка конфигурации приложения
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // создание объекта приложения и его конфигурирование
 (new yii\web\Application($config))->run();
@@ -66,7 +66,7 @@ $config = require(__DIR__ . '/../config/web.php');
 Свойство [[yii\base\Application::basePath|basePath]] часто используется для указания других важных путей (например, путь к 
 директории runtime, используемой приложением). По этой причине, псевдоним пути `@app` предустановлен и содержит данный путь.
 Производные пути могут быть получены с использованием этого псевдонима пути (например, `@app/runtime` указывает на
-времененную директорию runtime).
+временную директорию runtime).
 
 
 ### Важные свойства <span id="important-properties"></span>
@@ -97,7 +97,7 @@ $config = require(__DIR__ . '/../config/web.php');
 
 Данное свойство является очень удобным, оно позволяет указать массив компонентов, которые должны быть загружены
 в процессе  [[yii\base\Application::bootstrap()|начальной загрузки]] приложения. Например, если вы хотите, чтобы
-[модуль](structure-modules.md) производил тонкую настройку [URL правил](runtime-url-handling.md), вы можете указать его
+[модуль](structure-modules.md) производил тонкую настройку [URL правил](runtime-routing.md), вы можете указать его
 ID в качестве элемента данного свойства.
 
 Каждый из элементов данного свойства, может быть указан в одном из следующих форматов:
@@ -136,12 +136,12 @@ ID в качестве элемента данного свойства.
 > будет использован компонент приложения. Если Вы вместо этого хотите использовать модуль, то можете указать его при
 > помощи анонимной функции похожей на эту:
 > ```php
-[
-    function () {
-        return Yii::$app->getModule('user');
-    },
-]
-```
+> [
+>     function () {
+>         return Yii::$app->getModule('user');
+>     },
+> ]
+> ```
 
 В процессе [начальной загрузки](runtime-bootstrapping.md), каждый компонент будет создан. Если класс компонента имеет
 интерфейс [[yii\base\BootstrapInterface]], то также будет вызван метод [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]].
@@ -190,7 +190,7 @@ if (YII_ENV_DEV) {
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
 Данное свойство является наиболее важным. Оно позволяет вам зарегистрировать список именованных компонентов, называемых
-[компоненты приложения](#structure-application-components.md), которые Вы можете использовать в других местах.
+[компоненты приложения](structure-application-components.md), которые Вы можете использовать в других местах.
 Например,
 
 ```php
@@ -211,7 +211,7 @@ if (YII_ENV_DEV) {
 в то время как значение представляет собой название класса или [конфигурацию](concept-configurations.md).
 
 Вы можете зарегистрировать любой компонент в приложении, позже этот компонент будет глобально доступен через
-выражение `\Yii::$app->ComponentID`.
+выражение `\Yii::$app->componentID`.
 
 Более подробная информация приведена в разделе [Компоненты приложения](structure-application-components.md).
 
@@ -228,12 +228,10 @@ if (YII_ENV_DEV) {
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]
@@ -591,7 +589,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Когда [входной скрипт](structure-entry-scripts.md) выполняется для обработки запроса, приложение
 будет развиваться согласно следующему жизненному циклу:
 
-1. Входной скрипт загружает конфигурацию приложения в качества массива;
+1. Входной скрипт загружает конфигурацию приложения в качестве массива;
 2. Входной скрипт создаёт новый объект приложения:
   * Вызывается метод [[yii\base\Application::preInit()|preInit()]], который настраивает некоторые 
     жизненно важные свойства приложения, такие как [[yii\base\Application::basePath|basePath]];

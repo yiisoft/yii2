@@ -34,7 +34,7 @@ Phần cấu hình trên được đề cập ở mục [Môi trường phát tr
 ứng dụng bao gồm module tên là `gii`, nằm ở lớp [[yii\gii\Module]].
 
 Nếu bạn xem qua file [entry script](structure-entry-scripts.md) `web/index.php` trong ứng dụng của bạn, bạn sẽ thấy dòng sau, 
-Điều này chủ yếu thiết lập tham số `YII_ENV_DEV` có giá trị true.
+Điều này chủ yếu thiết lập tham số `YII_ENV_DEV` có giá trị `true`.
 
 ```php
 defined('YII_ENV') or define('YII_ENV', 'dev');

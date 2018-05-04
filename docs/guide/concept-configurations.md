@@ -97,7 +97,7 @@ configuration file for the [Basic Project Template](start-installation.md).
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -135,6 +135,28 @@ an [entry script](structure-entry-scripts.md), where the class name is already g
 More details about configuring the `components` property of an application can be found
 in the [Applications](structure-applications.md) section and the [Service Locator](concept-service-locator.md) section.
 
+Since version 2.0.11, the application configuration supports [Dependency Injection Container](concept-di-container.md)
+configuration using `container` property. For example:
+
+```php
+$config = [
+    'id' => 'basic',
+    'basePath' => dirname(__DIR__),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'container' => [
+        'definitions' => [
+            'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
+        ],
+        'singletons' => [
+            // Dependency Injection Container singletons configuration
+        ]
+    ]
+];
+```
+
+To know more about the possible values of `definitions` and `singletons` configuration arrays and real-life examples,
+please read [Advanced Practical Usage](concept-di-container.md#advanced-practical-usage) subsection of the
+[Dependency Injection Container](concept-di-container.md) article.
 
 ### Widget Configurations <span id="widget-configurations"></span>
 
@@ -155,7 +177,7 @@ echo Menu::widget([
 ]);
 ```
 
-The above code creates a `Menu` widget and initializes its `activateItems` property to be false.
+The above code creates a `Menu` widget and initializes its `activateItems` property to be `false`.
 The `items` property is also configured with menu items to be displayed.
 
 Note that because the class name is already given, the configuration array should NOT have the `class` key.
@@ -171,8 +193,8 @@ For example, you may keep an application configuration in a file named `web.php`
 return [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
-    'components' => require(__DIR__ . '/components.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'components' => require __DIR__ . '/components.php',
 ];
 ```
 
@@ -209,7 +231,7 @@ return [
 To get a configuration stored in a configuration file, simply "require" it, like the following:
 
 ```php
-$config = require('path/to/web.php');
+$config = require 'path/to/web.php';
 (new yii\web\Application($config))->run();
 ```
 
@@ -222,7 +244,7 @@ the specified classes when they are being created using [[Yii::createObject()]].
 can be specified by calling `Yii::$container->set()` in the [bootstrapping](runtime-bootstrapping.md) code.
 
 For example, if you want to customize [[yii\widgets\LinkPager]] so that ALL link pagers will show at most 5 page buttons
-(the default value is 10), you may use the following code to achieve this goal,
+(the default value is 10), you may use the following code to achieve this goal:
 
 ```php
 \Yii::$container->set('yii\widgets\LinkPager', [
@@ -248,10 +270,10 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 
 You may define `YII_ENV` as one of the following values:
 
-- `prod`: production environment. The constant `YII_ENV_PROD` will evaluate as true.
+- `prod`: production environment. The constant `YII_ENV_PROD` will evaluate as `true`.
   This is the default value of `YII_ENV` if you do not define it.
-- `dev`: development environment. The constant `YII_ENV_DEV` will evaluate as true.
-- `test`: testing environment. The constant `YII_ENV_TEST` will evaluate as true.
+- `dev`: development environment. The constant `YII_ENV_DEV` will evaluate as `true`.
+- `test`: testing environment. The constant `YII_ENV_TEST` will evaluate as `true`.
 
 With these environment constants, you may specify your configurations conditionally based on
 the current environment. For example, your application configuration may contain the following

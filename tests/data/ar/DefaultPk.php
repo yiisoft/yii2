@@ -8,10 +8,10 @@
 namespace yiiunit\data\ar;
 
 /**
- * DefaultPk
+ * DefaultPk.
  *
  * @author Jan Waś <janek.jan@gmail.com>
- * @property integer $id
+ * @property int $id
  */
 class DefaultPk extends ActiveRecord
 {

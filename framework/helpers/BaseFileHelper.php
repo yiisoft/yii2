@@ -9,8 +9,8 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\ErrorException;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * BaseFileHelper provides concrete implementation for [[FileHelper]].
@@ -33,10 +33,16 @@ class BaseFileHelper
      * @var string the path (or alias) of a PHP file containing MIME type information.
      */
     public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
+    /**
+     * @var string the path (or alias) of a PHP file containing MIME aliases.
+     * @since 2.0.14
+     */
+    public static $mimeAliasesFile = '@yii/helpers/mimeAliases.php';
 
 
     /**
      * Normalizes a file/directory path.
+     *
      * The normalization does the following work:
      *
      * - Convert all directory separators into `DIRECTORY_SEPARATOR` (e.g. "\a/b\c" becomes "/a/b/c")
@@ -55,7 +61,11 @@ class BaseFileHelper
             return $path;
         }
         // the path may contain ".", ".." or double slashes, need to clean them up
-        $parts = [];
+        if (strpos($path, "{$ds}{$ds}") === 0 && $ds == '\\') {
+            $parts = [$ds];
+        } else {
+            $parts = [];
+        }
         foreach (explode($ds, $path) as $part) {
             if ($part === '..' && !empty($parts) && end($parts) !== '..') {
                 array_pop($parts);
@@ -104,15 +114,15 @@ class BaseFileHelper
         $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
         if (is_file($desiredFile)) {
             return $desiredFile;
-        } else {
-            $language = substr($language, 0, 2);
-            if ($language === $sourceLanguage) {
-                return $file;
-            }
-            $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
-
-            return is_file($desiredFile) ? $desiredFile : $file;
         }
+
+        $language = substr($language, 0, 2);
+        if ($language === $sourceLanguage) {
+            return $file;
+        }
+        $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
+
+        return is_file($desiredFile) ? $desiredFile : $file;
     }
 
     /**
@@ -125,7 +135,7 @@ class BaseFileHelper
      * This will be passed as the second parameter to [finfo_open()](http://php.net/manual/en/function.finfo-open.php)
      * when the `fileinfo` extension is installed. If the MIME type is being determined based via [[getMimeTypeByExtension()]]
      * and this is null, it will use the file specified by [[mimeMagicFile]].
-     * @param boolean $checkExtension whether to use the file extension to determine the MIME type in case
+     * @param bool $checkExtension whether to use the file extension to determine the MIME type in case
      * `finfo_open()` cannot determine it.
      * @return string the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
      * @throws InvalidConfigException when the `fileinfo` PHP extension is not installed and `$checkExtension` is `false`.
@@ -138,9 +148,9 @@ class BaseFileHelper
         if (!extension_loaded('fileinfo')) {
             if ($checkExtension) {
                 return static::getMimeTypeByExtension($file, $magicFile);
-            } else {
-                throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
             }
+
+            throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
         }
         $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
 
@@ -162,7 +172,7 @@ class BaseFileHelper
      * @param string $file the file name.
      * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
-     * @return string the MIME type. Null is returned if the MIME type cannot be determined.
+     * @return string|null the MIME type. Null is returned if the MIME type cannot be determined.
      */
     public static function getMimeTypeByExtension($file, $magicFile = null)
     {
@@ -188,6 +198,11 @@ class BaseFileHelper
      */
     public static function getExtensionsByMimeType($mimeType, $magicFile = null)
     {
+        $aliases = static::loadMimeAliases(static::$mimeAliasesFile);
+        if (isset($aliases[$mimeType])) {
+            $mimeType = $aliases[$mimeType];
+        }
+
         $mimeTypes = static::loadMimeTypes($magicFile);
         return array_keys($mimeTypes, mb_strtolower($mimeType, 'UTF-8'), true);
     }
@@ -207,9 +222,32 @@ class BaseFileHelper
         }
         $magicFile = Yii::getAlias($magicFile);
         if (!isset(self::$_mimeTypes[$magicFile])) {
-            self::$_mimeTypes[$magicFile] = require($magicFile);
+            self::$_mimeTypes[$magicFile] = require $magicFile;
         }
+
         return self::$_mimeTypes[$magicFile];
+    }
+
+    private static $_mimeAliases = [];
+
+    /**
+     * Loads MIME aliases from the specified file.
+     * @param string $aliasesFile the path (or alias) of the file that contains MIME type aliases.
+     * If this is not set, the file specified by [[mimeAliasesFile]] will be used.
+     * @return array the mapping from file extensions to MIME types
+     * @since 2.0.14
+     */
+    protected static function loadMimeAliases($aliasesFile)
+    {
+        if ($aliasesFile === null) {
+            $aliasesFile = static::$mimeAliasesFile;
+        }
+        $aliasesFile = Yii::getAlias($aliasesFile);
+        if (!isset(self::$_mimeAliases[$aliasesFile])) {
+            self::$_mimeAliases[$aliasesFile] = require $aliasesFile;
+        }
+
+        return self::$_mimeAliases[$aliasesFile];
     }
 
     /**
@@ -249,22 +287,34 @@ class BaseFileHelper
      * - afterCopy: callback, a PHP callback that is called after each sub-directory or file is successfully copied.
      *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
      *   file copied from, while `$to` is the copy target.
-     * @throws \yii\base\InvalidParamException if unable to open directory
+     * - copyEmptyDirectories: boolean, whether to copy empty directories. Set this to false to avoid creating directories
+     *   that do not contain files. This affects directories that do not contain files initially as well as directories that
+     *   do not contain files at the target destination because files have been filtered via `only` or `except`.
+     *   Defaults to true. This option is available since version 2.0.12. Before 2.0.12 empty directories are always copied.
+     * @throws InvalidArgumentException if unable to open directory
      */
     public static function copyDirectory($src, $dst, $options = [])
     {
-        if (!is_dir($dst)) {
+        $src = static::normalizePath($src);
+        $dst = static::normalizePath($dst);
+
+        if ($src === $dst || strpos($dst, $src . DIRECTORY_SEPARATOR) === 0) {
+            throw new InvalidArgumentException('Trying to copy a directory to itself or a subdirectory.');
+        }
+        $dstExists = is_dir($dst);
+        if (!$dstExists && (!isset($options['copyEmptyDirectories']) || $options['copyEmptyDirectories'])) {
             static::createDirectory($dst, isset($options['dirMode']) ? $options['dirMode'] : 0775, true);
+            $dstExists = true;
         }
 
         $handle = opendir($src);
         if ($handle === false) {
-            throw new InvalidParamException("Unable to open directory: $src");
+            throw new InvalidArgumentException("Unable to open directory: $src");
         }
         if (!isset($options['basePath'])) {
             // this should be done only once
             $options['basePath'] = realpath($src);
-            $options = self::normalizeOptions($options);
+            $options = static::normalizeOptions($options);
         }
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {
@@ -277,12 +327,20 @@ class BaseFileHelper
                     continue;
                 }
                 if (is_file($from)) {
+                    if (!$dstExists) {
+                        // delay creation of destination directory until the first file is copied to avoid creating empty directories
+                        static::createDirectory($dst, isset($options['dirMode']) ? $options['dirMode'] : 0775, true);
+                        $dstExists = true;
+                    }
                     copy($from, $to);
                     if (isset($options['fileMode'])) {
                         @chmod($to, $options['fileMode']);
                     }
                 } else {
-                    static::copyDirectory($from, $to, $options);
+                    // recursive copy, defaults to true
+                    if (!isset($options['recursive']) || $options['recursive']) {
+                        static::copyDirectory($from, $to, $options);
+                    }
                 }
                 if (isset($options['afterCopy'])) {
                     call_user_func($options['afterCopy'], $from, $to);
@@ -309,7 +367,7 @@ class BaseFileHelper
         if (!is_dir($dir)) {
             return;
         }
-        if (isset($options['traverseSymlinks']) && $options['traverseSymlinks'] || !is_link($dir)) {
+        if (!empty($options['traverseSymlinks']) || !is_link($dir)) {
             if (!($handle = opendir($dir))) {
                 return;
             }
@@ -321,25 +379,45 @@ class BaseFileHelper
                 if (is_dir($path)) {
                     static::removeDirectory($path, $options);
                 } else {
-                    try {
-                        unlink($path);
-                    } catch (ErrorException $e) {
-                        if (DIRECTORY_SEPARATOR === '\\') {
-                            // last resort measure for Windows
-                            $lines = [];
-                            exec("DEL /F/Q \"$path\"", $lines, $deleteError);
-                        } else {
-                            throw $e;
-                        }
-                    }
+                    static::unlink($path);
                 }
             }
             closedir($handle);
         }
         if (is_link($dir)) {
-            unlink($dir);
+            static::unlink($dir);
         } else {
             rmdir($dir);
+        }
+    }
+
+    /**
+     * Removes a file or symlink in a cross-platform way
+     *
+     * @param string $path
+     * @return bool
+     *
+     * @since 2.0.14
+     */
+    public static function unlink($path)
+    {
+        $isWindows = DIRECTORY_SEPARATOR === '\\';
+
+        if (!$isWindows) {
+            return unlink($path);
+        }
+
+        if (is_link($path) && is_dir($path)) {
+            return rmdir($path);
+        }
+
+        try {
+            return unlink($path);
+        } catch (ErrorException $e) {
+            // last resort measure for Windows
+            $lines = [];
+            exec('DEL /F/Q ' . escapeshellarg($path), $lines, $deleteError);
+            return $deleteError !== 0;
         }
     }
 
@@ -348,50 +426,42 @@ class BaseFileHelper
      * @param string $dir the directory under which the files will be looked for.
      * @param array $options options for file searching. Valid options are:
      *
-     * - filter: callback, a PHP callback that is called for each directory or file.
+     * - `filter`: callback, a PHP callback that is called for each directory or file.
      *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
      *   The callback can return one of the following values:
      *
-     *   * true: the directory or file will be returned (the "only" and "except" options will be ignored)
-     *   * false: the directory or file will NOT be returned (the "only" and "except" options will be ignored)
-     *   * null: the "only" and "except" options will determine whether the directory or file should be returned
+     *   * `true`: the directory or file will be returned (the `only` and `except` options will be ignored)
+     *   * `false`: the directory or file will NOT be returned (the `only` and `except` options will be ignored)
+     *   * `null`: the `only` and `except` options will determine whether the directory or file should be returned
      *
-     * - except: array, list of patterns excluding from the results matching file or directory paths.
-     *   Patterns ending with '/' apply to directory paths only, and patterns not ending with '/'
+     * - `except`: array, list of patterns excluding from the results matching file or directory paths.
+     *   Patterns ending with slash ('/') apply to directory paths only, and patterns not ending with '/'
      *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
-     *   and '.svn/' matches directory paths ending with '.svn'.
-     *   If the pattern does not contain a slash /, it is treated as a shell glob pattern and checked for a match against the pathname relative to $dir.
-     *   Otherwise, the pattern is treated as a shell glob suitable for consumption by fnmatch(3) with the FNM_PATHNAME flag: wildcards in the pattern will not match a / in the pathname.
-     *   For example, "views/*.php" matches "views/index.php" but not "views/controller/index.php".
-     *   A leading slash matches the beginning of the pathname. For example, "/*.php" matches "index.php" but not "views/start/index.php".
-     *   An optional prefix "!" which negates the pattern; any matching file excluded by a previous pattern will become included again.
-     *   If a negated pattern matches, this will override lower precedence patterns sources. Put a backslash ("\") in front of the first "!"
-     *   for patterns that begin with a literal "!", for example, "\!important!.txt".
+     *   and `.svn/` matches directory paths ending with `.svn`.
+     *   If the pattern does not contain a slash (`/`), it is treated as a shell glob pattern
+     *   and checked for a match against the pathname relative to `$dir`.
+     *   Otherwise, the pattern is treated as a shell glob suitable for consumption by `fnmatch(3)`
+     *   with the `FNM_PATHNAME` flag: wildcards in the pattern will not match a `/` in the pathname.
+     *   For example, `views/*.php` matches `views/index.php` but not `views/controller/index.php`.
+     *   A leading slash matches the beginning of the pathname. For example, `/*.php` matches `index.php` but not `views/start/index.php`.
+     *   An optional prefix `!` which negates the pattern; any matching file excluded by a previous pattern will become included again.
+     *   If a negated pattern matches, this will override lower precedence patterns sources. Put a backslash (`\`) in front of the first `!`
+     *   for patterns that begin with a literal `!`, for example, `\!important!.txt`.
      *   Note, the '/' characters in a pattern matches both '/' and '\' in the paths.
-     * - only: array, list of patterns that the file paths should match if they are to be returned. Directory paths are not checked against them.
-     *   Same pattern matching rules as in the "except" option are used.
-     *   If a file path matches a pattern in both "only" and "except", it will NOT be returned.
-     * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
-     * - recursive: boolean, whether the files under the subdirectories should also be looked for. Defaults to true.
-     * @return array files found under the directory. The file list is sorted.
-     * @throws InvalidParamException if the dir is invalid.
+     * - `only`: array, list of patterns that the file paths should match if they are to be returned. Directory paths
+     *   are not checked against them. Same pattern matching rules as in the `except` option are used.
+     *   If a file path matches a pattern in both `only` and `except`, it will NOT be returned.
+     * - `caseSensitive`: boolean, whether patterns specified at `only` or `except` should be case sensitive. Defaults to `true`.
+     * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
+     * @return array files found under the directory, in no particular order. Ordering depends on the files system used.
+     * @throws InvalidArgumentException if the dir is invalid.
      */
     public static function findFiles($dir, $options = [])
     {
-        if (!is_dir($dir)) {
-            throw new InvalidParamException("The dir argument must be a directory: $dir");
-        }
-        $dir = rtrim($dir, DIRECTORY_SEPARATOR);
-        if (!isset($options['basePath'])) {
-            // this should be done only once
-            $options['basePath'] = realpath($dir);
-            $options = self::normalizeOptions($options);
-        }
+        $dir = self::clearDir($dir);
+        $options = self::setBasePath($dir, $options);
         $list = [];
-        $handle = opendir($dir);
-        if ($handle === false) {
-            throw new InvalidParamException("Unable to open directory: $dir");
-        }
+        $handle = self::openDir($dir);
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {
                 continue;
@@ -400,7 +470,7 @@ class BaseFileHelper
             if (static::filterPath($path, $options)) {
                 if (is_file($path)) {
                     $list[] = $path;
-                } elseif (!isset($options['recursive']) || $options['recursive']) {
+                } elseif (is_dir($path) && (!isset($options['recursive']) || $options['recursive'])) {
                     $list = array_merge($list, static::findFiles($path, $options));
                 }
             }
@@ -411,11 +481,88 @@ class BaseFileHelper
     }
 
     /**
+     * Returns the directories found under the specified directory and subdirectories.
+     * @param string $dir the directory under which the files will be looked for.
+     * @param array $options options for directory searching. Valid options are:
+     *
+     * - `filter`: callback, a PHP callback that is called for each directory or file.
+     *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
+     *   The callback can return one of the following values:
+     *
+     *   * `true`: the directory will be returned
+     *   * `false`: the directory will NOT be returned
+     *
+     * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
+     * @return array directories found under the directory, in no particular order. Ordering depends on the files system used.
+     * @throws InvalidArgumentException if the dir is invalid.
+     * @since 2.0.14
+     */
+    public static function findDirectories($dir, $options = [])
+    {
+        $dir = self::clearDir($dir);
+        $options = self::setBasePath($dir, $options);
+        $list = [];
+        $handle = self::openDir($dir);
+        while (($file = readdir($handle)) !== false) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($path) && static::filterPath($path, $options)) {
+                $list[] = $path;
+                if (!isset($options['recursive']) || $options['recursive']) {
+                    $list = array_merge($list, static::findDirectories($path, $options));
+                }
+            }
+        }
+        closedir($handle);
+
+        return $list;
+    }
+
+    /*
+     * @param string $dir
+     */
+    private static function setBasePath($dir, $options)
+    {
+        if (!isset($options['basePath'])) {
+            // this should be done only once
+            $options['basePath'] = realpath($dir);
+            $options = static::normalizeOptions($options);
+        }
+
+        return $options;
+    }
+
+    /*
+     * @param string $dir
+     */
+    private static function openDir($dir)
+    {
+        $handle = opendir($dir);
+        if ($handle === false) {
+            throw new InvalidArgumentException("Unable to open directory: $dir");
+        }
+        return $handle;
+    }
+
+    /*
+     * @param string $dir
+     */
+    private static function clearDir($dir)
+    {
+        if (!is_dir($dir)) {
+            throw new InvalidArgumentException("The dir argument must be a directory: $dir");
+        }
+        return rtrim($dir, DIRECTORY_SEPARATOR);
+    }
+
+    /**
      * Checks if the given file path satisfies the filtering options.
      * @param string $path the path of the file or directory to be checked
      * @param array $options the filtering options. See [[findFiles()]] for explanations of
      * the supported options.
-     * @return boolean whether the file or directory satisfies the filtering options.
+     * @return bool whether the file or directory satisfies the filtering options.
      */
     public static function filterPath($path, $options)
     {
@@ -458,9 +605,9 @@ class BaseFileHelper
      * in order to avoid the impact of the `umask` setting.
      *
      * @param string $path path of the directory to be created.
-     * @param integer $mode the permission to be set for the created directory.
-     * @param boolean $recursive whether to create parent directories if they do not exist.
-     * @return boolean whether the directory is created successfully
+     * @param int $mode the permission to be set for the created directory.
+     * @param bool $recursive whether to create parent directories if they do not exist.
+     * @return bool whether the directory is created successfully
      * @throws \yii\base\Exception if the directory could not be created (i.e. php error due to parallel changes)
      */
     public static function createDirectory($path, $mode = 0775, $recursive = true)
@@ -496,9 +643,9 @@ class BaseFileHelper
      *
      * @param string $baseName file or directory name to compare with the pattern
      * @param string $pattern the pattern that $baseName will be compared against
-     * @param integer|boolean $firstWildcard location of first wildcard character in the $pattern
-     * @param integer $flags pattern flags
-     * @return boolean whether the name matches against pattern
+     * @param int|bool $firstWildcard location of first wildcard character in the $pattern
+     * @param int $flags pattern flags
+     * @return bool whether the name matches against pattern
      */
     private static function matchBasename($baseName, $pattern, $firstWildcard, $flags)
     {
@@ -514,12 +661,12 @@ class BaseFileHelper
             }
         }
 
-        $fnmatchFlags = 0;
+        $matchOptions = [];
         if ($flags & self::PATTERN_CASE_INSENSITIVE) {
-            $fnmatchFlags |= FNM_CASEFOLD;
+            $matchOptions['caseSensitive'] = false;
         }
 
-        return fnmatch($pattern, $baseName, $fnmatchFlags);
+        return StringHelper::matchWildcard($pattern, $baseName, $matchOptions);
     }
 
     /**
@@ -530,9 +677,9 @@ class BaseFileHelper
      * @param string $path full path to compare
      * @param string $basePath base of path that will not be compared
      * @param string $pattern the pattern that path part will be compared against
-     * @param integer|boolean $firstWildcard location of first wildcard character in the $pattern
-     * @param integer $flags pattern flags
-     * @return boolean whether the path part matches against pattern
+     * @param int|bool $firstWildcard location of first wildcard character in the $pattern
+     * @param int $flags pattern flags
+     * @return bool whether the path part matches against pattern
      */
     private static function matchPathname($path, $basePath, $pattern, $firstWildcard, $flags)
     {
@@ -568,12 +715,14 @@ class BaseFileHelper
             }
         }
 
-        $fnmatchFlags = FNM_PATHNAME;
+        $matchOptions = [
+            'filePath' => true
+        ];
         if ($flags & self::PATTERN_CASE_INSENSITIVE) {
-            $fnmatchFlags |= FNM_CASEFOLD;
+            $matchOptions['caseSensitive'] = false;
         }
 
-        return fnmatch($pattern, $name, $fnmatchFlags);
+        return StringHelper::matchWildcard($pattern, $name, $matchOptions);
     }
 
     /**
@@ -587,8 +736,8 @@ class BaseFileHelper
      * @param string $basePath
      * @param string $path
      * @param array $excludes list of patterns to match $path against
-     * @return string null or one of $excludes item as an array with keys: 'pattern', 'flags'
-     * @throws InvalidParamException if any of the exclude patterns is not a string or an array with keys: pattern, flags, firstWildcard.
+     * @return array|null null or one of $excludes item as an array with keys: 'pattern', 'flags'
+     * @throws InvalidArgumentException if any of the exclude patterns is not a string or an array with keys: pattern, flags, firstWildcard.
      */
     private static function lastExcludeMatchingFromList($basePath, $path, $excludes)
     {
@@ -597,7 +746,7 @@ class BaseFileHelper
                 $exclude = self::parseExcludePattern($exclude, false);
             }
             if (!isset($exclude['pattern']) || !isset($exclude['flags']) || !isset($exclude['firstWildcard'])) {
-                throw new InvalidParamException('If exclude/include pattern is an array it must contain the pattern, flags and firstWildcard keys.');
+                throw new InvalidArgumentException('If exclude/include pattern is an array it must contain the pattern, flags and firstWildcard keys.');
             }
             if ($exclude['flags'] & self::PATTERN_MUSTBEDIR && !is_dir($path)) {
                 continue;
@@ -621,14 +770,14 @@ class BaseFileHelper
     /**
      * Processes the pattern, stripping special characters like / and ! from the beginning and settings flags instead.
      * @param string $pattern
-     * @param boolean $caseSensitive
-     * @throws \yii\base\InvalidParamException
-     * @return array with keys: (string) pattern, (int) flags, (int|boolean) firstWildcard
+     * @param bool $caseSensitive
+     * @throws InvalidArgumentException
+     * @return array with keys: (string) pattern, (int) flags, (int|bool) firstWildcard
      */
     private static function parseExcludePattern($pattern, $caseSensitive)
     {
         if (!is_string($pattern)) {
-            throw new InvalidParamException('Exclude/include pattern must be a string.');
+            throw new InvalidArgumentException('Exclude/include pattern must be a string.');
         }
 
         $result = [
@@ -668,7 +817,7 @@ class BaseFileHelper
     /**
      * Searches for the first wildcard character in the pattern.
      * @param string $pattern the pattern to search in
-     * @return integer|boolean position of first wildcard character or false if not found
+     * @return int|bool position of first wildcard character or false if not found
      */
     private static function firstWildcardInPattern($pattern)
     {
@@ -685,8 +834,9 @@ class BaseFileHelper
     /**
      * @param array $options raw options
      * @return array normalized options
+     * @since 2.0.12
      */
-    private static function normalizeOptions(array $options)
+    protected static function normalizeOptions(array $options)
     {
         if (!array_key_exists('caseSensitive', $options)) {
             $options['caseSensitive'] = true;
@@ -705,6 +855,7 @@ class BaseFileHelper
                 }
             }
         }
+
         return $options;
     }
 }

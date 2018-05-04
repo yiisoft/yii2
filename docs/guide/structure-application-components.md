@@ -7,7 +7,7 @@ the `urlManager` component is responsible for routing Web requests to appropriat
 the `db` component provides DB-related services; and so on.
 
 Each application component has an ID that uniquely identifies itself among other application components
-in the same application. You can access an application component through the expression
+in the same application. You can access an application component through the expression:
 
 ```php
 \Yii::$app->componentID
@@ -58,12 +58,22 @@ If it is not accessed at all during a request, it will not be instantiated. Some
 to instantiate an application component for every request, even if it is not explicitly accessed.
 To do so, you may list its ID in the [[yii\base\Application::bootstrap|bootstrap]] property of the application.
 
+You can also use Closures to bootstrap customized components. Returning a instantiated component is not 
+required. A Closure can also be used simply for running code after [[yii\base\Application]] instantiation.
+
 For example, the following application configuration makes sure the `log` component is always loaded:
 
 ```php
 [
     'bootstrap' => [
         'log',
+        function($app){
+            return new ComponentX();
+        },
+        function($app){
+            // some code
+           return;
+        }
     ],
     'components' => [
         'log' => [
@@ -87,11 +97,11 @@ like you do with normal application components. When you are configuring a core 
 if you do not specify its class, the default one will be used.
 
 * [[yii\web\AssetManager|assetManager]]: manages asset bundles and asset publishing.
-  Please refer to the [Managing Assets](structure-assets.md) section for more details.
+  Please refer to the [Assets](structure-assets.md) section for more details.
 * [[yii\db\Connection|db]]: represents a database connection through which you can perform DB queries.
   Note that when you configure this component, you must specify the component class as well as other required
   component properties, such as [[yii\db\Connection::dsn]].
-  Please refer to the [Data Access Objects](db-dao.md) section for more details.
+  Please refer to the [Database Access Objects](db-dao.md) section for more details.
 * [[yii\base\Application::errorHandler|errorHandler]]: handles PHP errors and exceptions.
   Please refer to the [Handling Errors](runtime-handling-errors.md) section for more details.
 * [[yii\i18n\Formatter|formatter]]: formats data when they are displayed to end users. For example, a number
@@ -101,7 +111,7 @@ if you do not specify its class, the default one will be used.
   Please refer to the [Internationalization](tutorial-i18n.md) section for more details.
 * [[yii\log\Dispatcher|log]]: manages log targets.
   Please refer to the [Logging](runtime-logging.md) section for more details.
-* [[yii\swiftmailer\Mailer|mail]]: supports mail composing and sending.
+* [[yii\swiftmailer\Mailer|mailer]]: supports mail composing and sending.
   Please refer to the [Mailing](tutorial-mailing.md) section for more details.
 * [[yii\base\Application::response|response]]: represents the response being sent to end users.
   Please refer to the [Responses](runtime-responses.md) section for more details.
@@ -111,9 +121,9 @@ if you do not specify its class, the default one will be used.
   in [[yii\web\Application|Web applications]].
   Please refer to the [Sessions and Cookies](runtime-sessions-cookies.md) section for more details.
 * [[yii\web\UrlManager|urlManager]]: supports URL parsing and creation.
-  Please refer to the [URL Parsing and Generation](runtime-routing.md) section for more details.
+  Please refer to the [Routing and URL Creation](runtime-routing.md) section for more details.
 * [[yii\web\User|user]]: represents the user authentication information. This component is only available
-  in [[yii\web\Application|Web applications]]
+  in [[yii\web\Application|Web applications]].
   Please refer to the [Authentication](security-authentication.md) section for more details.
 * [[yii\web\View|view]]: supports view rendering.
   Please refer to the [Views](structure-views.md) section for more details.

@@ -5,7 +5,7 @@
 замечательно подходит для изменения внешнего вида приложения.
 
 Для того, чтобы начать использовать темизацию, настройте свойство [[yii\base\View::theme|theme]] компонента
-приложения `view`. Конфигурация настраивает объект [[yii\base\Theme]], который отвечает за то, как как именно
+приложения `view`. Конфигурация настраивает объект [[yii\base\Theme]], который отвечает за то, как именно
 заменяются файлы отображений. Главным образом, стоит настроить следующие свойства [[yii\base\Theme]]:
 
 - [[yii\base\Theme::basePath]]: базовая директория, в которой размещены темизированные ресурсы (CSS, JS, изображения,
@@ -82,7 +82,7 @@ $file = $theme->getPath('img/logo.gif');
 ],
 ```
 
-Это позволит вам темизировать `@app/widgets/currency/views/index.php` в `@app/themes/basic/widgets/currency/index.php`.
+Это позволит вам темизировать `@app/widgets/currency/views/index.php` в `@app/themes/basic/widgets/currency/views/index.php`.
 
 
 ## Наследование тем <span id="theme-inheritance"></span>

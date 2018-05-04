@@ -15,13 +15,15 @@ namespace yii\base;
  * and make them directly accessible via the component. It can also respond to the events triggered in the component
  * and thus intercept the normal code execution.
  *
+ * For more details and usage information on Behavior, see the [guide article on behaviors](guide:concept-behaviors).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Behavior extends Object
+class Behavior extends BaseObject
 {
     /**
-     * @var Component the owner of this behavior
+     * @var Component|null the owner of this behavior
      */
     public $owner;
 

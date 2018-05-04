@@ -16,7 +16,7 @@ In this section, we will describe how to compose and send responses to end users
 
 One of the first things you would do when building a response is to state whether the request is successfully handled.
 This is done by setting the [[yii\web\Response::statusCode]] property which can take one of the valid
-[HTTP status codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html). For example, to indicate the request
+[HTTP status codes](https://tools.ietf.org/html/rfc2616#section-10). For example, to indicate the request
 is successfully handled, you may set the status code to be 200, like the following:
 
 ```php
@@ -189,13 +189,13 @@ a chained call to the [[yii\web\Response::send()]] method to ensure no extra con
 
 When the current request is an AJAX request, sending a `Location` header will not automatically cause the browser
 to redirect. To solve this problem, the [[yii\web\Response::redirect()]] method sets an `X-Redirect` header with 
-the redirection URL as its value. On the client side, you may write JavaScript code to read this header value and
+the redirection URL as its value. On the client-side, you may write JavaScript code to read this header value and
 redirect the browser accordingly.
 
 > Info: Yii comes with a `yii.js` JavaScript file which provides a set of commonly used JavaScript utilities,
   including browser redirection based on the `X-Redirect` header. Therefore, if you are using this JavaScript file
   (by registering the [[yii\web\YiiAsset]] asset bundle), you do not need to write anything to support AJAX redirection.
-
+  More information about `yii.js` can be found in the [Client Scripts Section](output-client-scripts.md#yii.js).
 
 ## Sending Files <span id="sending-files"></span>
 

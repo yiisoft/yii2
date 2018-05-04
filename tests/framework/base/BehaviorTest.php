@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\base;
 
@@ -22,6 +27,9 @@ class FooClass extends Component
 
 class BarBehavior extends Behavior
 {
+    public static $attachCount = 0;
+    public static $detachCount = 0;
+
     public $behaviorProperty = 'behavior property';
 
     public function behaviorMethod()
@@ -46,6 +54,18 @@ class BarBehavior extends Behavior
 
         return parent::hasMethod($name);
     }
+
+    public function attach($owner)
+    {
+        self::$attachCount++;
+        parent::attach($owner);
+    }
+
+    public function detach()
+    {
+        self::$detachCount++;
+        parent::detach();
+    }
 }
 
 /**
@@ -59,11 +79,23 @@ class BehaviorTest extends TestCase
         $this->mockApplication();
     }
 
-    public function testAttachAndAccessing()
+    protected function tearDown()
     {
+        parent::tearDown();
+        gc_enable();
+        gc_collect_cycles();
+    }
+
+    public function testAttachAndAccessingWithName()
+    {
+        BarBehavior::$attachCount = 0;
+        BarBehavior::$detachCount = 0;
+
         $bar = new BarClass();
         $behavior = new BarBehavior();
         $bar->attachBehavior('bar', $behavior);
+        $this->assertEquals(1, BarBehavior::$attachCount);
+        $this->assertEquals(0, BarBehavior::$detachCount);
         $this->assertEquals('behavior property', $bar->behaviorProperty);
         $this->assertEquals('behavior method', $bar->behaviorMethod());
         $this->assertEquals('behavior property', $bar->getBehavior('bar')->behaviorProperty);
@@ -71,14 +103,37 @@ class BehaviorTest extends TestCase
 
         $behavior = new BarBehavior(['behaviorProperty' => 'reattached']);
         $bar->attachBehavior('bar', $behavior);
+        $this->assertEquals(2, BarBehavior::$attachCount);
+        $this->assertEquals(1, BarBehavior::$detachCount);
         $this->assertEquals('reattached', $bar->behaviorProperty);
+    }
+
+    public function testAttachAndAccessingAnonymous()
+    {
+        BarBehavior::$attachCount = 0;
+        BarBehavior::$detachCount = 0;
+
+        $bar = new BarClass();
+        $behavior = new BarBehavior();
+        $bar->attachBehaviors([$behavior]);
+        $this->assertEquals(1, BarBehavior::$attachCount);
+        $this->assertEquals(0, BarBehavior::$detachCount);
+        $this->assertEquals('behavior property', $bar->behaviorProperty);
+        $this->assertEquals('behavior method', $bar->behaviorMethod());
     }
 
     public function testAutomaticAttach()
     {
+        BarBehavior::$attachCount = 0;
+        BarBehavior::$detachCount = 0;
+
         $foo = new FooClass();
+        $this->assertEquals(0, BarBehavior::$attachCount);
+        $this->assertEquals(0, BarBehavior::$detachCount);
         $this->assertEquals('behavior property', $foo->behaviorProperty);
         $this->assertEquals('behavior method', $foo->behaviorMethod());
+        $this->assertEquals(1, BarBehavior::$attachCount);
+        $this->assertEquals(0, BarBehavior::$detachCount);
     }
 
     public function testMagicMethods()
@@ -98,7 +153,7 @@ class BehaviorTest extends TestCase
     {
         $bar = new BarClass();
         $behavior = new BarBehavior();
-        $this->setExpectedException('yii\base\UnknownMethodException');
+        $this->expectException('yii\base\UnknownMethodException');
 
         $this->assertFalse($bar->hasMethod('nomagicBehaviorMethod'));
         $bar->attachBehavior('bar', $behavior);

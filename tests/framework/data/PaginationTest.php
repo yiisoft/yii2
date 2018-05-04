@@ -1,10 +1,18 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\data;
 
 use yii\data\Pagination;
 use yiiunit\TestCase;
 
+/**
+ * @group data
+ */
 class PaginationTest extends TestCase
 {
     protected function setUp()
@@ -13,14 +21,14 @@ class PaginationTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'urlManager' => [
-                    'scriptUrl' => '/index.php'
+                    'scriptUrl' => '/index.php',
                 ],
             ],
         ]);
     }
 
     /**
-     * Data provider for [[testCreateUrl()]]
+     * Data provider for [[testCreateUrl()]].
      * @return array test data
      */
     public function dataProviderCreateUrl()
@@ -30,11 +38,25 @@ class PaginationTest extends TestCase
                 2,
                 null,
                 '/index.php?r=item%2Flist&page=3',
+                null,
             ],
             [
                 2,
                 5,
                 '/index.php?r=item%2Flist&page=3&per-page=5',
+                null,
+            ],
+            [
+                2,
+                null,
+                '/index.php?r=item%2Flist&q=test&page=3',
+                ['q' => 'test'],
+            ],
+            [
+                2,
+                5,
+                '/index.php?r=item%2Flist&q=test&page=3&per-page=5',
+                ['q' => 'test'],
             ],
         ];
     }
@@ -42,14 +64,16 @@ class PaginationTest extends TestCase
     /**
      * @dataProvider dataProviderCreateUrl
      *
-     * @param integer $page
-     * @param integer $pageSize
+     * @param int $page
+     * @param int $pageSize
      * @param string $expectedUrl
+     * @param array $params
      */
-    public function testCreateUrl($page, $pageSize, $expectedUrl)
+    public function testCreateUrl($page, $pageSize, $expectedUrl, $params)
     {
         $pagination = new Pagination();
         $pagination->route = 'item/list';
+        $pagination->params = $params;
         $this->assertEquals($expectedUrl, $pagination->createUrl($page, $pageSize));
     }
 

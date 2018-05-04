@@ -1,13 +1,18 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\ar;
 
 /**
- * Class Item
+ * Class Item.
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
- * @property integer $category_id
+ * @property int $category_id
  */
 class Item extends ActiveRecord
 {

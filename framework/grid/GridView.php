@@ -7,15 +7,15 @@
 
 namespace yii\grid;
 
-use Yii;
 use Closure;
-use yii\i18n\Formatter;
+use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Url;
+use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
+use yii\i18n\Formatter;
 use yii\widgets\BaseListView;
-use yii\base\Model;
 
 /**
  * The GridView widget is used to display data in a grid.
@@ -40,6 +40,8 @@ use yii\base\Model;
  * which are configured via [[columns]].
  *
  * The look and feel of a grid view can be customized using the large amount of properties.
+ *
+ * For more details and usage information on GridView, see the [guide article on data widgets](guide:output-data-widgets).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -118,15 +120,20 @@ class GridView extends BaseListView
      */
     public $afterRow;
     /**
-     * @var boolean whether to show the header section of the grid table.
+     * @var bool whether to show the header section of the grid table.
      */
     public $showHeader = true;
     /**
-     * @var boolean whether to show the footer section of the grid table.
+     * @var bool whether to show the footer section of the grid table.
      */
     public $showFooter = false;
     /**
-     * @var boolean whether to show the grid view if [[dataProvider]] returns no data.
+     * @var bool whether to place footer after body in DOM if $showFooter is true
+     * @since 2.0.14
+     */
+    public $placeFooterAfterBody = false;
+    /**
+     * @var bool whether to show the grid view if [[dataProvider]] returns no data.
      */
     public $showOnEmpty = true;
     /**
@@ -200,7 +207,8 @@ class GridView extends BaseListView
      * at the top that users can fill in to filter the data.
      *
      * Note that in order to show an input field for filtering, a column must have its [[DataColumn::attribute]]
-     * property set or have [[DataColumn::filter]] set as the HTML code for the input field.
+     * property set and the attribute should be active in the current scenario of $filterModel or have
+     * [[DataColumn::filter]] set as the HTML code for the input field.
      *
      * When this property is not set (null) the filtering feature is disabled.
      */
@@ -241,7 +249,7 @@ class GridView extends BaseListView
      */
     public $filterErrorOptions = ['class' => 'help-block'];
     /**
-     * @var string the layout that determines how different sections of the list view should be organized.
+     * @var string the layout that determines how different sections of the grid view should be organized.
      * The following tokens will be replaced with the corresponding section contents:
      *
      * - `{summary}`: the summary section. See [[renderSummary()]].
@@ -296,13 +304,13 @@ class GridView extends BaseListView
     {
         if ($this->filterModel instanceof Model && $this->filterModel->hasErrors()) {
             return Html::errorSummary($this->filterModel, $this->filterErrorSummaryOptions);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function renderSection($name)
     {
@@ -335,6 +343,7 @@ class GridView extends BaseListView
 
     /**
      * Renders the data models for the grid view.
+     * @return string the HTML code of table
      */
     public function renderItems()
     {
@@ -342,13 +351,25 @@ class GridView extends BaseListView
         $columnGroup = $this->renderColumnGroup();
         $tableHeader = $this->showHeader ? $this->renderTableHeader() : false;
         $tableBody = $this->renderTableBody();
-        $tableFooter = $this->showFooter ? $this->renderTableFooter() : false;
+
+        $tableFooter = false;
+        $tableFooterAfterBody = false;
+        
+        if ($this->showFooter) {
+            if ($this->placeFooterAfterBody) {
+                $tableFooterAfterBody = $this->renderTableFooter();
+            } else {
+                $tableFooter = $this->renderTableFooter();
+            }	        
+        }
+
         $content = array_filter([
             $caption,
             $columnGroup,
             $tableHeader,
             $tableFooter,
             $tableBody,
+            $tableFooterAfterBody,
         ]);
 
         return Html::tag('table', implode("\n", $content), $this->tableOptions);
@@ -362,9 +383,9 @@ class GridView extends BaseListView
     {
         if (!empty($this->caption)) {
             return Html::tag('caption', $this->caption, $this->captionOptions);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -373,24 +394,19 @@ class GridView extends BaseListView
      */
     public function renderColumnGroup()
     {
-        $requireColumnGroup = false;
         foreach ($this->columns as $column) {
             /* @var $column Column */
             if (!empty($column->options)) {
-                $requireColumnGroup = true;
-                break;
-            }
-        }
-        if ($requireColumnGroup) {
-            $cols = [];
-            foreach ($this->columns as $column) {
-                $cols[] = Html::tag('col', '', $column->options);
-            }
+                $cols = [];
+                foreach ($this->columns as $col) {
+                    $cols[] = Html::tag('col', '', $col->options);
+                }
 
-            return Html::tag('colgroup', implode("\n", $cols));
-        } else {
-            return false;
+                return Html::tag('colgroup', implode("\n", $cols));
+            }
         }
+
+        return false;
     }
 
     /**
@@ -447,9 +463,9 @@ class GridView extends BaseListView
             }
 
             return Html::tag('tr', implode('', $cells), $this->filterRowOptions);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -480,20 +496,20 @@ class GridView extends BaseListView
             }
         }
 
-        if (empty($rows)) {
+        if (empty($rows) && $this->emptyText !== false) {
             $colspan = count($this->columns);
 
             return "<tbody>\n<tr><td colspan=\"$colspan\">" . $this->renderEmpty() . "</td></tr>\n</tbody>";
-        } else {
-            return "<tbody>\n" . implode("\n", $rows) . "\n</tbody>";
         }
+
+        return "<tbody>\n" . implode("\n", $rows) . "\n</tbody>";
     }
 
     /**
      * Renders a table row with the given data model and key.
      * @param mixed $model the data model to be rendered
      * @param mixed $key the key associated with the data model
-     * @param integer $index the zero-based index of the data model among the model array returned by [[dataProvider]].
+     * @param int $index the zero-based index of the data model among the model array returned by [[dataProvider]].
      * @return string the rendering result
      */
     public function renderTableRow($model, $key, $index)
@@ -526,7 +542,7 @@ class GridView extends BaseListView
                 $column = $this->createDataColumn($column);
             } else {
                 $column = Yii::createObject(array_merge([
-                    'class' => $this->dataColumnClass ? : DataColumn::className(),
+                    'class' => $this->dataColumnClass ?: DataColumn::className(),
                     'grid' => $this,
                 ], $column));
             }
@@ -551,7 +567,7 @@ class GridView extends BaseListView
         }
 
         return Yii::createObject([
-            'class' => $this->dataColumnClass ? : DataColumn::className(),
+            'class' => $this->dataColumnClass ?: DataColumn::className(),
             'grid' => $this,
             'attribute' => $matches[1],
             'format' => isset($matches[3]) ? $matches[3] : 'text',
@@ -569,7 +585,9 @@ class GridView extends BaseListView
         $model = reset($models);
         if (is_array($model) || is_object($model)) {
             foreach ($model as $name => $value) {
-                $this->columns[] = $name;
+                if ($value === null || is_scalar($value) || is_callable([$value, '__toString'])) {
+                    $this->columns[] = (string) $name;
+                }
             }
         }
     }

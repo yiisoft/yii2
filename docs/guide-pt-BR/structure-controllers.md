@@ -456,7 +456,7 @@ ao seguinte ciclo de vida para concluir a requisição:
    * Se o ID da ação for encontrada para corresponder a um método de ação, uma ação inline será criada;
    * Caso contrário, uma exceção [[yii\base\InvalidRouteException]] será lançada.
 3. De forma sequencial, o controller chama o método `beforeAction()` da aplicação, o módulo (se o controller pertencer a um módulo) e o controller.
-   * Se uma das chamadas retornar false, o restante dos métodos subsequentes `beforeAction()` serão ignoradas e a execução da ação será cancelada.
+   * Se uma das chamadas retornar `false`, o restante dos métodos subsequentes `beforeAction()` serão ignoradas e a execução da ação será cancelada.
    * Por padrão, cada método `beforeAction()` desencadeia a execução de um evento chamado `beforeAction` na qual você pode associar a uma função (handler).
 4. O controller executa a ação:
    * Os parâmetros da ação serão analizados e populados a partir dos dados obtidos pela requisição;

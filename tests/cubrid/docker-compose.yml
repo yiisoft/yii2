@@ -1,0 +1,17 @@
+version: '2'
+services:
+
+  php:
+    build:
+      context: ../..
+      dockerfile: tests/cubrid/Dockerfile
+    ports:
+      - 80
+    #volumes:
+    #  - ../..:/project
+    depends_on:
+      - cubrid
+
+  cubrid:
+    image: lighthopper/cubrid:9.3.6.0002
+    command: ./create-start-demodb.sh

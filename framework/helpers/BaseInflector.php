@@ -51,6 +51,7 @@ class BaseInflector
         '/us$/i' => 'uses',
         '/(alias)$/i' => '\1es',
         '/(ax|cris|test)is$/i' => '\1es',
+        '/(currenc)y$/' => '\1ies',
         '/s$/' => 's',
         '/^$/' => '',
         '/$/' => 's',
@@ -95,7 +96,9 @@ class BaseInflector
         '/(m)en$/i' => '\1an',
         '/(c)hildren$/i' => '\1\2hild',
         '/(n)ews$/i' => '\1\2ews',
+        '/(n)etherlands$/i' => '\1\2etherlands',
         '/eaus$/' => 'eau',
+        '/(currenc)ies$/' => '\1y',
         '/^(.*us)$/' => '\\1',
         '/s$/i' => '',
     ];
@@ -131,6 +134,7 @@ class BaseInflector
         'octopus' => 'octopuses',
         'opus' => 'opuses',
         'ox' => 'oxen',
+        'pasta' => 'pasta',
         'penis' => 'penises',
         'sex' => 'sexes',
         'soliloquy' => 'soliloquies',
@@ -231,47 +235,52 @@ class BaseInflector
         'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
         'ÿ' => 'y',
     ];
-
     /**
-     * Shortcut for `Any-Latin; NFKD` transliteration rule. The rule is strict, letters will be transliterated with
+     * Shortcut for `Any-Latin; NFKD` transliteration rule.
+     *
+     * The rule is strict, letters will be transliterated with
      * the closest sound-representation chars. The result may contain any UTF-8 chars. For example:
      * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
-     * `huò qǔ dào dochira Ukraí̈nsʹka: g̀,ê, Srpska: đ, n̂, d̂! ¿Español?`
+     * `huò qǔ dào dochira Ukraí̈nsʹka: g̀,ê, Srpska: đ, n̂, d̂! ¿Español?`.
      *
      * Used in [[transliterate()]].
      * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
+     * @since 2.0.7
      */
     const TRANSLITERATE_STRICT = 'Any-Latin; NFKD';
-
     /**
-     * Shortcut for `Any-Latin; Latin-ASCII` transliteration rule. The rule is medium, letters will be
+     * Shortcut for `Any-Latin; Latin-ASCII` transliteration rule.
+     *
+     * The rule is medium, letters will be
      * transliterated to characters of Latin-1 (ISO 8859-1) ASCII table. For example:
      * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
-     * `huo qu dao dochira Ukrainsʹka: g,e, Srpska: d, n, d! ¿Espanol?`
+     * `huo qu dao dochira Ukrainsʹka: g,e, Srpska: d, n, d! ¿Espanol?`.
      *
      * Used in [[transliterate()]].
      * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
+     * @since 2.0.7
      */
     const TRANSLITERATE_MEDIUM = 'Any-Latin; Latin-ASCII';
-
     /**
-     * Shortcut for `Any-Latin; Latin-ASCII; [\u0080-\uffff] remove` transliteration rule. The rule is loose,
+     * Shortcut for `Any-Latin; Latin-ASCII; [\u0080-\uffff] remove` transliteration rule.
+     *
+     * The rule is loose,
      * letters will be transliterated with the characters of Basic Latin Unicode Block.
      * For example:
      * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
-     * `huo qu dao dochira Ukrainska: g,e, Srpska: d, n, d! Espanol?`
+     * `huo qu dao dochira Ukrainska: g,e, Srpska: d, n, d! Espanol?`.
      *
      * Used in [[transliterate()]].
      * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
      * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
      * @see transliterate()
+     * @since 2.0.7
      */
     const TRANSLITERATE_LOOSE = 'Any-Latin; Latin-ASCII; [\u0080-\uffff] remove';
-
 
     /**
      * @var mixed Either a [[\Transliterator]], or a string from which a [[\Transliterator]] can be built
@@ -279,6 +288,7 @@ class BaseInflector
      * @see http://php.net/manual/en/transliterator.transliterate.php
      */
     public static $transliterator = self::TRANSLITERATE_LOOSE;
+
 
     /**
      * Converts a word to its plural form.
@@ -302,7 +312,7 @@ class BaseInflector
     }
 
     /**
-     * Returns the singular of the $word
+     * Returns the singular of the $word.
      * @param string $word the english word to singularize
      * @return string Singular noun.
      */
@@ -325,7 +335,7 @@ class BaseInflector
      * Converts an underscored or CamelCase word into a English
      * sentence.
      * @param string $words
-     * @param boolean $ucAll whether to set all words to uppercase
+     * @param bool $ucAll whether to set all words to uppercase
      * @return string
      */
     public static function titleize($words, $ucAll = false)
@@ -336,10 +346,11 @@ class BaseInflector
     }
 
     /**
-     * Returns given word as CamelCased
+     * Returns given word as CamelCased.
+     *
      * Converts a word like "send_email" to "SendEmail". It
      * will remove non alphanumeric character from the word, so
-     * "who's online" will be converted to "WhoSOnline"
+     * "who's online" will be converted to "WhoSOnline".
      * @see variablize()
      * @param string $word the word to CamelCase
      * @return string
@@ -353,15 +364,15 @@ class BaseInflector
      * Converts a CamelCase name into space-separated words.
      * For example, 'PostTag' will be converted to 'Post Tag'.
      * @param string $name the string to be converted
-     * @param boolean $ucwords whether to capitalize the first letter in each word
+     * @param bool $ucwords whether to capitalize the first letter in each word
      * @return string the resulting words
      */
     public static function camel2words($name, $ucwords = true)
     {
-        $label = trim(strtolower(str_replace([
+        $label = strtolower(trim(str_replace([
             '-',
             '_',
-            '.'
+            '.',
         ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
 
         return $ucwords ? ucwords($label) : $label;
@@ -373,17 +384,17 @@ class BaseInflector
      * For example, 'PostTag' will be converted to 'post-tag'.
      * @param string $name the string to be converted
      * @param string $separator the character used to concatenate the words in the ID
-     * @param boolean|string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
+     * @param bool|string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
      * @return string the resulting ID
      */
     public static function camel2id($name, $separator = '-', $strict = false)
     {
         $regex = $strict ? '/[A-Z]/' : '/(?<![A-Z])[A-Z]/';
         if ($separator === '_') {
-            return trim(strtolower(preg_replace($regex, '_\0', $name)), '_');
-        } else {
-            return trim(strtolower(str_replace('_', $separator, preg_replace($regex, $separator . '\0', $name))), $separator);
+            return strtolower(trim(preg_replace($regex, '_\0', $name), '_'));
         }
+
+        return strtolower(trim(str_replace('_', $separator, preg_replace($regex, $separator . '\0', $name)), $separator));
     }
 
     /**
@@ -396,7 +407,7 @@ class BaseInflector
      */
     public static function id2camel($id, $separator = '-')
     {
-        return str_replace(' ', '', ucwords(implode(' ', explode($separator, $id))));
+        return str_replace(' ', '', ucwords(str_replace($separator, ' ', $id)));
     }
 
     /**
@@ -410,9 +421,9 @@ class BaseInflector
     }
 
     /**
-     * Returns a human-readable string from $word
+     * Returns a human-readable string from $word.
      * @param string $word the string to humanize
-     * @param boolean $ucAll whether to set all words to uppercase or not
+     * @param bool $ucAll whether to set all words to uppercase or not
      * @return string
      */
     public static function humanize($word, $ucAll = false)
@@ -424,9 +435,10 @@ class BaseInflector
 
     /**
      * Same as camelize but first char is in lowercase.
+     *
      * Converts a word like "send_email" to "sendEmail". It
      * will remove non alphanumeric character from the word, so
-     * "who's online" will be converted to "whoSOnline"
+     * "who's online" will be converted to "whoSOnline".
      * @param string $word to lowerCamelCase
      * @return string
      */
@@ -438,8 +450,9 @@ class BaseInflector
     }
 
     /**
-     * Converts a class name to its table name (pluralized)
-     * naming conventions. For example, converts "Person" to "people"
+     * Converts a class name to its table name (pluralized) naming conventions.
+     *
+     * For example, converts "Person" to "people".
      * @param string $className the class name for getting related table_name
      * @return string
      */
@@ -458,7 +471,7 @@ class BaseInflector
      *
      * @param string $string An arbitrary string to convert
      * @param string $replacement The replacement to use for spaces
-     * @param boolean $lowercase whether to return the string in lowercase or not. Defaults to `true`.
+     * @param bool $lowercase whether to return the string in lowercase or not. Defaults to `true`.
      * @return string The converted string.
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
@@ -479,9 +492,10 @@ class BaseInflector
      * of the helper.
      *
      * @param string $string input string
-     * @param string|\Transliterator $transliterator either a [[Transliterator]] or a string
-     * from which a [[Transliterator]] can be built.
+     * @param string|\Transliterator $transliterator either a [[\Transliterator]] or a string
+     * from which a [[\Transliterator]] can be built.
      * @return string
+     * @since 2.0.7 this method is public.
      */
     public static function transliterate($string, $transliterator = null)
     {
@@ -491,13 +505,13 @@ class BaseInflector
             }
 
             return transliterator_transliterate($transliterator, $string);
-        } else {
-            return str_replace(array_keys(static::$transliteration), static::$transliteration, $string);
         }
+
+        return strtr($string, static::$transliteration);
     }
 
     /**
-     * @return boolean if intl extension is loaded
+     * @return bool if intl extension is loaded
      */
     protected static function hasIntl()
     {
@@ -505,7 +519,9 @@ class BaseInflector
     }
 
     /**
-     * Converts a table name to its class name. For example, converts "people" to "Person"
+     * Converts a table name to its class name.
+     *
+     * For example, converts "people" to "Person".
      * @param string $tableName
      * @return string
      */
@@ -516,12 +532,12 @@ class BaseInflector
 
     /**
      * Converts number to its ordinal English form. For example, converts 13 to 13th, 2 to 2nd ...
-     * @param integer $number the number to get its ordinal value
+     * @param int $number the number to get its ordinal value
      * @return string
      */
     public static function ordinalize($number)
     {
-        if (in_array(($number % 100), range(11, 13))) {
+        if (in_array($number % 100, range(11, 13))) {
             return $number . 'th';
         }
         switch ($number % 10) {
@@ -564,8 +580,11 @@ class BaseInflector
      * @return string the generated sentence
      * @since 2.0.1
      */
-    public static function sentence(array $words, $twoWordsConnector = ' and ', $lastWordConnector = null, $connector = ', ')
+    public static function sentence(array $words, $twoWordsConnector = null, $lastWordConnector = null, $connector = ', ')
     {
+        if ($twoWordsConnector === null) {
+            $twoWordsConnector = Yii::t('yii', ' and ');
+        }
         if ($lastWordConnector === null) {
             $lastWordConnector = $twoWordsConnector;
         }

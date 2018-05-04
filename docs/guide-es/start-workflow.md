@@ -10,6 +10,9 @@ y cómo la aplicación maneja los requests en general.
   como el document root de tu servidor Web, y configurado la URL de acceso a tu aplicación para que sea `http://hostname/index.php`
   o similar.
   Dependiendo de tus necesidades, por favor ajusta dichas URLs.
+  
+Ten en cuenta que a diferencia del framework en sí, después de que el template de proyecto es instalado, este es todo tuyo. Eres libre de agregar o eliminar
+código modificar todo según tu necesidad.
 
 
 Funcionalidad <span id="functionality"></span>
@@ -17,10 +20,9 @@ Funcionalidad <span id="functionality"></span>
 
 La aplicación básica contiene 4 páginas:
 
-* Página principal, mostrada cuando se accede a la URL `http://hostname/index.php`,
+* página principal, mostrada cuando se accede a la URL `http://hostname/index.php`,
 * página "Acerca de (About)",
-* la página "Contacto (Contact)", que muestra un formulario de contacto que permite a los usuarios
-  finales contactarse vía email,
+* la página "Contacto (Contact)", que muestra un formulario de contacto que permite a los usuarios finales contactarse vía email,
 * y la página "Login", que muestra un formulario para loguearse que puede usarse para autenticar usuarios. 
   Intenta loguearte con "admin/admin", y verás que el elemento "Login" del menú principal cambiará a "Logout".
 
@@ -28,10 +30,13 @@ Estas páginas comparten un encabezado y un pie. El encabezado contiene una barr
 la navegación entre las diferentes páginas.
 
 También deberías ver una barra en la parte inferior de la ventana del navegador.
-Esta es la útil [herramienta de depuración](tool-debugger.md) provista por Yii para registrar y mostrar mucha información de depuración,
-tal como los mensajes de log, response status, las consultas ejecutadas a la base de datos, y más.
+Esta es la útil [herramienta de depuración](tool-debugger.md) provista por Yii para registrar y mostrar mucha información de depuración, tal como los mensajes de log, response status, las consultas ejecutadas a la base de datos, y más.
 
+Adicionalmente a la aplicación web, hay un script de consola llamado `yii`, localizado en el directorio base de la aplicación.
+El script puede ser utilizado para ejecutar tareas de fondo y tareas de mantenimiento de la aplicación, las cuales son descritas
+en la [Sección de Aplicación de Consola](tutorial-console.md).
 
+  
 Estructura de la aplicación <span id="application-structure"></span>
 ---------------------------
 
@@ -71,7 +76,7 @@ Cada aplicación tiene un script de entrada `web/index.php` que es el único scr
 El script de entrada toma una petición (request) entrante y crea una instancia de una [aplicación](structure-applications.md) para manejarlo.
 La [aplicación](structure-applications.md) resuelve la petición (request) con la ayuda de sus [componentes](concept-components.md),
 y la envía al resto de los elementos MVC. Los [widgets](structure-widgets.md) son usados en las [vistas](structure-views.md)
-para ayudar a construir elementos de interfáz complejos y dinámicos.
+para ayudar a construir elementos de interfaz complejos y dinámicos.
 
 
 Ciclo de Vida de una Petición (Request) <span id="request-lifecycle"></span>
@@ -94,3 +99,4 @@ El siguiente diagrama muestra cómo una aplicación maneja una petición.
 9. La acción renderiza una vista, pasándole los datos del modelo cargado.
 10. El resultado de la renderización es pasado al componente [response](runtime-responses.md) de la aplicación.
 11. El componente response envía el resultado de la renderización al navegador del usuario.
+

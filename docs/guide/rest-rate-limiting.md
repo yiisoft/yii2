@@ -62,5 +62,5 @@ the current rate limiting information:
 * `X-Rate-Limit-Remaining`, the number of remaining requests in the current time period
 * `X-Rate-Limit-Reset`, the number of seconds to wait in order to get the maximum number of allowed requests
 
-You may disable these headers by configuring [[yii\filters\RateLimiter::enableRateLimitHeaders]] to be false,
+You may disable these headers by configuring [[yii\filters\RateLimiter::enableRateLimitHeaders]] to be `false`,
 as shown in the above code example.

@@ -1,4 +1,4 @@
-Установка Yii
+Установка Yii <span id="installing-from-composer"></span>
 ==============
 
 Вы можете установить Yii двумя способами: используя [Composer](https://getcomposer.org/) или скачав архив.
@@ -11,6 +11,8 @@
 Установка при помощи Composer <span id="installing-via-composer"></span>
 -----------------------
 
+### Установка Composer
+
 Если Composer еще не установлен это можно сделать по инструкции на
 [getcomposer.org](https://getcomposer.org/download/), или одним из нижеперечисленных способов. На Linux или Mac 
 используйте следующую команду:
@@ -22,29 +24,38 @@ mv composer.phar /usr/local/bin/composer
 
 На Windows, скачайте и запустите [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
-В случае возникновения проблем или если вам необходима дополнительная информация, обращайтесь
-к [документации Composer](https://getcomposer.org/doc/).
+В случае возникновения проблем читайте
+[раздел "Troubleshooting" в документации Composer](https://getcomposer.org/doc/articles/troubleshooting.md).
+Если вы только начинаете использовать Composer, рекомендуем прочитать как минимум
+[раздел "Basic usage"](https://getcomposer.org/doc/01-basic-usage.md).
+
+В данном руководстве предполагается, что Composer установлен [глобально](https://getcomposer.org/doc/00-intro.md#globally).
+То есть он доступен через команду `composer`. Если вы используете `composer.phar` из локальной директории,
+изменяйте команды соответственно.
 
 Если у вас уже установлен Composer, обновите его при помощи `composer self-update`.
 
+> Note: Во время установки Yii Composer запрашивает довольно большое количество информации через Github API.
+> Количество запросов варьируется в зависимости от количества зависимостей вашего проекта и может превысить
+> ограничения **Github API**. Если это произошло, Composer спросит логин и пароль от Github. Это необходимо для
+> получения токена для Github API. На быстрых соединениях это может прозойти ещё до того, как Composer сможет
+> обработать ошибку, поэтому мы рекомендум настроить токен доступа до установки Yii.
+> Инструкции приведены в [документации Composer о токенах Github API](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
+
 После установки Composer устанавливать Yii можно запустив следующую команду в папке доступной через веб:
 
+### Установка Yii
+
 ```bash
-composer global require "fxp/composer-asset-plugin:~1.1.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-Первая команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
-который позволяет управлять зависимостями пакетов bower и npm через Composer. Эту команду достаточно выполнить один раз.
-Вторая команда устанавливает Yii в директорию `basic`. Если хотите, можете выбрать другое имя директории.
+Эта команда устанавливает последнюю стабильную версию Yii в директорию `basic`. Если хотите, можете выбрать другое
+имя директории.
 
-Composer установит Yii (шаблонное приложение basic) в папку `basic`.
-
-> Note: В процессе установки Composer может запросить логин и пароль от Github потому как у API Github имеется
-> ограничение на количество запросов. Это нормально потому как Composer в процессе работы запрашивает у Github большое
->  количество информации для каждого пакета. Вход на Github повышает ограничение по запросам API и Composer может
-> продолжить свою работу. Подробнее об этом можно прочитать в
-> [документации Composer](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
+> Info: Если команда `composer create-project` не выполняется нормально, попробуйте обратиться к
+> [разделу "Troubleshooting" документации Composer](https://getcomposer.org/doc/articles/troubleshooting.md).
+> Там описаны другие типичные ошибки. После того, как вы исправили ошибку, запустите `composer update` в директории `basic`.
 
 > Tip: Если вы хотите установить последнюю нестабильную ревизию Yii, можете использовать следующую команду,
 > в которой присутствует [опция stability](https://getcomposer.org/doc/04-schema.md#minimum-stability):
@@ -129,7 +140,7 @@ php requirements.php
 На рабочем сервере вам наверняка захочется изменить URL приложения с `http://www.example.com/basic/web/index.php`
 на `http://www.example.com/index.php`. Для этого необходимо изменить корневую директорию в настройках веб сервера так,
 чтобы та указывала на `basic/web`. Дополнительно можно спрятать `index.php` следуя описанию в разделе
-«[Разбор и генерация URL](runtime-url-handling.md)». Далее будет показано как настроить Apache и Nginx.
+«[Разбор и генерация URL](runtime-routing.md)». Далее будет показано как настроить Apache и Nginx.
 
 > Info: Устанавливая `basic/web` корневой директорией веб сервера вы защищаете от нежелательного доступа код и данные,
   находящиеся на одном уровне с `basic/web`. Это делает приложение более защищенным.
@@ -165,7 +176,7 @@ DocumentRoot "path/to/basic/web"
 
 PHP должен быть установлен как [FPM SAPI](http://php.net/manual/ru/install.fpm.php) для [Nginx](http://wiki.nginx.org/).
 Используйте следующие параметры Nginx и не забудьте заменить `path/to/basic/web` на корректный путь к `basic/web` и
-`mysite.local` на ваше имя хоста.
+`mysite.test` на ваше имя хоста.
 
 ```
 server {
@@ -175,7 +186,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## слушаем ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

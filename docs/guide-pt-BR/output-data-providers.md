@@ -90,7 +90,7 @@ Por padrão, [[yii\data\ActiveDataProvider]] utiliza o componente da aplicação
 O [[yii\data\SqlDataProvider]] trabalha com uma instrução SQL, que é usado para obter os dados necessários. Com base nas especificações de [[yii\data\SqlDataProvider::sort|sort]] e
 [[yii\data\SqlDataProvider::pagination|pagination]], o provider ajustará as cláusulas `ORDER BY` e `LIMIT` da instrução SQL em conformidade para buscar somente a página de dados solicitada na ordem desejada.
 
-Para usar [[yii\data\SqlDataProvider]], você deve especificar a propriedade [[yii\data\SqlDataProvider::sql|sql]] bem como a propriedade [[yii\data\SqlDataProvider::totalCount|totalCount]. Por exemplo:
+Para usar [[yii\data\SqlDataProvider]], você deve especificar a propriedade [[yii\data\SqlDataProvider::sql|sql]] bem como a propriedade [[yii\data\SqlDataProvider::totalCount|totalCount]]. Por exemplo:
 
 ```php
 use yii\data\SqlDataProvider;
@@ -165,7 +165,7 @@ use yii\data\ActiveDataProvider;
 $query = Post::find()->where(['status' => 1]);
 
 $provider = new ActiveDataProvider([
-  'query' => Post::find(),
+  'query' => $query,
 ]);
 
 // retorna uma array de objetos Post
@@ -228,7 +228,7 @@ class CsvDataProvider extends BaseDataProvider
   protected $fileObject; // SplFileObject é muito conveniente para procurar uma linha específica em um arquivo
   
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   public function init()
   {
@@ -239,7 +239,7 @@ class CsvDataProvider extends BaseDataProvider
   }
 
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   protected function prepareModels()
   {
@@ -265,7 +265,7 @@ class CsvDataProvider extends BaseDataProvider
   }
 
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   protected function prepareKeys($models)
   {
@@ -285,7 +285,7 @@ class CsvDataProvider extends BaseDataProvider
   }
 
   /**
-   * @inheritdoc
+   * {@inheritdoc}
    */
   protected function prepareTotalCount()
   {

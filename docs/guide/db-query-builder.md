@@ -89,6 +89,9 @@ that contains commas to avoid incorrect automatic name quoting. For example,
 $query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
 
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing DB expressions in select.
+
 Starting from version 2.0.1, you may also select sub-queries. You should specify each sub-query in terms of 
 a [[yii\db\Query]] object. For example,
  
@@ -150,26 +153,33 @@ $subQuery = (new Query())->select('id')->from('user')->where('status=1');
 $query->from(['u' => $subQuery]);
 ```
 
+#### Prefixes
+Also a default [[yii\db\Connection::$tablePrefix|tablePrefix]] can be applied. Implementation instructions
+are in the ["Quoting Tables" section of the "Database Access Objects" guide](guide-db-dao.html#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
 The [[yii\db\Query::where()|where()]] method specifies the `WHERE` fragment of a SQL query. You can use one of
-the three formats to specify a `WHERE` condition:
+the four formats to specify a `WHERE` condition:
 
 - string format, e.g., `'status=1'`
 - hash format, e.g. `['status' => 1, 'type' => 2]`
 - operator format, e.g. `['like', 'name', 'test']`
-
+- object format, e.g. `new LikeCondition('name', 'LIKE', 'test')`
 
 #### String Format <span id="string-format"></span>
 
-String format is best used to specify very simple conditions. It works as if you are writing a raw SQL. For example,
+String format is best used to specify very simple conditions or if you need to use built-in functions of the DBMS.
+It works as if you are writing a raw SQL. For example,
 
 ```php
 $query->where('status=1');
 
 // or use parameter binding to bind dynamic parameter values
 $query->where('status=:status', [':status' => $status]);
+
+// raw SQL using MySQL YEAR() function on a date field
+$query->where('YEAR(somedate) = 2015');
 ```
 
 Do NOT embed variables directly in the condition like the following, especially if the variable values come from 
@@ -180,7 +190,7 @@ end user inputs, because this will make your application subject to SQL injectio
 $query->where("status=$status");
 ```
 
-When using parameter binding, you may call [[yii\db\Query::params()|params()]] or [[yii\db\Query::addParams()|addParams()]]
+When using `parameter binding`, you may call [[yii\db\Query::params()|params()]] or [[yii\db\Query::addParams()|addParams()]]
 to specify parameters separately.
 
 ```php
@@ -188,6 +198,8 @@ $query->where('status=:status')
     ->addParams([':status' => $status]);
 ```
 
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing conditions in string format. 
 
 #### Hash Format <span id="hash-format"></span>
 
@@ -215,9 +227,20 @@ $userQuery = (new Query())->select('id')->from('user');
 $query->where(['id' => $userQuery]);
 ```
 
-Using the Hash Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
-you do not have to add parameters manually.
+Using the Hash Format, Yii internally applies parameter binding for values, so in contrast to the [string format](#string-format),
+here you do not have to add parameters manually. However, note that Yii never escapes column names, so if you pass
+a variable obtained from user side as a column name without any additional checks, the application will become vulnerable
+to SQL injection attack. In order to keep the application secure, either do not use variables as column names or
+filter variable against white list. In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
+guide article. For example the following code is vulnerable:
 
+```php
+// Vulnerable code:
+$column = $request->get('column');
+$value = $request->get('value');
+$query->where([$column => $value]);
+// $value is safe, but $column name won't be encoded!
+```
 
 #### Operator Format <span id="operator-format"></span>
 
@@ -238,9 +261,14 @@ the operator can be one of the following:
 
 - `or`: similar to the `and` operator except that the operands are concatenated using `OR`.
 
+- `not`: requires only operand 1, which will be wrapped in `NOT()`. For example, `['not', 'id=1']` will generate `NOT (id=1)`. Operand 1 may also be an array to describe multiple expressions. For example `['not', ['status' => 'draft', 'name' => 'example']]` will generate `NOT ((status='draft') AND (name='example'))`.
+
 - `between`: operand 1 should be the column name, and operand 2 and 3 should be the
    starting and ending values of the range that the column is in.
    For example, `['between', 'id', 1, 10]` will generate `id BETWEEN 1 AND 10`.
+   In case you need to build a condition where value is between two columns (like `11 BETWEEN min_id AND max_id`), 
+   you should use [[yii\db\conditions\BetweenColumnsCondition|BetweenColumnsCondition]]. 
+   See [Conditions – Object Format](#object-format) chapter to learn more about object definition of conditions.
 
 - `not between`: similar to `between` except the `BETWEEN` is replaced with `NOT BETWEEN`
   in the generated condition.
@@ -282,15 +310,62 @@ the operator can be one of the following:
   the `NOT LIKE` predicates.
 
 - `exists`: requires one operand which must be an instance of [[yii\db\Query]] representing the sub-query.
-  It will build a `EXISTS (sub-query)` expression.
+  It will build an `EXISTS (sub-query)` expression.
 
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
 - `>`, `<=`, or any other valid DB operator that takes two operands: the first operand must be a column name
   while the second operand a value. For example, `['>', 'age', 10]` will generate `age>10`.
 
-Using the Operator Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
-you do not have to add parameters manually.
+Using the Operator Format, Yii internally uses parameter binding for values, so in contrast to the [string format](#string-format),
+here you do not have to add parameters manually. However, note that Yii never escapes column names, so if you pass
+a variable as a column name, the application will likely become vulnerable to SQL injection attack. In order to keep
+application secure, either do not use variables as column names or filter variable against white list.
+In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
+guide article. For example the following code is vulnerable:
+
+```php
+// Vulnerable code:
+$column = $request->get('column');
+$value = $request->get('value);
+$query->where(['=', $column, $value]);
+// $value is safe, but $column name won't be encoded!
+```
+
+#### Object Format <span id="object-format"></span>
+
+Object Form is available since 2.0.14 and is both most powerful and most complex way to define conditions.
+You need to follow it either if you want to build your own abstraction over query builder or if you want to implement
+your own complex conditions.
+
+Instances of condition classes are immutable. Their only purpose is to store condition data and provide getters
+for condition builders. Condition builder is a class that holds the logic that transforms data 
+stored in condition into the SQL expression.
+
+Internally the formats described above are implicitly converted to object format prior to building raw SQL,
+so it is possible to combine formats in a single condition:
+
+```php
+$query->andWhere(new OrCondition([
+    new InCondition('type', 'in', $types),
+    ['like', 'name', '%good%'],
+    'disabled=false'
+]))
+```
+
+Conversion from operator format into object format is performed according to
+[[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]] property, that maps operators names
+to representative class names:
+
+- `AND`, `OR` -> `yii\db\conditions\ConjunctionCondition`
+- `NOT` -> `yii\db\conditions\NotCondition`
+- `IN`, `NOT IN` -> `yii\db\conditions\InCondition`
+- `BETWEEN`, `NOT BETWEEN` -> `yii\db\conditions\BetweenCondition`
+
+And so on.
+
+Using the object format makes it possible to create your own conditions or to change the way default ones are built.
+See [Adding Custom Conditions and Expressions](#adding-custom-conditions-and-expressions) chapter to learn more.
 
 
 #### Appending Conditions <span id="appending-conditions"></span>
@@ -310,7 +385,7 @@ if (!empty($search)) {
 }
 ```
 
-If `$search` is not empty, the following WHERE condition will be generated:
+If `$search` is not empty, the following `WHERE` condition will be generated:
 
 ```sql
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')
@@ -336,12 +411,32 @@ The only difference between [[yii\db\Query::filterWhere()|filterWhere()]] and [[
 is that the former will ignore empty values provided in the condition in [hash format](#hash-format). So if `$email`
 is empty while `$username` is not, the above code will result in the SQL condition `WHERE username=:username`.
 
-> Info: A value is considered empty if it is null, an empty array, an empty string or a string consisting of whitespaces only.
+> Info: A value is considered empty if it is `null`, an empty array, an empty string or a string consisting of whitespaces only.
 
 Like [[yii\db\Query::andWhere()|andWhere()]] and [[yii\db\Query::orWhere()|orWhere()]], you can use
 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] and [[yii\db\Query::orFilterWhere()|orFilterWhere()]]
 to append additional filter conditions to the existing one.
 
+Additionally, there is [[yii\db\Query::andFilterCompare()]] that can intelligently determine operator based on what's
+in the value:
+
+```php
+$query->andFilterCompare('name', 'John Doe');
+$query->andFilterCompare('rating', '>9');
+$query->andFilterCompare('value', '<=100');
+```
+
+You can also specify operator explicitly:
+
+```php
+$query->andFilterCompare('name', 'Doe', 'like');
+```
+
+Since Yii 2.0.11 there are similar methods for `HAVING` condition:
+
+- [[yii\db\Query::filterHaving()|filterHaving()]]
+- [[yii\db\Query::andFilterHaving()|andFilterHaving()]]
+- [[yii\db\Query::orFilterHaving()|orFilterHaving()]]
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
@@ -355,7 +450,7 @@ $query->orderBy([
 ]);
 ```
  
-In the above code, the array keys are column names while the array values are the corresponding order-by directions.
+In the above code, the array keys are column names while the array values are the corresponding order by directions.
 The PHP constant `SORT_ASC` specifies ascending sort and `SORT_DESC` descending sort.
 
 If `ORDER BY` only involves simple column names, you can specify it using a string, just like you do when writing 
@@ -611,13 +706,21 @@ $query = (new \yii\db\Query())
 The anonymous function takes a parameter `$row` which contains the current row data and should return a scalar
 value which will be used as the index value for the current row.
 
+> Note: In contrast to query methods like [[yii\db\Query::groupBy()|groupBy()]] or [[yii\db\Query::orderBy()|orderBy()]]
+> which are converted to SQL and are part of the query, this method works after the data has been fetched from the database.
+> That means that only those column names can be used that have been part of SELECT in your query.
+> Also if you selected a column with table prefix, e.g. `customer.id`, the result set will only contain `id` so you have to call
+> `->indexBy('id')` without table prefix.
+
 
 ### Batch Query <span id="batch-query"></span>
 
 When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable
-because they require loading all data into the memory. To keep the memory requirement low, Yii
-provides the so-called batch query support. A batch query makes use of the data cursor and fetches
-data in batches.
+because they require loading the whole query result into the client's memory. To solve this issue
+Yii provides batch query support. The server holds the query result, and the client uses a cursor
+to iterate over the result set one batch at a time.
+
+> Warning: There are known limitations and workarounds for the MySQL implementation of batch queries. See below.
 
 Batch query can be used like the following:
 
@@ -632,23 +735,25 @@ foreach ($query->batch() as $users) {
     // $users is an array of 100 or fewer rows from the user table
 }
 
-// or if you want to iterate the row one by one
+// or to iterate the row one by one
 foreach ($query->each() as $user) {
-    // $user represents one row of data from the user table
+    // data is being fetched from the server in batches of 100,
+    // but $user represents one row of data from the user table
 }
 ```
 
-The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object
-which implements the `Iterator` interface and thus can be used in the `foreach` construct.
-During the first iteration, a SQL query is made to the database. Data are then fetched in batches
+The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] 
+object which implements the `Iterator` interface and thus can be used in the `foreach` construct.
+During the first iteration, a SQL query is made to the database. Data is then fetched in batches
 in the remaining iterations. By default, the batch size is 100, meaning 100 rows of data are being fetched in each batch.
 You can change the batch size by passing the first parameter to the `batch()` or `each()` method.
 
 Compared to the [[yii\db\Query::all()]], the batch query only loads 100 rows of data at a time into the memory.
-If you process the data and then discard it right away, the batch query can help reduce memory usage.
 
-If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], the batch query
-will still keep the proper index. For example,
+If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], 
+the batch query will still keep the proper index.
+
+For example:
 
 ```php
 $query = (new \yii\db\Query())
@@ -663,3 +768,245 @@ foreach ($query->each() as $username => $user) {
     // ...
 }
 ```
+
+#### Limitations of batch query in MySQL <span id="batch-query-mysql"></span>
+
+MySQL implementation of batch queries relies on the PDO driver library. By default, MySQL queries are 
+[`buffered`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php). This defeats the purpose 
+of using the cursor to get the data, because it doesn't prevent the whole result set from being 
+loaded into the client's memory by the driver.
+
+> Note: When `libmysqlclient` is used (typical of PHP5), PHP's memory limit won't count the memory 
+  used for result sets. It may seem that batch queries work correctly, but in reality the whole 
+  dataset is loaded into client's memory, and has the potential of using it up.
+
+To disable buffering and reduce client memory requirements, PDO connection property 
+`PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` must be set to `false`. However, until the whole dataset has 
+been retrieved, no other query can be made through the same connection. This may prevent `ActiveRecord` 
+from making a query to get the table schema when it needs to. If this is not a problem 
+(the table schema is cached already), it is possible to switch the original connection into 
+unbuffered mode, and then roll back when the batch query is done.
+
+```php
+Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+
+// Do batch query
+
+Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+```
+
+> Note: In the case of MyISAM, for the duration of the batch query, the table may become locked, 
+  delaying or denying write access for other connections. When using unbuffered queries, 
+  try to keep the cursor open for as little time as possible.
+
+If the schema is not cached, or it is necessary to run other queries while the batch query is 
+being processed, you can create a separate unbuffered connection to the database:
+
+```php
+$unbufferedDb = new \yii\db\Connection([
+    'dsn' => Yii::$app->db->dsn,
+    'username' => Yii::$app->db->username,
+    'password' => Yii::$app->db->password,
+    'charset' => Yii::$app->db->charset,
+]);
+$unbufferedDb->open();
+$unbufferedDb->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+```
+
+If you want to ensure that the `$unbufferedDb` has exactly the same PDO attributes like the original 
+buffered `$db` but the `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` is `false`, 
+[consider a deep copy of `$db`](https://github.com/yiisoft/yii2/issues/8420#issuecomment-301423833), 
+set it to false manually.
+
+Then, queries are created normally. The new connection is used to run batch queries and retrieve 
+results either in batches or one by one:
+
+```php
+// getting data in batches of 1000
+foreach ($query->batch(1000, $unbufferedDb) as $users) {
+    // ...
+}
+
+
+// data is fetched from server in batches of 1000, but is iterated one by one 
+foreach ($query->each(1000, $unbufferedDb) as $user) {
+    // ...
+}
+```
+
+When the connection is no longer necessary and the result set has been retrieved, it can be closed:
+
+```php
+$unbufferedDb->close();
+```
+
+> Note: unbuffered query uses less memory on the PHP-side, but can increase the load on the MySQL server. 
+It is recommended to design your own code with your production practice for extra massive data,
+[for example, divide the range for integer keys, loop them with Unbuffered Queries](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257).
+
+### Adding custom Conditions and Expressions <span id="adding-custom-conditions-and-expressions"></span>
+
+As it was mentioned in [Conditions – Object Format](#object-format) chapter, it is possible to create custom condition
+classes. For example, let's create a condition that will check that specific columns are less than some value.
+Using the operator format, it would look like the following:
+
+```php
+[
+    'and',
+    '>', 'posts', $minLimit,
+    '>', 'comments', $minLimit,
+    '>', 'reactions', $minLimit,
+    '>', 'subscriptions', $minLimit
+]
+```
+
+When such condition applied once, it is fine. In case it is used multiple times in a single query it can
+be optimized a lot. Let's create a custom condition object to demonstrate it.
+
+Yii has a [[yii\db\conditions\ConditionInterface|ConditionInterface]], that must be used to mark classes, that represent
+a condition. It requires `fromArrayDefinition()` method implementation, in order to make possible to create condition
+from array format. In case you don't need it, you can implement this method with exception throwing.
+
+Since we create our custom condition class, we can build API that suits our task the most. 
+
+```php
+namespace app\db\conditions;
+
+class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
+{
+    private $columns;
+    private $value;
+
+    /**
+     * @param string[] $columns Array of columns that must be greater, than $value
+     * @param mixed $value the value to compare each $column against.
+     */
+    public function __construct(array $columns, $value)
+    {
+        $this->columns = $columns;
+        $this->value = $value;
+    }
+    
+    public static function fromArrayDefinition($operator, $operands)
+    {
+        throw new InvalidArgumentException('Not implemented yet, but we will do it later');
+    }
+    
+    public function getColumns() { return $this->columns; }
+    public function getValue() { return $this->vaule; }
+}
+```
+
+So we can create a condition object:
+
+```php
+$conditon = new AllGreaterCondition(['col1', 'col2'], 42);
+```
+
+But `QueryBuilder` still does not know, to make an SQL condition out of this object.
+Now we need to create a builder for this condition. It must implement [[yii\db\ExpressionBuilderInterface]]
+that requires us to implement a `build()` method. 
+
+```php
+namespace app\db\conditions;
+
+class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
+{
+    use \yii\db\Condition\ExpressionBuilderTrait; // Contains constructor and `queryBuilder` property.
+
+    /**
+     * @param AllGreaterCondition $condition the condition to be built
+     * @param array $params the binding parameters.
+     */ 
+    public function build(ConditionInterface $condition, &$params)
+    {
+        $value = $condition->getValue();
+        
+        $conditions = [];
+        foreach ($condition->getColumns() as $column) {
+            $conditions[] = new SimpleCondition($column, '>', $value);
+        }
+
+        return $this->queryBuider->buildCondition(new AndCondition($conditions), $params);
+    }
+}
+```
+
+Then simple let [[yii\db\QueryBuilder|QueryBuilder]] know about our new condition – add a mapping for it to 
+the `expressionBuilders` array. It could be done right from the application configuration:
+
+```php
+'db' => [
+    'class' => 'yii\db\mysql\Connection',
+    // ...
+    'queryBuilder' => [
+        'expressionBuilders' => [
+            'app\db\conditions\AllGreaterCondition' => 'app\db\conditions\AllGreaterConditionBuilder',
+        ],
+    ],
+],
+```
+
+Now we can use our condition in `where()`:
+
+```php
+$query->andWhere(new AllGreaterCondition(['posts', 'comments', 'reactions', 'subscriptions'], $minValue));
+```
+
+If we want to make it possible to create our custom condition using operator format, we should declare it in
+[[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]]:
+
+```php
+'db' => [
+    'class' => 'yii\db\mysql\Connection',
+    // ...
+    'queryBuilder' => [
+        'expressionBuilders' => [
+            'app\db\conditions\AllGreaterCondition' => 'app\db\conditions\AllGreaterConditionBuilder',
+        ],
+        'conditionClasses' => [
+            'ALL>' => 'app\db\conditions\AllGreaterCondition',
+        ],
+    ],
+],
+```
+
+And create a real implementation of `AllGreaterCondition::fromArrayDefinition()` method 
+in `app\db\conditions\AllGreaterCondition`:
+
+```php
+namespace app\db\conditions;
+
+class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
+{
+    // ... see the implementation above
+     
+    public static function fromArrayDefinition($operator, $operands)
+    {
+        return new static($operands[0], $operands[1]);
+    }
+}
+```
+    
+After that, we can create our custom condition using shorter operator format:
+
+```php
+$query->andWhere(['ALL>', ['posts', 'comments', 'reactions', 'subscriptions'], $minValue]);
+```
+
+You might notice, that there was two concepts used: Expressions and Conditions. There is a [[yii\db\ExpressionInterface]]
+that should be used to mark objects, that require an Expression Builder class, that implements
+[[yii\db\ExpressionBuilderInterface]] to be built. Also there is a [[yii\db\condition\ConditionInterface]], that extends
+[[yii\db\ExpressionInterface|ExpressionInterface]] and should be used to objects, that can be created from array definition
+as it was shown above, but require builder as well.
+
+To summarise:
+
+- Expression – is a Data Transfer Object (DTO) for a dataset, that can be somehow compiled to some SQL 
+statement (an operator, string, array, JSON, etc).
+- Condition – is an Expression superset, that aggregates multiple Expressions (or scalar values) that can be compiled
+to a single SQL condition.
+
+You can create your own classes that implement [[yii\db\ExpressionInterface|ExpressionInterface]] to hide the complexity
+of transforming data to SQL statements. You will learn more about other examples of Expressions in the
+[next article](db-active-record.md);

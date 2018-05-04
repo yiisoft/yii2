@@ -14,7 +14,7 @@ use yii\jui\DatePicker;
 ```
 
 There are a good number of widgets bundled with Yii, such as [[yii\widgets\ActiveForm|active form]],
-[[yii\widgets\Menu|menu]], [jQuery UI widgets](widget-jui.md), [Twitter Bootstrap widgets](widget-bootstrap.md).
+[[yii\widgets\Menu|menu]], [jQuery UI widgets](https://www.yiiframework.com/extension/yiisoft/yii2-jui), [Twitter Bootstrap widgets](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap).
 In the following, we will introduce the basic knowledge about widgets. Please refer to the class API documentation
 if you want to learn about the usage of a particular widget.
 
@@ -34,9 +34,7 @@ use yii\jui\DatePicker;
     'model' => $model,
     'attribute' => 'from_date',
     'language' => 'ru',
-    'clientOptions' => [
-        'dateFormat' => 'yy-mm-dd',
-    ],
+    'dateFormat' => 'php:Y-m-d',
 ]) ?>
 ```
 
@@ -68,6 +66,11 @@ use yii\helpers\Html;
 Note that unlike [[yii\base\Widget::widget()]] which returns the rendering result of a widget, the method
 [[yii\base\Widget::begin()]] returns an instance of the widget which you can use to build the widget content.
 
+> Note: Some widgets will use [output buffering](http://php.net/manual/en/book.outcontrol.php) to adjust the enclosed
+> content when [[yii\base\Widget::end()]] is called. For this reason calling [[yii\base\Widget::begin()]] and
+> [[yii\base\Widget::end()]] is expected to happen in the same view file.
+> Not following this rule may result in unexpected output.
+
 
 ### Configuring global defaults
 
@@ -84,7 +87,7 @@ details.
 ## Creating Widgets <span id="creating-widgets"></span>
 
 To create a widget, extend from [[yii\base\Widget]] and override the [[yii\base\Widget::init()]] and/or
-[[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that normalizes the widget
+[[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that initializes the widget
 properties, while the `run()` method should contain the code that generates the rendering result of the widget.
 The rendering result may be directly "echoed" or returned as a string by `run()`.
 

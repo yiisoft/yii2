@@ -40,7 +40,7 @@
 Після встановлення Composer, встановити Yii можна виконавши наступну команду з директорії, яка доступна через Web:
 
 ```bash
-    composer global require "fxp/composer-asset-plugin:~1.1.1"
+    composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -98,24 +98,39 @@
 Перевірка встановлення <span id="verifying-installation"></span>
 ----------------------
 
-Після встановлення, ви можете використовувати свій браузер для доступу до встановленого додатку Yii за наступним URL:
+Після успішного встановлення ви можете налаштувати свій веб-сервер (див. наступний розділ)
+або використати [вбудований веб-сервер PHP](https://secure.php.net/manual/en/features.commandline.webserver.php),
+виконавши наступну консольну команду із директорії `web`:
+
+```bash
+php yii serve
+```
+
+> Note: За замовчуванням, HTTP-server буде прослуховувати порт 8080. Проте, 
+якщо цей порт вже використовується, або ви бажаєте таким чинов використовувати 
+кілька додатків одразу - ви можете встановити, який саме порт використовувати.
+Тільки додайтие аргумент --port:
+
+```bash
+php yii serve --port=8888
+```
+
+Тепер ви можете використати свій браузер для доступу до встановленого Yii додатку
+за наступним посиланням:
 
 ```
-http://localhost/basic/web/index.php
+http://localhost:8080/
 ```
-
-Даний URL припускає, що Yii встановлено в директорію `basic` у базовій директорії вашого локального веб-сервера (`localhost`).
-Вам, можливо, буде потрібно налаштувати його на своїй системі.
 
 ![Успішно встановлений Yii](images/start-app-installed.png)
 
 Ви повинні побачити сторінку із привітанням "Congratulations!" у вашому браузері. Якщо ж ні, будь ласка, перевірте, чи задовольняють
 налаштування PHP вимоги Yii. Це можна зробити одним із наведених способів:
 
-* Використайте браузер для доступу до URL `http://localhost/basic/requirements.php`
-* Або виконайте наступні команди в консолі: 
+* Скопіюйте файл `/requirements.php` до `/web/requirements.php` та використайте браузер для доступу до URL `http://localhost/requirements.php`
+* Виконайте наступні команди в консолі: 
 
-  ```
+  ```bash
   cd basic
   php requirements.php
   ```
@@ -178,7 +193,7 @@ DocumentRoot "path/to/basic/web"
 
 Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](http://php.net/install.fpm).
 Використовуйте наступні параметри Nginx, замінивши `path/to/basic/web` на коректний шлях до
-`basic/web`, а `mysite.local` на актуальний домен.
+`basic/web`, а `mysite.test` на актуальний домен.
 
 ```
 server {
@@ -188,7 +203,7 @@ server {
     listen 80; ## "слухаємо порт" для ipv4
     #listen [::]:80 default_server ipv6only=on; ## "слухаємо порт" для ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

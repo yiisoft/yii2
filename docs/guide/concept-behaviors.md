@@ -42,13 +42,16 @@ class MyBehavior extends Behavior
 }
 ```
 
-The above code defines the behavior class `app\components\MyBehavior`, with two properties--
-`prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
-is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
+The above code defines the behavior class `app\components\MyBehavior`, with two properties
+`prop1` and `prop2` and one method `foo()`. Note that property `prop2`
+is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\BaseObject]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
 Because this class is a behavior, when it is attached to a component, that component will then also have the `prop1` and `prop2` properties and the `foo()` method.
 
 > Tip: Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
+
+> Note: In case [[yii\base\Behavior::__get()]] and/or [[yii\base\Behavior::__set()]] method of behavior is overridden you
+need to override [[yii\base\Behavior::canGetProperty()]] and/or [[yii\base\Behavior::canSetProperty()]] as well.
 
 Handling Component Events
 ------------------
@@ -288,6 +291,8 @@ The behavior configuration above specifies that when the record is being:
   the `created_at` and `updated_at` attributes
 * updated, the behavior should assign the current UNIX timestamp to the `updated_at` attribute
 
+> Note: For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
+
 With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
 filled with the current UNIX timestamp:
 
@@ -305,6 +310,21 @@ to a specified attribute and save it to the database:
 ```php
 $user->touch('login_time');
 ```
+
+Other behaviors
+---------------
+
+There are several built-in and external behaviors available:
+
+- [[yii\behaviors\BlameableBehavior]] - automatically fills the specified attributes with the current user ID.
+- [[yii\behaviors\SluggableBehavior]] - automatically fills the specified attribute with a value that can be used
+  as a slug in a URL.
+- [[yii\behaviors\AttributeBehavior]] - automatically assigns a specified value to one or multiple attributes of
+  an ActiveRecord object when certain events happen.
+- [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - provides methods to soft-delete
+  and soft-restore ActiveRecord i.e. set flag or status which marks record as deleted.
+- [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - allows managing records order in an
+  integer field by providing reordering methods.
 
 Comparing Behaviors with Traits <span id="comparison-with-traits"></span>
 ----------------------

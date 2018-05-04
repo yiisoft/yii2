@@ -15,6 +15,8 @@ use yii\web\NotFoundHttpException;
 /**
  * Action is the base class for action classes that implement RESTful API.
  *
+ * For more details and usage information on Action, see the [guide article on rest controllers](guide:rest-controllers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -58,7 +60,7 @@ class Action extends \yii\base\Action
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -97,8 +99,8 @@ class Action extends \yii\base\Action
 
         if (isset($model)) {
             return $model;
-        } else {
-            throw new NotFoundHttpException("Object not found: $id");
         }
+
+        throw new NotFoundHttpException("Object not found: $id");
     }
 }

@@ -179,7 +179,7 @@ $session->setFlash('postDeleted', 'You have successfully deleted your post.');
 echo $session->getFlash('postDeleted');
 
 // Petición #3
-// $result será false ya que el mensaje flash ha sido borrado automáticamente
+// $result será `false` ya que el mensaje flash ha sido borrado automáticamente
 $result = $session->hasFlash('postDeleted');
 ```
 
@@ -262,7 +262,7 @@ unset($cookies['language']);
 
 Además de [[yii\web\Cookie::name|name]], [[yii\web\Cookie::value|value]] las propiedades que se muestran en los anteriores ejemplos, la clase [[yii\web\Cookie]] también define otras propiedades para representar toda la información posible de las cookies, tal como [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]. Puedes configurar estas propiedades según sea necesario para preparar una cookie y luego añadirlo a la colección de cookies de la respuesta.
 
-> Note: Para mayor seguridad, el valor por defecto de [[yii\web\Cookie::httpOnly]] es true. Esto ayuda a mitigar el riesgo del acceso a la cookie protegida por script desde el lado del cliente (si el navegador lo soporta). Puedes leer el [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) para más detalles.
+> Note: Para mayor seguridad, el valor por defecto de [[yii\web\Cookie::httpOnly]] es `true`. Esto ayuda a mitigar el riesgo del acceso a la cookie protegida por script desde el lado del cliente (si el navegador lo soporta). Puedes leer el [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) para más detalles.
 
 
 ### Validación de la Cookie <span id="cookie-validation"></span>
@@ -271,7 +271,7 @@ Cuando estás leyendo y enviando cookies a través de los componentes `request` 
 
 > Info: Si falla la validación de una cookie, aún puedes acceder a la misma a través de `$_COOKIE`. Esto sucede porque librerías de terceros pueden manipular de forma propia las cookies, lo cual no implica la validación de las mismas.
 
-La validación de cookies es habilitada por defecto. Puedes desactivar lo ajustando la propiedad [[yii\web\Request::enableCookieValidation]] a false, aunque se recomienda encarecidamente que no lo haga.
+La validación de cookies es habilitada por defecto. Puedes desactivar lo ajustando la propiedad [[yii\web\Request::enableCookieValidation]] a `false`, aunque se recomienda encarecidamente que no lo haga.
 
 > Note: Las cookies que son directamente leídas/enviadas vía `$_COOKIE` y `setcookie()` no serán validadas.
 

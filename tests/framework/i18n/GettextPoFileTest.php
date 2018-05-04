@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\i18n;
 
@@ -10,6 +15,12 @@ use yiiunit\TestCase;
  */
 class GettextPoFileTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->mockApplication();
+    }
+
     public function testLoad()
     {
         $poFile = new GettextPoFile();
@@ -24,14 +35,14 @@ class GettextPoFileTest extends TestCase
         // original messages
         $this->assertArrayHasKey("Missing\n\r\t\"translation.", $context1);
         $this->assertArrayHasKey("Aliquam tempus elit vel purus molestie placerat. In sollicitudin tincidunt\naliquet. Integer tincidunt gravida tempor. In convallis blandit dui vel malesuada.\nNunc vel sapien nunc, a pretium nulla.", $context1);
-        $this->assertArrayHasKey("String number two.", $context1);
+        $this->assertArrayHasKey('String number two.', $context1);
         $this->assertArrayHasKey("Nunc vel sapien nunc, a pretium nulla.\nPellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.", $context1);
 
         $this->assertArrayHasKey("The other\n\ncontext.\n", $context2);
         $this->assertArrayHasKey("test1\\\ntest2\n\\\\\ntest3", $context2);
 
         // translated messages
-        $this->assertTrue(in_array("", $context1));
+        $this->assertTrue(in_array('', $context1));
         $this->assertTrue(in_array("Олицетворение однократно. Представленный лексико-семантический анализ является\nпсихолингвистическим в своей основе, но механизм сочленений полидисперсен. Впечатление\nоднократно. Различное расположение выбирает сюжетный механизм сочленений.", $context1));
         $this->assertTrue(in_array('Строка номер два.', $context1));
         $this->assertTrue(in_array('Короткий перевод.', $context1));
@@ -83,7 +94,7 @@ class GettextPoFileTest extends TestCase
         // context2
         $this->assertCount(4, $context2);
 
-        $this->assertArrayHasKey("\"Quotes\"", $context2);
+        $this->assertArrayHasKey('"Quotes"', $context2);
         $this->assertTrue(in_array('"Кавычки"', $context2));
 
         $this->assertArrayHasKey("\nNew lines\n", $context2);

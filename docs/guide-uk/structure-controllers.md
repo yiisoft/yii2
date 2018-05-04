@@ -356,7 +356,7 @@ class PostController extends Controller
 Параметри дії будуть заповнені для різних запитів наступним чином:
 
 * `http://hostname/index.php?r=post/view&id=123`: параметру `$id` буде присвоєне значення `'123'`, у той час,
-  як `$version` буде мати значення null, бо рядок запиту не містить параметра `version`.
+  як `$version` буде мати значення `null`, бо рядок запиту не містить параметра `version`.
 * `http://hostname/index.php?r=post/view&id=123&version=2`: параметрам `$id` і `$version` будуть присвоєні
   значення `'123'` і `'2'` відповідно.
 * `http://hostname/index.php?r=post/view`: буде отримане виключення [[yii\web\BadRequestHttpException]], оскільки

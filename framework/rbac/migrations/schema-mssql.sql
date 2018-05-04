@@ -9,15 +9,22 @@
  * @since 2.0
  */
 
-drop table [auth_assignment];
-drop table [auth_item_child];
-drop table [auth_item];
-drop table [auth_rule];
+if object_id('[auth_assignment]', 'U') is not null
+    drop table [auth_assignment];
+
+if object_id('[auth_item_child]', 'U') is not null
+    drop table [auth_item_child];
+
+if object_id('[auth_item]', 'U') is not null
+    drop table [auth_item];
+
+if object_id('[auth_rule]', 'U') is not null
+    drop table [auth_rule];
 
 create table [auth_rule]
 (
     [name]  varchar(64) not null,
-    [data]  text,
+    [data]  blob,
     [created_at]           integer,
     [updated_at]           integer,
     primary key ([name])
@@ -26,10 +33,10 @@ create table [auth_rule]
 create table [auth_item]
 (
    [name]                 varchar(64) not null,
-   [type]                 integer not null,
+   [type]                 smallint not null,
    [description]          text,
    [rule_name]            varchar(64),
-   [data]                 text,
+   [data]                 blob,
    [created_at]           integer,
    [updated_at]           integer,
    primary key ([name]),
@@ -55,6 +62,8 @@ create table [auth_assignment]
    primary key ([item_name], [user_id]),
    foreign key ([item_name]) references [auth_item] ([name]) on delete cascade on update cascade
 );
+
+create index [auth_assignment_user_id_idx] on [auth_assignment] ([user_id]);
 
 CREATE TRIGGER dbo.trigger_auth_item_child
     ON dbo.[auth_item]

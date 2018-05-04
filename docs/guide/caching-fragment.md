@@ -18,7 +18,7 @@ if ($this->beginCache($id)) {
 
 That is, enclose content generation logic in a pair of [[yii\base\View::beginCache()|beginCache()]] and
 [[yii\base\View::endCache()|endCache()]] calls. If the content is found in the cache, [[yii\base\View::beginCache()|beginCache()]]
-will render the cached content and return false, thus skip the content generation logic.
+will render the cached content and return `false`, thus skip the content generation logic.
 Otherwise, your content generation logic will be called, and when [[yii\base\View::endCache()|endCache()]]
 is called, the generated content will be captured and stored in the cache.
 
@@ -174,3 +174,6 @@ if ($this->beginCache($id1)) {
 The [[yii\base\View::renderDynamic()|renderDynamic()]] method takes a piece of PHP code as its parameter.
 The return value of the PHP code is treated as the dynamic content. The same PHP code will be executed
 for every request, no matter the enclosing fragment is being served from cached or not.
+
+> Note: since version 2.0.14 a dynamic content API is exposed via the [[yii\base\DynamicContentAwareInterface]] interface and its [[yii\base\DynamicContentAwareTrait]] trait.
+  As an example, you may refer to the [[yii\widgets\FragmentCache]] class.

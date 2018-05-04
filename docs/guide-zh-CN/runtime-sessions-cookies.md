@@ -1,20 +1,21 @@
 Sessions 和 Cookies
 ====================
 
-[译注：Session中文翻译为会话，Cookie有些翻译成小甜饼，不贴切，两个单词保留英文] Sessions 和 cookies 允许数据在多次请求中保持，
-在纯PHP中，可以分别使用全局变量`$_SESSION` 和`$_COOKIE` 来访问，Yii将session和cookie封装成对象并增加一些功能，
+Sessions 和 cookies 允许数据在多次请求中保持，
+在纯 PHP 中，可以分别使用全局变量 `$_SESSION` 和 `$_COOKIE` 来访问，Yii 将 session 和 cookie 封装成对象并增加一些功能，
 可通过面向对象方式访问它们。
 
 
 ## Sessions <span id="sessions"></span>
 
 和 [请求](runtime-requests.md) 和 [响应](runtime-responses.md)类似，
-默认可通过为[[yii\web\Session]] 实例的`session` [应用组件](structure-application-components.md) 来访问sessions。
+默认可通过为 [[yii\web\Session]] 实例的 `session` 
+[应用组件](structure-application-components.md) 来访问 sessions。
 
 
 ### 开启和关闭 Sessions <span id="opening-closing-sessions"></span>
 
-可使用以下代码来开启和关闭session。
+可使用以下代码来开启和关闭 session。
 
 ```php
 $session = Yii::$app->session;
@@ -36,9 +37,8 @@ $session->destroy();
 因为方法内部会先检查session是否已经开启。
 
 
-### 访问Session数据 <span id="access-session-data"></span>
+### 访问 Session 数据 <span id="access-session-data"></span>
 
-To access the data stored in session, you can do the following:
 可使用如下方式访问session中的数据：
 
 ```php
@@ -69,10 +69,12 @@ foreach ($session as $name => $value) ...
 foreach ($_SESSION as $name => $value) ...
 ```
 
-> Info: 当使用`session`组件访问session数据时候，如果session没有开启会自动开启，
-这和通过`$_SESSION`不同，`$_SESSION`要求先执行`session_start()`。
+> Info: 当使用 `session` 组件访问 session 数据时候，
+  如果 session 没有开启会自动开启，
+  这和通过 `$_SESSION` 不同，`$_SESSION` 要求先执行 `session_start()`。
 
-当session数据为数组时，`session`组件会限制你直接修改数据中的单元项，例如：
+当 session 数据为数组时，`session` 组件会限制你直接修改数据中的单元项，
+例如：
 
 ```php
 $session = Yii::$app->session;
@@ -117,26 +119,31 @@ $session['captcha.number'] = 5;
 $session['captcha.lifetime'] = 3600;
 ```
 
-为更好的性能和可读性，推荐最后一种方案，也就是不用存储session变量为数组，
-而是将每个数组项变成有相同键前缀的session变量。
+为更好的性能和可读性，推荐最后一种方案，
+也就是不用存储 session 变量为数组，
+而是将每个数组项变成有相同键前缀的 session 变量。
 
 
 ### 自定义Session存储 <span id="custom-session-storage"></span>
 
-[[yii\web\Session]] 类默认存储session数据为文件到服务器上，Yii提供以下session类实现不同的session存储方式：
+[[yii\web\Session]] 类默认存储 session 数据为文件到服务器上，
+Yii 提供以下 session 类实现不同的 session 存储方式：
 
-* [[yii\web\DbSession]]: 存储session数据在数据表中
-* [[yii\web\CacheSession]]: 存储session数据到缓存中，缓存和配置中的[缓存组件](caching-data.md#cache-components)相关
-* [[yii\redis\Session]]: 存储session数据到以[redis](http://redis.io/) 作为存储媒介中
-* [[yii\mongodb\Session]]: 存储session数据到[MongoDB](http://www.mongodb.org/).
+* [[yii\web\DbSession]]：存储 session 数据在数据表中
+* [[yii\web\CacheSession]]：存储 session 数据到缓存中，缓存和配置中的[缓存组件](caching-data.md#cache-components)相关
+* [[yii\redis\Session]]：存储 session 数据到以 [redis](http://redis.io/) 作为存储媒介中
+* [[yii\mongodb\Session]]：存储 session 数据到 [MongoDB](http://www.mongodb.org/)。
 
-所有这些session类支持相同的API方法集，因此，切换到不同的session存储介质不需要修改项目使用session的代码。
+所有这些session类支持相同的API方法集，因此，
+切换到不同的session存储介质不需要修改项目使用session的代码。
 
-> Note: 如果通过`$_SESSION`访问使用自定义存储介质的session，需要确保session已经用[[yii\web\Session::open()]] 开启，
+> Note: 如果通过`$_SESSION`访问使用自定义存储介质的session，
+  需要确保session已经用[[yii\web\Session::open()]] 开启，
   这是因为在该方法中注册自定义session存储处理器。
 
 学习如何配置和使用这些组件类请参考它们的API文档，如下为一个示例
-显示如何在应用配置中配置[[yii\web\DbSession]]将数据表作为session存储介质。
+显示如何在应用配置中配置[[yii\web\DbSession]]
+将数据表作为 session 存储介质。
 
 ```php
 return [
@@ -150,7 +157,7 @@ return [
 ];
 ```
 
-也需要创建如下数据库表来存储session数据：
+也需要创建如下数据库表来存储 session 数据：
 
 ```sql
 CREATE TABLE session
@@ -161,22 +168,50 @@ CREATE TABLE session
 )
 ```
 
-其中'BLOB' 对应你选择的数据库管理系统的BLOB-type类型，以下一些常用数据库管理系统的BLOB类型：
+其中 'BLOB' 对应你选择的数据库管理系统的 BLOB-type 类型，以下一些常用数据库管理系统的 BLOB 类型：
 
 - MySQL: LONGBLOB
 - PostgreSQL: BYTEA
 - MSSQL: BLOB
 
-> Note: 根据 php.ini 设置的 `session.hash_function`，你需要调整`id`列的长度，
-  例如，如果 `session.hash_function=sha256` ，应使用长度为64而不是40的char类型。
+> Note: 根据 php.ini 设置的 `session.hash_function`，你需要调整 `id` 列的长度，
+  例如，如果 `session.hash_function=sha256`，
+  应使用长度为 64 而不是 40 的 char 类型。
 
+或者，可以通过以下迁移完成：
+
+```php
+<?php
+
+use yii\db\Migration;
+
+class m170529_050554_create_table_session extends Migration
+{
+    public function up()
+    {
+        $this->createTable('{{%session}}', [
+            'id' => $this->char(64)->notNull(),
+            'expire' => $this->integer(),
+            'data' => $this->binary()
+        ]);
+        $this->addPrimaryKey('pk-id', '{{%session}}', 'id');
+    }
+
+    public function down()
+    {
+        $this->dropTable('{{%session}}');
+    }
+}
+```
 
 ### Flash 数据 <span id="flash-data"></span>
 
-Flash数据是一种特别的session数据，它一旦在某个请求中设置后，只会在下次请求中有效，然后该数据就会自动被删除。
-常用于实现只需显示给终端用户一次的信息，如用户提交一个表单后显示确认信息。
+Flash数据是一种特别的 session 数据，它一旦在某个请求中设置后，
+只会在下次请求中有效，然后该数据就会自动被删除。
+常用于实现只需显示给终端用户一次的信息，
+如用户提交一个表单后显示确认信息。
 
-可通过`session`应用组件设置或访问`session`，例如：
+可通过 `session` 应用组件设置或访问 `session`，例如：
 
 ```php
 $session = Yii::$app->session;
@@ -194,10 +229,10 @@ echo $session->getFlash('postDeleted');
 $result = $session->hasFlash('postDeleted');
 ```
 
-和普通session数据类似，可将任意数据存储为flash数据。
+和普通 session 数据类似，可将任意数据存储为 flash 数据。
 
-当调用[[yii\web\Session::setFlash()]]时, 会自动覆盖相同名的已存在的任何数据，
-为将数据追加到已存在的相同名flash中，可改为调用[[yii\web\Session::addFlash()]]。
+当调用 [[yii\web\Session::setFlash()]] 时, 会自动覆盖相同名的已存在的任何数据，
+为将数据追加到已存在的相同名 flash 中，可改为调用 [[yii\web\Session::addFlash()]]。
 例如:
 
 ```php
@@ -214,28 +249,41 @@ $session->addFlash('alerts', 'You are promoted.');
 $alerts = $session->getFlash('alerts');
 ```
 
-> Note: 不要在相同名称的flash数据中使用[[yii\web\Session::setFlash()]] 的同时也使用[[yii\web\Session::addFlash()]]，
-  因为后一个防范会自动将flash信息转换为数组以使新的flash数据可追加进来，因此，
-  当你调用[[yii\web\Session::getFlash()]]时，会发现有时获取到一个数组，有时获取到一个字符串，
+> Note: 不要在相同名称的 flash 数据中使用 [[yii\web\Session::setFlash()]] 的同时也使用 [[yii\web\Session::addFlash()]]，
+  因为后一个防范会自动将 flash 信息转换为数组以使新的 flash 数据可追加进来，因此，
+  当你调用 [[yii\web\Session::getFlash()]] 时，
+  会发现有时获取到一个数组，有时获取到一个字符串，
   取决于你调用这两个方法的顺序。
+
+> Tip: For displaying Flash messages you can use [[yii\bootstrap\Alert|bootstrap Alert]] widget in the following way:
+>
+> ```php
+> echo Alert::widget([
+>    'options' => ['class' => 'alert-info'],
+>    'body' => Yii::$app->session->getFlash('postDeleted'),
+> ]);
+> ```
 
 
 ## Cookies <span id="cookies"></span>
 
-Yii使用 [[yii\web\Cookie]]对象来代表每个cookie，[[yii\web\Request]] 和 [[yii\web\Response]]
-通过名为'cookies'的属性维护一个cookie集合，前者的cookie 集合代表请求提交的cookies，
-后者的cookie集合表示发送给用户的cookies。
+Yii使用 [[yii\web\Cookie]] 对象来代表每个 cookie，
+[[yii\web\Request]] 和 [[yii\web\Response]]
+通过名为 'cookies' 的属性维护一个 cookie 集合，前者的 cookie 集合代表请求提交的 cookies，
+后者的 cookie 集合表示发送给用户的 cookies。
 
+控制器是直接处理请求和响应的部分。 因此, 应当在控制器中读取和发送 cookie 。
+(译者注：意思在控制器中处理 cookie 是安全的。)
 
 ### 读取 Cookies <span id="reading-cookies"></span>
 
 当前请求的cookie信息可通过如下代码获取：
 
 ```php
-// 从 "request"组件中获取cookie集合(yii\web\CookieCollection)
+// 从 "request" 组件中获取 cookie 集合(yii\web\CookieCollection)
 $cookies = Yii::$app->request->cookies;
 
-// 获取名为 "language" cookie 的值，如果不存在，返回默认值"en"
+// 获取名为 "language" cookie 的值，如果不存在，返回默认值 "en"
 $language = $cookies->getValue('language', 'en');
 
 // 另一种方式获取名为 "language" cookie 的值
@@ -243,7 +291,7 @@ if (($cookie = $cookies->get('language')) !== null) {
     $language = $cookie->value;
 }
 
-// 可将 $cookies当作数组使用
+// 可将 $cookies 当作数组使用
 if (isset($cookies['language'])) {
     $language = $cookies['language']->value;
 }
@@ -256,20 +304,19 @@ if (isset($cookies['language'])) ...
 
 ### 发送 Cookies <span id="sending-cookies"></span>
 
-You can send cookies to end users using the following code:
-可使用如下代码发送cookie到终端用户：
+可使用如下代码发送 cookie 到终端用户：
 
 ```php
-// 从"response"组件中获取cookie 集合(yii\web\CookieCollection)
+// 从 "response" 组件中获取 cookie 集合(yii\web\CookieCollection)
 $cookies = Yii::$app->response->cookies;
 
-// 在要发送的响应中添加一个新的cookie
+// 在要发送的响应中添加一个新的 cookie
 $cookies->add(new \yii\web\Cookie([
     'name' => 'language',
     'value' => 'zh-CN',
 ]));
 
-// 删除一个cookie
+// 删除一个 cookie
 $cookies->remove('language');
 // 等同于以下删除代码
 unset($cookies['language']);
@@ -277,28 +324,33 @@ unset($cookies['language']);
 
 除了上述例子定义的 [[yii\web\Cookie::name|name]] 和 [[yii\web\Cookie::value|value]] 属性
 [[yii\web\Cookie]] 类也定义了其他属性来实现cookie的各种信息，如
-[[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]
-可配置这些属性到cookie中并添加到响应的cookie集合中。
+[[yii\web\Cookie::domain|domain]]，[[yii\web\Cookie::expire|expire]]
+可配置这些属性到 cookie 中并添加到响应的 cookie 集合中。
 
-> Note: 为安全起见[[yii\web\Cookie::httpOnly]] 被设置为true，这可减少客户端脚本访问受保护cookie（如果浏览器支持）的风险，
-更多详情可阅读 [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
+> Note: 为安全起见 [[yii\web\Cookie::httpOnly]] 被设置为 true，
+  这可减少客户端脚本访问受保护 cookie（如果浏览器支持）的风险，
+  更多详情可阅读 [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly)。
 
 
 ### Cookie验证 <span id="cookie-validation"></span>
 
-在上两节中，当通过`request` 和 `response` 组件读取和发送cookie时，你会喜欢扩展的cookie验证的保障安全功能，它能
-使cookie不被客户端修改。该功能通过给每个cookie签发一个哈希字符串来告知服务端cookie是否在客户端被修改，
-如果被修改，通过`request`组件的[[yii\web\Request::cookies|cookie collection]]cookie集合访问不到该cookie。
+在上两节中，当通过 `request` 和 `response` 组件读取和发送 cookie 时，
+你会喜欢扩展的 cookie 验证的保障安全功能，它能
+使 cookie 不被客户端修改。该功能通过给每个cookie签发一个哈希字符串来告知服务端 cookie 是否在客户端被修改，
+如果被修改，通过 `request` 组件的
+[[yii\web\Request::cookies|cookie collection]] cookie 集合访问不到该 cookie。
 
-> Note: Cookie验证只保护cookie值被修改，如果一个cookie验证失败，仍然可以通过`$_COOKIE`来访问该cookie，
-因为这是第三方库对未通过cookie验证自定义的操作方式。
+> Note: Cookie验证只保护 cookie 值被修改，如果一个 cookie 验证失败，
+  仍然可以通过 `$_COOKIE` 来访问该 cookie，
+  因为这是第三方库对未通过 cookie 验证自定义的操作方式。
 
-Cookie验证默认启用，可以设置[[yii\web\Request::enableCookieValidation]]属性为false来禁用它，尽管如此，我们强烈建议启用它。
+Cookie 验证默认启用，可以设置 [[yii\web\Request::enableCookieValidation]] 属性为 false 来禁用它，
+尽管如此，我们强烈建议启用它。
 
-> Note: 直接通过`$_COOKIE` 和 `setcookie()` 读取和发送的Cookie不会被验证。
+> Note: 直接通过 `$_COOKIE` 和 `setcookie()` 读取和发送的 Cookie 不会被验证。
 
-当使用cookie验证，必须指定[[yii\web\Request::cookieValidationKey]]，它是用来生成s上述的哈希值，
-可通过在应用配置中配置`request` 组件。
+当使用 cookie 验证时，必须指定 [[yii\web\Request::cookieValidationKey]]，它是用来生成上述的哈希值，
+可通过在应用配置中配置 `request` 组件。
 
 ```php
 return [
@@ -310,5 +362,5 @@ return [
 ];
 ```
 
-> Info: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] 对你的应用安全很重要，
+> 补充: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] 对你的应用安全很重要，
   应只被你信任的人知晓，请不要将它放入版本控制中。

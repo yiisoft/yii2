@@ -2,8 +2,8 @@
 ============
 
 Yii предоставляет набор [виджетов](structure-widgets.md), которые могут быть использованы для отображения данных.
-В то время как виджет [DetailView](#detail-view) может быть использован для отображения данных по одной записи, то 
-виджеты [ListView](#list-view) и [GridView](#grid-view) могут быть использованы для показа данных в виде списка или 
+В то время как виджет [DetailView](#detail-view) может быть использован для отображения данных по одной записи, то
+виджеты [ListView](#list-view) и [GridView](#grid-view) могут быть использованы для показа данных в виде списка или
 таблицы с возможностью сортировки, фильтрации и разбивки данных постранично.
 
 
@@ -13,7 +13,7 @@ DetailView <a name="detail-view"></a>
 Виджет [[yii\widgets\DetailView|DetailView]] отображает детали по данным для одной [[yii\widgets\DetailView::$model|model]].
 
 Этот виджет лучше использовать для отображения данных модели в обычном формате(т.е. каждый атрибут модели будет представлен
-в виде строки в таблице). Модель может быть либо объектом класса [[\yii\base\Model]] или его наследником, таких как 
+в виде строки в таблице). Модель может быть либо объектом класса [[\yii\base\Model]] или его наследником, таких как
 [active record](db-active-record.md) , либо ассоциативным массивом.
 
 DetailView использует свойство [[yii\widgets\DetailView::$attributes|$attributes]] для определений, какие атрибуты модели
@@ -21,18 +21,20 @@ DetailView использует свойство [[yii\widgets\DetailView::$attr
 настройками форматирования.
 
 Обычное использование DetailView сводится к следующему коду:
- 
+
 ```php
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',               // title свойство (обычный текст)
-        'description:html',    // description свойство, как HTML
-        [                      // name свойство зависимой модели owner
+        'title',                                           // title свойство (обычный текст)
+        'description:html',                                // description свойство, как HTML
+        [                                                  // name свойство зависимой модели owner
             'label' => 'Owner',
-            'value' => $model->owner->name,
+            'value' => $model->owner->name,            
+            'contentOptions' => ['class' => 'bg-red'],     // настройка HTML атрибутов для тега, соответсвующего value
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // настройка HTML атрибутов для тега, соответсвующего label
         ],
-        'created_at:datetime', // дата создания в формате datetime
+        'created_at:datetime',                             // дата создания в формате datetime
     ],
 ]);
 ```
@@ -42,7 +44,7 @@ ListView <a name="list-view"></a>
 
 Виджет [[yii\widgets\ListView|ListView]] использует для отображения информации [провайдера данных](output-data-providers.md).
 Каждая модель отображается, используя определённый [[yii\widgets\ListView::$itemView|вид]]. Поскольку провайдер включает
-в себя разбивку на страницы, сортировку и фильтрацию, то его использование удобно для отображения информации конечному 
+в себя разбивку на страницы, сортировку и фильтрацию, то его использование удобно для отображения информации конечному
 пользователю и создания интерфейса управления данными.
 
 Обычное использование сводится к следующему коду:
@@ -73,8 +75,8 @@ use yii\helpers\HtmlPurifier;
 ?>
 <div class="post">
     <h2><?= Html::encode($model->title) ?></h2>
-    
-    <?= HtmlPurifier::process($model->text) ?>    
+
+    <?= HtmlPurifier::process($model->text) ?>
 </div>
 ```
 
@@ -109,7 +111,7 @@ GridView <a name="grid-view"></a>
 административный раздел системы. GridView использует данные, как [провайдер данных](output-data-providers.md) и отображает
 каждую строку используя [[yii\grid\GridView::columns|columns]] для предоставления данных в таблице.
 
-Каждая строка из таблицы представлена данными из одиночной записи и колонна, как правило, представляет собой атрибут
+Каждая строка из таблицы представлена данными из одиночной записи и колонка, как правило, представляет собой атрибут
 записи (некоторые столбцы могут соответствовать сложным выражениям атрибутов или статическому тексту).
 
 Минимальный код, который необходим для использования GridView:
@@ -129,8 +131,8 @@ echo GridView::widget([
 ]);
 ```
 
-В вышеприведённом коде сначала создаётся провайдер данных и затем используется GridView для отображения атрибутов для 
-каждого элемента из провайдера данных. Отображенная таблица оснащена функционалом сортировки и разбивки на страницы из 
+В вышеприведённом коде сначала создаётся провайдер данных и затем используется GridView для отображения атрибутов для
+каждого элемента из провайдера данных. Отображенная таблица оснащена функционалом сортировки и разбивки на страницы из
 коробки.
 
 ### Колонки таблицы
@@ -145,15 +147,15 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
-        // Simple columns defined by the data contained in $dataProvider.
-        // Data from the model's column will be used.
+        // Обычные поля определенные данными содержащимися в $dataProvider.
+        // Будут использованы данные из полей модели.
         'id',
         'username',
-        // More complex one.
+        // Более сложный пример.
         [
-            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
+            'class' => 'yii\grid\DataColumn', // может быть опущено, поскольку является значением по умолчанию
             'value' => function ($data) {
-                return $data->name; // $data['name'] for array data, e.g. using SqlDataProvider.
+                return $data->name; // $data['name'] для массивов, например, при использовании SqlDataProvider.
             },
         ],
     ],
@@ -203,7 +205,7 @@ echo GridView::widget([
 
 #### DataColumn <span id="data-column"></span>
 
-[[yii\grid\DataColumn|Data column]] используется для отображения и сортировки данных. По умолчанию этот тип 
+[[yii\grid\DataColumn|Data column]] используется для отображения и сортировки данных. По умолчанию этот тип
 используется для всех колонок.
 
 Основная настройка этой колонки - это свойство [[yii\grid\DataColumn::format|format]]. Значение этого свойства посылается
@@ -220,18 +222,32 @@ echo GridView::widget([
             'attribute' => 'birthday',
             'format' => ['date', 'php:Y-m-d']
         ],
+        'created_at:datetime', // короткий вид записи формата
+        [
+            'label' => 'Education',
+            'attribute' => 'education',
+            'filter' => ['0' => 'Elementary', '1' => 'Secondary', '2' => 'Higher'],
+            'filterInputOptions' => ['prompt' => 'All educations', 'class' => 'form-control', 'id' => null]
+        ],
     ],
-]); 
+]);
 ```
 
 В вышеприведённом коде  `text` соответствует [[\yii\i18n\Formatter::asText()]]. В качестве первого аргумента для этого
 метода будет передаваться значение колонки. Во второй колонки описано  `date`, которая соответствует [[\yii\i18n\Formatter::asDate()]].
-В качестве первого аргумента, опять же, будет передаваться значение колонки, в то время как второй аргумент будет 
+В качестве первого аргумента, опять же, будет передаваться значение колонки, в то время как второй аргумент будет
 'php:Y-m-d'.
 
 Доступный список форматов смотрите в разделе [Форматирование данных](output-formatting.md).
 
 Для конфигурации колонок данных также доступен короткий вид записи, который описан в API документации для [[yii\grid\GridView::columns|колонок]].
+
+Используйте [[yii\grid\DataColumn::filter|filter]] и [[yii\grid\DataColumn::filterInputOptions|filterInputOptions]] для
+настройки HTML кода фильтра.
+
+По умолчанию заголовки колонок генерируются используя [[yii\data\Sort::link]]. Это можно изменить через свойство
+[[yii\grid\Column::header]]. Для изменения заголовка нужно задать [[yii\grid\DataColumn::$label]], как в
+примере выше. По умолчанию текст будет взят из модели данных. Подробное описание ищите в [[yii\grid\DataColumn::getHeaderCellLabel]].
 
 #### ActionColumn
 
@@ -250,27 +266,45 @@ echo GridView::widget([
 Доступные свойства для конфигурации:
 
 - [[yii\grid\ActionColumn::controller|controller]] это идентификатор контроллера, который должен обрабатывать действия.
- Если не установлен, то будет использоваться текущий активный контроллер. 
+ Если не установлен, то будет использоваться текущий активный контроллер.
 - [[yii\grid\ActionColumn::template|template]] определяет шаблон для каждой ячейки в колонке действия. Маркеры заключённые
  в фигурные скобки являются ID действием контроллера (также называются *именами кнопок* в контексте колонки действия).
  Они могут быть заменены, через свойство [[yii\grid\ActionColumn::$buttons|buttons]]. Например, маркер `{view}` будет
  заменён результатом из функции, определённой в `buttons['view']`. Если такая функция не может быть найдена, то маркер
- заменяется на пустую строку. По умолчанию шаблон имеет вид `{view} {update} {delete}`. 
+ заменяется на пустую строку. По умолчанию шаблон имеет вид `{view} {update} {delete}`.
 - [[yii\grid\ActionColumn::buttons|buttons]] массив из функций для отображения кнопок. Ключи массива представлены как
- имена кнопок(как описывалось выше), а значения представлены в качестве анонимных функций, которые выводят кнопки. Замыкания
+ имена кнопок (как описывалось выше), а значения представлены в качестве анонимных функций, которые выводят кнопки. Замыкания
  должны использоваться в следующем виде:
 
   ```php
   function ($url, $model, $key) {
-      // возвращаем HTML код для кнопки 
+      // возвращаем HTML код для кнопки
   }
   ```
-  где, `$url` - это URL, который будет повешен на как ссылка на кнопку, `$model` - это объект модели для текущей строки и
+  где, `$url` - это URL, который будет повешен как ссылка на кнопку, `$model` - это объект модели для текущей строки и
   `$key` - это ключ для модели из провайдера данных.
 
-- [[yii\grid\ActionColumn::urlCreator|urlCreator]] замыкание, которое создаёт URL используя информацию из модели. Вид 
+- [[yii\grid\ActionColumn::urlCreator|urlCreator]] замыкание, которое создаёт URL используя информацию из модели. Вид
  замыкания должен быть таким же как и в [[yii\grid\ActionColumn::createUrl()]]. Если свойство не задано, то URL для кнопки
  будет создана используя метод [[yii\grid\ActionColumn::createUrl()]].
+- [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] это массив условий видимости каждой из кнопок.
+ Ключи массива представлены как имена кнопок (как описывалось выше), а значения представлены как булево значение или
+ анонимная функция. Если имя кнопки не описано в массиве, она будет отображена по умолчанию.
+ Замыкания должны использоваться в следующем виде:
+
+ ```php
+ function ($model, $key, $index) {
+   return $model->status === 'editable'; // отображать ли кнопку
+ }
+ ```
+
+ Или вы можете передать булево значение:
+
+ ```php
+ [
+     'update' => \Yii::$app->user->can('update')
+ ]
+ ```
 
 #### CheckboxColumn
 
@@ -290,7 +324,7 @@ echo GridView::widget([
     ],
 ```
 
-Пользователи могут нажимать на флаги для выделения строк в таблице. Отмеченные строки могут быть обработаны с помощью 
+Пользователи могут нажимать на флаги для выделения строк в таблице. Отмеченные строки могут быть обработаны с помощью
 JavaScript кода:
 
 ```javascript
@@ -342,7 +376,7 @@ class PostSearch extends Post
 {
     public function rules()
     {
-        // only fields in rules() are searchable
+        // только поля определенные в rules() будут доступны для поиска
         return [
             [['id'], 'integer'],
             [['title', 'creation_date'], 'safe'],
@@ -363,12 +397,12 @@ class PostSearch extends Post
             'query' => $query,
         ]);
 
-        // load the search form data and validate
+        // загружаем данные формы поиска и производим валидацию
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
 
-        // adjust the query by adding the filters
+        // изменяем запрос добавляя в его фильтрацию
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['like', 'title', $this->title])
               ->andFilterWhere(['like', 'creation_date', $this->creation_date]);
@@ -403,13 +437,93 @@ echo GridView::widget([
 ]);
 ```
 
+### Отдельная форма фильтрации
+
+Фильтров в шапке GridView достаточно для большинства задач, но добавление отдельной формы фильтрации не представляет
+особой сложности. Она бывает полезна в случае необходимости фильтрации по полям, которые не отображаются в GridView
+или особых условий фильтрации, например по диапазону дат.
+
+Создайте частичное представление `_search.php` со следующим содержимым:
+
+```php
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $model app\models\PostSearch */
+/* @var $form yii\widgets\ActiveForm */
+?>
+
+<div class="post-search">
+    <?php $form = ActiveForm::begin([
+        'action' => ['index'],
+        'method' => 'get',
+    ]); ?>
+
+    <?= $form->field($model, 'title') ?>
+
+    <?= $form->field($model, 'creation_date') ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Искать', ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton('Сбросить', ['class' => 'btn btn-default']) ?>
+    </div>
+
+    <?php ActiveForm::end(); ?>
+</div>
+```
+
+и добавьте его отображение в `index.php` таким образом:
+
+```php
+<?= $this->render('_search', ['model' => $searchModel]) ?>
+```
+
+> Note: если вы используете Gii для генерации CRUD кода, отдельная форма фильтрации (`_search.php`)
+генерируется по умолчанию, но закомментирована в представлении `index.php`. Вам остается только раскомментировать
+эту строку и форма готова к использованию!
+
+Для фильтра по диапазону дат мы можем добавить дополнительные атрибуты `createdFrom` и `createdTo` в поисковую модель
+(их нет в соответствующей таблице модели):
+
+```php
+class PostSearch extends Post
+{
+    /**
+     * @var string
+     */
+    public $createdFrom;
+
+    /**
+     * @var string
+     */
+    public $createdTo;
+}
+```
+
+Расширим условия запроса в методе `search()`:
+
+```php
+$query->andFilterWhere(['>=', 'creation_date', $this->createdFrom])
+      ->andFilterWhere(['<=', 'creation_date', $this->createdTo]);
+```
+
+И добавим соответствующие поля в форму фильтрации:
+
+```php
+<?= $form->field($model, 'creationFrom') ?>
+
+<?= $form->field($model, 'creationTo') ?>
+```
 
 ### Отображение зависимых моделей
 
 Бывают случаи, когда необходимо в GridView вывести в колонке значения из зависимой модели для active records, например
 имя автора новости, вместо его `id`. Для этого необходимо задать [[yii\grid\GridView::$columns]] как `author.name`, если
-же модель `Post` содержит зависимость с именем `author` и имя автора хранится в атрибуте `name`. GridView отобразит 
-имя автора, но вот сортировка и фильтрации по этому полю будет не доступна. Необходимо дополнить некоторый функционал в 
+же модель `Post` содержит зависимость с именем `author` и имя автора хранится в атрибуте `name`. GridView отобразит
+имя автора, но вот сортировка и фильтрации по этому полю будет не доступна. Необходимо дополнить некоторый функционал в
 `PostSearch` модель, которая была упомянута в предыдущем разделе.
 
 Для включения сортировки по зависимой колонки необходимо присоединить зависимую таблицу и добавить правило в компонент
@@ -421,10 +535,10 @@ $dataProvider = new ActiveDataProvider([
     'query' => $query,
 ]);
 
-// join with relation `author` that is a relation to the table `users`
-// and set the table alias to be `author`
+// присоединяем зависимость `author` которая является связью с таблицей `users`
+// и устанавливаем алиас таблицы в значение `author`
 $query->joinWith(['author' => function($query) { $query->from(['author' => 'users']); }]);
-// enable sorting for the related column
+// добавляем сортировку по колонке из зависимости
 $dataProvider->sort->attributes['author.name'] = [
     'asc' => ['author.name' => SORT_ASC],
     'desc' => ['author.name' => SORT_DESC],
@@ -439,7 +553,7 @@ $dataProvider->sort->attributes['author.name'] = [
 ```php
 public function attributes()
 {
-    // add related fields to searchable attributes
+    // делаем поле зависимости доступным для поиска
     return array_merge(parent::attributes(), ['author.name']);
 }
 
@@ -458,11 +572,11 @@ public function rules()
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> Info: В коде, что выше, использует такая же строка, как и имя зависимости и псевдонима таблицы.
+> Info: В коде, что выше, используется такая же строка, как и имя зависимости и псевдонима таблицы.
 > Однако, когда ваш псевдоним и имя связи различаются, вы должны обратить внимание, где вы используете псевдоним,
 > а где имя связи. Простым правилом для этого является использование псевдонима в каждом месте, которое используется
 > для построения запроса к базе данных, и имя связи во всех других определениях, таких как `attributes()`, `rules()` и т.д.
-> 
+>
 > Например, если вы используете псевдоним `au` для связи с таблицей автора, то joinWith будет выглядеть так:
 >
 > ```php
@@ -497,7 +611,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 
 #### Использование SQL видов для вывода данных, их сортировки и фильтрации.
 
-Существует и другой подход, который быстре и более удобен - SQL виды. Например, если необходимо показать таблицу из 
+Существует и другой подход, который быстре и более удобен - SQL виды. Например, если необходимо показать таблицу из
 пользователей и их профилей, то можно выбрать такой путь:
 
 ```sql
@@ -507,7 +621,7 @@ CREATE OR REPLACE VIEW vw_user_info AS
     WHERE user.id = user_profile.user_id
 ```
 
-Теперь необходимо создать ActiveRecord, которая будет отображение данных из этого вида:
+Теперь вам необходимо создать ActiveRecord, через который будут доступны данные из вида выше:
 
 ```php
 
@@ -519,7 +633,7 @@ class UserView extends ActiveRecord
 {
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -532,30 +646,28 @@ class UserView extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            // define here your rules
+            // здесь определяйте ваши правила
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public static function attributeLabels()
+    public function attributeLabels()
     {
         return [
-            // define here your attribute labels
+            // здесь определяйте ваши метки атрибутов
         ];
     }
-
-
 }
 ```
 
-Полсе этого вы можете использовать UserView в модели поиска, без каких либо дополнительных условий по сортировки и фильтрации.
+После этого вы можете использовать UserView в модели поиска, без каких-либо дополнительных условий по сортировке и фильтрации.
 Все атрибуты будут работать из коробки. Но такая реализация имеет свои плюсы и минусы:
 
 - вам не надо определять условия сортировок и фильтраций. Всё работает из коробки;
@@ -568,11 +680,11 @@ class UserView extends ActiveRecord
 Вы можете использовать больше одной GridView на одной странице. Для этого нужно внести некоторые дополнительные настройки
 для того, чтобы они друг другу не мешали.
 При использовании нескольких экземпляров GridView вы должны настроить различные имена параметров для сортировки и ссылки
-для разбиения на страницы так, чтобы каждый GridView имел свою индивидуальный сортировку и разбиение на страницы.
+для разбиения на страницы так, чтобы каждый GridView имел свою индивидуальную сортировку и разбиение на страницы.
 Сделать это возможно через настройку [[yii\data\Sort::sortParam|sortParam]] и [[yii\data\Pagination::pageParam|pageParam]]
 свойств провайдеров данных [[yii\data\BaseDataProvider::$sort|sort]] и [[yii\data\BaseDataProvider::$pagination|pagination]]
 
-Допустим мы хотим список моделей `Post` и `User`, для которых мы уже подготовили провайдеры данных `$userProvider` и 
+Допустим мы хотим список моделей `Post` и `User`, для которых мы уже подготовили провайдеры данных `$userProvider` и
 `$postProvider`, тогда код будет выглядеть следующим образом:
 
 ```php
