@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Enh: Modified yii\web\XmlResponseFormatter to accept attributes for xml elements (codespede)
 - Bug #16006: Handle case when `X-Forwarded-Host` header have multiple hosts separated with a comma (pgaultier)
 - Bug #16010: Fixed `yii\filters\ContentNegotiator` behavior when GET parameters contain an array (rugabarbo)
 - Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
