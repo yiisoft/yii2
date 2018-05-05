@@ -1,18 +1,18 @@
-Models
+Model
 ======
 
-Models là phần trong kiến trúc [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Model là phần trong kiến trúc [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
 Là đối tượng đại diện cho phần dữ liệu, phương thức xử lý và nghiệp vụ logic.
 
 Bạn có thể tạo mới các lớp model bằng việc kế thừa từ lớp [[yii\base\Model]] hoặc các lớp con của nó. Lớp cơ sở
 [[yii\base\Model]] hỗ trợ nhiều tính năng như:
 
-* [Attributes](#attributes): đại diện cho các dữ liệu nghiệp vụ và có thể truy cập như các thuộc tính
+* [Thuộc tính (Attributes)](#attributes): đại diện cho các dữ liệu nghiệp vụ và có thể truy cập như các thuộc tính
   hoặc mảng các phần tử;
 * [Attribute labels](#attribute-labels): tên hiển thị cho các thuộc tính;
-* [Massive assignment](#massive-assignment): supports populating multiple attributes in a single step;
-* [Validation rules](#validation-rules): khai báo các quy tắc và xác thực dữ liệu được nhập vào;
-* [Data Exporting](#data-exporting): cho phép xuất dữ liệu dưới dạng mảng hoặc tuỳ chọn khác.
+* [Gán nhanh (Massive assignment)](#massive-assignment): hỗ trợ nhập dữ liệu cho thuộc tính trong một bước;
+* [Quy tắc xác nhận (Validation rules)](#validation-rules): khai báo các quy tắc và xác thực dữ liệu được nhập vào;
+* [Xuất dữ liệu (Data Exporting)](#data-exporting): cho phép xuất dữ liệu dưới dạng mảng hoặc tuỳ chọn khác.
 
 Lớp `Model` thường dựa trên lớp để thực hiện chức năng nâng cao, chẳng hạn [Active Record](db-active-record.md).
 Vui lòng tham khảo thêm tài liệu để biết thêm thông tin.
@@ -197,14 +197,14 @@ class User extends ActiveRecord
 > Lưu ý: Như phần trên và ví dụ vừa rồi, lớp Model được kế thừa từ lớp [[yii\db\ActiveRecord]]
   bởi vì lớp [Active Record](db-active-record.md) thường được sử dụng nhiều kịch bản.
 
-The `scenarios()` method returns an array whose keys are the scenario names and values the corresponding
-*active attributes*. An active attribute can be [massively assigned](#massive-assignment) and is subject
-to [validation](#validation-rules). In the above example, the `username` and `password` attributes are active
-in the `login` scenario; while in the `register` scenario, `email` is also active besides `username` and `password`.
+Phương thức `scenarios()` trả về một mảng có chứa các khóa là tên các kịch bản và các giá trị tương ứng là các  
+danh sách *thuộc tính được chọn*. An active attribute can be [massively assigned](#massive-assignment) và là đối tượng sẽ được
+dùng để [xác thực (validation)](#validation-rules). Chẳng hạn ở ví dụ trên, thuộc tính `username` và `password` sẽ được chọn
+ở kịch bản `login`; còn ở kịch bản `register`, sẽ có thêm thuộc tính `email` ngoài 2 thuộc tính `username` và `password`.
 
-The default implementation of `scenarios()` will return all scenarios found in the validation rule declaration
-method [[yii\base\Model::rules()]]. When overriding `scenarios()`, if you want to introduce new scenarios
-in addition to the default ones, you may write code like the following:
+Việc triển khai phương thức `scenarios()` mặc định sẻ trả về các kịch bản tìm thấy trong phương thức
+[[yii\base\Model::rules()]]. Khi khi đè phương thức `scenarios()`, nếu bạn muốn khai báo các kịch bản mới, ngoài các kịch bản mặc định
+in addition to the default ones, bạn có thể viết mã như sau:
 
 ```php
 namespace app\models;
@@ -226,42 +226,42 @@ class User extends ActiveRecord
 }
 ```
 
-The scenario feature is primarily used by [validation](#validation-rules) and [massive attribute assignment](#massive-assignment).
-You can, however, use it for other purposes. For example, you may declare [attribute labels](#attribute-labels)
-differently based on the current scenario.
+Xây dựng các kịch bản được dùng vào việc [xác thực](#validation-rules) và [massive attribute assignment](#massive-assignment).
+Tuy nhiên, bạn có thể dùng vào mục đích khác. Chẳng hạn, bạn có thể khai báo các [nhãn thuộc tính](#attribute-labels)
+khác nhau được dựa trên kịch bản hiện tại.
 
 
-## Validation Rules <span id="validation-rules"></span>
+## Các quy tắc xác nhận (Validation Rules) <span id="validation-rules"></span>
 
-When the data for a model is received from end users, it should be validated to make sure it satisfies
-certain rules (called *validation rules*, also known as *business rules*). For example, given a `ContactForm` model,
-you may want to make sure all attributes are not empty and the `email` attribute contains a valid email address.
-If the values for some attributes do not satisfy the corresponding business rules, appropriate error messages
-should be displayed to help the user to fix the errors.
+Khi dữ liệu cho model được chuyển lên từ người dùng cuối, dữ liệu này cần được xác thực để chắc chắn rằng dữ liệu này là hợp lệ
+ (được gọi là *quy tắc xác nhận*, có thể gọi *business rules*). Ví dụ, cho model `ContactForm`,
+bạn muốn tất cả các thuộc tính không được để trống và thuộc tính `email` phải là địa chỉ email hợp lệ.
+Nếu các giá trị cho các thuộc tính không được thỏa mãn với các quy tắc xác nhận, các thông báo lỗi sẽ được
+được hiển thị để giúp người dùng sửa lỗi.
 
-You may call [[yii\base\Model::validate()]] to validate the received data. The method will use
-the validation rules declared in [[yii\base\Model::rules()]] to validate every relevant attribute. If no error
-is found, it will return true. Otherwise, it will keep the errors in the [[yii\base\Model::errors]] property
-and return false. For example,
+Bạn có thể gọi phương thức [[yii\base\Model::validate()]] để xác thực các dữ liệu đã nhận. Phương thức sẽ dùng các quy tắc xác nhận
+được khai báo ở phương thức [[yii\base\Model::rules()]] để xác thực mọi thuộc tính liên quan. Nếu không có lỗi nào tìm thấy
+, sẽ trả về giá trị `true`. Nếu không thì, phương thức sẽ giữ các thông báo lỗi tại thuộc tính [[yii\base\Model::errors]]
+và trả kết quả`false`. Ví dụ,
 
 ```php
 $model = new \app\models\ContactForm;
 
-// populate model attributes with user inputs
+// gán các thuộc tính của model từ dữ liệu người dùng
 $model->attributes = \Yii::$app->request->post('ContactForm');
 
 if ($model->validate()) {
-    // all inputs are valid
+    // tất cả các dữ liệu nhập vào hợp lệ
 } else {
-    // validation failed: $errors is an array containing error messages
+    // xác nhận lỗi: biến $errors chứa mảng các nội dung thông báo lỗi
     $errors = $model->errors;
 }
 ```
 
 
-To declare validation rules associated with a model, override the [[yii\base\Model::rules()]] method by returning
-the rules that the model attributes should satisfy. The following example shows the validation rules declared
-for the `ContactForm` model:
+Các quy tắc xác nhận được gắn vào model, việc ghi đè phương thức [[yii\base\Model::rules()]] cùng với việc trả về
+có chứa các thuộc tính an toàn cần được xác thực. Ví dụ sau đây sẽ cho thấy các quy tắc xác nhận được khai báo cho model
+`ContactForm`:
 
 ```php
 public function rules()
@@ -276,40 +276,38 @@ public function rules()
 }
 ```
 
-A rule can be used to validate one or multiple attributes, and an attribute may be validated by one or multiple rules.
-Please refer to the [Validating Input](input-validation.md) section for more details on how to declare
-validation rules.
+Mỗi quy tắc được dùng để xác nhận một hoặc nhiều các thuộc tính, và một thuộc tính có thể được xác nhận một hoặc nhiều quy tắc.
+Vui lòng tham khảo mục [Xác nhận đầu vào](input-validation.md) để biết thêm chi tiết về cách khai báo các quy tắc xác nhận.
 
-Sometimes, you may want a rule to be applied only in certain [scenarios](#scenarios). To do so, you can
-specify the `on` property of a rule, like the following:
+Đôi khi, bạn muốn các quy tắc chỉ được áp dụng chỉ trong một số [kịch bản](#scenarios). Để làm như vậy, bạn có thể
+thêm thông tin thuộc tính `on` ở mỗi quy tắc, giống như sau:
 
 ```php
 public function rules()
 {
     return [
-        // username, email and password are all required in "register" scenario
+        // thuộc tính username, email và password cần được nhập ở kịch bản "register"
         [['username', 'email', 'password'], 'required', 'on' => self::SCENARIO_REGISTER],
 
-        // username and password are required in "login" scenario
+        // username và password cần được nhập ở kịch bản "login"
         [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
     ];
 }
 ```
 
-If you do not specify the `on` property, the rule would be applied in all scenarios. A rule is called
-an *active rule* if it can be applied in the current [[yii\base\Model::scenario|scenario]].
+Nếu bạn không chỉ định thuộc tính `on`, quy tắc sẽ áp dụng trong tất cả các kịch bản. Một quy tắc được gọi
+một *quy tắc hoạt động* nếu nó được áp dụng với kịch bản hiện tại [[yii\base\Model::scenario|scenario]].
 
-An attribute will be validated if and only if it is an active attribute declared in `scenarios()` and
-is associated with one or multiple active rules declared in `rules()`.
+Một thuộc tính được xác nhận nếu và chỉ nếu nó là thuộc tính được kích hoạt với khai báo tại phương thức `scenarios()` và
+được liên kết với một hoặc nhiều quy tắc được khai báo ở phương thức `rules()`.
 
 
-## Massive Assignment <span id="massive-assignment"></span>
+## Gán nhanh (Massive Assignment) <span id="massive-assignment"></span>
 
-Massive assignment is a convenient way of populating a model with user inputs using a single line of code.
-It populates the attributes of a model by assigning the input data directly to the [[yii\base\Model::$attributes]]
-property. The following two pieces of code are equivalent, both trying to assign the form data submitted by end users
-to the attributes of the `ContactForm` model. Clearly, the former, which uses massive assignment, is much cleaner
-and less error prone than the latter:
+Gán nhanh là cách tiện lợi cho việc nhập dữ liệu vào model từ người dùng với một dòng mã.
+Nó nhập vào các thuộc tính của model bằng việc gán dữ liệu nhập vào qua thuộc tính [[yii\base\Model::$attributes]]
+. 2 đoạn mã sau hoạt động giống nhau , cả 2 đều lấy dữ liệu trong form gửi lên từ người dùng 
+vào các thuộc tính của model `ContactForm`. Nhanh gọn, cách trên, sẽ dùng gán nhanh, mã của bạn trông sạch và ít lỗi hơn cách sau đó:
 
 ```php
 $model = new \app\models\ContactForm;
@@ -326,13 +324,13 @@ $model->body = isset($data['body']) ? $data['body'] : null;
 ```
 
 
-### Safe Attributes <span id="safe-attributes"></span>
+### Thuộc tính an toàn (Safe Attributes) <span id="safe-attributes"></span>
 
-Massive assignment only applies to the so-called *safe attributes* which are the attributes listed in
-[[yii\base\Model::scenarios()]] for the current [[yii\base\Model::scenario|scenario]] of a model.
-For example, if the `User` model has the following scenario declaration, then when the current scenario
-is `login`, only the `username` and `password` can be massively assigned. Any other attributes will
-be kept untouched.
+Gán nhanh chỉ gán dữ liệu cho những thuộc tính gọi là  *thuộc tính an toàn (safe attributes)* đó là các thuộc tính được liệt kê trong phương thức
+[[yii\base\Model::scenarios()]] cho thuộc tính [[yii\base\Model::scenario|scenario]] của model.
+Chẳng hạn, nếu model `User` có các kịch bản mô tả như sau, tiếp đến kịch bản
+`login` đang được chọn, thì chỉ thuộc tính `username` và `password` có thể được gán nhanh. Bất kỳ các thuộc tính khác
+sẽ được giữ nguyên.
 
 ```php
 public function scenarios()
@@ -344,18 +342,18 @@ public function scenarios()
 }
 ```
 
-> Info: The reason that massive assignment only applies to safe attributes is because you want to
-  control which attributes can be modified by end user data. For example, if the `User` model
-  has a `permission` attribute which determines the permission assigned to the user, you would
-  like this attribute to be modifiable by administrators through a backend interface only.
+> Thông tin: Lý do việc gán nhanh chỉ gán dữ liệu cho các thuộc tính an toàn là bởi vì bạn muốn kiểm soát
+  những thuộc tính có thể được thay đổi bởi người dùng. Chẳng hạn, nếu model `User` 
+  có thuộc tính `permission` nhằm xác định các quyền hạn của người dùng, bạn chỉ muốn
+  thuộc tính này chỉ được thay đổi bởi quản trị viên thông qua giao diện phụ trợ.
 
-Because the default implementation of [[yii\base\Model::scenarios()]] will return all scenarios and attributes
-found in [[yii\base\Model::rules()]], if you do not override this method, it means an attribute is safe as long
-as it appears in one of the active validation rules.
+Bởi vì mặc định phương thức [[yii\base\Model::scenarios()]] sẽ trả về tất cả các kịch bản và thuộc tính
+nằm trong phương thức [[yii\base\Model::rules()]], nếu bạn không ghi đè phương thức này, có nghĩa là một thuộc tính là an toàn
+miễn là có khai báo ở một trong các quy tắc xác nhận.
 
-For this reason, a special validator aliased `safe` is provided so that you can declare an attribute
-to be safe without actually validating it. For example, the following rules declare that both `title`
-and `description` are safe attributes.
+Vì lý do này, bí danh `safe` được đưa ra bạn có thể khai báo các thuộc tính an toàn
+mà không thực sự xác nhận nó. Chẳng hạn, các quy tắc sau đây khai báo thuộc tính `title`
+và `description` là thuộc tính an toàn.
 
 ```php
 public function rules()
@@ -367,12 +365,12 @@ public function rules()
 ```
 
 
-### Unsafe Attributes <span id="unsafe-attributes"></span>
+### Thuộc tính không an toàn (Unsafe Attributes) <span id="unsafe-attributes"></span>
 
-As described above, the [[yii\base\Model::scenarios()]] method serves for two purposes: determining which attributes
-should be validated, and determining which attributes are safe. In some rare cases, you may want to validate
-an attribute but do not want to mark it safe. You can do so by prefixing an exclamation mark `!` to the attribute
-name when declaring it in `scenarios()`, like the `secret` attribute in the following:
+Như mô tả trên, khai báo phương thức [[yii\base\Model::scenarios()]] có 2 mục đích: liệt kê thuộc tính cần được xác nhận
+, và xác định các thuộc tính là an toàn. Trong một số trường hợp khác, bạn muốn xác nhận thuộc tính nhưng
+không muốn đánh dấu là an toàn. bạn có thể thực hiện bằng việc đặt dấu chấm than `!` vào tên thuộc tính
+khi khai báo tại phương thức `scenarios()`, giốn như thuộc tính `secret` như sau:
 
 ```php
 public function scenarios()
@@ -383,24 +381,40 @@ public function scenarios()
 }
 ```
 
-When the model is in the `login` scenario, all three attributes will be validated. However, only the `username`
-and `password` attributes can be massively assigned. To assign an input value to the `secret` attribute, you
-have to do it explicitly as follows,
+Khi model đang ở kịch bản `login`, cả 3 thuộc tính sẽ được xác nhận. Tuy nhiên, chỉ có thuộc tính `username`
+và `password` được gán nhanh. Để gán giá trị cho thuộc tính `secret`, bạn
+cần được gán trực tiếp như sau,
 
 ```php
 $model->secret = $secret;
 ```
 
+Điều tương tự có thể được thực hiện trong phương thức `rules()`:
 
-## Data Exporting <span id="data-exporting"></span>
+```php
+public function rules()
+{
+    return [
+        [['username', 'password', '!secret'], 'required', 'on' => 'login']
+    ];
+}
+```
 
-Models often need to be exported in different formats. For example, you may want to convert a collection of
-models into JSON or Excel format. The exporting process can be broken down into two independent steps.
-In the first step, models are converted into arrays; in the second step, the arrays are converted into
-target formats. You may just focus on the first step, because the second step can be achieved by generic
-data formatters, such as [[yii\web\JsonResponseFormatter]].
+Trong trường hợp này các thuộc tính `username`, `password` và `secret` là yêu cầu nhập, nhưng thuộc tính `secret` phải cần được gán trực tiếp.
 
-The simplest way of converting a model into an array is to use the [[yii\base\Model::$attributes]] property.
+
+## Xuất dữ liệu (Data Exporting) <span id="data-exporting"></span>
+
+Các model thường được cần trích xuất ra các định dạng khác nhau. Chẳng hạn, bạn cần chuyển dữ liệu sang của
+models sang định dạng JSON hoặc Excel. Quá trình xuất có thể được chia nhỏ thành hai bước độc lập:
+
+- models cần được chuyển sang định dạng mảng;
+- các mảng cần được chuyển đổi thành các định dạng cần chuyển.
+
+Bạn chỉ cần tập trung vào bước đầu tiên, bởi vì bước thứ 2 có thể được thực hiện bởi các trình định dạng dữ liệu
+, chẳng hạn như [[yii\web\JsonResponseFormatter]].
+
+Các đơn giản nhất để chuyển đổi model sang dạng mảng là sử dụng thuộc tính [[yii\base\Model::$attributes]].
 For example,
 
 ```php
@@ -408,60 +422,59 @@ $post = \app\models\Post::findOne(100);
 $array = $post->attributes;
 ```
 
-By default, the [[yii\base\Model::$attributes]] property will return the values of *all* attributes
-declared in [[yii\base\Model::attributes()]].
+Bởi mặc định, thuộc tính [[yii\base\Model::$attributes]] sẽ trả về các giá trị của *tất cả* các thuộc tính
+được khai báo trong phương thức [[yii\base\Model::attributes()]].
 
-A more flexible and powerful way of converting a model into an array is to use the [[yii\base\Model::toArray()]]
-method. Its default behavior is the same as that of [[yii\base\Model::$attributes]]. However, it allows you
-to choose which data items, called *fields*, to be put in the resulting array and how they should be formatted.
-In fact, it is the default way of exporting models in RESTful Web service development, as described in
-the [Response Formatting](rest-response-formatting.md).
+Còn một cách linh hoạt và tiện lợi hơn trong việc chuyển đổi model sang định dạng mảng là sử dụng phương thức [[yii\base\Model::toArray()]]
+. Cách chuyển đổi cũng tương tự như trong cách của thuộc tính [[yii\base\Model::$attributes]]. Tuy nhiên, nó cho phép bạn chọn các dữ liệu
+, được gọi là *fields*, được đặt trong mảng kết quả và chúng được định dạng thế nào.
+Trong thực tế, đó là cách trích xuất mặc định của các model ở việc phát triển các dịch vụ RESTful Web, như được mô tả trong
+mục [Response Formatting](rest-response-formatting.md).
 
 
-### Fields <span id="fields"></span>
+### Các trường (Fields) <span id="fields"></span>
 
-A field is simply a named element in the array that is obtained by calling the [[yii\base\Model::toArray()]] method
-of a model.
+Một trường đơn giản là tên của thành phần thu được nằm trong mảng khi gọi phương thức [[yii\base\Model::toArray()]]
+của model.
 
-By default, field names are equivalent to attribute names. However, you can change this behavior by overriding
-the [[yii\base\Model::fields()|fields()]] and/or [[yii\base\Model::extraFields()|extraFields()]] methods. Both methods
-should return a list of field definitions. The fields defined by `fields()` are default fields, meaning that
-`toArray()` will return these fields by default. The `extraFields()` method defines additionally available fields
-which can also be returned by `toArray()` as long as you specify them via the `$expand` parameter. For example,
-the following code will return all fields defined in `fields()` and the `prettyName` and `fullAddress` fields
-if they are defined in `extraFields()`.
+Mặc định, tên trường sẽ tương đương với tên thuộc tính. Tuy nhiên, bạn có thể thay đổi bằng việc ghi đè
+qua phương thức [[yii\base\Model::fields()|fields()]] và/hoặc phương thức [[yii\base\Model::extraFields()|extraFields()]]. Cả 2 phương thức
+trả về danh sách các khai báo trường. Các trường được định nghĩa bởi phương thức `fields()` là các trường mặc định, nghĩa là phương thức 
+`toArray()` sẽ trả về những trường mặc định. Phương thức `extraFields()` sẽ khai báo thêm các trường bổ sung có thể được trả về
+bởi phương thức `toArray()` miễn là bạn chỉ định chugns qua tham số `$expand`. Chẳng hạn,
+đoạn mã sau sẽ trả về các trường được định nghĩa trong phương thức `fields()` và 2 trường `prettyName` và `fullAddress`
+nếu chúng được định nghĩa trong phương thức `extraFields()`.
 
 ```php
 $array = $model->toArray([], ['prettyName', 'fullAddress']);
 ```
 
-You can override `fields()` to add, remove, rename or redefine fields. The return value of `fields()`
-should be an array. The array keys are the field names, and the array values are the corresponding
-field definitions which can be either property/attribute names or anonymous functions returning the
-corresponding field values. In the special case when a field name is the same as its defining attribute
-name, you can omit the array key. For example,
+Bạn có thể ghi đè phương thức `fields()` để thêm, xóa, cập nhật hoặc định nghĩa lại các trường. Phương thức `fields()`
+sẽ trả về dữ liệu dạng mảng. Mảng này có các khóa là tên các trường, và các giá trị của mảng tương ứng
+với các trường đã định nghĩa giá trị có thể là tên các thuộc tính/biến hoặc một hàm trả về các giá trị trường tương ứng
+. Trong trường hợp đặc biệt khi tên trường giống với tên thuộc tính xác định của nó, bạn có thể bỏ qua khóa mảng. Ví dụ,
 
 ```php
-// explicitly list every field, best used when you want to make sure the changes
-// in your DB table or model attributes do not cause your field changes (to keep API backward compatibility).
+// liệt kê rõ ràng các trường, sử dụng tốt nhất khi bạn nắm được các thay đổi
+// trong bản CSDL hoặc các thuộc tính của model, không gây ra sự thay đổi của trường (để giữ tương thích với API).
 public function fields()
 {
     return [
-        // field name is the same as the attribute name
+        // tên trường giống với tên thuộc tính
         'id',
 
-        // field name is "email", the corresponding attribute name is "email_address"
+        // tên trường là "email", tương ứng với tên thuộc tính là "email_address"
         'email' => 'email_address',
 
-        // field name is "name", its value is defined by a PHP callback
+        // tên trường là "name", giá trị được định nghĩa bởi hàm
         'name' => function () {
             return $this->first_name . ' ' . $this->last_name;
         },
     ];
 }
 
-// filter out some fields, best used when you want to inherit the parent implementation
-// and blacklist some sensitive fields.
+// lọc ra một số trường, nên sử dụng khi bạn muốn kế thừa các trường
+// thêm vào blacklist một số trường không cần thiết.
 public function fields()
 {
     $fields = parent::fields();
@@ -473,44 +486,44 @@ public function fields()
 }
 ```
 
-> Warning: Because by default all attributes of a model will be included in the exported array, you should
-> examine your data to make sure they do not contain sensitive information. If there is such information,
-> you should override `fields()` to filter them out. In the above example, we choose
-> to filter out `auth_key`, `password_hash` and `password_reset_token`.
+> Cảnh báo: Bởi vì theo mặc định tất cả các thuộc tính của model sẽ liệt kê trong mảng trích xuất, bạn nên
+> kiểm tra dữ liệu của bạn để chắc chắn rằng chúng không chứa các thông tin không cần thiết. Nếu có thông tin như vậy,
+> bạn nên ghi đè phương thức `fields()` để lọc chúng ra. Tại ví dụ trên, chúng ta chọn
+> các trường để lọc ra là `auth_key`, `password_hash` và `password_reset_token`.
 
 
-## Best Practices <span id="best-practices"></span>
+## Bài thực hành <span id="best-practices"></span>
 
-Models are the central places to represent business data, rules and logic. They often need to be reused
-in different places. In a well-designed application, models are usually much fatter than
+Các model là phần trung tâm đại diện cho tầng dữ liệu, chứa các quy tắc và logic. Model thường được tái sử dụng
+tại một số nơi khác nhau. Với một ứng dụng được thiết kế tốt, thông thường các model được chú trọng hơn 
 [controllers](structure-controllers.md).
 
-In summary, models
+Tổng hợp mục, models
 
-* may contain attributes to represent business data;
-* may contain validation rules to ensure the data validity and integrity;
-* may contain methods implementing business logic;
-* should NOT directly access request, session, or any other environmental data. These data should be injected
-  by [controllers](structure-controllers.md) into models;
-* should avoid embedding HTML or other presentational code - this is better done in [views](structure-views.md);
-* avoid having too many [scenarios](#scenarios) in a single model.
+* có thể chứa các thuộc tính đại diện cho tầng dữ liệu (business data);
+* có thể chứa các quy tắc xác nhận để đảm bảo tính hợp lệ và tính toàn vẹn của dữ liệu;;
+* có thể chứa các phương thức tại tầng logic (business logic);
+* không nên trực tiếp xử lý các yêu cầu, session, hoặc bất cứ dữ liệu môi trường. Những dữ liệu này nên được tiến hành xử lý
+  bởi [controllers](structure-controllers.md) vào model;
+* tránh việc nhúng mã HTML hoặc các dữ liệu hiển thị - mã này nên được đặt tại [views](structure-views.md);
+* tránh có quá nhiều kịch bản [scenarios](#scenarios) trong một model.
 
-You may usually consider the last recommendation above when you are developing large complex systems.
-In these systems, models could be very fat because they are used in many places and may thus contain many sets
-of rules and business logic. This often ends up in a nightmare in maintaining the model code
-because a single touch of the code could affect several different places. To make the model code more maintainable,
-you may take the following strategy:
+Bạn cần có sự xem xét các đề nghị trên mỗi khi bạn triển khai hệ thống lớn và phức tạp.
+Trong các hệ thống này, cácmodel cần được chú trọng bởi vì chúng được sử dụng ở nhiều nơi và có thể chứa nhiều các quy tắc
+và các xử lý nghiệp vụ. Điều này có sự ảnh hưởng tại tiến trình bảo trì mỗi thay đổi mã của bạn
+có thể ảnh hưởng tới nhiều vị trí khác nhau. Để mã code của bạn dễ được bảo trì hơn,
+bạn có thể được thực hiện các chiến lược sau:
 
-* Define a set of base model classes that are shared by different [applications](structure-applications.md) or
-  [modules](structure-modules.md). These model classes should contain minimal sets of rules and logic that
-  are common among all their usages.
-* In each [application](structure-applications.md) or [module](structure-modules.md) that uses a model,
-  define a concrete model class by extending from the corresponding base model class. The concrete model classes
-  should contain rules and logic that are specific for that application or module.
+* Định nghĩa tập các lớp model cơ sở (base model) lớp này được chia sẻ qua các [ứng dụng](structure-applications.md) hoặc
+  [modules](structure-modules.md) khác nhau. Các model này có thể chứa tập các quy tắc và logic có thể được
+  dùng rộng rãi ở các lớp cần được sử dụng.
+* Tại mỗi [ứng dụng](structure-applications.md) hoặc [module](structure-modules.md) có dùng model,
+  ta định nghĩa lớp khung model bằng việc kế thừa từ lớp model cơ sở. Lớp khung model này
+  có thể chứa các quy tắc logic được mô tả cụ thể chi ứng dụng hoặc module này.
 
-For example, in the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), you may define a base model
-class `common\models\Post`. Then for the front end application, you define and use a concrete model class
-`frontend\models\Post` which extends from `common\models\Post`. And similarly for the back end application,
-you define `backend\models\Post`. With this strategy, you will be sure that the code in `frontend\models\Post`
-is only specific to the front end application, and if you make any change to it, you do not need to worry if
-the change may break the back end application.
+Ví dụ, với [Mẫu Dự án Advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), bạn có thể định nghĩa lớp cơ sở model
+là `common\models\Post`. Tiếp đến tại ứng dụng front end, bạn định nghĩa lớp khung là
+`frontend\models\Post` lớp này kế thừa từ lớp `common\models\Post`. Và tương tự cho ứng dụng back end,
+bạn định nghĩa model `backend\models\Post`. Với cách giải quyết này, bạn sẽ chắc chắn rằng mã của bạn tại model `frontend\models\Post`
+chỉ dùng cho ứng dụng front end, và nếu bạn thực hiện với bất kỳ thay đổi nào, bạn không cần lo lắng về
+việc thay đổi này có ảnh hưởng tới ứng dụng back end.
