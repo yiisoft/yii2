@@ -612,8 +612,8 @@ class BaseInflector
     /**
      * The same as built-in `ucfirst`, but unicode-safe
      *
-     * @param $string
-     * @param $encoding
+     * @param string $string
+     * @param string $encoding
      * @return string
      */
     private static function mb_ucfirst($string, $encoding)
