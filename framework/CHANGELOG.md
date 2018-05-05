@@ -16,7 +16,7 @@ Yii Framework 2 Change Log
 - Bug #16091: Make `yii\test\InitDbFixture` work with non-SQL DBMS (cebe)
 - Bug #16184: Fixed `yii\base\Widget` to access `stack` property with `self` instead of `static` (yanggs07)
 - Bug #16039: Fixed implicit conversion from `char` to `varbinnary` in MSSQL (vsivsivsi)
-- Bug #16191: Fixed `yii\helpers\Inflector::camel2words()` to work with UTF-8 (silverfire)
+- Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
 
 
 2.0.15.1 March 21, 2018
