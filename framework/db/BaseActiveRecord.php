@@ -458,6 +458,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function populateRelation($name, $records)
     {
+        foreach ($this->_relationsDependencies as &$relationNames) {
+            unset($relationNames[$name]);
+        }
+
         $this->_related[$name] = $records;
     }
 

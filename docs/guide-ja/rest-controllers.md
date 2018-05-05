@@ -1,12 +1,14 @@
 コントローラ
 ============
 
-リソース・クラスを作成して、リソース・データをどのようにフォーマットすべきかを指定したら、次は、RESTful API を通じてエンド・ユーザにリソースを公開するコントローラ・アクションを作成します。
+リソース・クラスを作成して、リソース・データをどのようにフォーマットすべきかを指定したら、
+次は、RESTful API を通じてエンド・ユーザにリソースを公開するコントローラ・アクションを作成します。
 
 Yii は、RESTful アクションを作成する仕事を簡単にするための二つの基底コントローラ・クラスを提供しています。
 すなわち、[[yii\rest\Controller]] と [[yii\rest\ActiveController]] です。
 二つのコントローラの違いは、後者は [アクティブ・レコード](db-active-record.md) として表現されるリソースの扱いに特化した一連のアクションをデフォルトで提供する、という点にあります。
-従って、あなたが [アクティブ・レコード](db-active-record.md) を使っていて、提供される組み込みのアクションに満足できるのであれば、コントローラ・クラスを [[yii\rest\ActiveController]] から拡張することを検討すると良いでしょう。
+従って、あなたが [アクティブ・レコード](db-active-record.md) を使っていて、提供される組み込みのアクションに満足できるのであれば、
+コントローラ・クラスを [[yii\rest\ActiveController]] から拡張することを検討すると良いでしょう。
 そうすれば、最小限のコードで強力な RESTful API を作成することが出来ます。
 
 [[yii\rest\Controller]] と [[yii\rest\ActiveController]] は、ともに、下記の機能を提供します。
@@ -25,12 +27,14 @@ Yii は、RESTful アクションを作成する仕事を簡単にするため�
 
 ## コントローラ・クラスを作成する <span id="creating-controller"></span>
 
-新しいコントローラ・クラスを作成する場合、コントローラ・クラスの命名規約は、リソースの型の名前を単数形で使う、というものです。
+新しいコントローラ・クラスを作成する場合、コントローラ・クラスの命名規約は、
+リソースの型の名前を単数形で使う、というものです。
 例えば、ユーザの情報を提供するコントローラは `UserController` と名付けることが出来ます。
 
 新しいアクションを作成する仕方はウェブ・アプリケーションの場合とほぼ同じです。
 唯一の違いは、`render()` メソッドを呼んでビューを使って結果を表示する代りに、RESTful アクションの場合はデータを直接に返す、という点です。
-[[yii\rest\Controller::serializer|シリアライザ]] と [[yii\web\Response|レスポンス・オブジェクト]] が、元のデータからリクエストされた形式への変換を処理します。
+[[yii\rest\Controller::serializer|シリアライザ]] と [[yii\web\Response|レスポンス・オブジェクト]] が、
+元のデータからリクエストされた形式への変換を処理します。
 例えば、
 
 ```php
@@ -71,14 +75,15 @@ public function behaviors()
 }
 ```
 
-
 ### CORS <span id="cors"></span>
 
 コントローラに [CORS (クロス・オリジン・リソース共有)](structure-filters.md#cors) フィルタを追加するのは、上記の他のフィルタを追加するのより、若干複雑になります。
 と言うのは、CORS フィルタは認証メソッドより前に適用されなければならないため、他のフィルタとは少し異なるアプローチが必要だからです。
 また、ブラウザが認証クレデンシャルを送信する必要なく、リクエストが出来るかどうかを前もって安全に判断できるように、
-[CORS プリフライト・リクエスト](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests) の認証を無効にする必要もあります。
-下記のコードは、[[yii\rest\ActiveController]] を拡張した既存のコントローラに [[yii\filters\Cors]] フィルタを追加するのに必要なコードを示しています。
+[CORS プリフライト・リクエスト](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests)
+の認証を無効にする必要もあります。
+下記のコードは、[[yii\rest\ActiveController]] を拡張した既存のコントローラに
+[[yii\filters\Cors]] フィルタを追加するのに必要なコードを示しています。
 
 ```php
 use yii\filters\auth\HttpBasicAuth;
@@ -108,7 +113,8 @@ public function behaviors()
 
 ## `ActiveController` を拡張する <span id="extending-active-controller"></span>
 
-コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソース・クラスの名前を [[yii\rest\ActiveController::modelClass|modelClass]] プロパティにセットしなければなりません。
+コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソース・クラスの名前を
+[[yii\rest\ActiveController::modelClass|modelClass]] プロパティにセットしなければなりません。
 リソース・クラスは [[yii\db\ActiveRecord]] から拡張しなければなりません。
 
 
@@ -124,8 +130,7 @@ public function behaviors()
 * [[yii\rest\OptionsAction|options]]: サポートされている HTTP メソッドを返す。
 
 これらのアクションは全て [[yii\rest\ActiveController::actions()|actions()]] メソッドによって宣言されます。
-`actions()` メソッドをオーバーライドすることによって、これらのアクションを構成したり、そのいくつかを無効化したりすることが出来ます。
-例えば、
+`actions()` メソッドをオーバーライドすることによって、これらのアクションを構成したり、そのいくつかを無効化したりすることが出来ます。例えば、
 
 ```php
 public function actions()
@@ -152,7 +157,8 @@ public function prepareDataProvider()
 
 ### アクセス・チェックを実行する <span id="performing-access-check"></span>
 
-RESTful API によってリソースを公開するときには、たいてい、現在のユーザがリクエストしているリソースにアクセスしたり操作したりする許可を持っているか否かをチェックする必要があります。
+RESTful API によってリソースを公開するときには、たいてい、
+現在のユーザがリクエストしているリソースにアクセスしたり操作したりする許可を持っているか否かをチェックする必要があります。
 これは、[[yii\rest\ActiveController]] を使う場合は、[[yii\rest\ActiveController::checkAccess()|checkAccess()]] メソッドを次のようにオーバーライドすることによって出来ます。
 
 ```php
