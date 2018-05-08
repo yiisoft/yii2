@@ -275,8 +275,9 @@ class View extends Component implements DynamicContentAwareInterface
 
     /**
      * @return string|bool the requested view currently being rendered. False if no view file is being rendered.
+     * @since 2.0.16
      */
-    public function getRequestedViewFile()
+    protected function getRequestedViewFile()
     {
         return empty($this->_viewFiles) ? false : end($this->_viewFiles)['requested'];
     }
