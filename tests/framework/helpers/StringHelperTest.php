@@ -16,6 +16,7 @@ use yiiunit\TestCase;
  */
 class StringHelperTest extends TestCase
 {
+
     protected function setUp()
     {
         parent::setUp();
@@ -398,5 +399,49 @@ class StringHelperTest extends TestCase
     public function testMatchWildcard($pattern, $string, $expectedResult, $options = [])
     {
         $this->assertSame($expectedResult, StringHelper::matchWildcard($pattern, $string, $options));
+    }
+
+    public function dataProviderMb_ucfirst()
+    {
+        return [
+            ['foo', 'Foo'],
+            ['foo bar', 'Foo bar'],
+            ['👍🏻 foo bar', '👍🏻 foo bar'],
+            ['', ''],
+            [null, ''],
+            ['здесь我 multibyte我 строка', 'Здесь我 multibyte我 строка'],
+        ];
+    }
+
+    /**
+     * @param string $string
+     * @param string $expectedResult
+     * @dataProvider dataProviderMb_ucfirst
+     */
+    public function testMb_ucfirst($string, $expectedResult)
+    {
+        $this->assertSame($expectedResult, StringHelper::mb_ucfirst($string));
+    }
+
+    public function dataProviderMb_ucwords()
+    {
+        return [
+            ['foo', 'Foo'],
+            ['foo bar', 'Foo Bar'],
+            ['👍🏻 foo bar', '👍🏻 Foo Bar'],
+            ['', ''],
+            [null, ''],
+            ['здесь我 multibyte我 строка', 'Здесь我 Multibyte我 Строка'],
+        ];
+    }
+
+    /**
+     * @param string $string
+     * @param string $expectedResult
+     * @dataProvider dataProviderMb_ucwords
+     */
+    public function testMb_ucwords($string, $expectedResult)
+    {
+        $this->assertSame($expectedResult, StringHelper::mb_ucwords($string));
     }
 }
