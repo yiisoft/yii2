@@ -333,7 +333,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         try {
             return $this->__get($name) !== null;
-        } catch ($t) {
+        } catch (\Throwable $t) {
+            return false;
+        } catch (\Exception $e) {
             return false;
         }
     }
