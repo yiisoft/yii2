@@ -1803,7 +1803,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function testIssetException()
     {
         $cat = new Cat();
-        $this->assertFalse($cat->exception);
+        $this->assertFalse(isset($cat->exception));
     }
 
     /**
@@ -1812,7 +1812,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function testIssetThrowable()
     {
         $cat = new Cat();
-        $this->assertFalse($cat->throwable);
+        $this->assertFalse(isset($cat->throwable));
 
     }
 }
