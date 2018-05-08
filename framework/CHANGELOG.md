@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #16184: Fixed `yii\base\Widget` to access `stack` property with `self` instead of `static` (yanggs07)
 - Bug #16039: Fixed implicit conversion from `char` to `varbinnary` in MSSQL (vsivsivsi)
 - Bug #14636: Views can now use relative paths even when using themed views (sammousa)
+- Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
 
 
 2.0.15.1 March 21, 2018
