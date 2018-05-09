@@ -55,7 +55,7 @@ use yii\validators\NumberValidator;
  * @since 2.0.16
  * @see \yii\db\BaseActiveRecord::optimisticLock() for details on how to enable optimistic lock.
  */
-class OptimisticLockBehavior extends \yii\behaviors\AttributeBehavior
+class OptimisticLockBehavior extends AttributeBehavior
 {
     /**
      * {@inheritdoc}
