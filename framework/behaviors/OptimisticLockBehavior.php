@@ -102,6 +102,7 @@ class OptimisticLockBehavior extends \yii\behaviors\AttributeBehavior
      * Returns the column name to hold the version value as defined in [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]].
      * @return string the property name.
      * @throws InvalidCallException if [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]] is not properly configured.
+     * @since 2.0.16
      */
     protected function getLockAttribute()
     {
@@ -143,6 +144,7 @@ class OptimisticLockBehavior extends \yii\behaviors\AttributeBehavior
      * $model->upgrade();
      * ```
      * @throws InvalidCallException if owner is a new record.
+     * @since 2.0.16
      */
     public function upgrade()
     {
