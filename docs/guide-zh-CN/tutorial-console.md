@@ -203,7 +203,8 @@ class HelloController extends Controller
         return ['m' => 'message'];
     }
 
-    public function actionIndex(){
+    public function actionIndex()
+    {
         echo $this->message;
     }
 }
