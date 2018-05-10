@@ -192,20 +192,19 @@ use yii\console\Controller;
 class HelloController extends Controller
 {
     public $message;
-    
-    public function options()
+
+    public function options($actionID)
     {
         return ['message'];
     }
-    
+
     public function optionAliases()
     {
         return ['m' => 'message'];
     }
-    
-    public function actionIndex()
-    {
-        echo $message . "\n";
+
+    public function actionIndex(){
+        echo $this->message;
     }
 }
 ```
