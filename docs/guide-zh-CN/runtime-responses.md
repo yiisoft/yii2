@@ -1,23 +1,22 @@
 响应
 =========
 
-当应用完成处理一个[请求](runtime-requests.md)后, 会生成一个[[yii\web\Response|response]]响应对象并发送给终端用户
-响应对象包含的信息有HTTP状态码，HTTP头和主体内容等, 
-网页应用开发的最终目的本质上就是根据不同的请求构建这些响应对象。
+当一个应用在处理完一个[请求](runtime-requests.md)后, 这个应用会生成一个[[yii\web\Response|response]]响应对象并把这个响应对象发送给终端用户
+这个响应对象包含的信息有HTTP状态码，HTTP头和主体内容等, 
+从本质上说，网页应用开发最终的目标就是根据不同的请求去构建这些响应对象。
 
-在大多是情况下主要处理继承自 [[yii\web\Response]] 的 
-`response` [应用组件](structure-application-components.md)，
-尽管如此，Yii也允许你创建你自己的响应对象并发送给终端用户，这方面后续会阐述。
+在大多数实际应用情况下，你应该主要地去处理`response`这个 [应用组件](structure-application-components.md)，在默认情况下，它是一个继承自[[yii\web\Response]]的实例
+然而，Yii也允许你创建自己的响应对象并发送给终端用户，这方面在后续会阐述。
 
-在本节，将会描述如何构建响应和发送给终端用户。
+在本节，我们将会讲述如何组装和构建响应并把它发送给终端用户。
 
 
 ## 状态码 <span id="status-code"></span>
 
-构建响应时，最先应做的是标识请求是否成功处理的状态，可通过设置
-[[yii\web\Response::statusCode]] 属性，该属性使用一个有效的
-[HTTP 状态码](https://tools.ietf.org/html/rfc2616#section-10)。例如，为标识处理已被处理成功，
-可设置状态码为200，如下所示：
+构建响应要做的第一件事就是声明请求是否被成功处理，我们可通过设置
+[[yii\web\Response::$statusCode]] 这个属性来做到这一点，该属性接受一个有效的
+[HTTP 状态码](https://tools.ietf.org/html/rfc2616#section-10)。例如，表明该请求已被成功处理，
+可以设置状态码为200，如下所示：
 
 ```php
 Yii::$app->response->statusCode = 200;
