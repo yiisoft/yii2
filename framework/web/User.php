@@ -147,7 +147,7 @@ class User extends Component
      * @var array MIME types for which this component should redirect to the [[loginUrl]].
      * @since 2.0.8
      */
-    public $acceptableRedirectTypes = ['text/html', 'application/xhtml+xml'];
+    public $acceptableRedirectTypes = ['text/html', 'application/xhtml+xml', '*/*'];
 
     private $_access = [];
 
