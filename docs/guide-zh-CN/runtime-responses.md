@@ -5,7 +5,8 @@
 这个响应对象包含的信息有HTTP状态码，HTTP头和主体内容等, 
 从本质上说，网页应用开发最终的目标就是根据不同的请求去构建这些响应对象。
 
-在大多数实际应用情况下，你应该主要地去处理`response`这个 [应用组件](structure-application-components.md)，在默认情况下，它是一个继承自[[yii\web\Response]]的实例
+在大多数实际应用情况下，你应该主要地去处理`response`这个 [应用组件](structure-application-components.md)，
+在默认情况下，它是一个继承自[[yii\web\Response]]的实例
 然而，Yii也允许你创建自己的响应对象并发送给终端用户，这方面在后续会阐述。
 
 在本节，我们将会讲述如何组装和构建响应并把它发送给终端用户。
