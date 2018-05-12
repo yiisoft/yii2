@@ -743,9 +743,10 @@ To use optimistic locking,
 1. Create a column in the DB table associated with the Active Record class to store the version number of each row.
    The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
 2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
-3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
-   Be sure your version attribute has input validation rules and validates successfully.
-4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
+3. Implement [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] inside your model class to automatically parse its value from received requests.
+4. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
+   Remove the version attribute from validation rules as [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] should handle it.
+5. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
    exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
    
 For example, assume the version column is named as `version`. You can implement optimistic locking with the code like
@@ -779,6 +780,17 @@ public function actionUpdate($id)
     } catch (StaleObjectException $e) {
         // logic to resolve the conflict
     }
+}
+
+// ------ model code -------
+
+use yii\behaviors\OptimisticLockBehavior;
+
+public function behaviors()
+{
+    return [
+        OptimisticLockBehavior::className(),
+    ];
 }
 ```
 
