@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #16245: Fixed `__isset()` in `BaseActiveRecord` not catching errors (sammousa)
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
 
+- Bug: Fixed bad instnaceof check in `yii\db\Schema::getTableMetadata()` (samdark)
 
 
 2.0.15.1 March 21, 2018
