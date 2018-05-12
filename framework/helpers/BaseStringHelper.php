@@ -269,7 +269,7 @@ class BaseStringHelper
     public static function explode($string, $delimiter = ',', $trim = true, $skipEmpty = false)
     {
         $result = explode($delimiter, $string);
-        if ($trim) {
+        if ($trim !== false) {
             if ($trim === true) {
                 $trim = 'trim';
             } elseif (!is_callable($trim)) {
