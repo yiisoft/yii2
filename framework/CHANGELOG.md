@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #16217: Fixed `yii\console\controllers\HelpController` to work well in Windows environment (samdark)
 - Bug #14636: Views can now use relative paths even when using themed views (sammousa)
 - Bug #16245: Fixed `__isset()` in `BaseActiveRecord` not catching errors (sammousa)
+- Bug #16266: Fixed `yii\helpers\BaseStringHelper` where explode would not allow 0 as trim string (Thoulah)
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
 - Bug: Fixed bad instnaceof check in `yii\db\Schema::getTableMetadata()` (samdark)
 
