@@ -24,7 +24,7 @@ Yii 開発者ドキュメント
 フレームワーク開発
 ------------------
 
-- [プルリクエストの品質保証](pull-request-qa.md)
+- [プル・リクエストの品質保証](pull-request-qa.md)
 - [自動化されるタスク](automation.md) コード・スタイルの修正、ドキュメントやファイルの自動生成など。
 - [設計上の決定](design-decisions.md) - よく議論される事柄についての FAQ 形式の声明リスト。
 
@@ -45,5 +45,4 @@ Yii 開発者ドキュメント
 
 ### データベースのテスト
 
-[こちら](https://gist.github.com/sergeymakinen/0696a5952f160ea28d7b64c3adfecf6f) に、
-Yii がサポートする全てのデータベースのためのテスト環境構成があります。
+[こちら](https://gist.github.com/sergeymakinen/0696a5952f160ea28d7b64c3adfecf6f) に、Yii がサポートする全てのデータベースのためのテスト環境構成があります。

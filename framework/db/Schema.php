@@ -732,7 +732,7 @@ abstract class Schema extends BaseObject
         $cache = null;
         if ($this->db->enableSchemaCache && !in_array($name, $this->db->schemaCacheExclude, true)) {
             $schemaCache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
-            if ($schemaCache instanceof Cache) {
+            if ($schemaCache instanceof CacheInterface) {
                 $cache = $schemaCache;
             }
         }

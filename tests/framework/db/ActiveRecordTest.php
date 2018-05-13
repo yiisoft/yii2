@@ -1791,4 +1791,20 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $this->assertEquals(1, sizeof($order->orderItems));
     }
+
+    public function testIssetException()
+    {
+        $cat = new Cat();
+        $this->assertFalse(isset($cat->exception));
+    }
+
+    /**
+     * @requires PHP 7
+     */
+    public function testIssetThrowable()
+    {
+        $cat = new Cat();
+        $this->assertFalse(isset($cat->throwable));
+
+    }
 }
