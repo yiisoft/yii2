@@ -31,6 +31,7 @@ env:
     - DEFAULT_COMPOSER_FLAGS="--prefer-dist --no-interaction --no-progress --optimize-autoloader"
     - TASK_TESTS_PHP=1
     - TASK_TESTS_COVERAGE=0
+    - TRAVIS_SECOND_USER=travis_two
 
 
 services:
@@ -65,6 +66,9 @@ matrix:
     - php: 7.1
       env: TASK_TESTS_COVERAGE=1
     - php: nightly
+      services:
+        - mysql
+        - postgresql
 
   allow_failures:
     - php: nightly
@@ -83,11 +87,14 @@ install:
 
   # setup PHP extension
   - |
-    if [ $TASK_TESTS_PHP == 1 ]; then
+    if [[ $TASK_TESTS_PHP == 1 && $TRAVIS_PHP_VERSION != nightly ]]; then
       tests/data/travis/apcu-setup.sh
       tests/data/travis/memcache-setup.sh
       tests/data/travis/imagick-setup.sh
     fi
+
+  # Needed for FileCacheTest
+  - sudo useradd $TRAVIS_SECOND_USER --gid $(id -g) -M
 
 before_script:
   # show some versions and env information
@@ -120,8 +127,8 @@ before_script:
   # Disable DEPRECATE messages during PHPUnit initialization on PHP 7.2. To fix them, PHPUnit should be updated to 6.*
   # For Yii2 tests, messages will be enabled by tests/bootstrap.php
   - |
-    if [ $TRAVIS_PHP_VERSION == 7.2 ]; then
-      echo 'Disabled DEPRECATED notifications for PHP 7.2';
+    if [[ $TRAVIS_PHP_VERSION == 7.2 || $TRAVIS_PHP_VERSION = nightly ]]; then
+      echo 'Disabled DEPRECATED notifications for PHP >= 7.2';
       echo 'error_reporting = E_ALL & ~E_DEPRECATED' >> /tmp/php-config.ini;
       phpenv config-add /tmp/php-config.ini;
     fi

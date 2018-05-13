@@ -22,17 +22,17 @@ class TargetTest extends TestCase
     public function filters()
     {
         return [
-            [[], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']],
+            [[], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']],
 
-            [['levels' => []], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']],
+            [['levels' => []], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']],
             [
                 ['levels' => [LogLevel::INFO, LogLevel::WARNING, LogLevel::ERROR, LogLevel::DEBUG]],
-                ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+                ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
             ],
-            [['levels' => ['error']], ['B', 'G', 'H']],
-            [['levels' => [LogLevel::ERROR]], ['B', 'G', 'H']],
-            [['levels' => ['error', 'warning']], ['B', 'C', 'G', 'H']],
-            [['levels' => [LogLevel::ERROR, LogLevel::WARNING]], ['B', 'C', 'G', 'H']],
+            [['levels' => ['error']], ['B', 'G', 'H', 'I']],
+            [['levels' => [LogLevel::ERROR]], ['B', 'G', 'H', 'I']],
+            [['levels' => ['error', 'warning']], ['B', 'C', 'G', 'H', 'I']],
+            [['levels' => [LogLevel::ERROR, LogLevel::WARNING]], ['B', 'C', 'G', 'H', 'I']],
 
             [['categories' => ['application']], ['A', 'B', 'C', 'D', 'E']],
             [['categories' => ['application*']], ['A', 'B', 'C', 'D', 'E', 'F']],
@@ -41,7 +41,9 @@ class TargetTest extends TestCase
             [['categories' => ['application.components.Test']], ['F']],
             [['categories' => ['application.components.*']], ['F']],
             [['categories' => ['application.*', 'yii.db.*']], ['F', 'G', 'H']],
-            [['categories' => ['application.*', 'yii.db.*'], 'except' => ['yii.db.Command.*']], ['F', 'G']],
+            [['categories' => ['application.*', 'yii.db.*'], 'except' => ['yii.db.Command.*', 'yii\db\*']], ['F', 'G']],
+            [['except' => ['yii\db\*']], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']],
+            [['categories' => ['yii*'], 'except' => ['yii\db\*']], ['G', 'H']],
 
             [['categories' => ['application', 'yii.db.*'], 'levels' => [LogLevel::ERROR]], ['B', 'G', 'H']],
             [['categories' => ['application'], 'levels' => [LogLevel::ERROR]], ['B']],
@@ -70,8 +72,9 @@ class TargetTest extends TestCase
         $logger->log(LogLevel::INFO, 'testF', ['category' => 'application.components.Test']);
         $logger->log(LogLevel::ERROR, 'testG', ['category' => 'yii.db.Command']);
         $logger->log(LogLevel::ERROR, 'testH', ['category' => 'yii.db.Command.whatever']);
+        $logger->log(LogLevel::ERROR, 'testI', ['category' => 'yii\db\Command::query']);
 
-        $this->assertEquals(count($expected), count(static::$messages));
+        $this->assertEquals(count($expected), count(static::$messages), 'Expected ' . implode(',', $expected) . ', got ' . implode(',', array_column(static::$messages, 0)));
         $i = 0;
         foreach ($expected as $e) {
             $this->assertEquals('test' . $e, static::$messages[$i++][1]);

@@ -110,6 +110,24 @@ use yii\caching\CacheInterface;
  * ],
  * ```
  *
+ * The [[dsn]] property can be defined via configuration array:
+ *
+ * ```php
+ * 'components' => [
+ *     'db' => [
+ *         '__class' => \yii\db\Connection::class,
+ *         'dsn' => [
+ *             'driver' => 'mysql',
+ *             'host' => '127.0.0.1',
+ *             'dbname' => 'demo'
+ *          ],
+ *         'username' => 'root',
+ *         'password' => '',
+ *         'charset' => 'utf8',
+ *     ],
+ * ],
+ * ```
+ *
  * @property string $driverName Name of the DB driver.
  * @property bool $isActive Whether the DB connection is established. This property is read-only.
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
@@ -127,8 +145,8 @@ use yii\caching\CacheInterface;
  * available and `$fallbackToMaster` is false. This property is read-only.
  * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
  * no slave connection is available and `$fallbackToMaster` is false. This property is read-only.
- * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
- * property is read-only.
+ * @property Transaction|null $transaction The currently active transaction. Null if no active transaction.
+ * This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -153,12 +171,26 @@ class Connection extends Component
     const EVENT_ROLLBACK_TRANSACTION = 'rollbackTransaction';
 
     /**
-     * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
+     * @var string|array the Data Source Name, or DSN, contains the information required to connect to the database.
      * Please refer to the [PHP manual](http://php.net/manual/en/pdo.construct.php) on
      * the format of the DSN string.
      *
      * For [SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a [path alias](guide:concept-aliases)
      * for specifying the database path, e.g. `sqlite:@app/data/db.sql`.
+     *
+     * Since version 2.1.0 an array can be passed to contruct a DSN string.
+     * The `driver` array key is used as the driver prefix of the DSN,
+     * all further key-value pairs are rendered as `key=value` and concatenated by `;`. For example:
+     *
+     * ```php
+     * 'dsn' => [
+     *     'driver' => 'mysql',
+     *     'host' => '127.0.0.1',
+     *     'dbname' => 'demo'
+     * ],
+     * ```
+     *
+     * Will result in the DSN string `mysql:host=127.0.0.1;dbname=demo`.
      *
      * @see charset
      */
@@ -313,9 +345,10 @@ class Connection extends Component
      */
     public $enableSavepoint = true;
     /**
-     * @var CacheInterface|string the cache object or the ID of the cache application component that is used to store
+     * @var CacheInterface|string|false the cache object or the ID of the cache application component that is used to store
      * the health status of the DB servers specified in [[masters]] and [[slaves]].
      * This is used only when read/write splitting is enabled or [[masters]] is not empty.
+     * Set boolean `false` to disabled server status caching.
      */
     public $serverStatusCache = 'cache';
     /**
@@ -426,6 +459,7 @@ class Connection extends Component
      */
     private $_queryCacheInfo = [];
 
+
     /**
     * {@inheritdoc}
     */
@@ -434,6 +468,7 @@ class Connection extends Component
        if (is_array($this->dsn)) {
            $this->dsn = $this->buildDSN($this->dsn);
        }
+       parent::init();
     }
 
     /**
@@ -715,7 +750,7 @@ class Connection extends Component
 
     /**
      * Returns the currently active transaction.
-     * @return Transaction the currently active transaction. Null if no active transaction.
+     * @return Transaction|null the currently active transaction. Null if no active transaction.
      */
     public function getTransaction()
     {
@@ -1008,7 +1043,7 @@ class Connection extends Component
     public function getMaster()
     {
         if ($this->_master === false) {
-            $this->_master = ($this->shuffleMasters)
+            $this->_master = $this->shuffleMasters
                 ? $this->openFromPool($this->masters, $this->masterConfig)
                 : $this->openFromPoolSequentially($this->masters, $this->masterConfig);
         }
@@ -1128,18 +1163,17 @@ class Connection extends Component
     private function buildDSN(array $config)
     {
         if (isset($config['driver'])) {
-            $parts = [];
             $driver = $config['driver'];
             unset($config['driver']);
 
+            $parts = [];
             foreach ($config as $key => $value) {
                 $parts[] = "$key=$value";
             }
 
             return "$driver:" . implode(';', $parts);
-        } else {
-            throw new InvalidConfigException("Connection 'driver' must be set.");
         }
+        throw new InvalidConfigException("Connection DSN 'driver' must be set.");
     }
 
     /**

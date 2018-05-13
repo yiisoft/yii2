@@ -8,9 +8,11 @@
 namespace yiiunit\framework\db\mysql;
 
 use yii\base\DynamicModel;
+use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
+use yii\helpers\Json;
 
 /**
  * @group db
@@ -63,11 +65,34 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test' AFTER `col_before`",
             ],
             [
+                Schema::TYPE_PK . " COMMENT 'testing \'quote\'' AFTER `col_before`",
+                $this->primaryKey()->comment('testing \'quote\'')->after('col_before'),
+                "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'testing \'quote\'' AFTER `col_before`",
+            ],
+            [
                 Schema::TYPE_JSON,
                 $this->json(),
                 "json",
             ],
         ];
+
+        /**
+         * @link https://github.com/yiisoft/yii2/issues/14834
+         */
+        $sqlModes = $this->getConnection(false)->createCommand('SELECT @@sql_mode')->queryScalar();
+        $sqlModes = explode(',', $sqlModes);
+        if (in_array('NO_ZERO_DATE', $sqlModes, true)) {
+            $this->markTestIncomplete(
+                "MySQL doesn't allow the 'TIMESTAMP' column definition when the NO_ZERO_DATE mode enabled. " .
+                "This definition test was skipped."
+            );
+        } else {
+            $columns[] = [
+                Schema::TYPE_TIMESTAMP,
+                $this->timestamp(),
+                'timestamp',
+            ];
+        }
 
         return array_merge(parent::columnTypes(), $columns);
     }
@@ -176,21 +201,38 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         return array_merge(parent::conditionProvider(), [
             // json conditions
-            [['=', 'jsoncol', new JsonExpression(['lang' => 'uk', 'country' => 'UA'])], '[[jsoncol]] = :qp0', [':qp0' => '{"lang":"uk","country":"UA"}']],
-            [['=', 'jsoncol', new JsonExpression([false])], '[[jsoncol]] = :qp0', [':qp0' => '[false]']],
+            [
+                ['=', 'jsoncol', new JsonExpression(['lang' => 'uk', 'country' => 'UA'])],
+                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '{"lang":"uk","country":"UA"}'],
+            ],
+            [
+                ['=', 'jsoncol', new JsonExpression([false])],
+                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '[false]']
+            ],
             'object with type. Type is ignored for MySQL' => [
                 ['=', 'prices', new JsonExpression(['seeds' => 15, 'apples' => 25], 'jsonb')],
-                '[[prices]] = :qp0', [':qp0' => '{"seeds":15,"apples":25}']
+                '[[prices]] = CAST(:qp0 AS JSON)', [':qp0' => '{"seeds":15,"apples":25}'],
             ],
             'nested json' => [
                 ['=', 'data', new JsonExpression(['user' => ['login' => 'silverfire', 'password' => 'c4ny0ur34d17?'], 'props' => ['mood' => 'good']])],
-                '[[data]] = :qp0', [':qp0' => '{"user":{"login":"silverfire","password":"c4ny0ur34d17?"},"props":{"mood":"good"}}']
+                '[[data]] = CAST(:qp0 AS JSON)', [':qp0' => '{"user":{"login":"silverfire","password":"c4ny0ur34d17?"},"props":{"mood":"good"}}']
             ],
-            'null value' => [['=', 'jsoncol', new JsonExpression(null)], '[[jsoncol]] = :qp0', [':qp0' => 'null']],
-            'null as array value' => [['=', 'jsoncol', new JsonExpression([null])], '[[jsoncol]] = :qp0', [':qp0' => '[null]']],
-            'null as object value' => [['=', 'jsoncol', new JsonExpression(['nil' => null])], '[[jsoncol[[ = :qp0', [':qp0' => '{"nil":null}']],
-
-            [['=', 'jsoncol', new JsonExpression(new DynamicModel(['a' => 1, 'b' => 2]))], '[[jsoncol]] = :qp0', [':qp0' => '{"a":1,"b":2}']],
+            'null value' => [
+                ['=', 'jsoncol', new JsonExpression(null)],
+                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => 'null']
+            ],
+            'null as array value' => [
+                ['=', 'jsoncol', new JsonExpression([null])],
+                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '[null]']
+            ],
+            'null as object value' => [
+                ['=', 'jsoncol', new JsonExpression(['nil' => null])],
+                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '{"nil":null}']
+            ],
+            'with object as value' => [
+                ['=', 'jsoncol', new JsonExpression(new DynamicModel(['a' => 1, 'b' => 2]))],
+                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '{"a":1,"b":2}']
+            ],
             'query' => [
                 ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]))],
                 '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)', [':qp0' => 1]
@@ -199,6 +241,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]), 'jsonb')],
                 '[[jsoncol]] = (SELECT [[params]] FROM [[user]] WHERE [[id]]=:qp0)', [':qp0' => 1]
             ],
+            'nested and combined json expression' => [
+                ['=', 'jsoncol', new JsonExpression(new JsonExpression(['a' => 1, 'b' => 2, 'd' => new JsonExpression(['e' => 3])]))],
+                "[[jsoncol]] = CAST(:qp0 AS JSON)", [':qp0' => '{"a":1,"b":2,"d":{"e":3}}']
+            ],
+            'search by property in JSON column (issue #15838)' => [
+                ['=', new Expression("(jsoncol->>'$.someKey')"), '42'],
+                "(jsoncol->>'$.someKey') = :qp0", [':qp0' => 42]
+            ]
         ]);
     }
 
@@ -214,7 +264,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 'id' => 1,
             ],
-            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1'),
+            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=CAST(:qp0 AS JSON) WHERE [[id]]=:qp1'),
             [
                 ':qp0' => '{"abc":"def","0":123,"1":null}',
                 ':qp1' => 1,

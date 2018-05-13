@@ -5,11 +5,11 @@ Built on top of [PDO](http://www.php.net/manual/en/book.pdo.php), Yii DAO (Datab
 object-oriented API for accessing relational databases. It is the foundation for other more advanced database
 access methods, including [query builder](db-query-builder.md) and [active record](db-active-record.md).
 
-When using Yii DAO, you mainly need to deal with plain SQLs and PHP arrays. As a result, it is the most efficient 
-way to access databases. However, because SQL syntax may vary for different databases, using Yii DAO also means 
+When using Yii DAO, you mainly need to deal with plain SQLs and PHP arrays. As a result, it is the most efficient
+way to access databases. However, because SQL syntax may vary for different databases, using Yii DAO also means
 you have to take extra effort to create a database-agnostic application.
 
-Yii DAO supports the following databases out of box:
+In Yii 2.0, DAO supports the following databases out of the box:
 
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
@@ -17,6 +17,12 @@ Yii DAO supports the following databases out of box:
 - [PostgreSQL](http://www.postgresql.org/): version 8.4 or higher
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
+
+> Info: In Yii 2.1 and later, the DAO supports for CUBRID, Oracle and MSSQL are no longer provided as the built-in
+  core components of the framework. They have to be installed as the separated [extensions](structure-extensions.md).
+  There are [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) and
+  [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql) in the 
+  [official extensions](https://www.yiiframework.com/extensions/official).
 
 > Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
   [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
@@ -59,10 +65,10 @@ You can then access the DB connection via the expression `Yii::$app->db`.
 
 > Tip: You can configure multiple DB application components if your application needs to access multiple databases.
 
-When configuring a DB connection, you should always specify its Data Source Name (DSN) via the [[yii\db\Connection::dsn|dsn]] 
-property. The format of DSN varies for different databases. Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) 
+When configuring a DB connection, you should always specify its Data Source Name (DSN) via the [[yii\db\Connection::dsn|dsn]]
+property. The format of DSN varies for different databases. Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php)
 for more details. Below are some examples:
- 
+
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
 * PostgreSQL: `pgsql:host=localhost;port=5432;dbname=mydatabase`
@@ -70,6 +76,21 @@ for more details. Below are some examples:
 * MS SQL Server (via dblib driver): `dblib:host=localhost;dbname=mydatabase`
 * MS SQL Server (via mssql driver): `mssql:host=localhost;dbname=mydatabase`
 * Oracle: `oci:dbname=//localhost:1521/mydatabase`
+
+You can set the [[yii\db\Connection::dsn|dsn]] via configuration array. For example,
+
+```php
+'db' => [
+    '__class' => yii\db\Connection::class,    
+    'dsn' => [      
+        'driver' => 'mysql',
+        'host' => 'localhost',
+        'dbname' => 'example',
+    ],
+    'username' => 'root',
+    'password' => '',
+],
+```
 
 Note that if you are connecting with a database via ODBC, you should configure the [[yii\db\Connection::driverName]]
 property so that Yii can know the actual database type. For example,
@@ -85,7 +106,7 @@ property so that Yii can know the actual database type. For example,
 ```
 
 Besides the [[yii\db\Connection::dsn|dsn]] property, you often need to configure [[yii\db\Connection::username|username]]
-and [[yii\db\Connection::password|password]]. Please refer to [[yii\db\Connection]] for the full list of configurable properties. 
+and [[yii\db\Connection::password|password]]. Please refer to [[yii\db\Connection]] for the full list of configurable properties.
 
 > Info: When you create a DB connection instance, the actual connection to the database is not established until
   you execute the first SQL or you call the [[yii\db\Connection::open()|open()]] method explicitly.
@@ -94,7 +115,7 @@ and [[yii\db\Connection::password|password]]. Please refer to [[yii\db\Connectio
 > some environment variables (e.g., to set the timezone or character set). You can do so by registering an event handler
 > for the [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] event
 > of the database connection. You may register the handler directly in the application configuration like so:
-> 
+>
 > ```php
 > 'db' => [
 >     // ...
@@ -109,13 +130,13 @@ and [[yii\db\Connection::password|password]]. Please refer to [[yii\db\Connectio
 ## Executing SQL Queries <span id="executing-sql-queries"></span>
 
 Once you have a database connection instance, you can execute a SQL query by taking the following steps:
- 
+
 1. Create a [[yii\db\Command]] with a plain SQL query;
 2. Bind parameters (optional);
 3. Call one of the SQL execution methods in [[yii\db\Command]].
 
 The following example shows various ways of fetching data from a database:
- 
+
 ```php
 // return a set of rows. each row is an associative array of column names and values.
 // an empty array is returned if the query returned no results
@@ -158,7 +179,7 @@ In the SQL statement, you can embed one or multiple parameter placeholders (e.g.
 placeholder should be a string starting with a colon. You may then call one of the following parameter binding methods
 to bind the parameter values:
 
-* [[yii\db\Command::bindValue()|bindValue()]]: bind a single parameter value 
+* [[yii\db\Command::bindValue()|bindValue()]]: bind a single parameter value
 * [[yii\db\Command::bindValues()|bindValues()]]: bind multiple parameter values in one call
 * [[yii\db\Command::bindParam()|bindParam()]]: similar to [[yii\db\Command::bindValue()|bindValue()]] but also
   support binding parameter references.
@@ -171,7 +192,7 @@ $params = [':id' => $_GET['id'], ':status' => 1];
 $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status')
            ->bindValues($params)
            ->queryOne();
-           
+
 $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status=:status', $params)
            ->queryOne();
 ```
@@ -203,9 +224,9 @@ $post2 = $command->queryOne();
 // ...
 ```
 
-Notice that you bind the placeholder to the `$id` variable before the execution, and then change the value of that variable 
-before each subsequent execution (this is often done with loops). Executing queries in this manner can be vastly 
-more efficient than running a new query for every different parameter value. 
+Notice that you bind the placeholder to the `$id` variable before the execution, and then change the value of that variable
+before each subsequent execution (this is often done with loops). Executing queries in this manner can be vastly
+more efficient than running a new query for every different parameter value.
 
 > Info: Parameter binding is only used in places where values need to be inserted into strings that contain plain SQL.
 > In many places in higher abstraction layers like [query builder](db-query-builder.md) and [active record](db-active-record.md)
@@ -280,7 +301,7 @@ When writing database-agnostic code, properly quoting table and column names is 
 different databases have different name quoting rules. To overcome this problem, you may use the following
 quoting syntax introduced by Yii:
 
-* `[[column name]]`: enclose a column name to be quoted in double square brackets; 
+* `[[column name]]`: enclose a column name to be quoted in double square brackets;
 * `{{table name}}`: enclose a table name to be quoted in double curly brackets.
 
 Yii DAO will automatically convert such constructs into the corresponding quoted column or table names using the
@@ -330,7 +351,7 @@ $count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
 When running multiple related queries in a sequence, you may need to wrap them in a transaction to ensure the integrity
 and consistency of your database. If any of the queries fails, the database will be rolled back to the state as if
 none of these queries were executed.
- 
+
 The following code shows a typical way of using transactions:
 
 ```php
@@ -350,7 +371,7 @@ try {
     $db->createCommand($sql1)->execute();
     $db->createCommand($sql2)->execute();
     // ... executing other SQL statements ...
-    
+
     $transaction->commit();
 } catch(\Exception $e) {
     $transaction->rollBack();
@@ -369,7 +390,7 @@ will be triggered and caught, the [[yii\db\Transaction::rollBack()|rollBack()]] 
 the changes made by the queries prior to that failed query in the transaction. `throw $e` will then re-throw the
 exception as if we had not caught it, so the normal error handling process will take care of it.
 
-> Note: in the above code we have two catch-blocks for compatibility 
+> Note: in the above code we have two catch-blocks for compatibility
 > with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
 > since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
 
@@ -385,7 +406,7 @@ $isolationLevel = \yii\db\Transaction::REPEATABLE_READ;
 Yii::$app->db->transaction(function ($db) {
     ....
 }, $isolationLevel);
- 
+
 // or alternatively
 
 $transaction = Yii::$app->db->beginTransaction($isolationLevel);
@@ -423,7 +444,7 @@ If your DBMS supports Savepoint, you may nest multiple transactions like the fol
 ```php
 Yii::$app->db->transaction(function ($db) {
     // outer transaction
-    
+
     $db->transaction(function ($db) {
         // inner transaction
     });
@@ -575,7 +596,7 @@ You can also configure multiple masters with multiple slaves. For example,
 ```
 
 The above configuration specifies two masters and four slaves. The `Connection` component also supports
-load balancing and failover between masters just as it does between slaves. A difference is that when none 
+load balancing and failover between masters just as it does between slaves. A difference is that when none
 of the masters are available an exception will be thrown.
 
 > Note: When you use the [[yii\db\Connection::masters|masters]] property to configure one or multiple
@@ -668,5 +689,5 @@ $table = Yii::$app->db->getTableSchema('post');
 ```
 
 The method returns a [[yii\db\TableSchema]] object which contains the information about the table's columns,
-primary keys, foreign keys, etc. All these information are mainly utilized by [query builder](db-query-builder.md) 
-and [active record](db-active-record.md) to help you write database-agnostic code. 
+primary keys, foreign keys, etc. All these information are mainly utilized by [query builder](db-query-builder.md)
+and [active record](db-active-record.md) to help you write database-agnostic code.

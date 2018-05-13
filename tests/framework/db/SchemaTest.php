@@ -107,14 +107,23 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testSchemaCache()
     {
+        /* @var $db Connection */
+        $db = $this->getConnection();
+
         /* @var $schema Schema */
-        $schema = $this->getConnection()->schema;
+        $schema = $db->schema;
 
         $schema->db->enableSchemaCache = true;
         $schema->db->schemaCache = new FileCache();
         $noCacheTable = $schema->getTableSchema('type', true);
         $cachedTable = $schema->getTableSchema('type', false);
         $this->assertEquals($noCacheTable, $cachedTable);
+
+        $db->createCommand()->renameTable('type', 'type_test');
+        $noCacheTable = $schema->getTableSchema('type', true);
+        $this->assertNotSame($noCacheTable, $cachedTable);
+
+        $db->createCommand()->renameTable('type_test', 'type');
     }
 
     /**

@@ -80,6 +80,10 @@ class RadioButtonColumn extends Column
      */
     protected function renderDataCellContent($model, $key, $index)
     {
+        if ($this->content !== null) {
+            return parent::renderDataCellContent($model, $key, $index);
+        }
+
         if ($this->radioOptions instanceof Closure) {
             $options = call_user_func($this->radioOptions, $model, $key, $index, $this);
         } else {
