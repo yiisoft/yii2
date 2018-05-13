@@ -181,7 +181,7 @@ STRING
         $this->assertContains('- address: string (defaults to \'localhost\')', $result);
         $this->assertContains('--appconfig: string', $result);
         $this->assertContains('--color: boolean, 0 or 1', $result);
-        $this->assertContains('--docroot, -t: string (defaults to \'@app/web\')', $result);
+        $this->assertContains('--docroot, -t: string (defaults to \'public\')', $result);
         $this->assertContains('--help, -h: boolean, 0 or 1', $result);
         $this->assertContains('--interactive: boolean, 0 or 1 (defaults to 1)', $result);
         $this->assertContains('--port, -p: int (defaults to 8080)', $result);
