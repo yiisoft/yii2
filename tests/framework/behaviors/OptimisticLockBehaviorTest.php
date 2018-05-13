@@ -73,7 +73,7 @@ class OptimisticLockBehaviorTest extends TestCase
     public function testUpdateRecordWithinConsoleRequest()
     {
         ActiveRecordLockVersion::$behaviors = [
-            OptimisticLockBehavior::className(),
+            OptimisticLockBehavior::class,
         ];
         $model = new ActiveRecordLockVersion();
         $model->version = 0;
@@ -103,7 +103,7 @@ class OptimisticLockBehaviorTest extends TestCase
         Yii::$app->set('request', $request);
 
         ActiveRecordLockVersion::$behaviors = [
-            OptimisticLockBehavior::className(),
+            OptimisticLockBehavior::class,
         ];
         $model = new ActiveRecordLockVersion();
         $model->save(false);
@@ -128,7 +128,7 @@ class OptimisticLockBehaviorTest extends TestCase
         Yii::$app->set('request', $request);
 
         ActiveRecordLockVersion::$behaviors = [
-            OptimisticLockBehavior::className(),
+            OptimisticLockBehavior::class,
         ];
         $model = new ActiveRecordLockVersion();
         $model->save(false);
@@ -204,7 +204,7 @@ class OptimisticLockBehaviorTest extends TestCase
         Yii::$app->set('request', $request);
 
         ActiveRecordLockVersion::$behaviors = [
-            OptimisticLockBehavior::className(),
+            OptimisticLockBehavior::class,
         ];
         $model = new ActiveRecordLockVersion();
         $model->save(false);
