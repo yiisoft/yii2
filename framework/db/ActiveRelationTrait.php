@@ -353,7 +353,7 @@ trait ActiveRelationTrait
                     }
                 }
             }
-        } else if ($this->multiple) {
+        } elseif ($this->multiple) {
             foreach ($primaryModels as $i => $primaryModel) {
                 foreach ($primaryModel[$primaryName] as $j => $m) {
                     if ($m instanceof ActiveRecordInterface) {
