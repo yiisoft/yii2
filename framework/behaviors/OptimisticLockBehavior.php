@@ -32,7 +32,7 @@ use yii\validators\NumberValidator;
  * public function behaviors()
  * {
  *     return [
- *         OptimisticLockBehavior::className(),
+ *         OptimisticLockBehavior::class,
  *     ];
  * }
  * ```
