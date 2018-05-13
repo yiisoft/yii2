@@ -163,7 +163,31 @@ class Menu extends Widget
      * @see isItemActive()
      */
     public $params;
+    /**
+     * @var \yii\web\UrlManager the URL manager used for creating pagination URLs. If not set,
+     * the "urlManager" application component will be used.
+     * @since 2.1.0
+     */
+    public $urlManager;
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+
+        if ($this->route === null && Yii::$app->controller !== null) {
+            $this->route = Yii::$app->controller->getRoute();
+        }
+        if ($this->params === null) {
+            $this->params = Yii::$app->request->getQueryParams();
+        }
+        if ($this->urlManager === null) {
+            $this->urlManager = Yii::$app->getUrlManager();
+        }
+    }
 
     /**
      * Renders the menu.
@@ -171,12 +195,6 @@ class Menu extends Widget
      */
     public function run()
     {
-        if ($this->route === null && Yii::$app->controller !== null) {
-            $this->route = Yii::$app->controller->getRoute();
-        }
-        if ($this->params === null) {
-            $this->params = Yii::$app->request->getQueryParams();
-        }
         $items = $this->normalizeItems($this->items, $hasActiveChild);
         if (empty($items)) {
             return '';
@@ -237,7 +255,7 @@ class Menu extends Widget
             $template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 
             return strtr($template, [
-                '{url}' => Html::encode(Yii::$app->getUrlManager()->to($item['url'])),
+                '{url}' => Html::encode($this->urlManager->to($item['url'])),
                 '{label}' => $item['label'],
             ]);
         }

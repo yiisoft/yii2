@@ -85,7 +85,8 @@ class ActionColumn extends Column
      * ```
      */
     public $buttons = [];
-    /** @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
+    /**
+     * @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
      * and the values are the boolean true/false or the anonymous function. When the button name is not specified in
      * this array it will be shown by default.
      * The callbacks must use the following signature:
@@ -125,7 +126,12 @@ class ActionColumn extends Column
      * @since 2.0.4
      */
     public $buttonOptions = [];
-
+    /**
+     * @var \yii\web\UrlManager the URL manager used for creating pagination URLs. If not set,
+     * the "urlManager" application component will be used.
+     * @since 2.1.0
+     */
+    public $urlManager;
 
     /**
      * {@inheritdoc}
@@ -134,6 +140,10 @@ class ActionColumn extends Column
     {
         parent::init();
         $this->initDefaultButtons();
+
+        if ($this->urlManager === null) {
+            $this->urlManager = Yii::$app->getUrlManager();
+        }
     }
 
     /**
@@ -201,7 +211,7 @@ class ActionColumn extends Column
         $params = is_array($key) ? $key : ['id' => (string) $key];
         $params[0] = $this->controller ? $this->controller . '/' . $action : $action;
 
-        return Yii::$app->getUrlManager()->toRoute($params);
+        return $this->urlManager->toRoute($params);
     }
 
     /**
