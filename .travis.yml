@@ -91,8 +91,9 @@ matrix:
         - mysql
         - postgresql
 
-    # test against the latest HHVM version by using a newer image
-    - php: hhvm
+    # test against the latest pre 3.26 HHVM version by using a newer image.
+    # @see https://github.com/facebook/hhvm/issues/8192
+    - php: hhvm-3.24
       sudo: true
       addons:
         code_climate:

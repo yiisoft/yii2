@@ -182,14 +182,14 @@ RESTful ウェブ・サービス
 ウィジェット
 ------------
 
-* [[yii\grid\GridView|GridView]]
-* [[yii\widgets\ListView|ListView]]
-* [[yii\widgets\DetailView|DetailView]]
-* [[yii\widgets\ActiveForm|ActiveForm]]
-* [[yii\widgets\Pjax|Pjax]]
-* [[yii\widgets\Menu|Menu]]
-* [[yii\widgets\LinkPager|LinkPager]]
-* [[yii\widgets\LinkSorter|LinkSorter]]
+* [GridView](https://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](https://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](https://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](https://www.yiiframework.com/doc/guide/2.0/ja/input-forms#activerecord-based-forms-activeform)
+* [Pjax](https://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](https://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](https://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](https://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Bootstrap ウィジェット](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap/doc/guide)
 * [jQuery UI ウィジェット](https://www.yiiframework.com/extension/yiisoft/yii2-jui/doc/guide)
 
