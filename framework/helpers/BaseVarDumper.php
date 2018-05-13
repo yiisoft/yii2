@@ -255,7 +255,7 @@ class BaseVarDumper
                 continue;
             }
             if ($closureTokens !== []) {
-                $closureTokens[] = isset($token[1]) ? $token[1] : $token;
+                $closureTokens[] = $token[1] ?? $token;
                 if ($token === '}') {
                     $pendingParenthesisCount--;
                     if ($pendingParenthesisCount === 0) {

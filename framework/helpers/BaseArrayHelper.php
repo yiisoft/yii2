@@ -927,7 +927,7 @@ class BaseArrayHelper
         foreach ($filters as $var) {
             $keys = explode('.', $var);
             $globalKey = $keys[0];
-            $localKey = isset($keys[1]) ? $keys[1] : null;
+            $localKey = $keys[1] ?? null;
 
             if ($globalKey[0] === '!') {
                 $forbiddenVars[] = [

@@ -1018,7 +1018,7 @@ SQL;
     protected function performAndCompareUpsertResult(Connection $db, array $data)
     {
         $params = $data['params'];
-        $expected = isset($data['expected']) ? $data['expected'] : $params[1];
+        $expected = $data['expected'] ?? $params[1];
         $command = $db->createCommand();
         call_user_func_array([$command, 'upsert'], $params);
         $command->execute();
