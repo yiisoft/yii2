@@ -548,7 +548,7 @@ class Response extends \yii\base\Response implements ResponseInterface
             $body->write($content);
         }
 
-        $mimeType = isset($options['mimeType']) ? $options['mimeType'] : 'application/octet-stream';
+        $mimeType = $options['mimeType'] ?? 'application/octet-stream';
         $this->setDownloadHeaders($attachmentName, $mimeType, !empty($options['inline']), $end - $begin + 1);
 
         $this->format = self::FORMAT_RAW;
@@ -600,7 +600,7 @@ class Response extends \yii\base\Response implements ResponseInterface
             $this->setStatusCode(200);
         }
 
-        $mimeType = isset($options['mimeType']) ? $options['mimeType'] : 'application/octet-stream';
+        $mimeType = $options['mimeType'] ?? 'application/octet-stream';
         $this->setDownloadHeaders($attachmentName, $mimeType, !empty($options['inline']), $end - $begin + 1);
 
         $this->format = self::FORMAT_RAW;

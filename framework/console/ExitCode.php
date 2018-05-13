@@ -155,6 +155,6 @@ class ExitCode
      */
     public static function getReason($exitCode)
     {
-        return isset(static::$reasons[$exitCode]) ? static::$reasons[$exitCode] : 'Unknown exit code';
+        return static::$reasons[$exitCode] ?? 'Unknown exit code';
     }
 }

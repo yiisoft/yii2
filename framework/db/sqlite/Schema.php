@@ -127,8 +127,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
                 'columnNames' => ArrayHelper::getColumn($foreignKey, 'from'),
                 'foreignTableName' => $table,
                 'foreignColumnNames' => ArrayHelper::getColumn($foreignKey, 'to'),
-                'onDelete' => isset($foreignKey[0]['on_delete']) ? $foreignKey[0]['on_delete'] : null,
-                'onUpdate' => isset($foreignKey[0]['on_update']) ? $foreignKey[0]['on_update'] : null,
+                'onDelete' => $foreignKey[0]['on_delete'] ?? null,
+                'onUpdate' => $foreignKey[0]['on_update'] ?? null,
             ]);
         }
 

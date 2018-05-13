@@ -191,7 +191,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
         $type = ArrayAndJsonTypes::find()->one();
         foreach ($attributes as $attribute => $expected) {
-            $expected = isset($expected[1]) ? $expected[1] : $expected[0];
+            $expected = $expected[1] ?? $expected[0];
             $value = $type->$attribute;
 
             $this->assertEquals($expected, $value, 'In column ' . $attribute);

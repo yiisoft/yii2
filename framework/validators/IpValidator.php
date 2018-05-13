@@ -331,7 +331,7 @@ class IpValidator extends Validator
         if (preg_match($this->getIpParsePattern(), $ip, $matches)) {
             $negation = ($matches[1] !== '') ? $matches[1] : null;
             $ip = $matches[2];
-            $cidr = isset($matches[4]) ? $matches[4] : null;
+            $cidr = $matches[4] ?? null;
         }
 
         if ($this->subnet === true && $cidr === null) {

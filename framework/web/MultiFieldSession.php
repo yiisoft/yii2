@@ -137,6 +137,6 @@ abstract class MultiFieldSession extends Session
             return $fields['data'];
         }
 
-        return isset($fields['data']) ? $fields['data'] : '';
+        return $fields['data'] ?? '';
     }
 }
