@@ -177,6 +177,11 @@ Upgrade from Yii 2.0.x
   this package manually for your project.
 * `yii\BaseYii::powered()` method has been removed. Please add "Powered by Yii" link either right into HTML or using
   `yii\helpers\Html::a()`.
+* `yii\i18n\MessageFormatter` no longer supports parameter names with `.`, `-`, `=` and other symbols that are used in
+  pattern syntax following directly how it works in intl/ICU. If you use such parameters names, replace special
+  symbols with `_`.
+* `yii\i18n\MessageFormatter::parse()` method was removed. If you have a rare case where it's used copy-paste it from
+  2.0 branch to your project. 
 
 
 Upgrade from Yii 2.0.15

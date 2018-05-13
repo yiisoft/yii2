@@ -193,11 +193,11 @@ echo \Yii::t('app', 'Hello, {username}!', [
 While translating a message containing placeholders, you should leave the placeholders as is. This is because the placeholders
 will be replaced with the actual values when you call `Yii::t()` to translate a message.
 
-You can use either *named placeholders* or *positional placeholders*, but not both, in a single message.
- 
 The previous example shows how you can use named placeholders. That is, each placeholder is written in the format of 
 `{name}`, and you provide an associative array whose keys are the placeholder names
 (without the curly brackets) and whose values are the corresponding values placeholder to be replaced with.
+
+> Note: Some characters such as `.`, `-` or `=` are not allowed in placeholder names. Use `_` instead.
 
 Positional placeholders use zero-based integer sequence as names which are replaced by the provided values
 according to their positions in the call of `Yii::t()`. In the following example, the positional placeholders
