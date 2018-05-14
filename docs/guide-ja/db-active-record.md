@@ -742,10 +742,11 @@ class Post extends \yii\db\ActiveRecord
 
 1. アクティブ・レコード・クラスと関連付けられている DB テーブルに、各行のバージョン番号を保存するカラムを作成します。
    カラムは長倍精度整数 (big integer) タイプでなければなりません (MySQL では `BIGINT DEFAULT 0` です)。
-2.  [[yii\db\ActiveRecord::optimisticLock()]] メソッドをオーバーライドして、このカラムの名前を返すようにします。
-3. ユーザ入力を収集するウェブフォームに、更新されるレコードの現在のバージョン番号を保持する隠しフィールドを追加します。
-   バージョン属性が入力の検証規則を持っており、検証が成功することを確かめてください。
-4. アクティブ・レコードを使って行の更新を行うコントローラ・アクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、
+2. [[yii\db\ActiveRecord::optimisticLock()]] メソッドをオーバーライドして、このカラムの名前を返すようにします。
+3. あなたのモデル・クラスの中で [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] を実装し、受診したリクエストからその値を自動的に解析できるようにします。
+4. ユーザ入力を収集するウェブフォームに、更新されるレコードの現在のバージョン番号を保持する隠しフィールドを追加します。
+   [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] が検証を処理すべきですので、バージョンの属性は検証規則から削除します。
+5. アクティブ・レコードを使って行の更新を行うコントローラ・アクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、
    衝突を解決するために必要なビジネス・ロジック (例えば、変更をマージしたり、データの陳腐化を知らせたり) を実装します。
 
 例えば、バージョン番号のカラムが `version` と名付けられているとすると、
@@ -779,6 +780,17 @@ public function actionUpdate($id)
     } catch (StaleObjectException $e) {
         // 衝突を解決するロジック
     }
+}
+
+// ------ モデルのコード -------
+
+use yii\behaviors\OptimisticLockBehavior;
+
+public function behaviors()
+{
+    return [
+        OptimisticLockBehavior::className(),
+    ];
 }
 ```
 
