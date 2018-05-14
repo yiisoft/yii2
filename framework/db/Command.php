@@ -220,7 +220,7 @@ class Command extends Component
         }
         $sql = '';
         foreach (explode('?', $this->_sql) as $i => $part) {
-            $sql .= (isset($params[$i]) ? $params[$i] : '') . $part;
+            $sql .= ($params[$i] ?? '') . $part;
         }
 
         return $sql;
@@ -1100,10 +1100,10 @@ class Command extends Component
             Yii::info($rawSql, $category);
         }
         if (!$this->db->enableProfiling) {
-            return [false, isset($rawSql) ? $rawSql : null];
+            return [false, $rawSql ?? null];
         }
 
-        return [true, isset($rawSql) ? $rawSql : $this->getRawSql()];
+        return [true, $rawSql ?? $this->getRawSql()];
     }
 
     /**

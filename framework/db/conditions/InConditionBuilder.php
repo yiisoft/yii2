@@ -90,7 +90,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
 
         foreach ($values as $i => $value) {
             if (is_array($value) || $value instanceof \ArrayAccess) {
-                $value = isset($value[$column]) ? $value[$column] : null;
+                $value = $value[$column] ?? null;
             }
             if ($value === null) {
                 $sqlValues[$i] = 'NULL';

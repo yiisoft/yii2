@@ -522,7 +522,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function getAttributeLabel($attribute)
     {
         $labels = $this->attributeLabels();
-        return isset($labels[$attribute]) ? $labels[$attribute] : $this->generateAttributeLabel($attribute);
+        return $labels[$attribute] ?? $this->generateAttributeLabel($attribute);
     }
 
     /**
@@ -535,7 +535,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function getAttributeHint($attribute)
     {
         $hints = $this->attributeHints();
-        return isset($hints[$attribute]) ? $hints[$attribute] : '';
+        return $hints[$attribute] ?? '';
     }
 
     /**

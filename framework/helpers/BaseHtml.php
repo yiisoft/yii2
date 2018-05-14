@@ -766,7 +766,7 @@ class BaseHtml
         }
         if (isset($options['label'])) {
             $label = $options['label'];
-            $labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
+            $labelOptions = $options['labelOptions'] ?? [];
             unset($options['label'], $options['labelOptions']);
             $content = static::label(static::input($type, $name, $value, $options) . ' ' . $label, null, $labelOptions);
             return $hidden . $content;
@@ -1190,7 +1190,7 @@ class BaseHtml
     public static function activeHint($model, $attribute, $options = [])
     {
         $attribute = static::getAttributeName($attribute);
-        $hint = isset($options['hint']) ? $options['hint'] : $model->getAttributeHint($attribute);
+        $hint = $options['hint'] ?? $model->getAttributeHint($attribute);
         if (empty($hint)) {
             return '';
         }
@@ -1218,7 +1218,7 @@ class BaseHtml
      */
     public static function errorSummary($models, $options = [])
     {
-        $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
+        $header = $options['header'] ?? '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
         $footer = ArrayHelper::remove($options, 'footer', '');
         $encode = ArrayHelper::remove($options, 'encode', true);
         $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
@@ -1319,8 +1319,8 @@ class BaseHtml
      */
     public static function activeInput($type, $model, $attribute, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $value = isset($options['value']) ? $options['value'] : static::getAttributeValue($model, $attribute);
+        $name = $options['name'] ?? static::getInputName($model, $attribute);
+        $value = $options['value'] ?? static::getAttributeValue($model, $attribute);
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
@@ -1491,7 +1491,7 @@ class BaseHtml
      */
     public static function activeTextarea($model, $attribute, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
+        $name = $options['name'] ?? static::getInputName($model, $attribute);
         if (isset($options['value'])) {
             $value = $options['value'];
             unset($options['value']);
@@ -1552,7 +1552,7 @@ class BaseHtml
      */
     protected static function activeBooleanInput($type, $model, $attribute, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
+        $name = $options['name'] ?? static::getInputName($model, $attribute);
         $value = static::getAttributeValue($model, $attribute);
 
         if (!array_key_exists('value', $options)) {
@@ -1788,8 +1788,8 @@ class BaseHtml
      */
     protected static function activeListInput($type, $model, $attribute, $items, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $selection = isset($options['value']) ? $options['value'] : static::getAttributeValue($model, $attribute);
+        $name = $options['name'] ?? static::getInputName($model, $attribute);
+        $selection = $options['value'] ?? static::getAttributeValue($model, $attribute);
         if (!array_key_exists('unselect', $options)) {
             $options['unselect'] = '';
         }
@@ -1841,15 +1841,15 @@ class BaseHtml
             $lines[] = static::tag('option', $promptText, $promptOptions);
         }
 
-        $options = isset($tagOptions['options']) ? $tagOptions['options'] : [];
-        $groups = isset($tagOptions['groups']) ? $tagOptions['groups'] : [];
+        $options = $tagOptions['options'] ?? [];
+        $groups = $tagOptions['groups'] ?? [];
         unset($tagOptions['prompt'], $tagOptions['options'], $tagOptions['groups']);
         $options['encodeSpaces'] = ArrayHelper::getValue($options, 'encodeSpaces', $encodeSpaces);
         $options['encode'] = ArrayHelper::getValue($options, 'encode', $encode);
 
         foreach ($items as $key => $value) {
             if (is_array($value)) {
-                $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
+                $groupAttrs = $groups[$key] ?? [];
                 if (!isset($groupAttrs['label'])) {
                     $groupAttrs['label'] = $key;
                 }
@@ -1857,7 +1857,7 @@ class BaseHtml
                 $content = static::renderSelectOptions($selection, $value, $attrs);
                 $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
             } else {
-                $attrs = isset($options[$key]) ? $options[$key] : [];
+                $attrs = $options[$key] ?? [];
                 $attrs['value'] = (string) $key;
                 if (!array_key_exists('selected', $attrs)) {
                     $attrs['selected'] = $selection !== null &&

@@ -284,7 +284,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             $appendSlash = false;
             foreach ($matches as $match) {
                 $name = $match[1][0];
-                $pattern = isset($match[2][0]) ? $match[2][0] : '[^\/]+';
+                $pattern = $match[2][0] ?? '[^\/]+';
                 $placeholder = 'a' . hash('crc32b', $name); // placeholder must begin with a letter
                 $this->placeholders[$placeholder] = $name;
                 if (array_key_exists($name, $this->defaults)) {

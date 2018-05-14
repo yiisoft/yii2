@@ -61,7 +61,7 @@ class CorsTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['HTTP_ORIGIN'] = 'http://foo.com';
         $this->assertTrue($cors->beforeAction($action));
-        $this->assertEquals('*', $cors->response->getHeaders()->get('access-control-allow-origin'));
+        $this->assertEquals('*', $cors->response->getHeaderCollection()->get('access-control-allow-origin'));
     }
 
 }

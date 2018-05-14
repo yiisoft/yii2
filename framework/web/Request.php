@@ -761,7 +761,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             }
         }
 
-        return isset($params[$name]) ? $params[$name] : $defaultValue;
+        return $params[$name] ?? $defaultValue;
     }
 
     /**
@@ -851,7 +851,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     {
         $params = $this->getQueryParams();
 
-        return isset($params[$name]) ? $params[$name] : $defaultValue;
+        return $params[$name] ?? $defaultValue;
     }
 
     /**
