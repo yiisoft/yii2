@@ -787,7 +787,7 @@ use yii\behaviors\OptimisticLockBehavior;
 public function behaviors()
 {
     return [
-        OptimisticLockBehavior::className(),
+        OptimisticLockBehavior::class,
     ];
 }
 ```

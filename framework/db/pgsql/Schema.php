@@ -695,8 +695,8 @@ SQL;
                             'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
                             'foreignTableName' => $constraint[0]['foreign_table_name'],
                             'foreignColumnNames' => array_keys(array_count_values(ArrayHelper::getColumn($constraint, 'foreign_column_name'))),
-                            'onDelete' => isset($actionTypes[$constraint[0]['on_delete']]) ? $actionTypes[$constraint[0]['on_delete']] : null,
-                            'onUpdate' => isset($actionTypes[$constraint[0]['on_update']]) ? $actionTypes[$constraint[0]['on_update']] : null,
+                            'onDelete' => $actionTypes[$constraint[0]['on_delete']] ?? null,
+                            'onUpdate' => $actionTypes[$constraint[0]['on_update']] ?? null,
                         ]);
                         break;
                     case 'u':

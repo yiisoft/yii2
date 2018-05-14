@@ -29,7 +29,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             static::$params = require __DIR__ . '/data/config.php';
         }
 
-        return isset(static::$params[$name]) ? static::$params[$name] : $default;
+        return static::$params[$name] ?? $default;
     }
 
     /**

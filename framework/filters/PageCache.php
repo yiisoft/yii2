@@ -226,7 +226,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
         if (!empty($data['dynamicPlaceholders']) && is_array($data['dynamicPlaceholders'])) {
             $response->content = $this->updateDynamicContent($response->content, $data['dynamicPlaceholders'], true);
         }
-        $this->afterRestoreResponse(isset($data['cacheData']) ? $data['cacheData'] : null);
+        $this->afterRestoreResponse($data['cacheData'] ?? null);
     }
 
     /**

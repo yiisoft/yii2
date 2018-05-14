@@ -112,7 +112,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         // create a record starting from version 5
 
-        $request->setBodyParams(['version' => 5]);
+        $request->setParsedBody(['version' => 5]);
         Yii::$app->set('request', $request);
 
         $model = new ActiveRecordLockVersion();
@@ -154,7 +154,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         // save stale data by sending an outdated version
 
-        $request->setBodyParams(['version' => 0]);
+        $request->setParsedBody(['version' => 0]);
         Yii::$app->set('request', $request);
 
         $thrown = false;
@@ -170,7 +170,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         // save stale data by sending an 'invalid' version number
 
-        $request->setBodyParams(['version' => 'yii']);
+        $request->setParsedBody(['version' => 'yii']);
         Yii::$app->set('request', $request);
 
         $thrown = false;
@@ -190,7 +190,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         // a successful update by sending the correct version
 
-        $request->setBodyParams(['version' => '1']);
+        $request->setParsedBody(['version' => '1']);
         Yii::$app->set('request', $request);
 
         $model->save(false);
@@ -228,7 +228,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         // delete stale data by sending an outdated version
 
-        $request->setBodyParams(['version' => 0]);
+        $request->setParsedBody(['version' => 0]);
         Yii::$app->set('request', $request);
 
         $thrown = false;
@@ -244,7 +244,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         // a successful update by sending the correct version
 
-        $request->setBodyParams(['version' => '1']);
+        $request->setParsedBody(['version' => '1']);
         Yii::$app->set('request', $request);
 
         $model->delete();
