@@ -1,7 +1,8 @@
 テンプレートエンジンを使う
 ==========================
 
-デフォルトでは、Yii は PHP をテンプレート言語として使いますが、[Twig](http://twig.sensiolabs.org/) や [Smarty](http://www.smarty.net/) などの他のレンダリング・エンジンをサポートするように Yii を構成することが出来ます。
+デフォルトでは、Yii は PHP をテンプレート言語として使いますが、[Twig](http://twig.sensiolabs.org/) や
+[Smarty](http://www.smarty.net/) などの他のレンダリング・エンジンをサポートするように Yii を構成することが出来ます。
 
 `view` コンポーネントがビューのレンダリングに責任を持っています。
 このコンポーネントのビヘイビアを構成することによって、カスタム・テンプレート・エンジンを追加することが出来ます。
@@ -40,11 +41,9 @@
 "yiisoft/yii2-smarty": "~2.0.0",
 "yiisoft/yii2-twig": "~2.0.0",
 ```
-
-上のコードを `composer.json` の `require` セクションに追加します。
-変更をファイルに保存した後、コマンドラインで `composer update --prefer-dist` を実行することによってエクステンションをインストールすることが出来ます。
+上のコードを `composer.json` の `require` セクションに追加します。変更をファイルに保存した後、コマンドラインで `composer update --prefer-dist` を実行することによってエクステンションをインストールすることが出来ます。
 
 具体的にテンプレート・エンジンを使用する方法については、それぞれのドキュメントで詳細を参照してください。
 
-- [Twig ガイド](https://github.com/yiisoft/yii2-twig/tree/master/docs/guide-ja)
-- [Smarty ガイド](https://github.com/yiisoft/yii2-smarty/tree/master/docs/guide-ja)
+- [Twig ガイド](https://www.yiiframework.com/extension/yiisoft/yii2-twig/doc/guide/)
+- [Smarty ガイド](https://www.yiiframework.com/extension/yiisoft/yii2-smarty/doc/guide/)

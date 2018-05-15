@@ -85,11 +85,11 @@ class DetailViewTest extends \yiiunit\TestCase
         ]);
 
         $this->assertEquals(
-            'ИдентификаторТовара:A00001',
+            'Идентификатор Товара:A00001',
             $this->detailView->renderAttribute($this->detailView->attributes[0], 0)
         );
         $this->assertEquals(
-            'το αναγνωριστικό του:A00002',
+            'Το Αναγνωριστικό Του:A00002',
             $this->detailView->renderAttribute($this->detailView->attributes[1], 1)
         );
     }

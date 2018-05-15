@@ -1785,4 +1785,34 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $this->assertEquals(1, $customer->id);
     }
+
+    public function testResetNotSavedRelation()
+    {
+        $order = new Order();
+        $order->customer_id = 1;
+        $order->total = 0;
+
+        $orderItem = new OrderItem();
+        $order->orderItems;
+        $order->populateRelation('orderItems', [$orderItem]);
+        $order->save();
+
+        $this->assertEquals(1, sizeof($order->orderItems));
+    }
+
+    public function testIssetException()
+    {
+        $cat = new Cat();
+        $this->assertFalse(isset($cat->exception));
+    }
+
+    /**
+     * @requires PHP 7
+     */
+    public function testIssetThrowable()
+    {
+        $cat = new Cat();
+        $this->assertFalse(isset($cat->throwable));
+
+    }
 }

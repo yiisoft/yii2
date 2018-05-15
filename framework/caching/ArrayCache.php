@@ -24,7 +24,7 @@ namespace yii\caching;
  */
 class ArrayCache extends Cache
 {
-    private $_cache;
+    private $_cache = [];
 
 
     /**
