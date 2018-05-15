@@ -340,12 +340,15 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function renderPhpFile($_file_, $_params_ = [])
     {
+        $md5FileName = md5($_file_);
+        $$md5FileName = $_file_;
+
         $_obInitialLevel_ = ob_get_level();
         ob_start();
         ob_implicit_flush(false);
         extract($_params_, EXTR_OVERWRITE);
         try {
-            require $_file_;
+            require $$md5FileName;
             return ob_get_clean();
         } catch (\Exception $e) {
             while (ob_get_level() > $_obInitialLevel_) {
