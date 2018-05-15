@@ -342,7 +342,7 @@ class BaseInflector
     {
         $words = static::humanize(static::underscore($words), $ucAll);
 
-        return $ucAll ? mb_convert_case($words, MB_CASE_TITLE, self::encoding()) : self::mb_ucfirst($words, self::encoding());
+        return $ucAll ? StringHelper::mb_ucwords($words, self::encoding()) : StringHelper::mb_ucfirst($words, self::encoding());
     }
 
     /**
@@ -357,7 +357,7 @@ class BaseInflector
      */
     public static function camelize($word)
     {
-        return str_replace(' ', '', mb_convert_case(preg_replace('/[^\pL\pN]+/u', ' ', $word), MB_CASE_TITLE, self::encoding()));
+        return str_replace(' ', '', StringHelper::mb_ucwords(preg_replace('/[^\pL\pN]+/u', ' ', $word), self::encoding()));
     }
 
     /**
@@ -375,7 +375,7 @@ class BaseInflector
             '.',
         ], ' ', preg_replace('/(\p{Lu})/u', ' \0', $name))), self::encoding());
 
-        return $ucwords ? mb_convert_case($label, MB_CASE_TITLE, self::encoding()) : $label;
+        return $ucwords ? StringHelper::mb_ucwords($label, self::encoding()) : $label;
     }
 
     /**
@@ -407,7 +407,7 @@ class BaseInflector
      */
     public static function id2camel($id, $separator = '-')
     {
-        return str_replace(' ', '', mb_convert_case(str_replace($separator, ' ', $id), MB_CASE_TITLE, self::encoding()));
+        return str_replace(' ', '', StringHelper::mb_ucwords(str_replace($separator, ' ', $id), self::encoding()));
     }
 
     /**
@@ -431,7 +431,7 @@ class BaseInflector
         $word = str_replace('_', ' ', preg_replace('/_id$/', '', $word));
         $encoding = self::encoding();
 
-        return $ucAll ? mb_convert_case($word, MB_CASE_TITLE, $encoding) : self::mb_ucfirst($word, $encoding);
+        return $ucAll ? StringHelper::mb_ucwords($word, $encoding) : StringHelper::mb_ucfirst($word, $encoding);
     }
 
     /**
@@ -609,18 +609,4 @@ class BaseInflector
         return isset(Yii::$app) ? Yii::$app->charset : 'UTF-8';
     }
 
-    /**
-     * The same as built-in `ucfirst`, but unicode-safe
-     *
-     * @param string $string
-     * @param string $encoding
-     * @return string
-     */
-    private static function mb_ucfirst($string, $encoding)
-    {
-        $firstChar = mb_substr($string, 0, 1, $encoding);
-        $rest = mb_substr($string, 1, null, $encoding);
-
-        return mb_strtoupper($firstChar, $encoding) . $rest;
-    }
 }

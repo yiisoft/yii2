@@ -814,12 +814,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         $_SESSION[$this->flashParam] = $counters;
         if (empty($_SESSION[$key])) {
             $_SESSION[$key] = [$value];
+        } elseif (is_array($_SESSION[$key])) {
+            $_SESSION[$key][] = $value;
         } else {
-            if (is_array($_SESSION[$key])) {
-                $_SESSION[$key][] = $value;
-            } else {
-                $_SESSION[$key] = [$_SESSION[$key], $value];
-            }
+            $_SESSION[$key] = [$_SESSION[$key], $value];
         }
     }
 

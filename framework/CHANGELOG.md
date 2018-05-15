@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh: Modified yii\web\XmlResponseFormatter to accept attributes for xml elements (codespede)
+- Enh #9133: Added `yii\behaviors\OptimisticLockBehavior` (tunecino)
 - Bug #16193: Fixed `yii\filters\Cors` to not reflect origin header value when configured to wildcard origins (Jianjun Chen)
 - Bug #16068: Fixed `yii\web\CookieCollection::has` when an expiration param is set to 'until the browser is closed' (OndrejVasicek)
 - Bug #16006: Handle case when `X-Forwarded-Host` header have multiple hosts separated with a comma (pgaultier)
@@ -19,7 +20,13 @@ Yii Framework 2 Change Log
 - Bug #16091: Make `yii\test\InitDbFixture` work with non-SQL DBMS (cebe)
 - Bug #16184: Fixed `yii\base\Widget` to access `stack` property with `self` instead of `static` (yanggs07)
 - Bug #16039: Fixed implicit conversion from `char` to `varbinnary` in MSSQL (vsivsivsi)
+- Bug #16217: Fixed `yii\console\controllers\HelpController` to work well in Windows environment (samdark)
+- Bug #14636: Views can now use relative paths even when using themed views (sammousa)
+- Bug #16245: Fixed `__isset()` in `BaseActiveRecord` not catching errors (sammousa)
+- Bug #16266: Fixed `yii\helpers\BaseStringHelper` where explode would not allow 0 as trim string (Thoulah)
+- Bug #16277: Fixed `yii\db\Query::from()` to respect `yii\db\ExpressionInterface` (noname007)
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
+- Bug: Fixed bad instnaceof check in `yii\db\Schema::getTableMetadata()` (samdark)
 
 
 2.0.15.1 March 21, 2018

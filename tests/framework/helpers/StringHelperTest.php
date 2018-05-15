@@ -16,6 +16,7 @@ use yiiunit\TestCase;
  */
 class StringHelperTest extends TestCase
 {
+
     protected function setUp()
     {
         parent::setUp();
@@ -266,6 +267,7 @@ class StringHelperTest extends TestCase
         $this->assertEquals(['It', 'is', 'a test with trimmed digits', '0', '1', '2'], StringHelper::explode('It, is, a test with trimmed digits, 0, 1, 2', ',', true, true));
         $this->assertEquals(['It', 'is', 'a second', 'test'], StringHelper::explode('It+ is+ a second+ test', '+'));
         $this->assertEquals(['Save', '', '', 'empty trimmed string'], StringHelper::explode('Save, ,, empty trimmed string', ','));
+        $this->assertEquals(['44', '512'], StringHelper::explode('0 0 440 512', ' ', '0', true));
         $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::explode('Здесь我 multibyte我 строка', '我'));
         $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::explode('Disable,  trim  ,,,here but ignore empty', ',', false, true));
         $this->assertEquals(['It/', ' is?', ' a', ' test with rtrim'], StringHelper::explode('It/, is?, a , test with rtrim', ',', 'rtrim'));
@@ -398,5 +400,49 @@ class StringHelperTest extends TestCase
     public function testMatchWildcard($pattern, $string, $expectedResult, $options = [])
     {
         $this->assertSame($expectedResult, StringHelper::matchWildcard($pattern, $string, $options));
+    }
+
+    public function dataProviderMb_ucfirst()
+    {
+        return [
+            ['foo', 'Foo'],
+            ['foo bar', 'Foo bar'],
+            ['👍🏻 foo bar', '👍🏻 foo bar'],
+            ['', ''],
+            [null, ''],
+            ['здесь我 multibyte我 строка', 'Здесь我 multibyte我 строка'],
+        ];
+    }
+
+    /**
+     * @param string $string
+     * @param string $expectedResult
+     * @dataProvider dataProviderMb_ucfirst
+     */
+    public function testMb_ucfirst($string, $expectedResult)
+    {
+        $this->assertSame($expectedResult, StringHelper::mb_ucfirst($string));
+    }
+
+    public function dataProviderMb_ucwords()
+    {
+        return [
+            ['foo', 'Foo'],
+            ['foo bar', 'Foo Bar'],
+            ['👍🏻 foo bar', '👍🏻 Foo Bar'],
+            ['', ''],
+            [null, ''],
+            ['здесь我 multibyte我 строка', 'Здесь我 Multibyte我 Строка'],
+        ];
+    }
+
+    /**
+     * @param string $string
+     * @param string $expectedResult
+     * @dataProvider dataProviderMb_ucwords
+     */
+    public function testMb_ucwords($string, $expectedResult)
+    {
+        $this->assertSame($expectedResult, StringHelper::mb_ucwords($string));
     }
 }
