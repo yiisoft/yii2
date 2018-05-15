@@ -90,9 +90,9 @@ STRING
         $result = Console::stripAnsiFormat($this->runControllerAction('list'));
         $this->assertEqualsWithoutLE(<<<'STRING'
 cache
-cache/flush
-cache/flush-all
-cache/flush-schema
+cache/clear
+cache/clear-all
+cache/clear-schema
 cache/index
 help
 help/index
@@ -181,7 +181,7 @@ STRING
         $this->assertContains('- address: string (defaults to \'localhost\')', $result);
         $this->assertContains('--appconfig: string', $result);
         $this->assertContains('--color: boolean, 0 or 1', $result);
-        $this->assertContains('--docroot, -t: string (defaults to \'@app/web\')', $result);
+        $this->assertContains('--docroot, -t: string (defaults to \'public\')', $result);
         $this->assertContains('--help, -h: boolean, 0 or 1', $result);
         $this->assertContains('--interactive: boolean, 0 or 1 (defaults to 1)', $result);
         $this->assertContains('--port, -p: int (defaults to 8080)', $result);

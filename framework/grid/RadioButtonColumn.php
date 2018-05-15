@@ -20,7 +20,7 @@ use yii\helpers\Html;
  * 'columns' => [
  *     // ...
  *     [
- *         'class' => 'yii\grid\RadioButtonColumn',
+ *         '__class' => \yii\grid\RadioButtonColumn::class,
  *         'radioOptions' => function ($model) {
  *              return [
  *                  'value' => $model['value'],
@@ -92,7 +92,7 @@ class RadioButtonColumn extends Column
                 $options['value'] = is_array($key) ? json_encode($key, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : $key;
             }
         }
-        $checked = isset($options['checked']) ? $options['checked'] : false;
+        $checked = $options['checked'] ?? false;
         return Html::radio($this->name, $checked, $options);
     }
 }

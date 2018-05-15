@@ -11,7 +11,7 @@ use Yii;
 use yii\filters\auth\AuthMethod;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
-use yii\rest\Controller;
+use yii\web\Controller;
 use yiiunit\framework\web\UserIdentity;
 
 /**
@@ -68,9 +68,9 @@ class TestController extends Controller
          */
         return [
             'authenticator' => [
-                'class' => CompositeAuth::className(),
+                '__class' => CompositeAuth::class,
                 'authMethods' => $this->authMethods ?: [
-                    TestAuth::className(),
+                    TestAuth::class,
                 ],
             ],
         ];
@@ -92,11 +92,11 @@ class CompositeAuthTest extends \yiiunit\TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
             'controllerMap' => [
-                'test' => TestController::className(),
+                'test' => TestController::class,
             ],
         ];
 
@@ -129,12 +129,12 @@ class CompositeAuthTest extends \yiiunit\TestCase
 
     public function testCompositeAuth()
     {
-        Yii::$app->request->headers->set('Authorization', base64_encode("foo:bar"));
+        Yii::$app->request->setHeader('Authorization', base64_encode("foo:bar"));
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test')[0];
         $controller->authMethods = [
-            HttpBearerAuth::className(),
-            TestAuth::className(),
+            HttpBearerAuth::class,
+            TestAuth::class,
         ];
         try {
             $this->assertEquals('success', $controller->run('b'));

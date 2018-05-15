@@ -65,8 +65,8 @@ class BaseIpHelper
      */
     public static function inRange($subnet, $range)
     {
-        list($ip, $mask) = array_pad(explode('/', $subnet), 2, null);
-        list($net, $netMask) = array_pad(explode('/', $range), 2, null);
+        [$ip, $mask] = array_pad(explode('/', $subnet), 2, null);
+        [$net, $netMask] = array_pad(explode('/', $range), 2, null);
 
         $ipVersion = static::getIpVersion($ip);
         $netVersion = static::getIpVersion($net);
@@ -75,8 +75,8 @@ class BaseIpHelper
         }
 
         $maxMask = $ipVersion === self::IPV4 ? self::IPV4_ADDRESS_LENGTH : self::IPV6_ADDRESS_LENGTH;
-        $mask = isset($mask) ? $mask : $maxMask;
-        $netMask = isset($netMask) ? $netMask : $maxMask;
+        $mask = $mask ?? $maxMask;
+        $netMask = $netMask ?? $maxMask;
 
         $binIp = static::ip2bin($ip);
         $binNet = static::ip2bin($net);

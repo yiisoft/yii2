@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\log;
 
-use yii\log\Dispatcher;
+use Psr\Log\LogLevel;
 use yii\log\Logger;
 use yii\log\Target;
 use yiiunit\TestCase;
@@ -24,15 +24,15 @@ class TargetTest extends TestCase
         return [
             [[], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']],
 
-            [['levels' => 0], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']],
+            [['levels' => []], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']],
             [
-                ['levels' => Logger::LEVEL_INFO | Logger::LEVEL_WARNING | Logger::LEVEL_ERROR | Logger::LEVEL_TRACE],
+                ['levels' => [LogLevel::INFO, LogLevel::WARNING, LogLevel::ERROR, LogLevel::DEBUG]],
                 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
             ],
             [['levels' => ['error']], ['B', 'G', 'H', 'I']],
-            [['levels' => Logger::LEVEL_ERROR], ['B', 'G', 'H', 'I']],
+            [['levels' => [LogLevel::ERROR]], ['B', 'G', 'H', 'I']],
             [['levels' => ['error', 'warning']], ['B', 'C', 'G', 'H', 'I']],
-            [['levels' => Logger::LEVEL_ERROR | Logger::LEVEL_WARNING], ['B', 'C', 'G', 'H', 'I']],
+            [['levels' => [LogLevel::ERROR, LogLevel::WARNING]], ['B', 'C', 'G', 'H', 'I']],
 
             [['categories' => ['application']], ['A', 'B', 'C', 'D', 'E']],
             [['categories' => ['application*']], ['A', 'B', 'C', 'D', 'E', 'F']],
@@ -45,9 +45,9 @@ class TargetTest extends TestCase
             [['except' => ['yii\db\*']], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']],
             [['categories' => ['yii*'], 'except' => ['yii\db\*']], ['G', 'H']],
 
-            [['categories' => ['application', 'yii.db.*'], 'levels' => Logger::LEVEL_ERROR], ['B', 'G', 'H']],
-            [['categories' => ['application'], 'levels' => Logger::LEVEL_ERROR], ['B']],
-            [['categories' => ['application'], 'levels' => Logger::LEVEL_ERROR | Logger::LEVEL_WARNING], ['B', 'C']],
+            [['categories' => ['application', 'yii.db.*'], 'levels' => [LogLevel::ERROR]], ['B', 'G', 'H']],
+            [['categories' => ['application'], 'levels' => [LogLevel::ERROR]], ['B']],
+            [['categories' => ['application'], 'levels' => [LogLevel::ERROR, LogLevel::WARNING]], ['B', 'C']],
         ];
     }
 
@@ -60,26 +60,24 @@ class TargetTest extends TestCase
     {
         static::$messages = [];
 
-        $logger = new Logger();
-        $dispatcher = new Dispatcher([
-            'logger' => $logger,
+        $logger = new Logger([
             'targets' => [new TestTarget(array_merge($filter, ['logVars' => []]))],
             'flushInterval' => 1,
         ]);
-        $logger->log('testA', Logger::LEVEL_INFO);
-        $logger->log('testB', Logger::LEVEL_ERROR);
-        $logger->log('testC', Logger::LEVEL_WARNING);
-        $logger->log('testD', Logger::LEVEL_TRACE);
-        $logger->log('testE', Logger::LEVEL_INFO, 'application');
-        $logger->log('testF', Logger::LEVEL_INFO, 'application.components.Test');
-        $logger->log('testG', Logger::LEVEL_ERROR, 'yii.db.Command');
-        $logger->log('testH', Logger::LEVEL_ERROR, 'yii.db.Command.whatever');
-        $logger->log('testI', Logger::LEVEL_ERROR, 'yii\db\Command::query');
+        $logger->log(LogLevel::INFO, 'testA');
+        $logger->log(LogLevel::ERROR, 'testB');
+        $logger->log(LogLevel::WARNING, 'testC');
+        $logger->log(LogLevel::DEBUG, 'testD');
+        $logger->log(LogLevel::INFO, 'testE', ['category' => 'application']);
+        $logger->log(LogLevel::INFO, 'testF', ['category' => 'application.components.Test']);
+        $logger->log(LogLevel::ERROR, 'testG', ['category' => 'yii.db.Command']);
+        $logger->log(LogLevel::ERROR, 'testH', ['category' => 'yii.db.Command.whatever']);
+        $logger->log(LogLevel::ERROR, 'testI', ['category' => 'yii\db\Command::query']);
 
         $this->assertEquals(count($expected), count(static::$messages), 'Expected ' . implode(',', $expected) . ', got ' . implode(',', array_column(static::$messages, 0)));
         $i = 0;
         foreach ($expected as $e) {
-            $this->assertEquals('test' . $e, static::$messages[$i++][0]);
+            $this->assertEquals('test' . $e, static::$messages[$i++][1]);
         }
     }
 
@@ -131,44 +129,6 @@ class TargetTest extends TestCase
         $this->assertNotContains('E_c', $context);
     }
 
-    /**
-     * @covers \yii\log\Target::setLevels()
-     * @covers \yii\log\Target::getLevels()
-     */
-    public function testSetupLevelsThroughArray()
-    {
-        $target = $this->getMockForAbstractClass('yii\\log\\Target');
-
-        $target->setLevels(['info', 'error']);
-        $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_ERROR, $target->getLevels());
-
-        $target->setLevels(['trace']);
-        $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
-
-        $this->expectException('yii\\base\\InvalidConfigException');
-        $this->expectExceptionMessage('Unrecognized level: unknown level');
-        $target->setLevels(['info', 'unknown level']);
-    }
-
-    /**
-     * @covers \yii\log\Target::setLevels()
-     * @covers \yii\log\Target::getLevels()
-     */
-    public function testSetupLevelsThroughBitmap()
-    {
-        $target = $this->getMockForAbstractClass('yii\\log\\Target');
-
-        $target->setLevels(Logger::LEVEL_INFO | Logger::LEVEL_WARNING);
-        $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_WARNING, $target->getLevels());
-
-        $target->setLevels(Logger::LEVEL_TRACE);
-        $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
-
-        $this->expectException('yii\\base\\InvalidConfigException');
-        $this->expectExceptionMessage('Incorrect 128 value');
-        $target->setLevels(128);
-    }
-
     public function testGetEnabled()
     {
         /** @var Target $target */
@@ -192,24 +152,24 @@ class TargetTest extends TestCase
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
         $text = 'message';
-        $level = Logger::LEVEL_INFO;
+        $level = LogLevel::INFO;
         $category = 'application';
         $timestamp = 1508160390.6083;
 
         $expectedWithoutMicro = '2017-10-16 13:26:30 [info][application] message';
-        $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
+        $formatted = $target->formatMessage([$level, $text, ['category' => $category, 'time' => $timestamp]]);
         $this->assertSame($expectedWithoutMicro, $formatted);
 
         $target->microtime = true;
 
         $expectedWithMicro = '2017-10-16 13:26:30.6083 [info][application] message';
-        $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
+        $formatted = $target->formatMessage([$level, $text, ['category' => $category, 'time' => $timestamp]]);
         $this->assertSame($expectedWithMicro, $formatted);
 
         $timestamp = 1508160390;
 
         $expectedWithoutMicro = '2017-10-16 13:26:30 [info][application] message';
-        $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
+        $formatted = $target->formatMessage([$level, $text, ['category' => $category, 'time' => $timestamp]]);
         $this->assertSame($expectedWithoutMicro, $formatted);
     }
 }

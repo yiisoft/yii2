@@ -20,7 +20,7 @@ Sessions 和 cookies 允许数据在多次请求中保持，
 ```php
 $session = Yii::$app->session;
 
-// 检查session是否开启 
+// 检查session是否开启
 if ($session->isActive) ...
 
 // 开启session

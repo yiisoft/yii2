@@ -149,7 +149,7 @@ for session storage:
 return [
     'components' => [
         'session' => [
-            'class' => 'yii\web\DbSession',
+            '__class' => yii\web\DbSession::class,
             // 'db' => 'mydb',  // the application component ID of the DB connection. Defaults to 'db'.
             // 'sessionTable' => 'my_session', // session table name. Defaults to 'session'.
         ],

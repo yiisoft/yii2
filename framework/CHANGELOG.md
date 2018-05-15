@@ -1,10 +1,66 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.1.0 under development
+-----------------------
+
+- Bug #16065: Remove using `date.timezone` at `yii\base\Application`, use `date_default_timezone_get()` instead (sashsvamir)
+- Bug #12539: `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on content-type negotiation fail (PowerGamer1)
+- Bug #14458: Fixed `yii\filters\VerbFilter` uses case-insensitive comparison for the HTTP method name (klimov-paul)
+- Enh #879: Caching implementation refactored according to PSR-16 'Simple Cache' specification (klimov-paul)
+- Enh #11328: Added support for PSR-7 'HTTP Message' (klimov-paul)
+- Enh #14339: Uploaded file retrieve methods have been moved from `yii\http\UploadedFile` to `yii\web\Request` (klimov-paul)
+- Enh #4352: Result of `yii\web\Request::getBodyParams()` now includes uploaded files (klimov-paul)
+- Enh #14522: `yii\web\Request::getBodyParams()` now generates 415 'Unsupported Media Type' error on invalid or missing 'Content-Type' header (klimov-paul)
+- Enh #13799: CAPTCHA rendering logic extracted into `yii\captcha\DriverInterface`, which instance is available via `yii\captcha\CaptchaAction::$driver` field (vladis84, klimov-paul)
+- Enh #9137: Added `clearErrors` parameter to `yii\base\Model` `validateMultiple()` method (developeruz)
+- Enh #9260: Mail view rendering encapsulated into `yii\mail\Template` class allowing rendering in isolation and access to `yii\mail\MessageInterface` instance via `$this->context->message` inside the view (klimov-paul)
+- Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)
+- Enh #12385: Methods `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()` have been added to `yii\mail\MessageInterface` allowing setup of custom message headers (klimov-paul)
+- Enh #12592: Optimized `yii\filters\AccessController` on processing accessrules (dynasource)
+- Enh #12938: Allow to pass additional parameters to `yii\base\View::renderDynamic()` (mikehaertl)
+- Enh #13006: Added a `/` to the `yii\captcha\Captcha::$captchaAction` string to work correctly in a module also (boehsermoe)
+- Enh #13702: Added support for PSR-3 'Logger' (klimov-paul)
+- Enh #13706: 'Profiler' layer extracted (klimov-paul)
+- Enh #15410: Added serialization abstraction layer under `yii\serialize\*` namespace (klimov-paul)
+- Enh #608: Added `yii\web\AssetConverter::$isOutdatedCallback` allowing custom check for outdated asset conversion result (klimov-paul)
+- Enh: Objects `yii\helpers\ReplaceArrayValue`, `yii\helpers\UnsetArrayValue` now support restoring after being exported with `var_export()` function (silverfire)
+- Chg: Removed methods marked as deprecated in 2.0.x (samdark)
+- Chg #8452: Packages 'captcha', 'jquery', 'rest', 'mssql' and 'oracle' have been extracted into extensions (klimov-paul)
+- Chg #15383: PJAX support removed (klimov-paul)
+- Chg #15383: CUBRID database support removed (klimov-paul)
+- Chg #14784: Signature of `yii\web\RequestParserInterface::parse()` changed to accept `yii\web\Request` instance as a sole argument (klimov-paul)
+- Chg #10771: Consistent behavior of `run()` method in all framework widgets. All return the result now for better extensibility (pkirill99, cebe)
+- Chg #11397: Minimum required version of PHP is 7.1 now (samdark)
+- Chg: Removed `yii\base\Object::className()` in favor of native PHP syntax `::class`, which does not trigger autoloading (cebe)
+- Chg #12074: Updated `yii\widgets\ActiveField::hint()` method signature to match `label()` (PowerGamer1, samdark)
+- Chg #11560: Removed XCache and Zend data cache support as caching backends (samdark)
+- Chg #7770: Updated the fallback date formats used when no `intl` extension is installed to match the defaults of the latest ICU version (cebe)
+- Chg #13080: Rename `yii\base\InvalidParamException` to `yii\base\InvalidArgumentException` (arogachev)
+- Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
+- Chg #9260: Mail message composition extracted into separated class `yii\mail\Composer`, which setup is available via `yii\mail\BaseMailer::$composer` (klimov-paul)
+- Chg: Moved masked input field widget into separate extension https://github.com/yiisoft/yii2-maskedinput (samdark)
+- Chg #12089: Behavior of `yii\grid\DataColumn::$filterInputOptions` changed when default value is overwritten (bvanleeuwen, cebe)
+- Chg #13885: Removed APC support in ApcCache, APCu works as before (samdark)
+- Chg #14178: Removed HHVM-specific code (samdark)
+- Enh #14671: use `random_int()` instead of `mt_rand()` to generate cryptographically secure pseudo-random integers (yyxx9988)
+- Chg #14761: Removed Yii autoloader in favor of Composer's PSR-4 implementation (samdark)
+- Chg #15448: Package "ezyang/htmlpurifier" has been made optional and is not installed by default (klimov-paul)
+- Chg #15481: Removed `yii\BaseYii::powered()` method (Kolyunya, samdark)
+- Chg #15811: Fixed issue with additional parameters on `yii\base\View::renderDynamic()` while parameters contains single quote introduced in #12938 (xicond)
+- Enh #16054: Callback execution with mutex synchronization (zhuravljov)
+- Enh #16126: Allows to configure `Connection::dsn` by config array (leandrogehlen)
+- Chg #11397: `yii\i18n\MessageFormatter` polyfills and `yii\i18n\MessageFormatter::parse()` method were removed resulting in performance boost. See UPGRADE for compatibility notes (samdark)
+
+2.0.14.2 under development
+------------------------
+
+- Bug #15801: Fixed `has-error` CSS class assignment in `yii\widgets\ActiveField` when attribute name is prefixed with tabular index (FabrizioCaldarelli)
 2.0.16 under development
 ------------------------
 
 - Enh: Modified yii\web\XmlResponseFormatter to accept attributes for xml elements (codespede)
+- Enh #9133: Added `yii\behaviors\OptimisticLockBehavior` (tunecino)
 - Bug #16193: Fixed `yii\filters\Cors` to not reflect origin header value when configured to wildcard origins (Jianjun Chen)
 - Bug #16068: Fixed `yii\web\CookieCollection::has` when an expiration param is set to 'until the browser is closed' (OndrejVasicek)
 - Bug #16006: Handle case when `X-Forwarded-Host` header have multiple hosts separated with a comma (pgaultier)
@@ -19,7 +75,12 @@ Yii Framework 2 Change Log
 - Bug #16091: Make `yii\test\InitDbFixture` work with non-SQL DBMS (cebe)
 - Bug #16184: Fixed `yii\base\Widget` to access `stack` property with `self` instead of `static` (yanggs07)
 - Bug #16039: Fixed implicit conversion from `char` to `varbinnary` in MSSQL (vsivsivsi)
+- Bug #16217: Fixed `yii\console\controllers\HelpController` to work well in Windows environment (samdark)
+- Bug #14636: Views can now use relative paths even when using themed views (sammousa)
+- Bug #16245: Fixed `__isset()` in `BaseActiveRecord` not catching errors (sammousa)
+- Bug #16266: Fixed `yii\helpers\BaseStringHelper` where explode would not allow 0 as trim string (Thoulah)
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
+- Bug: Fixed bad instnaceof check in `yii\db\Schema::getTableMetadata()` (samdark)
 
 
 2.0.15.1 March 21, 2018

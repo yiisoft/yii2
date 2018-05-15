@@ -24,7 +24,7 @@ use yii\helpers\Json;
  *     // ...
  *     'formatters' => [
  *         \yii\web\Response::FORMAT_JSON => [
- *              'class' => 'yii\web\JsonResponseFormatter',
+ *              '__class' => \yii\web\JsonResponseFormatter::class,
  *              'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
  *              // ...
  *         ],
@@ -96,7 +96,7 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
         } elseif (strpos($this->contentType, 'charset') === false) {
             $this->contentType .= '; charset=UTF-8';
         }
-        $response->getHeaders()->set('Content-Type', $this->contentType);
+        $response->setHeader('Content-Type', $this->contentType);
   
         if ($this->useJsonp) {
             $this->formatJsonp($response);

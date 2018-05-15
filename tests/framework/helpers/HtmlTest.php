@@ -24,14 +24,14 @@ class HtmlTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'request' => [
-                    'class' => 'yii\web\Request',
+                    '__class' => \yii\web\Request::class,
                     'url' => '/test',
                     'scriptUrl' => '/index.php',
                     'hostInfo' => 'http://www.example.com',
                     'enableCsrfValidation' => false,
                 ],
                 'response' => [
-                    'class' => 'yii\web\Response',
+                    '__class' => \yii\web\Response::class,
                 ],
             ],
         ]);
@@ -111,7 +111,7 @@ class HtmlTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'request' => [
-                    'class' => 'yii\web\Request',
+                    '__class' => \yii\web\Request::class,
                     'enableCsrfValidation' => false,
                 ],
             ],
@@ -124,12 +124,12 @@ class HtmlTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'request' => [
-                    'class' => 'yii\web\Request',
+                    '__class' => \yii\web\Request::class,
                     'enableCsrfValidation' => true,
                     'cookieValidationKey' => 'key',
                 ],
                 'response' => [
-                    'class' => 'yii\web\Response',
+                    '__class' => \yii\web\Response::class,
                 ],
             ],
         ]);
@@ -143,13 +143,13 @@ class HtmlTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'request' => [
-                    'class' => 'yii\web\Request',
+                    '__class' => \yii\web\Request::class,
                     'enableCsrfValidation' => true,
                 ],
             ],
         ]);
-        $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('yii\web\Request::cookieValidationKey must be configured with a secret key.');
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('yii\web\Request::$cookieValidationKey must be configured with a secret key.');
         Html::csrfMetaTags();
     }
 
@@ -1292,7 +1292,7 @@ EOD;
         }
         $model->validate(null, false);
 
-        $this->assertEquals($expectedHtml, Html::errorSummary($model, $options));
+        $this->assertEqualsWithoutLE($expectedHtml, Html::errorSummary($model, $options));
     }
 
     public function testError()
@@ -1549,7 +1549,12 @@ EOD;
      */
     public function testAttributeNameValidation($name, $expected)
     {
-        $this->assertEquals($expected, Html::getAttributeName($name));
+        if (!isset($expected)) {
+            $this->expectException('yii\base\InvalidArgumentException');
+            Html::getAttributeName($name);
+        } else {
+            $this->assertEquals($expected, Html::getAttributeName($name));
+        }
     }
 
     /**
@@ -1609,7 +1614,7 @@ EOD;
         $actual = Html::getAttributeValue($model, 'types');
         $this->assertSame($expected, $actual);
 
-        $activeRecord = $this->getMockBuilder('yii\\db\\ActiveRecordInterface')->getMock();
+        $activeRecord = $this->createMock(\yii\db\ActiveRecordInterface::class);
         $activeRecord->method('getPrimaryKey')->willReturn(1);
         $model->types = $activeRecord;
 
@@ -1642,14 +1647,14 @@ EOD;
      */
     public function testGetInputNameInvalidArgumentExceptionFormName()
     {
-        $model = $this->getMockBuilder('yii\\base\\Model')->getMock();
+        $model = $this->createMock(\yii\base\Model::class);
         $model->method('formName')->willReturn('');
         Html::getInputName($model, '[foo]bar');
     }
 
     public function testGetInputName()
     {
-        $model = $this->getMockBuilder('yii\\base\\Model')->getMock();
+        $model = $this->createMock(\yii\base\Model::class);
         $model->method('formName')->willReturn('');
         $expected = 'types';
         $actual = Html::getInputName($model, 'types');

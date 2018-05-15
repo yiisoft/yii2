@@ -27,7 +27,8 @@ use Yii;
  * component. This property is read-only.
  * @property \yii\i18n\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization application component. This property is read-only.
- * @property \yii\log\Dispatcher $log The log dispatcher application component. This property is read-only.
+ * @property \psr\log\LoggerInterface $logger The logger.
+ * @property \yii\profile\ProfilerInterface $profiler The profiler.
  * @property \yii\mail\MailerInterface $mailer The mailer application component. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
@@ -244,22 +245,29 @@ abstract class Application extends Module
         if (isset($config['timeZone'])) {
             $this->setTimeZone($config['timeZone']);
             unset($config['timeZone']);
-        } elseif (!ini_get('date.timezone')) {
-            $this->setTimeZone('UTC');
         }
 
         if (isset($config['container'])) {
             $this->setContainer($config['container']);
-
             unset($config['container']);
+        }
+
+        if (isset($config['logger'])) {
+            $this->setLogger($config['logger']);
+            unset($config['logger']);
+        }
+
+        if (isset($config['profiler'])) {
+            $this->setProfiler($config['profiler']);
+            unset($config['profiler']);
         }
 
         // merge core components with custom components
         foreach ($this->coreComponents() as $id => $component) {
             if (!isset($config['components'][$id])) {
                 $config['components'][$id] = $component;
-            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
-                $config['components'][$id]['class'] = $component['class'];
+            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['__class'])) {
+                $config['components'][$id]['__class'] = $component['__class'];
             }
         }
     }
@@ -338,7 +346,7 @@ abstract class Application extends Module
     protected function registerErrorHandler(&$config)
     {
         if (YII_ENABLE_ERROR_HANDLER) {
-            if (!isset($config['components']['errorHandler']['class'])) {
+            if (!isset($config['components']['errorHandler']['__class'])) {
                 echo "Error: no errorHandler component is configured.\n";
                 exit(1);
             }
@@ -395,7 +403,7 @@ abstract class Application extends Module
 
             return $response->exitStatus;
         } catch (ExitException $e) {
-            $this->end($e->statusCode, isset($response) ? $response : null);
+            $this->end($e->statusCode, $response ?? null);
             return $e->statusCode;
         }
     }
@@ -500,12 +508,43 @@ abstract class Application extends Module
     }
 
     /**
-     * Returns the log dispatcher component.
-     * @return \yii\log\Dispatcher the log dispatcher application component.
+     * Sets up or configure the logger instance.
+     * @param \psr\log\LoggerInterface|\Closure|array|null $logger the logger object or its DI compatible configuration.
+     * @since 2.1.0
      */
-    public function getLog()
+    public function setLogger($logger)
     {
-        return $this->get('log');
+        Yii::setLogger($logger);
+    }
+
+    /**
+     * Returns the logger instance.
+     * @return \psr\log\LoggerInterface the logger instance.
+     * @since 2.1.0
+     */
+    public function getLogger()
+    {
+        return Yii::getLogger();
+    }
+
+    /**
+     * Sets up or configure the profiler instance.
+     * @param \yii\profile\ProfilerInterface|\Closure|array|null $profiler the profiler object or its DI compatible configuration.
+     * @since 2.1.0
+     */
+    public function setProfiler($profiler)
+    {
+        Yii::setProfiler($profiler);
+    }
+
+    /**
+     * Returns the profiler instance.
+     * @return \yii\profile\ProfilerInterface profiler instance.
+     * @since 2.1.0
+     */
+    public function getProfiler()
+    {
+        return Yii::getProfiler();
     }
 
     /**
@@ -624,14 +663,13 @@ abstract class Application extends Module
     public function coreComponents()
     {
         return [
-            'log' => ['class' => 'yii\log\Dispatcher'],
-            'view' => ['class' => 'yii\web\View'],
-            'formatter' => ['class' => 'yii\i18n\Formatter'],
-            'i18n' => ['class' => 'yii\i18n\I18N'],
-            'mailer' => ['class' => 'yii\swiftmailer\Mailer'],
-            'urlManager' => ['class' => 'yii\web\UrlManager'],
-            'assetManager' => ['class' => 'yii\web\AssetManager'],
-            'security' => ['class' => 'yii\base\Security'],
+            'security' => ['__class' => Security::class],
+            'formatter' => ['__class' => \yii\i18n\Formatter::class],
+            'i18n' => ['__class' => \yii\i18n\I18N::class],
+            'mailer' => ['__class' => \yii\swiftmailer\Mailer::class],
+            'assetManager' => ['__class' => \yii\web\AssetManager::class],
+            'urlManager' => ['__class' => \yii\web\UrlManager::class],
+            'view' => ['__class' => \yii\web\View::class],
         ];
     }
 

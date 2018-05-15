@@ -8,8 +8,8 @@
 namespace yii\rbac;
 
 use Yii;
-use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
+use yii\base\InvalidArgumentException;
 use yii\helpers\VarDumper;
 
 /**
@@ -22,9 +22,6 @@ use yii\helpers\VarDumper;
  * PhpManager is mainly suitable for authorization data that is not too big
  * (for example, the authorization data for a personal blog system).
  * Use [[DbManager]] for more complex authorization data.
- *
- * Note that PhpManager is not compatible with facebooks [HHVM](http://hhvm.com/) because
- * it relies on writing php files and including them afterwards which is not supported by HHVM.
  *
  * For more details and usage information on PhpManager, see the [guide article on security authorization](guide:security-authorization).
  *
@@ -724,13 +721,13 @@ class PhpManager extends BaseManager
         $rules = $this->loadFromFile($this->ruleFile);
 
         foreach ($items as $name => $item) {
-            $class = $item['type'] == Item::TYPE_PERMISSION ? Permission::className() : Role::className();
+            $class = $item['type'] == Item::TYPE_PERMISSION ? Permission::class : Role::class;
 
             $this->items[$name] = new $class([
                 'name' => $name,
-                'description' => isset($item['description']) ? $item['description'] : null,
-                'ruleName' => isset($item['ruleName']) ? $item['ruleName'] : null,
-                'data' => isset($item['data']) ? $item['data'] : null,
+                'description' => $item['description'] ?? null,
+                'ruleName' => $item['ruleName'] ?? null,
+                'data' => $item['data'] ?? null,
                 'createdAt' => $itemsMtime,
                 'updatedAt' => $itemsMtime,
             ]);
@@ -801,7 +798,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Invalidates precompiled script cache (such as OPCache or APC) for the given file.
+     * Invalidates precompiled script cache (such as OPCache) for the given file.
      * @param string $file the file path.
      * @since 2.0.9
      */
@@ -809,9 +806,6 @@ class PhpManager extends BaseManager
     {
         if (function_exists('opcache_invalidate')) {
             opcache_invalidate($file, true);
-        }
-        if (function_exists('apc_delete_file')) {
-            @apc_delete_file($file);
         }
     }
 

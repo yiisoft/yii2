@@ -8,6 +8,7 @@
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
+use yii\console\ExitCode;
 use yii\db\Connection;
 
 /**
@@ -33,7 +34,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
                 'id' => 'Migrator',
                 'basePath' => '@yiiunit',
                 'controllerMap' => [
-                    'migrate' => EchoMigrateController::className(),
+                    'migrate' => EchoMigrateController::class,
                 ],
                 'components' => [
                     'db' => static::getConnection(),
@@ -44,7 +45,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         ob_start();
         $result = Yii::$app->runAction($route, $params);
         echo 'Result is ' . $result;
-        if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
+        if ($result !== ExitCode::OK) {
             ob_end_flush();
         } else {
             ob_end_clean();
@@ -82,7 +83,6 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @throws \yii\base\InvalidParamException
      * @throws \yii\db\Exception
      * @throws \yii\base\InvalidConfigException
      * @return \yii\db\Connection

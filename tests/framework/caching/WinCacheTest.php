@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\caching;
 
+use yii\caching\Cache;
 use yii\caching\WinCache;
 
 /**
@@ -19,7 +20,7 @@ class WinCacheTest extends CacheTestCase
     private $_cacheInstance = null;
 
     /**
-     * @return WinCache
+     * @return Cache
      */
     protected function getCacheInstance()
     {
@@ -32,7 +33,9 @@ class WinCacheTest extends CacheTestCase
         }
 
         if ($this->_cacheInstance === null) {
-            $this->_cacheInstance = new WinCache();
+            $this->_cacheInstance = new Cache([
+                'handler' => new WinCache()
+            ]);
         }
 
         return $this->_cacheInstance;

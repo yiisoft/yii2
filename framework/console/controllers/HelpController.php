@@ -55,7 +55,7 @@ class HelpController extends Controller
                 throw new Exception("No help for unknown command \"$name\".");
             }
 
-            list($controller, $actionID) = $result;
+            [$controller, $actionID] = $result;
 
             $actions = $this->getActions($controller);
             if ($actionID !== '' || count($actions) === 1 && $actions[0] === $controller->defaultAction) {
@@ -81,7 +81,7 @@ class HelpController extends Controller
                 continue;
             }
             /** @var $controller Controller */
-            list($controller, $actionID) = $result;
+            [$controller, $actionID] = $result;
             $actions = $this->getActions($controller);
             if (!empty($actions)) {
                 $prefix = $controller->getUniqueId();
@@ -109,20 +109,20 @@ class HelpController extends Controller
         }
 
         /** @var Controller $controller */
-        list($controller, $actionID) = $result;
+        [$controller, $actionID] = $result;
         $action = $controller->createAction($actionID);
         if ($action === null) {
             return;
         }
 
         foreach ($controller->getActionArgsHelp($action) as $argument => $help) {
-            $description = str_replace("\n", '', addcslashes($help['comment'], ':')) ?: $argument;
+            $description = preg_replace("~\R~", '', addcslashes($help['comment'], ':')) ?: $argument;
             $this->stdout($argument . ':' . $description . "\n");
         }
 
         $this->stdout("\n");
         foreach ($controller->getActionOptionsHelp($action) as $argument => $help) {
-            $description = str_replace("\n", '', addcslashes($help['comment'], ':'));
+            $description = preg_replace("~\R~", '', addcslashes($help['comment'], ':'));
             $this->stdout('--' . $argument . ($description ? ':' . $description : '') . "\n");
         }
     }
@@ -142,7 +142,7 @@ class HelpController extends Controller
         }
 
         /** @var Controller $controller */
-        list($controller, $actionID) = $result;
+        [$controller, $actionID] = $result;
         $action = $controller->createAction($actionID);
         if ($action === null) {
             return;
@@ -189,7 +189,7 @@ class HelpController extends Controller
 
             $result = Yii::$app->createController($command);
             if ($result !== false && $result[0] instanceof Controller) {
-                list($controller, $actionID) = $result;
+                [$controller, $actionID] = $result;
                 /** @var Controller $controller */
                 $description = $controller->getHelpSummary();
             }
@@ -251,16 +251,16 @@ class HelpController extends Controller
                 $file = $matches[0];
                 $relativePath = str_replace($controllerPath, '', $file);
                 $class = strtr($relativePath, [
-                    DIRECTORY_SEPARATOR => '\\',
+                    '/' => '\\',
                     '.php' => '',
                 ]);
                 $controllerClass = $module->controllerNamespace . $class;
                 if ($this->validateControllerClass($controllerClass)) {
-                    $dir = ltrim(pathinfo($relativePath, PATHINFO_DIRNAME), DIRECTORY_SEPARATOR);
+                    $dir = ltrim(pathinfo($relativePath, PATHINFO_DIRNAME), '\\/');
 
                     $command = Inflector::camel2id(substr(basename($file), 0, -14), '-', true);
                     if (!empty($dir)) {
-                        $command = $dir . DIRECTORY_SEPARATOR . $command;
+                        $command = $dir . '/' . $command;
                     }
                     $commands[] = $prefix . $command;
                 }
@@ -279,7 +279,7 @@ class HelpController extends Controller
     {
         if (class_exists($controllerClass)) {
             $class = new \ReflectionClass($controllerClass);
-            return !$class->isAbstract() && $class->isSubclassOf('yii\console\Controller');
+            return !$class->isAbstract() && $class->isSubclassOf(Controller::class);
         }
 
         return false;
@@ -299,7 +299,7 @@ class HelpController extends Controller
                 $result = Yii::$app->createController($command);
                 if ($result !== false && $result[0] instanceof Controller) {
                     /** @var $controller Controller */
-                    list($controller, $actionID) = $result;
+                    [$controller, $actionID] = $result;
                     $actions = $this->getActions($controller);
                     if (!empty($actions)) {
                         $prefix = $controller->getUniqueId();
@@ -325,7 +325,7 @@ class HelpController extends Controller
 
                 $result = Yii::$app->createController($command);
                 if ($result !== false && $result[0] instanceof Controller) {
-                    list($controller, $actionID) = $result;
+                    [$controller, $actionID] = $result;
                     $actions = $this->getActions($controller);
                     if (!empty($actions)) {
                         $prefix = $controller->getUniqueId();

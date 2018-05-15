@@ -53,7 +53,7 @@ class DbTarget extends Target
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db = Instance::ensure($this->db, Connection::class);
     }
 
     /**
@@ -75,7 +75,7 @@ class DbTarget extends Target
                 VALUES (:level, :category, :log_time, :prefix, :message)";
         $command = $this->db->createCommand($sql);
         foreach ($this->messages as $message) {
-            list($text, $level, $category, $timestamp) = $message;
+            [$level, $text, $context] = $message;
             if (!is_string($text)) {
                 // exceptions may not be serializable if in the call stack somewhere is a Closure
                 if ($text instanceof \Throwable || $text instanceof \Exception) {
@@ -86,8 +86,8 @@ class DbTarget extends Target
             }
             if ($command->bindValues([
                     ':level' => $level,
-                    ':category' => $category,
-                    ':log_time' => $timestamp,
+                    ':category' => $context['category'],
+                    ':log_time' => $context['time'],
                     ':prefix' => $this->getMessagePrefix($message),
                     ':message' => $text,
                 ])->execute() > 0) {

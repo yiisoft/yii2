@@ -26,13 +26,13 @@ class MigrateControllerTest extends TestCase
 
     public function setUp()
     {
-        $this->migrateControllerClass = EchoMigrateController::className();
-        $this->migrationBaseClass = Migration::className();
+        $this->migrateControllerClass = EchoMigrateController::class;
+        $this->migrationBaseClass = Migration::class;
 
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => 'yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],

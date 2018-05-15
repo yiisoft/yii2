@@ -7,6 +7,7 @@
 
 namespace yii\web;
 
+use Psr\Http\Message\ResponseInterface;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
@@ -14,6 +15,10 @@ use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
+use yii\http\CookieCollection;
+use yii\http\MemoryStream;
+use yii\http\MessageTrait;
+use yii\http\ResourceStream;
 
 /**
  * The web Response class represents an HTTP response.
@@ -39,7 +44,6 @@ use yii\helpers\Url;
  *
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property string $downloadHeaders The attachment file name. This property is write-only.
- * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property bool $isClientError Whether this response indicates a client error. This property is read-only.
  * @property bool $isEmpty Whether this response is empty. This property is read-only.
  * @property bool $isForbidden Whether this response indicates the current request is forbidden. This property
@@ -54,13 +58,16 @@ use yii\helpers\Url;
  * @property bool $isSuccessful Whether this response is successful. This property is read-only.
  * @property int $statusCode The HTTP status code to send with the response.
  * @property \Exception|\Error $statusCodeByException The exception object. This property is write-only.
+ * @property string $content body content string.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class Response extends \yii\base\Response
+class Response extends \yii\base\Response implements ResponseInterface
 {
+    use MessageTrait;
+
     /**
      * @event ResponseEvent an event that is triggered at the beginning of [[send()]].
      */
@@ -128,17 +135,10 @@ class Response extends \yii\base\Response
      */
     public $data;
     /**
-     * @var string the response content. When [[data]] is not null, it will be converted into [[content]]
-     * according to [[format]] when the response is being sent out.
-     * @see data
+     * @var array the stream range to be applied on [[send()]]. This should be an array of the begin position and the end position.
+     * Note that when this property is set, the [[data]] property will be ignored by [[send()]].
      */
-    public $content;
-    /**
-     * @var resource|array the stream to be sent. This can be a stream handle or an array of stream handle,
-     * the begin position and the end position. Note that when this property is set, the [[data]] and [[content]]
-     * properties will be ignored by [[send()]].
-     */
-    public $stream;
+    public $bodyRange;
     /**
      * @var string the charset of the text response. If not set, it will use
      * the value of [[Application::charset]].
@@ -148,12 +148,7 @@ class Response extends \yii\base\Response
      * @var string the HTTP status description that comes together with the status code.
      * @see httpStatuses
      */
-    public $statusText = 'OK';
-    /**
-     * @var string the version of the HTTP protocol to use. If not set, it will be determined via `$_SERVER['SERVER_PROTOCOL']`,
-     * or '1.1' if that is not available.
-     */
-    public $version;
+    public $reasonPhrase = 'OK';
     /**
      * @var bool whether the response has been sent. If this is true, calling [[send()]] will do nothing.
      */
@@ -235,10 +230,6 @@ class Response extends \yii\base\Response
      * @var int the HTTP status code to send with the response.
      */
     private $_statusCode = 200;
-    /**
-     * @var HeaderCollection
-     */
-    private $_headers;
 
 
     /**
@@ -246,13 +237,6 @@ class Response extends \yii\base\Response
      */
     public function init()
     {
-        if ($this->version === null) {
-            if (isset($_SERVER['SERVER_PROTOCOL']) && $_SERVER['SERVER_PROTOCOL'] === 'HTTP/1.0') {
-                $this->version = '1.0';
-            } else {
-                $this->version = '1.1';
-            }
-        }
         if ($this->charset === null) {
             $this->charset = Yii::$app->charset;
         }
@@ -260,7 +244,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return int the HTTP status code to send with the response.
+     * {@inheritdoc}
      */
     public function getStatusCode()
     {
@@ -270,27 +254,49 @@ class Response extends \yii\base\Response
     /**
      * Sets the response status code.
      * This method will set the corresponding status text if `$text` is null.
-     * @param int $value the status code
-     * @param string $text the status text. If not set, it will be set automatically based on the status code.
+     * @param int $code the status code
+     * @param string $reasonPhrase the status text. If not set, it will be set automatically based on the status code.
      * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      */
-    public function setStatusCode($value, $text = null)
+    public function setStatusCode($code, $reasonPhrase = null)
     {
-        if ($value === null) {
-            $value = 200;
+        if ($code === null) {
+            $code = 200;
         }
-        $this->_statusCode = (int) $value;
+        $this->_statusCode = (int) $code;
         if ($this->getIsInvalid()) {
-            throw new InvalidArgumentException("The HTTP status code is invalid: $value");
+            throw new InvalidArgumentException("The HTTP status code is invalid: $code");
         }
-        if ($text === null) {
-            $this->statusText = isset(static::$httpStatuses[$this->_statusCode]) ? static::$httpStatuses[$this->_statusCode] : '';
+        if (empty($reasonPhrase)) {
+            $this->reasonPhrase = isset(static::$httpStatuses[$this->_statusCode]) ? static::$httpStatuses[$this->_statusCode] : '';
         } else {
-            $this->statusText = $text;
+            $this->reasonPhrase = $reasonPhrase;
         }
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withStatus($code, $reasonPhrase = '')
+    {
+        if ($this->getStatusCode() === $code && $this->reasonPhrase === $reasonPhrase) {
+            return $this;
+        }
+
+        $newInstance = clone $this;
+        $newInstance->setStatusCode($code, $reasonPhrase);
+        return $newInstance;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReasonPhrase()
+    {
+        return $this->reasonPhrase;
     }
 
     /**
@@ -312,17 +318,23 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Returns the header collection.
-     * The header collection contains the currently registered HTTP headers.
-     * @return HeaderCollection the header collection
+     * @return string body content string.
+     * @since 2.1.0
      */
-    public function getHeaders()
+    public function getContent()
     {
-        if ($this->_headers === null) {
-            $this->_headers = new HeaderCollection();
-        }
+        return $this->getBody()->__toString();
+    }
 
-        return $this->_headers;
+    /**
+     * @param string $content body content string.
+     * @since 2.1.0
+     */
+    public function setContent($content)
+    {
+        $body = new MemoryStream();
+        $body->write($content);
+        $this->setBody($body);
     }
 
     /**
@@ -347,14 +359,14 @@ class Response extends \yii\base\Response
      */
     public function clear()
     {
-        $this->_headers = null;
+        $this->_headerCollection = null;
         $this->_cookies = null;
         $this->_statusCode = 200;
-        $this->statusText = 'OK';
+        $this->reasonPhrase = 'OK';
         $this->data = null;
-        $this->stream = null;
-        $this->content = null;
+        $this->bodyRange = null;
         $this->isSent = false;
+        $this->setBody(null);
     }
 
     /**
@@ -365,7 +377,7 @@ class Response extends \yii\base\Response
         if (headers_sent($file, $line)) {
             throw new HeadersAlreadySentException($file, $line);
         }
-        if ($this->_headers) {
+        if ($this->_headerCollection) {
             foreach ($this->getHeaders() as $name => $values) {
                 $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
                 // set replace for first occurrence of header but false afterwards to allow multiple
@@ -377,7 +389,8 @@ class Response extends \yii\base\Response
             }
         }
         $statusCode = $this->getStatusCode();
-        header("HTTP/{$this->version} {$statusCode} {$this->statusText}");
+        $protocolVersion = $this->getProtocolVersion();
+        header("HTTP/{$protocolVersion} {$statusCode} {$this->reasonPhrase}");
         $this->sendCookies();
     }
 
@@ -410,32 +423,40 @@ class Response extends \yii\base\Response
      */
     protected function sendContent()
     {
-        if ($this->stream === null) {
-            echo $this->content;
-
-            return;
+        $body = $this->getBody();
+        if (!$body->isReadable()) {
+            throw new \RuntimeException('Unable to send content: body stream is not readable.');
         }
 
         set_time_limit(0); // Reset time limit for big files
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
-        if (is_array($this->stream)) {
-            list($handle, $begin, $end) = $this->stream;
-            fseek($handle, $begin);
-            while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
+        if (is_array($this->bodyRange)) {
+            [$begin, $end] = $this->bodyRange;
+
+            if (!$body->isSeekable()) {
+                throw new \RuntimeException('Unable to send content in range: body stream is not seekable.');
+            }
+
+            $body->seek($begin);
+            while (!$body->eof() && ($pos = $body->tell()) <= $end) {
                 if ($pos + $chunkSize > $end) {
                     $chunkSize = $end - $pos + 1;
                 }
-                echo fread($handle, $chunkSize);
+                echo $body->read($chunkSize);
                 flush(); // Free up memory. Otherwise large files will trigger PHP's memory limit.
             }
-            fclose($handle);
+            $body->close();
         } else {
-            while (!feof($this->stream)) {
-                echo fread($this->stream, $chunkSize);
-                flush();
+            if ($body->isSeekable()) {
+                $body->seek(0);
             }
-            fclose($this->stream);
+            while (!$body->eof()) {
+                echo $body->read($chunkSize);
+                flush(); // Free up memory. Otherwise large files will trigger PHP's memory limit.
+            }
+            $body->close();
+            return;
         }
     }
 
@@ -508,31 +529,30 @@ class Response extends \yii\base\Response
      */
     public function sendContentAsFile($content, $attachmentName, $options = [])
     {
-        $headers = $this->getHeaders();
-
         $contentLength = StringHelper::byteLength($content);
         $range = $this->getHttpRange($contentLength);
 
         if ($range === false) {
-            $headers->set('Content-Range', "bytes */$contentLength");
+            $this->setHeader('Content-Range', "bytes */$contentLength");
             throw new RangeNotSatisfiableHttpException();
         }
 
-        list($begin, $end) = $range;
+        [$begin, $end] = $range;
+        $body = new MemoryStream();
         if ($begin != 0 || $end != $contentLength - 1) {
             $this->setStatusCode(206);
-            $headers->set('Content-Range', "bytes $begin-$end/$contentLength");
-            $this->content = StringHelper::byteSubstr($content, $begin, $end - $begin + 1);
+            $this->setHeader('Content-Range', "bytes $begin-$end/$contentLength");
+            $body->write(StringHelper::byteSubstr($content, $begin, $end - $begin + 1));
         } else {
             $this->setStatusCode(200);
-            $this->content = $content;
+            $body->write($content);
         }
 
-        $mimeType = isset($options['mimeType']) ? $options['mimeType'] : 'application/octet-stream';
+        $mimeType = $options['mimeType'] ?? 'application/octet-stream';
         $this->setDownloadHeaders($attachmentName, $mimeType, !empty($options['inline']), $end - $begin + 1);
 
         $this->format = self::FORMAT_RAW;
-
+        $this->setBody($body);
         return $this;
     }
 
@@ -559,7 +579,6 @@ class Response extends \yii\base\Response
      */
     public function sendStreamAsFile($handle, $attachmentName, $options = [])
     {
-        $headers = $this->getHeaders();
         if (isset($options['fileSize'])) {
             $fileSize = $options['fileSize'];
         } else {
@@ -569,24 +588,28 @@ class Response extends \yii\base\Response
 
         $range = $this->getHttpRange($fileSize);
         if ($range === false) {
-            $headers->set('Content-Range', "bytes */$fileSize");
+            $this->setHeader('Content-Range', "bytes */$fileSize");
             throw new RangeNotSatisfiableHttpException();
         }
 
-        list($begin, $end) = $range;
+        [$begin, $end] = $range;
         if ($begin != 0 || $end != $fileSize - 1) {
             $this->setStatusCode(206);
-            $headers->set('Content-Range', "bytes $begin-$end/$fileSize");
+            $this->setHeader('Content-Range', "bytes $begin-$end/$fileSize");
         } else {
             $this->setStatusCode(200);
         }
 
-        $mimeType = isset($options['mimeType']) ? $options['mimeType'] : 'application/octet-stream';
+        $mimeType = $options['mimeType'] ?? 'application/octet-stream';
         $this->setDownloadHeaders($attachmentName, $mimeType, !empty($options['inline']), $end - $begin + 1);
 
         $this->format = self::FORMAT_RAW;
-        $this->stream = [$handle, $begin, $end];
+        $this->bodyRange = [$begin, $end];
 
+        $body = new ResourceStream();
+        $body->resource = $handle;
+
+        $this->setBody($body);
         return $this;
     }
 
@@ -601,21 +624,28 @@ class Response extends \yii\base\Response
      */
     public function setDownloadHeaders($attachmentName, $mimeType = null, $inline = false, $contentLength = null)
     {
-        $headers = $this->getHeaders();
-
         $disposition = $inline ? 'inline' : 'attachment';
-        $headers->setDefault('Pragma', 'public')
-            ->setDefault('Accept-Ranges', 'bytes')
-            ->setDefault('Expires', '0')
-            ->setDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->setDefault('Content-Disposition', $this->getDispositionHeaderValue($disposition, $attachmentName));
+
+        $headers = [
+            'Pragma' => 'public',
+            'Accept-Ranges' => 'bytes',
+            'Expires' => '0',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Content-Disposition' => $this->getDispositionHeaderValue($disposition, $attachmentName),
+        ];
 
         if ($mimeType !== null) {
-            $headers->setDefault('Content-Type', $mimeType);
+            $headers['Content-Type'] = $mimeType;
         }
 
         if ($contentLength !== null) {
-            $headers->setDefault('Content-Length', $contentLength);
+            $headers['Content-Length'] = $contentLength;
+        }
+
+        foreach ($headers as $name => $value) {
+            if (!$this->hasHeader($name)) {
+                $this->setHeader($name, $value);
+            }
         }
 
         return $this;
@@ -628,8 +658,9 @@ class Response extends \yii\base\Response
      */
     protected function getHttpRange($fileSize)
     {
-        $rangeHeader = Yii::$app->getRequest()->getHeaders()->get('Range', '-');
-        if ($rangeHeader === '-') {
+        $rangeHeader = Yii::$app->getRequest()->getHeaderLine('Range');
+
+        if (empty($rangeHeader) || $rangeHeader === '-') {
             return [0, $fileSize - 1];
         }
         if (!preg_match('/^bytes=(\d*)-(\d*)$/', $rangeHeader, $matches)) {
@@ -730,10 +761,18 @@ class Response extends \yii\base\Response
         }
 
         $disposition = empty($options['inline']) ? 'attachment' : 'inline';
-        $this->getHeaders()
-            ->setDefault($xHeader, $filePath)
-            ->setDefault('Content-Type', $mimeType)
-            ->setDefault('Content-Disposition', $this->getDispositionHeaderValue($disposition, $attachmentName));
+
+        $headers = [
+            $xHeader => $filePath,
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => $this->getDispositionHeaderValue($disposition, $attachmentName),
+        ];
+
+        foreach ($headers as $name => $value) {
+            if (!$this->hasHeader($name)) {
+                $this->setHeader($name, $value);
+            }
+        }
 
         $this->format = self::FORMAT_RAW;
 
@@ -830,10 +869,10 @@ class Response extends \yii\base\Response
      * @param int $statusCode the HTTP status code. Defaults to 302.
      * See <https://tools.ietf.org/html/rfc2616#section-10>
      * for details about HTTP status code
-     * @param bool $checkAjax whether to specially handle AJAX (and PJAX) requests. Defaults to true,
-     * meaning if the current request is an AJAX or PJAX request, then calling this method will cause the browser
+     * @param bool $checkAjax whether to specially handle AJAX requests. Defaults to true,
+     * meaning if the current request is an AJAX request, then calling this method will cause the browser
      * to redirect to the given URL. If this is false, a `Location` header will be sent, which when received as
-     * an AJAX/PJAX response, may NOT cause browser redirection.
+     * an AJAX response, may NOT cause browser redirection.
      * Takes effect only when request header `X-Ie-Redirect-Compatibility` is absent.
      * @return $this the response object itself
      */
@@ -850,20 +889,16 @@ class Response extends \yii\base\Response
 
         if ($checkAjax) {
             if (Yii::$app->getRequest()->getIsAjax()) {
-                if (Yii::$app->getRequest()->getHeaders()->get('X-Ie-Redirect-Compatibility') !== null && $statusCode === 302) {
+                if (Yii::$app->getRequest()->hasHeader('X-Ie-Redirect-Compatibility') && $statusCode === 302) {
                     // Ajax 302 redirect in IE does not work. Change status code to 200. See https://github.com/yiisoft/yii2/issues/9670
                     $statusCode = 200;
                 }
-                if (Yii::$app->getRequest()->getIsPjax()) {
-                    $this->getHeaders()->set('X-Pjax-Url', $url);
-                } else {
-                    $this->getHeaders()->set('X-Redirect', $url);
-                }
+                $this->setHeader('X-Redirect', $url);
             } else {
-                $this->getHeaders()->set('Location', $url);
+                $this->setHeader('Location', $url);
             }
         } else {
-            $this->getHeaders()->set('Location', $url);
+            $this->setHeader('Location', $url);
         }
 
         $this->setStatusCode($statusCode);
@@ -1009,16 +1044,16 @@ class Response extends \yii\base\Response
     {
         return [
             self::FORMAT_HTML => [
-                'class' => 'yii\web\HtmlResponseFormatter',
+                '__class' => HtmlResponseFormatter::class,
             ],
             self::FORMAT_XML => [
-                'class' => 'yii\web\XmlResponseFormatter',
+                '__class' => XmlResponseFormatter::class,
             ],
             self::FORMAT_JSON => [
-                'class' => 'yii\web\JsonResponseFormatter',
+                '__class' => JsonResponseFormatter::class,
             ],
             self::FORMAT_JSONP => [
-                'class' => 'yii\web\JsonResponseFormatter',
+                '__class' => JsonResponseFormatter::class,
                 'useJsonp' => true,
             ],
         ];
@@ -1031,7 +1066,7 @@ class Response extends \yii\base\Response
      */
     protected function prepare()
     {
-        if ($this->stream !== null) {
+        if ($this->bodyRange !== null) {
             return;
         }
 
@@ -1042,25 +1077,44 @@ class Response extends \yii\base\Response
             }
             if ($formatter instanceof ResponseFormatterInterface) {
                 $formatter->format($this);
-            } else {
-                throw new InvalidConfigException("The '{$this->format}' response formatter is invalid. It must implement the ResponseFormatterInterface.");
+                return;
             }
-        } elseif ($this->format === self::FORMAT_RAW) {
-            if ($this->data !== null) {
-                $this->content = $this->data;
-            }
-        } else {
+            throw new InvalidConfigException("The '{$this->format}' response formatter is invalid. It must implement the ResponseFormatterInterface.");
+        } elseif ($this->format !== self::FORMAT_RAW) {
             throw new InvalidConfigException("Unsupported response format: {$this->format}");
         }
 
-        if (is_array($this->content)) {
-            throw new InvalidArgumentException('Response content must not be an array.');
-        } elseif (is_object($this->content)) {
-            if (method_exists($this->content, '__toString')) {
-                $this->content = $this->content->__toString();
+        if ($this->data !== null) {
+            if (is_array($this->data)) {
+                throw new InvalidArgumentException('Response raw data must not be an array.');
+            } elseif (is_object($this->data)) {
+                if (method_exists($this->data, '__toString')) {
+                    $content = $this->data->__toString();
+                } else {
+                    throw new InvalidArgumentException('Response raw data must be a string or an object implementing '
+                        . ' __toString().');
+                }
             } else {
-                throw new InvalidArgumentException('Response content must be a string or an object implementing __toString().');
+                $content = $this->data;
             }
+
+            $body = new MemoryStream();
+            $body->write($content);
+            $this->setBody($body);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __clone()
+    {
+        parent::__clone();
+
+        $this->cloneHttpMessageInternals();
+
+        if (is_object($this->_cookies)) {
+            $this->_cookies = clone $this->_cookies;
         }
     }
 }

@@ -141,7 +141,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             $this->updateFlashCounters();
         } else {
             $error = error_get_last();
-            $message = isset($error['message']) ? $error['message'] : 'Failed to start session.';
+            $message = $error['message'] ?? 'Failed to start session.';
             Yii::error($message, __METHOD__);
         }
     }
@@ -236,6 +236,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if ($this->_hasSessionId === null) {
             $name = $this->getName();
             $request = Yii::$app->getRequest();
+            // unable to use `Request::$cookies` since CSRF protection feature exclude the session one from them
             if (!empty($_COOKIE[$name]) && ini_get('session.use_cookies')) {
                 $this->_hasSessionId = true;
             } elseif (!ini_get('session.use_only_cookies') && ini_get('session.use_trans_sid')) {
@@ -610,7 +611,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function get($key, $defaultValue = null)
     {
         $this->open();
-        return isset($_SESSION[$key]) ? $_SESSION[$key] : $defaultValue;
+        return $_SESSION[$key] ?? $defaultValue;
     }
 
     /**
@@ -894,7 +895,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         $this->open();
 
-        return isset($_SESSION[$offset]) ? $_SESSION[$offset] : null;
+        return $_SESSION[$offset] ?? null;
     }
 
     /**
@@ -948,7 +949,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
                 Yii::info('Session unfrozen', __METHOD__);
             } else {
                 $error = error_get_last();
-                $message = isset($error['message']) ? $error['message'] : 'Failed to unfreeze session.';
+                $message = $error['message'] ?? 'Failed to unfreeze session.';
                 Yii::error($message, __METHOD__);
             }
 

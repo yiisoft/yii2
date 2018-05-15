@@ -26,7 +26,7 @@ use yii\helpers\ArrayHelper;
  *
  * ```php
  * 'session' => [
- *     'class' => 'yii\web\DbSession',
+ *     '__class' => \yii\web\DbSession::class,
  *     // 'db' => 'mydb',
  *     // 'sessionTable' => 'my_session',
  * ]
@@ -85,7 +85,7 @@ class DbSession extends MultiFieldSession
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db = Instance::ensure($this->db, Connection::class);
     }
 
     /**

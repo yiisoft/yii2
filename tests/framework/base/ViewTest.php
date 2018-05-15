@@ -8,7 +8,11 @@
 namespace yiiunit\framework\base;
 
 use Yii;
+use yii\base\Theme;
 use yii\base\View;
+use yii\caching\Cache;
+use yii\caching\FileCache;
+use yii\base\ViewEvent;
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
@@ -66,5 +70,86 @@ PHP
         $view->renderFile($normalViewFile);
 
         $this->assertEquals($obInitialLevel, ob_get_level());
+    }
+
+    public function testRenderDynamic()
+    {
+        Yii::$app->set('cache', new Cache(['handler' => new FileCache(['cachePath' => '@yiiunit/runtime/cache'])]));
+        $view = new View();
+        $this->assertEquals(1, $view->renderDynamic('return 1;'));
+    }
+
+    public function testRenderDynamic_DynamicPlaceholders()
+    {
+        Yii::$app->set('cache', new Cache(['handler' => new FileCache(['cachePath' => '@yiiunit/runtime/cache'])]));
+        $statement = "return 1;";
+        $view = new View();
+        if ($view->beginCache(__FUNCTION__, ['duration' => 3])) {
+            $view->renderDynamic($statement);
+            $view->endCache();
+        }
+        $this->assertEquals([
+            '<![CDATA[YII-DYNAMIC-0]]>' => $statement
+        ], $view->getDynamicPlaceholders());
+    }
+
+    public function testRenderDynamic_StatementWithThisVariable()
+    {
+        Yii::$app->set('cache', new FileCache(['cachePath' => '@yiiunit/runtime/cache']));
+        $view = new View();
+        $view->params['viewParam'] = 'dummy';
+        $this->assertEquals($view->params['viewParam'], $view->renderDynamic('return $this->params["viewParam"];'));
+    }
+
+    public function testRenderDynamic_IncludingParams()
+    {
+        Yii::$app->set('cache', new FileCache(['cachePath' => '@yiiunit/runtime/cache']));
+        $view = new View();
+        $this->assertEquals('YiiFramework', $view->renderDynamic('return $a . $b;', [
+            'a' => 'Yii',
+            'b' => 'Framework',
+            'c' => 'Yii\'s Author',
+            'd' => 'app\\namespace',
+        ]));
+    }
+
+    public function testRenderDynamic_IncludingParams_ThrowException()
+    {
+        Yii::$app->set('cache', new FileCache(['cachePath' => '@yiiunit/runtime/cache']));
+        $view = new View();
+        try {
+            $view->renderDynamic('return $a;');
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+        }
+        $this->assertEquals('Undefined variable: a', $message);
+    }
+
+    public function testRelativePathInView()
+    {
+        $view = new View();
+        FileHelper::createDirectory($this->testViewPath . '/theme1');
+        \Yii::setAlias('@testviews', $this->testViewPath);
+        \Yii::setAlias('@theme', $this->testViewPath . '/theme1');
+
+        $baseView = "{$this->testViewPath}/theme1/base.php";
+        file_put_contents($baseView, <<<'PHP'
+<?php 
+    echo $this->render("sub"); 
+?>
+PHP
+        );
+
+        $subView = "{$this->testViewPath}/sub.php";
+        $subViewContent = "subviewcontent";
+        file_put_contents($subView, $subViewContent);
+
+        $view->theme = new Theme([
+            'pathMap' => [
+                '@testviews' => '@theme'
+            ]
+        ]);
+
+        $this->assertSame($subViewContent, $view->render('@testviews/base'));
     }
 }

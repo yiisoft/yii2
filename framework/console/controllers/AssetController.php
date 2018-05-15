@@ -15,6 +15,7 @@ use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yii\web\AssetBundle;
+use yii\web\AssetManager;
 
 /**
  * Allows you to combine and compress your JavaScript and CSS files.
@@ -38,7 +39,7 @@ use yii\web\AssetBundle;
  * Note: by default this command relies on an external tools to perform actual files compression,
  * check [[jsCompressor]] and [[cssCompressor]] for more details.
  *
- * @property \yii\web\AssetManager $assetManager Asset manager instance. Note that the type of this property
+ * @property AssetManager $assetManager Asset manager instance. Note that the type of this property
  * differs in getter and setter. See [[getAssetManager()]] and [[setAssetManager()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -82,8 +83,8 @@ class AssetController extends Controller
      *     'css' => 'css/all-shared-{hash}.css',
      *     'depends' => [
      *         // Include all assets shared between 'backend' and 'frontend'
-     *         'yii\web\YiiAsset',
-     *         'app\assets\SharedAsset',
+     *         \yii\web\YiiAsset::class,
+     *         \app\assets\SharedAsset::class,
      *     ],
      * ],
      * 'allBackEnd' => [
@@ -91,7 +92,7 @@ class AssetController extends Controller
      *     'css' => 'css/all-{hash}.css',
      *     'depends' => [
      *         // Include only 'backend' assets:
-     *         'app\assets\AdminAsset'
+     *         \app\assets\AdminAsset::class
      *     ],
      * ],
      * 'allFrontEnd' => [
@@ -130,7 +131,7 @@ class AssetController extends Controller
     public $deleteSource = false;
 
     /**
-     * @var array|\yii\web\AssetManager [[\yii\web\AssetManager]] instance or its array configuration, which will be used
+     * @var array|AssetManager [[AssetManager]] instance or its array configuration, which will be used
      * for assets processing.
      */
     private $_assetManager = [];
@@ -145,8 +146,8 @@ class AssetController extends Controller
     {
         if (!is_object($this->_assetManager)) {
             $options = $this->_assetManager;
-            if (!isset($options['class'])) {
-                $options['class'] = 'yii\\web\\AssetManager';
+            if (empty($options['__class'])) {
+                $options['__class'] = AssetManager::class;
             }
             if (!isset($options['basePath'])) {
                 throw new Exception("Please specify 'basePath' for the 'assetManager' option.");
@@ -167,8 +168,8 @@ class AssetController extends Controller
 
     /**
      * Sets asset manager instance or configuration.
-     * @param \yii\web\AssetManager|array $assetManager asset manager instance or its array configuration.
-     * @throws \yii\console\Exception on invalid argument type.
+     * @param AssetManager|array $assetManager asset manager instance or its array configuration.
+     * @throws Exception on invalid argument type.
      */
     public function setAssetManager($assetManager)
     {
@@ -326,8 +327,8 @@ class AssetController extends Controller
 
                 return $bundleOrders[$a] > $bundleOrders[$b] ? 1 : -1;
             });
-            if (!isset($target['class'])) {
-                $target['class'] = $name;
+            if (!isset($target['__class'])) {
+                $target['__class'] = $name;
             }
             $targets[$name] = Yii::createObject($target);
         }
@@ -462,7 +463,7 @@ class AssetController extends Controller
         foreach ($targets as $name => $target) {
             if (isset($this->targets[$name])) {
                 $array[$name] = array_merge($this->targets[$name], [
-                    'class' => get_class($target),
+                    '__class' => get_class($target),
                     'sourcePath' => null,
                     'basePath' => $this->targets[$name]['basePath'],
                     'baseUrl' => $this->targets[$name]['baseUrl'],
@@ -713,13 +714,13 @@ return [
     // The list of asset bundles to compress:
     'bundles' => [
         // 'app\assets\AppAsset',
-        // 'yii\web\YiiAsset',
-        // 'yii\web\JqueryAsset',
+        // \yii\web\YiiAsset::class,
+        // \yii\web\JqueryAsset::class,
     ],
     // Asset bundle for compression output:
     'targets' => [
         'all' => [
-            'class' => 'yii\web\AssetBundle',
+            '__class' => \yii\web\AssetBundle::class,
             'basePath' => '@webroot/assets',
             'baseUrl' => '@web/assets',
             'js' => 'js/all-{hash}.js',
@@ -785,7 +786,7 @@ EOD;
     private function composeBundleConfig($bundle)
     {
         $config = Yii::getObjectVars($bundle);
-        $config['class'] = get_class($bundle);
+        $config['__class'] = get_class($bundle);
         return $config;
     }
 

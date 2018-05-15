@@ -39,9 +39,9 @@ class ContainerTest extends TestCase
     {
         $namespace = __NAMESPACE__ . '\stubs';
         $QuxInterface = "$namespace\\QuxInterface";
-        $Foo = Foo::className();
-        $Bar = Bar::className();
-        $Qux = Qux::className();
+        $Foo = Foo::class;
+        $Bar = Bar::class;
+        $Qux = Qux::class;
 
         // automatic wiring
         $container = new Container();
@@ -80,7 +80,7 @@ class ContainerTest extends TestCase
         $container = new Container();
         $container->set($QuxInterface, $Qux);
         $container->set('foo', function (Container $c, $params, $config) {
-            return $c->get(Foo::className());
+            return $c->get(Foo::class);
         });
         $foo = $container->get('foo');
         $this->assertInstanceOf($Foo, $foo);
@@ -98,12 +98,12 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf($Qux, $foo->bar->qux);
 
         // predefined property parameters
-        $fooSetter = FooProperty::className();
-        $barSetter = BarSetter::className();
+        $fooSetter = FooProperty::class;
+        $barSetter = BarSetter::class;
 
         $container = new Container();
-        $container->set('foo', ['class' => $fooSetter, 'bar' => Instance::of('bar')]);
-        $container->set('bar', ['class' => $barSetter, 'qux' => Instance::of('qux')]);
+        $container->set('foo', ['__class' => $fooSetter, 'bar' => Instance::of('bar')]);
+        $container->set('bar', ['__class' => $barSetter, 'qux' => Instance::of('qux')]);
         $container->set('qux', $Qux);
         $foo = $container->get('foo');
         $this->assertInstanceOf($fooSetter, $foo);
@@ -133,17 +133,17 @@ class ContainerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'qux' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongApp',
                 ],
                 'qux2' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
             ],
         ]);
         Yii::$container->set('yiiunit\framework\di\stubs\QuxInterface', [
-            'class' => 'yiiunit\framework\di\stubs\Qux',
+            '__class' => 'yiiunit\framework\di\stubs\Qux',
             'a' => 'independent',
         ]);
 
@@ -189,7 +189,7 @@ class ContainerTest extends TestCase
         $myFunc = function (\yii\console\Request $request, \yii\console\Response $response) {
             return [$request, $response];
         };
-        list($request, $response) = Yii::$container->invoke($myFunc);
+        [$request, $response] = Yii::$container->invoke($myFunc);
         $this->assertEquals($request, Yii::$app->request);
         $this->assertEquals($response, Yii::$app->response);
     }
@@ -199,11 +199,11 @@ class ContainerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'qux' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongApp',
                 ],
                 'qux2' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
             ],
@@ -220,11 +220,11 @@ class ContainerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'qux' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongApp',
                 ],
                 'qux2' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
             ],
@@ -251,10 +251,10 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
         $container->setDefinitions([
-            'model.order' => Order::className(),
-            Cat::className() => Type::className(),
+            'model.order' => Order::class,
+            Cat::class => Type::class,
             'test\TraversableInterface' => [
-                ['class' => 'yiiunit\data\base\TraversableObject'],
+                ['__class' => 'yiiunit\data\base\TraversableObject'],
                 [['item1', 'item2']],
             ],
             'qux.using.closure' => function () {
@@ -263,8 +263,8 @@ class ContainerTest extends TestCase
         ]);
         $container->setDefinitions([]);
 
-        $this->assertInstanceOf(Order::className(), $container->get('model.order'));
-        $this->assertInstanceOf(Type::className(), $container->get(Cat::className()));
+        $this->assertInstanceOf(Order::class, $container->get('model.order'));
+        $this->assertInstanceOf(Type::class, $container->get(Cat::class));
 
         $traversable = $container->get('test\TraversableInterface');
         $this->assertInstanceOf('yiiunit\data\base\TraversableObject', $traversable);
@@ -277,9 +277,9 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
         $container->setSingletons([
-            'model.order' => Order::className(),
+            'model.order' => Order::class,
             'test\TraversableInterface' => [
-                ['class' => 'yiiunit\data\base\TraversableObject'],
+                ['__class' => 'yiiunit\data\base\TraversableObject'],
                 [['item1', 'item2']],
             ],
             'qux.using.closure' => function () {
@@ -301,28 +301,22 @@ class ContainerTest extends TestCase
         $this->assertSame($foo, $sameFoo);
     }
 
-    /**
-     * @requires PHP 5.6
-     */
     public function testVariadicConstructor()
     {
-        if (\defined('HHVM_VERSION')) {
-            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
-        }
-
         $container = new Container();
         $container->get('yiiunit\framework\di\stubs\Variadic');
+
+        $this->assertTrue(true, 'Should be not exception above');
     }
 
-    /**
-     * @requires PHP 5.6
-     */
     public function testVariadicCallable()
     {
-        if (\defined('HHVM_VERSION')) {
-            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
-        }
+        $container = new Container();
+        $func = function (QuxInterface ...$quxes) {
+            return "That's a whole lot of quxes!";
+        };
+        $container->invoke($func);
 
-        require __DIR__ . '/testContainerWithVariadicCallable.php';
+        $this->assertTrue(true, 'Should be not exception above');
     }
 }

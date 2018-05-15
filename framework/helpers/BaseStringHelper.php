@@ -154,10 +154,7 @@ class BaseStringHelper
      */
     protected static function truncateHtml($string, $count, $suffix, $encoding = false)
     {
-        $config = \HTMLPurifier_Config::create(null);
-        if (Yii::$app !== null) {
-            $config->set('Cache.SerializerPath', Yii::$app->getRuntimePath());
-        }
+        $config = HtmlPurifier::createConfig();
         $lexer = \HTMLPurifier_Lexer::create($config);
         $tokens = $lexer->tokenizeHTML($string, $config, new \HTMLPurifier_Context());
         $openTokens = [];
@@ -269,7 +266,7 @@ class BaseStringHelper
     public static function explode($string, $delimiter = ',', $trim = true, $skipEmpty = false)
     {
         $result = explode($delimiter, $string);
-        if ($trim) {
+        if ($trim !== false) {
             if ($trim === true) {
                 $trim = 'trim';
             } elseif (!is_callable($trim)) {
@@ -313,7 +310,7 @@ class BaseStringHelper
         $value = (string)$value;
 
         $localeInfo = localeconv();
-        $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
+        $decimalSeparator = $localeInfo['decimal_point'] ?? null;
 
         if ($decimalSeparator !== null && $decimalSeparator !== '.') {
             $value = str_replace($decimalSeparator, '.', $value);
@@ -417,5 +414,41 @@ class BaseStringHelper
         }
 
         return preg_match($pattern, $string) === 1;
+    }
+
+    /**
+     * This method provides a unicode-safe implementation of built-in PHP function `ucfirst()`.
+     *
+     * @param string $string the string to be proceeded
+     * @param string $encoding Optional, defaults to "UTF-8"
+     * @return string
+     * @see http://php.net/manual/en/function.ucfirst.php
+     * @since 2.0.16
+     */
+    public static function mb_ucfirst($string, $encoding = 'UTF-8')
+    {
+        $firstChar = mb_substr($string, 0, 1, $encoding);
+        $rest = mb_substr($string, 1, null, $encoding);
+
+        return mb_strtoupper($firstChar, $encoding) . $rest;
+    }
+
+    /**
+     * This method provides a unicode-safe implementation of built-in PHP function `ucwords()`.
+     *
+     * @param string $string the string to be proceeded
+     * @param string $encoding Optional, defaults to "UTF-8"
+     * @see http://php.net/manual/en/function.ucwords.php
+     * @return string
+     */
+    public static function mb_ucwords($string, $encoding = 'UTF-8')
+    {
+        $words = preg_split("/\s/u", $string, -1, PREG_SPLIT_NO_EMPTY);
+
+        $titelized = array_map(function ($word) use ($encoding) {
+            return static::mb_ucfirst($word, $encoding);
+        }, $words);
+
+        return implode(' ', $titelized);
     }
 }

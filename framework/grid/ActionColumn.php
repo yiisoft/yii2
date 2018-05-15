@@ -20,7 +20,7 @@ use yii\helpers\Url;
  * 'columns' => [
  *     // ...
  *     [
- *         'class' => ActionColumn::className(),
+ *         '__class' => \yii\grid\ActionColumn::class,
  *         // you may configure additional properties here
  *     ],
  * ]
@@ -54,7 +54,7 @@ class ActionColumn extends Column
      * As an example, to only have the view, and update button you can add the ActionColumn to your GridView columns as follows:
      *
      * ```php
-     * ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}'],
+     * ['__class' => \yii\grid\ActionColumn::class, 'template' => '{view} {update}'],
      * ```
      *
      * @see buttons
@@ -177,7 +177,6 @@ class ActionColumn extends Column
                 $options = array_merge([
                     'title' => $title,
                     'aria-label' => $title,
-                    'data-pjax' => '0',
                 ], $additionalOptions, $this->buttonOptions);
                 $icon = Html::tag('span', '', ['class' => "glyphicon glyphicon-$iconName"]);
                 return Html::a($icon, $url, $options);

@@ -43,7 +43,11 @@ class UniqueValidator extends Validator
 {
     /**
      * @var string the name of the ActiveRecord class that should be used to validate the uniqueness
-     * of the current attribute value. If not set, it will use the ActiveRecord class of the attribute being validated.
+     * of the current attribute value.
+     * This must be a fully qualified class name.
+     *
+     * If not set, it will use the ActiveRecord class of the attribute being validated.
+     *
      * @see targetAttribute
      */
     public $targetClass;
@@ -78,13 +82,6 @@ class UniqueValidator extends Validator
      */
     public $message;
     /**
-     * @var string
-     * @since 2.0.9
-     * @deprecated since version 2.0.10, to be removed in 2.1. Use [[message]] property
-     * to setup custom message for multiple target attributes.
-     */
-    public $comboNotUnique;
-    /**
      * @var string and|or define how target attributes are related
      * @since 2.0.11
      */
@@ -106,12 +103,7 @@ class UniqueValidator extends Validator
             return;
         }
         if (is_array($this->targetAttribute) && count($this->targetAttribute) > 1) {
-            // fallback for deprecated `comboNotUnique` property - use it as message if is set
-            if ($this->comboNotUnique === null) {
-                $this->message = Yii::t('yii', 'The combination {values} of {attributes} has already been taken.');
-            } else {
-                $this->message = $this->comboNotUnique;
-            }
+            $this->message = Yii::t('yii', 'The combination {values} of {attributes} has already been taken.');
         } else {
             $this->message = Yii::t('yii', '{attribute} "{value}" has already been taken.');
         }
@@ -181,7 +173,10 @@ class UniqueValidator extends Validator
         /** @var ActiveRecordInterface $targetClass $query */
         $query = $this->prepareQuery($targetClass, $conditions);
 
-        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
+        if (!$model instanceof ActiveRecordInterface
+            || $model->getIsNewRecord()
+            || get_class($model) !== $targetClass
+        ) {
             // if current $model isn't in the database yet then it's OK just to call exists()
             // also there's no need to run check based on primary keys, when $targetClass is not the same as $model's class
             $exists = $query->exists();
@@ -273,7 +268,8 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * Builds and adds [[comboNotUnique]] error message to the specified model attribute.
+     * Builds and adds error message to the specified model attribute.
+     * Should be used when [[targetAttribute]] is an array (is a combination of attributes).
      * @param \yii\base\Model $model the data model.
      * @param string $attribute the name of the attribute.
      */

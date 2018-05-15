@@ -23,7 +23,6 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'Powered by {yii}' => 'Powered by {yii}',
     'Yii Framework' => 'Yii Framework',
     '{attribute} must be equal to "{compareValueOrAttribute}".' => '{attribute} täytyy olla yhtä suuri kuin "{compareValueOrAttribute}".',
     '{attribute} must be greater than "{compareValueOrAttribute}".' => '{attribute} täytyy olla suurempi kuin "{compareValueOrAttribute}".',

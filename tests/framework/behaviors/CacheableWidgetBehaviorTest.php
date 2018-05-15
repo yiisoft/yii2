@@ -84,14 +84,14 @@ class CacheableWidgetBehaviorTest extends TestCase
 
     /**
      * Initializes a mock application.
-     *
      */
     private function initializeApplicationMock()
     {
         $this->mockApplication([
             'components' => [
                 'cache' => [
-                    'class' => '\yii\caching\ArrayCache',
+                    '__class' => \yii\caching\Cache::class,
+                    'handler' => ['__class' => \yii\caching\ArrayCache::class],
                 ],
             ],
             'params' => [
@@ -107,8 +107,8 @@ class CacheableWidgetBehaviorTest extends TestCase
      */
     private function initializeWidgetMocks()
     {
-        $this->simpleWidget = $this->getWidgetMock(SimpleCacheableWidget::className());
-        $this->dynamicWidget = $this->getWidgetMock(DynamicCacheableWidget::className());
+        $this->simpleWidget = $this->getWidgetMock(SimpleCacheableWidget::class);
+        $this->dynamicWidget = $this->getWidgetMock(DynamicCacheableWidget::class);
     }
 
     /**
@@ -159,7 +159,7 @@ class BaseCacheableWidget extends Widget
     public function behaviors()
     {
         return [
-            'cacheable' => 'yii\behaviors\CacheableWidgetBehavior',
+            'cacheable' => \yii\behaviors\CacheableWidgetBehavior::class,
         ];
     }
 }

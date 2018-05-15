@@ -150,6 +150,7 @@ class DetailView extends Widget
     /**
      * Renders the detail view.
      * This is the main entry of the whole detail view rendering.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
@@ -161,7 +162,7 @@ class DetailView extends Widget
 
         $options = $this->options;
         $tag = ArrayHelper::remove($options, 'tag', 'table');
-        echo Html::tag($tag, implode("\n", $rows), $options);
+        return Html::tag($tag, implode("\n", $rows), $options);
     }
 
     /**
@@ -212,8 +213,8 @@ class DetailView extends Widget
                 }
                 $attribute = [
                     'attribute' => $matches[1],
-                    'format' => isset($matches[3]) ? $matches[3] : 'text',
-                    'label' => isset($matches[5]) ? $matches[5] : null,
+                    'format' => $matches[3] ?? 'text',
+                    'label' => $matches[5] ?? null,
                 ];
             }
 

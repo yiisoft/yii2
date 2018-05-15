@@ -23,7 +23,7 @@ use yii\web\TooManyRequestsHttpException;
  * {
  *     return [
  *         'rateLimiter' => [
- *             'class' => \yii\filters\RateLimiter::className(),
+ *             '__class' => \yii\filters\RateLimiter::class,
  *         ],
  *     ];
  * }
@@ -106,8 +106,8 @@ class RateLimiter extends ActionFilter
      */
     public function checkRateLimit($user, $request, $response, $action)
     {
-        list($limit, $window) = $user->getRateLimit($request, $action);
-        list($allowance, $timestamp) = $user->loadAllowance($request, $action);
+        [$limit, $window] = $user->getRateLimit($request, $action);
+        [$allowance, $timestamp] = $user->loadAllowance($request, $action);
 
         $current = time();
 
@@ -136,10 +136,9 @@ class RateLimiter extends ActionFilter
     public function addRateLimitHeaders($response, $limit, $remaining, $reset)
     {
         if ($this->enableRateLimitHeaders) {
-            $response->getHeaders()
-                ->set('X-Rate-Limit-Limit', $limit)
-                ->set('X-Rate-Limit-Remaining', $remaining)
-                ->set('X-Rate-Limit-Reset', $reset);
+            $response->setHeader('X-Rate-Limit-Limit', $limit);
+            $response->setHeader('X-Rate-Limit-Remaining', $remaining);
+            $response->setHeader('X-Rate-Limit-Reset', $reset);
         }
     }
 }

@@ -20,7 +20,7 @@ class SiteController extends Controller
    {
        return [
            'access' => [
-               'class' => AccessControl::className(),
+               'class' => AccessControl::class,
                'only' => ['login', 'logout', 'signup'],
                'rules' => [
                    [
@@ -59,7 +59,7 @@ Você pode personalizar este behavior configurando a propriedade  [[yii\filters\
 
 ```php
 [
-   'class' => AccessControl::className(),
+   'class' => AccessControl::class,
    ...
    'denyCallback' => function ($rule, $action) {
        throw new \Exception('Você não está autorizado a acessar esta página');
@@ -103,7 +103,7 @@ class SiteController extends Controller
    {
        return [
            'access' => [
-               'class' => AccessControl::className(),
+               'class' => AccessControl::class,
                'only' => ['special-callback'],
                'rules' => [
                    [

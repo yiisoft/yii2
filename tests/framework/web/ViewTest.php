@@ -90,7 +90,7 @@ class ViewTest extends TestCase
         $this->assertContains('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
     }
 
-    public function testRegisterregisterCsrfMetaTags()
+    public function testRegisterCsrfMetaTags()
     {
         $this->mockWebApplication([
             'components' => [
@@ -99,7 +99,7 @@ class ViewTest extends TestCase
                     'scriptUrl' => '/baseUrl/index.php',
                 ],
                 'cache' => [
-                    'class' => FileCache::className(),
+                    '__class' => FileCache::class,
                 ],
             ],
         ]);

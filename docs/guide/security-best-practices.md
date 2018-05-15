@@ -320,7 +320,7 @@ application level in order to protect against such kind of attack:
 // Web Application configuration file
 return [
     'as hostControl' => [
-        'class' => 'yii\filters\HostControl',
+        '__class' => yii\filters\HostControl::class,
         'allowedHosts' => [
             'example.com',
             '*.example.com',

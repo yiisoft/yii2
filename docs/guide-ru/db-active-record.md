@@ -32,9 +32,6 @@ Yii поддерживает работу с Active Record для следующ
 * SQLite 2 и 3: посредством [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2008 и выше: посредством [[yii\db\ActiveRecord]]
 * Oracle: посредством [[yii\db\ActiveRecord]]
-* CUBRID 9.3 и выше: посредством [[yii\db\ActiveRecord]] (Имейте ввиду, что вследствие
-  [бага](http://jira.cubrid.org/browse/APIS-658) в PDO-расширении для CUBRID, заключение значений в кавычки не работает,
-  поэтому необходимо использовать CUBRID версии 9.3 как на клиентской стороне, так и на сервере)
 * Sphinx: посредством [[yii\sphinx\ActiveRecord]], потребуется расширение `yii2-sphinx`
 * ElasticSearch: посредством [[yii\elasticsearch\ActiveRecord]], потребуется расширение `yii2-elasticsearch`
 
@@ -791,7 +788,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -799,7 +796,7 @@ class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -816,7 +813,7 @@ class Order extends ActiveRecord
   что покупатель может иметь много заказов в то время, как заказ может быть сделан лишь одним покупателем.
 - название связного Active Record класса: указывается в качестве первого параметра для метода 
   [[yii\db\ActiveRecord::hasMany()|hasMany()]] или для метода [[yii\db\ActiveRecord::hasOne()|hasOne()]]. Рекомендуется
-  использовать код `Xyz::className()`, чтобы получить строку с именем класса, при этом вы сможете воспользоваться
+  использовать код `Xyz::class`, чтобы получить строку с именем класса, при этом вы сможете воспользоваться
   возможностями авто-дополнения кода, встроенного в IDE, а также получите обработку ошибок на этапе компиляции.
 - связь между двумя типами данных: указываются столбцы с помощью которых два типа данных связаны. Значения массива - это
   столбцы  основного объекта данных (представлен классом Active Record, в котором объявляется связь), в то время как
@@ -892,7 +889,7 @@ class Customer extends ActiveRecord
 {
     public function getBigOrders($threshold = 100)
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])
             ->where('subtotal > :threshold', [':threshold' => $threshold])
             ->orderBy('id');
     }
@@ -928,7 +925,7 @@ class Order extends ActiveRecord
 {
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 }
@@ -941,12 +938,12 @@ class Order extends ActiveRecord
 {
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems');
     }
 }
@@ -1217,7 +1214,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1225,7 +1222,7 @@ class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -1259,7 +1256,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
     }
 }
 ```
@@ -1372,7 +1369,7 @@ class Customer extends \yii\db\ActiveRecord
     public function getComments()
     {
         // у покупателя может быть много комментариев
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1387,7 +1384,7 @@ class Comment extends \yii\mongodb\ActiveRecord
     public function getCustomer()
     {
         // комментарий принадлежит одному покупателю
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 
@@ -1467,7 +1464,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getActiveComments()
     {
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id'])->active();
+        return $this->hasMany(Comment::class, ['customer_id' => 'id'])->active();
     }
 }
 
@@ -1538,7 +1535,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1634,7 +1631,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1665,7 +1662,7 @@ class Customer extends \yii\db\ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 
     /**

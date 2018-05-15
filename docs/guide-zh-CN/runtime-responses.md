@@ -247,7 +247,7 @@ Web应用可在服务器发送文件前结束，为使用该功能，
 [[yii\web\Response::send()]] 方法使用以下步骤来发送响应：
 
 1. 触发 [[yii\web\Response::EVENT_BEFORE_SEND]] 事件.
-2. 调用 [[yii\web\Response::prepare()]] 来格式化 [[yii\web\Response::data|response data]] 为 
+2. 调用 [[yii\web\Response::prepare()]] 来格式化 [[yii\web\Response::data|response data]] 为
    [[yii\web\Response::content|response content]].
 3. 触发 [[yii\web\Response::EVENT_AFTER_PREPARE]] 事件.
 4. 调用 [[yii\web\Response::sendHeaders()]] 来发送注册的HTTP头

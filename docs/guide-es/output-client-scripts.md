@@ -30,7 +30,7 @@ en vez de agregar uno nuevo. En caso de no proveerlo, el código JS en sí será
 Un script externo puede ser agregado de esta manera:
 
 ```php
-$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('http://example.com/js/main.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ```
 
 Los argumentos para [[yii\web\View::registerJsFile()|registerJsFile()]] son similares a los de
@@ -77,7 +77,7 @@ Si necesitas asegurarte que haya sólo una etiqueta style utiliza el cuarto argu
 
 ```php
 $this->registerCssFile("http://example.com/css/themes/black-and-white.css", [
-    'depends' => [BootstrapAsset::className()],
+    'depends' => [BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```

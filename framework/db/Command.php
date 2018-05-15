@@ -220,7 +220,7 @@ class Command extends Component
         }
         $sql = '';
         foreach (explode('?', $this->_sql) as $i => $part) {
-            $sql .= (isset($params[$i]) ? $params[$i] : '') . $part;
+            $sql .= ($params[$i] ?? '') . $part;
         }
 
         return $sql;
@@ -1061,7 +1061,7 @@ class Command extends Component
     public function execute()
     {
         $sql = $this->getSql();
-        list($profile, $rawSql) = $this->logQuery(__METHOD__);
+        [$profile, $rawSql] = $this->logQuery(__METHOD__);
 
         if ($sql == '') {
             return 0;
@@ -1100,10 +1100,10 @@ class Command extends Component
             Yii::info($rawSql, $category);
         }
         if (!$this->db->enableProfiling) {
-            return [false, isset($rawSql) ? $rawSql : null];
+            return [false, $rawSql ?? null];
         }
 
-        return [true, isset($rawSql) ? $rawSql : $this->getRawSql()];
+        return [true, $rawSql ?? $this->getRawSql()];
     }
 
     /**
@@ -1117,7 +1117,7 @@ class Command extends Component
      */
     protected function queryInternal($method, $fetchMode = null)
     {
-        list($profile, $rawSql) = $this->logQuery('yii\db\Command::query');
+        [$profile, $rawSql] = $this->logQuery('yii\db\Command::query');
 
         if ($method !== '') {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);

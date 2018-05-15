@@ -57,7 +57,7 @@ use yii\helpers\Console;
  * return [
  *     'controllerMap' => [
  *         'migrate' => [
- *             'class' => 'yii\console\controllers\MigrateController',
+ *             '__class' => 'yii\console\controllers\MigrateController',
  *             'migrationNamespaces' => [
  *                 'app\migrations',
  *                 'some\extension\migrations',
@@ -179,7 +179,7 @@ class MigrateController extends BaseMigrateController
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            $this->db = Instance::ensure($this->db, Connection::className());
+            $this->db = Instance::ensure($this->db, Connection::class);
             return true;
         }
 
@@ -196,7 +196,7 @@ class MigrateController extends BaseMigrateController
         $this->includeMigrationFile($class);
 
         return Yii::createObject([
-            'class' => $class,
+            '__class' => $class,
             'db' => $this->db,
             'compact' => $this->compact,
         ]);
@@ -415,7 +415,7 @@ class MigrateController extends BaseMigrateController
             if ($relatedColumn === null) {
                 $relatedColumn = 'id';
                 try {
-                    $this->db = Instance::ensure($this->db, Connection::className());
+                    $this->db = Instance::ensure($this->db, Connection::class);
                     $relatedTableSchema = $this->db->getTableSchema($relatedTable);
                     if ($relatedTableSchema !== null) {
                         $primaryKeyCount = count($relatedTableSchema->primaryKey);
@@ -486,9 +486,8 @@ class MigrateController extends BaseMigrateController
                 if (strncmp($chunk, 'foreignKey', 10) === 0) {
                     preg_match('/foreignKey\((\w*)\s?(\w*)\)/', $chunk, $matches);
                     $foreignKeys[$property] = [
-                        'table' => isset($matches[1])
-                            ? $matches[1]
-                            : preg_replace('/_id$/', '', $property),
+                        'table' => $matches[1]
+                            ?? preg_replace('/_id$/', '', $property),
                         'column' => !empty($matches[2])
                             ? $matches[2]
                             : null,

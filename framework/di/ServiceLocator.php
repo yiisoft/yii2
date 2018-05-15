@@ -26,11 +26,11 @@ use yii\base\InvalidConfigException;
  * $locator = new \yii\di\ServiceLocator;
  * $locator->setComponents([
  *     'db' => [
- *         'class' => 'yii\db\Connection',
+ *         '__class' => \yii\db\Connection::class,
  *         'dsn' => 'sqlite:path/to/file.db',
  *     ],
  *     'cache' => [
- *         'class' => 'yii\caching\DbCache',
+ *         '__class' => \yii\caching\DbCache::class,
  *         'db' => 'db',
  *     ],
  * ]);
@@ -149,11 +149,11 @@ class ServiceLocator extends Component
      *
      * ```php
      * // a class name
-     * $locator->set('cache', 'yii\caching\FileCache');
+     * $locator->set('cache', \yii\caching\FileCache::class);
      *
      * // a configuration array
      * $locator->set('db', [
-     *     'class' => 'yii\db\Connection',
+     *     '__class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -199,10 +199,11 @@ class ServiceLocator extends Component
             $this->_definitions[$id] = $definition;
         } elseif (is_array($definition)) {
             // a configuration array
-            if (isset($definition['class'])) {
+            if (isset($definition['__class']) || isset($definition['class'])) {
+                // @todo remove fallback
                 $this->_definitions[$id] = $definition;
             } else {
-                throw new InvalidConfigException("The configuration for the \"$id\" component must contain a \"class\" element.");
+                throw new InvalidConfigException("The configuration for the \"$id\" component must contain a \"__class\" element.");
             }
         } else {
             throw new InvalidConfigException("Unexpected configuration type for the \"$id\" component: " . gettype($definition));
@@ -243,11 +244,11 @@ class ServiceLocator extends Component
      * ```php
      * [
      *     'db' => [
-     *         'class' => 'yii\db\Connection',
+     *         '__class' => \yii\db\Connection::class,
      *         'dsn' => 'sqlite:path/to/file.db',
      *     ],
      *     'cache' => [
-     *         'class' => 'yii\caching\DbCache',
+     *         '__class' => \yii\caching\DbCache::class,
      *         'db' => 'db',
      *     ],
      * ]

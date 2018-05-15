@@ -180,7 +180,7 @@ class JsonResponseFormatterTest extends FormatterTest
     {
         $formatter = $this->getFormatterInstance($configuration);
         $formatter->format($this->response);
-        $contentTypeActual = $this->response->headers->get('Content-Type');
+        $contentTypeActual = $this->response->getHeader('Content-Type')[0];
 
         $this->assertEquals($contentTypeExpected, $contentTypeActual);
     }

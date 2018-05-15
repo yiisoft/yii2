@@ -9,6 +9,7 @@ namespace yii\di;
 
 use ReflectionClass;
 use Yii;
+use yii\base\Configurable;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
@@ -72,13 +73,13 @@ use yii\helpers\ArrayHelper;
  * }
  *
  * $container = new Container;
- * $container->set('yii\db\Connection', [
+ * $container->set(\yii\db\Connection::class, [
  *     'dsn' => '...',
  * ]);
- * $container->set('app\models\UserFinderInterface', [
- *     'class' => 'app\models\UserFinder',
+ * $container->set(\app\models\UserFinderInterface::class, [
+ *     '__class' => \app\models\UserFinder::class,
  * ]);
- * $container->set('userLister', 'app\models\UserLister');
+ * $container->set('userLister', \app\models\UserLister::class);
  *
  * $lister = $container->get('userLister');
  *
@@ -162,8 +163,8 @@ class Container extends Component
             $params = $this->resolveDependencies($this->mergeParams($class, $params));
             $object = call_user_func($definition, $this, $params, $config);
         } elseif (is_array($definition)) {
-            $concrete = $definition['class'];
-            unset($definition['class']);
+            $concrete = $definition['__class'];
+            unset($definition['__class']);
 
             $config = array_merge($definition, $config);
             $params = $this->mergeParams($class, $params);
@@ -194,20 +195,20 @@ class Container extends Component
      *
      * ```php
      * // register a class name as is. This can be skipped.
-     * $container->set('yii\db\Connection');
+     * $container->set(\yii\db\Connection::class);
      *
      * // register an interface
      * // When a class depends on the interface, the corresponding class
      * // will be instantiated as the dependent object
-     * $container->set('yii\mail\MailInterface', 'yii\swiftmailer\Mailer');
+     * $container->set(\yii\mail\MailInterface::class, \yii\swiftmailer\Mailer::class);
      *
      * // register an alias name. You can use $container->get('foo')
      * // to create an instance of Connection
-     * $container->set('foo', 'yii\db\Connection');
+     * $container->set('foo', \yii\db\Connection::class);
      *
      * // register a class with configuration. The configuration
      * // will be applied when the class is instantiated by get()
-     * $container->set('yii\db\Connection', [
+     * $container->set(\yii\db\Connection::class, [
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -217,7 +218,7 @@ class Container extends Component
      * // register an alias name with class configuration
      * // In this case, a "class" element is required to specify the class
      * $container->set('db', [
-     *     'class' => 'yii\db\Connection',
+     *     '__class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -319,17 +320,17 @@ class Container extends Component
     protected function normalizeDefinition($class, $definition)
     {
         if (empty($definition)) {
-            return ['class' => $class];
+            return ['__class' => $class];
         } elseif (is_string($definition)) {
-            return ['class' => $definition];
+            return ['__class' => $definition];
         } elseif (is_callable($definition, true) || is_object($definition)) {
             return $definition;
         } elseif (is_array($definition)) {
-            if (!isset($definition['class'])) {
+            if (!isset($definition['__class'])) {
                 if (strpos($class, '\\') !== false) {
-                    $definition['class'] = $class;
+                    $definition['__class'] = $class;
                 } else {
-                    throw new InvalidConfigException('A class definition requires a "class" member.');
+                    throw new InvalidConfigException('A class definition requires a "__class" member.');
                 }
             }
 
@@ -361,7 +362,14 @@ class Container extends Component
     protected function build($class, $params, $config)
     {
         /* @var $reflection ReflectionClass */
-        list($reflection, $dependencies) = $this->getDependencies($class);
+        [$reflection, $dependencies] = $this->getDependencies($class);
+
+        if (isset($config['__construct()'])) {
+            foreach ($config['__construct()'] as $index => $param) {
+                $dependencies[$index] = $param;
+            }
+            unset($config['__construct()']);
+        }
 
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
@@ -377,7 +385,7 @@ class Container extends Component
 
         $config = $this->resolveDependencies($config);
 
-        if (!empty($dependencies) && $reflection->implementsInterface('yii\base\Configurable')) {
+        if (!empty($dependencies) && $reflection->implementsInterface(Configurable::class)) {
             // set $config as the last parameter (existing one will be overwritten)
             $dependencies[count($dependencies) - 1] = $config;
             return $reflection->newInstanceArgs($dependencies);
@@ -430,7 +438,7 @@ class Container extends Component
         $constructor = $reflection->getConstructor();
         if ($constructor !== null) {
             foreach ($constructor->getParameters() as $param) {
-                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                if ($param->isVariadic()) {
                     break;
                 } elseif ($param->isDefaultValueAvailable()) {
                     $dependencies[] = $param->getDefaultValue();
@@ -535,7 +543,7 @@ class Container extends Component
             $name = $param->getName();
             if (($class = $param->getClass()) !== null) {
                 $className = $class->getName();
-                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                if ($param->isVariadic()) {
                     $args = array_merge($args, array_values($params));
                     break;
                 } elseif ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
@@ -593,7 +601,7 @@ class Container extends Component
      * $container->setDefinitions([
      *     'yii\web\Request' => 'app\components\Request',
      *     'yii\web\Response' => [
-     *         'class' => 'app\components\Response',
+     *         '__class' => 'app\components\Response',
      *         'format' => 'json'
      *     ],
      *     'foo\Bar' => function () {
@@ -614,7 +622,7 @@ class Container extends Component
      * ```php
      * $container->setDefinitions([
      *     'foo\Bar' => [
-     *          ['class' => 'app\Bar'],
+     *          ['__class' => 'app\Bar'],
      *          [Instance::of('baz')]
      *      ]
      * ]);

@@ -166,14 +166,14 @@ The default class is [[yii\grid\DataColumn]], which represents a model attribute
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
-        ['class' => 'yii\grid\SerialColumn'],
+        ['__class' => yii\grid\SerialColumn::class],
         // Simple columns defined by the data contained in $dataProvider.
         // Data from the model's column will be used.
         'id',
         'username',
         // More complex one.
         [
-            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
+            '__class' => yii\grid\DataColumn::class, // can be omitted, as it is the default
             'value' => function ($data) {
                 return $data->name; // $data['name'] for array data, e.g. using SqlDataProvider.
             },
@@ -195,7 +195,7 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         [
-            'class' => 'yii\grid\SerialColumn', // <-- here
+            '__class' => yii\grid\SerialColumn::class, // <-- here
             // you may configure additional properties here
         ],
 ```
@@ -279,7 +279,7 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         [
-            'class' => 'yii\grid\ActionColumn',
+            '__class' => yii\grid\ActionColumn::class,
             // you may configure additional properties here
         ],
 ```
@@ -339,7 +339,7 @@ echo GridView::widget([
     'columns' => [
         // ...
         [
-            'class' => 'yii\grid\CheckboxColumn',
+            '__class' => yii\grid\CheckboxColumn::class,
             // you may configure additional properties here
         ],
     ],
@@ -363,7 +363,7 @@ Usage is as simple as the following:
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
-        ['class' => 'yii\grid\SerialColumn'], // <-- here
+        ['__class' => yii\grid\SerialColumn::class], // <-- here
         // ...
 ```
 
@@ -733,45 +733,6 @@ echo GridView::widget([
     'dataProvider' => $postProvider,
 ]);
 ```
-
-### Using GridView with Pjax <span id="using-gridview-with-pjax"></span>
-
-The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
-page instead of reloading the entire page. You can use it to update only the
-[[yii\grid\GridView|GridView]] content when using filters.
-
-```php
-use yii\widgets\Pjax;
-use yii\grid\GridView;
-
-Pjax::begin([
-    // PJax options
-]);
-    Gridview::widget([
-        // GridView options
-    ]);
-Pjax::end();
-```
-
-Pjax also works for the links inside the [[yii\widgets\Pjax|Pjax]] widget and
-for the links specified by [[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]].
-But this might be a problem for the links of an [[yii\grid\ActionColumn|ActionColumn]].
-To prevent this, add the HTML attribute `data-pjax="0"` to the links when you edit
-the [[yii\grid\ActionColumn::$buttons|ActionColumn::$buttons]] property.
-
-#### GridView/ListView with Pjax in Gii
-
-Since 2.0.5, the CRUD generator of [Gii](start-gii.md) has an option called
-`$enablePjax` that can be used via either web interface or command line.
-
-```php
-yii gii/crud --controllerClass="backend\\controllers\PostController" \
-  --modelClass="common\\models\\Post" \
-  --enablePjax=1
-```
-
-Which generates a [[yii\widgets\Pjax|Pjax]] widget wrapping the
-[[yii\grid\GridView|GridView]] or [[yii\widgets\ListView|ListView]] widgets.
 
 Further reading
 ---------------

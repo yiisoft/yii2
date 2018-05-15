@@ -128,10 +128,6 @@ Yii 支持一系列缓存存储器，概况如下：
  （需要 redis 2.6.12 及以上版本的支持 ）。
 * [[yii\caching\WinCache]]：使用 PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
  （[另可参考](http://php.net/manual/en/book.wincache.php)）扩展.
-* [[yii\caching\XCache]]：使用 PHP [XCache](http://xcache.lighttpd.net/)扩展。
-* [[yii\caching\ZendDataCache]]：使用 
-  [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend- server.htm#data_cache_component.htm) 
-  作为底层缓存媒介。
 
 
 > Tip: 你可以在同一个应用程序中使用不同的缓存存储器。一个常见的策略是使用基于内存的缓存存储器
@@ -155,7 +151,7 @@ Yii 支持一系列缓存存储器，概况如下：
   如果某个键已经存在，则略过该数据项不缓存。
 * [[yii\caching\Cache::exists()|exists()]]：返回一个值，指明某个键是否存在于缓存中。
 * [[yii\caching\Cache::delete()|delete()]]：通过一个键，删除缓存中对应的值。
-* [[yii\caching\Cache::flush()|flush()]]：删除缓存中的所有数据。
+* [[yii\caching\Cache::clear()|clear()]]：删除缓存中的所有数据。
 
 > Note: 千万别直接用 `false` 布尔值当做数据项缓存，因为 [[yii\caching\Cache::get()|get()]] 方法用
 `false` 作为返回值来表名对应的缓存项不存在。

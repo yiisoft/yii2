@@ -27,11 +27,11 @@ For example,
 [
     'components' => [
         // register "cache" component using a class name
-        'cache' => 'yii\caching\ApcCache',
+        'cache' => yii\caching\ApcCache::class,
 
         // register "db" component using a configuration array
         'db' => [
-            'class' => 'yii\db\Connection',
+            '__class' => yii\db\Connection::class,
             'dsn' => 'mysql:host=localhost;dbname=demo',
             'username' => 'root',
             'password' => '',

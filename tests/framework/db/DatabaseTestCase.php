@@ -80,8 +80,8 @@ abstract class DatabaseTestCase extends TestCase
 
     public function prepareDatabase($config, $fixture, $open = true)
     {
-        if (!isset($config['class'])) {
-            $config['class'] = 'yii\db\Connection';
+        if (!isset($config['__class'])) {
+            $config['__class'] = \yii\db\Connection::class;
         }
         /* @var $db \yii\db\Connection */
         $db = \Yii::createObject($config);
@@ -91,8 +91,8 @@ abstract class DatabaseTestCase extends TestCase
         $db->open();
         if ($fixture !== null) {
             if ($this->driverName === 'oci') {
-                list($drops, $creates) = explode('/* STATEMENTS */', file_get_contents($fixture), 2);
-                list($statements, $triggers, $data) = explode('/* TRIGGERS */', $creates, 3);
+                [$drops, $creates] = explode('/* STATEMENTS */', file_get_contents($fixture), 2);
+                [$statements, $triggers, $data] = explode('/* TRIGGERS */', $creates, 3);
                 $lines = array_merge(explode('--', $drops), explode(';', $statements), explode('/', $triggers), explode(';', $data));
             } else {
                 $lines = explode(';', file_get_contents($fixture));
@@ -118,7 +118,6 @@ abstract class DatabaseTestCase extends TestCase
             case 'mysql':
             case 'sqlite':
                 return str_replace(['[[', ']]'], '`', $sql);
-            case 'cubrid':
             case 'oci':
                 return str_replace(['[[', ']]'], '"', $sql);
             case 'pgsql':

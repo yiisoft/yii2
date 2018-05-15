@@ -23,7 +23,7 @@ use yii\helpers\Url;
  * Menu checks the current route and request parameters to toggle certain menu items
  * with active state.
  *
- * Note that Menu only renders the HTML tags about the menu. It does do any styling.
+ * Note that Menu only renders the HTML tags about the menu. It does not do any styling.
  * You are responsible to provide CSS styles to make it look like a real menu.
  *
  * The following example shows how to use Menu:
@@ -168,6 +168,7 @@ class Menu extends Widget
 
     /**
      * Renders the menu.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
@@ -178,12 +179,14 @@ class Menu extends Widget
             $this->params = Yii::$app->request->getQueryParams();
         }
         $items = $this->normalizeItems($this->items, $hasActiveChild);
-        if (!empty($items)) {
-            $options = $this->options;
-            $tag = ArrayHelper::remove($options, 'tag', 'ul');
-
-            echo Html::tag($tag, $this->renderItems($items), $options);
+        if (empty($items)) {
+            return '';
         }
+
+        $options = $this->options;
+        $tag = ArrayHelper::remove($options, 'tag', 'ul');
+
+        return Html::tag($tag, $this->renderItems($items), $options);
     }
 
     /**
@@ -263,7 +266,7 @@ class Menu extends Widget
             if (!isset($item['label'])) {
                 $item['label'] = '';
             }
-            $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
+            $encodeLabel = $item['encode'] ?? $this->encodeLabels;
             $items[$i]['label'] = $encodeLabel ? Html::encode($item['label']) : $item['label'];
             $hasActiveChild = false;
             if (isset($item['items'])) {

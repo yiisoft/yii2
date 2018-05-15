@@ -33,10 +33,13 @@ class m141106_185632_log_init extends Migration
     protected function getDbTargets()
     {
         if ($this->dbTargets === []) {
-            $log = Yii::$app->getLog();
+            $logger = Yii::getLogger();
+            if (!$logger instanceof \yii\log\Logger) {
+                throw new InvalidConfigException('You should configure "logger" to be instance of "\yii\log\Logger" before executing this migration.');
+            }
 
             $usedTargets = [];
-            foreach ($log->targets as $target) {
+            foreach ($logger->targets as $target) {
                 if ($target instanceof DbTarget) {
                     $currentTarget = [
                         $target->db,
@@ -71,7 +74,7 @@ class m141106_185632_log_init extends Migration
 
             $this->createTable($target->logTable, [
                 'id' => $this->bigPrimaryKey(),
-                'level' => $this->integer(),
+                'level' => $this->string(),
                 'category' => $this->string(),
                 'log_time' => $this->double(),
                 'prefix' => $this->text(),

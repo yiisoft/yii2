@@ -102,7 +102,7 @@ using a configuration array:
 
 ```php
 $object = Yii::createObject([
-    'class' => 'MyClass',
+    '__class' => 'MyClass',
     'property1' => 'abc',
     'property2' => 'cde',
 ], [$param1, $param2]);
@@ -313,7 +313,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => 'yii\filters\AccessControl',
+            '__class' => \yii\filters\AccessControl::class,
             'rules' => [
                 ['allow' => true, 'actions' => ['admin'], 'roles' => ['@']],
             ],

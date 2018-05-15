@@ -69,21 +69,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 $this->primaryKey()->comment('testing \'quote\'')->after('col_before'),
                 "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'testing \'quote\'' AFTER `col_before`",
             ],
-        ];
-
-        /*
-         * TODO Remove in Yii 2.1
-         *
-         * Disabled due bug in MySQL extension
-         * @link https://bugs.php.net/bug.php?id=70384
-         */
-        if (version_compare(PHP_VERSION, '5.6', '>=')) {
-            $columns[] = [
+            [
                 Schema::TYPE_JSON,
                 $this->json(),
                 "json",
-            ];
-        }
+            ],
+        ];
 
         /**
          * @link https://github.com/yiisoft/yii2/issues/14834

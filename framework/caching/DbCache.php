@@ -20,16 +20,25 @@ use yii\di\Instance;
  * By default, DbCache stores session data in a DB table named 'cache'. This table
  * must be pre-created. The table name can be changed by setting [[cacheTable]].
  *
- * Please refer to [[Cache]] for common cache operations that are supported by DbCache.
+ * Please refer to [[\Psr\SimpleCache\CacheInterface]] for common cache operations that are supported by DbCache.
  *
  * The following example shows how you can configure the application to use DbCache:
  *
  * ```php
- * 'cache' => [
- *     'class' => 'yii\caching\DbCache',
- *     // 'db' => 'mydb',
- *     // 'cacheTable' => 'my_cache',
- * ]
+ * return [
+ *     'components' => [
+ *         'cache' => [
+ *             '__class' => yii\caching\Cache:class,
+ *             'handler' => [
+ *                 '__class' => yii\caching\DbCache::class,
+ *                 // 'db' => 'mydb',
+ *                 // 'cacheTable' => 'my_cache',
+ *             ],
+ *         ],
+ *         // ...
+ *     ],
+ *     // ...
+ * ];
  * ```
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
@@ -37,7 +46,7 @@ use yii\di\Instance;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class DbCache extends Cache
+class DbCache extends SimpleCache
 {
     /**
      * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
@@ -85,22 +94,15 @@ class DbCache extends Cache
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db = Instance::ensure($this->db, Connection::class);
     }
 
     /**
-     * Checks whether a specified key exists in the cache.
-     * This can be faster than getting the value from the cache if the data is big.
-     * Note that this method does not check whether the dependency associated
-     * with the cached data, if there is any, has changed. So a call to [[get]]
-     * may return false while exists returns true.
-     * @param mixed $key a key identifying the cached value. This can be a simple string or
-     * a complex data structure consisting of factors representing the key.
-     * @return bool true if a value exists in cache, false if the value is not in the cache or expired.
+     * {@inheritdoc}
      */
-    public function exists($key)
+    public function has($key)
     {
-        $key = $this->buildKey($key);
+        $key = $this->normalizeKey($key);
 
         $query = new Query();
         $query->select(['COUNT(*)'])
@@ -119,17 +121,15 @@ class DbCache extends Cache
     }
 
     /**
-     * Retrieves a value from cache with a specified key.
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key a unique key identifying the cached value
-     * @return string|false the value stored in cache, false if the value is not in the cache or expired.
+     * {@inheritdoc}
      */
     protected function getValue($key)
     {
-        $query = new Query();
-        $query->select(['data'])
+        $query = (new Query())
+            ->select(['data'])
             ->from($this->cacheTable)
             ->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
+
         if ($this->db->enableQueryCache) {
             // temporarily disable and re-enable query caching
             $this->db->enableQueryCache = false;
@@ -143,17 +143,15 @@ class DbCache extends Cache
     }
 
     /**
-     * Retrieves multiple values from cache with the specified keys.
-     * @param array $keys a list of keys identifying the cached values
-     * @return array a list of cached values indexed by the keys
+     * {@inheritdoc}
      */
     protected function getValues($keys)
     {
         if (empty($keys)) {
             return [];
         }
-        $query = new Query();
-        $query->select(['id', 'data'])
+        $query = (new Query())
+            ->select(['id', 'data'])
             ->from($this->cacheTable)
             ->where(['id' => $keys])
             ->andWhere('([[expire]] = 0 OR [[expire]] > ' . time() . ')');
@@ -166,10 +164,7 @@ class DbCache extends Cache
             $rows = $query->createCommand($this->db)->queryAll();
         }
 
-        $results = [];
-        foreach ($keys as $key) {
-            $results[$key] = false;
-        }
+        $results = array_fill_keys($keys, false);
         foreach ($rows as $row) {
             if (is_resource($row['data']) && get_resource_type($row['data']) === 'stream') {
                 $results[$row['id']] = stream_get_contents($row['data']);
@@ -182,21 +177,15 @@ class DbCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key in cache.
-     * This is the implementation of the method declared in the parent class.
-     *
-     * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached. Other types (if you have disabled [[serializer]]) cannot be saved.
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * {@inheritdoc}
      */
-    protected function setValue($key, $value, $duration)
+    protected function setValue($key, $value, $ttl)
     {
         try {
-            $this->db->noCache(function (Connection $db) use ($key, $value, $duration) {
+            $this->db->noCache(function (Connection $db) use ($key, $value, $ttl) {
                 $db->createCommand()->upsert($this->cacheTable, [
                     'id' => $key,
-                    'expire' => $duration > 0 ? $duration + time() : 0,
+                    'expire' => $ttl > 0 ? $ttl + time() : 0,
                     'data' => new PdoValue($value, \PDO::PARAM_LOB),
                 ])->execute();
             });
@@ -243,10 +232,7 @@ class DbCache extends Cache
     }
 
     /**
-     * Deletes a value with the specified key from cache
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key the key of the value to be deleted
-     * @return bool if no error happens during deletion
+     * {@inheritdoc}
      */
     protected function deleteValue($key)
     {
@@ -274,11 +260,9 @@ class DbCache extends Cache
     }
 
     /**
-     * Deletes all values from cache.
-     * This is the implementation of the method declared in the parent class.
-     * @return bool whether the flush operation was successful.
+     * {@inheritdoc}
      */
-    protected function flushValues()
+    public function clear()
     {
         $this->db->createCommand()
             ->delete($this->cacheTable)

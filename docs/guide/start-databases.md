@@ -60,7 +60,7 @@ the file contains the following:
 <?php
 
 return [
-    'class' => 'yii\db\Connection',
+    '__class' => yii\db\Connection::class,
     'dsn' => 'mysql:host=localhost;dbname=yii2basic',
     'username' => 'root',
     'password' => '',

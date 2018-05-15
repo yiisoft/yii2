@@ -56,7 +56,7 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
             $escape = $this->escapingReplacements;
         }
 
-        list($andor, $not, $operator) = $this->parseOperator($operator);
+        [$andor, $not, $operator] = $this->parseOperator($operator);
 
         if (!is_array($values)) {
             $values = [$values];

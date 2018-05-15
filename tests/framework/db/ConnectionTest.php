@@ -10,6 +10,7 @@ namespace yiiunit\framework\db;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\db\Connection;
 use yii\db\Transaction;
 
@@ -242,51 +243,66 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection->enableLogging = true;
         $connection->enableProfiling = true;
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand()->createTable('qlog1', ['id' => 'pk'])->execute();
-        $this->assertCount(3, \Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getProfiler()->messages);
         $this->assertNotNull($connection->getTableSchema('qlog1', true));
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand('SELECT * FROM qlog1')->queryAll();
-        $this->assertCount(3, \Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getProfiler()->messages);
 
         // profiling only
         $connection->enableLogging = false;
         $connection->enableProfiling = true;
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand()->createTable('qlog2', ['id' => 'pk'])->execute();
-        $this->assertCount(2, \Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getProfiler()->messages);
         $this->assertNotNull($connection->getTableSchema('qlog2', true));
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand('SELECT * FROM qlog2')->queryAll();
-        $this->assertCount(2, \Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getProfiler()->messages);
 
         // logging only
         $connection->enableLogging = true;
         $connection->enableProfiling = false;
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand()->createTable('qlog3', ['id' => 'pk'])->execute();
-        $this->assertCount(1, \Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getProfiler()->messages);
         $this->assertNotNull($connection->getTableSchema('qlog3', true));
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand('SELECT * FROM qlog3')->queryAll();
-        $this->assertCount(1, \Yii::getLogger()->messages);
+        $this->assertCount(1, Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getProfiler()->messages);
 
         // disabled
         $connection->enableLogging = false;
         $connection->enableProfiling = false;
 
-        \Yii::getLogger()->messages = [];
+        Yii::getLogger()->messages = [];
+        Yii::getProfiler()->messages = [];
         $connection->createCommand()->createTable('qlog4', ['id' => 'pk'])->execute();
         $this->assertNotNull($connection->getTableSchema('qlog4', true));
-        $this->assertCount(0, \Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getProfiler()->messages);
         $connection->createCommand('SELECT * FROM qlog4')->queryAll();
-        $this->assertCount(0, \Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getLogger()->messages);
+        $this->assertCount(0, Yii::getProfiler()->messages);
     }
 
     public function testExceptionContainsRawQuery()
@@ -422,9 +438,25 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertNotSame($masterPdo, $slavePdo);
     }
 
+    public function testDSNConfig()
+    {
+        $dsn = [
+            'driver' => 'mysql',
+            'host' => '127.0.0.1',
+            'dbname' => 'yiitest'
+        ];
+
+        $connection = new Connection(['dsn' => $dsn]);
+        $this->assertEquals('mysql:host=127.0.0.1;dbname=yiitest', $connection->dsn);
+
+        unset($dsn['driver']);
+        $this->expectException('yii\base\InvalidConfigException');
+        $connection = new Connection(['dsn' => $dsn]);
+    }
+
     public function testServerStatusCacheWorks()
     {
-        $cache = new ArrayCache();
+        $cache = new Cache(['handler' => new ArrayCache()]);
         Yii::$app->set('cache', $cache);
 
         $connection = $this->getConnection(true, false);
@@ -437,9 +469,9 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $cacheKey = ['yii\db\Connection::openFromPoolSequentially', $connection->dsn];
 
-        $this->assertFalse($cache->exists($cacheKey));
+        $this->assertFalse($cache->has($cacheKey));
         $connection->open();
-        $this->assertFalse($cache->exists($cacheKey), 'Connection was successful – cache must not contain information about this DSN');
+        $this->assertFalse($cache->has($cacheKey), 'Connection was successful – cache must not contain information about this DSN');
         $connection->close();
 
         $cacheKey = ['yii\db\Connection::openFromPoolSequentially', 'host:invalid'];
@@ -448,13 +480,13 @@ abstract class ConnectionTest extends DatabaseTestCase
             $connection->open();
         } catch (InvalidConfigException $e) {
         }
-        $this->assertTrue($cache->exists($cacheKey), 'Connection was not successful – cache must contain information about this DSN');
+        $this->assertTrue($cache->has($cacheKey), 'Connection was not successful – cache must contain information about this DSN');
         $connection->close();
     }
 
     public function testServerStatusCacheCanBeDisabled()
     {
-        $cache = new ArrayCache();
+        $cache = new Cache(['handler' => new ArrayCache()]);
         Yii::$app->set('cache', $cache);
 
         $connection = $this->getConnection(true, false);
@@ -468,9 +500,9 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $cacheKey = ['yii\db\Connection::openFromPoolSequentially', $connection->dsn];
 
-        $this->assertFalse($cache->exists($cacheKey));
+        $this->assertFalse($cache->has($cacheKey));
         $connection->open();
-        $this->assertFalse($cache->exists($cacheKey), 'Caching is disabled');
+        $this->assertFalse($cache->has($cacheKey), 'Caching is disabled');
         $connection->close();
 
         $cacheKey = ['yii\db\Connection::openFromPoolSequentially', 'host:invalid'];
@@ -479,7 +511,7 @@ abstract class ConnectionTest extends DatabaseTestCase
             $connection->open();
         } catch (InvalidConfigException $e) {
         }
-        $this->assertFalse($cache->exists($cacheKey), 'Caching is disabled');
+        $this->assertFalse($cache->has($cacheKey), 'Caching is disabled');
         $connection->close();
     }
 }

@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\helpers;
 
+use yii\base\Arrayable;
 use yii\base\BaseObject;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
@@ -56,7 +57,7 @@ class ArrayHelperTest extends TestCase
 
     public function testToArray()
     {
-        $dataArrayable = $this->getMockBuilder('yii\\base\\Arrayable')->getMock();
+        $dataArrayable = $this->getMockBuilder(Arrayable::class)->getMock();
         $dataArrayable->method('toArray')->willReturn([]);
         $this->assertEquals([], ArrayHelper::toArray($dataArrayable));
         $this->assertEquals(['foo'], ArrayHelper::toArray('foo'));
@@ -82,7 +83,7 @@ class ArrayHelperTest extends TestCase
             '_content' => 'test',
             'length' => 4,
         ], ArrayHelper::toArray($object, [
-            $object->className() => [
+            get_class($object) => [
                 'id', 'secret',
                 '_content' => 'content',
                 'length' => function ($post) {
@@ -110,13 +111,13 @@ class ArrayHelperTest extends TestCase
                 'id_plus_1' => 124,
             ],
         ], ArrayHelper::toArray($object, [
-            $object->className() => [
+            get_class($object) => [
                 'id', 'subObject',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
                 },
             ],
-            $object->subObject->className() => [
+            get_class($object->subObject) => [
                 'id',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
@@ -132,7 +133,7 @@ class ArrayHelperTest extends TestCase
                 'id_plus_1' => 124,
             ],
         ], ArrayHelper::toArray($object, [
-            $object->subObject->className() => [
+            get_class($object->subObject) => [
                 'id',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
@@ -344,18 +345,18 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      */
-    public function testMultisortInvalidParamExceptionDirection()
+    public function testMultisortInvalidArgumentExceptionDirection()
     {
         $data = ['foo' => 'bar'];
         ArrayHelper::multisort($data, ['foo'], []);
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      */
-    public function testMultisortInvalidParamExceptionSortFlag()
+    public function testMultisortInvalidArgumentExceptionSortFlag()
     {
         $data = ['foo' => 'bar'];
         ArrayHelper::multisort($data, ['foo'], ['foo'], []);
@@ -494,7 +495,7 @@ class ArrayHelperTest extends TestCase
         ];
         $b = [
             'secondValue',
-            'thirdValue',
+            'thirdValue'
         ];
 
         $result = ArrayHelper::merge($a, $b);
@@ -506,12 +507,6 @@ class ArrayHelperTest extends TestCase
         ];
 
         $this->assertEquals($expected, $result);
-    }
-
-    public function testMergeEmpty()
-    {
-        $this->assertEquals([], ArrayHelper::merge([], []));
-        $this->assertEquals([], ArrayHelper::merge([], [], []));
     }
 
     /**
@@ -814,7 +809,7 @@ class ArrayHelperTest extends TestCase
      */
     public function testGetValueNonexistingProperties1()
     {
-        $this->expectException('PHPUnit\Framework\Error\Notice');
+        $this->expectException(\PHPUnit\Framework\Error\Error::class);
         $object = new Post1();
         $this->assertNull(ArrayHelper::getValue($object, 'nonExisting'));
     }
@@ -825,7 +820,7 @@ class ArrayHelperTest extends TestCase
      */
     public function testGetValueNonexistingProperties2()
     {
-        $this->expectException('PHPUnit\Framework\Error\Notice');
+        $this->expectException(\PHPUnit\Framework\Error\Error::class);
         $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
         $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
     }
@@ -1189,7 +1184,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Argument $haystack must be an array or implement Traversable
      */
     public function testInException()
@@ -1210,7 +1205,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Argument $needles must be an array or implement Traversable
      */
     public function testIsSubsetException()

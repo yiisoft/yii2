@@ -130,7 +130,7 @@ class UserProfileTest extends \Codeception\Test\Unit
     {
         return [
             'profiles' => [
-                'class' => UserProfileFixture::className(),
+                'class' => UserProfileFixture::class,
                 // フィクスチャ・データは tests/_data/user.php に配置されている
                 'dataFile' => codecept_data_dir() . 'user.php'
             ],

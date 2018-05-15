@@ -901,7 +901,7 @@ once for all in the application configuration like shown below:
 return [
     'controllerMap' => [
         'migrate' => [
-            'class' => 'yii\console\controllers\MigrateController',
+            '__class' => yii\console\controllers\MigrateController::class,
             'migrationTable' => 'backend_migration',
         ],
     ],
@@ -923,7 +923,7 @@ migration classes allows you usage of the several source locations for the migra
 return [
     'controllerMap' => [
         'migrate' => [
-            'class' => 'yii\console\controllers\MigrateController',
+            '__class' => yii\console\controllers\MigrateController::class,
             'migrationPath' => null, // disable non-namespaced migrations if app\migrations is listed below
             'migrationNamespaces' => [
                 'app\migrations', // Common migrations for the whole application
@@ -970,21 +970,21 @@ return [
     'controllerMap' => [
         // Common migrations for the whole application
         'migrate-app' => [
-            'class' => 'yii\console\controllers\MigrateController',
+            '__class' => yii\console\controllers\MigrateController::class,
             'migrationNamespaces' => ['app\migrations'],
             'migrationTable' => 'migration_app',
             'migrationPath' => null,
         ],
         // Migrations for the specific project's module
         'migrate-module' => [
-            'class' => 'yii\console\controllers\MigrateController',
+            '__class' => yii\console\controllers\MigrateController::class,
             'migrationNamespaces' => ['module\migrations'],
             'migrationTable' => 'migration_module',
             'migrationPath' => null,
         ],
         // Migrations for the specific extension
         'migrate-rbac' => [
-            'class' => 'yii\console\controllers\MigrateController',
+            '__class' => yii\console\controllers\MigrateController::class,
             'migrationPath' => '@yii/rbac/migrations',
             'migrationTable' => 'migration_rbac',
         ],

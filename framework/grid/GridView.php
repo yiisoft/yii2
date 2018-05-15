@@ -12,8 +12,6 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\Html;
-use yii\helpers\Json;
-use yii\helpers\Url;
 use yii\i18n\Formatter;
 use yii\widgets\BaseListView;
 
@@ -56,7 +54,7 @@ class GridView extends BaseListView
      * @var string the default data column class if the class name is not explicitly specified when configuring a data column.
      * Defaults to 'yii\grid\DataColumn'.
      */
-    public $dataColumnClass;
+    public $dataColumnClass = DataColumn::class;
     /**
      * @var string the caption of the grid table
      * @see captionOptions
@@ -148,14 +146,14 @@ class GridView extends BaseListView
      *
      * ```php
      * [
-     *     ['class' => SerialColumn::className()],
+     *     ['__class' => \yii\grid\SerialColumn::class],
      *     [
-     *         'class' => DataColumn::className(), // this line is optional
+     *         '__class' => \yii\grid\DataColumn::class, // this line is optional
      *         'attribute' => 'name',
      *         'format' => 'text',
      *         'label' => 'Name',
      *     ],
-     *     ['class' => CheckboxColumn::className()],
+     *     ['__class' => \yii\grid\CheckboxColumn::class],
      * ]
      * ```
      *
@@ -221,10 +219,6 @@ class GridView extends BaseListView
      */
     public $filterUrl;
     /**
-     * @var string additional jQuery selector for selecting filter input fields
-     */
-    public $filterSelector;
-    /**
      * @var string whether the filters should be displayed in the grid view. Valid values include:
      *
      * - [[FILTER_POS_HEADER]]: the filters will be displayed on top of each column's header cell.
@@ -284,19 +278,6 @@ class GridView extends BaseListView
     }
 
     /**
-     * Runs the widget.
-     */
-    public function run()
-    {
-        $id = $this->options['id'];
-        $options = Json::htmlEncode($this->getClientOptions());
-        $view = $this->getView();
-        GridViewAsset::register($view);
-        $view->registerJs("jQuery('#$id').yiiGridView($options);");
-        parent::run();
-    }
-
-    /**
      * Renders validator errors of filter model.
      * @return string the rendering result.
      */
@@ -320,25 +301,6 @@ class GridView extends BaseListView
             default:
                 return parent::renderSection($name);
         }
-    }
-
-    /**
-     * Returns the options for the grid view JS widget.
-     * @return array the options
-     */
-    protected function getClientOptions()
-    {
-        $filterUrl = isset($this->filterUrl) ? $this->filterUrl : Yii::$app->request->url;
-        $id = $this->filterRowOptions['id'];
-        $filterSelector = "#$id input, #$id select";
-        if (isset($this->filterSelector)) {
-            $filterSelector .= ', ' . $this->filterSelector;
-        }
-
-        return [
-            'filterUrl' => Url::to($filterUrl),
-            'filterSelector' => $filterSelector,
-        ];
     }
 
     /**
@@ -542,7 +504,7 @@ class GridView extends BaseListView
                 $column = $this->createDataColumn($column);
             } else {
                 $column = Yii::createObject(array_merge([
-                    'class' => $this->dataColumnClass ?: DataColumn::className(),
+                    '__class' => $this->dataColumnClass ?: DataColumn::class,
                     'grid' => $this,
                 ], $column));
             }
@@ -567,11 +529,11 @@ class GridView extends BaseListView
         }
 
         return Yii::createObject([
-            'class' => $this->dataColumnClass ?: DataColumn::className(),
+            '__class' => $this->dataColumnClass ?: DataColumn::class,
             'grid' => $this,
             'attribute' => $matches[1],
-            'format' => isset($matches[3]) ? $matches[3] : 'text',
-            'label' => isset($matches[5]) ? $matches[5] : null,
+            'format' => $matches[3] ?? 'text',
+            'label' => $matches[5] ?? null,
         ]);
     }
 

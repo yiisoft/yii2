@@ -7,6 +7,8 @@
 
 namespace yiiunit\framework\db;
 
+use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
@@ -92,7 +94,7 @@ abstract class CommandTest extends DatabaseTestCase
         // query
         $sql = 'SELECT * FROM {{customer}}';
         $reader = $db->createCommand($sql)->query();
-        $this->assertInstanceOf(DataReader::className(), $reader);
+        $this->assertInstanceOf(DataReader::class, $reader);
 
         // queryAll
         $rows = $db->createCommand('SELECT * FROM {{customer}}')->queryAll();
@@ -148,10 +150,6 @@ abstract class CommandTest extends DatabaseTestCase
 
     public function testBindParamValue()
     {
-        if (\defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
-            $this->markTestSkipped('HHVMs PgSQL implementation has some specific behavior that breaks some parts of this test.');
-        }
-
         $db = $this->getConnection();
 
         // bindParam
@@ -209,14 +207,12 @@ SQL;
         $this->assertEquals($floatCol, $row['float_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'sqlite' || $this->driverName === 'oci') {
             $this->assertEquals($blobCol, $row['blob_col']);
-        } elseif (\defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
-            // HHVMs pgsql implementation does not seem to support blob columns correctly.
         } else {
             $this->assertInternalType('resource', $row['blob_col']);
             $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
-        if ($this->driverName === 'mysql' || $this->driverName === 'oci' || (\defined('HHVM_VERSION') && \in_array($this->driverName, ['sqlite', 'pgsql']))) {
+        if ($this->driverName === 'mysql' || $this->driverName === 'oci') {
             $this->assertEquals($boolCol, (int) $row['bool_col']);
         } else {
             $this->assertEquals($boolCol, $row['bool_col']);
@@ -311,11 +307,19 @@ SQL;
 
     public function testBatchInsertWithYield()
     {
-        if (PHP_VERSION_ID < 50500) {
-            $this->markTestSkipped('The yield function is only supported with php 5.5 =< version');
-        } else {
-            include __DIR__ . '/testBatchInsertWithYield.php';
-        }
+        $rows = call_user_func(function () {
+            if (false) {
+                yield [];
+            }
+        });
+
+        $command = $this->getConnection()->createCommand();
+        $command->batchInsert(
+            '{{customer}}',
+            ['email', 'name', 'address'],
+            $rows
+        );
+        $this->assertEquals(0, $command->execute());
     }
 
     /**
@@ -608,7 +612,7 @@ SQL;
      * Test INSERT INTO ... SELECT SQL statement with wrong query object.
      *
      * @dataProvider invalidSelectColumns
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
      * @param mixed $invalidSelectColumns
      */
@@ -634,7 +638,6 @@ SQL;
             case 'pgsql':
                 $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
             break;
-            case 'cubrid':
             case 'mysql':
                 $expression = 'YEAR(NOW())';
             break;
@@ -1015,7 +1018,7 @@ SQL;
     protected function performAndCompareUpsertResult(Connection $db, array $data)
     {
         $params = $data['params'];
-        $expected = isset($data['expected']) ? $data['expected'] : $params[1];
+        $expected = $data['expected'] ?? $params[1];
         $command = $db->createCommand();
         call_user_func_array([$command, 'upsert'], $params);
         $command->execute();
@@ -1237,7 +1240,7 @@ SQL;
     {
         $db = $this->getConnection();
         $db->enableQueryCache = true;
-        $db->queryCache = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
+        $db->queryCache = new Cache(['handler' => new ArrayCache()]);
         $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id');
 
         $this->assertEquals('user1', $command->bindValue(':id', 1)->queryScalar());

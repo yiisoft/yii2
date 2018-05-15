@@ -19,7 +19,7 @@ use yii\base\InvalidConfigException;
  *
  * ```php
  * 'rules' => [
- *     ['class' => 'MyUrlRule', 'pattern' => '...', 'route' => 'site/index', ...],
+ *     ['__class' => MyUrlRule::class, 'pattern' => '...', 'route' => 'site/index', ...],
  *     // ...
  * ]
  * ```
@@ -189,13 +189,13 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     public function init()
     {
         if ($this->pattern === null) {
-            throw new InvalidConfigException('UrlRule::pattern must be set.');
+            throw new InvalidConfigException('UrlRule::$pattern must be set.');
         }
         if ($this->route === null) {
-            throw new InvalidConfigException('UrlRule::route must be set.');
+            throw new InvalidConfigException('UrlRule::$route must be set.');
         }
         if (is_array($this->normalizer)) {
-            $normalizerConfig = array_merge(['class' => UrlNormalizer::className()], $this->normalizer);
+            $normalizerConfig = array_merge(['__class' => UrlNormalizer::class], $this->normalizer);
             $this->normalizer = Yii::createObject($normalizerConfig);
         }
         if ($this->normalizer !== null && $this->normalizer !== false && !$this->normalizer instanceof UrlNormalizer) {
@@ -284,7 +284,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             $appendSlash = false;
             foreach ($matches as $match) {
                 $name = $match[1][0];
-                $pattern = isset($match[2][0]) ? $match[2][0] : '[^\/]+';
+                $pattern = $match[2][0] ?? '[^\/]+';
                 $placeholder = 'a' . hash('crc32b', $name); // placeholder must begin with a letter
                 $this->placeholders[$placeholder] = $name;
                 if (array_key_exists($name, $this->defaults)) {

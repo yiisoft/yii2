@@ -20,14 +20,8 @@ Create file `composer.json` under the `micro-app` directory using your favorite 
 ```json
 {
     "require": {
-        "yiisoft/yii2": "~2.0.0"
-    },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
-        }
-    ]
+        "yiisoft/yii2": "~2.1.0"
+    }
 }
 ```
 
@@ -134,7 +128,7 @@ to the application configuration:
 ```php
 'components' => [
     'db' => [
-        'class' => 'yii\db\Connection',
+        '__class' => yii\db\Connection::class,
         'dsn' => 'sqlite:@micro/database.sqlite',
     ],
 ],

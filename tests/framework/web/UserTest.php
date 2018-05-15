@@ -22,8 +22,8 @@ use Yii;
 use yii\base\BaseObject;
 use yii\rbac\CheckAccessInterface;
 use yii\rbac\PhpManager;
-use yii\web\Cookie;
-use yii\web\CookieCollection;
+use yii\http\Cookie;
+use yii\http\CookieCollection;
 use yii\web\ForbiddenHttpException;
 use yiiunit\TestCase;
 
@@ -54,11 +54,11 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                     'authTimeout' => 10,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::className(),
+                    '__class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                      'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                      'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -108,16 +108,16 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                     'authTimeout' => 10,
                     'enableAutoLogin' => true,
                     'autoRenewCookie' => false,
                 ],
                 'response' => [
-                    'class' => MockResponse::className(),
+                    '__class' => MockResponse::class,
                 ],
                 'request' => [
-                    'class' => MockRequest::className(),
+                    '__class' => MockRequest::class,
                 ],
             ],
         ];
@@ -160,14 +160,14 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                     'enableAutoLogin' => true,
                 ],
                 'response' => [
-                    'class' => MockResponse::className(),
+                    '__class' => MockResponse::class,
                 ],
                 'request' => [
-                    'class' => MockRequest::className(),
+                    '__class' => MockRequest::class,
                 ],
             ],
         ];
@@ -204,24 +204,25 @@ class UserTest extends TestCase
         }
 
         $_SERVER = $server;
-        Yii::$app->set('response', ['class' => 'yii\web\Response']);
+        Yii::$app->set('response', ['__class' => \yii\web\Response::class]);
         Yii::$app->set('request', [
-            'class' => 'yii\web\Request',
+            '__class' => \yii\web\Request::class,
             'scriptFile' => __DIR__ . '/index.php',
             'scriptUrl' => '/index.php',
             'url' => '',
         ]);
         Yii::$app->user->setReturnUrl(null);
     }
+
     public function testLoginRequired()
     {
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::className(),
+                    '__class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -238,7 +239,6 @@ class UserTest extends TestCase
         $user->loginRequired();
         $this->assertEquals('normal', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
-
 
         $this->reset();
         Yii::$app->request->setUrl('ajax');
@@ -332,10 +332,10 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::className(),
+                    '__class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -355,26 +355,28 @@ class UserTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
-                    'accessChecker' => AccessChecker::className()
+                    'identityClass' => UserIdentity::class,
+                    'accessChecker' => AccessChecker::class
                 ]
             ],
         ];
 
         $this->mockWebApplication($appConfig);
-        $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
+        $this->assertInstanceOf(AccessChecker::class, Yii::$app->user->accessChecker);
     }
 
     public function testGetIdentityException()
     {
-        $session = $this->getMock('yii\web\Session');
-        $session->method('getHasSessionId')->willReturn(true);
-        $session->method('get')->with($this->equalTo('__id'))->willReturn('1');
+        $session = $this->getMockBuilder(\yii\web\Session::class)
+            ->setMethods(['getHasSessionId', 'get'])
+            ->getMock();
+        $session->expects($this->any())->method('getHasSessionId')->willReturn(true);
+        $session->expects($this->any())->method('get')->with($this->equalTo('__id'))->willReturn('1');
 
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => ExceptionIdentity::className(),
+                    'identityClass' => ExceptionIdentity::class,
                 ],
                 'session' => $session,
             ],

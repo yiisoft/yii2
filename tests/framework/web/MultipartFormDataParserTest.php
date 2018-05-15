@@ -7,17 +7,16 @@
 
 namespace yiiunit\framework\web;
 
+use Psr\Http\Message\UploadedFileInterface;
+use yii\http\UploadedFile;
 use yii\web\MultipartFormDataParser;
+use yii\web\Request;
 use yiiunit\TestCase;
 
 class MultipartFormDataParserTest extends TestCase
 {
     public function testParse()
     {
-        if (defined('HHVM_VERSION')) {
-            static::markTestSkipped('Can not test on HHVM because it does not support proper handling of the temporary files.');
-        }
-
         $parser = new MultipartFormDataParser();
 
         $boundary = '---------------------------22472926011618';
@@ -28,28 +27,43 @@ class MultipartFormDataParserTest extends TestCase
         $rawBody .= "\r\n--{$boundary}\nContent-Disposition: form-data; name=\"Item[file]\"; filename=\"item-file.txt\"\nContent-Type: text/plain\r\n\r\nitem file content";
         $rawBody .= "\r\n--{$boundary}--";
 
-        $bodyParams = $parser->parse($rawBody, $contentType);
+        $request = new Request([
+            'rawBody' => $rawBody,
+            'headers' => [
+                'content-type' => [$contentType]
+            ]
+        ]);
+
+        $bodyParams = $parser->parse($request);
+
+        $uploadedFiles = $request->getUploadedFiles();
+
+        $this->assertFalse(empty($uploadedFiles['someFile']));
+        /* @var $uploadedFile UploadedFileInterface */
+        $uploadedFile = $uploadedFiles['someFile'];
+        $this->assertTrue($uploadedFile instanceof UploadedFileInterface);
+        $this->assertEquals(UPLOAD_ERR_OK, $uploadedFile->getError());
+        $this->assertEquals('some-file.txt', $uploadedFile->getClientFilename());
+        $this->assertEquals('text/plain', $uploadedFile->getClientMediaType());
+        $this->assertEquals('some file content', $uploadedFile->getStream()->__toString());
+
+        $this->assertFalse(empty($uploadedFiles['Item']['file']));
+        /* @var $uploadedFile UploadedFileInterface */
+        $uploadedFile = $uploadedFiles['Item']['file'];
+        $this->assertEquals(UPLOAD_ERR_OK, $uploadedFile->getError());
+        $this->assertEquals('item-file.txt', $uploadedFile->getClientFilename());
+        $this->assertEquals('text/plain', $uploadedFile->getClientMediaType());
+        $this->assertEquals('item file content', $uploadedFile->getStream()->__toString());
 
         $expectedBodyParams = [
             'title' => 'test-title',
             'Item' => [
                 'name' => 'test-name',
+                'file' => $uploadedFiles['Item']['file'],
             ],
+            'someFile' => $uploadedFiles['someFile']
         ];
         $this->assertEquals($expectedBodyParams, $bodyParams);
-
-        $this->assertNotEmpty($_FILES['someFile']);
-        $this->assertEquals(UPLOAD_ERR_OK, $_FILES['someFile']['error']);
-        $this->assertEquals('some-file.txt', $_FILES['someFile']['name']);
-        $this->assertEquals('text/plain', $_FILES['someFile']['type']);
-        $this->assertStringEqualsFile($_FILES['someFile']['tmp_name'], 'some file content');
-
-        $this->assertNotEmpty($_FILES['Item']);
-        $this->assertNotEmpty($_FILES['Item']['name']['file']);
-        $this->assertEquals(UPLOAD_ERR_OK, $_FILES['Item']['error']['file']);
-        $this->assertEquals('item-file.txt', $_FILES['Item']['name']['file']);
-        $this->assertEquals('text/plain', $_FILES['Item']['type']['file']);
-        $this->assertStringEqualsFile($_FILES['Item']['tmp_name']['file'], 'item file content');
     }
 
     /**
@@ -57,15 +71,22 @@ class MultipartFormDataParserTest extends TestCase
      */
     public function testNotEmptyPost()
     {
-        $parser = new MultipartFormDataParser();
-
         $_POST = [
             'name' => 'value',
         ];
 
-        $bodyParams = $parser->parse('should not matter', 'multipart/form-data; boundary=---12345');
+        $request = new Request([
+            'rawBody' => 'should not matter',
+            'headers' => [
+                'content-type' => ['multipart/form-data; boundary=---12345']
+            ],
+            'parsers' => [
+                'multipart/form-data' => MultipartFormDataParser::class
+            ]
+        ]);
+        $bodyParams = $request->getParsedBody();
         $this->assertEquals($_POST, $bodyParams);
-        $this->assertEquals([], $_FILES);
+        $this->assertEquals([], $request->getUploadedFiles());
     }
 
     /**
@@ -73,8 +94,6 @@ class MultipartFormDataParserTest extends TestCase
      */
     public function testNotEmptyFiles()
     {
-        $parser = new MultipartFormDataParser();
-
         $_FILES = [
             'file' => [
                 'name' => 'file.txt',
@@ -86,7 +105,16 @@ class MultipartFormDataParserTest extends TestCase
         $contentType = 'multipart/form-data; boundary=' . $boundary;
         $rawBody = "--{$boundary}\nContent-Disposition: form-data; name=\"title\"\r\ntest-title--{$boundary}--";
 
-        $bodyParams = $parser->parse($rawBody, $contentType);
+        $request = new Request([
+            'rawBody' => $rawBody,
+            'headers' => [
+                'content-type' => [$contentType]
+            ],
+            'parsers' => [
+                'multipart/form-data' => MultipartFormDataParser::class
+            ]
+        ]);
+        $bodyParams = $request->getParsedBody();
         $this->assertEquals([], $bodyParams);
     }
 
@@ -105,8 +133,14 @@ class MultipartFormDataParserTest extends TestCase
         $rawBody .= "--{$boundary}\nContent-Disposition: form-data; name=\"thirdFile\"; filename=\"third-file.txt\"\nContent-Type: text/plain\r\n\r\nthird file content";
         $rawBody .= "--{$boundary}--";
 
-        $parser->parse($rawBody, $contentType);
-        $this->assertCount(2, $_FILES);
+        $request = new Request([
+            'rawBody' => $rawBody,
+            'headers' => [
+                'content-type' => [$contentType]
+            ]
+        ]);
+        $parser->parse($request);
+        $this->assertCount(2, $request->getUploadedFiles());
     }
 
     /**
@@ -124,9 +158,16 @@ class MultipartFormDataParserTest extends TestCase
         $rawBody .= "--{$boundary}\nContent-Disposition: form-data; name=\"thirdFile\"; filename=\"third-file.txt\"\nContent-Type: text/plain\r\n\r\nthird file with too long file content";
         $rawBody .= "--{$boundary}--";
 
-        $parser->parse($rawBody, $contentType);
-        $this->assertCount(3, $_FILES);
-        $this->assertEquals(UPLOAD_ERR_INI_SIZE, $_FILES['thirdFile']['error']);
+        $request = new Request([
+            'rawBody' => $rawBody,
+            'headers' => [
+                'content-type' => [$contentType]
+            ]
+        ]);
+        $parser->parse($request);
+        $uploadedFiles = $request->getUploadedFiles();
+        $this->assertCount(3, $uploadedFiles);
+        $this->assertEquals(UPLOAD_ERR_INI_SIZE, $uploadedFiles['thirdFile']->getError());
     }
 
     /**
@@ -154,13 +195,22 @@ class MultipartFormDataParserTest extends TestCase
         $rawBody .= "\r\n--{$boundary}\nContent-Disposition: form-data; name=\"someFile\"; filename=\"some-file.txt\"\nContent-Type: text/plain\r\n\r\nsome file content";
         $rawBody .= "\r\n--{$boundary}--";
 
-        $bodyParams = $parser->parse($rawBody, $contentType);
+        $request = new Request([
+            'rawBody' => $rawBody,
+            'headers' => [
+                'content-type' => [$contentType]
+            ]
+        ]);
+        $bodyParams = $parser->parse($request);
+
+        $uploadedFiles = $request->getUploadedFiles();
+        $this->assertNotEmpty($uploadedFiles['someFile']);
+        $this->assertFalse(isset($uploadedFiles['existingFile']));
 
         $expectedBodyParams = [
             'title' => 'test-title',
+            'someFile' => $uploadedFiles['someFile'],
         ];
         $this->assertEquals($expectedBodyParams, $bodyParams);
-        $this->assertNotEmpty($_FILES['someFile']);
-        $this->assertFalse(isset($_FILES['existingFile']));
     }
 }

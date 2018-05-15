@@ -11,14 +11,14 @@ component's behavior:
 [
     'components' => [
         'view' => [
-            'class' => 'yii\web\View',
+            '__class' => yii\web\View::class,
             'renderers' => [
                 'tpl' => [
-                    'class' => 'yii\smarty\ViewRenderer',
+                    '__class' => yii\smarty\ViewRenderer::class,
                     //'cachePath' => '@runtime/Smarty/cache',
                 ],
                 'twig' => [
-                    'class' => 'yii\twig\ViewRenderer',
+                    '__class' => yii\twig\ViewRenderer::class,
                     'cachePath' => '@runtime/Twig/cache',
                     // Array of twig options:
                     'options' => [

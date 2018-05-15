@@ -8,7 +8,7 @@
 namespace yii\validators;
 
 use Yii;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 /**
  * ImageValidator verifies if an attribute is receiving a valid image.
@@ -130,92 +130,32 @@ class ImageValidator extends FileValidator
      */
     protected function validateImage($image)
     {
-        if (false === ($imageInfo = getimagesize($image->tempName))) {
+        if (false === ($imageInfo = getimagesize($image->tempFilename))) {
             return [$this->notImage, ['file' => $image->name]];
         }
 
-        list($width, $height) = $imageInfo;
+        [$width, $height] = $imageInfo;
 
         if ($width == 0 || $height == 0) {
-            return [$this->notImage, ['file' => $image->name]];
+            return [$this->notImage, ['file' => $image->getClientFilename()]];
         }
 
         if ($this->minWidth !== null && $width < $this->minWidth) {
-            return [$this->underWidth, ['file' => $image->name, 'limit' => $this->minWidth]];
+            return [$this->underWidth, ['file' => $image->getClientFilename(), 'limit' => $this->minWidth]];
         }
 
         if ($this->minHeight !== null && $height < $this->minHeight) {
-            return [$this->underHeight, ['file' => $image->name, 'limit' => $this->minHeight]];
+            return [$this->underHeight, ['file' => $image->getClientFilename(), 'limit' => $this->minHeight]];
         }
 
         if ($this->maxWidth !== null && $width > $this->maxWidth) {
-            return [$this->overWidth, ['file' => $image->name, 'limit' => $this->maxWidth]];
+            return [$this->overWidth, ['file' => $image->getClientFilename(), 'limit' => $this->maxWidth]];
         }
 
         if ($this->maxHeight !== null && $height > $this->maxHeight) {
-            return [$this->overHeight, ['file' => $image->name, 'limit' => $this->maxHeight]];
+            return [$this->overHeight, ['file' => $image->getClientFilename(), 'limit' => $this->maxHeight]];
         }
 
         return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-        return 'yii.validation.image(attribute, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ', deferred);';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $options = parent::getClientOptions($model, $attribute);
-
-        $label = $model->getAttributeLabel($attribute);
-
-        if ($this->notImage !== null) {
-            $options['notImage'] = $this->formatMessage($this->notImage, [
-                'attribute' => $label,
-            ]);
-        }
-
-        if ($this->minWidth !== null) {
-            $options['minWidth'] = $this->minWidth;
-            $options['underWidth'] = $this->formatMessage($this->underWidth, [
-                'attribute' => $label,
-                'limit' => $this->minWidth,
-            ]);
-        }
-
-        if ($this->maxWidth !== null) {
-            $options['maxWidth'] = $this->maxWidth;
-            $options['overWidth'] = $this->formatMessage($this->overWidth, [
-                'attribute' => $label,
-                'limit' => $this->maxWidth,
-            ]);
-        }
-
-        if ($this->minHeight !== null) {
-            $options['minHeight'] = $this->minHeight;
-            $options['underHeight'] = $this->formatMessage($this->underHeight, [
-                'attribute' => $label,
-                'limit' => $this->minHeight,
-            ]);
-        }
-
-        if ($this->maxHeight !== null) {
-            $options['maxHeight'] = $this->maxHeight;
-            $options['overHeight'] = $this->formatMessage($this->overHeight, [
-                'attribute' => $label,
-                'limit' => $this->maxHeight,
-            ]);
-        }
-
-        return $options;
     }
 }

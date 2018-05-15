@@ -9,8 +9,6 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Json;
-use yii\web\JsExpression;
 
 /**
  * UrlValidator validates that the attribute value is a valid http or https URL.
@@ -110,53 +108,6 @@ class UrlValidator extends Validator
 
     private function idnToAscii($idn)
     {
-        if (PHP_VERSION_ID < 50600) {
-            // TODO: drop old PHP versions support
-            return idn_to_ascii($idn);
-        }
-
         return idn_to_ascii($idn, 0, INTL_IDNA_VARIANT_UTS46);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        if ($this->enableIDN) {
-            PunycodeAsset::register($view);
-        }
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        if (strpos($this->pattern, '{schemes}') !== false) {
-            $pattern = str_replace('{schemes}', '(' . implode('|', $this->validSchemes) . ')', $this->pattern);
-        } else {
-            $pattern = $this->pattern;
-        }
-
-        $options = [
-            'pattern' => new JsExpression($pattern),
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ]),
-            'enableIDN' => (bool) $this->enableIDN,
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-        if ($this->defaultScheme !== null) {
-            $options['defaultScheme'] = $this->defaultScheme;
-        }
-
-        return $options;
     }
 }

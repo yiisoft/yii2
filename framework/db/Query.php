@@ -143,7 +143,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
         if ($db === null) {
             $db = Yii::$app->getDb();
         }
-        list($sql, $params) = $db->getQueryBuilder()->build($this);
+        [$sql, $params] = $db->getQueryBuilder()->build($this);
 
         $command = $db->createCommand($sql, $params);
         $this->setCommandCache($command);
@@ -187,7 +187,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
     public function batch($batchSize = 100, $db = null)
     {
         return Yii::createObject([
-            'class' => BatchQueryResult::className(),
+            '__class' => BatchQueryResult::class,
             'query' => $this,
             'batchSize' => $batchSize,
             'db' => $db,
@@ -215,7 +215,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
     public function each($batchSize = 100, $db = null)
     {
         return Yii::createObject([
-            'class' => BatchQueryResult::className(),
+            '__class' => BatchQueryResult::class,
             'query' => $this,
             'batchSize' => $batchSize,
             'db' => $db,
@@ -543,7 +543,7 @@ $
 PATTERN;
                 if (preg_match($pattern, $tableName, $matches)) {
                     if (isset($matches[2])) {
-                        list(, $tableName, $alias) = $matches;
+                        [, $tableName, $alias] = $matches;
                     } else {
                         $tableName = $alias = $matches[1];
                     }

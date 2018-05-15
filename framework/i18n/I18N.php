@@ -57,7 +57,7 @@ class I18N extends Component
         parent::init();
         if (!isset($this->translations['yii']) && !isset($this->translations['yii*'])) {
             $this->translations['yii'] = [
-                'class' => 'yii\i18n\PhpMessageSource',
+                '__class' => PhpMessageSource::class,
                 'sourceLanguage' => 'en-US',
                 'basePath' => '@yii/messages',
             ];
@@ -65,7 +65,7 @@ class I18N extends Component
 
         if (!isset($this->translations['app']) && !isset($this->translations['app*'])) {
             $this->translations['app'] = [
-                'class' => 'yii\i18n\PhpMessageSource',
+                '__class' => PhpMessageSource::class,
                 'sourceLanguage' => Yii::$app->sourceLanguage,
                 'basePath' => '@app/messages',
             ];

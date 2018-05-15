@@ -8,8 +8,8 @@
 namespace yii\rbac;
 
 use Yii;
-use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
+use yii\base\InvalidArgumentException;
 use yii\caching\CacheInterface;
 use yii\db\Connection;
 use yii\db\Expression;
@@ -109,9 +109,9 @@ class DbManager extends BaseManager
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db = Instance::ensure($this->db, Connection::class);
         if ($this->cache !== null) {
-            $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
+            $this->cache = Instance::ensure($this->cache, CacheInterface::class);
         }
     }
 
@@ -441,7 +441,7 @@ class DbManager extends BaseManager
      */
     protected function populateItem($row)
     {
-        $class = $row['type'] == Item::TYPE_PERMISSION ? Permission::className() : Role::className();
+        $class = $row['type'] == Item::TYPE_PERMISSION ? Permission::class : Role::class;
 
         if (!isset($row['data']) || ($data = @unserialize(is_resource($row['data']) ? stream_get_contents($row['data']) : $row['data'])) === false) {
             $data = null;
@@ -993,7 +993,7 @@ class DbManager extends BaseManager
 
         $data = $this->cache->get($this->cacheKey);
         if (is_array($data) && isset($data[0], $data[1], $data[2])) {
-            list($this->items, $this->rules, $this->parents) = $data;
+            [$this->items, $this->rules, $this->parents] = $data;
             return;
         }
 

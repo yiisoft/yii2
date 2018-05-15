@@ -26,7 +26,7 @@ use yii\di\Instance;
  *
  * ```php
  * 'session' => [
- *     'class' => 'yii\web\CacheSession',
+ *     '__class' => \yii\web\CacheSession::class,
  *     // 'cache' => 'mycache',
  * ]
  * ```
@@ -56,7 +56,7 @@ class CacheSession extends Session
     public function init()
     {
         parent::init();
-        $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
+        $this->cache = Instance::ensure($this->cache, CacheInterface::class);
     }
 
     /**
@@ -79,7 +79,7 @@ class CacheSession extends Session
     {
         $data = $this->cache->get($this->calculateKey($id));
 
-        return $data === false ? '' : $data;
+        return $data === null ? '' : $data;
     }
 
     /**
@@ -103,7 +103,7 @@ class CacheSession extends Session
     public function destroySession($id)
     {
         $cacheId = $this->calculateKey($id);
-        if ($this->cache->exists($cacheId) === false) {
+        if ($this->cache->has($cacheId) === false) {
             return true;
         }
 

@@ -34,7 +34,7 @@ class ServeController extends Controller
     /**
      * @var string path or [path alias](guide:concept-aliases) to directory to serve
      */
-    public $docroot = '@app/web';
+    public $docroot = 'public';
     /**
      * @var string path to router script.
      * See https://secure.php.net/manual/en/features.commandline.webserver.php
@@ -113,7 +113,7 @@ class ServeController extends Controller
      */
     protected function isAddressTaken($address)
     {
-        list($hostname, $port) = explode(':', $address);
+        [$hostname, $port] = explode(':', $address);
         $fp = @fsockopen($hostname, $port, $errno, $errstr, 3);
         if ($fp === false) {
             return false;

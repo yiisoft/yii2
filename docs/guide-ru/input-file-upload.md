@@ -1,7 +1,7 @@
 Загрузка файлов
 ===============
 
-Загрузка файлов в Yii, обычно, выполняется при помощи класса [[yii\web\UploadedFile]], который представляет каждый
+Загрузка файлов в Yii, обычно, выполняется при помощи класса [[yii\http\UploadedFile]], который представляет каждый
 загруженный файл в виде объекта `UploadedFile`. Используя [[yii\widgets\ActiveForm]] и [модели](structure-models.md)
 можно легко создать безопасный механизм загрузки файлов.
 
@@ -16,7 +16,7 @@
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -90,7 +90,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -112,7 +112,7 @@ class SiteController extends Controller
 ```
 
 При получении данных, отправленных из формы, для создания из загруженного файла экземпляра объекта `UploadedFile`,
-вызывается метод [[yii\web\UploadedFile::getInstance()]]. Далее всю работу по валидации и сохранению загруженного
+вызывается метод [[yii\http\UploadedFile::getInstance()]]. Далее всю работу по валидации и сохранению загруженного
 файла на сервере берет на себя модель.
 
 
@@ -130,7 +130,7 @@ class SiteController extends Controller
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -184,7 +184,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {

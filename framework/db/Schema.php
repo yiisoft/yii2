@@ -84,13 +84,13 @@ abstract class Schema extends BaseObject
      * If left part is found in DB error message exception class from the right part is used.
      */
     public $exceptionMap = [
-        'SQLSTATE[23' => 'yii\db\IntegrityException',
+        'SQLSTATE[23' => IntegrityException::class,
     ];
     /**
      * @var string|array column schema class or class config
      * @since 2.0.11
      */
-    public $columnSchemaClass = 'yii\db\ColumnSchema';
+    public $columnSchemaClass = ColumnSchema::class;
 
     /**
      * @var string|string[] character used to quote schema, table, etc. names.
@@ -270,7 +270,7 @@ abstract class Schema extends BaseObject
         ];
         $type = gettype($data);
 
-        return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
+        return $typeMap[$type] ?? \PDO::PARAM_STR;
     }
 
     /**
@@ -441,7 +441,7 @@ abstract class Schema extends BaseObject
                 break;
             }
 
-            $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
+            $result[$name] = $columns[$name] ?? $tableSchema->columns[$name]->defaultValue;
         }
 
         return $result;
@@ -532,7 +532,7 @@ abstract class Schema extends BaseObject
         if (is_string($this->tableQuoteCharacter)) {
             $startingCharacter = $endingCharacter = $this->tableQuoteCharacter;
         } else {
-            list($startingCharacter, $endingCharacter) = $this->tableQuoteCharacter;
+            [$startingCharacter, $endingCharacter] = $this->tableQuoteCharacter;
         }
         return strpos($name, $startingCharacter) !== false ? $name : $startingCharacter . $name . $endingCharacter;
     }
@@ -549,7 +549,7 @@ abstract class Schema extends BaseObject
         if (is_string($this->tableQuoteCharacter)) {
             $startingCharacter = $endingCharacter = $this->columnQuoteCharacter;
         } else {
-            list($startingCharacter, $endingCharacter) = $this->columnQuoteCharacter;
+            [$startingCharacter, $endingCharacter] = $this->columnQuoteCharacter;
         }
         return $name === '*' || strpos($name, $startingCharacter) !== false ? $name : $startingCharacter . $name . $endingCharacter;
     }
@@ -653,7 +653,7 @@ abstract class Schema extends BaseObject
             return $e;
         }
 
-        $exceptionClass = '\yii\db\Exception';
+        $exceptionClass = Exception::class;
         foreach ($this->exceptionMap as $error => $class) {
             if (strpos($e->getMessage(), $error) !== false) {
                 $exceptionClass = $class;
@@ -732,7 +732,7 @@ abstract class Schema extends BaseObject
         $cache = null;
         if ($this->db->enableSchemaCache && !in_array($name, $this->db->schemaCacheExclude, true)) {
             $schemaCache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
-            if ($schemaCache instanceof Cache) {
+            if ($schemaCache instanceof CacheInterface) {
                 $cache = $schemaCache;
             }
         }

@@ -312,7 +312,7 @@ class FileHelperTest extends TestCase
             $dirName => [],
         ]);
 
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidArgumentException');
 
         $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_dir';
         FileHelper::copyDirectory($dirName, $dirName);
@@ -328,7 +328,7 @@ class FileHelperTest extends TestCase
             'backup' => ['data' => []],
         ]);
 
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidArgumentException');
 
         FileHelper::copyDirectory(
             $this->testFilePath . DIRECTORY_SEPARATOR . 'backup',
@@ -367,6 +367,8 @@ class FileHelperTest extends TestCase
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data-backup'
         );
+
+        $this->assertTrue(true, 'no error');
     }
 
     public function testRemoveDirectory()
@@ -841,7 +843,7 @@ class FileHelperTest extends TestCase
      */
     public function testCopyDirectoryEmptyDirectories()
     {
-        list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
+        [$basePath, $srcDirName] = $this->setupCopyEmptyDirectoriesTest();
 
         // copy with empty directories
         $dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_empty_dst_dir';
@@ -866,7 +868,7 @@ class FileHelperTest extends TestCase
      */
     public function testCopyDirectoryNoEmptyDirectories()
     {
-        list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
+        [$basePath, $srcDirName] = $this->setupCopyEmptyDirectoriesTest();
 
         // copy without empty directories
         $dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_empty_dst_dir2';

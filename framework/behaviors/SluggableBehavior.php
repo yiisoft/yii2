@@ -29,7 +29,7 @@ use yii\validators\UniqueValidator;
  * {
  *     return [
  *         [
- *             'class' => SluggableBehavior::className(),
+ *             '__class' => SluggableBehavior::class,
  *             'attribute' => 'title',
  *             // 'slugAttribute' => 'slug',
  *         ],
@@ -50,7 +50,7 @@ use yii\validators\UniqueValidator;
  * {
  *     return [
  *         [
- *             'class' => SluggableBehavior::className(),
+ *             '__class' => SluggableBehavior::class,
  *             'slugAttribute' => 'alias',
  *         ],
  *     ];
@@ -105,7 +105,7 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $skipOnEmpty = false;
     /**
-     * @var array configuration for slug uniqueness validator. Parameter 'class' may be omitted - by default
+     * @var array configuration for slug uniqueness validator. Parameter '__class' may be omitted - by default
      * [[UniqueValidator]] will be used.
      * @see UniqueValidator
      */
@@ -243,7 +243,7 @@ class SluggableBehavior extends AttributeBehavior
         /* @var $model BaseActiveRecord */
         $validator = Yii::createObject(array_merge(
             [
-                'class' => UniqueValidator::className(),
+                '__class' => UniqueValidator::class
             ],
             $this->uniqueValidator
         ));

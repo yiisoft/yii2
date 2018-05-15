@@ -46,7 +46,6 @@ return [
     'Page not found.' => '页面未找到。',
     'Please fix the following errors:' => '请修复以下错误',
     'Please upload a file.' => '请上传一个文件。',
-    'Powered by {yii}' => '技术支持 {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => '第<b>{begin, number}-{end, number}</b>条，共<b>{totalCount, number}</b>条数据.',
     'The combination {values} of {attributes} has already been taken.' => '{attributes} 的值 "{values}" 已经被占用了。',
     'The file "{file}" is not an image.' => '文件 "{file}" 不是一个图像文件。',

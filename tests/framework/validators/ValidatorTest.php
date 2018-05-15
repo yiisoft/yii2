@@ -46,9 +46,9 @@ class ValidatorTest extends TestCase
         $model = FakedValidationModel::createWithAttributes(['attr_test1' => 'abc', 'attr_test2' => '2013']);
         /* @var $numberVal NumberValidator */
         $numberVal = TestValidator::createValidator('number', $model, ['attr_test1']);
-        $this->assertInstanceOf(NumberValidator::className(), $numberVal);
+        $this->assertInstanceOf(NumberValidator::class, $numberVal);
         $numberVal = TestValidator::createValidator('integer', $model, ['attr_test2']);
-        $this->assertInstanceOf(NumberValidator::className(), $numberVal);
+        $this->assertInstanceOf(NumberValidator::class, $numberVal);
         $this->assertTrue($numberVal->integerOnly);
         $val = TestValidator::createValidator(
             'boolean',
@@ -56,7 +56,7 @@ class ValidatorTest extends TestCase
             ['attr_test1', 'attr_test2'],
             ['on' => ['a', 'b']]
         );
-        $this->assertInstanceOf(BooleanValidator::className(), $val);
+        $this->assertInstanceOf(BooleanValidator::class, $val);
         $this->assertSame(['a', 'b'], $val->on);
         $this->assertSame(['attr_test1', 'attr_test2'], $val->attributes);
         $val = TestValidator::createValidator(
@@ -65,11 +65,11 @@ class ValidatorTest extends TestCase
             ['attr_test1', 'attr_test2'],
             ['on' => ['a', 'b'], 'except' => ['c', 'd', 'e']]
         );
-        $this->assertInstanceOf(BooleanValidator::className(), $val);
+        $this->assertInstanceOf(BooleanValidator::class, $val);
         $this->assertSame(['a', 'b'], $val->on);
         $this->assertSame(['c', 'd', 'e'], $val->except);
         $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
-        $this->assertInstanceOf(InlineValidator::className(), $val);
+        $this->assertInstanceOf(InlineValidator::class, $val);
         $this->assertSame('inlineVal', $val->method);
         $this->assertSame(['foo' => 'bar'], $val->params);
     }
@@ -83,7 +83,7 @@ class ValidatorTest extends TestCase
 
         $validator = TestValidator::createValidator('required', $model, ['firstAttribute']);
 
-        $this->assertInstanceOf(RequiredValidator::className(), $validator);
+        $this->assertInstanceOf(RequiredValidator::class, $validator);
     }
 
     public function testValidateAttributes()
@@ -192,7 +192,7 @@ class ValidatorTest extends TestCase
     public function testValidateValue()
     {
         $this->expectException('yii\base\NotSupportedException');
-        $this->expectExceptionMessage(TestValidator::className() . ' does not support validateValue().');
+        $this->expectExceptionMessage(TestValidator::class . ' does not support validateValue().');
         $val = new TestValidator();
         $val->validate('abc');
     }
@@ -209,7 +209,7 @@ class ValidatorTest extends TestCase
         $this->assertCount(3, $args);
         $this->assertEquals('val_attr_a', $args[0]);
         $this->assertEquals(['foo' => 'bar'], $args[1]);
-        $this->assertInstanceOf(InlineValidator::className(), $args[2]);
+        $this->assertInstanceOf(InlineValidator::class, $args[2]);
     }
 
     public function testClientValidateAttribute()
@@ -229,7 +229,7 @@ class ValidatorTest extends TestCase
         $this->assertCount(3, $args);
         $this->assertEquals('val_attr_a', $args[0]);
         $this->assertEquals(['foo' => 'bar'], $args[1]);
-        $this->assertInstanceOf(InlineValidator::className(), $args[2]);
+        $this->assertInstanceOf(InlineValidator::class, $args[2]);
     }
 
     public function testIsActive()

@@ -61,7 +61,7 @@ following code specifies that the fragment content depends on the change of the 
 
 ```php
 $dependency = [
-    'class' => 'yii\caching\DbDependency',
+    '__class' => 'yii\caching\DbDependency',
     'sql' => 'SELECT MAX(updated_at) FROM post',
 ];
 

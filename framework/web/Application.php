@@ -79,7 +79,7 @@ class Application extends \yii\base\Application
     {
         if (empty($this->catchAll)) {
             try {
-                list($route, $params) = $request->resolve();
+                [$route, $params] = $request->resolve();
             } catch (UrlNormalizerRedirectException $e) {
                 $url = $e->url;
                 if (is_array($url)) {
@@ -193,11 +193,11 @@ class Application extends \yii\base\Application
     public function coreComponents()
     {
         return array_merge(parent::coreComponents(), [
-            'request' => ['class' => 'yii\web\Request'],
-            'response' => ['class' => 'yii\web\Response'],
-            'session' => ['class' => 'yii\web\Session'],
-            'user' => ['class' => 'yii\web\User'],
-            'errorHandler' => ['class' => 'yii\web\ErrorHandler'],
+            'request' => ['__class' => Request::class],
+            'response' => ['__class' => Response::class],
+            'session' => ['__class' => Session::class],
+            'user' => ['__class' => User::class],
+            'errorHandler' => ['__class' => ErrorHandler::class],
         ]);
     }
 }

@@ -79,8 +79,6 @@ se muestra un listado con los componentes de caché disponibles:
 * [[yii\caching\MemCache]]: utiliza las extensiones de PHP [memcache](http://php.net/manual/es/book.memcache.php) y [memcached](http://php.net/manual/es/book.memcached.php). Esta opción puede ser considerada como la más rápida cuando la caché es manejada en una aplicación distribuida (ej. con varios servidores, con balance de carga, etc..)
 * [[yii\redis\Cache]]: implementa un componente de caché basado en [Redis](http://redis.io/) que almacenan pares clave-valor (requiere la versión 2.6.12 de redis).
 * [[yii\caching\WinCache]]: utiliza la extensión de PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension) ([ver también](http://php.net/manual/es/book.wincache.php)).
-* [[yii\caching\XCache]] _(deprecated)_: utiliza la extensión de PHP [XCache](http://xcache.lighttpd.net/).
-* [[yii\caching\ZendDataCache]] _(deprecated)_: utiliza [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) como el medio fundamental de caché.
 
 > Tip: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (ej. datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (ej. contenido de página).
 
@@ -98,7 +96,7 @@ Todos los componentes de almacenamiento de caché provienen de la misma clase "p
 * [[yii\caching\Cache::madd()|madd()]]: almacena múltiples elementos de datos en la memoria caché. Cada elemento se identifica con una clave. Si una clave ya existe en la caché, el elemento será omitido.
 * [[yii\caching\Cache::exists()|exists()]]: devuelve un valor que indica si la clave especificada se encuentra en la memoria caché.
 * [[yii\caching\Cache::delete()|delete()]]: elimina un elemento de datos identificado por una clave de la caché.
-* [[yii\caching\Cache::flush()|flush()]]: elimina todos los elementos de datos de la cache.
+* [[yii\caching\Cache::clear()|clear()]]: elimina todos los elementos de datos de la cache.
 
 > Note: No Almacenes el valor boolean `false` en caché directamente porque el método [[yii\caching\Cache::get()|get()]] devuelve
 el valor `false` para indicar que el dato no ha sido encontrado en la caché. Puedes poner `false` dentro de un array y cachear

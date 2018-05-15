@@ -17,7 +17,7 @@ use yiiunit\TestCase;
 class EmailTargetTest extends TestCase
 {
     /**
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit_Framework_MockObject_MockObject|\yii\mail\BaseMailer
      */
     protected $mailer;
 

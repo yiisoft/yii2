@@ -7,9 +7,9 @@
 
 namespace yiiunit\framework\log;
 
+use Psr\Log\LogLevel;
 use Yii;
 use yii\helpers\FileHelper;
-use yii\log\Dispatcher;
 use yii\log\FileTarget;
 use yii\log\Logger;
 use yiiunit\TestCase;
@@ -60,14 +60,12 @@ class FileTargetTest extends TestCase
         FileHelper::removeDirectory(dirname($logFile));
         mkdir(dirname($logFile), 0777, true);
 
-        $logger = new Logger();
-        $dispatcher = new Dispatcher([
-            'logger' => $logger,
+        $logger = new Logger([
             'targets' => [
                 'file' => [
-                    'class' => 'yii\log\FileTarget',
+                    '__class' => FileTarget::class,
                     'logFile' => $logFile,
-                    'levels' => ['warning'],
+                    'levels' => [LogLevel::WARNING],
                     'maxFileSize' => 1024, // 1 MB
                     'maxLogFiles' => 1, // one file for rotation and one normal log file
                     'logVars' => [],
@@ -78,7 +76,7 @@ class FileTargetTest extends TestCase
 
         // one file
 
-        $logger->log(str_repeat('x', 1024), Logger::LEVEL_WARNING);
+        $logger->log(LogLevel::WARNING, str_repeat('x', 1024));
         $logger->flush(true);
 
         clearstatcache();
@@ -91,13 +89,13 @@ class FileTargetTest extends TestCase
 
         // exceed max size
         for ($i = 0; $i < 1024; $i++) {
-            $logger->log(str_repeat('x', 1024), Logger::LEVEL_WARNING);
+            $logger->log(LogLevel::WARNING, str_repeat('x', 1024));
         }
         $logger->flush(true);
 
         // first rotate
 
-        $logger->log(str_repeat('x', 1024), Logger::LEVEL_WARNING);
+        $logger->log(LogLevel::WARNING, str_repeat('x', 1024));
         $logger->flush(true);
 
         clearstatcache();
@@ -111,7 +109,7 @@ class FileTargetTest extends TestCase
         // second rotate
 
         for ($i = 0; $i < 1024; $i++) {
-            $logger->log(str_repeat('x', 1024), Logger::LEVEL_WARNING);
+            $logger->log(LogLevel::WARNING, str_repeat('x', 1024));
         }
         $logger->flush(true);
 
