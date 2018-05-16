@@ -9,6 +9,8 @@ namespace yii\grid;
 
 use Yii;
 use yii\helpers\Html;
+use yii\di\Instance;
+use yii\web\UrlManager;
 
 /**
  * ActionColumn is a column for the [[GridView]] widget that displays buttons for viewing and manipulating the items.
@@ -127,8 +129,8 @@ class ActionColumn extends Column
      */
     public $buttonOptions = [];
     /**
-     * @var \yii\web\UrlManager the URL manager used for creating pagination URLs. If not set,
-     * the "urlManager" application component will be used.
+     * @var UrlManager|string|array the URL manager used for creating URLs. If not set, then "urlManager"
+     * application component will be used.
      * @since 2.1.0
      */
     public $urlManager;
@@ -143,6 +145,8 @@ class ActionColumn extends Column
 
         if ($this->urlManager === null) {
             $this->urlManager = Yii::$app->getUrlManager();
+        } else {
+            $this->urlManager = Instance::ensure($this->urlManager, UrlManager::class);
         }
     }
 

@@ -10,8 +10,10 @@ namespace yii\widgets;
 use Closure;
 use Yii;
 use yii\base\Widget;
+use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\web\UrlManager;
 
 /**
  * Menu displays a multi-level menu using nested HTML lists.
@@ -164,8 +166,8 @@ class Menu extends Widget
      */
     public $params;
     /**
-     * @var \yii\web\UrlManager the URL manager used for creating pagination URLs. If not set,
-     * the "urlManager" application component will be used.
+     * @var UrlManager|string|array the URL manager used for creating URLs. If not set, then "urlManager"
+     * application component will be used.
      * @since 2.1.0
      */
     public $urlManager;
@@ -186,6 +188,8 @@ class Menu extends Widget
         }
         if ($this->urlManager === null) {
             $this->urlManager = Yii::$app->getUrlManager();
+        } else {
+            $this->urlManager = Instance::ensure($this->urlManager, UrlManager::class);
         }
     }
 
