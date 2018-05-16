@@ -88,7 +88,7 @@ class Application extends \yii\base\Application
                     }
                     $url += $request->getQueryParams();
                 }
-                $url = Yii::$app->getUrlManager()->to($url, $e->scheme);
+                $url = $this->getUrlManager()->to($url, $e->scheme);
                 return $this->getResponse()->redirect($url, $e->statusCode);
             }
         } else {
