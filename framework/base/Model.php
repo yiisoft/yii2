@@ -431,10 +431,20 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      */
     public function getActiveValidators($attribute = null)
     {
-        $validators = [];
+        $activeAttributes = $this->activeAttributes();
+        if ($attribute !== null && !in_array($attribute, $activeAttributes, true)) {
+            return [];
+        }
         $scenario = $this->getScenario();
+        $validators = [];
         foreach ($this->getValidators() as $validator) {
-            if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->getAttributeNames(), true))) {
+            if ($attribute === null) {
+                $validatorAttributes = $validator->getValidationAttributes($activeAttributes);
+                $attributeValid = !empty($validatorAttributes);
+            } else {
+                $attributeValid = in_array($attribute, $validator->getValidationAttributes($attribute), true);
+            }
+            if ($attributeValid && $validator->isActive($scenario)) {
                 $validators[] = $validator;
             }
         }
