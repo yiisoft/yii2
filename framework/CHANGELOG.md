@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.1.0 under development
 -----------------------
-- Enh: Modified yii\web\XmlResponseFormatter to accept attributes for xml elements (codespede)
+- Enh #16285: Modified yii\web\XmlResponseFormatter to accept attributes for xml elements (codespede)
 - Bug #16065: Remove using `date.timezone` at `yii\base\Application`, use `date_default_timezone_get()` instead (sashsvamir)
 - Bug #12539: `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on content-type negotiation fail (PowerGamer1)
 - Bug #14458: Fixed `yii\filters\VerbFilter` uses case-insensitive comparison for the HTTP method name (klimov-paul)
