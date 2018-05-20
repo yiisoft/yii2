@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #16245: Fixed `__isset()` in `BaseActiveRecord` not catching errors (sammousa)
 - Bug #16266: Fixed `yii\helpers\BaseStringHelper` where explode would not allow 0 as trim string (Thoulah)
 - Bug #16277: Fixed `yii\db\Query::from()` to respect `yii\db\ExpressionInterface` (noname007)
+- Bug #16280: Fixed `yii\base\Model::getActiveValidators()` to return correct validators for attribute on scenario (paweljankowiak06)
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
 - Bug: Fixed bad instnaceof check in `yii\db\Schema::getTableMetadata()` (samdark)
 - Bug #16292: Fixed misconfigured CORS filter exception throwing. Now it throws `InvalidConfigException` in Debug mode (khvalov)
