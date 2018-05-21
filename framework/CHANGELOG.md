@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
 - Bug: Fixed bad instnaceof check in `yii\db\Schema::getTableMetadata()` (samdark)
 - Bug #16292: Fixed misconfigured CORS filter exception throwing. Now it throws `InvalidConfigException` in Debug mode (khvalov)
+- Bug #16301: Fixed `yii\web\User::setIdentity()` to clear access check cache while setting identity object to `null` (Izumi-kun)
 
 
 2.0.15.1 March 21, 2018
