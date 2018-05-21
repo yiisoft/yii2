@@ -13,19 +13,20 @@ Yii'yi diğer kütüphanelerle nasıl karşılaştırabilirim?
 
 Eğer zaten başka bir kütüphane ailesine dahilseniz, Yii'yi karşılaştırmak için anlamanız gereken şeyler:
 
-- Çoğu PHP kütüphaneleri gibi, Yii  MVC (Model-View-Controller) desenini uygular ve bu desene göre kod organizasyonu teşvik eder.
+- Çoğu PHP kütüphaneleri gibi, Yii  MVC (Model-View-Controller) desenini uygular ve bu desene göre kod organizasyonunu teşvik eder.
 - Yii, kodun basit ama zarif bir şekilde yazılması gerektiğini felsefe edinir. Yii, asla bazı tasarım desenlerini sıkı takip etmek amacıyla herşeyi aşırı tasarlamayacaktır.
-- Yii, kanıtlanmış full-stack bir kütüphanedir ve şu özellikleri kullanıma hazırdır: sorgu mimarı ve ActiveRecord her ikisi için ilişkisel ve NoSQL veritabanlarını; RESTful API geliştirmeyi; multi-tier (çok katmanlı) önbelleklemeyi; ve dahasını destekler.
+- Yii, kanıtlanmış full-stack bir kütüphanedir ve şu özellikleri kullanıma hazırdır: sorgu mimarı ve ActiveRecord her ikisi için ilişkisel ve NoSQL veritabanlarını; RESTful API geliştirmeyi; multi-tier (çok katmanlı) cache desteği ve dahasını destekler.
 - Yii son derece genişletilebilir. Neredeyse her bir çekirdek kodunu kişiselleştirebilir veya değiştirebilirsiniz. Yeniden dağıtılabilir uzantıları kullanmak veya geliştirmek için Yii'nin katı uzantı mimarisinden de yararlanabilirsiniz.
 - Yüksek performans her zaman Yii'nin öncelikli hedefidir.
 
-Yii tek kişilik bir gösteri değildir, bir [güçlü çekirdek geliştirici ekibi](http://www.yiiframework.com/team/) ve Yii'nin gelişimine sürekli katkıda bulunan büyük bir profesyonel topluluğu tarafından da destekleniyor. Yii geliştirici ekibi, en yeni Web geliştirme tekniklerine ve diğer kütüphaneler ve projelerde bulunan en iyi uygulamalara ve özelliklere yakından göz atmaktadır. Basit ve zarif arayüzler aracılığıyla, başka yerde bulunan en uygun, en iyi uygulamalar ve özellikler, düzenli olarak çekirdek kütüphaneye dahil edilir.
+Yii tek kişilik bir gösteri değildir, [güçlü çekirdek geliştirici ekibi](http://www.yiiframework.com/team/) ve Yii'nin gelişimine sürekli katkıda bulunan büyük bir profesyonel geliştirici topluluğu tarafından da destekleniyor. Yii geliştirici ekibi, en yeni Web geliştirme teknikleri ile diğer kütüphaneler ve projelerde bulunan en iyi uygulamalara ve özelliklere yakından göz atmaktadır. Basit ve zarif arayüzler aracılığıyla, başka yerde bulunan en uygun, en iyi uygulamalar ve özellikler, düzenli olarak çekirdek kütüphaneye dahil edilir.
 
 
-Yii Sürümleri
+Yii'nin Sürümleri
 ------------
 
-Yii'nin şuanda 2 tane major sürümü vardır: 1.1 ve 2.0. 1.1 sürümü eski nesil ve şu anda bakım modundadır.Sürüm 2.0, Yii'nin Composer, PSR, namespaceler, traitler ve benzerlerini içeren en son teknolojileri ve protokolleri benimseyen eksiksiz bir yeniden yazımıdır. Sürüm 2.0, çerçevenin mevcut neslini temsil eder ve önümüzdeki birkaç yıl boyunca ana geliştirme çabalarını alır.
+Yii'nin şuan da 1.1 ve 2.0 olmak üzere 2 tane major sürümü vardır. 1.1 sürümü eski nesil ve şuan da bakım modundadır.Sürüm 2.0, Yii'nin Composer, PSR, namespaceler, traitler ve benzerlerini içeren en son teknolojileri ve protokolleri benimseyen eksiksiz bir yeniden yazımıdır. Sürüm 2.0, kütüphanenin mevcut sürümünü temsil eder ve önümüzdeki birkaç yıl boyunca geliştirilmeye devam edecektir.
+
 Bu kılavuz esas olarak sürüm 2.0 ile ilgilidir.
 
 Gereksinimler ve Önkoşullar
@@ -33,4 +34,4 @@ Gereksinimler ve Önkoşullar
 
 Yii 2.0, PHP 5.4.0 veya üstü sürüm gerektirir ve PHP 7'nin en son sürümü ile en iyi şekilde çalışır. Her bir Yii sürümünde yer alan gereksinim denetleyicisini çalıştırarak, daha ayrıntılı gereksinimleri ayrı ayrı özellikler için bulabilirsiniz.
 
-Yii'nin OOP temelli bir kütüphane olduğu için Yii'yi kullanmak, nesne yönelimli programlama (OOP) hakkında temel bilgi gerektirir. Yii 2.0 ayrıca PHP'nin [namespaces](http://www.php.net/manual/en/language.namespaces.php) ve [traits](http://www.php.net/manual/en/language.oop5.traits.php) gibi son özelliklerinden de yararlanır. Bu kavramları anlamak, Yii 2.0'ı daha kolay anlamanıza yardımcı olacaktır.
+Yii OOP temelli bir kütüphane olduğu için Yii'yi kullanmak, nesne yönelimli programlama (OOP) hakkında temel bilgi gerektirir. Yii 2.0 ayrıca PHP'nin [namespaceler](http://www.php.net/manual/en/language.namespaces.php) ve [traitler](http://www.php.net/manual/en/language.oop5.traits.php) gibi son özelliklerinden de yararlanır. Bu kavramları anlamak, Yii 2.0'ı daha kolay anlamanıza yardımcı olacaktır.

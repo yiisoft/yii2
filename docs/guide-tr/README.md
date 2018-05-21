@@ -63,9 +63,9 @@ Anahtar Kavramlar
 
 * [Components](concept-components.md)
 * [Properties](concept-properties.md)
-* [Events](concept-events.md)
+* [Olaylar](concept-events.md)
 * [Behaviors](concept-behaviors.md)
-* [Configurations](concept-configurations.md)
+* [Yapılandırmalar](concept-configurations.md)
 * [Aliases](concept-aliases.md)
 * [Class Autoloading](concept-autoloading.md)
 * [Service Locator](concept-service-locator.md)
@@ -75,10 +75,10 @@ Anahtar Kavramlar
 Veritabanıyla Çalışırken
 ----------------------
 
-* [Database Access Objects](db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
-* [Query Builder](db-query-builder.md): Querying the database using a simple abstraction layer
-* [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
-* [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
+* [Database Access Objects](db-dao.md): Bir veritabanına bağlanmak, basit sorgular, işlemler ve şema manipilasyonu
+* [Query Builder](db-query-builder.md): Basit bir ayırma katmanı kullanarak veritabanı sorgulamak
+* [Active Record](db-active-record.md): Active Record ORM, kayıtları almak, değiştirmek ve ilişkileri tanımlamak
+* [Migrations](db-migrations.md): Bir takım geliştirme ortamında sürüm kontrolünü veritabanlarına uygula
 * [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx/doc/guide)
 * [Redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis/doc/guide)
 * [MongoDB](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb/doc/guide)
@@ -88,96 +88,96 @@ Veritabanıyla Çalışırken
 Kullanıcılardan Veri Alırken
 -----------------------
 
-* [Creating Forms](input-forms.md)
+* [Form Oluşturma](input-forms.md)
 * [Validating Input](input-validation.md)
-* [Uploading Files](input-file-upload.md)
+* [Dosya Yükleme](input-file-upload.md)
 * [Collecting Tabular Input](input-tabular-input.md)
-* [Getting Data for Multiple Models](input-multiple-models.md)
+* [Birden fazla Model için Veri Alma](input-multiple-models.md)
 * [Extending ActiveForm on the Client Side](input-form-javascript.md)
 
 
 Veriyi Gösterirken
 ---------------
 
-* [Data Formatting](output-formatting.md)
-* [Pagination](output-pagination.md)
-* [Sorting](output-sorting.md)
-* [Data Providers](output-data-providers.md)
-* [Data Widgets](output-data-widgets.md)
-* [Working with Client Scripts](output-client-scripts.md)
-* [Theming](output-theming.md)
+* [Veri Formatlama](output-formatting.md)
+* [Sayfalama](output-pagination.md)
+* [Sıralama](output-sorting.md)
+* [Veri Sağlayıcıları](output-data-providers.md)
+* [Veri Araçları](output-data-widgets.md)
+* [Scriptlerle Çalışmak](output-client-scripts.md)
+* [Tema Kullanımı](output-theming.md)
 
 
 Güvenlik
 --------
 
-* [Security Overview](security-overview.md)
-* [Authentication](security-authentication.md)
-* [Authorization](security-authorization.md)
-* [Working with Passwords](security-passwords.md)
-* [Cryptography](security-cryptography.md)
+* [Güvenliğe Genel Bakış](security-overview.md)
+* [Doğrulama](security-authentication.md)
+* [Yetkilendirme](security-authorization.md)
+* [Şifrelerle Çalışma](security-passwords.md)
+* [Kriptografi](security-cryptography.md)
 * [Auth Clients](https://www.yiiframework.com/extension/yiisoft/yii2-authclient/doc/guide)
-* [Best Practices](security-best-practices.md)
+* [En İyi Egzersizler](security-best-practices.md)
 
 
 Önbellek
 -------
 
-* [Caching Overview](caching-overview.md)
-* [Data Caching](caching-data.md)
-* [Fragment Caching](caching-fragment.md)
-* [Page Caching](caching-page.md)
-* [HTTP Caching](caching-http.md)
+* [Cache Genel Bakış](caching-overview.md)
+* [Veriyi Cache Almak](caching-data.md)
+* [Kısım Cachelemek](caching-fragment.md)
+* [Sayfayı Cache Almak](caching-page.md)
+* [HTTP Cache Almak](caching-http.md)
 
 
 RESTful Web Servisleri
 --------------------
 
-* [Quick Start](rest-quick-start.md)
-* [Resources](rest-resources.md)
-* [Controllers](rest-controllers.md)
+* [Hızlı Başlangıç](rest-quick-start.md)
+* [Kaynaklar](rest-resources.md)
+* [Kontroller](rest-controllers.md)
 * [Routing](rest-routing.md)
-* [Response Formatting](rest-response-formatting.md)
-* [Authentication](rest-authentication.md)
-* [Rate Limiting](rest-rate-limiting.md)
-* [Versioning](rest-versioning.md)
-* [Error Handling](rest-error-handling.md)
+* [Yanıt Formatlama](rest-response-formatting.md)
+* [Doğrulama](rest-authentication.md)
+* [İstek Sınırlama](rest-rate-limiting.md)
+* [Sürümlere Ayırma](rest-versioning.md)
+* [Hataları Kullanma](rest-error-handling.md)
 
 
 Geliştirici Araçları
 -----------------
 
-* [Debug Toolbar and Debugger](https://www.yiiframework.com/extension/yiisoft/yii2-debug/doc/guide)
-* [Generating Code using Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide)
-* [Generating API Documentation](https://www.yiiframework.com/extension/yiisoft/yii2-apidoc)
+* [Debug Toolbar ve Debugger](https://www.yiiframework.com/extension/yiisoft/yii2-debug/doc/guide)
+* [Gii'yi Kullanarak Kod Oluşturmak](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide)
+* [API Dökümanı OLuşturma](https://www.yiiframework.com/extension/yiisoft/yii2-apidoc)
 
 
 Test
 -------
 
-* [Testing Overview](test-overview.md)
-* [Testing environment setup](test-environment-setup.md)
-* [Unit Tests](test-unit.md)
-* [Functional Tests](test-functional.md)
-* [Acceptance Tests](test-acceptance.md)
+* [Testlere Genel Bakış](test-overview.md)
+* [Testlere Ortam Kurulumu](test-environment-setup.md)
+* [Unit Testleri](test-unit.md)
+* [Fonksiyonel Testler](test-functional.md)
+* [Kabul Testleri](test-acceptance.md)
 * [Fixtures](test-fixtures.md)
 
 
 Özel Başlıklar
 --------------
 
-* [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide)
+* [Gelişmiş Proje Şablonu](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide)
 * [Building Application from Scratch](tutorial-start-from-scratch.md)
-* [Console Commands](tutorial-console.md)
+* [Console Komutları](tutorial-console.md)
 * [Core Validators](tutorial-core-validators.md)
 * [Docker](tutorial-docker.md)
-* [Internationalization](tutorial-i18n.md)
+* [Uluslararası hale getirme](tutorial-i18n.md)
 * [Mailing](tutorial-mailing.md)
-* [Performance Tuning](tutorial-performance-tuning.md)
-* [Shared Hosting Environment](tutorial-shared-hosting.md)
-* [Template Engines](tutorial-template-engines.md)
-* [Working with Third-Party Code](tutorial-yii-integration.md)
-* [Using Yii as a micro framework](tutorial-yii-as-micro-framework.md)
+* [Performans Ayarları](tutorial-performance-tuning.md)
+* [Paylaşımlı Hosting Ortamı](tutorial-shared-hosting.md)
+* [Şablon Motoru](tutorial-template-engines.md)
+* [3. parti kodlarla çalışmak](tutorial-yii-integration.md)
+* [Yii'yi mikro kütüphane gibi kullanmak](tutorial-yii-as-micro-framework.md)
 
 
 Araçlar
