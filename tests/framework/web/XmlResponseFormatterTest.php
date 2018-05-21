@@ -68,8 +68,15 @@ class XmlResponseFormatterTest extends FormatterTest
                 'a' => 1,
                 'b' => 'abc',
                 'c' => [2, '<>'],
+                'city' => [
+                    'value' => 'New York',
+                    'xml-attributes' => [
+                        'type' => 'metropolitan',
+                        'population' => '10000000'
+                    ]
+                ],
                 false,
-            ], "<response><a>1</a><b>abc</b><c><item>2</item><item>&lt;&gt;</item></c><item>false</item></response>\n"],
+            ], "<response><a>1</a><b>abc</b><c><item>2</item><item>&lt;&gt;</item></c><city type=\"metropolitan\" population=\"10000000\">New York</city><item>false</item></response>\n"],
 
             // Checks if empty keys and keys not valid in XML are processed.
             // See https://github.com/yiisoft/yii2/pull/10346/
@@ -89,12 +96,18 @@ class XmlResponseFormatterTest extends FormatterTest
 
         $postsStack = new \SplStack();
 
-        $postsStack->push(new Post(915, 'record1'));
-        $expectedXmlForStack = '<Post><id>915</id><title>record1</title></Post>' .
+        $postsStack->push(new Post(915, 'record1', [
+            'value' => 'New York',
+            'xml-attributes' => [
+                'type' => 'metropolitan',
+                'population' => '10000000'
+            ]
+        ]));
+        $expectedXmlForStack = '<Post><id>915</id><title>record1</title><city type="metropolitan" population="10000000">New York</city></Post>' .
           $expectedXmlForStack;
 
         $postsStack->push(new Post(456, 'record2'));
-        $expectedXmlForStack = '<Post><id>456</id><title>record2</title></Post>' .
+        $expectedXmlForStack = '<Post><id>456</id><title>record2</title><city></city></Post>' .
           $expectedXmlForStack;
 
         $data = [
@@ -107,15 +120,15 @@ class XmlResponseFormatterTest extends FormatterTest
     public function formatObjectDataProvider()
     {
         return $this->addXmlHead([
-            [new Post(123, 'abc'), "<response><Post><id>123</id><title>abc</title></Post></response>\n"],
+            [new Post(123, 'abc'), "<response><Post><id>123</id><title>abc</title><city></city></Post></response>\n"],
             [[
                 new Post(123, 'abc'),
                 new Post(456, 'def'),
-            ], "<response><Post><id>123</id><title>abc</title></Post><Post><id>456</id><title>def</title></Post></response>\n"],
+            ], "<response><Post><id>123</id><title>abc</title><city></city></Post><Post><id>456</id><title>def</title><city></city></Post></response>\n"],
             [[
                 new Post(123, '<>'),
                 'a' => new Post(456, 'def'),
-            ], "<response><Post><id>123</id><title>&lt;&gt;</title></Post><a><Post><id>456</id><title>def</title></Post></a></response>\n"],
+            ], "<response><Post><id>123</id><title>&lt;&gt;</title><city></city></Post><a><Post><id>456</id><title>def</title><city></city></Post></a></response>\n"],
         ]);
     }
 
@@ -160,6 +173,6 @@ class XmlResponseFormatterTest extends FormatterTest
 
         $this->response->data = new Post(123, 'abc');
         $formatter->format($this->response);
-        $this->assertEquals($this->xmlHead . "<response><id>123</id><title>abc</title></response>\n", $this->response->content);
+        $this->assertEquals($this->xmlHead . "<response><id>123</id><title>abc</title><city></city></response>\n", $this->response->content);
     }
 }
