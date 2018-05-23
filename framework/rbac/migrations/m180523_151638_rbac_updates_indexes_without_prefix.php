@@ -10,19 +10,15 @@ use yii\db\Migration;
 use yii\rbac\DbManager;
 
 /**
- * Fix index on `user_id` column in `auth_assignment` table for performance reasons.
+ * Updates indexes without a prefix.
  *
  * @see https://github.com/yiisoft/yii2/pull/15548
  *
- * @author Sergey Goimar <sergey.gonimar@gmail.com>
+ * @author Sergey Gonimar <sergey.gonimar@gmail.com>
  * @since 2.0.16
  */
-class m180523_151638_rbac_update_index_on_auth_assignment_user_id extends Migration
+class m180523_151638_rbac_updates_indexes_without_prefix extends Migration
 {
-    public $column = 'user_id';
-    public $oldIndex = 'auth_assignment_user_id_idx';
-    public $newIndex = '{{%auth_assignment_user_id_idx}}';
-
     /**
      * @throws yii\base\InvalidConfigException
      * @return DbManager
@@ -44,8 +40,11 @@ class m180523_151638_rbac_update_index_on_auth_assignment_user_id extends Migrat
     {
         $authManager = $this->getAuthManager();
 
-        $this->dropIndex($this->oldIndex, $authManager->assignmentTable);
-        $this->createIndex($this->newIndex, $authManager->assignmentTable, $this->column);
+        $this->dropIndex('auth_assignment_user_id_idx', $authManager->assignmentTable);
+        $this->createIndex('{{%idx-auth_assignment-user_id}}', $authManager->assignmentTable, 'user_id');
+
+        $this->dropIndex('idx-auth_item-type', $authManager->itemTable);
+        $this->createIndex('{{%idx-auth_item-type}}', $authManager->itemTable, 'type');
     }
 
     /**
@@ -55,7 +54,11 @@ class m180523_151638_rbac_update_index_on_auth_assignment_user_id extends Migrat
     {
         $authManager = $this->getAuthManager();
 
-        $this->dropIndex($this->newIndex, $authManager->assignmentTable);
-        $this->createIndex($this->oldIndex, $authManager->assignmentTable, $this->column);
+        $this->dropIndex('{{%idx-auth_assignment-user_id}}', $authManager->assignmentTable);
+        $this->createIndex('auth_assignment_user_id_idx', $authManager->assignmentTable, 'user_id');
+
+
+        $this->dropIndex('{{%idx-auth_item-type}}', $authManager->assignmentTable);
+        $this->createIndex('idx-auth_item-type', $authManager->itemTable, 'type');
     }
 }
