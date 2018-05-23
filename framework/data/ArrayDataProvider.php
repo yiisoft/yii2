@@ -123,7 +123,7 @@ class ArrayDataProvider extends BaseDataProvider
      */
     protected function prepareTotalCount()
     {
-        return count($this->allModels);
+        return !$this->allModels ?: count($this->allModels);
     }
 
     /**
