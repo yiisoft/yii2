@@ -524,6 +524,7 @@ class FileValidator extends Validator
     protected function validateMimeType($file)
     {
         $fileMimeType = FileHelper::getMimeType($file->tempName);
+        $fileMimeType = strtolower($fileMimeType);
 
         foreach ($this->mimeTypes as $mimeType) {
             if ($mimeType === $fileMimeType) {
