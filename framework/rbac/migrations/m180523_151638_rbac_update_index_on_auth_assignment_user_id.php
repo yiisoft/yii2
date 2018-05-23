@@ -10,12 +10,12 @@ use yii\db\Migration;
 use yii\rbac\DbManager;
 
 /**
- * Adds index on `user_id` column in `auth_assignment` table for performance reasons.
+ * Fix index on `user_id` column in `auth_assignment` table for performance reasons.
  *
- * @see https://github.com/yiisoft/yii2/pull/14765
+ * @see https://github.com/yiisoft/yii2/pull/15548
  *
- * @author Ivan Buttinoni <ivan.buttinoni@cibi.it>
- * @since 2.0.13
+ * @author Sergey Goimar <sergey.gonimar@gmail.com>
+ * @since 2.0.16
  */
 class m180523_151638_rbac_update_index_on_auth_assignment_user_id extends Migration
 {
