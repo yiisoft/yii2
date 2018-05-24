@@ -248,6 +248,30 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
+     * Creates and executes a command to insert rows into a database table if
+     * they do not already exist (matching unique constraints),
+     * or update them if they do.
+     *
+     * The method will properly escape the column names, and bind the values to be inserted.
+     *
+     * @param string $table the table that new rows will be inserted into/updated in.
+     * @param array|Query $insertColumns the column data (name => value) to be inserted into the table or instance
+     * of [[Query]] to perform `INSERT INTO ... SELECT` SQL statement.
+     * @param array|bool $updateColumns the column data (name => value) to be updated if they already exist.
+     * If `true` is passed, the column data will be updated to match the insert column data.
+     * If `false` is passed, no update will be performed if the column data already exists.
+     * @param array $params the parameters to be bound to the command.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function upsert($table, $insertColumns, $updateColumns = true, $params = [])
+    {
+        $time = $this->beginCommand("upsert into $table");
+        $this->db->createCommand()->upsert($table, $insertColumns, $updateColumns, $params)->execute();
+        $this->endCommand($time);
+    }
+
+    /**
      * Creates and executes an UPDATE SQL statement.
      * The method will properly escape the column names and bind the values to be updated.
      * @param string $table the table to be updated.

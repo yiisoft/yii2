@@ -308,9 +308,9 @@ Same command options like: `namespace`, `globalFixtures` also can be applied to 
 
 ### Configure Command Globally
 
-While command line options allow us to configure the migration command
+While command line options allow us to configure the fixture command
 on-the-fly, sometimes we may want to configure the command once for all. For example you can configure
-different migration path as follows:
+different fixture path as follows:
 
 ```
 'controllerMap' => [

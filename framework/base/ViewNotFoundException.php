@@ -13,7 +13,7 @@ namespace yii\base;
  * @author Alexander Makarov
  * @since 2.0.10
  */
-class ViewNotFoundException extends InvalidParamException
+class ViewNotFoundException extends InvalidArgumentException
 {
     /**
      * @return string the user-friendly name of this exception

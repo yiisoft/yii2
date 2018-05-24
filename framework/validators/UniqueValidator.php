@@ -89,6 +89,11 @@ class UniqueValidator extends Validator
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
+    /**
+     * @var bool whether this validator is forced to always use master DB
+     * @since 2.0.14
+     */
+    public $forceMasterDb =  true;
 
 
     /**
@@ -131,7 +136,19 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
-        if ($this->modelExists($targetClass, $conditions, $model)) {
+        $db = $targetClass::getDb();
+
+        $modelExists = false;
+
+        if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
+            $db->useMaster(function () use ($targetClass, $conditions, $model, &$modelExists) {
+                $modelExists = $this->modelExists($targetClass, $conditions, $model);
+            });
+        } else {
+            $modelExists = $this->modelExists($targetClass, $conditions, $model);
+        }
+
+        if ($modelExists) {
             if (is_array($targetAttribute) && count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {

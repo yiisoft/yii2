@@ -85,10 +85,6 @@ class FileTarget extends Target
         } else {
             $this->logFile = Yii::getAlias($this->logFile);
         }
-        $logPath = dirname($this->logFile);
-        if (!is_dir($logPath)) {
-            FileHelper::createDirectory($logPath, $this->dirMode, true);
-        }
         if ($this->maxLogFiles < 1) {
             $this->maxLogFiles = 1;
         }
@@ -99,10 +95,15 @@ class FileTarget extends Target
 
     /**
      * Writes log messages to a file.
+     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
      * @throws InvalidConfigException if unable to open the log file for writing
+     * @throws LogRuntimeException if unable to write complete log to file
      */
     public function export()
     {
+        $logPath = dirname($this->logFile);
+        FileHelper::createDirectory($logPath, $this->dirMode, true);
+
         $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
         if (($fp = @fopen($this->logFile, 'a')) === false) {
             throw new InvalidConfigException("Unable to append to log file: {$this->logFile}");
@@ -117,9 +118,25 @@ class FileTarget extends Target
             $this->rotateFiles();
             @flock($fp, LOCK_UN);
             @fclose($fp);
-            @file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
+            $writeResult = @file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
+            if ($writeResult === false) {
+                $error = error_get_last();
+                throw new LogRuntimeException("Unable to export log through file!: {$error['message']}");
+            }
+            $textSize = strlen($text);
+            if ($writeResult < $textSize) {
+                throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of $textSize bytes.");
+            }
         } else {
-            @fwrite($fp, $text);
+            $writeResult = @fwrite($fp, $text);
+            if ($writeResult === false) {
+                $error = error_get_last();
+                throw new LogRuntimeException("Unable to export log through file!: {$error['message']}");
+            }
+            $textSize = strlen($text);
+            if ($writeResult < $textSize) {
+                throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of $textSize bytes.");
+            }
             @flock($fp, LOCK_UN);
             @fclose($fp);
         }

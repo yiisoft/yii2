@@ -104,6 +104,7 @@ At this point the project structure should look like this:
 ```
 micro-app/
 ├── composer.json
+├── config.php
 ├── web/
     └── index.php
 └── controllers/
@@ -141,7 +142,7 @@ to the application configuration:
 
 > Info: We use an sqlite database here for simplicity. Please refer to the [Database guide](db-dao.md) for more options.
 
-Next we create a [database migration](db-migrations.md) to create a posts table.
+Next we create a [database migration](db-migrations.md) to create a post table.
 Make sure you have a separate configuration file as explained above, we need it to run the console commands below.
 Running the following commands will
 create a database migration file and apply the migration to the database:
@@ -162,12 +163,12 @@ class Post extends ActiveRecord
 { 
     public static function tableName()
     {
-        return '{{posts}}';
+        return '{{post}}';
     }
 }
 ```
 
-> Info: The model created here is an ActiveRecord class, which represents the data from the `posts` table.
+> Info: The model created here is an ActiveRecord class, which represents the data from the `post` table.
 > Please refer to the [active record guide](db-active-record.md) for more information.
 
 To serve posts on our API, add the `PostController` in `controllers`:

@@ -128,7 +128,7 @@ class BaseYiiTest extends TestCase
     /**
      * @covers \yii\BaseYii::info()
      * @covers \yii\BaseYii::warning()
-     * @covers \yii\BaseYii::trace()
+     * @covers \yii\BaseYii::debug()
      * @covers \yii\BaseYii::error()
      * @covers \yii\BaseYii::beginProfile()
      * @covers \yii\BaseYii::endProfile()
@@ -165,7 +165,7 @@ class BaseYiiTest extends TestCase
 
         BaseYii::info('info message', 'info category');
         BaseYii::warning('warning message', 'warning category');
-        BaseYii::trace('trace message', 'trace category');
+        BaseYii::debug('trace message', 'trace category');
         BaseYii::error('error message', 'error category');
         BaseYii::beginProfile('beginProfile message', 'beginProfile category');
         BaseYii::endProfile('endProfile message', 'endProfile category');

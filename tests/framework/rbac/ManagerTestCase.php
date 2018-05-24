@@ -8,6 +8,7 @@
 namespace yiiunit\framework\rbac;
 
 use yii\base\InvalidParamException;
+use yii\rbac\BaseManager;
 use yii\rbac\Item;
 use yii\rbac\Permission;
 use yii\rbac\Role;
@@ -19,7 +20,7 @@ use yiiunit\TestCase;
 abstract class ManagerTestCase extends TestCase
 {
     /**
-     * @var \yii\rbac\ManagerInterface
+     * @var \yii\rbac\ManagerInterface|BaseManager
      */
     protected $auth;
 
@@ -615,26 +616,19 @@ abstract class ManagerTestCase extends TestCase
         $this->assertInstanceOf(ActionRule::className(), $rule);
     }
 
-    public function testDefaultRoles()
+    public function testDefaultRolesWithClosureReturningNonArrayValue()
     {
-        try {
-            $this->auth->defaultRoles = 'test';
-        } catch (\Exception $e) {
-            $this->assertInstanceOf('\yii\base\InvalidParamException', $e);
-            $this->assertEquals('Default roles must be either an array or a callable', $e->getMessage());
+        $this->expectException('yii\base\InvalidValueException');
+        $this->expectExceptionMessage('Default roles closure must return an array');
+        $this->auth->defaultRoles = function () {
+            return 'test';
+        };
+    }
 
-            try {
-                $this->auth->defaultRoles = function () {
-                    return 'test';
-                };
-            } catch (\Exception $e) {
-                $this->assertInstanceOf('\yii\base\InvalidParamException', $e);
-                $this->assertEquals('Default roles closure must return an array', $e->getMessage());
-            }
-
-            return;
-        }
-
-        $this->fail('Not rise an exception');
+    public function testDefaultRolesWithNonArrayValue()
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Default roles must be either an array or a callable');
+        $this->auth->defaultRoles = 'test';
     }
 }

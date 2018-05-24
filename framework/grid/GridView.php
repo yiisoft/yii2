@@ -127,11 +127,11 @@ class GridView extends BaseListView
      * @var bool whether to show the footer section of the grid table.
      */
     public $showFooter = false;
-	/**
-	 * @var bool whether to place footer after body in DOM if $showFooter is true
+    /**
+     * @var bool whether to place footer after body in DOM if $showFooter is true
      * @since 2.0.14
-	 */
-	public $placeFooterAfterBody = false;
+     */
+    public $placeFooterAfterBody = false;
     /**
      * @var bool whether to show the grid view if [[dataProvider]] returns no data.
      */
@@ -343,6 +343,7 @@ class GridView extends BaseListView
 
     /**
      * Renders the data models for the grid view.
+     * @return string the HTML code of table
      */
     public function renderItems()
     {
