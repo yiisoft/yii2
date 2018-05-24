@@ -8,8 +8,8 @@
 namespace yii\rbac;
 
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidCallException;
-use yii\base\InvalidParamException;
 use yii\caching\CacheInterface;
 use yii\db\Connection;
 use yii\db\Expression;
@@ -162,7 +162,7 @@ class DbManager extends BaseManager
 
         $item = $this->items[$itemName];
 
-        Yii::trace($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
+        Yii::debug($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
 
         if (!$this->executeRule($user, $item, $params)) {
             return false;
@@ -201,7 +201,7 @@ class DbManager extends BaseManager
             return false;
         }
 
-        Yii::trace($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
+        Yii::debug($item instanceof Role ? "Checking role: $itemName" : "Checking permission: $itemName", __METHOD__);
 
         if (!$this->executeRule($user, $item, $params)) {
             return false;
@@ -490,7 +490,7 @@ class DbManager extends BaseManager
         $role = $this->getRole($roleName);
 
         if ($role === null) {
-            throw new InvalidParamException("Role \"$roleName\" not found.");
+            throw new InvalidArgumentException("Role \"$roleName\" not found.");
         }
 
         $result = [];
@@ -742,11 +742,11 @@ class DbManager extends BaseManager
     public function addChild($parent, $child)
     {
         if ($parent->name === $child->name) {
-            throw new InvalidParamException("Cannot add '{$parent->name}' as a child of itself.");
+            throw new InvalidArgumentException("Cannot add '{$parent->name}' as a child of itself.");
         }
 
         if ($parent instanceof Permission && $child instanceof Role) {
-            throw new InvalidParamException('Cannot add a role as a child of a permission.');
+            throw new InvalidArgumentException('Cannot add a role as a child of a permission.');
         }
 
         if ($this->detectLoop($parent, $child)) {

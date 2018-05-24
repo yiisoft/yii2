@@ -9,8 +9,8 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\ErrorException;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * BaseFileHelper provides concrete implementation for [[FileHelper]].
@@ -33,7 +33,6 @@ class BaseFileHelper
      * @var string the path (or alias) of a PHP file containing MIME type information.
      */
     public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
-
     /**
      * @var string the path (or alias) of a PHP file containing MIME aliases.
      * @since 2.0.14
@@ -62,7 +61,11 @@ class BaseFileHelper
             return $path;
         }
         // the path may contain ".", ".." or double slashes, need to clean them up
-        $parts = [];
+        if (strpos($path, "{$ds}{$ds}") === 0 && $ds == '\\') {
+            $parts = [$ds];
+        } else {
+            $parts = [];
+        }
         foreach (explode($ds, $path) as $part) {
             if ($part === '..' && !empty($parts) && end($parts) !== '..') {
                 array_pop($parts);
@@ -288,7 +291,7 @@ class BaseFileHelper
      *   that do not contain files. This affects directories that do not contain files initially as well as directories that
      *   do not contain files at the target destination because files have been filtered via `only` or `except`.
      *   Defaults to true. This option is available since version 2.0.12. Before 2.0.12 empty directories are always copied.
-     * @throws \yii\base\InvalidParamException if unable to open directory
+     * @throws InvalidArgumentException if unable to open directory
      */
     public static function copyDirectory($src, $dst, $options = [])
     {
@@ -296,7 +299,7 @@ class BaseFileHelper
         $dst = static::normalizePath($dst);
 
         if ($src === $dst || strpos($dst, $src . DIRECTORY_SEPARATOR) === 0) {
-            throw new InvalidParamException('Trying to copy a directory to itself or a subdirectory.');
+            throw new InvalidArgumentException('Trying to copy a directory to itself or a subdirectory.');
         }
         $dstExists = is_dir($dst);
         if (!$dstExists && (!isset($options['copyEmptyDirectories']) || $options['copyEmptyDirectories'])) {
@@ -306,7 +309,7 @@ class BaseFileHelper
 
         $handle = opendir($src);
         if ($handle === false) {
-            throw new InvalidParamException("Unable to open directory: $src");
+            throw new InvalidArgumentException("Unable to open directory: $src");
         }
         if (!isset($options['basePath'])) {
             // this should be done only once
@@ -364,7 +367,7 @@ class BaseFileHelper
         if (!is_dir($dir)) {
             return;
         }
-        if (isset($options['traverseSymlinks']) && $options['traverseSymlinks'] || !is_link($dir)) {
+        if (!empty($options['traverseSymlinks']) || !is_link($dir)) {
             if (!($handle = opendir($dir))) {
                 return;
             }
@@ -413,7 +416,7 @@ class BaseFileHelper
         } catch (ErrorException $e) {
             // last resort measure for Windows
             $lines = [];
-            exec("DEL /F/Q \"$path\"", $lines, $deleteError);
+            exec('DEL /F/Q ' . escapeshellarg($path), $lines, $deleteError);
             return $deleteError !== 0;
         }
     }
@@ -451,24 +454,14 @@ class BaseFileHelper
      * - `caseSensitive`: boolean, whether patterns specified at `only` or `except` should be case sensitive. Defaults to `true`.
      * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
      * @return array files found under the directory, in no particular order. Ordering depends on the files system used.
-     * @throws InvalidParamException if the dir is invalid.
+     * @throws InvalidArgumentException if the dir is invalid.
      */
     public static function findFiles($dir, $options = [])
     {
-        if (!is_dir($dir)) {
-            throw new InvalidParamException("The dir argument must be a directory: $dir");
-        }
-        $dir = rtrim($dir, DIRECTORY_SEPARATOR);
-        if (!isset($options['basePath'])) {
-            // this should be done only once
-            $options['basePath'] = realpath($dir);
-            $options = static::normalizeOptions($options);
-        }
+        $dir = self::clearDir($dir);
+        $options = self::setBasePath($dir, $options);
         $list = [];
-        $handle = opendir($dir);
-        if ($handle === false) {
-            throw new InvalidParamException("Unable to open directory: $dir");
-        }
+        $handle = self::openDir($dir);
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {
                 continue;
@@ -485,6 +478,83 @@ class BaseFileHelper
         closedir($handle);
 
         return $list;
+    }
+
+    /**
+     * Returns the directories found under the specified directory and subdirectories.
+     * @param string $dir the directory under which the files will be looked for.
+     * @param array $options options for directory searching. Valid options are:
+     *
+     * - `filter`: callback, a PHP callback that is called for each directory or file.
+     *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
+     *   The callback can return one of the following values:
+     *
+     *   * `true`: the directory will be returned
+     *   * `false`: the directory will NOT be returned
+     *
+     * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
+     * @return array directories found under the directory, in no particular order. Ordering depends on the files system used.
+     * @throws InvalidArgumentException if the dir is invalid.
+     * @since 2.0.14
+     */
+    public static function findDirectories($dir, $options = [])
+    {
+        $dir = self::clearDir($dir);
+        $options = self::setBasePath($dir, $options);
+        $list = [];
+        $handle = self::openDir($dir);
+        while (($file = readdir($handle)) !== false) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($path) && static::filterPath($path, $options)) {
+                $list[] = $path;
+                if (!isset($options['recursive']) || $options['recursive']) {
+                    $list = array_merge($list, static::findDirectories($path, $options));
+                }
+            }
+        }
+        closedir($handle);
+
+        return $list;
+    }
+
+    /*
+     * @param string $dir
+     */
+    private static function setBasePath($dir, $options)
+    {
+        if (!isset($options['basePath'])) {
+            // this should be done only once
+            $options['basePath'] = realpath($dir);
+            $options = static::normalizeOptions($options);
+        }
+
+        return $options;
+    }
+
+    /*
+     * @param string $dir
+     */
+    private static function openDir($dir)
+    {
+        $handle = opendir($dir);
+        if ($handle === false) {
+            throw new InvalidArgumentException("Unable to open directory: $dir");
+        }
+        return $handle;
+    }
+
+    /*
+     * @param string $dir
+     */
+    private static function clearDir($dir)
+    {
+        if (!is_dir($dir)) {
+            throw new InvalidArgumentException("The dir argument must be a directory: $dir");
+        }
+        return rtrim($dir, DIRECTORY_SEPARATOR);
     }
 
     /**
@@ -667,7 +737,7 @@ class BaseFileHelper
      * @param string $path
      * @param array $excludes list of patterns to match $path against
      * @return array|null null or one of $excludes item as an array with keys: 'pattern', 'flags'
-     * @throws InvalidParamException if any of the exclude patterns is not a string or an array with keys: pattern, flags, firstWildcard.
+     * @throws InvalidArgumentException if any of the exclude patterns is not a string or an array with keys: pattern, flags, firstWildcard.
      */
     private static function lastExcludeMatchingFromList($basePath, $path, $excludes)
     {
@@ -676,7 +746,7 @@ class BaseFileHelper
                 $exclude = self::parseExcludePattern($exclude, false);
             }
             if (!isset($exclude['pattern']) || !isset($exclude['flags']) || !isset($exclude['firstWildcard'])) {
-                throw new InvalidParamException('If exclude/include pattern is an array it must contain the pattern, flags and firstWildcard keys.');
+                throw new InvalidArgumentException('If exclude/include pattern is an array it must contain the pattern, flags and firstWildcard keys.');
             }
             if ($exclude['flags'] & self::PATTERN_MUSTBEDIR && !is_dir($path)) {
                 continue;
@@ -701,13 +771,13 @@ class BaseFileHelper
      * Processes the pattern, stripping special characters like / and ! from the beginning and settings flags instead.
      * @param string $pattern
      * @param bool $caseSensitive
-     * @throws \yii\base\InvalidParamException
+     * @throws InvalidArgumentException
      * @return array with keys: (string) pattern, (int) flags, (int|bool) firstWildcard
      */
     private static function parseExcludePattern($pattern, $caseSensitive)
     {
         if (!is_string($pattern)) {
-            throw new InvalidParamException('Exclude/include pattern must be a string.');
+            throw new InvalidArgumentException('Exclude/include pattern must be a string.');
         }
 
         $result = [

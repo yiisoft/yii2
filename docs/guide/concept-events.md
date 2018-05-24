@@ -212,7 +212,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' is inserted');
+    Yii::debug(get_class($event->sender) . ' is inserted');
 });
 ```
 
@@ -296,7 +296,7 @@ pass the interface class name as the first argument:
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
+    Yii::debug(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
 });
 ```
 
@@ -370,7 +370,7 @@ $foo = new Foo();
 
 $foo->on('foo.event.*', function ($event) {
     // triggered for any event, which name starts on 'foo.event.'
-    Yii::trace('trigger event: ' . $event->name);
+    Yii::debug('trigger event: ' . $event->name);
 });
 ```
 
@@ -382,7 +382,7 @@ use Yii;
 
 Event::on('app\models\*', 'before*', function ($event) {
     // triggered for any class in namespace 'app\models' for any event, which name starts on 'before'
-    Yii::trace('trigger event: ' . $event->name . ' for class: ' . get_class($event->sender));
+    Yii::debug('trigger event: ' . $event->name . ' for class: ' . get_class($event->sender));
 });
 ```
 
@@ -394,7 +394,7 @@ use Yii;
 
 Event::on('*', '*', function ($event) {
     // triggered for any event at any class
-    Yii::trace('trigger event: ' . $event->name);
+    Yii::debug('trigger event: ' . $event->name);
 });
 ```
 
@@ -403,7 +403,7 @@ Event::on('*', '*', function ($event) {
 
 In order to detach event handler specified by wildcard pattern, you should repeat same pattern at
 [[yii\base\Component::off()]] or [[yii\base\Event::off()]] invocation. Keep in mind that passing wildcard
-during detaching of event handler will detach ony the handler specified for this wildcard, while handlers
+during detaching of event handler will detach only the handler specified for this wildcard, while handlers
 attached for regular event names will remain even if they match the pattern. For example:
 
 ```php

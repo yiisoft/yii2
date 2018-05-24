@@ -129,7 +129,7 @@ class EachValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        if (!is_array($value)) {
+        if (!is_array($value) && !$value instanceof \ArrayAccess) {
             $this->addError($model, $attribute, $this->message, []);
             return;
         }
@@ -172,7 +172,7 @@ class EachValidator extends Validator
      */
     protected function validateValue($value)
     {
-        if (!is_array($value)) {
+        if (!is_array($value) && !$value instanceof \ArrayAccess) {
             return [$this->message, []];
         }
 

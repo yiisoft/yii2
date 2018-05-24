@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use yii\db\conditions\ExistsConditionBuilder;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Type;
@@ -35,6 +36,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['int_col2']['size'] = null;
         $columns['int_col2']['precision'] = 32;
         $columns['int_col2']['scale'] = 0;
+        $columns['tinyint_col']['type'] = 'smallint';
+        $columns['tinyint_col']['dbType'] = 'int2';
+        $columns['tinyint_col']['size'] = null;
+        $columns['tinyint_col']['precision'] = 16;
+        $columns['tinyint_col']['scale'] = 0;
         $columns['smallint_col']['dbType'] = 'int2';
         $columns['smallint_col']['size'] = null;
         $columns['smallint_col']['precision'] = 16;
@@ -84,6 +90,71 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'precision' => 64,
             'scale' => 0,
             'defaultValue' => null,
+        ];
+        $columns['intarray_col'] = [
+            'type' => 'integer',
+            'dbType' => 'int4',
+            'phpType' => 'integer',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => null,
+            'precision' => null,
+            'scale' => null,
+            'defaultValue' => null,
+            'dimension' => 1
+        ];
+        $columns['textarray2_col'] = [
+            'type' => 'text',
+            'dbType' => 'text',
+            'phpType' => 'string',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => null,
+            'precision' => null,
+            'scale' => null,
+            'defaultValue' => null,
+            'dimension' => 2
+        ];
+        $columns['json_col'] = [
+            'type' => 'json',
+            'dbType' => 'json',
+            'phpType' => 'array',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => null,
+            'precision' => null,
+            'scale' => null,
+            'defaultValue' => ["a" => 1],
+            'dimension' => 0
+        ];
+        $columns['jsonb_col'] = [
+            'type' => 'json',
+            'dbType' => 'jsonb',
+            'phpType' => 'array',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => null,
+            'precision' => null,
+            'scale' => null,
+            'defaultValue' => null,
+            'dimension' => 0
+        ];
+        $columns['jsonarray_col'] = [
+            'type' => 'json',
+            'dbType' => 'json',
+            'phpType' => 'array',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => null,
+            'precision' => null,
+            'scale' => null,
+            'defaultValue' => null,
+            'dimension' => 1
         ];
 
         return $columns;

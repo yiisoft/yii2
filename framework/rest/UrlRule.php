@@ -225,7 +225,7 @@ class UrlRule extends CompositeUrlRule
                     /* @var $rule WebUrlRule */
                     $result = $rule->parseRequest($manager, $request);
                     if (YII_DEBUG) {
-                        Yii::trace([
+                        Yii::debug([
                             'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                             'match' => $result !== false,
                             'parent' => self::className(),

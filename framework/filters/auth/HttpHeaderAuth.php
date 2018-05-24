@@ -51,9 +51,14 @@ class HttpHeaderAuth extends AuthMethod
         $authHeader = $request->getHeaders()->get($this->header);
 
         if ($authHeader !== null) {
-            if ($this->pattern !== null && preg_match($this->pattern, $authHeader, $matches)) {
-                $authHeader = $matches[1];
+            if ($this->pattern !== null) {
+                if (preg_match($this->pattern, $authHeader, $matches)) {
+                    $authHeader = $matches[1];
+                } else {
+                    return null;
+                }
             }
+
             $identity = $user->loginByAccessToken($authHeader, get_class($this));
             if ($identity === null) {
                 $this->challenge($response);

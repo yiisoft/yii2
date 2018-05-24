@@ -118,16 +118,17 @@ use yii\caching\CacheInterface;
  * master available. This property is read-only.
  * @property PDO $masterPdo The PDO instance for the currently active master connection. This property is
  * read-only.
- * @property QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
- * read-only.
+ * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
+ * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
+ * @property string $serverVersion Server version as a string. This property is read-only.
  * @property Connection $slave The currently active slave connection. `null` is returned if there is no slave
  * available and `$fallbackToMaster` is false. This property is read-only.
  * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
  * no slave connection is available and `$fallbackToMaster` is false. This property is read-only.
- * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
- * property is read-only.
+ * @property Transaction|null $transaction The currently active transaction. Null if no active transaction.
+ * This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -135,19 +136,19 @@ use yii\caching\CacheInterface;
 class Connection extends Component
 {
     /**
-     * @event Event an event that is triggered after a DB connection is established
+     * @event yii\base\Event an event that is triggered after a DB connection is established
      */
     const EVENT_AFTER_OPEN = 'afterOpen';
     /**
-     * @event Event an event that is triggered right before a top-level transaction is started
+     * @event yii\base\Event an event that is triggered right before a top-level transaction is started
      */
     const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
     /**
-     * @event Event an event that is triggered right after a top-level transaction is committed
+     * @event yii\base\Event an event that is triggered right after a top-level transaction is committed
      */
     const EVENT_COMMIT_TRANSACTION = 'commitTransaction';
     /**
-     * @event Event an event that is triggered right after a top-level transaction is rolled back
+     * @event yii\base\Event an event that is triggered right after a top-level transaction is rolled back
      */
     const EVENT_ROLLBACK_TRANSACTION = 'rollbackTransaction';
 
@@ -295,7 +296,7 @@ class Connection extends Component
      * Since version 2.0.14 [[$commandMap]] is used if this property is set to its default value.
      * @see createCommand
      * @since 2.0.7
-     * @deprecated 2.0.14 Use [[$commandMap]] for precise configuration.
+     * @deprecated since 2.0.14. Use [[$commandMap]] for precise configuration.
      */
     public $commandClass = 'yii\db\Command';
     /**
@@ -327,9 +328,10 @@ class Connection extends Component
      */
     public $enableSavepoint = true;
     /**
-     * @var CacheInterface|string the cache object or the ID of the cache application component that is used to store
+     * @var CacheInterface|string|false the cache object or the ID of the cache application component that is used to store
      * the health status of the DB servers specified in [[masters]] and [[slaves]].
      * This is used only when read/write splitting is enabled or [[masters]] is not empty.
+     * Set boolean `false` to disabled server status caching.
      */
     public $serverStatusCache = 'cache';
     /**
@@ -639,7 +641,7 @@ class Connection extends Component
         }
 
         if ($this->pdo !== null) {
-            Yii::trace('Closing DB connection: ' . $this->dsn, __METHOD__);
+            Yii::debug('Closing DB connection: ' . $this->dsn, __METHOD__);
             $this->pdo = null;
             $this->_schema = null;
             $this->_transaction = null;
@@ -728,7 +730,7 @@ class Connection extends Component
 
     /**
      * Returns the currently active transaction.
-     * @return Transaction the currently active transaction. Null if no active transaction.
+     * @return Transaction|null the currently active transaction. Null if no active transaction.
      */
     public function getTransaction()
     {
@@ -832,6 +834,17 @@ class Connection extends Component
     public function getQueryBuilder()
     {
         return $this->getSchema()->getQueryBuilder();
+    }
+
+    /**
+     * Can be used to set [[QueryBuilder]] configuration via Connection configuration array.
+     *
+     * @param array $value the [[QueryBuilder]] properties to be configured.
+     * @since 2.0.14
+     */
+    public function setQueryBuilder($value)
+    {
+        Yii::configure($this->getQueryBuilder(), $value);
     }
 
     /**
@@ -946,6 +959,16 @@ class Connection extends Component
     }
 
     /**
+     * Returns a server version as a string comparable by [[\version_compare()]].
+     * @return string server version as a string.
+     * @since 2.0.14
+     */
+    public function getServerVersion()
+    {
+        return $this->getSchema()->getServerVersion();
+    }
+
+    /**
      * Returns the PDO instance for the currently active slave connection.
      * When [[enableSlaves]] is true, one of the slaves will be used for read queries, and its PDO instance
      * will be returned by this method.
@@ -1003,7 +1026,7 @@ class Connection extends Component
     public function getMaster()
     {
         if ($this->_master === false) {
-            $this->_master = ($this->shuffleMasters)
+            $this->_master = $this->shuffleMasters
                 ? $this->openFromPool($this->masters, $this->masterConfig)
                 : $this->openFromPoolSequentially($this->masters, $this->masterConfig);
         }

@@ -72,7 +72,7 @@ function function_name($event) {
 Порядок обработки событий
 -------------------
 
-К одному событию можно присоединить несколько обработчиков. При срабатывании события обработчики будут вызываться в том порядке, к котором они присоединялись к событию. Чтобы запретить в обработчике вызов всех следующих за ним обработчиков, необходимо установить свойство [[yii\base\Event::handled]] параметра `$event` в `true`:
+К одному событию можно присоединить несколько обработчиков. При срабатывании события обработчики будут вызываться в том порядке, в котором они присоединялись к событию. Чтобы запретить в обработчике вызов всех следующих за ним обработчиков, необходимо установить свойство [[yii\base\Event::handled]] параметра `$event` в `true`:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -188,7 +188,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
-    Yii::trace(get_class($event->sender) . ' добавлен');
+    Yii::debug(get_class($event->sender) . ' добавлен');
 });
 ```
 
@@ -266,7 +266,7 @@ class Developer extends Component implements DanceEventInterface
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace(get_class($event->sender) . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
+    Yii::debug(get_class($event->sender) . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
 });
 ```
 
