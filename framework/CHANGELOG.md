@@ -26,7 +26,7 @@ Yii Framework 2 Change Log
 - Bug #16277: Fixed `yii\db\Query::from()` to respect `yii\db\ExpressionInterface` (noname007)
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
 - Bug: Fixed bad instnaceof check in `yii\db\Schema::getTableMetadata()` (samdark)
-
+- Bug #16252: Fixed `yii\base\DynamicModel` for checking exist property (vuongxuongminh) 
 
 2.0.15.1 March 21, 2018
 -----------------------
