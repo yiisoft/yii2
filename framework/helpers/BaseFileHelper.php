@@ -303,7 +303,7 @@ class BaseFileHelper
         }
         $dstExists = is_dir($dst);
         if (!$dstExists && (!isset($options['copyEmptyDirectories']) || $options['copyEmptyDirectories'])) {
-            static::createDirectory($dst, isset($options['dirMode']) ? $options['dirMode'] : 0775, true);
+            static::createDirectory($dst, $options['dirMode'] ?? 0775, true);
             $dstExists = true;
         }
 
@@ -329,7 +329,7 @@ class BaseFileHelper
                 if (is_file($from)) {
                     if (!$dstExists) {
                         // delay creation of destination directory until the first file is copied to avoid creating empty directories
-                        static::createDirectory($dst, isset($options['dirMode']) ? $options['dirMode'] : 0775, true);
+                        static::createDirectory($dst, $options['dirMode'] ?? 0775, true);
                         $dstExists = true;
                     }
                     copy($from, $to);

@@ -344,7 +344,7 @@ class Sort extends BaseObject
     {
         $orders = $this->getAttributeOrders();
 
-        return isset($orders[$attribute]) ? $orders[$attribute] : null;
+        return $orders[$attribute] ?? null;
     }
 
     /**
@@ -435,7 +435,7 @@ class Sort extends BaseObject
             $direction = $directions[$attribute] === SORT_DESC ? SORT_ASC : SORT_DESC;
             unset($directions[$attribute]);
         } else {
-            $direction = isset($definition['default']) ? $definition['default'] : SORT_ASC;
+            $direction = $definition['default'] ?? SORT_ASC;
         }
 
         if ($this->enableMultiSort) {

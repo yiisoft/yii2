@@ -59,7 +59,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * Page cache version, to detect incompatibilities in cached values when the
      * data format of the cache changes.
      */
-    const PAGE_CACHE_VERSION = 1;
+    const PAGE_CACHE_VERSION = 2;
 
     /**
      * @var bool whether the content being cached should be differentiated according to the route.
@@ -226,7 +226,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
         if (!empty($data['dynamicPlaceholders']) && is_array($data['dynamicPlaceholders'])) {
             $response->content = $this->updateDynamicContent($response->content, $data['dynamicPlaceholders'], true);
         }
-        $this->afterRestoreResponse(isset($data['cacheData']) ? $data['cacheData'] : null);
+        $this->afterRestoreResponse($data['cacheData'] ?? null);
     }
 
     /**

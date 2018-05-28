@@ -403,7 +403,7 @@ abstract class Application extends Module
 
             return $response->exitStatus;
         } catch (ExitException $e) {
-            $this->end($e->statusCode, isset($response) ? $response : null);
+            $this->end($e->statusCode, $response ?? null);
             return $e->statusCode;
         }
     }

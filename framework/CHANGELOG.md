@@ -50,6 +50,7 @@ Yii Framework 2 Change Log
 - Chg #15811: Fixed issue with additional parameters on `yii\base\View::renderDynamic()` while parameters contains single quote introduced in #12938 (xicond)
 - Enh #16054: Callback execution with mutex synchronization (zhuravljov)
 - Enh #16126: Allows to configure `Connection::dsn` by config array (leandrogehlen)
+- Chg #11397: `yii\i18n\MessageFormatter` polyfills and `yii\i18n\MessageFormatter::parse()` method were removed resulting in performance boost. See UPGRADE for compatibility notes (samdark)
 
 2.0.14.2 under development
 ------------------------

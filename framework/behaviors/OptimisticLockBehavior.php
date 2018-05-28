@@ -32,12 +32,12 @@ use yii\validators\NumberValidator;
  * public function behaviors()
  * {
  *     return [
- *         OptimisticLockBehavior::className(),
+ *         OptimisticLockBehavior::class,
  *     ];
  * }
  * ```
  *
- * By default, OptimisticLockBehavior will use [[\yii\web\Request::getBodyParam()|getBodyParam()]] to parse
+ * By default, OptimisticLockBehavior will use [[\yii\web\Request::getParsedBodyParam()|getParsedBodyParam()]] to parse
  * the submitted value or set it to 0 on any fail. That means a request not holding the version attribute
  * may achieve a first successful update to entity, but starting from there any further try should fail
  * unless the request is holding the expected version number. You can also configure the [[value]] property 
@@ -60,7 +60,7 @@ class OptimisticLockBehavior extends AttributeBehavior
     /**
      * {@inheritdoc}
      *
-     * In case of `null` value it will be directly parsed from [[\yii\web\Request::getBodyParam()|getBodyParam()]] or set to 0.
+     * In case of `null` value it will be directly parsed from [[\yii\web\Request::getParsedBodyParam()|getParsedBodyParam()]] or set to 0.
      */
     public $value;
     /**
@@ -123,13 +123,13 @@ class OptimisticLockBehavior extends AttributeBehavior
     /**
      * {@inheritdoc}
      *
-     * In case of `null`, value will be parsed from [[\yii\web\Request::getBodyParam()|getBodyParam()]] or set to 0.
+     * In case of `null`, value will be parsed from [[\yii\web\Request::getParsedBodyParam()|getParsedBodyParam()]] or set to 0.
      */
     protected function getValue($event)
     {
         if ($this->value === null) {
             $lock = $this->getLockAttribute();
-            $input = Yii::$app->getRequest()->getBodyParam($lock);
+            $input = Yii::$app->getRequest()->getParsedBodyParam($lock);
             $isValid = $input && (new NumberValidator())->validate($input);
             return $isValid ? $input : 0;
         }

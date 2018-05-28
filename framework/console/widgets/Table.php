@@ -231,7 +231,7 @@ class Table extends Widget
         for ($i = 0, ($max = $this->calculateRowHeight($row)) ?: $max = 1; $i < $max; $i++) {
             $buffer .= $spanLeft . ' ';
             foreach ($size as $index => $cellSize) {
-                $cell = isset($row[$index]) ? $row[$index] : null;
+                $cell = $row[$index] ?? null;
                 $prefix = '';
                 if ($index !== 0) {
                     $buffer .= $spanMiddle . ' ';
@@ -377,9 +377,8 @@ class Table extends Widget
     {
         if (!$this->_screenWidth) {
             $size = Console::getScreenSize();
-            $this->_screenWidth = isset($size[0])
-                ? $size[0]
-                : self::DEFAULT_CONSOLE_SCREEN_WIDTH + self::CONSOLE_SCROLLBAR_OFFSET;
+            $this->_screenWidth = $size[0]
+                ?? self::DEFAULT_CONSOLE_SCREEN_WIDTH + self::CONSOLE_SCROLLBAR_OFFSET;
         }
         return $this->_screenWidth;
     }
