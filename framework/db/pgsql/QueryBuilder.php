@@ -140,6 +140,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropIndex($name, $table)
     {
+        if (strpos($table, '.') !== false && strpos($name, '.') === false) {
+            list($schema) = explode('.', $table);
+            $name = $schema.'.'.$name;
+        }
         return 'DROP INDEX ' . $this->db->quoteTableName($name);
     }
 
