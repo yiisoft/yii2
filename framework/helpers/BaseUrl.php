@@ -39,7 +39,7 @@ class BaseUrl
      */
     public static function toRoute($route, $scheme = false)
     {
-        return Yii::$app->getUrlManager()->toRoute($route, $scheme);
+        return Yii::$app->getUrlManager()->createUrlToRoute($route, $scheme);
     }
 
     /**
@@ -60,7 +60,7 @@ class BaseUrl
      */
     public static function to($url = '', $scheme = false)
     {
-        return Yii::$app->getUrlManager()->to($url, $scheme);
+        return Yii::$app->getUrlManager()->createUrlTo($url, $scheme);
     }
 
     /**
@@ -78,7 +78,7 @@ class BaseUrl
      */
     public static function base($scheme = false)
     {
-        return Yii::$app->getUrlManager()->base($scheme);
+        return Yii::$app->getUrlManager()->getBaseUrl($scheme);
     }
 
     /**
@@ -93,7 +93,7 @@ class BaseUrl
      */
     public static function remember($url = '', $name = null)
     {
-        $url = Yii::$app->getUrlManager()->to($url);
+        $url = Yii::$app->getUrlManager()->createUrlTo($url);
 
         if ($name === null) {
             Yii::$app->getUser()->setReturnUrl($url);
@@ -158,7 +158,7 @@ class BaseUrl
      */
     public static function home($scheme = false)
     {
-        return Yii::$app->getUrlManager()->home($scheme);
+        return Yii::$app->getUrlManager()->getHomeUrl($scheme);
     }
 
     /**

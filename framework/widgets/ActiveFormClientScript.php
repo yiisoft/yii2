@@ -203,7 +203,7 @@ abstract class ActiveFormClientScript extends Behavior
             'scrollToErrorOffset' => $this->owner->scrollToErrorOffset,
         ];
         if ($this->owner->validationUrl !== null) {
-            $options['validationUrl'] = Yii::$app->getUrlManager()->to($this->owner->validationUrl);
+            $options['validationUrl'] = Yii::$app->getUrlManager()->createUrlTo($this->owner->validationUrl);
         }
 
         return $options;

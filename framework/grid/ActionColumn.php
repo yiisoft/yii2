@@ -215,7 +215,7 @@ class ActionColumn extends Column
         $params = is_array($key) ? $key : ['id' => (string) $key];
         $params[0] = $this->controller ? $this->controller . '/' . $action : $action;
 
-        return $this->urlManager->toRoute($params);
+        return $this->urlManager->createUrlToRoute($params);
     }
 
     /**

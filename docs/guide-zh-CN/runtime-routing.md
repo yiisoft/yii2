@@ -200,7 +200,7 @@ echo Url::to(['/post/index']);
 echo Url::to(['@posts']);
 ```
 
-方法 [[yii\helpers\Url::to()]] 实际上调用了 [[yii\web\UrlManager|URL管理器]] 中的 [[yii\web\UrlManager::createUrl()|createUrl()]] 方法
+方法 [[yii\helpers\Url::to()]] 实际上调用了 [[yii\web\UrlManager|URL管理器]] 中的 [[yii\web\UrlManager::createUrlTo()|createUrlTo()]] 方法
 和 [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] 方法。
 下面的介绍中，我们将介绍如何配置 [[yii\web\UrlManager|URL管理器]] 来创建自定义的 URL 格式。
 

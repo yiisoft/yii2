@@ -206,7 +206,7 @@ class Controller extends \yii\base\Controller
     public function redirect($url, $statusCode = 302, $checkAjax = true)
     {
         return Yii::$app->getResponse()->redirect(
-            Yii::$app->getUrlManager()->to($url),
+            Yii::$app->getUrlManager()->createUrlTo($url),
             $statusCode,
             $checkAjax
         );

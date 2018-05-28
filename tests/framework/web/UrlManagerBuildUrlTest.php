@@ -74,70 +74,70 @@ class UrlManagerBuildUrlTest extends TestCase
         $this->mockAction('page', 'view', null, ['id' => 10]);
 
         // If the route is an empty string, the current route will be used;
-        $this->assertEquals('/base/index.php?r=page%2Fview', $manager->toRoute(''));
+        $this->assertEquals('/base/index.php?r=page%2Fview', $manager->createUrlToRoute(''));
         // a slash will be an absolute route representing the default route
-        $this->assertEquals('/base/index.php?r=', $manager->toRoute('/'));
-        $this->assertEquals('http://example.com/base/index.php?r=page%2Fview', $manager->toRoute('', true));
-        $this->assertEquals('https://example.com/base/index.php?r=page%2Fview', $manager->toRoute('', 'https'));
-        $this->assertEquals('//example.com/base/index.php?r=page%2Fview', $manager->toRoute('', ''));
+        $this->assertEquals('/base/index.php?r=', $manager->createUrlToRoute('/'));
+        $this->assertEquals('http://example.com/base/index.php?r=page%2Fview', $manager->createUrlToRoute('', true));
+        $this->assertEquals('https://example.com/base/index.php?r=page%2Fview', $manager->createUrlToRoute('', 'https'));
+        $this->assertEquals('//example.com/base/index.php?r=page%2Fview', $manager->createUrlToRoute('', ''));
 
         // If the route contains no slashes at all, it is considered to be an action ID of the current controller and
         // will be prepended with uniqueId;
-        $this->assertEquals('/base/index.php?r=page%2Fedit', $manager->toRoute('edit'));
-        $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', $manager->toRoute(['edit', 'id' => 20]));
-        $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit&id=20', $manager->toRoute(['edit', 'id' => 20], true));
-        $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit&id=20', $manager->toRoute(['edit', 'id' => 20], 'https'));
-        $this->assertEquals('//example.com/base/index.php?r=page%2Fedit&id=20', $manager->toRoute(['edit', 'id' => 20], ''));
+        $this->assertEquals('/base/index.php?r=page%2Fedit', $manager->createUrlToRoute('edit'));
+        $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', $manager->createUrlToRoute(['edit', 'id' => 20]));
+        $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit&id=20', $manager->createUrlToRoute(['edit', 'id' => 20], true));
+        $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit&id=20', $manager->createUrlToRoute(['edit', 'id' => 20], 'https'));
+        $this->assertEquals('//example.com/base/index.php?r=page%2Fedit&id=20', $manager->createUrlToRoute(['edit', 'id' => 20], ''));
 
         // If the route has no leading slash, it is considered to be a route relative
         // to the current module and will be prepended with the module's uniqueId.
         $this->mockAction('default', 'index', 'stats');
-        $this->assertEquals('/base/index.php?r=stats%2Fuser%2Fview', $manager->toRoute('user/view'));
-        $this->assertEquals('/base/index.php?r=stats%2Fuser%2Fview&id=42', $manager->toRoute(['user/view', 'id' => 42]));
-        $this->assertEquals('http://example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', $manager->toRoute(['user/view', 'id' => 42], true));
-        $this->assertEquals('https://example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', $manager->toRoute(['user/view', 'id' => 42], 'https'));
-        $this->assertEquals('//example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', $manager->toRoute(['user/view', 'id' => 42], ''));
+        $this->assertEquals('/base/index.php?r=stats%2Fuser%2Fview', $manager->createUrlToRoute('user/view'));
+        $this->assertEquals('/base/index.php?r=stats%2Fuser%2Fview&id=42', $manager->createUrlToRoute(['user/view', 'id' => 42]));
+        $this->assertEquals('http://example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', $manager->createUrlToRoute(['user/view', 'id' => 42], true));
+        $this->assertEquals('https://example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', $manager->createUrlToRoute(['user/view', 'id' => 42], 'https'));
+        $this->assertEquals('//example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', $manager->createUrlToRoute(['user/view', 'id' => 42], ''));
 
         // alias support
         Yii::setAlias('@userView', 'user/view');
-        $this->assertEquals('/base/index.php?r=stats%2Fuser%2Fview', $manager->toRoute('@userView'));
+        $this->assertEquals('/base/index.php?r=stats%2Fuser%2Fview', $manager->createUrlToRoute('@userView'));
         Yii::setAlias('@userView', null);
 
         // In case there is no controller, an exception should be thrown for relative route
         $this->removeMockedAction();
 
         $this->expectException('yii\base\InvalidConfigException');
-        $manager->toRoute('site/view');
+        $manager->createUrlToRoute('site/view');
     }
 
-    public function testTo()
+    public function testCreateUrlTo()
     {
         $manager = Yii::$app->getUrlManager();
         // is an array: the first array element is considered a route, while the rest of the name-value
         // pairs are treated as the parameters to be used for URL creation using Yii::$app->urlManager->toRoute().
         $this->mockAction('page', 'view', null, ['id' => 10]);
-        $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', $manager->to(['edit', 'id' => 20]));
-        $this->assertEquals('/base/index.php?r=page%2Fedit', $manager->to(['edit']));
-        $this->assertEquals('/base/index.php?r=page%2Fview', $manager->to(['']));
+        $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', $manager->createUrlTo(['edit', 'id' => 20]));
+        $this->assertEquals('/base/index.php?r=page%2Fedit', $manager->createUrlTo(['edit']));
+        $this->assertEquals('/base/index.php?r=page%2Fview', $manager->createUrlTo(['']));
 
         // alias support
         Yii::setAlias('@pageEdit', 'edit');
-        $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', $manager->to(['@pageEdit', 'id' => 20]));
+        $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', $manager->createUrlTo(['@pageEdit', 'id' => 20]));
         Yii::setAlias('@pageEdit', null);
 
-        $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit&id=20', $manager->to(['edit', 'id' => 20], true));
-        $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit', $manager->to(['edit'], true));
-        $this->assertEquals('http://example.com/base/index.php?r=page%2Fview', $manager->to([''], true));
+        $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit&id=20', $manager->createUrlTo(['edit', 'id' => 20], true));
+        $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit', $manager->createUrlTo(['edit'], true));
+        $this->assertEquals('http://example.com/base/index.php?r=page%2Fview', $manager->createUrlTo([''], true));
 
-        $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit&id=20', $manager->to(['edit', 'id' => 20], 'https'));
-        $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit', $manager->to(['edit'], 'https'));
-        $this->assertEquals('https://example.com/base/index.php?r=page%2Fview', $manager->to([''], 'https'));
+        $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit&id=20', $manager->createUrlTo(['edit', 'id' => 20], 'https'));
+        $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit', $manager->createUrlTo(['edit'], 'https'));
+        $this->assertEquals('https://example.com/base/index.php?r=page%2Fview', $manager->createUrlTo([''], 'https'));
 
         // is an empty string: the currently requested URL will be returned;
         $this->mockAction('page', 'view', null, ['id' => 10]);
-        $this->assertEquals('/base/index.php&r=site%2Fcurrent&id=42', $manager->to(''));
-        $this->assertEquals('http://example.com/base/index.php&r=site%2Fcurrent&id=42', $manager->to('', true));
-        $this->assertEquals('https://example.com/base/index.php&r=site%2Fcurrent&id=42', $manager->to('', 'https'));
+        $this->assertEquals('/base/index.php&r=site%2Fcurrent&id=42', $manager->createUrlTo(''));
+        $this->assertEquals('http://example.com/base/index.php&r=site%2Fcurrent&id=42', $manager->createUrlTo('', true));
+        $this->assertEquals('https://example.com/base/index.php&r=site%2Fcurrent&id=42', $manager->createUrlTo('', 'https'));
 
         // is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
         // is an absolute URL, it will be returned either without any change or, if schema was specified, with schema
@@ -148,53 +148,53 @@ class UrlManagerBuildUrlTest extends TestCase
         Yii::setAlias('@web4', '/test');
         Yii::setAlias('@web5', '#test');
 
-        $this->assertEquals('test/me1', $manager->to('test/me1'));
-        $this->assertEquals('javascript:test/me1', $manager->to('javascript:test/me1'));
-        $this->assertEquals('java/script:test/me1', $manager->to('java/script:test/me1'));
-        $this->assertEquals('#test/me1', $manager->to('#test/me1'));
-        $this->assertEquals('.test/me1', $manager->to('.test/me1'));
-        $this->assertEquals('http://example.com/test/me1', $manager->to('test/me1', true));
-        $this->assertEquals('https://example.com/test/me1', $manager->to('test/me1', 'https'));
-        $this->assertEquals('https://example.com/test/test/me1', $manager->to('@web4/test/me1', 'https'));
+        $this->assertEquals('test/me1', $manager->createUrlTo('test/me1'));
+        $this->assertEquals('javascript:test/me1', $manager->createUrlTo('javascript:test/me1'));
+        $this->assertEquals('java/script:test/me1', $manager->createUrlTo('java/script:test/me1'));
+        $this->assertEquals('#test/me1', $manager->createUrlTo('#test/me1'));
+        $this->assertEquals('.test/me1', $manager->createUrlTo('.test/me1'));
+        $this->assertEquals('http://example.com/test/me1', $manager->createUrlTo('test/me1', true));
+        $this->assertEquals('https://example.com/test/me1', $manager->createUrlTo('test/me1', 'https'));
+        $this->assertEquals('https://example.com/test/test/me1', $manager->createUrlTo('@web4/test/me1', 'https'));
 
-        $this->assertEquals('/test/me1', $manager->to('/test/me1'));
-        $this->assertEquals('http://example.com/test/me1', $manager->to('/test/me1', true));
-        $this->assertEquals('https://example.com/test/me1', $manager->to('/test/me1', 'https'));
-        $this->assertEquals('./test/me1', $manager->to('./test/me1'));
+        $this->assertEquals('/test/me1', $manager->createUrlTo('/test/me1'));
+        $this->assertEquals('http://example.com/test/me1', $manager->createUrlTo('/test/me1', true));
+        $this->assertEquals('https://example.com/test/me1', $manager->createUrlTo('/test/me1', 'https'));
+        $this->assertEquals('./test/me1', $manager->createUrlTo('./test/me1'));
 
-        $this->assertEquals('http://test.example.com/test/me1', $manager->to('@web1'));
-        $this->assertEquals('http://test.example.com/test/me1', $manager->to('@web1', true));
-        $this->assertEquals('https://test.example.com/test/me1', $manager->to('@web1', 'https'));
+        $this->assertEquals('http://test.example.com/test/me1', $manager->createUrlTo('@web1'));
+        $this->assertEquals('http://test.example.com/test/me1', $manager->createUrlTo('@web1', true));
+        $this->assertEquals('https://test.example.com/test/me1', $manager->createUrlTo('@web1', 'https'));
 
-        $this->assertEquals('test/me2', $manager->to('@web2'));
-        $this->assertEquals('http://example.com/test/me2', $manager->to('@web2', true));
-        $this->assertEquals('https://example.com/test/me2', $manager->to('@web2', 'https'));
+        $this->assertEquals('test/me2', $manager->createUrlTo('@web2'));
+        $this->assertEquals('http://example.com/test/me2', $manager->createUrlTo('@web2', true));
+        $this->assertEquals('https://example.com/test/me2', $manager->createUrlTo('@web2', 'https'));
 
-        $this->assertEquals('/base/index.php&r=site%2Fcurrent&id=42', $manager->to('@web3'));
-        $this->assertEquals('http://example.com/base/index.php&r=site%2Fcurrent&id=42', $manager->to('@web3', true));
-        $this->assertEquals('https://example.com/base/index.php&r=site%2Fcurrent&id=42', $manager->to('@web3', 'https'));
+        $this->assertEquals('/base/index.php&r=site%2Fcurrent&id=42', $manager->createUrlTo('@web3'));
+        $this->assertEquals('http://example.com/base/index.php&r=site%2Fcurrent&id=42', $manager->createUrlTo('@web3', true));
+        $this->assertEquals('https://example.com/base/index.php&r=site%2Fcurrent&id=42', $manager->createUrlTo('@web3', 'https'));
 
-        $this->assertEquals('/test', $manager->to('@web4'));
-        $this->assertEquals('http://example.com/test', $manager->to('@web4', true));
-        $this->assertEquals('https://example.com/test', $manager->to('@web4', 'https'));
+        $this->assertEquals('/test', $manager->createUrlTo('@web4'));
+        $this->assertEquals('http://example.com/test', $manager->createUrlTo('@web4', true));
+        $this->assertEquals('https://example.com/test', $manager->createUrlTo('@web4', 'https'));
 
-        $this->assertEquals('#test', $manager->to('@web5'));
-        $this->assertEquals('http://example.com/#test', $manager->to('@web5', true));
-        $this->assertEquals('https://example.com/#test', $manager->to('@web5', 'https'));
-        $this->assertEquals('//example.com/#test', $manager->to('@web5', ''));
+        $this->assertEquals('#test', $manager->createUrlTo('@web5'));
+        $this->assertEquals('http://example.com/#test', $manager->createUrlTo('@web5', true));
+        $this->assertEquals('https://example.com/#test', $manager->createUrlTo('@web5', 'https'));
+        $this->assertEquals('//example.com/#test', $manager->createUrlTo('@web5', ''));
 
         // @see https://github.com/yiisoft/yii2/issues/13156
         Yii::setAlias('@cdn', '//cdn.example.com');
-        $this->assertEquals('http://cdn.example.com/images/logo.gif', $manager->to('@cdn/images/logo.gif', 'http'));
-        $this->assertEquals('//cdn.example.com/images/logo.gif', $manager->to('@cdn/images/logo.gif', ''));
-        $this->assertEquals('https://cdn.example.com/images/logo.gif', $manager->to('@cdn/images/logo.gif', 'https'));
+        $this->assertEquals('http://cdn.example.com/images/logo.gif', $manager->createUrlTo('@cdn/images/logo.gif', 'http'));
+        $this->assertEquals('//cdn.example.com/images/logo.gif', $manager->createUrlTo('@cdn/images/logo.gif', ''));
+        $this->assertEquals('https://cdn.example.com/images/logo.gif', $manager->createUrlTo('@cdn/images/logo.gif', 'https'));
         Yii::setAlias('@cdn', null);
 
         //In case there is no controller, throw an exception
         $this->removeMockedAction();
 
         $this->expectException('yii\base\InvalidConfigException');
-        $manager->to(['site/view']);
+        $manager->createUrlTo(['site/view']);
     }
 
     /**
@@ -222,7 +222,7 @@ class UrlManagerBuildUrlTest extends TestCase
         $url = $manager->createUrl(['/site/page', 'view' => 'about']);
         $this->assertEquals('/site/page.html?view=about', $url);
 
-        $url = $manager->to(['/site/page', 'view' => 'about']);
+        $url = $manager->createUrlTo(['/site/page', 'view' => 'about']);
         $this->assertEquals('/site/page.html?view=about', $url);
 
         $output = Menu::widget([
@@ -233,22 +233,22 @@ class UrlManagerBuildUrlTest extends TestCase
         $this->assertRegExp('~<a href="/site/page.html\?view=about">~', $output);
     }
 
-    public function testBase()
+    public function testBaseUrl()
     {
         $manager = Yii::$app->getUrlManager();
         $this->mockAction('page', 'view', null, ['id' => 10]);
-        $this->assertEquals('/base', $manager->base());
-        $this->assertEquals('http://example.com/base', $manager->base(true));
-        $this->assertEquals('https://example.com/base', $manager->base('https'));
-        $this->assertEquals('//example.com/base', $manager->base(''));
+        $this->assertEquals('/base', $manager->getBaseUrl());
+        $this->assertEquals('http://example.com/base', $manager->getBaseUrl(true));
+        $this->assertEquals('https://example.com/base', $manager->getBaseUrl('https'));
+        $this->assertEquals('//example.com/base', $manager->getBaseUrl(''));
     }
 
-    public function testHome()
+    public function testHomeUrl()
     {
         $manager = Yii::$app->getUrlManager();
-        $this->assertEquals('/base/index.php', $manager->home());
-        $this->assertEquals('http://example.com/base/index.php', $manager->home(true));
-        $this->assertEquals('https://example.com/base/index.php', $manager->home('https'));
-        $this->assertEquals('//example.com/base/index.php', $manager->home(''));
+        $this->assertEquals('/base/index.php', $manager->getHomeUrl());
+        $this->assertEquals('http://example.com/base/index.php', $manager->getHomeUrl(true));
+        $this->assertEquals('https://example.com/base/index.php', $manager->getHomeUrl('https'));
+        $this->assertEquals('//example.com/base/index.php', $manager->getHomeUrl(''));
     }
 }

@@ -224,7 +224,7 @@ echo Url::to(['@posts']);
 ```
 
 O método [[yii\helpers\Url::to()]] é implementado através das chamadas dos métodos 
-[[yii\web\UrlManager::createUrl()|createUrl()]] e 
+[[yii\web\UrlManager::createUrlTo()|createUrlTo()]] e 
 [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] do 
 [[yii\web\UrlManager|gerenciador de URL]].
 Nas próximas subseções, iremos explicar como configurar o 

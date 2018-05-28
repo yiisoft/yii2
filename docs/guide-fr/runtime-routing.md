@@ -139,7 +139,7 @@ echo Url::to(['/post/index']);
 echo Url::to(['@posts']);
 ```
 
-La méthode [[yii\helpers\Url::to()]] est mise en œuvre en appelant les méthodes [[yii\web\UrlManager::createUrl()|createUrl()]] et  [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] du [[yii\web\UrlManager|gestionnaire d'URL]]. Dans les quelques sous-sections suivantes, nous expliquons comment configurer le [[yii\web\UrlManager|gestionnaire d'URL]] pour personnaliser le format des URL créées. 
+La méthode [[yii\helpers\Url::to()]] est mise en œuvre en appelant les méthodes [[yii\web\UrlManager::createUrlTo()|createUrlTo()]] et  [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] du [[yii\web\UrlManager|gestionnaire d'URL]]. Dans les quelques sous-sections suivantes, nous expliquons comment configurer le [[yii\web\UrlManager|gestionnaire d'URL]] pour personnaliser le format des URL créées. 
 
 La méthode [[yii\helpers\Url::to()]] prend aussi en charge la création d'URL qui n'ont PAS de relation avec des routes particulières. Au lieu de passer un tableau comme premier paramètre, vous devez, dans ce cas,  passer une chaîne de caractères. Par exemple :
  

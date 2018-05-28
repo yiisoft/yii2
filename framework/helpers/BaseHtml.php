@@ -236,7 +236,7 @@ class BaseHtml
         if (!isset($options['rel'])) {
             $options['rel'] = 'stylesheet';
         }
-        $options['href'] = Yii::$app->getUrlManager()->to($url);
+        $options['href'] = Yii::$app->getUrlManager()->createUrlTo($url);
 
         if (isset($options['condition'])) {
             $condition = $options['condition'];
@@ -267,7 +267,7 @@ class BaseHtml
      */
     public static function jsFile($url, $options = [])
     {
-        $options['src'] = Yii::$app->getUrlManager()->to($url);
+        $options['src'] = Yii::$app->getUrlManager()->createUrlTo($url);
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
@@ -329,7 +329,7 @@ class BaseHtml
      */
     public static function beginForm($action = '', $method = 'post', $options = [])
     {
-        $action = Yii::$app->getUrlManager()->to($action);
+        $action = Yii::$app->getUrlManager()->createUrlTo($action);
 
         $hiddenInputs = [];
 
@@ -409,7 +409,7 @@ class BaseHtml
     public static function a($text, $url = null, $options = [])
     {
         if ($url !== null) {
-            $options['href'] = Yii::$app->getUrlManager()->to($url);
+            $options['href'] = Yii::$app->getUrlManager()->createUrlTo($url);
         }
 
         return static::tag('a', $text, $options);
@@ -449,12 +449,12 @@ class BaseHtml
     public static function img($src, $options = [])
     {
         $urlManager = Yii::$app->getUrlManager();
-        $options['src'] = $urlManager->to($src);
+        $options['src'] = $urlManager->createUrlTo($src);
 
         if (isset($options['srcset']) && is_array($options['srcset'])) {
             $srcset = [];
             foreach ($options['srcset'] as $descriptor => $url) {
-                $srcset[] = $urlManager->to($url) . ' ' . $descriptor;
+                $srcset[] = $urlManager->createUrlTo($url) . ' ' . $descriptor;
             }
             $options['srcset'] = implode(',', $srcset);
         }

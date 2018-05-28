@@ -182,7 +182,7 @@ echo Url::to(['/post/index']);
 ```
 
 El método [[yii\helpers\Url::to()]] se implementa llamando a los métodos 
-[[yii\web\UrlManager::createUrl()|createUrl()]] y [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] del 
+[[yii\web\UrlManager::createUrlTo()|createUrlTo()]] y [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] del 
 [[yii\web\UrlManager|URL manager]]. En las próximas sub-secciones, explicaremos como configurar el 
 [[yii\web\UrlManager|URL manager]] para personalizar el formato de las URLs generadas.
 

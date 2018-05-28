@@ -259,7 +259,7 @@ class Menu extends Widget
             $template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 
             return strtr($template, [
-                '{url}' => Html::encode($this->urlManager->to($item['url'])),
+                '{url}' => Html::encode($this->urlManager->createUrlTo($item['url'])),
                 '{label}' => $item['label'],
             ]);
         }

@@ -157,7 +157,7 @@ echo Url::to(['/post/index']);
 echo Url::to(['@posts']);
 ```
 
-В основе реализации метода [[yii\helpers\Url::to()]] лежит использование двух методов компонента [[yii\web\UrlManager|URL manager]]: [[yii\web\UrlManager::createUrl()|createUrl()]] и [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]]. Ниже будут рассмотрены способы конфигурации [[yii\web\UrlManager|URL manager]] для создания URL в различных форматах.
+В основе реализации метода [[yii\helpers\Url::to()]] лежит использование двух методов компонента [[yii\web\UrlManager|URL manager]]: [[yii\web\UrlManager::createUrlTo()|createUrlTo()]] и [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]]. Ниже будут рассмотрены способы конфигурации [[yii\web\UrlManager|URL manager]] для создания URL в различных форматах.
 
 Метод [[yii\helpers\Url::to()]] также поддерживает создание URL, не связанных с маршрутами приложения.
 В данном случае, нужно передать в качестве первого параметра строку, а не массив. Например,

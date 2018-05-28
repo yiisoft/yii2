@@ -200,7 +200,7 @@ echo Url::to(['/post/index']);
 echo Url::to(['@posts']);
 ```
 
-The [[yii\helpers\Url::to()]] method is implemented by calling the [[yii\web\UrlManager::createUrl()|createUrl()]]
+The [[yii\helpers\Url::to()]] method is implemented by calling the [[yii\web\UrlManager::createUrlTo()|createUrlTo()]]
 and [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] methods of the [[yii\web\UrlManager|URL manager]].
 In the next few subsections, we will explain how to configure the [[yii\web\UrlManager|URL manager]] to customize
 the format of the created URLs.

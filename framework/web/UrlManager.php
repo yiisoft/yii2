@@ -549,13 +549,24 @@ class UrlManager extends Component
      * Returns the base URL that is used by [[createUrl()]] to prepend to created URLs.
      * It defaults to [[Request::baseUrl]].
      * This is mainly used when [[enablePrettyUrl]] is `true` and [[showScriptName]] is `false`.
+     *
+     * @param bool|string $scheme the URI scheme to use in the returned base URL:
+     * - `false` (default): returning the base URL without host info.
+     * - `true`: returning an absolute base URL whose scheme is the same as that in [[getHostInfo()]].
+     * - string: returning an absolute base URL with the specified scheme (either `http`, `https` or empty string
+     *   for protocol-relative URL).
      * @return string the base URL that is used by [[createUrl()]] to prepend to created URLs.
      * @throws InvalidConfigException if running in console application and [[baseUrl]] is not configured.
+     * @since 2.1.0
      */
-    public function getBaseUrl()
+    public function getBaseUrl($scheme = false)
     {
         if ($this->_baseUrl === null) {
             $this->_baseUrl = $this->getRequest()->getBaseUrl();
+        }
+        if ($scheme !== false) {
+            $url = $this->getHostInfo() . $this->_baseUrl;
+            return $this->ensureScheme($url, $scheme);
         }
 
         return $this->_baseUrl;
@@ -689,19 +700,19 @@ class UrlManager extends Component
      * $urlManager = Yii::$app->urlManager;
      *
      * // /index.php?r=site%2Findex
-     * echo $urlManager->toRoute('site/index');
+     * echo $urlManager->createUrlToRoute('site/index');
      *
      * // /index.php?r=site%2Findex&src=ref1#name
-     * echo $urlManager->toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
+     * echo $urlManager->createUrlToRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
      *
      * // http://www.example.com/index.php?r=site%2Findex
-     * echo $urlManager->toRoute('site/index', true);
+     * echo $urlManager->createUrlToRoute('site/index', true);
      *
      * // https://www.example.com/index.php?r=site%2Findex
-     * echo $urlManager->toRoute('site/index', 'https');
+     * echo $urlManager->createUrlToRoute('site/index', 'https');
      *
      * // /index.php?r=post%2Findex     assume the alias "@posts" is defined as "post/index"
-     * echo $urlManager->toRoute('@posts');
+     * echo $urlManager->createUrlToRoute('@posts');
      * ```
      *
      * @param string|array $route use a string to represent a route (e.g. `index`, `site/index`),
@@ -717,7 +728,7 @@ class UrlManager extends Component
      * @throws InvalidConfigException a relative route is given while there is no active controller
      * @since 2.1.0
      */
-    public function toRoute($route, $scheme = false)
+    public function createUrlToRoute($route, $scheme = false)
     {
         $route = (array) $route;
         $route[0] = $this->normalizeRoute($route[0]);
@@ -768,12 +779,12 @@ class UrlManager extends Component
     /**
      * Creates a URL based on the given parameters.
      *
-     * This method is very similar to [[toRoute()]]. The only difference is that this method
+     * This method is very similar to [[createUrlToRoute()]]. The only difference is that this method
      * requires a route to be specified as an array only. If a string is given, it will be treated as a URL.
      * In particular, if `$url` is
      *
-     * - an array: [[toRoute()]] will be called to generate the URL. For example:
-     *   `['site/index']`, `['post/index', 'page' => 2]`. Please refer to [[toRoute()]] for more details
+     * - an array: [[createUrlToRoute()]] will be called to generate the URL. For example:
+     *   `['site/index']`, `['post/index', 'page' => 2]`. Please refer to [[createUrlToRoute()]] for more details
      *   on how to specify a route.
      * - a string with a leading `@`: it is treated as an alias, and the corresponding aliased string
      *   will be returned.
@@ -790,10 +801,10 @@ class UrlManager extends Component
      * $urlManager = Yii::$app->urlManager;
      *
      * // /index.php?r=site%2Findex
-     * echo $urlManager->to(['site/index']);
+     * echo $urlManager->createUrlTo(['site/index']);
      *
      * // /index.php?r=site%2Findex&src=ref1#name
-     * echo $urlManager->to(['site/index', 'src' => 'ref1', '#' => 'name']);
+     * echo $urlManager->createUrlTo(['site/index', 'src' => 'ref1', '#' => 'name']);
      *
      * // /index.php?r=post%2Findex     assume the alias "@posts" is defined as "/post/index"
      * echo $urlManager->to(['@posts']);
@@ -830,10 +841,10 @@ class UrlManager extends Component
      * @throws InvalidConfigException a relative route is given while there is no active controller
      * @since 2.1.0
      */
-    public function to($url = '', $scheme = false)
+    public function createUrlTo($url = '', $scheme = false)
     {
         if (is_array($url)) {
-            return $this->toRoute($url, $scheme);
+            return $this->createUrlToRoute($url, $scheme);
         }
 
         $url = Yii::getAlias($url);
@@ -887,28 +898,6 @@ class UrlManager extends Component
     }
 
     /**
-     * Returns the base URL of the current request.
-     * @param bool|string $scheme the URI scheme to use in the returned base URL:
-     *
-     * - `false` (default): returning the base URL without host info.
-     * - `true`: returning an absolute base URL whose scheme is the same as that in [[getHostInfo()]].
-     * - string: returning an absolute base URL with the specified scheme (either `http`, `https` or empty string
-     *   for protocol-relative URL).
-     * @return string
-     * @since 2.1.0
-     */
-    public function base($scheme = false)
-    {
-        $url = $this->getBaseUrl();
-        if ($scheme !== false) {
-            $url = $this->getHostInfo() . $url;
-            $url = $this->ensureScheme($url, $scheme);
-        }
-
-        return $url;
-    }
-
-    /**
      * Returns the home URL.
      *
      * @param bool|string $scheme the URI scheme to use for the returned URL:
@@ -921,7 +910,7 @@ class UrlManager extends Component
      * @return string home URL
      * @since 2.1.0
      */
-    public function home($scheme = false)
+    public function getHomeUrl($scheme = false)
     {
         $url = Yii::$app->getHomeUrl();
 
