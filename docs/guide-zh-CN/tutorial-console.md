@@ -193,7 +193,7 @@ class HelloController extends Controller
 {
     public $message;
     
-    public function options()
+    public function options($actionID)
     {
         return ['message'];
     }
@@ -205,7 +205,7 @@ class HelloController extends Controller
     
     public function actionIndex()
     {
-        echo $message . "\n";
+        echo $this->message . "\n";
     }
 }
 ```

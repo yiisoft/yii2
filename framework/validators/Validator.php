@@ -240,24 +240,13 @@ class Validator extends Component
     /**
      * Validates the specified object.
      * @param \yii\base\Model $model the data model being validated
-     * @param array|null $attributes the list of attributes to be validated.
+     * @param array|string|null $attributes the list of attributes to be validated.
      * Note that if an attribute is not associated with the validator - it will be
      * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
      */
     public function validateAttributes($model, $attributes = null)
     {
-        if (is_array($attributes)) {
-            $newAttributes = [];
-            $attributeNames = $this->getAttributeNames();
-            foreach ($attributes as $attribute) {
-                if (in_array($attribute, $attributeNames, true)) {
-                    $newAttributes[] = $attribute;
-                }
-            }
-            $attributes = $newAttributes;
-        } else {
-            $attributes = $this->getAttributeNames();
-        }
+        $attributes = $this->getValidationAttributes($attributes);
 
         foreach ($attributes as $attribute) {
             $skip = $this->skipOnError && $model->hasErrors($attribute)
@@ -268,6 +257,26 @@ class Validator extends Component
                 }
             }
         }
+    }
+
+    public function getValidationAttributes($attributes = null)
+    {
+        if ($attributes === null) {
+            return $this->getAttributeNames();
+        }
+
+        if (is_string($attributes)) {
+            $attributes = [$attributes];
+        }
+
+        $newAttributes = [];
+        $attributeNames = $this->getAttributeNames();
+        foreach ($attributes as $attribute) {
+            if (in_array($attribute, $attributeNames, true)) {
+                $newAttributes[] = $attribute;
+            }
+        }
+        return $newAttributes;
     }
 
     /**
