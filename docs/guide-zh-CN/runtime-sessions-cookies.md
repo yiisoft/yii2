@@ -362,5 +362,5 @@ return [
 ];
 ```
 
-> 补充: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] 对你的应用安全很重要，
+> Info: [[yii\web\Request::cookieValidationKey|cookieValidationKey]] 对你的应用安全很重要，
   应只被你信任的人知晓，请不要将它放入版本控制中。
