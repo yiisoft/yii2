@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug: Fixed bad instanceof check in `yii\db\Schema::getTableMetadata()` (samdark)
 - Bug #16292: Fixed misconfigured CORS filter exception throwing. Now it throws `InvalidConfigException` in Debug mode (khvalov)
 - Bug #16301: Fixed `yii\web\User::setIdentity()` to clear access check cache while setting identity object to `null` (Izumi-kun)
+- Bug #16322: Fixed strings were not were not compared using timing attack resistant approach while CSRF token validation (samdark, Felix Wiedemann)
 
 
 2.0.15.1 March 21, 2018
