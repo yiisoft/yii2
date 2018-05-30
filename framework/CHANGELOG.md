@@ -27,7 +27,7 @@ Yii Framework 2 Change Log
 - Bug #16277: Fixed `yii\db\Query::from()` to respect `yii\db\ExpressionInterface` (noname007)
 - Bug #16280: Fixed `yii\base\Model::getActiveValidators()` to return correct validators for attribute on scenario (paweljankowiak06)
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
-- Bug: Fixed bad instnaceof check in `yii\db\Schema::getTableMetadata()` (samdark)
+- Bug: Fixed bad instanceof check in `yii\db\Schema::getTableMetadata()` (samdark)
 - Bug #16292: Fixed misconfigured CORS filter exception throwing. Now it throws `InvalidConfigException` in Debug mode (khvalov)
 - Bug #16301: Fixed `yii\web\User::setIdentity()` to clear access check cache while setting identity object to `null` (Izumi-kun)
 
