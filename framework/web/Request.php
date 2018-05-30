@@ -2129,7 +2129,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
         $security = Yii::$app->security;
 
-        return $security->unmaskToken($clientSuppliedToken) === $security->unmaskToken($trueToken);
+        return $security->compareString($security->unmaskToken($clientSuppliedToken), $security->unmaskToken($trueToken));
     }
 
     /**
