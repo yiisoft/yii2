@@ -1712,6 +1712,6 @@ class Request extends \yii\base\Request
 
         $security = Yii::$app->security;
 
-        return $security->unmaskToken($clientSuppliedToken) === $security->unmaskToken($trueToken);
+        return $security->compareString($security->unmaskToken($clientSuppliedToken), $security->unmaskToken($trueToken));
     }
 }

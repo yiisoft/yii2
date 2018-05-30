@@ -215,7 +215,7 @@ PHP の世界には PHP の依存を管理する Composer がありますが、P
 
 ___
 
-##### asset-packagist レポジトリを使う
+#### asset-packagist レポジトリを使う
 
 この方法は NPM または Bower のパッケージを必要とするプロジェクトの大半の要求を満たすことが出来ます。
 
@@ -248,7 +248,7 @@ $config = [
 
 asset-packagist がどのようにして動作するのかは、[asset-packagist.org のサイト](https://asset-packagist.org) に説明があります。
 
-##### fxp/composer-asset-plugin を使う
+#### fxp/composer-asset-plugin を使う
 
 asset-packagist と異なって、composer-asset-plugin はアプリケーション構成の変更を少しも要求しません。
 その代りに、次のコマンドを実行して特別な Composer プラグインをグローバルにインストールすることが要求されます。
@@ -265,7 +265,7 @@ Yii を使ってこれらのアセットを発行したい場合は、プロジ�
 インストールされるパッケージが配置されるディレクトリを調整します。
 
 ```json
-"extra": {
+"config": {
     "asset-installer-paths": {
         "npm-asset-library": "vendor/npm",
         "bower-asset-library": "vendor/bower"
