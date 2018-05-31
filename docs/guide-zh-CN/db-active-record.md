@@ -303,8 +303,8 @@ class Customer extends ActiveRecord
 }
 ```
 
-现在你的 PHP 代码中，你可以访问 `$ customer-> birthdayText`，
-来以 `'YYYY/MM/DD'` 的格式输入和显示客户生日，而不是访问 `$ customer-> birthday`。
+现在你的 PHP 代码中，你可以访问 `$customer->birthdayText`，
+来以 `'YYYY/MM/DD'` 的格式输入和显示客户生日，而不是访问 `$customer->birthday`。
 
 > Tip: 上述示例显示了以不同格式转换数据的通用方法。如果你正在使用
 > 日期值，您可以使用 [DateValidator](tutorial-core-validators.md#date) 和 [[yii\jui\DatePicker|DatePicker]] 来操作，
