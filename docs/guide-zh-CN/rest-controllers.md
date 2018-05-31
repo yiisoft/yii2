@@ -120,14 +120,14 @@ public function behaviors()
 
 ### 自定义动作 <span id="customizing-actions"></span>
 
-[[yii\rest\ActiveController]] 默认提供一下动作:
+[[yii\rest\ActiveController]] 默认提供一下动作：
 
-* [[yii\rest\IndexAction|index]]: 按页列出资源;
-* [[yii\rest\ViewAction|view]]: 返回指定资源的详情;
-* [[yii\rest\CreateAction|create]]: 创建新的资源;
-* [[yii\rest\UpdateAction|update]]: 更新一个存在的资源;
-* [[yii\rest\DeleteAction|delete]]: 删除指定的资源;
-* [[yii\rest\OptionsAction|options]]: 返回支持的HTTP方法.
+* [[yii\rest\IndexAction|index]]：按页列出资源;
+* [[yii\rest\ViewAction|view]]：返回指定资源的详情;
+* [[yii\rest\CreateAction|create]]：创建新的资源;
+* [[yii\rest\UpdateAction|update]]：更新一个存在的资源;
+* [[yii\rest\DeleteAction|delete]]：删除指定的资源;
+* [[yii\rest\OptionsAction|options]]：返回支持的HTTP方法.
 
 所有这些动作通过[[yii\rest\ActiveController::actions()|actions()]] 方法申明，可覆盖`actions()`方法配置或禁用这些动作，
 如下所示：
