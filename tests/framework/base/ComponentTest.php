@@ -10,6 +10,9 @@ namespace yiiunit\framework\base;
 use yii\base\Behavior;
 use yii\base\Component;
 use yii\base\Event;
+use yii\base\InvalidCallException;
+use yii\base\UnknownMethodException;
+use yii\base\UnknownPropertyException;
 use yiiunit\TestCase;
 
 function globalEventHandler($event)
@@ -106,11 +109,9 @@ class ComponentTest extends TestCase
         $this->component->detachBehavior('a');
     }
 
-    /**
-     * @expectedException \yii\base\UnknownPropertyException
-     */
     public function testGetProperty()
     {
+        $this->expectException(UnknownPropertyException::class);
         $this->assertSame('default', $this->component->Text);
         $this->component->Caption;
     }
@@ -124,11 +125,9 @@ class ComponentTest extends TestCase
         $this->component->detachBehavior('a');
     }
 
-    /**
-     * @expectedException \yii\base\UnknownPropertyException
-     */
     public function testSetProperty()
     {
+        $this->expectException(UnknownPropertyException::class);
         $value = 'new value';
         $this->component->Text = $value;
         $this->assertEquals($value, $this->component->Text);
@@ -154,11 +153,9 @@ class ComponentTest extends TestCase
         $this->assertTrue(isset($this->component->p2));
     }
 
-    /**
-     * @expectedException \yii\base\UnknownMethodException
-     */
     public function testCallUnknownMethod()
     {
+        $this->expectException(UnknownMethodException::class);
         $this->component->unknownMethod();
     }
 
@@ -176,11 +173,9 @@ class ComponentTest extends TestCase
         $this->assertNull($this->component->getP2());
     }
 
-    /**
-     * @expectedException \yii\base\InvalidCallException
-     */
     public function testUnsetReadonly()
     {
+        $this->expectException(InvalidCallException::class);
         unset($this->component->object);
     }
 
@@ -340,11 +335,9 @@ class ComponentTest extends TestCase
         $this->assertFalse($this->component->eventHandled);
     }
 
-    /**
-     * @expectedException \yii\base\UnknownMethodException
-     */
     public function testAttachBehavior()
     {
+        $this->expectException(UnknownMethodException::class);
         $component = new NewComponent();
         $this->assertFalse($component->hasProperty('p'));
         $this->assertFalse($component->behaviorCalled);
@@ -417,11 +410,9 @@ class ComponentTest extends TestCase
         $this->assertNull($component->getBehavior('b'));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidCallException
-     */
     public function testSetReadOnlyProperty()
     {
+        $this->expectException(InvalidCallException::class);
         $this->expectExceptionMessage('Setting read-only property: yiiunit\framework\base\NewComponent::object');
         $this->component->object = 'z';
     }
@@ -448,11 +439,9 @@ class ComponentTest extends TestCase
         $this->assertSame(__NAMESPACE__ . '\NewBehavior', get_class($this->component->getBehavior($behaviorName)));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidCallException
-     */
     public function testWriteOnlyProperty()
     {
+        $this->expectException(InvalidCallException::class);
         $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly');
         $this->component->writeOnly;
     }

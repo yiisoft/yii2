@@ -9,6 +9,8 @@ namespace yiiunit\framework\base;
 
 use yii\base\BaseObject;
 use yii\base\InvalidCallException;
+use yii\base\UnknownMethodException;
+use yii\base\UnknownPropertyException;
 use yiiunit\TestCase;
 
 /**
@@ -65,31 +67,25 @@ class BaseObjectTest extends TestCase
         $this->assertFalse($this->object->canSetProperty('Content'));
     }
 
-    /**
-     * @expectedException \yii\base\UnknownPropertyException
-     */
     public function testGetProperty()
     {
+        $this->expectException(UnknownPropertyException::class);
         $this->assertSame('default', $this->object->Text);
         $this->object->Caption;
     }
 
-    /**
-     * @expectedException \yii\base\UnknownPropertyException
-     */
     public function testSetProperty()
     {
+        $this->expectException(UnknownPropertyException::class);
         $value = 'new value';
         $this->object->Text = $value;
         $this->assertEquals($value, $this->object->Text);
         $this->object->NewMember = $value;
     }
 
-    /**
-     * @expectedException  \yii\base\InvalidCallException
-     */
     public function testSetReadOnlyProperty()
     {
+        $this->expectException(InvalidCallException::class);
         $this->object->object = 'test';
     }
 
@@ -118,19 +114,15 @@ class BaseObjectTest extends TestCase
         $this->assertEmpty($this->object->Text);
     }
 
-    /**
-     * @expectedException  \yii\base\InvalidCallException
-     */
     public function testUnsetReadOnlyProperty()
     {
+        $this->expectException(InvalidCallException::class);
         unset($this->object->object);
     }
 
-    /**
-     * @expectedException \yii\base\UnknownMethodException
-     */
     public function testCallUnknownMethod()
     {
+        $this->expectException(UnknownMethodException::class);
         $this->object->unknownMethod();
     }
 
