@@ -28,11 +28,12 @@ Yii Framework 2 Change Log
 - Bug #16277: Fixed `yii\db\Query::from()` to respect `yii\db\ExpressionInterface` (noname007)
 - Bug #16280: Fixed `yii\base\Model::getActiveValidators()` to return correct validators for attribute on scenario (paweljankowiak06)
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
-- Bug #16252: Fixed `yii\base\DynamicModel` for checking exist property (vuongxuongminh) 
+- Bug #16252: Fixed `yii\base\DynamicModel` for checking exist property (vuongxuongminh)
 - Bug: Fixed bad instanceof check in `yii\db\Schema::getTableMetadata()` (samdark)
 - Bug #16292: Fixed misconfigured CORS filter exception throwing. Now it throws `InvalidConfigException` in Debug mode (khvalov)
 - Bug #16301: Fixed `yii\web\User::setIdentity()` to clear access check cache while setting identity object to `null` (Izumi-kun)
 - Bug #16322: Fixed strings were not were not compared using timing attack resistant approach while CSRF token validation (samdark, Felix Wiedemann)
+- Chg #16192: `yii\db\Command::logQuery()` is now protected (drlibra)
 
 2.0.15.1 March 21, 2018
 -----------------------
