@@ -84,7 +84,7 @@ abstract class BaseMailer extends Component implements MailerInterface
      * @var Composer|array|string|callable message composer.
      * @since 2.1
      */
-    private $_composer;
+    private $_composer = [];
 
 
     /**
@@ -94,7 +94,7 @@ abstract class BaseMailer extends Component implements MailerInterface
     public function getComposer()
     {
         if (!is_object($this->_composer) || $this->_composer instanceof \Closure) {
-            if (!is_array($this->_composer) && !isset($this->_composer['__class'])) {
+            if (is_array($this->_composer) && !isset($this->_composer['__class'])) {
                 $this->_composer['__class'] = Composer::class;
             }
             $this->_composer = Yii::createObject($this->_composer);
