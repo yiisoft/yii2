@@ -1041,6 +1041,21 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
+     * Execute a SQL statement for resetting the sequence value of a table's primary key.
+     * Reason for execute is that some databases (Oracle) need several queries to do so.
+     * The sequence is reset such that the primary key of the next new row inserted
+     * will have the specified value or 1.
+     * @param string $table the name of the table whose primary key sequence is reset
+     * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS
+     */
+    public function executeResetSequence($table, $value = null)
+    {
+        $this->db->createCommand()->resetSequence($table, $value)->execute();
+    }
+
+    /**
      * Builds a SQL statement for enabling or disabling integrity check.
      * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
