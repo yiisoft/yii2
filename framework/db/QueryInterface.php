@@ -273,6 +273,7 @@ interface QueryInterface
      * @param callable $callback a valid PHP callback that customizes the query. Accepts query and the given value as parameter.
      * @param callable|null $onFalse a valid PHP callback that customizes the query if the given value is false. Accepts query and the given value as parameter.
      * @return $this the query object itself.
+     * @since 2.0.16
      */
     public function when($value, callable $callback, callable $onFalse = null);
 }
