@@ -266,4 +266,13 @@ interface QueryInterface
      * @since 2.0.11
      */
     public function emulateExecution($value = true);
+
+    /**
+     * Customizes the query using an anonymous function if the given value is true.
+     * @param mixed $value
+     * @param callable $callback a valid PHP callback that customizes the query. Accepts query and the given value as parameter.
+     * @param callable|null $onFalse a valid PHP callback that customizes the query if the given value is false. Accepts query and the given value as parameter.
+     * @return $this the query object itself.
+     */
+    public function when($value, callable $callback, callable $onFalse = null);
 }
