@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\sqlite;
 
@@ -22,7 +27,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 Schema::TYPE_PK,
                 $this->primaryKey()->first()->after('col_before'),
-                'integer PRIMARY KEY AUTOINCREMENT NOT NULL'
+                'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
             ],
         ]);
     }
@@ -36,19 +41,46 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                     ['id' => 2, 'name' => 'yo'],
                 ])],
                 '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))',
-                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo']
+                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
             ],
             'composite in' => [
-                ['in', ['id', 'name'], [['id' =>1, 'name' => 'oy']]],
+                ['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
                 '(([[id]] = :qp0 AND [[name]] = :qp1))',
-                [':qp0' => 1, ':qp1' => 'oy']
+                [':qp0' => 1, ':qp1' => 'oy'],
             ],
         ]);
     }
 
-    public function testAddDropPrimaryKey()
+    public function primaryKeysProvider()
     {
-        $this->markTestSkipped('Comments are not supported in SQLite');
+        $this->markTestSkipped('Adding/dropping primary keys is not supported in SQLite.');
+    }
+
+    public function foreignKeysProvider()
+    {
+        $this->markTestSkipped('Adding/dropping foreign keys is not supported in SQLite.');
+    }
+
+    public function indexesProvider()
+    {
+        $result = parent::indexesProvider();
+        $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
+        return $result;
+    }
+
+    public function uniquesProvider()
+    {
+        $this->markTestSkipped('Adding/dropping unique constraints is not supported in SQLite.');
+    }
+
+    public function checksProvider()
+    {
+        $this->markTestSkipped('Adding/dropping check constraints is not supported in SQLite.');
+    }
+
+    public function defaultValuesProvider()
+    {
+        $this->markTestSkipped('Adding/dropping default constraints is not supported in SQLite.');
     }
 
     public function testCommentColumn()
@@ -81,16 +113,16 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     public function testRenameTable()
     {
         $sql = $this->getQueryBuilder()->renameTable('table_from', 'table_to');
-        $this->assertEquals("ALTER TABLE `table_from` RENAME TO `table_to`", $sql);
+        $this->assertEquals('ALTER TABLE `table_from` RENAME TO `table_to`', $sql);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function testBuildUnion()
     {
         $expectedQuerySql = $this->replaceQuotes(
-            "SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION  SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 UNION ALL  SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3"
+            'SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION  SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 UNION ALL  SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3'
         );
         $query = new Query();
         $secondQuery = new Query();
@@ -105,7 +137,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ->from('TotalExample t1')
             ->where(['and', 'w > 0', 'x < 2'])
             ->union($secondQuery)
-            ->union($thirdQuery, TRUE);
+            ->union($thirdQuery, true);
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
@@ -122,5 +154,49 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $expected = "UPDATE sqlite_sequence SET seq='3' WHERE name='item'";
         $sql = $qb->resetSequence('item', 4);
         $this->assertEquals($expected, $sql);
+    }
+
+    public function upsertProvider()
+    {
+        $concreteData = [
+            'regular values' => [
+                3 => 'WITH "EXCLUDED" (`email`, `address`, `status`, `profile_id`) AS (VALUES (:qp0, :qp1, :qp2, :qp3)) UPDATE `T_upsert` SET `address`=(SELECT `address` FROM `EXCLUDED`), `status`=(SELECT `status` FROM `EXCLUDED`), `profile_id`=(SELECT `profile_id` FROM `EXCLUDED`) WHERE `T_upsert`.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3);',
+            ],
+            'regular values with update part' => [
+                3 => 'WITH "EXCLUDED" (`email`, `address`, `status`, `profile_id`) AS (VALUES (:qp0, :qp1, :qp2, :qp3)) UPDATE `T_upsert` SET `address`=:qp4, `status`=:qp5, `orders`=T_upsert.orders + 1 WHERE `T_upsert`.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3);',
+            ],
+            'regular values without update part' => [
+                3 => 'INSERT OR IGNORE INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3)',
+            ],
+            'query' => [
+                3 => 'WITH "EXCLUDED" (`email`, `status`) AS (SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1) UPDATE `T_upsert` SET `status`=(SELECT `status` FROM `EXCLUDED`) WHERE `T_upsert`.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1;',
+            ],
+            'query with update part' => [
+                3 => 'WITH "EXCLUDED" (`email`, `status`) AS (SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1) UPDATE `T_upsert` SET `address`=:qp1, `status`=:qp2, `orders`=T_upsert.orders + 1 WHERE `T_upsert`.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1;',
+            ],
+            'query without update part' => [
+                3 => 'INSERT OR IGNORE INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1',
+            ],
+            'values and expressions' => [
+                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
+            ],
+            'values and expressions with update part' => [
+                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
+            ],
+            'values and expressions without update part' => [
+                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
+            ],
+            'query, values and expressions with update part' => [
+                3 => 'WITH "EXCLUDED" (`email`, [[time]]) AS (SELECT :phEmail AS `email`, now() AS [[time]]) UPDATE {{%T_upsert}} SET `ts`=:qp1, [[orders]]=T_upsert.orders + 1 WHERE {{%T_upsert}}.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]];',
+            ],
+            'query, values and expressions without update part' => [
+                3 => 'WITH "EXCLUDED" (`email`, [[time]]) AS (SELECT :phEmail AS `email`, now() AS [[time]]) UPDATE {{%T_upsert}} SET `ts`=:qp1, [[orders]]=T_upsert.orders + 1 WHERE {{%T_upsert}}.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]];',
+            ],
+        ];
+        $newData = parent::upsertProvider();
+        foreach ($concreteData as $testName => $data) {
+            $newData[$testName] = array_replace($newData[$testName], $data);
+        }
+        return $newData;
     }
 }

@@ -16,7 +16,7 @@ Nesta seção, vamos descrever principalmente os dois primeiros passos.
 
 Gravar mensagens de log é tão simples como chamar um dos seguintes métodos de registro:
 
-* [[Yii::trace()]]: gravar uma mensagem para rastrear como um determinado trecho de código é executado. Isso é principalmente para o uso de desenvolvimento.
+* [[Yii::debug()]]: gravar uma mensagem para rastrear como um determinado trecho de código é executado. Isso é principalmente para o uso de desenvolvimento.
 * [[Yii::info()]]: gravar uma mensagem que transmite algumas informações úteis.
 * [[Yii::warning()]]: gravar uma mensagem de aviso que indica que algo inesperado aconteceu.
 * [[Yii::error()]]: gravar um erro fatal que deve ser investigado o mais rápido possível.
@@ -24,7 +24,7 @@ Gravar mensagens de log é tão simples como chamar um dos seguintes métodos de
 Estes métodos gravam mensagens de log em vários *níveis* e *categorias*. Eles compartilham a mesma assinatura de função `function ($message, $category = 'application')`, onde `$message` significa a mensagem de log a ser gravada, enquanto `$category` é a categoria da mensagem de log. O código no exemplo a seguir registra uma mensagem de rastreamento sob a categoria padrão `application`:
 
 ```php
-Yii::trace('start calculating average revenue');
+Yii::debug('start calculating average revenue');
 ```
 
 > Observação: Mensagens de log podem ser strings, bem como dados complexos, tais como arrays ou objetos. É da responsabilidade dos [destinos de log](#log-targets) lidar adequadamente com as mensagens de log. Por padrão, se uma mensagem de log não for uma string, ela será exportada como uma string chamando [[yii\helpers\VarDumper::export()]].
@@ -32,7 +32,7 @@ Yii::trace('start calculating average revenue');
 Para melhor organizar e filtrar as mensagens de log, é recomendável que você especifique uma categoria apropriada para cada mensagem de log. Você pode escolher um esquema de nomenclatura hierárquica para as categorias, o que tornará mais fácil para os [destinos de log](#log-targets) filtrar mensagens com base em suas categorias. Um esquema de nomes simples, mas eficaz é usar a constante mágica PHP `__METHOD__` para os nomes das categorias. Esta é também a abordagem utilizada no código central do framework Yii. Por exemplo,
 
 ```php
-Yii::trace('start calculating average revenue', __METHOD__);
+Yii::debug('start calculating average revenue', __METHOD__);
 ```
 
 A constante `__METHOD__` corresponde ao nome do método (prefixado com o caminho completo do nome da classe) onde a constante aparece. Por exemplo, é igual a string `'app\controllers\RevenueController::calculate'` se o código acima for chamado dentro deste método.
@@ -100,7 +100,7 @@ A propriedade [[yii\log\Target::levels|levels]] é um array que consiste em um o
 * `error`: corresponde a mensagens logadas por [[Yii::error()]].
 * `warning`: corresponde a mensagens logadas por [[Yii::warning()]].
 * `info`: corresponde a mensagens logadas por [[Yii::info()]].
-* `trace`: corresponde a mensagens logadas por [[Yii::trace()]].
+* `trace`: corresponde a mensagens logadas por [[Yii::debug()]].
 * `profile`: corresponde a mensagens logadas por [[Yii::beginProfile()]] e [[Yii::endProfile()]], que será explicado em mais detalhes na subseção [Perfil de Desempenho](#performance-profiling).
 
 Se você não especificar a propriedade [[yii\log\Target::levels|levels]], significa que o alvo de log processará mensagens de *qualquer* nível.
@@ -218,7 +218,7 @@ Quando o [[yii\log\Logger|logger object]] libera mensagens de log para os [alvos
 ]
 ```
 
-Devido a configuração de nível, liberação e exportação, por padrão quando você chama `Yii::trace()` ou qualquer outro método de log, você NÃO verá a mensagem de log imediatamente no destino. Isto poderia ser um problema para algumas aplicações console de longa execução. Para fazer cada mensagem de log aparecer imediatamente no destino, você deve configurar ambos [[yii\log\Dispatcher::flushInterval|flushInterval]] e [[yii\log\Target::exportInterval|exportInterval]] para  1, como mostrado a seguir:
+Devido a configuração de nível, liberação e exportação, por padrão quando você chama `Yii::debug()` ou qualquer outro método de log, você NÃO verá a mensagem de log imediatamente no destino. Isto poderia ser um problema para algumas aplicações console de longa execução. Para fazer cada mensagem de log aparecer imediatamente no destino, você deve configurar ambos [[yii\log\Dispatcher::flushInterval|flushInterval]] e [[yii\log\Target::exportInterval|exportInterval]] para  1, como mostrado a seguir:
 
 ```php
 return [

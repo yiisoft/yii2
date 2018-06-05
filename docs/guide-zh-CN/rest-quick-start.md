@@ -37,7 +37,8 @@ class UserController extends ActiveController
 }
 ```
 
-控制器类扩展自 [[yii\rest\ActiveController]]。通过指定 [[yii\rest\ActiveController::modelClass|modelClass]]
+控制器类扩展自 [[yii\rest\ActiveController]]。
+通过指定 [[yii\rest\ActiveController::modelClass|modelClass]]
 作为 `app\models\User`， 控制器就能知道使用哪个模型去获取和处理数据。
 
 
@@ -58,6 +59,9 @@ class UserController extends ActiveController
 
 上面的配置主要是为`user`控制器增加一个 URL 规则。这样，
 用户的数据就能通过美化的 URL 和有意义的 http 动词进行访问和操作。
+
+> Note: Yii will automatically pluralize controller names for use in endpoints (see [Trying it Out](#trying-it-out) section below).
+> You can configure this using the [[yii\rest\UrlRule::$pluralize]] property.
 
 
 ## 启用 JSON 输入 <span id="enabling-json-input"></span>
@@ -91,9 +95,6 @@ class UserController extends ActiveController
 * `DELETE /users/123`: 删除用户123
 * `OPTIONS /users`: 显示关于末端 `/users` 支持的动词
 * `OPTIONS /users/123`: 显示有关末端 `/users/123` 支持的动词
-
-> Info: Yii 将在末端使用的控制器的名称自动变为复数。（译注：个人感觉这里应该变为注意）
-> 你可以用 [[yii\rest\UrlRule::$pluralize]]-属性来配置此项。
 
 你可以访问你的API用 `curl` 命令如下，
 
@@ -189,7 +190,7 @@ Content-Type: application/json; charset=UTF-8
 
 ## 总结 <span id="summary"></span>
 
-使用 Yii 框架的 RESTful 风格的 API, 在控制器的操作中实现API末端，使用
+使用 Yii 框架的 RESTful 风格的 API, 在控制器的动作中实现API末端，使用
 控制器来组织末端接口为一个单一的资源类型。
 
 从 [[yii\base\Model]] 类扩展的资源被表示为数据模型。
@@ -200,4 +201,3 @@ Content-Type: application/json; charset=UTF-8
 
 为了方便维护你的WEB前端和后端，建议你开发接口作为一个单独的应用程序，
 虽然这不是必须的。
-

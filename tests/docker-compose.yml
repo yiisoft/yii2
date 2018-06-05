@@ -2,7 +2,10 @@ version: '2'
 services:
 
   php:
-    build: ..
+    build:
+      context: ..
+      args:
+        DOCKER_YII2_PHP_IMAGE: ${DOCKER_YII2_PHP_IMAGE}
     working_dir: /project
     volumes:
       - ../tests/data/config-docker.php:/project/tests/data/config.php
@@ -12,11 +15,5 @@ services:
     # Tmpfs volume (experimental, asset tests may fail)
     #tmpfs:
     #  - /project/tests/runtime
-
-networks:
-  default:
-    ipam:
-      driver: default
-      config:
-        # prevent overlapping/duplicated networks, since docker assigns /16 subnets by default ranging from 10.x over 172.x to 192.168.x
-        - subnet: 10.100.1${TUPLE_C}.1/24
+    environment:
+      - TEST_RUNTIME_PATH=/tmp/runtime

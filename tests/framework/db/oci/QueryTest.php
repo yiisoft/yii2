@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\oci;
 
@@ -16,10 +21,10 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
     {
         $db = $this->getConnection();
 
-        $result = (new Query)->from('customer')->where(['[[status]]' => 2])->one($db);
+        $result = (new Query())->from('customer')->where(['[[status]]' => 2])->one($db);
         $this->assertEquals('user3', $result['name']);
 
-        $result = (new Query)->from('customer')->where(['[[status]]' => 3])->one($db);
+        $result = (new Query())->from('customer')->where(['[[status]]' => 3])->one($db);
         $this->assertFalse($result);
     }
 }

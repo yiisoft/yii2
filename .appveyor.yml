@@ -1,0 +1,42 @@
+build: false
+version: dev-{build}
+shallow_clone: true
+clone_folder: C:\projects\yii2
+
+environment:
+    matrix:
+        - php_ver: 7.2.4
+
+cache:
+    - '%APPDATA%\Composer'
+    - '%LOCALAPPDATA%\Composer'
+    - C:\tools\php -> .appveyor.yml
+    - C:\tools\composer.phar -> .appveyor.yml
+
+init:
+    - SET PATH=C:\tools\php;%PATH%
+
+install:
+    - ps: Set-Service wuauserv -StartupType Manual
+    - IF NOT EXIST C:\tools\php (choco install --yes --allow-empty-checksums php --version %php_ver% --params '/InstallDir:C:\tools\php')
+    - cd C:\tools\php
+    - copy php.ini-production php.ini
+    - echo date.timezone="UTC" >> php.ini
+    - echo memory_limit=512M >> php.ini
+    - echo extension_dir=ext >> php.ini
+    - echo extension=php_curl.dll >> php.ini
+    - echo extension=php_fileinfo.dll >> php.ini
+    - echo extension=php_gd2.dll >> php.ini
+    - echo extension=php_intl.dll >> php.ini
+    - echo extension=php_mbstring.dll >> php.ini
+    - echo extension=php_openssl.dll >> php.ini
+    - echo extension=php_pdo_sqlite.dll >> php.ini
+    - IF NOT EXIST C:\tools\composer.phar (cd C:\tools && appveyor DownloadFile https://getcomposer.org/download/1.4.1/composer.phar)
+
+before_test:
+    - cd C:\projects\yii2
+    - php C:\tools\composer.phar update --no-interaction --no-progress --prefer-stable --no-ansi
+
+test_script:
+    - cd C:\projects\yii2
+    - vendor\bin\phpunit --exclude-group mssql,mysql,pgsql,sqlite,db,oci,wincache,xcache,zenddata,cubrid

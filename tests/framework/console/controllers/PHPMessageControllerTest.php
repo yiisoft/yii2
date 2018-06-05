@@ -1,6 +1,11 @@
 <?php
-namespace yiiunit\framework\console\controllers;
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
+namespace yiiunit\framework\console\controllers;
 
 use Yii;
 use yii\helpers\FileHelper;
@@ -27,7 +32,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getDefaultConfig()
     {
@@ -37,6 +42,8 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
             'sourcePath' => $this->sourcePath,
             'messagePath' => $this->messagePath,
             'overwrite' => true,
+            'phpFileHeader' => "/*file header*/\n",
+            'phpDocBlock' => '/*doc block*/',
         ];
     }
 
@@ -50,7 +57,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function saveMessages($messages, $category)
     {
@@ -68,7 +75,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function loadMessages($category)
     {
@@ -83,8 +90,36 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
             // https://github.com/facebook/hhvm/issues/1447
             $content = file_get_contents($messageFilePath);
             return eval(substr($content, strpos($content, 'return ')));
-        } else {
-            return require $messageFilePath;
         }
+
+        return require $messageFilePath;
+    }
+
+    // By default phpunit runs inherited test after inline tests, so `testCreateTranslation()` would be run after
+    // `testCustomFileHeaderAndDocBlock()` (that would break `@depends` annotation). This ensures that
+    // `testCreateTranslation() will be run before `testCustomFileHeaderAndDocBlock()`.
+    public function testCreateTranslation()
+    {
+        parent::testCreateTranslation();
+    }
+
+    /**
+     * @depends testCreateTranslation
+     */
+    public function testCustomFileHeaderAndDocBlock()
+    {
+        $category = 'test_headers_category';
+        $message = 'test message';
+        $sourceFileContent = "Yii::t('{$category}', '{$message}');";
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig());
+        $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $messageFilePath = $this->getMessageFilePath('test_headers_category');
+        $content = file_get_contents($messageFilePath);
+        $head = substr($content, 0, strpos($content, 'return '));
+        $expected = "<?php\n/*file header*/\n/*doc block*/\n";
+        $this->assertEqualsWithoutLE($expected, $head);
     }
 }

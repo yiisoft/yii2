@@ -1,9 +1,15 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\rbac;
 
 /**
  * Mock for the filemtime() function for rbac classes. Avoid random test fails.
+ * @param string $file
  * @return int
  */
 function filemtime($file)
@@ -56,7 +62,7 @@ class PhpManagerTest extends ManagerTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function createManager()
     {
@@ -64,7 +70,7 @@ class PhpManagerTest extends ManagerTestCase
             'itemFile' => $this->getItemFile(),
             'assignmentFile' => $this->getAssignmentFile(),
             'ruleFile' => $this->getRuleFile(),
-            'defaultRoles' => ['myDefaultRole']
+            'defaultRoles' => ['myDefaultRole'],
         ]);
     }
 
@@ -121,7 +127,8 @@ class PhpManagerTest extends ManagerTestCase
         $this->assertTrue($this->auth->update($name, $permission), 'You should be able to update name.');
     }
 
-    public function testUpdateDescription() {
+    public function testUpdateDescription()
+    {
         $this->prepareData();
         $name = 'readPost';
         $permission = $this->auth->getPermission($name);
@@ -153,6 +160,5 @@ class PhpManagerTest extends ManagerTestCase
         $this->assertContains('NewAdmin', file_get_contents($this->getAssignmentFile()));
         $this->auth->remove($role);
         $this->assertNotContains('NewAdmin', file_get_contents($this->getAssignmentFile()));
-
     }
 }

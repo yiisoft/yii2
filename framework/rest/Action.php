@@ -60,7 +60,7 @@ class Action extends \yii\base\Action
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -99,8 +99,8 @@ class Action extends \yii\base\Action
 
         if (isset($model)) {
             return $model;
-        } else {
-            throw new NotFoundHttpException("Object not found: $id");
         }
+
+        throw new NotFoundHttpException("Object not found: $id");
     }
 }
