@@ -115,6 +115,7 @@ class ColumnSchema extends BaseObject
     protected function typecast($value)
     {
         if ($value === ''
+            && $this->allowNull
             && !in_array(
                 $this->type,
                 [

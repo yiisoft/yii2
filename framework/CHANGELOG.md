@@ -34,6 +34,7 @@ Yii Framework 2 Change Log
 - Bug #16301: Fixed `yii\web\User::setIdentity()` to clear access check cache while setting identity object to `null` (Izumi-kun)
 - Bug #16322: Fixed strings were not were not compared using timing attack resistant approach while CSRF token validation (samdark, Felix Wiedemann)
 - Chg #16192: `yii\db\Command::logQuery()` is now protected (drlibra)
+- Bug #16364: Fixed integrity constraint violation when saving an empty string for a `NOT NULL` text column (brandonkelly)
 
 2.0.15.1 March 21, 2018
 -----------------------
