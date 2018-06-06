@@ -116,7 +116,7 @@ return [
     '{nFormatted} B' => '{nFormatted} o',
     '{nFormatted} GB' => '{nFormatted} Go',
     '{nFormatted} GiB' => '{nFormatted} Gio',
-    '{nFormatted} KB' => '{nFormatted} Ko',
+    '{nFormatted} kB' => '{nFormatted} Ko',
     '{nFormatted} KiB' => '{nFormatted} Kio',
     '{nFormatted} MB' => '{nFormatted} Mo',
     '{nFormatted} MiB' => '{nFormatted} Mio',

@@ -1305,7 +1305,7 @@ class Formatter extends Component
     }
 
     /**
-     * Formats the value in bytes as a size in human readable form for example `12 KB`.
+     * Formats the value in bytes as a size in human readable form for example `12 kB`.
      *
      * This is the short form of [[asSize]].
      *
