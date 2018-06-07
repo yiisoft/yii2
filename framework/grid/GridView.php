@@ -249,6 +249,11 @@ class GridView extends BaseListView
      */
     public $filterErrorOptions = ['class' => 'help-block'];
     /**
+     * @var bool auto filter switch
+     * Allows you to disable the automatic application of filters, while leaving the ability to manage filters using yiiGridView in JS
+     */
+    public $filterAutoApply = true;
+    /**
      * @var string the layout that determines how different sections of the grid view should be organized.
      * The following tokens will be replaced with the corresponding section contents:
      *
@@ -288,11 +293,13 @@ class GridView extends BaseListView
      */
     public function run()
     {
-        $id = $this->options['id'];
-        $options = Json::htmlEncode($this->getClientOptions());
         $view = $this->getView();
         GridViewAsset::register($view);
-        $view->registerJs("jQuery('#$id').yiiGridView($options);");
+        if ($this->filterAutoApply) {
+            $id = $this->options['id'];
+            $options = Json::htmlEncode($this->getClientOptions());
+            $view->registerJs("jQuery('#$id').yiiGridView($options);");
+        }
         parent::run();
     }
 
