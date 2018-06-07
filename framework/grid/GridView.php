@@ -252,7 +252,7 @@ class GridView extends BaseListView
      * @var bool auto filter switch
      * Allows you to disable the automatic application of filters, while leaving the ability to manage filters using yiiGridView in JS
      */
-    public $filterAutoApply = true;
+    public $filterOnFocusOut = true;
     /**
      * @var string the layout that determines how different sections of the grid view should be organized.
      * The following tokens will be replaced with the corresponding section contents:
@@ -295,7 +295,7 @@ class GridView extends BaseListView
     {
         $view = $this->getView();
         GridViewAsset::register($view);
-        if ($this->filterAutoApply) {
+        if ($this->filterOnFocusOut) {
             $id = $this->options['id'];
             $options = Json::htmlEncode($this->getClientOptions());
             $view->registerJs("jQuery('#$id').yiiGridView($options);");
