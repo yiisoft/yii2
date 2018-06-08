@@ -91,6 +91,14 @@ class EventTest extends TestCase
         $this->assertTrue(Event::hasHandlers('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT));
     }
 
+    public function testOffUnmatchedHandler()
+    {
+        $this->assertFalse(Event::hasHandlers(Post::className(), 'afterSave'));
+        Event::on(Post::className(), 'afterSave', [$this, 'bla-bla']);
+        $this->assertFalse(Event::off(Post::className(), 'afterSave', [$this, 'bla-bla-bla']));
+        $this->assertTrue(Event::off(Post::className(), 'afterSave', [$this, 'bla-bla']));
+    }
+
     /**
      * @depends testOn
      * @depends testHasHandlers
