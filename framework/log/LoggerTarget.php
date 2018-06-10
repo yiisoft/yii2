@@ -43,7 +43,7 @@ use yii\di\Instance;
  *
  * @author Paul Klimov <klimov-paul@gmail.com>
  * @author Alexander Makarov <sam@rmcreative.ru>
- * @since 2.1
+ * @since 3.0.0
  */
 class LoggerTarget extends Target
 {

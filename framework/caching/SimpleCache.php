@@ -31,7 +31,7 @@ use yii\serialize\SerializerInterface;
  * @see CacheInterface
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1.0
+ * @since 3.0.0
  */
 abstract class SimpleCache extends Component implements CacheInterface
 {

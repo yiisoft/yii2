@@ -14,7 +14,7 @@ use yii\helpers\Json;
  * JsonSerializer serializes data in JSON format.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1.0
+ * @since 3.0.0
  */
 class JsonSerializer extends BaseObject implements SerializerInterface
 {

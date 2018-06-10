@@ -112,7 +112,7 @@ abstract class Mutex extends Component
      * @param bool $throw whether to throw an exception when the lock is not acquired.
      * @return mixed result of callback function, or null when the lock is not acquired.
      * @throws SyncException when the lock is not acquired.
-     * @since 2.1
+     * @since 3.0.0
      */
     public function sync($name, $timeout, callable $callback, $throw = true)
     {

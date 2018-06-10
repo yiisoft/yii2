@@ -178,7 +178,7 @@ class Connection extends Component
      * For [SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a [path alias](guide:concept-aliases)
      * for specifying the database path, e.g. `sqlite:@app/data/db.sql`.
      *
-     * Since version 2.1.0 an array can be passed to contruct a DSN string.
+     * Since version 3.0.0 an array can be passed to contruct a DSN string.
      * The `driver` array key is used as the driver prefix of the DSN,
      * all further key-value pairs are rendered as `key=value` and concatenated by `;`. For example:
      *

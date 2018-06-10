@@ -18,7 +18,7 @@ use yii\base\Component;
  * For more details and usage information on Target, see the [guide article on profiling & targets](guide:runtime-profiling).
  *
  * @author Paul Klimov <klimov-paul@gmail.com>
- * @since 2.1
+ * @since 3.0.0
  */
 abstract class Target extends Component
 {

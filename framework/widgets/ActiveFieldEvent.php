@@ -15,7 +15,7 @@ use yii\base\Event;
  * @property ActiveForm $sender the sender of this event.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1
+ * @since 3.0.0
  */
 class ActiveFieldEvent extends Event
 {

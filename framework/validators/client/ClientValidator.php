@@ -13,7 +13,7 @@ use yii\base\BaseObject;
  * ClientValidator composes client-side validation code from [[\yii\validators\Validator]] instance.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1.0
+ * @since 3.0.0
  */
 abstract class ClientValidator extends BaseObject
 {

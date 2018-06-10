@@ -141,7 +141,7 @@ The following example shows the `composer.json` file for the `yiisoft/yii2-imagi
 
     // package dependencies
     "require": {
-        "yiisoft/yii2": "~2.1.0",
+        "yiisoft/yii2": "~3.0.0",
         "imagine/imagine": "v0.5.0"
     },
 
@@ -451,7 +451,7 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig):
   provides a template engine based on [Twig](http://twig.sensiolabs.org/).
 
-The following official extensions are for Yii 2.1 and above.
+The following official extensions are for Yii 3.0.0 and above.
 You don't need to install them for Yii 2.0, since they are included in the core framework.
 
 - [yiisoft/yii2-captcha](https://www.yiiframework.com/extension/yiisoft/yii2-captcha):

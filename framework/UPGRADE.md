@@ -60,7 +60,7 @@ Upgrade from Yii 2.0.x
   providing ability to setup custom mail headers. Make sure your provide implementation for those methods, while
   creating your own mailer solution.
 * `::className()` method calls should be replaced with [native](http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class.class) `::class`.
-  When upgrading to Yii 2.1, You should do a global search and replace for `::className()` to `::class`.
+  When upgrading to Yii 3.0, You should do a global search and replace for `::className()` to `::class`.
   All calls on objects via `->className()` should be replaced by a call to `get_class()`.
 * Dependency injection (DI) layer has been replaced by "yiisoft/di" package. Make sure to update class/object definitions at
   your code to match the syntax used by it. In particular: you should use '__class' array key instead of 'class' for
@@ -131,9 +131,9 @@ Upgrade from Yii 2.0.x
 * Console command used to clear cache now calls related actions "clear" instead of "flush".
 * Yii autoloader was removed in favor of Composer-generated one. You should remove explicit inclusion of `Yii.php` from
   your entry `index.php` scripts. In case you have relied on class map, use `composer.json` instead of configuring it
-  with PHP. For details please refer to [guide on autoloading](https://github.com/yiisoft/yii2/blob/2.1/docs/guide/concept-autoloading.md),
-  [guide on customizing helpers](https://github.com/yiisoft/yii2/blob/2.1/docs/guide/helper-overview.md#customizing-helper-classes-)
-  and [guide on Working with Third-Party Code](https://github.com/yiisoft/yii2/blob/2.1/docs/guide/tutorial-yii-integration.md).
+  with PHP. For details please refer to [guide on autoloading](https://github.com/yiisoft/yii2/blob/3.0/docs/guide/concept-autoloading.md),
+  [guide on customizing helpers](https://github.com/yiisoft/yii2/blob/3.0/docs/guide/helper-overview.md#customizing-helper-classes-)
+  and [guide on Working with Third-Party Code](https://github.com/yiisoft/yii2/blob/3.0/docs/guide/tutorial-yii-integration.md).
 * The signature of `yii\web\RequestParserInterface::parse()` was changed. The method now accepts the `yii\web\Request` instance
   as a sole argument. Make sure you declare and implement this method correctly, while creating your own request parser.
 * Uploaded file retrieve methods have been moved from `yii\http\UploadedFile` to `yii\web\Request`. You should use `Request::getUploadedFileByName()`
@@ -263,7 +263,7 @@ Upgrade from Yii 2.0.13
 
 * `yii\db\PdoValue` class has been introduced to replace a special syntax that was used to declare PDO parameter type 
   when binding parameters to an SQL command, for example: `['value', \PDO::PARAM_STR]`.
-  You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 2.1.
+  You should use `new PdoValue('value', \PDO::PARAM_STR)` instead. Old syntax will be removed in Yii 3.0.
 
 * `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
   Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
@@ -277,13 +277,13 @@ Upgrade from Yii 2.0.13
 
 * Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
 
-* You can start preparing your application for Yii 2.1 by doing the following:
+* You can start preparing your application for Yii 3.0 by doing the following:
 
   - Replace `::className()` calls with `::class` (if you’re running PHP 5.5+).
   - Replace usages of `yii\base\InvalidParamException` with `yii\base\InvalidArgumentException`.
   - Replace calls to `Yii::trace()` with `Yii::debug()`.
   - Remove calls to `yii\BaseYii::powered()`.
-  - If you are using XCache or Zend data cache, those are going away in 2.1 so you might want to start looking for an alternative.
+  - If you are using XCache or Zend data cache, those are going away in 3.0 so you might want to start looking for an alternative.
 
 * In case you aren't using CSRF cookies (REST APIs etc.) you should turn them off explicitly by setting
   `\yii\web\Request::$enableCsrfCookie` to `false` in your config file. 

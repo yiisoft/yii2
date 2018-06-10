@@ -82,14 +82,14 @@ abstract class BaseMailer extends Component implements MailerInterface
 
     /**
      * @var Composer|array|string|callable message composer.
-     * @since 2.1
+     * @since 3.0.0
      */
     private $_composer;
 
 
     /**
      * @return Composer message composer instance.
-     * @since 2.1
+     * @since 3.0.0
      */
     public function getComposer()
     {
@@ -104,7 +104,7 @@ abstract class BaseMailer extends Component implements MailerInterface
 
     /**
      * @param Composer|array|string|callable $composer message composer instance or DI compatible configuration.
-     * @since 2.1
+     * @since 3.0.0
      */
     public function setComposer($composer)
     {

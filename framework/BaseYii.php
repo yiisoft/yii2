@@ -91,7 +91,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.1.0-dev';
+        return '3.0.0-dev';
     }
 
     /**
@@ -361,13 +361,13 @@ class BaseYii
 
     /**
      * @var ProfilerInterface profiler instance.
-     * @since 2.1
+     * @since 3.0.0
      */
     private static $_profiler;
 
     /**
      * @return ProfilerInterface profiler instance.
-     * @since 2.1
+     * @since 3.0.0
      */
     public static function getProfiler()
     {
@@ -379,7 +379,7 @@ class BaseYii
 
     /**
      * @param ProfilerInterface|\Closure|array|null $profiler profiler instance or its DI compatible configuration.
-     * @since 2.1
+     * @since 3.0.0
      */
     public static function setProfiler($profiler)
     {
@@ -407,7 +407,7 @@ class BaseYii
      * @param mixed $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as array.
      * @param string $category the category of the message.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public static function log($level, $message, $category = 'application')
     {

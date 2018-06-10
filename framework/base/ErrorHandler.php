@@ -303,7 +303,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Attempts to flush logger messages.
-     * @since 2.1
+     * @since 3.0.0
      */
     protected function flushLogger()
     {

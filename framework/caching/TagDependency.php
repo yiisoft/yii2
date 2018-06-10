@@ -122,7 +122,7 @@ class TagDependency extends Dependency
      * for any particular cache storage.
      * @param string $tag tag name.
      * @return string cache key.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     protected static function buildCacheKey($tag)
     {

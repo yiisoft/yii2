@@ -20,7 +20,7 @@ Create file `composer.json` under the `micro-app` directory using your favorite 
 ```json
 {
     "require": {
-        "yiisoft/yii2": "~2.1.0"
+        "yiisoft/yii2": "~3.0.0"
     }
 }
 ```

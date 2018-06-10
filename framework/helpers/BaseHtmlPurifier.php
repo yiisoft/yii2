@@ -70,7 +70,7 @@ class BaseHtmlPurifier
      * @param string $suffix String to append to the end of the truncated string.
      * @param string|bool $encoding
      * @return string
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public static function truncate($html, $count, $suffix, $encoding = false)
     {
@@ -147,7 +147,7 @@ class BaseHtmlPurifier
      *
      * @return \HTMLPurifier_Config HTMLPurifier config instance.
      * @throws InvalidConfigException in case "ezyang/htmlpurifier" package is not available.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public static function createConfig($config = null)
     {

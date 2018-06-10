@@ -2,22 +2,24 @@ Yii Versioning
 ==============
 
 This document summarizes the versioning policy of Yii. Our current versioning strategy is
-a variant of [Semantic Versioning](http://semver.org/).
+[Semantic Versioning](http://semver.org/).
 
-Within the core developer team, we have emphasized several times that it is important to keep 2.0.x releases backwards
+Within the core developer team, we have emphasized several times that it is important to keep major releases backwards
 compatible. But this is an ideal plan. In a real world this is hard to achieve. See [Backwards Compatibility](bc.md)
 document for detailed description of what BC is.
 
-In summary, our versioning policy for Yii 2 is as follows:
+## Yii 2.0.x versioning policy
 
-## Version numbers
+In Yii 2.0.x Yii wasn't following SemVer precisely. Our versioning policy for Yii 2 is as follows:
+
+### Version numbers
 
 Version numbers are in the format of `2.x.y.z`, where the `z` can be skipped for releases for which `z` is `0`.
 
 A possible Yii version 3 is not covered here as we'd expect it to be like 2.0 over 1.0. We expect that this only happens every 3 to 5 years,
 depending on external technology advancement (such as PHP upgraded from 5.0 to 5.4).
 
-### `2.X.0`: major releases
+#### `2.X.0`: major releases
 
 Backwards compatibility breaking releases, which contain major features and changes that may break BC. Upgrading from
 earlier versions may not be trivial, but a complete upgrade guide will be available.
@@ -30,7 +32,7 @@ earlier versions may not be trivial, but a complete upgrade guide will be availa
 * Requires major news releases and marketing effort.
 
 
-### `2.x.Y`: minor releases
+#### `2.x.Y`: minor releases
 
 Minor releases, which are mostly BC-compatible. Ideally, we hope they contain only changes that do not affect backwards
 compatibility. However, it is not always possible to keep everything 100% BC-compatible, so upgrade notes are recorded
@@ -46,7 +48,7 @@ to it so that users can enjoy them earlier.
 * With news announcements. Project site will be updated.
 
 
-### `2.x.y.Z`: patch releases
+#### `2.x.y.Z`: patch releases
 
 Patch releases, which should be 100% BC-compatible, containing bug fixes only.
 No news announcement or project site update (unless it contains major/security issue fixes).
@@ -59,7 +61,7 @@ The release process is mostly automatic.
 * Should be merged back to master branch on release
 
 
-## Branching policy
+### Branching policy
 
 * `master` branch is the development branch for the current stable major release, currently `2.0.x` versions.
 * Each new major release will be developed on a branch named after the version number, e.g. `2.1`.
@@ -74,7 +76,7 @@ The following image shows an illustration of the branches on changing commit his
 ![Branching policy](versions-branches.png)
 
 
-## Releases
+### Releases
 
 Framework and official extension projects are released independently of each other, i.e. version number mismatch between
 framework and extension is expected. The Application Templates are always released together with the framework.

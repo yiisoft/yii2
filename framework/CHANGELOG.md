@@ -1,7 +1,7 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.1.0 under development
+3.0.0 under development
 -----------------------
 
 - Bug #16065: Remove using `date.timezone` at `yii\base\Application`, use `date_default_timezone_get()` instead (sashsvamir)
@@ -604,7 +604,7 @@ Yii Framework 2 Change Log
 - Enh #12758: Added the ability to use instances of `\yii\db\Query` class as values in the `\yii\db\QueryBuilder::insert()` method (PowerGamer1)
 - Enh #12771: Skip \yii\rbac\PhpManager::checkAccessRecursive and \yii\rbac\DbManager::checkAccessRecursive if role assignments are empty (Ni-san)
 - Enh #12790: Added `scrollToErrorOffset` option for `yii\widgets\ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
-- Enh #12798: Changed `yii\cache\Dependency::getHasChanged()` (deprecated, to be removed in 2.1) to `yii\cache\Dependency::isChanged()` (dynasource)
+- Enh #12798: Changed `yii\cache\Dependency::getHasChanged()` (deprecated, to be removed in 3.0) to `yii\cache\Dependency::isChanged()` (dynasource)
 - Enh #12807: Added console controller checks for `yii\console\controllers\HelpController` (schmunk42)
 - Enh #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `yii\db\ColumnSchema` class (nanodesu88)
 - Enh #12854: Added `RangeNotSatisfiableHttpException` to cover HTTP error 416 file request exceptions (zalatov)

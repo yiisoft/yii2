@@ -71,7 +71,7 @@ class Cache extends Component implements CacheInterface
      * @var \Psr\SimpleCache\CacheInterface|array|\Closure|string actual cache handler or its DI compatible configuration.
      * After the Cache object is created, if you want to change this property, you should only assign it
      * with a [[\Psr\SimpleCache\CacheInterface]] instance.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public $handler;
 
@@ -229,7 +229,7 @@ class Cache extends Component implements CacheInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1
+     * @since 3.0.0
      */
     public function deleteMultiple($keys)
     {

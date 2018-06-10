@@ -29,7 +29,7 @@ use yii\base\InvalidConfigException;
  * ```
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1.0
+ * @since 3.0.0
  */
 class FileStream extends BaseObject implements StreamInterface
 {

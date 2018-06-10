@@ -74,7 +74,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
     private $_error;
     /**
      * @var StreamInterface stream for this file.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     private $_stream;
 
@@ -142,7 +142,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getStream()
     {
@@ -169,7 +169,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
 
     /**
      * @param StreamInterface|\Closure|array $stream stream instance or its DI compatible configuration.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setStream($stream)
     {
@@ -178,7 +178,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function moveTo($targetPath)
     {
@@ -192,7 +192,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getSize()
     {
@@ -202,7 +202,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
     /**
      * @param int $size the actual size of the uploaded file in bytes.
      * @throws InvalidArgumentException on invalid size given.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setSize($size)
     {
@@ -214,7 +214,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getError()
     {
@@ -224,7 +224,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
     /**
      * @param int $error upload error code.
      * @throws InvalidArgumentException on invalid error given.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setError($error)
     {
@@ -236,7 +236,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getClientFilename()
     {
@@ -245,7 +245,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
 
     /**
      * @param string $clientFilename the original name of the file being uploaded.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setClientFilename($clientFilename)
     {
@@ -254,7 +254,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getClientMediaType()
     {
@@ -263,7 +263,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
 
     /**
      * @param string $clientMediaType the MIME-type of the uploaded file (such as "image/gif").
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setClientMediaType($clientMediaType)
     {

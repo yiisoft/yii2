@@ -20,7 +20,7 @@ cd micro-app
 ```json
 {
     "require": {
-        "yiisoft/yii2": "~2.1.0"
+        "yiisoft/yii2": "~3.0.0"
     }
 }
 ```
