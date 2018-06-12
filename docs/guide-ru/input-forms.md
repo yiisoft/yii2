@@ -141,7 +141,7 @@ use yii\widgets\Pjax;
 use yii\widgets\ActiveForm;
 
 Pjax::begin([
-    // Pjax options
+    // Опции Pjax
 ]);
     $form = ActiveForm::begin([
         'options' => ['data' => ['pjax' => true]],
