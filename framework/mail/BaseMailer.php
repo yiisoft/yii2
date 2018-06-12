@@ -84,7 +84,7 @@ abstract class BaseMailer extends Component implements MailerInterface
      * @var Composer|array|string|callable message composer.
      * @since 3.0.0
      */
-    private $_composer;
+    private $_composer = [];
 
 
     /**
