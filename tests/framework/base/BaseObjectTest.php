@@ -172,6 +172,20 @@ class BaseObjectTest extends TestCase
         new BCObject();
         $this->assertTrue(BCObject::$initCalled);
     }
+
+    public function testProtectedGetMethod()
+    {
+        $object = new NewObject();
+        $this->expectException('yii\base\UnknownPropertyException');
+        $this->assertNotEquals($object->mode, 'mode');
+    }
+
+    public function testProtectedSetMethod()
+    {
+        $object = new NewObject();
+        $object->modeTwo = 'test';
+        $this->assertNotEquals($object->modeTwo, 'test');
+    }
 }
 
 
@@ -181,6 +195,23 @@ class NewObject extends BaseObject
     private $_text = 'default';
     private $_items = [];
     public $content;
+    private $_mode = 'mode';
+    private $_modeTwo = 'modeTwo';
+
+    protected function getMode()
+    {
+        return $this->_mode;
+    }
+
+    public function getModeTwo()
+    {
+        return $this->_modeTwo;
+    }
+
+    protected function setModeTwo($mode)
+    {
+        return $this->_modeTwo = $mode;
+    }
 
     public function getText()
     {
