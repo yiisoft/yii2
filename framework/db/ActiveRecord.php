@@ -235,7 +235,7 @@ class ActiveRecord extends BaseActiveRecord
         foreach ($this->getPrimaryKey(true) as $key => $value) {
             $pk[$tableName . '.' . $key] = $value;
         }
-        $query->where($pk);
+        $query->andWhere($pk);
 
         /* @var $record BaseActiveRecord */
         $record = $query->one();
