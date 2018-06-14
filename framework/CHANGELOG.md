@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.16 under development
 ------------------------
-
+- Bug #16332: Fixed `protected function can still be called outside the class` (jwlewisiii)
 - Enh #9133: Added `yii\behaviors\OptimisticLockBehavior` (tunecino)
 - Bug #16104: Fixed `yii\db\pgsql\QueryBuilder::dropIndex()` to prepend index name with schema name (wapmorgan)
 - Bug #16193: Fixed `yii\filters\Cors` to not reflect origin header value when configured to wildcard origins (Jianjun Chen)
