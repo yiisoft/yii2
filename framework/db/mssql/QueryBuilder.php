@@ -25,6 +25,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public $typeMap = [
         Schema::TYPE_PK => 'int IDENTITY PRIMARY KEY',
         Schema::TYPE_UPK => 'int IDENTITY PRIMARY KEY',
+        Schema::TYPE_SMALLPK => 'smallint IDENTITY PRIMARY KEY',
+        Schema::TYPE_USMALLPK => 'smallint IDENTITY PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigint IDENTITY PRIMARY KEY',
         Schema::TYPE_UBIGPK => 'bigint IDENTITY PRIMARY KEY',
         Schema::TYPE_CHAR => 'nchar(1)',

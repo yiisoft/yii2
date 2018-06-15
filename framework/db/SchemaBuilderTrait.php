@@ -52,6 +52,18 @@ trait SchemaBuilderTrait
     }
 
     /**
+     * Creates a small integer primary key column.
+     * @param int $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.1.1
+     */
+    public function smallPrimaryKey($length = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_SMALLPK, $length);
+    }
+
+    /**
      * Creates a big primary key column.
      * @param int $length column size or precision definition.
      * This parameter will be ignored if not supported by the DBMS.

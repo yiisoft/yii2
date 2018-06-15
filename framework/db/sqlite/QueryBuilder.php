@@ -30,6 +30,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public $typeMap = [
         Schema::TYPE_PK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
         Schema::TYPE_UPK => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
+        Schema::TYPE_SMALLPK => 'smallint PRIMARY KEY AUTOINCREMENT NOT NULL',
+        Schema::TYPE_USMALLPK => 'smallint UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
         Schema::TYPE_BIGPK => 'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
         Schema::TYPE_UBIGPK => 'integer UNSIGNED PRIMARY KEY AUTOINCREMENT NOT NULL',
         Schema::TYPE_CHAR => 'char(1)',

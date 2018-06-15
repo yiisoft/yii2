@@ -1150,6 +1150,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * physical types):
      *
      * - `pk`: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"
+     * - `smallpk`: an auto-incremental primary key type, will be converted into "smallint(6) NOT NULL AUTO_INCREMENT PRIMARY KEY"
      * - `bigpk`: an auto-incremental primary key type, will be converted into "bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY"
      * - `upk`: an unsigned auto-incremental primary key type, will be converted into "int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY"
      * - `char`: char type, will be converted into "char(1)"
