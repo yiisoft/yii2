@@ -28,7 +28,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * Default to `false`, meaning JSON support is enabled.
      *
      * @since 2.0.14.1
-     * @deprecated Since 2.0.14.1 and will be removed in 2.1.
+     * @deprecated Since 2.0.14.1 and will be removed in 3.1.
      */
     public $disableJsonSupport = false;
     /**
@@ -37,7 +37,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * Default to `false`, meaning Arrays support is enabled.
      *
      * @since 2.0.14.1
-     * @deprecated Since 2.0.14.1 and will be removed in 2.1.
+     * @deprecated Since 2.0.14.1 and will be removed in 3.1.
      */
     public $disableArraySupport = false;
     /**
@@ -46,7 +46,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * Default to `true`, meaning arrays are unserialized to [[ArrayExpression]] objects.
      *
      * @since 2.0.14.1
-     * @deprecated Since 2.0.14.1 and will be removed in 2.1.
+     * @deprecated Since 2.0.14.1 and will be removed in 3.1.
      */
     public $deserializeArrayColumnToArrayExpression = true;
 

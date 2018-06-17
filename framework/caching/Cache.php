@@ -156,7 +156,7 @@ abstract class Cache extends Component implements CacheInterface
      * @return array list of cached values corresponding to the specified keys. The array
      * is returned in terms of (key, value) pairs.
      * If a value is not cached or expired, the corresponding array value will be false.
-     * @deprecated This method is an alias for [[multiGet()]] and will be removed in 2.1.0.
+     * @deprecated This method is an alias for [[multiGet()]] and will be removed in 3.1.0.
      */
     public function mget($keys)
     {
@@ -246,7 +246,7 @@ abstract class Cache extends Component implements CacheInterface
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
-     * @deprecated This method is an alias for [[multiSet()]] and will be removed in 2.1.0.
+     * @deprecated This method is an alias for [[multiSet()]] and will be removed in 3.1.0.
      */
     public function mset($items, $duration = 0, $dependency = null)
     {
@@ -297,7 +297,7 @@ abstract class Cache extends Component implements CacheInterface
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
-     * @deprecated This method is an alias for [[multiAdd()]] and will be removed in 2.1.0.
+     * @deprecated This method is an alias for [[multiAdd()]] and will be removed in 3.1.0.
      */
     public function madd($items, $duration = 0, $dependency = null)
     {
