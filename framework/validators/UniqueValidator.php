@@ -80,7 +80,7 @@ class UniqueValidator extends Validator
     /**
      * @var string
      * @since 2.0.9
-     * @deprecated since version 2.0.10, to be removed in 2.1. Use [[message]] property
+     * @deprecated since version 2.0.10, to be removed in 3.1. Use [[message]] property
      * to setup custom message for multiple target attributes.
      */
     public $comboNotUnique;
@@ -191,7 +191,7 @@ class UniqueValidator extends Validator
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
-                
+
                 // any with relation can't be loaded because related fields are not selected
                 $query->with = null;
             }
