@@ -485,7 +485,7 @@ class BaseYii
     /**
      * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
      * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
-     * @deprecated since 2.0.14, this method will be removed in 3.0.0.
+     * @deprecated since 2.0.14, this method will be removed in 3.1.0.
      */
     public static function powered()
     {
