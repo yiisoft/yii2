@@ -275,8 +275,13 @@ public function actionIndex()
 
 Есть несколько предопределённых констант, которые вы можете использовать:
 
+<<<<<<< HEAD
 - [[yii\console\ExitCode::OK]] со значением `0`;
 - [[yii\console\ExitCode::UNSPECIFIED_ERROR]] со значением `1`.
+=======
+- [[yii\console\ExitCode::OK|ExitCode::OK]] со значением `0`;
+- [[yii\console\ExitCode::UNSPECIFIED_ERROR|ExitCode::UNSPECIFIED_ERROR]] со значением `1`.
+>>>>>>> Update tutorial-console.md (#16417) [skip ci]
 
 Хорошая практика, определять значимые для вашего контроллера константы в случае, если вы используете больше типов ошибок.
 
