@@ -362,7 +362,7 @@ class ActiveField extends Component
      */
     public function input($type, $options = [])
     {
-        $options = array_merge($this->inputOptions, $options);
+        $options = array_merge_recursive($this->inputOptions, $options);
         if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
             $this->addErrorClassIfNeeded($options);
         }

@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #9133: Added `yii\behaviors\OptimisticLockBehavior` (tunecino)
+- Bug #16329: Fixed `yii\widgets\ActiveField::input()` to merge input options with those from child classes (MacGyer)
 - Bug #16104: Fixed `yii\db\pgsql\QueryBuilder::dropIndex()` to prepend index name with schema name (wapmorgan)
 - Bug #16193: Fixed `yii\filters\Cors` to not reflect origin header value when configured to wildcard origins (Jianjun Chen)
 - Bug #16068: Fixed `yii\web\CookieCollection::has` when an expiration param is set to 'until the browser is closed' (OndrejVasicek)
