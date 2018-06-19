@@ -352,7 +352,7 @@ foreach (Customer::find()->each(10) as $customer) {
 
 // пакетная выборка с жадной загрузкой
 foreach (Customer::find()->with('orders')->each() as $customer) {
-    // $customer - это объекта класса Customer
+    // $customer - это объект класса Customer
 }
 ```
 
