@@ -302,13 +302,20 @@ class Component extends BaseObject
 
     /**
      * This method is called after the object is created by cloning an existing one.
-     * It removes all behaviors because they are attached to the old object.
+     * It clones all behaviors as well, and attaches them to the new object.
      */
     public function __clone()
     {
         $this->_events = [];
         $this->_eventWildcards = [];
-        $this->_behaviors = null;
+
+        if ($this->_behaviors !== null) {
+            $behaviors = $this->_behaviors;
+            $this->_behaviors = null;
+            foreach ($behaviors as $name => $behavior) {
+                $this->attachBehavior($name, clone $behavior);
+            }
+        }
     }
 
     /**

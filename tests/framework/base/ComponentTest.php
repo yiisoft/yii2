@@ -61,7 +61,8 @@ class ComponentTest extends TestCase
 
         $clone = clone $component;
         $this->assertNotSame($component, $clone);
-        $this->assertNull($clone->getBehavior('a'));
+        $this->assertNotNull($clone->getBehavior('a'));
+        $this->assertNotSame($behavior, $clone->getBehavior('a'));
         $this->assertFalse($clone->hasEventHandlers('test'));
         $this->assertFalse($clone->hasEventHandlers('foo'));
         $this->assertFalse($clone->hasEventHandlers('*'));
