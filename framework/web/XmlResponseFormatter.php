@@ -94,14 +94,21 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
             foreach ($data as $name => $value) {
                 if (is_int($name) && is_object($value)) {
                     $this->buildXml($element, $value);
-                } elseif (is_array($value) || is_object($value)) {
+                } elseif ((is_array($value) && !isset($value['xml-attributes'])) || is_object($value)) {
                     $child = new DOMElement($this->getValidXmlElementName($name));
                     $element->appendChild($child);
                     $this->buildXml($child, $value);
                 } else {
                     $child = new DOMElement($this->getValidXmlElementName($name));
                     $element->appendChild($child);
-                    $child->appendChild(new DOMText($this->formatScalarValue($value)));
+                    if(is_array($value) && isset($value['xml-attributes'])){
+                        foreach($value['xml-attributes'] as $attribute => $val){
+                            $child->setAttribute($attribute, $val);
+                        }
+                        $child->appendChild(new DOMText($this->formatScalarValue($value['value'])));
+                    }else{
+                        $child->appendChild(new DOMText($this->formatScalarValue($value)));
+                    }
                 }
             }
         } elseif (is_object($data)) {

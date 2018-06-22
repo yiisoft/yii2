@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 3.0.0 under development
 -----------------------
 
+- Enh #16285: Modified yii\web\XmlResponseFormatter to accept attributes for XML elements (codespede)
 - Bug #16327: Fix getComposer() yii\BaseYii::createObject(null) BaseMailer (cjtterabyte)
 - Bug #16065: Remove using `date.timezone` at `yii\base\Application`, use `date_default_timezone_get()` instead (sashsvamir)
 - Bug #12539: `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on content-type negotiation fail (PowerGamer1)

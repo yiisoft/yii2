@@ -151,7 +151,7 @@ class JsonTest extends TestCase
         $postsStack->push(new Post(915, 'record1'));
         $postsStack->push(new Post(456, 'record2'));
 
-        $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
+        $this->assertSame('{"1":{"id":456,"title":"record2","city":null},"0":{"id":915,"title":"record1","city":null}}', Json::encode($postsStack));
     }
 
     public function testDecode()
