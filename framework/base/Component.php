@@ -307,8 +307,15 @@ class Component extends BaseObject
     public function __clone()
     {
         $this->_events = [];
-        $this->_eventWildcards = [];
-        $this->_behaviors = null;
+        $this-> _eventWildcards = [];
+
+        if ($this->_behaviors !== null) {
+            $behaviors = $this->_behaviors;
+            $this->_behaviors = null;
+            foreach ($behaviors as $name => $behavior) {
+                $this->attachBehavior($name, clone $behavior);
+            }
+        }
     }
 
     /**
