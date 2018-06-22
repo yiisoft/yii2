@@ -441,7 +441,7 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
   [Twig](http://twig.sensiolabs.org/) に基づいたテンプレート・エンジンを提供します。
 
-下記の公式エクステンションは Yii 2.1 以上のためのものです。
+下記の公式エクステンションは Yii 3 以上のためのものです。
 これらは、Yii 2.0 ではコア・フレームワークに含まれていますので、インストールする必要はありません。.
 
 - [yiisoft/yii2-captcha](https://www.yiiframework.com/extension/yiisoft/yii2-captcha):

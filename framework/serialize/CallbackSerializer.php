@@ -13,7 +13,7 @@ use yii\base\BaseObject;
  * CallbackSerializer serializes data via custom PHP callback.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1.0
+ * @since 3.0.0
  */
 class CallbackSerializer extends BaseObject implements SerializerInterface
 {

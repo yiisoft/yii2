@@ -30,7 +30,7 @@ use yii\base\ErrorHandler;
  * > Note: closing this stream will close the resource associated with it, so it becomes invalid for usage elsewhere.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1.0
+ * @since 3.0.0
  */
 class ResourceStream extends BaseObject implements StreamInterface
 {

@@ -208,7 +208,7 @@ interface MessageInterface
      * @param string $name header name.
      * @param string $value header value.
      * @return $this self reference.
-     * @since 2.1
+     * @since 3.0.0
      */
     public function addHeader($name, $value);
 
@@ -217,7 +217,7 @@ interface MessageInterface
      * @param string $name header name.
      * @param string|array $value header value or values.
      * @return $this self reference.
-     * @since 2.1
+     * @since 3.0.0
      */
     public function setHeader($name, $value);
 
@@ -225,7 +225,7 @@ interface MessageInterface
      * Returns all values for the specified header.
      * @param string $name header name.
      * @return array header values list.
-     * @since 2.1
+     * @since 3.0.0
      */
     public function getHeader($name);
 
@@ -233,7 +233,7 @@ interface MessageInterface
      * Sets custom header values to the message.
      * @param array $headers headers in format: `[name => value]`.
      * @return $this self reference.
-     * @since 2.1
+     * @since 3.0.0
      */
     public function setHeaders($headers);
 

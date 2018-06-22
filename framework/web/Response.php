@@ -319,7 +319,7 @@ class Response extends \yii\base\Response implements ResponseInterface
 
     /**
      * @return string body content string.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getContent()
     {
@@ -328,7 +328,7 @@ class Response extends \yii\base\Response implements ResponseInterface
 
     /**
      * @param string $content body content string.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setContent($content)
     {

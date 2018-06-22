@@ -63,23 +63,23 @@ Making an extension release includes only one command (e.g. for redis):
 
 The default release command will release a new minor version from the currently checked out branch.
 To release another version than the default, you have to specify it using the `--version` option, e.g.
-`--version=2.1.0`, or `--version=2.1.0-beta`.
+`--version=3.0.0`, or `--version=3.0.0-alpha`.
 
 
-#### Release a new major version e.g. 2.1.0
+#### Release a new major version e.g. 3.0.0
 
 Releasing a new major version includes a branch change as described in the
 [versioning policy](versions.md).
-The following describes an example of releasing version `2.1.0` which has been
-developed on the `2.1` branch derived from `master`. `master` has contained the `2.0.x` versions
+The following describes an example of releasing version `3.0.0` which has been
+developed on the `3.0` branch derived from `master`. `master` has contained the `2.0.x` versions
 before.
 
-- create a new branch `2.0` from `master`
+- create a new branch `3.0` from `master`
 - ensure composer.json does not contain a branch alias on this branch anymore.
-- merge necessary changes from `master` to `2.1`
-- point `master` to the lastest commit on `2.1`
-- adjust composer.json branch alias for master to `2.1.x-dev`.
-- delete `2.1` branch
+- merge necessary changes from `master` to `3.0`
+- point `master` to the lastest commit on `3.0`
+- adjust composer.json branch alias for master to `3.0.x-dev`.
+- delete `3.0` branch
 
-Now check out `master` and run the release command with the `--version=2.1.0` option. 
+Now check out `master` and run the release command with the `--version=3.0.0` option. 
 

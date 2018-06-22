@@ -18,7 +18,7 @@ In Yii 2.0, DAO supports the following databases out of the box:
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
 
-> Info: In Yii 2.1 and later, the DAO supports for CUBRID, Oracle and MSSQL are no longer provided as the built-in
+> Info: In Yii 3 and later, the DAO supports for CUBRID, Oracle and MSSQL are no longer provided as the built-in
   core components of the framework. They have to be installed as the separated [extensions](structure-extensions.md).
   There are [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) and
   [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql) in the 
