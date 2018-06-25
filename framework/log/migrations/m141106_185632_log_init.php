@@ -54,13 +54,13 @@ class m141106_185632_log_init extends Migration
                 throw new InvalidConfigException('You should configure "log" component to use one or more database targets before executing this migration.');
             }
         }
+
         return $this->dbTargets;
     }
 
     public function up()
     {
-        $targets = $this->getDbTargets();
-        foreach ($targets as $target) {
+        foreach ($this->getDbTargets() as $target) {
             $this->db = $target->db;
 
             $tableOptions = null;
@@ -85,8 +85,7 @@ class m141106_185632_log_init extends Migration
 
     public function down()
     {
-        $targets = $this->getDbTargets();
-        foreach ($targets as $target) {
+        foreach ($this->getDbTargets() as $target) {
             $this->db = $target->db;
 
             $this->dropTable($target->logTable);

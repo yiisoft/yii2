@@ -10,6 +10,7 @@ namespace yii\web;
 /**
  * ServerErrorHttpException represents an "Internal Server Error" HTTP exception with status code 500.
  *
+ * @see https://tools.ietf.org/html/rfc7231#section-6.6.1
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

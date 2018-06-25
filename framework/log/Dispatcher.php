@@ -75,7 +75,7 @@ class Dispatcher extends Component
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __construct($config = [])
     {
@@ -91,7 +91,7 @@ class Dispatcher extends Component
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -115,6 +115,7 @@ class Dispatcher extends Component
         if ($this->_logger === null) {
             $this->setLogger(Yii::getLogger());
         }
+
         return $this->_logger;
     }
 
@@ -189,7 +190,7 @@ class Dispatcher extends Component
                 } catch (\Exception $e) {
                     $target->enabled = false;
                     $targetErrors[] = [
-                        'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToString($e),
+                        'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToVerboseString($e),
                         Logger::LEVEL_WARNING,
                         __METHOD__,
                         microtime(true),

@@ -69,7 +69,7 @@ public function init()
 {
     parent::init();
     // inicializa o módulo com as configurações carregadas de config.php
-    \Yii::configure($this, require(__DIR__ . '/config.php'));
+    \Yii::configure($this, require __DIR__ . '/config.php');
 }
 ```
 

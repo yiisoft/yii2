@@ -46,7 +46,7 @@ class MyBehavior extends Behavior
 В приведенном выше примере, объявлен класс поведения `app\components\MyBehavior` содержащий 2 свойства
 `prop1` и `prop2`, и один метод `foo()`. Обратите внимание, свойство `prop2` объявлено с использованием геттера
 `getProp2()` и сеттера `setProp2()`. Это возможно, так как [[yii\base\Behavior]] является дочерним классом для
-[[yii\base\Object]], который предоставляет возможность определения [свойств](concept-properties.md) через геттеры и сеттеры.
+[[yii\base\BaseObject]], который предоставляет возможность определения [свойств](concept-properties.md) через геттеры и сеттеры.
 
 Так как этот класс является поведением, когда он прикреплён к компоненту, компоненту будут также доступны свойства `prop1`
 и `prop2`, а также метод `foo()`.
@@ -174,7 +174,7 @@ $component->attachBehavior('myBehavior3', [
 ]);
 ```
 
-Использование метода [[yii\base\Component::attachBehaviors()]] позволяет прикрепить несколько поведение за раз.
+Использование метода [[yii\base\Component::attachBehaviors()]] позволяет прикрепить несколько поведений за раз.
 Например,
 
 ```php
@@ -334,7 +334,7 @@ $user->touch('login_time');
 - [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - предоставляет методы для
   «мягкого» удаления и воосстановления ActiveRecord. То есть выставляет статус или флаг, который показывает, что
   запись удалена.
-- [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - позволяет упралять порядком
+- [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - позволяет управлять порядком
   записей через специальные методы. Информация сохраняется в целочисленном поле.
 
 

@@ -97,6 +97,20 @@ echo Yii::$app->formatter->asDate('now', 'yyyy-MM-dd'); // 2014-10-06
 echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 ```
 
+> Info: Some letters of the PHP format syntax are not supported by ICU and thus the PHP intl extension and can not be used
+> in Yii formatter. Most of these (`w`, `t`, `L`, `B`, `u`, `I`, `Z`) are not really useful for formatting dates but rather
+> used when doing date math. `S` and `U` however may be useful. Their behavior can be achived by doing the following:
+>
+> - for `S`, which is the English ordinal suffix for the day of the month (e.g. st, nd, rd or th.), the following replacement can be used:
+>
+>   ```php
+>   $f = Yii::$app->formatter;
+>   $d = $f->asOrdinal($f->asDate('2017-05-15', 'php:j'));
+>   echo "On the $d day of the month.";  // prints "On the 15th day of the month."
+>   ```
+>
+> - for `U`, the Unix Epoch, you can use the [[yii\i18n\Formatter::asTimestamp()|timestamp]] format.
+
 When working with applications that need to support multiple languages, you often need to specify different date
 and time formats for different locales. To simplify this task, you may use format shortcuts (e.g. `long`, `short`), instead.
 The formatter will turn a format shortcut into an appropriate format according to the currently active [[yii\i18n\Formatter::locale|locale]].
@@ -130,12 +144,15 @@ echo Yii::$app->formatter->asTime('2014-10-06 12:41:00'); // 14:41:00
 echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 ```
 
+If the [[yii\i18n\Formatter::timeZone|time zone]] is not set explicitly on the formatter component, the 
+[[yii\base\Application::timeZone|time zone configured in the application]] is used, which is the same time zone
+as set in the PHP configuration.
+
 > Note: As time zones are subject to rules made by the governments around the world and may change frequently, it is
 > likely that you do not have the latest information in the time zone database installed on your system.
 > You may refer to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data)
 > for details on updating the time zone database. Please also read
-> [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
-
+> [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).  
 
 ## Formatting Numbers <span id="numbers"></span>
 

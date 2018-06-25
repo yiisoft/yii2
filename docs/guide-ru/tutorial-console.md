@@ -71,10 +71,10 @@ yii migrate/up 5 --migrationTable=migrations
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
-require(__DIR__ . '/vendor/autoload.php');
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -275,8 +275,8 @@ public function actionIndex()
 
 Есть несколько предопределённых констант, которые вы можете использовать:
 
-- [[yii\console\Controller::EXIT_CODE_NORMAL|Controller::EXIT_CODE_NORMAL]] со значением `0`;
-- [[yii\console\Controller::EXIT_CODE_ERROR|Controller::EXIT_CODE_ERROR]] со значением `1`.
+- [[yii\console\ExitCode::OK|ExitCode::OK]] со значением `0`;
+- [[yii\console\ExitCode::UNSPECIFIED_ERROR|ExitCode::UNSPECIFIED_ERROR]] со значением `1`.
 
 Хорошая практика, определять значимые для вашего контроллера константы в случае, если вы используете больше типов ошибок.
 

@@ -85,9 +85,9 @@ class MessageSource extends Component
     {
         if ($this->forceTranslation || $language !== $this->sourceLanguage) {
             return $this->translateMessage($category, $message, $language);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

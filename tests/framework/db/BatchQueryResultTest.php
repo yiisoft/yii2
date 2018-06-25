@@ -1,11 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db;
 
 use Yii;
-use yiiunit\data\ar\ActiveRecord;
-use yii\db\Query;
 use yii\db\BatchQueryResult;
+use yii\db\Query;
+use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 
 abstract class BatchQueryResultTest extends DatabaseTestCase
@@ -75,8 +80,8 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
         $query = new Query();
         $query->from('customer')->orderBy('id');
         $allRows = [];
-        foreach ($query->each(100, $db) as $rows) {
-            $allRows[] = $rows;
+        foreach ($query->each(2, $db) as $index => $row) {
+            $allRows[$index] = $row;
         }
         $this->assertCount(3, $allRows);
         $this->assertEquals('user1', $allRows[0]['name']);

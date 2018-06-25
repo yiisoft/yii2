@@ -29,16 +29,16 @@ The widget's properties are easily writable because the class extends [[yii\base
 While components are very powerful, they are a bit heavier than normal objects, due to the fact that
 it takes extra memory and CPU time to support [event](concept-events.md) and [behavior](concept-behaviors.md) functionality in particular.
 If your components do not need these two features, you may consider extending your component class from
-[[yii\base\Object]] instead of [[yii\base\Component]]. Doing so will make your components as efficient as normal PHP objects,
+[[yii\base\BaseObject]] instead of [[yii\base\Component]]. Doing so will make your components as efficient as normal PHP objects,
 but with added support for [properties](concept-properties.md).
 
-When extending your class from [[yii\base\Component]] or [[yii\base\Object]], it is recommended that you follow
+When extending your class from [[yii\base\Component]] or [[yii\base\BaseObject]], it is recommended that you follow
 these conventions:
 
 - If you override the constructor, specify a `$config` parameter as the constructor's *last* parameter, and then pass this parameter
   to the parent constructor.
 - Always call the parent constructor *at the end* of your overriding constructor.
-- If you override the [[yii\base\Object::init()]] method, make sure you call the parent implementation of `init()` *at the beginning* of your `init()` method.
+- If you override the [[yii\base\BaseObject::init()]] method, make sure you call the parent implementation of `init()` *at the beginning* of your `init()` method.
 
 For example:
 
@@ -47,9 +47,9 @@ For example:
 
 namespace yii\components\MyClass;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class MyClass extends Object
+class MyClass extends BaseObject
 {
     public $prop1;
     public $prop2;
@@ -86,11 +86,11 @@ $component = \Yii::createObject([
 > implemented on top of a [dependency injection container](concept-di-container.md).
   
 
-The [[yii\base\Object]] class enforces the following object lifecycle:
+The [[yii\base\BaseObject]] class enforces the following object lifecycle:
 
 1. Pre-initialization within the constructor. You can set default property values here.
 2. Object configuration via `$config`. The configuration may overwrite the default values set within the constructor.
-3. Post-initialization within [[yii\base\Object::init()|init()]]. You may override this method to perform sanity checks and normalization of the properties.
+3. Post-initialization within [[yii\base\BaseObject::init()|init()]]. You may override this method to perform sanity checks and normalization of the properties.
 4. Object method calls.
 
 The first three steps all happen within the object's constructor. This means that once you get a class instance (i.e., an object),

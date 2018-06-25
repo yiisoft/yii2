@@ -7,15 +7,18 @@
 
 namespace yii\behaviors;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\validators\UniqueValidator;
-use Yii;
 
 /**
  * SluggableBehavior automatically fills the specified attribute with a value that can be used a slug in a URL.
+ *
+ * Note: This behavior relies on php-intl extension for transliteration. If it is not installed it
+ * falls back to replacements defined in [[\yii\helpers\Inflector::$transliteration]].
  *
  * To use SluggableBehavior, insert the following code to your ActiveRecord class:
  *
@@ -66,7 +69,7 @@ class SluggableBehavior extends AttributeBehavior
     public $slugAttribute = 'slug';
     /**
      * @var string|array|null the attribute or list of attributes whose value will be converted into a slug
-     * or `null` meaning that the `$value` property will be used to generate a slug. 
+     * or `null` meaning that the `$value` property will be used to generate a slug.
      */
     public $attribute;
     /**
@@ -96,6 +99,12 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $ensureUnique = false;
     /**
+     * @var bool whether to skip slug generation if [[attribute]] is null or an empty string.
+     * If true, the behaviour will not generate a new slug if [[attribute]] is null or an empty string.
+     * @since 2.0.13
+     */
+    public $skipOnEmpty = false;
+    /**
      * @var array configuration for slug uniqueness validator. Parameter 'class' may be omitted - by default
      * [[UniqueValidator]] will be used.
      * @see UniqueValidator
@@ -118,7 +127,7 @@ class SluggableBehavior extends AttributeBehavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -134,21 +143,24 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getValue($event)
     {
-        if ($this->attribute !== null) {
-            if ($this->isNewSlugNeeded()) {
-                $slugParts = [];
-                foreach ((array) $this->attribute as $attribute) {
-                    $slugParts[] = ArrayHelper::getValue($this->owner, $attribute);
-                }
+        if (!$this->isNewSlugNeeded()) {
+            return $this->owner->{$this->slugAttribute};
+        }
 
-                $slug = $this->generateSlug($slugParts);
-            } else {
-                return $this->owner->{$this->slugAttribute};
+        if ($this->attribute !== null) {
+            $slugParts = [];
+            foreach ((array) $this->attribute as $attribute) {
+                $part = ArrayHelper::getValue($this->owner, $attribute);
+                if ($this->skipOnEmpty && $this->isEmpty($part)) {
+                    return $this->owner->{$this->slugAttribute};
+                }
+                $slugParts[] = $part;
             }
+            $slug = $this->generateSlug($slugParts);
         } else {
             $slug = parent::getValue($event);
         }
@@ -173,7 +185,11 @@ class SluggableBehavior extends AttributeBehavior
             return false;
         }
 
-        foreach ((array)$this->attribute as $attribute) {
+        if ($this->attribute === null) {
+            return true;
+        }
+
+        foreach ((array) $this->attribute as $attribute) {
             if ($this->owner->isAttributeChanged($attribute)) {
                 return true;
             }
@@ -212,6 +228,7 @@ class SluggableBehavior extends AttributeBehavior
             $iteration++;
             $uniqueSlug = $this->generateUniqueSlug($slug, $iteration);
         }
+
         return $uniqueSlug;
     }
 
@@ -251,6 +268,19 @@ class SluggableBehavior extends AttributeBehavior
         if (is_callable($this->uniqueSlugGenerator)) {
             return call_user_func($this->uniqueSlugGenerator, $baseSlug, $iteration, $this->owner);
         }
+
         return $baseSlug . '-' . ($iteration + 1);
+    }
+
+    /**
+     * Checks if $slugPart is empty string or null.
+     *
+     * @param string $slugPart One of attributes that is used for slug generation.
+     * @return bool whether $slugPart empty or not.
+     * @since 2.0.13
+     */
+    protected function isEmpty($slugPart)
+    {
+        return $slugPart === null || $slugPart === '';
     }
 }

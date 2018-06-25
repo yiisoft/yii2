@@ -8,7 +8,7 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
 
 /**
@@ -18,7 +18,7 @@ use yii\base\InvalidConfigException;
  * @author Cronfy <cronfy@gmail.com>
  * @since 2.0.10
  */
-class UrlNormalizer extends Object
+class UrlNormalizer extends BaseObject
 {
     /**
      * Represents permament redirection during route normalization.

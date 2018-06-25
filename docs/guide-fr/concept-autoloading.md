@@ -47,8 +47,8 @@ Comme Yii utilise Composer comme gestionnaire de dépendances de paquets, il est
 Lors de l'utilisation conjointe du chargeur automatique de Yii et d'autres chargeurs automatiques, vous devez inclure le fichier `Yii.php` *après* que tous les autres chargeurs automatiques sont installés. Cela fait du chargeur automatique de Yii le premier à répondre à une requête de chargement automatique de classe. Par exemple, le code suivant est extrait du [script d'entrée](structure-entry-scripts.md) du [modèle de projet *basic*](start-installation.md). La première ligne installe le chargeur automatique de Composer, tandis que la seconde installe le chargeur automatique de Yii :
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 Vous pouvez utiliser le chargeur automatique de Composer seul sans celui de Yii. Néanmoins, en faisant de cette manière, la performance de chargement de vos classes est dégradée et vous devez appliquer les règles de Composer pour que vos classes puissent être chargées automatiquement. 

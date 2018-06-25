@@ -12,7 +12,15 @@ IF OBJECT_ID('[dbo].[negative_default_values]', 'U') IS NOT NULL DROP TABLE [dbo
 IF OBJECT_ID('[dbo].[animal]', 'U') IS NOT NULL DROP TABLE [dbo].[animal];
 IF OBJECT_ID('[dbo].[default_pk]', 'U') IS NOT NULL DROP TABLE [dbo].[default_pk];
 IF OBJECT_ID('[dbo].[document]', 'U') IS NOT NULL DROP TABLE [dbo].[document];
+IF OBJECT_ID('[dbo].[dossier]', 'U') IS NOT NULL DROP TABLE [dbo].[dossier];
+IF OBJECT_ID('[dbo].[employee]', 'U') IS NOT NULL DROP TABLE [dbo].[employee];
+IF OBJECT_ID('[dbo].[department]', 'U') IS NOT NULL DROP TABLE [dbo].[department];
 IF OBJECT_ID('[dbo].[animal_view]', 'V') IS NOT NULL DROP VIEW [dbo].[animal_view];
+IF OBJECT_ID('[T_constraints_4]', 'U') IS NOT NULL DROP TABLE [T_constraints_4];
+IF OBJECT_ID('[T_constraints_3]', 'U') IS NOT NULL DROP TABLE [T_constraints_3];
+IF OBJECT_ID('[T_constraints_2]', 'U') IS NOT NULL DROP TABLE [T_constraints_2];
+IF OBJECT_ID('[T_constraints_1]', 'U') IS NOT NULL DROP TABLE [T_constraints_1];
+IF OBJECT_ID('[T_upsert]', 'U') IS NOT NULL DROP TABLE [T_upsert];
 
 CREATE TABLE [dbo].[profile] (
     [id] [int] IDENTITY NOT NULL,
@@ -98,6 +106,7 @@ CREATE TABLE [dbo].[null_values] (
 );
 
 CREATE TABLE [dbo].[negative_default_values] (
+  [tinyint_col] [tinyint] DEFAULT '-123',
   [smallint_col] [tinyint] DEFAULT '-123',
   [int_col] [smallint] DEFAULT '-123',
   [bigint_col] [int] DEFAULT '-123',
@@ -108,6 +117,7 @@ CREATE TABLE [dbo].[negative_default_values] (
 CREATE TABLE [dbo].[type] (
     [int_col] [int] NOT NULL,
     [int_col2] [int] DEFAULT '1',
+    [tinyint_col] [tinyint] DEFAULT '1',
     [smallint_col] [smallint] DEFAULT '1',
     [char_col] [char](100) NOT NULL,
     [char_col2] [varchar](100) DEFAULT 'something',
@@ -143,6 +153,35 @@ CREATE TABLE [dbo].[document] (
     [content] [text],
     [version] [int] NOT NULL DEFAULT 0,
     CONSTRAINT [PK_document_pk] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
+);
+
+CREATE TABLE [dbo].[department] (
+    [id] [int] IDENTITY NOT NULL,
+    [title] [varchar](255) NOT NULL,
+    CONSTRAINT [PK_department_pk] PRIMARY KEY CLUSTERED (
+        [id] ASC
+    ) ON [PRIMARY]
+);
+
+CREATE TABLE [dbo].[employee] (
+    [id] [int] NOT NULL,
+    [department_id] [int] NOT NULL,
+    [first_name] [varchar](255) NOT NULL,
+    [last_name] [varchar](255) NOT NULL,
+    CONSTRAINT [PK_employee_pk] PRIMARY KEY CLUSTERED (
+        [id] ASC,
+        [department_id] ASC
+    ) ON [PRIMARY]
+);
+
+CREATE TABLE [dbo].[dossier] (
+    [id] [int] IDENTITY NOT NULL,
+    [department_id] [int] NOT NULL,
+    [employee_id] [int] NOT NULL,
+    [summary] [varchar](255) NOT NULL,
+    CONSTRAINT [PK_dossier_pk] PRIMARY KEY CLUSTERED (
         [id] ASC
     ) ON [PRIMARY]
 );
@@ -192,6 +231,21 @@ INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], 
 
 INSERT INTO [dbo].[document] ([title], [content], [version]) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
 
+SET IDENTITY_INSERT [dbo].[department] ON;
+INSERT INTO [dbo].[department] (id, title) VALUES (1, 'IT');
+INSERT INTO [dbo].[department] (id, title) VALUES (2, 'accounting');
+SET IDENTITY_INSERT [dbo].[department] OFF;
+
+INSERT INTO [dbo].[employee] (id, department_id, first_name, last_name) VALUES (1, 1, 'John', 'Doe');
+INSERT INTO [dbo].[employee] (id, department_id, first_name, last_name) VALUES (1, 2, 'Ann', 'Smith');
+INSERT INTO [dbo].[employee] (id, department_id, first_name, last_name) VALUES (2, 2, 'Will', 'Smith');
+
+SET IDENTITY_INSERT [dbo].[dossier] ON;
+INSERT INTO [dbo].[dossier] (id, department_id, employee_id, summary) VALUES (1, 1, 1, 'Excellent employee.');
+INSERT INTO [dbo].[dossier] (id, department_id, employee_id, summary) VALUES (2, 2, 1, 'Brilliant employee.');
+INSERT INTO [dbo].[dossier] (id, department_id, employee_id, summary) VALUES (3, 2, 2, 'Good employee.');
+SET IDENTITY_INSERT [dbo].[dossier] OFF;
+
 /* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
 
 IF OBJECT_ID('[dbo].[bit_values]', 'U') IS NOT NULL DROP TABLE [dbo].[bit_values];
@@ -205,3 +259,55 @@ CREATE TABLE [dbo].[bit_values] (
 );
 
 INSERT INTO [dbo].[bit_values] ([val]) VALUES (0), (1);
+
+CREATE TABLE [T_constraints_1]
+(
+    [C_id] INT NOT NULL IDENTITY PRIMARY KEY,
+    [C_not_null] INT NOT NULL,
+    [C_check] VARCHAR(255) NULL CHECK ([C_check] <> ''),
+    [C_unique] INT NOT NULL,
+    [C_default] INT NOT NULL DEFAULT 0,
+    CONSTRAINT [CN_unique] UNIQUE ([C_unique])
+);
+
+CREATE TABLE [T_constraints_2]
+(
+    [C_id_1] INT NOT NULL,
+    [C_id_2] INT NOT NULL,
+    [C_index_1] INT NULL,
+    [C_index_2_1] INT NULL,
+    [C_index_2_2] INT NULL,
+    CONSTRAINT [CN_constraints_2_multi] UNIQUE ([C_index_2_1], [C_index_2_2]),
+    CONSTRAINT [CN_pk] PRIMARY KEY ([C_id_1], [C_id_2])
+);
+
+CREATE INDEX [CN_constraints_2_single] ON [T_constraints_2] ([C_index_1]);
+
+CREATE TABLE [T_constraints_3]
+(
+    [C_id] INT NOT NULL,
+    [C_fk_id_1] INT NOT NULL,
+    [C_fk_id_2] INT NOT NULL,
+    CONSTRAINT [CN_constraints_3] FOREIGN KEY ([C_fk_id_1], [C_fk_id_2]) REFERENCES [T_constraints_2] ([C_id_1], [C_id_2]) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE [T_constraints_4]
+(
+    [C_id] INT NOT NULL IDENTITY  PRIMARY KEY,
+    [C_col_1] INT NULL,
+    [C_col_2] INT NOT NULL,
+    CONSTRAINT [CN_constraints_4] UNIQUE ([C_col_1], [C_col_2])
+);
+
+CREATE TABLE [T_upsert]
+(
+    [id] INT NOT NULL IDENTITY PRIMARY KEY,
+    [ts] INT NULL,
+    [email] VARCHAR(128) NOT NULL UNIQUE,
+    [recovery_email] VARCHAR(128) NULL,
+    [address] TEXT NULL,
+    [status] TINYINT NOT NULL DEFAULT 0,
+    [orders] INT NOT NULL DEFAULT 0,
+    [profile_id] INT NULL,
+    UNIQUE ([email], [recovery_email])
+);

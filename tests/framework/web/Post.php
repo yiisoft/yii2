@@ -1,9 +1,15 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\web;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Post extends Object
+class Post extends BaseObject
 {
     public $id;
     public $title;

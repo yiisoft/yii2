@@ -67,9 +67,9 @@ Yii::$container->invoke([$obj, 'doSomething'], ['param1' => 42]); // $something 
 L'injection par les méthodes d'assignation et les propriétés est prise en charge via les [configurations](concept-configurations.md). Lors de l'enregistrement d'une dépendance ou lors de la création d'un nouvel objet, vous pouvez fournir une configuration qui est utilisée par le conteneur pour injecter les dépendances via les méthodes d'assignation ou les propriétés correspondantes. Par exemple :
 
 ```php
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     public $bar;
 
@@ -92,14 +92,14 @@ $container->get('Foo', [], [
 ]);
 ```
 
-> Info: la méthode [[yii\di\Container::get()]] accepte un tableau de configuration qui peut être appliqué à l'objet en création comme troisième paramètre. Si la classe implémente l'interface [[yii\base\Configurable]] (p. ex. [[yii\base\Object]]), le tableau de configuration est passé en tant que dernier paramètre du constructeur de la classe ; autrement le tableau de configuration serait appliqué *après* la création de l'objet. 
+> Info: la méthode [[yii\di\Container::get()]] accepte un tableau de configuration qui peut être appliqué à l'objet en création comme troisième paramètre. Si la classe implémente l'interface [[yii\base\Configurable]] (p. ex. [[yii\base\BaseObject]]), le tableau de configuration est passé en tant que dernier paramètre du constructeur de la classe ; autrement le tableau de configuration serait appliqué *après* la création de l'objet. 
 
 ### Injection par une méthode de rappel PHP <span id="php-callable-injection"></span>
 
 Dans ce cas, le conteneur utilise une fonction de rappel PRP enregistrée pour construire de nouvelles instances d'une classe. À chaque fois que [[yii\di\Container::get()]] est appelée, la fonction de rappel correspondante est invoquée. Cette fonction de rappel est chargée de la résolution des dépendances et de leur injection appropriée dans les objets nouvellement créés. Par exemple :
 
 ```php
-$container->set('Foo', function () {
+$container->set('Foo', function ($container, $params, $config) {
     $foo = new Foo(new Bar);
     // ... autres initialisations ...
     return $foo;
@@ -113,7 +113,7 @@ Pour cacher la logique complexe de construction des nouveaux objets, vous pouvez
 ```php
 class FooBuilder
 {
-    public static function build()
+    public static function build($container, $params, $config)
     {
         $foo = new Foo(new Bar);
         // ... autres initialisations ...
@@ -215,7 +215,7 @@ Le code suivant montre un exemple plus sophistiqué. La classe `UserLister` dép
 ```php
 namespace app\models;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\di\Container;
 
@@ -224,7 +224,7 @@ interface UserFinderInterface
     function findUser();
 }
 
-class UserFinder extends Object implements UserFinderInterface
+class UserFinder extends BaseObject implements UserFinderInterface
 {
     public $db;
 
@@ -239,7 +239,7 @@ class UserFinder extends Object implements UserFinderInterface
     }
 }
 
-class UserLister extends Object
+class UserLister extends BaseObject
 {
     public $finder;
 
