@@ -1047,7 +1047,7 @@ class DbManager extends BaseManager
      * @param mixed $userId
      * @return bool
      */
-    private function isEmptyUserId($userId)
+    protected function isEmptyUserId($userId)
     {
         return !isset($userId) || $userId === '';
     }
