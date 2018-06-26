@@ -296,11 +296,9 @@ class GridView extends BaseListView
     {
         $view = $this->getView();
         GridViewAsset::register($view);
-        if ($this->filterOnFocusOut) {
-            $id = $this->options['id'];
-            $options = Json::htmlEncode($this->getClientOptions());
-            $view->registerJs("jQuery('#$id').yiiGridView($options);");
-        }
+        $id = $this->options['id'];
+        $options = Json::htmlEncode($this->getClientOptions());
+        $view->registerJs("jQuery('#$id').yiiGridView($options, $this->filterOnFocusOut);");
         parent::run();
     }
 
