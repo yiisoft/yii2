@@ -250,6 +250,7 @@ class GridView extends BaseListView
     public $filterErrorOptions = ['class' => 'help-block'];
     /**
      * @var bool auto filter switch
+     * @since 2.0.16
      * Allows you to disable the automatic application of filters, while leaving the ability to manage filters using yiiGridView in JS
      */
     public $filterOnFocusOut = true;
