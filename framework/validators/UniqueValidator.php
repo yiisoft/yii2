@@ -58,8 +58,9 @@ class UniqueValidator extends Validator
     /**
      * @var string|array|\Closure additional filter to be applied to the DB query used to check the uniqueness of the attribute value.
      * This can be a string or an array representing the additional query condition (refer to [[\yii\db\Query::where()]]
-     * on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
-     * is the [[\yii\db\Query|Query]] object that you can modify in the function.
+     * on the format of query condition), or an anonymous function with the signature `function ($query, $model, $attribute)`,
+     * where `$query` is the [[\yii\db\Query|Query]] object that you can modify in the function; `$model` and `$attribute`
+     * refer to the model and the attribute currently being validated.
      */
     public $filter;
     /**
@@ -141,11 +142,11 @@ class UniqueValidator extends Validator
         $modelExists = false;
 
         if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
-            $db->useMaster(function () use ($targetClass, $conditions, $model, &$modelExists) {
-                $modelExists = $this->modelExists($targetClass, $conditions, $model);
+            $db->useMaster(function () use ($targetClass, $conditions, $model, &$modelExists, $attribute) {
+                $modelExists = $this->modelExists($targetClass, $conditions, $model, $attribute);
             });
         } else {
-            $modelExists = $this->modelExists($targetClass, $conditions, $model);
+            $modelExists = $this->modelExists($targetClass, $conditions, $model, $attribute);
         }
 
         if ($modelExists) {
@@ -173,13 +174,14 @@ class UniqueValidator extends Validator
      * of the current attribute value.
      * @param array $conditions conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.
      * @param Model $model the data model to be validated
+     * @param string $attribute the name of the attribute to be validated.
      *
      * @return bool whether the model already exists
      */
-    private function modelExists($targetClass, $conditions, $model)
+    private function modelExists($targetClass, $conditions, $model, $attribute)
     {
         /** @var ActiveRecordInterface $targetClass $query */
-        $query = $this->prepareQuery($targetClass, $conditions);
+        $query = $this->prepareQuery($targetClass, $conditions, $model, $attribute);
 
         if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
             // if current $model isn't in the database yet then it's OK just to call exists()
@@ -222,15 +224,17 @@ class UniqueValidator extends Validator
      * @param ActiveRecordInterface $targetClass the name of the ActiveRecord class that should be used to validate
      * the uniqueness of the current attribute value.
      * @param array $conditions conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format
+     * @param null|Model $model the data model to be validated
+     * @param null|string $attribute the name of the attribute to be validated.
      *
      * @return ActiveQueryInterface|ActiveQuery
      */
-    private function prepareQuery($targetClass, $conditions)
+    private function prepareQuery($targetClass, $conditions, $model = null, $attribute = null)
     {
         $query = $targetClass::find();
         $query->andWhere($conditions);
         if ($this->filter instanceof \Closure) {
-            call_user_func($this->filter, $query);
+            call_user_func($this->filter, $query, $model, $attribute);
         } elseif ($this->filter !== null) {
             $query->andWhere($this->filter);
         }

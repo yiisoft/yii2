@@ -392,6 +392,14 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         }]), 'prepareQuery', [$model, $params]);
         $expected = "SELECT * FROM {$schema->quoteTableName('validator_main')} WHERE ({$schema->quoteColumnName('val_attr_b')}=:qp0) OR (val_attr_a > 0)";
         $this->assertEquals($expected, $query->createCommand()->getSql());
+
+        $model = new ValidatorTestMainModel();
+        $model->field1 = 5;
+        $query = $this->invokeMethod(new UniqueValidator(['filter' => function ($query, $model, $attribute) {
+            $query->orWhere($attribute . ' > ' . $model->$attribute);
+        }]), 'prepareQuery', [$model, ['val_attr_b' => 'test value a'], $model, 'field1']);
+        $expected = "SELECT * FROM {$schema->quoteTableName('validator_main')} WHERE ({$schema->quoteColumnName('val_attr_b')}=:qp0) OR (field1 > 5)";
+        $this->assertEquals($expected, $query->createCommand()->getSql());
     }
 
     /**
