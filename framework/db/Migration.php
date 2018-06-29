@@ -79,9 +79,10 @@ class Migration extends Component implements MigrationInterface
      */
     public $compact = false;
     /**
-     * @var string
+     * @var null|string
      * Allow to set table options one time in custom base migration
      * Default is null
+     * @since 3.0.0
      */
     public $tableOptions;
 
