@@ -1859,6 +1859,11 @@ class BaseHtml
             } else {
                 $attrs = isset($options[$key]) ? $options[$key] : [];
                 $attrs['value'] = (string) $key;
+                if (isset($tagOptions['itemAttr']) && !empty($tagOptions['itemAttr'])) {
+                    foreach ($tagOptions['itemAttr'] as $attrKey => $attrValue) {
+                        $attrs[$attrKey] = (string)$attrValue;
+                    }
+                }
                 if (!array_key_exists('selected', $attrs)) {
                     $attrs['selected'] = $selection !== null &&
                         (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
