@@ -287,10 +287,14 @@ class MigrateControllerTest extends TestCase
         Yii::$app->db->createCommand("insert into hall_of_fame values(2, 'Alexander Makarov');")
             ->execute();
 
+        Yii::$app->db->createCommand('create view view_hall_of_fame as select * from hall_of_fame')
+            ->execute();
+
         $result = $this->runMigrateControllerAction('fresh');
 
         // Drop worked
         $this->assertContains('Table hall_of_fame dropped.', $result);
+        $this->assertContains('View view_hall_of_fame dropped.', $result);
 
         // Migration was restarted
         $this->assertContains('No new migrations found. Your system is up-to-date.', $result);

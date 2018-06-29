@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Bug #14636: Views can now use relative paths even when using themed views (sammousa)
 - Bug #16245: Fixed `__isset()` in `BaseActiveRecord` not catching errors (sammousa)
 - Bug #16266: Fixed `yii\helpers\BaseStringHelper` where explode would not allow 0 as trim string (Thoulah)
+- Bug #16278: Fixed drop existing views when console `migrate/fresh` command runs (developeruz)
 - Bug #16277: Fixed `yii\db\Query::from()` to respect `yii\db\ExpressionInterface` (noname007)
 - Bug #16280: Fixed `yii\base\Model::getActiveValidators()` to return correct validators for attribute on scenario (paweljankowiak06)
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
