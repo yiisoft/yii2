@@ -11,6 +11,7 @@ use Yii;
 use yii\db\BaseActiveRecord;
 use yii\base\InvalidCallException;
 use yii\validators\NumberValidator;
+use yii\helpers\ArrayHelper;
 
 /**
  * OptimisticLockBehavior automatically upgrades a model's lock version using the column name 
@@ -128,8 +129,11 @@ class OptimisticLockBehavior extends AttributeBehavior
     protected function getValue($event)
     {
         if ($this->value === null) {
+            $request = Yii::$app->getRequest();
             $lock = $this->getLockAttribute();
-            $input = Yii::$app->getRequest()->getBodyParam($lock);
+            $formName = $this->owner->formName();
+            $formValue = $formName ? ArrayHelper::getValue($request->getBodyParams(), $formName.'.'.$lock) : null;
+            $input = $formValue ?: $request->getBodyParam($lock);
             $isValid = $input && (new NumberValidator())->validate($input);
             return $isValid ? $input : 0;
         }

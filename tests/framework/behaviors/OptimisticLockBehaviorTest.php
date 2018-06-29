@@ -119,6 +119,16 @@ class OptimisticLockBehaviorTest extends TestCase
         $model->save(false);
 
         $this->assertEquals(5, $model->version, 'init version should equal 5');
+
+        // starting from version 8 but mocking a html web form
+
+        $request->setBodyParams(['ActiveRecordLockVersion' => ['version' => 8]]);
+        Yii::$app->set('request', $request);
+
+        $model = new ActiveRecordLockVersion();
+        $model->save(false);
+
+        $this->assertEquals(8, $model->version, 'init version should equal 8');
     }
 
 
@@ -196,6 +206,15 @@ class OptimisticLockBehaviorTest extends TestCase
         $model->save(false);
 
         $this->assertEquals(2, $model->version, 'updated version should equal 2');
+
+        // a successful update as sent from a HTML web form
+
+        $request->setBodyParams(['ActiveRecordLockVersion' => ['version' => '2']]);
+        Yii::$app->set('request', $request);
+
+        $model->save(false);
+
+        $this->assertEquals(3, $model->version, 'updated version should equal 3');
     }
 
      public function testDeleteRecord()
@@ -242,14 +261,24 @@ class OptimisticLockBehaviorTest extends TestCase
 
         $this->assertTrue($thrown, 'A StaleObjectException exception should have been thrown.');
 
-        // a successful update by sending the correct version
+        // a successful delete by sending the correct version
 
         $request->setBodyParams(['version' => '1']);
         Yii::$app->set('request', $request);
 
-        $model->delete();
-
+        $this->assertEquals(true, $model->delete(), 'model is successfully deleted');
         $this->assertEquals(1, $model->version, 'deleted version should remain 1');
+
+        // save it again, upgrade then remove it one more time but mocking a HTML web form
+
+        $model->save(false);
+        $model->upgrade();
+
+        $request->setBodyParams(['ActiveRecordLockVersion' => ['version' => '2']]);
+        Yii::$app->set('request', $request);
+
+        $this->assertEquals(true, $model->delete(), 'model is successfully deleted');
+        $this->assertEquals(2, $model->version, 'deleted version should remain 2');
     }
 }
 
