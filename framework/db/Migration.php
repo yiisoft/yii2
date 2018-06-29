@@ -78,7 +78,13 @@ class Migration extends Component implements MigrationInterface
      * @since 2.0.13
      */
     public $compact = false;
-
+    /**
+     * @var null|string
+     * Allow to set table options one time in custom base migration
+     * Default is null
+     * @since 3.0.0
+     */
+    public $tableOptions;
 
     /**
      * Initializes the migration.
@@ -311,6 +317,9 @@ class Migration extends Component implements MigrationInterface
      */
     public function createTable($table, $columns, $options = null)
     {
+        if (null === $options) {
+            $options = $this->tableOptions;
+        }
         $time = $this->beginCommand("create table $table");
         $this->db->createCommand()->createTable($table, $columns, $options)->execute();
         foreach ($columns as $column => $type) {
