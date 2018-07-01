@@ -61,7 +61,7 @@ class MigrateControllerTest extends TestCase
     {
         $expected = include Yii::getAlias("@yiiunit/data/console/migrate_create/$expectedFile.php");
         $expected = str_replace('{table}', $table, $expected);
-        $this->assertEqualsWithoutLE($expected, $this->parseNameClassMigration($class, $table));
+        $this->assertEqualsWithoutLE($expected, $this->parseNameClassMigration($class));
     }
 
     protected function assertCommandCreatedFile($expectedFile, $migrationName, $table, $params = [])
@@ -354,5 +354,24 @@ class MigrateControllerTest extends TestCase
             ],
             array_keys($rows)
         );
+    }
+
+    public function testGenerateAlterColumnMigration()
+    {
+        $tables = [
+            'test',
+            'TEST',
+        ];
+
+        foreach ($tables as $table) {
+            $migrationName = 'alter_columns_column_of_' . $table . '_table';
+
+            $this->assertCommandCreatedFile('alter_columns_test', $migrationName, $table, [
+                'fields' => 'title:string(10):notNull,
+                    body:text:notNull',
+                'oldFields' => 'title:int:notNull,
+                    body:text',
+            ]);
+        }
     }
 }

@@ -11,7 +11,7 @@ return <<<CODE
 use yii\db\Migration;
 
 /**
- * Handles adding columns to table `{table}`.
+ * Handles changing columns 'columns' of table `{table}`.
  */
 class {$class} extends Migration
 {
@@ -20,10 +20,8 @@ class {$class} extends Migration
      */
     public function safeUp()
     {
-        \$this->addColumn('{table}', 'title', \$this->string(10)->notNull());
-        \$this->addColumn('{table}', 'body', \$this->text()->notNull());
-        \$this->addColumn('{table}', 'price', \$this->money(11,2)->notNull());
-        \$this->addColumn('{table}', 'created_at', \$this->dateTime());
+        \$this->alterColumn('{table}', 'title', \$this->string(10)->notNull());
+        \$this->alterColumn('{table}', 'body', \$this->text()->notNull());
     }
 
     /**
@@ -31,11 +29,10 @@ class {$class} extends Migration
      */
     public function safeDown()
     {
-        \$this->dropColumn('{table}', 'title');
-        \$this->dropColumn('{table}', 'body');
-        \$this->dropColumn('{table}', 'price');
-        \$this->dropColumn('{table}', 'created_at');
+        \$this->alterColumn('{table}', 'title', \$this->int()->notNull());
+        \$this->alterColumn('{table}', 'body', \$this->text());
     }
 }
+
 
 CODE;

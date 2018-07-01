@@ -371,7 +371,7 @@ class MigrateController extends BaseMigrateController
      */
     protected function generateMigrationSourceCode($params)
     {
-        $parsedFields = $this->parseFields();
+        $parsedFields = $this->parseFields($this->fields);
         $fields = $parsedFields['fields'];
         $foreignKeys = $parsedFields['foreignKeys'];
         $oldFields = [];
@@ -499,6 +499,7 @@ class MigrateController extends BaseMigrateController
 
     /**
      * Parse the command line migration fields.
+     * @param array $sourceFields either $this->fields or $this->oldFields
      * @return array parse result with following fields:
      *
      * - fields: array, parsed fields
@@ -506,12 +507,12 @@ class MigrateController extends BaseMigrateController
      *
      * @since 2.0.7
      */
-    protected function parseFields()
+    protected function parseFields($sourceFields)
     {
         $fields = [];
         $foreignKeys = [];
 
-        foreach ($this->fields as $index => $field) {
+        foreach ($sourceFields as $index => $field) {
             $chunks = preg_split('/\s?:\s?/', $field, null);
             $property = array_shift($chunks);
 
