@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Enh #14289: Added `yii\db\Command::executeResetSequence()` to work with Oracle (CedricYii)
 - Enh #9133: Added `yii\behaviors\OptimisticLockBehavior` (tunecino)
+- Enh #15133: Create alter column migration from command line (santilin, developeruz)
 - Bug #16104: Fixed `yii\db\pgsql\QueryBuilder::dropIndex()` to prepend index name with schema name (wapmorgan)
 - Bug #16193: Fixed `yii\filters\Cors` to not reflect origin header value when configured to wildcard origins (Jianjun Chen)
 - Bug #16068: Fixed `yii\web\CookieCollection::has` when an expiration param is set to 'until the browser is closed' (OndrejVasicek)

@@ -134,7 +134,7 @@ class MigrateController extends BaseMigrateController
      * For example, `--fields="name:string(12):notNull:unique"`
      * produces a string column of size 12 which is not null and unique values.
      *
-     * @since 2.0.??
+     * @since 2.0.16
      */
     public $oldFields = [];
     /**
@@ -438,38 +438,7 @@ class MigrateController extends BaseMigrateController
 			}
         }
 
-        foreach ($foreignKeys as $column => $foreignKey) {
-            $relatedColumn = $foreignKey['column'];
-            $relatedTable = $foreignKey['table'];
-            // Since 2.0.11 if related column name is not specified,
-            // we're trying to get it from table schema
-            // @see https://github.com/yiisoft/yii2/issues/12748
-            if ($relatedColumn === null) {
-                $relatedColumn = 'id';
-                try {
-                    $this->db = Instance::ensure($this->db, Connection::className());
-                    $relatedTableSchema = $this->db->getTableSchema($relatedTable);
-                    if ($relatedTableSchema !== null) {
-                        $primaryKeyCount = count($relatedTableSchema->primaryKey);
-                        if ($primaryKeyCount === 1) {
-                            $relatedColumn = $relatedTableSchema->primaryKey[0];
-                        } elseif ($primaryKeyCount > 1) {
-                            $this->stdout("Related table for field \"{$column}\" exists, but primary key is composite. Default name \"id\" will be used for related field\n", Console::FG_YELLOW);
-                        } elseif ($primaryKeyCount === 0) {
-                            $this->stdout("Related table for field \"{$column}\" exists, but does not have a primary key. Default name \"id\" will be used for related field.\n", Console::FG_YELLOW);
-                        }
-                    }
-                } catch (\ReflectionException $e) {
-                    $this->stdout("Cannot initialize database component to try reading referenced table schema for field \"{$column}\". Default name \"id\" will be used for related field.\n", Console::FG_YELLOW);
-                }
-            }
-            $foreignKeys[$column] = [
-                'idx' => $this->generateTableName("idx-$table-$column"),
-                'fk' => $this->generateTableName("fk-$table-$column"),
-                'relatedTable' => $this->generateTableName($relatedTable),
-                'relatedColumn' => $relatedColumn,
-            ];
-        }
+        $foreignKeys = $this->collectForeignKeysMetadata($foreignKeys, $table);
 
         return $this->renderFile(Yii::getAlias($templateFile), array_merge($params, [
             'table' => $this->generateTableName($table),
@@ -556,29 +525,28 @@ class MigrateController extends BaseMigrateController
      *
      * @throws \InvalidArgumentException
      * @return array the fields definitions from the db schema
+     * @since 2.0.16
      */
     protected function getOldFieldsFromDatabase($table, $newfields)
     {
 		try {
 			$this->db = Instance::ensure($this->db, Connection::className());
 			$tableSchema = $this->db->getTableSchema($table);
-			if ($tableSchema !== null) {
-				$ret = [];
-				foreach ($newfields as $newfield) {
-					$column = $tableSchema->getColumn($newfield['property']);
-					if ($column == null) {
-						throw new \InvalidArgumentException($newfield['property'] . " column not found in schema of table $table");
-					} else {
-						$ret[] = [
-							'property' => $newfield['property'],
-							'decorators' => $this->genDecorators($column)
-						];
-					}
-				}
-				return $ret;
-			} else {
-				throw new \InvalidArgumentException("$table not found in database schema");
-			}
+            if ($tableSchema === null) {
+                throw new \InvalidArgumentException("$table not found in database schema");
+            }
+            $ret = [];
+            foreach ($newfields as $newfield) {
+                $column = $tableSchema->getColumn($newfield['property']);
+                if ($column == null) {
+                    throw new \InvalidArgumentException($newfield['property'] . " column not found in schema of table $table");
+                }
+                $ret[] = [
+                    'property' => $newfield['property'],
+                    'decorators' => $this->genDecorators($column)
+                ];
+            }
+            return $ret;
 		} catch (\ReflectionException $e) {
 			$this->stdout("Cannot initialize database component to try reading old table definitions\n", Console::FG_YELLOW);
 			throw $e;
@@ -588,35 +556,22 @@ class MigrateController extends BaseMigrateController
     /**
      * Generates decorators from a column schema
      * @param yii\db\ColumnSchema $column
-     *
-     * @todo What to do with primarykey and autoincrement?
+     * @since 2.0.16
      */
     protected function genDecorators($column)
     {
 		$decorators = $column->dbType . "(";
 		if ($column->size != 0 ) {
 			$decorators .= intval($column->size);
-			if ($column->precision != 0) {
-				$decorators .= intval($column->precision);
-			} elseif ($column->scale != 0) {
-				$decorators .= intval($column->scale);
+			if ($column->precision != 0 || $column->scale != 0) {
+				$decorators .= $column->precision != 0 ? intval($column->precision) : intval($column->scale);
 			}
 		}
 		$decorators .= ")";
-		if ($column->allowNull) {
-			$decorators .= "->null()";
-		} else {
-			$decorators .= "->notNull()";
-		}
-		if ($column->unsigned) {
-			$decorators .= "->unsigned()";
-		}
-		if ($column->defaultValue != '') {
-			$decorators .= "->defaultValue('" . $column->defaultValue . "')";
-		}
-		if ($column->comment != '') {
-			$decorators .= "->comment('" . $column->comment . "')";
-		}
+        $decorators .= $column->allowNull ? "->null()" : "->notNull()";
+        $decorators .= $column->unsigned ? "->unsigned()" : '';
+        $decorators .= $column->defaultValue != '' ? "->defaultValue('" . $column->defaultValue . "')" : '';
+        $decorators .= $column->comment != '' ? "->comment('" . $column->comment . "')" : '';
 		return $decorators;
     }
 
@@ -633,5 +588,71 @@ class MigrateController extends BaseMigrateController
             }
         }
         array_unshift($fields, ['property' => 'id', 'decorators' => 'primaryKey()']);
+    }
+
+    /**
+     * Collects information about foreign keys
+     * @param $foreignKeys
+     * @param $table
+     * @return array
+     * @since 2.0.16
+     */
+    protected function collectForeignKeysMetadata($foreignKeys, $table)
+    {
+        foreach ($foreignKeys as $column => $foreignKey) {
+            $relatedColumn = $foreignKey['column'];
+            $relatedTable = $foreignKey['table'];
+            // Since 2.0.11 if related column name is not specified,
+            // we're trying to get it from table schema
+            // @see https://github.com/yiisoft/yii2/issues/12748
+            if ($relatedColumn === null) {
+                $relatedColumnFromTable = $this->getRelatedColumnFromTableSchema($relatedTable, $column);
+                $relatedColumn = $relatedColumnFromTable === false ? 'id' : $relatedColumnFromTable;
+            }
+            $foreignKeys[$column] = [
+                'idx' => $this->generateTableName("idx-$table-$column"),
+                'fk' => $this->generateTableName("fk-$table-$column"),
+                'relatedTable' => $this->generateTableName($relatedTable),
+                'relatedColumn' => $relatedColumn,
+            ];
+        }
+
+        return $foreignKeys;
+    }
+
+    /**
+     * Gets related column from table schema
+     * @param $relatedTable
+     * @param $column
+     * @return mixed primary key or false if error
+     * @since 2.0.16
+     */
+    protected function getRelatedColumnFromTableSchema($relatedTable, $column)
+    {
+        try {
+            $this->db = Instance::ensure($this->db, Connection::className());
+            $relatedTableSchema = $this->db->getTableSchema($relatedTable);
+            if ($relatedTableSchema === null) {
+                return false;
+            }
+            $primaryKeyCount = count($relatedTableSchema->primaryKey);
+            if ($primaryKeyCount === 1) {
+                return $relatedTableSchema->primaryKey[0];
+            }
+
+            if ($primaryKeyCount > 1) {
+                $this->stdout("Related table for field \"{$column}\" exists, but primary key is composite. Default name \"id\" will be used for related field\n",
+                    Console::FG_YELLOW);
+            } elseif ($primaryKeyCount === 0) {
+                $this->stdout("Related table for field \"{$column}\" exists, but does not have a primary key. Default name \"id\" will be used for related field.\n",
+                    Console::FG_YELLOW);
+            }
+
+        } catch (\ReflectionException $e) {
+            $this->stdout("Cannot initialize database component to try reading referenced table schema for field \"{$column}\". Default name \"id\" will be used for related field.\n",
+                Console::FG_YELLOW);
+        }
+
+        return false;
     }
 }
