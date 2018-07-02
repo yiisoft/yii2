@@ -512,7 +512,7 @@ class MigrateController extends BaseMigrateController
         $fields = [];
         $foreignKeys = [];
 
-        foreach ($sourceFields as $index => $field) {
+        foreach ($sourceFields as $field) {
             $chunks = preg_split('/\s?:\s?/', $field, null);
             $property = array_shift($chunks);
 

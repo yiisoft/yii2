@@ -30,7 +30,7 @@ class {$class} extends Migration
     public function safeDown()
     {
         \$this->alterColumn('{table}', 'title', \$this->int()->notNull());
-        \$this->alterColumn('{table}', 'body', \$this->text());
+        \$this->alterColumn('{table}', 'body', \$this->text()->null());
     }
 }
 

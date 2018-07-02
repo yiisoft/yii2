@@ -370,8 +370,23 @@ class MigrateControllerTest extends TestCase
                 'fields' => 'title:string(10):notNull,
                     body:text:notNull',
                 'oldFields' => 'title:int:notNull,
-                    body:text',
+                    body:text:null',
             ]);
         }
+    }
+
+    public function testGenerateAlterColumnMigrationFromDB()
+    {
+        $table = 'test';
+        Yii::$app->db->createCommand('create table '.$table.' (title int NOT NULL, body text)')
+            ->execute();
+
+        $migrationName = 'alter_columns_column_of_' . $table . '_table';
+
+        $this->assertCommandCreatedFile('alter_columns_test', $migrationName, $table, [
+            'fields' => 'title:string(10):notNull,
+                    body:text:notNull',
+            'oldFields' => 'from-db',
+        ]);
     }
 }
