@@ -33,6 +33,7 @@ We can tag additional releases in case someone will take the role of release man
 - [x] [Switch to 3.0.0 SemVer-like release tagging](https://www.yiiframework.com/news/177/yii-adopts-semver-since-version-3-0-0).
 - [x] Soft-deprecate 2.0.
 - [ ] Move framework to `yiisoft/framework`?
+- [ ] [Remove subsplit](https://github.com/yiisoft/yii2/issues/16160).
 
 ## Requirements
 
@@ -84,7 +85,7 @@ We can tag additional releases in case someone will take the role of release man
 
 ## Request
 
-- [ ] Consider PSR-7 compatible middleware.
+- [ ] [Consider PSR-7 compatible middleware](https://github.com/yiisoft/yii2/issues/15438).
 - [x] Add `$request->getFile($name)` that returns `UploadedFile` instance.
 
 ## App templates
