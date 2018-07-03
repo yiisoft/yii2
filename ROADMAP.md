@@ -1,0 +1,114 @@
+These are main plans that are additional to [open issues](https://github.com/yiisoft/yii2/milestones/3.0.0).
+
+# 2.0
+
+### 2.0.14 (1st quarter of 2018)
+
+Will be last release with features and enhancements the last one that will be merged into 3.0 directly.
+
+### 2.0.15 (2nd quarter of 2018)
+
+- Since this release main focus is bug fixing.
+- No full-branch merges into 3.0.
+- No enhancements are accepted.
+  
+### 2.0.16 (3rd quarter of 2018)
+
+- Bugfixes.
+
+### 2.0.17 (4th quarter of 2018)
+
+- Bugfixes.
+- Announce bugfixes EOL (a year more?).
+- Security fixes only.
+
+# 3.0 (first half of 2018)
+
+## Infrastructure
+
+- [x] Switch to 3.0.0 SemVer-like release tagging.
+- [x] Soft-deprecate 2.0.
+
+## Requirements
+
+- [x] [Raise requirements to PHP 7.1](https://github.com/yiisoft/yii2/issues/11397).
+- [x] Drop HHVM support.
+
+## Cleanup
+
+- [x] [Remove everything marked as `@deprecated`](https://github.com/yiisoft/yii2/issues/15957).
+- [ ] See if more PHP 7.1 features could be used and more compatibility hacks removed.
+- [ ] [Error handler](https://github.com/yiisoft/yii2/issues/14348).
+- [x] Remove PJAX support.
+- [x] Remove Cubrid support.
+- [ ] Extract `findIdentityByAccessToken` from `IdentityInterface` (looks weird when it's not implemented in all web apps).
+
+## Client side
+
+- [x] Make core jQuery-free.
+- [x] [Move `MaskedInput` into separate repository](https://github.com/yiisoft/yii2-maskedinput).
+- [x] Make fxp composer plugin optional. Describe how to use asset packagist instead.
+- [x] Remove dependencies on any clientside libraries.
+
+## Security
+
+- [x] Remove custom random number generation in favor of what's in PHP 7.
+- [x] Remove custom bcrypt password hashing in favor of what's in PHP 7.
+
+## Databases
+
+- [x] Move MSSQL into extension: https://github.com/yiisoft/yii2-mssql
+- [x] Move Oracle into extension: https://github.com/yiisoft/yii2-oracle
+- [ ] Implement upsert.
+- [ ] Implement batch w/ ignore.
+
+## Logging
+
+- [x] Separate profiling and logging.
+
+## Cache
+
+- [x] PSR compatibility.
+
+## Request
+
+- [ ] Consider PSR-7 compatible middleware.
+- [x] Add `$request->getFile($name)` that returns `UploadedFile` instance.
+
+## App templates
+
+- [ ] Implement API template.
+- [ ] Implement more sophisticated basic template.
+- [ ] Drop advanced template?
+
+## i18n
+
+- [ ] Use `-` instead of `_` for view files, message files etc. [See #8057](https://github.com/yiisoft/yii2/pull/8057)
+
+# 4.0 (late 2018)
+
+- [ ] Announce LTS.
+- [ ] PHP 7 strict scalar types everywhere.
+- [ ] Decouple routing from controllers and modules. Allow specifying any class method as a callback for a matching route.
+- [ ] Merge `components` and DI container configs.
+- [ ] Try to eliminate `Object` and `Component` turning these into traits. Could extract AccessorTrait, EventTrait etc. Alternatively we can drop accessors. Will get [PSR-2](https://github.com/yiisoft/yii2/issues/11956) and stricter interfaces in exchange additionally to possibility to get more performance.
+- [ ] When triggering events, pass data as a separate argument instead of a part of event object (commonly referred to as inconvenient).
+- [ ] Move methods from Yii class into helpers. For example, `Yii::getAlias()` could be `FileHelper::getAlias()`.
+- [ ] Use HTML-5 data attributes to specify validation rules + global validation script that doesn't require additional config.
+
+## Features
+
+- [ ] Introduce configuration manager.
+- [ ] Implement `change()` for migrations.
+
+# Bootstrap extension
+
+- [ ] Remove all widgets that doing things that could be done simpler via plain HTML.
+
+# Gii extension
+
+- [ ] [Re-write Gii JavaScript not to use jQuery](https://github.com/yiisoft/yii2-gii/issues/282).
+
+# Debug extension
+
+- [ ] [Re-write Debug JavaScript not to use jQuery](https://github.com/yiisoft/yii2-debug/issues/246).
