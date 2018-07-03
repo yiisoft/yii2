@@ -26,7 +26,7 @@ Will be last release with features and enhancements the last one that will be me
 
 We can tag additional releases in case someone will take the role of release manager. Otherwise we'll focus on 3.0.
 
-# 3.0 (first half of 2018)
+# 3.0 (2018)
 
 ## Infrastructure
 
@@ -100,7 +100,7 @@ We can tag additional releases in case someone will take the role of release man
 
 - [ ] Make sure all official extensions have releases for 3.0.0.
 
-# 4.0 (late 2018)
+# 4.0 (2018)
 
 - [ ] Announce LTS.
 - [ ] PHP 7 strict scalar types everywhere.
