@@ -22,11 +22,15 @@ Will be last release with features and enhancements the last one that will be me
 - Announce bugfixes EOL (a year more?).
 - Security fixes only.
 
+### Additional releases
+
+We can tag additional releases in case someone will take the role of release manager. Otherwise we'll focus on 3.0.
+
 # 3.0 (first half of 2018)
 
 ## Infrastructure
 
-- [x] Switch to 3.0.0 SemVer-like release tagging.
+- [x] [Switch to 3.0.0 SemVer-like release tagging](https://www.yiiframework.com/news/177/yii-adopts-semver-since-version-3-0-0).
 - [x] Soft-deprecate 2.0.
 
 ## Requirements
@@ -77,13 +81,16 @@ Will be last release with features and enhancements the last one that will be me
 
 ## App templates
 
-- [ ] Implement API template.
-- [ ] Implement more sophisticated basic template.
-- [ ] Drop advanced template?
+- [ ] [Implement more sophisticated basic template](https://github.com/yiisoft/app).
+- [x] Drop advanced template?
 
 ## i18n
 
 - [ ] Use `-` instead of `_` for view files, message files etc. [See #8057](https://github.com/yiisoft/yii2/pull/8057)
+
+## Extensions
+
+- [ ] Make sure all official extensions have releases for 3.0.0.
 
 # 4.0 (late 2018)
 
@@ -112,3 +119,8 @@ Will be last release with features and enhancements the last one that will be me
 # Debug extension
 
 - [ ] [Re-write Debug JavaScript not to use jQuery](https://github.com/yiisoft/yii2-debug/issues/246).
+
+
+# 1.0
+
+- [ ] Tag 1.1.20.
