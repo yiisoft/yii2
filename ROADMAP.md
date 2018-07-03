@@ -32,6 +32,7 @@ We can tag additional releases in case someone will take the role of release man
 
 - [x] [Switch to 3.0.0 SemVer-like release tagging](https://www.yiiframework.com/news/177/yii-adopts-semver-since-version-3-0-0).
 - [x] Soft-deprecate 2.0.
+- [ ] Move framework to `yiisoft/framework`?
 
 ## Requirements
 
@@ -46,6 +47,13 @@ We can tag additional releases in case someone will take the role of release man
 - [x] Remove PJAX support.
 - [x] Remove Cubrid support.
 - [ ] Extract `findIdentityByAccessToken` from `IdentityInterface` (looks weird when it's not implemented in all web apps).
+
+## Dependency injection
+
+- [ ] Declare an interface for DI container in `yiisoft/yii2`. Make it an extension of PSR if possible.
+- [ ] Port cycles in dependencies detection from `yiisoft/di`.
+- [ ] Port method calls support from `yiisoft/di`.
+- [ ] Remove ability to set constructor options from method signatures, move it to `__construct`.
 
 ## Client side
 
