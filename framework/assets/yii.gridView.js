@@ -14,10 +14,7 @@
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || !method) {
-            if (arguments[1] === 1) {
                 return methods.init.apply(this, arguments);
-            }
-            return false;
         } else {
             $.error('Method ' + method + ' does not exist in jQuery.yiiGridView');
             return false;
@@ -26,7 +23,8 @@
 
     var defaults = {
         filterUrl: undefined,
-        filterSelector: undefined
+        filterSelector: undefined,
+        filterOnFocusOut: true
     };
 
     var gridData = {};
@@ -85,6 +83,9 @@
                 var $e = $(this);
                 var settings = $.extend({}, defaults, options || {});
                 var id = $e.attr('id');
+                if (!settings.filterOnFocusOut) {
+                    return false;
+                }
                 if (gridData[id] === undefined) {
                     gridData[id] = {};
                 }
