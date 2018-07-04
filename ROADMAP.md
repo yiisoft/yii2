@@ -117,6 +117,15 @@ We can tag additional releases in case someone will take the role of release man
 - [ ] Introduce configuration manager.
 - [ ] Implement `change()` for migrations.
 
+# Post 4.0 (but could be done independently)
+
+Start extracting separate independent components:
+
+- [ ] DBAL layer.
+- [ ] ActiveRecord.
+- [ ] i18n.
+- [ ] Gii.
+
 # Bootstrap extension
 
 - [ ] Remove all widgets that doing things that could be done simpler via plain HTML.
