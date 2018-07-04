@@ -59,7 +59,7 @@ We can tag additional releases in case someone will take the role of release man
 - [ ] Declare an interface for DI container in `yiisoft/yii2`. Make it an extension of PSR if possible.
 - [ ] Port cycles in dependencies detection from `yiisoft/di`.
 - [ ] Port method calls support from `yiisoft/di`.
-- [ ] Remove ability to set constructor options from method signatures, move it to `__construct`.
+- [ ] Deprecate ability to set constructor options from method signatures, move it to `__construct`.
 
 ## Client side
 
@@ -77,8 +77,7 @@ We can tag additional releases in case someone will take the role of release man
 
 - [x] Move MSSQL into extension: https://github.com/yiisoft/yii2-mssql
 - [x] Move Oracle into extension: https://github.com/yiisoft/yii2-oracle
-- [ ] Implement upsert.
-- [ ] Implement batch w/ ignore.
+- [x] Implement upsert ([was done in 2.0](https://github.com/yiisoft/yii2/issues/13879))
 
 ## Logging
 
