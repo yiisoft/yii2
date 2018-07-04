@@ -143,7 +143,8 @@ describe('yii.gridView', function () {
     describe('init', function () {
         var customSettings = {
             filterUrl: '/posts/filter',
-            filterSelector: '#w-common-filters input'
+            filterSelector: '#w-common-filters input',
+            filterOnFocusOut: true
         };
 
         withData({
