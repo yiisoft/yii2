@@ -59,7 +59,6 @@ We can tag additional releases in case someone will take the role of release man
 - [ ] Declare an interface for DI container in `yiisoft/yii2`. Make it an extension of PSR if possible.
 - [ ] Port cycles in dependencies detection from `yiisoft/di`.
 - [ ] Port method calls support from `yiisoft/di`.
-- [ ] Deprecate ability to set constructor options from method signatures, move it to `__construct`.
 
 ## Client side
 
@@ -115,6 +114,10 @@ We can tag additional releases in case someone will take the role of release man
 - [ ] When triggering events, pass data as a separate argument instead of a part of event object (commonly referred to as inconvenient).
 - [ ] Move methods from Yii class into helpers. For example, `Yii::getAlias()` could be `FileHelper::getAlias()`.
 - [ ] Use HTML-5 data attributes to specify validation rules + global validation script that doesn't require additional config.
+
+## Dependency injection
+
+- [ ] Remove ability to set constructor options from method signatures, move it to `__construct`.
 
 ## Features
 
