@@ -28,6 +28,11 @@ We can tag additional releases in case someone will take the role of release man
 
 # 3.0 (2018)
 
+## Documentation
+
+- [ ] Prepare changes description.
+- [ ] Prepare upgrading instructions.
+
 ## Infrastructure
 
 - [x] [Switch to 3.0.0 SemVer-like release tagging](https://www.yiiframework.com/news/177/yii-adopts-semver-since-version-3-0-0).
