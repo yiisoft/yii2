@@ -44,10 +44,11 @@ use yii\web\Response;
  *             'cors' => [
  *                 // restrict access to
  *                 'Origin' => ['http://www.myserver.com', 'https://www.myserver.com'],
- *                 'Access-Control-Request-Method' => ['POST', 'PUT'],
  *                 // Allow only POST and PUT methods
- *                 'Access-Control-Request-Headers' => ['X-Wsse'],
+ *                 'Access-Control-Request-Method' => ['POST', 'PUT'],
  *                 // Allow only headers 'X-Wsse'
+ *                 'Access-Control-Request-Headers' => ['X-Wsse'],
+ *                 // Allow credentials (cookies, authorization headers, etc.) to be exposed to the browser
  *                 'Access-Control-Allow-Credentials' => true,
  *                 // Allow OPTIONS caching
  *                 'Access-Control-Max-Age' => 3600,

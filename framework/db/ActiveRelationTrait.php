@@ -504,10 +504,7 @@ trait ActiveRelationTrait
             // composite keys
 
             // ensure keys of $this->link are prefixed the same way as $attributes
-            $prefixedLink = array_combine(
-                $attributes,
-                array_values($this->link)
-            );
+            $prefixedLink = array_combine($attributes, $this->link);
             foreach ($models as $model) {
                 $v = [];
                 foreach ($prefixedLink as $attribute => $link) {
