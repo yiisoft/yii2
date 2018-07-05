@@ -138,7 +138,7 @@ class OptimisticLockBehavior extends AttributeBehavior
             $request = Yii::$app->getRequest();
             $lock = $this->getLockAttribute();
             $formName = $this->owner->formName();
-            $formValue = $formName ? ArrayHelper::getValue($request->getBodyParams(), $formName.'.'.$lock) : null;
+            $formValue = $formName ? ArrayHelper::getValue($request->getBodyParams(), $formName . '.' . $lock) : null;
             $input = $formValue ?: $request->getBodyParam($lock);
             $isValid = $input && (new NumberValidator())->validate($input);
             return $isValid ? $input : 0;
