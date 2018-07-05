@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
-- Bug #16456: Fixed OptimisticLockBehavior omitting HTML web forms (tarranjones, tunecino)
 - Enh #16365: Added $filterOnFocusOut option for GridView (s1lver)
 - Enh #14289: Added `yii\db\Command::executeResetSequence()` to work with Oracle (CedricYii)
 - Enh #9133: Added `yii\behaviors\OptimisticLockBehavior` (tunecino)
