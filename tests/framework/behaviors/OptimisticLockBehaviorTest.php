@@ -77,7 +77,7 @@ class OptimisticLockBehaviorTest extends TestCase
         ];
         $model = new ActiveRecordLockVersion();
         $model->version = 0;
-        $model->save(false);
+        $this->assertEquals(true, $model->save(false), 'model is successfully saved');
 
         // upgrade model
 
@@ -89,8 +89,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         $model->markAttributeDirty('version');
 
-        $model->save(false);
-
+        $this->assertEquals(true, $model->save(false), 'model is successfully saved');
         $this->assertEquals(2, $model->version, 'updated version should equal 2');
     }
 
@@ -106,8 +105,7 @@ class OptimisticLockBehaviorTest extends TestCase
             OptimisticLockBehavior::className(),
         ];
         $model = new ActiveRecordLockVersion();
-        $model->save(false);
-
+        $this->assertEquals(true, $model->save(false), 'model is successfully saved');
         $this->assertEquals(0, $model->version, 'init version should equal 0');
 
         // create a record starting from version 5
@@ -116,9 +114,17 @@ class OptimisticLockBehaviorTest extends TestCase
         Yii::$app->set('request', $request);
 
         $model = new ActiveRecordLockVersion();
-        $model->save(false);
-
+        $this->assertEquals(true, $model->save(false), 'model is successfully saved');
         $this->assertEquals(5, $model->version, 'init version should equal 5');
+
+        // starting from version 8 but mocking a html web form
+
+        $request->setBodyParams(['ActiveRecordLockVersion' => ['version' => 8]]);
+        Yii::$app->set('request', $request);
+
+        $model = new ActiveRecordLockVersion();
+        $this->assertEquals(true, $model->save(false), 'model is successfully saved');
+        $this->assertEquals(8, $model->version, 'init version should equal 8');
     }
 
 
@@ -131,7 +137,7 @@ class OptimisticLockBehaviorTest extends TestCase
             OptimisticLockBehavior::className(),
         ];
         $model = new ActiveRecordLockVersion();
-        $model->save(false);
+        $this->assertEquals(true, $model->save(false), 'model is successfully saved');
 
         // upgrade model
 
@@ -193,9 +199,16 @@ class OptimisticLockBehaviorTest extends TestCase
         $request->setBodyParams(['version' => '1']);
         Yii::$app->set('request', $request);
 
-        $model->save(false);
-
+        $this->assertEquals(true, $model->save(false), 'model is successfully saved');
         $this->assertEquals(2, $model->version, 'updated version should equal 2');
+
+        // a successful update as sent from a HTML web form
+
+        $request->setBodyParams(['ActiveRecordLockVersion' => ['version' => '2']]);
+        Yii::$app->set('request', $request);
+
+        $this->assertEquals(true, $model->save(false), 'model is successfully saved');
+        $this->assertEquals(3, $model->version, 'updated version should equal 3');
     }
 
      public function testDeleteRecord()
@@ -207,7 +220,7 @@ class OptimisticLockBehaviorTest extends TestCase
             OptimisticLockBehavior::className(),
         ];
         $model = new ActiveRecordLockVersion();
-        $model->save(false);
+        $this->assertEquals(true, $model->save(false), 'model is successfully saved');
 
         // upgrade model version to 1
 
@@ -242,14 +255,25 @@ class OptimisticLockBehaviorTest extends TestCase
 
         $this->assertTrue($thrown, 'A StaleObjectException exception should have been thrown.');
 
-        // a successful update by sending the correct version
+        // a successful delete by sending the correct version
 
         $request->setBodyParams(['version' => '1']);
         Yii::$app->set('request', $request);
 
-        $model->delete();
-
+        $this->assertEquals(true, $model->delete(), 'model is successfully deleted');
         $this->assertEquals(1, $model->version, 'deleted version should remain 1');
+
+        // save it again, upgrade then remove it one more time but mocking a HTML web form
+
+        $this->assertEquals(true, $model->save(false), 'model is successfully saved');
+
+        $model->upgrade();
+
+        $request->setBodyParams(['ActiveRecordLockVersion' => ['version' => '2']]);
+        Yii::$app->set('request', $request);
+
+        $this->assertEquals(true, $model->delete(), 'model is successfully deleted');
+        $this->assertEquals(2, $model->version, 'deleted version should remain 2');
     }
 }
 
