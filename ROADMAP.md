@@ -57,8 +57,8 @@ We can tag additional releases in case someone will take the role of release man
 ## Dependency injection
 
 - [ ] Declare an interface for DI container in `yiisoft/yii2`. Make it an extension of PSR if possible.
-- [ ] Port cycles in dependencies detection from `yiisoft/di`.
-- [ ] Port method calls support from `yiisoft/di`.
+- [ ] Port cycles in dependencies detection from `yiisoft/di` (@hiqsol)
+- [ ] Port method calls support from `yiisoft/di` (@hiqsol)
 
 ## Client side
 
