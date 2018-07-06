@@ -55,6 +55,7 @@ Yii Framework 2 Change Log
 - Chg #11397: `yii\i18n\MessageFormatter` polyfills and `yii\i18n\MessageFormatter::parse()` method were removed resulting in performance boost. See UPGRADE for compatibility notes (samdark)
 - Chg #16247: Cloning components will now clone their behaviors as well (brandonkelly)
 - Enh #16487: Added circular reference detection in DI container (hiqsol)
+- Enh #16495: Added method call support in DI and `Yii::configure()` (hiqsol)
 
 2.0.14.2 under development
 ------------------------

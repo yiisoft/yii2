@@ -20,6 +20,7 @@ use yiiunit\framework\di\stubs\BarSetter;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\FooProperty;
 use yiiunit\framework\di\stubs\Qux;
+use yiiunit\framework\di\stubs\QuxHolder;
 use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\TestCase;
 
@@ -339,5 +340,35 @@ class ContainerTest extends TestCase
 
         $this->expectException(CircularReferenceException::class);
         $container->get(Bar::class);
+    }
+
+    public function testMethodCallInConfigurable()
+    {
+        $container = new Container();
+        $qux = new Qux();
+        $container->set('barSetter', [
+            '__class' => BarSetter::class,
+            'setQux()' => [$qux],
+        ]);
+
+        $res = $container->get('barSetter');
+        $this->assertInstanceOf(BarSetter::class, $res);
+        $this->assertSame($qux, $res->getQux());
+    }
+
+    public function testMethodCall()
+    {
+        $container = new Container();
+        $qux = new Qux();
+        $container->set('quxHolder', [
+            '__class' => QuxHolder::class,
+            'setQux()' => [$qux],
+            'otherQux' => $qux,
+        ]);
+
+        $res = $container->get('quxHolder');
+        $this->assertInstanceOf(QuxHolder::class, $res);
+        $this->assertSame($qux, $res->getQux());
+        $this->assertSame($qux, $res->otherQux);
     }
 }
