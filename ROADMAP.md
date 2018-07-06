@@ -58,7 +58,7 @@ We can tag additional releases in case someone will take the role of release man
 
 - [ ] Declare an interface for DI container in `yiisoft/yii2`. Make it an extension of PSR if possible.
 - [x] Port cycles in dependencies detection from `yiisoft/di` (@hiqsol)
-- [ ] Port method calls support from `yiisoft/di` (@hiqsol)
+- [ ] [Port method calls support from `yiisoft/di`](https://github.com/yiisoft/yii2/pull/16495) (@hiqsol)
 
 ## Client side
 
