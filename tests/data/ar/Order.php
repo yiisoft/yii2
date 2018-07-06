@@ -14,6 +14,7 @@ namespace yiiunit\data\ar;
  * @property int $customer_id
  * @property int $created_at
  * @property string $total
+ * @property string $tracking_number
  */
 class Order extends ActiveRecord
 {
@@ -214,5 +215,15 @@ class Order extends ActiveRecord
         return [
             0 => 'customer_id',
         ];
+    }
+
+    public function getTrackingNumber()
+    {
+        return '#' . $this->tracking_number;
+    }
+
+    public function setTrackingNumber($value)
+    {
+        return str_pad($value, 16, '0', STR_PAD_LEFT);
     }
 }

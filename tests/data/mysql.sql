@@ -75,6 +75,7 @@ CREATE TABLE `order` (
   `customer_id` int(11) NOT NULL,
   `created_at` int(11) NOT NULL,
   `total` decimal(10,0) NOT NULL,
+  `tracking_number` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `FK_order_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -230,7 +231,7 @@ INSERT INTO `item` (name, category_id) VALUES ('Ice Age', 2);
 INSERT INTO `item` (name, category_id) VALUES ('Toy Story', 2);
 INSERT INTO `item` (name, category_id) VALUES ('Cars', 2);
 
-INSERT INTO `order` (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO `order` (customer_id, created_at, total, tracking_number) VALUES (1, 1325282384, 110.0, '1234567890123456');
 INSERT INTO `order` (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
 INSERT INTO `order` (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 

@@ -81,7 +81,8 @@ CREATE TABLE "order" (
   id serial not null primary key,
   customer_id integer NOT NULL references "customer"(id) on UPDATE CASCADE on DELETE CASCADE,
   created_at integer NOT NULL,
-  total decimal(10,0) NOT NULL
+  total decimal(10,0) NOT NULL,
+  tracking_number varchar(16) DEFAULT NULL
 );
 
 CREATE TABLE "order_with_null_fk" (
@@ -232,7 +233,7 @@ INSERT INTO "item" (name, category_id) VALUES ('Ice Age', 2);
 INSERT INTO "item" (name, category_id) VALUES ('Toy Story', 2);
 INSERT INTO "item" (name, category_id) VALUES ('Cars', 2);
 
-INSERT INTO "order" (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO "order" (customer_id, created_at, total, tracking_number) VALUES (1, 1325282384, 110.0, '1234567890123456');
 INSERT INTO "order" (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
 INSERT INTO "order" (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 

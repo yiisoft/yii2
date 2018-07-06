@@ -62,6 +62,7 @@ CREATE TABLE "order" (
   customer_id INTEGER NOT NULL,
   created_at INTEGER NOT NULL,
   total decimal(10,0) NOT NULL,
+  tracking_number varchar(16) DEFAULT NULL,
   PRIMARY KEY (id)
 );
 
@@ -194,7 +195,7 @@ INSERT INTO "item" (name, category_id) VALUES ('Ice Age', 2);
 INSERT INTO "item" (name, category_id) VALUES ('Toy Story', 2);
 INSERT INTO "item" (name, category_id) VALUES ('Cars', 2);
 
-INSERT INTO "order" (customer_id, created_at, total) VALUES (1, 1325282384, 110.0);
+INSERT INTO "order" (customer_id, created_at, total, tracking_number) VALUES (1, 1325282384, 110.0, '1234567890123456');
 INSERT INTO "order" (customer_id, created_at, total) VALUES (2, 1325334482, 33.0);
 INSERT INTO "order" (customer_id, created_at, total) VALUES (2, 1325502201, 40.0);
 
