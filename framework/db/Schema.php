@@ -270,7 +270,7 @@ abstract class Schema extends BaseObject
         ];
         $type = gettype($data);
 
-        return isset($typeMap[$type]) ? $typeMap[$type] : \PDO::PARAM_STR;
+        return $typeMap[$type] ?? \PDO::PARAM_STR;
     }
 
     /**
@@ -441,7 +441,7 @@ abstract class Schema extends BaseObject
                 break;
             }
 
-            $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
+            $result[$name] = $columns[$name] ?? $tableSchema->columns[$name]->defaultValue;
         }
 
         return $result;
@@ -732,15 +732,15 @@ abstract class Schema extends BaseObject
         $cache = null;
         if ($this->db->enableSchemaCache && !in_array($name, $this->db->schemaCacheExclude, true)) {
             $schemaCache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
-            if ($schemaCache instanceof Cache) {
+            if ($schemaCache instanceof CacheInterface) {
                 $cache = $schemaCache;
             }
         }
         $rawName = $this->getRawTableName($name);
-        if ($refresh || !isset($this->_tableMetadata[$rawName])) {
+        if (!isset($this->_tableMetadata[$rawName])) {
             $this->loadTableMetadataFromCache($cache, $rawName);
         }
-        if (!array_key_exists($type, $this->_tableMetadata[$rawName])) {
+        if ($refresh || !array_key_exists($type, $this->_tableMetadata[$rawName])) {
             $this->_tableMetadata[$rawName][$type] = $this->{'loadTable' . ucfirst($type)}($rawName);
             $this->saveTableMetadataToCache($cache, $rawName);
         }

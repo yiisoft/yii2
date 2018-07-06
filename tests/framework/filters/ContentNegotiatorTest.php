@@ -8,37 +8,72 @@
 namespace yiiunit\framework\filters;
 
 use Yii;
+use yii\base\Action;
 use yii\filters\ContentNegotiator;
-use yii\web\NotAcceptableHttpException;
+use yii\web\Controller;
+use yii\web\Request;
 use yii\web\Response;
 use yiiunit\TestCase;
 
+/**
+ *  @group filters
+ */
 class ContentNegotiatorTest extends TestCase
 {
     protected function setUp()
     {
         parent::setUp();
 
-        $_SERVER['SCRIPT_FILENAME'] = '/index.php';
-        $_SERVER['SCRIPT_NAME'] = '/index.php';
-
         $this->mockWebApplication();
     }
 
-    public function testNegotiateContentType()
+    protected function mockActionAndFilter()
     {
+        $action = new Action('test', new Controller('id', Yii::$app));
         $filter = new ContentNegotiator([
-            'formats' => [
-                'application/json' => Response::FORMAT_JSON,
-            ],
+            'request' => new Request(),
+            'response' => new Response(),
         ]);
 
-        Yii::$app->request->setAcceptableContentTypes(['application/json' => ['q' => 1, 'version' => '1.0']]);
-        $filter->negotiate();
-        $this->assertSame('json', Yii::$app->response->format);
+        return [$action, $filter];
+    }
 
-        $this->expectException(NotAcceptableHttpException::class);
-        Yii::$app->request->setAcceptableContentTypes(['application/xml' => ['q' => 1, 'version' => '2.0']]);
-        $filter->negotiate();
+    public function testWhenLanguageGETParamIsArray()
+    {
+        list($action, $filter) = $this->mockActionAndFilter();
+
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_GET[$filter->languageParam] = [
+            'foo',
+            'string-index' => 'bar',
+        ];
+
+        $targetLanguage = 'de';
+        $filter->languages = [$targetLanguage, 'ru', 'en'];
+
+        $filter->beforeAction($action);
+        $this->assertEquals($targetLanguage, Yii::$app->language);
+    }
+
+    /**
+     * @expectedException yii\web\BadRequestHttpException
+     * @expectedExceptionMessageRegExp |Invalid data received for GET parameter '.+'|
+     */
+    public function testWhenFormatGETParamIsArray()
+    {
+        list($action, $filter) = $this->mockActionAndFilter();
+
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_GET[$filter->formatParam] = [
+            'format-A',
+            'string-index' => 'format-B',
+        ];
+
+        $filter->formats = [
+            'application/json' => Response::FORMAT_JSON,
+            'application/xml' => Response::FORMAT_XML,
+        ];
+
+        $filter->beforeAction($action);
     }
 }

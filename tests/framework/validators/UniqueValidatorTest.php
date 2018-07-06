@@ -61,16 +61,6 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $validator->validateAttribute($model, 'order_id');
         $this->assertTrue($model->hasErrors('order_id'));
         $this->assertEquals($customError, $model->getFirstError('order_id'));
-
-        // fallback for deprecated `comboNotUnique` - should be removed on 2.1.0
-        $validator = new UniqueValidator([
-            'targetAttribute' => ['order_id', 'item_id'],
-            'comboNotUnique' => 'Custom message for {attributes} with values {values}',
-        ]);
-        $model->clearErrors();
-        $validator->validateAttribute($model, 'order_id');
-        $this->assertTrue($model->hasErrors('order_id'));
-        $this->assertEquals($customError, $model->getFirstError('order_id'));
     }
 
     public function testValidateInvalidAttribute()

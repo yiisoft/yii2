@@ -7,6 +7,8 @@
 
 namespace yii\helpers;
 
+use yii\base\InvalidConfigException;
+
 /**
  * Object that represents the replacement of array value while performing [[ArrayHelper::merge()]].
  *
@@ -76,7 +78,7 @@ class ReplaceArrayValue
      * @param array $state
      * @return self
      * @see var_export()
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public static function __set_state($state)
     {

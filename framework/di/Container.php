@@ -121,7 +121,10 @@ class Container extends Component
      * is associated with a list of constructor parameter types or default values.
      */
     private $_dependencies = [];
-
+    /**
+     * @var array used to collect classes instantiated during get to detect circular references
+     */
+    private $_getting = [];
 
     /**
      * Returns an instance of the requested class.
@@ -157,6 +160,11 @@ class Container extends Component
             return $this->build($class, $params, $config);
         }
 
+        if (isset($this->_getting[$class])) {
+            throw new CircularReferenceException($class);
+        }
+        $this->_getting[$class] = 1;
+
         $definition = $this->_definitions[$class];
 
         if (is_callable($definition, true)) {
@@ -175,7 +183,7 @@ class Container extends Component
                 $object = $this->get($concrete, $params, $config);
             }
         } elseif (is_object($definition)) {
-            return $this->_singletons[$class] = $definition;
+            $object = $this->_singletons[$class] = $definition;
         } else {
             throw new InvalidConfigException('Unexpected object definition type: ' . gettype($definition));
         }
@@ -184,6 +192,7 @@ class Container extends Component
             // singleton
             $this->_singletons[$class] = $object;
         }
+        unset($this->_getting[$class]);
 
         return $object;
     }
@@ -438,7 +447,7 @@ class Container extends Component
         $constructor = $reflection->getConstructor();
         if ($constructor !== null) {
             foreach ($constructor->getParameters() as $param) {
-                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                if ($param->isVariadic()) {
                     break;
                 } elseif ($param->isDefaultValueAvailable()) {
                     $dependencies[] = $param->getDefaultValue();
@@ -543,7 +552,7 @@ class Container extends Component
             $name = $param->getName();
             if (($class = $param->getClass()) !== null) {
                 $className = $class->getName();
-                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                if ($param->isVariadic()) {
                     $args = array_merge($args, array_values($params));
                     break;
                 } elseif ($associative && isset($params[$name]) && $params[$name] instanceof $className) {

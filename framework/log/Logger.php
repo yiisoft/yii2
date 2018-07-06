@@ -83,19 +83,19 @@ class Logger extends Component implements LoggerInterface
     /**
      * @var array|Target[] the log targets. Each array element represents a single [[Target|log target]] instance
      * or the configuration for creating the log target instance.
-     * @since 2.1
+     * @since 3.0.0
      */
     private $_targets = [];
     /**
      * @var bool whether [[targets]] have been initialized, e.g. ensured to be objects.
-     * @since 2.1
+     * @since 3.0.0
      */
     private $_isTargetsInitialized = false;
 
 
     /**
      * @return Target[] the log targets. Each array element represents a single [[Target|log target]] instance.
-     * @since 2.1
+     * @since 3.0.0
      */
     public function getTargets()
     {
@@ -113,7 +113,7 @@ class Logger extends Component implements LoggerInterface
     /**
      * @param array|Target[] $targets the log targets. Each array element represents a single [[Target|log target]] instance
      * or the configuration for creating the log target instance.
-     * @since 2.1
+     * @since 3.0.0
      */
     public function setTargets($targets)
     {
@@ -235,7 +235,7 @@ class Logger extends Component implements LoggerInterface
      * Dispatches the logged messages to [[targets]].
      * @param array $messages the logged messages
      * @param bool $final whether this method is called at the end of the current application
-     * @since 2.1
+     * @since 3.0.0
      */
     protected function dispatch($messages, $final)
     {
@@ -268,7 +268,7 @@ class Logger extends Component implements LoggerInterface
      * @param string $message log message.
      * @param array $context message context.
      * @return string parsed message.
-     * @since 2.1
+     * @since 3.0.0
      */
     protected function parseMessage($message, array $context)
     {

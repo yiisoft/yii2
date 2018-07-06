@@ -62,7 +62,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
         $modelClass = $this->modelClass;
         $keys = [];
         foreach ($modelClass::primaryKey() as $key) {
-            $keys[$key] = isset($row[$key]) ? $row[$key] : null;
+            $keys[$key] = $row[$key] ?? null;
         }
 
         return $this->_models[$name] = $modelClass::findOne($keys);
@@ -84,7 +84,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      *
      * @return array the data to be put into the database
      * @throws InvalidConfigException if the specified data file does not exist.
-     * @see [[loadDataFile]]
+     * @see [[loadData]]
      */
     protected function getData()
     {

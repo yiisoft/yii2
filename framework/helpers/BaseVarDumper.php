@@ -72,10 +72,10 @@ class BaseVarDumper
                 self::$_output .= $var ? 'true' : 'false';
                 break;
             case 'integer':
-                self::$_output .= "$var";
+                self::$_output .= (string)$var;
                 break;
             case 'double':
-                self::$_output .= "$var";
+                self::$_output .= (string)$var;
                 break;
             case 'string':
                 self::$_output .= "'" . addslashes($var) . "'";
@@ -255,7 +255,7 @@ class BaseVarDumper
                 continue;
             }
             if ($closureTokens !== []) {
-                $closureTokens[] = isset($token[1]) ? $token[1] : $token;
+                $closureTokens[] = $token[1] ?? $token;
                 if ($token === '}') {
                     $pendingParenthesisCount--;
                     if ($pendingParenthesisCount === 0) {

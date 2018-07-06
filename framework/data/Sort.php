@@ -257,8 +257,7 @@ class Sort extends BaseObject
                 $params = $request instanceof Request ? $request->getQueryParams() : [];
             }
             if (isset($params[$this->sortParam])) {
-                $attributes = $this->parseSortParam($params[$this->sortParam]);
-                foreach ($attributes as $attribute) {
+                foreach ($this->parseSortParam($params[$this->sortParam]) as $attribute) {
                     $descending = false;
                     if (strncmp($attribute, '-', 1) === 0) {
                         $descending = true;
@@ -345,7 +344,7 @@ class Sort extends BaseObject
     {
         $orders = $this->getAttributeOrders();
 
-        return isset($orders[$attribute]) ? $orders[$attribute] : null;
+        return $orders[$attribute] ?? null;
     }
 
     /**
@@ -436,7 +435,7 @@ class Sort extends BaseObject
             $direction = $directions[$attribute] === SORT_DESC ? SORT_ASC : SORT_DESC;
             unset($directions[$attribute]);
         } else {
-            $direction = isset($definition['default']) ? $definition['default'] : SORT_ASC;
+            $direction = $definition['default'] ?? SORT_ASC;
         }
 
         if ($this->enableMultiSort) {

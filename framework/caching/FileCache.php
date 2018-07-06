@@ -134,6 +134,12 @@ class FileCache extends SimpleCache
         if ($this->directoryLevel > 0) {
             @FileHelper::createDirectory(dirname($cacheFile), $this->dirMode, true);
         }
+        // If ownership differs the touch call will fail, so we try to
+        // rebuild the file from scratch by deleting it first
+        // https://github.com/yiisoft/yii2/pull/16120
+        if (is_file($cacheFile) && function_exists('posix_geteuid') && fileowner($cacheFile) !== posix_geteuid()) {
+            @unlink($cacheFile);
+        }
         if (@file_put_contents($cacheFile, $value, LOCK_EX) !== false) {
             if ($this->fileMode !== null) {
                 @chmod($cacheFile, $this->fileMode);

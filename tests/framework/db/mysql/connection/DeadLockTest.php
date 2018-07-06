@@ -31,17 +31,12 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     public function testDeadlockException()
     {
-        if (getenv('TRAVIS') && PHP_VERSION_ID < 70000) {
-            $this->markTestSkipped('Skipping PHP 5 on Travis since it segfaults with pcntl');
-        }
-
         if (!\function_exists('pcntl_fork')) {
             $this->markTestSkipped('pcntl_fork() is not available');
         }
         if (!\function_exists('posix_kill')) {
             $this->markTestSkipped('posix_kill() is not available');
         }
-        // HHVM does not support this (?)
         if (!\function_exists('pcntl_sigtimedwait')) {
             $this->markTestSkipped('pcntl_sigtimedwait() is not available');
         }
@@ -272,11 +267,9 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     private function setErrorHandler()
     {
-        if (PHP_VERSION_ID < 70000) {
-            set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-                throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
-            });
-        }
+        set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+            throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
+        });
     }
 
     /**

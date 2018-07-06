@@ -290,7 +290,7 @@ abstract class ErrorHandler extends Component
         if ($exception instanceof Exception) {
             $message = "Exception ({$exception->getName()})";
         } elseif ($exception instanceof ErrorException) {
-            $message = "{$exception->getName()}";
+            $message = (string)$exception->getName();
         } else {
             $message = 'Exception';
         }
@@ -303,7 +303,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Attempts to flush logger messages.
-     * @since 2.1
+     * @since 3.0.0
      */
     protected function flushLogger()
     {

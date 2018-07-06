@@ -258,11 +258,27 @@ class User extends Component
             } else {
                 $log = "User '$id' logged in from $ip. Session not enabled.";
             }
+
+            $this->regenerateCsrfToken();
+
             Yii::info($log, __METHOD__);
             $this->afterLogin($identity, false, $duration);
         }
 
         return !$this->getIsGuest();
+    }
+
+    /**
+     * Regenerates CSRF token
+     *
+     * @since 2.0.14.2
+     */
+    protected function regenerateCsrfToken()
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->enableCsrfCookie || $this->enableSession) {
+            $request->getCsrfToken(true);
+        }
     }
 
     /**
@@ -650,9 +666,6 @@ class User extends Component
                 $this->sendIdentityCookie($identity, $duration);
             }
         }
-
-        // regenerate CSRF token
-        Yii::$app->getRequest()->getCsrfToken(true);
     }
 
     /**
@@ -754,20 +767,6 @@ class User extends Component
         }
 
         return false;
-    }
-
-    /**
-     * Returns auth manager associated with the user component.
-     *
-     * By default this is the `authManager` application component.
-     * You may override this method to return a different auth manager instance if needed.
-     * @return \yii\rbac\ManagerInterface
-     * @since 2.0.6
-     * @deprecated since version 2.0.9, to be removed in 2.1. Use [[getAccessChecker()]] instead.
-     */
-    protected function getAuthManager()
-    {
-        return Yii::$app->getAuthManager();
     }
 
     /**

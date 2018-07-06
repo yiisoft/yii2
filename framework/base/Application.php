@@ -245,8 +245,6 @@ abstract class Application extends Module
         if (isset($config['timeZone'])) {
             $this->setTimeZone($config['timeZone']);
             unset($config['timeZone']);
-        } elseif (!ini_get('date.timezone')) {
-            $this->setTimeZone('UTC');
         }
 
         if (isset($config['container'])) {
@@ -405,7 +403,7 @@ abstract class Application extends Module
 
             return $response->exitStatus;
         } catch (ExitException $e) {
-            $this->end($e->statusCode, isset($response) ? $response : null);
+            $this->end($e->statusCode, $response ?? null);
             return $e->statusCode;
         }
     }
@@ -512,7 +510,7 @@ abstract class Application extends Module
     /**
      * Sets up or configure the logger instance.
      * @param \psr\log\LoggerInterface|\Closure|array|null $logger the logger object or its DI compatible configuration.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setLogger($logger)
     {
@@ -522,7 +520,7 @@ abstract class Application extends Module
     /**
      * Returns the logger instance.
      * @return \psr\log\LoggerInterface the logger instance.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getLogger()
     {
@@ -532,7 +530,7 @@ abstract class Application extends Module
     /**
      * Sets up or configure the profiler instance.
      * @param \yii\profile\ProfilerInterface|\Closure|array|null $profiler the profiler object or its DI compatible configuration.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setProfiler($profiler)
     {
@@ -542,7 +540,7 @@ abstract class Application extends Module
     /**
      * Returns the profiler instance.
      * @return \yii\profile\ProfilerInterface profiler instance.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getProfiler()
     {

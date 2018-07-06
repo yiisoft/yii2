@@ -14,7 +14,7 @@ use yii\base\BaseObject;
  * Make sure you have 'igbinary' PHP extension install at your system before attempt to use this serializer.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1.0
+ * @since 3.0.0
  */
 class IgbinarySerializer extends BaseObject implements SerializerInterface
 {

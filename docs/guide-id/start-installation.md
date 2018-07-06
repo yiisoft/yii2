@@ -143,9 +143,7 @@ Konfigurasi Web Server <span id="configuring-web-servers"></span>
 
 Aplikasi yang diinstal sesuai dengan petunjuk di atas seharusnya bekerja dengan baik
 pada [Apache HTTP server](http://httpd.apache.org/) atau [Nginx HTTP server](http://nginx.org/), pada
-Windows, Mac OS X, atau Linux yang menjalankan PHP 5.4 atau lebih tinggi. Yii 2.0 juga kompatibel dengan facebook
-[HHVM](http://hhvm.com/). Namun, ada beberapa kasus di mana HHVM berperilaku berbeda dari PHP asli,
-sehingga Anda harus mengambil beberapa perlakuan ekstra ketika menggunakan HHVM.
+Windows, Mac OS X, atau Linux yang menjalankan PHP 5.4 atau lebih tinggi.
 
 Pada server produksi, Anda mungkin ingin mengkonfigurasi server Web Anda sehingga aplikasi dapat diakses
 melalui URL `http://www.example.com/index.php` bukannya `http://www.example.com/dasar/web/index.php`. konfigurasi seperti itu

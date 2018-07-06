@@ -533,7 +533,7 @@ and `http://example.com/path/` are different URLs, serving the same content for 
 By default normalizer collapses consecutive slashes, adds or removes trailing slashes depending on whether the
 suffix has a trailing slash or not, and redirects to the normalized version of the URL using [permanent redirection](https://en.wikipedia.org/wiki/HTTP_301).
 The normalizer can be configured globally for the URL manager or individually for each rule - by default each rule will use the normalizer
-from URL manager. Since version 2.1.0 normalizer is enabled by default in [[yii\web\UrlManager|UrlManager]]. You can set
+from URL manager. Since version 3.0.0 normalizer is enabled by default in [[yii\web\UrlManager|UrlManager]]. You can set
 [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] to `false` to disable normalization for particular URL rule.
 
 The following shows an example configuration for the UrlNormalizer:

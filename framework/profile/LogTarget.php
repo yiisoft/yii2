@@ -34,7 +34,7 @@ use yii\di\Instance;
  * @property LoggerInterface $logger logger to be used for message export.
  *
  * @author Paul Klimov <klimov-paul@gmail.com>
- * @since 2.1
+ * @since 3.0.0
  */
 class LogTarget extends Target
 {

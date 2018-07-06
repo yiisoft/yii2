@@ -101,10 +101,6 @@ Yii prend en charge un large panel de supports de stockage pour cache. Ce qui su
 * [[yii\caching\WinCache]]: utilise le [WinCache](http://iis.net/downloads/microsoft/wincache-extension) PHP
   ([voir aussi l'extension](http://php.net/manual/en/book.wincache.php)).
 * [[yii\caching\XCache]] _(deprecated)_: utilise l'extension PHP [XCache](http://xcache.lighttpd.net/).
-* [[yii\caching\ZendDataCache]] _(deprecated)_: utilise le 
-  [cache de données Zend](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
-  en tant que médium de cache sous-jacent.
-
 
 > Tip: vous pouvez utiliser différents supports de stockage pour cache dans la même application. Une stratégie courante est d'utiliser un support de stockage pour cache basé sur la mémoire pour stocker des données de petite taille mais d'usage constant (p. ex. des données statistiques), et d'utiliser des supports de stockage pour cache basés sur des fichiers ou des bases de données pour stocker des données volumineuses et utilisées moins souvent (p. ex. des contenus de pages).
 

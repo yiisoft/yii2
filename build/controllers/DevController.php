@@ -33,6 +33,10 @@ class DevController extends Controller
      */
     public $useHttp = false;
     /**
+     * @var bool whether to use --no-progress option when running composer
+     */
+    public $composerNoProgress = false;
+    /**
      * @var array
      */
     public $apps = [
@@ -47,6 +51,7 @@ class DevController extends Controller
         'apidoc' => 'git@github.com:yiisoft/yii2-apidoc.git',
         'authclient' => 'git@github.com:yiisoft/yii2-authclient.git',
         'bootstrap' => 'git@github.com:yiisoft/yii2-bootstrap.git',
+        'captcha' => 'git@github.com:yiisoft/yii2-captcha.git',
         'codeception' => 'git@github.com:yiisoft/yii2-codeception.git',
         'composer' => 'git@github.com:yiisoft/yii2-composer.git',
         'debug' => 'git@github.com:yiisoft/yii2-debug.git',
@@ -55,10 +60,15 @@ class DevController extends Controller
         'gii' => 'git@github.com:yiisoft/yii2-gii.git',
         'httpclient' => 'git@github.com:yiisoft/yii2-httpclient.git',
         'imagine' => 'git@github.com:yiisoft/yii2-imagine.git',
+        'jquery' => 'git@github.com:yiisoft/yii2-jquery.git',
         'jui' => 'git@github.com:yiisoft/yii2-jui.git',
+        'maskedinput' => 'git@github.com:yiisoft/yii2-maskedinput.git',
         'mongodb' => 'git@github.com:yiisoft/yii2-mongodb.git',
+        'mssql' => 'git@github.com:yiisoft/yii2-mssql.git',
+        'oracle' => 'git@github.com:yiisoft/yii2-oracle.git',
         'queue' => 'git@github.com:yiisoft/yii2-queue.git',
         'redis' => 'git@github.com:yiisoft/yii2-redis.git',
+        'rest' => 'git@github.com:yiisoft/yii2-rest.git',
         'shell' => 'git@github.com:yiisoft/yii2-shell.git',
         'smarty' => 'git@github.com:yiisoft/yii2-smarty.git',
         'sphinx' => 'git@github.com:yiisoft/yii2-sphinx.git',
@@ -172,7 +182,11 @@ class DevController extends Controller
         // composer update
         $this->stdout("updating composer for app '$app'...\n", Console::BOLD);
         chdir($appDir);
-        passthru('composer update --prefer-dist');
+        $command = 'composer update --prefer-dist';
+        if ($this->composerNoProgress) {
+            $command .= ' --no-progress';
+        }
+        passthru($command);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
         // link directories
@@ -223,7 +237,11 @@ class DevController extends Controller
         // composer update
         $this->stdout("updating composer for extension '$extension'...\n", Console::BOLD);
         chdir($extensionDir);
-        passthru('composer update --prefer-dist');
+        $command = 'composer update --prefer-dist';
+        if ($this->composerNoProgress) {
+            $command .= ' --no-progress';
+        }
+        passthru($command);
         $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
 
         // link directories
@@ -242,6 +260,7 @@ class DevController extends Controller
         $options = parent::options($actionID);
         if (\in_array($actionID, ['ext', 'app', 'all'], true)) {
             $options[] = 'useHttp';
+            $options[] = 'composerNoProgress';
         }
 
         return $options;

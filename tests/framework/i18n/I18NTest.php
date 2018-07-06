@@ -273,15 +273,7 @@ class I18NTest extends TestCase
     public function testFormatMessageWithNoParam()
     {
         $message = 'Incorrect password (length must be from {min, number} to {max, number} symbols).';
-        $this->assertEquals($message, $this->i18n->format($message, ['attribute' => 'password'], 'en'));
-    }
-
-    public function testFormatMessageWithDottedParameters()
-    {
-        $message = 'date: {dt.test}';
-        $this->assertEquals('date: 1510147434', $this->i18n->format($message, ['dt.test' => 1510147434], 'en'));
-
-        $message = 'date: {dt.test,date}';
-        $this->assertEquals('date: Nov 8, 2017', $this->i18n->format($message, ['dt.test' => 1510147434], 'en'));
+        $expected = 'Incorrect password (length must be from {min} to {max} symbols).';
+        $this->assertEquals($expected, $this->i18n->format($message, ['attribute' => 'password'], 'en'));
     }
 }

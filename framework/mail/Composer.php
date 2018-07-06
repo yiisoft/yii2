@@ -21,7 +21,7 @@ use yii\web\View;
  * to '@app/mail'.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1
+ * @since 3.0.0
  */
 class Composer extends BaseObject
 {

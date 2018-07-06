@@ -275,16 +275,6 @@ trait ActiveRecordTestTrait
         $this->assertEquals('user1', $customer->name);
     }
 
-    public function testRefresh_querySetAlias_findRecord()
-    {
-        $customer = new \yiiunit\data\ar\CustomerWithAlias();
-        $customer->id = 1;
-
-        $customer->refresh();
-
-        $this->assertEquals(1, $customer->id);
-    }
-
     public function testEquals()
     {
         /* @var $customerClass \yii\db\ActiveRecordInterface */

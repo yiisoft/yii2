@@ -61,7 +61,7 @@ use yii\base\InvalidArgumentException;
  * @property string $userInfo the user information component of the URI. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1.0
+ * @since 3.0.0
  */
 class Uri extends BaseObject implements UriInterface
 {

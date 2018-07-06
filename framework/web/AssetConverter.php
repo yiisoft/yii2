@@ -82,7 +82,7 @@ class AssetConverter extends Component implements AssetConverterInterface
      * }
      * ```
      *
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public $isOutdatedCallback;
 
@@ -120,7 +120,7 @@ class AssetConverter extends Component implements AssetConverterInterface
      * @param string $sourceExtension source asset file extension.
      * @param string $targetExtension target asset file extension.
      * @return bool whether asset is outdated or not.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     protected function isOutdated($basePath, $sourceFile, $targetFile, $sourceExtension, $targetExtension)
     {

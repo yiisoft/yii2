@@ -116,9 +116,7 @@ Configurazione del webserver <span id="configuring-web-servers"></span>
 > Informazione: puoi saltare questa parte per ora se stai solo provando Yii e non hai intenzione di installarlo su un server di produzione.
 
 L'applicazione installata secondo le istruzioni sopra dovrebbe funzionare senza problemi su un server 
-[Apache](http://httpd.apache.org/) o [Nginx](http://nginx.org/), su Windows, Mac OS X, or Linux equipaggiati con PHP 5.4 o successivo. 
-Yii 2.0 è anche compatibile con le librerie [HHVM](http://hhvm.com/) di Facebook, tuttavia ci sono alcuni casi limite dove HHVM si
-comporta diversamente dal PHP nativo, quindi devi avere maggiore cura se intendi usare HHVM.
+[Apache](http://httpd.apache.org/) o [Nginx](http://nginx.org/), su Windows, Mac OS X, or Linux equipaggiati con PHP 5.4 o successivo.
 
 Su un server di produzione vorrai probabilmente che la tua applicazione sia accessibile tramite l'url 
 `http://www.example.com/index.php` invece di `http://www.example.com/basic/web/index.php`. Questo risultato richiede che punti la

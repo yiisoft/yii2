@@ -38,12 +38,12 @@ class ActiveForm extends Widget
     const VALIDATION_STATE_ON_INPUT = 'input';
     /**
      * @event ActiveFieldEvent an event raised right before rendering an ActiveField.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     const EVENT_BEFORE_FIELD_RENDER = 'beforeFieldRender';
     /**
      * @event ActionEvent an event raised right after rendering an ActiveField.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     const EVENT_AFTER_FIELD_RENDER = 'afterFieldRender';
 
@@ -404,7 +404,7 @@ class ActiveForm extends Widget
      * This method is invoked right before an ActiveField is rendered.
      * The method will trigger the [[EVENT_BEFORE_FIELD_RENDER]] event.
      * @param ActiveField $field active field to be rendered.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function beforeFieldRender($field)
     {
@@ -416,7 +416,7 @@ class ActiveForm extends Widget
      * This method is invoked right after an ActiveField is rendered.
      * The method will trigger the [[EVENT_AFTER_FIELD_RENDER]] event.
      * @param ActiveField $field active field to be rendered.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function afterFieldRender($field)
     {

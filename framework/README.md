@@ -12,6 +12,8 @@ Installation
 
 The preferred way to install the Yii framework is through [composer](http://getcomposer.org/download/).
 
+Refer to [Bower and NPM Assets installation](https://www.yiiframework.com/doc/guide/2.0/en/structure-assets#bower-npm-assets) to select an asset installation method.
+
 Either run
 
 ```
@@ -21,7 +23,7 @@ composer require yiisoft/yii2
 or add
 
 ```json
-"yiisoft/yii2": "~2.1.0",
+"yiisoft/yii2": "~3.0.0",
 ```
 
 to the require section of your composer.json.

@@ -319,7 +319,7 @@ class Response extends \yii\base\Response implements ResponseInterface
 
     /**
      * @return string body content string.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getContent()
     {
@@ -328,7 +328,7 @@ class Response extends \yii\base\Response implements ResponseInterface
 
     /**
      * @param string $content body content string.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setContent($content)
     {
@@ -378,8 +378,7 @@ class Response extends \yii\base\Response implements ResponseInterface
             throw new HeadersAlreadySentException($file, $line);
         }
         if ($this->_headerCollection) {
-            $headers = $this->getHeaders();
-            foreach ($headers as $name => $values) {
+            foreach ($this->getHeaders() as $name => $values) {
                 $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
                 // set replace for first occurrence of header but false afterwards to allow multiple
                 $replace = true;
@@ -549,7 +548,7 @@ class Response extends \yii\base\Response implements ResponseInterface
             $body->write($content);
         }
 
-        $mimeType = isset($options['mimeType']) ? $options['mimeType'] : 'application/octet-stream';
+        $mimeType = $options['mimeType'] ?? 'application/octet-stream';
         $this->setDownloadHeaders($attachmentName, $mimeType, !empty($options['inline']), $end - $begin + 1);
 
         $this->format = self::FORMAT_RAW;
@@ -601,7 +600,7 @@ class Response extends \yii\base\Response implements ResponseInterface
             $this->setStatusCode(200);
         }
 
-        $mimeType = isset($options['mimeType']) ? $options['mimeType'] : 'application/octet-stream';
+        $mimeType = $options['mimeType'] ?? 'application/octet-stream';
         $this->setDownloadHeaders($attachmentName, $mimeType, !empty($options['inline']), $end - $begin + 1);
 
         $this->format = self::FORMAT_RAW;
@@ -806,7 +805,11 @@ class Response extends \yii\base\Response implements ResponseInterface
      */
     protected function getDispositionHeaderValue($disposition, $attachmentName)
     {
-        $fallbackName = str_replace('"', '\\"', str_replace(['%', '/', '\\'], '_', Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)));
+        $fallbackName = str_replace(
+            ['%', '/', '\\', '"'],
+            ['_', '_', '_', '\\"'],
+            Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)
+        );
         $utfName = rawurlencode(str_replace(['%', '/', '\\'], '', $attachmentName));
 
         $dispositionHeader = "{$disposition}; filename=\"{$fallbackName}\"";
@@ -880,7 +883,7 @@ class Response extends \yii\base\Response implements ResponseInterface
             $url[0] = '/' . ltrim($url[0], '/');
         }
         $url = Url::to($url);
-        if (strpos($url, '/') === 0 && strpos($url, '//') !== 0) {
+        if (strncmp($url, '/', 1) === 0 && strncmp($url, '//', 2) !== 0) {
             $url = Yii::$app->getRequest()->getHostInfo() . $url;
         }
 

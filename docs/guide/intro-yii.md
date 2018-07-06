@@ -41,20 +41,20 @@ via simple and elegant interfaces.
 Yii Versions
 ------------
 
-Yii currently has three major versions available: 1.1, 2.0 and 2.1. Version 1.1 is the old generation and is now in maintenance mode. Version 2.0 is a complete rewrite of Yii, adopting the latest
-technologies and protocols, including Composer, PSR, namespaces, traits, and so forth. Version 2.1 is a cleaned up and refactored version of 2.0 that represents the current
+Yii currently has three major versions available: 1.1, 2.0 and 3. Version 1.1 is the old generation and is now in maintenance mode. Version 2.0 is a complete rewrite of Yii, adopting the latest
+technologies and protocols, including Composer, PSR, namespaces, traits, and so forth. Version 3 is a cleaned up and refactored version of 2.0 that represents the current
 generation of the framework and will receive the main development efforts over the next few years.
-This guide is mainly about version 2.1.
+This guide is mainly about version 3.
 
 
 Requirements and Prerequisites
 ------------------------------
 
-Yii 2.1 requires PHP 7.1 or above. You can find more detailed
+Yii 3 requires PHP 7.1 or above. You can find more detailed
 requirements for individual features by running the requirement checker included in every Yii release.
 
 Using Yii requires basic knowledge of object-oriented programming (OOP), as Yii is a pure OOP-based framework.
-Yii 2.1 also makes use of the latest features of PHP, such as [namespaces](http://www.php.net/manual/en/language.namespaces.php)
+Yii 3 also makes use of the latest features of PHP, such as [namespaces](http://www.php.net/manual/en/language.namespaces.php)
 and [traits](http://www.php.net/manual/en/language.oop5.traits.php). Understanding these concepts will help
-you more easily pick up Yii 2.1.
+you more easily pick up Yii 3.
 

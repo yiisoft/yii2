@@ -8,9 +8,11 @@
 namespace yiiunit\framework\base;
 
 use Yii;
+use yii\base\Theme;
 use yii\base\View;
 use yii\caching\Cache;
 use yii\caching\FileCache;
+use yii\base\ViewEvent;
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
@@ -88,7 +90,7 @@ PHP
         }
         $this->assertEquals([
             '<![CDATA[YII-DYNAMIC-0]]>' => $statement
-        ], $view->dynamicPlaceholders);
+        ], $view->getDynamicPlaceholders());
     }
 
     public function testRenderDynamic_StatementWithThisVariable()
@@ -121,5 +123,33 @@ PHP
             $message = $e->getMessage();
         }
         $this->assertEquals('Undefined variable: a', $message);
+    }
+
+    public function testRelativePathInView()
+    {
+        $view = new View();
+        FileHelper::createDirectory($this->testViewPath . '/theme1');
+        \Yii::setAlias('@testviews', $this->testViewPath);
+        \Yii::setAlias('@theme', $this->testViewPath . '/theme1');
+
+        $baseView = "{$this->testViewPath}/theme1/base.php";
+        file_put_contents($baseView, <<<'PHP'
+<?php 
+    echo $this->render("sub"); 
+?>
+PHP
+        );
+
+        $subView = "{$this->testViewPath}/sub.php";
+        $subViewContent = "subviewcontent";
+        file_put_contents($subView, $subViewContent);
+
+        $view->theme = new Theme([
+            'pathMap' => [
+                '@testviews' => '@theme'
+            ]
+        ]);
+
+        $this->assertSame($subViewContent, $view->render('@testviews/base'));
     }
 }

@@ -93,12 +93,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
             // array condition corner cases
             [['@>', 'id', new ArrayExpression([1])], '"id" @> ARRAY[:qp0]', [':qp0' => 1]],
-            'scalar can not be converted to array #1' => [['@>', 'id', new ArrayExpression(1)], '"id" @> \'{}\'', []],
-            ['scalar can not be converted to array #2' => ['@>', 'id', new ArrayExpression(false)], '"id" @> \'{}\'', []],
+            'scalar can not be converted to array #1' => [['@>', 'id', new ArrayExpression(1)], '"id" @> ARRAY[]', []],
+            ['scalar can not be converted to array #2' => ['@>', 'id', new ArrayExpression(false)], '"id" @> ARRAY[]', []],
             [['&&', 'price', new ArrayExpression([12, 14], 'float')], '"price" && ARRAY[:qp0, :qp1]::float[]', [':qp0' => 12, ':qp1' => 14]],
             [['@>', 'id', new ArrayExpression([2, 3])], '"id" @> ARRAY[:qp0, :qp1]', [':qp0' => 2, ':qp1' => 3]],
             'array of arrays' => [['@>', 'id', new ArrayExpression([[1,2], [3,4]], 'float', 2)], '"id" @> ARRAY[ARRAY[:qp0, :qp1]::float[], ARRAY[:qp2, :qp3]::float[]\\]::float[][]', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3, ':qp3' => 4]],
-            [['@>', 'id', new ArrayExpression([])], '"id" @> \'{}\'', []],
+            [['@>', 'id', new ArrayExpression([])], '"id" @> ARRAY[]', []],
             'array can contain nulls' => [['@>', 'id', new ArrayExpression([null])], '"id" @> ARRAY[:qp0]', [':qp0' => null]],
             'traversable objects are supported' => [['@>', 'id', new ArrayExpression(new TraversableObject([1, 2, 3]))], '[[id]] @> ARRAY[:qp0, :qp1, :qp2]', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
             [['@>', 'time', new ArrayExpression([new Expression('now()')])], '[[time]] @> ARRAY[now()]', []],

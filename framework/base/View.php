@@ -86,22 +86,13 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public $blocks;
     /**
-     * @var array|DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
-     * This property is used internally to implement the dynamic content caching feature. Do not modify it directly.
-     * @internal
-     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicContents()]],
-     * [[pushDynamicContent()]], [[popDynamicContent()]] instead.
+     * @var DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
      */
-    public $cacheStack = [];
+    private $_cacheStack = [];
     /**
-     * @var array a list of placeholders for embedding dynamic contents. This property
-     * is used internally to implement the content caching feature. Do not modify it directly.
-     * @internal
-     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicPlaceholders()]],
-     * [[setDynamicPlaceholders()]], [[addDynamicPlaceholder()]] instead.
+     * @var array a list of placeholders for embedding dynamic contents.
      */
-    public $dynamicPlaceholders = [];
-
+    private $_dynamicPlaceholders = [];
     /**
      * @var array the view files currently being rendered. There may be multiple view files being
      * rendered at a moment because one view may be rendered within another.
@@ -184,7 +175,7 @@ class View extends Component implements DynamicContentAwareInterface
             }
         } elseif ($context instanceof ViewContextInterface) {
             $file = $context->getViewPath() . DIRECTORY_SEPARATOR . $view;
-        } elseif (($currentViewFile = $this->getViewFile()) !== false) {
+        } elseif (($currentViewFile = $this->getRequestedViewFile()) !== false) {
             $file = dirname($currentViewFile) . DIRECTORY_SEPARATOR . $view;
         } else {
             throw new InvalidCallException("Unable to resolve view file for view '$view': no active view context.");
@@ -222,7 +213,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function renderFile($viewFile, $params = [], $context = null)
     {
-        $viewFile = Yii::getAlias($viewFile);
+        $viewFile = $requestedFile = Yii::getAlias($viewFile);
 
         if ($this->theme !== null) {
             $viewFile = $this->theme->applyTo($viewFile);
@@ -238,7 +229,10 @@ class View extends Component implements DynamicContentAwareInterface
             $this->context = $context;
         }
         $output = '';
-        $this->_viewFiles[] = $viewFile;
+        $this->_viewFiles[] = [
+            'resolved' => $viewFile,
+            'requested' => $requestedFile
+        ];
 
         if ($this->beforeRender($viewFile, $params)) {
             Yii::debug("Rendering view file: $viewFile", __METHOD__);
@@ -267,7 +261,16 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function getViewFile()
     {
-        return end($this->_viewFiles);
+        return empty($this->_viewFiles) ? false : end($this->_viewFiles)['resolved'];
+    }
+
+    /**
+     * @return string|bool the requested view currently being rendered. False if no view file is being rendered.
+     * @since 2.0.16
+     */
+    protected function getRequestedViewFile()
+    {
+        return empty($this->_viewFiles) ? false : end($this->_viewFiles)['requested'];
     }
 
     /**
@@ -370,8 +373,9 @@ class View extends Component implements DynamicContentAwareInterface
         if (!empty($params)) {
             $statements = 'extract(unserialize(\'' . str_replace(['\\', '\'' ], ['\\\\', '\\\'' ], serialize($params)) . '\'));' . $statements;
         }
-        if (!empty($this->cacheStack)) {
-            $n = count($this->dynamicPlaceholders);
+
+        if (!empty($this->_cacheStack)) {
+            $n = count($this->_dynamicPlaceholders);
             $placeholder = "<![CDATA[YII-DYNAMIC-$n]]>";
             $this->addDynamicPlaceholder($placeholder, $statements);
 
@@ -386,7 +390,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function getDynamicPlaceholders()
     {
-        return $this->dynamicPlaceholders;
+        return $this->_dynamicPlaceholders;
     }
 
     /**
@@ -394,7 +398,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function setDynamicPlaceholders($placeholders)
     {
-        $this->dynamicPlaceholders = $placeholders;
+        $this->_dynamicPlaceholders = $placeholders;
     }
 
     /**
@@ -402,16 +406,12 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function addDynamicPlaceholder($placeholder, $statements)
     {
-        foreach ($this->cacheStack as $cache) {
-            if ($cache instanceof DynamicContentAwareInterface) {
-                $cache->addDynamicPlaceholder($placeholder, $statements);
-            } else {
-                // TODO: Remove in 2.1
-                $cache->dynamicPlaceholders[$placeholder] = $statements;
-            }
+        foreach ($this->_cacheStack as $cache) {
+            $cache->addDynamicPlaceholder($placeholder, $statements);
         }
-        $this->dynamicPlaceholders[$placeholder] = $statements;
-}
+
+        $this->_dynamicPlaceholders[$placeholder] = $statements;
+    }
 
     /**
      * Evaluates the given PHP statements.
@@ -431,7 +431,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function getDynamicContents()
     {
-        return $this->cacheStack;
+        return $this->_cacheStack;
     }
 
     /**
@@ -442,7 +442,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function pushDynamicContent(DynamicContentAwareInterface $instance)
     {
-        $this->cacheStack[] = $instance;
+        $this->_cacheStack[] = $instance;
     }
 
     /**
@@ -452,7 +452,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function popDynamicContent()
     {
-        array_pop($this->cacheStack);
+        array_pop($this->_cacheStack);
     }
 
     /**
