@@ -19,6 +19,8 @@ namespace yii\db;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @property $link
  */
 interface ActiveQueryInterface extends QueryInterface
 {

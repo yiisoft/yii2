@@ -294,12 +294,12 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * @param array $attributes attribute values (name-value pairs) to be saved for the record.
      * Unlike [[update()]] these are not going to be validated.
-     * @param array $condition the condition that matches the records that should get updated.
+     * @param string|array $condition the condition that matches the records that should get updated.
      * Please refer to [[QueryInterface::where()]] on how to specify this parameter.
      * An empty condition will match all records.
      * @return int the number of rows updated
      */
-    public static function updateAll($attributes, $condition = null);
+    public static function updateAll($attributes, $condition = '');
 
     /**
      * Deletes records using the provided conditions.
