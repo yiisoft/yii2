@@ -330,4 +330,14 @@ class ContainerTest extends TestCase
         $this->expectException(CircularReferenceException::class);
         $container->get(Qux::class);
     }
+
+    public function testCircularReferenceWithInstance()
+    {
+        $container = new Container();
+        $container->set(Bar::class, 'qux');
+        $container->set('qux', Qux::class, [Instance::of(Bar::class)]);
+
+        $this->expectException(CircularReferenceException::class);
+        $container->get(Bar::class);
+    }
 }
