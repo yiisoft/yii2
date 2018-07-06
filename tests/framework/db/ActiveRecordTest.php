@@ -1807,4 +1807,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertFalse(isset($cat->throwable));
 
     }
+
+    public function testAttributeGetterAndSetters()
+    {
+        $order = Order::findOne(['customer_id' => 1]);
+
+        $this->assertEquals('#1234567890123456', $order->tracking_number);
+        $order->tracking_number = '123456';
+        $this->assertEquals('0000000000123456', $order->tracking_number);
+    }
 }

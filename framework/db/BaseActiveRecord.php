@@ -288,7 +288,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function __get($name)
     {
         if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
-            $getter = 'get' . Inflector::variablize($name);
+            $getter = 'get' . Inflector::camelize($name);
             if (method_exists($this, $getter)) {
                 // read attribute, e.g. getName()
                 return $this->$getter();
@@ -328,10 +328,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             ) {
                 $this->resetDependentRelations($name);
             }
-            $setter = 'set' . Inflector::variablize($name);
+            $setter = 'set' . Inflector::camelize($name);
             if (method_exists($this, $setter)) {
                 // set attribute, e.g. setName()
-                $value = $this->$setter();
+                $value = $this->$setter($value);
             }
             $this->_attributes[$name] = $value;
         } else {
