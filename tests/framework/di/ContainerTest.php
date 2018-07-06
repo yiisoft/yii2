@@ -10,6 +10,7 @@ namespace yiiunit\framework\di;
 use Yii;
 use yii\di\Container;
 use yii\di\Instance;
+use yii\di\CircularReferenceException;
 use yii\validators\NumberValidator;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Order;
@@ -318,5 +319,25 @@ class ContainerTest extends TestCase
         $container->invoke($func);
 
         $this->assertTrue(true, 'Should be not exception above');
+    }
+
+    public function testCircularReference()
+    {
+        $container = new Container();
+        $container->set(Bar::class, Qux::class);
+        $container->set(Qux::class, Bar::class);
+
+        $this->expectException(CircularReferenceException::class);
+        $container->get(Qux::class);
+    }
+
+    public function testCircularReferenceWithInstance()
+    {
+        $container = new Container();
+        $container->set(Bar::class, 'qux');
+        $container->set('qux', Qux::class, [Instance::of(Bar::class)]);
+
+        $this->expectException(CircularReferenceException::class);
+        $container->get(Bar::class);
     }
 }
