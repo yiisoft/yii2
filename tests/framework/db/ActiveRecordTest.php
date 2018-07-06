@@ -1814,6 +1814,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $this->assertEquals('#1234567890123456', $order->tracking_number);
         $order->tracking_number = '123456';
-        $this->assertEquals('0000000000123456', $order->tracking_number);
+        $this->assertEquals('#0000000000123456', $order->tracking_number);
     }
 }

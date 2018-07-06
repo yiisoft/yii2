@@ -291,7 +291,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $getter = 'get' . Inflector::camelize($name);
             if (method_exists($this, $getter)) {
                 // read attribute, e.g. getName()
-                return $this->$getter();
+                return $this->$getter($this->_attributes[$name]);
             }
             return $this->_attributes[$name];
         }

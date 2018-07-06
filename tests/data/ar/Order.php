@@ -217,9 +217,9 @@ class Order extends ActiveRecord
         ];
     }
 
-    public function getTrackingNumber()
+    public function getTrackingNumber($value)
     {
-        return '#' . $this->tracking_number;
+        return '#' . $value;
     }
 
     public function setTrackingNumber($value)
