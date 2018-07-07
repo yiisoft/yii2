@@ -1063,7 +1063,7 @@ trait ActiveRecordTestTrait
     }
 
     /**
-     * Some PDO implementations(e.g. cubrid) do not support boolean values.
+     * Some PDO implementations do not support boolean values.
      * Make sure this does not affect AR layer.
      */
     public function testBooleanAttribute()
@@ -1105,7 +1105,7 @@ trait ActiveRecordTestTrait
         Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_FIND, function (Event $event) use (&$afterFindCalls) {
             /* @var $ar BaseActiveRecord */
             $ar = $event->getTarget();
-            $afterFindCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+            $afterFindCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
 
         $customer = $customerClass::findOne(1);
@@ -1160,7 +1160,7 @@ trait ActiveRecordTestTrait
         Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_REFRESH, function (Event $event) use (&$afterRefreshCalls) {
             /* @var $ar BaseActiveRecord */
             $ar = $event->getTarget();
-            $afterRefreshCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+            $afterRefreshCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
 
         $customer = $customerClass::findOne(1);

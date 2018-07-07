@@ -39,7 +39,7 @@ class AttributeBehaviorTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -129,13 +129,13 @@ class AttributeBehaviorTest extends TestCase
 class ActiveRecordWithAttributeBehavior extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {
         return [
             'attribute' => [
-                'class' => AttributeBehavior::class,
+                '__class' => AttributeBehavior::class,
                 'attributes' => [
                     self::EVENT_BEFORE_VALIDATE => 'alias',
                 ],
@@ -147,7 +147,7 @@ class ActiveRecordWithAttributeBehavior extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {

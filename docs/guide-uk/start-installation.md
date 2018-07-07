@@ -148,9 +148,7 @@ http://localhost:8080/
 
 Додаток, встановлений за інструкціями, наведеними вище, буде працювати одразу як
 з [Apache HTTP server](http://httpd.apache.org/), так і з [Nginx HTTP server](http://nginx.org/) на
-Windows, Mac OS X чи Linux із встановленим PHP 5.4 або вище. Yii 2.0 також сумісний із віртуальною машиною Фейсбука
-[HHVM](http://hhvm.com/), однак є деякі крайні випадки, де HHVM поводиться інакше,
-ніж рідний PHP, тому ви повинні бути дуже уважними при використанні HHVM.  
+Windows, Mac OS X чи Linux із встановленим PHP 5.4 або вище.
 
 На робочому сервері вам напевно захочеться змінити URL додатку з `http://www.example.com/basic/web/index.php`
 на `http://www.example.com/index.php`. Для цього необхідно змінити кореневу директорію в налаштуваннях веб-сервера на `basic/web`.

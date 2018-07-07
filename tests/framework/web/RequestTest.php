@@ -269,7 +269,98 @@ class RequestTest extends TestCase
         $this->assertEquals($_GET, ['id' => 63]);
     }
 
-    public function testGetHostInfo()
+    public function getHostInfoDataProvider()
+    {
+        return [
+            // empty
+            [
+                [],
+                [null, null]
+            ],
+            // normal
+            [
+                [
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example1.com',
+                    'example1.com',
+                ]
+            ],
+            // HTTP header missing
+            [
+                [
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example2.com',
+                    'example2.com',
+                ]
+            ],
+            // forwarded from untrusted server
+            [
+                [
+                    'HTTP_X_FORWARDED_HOST' => 'example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                ],
+                [
+                    'http://example1.com',
+                    'example1.com',
+                ]
+            ],
+            // forwarded from trusted proxy
+            [
+                [
+                    'HTTP_X_FORWARDED_HOST' => 'example3.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                [
+                    'http://example3.com',
+                    'example3.com',
+                ]
+            ],
+            // forwarded from trusted proxy
+            [
+                [
+                    'HTTP_X_FORWARDED_HOST' => 'example3.com, example2.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                [
+                    'http://example3.com',
+                    'example3.com',
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getHostInfoDataProvider
+     * @param array $server
+     * @param array $expected
+     */
+    public function testGetHostInfo($server, $expected)
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24',
+            ],
+        ]);
+
+        $this->assertEquals($expected[0], $request->getHostInfo());
+        $this->assertEquals($expected[1], $request->getHostName());
+        $_SERVER = $original;
+    }
+
+
+    public function testSetHostInfo()
     {
         $request = new Request();
 
@@ -521,39 +612,6 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function getIsPjaxDataProvider()
-    {
-        return [
-            [
-                [
-                ],
-                false,
-            ],
-            [
-                [
-                    'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
-                    'HTTP_X_PJAX' => 'any value',
-                ],
-                true,
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider getIsPjaxDataProvider
-     * @param array $server
-     * @param bool $expected
-     */
-    public function testGetIsPjax($server, $expected)
-    {
-        $original = $_SERVER;
-        $_SERVER = $server;
-        $request = new Request();
-
-        $this->assertEquals($expected, $request->getIsPjax());
-        $_SERVER = $original;
-    }
-
     public function testGetOrigin()
     {
         $_SERVER['HTTP_ORIGIN'] = 'https://www.w3.org';
@@ -603,7 +661,7 @@ class RequestTest extends TestCase
     public function testHttpAuthCredentialsFromServerSuperglobal()
     {
         $original = $_SERVER;
-        list($user, $pw) = ['foo', 'bar'];
+        [$user, $pw] = ['foo', 'bar'];
         $_SERVER['PHP_AUTH_USER'] = $user;
         $_SERVER['PHP_AUTH_PW'] = $pw;
 
@@ -617,7 +675,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function testGetBodyParams()
+    public function testGetParsedBody()
     {
         $body = new MemoryStream();
         $body->write('name=value');
@@ -640,6 +698,23 @@ class RequestTest extends TestCase
             $request->withMethod('POST')->getParsedBody();
         } catch (UnsupportedMediaTypeHttpException $postWithoutContentTypeException) {}
         $this->assertTrue(isset($postWithoutContentTypeException));
+    }
+
+    /**
+     * @depends testGetParsedBody
+     */
+    public function testParseEmptyBody()
+    {
+        $request = new Request();
+        $request->setMethod('GET');
+        $request->setBody(new MemoryStream());
+
+        $this->assertNull($request->getParsedBody());
+
+        try {
+            $request->withHeader('Content-Type', 'test/json')->getParsedBody();
+        } catch (UnsupportedMediaTypeHttpException $noContentException) {}
+        $this->assertTrue(isset($noContentException));
     }
 
     /**
@@ -765,7 +840,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @depends testGetBodyParams
+     * @depends testGetParsedBody
      * @dataProvider dataProviderDefaultUploadedFiles
      *
      * @param array $rawFiles
@@ -898,5 +973,29 @@ class RequestTest extends TestCase
         $newStorage = $request->withoutAttribute('attr1');
         $this->assertNotSame($newStorage, $request);
         $this->assertSame(['attr2' => '2'], $newStorage->getAttributes());
+    }
+
+    public function testGetParsedBodyParam()
+    {
+        $request = new Request();
+
+        $request->setParsedBody([
+            'someParam' => 'some value',
+            'param.dot' => 'value.dot',
+        ]);
+        $this->assertSame('some value', $request->getParsedBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getParsedBodyParam('param.dot'));
+        $this->assertSame(null, $request->getParsedBodyParam('unexisting'));
+        $this->assertSame('default', $request->getParsedBodyParam('unexisting', 'default'));
+
+        // @see https://github.com/yiisoft/yii2/issues/14135
+        $bodyParams = new \stdClass();
+        $bodyParams->someParam = 'some value';
+        $bodyParams->{'param.dot'} = 'value.dot';
+        $request->setParsedBody($bodyParams);
+        $this->assertSame('some value', $request->getParsedBodyParam('someParam'));
+        $this->assertSame('value.dot', $request->getParsedBodyParam('param.dot'));
+        $this->assertSame(null, $request->getParsedBodyParam('unexisting'));
+        $this->assertSame('default', $request->getParsedBodyParam('unexisting', 'default'));
     }
 }

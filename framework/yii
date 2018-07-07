@@ -13,6 +13,7 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 $composerAutoload = [
     __DIR__ . '/../vendor/autoload.php', // in yii2-dev repo
     __DIR__ . '/../../autoload.php', // installed as a composer binary
+    __DIR__ . '/../../../autoload.php', // installed as a composer binary from yii2-dev repo
 ];
 $vendorPath = null;
 foreach ($composerAutoload as $autoload) {

@@ -31,17 +31,13 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     public function testDeadlockException()
     {
-        if (getenv('TRAVIS') && version_compare(PHP_VERSION, '7.0.0', '<')) {
-            $this->markTestSkipped('Skipping PHP 5 on Travis since it segfaults with pcntl');
-        }
-
-        if (!function_exists('pcntl_fork')) {
+        if (!\function_exists('pcntl_fork')) {
             $this->markTestSkipped('pcntl_fork() is not available');
         }
-        if (!function_exists('posix_kill')) {
+        if (!\function_exists('posix_kill')) {
             $this->markTestSkipped('posix_kill() is not available');
         }
-        if (!function_exists('pcntl_sigtimedwait')) {
+        if (!\function_exists('pcntl_sigtimedwait')) {
             $this->markTestSkipped('pcntl_sigtimedwait() is not available');
         }
 
@@ -193,10 +189,10 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             $this->log("child 1: ! sql error $sqlError: $driverError: $driverMessage");
             return 1;
         } catch (\Exception $e) {
-            $this->log('child 1: ! exit <<' . get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
+            $this->log('child 1: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
         } catch (\Throwable $e) {
-            $this->log('child 1: ! exit <<' . get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
+            $this->log('child 1: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
         }
         $this->log('child 1: exit');
@@ -253,10 +249,10 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             $this->log("child 2: ! sql error $sqlError: $driverError: $driverMessage");
             return 1;
         } catch (\Exception $e) {
-            $this->log('child 2: ! exit <<' . get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
+            $this->log('child 2: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
         } catch (\Throwable $e) {
-            $this->log('child 2: ! exit <<' . get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
+            $this->log('child 2: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
         }
         $this->log('child 2: exit');
@@ -271,11 +267,9 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     private function setErrorHandler()
     {
-        if (version_compare(PHP_VERSION, '7', '<')) {
-            set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-                throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
-            });
-        }
+        set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+            throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
+        });
     }
 
     /**

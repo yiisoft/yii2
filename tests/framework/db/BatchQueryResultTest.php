@@ -80,8 +80,8 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
         $query = new Query();
         $query->from('customer')->orderBy('id');
         $allRows = [];
-        foreach ($query->each(100, $db) as $rows) {
-            $allRows[] = $rows;
+        foreach ($query->each(2, $db) as $index => $row) {
+            $allRows[$index] = $row;
         }
         $this->assertCount(3, $allRows);
         $this->assertEquals('user1', $allRows[0]['name']);

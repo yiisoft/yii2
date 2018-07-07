@@ -24,7 +24,7 @@ use yii\helpers\Json;
  *     // ...
  *     'formatters' => [
  *         \yii\web\Response::FORMAT_JSON => [
- *              'class' => \yii\web\JsonResponseFormatter::class,
+ *              '__class' => \yii\web\JsonResponseFormatter::class,
  *              'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
  *              // ...
  *         ],
@@ -42,19 +42,17 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      * @since 2.0.14
      */
     const CONTENT_TYPE_JSONP = 'application/javascript; charset=UTF-8';
-
     /**
      * JSONP Content Type
      * @since 2.0.14
      */
     const CONTENT_TYPE_JSON = 'application/json; charset=UTF-8';
- 
     /**
      * HAL JSON Content Type
      * @since 2.0.14
      */
     const CONTENT_TYPE_HAL_JSON = 'application/hal+json; charset=UTF-8';
-    
+
     /**
      * @var string|null custom value of the `Content-Type` header of the response.
      * When equals `null` default content type will be used based on the `useJsonp` property.

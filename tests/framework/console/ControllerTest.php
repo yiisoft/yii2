@@ -63,7 +63,7 @@ class ControllerTest extends TestCase
         $this->assertEquals('notdefault', $other);
 
         $params = ['test-array' => 'from params,notdefault'];
-        list($fromParam, $other) = $controller->runAction('aksi6', $params);
+        [$fromParam, $other] = $controller->runAction('aksi6', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 

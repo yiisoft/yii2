@@ -113,7 +113,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
     public function has($name)
     {
         return isset($this->_cookies[$name]) && $this->_cookies[$name]->value !== ''
-            && ($this->_cookies[$name]->expire === null || $this->_cookies[$name]->expire >= time());
+            && ($this->_cookies[$name]->expire === null || $this->_cookies[$name]->expire === 0 || $this->_cookies[$name]->expire >= time());
     }
 
     /**
@@ -148,7 +148,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
             $cookie->value = '';
         } else {
             $cookie = Yii::createObject([
-                'class' => \yii\http\Cookie::class,
+                '__class' => Cookie::class,
                 'name' => $cookie,
                 'expire' => 1,
             ]);

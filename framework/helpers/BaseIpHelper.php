@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\helpers;
 
@@ -22,6 +27,7 @@ class BaseIpHelper
      * The length of IPv4 address in bits
      */
     const IPV4_ADDRESS_LENGTH = 32;
+
 
     /**
      * Gets the IP version. Does not perform IP address validation.
@@ -69,8 +75,8 @@ class BaseIpHelper
         }
 
         $maxMask = $ipVersion === self::IPV4 ? self::IPV4_ADDRESS_LENGTH : self::IPV6_ADDRESS_LENGTH;
-        $mask = isset($mask) ? $mask : $maxMask;
-        $netMask = isset($netMask) ? $netMask : $maxMask;
+        $mask = $mask ?? $maxMask;
+        $netMask = $netMask ?? $maxMask;
 
         $binIp = static::ip2bin($ip);
         $binNet = static::ip2bin($net);

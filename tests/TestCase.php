@@ -18,16 +18,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     public static $params;
 
     /**
-     * Clean up after test case.
-     */
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-        $logger = Yii::getLogger();
-        $logger->flush();
-    }
-
-    /**
      * Returns a test configuration param from /data/config.php.
      * @param  string $name params name
      * @param  mixed $default default value to use when param is not set.
@@ -39,7 +29,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             static::$params = require __DIR__ . '/data/config.php';
         }
 
-        return isset(static::$params[$name]) ? static::$params[$name] : $default;
+        return static::$params[$name] ?? $default;
     }
 
     /**
@@ -50,6 +40,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         parent::tearDown();
         $this->destroyApplication();
+        Yii::setLogger(null);
+        Yii::$container = new \yii\di\Container();
     }
 
     /**
@@ -58,7 +50,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param array $config The application configuration, if needed
      * @param string $appClass name of the application class to create
      */
-    protected function mockApplication($config = [], $appClass = '\yii\console\Application')
+    protected function mockApplication($config = [], $appClass = \yii\console\Application::class)
     {
         new $appClass(ArrayHelper::merge([
             'id' => 'testapp',
@@ -67,7 +59,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         ], $config));
     }
 
-    protected function mockWebApplication($config = [], $appClass = '\yii\web\Application')
+    protected function mockWebApplication($config = [], $appClass = \yii\web\Application::class)
     {
         new $appClass(ArrayHelper::merge([
             'id' => 'testapp',
@@ -102,10 +94,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function destroyApplication()
     {
-        if (\Yii::$app && \Yii::$app->has('session', true)) {
-            \Yii::$app->session->close();
+        if (Yii::$app && Yii::$app->has('session', true)) {
+            Yii::$app->session->close();
         }
-        \Yii::$app = null;
+        Yii::$app = null;
     }
 
     /**
@@ -187,7 +179,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         return $result;
     }
-
 
     /**
      * Asserts that value is one of expected values.

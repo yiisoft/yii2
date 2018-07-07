@@ -449,10 +449,6 @@ class FormatterTest extends TestCase
             $this->markTestSkipped('ICU data does not contain measure units information.');
         };
 
-        if (defined('HHVM_VERSION')) {
-            return $skip();
-        }
-
         try {
             $bundle = new \ResourceBundle($this->formatter->locale, 'ICUDATA-unit');
             $massUnits = $bundle['units']['mass'];

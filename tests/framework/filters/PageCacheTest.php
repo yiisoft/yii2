@@ -410,7 +410,7 @@ class PageCacheTest extends TestCase
                 'cache' => $cache = new Cache(['handler' => new ArrayCache()]),
                 'view' => new View(),
                 'dependency' => [
-                    'class' => ExpressionDependency::class,
+                    '__class' => ExpressionDependency::class,
                     'expression' => 'Yii::$app->params[\'dependency\']',
                 ],
             ]);

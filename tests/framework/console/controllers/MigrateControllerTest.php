@@ -32,7 +32,7 @@ class MigrateControllerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => 'yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -171,6 +171,10 @@ class MigrateControllerTest extends TestCase
 
     public function testCreateLongNamedMigration()
     {
+        $this->setOutputCallback(function($output) {
+            return null;
+        });
+
         $migrationName = str_repeat('a', 180);
 
         $this->expectException('yii\console\Exception');

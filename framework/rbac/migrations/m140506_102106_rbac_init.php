@@ -44,7 +44,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function up()
     {
@@ -137,7 +137,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function down()
     {

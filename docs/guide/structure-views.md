@@ -531,7 +531,7 @@ like the following:
     // ...
     'components' => [
         'view' => [
-            'class' => 'app\components\View',
+            '__class' => app\components\View::class,
         ],
         // ...
     ],
@@ -683,7 +683,7 @@ class SiteController extends Controller
     {
         return [
             'page' => [
-                'class' => 'yii\web\ViewAction',
+                '__class' => yii\web\ViewAction::class,
             ],
         ];
     }

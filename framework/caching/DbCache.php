@@ -10,6 +10,7 @@ namespace yii\caching;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\db\PdoValue;
 use yii\db\Query;
 use yii\di\Instance;
 
@@ -27,9 +28,9 @@ use yii\di\Instance;
  * return [
  *     'components' => [
  *         'cache' => [
- *             'class' => yii\caching\Cache:class,
+ *             '__class' => yii\caching\Cache:class,
  *             'handler' => [
- *                 'class' => yii\caching\DbCache::class,
+ *                 '__class' => yii\caching\DbCache::class,
  *                 // 'db' => 'mydb',
  *                 // 'cacheTable' => 'my_cache',
  *             ],
@@ -134,6 +135,7 @@ class DbCache extends SimpleCache
             $this->db->enableQueryCache = false;
             $result = $query->createCommand($this->db)->queryScalar();
             $this->db->enableQueryCache = true;
+
             return $result;
         }
 
@@ -179,21 +181,23 @@ class DbCache extends SimpleCache
      */
     protected function setValue($key, $value, $ttl)
     {
-        $result = $this->db->noCache(function (Connection $db) use ($key, $value, $ttl) {
-            $command = $db->createCommand()
-                ->update($this->cacheTable, [
+        try {
+            $this->db->noCache(function (Connection $db) use ($key, $value, $ttl) {
+                $db->createCommand()->upsert($this->cacheTable, [
+                    'id' => $key,
                     'expire' => $ttl > 0 ? $ttl + time() : 0,
-                    'data' => [$value, \PDO::PARAM_LOB],
-                ], ['id' => $key]);
-            return $command->execute();
-        });
+                    'data' => new PdoValue($value, \PDO::PARAM_LOB),
+                ])->execute();
+            });
 
-        if ($result) {
             $this->gc();
+
             return true;
+        } catch (\Exception $e) {
+            Yii::warning("Unable to update or insert cache data: {$e->getMessage()}", __METHOD__);
+
+            return false;
         }
-        
-        return $this->addValue($key, $value, $ttl);
     }
 
     /**
@@ -215,12 +219,14 @@ class DbCache extends SimpleCache
                     ->insert($this->cacheTable, [
                         'id' => $key,
                         'expire' => $duration > 0 ? $duration + time() : 0,
-                        'data' => [$value, \PDO::PARAM_LOB],
+                        'data' => new PdoValue($value, \PDO::PARAM_LOB),
                     ])->execute();
             });
 
             return true;
         } catch (\Exception $e) {
+            Yii::warning("Unable to insert cache data: {$e->getMessage()}", __METHOD__);
+
             return false;
         }
     }

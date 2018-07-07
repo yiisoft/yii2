@@ -119,17 +119,17 @@ Now you can use most features provided by Yii. For example, you can create Activ
 to work with databases.
 
 
-Using Yii 2 with Yii 1 <span id="using-both-yii2-yii1"></span>
+Using Yii 3 with Yii 1 <span id="using-both-yii2-yii1"></span>
 ----------------------
 
 If you were using Yii 1 previously, it is likely you have a running Yii 1 application. Instead of rewriting
-the whole application in Yii 2, you may just want to enhance it using some of the features only available in Yii 2.
+the whole application in Yii 3, you may just want to enhance it using some of the features only available in Yii 3.
 This can be achieved as described below.
 
-> Note: Yii 2.1 requires PHP 7.1 or above. You should make sure that both your server and the existing application
+> Note: Yii 3 requires PHP 7.1 or above. You should make sure that both your server and the existing application
 > support this.
 
-First, install Yii 2 in your existing application by following the instructions given in the [last subsection](#using-yii-in-others).
+First, install Yii 3 in your existing application by following the instructions given in the [last subsection](#using-yii-in-others).
 
 Second, modify the entry script of the application as follows,
 
@@ -138,20 +138,20 @@ Second, modify the entry script of the application as follows,
 require __DIR__ . '/../components/Yii.php';
 
 // configuration for Yii 2 application
-$yii2Config = require __DIR__ . '/../config/yii2/web.php';
-new yii\web\Application($yii2Config); // Do NOT call run(), yii2 app is only used as service locator
+$yii3Config = require __DIR__ . '/../config/yii3/web.php';
+new yii\web\Application($yii3Config); // Do NOT call run(), yii2 app is only used as service locator
 
 // configuration for Yii 1 application
 $yii1Config = require __DIR__ . '/../config/yii1/main.php';
 Yii::createWebApplication($yii1Config)->run();
 ```
 
-Because both Yii 1 and Yii 2 have the `Yii` class, you should create a customized version to combine them.
+Because both Yii 1 and Yii 3 have the `Yii` class, you should create a customized version to combine them.
 The above code includes the customized `Yii` class file, which can be created as follows.
 
 ```php
-$yii2path = '/path/to/yii2';
-require $yii2path . '/BaseYii.php'; // Yii 2.x
+$yii3path = '/path/to/yii3';
+require $yii3path . '/BaseYii.php'; // Yii 3.x
 
 $yii1path = '/path/to/yii1';
 require $yii1path . '/YiiBase.php'; // Yii 1.x

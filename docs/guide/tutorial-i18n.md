@@ -102,7 +102,7 @@ method to perform the actual translation work. The component can be configured i
     'i18n' => [
         'translations' => [
             'app*' => [
-                'class' => 'yii\i18n\PhpMessageSource',
+                '__class' => yii\i18n\PhpMessageSource::class,
                 //'basePath' => '@app/messages',
                 //'sourceLanguage' => 'en-US',
                 'fileMap' => [
@@ -193,11 +193,11 @@ echo \Yii::t('app', 'Hello, {username}!', [
 While translating a message containing placeholders, you should leave the placeholders as is. This is because the placeholders
 will be replaced with the actual values when you call `Yii::t()` to translate a message.
 
-You can use either *named placeholders* or *positional placeholders*, but not both, in a single message.
- 
 The previous example shows how you can use named placeholders. That is, each placeholder is written in the format of 
 `{name}`, and you provide an associative array whose keys are the placeholder names
 (without the curly brackets) and whose values are the corresponding values placeholder to be replaced with.
+
+> Note: Some characters such as `.`, `-` or `=` are not allowed in placeholder names. Use `_` instead.
 
 Positional placeholders use zero-based integer sequence as names which are replaced by the provided values
 according to their positions in the call of `Yii::t()`. In the following example, the positional placeholders
@@ -302,7 +302,7 @@ You can also specify a custom pattern to format the date value:
 echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
+[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Time <span id="time"></span>
@@ -325,7 +325,7 @@ You can also specify a custom pattern to format the time value:
 echo \Yii::t('app', 'It is {0,date,HH:mm}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
+[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Spellout <span id="spellout"></span>
@@ -492,7 +492,7 @@ to the application config:
 'i18n' => [
     'translations' => [
         '*' => [
-            'class' => 'yii\i18n\PhpMessageSource'
+            '__class' => yii\i18n\PhpMessageSource::class
         ],
     ],
 ],
@@ -531,7 +531,7 @@ class Module extends \yii\base\Module
     public function registerTranslations()
     {
         Yii::$app->i18n->translations['modules/users/*'] = [
-            'class' => 'yii\i18n\PhpMessageSource',
+            '__class' => \yii\i18n\PhpMessageSource::class,
             'sourceLanguage' => 'en-US',
             'basePath' => '@app/modules/users/messages',
             'fileMap' => [
@@ -579,7 +579,7 @@ class Menu extends Widget
     {
         $i18n = Yii::$app->i18n;
         $i18n->translations['widgets/menu/*'] = [
-            'class' => 'yii\i18n\PhpMessageSource',
+            '__class' => \yii\i18n\PhpMessageSource::class,
             'sourceLanguage' => 'en-US',
             'basePath' => '@app/widgets/menu/messages',
             'fileMap' => [
@@ -617,7 +617,7 @@ In order to do so, configure the `i18n` [application component](structure-applic
 'i18n' => [
     'translations' => [
         'yii' => [
-            'class' => 'yii\i18n\PhpMessageSource',
+            '__class' => yii\i18n\PhpMessageSource::class,
             'sourceLanguage' => 'en-US',
             'basePath' => '@app/messages'
         ],
@@ -643,12 +643,12 @@ First you need to setup an event handler. This can be done in the application co
     'i18n' => [
         'translations' => [
             'app*' => [
-                'class' => 'yii\i18n\PhpMessageSource',
+                '__class' => yii\i18n\PhpMessageSource::class,
                 'fileMap' => [
                     'app' => 'app.php',
                     'app/error' => 'error.php',
                 ],
-                'on missingTranslation' => ['app\components\TranslationEventHandler', 'handleMissingTranslation']
+                'on missingTranslation' => [app\components\TranslationEventHandler::class, 'handleMissingTranslation']
             ],
         ],
     ],

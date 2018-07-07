@@ -63,9 +63,9 @@ and accessible. The following code shows how to configure the `cache` applicatio
 ```php
 'components' => [
     'cache' => [
-        'class' => yii\caching\Cache::class,
+        '__class' => yii\caching\Cache::class,
         'handler' => [
-            'class' => yii\caching\MemCache::class,
+            '__class' => yii\caching\MemCache::class,
             'servers' => [
                 [
                     'host' => 'server1',
@@ -93,9 +93,9 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 ```php
 'components' => [
     'cache' => [
-        'class' => yii\caching\Cache::class,
+        '__class' => yii\caching\Cache::class,
         'handler' => [
-            'class' => yii\caching\ApcCache::class,
+            '__class' => yii\caching\ApcCache::class,
         ],
     ],
 ],
@@ -114,6 +114,9 @@ Yii supports a wide range of cache handlers. The following is a summary:
   server, no dedicated load balancers, etc.).
 * [[yii\caching\DbCache]]: uses a database table to store cached data. To use this cache, you must
   create a table as specified in [[yii\caching\DbCache::cacheTable]].
+* [[yii\caching\ArrayCache]]: provides caching for the current request only by storing the values in an array.
+  For enhanced performance of ArrayCache, you can disable serialization of the stored data by setting
+  [[yii\caching\ArrayCache::$serializer]] to `false`.
 * [[yii\caching\DummyCache]]: serves as a cache placeholder which does no real caching.
   The purpose of this component is to simplify the code that needs to check the availability of cache.
   For example, during development or if the server doesn't have actual cache support, you may configure
@@ -211,9 +214,9 @@ property. For example, in the application configuration you can write the follow
 ```php
 'components' => [
     'cache' => [
-        'class' => 'yii\caching\Cache',
+        '__class' => 'yii\caching\Cache',
         'handler' => [
-            'class' => 'yii\caching\ApcCache',
+            '__class' => 'yii\caching\ApcCache',
             'keyPrefix' => 'myapp',       // a unique cache key prefix
         ],
     ],
@@ -319,6 +322,13 @@ $result = Customer::getDb()->cache(function ($db) {
   The query caching described above has the advantage that you may specify flexible cache dependencies
   and are potentially more efficient.
 
+Since 2.0.14 you can use the following shortcuts:
+
+```php
+(new Query())->cache(7200)->all();
+// and
+User::find()->cache(7200)->all();
+```
 
 ### Clearing Cache <span id="clearing-cache">
 
@@ -426,4 +436,18 @@ handler for the column data.
 Some caching storage has size limitation. For example, memcache limits the maximum size
 of each entry to be 1MB. Therefore, if the size of a query result exceeds this limit,
 the caching will fail.
+
+
+## Cache Flushing <span id="cache-flushing">
+
+When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
+
+You can flush the cache from the console by calling `yii cache/flush` as well.
+ - `yii cache`: lists the available caches in application
+ - `yii cache/flush cache1 cache2`: flushes the cache components `cache1`, `cache2` (you can pass multiple component
+ names separated with space)
+ - `yii cache/flush-all`: flushes all cache components in the application
+
+> Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
+components in your web and console application configs to reach the proper effect.
 

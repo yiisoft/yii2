@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class,
+                '__class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -70,7 +70,7 @@ You may customize this behavior by configuring the [[yii\filters\AccessControl::
 
 ```php
 [
-    'class' => AccessControl::class,
+    '__class' => AccessControl::class,
     ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('You are not allowed to access this page');
@@ -129,7 +129,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::class,
+                '__class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -202,7 +202,7 @@ return [
     // ...
     'components' => [
         'authManager' => [
-            'class' => 'yii\rbac\PhpManager',
+            '__class' => yii\rbac\PhpManager::class,
         ],
         // ...
     ],
@@ -224,7 +224,7 @@ return [
     // ...
     'components' => [
         'authManager' => [
-            'class' => 'yii\rbac\DbManager',
+            '__class' => yii\rbac\DbManager::class,
             // uncomment if you want to cache RBAC items hierarchy
             // 'cache' => 'cache',
         ],
@@ -538,7 +538,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::class,
+            '__class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,
@@ -585,7 +585,7 @@ the access rule:
     'actions' => ['update'],
     'roles' => ['updatePost'],
     'roleParams' => function() {
-        return ['post' => Post::findOne(Yii::$app->request->get('id'))];
+        return ['post' => Post::findOne(['id' => Yii::$app->request->get('id')])];
     },
 ],
 ```
@@ -599,7 +599,7 @@ If the creation of role parameters is a simple operation, you may just specify a
     'allow' => true,
     'actions' => ['update'],
     'roles' => ['updatePost'],
-    'roleParams' => ['postId' => Yii::$app->request->get('id')];
+    'roleParams' => ['postId' => Yii::$app->request->get('id')],
 ],
 ```
 
@@ -617,7 +617,7 @@ assign each user to an RBAC role. Let's use an example to show how this can be d
 
 Assume in the user table, you have a `group` column which uses 1 to represent the administrator group and 2 the author group.
 You plan to have two RBAC roles `admin` and `author` to represent the permissions for these two groups, respectively.
-You can set up the RBAC data as follows,
+You can set up the RBAC data as follows, first create a class:
 
 
 ```php
@@ -646,7 +646,11 @@ class UserGroupRule extends Rule
         return false;
     }
 }
+```
 
+Then create your own command/migration as explained [in the previous section](#generating-rbac-data):
+
+```php
 $auth = Yii::$app->authManager;
 
 $rule = new \app\rbac\UserGroupRule;
@@ -676,7 +680,7 @@ return [
     // ...
     'components' => [
         'authManager' => [
-            'class' => 'yii\rbac\PhpManager',
+            '__class' => yii\rbac\PhpManager::class,
             'defaultRoles' => ['admin', 'author'],
         ],
         // ...

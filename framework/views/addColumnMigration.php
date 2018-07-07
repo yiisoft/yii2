@@ -29,7 +29,7 @@ use yii\db\Migration;
 class <?= $className ?> extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function safeUp()
     {
@@ -42,7 +42,7 @@ class <?= $className ?> extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function safeDown()
     {

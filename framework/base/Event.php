@@ -195,7 +195,7 @@ class Event extends BaseObject
      *
      * ```php
      * Event::on('app\models\db\*', '*Insert', function ($event) {
-     *     Yii::trace(get_class($event->sender) . ' is inserted.');
+     *     Yii::debug(get_class($event->sender) . ' is inserted.');
      * });
      * ```
      *
@@ -413,6 +413,7 @@ class Event extends BaseObject
             foreach ($wildcardEventHandlers as $classWildcard => $handlers) {
                 if (StringHelper::matchWildcard($classWildcard, $class)) {
                     $eventHandlers = array_merge($eventHandlers, $handlers);
+                    unset($wildcardEventHandlers[$classWildcard]);
                 }
             }
 

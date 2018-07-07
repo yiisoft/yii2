@@ -8,6 +8,7 @@
 namespace yii\db;
 
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
@@ -165,7 +166,7 @@ class ActiveRecord extends BaseActiveRecord
      * This method is internally called by [[findOne()]] and [[findAll()]].
      * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
      * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
-     * @throws InvalidConfigException if there is no primary key defined
+     * @throws InvalidConfigException if there is no primary key defined.
      * @internal
      */
     protected static function findByCondition($condition)
@@ -180,27 +181,64 @@ class ActiveRecord extends BaseActiveRecord
                 if (!empty($query->join) || !empty($query->joinWith)) {
                     $pk = static::tableName() . '.' . $pk;
                 }
-                $condition = [$pk => $condition];
+                // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
+                $condition = [$pk => is_array($condition) ? array_values($condition) : $condition];
             } else {
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
+        } elseif (is_array($condition)) {
+            $condition = static::filterCondition($condition);
         }
 
         return $query->andWhere($condition);
     }
 
     /**
-     * @inheritdoc
+     * Filters array condition before it is assiged to a Query filter.
+     *
+     * This method will ensure that an array condition only filters on existing table columns.
+     *
+     * @param array $condition condition to filter.
+     * @return array filtered condition.
+     * @throws InvalidArgumentException in case array contains unsafe values.
+     * @since 2.0.15
+     * @internal
+     */
+    protected static function filterCondition(array $condition)
+    {
+        $result = [];
+        // valid column names are table column names or column names prefixed with table name
+        $columnNames = static::getTableSchema()->getColumnNames();
+        $tableName = static::tableName();
+        $columnNames = array_merge($columnNames, array_map(function($columnName) use ($tableName) {
+            return "$tableName.$columnName";
+        }, $columnNames));
+        foreach ($condition as $key => $value) {
+            if (is_string($key) && !in_array($key, $columnNames, true)) {
+                throw new InvalidArgumentException('Key "' . $key . '" is not a column name and can not be used as a filter');
+            }
+            $result[$key] = is_array($value) ? array_values($value) : $value;
+        }
+
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function refresh()
     {
+        $query = static::find();
+        $tableName = key($query->getTablesUsedInFrom());
         $pk = [];
         // disambiguate column names in case ActiveQuery adds a JOIN
         foreach ($this->getPrimaryKey(true) as $key => $value) {
-            $pk[static::tableName() . '.' . $key] = $value;
+            $pk[$tableName . '.' . $key] = $value;
         }
+        $query->where($pk);
+
         /* @var $record BaseActiveRecord */
-        $record = static::findOne($pk);
+        $record = $query->one();
         return $this->refreshInternal($record);
     }
 
@@ -313,7 +351,7 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
@@ -413,7 +451,7 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function populateRecord($record, $row)
     {

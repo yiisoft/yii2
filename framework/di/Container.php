@@ -77,7 +77,7 @@ use yii\helpers\ArrayHelper;
  *     'dsn' => '...',
  * ]);
  * $container->set(\app\models\UserFinderInterface::class, [
- *     'class' => \app\models\UserFinder::class,
+ *     '__class' => \app\models\UserFinder::class,
  * ]);
  * $container->set('userLister', \app\models\UserLister::class);
  *
@@ -121,7 +121,10 @@ class Container extends Component
      * is associated with a list of constructor parameter types or default values.
      */
     private $_dependencies = [];
-
+    /**
+     * @var array used to collect classes instantiated during get to detect circular references
+     */
+    private $_getting = [];
 
     /**
      * Returns an instance of the requested class.
@@ -157,14 +160,19 @@ class Container extends Component
             return $this->build($class, $params, $config);
         }
 
+        if (isset($this->_getting[$class])) {
+            throw new CircularReferenceException($class);
+        }
+        $this->_getting[$class] = 1;
+
         $definition = $this->_definitions[$class];
 
         if (is_callable($definition, true)) {
             $params = $this->resolveDependencies($this->mergeParams($class, $params));
             $object = call_user_func($definition, $this, $params, $config);
         } elseif (is_array($definition)) {
-            $concrete = $definition['class'];
-            unset($definition['class']);
+            $concrete = $definition['__class'];
+            unset($definition['__class']);
 
             $config = array_merge($definition, $config);
             $params = $this->mergeParams($class, $params);
@@ -175,7 +183,7 @@ class Container extends Component
                 $object = $this->get($concrete, $params, $config);
             }
         } elseif (is_object($definition)) {
-            return $this->_singletons[$class] = $definition;
+            $object = $this->_singletons[$class] = $definition;
         } else {
             throw new InvalidConfigException('Unexpected object definition type: ' . gettype($definition));
         }
@@ -184,6 +192,7 @@ class Container extends Component
             // singleton
             $this->_singletons[$class] = $object;
         }
+        unset($this->_getting[$class]);
 
         return $object;
     }
@@ -218,7 +227,7 @@ class Container extends Component
      * // register an alias name with class configuration
      * // In this case, a "class" element is required to specify the class
      * $container->set('db', [
-     *     'class' => \yii\db\Connection::class,
+     *     '__class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -320,17 +329,17 @@ class Container extends Component
     protected function normalizeDefinition($class, $definition)
     {
         if (empty($definition)) {
-            return ['class' => $class];
+            return ['__class' => $class];
         } elseif (is_string($definition)) {
-            return ['class' => $definition];
+            return ['__class' => $definition];
         } elseif (is_callable($definition, true) || is_object($definition)) {
             return $definition;
         } elseif (is_array($definition)) {
-            if (!isset($definition['class'])) {
+            if (!isset($definition['__class'])) {
                 if (strpos($class, '\\') !== false) {
-                    $definition['class'] = $class;
+                    $definition['__class'] = $class;
                 } else {
-                    throw new InvalidConfigException('A class definition requires a "class" member.');
+                    throw new InvalidConfigException('A class definition requires a "__class" member.');
                 }
             }
 
@@ -363,6 +372,13 @@ class Container extends Component
     {
         /* @var $reflection ReflectionClass */
         [$reflection, $dependencies] = $this->getDependencies($class);
+
+        if (isset($config['__construct()'])) {
+            foreach ($config['__construct()'] as $index => $param) {
+                $dependencies[$index] = $param;
+            }
+            unset($config['__construct()']);
+        }
 
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
@@ -431,7 +447,7 @@ class Container extends Component
         $constructor = $reflection->getConstructor();
         if ($constructor !== null) {
             foreach ($constructor->getParameters() as $param) {
-                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                if ($param->isVariadic()) {
                     break;
                 } elseif ($param->isDefaultValueAvailable()) {
                     $dependencies[] = $param->getDefaultValue();
@@ -536,7 +552,7 @@ class Container extends Component
             $name = $param->getName();
             if (($class = $param->getClass()) !== null) {
                 $className = $class->getName();
-                if (version_compare(PHP_VERSION, '5.6.0', '>=') && $param->isVariadic()) {
+                if ($param->isVariadic()) {
                     $args = array_merge($args, array_values($params));
                     break;
                 } elseif ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
@@ -594,7 +610,7 @@ class Container extends Component
      * $container->setDefinitions([
      *     'yii\web\Request' => 'app\components\Request',
      *     'yii\web\Response' => [
-     *         'class' => 'app\components\Response',
+     *         '__class' => 'app\components\Response',
      *         'format' => 'json'
      *     ],
      *     'foo\Bar' => function () {
@@ -615,7 +631,7 @@ class Container extends Component
      * ```php
      * $container->setDefinitions([
      *     'foo\Bar' => [
-     *          ['class' => 'app\Bar'],
+     *          ['__class' => 'app\Bar'],
      *          [Instance::of('baz')]
      *      ]
      * ]);

@@ -21,7 +21,7 @@ use yii\helpers\StringHelper;
 class Command extends \yii\db\Command
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function execute()
     {
@@ -43,7 +43,7 @@ class Command extends \yii\db\Command
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function queryInternal($method, $fetchMode = null)
     {

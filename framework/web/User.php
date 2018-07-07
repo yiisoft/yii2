@@ -188,8 +188,16 @@ class User extends Component
     {
         if ($this->_identity === false) {
             if ($this->enableSession && $autoRenew) {
-                $this->_identity = null;
-                $this->renewAuthStatus();
+                try {
+                    $this->_identity = null;
+                    $this->renewAuthStatus();
+                } catch (\Exception $e) {
+                    $this->_identity = false;
+                    throw $e;
+                } catch (\Throwable $e) {
+                    $this->_identity = false;
+                    throw $e;
+                }
             } else {
                 return null;
             }
@@ -250,11 +258,27 @@ class User extends Component
             } else {
                 $log = "User '$id' logged in from $ip. Session not enabled.";
             }
+
+            $this->regenerateCsrfToken();
+
             Yii::info($log, __METHOD__);
             $this->afterLogin($identity, false, $duration);
         }
 
         return !$this->getIsGuest();
+    }
+
+    /**
+     * Regenerates CSRF token
+     *
+     * @since 2.0.14.2
+     */
+    protected function regenerateCsrfToken()
+    {
+        $request = Yii::$app->getRequest();
+        if ($request->enableCsrfCookie || $this->enableSession) {
+            $request->getCsrfToken(true);
+        }
     }
 
     /**
@@ -522,7 +546,7 @@ class User extends Component
             $data = json_decode($value, true);
             if (is_array($data) && isset($data[2])) {
                 $cookie = Yii::createObject(array_merge($this->identityCookie, [
-                    'class' => \yii\http\Cookie::class,
+                    '__class' => \yii\http\Cookie::class,
                     'value' => $value,
                     'expire' => time() + (int) $data[2],
                 ]));
@@ -543,7 +567,7 @@ class User extends Component
     protected function sendIdentityCookie($identity, $duration)
     {
         $cookie = Yii::createObject(array_merge($this->identityCookie, [
-            'class' => \yii\http\Cookie::class,
+            '__class' => \yii\http\Cookie::class,
             'value' => json_encode([
                 $identity->getId(),
                 $identity->getAuthKey(),
@@ -596,7 +620,7 @@ class User extends Component
     protected function removeIdentityCookie()
     {
         Yii::$app->getResponse()->getCookies()->remove(Yii::createObject(array_merge($this->identityCookie, [
-            'class' => \yii\http\Cookie::class,
+            '__class' => \yii\http\Cookie::class,
         ])));
     }
 
@@ -646,9 +670,6 @@ class User extends Component
                 $this->sendIdentityCookie($identity, $duration);
             }
         }
-
-        // regenerate CSRF token
-        Yii::$app->getRequest()->getCsrfToken(true);
     }
 
     /**
@@ -750,20 +771,6 @@ class User extends Component
         }
 
         return false;
-    }
-
-    /**
-     * Returns auth manager associated with the user component.
-     *
-     * By default this is the `authManager` application component.
-     * You may override this method to return a different auth manager instance if needed.
-     * @return \yii\rbac\ManagerInterface
-     * @since 2.0.6
-     * @deprecated since version 2.0.9, to be removed in 2.1. Use [[getAccessChecker()]] instead.
-     */
-    protected function getAuthManager()
-    {
-        return Yii::$app->getAuthManager();
     }
 
     /**

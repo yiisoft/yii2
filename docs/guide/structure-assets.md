@@ -625,7 +625,7 @@ return [
     'components' => [
         'assetManager' => [
             'converter' => [
-                'class' => 'yii\web\AssetConverter',
+                '__class' => yii\web\AssetConverter::class,
                 'commands' => [
                     'less' => ['css', 'lessc {from} {to} --no-color'],
                     'ts' => ['js', 'tsc --out {to} {from}'],
@@ -709,7 +709,7 @@ return [
         'assetManager' => [
             'bundles' => [
                 'all' => [
-                    'class' => 'yii\web\AssetBundle',
+                    '__class' => yii\web\AssetBundle::class,
                     'basePath' => '@webroot/assets',
                     'baseUrl' => '@web/assets',
                     'css' => ['all-xyz.css'],
@@ -790,7 +790,7 @@ return [
     // Asset bundle for compression output:
     'targets' => [
         'all' => [
-            'class' => 'yii\web\AssetBundle',
+            '__class' => yii\web\AssetBundle::class,
             'basePath' => '@webroot/assets',
             'baseUrl' => '@web/assets',
             'js' => 'js/all-{hash}.js',

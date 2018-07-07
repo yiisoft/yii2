@@ -23,7 +23,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         parent::setUp();
         $this->mockWebApplication();
         Yii::$app->set('cache', [
-            'class' => Cache::class,
+            '__class' => Cache::class,
             'handler' => ArrayCache::class,
         ]);
     }
@@ -198,6 +198,10 @@ class FragmentCacheTest extends \yiiunit\TestCase
 
     public function testVariations()
     {
+        $this->setOutputCallback(function($output) {
+            return null;
+        });
+
         ob_start();
         ob_implicit_flush(false);
         $view = new View();

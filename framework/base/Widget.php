@@ -84,10 +84,10 @@ class Widget extends Component implements ViewContextInterface
      */
     public static function begin($config = [])
     {
-        $config['class'] = get_called_class();
+        $config['__class'] = get_called_class();
         /* @var $widget Widget */
         $widget = Yii::createObject($config);
-        static::$stack[] = $widget;
+        self::$stack[] = $widget;
 
         return $widget;
     }
@@ -101,8 +101,8 @@ class Widget extends Component implements ViewContextInterface
      */
     public static function end()
     {
-        if (!empty(static::$stack)) {
-            $widget = array_pop(static::$stack);
+        if (!empty(self::$stack)) {
+            $widget = array_pop(self::$stack);
             if (get_class($widget) === get_called_class()) {
                 /* @var $widget Widget */
                 if ($widget->beforeRun()) {
@@ -133,7 +133,7 @@ class Widget extends Component implements ViewContextInterface
         ob_implicit_flush(false);
         try {
             /* @var $widget Widget */
-            $config['class'] = get_called_class();
+            $config['__class'] = get_called_class();
             $widget = Yii::createObject($config);
             $out = '';
             if ($widget->beforeRun()) {

@@ -134,8 +134,7 @@ class BaseUrl
 
         // relative route
         if (Yii::$app->controller === null) {
-            throw new InvalidArgumentException("Unable to resolve the relative route: $route. No active controller "
-                . "is available.");
+            throw new InvalidArgumentException("Unable to resolve the relative route: $route. No active controller is available.");
         }
 
         if (strpos($route, '/') === false) {

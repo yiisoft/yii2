@@ -245,8 +245,6 @@ abstract class Application extends Module
         if (isset($config['timeZone'])) {
             $this->setTimeZone($config['timeZone']);
             unset($config['timeZone']);
-        } elseif (!ini_get('date.timezone')) {
-            $this->setTimeZone('UTC');
         }
 
         if (isset($config['container'])) {
@@ -268,14 +266,14 @@ abstract class Application extends Module
         foreach ($this->coreComponents() as $id => $component) {
             if (!isset($config['components'][$id])) {
                 $config['components'][$id] = $component;
-            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
-                $config['components'][$id]['class'] = $component['class'];
+            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['__class'])) {
+                $config['components'][$id]['__class'] = $component['__class'];
             }
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -348,7 +346,7 @@ abstract class Application extends Module
     protected function registerErrorHandler(&$config)
     {
         if (YII_ENABLE_ERROR_HANDLER) {
-            if (!isset($config['components']['errorHandler']['class'])) {
+            if (!isset($config['components']['errorHandler']['__class'])) {
                 echo "Error: no errorHandler component is configured.\n";
                 exit(1);
             }
@@ -405,7 +403,7 @@ abstract class Application extends Module
 
             return $response->exitStatus;
         } catch (ExitException $e) {
-            $this->end($e->statusCode, isset($response) ? $response : null);
+            $this->end($e->statusCode, $response ?? null);
             return $e->statusCode;
         }
     }
@@ -512,7 +510,7 @@ abstract class Application extends Module
     /**
      * Sets up or configure the logger instance.
      * @param \psr\log\LoggerInterface|\Closure|array|null $logger the logger object or its DI compatible configuration.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setLogger($logger)
     {
@@ -522,7 +520,7 @@ abstract class Application extends Module
     /**
      * Returns the logger instance.
      * @return \psr\log\LoggerInterface the logger instance.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getLogger()
     {
@@ -532,7 +530,7 @@ abstract class Application extends Module
     /**
      * Sets up or configure the profiler instance.
      * @param \yii\profile\ProfilerInterface|\Closure|array|null $profiler the profiler object or its DI compatible configuration.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setProfiler($profiler)
     {
@@ -542,7 +540,7 @@ abstract class Application extends Module
     /**
      * Returns the profiler instance.
      * @return \yii\profile\ProfilerInterface profiler instance.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getProfiler()
     {
@@ -665,13 +663,13 @@ abstract class Application extends Module
     public function coreComponents()
     {
         return [
-            'security' => ['class' => Security::class],
-            'formatter' => ['class' => \yii\i18n\Formatter::class],
-            'i18n' => ['class' => \yii\i18n\I18N::class],
-            'mailer' => ['class' => \yii\swiftmailer\Mailer::class],
-            'assetManager' => ['class' => \yii\web\AssetManager::class],
-            'urlManager' => ['class' => \yii\web\UrlManager::class],
-            'view' => ['class' => \yii\web\View::class],
+            'security' => ['__class' => Security::class],
+            'formatter' => ['__class' => \yii\i18n\Formatter::class],
+            'i18n' => ['__class' => \yii\i18n\I18N::class],
+            'mailer' => ['__class' => \yii\swiftmailer\Mailer::class],
+            'assetManager' => ['__class' => \yii\web\AssetManager::class],
+            'urlManager' => ['__class' => \yii\web\UrlManager::class],
+            'view' => ['__class' => \yii\web\View::class],
         ];
     }
 

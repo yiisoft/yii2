@@ -12,6 +12,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Connection;
 use yii\db\Expression;
+use yii\db\ExpressionInterface;
 use yiiunit\TestCase;
 
 /**
@@ -39,7 +40,7 @@ class TimestampBehaviorTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -149,15 +150,15 @@ class TimestampBehaviorTest extends TestCase
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'value' => $expression,
             ],
         ];
         $model = new ActiveRecordTimestamp();
         $model->save(false);
-        if ($expression instanceof Expression) {
-            $this->assertInstanceOf(Expression::class, $model->created_at);
-            $this->assertInstanceOf(Expression::class, $model->updated_at);
+        if ($expression instanceof ExpressionInterface) {
+            $this->assertInstanceOf('yii\db\ExpressionInterface', $model->created_at);
+            $this->assertInstanceOf('yii\db\ExpressionInterface', $model->updated_at);
             $model->refresh();
         }
         $this->assertEquals($expected, $model->created_at);
@@ -177,7 +178,7 @@ class TimestampBehaviorTest extends TestCase
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];
@@ -200,13 +201,13 @@ class TimestampBehaviorTest extends TestCase
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];
         $model = new ActiveRecordTimestamp();
 
-        $this->expectException('yii\base\InvalidCallException');
+        $this->expectException(\yii\base\InvalidCallException::class);
 
         $model->touch('created_at');
     }
@@ -215,7 +216,7 @@ class TimestampBehaviorTest extends TestCase
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];

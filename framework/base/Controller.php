@@ -97,7 +97,7 @@ class Controller extends Component implements ViewContextInterface
      * return [
      *     'action1' => \app\components\Action1::class,
      *     'action2' => [
-     *         'class' => \app\components\Action2::class,
+     *         '__class' => \app\components\Action2::class,
      *         'property1' => 'value1',
      *         'property2' => 'value2',
      *     ],
@@ -226,7 +226,7 @@ class Controller extends Component implements ViewContextInterface
         if (isset($actionMap[$id])) {
             return Yii::createObject($actionMap[$id], [$id, $this]);
         } elseif (preg_match('/^[a-z0-9\\-_]+$/', $id) && strpos($id, '--') === false && trim($id, '-') === $id) {
-            $methodName = 'action' . str_replace(' ', '', ucwords(implode(' ', explode('-', $id))));
+            $methodName = 'action' . str_replace(' ', '', ucwords(str_replace('-', ' ', $id)));
             if (method_exists($this, $methodName)) {
                 $method = new \ReflectionMethod($this, $methodName);
                 if ($method->isPublic() && $method->getName() === $methodName) {

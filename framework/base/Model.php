@@ -252,7 +252,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function formName()
     {
         $reflector = new ReflectionClass($this);
-        if (PHP_VERSION_ID >= 70000 && $reflector->isAnonymous()) {
+        if ($reflector->isAnonymous()) {
             throw new InvalidConfigException('The "formName()" method should be explicitly defined for anonymous models');
         }
         return $reflector->getShortName();
@@ -522,7 +522,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function getAttributeLabel($attribute)
     {
         $labels = $this->attributeLabels();
-        return isset($labels[$attribute]) ? $labels[$attribute] : $this->generateAttributeLabel($attribute);
+        return $labels[$attribute] ?? $this->generateAttributeLabel($attribute);
     }
 
     /**
@@ -535,7 +535,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function getAttributeHint($attribute)
     {
         $hints = $this->attributeHints();
-        return isset($hints[$attribute]) ? $hints[$attribute] : '';
+        return $hints[$attribute] ?? '';
     }
 
     /**

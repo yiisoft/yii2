@@ -8,8 +8,9 @@
 namespace yii\rbac;
 
 use yii\base\Component;
-use yii\base\InvalidConfigException;
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidValueException;
 
 /**
  * BaseManager is a base class implementing [[ManagerInterface]] for RBAC management.
@@ -18,6 +19,8 @@ use yii\base\InvalidArgumentException;
  *
  * @property Role[] $defaultRoleInstances Default roles. The array is indexed by the role names. This property
  * is read-only.
+ * @property string[] $defaultRoles Default roles. Note that the type of this property differs in getter and
+ * setter. See [[getDefaultRoles()]] and [[setDefaultRoles()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -96,7 +99,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     abstract protected function updateRule($name, $rule);
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createRole($name)
     {
@@ -106,7 +109,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createPermission($name)
     {
@@ -116,7 +119,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function add($object)
     {
@@ -136,7 +139,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function remove($object)
     {
@@ -150,7 +153,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function update($name, $object)
     {
@@ -170,7 +173,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRole($name)
     {
@@ -179,7 +182,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermission($name)
     {
@@ -188,7 +191,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRoles()
     {
@@ -197,17 +200,19 @@ abstract class BaseManager extends Component implements ManagerInterface
 
     /**
      * Set default roles
-     * @param array|\Closure $roles either array of roles or a callable returning it
+     * @param string[]|\Closure $roles either array of roles or a callable returning it
+     * @throws InvalidArgumentException when $roles is neither array nor Closure
+     * @throws InvalidValueException when Closure return is not an array
      * @since 2.0.14
      */
     public function setDefaultRoles($roles)
     {
         if (is_array($roles)) {
             $this->defaultRoles = $roles;
-        } elseif (is_callable($roles)) {
-            $roles = $roles();
+        } elseif ($roles instanceof \Closure) {
+            $roles = call_user_func($roles);
             if (!is_array($roles)) {
-                throw new InvalidArgumentException('Default roles closure must return an array');
+                throw new InvalidValueException('Default roles closure must return an array');
             }
             $this->defaultRoles = $roles;
         } else {
@@ -217,7 +222,7 @@ abstract class BaseManager extends Component implements ManagerInterface
 
     /**
      * Get default roles
-     * @return array default roles
+     * @return string[] default roles
      * @since 2.0.14
      */
     public function getDefaultRoles()
@@ -241,7 +246,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getPermissions()
     {

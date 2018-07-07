@@ -22,7 +22,7 @@ use yii\base\ViewContextInterface;
  * @see BaseMailer::compose()
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1
+ * @since 3.0.0
  */
 class Template extends BaseObject implements ViewContextInterface
 {
@@ -65,7 +65,7 @@ class Template extends BaseObject implements ViewContextInterface
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getViewPath()
     {

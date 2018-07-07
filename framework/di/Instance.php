@@ -26,11 +26,11 @@ use yii\base\InvalidConfigException;
  * ```php
  * $container = new \yii\di\Container;
  * $container->set('cache', [
- *     'class' => \yii\caching\DbCache::class,
+ *     '__class' => \yii\caching\DbCache::class,
  *     'db' => Instance::of('db')
  * ]);
  * $container->set('db', [
- *     'class' => \yii\db\Connection::class,
+ *     '__class' => \yii\db\Connection::class,
  *     'dsn' => 'sqlite:path/to/file.db',
  * ]);
  * ```
@@ -111,11 +111,20 @@ class Instance
     public static function ensure($reference, $type = null, $container = null)
     {
         if (is_array($reference)) {
-            $class = isset($reference['class']) ? $reference['class'] : $type;
+            $class = $type;
+            if (isset($reference['__class'])) {
+                $class = $reference['__class'];
+                unset($reference['__class']);
+            }
+            if (isset($reference['class'])) {
+                // @todo remove fallback
+                $class = $reference['class'];
+                unset($reference['class']);
+            }
+
             if (!$container instanceof Container) {
                 $container = Yii::$container;
             }
-            unset($reference['class']);
             $component = $container->get($class, [], $reference);
             if ($type === null || $component instanceof $type) {
                 return $component;

@@ -58,7 +58,7 @@ class UserTest extends TestCase
                     'authTimeout' => 10,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::class,
+                    '__class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                      'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                      'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -114,10 +114,10 @@ class UserTest extends TestCase
                     'autoRenewCookie' => false,
                 ],
                 'response' => [
-                    'class' => MockResponse::class,
+                    '__class' => MockResponse::class,
                 ],
                 'request' => [
-                    'class' => MockRequest::class,
+                    '__class' => MockRequest::class,
                 ],
             ],
         ];
@@ -164,10 +164,10 @@ class UserTest extends TestCase
                     'enableAutoLogin' => true,
                 ],
                 'response' => [
-                    'class' => MockResponse::class,
+                    '__class' => MockResponse::class,
                 ],
                 'request' => [
-                    'class' => MockRequest::class,
+                    '__class' => MockRequest::class,
                 ],
             ],
         ];
@@ -204,9 +204,9 @@ class UserTest extends TestCase
         }
 
         $_SERVER = $server;
-        Yii::$app->set('response', ['class' => 'yii\web\Response']);
+        Yii::$app->set('response', ['__class' => \yii\web\Response::class]);
         Yii::$app->set('request', [
-            'class' => 'yii\web\Request',
+            '__class' => \yii\web\Request::class,
             'scriptFile' => __DIR__ . '/index.php',
             'scriptUrl' => '/index.php',
             'url' => '',
@@ -222,7 +222,7 @@ class UserTest extends TestCase
                     'identityClass' => UserIdentity::class,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::class,
+                    '__class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -335,7 +335,7 @@ class UserTest extends TestCase
                     'identityClass' => UserIdentity::class,
                 ],
                 'authManager' => [
-                    'class' => PhpManager::class,
+                    '__class' => PhpManager::class,
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
@@ -363,6 +363,37 @@ class UserTest extends TestCase
 
         $this->mockWebApplication($appConfig);
         $this->assertInstanceOf(AccessChecker::class, Yii::$app->user->accessChecker);
+    }
+
+    public function testGetIdentityException()
+    {
+        $session = $this->getMockBuilder(\yii\web\Session::class)
+            ->setMethods(['getHasSessionId', 'get'])
+            ->getMock();
+        $session->expects($this->any())->method('getHasSessionId')->willReturn(true);
+        $session->expects($this->any())->method('get')->with($this->equalTo('__id'))->willReturn('1');
+
+        $appConfig = [
+            'components' => [
+                'user' => [
+                    'identityClass' => ExceptionIdentity::class,
+                ],
+                'session' => $session,
+            ],
+        ];
+        $this->mockWebApplication($appConfig);
+
+        $exceptionThrown = false;
+        try {
+            Yii::$app->getUser()->getIdentity();
+        } catch (\Exception $e) {
+            $exceptionThrown = true;
+        }
+        $this->assertTrue($exceptionThrown);
+
+        // Do it again to make sure the exception is thrown the second time
+        $this->expectException('Exception');
+        Yii::$app->getUser()->getIdentity();
     }
 
 }
@@ -395,5 +426,13 @@ class AccessChecker extends BaseObject implements CheckAccessInterface
     public function checkAccess($userId, $permissionName, $params = [])
     {
         // Implement checkAccess() method.
+    }
+}
+
+class ExceptionIdentity extends \yiiunit\framework\filters\stubs\UserIdentity
+{
+    public static function findIdentity($id)
+    {
+        throw new \Exception();
     }
 }

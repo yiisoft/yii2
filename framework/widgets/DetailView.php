@@ -127,6 +127,8 @@ class DetailView extends Widget
      */
     public function init()
     {
+        parent::init();
+
         if ($this->model === null) {
             throw new InvalidConfigException('Please specify the "model" property.');
         }
@@ -211,8 +213,8 @@ class DetailView extends Widget
                 }
                 $attribute = [
                     'attribute' => $matches[1],
-                    'format' => isset($matches[3]) ? $matches[3] : 'text',
-                    'label' => isset($matches[5]) ? $matches[5] : null,
+                    'format' => $matches[3] ?? 'text',
+                    'label' => $matches[5] ?? null,
                 ];
             }
 

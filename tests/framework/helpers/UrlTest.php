@@ -28,14 +28,14 @@ class UrlTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'request' => [
-                    'class' => 'yii\web\Request',
+                    '__class' => \yii\web\Request::class,
                     'cookieValidationKey' => '123',
                     'scriptUrl' => '/base/index.php',
                     'hostInfo' => 'http://example.com/',
                     'url' => '/base/index.php&r=site%2Fcurrent&id=42',
                 ],
                 'urlManager' => [
-                    'class' => 'yii\web\UrlManager',
+                    '__class' => \yii\web\UrlManager::class,
                     'baseUrl' => '/base',
                     'scriptUrl' => '/base/index.php',
                     'hostInfo' => 'http://example.com/',
@@ -44,7 +44,7 @@ class UrlTest extends TestCase
                     'identityClass' => UserIdentity::class,
                 ],
             ],
-        ], '\yii\web\Application');
+        ], \yii\web\Application::class);
     }
 
     protected function tearDown()
@@ -244,7 +244,7 @@ class UrlTest extends TestCase
     public function testToWithSuffix()
     {
         Yii::$app->set('urlManager', [
-            'class' => 'yii\web\UrlManager',
+            '__class' => \yii\web\UrlManager::class,
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'cache' => null,

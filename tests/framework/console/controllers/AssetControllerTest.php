@@ -107,7 +107,7 @@ class AssetControllerTest extends TestCase
     {
         static $classNumber = 0;
         $classNumber++;
-        $className = $this->declareAssetBundleClass(['class' => 'AssetBundleAll' . $classNumber]);
+        $className = $this->declareAssetBundleClass(['__class' => 'AssetBundleAll' . $classNumber]);
         $baseUrl = '/test';
         $config = ArrayHelper::merge($config, [
             'bundles' => $bundles,
@@ -201,8 +201,8 @@ class AssetControllerTest extends TestCase
     {
         $config = array_merge(
             [
-                'namespace' => StringHelper::dirname(get_class($this)),
-                'class' => 'AppAsset',
+                '__namespace' => StringHelper::dirname(get_class($this)),
+                '__class' => 'AppAsset',
                 'sourcePath' => null,
                 'basePath' => $this->testFilePath,
                 'baseUrl' => '',
@@ -213,17 +213,17 @@ class AssetControllerTest extends TestCase
             $config
         );
         foreach ($config as $name => $value) {
-            if (!in_array($name, ['namespace', 'class'])) {
+            if (!in_array($name, ['__namespace', '__class'])) {
                 $config[$name] = VarDumper::export($value);
             }
         }
 
         $source = <<<EOL
-namespace {$config['namespace']};
+namespace {$config['__namespace']};
 
 use yii\web\AssetBundle;
 
-class {$config['class']} extends AssetBundle
+class {$config['__class']} extends AssetBundle
 {
     public \$sourcePath = {$config['sourcePath']};
     public \$basePath = {$config['basePath']};
@@ -247,7 +247,7 @@ EOL;
         $sourceCode = $this->composeAssetBundleClassSource($config);
         eval($sourceCode);
 
-        return $config['namespace'] . '\\' . $config['class'];
+        return $config['__namespace'] . '\\' . $config['__class'];
     }
 
     // Tests :
@@ -337,7 +337,7 @@ EOL;
     {
         // Given :
         $externalAssetConfig = [
-            'class' => 'ExternalAsset',
+            '__class' => 'ExternalAsset',
             'sourcePath' => null,
             'basePath' => null,
             'js' => [
@@ -363,7 +363,7 @@ EOL;
         ];
         $this->createAssetSourceFiles($jsFiles);
         $regularAssetBundleClassName = $this->declareAssetBundleClass([
-            'class' => 'RegularAsset',
+            '__class' => 'RegularAsset',
             'css' => array_keys($cssFiles),
             'js' => array_keys($jsFiles),
             'depends' => [
@@ -406,29 +406,29 @@ EOL;
         $namespace = __NAMESPACE__;
 
         $this->declareAssetBundleClass([
-            'namespace' => $namespace,
-            'class' => 'AssetStart',
+            '__namespace' => $namespace,
+            '__class' => 'AssetStart',
             'depends' => [
                 $namespace . '\AssetA',
             ],
         ]);
         $this->declareAssetBundleClass([
-            'namespace' => $namespace,
-            'class' => 'AssetA',
+            '__namespace' => $namespace,
+            '__class' => 'AssetA',
             'depends' => [
                 $namespace . '\AssetB',
             ],
         ]);
         $this->declareAssetBundleClass([
-            'namespace' => $namespace,
-            'class' => 'AssetB',
+            '__namespace' => $namespace,
+            '__class' => 'AssetB',
             'depends' => [
                 $namespace . '\AssetC',
             ],
         ]);
         $this->declareAssetBundleClass([
-            'namespace' => $namespace,
-            'class' => 'AssetC',
+            '__namespace' => $namespace,
+            '__class' => 'AssetC',
             'depends' => [
                 $namespace . '\AssetA',
             ],
@@ -642,7 +642,7 @@ EOL;
         $this->createAssetSourceFiles($cssFiles, $sourcePath);
         $this->createAssetSourceFiles($jsFiles, $sourcePath);
         $assetBundleClassName = $this->declareAssetBundleClass([
-            'class' => 'AssetDelete',
+            '__class' => 'AssetDelete',
             'css' => array_keys($cssFiles),
             'js' => array_keys($jsFiles),
             'basePath' => null,
@@ -711,7 +711,7 @@ EOL;
         //$this->createAssetSourceFiles($cssFiles, $sourcePath);
         //$this->createAssetSourceFiles($jsFiles, $sourcePath);
         $assetBundleClassName = $this->declareAssetBundleClass([
-            'class' => 'AssetOverrideExternal',
+            '__class' => 'AssetOverrideExternal',
             'css' => array_keys($cssFiles),
             'js' => array_keys($jsFiles),
         ]);

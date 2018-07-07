@@ -23,7 +23,7 @@ use yii\web\NotFoundHttpException;
  * ```php
  * return [
  *     'as hostControl' => [
- *         'class' => 'yii\filters\HostControl',
+ *         '__class' => \yii\filters\HostControl::class,
  *         'allowedHosts' => [
  *             'example.com',
  *             '*.example.com',
@@ -45,7 +45,7 @@ use yii\web\NotFoundHttpException;
  *     {
  *         return [
  *             'hostControl' => [
- *                 'class' => HostControl::class,
+ *                 '__class' => HostControl::class,
  *                 'allowedHosts' => [
  *                     'example.com',
  *                     '*.example.com',
@@ -117,7 +117,7 @@ class HostControl extends ActionFilter
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {

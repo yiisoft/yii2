@@ -267,8 +267,8 @@ class CacheController extends Controller
 
             if ($component instanceof CacheInterface) {
                 $caches[$name] = get_class($component);
-            } elseif (is_array($component) && isset($component['class']) && $this->isCacheClass($component['class'])) {
-                $caches[$name] = $component['class'];
+            } elseif (is_array($component) && isset($component['__class']) && $this->isCacheClass($component['__class'])) {
+                $caches[$name] = $component['__class'];
             } elseif (is_string($component) && $this->isCacheClass($component)) {
                 $caches[$name] = $component;
             } elseif ($component instanceof \Closure) {
@@ -300,6 +300,6 @@ class CacheController extends Controller
      */
     private function canBeCleared($className)
     {
-        return !is_a($className, ApcCache::class, true) || php_sapi_name() !== 'cli';
+        return !is_a($className, ApcCache::class, true) || PHP_SAPI !== 'cli';
     }
 }

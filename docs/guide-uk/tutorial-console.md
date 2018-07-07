@@ -219,8 +219,8 @@ public function actionIndex()
 
 Є декілька попередньо визначених констант, які ви можете використовувати:
 
-- `Controller::EXIT_CODE_NORMAL` зі значенням `0`;
-- `Controller::EXIT_CODE_ERROR` зі значенням `1`.
+- [[yii\console\ExitCode::OK]] зі значенням `0`;
+- [[yii\console\ExitCode::UNSPECIFIED_ERROR]] зі значенням `1`.
 
 Хорошою практикою є визначення значущих констант для вашого контролера у випадку, якщо ви маєте більше типів помилок.
 

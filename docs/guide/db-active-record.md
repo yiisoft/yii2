@@ -34,8 +34,6 @@ Yii provides the Active Record support for the following relational databases:
 * SQLite 2 and 3: via [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2008 or later: via [[yii\db\ActiveRecord]]
 * Oracle: via [[yii\db\ActiveRecord]]
-* CUBRID 9.3 or later: via [[yii\db\ActiveRecord]] (Note that due to a [bug](http://jira.cubrid.org/browse/APIS-658) in
-  the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
 * Sphinx: via [[yii\sphinx\ActiveRecord]], requires the `yii2-sphinx` extension
 * ElasticSearch: via [[yii\elasticsearch\ActiveRecord]], requires the `yii2-elasticsearch` extension
 
@@ -88,6 +86,7 @@ class Customer extends ActiveRecord
 ```
 
 ### Active records are called "models"
+
 Active Record instances are considered as [models](structure-models.md). For this reason, we usually put Active Record
 classes under the `app\models` namespace (or other namespaces for keeping model classes). 
 
@@ -106,7 +105,7 @@ below,
 return [
     'components' => [
         'db' => [
-            'class' => 'yii\db\Connection',
+            '__class' => \yii\db\Connection::class,
             'dsn' => 'mysql:host=localhost;dbname=testdb',
             'username' => 'demo',
             'password' => 'demo',
@@ -218,6 +217,25 @@ $customers = Customer::findAll([
     'status' => Customer::STATUS_INACTIVE,
 ]);
 ```
+
+> Warning: If you need to pass user input to these methods, make sure the input value is scalar or in case of
+> array condition, make sure the array structure can not be changed from the outside:
+>
+> ```php
+> // yii\web\Controller ensures that $id is scalar
+> public function actionView($id)
+> {
+>     $model = Post::findOne($id);
+>     // ...
+> }
+>
+> // explicitly specifying the column to search, passing a scalar or array here will always result in finding a single record
+> $model = Post::findOne(['id' => Yii::$app->request->get('id')]);
+>
+> // do NOT use the following code! it is possible to inject an array condition to filter by arbitrary column values!
+> $model = Post::findOne(Yii::$app->request->get('id'));
+> ```
+
 
 > Note: Neither [[yii\db\ActiveRecord::findOne()]] nor [[yii\db\ActiveQuery::one()]] will add `LIMIT 1` to 
   the generated SQL statement. If your query may return many rows of data, you should call `limit(1)` explicitly
@@ -472,7 +490,7 @@ $customer->loadDefaultValues();
 
 ### Attributes Typecasting <span id="attributes-typecasting"></span>
 
-Being populated by query results [[yii\db\ActiveRecord]] performs automatic typecast for its attribute values, using
+Being populated by query results, [[yii\db\ActiveRecord]] performs automatic typecast for its attribute values, using
 information from [database table schema](db-dao.md#database-schema). This allows data retrieved from table column
 declared as integer to be populated in ActiveRecord instance with PHP integer, boolean with boolean and so on.
 However, typecasting mechanism has several limitations:
@@ -490,7 +508,33 @@ converted during saving process.
 
 > Tip: you may use [[yii\behaviors\AttributeTypecastBehavior]] to facilitate attribute values typecasting
   on ActiveRecord validation or saving.
+  
+Since 2.0.14, Yii ActiveRecord supports complex data types, such as JSON or multidimensional arrays.
 
+#### JSON in MySQL and PostgreSQL
+
+After data population, the value from JSON column will be automatically decoded from JSON according to standard JSON
+decoding rules.
+
+To save attribute value to a JSON column, ActiveRecord will automatically create a [[yii\db\JsonExpression|JsonExpression]] object
+that will be encoded to a JSON string on [QueryBuilder](db-query-builder.md) level.
+
+#### Arrays in PostgreSQL
+
+After data population, the value from Array column will be automatically decoded from PgSQL notation to an [[yii\db\ArrayExpression|ArrayExpression]]
+object. It implements PHP `ArrayAccess` interface, so you can use it as an array, or call `->getValue()` to get the array itself.
+
+To save attribute value to an array column, ActiveRecord will automatically create an [[yii\db\ArrayExpression|ArrayExpression]] object
+that will be encoded by [QueryBuilder](db-query-builder.md) to an PgSQL string representation of array.
+
+You can also use conditions for JSON columns:
+
+```php
+$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
+```
+
+To learn more about expressions building system read the [Query Builder – Adding custom Conditions and Expressions](db-query-builder.md#adding-custom-conditions-and-expressions)
+article.
 
 ### Updating Multiple Rows <span id="updating-multiple-rows"></span>
 
@@ -697,9 +741,10 @@ To use optimistic locking,
 1. Create a column in the DB table associated with the Active Record class to store the version number of each row.
    The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
 2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
-3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
-   Be sure your version attribute has input validation rules and validates successfully.
-4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
+3. Implement [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] inside your model class to automatically parse its value from received requests.
+4. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
+   Remove the version attribute from validation rules as [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] should handle it.
+5. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
    exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
    
 For example, assume the version column is named as `version`. You can implement optimistic locking with the code like
@@ -733,6 +778,17 @@ public function actionUpdate($id)
     } catch (StaleObjectException $e) {
         // logic to resolve the conflict
     }
+}
+
+// ------ model code -------
+
+use yii\behaviors\OptimisticLockBehavior;
+
+public function behaviors()
+{
+    return [
+        OptimisticLockBehavior::class,
+    ];
 }
 ```
 
@@ -952,21 +1008,21 @@ class Customer extends ActiveRecord
     public function getPurchasedItems()
     {
         // customer's items, matching 'id' column of `Item` to 'item_id' in OrderItem
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
                     ->via('orderItems');
     }
 
     public function getOrderItems()
     {
         // customer's order items, matching 'id' column of `Order` to 'order_id' in OrderItem
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id'])
                     ->via('orders');
     }
 
     public function getOrders()
     {
         // same as above
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```
@@ -1137,7 +1193,9 @@ the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery
 Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
 If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as `false`. 
 
-> Note: Even when using [[yii\db\ActiveQuery::joinWith()|joinWith()]] or [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] with eager loading enabled the related data will **not** be populated from the result of the `JOIN` query. So there's still an extra query for each joined relation as explained in the section on [eager loading](#lazy-eager-loading).
+> Note: Even when using [[yii\db\ActiveQuery::joinWith()|joinWith()]] or [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]]
+  with eager loading enabled the related data will **not** be populated from the result of the `JOIN` query. So there's
+  still an extra query for each joined relation as explained in the section on [eager loading](#lazy-eager-loading).
 
 Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
 queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
@@ -1449,7 +1507,8 @@ class CommentQuery extends ActiveQuery
 ```
 
 > Note: Instead of calling [[yii\db\ActiveQuery::onCondition()|onCondition()]], you usually should call
-  [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] or [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] to append additional conditions when defining new query building methods so that any existing conditions are not overwritten.
+  [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] or [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]]
+  to append additional conditions when defining new query building methods so that any existing conditions are not overwritten.
 
 This allows you to write query building code like the following:
 

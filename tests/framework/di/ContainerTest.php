@@ -10,6 +10,7 @@ namespace yiiunit\framework\di;
 use Yii;
 use yii\di\Container;
 use yii\di\Instance;
+use yii\di\CircularReferenceException;
 use yii\validators\NumberValidator;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Order;
@@ -102,8 +103,8 @@ class ContainerTest extends TestCase
         $barSetter = BarSetter::class;
 
         $container = new Container();
-        $container->set('foo', ['class' => $fooSetter, 'bar' => Instance::of('bar')]);
-        $container->set('bar', ['class' => $barSetter, 'qux' => Instance::of('qux')]);
+        $container->set('foo', ['__class' => $fooSetter, 'bar' => Instance::of('bar')]);
+        $container->set('bar', ['__class' => $barSetter, 'qux' => Instance::of('qux')]);
         $container->set('qux', $Qux);
         $foo = $container->get('foo');
         $this->assertInstanceOf($fooSetter, $foo);
@@ -133,17 +134,17 @@ class ContainerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'qux' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongApp',
                 ],
                 'qux2' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
             ],
         ]);
         Yii::$container->set('yiiunit\framework\di\stubs\QuxInterface', [
-            'class' => 'yiiunit\framework\di\stubs\Qux',
+            '__class' => 'yiiunit\framework\di\stubs\Qux',
             'a' => 'independent',
         ]);
 
@@ -170,7 +171,7 @@ class ContainerTest extends TestCase
 
 
         $myFunc = function ($a, NumberValidator $b, $c = 'default') {
-            return[$a, get_class($b), $c];
+            return[$a, \get_class($b), $c];
         };
         $result = Yii::$container->invoke($myFunc, ['a']);
         $this->assertEquals(['a', 'yii\validators\NumberValidator', 'default'], $result);
@@ -199,11 +200,11 @@ class ContainerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'qux' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongApp',
                 ],
                 'qux2' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
             ],
@@ -220,11 +221,11 @@ class ContainerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'qux' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongApp',
                 ],
                 'qux2' => [
-                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    '__class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
             ],
@@ -254,7 +255,7 @@ class ContainerTest extends TestCase
             'model.order' => Order::class,
             Cat::class => Type::class,
             'test\TraversableInterface' => [
-                ['class' => 'yiiunit\data\base\TraversableObject'],
+                ['__class' => 'yiiunit\data\base\TraversableObject'],
                 [['item1', 'item2']],
             ],
             'qux.using.closure' => function () {
@@ -279,7 +280,7 @@ class ContainerTest extends TestCase
         $container->setSingletons([
             'model.order' => Order::class,
             'test\TraversableInterface' => [
-                ['class' => 'yiiunit\data\base\TraversableObject'],
+                ['__class' => 'yiiunit\data\base\TraversableObject'],
                 [['item1', 'item2']],
             ],
             'qux.using.closure' => function () {
@@ -301,28 +302,42 @@ class ContainerTest extends TestCase
         $this->assertSame($foo, $sameFoo);
     }
 
-    /**
-     * @requires PHP 5.6
-     */
     public function testVariadicConstructor()
     {
-        if (defined('HHVM_VERSION')) {
-            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
-        }
-
         $container = new Container();
         $container->get('yiiunit\framework\di\stubs\Variadic');
+
+        $this->assertTrue(true, 'Should be not exception above');
     }
 
-    /**
-     * @requires PHP 5.6
-     */
     public function testVariadicCallable()
     {
-        if (defined('HHVM_VERSION')) {
-            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
-        }
+        $container = new Container();
+        $func = function (QuxInterface ...$quxes) {
+            return "That's a whole lot of quxes!";
+        };
+        $container->invoke($func);
 
-        require __DIR__ . '/testContainerWithVariadicCallable.php';
+        $this->assertTrue(true, 'Should be not exception above');
+    }
+
+    public function testCircularReference()
+    {
+        $container = new Container();
+        $container->set(Bar::class, Qux::class);
+        $container->set(Qux::class, Bar::class);
+
+        $this->expectException(CircularReferenceException::class);
+        $container->get(Qux::class);
+    }
+
+    public function testCircularReferenceWithInstance()
+    {
+        $container = new Container();
+        $container->set(Bar::class, 'qux');
+        $container->set('qux', Qux::class, [Instance::of(Bar::class)]);
+
+        $this->expectException(CircularReferenceException::class);
+        $container->get(Bar::class);
     }
 }
