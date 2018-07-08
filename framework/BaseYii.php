@@ -563,7 +563,11 @@ class BaseYii
     public static function configure($object, $properties)
     {
         foreach ($properties as $name => $value) {
-            $object->$name = $value;
+            if (substr($name, -2) === '()') {
+                call_user_func_array([$object, substr($name, 0, -2)], $value);
+            } else {
+                $object->$name = $value;
+            }
         }
 
         return $object;
