@@ -121,9 +121,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($condition === null) {
             return static::find()->all();
         }
-        else {
-            return static::findByCondition($condition)->all();
-        }
+        return static::findByCondition($condition)->all();
     }
 
     /**
