@@ -42,7 +42,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     {
         $where = '1==1';
         $callback = function (\yii\base\Event $event) use ($where) {
-            $event->sender->where = $where;
+            $event->target->where = $where;
         };
         Event::on(ActiveQuery::class, ActiveQuery::EVENT_INIT, $callback);
         $result = new ActiveQuery(Customer::class);

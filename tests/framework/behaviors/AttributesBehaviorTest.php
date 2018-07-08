@@ -8,6 +8,7 @@
 namespace yiiunit\framework\behaviors;
 
 use Yii;
+use yii\base\Event;
 use yii\behaviors\AttributesBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Connection;
@@ -182,13 +183,13 @@ class ActiveRecordWithAttributesBehavior extends ActiveRecord
                 '__class' => AttributesBehavior::class,
                 'attributes' => [
                     'alias' => [
-                        self::EVENT_BEFORE_VALIDATE => function ($event) {
-                            return $event->sender->name;
+                        self::EVENT_BEFORE_VALIDATE => function (Event $event) {
+                            return $event->getTarget()->name;
                         },
                     ],
                     'name' => [
-                        self::EVENT_BEFORE_VALIDATE => function ($event, $attribute) {
-                            return $attribute . ': ' . $event->sender->alias;
+                        self::EVENT_BEFORE_VALIDATE => function (Event $event, $attribute) {
+                            return $attribute . ': ' . $event->getTarget()->alias;
                         },
                     ],
                 ],

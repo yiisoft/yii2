@@ -408,8 +408,8 @@ class ActiveForm extends Widget
      */
     public function beforeFieldRender($field)
     {
-        $event = new ActiveFieldEvent($field);
-        $this->trigger(self::EVENT_BEFORE_FIELD_RENDER, $event);
+        $event = new ActiveFieldEvent($field, ['name' => self::EVENT_BEFORE_FIELD_RENDER]);
+        $this->trigger($event);
     }
 
     /**
@@ -420,7 +420,7 @@ class ActiveForm extends Widget
      */
     public function afterFieldRender($field)
     {
-        $event = new ActiveFieldEvent($field);
-        $this->trigger(self::EVENT_AFTER_FIELD_RENDER, $event);
+        $event = new ActiveFieldEvent($field, ['name' => self::EVENT_AFTER_FIELD_RENDER]);
+        $this->trigger($event);
     }
 }

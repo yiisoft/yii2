@@ -9,6 +9,7 @@ namespace yiiunit\framework\behaviors;
 
 use Yii;
 use yii\base\BaseObject;
+use yii\base\Event;
 use yii\behaviors\BlameableBehavior;
 use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
@@ -120,8 +121,8 @@ class BlameableBehaviorTest extends TestCase
     {
         $model = new ActiveRecordBlameable();
         $model->name = __METHOD__;
-        $model->getBlameable()->value = function ($event) {
-            return strlen($event->sender->name); // $model->name;
+        $model->getBlameable()->value = function (Event $event) {
+            return strlen($event->getTarget()->name); // $model->name;
         };
         $model->beforeSave(true);
 

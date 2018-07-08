@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #12539: `yii\filters\ContentNegotiator` now generates 406 'Not Acceptable' instead of 415 'Unsupported Media Type' on content-type negotiation fail (PowerGamer1)
 - Bug #14458: Fixed `yii\filters\VerbFilter` uses case-insensitive comparison for the HTTP method name (klimov-paul)
 - Enh #879: Caching implementation refactored according to PSR-16 'Simple Cache' specification (klimov-paul)
+- Enh #11389: `yii\base\Event` refactored to match commonly used notations (klimov-paul)
 - Enh #11328: Added support for PSR-7 'HTTP Message' (klimov-paul)
 - Enh #14339: Uploaded file retrieve methods have been moved from `yii\http\UploadedFile` to `yii\web\Request` (klimov-paul)
 - Enh #4352: Result of `yii\web\Request::getBodyParams()` now includes uploaded files (klimov-paul)

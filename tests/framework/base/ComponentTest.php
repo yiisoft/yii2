@@ -12,15 +12,15 @@ use yii\base\Component;
 use yii\base\Event;
 use yiiunit\TestCase;
 
-function globalEventHandler($event)
+function globalEventHandler(Event $event)
 {
-    $event->sender->eventHandled = true;
+    $event->getTarget()->eventHandled = true;
 }
 
-function globalEventHandler2($event)
+function globalEventHandler2(Event $event)
 {
-    $event->sender->eventHandled = true;
-    $event->handled = true;
+    $event->getTarget()->eventHandled = true;
+    $event->stopPropagation();
 }
 
 /**
@@ -211,8 +211,8 @@ class ComponentTest extends TestCase
         $this->component->raiseEvent();
         $this->assertTrue($this->component->eventHandled);
         $this->assertEquals('click', $this->component->event->name);
-        $this->assertEquals($this->component, $this->component->event->sender);
-        $this->assertFalse($this->component->event->handled);
+        $this->assertEquals($this->component, $this->component->event->getTarget());
+        $this->assertFalse($this->component->event->isPropagationStopped());
 
         $eventRaised = false;
         $this->component->on('click', function ($event) use (&$eventRaised) {
@@ -276,8 +276,8 @@ class ComponentTest extends TestCase
         $this->component->raiseEvent();
         $this->assertTrue($this->component->eventHandled);
         $this->assertEquals('click', $this->component->event->name);
-        $this->assertEquals($this->component, $this->component->event->sender);
-        $this->assertFalse($this->component->event->handled);
+        $this->assertEquals($this->component, $this->component->event->getTarget());
+        $this->assertFalse($this->component->event->isPropagationStopped());
 
         $eventRaised = false;
         $this->component->on('cli*', function ($event) use (&$eventRaised) {
@@ -488,6 +488,9 @@ class NewComponent extends Component
     }
 
     public $eventHandled = false;
+    /**
+     * @var Event
+     */
     public $event;
     public $behaviorCalled = false;
 
@@ -499,7 +502,7 @@ class NewComponent extends Component
 
     public function raiseEvent()
     {
-        $this->trigger('click', new Event());
+        $this->trigger(new Event(['name' => 'click']));
     }
 
     public function setWriteOnly()

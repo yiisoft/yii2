@@ -511,30 +511,30 @@ class Component extends BaseObject
      *
      * @param string $name the event name
      * @param callable $handler the event handler
-     * @param mixed $data the data to be passed to the event handler when the event is triggered.
+     * @param array $params the parameters to be passed to the event handler when the event is triggered.
      * When the event handler is invoked, this data can be accessed via [[Event::data]].
      * @param bool $append whether to append new event handler to the end of the existing
      * handler list. If false, the new handler will be inserted at the beginning of the existing
      * handler list.
      * @see off()
      */
-    public function on($name, $handler, $data = null, $append = true)
+    public function on($name, $handler, array $params = [], $append = true)
     {
         $this->ensureBehaviors();
 
         if (strpos($name, '*') !== false) {
             if ($append || empty($this->_eventWildcards[$name])) {
-                $this->_eventWildcards[$name][] = [$handler, $data];
+                $this->_eventWildcards[$name][] = [$handler, $params];
             } else {
-                array_unshift($this->_eventWildcards[$name], [$handler, $data]);
+                array_unshift($this->_eventWildcards[$name], [$handler, $params]);
             }
             return;
         }
 
         if ($append || empty($this->_events[$name])) {
-            $this->_events[$name][] = [$handler, $data];
+            $this->_events[$name][] = [$handler, $params];
         } else {
-            array_unshift($this->_events[$name], [$handler, $data]);
+            array_unshift($this->_events[$name], [$handler, $params]);
         }
     }
 
@@ -602,12 +602,17 @@ class Component extends BaseObject
      * Triggers an event.
      * This method represents the happening of an event. It invokes
      * all attached handlers for the event including class-level handlers.
-     * @param string $name the event name
-     * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
+     * @param Event|string $event the event instance or name. If string name passed, a default [[Event]] object will be created.
      */
-    public function trigger($name, Event $event = null)
+    public function trigger($event)
     {
         $this->ensureBehaviors();
+
+        if (is_object($event)) {
+            $name = $event->getName();
+        } else {
+            $name = $event;
+        }
 
         $eventHandlers = [];
         foreach ($this->_eventWildcards as $wildcard => $handlers) {
@@ -621,26 +626,26 @@ class Component extends BaseObject
         }
 
         if (!empty($eventHandlers)) {
-            if ($event === null) {
+            if (!is_object($event)) {
                 $event = new Event();
+                $event->setName($name);
             }
-            if ($event->sender === null) {
-                $event->sender = $this;
+            if ($event->getTarget() === null) {
+                $event->setTarget($this);
             }
-            $event->handled = false;
-            $event->name = $name;
+            $event->stopPropagation(false);
             foreach ($eventHandlers as $handler) {
-                $event->data = $handler[1];
+                $event->setParams($handler[1]);
                 call_user_func($handler[0], $event);
                 // stop further handling if the event is handled
-                if ($event->handled) {
+                if ($event->isPropagationStopped()) {
                     return;
                 }
             }
         }
 
         // invoke class-level attached handlers
-        Event::trigger($this, $name, $event);
+        Event::trigger($this, $event);
     }
 
     /**
