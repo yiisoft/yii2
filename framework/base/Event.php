@@ -64,7 +64,7 @@ class Event extends BaseObject
     /**
      * Returns event name.
      * @return string event name.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getName()
     {
@@ -77,7 +77,7 @@ class Event extends BaseObject
     /**
      * Sets the event name.
      * @param string $name event name.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setName($name)
     {
