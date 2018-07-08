@@ -103,9 +103,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $useCustomErrorAction = $this->errorAction !== null && (!YII_DEBUG || $exception instanceof UserException);
         $response->setStatusCodeByException($exception);
 
-        $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
-
-      if ($useCustomErrorAction) {
+        if ($useCustomErrorAction) {
             $result = Yii::$app->runAction($this->errorAction);
             if ($result instanceof Response) {
                 $response = $result;
