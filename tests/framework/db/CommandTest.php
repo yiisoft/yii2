@@ -12,11 +12,16 @@ use yii\caching\Cache;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
+use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\JsonExpression;
+use yii\db\Query;
 use yii\db\Schema;
 
 abstract class CommandTest extends DatabaseTestCase
 {
+    protected $upsertTestCharCast = 'CAST([[address]] AS VARCHAR(255))';
+
     public function testConstruct()
     {
         $db = $this->getConnection(false);
@@ -261,7 +266,7 @@ SQL;
         $sql = 'SELECT * FROM {{customer}}';
         $command = $db->createCommand($sql);
         $result = $command->queryOne();
-        $this->assertTrue(is_array($result) && isset($result['id']));
+        $this->assertTrue(\is_array($result) && isset($result['id']));
 
         // FETCH_OBJ, customized via fetchMode property
         $sql = 'SELECT * FROM {{customer}}';
@@ -274,7 +279,7 @@ SQL;
         $sql = 'SELECT * FROM {{customer}}';
         $command = $db->createCommand($sql);
         $result = $command->queryOne([], \PDO::FETCH_NUM);
-        $this->assertTrue(is_array($result) && isset($result[0]));
+        $this->assertTrue(\is_array($result) && isset($result[0]));
     }
 
     public function testBatchInsert()
@@ -302,11 +307,19 @@ SQL;
 
     public function testBatchInsertWithYield()
     {
-        if (version_compare(PHP_VERSION, '5.5', '<')) {
-            $this->markTestSkipped('The yield function is only supported with php 5.5 =< version');
-        } else {
-            include __DIR__ . '/testBatchInsertWithYield.php';
-        }
+        $rows = call_user_func(function () {
+            if (false) {
+                yield [];
+            }
+        });
+
+        $command = $this->getConnection()->createCommand();
+        $command->batchInsert(
+            '{{customer}}',
+            ['email', 'name', 'address'],
+            $rows
+        );
+        $this->assertEquals(0, $command->execute());
     }
 
     /**
@@ -341,7 +354,7 @@ SQL;
             $db->createCommand()->batchInsert('type', $cols, $data)->execute();
 
             $data = $db->createCommand('SELECT int_col, char_col, float_col, bool_col FROM {{type}} WHERE [[int_col]] IN (1,2,3) ORDER BY [[int_col]];')->queryAll();
-            $this->assertEquals(3, count($data));
+            $this->assertEquals(3, \count($data));
             $this->assertEquals(1, $data[0]['int_col']);
             $this->assertEquals(2, $data[1]['int_col']);
             $this->assertEquals(3, $data[2]['int_col']);
@@ -388,6 +401,13 @@ SQL;
                  * TODO: make it work. Impossible without BC breaking for public methods.
                  */
             ],
+            'batchInsert binds params from expression' => [
+                '{{%type}}',
+                ['int_col'],
+                [[new Expression(':qp1', [':qp1' => 42])]], // This example is completely useless. This feature of batchInsert is intended to be used with complex expression objects, such as JsonExpression.
+                'expected' => "INSERT INTO `type` (`int_col`) VALUES (:qp1)",
+                'expectedParams' => [':qp1' => 42]
+            ]
         ];
     }
 
@@ -400,12 +420,15 @@ SQL;
      * @param mixed $columns
      * @param mixed $values
      * @param mixed $expected
+     * @param array $expectedParams
      */
-    public function testBatchInsertSQL($table, $columns, $values, $expected)
+    public function testBatchInsertSQL($table, $columns, $values, $expected, array $expectedParams = [])
     {
         $command = $this->getConnection()->createCommand();
         $command->batchInsert($table, $columns, $values);
-        $this->assertEquals($expected, $command->getSql());
+        $command->prepare(false);
+        $this->assertSame($expected, $command->getSql());
+        $this->assertSame($expectedParams, $command->params);
     }
 
     public function testInsert()
@@ -615,7 +638,6 @@ SQL;
             case 'pgsql':
                 $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
             break;
-            case 'cubrid':
             case 'mysql':
                 $expression = 'YEAR(NOW())';
             break;
@@ -755,6 +777,260 @@ SQL;
 
         $this->assertNull($db->getSchema()->getTableSchema($fromTableName, true));
         $this->assertNotNull($db->getSchema()->getTableSchema($toTableName, true));
+    }
+
+    public function upsertProvider()
+    {
+        return [
+            'regular values' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Earth',
+                            'status' => 3,
+                        ]
+                    ]
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Universe',
+                            'status' => 1,
+                        ]
+                    ]
+                ],
+            ],
+            'regular values with update part' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Earth',
+                            'status' => 3,
+                        ],
+                        [
+                            'address' => 'Moon',
+                            'status' => 2,
+                        ],
+                    ],
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Universe',
+                            'status' => 1,
+                        ],
+                        [
+                            'address' => 'Moon',
+                            'status' => 2,
+                        ],
+                    ],
+                    'expected' => [
+                        'email' => 'foo@example.com',
+                        'address' => 'Moon',
+                        'status' => 2,
+                    ],
+                ],
+            ],
+            'regular values without update part' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Earth',
+                            'status' => 3,
+                        ],
+                        false,
+                    ]
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        [
+                            'email' => 'foo@example.com',
+                            'address' => 'Universe',
+                            'status' => 1,
+                        ],
+                        false,
+                    ],
+                    'expected' => [
+                        'email' => 'foo@example.com',
+                        'address' => 'Earth',
+                        'status' => 3,
+                    ],
+                ],
+            ],
+            'query' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('1'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1)
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'address1',
+                        'status' => 1,
+                    ],
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('2'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1)
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'address1',
+                        'status' => 2,
+                    ],
+                ],
+            ],
+            'query with update part' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('1'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1),
+                        [
+                            'address' => 'Moon',
+                            'status' => 2,
+                        ],
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'address1',
+                        'status' => 1,
+                    ],
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('3'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1),
+                        [
+                            'address' => 'Moon',
+                            'status' => 2,
+                        ],
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'Moon',
+                        'status' => 2,
+                    ],
+                ],
+            ],
+            'query without update part' => [
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('1'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1),
+                        false,
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'address1',
+                        'status' => 1,
+                    ],
+                ],
+                [
+                    'params' => [
+                        'T_upsert',
+                        (new Query())
+                            ->select([
+                                'email',
+                                'address',
+                                'status' => new Expression('2'),
+                            ])
+                            ->from('customer')
+                            ->where(['name' => 'user1'])
+                            ->limit(1),
+                        false,
+                    ],
+                    'expected' => [
+                        'email' => 'user1@example.com',
+                        'address' => 'address1',
+                        'status' => 1,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider upsertProvider
+     * @param array $firstData
+     * @param array $secondData
+     */
+    public function testUpsert(array $firstData, array $secondData)
+    {
+        $db = $this->getConnection();
+        $this->assertEquals(0, $db->createCommand('SELECT COUNT(*) FROM {{T_upsert}}')->queryScalar());
+        $this->performAndCompareUpsertResult($db, $firstData);
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{T_upsert}}')->queryScalar());
+        $this->performAndCompareUpsertResult($db, $secondData);
+    }
+
+    protected function performAndCompareUpsertResult(Connection $db, array $data)
+    {
+        $params = $data['params'];
+        $expected = $data['expected'] ?? $params[1];
+        $command = $db->createCommand();
+        call_user_func_array([$command, 'upsert'], $params);
+        $command->execute();
+        $actual = (new Query())
+            ->select([
+                'email',
+                'address' => new Expression($this->upsertTestCharCast),
+                'status',
+            ])
+            ->from('T_upsert')
+            ->one($db);
+        $this->assertEquals($expected, $actual);
     }
 
     /*
@@ -1065,6 +1341,12 @@ SQL;
                 [':active' => false],
                 'SELECT * FROM customer WHERE active = FALSE',
             ],
+            // https://github.com/yiisoft/yii2/issues/15122
+            [
+                'SELECT * FROM customer WHERE id IN (:ids)',
+                [':ids' => new Expression(implode(', ', [1, 2]))],
+                'SELECT * FROM customer WHERE id IN (1, 2)',
+            ],
         ];
     }
 
@@ -1124,5 +1406,88 @@ SQL;
 
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
+    }
+
+    public function testTransaction()
+    {
+        $connection = $this->getConnection(false);
+        $this->assertNull($connection->transaction);
+        $command = $connection->createCommand("INSERT INTO {{profile}}([[description]]) VALUES('command transaction')");
+        $this->invokeMethod($command, 'requireTransaction');
+        $command->execute();
+        $this->assertNull($connection->transaction);
+        $this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'command transaction'")->queryScalar());
+    }
+
+    public function testRetryHandler()
+    {
+        $connection = $this->getConnection(false);
+        $this->assertNull($connection->transaction);
+        $connection->createCommand("INSERT INTO {{profile}}([[description]]) VALUES('command retry')")->execute();
+        $this->assertNull($connection->transaction);
+        $this->assertEquals(1, $connection->createCommand("SELECT COUNT(*) FROM {{profile}} WHERE [[description]] = 'command retry'")->queryScalar());
+
+        $attempts = null;
+        $hitHandler = false;
+        $hitCatch = false;
+        $command = $connection->createCommand("INSERT INTO {{profile}}([[id]], [[description]]) VALUES(1, 'command retry')");
+        $this->invokeMethod($command, 'setRetryHandler', [function ($exception, $attempt) use (&$attempts, &$hitHandler) {
+            $attempts = $attempt;
+            $hitHandler = true;
+            return $attempt <= 2;
+        }]);
+        try {
+            $command->execute();
+        } catch (Exception $e) {
+            $hitCatch = true;
+            $this->assertInstanceOf('yii\db\IntegrityException', $e);
+        }
+        $this->assertNull($connection->transaction);
+        $this->assertSame(3, $attempts);
+        $this->assertTrue($hitHandler);
+        $this->assertTrue($hitCatch);
+    }
+
+    public function testCreateView()
+    {
+        $db = $this->getConnection();
+        $subquery = (new \yii\db\Query())
+            ->select('bar')
+            ->from('testCreateViewTable')
+            ->where(['>', 'bar', '5']);
+        if ($db->getSchema()->getTableSchema('testCreateViewTable')) {
+            $db->createCommand()->dropTable('testCreateViewTable')->execute();
+        }
+        if ($db->getSchema()->getTableSchema('testCreateView') !== null) {
+            $db->createCommand()->dropView('testCreateView')->execute();
+        }
+        $db->createCommand()->createTable('testCreateViewTable', [
+            'id' => Schema::TYPE_PK,
+            'bar' => Schema::TYPE_INTEGER,
+        ])->execute();
+        $db->createCommand()->insert('testCreateViewTable', ['bar' => 1])->execute();
+        $db->createCommand()->insert('testCreateViewTable', ['bar' => 6])->execute();
+        $db->createCommand()->createView('testCreateView', $subquery)->execute();
+        $records = $db->createCommand('SELECT [[bar]] FROM {{testCreateView}};')->queryAll();
+
+        $this->assertEquals([['bar' => 6]], $records);
+    }
+
+    public function testDropView()
+    {
+        $db = $this->getConnection();
+        $viewName = 'animal_view'; // since it already exists in the fixtures
+        $this->assertNotNull($db->getSchema()->getTableSchema($viewName));
+        $db->createCommand()->dropView($viewName)->execute();
+
+        $this->assertNull($db->getSchema()->getTableSchema($viewName));
+    }
+
+    // TODO: Remove in Yii 2.1
+    public function testBindValuesSupportsDeprecatedPDOCastingFormat()
+    {
+        $db = $this->getConnection();
+        $db->createCommand()->setSql("SELECT :p1")->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
+        $this->assertTrue(true);
     }
 }

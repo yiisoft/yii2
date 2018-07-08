@@ -99,7 +99,7 @@ $container->get('Foo', [], [
 Dans ce cas, le conteneur utilise une fonction de rappel PRP enregistrée pour construire de nouvelles instances d'une classe. À chaque fois que [[yii\di\Container::get()]] est appelée, la fonction de rappel correspondante est invoquée. Cette fonction de rappel est chargée de la résolution des dépendances et de leur injection appropriée dans les objets nouvellement créés. Par exemple :
 
 ```php
-$container->set('Foo', function () {
+$container->set('Foo', function ($container, $params, $config) {
     $foo = new Foo(new Bar);
     // ... autres initialisations ...
     return $foo;
@@ -113,7 +113,7 @@ Pour cacher la logique complexe de construction des nouveaux objets, vous pouvez
 ```php
 class FooBuilder
 {
-    public static function build()
+    public static function build($container, $params, $config)
     {
         $foo = new Foo(new Bar);
         // ... autres initialisations ...

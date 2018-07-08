@@ -38,7 +38,7 @@ class SluggableBehaviorTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -245,7 +245,7 @@ class ActiveRecordSluggable extends ActiveRecord
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::class,
+                '__class' => SluggableBehavior::class,
                 'attribute' => 'name',
             ],
         ];
@@ -284,7 +284,7 @@ class ActiveRecordSluggableUnique extends ActiveRecordSluggable
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::class,
+                '__class' => SluggableBehavior::class,
                 'attribute' => 'name',
                 'ensureUnique' => true,
             ],
@@ -298,7 +298,7 @@ class SkipOnEmptySluggableActiveRecord extends ActiveRecordSluggable
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::class,
+                '__class' => SluggableBehavior::class,
                 'attribute' => 'name',
                 'slugAttribute' => 'slug',
                 'ensureUnique' => true,

@@ -200,7 +200,7 @@ TEXT
     {
         $template = $this->createTemplate();
 
-        $htmlViewName = 'test_html_view' . sha1($htmlViewFileContent); // hash is needed to generate different view files to ensure it works on HHVM
+        $htmlViewName = 'test_html_view';
         $htmlViewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $htmlViewName . '.php';
         file_put_contents($htmlViewFileName, $htmlViewFileContent);
 

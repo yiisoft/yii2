@@ -20,7 +20,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => 'yii\filters\HttpCache',
+            '__class' => yii\filters\HttpCache::class,
             'only' => ['index', 'view'],
             'lastModified' => function ($action, $params) {
                 $q = new \yii\db\Query();
@@ -121,7 +121,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::class,
+            '__class' => AccessControl::class,
             'only' => ['create', 'update'],
             'rules' => [
                 // allow authenticated users
@@ -157,7 +157,7 @@ public function behaviors()
 {
     return [
         'basicAuth' => [
-            'class' => HttpBasicAuth::class,
+            '__class' => HttpBasicAuth::class,
         ],
     ];
 }
@@ -183,7 +183,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => ContentNegotiator::class,
+            '__class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -210,7 +210,7 @@ use yii\web\Response;
 [
     'bootstrap' => [
         [
-            'class' => ContentNegotiator::class,
+            '__class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -241,7 +241,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => HttpCache::class,
+            '__class' => HttpCache::class,
             'only' => ['index'],
             'lastModified' => function ($action, $params) {
                 $q = new \yii\db\Query();
@@ -269,11 +269,11 @@ public function behaviors()
 {
     return [
         'pageCache' => [
-            'class' => PageCache::class,
+            '__class' => PageCache::class,
             'only' => ['index'],
             'duration' => 60,
             'dependency' => [
-                'class' => DbDependency::class,
+                '__class' => DbDependency::class,
                 'sql' => 'SELECT COUNT(*) FROM post',
             ],
             'variations' => [
@@ -307,7 +307,7 @@ public function behaviors()
 {
     return [
         'verbs' => [
-            'class' => VerbFilter::class,
+            '__class' => VerbFilter::class,
             'actions' => [
                 'index'  => ['get'],
                 'view'   => ['get'],
@@ -339,7 +339,7 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::class,
+            '__class' => Cors::class,
         ],
     ], parent::behaviors());
 }
@@ -366,7 +366,7 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::class,
+            '__class' => Cors::class,
             'cors' => [
                 'Origin' => ['http://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
@@ -387,7 +387,7 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::class,
+            '__class' => Cors::class,
             'cors' => [
                 'Origin' => ['http://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],

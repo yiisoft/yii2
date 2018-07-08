@@ -11,6 +11,7 @@ use Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
 use yii\grid\RadioButtonColumn;
+use yii\helpers\Html;
 use yii\web\Request;
 use yiiunit\TestCase;
 
@@ -59,6 +60,23 @@ class RadiobuttonColumnTest extends TestCase
         $this->assertEquals('<td><input type="radio" name="radioButtonSelection" value="' . $model['value'] . '"></td>', $actual);
     }
 
+    public function testContent()
+    {
+        $column = new RadioButtonColumn([
+            'content' => function ($model, $key, $index, $column) {
+                return null;
+            }
+        ]);
+        $this->assertContains('<td></td>', $column->renderDataCell([], 1, 0));
+
+        $column = new RadioButtonColumn([
+            'content' => function ($model, $key, $index, $column) {
+                return Html::radio('radioButtonInput', false);
+            }
+        ]);
+        $this->assertContains(Html::radio('radioButtonInput', false), $column->renderDataCell([], 1, 0));
+    }
+
     public function testMultipleInGrid()
     {
         $this->mockApplication();
@@ -76,7 +94,7 @@ class RadiobuttonColumnTest extends TestCase
             'options' => ['id' => 'radio-gridview'],
             'columns' => [
                 [
-                    'class' => RadioButtonColumn::class,
+                    '__class' => RadioButtonColumn::class,
                     'radioOptions' => function ($model) {
                         return [
                             'value' => $model['value'],

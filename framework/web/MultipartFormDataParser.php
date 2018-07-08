@@ -169,7 +169,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
                 }
 
                 $fileConfig = [
-                    'class' => $request->uploadedFileClass,
+                    '__class' => $request->uploadedFileClass,
                     'clientFilename' => $headers['content-disposition']['filename'],
                     'clientMediaType' => ArrayHelper::getValue($headers, 'content-type', 'application/octet-stream'),
                     'size' => StringHelper::byteLength($value),
@@ -221,7 +221,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
         $headers = [];
         $headerParts = preg_split('/\\R/s', $headerContent, -1, PREG_SPLIT_NO_EMPTY);
         foreach ($headerParts as $headerPart) {
-            if (($separatorPos = strpos($headerPart, ':')) === false) {
+            if (strpos($headerPart, ':') === false) {
                 continue;
             }
 

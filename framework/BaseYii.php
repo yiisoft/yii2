@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
+use yii\base\UnknownClassException;
 use yii\di\Container;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
@@ -90,7 +91,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.14-dev';
+        return '3.0.0-dev';
     }
 
     /**
@@ -132,19 +133,10 @@ class BaseYii
             return $alias;
         }
 
-        $pos = strpos($alias, '/');
-        $root = $pos === false ? $alias : substr($alias, 0, $pos);
+        $result = static::findAlias($alias);
 
-        if (isset(static::$aliases[$root])) {
-            if (is_string(static::$aliases[$root])) {
-                return $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos);
-            }
-
-            foreach (static::$aliases[$root] as $name => $path) {
-                if (strpos($alias . '/', $name . '/') === 0) {
-                    return $path . substr($alias, strlen($name));
-                }
-            }
+        if (is_array($result)) {
+            return $result['path'];
         }
 
         if ($throwException) {
@@ -163,17 +155,30 @@ class BaseYii
      */
     public static function getRootAlias($alias)
     {
+        $result = static::findAlias($alias);
+        if (is_array($result)) {
+            $result = $result['root'];
+        }
+        return $result;
+    }
+
+    /**
+     * @param string $alias
+     * @return array|bool
+     */
+    protected static function findAlias(string $alias)
+    {
         $pos = strpos($alias, '/');
         $root = $pos === false ? $alias : substr($alias, 0, $pos);
 
         if (isset(static::$aliases[$root])) {
             if (is_string(static::$aliases[$root])) {
-                return $root;
+                return ['root' => $root, 'path' => $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos)];
             }
 
             foreach (static::$aliases[$root] as $name => $path) {
                 if (strpos($alias . '/', $name . '/') === 0) {
-                    return $name;
+                    return ['root' => $name, 'path' => $path . substr($alias, strlen($name))];
                 }
             }
         }
@@ -263,7 +268,7 @@ class BaseYii
      *
      * // create an object using a configuration array
      * $object = Yii::createObject([
-     *     'class' => \yii\db\Connection::class,
+     *     '__class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -294,14 +299,20 @@ class BaseYii
     {
         if (is_string($type)) {
             return static::$container->get($type, $params);
-        } elseif (is_array($type) && isset($type['class'])) {
-            $class = $type['class'];
-            unset($type['class']);
+        } elseif (is_array($type) && (isset($type['__class']) || isset($type['class']))) {
+            if (isset($type['__class'])) {
+                $class = $type['__class'];
+                unset($type['__class']);
+            } else {
+                // @todo remove fallback
+                $class = $type['class'];
+                unset($type['class']);
+            }
             return static::$container->get($class, $params, $type);
         } elseif (is_callable($type, true)) {
             return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
-            throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
+            throw new InvalidConfigException('Object configuration must be an array containing a "__class" element.');
         }
 
         throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
@@ -321,7 +332,7 @@ class BaseYii
             return self::$_logger;
         }
 
-        return self::$_logger = Instance::ensure(['class' => Logger::class], LoggerInterface::class);
+        return self::$_logger = Instance::ensure(['__class' => Logger::class], LoggerInterface::class);
     }
 
     /**
@@ -336,11 +347,11 @@ class BaseYii
         }
 
         if (is_array($logger)) {
-            if (!isset($logger['class']) && is_object(self::$_logger)) {
+            if (!isset($logger['__class']) && is_object(self::$_logger)) {
                 static::configure(self::$_logger, $logger);
                 return;
             }
-            $logger = array_merge(['class' => Logger::class], $logger);
+            $logger = array_merge(['__class' => Logger::class], $logger);
         } elseif ($logger instanceof \Closure) {
             $logger = call_user_func($logger);
         }
@@ -350,25 +361,25 @@ class BaseYii
 
     /**
      * @var ProfilerInterface profiler instance.
-     * @since 2.1
+     * @since 3.0.0
      */
     private static $_profiler;
 
     /**
      * @return ProfilerInterface profiler instance.
-     * @since 2.1
+     * @since 3.0.0
      */
     public static function getProfiler()
     {
         if (self::$_profiler !== null) {
             return self::$_profiler;
         }
-        return self::$_profiler = Instance::ensure(['class' => Profiler::class], ProfilerInterface::class);
+        return self::$_profiler = Instance::ensure(['__class' => Profiler::class], ProfilerInterface::class);
     }
 
     /**
      * @param ProfilerInterface|\Closure|array|null $profiler profiler instance or its DI compatible configuration.
-     * @since 2.1
+     * @since 3.0.0
      */
     public static function setProfiler($profiler)
     {
@@ -378,11 +389,11 @@ class BaseYii
         }
 
         if (is_array($profiler)) {
-            if (!isset($profiler['class']) && is_object(self::$_profiler)) {
+            if (!isset($profiler['__class']) && is_object(self::$_profiler)) {
                 static::configure(self::$_profiler, $profiler);
                 return;
             }
-            $profiler = array_merge(['class' => Profiler::class], $profiler);
+            $profiler = array_merge(['__class' => Profiler::class], $profiler);
         } elseif ($profiler instanceof \Closure) {
             $profiler = call_user_func($profiler);
         }
@@ -396,7 +407,7 @@ class BaseYii
      * @param mixed $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as array.
      * @param string $category the category of the message.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public static function log($level, $message, $category = 'application')
     {
@@ -421,6 +432,7 @@ class BaseYii
      * @param string|array $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as array.
      * @param string $category the category of the message.
+     * @since 2.0.14
      */
     public static function debug($message, $category = 'application')
     {
@@ -504,18 +516,6 @@ class BaseYii
     }
 
     /**
-     * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
-     * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
-     */
-    public static function powered()
-    {
-        return \Yii::t('yii', 'Powered by {yii}', [
-            'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
-                    'Yii Framework') . '</a>',
-        ]);
-    }
-
-    /**
      * Translates a message to the specified language.
      *
      * This is a shortcut method of [[\yii\i18n\I18N::translate()]].
@@ -563,7 +563,11 @@ class BaseYii
     public static function configure($object, $properties)
     {
         foreach ($properties as $name => $value) {
-            $object->$name = $value;
+            if (substr($name, -2) === '()') {
+                call_user_func_array([$object, substr($name, 0, -2)], $value);
+            } else {
+                $object->$name = $value;
+            }
         }
 
         return $object;

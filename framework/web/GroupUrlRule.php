@@ -69,11 +69,11 @@ class GroupUrlRule extends CompositeUrlRule
      * @var array the default configuration of URL rules. Individual rule configurations
      * specified via [[rules]] will take precedence when the same property of the rule is configured.
      */
-    public $ruleConfig = ['class' => UrlRule::class];
+    public $ruleConfig = ['__class' => UrlRule::class];
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -83,16 +83,23 @@ class GroupUrlRule extends CompositeUrlRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function createRules()
     {
         $rules = [];
         foreach ($this->rules as $key => $rule) {
             if (!is_array($rule)) {
+                $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
+                $verb = null;
+                if (preg_match("/^((?:(?:$verbs),)*(?:$verbs))\\s+(.*)$/", $key, $matches)) {
+                    $verb = explode(',', $matches[1]);
+                    $key = $matches[2];
+                }
                 $rule = [
                     'pattern' => ltrim($this->prefix . '/' . $key, '/'),
                     'route' => ltrim($this->routePrefix . '/' . $rule, '/'),
+                    'verb' => $verb
                 ];
             } elseif (isset($rule['pattern'], $rule['route'])) {
                 $rule['pattern'] = ltrim($this->prefix . '/' . $rule['pattern'], '/');
@@ -110,7 +117,7 @@ class GroupUrlRule extends CompositeUrlRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function parseRequest($manager, $request)
     {
@@ -123,7 +130,7 @@ class GroupUrlRule extends CompositeUrlRule
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createUrl($manager, $route, $params)
     {

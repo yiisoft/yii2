@@ -16,6 +16,7 @@ use yiiunit\TestCase;
  */
 class StringHelperTest extends TestCase
 {
+
     protected function setUp()
     {
         parent::setUp();
@@ -266,6 +267,7 @@ class StringHelperTest extends TestCase
         $this->assertEquals(['It', 'is', 'a test with trimmed digits', '0', '1', '2'], StringHelper::explode('It, is, a test with trimmed digits, 0, 1, 2', ',', true, true));
         $this->assertEquals(['It', 'is', 'a second', 'test'], StringHelper::explode('It+ is+ a second+ test', '+'));
         $this->assertEquals(['Save', '', '', 'empty trimmed string'], StringHelper::explode('Save, ,, empty trimmed string', ','));
+        $this->assertEquals(['44', '512'], StringHelper::explode('0 0 440 512', ' ', '0', true));
         $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::explode('Здесь我 multibyte我 строка', '我'));
         $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::explode('Disable,  trim  ,,,here but ignore empty', ',', false, true));
         $this->assertEquals(['It/', ' is?', ' a', ' test with rtrim'], StringHelper::explode('It/, is?, a , test with rtrim', ',', 'rtrim'));
@@ -311,5 +313,136 @@ class StringHelperTest extends TestCase
             ['subjects>_d=1', 'c3ViamVjdHM-X2Q9MQ=='],
             ['Это закодированная строка', '0K3RgtC-INC30LDQutC-0LTQuNGA0L7QstCw0L3QvdCw0Y8g0YHRgtGA0L7QutCw'],
         ];
+    }
+
+    /**
+     * Data provider for [[testMatchWildcard()]]
+     * @return array test data.
+     */
+    public function dataProviderMatchWildcard()
+    {
+        return [
+            // *
+            ['*', 'any', true],
+            ['*', '', true],
+            ['begin*end', 'begin-middle-end', true],
+            ['begin*end', 'beginend', true],
+            ['begin*end', 'begin-d', false],
+            ['*end', 'beginend', true],
+            ['*end', 'begin', false],
+            ['begin*', 'begin-end', true],
+            ['begin*', 'end', false],
+            ['begin*', 'before-begin', false],
+            // ?
+            ['begin?end', 'begin1end', true],
+            ['begin?end', 'beginend', false],
+            ['begin??end', 'begin12end', true],
+            ['begin??end', 'begin1end', false],
+            // []
+            ['gr[ae]y', 'gray', true],
+            ['gr[ae]y', 'grey', true],
+            ['gr[ae]y', 'groy', false],
+            ['a[2-8]', 'a1', false],
+            ['a[2-8]', 'a3', true],
+            ['[][!]', ']', true],
+            ['[-1]', '-', true],
+            // [!]
+            ['gr[!ae]y', 'gray', false],
+            ['gr[!ae]y', 'grey', false],
+            ['gr[!ae]y', 'groy', true],
+            ['a[!2-8]', 'a1', true],
+            ['a[!2-8]', 'a3', false],
+            // -
+            ['a-z', 'a-z', true],
+            ['a-z', 'a-c', false],
+            // slashes
+            ['begin/*/end', 'begin/middle/end', true],
+            ['begin/*/end', 'begin/two/steps/end', true],
+            ['begin/*/end', 'begin/end', false],
+            ['begin\\\\*\\\\end', 'begin\middle\end', true],
+            ['begin\\\\*\\\\end', 'begin\two\steps\end', true],
+            ['begin\\\\*\\\\end', 'begin\end', false],
+            // dots
+            ['begin.*.end', 'begin.middle.end', true],
+            ['begin.*.end', 'begin.two.steps.end', true],
+            ['begin.*.end', 'begin.end', false],
+            // case
+            ['begin*end', 'BEGIN-middle-END', false],
+            ['begin*end', 'BEGIN-middle-END', true, ['caseSensitive' => false]],
+            // file path
+            ['begin/*/end', 'begin/middle/end', true, ['filePath' => true]],
+            ['begin/*/end', 'begin/two/steps/end', false, ['filePath' => true]],
+            ['begin\\\\*\\\\end', 'begin\middle\end', true, ['filePath' => true]],
+            ['begin\\\\*\\\\end', 'begin\two\steps\end', false, ['filePath' => true]],
+            ['*', 'any', true, ['filePath' => true]],
+            ['*', 'any/path', false, ['filePath' => true]],
+            ['[.-0]', 'any/path', false, ['filePath' => true]],
+            ['*', '.dotenv', true, ['filePath' => true]],
+            // escaping
+            ['\*\?', '*?', true],
+            ['\*\?', 'zz', false],
+            ['begin\*\end', 'begin\middle\end', true, ['escape' => false]],
+            ['begin\*\end', 'begin\two\steps\end', true, ['escape' => false]],
+            ['begin\*\end', 'begin\end', false, ['escape' => false]],
+            ['begin\*\end', 'begin\middle\end', true, ['filePath' => true, 'escape' => false]],
+            ['begin\*\end', 'begin\two\steps\end', false, ['filePath' => true, 'escape' => false]],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderMatchWildcard
+     *
+     * @param string $pattern
+     * @param string $string
+     * @param bool $expectedResult
+     * @param array $options
+     */
+    public function testMatchWildcard($pattern, $string, $expectedResult, $options = [])
+    {
+        $this->assertSame($expectedResult, StringHelper::matchWildcard($pattern, $string, $options));
+    }
+
+    public function dataProviderMb_ucfirst()
+    {
+        return [
+            ['foo', 'Foo'],
+            ['foo bar', 'Foo bar'],
+            ['👍🏻 foo bar', '👍🏻 foo bar'],
+            ['', ''],
+            [null, ''],
+            ['здесь我 multibyte我 строка', 'Здесь我 multibyte我 строка'],
+        ];
+    }
+
+    /**
+     * @param string $string
+     * @param string $expectedResult
+     * @dataProvider dataProviderMb_ucfirst
+     */
+    public function testMb_ucfirst($string, $expectedResult)
+    {
+        $this->assertSame($expectedResult, StringHelper::mb_ucfirst($string));
+    }
+
+    public function dataProviderMb_ucwords()
+    {
+        return [
+            ['foo', 'Foo'],
+            ['foo bar', 'Foo Bar'],
+            ['👍🏻 foo bar', '👍🏻 Foo Bar'],
+            ['', ''],
+            [null, ''],
+            ['здесь我 multibyte我 строка', 'Здесь我 Multibyte我 Строка'],
+        ];
+    }
+
+    /**
+     * @param string $string
+     * @param string $expectedResult
+     * @dataProvider dataProviderMb_ucwords
+     */
+    public function testMb_ucwords($string, $expectedResult)
+    {
+        $this->assertSame($expectedResult, StringHelper::mb_ucwords($string));
     }
 }

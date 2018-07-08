@@ -9,6 +9,7 @@ namespace yii\filters;
 
 use Yii;
 use yii\base\ActionFilter;
+use yii\helpers\StringHelper;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -22,7 +23,7 @@ use yii\web\NotFoundHttpException;
  * ```php
  * return [
  *     'as hostControl' => [
- *         'class' => 'yii\filters\HostControl',
+ *         '__class' => \yii\filters\HostControl::class,
  *         'allowedHosts' => [
  *             'example.com',
  *             '*.example.com',
@@ -44,7 +45,7 @@ use yii\web\NotFoundHttpException;
  *     {
  *         return [
  *             'hostControl' => [
- *                 'class' => HostControl::class,
+ *                 '__class' => HostControl::class,
  *                 'allowedHosts' => [
  *                     'example.com',
  *                     '*.example.com',
@@ -116,7 +117,7 @@ class HostControl extends ActionFilter
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -135,7 +136,7 @@ class HostControl extends ActionFilter
         $currentHost = Yii::$app->getRequest()->getHostName();
 
         foreach ($allowedHosts as $allowedHost) {
-            if (fnmatch($allowedHost, $currentHost)) {
+            if (StringHelper::matchWildcard($allowedHost, $currentHost)) {
                 return true;
             }
         }

@@ -13,10 +13,13 @@ class Post extends BaseObject
 {
     public $id;
     public $title;
+    public $city;
 
-    public function __construct($id, $title)
+    public function __construct($id, $title, $city = null)
     {
         $this->id = $id;
         $this->title = $title;
+        if(!is_null($city))
+        	$this->city = $city;
     }
 }

@@ -47,7 +47,7 @@ class MessageTraitTest extends TestCase
         $message = new TestMessage();
 
         $message->setBody([
-            'class' => FileStream::class
+            '__class' => FileStream::class
         ]);
         $this->assertTrue($message->getBody() instanceof FileStream);
 
@@ -118,7 +118,7 @@ class MessageTraitTest extends TestCase
                 ],
             ],
             'body' => [
-                'class' => FileStream::class
+                '__class' => FileStream::class
             ],
         ]);
 

@@ -58,10 +58,10 @@ return [
     'components' => [
         // ...
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            '__class' => yii\caching\FileCache::class,
         ],
         'db' => [
-            'class' => 'yii\db\Connection',
+            '__class' => yii\db\Connection::class,
             'dsn' => 'mysql:host=localhost;dbname=mydatabase',
             'username' => 'root',
             'password' => '',
@@ -101,7 +101,7 @@ return [
     // ...
     'components' => [
         'session' => [
-            'class' => 'yii\web\DbSession',
+            '__class' => yii\web\DbSession::class,
 
             // Set the following if you want to use DB component other than
             // default 'db'.

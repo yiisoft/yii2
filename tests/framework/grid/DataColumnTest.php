@@ -106,7 +106,7 @@ class DataColumnTest extends \yiiunit\TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -157,7 +157,7 @@ HTML
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -191,8 +191,8 @@ HTML
         $this->assertEqualsWithoutLE(<<<'HTML'
 <select class="form-control" name="Order[customer_id]">
 <option value=""></option>
-<option value="0">No</option>
 <option value="1">Yes</option>
+<option value="0">No</option>
 </select>
 HTML
             , $result);

@@ -121,9 +121,7 @@ Cấu hình máy chủ Web <span id="configuring-web-servers"></span>
   bạn có thể bỏ qua phần này.
 
 Các ứng dụng được cài đặt theo phương pháp trên, được chạy trong Windows, Max OS X, Linux hoặc máy chủ [Apache HTTP](http://httpd.apache.org/) 
-hoặc [Nginx HTTP server](http://nginx.org/) và PHP phiên bản 5.4 hoặc cao hơn đều có thể được chạy trực tiếp. Yii 2.0 cũng tương thích với HHVM, 
-do [HHVM](http://hhvm.com/)của Facebook và PHP tiêu chuẩn trên các khía cạnh trong một vài nơi một với trường hợp hơi khác nhau, 
-khi sử dụng HHVM đòi hỏi ít thay đổi.
+hoặc [Nginx HTTP server](http://nginx.org/) và PHP phiên bản 5.4 hoặc cao hơn đều có thể được chạy trực tiếp.
 
 Trong môi trường máy chủ sản xuất, bạn có thể cấu hình máy chủ để ứng dụng có thể truy cập thông qua URL http://www.example.com/index.php 
 thay vì http://www.example.com/basic/web/index.php. Cấu hình này đòi hỏi các thư mục gốc tài liệu của máy chủ Web vào thư mục basic/web. Bạn cũng có thể  ẩn index.php trên URL, 
@@ -163,7 +161,7 @@ DocumentRoot "path/to/basic/web"
 
 Để sử dụng [Nginx](http://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](http://php.net/install.fpm).
 Bạn có thể cấu hình Nginx như sau, thay thế đường dẫn `path/to/basic/web` với đường dẫn thực tế ở
-`basic/web` và  `mysite.local` thay thế bằng tên máy chủ thực tế để cung cấp dịch vụ.
+`basic/web` và  `mysite.test` thay thế bằng tên máy chủ thực tế để cung cấp dịch vụ.
 
 ```
 server {
@@ -173,7 +171,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

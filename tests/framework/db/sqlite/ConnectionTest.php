@@ -117,7 +117,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
             $hit_slaves[$db->getSlave()->dsn] = true;
             $hit_masters[$db->getMaster()->dsn] = true;
-            if (count($hit_slaves) === $slavesCount && count($hit_masters) === $mastersCount) {
+            if (\count($hit_slaves) === $slavesCount && \count($hit_masters) === $mastersCount) {
                 break;
             }
         }
@@ -142,7 +142,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
             $hit_slaves[$db->getSlave()->dsn] = true;
             $hit_masters[$db->getMaster()->dsn] = true;
-            if (count($hit_slaves) === $slavesCount) {
+            if (\count($hit_slaves) === $slavesCount) {
                 break;
             }
         }
@@ -179,7 +179,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $basePath = \Yii::getAlias('@yiiunit/runtime');
 
         $config = [
-            'class' => 'yii\db\Connection',
+            '__class' => \yii\db\Connection::class,
             'dsn' => "sqlite:$basePath/yii2test.sq3",
         ];
         $this->prepareDatabase($config, $fixture)->close();

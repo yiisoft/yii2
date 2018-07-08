@@ -91,6 +91,7 @@ class ColumnSchemaBuilder extends BaseObject
         Schema::TYPE_CHAR => self::CATEGORY_STRING,
         Schema::TYPE_STRING => self::CATEGORY_STRING,
         Schema::TYPE_TEXT => self::CATEGORY_STRING,
+        Schema::TYPE_TINYINT => self::CATEGORY_NUMERIC,
         Schema::TYPE_SMALLINT => self::CATEGORY_NUMERIC,
         Schema::TYPE_INTEGER => self::CATEGORY_NUMERIC,
         Schema::TYPE_BIGINT => self::CATEGORY_NUMERIC,
@@ -223,7 +224,7 @@ class ColumnSchemaBuilder extends BaseObject
 
     /**
      * Adds an `AFTER` constraint to the column.
-     * Note: MySQL, Oracle and Cubrid support only.
+     * Note: MySQL, Oracle support only.
      * @param string $after the column after which $this column will be added.
      * @return $this
      * @since 2.0.8
@@ -236,7 +237,7 @@ class ColumnSchemaBuilder extends BaseObject
 
     /**
      * Adds an `FIRST` constraint to the column.
-     * Note: MySQL, Oracle and Cubrid support only.
+     * Note: MySQL, Oracle support only.
      * @return $this
      * @since 2.0.8
      */

@@ -30,7 +30,7 @@ class MysqlMutexTest extends DatabaseTestCase
     protected function createMutex()
     {
         return \Yii::createObject([
-            'class' => MysqlMutex::class,
+            '__class' => MysqlMutex::class,
             'db' => $this->getConnection(),
         ]);
     }

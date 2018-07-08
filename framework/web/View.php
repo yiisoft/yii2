@@ -433,7 +433,7 @@ class View extends \yii\base\View
             $this->cssFiles[$key] = Html::cssFile($url, $options);
         } else {
             $this->getAssetManager()->bundles[$key] = Yii::createObject([
-                'class' => AssetBundle::class,
+                '__class' => AssetBundle::class,
                 'baseUrl' => '',
                 'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
@@ -501,7 +501,7 @@ class View extends \yii\base\View
             $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
         } else {
             $this->getAssetManager()->bundles[$key] = Yii::createObject([
-                'class' => AssetBundle::class,
+                '__class' => AssetBundle::class,
                 'baseUrl' => '',
                 'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,
@@ -509,6 +509,31 @@ class View extends \yii\base\View
             ]);
             $this->registerAssetBundle($key);
         }
+    }
+
+    /**
+     * Registers a JS code block defining a variable. The name of variable will be
+     * used as key, preventing duplicated variable names.
+     *
+     * @param string $name Name of the variable
+     * @param array|string $value Value of the variable
+     * @param int $position the position in a page at which the JavaScript variable should be inserted.
+     * The possible values are:
+     *
+     * - [[POS_HEAD]]: in the head section. This is the default value.
+     * - [[POS_BEGIN]]: at the beginning of the body section.
+     * - [[POS_END]]: at the end of the body section.
+     * - [[POS_LOAD]]: enclosed within jQuery(window).load().
+     *   Note that by using this position, the method will automatically register the jQuery js file.
+     * - [[POS_READY]]: enclosed within jQuery(document).ready().
+     *   Note that by using this position, the method will automatically register the jQuery js file.
+     *
+     * @since 2.0.14
+     */
+    public function registerJsVar($name, $value, $position = self::POS_HEAD)
+    {
+        $js = sprintf('var %s = %s;', $name, \yii\helpers\Json::htmlEncode($value));
+        $this->registerJs($js, $position, $name);
     }
 
     /**
@@ -536,7 +561,7 @@ class View extends \yii\base\View
             $lines[] = implode("\n", $this->jsFiles[self::POS_HEAD]);
         }
         if (!empty($this->js[self::POS_HEAD])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]), ['type' => 'text/javascript']);
+            $lines[] = Html::script(implode("\n", $this->js[self::POS_HEAD]));
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -554,7 +579,7 @@ class View extends \yii\base\View
             $lines[] = implode("\n", $this->jsFiles[self::POS_BEGIN]);
         }
         if (!empty($this->js[self::POS_BEGIN])) {
-            $lines[] = Html::script(implode("\n", $this->js[self::POS_BEGIN]), ['type' => 'text/javascript']);
+            $lines[] = Html::script(implode("\n", $this->js[self::POS_BEGIN]));
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
@@ -588,11 +613,11 @@ class View extends \yii\base\View
                 $scripts[] = implode("\n", $this->js[self::POS_LOAD]);
             }
             if (!empty($scripts)) {
-                $lines[] = Html::script(implode("\n", $scripts), ['type' => 'text/javascript']);
+                $lines[] = Html::script(implode("\n", $scripts));
             }
         } else {
             if (!empty($this->js[self::POS_END])) {
-                $lines[] = Html::script(implode("\n", $this->js[self::POS_END]), ['type' => 'text/javascript']);
+                $lines[] = Html::script(implode("\n", $this->js[self::POS_END]));
             }
             if (!empty($this->js[self::POS_READY])) {
                 $js = "document.addEventListener('DOMContentLoaded', function(event) {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";

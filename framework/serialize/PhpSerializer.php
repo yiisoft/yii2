@@ -13,7 +13,7 @@ use yii\base\BaseObject;
  * PhpSerializer uses native PHP `serialize()` and `unserialize()` functions for the serialization.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.1.0
+ * @since 3.0.0
  */
 class PhpSerializer extends BaseObject implements SerializerInterface
 {

@@ -65,6 +65,7 @@ class EmailTargetTest extends TestCase
         $message = $this->getMockBuilder('yii\\mail\\BaseMessage')
             ->setMethods(['setTextBody', 'send', 'setSubject'])
             ->getMockForAbstractClass();
+        $message->method('send')->willReturn(true);
 
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
 
@@ -109,6 +110,7 @@ class EmailTargetTest extends TestCase
         $message = $this->getMockBuilder('yii\\mail\\BaseMessage')
             ->setMethods(['setTextBody', 'send', 'setSubject'])
             ->getMockForAbstractClass();
+        $message->method('send')->willReturn(true);
 
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
 
@@ -135,6 +137,33 @@ class EmailTargetTest extends TestCase
                 [$message2, $message2[0]],
             ]
         );
+        $mailTarget->export();
+    }
+
+    /**
+     * @covers \yii\log\EmailTarget::export()
+     *
+     * See https://github.com/yiisoft/yii2/issues/14296
+     */
+    public function testExportWithSendFailure()
+    {
+        $message = $this->getMockBuilder('yii\\mail\\BaseMessage')
+            ->setMethods(['send'])
+            ->getMockForAbstractClass();
+        $message->method('send')->willReturn(false);
+        $this->mailer->expects($this->once())->method('compose')->willReturn($message);
+        $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
+            ->setMethods(['formatMessage'])
+            ->setConstructorArgs([
+                [
+                    'mailer' => $this->mailer,
+                    'message' => [
+                        'to' => 'developer@example.com',
+                    ],
+                ],
+            ])
+            ->getMock();
+        $this->expectException('yii\log\LogRuntimeException');
         $mailTarget->export();
     }
 }

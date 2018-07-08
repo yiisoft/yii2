@@ -18,16 +18,32 @@ class EventTest extends TestCase
 {
     public $counter;
 
+    /**
+     * {@inheritdoc}
+     */
     protected function setUp()
     {
         $this->counter = 0;
         Event::offAll();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function tearDown()
     {
         parent::tearDown();
         Event::offAll();
+    }
+
+    public function testSetupName()
+    {
+        $event = new Event();
+        $event->setName('some.event');
+        $this->assertSame('some.event', $event->getName());
+
+        $event = new Event();
+        $this->assertSame('yii.base.event', $event->getName());
     }
 
     public function testOn()
@@ -89,6 +105,42 @@ class EventTest extends TestCase
         $this->assertTrue(Event::hasHandlers(User::class, 'save'));
         $this->assertTrue(Event::hasHandlers(ActiveRecord::class, 'save'));
         $this->assertTrue(Event::hasHandlers('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT));
+    }
+
+    /**
+     * @depends testOn
+     * @depends testHasHandlers
+     */
+    public function testOnWildcard()
+    {
+        Event::on(Post::class, '*', function ($event) {
+            $this->counter += 1;
+        });
+        Event::on('*\Post', 'save', function ($event) {
+            $this->counter += 3;
+        });
+
+        $post = new Post();
+        $post->save();
+        $this->assertEquals(4, $this->counter);
+
+        $this->assertTrue(Event::hasHandlers(Post::class, 'save'));
+    }
+
+    /**
+     * @depends testOnWildcard
+     * @depends testOff
+     */
+    public function testOffWildcard()
+    {
+        $handler = function ($event) {
+            $this->counter++;
+        };
+        $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
+        Event::on('*\Post', 'save', $handler);
+        $this->assertTrue(Event::hasHandlers(Post::class, 'save'));
+        Event::off('*\Post', 'save', $handler);
+        $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
     }
 }
 

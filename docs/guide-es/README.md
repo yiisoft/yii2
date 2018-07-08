@@ -130,20 +130,6 @@ Caché
 * [Caché HTTP](caching-http.md)
 
 
-Servicios Web RESTful
----------------------
-
-* [Guía breve](rest-quick-start.md)
-* [Recursos (Resources)](rest-resources.md)
-* [Controladores](rest-controllers.md)
-* [Gestión de rutas](rest-routing.md)
-* [Formateo de respuestas](rest-response-formatting.md)
-* [Autenticación](rest-authentication.md)
-* [Límite de Rango](rest-rate-limiting.md)
-* [Gestión de versiones](rest-versioning.md)
-* [Gestión de errores](rest-error-handling.md)
-
-
 Herramientas de Desarrollo
 --------------------------
 

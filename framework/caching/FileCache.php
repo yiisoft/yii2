@@ -23,9 +23,9 @@ use yii\helpers\FileHelper;
  * return [
  *     'components' => [
  *         'cache' => [
- *             'class' => yii\caching\Cache::class,
+ *             '__class' => yii\caching\Cache::class,
  *             'handler' => [
- *                 'class' => yii\caching\FileCache::class,
+ *                 '__class' => yii\caching\FileCache::class,
  *                 // 'cachePath' => '@runtime/cache',
  *             ],
  *         ],
@@ -133,6 +133,12 @@ class FileCache extends SimpleCache
         $cacheFile = $this->getCacheFile($key);
         if ($this->directoryLevel > 0) {
             @FileHelper::createDirectory(dirname($cacheFile), $this->dirMode, true);
+        }
+        // If ownership differs the touch call will fail, so we try to
+        // rebuild the file from scratch by deleting it first
+        // https://github.com/yiisoft/yii2/pull/16120
+        if (is_file($cacheFile) && function_exists('posix_geteuid') && fileowner($cacheFile) !== posix_geteuid()) {
+            @unlink($cacheFile);
         }
         if (@file_put_contents($cacheFile, $value, LOCK_EX) !== false) {
             if ($this->fileMode !== null) {

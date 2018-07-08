@@ -77,7 +77,7 @@ class EachValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -124,12 +124,12 @@ class EachValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        if (!is_array($value)) {
+        if (!is_array($value) && !$value instanceof \ArrayAccess) {
             $this->addError($model, $attribute, $this->message, []);
             return;
         }
@@ -168,11 +168,11 @@ class EachValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
-        if (!is_array($value)) {
+        if (!is_array($value) && !$value instanceof \ArrayAccess) {
             return [$this->message, []];
         }
 

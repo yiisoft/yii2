@@ -19,7 +19,7 @@ use yii\base\InvalidConfigException;
  *
  * ```php
  * 'rules' => [
- *     ['class' => MyUrlRule::class, 'pattern' => '...', 'route' => 'site/index', ...],
+ *     ['__class' => MyUrlRule::class, 'pattern' => '...', 'route' => 'site/index', ...],
  *     // ...
  * ]
  * ```
@@ -189,13 +189,13 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     public function init()
     {
         if ($this->pattern === null) {
-            throw new InvalidConfigException('UrlRule::pattern must be set.');
+            throw new InvalidConfigException('UrlRule::$pattern must be set.');
         }
         if ($this->route === null) {
-            throw new InvalidConfigException('UrlRule::route must be set.');
+            throw new InvalidConfigException('UrlRule::$route must be set.');
         }
         if (is_array($this->normalizer)) {
-            $normalizerConfig = array_merge(['class' => UrlNormalizer::class], $this->normalizer);
+            $normalizerConfig = array_merge(['__class' => UrlNormalizer::class], $this->normalizer);
             $this->normalizer = Yii::createObject($normalizerConfig);
         }
         if ($this->normalizer !== null && $this->normalizer !== false && !$this->normalizer instanceof UrlNormalizer) {
@@ -239,7 +239,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             } else {
                 $this->host = $this->pattern;
             }
-        } elseif (strpos($this->pattern, '//') === 0) {
+        } elseif (strncmp($this->pattern, '//', 2) === 0) {
             if (($pos2 = strpos($this->pattern, '/', 2)) !== false) {
                 $this->host = substr($this->pattern, 0, $pos2);
             } else {
@@ -284,7 +284,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             $appendSlash = false;
             foreach ($matches as $match) {
                 $name = $match[1][0];
-                $pattern = isset($match[2][0]) ? $match[2][0] : '[^\/]+';
+                $pattern = $match[2][0] ?? '[^\/]+';
                 $placeholder = 'a' . hash('crc32b', $name); // placeholder must begin with a letter
                 $this->placeholders[$placeholder] = $name;
                 if (array_key_exists($name, $this->defaults)) {
@@ -336,7 +336,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         $this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';
 
         // if host starts with relative scheme, then insert pattern to match any
-        if (strpos($this->host, '//') === 0) {
+        if (strncmp($this->host, '//', 2) === 0) {
             $this->pattern = substr_replace($this->pattern, '[\w]+://', 2, 0);
         }
 
@@ -593,7 +593,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     private function trimSlashes($string)
     {
-        if (strpos($string, '//') === 0) {
+        if (strncmp($string, '//', 2) === 0) {
             return '//' . trim($string, '/');
         }
 

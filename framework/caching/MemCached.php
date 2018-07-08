@@ -28,9 +28,9 @@ use yii\base\InvalidConfigException;
  * [
  *     'components' => [
  *         'cache' => [
- *             'class' => \yii\caching\Cache::class,
+ *             '__class' => \yii\caching\Cache::class,
  *             'handler' => [
- *                 'class' => \yii\caching\MemCached::class,
+ *                 '__class' => \yii\caching\MemCached::class,
  *                 'servers' => [
  *                     [
  *                         'host' => 'server1',

@@ -81,7 +81,7 @@ class Application extends \yii\base\Application
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function __construct($config = [])
     {
@@ -229,14 +229,14 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function coreComponents()
     {
         return array_merge(parent::coreComponents(), [
-            'request' => ['class' => Request::class],
-            'response' => ['class' => Response::class],
-            'errorHandler' => ['class' => ErrorHandler::class],
+            'request' => ['__class' => Request::class],
+            'response' => ['__class' => Response::class],
+            'errorHandler' => ['__class' => ErrorHandler::class],
         ]);
     }
 }

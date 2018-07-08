@@ -11,14 +11,14 @@ component's behavior:
 [
     'components' => [
         'view' => [
-            'class' => 'yii\web\View',
+            '__class' => yii\web\View::class,
             'renderers' => [
                 'tpl' => [
-                    'class' => 'yii\smarty\ViewRenderer',
+                    '__class' => yii\smarty\ViewRenderer::class,
                     //'cachePath' => '@runtime/Smarty/cache',
                 ],
                 'twig' => [
-                    'class' => 'yii\twig\ViewRenderer',
+                    '__class' => yii\twig\ViewRenderer::class,
                     'cachePath' => '@runtime/Twig/cache',
                     // Array of twig options:
                     'options' => [
@@ -45,5 +45,5 @@ That code would be added to the `require` section of `composer.json`. After maki
 
 For details about using concrete template engine please refer to its documentation:
 
-- [Twig guide](https://github.com/yiisoft/yii2-twig/tree/master/docs/guide)
-- [Smarty guide](https://github.com/yiisoft/yii2-smarty/tree/master/docs/guide)
+- [Twig guide](https://www.yiiframework.com/extension/yiisoft/yii2-twig/doc/guide/)
+- [Smarty guide](https://www.yiiframework.com/extension/yiisoft/yii2-smarty/doc/guide/)

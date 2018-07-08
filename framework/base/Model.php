@@ -246,10 +246,15 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      *
      * @return string the form name of this model class.
      * @see load()
+     * @throws InvalidConfigException when form is defined with anonymous class and `formName()` method is
+     * not overridden.
      */
     public function formName()
     {
         $reflector = new ReflectionClass($this);
+        if ($reflector->isAnonymous()) {
+            throw new InvalidConfigException('The "formName()" method should be explicitly defined for anonymous models');
+        }
         return $reflector->getShortName();
     }
 
@@ -329,7 +334,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Errors found during the validation can be retrieved via [[getErrors()]],
      * [[getFirstErrors()]] and [[getFirstError()]].
      *
-     * @param array $attributeNames list of attribute names that should be validated.
+     * @param string[]|string $attributeNames attribute name or list of attribute names that should be validated.
      * If this parameter is empty, it means any attribute listed in the applicable
      * validation rules should be validated.
      * @param bool $clearErrors whether to call [[clearErrors()]] before performing validation
@@ -356,6 +361,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
             $attributeNames = $this->activeAttributes();
         }
 
+        $attributeNames = (array)$attributeNames;
+
         foreach ($this->getActiveValidators() as $validator) {
             $validator->validateAttributes($this, $attributeNames);
         }
@@ -374,8 +381,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      */
     public function beforeValidate()
     {
-        $event = new ModelEvent();
-        $this->trigger(self::EVENT_BEFORE_VALIDATE, $event);
+        $event = new ModelEvent(['name' => self::EVENT_BEFORE_VALIDATE]);
+        $this->trigger($event);
 
         return $event->isValid;
     }
@@ -515,7 +522,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function getAttributeLabel($attribute)
     {
         $labels = $this->attributeLabels();
-        return isset($labels[$attribute]) ? $labels[$attribute] : $this->generateAttributeLabel($attribute);
+        return $labels[$attribute] ?? $this->generateAttributeLabel($attribute);
     }
 
     /**
@@ -528,7 +535,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function getAttributeHint($attribute)
     {
         $hints = $this->attributeHints();
-        return isset($hints[$attribute]) ? $hints[$attribute] : '';
+        return $hints[$attribute] ?? '';
     }
 
     /**
@@ -606,6 +613,25 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public function getFirstError($attribute)
     {
         return isset($this->_errors[$attribute]) ? reset($this->_errors[$attribute]) : null;
+    }
+
+    /**
+     * Returns the errors for all attributes as a one-dimensional array.
+     * @param bool $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
+     * only the first error message for each attribute will be shown.
+     * @return array errors for all attributes as a one-dimensional array. Empty array is returned if no error.
+     * @see getErrors()
+     * @see getFirstErrors()
+     * @since 2.0.14
+     */
+    public function getErrorSummary($showAllErrors)
+    {
+        $lines = [];
+        $errors = $showAllErrors ? $this->getErrors() : $this->getFirstErrors();
+        foreach ($errors as $es) {
+            $lines = array_merge((array)$es, $lines);
+        }
+        return $lines;
     }
 
     /**

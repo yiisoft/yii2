@@ -63,8 +63,7 @@ class m141106_185632_log_init extends Migration
 
     public function up()
     {
-        $targets = $this->getDbTargets();
-        foreach ($targets as $target) {
+        foreach ($this->getDbTargets() as $target) {
             $this->db = $target->db;
 
             $tableOptions = null;
@@ -75,7 +74,7 @@ class m141106_185632_log_init extends Migration
 
             $this->createTable($target->logTable, [
                 'id' => $this->bigPrimaryKey(),
-                'level' => $this->integer(),
+                'level' => $this->string(),
                 'category' => $this->string(),
                 'log_time' => $this->double(),
                 'prefix' => $this->text(),
@@ -89,8 +88,7 @@ class m141106_185632_log_init extends Migration
 
     public function down()
     {
-        $targets = $this->getDbTargets();
-        foreach ($targets as $target) {
+        foreach ($this->getDbTargets() as $target) {
             $this->db = $target->db;
 
             $this->dropTable($target->logTable);

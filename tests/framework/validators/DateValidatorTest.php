@@ -303,6 +303,21 @@ class DateValidatorTest extends TestCase
      */
     public function testIntlValidationWithTime($timezone)
     {
+        // prepare data for specific ICU version, see https://github.com/yiisoft/yii2/issues/15140
+        switch (true) {
+            case (version_compare(INTL_ICU_VERSION, '57.1', '>=')):
+                $enGB_dateTime_valid = '31/05/2017, 12:30';
+                $enGB_dateTime_invalid = '05/31/2017, 12:30';
+                $deDE_dateTime_valid = '31.05.2017, 12:30';
+                $deDE_dateTime_invalid = '05.31.2017, 12:30';
+                break;
+            default:
+                $enGB_dateTime_valid = '31/5/2017 12:30';
+                $enGB_dateTime_invalid = '5/31/2017 12:30';
+                $deDE_dateTime_valid = '31.5.2017 12:30';
+                $deDE_dateTime_invalid = '5.31.2017 12:30';
+        }
+
         $this->testValidationWithTime($timezone);
 
         $this->mockApplication([
@@ -314,12 +329,13 @@ class DateValidatorTest extends TestCase
                 ],
             ],
         ]);
+
         $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31/5/2017 12:30'));
-        $this->assertFalse($val->validate('5/31/2017 12:30'));
+        $this->assertTrue($val->validate($enGB_dateTime_valid));
+        $this->assertFalse($val->validate($enGB_dateTime_invalid));
         $val = new DateValidator(['format' => 'short', 'locale' => 'en-GB', 'type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31/5/2017 12:30'));
-        $this->assertFalse($val->validate('5/31/2017 12:30'));
+        $this->assertTrue($val->validate($enGB_dateTime_valid));
+        $this->assertFalse($val->validate($enGB_dateTime_invalid));
         $this->mockApplication([
             'language' => 'de-DE',
             'components' => [
@@ -330,11 +346,11 @@ class DateValidatorTest extends TestCase
             ],
         ]);
         $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31.5.2017 12:30'));
-        $this->assertFalse($val->validate('5.31.2017 12:30'));
+        $this->assertTrue($val->validate($deDE_dateTime_valid));
+        $this->assertFalse($val->validate($deDE_dateTime_invalid));
         $val = new DateValidator(['format' => 'short', 'locale' => 'de-DE', 'type' => DateValidator::TYPE_DATETIME]);
-        $this->assertTrue($val->validate('31.5.2017 12:30'));
-        $this->assertFalse($val->validate('5.31.2017 12:30'));
+        $this->assertTrue($val->validate($deDE_dateTime_valid));
+        $this->assertFalse($val->validate($deDE_dateTime_invalid));
     }
 
     /**
@@ -658,5 +674,21 @@ class DateValidatorTest extends TestCase
         $validator->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
         $this->assertNull($model->attr_timestamp);
+    }
+
+    /**
+     * Tests that DateValidator with format `php:U` does not truncate timestamp to date.
+     * @see https://github.com/yiisoft/yii2/issues/15628
+     */
+    public function testIssue15628()
+    {
+        $validator = new DateValidator(['format' => 'php:U' , 'type' => DateValidator::TYPE_DATETIME, 'timestampAttribute' => 'attr_date']);
+        $model = new FakedValidationModel();
+        $value = 1518023610;
+        $model->attr_date = $value;
+
+        $validator->validateAttribute($model, 'attr_date');
+
+        $this->assertEquals($value, $model->attr_date);
     }
 }

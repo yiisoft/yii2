@@ -22,7 +22,7 @@ use yii\di\Instance;
  *     'logger' => [
  *         'targets' => [
  *             [
- *                 'class' => yii\log\LoggerTarget::class,
+ *                 '__class' => yii\log\LoggerTarget::class,
  *                 'logger' => function () {
  *                     $logger = new \Monolog\Logger('my_logger');
  *                     $logger->pushHandler(new \Monolog\Handler\SlackHandler('slack_token', 'logs', null, true, null, \Monolog\Logger::DEBUG));
@@ -43,7 +43,7 @@ use yii\di\Instance;
  *
  * @author Paul Klimov <klimov-paul@gmail.com>
  * @author Alexander Makarov <sam@rmcreative.ru>
- * @since 2.1
+ * @since 3.0.0
  */
 class LoggerTarget extends Target
 {

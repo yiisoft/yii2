@@ -35,7 +35,7 @@ class UploadedFileTest extends TestCase
         $uploadedFile->setStream($stream);
         $this->assertSame($stream, $uploadedFile->getStream());
 
-        $uploadedFile->setStream(['class' => MemoryStream::class]);
+        $uploadedFile->setStream(['__class' => MemoryStream::class]);
         $this->assertNotSame($stream, $uploadedFile->getStream());
         $this->assertTrue($uploadedFile->getStream() instanceof MemoryStream);
 

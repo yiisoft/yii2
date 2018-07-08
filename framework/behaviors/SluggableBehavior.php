@@ -17,6 +17,9 @@ use yii\validators\UniqueValidator;
 /**
  * SluggableBehavior automatically fills the specified attribute with a value that can be used a slug in a URL.
  *
+ * Note: This behavior relies on php-intl extension for transliteration. If it is not installed it
+ * falls back to replacements defined in [[\yii\helpers\Inflector::$transliteration]].
+ *
  * To use SluggableBehavior, insert the following code to your ActiveRecord class:
  *
  * ```php
@@ -26,7 +29,7 @@ use yii\validators\UniqueValidator;
  * {
  *     return [
  *         [
- *             'class' => SluggableBehavior::class,
+ *             '__class' => SluggableBehavior::class,
  *             'attribute' => 'title',
  *             // 'slugAttribute' => 'slug',
  *         ],
@@ -47,7 +50,7 @@ use yii\validators\UniqueValidator;
  * {
  *     return [
  *         [
- *             'class' => SluggableBehavior::class,
+ *             '__class' => SluggableBehavior::class,
  *             'slugAttribute' => 'alias',
  *         ],
  *     ];
@@ -102,7 +105,7 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $skipOnEmpty = false;
     /**
-     * @var array configuration for slug uniqueness validator. Parameter 'class' may be omitted - by default
+     * @var array configuration for slug uniqueness validator. Parameter '__class' may be omitted - by default
      * [[UniqueValidator]] will be used.
      * @see UniqueValidator
      */
@@ -124,7 +127,7 @@ class SluggableBehavior extends AttributeBehavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -140,7 +143,7 @@ class SluggableBehavior extends AttributeBehavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getValue($event)
     {
@@ -240,7 +243,7 @@ class SluggableBehavior extends AttributeBehavior
         /* @var $model BaseActiveRecord */
         $validator = Yii::createObject(array_merge(
             [
-                'class' => UniqueValidator::class
+                '__class' => UniqueValidator::class
             ],
             $this->uniqueValidator
         ));

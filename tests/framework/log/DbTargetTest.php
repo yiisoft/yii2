@@ -44,7 +44,7 @@ abstract class DbTargetTest extends TestCase
                 'logger' => [
                     'targets' => [
                         'db' => [
-                            'class' => DbTarget::class,
+                            '__class' => DbTarget::class,
                             'levels' => [LogLevel::WARNING],
                             'logTable' => self::$logTable,
                         ],

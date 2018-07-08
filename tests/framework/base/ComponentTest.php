@@ -12,15 +12,15 @@ use yii\base\Component;
 use yii\base\Event;
 use yiiunit\TestCase;
 
-function globalEventHandler($event)
+function globalEventHandler(Event $event)
 {
-    $event->sender->eventHandled = true;
+    $event->getTarget()->eventHandled = true;
 }
 
-function globalEventHandler2($event)
+function globalEventHandler2(Event $event)
 {
-    $event->sender->eventHandled = true;
-    $event->handled = true;
+    $event->getTarget()->eventHandled = true;
+    $event->stopPropagation();
 }
 
 /**
@@ -56,11 +56,16 @@ class ComponentTest extends TestCase
         $this->assertSame($behavior, $component->getBehavior('a'));
         $component->on('test', 'fake');
         $this->assertTrue($component->hasEventHandlers('test'));
+        $component->on('*', 'fakeWildcard');
+        $this->assertTrue($component->hasEventHandlers('foo'));
 
         $clone = clone $component;
         $this->assertNotSame($component, $clone);
-        $this->assertNull($clone->getBehavior('a'));
+        $this->assertNotNull($clone->getBehavior('a'));
+        $this->assertNotSame($behavior, $clone->getBehavior('a'));
         $this->assertFalse($clone->hasEventHandlers('test'));
+        $this->assertFalse($clone->hasEventHandlers('foo'));
+        $this->assertFalse($clone->hasEventHandlers('*'));
     }
 
     public function testHasProperty()
@@ -174,6 +179,9 @@ class ComponentTest extends TestCase
         $this->assertTrue($this->component->hasEventHandlers('click2'));
     }
 
+    /**
+     * @depends testOn
+     */
     public function testOff()
     {
         $this->assertFalse($this->component->hasEventHandlers('click'));
@@ -192,6 +200,9 @@ class ComponentTest extends TestCase
         $this->assertFalse($this->component->hasEventHandlers('click2'));
     }
 
+    /**
+     * @depends testOn
+     */
     public function testTrigger()
     {
         $this->component->on('click', [$this->component, 'myEventHandler']);
@@ -200,8 +211,8 @@ class ComponentTest extends TestCase
         $this->component->raiseEvent();
         $this->assertTrue($this->component->eventHandled);
         $this->assertEquals('click', $this->component->event->name);
-        $this->assertEquals($this->component, $this->component->event->sender);
-        $this->assertFalse($this->component->event->handled);
+        $this->assertEquals($this->component, $this->component->event->getTarget());
+        $this->assertFalse($this->component->event->isPropagationStopped());
 
         $eventRaised = false;
         $this->component->on('click', function ($event) use (&$eventRaised) {
@@ -219,11 +230,80 @@ class ComponentTest extends TestCase
         $this->assertTrue($eventRaised);
     }
 
+    /**
+     * @depends testOn
+     */
+    public function testOnWildcard()
+    {
+        $this->assertFalse($this->component->hasEventHandlers('group.click'));
+        $this->component->on('group.*', 'foo');
+        $this->assertTrue($this->component->hasEventHandlers('group.click'));
+        $this->assertFalse($this->component->hasEventHandlers('category.click'));
+    }
+
+    /**
+     * @depends testOnWildcard
+     * @depends testOff
+     */
+    public function testOffWildcard()
+    {
+        $this->assertFalse($this->component->hasEventHandlers('group.click'));
+        $this->component->on('group.*', 'foo');
+        $this->assertTrue($this->component->hasEventHandlers('group.click'));
+        $this->component->off('*', 'foo');
+        $this->assertTrue($this->component->hasEventHandlers('group.click'));
+        $this->component->off('group.*', 'foo');
+        $this->assertFalse($this->component->hasEventHandlers('group.click'));
+
+        $this->component->on('category.*', 'foo');
+        $this->component->on('category.*', 'foo2');
+        $this->component->on('category.*', 'foo3');
+        $this->assertTrue($this->component->hasEventHandlers('category.click'));
+        $this->component->off('category.*', 'foo3');
+        $this->assertTrue($this->component->hasEventHandlers('category.click'));
+        $this->component->off('category.*');
+        $this->assertFalse($this->component->hasEventHandlers('category.click'));
+    }
+
+    /**
+     * @depends testTrigger
+     */
+    public function testTriggerWildcard()
+    {
+        $this->component->on('cli*', [$this->component, 'myEventHandler']);
+        $this->assertFalse($this->component->eventHandled);
+        $this->assertNull($this->component->event);
+        $this->component->raiseEvent();
+        $this->assertTrue($this->component->eventHandled);
+        $this->assertEquals('click', $this->component->event->name);
+        $this->assertEquals($this->component, $this->component->event->getTarget());
+        $this->assertFalse($this->component->event->isPropagationStopped());
+
+        $eventRaised = false;
+        $this->component->on('cli*', function ($event) use (&$eventRaised) {
+            $eventRaised = true;
+        });
+        $this->component->raiseEvent();
+        $this->assertTrue($eventRaised);
+
+        // raise event w/o parameters
+        $eventRaised = false;
+        $this->component->on('group.*', function ($event) use (&$eventRaised) {
+            $eventRaised = true;
+        });
+        $this->component->trigger('group.test');
+        $this->assertTrue($eventRaised);
+    }
+
     public function testHasEventHandlers()
     {
         $this->assertFalse($this->component->hasEventHandlers('click'));
+
         $this->component->on('click', 'foo');
         $this->assertTrue($this->component->hasEventHandlers('click'));
+
+        $this->component->on('*', 'foo');
+        $this->assertTrue($this->component->hasEventHandlers('some'));
     }
 
     public function testStopEvent()
@@ -252,12 +332,12 @@ class ComponentTest extends TestCase
 
         $this->assertSame($behavior, $component->detachBehavior('a'));
         $this->assertFalse($component->hasProperty('p'));
-        $this->expectException('yii\base\UnknownMethodException');
+        $this->expectException(\yii\base\UnknownMethodException::class);
         $component->test();
 
         $p = 'as b';
         $component = new NewComponent();
-        $component->$p = ['class' => 'NewBehavior'];
+        $component->$p = ['__class' => 'NewBehavior'];
         $this->assertSame($behavior, $component->getBehavior('a'));
         $this->assertTrue($component->hasProperty('p'));
         $component->test();
@@ -357,6 +437,15 @@ class ComponentTest extends TestCase
         $this->assertFalse($this->component->hasEventHandlers('foo'));
         $this->assertFalse($this->component->off('foo'));
     }
+
+    public function testDetachNotAttachedHandler()
+    {
+        $obj = new NewComponent();
+
+        $obj->on('test', [$this, 'handler']);
+        $this->assertFalse($obj->off('test', [$this, 'handler2']), 'Trying to remove the handler that is not attached');
+        $this->assertTrue($obj->off('test', [$this, 'handler']), 'Trying to remove the attached handler');
+    }
 }
 
 class NewComponent extends Component
@@ -399,6 +488,9 @@ class NewComponent extends Component
     }
 
     public $eventHandled = false;
+    /**
+     * @var Event
+     */
     public $event;
     public $behaviorCalled = false;
 
@@ -410,7 +502,7 @@ class NewComponent extends Component
 
     public function raiseEvent()
     {
-        $this->trigger('click', new Event());
+        $this->trigger(new Event(['name' => 'click']));
     }
 
     public function setWriteOnly()

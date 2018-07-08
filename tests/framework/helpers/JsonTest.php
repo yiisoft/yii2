@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\helpers;
 
-use yii\base\Model;
+use yii\base\DynamicModel;
 use yii\helpers\BaseJson;
 use yii\helpers\Json;
 use yii\web\JsExpression;
@@ -151,7 +151,7 @@ class JsonTest extends TestCase
         $postsStack->push(new Post(915, 'record1'));
         $postsStack->push(new Post(456, 'record2'));
 
-        $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
+        $this->assertSame('{"1":{"id":456,"title":"record2","city":null},"0":{"id":915,"title":"record1","city":null}}', Json::encode($postsStack));
     }
 
     public function testDecode()
@@ -201,21 +201,42 @@ class JsonTest extends TestCase
             Json::encode($data);
             fclose($fp);
         } catch (\yii\base\InvalidArgumentException $e) {
-            if (PHP_VERSION_ID >= 50500) {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
-            } else {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
-            }
+            $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
         }
+    }
+
+    public function testErrorSummary()
+    {
+        $model = new JsonModel();
+        $model->name = 'not_an_integer';
+        $model->addError('name', 'Error message. Here are some chars: < >');
+        $model->addError('name', 'Error message. Here are even more chars: ""');
+        $model->validate(null, false);
+        $options = ['showAllErrors' => true];
+        $expectedHtml = '["Error message. Here are some chars: < >","Error message. Here are even more chars: \"\""]';
+        $this->assertEquals($expectedHtml, Json::errorSummary($model, $options));
     }
 }
 
-class JsonModel extends Model implements \JsonSerializable
+class JsonModel extends DynamicModel implements \JsonSerializable
 {
     public $data = ['json' => 'serializable'];
 
     public function jsonSerialize()
     {
         return $this->data;
+    }
+
+    public function rules()
+    {
+        return [
+            ['name', 'required'],
+            ['name', 'string', 'max' => 100]
+        ];
+    }
+
+    public function init()
+    {
+       $this->defineAttribute('name');
     }
 }

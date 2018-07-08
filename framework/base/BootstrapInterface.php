@@ -37,7 +37,7 @@ namespace yii\base;
  *     'bootstrap' => [
  *         "path\\to\\MyBootstrapClass1",
  *         [
- *             'class' => "path\\to\\MyBootstrapClass2",
+ *             '__class' => "path\\to\\MyBootstrapClass2",
  *             'prop1' => 'value1',
  *             'prop2' => 'value2',
  *         ],

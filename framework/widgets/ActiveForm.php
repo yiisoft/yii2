@@ -27,13 +27,23 @@ use yii\helpers\Url;
 class ActiveForm extends Widget
 {
     /**
+     * Add validation state class to container tag
+     * @since 2.0.14
+     */
+    const VALIDATION_STATE_ON_CONTAINER = 'container';
+    /**
+     * Add validation state class to input tag
+     * @since 2.0.14
+     */
+    const VALIDATION_STATE_ON_INPUT = 'input';
+    /**
      * @event ActiveFieldEvent an event raised right before rendering an ActiveField.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     const EVENT_BEFORE_FIELD_RENDER = 'widget.form.field.render.before';
     /**
      * @event ActionEvent an event raised right after rendering an ActiveField.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     const EVENT_AFTER_FIELD_RENDER = 'widget.form.field.render.after';
 
@@ -108,6 +118,13 @@ class ActiveForm extends Widget
      */
     public $validatingCssClass = 'validating';
     /**
+     * @var string where to render validation state class
+     * Could be either "container" or "input".
+     * Default is "container".
+     * @since 2.0.14
+     */
+    public $validationStateOn = self::VALIDATION_STATE_ON_CONTAINER;
+    /**
      * @var bool whether to enable client-side data validation.
      * If [[ActiveField::enableClientValidation]] is set, its value will take precedence for that input field.
      */
@@ -180,6 +197,7 @@ class ActiveForm extends Widget
      */
     public function init()
     {
+        parent::init();
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
@@ -245,8 +263,8 @@ class ActiveForm extends Widget
         if ($config instanceof \Closure) {
             $config = call_user_func($config, $model, $attribute);
         }
-        if (!isset($config['class'])) {
-            $config['class'] = $this->fieldClass;
+        if (!isset($config['__class'])) {
+            $config['__class'] = $this->fieldClass;
         }
 
         return Yii::createObject(ArrayHelper::merge($config, $options, [
@@ -386,23 +404,23 @@ class ActiveForm extends Widget
      * This method is invoked right before an ActiveField is rendered.
      * The method will trigger the [[EVENT_BEFORE_FIELD_RENDER]] event.
      * @param ActiveField $field active field to be rendered.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function beforeFieldRender($field)
     {
-        $event = new ActiveFieldEvent($field);
-        $this->trigger(self::EVENT_BEFORE_FIELD_RENDER, $event);
+        $event = new ActiveFieldEvent($field, ['name' => self::EVENT_BEFORE_FIELD_RENDER]);
+        $this->trigger($event);
     }
 
     /**
      * This method is invoked right after an ActiveField is rendered.
      * The method will trigger the [[EVENT_AFTER_FIELD_RENDER]] event.
      * @param ActiveField $field active field to be rendered.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function afterFieldRender($field)
     {
-        $event = new ActiveFieldEvent($field);
-        $this->trigger(self::EVENT_AFTER_FIELD_RENDER, $event);
+        $event = new ActiveFieldEvent($field, ['name' => self::EVENT_AFTER_FIELD_RENDER]);
+        $this->trigger($event);
     }
 }

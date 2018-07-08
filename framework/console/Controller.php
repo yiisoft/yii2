@@ -41,15 +41,6 @@ use yii\helpers\Inflector;
 class Controller extends \yii\base\Controller
 {
     /**
-     * @deprecated since 2.0.13. Use [[ExitCode::OK]] instead.
-     */
-    const EXIT_CODE_NORMAL = 0;
-    /**
-     * @deprecated since 2.0.13. Use [[ExitCode::UNSPECIFIED_ERROR]] instead.
-     */
-    const EXIT_CODE_ERROR = 1;
-
-    /**
      * @var bool whether to run the command interactively.
      */
     public $interactive = true;
@@ -113,7 +104,8 @@ class Controller extends \yii\base\Controller
             foreach ($params as $name => $value) {
                 // Allow camelCase options to be entered in kebab-case
                 if (!in_array($name, $options, true) && strpos($name, '-') !== false) {
-                    $altName = lcfirst(Inflector::id2camel($name));
+                    $kebabName = $name;
+                    $altName = lcfirst(Inflector::id2camel($kebabName));
                     if (in_array($altName, $options, true)) {
                         $name = $altName;
                     }
@@ -131,6 +123,9 @@ class Controller extends \yii\base\Controller
                     }
                     $this->_passedOptions[] = $name;
                     unset($params[$name]);
+                    if (isset($kebabName)) {
+                        unset($params[$kebabName]);
+                    }
                 } elseif (!is_int($name)) {
                     throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
                 }
@@ -167,7 +162,7 @@ class Controller extends \yii\base\Controller
         $missing = [];
         foreach ($method->getParameters() as $i => $param) {
             if ($param->isArray() && isset($args[$i])) {
-                $args[$i] = preg_split('/\s*,\s*/', $args[$i]);
+                $args[$i] = $args[$i] === '' ? [] : preg_split('/\s*,\s*/', $args[$i]);
             }
             if (!isset($args[$i])) {
                 if ($param->isDefaultValueAvailable()) {
@@ -295,7 +290,7 @@ class Controller extends \yii\base\Controller
             return Console::prompt($text, $options);
         }
 
-        return isset($options['default']) ? $options['default'] : '';
+        return $options['default'] ?? '';
     }
 
     /**
@@ -493,7 +488,7 @@ class Controller extends \yii\base\Controller
                 continue;
             }
             $name = $reflection->getName();
-            $tag = isset($params[$i]) ? $params[$i] : '';
+            $tag = $params[$i] ?? '';
             if (preg_match('/^(\S+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
                 $type = $matches[1];
                 $comment = $matches[3];
@@ -558,7 +553,7 @@ class Controller extends \yii\base\Controller
             $name = Inflector::camel2id($name, '-', true);
 
             if (isset($tags['var']) || isset($tags['property'])) {
-                $doc = isset($tags['var']) ? $tags['var'] : $tags['property'];
+                $doc = $tags['var'] ?? $tags['property'];
                 if (is_array($doc)) {
                     $doc = reset($doc);
                 }

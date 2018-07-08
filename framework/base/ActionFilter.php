@@ -7,6 +7,8 @@
 
 namespace yii\base;
 
+use yii\helpers\StringHelper;
+
 /**
  * ActionFilter is the base class for action filters.
  *
@@ -43,7 +45,7 @@ class ActionFilter extends Behavior
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function attach($owner)
     {
@@ -52,7 +54,7 @@ class ActionFilter extends Behavior
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function detach()
     {
@@ -76,9 +78,9 @@ class ActionFilter extends Behavior
         if ($event->isValid) {
             // call afterFilter only if beforeFilter succeeds
             // beforeFilter and afterFilter should be properly nested
-            $this->owner->on(Controller::EVENT_AFTER_ACTION, [$this, 'afterFilter'], null, false);
+            $this->owner->on(Controller::EVENT_AFTER_ACTION, [$this, 'afterFilter'], [], false);
         } else {
-            $event->handled = true;
+            $event->stopPropagation();
         }
     }
 
@@ -149,7 +151,7 @@ class ActionFilter extends Behavior
         } else {
             $onlyMatch = false;
             foreach ($this->only as $pattern) {
-                if (fnmatch($pattern, $id)) {
+                if (StringHelper::matchWildcard($pattern, $id)) {
                     $onlyMatch = true;
                     break;
                 }
@@ -158,7 +160,7 @@ class ActionFilter extends Behavior
 
         $exceptMatch = false;
         foreach ($this->except as $pattern) {
-            if (fnmatch($pattern, $id)) {
+            if (StringHelper::matchWildcard($pattern, $id)) {
                 $exceptMatch = true;
                 break;
             }

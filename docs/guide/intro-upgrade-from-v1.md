@@ -102,7 +102,7 @@ using a configuration array:
 
 ```php
 $object = Yii::createObject([
-    'class' => 'MyClass',
+    '__class' => 'MyClass',
     'property1' => 'abc',
     'property2' => 'cde',
 ], [$param1, $param2]);
@@ -313,7 +313,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => 'yii\filters\AccessControl',
+            '__class' => \yii\filters\AccessControl::class,
             'rules' => [
                 ['allow' => true, 'actions' => ['admin'], 'roles' => ['@']],
             ],
@@ -505,7 +505,7 @@ The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no
 `CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
 is much more straightforward to use. The advanced project template provides such an example.
 
-Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) sections for more details.
+Please refer to the [Authentication](security-authentication.md), [Authorization](security-authorization.md), and [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide) sections for more details.
 
 
 URL Management

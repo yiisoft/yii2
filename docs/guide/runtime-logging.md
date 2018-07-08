@@ -69,11 +69,11 @@ return [
     'logger' => [
         'targets' => [
             [
-                'class' => \yii\log\DbTarget::class,
+                '__class' => \yii\log\DbTarget::class,
                 'levels' => ['error', 'warning'],
             ],
             [
-                'class' => \yii\log\EmailTarget::class,
+                '__class' => \yii\log\EmailTarget::class,
                 'levels' => ['error'],
                 'categories' => ['yii\db\*'],
                 'message' => [
@@ -83,11 +83,11 @@ return [
                 ],
             ],
         ],
-    ], 
+    ],
 ];
 ```
 
-In the above code, two log targets are registered: 
+In the above code, two log targets are registered:
 
 * the first target selects error and warning messages and saves them in a database table;
 * the second target selects error messages under the categories whose names start with `yii\db\`, and sends
@@ -138,7 +138,7 @@ under the categories whose names match either `yii\db\*` or `yii\web\HttpExcepti
 
 ```php
 [
-    'class' => \yii\log\FileTarget::class,
+    '__class' => \yii\log\FileTarget::class,
     'levels' => ['error', 'warning'],
     'categories' => [
         'yii\db\*',
@@ -177,7 +177,7 @@ log message with the current user ID (IP address and Session ID are removed for 
 
 ```php
 [
-    'class' => \yii\log\FileTarget::class,
+    '__class' => \yii\log\FileTarget::class,
     'prefix' => function ($message) {
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         $userID = $user ? $user->getId(false) : '-';
@@ -194,7 +194,7 @@ log target configuration specifies that only the value of the `$_SERVER` variabl
 
 ```php
 [
-    'class' => \yii\log\FileTarget::class,
+    '__class' => \yii\log\FileTarget::class,
     'logVars' => ['_SERVER'],
 ]
 ```
@@ -253,7 +253,7 @@ property of individual [log targets](#log-targets), like the following,
 
 ```php
 [
-    'class' => \yii\log\FileTarget::class,
+    '__class' => \yii\log\FileTarget::class,
     'exportInterval' => 100,  // default is 1000
 ]
 ```
@@ -270,7 +270,7 @@ return [
         'flushInterval' => 1,
         'targets' => [
             [
-                'class' => \yii\log\FileTarget::class,
+                '__class' => \yii\log\FileTarget::class,
                 'exportInterval' => 1,
             ],
         ],
@@ -298,10 +298,10 @@ return [
     'logger' => [
         'targets' => [
             'file' => [
-                'class' => \yii\log\FileTarget::class,
+                '__class' => \yii\log\FileTarget::class,
             ],
             'db' => [
-                'class' => \yii\log\DbTarget::class,
+                '__class' => \yii\log\DbTarget::class,
             ],
         ],
     ],
@@ -321,3 +321,44 @@ log target classes included in the Yii release.
 
 > Tip: Instead of creating your own loggers you may try using PSR-3 compatible targets.
 
+## Performance Profiling <span id="performance-profiling"></span>
+
+Performance profiling is a special type of message logging that is used to measure the time taken by certain
+code blocks and find out what are the performance bottlenecks. For example, the [[yii\db\Command]] class uses
+performance profiling to find out the time taken by each DB query.
+
+To use performance profiling, first identify the code blocks that need to be profiled. Then enclose each
+code block like the following:
+
+```php
+\Yii::beginProfile('myBenchmark');
+
+...code block being profiled...
+
+\Yii::endProfile('myBenchmark');
+```
+
+where `myBenchmark` stands for a unique token identifying a code block. Later when you examine the profiling
+result, you will use this token to locate the time spent by the corresponding code block.
+
+It is important to make sure that the pairs of `beginProfile` and `endProfile` are properly nested.
+For example,
+
+```php
+\Yii::beginProfile('block1');
+
+    // some code to be profiled
+
+    \Yii::beginProfile('block2');
+        // some other code to be profiled
+    \Yii::endProfile('block2');
+
+\Yii::endProfile('block1');
+```
+
+If you miss `\Yii::endProfile('block1')` or switch the order of `\Yii::endProfile('block1')` and
+`\Yii::endProfile('block2')`, the performance profiling will not work.
+
+For each code block being profiled, a log message with the severity level `profile` is recorded. You can configure
+a [log target](#log-targets) to collect such messages and export them. The [Yii debugger](tool-debugger.md) has
+a built-in performance profiling panel showing the profiling results.

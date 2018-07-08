@@ -8,6 +8,7 @@
 namespace yiiunit\framework\behaviors;
 
 use Yii;
+use yii\base\Event;
 use yii\behaviors\AttributeBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Connection;
@@ -38,7 +39,7 @@ class AttributeBehaviorTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -128,25 +129,25 @@ class AttributeBehaviorTest extends TestCase
 class ActiveRecordWithAttributeBehavior extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {
         return [
             'attribute' => [
-                'class' => AttributeBehavior::class,
+                '__class' => AttributeBehavior::class,
                 'attributes' => [
                     self::EVENT_BEFORE_VALIDATE => 'alias',
                 ],
-                'value' => function ($event) {
-                    return $event->sender->name;
+                'value' => function (Event $event) {
+                    return $event->getTarget()->name;
                 },
             ],
         ];
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {

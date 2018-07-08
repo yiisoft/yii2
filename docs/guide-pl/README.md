@@ -129,20 +129,6 @@ Pamięć podręczna
 * [Pamięć podręczna HTTP](caching-http.md)
 
 
-Webserwisy z wykorzystaniem REST
---------------------------------
-
-* [Szybki start](rest-quick-start.md)
-* [Zasoby](rest-resources.md)
-* [Kontrolery](rest-controllers.md)
-* [Routing](rest-routing.md)
-* [Formatowanie odpowiedzi](rest-response-formatting.md)
-* [Uwierzytelnianie](rest-authentication.md)
-* [Limit użycia](rest-rate-limiting.md)
-* [Wersjonowanie](rest-versioning.md)
-* [Obsługa błędów](rest-error-handling.md)
-
-
 Narzędzia wspomagające tworzenie aplikacji
 ------------------------------------------
 

@@ -69,6 +69,17 @@ class ErrorHandler extends \yii\base\ErrorHandler
      * @since 2.0.7
      */
     public $displayVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION'];
+    /**
+     * @var string trace line with placeholders to be be substituted.
+     * The placeholders are {file}, {line} and {text} and the string should be as follows.
+     *
+     * `File: {file} - Line: {line} - Text: {text}`
+     *
+     * @example <a href="ide://open?file={file}&line={line}">{html}</a>
+     * @see https://github.com/yiisoft/yii2-debug#open-files-in-ide
+     * @since 2.0.14
+     */
+    public $traceLine = '{html}';
 
 
     /**
@@ -89,11 +100,10 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $response = new Response();
         }
 
+        $useCustomErrorAction = $this->errorAction !== null && (!YII_DEBUG || $exception instanceof UserException);
         $response->setStatusCodeByException($exception);
 
-        $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
-
-        if ($useErrorView && $this->errorAction !== null) {
+        if ($useCustomErrorAction) {
             $result = Yii::$app->runAction($this->errorAction);
             if ($result instanceof Response) {
                 $response = $result;
@@ -110,6 +120,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 if (YII_DEBUG) {
                     ini_set('display_errors', 1);
                 }
+                $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
                 $file = $useErrorView ? $this->errorView : $this->exceptionView;
                 $response->data = $this->renderFile($file, [
                     'exception' => $exception,
@@ -221,7 +232,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function getTypeUrl($class, $method)
     {
-        if (strpos($class, 'yii\\') !== 0) {
+        if (strncmp($class, 'yii\\', 4) !== 0) {
             return null;
         }
 

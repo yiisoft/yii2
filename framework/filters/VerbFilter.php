@@ -28,7 +28,7 @@ use yii\web\MethodNotAllowedHttpException;
  * {
  *     return [
  *         'verbs' => [
- *             'class' => \yii\filters\VerbFilter::class,
+ *             '__class' => \yii\filters\VerbFilter::class,
  *             'actions' => [
  *                 'index'  => ['GET'],
  *                 'view'   => ['GET'],

@@ -252,7 +252,7 @@ $result = Customer::getDb()->cache(function ($db) {
 
 ### Очистка кэша <span id="cache-flushing">
 
-Для очистки всего кэша, вы можете вызвать [[yii\caching\Cache::clear()]].
+Для очистки всего кэша, вы можете вызвать [[yii\caching\Cache::flush()]].
 
 Также вы можете очистить кэш из консоли, вызвав `yii cache/clear`.
  - `yii cache`: отображает список доступных кэширующих компонентов приложения

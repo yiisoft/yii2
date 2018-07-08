@@ -133,9 +133,7 @@ php requirements.php
   его на рабочем сервере.
 
 Приложение, установленное по инструкциям, приведённым выше, будет работать сразу как с [Apache](http://httpd.apache.org/),
-так и с [Nginx](http://nginx.org/) под Windows и Linux с установленным PHP 5.4 и выше. Yii 2.0 также совместим с
-[HHVM](http://hhvm.com/). Тем не менее, в некоторых случаях поведение при работе с HHVM отличается от обычного PHP.
-Будьте внимательны.
+так и с [Nginx](http://nginx.org/) под Windows и Linux с установленным PHP 5.4 и выше.
 
 На рабочем сервере вам наверняка захочется изменить URL приложения с `http://www.example.com/basic/web/index.php`
 на `http://www.example.com/index.php`. Для этого необходимо изменить корневую директорию в настройках веб сервера так,
@@ -176,7 +174,7 @@ DocumentRoot "path/to/basic/web"
 
 PHP должен быть установлен как [FPM SAPI](http://php.net/manual/ru/install.fpm.php) для [Nginx](http://wiki.nginx.org/).
 Используйте следующие параметры Nginx и не забудьте заменить `path/to/basic/web` на корректный путь к `basic/web` и
-`mysite.local` на ваше имя хоста.
+`mysite.test` на ваше имя хоста.
 
 ```
 server {
@@ -186,7 +184,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## слушаем ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

@@ -47,13 +47,13 @@ class InstanceTest extends TestCase
     {
         $container = new Container();
         $container->set('db', [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => 'test',
         ]);
 
         $this->assertInstanceOf(Connection::class, Instance::ensure('db', Connection::class, $container));
         $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection(), Connection::class, $container));
-        $this->assertInstanceOf(Connection::class, Instance::ensure(['class' => Connection::class, 'dsn' => 'test'], Connection::class, $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(['__class' => Connection::class, 'dsn' => 'test'], Connection::class, $container));
     }
 
     /**
@@ -82,25 +82,25 @@ class InstanceTest extends TestCase
     {
         $container = new Container();
         $container->set('db', [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => 'test',
         ]);
 
         $this->assertInstanceOf(Connection::class, Instance::ensure('db', null, $container));
         $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection, null, $container));
-        $this->assertInstanceOf(Connection::class, Instance::ensure(['class' => Connection::class, 'dsn' => 'test'], null, $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(['__class' => Connection::class, 'dsn' => 'test'], null, $container));
     }
 
     public function testEnsure_MinimalSettings()
     {
         Yii::$container->set('db', [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => 'test',
         ]);
 
         $this->assertInstanceOf(Connection::class, Instance::ensure('db'));
         $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection()));
-        $this->assertInstanceOf(Connection::class, Instance::ensure(['class' => Connection::class, 'dsn' => 'test']));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(['__class' => Connection::class, 'dsn' => 'test']));
         Yii::$container = new Container();
     }
 
@@ -108,7 +108,7 @@ class InstanceTest extends TestCase
     {
         $container = new Container();
         $container->set('db', [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => 'test',
         ]);
 
@@ -137,7 +137,7 @@ class InstanceTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => Connection::class,
+                    '__class' => Connection::class,
                     'dsn' => 'test',
                 ],
             ],
@@ -157,11 +157,11 @@ class InstanceTest extends TestCase
     {
         Yii::$container = new Container();
         Yii::$container->set('cache', [
-            'class' => DbCache::class,
+            '__class' => DbCache::class,
             'db' => Instance::of('db'),
         ]);
         Yii::$container->set('db', [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => 'sqlite:path/to/file.db',
         ]);
 
@@ -198,7 +198,7 @@ PHP
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
         Instance::ensure([
-            'class' => Connection::class,
+            '__class' => Connection::class,
         ], Widget::class);
     }
 }

@@ -9,6 +9,7 @@ namespace yiiunit\framework\behaviors;
 
 use Yii;
 use yii\base\BaseObject;
+use yii\base\Event;
 use yii\behaviors\BlameableBehavior;
 use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
@@ -33,11 +34,11 @@ class BlameableBehaviorTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
                 'user' => [
-                    'class' => 'yiiunit\framework\behaviors\UserMock',
+                    '__class' => \yiiunit\framework\behaviors\UserMock::class,
                 ],
             ],
         ]);
@@ -120,8 +121,8 @@ class BlameableBehaviorTest extends TestCase
     {
         $model = new ActiveRecordBlameable();
         $model->name = __METHOD__;
-        $model->getBlameable()->value = function ($event) {
-            return strlen($event->sender->name); // $model->name;
+        $model->getBlameable()->value = function (Event $event) {
+            return strlen($event->getTarget()->name); // $model->name;
         };
         $model->beforeSave(true);
 
@@ -133,7 +134,7 @@ class BlameableBehaviorTest extends TestCase
     {
         $model = new ActiveRecordBlameable([
             'as blameable' => [
-                'class' => BlameableBehavior::class,
+                '__class' => BlameableBehavior::class,
                 'attributes' => [
                     BaseActiveRecord::EVENT_BEFORE_VALIDATE => 'created_by',
                     BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_by', 'updated_by'],
@@ -161,7 +162,7 @@ class BlameableBehaviorTest extends TestCase
 
         $model = new ActiveRecordBlameable([
             'as blameable' => [
-                'class' => BlameableBehavior::class,
+                '__class' => BlameableBehavior::class,
                 'defaultValue' => 2
             ],
         ]);
@@ -193,7 +194,7 @@ class ActiveRecordBlameableWithDefaultValueClosure extends ActiveRecordBlameable
     {
         return [
             'blameable' => [
-                'class' => BlameableBehavior::class,
+                '__class' => BlameableBehavior::class,
                 'defaultValue' => function () {
                     return $this->created_by + 1;
                 }
@@ -217,7 +218,7 @@ class ActiveRecordBlameable extends ActiveRecord
     {
         return [
             'blameable' => [
-                'class' => BlameableBehavior::class,
+                '__class' => BlameableBehavior::class,
             ],
         ];
     }

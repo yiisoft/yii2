@@ -67,7 +67,6 @@ use yii\validators\IpValidator;
  * @property bool $isHead Whether this is a HEAD request. This property is read-only.
  * @property bool $isOptions Whether this is a OPTIONS request. This property is read-only.
  * @property bool $isPatch Whether this is a PATCH request. This property is read-only.
- * @property bool $isPjax Whether this is a PJAX request. This property is read-only.
  * @property bool $isPost Whether this is a POST request. This property is read-only.
  * @property bool $isPut Whether this is a PUT request. This property is read-only.
  * @property bool $isSecureConnection If the request is sent via secure channel (https). This property is
@@ -109,11 +108,6 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * The name of the HTTP header for sending CSRF token.
      */
     const CSRF_HEADER = 'X-CSRF-Token';
-    /**
-     * The length of the CSRF token mask.
-     * @deprecated 2.0.12 The mask length is now equal to the token length.
-     */
-    const CSRF_MASK_LENGTH = 8;
 
     /**
      * @var bool whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
@@ -186,7 +180,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     /**
      * @var string name of the class to be used for uploaded file instantiation.
      * This class should implement [[UploadedFileInterface]].
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public $uploadedFileClass = UploadedFile::class;
     /**
@@ -235,9 +229,12 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * @since 2.0.13
      */
     public $secureHeaders = [
+        // Common:
         'X-Forwarded-For',
         'X-Forwarded-Host',
         'X-Forwarded-Proto',
+
+        // Microsoft:
         'Front-End-Https',
         'X-Rewrite-Url',
     ];
@@ -250,7 +247,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * @since 2.0.13
      */
     public $ipHeaders = [
-        'X-Forwarded-For',
+        'X-Forwarded-For', // Common
     ];
     /**
      * @var array list of headers to check for determining whether the connection is made via HTTPS.
@@ -262,23 +259,23 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * @since 2.0.13
      */
     public $secureProtocolHeaders = [
-        'X-Forwarded-Proto' => ['https'],
-        'Front-End-Https' => ['on'],
+        'X-Forwarded-Proto' => ['https'], // Common
+        'Front-End-Https' => ['on'], // Microsoft
     ];
 
     /**
      * @var array attributes derived from the request.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     private $_attributes;
     /**
      * @var array server parameters.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     private $_serverParams;
     /**
      * @var array the cookies sent by the client to the server.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     private $_cookieParams;
     /**
@@ -299,7 +296,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     private $_requestTarget;
     /**
      * @var array uploaded files.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     private $_uploadedFiles;
 
@@ -403,7 +400,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getRequestTarget()
     {
@@ -416,7 +413,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     /**
      * Specifies the message's request target
      * @param mixed $requestTarget the message's request target.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setRequestTarget($requestTarget)
     {
@@ -425,7 +422,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function withRequestTarget($requestTarget)
     {
@@ -458,7 +455,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     /**
      * Specifies request HTTP method.
      * @param string $method case-sensitive HTTP method.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setMethod($method)
     {
@@ -467,7 +464,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function withMethod($method)
     {
@@ -482,7 +479,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getUri()
     {
@@ -503,7 +500,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     /**
      * Specifies the URI instance.
      * @param UriInterface|\Closure|array $uri URI instance or its DI compatible configuration.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setUri($uri)
     {
@@ -512,7 +509,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
@@ -606,15 +603,6 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     }
 
     /**
-     * Returns whether this is a PJAX request
-     * @return bool whether this is a PJAX request
-     */
-    public function getIsPjax()
-    {
-        return $this->getIsAjax() && $this->hasHeader('x-pjax');
-    }
-
-    /**
      * Returns whether this is an Adobe Flash or Flex request.
      * @return bool whether this is an Adobe Flash or Adobe Flex request.
      */
@@ -659,7 +647,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         $this->setBody($body);
     }
 
-    private $_parsedBody;
+    private $_parsedBody = false;
 
     /**
      * Returns the request parameters given in the request body.
@@ -670,7 +658,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      *
      * Since 2.1.0 body params also include result of [[getUploadedFiles()]].
      *
-     * @return array the request parameters given in the request body.
+     * @return array|null the request parameters given in the request body. A `null` value indicates
+     * the absence of body content.
      * @throws InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
      * @throws UnsupportedMediaTypeHttpException if unable to parse raw body.
      * @see getMethod()
@@ -679,7 +668,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      */
     public function getParsedBody()
     {
-        if ($this->_parsedBody === null) {
+        if ($this->_parsedBody === false) {
             if (isset($_POST[$this->methodParam])) {
                 $this->_parsedBody = $_POST;
                 unset($this->_parsedBody[$this->methodParam]);
@@ -714,6 +703,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
                 if ($contentType === 'multipart/form-data') {
                     $this->_parsedBody = ArrayHelper::merge($this->_parsedBody, $this->getUploadedFiles());
                 }
+            } elseif (empty($contentType) && ($this->getBody()->getSize() === 0 || $this->getBody()->getSize() === null)) {
+                $this->_parsedBody = null;
             } else {
                 if ($contentType !== 'application/x-www-form-urlencoded') {
                     throw new UnsupportedMediaTypeHttpException();
@@ -739,7 +730,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function withParsedBody($data)
     {
@@ -761,7 +752,16 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     {
         $params = $this->getParsedBody();
 
-        return isset($params[$name]) ? $params[$name] : $defaultValue;
+        if (is_object($params)) {
+            // unable to use `ArrayHelper::getValue()` due to different dots in key logic and lack of exception handling
+            try {
+                return $params->{$name};
+            } catch (\Exception $e) {
+                return $defaultValue;
+            }
+        }
+
+        return $params[$name] ?? $defaultValue;
     }
 
     /**
@@ -851,13 +851,13 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     {
         $params = $this->getQueryParams();
 
-        return isset($params[$name]) ? $params[$name] : $defaultValue;
+        return $params[$name] ?? $defaultValue;
     }
 
     /**
      * Sets the data related to the incoming request environment.
      * @param array $serverParams server parameters.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setServerParams(array $serverParams)
     {
@@ -866,7 +866,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getServerParams()
     {
@@ -881,7 +881,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * @param string $name parameter name.
      * @param mixed $default default value to return if the parameter does not exist.
      * @return mixed parameter value.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getServerParam($name, $default = null)
     {
@@ -895,7 +895,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     /**
      * Specifies cookies.
      * @param array $cookies array of key/value pairs representing cookies.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setCookieParams(array $cookies)
     {
@@ -905,7 +905,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getCookieParams()
     {
@@ -917,7 +917,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function withCookieParams(array $cookies)
     {
@@ -965,7 +965,10 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         if ($this->_hostInfo === null) {
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
-            if ($this->hasHeader('Host')) {
+
+            if ($this->hasHeader('X-Forwarded-Host')) {
+                $this->_hostInfo = $http . '://' . trim(explode(',', $this->getHeaderLine('X-Forwarded-Host'))[0]);
+            } elseif ($this->hasHeader('Host')) {
                 $this->_hostInfo = $http . '://' . $this->getHeaderLine('Host');
             } elseif (($serverName = $this->getServerParam('SERVER_NAME')) !== null) {
                 $this->_hostInfo = $http . '://' . $serverName;
@@ -1064,7 +1067,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             } elseif (isset($serverParams['PHP_SELF']) && ($pos = strpos($serverParams['PHP_SELF'], '/' . $scriptName)) !== false) {
                 $this->_scriptUrl = substr($serverParams['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
             } elseif (!empty($serverParams['DOCUMENT_ROOT']) && strpos($scriptFile, $serverParams['DOCUMENT_ROOT']) === 0) {
-                $this->_scriptUrl = str_replace('\\', '/', str_replace($serverParams['DOCUMENT_ROOT'], '', $scriptFile));
+                $this->_scriptUrl = str_replace([$serverParams['DOCUMENT_ROOT'], '\\'], ['', '/'], $scriptFile);
             } else {
                 throw new InvalidConfigException('Unable to determine the entry script URL.');
             }
@@ -1461,7 +1464,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
          * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
          */
         $auth_token = $this->getHeader('HTTP_AUTHORIZATION') ?: $this->getHeader('REDIRECT_HTTP_AUTHORIZATION');
-        if ($auth_token !== [] && strpos(strtolower($auth_token[0]), 'basic') === 0) {
+        if ($auth_token !== [] && strncasecmp($auth_token[0], 'basic', 5) === 0) {
             $parts = array_map(function ($value) {
                 return strlen($value) === 0 ? null : $value;
             }, explode(':', base64_decode(mb_substr($auth_token[0], 6)), 2));
@@ -1488,8 +1491,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     public function getPort()
     {
         if ($this->_port === null) {
-            $serverPort = $this->getServerParam('SERVER_PORT');
-            $this->_port = !$this->getIsSecureConnection() && $serverPort === null ? (int) $serverPort : 80;
+            $serverPort = $this->getServerPort();
+            $this->_port = !$this->getIsSecureConnection() && $serverPort !== null ? $serverPort : 80;
         }
 
         return $this->_port;
@@ -1521,8 +1524,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     public function getSecurePort()
     {
         if ($this->_securePort === null) {
-            $serverPort = $this->getServerParam('SERVER_PORT');
-            $this->_securePort = $this->getIsSecureConnection() && $serverPort === null ? (int) $serverPort : 443;
+            $serverPort = $this->getServerPort();
+            $this->_securePort = $this->getIsSecureConnection() && $serverPort !== null ? $serverPort : 443;
         }
 
         return $this->_securePort;
@@ -1824,7 +1827,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
                 $data = @unserialize($data);
                 if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
                     $cookies[$name] = Yii::createObject([
-                        'class' => \yii\http\Cookie::class,
+                        '__class' => \yii\http\Cookie::class,
                         'name' => $name,
                         'value' => $data[1],
                         'expire' => null,
@@ -1834,7 +1837,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         } else {
             foreach ($this->getCookieParams() as $name => $value) {
                 $cookies[$name] = Yii::createObject([
-                    'class' => \yii\http\Cookie::class,
+                    '__class' => \yii\http\Cookie::class,
                     'name' => $name,
                     'value' => $value,
                     'expire' => null,
@@ -1847,7 +1850,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getUploadedFiles()
     {
@@ -1864,7 +1867,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * Sets uploaded files for this request.
      * Data structure for the uploaded files should follow [PSR-7 Uploaded Files specs](http://www.php-fig.org/psr/psr-7/#16-uploaded-files).
      * @param array|null $uploadedFiles uploaded files.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setUploadedFiles($uploadedFiles)
     {
@@ -1873,7 +1876,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
@@ -1886,7 +1889,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * Initializes default uploaded files data structure parsing super-global $_FILES.
      * @see http://www.php-fig.org/psr/psr-7/#16-uploaded-files
      * @return array uploaded files.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     protected function defaultUploadedFiles()
     {
@@ -1907,7 +1910,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * @param mixed $types file types provided by PHP
      * @param mixed $sizes file sizes provided by PHP
      * @param mixed $errors uploading issues provided by PHP
-     * @since 2.1.0
+     * @since 3.0.0
      */
     private function populateUploadedFileRecursive(&$files, $names, $tempNames, $types, $sizes, $errors)
     {
@@ -1918,7 +1921,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
             }
         } else {
             $files = Yii::createObject([
-                'class' => $this->uploadedFileClass,
+                '__class' => $this->uploadedFileClass,
                 'clientFilename' => $names,
                 'tempFilename' => $tempNames,
                 'clientMediaType' => $types,
@@ -1934,7 +1937,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * Note: this method returns `null` in case given name matches multiple files.
      * @param string|array $name HTML form input name or array path.
      * @return UploadedFileInterface|null uploaded file instance, `null` - if not found.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getUploadedFileByName($name)
     {
@@ -1952,7 +1955,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * even if they are set by nested keys.
      * @param string|array $name HTML form input name or array path.
      * @return UploadedFileInterface[] list of uploaded file instances.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getUploadedFilesByName($name)
     {
@@ -1971,7 +1974,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * Name can be either a string HTML form input name, e.g. 'Item[file]' or array path, e.g. `['Item', 'file']`.
      * @param string|array $name HTML form input name or array path.
      * @return UploadedFileInterface|array|null
-     * @since 2.1.0
+     * @since 3.0.0
      */
     private function findUploadedFiles($name)
     {
@@ -1985,7 +1988,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
      * Reduces complex uploaded files structure to the single-level array (list).
      * @param array $uploadedFiles raw set of the uploaded files.
      * @return UploadedFileInterface[] list of uploaded files.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     private function reduceUploadedFiles($uploadedFiles)
     {
@@ -2013,7 +2016,8 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     public function getCsrfToken($regenerate = false)
     {
         if ($this->_csrfToken === null || $regenerate) {
-            if ($regenerate || ($token = $this->loadCsrfToken()) === null) {
+            $token = $this->loadCsrfToken();
+            if ($regenerate || empty($token)) {
                 $token = $this->generateCsrfToken();
             }
             $this->_csrfToken = Yii::$app->security->maskToken($token);
@@ -2072,7 +2076,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     {
         $options = $this->csrfCookie;
         return Yii::createObject(array_merge($options, [
-            'class' => \yii\http\Cookie::class,
+            '__class' => \yii\http\Cookie::class,
             'name' => $this->csrfParam,
             'value' => $token,
         ]));
@@ -2130,7 +2134,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getAttributes()
     {
@@ -2150,7 +2154,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getAttribute($name, $default = null)
     {
@@ -2164,7 +2168,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function withAttribute($name, $value)
     {
@@ -2182,7 +2186,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function withoutAttribute($name)
     {
@@ -2201,7 +2205,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
     /**
      * Returns default server request attributes to be used in case they are not explicitly set.
      * @return array attributes derived from the request.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     protected function defaultAttributes()
     {
@@ -2220,5 +2224,7 @@ class Request extends \yii\base\Request implements ServerRequestInterface
         if (is_object($this->_cookies)) {
             $this->_cookies = clone $this->_cookies;
         }
+
+        $this->_parsedBody = false;
     }
 }

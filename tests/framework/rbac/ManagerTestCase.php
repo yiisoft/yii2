@@ -7,6 +7,8 @@
 
 namespace yiiunit\framework\rbac;
 
+use yii\base\InvalidArgumentException;
+use yii\rbac\BaseManager;
 use yii\rbac\Item;
 use yii\rbac\Permission;
 use yii\rbac\Role;
@@ -18,7 +20,7 @@ use yiiunit\TestCase;
 abstract class ManagerTestCase extends TestCase
 {
     /**
-     * @var \yii\rbac\ManagerInterface
+     * @var \yii\rbac\ManagerInterface|BaseManager
      */
     protected $auth;
 
@@ -498,9 +500,9 @@ abstract class ManagerTestCase extends TestCase
         $this->assertFalse($auth->checkAccess($userId, 'Reader', ['action' => 'write']));
 
         // using DI
-        \Yii::$container->set('write_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'write']);
-        \Yii::$container->set('delete_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'delete']);
-        \Yii::$container->set('all_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'all']);
+        \Yii::$container->set('write_rule', ['__class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'write']);
+        \Yii::$container->set('delete_rule', ['__class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'delete']);
+        \Yii::$container->set('all_rule', ['__class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'all']);
 
         $item = $this->createRBACItem($RBACItemType, 'Writer');
         $item->ruleName = 'write_rule';
@@ -612,5 +614,21 @@ abstract class ManagerTestCase extends TestCase
         /** @var ActionRule $rule */
         $rule = $this->auth->getRule('action_rule');
         $this->assertInstanceOf(ActionRule::class, $rule);
+    }
+
+    public function testDefaultRolesWithClosureReturningNonArrayValue()
+    {
+        $this->expectException('yii\base\InvalidValueException');
+        $this->expectExceptionMessage('Default roles closure must return an array');
+        $this->auth->defaultRoles = function () {
+            return 'test';
+        };
+    }
+
+    public function testDefaultRolesWithNonArrayValue()
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Default roles must be either an array or a callable');
+        $this->auth->defaultRoles = 'test';
     }
 }

@@ -27,7 +27,7 @@ class LogTargetTest extends TestCase
         $target->setLogger($logger);
         $this->assertSame($logger, $target->getLogger());
 
-        $target->setLogger(['class' => NullLogger::class]);
+        $target->setLogger(['__class' => NullLogger::class]);
         $this->assertNotSame($logger, $target->getLogger());
         $this->assertTrue($target->getLogger() instanceof NullLogger);
 

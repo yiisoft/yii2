@@ -20,7 +20,7 @@ use yii\helpers\FileHelper;
  *     'profiler' => [
  *         'targets' => [
  *             [
- *                 'class' => yii\profile\FileTarget::class,
+ *                 '__class' => yii\profile\FileTarget::class,
  *                 //'filename' => '@runtime/profiling/{date}-{time}.txt',
  *             ],
  *         ],
@@ -31,7 +31,7 @@ use yii\helpers\FileHelper;
  * ```
  *
  * @author Paul Klimov <klimov-paul@gmail.com>
- * @since 2.1.0
+ * @since 3.0.0
  */
 class FileTarget extends Target
 {

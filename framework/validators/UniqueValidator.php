@@ -82,21 +82,19 @@ class UniqueValidator extends Validator
      */
     public $message;
     /**
-     * @var string
-     * @since 2.0.9
-     * @deprecated since version 2.0.10, to be removed in 2.1. Use [[message]] property
-     * to setup custom message for multiple target attributes.
-     */
-    public $comboNotUnique;
-    /**
      * @var string and|or define how target attributes are related
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
+    /**
+     * @var bool whether this validator is forced to always use master DB
+     * @since 2.0.14
+     */
+    public $forceMasterDb =  true;
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -105,19 +103,14 @@ class UniqueValidator extends Validator
             return;
         }
         if (is_array($this->targetAttribute) && count($this->targetAttribute) > 1) {
-            // fallback for deprecated `comboNotUnique` property - use it as message if is set
-            if ($this->comboNotUnique === null) {
-                $this->message = Yii::t('yii', 'The combination {values} of {attributes} has already been taken.');
-            } else {
-                $this->message = $this->comboNotUnique;
-            }
+            $this->message = Yii::t('yii', 'The combination {values} of {attributes} has already been taken.');
         } else {
             $this->message = Yii::t('yii', '{attribute} "{value}" has already been taken.');
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -135,7 +128,19 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
-        if ($this->modelExists($targetClass, $conditions, $model)) {
+        $db = $targetClass::getDb();
+
+        $modelExists = false;
+
+        if ($this->forceMasterDb && method_exists($db, 'useMaster')) {
+            $db->useMaster(function () use ($targetClass, $conditions, $model, &$modelExists) {
+                $modelExists = $this->modelExists($targetClass, $conditions, $model);
+            });
+        } else {
+            $modelExists = $this->modelExists($targetClass, $conditions, $model);
+        }
+
+        if ($modelExists) {
             if (is_array($targetAttribute) && count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
@@ -181,6 +186,9 @@ class UniqueValidator extends Validator
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
+                
+                // any with relation can't be loaded because related fields are not selected
+                $query->with = null;
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);
@@ -260,7 +268,8 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * Builds and adds [[comboNotUnique]] error message to the specified model attribute.
+     * Builds and adds error message to the specified model attribute.
+     * Should be used when [[targetAttribute]] is an array (is a combination of attributes).
      * @param \yii\base\Model $model the data model.
      * @param string $attribute the name of the attribute.
      */

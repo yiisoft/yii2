@@ -114,7 +114,7 @@ class SiteController extends Controller
     {
         return [
             'error' => [
-                'class' => 'yii\web\ErrorAction',
+                '__class' => \yii\web\ErrorAction::class,
             ],
         ];
     }
@@ -187,7 +187,7 @@ return [
     // ...
     'components' => [
         'response' => [
-            'class' => 'yii\web\Response',
+            '__class' => yii\web\Response::class,
             'on beforeSend' => function ($event) {
                 $response = $event->sender;
                 if ($response->data !== null) {

@@ -8,6 +8,7 @@
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
+use yii\console\ExitCode;
 use yii\db\Connection;
 
 /**
@@ -44,7 +45,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         ob_start();
         $result = Yii::$app->runAction($route, $params);
         echo 'Result is ' . $result;
-        if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
+        if ($result !== ExitCode::OK) {
             ob_end_flush();
         } else {
             ob_end_clean();
@@ -108,7 +109,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getDefaultConfig()
     {
@@ -122,7 +123,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function saveMessages($messages, $category)
     {
@@ -144,7 +145,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function loadMessages($category)
     {

@@ -57,7 +57,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $config = $databases[$driverAvailable];
 
         $result = [
-            'class' => Connection::class,
+            '__class' => Connection::class,
             'dsn' => $config['dsn'],
         ];
 
@@ -91,6 +91,19 @@ abstract class AbstractDbSessionTest extends TestCase
     public function testReadWrite()
     {
         $session = new DbSession();
+
+        $session->writeSession('test', 'session data');
+        $this->assertEquals('session data', $session->readSession('test'));
+        $session->destroySession('test');
+        $this->assertEquals('', $session->readSession('test'));
+    }
+
+    public function testInitializeWithConfig()
+    {
+        // should produce no exceptions
+        $session = new DbSession([
+            'useCookies' => true,
+        ]);
 
         $session->writeSession('test', 'session data');
         $this->assertEquals('session data', $session->readSession('test'));
@@ -144,11 +157,6 @@ abstract class AbstractDbSessionTest extends TestCase
         $object->binary = base64_decode('5qS2UUcXWH7rjAmvhqGJTDNkYWFiOGMzNTFlMzNmMWIyMDhmOWIwYzAwYTVmOTFhM2E5MDg5YjViYzViN2RlOGZlNjllYWMxMDA0YmQxM2RQ3ZC0in5ahjNcehNB/oP/NtOWB0u3Skm67HWGwGt9MA==');
         $object->with_null_byte = 'hey!' . "\0" . 'y"ûƒ^äjw¾bðúl5êù-Ö=W¿Š±¬GP¥Œy÷&ø';
 
-        if (version_compare(PHP_VERSION, '5.5.0', '<')) {
-            unset($object->binary);
-            // Binary data can not be inserted on PHP <5.5
-        }
-
         return $object;
     }
 
@@ -196,5 +204,26 @@ abstract class AbstractDbSessionTest extends TestCase
         $history = $this->runMigrate('down');
         $this->assertEquals(['base'], $history);
         $this->createTableSession();
+    }
+
+    public function testInstantiate()
+    {
+        $oldTimeout = ini_get('session.gc_maxlifetime');
+        // unset Yii::$app->db to make sure that all queries are made against sessionDb
+        Yii::$app->set('sessionDb', Yii::$app->db);
+        Yii::$app->set('db', null);
+
+        $session = new DbSession([
+            'timeout' => 300,
+            'db' => 'sessionDb',
+        ]);
+
+        $this->assertSame(Yii::$app->sessionDb, $session->db);
+        $this->assertSame(300, $session->timeout);
+        $session->close();
+
+        Yii::$app->set('db', Yii::$app->sessionDb);
+        Yii::$app->set('sessionDb', null);
+        ini_set('session.gc_maxlifetime', $oldTimeout);
     }
 }

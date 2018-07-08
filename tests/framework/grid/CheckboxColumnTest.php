@@ -12,6 +12,7 @@ use yii\data\ArrayDataProvider;
 use yii\grid\CheckboxColumn;
 use yii\grid\GridView;
 use yii\helpers\FileHelper;
+use yii\helpers\Html;
 use yiiunit\framework\i18n\IntlTestHelper;
 use yiiunit\TestCase;
 
@@ -27,8 +28,8 @@ class CheckboxColumnTest extends TestCase
         $this->mockApplication();
         Yii::setAlias('@webroot', '@yiiunit/runtime');
         Yii::setAlias('@web', 'http://localhost/');
-        Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = false;
         FileHelper::createDirectory(Yii::getAlias('@webroot/assets'));
+        Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = false;
     }
 
     public function testInputName()
@@ -81,6 +82,25 @@ class CheckboxColumnTest extends TestCase
         ]);
         $this->assertNotContains('value="1"', $column->renderDataCell([], 1, 0));
         $this->assertContains('value="42"', $column->renderDataCell([], 1, 0));
+    }
+
+    public function testContent()
+    {
+        $column = new CheckboxColumn([
+            'content' => function ($model, $key, $index, $column) {
+                return null;
+            },
+            'grid' => $this->getGrid(),
+        ]);
+        $this->assertContains('<td></td>', $column->renderDataCell([], 1, 0));
+
+        $column = new CheckboxColumn([
+            'content' => function ($model, $key, $index, $column) {
+                return Html::checkBox('checkBoxInput', false);
+            },
+            'grid' => $this->getGrid(),
+        ]);
+        $this->assertContains(Html::checkBox('checkBoxInput', false), $column->renderDataCell([], 1, 0));
     }
 
     /**

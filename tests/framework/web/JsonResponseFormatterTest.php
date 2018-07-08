@@ -76,15 +76,15 @@ class JsonResponseFormatterTest extends FormatterTest
     public function formatObjectDataProvider()
     {
         return [
-            [new Post(123, 'abc'), '{"id":123,"title":"abc"}'],
+            [new Post(123, 'abc'), '{"id":123,"title":"abc","city":null}'],
             [[
                 new Post(123, 'abc'),
                 new Post(456, 'def'),
-            ], '[{"id":123,"title":"abc"},{"id":456,"title":"def"}]'],
+            ], '[{"id":123,"title":"abc","city":null},{"id":456,"title":"def","city":null}]'],
             [[
                 new Post(123, '<>'),
                 'a' => new Post(456, 'def'),
-            ], '{"0":{"id":123,"title":"<>"},"a":{"id":456,"title":"def"}}'],
+            ], '{"0":{"id":123,"title":"<>","city":null},"a":{"id":456,"title":"def","city":null}}'],
         ];
     }
 
@@ -95,7 +95,7 @@ class JsonResponseFormatterTest extends FormatterTest
         $postsStack->push(new Post(456, 'record2'));
 
         return [
-            [$postsStack, '{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}'],
+            [$postsStack, '{"1":{"id":456,"title":"record2","city":null},"0":{"id":915,"title":"record1","city":null}}'],
         ];
     }
 

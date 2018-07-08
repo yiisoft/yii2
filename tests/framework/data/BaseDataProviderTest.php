@@ -33,7 +33,7 @@ class BaseDataProviderTest extends TestCase
 class ConcreteDataProvider extends BaseDataProvider
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareModels()
     {
@@ -41,7 +41,7 @@ class ConcreteDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareKeys($models)
     {
@@ -49,7 +49,7 @@ class ConcreteDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareTotalCount()
     {
