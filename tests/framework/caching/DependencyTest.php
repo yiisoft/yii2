@@ -1,14 +1,20 @@
 <?php
-namespace yiiunit\framework\caching;
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
+namespace yiiunit\framework\caching;
 
 use yii\caching\Cache;
 use yii\caching\Dependency;
+use yii\caching\SimpleCache;
 use yiiunit\data\cache\MockDependency;
 use yiiunit\TestCase;
 
 /**
- * Dependency (abstract) tests
+ * Dependency (abstract) tests.
  * @group caching
  * @author Boudewijn Vahrmeijer <vahrmeijer@gmail.com>
  * @since 2.0.11
@@ -37,10 +43,12 @@ class DependencyTest extends TestCase
         $this->assertEquals(40, strlen($result));
     }
 
-    public function testisChanged()
+    public function testIsChanged()
     {
+        /* @var $dependency Dependency */
+        /* @var $cache SimpleCache */
         $dependency = $this->getMockForAbstractClass(Dependency::class);
-        $cache = $this->getMockForAbstractClass(Cache::class);
+        $cache = $this->getMockForAbstractClass(SimpleCache::class);
 
         $result = $dependency->isChanged($cache);
         $this->assertFalse($result);

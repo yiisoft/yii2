@@ -1,14 +1,19 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\console\controllers;
 
+use Yii;
+use yii\console\controllers\AssetController;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
 use yiiunit\TestCase;
-use yii\console\controllers\AssetController;
-use Yii;
 
 /**
  * Unit test for [[\yii\console\controllers\AssetController]].
@@ -67,7 +72,10 @@ class AssetControllerTest extends TestCase
      */
     protected function createAssetController()
     {
-        $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
+        $module = $this->getMockBuilder('yii\\base\\Module')
+            ->setMethods(['fake'])
+            ->setConstructorArgs(['console'])
+            ->getMock();
         $assetController = new AssetControllerMock('asset', $module);
         $assetController->interactive = false;
         $assetController->jsCompressor = 'cp {from} {to}';
@@ -99,7 +107,7 @@ class AssetControllerTest extends TestCase
     {
         static $classNumber = 0;
         $classNumber++;
-        $className = $this->declareAssetBundleClass(['class' => 'AssetBundleAll' . $classNumber]);
+        $className = $this->declareAssetBundleClass(['__class' => 'AssetBundleAll' . $classNumber]);
         $baseUrl = '/test';
         $config = ArrayHelper::merge($config, [
             'bundles' => $bundles,
@@ -193,8 +201,8 @@ class AssetControllerTest extends TestCase
     {
         $config = array_merge(
             [
-                'namespace' => StringHelper::dirname(get_class($this)),
-                'class' => 'AppAsset',
+                '__namespace' => StringHelper::dirname(get_class($this)),
+                '__class' => 'AppAsset',
                 'sourcePath' => null,
                 'basePath' => $this->testFilePath,
                 'baseUrl' => '',
@@ -205,17 +213,17 @@ class AssetControllerTest extends TestCase
             $config
         );
         foreach ($config as $name => $value) {
-            if (!in_array($name, ['namespace', 'class'])) {
+            if (!in_array($name, ['__namespace', '__class'])) {
                 $config[$name] = VarDumper::export($value);
             }
         }
 
         $source = <<<EOL
-namespace {$config['namespace']};
+namespace {$config['__namespace']};
 
 use yii\web\AssetBundle;
 
-class {$config['class']} extends AssetBundle
+class {$config['__class']} extends AssetBundle
 {
     public \$sourcePath = {$config['sourcePath']};
     public \$basePath = {$config['basePath']};
@@ -239,7 +247,7 @@ EOL;
         $sourceCode = $this->composeAssetBundleClassSource($config);
         eval($sourceCode);
 
-        return $config['namespace'] . '\\' . $config['class'];
+        return $config['__namespace'] . '\\' . $config['__class'];
     }
 
     // Tests :
@@ -248,9 +256,9 @@ EOL;
     {
         $configFileName = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
         $this->runAssetControllerAction('template', [$configFileName]);
-        $this->assertTrue(file_exists($configFileName), 'Unable to create config file template!');
-        $config = require($configFileName);
-        $this->assertTrue(is_array($config), 'Invalid config created!');
+        $this->assertFileExists($configFileName, 'Unable to create config file template!');
+        $config = require $configFileName;
+        $this->assertInternalType('array', $config, 'Invalid config created!');
     }
 
     public function testActionCompress()
@@ -272,9 +280,9 @@ EOL;
             'js/test_alert.js' => "function test() {
                 alert('Test message');
             }",
-            'js/test_sum_ab.js' => "function sumAB(a, b) {
+            'js/test_sum_ab.js' => 'function sumAB(a, b) {
                 return a + b;
-            }",
+            }',
         ];
         $this->createAssetSourceFiles($jsFiles);
         $assetBundleClassName = $this->declareAssetBundleClass([
@@ -283,7 +291,7 @@ EOL;
         ]);
 
         $bundles = [
-            $assetBundleClassName
+            $assetBundleClassName,
         ];
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
@@ -294,9 +302,9 @@ EOL;
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
 
         // Then :
-        $this->assertTrue(file_exists($bundleFile), 'Unable to create output bundle file!');
-        $compressedBundleConfig = require($bundleFile);
-        $this->assertTrue(is_array($compressedBundleConfig), 'Output bundle file has incorrect format!');
+        $this->assertFileExists($bundleFile, 'Unable to create output bundle file!');
+        $compressedBundleConfig = require $bundleFile;
+        $this->assertInternalType('array', $compressedBundleConfig, 'Output bundle file has incorrect format!');
         $this->assertCount(2, $compressedBundleConfig, 'Output bundle config contains wrong bundle count!');
 
         $this->assertArrayHasKey($assetBundleClassName, $compressedBundleConfig, 'Source bundle is lost!');
@@ -306,9 +314,9 @@ EOL;
         $this->assertNotEmpty($compressedAssetBundleConfig['depends'], 'Compressed bundle dependency is invalid!');
 
         $compressedCssFileName = $this->testAssetsBasePath . DIRECTORY_SEPARATOR . 'all.css';
-        $this->assertTrue(file_exists($compressedCssFileName), 'Unable to compress CSS files!');
+        $this->assertFileExists($compressedCssFileName, 'Unable to compress CSS files!');
         $compressedJsFileName = $this->testAssetsBasePath . DIRECTORY_SEPARATOR . 'all.js';
-        $this->assertTrue(file_exists($compressedJsFileName), 'Unable to compress JS files!');
+        $this->assertFileExists($compressedJsFileName, 'Unable to compress JS files!');
 
         $compressedCssFileContent = file_get_contents($compressedCssFileName);
         foreach ($cssFiles as $name => $content) {
@@ -329,14 +337,14 @@ EOL;
     {
         // Given :
         $externalAssetConfig = [
-            'class' => 'ExternalAsset',
+            '__class' => 'ExternalAsset',
             'sourcePath' => null,
             'basePath' => null,
             'js' => [
                 '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
             ],
             'css' => [
-                '//ajax.googleapis.com/css/libs/jquery/2.1.1/jquery.ui.min.css'
+                '//ajax.googleapis.com/css/libs/jquery/2.1.1/jquery.ui.min.css',
             ],
         ];
         $externalAssetBundleClassName = $this->declareAssetBundleClass($externalAssetConfig);
@@ -355,15 +363,15 @@ EOL;
         ];
         $this->createAssetSourceFiles($jsFiles);
         $regularAssetBundleClassName = $this->declareAssetBundleClass([
-            'class' => 'RegularAsset',
+            '__class' => 'RegularAsset',
             'css' => array_keys($cssFiles),
             'js' => array_keys($jsFiles),
             'depends' => [
-                $externalAssetBundleClassName
+                $externalAssetBundleClassName,
             ],
         ]);
         $bundles = [
-            $regularAssetBundleClassName
+            $regularAssetBundleClassName,
         ];
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
@@ -374,9 +382,9 @@ EOL;
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
 
         // Then :
-        $this->assertTrue(file_exists($bundleFile), 'Unable to create output bundle file!');
-        $compressedBundleConfig = require($bundleFile);
-        $this->assertTrue(is_array($compressedBundleConfig), 'Output bundle file has incorrect format!');
+        $this->assertFileExists($bundleFile, 'Unable to create output bundle file!');
+        $compressedBundleConfig = require $bundleFile;
+        $this->assertInternalType('array', $compressedBundleConfig, 'Output bundle file has incorrect format!');
         $this->assertArrayHasKey($externalAssetBundleClassName, $compressedBundleConfig, 'External bundle is lost!');
 
         $compressedExternalAssetConfig = $compressedBundleConfig[$externalAssetBundleClassName];
@@ -398,36 +406,36 @@ EOL;
         $namespace = __NAMESPACE__;
 
         $this->declareAssetBundleClass([
-            'namespace' => $namespace,
-            'class' => 'AssetStart',
+            '__namespace' => $namespace,
+            '__class' => 'AssetStart',
             'depends' => [
-                $namespace . '\AssetA'
+                $namespace . '\AssetA',
             ],
         ]);
         $this->declareAssetBundleClass([
-            'namespace' => $namespace,
-            'class' => 'AssetA',
+            '__namespace' => $namespace,
+            '__class' => 'AssetA',
             'depends' => [
-                $namespace . '\AssetB'
+                $namespace . '\AssetB',
             ],
         ]);
         $this->declareAssetBundleClass([
-            'namespace' => $namespace,
-            'class' => 'AssetB',
+            '__namespace' => $namespace,
+            '__class' => 'AssetB',
             'depends' => [
-                $namespace . '\AssetC'
+                $namespace . '\AssetC',
             ],
         ]);
         $this->declareAssetBundleClass([
-            'namespace' => $namespace,
-            'class' => 'AssetC',
+            '__namespace' => $namespace,
+            '__class' => 'AssetC',
             'depends' => [
-                $namespace . '\AssetA'
+                $namespace . '\AssetA',
             ],
         ]);
 
         $bundles = [
-            $namespace . '\AssetStart'
+            $namespace . '\AssetStart',
         ];
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
@@ -436,7 +444,8 @@ EOL;
 
         // Assert :
         $expectedExceptionMessage = ": {$namespace}\AssetA -> {$namespace}\AssetB -> {$namespace}\AssetC -> {$namespace}\AssetA";
-        $this->setExpectedException('yii\console\Exception', $expectedExceptionMessage);
+        $this->expectException('yii\console\Exception');
+        $this->expectExceptionMessage($expectedExceptionMessage);
 
         // When :
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
@@ -537,6 +546,12 @@ EOL;
                 '/test/base/path/assets/css',
                 '.published-relative-dir-class {background-image: url(../img/same_relative_dir.png);}',
             ],
+            [
+                'img {clip-path: url(#xxx)}',
+                '/test/base/path/css',
+                '/test/base/path/assets/output',
+                'img {clip-path: url(#xxx)}',
+            ],
         ];
     }
 
@@ -556,7 +571,7 @@ EOL;
     }
 
     /**
-     * Data provider for [[testFindRealPath()]]
+     * Data provider for [[testFindRealPath()]].
      * @return array test data
      */
     public function findRealPathDataProvider()
@@ -627,7 +642,7 @@ EOL;
         $this->createAssetSourceFiles($cssFiles, $sourcePath);
         $this->createAssetSourceFiles($jsFiles, $sourcePath);
         $assetBundleClassName = $this->declareAssetBundleClass([
-            'class' => 'AssetDelete',
+            '__class' => 'AssetDelete',
             'css' => array_keys($cssFiles),
             'js' => array_keys($jsFiles),
             'basePath' => null,
@@ -635,14 +650,14 @@ EOL;
         ]);
 
         $bundles = [
-            $assetBundleClassName
+            $assetBundleClassName,
         ];
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
         // Keep source :
         $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config_no_source_delete.php';
         $this->createCompressConfigFile($configFile, $bundles, [
-            'deleteSource' => false
+            'deleteSource' => false,
         ]);
 
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
@@ -650,7 +665,7 @@ EOL;
         $files = FileHelper::findFiles($this->testAssetsBasePath, [
             'only' => [
                 'test_body.css',
-                'test_alert.js'
+                'test_alert.js',
             ],
         ]);
         $this->assertNotEmpty($files);
@@ -658,7 +673,7 @@ EOL;
         // Delete source :
         $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config_source_delete.php';
         $this->createCompressConfigFile($configFile, $bundles, [
-            'deleteSource' => true
+            'deleteSource' => true,
         ]);
 
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
@@ -666,7 +681,7 @@ EOL;
         $files = FileHelper::findFiles($this->testAssetsBasePath, [
             'only' => [
                 'test_body.css',
-                'test_alert.js'
+                'test_alert.js',
             ],
         ]);
         $this->assertEmpty($files);
@@ -696,13 +711,13 @@ EOL;
         //$this->createAssetSourceFiles($cssFiles, $sourcePath);
         //$this->createAssetSourceFiles($jsFiles, $sourcePath);
         $assetBundleClassName = $this->declareAssetBundleClass([
-            'class' => 'AssetOverrideExternal',
+            '__class' => 'AssetOverrideExternal',
             'css' => array_keys($cssFiles),
             'js' => array_keys($jsFiles),
         ]);
 
         $bundles = [
-            $assetBundleClassName
+            $assetBundleClassName,
         ];
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle_override_as_external.php';
 
@@ -713,10 +728,10 @@ EOL;
             'basePath' => null,
             'baseUrl' => null,
             'css' => [
-                '//some.cdn.com/js/override_external.css'
+                '//some.cdn.com/js/override_external.css',
             ],
             'js' => [
-                '//some.cdn.com/js/override_external.js'
+                '//some.cdn.com/js/override_external.js',
             ],
         ];
         $this->createCompressConfigFile($configFile, $bundles, [
@@ -724,20 +739,20 @@ EOL;
                 'bundles' => [
                     $assetBundleClassName => $assetBundleOverrideConfig,
                 ],
-            ]
+            ],
         ]);
 
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
 
         $bundlesConfig = require $bundleFile;
-        
+
         $this->assertEquals($assetBundleOverrideConfig['css'], $bundlesConfig[$assetBundleClassName]['css']);
         $this->assertEquals($assetBundleOverrideConfig['js'], $bundlesConfig[$assetBundleClassName]['js']);
     }
 }
 
 /**
- * Mock class for [[\yii\console\controllers\AssetController]]
+ * Mock class for [[\yii\console\controllers\AssetController]].
  */
 class AssetControllerMock extends AssetController
 {

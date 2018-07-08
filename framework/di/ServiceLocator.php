@@ -7,8 +7,8 @@
 
 namespace yii\di;
 
-use Yii;
 use Closure;
+use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 
@@ -26,11 +26,11 @@ use yii\base\InvalidConfigException;
  * $locator = new \yii\di\ServiceLocator;
  * $locator->setComponents([
  *     'db' => [
- *         'class' => \yii\db\Connection::class,
+ *         '__class' => \yii\db\Connection::class,
  *         'dsn' => 'sqlite:path/to/file.db',
  *     ],
  *     'cache' => [
- *         'class' => \yii\caching\DbCache::class,
+ *         '__class' => \yii\caching\DbCache::class,
  *         'db' => 'db',
  *     ],
  * ]);
@@ -40,6 +40,7 @@ use yii\base\InvalidConfigException;
  * ```
  *
  * Because [[\yii\base\Module]] extends from ServiceLocator, modules and the application are all service locators.
+ * Modules add [tree traversal](guide:concept-service-locator#tree-traversal) for service resolution.
  *
  * For more details and usage information on ServiceLocator, see the [guide article on service locators](guide:concept-service-locator).
  *
@@ -71,9 +72,9 @@ class ServiceLocator extends Component
     {
         if ($this->has($name)) {
             return $this->get($name);
-        } else {
-            return parent::__get($name);
         }
+
+        return parent::__get($name);
     }
 
     /**
@@ -84,11 +85,11 @@ class ServiceLocator extends Component
      */
     public function __isset($name)
     {
-        if ($this->has($name, true)) {
+        if ($this->has($name)) {
             return true;
-        } else {
-            return parent::__isset($name);
         }
+
+        return parent::__isset($name);
     }
 
     /**
@@ -131,14 +132,14 @@ class ServiceLocator extends Component
             $definition = $this->_definitions[$id];
             if (is_object($definition) && !$definition instanceof Closure) {
                 return $this->_components[$id] = $definition;
-            } else {
-                return $this->_components[$id] = Yii::createObject($definition);
             }
+
+            return $this->_components[$id] = Yii::createObject($definition);
         } elseif ($throwException) {
             throw new InvalidConfigException("Unknown component ID: $id");
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -152,7 +153,7 @@ class ServiceLocator extends Component
      *
      * // a configuration array
      * $locator->set('db', [
-     *     'class' => \yii\db\Connection::class,
+     *     '__class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -186,22 +187,23 @@ class ServiceLocator extends Component
      */
     public function set($id, $definition)
     {
+        unset($this->_components[$id]);
+
         if ($definition === null) {
-            unset($this->_components[$id], $this->_definitions[$id]);
+            unset($this->_definitions[$id]);
             return;
         }
-
-        unset($this->_components[$id]);
 
         if (is_object($definition) || is_callable($definition, true)) {
             // an object, a class name, or a PHP callable
             $this->_definitions[$id] = $definition;
         } elseif (is_array($definition)) {
             // a configuration array
-            if (isset($definition['class'])) {
+            if (isset($definition['__class']) || isset($definition['class'])) {
+                // @todo remove fallback
                 $this->_definitions[$id] = $definition;
             } else {
-                throw new InvalidConfigException("The configuration for the \"$id\" component must contain a \"class\" element.");
+                throw new InvalidConfigException("The configuration for the \"$id\" component must contain a \"__class\" element.");
             }
         } else {
             throw new InvalidConfigException("Unexpected configuration type for the \"$id\" component: " . gettype($definition));
@@ -242,11 +244,11 @@ class ServiceLocator extends Component
      * ```php
      * [
      *     'db' => [
-     *         'class' => \yii\db\Connection::class,
+     *         '__class' => \yii\db\Connection::class,
      *         'dsn' => 'sqlite:path/to/file.db',
      *     ],
      *     'cache' => [
-     *         'class' => \yii\caching\DbCache::class,
+     *         '__class' => \yii\caching\DbCache::class,
      *         'db' => 'db',
      *     ],
      * ]

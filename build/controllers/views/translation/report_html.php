@@ -36,9 +36,9 @@ use yii\helpers\Html;
             <li><strong>Translation:</strong> <?= Html::encode($translationPath) ?></li>
         </ul>
 
-        <?php foreach($results as $name => $result): ?>
+        <?php foreach ($results as $name => $result): ?>
             <h2 class="<?= empty($result['errors']) ? 'ok' : 'errors' ?>"><?= $name ?></h2>
-            <?php foreach($result['errors'] as $error): ?>
+            <?php foreach ($result['errors'] as $error): ?>
                 <p><?= Html::encode($error) ?></p>
             <?php endforeach ?>
             <?php if (!empty($result['diff'])): ?>

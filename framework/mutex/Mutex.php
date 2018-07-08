@@ -7,15 +7,15 @@
 
 namespace yii\mutex;
 
-use Yii;
 use yii\base\Component;
 
 /**
  * The Mutex component allows mutual execution of concurrent processes in order to prevent "race conditions".
+ *
  * This is achieved by using a "lock" mechanism. Each possibly concurrent thread cooperates by acquiring
  * a lock before accessing the corresponding data.
  *
- * Usage example:
+ * Usage examples:
  *
  * ```
  * if ($mutex->acquire($mutexName)) {
@@ -23,6 +23,12 @@ use yii\base\Component;
  * } else {
  *     // execution is blocked!
  * }
+ * ```
+ *
+ * ```
+ * $mutex->sync($mutexName, 10, function () {
+ *     // business logic execution with synchronization
+ * }));
  * ```
  *
  * This is a base class, which should be extended in order to implement the actual lock mechanism.
@@ -63,7 +69,7 @@ abstract class Mutex extends Component
     /**
      * Acquires a lock by name.
      * @param string $name of the lock to be acquired. Must be unique.
-     * @param int $timeout time to wait for lock to be released. Defaults to zero meaning that method will return
+     * @param int $timeout time (in seconds) to wait for lock to be released. Defaults to zero meaning that method will return
      * false immediately in case lock was already acquired.
      * @return bool lock acquiring result.
      */
@@ -73,9 +79,9 @@ abstract class Mutex extends Component
             $this->_locks[] = $name;
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -92,15 +98,42 @@ abstract class Mutex extends Component
             }
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
+    }
+
+    /**
+     * Executes callback with mutex synchronization.
+     *
+     * @param string $name of the lock to be acquired. Must be unique.
+     * @param int $timeout time (in seconds) to wait for lock to be released.
+     * @param callable $callback a valid PHP callback that performs the job. Accepts mutex instance as parameter.
+     * @param bool $throw whether to throw an exception when the lock is not acquired.
+     * @return mixed result of callback function, or null when the lock is not acquired.
+     * @throws SyncException when the lock is not acquired.
+     * @since 3.0.0
+     */
+    public function sync($name, $timeout, callable $callback, $throw = true)
+    {
+        if ($this->acquire($name, $timeout)) {
+            try {
+                $result = call_user_func($callback, $this);
+            } finally {
+                $this->release($name);
+            }
+            return $result;
+        }
+        if ($throw) {
+            throw new SyncException('Cannot acquire the lock.');
+        }
+        return null;
     }
 
     /**
      * This method should be extended by a concrete Mutex implementations. Acquires lock by name.
      * @param string $name of the lock to be acquired.
-     * @param int $timeout time to wait for the lock to be released.
+     * @param int $timeout time (in seconds) to wait for the lock to be released.
      * @return bool acquiring result.
      */
     abstract protected function acquireLock($name, $timeout = 0);

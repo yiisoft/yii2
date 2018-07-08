@@ -9,7 +9,6 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 
 /**
  * CompareValidator compares the specified attribute value with another value.
@@ -97,7 +96,7 @@ class CompareValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -135,7 +134,7 @@ class CompareValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -163,7 +162,7 @@ class CompareValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -176,9 +175,9 @@ class CompareValidator extends Validator
                 'compareValue' => $this->compareValue,
                 'compareValueOrAttribute' => $this->compareValue,
             ]];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -218,41 +217,5 @@ class CompareValidator extends Validator
             default:
                 return false;
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        $options = [
-            'operator' => $this->operator,
-            'type' => $this->type,
-        ];
-
-        if ($this->compareValue !== null) {
-            $options['compareValue'] = $this->compareValue;
-            $compareLabel = $compareValue = $compareValueOrAttribute = $this->compareValue;
-        } else {
-            $compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
-            $compareValue = $model->getAttributeLabel($compareAttribute);
-            $options['compareAttribute'] = Html::getInputId($model, $compareAttribute);
-            $compareLabel = $compareValueOrAttribute = $model->getAttributeLabel($compareAttribute);
-        }
-
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-
-        $options['message'] = Yii::$app->getI18n()->format($this->message, [
-            'attribute' => $model->getAttributeLabel($attribute),
-            'compareAttribute' => $compareLabel,
-            'compareValue' => $compareValue,
-            'compareValueOrAttribute' => $compareValueOrAttribute,
-        ], Yii::$app->language);
-
-        ValidationAsset::register($view);
-
-        return 'yii.validation.compare(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
     }
 }

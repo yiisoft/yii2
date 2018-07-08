@@ -9,12 +9,12 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\InvalidCallException;
-use yii\base\Widget;
 use yii\base\Model;
+use yii\base\Widget;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
 
 /**
  * ActiveForm is a widget that builds an interactive HTML form for one or multiple data models.
@@ -27,7 +27,28 @@ use yii\helpers\Json;
 class ActiveForm extends Widget
 {
     /**
-     * @var array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
+     * Add validation state class to container tag
+     * @since 2.0.14
+     */
+    const VALIDATION_STATE_ON_CONTAINER = 'container';
+    /**
+     * Add validation state class to input tag
+     * @since 2.0.14
+     */
+    const VALIDATION_STATE_ON_INPUT = 'input';
+    /**
+     * @event ActiveFieldEvent an event raised right before rendering an ActiveField.
+     * @since 3.0.0
+     */
+    const EVENT_BEFORE_FIELD_RENDER = 'beforeFieldRender';
+    /**
+     * @event ActionEvent an event raised right after rendering an ActiveField.
+     * @since 3.0.0
+     */
+    const EVENT_AFTER_FIELD_RENDER = 'afterFieldRender';
+
+    /**
+     * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @see method for specifying the HTTP method for this form.
      */
     public $action = '';
@@ -97,6 +118,13 @@ class ActiveForm extends Widget
      */
     public $validatingCssClass = 'validating';
     /**
+     * @var string where to render validation state class
+     * Could be either "container" or "input".
+     * Default is "container".
+     * @since 2.0.14
+     */
+    public $validationStateOn = self::VALIDATION_STATE_ON_CONTAINER;
+    /**
      * @var bool whether to enable client-side data validation.
      * If [[ActiveField::enableClientValidation]] is set, its value will take precedence for that input field.
      */
@@ -106,13 +134,6 @@ class ActiveForm extends Widget
      * If [[ActiveField::enableAjaxValidation]] is set, its value will take precedence for that input field.
      */
     public $enableAjaxValidation = false;
-    /**
-     * @var bool whether to hook up `yii.activeForm` JavaScript plugin.
-     * This property must be set `true` if you want to support client validation and/or AJAX validation, or if you
-     * want to take advantage of the `yii.activeForm` plugin. When this is `false`, the form will not generate
-     * any JavaScript.
-     */
-    public $enableClientScript = true;
     /**
      * @var array|string the URL for performing AJAX-based validation. This property will be processed by
      * [[Url::to()]]. Please refer to [[Url::to()]] for more details on how to configure this property.
@@ -163,12 +184,6 @@ class ActiveForm extends Widget
      * @since 2.0.11
      */
     public $scrollToErrorOffset = 0;
-    /**
-     * @var array the client validation options for individual attributes. Each element of the array
-     * represents the validation options for a particular attribute.
-     * @internal
-     */
-    public $attributes = [];
 
     /**
      * @var ActiveField[] the ActiveField objects that are currently active
@@ -182,6 +197,7 @@ class ActiveForm extends Widget
      */
     public function init()
     {
+        parent::init();
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
@@ -191,7 +207,7 @@ class ActiveForm extends Widget
 
     /**
      * Runs the widget.
-     * This registers the necessary JavaScript code and renders the form close tag.
+     * This registers the necessary JavaScript code and renders the form open and close tags.
      * @throws InvalidCallException if `beginField()` and `endField()` calls are not matching.
      */
     public function run()
@@ -203,56 +219,9 @@ class ActiveForm extends Widget
         $content = ob_get_clean();
         $html = Html::beginForm($this->action, $this->method, $this->options);
         $html .= $content;
-
-        if ($this->enableClientScript) {
-            $id = $this->options['id'];
-            $options = Json::htmlEncode($this->getClientOptions());
-            $attributes = Json::htmlEncode($this->attributes);
-            $view = $this->getView();
-            ActiveFormAsset::register($view);
-            $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
-        }
-
         $html .= Html::endForm();
 
         return $html;
-    }
-
-    /**
-     * Returns the options for the form JS widget.
-     * @return array the options.
-     */
-    protected function getClientOptions()
-    {
-        $options = [
-            'encodeErrorSummary' => $this->encodeErrorSummary,
-            'errorSummary' => '.' . implode('.', preg_split('/\s+/', $this->errorSummaryCssClass, -1, PREG_SPLIT_NO_EMPTY)),
-            'validateOnSubmit' => $this->validateOnSubmit,
-            'errorCssClass' => $this->errorCssClass,
-            'successCssClass' => $this->successCssClass,
-            'validatingCssClass' => $this->validatingCssClass,
-            'ajaxParam' => $this->ajaxParam,
-            'ajaxDataType' => $this->ajaxDataType,
-            'scrollToError' => $this->scrollToError,
-            'scrollToErrorOffset' => $this->scrollToErrorOffset,
-        ];
-        if ($this->validationUrl !== null) {
-            $options['validationUrl'] = Url::to($this->validationUrl);
-        }
-
-        // only get the options that are different from the default ones (set in yii.activeForm.js)
-        return array_diff_assoc($options, [
-            'encodeErrorSummary' => true,
-            'errorSummary' => '.error-summary',
-            'validateOnSubmit' => true,
-            'errorCssClass' => 'has-error',
-            'successCssClass' => 'has-success',
-            'validatingCssClass' => 'validating',
-            'ajaxParam' => 'ajax',
-            'ajaxDataType' => 'json',
-            'scrollToError' => true,
-            'scrollToErrorOffset' => 0,
-        ]);
     }
 
     /**
@@ -294,9 +263,10 @@ class ActiveForm extends Widget
         if ($config instanceof \Closure) {
             $config = call_user_func($config, $model, $attribute);
         }
-        if (!isset($config['class'])) {
-            $config['class'] = $this->fieldClass;
+        if (!isset($config['__class'])) {
+            $config['__class'] = $this->fieldClass;
         }
+
         return Yii::createObject(ArrayHelper::merge($config, $options, [
             'model' => $model,
             'attribute' => $attribute,
@@ -334,9 +304,9 @@ class ActiveForm extends Widget
         $field = array_pop($this->_fields);
         if ($field instanceof ActiveField) {
             return $field->end();
-        } else {
-            throw new InvalidCallException('Mismatching endField() call.');
         }
+
+        throw new InvalidCallException('Mismatching endField() call.');
     }
 
     /**
@@ -428,5 +398,29 @@ class ActiveForm extends Widget
         }
 
         return $result;
+    }
+
+    /**
+     * This method is invoked right before an ActiveField is rendered.
+     * The method will trigger the [[EVENT_BEFORE_FIELD_RENDER]] event.
+     * @param ActiveField $field active field to be rendered.
+     * @since 3.0.0
+     */
+    public function beforeFieldRender($field)
+    {
+        $event = new ActiveFieldEvent($field, ['name' => self::EVENT_BEFORE_FIELD_RENDER]);
+        $this->trigger($event);
+    }
+
+    /**
+     * This method is invoked right after an ActiveField is rendered.
+     * The method will trigger the [[EVENT_AFTER_FIELD_RENDER]] event.
+     * @param ActiveField $field active field to be rendered.
+     * @since 3.0.0
+     */
+    public function afterFieldRender($field)
+    {
+        $event = new ActiveFieldEvent($field, ['name' => self::EVENT_AFTER_FIELD_RENDER]);
+        $this->trigger($event);
     }
 }

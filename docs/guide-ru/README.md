@@ -78,8 +78,8 @@ All Rights Reserved.
 * [Построитель запросов](db-query-builder.md) - Запросы к базе данных через простой слой абстракции.
 * [Active Record](db-active-record.md) - Получение объектов AR, работа с ними и определение связей.
 * [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
-* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
-* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
+* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ru/README.md)
+* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide-ru/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ru/README.md)
 * [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
 
@@ -102,7 +102,7 @@ All Rights Reserved.
 * [Сортировка](output-sorting.md)
 * [Провайдеры данных](output-data-providers.md)
 * [Виджеты для данных](output-data-widgets.md)
-* [Работа с клиентскими скриптами](output-client-scripts.md)
+* Работа с клиентскими скриптами
 * [Темизация](output-theming.md)
 
 
@@ -128,26 +128,12 @@ All Rights Reserved.
 * [HTTP кэширование](caching-http.md)
 
 
-Веб-сервисы REST
-----------------
-
-* [Быстрый старт](rest-quick-start.md)
-* [Ресурсы](rest-resources.md)
-* [Контроллеры](rest-controllers.md)
-* [Роутинг](rest-routing.md)
-* [Форматирование ответа](rest-response-formatting.md)
-* [Аутентификация](rest-authentication.md)
-* [Ограничение частоты запросов](rest-rate-limiting.md)
-* [Версионирование](rest-versioning.md)
-* [Обработка ошибок](rest-error-handling.md)
-
-
 Инструменты разработчика
 ------------------------
 
 * [Отладочная панель и отладчик](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 * [Генерация кода с Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
-* **TBD** [Генератор документации API](https://github.com/yiisoft/yii2-apidoc)
+* [Генератор документации API](https://github.com/yiisoft/yii2-apidoc)
 
 
 Тестирование
@@ -175,20 +161,21 @@ All Rights Reserved.
 * [Окружение виртуального хостинга](tutorial-shared-hosting.md)
 * [Шаблонизаторы](tutorial-template-engines.md)
 * [Работа со сторонним кодом](tutorial-yii-integration.md)
+* [Использование Yii в качестве микро-framework'а](tutorial-yii-as-micro-framework.md)
 
 
 Виджеты
 -------
 
-* GridView: link to demo page
-* ListView: link to demo page
-* DetailView: link to demo page
-* ActiveForm: link to demo page
-* Pjax: link to demo page
-* Menu: link to demo page
-* LinkPager: link to demo page
-* LinkSorter: link to demo page
-* [Виджеты Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
+* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
+* [Виджеты Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ru/README.md)
 * [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
 
 

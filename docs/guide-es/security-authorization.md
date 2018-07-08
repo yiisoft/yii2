@@ -304,7 +304,7 @@ class RbacController extends Controller
 ```
 
 > Note: Si estas utilizando el template avanzado, necesitas poner tu `RbacController` dentro del directorio `console/controllers`
-  y cambiar el espacio de nombres a `console/controllers`.
+  y cambiar el espacio de nombres a `console\controllers`.
 
 Después de ejecutar el comando `yii rbac/init`, obtendremos la siguiente jerarquía:
 

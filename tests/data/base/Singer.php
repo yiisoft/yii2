@@ -1,10 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\data\base;
 
 use yii\base\Model;
 
 /**
- * Singer
+ * Singer.
  */
 class Singer extends Model
 {
@@ -17,8 +23,8 @@ class Singer extends Model
         return [
             [['lastName'], 'default', 'value' => 'Lennon'],
             [['lastName'], 'required'],
-            [['underscore_style'], 'yii\captcha\CaptchaValidator'],
-            [['test'], 'required', 'when' => function($model) { return $model->firstName === 'cebe'; }],
+            [['underscore_style'], 'safe'],
+            [['test'], 'required', 'when' => function ($model) { return $model->firstName === 'cebe'; }],
         ];
     }
 }

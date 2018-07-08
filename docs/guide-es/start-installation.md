@@ -40,7 +40,7 @@ ejecutando el comando `composer self-update`
 Teniendo Composer instalado, puedes instalar Yii ejecutando los siguientes comandos en un directorio accesible vía Web:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
+composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -143,9 +143,7 @@ Configurar Servidores Web <span id="configuring-web-servers"></span>
 
 La aplicación instalada siguiendo las instrucciones mencionadas debería estar lista para usar tanto
 con un [servidor HTTP Apache](http://httpd.apache.org/) como con un [servidor HTTP Nginx](http://nginx.org/),
-en Windows, Mac OS X, o Linux utilizando PHP 5.4 o mayor. Yii 2.0 también es compatible con [HHVM](http://hhvm.com/)
-de Facebook. De todos modos, hay algunos casos donde HHVM se comporta diferente del
-PHP oficial, por lo que tendrás que tener cuidados extra al utilizarlo.
+en Windows, Mac OS X, o Linux utilizando PHP 5.4 o mayor.
 
 En un servidor de producción, podrías querer configurar el servidor Web para que la aplicación sea accedida
 a través de la URL `http://www.example.com/index.php` en vez de `http://www.example.com/basic/web/index.php`. Tal configuración
@@ -189,7 +187,7 @@ DocumentRoot "path/to/basic/web"
 
 Para utilizar [Nginx](http://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](http://php.net/install.fpm).
 Utiliza la siguiente configuración de Nginx, reemplazando `path/to/basic/web` con la ruta real a
-`basic/web` y `mysite.local` con el hostname real a servir.
+`basic/web` y `mysite.test` con el hostname real a servir.
 
 ```
 server {
@@ -199,7 +197,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

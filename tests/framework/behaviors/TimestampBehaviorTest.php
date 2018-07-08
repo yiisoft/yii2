@@ -1,13 +1,19 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\behaviors;
 
 use Yii;
-use yii\db\Expression;
-use yiiunit\TestCase;
-use yii\db\Connection;
-use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Connection;
+use yii\db\Expression;
+use yii\db\ExpressionInterface;
+use yiiunit\TestCase;
 
 /**
  * Unit test for [[\yii\behaviors\TimestampBehavior]].
@@ -34,10 +40,10 @@ class TimestampBehaviorTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => '\yii\db\Connection',
+                    '__class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $columns = [
@@ -59,6 +65,8 @@ class TimestampBehaviorTest extends TestCase
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
+        gc_enable();
+        gc_collect_cycles();
     }
 
     // Tests :
@@ -105,8 +113,6 @@ class TimestampBehaviorTest extends TestCase
      */
     public function testUpdateCleanRecord()
     {
-        $currentTime = time();
-
         ActiveRecordTimestamp::$behaviors = [
             TimestampBehavior::class,
         ];
@@ -136,21 +142,23 @@ class TimestampBehaviorTest extends TestCase
 
     /**
      * @dataProvider expressionProvider
+     * @param mixed $expression
+     * @param mixed $expected
      */
     public function testNewRecordExpression($expression, $expected)
     {
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'value' => $expression,
             ],
         ];
         $model = new ActiveRecordTimestamp();
         $model->save(false);
-        if ($expression instanceof Expression) {
-            $this->assertInstanceOf(Expression::class, $model->created_at);
-            $this->assertInstanceOf(Expression::class, $model->updated_at);
+        if ($expression instanceof ExpressionInterface) {
+            $this->assertInstanceOf('yii\db\ExpressionInterface', $model->created_at);
+            $this->assertInstanceOf('yii\db\ExpressionInterface', $model->updated_at);
             $model->refresh();
         }
         $this->assertEquals($expected, $model->created_at);
@@ -170,7 +178,7 @@ class TimestampBehaviorTest extends TestCase
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];
@@ -187,6 +195,41 @@ class TimestampBehaviorTest extends TestCase
         $model->refresh();
         $this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
         $this->assertEquals(date('Y'), $model->updated_at);
+    }
+
+    public function testTouchingNewRecordGeneratesException()
+    {
+        ActiveRecordTimestamp::$behaviors = [
+            'timestamp' => [
+                '__class' => TimestampBehavior::class,
+                'value' => new Expression("strftime('%Y')"),
+            ],
+        ];
+        $model = new ActiveRecordTimestamp();
+
+        $this->expectException(\yii\base\InvalidCallException::class);
+
+        $model->touch('created_at');
+    }
+
+    public function testTouchingNotNewRecord()
+    {
+        ActiveRecordTimestamp::$behaviors = [
+            'timestamp' => [
+                '__class' => TimestampBehavior::class,
+                'value' => new Expression("strftime('%Y')"),
+            ],
+        ];
+        $model = new ActiveRecordTimestamp();
+        $enforcedTime = date('Y') - 1;
+        $model->created_at = $enforcedTime;
+        $model->updated_at = $enforcedTime;
+        $model->save(false);
+        $expectedCreatedAt = new Expression("strftime('%Y')");
+
+        $model->touch('created_at');
+
+        $this->assertEquals($expectedCreatedAt, $model->created_at);
     }
 }
 

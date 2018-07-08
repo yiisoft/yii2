@@ -47,7 +47,7 @@ interface MessageInterface
 
     /**
      * Returns the message sender.
-     * @return string the sender
+     * @return string|array the sender
      */
     public function getFrom();
 
@@ -63,7 +63,7 @@ interface MessageInterface
 
     /**
      * Returns the message recipient(s).
-     * @return array the message recipients
+     * @return string|array the message recipients
      */
     public function getTo();
 
@@ -79,7 +79,7 @@ interface MessageInterface
 
     /**
      * Returns the reply-to address of this message.
-     * @return string the reply-to address of this message.
+     * @return string|array the reply-to address of this message.
      */
     public function getReplyTo();
 
@@ -95,7 +95,7 @@ interface MessageInterface
 
     /**
      * Returns the Cc (additional copy receiver) addresses of this message.
-     * @return array the Cc (additional copy receiver) addresses of this message.
+     * @return string|array the Cc (additional copy receiver) addresses of this message.
      */
     public function getCc();
 
@@ -111,7 +111,7 @@ interface MessageInterface
 
     /**
      * Returns the Bcc (hidden copy receiver) addresses of this message.
-     * @return array the Bcc (hidden copy receiver) addresses of this message.
+     * @return string|array the Bcc (hidden copy receiver) addresses of this message.
      */
     public function getBcc();
 
@@ -201,6 +201,41 @@ interface MessageInterface
      * @return string attachment CID.
      */
     public function embedContent($content, array $options = []);
+
+    /**
+     * Adds custom header value to the message.
+     * Several invocations of this method with the same name will add multiple header values.
+     * @param string $name header name.
+     * @param string $value header value.
+     * @return $this self reference.
+     * @since 3.0.0
+     */
+    public function addHeader($name, $value);
+
+    /**
+     * Sets custom header value to the message.
+     * @param string $name header name.
+     * @param string|array $value header value or values.
+     * @return $this self reference.
+     * @since 3.0.0
+     */
+    public function setHeader($name, $value);
+
+    /**
+     * Returns all values for the specified header.
+     * @param string $name header name.
+     * @return array header values list.
+     * @since 3.0.0
+     */
+    public function getHeader($name);
+
+    /**
+     * Sets custom header values to the message.
+     * @param array $headers headers in format: `[name => value]`.
+     * @return $this self reference.
+     * @since 3.0.0
+     */
+    public function setHeaders($headers);
 
     /**
      * Sends this email message.

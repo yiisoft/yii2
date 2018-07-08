@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -14,7 +19,9 @@ class StringValidatorTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testValidateValue()
@@ -22,6 +29,8 @@ class StringValidatorTest extends TestCase
         $val = new StringValidator();
         $this->assertFalse($val->validate(['not a string']));
         $this->assertTrue($val->validate('Just some string'));
+        $this->assertFalse($val->validate(true));
+        $this->assertFalse($val->validate(false));
     }
 
     public function testValidateValueLength()
@@ -70,6 +79,12 @@ class StringValidatorTest extends TestCase
         $model->attr_string = 'a tet string';
         $val->validateAttribute($model, 'attr_string');
         $this->assertFalse($model->hasErrors());
+        $model->attr_string = true;
+        $val->validateAttribute($model, 'attr_string');
+        $this->assertTrue($model->hasErrors());
+        $model->attr_string = false;
+        $val->validateAttribute($model, 'attr_string');
+        $this->assertTrue($model->hasErrors());
         $val = new StringValidator(['length' => 20]);
         $model = new FakedValidationModel();
         $model->attr_string = str_repeat('x', 20);
@@ -97,9 +112,9 @@ class StringValidatorTest extends TestCase
     public function testEnsureMessagesOnInit()
     {
         $val = new StringValidator(['min' => 1, 'max' => 2]);
-        $this->assertTrue(is_string($val->message));
-        $this->assertTrue(is_string($val->tooLong));
-        $this->assertTrue(is_string($val->tooShort));
+        $this->assertInternalType('string', $val->message);
+        $this->assertInternalType('string', $val->tooLong);
+        $this->assertInternalType('string', $val->tooShort);
     }
 
     public function testCustomErrorMessageInValidateAttribute()

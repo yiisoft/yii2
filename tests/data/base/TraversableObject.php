@@ -16,7 +16,7 @@ namespace yiiunit\data\base;
  */
 class TraversableObject implements \Iterator, \Countable
 {
-    private $data;
+    protected $data;
     private $position = 0;
 
     public function __construct(array $array)
@@ -34,7 +34,7 @@ class TraversableObject implements \Iterator, \Countable
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function current()
     {
@@ -42,7 +42,7 @@ class TraversableObject implements \Iterator, \Countable
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function next()
     {
@@ -50,7 +50,7 @@ class TraversableObject implements \Iterator, \Countable
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function key()
     {
@@ -58,7 +58,7 @@ class TraversableObject implements \Iterator, \Countable
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function valid()
     {
@@ -66,7 +66,7 @@ class TraversableObject implements \Iterator, \Countable
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rewind()
     {

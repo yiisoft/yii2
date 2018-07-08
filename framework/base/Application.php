@@ -19,14 +19,16 @@ use Yii;
  * @property \yii\rbac\ManagerInterface $authManager The auth manager application component. Null is returned
  * if auth manager is not configured. This property is read-only.
  * @property string $basePath The root directory of the application.
- * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
- * This property is read-only.
+ * @property \yii\caching\CacheInterface $cache The cache application component. Null if the component is not
+ * enabled. This property is read-only.
+ * @property array $container Values given in terms of name-value pairs. This property is write-only.
  * @property \yii\db\Connection $db The database connection. This property is read-only.
  * @property \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
  * component. This property is read-only.
  * @property \yii\i18n\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization application component. This property is read-only.
- * @property \yii\log\Dispatcher $log The log dispatcher application component. This property is read-only.
+ * @property \psr\log\LoggerInterface $logger The logger.
+ * @property \yii\profile\ProfilerInterface $profiler The profiler.
  * @property \yii\mail\MailerInterface $mailer The mailer application component. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
@@ -167,6 +169,7 @@ abstract class Application extends Module
      * - a module ID as specified via [[modules]].
      * - a class name.
      * - a configuration array.
+     * - a Closure
      *
      * During the bootstrapping process, each component will be instantiated. If the component class
      * implements [[BootstrapInterface]], its [[BootstrapInterface::bootstrap()|bootstrap()]] method
@@ -242,22 +245,35 @@ abstract class Application extends Module
         if (isset($config['timeZone'])) {
             $this->setTimeZone($config['timeZone']);
             unset($config['timeZone']);
-        } elseif (!ini_get('date.timezone')) {
-            $this->setTimeZone('UTC');
+        }
+
+        if (isset($config['container'])) {
+            $this->setContainer($config['container']);
+            unset($config['container']);
+        }
+
+        if (isset($config['logger'])) {
+            $this->setLogger($config['logger']);
+            unset($config['logger']);
+        }
+
+        if (isset($config['profiler'])) {
+            $this->setProfiler($config['profiler']);
+            unset($config['profiler']);
         }
 
         // merge core components with custom components
         foreach ($this->coreComponents() as $id => $component) {
             if (!isset($config['components'][$id])) {
                 $config['components'][$id] = $component;
-            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['class'])) {
-                $config['components'][$id]['class'] = $component['class'];
+            } elseif (is_array($config['components'][$id]) && !isset($config['components'][$id]['__class'])) {
+                $config['components'][$id]['__class'] = $component['__class'];
             }
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -274,7 +290,7 @@ abstract class Application extends Module
     {
         if ($this->extensions === null) {
             $file = Yii::getAlias('@vendor/yiisoft/extensions.php');
-            $this->extensions = is_file($file) ? include($file) : [];
+            $this->extensions = is_file($file) ? include $file : [];
         }
         foreach ($this->extensions as $extension) {
             if (!empty($extension['alias'])) {
@@ -285,34 +301,40 @@ abstract class Application extends Module
             if (isset($extension['bootstrap'])) {
                 $component = Yii::createObject($extension['bootstrap']);
                 if ($component instanceof BootstrapInterface) {
-                    Yii::trace('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
+                    Yii::debug('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
                     $component->bootstrap($this);
                 } else {
-                    Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
+                    Yii::debug('Bootstrap with ' . get_class($component), __METHOD__);
                 }
             }
         }
 
-        foreach ($this->bootstrap as $class) {
+        foreach ($this->bootstrap as $mixed) {
             $component = null;
-            if (is_string($class)) {
-                if ($this->has($class)) {
-                    $component = $this->get($class);
-                } elseif ($this->hasModule($class)) {
-                    $component = $this->getModule($class);
-                } elseif (strpos($class, '\\') === false) {
-                    throw new InvalidConfigException("Unknown bootstrapping component ID: $class");
+            if ($mixed instanceof \Closure) {
+                Yii::debug('Bootstrap with Closure', __METHOD__);
+                if (!$component = call_user_func($mixed, $this)) {
+                    continue;
+                }
+            } elseif (is_string($mixed)) {
+                if ($this->has($mixed)) {
+                    $component = $this->get($mixed);
+                } elseif ($this->hasModule($mixed)) {
+                    $component = $this->getModule($mixed);
+                } elseif (strpos($mixed, '\\') === false) {
+                    throw new InvalidConfigException("Unknown bootstrapping component ID: $mixed");
                 }
             }
+
             if (!isset($component)) {
-                $component = Yii::createObject($class);
+                $component = Yii::createObject($mixed);
             }
 
             if ($component instanceof BootstrapInterface) {
-                Yii::trace('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
+                Yii::debug('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
                 $component->bootstrap($this);
             } else {
-                Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
+                Yii::debug('Bootstrap with ' . get_class($component), __METHOD__);
             }
         }
     }
@@ -324,7 +346,7 @@ abstract class Application extends Module
     protected function registerErrorHandler(&$config)
     {
         if (YII_ENABLE_ERROR_HANDLER) {
-            if (!isset($config['components']['errorHandler']['class'])) {
+            if (!isset($config['components']['errorHandler']['__class'])) {
                 echo "Error: no errorHandler component is configured.\n";
                 exit(1);
             }
@@ -349,7 +371,7 @@ abstract class Application extends Module
      * This method can only be invoked at the beginning of the constructor.
      * @param string $path the root directory of the application.
      * @property string the root directory of the application.
-     * @throws InvalidParamException if the directory does not exist.
+     * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)
     {
@@ -381,7 +403,7 @@ abstract class Application extends Module
 
             return $response->exitStatus;
         } catch (ExitException $e) {
-            $this->end($e->statusCode, isset($response) ? $response : null);
+            $this->end($e->statusCode, $response ?? null);
             return $e->statusCode;
         }
     }
@@ -486,12 +508,43 @@ abstract class Application extends Module
     }
 
     /**
-     * Returns the log dispatcher component.
-     * @return \yii\log\Dispatcher the log dispatcher application component.
+     * Sets up or configure the logger instance.
+     * @param \psr\log\LoggerInterface|\Closure|array|null $logger the logger object or its DI compatible configuration.
+     * @since 3.0.0
      */
-    public function getLog()
+    public function setLogger($logger)
     {
-        return $this->get('log');
+        Yii::setLogger($logger);
+    }
+
+    /**
+     * Returns the logger instance.
+     * @return \psr\log\LoggerInterface the logger instance.
+     * @since 3.0.0
+     */
+    public function getLogger()
+    {
+        return Yii::getLogger();
+    }
+
+    /**
+     * Sets up or configure the profiler instance.
+     * @param \yii\profile\ProfilerInterface|\Closure|array|null $profiler the profiler object or its DI compatible configuration.
+     * @since 3.0.0
+     */
+    public function setProfiler($profiler)
+    {
+        Yii::setProfiler($profiler);
+    }
+
+    /**
+     * Returns the profiler instance.
+     * @return \yii\profile\ProfilerInterface profiler instance.
+     * @since 3.0.0
+     */
+    public function getProfiler()
+    {
+        return Yii::getProfiler();
     }
 
     /**
@@ -505,7 +558,7 @@ abstract class Application extends Module
 
     /**
      * Returns the cache component.
-     * @return \yii\caching\Cache the cache application component. Null if the component is not enabled.
+     * @return \yii\caching\CacheInterface the cache application component. Null if the component is not enabled.
      */
     public function getCache()
     {
@@ -558,7 +611,7 @@ abstract class Application extends Module
     }
 
     /**
-     * Returns the internationalization (i18n) component
+     * Returns the internationalization (i18n) component.
      * @return \yii\i18n\I18N the internationalization application component.
      */
     public function getI18n()
@@ -610,14 +663,13 @@ abstract class Application extends Module
     public function coreComponents()
     {
         return [
-            'security' => ['class' => Security::class],
-            'formatter' => ['class' => \yii\i18n\Formatter::class],
-            'i18n' => ['class' => \yii\i18n\I18N::class],
-            'log' => ['class' => \yii\log\Dispatcher::class],
-            'mailer' => ['class' => \yii\swiftmailer\Mailer::class],
-            'assetManager' => ['class' => \yii\web\AssetManager::class],
-            'urlManager' => ['class' => \yii\web\UrlManager::class],
-            'view' => ['class' => \yii\web\View::class],
+            'security' => ['__class' => Security::class],
+            'formatter' => ['__class' => \yii\i18n\Formatter::class],
+            'i18n' => ['__class' => \yii\i18n\I18N::class],
+            'mailer' => ['__class' => \yii\swiftmailer\Mailer::class],
+            'assetManager' => ['__class' => \yii\web\AssetManager::class],
+            'urlManager' => ['__class' => \yii\web\UrlManager::class],
+            'view' => ['__class' => \yii\web\View::class],
         ];
     }
 
@@ -638,14 +690,25 @@ abstract class Application extends Module
 
         if ($this->state !== self::STATE_SENDING_RESPONSE && $this->state !== self::STATE_END) {
             $this->state = self::STATE_END;
-            $response = $response ? : $this->getResponse();
+            $response = $response ?: $this->getResponse();
             $response->send();
         }
 
         if (YII_ENV_TEST) {
             throw new ExitException($status);
-        } else {
-            exit($status);
         }
+
+        exit($status);
+    }
+
+    /**
+     * Configures [[Yii::$container]] with the $config.
+     *
+     * @param array $config values given in terms of name-value pairs
+     * @since 2.0.11
+     */
+    public function setContainer($config)
+    {
+        Yii::configure(Yii::$container, $config);
     }
 }

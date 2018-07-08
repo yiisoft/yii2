@@ -1,21 +1,40 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\helpers;
 
-use yii\base\Model;
+use yii\base\DynamicModel;
 use yii\helpers\BaseJson;
 use yii\helpers\Json;
-use yiiunit\TestCase;
 use yii\web\JsExpression;
 use yiiunit\framework\web\Post;
+use yiiunit\TestCase;
 
 /**
  * @group helpers
  */
 class JsonTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testEncode()
     {
+        // Arrayable data encoding
+        $dataArrayable = $this->createMock(\yii\base\Arrayable::class);
+        $dataArrayable->method('toArray')->willReturn([]);
+        $actual = Json::encode($dataArrayable);
+        $this->assertSame('{}', $actual);
+
         // basic data encoding
         $data = '1';
         $this->assertSame('"1"', Json::encode($data));
@@ -48,7 +67,7 @@ class JsonTest extends TestCase
         $expression2 = 'function (b) {}';
         $data = [
             'a' => [
-                1, new JsExpression($expression1)
+                1, new JsExpression($expression1),
             ],
             'b' => new JsExpression($expression2),
         ];
@@ -102,14 +121,14 @@ class JsonTest extends TestCase
         $expression2 = 'function (b) {}';
         $data = [
             'a' => [
-                1, new JsExpression($expression1)
+                1, new JsExpression($expression1),
             ],
             'b' => new JsExpression($expression2),
         ];
         $this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::htmlEncode($data));
 
         // https://github.com/yiisoft/yii2/issues/957
-        $data = (object)null;
+        $data = (object) null;
         $this->assertSame('{}', Json::htmlEncode($data));
 
         // JsonSerializable
@@ -132,11 +151,16 @@ class JsonTest extends TestCase
         $postsStack->push(new Post(915, 'record1'));
         $postsStack->push(new Post(456, 'record2'));
 
-        $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
+        $this->assertSame('{"1":{"id":456,"title":"record2","city":null},"0":{"id":915,"title":"record1","city":null}}', Json::encode($postsStack));
     }
 
     public function testDecode()
     {
+        // empty value
+        $json = '';
+        $actual = Json::decode($json);
+        $this->assertNull($actual);
+
         // basic data decoding
         $json = '"1"';
         $this->assertSame('1', Json::decode($json));
@@ -147,8 +171,17 @@ class JsonTest extends TestCase
 
         // exception
         $json = '{"a":1,"b":2';
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidArgumentException');
         Json::decode($json);
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidArgumentException
+     * @expectedExceptionMessage Invalid JSON data.
+     */
+    public function testDecodeInvalidArgumentException()
+    {
+        Json::decode([]);
     }
 
     public function testHandleJsonError()
@@ -157,7 +190,7 @@ class JsonTest extends TestCase
         try {
             $json = "{'a': '1'}";
             Json::decode($json);
-        } catch (\yii\base\InvalidParamException $e) {
+        } catch (\yii\base\InvalidArgumentException $e) {
             $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
         }
 
@@ -167,22 +200,43 @@ class JsonTest extends TestCase
             $data = ['a' => $fp];
             Json::encode($data);
             fclose($fp);
-        } catch (\yii\base\InvalidParamException $e) {
-            if (PHP_VERSION_ID >= 50500) {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
-            } else {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
-            }
+        } catch (\yii\base\InvalidArgumentException $e) {
+            $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
         }
+    }
+
+    public function testErrorSummary()
+    {
+        $model = new JsonModel();
+        $model->name = 'not_an_integer';
+        $model->addError('name', 'Error message. Here are some chars: < >');
+        $model->addError('name', 'Error message. Here are even more chars: ""');
+        $model->validate(null, false);
+        $options = ['showAllErrors' => true];
+        $expectedHtml = '["Error message. Here are some chars: < >","Error message. Here are even more chars: \"\""]';
+        $this->assertEquals($expectedHtml, Json::errorSummary($model, $options));
     }
 }
 
-class JsonModel extends Model implements \JsonSerializable
+class JsonModel extends DynamicModel implements \JsonSerializable
 {
     public $data = ['json' => 'serializable'];
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return $this->data;
+    }
+
+    public function rules()
+    {
+        return [
+            ['name', 'required'],
+            ['name', 'string', 'max' => 100]
+        ];
+    }
+
+    public function init()
+    {
+       $this->defineAttribute('name');
     }
 }

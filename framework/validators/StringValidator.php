@@ -67,7 +67,7 @@ class StringValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -82,7 +82,7 @@ class StringValidator extends Validator
             $this->length = null;
         }
         if ($this->encoding === null) {
-            $this->encoding = Yii::$app->charset;
+            $this->encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
         }
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} must be a string.');
@@ -99,7 +99,7 @@ class StringValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -125,7 +125,7 @@ class StringValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -146,48 +146,5 @@ class StringValidator extends Validator
         }
 
         return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        $label = $model->getAttributeLabel($attribute);
-
-        $options = [
-            'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $label,
-            ], Yii::$app->language),
-        ];
-
-        if ($this->min !== null) {
-            $options['min'] = $this->min;
-            $options['tooShort'] = Yii::$app->getI18n()->format($this->tooShort, [
-                'attribute' => $label,
-                'min' => $this->min,
-            ], Yii::$app->language);
-        }
-        if ($this->max !== null) {
-            $options['max'] = $this->max;
-            $options['tooLong'] = Yii::$app->getI18n()->format($this->tooLong, [
-                'attribute' => $label,
-                'max' => $this->max,
-            ], Yii::$app->language);
-        }
-        if ($this->length !== null) {
-            $options['is'] = $this->length;
-            $options['notEqual'] = Yii::$app->getI18n()->format($this->notEqual, [
-                'attribute' => $label,
-                'length' => $this->length,
-            ], Yii::$app->language);
-        }
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-
-        ValidationAsset::register($view);
-
-        return 'yii.validation.string(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
     }
 }

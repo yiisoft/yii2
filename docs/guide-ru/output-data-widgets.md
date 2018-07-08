@@ -222,6 +222,13 @@ echo GridView::widget([
             'attribute' => 'birthday',
             'format' => ['date', 'php:Y-m-d']
         ],
+        'created_at:datetime', // короткий вид записи формата
+        [
+            'label' => 'Education',
+            'attribute' => 'education',
+            'filter' => ['0' => 'Elementary', '1' => 'Secondary', '2' => 'Higher'],
+            'filterInputOptions' => ['prompt' => 'All educations', 'class' => 'form-control', 'id' => null]
+        ],
     ],
 ]);
 ```
@@ -234,6 +241,13 @@ echo GridView::widget([
 Доступный список форматов смотрите в разделе [Форматирование данных](output-formatting.md).
 
 Для конфигурации колонок данных также доступен короткий вид записи, который описан в API документации для [[yii\grid\GridView::columns|колонок]].
+
+Используйте [[yii\grid\DataColumn::filter|filter]] и [[yii\grid\DataColumn::filterInputOptions|filterInputOptions]] для
+настройки HTML кода фильтра.
+
+По умолчанию заголовки колонок генерируются используя [[yii\data\Sort::link]]. Это можно изменить через свойство
+[[yii\grid\Column::header]]. Для изменения заголовка нужно задать [[yii\grid\DataColumn::$label]], как в
+примере выше. По умолчанию текст будет взят из модели данных. Подробное описание ищите в [[yii\grid\DataColumn::getHeaderCellLabel]].
 
 #### ActionColumn
 
@@ -267,7 +281,7 @@ echo GridView::widget([
       // возвращаем HTML код для кнопки
   }
   ```
-  где, `$url` - это URL, который будет повешен на как ссылка на кнопку, `$model` - это объект модели для текущей строки и
+  где, `$url` - это URL, который будет повешен как ссылка на кнопку, `$model` - это объект модели для текущей строки и
   `$key` - это ключ для модели из провайдера данных.
 
 - [[yii\grid\ActionColumn::urlCreator|urlCreator]] замыкание, которое создаёт URL используя информацию из модели. Вид
@@ -558,7 +572,7 @@ public function rules()
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> Info: В коде, что выше, использует такая же строка, как и имя зависимости и псевдонима таблицы.
+> Info: В коде, что выше, используется такая же строка, как и имя зависимости и псевдонима таблицы.
 > Однако, когда ваш псевдоним и имя связи различаются, вы должны обратить внимание, где вы используете псевдоним,
 > а где имя связи. Простым правилом для этого является использование псевдонима в каждом месте, которое используется
 > для построения запроса к базе данных, и имя связи во всех других определениях, таких как `attributes()`, `rules()` и т.д.
@@ -607,7 +621,7 @@ CREATE OR REPLACE VIEW vw_user_info AS
     WHERE user.id = user_profile.user_id
 ```
 
-Теперь необходимо создать ActiveRecord, которая будет отображение данных из этого вида:
+Теперь вам необходимо создать ActiveRecord, через который будут доступны данные из вида выше:
 
 ```php
 
@@ -619,7 +633,7 @@ class UserView extends ActiveRecord
 {
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -632,7 +646,7 @@ class UserView extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -642,16 +656,14 @@ class UserView extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public static function attributeLabels()
+    public function attributeLabels()
     {
         return [
             // здесь определяйте ваши метки атрибутов
         ];
     }
-
-
 }
 ```
 
@@ -668,7 +680,7 @@ class UserView extends ActiveRecord
 Вы можете использовать больше одной GridView на одной странице. Для этого нужно внести некоторые дополнительные настройки
 для того, чтобы они друг другу не мешали.
 При использовании нескольких экземпляров GridView вы должны настроить различные имена параметров для сортировки и ссылки
-для разбиения на страницы так, чтобы каждый GridView имел свою индивидуальный сортировку и разбиение на страницы.
+для разбиения на страницы так, чтобы каждый GridView имел свою индивидуальную сортировку и разбиение на страницы.
 Сделать это возможно через настройку [[yii\data\Sort::sortParam|sortParam]] и [[yii\data\Pagination::pageParam|pageParam]]
 свойств провайдеров данных [[yii\data\BaseDataProvider::$sort|sort]] и [[yii\data\BaseDataProvider::$pagination|pagination]]
 

@@ -7,11 +7,12 @@
 
 namespace yii\widgets;
 
+use Closure;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * Menu displays a multi-level menu using nested HTML lists.
@@ -22,7 +23,7 @@ use yii\helpers\Html;
  * Menu checks the current route and request parameters to toggle certain menu items
  * with active state.
  *
- * Note that Menu only renders the HTML tags about the menu. It does do any styling.
+ * Note that Menu only renders the HTML tags about the menu. It does not do any styling.
  * You are responsible to provide CSS styles to make it look like a real menu.
  *
  * The following example shows how to use Menu:
@@ -60,7 +61,9 @@ class Menu extends Widget
      *   otherwise, [[labelTemplate]] will be used.
      * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
      * - items: array, optional, specifies the sub-menu items. Its format is the same as the parent items.
-     * - active: boolean, optional, whether this menu item is in active state (currently selected).
+     * - active: boolean or Closure, optional, whether this menu item is in active state (currently selected).
+     *   When using a closure, its signature should be `function ($item, $hasActiveChild, $isItemActive, $widget)`.
+     *   Closure must return `true` if item should be marked as `active`, otherwise - `false`.
      *   If a menu item is active, its CSS class will be appended with [[activeCssClass]].
      *   If this option is not set, the menu item will be set active automatically when the current request
      *   is triggered by `url`. For more details, please refer to [[isItemActive()]].
@@ -208,13 +211,7 @@ class Menu extends Widget
             if ($i === $n - 1 && $this->lastItemCssClass !== null) {
                 $class[] = $this->lastItemCssClass;
             }
-            if (!empty($class)) {
-                if (empty($options['class'])) {
-                    $options['class'] = implode(' ', $class);
-                } else {
-                    $options['class'] .= ' ' . implode(' ', $class);
-                }
-            }
+            Html::addCssClass($options, $class);
 
             $menu = $this->renderItem($item);
             if (!empty($item['items'])) {
@@ -244,13 +241,13 @@ class Menu extends Widget
                 '{url}' => Html::encode(Url::to($item['url'])),
                 '{label}' => $item['label'],
             ]);
-        } else {
-            $template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
-
-            return strtr($template, [
-                '{label}' => $item['label'],
-            ]);
         }
+
+        $template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
+
+        return strtr($template, [
+            '{label}' => $item['label'],
+        ]);
     }
 
     /**
@@ -269,7 +266,7 @@ class Menu extends Widget
             if (!isset($item['label'])) {
                 $item['label'] = '';
             }
-            $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
+            $encodeLabel = $item['encode'] ?? $this->encodeLabels;
             $items[$i]['label'] = $encodeLabel ? Html::encode($item['label']) : $item['label'];
             $hasActiveChild = false;
             if (isset($item['items'])) {
@@ -288,6 +285,8 @@ class Menu extends Widget
                 } else {
                     $items[$i]['active'] = false;
                 }
+            } elseif ($item['active'] instanceof Closure) {
+                $active = $items[$i]['active'] = call_user_func($item['active'], $item, $hasActiveChild, $this->isItemActive($item), $this);
             } elseif ($item['active']) {
                 $active = true;
             }

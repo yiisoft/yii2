@@ -8,8 +8,9 @@
 namespace yii\log;
 
 use Yii;
-use yii\db\Connection;
 use yii\base\InvalidConfigException;
+use yii\db\Connection;
+use yii\db\Exception;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
 
@@ -57,15 +58,24 @@ class DbTarget extends Target
 
     /**
      * Stores log messages to DB.
+     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
+     * @throws Exception
+     * @throws LogRuntimeException
      */
     public function export()
     {
+        if ($this->db->getTransaction()) {
+            // create new database connection, if there is an open transaction
+            // to ensure insert statement is not affected by a rollback
+            $this->db = clone $this->db;
+        }
+
         $tableName = $this->db->quoteTableName($this->logTable);
         $sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[prefix]], [[message]])
                 VALUES (:level, :category, :log_time, :prefix, :message)";
         $command = $this->db->createCommand($sql);
         foreach ($this->messages as $message) {
-            list($text, $level, $category, $timestamp) = $message;
+            [$level, $text, $context] = $message;
             if (!is_string($text)) {
                 // exceptions may not be serializable if in the call stack somewhere is a Closure
                 if ($text instanceof \Throwable || $text instanceof \Exception) {
@@ -74,13 +84,16 @@ class DbTarget extends Target
                     $text = VarDumper::export($text);
                 }
             }
-            $command->bindValues([
-                ':level' => $level,
-                ':category' => $category,
-                ':log_time' => $timestamp,
-                ':prefix' => $this->getMessagePrefix($message),
-                ':message' => $text,
-            ])->execute();
+            if ($command->bindValues([
+                    ':level' => $level,
+                    ':category' => $context['category'],
+                    ':log_time' => $context['time'],
+                    ':prefix' => $this->getMessagePrefix($message),
+                    ':message' => $text,
+                ])->execute() > 0) {
+                continue;
+            }
+            throw new LogRuntimeException('Unable to export log through database!');
         }
     }
 }

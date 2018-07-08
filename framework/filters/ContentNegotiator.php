@@ -10,10 +10,10 @@ namespace yii\filters;
 use Yii;
 use yii\base\ActionFilter;
 use yii\base\BootstrapInterface;
-use yii\base\InvalidConfigException;
-use yii\web\Response;
+use yii\web\BadRequestHttpException;
+use yii\web\NotAcceptableHttpException;
 use yii\web\Request;
-use yii\web\UnsupportedMediaTypeHttpException;
+use yii\web\Response;
 
 /**
  * ContentNegotiator supports response format negotiation and application language negotiation.
@@ -39,7 +39,7 @@ use yii\web\UnsupportedMediaTypeHttpException;
  * return [
  *     'bootstrap' => [
  *         [
- *             'class' => \yii\filters\ContentNegotiator::class,
+ *             '__class' => \yii\filters\ContentNegotiator::class,
  *             'formats' => [
  *                 'application/json' => Response::FORMAT_JSON,
  *                 'application/xml' => Response::FORMAT_XML,
@@ -64,7 +64,7 @@ use yii\web\UnsupportedMediaTypeHttpException;
  * {
  *     return [
  *         [
- *             'class' => \yii\filters\ContentNegotiator::class,
+ *             '__class' => \yii\filters\ContentNegotiator::class,
  *             'only' => ['view', 'index'],  // in a controller
  *             // if in a module, use the following IDs for user actions
  *             // 'only' => ['user/view', 'user/index']
@@ -87,7 +87,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
 {
     /**
      * @var string the name of the GET parameter that specifies the response format.
-     * Note that if the specified format does not exist in [[formats]], a [[UnsupportedMediaTypeHttpException]]
+     * Note that if the specified format does not exist in [[formats]], a [[NotAcceptableHttpException]]
      * exception will be thrown.  If the parameter value is empty or if this property is null,
      * the response format will be determined based on the `Accept` HTTP header only.
      * @see formats
@@ -104,7 +104,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     /**
      * @var array list of supported response formats. The keys are MIME types (e.g. `application/json`)
      * while the values are the corresponding formats (e.g. `html`, `json`) which must be supported
-     * as declared in [[\yii\web\Response::formatters]].
+     * as declared in [[\yii\web\Response::$formatters]].
      *
      * If this property is empty or not set, response format negotiation will be skipped.
      */
@@ -130,7 +130,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function bootstrap($app)
     {
@@ -138,7 +138,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -151,8 +151,8 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      */
     public function negotiate()
     {
-        $request = $this->request ? : Yii::$app->getRequest();
-        $response = $this->response ? : Yii::$app->getResponse();
+        $request = $this->request ?: Yii::$app->getRequest();
+        $response = $this->response ?: Yii::$app->getResponse();
         if (!empty($this->formats)) {
             $this->negotiateContentType($request, $response);
         }
@@ -165,20 +165,24 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      * Negotiates the response format.
      * @param Request $request
      * @param Response $response
-     * @throws InvalidConfigException if [[formats]] is empty
-     * @throws UnsupportedMediaTypeHttpException if none of the requested content types is accepted.
+     * @throws BadRequestHttpException if an array received for GET parameter [[formatParam]].
+     * @throws NotAcceptableHttpException if none of the requested content types is accepted.
      */
     protected function negotiateContentType($request, $response)
     {
         if (!empty($this->formatParam) && ($format = $request->get($this->formatParam)) !== null) {
+            if (is_array($format)) {
+                throw new BadRequestHttpException("Invalid data received for GET parameter '{$this->formatParam}'.");
+            }
+
             if (in_array($format, $this->formats)) {
                 $response->format = $format;
                 $response->acceptMimeType = null;
                 $response->acceptParams = [];
                 return;
-            } else {
-                throw new UnsupportedMediaTypeHttpException('The requested response format is not supported: ' . $format);
             }
+
+            throw new NotAcceptableHttpException('The requested response format is not supported: ' . $format);
         }
 
         $types = $request->getAcceptableContentTypes();
@@ -195,17 +199,18 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
             }
         }
 
-        if (isset($types['*/*'])) {
-            // return the first format
-            foreach ($this->formats as $type => $format) {
-                $response->format = $this->formats[$type];
-                $response->acceptMimeType = $type;
-                $response->acceptParams = [];
-                return;
-            }
+        foreach ($this->formats as $type => $format) {
+            $response->format = $format;
+            $response->acceptMimeType = $type;
+            $response->acceptParams = [];
+            break;
         }
 
-        throw new UnsupportedMediaTypeHttpException('None of your requested content types is supported.');
+        if (isset($types['*/*'])) {
+            return;
+        }
+
+        throw new NotAcceptableHttpException('None of your requested media types is supported.');
     }
 
     /**
@@ -216,6 +221,10 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     protected function negotiateLanguage($request)
     {
         if (!empty($this->languageParam) && ($language = $request->get($this->languageParam)) !== null) {
+            if (is_array($language)) {
+                // If an array received, then skip it and use the first of supported languages
+                return reset($this->languages);
+            }
             if (isset($this->languages[$language])) {
                 return $this->languages[$language];
             }
@@ -224,6 +233,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
                     return $supported;
                 }
             }
+
             return reset($this->languages);
         }
 

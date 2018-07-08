@@ -40,7 +40,7 @@ dengan menjalankan `composer self-update`.
 Dengan Komposer diinstal, Anda dapat menginstal Yii dengan menjalankan perintah berikut di bawah folder yang terakses web:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
+composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -143,9 +143,7 @@ Konfigurasi Web Server <span id="configuring-web-servers"></span>
 
 Aplikasi yang diinstal sesuai dengan petunjuk di atas seharusnya bekerja dengan baik
 pada [Apache HTTP server](http://httpd.apache.org/) atau [Nginx HTTP server](http://nginx.org/), pada
-Windows, Mac OS X, atau Linux yang menjalankan PHP 5.4 atau lebih tinggi. Yii 2.0 juga kompatibel dengan facebook
-[HHVM](http://hhvm.com/). Namun, ada beberapa kasus di mana HHVM berperilaku berbeda dari PHP asli,
-sehingga Anda harus mengambil beberapa perlakuan ekstra ketika menggunakan HHVM.
+Windows, Mac OS X, atau Linux yang menjalankan PHP 5.4 atau lebih tinggi.
 
 Pada server produksi, Anda mungkin ingin mengkonfigurasi server Web Anda sehingga aplikasi dapat diakses
 melalui URL `http://www.example.com/index.php` bukannya `http://www.example.com/dasar/web/index.php`. konfigurasi seperti itu
@@ -189,7 +187,7 @@ DocumentRoot "path/to/basic/web"
 
 Untuk menggunakan [Nginx](http://wiki.nginx.org/), Anda harus menginstal PHP sebagai [FPM SAPI](http://php.net/install.fpm).
 Anda dapat menggunakan konfigurasi Nginx berikut, menggantikan `path/to/basic/web` dengan path yang sebenarnya untuk
-`basic/web` dan `mysite.local` dengan hostname yang sebenarnya untuk server.
+`basic/web` dan `mysite.test` dengan hostname yang sebenarnya untuk server.
 
 ```nginx
 server {
@@ -199,7 +197,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

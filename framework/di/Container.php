@@ -37,7 +37,7 @@ use yii\helpers\ArrayHelper;
  * ```php
  * namespace app\models;
  *
- * use yii\base\Object;
+ * use yii\base\BaseObject;
  * use yii\db\Connection;
  * use yii\di\Container;
  *
@@ -46,7 +46,7 @@ use yii\helpers\ArrayHelper;
  *     function findUser();
  * }
  *
- * class UserFinder extends Object implements UserFinderInterface
+ * class UserFinder extends BaseObject implements UserFinderInterface
  * {
  *     public $db;
  *
@@ -61,7 +61,7 @@ use yii\helpers\ArrayHelper;
  *     }
  * }
  *
- * class UserLister extends Object
+ * class UserLister extends BaseObject
  * {
  *     public $finder;
  *
@@ -77,7 +77,7 @@ use yii\helpers\ArrayHelper;
  *     'dsn' => '...',
  * ]);
  * $container->set(\app\models\UserFinderInterface::class, [
- *     'class' => \app\models\UserFinder::class,
+ *     '__class' => \app\models\UserFinder::class,
  * ]);
  * $container->set('userLister', \app\models\UserLister::class);
  *
@@ -121,7 +121,10 @@ class Container extends Component
      * is associated with a list of constructor parameter types or default values.
      */
     private $_dependencies = [];
-
+    /**
+     * @var array used to collect classes instantiated during get to detect circular references
+     */
+    private $_getting = [];
 
     /**
      * Returns an instance of the requested class.
@@ -157,14 +160,19 @@ class Container extends Component
             return $this->build($class, $params, $config);
         }
 
+        if (isset($this->_getting[$class])) {
+            throw new CircularReferenceException($class);
+        }
+        $this->_getting[$class] = 1;
+
         $definition = $this->_definitions[$class];
 
         if (is_callable($definition, true)) {
             $params = $this->resolveDependencies($this->mergeParams($class, $params));
             $object = call_user_func($definition, $this, $params, $config);
         } elseif (is_array($definition)) {
-            $concrete = $definition['class'];
-            unset($definition['class']);
+            $concrete = $definition['__class'];
+            unset($definition['__class']);
 
             $config = array_merge($definition, $config);
             $params = $this->mergeParams($class, $params);
@@ -175,7 +183,7 @@ class Container extends Component
                 $object = $this->get($concrete, $params, $config);
             }
         } elseif (is_object($definition)) {
-            return $this->_singletons[$class] = $definition;
+            $object = $this->_singletons[$class] = $definition;
         } else {
             throw new InvalidConfigException('Unexpected object definition type: ' . gettype($definition));
         }
@@ -184,6 +192,7 @@ class Container extends Component
             // singleton
             $this->_singletons[$class] = $object;
         }
+        unset($this->_getting[$class]);
 
         return $object;
     }
@@ -218,7 +227,7 @@ class Container extends Component
      * // register an alias name with class configuration
      * // In this case, a "class" element is required to specify the class
      * $container->set('db', [
-     *     'class' => \yii\db\Connection::class,
+     *     '__class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -257,7 +266,6 @@ class Container extends Component
         unset($this->_singletons[$class]);
         return $this;
     }
-
     /**
      * Registers a class definition with this container and marks the class as a singleton class.
      *
@@ -321,23 +329,24 @@ class Container extends Component
     protected function normalizeDefinition($class, $definition)
     {
         if (empty($definition)) {
-            return ['class' => $class];
+            return ['__class' => $class];
         } elseif (is_string($definition)) {
-            return ['class' => $definition];
+            return ['__class' => $definition];
         } elseif (is_callable($definition, true) || is_object($definition)) {
             return $definition;
         } elseif (is_array($definition)) {
-            if (!isset($definition['class'])) {
+            if (!isset($definition['__class'])) {
                 if (strpos($class, '\\') !== false) {
-                    $definition['class'] = $class;
+                    $definition['__class'] = $class;
                 } else {
-                    throw new InvalidConfigException("A class definition requires a \"class\" member.");
+                    throw new InvalidConfigException('A class definition requires a "__class" member.');
                 }
             }
+
             return $definition;
-        } else {
-            throw new InvalidConfigException("Unsupported definition type for \"$class\": " . gettype($definition));
         }
+
+        throw new InvalidConfigException("Unsupported definition type for \"$class\": " . gettype($definition));
     }
 
     /**
@@ -362,7 +371,14 @@ class Container extends Component
     protected function build($class, $params, $config)
     {
         /* @var $reflection ReflectionClass */
-        list($reflection, $dependencies) = $this->getDependencies($class);
+        [$reflection, $dependencies] = $this->getDependencies($class);
+
+        if (isset($config['__construct()'])) {
+            foreach ($config['__construct()'] as $index => $param) {
+                $dependencies[$index] = $param;
+            }
+            unset($config['__construct()']);
+        }
 
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
@@ -376,17 +392,24 @@ class Container extends Component
             return $reflection->newInstanceArgs($dependencies);
         }
 
+        $config = $this->resolveDependencies($config);
+
         if (!empty($dependencies) && $reflection->implementsInterface(Configurable::class)) {
             // set $config as the last parameter (existing one will be overwritten)
             $dependencies[count($dependencies) - 1] = $config;
             return $reflection->newInstanceArgs($dependencies);
-        } else {
-            $object = $reflection->newInstanceArgs($dependencies);
-            foreach ($config as $name => $value) {
+        }
+
+        $object = $reflection->newInstanceArgs($dependencies);
+        foreach ($config as $name => $value) {
+            if (substr($name, -2) === '()') {
+                call_user_func_array([$object, substr($name, 0, -2)], $value);
+            } else {
                 $object->$name = $value;
             }
-            return $object;
         }
+
+        return $object;
     }
 
     /**
@@ -401,13 +424,14 @@ class Container extends Component
             return $params;
         } elseif (empty($params)) {
             return $this->_params[$class];
-        } else {
-            $ps = $this->_params[$class];
-            foreach ($params as $index => $value) {
-                $ps[$index] = $value;
-            }
-            return $ps;
         }
+
+        $ps = $this->_params[$class];
+        foreach ($params as $index => $value) {
+            $ps[$index] = $value;
+        }
+
+        return $ps;
     }
 
     /**
@@ -427,7 +451,9 @@ class Container extends Component
         $constructor = $reflection->getConstructor();
         if ($constructor !== null) {
             foreach ($constructor->getParameters() as $param) {
-                if ($param->isDefaultValueAvailable()) {
+                if ($param->isVariadic()) {
+                    break;
+                } elseif ($param->isDefaultValueAvailable()) {
                     $dependencies[] = $param->getDefaultValue();
                 } else {
                     $c = $param->getClass();
@@ -462,6 +488,7 @@ class Container extends Component
                 }
             }
         }
+
         return $dependencies;
     }
 
@@ -495,9 +522,9 @@ class Container extends Component
     {
         if (is_callable($callback)) {
             return call_user_func_array($callback, $this->resolveCallableDependencies($callback, $params));
-        } else {
-            return call_user_func_array($callback, $params);
         }
+
+        return call_user_func_array($callback, $params);
     }
 
     /**
@@ -529,7 +556,10 @@ class Container extends Component
             $name = $param->getName();
             if (($class = $param->getClass()) !== null) {
                 $className = $class->getName();
-                if ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
+                if ($param->isVariadic()) {
+                    $args = array_merge($args, array_values($params));
+                    break;
+                } elseif ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
                     $args[] = $params[$name];
                     unset($params[$name]);
                 } elseif (!$associative && isset($params[0]) && $params[0] instanceof $className) {
@@ -547,7 +577,6 @@ class Container extends Component
                             throw $e;
                         }
                     }
-
                 }
             } elseif ($associative && isset($params[$name])) {
                 $args[] = $params[$name];
@@ -565,6 +594,87 @@ class Container extends Component
         foreach ($params as $value) {
             $args[] = $value;
         }
+
         return $args;
+    }
+
+    /**
+     * Registers class definitions within this container.
+     *
+     * @param array $definitions array of definitions. There are two allowed formats of array.
+     * The first format:
+     *  - key: class name, interface name or alias name. The key will be passed to the [[set()]] method
+     *    as a first argument `$class`.
+     *  - value: the definition associated with `$class`. Possible values are described in
+     *    [[set()]] documentation for the `$definition` parameter. Will be passed to the [[set()]] method
+     *    as the second argument `$definition`.
+     *
+     * Example:
+     * ```php
+     * $container->setDefinitions([
+     *     'yii\web\Request' => 'app\components\Request',
+     *     'yii\web\Response' => [
+     *         '__class' => 'app\components\Response',
+     *         'format' => 'json'
+     *     ],
+     *     'foo\Bar' => function () {
+     *         $qux = new Qux;
+     *         $foo = new Foo($qux);
+     *         return new Bar($foo);
+     *     }
+     * ]);
+     * ```
+     *
+     * The second format:
+     *  - key: class name, interface name or alias name. The key will be passed to the [[set()]] method
+     *    as a first argument `$class`.
+     *  - value: array of two elements. The first element will be passed the [[set()]] method as the
+     *    second argument `$definition`, the second one — as `$params`.
+     *
+     * Example:
+     * ```php
+     * $container->setDefinitions([
+     *     'foo\Bar' => [
+     *          ['__class' => 'app\Bar'],
+     *          [Instance::of('baz')]
+     *      ]
+     * ]);
+     * ```
+     *
+     * @see set() to know more about possible values of definitions
+     * @since 2.0.11
+     */
+    public function setDefinitions(array $definitions)
+    {
+        foreach ($definitions as $class => $definition) {
+            if (is_array($definition) && count($definition) === 2 && array_values($definition) === $definition) {
+                $this->set($class, $definition[0], $definition[1]);
+                continue;
+            }
+
+            $this->set($class, $definition);
+        }
+    }
+
+    /**
+     * Registers class definitions as singletons within this container by calling [[setSingleton()]].
+     *
+     * @param array $singletons array of singleton definitions. See [[setDefinitions()]]
+     * for allowed formats of array.
+     *
+     * @see setDefinitions() for allowed formats of $singletons parameter
+     * @see setSingleton() to know more about possible values of definitions
+     * @since 2.0.11
+     */
+    public function setSingletons(array $singletons)
+    {
+        foreach ($singletons as $class => $definition) {
+            if (is_array($definition) && count($definition) === 2 && array_values($definition) === $definition) {
+                $this->setSingleton($class, $definition[0], $definition[1]);
+                continue;
+            }
+
+            $this->setSingleton($class, $definition);
+        }
     }
 }

@@ -12,7 +12,7 @@ use yii\console\Controller;
 use yii\helpers\Console;
 
 /**
- * Runs PHP built-in web server
+ * Runs PHP built-in web server.
  *
  * In order to access server from remote machines use 0.0.0.0:8000. That is especially useful when running server in
  * a virtual machine.
@@ -32,9 +32,9 @@ class ServeController extends Controller
      */
     public $port = 8080;
     /**
-     * @var string path or path alias to directory to serve
+     * @var string path or [path alias](guide:concept-aliases) to directory to serve
      */
-    public $docroot = '@app/web';
+    public $docroot = 'public';
     /**
      * @var string path to router script.
      * See https://secure.php.net/manual/en/features.commandline.webserver.php
@@ -43,7 +43,7 @@ class ServeController extends Controller
 
 
     /**
-     * Runs PHP built-in web server
+     * Runs PHP built-in web server.
      *
      * @param string $address address to serve on. Either "host" or "host:port".
      *
@@ -83,7 +83,7 @@ class ServeController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function options($actionID)
     {
@@ -95,7 +95,7 @@ class ServeController extends Controller
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function optionAliases()
@@ -113,7 +113,7 @@ class ServeController extends Controller
      */
     protected function isAddressTaken($address)
     {
-        list($hostname, $port) = explode(':', $address);
+        [$hostname, $port] = explode(':', $address);
         $fp = @fsockopen($hostname, $port, $errno, $errstr, 3);
         if ($fp === false) {
             return false;

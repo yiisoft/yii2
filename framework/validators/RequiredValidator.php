@@ -51,7 +51,7 @@ class RequiredValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -63,7 +63,7 @@ class RequiredValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -76,37 +76,10 @@ class RequiredValidator extends Validator
         }
         if ($this->requiredValue === null) {
             return [$this->message, []];
-        } else {
-            return [$this->message, [
-                'requiredValue' => $this->requiredValue,
-            ]];
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        $options = [];
-        if ($this->requiredValue !== null) {
-            $options['message'] = Yii::$app->getI18n()->format($this->message, [
-                'requiredValue' => $this->requiredValue,
-            ], Yii::$app->language);
-            $options['requiredValue'] = $this->requiredValue;
-        } else {
-            $options['message'] = $this->message;
-        }
-        if ($this->strict) {
-            $options['strict'] = 1;
         }
 
-        $options['message'] = Yii::$app->getI18n()->format($options['message'], [
-            'attribute' => $model->getAttributeLabel($attribute),
-        ], Yii::$app->language);
-
-        ValidationAsset::register($view);
-
-        return 'yii.validation.required(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return [$this->message, [
+            'requiredValue' => $this->requiredValue,
+        ]];
     }
 }

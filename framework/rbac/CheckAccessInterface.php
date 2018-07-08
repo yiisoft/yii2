@@ -9,7 +9,7 @@ namespace yii\rbac;
 
 /**
  * For more details and usage information on CheckAccessInterface, see the [guide article on security authorization](guide:security-authorization).
- * 
+ *
  * @author Sam Mousa <sam@mousa.nl>
  * @since 2.0.9
  */
@@ -23,7 +23,7 @@ interface CheckAccessInterface
      * @param array $params name-value pairs that will be passed to the rules associated
      * with the roles and permissions assigned to the user.
      * @return bool whether the user has the specified permission.
-     * @throws \yii\base\InvalidParamException if $permissionName does not refer to an existing permission
+     * @throws \yii\base\InvalidArgumentException if $permissionName does not refer to an existing permission
      */
     public function checkAccess($userId, $permissionName, $params = []);
 }

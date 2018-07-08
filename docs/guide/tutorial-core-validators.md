@@ -26,7 +26,7 @@ In the following, we will describe the main usage and properties of every core v
     // checks if "selected" is either 0 or 1, regardless of data type
     ['selected', 'boolean'],
 
-    // checks if "deleted" is of boolean type, either `true` or `false`
+    // checks if "deleted" is of boolean type, either true or false
     ['deleted', 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
 ]
 ```
@@ -175,7 +175,7 @@ or `1970-01-01` in the input field of a date picker.
 
 ```php
 [
-    // set "age" to be `null` if it is empty
+    // set "age" to be null if it is empty
     ['age', 'default', 'value' => null],
 
     // set "country" to be "USA" if it is empty
@@ -202,7 +202,8 @@ function foo($model, $attribute) {
 ```
 
 > Info: How to determine if a value is empty or not is a separate topic covered
-  in the [Empty Values](input-validation.md#handling-empty-inputs) section.
+  in the [Empty Values](input-validation.md#handling-empty-inputs) section. Default value from database
+  schema could be loaded via [loadDefaultValues()](db-active-record.md#default-attribute-values) method of the model.
 
 
 ## [[yii\validators\NumberValidator|double]] <span id="double"></span>
@@ -285,6 +286,12 @@ This validator checks if the input value is a valid email address.
 
     // a1 needs to exist. If a1 is an array, then every element of it must exist.
     ['a1', 'exist', 'allowArray' => true],
+    
+    // type_id needs to exist in the column "id" in the table defined in ProductType class 
+    ['type_id', 'exist', 'targetClass' => ProductType::class, 'targetAttribute' => ['type_id' => 'id']],    
+    
+    // the same as the previous, but using already defined relation "type"
+    ['type_id', 'exist', 'targetRelation' => 'type'],
 ]
 ```
 
@@ -303,6 +310,7 @@ multiple attribute values should exist).
   You may use an array to validate the existence of multiple columns at the same time. The array values
   are the attributes that will be used to validate the existence, while the array keys are the attributes
   whose values are to be validated. If the key and the value are the same, you can just specify the value.
+- `targetRelation`: since version 2.0.14 you can use convenient attribute `targetRelation`, which overrides the `targetClass` and `targetAttribute` attributes using specs from the requested relation.  
 - `filter`: additional filter to be applied to the DB query used to check the existence of the input value.
   This can be a string or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
   on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
@@ -343,7 +351,7 @@ This validator checks if the input is a valid uploaded file.
   MIME type check differs from the uploaded file extension, the file will be considered as invalid. Defaults to `true`,
   meaning perform such check.
 
-`FileValidator` is used together with [[yii\web\UploadedFile]]. Please refer to the [Uploading Files](input-file-upload.md)
+`FileValidator` is used together with [[yii\http\UploadedFile]]. Please refer to the [Uploading Files](input-file-upload.md)
 section for complete coverage about uploading files and performing validation about the uploaded files.
 
 
@@ -676,3 +684,6 @@ This validator checks if the input value is a valid URL.
   Defaults to `false`. Note that in order to use IDN validation you have to install and enable the `intl` PHP
   extension, otherwise an exception would be thrown.
 
+> Note: The validator checks that URL scheme and host part is correct. It does NOT check the remaining parts of a URL
+and is NOT designed to protect against XSS or any other attacks. See [Security best practices](security-best-practices.md)
+article to learn more about threats prevention when developing applications.

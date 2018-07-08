@@ -298,7 +298,7 @@ class RbacController extends Controller
 ```
 
 > Note: Если вы используете шаблон проекта advanced, `RbacController` необходимо создать в директории `console/controllers`
-  и сменить пространство имён на `console/controllers`.
+  и сменить пространство имён на `console\controllers`.
 
 После выполнения команды `yii rbac/init` мы получим следующую иерархию:
 

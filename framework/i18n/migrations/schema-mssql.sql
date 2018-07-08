@@ -8,8 +8,11 @@
  * @since 2.0.7
  */
 
-drop table if exists [source_message];
-drop table if exists [message];
+if object_id('[source_message]', 'U') is not null
+    drop table [source_message];
+
+if object_id('[message]', 'U') is not null
+    drop table [message];
 
 CREATE TABLE [source_message]
 (

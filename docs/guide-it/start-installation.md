@@ -27,7 +27,7 @@ Se hai già Composer installato assicurati di avere una versione aggiornata. Puo
 
 Una volta installato Composer, puoi installare Yii eseguendo questo comando in una directory accessbile via web:
 
-    composer global require "fxp/composer-asset-plugin:^1.2.0"
+    composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Il primo comando installa il [plugin composer asset](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -116,9 +116,7 @@ Configurazione del webserver <span id="configuring-web-servers"></span>
 > Informazione: puoi saltare questa parte per ora se stai solo provando Yii e non hai intenzione di installarlo su un server di produzione.
 
 L'applicazione installata secondo le istruzioni sopra dovrebbe funzionare senza problemi su un server 
-[Apache](http://httpd.apache.org/) o [Nginx](http://nginx.org/), su Windows, Mac OS X, or Linux equipaggiati con PHP 5.4 o successivo. 
-Yii 2.0 è anche compatibile con le librerie [HHVM](http://hhvm.com/) di Facebook, tuttavia ci sono alcuni casi limite dove HHVM si
-comporta diversamente dal PHP nativo, quindi devi avere maggiore cura se intendi usare HHVM.
+[Apache](http://httpd.apache.org/) o [Nginx](http://nginx.org/), su Windows, Mac OS X, or Linux equipaggiati con PHP 5.4 o successivo.
 
 Su un server di produzione vorrai probabilmente che la tua applicazione sia accessibile tramite l'url 
 `http://www.example.com/index.php` invece di `http://www.example.com/basic/web/index.php`. Questo risultato richiede che punti la
@@ -161,7 +159,7 @@ DocumentRoot "path/to/basic/web"
 ### Configurazione consigliata di Nginx <span id="recommended-nginx-configuration"></span>
 
 Devi aver installato PHP con il demone [FPM](http://php.net/install.fpm) per usare [Nginx](http://wiki.nginx.org/).
-Usa questa configurazione per Nginx, sostituendo `path/to/basic/web` con il percorso reale di `basic/web` e `mysite.local` con
+Usa questa configurazione per Nginx, sostituendo `path/to/basic/web` con il percorso reale di `basic/web` e `mysite.test` con
 il nome reale del server web.
 
 ```
@@ -172,7 +170,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

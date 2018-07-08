@@ -1,18 +1,24 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit;
 
+use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
  * This is the base class for all yii framework unit tests.
  */
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     public static $params;
 
     /**
-     * Returns a test configuration param from /data/config.php
+     * Returns a test configuration param from /data/config.php.
      * @param  string $name params name
      * @param  mixed $default default value to use when param is not set.
      * @return mixed  the value of the configuration param
@@ -20,10 +26,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     public static function getParam($name, $default = null)
     {
         if (static::$params === null) {
-            static::$params = require(__DIR__ . '/data/config.php');
+            static::$params = require __DIR__ . '/data/config.php';
         }
 
-        return isset(static::$params[$name]) ? static::$params[$name] : $default;
+        return static::$params[$name] ?? $default;
     }
 
     /**
@@ -34,6 +40,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     {
         parent::tearDown();
         $this->destroyApplication();
+        Yii::setLogger(null);
+        Yii::$container = new \yii\di\Container();
     }
 
     /**
@@ -42,7 +50,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      * @param array $config The application configuration, if needed
      * @param string $appClass name of the application class to create
      */
-    protected function mockApplication($config = [], $appClass = '\yii\console\Application')
+    protected function mockApplication($config = [], $appClass = \yii\console\Application::class)
     {
         new $appClass(ArrayHelper::merge([
             'id' => 'testapp',
@@ -51,19 +59,23 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         ], $config));
     }
 
-    protected function mockWebApplication($config = [], $appClass = '\yii\web\Application')
+    protected function mockWebApplication($config = [], $appClass = \yii\web\Application::class)
     {
         new $appClass(ArrayHelper::merge([
             'id' => 'testapp',
             'basePath' => __DIR__,
             'vendorPath' => $this->getVendorPath(),
+            'aliases' => [
+                '@bower' => '@vendor/bower-asset',
+                '@npm' => '@vendor/npm-asset',
+            ],
             'components' => [
                 'request' => [
                     'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
                     'scriptFile' => __DIR__ . '/index.php',
                     'scriptUrl' => '/index.php',
                 ],
-            ]
+            ],
         ], $config));
     }
 
@@ -73,6 +85,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         if (!is_dir($vendor)) {
             $vendor = dirname(dirname(dirname(dirname(__DIR__))));
         }
+
         return $vendor;
     }
 
@@ -81,14 +94,14 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function destroyApplication()
     {
-        if (\Yii::$app && \Yii::$app->has('session', true)) {
-            \Yii::$app->session->close();
+        if (Yii::$app && Yii::$app->has('session', true)) {
+            Yii::$app->session->close();
         }
-        \Yii::$app = null;
+        Yii::$app = null;
     }
 
     /**
-     * Asserting two strings equality ignoring line endings
+     * Asserting two strings equality ignoring line endings.
      * @param string $expected
      * @param string $actual
      */
@@ -101,27 +114,33 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Invokes a inaccessible method
+     * Invokes a inaccessible method.
      * @param $object
      * @param $method
      * @param array $args
+     * @param bool $revoke whether to make method inaccessible after execution
      * @return mixed
      * @since 2.0.11
      */
-    protected function invokeMethod($object, $method, $args = [])
+    protected function invokeMethod($object, $method, $args = [], $revoke = true)
     {
-        $reflection = new \ReflectionClass(get_class($object));
+        $reflection = new \ReflectionObject($object);
         $method = $reflection->getMethod($method);
         $method->setAccessible(true);
-        return $method->invokeArgs($object, $args);
+        $result = $method->invokeArgs($object, $args);
+        if ($revoke) {
+            $method->setAccessible(false);
+        }
+
+        return $result;
     }
 
     /**
-     * Sets an inaccessible object property to a designated value
+     * Sets an inaccessible object property to a designated value.
      * @param $object
      * @param $propertyName
      * @param $value
-     * @param bool $revoke
+     * @param bool $revoke whether to make property inaccessible after setting
      * @since 2.0.11
      */
     protected function setInaccessibleProperty($object, $propertyName, $value, $revoke = true)
@@ -132,19 +151,20 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         }
         $property = $class->getProperty($propertyName);
         $property->setAccessible(true);
-        $property->setValue($value);
-        if($revoke){
+        $property->setValue($object, $value);
+        if ($revoke) {
             $property->setAccessible(false);
         }
     }
 
     /**
-     * Gets an inaccessible object property
+     * Gets an inaccessible object property.
      * @param $object
      * @param $propertyName
+     * @param bool $revoke whether to make property inaccessible after getting
      * @return mixed
      */
-    protected function getInaccessibleProperty($object, $propertyName)
+    protected function getInaccessibleProperty($object, $propertyName, $revoke = true)
     {
         $class = new \ReflectionClass($object);
         while (!$class->hasProperty($propertyName)) {
@@ -152,12 +172,23 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         }
         $property = $class->getProperty($propertyName);
         $property->setAccessible(true);
-        return $property->getValue($object);
+        $result = $property->getValue($object);
+        if ($revoke) {
+            $property->setAccessible(false);
+        }
+
+        return $result;
     }
 
-
-
-
-
-
+    /**
+     * Asserts that value is one of expected values.
+     *
+     * @param mixed $actual
+     * @param array $expected
+     * @param string $message
+     */
+    public function assertIsOneOf($actual, array $expected, $message = '')
+    {
+        self::assertThat($actual, new IsOneOfAssert($expected), $message);
+    }
 }

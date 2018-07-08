@@ -40,7 +40,7 @@
 Після встановлення Composer, встановити Yii можна виконавши наступну команду з директорії, яка доступна через Web:
 
 ```bash
-    composer global require "fxp/composer-asset-plugin:^1.2.0"
+    composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -148,9 +148,7 @@ http://localhost:8080/
 
 Додаток, встановлений за інструкціями, наведеними вище, буде працювати одразу як
 з [Apache HTTP server](http://httpd.apache.org/), так і з [Nginx HTTP server](http://nginx.org/) на
-Windows, Mac OS X чи Linux із встановленим PHP 5.4 або вище. Yii 2.0 також сумісний із віртуальною машиною Фейсбука
-[HHVM](http://hhvm.com/), однак є деякі крайні випадки, де HHVM поводиться інакше,
-ніж рідний PHP, тому ви повинні бути дуже уважними при використанні HHVM.  
+Windows, Mac OS X чи Linux із встановленим PHP 5.4 або вище.
 
 На робочому сервері вам напевно захочеться змінити URL додатку з `http://www.example.com/basic/web/index.php`
 на `http://www.example.com/index.php`. Для цього необхідно змінити кореневу директорію в налаштуваннях веб-сервера на `basic/web`.
@@ -193,7 +191,7 @@ DocumentRoot "path/to/basic/web"
 
 Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](http://php.net/install.fpm).
 Використовуйте наступні параметри Nginx, замінивши `path/to/basic/web` на коректний шлях до
-`basic/web`, а `mysite.local` на актуальний домен.
+`basic/web`, а `mysite.test` на актуальний домен.
 
 ```
 server {
@@ -203,7 +201,7 @@ server {
     listen 80; ## "слухаємо порт" для ipv4
     #listen [::]:80 default_server ipv6only=on; ## "слухаємо порт" для ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

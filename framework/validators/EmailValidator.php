@@ -9,8 +9,6 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\web\JsExpression;
-use yii\helpers\Json;
 
 /**
  * EmailValidator validates that the attribute value is a valid email address.
@@ -52,7 +50,7 @@ class EmailValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -66,7 +64,7 @@ class EmailValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -76,8 +74,8 @@ class EmailValidator extends Validator
             $valid = false;
         } else {
             if ($this->enableIDN) {
-                $matches['local'] = idn_to_ascii($matches['local']);
-                $matches['domain'] = idn_to_ascii($matches['domain']);
+                $matches['local'] = $this->idnToAscii($matches['local']);
+                $matches['domain'] = $this->idnToAscii($matches['domain']);
                 $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
             }
 
@@ -96,7 +94,7 @@ class EmailValidator extends Validator
             } else {
                 $valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
                 if ($valid && $this->checkDNS) {
-                    $valid = checkdnsrr($matches['domain'], 'MX') || checkdnsrr($matches['domain'], 'A');
+                    $valid = checkdnsrr($matches['domain'] . '.', 'MX') || checkdnsrr($matches['domain'] . '.', 'A');
                 }
             }
         }
@@ -104,29 +102,8 @@ class EmailValidator extends Validator
         return $valid ? null : [$this->message, []];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
+    private function idnToAscii($idn)
     {
-        $options = [
-            'pattern' => new JsExpression($this->pattern),
-            'fullPattern' => new JsExpression($this->fullPattern),
-            'allowName' => $this->allowName,
-            'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language),
-            'enableIDN' => (bool)$this->enableIDN,
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-
-        ValidationAsset::register($view);
-        if ($this->enableIDN) {
-            PunycodeAsset::register($view);
-        }
-
-        return 'yii.validation.email(value, messages, ' . Json::htmlEncode($options) . ');';
+        return idn_to_ascii($idn, 0, INTL_IDNA_VARIANT_UTS46);
     }
 }

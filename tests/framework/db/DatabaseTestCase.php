@@ -1,9 +1,15 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db;
 
+use yii\caching\DummyCache;
 use yii\db\Connection;
-use yiiunit\TestCase as TestCase;
+use yiiunit\TestCase;
 
 abstract class DatabaseTestCase extends TestCase
 {
@@ -27,13 +33,13 @@ abstract class DatabaseTestCase extends TestCase
         parent::setUp();
         $databases = self::getParam('databases');
         $this->database = $databases[$this->driverName];
-        $pdo_database = 'pdo_'.$this->driverName;
+        $pdo_database = 'pdo_' . $this->driverName;
         if ($this->driverName === 'oci') {
             $pdo_database = 'oci8';
         }
 
-        if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
-            $this->markTestSkipped('pdo and '.$pdo_database.' extension are required.');
+        if (!\extension_loaded('pdo') || !\extension_loaded($pdo_database)) {
+            $this->markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
         }
         $this->mockApplication();
     }
@@ -66,15 +72,16 @@ abstract class DatabaseTestCase extends TestCase
         try {
             $this->_db = $this->prepareDatabase($config, $fixture, $open);
         } catch (\Exception $e) {
-            $this->markTestSkipped("Something wrong when preparing database: " . $e->getMessage());
+            $this->markTestSkipped('Something wrong when preparing database: ' . $e->getMessage());
         }
+
         return $this->_db;
     }
 
     public function prepareDatabase($config, $fixture, $open = true)
     {
-        if (!isset($config['class'])) {
-            $config['class'] = 'yii\db\Connection';
+        if (!isset($config['__class'])) {
+            $config['__class'] = \yii\db\Connection::class;
         }
         /* @var $db \yii\db\Connection */
         $db = \Yii::createObject($config);
@@ -84,8 +91,8 @@ abstract class DatabaseTestCase extends TestCase
         $db->open();
         if ($fixture !== null) {
             if ($this->driverName === 'oci') {
-                list($drops, $creates) = explode('/* STATEMENTS */', file_get_contents($fixture), 2);
-                list($statements, $triggers, $data) = explode('/* TRIGGERS */', $creates, 3);
+                [$drops, $creates] = explode('/* STATEMENTS */', file_get_contents($fixture), 2);
+                [$statements, $triggers, $data] = explode('/* TRIGGERS */', $creates, 3);
                 $lines = array_merge(explode('--', $drops), explode(';', $statements), explode('/', $triggers), explode(';', $data));
             } else {
                 $lines = explode(';', file_get_contents($fixture));
@@ -96,11 +103,12 @@ abstract class DatabaseTestCase extends TestCase
                 }
             }
         }
+
         return $db;
     }
 
     /**
-     * adjust dbms specific escaping
+     * Adjust dbms specific escaping.
      * @param $sql
      * @return mixed
      */
@@ -110,14 +118,37 @@ abstract class DatabaseTestCase extends TestCase
             case 'mysql':
             case 'sqlite':
                 return str_replace(['[[', ']]'], '`', $sql);
-            case 'cubrid':
-            case 'pgsql':
             case 'oci':
                 return str_replace(['[[', ']]'], '"', $sql);
+            case 'pgsql':
+                // more complex replacement needed to not conflict with postgres array syntax
+                return str_replace(['\\[', '\\]'], ['[', ']'], preg_replace('/(\[\[)|((?<!(\[))\]\])/', '"', $sql));
             case 'sqlsrv':
                 return str_replace(['[[', ']]'], ['[', ']'], $sql);
             default:
                 return $sql;
         }
+    }
+    
+    /**
+     * @return \yii\db\Connection
+     */
+    protected function getConnectionWithInvalidSlave()
+    {
+        $config = array_merge($this->database, [
+            'serverStatusCache' => new DummyCache(),
+            'slaves' => [
+                [], // invalid config
+            ],
+        ]);
+
+        if (isset($config['fixture'])) {
+            $fixture = $config['fixture'];
+            unset($config['fixture']);
+        } else {
+            $fixture = null;
+        }
+
+        return $this->prepareDatabase($config, $fixture, true);
     }
 }

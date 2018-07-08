@@ -1,4 +1,3 @@
----
 engines:
   duplication:
     enabled: true
@@ -12,6 +11,8 @@ engines:
     enabled: true
   phpmd:
     enabled: true
+    config:
+      rulesets: "codesize,design,unusedcode,tests/data/codeclimate/phpmd_ruleset.xml"
 ratings:
   paths:
   - "**.js"

@@ -37,7 +37,7 @@ trait SchemaBuilderTrait
     /**
      * @return Connection the database connection to be used for schema building.
      */
-    protected abstract function getDb();
+    abstract protected function getDb();
 
     /**
      * Creates a primary key column.
@@ -95,6 +95,18 @@ trait SchemaBuilderTrait
     public function text()
     {
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TEXT);
+    }
+
+    /**
+     * Creates a tinyint column. If tinyint is not supported by the DBMS, smallint will be used.
+     * @param int $length column size or precision definition.
+     * This parameter will be ignored if not supported by the DBMS.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.14
+     */
+    public function tinyInteger($length = null)
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_TINYINT, $length);
     }
 
     /**
@@ -177,6 +189,7 @@ trait SchemaBuilderTrait
         if ($scale !== null) {
             $length[] = $scale;
         }
+
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_DECIMAL, $length);
     }
 
@@ -268,6 +281,18 @@ trait SchemaBuilderTrait
         if ($scale !== null) {
             $length[] = $scale;
         }
+
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_MONEY, $length);
+    }
+
+    /**
+     * Creates a JSON column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.14
+     * @throws \yii\base\Exception
+     */
+    public function json()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_JSON);
     }
 }

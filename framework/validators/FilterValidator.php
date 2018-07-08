@@ -58,7 +58,7 @@ class FilterValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -69,7 +69,7 @@ class FilterValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -77,24 +77,5 @@ class FilterValidator extends Validator
         if (!$this->skipOnArray || !is_array($value)) {
             $model->$attribute = call_user_func($this->filter, $value);
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        if ($this->filter !== 'trim') {
-            return null;
-        }
-
-        $options = [];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-
-        ValidationAsset::register($view);
-
-        return 'value = yii.validation.trim($form, attribute, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
     }
 }

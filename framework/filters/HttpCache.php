@@ -8,8 +8,8 @@
 namespace yii\filters;
 
 use Yii;
-use yii\base\ActionFilter;
 use yii\base\Action;
+use yii\base\ActionFilter;
 
 /**
  * HttpCache implements client-side caching by utilizing the `Last-Modified` and `ETag` HTTP headers.
@@ -17,7 +17,7 @@ use yii\base\Action;
  * It is an action filter that can be added to a controller and handles the `beforeAction` event.
  *
  * To use HttpCache, declare it in the `behaviors()` method of your controller class.
- * In the following example the filter will be applied to the `list`-action and
+ * In the following example the filter will be applied to the `index` action and
  * the Last-Modified header will contain the date of the last update to the user table in the database.
  *
  * ```php
@@ -25,7 +25,7 @@ use yii\base\Action;
  * {
  *     return [
  *         [
- *             'class' => \yii\filters\HttpCache::class,
+ *             '__class' => \yii\filters\HttpCache::class,
  *             'only' => ['index'],
  *             'lastModified' => function ($action, $params) {
  *                 $q = new \yii\db\Query();
@@ -139,13 +139,13 @@ class HttpCache extends ActionFilter
 
         $response = Yii::$app->getResponse();
         if ($etag !== null) {
-            $response->getHeaders()->set('Etag', $etag);
+            $response->setHeader('Etag', $etag);
         }
 
         $cacheValid = $this->validateCache($lastModified, $etag);
         // https://tools.ietf.org/html/rfc7232#section-4.1
         if ($lastModified !== null && (!$cacheValid || ($cacheValid && $etag === null))) {
-            $response->getHeaders()->set('Last-Modified', gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
+            $response->setHeader('Last-Modified', gmdate('D, d M Y H:i:s', $lastModified) . ' GMT');
         }
         if ($cacheValid) {
             $response->setStatusCode(304);
@@ -165,19 +165,20 @@ class HttpCache extends ActionFilter
      */
     protected function validateCache($lastModified, $etag)
     {
-        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-            // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
+        $request = Yii::$app->getRequest();
+        if ($request->hasHeader('if-none-match')) {
+            // 'if-none-match' takes precedence over 'if-modified-since'
             // http://tools.ietf.org/html/rfc7232#section-3.3
             return $etag !== null && in_array($etag, Yii::$app->request->getETags(), true);
-        } elseif (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
-            return $lastModified !== null && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified;
-        } else {
-            return false;
+        } elseif ($request->hasHeader('if-modified-since')) {
+            return $lastModified !== null && @strtotime($request->getHeaderLine('if-modified-since')) >= $lastModified;
         }
+
+        return false;
     }
 
     /**
-     * Sends the cache control header to the client
+     * Sends the cache control header to the client.
      * @see cacheControlHeader
      */
     protected function sendCacheControlHeader()
@@ -189,13 +190,12 @@ class HttpCache extends ActionFilter
                 header_remove('Last-Modified');
                 header_remove('Pragma');
             }
-            session_cache_limiter($this->sessionCacheLimiter);
+
+            Yii::$app->getSession()->setCacheLimiter($this->sessionCacheLimiter);
         }
 
-        $headers = Yii::$app->getResponse()->getHeaders();
-
         if ($this->cacheControlHeader !== null) {
-            $headers->set('Cache-Control', $this->cacheControlHeader);
+            Yii::$app->getResponse()->setHeader('Cache-Control', $this->cacheControlHeader);
         }
     }
 
@@ -206,7 +206,7 @@ class HttpCache extends ActionFilter
      */
     protected function generateEtag($seed)
     {
-        $etag =  '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
+        $etag = '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
         return $this->weakEtag ? 'W/' . $etag : $etag;
     }
 }

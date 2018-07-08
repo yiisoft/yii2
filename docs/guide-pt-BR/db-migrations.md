@@ -109,7 +109,7 @@ class m150101_185401_criar_tabela_noticias extends \yii\db\Migration
   Neste caso, você deve retornar `false` no método `down()` para indicar que a migração não é reversível.
 
 A classe base [[yii\db\Migration]] expõe a conexão ao banco através da propriedade [[yii\db\Migration::db|db]].
-Você pode usá-la para manipular o esquema do banco de dados usando os métodos como descritos em [Trabalhando com um Esquema de Banco de Dados](db-dao.md#working-with-database-schema-).
+Você pode usá-la para manipular o esquema do banco de dados usando os métodos como descritos em [Trabalhando com um Esquema de Banco de Dados](db-dao.md#database-schema).
 
 Ao invés de usar tipos físicos, ao criar uma tabela ou coluna, você deve usar *tipos abstratos* para que
 suas migrações sejam independentes do SGBD. A classe [[yii\db\Schema]] define uma gama de constantes para

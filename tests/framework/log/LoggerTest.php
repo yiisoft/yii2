@@ -1,11 +1,15 @@
 <?php
 /**
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\log;
 
+use Psr\Log\LogLevel;
 use yii\log\Logger;
+use yii\log\Target;
 use yiiunit\TestCase;
 
 /**
@@ -14,217 +18,107 @@ use yiiunit\TestCase;
 class LoggerTest extends TestCase
 {
     /**
-     * @var Logger
+     * @var Logger|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $logger;
 
-    /**
-     * @var Dispatcher
-     */
-    protected $dispatcher;
-
     protected function setUp()
     {
-        $this->logger = new Logger();
-        $this->dispatcher = $this->getMock('yii\\log\\Dispatcher', ['dispatch']);
+        $this->logger = $this->getMockBuilder('yii\log\Logger')
+            ->setMethods(['dispatch'])
+            ->getMock();
     }
 
     /**
-     * @covers yii\log\Logger::Log()
+     * @covers \yii\log\Logger::Log()
      */
     public function testLog()
     {
-        $this->logger->log('test1', Logger::LEVEL_INFO);
-        $this->assertEquals(1, count($this->logger->messages));
-        $this->assertEquals('test1', $this->logger->messages[0][0]);
-        $this->assertEquals(Logger::LEVEL_INFO, $this->logger->messages[0][1]);
-        $this->assertEquals('application', $this->logger->messages[0][2]);
-        $this->assertEquals([], $this->logger->messages[0][4]);
+        $memory = memory_get_usage();
+        $this->logger->log(LogLevel::INFO, 'test1');
+        $this->assertCount(1, $this->logger->messages);
+        $this->assertEquals(LogLevel::INFO, $this->logger->messages[0][0]);
+        $this->assertEquals('test1', $this->logger->messages[0][1]);
+        $this->assertEquals('application', $this->logger->messages[0][2]['category']);
+        $this->assertEquals([], $this->logger->messages[0][2]['trace']);
+        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[0][2]['memory']);
 
-        $this->logger->log('test2', Logger::LEVEL_ERROR, 'category');
-        $this->assertEquals(2, count($this->logger->messages));
-        $this->assertEquals('test2', $this->logger->messages[1][0]);
-        $this->assertEquals(Logger::LEVEL_ERROR, $this->logger->messages[1][1]);
-        $this->assertEquals('category', $this->logger->messages[1][2]);
-        $this->assertEquals([], $this->logger->messages[1][4]);
+        $this->logger->log(LogLevel::ERROR, 'test2', ['category' => 'category']);
+        $this->assertCount(2, $this->logger->messages);
+        $this->assertEquals(LogLevel::ERROR, $this->logger->messages[1][0]);
+        $this->assertEquals('test2', $this->logger->messages[1][1]);
+        $this->assertEquals('category', $this->logger->messages[1][2]['category']);
+        $this->assertEquals([], $this->logger->messages[1][2]['trace']);
+        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[1][2]['memory']);
     }
 
     /**
-     * @covers yii\log\Logger::Log()
+     * @covers \yii\log\Logger::Log()
      */
     public function testLogWithTraceLevel()
     {
+        $memory = memory_get_usage();
         $this->logger->traceLevel = 3;
-        $this->logger->log('test3', Logger::LEVEL_INFO);
-        $this->assertEquals(1, count($this->logger->messages));
-        $this->assertEquals('test3', $this->logger->messages[0][0]);
-        $this->assertEquals(Logger::LEVEL_INFO, $this->logger->messages[0][1]);
-        $this->assertEquals('application', $this->logger->messages[0][2]);
+        $this->logger->log(LogLevel::INFO, 'test3');
+        $this->assertCount(1, $this->logger->messages);
+        $this->assertEquals(LogLevel::INFO, $this->logger->messages[0][0]);
+        $this->assertEquals('test3', $this->logger->messages[0][1]);
+        $this->assertEquals('application', $this->logger->messages[0][2]['category']);
         $this->assertEquals([
             'file' => __FILE__,
-            'line' => 58,
+            'line' => 62,
             'function' => 'log',
-            'class' => get_class($this->logger),
-            'type' => '->'
-        ], $this->logger->messages[0][4][0]);
-        $this->assertEquals(3, count($this->logger->messages[0][4]));
+            'class' => Logger::class,
+            'type' => '->',
+        ], $this->logger->messages[0][2]['trace'][0]);
+        $this->assertCount(3, $this->logger->messages[0][2]['trace']);
+        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[0][2]['memory']);
     }
 
     /**
-     * @covers yii\log\Logger::Log()
+     * @covers \yii\log\Logger::Log()
      */
     public function testLogWithFlush()
     {
-        $logger = $this->getMock('yii\\log\\Logger', ['flush']);
+        /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
+        $logger = $this->getMockBuilder(Logger::class)
+            ->setMethods(['flush'])
+            ->getMock();
         $logger->flushInterval = 1;
         $logger->expects($this->exactly(1))->method('flush');
-        $logger->log('test1', Logger::LEVEL_INFO);
+        $logger->log(LogLevel::INFO, 'test1');
     }
 
     /**
-     * @covers yii\log\Logger::Flush()
+     * @covers \yii\log\Logger::Flush()
      */
-    public function testFlushWithoutDispatcher()
-    {
-        $dispatcher = $this->getMock('\stdClass');
-        $dispatcher->expects($this->never())->method($this->anything());
-
-        $this->logger->messages = ['anything'];
-        $this->logger->dispatcher = $dispatcher;
-        $this->logger->flush();
-        $this->assertEmpty($this->logger->messages);
-    }
-
-    /**
-     * @covers yii\log\Logger::Flush()
-     */
-    public function testFlushWithDispatcherAndDefaultParam()
+    public function testFlushWithDispatch()
     {
         $message = ['anything'];
-        $this->dispatcher->expects($this->once())
+        $this->logger->expects($this->once())
             ->method('dispatch')->with($this->equalTo($message), $this->equalTo(false));
 
         $this->logger->messages = $message;
-        $this->logger->dispatcher = $this->dispatcher;
         $this->logger->flush();
         $this->assertEmpty($this->logger->messages);
     }
 
     /**
-     * @covers yii\log\Logger::Flush()
+     * @covers \yii\log\Logger::Flush()
      */
-    public function testFlushWithDispatcherAndDefinedParam()
+    public function testFlushWithDispatchAndDefinedParam()
     {
         $message = ['anything'];
-        $this->dispatcher->expects($this->once())
+        $this->logger->expects($this->once())
             ->method('dispatch')->with($this->equalTo($message), $this->equalTo(true));
 
         $this->logger->messages = $message;
-        $this->logger->dispatcher = $this->dispatcher;
         $this->logger->flush(true);
         $this->assertEmpty($this->logger->messages);
     }
 
     /**
-     * @covers yii\log\Logger::getDbProfiling()
-     */
-    public function testGetDbProfiling()
-    {
-        $timings = [
-            ['duration' => 5],
-            ['duration' => 15],
-            ['duration' => 30],
-        ];
-
-        $logger = $this->getMock('yii\\log\\Logger', ['getProfiling']);
-        $logger->method('getProfiling')->willReturn($timings);
-        $logger->expects($this->once())
-            ->method('getProfiling')
-            ->with($this->equalTo(['yii\db\Command::query', 'yii\db\Command::execute']));
-        $this->assertEquals([3, 50], $logger->getDbProfiling());
-    }
-
-    /**
-     * @covers yii\log\Logger::calculateTimings()
-     */
-    public function testCalculateTimingsWithEmptyMessages()
-    {
-        $this->assertEmpty($this->logger->calculateTimings([]));
-    }
-
-    /**
-     * @covers yii\log\Logger::calculateTimings()
-     */
-    public function testCalculateTimingsWithProfileNotBeginOrEnd()
-    {
-        $messages = [
-            ['message0', Logger::LEVEL_ERROR, 'category', 'time', 'trace'],
-            ['message1', Logger::LEVEL_INFO, 'category', 'time', 'trace'],
-            ['message2', Logger::LEVEL_PROFILE, 'category', 'time', 'trace'],
-            ['message3', Logger::LEVEL_TRACE, 'category', 'time', 'trace'],
-            ['message4', Logger::LEVEL_WARNING, 'category', 'time', 'trace'],
-        ];
-        $this->assertEmpty($this->logger->calculateTimings($messages));
-    }
-
-    /**
-     * @covers yii\log\Logger::calculateTimings()
-     */
-    public function testCalculateTimingsWithProfileBeginEnd()
-    {
-        $messages = [
-            'anyKey' => ['token', Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace'],
-            'anyKey2' => ['token', Logger::LEVEL_PROFILE_END, 'category', 15, 'trace'],
-        ];
-        $this->assertEquals([
-            [
-                'info' => 'token',
-                'category' => 'category',
-                'timestamp' => 10,
-                'trace' => 'trace',
-                'level' => 0,
-                'duration' => 5,
-            ]
-        ],
-            $this->logger->calculateTimings($messages)
-        );
-    }
-
-    /**
-     * @covers yii\log\Logger::calculateTimings()
-     */
-    public function testCalculateTimingsWithProfileBeginEndAndNestedLevels()
-    {
-        $messages = [
-            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace'],
-            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace'],
-            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace'],
-            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace'],
-        ];
-        $this->assertEquals([
-            [
-                'info' => 'firstLevel',
-                'category' => 'firstLevelCategory',
-                'timestamp' => 10,
-                'trace' => 'firstTrace',
-                'level' => 0,
-                'duration' => 70,
-            ],
-            [
-                'info' => 'secondLevel',
-                'category' => 'secondLevelCategory',
-                'timestamp' => 15,
-                'trace' => 'secondTrace',
-                'level' => 1,
-                'duration' => 40,
-            ]
-        ],
-            $this->logger->calculateTimings($messages)
-        );
-    }
-
-    /**
-     * @covers yii\log\Logger::getElapsedTime()
+     * @covers \yii\log\Logger::getElapsedTime()
      */
     public function testGetElapsedTime()
     {
@@ -239,159 +133,109 @@ class LoggerTest extends TestCase
     }
 
     /**
-     * @covers yii\log\Logger::getLevelName()
+     * @covers \yii\log\Logger::getLevelName()
      */
     public function testGetLevelName()
     {
-        $this->assertEquals('info', Logger::getLevelName(Logger::LEVEL_INFO));
-        $this->assertEquals('error', Logger::getLevelName(Logger::LEVEL_ERROR));
-        $this->assertEquals('warning', Logger::getLevelName(Logger::LEVEL_WARNING));
-        $this->assertEquals('trace', Logger::getLevelName(Logger::LEVEL_TRACE));
-        $this->assertEquals('profile', Logger::getLevelName(Logger::LEVEL_PROFILE));
-        $this->assertEquals('profile begin', Logger::getLevelName(Logger::LEVEL_PROFILE_BEGIN));
-        $this->assertEquals('profile end', Logger::getLevelName(Logger::LEVEL_PROFILE_END));
+        $this->assertEquals('info', Logger::getLevelName(LogLevel::INFO));
+        $this->assertEquals('error', Logger::getLevelName(LogLevel::ERROR));
+        $this->assertEquals('warning', Logger::getLevelName(LogLevel::WARNING));
+        $this->assertEquals('debug', Logger::getLevelName(LogLevel::DEBUG));
+        $this->assertEquals('emergency', Logger::getLevelName(LogLevel::EMERGENCY));
+        $this->assertEquals('alert', Logger::getLevelName(LogLevel::ALERT));
+        $this->assertEquals('critical', Logger::getLevelName(LogLevel::CRITICAL));
         $this->assertEquals('unknown', Logger::getLevelName(0));
     }
 
     /**
-     * @covers yii\log\Logger::getProfiling()
+     * @covers \yii\log\Logger::setTargets()
+     * @covers \yii\log\Logger::getTargets()
      */
-    public function testGetProfilingWithEmptyCategoriesAndExcludeCategories()
+    public function testSetupTarget()
     {
-        $messages = ['anyData'];
-        $returnValue = 'return value';
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
+        $logger = new Logger();
 
-        $logger->messages = $messages;
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($this->equalTo($messages));
-        $this->assertEquals($returnValue, $logger->getProfiling());
-    }
+        $target = $this->getMockBuilder(Target::class)->getMockForAbstractClass();
+        $logger->setTargets([$target]);
 
-    /**
-     * @covers yii\log\Logger::getProfiling()
-     */
-    public function testGetProfilingWithNotEmptyCategoriesAndNotMatched()
-    {
-        $messages = ['anyData'];
-        $returnValue = [
+        $this->assertEquals([$target], $logger->getTargets());
+        $this->assertSame($target, $logger->getTargets()[0]);
+
+        $logger->setTargets([
             [
-                'info' => 'token',
-                'category' => 'category',
-                'timestamp' => 10,
-                'trace' => 'trace',
-                'level' => 0,
-                'duration' => 5,
-            ]
-        ];
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
-
-        $logger->messages = $messages;
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($this->equalTo($messages));
-        $this->assertEquals([], $logger->getProfiling(['not-matched-category']));
+                'class' => get_class($target),
+            ],
+        ]);
+        $this->assertNotSame($target, $logger->getTargets()[0]);
+        $this->assertEquals(get_class($target), get_class($logger->getTargets()[0]));
     }
 
     /**
-     * @covers yii\log\Logger::getProfiling()
+     * @depends testSetupTarget
+     *
+     * @covers \yii\log\Logger::addTarget()
      */
-    public function testGetProfilingWithNotEmptyCategoriesAndMatched()
+    public function testAddTarget()
     {
-        $messages = ['anyData'];
-        $matchedByCategoryName = [
-            'info' => 'token',
-            'category' => 'category',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
-        $secondCategory = [
-            'info' => 'secondToken',
-            'category' => 'category2',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
-        $returnValue = [
-            'anyKey' => $matchedByCategoryName,
-            $secondCategory
-        ];
-        /**
-         * Matched by category name
-         */
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
+        $logger = new Logger();
 
-        $logger->messages = $messages;
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($this->equalTo($messages));
-        $this->assertEquals([$matchedByCategoryName], $logger->getProfiling(['category']));
+        $target = $this->getMockBuilder(Target::class)->getMockForAbstractClass();
+        $logger->setTargets([$target]);
 
-        /**
-         * Matched by prefix
-         */
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
+        $namedTarget = $this->getMockBuilder(Target::class)->getMockForAbstractClass();
+        $logger->addTarget($namedTarget, 'test-target');
 
-        $logger->messages = $messages;
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($this->equalTo($messages));
-        $this->assertEquals([$matchedByCategoryName, $secondCategory], $logger->getProfiling(['category*']));
+        $targets = $logger->getTargets();
+        $this->assertCount(2, $targets);
+        $this->assertTrue(isset($targets['test-target']));
+        $this->assertSame($namedTarget, $targets['test-target']);
+
+        $namelessTarget = $this->getMockBuilder(Target::class)->getMockForAbstractClass();
+        $logger->addTarget($namelessTarget);
+        $targets = $logger->getTargets();
+        $this->assertCount(3, $targets);
+        $this->assertSame($namelessTarget, array_pop($targets));
     }
 
     /**
-     * @covers yii\log\Logger::getProfiling()
+     * Data provider for [[testParseMessage()]]
+     * @return array test data.
      */
-    public function testGetProfilingWithNotEmptyCategoriesMatchedAndExcludeCategories()
+    public function dataProviderParseMessage()
     {
-        $messages = ['anyData'];
-        $fistCategory = [
-            'info' => 'fistToken',
-            'category' => 'cat',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
-        $secondCategory = [
-            'info' => 'secondToken',
-            'category' => 'category2',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
-        $returnValue = [
-            $fistCategory,
-            $secondCategory,
+        return [
             [
-                'info' => 'anotherToken',
-                'category' => 'category3',
-                'timestamp' => 10,
-                'trace' => 'trace',
-                'level' => 0,
-                'duration' => 5,
-            ]
+                'no placeholder',
+                ['foo' => 'some'],
+                'no placeholder',
+            ],
+            [
+                'has {foo} placeholder',
+                ['foo' => 'some'],
+                'has some placeholder',
+            ],
+            [
+                'has {foo} placeholder',
+                [],
+                'has {foo} placeholder',
+            ],
         ];
+    }
 
-        /**
-         * Exclude by category name
-         */
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
-
-        $logger->messages = $messages;
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($this->equalTo($messages));
-        $this->assertEquals([$fistCategory, $secondCategory], $logger->getProfiling(['cat*'], ['category3']));
-
-        /**
-         * Exclude by category prefix
-         */
-        $logger = $this->getMock('yii\\log\\Logger', ['calculateTimings']);
-
-        $logger->messages = $messages;
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($this->equalTo($messages));
-        $this->assertEquals([$fistCategory], $logger->getProfiling(['cat*'], ['category*']));
+    /**
+     * @depends testLog
+     * @dataProvider dataProviderParseMessage
+     *
+     * @covers \yii\log\Logger::parseMessage()
+     *
+     * @param $message
+     * @param array $context
+     * @param $expected
+     */
+    public function testParseMessage($message, array $context, $expected)
+    {
+        $this->logger->log(LogLevel::INFO, $message, $context);
+        [$level, $message, $context] = $this->logger->messages[0];
+        $this->assertEquals($expected, $message);
     }
 }

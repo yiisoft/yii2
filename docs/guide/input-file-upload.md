@@ -1,7 +1,7 @@
 Uploading Files
 ===============
 
-Uploading files in Yii is usually done with the help of [[yii\web\UploadedFile]] which encapsulates each uploaded
+Uploading files in Yii is usually done with the help of [[yii\http\UploadedFile]] which encapsulates each uploaded
 file as an `UploadedFile` object. Combined with [[yii\widgets\ActiveForm]] and [models](structure-models.md),
 you can easily implement a secure file uploading mechanism.
 
@@ -16,7 +16,7 @@ For example,
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -77,7 +77,7 @@ use yii\widgets\ActiveForm;
 It is important to remember that you add the `enctype` option to the form so that the file can be properly uploaded.
 The `fileInput()` call will render a `<input type="file">` tag which will allow users to select a file to upload.
 
-> Tip: since version 2.0.8, [[yii\web\widgets\ActiveField::fileInput|fileInput]] adds `enctype` option to the form
+> Tip: since version 2.0.8, [[yii\widgets\ActiveField::fileInput|fileInput]] adds `enctype` option to the form
   automatically when file input field is used.
 
 ## Wiring Up <span id="wiring-up"></span>
@@ -90,7 +90,7 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -99,7 +99,7 @@ class SiteController extends Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-            $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+            $model->load(Yii::$app->request->getUploadedFiles()); // populates `UploadForm::$imageFile` from `UploadForm[imageFile]`
             if ($model->upload()) {
                 // file is uploaded successfully
                 return;
@@ -111,9 +111,10 @@ class SiteController extends Controller
 }
 ```
 
-In the above code, when the form is submitted, the [[yii\web\UploadedFile::getInstance()]] method is called
-to represent the uploaded file as an `UploadedFile` instance. We then rely on the model validation to make sure
-the uploaded file is valid and save the file on the server.
+In the above code, when the form is submitted, the [[yii\base\Model::load()]] method is called upon result
+of [[yii\web\Request::getUploadedFiles()]], which contains `UploadedFile` instances in the array structured
+as regular POST data. We then rely on the model validation to make sure the uploaded file is valid and save
+the file on the server.
 
 
 ## Uploading Multiple Files <span id="uploading-multiple-files"></span>
@@ -130,7 +131,7 @@ which defaults to 20. The `upload()` method should also be updated to save the u
 namespace app\models;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 class UploadForm extends Model
 {
@@ -186,7 +187,6 @@ namespace app\controllers;
 use Yii;
 use yii\web\Controller;
 use app\models\UploadForm;
-use yii\web\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -195,7 +195,7 @@ class SiteController extends Controller
         $model = new UploadForm();
 
         if (Yii::$app->request->isPost) {
-            $model->imageFiles = UploadedFile::getInstances($model, 'imageFiles');
+            $model->load(Yii::$app->request->getUploadedFiles()); // populates `UploadForm::$imageFiles` from `UploadForm[imageFiles][]`
             if ($model->upload()) {
                 // file is uploaded successfully
                 return;
@@ -203,6 +203,37 @@ class SiteController extends Controller
         }
 
         return $this->render('upload', ['model' => $model]);
+    }
+}
+```
+
+Uploaded files are also present inside result of [[yii\web\Request::getBodyParams()]]. Thus in case your model need to
+handle both regular inputs and uploaded files, you can use this method for the attributes population. For example:
+in case you have a form, which allows user to update his profile information, it may contain text inputs, like 'email',
+'bio' and so on, and file input for user avatar image upload. In such case controller code may look like following:
+
+```php
+namespace app\controllers;
+
+use Yii;
+use yii\web\Controller;
+use app\models\UserProfileForm;
+
+class UserController extends Controller
+{
+    public function actionUpload()
+    {
+        $model = new UserProfileForm();
+
+        if (Yii::$app->request->isPost) {
+            $model->load(Yii::$app->request->getBodyParams()); // populates both regular inputs (e.g. 'email') and uploaded files (e.g. 'avatarImage')
+            if ($model->save()) {
+                // success
+                return;
+            }
+        }
+
+        return $this->render('profile', ['model' => $model]);
     }
 }
 ```

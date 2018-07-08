@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db;
 
@@ -11,7 +16,7 @@ use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Profile;
 
 /**
- * Class ActiveQueryTest the base class for testing ActiveQuery
+ * Class ActiveQueryTest the base class for testing ActiveQuery.
  */
 abstract class ActiveQueryTest extends DatabaseTestCase
 {
@@ -37,7 +42,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     {
         $where = '1==1';
         $callback = function (\yii\base\Event $event) use ($where) {
-            $event->sender->where = $where;
+            $event->target->where = $where;
         };
         Event::on(ActiveQuery::class, ActiveQuery::EVENT_INIT, $callback);
         $result = new ActiveQuery(Customer::class);
@@ -113,20 +118,38 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $query = new ActiveQuery(Customer::class);
         $result = $query->joinWith('profile');
         $this->assertEquals([
-            [['profile'], true, 'LEFT JOIN']
+            [['profile'], true, 'LEFT JOIN'],
         ], $result->joinWith);
     }
 
     /**
-     * @todo: tests for internal logic of joinWith()
+     * @todo: tests for internal logic of innerJoinWith()
      */
     public function testInnerJoinWith()
     {
         $query = new ActiveQuery(Customer::class);
         $result = $query->innerJoinWith('profile');
         $this->assertEquals([
-            [['profile'], true, 'INNER JOIN']
+            [['profile'], true, 'INNER JOIN'],
         ], $result->joinWith);
+    }
+
+    /**
+     * @todo: tests for the regex inside getQueryTableName
+     */
+    public function testGetQueryTableName_from_not_set()
+    {
+        $query = new ActiveQuery(Customer::class);
+        $result = $this->invokeMethod($query, 'getTableNameAndAlias');
+        $this->assertEquals(['customer', 'customer'], $result);
+    }
+
+    public function testGetQueryTableName_from_set()
+    {
+        $options = ['from' => ['alias' => 'customer']];
+        $query = new ActiveQuery(Customer::class, $options);
+        $result = $this->invokeMethod($query, 'getTableNameAndAlias');
+        $this->assertEquals(['customer', 'alias'], $result);
     }
 
     public function testOnCondition()
@@ -139,7 +162,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testAndOnCondition_OnIsNull()
+    public function testAndOnCondition_on_not_set()
     {
         $query = new ActiveQuery(Customer::class);
         $on = ['active' => true];
@@ -149,7 +172,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testAndOnCondition_OnIsNotNull()
+    public function testAndOnCondition_on_set()
     {
         $onOld = ['active' => true];
         $query = new ActiveQuery(Customer::class);
@@ -162,7 +185,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testOrOnCondition_OnIsNull()
+    public function testOrOnCondition_on_not_set()
     {
         $query = new ActiveQuery(Customer::class);
         $on = ['active' => true];
@@ -172,7 +195,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testOrOnCondition_OnIsNotNull()
+    public function testOrOnCondition_on_set()
     {
         $onOld = ['active' => true];
         $query = new ActiveQuery(Customer::class);
@@ -212,5 +235,30 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $result = $query->alias('alias');
         $this->assertInstanceOf('yii\db\ActiveQuery', $result);
         $this->assertEquals(['alias' => 'old'], $result->from);
+    }
+
+    use GetTablesAliasTestTrait;
+    protected function createQuery()
+    {
+        return new ActiveQuery(null);
+    }
+
+    public function testGetTableNames_notFilledFrom()
+    {
+        $query = new ActiveQuery(Profile::class);
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals([
+            '{{' . Profile::tableName() . '}}' => '{{' . Profile::tableName() . '}}',
+        ], $tables);
+    }
+
+    public function testGetTableNames_wontFillFrom()
+    {
+        $query = new ActiveQuery(Profile::class);
+        $this->assertEquals($query->from, null);
+        $query->getTablesUsedInFrom();
+        $this->assertEquals($query->from, null);
     }
 }

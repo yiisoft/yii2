@@ -11,7 +11,7 @@ In the following, a configuration is used to create and initialize a database co
 
 ```php
 $config = [
-    'class' => 'yii\db\Connection',
+    '__class' => yii\db\Connection::class,
     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
     'username' => 'root',
     'password' => '',
@@ -41,7 +41,7 @@ The format of a configuration can be formally described as:
 
 ```php
 [
-    'class' => 'ClassName',
+    '__class' => 'ClassName',
     'propertyName' => 'propertyValue',
     'on eventName' => $eventHandler,
     'as behaviorName' => $behaviorConfig,
@@ -67,13 +67,13 @@ Below is an example showing a configuration with initial property values, event 
 
 ```php
 [
-    'class' => \app\components\SearchEngine::class,
+    '__class' => \app\components\SearchEngine::class,
     'apiKey' => 'xxxxxxxx',
     'on search' => function ($event) {
         Yii::info("Keyword searched: " . $event->keyword);
     },
     'as indexer' => [
-        'class' => 'app\components\IndexerBehavior',
+        '__class' => \app\components\IndexerBehavior::class,
         // ... property init values ...
     ],
 ]
@@ -99,25 +99,16 @@ configuration file for the [Basic Project Template](start-installation.md).
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'components' => [
         'cache' => [
-            'class' => \yii\caching\FileCache::class,
+            '__class' => \yii\caching\FileCache::class,
         ],
         'mailer' => [
-            'class' => \yii\swiftmailer\Mailer::class,
-        ],
-        'log' => [
-            'class' => \yii\log\Dispatcher::class,
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => \yii\log\FileTarget::class,
-                ],
-            ],
+            '__class' => \yii\swiftmailer\Mailer::class,
         ],
         'db' => [
-            'class' => \yii\db\Connection::class,
+            '__class' => \yii\db\Connection::class,
             'dsn' => 'mysql:host=localhost;dbname=stay2',
             'username' => 'root',
             'password' => '',
@@ -137,6 +128,28 @@ an [entry script](structure-entry-scripts.md), where the class name is already g
 More details about configuring the `components` property of an application can be found
 in the [Applications](structure-applications.md) section and the [Service Locator](concept-service-locator.md) section.
 
+Since version 2.0.11, the application configuration supports [Dependency Injection Container](concept-di-container.md)
+configuration using `container` property. For example:
+
+```php
+$config = [
+    'id' => 'basic',
+    'basePath' => dirname(__DIR__),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'container' => [
+        'definitions' => [
+            'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
+        ],
+        'singletons' => [
+            // Dependency Injection Container singletons configuration
+        ]
+    ]
+];
+```
+
+To know more about the possible values of `definitions` and `singletons` configuration arrays and real-life examples,
+please read [Advanced Practical Usage](concept-di-container.md#advanced-practical-usage) subsection of the
+[Dependency Injection Container](concept-di-container.md) article.
 
 ### Widget Configurations <span id="widget-configurations"></span>
 
@@ -173,8 +186,8 @@ For example, you may keep an application configuration in a file named `web.php`
 return [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
-    'components' => require(__DIR__ . '/components.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'components' => require __DIR__ . '/components.php',
 ];
 ```
 
@@ -184,22 +197,13 @@ and "require" this file in `web.php` as shown above. The content of `components.
 ```php
 return [
     'cache' => [
-        'class' => \yii\caching\FileCache::class,
+        '__class' => \yii\caching\FileCache::class,
     ],
     'mailer' => [
-        'class' => yii\swiftmailer\Mailer::class,
-    ],
-    'log' => [
-        'class' => \yii\log\Dispatcher::class,
-        'traceLevel' => YII_DEBUG ? 3 : 0,
-        'targets' => [
-            [
-                'class' => \yii\log\FileTarget::class,
-            ],
-        ],
+        '__class' => yii\swiftmailer\Mailer::class,
     ],
     'db' => [
-        'class' => \yii\db\Connection::class,
+        '__class' => \yii\db\Connection::class,
         'dsn' => 'mysql:host=localhost;dbname=stay2',
         'username' => 'root',
         'password' => '',
@@ -211,7 +215,7 @@ return [
 To get a configuration stored in a configuration file, simply "require" it, like the following:
 
 ```php
-$config = require('path/to/web.php');
+$config = require 'path/to/web.php';
 (new yii\web\Application($config))->run();
 ```
 

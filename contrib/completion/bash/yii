@@ -1,0 +1,60 @@
+# This file implements bash completion for the ./yii command file.
+# It completes the commands available by the ./yii command.
+# See also:
+# - https://debian-administration.org/article/317/An_introduction_to_bash_completion_part_2 on how this works.
+# - https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html
+# - http://www.yiiframework.com/doc-2.0/guide-tutorial-console.html#bash-completion
+#
+# Usage:
+# Temporarily you can source this file in you bash by typing: source yii
+# For permanent availability, copy or link this file to /etc/bash_completion.d/
+#
+
+_yii()
+{
+    local cur opts yii command
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    yii="${COMP_WORDS[0]}"
+
+    # exit if ./yii does not exist
+    test -f $yii || return 0
+
+    # lookup for command
+    for word in ${COMP_WORDS[@]:1}; do
+        if [[ $word != -* ]]; then
+            command=$word
+            break
+        fi
+    done
+
+    [[ $cur == $command ]] && state="command"
+    [[ $cur != $command ]] && state="option"
+    [[ $cur = *=* ]] && state="value"
+    [[ $prev == "help" ]] && state="help"
+
+    case $state in
+        command|help)
+            # complete command/route if not given
+            # fetch available commands from ./yii help/list command
+            opts=$($yii help/list 2> /dev/null)
+        ;;
+        option)
+            # fetch available options from ./yii help/list-action-options command
+            opts=$($yii help/list-action-options $command 2> /dev/null | grep -o '^--[a-zA-Z0-9\-]*')
+        ;;
+        value)
+            # TODO allow normal file completion after an option, e.g. --migrationPath=...
+        ;;
+    esac
+
+    # generate completion suggestions
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    return 0
+
+}
+
+# register completion for the ./yii command
+# you may adjust this line if your command file is named differently
+complete -F _yii ./yii yii

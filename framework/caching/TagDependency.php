@@ -37,7 +37,7 @@ class TagDependency extends Dependency
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method does nothing in this class.
-     * @param Cache $cache the cache component that is currently evaluating this dependency
+     * @param CacheInterface $cache the cache component that is currently evaluating this dependency
      * @return mixed the data needed to determine if dependency has been changed.
      */
     protected function generateDependencyData($cache)
@@ -58,7 +58,7 @@ class TagDependency extends Dependency
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function isChanged($cache)
     {
@@ -68,21 +68,21 @@ class TagDependency extends Dependency
 
     /**
      * Invalidates all of the cached data items that are associated with any of the specified [[tags]].
-     * @param Cache $cache the cache component that caches the data items
+     * @param \Psr\SimpleCache\CacheInterface $cache the cache component that caches the data items
      * @param string|array $tags
      */
     public static function invalidate($cache, $tags)
     {
         $keys = [];
         foreach ((array) $tags as $tag) {
-            $keys[] = $cache->buildKey([__CLASS__, $tag]);
+            $keys[] = static::buildCacheKey($tag);
         }
         static::touchKeys($cache, $keys);
     }
 
     /**
      * Generates the timestamp for the specified cache keys.
-     * @param Cache $cache
+     * @param \Psr\SimpleCache\CacheInterface $cache
      * @param string[] $keys
      * @return array the timestamp indexed by cache keys
      */
@@ -93,13 +93,13 @@ class TagDependency extends Dependency
         foreach ($keys as $key) {
             $items[$key] = $time;
         }
-        $cache->multiSet($items);
+        $cache->setMultiple($items);
         return $items;
     }
 
     /**
      * Returns the timestamps for the specified tags.
-     * @param Cache $cache
+     * @param \Psr\SimpleCache\CacheInterface $cache
      * @param string[] $tags
      * @return array the timestamps indexed by the specified tags.
      */
@@ -111,9 +111,21 @@ class TagDependency extends Dependency
 
         $keys = [];
         foreach ($tags as $tag) {
-            $keys[] = $cache->buildKey([__CLASS__, $tag]);
+            $keys[] = static::buildCacheKey($tag);
         }
 
-        return $cache->multiGet($keys);
+        return $cache->getMultiple($keys);
+    }
+
+    /**
+     * Builds a normalized cache key from a given tag, making sure it is short enough and safe
+     * for any particular cache storage.
+     * @param string $tag tag name.
+     * @return string cache key.
+     * @since 3.0.0
+     */
+    protected static function buildCacheKey($tag)
+    {
+        return md5(json_encode([__CLASS__, $tag]));
     }
 }

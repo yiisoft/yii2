@@ -69,10 +69,10 @@ yii migrate/up 5 --migrationTable=migrations
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
-require(__DIR__ . '/vendor/autoload.php');
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -143,7 +143,7 @@ class HelloController extends Controller
 {
     public $message;
     
-    public function options()
+    public function options($actionID)
     {
         return ['message'];
     }
@@ -219,8 +219,8 @@ public function actionIndex()
 
 Є декілька попередньо визначених констант, які ви можете використовувати:
 
-- `Controller::EXIT_CODE_NORMAL` зі значенням `0`;
-- `Controller::EXIT_CODE_ERROR` зі значенням `1`.
+- [[yii\console\ExitCode::OK]] зі значенням `0`;
+- [[yii\console\ExitCode::UNSPECIFIED_ERROR]] зі значенням `1`.
 
 Хорошою практикою є визначення значущих констант для вашого контролера у випадку, якщо ви маєте більше типів помилок.
 

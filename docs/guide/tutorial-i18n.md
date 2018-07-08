@@ -9,24 +9,33 @@ translation, view translation, date and number formatting.
 
 ## Locale and Language <span id="locale-language"></span>
 
+### Locale
+
 Locale is a set of parameters that defines the user's language, country and any special variant preferences
 that the user wants to see in their user interface. It is usually identified by an ID consisting of a language
-ID and a region ID. For example, the ID `en-US` stands for the locale of English and United States.
-For consistency, all locale IDs used in Yii applications should be canonicalized to the format of
+ID and a region ID. 
+
+For example, the ID `en-US` stands for the locale of "English and the United States".
+
+For consistency reasons, all locale IDs used in Yii applications should be canonicalized to the format of
 `ll-CC`, where `ll` is a two- or three-letter lowercase language code according to
 [ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
-[ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
+[ISO-3166](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes).
 More details about locale can be found in the
 [documentation of the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
 
+### Language
+
 In Yii, we often use the term "language" to refer to a locale.
 
-A Yii application uses two kinds of languages: [[yii\base\Application::$sourceLanguage|source language]] and
-[[yii\base\Application::$language|target language]]. The former refers to the language in which the text messages
-in the source code are written, while the latter is the language that should be used to display content to end users.
+A Yii application uses two kinds of languages: 
+* [[yii\base\Application::$sourceLanguage|source language]]: This refers to the language in which the text messages in the source code are written.
+* [[yii\base\Application::$language|target language]]: This is the language that should be used to display content to end users.
+
 The so-called message translation service mainly translates a text message from source language to target language.
 
-You can configure application languages in the application configuration like the following:
+### Configuration
+You can configure application languages in the "application configuration" like the following:
 
 ```php
 return [
@@ -41,8 +50,8 @@ return [
 ```
 
 The default value for the [[yii\base\Application::$sourceLanguage|source language]] is `en-US`, meaning
-US English. It is recommended that you keep this default value unchanged, because it is usually much easier
-to find people who can translate from English to other languages than from non-English to non-English.
+US English. It is **recommended** that you keep this default value unchanged. Usually it is much easier
+to find people who can translate from "English to other languages" than from "non-English to non-English".
 
 You often need to set the [[yii\base\Application::$language|target language]] dynamically based on different 
 factors, such as the language preference of end users. Instead of configuring it in the application configuration,
@@ -58,18 +67,22 @@ you can use the following statement to change the target language:
 
 ## Message Translation <span id="message-translation"></span>
 
+### From source language to target language
 The message translation service translates a text message from one language (usually the [[yii\base\Application::$sourceLanguage|source language]])
-to another (usually the [[yii\base\Application::$language|target language]]). It does the translation by looking
-up the message to be translated in a message source which stores the original messages and the translated messages.
-If the message is found, the corresponding translated message will be returned; otherwise the original message will be 
+to another (usually the [[yii\base\Application::$language|target language]]). 
+
+It does the translation by looking up the message to be translated in a message source which stores the original messages and the translated messages. If the message is found, the corresponding translated message will be returned; otherwise the original message will be 
 returned untranslated.
 
+### How to implement
 To use the message translation service, you mainly need to do the following work:
 
-* Wrap every text message that needs to be translated in a call to the [[Yii::t()]] method;
-* Configure one or multiple message sources in which the message translation service can look for translated messages;
-* Let the translators translate messages and store them in the message source(s).
+1. Wrap every text message that needs to be translated in a call to the [[Yii::t()]] method.
+2. Configure one or multiple message sources in which the message translation service can look for translated messages.
+3. Let the translators translate messages and store them in the message source(s).
 
+
+#### 1. Wrap a text message
 The method [[Yii::t()]] can be used like the following,
 
 ```php
@@ -79,6 +92,7 @@ echo \Yii::t('app', 'This is a string to translate!');
 where the second parameter refers to the text message to be translated, while the first parameter refers to 
 the name of the category which is used to categorize the message. 
 
+#### 2. Configure one or multiple message sources
 The [[Yii::t()]] method will call the `i18n` [application component](structure-application-components.md) `translate`
 method to perform the actual translation work. The component can be configured in the application configuration as follows,
 
@@ -88,7 +102,7 @@ method to perform the actual translation work. The component can be configured i
     'i18n' => [
         'translations' => [
             'app*' => [
-                'class' => 'yii\i18n\PhpMessageSource',
+                '__class' => yii\i18n\PhpMessageSource::class,
                 //'basePath' => '@app/messages',
                 //'sourceLanguage' => 'en-US',
                 'fileMap' => [
@@ -101,14 +115,46 @@ method to perform the actual translation work. The component can be configured i
 ],
 ```
 
-In the above code, a message source supported by [[yii\i18n\PhpMessageSource]] is being configured. The pattern
-`app*` indicates that all message categories whose names start with `app` should be translated using this
-message source. The [[yii\i18n\PhpMessageSource]] class uses PHP files to store message translations. Each
-PHP file corresponds to the messages of a single category. By default, the file name should be the same as
-the category name. However, you may configure [[yii\i18n\PhpMessageSource::fileMap|fileMap]] to map a category
-to a PHP file with a different naming approach. In the above example, the category `app/error` is mapped to
-the PHP file `@app/messages/ru-RU/error.php` (assuming `ru-RU` is the target language). Without this configuration,
-the category would be mapped to `@app/messages/ru-RU/app/error.php`, instead.
+In the above code, a message source supported by [[yii\i18n\PhpMessageSource]] is being configured. 
+
+##### Category wildcards with `*` symbol
+
+The pattern `app*` indicates that all message categories whose names start with `app` should be translated using this
+message source. 
+
+#### 3. Let the translators translate messages and store them in the message source(s)
+
+The [[yii\i18n\PhpMessageSource]] class uses PHP files with a simple PHP array to store message translations. 
+These files contain a map of the messages in `source language` to the translation in the `target language`.
+
+> Info: You can automatically generate these PHP files by using the [`message` command](#message-command),
+> which will be introduced later in this chapter.
+
+Each PHP file corresponds to the messages of a single category. By default, the file name should be the same as
+the category name. Example for `app/messages/nl-NL/main.php:`
+
+```php
+<?php
+
+/**
+* Translation map for nl-NL
+*/
+return [
+    'welcome' => 'welkom'
+];
+
+```
+
+
+##### File mapping
+
+You may configure [[yii\i18n\PhpMessageSource::fileMap|fileMap]] to map a category to a PHP file with a different naming approach. 
+
+In the above example, the category `app/error` is mapped to the PHP file `@app/messages/ru-RU/error.php` 
+(assuming `ru-RU` is the target language). 
+However, without this configuration the category would be mapped to `@app/messages/ru-RU/app/error.php` instead.
+
+#####  Other storage types
 
 Besides storing the messages in PHP files, you may also use the following message sources to store translated messages
 in different storage:
@@ -147,11 +193,11 @@ echo \Yii::t('app', 'Hello, {username}!', [
 While translating a message containing placeholders, you should leave the placeholders as is. This is because the placeholders
 will be replaced with the actual values when you call `Yii::t()` to translate a message.
 
-You can use either *named placeholders* or *positional placeholders*, but not both, in a single message.
- 
 The previous example shows how you can use named placeholders. That is, each placeholder is written in the format of 
 `{name}`, and you provide an associative array whose keys are the placeholder names
 (without the curly brackets) and whose values are the corresponding values placeholder to be replaced with.
+
+> Note: Some characters such as `.`, `-` or `=` are not allowed in placeholder names. Use `_` instead.
 
 Positional placeholders use zero-based integer sequence as names which are replaced by the provided values
 according to their positions in the call of `Yii::t()`. In the following example, the positional placeholders
@@ -256,7 +302,7 @@ You can also specify a custom pattern to format the date value:
 echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
+[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Time <span id="time"></span>
@@ -279,7 +325,7 @@ You can also specify a custom pattern to format the time value:
 echo \Yii::t('app', 'It is {0,date,HH:mm}', time());
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
+[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Spellout <span id="spellout"></span>
@@ -370,7 +416,7 @@ while `one` matches `21` or `101`:
 
 These `other`, `few`, `many` and other special argument names vary depending on language. To learn which ones you should
 specify for a particular locale, please refer to "Plural Rules, Cardinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
-Alternatively you can refer to [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+Alternatively you can refer to [rules reference at unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 > Note: The above example Russian message is mainly used as a translated message, not an original message, unless you set
 > the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU` and translating from Russian.
@@ -446,7 +492,7 @@ to the application config:
 'i18n' => [
     'translations' => [
         '*' => [
-            'class' => 'yii\i18n\PhpMessageSource'
+            '__class' => yii\i18n\PhpMessageSource::class
         ],
     ],
 ],
@@ -485,7 +531,7 @@ class Module extends \yii\base\Module
     public function registerTranslations()
     {
         Yii::$app->i18n->translations['modules/users/*'] = [
-            'class' => 'yii\i18n\PhpMessageSource',
+            '__class' => \yii\i18n\PhpMessageSource::class,
             'sourceLanguage' => 'en-US',
             'basePath' => '@app/modules/users/messages',
             'fileMap' => [
@@ -533,7 +579,7 @@ class Menu extends Widget
     {
         $i18n = Yii::$app->i18n;
         $i18n->translations['widgets/menu/*'] = [
-            'class' => 'yii\i18n\PhpMessageSource',
+            '__class' => \yii\i18n\PhpMessageSource::class,
             'sourceLanguage' => 'en-US',
             'basePath' => '@app/widgets/menu/messages',
             'fileMap' => [
@@ -571,7 +617,7 @@ In order to do so, configure the `i18n` [application component](structure-applic
 'i18n' => [
     'translations' => [
         'yii' => [
-            'class' => 'yii\i18n\PhpMessageSource',
+            '__class' => yii\i18n\PhpMessageSource::class,
             'sourceLanguage' => 'en-US',
             'basePath' => '@app/messages'
         ],
@@ -597,12 +643,12 @@ First you need to setup an event handler. This can be done in the application co
     'i18n' => [
         'translations' => [
             'app*' => [
-                'class' => 'yii\i18n\PhpMessageSource',
+                '__class' => yii\i18n\PhpMessageSource::class,
                 'fileMap' => [
                     'app' => 'app.php',
                     'app/error' => 'error.php',
                 ],
-                'on missingTranslation' => ['app\components\TranslationEventHandler', 'handleMissingTranslation']
+                'on missingTranslation' => [app\components\TranslationEventHandler::class, 'handleMissingTranslation']
             ],
         ],
     ],

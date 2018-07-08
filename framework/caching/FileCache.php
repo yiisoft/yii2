@@ -11,31 +11,41 @@ use Yii;
 use yii\helpers\FileHelper;
 
 /**
- * FileCache implements a cache component using files.
+ * FileCache implements a cache handler using files.
  *
  * For each data value being cached, FileCache will store it in a separate file.
  * The cache files are placed under [[cachePath]]. FileCache will perform garbage collection
  * automatically to remove expired cache files.
  *
- * Please refer to [[Cache]] for common cache operations that are supported by FileCache.
+ * Application configuration example:
+ *
+ * ```php
+ * return [
+ *     'components' => [
+ *         'cache' => [
+ *             '__class' => yii\caching\Cache::class,
+ *             'handler' => [
+ *                 '__class' => yii\caching\FileCache::class,
+ *                 // 'cachePath' => '@runtime/cache',
+ *             ],
+ *         ],
+ *         // ...
+ *     ],
+ *     // ...
+ * ];
+ * ```
+ *
+ * Please refer to [[\Psr\SimpleCache\CacheInterface]] for common cache operations that are supported by FileCache.
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class FileCache extends Cache
+class FileCache extends SimpleCache
 {
     /**
-     * @var string a string prefixed to every cache key. This is needed when you store
-     * cache data under the same [[cachePath]] for different applications to avoid
-     * conflict.
-     *
-     * To ensure interoperability, only alphanumeric characters should be used.
-     */
-    public $keyPrefix = '';
-    /**
-     * @var string the directory to store cache files. You may use path alias here.
+     * @var string the directory to store cache files. You may use [path alias](guide:concept-aliases) here.
      * If not set, it will use the "cache" subdirectory under the application runtime path.
      */
     public $cachePath = '@runtime/cache';
@@ -84,27 +94,17 @@ class FileCache extends Cache
     }
 
     /**
-     * Checks whether a specified key exists in the cache.
-     * This can be faster than getting the value from the cache if the data is big.
-     * Note that this method does not check whether the dependency associated
-     * with the cached data, if there is any, has changed. So a call to [[get]]
-     * may return false while exists returns true.
-     * @param mixed $key a key identifying the cached value. This can be a simple string or
-     * a complex data structure consisting of factors representing the key.
-     * @return bool true if a value exists in cache, false if the value is not in the cache or expired.
+     * {@inheritdoc}
      */
-    public function exists($key)
+    public function has($key)
     {
-        $cacheFile = $this->getCacheFile($this->buildKey($key));
+        $cacheFile = $this->getCacheFile($this->normalizeKey($key));
 
         return @filemtime($cacheFile) > time();
     }
 
     /**
-     * Retrieves a value from cache with a specified key.
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key a unique key identifying the cached value
-     * @return string|false the value stored in cache, false if the value is not in the cache or expired.
+     * {@inheritdoc}
      */
     protected function getValue($key)
     {
@@ -125,68 +125,43 @@ class FileCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key in cache.
-     * This is the implementation of the method declared in the parent class.
-     *
-     * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached. Other types (If you have disabled [[serializer]]) unable to get is
-     * correct in [[getValue()]].
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * {@inheritdoc}
      */
-    protected function setValue($key, $value, $duration)
+    protected function setValue($key, $value, $ttl)
     {
         $this->gc();
         $cacheFile = $this->getCacheFile($key);
         if ($this->directoryLevel > 0) {
             @FileHelper::createDirectory(dirname($cacheFile), $this->dirMode, true);
         }
+        // If ownership differs the touch call will fail, so we try to
+        // rebuild the file from scratch by deleting it first
+        // https://github.com/yiisoft/yii2/pull/16120
+        if (is_file($cacheFile) && function_exists('posix_geteuid') && fileowner($cacheFile) !== posix_geteuid()) {
+            @unlink($cacheFile);
+        }
         if (@file_put_contents($cacheFile, $value, LOCK_EX) !== false) {
             if ($this->fileMode !== null) {
                 @chmod($cacheFile, $this->fileMode);
             }
-            if ($duration <= 0) {
-                $duration = 31536000; // 1 year
+            if ($ttl <= 0) {
+                $ttl = 31536000; // 1 year
             }
 
-            return @touch($cacheFile, $duration + time());
-        } else {
-            $error = error_get_last();
-            Yii::warning("Unable to write cache file '{$cacheFile}': {$error['message']}", __METHOD__);
-            return false;
+            return @touch($cacheFile, $ttl + time());
         }
+
+        $error = error_get_last();
+        Yii::warning("Unable to write cache file '{$cacheFile}': {$error['message']}", __METHOD__);
+        return false;
     }
 
     /**
-     * Stores a value identified by a key into cache if the cache does not contain this key.
-     * This is the implementation of the method declared in the parent class.
-     *
-     * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached. Other types (if you have disabled [[serializer]]) unable to get is
-     * correct in [[getValue()]].
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
-     */
-    protected function addValue($key, $value, $duration)
-    {
-        $cacheFile = $this->getCacheFile($key);
-        if (@filemtime($cacheFile) > time()) {
-            return false;
-        }
-
-        return $this->setValue($key, $value, $duration);
-    }
-
-    /**
-     * Deletes a value with the specified key from cache
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key the key of the value to be deleted
-     * @return bool if no error happens during deletion
+     * {@inheritdoc}
      */
     protected function deleteValue($key)
     {
         $cacheFile = $this->getCacheFile($key);
-
         return @unlink($cacheFile);
     }
 
@@ -206,20 +181,17 @@ class FileCache extends Cache
             }
 
             return $base . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
-        } else {
-            return $this->cachePath . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
         }
+
+        return $this->cachePath . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
     }
 
     /**
-     * Deletes all values from cache.
-     * This is the implementation of the method declared in the parent class.
-     * @return bool whether the flush operation was successful.
+     * {@inheritdoc}
      */
-    protected function flushValues()
+    public function clear()
     {
         $this->gc(true, false);
-
         return true;
     }
 

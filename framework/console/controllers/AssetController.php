@@ -8,8 +8,9 @@
 namespace yii\console\controllers;
 
 use Yii;
-use yii\console\Exception;
 use yii\console\Controller;
+use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
@@ -32,7 +33,7 @@ use yii\web\AssetManager;
  *
  * 4. Adjust your web application config to use compressed assets.
  *
- * Note: in the console environment some path aliases like `@webroot` and `@web` may not exist,
+ * Note: in the console environment some [path aliases](guide:concept-aliases) like `@webroot` and `@web` may not exist,
  * so corresponding paths inside the configuration should be specified directly.
  *
  * Note: by default this command relies on an external tools to perform actual files compression,
@@ -145,8 +146,8 @@ class AssetController extends Controller
     {
         if (!is_object($this->_assetManager)) {
             $options = $this->_assetManager;
-            if (empty($options['class'])) {
-                $options['class'] = AssetManager::class;
+            if (empty($options['__class'])) {
+                $options['__class'] = AssetManager::class;
             }
             if (!isset($options['basePath'])) {
                 throw new Exception("Please specify 'basePath' for the 'assetManager' option.");
@@ -217,7 +218,8 @@ class AssetController extends Controller
     protected function loadConfiguration($configFile)
     {
         $this->stdout("Loading configuration from '{$configFile}'...\n");
-        foreach (require($configFile) as $name => $value) {
+        $config = require $configFile;
+        foreach ($config as $name => $value) {
             if (property_exists($this, $name) || $this->canSetProperty($name)) {
                 $this->$name = $value;
             } else {
@@ -321,12 +323,12 @@ class AssetController extends Controller
             usort($target['depends'], function ($a, $b) use ($bundleOrders) {
                 if ($bundleOrders[$a] == $bundleOrders[$b]) {
                     return 0;
-                } else {
-                    return $bundleOrders[$a] > $bundleOrders[$b] ? 1 : -1;
                 }
+
+                return $bundleOrders[$a] > $bundleOrders[$b] ? 1 : -1;
             });
-            if (!isset($target['class'])) {
-                $target['class'] = $name;
+            if (!isset($target['__class'])) {
+                $target['__class'] = $name;
             }
             $targets[$name] = Yii::createObject($target);
         }
@@ -461,7 +463,7 @@ class AssetController extends Controller
         foreach ($targets as $name => $target) {
             if (isset($this->targets[$name])) {
                 $array[$name] = array_merge($this->targets[$name], [
-                    'class' => get_class($target),
+                    '__class' => get_class($target),
                     'sourcePath' => null,
                     'basePath' => $this->targets[$name]['basePath'],
                     'baseUrl' => $this->targets[$name]['baseUrl'],
@@ -483,7 +485,7 @@ class AssetController extends Controller
             }
         }
         $array = VarDumper::export($array);
-        $version = date('Y-m-d H:i:s', time());
+        $version = date('Y-m-d H:i:s');
         $bundleFileContent = <<<EOD
 <?php
 /**
@@ -493,7 +495,7 @@ class AssetController extends Controller
  */
 return {$array};
 EOD;
-        if (!file_put_contents($bundleFile, $bundleFileContent)) {
+        if (!file_put_contents($bundleFile, $bundleFileContent, LOCK_EX)) {
             throw new Exception("Unable to write output bundle configuration at '{$bundleFile}'.");
         }
         $this->stdout("Output bundle configuration created at '{$bundleFile}'.\n", Console::FG_GREEN);
@@ -567,8 +569,14 @@ EOD;
     {
         $content = '';
         foreach ($inputFiles as $file) {
+            // Add a semicolon to source code if trailing semicolon missing.
+            // Notice: It needs a new line before `;` to avoid affection of line comment. (// ...;)
+            $fileContent = rtrim(file_get_contents($file));
+            if (substr($fileContent, -1) !== ';') {
+                $fileContent .= "\n;";
+            }
             $content .= "/*** BEGIN FILE: $file ***/\n"
-                . file_get_contents($file)
+                . $fileContent . "\n"
                 . "/*** END FILE: $file ***/\n";
         }
         if (!file_put_contents($outputFile, $content)) {
@@ -613,7 +621,7 @@ EOD;
         $inputFilePathPartsCount = count($inputFilePathParts);
         $outputFilePathParts = explode('/', $outputFilePath);
         $outputFilePathPartsCount = count($outputFilePathParts);
-        for ($i =0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
+        for ($i = 0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
             if ($inputFilePathParts[$i] == $outputFilePathParts[$i]) {
                 $sharedPathParts[] = $inputFilePathParts[$i];
             } else {
@@ -639,7 +647,7 @@ EOD;
             $fullMatch = $matches[0];
             $inputUrl = $matches[1];
 
-            if (strpos($inputUrl, '/') === 0 || preg_match('/^https?:\/\//i', $inputUrl) || preg_match('/^data:/i', $inputUrl)) {
+            if (strncmp($inputUrl, '/', 1) === 0 || strncmp($inputUrl, '#', 1) === 0 || preg_match('/^https?:\/\//i', $inputUrl) || preg_match('/^data:/i', $inputUrl)) {
                 return $fullMatch;
             }
             if ($inputFileRelativePathParts === $outputFileRelativePathParts) {
@@ -712,7 +720,7 @@ return [
     // Asset bundle for compression output:
     'targets' => [
         'all' => [
-            'class' => \yii\web\AssetBundle::class,
+            '__class' => \yii\web\AssetBundle::class,
             'basePath' => '@webroot/assets',
             'baseUrl' => '@web/assets',
             'js' => 'js/all-{hash}.js',
@@ -728,15 +736,15 @@ return [
 EOD;
         if (file_exists($configFile)) {
             if (!$this->confirm("File '{$configFile}' already exists. Do you wish to overwrite it?")) {
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
         }
-        if (!file_put_contents($configFile, $template)) {
+        if (!file_put_contents($configFile, $template, LOCK_EX)) {
             throw new Exception("Unable to write template file '{$configFile}'.");
-        } else {
-            $this->stdout("Configuration file template created at '{$configFile}'.\n\n", Console::FG_GREEN);
-            return self::EXIT_CODE_NORMAL;
         }
+
+        $this->stdout("Configuration file template created at '{$configFile}'.\n\n", Console::FG_GREEN);
+        return ExitCode::OK;
     }
 
     /**
@@ -758,6 +766,7 @@ EOD;
                 $realPathParts[] = $pathPart;
             }
         }
+
         return implode(DIRECTORY_SEPARATOR, $realPathParts);
     }
 
@@ -767,7 +776,7 @@ EOD;
      */
     private function isBundleExternal($bundle)
     {
-        return (empty($bundle->sourcePath) && empty($bundle->basePath));
+        return empty($bundle->sourcePath) && empty($bundle->basePath);
     }
 
     /**
@@ -777,7 +786,7 @@ EOD;
     private function composeBundleConfig($bundle)
     {
         $config = Yii::getObjectVars($bundle);
-        $config['class'] = get_class($bundle);
+        $config['__class'] = get_class($bundle);
         return $config;
     }
 

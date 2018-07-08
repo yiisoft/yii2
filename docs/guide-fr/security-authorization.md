@@ -258,7 +258,7 @@ class RbacController extends Controller
 }
 ```
 
-> Note: si vous utilisez le modèle avancé, vous devez mettre votre `RbacController` dans le dossier  `console/controllers` et changer l'espace de noms en `console/controllers`.
+> Note: si vous utilisez le modèle avancé, vous devez mettre votre `RbacController` dans le dossier  `console/controllers` et changer l'espace de noms en `console\controllers`.
 
 Après avoir exécuté la commande `yii rbac/init` vous vous retrouverez avec la hiérarchie suivante :
 

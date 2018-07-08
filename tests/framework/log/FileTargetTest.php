@@ -1,14 +1,17 @@
 <?php
 /**
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\log;
 
-use yii\helpers\FileHelper;
-use yii\log\Dispatcher;
-use yii\log\Logger;
+use Psr\Log\LogLevel;
 use Yii;
+use yii\helpers\FileHelper;
+use yii\log\FileTarget;
+use yii\log\Logger;
 use yiiunit\TestCase;
 
 /**
@@ -26,12 +29,30 @@ class FileTargetTest extends TestCase
     {
         return [
             [true],
-            [false]
+            [false],
         ];
     }
 
     /**
+     * Tests that log directory isn't created during init process
+     * @see https://github.com/yiisoft/yii2/issues/15662
+     */
+    public function testInit()
+    {
+        $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
+        FileHelper::removeDirectory(dirname($logFile));
+        new FileTarget([
+            'logFile' => Yii::getAlias('@yiiunit/runtime/log/filetargettest.log'),
+        ]);
+        $this->assertFileNotExists(
+            dirname($logFile),
+            'Log directory should not be created during init process'
+        );
+    }
+
+    /**
      * @dataProvider booleanDataProvider
+     * @param bool $rotateByCopy
      */
     public function testRotate($rotateByCopy)
     {
@@ -39,67 +60,65 @@ class FileTargetTest extends TestCase
         FileHelper::removeDirectory(dirname($logFile));
         mkdir(dirname($logFile), 0777, true);
 
-        $logger = new Logger();
-        $dispatcher = new Dispatcher([
-            'logger' => $logger,
+        $logger = new Logger([
             'targets' => [
                 'file' => [
-                    'class' => 'yii\log\FileTarget',
+                    '__class' => FileTarget::class,
                     'logFile' => $logFile,
-                    'levels' => ['warning'],
+                    'levels' => [LogLevel::WARNING],
                     'maxFileSize' => 1024, // 1 MB
                     'maxLogFiles' => 1, // one file for rotation and one normal log file
                     'logVars' => [],
-                    'rotateByCopy' => $rotateByCopy
-                ]
-            ]
+                    'rotateByCopy' => $rotateByCopy,
+                ],
+            ],
         ]);
 
         // one file
 
-        $logger->log(str_repeat('x', 1024), Logger::LEVEL_WARNING);
+        $logger->log(LogLevel::WARNING, str_repeat('x', 1024));
         $logger->flush(true);
 
         clearstatcache();
 
-        $this->assertTrue(file_exists($logFile));
-        $this->assertFalse(file_exists($logFile . '.1'));
-        $this->assertFalse(file_exists($logFile . '.2'));
-        $this->assertFalse(file_exists($logFile . '.3'));
-        $this->assertFalse(file_exists($logFile . '.4'));
+        $this->assertFileExists($logFile);
+        $this->assertFileNotExists($logFile . '.1');
+        $this->assertFileNotExists($logFile . '.2');
+        $this->assertFileNotExists($logFile . '.3');
+        $this->assertFileNotExists($logFile . '.4');
 
         // exceed max size
-        for($i = 0; $i < 1024; $i++) {
-            $logger->log(str_repeat('x', 1024), Logger::LEVEL_WARNING);
+        for ($i = 0; $i < 1024; $i++) {
+            $logger->log(LogLevel::WARNING, str_repeat('x', 1024));
         }
         $logger->flush(true);
 
         // first rotate
 
-        $logger->log(str_repeat('x', 1024), Logger::LEVEL_WARNING);
+        $logger->log(LogLevel::WARNING, str_repeat('x', 1024));
         $logger->flush(true);
 
         clearstatcache();
 
-        $this->assertTrue(file_exists($logFile));
-        $this->assertTrue(file_exists($logFile . '.1'));
-        $this->assertFalse(file_exists($logFile . '.2'));
-        $this->assertFalse(file_exists($logFile . '.3'));
-        $this->assertFalse(file_exists($logFile . '.4'));
+        $this->assertFileExists($logFile);
+        $this->assertFileExists($logFile . '.1');
+        $this->assertFileNotExists($logFile . '.2');
+        $this->assertFileNotExists($logFile . '.3');
+        $this->assertFileNotExists($logFile . '.4');
 
         // second rotate
 
-        for($i = 0; $i < 1024; $i++) {
-            $logger->log(str_repeat('x', 1024), Logger::LEVEL_WARNING);
+        for ($i = 0; $i < 1024; $i++) {
+            $logger->log(LogLevel::WARNING, str_repeat('x', 1024));
         }
         $logger->flush(true);
 
         clearstatcache();
 
-        $this->assertTrue(file_exists($logFile));
-        $this->assertTrue(file_exists($logFile . '.1'));
-        $this->assertFalse(file_exists($logFile . '.2'));
-        $this->assertFalse(file_exists($logFile . '.3'));
-        $this->assertFalse(file_exists($logFile . '.4'));
+        $this->assertFileExists($logFile);
+        $this->assertFileExists($logFile . '.1');
+        $this->assertFileNotExists($logFile . '.2');
+        $this->assertFileNotExists($logFile . '.3');
+        $this->assertFileNotExists($logFile . '.4');
     }
 }

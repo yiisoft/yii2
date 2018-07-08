@@ -42,9 +42,9 @@ class MyBehavior extends Behavior
 }
 ```
 
-The above code defines the behavior class `app\components\MyBehavior`, with two properties--
-`prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
-is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
+The above code defines the behavior class `app\components\MyBehavior`, with two properties
+`prop1` and `prop2` and one method `foo()`. Note that property `prop2`
+is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\BaseObject]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
 Because this class is a behavior, when it is attached to a component, that component will then also have the `prop1` and `prop2` properties and the `foo()` method.
 
@@ -127,14 +127,14 @@ class User extends ActiveRecord
 
             // anonymous behavior, configuration array
             [
-                'class' => MyBehavior::class,
+                '__class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
             // named behavior, configuration array
             'myBehavior4' => [
-                'class' => MyBehavior::class,
+                '__class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ]
@@ -160,7 +160,7 @@ $component->attachBehavior('myBehavior2', MyBehavior::class);
 
 // attach a configuration array
 $component->attachBehavior('myBehavior3', [
-    'class' => MyBehavior::class,
+    '__class' => MyBehavior::class,
     'prop1' => 'value1',
     'prop2' => 'value2',
 ]);
@@ -182,7 +182,7 @@ You may also attach behaviors through [configurations](concept-configurations.md
     'as myBehavior2' => MyBehavior::class,
 
     'as myBehavior3' => [
-        'class' => MyBehavior::class,
+        '__class' => MyBehavior::class,
         'prop1' => 'value1',
         'prop2' => 'value2',
     ],
@@ -272,7 +272,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::class,
+                '__class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],

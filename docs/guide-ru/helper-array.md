@@ -1,6 +1,6 @@
 ArrayHelper
 ===========
-В добавок к [богатому набору функций](http://php.net/manual/en/book.array.php)  для работы с массивами, которые есть в самом PHP, Yii Array helper предоставляет свои статические функции, которые могут быть вам полезны.
+Вдобавок к [богатому набору функций](http://php.net/manual/ru/book.array.php)  для работы с массивами, которые есть в самом PHP, хелпер Yii Array предоставляет свои статические функции, которые могут быть вам полезны.
 
 
 ## Получение значений <span id="getting-values"></span>
@@ -31,7 +31,7 @@ $value = ArrayHelper::getValue($array, 'foo.bar.name');
 Первый аргумент – массив или объект из которого мы извлекаем значение. Второй аргумент определяет как будут извлекаться данные и может выглядеть как один из таких вариантов:
 - Имя ключа массива или свойства объекта, значение которого нужно вернуть
 - Путь к нужному значению, разделенный точками, как в примере выше
-- Callback-функция возвращающая значение
+- Callback-функция, возвращающая значение
 
 Callback-функция должна выглядеть примерно так:
 
@@ -41,13 +41,64 @@ $fullName = ArrayHelper::getValue($user, function ($user, $defaultValue) {
 });
 ```
 
-Третий, необязательный, аргумент определяет значение по-умолчанию. Если не установлен – равен `null`. Используется так:
+Третий необязательный аргумент определяет значение по умолчанию. Если не установлен – равен `null`. Используется так:
 
 ```php
 $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
 ```
 
-В случае если вы хотите получить значение и тут же удалить его из массива, вы можете использовать метод  `remove`
+
+## Запись значений <span id="setting-values"></span>
+
+```php
+$array = [
+    'key' => [
+        'in' => ['k' => 'value']
+    ]
+];
+
+ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);
+// путь для записи значения в `$array` можно указать как массив
+ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);
+```
+
+В результате исходное значение `$array['key']['in']` будет перезаписано новым
+
+```php
+[
+    'key' => [
+        'in' => ['arr' => 'val']
+    ]
+]
+```
+
+Если путь содержит несуществующий ключ, то он будет создан
+
+```php
+// Если `$array['key']['in']['arr0']` не пустой, то значение будет добавлено в массив
+ArrayHelper::setValue($array, 'key.in.arr0.arr1', 'val');
+
+// если необходимо полностью переопределить значение `$array['key']['in']['arr0']`
+ArrayHelper::setValue($array, 'key.in.arr0', ['arr1' => 'val']);
+```
+
+Результатом будет следующим:
+
+```php
+[
+    'key' => [
+        'in' => [
+            'k' => 'value',
+            'arr0' => ['arr1' => 'val']
+        ]
+    ]
+]
+```
+
+
+## Изъять значение из массива <span id="removing-values"></span>
+
+Если вы хотите получить значение и тут же удалить его из массива, вы можете использовать метод `remove`
 
 ```php
 $array = ['type' => 'A', 'options' => [1, 2]];
@@ -59,7 +110,7 @@ $type = ArrayHelper::remove($array, 'type');
 
 ## Проверка наличия ключей <span id="checking-existence-of-keys"></span>
 
-`ArrayHelper::keyExists` работает так же как и стандартный [array_key_exists](http://php.net/manual/en/function.array-key-exists.php),
+`ArrayHelper::keyExists` работает так же, как и стандартный [array_key_exists](http://php.net/manual/ru/function.array-key-exists.php),
 но также может проверять ключи без учёта регистра:
 
 ```php
@@ -72,7 +123,7 @@ $data2 = [
 ];
 
 if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExists('username', $data2, false)) {
-    echo "Please provide username.";
+    echo "Пожалуйста, укажите имя пользователя.";
 }
 ```
 
@@ -81,7 +132,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 Часто нужно извлечь столбец значений из многомерного массива или объекта. Например, список ID.
 
 ```php
-$data = [
+$array = [
     ['id' => '123', 'data' => 'abc'],
     ['id' => '345', 'data' => 'def'],
 ];
@@ -113,13 +164,13 @@ $array = [
     ['id' => '345', 'data' => 'def'],
 ];
 $result = ArrayHelper::index($array, 'id');
-// the result is:
+// результат будет таким:
 // [
 //     '123' => ['id' => '123', 'data' => 'abc'],
 //     '345' => ['id' => '345', 'data' => 'def'],
 // ]
 
-// using anonymous function
+// использование анонимной функции
 $result = ArrayHelper::index($array, function ($element) {
     return $element['id'];
 });
@@ -131,7 +182,7 @@ $result = ArrayHelper::index($array, function ($element) {
 
 Для получения пар ключ-значение из многомерного массива или из массива объектов вы можете использовать метод `map`.
 
-Параметры `$from` и `$to` определяют имена ключей или свойств, которые будут использованы в map. Так же, третьим необязательным параметром вы можете задать правила группировки.
+Параметры `$from` и `$to` определяют имена ключей или свойств, которые будут использованы в map. Также третьим необязательным параметром вы можете задать правила группировки.
 
 ```php
 $array = [
@@ -141,7 +192,7 @@ $array = [
 );
 
 $result = ArrayHelper::map($array, 'id', 'name');
-// the result is:
+// результат будет таким:
 // [
 //     '123' => 'aaa',
 //     '124' => 'bbb',
@@ -149,7 +200,7 @@ $result = ArrayHelper::map($array, 'id', 'name');
 // ]
 
 $result = ArrayHelper::map($array, 'id', 'name', 'class');
-// the result is:
+// результат будет таким:
 // [
 //     'x' => [
 //         '123' => 'aaa',
@@ -194,7 +245,7 @@ ArrayHelper::multisort($data, function($item) {
 ```
 Третий аргумент определяет способ сортировки – от большего к меньшему или от меньшего к большему. В случае, если мы сортируем по одному ключу, передаем  `SORT_ASC`  или  `SORT_DESC`. Если сортировка осуществляется по нескольким ключам, вы можете назначить направление сортировки для каждого из них с помощью массива.
 
-Последний аргумент – это флаг, который используется в стандартной функции PHP `sort()`. Посмотреть его возможные значения можно [тут](http://php.net/manual/en/function.sort.php).
+Последний аргумент – это флаг, который используется в стандартной функции PHP `sort()`. Посмотреть его возможные значения можно [тут](http://php.net/manual/ru/function.sort.php).
 
 
 ## Определение типа массива <span id="detecting-array-types"></span>
@@ -202,11 +253,11 @@ ArrayHelper::multisort($data, function($item) {
 Удобный способ для определения, является массив индексным или ассоциативным. Вот пример:
 
 ```php
-// no keys specified
+// ключи не определены
 $indexed = ['Qiang', 'Paul'];
 echo ArrayHelper::isIndexed($indexed);
 
-// all keys are strings
+// все ключи - строки
 $associative = ['framework' => 'Yii', 'version' => '2.0'];
 echo ArrayHelper::isAssociative($associative);
 ```
@@ -244,9 +295,9 @@ $data = ArrayHelper::toArray($posts, [
     'app\models\Post' => [
         'id',
         'title',
-        // the key name in array result => property name
+        // ключ в результирующем массиве => имя свойства
         'createTime' => 'created_at',
-        // the key name in array result => anonymous function
+        // ключ в результирующем массиве => анонимная функция
         'length' => function ($post) {
             return strlen($post->content);
         },
@@ -254,7 +305,7 @@ $data = ArrayHelper::toArray($posts, [
 ]);
 ```
 
-Первый аргумент содержит данные, которые вы хотите конвертировать. В нашем случае это Active Record модель `Post`.
+Первый аргумент содержит данные, которые вы хотите конвертировать. В нашем случае это модель Active Record `Post`.
 
 Второй аргумент служит для управления процессом конвертации и может быть трех видов:
 
@@ -280,11 +331,11 @@ $data = ArrayHelper::toArray($posts, [
 ## Проверка на присутствие в массиве <span id="testing-arrays"></span>
 
 Часто необходимо проверить, содержится ли элемент в массиве, или является ли массив подмножеством другого массива.
-К сожалению, PHP функция `in_array()` не поддерживает подмножества объектов, реализующих интерфейс `\Traversable`.
+К сожалению, PHP-функция `in_array()` не поддерживает подмножества объектов, реализующих интерфейс `\Traversable`.
 
 Для таких случаев [[yii\helpers\ArrayHelper]] предоставляет [[yii\helpers\ArrayHelper::isIn()|isIn()]] и
 [[yii\helpers\ArrayHelper::isSubset()|isSubset()]]. Методы принимают такие же параметры, что и
-[in_array()](http://php.net/manual/en/function.in-array.php).
+[in_array()](http://php.net/manual/ru/function.in-array.php).
 
 ```php
 // true

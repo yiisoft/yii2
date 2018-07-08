@@ -7,9 +7,11 @@
 
 namespace yii\db;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
-use yii\helpers\ArrayHelper;
+use yii\db\conditions\ConditionInterface;
+use yii\db\conditions\HashCondition;
+use yii\helpers\StringHelper;
 
 /**
  * QueryBuilder builds a SELECT SQL statement based on the specification given as a [[Query]] object.
@@ -20,10 +22,15 @@ use yii\helpers\ArrayHelper;
  *
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
+ * @property string[] $conditionClasses Map of condition aliases to condition classes. For example: ```php
+ * ['LIKE' => yii\db\condition\LikeCondition::class] ``` . This property is write-only.
+ * @property string[] $expressionBuilders Array of builders that should be merged with the pre-defined ones in
+ * [[expressionBuilders]] property. This property is write-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class QueryBuilder extends \yii\base\Object
+class QueryBuilder extends \yii\base\BaseObject
 {
     /**
      * The prefix for automatically generated query binding parameters.
@@ -47,24 +54,49 @@ class QueryBuilder extends \yii\base\Object
     public $typeMap = [];
 
     /**
-     * @var array map of query condition to builder methods.
-     * These methods are used by [[buildCondition]] to build SQL conditions from array syntax.
+     * @var array map of condition aliases to condition classes. For example:
+     *
+     * ```php
+     * return [
+     *     'LIKE' => yii\db\condition\LikeCondition::class,
+     * ];
+     * ```
+     *
+     * This property is used by [[createConditionFromArray]] method.
+     * See default condition classes list in [[defaultConditionClasses()]] method.
+     *
+     * In case you want to add custom conditions support, use the [[setConditionClasses()]] method.
+     *
+     * @see setConditonClasses()
+     * @see defaultConditionClasses()
+     * @since 2.0.14
      */
-    protected $conditionBuilders = [
-        'NOT' => 'buildNotCondition',
-        'AND' => 'buildAndCondition',
-        'OR' => 'buildAndCondition',
-        'BETWEEN' => 'buildBetweenCondition',
-        'NOT BETWEEN' => 'buildBetweenCondition',
-        'IN' => 'buildInCondition',
-        'NOT IN' => 'buildInCondition',
-        'LIKE' => 'buildLikeCondition',
-        'NOT LIKE' => 'buildLikeCondition',
-        'OR LIKE' => 'buildLikeCondition',
-        'OR NOT LIKE' => 'buildLikeCondition',
-        'EXISTS' => 'buildExistsCondition',
-        'NOT EXISTS' => 'buildExistsCondition',
-    ];
+    protected $conditionClasses = [];
+    /**
+     * @var string[]|ExpressionBuilderInterface[] maps expression class to expression builder class.
+     * For example:
+     *
+     * ```php
+     * [
+     *    yii\db\Expression::class => yii\db\ExpressionBuilder::class
+     * ]
+     * ```
+     * This property is mainly used by [[buildExpression()]] to build SQL expressions form expression objects.
+     * See default values in [[defaultExpressionBuilders()]] method.
+     *
+     *
+     * To override existing builders or add custom, use [[setExpressionBuilder()]] method. New items will be added
+     * to the end of this array.
+     *
+     * To find a builder, [[buildExpression()]] will check the expression class for its exact presence in this map.
+     * In case it is NOT present, the array will be iterated in reverse direction, checking whether the expression
+     * extends the class, defined in this map.
+     *
+     * @see setExpressionBuilders()
+     * @see defaultExpressionBuilders()
+     * @since 2.0.14
+     */
+    protected $expressionBuilders = [];
 
 
     /**
@@ -79,7 +111,104 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->expressionBuilders = array_merge($this->defaultExpressionBuilders(), $this->expressionBuilders);
+        $this->conditionClasses = array_merge($this->defaultConditionClasses(), $this->conditionClasses);
+    }
+
+    /**
+     * Contains array of default condition classes. Extend this method, if you want to change
+     * default condition classes for the query builder. See [[conditionClasses]] docs for details.
+     *
+     * @return array
+     * @see conditionClasses
+     * @since 2.0.14
+     */
+    protected function defaultConditionClasses()
+    {
+        return [
+            'NOT' => conditions\NotCondition::class,
+            'AND' => conditions\AndCondition::class,
+            'OR' => conditions\OrCondition::class,
+            'BETWEEN' => conditions\BetweenCondition::class,
+            'NOT BETWEEN' => conditions\BetweenCondition::class,
+            'IN' => conditions\InCondition::class,
+            'NOT IN' => conditions\InCondition::class,
+            'LIKE' => conditions\LikeCondition::class,
+            'NOT LIKE' => conditions\LikeCondition::class,
+            'OR LIKE' => conditions\LikeCondition::class,
+            'OR NOT LIKE' => conditions\LikeCondition::class,
+            'EXISTS' => conditions\ExistsCondition::class,
+            'NOT EXISTS' => conditions\ExistsCondition::class,
+        ];
+    }
+
+    /**
+     * Contains array of default expression builders. Extend this method and override it, if you want to change
+     * default expression builders for this query builder. See [[expressionBuilders]] docs for details.
+     *
+     * @return array
+     * @see $expressionBuilders
+     * @since 2.0.14
+     */
+    protected function defaultExpressionBuilders()
+    {
+        return [
+            Query::class => QueryExpressionBuilder::class,
+            PdoValue::class => PdoValueBuilder::class,
+            Expression::class => ExpressionBuilder::class,
+            conditions\ConjunctionCondition::class => conditions\ConjunctionConditionBuilder::class,
+            conditions\NotCondition::class => conditions\NotConditionBuilder::class,
+            conditions\AndCondition::class => conditions\ConjunctionConditionBuilder::class,
+            conditions\OrCondition::class => conditions\ConjunctionConditionBuilder::class,
+            conditions\BetweenCondition::class => conditions\BetweenConditionBuilder::class,
+            conditions\InCondition::class => conditions\InConditionBuilder::class,
+            conditions\LikeCondition::class => conditions\LikeConditionBuilder::class,
+            conditions\ExistsCondition::class => conditions\ExistsConditionBuilder::class,
+            conditions\SimpleCondition::class => conditions\SimpleConditionBuilder::class,
+            conditions\HashCondition::class => conditions\HashConditionBuilder::class,
+            conditions\BetweenColumnsCondition::class => conditions\BetweenColumnsConditionBuilder::class,
+        ];
+    }
+
+    /**
+     * Setter for [[expressionBuilders]] property.
+     *
+     * @param string[] $builders array of builders that should be merged with the pre-defined ones
+     * in [[expressionBuilders]] property.
+     * @since 2.0.14
+     * @see expressionBuilders
+     */
+    public function setExpressionBuilders($builders)
+    {
+        $this->expressionBuilders = array_merge($this->expressionBuilders, $builders);
+    }
+
+    /**
+     * Setter for [[conditionClasses]] property.
+     *
+     * @param string[] $classes map of condition aliases to condition classes. For example:
+     *
+     * ```php
+     * ['LIKE' => yii\db\condition\LikeCondition::class]
+     * ```
+     *
+     * @since 2.0.14.2
+     * @see conditionClasses
+     */
+    public function setConditionClasses($classes)
+    {
+        $this->conditionClasses = array_merge($this->conditionClasses, $classes);
+    }
+
+    /**
      * Generates a SELECT SQL statement from a [[Query]] object.
+     *
      * @param Query $query the [[Query]] object from which the SQL statement will be generated.
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the query building process.
@@ -114,6 +243,64 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * Builds given $expression
+     *
+     * @param ExpressionInterface $expression the expression to be built
+     * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
+     * be included in the result with the additional parameters generated during the expression building process.
+     * @return string the SQL statement that will not be neither quoted nor encoded before passing to DBMS
+     * @see ExpressionInterface
+     * @see ExpressionBuilderInterface
+     * @see expressionBuilders
+     * @since 2.0.14
+     * @throws InvalidArgumentException when $expression building is not supported by this QueryBuilder.
+     */
+    public function buildExpression(ExpressionInterface $expression, &$params = [])
+    {
+        $builder = $this->getExpressionBuilder($expression);
+
+        return $builder->build($expression, $params);
+    }
+
+    /**
+     * Gets object of [[ExpressionBuilderInterface]] that is suitable for $expression.
+     * Uses [[expressionBuilders]] array to find a suitable builder class.
+     *
+     * @param ExpressionInterface $expression
+     * @return ExpressionBuilderInterface
+     * @see expressionBuilders
+     * @since 2.0.14
+     * @throws InvalidArgumentException when $expression building is not supported by this QueryBuilder.
+     */
+    public function getExpressionBuilder(ExpressionInterface $expression)
+    {
+        $className = get_class($expression);
+
+        if (!isset($this->expressionBuilders[$className])) {
+            foreach (array_reverse($this->expressionBuilders) as $expressionClass => $builderClass) {
+                if (is_subclass_of($expression, $expressionClass)) {
+                    $this->expressionBuilders[$className] = $builderClass;
+                    break;
+                }
+            }
+
+            if (!isset($this->expressionBuilders[$className])) {
+                throw new InvalidArgumentException('Expression of class ' . $className . ' can not be built in ' . get_class($this));
+            }
+        }
+
+        if ($this->expressionBuilders[$className] === __CLASS__) {
+            return $this;
+        }
+
+        if (!is_object($this->expressionBuilders[$className])) {
+            $this->expressionBuilders[$className] = new $this->expressionBuilders[$className]($this);
+        }
+
+        return $this->expressionBuilders[$className];
+    }
+
+    /**
      * Creates an INSERT SQL statement.
      * For example,
      *
@@ -127,42 +314,96 @@ class QueryBuilder extends \yii\base\Object
      * The method will properly escape the table and column names.
      *
      * @param string $table the table that new rows will be inserted into.
-     * @param array $columns the column data (name => value) to be inserted into the table.
+     * @param array|Query $columns the column data (name => value) to be inserted into the table or instance
+     * of [[yii\db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
+     * Passing of [[yii\db\Query|Query]] is available since version 2.0.11.
      * @param array $params the binding parameters that will be generated by this method.
      * They should be bound to the DB command later.
      * @return string the INSERT SQL
      */
     public function insert($table, $columns, &$params)
     {
+        [$names, $placeholders, $values, $params] = $this->prepareInsertValues($table, $columns, $params);
+        return 'INSERT INTO ' . $this->db->quoteTableName($table)
+            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
+    }
+
+    /**
+     * Prepares a `VALUES` part for an `INSERT` SQL statement.
+     *
+     * @param string $table the table that new rows will be inserted into.
+     * @param array|Query $columns the column data (name => value) to be inserted into the table or instance
+     * of [[yii\db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
+     * @param array $params the binding parameters that will be generated by this method.
+     * They should be bound to the DB command later.
+     * @return array array of column names, placeholders, values and params.
+     * @since 2.0.14
+     */
+    protected function prepareInsertValues($table, $columns, $params = [])
+    {
         $schema = $this->db->getSchema();
-        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
-            $columnSchemas = $tableSchema->columns;
-        } else {
-            $columnSchemas = [];
-        }
+        $tableSchema = $schema->getTableSchema($table);
+        $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $names = [];
         $placeholders = [];
-        foreach ($columns as $name => $value) {
-            $names[] = $schema->quoteColumnName($name);
-            if ($value instanceof Expression) {
-                $placeholders[] = $value->expression;
-                foreach ($value->params as $n => $v) {
-                    $params[$n] = $v;
+        $values = ' DEFAULT VALUES';
+        if ($columns instanceof Query) {
+            [$names, $values, $params] = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
+        } else {
+            foreach ($columns as $name => $value) {
+                $names[] = $schema->quoteColumnName($name);
+                $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+
+                if ($value instanceof ExpressionInterface) {
+                    $placeholders[] = $this->buildExpression($value, $params);
+                } elseif ($value instanceof \yii\db\Query) {
+                    [$sql, $params] = $this->build($value, $params);
+                    $placeholders[] = "($sql)";
+                } else {
+                    $placeholders[] = $this->bindParam($value, $params);
                 }
+            }
+        }
+        return [$names, $placeholders, $values, $params];
+    }
+
+    /**
+     * Prepare select-subquery and field names for INSERT INTO ... SELECT SQL statement.
+     *
+     * @param Query $columns Object, which represents select query.
+     * @param \yii\db\Schema $schema Schema object to quote column name.
+     * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
+     * be included in the result with the additional parameters generated during the query building process.
+     * @return array array of column names, values and params.
+     * @throws InvalidArgumentException if query's select does not contain named parameters only.
+     * @since 2.0.11
+     */
+    protected function prepareInsertSelectSubQuery($columns, $schema, $params = [])
+    {
+        if (!is_array($columns->select) || empty($columns->select) || in_array('*', $columns->select)) {
+            throw new InvalidArgumentException('Expected select query object with enumerated (named) parameters');
+        }
+
+        [$values, $params] = $this->build($columns, $params);
+        $names = [];
+        $values = ' ' . $values;
+        foreach ($columns->select as $title => $field) {
+            if (is_string($title)) {
+                $names[] = $schema->quoteColumnName($title);
+            } elseif (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $field, $matches)) {
+                $names[] = $schema->quoteColumnName($matches[2]);
             } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $placeholders[] = $phName;
-                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                $names[] = $schema->quoteColumnName($field);
             }
         }
 
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
-            . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
+        return [$names, $values, $params];
     }
 
     /**
      * Generates a batch INSERT SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -179,10 +420,11 @@ class QueryBuilder extends \yii\base\Object
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
-     * @param array $rows the rows to be batch inserted into the table
+     * @param array|\Generator $rows the rows to be batch inserted into the table
+     * @param array $params the binding parameters. This parameter exists since 2.0.14
      * @return string the batch INSERT SQL statement
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, &$params = [])
     {
         if (empty($rows)) {
             return '';
@@ -199,19 +441,27 @@ class QueryBuilder extends \yii\base\Object
         foreach ($rows as $row) {
             $vs = [];
             foreach ($row as $i => $value) {
-                if (isset($columns[$i], $columnSchemas[$columns[$i]]) && !is_array($value)) {
+                if (isset($columns[$i], $columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
+                } elseif (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    $value = StringHelper::floatToString($value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {
                     $value = 'NULL';
+                } elseif ($value instanceof ExpressionInterface) {
+                    $value = $this->buildExpression($value, $params);
                 }
                 $vs[] = $value;
             }
             $values[] = '(' . implode(', ', $vs) . ')';
+        }
+        if (empty($values)) {
+            return '';
         }
 
         foreach ($columns as $i => $name) {
@@ -223,7 +473,117 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * Creates an SQL statement to insert rows into a database table if
+     * they do not already exist (matching unique constraints),
+     * or update them if they do.
+     *
+     * For example,
+     *
+     * ```php
+     * $sql = $queryBuilder->upsert('pages', [
+     *     'name' => 'Front page',
+     *     'url' => 'http://example.com/', // url is unique
+     *     'visits' => 0,
+     * ], [
+     *     'visits' => new \yii\db\Expression('visits + 1'),
+     * ], $params);
+     * ```
+     *
+     * The method will properly escape the table and column names.
+     *
+     * @param string $table the table that new rows will be inserted into/updated in.
+     * @param array|Query $insertColumns the column data (name => value) to be inserted into the table or instance
+     * of [[Query]] to perform `INSERT INTO ... SELECT` SQL statement.
+     * @param array|bool $updateColumns the column data (name => value) to be updated if they already exist.
+     * If `true` is passed, the column data will be updated to match the insert column data.
+     * If `false` is passed, no update will be performed if the column data already exists.
+     * @param array $params the binding parameters that will be generated by this method.
+     * They should be bound to the DB command later.
+     * @return string the resulting SQL.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS.
+     * @since 2.0.14
+     */
+    public function upsert($table, $insertColumns, $updateColumns, &$params)
+    {
+        throw new NotSupportedException($this->db->getDriverName() . ' does not support upsert statements.');
+    }
+
+    /**
+     * @param string $table
+     * @param array|Query $insertColumns
+     * @param array|bool $updateColumns
+     * @param Constraint[] $constraints this parameter recieves a matched constraint list.
+     * The constraints will be unique by their column names.
+     * @return array
+     * @since 2.0.14
+     */
+    protected function prepareUpsertColumns($table, $insertColumns, $updateColumns, &$constraints = [])
+    {
+        if ($insertColumns instanceof Query) {
+            [$insertNames] = $this->prepareInsertSelectSubQuery($insertColumns, $this->db->getSchema());
+        } else {
+            $insertNames = array_map([$this->db, 'quoteColumnName'], array_keys($insertColumns));
+        }
+        $uniqueNames = $this->getTableUniqueColumnNames($table, $insertNames, $constraints);
+        $uniqueNames = array_map([$this->db, 'quoteColumnName'], $uniqueNames);
+        if ($updateColumns !== true) {
+            return [$uniqueNames, $insertNames, null];
+        }
+
+        return [$uniqueNames, $insertNames, array_diff($insertNames, $uniqueNames)];
+    }
+
+    /**
+     * Returns all column names belonging to constraints enforcing uniqueness (`PRIMARY KEY`, `UNIQUE INDEX`, etc.)
+     * for the named table removing constraints which did not cover the specified column list.
+     * The column list will be unique by column names.
+     *
+     * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
+     * @param string[] $columns source column list.
+     * @param Constraint[] $constraints this parameter optionally recieves a matched constraint list.
+     * The constraints will be unique by their column names.
+     * @return string[] column list.
+     */
+    private function getTableUniqueColumnNames($name, $columns, &$constraints = [])
+    {
+        $schema = $this->db->getSchema();
+        if (!$schema instanceof ConstraintFinderInterface) {
+            return [];
+        }
+
+        $constraints = [];
+        $primaryKey = $schema->getTablePrimaryKey($name);
+        if ($primaryKey !== null) {
+            $constraints[] = $primaryKey;
+        }
+        foreach ($schema->getTableIndexes($name) as $constraint) {
+            if ($constraint->isUnique) {
+                $constraints[] = $constraint;
+            }
+        }
+        $constraints = array_merge($constraints, $schema->getTableUniques($name));
+        // Remove duplicates
+        $constraints = array_combine(array_map(function (Constraint $constraint) {
+            $columns = $constraint->columnNames;
+            sort($columns, SORT_STRING);
+            return json_encode($columns);
+        }, $constraints), $constraints);
+        $columnNames = [];
+        // Remove all constraints which do not cover the specified column list
+        $constraints = array_values(array_filter($constraints, function (Constraint $constraint) use ($schema, $columns, &$columnNames) {
+            $constraintColumnNames = array_map([$schema, 'quoteColumnName'], $constraint->columnNames);
+            $result = !array_diff($constraintColumnNames, $columns);
+            if ($result) {
+                $columnNames = array_merge($columnNames, $constraintColumnNames);
+            }
+            return $result;
+        }));
+        return array_unique($columnNames);
+    }
+
+    /**
      * Creates an UPDATE SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -243,34 +603,43 @@ class QueryBuilder extends \yii\base\Object
      */
     public function update($table, $columns, $condition, &$params)
     {
-        if (($tableSchema = $this->db->getTableSchema($table)) !== null) {
-            $columnSchemas = $tableSchema->columns;
-        } else {
-            $columnSchemas = [];
-        }
-
-        $lines = [];
-        foreach ($columns as $name => $value) {
-            if ($value instanceof Expression) {
-                $lines[] = $this->db->quoteColumnName($name) . '=' . $value->expression;
-                foreach ($value->params as $n => $v) {
-                    $params[$n] = $v;
-                }
-            } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $lines[] = $this->db->quoteColumnName($name) . '=' . $phName;
-                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
-            }
-        }
-
+        [$lines, $params] = $this->prepareUpdateSets($table, $columns, $params);
         $sql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $lines);
         $where = $this->buildWhere($condition, $params);
-
         return $where === '' ? $sql : $sql . ' ' . $where;
     }
 
     /**
+     * Prepares a `SET` parts for an `UPDATE` SQL statement.
+     * @param string $table the table to be updated.
+     * @param array $columns the column data (name => value) to be updated.
+     * @param array $params the binding parameters that will be modified by this method
+     * so that they can be bound to the DB command later.
+     * @return array an array `SET` parts for an `UPDATE` SQL statement (the first array element) and params (the second array element).
+     * @since 2.0.14
+     */
+    protected function prepareUpdateSets($table, $columns, $params = [])
+    {
+        $tableSchema = $this->db->getTableSchema($table);
+        $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
+        $sets = [];
+        foreach ($columns as $name => $value) {
+
+            $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+            if ($value instanceof ExpressionInterface) {
+                $placeholder = $this->buildExpression($value, $params);
+            } else {
+                $placeholder = $this->bindParam($value, $params);
+            }
+
+            $sets[] = $this->db->quoteColumnName($name) . '=' . $placeholder;
+        }
+        return [$sets, $params];
+    }
+
+    /**
      * Creates a DELETE SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -374,8 +743,8 @@ class QueryBuilder extends \yii\base\Object
         }
 
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
-            . $this->db->quoteColumnName($name) . '  PRIMARY KEY ('
-            . implode(', ', $columns). ' )';
+            . $this->db->quoteColumnName($name) . ' PRIMARY KEY ('
+            . implode(', ', $columns) . ')';
     }
 
     /**
@@ -533,6 +902,111 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * Creates a SQL command for adding an unique constraint to an existing table.
+     * @param string $name the name of the unique constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the unique constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string|array $columns the name of the column to that the constraint will be added on.
+     * If there are multiple columns, separate them with commas.
+     * The name will be properly quoted by the method.
+     * @return string the SQL statement for adding an unique constraint to an existing table.
+     * @since 2.0.13
+     */
+    public function addUnique($name, $table, $columns)
+    {
+        if (is_string($columns)) {
+            $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        foreach ($columns as $i => $col) {
+            $columns[$i] = $this->db->quoteColumnName($col);
+        }
+
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+            . $this->db->quoteColumnName($name) . ' UNIQUE ('
+            . implode(', ', $columns) . ')';
+    }
+
+    /**
+     * Creates a SQL command for dropping an unique constraint.
+     * @param string $name the name of the unique constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose unique constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return string the SQL statement for dropping an unique constraint.
+     * @since 2.0.13
+     */
+    public function dropUnique($name, $table)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+    }
+
+    /**
+     * Creates a SQL command for adding a check constraint to an existing table.
+     * @param string $name the name of the check constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the check constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string $expression the SQL of the `CHECK` constraint.
+     * @return string the SQL statement for adding a check constraint to an existing table.
+     * @since 2.0.13
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+            . $this->db->quoteColumnName($name) . ' CHECK (' . $this->db->quoteSql($expression) . ')';
+    }
+
+    /**
+     * Creates a SQL command for dropping a check constraint.
+     * @param string $name the name of the check constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose check constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return string the SQL statement for dropping a check constraint.
+     * @since 2.0.13
+     */
+    public function dropCheck($name, $table)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+    }
+
+    /**
+     * Creates a SQL command for adding a default value constraint to an existing table.
+     * @param string $name the name of the default value constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the default value constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string $column the name of the column to that the constraint will be added on.
+     * The name will be properly quoted by the method.
+     * @param mixed $value default value.
+     * @return string the SQL statement for adding a default value constraint to an existing table.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS.
+     * @since 2.0.13
+     */
+    public function addDefaultValue($name, $table, $column, $value)
+    {
+        throw new NotSupportedException($this->db->getDriverName() . ' does not support adding default value constraints.');
+    }
+
+    /**
+     * Creates a SQL command for dropping a default value constraint.
+     * @param string $name the name of the default value constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose default value constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return string the SQL statement for dropping a default value constraint.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS.
+     * @since 2.0.13
+     */
+    public function dropDefaultValue($name, $table)
+    {
+        throw new NotSupportedException($this->db->getDriverName() . ' does not support dropping default value constraints.');
+    }
+
+    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
@@ -561,7 +1035,7 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * Builds a SQL command for adding comment to column
+     * Builds a SQL command for adding comment to column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -571,12 +1045,11 @@ class QueryBuilder extends \yii\base\Object
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
-
         return 'COMMENT ON COLUMN ' . $this->db->quoteTableName($table) . '.' . $this->db->quoteColumnName($column) . ' IS ' . $this->db->quoteValue($comment);
     }
 
     /**
-     * Builds a SQL command for adding comment to table
+     * Builds a SQL command for adding comment to table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
@@ -589,7 +1062,7 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * Builds a SQL command for adding comment to column
+     * Builds a SQL command for adding comment to column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -602,7 +1075,7 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * Builds a SQL command for adding comment to table
+     * Builds a SQL command for adding comment to table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @return string the SQL statement for adding comment on column
@@ -614,14 +1087,52 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
+     * Creates a SQL View.
+     *
+     * @param string $viewName the name of the view to be created.
+     * @param string|Query $subQuery the select statement which defines the view.
+     * This can be either a string or a [[Query]] object.
+     * @return string the `CREATE VIEW` SQL statement.
+     * @since 2.0.14
+     */
+    public function createView($viewName, $subQuery)
+    {
+        if ($subQuery instanceof Query) {
+            [$rawQuery, $params] = $this->build($subQuery);
+            array_walk(
+                $params,
+                function(&$param) {
+                    $param = $this->db->quoteValue($param);
+                }
+            );
+            $subQuery = strtr($rawQuery, $params);
+        }
+
+        return 'CREATE VIEW ' . $this->db->quoteTableName($viewName) . ' AS ' . $subQuery;
+    }
+
+    /**
+     * Drops a SQL View.
+     *
+     * @param string $viewName the name of the view to be dropped.
+     * @return string the `DROP VIEW` SQL statement.
+     * @since 2.0.14
+     */
+    public function dropView($viewName)
+    {
+        return 'DROP VIEW ' . $this->db->quoteTableName($viewName);
+    }
+
+    /**
      * Converts an abstract column type into a physical column type.
+     *
      * The conversion is done using the type map specified in [[typeMap]].
      * The following abstract column types are supported (using MySQL as an example to explain the corresponding
      * physical types):
      *
      * - `pk`: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"
      * - `bigpk`: an auto-incremental primary key type, will be converted into "bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY"
-     * - `unsignedpk`: an unsigned auto-incremental primary key type, will be converted into "int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY"
+     * - `upk`: an unsigned auto-incremental primary key type, will be converted into "int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY"
      * - `char`: char type, will be converted into "char(1)"
      * - `string`: string type, will be converted into "varchar(255)"
      * - `text`: a long string type, will be converted into "text"
@@ -692,15 +1203,14 @@ class QueryBuilder extends \yii\base\Object
         }
 
         foreach ($columns as $i => $column) {
-            if ($column instanceof Expression) {
+            if ($column instanceof ExpressionInterface) {
                 if (is_int($i)) {
-                    $columns[$i] = $column->expression;
+                    $columns[$i] = $this->buildExpression($column, $params);
                 } else {
-                    $columns[$i] = $column->expression . ' AS ' . $this->db->quoteColumnName($i);
+                    $columns[$i] = $this->buildExpression($column, $params) . ' AS ' . $this->db->quoteColumnName($i);
                 }
-                $params = array_merge($params, $column->params);
             } elseif ($column instanceof Query) {
-                list($sql, $params) = $this->build($column, $params);
+                [$sql, $params] = $this->build($column, $params);
                 $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
             } elseif (is_string($i)) {
                 if (strpos($column, '(') === false) {
@@ -752,7 +1262,7 @@ class QueryBuilder extends \yii\base\Object
                 throw new Exception('A join clause must be specified as an array of join type, join table, and optionally join condition.');
             }
             // 0:join type, 1:join table, 2:on-condition (optional)
-            list ($joinType, $table) = $join;
+            [$joinType, $table] = $join;
             $tables = $this->quoteTableNames((array) $table, $params);
             $table = reset($tables);
             $joins[$i] = "$joinType $table";
@@ -768,7 +1278,7 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * Quotes table names passed
+     * Quotes table names passed.
      *
      * @param array $tables
      * @param array $params
@@ -778,7 +1288,7 @@ class QueryBuilder extends \yii\base\Object
     {
         foreach ($tables as $i => $table) {
             if ($table instanceof Query) {
-                list($sql, $params) = $this->build($table, $params);
+                [$sql, $params] = $this->build($table, $params);
                 $tables[$i] = "($sql) " . $this->db->quoteTableName($i);
             } elseif (is_string($i)) {
                 if (strpos($table, '(') === false) {
@@ -793,6 +1303,7 @@ class QueryBuilder extends \yii\base\Object
                 }
             }
         }
+
         return $tables;
     }
 
@@ -819,13 +1330,14 @@ class QueryBuilder extends \yii\base\Object
             return '';
         }
         foreach ($columns as $i => $column) {
-            if ($column instanceof Expression) {
-                $columns[$i] = $column->expression;
+            if ($column instanceof ExpressionInterface) {
+                $columns[$i] = $this->buildExpression($column);
                 $params = array_merge($params, $column->params);
             } elseif (strpos($column, '(') === false) {
                 $columns[$i] = $this->db->quoteColumnName($column);
             }
         }
+
         return 'GROUP BY ' . implode(', ', $columns);
     }
 
@@ -860,6 +1372,7 @@ class QueryBuilder extends \yii\base\Object
         if ($limit !== '') {
             $sql .= $this->separator . $limit;
         }
+
         return $sql;
     }
 
@@ -875,8 +1388,8 @@ class QueryBuilder extends \yii\base\Object
         }
         $orders = [];
         foreach ($columns as $name => $direction) {
-            if ($direction instanceof Expression) {
-                $orders[] = $direction->expression;
+            if ($direction instanceof ExpressionInterface) {
+                $orders[] = $this->buildExpression($direction);
                 $params = array_merge($params, $direction->params);
             } else {
                 $orders[] = $this->db->quoteColumnName($name) . ($direction === SORT_DESC ? ' DESC' : '');
@@ -911,7 +1424,7 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasLimit($limit)
     {
-        return ctype_digit((string) $limit);
+        return ($limit instanceof ExpressionInterface) || ctype_digit((string) $limit);
     }
 
     /**
@@ -921,8 +1434,7 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasOffset($offset)
     {
-        $offset = (string) $offset;
-        return ctype_digit($offset) && $offset !== '0';
+        return ($offset instanceof ExpressionInterface) || ctype_digit((string) $offset) && (string) $offset !== '0';
     }
 
     /**
@@ -941,7 +1453,7 @@ class QueryBuilder extends \yii\base\Object
         foreach ($unions as $i => $union) {
             $query = $union['query'];
             if ($query instanceof Query) {
-                list($unions[$i]['query'], $params) = $this->build($query, $params);
+                [$unions[$i]['query'], $params] = $this->build($query, $params);
             }
 
             $result .= 'UNION ' . ($union['all'] ? 'ALL ' : '') . '( ' . $unions[$i]['query'] . ' ) ';
@@ -961,446 +1473,74 @@ class QueryBuilder extends \yii\base\Object
         if (!is_array($columns)) {
             if (strpos($columns, '(') !== false) {
                 return $columns;
-            } else {
-                $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+            }
+
+            $rawColumns = $columns;
+            $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+            if ($columns === false) {
+                throw new InvalidArgumentException("$rawColumns is not valid columns.");
             }
         }
         foreach ($columns as $i => $column) {
-            if ($column instanceof Expression) {
-                $columns[$i] = $column->expression;
+            if ($column instanceof ExpressionInterface) {
+                $columns[$i] = $this->buildExpression($column);
             } elseif (strpos($column, '(') === false) {
                 $columns[$i] = $this->db->quoteColumnName($column);
             }
         }
 
-        return is_array($columns) ? implode(', ', $columns) : $columns;
+        return implode(', ', $columns);
     }
 
     /**
      * Parses the condition specification and generates the corresponding SQL expression.
-     * @param string|array|Expression $condition the condition specification. Please refer to [[Query::where()]]
+     * @param string|array|ExpressionInterface $condition the condition specification. Please refer to [[Query::where()]]
      * on how to specify a condition.
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
      */
     public function buildCondition($condition, &$params)
     {
-        if ($condition instanceof Expression) {
-            foreach ($condition->params as $n => $v) {
-                $params[$n] = $v;
+        if (is_array($condition)) {
+            if (empty($condition)) {
+                return '';
             }
-            return $condition->expression;
-        } elseif (!is_array($condition)) {
-            return (string) $condition;
-        } elseif (empty($condition)) {
-            return '';
+
+            $condition = $this->createConditionFromArray($condition);
         }
 
+        if ($condition instanceof ExpressionInterface) {
+            return $this->buildExpression($condition, $params);
+        }
+
+        return (string) $condition;
+    }
+
+    /**
+     * Transforms $condition defined in array format (as described in [[Query::where()]]
+     * to instance of [[yii\db\condition\ConditionInterface|ConditionInterface]] according to
+     * [[conditionClasses]] map.
+     *
+     * @param string|array $condition
+     * @see conditionClasses
+     * @return ConditionInterface
+     * @since 2.0.14
+     */
+    public function createConditionFromArray($condition)
+    {
         if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
-            $operator = strtoupper($condition[0]);
-            if (isset($this->conditionBuilders[$operator])) {
-                $method = $this->conditionBuilders[$operator];
+            $operator = strtoupper(array_shift($condition));
+            if (isset($this->conditionClasses[$operator])) {
+                $className = $this->conditionClasses[$operator];
             } else {
-                $method = 'buildSimpleCondition';
+                $className = 'yii\db\conditions\SimpleCondition';
             }
-            array_shift($condition);
-            return $this->$method($operator, $condition, $params);
-        } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-            return $this->buildHashCondition($condition, $params);
-        }
-    }
-
-    /**
-     * Creates a condition based on column-value pairs.
-     * @param array $condition the condition specification.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     */
-    public function buildHashCondition($condition, &$params)
-    {
-        $parts = [];
-        foreach ($condition as $column => $value) {
-            if (ArrayHelper::isTraversable($value) || $value instanceof Query) {
-                // IN condition
-                $parts[] = $this->buildInCondition('IN', [$column, $value], $params);
-            } else {
-                if (strpos($column, '(') === false) {
-                    $column = $this->db->quoteColumnName($column);
-                }
-                if ($value === null) {
-                    $parts[] = "$column IS NULL";
-                } elseif ($value instanceof Expression) {
-                    $parts[] = "$column=" . $value->expression;
-                    foreach ($value->params as $n => $v) {
-                        $params[$n] = $v;
-                    }
-                } else {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $parts[] = "$column=$phName";
-                    $params[$phName] = $value;
-                }
-            }
-        }
-        return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
-    }
-
-    /**
-     * Connects two or more SQL expressions with the `AND` or `OR` operator.
-     * @param string $operator the operator to use for connecting the given operands
-     * @param array $operands the SQL expressions to connect.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     */
-    public function buildAndCondition($operator, $operands, &$params)
-    {
-        $parts = [];
-        foreach ($operands as $operand) {
-            if (is_array($operand)) {
-                $operand = $this->buildCondition($operand, $params);
-            }
-            if ($operand instanceof Expression) {
-                foreach ($operand->params as $n => $v) {
-                    $params[$n] = $v;
-                }
-                $operand = $operand->expression;
-            }
-            if ($operand !== '') {
-                $parts[] = $operand;
-            }
-        }
-        if (!empty($parts)) {
-            return '(' . implode(") $operator (", $parts) . ')';
-        } else {
-            return '';
-        }
-    }
-
-    /**
-     * Inverts an SQL expressions with `NOT` operator.
-     * @param string $operator the operator to use for connecting the given operands
-     * @param array $operands the SQL expressions to connect.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
-     */
-    public function buildNotCondition($operator, $operands, &$params)
-    {
-        if (count($operands) !== 1) {
-            throw new InvalidParamException("Operator '$operator' requires exactly one operand.");
+            /** @var ConditionInterface $className */
+            return $className::fromArrayDefinition($operator, $condition);
         }
 
-        $operand = reset($operands);
-        if (is_array($operand)) {
-            $operand = $this->buildCondition($operand, $params);
-        }
-        if ($operand === '') {
-            return '';
-        }
-
-        return "$operator ($operand)";
-    }
-
-    /**
-     * Creates an SQL expressions with the `BETWEEN` operator.
-     * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
-     * @param array $operands the first operand is the column name. The second and third operands
-     * describe the interval that column value should be in.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
-     */
-    public function buildBetweenCondition($operator, $operands, &$params)
-    {
-        if (!isset($operands[0], $operands[1], $operands[2])) {
-            throw new InvalidParamException("Operator '$operator' requires three operands.");
-        }
-
-        list($column, $value1, $value2) = $operands;
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-        if ($value1 instanceof Expression) {
-            foreach ($value1->params as $n => $v) {
-                $params[$n] = $v;
-            }
-            $phName1 = $value1->expression;
-        } else {
-            $phName1 = self::PARAM_PREFIX . count($params);
-            $params[$phName1] = $value1;
-        }
-        if ($value2 instanceof Expression) {
-            foreach ($value2->params as $n => $v) {
-                $params[$n] = $v;
-            }
-            $phName2 = $value2->expression;
-        } else {
-            $phName2 = self::PARAM_PREFIX . count($params);
-            $params[$phName2] = $value2;
-        }
-
-        return "$column $operator $phName1 AND $phName2";
-    }
-
-    /**
-     * Creates an SQL expressions with the `IN` operator.
-     * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
-     * @param array $operands the first operand is the column name. If it is an array
-     * a composite IN condition will be generated.
-     * The second operand is an array of values that column value should be among.
-     * If it is an empty array the generated expression will be a `false` value if
-     * operator is `IN` and empty if operator is `NOT IN`.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws Exception if wrong number of operands have been given.
-     */
-    public function buildInCondition($operator, $operands, &$params)
-    {
-        if (!isset($operands[0], $operands[1])) {
-            throw new Exception("Operator '$operator' requires two operands.");
-        }
-
-        list($column, $values) = $operands;
-
-        if ($column === []) {
-            // no columns to test against
-            return $operator === 'IN' ? '0=1' : '';
-        }
-
-        if ($values instanceof Query) {
-            return $this->buildSubqueryInCondition($operator, $column, $values, $params);
-        }
-        if (!is_array($values) && !$values instanceof \Traversable) {
-            // ensure values is an array
-            $values = (array) $values;
-        }
-
-        if ($column instanceof \Traversable || count($column) > 1) {
-            return $this->buildCompositeInCondition($operator, $column, $values, $params);
-        } elseif (is_array($column)) {
-            $column = reset($column);
-        }
-
-        $sqlValues = [];
-        foreach ($values as $i => $value) {
-            if (is_array($value) || $value instanceof \ArrayAccess) {
-                $value = isset($value[$column]) ? $value[$column] : null;
-            }
-            if ($value === null) {
-                $sqlValues[$i] = 'NULL';
-            } elseif ($value instanceof Expression) {
-                $sqlValues[$i] = $value->expression;
-                foreach ($value->params as $n => $v) {
-                    $params[$n] = $v;
-                }
-            } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $params[$phName] = $value;
-                $sqlValues[$i] = $phName;
-            }
-        }
-
-        if (empty($sqlValues)) {
-            return $operator === 'IN' ? '0=1' : '';
-        }
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-
-        if (count($sqlValues) > 1) {
-            return "$column $operator (" . implode(', ', $sqlValues) . ')';
-        } else {
-            $operator = $operator === 'IN' ? '=' : '<>';
-            return $column . $operator . reset($sqlValues);
-        }
-    }
-
-    /**
-     * Builds SQL for IN condition
-     *
-     * @param string $operator
-     * @param array $columns
-     * @param Query $values
-     * @param array $params
-     * @return string SQL
-     */
-    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
-    {
-        list($sql, $params) = $this->build($values, $params);
-        if (is_array($columns)) {
-            foreach ($columns as $i => $col) {
-                if (strpos($col, '(') === false) {
-                    $columns[$i] = $this->db->quoteColumnName($col);
-                }
-            }
-            return '(' . implode(', ', $columns) . ") $operator ($sql)";
-        } else {
-            if (strpos($columns, '(') === false) {
-                $columns = $this->db->quoteColumnName($columns);
-            }
-            return "$columns $operator ($sql)";
-        }
-    }
-
-    /**
-     * Builds SQL for IN condition
-     *
-     * @param string $operator
-     * @param array|\Traversable $columns
-     * @param array $values
-     * @param array $params
-     * @return string SQL
-     */
-    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
-    {
-        $vss = [];
-        foreach ($values as $value) {
-            $vs = [];
-            foreach ($columns as $column) {
-                if (isset($value[$column])) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $params[$phName] = $value[$column];
-                    $vs[] = $phName;
-                } else {
-                    $vs[] = 'NULL';
-                }
-            }
-            $vss[] = '(' . implode(', ', $vs) . ')';
-        }
-
-        if (empty($vss)) {
-            return $operator === 'IN' ? '0=1' : '';
-        }
-
-        $sqlColumns = [];
-        foreach ($columns as $i => $column) {
-            $sqlColumns[] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
-        }
-
-        return '(' . implode(', ', $sqlColumns) . ") $operator (" . implode(', ', $vss) . ')';
-    }
-
-    /**
-     * Creates an SQL expressions with the `LIKE` operator.
-     * @param string $operator the operator to use (e.g. `LIKE`, `NOT LIKE`, `OR LIKE` or `OR NOT LIKE`)
-     * @param array $operands an array of two or three operands
-     *
-     * - The first operand is the column name.
-     * - The second operand is a single value or an array of values that column value
-     *   should be compared with. If it is an empty array the generated expression will
-     *   be a `false` value if operator is `LIKE` or `OR LIKE`, and empty if operator
-     *   is `NOT LIKE` or `OR NOT LIKE`.
-     * - An optional third operand can also be provided to specify how to escape special characters
-     *   in the value(s). The operand should be an array of mappings from the special characters to their
-     *   escaped counterparts. If this operand is not provided, a default escape mapping will be used.
-     *   You may use `false` or an empty array to indicate the values are already escaped and no escape
-     *   should be applied. Note that when using an escape mapping (or the third operand is not provided),
-     *   the values will be automatically enclosed within a pair of percentage characters.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
-     */
-    public function buildLikeCondition($operator, $operands, &$params)
-    {
-        if (!isset($operands[0], $operands[1])) {
-            throw new InvalidParamException("Operator '$operator' requires two operands.");
-        }
-
-        $escape = isset($operands[2]) ? $operands[2] : ['%' => '\%', '_' => '\_', '\\' => '\\\\'];
-        unset($operands[2]);
-
-        if (!preg_match('/^(AND |OR |)(((NOT |))I?LIKE)/', $operator, $matches)) {
-            throw new InvalidParamException("Invalid operator '$operator'.");
-        }
-        $andor = ' ' . (!empty($matches[1]) ? $matches[1] : 'AND ');
-        $not = !empty($matches[3]);
-        $operator = $matches[2];
-
-        list($column, $values) = $operands;
-
-        if (!is_array($values)) {
-            $values = [$values];
-        }
-
-        if (empty($values)) {
-            return $not ? '' : '0=1';
-        }
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-
-        $parts = [];
-        foreach ($values as $value) {
-            if ($value instanceof Expression) {
-                foreach ($value->params as $n => $v) {
-                    $params[$n] = $v;
-                }
-                $phName = $value->expression;
-            } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
-            }
-            $parts[] = "$column $operator $phName";
-        }
-
-        return implode($andor, $parts);
-    }
-
-    /**
-     * Creates an SQL expressions with the `EXISTS` operator.
-     * @param string $operator the operator to use (e.g. `EXISTS` or `NOT EXISTS`)
-     * @param array $operands contains only one element which is a [[Query]] object representing the sub-query.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if the operand is not a [[Query]] object.
-     */
-    public function buildExistsCondition($operator, $operands, &$params)
-    {
-        if ($operands[0] instanceof Query) {
-            list($sql, $params) = $this->build($operands[0], $params);
-            return "$operator ($sql)";
-        } else {
-            throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
-        }
-    }
-
-    /**
-     * Creates an SQL expressions like `"column" operator value`.
-     * @param string $operator the operator to use. Anything could be used e.g. `>`, `<=`, etc.
-     * @param array $operands contains two column names.
-     * @param array $params the binding parameters to be populated
-     * @return string the generated SQL expression
-     * @throws InvalidParamException if wrong number of operands have been given.
-     */
-    public function buildSimpleCondition($operator, $operands, &$params)
-    {
-        if (count($operands) !== 2) {
-            throw new InvalidParamException("Operator '$operator' requires two operands.");
-        }
-
-        list($column, $value) = $operands;
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-
-        if ($value === null) {
-            return "$column $operator NULL";
-        } elseif ($value instanceof Expression) {
-            foreach ($value->params as $n => $v) {
-                $params[$n] = $v;
-            }
-            return "$column $operator {$value->expression}";
-        } elseif ($value instanceof Query) {
-            list($sql, $params) = $this->build($value, $params);
-            return "$column $operator ($sql)";
-        } else {
-            $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = $value;
-            return "$column $operator $phName";
-        }
+        // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
+        return new HashCondition($condition);
     }
 
     /**
@@ -1412,5 +1552,22 @@ class QueryBuilder extends \yii\base\Object
     public function selectExists($rawSql)
     {
         return 'SELECT EXISTS(' . $rawSql . ')';
+    }
+
+    /**
+     * Helper method to add $value to $params array using [[PARAM_PREFIX]].
+     *
+     * @param string|null $value
+     * @param array $params passed by reference
+     * @return string the placeholder name in $params array
+     *
+     * @since 2.0.14
+     */
+    public function bindParam($value, &$params)
+    {
+        $phName = self::PARAM_PREFIX . count($params);
+        $params[$phName] = $value;
+
+        return $phName;
     }
 }

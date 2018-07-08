@@ -1,11 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\filters\auth;
 
 use Yii;
 use yii\filters\auth\AuthMethod;
 use yii\filters\auth\CompositeAuth;
-use yii\rest\Controller;
+use yii\filters\auth\HttpBearerAuth;
+use yii\web\Controller;
 use yiiunit\framework\web\UserIdentity;
 
 /**
@@ -21,6 +27,8 @@ class TestAuth extends AuthMethod
 
 class TestController extends Controller
 {
+    public $authMethods = [];
+
     public function actionA()
     {
         return 'success';
@@ -28,7 +36,7 @@ class TestController extends Controller
 
     public function actionB()
     {
-        /**
+        /*
          * this call will execute the actionA in a same instance of TestController
          */
         return $this->runAction('a');
@@ -36,7 +44,7 @@ class TestController extends Controller
 
     public function actionC()
     {
-        /**
+        /*
          * this call will execute the actionA in a same instance of TestController
          */
         return $this->run('a');
@@ -44,7 +52,7 @@ class TestController extends Controller
 
     public function actionD()
     {
-        /**
+        /*
          * this call will execute the actionA in a new instance of TestController
          */
         return $this->run('test/a');
@@ -52,7 +60,7 @@ class TestController extends Controller
 
     public function behaviors()
     {
-        /**
+        /*
          * the CompositeAuth::authenticate() assumes that it is only executed once per the controller's instance
          * i believe this is okay as long as we specify in the documentation that if we want to use the authenticate
          * method again(this might even be also true to other behaviors that attaches to the beforeAction event),
@@ -60,9 +68,9 @@ class TestController extends Controller
          */
         return [
             'authenticator' => [
-                'class' => CompositeAuth::class,
-                'authMethods' => [
-                    TestAuth::class
+                '__class' => CompositeAuth::class,
+                'authMethods' => $this->authMethods ?: [
+                    TestAuth::class,
                 ],
             ],
         ];
@@ -78,18 +86,18 @@ class CompositeAuthTest extends \yiiunit\TestCase
     {
         parent::setUp();
 
-        $_SERVER['SCRIPT_FILENAME'] = "/index.php";
-        $_SERVER['SCRIPT_NAME'] = "/index.php";
+        $_SERVER['SCRIPT_FILENAME'] = '/index.php';
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
 
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::class
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
             'controllerMap' => [
-                'test' => TestController::class
-            ]
+                'test' => TestController::class,
+            ],
         ];
 
         $this->mockWebApplication($appConfig);
@@ -103,7 +111,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
     }
 
     /**
-     * reproducing the issue specified in https://github.com/yiisoft/yii2/issues/7409
+     * @see https://github.com/yiisoft/yii2/issues/7409
      */
     public function testRunAction()
     {
@@ -117,5 +125,20 @@ class CompositeAuthTest extends \yiiunit\TestCase
         /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
         $this->assertEquals('success', $controller->run('c'));
+    }
+
+    public function testCompositeAuth()
+    {
+        Yii::$app->request->setHeader('Authorization', base64_encode("foo:bar"));
+        /** @var TestAuthController $controller */
+        $controller = Yii::$app->createController('test')[0];
+        $controller->authMethods = [
+            HttpBearerAuth::class,
+            TestAuth::class,
+        ];
+        try {
+            $this->assertEquals('success', $controller->run('b'));
+        } catch (UnauthorizedHttpException $e) {
+        }
     }
 }

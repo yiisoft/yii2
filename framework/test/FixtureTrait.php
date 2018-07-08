@@ -20,7 +20,7 @@ use yii\base\InvalidConfigException;
  * through the syntax `$this->fixtureName('model name')`.
  *
  * For more details and usage information on FixtureTrait, see the [guide article on fixtures](guide:test-fixtures).
- * 
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -37,6 +37,7 @@ trait FixtureTrait
 
     /**
      * Declares the fixtures that are needed by the current test case.
+     *
      * The return value of this method must be an array of fixture configurations. For example,
      *
      * ```php
@@ -47,7 +48,7 @@ trait FixtureTrait
      *     'users' => UserFixture::class,
      *     // "cache" fixture with configuration
      *     'cache' => [
-     *          'class' => CacheFixture::class,
+     *          '__class' => CacheFixture::class,
      *          'host' => 'xxx',
      *     ],
      * ]
@@ -125,6 +126,16 @@ trait FixtureTrait
     }
 
     /**
+     * Initialize the fixtures.
+     * @since 2.0.12
+     */
+    public function initFixtures()
+    {
+        $this->unloadFixtures();
+        $this->loadFixtures();
+    }
+
+    /**
      * Returns the fixture objects as specified in [[globalFixtures()]] and [[fixtures()]].
      * @return Fixture[] the loaded fixtures for the current test case
      */
@@ -169,14 +180,14 @@ trait FixtureTrait
         foreach ($fixtures as $name => $fixture) {
             if (!is_array($fixture)) {
                 $class = ltrim($fixture, '\\');
-                $fixtures[$name] = ['class' => $class];
+                $fixtures[$name] = ['__class' => $class];
                 $aliases[$class] = is_int($name) ? $class : $name;
-            } elseif (isset($fixture['class'])) {
-                $class = ltrim($fixture['class'], '\\');
+            } elseif (isset($fixture['__class'])) {
+                $class = ltrim($fixture['__class'], '\\');
                 $config[$class] = $fixture;
                 $aliases[$class] = $name;
             } else {
-                throw new InvalidConfigException("You must specify 'class' for the fixture '$name'.");
+                throw new InvalidConfigException("You must specify '__class' for the fixture '$name'.");
             }
         }
 
@@ -186,18 +197,18 @@ trait FixtureTrait
         while (($fixture = array_pop($stack)) !== null) {
             if ($fixture instanceof Fixture) {
                 $class = get_class($fixture);
-                $name = isset($aliases[$class]) ? $aliases[$class] : $class;
+                $name = $aliases[$class] ?? $class;
                 unset($instances[$name]);  // unset so that the fixture is added to the last in the next line
                 $instances[$name] = $fixture;
             } else {
-                $class = ltrim($fixture['class'], '\\');
-                $name = isset($aliases[$class]) ? $aliases[$class] : $class;
+                $class = ltrim($fixture['__class'], '\\');
+                $name = $aliases[$class] ?? $class;
                 if (!isset($instances[$name])) {
                     $instances[$name] = false;
                     $stack[] = $fixture = Yii::createObject($fixture);
                     foreach ($fixture->depends as $dep) {
                         // need to use the configuration provided in test case
-                        $stack[] = isset($config[$dep]) ? $config[$dep] : ['class' => $dep];
+                        $stack[] = $config[$dep] ?? ['__class' => $dep];
                     }
                 } elseif ($instances[$name] === false) {
                     throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");

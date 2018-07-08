@@ -46,7 +46,7 @@ Você pode atualizar o Composer executando o comando `composer self-update`.
 Com o Composer instalado, você pode instalar o Yii executando o seguinte comando
 em um diretório acessível pela Web:
 
-    composer global require "fxp/composer-asset-plugin:^1.2.0"
+    composer global require "fxp/composer-asset-plugin:^1.4.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 O primeiro comando instala o [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
@@ -148,10 +148,7 @@ Configurando os Servidores Web <span id="configuring-web-servers"></span>
 
 A aplicação instalada de acordo com as instruções acima deve funcionar imediatamente 
 com um [Servidor HTTP Apache](http://httpd.apache.org/) ou um [Servidor HTTP Nginx](http://nginx.org/),
-no Windows, Mac OS X ou Linux usando PHP 5.4 ou superior. O Yii 2.0 também é compatível
-com o [HHVM](http://hhvm.com/) do Facebook, no entanto, existem alguns casos extremos
-que o HHVM se comporta diferente no PHP nativo, então, terá que tomar um cuidado 
-extra quando usar o HHVM.
+no Windows, Mac OS X ou Linux usando PHP 5.4 ou superior.
 
 Em um servidor de produção, você pode querer configurar o seu servidor Web de
 modo que a aplicação possa ser acessada pela URL `http://www.example.com/index.php`
@@ -202,7 +199,7 @@ DocumentRoot "path/to/basic/web"
 
 Você deve ter instalado o PHP como um [FPM SAPI](http://php.net/install.fpm) para
 usar o [Nginx](http://wiki.nginx.org/). Use a seguinte configuração do Nginx,
-substituindo `path/to/basic/web` com o caminho real para `basic/web` e `mysite.local`
+substituindo `path/to/basic/web` com o caminho real para `basic/web` e `mysite.test`
 com o nome de host real a servidor.
 
 ```
@@ -213,7 +210,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

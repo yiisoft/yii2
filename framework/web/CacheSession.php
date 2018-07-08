@@ -8,7 +8,7 @@
 namespace yii\web;
 
 use Yii;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\di\Instance;
 
 /**
@@ -26,7 +26,7 @@ use yii\di\Instance;
  *
  * ```php
  * 'session' => [
- *     'class' => \yii\web\CacheSession::class,
+ *     '__class' => \yii\web\CacheSession::class,
  *     // 'cache' => 'mycache',
  * ]
  * ```
@@ -39,7 +39,7 @@ use yii\di\Instance;
 class CacheSession extends Session
 {
     /**
-     * @var Cache|array|string the cache object or the application component ID of the cache object.
+     * @var CacheInterface|array|string the cache object or the application component ID of the cache object.
      * The session data will be stored using this cache object.
      *
      * After the CacheSession object is created, if you want to change this property,
@@ -56,7 +56,7 @@ class CacheSession extends Session
     public function init()
     {
         parent::init();
-        $this->cache = Instance::ensure($this->cache, Cache::class);
+        $this->cache = Instance::ensure($this->cache, CacheInterface::class);
     }
 
     /**
@@ -71,7 +71,7 @@ class CacheSession extends Session
 
     /**
      * Session read handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @return string the session data
      */
@@ -79,12 +79,12 @@ class CacheSession extends Session
     {
         $data = $this->cache->get($this->calculateKey($id));
 
-        return $data === false ? '' : $data;
+        return $data === null ? '' : $data;
     }
 
     /**
      * Session write handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @param string $data session data
      * @return bool whether session write is successful
@@ -96,13 +96,18 @@ class CacheSession extends Session
 
     /**
      * Session destroy handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @return bool whether session is destroyed successfully
      */
     public function destroySession($id)
     {
-        return $this->cache->delete($this->calculateKey($id));
+        $cacheId = $this->calculateKey($id);
+        if ($this->cache->has($cacheId) === false) {
+            return true;
+        }
+
+        return $this->cache->delete($cacheId);
     }
 
     /**

@@ -1,11 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\caching;
 
 use yii\caching\ArrayCache;
+use yii\caching\Cache;
 
 /**
- * Class for testing file cache backend
+ * Class for testing file cache backend.
  * @group caching
  */
 class ArrayCacheTest extends CacheTestCase
@@ -13,13 +19,16 @@ class ArrayCacheTest extends CacheTestCase
     private $_cacheInstance = null;
 
     /**
-     * @return ArrayCache
+     * @return Cache
      */
     protected function getCacheInstance()
     {
         if ($this->_cacheInstance === null) {
-            $this->_cacheInstance = new ArrayCache();
+            $this->_cacheInstance = new Cache([
+                'handler' => new ArrayCache()
+            ]);
         }
+
         return $this->_cacheInstance;
     }
 
@@ -32,7 +41,7 @@ class ArrayCacheTest extends CacheTestCase
         static::$microtime++;
         $this->assertEquals('expire_test', $cache->get('expire_test'));
         static::$microtime++;
-        $this->assertFalse($cache->get('expire_test'));
+        $this->assertNull($cache->get('expire_test'));
     }
 
     public function testExpireAdd()
@@ -44,6 +53,6 @@ class ArrayCacheTest extends CacheTestCase
         static::$microtime++;
         $this->assertEquals('expire_testa', $cache->get('expire_testa'));
         static::$microtime++;
-        $this->assertFalse($cache->get('expire_testa'));
+        $this->assertNull($cache->get('expire_testa'));
     }
 }
