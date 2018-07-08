@@ -89,7 +89,7 @@ class Event extends BaseObject
      * By default this method generates event name from its class name, converting it to 'dot.separated.string' format.
      * Child classes may override this method providing their own implementation.
      * @return string default event name.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     protected function defaultName()
     {
@@ -102,7 +102,7 @@ class Event extends BaseObject
      * This property may be a `null` when this event is a class-level event,
      * which is triggered in a static context.
      * @return object|null target/context from which event was triggered.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getTarget()
     {
@@ -112,7 +112,7 @@ class Event extends BaseObject
     /**
      * Sets target/context from which event was triggered.
      * @param object|null $target target/context from which event was triggered.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setTarget($target)
     {
@@ -124,7 +124,7 @@ class Event extends BaseObject
      * When a handler sets this to be `true`, the event processing will stop and
      * ignore the rest of the event handlers, which have not been invoked yet.
      * @param bool $flag whether or not to stop propagating this event. Default is `true`.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function stopPropagation($flag = true)
     {
@@ -134,7 +134,7 @@ class Event extends BaseObject
     /**
      * Indicates whether or not the propagation of this event has been stopped.
      * @return bool whether or not the propagation of this event has been stopped.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function isPropagationStopped()
     {
@@ -143,7 +143,7 @@ class Event extends BaseObject
 
     /**
      * @return array
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getParams()
     {
@@ -152,7 +152,7 @@ class Event extends BaseObject
 
     /**
      * @param array $params
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function setParams(array $params)
     {
@@ -164,7 +164,7 @@ class Event extends BaseObject
      * @param string $name parameter name.
      * @param mixed|null $default default value.
      * @return mixed parameter value.
-     * @since 2.1.0
+     * @since 3.0.0
      */
     public function getParam($name, $default = null)
     {
