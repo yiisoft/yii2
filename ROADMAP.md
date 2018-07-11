@@ -52,7 +52,7 @@ We can tag additional releases in case someone will take the role of release man
 - [ ] [Error handler](https://github.com/yiisoft/yii2/issues/14348).
 - [x] Remove PJAX support.
 - [x] Remove Cubrid support.
-- [ ] Extract `findIdentityByAccessToken` from `IdentityInterface` (looks weird when it's not implemented in all web apps).
+- [ ] [Split `IdentityInterface`](https://github.com/yiisoft/yii2/issues/13825).
 
 ## Dependency injection
 
