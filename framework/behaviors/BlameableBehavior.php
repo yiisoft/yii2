@@ -110,7 +110,7 @@ class BlameableBehavior extends AttributeBehavior
             return $userId;
         }
 
-        return parent::getValue($event);
+        return $this->getDefaultValue($event);
     }
 
     /**
