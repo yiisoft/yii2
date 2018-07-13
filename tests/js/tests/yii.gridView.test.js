@@ -14,11 +14,13 @@ describe('yii.gridView', function () {
     var $gridView;
     var settings = {
         filterUrl: '/posts/index',
-        filterSelector: '#w0-filters input, #w0-filters select'
+        filterSelector: '#w0-filters input, #w0-filters select',
+        filterOnFocusOut: true
     };
     var commonSettings = {
         filterUrl: '/posts/index',
-        filterSelector: '#w-common-filters input, #w-common-filters select'
+        filterSelector: '#w-common-filters input, #w-common-filters select',
+        filterOnFocusOut: true
     };
     var $textInput;
     var $select;
@@ -143,7 +145,8 @@ describe('yii.gridView', function () {
     describe('init', function () {
         var customSettings = {
             filterUrl: '/posts/filter',
-            filterSelector: '#w-common-filters input'
+            filterSelector: '#w-common-filters input',
+            filterOnFocusOut: true
         };
 
         withData({

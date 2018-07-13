@@ -353,4 +353,29 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         return $items;
     }
+
+    public function testDropIndex()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = 'DROP INDEX "index"';
+        $sql = $qb->dropIndex('index', '{{table}}');
+        $this->assertEquals($expected, $sql);
+
+        $expected = 'DROP INDEX "schema"."index"';
+        $sql = $qb->dropIndex('index', '{{schema.table}}');
+        $this->assertEquals($expected, $sql);
+
+        $expected = 'DROP INDEX "schema"."index"';
+        $sql = $qb->dropIndex('schema.index', '{{schema2.table}}');
+        $this->assertEquals($expected, $sql);
+
+        $expected = 'DROP INDEX "schema"."index"';
+        $sql = $qb->dropIndex('index', '{{schema.%table}}');
+        $this->assertEquals($expected, $sql);
+
+        $expected = 'DROP INDEX {{%schema.index}}';
+        $sql = $qb->dropIndex('index', '{{%schema.table}}');
+        $this->assertEquals($expected, $sql);
+    }
 }

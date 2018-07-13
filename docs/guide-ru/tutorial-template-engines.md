@@ -43,5 +43,5 @@
 
 Для получения подробной информации об использовании конкретного шаблонизатора обратитесь в их документации:
 
-- [Twig guide](https://github.com/yiisoft/yii2-twig/tree/master/docs/guide)
-- [Smarty guide](https://github.com/yiisoft/yii2-smarty/tree/master/docs/guide)
+- [Руководство по Twig (англ.)](https://github.com/yiisoft/yii2-twig/tree/master/docs/guide)
+- [Руководство Smarty (англ.)](https://github.com/yiisoft/yii2-smarty/tree/master/docs/guide)

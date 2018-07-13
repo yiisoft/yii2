@@ -106,19 +106,19 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
 
-    public function testResetSequence()
+    public function testExecuteResetSequence()
     {
+        $db = $this->getConnection();
         $qb = $this->getQueryBuilder();
+        $sqlResult = "SELECT last_number FROM user_sequences WHERE sequence_name = 'item_SEQ'";
 
-        $expected = 'DROP SEQUENCE "item_SEQ";'
-            . 'CREATE SEQUENCE "item_SEQ" START WITH 6 INCREMENT BY 1 NOMAXVALUE NOCACHE';
-        $sql = $qb->resetSequence('item');
-        $this->assertEquals($expected, $sql);
+        $qb->executeResetSequence('item');
+        $result = $db->createCommand($sqlResult)->queryScalar();
+        $this->assertEquals(6, $result);
 
-        $expected = 'DROP SEQUENCE "item_SEQ";'
-            . 'CREATE SEQUENCE "item_SEQ" START WITH 4 INCREMENT BY 1 NOMAXVALUE NOCACHE';
-        $sql = $qb->resetSequence('item', 4);
-        $this->assertEquals($expected, $sql);
+        $qb->executeResetSequence('item', 4);
+        $result = $db->createCommand($sqlResult)->queryScalar();
+        $this->assertEquals(4, $result);
     }
 
     public function likeConditionProvider()
