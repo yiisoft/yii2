@@ -16,6 +16,22 @@ use yii\grid\ActionColumn;
  */
 class ActionColumnTest extends \yiiunit\TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->mockApplication([
+            'components' => [
+                'request' => [
+                    '__class' => \yii\web\Request::class,
+                    'baseUrl' => '/',
+                ],
+                'urlManager' => [
+                    '__class' => \yii\web\UrlManager::class,
+                ],
+            ]
+        ], \yii\web\Application::class);
+    }
+
     public function testInit()
     {
         $column = new ActionColumn();

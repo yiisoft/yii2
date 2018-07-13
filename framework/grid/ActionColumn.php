@@ -9,7 +9,8 @@ namespace yii\grid;
 
 use Yii;
 use yii\helpers\Html;
-use yii\helpers\Url;
+use yii\di\Instance;
+use yii\web\UrlManager;
 
 /**
  * ActionColumn is a column for the [[GridView]] widget that displays buttons for viewing and manipulating the items.
@@ -86,7 +87,8 @@ class ActionColumn extends Column
      * ```
      */
     public $buttons = [];
-    /** @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
+    /**
+     * @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
      * and the values are the boolean true/false or the anonymous function. When the button name is not specified in
      * this array it will be shown by default.
      * The callbacks must use the following signature:
@@ -126,7 +128,12 @@ class ActionColumn extends Column
      * @since 2.0.4
      */
     public $buttonOptions = [];
-
+    /**
+     * @var UrlManager|string|array the URL manager used for creating URLs. If not set, then "urlManager"
+     * application component will be used.
+     * @since 2.1.0
+     */
+    public $urlManager;
 
     /**
      * {@inheritdoc}
@@ -135,6 +142,12 @@ class ActionColumn extends Column
     {
         parent::init();
         $this->initDefaultButtons();
+
+        if ($this->urlManager === null) {
+            $this->urlManager = Yii::$app->getUrlManager();
+        } else {
+            $this->urlManager = Instance::ensure($this->urlManager, UrlManager::class);
+        }
     }
 
     /**
@@ -202,7 +215,7 @@ class ActionColumn extends Column
         $params = is_array($key) ? $key : ['id' => (string) $key];
         $params[0] = $this->controller ? $this->controller . '/' . $action : $action;
 
-        return Url::toRoute($params);
+        return $this->urlManager->createUrlToRoute($params);
     }
 
     /**

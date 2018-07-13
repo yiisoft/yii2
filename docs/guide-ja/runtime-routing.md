@@ -201,7 +201,7 @@ echo Url::to(['@posts']);
 ```
 
 [[yii\helpers\Url::to()]] メソッドは、[[yii\web\UrlManager|URL マネージャ]] の
-[[yii\web\UrlManager::createUrl()|createUrl()]] メソッド、および、[[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]]
+[[yii\web\UrlManager::createUrlTo()|createUrlTo()]] メソッド、および、[[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]]
 を呼び出すことによって実装されています。
 次に続くいくつかの項では、[[yii\web\UrlManager|URL マネージャ]] を構成して、生成される URL の形式をカスタマイズする方法を説明します。
 

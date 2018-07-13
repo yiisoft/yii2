@@ -11,7 +11,6 @@ use Yii;
 use yii\base\Behavior;
 use yii\base\Widget;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\web\JsExpression;
 
 /**
@@ -204,7 +203,7 @@ abstract class ActiveFormClientScript extends Behavior
             'scrollToErrorOffset' => $this->owner->scrollToErrorOffset,
         ];
         if ($this->owner->validationUrl !== null) {
-            $options['validationUrl'] = Url::to($this->owner->validationUrl);
+            $options['validationUrl'] = Yii::$app->getUrlManager()->createUrlTo($this->owner->validationUrl);
         }
 
         return $options;

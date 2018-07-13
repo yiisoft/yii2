@@ -10,9 +10,10 @@ namespace yii\widgets;
 use Closure;
 use Yii;
 use yii\base\Widget;
+use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Url;
+use yii\web\UrlManager;
 
 /**
  * Menu displays a multi-level menu using nested HTML lists.
@@ -164,7 +165,33 @@ class Menu extends Widget
      * @see isItemActive()
      */
     public $params;
+    /**
+     * @var UrlManager|string|array the URL manager used for creating URLs. If not set, then "urlManager"
+     * application component will be used.
+     * @since 2.1.0
+     */
+    public $urlManager;
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+
+        if ($this->route === null && Yii::$app->controller !== null) {
+            $this->route = Yii::$app->controller->getRoute();
+        }
+        if ($this->params === null) {
+            $this->params = Yii::$app->request->getQueryParams();
+        }
+        if ($this->urlManager === null) {
+            $this->urlManager = Yii::$app->getUrlManager();
+        } else {
+            $this->urlManager = Instance::ensure($this->urlManager, UrlManager::class);
+        }
+    }
 
     /**
      * Renders the menu.
@@ -172,12 +199,6 @@ class Menu extends Widget
      */
     public function run()
     {
-        if ($this->route === null && Yii::$app->controller !== null) {
-            $this->route = Yii::$app->controller->getRoute();
-        }
-        if ($this->params === null) {
-            $this->params = Yii::$app->request->getQueryParams();
-        }
         $items = $this->normalizeItems($this->items, $hasActiveChild);
         if (empty($items)) {
             return '';
@@ -238,7 +259,7 @@ class Menu extends Widget
             $template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 
             return strtr($template, [
-                '{url}' => Html::encode(Url::to($item['url'])),
+                '{url}' => Html::encode($this->urlManager->createUrlTo($item['url'])),
                 '{label}' => $item['label'],
             ]);
         }
