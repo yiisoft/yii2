@@ -1506,13 +1506,8 @@ describe('yii.validation', function () {
         describe('with compareAttribute, "==" operator and 2 identical strings', function () {
             it(VALIDATOR_SUCCESS_MESSAGE, function () {
                 var $form = {
-                    data: function () {
-                        return {
-                            attributes: [{
-                                "id": "input-id",
-                                "input": "#input-id"
-                            }]
-                        }
+                    find: function(){
+                        return $input;
                     }
                 };
                 var messages = [];

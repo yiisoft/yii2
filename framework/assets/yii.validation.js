@@ -274,12 +274,11 @@ yii.validation = (function ($) {
             if (options.compareAttribute === undefined) {
                 compareValue = options.compareValue;
             } else {
-                var attributes = $form.data('yiiActiveForm').attributes
-                for (var i = attributes.length - 1; i >= 0; i--) {
-                    if (attributes[i].id === options.compareAttribute) {
-                        compareValue = $(attributes[i].input).val();
-                    }
+                var $target = $('#' + options.compareAttribute);
+                if (!$target.length) {
+                    $target = $form.find('[name="' + options.compareAttributeName + '"]');
                 }
+                compareValue = $target.val();                
             }
 
             if (options.type === 'number') {
