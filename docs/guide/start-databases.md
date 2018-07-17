@@ -85,7 +85,7 @@ If you need to work with databases support for which isn't bundled with Yii, che
 - [Informix](https://github.com/edgardmessias/yii2-informix)
 - [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
 - [Firebird](https://github.com/edgardmessias/yii2-firebird)
-- [MariaDB](https://github.com/edgardmessias/yii2-mariadb)
+- [MariaDB](https://github.com/sam-it/yii2-mariadb)
 
 
 Creating an Active Record <span id="creating-active-record"></span>
