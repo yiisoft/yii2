@@ -794,7 +794,7 @@ public function behaviors()
 }
 ```
 > Note: Because [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] will ensure the record is only saved
-> if user submits a valid user number by directly parsing [[\yii\web\Request::getBodyParam()|getBodyParam()]], it
+> if user submits a valid version number by directly parsing [[\yii\web\Request::getBodyParam()|getBodyParam()]], it
 > may be useful to extend your model class and do step 2 in parent model while attaching the behavior (step 3) to the child
 > class so you can have an instance dedicated to internal use while tying the other to controllers responsible of receiving 
 > end user inputs. Alternatively, you can implement your own logic by configuring its [[\yii\behaviors\OptimisticLockBehavior::$value|value]] property. 
