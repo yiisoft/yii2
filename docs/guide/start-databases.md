@@ -23,6 +23,8 @@ Preparing the Database <span id="preparing-database"></span>
 To begin, create a database named `yii2basic`, from which you will fetch data in your application.
 You may create an SQLite, MySQL, PostgreSQL, MSSQL or Oracle database, as Yii has built-in support for many database applications. For simplicity, MySQL will be assumed in the following description.
 
+> Info: While MariaDB used to be a drop-in replacement for MySQL this is no longer fully true. In case you wish to use advanced features like `JSON` support in MariaDB, please check the MariaDB extension listed below.
+
 Next, create a table named `country` in the database, and insert some sample data. You may run the following SQL statements to do so:
 
 ```sql
@@ -83,6 +85,7 @@ If you need to work with databases support for which isn't bundled with Yii, che
 - [Informix](https://github.com/edgardmessias/yii2-informix)
 - [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
 - [Firebird](https://github.com/edgardmessias/yii2-firebird)
+- [MariaDB](https://github.com/sam-it/yii2-mariadb)
 
 
 Creating an Active Record <span id="creating-active-record"></span>
