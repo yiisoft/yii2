@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Bug #16322: Fixed strings were not were not compared using timing attack resistant approach while CSRF token validation (samdark, Felix Wiedemann)
 - Chg #16192: `yii\db\Command::logQuery()` is now protected (drlibra)
 - Bug #16377: Fixed `yii\base\Event:off()` undefined index error when event handler does not match (razvanphp)
+- Bug #16531: Fix a PHP error that would occur when using `yii\web\Response:sendContent()` in an environment where `set_time_limit()` was disabled (angrybrad)
 
 2.0.15.1 March 21, 2018
 -----------------------
