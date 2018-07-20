@@ -39,10 +39,8 @@ class UserController extends ActiveController
 ```
 
 このコントローラ・クラスは、よく使用される一揃いの RESTful アクションを実装した [[yii\rest\ActiveController]] を拡張するものです。
-[[yii\rest\ActiveController::modelClass|modelClass]] を `app\models\User` と指定することによって、データの取得と操作にどのモデルが使用できるかをコントローラに教えてやります。
-The controller class extends from [[yii\rest\ActiveController]], which implements a common set of RESTful actions.
-By specifying [[yii\rest\ActiveController::modelClass|modelClass]]
-as `app\models\User`, the controller knows which model can be used for fetching and manipulating data.
+[[yii\rest\ActiveController::modelClass|modelClass]] として `app\models\User` が指定されているため、
+コントローラがどのモデルを使用してデータの取得と操作が出来るかがわかります。
 
 
 ## URL 規則を構成する <span id="configuring-url-rules"></span>
@@ -60,8 +58,8 @@ as `app\models\User`, the controller knows which model can be used for fetching 
 ]
 ```
 
-上記の構成情報は、主として、`user` コントローラの URL 規則を追加して、ユーザのデータが綺麗な URL と意味のある HTTP 動詞によってアクセスおよび操作できるようにするものです。
-
+上記の構成情報は、主として、`user` コントローラの URL 規則を追加して、ユーザのデータが綺麗な URL と意味のある
+HTTP 動詞によってアクセスおよび操作できるようにするものです。
 
 > Info: Yii はコントローラの名前を自動的に複数形にしてエンド・ボイントとして使用します (下の「試してみる」(#trying-it-out) を参照してください)。
 > この振る舞いは [[yii\rest\UrlRule::$pluralize]] プロパティを使って構成することが可能です。
@@ -69,7 +67,8 @@ as `app\models\User`, the controller knows which model can be used for fetching 
 
 ## JSON の入力を可能にする <span id="enabling-json-input"></span>
 
-API が JSON 形式で入力データを受け取ることが出来るように、`request` [アプリケーション・コンポーネント](structure-application-components.md) の [[yii\web\Request::$parsers|parsers]] プロパティを構成して、JSON 入力のために [[yii\web\JsonParser]] を使うようにします。
+API が JSON 形式で入力データを受け取ることが出来るように、`request` [アプリケーション・コンポーネント](structure-application-components.md) の
+[[yii\web\Request::$parsers|parsers]] プロパティを構成して、JSON 入力のために [[yii\web\JsonParser]] を使うようにします。
 
 ```php
 'request' => [
@@ -201,8 +200,10 @@ Yii の RESTful API フレームワークを使う場合は、API エンド・�
 そして、コントローラを使って、単一タイプのリソースに対するエンド・ボイントを実装するアクションを編成します。
 
 リソースは [[yii\base\Model]] クラスを拡張するデータ・モデルとして表現されます。
-データベース (リレーショナルまたは NoSQL) を扱っている場合は、[[yii\db\ActiveRecord|ActiveRecord]] を使ってリソースを表現することが推奨されます。
+データベース (リレーショナルまたは NoSQL) を扱っている場合は、[[yii\db\ActiveRecord|ActiveRecord]]
+を使ってリソースを表現することが推奨されます。
 
 [[yii\rest\UrlRule]] を使って API エンド・ボイントへのルーティングを簡単にすることが出来ます。
 
-これは要求されてはいませんが、RESTful API は、保守を容易にするために、ウェブのフロントエンドやバックエンドとは別の独立したアプリケーションとして開発することが推奨されます。
+これは要求されてはいませんが、RESTful API は、保守を容易にするために、
+ウェブのフロントエンドやバックエンドとは別の独立したアプリケーションとして開発することが推奨されます。

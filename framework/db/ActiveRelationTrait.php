@@ -353,24 +353,22 @@ trait ActiveRelationTrait
                     }
                 }
             }
-        } else {
-            if ($this->multiple) {
-                foreach ($primaryModels as $i => $primaryModel) {
-                    foreach ($primaryModel[$primaryName] as $j => $m) {
-                        if ($m instanceof ActiveRecordInterface) {
-                            $m->populateRelation($name, $primaryModel);
-                        } else {
-                            $primaryModels[$i][$primaryName][$j][$name] = $primaryModel;
-                        }
+        } elseif ($this->multiple) {
+            foreach ($primaryModels as $i => $primaryModel) {
+                foreach ($primaryModel[$primaryName] as $j => $m) {
+                    if ($m instanceof ActiveRecordInterface) {
+                        $m->populateRelation($name, $primaryModel);
+                    } else {
+                        $primaryModels[$i][$primaryName][$j][$name] = $primaryModel;
                     }
                 }
-            } else {
-                foreach ($primaryModels as $i => $primaryModel) {
-                    if ($primaryModels[$i][$primaryName] instanceof ActiveRecordInterface) {
-                        $primaryModels[$i][$primaryName]->populateRelation($name, $primaryModel);
-                    } elseif (!empty($primaryModels[$i][$primaryName])) {
-                        $primaryModels[$i][$primaryName][$name] = $primaryModel;
-                    }
+            }
+        } else {
+            foreach ($primaryModels as $i => $primaryModel) {
+                if ($primaryModels[$i][$primaryName] instanceof ActiveRecordInterface) {
+                    $primaryModels[$i][$primaryName]->populateRelation($name, $primaryModel);
+                } elseif (!empty($primaryModels[$i][$primaryName])) {
+                    $primaryModels[$i][$primaryName][$name] = $primaryModel;
                 }
             }
         }
@@ -506,10 +504,7 @@ trait ActiveRelationTrait
             // composite keys
 
             // ensure keys of $this->link are prefixed the same way as $attributes
-            $prefixedLink = array_combine(
-                $attributes,
-                array_values($this->link)
-            );
+            $prefixedLink = array_combine($attributes, $this->link);
             foreach ($models as $model) {
                 $v = [];
                 foreach ($prefixedLink as $attribute => $link) {
