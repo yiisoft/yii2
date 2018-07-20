@@ -203,9 +203,9 @@ public function actionOld()
 和浏览器跳转类似，文件发送是另一个依赖指定HTTP头的功能，
 Yii提供方法集合来支持各种文件发送需求，它们对HTTP头都有内置的支持。
 
-- [[yii\web\Response::sendFile()]]: 发送一个已存在的文件到客户端
-- [[yii\web\Response::sendContentAsFile()]]: 发送一个文本字符串作为文件到客户端
-- [[yii\web\Response::sendStreamAsFile()]]: 发送一个已存在的文件流作为文件到客户端
+- [[yii\web\Response::sendFile()]]：发送一个已存在的文件到客户端
+- [[yii\web\Response::sendContentAsFile()]]：发送一个文本字符串作为文件到客户端
+- [[yii\web\Response::sendStreamAsFile()]]：发送一个已存在的文件流作为文件到客户端
 
 这些方法都将响应对象作为返回值，如果要发送的文件非常大，应考虑使用
 [[yii\web\Response::sendStreamAsFile()]] 因为它更节约内存，
