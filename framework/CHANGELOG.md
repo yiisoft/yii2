@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Enh #6780: Support use method `ActiveRecord::findAll()` with empty parameters (LazyKnight)
 - Bug #15826: Fixed JavaScript compareValidator in `yii.validation.js` for attributes not in rules (mgrechanik)
 - Enh #16365: Added $filterOnFocusOut option for GridView (s1lver)
 - Enh #14289: Added `yii\db\Command::executeResetSequence()` to work with Oracle (CedricYii)
