@@ -251,7 +251,7 @@ window.yii = (function ($) {
                 });
             }
 
-            $form.trigger('submit');
+            $form[0].trigger('submit');
 
             $.when($form.data('yiiSubmitFinalizePromise')).done(function () {
                 if (newForm) {
