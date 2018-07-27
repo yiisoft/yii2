@@ -416,7 +416,9 @@ class Response extends \yii\base\Response
             return;
         }
 
-        set_time_limit(0); // Reset time limit for big files
+        if (strpos(ini_get('disable_functions'), 'set_time_limit') === false) {
+            set_time_limit(0); // Reset time limit for big files
+        }
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
         if (is_array($this->stream)) {
