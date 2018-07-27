@@ -238,15 +238,10 @@ class Connection extends Component
      */
     public $queryCache = 'cache';
     /**
-     * @var string the charset used for database connection. The property is only used
-     * for MySQL, PostgreSQL and CUBRID databases. Defaults to null, meaning using default charset
+     * @var string the charset used for database connection. Defaults to null, meaning using default charset
      * as configured by the database.
      *
-     * For Oracle Database, the charset must be specified in the [[dsn]], for example for UTF-8 by appending `;charset=UTF-8`
-     * to the DSN string.
-     *
-     * The same applies for if you're using GBK or BIG5 charset with MySQL, then it's highly recommended to
-     * specify charset via [[dsn]] like `'mysql:dbname=mydatabase;host=127.0.0.1;charset=GBK;'`.
+     * @since 2.0.16 This property is now supported for all drivers.
      */
     public $charset;
     /**
@@ -441,7 +436,6 @@ class Connection extends Component
      * @var array query cache parameters for the [[cache()]] calls
      */
     private $_queryCacheInfo = [];
-
 
     /**
      * Returns a value indicating whether the DB connection is established.
@@ -684,6 +678,11 @@ class Connection extends Component
             $dsn = 'sqlite:' . Yii::getAlias(substr($dsn, 7));
         }
 
+        // We always append the charset even if it is ignored by the driver.
+        if (isset($this->charset)) {
+            $this->dsn .= ';charset=' . $this->charset;
+        }
+
         return new $pdoClass($dsn, $this->username, $this->password, $this->attributes);
     }
 
@@ -700,9 +699,12 @@ class Connection extends Component
         if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES')) {
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
         }
-        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'], true)) {
+
+        // Some drivers don't support charset via the DSN so we manually set it here for those drivers.
+        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'cubrid'], true)) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
         }
+
         $this->trigger(self::EVENT_AFTER_OPEN);
     }
 
