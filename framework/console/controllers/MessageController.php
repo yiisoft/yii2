@@ -610,10 +610,10 @@ EOD;
     protected function tokensEqual($a, $b)
     {
         if (is_string($a) && is_string($b)) {
-            return $a === $b;
+            return strtolower($a) === strtolower($b);
         }
         if (isset($a[0], $a[1], $b[0], $b[1])) {
-            return $a[0] === $b[0] && $a[1] == $b[1];
+            return strtolower($a[0]) === strtolower($b[0]) && strtolower($a[1]) == strtolower($b[1]);
         }
 
         return false;
