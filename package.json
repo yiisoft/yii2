@@ -9,14 +9,13 @@
   "dependencies": {},
   "devDependencies": {
     "chai": "^3.5.0",
-    "jsdom": "^9.8.3",
-    "leche": "^2.1.2",
-    "mocha": "^3.1.2",
-    "mocha-jsdom": "^1.1.0",
+    "leche": "^2.2.3",
+    "mocha": "^3.5.3",
+    "mocha-jsdom": "^2.0.0",
     "sinon": "^1.17.6"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha tests/js/tests/*.test.js --timeout 0"
+    "test": "./node_modules/.bin/mocha tests/js/tests/*.test.js --timeout 0"
   },
   "repository": {
     "type": "git",

@@ -1572,9 +1572,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 throw new InvalidCallException('Unable to link models: the primary key of ' . get_class($primaryModel) . ' is null.');
             }
             if (is_array($foreignModel->$fk)) { // relation via array valued attribute
-                $foreignModel->$fk = array_merge($foreignModel->$fk, [$value]);
+                $foreignModel->{$fk}[] = $value;
             } else {
-                $foreignModel->$fk = $value;
+                $foreignModel->{$fk} = $value;
             }
         }
         $foreignModel->save(false);

@@ -4,6 +4,9 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #15826: Fixed JavaScript compareValidator in `yii.validation.js` for attributes not in rules (mgrechanik)
+- Enh #16365: Added $filterOnFocusOut option for GridView (s1lver)
+- Enh #14289: Added `yii\db\Command::executeResetSequence()` to work with Oracle (CedricYii)
 - Enh #9133: Added `yii\behaviors\OptimisticLockBehavior` (tunecino)
 - Bug #16104: Fixed `yii\db\pgsql\QueryBuilder::dropIndex()` to prepend index name with schema name (wapmorgan)
 - Bug #16193: Fixed `yii\filters\Cors` to not reflect origin header value when configured to wildcard origins (Jianjun Chen)
@@ -25,6 +28,7 @@ Yii Framework 2 Change Log
 - Bug #14636: Views can now use relative paths even when using themed views (sammousa)
 - Bug #16245: Fixed `__isset()` in `BaseActiveRecord` not catching errors (sammousa)
 - Bug #16266: Fixed `yii\helpers\BaseStringHelper` where explode would not allow 0 as trim string (Thoulah)
+- Bug #16278: Fixed drop existing views when console `migrate/fresh` command runs (developeruz)
 - Bug #16277: Fixed `yii\db\Query::from()` to respect `yii\db\ExpressionInterface` (noname007)
 - Bug #16280: Fixed `yii\base\Model::getActiveValidators()` to return correct validators for attribute on scenario (paweljankowiak06)
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
@@ -34,6 +38,7 @@ Yii Framework 2 Change Log
 - Bug #16301: Fixed `yii\web\User::setIdentity()` to clear access check cache while setting identity object to `null` (Izumi-kun)
 - Bug #16322: Fixed strings were not were not compared using timing attack resistant approach while CSRF token validation (samdark, Felix Wiedemann)
 - Chg #16192: `yii\db\Command::logQuery()` is now protected, extracted `getCacheKey()` from `queryInternal()` (drlibra)
+- Bug #16377: Fixed `yii\base\Event:off()` undefined index error when event handler does not match (razvanphp)
 
 2.0.15.1 March 21, 2018
 -----------------------
