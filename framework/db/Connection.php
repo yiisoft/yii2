@@ -679,7 +679,7 @@ class Connection extends Component
         }
 
         // We always append the charset even if it is ignored by the driver.
-        if (isset($this->charset)) {
+        if (isset($this->charset) && strpos($dsn, 'charset=') === false) {
             $this->dsn .= ';charset=' . $this->charset;
         }
 
