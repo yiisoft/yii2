@@ -2,7 +2,7 @@ Qu'est ce que Yii ?
 =================
 
 Yii est un framework PHP hautes performances à base de composants qui permet de développer rapidement des applications Web modernes.
-Le nom Yii (pronnoncer `Yee` ou `[ji:]`) signifie "simple et évolutif" en Chinois. Il peut également 
+Le nom Yii (prononcer `Yee` ou `[ji:]`) signifie "simple et évolutif" en Chinois. Il peut également 
 être considéré comme un acronyme de **Yes It Is**!
 
 
@@ -26,7 +26,7 @@ compliquer le code de Yii uniquement pour respecter un modèle de conception.
 constructeur de requêtes et ActiveRecord, à la fois pour les bases de données relationnelles et NoSQL; prise en charge RESTful API;
 prise en charge de caches multi-niveaux; et plus. 
 - Yii est extrêmement flexible. Vous pouvez personnaliser ou remplacer presque chaque partie du code du noyau. Vous pouvez également 
-profiter de son architecture extensible solide, afin d'utiliser ou développer des extensions redistribuables. 
+profiter de son architecture extensible solide, afin d'utiliser ou développer des extensions distribuables. 
 - La haute performance est toujours un des principaux objectifs de Yii.
 
 Yii n'est pas un one-man show, il est soutenu par une [solide équipe de développement du noyau][about_yii] ainsi que d'une grande communauté 
