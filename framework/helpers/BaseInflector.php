@@ -473,7 +473,7 @@ class BaseInflector
      * @param string $string An arbitrary string to convert
      * @param string $replacement The replacement to use for spaces
      * @param bool $lowercase whether to return the string in lowercase or not. Defaults to `true`.
-     * @param bool $transliterate whether transliterate this string or not. Defaults to `true`.
+     * @param bool $transliterate whether transliterate the string or not. Defaults to `true`.
      * @return string The converted string.
      */
     public static function slug($string, $replacement = '-', $lowercase = true, $transliterate = true)
