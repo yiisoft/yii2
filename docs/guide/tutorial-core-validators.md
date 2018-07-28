@@ -367,6 +367,13 @@ section for complete coverage about uploading files and performing validation ab
         // normalize phone input here
         return $value;
     }],
+    
+    // normalize "phone" using the function "normalizePhone"
+    ['phone', 'filter', 'filter' => [$this, 'normalizePhone']],
+    
+    public function normalizePhone($value) {
+        return $value;
+    }
 ]
 ```
 
