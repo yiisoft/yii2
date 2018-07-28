@@ -1325,7 +1325,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
 
-        self::setActivePlaceholder($model, $attribute, $options);
+        static::setActivePlaceholder($model, $attribute, $options);
 
         return static::input($type, $name, $value, $options);
     }
@@ -1502,7 +1502,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
         self::normalizeMaxLength($model, $attribute, $options);
-        self::setActivePlaceholder($model, $attribute, $options);
+        static::setActivePlaceholder($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 
