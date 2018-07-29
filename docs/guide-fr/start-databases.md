@@ -1,4 +1,4 @@
-Travailler avec les bases de données
+Travailler avec des bases de données
 ======================
 
 Cette section décrit comment créer une nouvelle page qui affiche des données pays récupérées dans une table de base 
@@ -10,22 +10,21 @@ Au long de ce tutoriel, vous apprendrez comment :
 
 * Configurer une connexion à une base de données
 * Définir une classe Active Record
-* Requêter des données en utilisant la classe Active Record
+* Demander des données en utilisant la classe Active Record (enregistrement actif)
 * Afficher des données dans une vue paginée
 
-Notez que pour finir cette section, vous aurez besoin d'avoir une connaissance basique des bases de données.
-En particulier, vous devez savoir créer une base de données, et exécuter des déclarations SQL en utilisant un client de
+Notez que, pour finir cette section, vous aurez besoin d'avoir une connaissance basique des bases de données.
+En particulier, vous devez savoir créer une base de données et exécuter des déclarations SQL en utilisant un client de
 gestion de bases de données.
 
 
 Préparer la Base de Données <span id="preparing-database"></span>
 --------------------
 
-Pour commencer, créez une base de données appelée `yii2basic`, depuis laquelle vous irez chercher les données dans 
-votre application.
-Vous pouvez créer une base de données SQLite, MySQL, PostgreSQL, MSSQL ou Oracle, car Yii gère nativement de nombreuses
-applications de base de données. Par simplicité, nous supposerons que vous utilisez MySQL dans les descriptions qui 
-suivent.
+Pour commencer, créez une base de données appelée `yii2basic`, depuis laquelle vous irez chercher les données dans votre application.
+Vous pouvez créer une base de données SQLite, MySQL, PostgreSQL, MSSQL ou Oracle, car Yii gère nativement de nombreuses applications de base de données. Pour simplifier, nous supposerons que vous utilisez MySQL dans les descriptions qui suivent.
+
+>Note : bien que MariaDB a été un remplacement direct de MySQL, cela n'est plus complètement vrai. Dans le cas où vous auriez besoin de fonctionnalités avancées telles que la prise en charge de `JSON`, jetez un coup d'œil à la liste des extensions de MariaDB ci-dessous.
 
 Créez maintenant une table nommée `country` dans la base de données et insérez-y quelques données exemples. Vous pouvez exécuter l'instruction SQL suivante pour le faire : 
 
@@ -48,15 +47,14 @@ INSERT INTO `country` VALUES ('RU','Russia',146519759);
 INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
-Vous avez désormais une base de données appelée `yii2basic` conmprenant une table `country` comportant trois colonnes et contenant dix lignes de données.
+Vous avez désormais une base de données appelée `yii2basic` comprenant une table `country` comportant trois colonnes et contenant dix lignes de données.
 
 Configurer une Connexion à la BDD <span id="configuring-db-connection"></span>
 ---------------------------
 
 Avant de continuer, vérifiez que vous avez installé à la fois l'extension PHP 
 [PDO](http://www.php.net/manual/fr/book.pdo.php) et le pilote PDO pour la base de données que vous utilisez (c'est
-à dire `pdo_mysql` pour MySQL). C'est une exigence de base si votre application utilise une base de données 
-relationnelle.
+à dire `pdo_mysql` pour MySQL). C'est une exigence de base si votre application utilise une base de données relationnelle.
 
 Une fois ces éléments installés, ouvrez le fichier `config/db.php` et modifiez les paramètres pour qu'ils correspondent à votre base de données. Par défaut, le fichier contient ce qui suit :
 
@@ -72,18 +70,20 @@ return [
 ];
 ```
 
-Le fichier `config/db.php` est un exemple type d'outil de [configuration](concept-configurations.md) basé sur un 
-fichier. Ce fichier de configuration en particulier spécifie les paramètres nécessaires à la création et 
-l'initialisation d'une instance de [[yii\db\Connection]] grâce à laquelle vous pouvez effectuer des requêtes SQL 
-dans la base de données sous-jacente.
+Le fichier `config/db.php` est un exemple type d'outil de [configuration](concept-configurations.md) basé sur un fichier. Ce fichier de configuration en particulier spécifie les paramètres nécessaires à la création et l'initialisation d'une instance de [[yii\db\Connection]] grâce à laquelle vous pouvez effectuer des requêtes SQL dans la base de données sous-jacente.
 
-On peut accéder à connexion à la BDD configurée ci-dessus depuis le code de l'application vial'expression 
-`Yii::$app->db`.
+On peut accéder à connexion à la BDD configurée ci-dessus depuis le code de l'application via l'expression `Yii::$app->db`.
 
 > Info: le fichier `config/db.php` sera inclus par la configuration principale de l'application `config/web.php`, 
-  qui spécifie comment l'instante d'[application](structure-applications.md) doit être initialisée.
+  qui spécifie comment l'instance d'[application](structure-applications.md) doit être initialisée.
   Pour plus d'informations, reportez-vous à la section [Configurations](concept-configurations.md).
 
+Si vous avez besoin de fonctionnalités de base de données dont la prise en charge n'est pas comprise dans Yii, examinez les extensions suivantes: 
+
+- [Informix](https://github.com/edgardmessias/yii2-informix)
+- [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
+- [Firebird](https://github.com/edgardmessias/yii2-firebird)
+- [MariaDB](https://github.com/sam-it/yii2-mariadb)
 
 Créer un Active Record <span id="creating-active-record"></span>
 -------------------------
@@ -102,8 +102,7 @@ class Country extends ActiveRecord
 }
 ```
 
-La classe `Country` étend [[yii\db\ActiveRecord]]. Vous n'avez pas besoin d'y écrire le moindre code ! Simplement, avec
-le code ci-dessus, Yii devine le nom de la table associée au nom de la classe. 
+La classe `Country` étend [[yii\db\ActiveRecord]]. Vous n'avez pas besoin d'y écrire le moindre code ! Simplement, avec le code ci-dessus, Yii devine le nom de la table associée au nom de la classe. 
 
 > Info: si aucune correspondance directe ne peut être faite à partir du nom de la classe, vous pouvez outrepasser la méthode [[yii\db\ActiveRecord::tableName()]] pour spécifier explicitement un nom de table.
 
@@ -126,10 +125,8 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Info: Active Record est un moyen puissant pour accéder et manipuler des données d'une base de manière orientée objet.
-Vous pouvez trouver plus d'informations dans la section [Active Record](db-active-record.md). Sinon, vous pouvez 
-également interagir avec une base de données en utilisant une méthode de plus bas niveau d'accès aux données appelée 
-[Data Access Objects](db-dao.md).
+> Info: Active Record (enregistrement actif) est un moyen puissant pour accéder et manipuler des données d'une base de manière orientée objet.
+Vous pouvez trouver plus d'informations dans la section [Active Record](db-active-record.md). Sinon, vous pouvez également interagir avec une base de données en utilisant une méthode de plus bas niveau d'accès aux données appelée [Database Access Objects](db-dao.md).
 
 
 Créer une Action <span id="creating-action"></span>
@@ -204,7 +201,7 @@ use yii\widgets\LinkPager;
 <ul>
 <?php foreach ($countries as $country): ?>
     <li>
-        <?= Html::encode("{$country->name} ({$country->code})") ?>:
+        <?= Html::encode("{$country->code} ({$country->name})") ?>:
         <?= $country->population ?>
     </li>
 <?php endforeach; ?>
@@ -243,13 +240,13 @@ En coulisse, [[yii\data\Pagination|Pagination]] fournit toutes les fonctionnalit
 
 * Au départ, [[yii\data\Pagination|Pagination]] représente la première page, qui reflète la requête SELECT de country
   avec la clause `LIMIT 5 OFFSET 0`. Il en résulte que les cinq premiers pays seront trouvés et affichés.
-* L'objet graphique [[yii\widgets\LinkPager|LinkPager]] effectue le rendu des boutons de pages en utilisant les URLs créées par 
-  [[yii\data\Pagination::createUrl()|Pagination]]. Les URLs contiendront le paramètre de requête `page`, qui représente
+* L'objet graphique [[yii\widgets\LinkPager|LinkPager]] effectue le rendu des boutons de pages en utilisant les URL créées par 
+  [[yii\data\Pagination::createUrl()|Pagination]]. Les URL contiendront le paramètre de requête `page`, qui représente
   les différents numéros de pages.
 * Si vous cliquez sur le bouton de page "2", une nouvelle requête pour la route `country/index` sera déclenchée et 
   traitée.
   [[yii\data\Pagination|Pagination]] lit le paramètre de requête `page` dans l'URL et met le numéro de page à 2.
-  La nouvelle requête de pays aura donc la clause `LIMIT 5 OFFSET 5` et retournera le cinq pays suivants pour être
+  La nouvelle requête de pays aura donc la clause `LIMIT 5 OFFSET 5` et retournera les cinq pays suivants pour être
   affichés.
 
 
@@ -260,7 +257,7 @@ Dans cette section, vous avez appris comment travailler avec une base de donnée
 chercher et afficher des données dans des pages avec l'aide de [[yii\data\Pagination]] et de [[yii\widgets\LinkPager]].
 
 Dans la prochaine section, vous apprendrez comment utiliser le puissant outil de génération de code, appelé 
-[Gii](tool-gii.md), pour vous aider à implémenter rapidement des fonctionnalités communément requises, telles que les 
+[Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide), pour vous aider à rapidement mettre en œuvre des fonctionnalités communément requises, telles que les 
 opérations Créer, Lire, Mettre à Jour et Supprimer (CRUD : Create-Read-Update-Delete) pour travailler avec les données 
 dans une table de base de données. En fait, le code que vous venez d'écrire peut être généré automatiquement dans Yii 
 en utilisant l'outil Gii.
