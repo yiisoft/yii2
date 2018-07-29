@@ -116,7 +116,7 @@ Vous pouvez aussi cliquer sur le bouton "Create Country" (créer un pays) en hau
 
 ![Mettre à Jour un Pays](images/start-gii-country-update.png)
 
-Ce qui suit est la liste des fichiers générés par Gii, au cas où vous souhaiteriez investiguer la manière dont ces fonctionnalités sont mise en œuvre, ou les personnaliser :
+Ce qui suit est la liste des fichiers générés par Gii, au cas où vous souhaiteriez investiguer la manière dont ces fonctionnalités sont mises en œuvre, ou les personnaliser :
 
 * Contrôleur: `controllers/CountryController.php`
 * Modèles: `models/Country.php` et `models/CountrySearch.php`
