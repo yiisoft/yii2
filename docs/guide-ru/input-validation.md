@@ -323,8 +323,9 @@ public function actionSearch($name, $email)
 /**
  * @param string $attribute атрибут проверяемый в настоящее время
  * @param array $params дополнительные пары имя-значение, заданное в правиле
+ * @param \yii\validators\InlineValidator $validator связь с экземпляром InlineValidator
  */
-function ($attribute, $params)
+function ($attribute, $params, $validator)
 ```
 
 Если атрибут не прошел проверку, метод/функция должна вызвать [[yii\base\Model::addError()]],
