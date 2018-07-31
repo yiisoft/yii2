@@ -41,7 +41,6 @@ Yii Framework 2 Change Log
 - Bug #16377: Fixed `yii\base\Event:off()` undefined index error when event handler does not match (razvanphp)
 - Bug #16514: Fixed `yii\di\Container::resolveCallableDependencies` to support callable object (wi1dcard)
 - Bug #15889: Fixed override `yii\helpers\Html::setActivePlaceholder` (lesha724)
-- Enh: Added Belarusian Translations (alexantr)
 
 2.0.15.1 March 21, 2018
 -----------------------
