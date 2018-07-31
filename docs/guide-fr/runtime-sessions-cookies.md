@@ -5,12 +5,12 @@ Les sessions et les témoins de connexion permettent à des données d'être con
 
 ## Sessions <span id="sessions"></span>
 
-Comme pour les [requêtes](runtime-requests.md) et les [réponses](runtime-responses.md), vous pouvez accéder aux sessions via le [composant d'application component](structure-application-components.md) `session` qui, par défaut, est une instance de la classe [[yii\web\Session]].
+Comme pour les [requêtes](runtime-requests.md) et les [réponses](runtime-responses.md), vous pouvez accéder aux sessions via le [composant d'application](structure-application-components.md) `session` qui, par défaut, est une instance de la classe [[yii\web\Session]].
 
 
 ### Ouverture et fermeture d'une session <span id="opening-closing-sessions"></span>
 
-Pour ouvrir et fermer une session, vous pouvez procéder comme ceci :
+Pour ouvrir et fermer une session, vous pouvez procéder comme suit :
 
 ```php
 $session = Yii::$app->session;
@@ -24,7 +24,7 @@ $session->open();
 // ferme une session
 $session->close();
 
-// détruit toutes les données enregistrée dans une session.
+// détruit toutes les données enregistrées dans une session.
 $session->destroy();
 ```
 
@@ -127,6 +127,10 @@ Toutes ces classes de session prennent en charge le même jeu de méthodes d'API
 
 > Note: si vous voulez accéder aux données de session via `$_SESSION` quand vous êtes en train d'utiliser une session à stockage personnalisé, vous devez vous assurer que cette session a été préalablement démarrée via  [[yii\web\Session::open()]]. Cela est dû au fait que les gestionnaires de stockage des sessions personnalisées sont enregistrés à l'intérieur de cette méthode. 
 
+> Note : si vous utilisez un stockage de session personnalisé, vous devez configurer le collecteur de déchets de session explicitement. 
+Quelques installations de PHP (p. ex. Debian) utilisent une probabilité de collecteur de déchets de 0 et nettoient les fichiers de session hors ligne dans une tâche de cron. Ce processus ne s'applique pas à votre stockage personnalisé, c'est pourquoi vous devez configurer  
+  [[yii\web\Session::$GCProbability]] pour utiliser une valeur non nulle.
+
 Pour savoir comment configurer et utiliser ces classes de composant, reportez-vous à leur documentation d'API. Ci-dessous, nous présentons un exemple de configuration de [[yii\web\DbSession]] dans la configuration de l'application pour utiliser une base de données en tant que support de stockage d'une session :
 
 
@@ -153,12 +157,38 @@ CREATE TABLE session
 )
 ```
 
-où 'BLOB' fait référence au type de grand objet binaire (binary large objet — BLOB) de votre système de gestion de base de données (DBMS) préféré. Ci-dessous, vous trouverez les types de BLOB qui peuvent être utilisés par quelques DBMS populaires :
+où 'BLOB' fait référence au type « grand objet binaire » (binary large objet — BLOB) de votre système de gestion de base de données (DBMS) préféré. Ci-dessous, vous trouverez les types de BLOB qui peuvent être utilisés par quelques DBMS populaires :
 - MySQL: LONGBLOB
 - PostgreSQL: BYTEA
 - MSSQL: BLOB
 
 > Note: en fonction des réglages de `session.hash_function` dans votre fichier php.ini, vous devez peut-être ajuster la longueur de la colonne `id`. Par exemple, si  `session.hash_function=sha256`, vous devez utiliser une longueur de 64 au lieu de 40. 
+
+Cela peut être accompli d'une façon alternative avec la migration suivante :
+
+```php
+<?php
+
+use yii\db\Migration;
+
+class m170529_050554_create_table_session extends Migration
+{
+    public function up()
+    {
+        $this->createTable('{{%session}}', [
+            'id' => $this->char(64)->notNull(),
+            'expire' => $this->integer(),
+            'data' => $this->binary()
+        ]);
+        $this->addPrimaryKey('pk-id', '{{%session}}', 'id');
+    }
+
+    public function down()
+    {
+        $this->dropTable('{{%session}}');
+    }
+}
+```
   
 
 ### Donnés flash <span id="flash-data"></span>
