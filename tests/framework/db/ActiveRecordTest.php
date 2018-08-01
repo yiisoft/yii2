@@ -1807,4 +1807,16 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertFalse(isset($cat->throwable));
 
     }
+
+    public function testIsDirty()
+    {
+        $order = new Order();
+        $this->assertTrue($order->isDirty());
+
+        $order->setIsNewRecord(false);
+        $this->assertFalse($order->isDirty());
+
+        $order->quantity = 2;
+        $this->assertTrue($order->isDirty());
+    }
 }

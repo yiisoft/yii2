@@ -190,7 +190,7 @@ class SluggableBehavior extends AttributeBehavior
         }
 
         foreach ((array) $this->attribute as $attribute) {
-            if ($this->owner->isAttributeChanged($attribute)) {
+            if ($this->owner->isAttributeDirty($attribute)) {
                 return true;
             }
         }
