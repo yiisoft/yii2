@@ -57,7 +57,7 @@ class BlameableBehaviorConsoleTest extends TestCase
 
     public function testDefaultValue()
     {
-        $model = new ActiveRecordBlameable([
+        $model = new ActiveRecordBlameableConsole([
             'as blameable' => [
                 'class' => BlameableBehavior::className(),
                 'defaultValue' => 2
