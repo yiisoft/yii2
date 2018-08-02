@@ -15,7 +15,7 @@ use yii\db\BaseActiveRecord;
 use yiiunit\TestCase;
 
 /**
- * Unit test for [[\yii\behaviors\BlameableBehavior]].
+ * Unit test emulating console app (without user component) for [[\yii\behaviors\BlameableBehavior]].
  *
  * @group behaviors
  */
