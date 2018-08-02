@@ -77,8 +77,6 @@ class BlameableBehaviorConsoleTest extends TestCase
         $model->name = __METHOD__;
         $model->beforeSave(true);
 
-        $model->beforeSave(true);
-
         $this->assertEquals(11, $model->created_by);
         $this->assertEquals(11, $model->updated_by);
     }
