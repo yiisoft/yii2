@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.16 under development
 ------------------------
+- Bug #14901: Fixed trim validation for radio/checkbox button (s1lver)
 - Bug #16527: Fixed return content for `\yii\widgets\ActiveForm::run()` (carono)
 - Bug #15826: Fixed JavaScript compareValidator in `yii.validation.js` for attributes not in rules (mgrechanik)
 - Enh #16365: Added $filterOnFocusOut option for GridView (s1lver)
