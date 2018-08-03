@@ -42,6 +42,7 @@ Yii Framework 2 Change Log
 - Bug #16514: Fixed `yii\di\Container::resolveCallableDependencies` to support callable object (wi1dcard)
 - Bug #15889: Fixed override `yii\helpers\Html::setActivePlaceholder` (lesha724)
 - Enh #16522: Allow jQuery 3.3 (Slamdunk)
+- Enh #16603: Added `yii\mutex\FileMutex::$isWindows` for Windows file shares on Unix guest machines (brandonkelly)  
 
 2.0.15.1 March 21, 2018
 -----------------------
