@@ -18,7 +18,7 @@ en el entorno de un equipo de desarrollo.
   utilizar el Template de Proyecto Básico por su simplicidad pero funcionalidad suficiente.
 
 
-Installing via Composer <span id="installing-via-composer"></span>
+Instalando via Composer <span id="installing-via-composer"></span>
 -------------------------------
 
 Si aún no tienes Composer instalado, puedes hacerlo siguiendo las instrucciones que se encuentran en
@@ -48,7 +48,7 @@ El primer comando instala [composer asset plugin](https://github.com/francoisplu
 que permite administrar dependencias de paquetes bower y npm a través de Composer. Sólo necesitas ejecutar este comando
 una vez. El segundo comando instala Yii en un directorio llamado `basic`. Puedes elegir un nombre de directorio diferente si así lo deseas.
 
-> Note: Durante la instalación, Composer puede preguntar por tus credenciales de acceso de Github. Esto es normal ya que Composer 
+> Nota: Durante la instalación, Composer puede preguntar por tus credenciales de acceso de Github. Esto es normal ya que Composer 
 > necesita obtener suficiente límite de acceso de la API para traer la información de dependencias de Github. Para más detalles, 
 > consulta la [documentación de Composer](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
 
@@ -104,7 +104,7 @@ comando de consola estando parado en el directorio `web` de la aplicación:
 php yii serve
 ```
 
-> Note: Por defecto el servidor HTTP escuchará en el puerto 8080. De cualquier modo, si el puerto está en uso o deseas 
+> Nota: Por defecto el servidor HTTP escuchará en el puerto 8080. De cualquier modo, si el puerto está en uso o deseas 
 servir varias aplicaciones de esta manera, podrías querer especificar qué puerto utilizar. Sólo agrega el argumento --port:
 
 ```bash
@@ -138,7 +138,7 @@ y el correspondiente driver de base de datos (como `pdo_mysql` para bases de dat
 Configurar Servidores Web <span id="configuring-web-servers"></span>
 -------------------------
 
-> Info: Puedes saltear esta sección por ahora si sólo estás probando Yii sin intención
+> Información: Puedes saltear esta sección por ahora si sólo estás probando Yii sin intención
   de poner la aplicación en un servidor de producción.
 
 La aplicación instalada siguiendo las instrucciones mencionadas debería estar lista para usar tanto
@@ -153,11 +153,11 @@ require apuntar el document root de tu servidor Web a la carpeta `basic/web`. Ta
 querer ocultar `index.php` de la URL, como se describe en la sección [Parseo y Generación de URLs](runtime-url-handling.md).
 En esta sub-sección, aprenderás a configurar tu servidor Apache o Nginx para alcanzar estos objetivos.
 
-> Info: Al definir `basic/web` como document root, también previenes que los usuarios finales accedan
+> Información: Al definir `basic/web` como document root, también previenes que los usuarios finales accedan
 al código privado o archivos con información sensible de tu aplicación que están incluidos en los directorios del mismo nivel
 que `basic/web`. Denegando el acceso es una importante mejora en la seguridad.
 
-> Info: En caso de que tu aplicación corra en un entorno de hosting compartido donde no tienes permisos para modificar
+> Información: En caso de que tu aplicación corra en un entorno de hosting compartido donde no tienes permisos para modificar
 la configuración del servidor Web, aún puedes ajustar la estructura de la aplicación para mayor seguridad. Por favor consulta
 la sección [Entorno de Hosting Compartido](tutorial-shared-hosting.md) para más detalles.
 
