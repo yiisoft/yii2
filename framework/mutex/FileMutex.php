@@ -63,6 +63,7 @@ class FileMutex extends Mutex
      * @var bool whether file handling should assume a Windows file system.
      * This value will determine how [[releaseLock()]] goes about deleting the lock file.
      * If not set, it will be determined by checking the DIRECTORY_SEPARATOR constant.
+     * @since 2.0.16
      */
     public $isWindows;
 
