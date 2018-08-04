@@ -365,7 +365,7 @@ Et ainsi de suite.
 
 L'utilisation du format objet rend possible de créer vos propres conditions ou de changer la manière dont celles par défaut sont construites.
 Reportez-vous au chapitre  [Ajout de conditions et d'expressions personnalisées](#adding-custom-conditions-and-expressions) pour en savoir plus.
-```
+
 
 #### Ajout de conditions <span id="appending-conditions"></span>
 
