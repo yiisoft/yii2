@@ -493,7 +493,7 @@ $customer->loadDefaultValues();
 ### Conversion de type d'attributs <span id="attributes-typecasting"></span>
 
 Étant peuplé par les résultats des requêtes, l'[[yii\db\ActiveRecord|enregistrement actif]] effectue des conversions automatiques de type pour ses valeurs d'attribut, en utilisant les informations du [schéma des tables de base de données](db-dao.md#database-schema). 
-Cela permet aux données retrouvées dans les colonnes de la table et déclarée comme entiers de peupler une instance d'enregistrement actif avec des entiers PHP, valeur booléenne avec des valeurs booléenne, et ainsi de suite.
+Cela permet aux données retrouvées dans les colonnes de la table et déclarées comme entiers de peupler une instance d'enregistrement actif avec des entiers PHP, les valeurs booléennes avec des valeurs booléennes, et ainsi de suite.
 Néanmoins, le mécanisme de conversion de type souffre de plusieurs limitation :
 
 * Les valeurs flottantes (Float) ne sont pas converties et sont représentées par des chaînes de caractères, autrement elles pourraient perdre de la précision. 
@@ -504,11 +504,11 @@ En particulier, les valeurs de colonne déclarée comme « entier non signé »
 
 Notez que la conversion de type des attributs n'est effectuée que lors du peuplement d'une instance d'enregistrement actif par les résultats d'une requête.
 Il n'y a pas de conversion automatique pour les valeurs chargées par une requête HTTP ou définies directement par accès à des propriétés. 
-Le schéma de table est aussi utilisé lors de la préparation des instructions SQL pour la sauvegarde de l'enregistrement actif, garantissat ainsi que les valeurs sont liées à la requête avec le type correct.
+Le schéma de table est aussi utilisé lors de la préparation des instructions SQL pour la sauvegarde de l'enregistrement actif, garantissant ainsi que les valeurs sont liées à la requête avec le type correct.
 Cependant, les valeurs d'attribut d'une instance d'enregistrement actif ne sont pas converties durant le processus de sauvegarde. 
 
 
-> Tip: vous pouvez utiliser  [[yii\behaviors\AttributeTypecastBehavior]] pour faciliter la conversion de type des valeurs d'attribut lors de la validation ou la sauvegarde d'un enregistrement actif.
+> Astuce : vous pouvez utiliser  [[yii\behaviors\AttributeTypecastBehavior]] pour faciliter la conversion de type des valeurs d'attribut lors de la validation ou la sauvegarde d'un enregistrement actif.
   
 
 Depuis la version 2.0.14, la classe  ActiveRecord de Yii prend en charge des types de données complexe tels que JSON ou les tableaux multi-dimensionnels. 
@@ -519,7 +519,7 @@ Après le peuplement par les données, la valeur d'une colonne JSON est automati
 
 
 Pour sauvegarder une valeur d'attribut dans une colonne de type JSON, la classe ActiveRecord crée automatiquement un objet  [[yii\db\JsonExpression|JsonExpression]] 
-qui est encodé en une chaîne JSON au niveau du [constructeur de requête](db-query-builder.md) level.
+qui est encodé en une chaîne JSON au niveau du [constructeur de requête](db-query-builder.md).
 
 #### Tableaux dans PostgreSQL
 
@@ -535,8 +535,7 @@ Vous pouvez aussi utiliser des conditions pour les colonnes de type JSON :
 $query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
 ```
 
-Pour en apprendre plus sur les le système de construction d'expressions, reportez-vous à l'article  [Constructeur de requêtes – Ajout de conditions et d'expressions personnalisées](db-query-builder.md#adding-custom-conditions-and-expressions)
-article.
+Pour en apprendre plus sur les le système de construction d'expressions, reportez-vous à l'article  [Constructeur de requêtes – Ajout de conditions et d'expressions personnalisées](db-query-builder.md#adding-custom-conditions-and-expressions).
 
 ### Mise à jour de plusieurs lignes <span id="updating-multiple-rows"></span>
 
@@ -574,7 +573,7 @@ Vous pouvez appeler [[yii\db\ActiveRecord::deleteAll()]] pour effacer plusieurs 
 Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 ```
 
-> Note: agissez avec prudence lorsque vous appelez [[yii\db\ActiveRecord::deleteAll()|deleteAll()]] parce que cela peut effacer totalement toutes les données de votre table si vous faites une erreur en spécifiant la condition. 
+> Note : agissez avec prudence lorsque vous appelez [[yii\db\ActiveRecord::deleteAll()|deleteAll()]] parce que cela peut effacer totalement toutes les données de votre table si vous faites une erreur en spécifiant la condition. 
 
 
 ## Cycles de vie de l'enregistrement actif <span id="ar-life-cycles"></span>
@@ -582,7 +581,7 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 Il est important que vous compreniez les cycles de vie d'un enregistrement actif lorsqu'il est utilisé à des fins différentes. 
 Lors de chaque cycle de vie, une certaine séquence d'invocation de méthodes a lieu, et vous pouvez redéfinir ces méthodes pour avoir une chance de personnaliser le cycle de vie. 
 Vous pouvez également répondre à certains événements de l'enregistrement actif déclenchés durant un cycle de vie pour injecter votre code personnalisé. 
-Ces événements sont particulièrement utiles lorsque vous développez des [comportements](concept-behaviors.md) d'enregistrement actif qui ont besoin de personnaliser les cycles de vies d'enregistrement actifs. 
+Ces événements sont particulièrement utiles lorsque vous développez des [comportements](concept-behaviors.md) d'enregistrement actif qui ont besoin de personnaliser les cycles de vie d'enregistrement actifs. 
 
 
 
@@ -594,7 +593,7 @@ Dans l'exemple suivant, nous résumons les différents cycles de vie d'enregistr
 
 Lorsque vous créez un nouvel enregistrement actif via l'opérateur `new`, le cycle suivant se réalise :
 
-1. Constructeur de la classe.
+1. Construction de la classe.
 2. [[yii\db\ActiveRecord::init()|init()]]: déclenche un événement [[yii\db\ActiveRecord::EVENT_INIT|EVENT_INIT]].
 
 
@@ -642,7 +641,7 @@ En appelant [[yii\db\ActiveRecord::delete()|delete()]] pour supprimer une instan
    déclenche un événement [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]].
 
 
-> Note: l'appel de l'une des méthodes suivantes n'initie AUCUN des cycles vus ci-dessus parce qu'elles travaillent directement sur la base de données et pas sur la base d'un enregistrement actif :
+> Note : l'appel de l'une des méthodes suivantes n'initie AUCUN des cycles vus ci-dessus parce qu'elles travaillent directement sur la base de données et pas sur la base d'un enregistrement actif :
 >
 
 > - [[yii\db\ActiveRecord::updateAll()]] 
@@ -688,7 +687,7 @@ try {
 }
 ```
 
-> Note: dans le code précédent, nous utilisons deux blocs de capture pour être compatible avec PHP 5.x et PHP 7.x. 
+> Note : dans le code précédent, nous utilisons deux blocs de capture pour être compatible avec PHP 5.x et PHP 7.x. 
 `\Exception` met en œuvre l'[interface `\Throwable`](http://php.net/manual/en/class.throwable.php)
 > à partir de  PHP 7.0, c'est pourquoi vous pouvez sauter la partie avec `\Exception` si votre application utilise PHP 7.0 ou une version plus récente.
 
@@ -711,7 +710,7 @@ class Customer extends ActiveRecord
 ```
 
 La méthode [[yii\db\ActiveRecord::transactions()]] 
-doit retourner un tableau dont les clés sont les noms de [scenario](structure-models.md#scenarios) et les valeurs les opérations correspondantes qui doivent être enfermées dans des transactions. 
+doit retourner un tableau dont les clés sont les noms de [scénario](structure-models.md#scenarios) et les valeurs les opérations correspondantes qui doivent être enfermées dans des transactions. 
 Vous devez utiliser les constantes suivantes pour faire référence aux différentes opérations de base de données :
 
 * [[yii\db\ActiveRecord::OP_INSERT|OP_INSERT]]: opération d'insertion réalisée par [[yii\db\ActiveRecord::insert()|insert()]];
@@ -747,7 +746,7 @@ La colonne doit être du type *big integer*
 4. Dans le formulaire Web qui reçoit les entrées de l'utilisateur, ajoutez un champ caché pour stocker le numéro de version courant de la ligne en modification. 
    Retirez l'attribut version des règles de validation étant donné que [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] s'en charge.
 5. Dans l'action de contrôleur qui met la ligne à jour en utilisant l'enregistrement actif, utiliser une structure *try-catch* pour l'exception [[yii\db\StaleObjectException]]. 
-   Mettez en œuvre la logique requise (p. ex. fusionner les modification, avertir des données douteuses) pour résoudre le conflit.
+   Mettez en œuvre la logique requise (p. ex. fusionner les modifications, avertir des données douteuses) pour résoudre le conflit.
 Par exemple, supposons que la colonne du numéro de version est nommée `version`. 
    Vous pouvez mettre en œuvre le verrouillage optimiste avec un code similaire au suivant :
 
@@ -793,7 +792,7 @@ public function behaviors()
     ];
 }
 ```
-> Note: Comme [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] garantit que l'enregistrement n'est sauvegardé que 
+> Note : comme [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] garantit que l'enregistrement n'est sauvegardé que 
 > si l'utilisateur soumet un numéro de version valide en analysant directement [[\yii\web\Request::getBodyParam()|getBodyParam()]], 
 > il peut être utile d'étendre votre classe de modèle et de réaliser l'étape 2 dans le modèle du parent lors de l'attachement du comportement (étape 3) à la classe enfant;
 > ainsi vous pouvez disposer d'une instance dédiée à l'usage interne tout en liant l'autre aux contrôleurs chargés de recevoir 
@@ -875,7 +874,7 @@ $customer = Customer::findOne(123);
 $orders = $customer->orders;
 ```
 
-> Info: lorsque vous déclarez une relation nommée `xyz` via une méthode d'obtention `getXyz()`, vous êtes capable d'accéder à `xyz` comme à un [objet property](concept-properties.md). 
+> Info : lorsque vous déclarez une relation nommée `xyz` via une méthode d'obtention `getXyz()`, vous êtes capable d'accéder à `xyz` comme à un [objet property](concept-properties.md). 
    Notez que le nom est sensible à la casse. 
 
 Si une relation est déclarée avec la méthode [[yii\db\ActiveRecord::hasMany()|hasMany()]], l'accès à cette propriété de relation retourne un tableau des instances de l'enregistrement actif en relation ; 
@@ -888,7 +887,7 @@ Si la même propriété fait l'objet d'un nouvel accès, le résultat précéden
 Pour forcer l'exécution à nouveau de l'instruction SQL, vous devez d'abord annuler la définition de la propriété de relation : `unset($customer->orders)`.
 
 
-> Note: bien que ce concept semble similaire à la fonctionnalité [propriété d'objet](concept-properties.md), il y a une différence importante. 
+> Note : bien que ce concept semble similaire à la fonctionnalité [propriété d'objet](concept-properties.md), il y a une différence importante. 
    Pour les propriétés normales d'objet, la valeur est du même type que la méthode d'obtention de définition. 
    Une méthode de relation cependant retourne toujours une instance d'[[yii\db\ActiveRecord]] ou un tableau de telles instances.
 > 
@@ -1118,7 +1117,7 @@ Vous pouvez charger précocement des relations imbriquées en profondeur, telles
 C'est à dire, que lorsque vous appelez [[yii\db\ActiveQuery::with()|with()]] en utilisant `a.b.c.d`, vous chargez précocement `a`, `a.b`, `a.b.c` et `a.b.c.d`.
 
 
-> Info: en général, lors du chargement précoce de `N` relations parmi lesquelles `M` relations sont définies par une [table de jointure](#junction-table), `N+M+1` instructions SQL sont exécutées au total. 
+> Info : en général, lors du chargement précoce de `N` relations parmi lesquelles `M` relations sont définies par une [table de jointure](#junction-table), `N+M+1` instructions SQL sont exécutées au total. 
 Notez qu'une relation imbriquée `a.b.c.d` possède 4 relations.
 
 
@@ -1143,7 +1142,7 @@ La fonction anonyme accepte une paramètre `$query` qui représente l'objet [[yi
 Dans le code ci-dessus, nous modifions la requête relationnelle en ajoutant une condition additionnelle à propos de l'état de la commande (*order*).
 
 
-> Note: si vous appelez [[yii\db\Query::select()|select()]] tout en chargeant précocement les relations, vous devez vous assurer que les colonnes référencées dans la déclaration de la relation sont sélectionnées. 
+> Note : si vous appelez [[yii\db\Query::select()|select()]] tout en chargeant précocement les relations, vous devez vous assurer que les colonnes référencées dans la déclaration de la relation sont sélectionnées. 
 > Autrement, les modèles en relation peuvent ne pas être chargés correctement. 
 > Par exemple :
 >
@@ -1156,7 +1155,7 @@ Dans le code ci-dessus, nous modifions la requête relationnelle en ajoutant une
 
 ### Jointure avec des relations <span id="joining-with-relations"></span>
 
-> Note: le contenu décrit dans cette sous-section ne s'applique qu'aux bases de données relationnelles, telles que MySQL, PostgreSQL, etc.
+> Note : le contenu décrit dans cette sous-section ne s'applique qu'aux bases de données relationnelles, telles que MySQL, PostgreSQL, etc.
 
 
 Les requêtes relationnelles que nous avons décrites jusqu'à présent ne font référence qu'aux colonnes de table primaires lorsque nous faisons une requête des données primaires. 
@@ -1178,7 +1177,7 @@ $customers = Customer::find()
     ->all();
 ```
 
-> Note: il est important de supprimer les ambiguïtés sur les noms de colonnes lorsque vous construisez les requêtes relationnelles faisant appel à des instructions SQL JOIN. 
+> Note : il est important de supprimer les ambiguïtés sur les noms de colonnes lorsque vous construisez les requêtes relationnelles faisant appel à des instructions SQL JOIN. 
 > Une pratique courante est de préfixer les noms de colonnes par le nom des tables correspondantes. 
 
 Néanmoins, une meilleure approche consiste à exploiter les déclarations de relations existantes en appelant [[yii\db\ActiveQuery::joinWith()]] :
@@ -1199,9 +1198,9 @@ Si le type de jointure que vous désirez est `INNER JOIN`, vous pouvez simplemen
 L'appel de [[yii\db\ActiveQuery::joinWith()|joinWith()]] [charge précocement](#lazy-eager-loading) les données en relation par défaut. 
 Si vous ne voulez pas charger les données en relation, vous pouvez spécifier son deuxième paramètre `$eagerLoading` comme étant `false`. 
 
-> Note: même en utilisant [[yii\db\ActiveQuery::joinWith()|joinWith()]] ou [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]]
+> Note : même en utilisant [[yii\db\ActiveQuery::joinWith()|joinWith()]] ou [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]]
   avec le chargement précoce activé les données en relation ne sont **pas** peuplées à partir du résultat de la requête `JOIN`. C'est pourquoi il y a
-  toujours une requête suppl [chargement précoce](#lazy-eager-loading).
+  toujours une requête supplémetaire pour chacune des relations jointes comme expliqué à la section [chargement précoce](#lazy-eager-loading).
 
 Comme avec [[yii\db\ActiveQuery::with()|with()]], vous pouvez joindre une ou plusieurs relations ; vous pouvez personnaliser les requêtes de relation à la volée ; vous pouvez joindre des relations imbriquées ; et vous pouvez mélanger l'utilisation de [[yii\db\ActiveQuery::with()|with()]] et celle de [[yii\db\ActiveQuery::joinWith()|joinWith()]]. 
 Par exemple :
@@ -1234,7 +1233,7 @@ $customers = Customer::find()->joinWith([
 La requête ci-dessus retourne *tous* les clients, et pour chacun des clients, toutes les commandes actives. 
 Notez que cela est différent de notre exemple précédent qui ne retourne que les clients qui ont au moins une commande active. 
 
-> Info: quand [[yii\db\ActiveQuery]] est spécifiée avec une condition via une jointure [[yii\db\ActiveQuery::onCondition()|onCondition()]], la condition est placée dans la partie `ON` si la requête fait appel à une requête JOIN. 
+> Info : quand [[yii\db\ActiveQuery]] est spécifiée avec une condition via une jointure [[yii\db\ActiveQuery::onCondition()|onCondition()]], la condition est placée dans la partie `ON` si la requête fait appel à une requête JOIN. 
 Si la requête ne fait pas appel à JOIN, la *on-condition* est automatiquement ajoutée à la partie `WHERE` de la requête. 
 Par conséquent elle peut ne contenir que des conditions incluant des colonnes de la table en relation. 
 
@@ -1344,7 +1343,7 @@ $customer2 = $order->customer;
 echo $customer2 === $customer ? 'same' : 'not the same';
 ```
 
-> Note: les relations inverses ne peuvent être définies pour des relations faisant appel à une [table de jointure](#junction-table). 
+> Note : les relations inverses ne peuvent être définies pour des relations faisant appel à une [table de jointure](#junction-table). 
 C'est à dire que, si une relation est définie avec [[yii\db\ActiveQuery::via()|via()]] ou avec [[yii\db\ActiveQuery::viaTable()|viaTable()]], vous ne devez pas appeler [[yii\db\ActiveQuery::inverseOf()|inverseOf()]] ensuite.
 
 
@@ -1366,7 +1365,7 @@ $order->customer_id = $customer->id;
 $order->save();
 ```
 
-L'enregistrement actif fournit la méthode [[yii\db\ActiveRecord::link()|link()]]qui vous permet d'accomplir cette tâche plus élégamment :
+L'enregistrement actif fournit la méthode [[yii\db\ActiveRecord::link()|link()]] qui vous permet d'accomplir cette tâche plus élégamment :
 
 ```php
 $customer = Customer::findOne(123);
@@ -1378,12 +1377,12 @@ $order->link('customer', $customer);
 ```
 
 La méthode [[yii\db\ActiveRecord::link()|link()]] requiert que vous spécifiiez le nom de la relation et l'instance d'enregistrement actif cible avec laquelle le relation doit être établie. 
-La méthode modifie les valeurs des attributs qui lient deux instances d'enregistrement actif et les sauvegarde dans la base de données. 
+La méthode modifie les valeurs des attributs qui lient deux instances d'enregistrement actif et les sauvegardes dans la base de données. 
 Dans l'exemple ci-dessus, elle définit l'attribut `customer_id` de l'instance `Order` comme étant la valeur de l'attribut `id` de l'instance `Customer` et le sauvegarde ensuite dans la base de données.
 
 
 
-> Note: vous ne pouvez pas lier deux instances d'enregistrement actif nouvellement créées. 
+> Note : vous ne pouvez pas lier deux instances d'enregistrement actif nouvellement créées. 
 
 L'avantage d'utiliser [[yii\db\ActiveRecord::link()|link()]] 
 est même plus évident lorsqu'une relation est définie via une [table de jointure](#junction-table). 
@@ -1395,7 +1394,7 @@ $order->link('items', $item);
 
 Le code ci-dessus insère automatiquement une ligne dans la table de jointure `order_item` pour mettre la commande en relation avec l'item. 
 
-> Info: la méthode [[yii\db\ActiveRecord::link()|link()]] n'effectue AUCUNE validation de données lors de la sauvegarde de l'instance d'enregistrement actif affectée. 
+> Info : la méthode [[yii\db\ActiveRecord::link()|link()]] n'effectue AUCUNE validation de données lors de la sauvegarde de l'instance d'enregistrement actif affectée. 
 > Il est de votre responsabilité de valider toutes les données entrées avant d'appeler cette méthode. 
 
 
@@ -1458,7 +1457,7 @@ $customers = Customer::find()->with('comments')->all();
 
 Vous pouvez utiliser la plupart des fonctionnalités de requêtes relationnelles qui ont été décrites dans cette section.
  
-> Note: l'utilisation de [[yii\db\ActiveQuery::joinWith()|joinWith()]] est limitée aux bases de données qui permettent les requête JOIN inter bases. 
+> Note : l'utilisation de [[yii\db\ActiveQuery::joinWith()|joinWith()]] est limitée aux bases de données qui permettent les requête JOIN inter bases. 
 Pour cette raison, vous ne pouvez pas utiliser cette méthode dans l'exemple ci-dessus car MongoDB ne prend pas JOIN en charge. 
 
 
@@ -1512,7 +1511,7 @@ class CommentQuery extends ActiveQuery
 }
 ```
 
-> Note: au lieu d'appeler [[yii\db\ActiveQuery::onCondition()|onCondition()]], vous devez généralement appeler
+> Note : au lieu d'appeler [[yii\db\ActiveQuery::onCondition()|onCondition()]], vous devez généralement appeler
   [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] ou [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]]
   pour ajouter des conditions supplémentaires lors de la définition de nouvelles méthodes de requête de façon à ce que aucune condition existante en soit redéfinie.
 
@@ -1523,7 +1522,7 @@ $comments = Comment::find()->active()->all();
 $inactiveComments = Comment::find()->active(false)->all();
 ```
 
-> Tip: dans les gros projets, il est recommandé que vous utilisiez des classes de requête personnalisées pour contenir la majeure partie de code relatif aux requêtes de manière à ce que les classe d'enregistrement actif puissent être maintenues propres. 
+> Astuce : dans les gros projets, il est recommandé que vous utilisiez des classes de requête personnalisées pour contenir la majeure partie de code relatif aux requêtes de manière à ce que les classe d'enregistrement actif puissent être maintenues propres. 
 
 
 Vous pouvez aussi utiliser les méthodes de construction de requêtes en définissant des relations avec `Comment` ou en effectuant une requête relationnelle : 
@@ -1555,8 +1554,8 @@ $customers = Customer::find()->joinWith([
 ])->all();
 ```
 
-> Info: dans Yii 1.1, il existe un concept appelé *scope*. 
-> Scope n'est plus pris en charge directement par Yii 2.0, et vous devez utiliser des classes de requête personnalisée et des méthodes de requêtes pour remplir le même objectif. 
+> Info : dans Yii 1.1, il existe un concept appelé *scope*. 
+> Scope n'est plus pris en charge directement par Yii 2.0, et vous devez utiliser des classes de requête personnalisées et des méthodes de requêtes pour remplir le même objectif. 
 
 
 ## Sélection de champs supplémentaires
