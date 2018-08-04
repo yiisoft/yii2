@@ -5,17 +5,17 @@ Construits au-dessus des [objets de bases de données PHP (PDO – PHP Data Obje
 
 Lorsque vous utilisez les objets d'accès aux bases de données de Yii, vous manipulez des requêtes SQL et des tableaux PHP. En conséquence, cela reste le moyen le plus efficace pour accéder aux bases de données. Néanmoins, étant donné que la syntaxe du langage SQL varie selon le type de base de données, l'utilisation des objets d'accès aux bases de données de Yii signifie également que vous avez à faire un travail supplémentaire pour créer une application indifférente au type de base de données. 
 
-Dans Yii «.0, es objets d'accès aux bases de données prennent en charge les bases de données suivantes sans configuration supplémentaire :
+Dans Yii 2.0, les objets d'accès aux bases de données prennent en charge les bases de données suivantes sans configuration supplémentaire :
 
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): version 8.4 or higher.
-- [CUBRID](http://www.cubrid.org/): version 9.3 or higher.
+- [PostgreSQL](http://www.postgresql.org/): version 8.4 ou plus récente.
+- [CUBRID](http://www.cubrid.org/): version 9.3 ou plus récente.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 ou plus récente.
 
-> Info: Depuis Yii 2.1, la prise en charge des objets d'accès aux bases de données pour CUBRID, Oracle et MSSQL ne sont plus fournis en tant que composants du noyau. Cette prise en charge nécessite l'installation d'[extensions](structure-extensions.md) séparées.
+> Info: depuis Yii 2.1, la prise en charge des objets d'accès aux bases de données pour CUBRID, Oracle et MSSQL n'est plus fournie en tant que composants du noyau. Cette prise en charge nécessite l'installation d'[extensions](structure-extensions.md) séparées.
 Parmi les [extensions officielles](https://www.yiiframework.com/extensions/official), on trouve [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) et
   [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql).
 
@@ -226,7 +226,7 @@ Vous pouvez aussi appeler [[yii\db\Command::batchInsert()|batchInsert()]] pour i
 
 ```php
 // noms de table, noms de colonne, valeurs de colonne
-Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
+Yii::$app->db->createCommand()->batchinsère('user', ['name', 'age'], [
     ['Tom', 30],
     ['Jane', 20],
     ['Linda', 25],
@@ -244,14 +244,14 @@ Yii::$app->db->createCommand()->upsert('pages', [
 ], $params)->execute();
 ```
 
-Le code ci-dessus, soit insert un enregistrement pour une nouvelle page, soit incrémente sont compteur de visite automatiquement.
+Le code ci-dessus, soit insère un enregistrement pour une nouvelle page, soit incrémente sont compteur de visite automatiquement.
 
 Notez que les méthodes mentionnées ci-dessus ne font que créer les requêtes, vous devez toujours appeler [[yii\db\Command::execute()|execute()]] pour les exécuter réellement. 
 
 
 ## Entourage de noms de table et de colonne par des marque de citation <span id="quoting-table-and-column-names"></span>
 
-Lorsque l'on écrit du code indifférent au type de base de données, entourer correctement les noms table et de colonne avec des marques de citation et souvent un casse-tête parce que les différentes base de données utilisent des règles de marquage de citation différentes. Pour vous affranchir de cette difficulté, vous pouvez utiliser la syntaxe de citation introduite par Yii :
+Lorsque l'on écrit du code indifférent au type de base de données, entourer correctement les noms table et de colonne avec des marques de citation (p. ex. guillemets ou simple apostrophe) et souvent un casse-tête parce que les différentes base de données utilisent des règles de marquage de citation différentes. Pour vous affranchir de cette difficulté, vous pouvez utiliser la syntaxe de citation introduite par Yii :
 
 * `[[column name]]`: entourez un nom de colonne qui doit recevoir les marques de citation par des doubles crochets ; 
 * `{{table name}}`: entourez un nom de table qui doit recevoir les marques de citation par des doubles accolades ;
@@ -351,7 +351,7 @@ $transaction = Yii::$app->db->beginTransaction($isolationLevel);
 
 Yii fournit quatre constantes pour les niveaux d'isolation les plus courants :
 
-- [[\yii\db\Transaction::READ_UNCOMMITTED]] – le niveau le plus faible, des lectures sales (*dirty reads*) , des lectures non répétables) (*non-repeatable reads*) et des lectures phantomes (*phantoms*) peuvent se produire. 
+- [[\yii\db\Transaction::READ_UNCOMMITTED]] – le niveau le plus faible, des lectures sales (*dirty reads*) , des lectures non répétables) (*non-repeatable reads*) et des lectures fantômes (*phantoms*) peuvent se produire. 
 - [[\yii\db\Transaction::READ_COMMITTED]] – évite les lectures sales.
 - [[\yii\db\Transaction::REPEATABLE_READ]] – évite les lectures sales et les lectures non répétables. 
 - [[\yii\db\Transaction::SERIALIZABLE]] – le niveau le plus élevé, évite tous les problèmes évoqués ci-dessus.
