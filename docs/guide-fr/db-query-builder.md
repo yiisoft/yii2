@@ -835,9 +835,9 @@ $unbufferedDb->close();
 ```
 
 > Note: une requête sans mise en tampon utilise moinsde mémoire du côté PHP, mais peut augmenter la charge du serveur MySQL. 
-Il est recommandé de concevoir votre propre code avec votre pratique en production pour des données massives supplémentaires.
-
-[par exemple, divisez la plage pour les clés entières, itérez sur elles avec des requêtes sans mise en tampon](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257).
+> Il est recommandé de concevoir votre propre code avec votre pratique en production pour des données massives supplémentaires.
+>
+> [par exemple, divisez la plage pour les clés entières, itérez sur elles avec des requêtes sans mise en tampon](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257).
 
 
 
