@@ -1,7 +1,7 @@
 小部件
 =======
 
-小部件是在 [视图](structure-views.md) 中使用的可重用单元，
+小部件是在[视图](structure-views.md)中使用的可重用单元，
 使用面向对象方式创建复杂和可配置用户界面单元。
 例如，日期选择器小部件可生成一个精致的允许用户选择日期的日期选择器，
 你只需要在视图中插入如下代码：
@@ -13,19 +13,19 @@ use yii\jui\DatePicker;
 <?= DatePicker::widget(['name' => 'date']) ?>
 ```
 
-Yii提供许多优秀的小部件，比如[[yii\widgets\ActiveForm|active form]], [[yii\widgets\Menu|menu]],
-[jQuery UI widgets](widget-jui.md), 
+Yii提供许多优秀的小部件，比如 [[yii\widgets\ActiveForm|active form]]，[[yii\widgets\Menu|menu]]，
+[jQuery UI widgets](widget-jui.md)，
 [Twitter Bootstrap widgets](widget-bootstrap.md)。
-接下来介绍小部件的基本知识，如果你想了解某个小部件请参考对应的类API文档。
+接下来介绍小部件的基本知识，如果你想了解某个小部件请参考对应的类 API 文档。
 
 
 ## 使用小部件 <span id="using-widgets"></span>
 
-小部件基本上在[views](structure-views.md)中使用，
+小部件基本上在 [views](structure-views.md) 中使用，
 在视图中可调用 [[yii\base\Widget::widget()]] 方法使用小部件。
 该方法使用 [配置](concept-configurations.md) 数组初始化小部件并返回小部件渲染后的结果。
 例如如下代码插入一个日期选择器小部件，它配置为使用俄罗斯语，
-输入框内容为`$model`的`from_date`属性值。
+输入框内容为 `$model` 的 `from_date` 属性值。
 
 ```php
 <?php
@@ -39,10 +39,10 @@ use yii\jui\DatePicker;
 ]) ?>
 ```
 
-一些小部件可在[[yii\base\Widget::begin()]] 
+一些小部件可在 [[yii\base\Widget::begin()]] 
 和 [[yii\base\Widget::end()]] 调用中使用数据内容。
-例如如下代码使用[[yii\widgets\ActiveForm]]小部件生成一个登录表单，
-小部件会在`begin()` 和0 `end()`执行处分别生成`<form>`的开始标签和结束标签，
+例如如下代码使用 [[yii\widgets\ActiveForm]] 小部件生成一个登录表单，
+小部件会在 `begin()` 和 `end()` 执行处分别生成 `<form>` 的开始标签和结束标签，
 中间的任何代码也会被渲染。
 
 ```php
@@ -74,13 +74,13 @@ use yii\helpers\Html;
 
 ### 配置全局默认值
 
-小部件的全局默认值可以通过 DI 容器配置:
+小部件的全局默认值可以通过 DI 容器配置：
 
 ```php
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
 ```
 
-详见 [依赖注入容器 "实践中的应用" 一节](concept-di-container.md#practical-usage) 。
+详见 [依赖注入容器“实践中的应用”一节](concept-di-container.md#practical-usage) 。
 
 
 ## 创建小部件 <span id="creating-widgets"></span>
@@ -88,10 +88,10 @@ use yii\helpers\Html;
 继承 [[yii\base\Widget]] 类并覆盖 [[yii\base\Widget::init()]] 和/或
 [[yii\base\Widget::run()]] 方法可创建小部件。通常`init()` 方法处理小部件属性，
 `run()` 方法包含小部件生成渲染结果的代码。
-渲染结果可在`run()`方法中直接"echoed"输出或以字符串返回。
+渲染结果可以直接“输出”或通过 `run()` 方法作为字符串返回。
 
-如下代码中`HelloWidget`编码并显示赋给`message` 属性的值，
-如果属性没有被赋值，默认会显示"Hello World"。
+如下代码中 `HelloWidget` 编码并显示赋给 `message` 属性的值，
+如果属性没有被赋值，默认会显示 "Hello World"。
 
 ```php
 namespace app\components;
