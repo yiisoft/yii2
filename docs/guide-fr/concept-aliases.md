@@ -16,6 +16,10 @@ Yii::setAlias('@foo', '/path/to/foo');
 
 // un alias pour une URL
 Yii::setAlias('@bar', 'http://www.example.com');
+
+
+// un alias de fichier concrêt qui contient une classe  \foo\Bar
+Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
 ```
 
 > Note: le chemin de fichier ou l'URL pour qui un alias est créé peut *ne pas* nécessairement faire référence à un fichier ou une ressource existante.
