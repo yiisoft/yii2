@@ -52,9 +52,9 @@ Cependant, la majeure partie du contenu décrit ici est aussi applicable aux bas
 
 Pour commencer, déclarez une classe d'enregistrement actif en étendant la classe [[yii\db\ActiveRecord]]. 
 
-###Définir un nom de table
+### Définir un nom de table
 
-Par défaut, chacune des classes d'enregistrement actif est associée à une table de la base de données. d
+Par défaut, chacune des classes d'enregistrement actif est associée à une table de la base de données.
 La méthode [[yii\db\ActiveRecord::tableName()|tableName()]] retourne le nom de la table en convertissant le nom via [[yii\helpers\Inflector::camel2id()]].
 Vous pouvez redéfinir cette méthode si le nom de la table ne suit pas cette convention.
 
@@ -87,7 +87,7 @@ class Customer extends ActiveRecord
 }
 ```
 
-###Les enregistrements actifs sont appelés "modèles"
+### Les enregistrements actifs sont appelés "modèles"
 
 Les instances d'une classe d'enregistrement actif (*Active Record*) sont considérées comme des [modèles](structure-models.md).
  Pour cette raison, nous plaçons les classes d'enregistrement actif dans l'espace de noms `app\models`(ou autres espaces de noms prévus pour contenir des classes de modèles). 
@@ -222,10 +222,10 @@ $customers = Customer::findAll([
 
 > Attention : si vous avez besoin de passer des saisies utilisateur à 
 ces méthodes, assurez-vous que la valeurs saisie est un scalaire ou dans le cas d'une
-> condition tableau, assurez-vous que la structure du tableau ne peut pas êter changée depuis l'extérieur :
+> condition tableau, assurez-vous que la structure du tableau ne peut pas être changée depuis l'extérieur :
 >
 > ```php
-> // yii\web\Controller ensures that $id is scalar
+> // yii\web\Controller garantit que $id est un scalaire
 > public function actionView($id)
 > {
 >     $model = Post::findOne($id);
@@ -326,7 +326,7 @@ $customers = Customer::find()
     ->all();
 ```
 
-> Note: bien que cette méthode économise de la mémoire et améliore la performance, elle est plus proche de la couche d'abstraction basse de la base de données et perd la plupart des fonctionnalité de l'objet enregistrement actif. Une distinction très importante réside dans le type de données des valeurs de colonne. 
+> Note: bien que cette méthode économise de la mémoire et améliore la performance, elle est plus proche de la couche d'abstraction basse de la base de données et perd la plupart des fonctionnalités de l'objet enregistrement actif. Une distinction très importante réside dans le type de données des valeurs de colonne. 
   Lorsque vous retournez des données dans une instance d'enregistrement actif, les valeurs des colonnes sont automatiquement typées en fonction du type réel des colonnes ;
   par contre, lorsque vous retournez des données dans des tableaux, les valeurs des colonnes sont des chaînes de caractères (parce qu'elles résultent de PDO sans aucun traitement), indépendamment du type réel de ces colonnes.
 
@@ -399,7 +399,7 @@ public function save($runValidation = true, $attributeNames = null)
 }
 ```
 
-> Tip: vous pouvez appeler [[yii\db\ActiveRecord::insert()|insert()]] ou [[yii\db\ActiveRecord::update()|update()]] 
+> Astuce: vous pouvez appeler [[yii\db\ActiveRecord::insert()|insert()]] ou [[yii\db\ActiveRecord::update()|update()]] 
 directement pour insérer ou mettre à jour une ligne.
   
 
@@ -413,7 +413,7 @@ Lorsque vous appelez la méthode [[yii\db\ActiveRecord::save()|save()]], par dé
 C'est seulement si la validation réussit, que les données sont effectivement sauvegardées ; 
 autrement elle retourne simplement `false`, et vous pouvez tester la propriété [[yii\db\ActiveRecord::errors|errors]] pour retrouver les messages d'erreurs de validation.
 
-> Tip: si vous avez la certitude que vos données n'ont pas besoin d'être validées (p. ex. vos données proviennent de sources fiables), vous pouvez appeler `save(false)` pour omettre la validation.
+> Astuce: si vous avez la certitude que vos données n'ont pas besoin d'être validées (p. ex. vos données proviennent de sources fiables), vous pouvez appeler `save(false)` pour omettre la validation.
 
 
 
