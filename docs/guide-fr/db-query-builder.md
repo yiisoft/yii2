@@ -329,7 +329,7 @@ $column = $request->get('column');
 $value = $request->get('value);
 $query->where(['=', $column, $value]);
 // $value est sûre, mais le nom  $column n'est pas encodé !
-
+```
 
 #### Format objet <span id="object-format"></span>
 
