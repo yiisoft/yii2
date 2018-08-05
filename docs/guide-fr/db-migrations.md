@@ -771,11 +771,11 @@ La commande de migration possède quelques options en ligne de commande qui peuv
 
 * `migrationPath`: string (valeur par défaut `@app/migrations`), spécifie le dossier qui stocke tous les fichiers de classe de  migration. Cela peut être spécifié soit comme un chemin de dossier, soit comme un [alias](concept-aliases.md) de chemin. Notez que le dossier doit exister sinon la commande déclenche une erreur.
 
-* `migrationTable`: string (valeur par défaut `migration`), spécifie le nom de la table de base de données pour stocker l'historique de migration. La table es créée automatiquement par la commande si elle n'existe pas encore. Vous pouvez aussi la créer à la main en utilisant la structure `version varchar(255) primary key, apply_time integer`.
+* `migrationTable`: string (valeur par défaut `migration`), spécifie le nom de la table de base de données pour stocker l'historique de migration. La table est créée automatiquement par la commande si elle n'existe pas encore. Vous pouvez aussi la créer à la main en utilisant la structure `version varchar(255) primary key, apply_time integer`.
 
 * `db`: string (valeur par défaut `db`), spécifie l'identifiant du [composant d'application](structure-application-components.md) base de données. Il représente la base de données à laquelle les migrations sont appliquées avec cette commande. 
 
-* `templateFile`: string (valeur par défaut `@yii/views/migration.php`), spécifie le chemin vers le fichier modèle qui est utilisé pour générer le squelette des fichiers de classe de migration. Cela peut être spécifié soit sous forme de chemin de fichier, soit sous forme d'[alias](concept-aliases.md).de chemin. Le fichier modèle est un script PHP dans lequel vous pouvez utiliser une variable prédéfinie nommée `$className` pour obtenir le nom de la classe de migration. 
+* `templateFile`: string (valeur par défaut `@yii/views/migration.php`), spécifie le chemin vers le fichier modèle qui est utilisé pour générer le squelette des fichiers de classe de migration. Cela peut être spécifié soit sous forme de chemin de fichier, soit sous forme d'[alias](concept-aliases.md) de chemin. Le fichier modèle est un script PHP dans lequel vous pouvez utiliser une variable prédéfinie nommée `$className` pour obtenir le nom de la classe de migration. 
 
 * `generatorTemplateFiles`: array (valeur par défaut `[
         'create_table' => '@yii/views/createTableMigration.php',
