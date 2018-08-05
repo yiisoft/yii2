@@ -3,7 +3,7 @@
 
 Les événement vous permettent d'injecter du code personnalisé dans le code existant à des points précis de son exécution. Vous pouvez attacher du code personnalisé à un événement de façon à ce que, lorsque l'événement est déclenché, le code s'exécute automatiquement. Par exemple, un objet serveur de courriel  peut déclencher un événement `messageSent` (message envoyé) quand il réussit à envoyer un message. Si vous voulez conserver une trace des messages dont l'envoi a réussi, vous pouvez simplement attacher le code de conservation de la trace à l'événement  `messageSent`.
 
-Yii introduit une classe de base appelée [[yii\base\Component]] pour prendre en charge les événements. Si une classe a besoin de déclencher des événements, elle doit êtendre la classe [[yii\base\Component]], ou une de ses classes filles. 
+Yii introduit une classe de base appelée [[yii\base\Component]] pour prendre en charge les événements. Si une classe a besoin de déclencher des événements, elle doit étendre la classe [[yii\base\Component]], ou une de ses classes filles. 
 
 
 Gestionnaires d'événements <span id="event-handlers"></span>
@@ -12,7 +12,7 @@ Gestionnaires d'événements <span id="event-handlers"></span>
 Un gestionnaire d'événement est une  [fonction de rappel PHP](http://www.php.net/manual/en/language.types.callable.php) qui est exécutée lorsque l'événement à laquelle elle est attachée est déclenché. Vous pouvez utiliser n'importe laquelle des fonctions de rappel suivantes :
 
 - une fonction PHP globale spécifiée sous forme de chaîne de caractères (sans les parenthèses) p. ex., `'trim'` ;
-- une méthode d'objet spécifiée sous forme de tableau constitué d'un nom d'objet et d'un nom de méthode sous forme de chaîne de caractères (sans les parentèses), p. ex., `[$object, 'methodName']`;
+- une méthode d'objet spécifiée sous forme de tableau constitué d'un nom d'objet et d'un nom de méthode sous forme de chaîne de caractères (sans les parenthèses), p. ex., `[$object, 'methodName']`;
 - une méthode d'une classe statique spécifiée sous forme de tableau constitué d'un nom de classe et d'un nom de méthode sous forme de chaîne de caractères (sans les parenthèses), p. ex., `['ClassName', 'methodName']`;
 - une fonction anonyme p. ex., `function ($event) { ... }`.
 
@@ -37,7 +37,7 @@ Attacher des gestionnaires d'événements <span id="attaching-event-handlers"></
 Vous pouvez attacher un gestionnaire d'événement en appelant la méthode [[yii\base\Component::on()]] du composant. Par exemple :
 
 ```php
-$foo = new Foo;
+$foo = new Foo();
 
 // le gestionnaire est une fonction globale
 $foo->on(Foo::EVENT_HELLO, 'function_name');
@@ -57,7 +57,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 Vous pouvez aussi attacher des gestionnaires d'événements via les [configurations](concept-configurations.md). Pour plus de détails, reportez-vous à la section [Configurations](concept-configurations.md#configuration-format).
 
 
-Losque vous attachez un gestionnaire d'événement, vous pouvez fournir des données additionnelles telles que le troisième paramètre de [[yii\base\Component::on()]]. Les données sont rendues disponibles au gestionnaire lorsque l'événement est déclenché et que le gestionnaire est appelé. Par exemple :
+Lorsque vous attachez un gestionnaire d'événement, vous pouvez fournir des données additionnelles telles que le troisième paramètre de [[yii\base\Component::on()]]. Les données sont rendues disponibles au gestionnaire lorsque l'événement est déclenché et que le gestionnaire est appelé. Par exemple :
 
 ```php
 // Le code suivant affiche  "abc" lorsque l'événement est déclenché
@@ -72,7 +72,7 @@ function function_name($event) {
 Ordre des gestionnaires d'événements
 ------------------------------------
 
-Vous pouvez attacher un ou plusieurs gestionnaires à un seul événement. Lorsqu'un événement est déclenché, les gestionnaires attachés sont appelés dans l'ordre dans lequel ils ont été attachés à l'événement. Si un gestionnaire a besoin d'arrêter l'appel des gestionnaires qui viennent après lui, il doit définir la propriété [[yii\base\Event::handled (géré)]] du paramètre `$event` parameter à `true`:
+Vous pouvez attacher un ou plusieurs gestionnaires à un seul événement. Lorsqu'un événement est déclenché, les gestionnaires attachés sont appelés dans l'ordre dans lequel ils ont été attachés à l'événement. Si un gestionnaire a besoin d'arrêter l'appel des gestionnaires qui viennent après lui, il doit définir la propriété [[yii\base\Event::handled (géré)]] du paramètre `$event` à `true`:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -111,7 +111,7 @@ class Foo extends Component
 ```
 Avec le code précédent, tout appel à  `bar()` déclenche un événement nommé `hello`.
 
-> Tip: il est recommandé d'utiliser des constantes de classe pour représenter les noms d'événement. Dans l'exemple qui précède, la constante `EVENT_HELLO` représente l'événement `hello`. Cette approche procure trois avantages. Primo, elle évite les erreurs de frappe. Secondo, elle permet aux événements d'être reconnus par le mécanisme d'auto-complètement des EDI. Tertio, vous pouvez dire quels événements sont pris en charge par une classe en vérifiant la déclaration de ses constantes. 
+> Tip: il est recommandé d'utiliser des constantes de classe pour représenter les noms d'événement. Dans l'exemple qui précède, la constante `EVENT_HELLO` représente l'événement `hello`. Cette approche procure trois avantages. Primo, elle évite les erreurs de frappe. Secundo, elle permet aux événements d'être reconnus par le mécanisme d'auto-complètement des EDI. Tertio, vous pouvez dire quels événements sont pris en charge par une classe en vérifiant la déclaration de ses constantes. 
 
 Parfois, lors du déclenchement d'un événement, vous désirez passer des informations additionnelles aux gestionnaires de cet événement. Par exemple, un serveur de courriels peut souhaiter passer les informations sur le message aux gestionnaires de l'événement `messageSent` pour que ces derniers soient informés de certaines particularités des messages envoyés. Pour ce faire, vous pouvez fournir un objet événement comme deuxième paramètre de la méthode [[yii\base\Component::trigger()]]. L'objet événement doit simplement être une instance de la classe [[yii\base\Event]] ou d'une de ses classes filles. Par exemple :
 
@@ -163,7 +163,7 @@ $foo->off(Foo::EVENT_HELLO, ['app\components\Bar', 'methodName']);
 $foo->off(Foo::EVENT_HELLO, $anonymousFunction);
 ```
 
-Notez qu'en général, vous ne devez pas essayer de détacher une fonction anonyme sauf si vous l'avez stokée quelque part lorsque vous l'avez attachée à un événement. Dans l'exemple ci-dessus, on suppose que la fonctions anonyme est stockée dans une variable nommée  `$anonymousFunction`.
+Notez qu'en général, vous ne devez pas essayer de détacher une fonction anonyme sauf si vous l'avez stockée quelque part lorsque vous l'avez attachée à un événement. Dans l'exemple ci-dessus, on suppose que la fonctions anonyme est stockée dans une variable nommée  `$anonymousFunction`.
 
 Pour détacher *tous* les gestionnaires d'un événement, appelez simplement la méthode [[yii\base\Component::off()]] sans le deuxième paramètre :
 
@@ -192,7 +192,7 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 
 Le gestionnaire d'événement est invoqué à chaque fois qu'une instance de la classe [[yii\db\ActiveRecord|ActiveRecord]], ou d'une de ses classes filles, déclenche l'événement [[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]]. Dans le gestionnaire, vous pouvez obtenir l'objet qui a déclenché l'événement via `$event->sender`.
 
-Losqu'un objet déclenche un événement, il commence par appeler les gestionnaires attachés au niveau de l'instance, puis les gestionnaires attachés au niveau de la classe. 
+Lorsqu'un objet déclenche un événement, il commence par appeler les gestionnaires attachés au niveau de l'instance, puis les gestionnaires attachés au niveau de la classe. 
 
 Vous pouvez déclencher un événement au *niveau de la classe* en appelant la méthode statique [[yii\base\Event::trigger()]]. Un événement déclenché au niveau de la classe n'est associé à aucun objet en particulier. En conséquence, il provoque l'appel des gestionnaires attachés au niveau de la classe seulement. Par exemple :
 
@@ -259,7 +259,7 @@ class Developer extends Component implements DanceEventInterface
 }
 ```
 
-Pour gérer l'évenement `EVENT_DANCE` déclenché par n'importe laquelle de ces classes, appelez [[yii\base\Event::on()|Event::on()]] et passez-lui le nom de l'interface comme premier argument :
+Pour gérer l'événement `EVENT_DANCE` déclenché par n'importe laquelle de ces classes, appelez [[yii\base\Event::on()|Event::on()]] et passez-lui le nom de l'interface comme premier argument :
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
@@ -317,3 +317,70 @@ Yii::$app->trigger('bar', new Event(['sender' => new Foo]));
 Un avantage de l'utilisation d'événement globaux est que vous n'avez pas besoin d'un objet lorsque vous attachez un gestionnaire à l'événement qui est déclenché par l'objet. Au lieu de cela, vous attachez le gestionnaire et déclenchez l'événement via le singleton (p. ex. l'instance d'application). 
 
 Néanmoins, parce que l'espace de noms des événements globaux est partagé par toutes les parties, vous devez nommer les événements globaux avec prudence, par exemple en introduisant une sorte d'espace de noms (p. ex. "frontend.mail.sent", "backend.mail.sent").
+
+Événements génériques <span id="wildcard-events"></span>
+---------------------
+
+Depuis la version 2.0.14, vous pouvez définir un gestionnaire d'événement pour de multiples événement correspondant à un motif générique. 
+Par exemple:
+
+```php
+use Yii;
+
+$foo = new Foo();
+
+$foo->on('foo.event.*', function ($event) {
+    // déclenché pour tout événement dont le nom commence par 'foo.event.'
+    Yii::debug('trigger event: ' . $event->name);
+});
+```
+
+Les motifs génériques peuvent être utilisés pour des événements au niveau de la classe. Par exemple : 
+
+```php
+use yii\base\Event;
+use Yii;
+
+Event::on('app\models\*', 'before*', function ($event) {
+    // déclenché pour toute classe de l'espace de noms  'app\models' pour tout événement dont le nom commence par 'before'
+    Yii::debug('trigger event: ' . $event->name . ' for class: ' . get_class($event->sender));
+});
+```
+
+Cela vous permet d'attraper tous les événement de l'application par un unique gestionnaire en utilisant le code suivant :
+
+```php
+use yii\base\Event;
+use Yii;
+
+Event::on('*', '*', function ($event) {
+    // déclenché pour tout événement de n'importe quelle classe
+    Yii::debug('trigger event: ' . $event->name);
+});
+```
+
+> Note: l'utilisation de motifs génériques pour la définition des gestionnaires d'événement peut réduire la performance de l'application . Il vaut mieux l'éviter si possible.
+
+Afin de détacher un gestionnaire d'événement spécifié par un motif générique, vous devez répéter le même motif en invoquant 
+[[yii\base\Component::off()]] ou [[yii\base\Event::off()]]. Soyez conscient que le passage d'un motif générique lors du détachement d'un gestionnaire d'événement ne détache que le gestionnaire attaché avec ce motif, tandis que les gestionnaires attachés par des noms réguliers d'événement resteront attachés même si leur nom correspond au motif. Par exemple :
+
+```php
+use Yii;
+
+$foo = new Foo();
+
+// attache un gestionnaire de façon régulière
+$foo->on('event.hello', function ($event) {
+    echo 'direct-handler'
+});
+
+// attache un gestionnaire par un motif générique
+$foo->on('*', function ($event) {
+    echo 'wildcard-handler'
+});
+
+// ne détache que le gestionnaire attaché par le motif générique
+$foo->off('*');
+
+$foo->trigger('event.hello'); // outputs: 'direct-handler'
+```
