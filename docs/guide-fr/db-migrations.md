@@ -31,8 +31,8 @@ Tous ces outils sont accessibles via la commande `yii migrate`. Dans cette secti
 > Note : lors de la manipulation de données utilisant une migration, vous pouvez trouver qu'utiliser vos classes  [Active Record](db-active-record.md) 
 > pour cela peut s'avérer utile parce qu'une partie de la logique y est déjà mise en œuvre. Soyez cependant conscient que, contrairement
 > au code écrit dans les migrations, dont la nature est de rester constant à jamais, la logique d'application est sujette à modification.
-> C'est pourquoi, lorsque vous utilisez des classes ActiveRecord dans le code d'une migration, des modifications de la logique de l'ActiveRecord peut accidentellement casser
-> des migrations existantes. Pour cette raison, le code des migrations devrait être conservé indépendant d'autres logiques d'application telle que celles des classes ActiveRecord.
+> C'est pourquoi, lorsque vous utilisez des classes ActiveRecord dans le code d'une migration, des modifications de la logique de l'ActiveRecord peuvent accidentellement casser
+> des migrations existantes. Pour cette raison, le code des migrations devrait être conservé indépendant d'autres logiques d'application telles que celles des classes ActiveRecord.
 
 ## Création de migrations <span id="creating-migrations"></span>
 
@@ -86,7 +86,7 @@ class m150101_185401_create_news_table extends Migration
 
 Chaque migration de base de données est définie sous forme de classe PHP étendant la classe [[yii\db\Migration]]. Le nom de la classe de migration est généré automatiquement dans le format `m<YYMMDD_HHMMSS>_<Name>`, dans lequel :
 
-* `<YYMMDD_HHMMSS>` fait référence à l'horodatage UTC auquel la commande de création de la migration a été exécutée.
+* `<YYMMDD_HHMMSS>` fait référence à l'horodate UTC à laquelle la commande de création de la migration a été exécutée.
 * `<Name>` est le même que la valeur que vous donnez à l'argument `name` dans la commande.
 
 Dans la classe de migration, vous devez écrire du code dans la méthode `up()` qui effectue les modifications dans la structure de la base de données. Vous désirez peut-être écrire du code dans la méthode `down()` pour défaire les changements apportés par `up()`. La méthode `up()` est invoquée lorsque vous mettez à jour la base de données avec la migration, tandis que la méthode `down()` est invoquée lorsque vous ramenez la base de données à l'état antérieur. Le code qui suit montre comment mettre en œuvre la classe de migration pour créer une table `news` :
@@ -670,13 +670,13 @@ Pour mettre une base de données à jour à sa dernière structure, vous devez a
 yii migrate
 ```
 
-Cette commande liste toutes les migrations qui n'ont pas encore été appliquées. Si vous confirmez que vous voulez appliquer ces migrations, cela provoque l'exécution des méthodes `up()` ou `safeUp()` de chacune des nouvelles migrations, l'une après l'autre, dans l'ordre de leur horodatage. Si l'une de ces migrations échoue, la commande se termine sans appliquer les migrations qui restent. 
+Cette commande liste toutes les migrations qui n'ont pas encore été appliquées. Si vous confirmez que vous voulez appliquer ces migrations, cela provoque l'exécution des méthodes `up()` ou `safeUp()` de chacune des nouvelles migrations, l'une après l'autre, dans l'ordre de leur horodate. Si l'une de ces migrations échoue, la commande se termine sans appliquer les migrations qui restent. 
 
 > Astuce : dans le cas où votre serveur ne vous offre pas de ligne de commande, vous pouvez essayer [Web shell](https://github.com/samdark/yii2-webshell).
 
 Pour chaque migration qui n'a pas été appliqué avec succès, la commande insère une ligne dans une table de base de données nommée `migration` pour enregistrer les applications réussies de la migration. Cela permet à l'outil de migration d'identifier les migrations qui ont été appliquées et celles qui ne l'ont pas été. 
 
-> Info: l'outil de migration crée automatiquement la table de `migration` dans la base de données spécifiée par l'option [[yii\console\controllers\MigrateController::db|db]] de la commande. Par défaut, la base de données est spécifiée dans le [composant d'application](structure-application-components.md) `db`.
+> Info: l'outil de migration crée automatiquement la table `migration` dans la base de données spécifiée par l'option [[yii\console\controllers\MigrateController::db|db]] de la commande. Par défaut, la base de données est spécifiée dans le [composant d'application](structure-application-components.md) `db`.
 
 Parfois, vous désirez peut-être appliquer une ou quelques migrations plutôt que toutes les migrations disponibles. Vous pouvez le faire en spécifiant le nombre de migrations que vous voulez appliquer en exécutant la commande. Par exemple, la commande suivante essaye d'appliquer les trois prochaines migrations disponibles :
 
@@ -706,6 +706,8 @@ Pour défaire une ou plusieurs migrations que ont été appliquées auparavant, 
 yii migrate/down     # défait la migration appliquée le plus récemment
 yii migrate/down 3   # défait les 3 migrations appliquées le plus récemment 
 
+```
+
 > Note: toutes les migrations ne sont PAS réversibles. Essayer de défaire de telles migrations provoque une erreur et arrête tout le processus de retour à l'état initial.
 
 
@@ -716,6 +718,7 @@ Refaire (ré-appliquer) des migrations signifie d'abord défaire les migrations 
 ```
 yii migrate/redo        # refait la dernière migration appliquée 
 yii migrate/redo 3      # refait les 3 dernière migrations appliquées
+
 ```
 
 > Note: si une  migration n'est pas réversible, vous ne serez pas en mesure de la refaire.
@@ -725,6 +728,8 @@ yii migrate/redo 3      # refait les 3 dernière migrations appliquées
 Deepuis la version 2.0.13, vous pouvez supprimer toutes les tables et clés étrangères de la base de données et ré-appliquer toutes les migrations depuis le début. 
 ```
 yii migrate/fresh       # Tronçonne la base de données et applique toutes les migrations depuis le début
+
+```
 
 ## Lister des migrations <span id="listing-migrations"></span>
 
