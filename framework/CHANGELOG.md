@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
-- Enh #16558: Added cloning `yii\data\ActiveDataProvider::query` property when ActiveDataProvider object is cloned (mgrechanik)
+- Bug #16558: Added cloning `yii\data\ActiveDataProvider::query` property when ActiveDataProvider object is cloned (mgrechanik)
 - Bug #16527: Fixed return content for `\yii\widgets\ActiveForm::run()` (carono)
 - Bug #15826: Fixed JavaScript compareValidator in `yii.validation.js` for attributes not in rules (mgrechanik)
 - Enh #16365: Added $filterOnFocusOut option for GridView (s1lver)
