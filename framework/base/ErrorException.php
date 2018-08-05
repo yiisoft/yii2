@@ -47,7 +47,7 @@ class ErrorException extends \ErrorException
         if (function_exists('xdebug_get_function_stack')) {
             // XDebug trace can't be modified and used directly with PHP 7
             // @see https://github.com/yiisoft/yii2/pull/11723
-            $xDebugTrace = array_slice(array_reverse(xdebug_get_function_stack()), 3, -1);
+            $xDebugTrace = array_slice(array_reverse(xdebug_get_function_stack()), 1, -1);
             $trace = [];
             foreach ($xDebugTrace as $frame) {
                 if (!isset($frame['function'])) {
