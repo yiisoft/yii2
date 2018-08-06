@@ -48,7 +48,7 @@ El primer comando instala [composer asset plugin](https://github.com/francoisplu
 que permite administrar dependencias de paquetes bower y npm a través de Composer. Sólo necesitas ejecutar este comando
 una vez. El segundo comando instala Yii en un directorio llamado `basic`. Puedes elegir un nombre de directorio diferente si así lo deseas.
 
-> Nota: Durante la instalación, Composer puede preguntar por tus credenciales de acceso de Github. Esto es normal ya que Composer 
+> Note: Durante la instalación, Composer puede preguntar por tus credenciales de acceso de Github. Esto es normal ya que Composer 
 > necesita obtener suficiente límite de acceso de la API para traer la información de dependencias de Github. Para más detalles, 
 > consulta la [documentación de Composer](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
 
@@ -104,7 +104,7 @@ comando de consola estando parado en el directorio `web` de la aplicación:
 php yii serve
 ```
 
-> Nota: Por defecto el servidor HTTP escuchará en el puerto 8080. De cualquier modo, si el puerto está en uso o deseas 
+> Note: Por defecto el servidor HTTP escuchará en el puerto 8080. De cualquier modo, si el puerto está en uso o deseas 
 servir varias aplicaciones de esta manera, podrías querer especificar qué puerto utilizar. Sólo agrega el argumento --port:
 
 ```bash
