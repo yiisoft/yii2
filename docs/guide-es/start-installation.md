@@ -138,7 +138,7 @@ y el correspondiente driver de base de datos (como `pdo_mysql` para bases de dat
 Configurar Servidores Web <span id="configuring-web-servers"></span>
 -------------------------
 
-> Información: Puedes saltear esta sección por ahora si sólo estás probando Yii sin intención
+> Info: Puedes saltear esta sección por ahora si sólo estás probando Yii sin intención
   de poner la aplicación en un servidor de producción.
 
 La aplicación instalada siguiendo las instrucciones mencionadas debería estar lista para usar tanto
@@ -153,11 +153,11 @@ require apuntar el document root de tu servidor Web a la carpeta `basic/web`. Ta
 querer ocultar `index.php` de la URL, como se describe en la sección [Parseo y Generación de URLs](runtime-url-handling.md).
 En esta sub-sección, aprenderás a configurar tu servidor Apache o Nginx para alcanzar estos objetivos.
 
-> Información: Al definir `basic/web` como document root, también previenes que los usuarios finales accedan
+> Info: Al definir `basic/web` como document root, también previenes que los usuarios finales accedan
 al código privado o archivos con información sensible de tu aplicación que están incluidos en los directorios del mismo nivel
 que `basic/web`. Denegando el acceso es una importante mejora en la seguridad.
 
-> Información: En caso de que tu aplicación corra en un entorno de hosting compartido donde no tienes permisos para modificar
+> Info: En caso de que tu aplicación corra en un entorno de hosting compartido donde no tienes permisos para modificar
 la configuración del servidor Web, aún puedes ajustar la estructura de la aplicación para mayor seguridad. Por favor consulta
 la sección [Entorno de Hosting Compartido](tutorial-shared-hosting.md) para más detalles.
 
