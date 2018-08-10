@@ -107,11 +107,12 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Returns the data models in the current page.
+     * @param bool $forcePrepare whether to force data preparation even if it has been done before.
      * @return array the list of data models in the current page.
      */
-    public function getModels()
+    public function getModels($forcePrepare = false)
     {
-        $this->prepare();
+        $this->prepare($forcePrepare);
 
         return $this->_models;
     }
