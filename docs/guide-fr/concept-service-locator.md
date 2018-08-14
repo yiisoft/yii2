@@ -52,7 +52,7 @@ Lorsque vous accédez à un composant pour la première fois, [[yii\di\ServiceLo
 Vous pouvez utiliser [[yii\di\ServiceLocator::has()]] pour savoir si un identifiant de composant a déjà été enregistré. Si vous appelez [[yii\di\ServiceLocator::get()]] avec un identifiant invalide, une exception est levée. 
 
 
-Comme les localisateurs de services sont souvent créés avec des [configurations](concept-configurations.md), une propriété accessible en écriture, et nommée [[yii\di\ServiceLocator::setComponents()|components]], est fournie. Cela vous permet de configurer et d'enregistrer plusieurs composants à la fois. Le code suivant montre un tableau de configuration qui peut être utilisé pour configurer un localisateur de services (p. ex. une [application](structure-applications.md)) avec les composants `db`, `cache` et `search` :
+Comme les localisateurs de services sont souvent créés avec des [configurations](concept-configurations.md), une propriété accessible en écriture, et nommée [[yii\di\ServiceLocator::setComponents()|components]], est fournie. Cela vous permet de configurer et d'enregistrer plusieurs composants à la fois. Le code suivant montre un tableau de configuration qui peut être utilisé pour configurer un localisateur de services (p. ex. une [application](structure-applications.md)) avec les composants `db`, `cache`, `tz` et `search` :
 
 ```php
 return [
@@ -65,6 +65,9 @@ return [
             'password' => '',
         ],
         'cache' => 'yii\caching\ApcCache',
+        'tz' => function() {
+            return new \DateTimeZone(Yii::$app->formatter->defaultTimeZone);
+        },
         'search' => function () {
             $solr = new app\components\SolrService('127.0.0.1');
             // ... other initializations ...
@@ -99,3 +102,13 @@ return [
 ```
 
 Cette approche alternative est à utiliser de préférence lorsque vous publiez une composant Yii qui encapsule quelques bibliothèques de tierces parties. Vous utilisez la méthode statique comme c'est montré ci-dessus pour représenter la logique complexe de construction de l'objet de tierce partie, et l'utilisateur de votre composant doit seulement appeler la méthode statique pour configurer le composant.
+
+## Parcours d'un arbre <span id="tree-traversal"></span>
+
+Les modules acceptent les inclusions arbitraires; une application Yii est essentiellement un arbre de modules. Comme chacun de ces modules est un localisateur de services, cela a du sens pour les enfants d'accéder à leur parent. 
+Cela permet aux modules d'utiliser `$this->get('db')` au lieu de faire référence au localisateur de services racine `Yii::$app->get('db')`.
+Un bénéficie supplémentaire pour le développeur est de pouvoir redéfinir la configuration dans un module.
+
+Toute requête d'un service à l'intérieur d'un module est passée à son parent dans le cas où le module lui-même est incapable  de la satisfaire.
+
+Notez que la configuration depuis des composants dans un module n'est jamais fusionnée avec celle depuis un composant du module parent. Le modèle de localisateur de services nous permet de définir des services nommés mais on ne peut supposer que des services du même nom utilisent les mêmes paramètres de configuration.

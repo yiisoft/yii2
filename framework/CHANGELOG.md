@@ -4,6 +4,9 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #16558: Added cloning `yii\data\ActiveDataProvider::query` property when ActiveDataProvider object is cloned (mgrechanik)
+- Bug #14901: Fixed trim validation for radio/checkbox button (s1lver)
+- Bug #16527: Fixed return content for `\yii\widgets\ActiveForm::run()` (carono)
 - Bug #15826: Fixed JavaScript compareValidator in `yii.validation.js` for attributes not in rules (mgrechanik)
 - Enh #16365: Added $filterOnFocusOut option for GridView (s1lver)
 - Enh #14289: Added `yii\db\Command::executeResetSequence()` to work with Oracle (CedricYii)
@@ -37,8 +40,13 @@ Yii Framework 2 Change Log
 - Bug #16292: Fixed misconfigured CORS filter exception throwing. Now it throws `InvalidConfigException` in Debug mode (khvalov)
 - Bug #16301: Fixed `yii\web\User::setIdentity()` to clear access check cache while setting identity object to `null` (Izumi-kun)
 - Bug #16322: Fixed strings were not were not compared using timing attack resistant approach while CSRF token validation (samdark, Felix Wiedemann)
-- Chg #16192: `yii\db\Command::logQuery()` is now protected (drlibra)
+- Chg #16192: `yii\db\Command::logQuery()` is now protected, extracted `getCacheKey()` from `queryInternal()` (drlibra)
 - Bug #16377: Fixed `yii\base\Event:off()` undefined index error when event handler does not match (razvanphp)
+- Bug #16514: Fixed `yii\di\Container::resolveCallableDependencies` to support callable object (wi1dcard)
+- Bug #15889: Fixed override `yii\helpers\Html::setActivePlaceholder` (lesha724)
+- Bug #16552: Added check in `yii\db\ActiveQuery::prepare()` to prevent populating already populated relation when another relation is requested with `via` (drlibra)
+- Enh #16522: Allow jQuery 3.3 (Slamdunk)
+- Enh #16603: Added `yii\mutex\FileMutex::$isWindows` for Windows file shares on Unix guest machines (brandonkelly)  
 
 2.0.15.1 March 21, 2018
 -----------------------

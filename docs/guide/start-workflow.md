@@ -95,8 +95,8 @@ The following diagram shows how an application handles a request.
 5. The controller creates an [action](structure-controllers.md) instance and performs the filters for the action.
 6. If any filter fails, the action is cancelled.
 7. If all filters pass, the action is executed.
-8. The action loads a data model, possibly from a database.
-9. The action renders a view, providing it with the data model.
+8. The action loads some data models, possibly from a database.
+9. The action renders a view, providing it with the data models.
 10. The rendered result is returned to the [response](runtime-responses.md) application component.
 11. The response component sends the rendered result to the user's browser.
 
