@@ -100,6 +100,9 @@ ACF 自顶向下逐一检查存取规则，直到找到一个与当前
    使用其他角色名时，将触发调用 [[yii\web\User::can()]]，这时要求 RBAC 的支持 （在下一节中阐述）。
    如果该选项为空或者不使用该选项，意味着该规则适用于所有角色。
 
+ * [[yii\filters\AccessRule::roleParams|roleParams]]：指定将传递给 [[yii\web\User::can()]] 的参数。
+   请参阅下面描述RBAC规则的部分，了解如何使用它。 如果此选项为空或未设置，则不传递任何参数。
+   
  * [[yii\filters\AccessRule::ips|ips]]：指定该规则用于匹配哪些 [[yii\web\Request::userIP|客户端IP地址]] 。
    IP 地址可在其末尾包含通配符 `*` 以匹配一批前缀相同的IP地址。
    例如，`192.168.*` 匹配所有 `192.168.` 段的IP地址。
@@ -222,14 +225,16 @@ return [
     'components' => [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
+            // uncomment if you want to cache RBAC items hierarchy
+            // 'cache' => 'cache',
         ],
         // ...
     ],
 ];
 ```
-> Note: If you are using yii2-basic-app template, there is a `config/console.php` configuration file where the
-  `authManager` needs to be declared additionally to `config/web.php`.
-> In case of yii2-advanced-app the `authManager` should be declared only once in `common/config/main.php`.
+> Note: 如果您使用的是 yii2-basic-app 模板，则有一个 `config/console.php` 配置文件，其中
+  `authManager` 需要另外声明在 `config/web.php`。
+> 在 yii2-advanced-app 的情况下，`authManager` 只能在 `common/config/main.php` 中声明一次。
 
 `DbManager` 使用4个数据库表存放它的数据：
 
@@ -241,6 +246,9 @@ return [
 继续之前，你需要在数据库中创建这些表。你可以使用存放在 `@yii/rbac/migrations` 目录中的数据库迁移文件来做这件事（译者注：根据本人经验，最好是将授权数据初始化命令也写到这个 RBAC 数据库迁移文件中）：
 
 `yii migrate --migrationPath=@yii/rbac/migrations`
+
+阅读 [Separated Migrations](db-migrations.md#separated-migrations)
+部分中有关处理来自不同名称空间的迁移的更多信息。
 
 现在可以通过 `\Yii::$app->authManager` 访问 `authManager` 。
 
@@ -255,21 +263,33 @@ return [
 - 将规则与角色和权限作关联；
 - 指派角色给用户。
 
-根据授权的弹性需求，上述任务可用不同的方法完成。
+根据授权灵活性要求，上述任务可以通过不同的方式完成。
+如果您的权限层次结构仅由开发人员更改，则可以使用迁移或控制台命令。
+Migration pro 是可以与其他迁移一起执行的。
+控制台命令 pro 是您可以很好地了解代码中的层次结构，
+而不是分散在多个迁移中。
 
-如果你的权限层次结构不会发生改变，而且你的用户数是恒定的，你可以通过 `authManager` 
-提供的 API 创建一个 [控制台命令](tutorial-console.md#create-command) 一次性初始化授权数据：
+无论哪种方式，最终都会得到以下 RBAC 层次结构：
+
+![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "简单的 RBAC 层次结构示意图")
+
+如果您需要动态形成权限层次结构，则需要 UI 或控制台命令。 用于构建层次结构的
+API 本身不会有所不同。
+
+#### 使用迁移（Using migrations）
+
+您可以使用 [migrations](db-migrations.md)
+通过 `authManager` 提供的 API 初始化和修改层次结构。
+
+使用 `./yii migrate/create init_rbac` 创建新迁移，然后实现创建层次结构：
 
 ```php
 <?php
-namespace app\commands;
+use yii\db\Migration;
 
-use Yii;
-use yii\console\Controller;
-
-class RbacController extends Controller
+class m170124_084304_init_rbac extends Migration
 {
-    public function actionInit()
+    public function up()
     {
         $auth = Yii::$app->authManager;
 
@@ -295,7 +315,69 @@ class RbacController extends Controller
         $auth->addChild($admin, $updatePost);
         $auth->addChild($admin, $author);
 
-        // 为用户指派角色。其中 1 和 2 是由 IdentityInterface::getId() 返回的id （译者注：user表的id）
+        // 为用户指派角色。其中 1 和 2 是由 IdentityInterface::getId() 返回的id
+        // 通常在你的 User 模型中实现这个函数。
+        $auth->assign($author, 2);
+        $auth->assign($admin, 1);
+    }
+    
+    public function down()
+    {
+        $auth = Yii::$app->authManager;
+
+        $auth->removeAll();
+    }
+}
+```
+
+> 如果您不想硬编码哪些用户具有某些角色，请不要在迁移中使用 `->assign()` 调用。
+  相反，请创建UI或控制台命令来管理分配。
+
+迁移可以通过 `yii migrate` 使用。
+
+### 使用控制台命令（Using console command）
+
+如果您的权限层次根本没有改变，并且您拥有固定数量的用户，
+则可以创建一个[控制台命令](tutorial-console.md#create-command)，它将通过
+`authManager` 提供的 API 初始化授权数据一次：
+
+```php
+<?php
+namespace app\commands;
+
+use Yii;
+use yii\console\Controller;
+
+class RbacController extends Controller
+{
+    public function actionInit()
+    {
+        $auth = Yii::$app->authManager;
+        $auth->removeAll();
+
+        // 添加 "createPost" 权限
+        $createPost = $auth->createPermission('createPost');
+        $createPost->description = 'Create a post';
+        $auth->add($createPost);
+
+        // 添加 "updatePost" 权限
+        $updatePost = $auth->createPermission('updatePost');
+        $updatePost->description = 'Update post';
+        $auth->add($updatePost);
+
+        // 添加 "author" 角色并赋予 "createPost" 权限
+        $author = $auth->createRole('author');
+        $auth->add($author);
+        $auth->addChild($author, $createPost);
+
+        // 添加 "admin" 角色并赋予 "updatePost" 
+		// 和 "author" 权限
+        $admin = $auth->createRole('admin');
+        $auth->add($admin);
+        $auth->addChild($admin, $updatePost);
+        $auth->addChild($admin, $author);
+
+        // 为用户指派角色。其中 1 和 2 是由 IdentityInterface::getId() 返回的id
         // 通常在你的 User 模型中实现这个函数。
         $auth->assign($author, 2);
         $auth->assign($admin, 1);
@@ -303,18 +385,25 @@ class RbacController extends Controller
 }
 ```
 
-> Note: If you are using advanced template, you need to put your `RbacController` inside `console/controllers` directory
-  and change namespace to `console/controllers`.
+> Note: 如果您使用高级模板，则需要将 `RbacController` 放在 `console/controllers` 目录中，
+  并将命名空间更改为 `console/controllers`。
 
-在用 `yii rbac/init` 执行了这个命令后，我们将得到下图所示的层次结构：
+上面的命令可以通过以下方式从控制台执行：
 
-![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "简单的 RBAC 层次结构示意图")
+```
+yii rbac/init
+```
 
-作者可创建新贴，管理员可编辑帖子以及所有作者可做的事情。
+> 如果您不想硬编码用户具有某些角色，请不要将 `->assign()` 调用放入命令中。
+  相反，请创建UI或控制台命令来管理分配。
 
-如果你的应用允许用户注册，你需要在注册时给新用户指派一次角色。例如，
-在高级项目模板中，要让所有注册用户成为作者，你需要如下例所示修改
-`frontend\models\SignupForm::signup()` 方法：
+## 为用户分配角色（Assigning roles to users）
+
+作者可以创建帖子，管理员可以更新帖子并可以做一切作者都能做的。
+
+如果您的应用程序允许用户注册，则需要为这些新用户分配一次角色。
+例如，为了让所有注册用户成为高级项目模板中的作者，您需要修改 `frontend\models\SignupForm::signup()`，
+如下所示：
 
 ```php
 public function signup()
@@ -327,8 +416,8 @@ public function signup()
         $user->generateAuthKey();
         $user->save(false);
 
-        // 要添加以下三行代码：
-        $auth = Yii::$app->authManager;
+        // 增加了以下三行：
+        $auth = \Yii::$app->authManager;
         $authorRole = $auth->getRole('author');
         $auth->assign($authorRole, $user->getId());
 
@@ -339,8 +428,8 @@ public function signup()
 }
 ```
 
-对于有动态更改授权数据的复杂存取控制需求的，你可能需要使用 `authManager` 
-提供的 API 的开发用户界面（例如：管理面板）。
+对于需要动态更新授权数据的复杂访问控制的应用程序，可能需要使用
+`authManager` 提供的 API 来开发特殊的用户界面（即管理面板）。
 
 
 ### 使用规则 (Rules) <span id="using-rules"></span>
@@ -353,6 +442,7 @@ public function signup()
 namespace app\rbac;
 
 use yii\rbac\Rule;
+use app\models\Post;
 
 /**
  * 检查 authorID 是否和通过参数传进来的 user 参数相符
@@ -439,6 +529,79 @@ if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
 
 ![Access check](images/rbac-access-check-3.png "Access check")
 
+在您的控制器内部有几种实现授权的方式。
+如果您希望细化权限来分开添加和删除的访问权限，那么您需要检查每个操作的访问权限。
+您可以在每个操作方法中使用上述条件，或使用 [[yii\filters\AccessControl]]：
+
+```php
+public function behaviors()
+{
+    return [
+        'access' => [
+            'class' => AccessControl::className(),
+            'rules' => [
+                [
+                    'allow' => true,
+                    'actions' => ['index'],
+                    'roles' => ['managePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['view'],
+                    'roles' => ['viewPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['create'],
+                    'roles' => ['createPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['update'],
+                    'roles' => ['updatePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['delete'],
+                    'roles' => ['deletePost'],
+                ],
+            ],
+        ],
+    ];
+}
+```
+
+如果所有的CRUD操作都是一起管理的，那么使用 `managePost` 这样的单一权限并且在
+[[yii\web\Controller::beforeAction()]] 中检查它是个好主意。
+
+在上面的例子中，没有参数与指定的访问动作的角色一起传递，但是在
+`updatePost` 权限的情况下，我们需要传递 `post` 参数才能正常工作。
+您可以通过在访问规则中指定 [[yii\filters\AccessRule::roleParams|roleParams]] 将参数传递给
+[[yii\web\User::can()]]：
+
+```php
+[
+    'allow' => true,
+    'actions' => ['update'],
+    'roles' => ['updatePost'],
+    'roleParams' => function() {
+        return ['post' => Post::findOne(['id' => Yii::$app->request->get('id')])];
+    },
+],
+```
+
+在上面的例子中，[[yii\filters\AccessRule::roleParams|roleParams]] 是一个 Closure，
+将在检查访问规则时进行评估，因此模型只会在需要时加载。
+如果创建角色参数是一个简单的操作，那么您可以指定一个数组，如下所示：
+
+```php
+[
+    'allow' => true,
+    'actions' => ['update'],
+    'roles' => ['updatePost'],
+    'roleParams' => ['postId' => Yii::$app->request->get('id')];
+],
+```
 
 ### 使用默认角色 <span id="using-default-roles"></span>
 

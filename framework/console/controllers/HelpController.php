@@ -116,13 +116,13 @@ class HelpController extends Controller
         }
 
         foreach ($controller->getActionArgsHelp($action) as $argument => $help) {
-            $description = str_replace("\n", '', addcslashes($help['comment'], ':')) ?: $argument;
+            $description = preg_replace("~\R~", '', addcslashes($help['comment'], ':')) ?: $argument;
             $this->stdout($argument . ':' . $description . "\n");
         }
 
         $this->stdout("\n");
         foreach ($controller->getActionOptionsHelp($action) as $argument => $help) {
-            $description = str_replace("\n", '', addcslashes($help['comment'], ':'));
+            $description = preg_replace("~\R~", '', addcslashes($help['comment'], ':'));
             $this->stdout('--' . $argument . ($description ? ':' . $description : '') . "\n");
         }
     }
@@ -251,16 +251,16 @@ class HelpController extends Controller
                 $file = $matches[0];
                 $relativePath = str_replace($controllerPath, '', $file);
                 $class = strtr($relativePath, [
-                    DIRECTORY_SEPARATOR => '\\',
+                    '/' => '\\',
                     '.php' => '',
                 ]);
                 $controllerClass = $module->controllerNamespace . $class;
                 if ($this->validateControllerClass($controllerClass)) {
-                    $dir = ltrim(pathinfo($relativePath, PATHINFO_DIRNAME), DIRECTORY_SEPARATOR);
+                    $dir = ltrim(pathinfo($relativePath, PATHINFO_DIRNAME), '\\/');
 
                     $command = Inflector::camel2id(substr(basename($file), 0, -14), '-', true);
                     if (!empty($dir)) {
-                        $command = $dir . DIRECTORY_SEPARATOR . $command;
+                        $command = $dir . '/' . $command;
                     }
                     $commands[] = $prefix . $command;
                 }

@@ -16,7 +16,8 @@ Yii はさまざまなコンポーネントを結び付けてログインをサ�
 
 [[yii\web\User|user]] アプリケーション・コンポーネントがユーザの認証状態を管理します。
 実際の認証ロジックを含む [[yii\web\User::identityClass|ユーザ識別情報クラス]] は、あなたが指定しなければなりません。
-下記のアプリケーション構成情報においては、[[yii\web\User|user]] の [[yii\web\User::identityClass|ユーザ識別情報クラス]] は `app\models\User` であると構成されています。
+下記のアプリケーション構成情報においては、[[yii\web\User|user]] の [[yii\web\User::identityClass|ユーザ識別情報クラス]] は
+`app\models\User` であると構成されています。
 `app\models\User` の実装については、次の項で説明します。
 
 ```php
@@ -29,23 +30,30 @@ return [
 ];
 ```
 
+
 ## [[yii\web\IdentityInterface]] を実装する <span id="implementing-identity"></span>
 
-[[yii\web\User::identityClass|ユーザ識別情報クラス]] が実装しなければならない [[yii\web\IdentityInterface]] は次のメソッドを含んでいます。
+[[yii\web\User::identityClass|ユーザ識別情報クラス]] が実装しなければならない
+[[yii\web\IdentityInterface]] は次のメソッドを含んでいます。
 
 * [[yii\web\IdentityInterface::findIdentity()|findIdentity()]]: 指定されたユーザ ID を使ってユーザ識別情報クラスのインスタンスを探します。
   セッションを通じてログイン状態を保持する必要がある場合に、このメソッドが使用されます。
-* [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]: 指定されたアクセス・トークンを使ってユーザ識別情報クラスのインスタンスを探します。
+* [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]: 
+  指定されたアクセス・トークンを使ってユーザ識別情報クラスのインスタンスを探します。
   単一の秘密のトークンでユーザを認証する必要がある場合 (ステートレスな RESTful アプリケーションなどの場合) に、このメソッドが使用されます。
 * [[yii\web\IdentityInterface::getId()|getId()]]: ユーザ識別情報クラスのインスタンスによって表されるユーザの ID を返します。
 * [[yii\web\IdentityInterface::getAuthKey()|getAuthKey()]]: クッキー・ベースのログインを検証するのに使用されるキーを返します。
-  このキーがログイン・クッキーに保存され、後でサーバ・サイドのキーと比較されて、ログイン・クッキーが有効であることが確認されます。
-* [[yii\web\IdentityInterface::validateAuthKey()|validateAuthKey()]]: クッキー・ベースのログイン・キーを検証するロジックを実装します。
+  このキーがログイン・クッキーに保存され、後でサーバ・サイドのキーと比較されて、
+  ログイン・クッキーが有効であることが確認されます。
+* [[yii\web\IdentityInterface::validateAuthKey()|validateAuthKey()]]: 
+  クッキー・ベースのログイン・キーを検証するロジックを実装します。
 
-特定のメソッドが必要でない場合は、中身を空にして実装しても構いません。
-例えば、あなたのアプリケーションが純粋なステート・レス RESTful アプリケーションであるなら、実装する必要があるのは [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] と [[yii\web\IdentityInterface::getId()|getId()]] だけであり、他のメソッドは全て中身を空にしておくことが出来ます。
+特定のメソッドが必要でない場合は、中身を空にして実装しても構いません。例えば、あなたのアプリケーションが純粋なステート・レス RESTful アプリケーションであるなら、
+実装する必要があるのは [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] と
+[[yii\web\IdentityInterface::getId()|getId()]] だけであり、他のメソッドは全て中身を空にしておくことが出来ます。
 
-次の例では、[[yii\web\User::identityClass|ユーザ識別情報クラス]] は、`user` データベース・テーブルと関連付けられた [アクティブレコード](db-active-record.md) クラスとして実装されています。
+次の例では、[[yii\web\User::identityClass|ユーザ識別情報クラス]] は、`user` データベース・テーブルと関連付けられた
+[アクティブ・レコード](db-active-record.md) クラスとして実装されています。
 
 ```php
 <?php
@@ -109,7 +117,8 @@ class User extends ActiveRecord implements IdentityInterface
 }
 ```
 
-前述のように、`getAuthKey()` と `validateAuthKey()` は、あなたのアプリケーションがクッキー・ベースのログイン機能を使用する場合にのみ実装する必要があります。
+前述のように、`getAuthKey()` と `validateAuthKey()` は、
+あなたのアプリケーションがクッキー・ベースのログイン機能を使用する場合にのみ実装する必要があります。
 この場合、次のコードを使って、各ユーザに対して認証キーを生成して、`user` テーブルに保存しておくことが出来ます。
 
 ```php
@@ -131,7 +140,8 @@ class User extends ActiveRecord implements IdentityInterface
 ```
 
 > Note: ユーザ識別情報クラスである `User` と [[yii\web\User]] を混同してはいけません。
-  前者は認証のロジックを実装するクラスであり、普通は、ユーザの認証情報を保存する何らかの持続的ストレージと関連付けられた [アクティブレコード](db-active-record.md) クラスとして実装されます。
+  前者は認証のロジックを実装するクラスであり、普通は、ユーザの認証情報を保存する何らかの持続的ストレージと関連付けられた
+  [アクティブ・レコード](db-active-record.md) クラスとして実装されます。
   後者はユーザの認証状態の管理に責任を持つアプリケーション・コンポーネントです。
 
 
@@ -140,7 +150,8 @@ class User extends ActiveRecord implements IdentityInterface
 [[yii\web\User]] は、主として、`user` アプリケーション・コンポーネントの形で使います。
 
 現在のユーザの識別情報は、`Yii::$app->user->identity` という式を使って取得することが出来ます。
-これは、現在ログインしているユーザの [[yii\web\User::identityClass|ユーザ識別情報クラス]] のインスタンスを返すか、現在のユーザが認証されていない (つまりゲストである) 場合は null を返します。
+これは、現在ログインしているユーザの [[yii\web\User::identityClass|ユーザ識別情報クラス]] 
+のインスタンスを返すか、現在のユーザが認証されていない (つまりゲストである) 場合は null を返します。
 次のコードは、[[yii\web\User]] からその他の認証関連の情報を取得する方法を示すものです。
 
 ```php
@@ -166,10 +177,13 @@ Yii::$app->user->login($identity);
 ```
 
 [[yii\web\User::login()]] メソッドは現在のユーザの識別情報を [[yii\web\User]] にセットします。
-セッションが [[yii\web\User::enableSession|有効]] にされている場合は、ユーザの認証状態がセッション全体を通じて保持されるように、ユーザ識別情報がセッションに保管されます。
-クッキー・ベースのログイン (つまり "remember me"、「次回は自動ログイン」) が [[yii\web\User::enableAutoLogin|有効]] にされている場合は、ユーザ識別情報をクッキーにも保存して、クッキーが有効である限りは、ユーザの認証状態をクッキーから復元することが可能になります。
+セッションが [[yii\web\User::enableSession|有効]] にされている場合は、
+ユーザの認証状態がセッション全体を通じて保持されるように、ユーザ識別情報がセッションに保管されます。
+クッキー・ベースのログイン (つまり "remember me"、「次回は自動ログイン」) が [[yii\web\User::enableAutoLogin|有効]] にされている場合は、
+ユーザ識別情報をクッキーにも保存して、クッキーが有効である限りは、ユーザの認証状態をクッキーから復元することが可能になります。
 
-クッキー・ベースのログインを有効にするためには、アプリケーションの構成情報で [[yii\web\User::enableAutoLogin]] を `true` に構成する必要があります。
+クッキー・ベースのログインを有効にするためには、アプリケーションの構成情報で
+[[yii\web\User::enableAutoLogin]] を `true` に構成する必要があります。
 また、[[yii\web\User::login()]] メソッドを呼ぶときには、有効期間のパラメータを与える必要があります。
 
 ユーザをログアウトさせるためには、単に次のように `logout()` を呼びます。
@@ -179,8 +193,7 @@ Yii::$app->user->logout();
 ```
 
 ユーザのログアウトはセッションが有効にされている場合にだけ意味があることに注意してください。
-`logout()` メソッドは、ユーザ認証状態をメモリとセッションの両方から消去します。
-そして、デフォルトでは、ユーザのセッションデータの *全て* を破壊します。
+`logout()` メソッドは、ユーザ認証状態をメモリとセッションの両方から消去します。そして、デフォルトでは、ユーザのセッションデータの *全て* を破壊します。
 セッション・データを保持したい場合は、代りに、`Yii::$app->user->logout(false)` を呼ばなければなりません。
 
 
@@ -189,11 +202,14 @@ Yii::$app->user->logout();
 [[yii\web\User]] クラスは、ログインとログアウトのプロセスで、いくつかのイベントを発生させます。
 
 * [[yii\web\User::EVENT_BEFORE_LOGIN|EVENT_BEFORE_LOGIN]]: [[yii\web\User::login()]] の開始時に発生します。
-  イベント・ハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを `false` にセットした場合は、ログインのプロセスがキャンセルされます。
+  イベント・ハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを `false` にセットした場合は、
+  ログインのプロセスがキャンセルされます。
 * [[yii\web\User::EVENT_AFTER_LOGIN|EVENT_AFTER_LOGIN]]: ログインが成功した時に発生します。
 * [[yii\web\User::EVENT_BEFORE_LOGOUT|EVENT_BEFORE_LOGOUT]]: [[yii\web\User::logout()]] の開始時に発生します。
-  イベント・ハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを `false` にセットした場合は、ログアウトのプロセスがキャンセルされます。
+  イベント・ハンドラがイベントの [[yii\web\UserEvent::isValid|isValid]] プロパティを `false` にセットした場合は、
+  ログアウトのプロセスがキャンセルされます。
 * [[yii\web\User::EVENT_AFTER_LOGOUT|EVENT_AFTER_LOGOUT]]: ログアウトが成功した時に発生します。
 
 これらのイベントに反応して、ログイン監査、オンライン・ユーザ統計などの機能を実装することが出来ます。
-例えば、[[yii\web\User::EVENT_AFTER_LOGIN|EVENT_AFTER_LOGIN]] のハンドラの中で、`user` テーブルにログインの日時と IP アドレスを記録することが出来ます。
+例えば、[[yii\web\User::EVENT_AFTER_LOGIN|EVENT_AFTER_LOGIN]] のハンドラの中で、
+`user` テーブルにログインの日時と IP アドレスを記録することが出来ます。

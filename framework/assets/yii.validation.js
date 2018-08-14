@@ -236,9 +236,15 @@ yii.validation = (function ($) {
             }
         },
 
-        trim: function ($form, attribute, options) {
+        trim: function ($form, attribute, options, value) {
             var $input = $form.find(attribute.input);
-            var value = $input.val();
+            var isCheckAble = $input.find('[type=radio]').is('[type=radio]') || $input.find('[type=checkbox]').is('[type=checkbox]');
+
+            if (!isCheckAble) {
+                return value;
+            }
+
+            value = $input.val();
             if (!options.skipOnEmpty || !pub.isEmpty(value)) {
                 value = $.trim(value);
                 $input.val(value);
@@ -274,12 +280,11 @@ yii.validation = (function ($) {
             if (options.compareAttribute === undefined) {
                 compareValue = options.compareValue;
             } else {
-                var attributes = $form.data('yiiActiveForm').attributes
-                for (var i = attributes.length - 1; i >= 0; i--) {
-                    if (attributes[i].id === options.compareAttribute) {
-                        compareValue = $(attributes[i].input).val();
-                    }
+                var $target = $('#' + options.compareAttribute);
+                if (!$target.length) {
+                    $target = $form.find('[name="' + options.compareAttributeName + '"]');
                 }
+                compareValue = $target.val();                
             }
 
             if (options.type === 'number') {

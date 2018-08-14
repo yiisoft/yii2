@@ -286,6 +286,12 @@ This validator checks if the input value is a valid email address.
 
     // a1 needs to exist. If a1 is an array, then every element of it must exist.
     ['a1', 'exist', 'allowArray' => true],
+    
+    // type_id needs to exist in the column "id" in the table defined in ProductType class 
+    ['type_id', 'exist', 'targetClass' => ProductType::class, 'targetAttribute' => ['type_id' => 'id']],    
+    
+    // the same as the previous, but using already defined relation "type"
+    ['type_id', 'exist', 'targetRelation' => 'type'],
 ]
 ```
 
@@ -304,6 +310,7 @@ multiple attribute values should exist).
   You may use an array to validate the existence of multiple columns at the same time. The array values
   are the attributes that will be used to validate the existence, while the array keys are the attributes
   whose values are to be validated. If the key and the value are the same, you can just specify the value.
+- `targetRelation`: since version 2.0.14 you can use convenient attribute `targetRelation`, which overrides the `targetClass` and `targetAttribute` attributes using specs from the requested relation.  
 - `filter`: additional filter to be applied to the DB query used to check the existence of the input value.
   This can be a string or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
   on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
@@ -360,6 +367,13 @@ section for complete coverage about uploading files and performing validation ab
         // normalize phone input here
         return $value;
     }],
+    
+    // normalize "phone" using the function "normalizePhone"
+    ['phone', 'filter', 'filter' => [$this, 'normalizePhone']],
+    
+    public function normalizePhone($value) {
+        return $value;
+    }
 ]
 ```
 
