@@ -486,7 +486,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $target = $modelClass::instance();
         /** @var ActiveQuery $relationQuery */
         $relationQuery = $target->getRelation($relationName);
-        $query = $this->createRelationQuery($relationQuery->modelClass, $relationQuery->link, $relationQuery->multiple);
+        $query = $this->createRelationQuery($relationQuery->modelClass, $relationQuery->link, $relation->multiple || $relationQuery->multiple);
         return $query->via($via, $callable);
     }
 
