@@ -579,7 +579,7 @@ EOD;
      * @param array $buffer
      * @return bool
      */
-    protected function isBufferValid(array $buffer): bool
+    private function isBufferValid(array $buffer): bool
     {
         return isset($buffer[0][0], $buffer[1], $buffer[2][0])
             && $buffer[0][0] === T_CONSTANT_ENCAPSED_STRING
