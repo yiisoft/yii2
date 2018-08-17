@@ -98,20 +98,23 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      */
     public $dependency;
     /**
-     * @var string[]|string list of factors that would cause the variation of the content being cached.
+     * @var string[]|string|\Closure[] list of factors that would cause the variation of the content being cached.
      * Each factor is a string representing a variation (e.g. the language, a GET parameter).
      * The following variation setting will cause the content to be cached in different versions
-     * according to the current application language:
+     * according to the current application language and user id.:
      *
      * ```php
      * [
+     *     function (PageCache $pageCache) {
+     *        return Yii::$app->user->id;
+     *     },
      *     Yii::$app->language,
      * ]
      * ```
      */
     public $variations;
     /**
-     * @var bool whether to enable the page cache. You may use this property to turn on and off
+     * @var bool|\Closure whether to enable the page cache. You may use this property to turn on and off
      * the page cache according to specific setting (e.g. enable page cache only for GET requests).
      */
     public $enabled = true;
@@ -155,7 +158,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      */
     public function beforeAction($action)
     {
-        if (!$this->enabled) {
+        if (($this->enabled instanceof \Closure && !call_user_func($this->enabled, $this)) || !$this->enabled) {
             return true;
         }
 
@@ -297,6 +300,11 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
         $key = [__CLASS__];
         if ($this->varyByRoute) {
             $key[] = Yii::$app->requestedRoute;
+        }
+        foreach ($this->variations as &$variation) {
+            if ($variation instanceof \Closure) {
+                $variation = call_user_func($variation, $this);
+            }
         }
         return array_merge($key, (array)$this->variations);
     }
