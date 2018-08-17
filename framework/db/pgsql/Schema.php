@@ -248,7 +248,6 @@ FROM
         generate_subscripts ( "i".indkey, 1 )) sb 
 WHERE
     "unn" = "attnum"
-ORDER BY "attnum" ASC
 SQL;
 
         $resolvedName = $this->resolveTableName($tableName);
