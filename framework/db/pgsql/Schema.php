@@ -220,21 +220,35 @@ SQL;
     {
         static $sql = <<<'SQL'
 SELECT
-    "ic"."relname" AS "name",
-    "ia"."attname" AS "column_name",
-    "i"."indisunique" AS "index_is_unique",
-    "i"."indisprimary" AS "index_is_primary"
-FROM "pg_class" AS "tc"
-INNER JOIN "pg_namespace" AS "tcns"
-    ON "tcns"."oid" = "tc"."relnamespace"
-INNER JOIN "pg_index" AS "i"
-    ON "i"."indrelid" = "tc"."oid"
-INNER JOIN "pg_class" AS "ic"
-    ON "ic"."oid" = "i"."indexrelid"
-INNER JOIN "pg_attribute" AS "ia"
-    ON "ia"."attrelid" = "i"."indrelid" AND "ia"."attnum" = ANY ("i"."indkey")
-WHERE "tcns"."nspname" = :schemaName AND "tc"."relname" = :tableName
-ORDER BY "ia"."attnum" ASC
+    "name",
+    "column_name",
+    "index_is_unique",
+    "index_is_primary" 
+FROM
+    (
+    SELECT
+        "i"."indisunique" AS "index_is_unique",
+        "i"."indisprimary" AS "index_is_primary",
+        "ic".relname AS "name",
+        "ia".attname AS "column_name",
+        UNNEST ( "i".indkey ) AS unn,
+        "ia".attnum 
+    FROM
+        "pg_class" AS "tc"
+        INNER JOIN "pg_namespace" AS "tcns" ON "tcns"."oid" = "tc"."relnamespace"
+        INNER JOIN "pg_index" AS "i" ON "i"."indrelid" = "tc"."oid"
+        INNER JOIN "pg_class" AS "ic" ON "ic"."oid" = "i"."indexrelid"
+        INNER JOIN "pg_attribute" AS "ia" ON "ia"."attrelid" = "i"."indrelid" 
+        AND "ia"."attnum" = ANY ( "i"."indkey" ) 
+    WHERE
+        "tcns"."nspname" = :schemaName AND "tc"."relname" = :tableName
+    ORDER BY
+        "tc".relname,
+        "ic".relname,
+        generate_subscripts ( "i".indkey, 1 )) sb 
+WHERE
+    "unn" = "attnum"
+ORDER BY "attnum" ASC
 SQL;
 
         $resolvedName = $this->resolveTableName($tableName);
