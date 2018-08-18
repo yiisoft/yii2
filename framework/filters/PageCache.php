@@ -158,10 +158,12 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      */
     public function beforeAction($action)
     {
-        if (($this->enabled instanceof \Closure && !call_user_func($this->enabled, $this)) || !$this->enabled) {
+        if($this->enabled instanceof \Closure) {
+            $this->enabled = call_user_func($this->enabled, $this);
+        }
+        if (!$this->enabled) {
             return true;
         }
-
         $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
 
         if (is_array($this->dependency)) {
