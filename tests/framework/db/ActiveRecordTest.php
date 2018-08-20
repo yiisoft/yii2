@@ -1813,6 +1813,33 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         $cat = new Cat();
         $this->assertFalse(isset($cat->throwable));
+    }
 
+    public function testIsAttributeChanged()
+    {
+        $order = Order::findOne(1);
+        $this->assertFalse($order->isAttributeChanged('unknown'));
+        $this->assertFalse($order->isAttributeChanged('total'));
+
+        $order->total = null;
+        $order->markAttributeDirty('total');
+        $this->assertTrue($order->isAttributeChanged('total'));
+
+        $order->total = null;
+        $order->setOldAttribute('total', 0);
+        $this->assertTrue($order->isAttributeChanged('total', true));
+        $this->assertFalse($order->isAttributeChanged('total', false));
+
+        $order->setOldAttribute('total', null);
+        $this->assertFalse($order->isAttributeChanged('total'));
+
+        $order->total = 10;
+        $this->assertTrue($order->isAttributeChanged('total'));
+
+        unset($order->total);
+        $this->assertFalse($order->isAttributeChanged('total'));
+
+        $orderNew = new Order;
+        $this->assertFalse($orderNew->isAttributeChanged('total'));
     }
 }
