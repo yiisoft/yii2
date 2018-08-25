@@ -892,7 +892,7 @@ abstract class BaseMigrateController extends Controller
         foreach ($migrationPaths as $item) {
             [$migrationPath, $namespace] = $item;
             if (!file_exists($migrationPath)) {
-                $this->stdout('Dir does not exist: ' . $migrationPath . "\n", Console::FG_RED);
+                $this->stdout('Directory does not exist: ' . $migrationPath . "\n", Console::FG_RED);
                 continue;
             }
             $handle = opendir($migrationPath);
