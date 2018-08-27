@@ -311,9 +311,9 @@ class Component extends BaseObject
 
         if ($this->_behaviors !== null) {
             $behaviors = $this->_behaviors;
-            $this->_behaviors = null;
+            $this->_behaviors = [];
             foreach ($behaviors as $name => $behavior) {
-                $this->attachBehavior($name, clone $behavior);
+                $this->attachBehaviorInternal($name, clone $behavior);
             }
         }
     }
