@@ -34,9 +34,4 @@ class Mouse extends Animal
             3 => 3 / 0
         ];
     }
-
-    public function runGetterException()
-    {
-        $value = $this->listWithException[1] ?? 0;
-    }
 }

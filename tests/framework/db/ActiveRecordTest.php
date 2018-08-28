@@ -1818,12 +1818,11 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * @requires PHP 7
      * @expectedException \yii\base\ErrorException
      */
     public function testGetterWithException()
     {
         $mouse = new Mouse();
-        $mouse->runGetterException();
+        $value = isset($mouse->listWithException[1]) ? $mouse->listWithException[1] : 0;
     }
 }
