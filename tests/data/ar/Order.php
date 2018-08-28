@@ -215,13 +215,4 @@ class Order extends ActiveRecord
             0 => 'customer_id',
         ];
     }
-
-    public function getListWithException()
-    {
-        return [
-            1 => 1,
-            2 => 2,
-            3 => 3 / 0
-        ];
-    }
 }
