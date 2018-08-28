@@ -46,7 +46,8 @@ Yii Framework 2 Change Log
 - Bug #15889: Fixed override `yii\helpers\Html::setActivePlaceholder` (lesha724)
 - Bug #16552: Added check in `yii\db\ActiveQuery::prepare()` to prevent populating already populated relation when another relation is requested with `via` (drlibra)
 - Enh #16522: Allow jQuery 3.3 (Slamdunk)
-- Enh #16603: Added `yii\mutex\FileMutex::$isWindows` for Windows file shares on Unix guest machines (brandonkelly)  
+- Enh #16603: Added `yii\mutex\FileMutex::$isWindows` for Windows file shares on Unix guest machines (brandonkelly)
+- Bug #16666: Fixed `yii\helpers\ArrayHelper::merge` (rustamwin)
 
 2.0.15.1 March 21, 2018
 -----------------------
