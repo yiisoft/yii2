@@ -1815,4 +1815,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertFalse(isset($cat->throwable));
 
     }
+
+    /**
+     * @expectedException \yii\base\ErrorException
+     */
+    public function testGetterWithException()
+    {
+        $order = new Order();
+        $value = $order->listWithException[1] ?? 0;
+    }
 }
