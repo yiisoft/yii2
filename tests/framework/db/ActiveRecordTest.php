@@ -1817,6 +1817,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
+     * @requires PHP 7
      * @expectedException \yii\base\ErrorException
      */
     public function testGetterWithException()
