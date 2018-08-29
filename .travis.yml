@@ -213,7 +213,7 @@ script:
   # PHP tests
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
-      vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
+      vendor/bin/phpunit --debug --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
     fi
 
   # JS tests
