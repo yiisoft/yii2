@@ -829,6 +829,10 @@ class Formatter extends Component
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
+            } elseif (($timestamp = DateTime::createFromFormat($this->getFormatDatePhp($this->dateFormat,$checkDateTimeInfo), $value, new DateTimeZone($this->defaultTimeZone))) !== false) {
+                return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
+            } elseif (($timestamp = DateTime::createFromFormat($this->getFormatDatePhp($this->timeFormat,$checkDateTimeInfo), $value, new DateTimeZone($this->defaultTimeZone))) !== false) {
+                return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             }
             // finally try to create a DateTime object with the value
             if ($checkDateTimeInfo) {
@@ -846,6 +850,30 @@ class Formatter extends Component
             throw new InvalidArgumentException("'$value' is not a valid date time value: " . $e->getMessage()
                 . "\n" . print_r(DateTime::getLastErrors(), true), $e->getCode(), $e);
         }
+    }
+    
+     /**
+     * Return the format of the date for apply with php
+     *
+     * @param string $format the format to apply in date or datetime. The following types of value are supported:
+     *
+     * - an string can be the ICU short patterns `short`, `medium`, `long` and `full`.
+     * - a ICU Symbol patterns.
+     * - a string characters that php recognized in the format parameter string.
+     *
+     * @param bool $checkDateTimeInfo whether to also info if the date/time value has some time and date information attached.
+     * Defaults to `false`. If `true`, the return format to datetime, otherwise format to date only
+     * @return string to php format pattern.
+     */
+    protected function getFormatDatePhp($format, $checkDateTimeInfo = false) {
+        if (isset(FormatConverter::$phpFallbackDatePatterns[$format])) {
+            return $checkDateTimeInfo?FormatConverter::$phpFallbackDatePatterns[$format]['datetime']:FormatConverter::$phpFallbackDatePatterns[$format]['date'];
+        } elseif (strncmp($format, 'php:', 4) === 0) {
+            return substr($format, 4);
+        } else {
+            return FormatConverter::convertDateIcuToPhp($format);
+        }
+        
     }
 
     /**
