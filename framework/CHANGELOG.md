@@ -48,6 +48,7 @@ Yii Framework 2 Change Log
 - Enh #16522: Allow jQuery 3.3 (Slamdunk)
 - Enh #16603: Added `yii\mutex\FileMutex::$isWindows` for Windows file shares on Unix guest machines (brandonkelly)
 - Bug #16666: Fixed `yii\helpers\ArrayHelper::merge` (rustamwin)
+- Enh: `yii\helpers\UnsetArrayValue`, `yii\helpers\ReplaceArrayValue` object now can be restored after serialization using `var_export()` function (silvefire)
 
 2.0.15.1 March 21, 2018
 -----------------------
