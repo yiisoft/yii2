@@ -14,6 +14,7 @@ use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Animal;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Cat;
+use yiiunit\data\ar\Mouse;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Document;
@@ -1806,5 +1807,15 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $cat = new Cat();
         $this->assertFalse(isset($cat->throwable));
 
+    }
+
+    /**
+     * @requires PHP 7
+     * @expectedException \yii\base\ErrorException
+     */
+    public function testGetterWithException()
+    {
+        $mouse = new Mouse();
+        $mouse->runGetterException();
     }
 }

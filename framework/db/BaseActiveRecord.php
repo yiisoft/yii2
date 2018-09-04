@@ -332,13 +332,18 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __isset($name)
     {
-        try {
-            return $this->__get($name) !== null;
-        } catch (\Throwable $t) {
-            return false;
-        } catch (\Exception $e) {
+        if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
+            return $this->_attributes[$name] !== null;
+        }
+
+        if ($this->hasAttribute($name)) {
             return false;
         }
+
+        if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+            return $this->_related[$name] !== null;
+        }
+        return parent::__isset($name);
     }
 
     /**
