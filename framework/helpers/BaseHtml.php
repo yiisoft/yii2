@@ -1326,6 +1326,7 @@ class BaseHtml
         }
 
         static::setActivePlaceholder($model, $attribute, $options);
+        self::normalizeMaxLength($model, $attribute, $options);
 
         return static::input($type, $name, $value, $options);
     }
