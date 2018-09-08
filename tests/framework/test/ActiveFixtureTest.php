@@ -34,6 +34,10 @@ class CustomDirectoryFixture extends ActiveFixture
     public $dataDirectory = '@app/framework/test/custom';
 }
 
+class AnimalFixture extends ActiveFixture
+{
+    public $modelClass = 'yiiunit\data\ar\Animal';
+}
 
 class BaseDbTestCase
 {
@@ -81,6 +85,19 @@ class DataPathDbTestCase extends BaseDbTestCase
         ];
     }
 }
+
+class TruncateTestCase extends BaseDbTestCase
+{
+    public function fixtures()
+    {
+        return [
+            'animals' => [
+                'class' => AnimalFixture::className(),
+            ]
+        ];
+    }
+}
+
 
 /**
  * @group fixture
@@ -165,6 +182,15 @@ class ActiveFixtureTest extends DatabaseTestCase
         $this->assertEquals(1, $customer->id);
         $this->assertEquals('customer1@example.com', $customer['email']);
         $test->tearDown();
+    }
 
+    public function testTruncate()
+    {
+        $test = new TruncateTestCase();
+
+        $test->setUp();
+        $fixture = $test->getFixture('animals');
+        $this->assertEmpty($fixture->data);
+        $test->tearDown();
     }
 }

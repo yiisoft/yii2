@@ -70,22 +70,22 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         $concreteData = [
             'regular values' => [
-                3 => 'MERGE INTO "T_upsert" USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS "EXCLUDED" ("email", "address", "status", "profile_id") ON (("T_upsert"."email"="EXCLUDED"."email")) WHEN MATCHED THEN UPDATE SET "address"="EXCLUDED"."address", "status"="EXCLUDED"."status", "profile_id"="EXCLUDED"."profile_id" WHEN NOT MATCHED THEN INSERT ("email", "address", "status", "profile_id") VALUES ("EXCLUDED"."email", "EXCLUDED"."address", "EXCLUDED"."status", "EXCLUDED"."profile_id")',
+                3 => 'MERGE INTO "T_upsert" USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS "EXCLUDED" ("email", "address", "status", "profile_id") ON ("T_upsert"."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "address"="EXCLUDED"."address", "status"="EXCLUDED"."status", "profile_id"="EXCLUDED"."profile_id" WHEN NOT MATCHED THEN INSERT ("email", "address", "status", "profile_id") VALUES ("EXCLUDED"."email", "EXCLUDED"."address", "EXCLUDED"."status", "EXCLUDED"."profile_id")',
             ],
             'regular values with update part' => [
-                3 => 'MERGE INTO "T_upsert" USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS "EXCLUDED" ("email", "address", "status", "profile_id") ON (("T_upsert"."email"="EXCLUDED"."email")) WHEN MATCHED THEN UPDATE SET "address"=:qp4, "status"=:qp5, "orders"=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", "address", "status", "profile_id") VALUES ("EXCLUDED"."email", "EXCLUDED"."address", "EXCLUDED"."status", "EXCLUDED"."profile_id")',
+                3 => 'MERGE INTO "T_upsert" USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS "EXCLUDED" ("email", "address", "status", "profile_id") ON ("T_upsert"."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "address"=:qp4, "status"=:qp5, "orders"=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", "address", "status", "profile_id") VALUES ("EXCLUDED"."email", "EXCLUDED"."address", "EXCLUDED"."status", "EXCLUDED"."profile_id")',
             ],
             'regular values without update part' => [
-                3 => 'MERGE INTO "T_upsert" USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS "EXCLUDED" ("email", "address", "status", "profile_id") ON (("T_upsert"."email"="EXCLUDED"."email")) WHEN NOT MATCHED THEN INSERT ("email", "address", "status", "profile_id") VALUES ("EXCLUDED"."email", "EXCLUDED"."address", "EXCLUDED"."status", "EXCLUDED"."profile_id")',
+                3 => 'MERGE INTO "T_upsert" USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS "EXCLUDED" ("email", "address", "status", "profile_id") ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NOT MATCHED THEN INSERT ("email", "address", "status", "profile_id") VALUES ("EXCLUDED"."email", "EXCLUDED"."address", "EXCLUDED"."status", "EXCLUDED"."profile_id")',
             ],
             'query' => [
-                3 => 'MERGE INTO "T_upsert" USING (SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 LIMIT 1) AS "EXCLUDED" ("email", "status") ON (("T_upsert"."email"="EXCLUDED"."email")) WHEN MATCHED THEN UPDATE SET "status"="EXCLUDED"."status" WHEN NOT MATCHED THEN INSERT ("email", "status") VALUES ("EXCLUDED"."email", "EXCLUDED"."status")',
+                3 => 'MERGE INTO "T_upsert" USING (SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 LIMIT 1) AS "EXCLUDED" ("email", "status") ON ("T_upsert"."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "status"="EXCLUDED"."status" WHEN NOT MATCHED THEN INSERT ("email", "status") VALUES ("EXCLUDED"."email", "EXCLUDED"."status")',
             ],
             'query with update part' => [
-                3 => 'MERGE INTO "T_upsert" USING (SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 LIMIT 1) AS "EXCLUDED" ("email", "status") ON (("T_upsert"."email"="EXCLUDED"."email")) WHEN MATCHED THEN UPDATE SET "address"=:qp1, "status"=:qp2, "orders"=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", "status") VALUES ("EXCLUDED"."email", "EXCLUDED"."status")',
+                3 => 'MERGE INTO "T_upsert" USING (SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 LIMIT 1) AS "EXCLUDED" ("email", "status") ON ("T_upsert"."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "address"=:qp1, "status"=:qp2, "orders"=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", "status") VALUES ("EXCLUDED"."email", "EXCLUDED"."status")',
             ],
             'query without update part' => [
-                3 => 'MERGE INTO "T_upsert" USING (SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 LIMIT 1) AS "EXCLUDED" ("email", "status") ON (("T_upsert"."email"="EXCLUDED"."email")) WHEN NOT MATCHED THEN INSERT ("email", "status") VALUES ("EXCLUDED"."email", "EXCLUDED"."status")',
+                3 => 'MERGE INTO "T_upsert" USING (SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 LIMIT 1) AS "EXCLUDED" ("email", "status") ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NOT MATCHED THEN INSERT ("email", "status") VALUES ("EXCLUDED"."email", "EXCLUDED"."status")',
             ],
             'values and expressions' => [
                 3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
@@ -97,10 +97,10 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
             ],
             'query, values and expressions with update part' => [
-                3 => 'MERGE INTO {{%T_upsert}} USING (SELECT :phEmail AS "email", now() AS [[time]]) AS "EXCLUDED" ("email", [[time]]) ON (({{%T_upsert}}."email"="EXCLUDED"."email")) WHEN MATCHED THEN UPDATE SET "ts"=:qp1, [[orders]]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", [[time]]) VALUES ("EXCLUDED"."email", "EXCLUDED".[[time]])',
+                3 => 'MERGE INTO {{%T_upsert}} USING (SELECT :phEmail AS "email", now() AS [[time]]) AS "EXCLUDED" ("email", [[time]]) ON ({{%T_upsert}}."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "ts"=:qp1, [[orders]]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", [[time]]) VALUES ("EXCLUDED"."email", "EXCLUDED".[[time]])',
             ],
             'query, values and expressions without update part' => [
-                3 => 'MERGE INTO {{%T_upsert}} USING (SELECT :phEmail AS "email", now() AS [[time]]) AS "EXCLUDED" ("email", [[time]]) ON (({{%T_upsert}}."email"="EXCLUDED"."email")) WHEN MATCHED THEN UPDATE SET "ts"=:qp1, [[orders]]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", [[time]]) VALUES ("EXCLUDED"."email", "EXCLUDED".[[time]])',
+                3 => 'MERGE INTO {{%T_upsert}} USING (SELECT :phEmail AS "email", now() AS [[time]]) AS "EXCLUDED" ("email", [[time]]) ON ({{%T_upsert}}."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "ts"=:qp1, [[orders]]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", [[time]]) VALUES ("EXCLUDED"."email", "EXCLUDED".[[time]])',
             ],
         ];
         $newData = parent::upsertProvider();

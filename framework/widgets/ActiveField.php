@@ -930,7 +930,10 @@ class ActiveField extends Component
      */
     protected function addErrorClassIfNeeded(&$options)
     {
-        if ($this->model->hasErrors($this->attribute)) {
+        // Get proper attribute name when attribute name is tabular.
+        $attributeName = Html::getAttributeName($this->attribute);
+
+        if ($this->model->hasErrors($attributeName)) {
             Html::addCssClass($options, $this->form->errorCssClass);
         }
     }

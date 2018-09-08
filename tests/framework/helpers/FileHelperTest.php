@@ -908,12 +908,13 @@ class FileHelperTest extends TestCase
         sort($foundFiles);
         $this->assertEquals($expectedFiles, $foundFiles);
 
+        // filter
         $expectedFiles = [
             $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir'
         ];
         $options = [
             'filter' => function ($path) {
-                return 'second_sub_dir' == basename($path);
+                return 'second_sub_dir' === basename($path);
             },
         ];
         $foundFiles = FileHelper::findDirectories($dirName, $options);
@@ -921,5 +922,16 @@ class FileHelperTest extends TestCase
         sort($foundFiles);
         $this->assertEquals($expectedFiles, $foundFiles);
 
+        // except
+        $expectedFiles = [
+            $dirName . DIRECTORY_SEPARATOR . 'second_sub_dir'
+        ];
+        $options = [
+            'except' => ['test_sub_dir'],
+        ];
+        $foundFiles = FileHelper::findDirectories($dirName, $options);
+        sort($expectedFiles);
+        sort($foundFiles);
+        $this->assertEquals($expectedFiles, $foundFiles);
     }
 }

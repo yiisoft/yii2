@@ -141,6 +141,7 @@ HTML
     public function testShouldTriggerInitEvent()
     {
         $initTriggered = false;
+        ob_start();
         $form = ActiveForm::begin(
             [
                 'action' => '/something',
@@ -151,6 +152,7 @@ HTML
             ]
         );
         ActiveForm::end();
+        ob_end_clean();
         $this->assertTrue($initTriggered);
     }
 

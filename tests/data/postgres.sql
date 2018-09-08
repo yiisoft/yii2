@@ -177,7 +177,7 @@ CREATE TABLE "default_pk" (
 CREATE TABLE "document" (
   id serial primary key,
   title varchar(255) not null,
-  content text not null,
+  content text,
   version integer not null default 0
 );
 
@@ -325,6 +325,7 @@ INSERT INTO "bit_values" (id, val) VALUES (1, '0'), (2, '1');
 
 DROP TABLE IF EXISTS "array_and_json_types" CASCADE;
 CREATE TABLE "array_and_json_types" (
+  id SERIAL NOT NULL PRIMARY KEY,
   intarray_col INT[],
   textarray2_col TEXT[][],
   json_col JSON,

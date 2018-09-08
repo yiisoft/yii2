@@ -179,6 +179,7 @@ return [
   'yii\db\mssql\TableSchema' => YII2_PATH . '/db/mssql/TableSchema.php',
   'yii\db\mssql\conditions\InConditionBuilder' => YII2_PATH . '/db/mssql/conditions/InConditionBuilder.php',
   'yii\db\mssql\conditions\LikeConditionBuilder' => YII2_PATH . '/db/mssql/conditions/LikeConditionBuilder.php',
+  'yii\db\mysql\ColumnSchema' => YII2_PATH . '/db/mysql/ColumnSchema.php',
   'yii\db\mysql\ColumnSchemaBuilder' => YII2_PATH . '/db/mysql/ColumnSchemaBuilder.php',
   'yii\db\mysql\JsonExpressionBuilder' => YII2_PATH . '/db/mysql/JsonExpressionBuilder.php',
   'yii\db\mysql\QueryBuilder' => YII2_PATH . '/db/mysql/QueryBuilder.php',

@@ -137,7 +137,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
-                $condition = [$primaryKey[0] => $condition];
+                // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
+                $condition = [$primaryKey[0] => is_array($condition) ? array_values($condition) : $condition];
             } else {
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
@@ -221,7 +222,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
      *    Override this method to return the name of this column.
-     * 2. Add a `required` validation rule for the version column to ensure the version value is submitted.
+     * 2. Ensure the version value is submitted and loaded to your model before any update or delete.
+     *    Or add [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] to your model 
+     *    class in order to automate the process.
      * 3. In the Web form that collects the user input, add a hidden field that stores
      *    the lock version of the recording being updated.
      * 4. In the controller action that does the data updating, try to catch the [[StaleObjectException]]
@@ -332,6 +335,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         try {
             return $this->__get($name) !== null;
+        } catch (\Throwable $t) {
+            return false;
         } catch (\Exception $e) {
             return false;
         }
@@ -457,6 +462,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function populateRelation($name, $records)
     {
+        foreach ($this->_relationsDependencies as &$relationNames) {
+            unset($relationNames[$name]);
+        }
+
         $this->_related[$name] = $records;
     }
 
@@ -1563,9 +1572,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 throw new InvalidCallException('Unable to link models: the primary key of ' . get_class($primaryModel) . ' is null.');
             }
             if (is_array($foreignModel->$fk)) { // relation via array valued attribute
-                $foreignModel->$fk = array_merge($foreignModel->$fk, [$value]);
+                $foreignModel->{$fk}[] = $value;
             } else {
-                $foreignModel->$fk = $value;
+                $foreignModel->{$fk} = $value;
             }
         }
         $foreignModel->save(false);
@@ -1728,7 +1737,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     private function setRelationDependencies($name, $relation)
     {
-        if (empty($relation->via)) {
+        if (empty($relation->via) && $relation->link) {
             foreach ($relation->link as $attribute) {
                 $this->_relationsDependencies[$attribute][$name] = $name;
             }

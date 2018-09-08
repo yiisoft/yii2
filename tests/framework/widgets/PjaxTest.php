@@ -45,6 +45,7 @@ class PjaxTest extends TestCase
     public function testShouldTriggerInitEvent()
     {
         $initTriggered = false;
+        ob_start();
         $pjax = new Pjax(
             [
                 'on init' => function () use (&$initTriggered) {
@@ -52,7 +53,7 @@ class PjaxTest extends TestCase
                 }
             ]
         );
-
+        ob_end_clean();
         $this->assertTrue($initTriggered);
     }
 }
