@@ -30,9 +30,5 @@
   "bugs": {
     "url": "https://github.com/yiisoft/yii2/issues"
   },
-  "homepage": "https://github.com/yiisoft/yii2",
-  "jest": {
-    "verbose": true,
-    "testURL": "http://localhost/"
-  }
+  "homepage": "https://github.com/yiisoft/yii2"
 }
