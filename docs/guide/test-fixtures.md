@@ -131,8 +131,6 @@ class UserProfileTest extends \Codeception\Test\Unit
         return [
             'profiles' => [
                 'class' => UserProfileFixture::className(),
-                // fixture data located in tests/_data/user.php
-                'dataFile' => codecept_data_dir() . 'user.php'
             ],
         ];
     }
@@ -178,7 +176,7 @@ different tests. We thus recommend that you organize the data files in a hierarc
 your class namespaces. For example,
 
 ```
-# under folder tests\unit\fixtures
+# under folder tests\fixtures
 
 data\
     components\
@@ -217,7 +215,7 @@ Yii supports fixtures via the `yii fixture` command line tool. This tool support
 Lets assume we have fixtures data to load:
 
 ```
-#users.php file under fixtures data path, by default @tests\unit\fixtures\data
+#users.php file under fixtures data path, by default @tests\fixtures\data
 
 return [
     [
@@ -243,7 +241,7 @@ Fixture classes name should not be plural.
 
 ### Loading fixtures
 
-Fixture classes should be suffixed by `Fixture` class. By default fixtures will be searched under `tests\unit\fixtures` namespace, you can
+Fixture classes should be suffixed by `Fixture` class. By default fixtures will be searched under `tests\fixtures` namespace, you can
 change this behavior with config or command options. You can exclude some fixtures due load or unload by specifying `-` before its name like `-User`.
 
 To load fixture, run the following command:
@@ -276,7 +274,7 @@ yii fixture "*"
 // load all fixtures except ones
 yii fixture "*, -DoNotLoadThisOne"
 
-// load fixtures, but search them in different namespace. By default namespace is: tests\unit\fixtures.
+// load fixtures, but search them in different namespace. By default namespace is: tests\fixtures.
 yii fixture User --namespace='alias\my\custom\namespace'
 
 // load global fixture `some\name\space\CustomFixture` before other fixtures will be loaded.
