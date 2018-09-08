@@ -76,7 +76,6 @@ describe('yii.validation', function () {
     }
 
     jsdom({
-        url: 'http://localhost',
         src: fs.readFileSync('vendor/bower-asset/jquery/dist/jquery.js', 'utf-8')
     });
 
