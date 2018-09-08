@@ -523,7 +523,7 @@ class Container extends Component
     {
         if (is_array($callback)) {
             $reflection = new \ReflectionMethod($callback[0], $callback[1]);
-        } elseif (is_object($callback)) {
+        } elseif (is_object($callback) && !$callback instanceof \Closure) {
             $reflection = new \ReflectionMethod($callback, '__invoke');
         } else {
             $reflection = new \ReflectionFunction($callback);

@@ -75,7 +75,9 @@ describe('yii.validation', function () {
         yii = sandbox.yii;
     }
 
-    jsdom({src: fs.readFileSync('vendor/bower-asset/jquery/dist/jquery.js', 'utf-8')});
+    jsdom({
+        src: fs.readFileSync('vendor/bower-asset/jquery/dist/jquery.js', 'utf-8')
+    });
 
     before(function () {
         $ = window.$;
@@ -1214,6 +1216,9 @@ describe('yii.validation', function () {
         var $input = {
             val: function () {
                 return getInputVal();
+            },
+            is: function () {
+                return false;
             }
         };
         var $form = {
@@ -1271,6 +1276,32 @@ describe('yii.validation', function () {
                 assert.strictEqual(inputSpy.getCall(0).args[0], undefined);
                 assert.equal(inputSpy.getCall(1).args[0], expectedValue);
             });
+        });
+    });
+
+    describe('trim filter on checkbox', function () {
+        var attribute = {input: '#input-id'};
+        var getInputVal;
+        var $checkbox = {
+            is: function (selector) {
+                if (selector === ':checked') {
+                    return true;
+                }
+
+                if (selector === ':checkbox, :radio') {
+                    return true;
+                }
+            }
+        };
+        var $form = {
+            find: function () {
+                return $checkbox;
+            }
+        };
+
+
+        it('should be left as is', function () {
+            assert.strictEqual(yii.validation.trim($form, attribute, {}, true), true);
         });
     });
 
