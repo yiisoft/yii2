@@ -65,7 +65,7 @@ class BaseVarDumper
      * @param mixed $var variable to be dumped
      * @param int $level depth level
      */
-    private static function dumpInternal($var, $level)
+    private static function dumpInternal($var, $level, $seenArrays = [])
     {
         switch (gettype($var)) {
             case 'boolean':
@@ -90,6 +90,7 @@ class BaseVarDumper
                 self::$_output .= '{unknown}';
                 break;
             case 'array':
+                $seenArrays[] = $var;
                 if (self::$_depth <= $level) {
                     self::$_output .= '[...]';
                 } elseif (empty($var)) {
@@ -102,7 +103,12 @@ class BaseVarDumper
                         self::$_output .= "\n" . $spaces . '    ';
                         self::dumpInternal($key, 0);
                         self::$_output .= ' => ';
-                        self::dumpInternal($var[$key], $level + 1);
+                        if (is_array($var[$key]) && in_array($var[$key], $seenArrays, true)) {
+                            self::$_output .= '*RECURSION*';
+                        }
+                        else {
+                            self::dumpInternal($var[$key], $level + 1, $seenArrays);
+                        }
                     }
                     self::$_output .= "\n" . $spaces . ']';
                 }
