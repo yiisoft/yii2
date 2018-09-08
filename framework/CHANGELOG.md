@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #16006: Handle case when `X-Forwarded-Host` header have multiple hosts separated with a comma (pgaultier)
 - Bug #16010: Fixed `yii\filters\ContentNegotiator` behavior when GET parameters contain an array (rugabarbo)
 - Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
+- Bug #15802: Fixed exception class in yii\di\Container (vuchastyi, developeruz)
 - Bug #15988: Fixed bash completion (alekciy)
 - Bug #15798: Fixed render `yii\grid\RadioButtonColumn::$content` and `yii\grid\CheckboxColumn::$content` (lesha724)
 - Bug #15548: Fixed index names collision in RBAC (gonimar)
