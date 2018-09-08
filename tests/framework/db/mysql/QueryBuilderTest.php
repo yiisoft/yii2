@@ -127,8 +127,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
          * @link https://github.com/yiisoft/yii2/issues/14367
          */
         $mysqlVersion = $this->getDb()->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
-        $isSupportFractionalSec = version_compare($mysqlVersion,'5.6.4', '>=');
-        if ($isSupportFractionalSec) {
+        $supportsFractionalSeconds = version_compare($mysqlVersion,'5.6.4', '>=');
+        if ($supportsFractionalSeconds) {
             $expectedValues = [
                 'datetime(0) NOT NULL',
                 'datetime(0)',
@@ -157,7 +157,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             $columns[] = [
                 Schema::TYPE_TIMESTAMP,
                 $this->timestamp(),
-                $isSupportFractionalSec ? 'timestamp(0)' : 'timestamp',
+                $supportsFractionalSeconds ? 'timestamp(0)' : 'timestamp',
             ];
         }
 
