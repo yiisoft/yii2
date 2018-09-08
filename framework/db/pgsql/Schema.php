@@ -571,7 +571,7 @@ SQL;
      */
     protected function loadColumnSchema($info)
     {
-        /** @var ColumnSchema $column */
+        /* @var $column ColumnSchema */
         $column = $this->createColumnSchema();
         $column->allowNull = $info['is_nullable'];
         $column->autoIncrement = $info['is_autoinc'];

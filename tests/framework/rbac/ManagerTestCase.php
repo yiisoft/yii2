@@ -611,7 +611,7 @@ abstract class ManagerTestCase extends TestCase
         $rule = new ActionRule();
         $auth->add($rule);
 
-        /** @var ActionRule $rule */
+        /* @var $rule ActionRule */
         $rule = $this->auth->getRule('action_rule');
         $this->assertInstanceOf(ActionRule::class, $rule);
     }

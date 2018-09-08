@@ -1,6 +1,6 @@
 <?php
-/** @var \yii\web\View $this */
-/** @var string $static */
+/* @var $this \yii\web\View */
+/* @var $static string */
 $this->beginPage();
 $this->head();
 $this->beginBody();

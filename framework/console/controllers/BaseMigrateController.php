@@ -773,7 +773,7 @@ abstract class BaseMigrateController extends Controller
     {
         $this->includeMigrationFile($class);
 
-        /** @var MigrationInterface $migration */
+        /* @var $migration MigrationInterface */
         $migration = Yii::createObject($class);
         if ($migration instanceof BaseObject && $migration->canSetProperty('compact')) {
             $migration->compact = $this->compact;

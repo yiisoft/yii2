@@ -131,7 +131,7 @@ class TargetTest extends TestCase
 
     public function testGetEnabled()
     {
-        /** @var Target $target */
+        /* @var $target Target */
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
         $target->enabled = true;
@@ -148,7 +148,7 @@ class TargetTest extends TestCase
 
     public function testFormatMessage()
     {
-        /** @var Target $target */
+        /* @var $target Target */
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
         $text = 'message';

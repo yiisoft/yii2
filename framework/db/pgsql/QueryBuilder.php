@@ -312,13 +312,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     private function oldUpsert($table, $insertColumns, $updateColumns, &$params)
     {
-        /** @var Constraint[] $constraints */
+        /* @var $constraints Constraint[] */
         [$uniqueNames, $insertNames, $updateNames] = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
         }
 
-        /** @var Schema $schema */
+        /* @var $schema Schema */
         $schema = $this->db->getSchema();
         if (!$insertColumns instanceof Query) {
             $tableSchema = $schema->getTableSchema($table);

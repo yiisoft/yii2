@@ -482,7 +482,7 @@ class Controller extends \yii\base\Controller
 
         $args = [];
 
-        /** @var \ReflectionParameter $reflection */
+        /* @var $reflection \ReflectionParameter */
         foreach ($method->getParameters() as $i => $reflection) {
             if ($reflection->getClass() !== null) {
                 continue;

@@ -28,7 +28,7 @@ class ErrorHandlerTest extends TestCase
 
     public function testCorrectResponseCodeInErrorView()
     {
-        /** @var ErrorHandler $handler */
+        /* @var $handler ErrorHandler */
         $handler = Yii::$app->getErrorHandler();
         ob_start(); // suppress response output
         $this->invokeMethod($handler, 'renderException', [new NotFoundHttpException('This message is displayed to end user')]);

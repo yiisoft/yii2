@@ -743,7 +743,7 @@ class Connection extends Component
         }
         $config['db'] = $this;
         $config['sql'] = $sql;
-        /** @var Command $command */
+        /* @var $command Command */
         $command = Yii::createObject($config);
         return $command->bindValues($params);
     }

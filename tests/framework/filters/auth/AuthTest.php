@@ -60,7 +60,7 @@ class AuthTest extends \yiiunit\TestCase
 
     public function authOnly($token, $login, $filter)
     {
-        /** @var TestAuthController $controller */
+        /* @var $controller TestAuthController */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {
@@ -71,7 +71,7 @@ class AuthTest extends \yiiunit\TestCase
 
     public function authOptional($token, $login, $filter)
     {
-        /** @var TestAuthController $controller */
+        /* @var $controller TestAuthController */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['optional' => ['filtered']]);
         try {
@@ -82,7 +82,7 @@ class AuthTest extends \yiiunit\TestCase
 
     public function authExcept($token, $login, $filter)
     {
-        /** @var TestAuthController $controller */
+        /* @var $controller TestAuthController */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['except' => ['other']]);
         try {
@@ -193,7 +193,7 @@ class AuthTest extends \yiiunit\TestCase
      */
     public function testActive($authClass)
     {
-        /** @var $filter AuthMethod */
+        /* @var $filter AuthMethod */
         $filter = new $authClass();
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');

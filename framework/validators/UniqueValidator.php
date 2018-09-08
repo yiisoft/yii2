@@ -170,7 +170,7 @@ class UniqueValidator extends Validator
      */
     private function modelExists($targetClass, $conditions, $model)
     {
-        /** @var ActiveRecordInterface $targetClass $query */
+        /* @var $targetClass $query ActiveRecordInterface */
         $query = $this->prepareQuery($targetClass, $conditions);
 
         if (!$model instanceof ActiveRecordInterface
@@ -263,7 +263,7 @@ class UniqueValidator extends Validator
             return $conditions;
         }
 
-        /** @var ActiveRecord $targetModelClass */
+        /* @var $targetModelClass ActiveRecord */
         return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 

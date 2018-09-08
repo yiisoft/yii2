@@ -218,7 +218,7 @@ abstract class ConnectionTest extends DatabaseTestCase
      */
     public function testNestedTransaction()
     {
-        /** @var Connection $connection */
+        /* @var $connection Connection */
         $connection = $this->getConnection(true);
         $connection->transaction(function (Connection $db) {
             $this->assertNotNull($db->transaction);

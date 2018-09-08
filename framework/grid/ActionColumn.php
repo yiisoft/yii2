@@ -86,7 +86,8 @@ class ActionColumn extends Column
      * ```
      */
     public $buttons = [];
-    /** @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
+    /**
+     * @var array visibility conditions for each button. The array keys are the button names (without curly brackets),
      * and the values are the boolean true/false or the anonymous function. When the button name is not specified in
      * this array it will be shown by default.
      * The callbacks must use the following signature:

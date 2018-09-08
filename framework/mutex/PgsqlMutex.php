@@ -72,7 +72,7 @@ class PgsqlMutex extends DbMutex
         }
         [$key1, $key2] = $this->getKeysFromName($name);
         return $this->db->useMaster(function ($db) use ($key1, $key2) {
-            /** @var \yii\db\Connection $db */
+            /* @var $db \yii\db\Connection */
             return (bool) $db->createCommand(
                 'SELECT pg_try_advisory_lock(:key1, :key2)',
                 [':key1' => $key1, ':key2' => $key2]
@@ -90,7 +90,7 @@ class PgsqlMutex extends DbMutex
     {
         [$key1, $key2] = $this->getKeysFromName($name);
         return $this->db->useMaster(function ($db) use ($key1, $key2) {
-            /** @var \yii\db\Connection $db */
+            /* @var $db \yii\db\Connection */
             return (bool) $db->createCommand(
                 'SELECT pg_advisory_unlock(:key1, :key2)',
                 [':key1' => $key1, ':key2' => $key2]

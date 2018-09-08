@@ -1535,7 +1535,7 @@ class QueryBuilder extends \yii\base\BaseObject
             } else {
                 $className = 'yii\db\conditions\SimpleCondition';
             }
-            /** @var ConditionInterface $className */
+            /* @var $className ConditionInterface */
             return $className::fromArrayDefinition($operator, $condition);
         }
 

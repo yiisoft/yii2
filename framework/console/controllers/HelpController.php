@@ -80,7 +80,7 @@ class HelpController extends Controller
             if ($result === false || !($result[0] instanceof Controller)) {
                 continue;
             }
-            /** @var $controller Controller */
+            /* @var $controller Controller */
             [$controller, $actionID] = $result;
             $actions = $this->getActions($controller);
             if (!empty($actions)) {
@@ -108,7 +108,7 @@ class HelpController extends Controller
             return;
         }
 
-        /** @var Controller $controller */
+        /* @var $controller Controller */
         [$controller, $actionID] = $result;
         $action = $controller->createAction($actionID);
         if ($action === null) {
@@ -141,7 +141,7 @@ class HelpController extends Controller
             return;
         }
 
-        /** @var Controller $controller */
+        /* @var $controller Controller */
         [$controller, $actionID] = $result;
         $action = $controller->createAction($actionID);
         if ($action === null) {
@@ -190,7 +190,7 @@ class HelpController extends Controller
             $result = Yii::$app->createController($command);
             if ($result !== false && $result[0] instanceof Controller) {
                 [$controller, $actionID] = $result;
-                /** @var Controller $controller */
+                /* @var $controller Controller */
                 $description = $controller->getHelpSummary();
             }
 
@@ -298,7 +298,7 @@ class HelpController extends Controller
             foreach ($commands as $command => $description) {
                 $result = Yii::$app->createController($command);
                 if ($result !== false && $result[0] instanceof Controller) {
-                    /** @var $controller Controller */
+                    /* @var $controller Controller */
                     [$controller, $actionID] = $result;
                     $actions = $this->getActions($controller);
                     if (!empty($actions)) {

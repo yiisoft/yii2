@@ -626,7 +626,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function testJoinWithAlias($aliasMethod)
     {
         // left join and eager loading
-        /** @var ActiveQuery $query */
+        /* @var $query ActiveQuery */
         $query = Order::find()->joinWith(['customer c']);
         if ($aliasMethod === 'explicit') {
             $orders = $query->orderBy('c.id DESC, order.id')->all();
@@ -760,7 +760,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         }
 
         // join with count and query
-        /** @var $query ActiveQuery */
+        /* @var $query ActiveQuery */
         $query = Order::find()->joinWith(['customer c']);
         if ($aliasMethod === 'explicit') {
             $count = $query->count('c.id');
@@ -774,7 +774,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(3, $orders);
 
         // relational query
-        /** @var $order Order */
+        /* @var $order Order */
         $order = Order::findOne(1);
         $customerQuery = $order->getCustomer()->innerJoinWith(['orders o'], false);
         if ($aliasMethod === 'explicit') {
@@ -949,7 +949,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         Order::$tableName = $orderTableName;
         OrderItem::$tableName = $orderItemTableName;
 
-        /** @var $order Order */
+        /* @var $order Order */
         $order = Order::findOne(1);
         $itemsSQL = $order->getOrderitems()->createCommand()->rawSql;
         $expectedSQL = $this->replaceQuotes('SELECT * FROM [[order_item]] WHERE [[order_id]]=1');
@@ -1526,9 +1526,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testUnlinkAllOnCondition()
     {
-        /** @var Category $categoryClass */
+        /* @var $categoryClass Category */
         $categoryClass = $this->getCategoryClass();
-        /** @var Item $itemClass */
+        /* @var $itemClass Item */
         $itemClass = $this->getItemClass();
 
         // Ensure there are three items with category_id = 2 in the Items table
@@ -1557,9 +1557,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testUnlinkAllOnConditionViaTable()
     {
-        /** @var Order $orderClass */
+        /* @var $orderClass Order */
         $orderClass = $this->getOrderClass();
-        /** @var Item $itemClass */
+        /* @var $itemClass Item */
         $itemClass = $this->getItemClass();
 
         // Ensure there are three items with category_id = 2 in the Items table
@@ -1607,7 +1607,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testNoTablenameReplacement()
     {
-        /** @var Customer $customer */
+        /* @var $customer Customer */
         $class = $this->getCustomerClass();
         $customer = new $class();
         $customer->name = 'Some {{weird}} name';
@@ -1677,7 +1677,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         $this->expectException('yii\base\InvalidArgumentException');
         $this->expectExceptionMessageRegExp('/^Key "(.+)?" is not a column name and can not be used as a filter$/');
-        /** @var Query $query */
+        /* @var $query Query */
         $query = $this->invokeMethod(new Customer(), 'findByCondition', $filterWithInjection);
         Customer::getDb()->queryBuilder->build($query);
     }
@@ -1718,7 +1718,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testFindWithConstructors()
     {
-        /** @var OrderWithConstructor[] $orders */
+        /* @var $orders OrderWithConstructor[] */
         $orders = OrderWithConstructor::find()
             ->with(['customer.profile', 'orderItems'])
             ->orderBy('id')

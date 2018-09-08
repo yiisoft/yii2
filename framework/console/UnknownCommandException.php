@@ -70,7 +70,7 @@ class UnknownCommandException extends Exception
         if ($help === false || $this->command === '') {
             return [];
         }
-        /** @var $helpController HelpController */
+        /* @var $helpController HelpController */
         [$helpController, $actionID] = $help;
 
         $availableActions = [];
@@ -83,7 +83,7 @@ class UnknownCommandException extends Exception
             $availableActions[] = $command;
 
             // add all actions of this controller
-            /** @var $controller Controller */
+            /* @var $controller Controller */
             [$controller, $actionID] = $result;
             $actions = $helpController->getActions($controller);
             if (!empty($actions)) {

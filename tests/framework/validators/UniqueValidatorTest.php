@@ -68,7 +68,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $validator = new UniqueValidator();
         $messageError = Yii::t('yii', '{attribute} is invalid.', ['attribute' => 'Name']);
 
-        /** @var Customer $customerModel */
+        /* @var $customerModel Customer */
         $customerModel = Customer::findOne(1);
         $customerModel->name = ['test array data'];
         $validator->validateAttribute($customerModel, 'name');
@@ -89,7 +89,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $m = ValidatorTestMainModel::find()->one();
         $val->validateAttribute($m, 'id');
         $this->assertFalse($m->hasErrors('id'));
-        /** @var ValidatorTestRefModel $m */
+        /* @var $m ValidatorTestRefModel */
         $m = ValidatorTestRefModel::findOne(1);
         $val->validateAttribute($m, 'ref');
         $this->assertTrue($m->hasErrors('ref'));
@@ -125,7 +125,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     public function testValidateNonDatabaseAttribute()
     {
         $val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::class, 'targetAttribute' => 'ref']);
-        /** @var ValidatorTestMainModel $m */
+        /* @var $m ValidatorTestMainModel */
         $m = ValidatorTestMainModel::findOne(1);
         $val->validateAttribute($m, 'testMainVal');
         $this->assertFalse($m->hasErrors('testMainVal'));
@@ -150,7 +150,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
             'targetAttribute' => ['order_id', 'item_id'],
         ]);
         // validate old record
-        /** @var OrderItem $m */
+        /* @var $m OrderItem */
         $m = OrderItem::findOne(['order_id' => 1, 'item_id' => 2]);
         $val->validateAttribute($m, 'order_id');
         $this->assertFalse($m->hasErrors('order_id'));
@@ -173,7 +173,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
             'targetAttribute' => ['id' => 'order_id'],
         ]);
         // validate old record
-        /** @var Order $m */
+        /* @var $m Order */
         $m = Order::findOne(1);
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
@@ -205,7 +205,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
             'targetAttribute' => ['description' => 'address'],
         ]);
 
-        /** @var Profile $m */
+        /* @var $m Profile */
         $m = Profile::findOne(1);
         $this->assertEquals('profile customer 1', $m->description);
         $val->validateAttribute($m, 'description');
@@ -230,7 +230,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     {
         $validator = new UniqueValidator();
 
-        /** @var Profile $profileModel */
+        /* @var $profileModel Profile */
         $profileModel = new Profile(['description' => 'profile customer 1']);
         $validator->validateAttribute($profileModel, 'description');
         $this->assertTrue($profileModel->hasErrors('description'));
@@ -250,7 +250,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     {
         $validator = new UniqueValidator();
 
-        /** @var Profile $profileModel */
+        /* @var $profileModel Profile */
         $profileModel = Profile::findOne(1);
         $validator->validateAttribute($profileModel, 'description');
         $this->assertFalse($profileModel->hasErrors('description'));

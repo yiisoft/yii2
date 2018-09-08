@@ -122,7 +122,7 @@ class ExistValidator extends Validator
     private function checkTargetRelationExistence($model, $attribute)
     {
         $exists = false;
-        /** @var ActiveQuery $relationQuery */
+        /* @var $relationQuery ActiveQuery */
         $relationQuery = $model->{'get' . ucfirst($this->targetRelation)}();
 
         if ($this->filter instanceof \Closure) {
@@ -211,7 +211,7 @@ class ExistValidator extends Validator
             return $conditions;
         }
 
-        /** @var ActiveRecord $targetModelClass */
+        /* @var $targetModelClass ActiveRecord */
         return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 

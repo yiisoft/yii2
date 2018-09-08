@@ -98,7 +98,7 @@ Exception: yii\web\NotFoundHttpException', $this->getController()->runAction('er
 
     public function testDefaultView()
     {
-        /** @var ErrorAction $action */
+        /* @var $action ErrorAction */
         $action = $this->getController()->createAction('error');
 
         // Unset view name. Class should try to load view that matches action name by default

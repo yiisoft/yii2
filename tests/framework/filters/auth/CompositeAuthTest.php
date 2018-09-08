@@ -105,7 +105,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
 
     public function testCallingRunWithCompleteRoute()
     {
-        /** @var TestController $controller */
+        /* @var $controller TestController */
         $controller = Yii::$app->createController('test')[0];
         $this->assertEquals('success', $controller->run('test/d'));
     }
@@ -115,14 +115,14 @@ class CompositeAuthTest extends \yiiunit\TestCase
      */
     public function testRunAction()
     {
-        /** @var TestController $controller */
+        /* @var $controller TestController */
         $controller = Yii::$app->createController('test')[0];
         $this->assertEquals('success', $controller->run('b'));
     }
 
     public function testRunButWithActionIdOnly()
     {
-        /** @var TestController $controller */
+        /* @var $controller TestController */
         $controller = Yii::$app->createController('test')[0];
         $this->assertEquals('success', $controller->run('c'));
     }
@@ -130,7 +130,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
     public function testCompositeAuth()
     {
         Yii::$app->request->setHeader('Authorization', base64_encode("foo:bar"));
-        /** @var TestAuthController $controller */
+        /* @var $controller TestAuthController */
         $controller = Yii::$app->createController('test')[0];
         $controller->authMethods = [
             HttpBearerAuth::class,

@@ -317,7 +317,7 @@ EOD;
                 }
             }
         } elseif ($this->config['format'] === 'db') {
-            /** @var Connection $db */
+            /* @var $db Connection */
             $db = Instance::ensure($this->config['db'], Connection::class);
             $sourceMessageTable = isset($this->config['sourceMessageTable']) ? $this->config['sourceMessageTable'] : '{{%source_message}}';
             $messageTable = isset($this->config['messageTable']) ? $this->config['messageTable'] : '{{%message}}';

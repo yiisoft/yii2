@@ -551,7 +551,7 @@ trait ActiveRecordTestTrait
         $this->assertTrue($customers->isRelationPopulated('ordersWithItems'));
         $this->assertCount(1, $customers->ordersWithItems);
 
-        /** @var Order $order */
+        /* @var $order Order */
         $order = $customers->ordersWithItems[0];
         $this->assertTrue($order->isRelationPopulated('orderItems'));
         $this->assertCount(2, $order->orderItems);
