@@ -219,7 +219,7 @@ script:
   # JS tests
   - |
     if [ $TASK_TESTS_JS == 1 ]; then
-      npm test
+      npm test --env=node
     fi
 
 after_script:
