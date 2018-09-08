@@ -556,9 +556,9 @@ class Component extends BaseObject
             return true;
         }
 
+        $removed = false;
         // plain event names
         if (isset($this->_events[$name])) {
-            $removed = false;
             foreach ($this->_events[$name] as $i => $event) {
                 if ($event[0] === $handler) {
                     unset($this->_events[$name][$i]);
@@ -572,18 +572,19 @@ class Component extends BaseObject
         }
 
         // wildcard event names
-        $removed = false;
-        foreach ($this->_eventWildcards[$name] as $i => $event) {
-            if ($event[0] === $handler) {
-                unset($this->_eventWildcards[$name][$i]);
-                $removed = true;
+        if (isset($this->_eventWildcards[$name])) {
+            foreach ($this->_eventWildcards[$name] as $i => $event) {
+                if ($event[0] === $handler) {
+                    unset($this->_eventWildcards[$name][$i]);
+                    $removed = true;
+                }
             }
-        }
-        if ($removed) {
-            $this->_eventWildcards[$name] = array_values($this->_eventWildcards[$name]);
-            // remove empty wildcards to save future redundant regex checks:
-            if (empty($this->_eventWildcards[$name])) {
-                unset($this->_eventWildcards[$name]);
+            if ($removed) {
+                $this->_eventWildcards[$name] = array_values($this->_eventWildcards[$name]);
+                // remove empty wildcards to save future redundant regex checks:
+                if (empty($this->_eventWildcards[$name])) {
+                    unset($this->_eventWildcards[$name]);
+                }
             }
         }
 

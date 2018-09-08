@@ -18,14 +18,14 @@ class CacheableWidgetBehaviorTest extends TestCase
     /**
      * Default-initialized simple cacheable widget mock.
      *
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var PHPUnit_Framework_MockObject_MockObject|SimpleCacheableWidget|CacheableWidgetBehavior
      */
     private $simpleWidget;
 
     /**
      * Default-initialized dynamic cacheable widget mock.
      *
-     * @var PHPUnit_Framework_MockObject_MockObject
+     * @var PHPUnit_Framework_MockObject_MockObject|DynamicCacheableWidget|CacheableWidgetBehavior
      */
     private $dynamicWidget;
 
@@ -38,6 +38,9 @@ class CacheableWidgetBehaviorTest extends TestCase
         $this->initializeWidgetMocks();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testWidgetIsRunWhenCacheIsEmpty()
     {
         $this->simpleWidget
@@ -48,6 +51,9 @@ class CacheableWidgetBehaviorTest extends TestCase
         $this->assertEquals('contents', $contents);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testWidgetIsNotRunWhenCacheIsNotEmpty()
     {
         $this->simpleWidget->cacheDuration = 0;
@@ -55,11 +61,14 @@ class CacheableWidgetBehaviorTest extends TestCase
             ->expects($this->once())
             ->method('run');
 
-        for ($counter = 0; $counter <= 42; $counter++) {
+        for ($counter = 0; $counter <= 1; $counter++) {
             $this->assertEquals('contents', $this->simpleWidget->test());
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testDynamicContent()
     {
         $this->dynamicWidget->cacheDuration = 0;
@@ -67,7 +76,7 @@ class CacheableWidgetBehaviorTest extends TestCase
             ->expects($this->once())
             ->method('run');
 
-        for ($counter = 0; $counter <= 42; $counter++) {
+        for ($counter = 0; $counter <= 1; $counter++) {
             $expectedContents = sprintf('<div>dynamic contents: %d</div>', $counter);
             $this->assertEquals($expectedContents, $this->dynamicWidget->test());
         }
@@ -104,7 +113,8 @@ class CacheableWidgetBehaviorTest extends TestCase
 
     /**
      * Returns a widget mock.
-     *
+     * @param $widgetClass
+     * @return PHPUnit_Framework_MockObject_MockObject
      */
     private function getWidgetMock($widgetClass)
     {

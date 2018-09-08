@@ -41,14 +41,14 @@ $model = new \app\models\ContactForm;
 $model['name'] = 'example';
 echo $model['name'];
 
-// itération sur les attributs
+// itération sur les attributs avec foreach
 foreach ($model as $name => $value) {
     echo "$name: $value\n";
 }
 ```
 
 
-### Definition d'attributs <span id="defining-attributes"></span>
+### Définition d'attributs <span id="defining-attributes"></span>
 
 Par défaut, si votre classe de modèle étend directement la classe [[yii\base\Model]], toutes ses variables membres *non statiques et publiques* sont des attributs. Par exemple, la classe de modèle `ContactForm` ci-dessous possède quatre attributs : `name`, `email`,
 `subject` et `body`. Le modèle `ContactForm` est utilisé pour représenter les données saisies dans un formulaire HTML. 
@@ -148,7 +148,7 @@ $model->scenario = User::SCENARIO_LOGIN;
 $model = new User(['scenario' => User::SCENARIO_LOGIN]);
 ```
 
-Par défaut, les scénarios pris en charge par un modèle sont détérminés par les [règles de validation](#validation-rules) déclarées dans le modèle. Néanmoins, vous pouvez personnaliser ce comportement en redéfinissant la méthode [[yii\base\Model::scenarios()]], de la manière suivante : 
+Par défaut, les scénarios pris en charge par un modèle sont déterminés par les [règles de validation](#validation-rules) déclarées dans le modèle. Néanmoins, vous pouvez personnaliser ce comportement en redéfinissant la méthode [[yii\base\Model::scenarios()]], de la manière suivante : 
 
 ```php
 namespace app\models;
@@ -294,7 +294,7 @@ public function scenarios()
 
 Comme la mise en œuvre par défaut de la méthode [[yii\base\Model::scenarios()]] retourne tous les scénarios et tous les attributs trouvés dans la méthode [[yii\base\Model::rules()]], si vous ne redéfinissez pas cette méthode, cela signifie qu'un attribut est *sûr* tant qu'il apparaît dans une des règles de validation actives. 
 
-Pour cette raison, un validateur spécial dont l'alias est `safe` est fourni pour vous permettre de déclarer un attribut *safe* sans réellement le valider. Par exemple, les règles suivantes déclarent que  `title`
+Pour cette raison, un validateur spécial dont l'alias est `safe` est fourni pour vous permettre de déclarer un attribut *sûr* sans réellement le valider. Par exemple, les règles suivantes déclarent que  `title`
 et `description` sont tous deux des attributs sûrs.
 
 ```php
@@ -320,7 +320,7 @@ public function scenarios()
 }
 ```
 
-Losque le modèle est dans le scénario `login`, les trois attributs sont validés. Néanmoins, seuls les attributs  `username`
+Lorsque le modèle est dans le scénario `login`, les trois attributs sont validés. Néanmoins, seuls les attributs  `username`
 et `password` peuvent être massivement assignés. Pour assigner une valeur d'entrée à l'attribut `secret`, vous devez le faire explicitement, comme montré ci-dessous :
 
 ```php
@@ -342,7 +342,12 @@ Dans ce cas, les attributs `username`, `password` et `secret` sont requis, mais 
 
 ## Exportation de données <span id="data-exporting"></span>
 
-On a souvent besoin d'exporter les modèles dans différents formats. Par exemple, vous désirez peut-être convertir une collection de modèles dans le format JSON ou dans le format Excel. Le processus d'exportation peut être décomposé en deux étapes indépendantes. Dans la première étape, les modèles sont convertis en tableaux. Dans la deuxième étape, les tableaux sont convertis dans les formats cibles. Vous pouvez vous concentrer uniquement sur la première étape, parce que la seconde peut être accomplie par des formateurs génériques de données, tels que [[yii\web\JsonResponseFormatter]].
+On a souvent besoin d'exporter les modèles dans différents formats. Par exemple, vous désirez peut-être convertir une collection de modèles dans le format JSON ou dans le format Excel. Le processus d'exportation peut être décomposé en deux étapes indépendantes :
+
+- les modèles sont convertis en tableaux,
+- les tableaux sont convertis dans les formats cibles. 
+
+Vous pouvez vous concentrer uniquement sur la première étape, parce que la seconde peut être accomplie par des formateurs génériques de données, tels que [[yii\web\JsonResponseFormatter]].
 
 La manière la plus simple de convertir un modèle en tableau est d'utiliser la propriété [[yii\base\Model::$attributes]]. Par exemple :
 
@@ -369,7 +374,7 @@ $array = $model->toArray([], ['prettyName', 'fullAddress']);
 Vous pouvez redéfinir la méthode `fields()` pour ajouter, retirer, renommer ou redéfinir des champs. La valeur de retour de la méthode `fields()` doit être un tableau associatif. Les clés du tableau sont les noms des champs et les valeurs sont les définitions de champ correspondantes qui peuvent être, soit des noms d'attribut/propriété, soit des fonctions anonymes retournant les valeurs de champ correspondantes. Dans le cas particulier où un nom de champ est identique à celui du nom d'attribut qui le définit, vous pouvez omettre la clé du tableau. Par exemple :
 
 ```php
-// liste explicitiement chaque champ ; à utiliser de préférence quand vous voulez être sûr 
+// liste explicitement chaque champ ; à utiliser de préférence quand vous voulez être sûr 
 // que les changements dans votre table de base de données ou dans les attributs de votre modèle
 // ne créent pas de changement dans vos champs (pour conserver la rétro-compatibilité de l'API). 
 public function fields()

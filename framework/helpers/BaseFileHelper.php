@@ -367,7 +367,7 @@ class BaseFileHelper
         if (!is_dir($dir)) {
             return;
         }
-        if (isset($options['traverseSymlinks']) && $options['traverseSymlinks'] || !is_link($dir)) {
+        if (!empty($options['traverseSymlinks']) || !is_link($dir)) {
             if (!($handle = opendir($dir))) {
                 return;
             }
@@ -520,7 +520,7 @@ class BaseFileHelper
         return $list;
     }
 
-    /*
+    /**
      * @param string $dir
      */
     private static function setBasePath($dir, $options)
@@ -534,7 +534,7 @@ class BaseFileHelper
         return $options;
     }
 
-    /*
+    /**
      * @param string $dir
      */
     private static function openDir($dir)
@@ -546,7 +546,7 @@ class BaseFileHelper
         return $handle;
     }
 
-    /*
+    /**
      * @param string $dir
      */
     private static function clearDir($dir)

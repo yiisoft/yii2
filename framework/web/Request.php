@@ -710,7 +710,7 @@ class Request extends \yii\base\Request
             $http = $secure ? 'https' : 'http';
 
             if ($this->headers->has('X-Forwarded-Host')) {
-                $this->_hostInfo = $http . '://' . $this->headers->get('X-Forwarded-Host');
+                $this->_hostInfo = $http . '://' . trim(explode(',', $this->headers->get('X-Forwarded-Host'))[0]);
             } elseif ($this->headers->has('Host')) {
                 $this->_hostInfo = $http . '://' . $this->headers->get('Host');
             } elseif (isset($_SERVER['SERVER_NAME'])) {
@@ -809,7 +809,7 @@ class Request extends \yii\base\Request
             } elseif (isset($_SERVER['PHP_SELF']) && ($pos = strpos($_SERVER['PHP_SELF'], '/' . $scriptName)) !== false) {
                 $this->_scriptUrl = substr($_SERVER['SCRIPT_NAME'], 0, $pos) . '/' . $scriptName;
             } elseif (!empty($_SERVER['DOCUMENT_ROOT']) && strpos($scriptFile, $_SERVER['DOCUMENT_ROOT']) === 0) {
-                $this->_scriptUrl = str_replace('\\', '/', str_replace($_SERVER['DOCUMENT_ROOT'], '', $scriptFile));
+                $this->_scriptUrl = str_replace([$_SERVER['DOCUMENT_ROOT'], '\\'], ['', '/'], $scriptFile);
             } else {
                 throw new InvalidConfigException('Unable to determine the entry script URL.');
             }
@@ -937,7 +937,7 @@ class Request extends \yii\base\Request
             throw new InvalidConfigException('Unable to determine the path info of the current request.');
         }
 
-        if (substr($pathInfo, 0, 1) === '/') {
+        if (strncmp($pathInfo, '/', 1) === 0) {
             $pathInfo = substr($pathInfo, 1);
         }
 
@@ -1196,7 +1196,7 @@ class Request extends \yii\base\Request
          * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
          */
         $auth_token = $this->getHeaders()->get('HTTP_AUTHORIZATION') ?: $this->getHeaders()->get('REDIRECT_HTTP_AUTHORIZATION');
-        if ($auth_token !== null && strpos(strtolower($auth_token), 'basic') === 0) {
+        if ($auth_token !== null && strncasecmp($auth_token, 'basic', 5) === 0) {
             $parts = array_map(function ($value) {
                 return strlen($value) === 0 ? null : $value;
             }, explode(':', base64_decode(mb_substr($auth_token, 6)), 2));
@@ -1712,6 +1712,6 @@ class Request extends \yii\base\Request
 
         $security = Yii::$app->security;
 
-        return $security->unmaskToken($clientSuppliedToken) === $security->unmaskToken($trueToken);
+        return $security->compareString($security->unmaskToken($clientSuppliedToken), $security->unmaskToken($trueToken));
     }
 }

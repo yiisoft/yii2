@@ -334,7 +334,7 @@ $user->touch('login_time');
 - [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - предоставляет методы для
   «мягкого» удаления и воосстановления ActiveRecord. То есть выставляет статус или флаг, который показывает, что
   запись удалена.
-- [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - позволяет упралять порядком
+- [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - позволяет управлять порядком
   записей через специальные методы. Информация сохраняется в целочисленном поле.
 
 

@@ -68,6 +68,8 @@ class ReleaseController extends Controller
         if ($actionID === 'release') {
             $options[] = 'dryRun';
             $options[] = 'version';
+        } elseif ($actionID === 'sort-changelog') {
+            $options[] = 'version';
         } elseif ($actionID === 'info') {
             $options[] = 'update';
         }
@@ -321,7 +323,7 @@ class ReleaseController extends Controller
         }
         $this->validateWhat($what, ['framework', 'ext'], false);
 
-        $version = array_values($this->getNextVersions($this->getCurrentVersions($what), self::PATCH))[0];
+        $version = $this->version ?: array_values($this->getNextVersions($this->getCurrentVersions($what), self::PATCH))[0];
         $this->stdout('sorting CHANGELOG of ');
         $this->stdout(reset($what), Console::BOLD);
         $this->stdout(' for version ');

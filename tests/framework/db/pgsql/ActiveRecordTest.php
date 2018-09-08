@@ -228,6 +228,49 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
                 'jsonb_col' => [[null, 'a', 'b', '\"', '{"af"}']],
                 'jsonarray_col' => [new ArrayExpression([[',', 'null', true, 'false', 'f']], 'json')],
             ]],
+            'null arrays values' => [[
+                'intarray_col' => [
+                    null,
+                ],
+                'textarray2_col' => [
+                    [null, null],
+                    new ArrayExpression([null, null], 'text', 2),
+                ],
+                'json_col' => [
+                    null
+                ],
+                'jsonarray_col' => [
+                    null
+                ],
+            ]],
+            'empty arrays values' => [[
+                'textarray2_col' => [
+                    [[], []],
+                    new ArrayExpression([], 'text', 2),
+                ],
+            ]],
+            'nested objects' => [[
+                'intarray_col' => [
+                    new ArrayExpression(new ArrayExpression([1,2,3]), 'int', 1),
+                    new ArrayExpression([1,2,3], 'int4', 1),
+                ],
+                'textarray2_col' => [
+                    new ArrayExpression([new ArrayExpression(['text']), [null], [1]], 'text', 2),
+                    new ArrayExpression([['text'], [null], ['1']], 'text', 2),
+                ],
+                'json_col' => [
+                    new JsonExpression(new JsonExpression(new JsonExpression(['a' => 1, 'b' => null, 'c' => new JsonExpression([1,3,5])]))),
+                    ['a' => 1, 'b' => null, 'c' => [1,3,5]]
+                ],
+                'jsonb_col' => [
+                    new JsonExpression(new ArrayExpression([1,2,3])),
+                    [1,2,3]
+                ],
+                'jsonarray_col' => [
+                    new ArrayExpression([new JsonExpression(['1', 2]), [3,4,5]], 'json'),
+                    new ArrayExpression([['1', 2], [3,4,5]], 'json')
+                ]
+            ]],
             'arrays packed in classes' => [[
                 'intarray_col' => [
                     new ArrayExpression([1,-2,null,'42'], 'int', 1),
@@ -257,7 +300,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
                 'jsonb_col' => [
                     pi()
                 ],
-            ]]
+            ]],
         ];
     }
 }

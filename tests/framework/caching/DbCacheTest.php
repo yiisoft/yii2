@@ -101,4 +101,18 @@ class DbCacheTest extends CacheTestCase
         static::$time++;
         $this->assertFalse($cache->get('expire_testa'));
     }
+
+    public function testSynchronousSetWithTheSameKey()
+    {
+        $KEY = 'sync-test-key';
+        $VALUE = 'sync-test-value';
+
+        $cache = $this->getCacheInstance();
+        static::$time = \time();
+
+        $this->assertTrue($cache->set($KEY, $VALUE, 60));
+        $this->assertTrue($cache->set($KEY, $VALUE, 60));
+
+        $this->assertEquals($VALUE, $cache->get($KEY));
+    }
 }

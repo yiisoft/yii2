@@ -1479,4 +1479,12 @@ SQL;
 
         $this->assertNull($db->getSchema()->getTableSchema($viewName));
     }
+
+    // TODO: Remove in Yii 2.1
+    public function testBindValuesSupportsDeprecatedPDOCastingFormat()
+    {
+        $db = $this->getConnection();
+        $db->createCommand()->setSql("SELECT :p1")->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
+        $this->assertTrue(true);
+    }
 }

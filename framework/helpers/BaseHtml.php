@@ -1255,9 +1255,13 @@ class BaseHtml
             $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
         }
 
+        // If there are the same error messages for different attributes, array_unique will leave gaps
+        // between sequential keys. Applying array_values to reorder array keys.
+        $lines = array_values($lines);
+
         if ($encode) {
-            for ($i = 0, $linesCount = count($lines); $i < $linesCount; $i++) {
-                $lines[$i] = Html::encode($lines[$i]);
+            foreach ($lines as &$line) {
+                $line = Html::encode($line);
             }
         }
 
@@ -1321,7 +1325,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
 
-        self::setActivePlaceholder($model, $attribute, $options);
+        static::setActivePlaceholder($model, $attribute, $options);
 
         return static::input($type, $name, $value, $options);
     }
@@ -1498,7 +1502,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
         self::normalizeMaxLength($model, $attribute, $options);
-        self::setActivePlaceholder($model, $attribute, $options);
+        static::setActivePlaceholder($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 
