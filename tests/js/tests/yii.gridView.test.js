@@ -50,7 +50,6 @@ describe('yii.gridView', function () {
     var html = '<!doctype html><html><head><meta charset="utf-8"></head><body>' + gridViewHtml + '</body></html>';
 
     jsdom({
-        url: 'http://localhost',
         html: html,
         src: fs.readFileSync(jQueryPath, 'utf-8')
     });
