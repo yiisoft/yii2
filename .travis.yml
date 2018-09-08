@@ -175,6 +175,7 @@ before_script:
       php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
       psql --version
       mysql --version
+      sudo mysql_upgrade
     fi
   - |
     if [ $TASK_TESTS_JS == 1 ]; then

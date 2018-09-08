@@ -1729,6 +1729,34 @@ HTML;
         $this->assertContains('placeholder="Name"', $html);
     }
 
+    public function testOverrideSetActivePlaceholder()
+    {
+        $model = new HtmlTestModel();
+
+        $html = MyHtml::activeTextInput($model, 'name', ['placeholder' => true]);
+
+        $this->assertContains('placeholder="My placeholder: Name"', $html);
+    }
+}
+
+/**
+ * Class MyHtml
+ * @package yiiunit\framework\helpers
+ */
+class MyHtml extends Html{
+
+    /**
+     * @param \yii\base\Model $model
+     * @param string $attribute
+     * @param array $options
+     */
+    protected static function setActivePlaceholder($model, $attribute, &$options = [])
+    {
+        if (isset($options['placeholder']) && $options['placeholder'] === true) {
+            $attribute = static::getAttributeName($attribute);
+            $options['placeholder'] = 'My placeholder: '. $model->getAttributeLabel($attribute);
+        }
+    }
 }
 
 /**

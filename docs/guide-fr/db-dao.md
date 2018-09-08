@@ -1,19 +1,26 @@
 Objets d'accès aux bases de données
 ===================================
 
-Construits au dessus des [objets de bases de données PHP (PDO – PHP Data Objects)](http://www.php.net/manual/en/book.pdo.php), les objets d'accès aux bases de données de Yii (DAO – Database Access Objects) fournissent une API orientée objets pour accéder à des bases de données relationnelles. C'est la fondation pour d'autres méthodes d'accès aux bases de données plus avancées qui incluent le [constructeur de requêtes (*query builder*)](db-query-builder.md) et l'[enregistrement actif (*active record*)](db-active-record.md).
+Construits au-dessus des [objets de bases de données PHP (PDO – PHP Data Objects)](http://www.php.net/manual/en/book.pdo.php), les objets d'accès aux bases de données de Yii (DAO – Database Access Objects) fournissent une API orientée objets pour accéder à des bases de données relationnelles. C'est la fondation pour d'autres méthodes d'accès aux bases de données plus avancées qui incluent le [constructeur de requêtes (*query builder*)](db-query-builder.md) et l'[enregistrement actif (*active record*)](db-active-record.md).
 
 Lorsque vous utilisez les objets d'accès aux bases de données de Yii, vous manipulez des requêtes SQL et des tableaux PHP. En conséquence, cela reste le moyen le plus efficace pour accéder aux bases de données. Néanmoins, étant donné que la syntaxe du langage SQL varie selon le type de base de données, l'utilisation des objets d'accès aux bases de données de Yii signifie également que vous avez à faire un travail supplémentaire pour créer une application indifférente au type de base de données. 
 
-Les objets d'accès aux bases de données de Yii prennent en charge les bases de données suivantes sans installation supplémentaire :
+Dans Yii 2.0, les objets d'accès aux bases de données prennent en charge les bases de données suivantes sans configuration supplémentaire :
 
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): version 8.4 or higher.
-- [CUBRID](http://www.cubrid.org/): version 9.3 or higher.
+- [PostgreSQL](http://www.postgresql.org/): version 8.4 ou plus récente.
+- [CUBRID](http://www.cubrid.org/): version 9.3 ou plus récente.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 ou plus récente.
+
+> Info: depuis Yii 2.1, la prise en charge des objets d'accès aux bases de données pour CUBRID, Oracle et MSSQL n'est plus fournie en tant que composants du noyau. Cette prise en charge nécessite l'installation d'[extensions](structure-extensions.md) séparées.
+Parmi les [extensions officielles](https://www.yiiframework.com/extensions/official), on trouve [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) et
+  [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql).
+
+> Note: la nouvelle version de pdo_oci pour PHP 7 n'existe pour le moment que sous forme de code source. Suivez les [instructions de la communauté](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
+  pour la compiler ou utilisez [la couche d'émulation de PDO](https://github.com/taq/pdooci).
 
 
 ## Création de connexions à une base de données <span id="creating-db-connections"></span>
@@ -52,7 +59,7 @@ Vous pouvez ensuite accéder à la base de données via l'expression `Yii::$app-
 
 > Tip: vous pouvez configurer plusieurs composants d'application « base de données » si votre application a besoin d'accéder à plusieurs bases de données. 
 
-Lorsque vous conifigurez une connexion à une base de données, vous devez toujours spécifier le nom de sa source de données (DSN – Data Source Name) via la propriété [[yii\db\Connection::dsn|dsn]]. Les formats des noms de source de données varient selon le type de base de données. Reportez-vous au [manuel de PHP](http://www.php.net/manual/en/function.PDO-construct.php) pour plus de détails. Ci-dessous, nous donnons quelques exemples :
+Lorsque vous configurez une connexion à une base de données, vous devez toujours spécifier le nom de sa source de données (DSN – Data Source Name) via la propriété [[yii\db\Connection::dsn|dsn]]. Les formats des noms de source de données varient selon le type de base de données. Reportez-vous au [manuel de PHP](http://www.php.net/manual/en/function.PDO-construct.php) pour plus de détails. Ci-dessous, nous donnons quelques exemples :
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
@@ -183,6 +190,10 @@ $post2 = $command->queryOne();
 
 Notez que vous devez lier la valeur à remplacer à la variable `$id` avant l'exécution, et ensuite changer la valeur de cette variable avant chacune des exécutions subséquentes (cela est souvent réalisé dans une boucle). L'exécution de requêtes de cette façon peut être largement plus efficace que d'exécuter une nouvelle requête pour chacune des valeurs du paramètre). 
 
+> Info: la liaison de paramètres n'est utilisée qu'en des endroits où les valeurs doivent être insérées dans des chaînes de caractères qui contiennent du langage SQL. 
+> Dans de nombreux endroits dans des couches plus abstraites comme le [query builder](db-query-builder.md) (constructeur de requêtes) et [active record](db-active-record.md) (enregistrement actif) 
+> vous spécifiez souvent un tableau de valeurs qui est transformé en SQL. À ces endroits, la liaison de paramètres est assurée par Yii en interne. Il n'est donc pas nécessaire de spécifier ces paramètres manuellement. 
+
 
 ### Exécution de requête sans sélection <span id="non-select-queries"></span>
 
@@ -215,19 +226,32 @@ Vous pouvez aussi appeler [[yii\db\Command::batchInsert()|batchInsert()]] pour i
 
 ```php
 // noms de table, noms de colonne, valeurs de colonne
-Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
+Yii::$app->db->createCommand()->batchinsère('user', ['name', 'age'], [
     ['Tom', 30],
     ['Jane', 20],
     ['Linda', 25],
 ])->execute();
 ```
+Une autre méthode utile est [[yii\db\Command::upsert()|upsert()]]. Upsert est une opération atomique qui insère des lignes dans une table de base de données si elles n'existent pas déjà (répondant à une contrainte unique), ou les mets à jour si elles existent :
+
+```php
+Yii::$app->db->createCommand()->upsert('pages', [
+    'name' => 'Front page',
+    'url' => 'http://example.com/', // url is unique
+    'visits' => 0,
+], [
+    'visits' => new \yii\db\Expression('visits + 1'),
+], $params)->execute();
+```
+
+Le code ci-dessus, soit insère un enregistrement pour une nouvelle page, soit incrémente sont compteur de visite automatiquement.
 
 Notez que les méthodes mentionnées ci-dessus ne font que créer les requêtes, vous devez toujours appeler [[yii\db\Command::execute()|execute()]] pour les exécuter réellement. 
 
 
 ## Entourage de noms de table et de colonne par des marque de citation <span id="quoting-table-and-column-names"></span>
 
-Lorsque l'on écrit du code indifférent au type de base de données, entourer correctement les noms table et de colonne avec des marques de citation et souvent un casse-tête parce que les différentes base de données utilisent des règles de marquage de citation différentes. Pour vous affranchir de cette difficulté, vous pouvez utiliser la syntaxe de citation introduite par Yii :
+Lorsque l'on écrit du code indifférent au type de base de données, entourer correctement les noms table et de colonne avec des marques de citation (p. ex. guillemets ou simple apostrophe) et souvent un casse-tête parce que les différentes base de données utilisent des règles de marquage de citation différentes. Pour vous affranchir de cette difficulté, vous pouvez utiliser la syntaxe de citation introduite par Yii :
 
 * `[[column name]]`: entourez un nom de colonne qui doit recevoir les marques de citation par des doubles crochets ; 
 * `{{table name}}`: entourez un nom de table qui doit recevoir les marques de citation par des doubles accolades ;
@@ -288,24 +312,26 @@ Le code précédent est équivalent à celui qui suit, et qui vous donne plus de
 ```php
 $db = Yii::$app->db;
 $transaction = $db->beginTransaction();
-
 try {
     $db->createCommand($sql1)->execute();
     $db->createCommand($sql2)->execute();
-    // ... exécution des autres instruction SQL ...
+    // ... exécutions des autres instructions SQL  ...
     
     $transaction->commit();
-    
 } catch(\Exception $e) {
-
     $transaction->rollBack();
-    
+    throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
     throw $e;
 }
 ```
 
 En appelant la méthode [[yii\db\Connection::beginTransaction()|beginTransaction()]], une nouvelle transaction est démarrée. La transaction est représentée sous forme d'objet [[yii\db\Transaction]] stocké dans la variable `$transaction`. Ensuite, les requêtes à exécuter sont placées dans un bloc `try...catch...`. Si toutes les requêtes réussissent, la méthode [[yii\db\Transaction::commit()|commit()]] est appelée pour entériner la transaction. Autrement, si une exception a été levée et capturée, la méthode [[yii\db\Transaction::rollBack()|rollBack()]] est appelée pour défaire les changements faits par les requêtes de la transaction antérieures à celle qui a échoué. `throw $e` est alors à nouveau exécutée comme si l'exception n'avait jamais été capturée, ce qui permet au processus normal de gestion des erreurs de s'en occuper.
 
+> Note: dans le code précédent nous avons deux blocs « catch » pour compatibilité 
+> avec PHP 5.x et PHP 7.x. `\Exception` met en œuvre l'[interface `\Throwable`](http://php.net/manual/en/class.throwable.php)
+> depuis PHP 7.0, ainsi vous pouvez sauter la partie avec `\Exception` si votre application utilise seulement PHP 7.0 et plus récent.
 
 ### Spécification de niveaux d'isolation <span id="specifying-isolation-levels"></span>
 
@@ -325,14 +351,14 @@ $transaction = Yii::$app->db->beginTransaction($isolationLevel);
 
 Yii fournit quatre constantes pour les niveaux d'isolation les plus courants :
 
-- [[\yii\db\Transaction::READ_UNCOMMITTED]] – le niveau le plus faible, des lectures sales (*dirty reads*) , des lectures non répétables) (*non-repeatable reads*) et des lectures phantomes (*phantoms*) peuvent se produire. 
+- [[\yii\db\Transaction::READ_UNCOMMITTED]] – le niveau le plus faible, des lectures sales (*dirty reads*) , des lectures non répétables) (*non-repeatable reads*) et des lectures fantômes (*phantoms*) peuvent se produire. 
 - [[\yii\db\Transaction::READ_COMMITTED]] – évite les lectures sales.
 - [[\yii\db\Transaction::REPEATABLE_READ]] – évite les lectures sales et les lectures non répétables. 
 - [[\yii\db\Transaction::SERIALIZABLE]] – le niveau le plus élevé, évite tous les problèmes évoqués ci-dessus.
 
 
 
-En plus de l'utilisation des constantes présentées ci-dessus pour spécifier un niveau d'isolation, vous pouvez également utiliser des chaînes de caractères avec une syntaxe valide prise en charges par le système de gestion de base de données que vous utilisez. Par exemple, dans PostgreSQL, vous pouvez utiliser `SERIALIZABLE READ ONLY DEFERRABLE`. 
+En plus de l'utilisation des constantes présentées ci-dessus pour spécifier un niveau d'isolation, vous pouvez également utiliser des chaînes de caractères avec une syntaxe valide prise en charges par le système de gestion de base de données que vous utilisez. Par exemple, dans PostgreSQL, vous pouvez utiliser `"SERIALIZABLE READ ONLY DEFERRABLE"`. 
 
 Notez que quelques systèmes de gestion de base de données autorisent la définition des niveaux d'isolation uniquement au niveau de la connexion tout entière. Toutes les transactions subséquentes auront donc le même niveau d'isolation même si vous n'en spécifiez aucun. En utilisant cette fonctionnalité, vous avez peut-être besoin de spécifier le niveau d'isolation de manière explicite pour éviter les conflits de définition. Au moment d'écrire ces lignes, seules MSSQL et SQLite sont affectées par cette limitation. 
 
@@ -358,7 +384,6 @@ Yii::$app->db->transaction(function ($db) {
 ```
 
 Ou en alternative,
-
 ```php
 $db = Yii::$app->db;
 $outerTransaction = $db->beginTransaction();
@@ -372,10 +397,16 @@ try {
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
         throw $e;
+    } catch (\Throwable $e) {
+        $innerTransaction->rollBack();
+        throw $e;
     }
 
     $outerTransaction->commit();
 } catch (\Exception $e) {
+    $outerTransaction->rollBack();
+    throw $e;
+} catch (\Throwable $e) {
     $outerTransaction->rollBack();
     throw $e;
 }

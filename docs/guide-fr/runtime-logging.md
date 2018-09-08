@@ -1,7 +1,7 @@
 Enregistrements des messages
 ============================
 
-Yii fournit une puissante base structurée d'enregistrement des messages qui est très personnalisable et extensible. En utilisant cette base structurée, vous pouvez facilement enregistrer des types variés de messages, les filtrer et les rassembler dans différentes cibles comme les bases de données et les courriels. 
+Yii fournit une puissante base structurée (framework) d'enregistrement des messages qui est très personnalisable et extensible. En utilisant cette base structurée, vous pouvez facilement enregistrer des types variés de messages, les filtrer et les rassembler dans différentes cibles comme les bases de données et les courriels. 
 
 L'utilisation de la base structurée d'enregistrement des messages de Yii nécessite de suivre les étapes suivantes :
  
@@ -50,6 +50,8 @@ Vous pouvez enregistrer plusieurs cibles d'enregistrement dans votre application
 return [
     // le composant "log" doit être chargé lors de la période d'amorçage
     'bootstrap' => ['log'],
+    // le composant "log" traite les messages avec un horodatage (timestamp). Définissez le fuseau horaire  PHP pour créer l'horodate correcte :
+    'timeZone' => 'America/Los_Angeles',
     
     'components' => [
         'log' => [
@@ -277,6 +279,8 @@ return [
 
 La création d'une classe de cible d'enregistrement est très simple. Vous devez essentiellement implémenter [[yii\log\Target::export()]] en envoyant le contenu du tableau des [[yii\log\Target::messages]] vers un média désigné. Vous pouvez appeler la méthode [[yii\log\Target::formatMessage()]] pour formater chacun des messages. Pour plus de détails, reportez-vous à n'importe quelle classe de cible de messages incluse dans la version de Yii. 
 
+> Tip: au lieu de créer vos propres journaliseurs, vous pouvez essayez n'importe quel journaliseur compatible PSR-3 tel que [Monolog](https://github.com/Seldaek/monolog) en utilisant 
+  [PSR log target extension](https://github.com/samdark/yii2-psr-log-target).
 
 ## Profilage de la performance <span id="performance-profiling"></span>
 
