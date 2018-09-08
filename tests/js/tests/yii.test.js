@@ -73,6 +73,7 @@ describe('yii', function () {
     }
 
     jsdom({
+        url: 'http://localhost',
         html: fs.readFileSync('tests/js/data/yii.html', 'utf-8'),
         src: fs.readFileSync(jQueryPath, 'utf-8')
     });

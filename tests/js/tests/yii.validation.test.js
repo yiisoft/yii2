@@ -75,7 +75,10 @@ describe('yii.validation', function () {
         yii = sandbox.yii;
     }
 
-    jsdom({src: fs.readFileSync('vendor/bower-asset/jquery/dist/jquery.js', 'utf-8')});
+    jsdom({
+        url: 'http://localhost',
+        src: fs.readFileSync('vendor/bower-asset/jquery/dist/jquery.js', 'utf-8')
+    });
 
     before(function () {
         $ = window.$;
