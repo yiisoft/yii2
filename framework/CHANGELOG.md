@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
-- Enh #14367: In `yii\db\mysql\QueryBuilder` added support fractional seconds for time types. Actually for MySQL >= 5.6.4 (konstantin-vl)
+- Enh #14367: In `yii\db\mysql\QueryBuilder` added support fractional seconds for time types for MySQL >= 5.6.4 (konstantin-vl)
 - Bug #16558: Added cloning `yii\data\ActiveDataProvider::query` property when ActiveDataProvider object is cloned (mgrechanik)
 - Bug #14901: Fixed trim validation for radio/checkbox button (s1lver)
 - Bug #16527: Fixed return content for `\yii\widgets\ActiveForm::run()` (carono)
