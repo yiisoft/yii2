@@ -369,12 +369,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * This method check the ability to use fractional seconds.
+     * This method checks the ability to use fractional seconds.
      *
      * @return bool
      * @see https://dev.mysql.com/doc/refman/5.6/en/fractional-seconds.html
+     * @since 2.0.16
      */
-    protected function isSupportFractionalSeconds()
+    protected function supportsFractionalSeconds()
     {
         $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
         return version_compare($version, '5.6.4', '>=');
@@ -386,6 +387,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * otherwise with fractional seconds.
      *
      * @return array
+     * @since 2.0.16
      */
     protected function defaultTimeTypeMap()
     {
@@ -395,7 +397,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             Schema::TYPE_TIME => 'time',
         ];
 
-        if ($this->isSupportFractionalSeconds()) {
+        if ($this->supportsFractionalSeconds()) {
             $map = [
                 Schema::TYPE_DATETIME => 'datetime(0)',
                 Schema::TYPE_TIMESTAMP => 'timestamp(0)',
