@@ -369,7 +369,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * This method checks the ability to use fractional seconds.
+     * Checks the ability to use fractional seconds.
      *
      * @return bool
      * @see https://dev.mysql.com/doc/refman/5.6/en/fractional-seconds.html
