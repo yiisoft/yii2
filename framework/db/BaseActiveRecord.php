@@ -223,7 +223,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * 1. Create a column to store the version number of each row. The column type should be `BIGINT DEFAULT 0`.
      *    Override this method to return the name of this column.
      * 2. Ensure the version value is submitted and loaded to your model before any update or delete.
-     *    Or add [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] to your model 
+     *    Or add [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] to your model
      *    class in order to automate the process.
      * 3. In the Web form that collects the user input, add a hidden field that stores
      *    the lock version of the recording being updated.
@@ -1734,18 +1734,22 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Sets relation dependencies for a property
      * @param string $name property name
      * @param ActiveQueryInterface $relation relation instance
+     * @param string|null $viaRelationName intermediate relation
      */
-    private function setRelationDependencies($name, $relation)
+    private function setRelationDependencies($name, $relation, $viaRelationName = null)
     {
         if (empty($relation->via) && $relation->link) {
             foreach ($relation->link as $attribute) {
                 $this->_relationsDependencies[$attribute][$name] = $name;
+                if ($viaRelationName !== null) {
+                    $this->_relationsDependencies[$attribute][] = $viaRelationName;
+                }
             }
         } elseif ($relation->via instanceof ActiveQueryInterface) {
             $this->setRelationDependencies($name, $relation->via);
         } elseif (is_array($relation->via)) {
-            list(, $viaQuery) = $relation->via;
-            $this->setRelationDependencies($name, $viaQuery);
+            list($viaRelationName, $viaQuery) = $relation->via;
+            $this->setRelationDependencies($name, $viaQuery, $viaRelationName);
         }
     }
 }
