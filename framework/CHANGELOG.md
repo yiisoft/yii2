@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #5341: HasMany via two relations (shirase, cebe)
 - Bug #16558: Added cloning `yii\data\ActiveDataProvider::query` property when ActiveDataProvider object is cloned (mgrechanik)
 - Bug #14901: Fixed trim validation for radio/checkbox button (s1lver)
 - Bug #16527: Fixed return content for `\yii\widgets\ActiveForm::run()` (carono)
