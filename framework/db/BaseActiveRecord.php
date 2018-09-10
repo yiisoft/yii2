@@ -600,8 +600,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @param string $name the name of the attribute.
      * @param bool $identical whether the comparison of new and old value is made for
      * identical values using `===`, defaults to `true`. Otherwise `==` is used for comparison.
+     * This parameter is available since version 2.0.4.
      * @return bool whether the attribute has been changed
-     * This parameter was available since version 2.0.4 under the name isAttributeChanged().
      * @since 3.0.0
      */
     public function isAttributeDirty($name, $identical = true)
@@ -624,16 +624,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function isDirty()
     {
-        if ($this->_attributes === [] and $this->attributes() === []) {
-            return false;
-        }
-
-        if ($this->_oldAttributes === null) {
+        if ($this->getIsNewRecord()) {
             return true;
         }
 
         foreach ($this->_attributes as $name => $value) {
-            if (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name]) {
+            if ($this->isAttributeDirty($name)) {
                 return true;
             }
         }
