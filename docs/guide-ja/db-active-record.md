@@ -743,7 +743,7 @@ class Post extends \yii\db\ActiveRecord
 1. アクティブ・レコード・クラスと関連付けられている DB テーブルに、各行のバージョン番号を保存するカラムを作成します。
    カラムは長倍精度整数 (big integer) タイプでなければなりません (MySQL では `BIGINT DEFAULT 0` です)。
 2. [[yii\db\ActiveRecord::optimisticLock()]] メソッドをオーバーライドして、このカラムの名前を返すようにします。
-3. あなたのモデル・クラスの中で [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] を実装し、受診したリクエストからその値を自動的に解析できるようにします。
+3. あなたのモデル・クラスの中で [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] を実装し、受信したリクエストからその値を自動的に解析できるようにします。
 4. ユーザ入力を収集するウェブフォームに、更新されるレコードの現在のバージョン番号を保持する隠しフィールドを追加します。
    [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] が検証を処理すべきですので、バージョンの属性は検証規則から削除します。
 5. アクティブ・レコードを使って行の更新を行うコントローラ・アクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、
@@ -793,6 +793,11 @@ public function behaviors()
     ];
 }
 ```
+> Note: [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] は、ユーザが正しいバージョン番号を送信したときにだけ
+> レコードが保存されるという事を保証します。そして、そのために、[[\yii\web\Request::getBodyParam()|getBodyParam()]] の結果を直接に解析します。
+> そこで、あなたのモデル・クラスを拡張して、親モデルで第2段階を行い、ビヘイビアのアタッチ(第3段階)を子モデルで行うようにすると便利でしょう。
+> そうすれば、一方を内部使用のためだけのインスタンスとして使うことが出来、他方をエンド・ユーザの入力の受信に責任を持つモデルとしてコントローラと結びつける事が出来ます。
+> もう一つのやり方としては、[[\yii\behaviors\OptimisticLockBehavior::$value|value]] プロパティを構成して独自のロジックを実装することも可能です。
 
 
 ## リレーショナル・データを扱う <span id="relational-data"></span>
