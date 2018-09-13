@@ -343,10 +343,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * Sets a component property to be null.
+     * Unsets a component property.
      * This method overrides the parent implementation by clearing
-     * the specified attribute value.
-     * @param string $name the property name or the event name
+     * the specified attribute or relation.
+     * @param string $name the attribute name or the relation name
      */
     public function __unset($name)
     {
