@@ -1216,6 +1216,49 @@ EOD;
         $this->assertEquals($expectedHtml, Html::activePasswordInput($model, 'name', $options));
     }
 
+    /**
+     * Data provider for [[testActiveInput_TypeText]].
+     * @return array test data
+     */
+    public function dataProviderActiveInput_TypeText()
+    {
+        return [
+            [
+                'some text',
+                [],
+                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="some text">',
+            ],
+            [
+                '',
+                [
+                    'maxlength' => true,
+                ],
+                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="100">',
+            ],
+            [
+                '',
+                [
+                    'maxlength' => 99,
+                ],
+                '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="99">',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderActiveInput_TypeText
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtml
+     */
+    public function testActiveInput_TypeText($value, array $options, $expectedHtml)
+    {
+        $model = new HtmlTestModel();
+        $model->name = $value;
+        $this->assertEquals($expectedHtml, Html::activeInput('text', $model, 'name', $options));
+    }
+
     public function errorSummaryDataProvider()
     {
         return [
@@ -1655,7 +1698,6 @@ EOD;
         $actual = Html::getInputName($model, 'types');
         $this->assertSame($expected, $actual);
     }
-
 
     public function testEscapeJsRegularExpression()
     {
