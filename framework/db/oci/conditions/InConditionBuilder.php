@@ -65,7 +65,8 @@ class InConditionBuilder extends \yii\db\conditions\InConditionBuilder
         for ($i = 0; $i < $count; $i += $maxParameters) {
             $slices[] = $this->queryBuilder->createConditionFromArray([$operator, $column, array_slice($values, $i, $maxParameters)]);
         }
+        array_unshift($slices, ($operator === 'IN') ? 'OR' : 'AND');
 
-        return $this->queryBuilder->buildCondition([($operator === 'IN') ? 'OR' : 'AND', $slices], $params);
+        return $this->queryBuilder->buildCondition($slices, $params);
     }
 }

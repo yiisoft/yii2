@@ -126,7 +126,7 @@ Yii 2.0 权威指南
 * [概述（Overview）](caching-overview.md)
 * [数据缓存（Data Caching）](caching-data.md)
 * [片段缓存（Fragment Caching）](caching-fragment.md)
-* [分页缓存（Page Caching）](caching-page.md)
+* [页面缓存（Page Caching）](caching-page.md)
 * [HTTP 缓存（HTTP Caching）](caching-http.md)
 
 
