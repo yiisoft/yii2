@@ -915,10 +915,8 @@ class ActiveField extends Component
             if (!isset($options['aria-required']) && $this->model->isAttributeRequired($this->attribute)) {
                 $options['aria-required'] = 'true';
             }
-            if (!isset($options['aria-invalid'])) {
-                if ($this->model->hasErrors($this->attribute)) {
-                    $options['aria-invalid'] = 'true';
-                }
+            if (!isset($options['aria-invalid']) && $this->model->hasErrors($this->attribute)) {
+                $options['aria-invalid'] = 'true';
             }
         }
     }
