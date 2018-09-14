@@ -357,7 +357,7 @@ EOD;
     {
         $expectedValue = <<<'EOD'
 <div class="form-group field-activefieldtestmodel-attributename">
-<label class="control-label">AttributeName</label>
+<label class="control-label">Attribute Name</label>
 <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="">
 <div id="activefieldtestmodel-attributename" role="radiogroup">
 <label><input type="radio" name="ActiveFieldTestModel[attributeName]" value="1"> Item One</label>
