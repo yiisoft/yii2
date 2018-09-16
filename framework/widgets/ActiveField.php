@@ -928,6 +928,7 @@ class ActiveField extends Component
      * Add role attributes to the input options
      * @param $options array input options
      * @param string $role
+     * @since 2.0.16
      */
     protected function addRoleAttributes(&$options, $role)
     {
