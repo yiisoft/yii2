@@ -744,8 +744,8 @@ class Post extends \yii\db\ActiveRecord
    カラムは長倍精度整数 (big integer) タイプでなければなりません (MySQL では `BIGINT DEFAULT 0` です)。
 2. [[yii\db\ActiveRecord::optimisticLock()]] メソッドをオーバーライドして、このカラムの名前を返すようにします。
 3. あなたのモデル・クラスの中で [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] を実装し、受信したリクエストからその値を自動的に解析できるようにします。
-4. ユーザ入力を収集するウェブフォームに、更新されるレコードの現在のバージョン番号を保持する隠しフィールドを追加します。
    [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] が検証を処理すべきですので、バージョンの属性は検証規則から削除します。
+4. ユーザ入力を収集するウェブフォームに、更新されるレコードの現在のバージョン番号を保持する隠しフィールドを追加します。
 5. アクティブ・レコードを使って行の更新を行うコントローラ・アクションにおいて、[[\yii\db\StaleObjectException]] 例外を捕捉して、
    衝突を解決するために必要なビジネス・ロジック (例えば、変更をマージしたり、データの陳腐化を知らせたり) を実装します。
 
