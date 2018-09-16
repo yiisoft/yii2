@@ -267,7 +267,7 @@ in the `admin` module which is a child module of the `forum` module.
 
 > Info: The [[yii\base\Module::getModule()|getModule()]] method only returns the child module directly belonging
 to its parent. The [[yii\base\Application::loadedModules]] property keeps a list of loaded modules, including both
-direct children and nested ones, indexed by their class names.
+direct children and nested ones, indexed by their class names.  [[yii\base\Controller::getModules()|getModules()]] returns all parent modules of a module. It can be accessed by `Yii::$app->controller->getModules()`.
 
 
 ## Best Practices <span id="best-practices"></span>
