@@ -298,7 +298,7 @@ class GridView extends BaseListView
         $id = $this->options['id'];
         $options = Json::htmlEncode(array_merge($this->getClientOptions(), ['filterOnFocusOut' => $this->filterOnFocusOut]));
         $view->registerJs("jQuery('#$id').yiiGridView($options);");
-        parent::run();
+        return parent::run();
     }
 
     /**
@@ -359,7 +359,7 @@ class GridView extends BaseListView
 
         $tableFooter = false;
         $tableFooterAfterBody = false;
-        
+
         if ($this->showFooter) {
             if ($this->placeFooterAfterBody) {
                 $tableFooterAfterBody = $this->renderTableFooter();
