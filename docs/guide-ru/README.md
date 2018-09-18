@@ -190,7 +190,7 @@ All Rights Reserved.
 * [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
 * [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Виджеты Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ru/README.md)
-* [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
+* [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ru/README.md)
 
 
 Хелперы
