@@ -294,7 +294,7 @@ if ($validator->validate($email, $error)) {
 ```php
 public function actionSearch($name, $email)
 {
-    $model = DynamicModel::validateData(compact('name', 'email'), [
+    $model = DynamicModel::validateData(['name' => $name, 'email' => $email], [
         [['name', 'email'], 'string', 'max' => 128],
         ['email', 'email'],
     ]);

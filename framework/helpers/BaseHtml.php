@@ -1326,6 +1326,7 @@ class BaseHtml
         }
 
         static::setActivePlaceholder($model, $attribute, $options);
+        self::normalizeMaxLength($model, $attribute, $options);
 
         return static::input($type, $name, $value, $options);
     }
@@ -1373,7 +1374,6 @@ class BaseHtml
      */
     public static function activeTextInput($model, $attribute, $options = [])
     {
-        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
     }
 
@@ -1434,7 +1434,6 @@ class BaseHtml
      */
     public static function activePasswordInput($model, $attribute, $options = [])
     {
-        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('password', $model, $attribute, $options);
     }
 
