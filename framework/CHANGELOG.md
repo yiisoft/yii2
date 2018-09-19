@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #14230: Fixed `itemsOptions` ignored in `checkBoxList` (s1lver)
 - Bug #14368: Added `role` attribute for active radio list (s1lver)
 - Bug #16680: Fixed ActiveField 'text' input with maxlength (s1lver)
 - Bug #5341: HasMany via two relations (shirase, cebe)

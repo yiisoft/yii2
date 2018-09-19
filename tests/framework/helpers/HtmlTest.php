@@ -714,6 +714,17 @@ EOD;
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', ['1', 'value3'], $this->getDataItems3()));
         $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', new \ArrayObject(['1', 'value3']), $this->getDataItems3()));
+
+        $expected = <<<'EOD'
+<div><label><input type="checkbox" name="test[]" value="0"> Test Label</label>
+<label><input type="checkbox" name="test[]" value="0"> Test Label</label></div>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', null, $this->getDataItems(), [
+            'itemOptions' => [
+                'value' => 0,
+                'label' => 'Test Label'
+            ]
+        ]));
     }
 
     public function testRadioList()
