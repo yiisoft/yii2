@@ -577,7 +577,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @return array the table name and the table alias.
      * @internal
      */
-    private function getTableNameAndAlias()
+    protected function getTableNameAndAlias()
     {
         if (empty($this->from)) {
             $tableName = $this->getPrimaryTableName();
