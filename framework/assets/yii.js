@@ -162,6 +162,10 @@ window.yii = (function ($) {
                 pjaxContainer,
                 pjaxOptions = {};
 
+            if (params !== undefined && ('submit' in params)) {
+                console.error("Property 'submit' of object #<HTMLFormElement> is not a function.");
+            }
+
             if (usePjax) {
                 pjaxContainer = $e.data('pjax-container');
                 if (pjaxContainer === undefined || !pjaxContainer.length) {
