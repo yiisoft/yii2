@@ -19,9 +19,9 @@ Yii DAO 支持下列现成的数据库：
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): 版本 2008 或更高。
 
-> Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
-  [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
-  to compile it or use [PDO emulation layer](https://github.com/taq/pdooci).
+> Note: 供PHP 7使用的新版pdo_oci扩展目前仅发布了源代码，如果你想编译使用请参照 
+  [社区用户提供的编译安装指引](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)。
+  或者你也可以在你的应用中使用 [PDO模拟层](https://github.com/taq/pdooci)。
 
 ## 创建数据库连接（Creating DB Connections） <span id="creating-db-connections"></span>
 
