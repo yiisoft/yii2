@@ -830,7 +830,7 @@ class ReleaseController extends Controller
 
     protected function openChangelogs($what, $version)
     {
-        $headline = "\n$version under development\R";
+        $headline = "\n$version under development\n";
         $headline .= str_repeat('-', \strlen($headline) - 2) . "\n\n- no changes in this release.\n";
         foreach ($this->getChangelogs($what) as $file) {
             $lines = explode("\n", file_get_contents($file));
