@@ -105,7 +105,7 @@ class RadiobuttonColumnTest extends TestCase
             ],
         ]);
         ob_start();
-        $grid->run();
+        echo $grid->run();
         $actual = ob_get_clean();
         $this->assertEqualsWithoutLE(<<<'HTML'
 <div id="radio-gridview"><div class="summary">Showing <b>1-2</b> of <b>2</b> items.</div>
