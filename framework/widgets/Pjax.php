@@ -127,12 +127,12 @@ class Pjax extends Widget
             $view->head();
             $view->beginBody();
             if ($view->title !== null) {
-                echo Html::tag('title', Html::encode($view->title));
+                return Html::tag('title', Html::encode($view->title));
             }
         } else {
             $options = $this->options;
             $tag = ArrayHelper::remove($options, 'tag', 'div');
-            echo Html::beginTag($tag, array_merge([
+            return Html::beginTag($tag, array_merge([
                 'data-pjax-container' => '',
                 'data-pjax-push-state' => $this->enablePushState,
                 'data-pjax-replace-state' => $this->enableReplaceState,
@@ -148,7 +148,7 @@ class Pjax extends Widget
     public function run()
     {
         if (!$this->requiresPjax()) {
-            echo Html::endTag(ArrayHelper::remove($this->options, 'tag', 'div'));
+            return Html::endTag(ArrayHelper::remove($this->options, 'tag', 'div'));
             $this->registerClientScript();
 
             return;

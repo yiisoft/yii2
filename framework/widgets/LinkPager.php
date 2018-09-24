@@ -155,7 +155,7 @@ class LinkPager extends Widget
         if ($this->registerLinkTags) {
             $this->registerLinkTags();
         }
-        echo $this->renderPageButtons();
+        return $this->renderPageButtons();
     }
 
     /**

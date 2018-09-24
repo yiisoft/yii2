@@ -334,6 +334,25 @@ class DetailViewTest extends \yiiunit\TestCase
 
         $this->assertTrue($initTriggered);
     }
+
+    public function testAfterRunResultNotEmpty()
+    {
+        $result = null;
+
+        $model = new ModelMock();
+        $model->id = 1;
+
+        ob_start();
+        DetailView::widget([
+            'model' => $model,
+            'on afterRun' => function ($event) use (&$result) {
+                $result = $event->result;
+            },
+        ]);
+        ob_end_clean();
+
+        $this->assertNotNull($result);
+    }
 }
 
 /**
