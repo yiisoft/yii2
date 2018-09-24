@@ -167,7 +167,7 @@ window.yii = (function ($) {
             // Forms and their child elements should not use input names or ids that conflict with properties of a form,
             // such as submit, length, or method.
             $.each(conflictParams, function (index, param) {
-                if (params !== undefined && params.hasOwnProperty(param)) {
+                if (areValidParams && params.hasOwnProperty(param)) {
                     console.error("Parameter name '" + param + "' conflicts with a same named form property. " +
                         "Please use another name.");
                 }
