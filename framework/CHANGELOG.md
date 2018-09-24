@@ -5,7 +5,6 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #15791: Added a warning when the form names conflict (s1lver, rustamwin)
-- Enh #16151: Change of scope for method `getTableNameAndAlias()` (s1lver)
 - Enh #16151: `ActiveQuery::getTableNameAndAlias()` is now protected (s1lver)
 - Bug #16657: Ensure widgets after run event result contains the result of the rendered widget (AdeAttwood)
 - Bug #14230: Fixed `itemsOptions` ignored in `checkBoxList` (s1lver)
