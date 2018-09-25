@@ -535,12 +535,9 @@ class DataFilter extends Model
                 }
             }
 
-            if (is_array($value)) {
-                $attribute = key($value);
-                $value = $value[key($value)];
+            foreach ($value as $attribute => $val) {
+                $this->$method($key, $val, $attribute);
             }
-
-            $this->$method($key, $value, $attribute);
         }
     }
 
