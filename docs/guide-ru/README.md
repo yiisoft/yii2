@@ -81,7 +81,7 @@ All Rights Reserved.
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ru/README.md)
 * [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide-ru/README.md)
 * [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ru/README.md)
-* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
+* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide-ru/README.md)
 
 
 Получение данных от пользователя
@@ -163,7 +163,6 @@ All Rights Reserved.
 
 Специальные темы
 ----------------
-
 
 * [Шаблон приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
 * [Создание приложения с нуля](tutorial-start-from-scratch.md)
