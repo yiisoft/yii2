@@ -797,8 +797,8 @@ EOD;
         $this->assertEqualsWithoutLE($expected, Html::radioList('test', new \ArrayObject(['value3']), $this->getDataItems3()));
 
         $expected = <<<'EOD'
-<div><label><input type="radio" name="test[]" value="0"> Test Label</label>
-<label><input type="radio" name="test[]" value="0"> Test Label</label></div>
+<div><label><input type="radio" name="test" value="0"> Test Label</label>
+<label><input type="radio" name="test" value="0"> Test Label</label></div>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::radioList('test', null, $this->getDataItems(), [
             'itemOptions' => [
