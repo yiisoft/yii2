@@ -527,13 +527,20 @@ class DataFilter extends Model
 
         foreach ($condition as $key => $value) {
             $method = 'validateAttributeCondition';
+            $attribute = null;
             if (isset($this->filterControls[$key])) {
                 $controlKey = $this->filterControls[$key];
                 if (isset($this->conditionValidators[$controlKey])) {
                     $method = $this->conditionValidators[$controlKey];
                 }
             }
-            $this->$method($key, $value);
+
+            if (is_array($value)) {
+                $attribute = key($value);
+                $value = $value[key($value)];
+            }
+
+            $this->$method($key, $value, $attribute);
         }
     }
 

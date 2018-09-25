@@ -96,7 +96,13 @@ class ActiveDataFilter extends DataFilter
             } else {
                 $callback = [$this, 'buildAttributeCondition'];
             }
-            $parts[] = $callback($key, $value);
+
+            if (is_array($value)) {
+                $attribute = key($value);
+                $value = $value[key($value)];
+            }
+
+            $parts[] = $callback($key, $value, $attribute);
         }
 
         if (!empty($parts)) {
