@@ -915,15 +915,16 @@ class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
     use \yii\db\ExpressionBuilderTrait; // Contains constructor and `queryBuilder` property.
 
     /**
-     * @param AllGreaterCondition $condition the condition to be built
+     * @param ExpressionInterface $condition the condition to be built
      * @param array $params the binding parameters.
+     * @return AllGreaterCondition
      */ 
-    public function build(ExpressionInterface $condition, array &$params = [])
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
         $value = $condition->getValue();
         
         $conditions = [];
-        foreach ($condition->getColumns() as $column) {
+        foreach ($expression->getColumns() as $column) {
             $conditions[] = new SimpleCondition($column, '>', $value);
         }
 
