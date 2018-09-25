@@ -167,6 +167,32 @@ describe('yii.gridView', function () {
             });
         });
 
+        describe('with option filterOnFocusOut', function () {
+            var jQuerySubmitStub;
+
+            before(function () {
+                jQuerySubmitStub = sinon.stub($.fn, 'submit');
+            });
+
+            after(function () {
+                jQuerySubmitStub.restore();
+            });
+
+            it('set option filterOnFocusOut off and press Enter key', function () {
+                $('#w0').yiiGridView({
+                    filterUrl: '/posts/index',
+                    filterSelector: '#w0-filters input, #w0-filters select',
+                    filterOnFocusOut: false
+                });
+
+                pressEnter($textInput);
+                assert.isTrue(jQuerySubmitStub.calledOnce);
+
+                changeValue($select, 1);
+                assert.isFalse(jQuerySubmitStub.calledOnce);
+            });
+        });
+
         describe('with repeated call', function () {
             var jQuerySubmitStub;
 
