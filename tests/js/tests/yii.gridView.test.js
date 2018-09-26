@@ -167,51 +167,6 @@ describe('yii.gridView', function () {
             });
         });
 
-        describe('with option filterOnFocusOut', function () {
-            var jQuerySubmitStub;
-
-            before(function () {
-                jQuerySubmitStub = sinon.stub($.fn, 'submit');
-            });
-
-            after(function () {
-                jQuerySubmitStub.restore();
-            });
-
-            it('set option filterOnFocusOut off and press Enter key', function () {
-                $gridView = $('#w0').yiiGridView({
-                    filterUrl: '/posts/index',
-                    filterSelector: '#w0-filters input, #w0-filters select',
-                    filterOnFocusOut: false
-                });
-
-                pressEnter($textInput);
-                assert.isTrue(jQuerySubmitStub.called);
-            });
-            it('set option filterOnFocusOut off and change value', function () {
-                $gridView = $('#w0').yiiGridView({
-                    filterUrl: '/posts/index',
-                    filterSelector: '#w0-filters input, #w0-filters select',
-                    filterOnFocusOut: false
-                });
-
-                changeValue($select, 1);
-                console.log(changeValue($select, 1));
-                console.log(jQuerySubmitStub.calledOnce);
-                assert.isFalse(jQuerySubmitStub.calledOnce);
-            });
-            it('set option filterOnFocusOut off and lose focus', function () {
-                $gridView = $('#w0').yiiGridView({
-                    filterUrl: '/posts/index',
-                    filterSelector: '#w0-filters input, #w0-filters select',
-                    filterOnFocusOut: false
-                });
-
-                loseFocus($textInput);
-                assert.isTrue(jQuerySubmitStub.called);
-            });
-        });
-
         describe('with repeated call', function () {
             var jQuerySubmitStub;
 
@@ -528,6 +483,39 @@ describe('yii.gridView', function () {
         describe('with filter event handlers', function () {
             beforeEach(function () {
                 $gridView = $('#w0').yiiGridView(settings);
+            });
+
+            describe('with option filterOnFocusOut', function () {
+                it('set option filterOnFocusOut off and press Enter key', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    pressEnter($textInput);
+                    assert.isTrue(jQuerySubmitStub.calledOnce);
+                });
+                it('set option filterOnFocusOut off and change value', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    changeValue($select, 1);
+                    assert.isFalse(jQuerySubmitStub.calledOnce);
+                });
+                it('set option filterOnFocusOut off and lose focus', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    loseFocus($textInput);
+                    assert.isFalse(jQuerySubmitStub.calledOnce);
+                });
             });
 
             describe('with text entered in the text input', function () {
