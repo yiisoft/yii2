@@ -41,4 +41,25 @@ class ContentDecoratorTest extends \yiiunit\TestCase
 
         $this->assertTrue($initTriggered);
     }
+
+    public function testAfterRunResultNotEmpty()
+    {
+        $result = null;
+
+        ob_start();
+        ContentDecorator::begin([
+            'viewFile' => '@yiiunit/data/views/layout.php',
+            'on afterRun' => function ($event) use (&$result) {
+                $result = $event->result;
+            },
+        ]);
+
+        echo 'The Content';
+
+        ContentDecorator::end();
+        ob_end_clean();
+
+        $this->assertContains('The Content', $result);
+        $this->assertContains('<title>Test</title>', $result);
+    }
 }

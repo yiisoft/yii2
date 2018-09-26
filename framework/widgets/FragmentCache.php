@@ -101,7 +101,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
     public function run()
     {
         if (($content = $this->getCachedContent()) !== false) {
-            echo $content;
+            return $content;
         } elseif ($this->cache instanceof CacheInterface) {
             $this->getView()->popDynamicContent();
 
@@ -114,7 +114,7 @@ class FragmentCache extends Widget implements DynamicContentAwareInterface
             }
             $data = [$content, $this->getDynamicPlaceholders()];
             $this->cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
-            echo $this->updateDynamicContent($content, $this->getDynamicPlaceholders());
+            return $this->updateDynamicContent($content, $this->getDynamicPlaceholders());
         }
     }
 
