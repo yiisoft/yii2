@@ -4,6 +4,19 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #15791: Added a warning when the form names conflict (s1lver, rustamwin)
+- Enh #16151: `ActiveQuery::getTableNameAndAlias()` is now protected (s1lver)
+- Bug #16657: Ensure widgets after run event result contains the result of the rendered widget (AdeAttwood)
+- Bug #14230: Fixed `itemsOptions` ignored in `checkBoxList` and `radioList` (s1lver)
+- Bug #14368: Added `role` attribute for active radio list (s1lver)
+- Bug #16680: Fixed ActiveField 'text' input with maxlength (s1lver)
+- Bug #5341: HasMany via two relations (shirase, cebe)
+- Bug #16558: Added cloning `yii\data\ActiveDataProvider::query` property when ActiveDataProvider object is cloned (mgrechanik)
+- Bug #14901: Fixed trim validation for radio/checkbox button (s1lver)
+- Bug #16527: Fixed return content for `\yii\widgets\ActiveForm::run()` (carono)
+- Bug #15826: Fixed JavaScript compareValidator in `yii.validation.js` for attributes not in rules (mgrechanik)
+- Enh #16365: Added $filterOnFocusOut option for GridView (s1lver)
+- Enh #14289: Added `yii\db\Command::executeResetSequence()` to work with Oracle (CedricYii)
 - Enh #9133: Added `yii\behaviors\OptimisticLockBehavior` (tunecino)
 - Bug #16104: Fixed `yii\db\pgsql\QueryBuilder::dropIndex()` to prepend index name with schema name (wapmorgan)
 - Bug #16193: Fixed `yii\filters\Cors` to not reflect origin header value when configured to wildcard origins (Jianjun Chen)
@@ -11,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #16006: Handle case when `X-Forwarded-Host` header have multiple hosts separated with a comma (pgaultier)
 - Bug #16010: Fixed `yii\filters\ContentNegotiator` behavior when GET parameters contain an array (rugabarbo)
 - Bug #14660: Fixed `yii\caching\DbCache` concurrency issue when set values with the same key (rugabarbo)
+- Bug #15802: Fixed exception class in yii\di\Container (vuchastyi, developeruz)
 - Bug #15988: Fixed bash completion (alekciy)
 - Bug #15798: Fixed render `yii\grid\RadioButtonColumn::$content` and `yii\grid\CheckboxColumn::$content` (lesha724)
 - Bug #15548: Fixed index names collision in RBAC (gonimar)
@@ -25,6 +39,7 @@ Yii Framework 2 Change Log
 - Bug #14636: Views can now use relative paths even when using themed views (sammousa)
 - Bug #16245: Fixed `__isset()` in `BaseActiveRecord` not catching errors (sammousa)
 - Bug #16266: Fixed `yii\helpers\BaseStringHelper` where explode would not allow 0 as trim string (Thoulah)
+- Bug #16278: Fixed drop existing views when console `migrate/fresh` command runs (developeruz)
 - Bug #16277: Fixed `yii\db\Query::from()` to respect `yii\db\ExpressionInterface` (noname007)
 - Bug #16280: Fixed `yii\base\Model::getActiveValidators()` to return correct validators for attribute on scenario (paweljankowiak06)
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
@@ -33,7 +48,15 @@ Yii Framework 2 Change Log
 - Bug #16292: Fixed misconfigured CORS filter exception throwing. Now it throws `InvalidConfigException` in Debug mode (khvalov)
 - Bug #16301: Fixed `yii\web\User::setIdentity()` to clear access check cache while setting identity object to `null` (Izumi-kun)
 - Bug #16322: Fixed strings were not were not compared using timing attack resistant approach while CSRF token validation (samdark, Felix Wiedemann)
-- Chg #16192: `yii\db\Command::logQuery()` is now protected (drlibra)
+- Chg #16192: `yii\db\Command::logQuery()` is now protected, extracted `getCacheKey()` from `queryInternal()` (drlibra)
+- Bug #16377: Fixed `yii\base\Event:off()` undefined index error when event handler does not match (razvanphp)
+- Bug #16514: Fixed `yii\di\Container::resolveCallableDependencies` to support callable object (wi1dcard)
+- Bug #15889: Fixed override `yii\helpers\Html::setActivePlaceholder` (lesha724)
+- Enh #16522: Allow jQuery 3.3 (Slamdunk)
+- Enh #16603: Added `yii\mutex\FileMutex::$isWindows` for Windows file shares on Unix guest machines (brandonkelly)
+- Bug #16666: Fixed `yii\helpers\ArrayHelper::merge` (rustamwin)
+- Enh: `yii\helpers\UnsetArrayValue`, `yii\helpers\ReplaceArrayValue` object now can be restored after serialization using `var_export()` function (silvefire)
+- Bug #16552: Added check in `yii\db\ActiveQuery::prepare()` to prevent populating already populated relation when another relation is requested with `via` (drlibra)
 
 2.0.15.1 March 21, 2018
 -----------------------

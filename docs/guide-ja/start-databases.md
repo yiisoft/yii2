@@ -23,6 +23,8 @@
 まず初めに、`yii2basic` という名前のデータベースを作成してください。このデータベースからアプリケーションにデータを読み出すことになります。
 Yii は多数のデータベース製品に対するサポートを内蔵しており、作成するデータベースは、SQLite、MySQL、PosttreSQL、MSSQL または Oracle から選ぶことが出来ます。以下の説明では、話を単純にするために、MySQL を前提とします。
 
+> Info: MariaDB は、かつては MySQL と差し替え可能な代替物でしたが、現在では完全にそうだとは言えません。MariaDB で `JSON` サポートのような高度な機能を使いたいときは、後述する MariaDB エスステンションの使用を検討して下さい。
+
 次に、データベースに `country` という名前のテーブルを作り、いくつかのサンプル・データを挿入します。そうするためには、次の SQL 文を実行することが出来ます。
 
 ```sql
@@ -83,6 +85,7 @@ Yii がサポートを内蔵していないデータベースを扱う必要が�
 - [Informix](https://github.com/edgardmessias/yii2-informix)
 - [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
 - [Firebird](https://github.com/edgardmessias/yii2-firebird)
+- [MariaDB](https://github.com/sam-it/yii2-mariadb)
 
 
 アクティブ・レコードを作成する <span id="creating-active-record"></span>
@@ -175,7 +178,7 @@ class CountryController extends Controller
 
 上記のコードを `controllers/CountryController.php` というファイルに保存します。
 
-`index` アクションは `Country::find()` を呼び出します。このアクティブ・レコードのメソッドは DB クエリを構築して、`country` テーブルから全てのデータを読み出します。
+`index` アクションは `Country::find()` を呼び出します。このアクティブ・レコードのメソッドは `country` テーブルから全てのデータを読み出すことが可能な DB クエリを構築します。
 一回のリクエストで返される国の数を制限するために、クエリは [[yii\data\Pagination]] オブジェクトの助けを借りてページ付けされます。
 `Pagination` オブジェクトは二つの目的に奉仕します。
 

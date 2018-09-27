@@ -41,7 +41,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . '</ul>';
 
         ob_start();
-        $this->breadcrumbs->run();
+        echo $this->breadcrumbs->run();
         $actualHtml = ob_get_contents();
         ob_end_clean();
 
@@ -63,7 +63,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . '</ul>';
 
         ob_start();
-        $this->breadcrumbs->run();
+        echo $this->breadcrumbs->run();
         $actualHtml = ob_get_contents();
         ob_end_clean();
 
@@ -82,7 +82,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . '</ul>';
 
         ob_start();
-        $this->breadcrumbs->run();
+        echo $this->breadcrumbs->run();
         $actualHtml = ob_get_contents();
         ob_end_clean();
 
@@ -180,11 +180,27 @@ class BreadcrumbsTest extends \yiiunit\TestCase
             . "http://my.example.com/yii2/link/page\n";
 
         ob_start();
-        $this->breadcrumbs->run();
+        echo $this->breadcrumbs->run();
         $actualHtml = ob_get_contents();
         ob_end_clean();
 
         $this->assertEquals($expectedHtml, $actualHtml);
+    }
+
+    public function testAfterRunResultNotEmpty()
+    {
+        $result = null;
+        Breadcrumbs::widget([
+            'links' => [
+                ['label' => 'Sample Post', 'url' => 'post/edit'],
+                'Edit',
+            ],
+            'on afterRun' => function ($event) use (&$result) {
+                $result = $event->result;
+            },
+        ]);
+
+        $this->assertNotNull($result);
     }
 
     /**

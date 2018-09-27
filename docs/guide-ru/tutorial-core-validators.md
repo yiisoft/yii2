@@ -308,6 +308,13 @@ function foo($model, $attribute) {
         // нормализация значения происходит тут
         return $value;
     }],
+    
+    // нормализует значение "phone" используя функцию "normalizePhone"
+    ['phone', 'filter', 'filter' => [$this, 'normalizePhone']],
+        
+    public function normalizePhone($value) {
+        return $value;
+    }
 ]
 ```
 

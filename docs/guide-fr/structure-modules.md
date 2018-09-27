@@ -137,8 +137,11 @@ La propriété [[yii\base\Application::modules|modules]] accepte un tableau de c
 
 ### Routes <span id="routes"></span>
 
-Les [routes](structure-controllers.md#routes) sont utilisées pour accéder aux contrôleurs d'un module comme elles le sont pour accéder aux contrôleurs d'une application. Une route pour un contrôleur d'un module doit commencer par l'identifiant du module, suivi de l'[identifiant du contrôleur](structure-controllers.md#controller-ids) et de [identifiant de l'action](structure-controllers.md#action-ids). Par exemple, si une application utilise un module nommé `forum`, alors la route `forum/post/index` représente l'action `index` du contrôleur `post` du module. Si la route ne contient que l'identifiant du module, alors la propriété [[yii\base\Module::defaultRoute]], dont la valeur par défaut est `default`, détermine quel contrôleur/action utiliser. Cela signifie que la route `forum` représente le contrôleur `default` dans le module `forum`.
+Les [routes](structure-controllers.md#routes) sont utilisées pour accéder aux contrôleurs d'un module comme elles le sont pour accéder aux contrôleurs d'une application. Une route, pour un contrôleur d'un module, doit commencer par l'identifiant du module, suivi de l'[identifiant du contrôleur](structure-controllers.md#controller-ids) et de [identifiant de l'action](structure-controllers.md#action-ids). Par exemple, si une application utilise un module nommé `forum`, alors la route `forum/post/index` représente l'action `index` du contrôleur `post` du module. Si la route ne contient que l'identifiant du module, alors la propriété [[yii\base\Module::defaultRoute]], dont la valeur par défaut est `default`, détermine quel contrôleur/action utiliser. Cela signifie que la route `forum` représente le contrôleur `default` dans le module `forum`.
 
+Le gestionnaire d'URL du module doit être ajouté avant que la fonction [[yii\web\UrlManager::parseRequest()]] ne soit exécutée. Cela siginifie que le faire dans la fonction `init()` du module ne fonctionne pas parce que le module est initialisé après que les routes ont été résolues. Par conséquent, les règles doivent être ajoutées à l'[étape d'amorçage](structure-extensions.md#bootstrapping-classes). C'est également une bonne pratique d'empaqueter les règles d'URL du module dans [[\yii\web\GroupUrlRule]].
+
+Dans le cas où un module est utilisé pour [versionner une API](rest-versioning.md), ses règles d'URL doivent être ajoutées directement dans la section `urlManager` de la configuration de l'application.
 
 ### Accès aux modules <span id="accessing-modules"></span>
 
@@ -216,6 +219,39 @@ class Module extends \yii\base\Module
 La route vers un contrôleur inclus dans un module doit inclure les identifiants de tous ses modules ancêtres. Par exemple, la route `forum/admin/dashboard/index` représente l'action `index` du contrôleur `dashboard` dans le module `admin` qui est un module enfant du module `forum`.
 
 > Info: la méthode [[yii\base\Module::getModule()|getModule()]] ne retourne que le module enfant appartenant directement à son parent.  La propriété [[yii\base\Application::loadedModules]] tient à jour une liste des modules chargés, y compris les enfant directs et les enfants des générations suivantes, indexée par le nom de classe. 
+
+## Accès aux composants depuis l'intérieur des modules 
+
+Depuis la version 2.0.13, les modules prennent en charge la [traversée des arbres](concept-service-locator.md#tree-traversal). Cela permet aux développeurs de modules de faire référence à des composants (d'application) via le localisateur de services qui se trouve dans leur module. 
+Cela signifie qu'il est préférable d'utiliser `$module->get('db')` plutôt que `Yii::$app->get('db')`.
+L'utilisateur d'un module est capable de spécifier un composant particulier pour une utilisation dans le module dans le cas où une configuration différente du composant est nécessaire. 
+
+Par exemple, considérons cette partie de la configuration d'une application :
+
+
+```php
+'components' => [
+    'db' => [
+        'tablePrefix' => 'main_',
+        'class' => Connection::class,
+        'enableQueryCache' => false
+    ],
+],
+'modules' => [
+    'mymodule' => [
+        'components' => [
+            'db' => [
+                'tablePrefix' => 'module_',
+                'class' => Connection::class
+            ],
+        ],
+    ],
+],
+```
+
+Les tables de base de données de l'application seront préfixées par `main_`, tandis que les tables de tous les modules seront préfixées par `module_`.
+Notez cependant que la configuration ci-dessus n'est pas fusionnée; le composant des modules par exemple aura le cache de requêtes activé puisque c'est la valeur par défaut.
+
 
 
 ## Meilleures pratiques <span id="best-practices"></span>

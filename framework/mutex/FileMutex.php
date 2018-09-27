@@ -59,6 +59,13 @@ class FileMutex extends Mutex
      * but read-only for other users.
      */
     public $dirMode = 0775;
+    /**
+     * @var bool whether file handling should assume a Windows file system.
+     * This value will determine how [[releaseLock()]] goes about deleting the lock file.
+     * If not set, it will be determined by checking the DIRECTORY_SEPARATOR constant.
+     * @since 2.0.16
+     */
+    public $isWindows;
 
     /**
      * @var resource[] stores all opened lock files. Keys are lock names and values are file handles.
@@ -77,6 +84,9 @@ class FileMutex extends Mutex
         $this->mutexPath = Yii::getAlias($this->mutexPath);
         if (!is_dir($this->mutexPath)) {
             FileHelper::createDirectory($this->mutexPath, $this->dirMode, true);
+        }
+        if ($this->isWindows === null) {
+            $this->isWindows = DIRECTORY_SEPARATOR === '\\';
         }
     }
 
@@ -149,7 +159,7 @@ class FileMutex extends Mutex
             return false;
         }
 
-        if (DIRECTORY_SEPARATOR === '\\') {
+        if ($this->isWindows) {
             // Under windows it's not possible to delete a file opened via fopen (either by own or other process).
             // That's why we must first unlock and close the handle and then *try* to delete the lock file.
             flock($this->_files[$name], LOCK_UN);

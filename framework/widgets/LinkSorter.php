@@ -66,7 +66,7 @@ class LinkSorter extends Widget
      */
     public function run()
     {
-        echo $this->renderSortLinks();
+        return $this->renderSortLinks();
     }
 
     /**

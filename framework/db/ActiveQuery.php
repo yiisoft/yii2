@@ -172,11 +172,19 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 /* @var $viaQuery ActiveQuery */
                 list($viaName, $viaQuery) = $this->via;
                 if ($viaQuery->multiple) {
-                    $viaModels = $viaQuery->all();
-                    $this->primaryModel->populateRelation($viaName, $viaModels);
+                    if ($this->primaryModel->isRelationPopulated($viaName)) {
+                        $viaModels = $this->primaryModel->$viaName;
+                    } else {
+                        $viaModels = $viaQuery->all();
+                        $this->primaryModel->populateRelation($viaName, $viaModels);
+                    }
                 } else {
-                    $model = $viaQuery->one();
-                    $this->primaryModel->populateRelation($viaName, $model);
+                    if ($this->primaryModel->isRelationPopulated($viaName)) {
+                        $model = $this->primaryModel->$viaName;
+                    } else {
+                        $model = $viaQuery->one();
+                        $this->primaryModel->populateRelation($viaName, $model);
+                    }
                     $viaModels = $model === null ? [] : [$model];
                 }
                 $this->filterByModels($viaModels);
@@ -567,9 +575,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * Returns the table name and the table alias for [[modelClass]].
      * @return array the table name and the table alias.
-     * @internal
+     * @since 2.0.16
      */
-    private function getTableNameAndAlias()
+    protected function getTableNameAndAlias()
     {
         if (empty($this->from)) {
             $tableName = $this->getPrimaryTableName();

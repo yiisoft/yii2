@@ -958,10 +958,10 @@ class BaseHtml
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
-                $lines[] = static::checkbox($name, $checked, array_merge($itemOptions, [
+                $lines[] = static::checkbox($name, $checked, array_merge([
                     'value' => $value,
                     'label' => $encode ? static::encode($label) : $label,
-                ]));
+                ], $itemOptions));
             }
             $index++;
         }
@@ -1041,10 +1041,10 @@ class BaseHtml
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
-                $lines[] = static::radio($name, $checked, array_merge($itemOptions, [
+                $lines[] = static::radio($name, $checked, array_merge([
                     'value' => $value,
                     'label' => $encode ? static::encode($label) : $label,
-                ]));
+                ], $itemOptions));
             }
             $index++;
         }
@@ -1325,7 +1325,8 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
 
-        self::setActivePlaceholder($model, $attribute, $options);
+        static::setActivePlaceholder($model, $attribute, $options);
+        self::normalizeMaxLength($model, $attribute, $options);
 
         return static::input($type, $name, $value, $options);
     }
@@ -1373,7 +1374,6 @@ class BaseHtml
      */
     public static function activeTextInput($model, $attribute, $options = [])
     {
-        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
     }
 
@@ -1434,7 +1434,6 @@ class BaseHtml
      */
     public static function activePasswordInput($model, $attribute, $options = [])
     {
-        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('password', $model, $attribute, $options);
     }
 
@@ -1502,7 +1501,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
         self::normalizeMaxLength($model, $attribute, $options);
-        self::setActivePlaceholder($model, $attribute, $options);
+        static::setActivePlaceholder($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 

@@ -744,8 +744,8 @@ To use optimistic locking,
    The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
 2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
 3. Implement [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] inside your model class to automatically parse its value from received requests.
-4. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
    Remove the version attribute from validation rules as [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] should handle it.
+4. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
 5. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
    exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
    
@@ -793,6 +793,11 @@ public function behaviors()
     ];
 }
 ```
+> Note: Because [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] will ensure the record is only saved
+> if user submits a valid version number by directly parsing [[\yii\web\Request::getBodyParam()|getBodyParam()]], it
+> may be useful to extend your model class and do step 2 in parent model while attaching the behavior (step 3) to the child
+> class so you can have an instance dedicated to internal use while tying the other to controllers responsible of receiving 
+> end user inputs. Alternatively, you can implement your own logic by configuring its [[\yii\behaviors\OptimisticLockBehavior::$value|value]] property. 
 
 
 ## Working with Relational Data <span id="relational-data"></span>
