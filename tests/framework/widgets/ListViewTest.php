@@ -26,7 +26,7 @@ class ListViewTest extends TestCase
     public function testEmptyListShown()
     {
         ob_start();
-        echo $this->getListView([
+        $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'emptyText' => 'Nothing at all',
         ])->run();
@@ -38,7 +38,7 @@ class ListViewTest extends TestCase
     public function testEmpty()
     {
         ob_start();
-        echo $this->getListView([
+        $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'emptyText' => false,
         ])->run();
@@ -50,7 +50,7 @@ class ListViewTest extends TestCase
     public function testEmptyListNotShown()
     {
         ob_start();
-        echo $this->getListView([
+        $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'showOnEmpty' => true,
         ])->run();
@@ -93,7 +93,7 @@ HTML
     public function testSimplyListView()
     {
         ob_start();
-        echo $this->getListView()->run();
+        $this->getListView()->run();
         $out = ob_get_clean();
 
         $this->assertEqualsWithoutLE(<<<'HTML'
@@ -109,7 +109,7 @@ HTML
     public function testWidgetOptions()
     {
         ob_start();
-        echo $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
+        $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
         $out = ob_get_clean();
 
         $this->assertEqualsWithoutLE(<<<'HTML'
@@ -160,7 +160,7 @@ HTML
     public function testItemViewOptions($itemView, $expected)
     {
         ob_start();
-        echo $this->getListView(['itemView' => $itemView])->run();
+        $this->getListView(['itemView' => $itemView])->run();
         $out = ob_get_clean();
 
         $this->assertEqualsWithoutLE($expected, $out);
@@ -206,7 +206,7 @@ HTML
     public function testItemOptions($itemOptions, $expected)
     {
         ob_start();
-        echo $this->getListView(['itemOptions' => $itemOptions])->run();
+        $this->getListView(['itemOptions' => $itemOptions])->run();
         $out = ob_get_clean();
 
         $this->assertEqualsWithoutLE($expected, $out);
@@ -227,7 +227,7 @@ HTML
         };
 
         ob_start();
-        echo $this->getListView([
+        $this->getListView([
             'beforeItem' => $before,
             'afterItem' => $after,
         ])->run();
@@ -262,22 +262,5 @@ HTML
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
         ]);
         $this->assertTrue($initTriggered);
-    }
-
-    public function testAfterRunResultNotEmpty()
-    {
-        $result = null;
-
-        ob_start();
-        ListView::widget([
-            'id' => 'w0',
-            'dataProvider' => $this->getDataProvider(),
-            'on afterRun' => function ($event) use (&$result) {
-                $result = $event->result;
-            },
-        ]);
-        ob_end_clean();
-
-        $this->assertNotNull($result);
     }
 }

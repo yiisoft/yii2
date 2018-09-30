@@ -302,36 +302,6 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testAfterRunResultNotEmpty()
-    {
-        $result = null;
-
-        ob_start();
-        Menu::widget([
-            'route' => 'test/test',
-            'params' => [],
-            'encodeLabels' => true,
-            'items' => [
-                [
-                    'encode' => false,
-                    'label' => '<span class="glyphicon glyphicon-user"></span> Users',
-                    'url' => '#',
-                ],
-                [
-                    'encode' => true,
-                    'label' => 'Authors & Publications',
-                    'url' => '#',
-                ],
-            ],
-            'on afterRun' => function ($event) use (&$result) {
-                $result = $event->result;
-            },
-        ]);
-        ob_end_clean();
-
-        $this->assertNotNull($result);
-    }
-
     /*public function testIsItemActive()
     {
         // TODO: implement test of protected method isItemActive()

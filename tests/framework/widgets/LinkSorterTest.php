@@ -100,32 +100,4 @@ class LinkSorterTest extends DatabaseTestCase
 
         $this->assertTrue($initTriggered);
     }
-
-    public function testAfterRunResultNotEmpty()
-    {
-        $result = null;
-        $dataProvider = new ActiveDataProvider([
-            'query' => Order::find(),
-            'models' => [new Order()],
-            'totalCount' => 1,
-            'sort' => [
-                'attributes' => ['total'],
-                'route' => 'site/index',
-            ],
-        ]);
-
-        ob_start();
-        echo ListView::widget([
-            'dataProvider' => $dataProvider,
-            'layout' => '{sorter}',
-            'sorter' => [
-                'on afterRun' => function ($event) use (&$result) {
-                    $result = $event->result;
-                },
-            ]
-        ]);
-        ob_end_clean();
-
-        $this->assertNotNull($result);
-    }
 }

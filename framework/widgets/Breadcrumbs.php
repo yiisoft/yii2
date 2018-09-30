@@ -147,7 +147,7 @@ class Breadcrumbs extends Widget
             }
             $links[] = $this->renderItem($link, isset($link['url']) ? $this->itemTemplate : $this->activeItemTemplate);
         }
-        return Html::tag($this->tag, implode('', $links), $this->options);
+        echo Html::tag($this->tag, implode('', $links), $this->options);
     }
 
     /**
