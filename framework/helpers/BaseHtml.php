@@ -751,7 +751,10 @@ class BaseHtml
      */
     protected static function booleanInput($type, $name, $checked = false, $options = [])
     {
-        $options['checked'] = (bool) $checked;
+        // 'checked' option has priority over $checked argument
+        if (!isset($options['checked'])) {
+            $options['checked'] = (bool) $checked;
+        }
         $value = array_key_exists('value', $options) ? $options['value'] : '1';
         if (isset($options['uncheck'])) {
             // add a hidden field so that if the checkbox is not selected, it still submits a value

@@ -477,6 +477,13 @@ class HtmlTest extends TestCase
             'value' => 2,
             'form' => 'test-form',
         ]));
+        $this->assertEquals('<input type="hidden" name="test" value="0"><label><input type="checkbox" class="a" name="test" value="2" checked> ccc</label>', Html::checkbox('test', false, [
+            'class' => 'a',
+            'uncheck' => '0',
+            'label' => 'ccc',
+            'value' => 2,
+            'checked' => true,
+        ]));
     }
 
     public function testDropDownList()
