@@ -583,6 +583,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $tableName = $this->getPrimaryTableName();
         } else {
             $tableName = '';
+            // if the first entry in "from" is an alias-tablename-pair return it directly
             foreach ($this->from as $alias => $tableName) {
                 if (is_string($alias)) {
                     return [$tableName, $alias];
