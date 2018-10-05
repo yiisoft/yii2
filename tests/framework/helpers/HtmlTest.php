@@ -1390,6 +1390,15 @@ EOD;
      */
     public function testCollectError()
     {
+        /**
+         * compact() issues an E_NOTICE level error if a given string refers to an unset variable
+         * @see http://php.net/manual/en/function.compact.php
+         */
+        if (version_compare(phpversion(), '7.3.0', '>=')) {
+            $this->markTestSkipped('Unable to be tested on PHP >= 7.3');
+            return;
+        }
+
         $model = new DynamicModel(compact('attr1', 'attr2'));
 
         $model->addError('attr1', 'error1');
