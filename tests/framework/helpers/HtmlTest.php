@@ -1390,7 +1390,7 @@ EOD;
      */
     public function testCollectError()
     {
-        $model = new DynamicModel(compact('attr1', 'attr2'));
+        $model = new DynamicModel(['attr1', 'attr2']);
 
         $model->addError('attr1', 'error1');
         $model->addError('attr1', 'error2');
