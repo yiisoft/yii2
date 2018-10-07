@@ -4,7 +4,10 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
-- Bug #16766: Enhanced `yii\filters\ContentNegotiator` to set `Vary` header to inform cache recipients (koteq, cebe, samdark)
+- Bug #16766: `yii\filters\ContentNegotiator` was not setting `Vary` header to inform cache recipients (koteq, cebe, samdark)
+- Bug #11960: Fixed `checked` option ignore in `yii\helpers\BaseHtml::checkbox()` (misantron)
+- Bug #14759: Fixed `yii\web\JsonResponseFormatter` output for `null` data (misantron)
+- Bug #16490: Fix schema on rbac init (marcelodeandrade)
 - Bug #16748: Fixed params when normalize data (marcelodeandrade)
 - Bug #16752: Fix rotating files under Windows (samdark, nadirvishun)
 - Bug #16716: The ability to filter by pressing the Enter key when the option `$filterOnFocusOut` off (s1lver)
