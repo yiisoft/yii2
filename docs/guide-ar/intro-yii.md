@@ -1,10 +1,9 @@
-What is Yii
+ما هي بيئة العمل Yii
 ===========
 
-Yii is a high performance, component-based PHP framework for rapidly developing modern Web applications.
-The name Yii (pronounced `Yee` or `[ji:]`) means "simple and evolutionary" in Chinese. It can also
-be thought of as an acronym for **Yes It Is**!
-
+Yii هو إطار PHP عالي الأداء يعتمد على المكونات لتطوير تطبيقات الويب الحديثة بسرعة.
+إن الاسم "Yii" (يُنطق بـ "يي" أو "[جي:]" يعني "بسيطًا وتطوريًا" باللغة الصينية. ومن الممكن ايضا
+ اعتباره اختصارًا لـ **Yes It Is**!
 
 What is Yii Best for?
 ---------------------
