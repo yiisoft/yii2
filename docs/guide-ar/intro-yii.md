@@ -13,27 +13,26 @@ Yii هو إطار عام لبرمجة الويب ، مما يعني أنه يم�
 </p>
 
 
-How does Yii Compare with Other Frameworks?
--------------------------------------------
+# <div dir="rtl">كيف يمكن مقارنة بيئة العمل الخاصة بال Yii مع الأطر أو بيئات العمل الأخرى؟</div>
 
-If you're already familiar with another framework, you may appreciate knowing how Yii compares:
+<p dir="rtl">
+    إذا كنت بالفعل على دراية بإطار العمل الأخرى ، فيمكنك معرفة كيف تتم مقارنة ال Yii:
 
-- Like most PHP frameworks, Yii implements the MVC (Model-View-Controller) architectural pattern and promotes code
-  organization based on that pattern.
-- Yii takes the philosophy that code should be written in a simple yet elegant way. Yii will never try to
-  over-design things mainly for the purpose of strictly following some design pattern.
-- Yii is a full-stack framework providing many proven and ready-to-use features: query builders
-  and ActiveRecord for both relational and NoSQL databases; RESTful API development support; multi-tier
-  caching support; and more.
-- Yii is extremely extensible. You can customize or replace nearly every piece of the core's code. You can also
-  take advantage of Yii's solid extension architecture to use or develop redistributable extensions.
-- High performance is always a primary goal of Yii.
+<ul  dir="rtl">
+    <li> مثل معظم أطر عمل ال PHP ، يطبق Yii النمط المعماري MVC (Model-View-Controller).</li>
+<li> ال Yii يتبنى الفلسفة التي تقول أن الشيفرة البرمجية يجب أن تكتب بأسهل طريقها وادقها، ولكنها بذات الوقت يجب أن تكون أنيقة الكتابة مظهرا ومضمونا (شكلا وتطيبقا).</li>
+<li> ال Yii هو إطار متكامل  (full stack) يوفر العديد من الميزات الجاهزة للإستخدام والمعدة مسبقا، مثل ال query builders وال ActiveRecord لقواعد البيانات العلاقئية (relational) وغير العلائقية (Nosql)، بالإضافة الى دعم وتجهيز ال RESTful API  والتخزين المؤقت (caching) وغيرها الكثير. </li> 
+<li> من مميزات ال Yii إمكانية التعديل (استبدال جزء معين أو تخيصيص وإضافة) جزء معين على أغلب ال Yii core code، وبالإضافة الى هذا، يمكنك بناء ملحقات برمجية اعتمادا على ال core code، ومن ثم نشر هذه الشيفرة وتوزيعها واستخدامها دون وجود أي مشاكل أو صعوبة تذكر.</li>
+<li> الأداء العالي هو الهدف الأساسي من ال Yii.</li>
+    </ul>
+</p>
 
-Yii is not a one-man show, it is backed up by a [strong core developer team](http://www.yiiframework.com/team/), as well as a large community
-of professionals constantly contributing to Yii's development. The Yii developer team
-keeps a close eye on the latest Web development trends and on the best practices and features
-found in other frameworks and projects. The most relevant best practices and features found elsewhere are regularly incorporated into the core framework and exposed
-via simple and elegant interfaces.
+<p dir="rtl">
+ال Yii إطار عمل صمم من قبل فريق برمجي متكامل، فهو ليس مجرد عمل فردي ،  بل يتكون من فريق تطوير أساسي وقوي(http://www.yiiframework.com/team/) ، بالإضافة إلى منتدى كبير
+من المهنيين الذين يساهمون باستمرار في تطوير هذا الإطار. فريق المطورين الخاص بال Yii
+يراقب عن كثب أحدث اتجاهات تطوير الويب وأفضل الممارسات والمميزات التي
+وجدت في الأطر والمشاريع الأخرى. وتدرج بانتظام بإضافة أفضل الممارسات والميزات الى ال Yii عبر واجهات بسيطة وأنيقة.
+</p>
 
 
 Yii Versions
