@@ -28,13 +28,13 @@
 * [ماذا الآن - الخطوة القادمة](start-looking-ahead.md)
 
 
-Application Structure
+الهيكلية الخاصة بالتطبيق (Application Structure)
 ---------------------
 
-* [Application Structure Overview](structure-overview.md)
+* [نظرة عامة عن الهيكلية الخاصة بالتطبيق](structure-overview.md)
 * [Entry Scripts](structure-entry-scripts.md)
-* [Applications](structure-applications.md)
-* [Application Components](structure-application-components.md)
+* [التطبيقات](structure-applications.md)
+* [مكونات التطبيقات](structure-application-components.md)
 * [Controllers](structure-controllers.md)
 * [Models](structure-models.md)
 * [Views](structure-views.md)
@@ -45,20 +45,20 @@ Application Structure
 * [Extensions](structure-extensions.md)
 
 
-Handling Requests
+التعامل مع ال requests
 -----------------
 
-* [Request Handling Overview](runtime-overview.md)
+* [نظرة عامة عن التعامل مع ال requests](runtime-overview.md)
 * [Bootstrapping](runtime-bootstrapping.md)
 * [Routing and URL Creation](runtime-routing.md)
 * [Requests](runtime-requests.md)
 * [Responses](runtime-responses.md)
 * [Sessions and Cookies](runtime-sessions-cookies.md)
-* [Handling Errors](runtime-handling-errors.md)
-* [Logging](runtime-logging.md)
+* [Handling Errors - التحكم بالأخطاء](runtime-handling-errors.md)
+* [Logging - تسجيل الحركات](runtime-logging.md)
 
 
-Key Concepts
+المفاهيم الرئيسية (Key Concepts)
 ------------
 
 * [Components](concept-components.md)
@@ -72,7 +72,7 @@ Key Concepts
 * [Dependency Injection Container](concept-di-container.md)
 
 
-Working with Databases
+التعامل مع قواعد البيانات
 ----------------------
 
 * [Database Access Objects](db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
@@ -85,7 +85,7 @@ Working with Databases
 * [ElasticSearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch/doc/guide)
 
 
-Getting Data from Users
+الحصول على البيانات من خلال خلال المستخدمين
 -----------------------
 
 * [Creating Forms](input-forms.md)
@@ -96,7 +96,7 @@ Getting Data from Users
 * [Extending ActiveForm on the Client Side](input-form-javascript.md)
 
 
-Displaying Data
+عرض البيانات
 ---------------
 
 * [Data Formatting](output-formatting.md)
@@ -108,7 +108,7 @@ Displaying Data
 * [Theming](output-theming.md)
 
 
-Security
+الامان والحماية
 --------
 
 * [Security Overview](security-overview.md)
@@ -120,7 +120,7 @@ Security
 * [Best Practices](security-best-practices.md)
 
 
-Caching
+Caching التخزين المؤقت
 -------
 
 * [Caching Overview](caching-overview.md)
@@ -144,7 +144,7 @@ RESTful Web Services
 * [Error Handling](rest-error-handling.md)
 
 
-Development Tools
+الأدوات المساعدة أثناء تطوير التطبيقات
 -----------------
 
 * [Debug Toolbar and Debugger](https://www.yiiframework.com/extension/yiisoft/yii2-debug/doc/guide)
@@ -152,7 +152,7 @@ Development Tools
 * [Generating API Documentation](https://www.yiiframework.com/extension/yiisoft/yii2-apidoc)
 
 
-Testing
+فحص واختبار التطبيقات
 -------
 
 * [Testing Overview](test-overview.md)
@@ -163,7 +163,7 @@ Testing
 * [Fixtures](test-fixtures.md)
 
 
-Special Topics
+مواضيع وعناوين مميزة
 --------------
 
 * [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide)
