@@ -485,6 +485,39 @@ describe('yii.gridView', function () {
                 $gridView = $('#w0').yiiGridView(settings);
             });
 
+            describe('with option filterOnFocusOut', function () {
+                it('set option filterOnFocusOut off and press Enter key', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    pressEnter($textInput);
+                    assert.isTrue(jQuerySubmitStub.calledOnce);
+                });
+                it('set option filterOnFocusOut off and change value', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    changeValue($select, 1);
+                    assert.isFalse(jQuerySubmitStub.calledOnce);
+                });
+                it('set option filterOnFocusOut off and lose focus', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    loseFocus($textInput);
+                    assert.isFalse(jQuerySubmitStub.calledOnce);
+                });
+            });
+
             describe('with text entered in the text input', function () {
                 it('should not submit form', function () {
                     pressButton($textInput, 'a');

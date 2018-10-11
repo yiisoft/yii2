@@ -751,7 +751,10 @@ class BaseHtml
      */
     protected static function booleanInput($type, $name, $checked = false, $options = [])
     {
-        $options['checked'] = (bool) $checked;
+        // 'checked' option has priority over $checked argument
+        if (!isset($options['checked'])) {
+            $options['checked'] = (bool) $checked;
+        }
         $value = array_key_exists('value', $options) ? $options['value'] : '1';
         if (isset($options['uncheck'])) {
             // add a hidden field so that if the checkbox is not selected, it still submits a value
@@ -958,10 +961,10 @@ class BaseHtml
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
-                $lines[] = static::checkbox($name, $checked, array_merge($itemOptions, [
+                $lines[] = static::checkbox($name, $checked, array_merge([
                     'value' => $value,
                     'label' => $encode ? static::encode($label) : $label,
-                ]));
+                ], $itemOptions));
             }
             $index++;
         }
@@ -1041,10 +1044,10 @@ class BaseHtml
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
-                $lines[] = static::radio($name, $checked, array_merge($itemOptions, [
+                $lines[] = static::radio($name, $checked, array_merge([
                     'value' => $value,
                     'label' => $encode ? static::encode($label) : $label,
-                ]));
+                ], $itemOptions));
             }
             $index++;
         }
@@ -1326,6 +1329,7 @@ class BaseHtml
         }
 
         static::setActivePlaceholder($model, $attribute, $options);
+        self::normalizeMaxLength($model, $attribute, $options);
 
         return static::input($type, $name, $value, $options);
     }
@@ -1373,7 +1377,6 @@ class BaseHtml
      */
     public static function activeTextInput($model, $attribute, $options = [])
     {
-        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
     }
 
@@ -1434,7 +1437,6 @@ class BaseHtml
      */
     public static function activePasswordInput($model, $attribute, $options = [])
     {
-        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('password', $model, $attribute, $options);
     }
 

@@ -5,6 +5,22 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #14367: In `yii\db\mysql\QueryBuilder` added support fractional seconds for time types for MySQL >= 5.6.4 (konstantin-vl)
+- Bug #16766: `yii\filters\ContentNegotiator` was not setting `Vary` header to inform cache recipients (koteq, cebe, samdark)
+- Bug #11960: Fixed `checked` option ignore in `yii\helpers\BaseHtml::checkbox()` (misantron)
+- Bug #14759: Fixed `yii\web\JsonResponseFormatter` output for `null` data (misantron)
+- Bug #16490: Fix schema on rbac init (marcelodeandrade)
+- Bug #16748: Fixed params when normalize data (marcelodeandrade)
+- Bug #16752: Fix rotating files under Windows (samdark, nadirvishun)
+- Bug #16716: The ability to filter by pressing the Enter key when the option `$filterOnFocusOut` off (s1lver)
+- Bug #15791: Added a warning when the form names conflict (s1lver, rustamwin)
+- Enh #16151: `ActiveQuery::getTableNameAndAlias()` is now protected (s1lver)
+- Bug #16657: Ensure widgets after run event result contains the result of the rendered widget (AdeAttwood)
+- Bug #14230: Fixed `itemsOptions` ignored in `checkBoxList` and `radioList` (s1lver)
+- Enh #16151: Change of scope for method `getTableNameAndAlias()` (s1lver)
+- Bug #14230: Fixed `itemsOptions` ignored in `checkBoxList` (s1lver)
+- Bug #14368: Added `role` attribute for active radio list (s1lver)
+- Bug #16680: Fixed ActiveField 'text' input with maxlength (s1lver)
+- Bug #5341: HasMany via two relations (shirase, cebe)
 - Bug #16558: Added cloning `yii\data\ActiveDataProvider::query` property when ActiveDataProvider object is cloned (mgrechanik)
 - Bug #14901: Fixed trim validation for radio/checkbox button (s1lver)
 - Bug #16527: Fixed return content for `\yii\widgets\ActiveForm::run()` (carono)
@@ -50,6 +66,7 @@ Yii Framework 2 Change Log
 - Enh #16603: Added `yii\mutex\FileMutex::$isWindows` for Windows file shares on Unix guest machines (brandonkelly)
 - Bug #16666: Fixed `yii\helpers\ArrayHelper::merge` (rustamwin)
 - Enh: `yii\helpers\UnsetArrayValue`, `yii\helpers\ReplaceArrayValue` object now can be restored after serialization using `var_export()` function (silvefire)
+- Bug #16552: Added check in `yii\db\ActiveQuery::prepare()` to prevent populating already populated relation when another relation is requested with `via` (drlibra)
 
 2.0.15.1 March 21, 2018
 -----------------------
