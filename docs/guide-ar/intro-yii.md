@@ -1,17 +1,17 @@
 # <div dir="rtl">ما هي بيئة العمل Yii</div>
-===========
 
 <p dir="rtl">Yii هو إطار PHP عالي الأداء يعتمد على المكونات لتطوير تطبيقات الويب الحديثة بسرعة.
 إن الاسم "Yii" (يُنطق بـ "يي" أو "[جي:]" يعني "بسيطًا وتطوريًا" باللغة الصينية. ومن الممكن ايضا
     اعتباره اختصارًا لـ <b>Yes It Is</b>!</p>
 
-What is Yii Best for?
+
+# <div dir="rtl">ما هي أفضل التطبيقات أو البرمجيات التي يمكن برمجتها وتتناسب مع ال Yii </div>
 ---------------------
 
-Yii is a generic Web programming framework, meaning that it can be used for developing all kinds
-of Web applications using PHP. Because of its component-based architecture and sophisticated caching
-support, it is especially suitable for developing large-scale applications such as portals, forums, content
-management systems (CMS), e-commerce projects, RESTful Web services, and so on.
+<p dir="rtl">
+Yii هو إطار عام لبرمجة الويب ، مما يعني أنه يمكن استخدامه لتطوير كافة أنواع
+تطبيقات الويب باستخدام PHP. وذلك بسبب البنية القائمة على  البنية التركيبة لبيئة العمل وترابطها مع المكونات والتخزين المؤقت، وهو مناسب بشكل خاص لتطوير portals, forums, content management systems (CMS), e-commerce projects, RESTful Web services. وما إلى ذلك.
+</p>
 
 
 How does Yii Compare with Other Frameworks?
