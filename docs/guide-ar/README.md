@@ -85,7 +85,7 @@
 * [ElasticSearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch/doc/guide)
 
 
-الحصول على البيانات من خلال خلال المستخدمين
+الحصول على البيانات من خلال المستخدمين
 -----------------------
 
 * [Creating Forms](input-forms.md)
