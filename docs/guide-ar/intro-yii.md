@@ -35,17 +35,13 @@ Yii هو إطار عام لبرمجة الويب ، مما يعني أنه يم�
 </p>
 
 
-Yii Versions
-------------
 
-Yii currently has two major versions available: 1.1 and 2.0. Version 1.1 is the old generation and is now in maintenance mode. Version 2.0 is a complete rewrite of Yii, adopting the latest
-technologies and protocols, including Composer, PSR, namespaces, traits, and so forth. Version 2.0 represents the current
-generation of the framework and will receive the main development efforts over the next few years.
-This guide is mainly about version 2.0.
+# <div dir="rtl">الإصدارات الخاصة بال Yii</div>
 
+<p dir="rtl">
+    يتوفر لدى Yii حاليًا إصداران رئيسيان: 1.1 و 2.0. الإصدار 1.1 هو الجيل القديم وهو الآن في وضع الصيانة. الإصدار 2.0 هو إعادة كتابة وهيكلة كاملة لل Yii، تم  اعتماد أحدث التقنيات والبروتوكولات فيها مثل  including Composer, PSR, namespaces, traits والكثير من الأمور الأخرى، وفي هذه الإرشادات، سيكون الكلام كله موجها الى الإصدار الثاني من بيئة العمل ال Yii.
+</p>
 
-Requirements and Prerequisites
-------------------------------
 
 Yii 2.0 requires PHP 5.4.0 or above and runs best with the latest version of PHP 7. You can find more detailed
 requirements for individual features by running the requirement checker included in every Yii release.
@@ -55,3 +51,16 @@ Yii 2.0 also makes use of the latest features of PHP, such as [namespaces](http:
 and [traits](http://www.php.net/manual/en/language.oop5.traits.php). Understanding these concepts will help
 you more easily pick up Yii 2.0.
 
+# <div dir="rtl">المتطلبات الأساسية للعمل على إطار ال Yii</div>
+
+<p dir="rtl">
+    <ul dir="rtl">
+        <li>الإصدار PHP 5.4.0 أو أكثر</li>
+        <li>المعرفة الأساسية بمفاهيم البرمجة كائنية التوجه OOP</li>
+        <li>المعرفة بآخر وأحدث التقنيات الموجودة بال php مثل ال namespaces, traits، الفهم لهذه المفاهيم سيسهل عليك العمل كثيرا</li>
+    </ul>
+</p>
+
+<p dir="rtl">
+    ملاحظة: يمكن التحقق من توافق المتطلبات الخاصة بك مع ال yii من خلال الدخول الى الصفحة requirement الموجودة بال yii
+    </p>
