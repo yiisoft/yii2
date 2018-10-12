@@ -1,11 +1,14 @@
-# What do you need to know
+# <div dir="rtl">ماذا يجب أن تعرف قبل البدء بال Yii</div>
 
-The Yii learning curve is not as steep as other PHP frameworks but still there are some things you should learn before starting with Yii.
+<p dir="rtl">
+    منحنى التعلم الخاص بال Yii ليس حادًا مثل أطر PHP الأخرى، ولكن لا يزال هناك بعض الأشياء التي يجب أن تتعلمها قبل البدء بـال Yii.
+</p>
 
 ## PHP
 
-Yii is a PHP framework so make sure you [read and understand language reference](http://php.net/manual/en/langref.php).
-When developing with Yii you will be writing code in an object oriented fashion, so make sure you are familiar with [Classes and Objects](https://secure.php.net/manual/en/language.oop5.basic.php) as well as [namespaces](https://secure.php.net/manual/en/language.namespaces.php).
+<p dir="rtl">
+    ال Yii هو إطار عمل PHP، لذا تأكد من قراءة وفهم المرجع الرسمي الخاص باللغة (http://php.net/manual/en/langref.php). عند البدء بتطوير المشاريع أو التطبيقات باستخدام ال Yii ، ستكتب التعليمات البرمجية بطريقة كائنية التوجه OOP، لذا تأكد من أنك على دراية بـمفاهيم ال OOP (https://secure.php.net/manual/en/language.oop5.basic.php) وكذلك ال namespaces (https://secure.php.net/manual/en/language.namespaces.php).
+</p>
 
 ## Object oriented programming
 
