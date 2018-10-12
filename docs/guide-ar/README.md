@@ -12,7 +12,7 @@
 ------------
 
 * [عن بيئة العمل Yii](intro-yii.md)
-* [التحديث من الإصدار 1.1](intro-upgrade-from-v1.md)
+* [التحديث من الإصدار 1.1](../guide/intro-upgrade-from-v1.md)
 
 
 البداية من هنا
