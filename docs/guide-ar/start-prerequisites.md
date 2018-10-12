@@ -19,7 +19,7 @@
 
 ## Command line and composer
 
-Yii extensively uses de-facto standard PHP package manager, [Composer](https://getcomposer.org/) so make sure you read
-and understand its [guide](https://getcomposer.org/doc/01-basic-usage.md). If you are not familiar with using command line it is time to start trying. Once you
-learn the basics you'll never want to work without it.
+<p dir="rtl">تستخدم ال Yii بشكل كبير de-facto standard PHP package manager، ال Composer (https://getcomposer.org/)، لذلك تأكد من قرائتك وفهمك لهذا الموضوع قبل أن تبدء. بالإضافة الى ذلك إذا لم تكن على دراية باستخدام سطر الأوامر (command line) ، فقد حان الوقت لبدء المحاولة. بمجرد تعلم الأساسيات ، لن ترغب في العمل بدون إستخدام سطر الأوامر.<br />
+ال composer: ويترجم حرفيا الى كلمة "الملحن"، وهي عبارة عن أداة لإدارة المشاريع البرمجية والتي تسمح لك بتحديث وتنزيل المكتبات البرمجية المطلوبة للمشروع الخاص بك.  
+</p>
 
