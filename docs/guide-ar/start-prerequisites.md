@@ -4,19 +4,18 @@
     منحنى التعلم الخاص بال Yii ليس حادًا مثل أطر PHP الأخرى، ولكن لا يزال هناك بعض الأشياء التي يجب أن تتعلمها قبل البدء بـال Yii.
 </p>
 
-## PHP
+## <div dir="rtl">PHP</div>
 
 <p dir="rtl">
     ال Yii هو إطار عمل PHP، لذا تأكد من قراءة وفهم المرجع الرسمي الخاص باللغة (http://php.net/manual/en/langref.php). عند البدء بتطوير المشاريع أو التطبيقات باستخدام ال Yii ، ستكتب التعليمات البرمجية بطريقة كائنية التوجه OOP، لذا تأكد من أنك على دراية بـمفاهيم ال OOP (https://secure.php.net/manual/en/language.oop5.basic.php) وكذلك ال namespaces (https://secure.php.net/manual/en/language.namespaces.php).
 </p>
 
-## Object oriented programming
+## <div dir="rtl">البرمجة كائنية التوجه object oriented programming</div>
 
-Basic understanding of object oriented programming is required. If you're not familiar with it, check one of the many
-tutorials available such as [the one from tuts+](https://code.tutsplus.com/tutorials/object-oriented-php-for-beginners--net-12762).
-
-Note that the more complicated your application is the more advanced OOP concepts you should learn in order to successfully
-manage that complexity.
+<p dir="rtl">
+    كمبرمج أو مطور يرغب بالعمل على ال Yii، يجب عليك أن تمتلك المعرفة الأساسية للبرمجة كائنية التوجه OOP. إذا لم تكن على دراية بها ، فيمكنك تعلم ذلك من خلال واحدة من هذه الدورات المنتشرة مثل (https://code.tutsplus.com/tutorials/object-oriented-php-for-beginners--net-12762).<br />
+ملاحظة: كلما زاد تعقيد التطبيق أو المشروع الذي تعمل عليه، كلما احتجت الى مستوى أعلى وإحترافي أكثر من مفاهيم ال OOP لحل وإدارة التعقديات التي ستترب على مثل هذه المشاريع.
+</p>
 
 ## Command line and composer
 
