@@ -19,66 +19,66 @@
 ---------------
 
 * [ماذا يجب أن تعرف عن بيئة العمل](start-prerequisites.md)
-* [تنصيب ال Yii](start-installation.md)
-* [تشغيل وتطبيق بيئة العمل](start-workflow.md)
-* [قل مرحبا - المشروع الأول](start-hello.md)
-* [العمل مع ال forms](start-forms.md)
-* [العمل مع قواعد البيانات](start-databases.md)
-* [إنشاء الشيفرة البرمجية من خلال ال gii](start-gii.md)
-* [ماذا الآن - الخطوة القادمة](start-looking-ahead.md)
+* [تنصيب ال Yii](../guide/start-installation.md)
+* [تشغيل وتطبيق بيئة العمل](../guide/start-workflow.md)
+* [قل مرحبا - المشروع الأول](../guide/start-hello.md)
+* [العمل مع ال forms](../guide/start-forms.md)
+* [العمل مع قواعد البيانات](../guide/start-databases.md)
+* [إنشاء الشيفرة البرمجية من خلال ال gii](../guide/start-gii.md)
+* [ماذا الآن - الخطوة القادمة](../guide/start-looking-ahead.md)
 
 
 الهيكلية الخاصة بالتطبيق (Application Structure)
 ---------------------
 
-* [نظرة عامة عن الهيكلية الخاصة بالتطبيق](structure-overview.md)
-* [Entry Scripts](structure-entry-scripts.md)
-* [التطبيقات](structure-applications.md)
-* [مكونات التطبيقات](structure-application-components.md)
-* [Controllers](structure-controllers.md)
-* [Models](structure-models.md)
-* [Views](structure-views.md)
-* [Modules](structure-modules.md)
-* [Filters](structure-filters.md)
-* [Widgets](structure-widgets.md)
-* [Assets](structure-assets.md)
-* [Extensions](structure-extensions.md)
+* [نظرة عامة عن الهيكلية الخاصة بالتطبيق](../guide/structure-overview.md)
+* [Entry Scripts](../guide/structure-entry-scripts.md)
+* [التطبيقات](../guide/structure-applications.md)
+* [مكونات التطبيقات](../guide/structure-application-components.md)
+* [Controllers](../guide/structure-controllers.md)
+* [Models](../guide/structure-models.md)
+* [Views](../guide/structure-views.md)
+* [Modules](../guide/structure-modules.md)
+* [Filters](../guide/structure-filters.md)
+* [Widgets](../guide/structure-widgets.md)
+* [Assets](../guide/structure-assets.md)
+* [Extensions](../guide/structure-extensions.md)
 
 
 التعامل مع ال requests
 -----------------
 
-* [نظرة عامة عن التعامل مع ال requests](runtime-overview.md)
-* [Bootstrapping](runtime-bootstrapping.md)
-* [Routing and URL Creation](runtime-routing.md)
-* [Requests](runtime-requests.md)
-* [Responses](runtime-responses.md)
-* [Sessions and Cookies](runtime-sessions-cookies.md)
-* [Handling Errors - التحكم بالأخطاء](runtime-handling-errors.md)
-* [Logging - تسجيل الحركات](runtime-logging.md)
+* [نظرة عامة عن التعامل مع ال requests](../guide/runtime-overview.md)
+* [Bootstrapping](../guide/runtime-bootstrapping.md)
+* [Routing and URL Creation](../guide/runtime-routing.md)
+* [Requests](../guide/runtime-requests.md)
+* [Responses](../guide/runtime-responses.md)
+* [Sessions and Cookies](../guide/runtime-sessions-cookies.md)
+* [Handling Errors - التحكم بالأخطاء](../guide/runtime-handling-errors.md)
+* [Logging - تسجيل الحركات](../guide/runtime-logging.md)
 
 
 المفاهيم الرئيسية (Key Concepts)
 ------------
 
-* [Components](concept-components.md)
-* [Properties](concept-properties.md)
-* [Events](concept-events.md)
-* [Behaviors](concept-behaviors.md)
-* [Configurations](concept-configurations.md)
-* [Aliases](concept-aliases.md)
-* [Class Autoloading](concept-autoloading.md)
-* [Service Locator](concept-service-locator.md)
-* [Dependency Injection Container](concept-di-container.md)
+* [Components](../guide/concept-components.md)
+* [Properties](../guide/concept-properties.md)
+* [Events](../guide/concept-events.md)
+* [Behaviors](../guide/concept-behaviors.md)
+* [Configurations](../guide/concept-configurations.md)
+* [Aliases](../guide/concept-aliases.md)
+* [Class Autoloading](../guide/concept-autoloading.md)
+* [Service Locator](../guide/concept-service-locator.md)
+* [Dependency Injection Container](../guide/concept-di-container.md)
 
 
 التعامل مع قواعد البيانات
 ----------------------
 
-* [Database Access Objects](db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
-* [Query Builder](db-query-builder.md): Querying the database using a simple abstraction layer
-* [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
-* [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
+* [Database Access Objects](../guide/db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
+* [Query Builder](../guide/db-query-builder.md): Querying the database using a simple abstraction layer
+* [Active Record](../guide/db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
+* [Migrations](../guide/db-migrations.md): Apply version control to your databases in a team development environment
 * [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx/doc/guide)
 * [Redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis/doc/guide)
 * [MongoDB](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb/doc/guide)
@@ -88,60 +88,60 @@
 الحصول على البيانات من خلال المستخدمين
 -----------------------
 
-* [Creating Forms](input-forms.md)
-* [Validating Input](input-validation.md)
-* [Uploading Files](input-file-upload.md)
-* [Collecting Tabular Input](input-tabular-input.md)
-* [Getting Data for Multiple Models](input-multiple-models.md)
-* [Extending ActiveForm on the Client Side](input-form-javascript.md)
+* [Creating Forms](../guide/input-forms.md)
+* [Validating Input](../guide/input-validation.md)
+* [Uploading Files](../guide/input-file-upload.md)
+* [Collecting Tabular Input](../guide/input-tabular-input.md)
+* [Getting Data for Multiple Models](../guide/input-multiple-models.md)
+* [Extending ActiveForm on the Client Side](../guide/input-form-javascript.md)
 
 
 عرض البيانات
 ---------------
 
-* [Data Formatting](output-formatting.md)
-* [Pagination](output-pagination.md)
-* [Sorting](output-sorting.md)
-* [Data Providers](output-data-providers.md)
-* [Data Widgets](output-data-widgets.md)
-* [Working with Client Scripts](output-client-scripts.md)
-* [Theming](output-theming.md)
+* [Data Formatting](../guide/output-formatting.md)
+* [Pagination](../guide/output-pagination.md)
+* [Sorting](../guide/output-sorting.md)
+* [Data Providers](../guide/output-data-providers.md)
+* [Data Widgets](../guide/output-data-widgets.md)
+* [Working with Client Scripts](../guide/output-client-scripts.md)
+* [Theming](../guide/output-theming.md)
 
 
 الامان والحماية
 --------
 
-* [Security Overview](security-overview.md)
-* [Authentication](security-authentication.md)
-* [Authorization](security-authorization.md)
-* [Working with Passwords](security-passwords.md)
-* [Cryptography](security-cryptography.md)
+* [Security Overview](../guide/security-overview.md)
+* [Authentication](../guide/security-authentication.md)
+* [Authorization](../guide/security-authorization.md)
+* [Working with Passwords](../guide/security-passwords.md)
+* [Cryptography](../guide/security-cryptography.md)
 * [Auth Clients](https://www.yiiframework.com/extension/yiisoft/yii2-authclient/doc/guide)
-* [Best Practices](security-best-practices.md)
+* [Best Practices](../guide/security-best-practices.md)
 
 
 Caching التخزين المؤقت
 -------
 
-* [Caching Overview](caching-overview.md)
-* [Data Caching](caching-data.md)
-* [Fragment Caching](caching-fragment.md)
-* [Page Caching](caching-page.md)
-* [HTTP Caching](caching-http.md)
+* [Caching Overview](../guide/caching-overview.md)
+* [Data Caching](../guide/caching-data.md)
+* [Fragment Caching](../guide/caching-fragment.md)
+* [Page Caching](../guide/caching-page.md)
+* [HTTP Caching](../guide/caching-http.md)
 
 
 RESTful Web Services
 --------------------
 
-* [Quick Start](rest-quick-start.md)
-* [Resources](rest-resources.md)
-* [Controllers](rest-controllers.md)
-* [Routing](rest-routing.md)
-* [Response Formatting](rest-response-formatting.md)
-* [Authentication](rest-authentication.md)
-* [Rate Limiting](rest-rate-limiting.md)
-* [Versioning](rest-versioning.md)
-* [Error Handling](rest-error-handling.md)
+* [Quick Start](../guide/rest-quick-start.md)
+* [Resources](../guide/rest-resources.md)
+* [Controllers](../guide/rest-controllers.md)
+* [Routing](../guide/rest-routing.md)
+* [Response Formatting](../guide/rest-response-formatting.md)
+* [Authentication](../guide/rest-authentication.md)
+* [Rate Limiting](../guide/rest-rate-limiting.md)
+* [Versioning](../guide/rest-versioning.md)
+* [Error Handling](../guide/rest-error-handling.md)
 
 
 الأدوات المساعدة أثناء تطوير التطبيقات
@@ -155,29 +155,29 @@ RESTful Web Services
 فحص واختبار التطبيقات
 -------
 
-* [Testing Overview](test-overview.md)
-* [Testing environment setup](test-environment-setup.md)
-* [Unit Tests](test-unit.md)
-* [Functional Tests](test-functional.md)
-* [Acceptance Tests](test-acceptance.md)
-* [Fixtures](test-fixtures.md)
+* [Testing Overview](../guide/test-overview.md)
+* [Testing environment setup](../guide/test-environment-setup.md)
+* [Unit Tests](../guide/test-unit.md)
+* [Functional Tests](../guide/test-functional.md)
+* [Acceptance Tests](../guide/test-acceptance.md)
+* [Fixtures](../guide/test-fixtures.md)
 
 
 مواضيع وعناوين مميزة
 --------------
 
 * [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide)
-* [Building Application from Scratch](tutorial-start-from-scratch.md)
-* [Console Commands](tutorial-console.md)
-* [Core Validators](tutorial-core-validators.md)
-* [Docker](tutorial-docker.md)
-* [Internationalization](tutorial-i18n.md)
-* [Mailing](tutorial-mailing.md)
-* [Performance Tuning](tutorial-performance-tuning.md)
-* [Shared Hosting Environment](tutorial-shared-hosting.md)
-* [Template Engines](tutorial-template-engines.md)
-* [Working with Third-Party Code](tutorial-yii-integration.md)
-* [Using Yii as a micro framework](tutorial-yii-as-micro-framework.md)
+* [Building Application from Scratch](../guide/tutorial-start-from-scratch.md)
+* [Console Commands](../guide/tutorial-console.md)
+* [Core Validators](../guide/tutorial-core-validators.md)
+* [Docker](../guide/tutorial-docker.md)
+* [Internationalization](../guide/tutorial-i18n.md)
+* [Mailing](../guide/tutorial-mailing.md)
+* [Performance Tuning](../guide/tutorial-performance-tuning.md)
+* [Shared Hosting Environment](../guide/tutorial-shared-hosting.md)
+* [Template Engines](../guide/tutorial-template-engines.md)
+* [Working with Third-Party Code](../guide/tutorial-yii-integration.md)
+* [Using Yii as a micro framework](../guide/tutorial-yii-as-micro-framework.md)
 
 
 Widgets
@@ -198,8 +198,8 @@ Widgets
 Helpers
 -------
 
-* [Helpers Overview](helper-overview.md)
-* [ArrayHelper](helper-array.md)
-* [Html](helper-html.md)
-* [Url](helper-url.md)
+* [Helpers Overview](../guide/helper-overview.md)
+* [ArrayHelper](../guide/helper-array.md)
+* [Html](../guide/helper-html.md)
+* [Url](../guide/helper-url.md)
 
