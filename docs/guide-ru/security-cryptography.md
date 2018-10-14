@@ -10,7 +10,7 @@
 Генерирование псевдослучайных данных
 ------------------------------------
 
-Pseudorandom data is useful in many situations. For example when resetting a password via email you need to generate a
+Псевдослучайные данные is useful in many situations. For example when resetting a password via email you need to generate a
 token, save it to the database, and send it via email to end user which in turn will allow them to prove ownership of
 that account. It is very important that this token be unique and hard to guess, else there is a possibility that attacker
 can predict the token's value and reset the user's password.
