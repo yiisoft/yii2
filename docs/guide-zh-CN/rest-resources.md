@@ -44,7 +44,7 @@ http://localhost/users?fields=id,email
 // 返回fields()方法申明的所有字段，以及extraFields()方法中的profile字段
 http://localhost/users?expand=profile
 
-// 返回回fields()和extraFields()方法中提供的id, email 和 profile字段
+// 返回fields()方法中的id, email，以及extraFields()方法中的profile字段
 http://localhost/users?fields=id,email&expand=profile
 ```
 
