@@ -367,6 +367,9 @@ class Controller extends \yii\base\Controller
      *
      * @return array the options alias names valid for the action
      * where the keys is alias name for option and value is option name.
+     * @since 2.0.16 the value can be a two-element array. In this array
+     * the first element value is option name and the second element value is a value of option
+     * for example: `return ['y' => ['-interactive', 0]];` is represent reflect `-y` to `--interactive=0`
      *
      * @since 2.0.8
      * @see options()

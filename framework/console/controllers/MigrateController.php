@@ -167,6 +167,7 @@ class MigrateController extends BaseMigrateController
             'F' => 'templateFile',
             'P' => 'useTablePrefix',
             'c' => 'compact',
+            'y' => ['-interactive', 0],
         ]);
     }
 

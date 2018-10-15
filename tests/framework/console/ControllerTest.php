@@ -57,6 +57,10 @@ class ControllerTest extends TestCase
         $result = $controller->runAction('aksi5', $params);
         $this->assertEquals('testAlias', $result);
 
+        $params = ['_aliases' => ['y' => 'nothing']];
+        $result = $controller->runAction('aksi7', $params);
+        $this->assertEquals(0, $result);
+
         $params = ['_aliases' => ['ta' => 'from params,notdefault']];
         list($fromParam, $other) = $controller->runAction('aksi6', $params);
         $this->assertEquals('from params', $fromParam);

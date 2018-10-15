@@ -47,6 +47,7 @@ class FakeController extends Controller
             't' => 'test',
             'ta' => 'testArray',
             'a' => 'alias',
+            'y' => ['-interactive', 0],
         ];
     }
 
@@ -82,6 +83,11 @@ class FakeController extends Controller
     public function actionAksi6()
     {
         return $this->testArray;
+    }
+
+    public function actionAksi7()
+    {
+        return $this->interactive;
     }
 
     public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument)
