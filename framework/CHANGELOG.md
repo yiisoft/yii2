@@ -67,7 +67,7 @@ Yii Framework 2 Change Log
 - Bug #16666: Fixed `yii\helpers\ArrayHelper::merge` (rustamwin)
 - Enh: `yii\helpers\UnsetArrayValue`, `yii\helpers\ReplaceArrayValue` object now can be restored after serialization using `var_export()` function (silvefire)
 - Bug #16552: Added check in `yii\db\ActiveQuery::prepare()` to prevent populating already populated relation when another relation is requested with `via` (drlibra)
-- Enh #16788: Added syntax to create a console command alias within value of option. `-y` is alias of `--interactive=0` for migrate command (bscheshirwork) 
+- Enh #16788: Added syntax to create a console command alias within value of option. `-y` is alias of `--interactive=0` for migrate command (bscheshirwork)
 
 2.0.15.1 March 21, 2018
 -----------------------
