@@ -103,7 +103,11 @@ class Controller extends \yii\base\Controller
                 $optionAliases = $this->optionAliases();
                 foreach ($params['_aliases'] as $name => $value) {
                     if (array_key_exists($name, $optionAliases)) {
-                        $params[$optionAliases[$name]] = $value;
+                        if (is_array($optionAliases[$name])) {
+                            $params[array_shift($optionAliases[$name])] = array_shift($optionAliases[$name]);
+                        } else {
+                            $params[$optionAliases[$name]] = $value;
+                        }
                     } else {
                         throw new Exception(Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]));
                     }
