@@ -7,7 +7,7 @@ Ushbu bo'limda biz "Salom" so'zlari bilan yangi sahifani qanday yaratishni ko'ri
 * Web-ilova so'rovni bajaradi va nazoratni tegishli amalga o'tkazadi;
 * Amal, o'z navbatida, "Salom" deb nomlangan ko'rinishni foydalanuvchiga ko'rsatadi.
 
-Ushbu qo'llanmani o`rganish jarayonida siz ushbu narsalarni o`rganib chiqasiz:
+Ushbu qo'llanmani o'rganish jarayonida siz ushbu narsalarni o'rganib chiqasiz:
 
 * So'rovlarga javob berish uchun qanday [amalni](structure-controllers.md) yaratish kerak;
 * Web ilovaga javob mazmunini shakllantirish uchun qanday qilib [ko`rinish](structure-views.md), yaratish kerak;
