@@ -1359,6 +1359,33 @@ describe('yii', function () {
             });
         });
 
+        describe('disabled confirm dialog', function () {
+            it('confirm data param = false', function () {
+                var element = $('#data-methods-no-data');
+                element.attr('data-confirm', false);
+                element.trigger($.Event('click'));
+
+                assert.isFalse(yiiConfirmSpy.called);
+                assert.isTrue(yiiHandleActionStub.called);
+            });
+            it('confirm data param = empty', function () {
+                var element = $('#data-methods-no-data');
+                element.attr('data-confirm', '');
+                element.trigger($.Event('click'));
+
+                assert.isFalse(yiiConfirmSpy.called);
+                assert.isTrue(yiiHandleActionStub.called);
+            });
+            it('confirm data param = undefined', function () {
+                var element = $('#data-methods-no-data');
+                element.attr('data-confirm', undefined);
+                element.trigger($.Event('click'));
+
+                assert.isFalse(yiiConfirmSpy.called);
+                assert.isTrue(yiiHandleActionStub.called);
+            });
+        });
+
         describe('with clickableSelector with data-confirm', function () {
             it('should call confirm and handleAction methods', function () {
                 var event = $.Event('click');
