@@ -2,7 +2,7 @@ Oldinga nigoh
 =============
 
 Oxir oqibat siz Yii to'liq va ko'p ishlatiladigan funksiyalarini bildingiz ulardan HTML-shakl yordamida foydalanuvchidan, ma'lumotlar omboridan ma'lumotlarni olib ularni sahifalarga bo'lib chiqarishni va yana siz  [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md) bilan
-avtomatik tarzda kod yaratishni o`rgandingiz, bu esa HTML-shaklni to'ldirishdek dasturlashni juda ham yengil va sodda mashg'ulotga aylantiradi. Bu bo'limda biz sizga Yii imkoniyatlarini umumiylashtirib beramiz, bu esa sizga Yiini mukammalroq ishlatishingizga yordam beradi.
+avtomatik tarzda kod yaratishni o'rgandingiz, bu esa HTML-shaklni to'ldirishdek dasturlashni juda ham yengil va sodda mashg'ulotga aylantiradi. Bu bo'limda biz sizga Yii imkoniyatlarini umumiylashtirib beramiz, bu esa sizga Yiini mukammalroq ishlatishingizga yordam beradi.
 
 * Qo'llanma
     - To'liq qo'llanma:
