@@ -8,11 +8,11 @@
 namespace yii\helpers;
 
 use Yii;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
+use yii\base\Model;
 use yii\db\ActiveRecordInterface;
 use yii\validators\StringValidator;
 use yii\web\Request;
-use yii\base\Model;
 
 /**
  * BaseHtml provides concrete implementation for [[Html]].
@@ -24,7 +24,6 @@ use yii\base\Model;
  */
 class BaseHtml
 {
-
     /**
      * @var string Regular expression used for attribute name validation.
      * @since 2.0.12
@@ -168,6 +167,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return '';
         }
+
         return "<$name" . static::renderTagAttributes($options) . '>';
     }
 
@@ -183,6 +183,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return '';
         }
+
         return "</$name>";
     }
 
@@ -244,9 +245,9 @@ class BaseHtml
         } elseif (isset($options['noscript']) && $options['noscript'] === true) {
             unset($options['noscript']);
             return '<noscript>' . static::tag('link', '', $options) . '</noscript>';
-        } else {
-            return static::tag('link', '', $options);
         }
+
+        return static::tag('link', '', $options);
     }
 
     /**
@@ -271,9 +272,9 @@ class BaseHtml
             $condition = $options['condition'];
             unset($options['condition']);
             return self::wrapIntoCondition(static::tag('script', '', $options), $condition);
-        } else {
-            return static::tag('script', '', $options);
         }
+
+        return static::tag('script', '', $options);
     }
 
     /**
@@ -287,6 +288,7 @@ class BaseHtml
         if (strpos($condition, '!IE') !== false) {
             return "<!--[if $condition]><!-->\n" . $content . "\n<!--<![endif]-->";
         }
+
         return "<!--[if $condition]>\n" . $content . "\n<![endif]-->";
     }
 
@@ -301,9 +303,9 @@ class BaseHtml
         if ($request instanceof Request && $request->enableCsrfValidation) {
             return static::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfParam]) . "\n    "
                 . static::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]) . "\n";
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -409,6 +411,7 @@ class BaseHtml
         if ($url !== null) {
             $options['href'] = Url::to($url);
         }
+
         return static::tag('a', $text, $options);
     }
 
@@ -458,6 +461,7 @@ class BaseHtml
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
+
         return static::tag('img', '', $options);
     }
 
@@ -496,6 +500,7 @@ class BaseHtml
         if (!isset($options['type'])) {
             $options['type'] = 'button';
         }
+
         return static::tag('button', $content, $options);
     }
 
@@ -746,7 +751,10 @@ class BaseHtml
      */
     protected static function booleanInput($type, $name, $checked = false, $options = [])
     {
-        $options['checked'] = (bool) $checked;
+        // 'checked' option has priority over $checked argument
+        if (!isset($options['checked'])) {
+            $options['checked'] = (bool) $checked;
+        }
         $value = array_key_exists('value', $options) ? $options['value'] : '1';
         if (isset($options['uncheck'])) {
             // add a hidden field so that if the checkbox is not selected, it still submits a value
@@ -765,9 +773,9 @@ class BaseHtml
             unset($options['label'], $options['labelOptions']);
             $content = static::label(static::input($type, $name, $value, $options) . ' ' . $label, null, $labelOptions);
             return $hidden . $content;
-        } else {
-            return $hidden . static::input($type, $name, $value, $options);
         }
+
+        return $hidden . static::input($type, $name, $value, $options);
     }
 
     /**
@@ -934,6 +942,9 @@ class BaseHtml
         if (substr($name, -2) !== '[]') {
             $name .= '[]';
         }
+        if (ArrayHelper::isTraversable($selection)) {
+            $selection = array_map('strval', (array)$selection);
+        }
 
         $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
@@ -946,14 +957,14 @@ class BaseHtml
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
-                $lines[] = static::checkbox($name, $checked, array_merge($itemOptions, [
+                $lines[] = static::checkbox($name, $checked, array_merge([
                     'value' => $value,
                     'label' => $encode ? static::encode($label) : $label,
-                ]));
+                ], $itemOptions));
             }
             $index++;
         }
@@ -1011,6 +1022,10 @@ class BaseHtml
      */
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
+        if (ArrayHelper::isTraversable($selection)) {
+            $selection = array_map('strval', (array)$selection);
+        }
+
         $formatter = ArrayHelper::remove($options, 'item');
         $itemOptions = ArrayHelper::remove($options, 'itemOptions', []);
         $encode = ArrayHelper::remove($options, 'encode', true);
@@ -1025,14 +1040,14 @@ class BaseHtml
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
-                $lines[] = static::radio($name, $checked, array_merge($itemOptions, [
+                $lines[] = static::radio($name, $checked, array_merge([
                     'value' => $value,
                     'label' => $encode ? static::encode($label) : $label,
-                ]));
+                ], $itemOptions));
             }
             $index++;
         }
@@ -1211,26 +1226,7 @@ class BaseHtml
         $encode = ArrayHelper::remove($options, 'encode', true);
         $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
         unset($options['header']);
-
-        $lines = [];
-        if (!is_array($models)) {
-            $models = [$models];
-        }
-        foreach ($models as $model) {
-            /* @var $model Model */
-            foreach ($model->getErrors() as $errors) {
-                foreach ($errors as $error) {
-                    $line = $encode ? Html::encode($error) : $error;
-                    if (!in_array($line, $lines, true)) {
-                        $lines[] = $line;
-                    }
-                    if (!$showAllErrors) {
-                        break;
-                    }
-                }
-            }
-        }
-
+        $lines = self::collectErrors($models, $encode, $showAllErrors);
         if (empty($lines)) {
             // still render the placeholder for client-side validation use
             $content = '<ul></ul>';
@@ -1238,7 +1234,41 @@ class BaseHtml
         } else {
             $content = '<ul><li>' . implode("</li>\n<li>", $lines) . '</li></ul>';
         }
+
         return Html::tag('div', $header . $content . $footer, $options);
+    }
+
+    /**
+     * Return array of the validation errors
+     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
+     * @param $encode boolean, if set to false then the error messages won't be encoded.
+     * @param $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
+     * only the first error message for each attribute will be shown.
+     * @return array of the validation errors
+     * @since 2.0.14
+     */
+    private static function collectErrors($models, $encode, $showAllErrors)
+    {
+        $lines = [];
+        if (!is_array($models)) {
+            $models = [$models];
+        }
+
+        foreach ($models as $model) {
+            $lines = array_unique(array_merge($lines, $model->getErrorSummary($showAllErrors)));
+        }
+
+        // If there are the same error messages for different attributes, array_unique will leave gaps
+        // between sequential keys. Applying array_values to reorder array keys.
+        $lines = array_values($lines);
+
+        if ($encode) {
+            foreach ($lines as &$line) {
+                $line = Html::encode($line);
+            }
+        }
+
+        return $lines;
     }
 
     /**
@@ -1255,6 +1285,9 @@ class BaseHtml
      * - tag: this specifies the tag name. If not set, "div" will be used.
      *   See also [[tag()]].
      * - encode: boolean, if set to false then the error message won't be encoded.
+     * - errorSource (since 2.0.14): \Closure|callable, callback that will be called to obtain an error message.
+     *   The signature of the callback must be: `function ($model, $attribute)` and return a string.
+     *   When not set, the `$model->getFirstError()` method will be called.
      *
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      *
@@ -1263,7 +1296,12 @@ class BaseHtml
     public static function error($model, $attribute, $options = [])
     {
         $attribute = static::getAttributeName($attribute);
-        $error = $model->getFirstError($attribute);
+        $errorSource = ArrayHelper::remove($options, 'errorSource');
+        if ($errorSource !== null) {
+            $error = call_user_func($errorSource, $model, $attribute);
+        } else {
+            $error = $model->getFirstError($attribute);
+        }
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         $encode = ArrayHelper::remove($options, 'encode', true);
         return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
@@ -1289,6 +1327,10 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
+        static::setActivePlaceholder($model, $attribute, $options);
+        self::normalizeMaxLength($model, $attribute, $options);
+
         return static::input($type, $name, $value, $options);
     }
 
@@ -1328,13 +1370,32 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This is available since version 2.0.3.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated input tag
      */
     public static function activeTextInput($model, $attribute, $options = [])
     {
-        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('text', $model, $attribute, $options);
+    }
+
+    /**
+     * Generate placeholder from model attribute label.
+     *
+     * @param Model $model the model object
+     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+     * about attribute expression.
+     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
+     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
+     * @since 2.0.14
+     */
+    protected static function setActivePlaceholder($model, $attribute, &$options = [])
+    {
+        if (isset($options['placeholder']) && $options['placeholder'] === true) {
+            $attribute = static::getAttributeName($attribute);
+            $options['placeholder'] = $model->getAttributeLabel($attribute);
+        }
     }
 
     /**
@@ -1369,12 +1430,13 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This option is available since version 2.0.6.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated input tag
      */
     public static function activePasswordInput($model, $attribute, $options = [])
     {
-        self::normalizeMaxLength($model, $attribute, $options);
         return static::activeInput('password', $model, $attribute, $options);
     }
 
@@ -1382,22 +1444,30 @@ class BaseHtml
      * Generates a file input tag for the given model attribute.
      * This method will generate the "name" and "value" tag attributes automatically for the model attribute
      * unless they are explicitly specified in `$options`.
+     * Additionally, if a separate set of HTML options array is defined inside `$options` with a key named `hiddenOptions`,
+     * it will be passed to the `activeHiddenInput` field as its own `$options` parameter.
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
      * about attribute expression.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * If `hiddenOptions` parameter which is another set of HTML options array is defined, it will be extracted
+     * from `$options` to be used for the hidden input.
      * @return string the generated input tag
      */
     public static function activeFileInput($model, $attribute, $options = [])
     {
-        // add a hidden field so that if a model only has a file field, we can
-        // still use isset($_POST[$modelClass]) to detect if the input is submitted
         $hiddenOptions = ['id' => null, 'value' => ''];
         if (isset($options['name'])) {
             $hiddenOptions['name'] = $options['name'];
         }
+        $hiddenOptions = ArrayHelper::merge($hiddenOptions, ArrayHelper::remove($options, 'hiddenOptions', []));
+        // add a hidden field so that if a model only has a file field, we can
+        // still use isset($_POST[$modelClass]) to detect if the input is submitted.
+        // The hidden input will be assigned its own set of html options via `$hiddenOptions`.
+        // This provides the possibility to interact with the hidden field via client script.
+
         return static::activeHiddenInput($model, $attribute, $hiddenOptions)
             . static::activeInput('file', $model, $attribute, $options);
     }
@@ -1416,6 +1486,8 @@ class BaseHtml
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This option is available since version 2.0.6.
+     * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
+     *   as a placeholder (this behavior is available since version 2.0.14).
      *
      * @return string the generated textarea tag
      */
@@ -1432,6 +1504,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
         self::normalizeMaxLength($model, $attribute, $options);
+        static::setActivePlaceholder($model, $attribute, $options);
         return static::textarea($name, $value, $options);
     }
 
@@ -1557,9 +1630,9 @@ class BaseHtml
     {
         if (empty($options['multiple'])) {
             return static::activeListInput('dropDownList', $model, $attribute, $items, $options);
-        } else {
-            return static::activeListBox($model, $attribute, $items, $options);
         }
+
+        return static::activeListBox($model, $attribute, $items, $options);
     }
 
     /**
@@ -1725,6 +1798,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
         return static::$type($name, $selection, $items, $options);
     }
 
@@ -1747,6 +1821,10 @@ class BaseHtml
      */
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
+        if (ArrayHelper::isTraversable($selection)) {
+            $selection = array_map('strval', (array)$selection);
+        }
+
         $lines = [];
         $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
         $encode = ArrayHelper::remove($tagOptions, 'encode', true);
@@ -1786,7 +1864,7 @@ class BaseHtml
                 if (!array_key_exists('selected', $attrs)) {
                     $attrs['selected'] = $selection !== null &&
                         (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($key, $selection));
+                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection));
                 }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {
@@ -1820,6 +1898,7 @@ class BaseHtml
      * @return string the rendering result. If the attributes are not empty, they will be rendered
      * into a string with a leading white space (so that it can be directly appended to the tag name
      * in a tag. If there is no attribute, an empty string will be returned.
+     * @see addCssClass()
      */
     public static function renderTagAttributes($attributes)
     {
@@ -1871,6 +1950,7 @@ class BaseHtml
 
     /**
      * Adds a CSS class (or several classes) to the specified options.
+     *
      * If the CSS class is already in the options, it will not be added again.
      * If class specification at given options is an array, and some class placed there with the named (string) key,
      * overriding of such key will have no effect. For example:
@@ -1883,6 +1963,8 @@ class BaseHtml
      *
      * @param array $options the options to be modified.
      * @param string|array $class the CSS class(es) to be added
+     * @see mergeCssClasses()
+     * @see removeCssClass()
      */
     public static function addCssClass(&$options, $class)
     {
@@ -1904,6 +1986,7 @@ class BaseHtml
      * @param array $existingClasses already existing CSS classes.
      * @param array $additionalClasses CSS classes to be added.
      * @return array merge result.
+     * @see addCssClass()
      */
     private static function mergeCssClasses(array $existingClasses, array $additionalClasses)
     {
@@ -1914,6 +1997,7 @@ class BaseHtml
                 $existingClasses[$key] = $class;
             }
         }
+
         return array_unique($existingClasses);
     }
 
@@ -1921,6 +2005,7 @@ class BaseHtml
      * Removes a CSS class from the specified options.
      * @param array $options the options to be modified.
      * @param string|array $class the CSS class(es) to be removed
+     * @see addCssClass()
      */
     public static function removeCssClass(&$options, $class)
     {
@@ -2057,6 +2142,7 @@ class BaseHtml
                 $result[trim($property[0])] = trim($property[1]);
             }
         }
+
         return $result;
     }
 
@@ -2075,15 +2161,15 @@ class BaseHtml
      * If `$attribute` has neither prefix nor suffix, it will be returned back without change.
      * @param string $attribute the attribute name or expression
      * @return string the attribute name without prefix and suffix.
-     * @throws InvalidParamException if the attribute name contains non-word characters.
+     * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getAttributeName($attribute)
     {
         if (preg_match(static::$attributeRegex, $attribute, $matches)) {
             return $matches[2];
-        } else {
-            throw new InvalidParamException('Attribute name must contain word characters only.');
         }
+
+        throw new InvalidArgumentException('Attribute name must contain word characters only.');
     }
 
     /**
@@ -2098,12 +2184,12 @@ class BaseHtml
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
      * @return string|array the corresponding attribute value
-     * @throws InvalidParamException if the attribute name contains non-word characters.
+     * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getAttributeValue($model, $attribute)
     {
         if (!preg_match(static::$attributeRegex, $attribute, $matches)) {
-            throw new InvalidParamException('Attribute name must contain word characters only.');
+            throw new InvalidArgumentException('Attribute name must contain word characters only.');
         }
         $attribute = $matches[2];
         $value = $model->$attribute;
@@ -2147,13 +2233,13 @@ class BaseHtml
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
      * @return string the generated input name
-     * @throws InvalidParamException if the attribute name contains non-word characters.
+     * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getInputName($model, $attribute)
     {
         $formName = $model->formName();
         if (!preg_match(static::$attributeRegex, $attribute, $matches)) {
-            throw new InvalidParamException('Attribute name must contain word characters only.');
+            throw new InvalidArgumentException('Attribute name must contain word characters only.');
         }
         $prefix = $matches[1];
         $attribute = $matches[2];
@@ -2162,9 +2248,9 @@ class BaseHtml
             return $attribute . $suffix;
         } elseif ($formName !== '') {
             return $formName . $prefix . "[$attribute]" . $suffix;
-        } else {
-            throw new InvalidParamException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
         }
+
+        throw new InvalidArgumentException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
     }
 
     /**
@@ -2175,7 +2261,7 @@ class BaseHtml
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for explanation of attribute expression.
      * @return string the generated input ID
-     * @throws InvalidParamException if the attribute name contains non-word characters.
+     * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getInputId($model, $attribute)
     {
@@ -2184,7 +2270,7 @@ class BaseHtml
     }
 
     /**
-     * Escapes regular expression to use in JavaScript
+     * Escapes regular expression to use in JavaScript.
      * @param string $regexp the regular expression to be escaped.
      * @return string the escaped result.
      * @since 2.0.6

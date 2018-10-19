@@ -7,8 +7,8 @@
 
 namespace yii\db;
 
-use yii\base\Object;
-use yii\base\InvalidParamException;
+use yii\base\BaseObject;
+use yii\base\InvalidArgumentException;
 
 /**
  * TableSchema represents the metadata of a database table.
@@ -18,7 +18,7 @@ use yii\base\InvalidParamException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class TableSchema extends Object
+class TableSchema extends BaseObject
 {
     /**
      * @var string the name of the schema that this table belongs to.
@@ -83,7 +83,7 @@ class TableSchema extends Object
     /**
      * Manually specifies the primary key for this table.
      * @param string|array $keys the primary key (can be composite)
-     * @throws InvalidParamException if the specified key cannot be found in the table.
+     * @throws InvalidArgumentException if the specified key cannot be found in the table.
      */
     public function fixPrimaryKey($keys)
     {
@@ -96,7 +96,7 @@ class TableSchema extends Object
             if (isset($this->columns[$key])) {
                 $this->columns[$key]->isPrimaryKey = true;
             } else {
-                throw new InvalidParamException("Primary key '$key' cannot be found in table '{$this->name}'.");
+                throw new InvalidArgumentException("Primary key '$key' cannot be found in table '{$this->name}'.");
             }
         }
     }

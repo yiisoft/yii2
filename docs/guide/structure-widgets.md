@@ -14,7 +14,7 @@ use yii\jui\DatePicker;
 ```
 
 There are a good number of widgets bundled with Yii, such as [[yii\widgets\ActiveForm|active form]],
-[[yii\widgets\Menu|menu]], [jQuery UI widgets](widget-jui.md), [Twitter Bootstrap widgets](widget-bootstrap.md).
+[[yii\widgets\Menu|menu]], [jQuery UI widgets](https://www.yiiframework.com/extension/yiisoft/yii2-jui), [Twitter Bootstrap widgets](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap).
 In the following, we will introduce the basic knowledge about widgets. Please refer to the class API documentation
 if you want to learn about the usage of a particular widget.
 
@@ -87,7 +87,7 @@ details.
 ## Creating Widgets <span id="creating-widgets"></span>
 
 To create a widget, extend from [[yii\base\Widget]] and override the [[yii\base\Widget::init()]] and/or
-[[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that normalizes the widget
+[[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that initializes the widget
 properties, while the `run()` method should contain the code that generates the rendering result of the widget.
 The rendering result may be directly "echoed" or returned as a string by `run()`.
 

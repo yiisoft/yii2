@@ -48,6 +48,8 @@ use yii\base\NotSupportedException;
  *
  * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
  *
+ * @property array $attributeNames Attribute names. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -101,11 +103,6 @@ class Validator extends Component
      * please specify them as an array; for single attribute, you may use either a string or an array.
      */
     public $attributes = [];
-    /**
-     * @var array cleaned attribute names. Contains attribute names without `!` character at the beginning
-     * @since 2.0.12
-     */
-    private $_attributeNames = [];
     /**
      * @var string the user-defined error message. It may contain the following placeholders which
      * will be replaced accordingly by the validator:
@@ -211,7 +208,7 @@ class Validator extends Component
     {
         $params['attributes'] = $attributes;
 
-        if ($type instanceof \Closure || $model->hasMethod($type)) {
+        if ($type instanceof \Closure || ($model->hasMethod($type) && !isset(static::$builtInValidators[$type]))) {
             // method-based validator
             $params['class'] = __NAMESPACE__ . '\InlineValidator';
             $params['method'] = $type;
@@ -230,7 +227,7 @@ class Validator extends Component
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -238,29 +235,18 @@ class Validator extends Component
         $this->attributes = (array) $this->attributes;
         $this->on = (array) $this->on;
         $this->except = (array) $this->except;
-        $this->setAttributeNames((array)$this->attributes);
     }
 
     /**
      * Validates the specified object.
      * @param \yii\base\Model $model the data model being validated
-     * @param array|null $attributes the list of attributes to be validated.
+     * @param array|string|null $attributes the list of attributes to be validated.
      * Note that if an attribute is not associated with the validator - it will be
      * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
      */
     public function validateAttributes($model, $attributes = null)
     {
-        if (is_array($attributes)) {
-            $newAttributes = [];
-            foreach ($attributes as $attribute) {
-                if (in_array($attribute, $this->getAttributeNames(), true)) {
-                    $newAttributes[] = $attribute;
-                }
-            }
-            $attributes = $newAttributes;
-        } else {
-            $attributes = $this->getAttributeNames();
-        }
+        $attributes = $this->getValidationAttributes($attributes);
 
         foreach ($attributes as $attribute) {
             $skip = $this->skipOnError && $model->hasErrors($attribute)
@@ -271,6 +257,26 @@ class Validator extends Component
                 }
             }
         }
+    }
+
+    public function getValidationAttributes($attributes = null)
+    {
+        if ($attributes === null) {
+            return $this->getAttributeNames();
+        }
+
+        if (is_string($attributes)) {
+            $attributes = [$attributes];
+        }
+
+        $newAttributes = [];
+        $attributeNames = $this->getAttributeNames();
+        foreach ($attributes as $attribute) {
+            if (in_array($attribute, $attributeNames, true)) {
+                $newAttributes[] = $attribute;
+            }
+        }
+        return $newAttributes;
     }
 
     /**
@@ -319,7 +325,21 @@ class Validator extends Component
      * Validates a value.
      * A validator class can implement this method to support data validation out of the context of a data model.
      * @param mixed $value the data value to be validated.
-     * @return array|null the error message and the parameters to be inserted into the error message.
+     * @return array|null the error message and the array of parameters to be inserted into the error message.
+     * ```php
+     * if (!$valid) {
+     *     return [$this->message, [
+     *         'param1' => $this->param1,
+     *         'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
+     *         'mimeTypes' => implode(', ', $this->mimeTypes),
+     *         'param4' => 'etc...',
+     *     ]];
+     * }
+     *
+     * return null;
+     * ```
+     * for this example `message` template can contain `{param1}`, `{formattedLimit}`, `{mimeTypes}`, `{param4}`
+     *
      * Null should be returned if the data is valid.
      * @throws NotSupportedException if the validator does not supporting data validation without a model
      */
@@ -356,7 +376,7 @@ class Validator extends Component
      * @param string $attribute the name of the attribute to be validated.
      * @param \yii\web\View $view the view object that is going to be used to render views or view files
      * containing a model form with this validator applied.
-     * @return string the client-side validation script. Null if the validator does not support
+     * @return string|null the client-side validation script. Null if the validator does not support
      * client-side validation.
      * @see getClientOptions()
      * @see \yii\widgets\ActiveForm::enableClientValidation
@@ -431,9 +451,9 @@ class Validator extends Component
     {
         if ($this->isEmpty !== null) {
             return call_user_func($this->isEmpty, $value);
-        } else {
-            return $value === null || $value === [] || $value === '';
         }
+
+        return $value === null || $value === [] || $value === '';
     }
 
     /**
@@ -458,24 +478,14 @@ class Validator extends Component
     }
 
     /**
-     * Returns cleaned attribute names without the `!` character at the beginning
-     * @return array
+     * Returns cleaned attribute names without the `!` character at the beginning.
+     * @return array attribute names.
      * @since 2.0.12
      */
     public function getAttributeNames()
     {
-        return $this->_attributeNames;
-    }
-
-    /**
-     * Saves attribute names without `!` character at the beginning
-     * @param array $attributeNames
-     * @since 2.0.12
-     */
-    private function setAttributeNames($attributeNames)
-    {
-        $this->_attributeNames = array_map(function($attribute) {
+        return array_map(function ($attribute) {
             return ltrim($attribute, '!');
-        }, $attributeNames);
+        }, $this->attributes);
     }
 }

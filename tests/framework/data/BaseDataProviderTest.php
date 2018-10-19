@@ -1,9 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\data;
 
-use yiiunit\TestCase;
 use yii\data\BaseDataProvider;
+use yiiunit\TestCase;
 
 /**
  * @group data
@@ -20,16 +25,15 @@ class BaseDataProviderTest extends TestCase
         $this->assertNull((new ConcreteDataProvider())->id);
         $this->assertNotNull((new ConcreteDataProvider())->id);
     }
-
 }
 
 /**
- * ConcreteDataProvider
+ * ConcreteDataProvider.
  */
 class ConcreteDataProvider extends BaseDataProvider
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareModels()
     {
@@ -37,7 +41,7 @@ class ConcreteDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareKeys($models)
     {
@@ -45,7 +49,7 @@ class ConcreteDataProvider extends BaseDataProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareTotalCount()
     {

@@ -54,24 +54,24 @@ classe si trova in `web/Request.php` nella directory principale del framework Yi
 Componenti ed oggetti
 ---------------------
 
-Yii 2 divide la classe `CComponent` della versione 1.1 in due classi: [[yii\base\Object]] and [[yii\base\Component]].
-La classe [[yii\base\Object|Object]] è una classe leggera da usare come base, che consente la definizione di 
+Yii 2 divide la classe `CComponent` della versione 1.1 in due classi: [[yii\base\BaseObject]] and [[yii\base\Component]].
+La classe [[yii\base\BaseObject|BaseObject]] è una classe leggera da usare come base, che consente la definizione di 
 [proprietà dell'oggetto](concept-properties.md) tramite *geters* e *setters*. La classe [[yii\base\Component|Component]] estende
-[[yii\base\Object|Object]] e supporta [eventi](concept-events.md) e [behavior](concept-behaviors.md).
+[[yii\base\BaseObject|BaseObject]] e supporta [eventi](concept-events.md) e [behavior](concept-behaviors.md).
 
-Se la tua classe non ha necessità di usare eventi o behavior conviene usare [[yii\base\Object|Object]] come classe base.
+Se la tua classe non ha necessità di usare eventi o behavior conviene usare [[yii\base\BaseObject|BaseObject]] come classe base.
 Di solito viene impiegata per classi che rappresentano strutture di dati semplici.
 
 
 Configurazione oggetti
 ----------------------
 
-La classe [[yii\base\Object|Object]] introduce un metodo uniforme per la configurazione degli oggetti. 
-Ogni classe figlia di [[yii\base\Object|Object]] dovrebbe dichiarare il suo costruttore (se necessario) in questo modo, così da essere 
+La classe [[yii\base\BaseObject|BaseObject]] introduce un metodo uniforme per la configurazione degli oggetti. 
+Ogni classe figlia di [[yii\base\BaseObject|BaseObject]] dovrebbe dichiarare il suo costruttore (se necessario) in questo modo, così da essere 
 configurato correttamente:
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -91,7 +91,7 @@ class MyClass extends \yii\base\Object
 
 Nell'esempio sopra, l'ultimo parametro del costruttore riceve l'array di configurazione che contiene coppie di nome-valore per
 inizializzare le proprietà alla fine del costruttore.
-Puoi sovrascrivere il metodo [[yii\base\Object::init()|init()]] per eseguire operazioni dopo che la configurazione è stata applicata.
+Puoi sovrascrivere il metodo [[yii\base\BaseObject::init()|init()]] per eseguire operazioni dopo che la configurazione è stata applicata.
 
 Seguendo questa convenzione potrai creare e configurare nuovi oggetti usando un array di configurazione:
 

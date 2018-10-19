@@ -236,13 +236,18 @@ yii.validation = (function ($) {
             }
         },
 
-        trim: function ($form, attribute, options) {
+        trim: function ($form, attribute, options, value) {
             var $input = $form.find(attribute.input);
-            var value = $input.val();
+            if ($input.is(':checkbox, :radio')) {
+                return value;
+            }
+
+            value = $input.val();
             if (!options.skipOnEmpty || !pub.isEmpty(value)) {
                 value = $.trim(value);
                 $input.val(value);
             }
+
             return value;
         },
 
@@ -263,7 +268,7 @@ yii.validation = (function ($) {
             }
         },
 
-        compare: function (value, messages, options) {
+        compare: function (value, messages, options, $form) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
             }
@@ -273,7 +278,11 @@ yii.validation = (function ($) {
             if (options.compareAttribute === undefined) {
                 compareValue = options.compareValue;
             } else {
-                compareValue = $('#' + options.compareAttribute).val();
+                var $target = $('#' + options.compareAttribute);
+                if (!$target.length) {
+                    $target = $form.find('[name="' + options.compareAttributeName + '"]');
+                }
+                compareValue = $target.val();                
             }
 
             if (options.type === 'number') {
@@ -377,6 +386,7 @@ yii.validation = (function ($) {
             if (!options.skipOnEmpty) {
                 messages.push(options.uploadRequired);
             }
+
             return [];
         }
 

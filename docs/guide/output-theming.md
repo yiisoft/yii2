@@ -82,7 +82,7 @@ In order to theme widgets, you can configure [[yii\base\Theme::pathMap]] in the 
 ],
 ```
 
-This will allow you to theme `@app/widgets/currency/views/index.php` into `@app/themes/basic/widgets/currency/index.php`.
+This will allow you to theme `@app/widgets/currency/views/index.php` into `@app/themes/basic/widgets/currency/views/index.php`.
 
 
 ## Theme Inheritance <span id="theme-inheritance"></span>

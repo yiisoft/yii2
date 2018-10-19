@@ -141,6 +141,11 @@ session storage class without the need to modify your application code that uses
   sure that the session has already been started by [[yii\web\Session::open()]]. This is because custom session storage
   handlers are registered within this method.
 
+> Note: If you use a custom session storage you may need to configure the session garbage collector explicitly.
+  Some installations of PHP (e.g. Debian) use a garbage collector probability of 0 and clean session files
+  offline in a cronjob. This process does not apply to your custom storage so you need to configure
+  [[yii\web\Session::$GCProbability]] to use a non-zero value.
+
 To learn how to configure and use these component classes, please refer to their API documentation. Below is
 an example showing how to configure [[yii\web\DbSession]] in the application configuration to use a database table
 for session storage:
@@ -178,6 +183,31 @@ where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB 
   the length of the `id` column. For example, if `session.hash_function=sha256`, you should use a
   length 64 instead of 40.
 
+Alternatively, this can be accomplished with the following migration:
+
+```php
+<?php
+
+use yii\db\Migration;
+
+class m170529_050554_create_table_session extends Migration
+{
+    public function up()
+    {
+        $this->createTable('{{%session}}', [
+            'id' => $this->char(64)->notNull(),
+            'expire' => $this->integer(),
+            'data' => $this->binary()
+        ]);
+        $this->addPrimaryKey('pk-id', '{{%session}}', 'id');
+    }
+
+    public function down()
+    {
+        $this->dropTable('{{%session}}');
+    }
+}
+```
 
 ### Flash Data <span id="flash-data"></span>
 

@@ -98,21 +98,22 @@ class Pjax extends Widget
      */
     public $clientOptions;
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @internal
      */
     public static $counter = 0;
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static $autoIdPrefix = 'p';
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
+        parent::init();
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
@@ -142,7 +143,7 @@ class Pjax extends Widget
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function run()
     {
@@ -156,11 +157,6 @@ class Pjax extends Widget
         $view = $this->getView();
         $view->endBody();
 
-        // Do not re-send css files as it may override the css files that were loaded after them.
-        // This is a temporary fix for https://github.com/yiisoft/yii2/issues/2310
-        // It should be removed once pjax supports loading only missing css files
-        $view->cssFiles = null;
-
         $view->endPage(true);
 
         $content = ob_get_clean();
@@ -171,6 +167,7 @@ class Pjax extends Widget
         $response->setStatusCode(200);
         $response->format = Response::FORMAT_HTML;
         $response->content = $content;
+        $response->headers->setDefault('X-Pjax-Url', Yii::$app->request->url);
         $response->send();
 
         Yii::$app->end();
