@@ -12,9 +12,10 @@ how to implement new features on top of this template. Yii also provides another
 the [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide) which is better used in a team development environment
 to develop applications with multiple tiers.
 
-> <div dir="rtl">
-
-> </div>
+<blockquote><p dir="rtl">
+معلومة: قالب المشروع الأساسي (Basic) مناسب لتطوير 90% من تطبيقات الويب. ويختلف القالب المتقدم (Advanced Template) عن القالب الأساسي في كيفية تنظيم وهيكلة الشيفرة البرمجية.
+اذا كنت جديدا في عالم تطوير تطبيقات الويب باستخدام ال Yii، فإننا نوصيك بقوة بأن تستخدم القالب الأساسي في بناء المشروع الخاص بك.
+</p></blockquote>
 
 
 Installing via Composer <span id="installing-via-composer"></span>
