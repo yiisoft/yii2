@@ -31,13 +31,16 @@
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
+<p dir="rtl">
+    ولنظام ويندوز يمكنك تثبيت ال <a href="https://getcomposer.org/Composer-Setup.exe">Composer-Setup.exe</a> ومن ثم عمل run 
+</p>
 
-On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
-
-Please refer to the [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
-if you encounter any problems.
-If you are new to Composer, we also recommend to read at least the [Basic usage section](https://getcomposer.org/doc/01-basic-usage.md)
-of the Composer documentation.
+<p dir="rtl">
+    يرجى الرجول الى <a href="https://getcomposer.org/doc/articles/troubleshooting.md">Troubleshooting section of the Composer Documentation</a> في حال واجهتك أي مشاكل متعلقة بال composer. 
+    <br />
+    إذا كنت مستخدمًا جديدًا لل composer، ننصحك أيضًا بقراءة <a href="https://getcomposer.org/doc/01-basic-usage.md">قسم الاستخدام الأساسي</a> على الأقل 
+من التوثيف الخاص بال composer. 
+</p>
 
 In this guide all composer commands assume you have installed composer [globally](https://getcomposer.org/doc/00-intro.md#globally)
 so that it is available as the `composer` command. If you are using the `composer.phar` in the local directory instead,
