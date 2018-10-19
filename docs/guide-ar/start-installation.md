@@ -7,10 +7,10 @@
     التثبيت الإفتراضي لل Yii ينتج عنه بنية تركيبة منظمة ومرتبة للمجلدات والملفات التي بداخلها، ويوفر هذا الكلام بعض المميزات التي يتم إضافتها وإنشائها بشكل تلقائي مثل صفحة تسجيل الدخول، ونموذج اتصل بنا...الخ، هذا الأمر سيشكل نقطة إنطلاق جيدة لبدء العمل على أي مشروع.
 </p>
     
-In this and the next few sections, we will describe how to install Yii with the so-called *Basic Project Template* and
-how to implement new features on top of this template. Yii also provides another template called
-the [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide) which is better used in a team development environment
-to develop applications with multiple tiers.
+<p dir="rtl">
+    في هذه الصفحة من التوثيق سنقوم بشرح ووصف كيف يمكن تثبيت إطار العمل Yii وبالتحديد Yii2-Basic Project Template.
+    هناك Template آخر موجود بإطار العمل Yii وهو <a href="https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide">Yii2 advanced Project Template</a>، وهو الأفضل للعمل وإنشاء المشاريع لفريق عمل برمجي، ولتطوير المشاريع متعددة الطبقات(multiple tires). 
+</p>
 
 <blockquote><p dir="rtl">
 معلومة: قالب المشروع الأساسي (Basic) مناسب لتطوير 90% من تطبيقات الويب. ويختلف القالب المتقدم (Advanced Template) عن القالب الأساسي في كيفية تنظيم وهيكلة الشيفرة البرمجية.
