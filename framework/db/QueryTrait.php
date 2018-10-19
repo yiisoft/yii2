@@ -85,7 +85,7 @@ trait QueryTrait
      *
      * See [[QueryInterface::where()]] for detailed documentation.
      *
-     * @param array $condition the conditions that should be put in the WHERE part.
+     * @param string|array $condition the conditions that should be put in the WHERE part.
      * @return $this the query object itself
      * @see andWhere()
      * @see orWhere()
