@@ -11,8 +11,8 @@ factors and explain how you can improve your application performance by adjustin
 A well configured PHP environment is very important. In order to get maximum performance,
 
 - Use the latest stable PHP version. Major releases of PHP may bring significant performance improvements.
-- Enable bytecode caching with [Opcache](http://php.net/opcache) (PHP 5.5 or later) or [APC](http://ru2.php.net/apc) 
-  (PHP 5.4 or earlier). Bytecode caching avoids the time spent in parsing and including PHP scripts for every
+- Enable bytecode caching with [Opcache](http://php.net/opcache) (PHP 5.5 or later) or [APC](http://php.net/apc) 
+  (PHP 5.4). Bytecode caching avoids the time spent in parsing and including PHP scripts for every
   incoming request.
 - [Tune `realpath()` cache](https://github.com/samdark/realpath_cache_tuner).
 
@@ -30,7 +30,7 @@ disable debug mode:
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-> Info: The default value of `YII_DEBUG` is false. So if you are certain that you do not change its default
+> Info: The default value of `YII_DEBUG` is `false`. So if you are certain that you do not change its default
   value somewhere else in your application code, you may simply remove the above line to disable debug mode. 
   
 
@@ -138,7 +138,7 @@ If you have [Redis](http://redis.io/) on your server, it is highly recommended y
 
 ## Optimizing Databases <span id="optimizing-databases"></span>
 
-Execute DB queries and fetching data from databases is often the main performance bottleneck in
+Executing DB queries and fetching data from databases are often the main performance bottleneck in
 a Web application. Although using [data caching](caching-data.md) techniques may alleviate the performance hit,
 it does not fully solve the problem. When the database contains enormous amounts of data and the cached data is invalid, 
 fetching the latest data could be prohibitively expensive without proper database and query design.
@@ -187,6 +187,11 @@ by executing the following command:
 composer dumpautoload -o
 ```
 
+Additionally you may consider using
+[authoritative class maps](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps)
+and [APCu cache](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-b-apcu-cache).
+Note that both opmizations may or may not be suitable for your particular case.
+
 
 ## Processing Data Offline <span id="processing-data-offline"></span>
 
@@ -198,7 +203,7 @@ There are two methods to process data offline: pull and push.
 In the pull method, whenever a request involves some complex operation, you create a task and save it in a persistent 
 storage, such as database. You then use a separate process (such as a cron job) to pull the tasks and process them.
 This method is easy to implement, but it has some drawbacks. For example, the task process needs to periodically pull
-from the task storage. If the pull frequency is too low, the tasks may be processed with great delay; but if the frequency
+from the task storage. If the pull frequency is too low, the tasks may be processed with great delay, but if the frequency
 is too high, it will introduce high overhead.
 
 In the push method, you would use a message queue (e.g. RabbitMQ, ActiveMQ, Amazon SQS, etc.) to manage the tasks. 
@@ -211,5 +216,10 @@ You should profile your code to find out the performance bottlenecks and take ap
 The following profiling tools may be useful:
 
 - [Yii debug toolbar and debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
-- [XDebug profiler](http://xdebug.org/docs/profiler)
+- [Blackfire](https://blackfire.io/)
 - [XHProf](http://www.php.net/manual/en/book.xhprof.php)
+- [XDebug profiler](http://xdebug.org/docs/profiler)
+
+## Prepare application for scaling
+
+When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii 2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md). For further reading you may refer to [Web apps performance and scaling](http://thehighload.com/).

@@ -18,7 +18,7 @@ En esta sección, se describirá como generar y enviar respuestas a usuarios fin
 Una de las primeras cosas que debería hacerse cuando se genera una respuesta es indicar si la petición se ha 
 gestionado correctamente. Esto se indica asignando la propiedad [[yii\web\Response::statusCode]] a la que se le puede 
 asignar cualquier valor válido dentro de los 
-[códigos de estado HTTP](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html). Por ejemplo, para indicar que la 
+[códigos de estado HTTP](https://tools.ietf.org/html/rfc2616#section-10). Por ejemplo, para indicar que la 
 petición se ha gestionado correctamente, se puede asignar el código de estado a 200, como en el siguiente ejemplo:
 
 ```php

@@ -266,8 +266,8 @@ mensagens apropriadas de erros serão exibidas para ajudar o usuário a corrigi-
 Você pode chamar o método [[yii\base\Model::validate()]] para validar os dados 
 recebidos. O método usará as regras de validação declaradas em [[yii\base\Model::rules()]] 
 para validar todos os atributos relevantes. Se nenhum erro for encontrado, o método 
-retornará true. Caso contrário, o método irá manter os erros na propriedade 
-[[yii\base\Model::errors]] e retornará false. Por exemplo,
+retornará `true`. Caso contrário, o método irá manter os erros na propriedade 
+[[yii\base\Model::errors]] e retornará `false`. Por exemplo,
 
 ```php
 $model = new \app\models\ContactForm;

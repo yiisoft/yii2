@@ -21,6 +21,8 @@ git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 If you have trouble setting up Git with GitHub in Linux, or are getting errors like "Permission Denied (publickey)",
 then you must [setup your Git installation to work with GitHub](http://help.github.com/linux-set-up-git/)
 
+> Tip: if you're not fluent with Git, we recommend reading excellent free [Pro Git book](https://git-scm.com/book/en/v2).
+
 ### 2. Add the main Yii repository as an additional git remote called "upstream"
 
 Change to the directory where you cloned Yii, normally, "yii2". Then enter the following command:
@@ -29,19 +31,25 @@ Change to the directory where you cloned Yii, normally, "yii2". Then enter the f
 git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
-### 3. Prepare the testing environment
+### 3. Prepare the testing environment <span id="prepare-the-test-environment"></span>
 
 The following steps are not necessary if you want to work only on translations or documentation.
 
-- run `composer update` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
+- run `composer install` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:~1.1.1"`
+If you are going to work with JavaScript:
 
-- run `php build/build dev/app basic` to clone the basic app and install composer dependencies for the basic app.
+- run `npm install` to install JavaScript testing tools and dependencies (assuming you have [Node.js and NPM installed](https://nodejs.org/en/download/package-manager/)).
+
+> Note: JavaScript tests depend on [jsdom](https://github.com/tmpvar/jsdom) library which requires Node.js 4 or newer.
+Using of Node.js 6 or 7 is more preferable.
+
+- run `php build/build dev/app basic <fork>` to clone the basic app and install composer dependencies for the basic app.
+  `<fork>` is URL of your repository fork such as `git@github.com:my_nickname/yii2-app-basic.git`. If you are core framework contributor you may skip specifying fork.
   This command will install foreign composer packages as normal but will link the yii2 repo to
   the currently checked out repo, so you have one instance of all the code installed.
   
-  Do the same for the advanced app if needed: `php build/build dev/app advanced`.
+  Do the same for the advanced app if needed: `php build/build dev/app advanced <fork>`.
   
   This command will also be used to update dependencies, it runs `composer update` internally.
 
@@ -55,27 +63,29 @@ The following steps are optional.
 ### Unit tests
 
 You can execute unit tests by running `phpunit` in the repo root directory. If you do not have phpunit installed globally
-you can run `php vendor/bin/phpunit` instead.
+you can run `php vendor/bin/phpunit` or `vendor/bin/phpunit.bat` in case of execution from the Windows OS.
 
 Some tests require additional databases to be set up and configured. You can create `tests/data/config.local.php` to override
 settings that are configured in `tests/data/config.php`.
 
 You may limit the tests to a group of tests you are working on e.g. to run only tests for the validators and redis
-`phpunit --group=validators,redis`. You get the list of available groups by running `phpunit --list-groups`. 
+`phpunit --group=validators,redis`. You get the list of available groups by running `phpunit --list-groups`.
+
+You can execute JavaScript unit tests by running `npm test` in the repo root directory.
 
 ### Extensions
 
 To work on extensions you have to clone the extension repository. We have created a command that can do this for you:
 
 ```
-php build/build dev/ext <extension-name>
+php build/build dev/ext <extension-name> <fork>
 ```
 
-where `<extension-name>` is the name of the extension, e.g. `redis`.
+where `<extension-name>` is the name of the extension, e.g. `redis` and `<fork>` is URL of your extension fork such as `git@github.com:my_nickname/yii2-redis.git`. If you are core framework contributor you may skip specifying fork.
 
 If you want to test the extension in one of the application templates, just add it to the `composer.json` of the application as you would
-normally do e.g. add `"yiisoft/yii2-redis": "*"` to the `require` section of the basic app.
-Running `php build/build dev/app basic` will install the extension and its dependecies and create
+normally do e.g. add `"yiisoft/yii2-redis": "~2.0.0"` to the `require` section of the basic app.
+Running `php build/build dev/app basic <fork>` will install the extension and its dependencies and create
 a symlink to `extensions/redis` so you are not working in the composer vendor dir but in the yii2 repository directly.
 
 > Note: The default git repository Urls clone from github via SSH, you may add the `--useHttp` flag to the `build` command
@@ -98,10 +108,10 @@ review your suggestion, and provide appropriate feedback along the way.
 
 > For small changes or documentation issues or straightforward fixes, you don't need to create an issue, a pull request is enough in this case.
 
-### 2. Fetch the latest code from the main Yii branch
+### 2. Pull the latest code from the main Yii branch
 
 ```
-git fetch upstream
+git pull upstream
 ```
 
 You should start at this point for every new contribution to make sure you are working on the latest code.
@@ -130,7 +140,7 @@ Failing unit tests as issue description are also accepted.
 ### 5. Update the CHANGELOG
 
 Edit the CHANGELOG file to include your change, you should insert this at the top of the file under the
-"Work in progress" heading, the line in the change log should look like one of the following:
+first heading (the version that is currently under development), the line in the change log should look like one of the following:
 
 ```
 Bug #999: a description of the bug fix (Your Name)
@@ -144,7 +154,7 @@ For very small fixes, e.g. typos and documentation changes, there is no need to 
 
 ### 6. Commit your changes
 
-add the files/changes you want to commit to the [staging area](http://gitref.org/basic/#add) with
+add the files/changes you want to commit to the [staging area](http://git.github.io/git-reference/basic/#add) with
 
 ```
 git add path/to/my/file.php
@@ -179,7 +189,7 @@ The `-u` parameter ensures that your branch will now automatically push and pull
 if you type `git push` the next time it will know where to push to. This is useful if you want to later add more commits
 to the pull request.
 
-### 9. Open a [pull request](http://help.github.com/send-pull-requests/) against upstream.
+### 9. Open a [pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) against upstream.
 
 Go to your repository on GitHub and click "Pull Request", choose your branch on the right and enter some more details
 in the comment box. To link the pull request to the issue put anywhere in the pull comment `#999` where 999 is the
@@ -209,7 +219,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 
 To detect regressions early every merge to the Yii codebase on GitHub will be picked up by
 [Travis CI](http://travis-ci.org) for an automated testrun. As core team doesn't wish to overtax this service,
-[`[ci skip]`](http://about.travis-ci.org/docs/user/how-to-skip-a-build/) will be included to the merge description if
+[`[ci skip]`](https://docs.travis-ci.com/user/customizing-the-build/#Skipping-a-build) will be included to the merge description if
 the pull request:
 
 * affect javascript, css or image files only,

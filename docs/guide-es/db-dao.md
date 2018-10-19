@@ -14,7 +14,7 @@ Yii DAO soporta las siguientes bases de datos:
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)
+- [PostgreSQL](http://www.postgresql.org/): versión 8.4 o superior.
 - [CUBRID](http://www.cubrid.org/): versión 9.3 o superior.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): versión 2008 o superior.
@@ -111,7 +111,7 @@ $posts = $db->createCommand('SELECT * FROM post')
             ->queryAll();
 
 // retorna una sola fila (la primera fila)
-// false es retornado si no hay resultados
+// `false` es retornado si no hay resultados
 $post = $db->createCommand('SELECT * FROM post WHERE id=1')
            ->queryOne();
 
@@ -121,7 +121,7 @@ $titles = $db->createCommand('SELECT title FROM post')
              ->queryColumn();
 
 // retorna un escalar
-// false es retornado si no hay resultados
+// `false` es retornado si no hay resultados
 $count = $db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
@@ -279,7 +279,7 @@ $count = $db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
 ```
 
 
-### Usadno Prefijos de Tabla <span id="using-table-prefix"></span>
+### Usando Prefijos de Tabla <span id="using-table-prefix"></span>
 
 Si la mayoría de tus tablas de BD utilizan algún prefijo común en sus tablas, puedes usar la función de prefijo de tabla soportado
 por Yii DAO.

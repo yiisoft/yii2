@@ -191,7 +191,7 @@ return [
 ];
 ```
 
-`DbManager` usa quatro tabelas de banco de dados para armazenar seus dados: 
+`DbManager` usa quatro tabelas de banco de dados para armazenar seus dados:
 
 - [[yii\rbac\DbManager::$itemTable|itemTable]]: tabela para armazenar itens de autorização. O padrão é "auth_item".
 - [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: tabela para armazenar hierarquia de itens de autorização. O padrão é "auth_item_child".
@@ -314,10 +314,10 @@ class AuthorRule extends Rule
    public $name = 'isAuthor';
 
    /**
-    * @param string|integer $user the user ID.
+    * @param string|int $user the user ID.
     * @param Item $item the role or permission that this rule is associated with
     * @param array $params parameters passed to ManagerInterface::checkAccess().
-    * @return boolean a value indicating whether the rule permits the role or permission it is associated with.
+    * @return bool a value indicating whether the rule permits the role or permission it is associated with.
     */
    public function execute($user, $item, $params)
    {
@@ -444,7 +444,7 @@ $auth->addChild($admin, $author);
 // ... adiciona permissões como filhas de  $admin ...
 ```
 
-Note que no exemplo acima, porque "author" é adicionado como filho de  "admin", quando você implementar o método `execute()` da classe rule, você também precisa respeitar essa hierarquia. É por isso que quando o nome da role é "author", o método `execute()` retornará  true se o grupo de usuário for 1 or 2 (significa que o usuário está no grupo "admin" ou "author").
+Note que no exemplo acima, porque "author" é adicionado como filho de  "admin", quando você implementar o método `execute()` da classe rule, você também precisa respeitar essa hierarquia. É por isso que quando o nome da role é "author", o método `execute()` retornará  `true` se o grupo de usuário for 1 or 2 (significa que o usuário está no grupo "admin" ou "author").
 
 Em seguida, configure `authManager` listando as duas roles [[yii\rbac\BaseManager::$defaultRoles]]:
 
@@ -461,7 +461,7 @@ return [
 ];
 ```
 
-Agora, se você executar uma verificação de acesso, ambas as roles `admin` e `author` serão verificadas através da avaliação das regras associado com elas. se a regra retornar true, isso significa que a role se aplica ao usuário atual. A partir da implementação da regra acima, isto significa que se o valor do ‘grupo’ de um usuário for 1, a role `admin` seria aplicável ao usuário; e se o valor do `grupo` for 2, seria a role `author`.
+Agora, se você executar uma verificação de acesso, ambas as roles `admin` e `author` serão verificadas através da avaliação das regras associado com elas. se a regra retornar `true`, isso significa que a role se aplica ao usuário atual. A partir da implementação da regra acima, isto significa que se o valor do ‘grupo’ de um usuário for 1, a role `admin` seria aplicável ao usuário; e se o valor do `grupo` for 2, seria a role `author`.
 
 
 

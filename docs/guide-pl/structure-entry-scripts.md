@@ -33,13 +33,13 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // register Composer autoloader
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // include Yii class file
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // load application configuration
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // create, configure and run application
 (new yii\web\Application($config))->run();
@@ -64,13 +64,13 @@ Podobnie poniżej kod skryptu wejściowego dla aplikacji konsolowej:
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
 // register Composer autoloader
-require(__DIR__ . '/vendor/autoload.php');
+require __DIR__ . '/vendor/autoload.php';
 
 // include Yii class file
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
 // load application configuration
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -84,11 +84,11 @@ Skrypty wejściowe są najlepszym miejscem do definiowania globalnych stałych. 
 
 * `YII_DEBUG`: określa czy aplikacja działa w trybie debugowania. Podczas tego trybu aplikacja 
   przetrzymuje więcej informacji w logach i zdradza szczegóły stosu błędów, kiedy rzucony jest wyjątek. Z tego powodu
-  tryb debugowania powinien być używany głównie podczas fazy deweloperskiej. Domyślną wartością `YII_DEBUG` jest false.
+  tryb debugowania powinien być używany głównie podczas fazy deweloperskiej. Domyślną wartością `YII_DEBUG` jest `false`.
 * `YII_ENV`: określa środowisko, w którym aplikacja działa. Opisane jest to bardziej szczegółowo 
   w sekcji [Konfiguracje](concept-configurations.md#environment-constants).
   Domyślną wartością `YII_ENV` jest `'prod'`, co oznacza, że aplikacja jest uruchomiona w środowisku produkcyjnym.
-* `YII_ENABLE_ERROR_HANDLER`: określa czy uruchomić obsługę błędów przygotowaną przez Yii. Domyślną wartością tej stałej jest true.
+* `YII_ENABLE_ERROR_HANDLER`: określa czy uruchomić obsługę błędów przygotowaną przez Yii. Domyślną wartością tej stałej jest `true`.
 
 Podczas definiowania stałej często korzystamy z poniższego kodu:
 

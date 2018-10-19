@@ -39,7 +39,7 @@ $totalCount = $provider->getTotalCount();
 You specify the pagination and sorting behaviors of a data provider by configuring its 
 [[yii\data\BaseDataProvider::pagination|pagination]] and [[yii\data\BaseDataProvider::sort|sort]] properties
 which correspond to the configurations for [[yii\data\Pagination]] and [[yii\data\Sort]], respectively.
-You may also configure them to be false to disable pagination and/or sorting features.
+You may also configure them to be `false` to disable pagination and/or sorting features.
 
 [Data widgets](output-data-widgets.md), such as [[yii\grid\GridView]], have a property named `dataProvider` which
 can take a data provider instance and display the data it provides. For example,
@@ -262,7 +262,7 @@ class CsvDataProvider extends BaseDataProvider
     
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -273,7 +273,7 @@ class CsvDataProvider extends BaseDataProvider
     }
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareModels()
     {
@@ -302,7 +302,7 @@ class CsvDataProvider extends BaseDataProvider
     }
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareKeys($models)
     {
@@ -318,13 +318,13 @@ class CsvDataProvider extends BaseDataProvider
             }
  
             return $keys;
-        } else {
-            return array_keys($models);
         }
+
+        return array_keys($models);
     }
  
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function prepareTotalCount()
     {
@@ -339,3 +339,61 @@ class CsvDataProvider extends BaseDataProvider
     }
 }
 ```
+
+## Filtering Data Providers using Data Filters <span id="filtering-data-providers-using-data-filters"></span>
+
+While you can build conditions for active data provider manually as described in
+[Filtering Data](output-data-widgets.md#filtering-data) and [Separate Filter Form](output-data-widgets.md#separate-filter-form)
+sections of data widgets guide, Yii has data filters that are very useful if you need flexible filter condtions.
+Data filters could be used as follows:
+
+```php
+$filter = new ActiveDataFilter([
+    'searchModel' => 'app\models\PostSearch'
+]);
+
+$filterCondition = null;
+
+// You may load filters from any source. For example,
+// if you prefer JSON in request body,
+// use Yii::$app->request->getBodyParams() below:
+if ($filter->load(\Yii::$app->request->get())) { 
+    $filterCondition = $filter->build();
+    if ($filterCondition === false) {
+        // Serializer would get errors out of it
+        return $filter;
+    }
+}
+
+$query = Post::find();
+if ($filterCondition !== null) {
+    $query->andWhere($filterCondition);
+}
+
+return new ActiveDataProvider([
+    'query' => $query,
+]);
+```
+
+`PostSearch` model serves the purpose of defining which properties and values are allowed for filtering:
+
+```php
+use yii\base\Model;
+
+class PostSearch extends Model 
+{
+    public $id;
+    public $title;
+    
+    public function rules()
+    {
+        return [
+            ['id', 'integer'],
+            ['title', 'string', 'min' => 2, 'max' => 200],            
+        ];
+    }
+}
+```
+
+Data filters are quite flexible. You may customize how conditions are built and which operators are allowed.
+For details check API docs on [[\yii\data\DataFilter]].

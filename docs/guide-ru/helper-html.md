@@ -43,7 +43,7 @@ Html-помощник
 Дополнительные атрибуты используются во многих методах Html-помощника и в различных виджетах. Во всех этих случаях в
 дело вступают механизмы дополнительной обработки данных, о которых следует знать:
 
-- Если значение равно null, соответствующий атрибут не будет выведен.
+- Если значение равно `null`, соответствующий атрибут не будет выведен.
 - Атрибуты, значения которых имеют тип boolean, будут интерпретированы как
   [логические атрибуты](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
 - Значения атрибутов будут экранированы с использованием метода [[yii\helpers\Html::encode()|Html::encode()]].
@@ -244,11 +244,11 @@ $decodedUserName = Html::decode($userName);
 Сигнатура методов для формирования радио-переключателей и чекбоксов немного отличается: 
 
 ```php
-<?= Html::radio('agree', true, ['label' => 'Я согласен']);
-<?= Html::activeRadio($model, 'agree', ['class' => 'agreement'])
+<?= Html::radio('agree', true, ['label' => 'Я согласен']) ?>
+<?= Html::activeRadio($model, 'agree', ['class' => 'agreement']) ?>
 
-<?= Html::checkbox('agree', true, ['label' => 'Я согласен']);
-<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement'])
+<?= Html::checkbox('agree', true, ['label' => 'Я согласен']) ?>
+<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement']) ?>
 ```
 
 Выпадающие и обычные списки могут быть сформированы следующим образом:
@@ -354,7 +354,7 @@ echo Html::getAttributeName('dates[0]');
 <style>.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("Привет!");', ['defer' => true]);
+<?= Html::script('alert("Привет!");', ['defer' => true]) ?>
 
 Результатом будет:
 

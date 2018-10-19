@@ -7,15 +7,16 @@
 
 namespace yii\test;
 
-use Yii;
+use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\di\Instance;
-use yii\base\Object;
 
 /**
  * DbFixture is the base class for DB-related fixtures.
  *
  * DbFixture provides the [[db]] connection to be used by DB fixtures.
+ *
+ * For more details and usage information on DbFixture, see the [guide article on fixtures](guide:test-fixtures).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -32,11 +33,11 @@ abstract class DbFixture extends Fixture
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Object::className());
+        $this->db = Instance::ensure($this->db, BaseObject::className());
     }
 }

@@ -10,7 +10,7 @@
 * Поддерживаются различные форматы ответа.
 
 По умолчанию [[yii\web\ErrorHandler|обработчик ошибок]] включен. Вы можете выключить его объявив константу
-`YII_ENABLE_ERROR_HANDLER` со значением false во [входном скрипте](structure-entry-scripts.md) вашего приложения.
+`YII_ENABLE_ERROR_HANDLER` со значением `false` во [входном скрипте](structure-entry-scripts.md) вашего приложения.
 
 
 ## Использование обработчика ошибок <span id="using-error-handler"></span>
@@ -60,8 +60,8 @@ throw new NotFoundHttpException();
 ## Настройка отображения ошибок <span id="customizing-error-display"></span>
 
 [[yii\web\ErrorHandler|Обработчик ошибок]] меняет отображение ошибок в зависимости от значения константы `YII_DEBUG`.
-При `YII_DEBUG` равной true (режим отладки), обработчик ошибок будет отображать для облегчения отладки детальный стек
-вызовов и исходный код. При `YII_DEBUG` равной false отображается только сообщение об ошибке, тем самым не позволяя
+При `YII_DEBUG` равной `true` (режим отладки), обработчик ошибок будет отображать для облегчения отладки детальный стек
+вызовов и исходный код. При `YII_DEBUG` равной `false` отображается только сообщение об ошибке, тем самым не позволяя
 получить информацию о внутренностях приложения.
 
 > Info: Если исключение является наследником [[yii\base\UserException]], стек вызовов не отображается вне
@@ -71,7 +71,7 @@ throw new NotFoundHttpException();
 По умолчанию [[yii\web\ErrorHandler|обработчик ошибок]] показывает ошибки используя два [представления](structure-views.md):
 
 * `@yii/views/errorHandler/error.php`: используется для отображения ошибок БЕЗ стека вызовов.
-  При `YII_DEBUG` равной false используется только это преставление.
+  При `YII_DEBUG` равной `false` используется только это преставление.
 * `@yii/views/errorHandler/exception.php`: используется для отображения ошибок СО стеком вызовов.
  
 Вы можете настроить свойства [[yii\web\ErrorHandler::errorView|errorView]] и [[yii\web\ErrorHandler::exceptionView|exceptionView]]
@@ -114,13 +114,12 @@ class SiteController extends Controller
         ];
     }
 }
- ```
- 
+```
+
 Приведённый выше код задаёт действие `error` используя класс [[yii\web\ErrorAction]], который рендерит ошибку используя
 отображение `error`.
 
 Вместо использования [[yii\web\ErrorAction]] вы можете создать действие `error` как обычный метод:
- 
 
 ```php
 public function actionError()

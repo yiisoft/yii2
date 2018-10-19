@@ -88,10 +88,10 @@ Próba <span id="trying-it-out"></span>
 Po utworzeniu akcji oraz widoku możesz uzyskać dostęp do nowej strony przez przejście pod podany adres URL:
 
 ```
-http://hostname/index.php?r=site/say&message=Hello+World
+http://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
-![Witaj świecie](../guide/images/start-hello-world.png)
+![Witaj świecie](images/start-hello-world.png)
 
 Wynikiem wywołania tego adresu jest wyświetlenie napisu "Hello World". Strona dzieli ten sam nagłówek i stopkę z innymi stronami aplikacji. 
 

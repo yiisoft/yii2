@@ -15,6 +15,6 @@ create table "cache"
 (
     "id"  varchar(128) not null,
     "expire" integer,
-    "data"   BLOB,
+    "data"   bytea,
     primary key ("id")
 );

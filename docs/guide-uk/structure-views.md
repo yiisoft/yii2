@@ -694,7 +694,7 @@ class SiteController extends Controller
 відображення цього представлення за наступною URL-адресою:
 
 ```
-http://localhost/index.php?r=site/page&view=about
+http://localhost/index.php?r=site%2Fpage&view=about
 ```
 
 Параметр `view` із запиту `GET` вказує автономній дії [[yii\web\ViewAction]], яке представлення запитане. Потім дія здійснює пошук

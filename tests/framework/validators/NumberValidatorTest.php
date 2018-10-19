@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -12,21 +17,56 @@ use yiiunit\TestCase;
  */
 class NumberValidatorTest extends TestCase
 {
+    private $commaDecimalLocales = ['fr_FR.UTF-8', 'fr_FR.UTF8', 'fr_FR.utf-8', 'fr_FR.utf8', 'French_France.1252'];
+    private $pointDecimalLocales = ['en_US.UTF-8', 'en_US.UTF8', 'en_US.utf-8', 'en_US.utf8', 'English_United States.1252'];
+    private $oldLocale;
+
+    private function setCommaDecimalLocale()
+    {
+        if ($this->oldLocale === false) {
+            $this->markTestSkipped('Your platform does not support locales.');
+        }
+
+        if (setlocale(LC_NUMERIC, $this->commaDecimalLocales) === false) {
+            $this->markTestSkipped('Could not set any of required locales: ' . implode(', ', $this->commaDecimalLocales));
+        }
+    }
+
+    private function setPointDecimalLocale()
+    {
+        if ($this->oldLocale === false) {
+            $this->markTestSkipped('Your platform does not support locales.');
+        }
+
+        if (setlocale(LC_NUMERIC, $this->pointDecimalLocales) === false) {
+            $this->markTestSkipped('Could not set any of required locales: ' . implode(', ', $this->pointDecimalLocales));
+        }
+    }
+
+    private function restoreLocale()
+    {
+        setlocale(LC_NUMERIC, $this->oldLocale);
+    }
+
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        $this->oldLocale = setlocale(LC_NUMERIC, 0);
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testEnsureMessageOnInit()
     {
-        $val = new NumberValidator;
-        $this->assertTrue(is_string($val->message));
-        $this->assertTrue(is_null($val->max));
+        $val = new NumberValidator();
+        $this->assertInternalType('string', $val->message);
+        $this->assertTrue($val->max === null);
         $val = new NumberValidator(['min' => -1, 'max' => 20, 'integerOnly' => true]);
-        $this->assertTrue(is_string($val->message));
-        $this->assertTrue(is_string($val->tooSmall));
-        $this->assertTrue(is_string($val->tooBig));
+        $this->assertInternalType('string', $val->message);
+        $this->assertInternalType('string', $val->tooSmall);
+        $this->assertInternalType('string', $val->tooBig);
     }
 
     public function testValidateValueSimple()
@@ -37,7 +77,13 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate(-20));
         $this->assertTrue($val->validate('20'));
         $this->assertTrue($val->validate(25.45));
+
+        $this->setPointDecimalLocale();
         $this->assertFalse($val->validate('25,45'));
+        $this->setCommaDecimalLocale();
+        $this->assertTrue($val->validate('25,45'));
+        $this->restoreLocale();
+
         $this->assertFalse($val->validate('12:45'));
         $val = new NumberValidator(['integerOnly' => true]);
         $this->assertTrue($val->validate(20));
@@ -70,11 +116,25 @@ class NumberValidatorTest extends TestCase
         $this->assertFalse($val->validate('12.23^4'));
     }
 
+    public function testValidateValueWithLocaleWhereDecimalPointIsComma()
+    {
+        $val = new NumberValidator();
+
+        $this->setPointDecimalLocale();
+        $this->assertTrue($val->validate(.5));
+
+        $this->setCommaDecimalLocale();
+        $this->assertTrue($val->validate(.5));
+
+        $this->restoreLocale();
+    }
+
     public function testValidateValueMin()
     {
         $val = new NumberValidator(['min' => 1]);
         $this->assertTrue($val->validate(1));
-        $this->assertFalse($val->validate(-1));
+        $this->assertFalse($val->validate(-1, $error));
+        $this->assertContains('the input value must be no less than 1.', $error);
         $this->assertFalse($val->validate('22e-12'));
         $this->assertTrue($val->validate(PHP_INT_MAX + 1));
         $val = new NumberValidator(['min' => 1], ['integerOnly' => true]);
@@ -150,25 +210,48 @@ class NumberValidatorTest extends TestCase
         $model = FakedValidationModel::createWithAttributes(['attr_num' => [1, 2, 3]]);
         $val->validateAttribute($model, 'attr_num');
         $this->assertTrue($model->hasErrors('attr_num'));
+
+        // @see https://github.com/yiisoft/yii2/issues/11672
+        $model = new FakedValidationModel();
+        $model->attr_number = new \stdClass();
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+    }
+
+    public function testValidateAttributeWithLocaleWhereDecimalPointIsComma()
+    {
+        $val = new NumberValidator();
+        $model = new FakedValidationModel();
+        $model->attr_number = 0.5;
+
+        $this->setPointDecimalLocale();
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+
+        $this->setCommaDecimalLocale();
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+
+        $this->restoreLocale();
     }
 
     public function testEnsureCustomMessageIsSetOnValidateAttribute()
     {
         $val = new NumberValidator([
             'tooSmall' => '{attribute} is to small.',
-            'min' => 5
+            'min' => 5,
         ]);
         $model = new FakedValidationModel();
         $model->attr_number = 0;
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
-        $this->assertEquals(1, count($model->getErrors('attr_number')));
+        $this->assertCount(1, $model->getErrors('attr_number'));
         $msgs = $model->getErrors('attr_number');
         $this->assertSame('attr_number is to small.', $msgs[0]);
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/3118
+     * @see https://github.com/yiisoft/yii2/issues/3118
      */
     public function testClientValidateComparison()
     {
@@ -207,5 +290,57 @@ class NumberValidatorTest extends TestCase
         $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
         $this->assertContains('"min":5.65', $js);
         $this->assertContains('"max":13.37', $js);
+    }
+
+    public function testValidateObject()
+    {
+        $val = new NumberValidator();
+        $value = new \stdClass();
+        $this->assertFalse($val->validate($value));
+    }
+
+    public function testValidateResource()
+    {
+        $val = new NumberValidator();
+        $fp = fopen('php://stdin', 'r');
+        $this->assertFalse($val->validate($fp));
+
+        $model = new FakedValidationModel();
+        $model->attr_number = $fp;
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        
+        // the check is here for HHVM that
+        // was losing handler for unknown reason
+        if (is_resource($fp)) {
+            fclose($fp);
+        }
+    }
+
+    public function testValidateToString()
+    {
+        $val = new NumberValidator();
+        $object = new TestClass('10');
+        $this->assertTrue($val->validate($object));
+
+        $model = new FakedValidationModel();
+        $model->attr_number = $object;
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+    }
+}
+
+class TestClass
+{
+    public $foo;
+
+    public function __construct($foo)
+    {
+        $this->foo = $foo;
+    }
+
+    public function __toString()
+    {
+        return $this->foo;
     }
 }

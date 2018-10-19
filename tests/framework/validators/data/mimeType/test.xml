@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+	<message>
+		<from>SilverFire</from>
+		<to>World</to>
+		<body>Hello, world!</body>
+	</message>
+</application>

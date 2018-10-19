@@ -24,6 +24,8 @@ use yii\base\Component;
  * You should normally override [[load()]] to specify how to set up a fixture; and override [[unload()]]
  * for clearing up a fixture.
  *
+ * For more details and usage information on Fixture, see the [guide article on fixtures](guide:test-fixtures).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

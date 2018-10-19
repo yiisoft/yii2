@@ -76,7 +76,7 @@ class SessionIterator implements \Iterator
     /**
      * Returns whether there is an element at current position.
      * This method is required by the interface [[\Iterator]].
-     * @return boolean
+     * @return bool
      */
     public function valid()
     {

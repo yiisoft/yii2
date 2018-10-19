@@ -1,16 +1,21 @@
 <?php
-namespace yiiunit\framework\base;
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
+namespace yiiunit\framework\base;
 
 use yii\base\Security;
 
 /**
- * ExposedSecurity exposes protected methods for direct testing
+ * ExposedSecurity exposes protected methods for direct testing.
  */
 class ExposedSecurity extends Security
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
     {
@@ -18,7 +23,7 @@ class ExposedSecurity extends Security
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
     {

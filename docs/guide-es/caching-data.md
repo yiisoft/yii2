@@ -79,8 +79,8 @@ se muestra un listado con los componentes de caché disponibles:
 * [[yii\caching\MemCache]]: utiliza las extensiones de PHP [memcache](http://php.net/manual/es/book.memcache.php) y [memcached](http://php.net/manual/es/book.memcached.php). Esta opción puede ser considerada como la más rápida cuando la caché es manejada en una aplicación distribuida (ej. con varios servidores, con balance de carga, etc..)
 * [[yii\redis\Cache]]: implementa un componente de caché basado en [Redis](http://redis.io/) que almacenan pares clave-valor (requiere la versión 2.6.12 de redis).
 * [[yii\caching\WinCache]]: utiliza la extensión de PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension) ([ver también](http://php.net/manual/es/book.wincache.php)).
-* [[yii\caching\XCache]]: utiliza la extensión de PHP [XCache](http://xcache.lighttpd.net/).
-* [[yii\caching\ZendDataCache]]: utiliza [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) como el medio fundamental de caché.
+* [[yii\caching\XCache]] _(deprecated)_: utiliza la extensión de PHP [XCache](http://xcache.lighttpd.net/).
+* [[yii\caching\ZendDataCache]] _(deprecated)_: utiliza [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) como el medio fundamental de caché.
 
 > Tip: Puedes utilizar diferentes tipos de almacenamiento de caché en la misma aplicación. Una estrategia común es la de usar almacenamiento de caché en memoria para almacenar datos que son pequeños pero que son utilizados constantemente (ej. datos estadísticos), y utilizar el almacenamiento de caché en archivos o en base de datos para guardar datos que son grandes y utilizados con menor frecuencia (ej. contenido de página).
 
@@ -182,7 +182,7 @@ $cache->set($key, $data, 30, $dependency);
 
 // La caché comprobará si los datos han expirado.
 // También comprobará si la dependencia ha cambiado.
-// Devolverá false si se encuentran algunas de esas condiciones.
+// Devolverá `false` si se encuentran algunas de esas condiciones.
 $data = $cache->get($key);
 ```
 
@@ -229,7 +229,7 @@ $result = Customer::getDb()->cache(function ($db) {
 Las consultas en caché tienen tres opciones configurables globales a través de [[yii\db\Connection]]:
 
 * [[yii\db\Connection::enableQueryCache|enableQueryCache]]: activa o desactiva el cacheo de consultas.
-  Por defecto es true. Tenga en cuenta que para activar el cacheo de consultas, también necesitas tener una caché válida, especificada por [[yii\db\Connection::queryCache|queryCache]].
+  Por defecto es `true`. Tenga en cuenta que para activar el cacheo de consultas, también necesitas tener una caché válida, especificada por [[yii\db\Connection::queryCache|queryCache]].
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: representa el número de segundos que un resultado de la consulta permanecerá válida en la memoria caché. Puedes usar 0 para indicar que el resultado de la consulta debe permanecer en la caché para siempre. Esta propiedad es el valor usado por defecto cuando [[yii\db\Connection::cache()]] es llamada sin especificar una duración.
 * [[yii\db\Connection::queryCache|queryCache]]: representa el ID del componente de aplicación de caché.
   Por defecto es `'cache'`. El almacenamiento en caché de consultas se habilita sólo si hay un componente de la aplicación de caché válida.

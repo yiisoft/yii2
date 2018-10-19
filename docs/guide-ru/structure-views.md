@@ -549,7 +549,7 @@ $this->registerLinkTag([
 <link title="Сводка новостей по Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
 ```
 
-Как и в случае с [[yii\web\View::registerMetaTag()|registerMetaTags()]], вы можете указать ключ вторым параметром при вызове 
+Как и в случае с [[yii\web\View::registerMetaTag()|registerMetaTag()]], вы можете указать ключ вторым параметром при вызове 
 [[yii\web\View::registerLinkTag()|registerLinkTag()]] чтобы избежать дублирования link тэгов одного типа.
 
 
@@ -616,7 +616,7 @@ class SiteController extends Controller
 Теперь, если вы создадите вид `about` в папке `@app/views/site/pages`, он будет отображаться по такому адресу: 
 
 ```
-http://localhost/index.php?r=site/page&view=about
+http://localhost/index.php?r=site%2Fpage&view=about
 ```
 
 `GET` параметр `view` сообщает [[yii\web\ViewAction]] какой вид затребован. Действие будет искать этот вид в папке `@app/views/site/pages`. 

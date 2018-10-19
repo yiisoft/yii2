@@ -40,5 +40,5 @@ información sobre el límite actual de rango:
 * `X-Rate-Limit-Remaining`, el número de peticiones restantes en el periodo de tiempo actual
 * `X-Rate-Limit-Reset`, el número de segundos a esperar para pedir el máximo número de peticiones permitidas
 
-Puedes desactivar estas cabeceras configurando [[yii\filters\RateLimiter::enableRateLimitHeaders]] a false,
+Puedes desactivar estas cabeceras configurando [[yii\filters\RateLimiter::enableRateLimitHeaders]] a `false`,
 tal y como en el anterior ejemplo.

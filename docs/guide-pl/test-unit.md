@@ -22,4 +22,4 @@ Testy jednostkowe frameworka
 ----------------------------
 
 Jeśli chcesz przeprowadzić testy jednostkowe na frameworku Yii przejdź do sekcji 
-"[Od czego zacząć projektowanie w Yii2](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md)".
+"[Od czego zacząć projektowanie w Yii 2](https://github.com/yiisoft/yii2/blob/master/docs/internals/getting-started.md)".

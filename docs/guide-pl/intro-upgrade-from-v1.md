@@ -52,22 +52,22 @@ Dzięki mechanizmowi ładowania klas Yii możesz użyć dowolnej podstawowej kla
 Komponent i obiekt
 ------------------
 
-Yii 2.0 rozdzielił klasę `CComponent` z 1.1 na dwie: [[yii\base\Object|Object]] i [[yii\base\Component|Component]].
-Lekka klasa [[yii\base\Object|Object]] pozwala na zdefiniowanie [właściwości obiektu](concept-properties.md) poprzez gettery i settery. 
-Klasa [[yii\base\Component|Component]] dziedziczy po [[yii\base\Object|Object]] i dodatkowo wspiera obsługę [zdarzeń](concept-events.md) oraz [zachowań](concept-behaviors.md).
+Yii 2.0 rozdzielił klasę `CComponent` z 1.1 na dwie: [[yii\base\BaseObject|BaseObject]] i [[yii\base\Component|Component]].
+Lekka klasa [[yii\base\BaseObject|BaseObject]] pozwala na zdefiniowanie [właściwości obiektu](concept-properties.md) poprzez gettery i settery. 
+Klasa [[yii\base\Component|Component]] dziedziczy po [[yii\base\BaseObject|BaseObject]] i dodatkowo wspiera obsługę [zdarzeń](concept-events.md) oraz [zachowań](concept-behaviors.md).
 
-Jeśli Twoja klasa nie wymaga ww. wsparcia, rozważ użycie [[yii\base\Object|Object]] jako klasy podstawowej. Tak jest zazwyczaj w przypadku klas reprezentujących 
+Jeśli Twoja klasa nie wymaga ww. wsparcia, rozważ użycie [[yii\base\BaseObject|BaseObject]] jako klasy podstawowej. Tak jest zazwyczaj w przypadku klas reprezentujących 
 najbardziej podstawową strukturę danych.
 
 
 Konfiguracja obiektu
 --------------------
 
-Klasa [[yii\base\Object|Object]] wprowadza ujednoliconą formę konfigurowania obiektów. Każda klasa dziedzicząca po [[yii\base\Object|Object]] powinna zadeklarować swój 
+Klasa [[yii\base\BaseObject|BaseObject]] wprowadza ujednoliconą formę konfigurowania obiektów. Każda klasa dziedzicząca po [[yii\base\BaseObject|BaseObject]] powinna zadeklarować swój 
 konstruktor (jeśli tego wymaga) w następujący sposób, dzięki czemu zostanie poprawnie skonfigurowana:
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -87,7 +87,7 @@ class MyClass extends \yii\base\Object
 
 W powyższym przykładzie ostatnim parametrem konstruktora musi być tablica konfiguracyjna, 
 zawierająca pary nazwa-wartość służące do zainicjowania właściwości na końcu konstruktora.
-Możesz nadpisać metodę [[yii\base\Object::init()|init()]], aby wykonać dodatkowy proces inicjalizacyjny po 
+Możesz nadpisać metodę [[yii\base\BaseObject::init()|init()]], aby wykonać dodatkowy proces inicjalizacyjny po 
 zaaplikowaniu konfiguracji.
 
 Dzięki tej konwencji możesz tworzyć i konfigurować nowe obiekty, używając 
@@ -513,4 +513,5 @@ Zapoznaj się z sekcją dotyczącą [ID kontrolerów](structure-controllers.md#c
 Korzystanie z Yii 1.1 i 2.x jednocześnie
 ----------------------------------------
 
-Jeśli chciałbyś skorzystać z kodu napisanego dla Yii 1.1 w aplikacji Yii 2.0, prosimy o zapoznanie się z sekcją [Praca z kodem zewnętrznym](tutorial-yii-integration.md).
+Jeśli chciałbyś skorzystać z kodu napisanego dla Yii 1.1 w aplikacji Yii 2.0, 
+prosimy o zapoznanie się z sekcją [Używanie Yii 1.1 i 2.0 razem](tutorial-yii-integration.md#using-both-yii2-yii1).

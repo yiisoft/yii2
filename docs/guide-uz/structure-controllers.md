@@ -346,7 +346,7 @@ class PostController extends Controller
 Для разных запросов параметры действий будут определены следующим образом:
 
 * `http://hostname/index.php?r=post/view&id=123`: параметр `$id` будет присвоено значение `'123'`, в то время
-  как `$version` будет иметь значение null, т. к. строка запроса не содержит параметра `version`;
+  как `$version` будет иметь значение `null`, т. к. строка запроса не содержит параметра `version`;
 * `http://hostname/index.php?r=post/view&id=123&version=2`: параметрам `$id` и `$version` будут присвоены
   значения `'123'` и `'2'` соответственно;
 * `http://hostname/index.php?r=post/view`: будет брошено исключение [[yii\web\BadRequestHttpException]], т. к.

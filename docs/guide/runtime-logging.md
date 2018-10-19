@@ -18,7 +18,7 @@ In this section, we will mainly describe the first two steps.
 
 Recording log messages is as simple as calling one of the following logging methods:
 
-* [[Yii::trace()]]: record a message to trace how a piece of code runs. This is mainly for development use.
+* [[Yii::debug()]]: record a message to trace how a piece of code runs. This is mainly for development use.
 * [[Yii::info()]]: record a message that conveys some useful information.
 * [[Yii::warning()]]: record a warning message that indicates something unexpected has happened.
 * [[Yii::error()]]: record a fatal error that should be investigated as soon as possible.
@@ -29,7 +29,7 @@ the log message to be recorded, while `$category` is the category of the log mes
 example records a trace message under the default category `application`:
 
 ```php
-Yii::trace('start calculating average revenue');
+Yii::debug('start calculating average revenue');
 ```
 
 > Info: Log messages can be strings as well as complex data, such as arrays or objects. It is the responsibility
@@ -43,7 +43,7 @@ is to use the PHP magic constant `__METHOD__` for the category names. This is al
 Yii framework code. For example,
 
 ```php
-Yii::trace('start calculating average revenue', __METHOD__);
+Yii::debug('start calculating average revenue', __METHOD__);
 ```
 
 The `__METHOD__` constant evaluates as the name of the method (prefixed with the fully qualified class name) where 
@@ -70,7 +70,8 @@ in the application configuration, like the following:
 return [
     // the "log" component must be loaded during bootstrapping time
     'bootstrap' => ['log'],
-    
+    // the "log" component process messages with timestamp. Set PHP timezone to create correct timestamp
+    'timeZone' => 'America/Los_Angeles',
     'components' => [
         'log' => [
             'targets' => [
@@ -124,7 +125,7 @@ The [[yii\log\Target::levels|levels]] property takes an array consisting of one 
 * `error`: corresponding to messages logged by [[Yii::error()]].
 * `warning`: corresponding to messages logged by [[Yii::warning()]].
 * `info`: corresponding to messages logged by [[Yii::info()]].
-* `trace`: corresponding to messages logged by [[Yii::trace()]].
+* `trace`: corresponding to messages logged by [[Yii::debug()]].
 * `profile`: corresponding to messages logged by [[Yii::beginProfile()]] and [[Yii::endProfile()]], which will
 be explained in more details in the [Profiling](#performance-profiling) subsection.
 
@@ -276,7 +277,7 @@ property of individual [log targets](#log-targets), like the following,
 ]
 ```
 
-Because of the flushing and exporting level setting, by default when you call `Yii::trace()` or any other logging
+Because of the flushing and exporting level setting, by default when you call `Yii::debug()` or any other logging
 method, you will NOT see the log message immediately in the log targets. This could be a problem for some long-running
 console applications. To make each log message appear immediately in the log targets, you should set both
 [[yii\log\Dispatcher::flushInterval|flushInterval]] and [[yii\log\Target::exportInterval|exportInterval]] to be 1,
@@ -332,6 +333,9 @@ return [
 ];
 ```
 
+Since version 2.0.13, you may configure [[yii\log\Target::enabled|enabled]] with a callable to
+define a dynamic condition for whether the log target should be enabled or not.
+See the documentation of [[yii\log\Target::setEnabled()]] for an example.
 
 ### Creating New Targets <span id="new-targets"></span>
 
@@ -340,6 +344,9 @@ sending the content of the [[yii\log\Target::messages]] array to a designated me
 [[yii\log\Target::formatMessage()]] method to format each message. For more details, you may refer to any of the
 log target classes included in the Yii release.
 
+> Tip: Instead of creating your own loggers you may try any PSR-3 compatible logger such
+  as [Monolog](https://github.com/Seldaek/monolog) by using
+  [PSR log target extension](https://github.com/samdark/yii2-psr-log-target).
 
 ## Performance Profiling <span id="performance-profiling"></span>
 

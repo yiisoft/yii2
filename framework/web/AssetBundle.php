@@ -7,10 +7,10 @@
 
 namespace yii\web;
 
-use yii\base\Object;
+use Yii;
+use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use Yii;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
@@ -22,10 +22,12 @@ use Yii;
  * An asset bundle can depend on other asset bundles. When registering an asset bundle
  * with a view, all its dependent asset bundles will be automatically registered.
  *
+ * For more details and usage information on AssetBundle, see the [guide article on assets](guide:structure-assets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class AssetBundle extends Object
+class AssetBundle extends BaseObject
 {
     /**
      * @var string the directory that contains the source asset files for this asset bundle.
@@ -82,17 +84,18 @@ class AssetBundle extends Object
      * - a relative path representing a local asset (e.g. `js/main.js`). The actual file path of a local
      *   asset can be determined by prefixing [[basePath]] to the relative path, and the actual URL
      *   of the asset can be determined by prefixing [[baseUrl]] to the relative path.
-     * - an array, with a first entry being the URL or relative path, and a list of key => pair values
+     * - an array, with the first entry being the URL or relative path as described before, and a list of key => value pairs
      *   that will be used to overwrite [[jsOptions]] settings for this entry.
+     *   This functionality is available since version 2.0.7.
      *
-     * Note that only forward slash "/" should be used as directory separators.
+     * Note that only a forward slash "/" should be used as directory separator.
      */
     public $js = [];
     /**
      * @var array list of CSS files that this bundle contains. Each CSS file can be specified
      * in one of the three formats as explained in [[js]].
      *
-     * Note that only forward slash "/" can be used as directory separator.
+     * Note that only a forward slash "/" should be used as directory separator.
      */
     public $css = [];
     /**
@@ -152,7 +155,9 @@ class AssetBundle extends Object
                 $options = ArrayHelper::merge($this->jsOptions, $js);
                 $view->registerJsFile($manager->getAssetUrl($this, $file), $options);
             } else {
-                $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
+                if ($js !== null) {
+                    $view->registerJsFile($manager->getAssetUrl($this, $js), $this->jsOptions);
+                }
             }
         }
         foreach ($this->css as $css) {
@@ -161,7 +166,9 @@ class AssetBundle extends Object
                 $options = ArrayHelper::merge($this->cssOptions, $css);
                 $view->registerCssFile($manager->getAssetUrl($this, $file), $options);
             } else {
-                $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
+                if ($css !== null) {
+                    $view->registerCssFile($manager->getAssetUrl($this, $css), $this->cssOptions);
+                }
             }
         }
     }
@@ -175,7 +182,7 @@ class AssetBundle extends Object
     public function publish($am)
     {
         if ($this->sourcePath !== null && !isset($this->basePath, $this->baseUrl)) {
-            list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
+            list($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
         }
 
         if (isset($this->basePath, $this->baseUrl) && ($converter = $am->getConverter()) !== null) {
