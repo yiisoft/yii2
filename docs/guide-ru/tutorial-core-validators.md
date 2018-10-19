@@ -66,7 +66,7 @@ public function rules()
     // проверяет, является ли значение атрибута "password" таким же, как "password_repeat"
     ['password', 'compare'],
     
-    // то же, что и выше, но атрбут для сравнения указан явно
+    // то же, что и выше, но атрибут для сравнения указан явно
     ['password', 'compare', 'compareAttribute' => 'password_repeat'],
 
     // проверяет, что возраст больше или равен 30

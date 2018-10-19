@@ -63,7 +63,7 @@ public function behaviors()
 }
 ```
 
-如果你系那个支持以上3个认证方式，可以使用`CompositeAuth`，如下所示：
+如果你想支持以上3个认证方式，可以使用`CompositeAuth`，如下所示：
 
 ```php
 use yii\filters\auth\CompositeAuth;
