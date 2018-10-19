@@ -1,6 +1,6 @@
 # <div dir="rtl">تثبيت ال Yii</div>
 
-<p dir="rtl">يمكنك تثبيت ال Yii بطريقتين ، الأولى باستخدام مدير الحزم <a href="https://getcomposer.org">Composer</a> أو عن طريق تنزيل ملف مضغوط. الطريقة الأولى هي الطريقة المفضلة للعمل، ، لأنها تتيح لك تثبيت [<a href="structure-extensions.md">extensions</a> - ملحقات أو اضافات] جديدة، أو تحديث إطار العمل Yii ببساطة عن طريق تشغيل أمر واحد فقط.
+<p dir="rtl">يمكنك تثبيت ال Yii بطريقتين ، الأولى باستخدام مدير الحزم <a href="https://getcomposer.org">Composer</a> أو عن طريق تنزيل Archive File. الطريقة الأولى هي الطريقة المفضلة للعمل، ، لأنها تتيح لك تثبيت [<a href="structure-extensions.md">extensions</a> - ملحقات أو اضافات] جديدة، أو تحديث إطار العمل Yii ببساطة عن طريق تشغيل أمر واحد فقط.
 </p>
 
 <p dir="rtl">
@@ -18,13 +18,14 @@
 </p></blockquote>
 
 
-Installing via Composer <span id="installing-via-composer"></span>
------------------------
+## <div dir="rtl">تثبيت ال Yii من خلال (Composer)</div> <span id="installing-via-composer"></span>
 
-### Installing Composer
+### <div dir="rtl">تثبيت ال Composer</div>
 
-If you do not already have Composer installed, you may do so by following the instructions at
-[getcomposer.org](https://getcomposer.org/download/). On Linux and Mac OS X, you'll run the following commands:
+<p dir="rtl">
+إن لم يكن لديك Composer مثبت مسبقا، فيمكنك السير بخطوات تثبيته من خلال الدخول الى هذا الرابط <a href="https://getcomposer.org/download/">https://getcomposer.org/download/</a>.
+لتثبيت ال Composer في كل من نظامي Linux و Max OS X، يمكنك تنفيذ الأوامر التالية: 
+</p>
 
 ```bash
 curl -sS https://getcomposer.org/installer | php
