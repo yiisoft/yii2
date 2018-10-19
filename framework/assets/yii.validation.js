@@ -282,7 +282,7 @@ yii.validation = (function ($) {
                 if (!$target.length) {
                     $target = $form.find('[name="' + options.compareAttributeName + '"]');
                 }
-                compareValue = $target.val();                
+                compareValue = $target.val();
             }
 
             if (options.type === 'number') {
