@@ -1,21 +1,20 @@
-Installing Yii
-==============
+# <div dir="rtl">تثبيت ال Yii</div>
 
-You can install Yii in two ways, using the [Composer](https://getcomposer.org/) package manager or by downloading an archive file.
-The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
+<p dir="rtl">يمكنك تثبيت ال Yii بطريقتين ، الأولى باستخدام مدير الحزم <a href="https://getcomposer.org">Composer</a> أو عن طريق تنزيل ملف مضغوط. الطريقة الأولى هي الطريقة المفضلة للعمل، ، لأنها تتيح لك تثبيت [<a href="structure-extensions.md">extensions</a> - ملحقات أو اضافات] جديدة، أو تحديث إطار العمل Yii ببساطة عن طريق تشغيل أمر واحد فقط.
+</p>
 
-Standard installations of Yii result in both the framework and a project template being downloaded and installed.
-A project template is a working Yii project implementing some basic features, such as login, contact form, etc.
-Its code is organized in a recommended way. Therefore, it can serve as a good starting point for your projects.
+<p dir="rtl">
+    التثبيت الإفتراضي لل Yii ينتج عنه بنية تركيبة منظمة ومرتبة للمجلدات والملفات التي بداخلها، ويوفر هذا الكلام بعض المميزات التي يتم إضافتها وإنشائها بشكل تلقائي مثل صفحة تسجيل الدخول، ونموذج اتصل بنا...الخ، هذا الأمر سيشكل نقطة إنطلاق جيدة لبدء العمل على أي مشروع.
+</p>
     
 In this and the next few sections, we will describe how to install Yii with the so-called *Basic Project Template* and
 how to implement new features on top of this template. Yii also provides another template called
 the [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide) which is better used in a team development environment
 to develop applications with multiple tiers.
 
-> Info: The Basic Project Template is suitable for developing 90 percent of Web applications. It differs
-  from the Advanced Project Template mainly in how their code is organized. If you are new to Yii, we strongly
-  recommend you stick to the Basic Project Template for its simplicity yet sufficient functionalities.
+> <div dir="rtl">
+
+> </div>
 
 
 Installing via Composer <span id="installing-via-composer"></span>
