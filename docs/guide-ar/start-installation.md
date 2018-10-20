@@ -113,16 +113,13 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 </ul>
 
 
-Installing Assets <span id="installing-assets"></span>
------------------
+### <div dir="rtl">تثبيت ال Assets</div> <span id="installing-assets"></span>
 
-Yii relies on [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) packages for the asset (CSS and JavaScript) libraries installation.
-It uses Composer to obtain these libraries, allowing PHP and CSS/JavaScript package versions to resolve at the same time.
-This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
-Please refer to [Assets documentation](structure-assets.md) for more details.
-
-You may want to either manage your assets via native Bower/NPM client, use CDN or avoid assets installation entirely.
-In order to prevent assets installation via Composer, add the following lines to your 'composer.json':
+<p dir="rtl">
+    تعتمد ال Yii على حزم Bower و / أو NPM لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS / JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام asset-packagist.org أو من خلال ال composer asset plugin، يرجى الرجوع إلى Assets documentation لمزيد من التفاصيل.
+<br /><br />
+قد ترغب في إدارة ال assets عبر  ال native Bower / NPM أو استخدام ال CDN أو تجنب تثبيت ال assets بالكامل من حلال ال Composer ، ويمكن ذلك من خلال إضافة الأسطر التالية إلى "composer.json":
+</p>
 
 ```json
 "replace": {
@@ -133,9 +130,9 @@ In order to prevent assets installation via Composer, add the following lines to
 },
 ```
 
-> Note: in case of bypassing asset installation via Composer, you are responsible for the assets installation and resolving
-> version collisions. Be prepared for possible inconsistencies among asset files from different extensions.
-
+<blockquote><p dir="rtl">
+ملاحظة: في حالة تجاوز تثبيت ال assets عبر ال Composer، فأنت المسؤول عن تثبيت ال assets وحل مشكلات التعارض بين الإصدارات والمكتبات المختلفة. وكن مستعدًا لعدم تناسق محتمل بين ملفات ال asstes والإضافات المختلفة.
+</p></blockquote>
 
 Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
