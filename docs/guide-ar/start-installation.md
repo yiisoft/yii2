@@ -67,15 +67,16 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 في معظم الأخطاء الشائعة، وعند حل المشكلة أو الخطأ، يمكنك إكمال التثبيت من خلال الدخول الى المسار `basic` ومن ثم تنفيذ الأمر التالي: `composer update`.
 </p></blockquote>
 
-> Tip: If you want to install the latest development version of Yii, you may use the following command instead,
-> which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
->
-> ```bash
-> composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
-> ```
->
-> Note that the development version of Yii should not be used for production as it may break your running code.
+<blockquote><p dir="rtl">
+    تلميح: اذا كنت ترغب بتثبيت أحدث نسخة خاصة بالمطورين من ال Yii، فيمكنك ذلك من خلال إضافة الخيار <a href="https://getcomposer.org/doc/04-schema.md#minimum-stability">stability</a> وذلك من خلال سطر الأوامر التالي:
+</p></blockquote>  
 
+```bash
+    composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+```
+<blockquote><p dir="rtl">
+    ملاحظة: نسخة المطورين من ال Yii يجب أن يتم إستخدامها للمواقع الإلكترونية التي لن تصدر كنسخة نهائية للمستخدم(Not for production) لأن ذلك يمكن أن يسبب بإيقاف المشروع أو الشيفرة البرمجية الخاصة بك. 
+</p></blockquote>
 
 Installing from an Archive File <span id="installing-from-archive-file"></span>
 -------------------------------
