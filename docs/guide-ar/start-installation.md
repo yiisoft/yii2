@@ -62,10 +62,10 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
       سطر الأوامر السابق سيقوم بتثبيت أحدث نسخة مستقرة(stable) من إطار العمل Yii داخل مسار جديد اسمه basic، ويمكنك التعديل على سطر الأوامر السابق لتغيير اسم المشروع لأي اسم ترغب فيه.  
 </p>
 
-> Info: If the `composer create-project` command fails you may also refer to the 
-> [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
-> for common errors. When you have fixed the error, you can resume the aborted installation
-> by running `composer update` inside of the `basic` directory.
+<blockquote><p dir="rtl">
+معلومة: اذا واجهتك أي مشكلة عند تنفيذ السطر `composer create-project` فيمكنك الذهاب إلى <a href="https://getcomposer.org/doc/articles/troubleshooting.md">قسم استكشاف الأخطاء في ال composer</a>.
+في معظم الأخطاء الشائعة، وعند حل المشكلة أو الخطأ، يمكنك إكمال التثبيت من خلال الدخول الى المسار `basic` ومن ثم تنفيذ الأمر التالي: `composer update`.
+</p></blockquote>
 
 > Tip: If you want to install the latest development version of Yii, you may use the following command instead,
 > which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
