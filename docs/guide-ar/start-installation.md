@@ -79,6 +79,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 </p></blockquote>
 
 ### <div dir="rtl">تثبيت ال Yii من خلال ال Archive File</div> <span id="installing-from-archive-file"></span>
+--------------------------
 
 <p dir="rtl">
 يتضمن تثبيت Yii من ملف أرشيف ثلاث خطوات وهي:
@@ -97,6 +98,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 
 ### <div dir="rtl">خيارات تثبيت أخرى</div> <span id="other-installation-options"></span>
+--------------------------
 
 <p dir="rtl">
 توضح تعليمات التثبيت أعلاه كيفية تثبيت ال Yii ، والذي يقوم أيضًا بإنشاء تطبيق ويب أساسي(basic).
@@ -114,6 +116,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 
 ### <div dir="rtl">تثبيت ال Assets</div> <span id="installing-assets"></span>
+--------------------------
 
 <p dir="rtl">
     تعتمد ال Yii على حزم <a href="http://bower.io/">Bower</a> و / أو <a href="https://www.npmjs.org/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS / JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/francoispluchino/composer-asset-plugin/">composer asset plugin</a>، يرجى الرجوع إلى <a href="structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
@@ -152,14 +155,15 @@ php yii serve
 ```bash
 php yii serve --port=8888
 ```
-
-You can use your browser to access the installed Yii application with the following URL:
+<p dir="rtl">
+    يمكنك استخدام الرابط الموجود في الأسفل للوصول الى تطبيق ال Yii الذي قمت بتثبيته وتنفيذ الأوامر السابقة عليه.
+</p>
 
 ```
 http://localhost:8080/
 ```
 
-![Successful Installation of Yii](images/start-app-installed.png)
+![Successful Installation of Yii](../guide/images/start-app-installed.png)
 
 You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
 Yii's requirements. You can check if the minimum requirements are met using one of the following approaches:
