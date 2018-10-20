@@ -52,7 +52,7 @@ sudo mv composer.phar /usr/local/bin/composer
 ### <div dir="rtl">تثبيت ال Yii</div> <span id="installing-from-composer"></span>
 
 <p dir="rtl">
-    من خلال ال Composer، يمكنك الآن تثبيت ال Yii من خلال تنفيذ سطر الأوامر التالي داخل أي مسار يمكن الوصول اليه من قبل الخادم(server)
+    من خلال ال Composer، يمكنك الآن تثبيت ال Yii من خلال تنفيذ سطر الأوامر التالي داخل أي مسار يمكن الوصول اليه من قبل الويب
 </p>
 
 ```bash
@@ -78,15 +78,17 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
     ملاحظة: نسخة المطورين من ال Yii يجب أن يتم إستخدامها للمواقع الإلكترونية التي لن تصدر كنسخة نهائية للمستخدم(Not for production) لأن ذلك يمكن أن يسبب بإيقاف المشروع أو الشيفرة البرمجية الخاصة بك. 
 </p></blockquote>
 
-Installing from an Archive File <span id="installing-from-archive-file"></span>
--------------------------------
+### <div dir="rtl">تثبيت ال Yii من خلال ال Archive File</div> <span id="installing-from-archive-file"></span>
 
-Installing Yii from an archive file involves three steps:
-
-1. Download the archive file from [yiiframework.com](http://www.yiiframework.com/download/).
-2. Unpack the downloaded file to a Web-accessible folder.
-3. Modify the `config/web.php` file by entering a secret key for the `cookieValidationKey` configuration item
-   (this is done automatically if you are installing Yii using Composer):
+<p dir="rtl">
+يتضمن تثبيت Yii من ملف أرشيف ثلاث خطوات وهي:
+</p>
+<ol dir="rtl">
+<li> تثبت الملف من خلال الموقع الرسمي <a href="http://www.yiiframework.com/download/">yiiframework.com</a>.</li>
+<li> قم بفك ضغط الملف الذي تم تنزيله إلى مجلد يمكن الوصول إليه عبر الويب.</li>
+<li> قم بتعديل ملف `config / web.php` عن طريق إدخال secret key ل` cookieValidationKey`
+(يتم ذلك تلقائيًا إذا قمت بتثبيت ال Yii باستخدام Composer): </li>
+</ol>
 
    ```php
    // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
