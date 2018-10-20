@@ -96,19 +96,21 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
    ```
 
 
-Other Installation Options <span id="other-installation-options"></span>
---------------------------
+### <div dir="rtl">خيارات تثبيت أخرى</div> <span id="other-installation-options"></span>
 
-The above installation instructions show how to install Yii, which also creates a basic Web application that works out of the box.
-This approach is a good starting point for most projects, either small or big. It is especially suitable if you just
-start learning Yii.
+<p dir="rtl">
+توضح تعليمات التثبيت أعلاه كيفية تثبيت ال Yii ، والذي يقوم أيضًا بإنشاء تطبيق ويب أساسي(basic).
+هذا النهج هو نقطة انطلاق جيدة لمعظم المشاريع، صغيرة كانت أو كبيرة. خصوصا اذا كنت قد بدأت تعلم ال Yii من وقت قريب.
+<br /><br />
+لكن، هناك خيارات أخرى متاحة لتثبيت ال Yii وهي: 
+</p>
 
-But there are other installation options available:
-
-* If you only want to install the core framework and would like to build an entire  application from scratch,
-  you may follow the instructions as explained in [Building Application from Scratch](tutorial-start-from-scratch.md).
-* If you want to start with a more sophisticated application, better suited to team development environments,
-  you may consider installing the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
+<ul dir="rtl">
+<li> إذا كنت ترغب فقط في تثبيت ال core لإطار العمل Yii، وترغب ببناء المكونات الخاصة بإطار العمل كما ترغب أنت وبطريقتك أنت، يمكنك اتباع التعليمات كما هو موضح في هذه الصفحة <a href="tutorial-start-from-scratch.md"> Building Application from Scratch</a>.</li>
+<li> إذا كنت تريد البدء بتطبيق أكثر تعقيدًا وأكثر إحترافية، ويتناسب بشكل أفضل مع وجود فريق عمل تقني،
+فأنت اذا سترغب بتثبيت ال <a href="https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md">Advanced Project Template</a>
+</li>
+</ul>
 
 
 Installing Assets <span id="installing-assets"></span>
