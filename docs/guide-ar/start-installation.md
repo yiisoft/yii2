@@ -134,19 +134,20 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ملاحظة: في حالة تجاوز تثبيت ال assets عبر ال Composer، فأنت المسؤول عن تثبيت ال assets وحل مشكلات التعارض بين الإصدارات والمكتبات المختلفة. وكن مستعدًا لعدم تناسق محتمل بين ملفات ال asstes والإضافات المختلفة.
 </p></blockquote>
 
-Verifying the Installation <span id="verifying-installation"></span>
+### <div dir="rtl">التحقق من التثبيت</div> <span id="verifying-installation"></span>
 --------------------------
 
-After installation is done, either configure your web server (see next section) or use the
-[built-in PHP web server](https://secure.php.net/manual/en/features.commandline.webserver.php) by running the following
-console command while in the project `web` directory:
+<p dir="rtl">
+    بعد الانتهاء من التثبيت، ستحتاج الى القيام بإعداد خادم الويب الخاص بك(your web server) (انظر القسم التالي) أو قم باستخدام <a href="https://secure.php.net/manual/en/features.commandline.webserver.php">built-in PHP web server</a> عن طريق تنفيذ الأمر التالي داخل المسار web في المشروع الخاص بك: 
+</p>
  
 ```bash
 php yii serve
 ```
 
-> Note: By default the HTTP-server will listen to port 8080. However if that port is already in use or you wish to 
-serve multiple applications this way, you might want to specify what port to use. Just add the --port argument:
+<blockquote><p dir="rtl">
+ملاحظة: افتراضيًا ال HTTP-server يعمل على البورت 8080. ومع ذلك ، إذا كان هذا البورت قيد الاستخدام بالفعل أو كنت ترغب في تشغيل أكثر من تطبيق بهذه الطريقة، حينها سيلزمك تحديد البورت الذي يجب استخدامه. ما عليك سوى إضافة --port:
+</p></blockquote>
 
 ```bash
 php yii serve --port=8888
