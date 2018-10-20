@@ -49,17 +49,18 @@ sudo mv composer.phar /usr/local/bin/composer
   ملاحظة مهمة: أثناء تثبيت ال Yii ، سيحتاج ال composer إلى طلب(request) الكثير من المعلومات من ال Github Api. يعتمد عدد الطلبات على عدد dependencies التي يمتلكها التطبيق الخاص بك، وقد يكون هذا العدد أكبر من الحد المسموح به من قبل ال Github Api <b>(Github API rate limit)</b>. إذا وصلت الى الحد الأعلى المسموح به من الطلبات، فقد يطلب منك ال composer بيانات تسجيل الدخول إلى Github، وذلك للحصول على رمز (token) للدخول إلى Github Api. اذا كانت عمليات الإتصال سريعة، فقد تصل إلى هذا الحد(limit) قبل أن يتمكن ال composer من التعامل معه ، لذالك نوصي بتكوين رمز الدخول(access token) قبل تثبيت ال Yii. يرجى الرجوع إلى التوثيق الخاص بال Composer والإطلاع على التعليمات الخاصة <a href="https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens">Github API tokens</a> للحصول على الإرشادات اللازمة للقيام بذلك. 
 </p></blockquote>
 
-### Installing Yii <span id="installing-from-composer"></span>
+### <div dir="rtl">تثبيت ال Yii</div> <span id="installing-from-composer"></span>
 
-With Composer installed, you can install Yii application template by running the following command
-under a Web-accessible folder:
+<p dir="rtl">
+    من خلال ال Composer، يمكنك الآن تثبيت ال Yii من خلال تنفيذ سطر الأوامر التالي داخل أي مسار يمكن الوصول اليه من قبل الخادم(server)
+</p>
 
 ```bash
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
-
-This will install the latest stable version of Yii application template in a directory named `basic`.
-You can choose a different directory name if you want.
+<p dir="rtl">
+      سطر الأوامر السابق سيقوم بتثبيت أحدث نسخة مستقرة(stable) من إطار العمل Yii داخل مسار جديد اسمه basic، ويمكنك التعديل على سطر الأوامر السابق لتغيير اسم المشروع لأي اسم ترغب فيه.  
+</p>
 
 > Info: If the `composer create-project` command fails you may also refer to the 
 > [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
