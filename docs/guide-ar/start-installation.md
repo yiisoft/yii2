@@ -39,12 +39,11 @@ sudo mv composer.phar /usr/local/bin/composer
 يرجى الدخول الى <a href="https://getcomposer.org/doc/articles/troubleshooting.md">Troubleshooting section of the Composer Documentation</a> في حال واجهتك أي مشاكل متعلقة بال composer, وإذا كنت مستخدمًا جديدًا لل composer، ننصحك أيضًا بقراءة <a href="https://getcomposer.org/doc/01-basic-usage.md">قسم الاستخدام الأساسي</a> على الأقل من التوثيف الخاص بال composer. 
 </p>
 
-In this guide all composer commands assume you have installed composer [globally](https://getcomposer.org/doc/00-intro.md#globally)
-so that it is available as the `composer` command. If you are using the `composer.phar` in the local directory instead,
-you have to adjust the example commands accordingly.
+<p dir="rtl">
+    في هذا الدليل ، نفترض أنك قمت بتثبيت ال composer على مستوى جميع المشاريع (<a href="https://getcomposer.org/doc/00-intro.md#globally">globally</a>)  بحيث تكون أوامر ال composer متاحة لجميع المشاريع من أي مكان. أما إذا كنت تستخدم ال composer.phar لمسار محدد فقط(local directory)،  فيجب عليك ضبط  الأومر وفقًا لذلك.
 
-If you had Composer already installed before, make sure you use an up to date version. You can update Composer
-by running `composer self-update`.
+إذا كان ال composer مثبتًا من قبل، فتأكد من استخدام إصدار حديث. يمكنك تحديث ال composer عن طريق تنفيذ الأمر التالي `composer self-update`
+</p>
 
 > Note: During the installation of Yii, Composer will need to request a lot of information from the Github API.
 > The number of requests depends on the number of dependencies your application has and may be bigger than the
