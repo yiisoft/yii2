@@ -45,13 +45,9 @@ sudo mv composer.phar /usr/local/bin/composer
 إذا كان ال composer مثبتًا من قبل، فتأكد من استخدام إصدار حديث. يمكنك تحديث ال composer عن طريق تنفيذ الأمر التالي `composer self-update`
 </p>
 
-> Note: During the installation of Yii, Composer will need to request a lot of information from the Github API.
-> The number of requests depends on the number of dependencies your application has and may be bigger than the
-> **Github API rate limit**. If you hit this limit, Composer may ask for your Github login credentials to obtain
-> a Github API access token. On fast connections you may hit this limit earlier than Composer can handle so we
-> recommend to configure the access token before installing Yii.
-> Please refer to the [Composer documentation about Github API tokens](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
-> for instructions on how to do this.
+<blockquote><p dir="rtl">
+  ملاحظة مهمة: أثناء تثبيت ال Yii ، سيحتاج ال composer إلى طلب(request) الكثير من المعلومات من ال Github Api. يعتمد عدد الطلبات على عدد dependencies التي يمتلكها التطبيق الخاص بك، وقد يكون هذا العدد أكبر من الحد المسموح به من قبل ال Github Api <b>(Github API rate limit)</b>. إذا وصلت الى الحد الأعلى المسموح به من الطلبات، فقد يطلب منك ال composer بيانات تسجيل الدخول إلى Github، وذلك للحصول على رمز (token) للدخول إلى Github Api. اذا كانت عمليات الإتصال سريعة، فقد تصل إلى هذا الحد(limit) قبل أن يتمكن ال composer من التعامل معه ، لذالك نوصي بتكوين رمز الدخول(access token) قبل تثبيت ال Yii. يرجى الرجوع إلى التوثيق الخاص بال Composer والإطلاع على التعليمات الخاصة <a href="https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens">Github API tokens</a> للحصول على الإرشادات اللازمة للقيام بذلك. 
+</p></blockquote>
 
 ### Installing Yii <span id="installing-from-composer"></span>
 
