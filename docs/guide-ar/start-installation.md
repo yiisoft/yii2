@@ -116,7 +116,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ### <div dir="rtl">تثبيت ال Assets</div> <span id="installing-assets"></span>
 
 <p dir="rtl">
-    تعتمد ال Yii على حزم Bower و / أو NPM لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS / JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام asset-packagist.org أو من خلال ال composer asset plugin، يرجى الرجوع إلى Assets documentation لمزيد من التفاصيل.
+    تعتمد ال Yii على حزم <a href="http://bower.io/">Bower</a> و / أو <a href="https://www.npmjs.org/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS / JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/francoispluchino/composer-asset-plugin/">composer asset plugin</a>، يرجى الرجوع إلى <a href="structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
 <br /><br />
 قد ترغب في إدارة ال assets عبر  ال native Bower / NPM أو استخدام ال CDN أو تجنب تثبيت ال assets بالكامل من حلال ال Composer ، ويمكن ذلك من خلال إضافة الأسطر التالية إلى "composer.json":
 </p>
