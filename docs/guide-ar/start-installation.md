@@ -1,6 +1,6 @@
 # <div dir="rtl">تثبيت ال Yii</div>
 
-<p dir="rtl">يمكنك تثبيت ال Yii بطريقتين ، الأولى باستخدام مدير الحزم <a href="https://getcomposer.org">Composer</a> أو عن طريق تنزيل Archive File. الطريقة الأولى هي الطريقة المفضلة للعمل، ، لأنها تتيح لك تثبيت [<a href="structure-extensions.md">extensions</a> - ملحقات أو اضافات] جديدة، أو تحديث إطار العمل Yii ببساطة عن طريق تشغيل أمر واحد فقط.
+<p dir="rtl">يمكنك تثبيت ال Yii بطريقتين ، الأولى باستخدام مدير الحزم <a href="https://getcomposer.org">Composer</a> أو عن طريق تنزيل Archive File. الطريقة الأولى هي الطريقة المفضلة للعمل، ، لأنها تتيح لك تثبيت [<a href="../guide/structure-extensions.md">extensions</a> - ملحقات أو اضافات] جديدة، أو تحديث إطار العمل Yii ببساطة عن طريق تشغيل أمر واحد فقط.
 </p>
 
 <p dir="rtl">
@@ -108,7 +108,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 </p>
 
 <ul dir="rtl">
-<li> إذا كنت ترغب فقط في تثبيت ال core لإطار العمل Yii، وترغب ببناء المكونات الخاصة بإطار العمل كما ترغب أنت وبطريقتك أنت، يمكنك اتباع التعليمات كما هو موضح في هذه الصفحة <a href="tutorial-start-from-scratch.md"> Building Application from Scratch</a>.</li>
+<li> إذا كنت ترغب فقط في تثبيت ال core لإطار العمل Yii، وترغب ببناء المكونات الخاصة بإطار العمل كما ترغب أنت وبطريقتك أنت، يمكنك اتباع التعليمات كما هو موضح في هذه الصفحة <a href="../guide/tutorial-start-from-scratch.md"> Building Application from Scratch</a>.</li>
 <li> إذا كنت تريد البدء بتطبيق أكثر تعقيدًا وأكثر إحترافية، ويتناسب بشكل أفضل مع وجود فريق عمل تقني،
 فأنت اذا سترغب بتثبيت ال <a href="https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md">Advanced Project Template</a>
 </li>
@@ -119,7 +119,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 --------------------------
 
 <p dir="rtl">
-    تعتمد ال Yii على حزم <a href="http://bower.io/">Bower</a> و / أو <a href="https://www.npmjs.org/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS / JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/francoispluchino/composer-asset-plugin/">composer asset plugin</a>، يرجى الرجوع إلى <a href="structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
+    تعتمد ال Yii على حزم <a href="http://bower.io/">Bower</a> و / أو <a href="https://www.npmjs.org/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS / JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/francoispluchino/composer-asset-plugin/">composer asset plugin</a>، يرجى الرجوع إلى <a href="../guide/structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
 <br /><br />
 قد ترغب في إدارة ال assets عبر  ال native Bower / NPM أو استخدام ال CDN أو تجنب تثبيت ال assets بالكامل من حلال ال Composer ، ويمكن ذلك من خلال إضافة الأسطر التالية إلى "composer.json":
 </p>
@@ -194,7 +194,7 @@ http://localhost:8080/
 
 <p dir="rtl">
     على ال production server، قد ترغب في إعداد خادم الويب الخاص بك بحيث يمكن الوصول إلى التطبيق
-الخاص بك عبر ال URL التالي <code>http: // www.example.com / index.php</code> بدلاً من <code>http: // www.example.com / basic / web / index.php</code>. هذا الكلام يتطلب إنشاء إعداد يقوم بتوجيه ال document root الموجود على ال web server الى مجلد ال basic/web، كما قد ترغب أيضا بإخفاء ال <code>index.php</code> من ال URL كما هو موضح في ال <a href="runtime-routing.md">Routing and URL Creation</a>. في هذا الموضوع ستتعلم كيف يمكنك إعداد ال Apache أو ال Nginx server لتحقيق هذه الأهداف. 
+الخاص بك عبر ال URL التالي <code>http: // www.example.com / index.php</code> بدلاً من <code>http: // www.example.com / basic / web / index.php</code>. هذا الكلام يتطلب إنشاء إعداد يقوم بتوجيه ال document root الموجود على ال web server الى مجلد ال basic/web، كما قد ترغب أيضا بإخفاء ال <code>index.php</code> من ال URL كما هو موضح في ال <a href="../guide/runtime-routing.md">Routing and URL Creation</a>. في هذا الموضوع ستتعلم كيف يمكنك إعداد ال Apache أو ال Nginx server لتحقيق هذه الأهداف. 
 </p>
 
 <blockquote><p dir="rtl">
@@ -202,11 +202,11 @@ http://localhost:8080/
 </p></blockquote>
 
 <blockquote><p dir="rtl">
-معلومة: إذا كان سيتم تشغيل التطبيق الخاص بك في بيئة استضافة مشتركة(shared hosting) حيث ليس لديك الصلاحية لتعديل الإعدادات الخاصة بال web server، ستحتاج حينها الى تعديل في البنية الخاصة بالمشروع للحصول على أفضل أمان ممكن. يرجى الرجوع إلى <a href="tutorial-shared-hosting.md">Shared Hosting Environment</a> لمزيد من المعلومات. 
+معلومة: إذا كان سيتم تشغيل التطبيق الخاص بك في بيئة استضافة مشتركة(shared hosting) حيث ليس لديك الصلاحية لتعديل الإعدادات الخاصة بال web server، ستحتاج حينها الى تعديل في البنية الخاصة بالمشروع للحصول على أفضل أمان ممكن. يرجى الرجوع إلى <a href="../guide/tutorial-shared-hosting.md">Shared Hosting Environment</a> لمزيد من المعلومات. 
 </p></blockquote>
 
 <blockquote><p dir="rtl">
-    معلومة: إذا كنت تقوم بتشغيل تطبيق ال Yii بوجود ال proxy، فقد تحتاج إلى إعداد التطبيق ليكون ضمن ال <a href="runtime-requests.md#trusted-proxies">trusted proxies and header</a>.
+    معلومة: إذا كنت تقوم بتشغيل تطبيق ال Yii بوجود ال proxy، فقد تحتاج إلى إعداد التطبيق ليكون ضمن ال <a href="../guide/runtime-requests.md#trusted-proxies">trusted proxies and header</a>.
 </p></blockquote>
 
 ### <div dir="rtl">الإعدادات الموصى بها لل Apache</div> <span id="recommended-apache-configuration"></span>
