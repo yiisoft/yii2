@@ -290,9 +290,12 @@ server {
     }
 }
 ```
+<p dir="rtl">
+    عند استخدامك لهذا الإعداد، يجب عليك أيضًا تعيين <code>cgi.fix_pathinfo = 0</code> في ملف php.ini
+    من أجل تجنب العديد من طلبات ال <code>stat()</code>  الغير الضرورية للنظام.
+</p>
 
-When using this configuration, you should also set `cgi.fix_pathinfo=0` in the `php.ini` file
-in order to avoid many unnecessary system `stat()` calls.
-
-Also note that when running an HTTPS server, you need to add `fastcgi_param HTTPS on;` so that Yii
-can properly detect if a connection is secure.
+<p dir="rtl">
+    لاحظ أيضًا أنه عند تشغيل خادم HTTPS، تحتاج إلى إضافة  <code>fastcgi_param HTTPS on;</code>
+بحيث يمكنك إكتشاف إذا ما كان الاتصال آمنًا أم لا.
+</p>
