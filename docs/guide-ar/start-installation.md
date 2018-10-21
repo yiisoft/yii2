@@ -165,8 +165,9 @@ http://localhost:8080/
 
 ![Successful Installation of Yii](../guide/images/start-app-installed.png)
 
-You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
-Yii's requirements. You can check if the minimum requirements are met using one of the following approaches:
+<p dir="rtl">
+    اذا كانت كل الإعدادات السابقة تعمل بشكل صحيح، فيجب أن ترى الصورة الموجودة بالأعلى "Congratulations!" على المتصفح. إذا لم يكن كذلك، يرجى التحقق مما إذا كان تثبيت الPHP الخاص بك متوافق مع متطلبات ال Yii. يمكنك التحقق من ذلك باستخدام أحد الأساليب التالية:
+</p>
 
 * Copy `/requirements.php` to `/web/requirements.php` and then use a browser to access it via `http://localhost/requirements.php`
 * Run the following commands:
@@ -176,9 +177,9 @@ Yii's requirements. You can check if the minimum requirements are met using one 
   php requirements.php
   ```
 
-You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
-should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
-and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
+<p dir="rtl">
+    يجب عليك أن تقوم بتثبيت وإعداد ال PHP الخاص بك بحيث تلبي الحد الأدنى من متطلبات ال Yii. الأهم من ذلك يجب أن يكون الإصدار الخاص بال PHP أعلى أو يساوي 5.4. من الناحية المثالية أحدث إصدار  يعمل مع ال Yii هو ال PHP 7. يجب عليك أيضًا تثبيت ال PDO
+</p>
 
 
 Configuring Web Servers <span id="configuring-web-servers"></span>
