@@ -206,7 +206,7 @@ http://localhost:8080/
 </p></blockquote>
 
 <blockquote><p dir="rtl">
-معلومة: إذا كنت تقوم بتشغيل تطبيق Yii بوجود proxy، فقد تحتاج إلى إعداد التطبيق / الطلبات(request) لتكون ضمن ال <a href="https://arabicmarkdown.netlify.com/runtime-requests.md#trusted-proxies">trusted proxies and header</a>. 
+    معلومة: إذا كنت تقوم بتشغيل تطبيق ال Yii بوجود ال proxy، فقد تحتاج إلى إعداد التطبيق ليكون ضمن ال <a href="runtime-requests.md#trusted-proxies">trusted proxies and header</a>.
 </p></blockquote>
 
 ### Recommended Apache Configuration <span id="recommended-apache-configuration"></span>
