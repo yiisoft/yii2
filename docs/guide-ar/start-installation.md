@@ -209,10 +209,12 @@ http://localhost:8080/
     معلومة: إذا كنت تقوم بتشغيل تطبيق ال Yii بوجود ال proxy، فقد تحتاج إلى إعداد التطبيق ليكون ضمن ال <a href="runtime-requests.md#trusted-proxies">trusted proxies and header</a>.
 </p></blockquote>
 
-### Recommended Apache Configuration <span id="recommended-apache-configuration"></span>
+### <div dir="rtl">الإعدادات الموصى بها لل Apache</div> <span id="recommended-apache-configuration"></span>
 
-Use the following configuration in Apache's `httpd.conf` file or within a virtual host configuration. Note that you
-should replace `path/to/basic/web` with the actual path for `basic/web`.
+<p dir="rtl">
+    استخدم الإعدادات التالية في ملف ال <code>httpd.conf</code> في Apache أو ضمن إعدادات ال virtual host.
+    ملاحظة:  يجب عليك استبدال المسار التالي <code>path / to / basic / web</code> بالمسار <code>basic / web</code>.
+</p>
 
 ```apache
 # Set document root to be "basic/web"
