@@ -357,6 +357,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
     'timeZone' => 'America/Los_Angeles',
 ]
 ```
+Более детально про установку временной зоны, смотрите раздел [section on date formatting](output-formatting.md#time-zones).
 
 #### [[yii\base\Application::version|version]] <span id="version"></span>
 
