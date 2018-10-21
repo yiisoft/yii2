@@ -242,7 +242,7 @@ DocumentRoot "path/to/basic/web"
 -----------------------
 
 <p dir="rtl">
-    لاستخدام <a href="http://wiki.nginx.org/">Nginx</a>، يجب تثبيت PHP على أنه <a href="http://php.net/install.fpm">FPM SAPI</a>، ويمكنك استخدام إعدادات ال Nginx التالية، مع الإنتباه على استبدال المسار من الى المسار الفعلي ل مع وضع ال hostname الخاص بالتطبيق.
+    لاستخدام <a href="http://wiki.nginx.org/">Nginx</a>، يجب تثبيت PHP على أنه <a href="http://php.net/install.fpm">FPM SAPI</a>، ويمكنك استخدام إعدادات ال Nginx التالية، مع الإنتباه على استبدال المسار من  <code>path / to / basic / web</code> الى المسار الفعلي  وصولا إلى <code>basic / web</code> بالإضافة الى إستبدال <code>mysite.test</code> إلى ال hostname الخاص بالتطبيق.
 </p>
 
 
