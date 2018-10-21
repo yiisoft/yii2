@@ -205,8 +205,9 @@ http://localhost:8080/
 معلومة: إذا كان سيتم تشغيل التطبيق الخاص بك في بيئة استضافة مشتركة(shared hosting) حيث ليس لديك الصلاحية لتعديل الإعدادات الخاصة بال web server، ستحتاج حينها الى تعديل في البنية الخاصة بالمشروع للحصول على أفضل أمان ممكن. يرجى الرجوع إلى <a href="tutorial-shared-hosting.md">Shared Hosting Environment</a> لمزيد من المعلومات. 
 </p></blockquote>
 
-> Info: If you are running your Yii application behind a reverse proxy, you might need to configure
-> [Trusted proxies and headers](runtime-requests.md#trusted-proxies) in the request component.
+<blockquote><p dir="rtl">
+معلومة: إذا كنت تقوم بتشغيل تطبيق Yii بوجود proxy، فقد تحتاج إلى إعداد التطبيق / الطلبات(request) لتكون ضمن ال <a href="https://arabicmarkdown.netlify.com/runtime-requests.md#trusted-proxies">trusted proxies and header</a>. 
+</p></blockquote>
 
 ### Recommended Apache Configuration <span id="recommended-apache-configuration"></span>
 
