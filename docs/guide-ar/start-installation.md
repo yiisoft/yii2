@@ -177,21 +177,20 @@ http://localhost:8080/
 </ul>
 
 <p dir="rtl">
-    يجب عليك أن تقوم بتثبيت وإعداد ال PHP الخاص بك بحيث تلبي الحد الأدنى من متطلبات ال Yii. الأهم من ذلك يجب أن يكون الإصدار الخاص بال PHP أعلى أو يساوي 5.4. من الناحية المثالية أحدث إصدار  يعمل مع ال Yii هو ال PHP 7. يجب عليك أيضًا تثبيت ال PDO.
+    يجب عليك أن تقوم بتثبيت وإعداد ال PHP الخاص بك بحيث تلبي الحد الأدنى من متطلبات ال Yii. الأهم من ذلك يجب أن يكون الإصدار الخاص بال PHP أعلى أو يساوي 5.4. من الناحية المثالية أحدث إصدار  يعمل مع ال Yii هو ال PHP 7. يجب عليك أيضًا تثبيت ال <a href="http://www.php.net/manual/en/pdo.installation.php">PDO PHP Extension</a>.
 </p>
 
 
-Configuring Web Servers <span id="configuring-web-servers"></span>
+### <div dir="rtl">إعداد ال Web Servers</div> <span id="configuring-web-servers"></span>
 -----------------------
 
-> Info: You may skip this subsection for now if you are just test driving Yii with no intention
-  of deploying it to a production server.
+<blockquote><p dir="rtl">
+معلومة: يمكنك تخطي هذا الجزء الآن إذا كنت تختبر فقط إطار العمل Yii دون أي نية لنشر هذا التطبيق على الويب(بدون رفع التطبيق على production server).
+</p></blockquote>
 
-The application installed according to the above instructions should work out of box with either
-an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
-Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebook's
-[HHVM](http://hhvm.com/). However, there are some edge cases where HHVM behaves different than native
-PHP, so you have to take some extra care when using HHVM.
+<p dir="rtl">
+    يجب أن يعمل التطبيق الذي تم تثبيته وفقًا للتعليمات المذكورة أعلاه مع أي من الخوادم ال <a href="http://httpd.apache.org/"Apache HTTP</a> أو ال <a href="http://nginx.org/">Nginx HTTP</a> في كل من أنظمة التشغيل Windows, Mac OS X أو Linux ممن لديها إصدار أعلى أو يساوي PHP 5.4، كما أن ال Yii 2.0 متوافق مع ال Facebook <a href="http://hhvm.com/">HHVM</a>، لكن، يجب أن تأخذ بعين الإعتبار أن ال HHVM يسلك في بعض الأحيان بطريقة مختلفة عن ال Native PHP، لذلك يجب أن تأخذ عناية إضافية عندما تعمل على ال HHVM.
+</p>
 
 On a production server, you may want to configure your Web server so that the application can be accessed
 via the URL `http://www.example.com/index.php` instead of `http://www.example.com/basic/web/index.php`. Such configuration
