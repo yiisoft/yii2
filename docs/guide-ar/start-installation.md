@@ -171,7 +171,8 @@ http://localhost:8080/
 
 <ul dir="rtl">
     <li>قم بنسخ الملف <pre>/requirements.php</pre> الى المسار <pre>/web/requirements.php</pre> بحيث يمكنك الوصول الى الصفحة من خلال الرابط التالي: <pre>http://localhost/requirements.php</pre></li>
-    <li>قم بتنفيذ الأوامر التالية: <br /><pre>cd basic
+    <li>قم بتنفيذ الأوامر التالية: <br /><pre>
+        cd basic
         php requirements.php</pre></li>
 </ul>
 
