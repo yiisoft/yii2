@@ -189,14 +189,13 @@ http://localhost:8080/
 </p></blockquote>
 
 <p dir="rtl">
-    يجب أن يعمل التطبيق الذي تم تثبيته وفقًا للتعليمات المذكورة أعلاه مع أي من الخوادم ال <a href="http://httpd.apache.org/"Apache HTTP</a> أو ال <a href="http://nginx.org/">Nginx HTTP</a> في كل من أنظمة التشغيل Windows, Mac OS X أو Linux ممن لديها إصدار أعلى أو يساوي PHP 5.4، كما أن ال Yii 2.0 متوافق مع ال Facebook <a href="http://hhvm.com/">HHVM</a>، لكن، يجب أن تأخذ بعين الإعتبار أن ال HHVM يسلك في بعض الأحيان بطريقة مختلفة عن ال Native PHP، لذلك يجب أن تأخذ عناية إضافية عندما تعمل على ال HHVM.
+    يجب أن يعمل التطبيق الذي تم تثبيته وفقًا للتعليمات المذكورة أعلاه مع أي من الخوادم ال <a href="http://httpd.apache.org/">Apache HTTP</a> أو ال <a href="http://nginx.org/">Nginx HTTP</a> في كل من أنظمة التشغيل Windows, Mac OS X أو Linux ممن لديها إصدار أعلى أو يساوي PHP 5.4، كما أن ال Yii 2.0 متوافق مع ال Facebook <a href="http://hhvm.com/">HHVM</a>، لكن، يجب أن تأخذ بعين الإعتبار أن ال HHVM يسلك في بعض الأحيان بطريقة مختلفة عن ال Native PHP، لذلك يجب أن تأخذ عناية إضافية عندما تعمل على ال HHVM.
 </p>
 
-On a production server, you may want to configure your Web server so that the application can be accessed
-via the URL `http://www.example.com/index.php` instead of `http://www.example.com/basic/web/index.php`. Such configuration
-requires pointing the document root of your Web server to the `basic/web` folder. You may also
-want to hide `index.php` from the URL, as described in the [Routing and URL Creation](runtime-routing.md) section.
-In this subsection, you'll learn how to configure your Apache or Nginx server to achieve these goals.
+<p dir="rtl">
+    على ال production server، قد ترغب في إعداد خادم الويب الخاص بك بحيث يمكن الوصول إلى التطبيق
+الخاص بك عبر ال URL التالي <pre>http: // www.example.com / index.php</pre> بدلاً من <pre>http: // www.example.com / basic / web / index.php</pre>. هذا الكلام يتطلب إنشاء إعداد يقوم بتوجيه ال document root الموجود على ال web server الى مجلد ال basic/web، كما قد ترغب أيضا بإخفاء ال <pre>index.php</pre> من ال URL كما هو موضح في ال <a href="runtime-routing.md">Routing and URL Creation</a>. في هذا الموضوع ستتعلم كيف يمكنك إعداد ال Apache أو ال Nginx server لتحقيق هذه الأهداف. 
+</p>
 
 > Info: By setting `basic/web` as the document root, you also prevent end users from accessing
 your private application code and sensitive data files that are stored in the sibling directories
