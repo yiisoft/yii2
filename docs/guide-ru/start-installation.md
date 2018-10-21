@@ -19,7 +19,7 @@
 
 ```bash
 curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
+sudo mv composer.phar /usr/local/bin/composer
 ```
 
 На Windows, скачайте и запустите [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -93,7 +93,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 * Если вам нужен только сам фреймворк и вы хотели бы создать приложение с нуля, воспользуйтесь инструкцией, описанной в
 разделе «[Создание приложения с нуля](tutorial-start-from-scratch.md)».
 * Если хотите начать с более продвинутого приложения, хорошо подходящего для работы в команде, используйте
-[шаблон приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
+[шаблон приложения advanced](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide).
 
 
 Проверка установки <span id="verifying-installation"></span>
