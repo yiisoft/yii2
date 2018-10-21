@@ -197,9 +197,9 @@ http://localhost:8080/
 الخاص بك عبر ال URL التالي <code>http: // www.example.com / index.php</code> بدلاً من <code>http: // www.example.com / basic / web / index.php</code>. هذا الكلام يتطلب إنشاء إعداد يقوم بتوجيه ال document root الموجود على ال web server الى مجلد ال basic/web، كما قد ترغب أيضا بإخفاء ال <code>index.php</code> من ال URL كما هو موضح في ال <a href="runtime-routing.md">Routing and URL Creation</a>. في هذا الموضوع ستتعلم كيف يمكنك إعداد ال Apache أو ال Nginx server لتحقيق هذه الأهداف. 
 </p>
 
-> Info: By setting `basic/web` as the document root, you also prevent end users from accessing
-your private application code and sensitive data files that are stored in the sibling directories
-of `basic/web`. Denying access to those other folders is a security improvement.
+<blockquote><p dir="rtl">
+    معلومة: من خلال تعيين ال <code>basic/web</code> ك <code>document root<code>، فإنك بذلك تمنع أيضًا المستخدمين النهائيين من الوصول الى الشيفرة البرمجية الخاصة بالتطبيق الخاص بك، وتمنعهم من الوصول الى الملفات الحساسة والمهمة والمخزنة في sibling directories من <code>basic/web</code>، ويعبر رفض الوصول الى المجلدات الأخرى تحسينا أمنيا مهما، يساعد في الحفاظ على مستوى أعلى من الحماية.
+</p></blockquote>
 
 > Info: If your application will run in a shared hosting environment where you do not have permission
 to modify its Web server configuration, you may still adjust the structure of your application for better security. Please refer to
