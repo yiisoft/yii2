@@ -115,6 +115,7 @@ $cache = new FileCache([
 Псевдоним `@yii` задаётся в момент подключения файла `Yii.php` во [входном скрипте](structure-entry-scripts.md).
 Остальные псевдонимы задаются в конструкторе приложения в момент применения [конфигурации](concept-configurations.md).
 
+Примечание: алиасы '@web' и '@webroot', как указано в их описаниях, определены в [[yii\web\Application|Web application]] и поэтому недоступны для [[yii\console\Application|Console application]] по умолчанию.
 
 Псевдонимы расширений <span id="extension-aliases"></span>
 ------------------------------------------------
