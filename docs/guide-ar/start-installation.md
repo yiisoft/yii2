@@ -210,6 +210,7 @@ http://localhost:8080/
 </p></blockquote>
 
 ### <div dir="rtl">الإعدادات الموصى بها لل Apache</div> <span id="recommended-apache-configuration"></span>
+-----------------------
 
 <p dir="rtl">
     استخدم الإعدادات التالية في ملف ال <code>httpd.conf</code> في Apache أو ضمن إعدادات ال virtual host.
@@ -237,11 +238,13 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### Recommended Nginx Configuration <span id="recommended-nginx-configuration"></span>
+### <div dir="rtl">الإعدادات الموصى بها لل Nginx</div> <span id="recommended-nginx-configuration"></span>
+-----------------------
 
-To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](http://php.net/install.fpm).
-You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
-`basic/web` and `mysite.test` with the actual hostname to serve.
+<p dir="rtl">
+    لاستخدام <a href="http://wiki.nginx.org/">Nginx</a>، يجب تثبيت PHP على أنه <a href="http://php.net/install.fpm">FPM SAPI</a>، ويمكنك استخدام إعدادات ال Nginx التالية، مع الإنتباه على استبدال المسار من الى المسار الفعلي ل مع وضع ال hostname الخاص بالتطبيق.
+</p>
+
 
 ```nginx
 server {
