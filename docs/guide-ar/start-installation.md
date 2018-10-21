@@ -213,7 +213,7 @@ http://localhost:8080/
 
 <p dir="rtl">
     استخدم الإعدادات التالية في ملف ال <code>httpd.conf</code> في Apache أو ضمن إعدادات ال virtual host.
-    ملاحظة:  يجب عليك استبدال المسار التالي <code>path / to / basic / web</code> بالمسار <code>basic / web</code>.
+    ملاحظة:  يجب عليك استبدال المسار التالي <code>path / to / basic / web</code> بالمسار الفعلي للتطبيق الخاص بك وصولا الى ال <code>basic / web</code>.
 </p>
 
 ```apache
