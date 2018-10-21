@@ -122,6 +122,8 @@ matrix:
 
   allow_failures:
     - php: nightly
+    - php: hhvm-3.21
+    - php: hhvm-3.24
 
 install:
   - |

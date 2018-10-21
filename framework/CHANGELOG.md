@@ -4,6 +4,13 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #13932: Fix number validator attributes comparison (uaoleg, s1lver)
+- Bug #14039, #16636: Fixed validation for disabled inputs (s1lver, omzy83)
+- Bug #16425: Check for additional values for disabled confirm dialog (Alex-Code, s1lver)
+- Enh #14367: In `yii\db\mysql\QueryBuilder` added support fractional seconds for time types for MySQL >= 5.6.4 (konstantin-vl)
+- Bug #16766: `yii\filters\ContentNegotiator` was not setting `Vary` header to inform cache recipients (koteq, cebe, samdark)
+- Bug #11960: Fixed `checked` option ignore in `yii\helpers\BaseHtml::checkbox()` (misantron)
+- Bug #14759: Fixed `yii\web\JsonResponseFormatter` output for `null` data (misantron)
 - Bug #16490: Fix schema on rbac init (marcelodeandrade)
 - Bug #16748: Fixed params when normalize data (marcelodeandrade)
 - Bug #16752: Fix rotating files under Windows (samdark, nadirvishun)
