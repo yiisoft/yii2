@@ -198,12 +198,12 @@ http://localhost:8080/
 </p>
 
 <blockquote><p dir="rtl">
-    معلومة: من خلال تعيين ال <code>basic/web</code> ك <code>document root<code>، فإنك بذلك تمنع أيضًا المستخدمين النهائيين من الوصول الى الشيفرة البرمجية الخاصة بالتطبيق الخاص بك، وتمنعهم من الوصول الى الملفات الحساسة والمهمة والمخزنة في sibling directories من <code>basic/web</code>، ويعبر رفض الوصول الى المجلدات الأخرى تحسينا أمنيا مهما، يساعد في الحفاظ على مستوى أعلى من الحماية.
+    معلومة: من خلال تعيين ال <code>basic/web</code> ك <code>document root</code>، فإنك بذلك تمنع أيضًا المستخدمين النهائيين من الوصول الى الشيفرة البرمجية الخاصة بالتطبيق الخاص بك، وتمنعهم من الوصول الى الملفات الحساسة والمهمة والمخزنة في sibling directories من <code>basic/web</code>، ويعبر رفض الوصول الى المجلدات الأخرى تحسينا أمنيا مهما، يساعد في الحفاظ على مستوى أعلى من الحماية.
 </p></blockquote>
 
-> Info: If your application will run in a shared hosting environment where you do not have permission
-to modify its Web server configuration, you may still adjust the structure of your application for better security. Please refer to
-the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
+<blockquote><p dir="rtl">
+معلومة: إذا كان سيتم تشغيل التطبيق الخاص بك في بيئة استضافة مشتركة(shared hosting) حيث ليس لديك الصلاحية لتعديل الإعدادات الخاصة بال web server، ستحتاج حينها الى تعديل في البنية الخاصة بالمشروع للحصول على أفضل أمان ممكن. يرجى الرجوع إلى <a href="tutorial-shared-hosting.md">Shared Hosting Environment</a> لمزيد من المعلومات. 
+</p></blockquote>
 
 > Info: If you are running your Yii application behind a reverse proxy, you might need to configure
 > [Trusted proxies and headers](runtime-requests.md#trusted-proxies) in the request component.
