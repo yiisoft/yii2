@@ -171,15 +171,12 @@ http://localhost:8080/
 
 <ul dir="rtl">
     <li>قم بنسخ الملف <pre>/requirements.php</pre> الى المسار <pre>/web/requirements.php</pre> بحيث يمكنك الوصول الى الصفحة من خلال الرابط التالي: <pre>http://localhost/requirements.php</pre></li>
-    <li>قم بتنفيذ الأوامر التالية: <br /><pre>
-        cd basic
-        php requirements.php
-    </pre></li>
+    <li>قم بتنفيذ الأوامر التالية: <br /><pre>cd basic
+        php requirements.php</pre></li>
 </ul>
 
 <p dir="rtl">
     يجب عليك أن تقوم بتثبيت وإعداد ال PHP الخاص بك بحيث تلبي الحد الأدنى من متطلبات ال Yii. الأهم من ذلك يجب أن يكون الإصدار الخاص بال PHP أعلى أو يساوي 5.4. من الناحية المثالية أحدث إصدار  يعمل مع ال Yii هو ال PHP 7. يجب عليك أيضًا تثبيت ال PDO.
-    
 </p>
 
 
