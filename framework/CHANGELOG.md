@@ -71,6 +71,7 @@ Yii Framework 2 Change Log
 - Enh: `yii\helpers\UnsetArrayValue`, `yii\helpers\ReplaceArrayValue` object now can be restored after serialization using `var_export()` function (silvefire)
 - Bug #16552: Added check in `yii\db\ActiveQuery::prepare()` to prevent populating already populated relation when another relation is requested with `via` (drlibra)
 - Bug #16424: `yii\db\Transaction::begin()` throws now `NotSupportedException` for nested transaction and DBMS not supporting savepoints (bizley)
+- Bug #15204: `yii\helpers\BaseInflector::slug()` is not removing substrings matching provided replacement from given string anymore (bizley)
 
 2.0.15.1 March 21, 2018
 -----------------------
