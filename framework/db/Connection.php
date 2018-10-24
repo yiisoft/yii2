@@ -136,19 +136,19 @@ use yii\caching\CacheInterface;
 class Connection extends Component
 {
     /**
-     * @event [[yii\base\Event|Event]] an event that is triggered after a DB connection is established
+     * @event yii\base\Event an event that is triggered after a DB connection is established
      */
     const EVENT_AFTER_OPEN = 'afterOpen';
     /**
-     * @event [[yii\base\Event|Event]] an event that is triggered right before a top-level transaction is started
+     * @event yii\base\Event an event that is triggered right before a top-level transaction is started
      */
     const EVENT_BEGIN_TRANSACTION = 'beginTransaction';
     /**
-     * @event [[yii\base\Event|Event]] an event that is triggered right after a top-level transaction is committed
+     * @event yii\base\Event an event that is triggered right after a top-level transaction is committed
      */
     const EVENT_COMMIT_TRANSACTION = 'commitTransaction';
     /**
-     * @event [[yii\base\Event|Event]] an event that is triggered right after a top-level transaction is rolled back
+     * @event yii\base\Event an event that is triggered right after a top-level transaction is rolled back
      */
     const EVENT_ROLLBACK_TRANSACTION = 'rollbackTransaction';
 

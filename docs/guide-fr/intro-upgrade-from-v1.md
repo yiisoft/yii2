@@ -61,7 +61,7 @@ Composants et objets
 Yii 2.0 décompose la classe `CComponent` 1.1 en deux classes: [[yii\base\BaseObject]] et [[yii\base\Component]].
 Le classe [[yii\base\BaseObject|BaseObject]] est une classe de base légère qui permet de définir les
 [Propriétés de l'objet](concept-properties.md) via des accesseurs. La classe [[yii\base\Component|Component]] est une
-sous classe de [[yii\base\BaseObject|BaseObject]] et prend en charge les [Evénements](concept events.md) et les
+sous classe de [[yii\base\BaseObject|BaseObject]] et prend en charge les [Événements](concept events.md) et les
 [Comportements](concept-behaviors.md).
 
 Si votre classe n'a pas besoin des événements et des comportements, vous devriez envisager d'utiliser
@@ -134,7 +134,7 @@ $component->on($eventName, $handler);
 // Pour détacher le gestionnaire, utilisez :
 // $component->off($eventName, $handler);
 ```
-Il y a de nombreuses améliorations dans la gestion des événements. Pour plus de détails, reportez-vous à la section [Evénements](concept-events.md).
+Il y a de nombreuses améliorations dans la gestion des événements. Pour plus de détails, reportez-vous à la section [Événements](concept-events.md).
 
 
 Alias
@@ -503,7 +503,7 @@ Au lieu de cela, vous devez implémenter [[yii\web\IdentityInterface]] qui est b
 Le modèle de projet avancé fournit un exemple.
 
 Reportez-vous aux sections [Authentification](security-authentication.md), [Authorisation](security-authorization.md), et
-[Modèle de projet avancé](tutorial-advanced-app.md) pour en savoir plus.
+[Modèle de projet avancé](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide) pour en savoir plus.
 
 
 Gestion des URL

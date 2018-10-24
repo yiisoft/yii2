@@ -429,6 +429,18 @@ class ModelTest extends TestCase
         $this->assertEquals($scenarios, $model->scenarios());
     }
 
+    public function testValidatorsWithDifferentScenarios()
+    {
+        $model = new CustomScenariosModel();
+        self::assertCount(3, $model->getActiveValidators());
+        self::assertCount(2, $model->getActiveValidators('name'));
+
+        $model->setScenario('secondScenario');
+        self::assertCount(2, $model->getActiveValidators());
+        self::assertCount(2, $model->getActiveValidators('id'));
+        self::assertCount(0, $model->getActiveValidators('name'), 'This attribute has no validators in current scenario.');
+    }
+
     public function testIsAttributeRequired()
     {
         $singer = new Singer();
@@ -534,5 +546,28 @@ class WriteOnlyModel extends Model
     public function setPassword($pw)
     {
         $this->passwordHash = $pw;
+    }
+}
+
+class CustomScenariosModel extends Model
+{
+    public $id;
+    public $name;
+
+    public function rules()
+    {
+        return [
+            [['id', 'name'], 'required'],
+            ['id', 'integer'],
+            ['name', 'string'],
+        ];
+    }
+
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_DEFAULT => ['id', 'name'],
+            'secondScenario' => ['id'],
+        ];
     }
 }

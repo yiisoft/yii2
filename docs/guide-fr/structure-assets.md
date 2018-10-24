@@ -1,18 +1,29 @@
 Ressources
 ==========
 
-Une ressource dans Yii est un fichier qui peut être référencé dans une page Web. Ça peut être un fichier CSS, un fichier JavaScript, une image, un fichier vidéo, etc. Les ressources sont situées dans un dossier accessible du Web et sont servies directement par les serveurs Web.
+Une ressource dans Yii est un fichier qui peut être référencé dans une page Web. Ça peut être un fichier CSS, un fichier JavaScript, une image, un fichier vidéo, etc. 
+Les ressources sont situées dans un dossier accessible du Web et sont servies directement par les serveurs Web.
 
-Il est souvent préférable de gérer les ressources par programmation. Par exemple, lorsque vous utilisez l'objet graphique [[yii\jui\DatePicker]] dans une page, il inclut automatiquement les fichiers  CSS et JavaScript dont il a besoin,  au lieu de vous demander de les inclure à la main. De plus, lorsque vous mettez à jour l'objet graphique, il utilise une nouvelle version des fichiers de ressources. Dans ce tutoriel, nous décrivons les puissantes possibilités de la gestion des ressources de Yii. 
+Il est souvent préférable de gérer les ressources par programmation. 
+Par exemple, lorsque vous utilisez l'objet graphique [[yii\jui\DatePicker]] dans une page, il inclut automatiquement les fichiers  CSS et JavaScript dont il a besoin,  au lieu de vous demander de les inclure à la main. 
+
+De plus, lorsque vous mettez à jour l'objet graphique, il utilise une nouvelle version des fichiers de ressources. 
+Dans ce tutoriel, nous décrivons les puissantes possibilités de la gestion des ressources de Yii. 
+
 
 ## Paquets de ressources <span id="asset-bundles"></span>
 
-Yii gère les ressources sous forme de *paquets de ressources*. Un paquet de ressources est simplement une collection de ressources situées dans un dossier. Lorsque vous enregistrez un paquet de ressources dans une [vue](structure-views.md), cette vue inclut les fichiers CSS et JavaScript du paquet dans la page Web rendue. 
+Yii gère les ressources sous forme de *paquets de ressources*. 
+Un paquet de ressources est simplement une collection de ressources situées dans un dossier.
+Lorsque vous enregistrez un paquet de ressources dans une [vue](structure-views.md), cette vue inclut les fichiers CSS et JavaScript du paquet dans la page Web rendue. 
 
 
 ## Définition de paquets de ressources <span id="defining-asset-bundles"></span>
 
-Les paquets de ressources sont spécifiés comme des classes PHP qui étendent [[yii\web\AssetBundle]]. Le nom du paquet est simplement le nom pleinement qualifié de la classe PHP correspondante (sans la barre oblique inversée de tête). Une classe de paquet de ressources doit être [auto-chargeable](concept-autoloading.md). Généralement, elle spécifie où les ressources sont situées, quels fichiers CSS et JavaScript le paquet contient, et si le paquet dépend d'autres paquets de ressources. 
+Les paquets de ressources sont spécifiés comme des classes PHP qui étendent [[yii\web\AssetBundle]]. 
+Le nom du paquet est simplement le nom pleinement qualifié de la classe PHP correspondante (sans la barre oblique inversée de tête).
+Une classe de paquet de ressources doit être [auto-chargeable](concept-autoloading.md).
+Généralement, elle spécifie où les ressources sont situées, quels fichiers CSS et JavaScript le paquet contient, et si le paquet dépend d'autres paquets de ressources. 
 
 Le code suivant définit le paquet de ressources principal utilisé par le [modèle de projet *basic*](start-installation.md):
 
@@ -29,6 +40,7 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        ['css/print.css', 'media' => 'print'],
     ];
     public $js = [
     ];
@@ -39,53 +51,102 @@ class AppAsset extends AssetBundle
 }
 ```
 
-La classe `AppAsset` ci-dessus spécifie que les fichiers de ressources sont situés dans le dossier `@webroot` qui correspond à l'URL `@web`; le paquet contient un unique fichier CSS `css/site.css` et aucun fichier JavaScript ; le paquet dépend de deux autres paquets : [[yii\web\YiiAsset]] et [[yii\bootstrap\BootstrapAsset]]. Des explications plus détaillées sur les propriétés d'[[yii\web\AssetBundle]] sont disponibles dans les ressources suivantes :
+La classe `AppAsset` ci-dessus spécifie que les fichiers de ressources sont situés dans le dossier `@webroot` qui correspond à l'URL `@web`; 
+le paquet contient un unique fichier CSS `css/site.css` et aucun fichier JavaScript ; 
+le paquet dépend de deux autres paquets : [[yii\web\YiiAsset]] et [[yii\bootstrap\BootstrapAsset]]. 
+Des explications plus détaillées sur les propriétés d'[[yii\web\AssetBundle]] sont disponibles dans les ressources suivantes :
 
-* [[yii\web\AssetBundle::sourcePath|sourcePath(chemin des sources)]]: spécifie le dossier racine qui contient les fichiers de ressources dans ce paquet. Cette propriété doit être définie si le dossier racine n'est pas accessible du Web. Autrement, vous devez définir les propriétés [[yii\web\AssetBundle::basePath|basePath]] et  [[yii\web\AssetBundle::baseUrl|baseUrl]]. Des [alias de chemin](concept-aliases.md) sont utilisables ici. 
-* [[yii\web\AssetBundle::basePath|basePath (chemin de base)]]: spécifie un dossier accessible du Web qui contient les fichiers de ressources dans ce paquet. Lorsque vous spécifiez la propriété[[yii\web\AssetBundle::sourcePath|sourcePath (chemin des sources)]], le [gestionnaire de ressources](#asset-manager) publie les ressources de ce paquet dans un dossier accessible du Web et redéfinit cette propriété en conséquence. Vous devez définir cette propriété si vos fichiers de ressources sont déjà dans un dossier accessible du Web et n'ont pas besoin d'être publiés. Les [alias de chemin](concept-aliases.md) sont utilisables ici.
-* [[yii\web\AssetBundle::baseUrl|baseUrl (URL de base)]]: spécifie l'URL qui correspond au dossier [[yii\web\AssetBundle::basePath|basePath]]. Comme pour  [[yii\web\AssetBundle::basePath|basePath (chemin de base)]], si vous spécifiez la propriété [[yii\web\AssetBundle::sourcePath|sourcePath]], le [gestionnaire de ressources](#asset-manager) publie les ressources et redéfinit cette propriété en conséquence. Les [alias de chemin](concept-aliases.md) sont utilisables ici.
-* [[yii\web\AssetBundle::js|js]]: un tableau listant les fichiers JavaScript contenus dans ce paquet. Notez que seule la barre oblique de division "/" peut être utilisée en tant que séparateur de dossiers. Chaque fichier JavaScript peut être spécifié dans l'un des formats suivants :
-  - Un chemin relatif représentant un fichier JavaScript local (p. ex. `js/main.js`). Le chemin réel du fichier peut être déterminé en préfixant le chemin relatif avec le [[yii\web\AssetManager::basePath| chemin de base]], et l'URL réelle du fichier peut être déterminée en préfixant le chemin relatif avec l'[[yii\web\AssetManager::baseUrl|URL de base]].
-  - Une URL absolue représentant un fichier JavaScript externe. Par exemple , `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` ou
+* [[yii\web\AssetBundle::sourcePath|sourcePath]] (chemin des sources): spécifie le dossier racine qui contient les fichiers de ressources dans ce paquet. 
+Cette propriété doit être définie si le dossier 
+racine n'est pas accessible du Web. 
+Autrement, vous devez définir les propriétés [[yii\web\AssetBundle::basePath|basePath]] et  [[yii\web\AssetBundle::baseUrl|baseUrl]]. Des [alias de chemin](concept-aliases.md) sont utilisables ici. 
+* [[yii\web\AssetBundle::basePath|basePath ]] (chemin de base): spécifie un dossier accessible du Web qui contient les fichiers de ressources dans ce paquet. 
+Lorsque vous spécifiez la propriété[[yii\web\AssetBundle::sourcePath|sourcePath (chemin des sources)]], le [gestionnaire de ressources](#asset-manager) publie les ressources de ce paquet dans un dossier accessible du Web et redéfinit cette propriété en conséquence. 
+Vous devez définir cette propriété si vos fichiers de ressources sont déjà
+ dans un dossier accessible du Web et n'ont pas besoin d'être publiés. 
+Les [alias de chemin](concept-aliases.md) sont utilisables ici.
+* [[yii\web\AssetBundle::baseUrl|baseUrl ]] (URL de base): spécifie l'URL qui correspond au dossier
+ [[yii\web\AssetBundle::basePath|basePath]]. 
+Comme pour  [[yii\web\AssetBundle::basePath|basePath]] (chemin de base),
+ si vous spécifiez la propriété [[yii\web\AssetBundle::sourcePath|sourcePath]], le [gestionnaire de ressources](#asset-manager) publie les ressources et redéfinit cette propriété en conséquence. Les [alias de chemin](concept-aliases.md) sont utilisables ici.
+* [[yii\web\AssetBundle::css|css]]: un tableau listant les fichiers CSS contenu dans ce paquet de ressources. 
+Notez que seul la barre oblique "/" doit être utilisée en tant que séparateur de dossier. Chaque fichier peut être spécifié en lui-même comme une chaîne de caractères ou dans un tableau avec les balises attributs et leur valeur.
+
+* [[yii\web\AssetBundle::js|js]]: un tableau listant les fichiers JavaScript contenus dans ce paquet. 
+Notez que seule la barre oblique de division "/" peut être utilisée en tant que séparateur de dossiers. 
+Chaque fichier JavaScript peut être spécifié dans l'un des formats suivants :
+  - Un chemin relatif représentant un fichier JavaScript local (p. ex. `js/main.js`). 
+Le chemin réel du fichier peut être déterminé en préfixant le chemin relatif avec le [[yii\web\AssetManager::basePath| chemin de base]], 
+et l'URL réelle du fichier peut être déterminée en préfixant le chemin relatif avec l'[[yii\web\AssetManager::baseUrl|URL de base]].
+  - Une URL absolue représentant un fichier JavaScript externe. 
+Par exemple , `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` ou
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-* [[yii\web\AssetBundle::css|css]]: un tableau listant les fichiers CSS contenus dans ce paquet. Le format de ce tableau est le même que celui de [[yii\web\AssetBundle::js|js]].
-* [[yii\web\AssetBundle::depends|depends (dépendances)]]: un tableau listant les paquets de ressources dont ce paquet dépend (brièvement expliqué).
-* [[yii\web\AssetBundle::jsOptions|jsOptions]]: spécifie les options qui sont passées à la méthode [[yii\web\View::registerJsFile()]] lorsqu'elle est appelée pour enregistrer *chacun des* fichiers JavaScript de ce paquet.
-* [[yii\web\AssetBundle::cssOptions|cssOptions]]: spécifie les options qui sont passées à la méthode [[yii\web\View::registerCssFile()]] lorsqu'elle est appelée pour enregistrer *chacun des* fichiers CSS de ce paquet.
-* [[yii\web\AssetBundle::publishOptions|publishOptions]]: spécifie les options qui sont passées à la méthode [[yii\web\AssetManager::publish()]] lorsqu'elle est appelée pour publier les fichiers de ressources sources dans un dossier accessible du Web.  Cela n'est utilisé que si vous spécifiez la propriété  [[yii\web\AssetBundle::sourcePath|sourcePath]].
+* [[yii\web\AssetBundle::depends|depends (dépendances)]]: 
+un tableau listant les paquets de ressources dont ce paquet dépend (brièvement expliqué).
+* [[yii\web\AssetBundle::jsOptions|jsOptions]]: spécifie les options qui sont passées à la méthode [[yii\web\View::registerJsFile()]] 
+lorsqu'elle est appelée pour enregistrer *chacun des* fichiers JavaScript de ce paquet.
+* [[yii\web\AssetBundle::cssOptions|cssOptions]]: spécifie les options qui sont passées à la méthode 
+[[yii\web\View::registerCssFile()]] lorsqu'elle est appelée pour enregistrer *chacun des* fichiers CSS de ce paquet.
+* [[yii\web\AssetBundle::publishOptions|publishOptions]]: spécifie les options qui sont passées à la méthode 
+[[yii\web\AssetManager::publish()]] lorsqu'elle est appelée pour publier les fichiers de ressources sources dans un dossier accessible du Web.  
+Cela n'est utilisé que si vous spécifiez la propriété  [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
 
 ### Emplacement des ressources <span id="asset-locations"></span>
 
 En se basant sur leur emplacement, les ressources peuvent être classifiées comme suit :
 
-* Les ressources sources : les fichiers de ressources qui sont situés avec du code source PHP et qui ne peuvent être accéder directement depuis le Web. Afin de pouvoir être utilisées dans une page, elles doivent être copiées dans un dossier accessible du Web et transformées en ressources publiées. Ce processus est appelé *publication des ressources* et il sera décrit en détail bientôt. 
+* Les ressources sources : les fichiers de ressources qui sont situés avec du code source PHP et qui ne peuvent être accéder directement depuis le Web.
+ Afin de pouvoir être utilisées dans une page, elles doivent être copiées dans un dossier accessible du Web et transformées en ressources publiées.
+Ce processus est appelé *publication des ressources* et il sera décrit en détail bientôt. 
 * Les ressources publiées : les fichiers de ressources sont situés dans un dossier accessible du Web et peuvent par conséquent être accédés directement depuis le Web. 
 * Les ressources externes : les fichiers de ressources sont situés sur un serveur Web différent de celui qui héberge l'application Web. 
 
-Lors de la définition de classes de paquet de ressources, si vous spécifiez la propriété [[yii\web\AssetBundle::sourcePath|sourcePath (chemin des sources)]], cela veut dire que les ressources listées en utilisant des chemins relatifs sont considérées comme des ressources sources. Si vous ne spécifiez pas cette propriété, cela signifie que ces ressources sont des ressources publiées (vous devez en conséquence spécifier  [[yii\web\AssetBundle::basePath (chemin de base)|basePath]] et [[yii\web\AssetBundle::baseUrl|baseUrl (URL de base)]] pour faire connaître à Yii l'emplacement où elles se trouvent). 
 
-Il est recommandé de placer les ressources appartenant à une application dans un dossier accessible du Web de manière à éviter une publication non nécessaire de ressources. C'est pourquoi `AppAsset` dans l'exemple précédent spécifie le [[yii\web\AssetBundle::basePath|chemin de base]] plutôt que le [[yii\web\AssetBundle::sourcePath|chemin des sources]].
+Lors de la définition de classes de paquet de ressources, si vous spécifiez la propriété 
+[[yii\web\AssetBundle::sourcePath|sourcePath (chemin des sources)]], cela veut dire que les ressources listées en utilisant des chemins relatifs sont considérées comme des ressources sources. 
+Si vous ne spécifiez pas cette propriété, cela signifie que ces ressources sont des ressources publiées (vous devez en conséquence spécifier  [[yii\web\AssetBundle::basePath (chemin de base)|basePath]] et [[yii\web\AssetBundle::baseUrl|baseUrl (URL de base)]]
+ pour faire connaître à Yii l'emplacement où elles se trouvent). 
 
-Quant aux [extensions](structure-extensions.md), comme leurs ressources sont situées avec le code source dans des dossiers non accessibles depuis le Web, vous devez spécifier la propriété [[yii\web\AssetBundle::sourcePath|sourcePath]] lorsque vous définissez des classes de paquet de ressources pour elles.
+Il est recommandé de placer les ressources appartenant à une application dans un dossier accessible du Web de manière à éviter une publication non nécessaire de ressources. 
+C'est pourquoi `AppAsset` dans l'exemple précédent spécifie le [[yii\web\AssetBundle::basePath|chemin de base]] 
+plutôt que le [[yii\web\AssetBundle::sourcePath|chemin des sources]].
 
-> Note: n'utilisez pas  `@webroot/assets` en tant que [[yii\web\AssetBundle::sourcePath|chemin des sources]]. Ce dossier est utilisé par défaut par le [[yii\web\AssetManager|gestionnaire de ressources]] pour sauvegarder les fichiers de ressources publiés depuis leur emplacement source. Tout contenu dans ce dossier est considéré temporaire et sujet à suppression. 
+Quant aux [extensions](structure-extensions.md), comme leurs ressources sont situées avec le code source dans des dossiers non accessibles depuis le Web, vous devez spécifier la propriété 
+[[yii\web\AssetBundle::sourcePath|sourcePath]] 
+lorsque vous définissez des classes de paquet de ressources pour elles.
+
+> Note: n'utilisez pas  `@webroot/assets` en tant que [[yii\web\AssetBundle::sourcePath|chemin des sources]].
+Ce dossier est utilisé par défaut par le 
+[[yii\web\AssetManager|gestionnaire de ressources]] pour sauvegarder les fichiers de ressources publiés depuis leur emplacement source. 
+Tout contenu dans ce dossier est considéré temporaire et sujet à suppression. 
 
 
 ### Dépendances de ressources <span id="asset-dependencies"></span>
 
-Lorsque vous incluez plusieurs fichiers CSS ou JavaScript dans une page Web, ils doivent respecter un certain ordre pour éviter des problèmes de redéfinition. Par exemple, si vous utilisez l'objet graphique jQuery Ui dans une page Web, vous devez vous assurer que le fichier JavaScript jQuery est inclus avant le fichier  JavaScript  jQuery UI. Nous appelons un tel ordre : « dépendances entre ressources ».
+Lorsque vous incluez plusieurs fichiers CSS ou JavaScript dans une page Web, ils doivent respecter un certain ordre pour éviter des problèmes de redéfinition. 
+Par exemple, si vous utilisez l'objet graphique jQuery Ui dans une page Web, vous devez vous assurer que le fichier JavaScript jQuery est inclus avant le fichier  JavaScript  jQuery UI. 
+Nous appelons un tel ordre : « dépendances entre ressources ».
 
-Les dépendances entre ressources sont essentiellement spécifiées via la propriété [[yii\web\AssetBundle::depends]]. Dans l'exemple `AppAsset`, le paquet de ressources dépend de deux autres paquets de ressources : [[yii\web\YiiAsset]] et [[yii\bootstrap\BootstrapAsset]], ce qui veut dire que  les fichiers  CSS et JavaScript dans `AppAsset` sont inclus *après* les  fichiers contenus dans ces deux paquets de ressources dont ils dépendent. 
+
+Les dépendances entre ressources sont essentiellement spécifiées via la propriété 
+[[yii\web\AssetBundle::depends]]. 
+Dans l'exemple `AppAsset`, le paquet de ressources dépend de deux autres paquets de ressources : [[yii\web\YiiAsset]] et [[yii\bootstrap\BootstrapAsset]], 
+ce qui veut dire que  les fichiers  CSS et JavaScript dans `AppAsset` sont inclus *après* les  fichiers contenus dans ces deux paquets de ressources dont ils dépendent. 
 
 Les dépendances entre ressources sont transitives. Cela veut dire que si un paquet de ressources A dépend d'un paquet B qui lui-même dépend de C, A dépend de C également.
 
 
 ### Options des ressources <span id="asset-options"></span>
 
-Vous pouvez spécifier les propriétés [[yii\web\AssetBundle::cssOptions|cssOptions]] et [[yii\web\AssetBundle::jsOptions|jsOptions]] pour personnaliser la manière dont les fichiers CSS et JavaScript sont inclus dans une page. Les valeurs de ces propriétés sont passées aux méthodes [[yii\web\View::registerCssFile()]] et  [[yii\web\View::registerJsFile()]] , respectivement, lorsqu'elles sont appelées par la [vue](structure-views.md) pour inclure les fichiers CSS et JavaScript.
+Vous pouvez spécifier les propriétés [[yii\web\AssetBundle::cssOptions|cssOptions]] et [[yii\web\AssetBundle::jsOptions|jsOptions]] 
+pour personnaliser la manière dont les fichiers CSS et JavaScript sont inclus dans une page. 
+Les valeurs de ces propriétés sont passées aux méthodes [[yii\web\View::registerCssFile()]] et  [[yii\web\View::registerJsFile()]], respectivement, lorsqu'elles sont appelées par la
+ [vue](structure-views.md) pour inclure les fichiers CSS et JavaScript.
 
-> Note: les options que vous définissez dans une classe de  paquet de ressources s'appliquent à  *chacun des* fichiers CSS/JavaScript du paquet. Si vous voulez utiliser des options différentes entre fichiers, vous devez créer des paquets de ressources séparés, et utiliser un jeu d'options différent par paquet.
+> Note: les options que vous définissez dans une classe de  paquet de ressources s'appliquent à  *chacun des* fichiers CSS/JavaScript du paquet.
+Si vous voulez utiliser des options différentes entre fichiers, vous devez utiliser le format indiqué [[yii\web\AssetBundle::css|ci-dessus]]
+ ou créer des paquets de ressources séparés et utiliser un jeu d'options dans chacun des paquets. 
 
 Par exemple, pour inclure un fichier CSS sous condition que le navigateur soit IE9 ou inférieur, vous pouvez utiliser l'option suivante :
 
@@ -113,7 +174,11 @@ Pour inclure un fichier JavaScript dans la section d'entête d'une page (par dé
 public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 ```
 
-Par défaut, lorsqu'un paquet de ressources est publié, tous les contenus dans le dossier spécifié par la propriété [[yii\web\AssetBundle::sourcePath]] sont publiés. Vous pouvez personnaliser ce comportement en configurant la propriété [[yii\web\AssetBundle::publishOptions|publishOptions]]. Par exemple, pour publier seulement un ou quelques sous-dossiers du dossier spécifié par la propriété [[yii\web\AssetBundle::sourcePath]], vous pouvez procéder comme ceci dans la classe du paquet de ressources :
+Par défaut, lorsqu'un paquet de ressources est publié, tous les contenus dans le dossier spécifié par la propriété [[yii\web\AssetBundle::sourcePath]]
+ sont publiés. 
+Vous pouvez personnaliser ce comportement en configurant la propriété [[yii\web\AssetBundle::publishOptions|publishOptions]]. 
+Par exemple, pour publier seulement un ou quelques sous-dossiers du dossier spécifié par la propriété [[yii\web\AssetBundle::sourcePath]], 
+vous pouvez procéder comme ceci dans la classe du paquet de ressources :
 
 ```php
 <?php
@@ -139,15 +204,81 @@ class FontAwesomeAsset extends AssetBundle
 L'exemple ci-dessus définit un paquet de ressources pour le [paquet "fontawesome"](http://fontawesome.io/). En spécifiant l'option de publication `only`, seuls les sous-dossiers `fonts` et  `css` sont publiés.
 
 
-### Ressources Bower et NPM  <span id="bower-npm-assets"></span>
+### Installation des ressources Bower et NPM  <span id="bower-npm-assets"></span>
 
-La plupart des paquets JavaScript/CSS sont gérés par  [Bower](http://bower.io/) et/ou [NPM](https://www.npmjs.org/). Si votre application ou extension utilise un tel paquet, il est recommandé que vous suiviez ces étapes pour gérer vos ressources dans la bibliothèque :
+La plupart des paquets JavaScript/CSS sont gérés par le gestionnaire de paquets [Bower](http://bower.io/) et/ou le gestionnaire de paquets [NPM](https://www.npmjs.org/). Dans le monde PHP, nous disposons de Composer, qui gère les dépendances, mais il est possible de charger des paquets Bower et NPM comme des paquets PHP en utilisant `composer.json`.
 
-1. Modifier le fichier `composer.json` de votre application ou extension et lister le paquet dans l'entrée `require`. Vous devez utiliser `bower-asset/PackageName` (pour les paquets  Bower) ou `npm-asset/PackageName` (pour les paquets NPM ) pour faire référence à la bibliothèque. 
-2. Créer une classe de paquet de ressources et lister les fichiers JavaScript/CSS que vous envisagez d'utiliser dans votre application ou extension. Vous devez spécifier la propriété [[yii\web\AssetBundle::sourcePath|sourcePath]] comme étant `@bower/PackageName` ou `@npm/PackageName`. Cela est dû au fait que Composer installe le paquet Bower ou NPM dans le dossier correspondant à cet alias. 
+Pour cela, nous devons configurer quelque peu notre composer. Il y a deux options possibles :
 
-> Note: quelques paquets peuvent placer les fichiers distribués dans un sous-dossier. Si c'est le cas, vous devez spécifier le sous-dossier comme étant la valeur du [[yii\web\AssetBundle::sourcePath|chemin des sources]]. Par exemple, [[yii\web\JqueryAsset]]
-  utilise `@bower/jquery/dist` au lieu de  `@bower/jquery`.
+___
+
+#### En utilisant le dépôt asset-packagist
+
+Cette façon de faire satisfera les exigences de la majorité des projets qui ont besoin de paquets Bower ou NPM.
+
+> Note: depuis la version 2.0.13, les modèles de projet  Basic et Advanced sont tous deux configuré pour utiliser asset-packagist par défaut, c'est pourquoi, vous pouvez sauter cette section.
+
+Dans le fichier `composer.json` de votre projet, ajoutez les lignes suivantes :
+
+```json
+"repositories": [
+    {
+        "type": "composer",
+        "url": "https://asset-packagist.org"
+    }
+]
+```
+
+Ajustez les [aliases](concept-aliases.md) `@npm` et `@bower` dans la [configuration](concept-configurations.md) de votre application :
+
+```php
+$config = [
+    ...
+    'aliases' => [
+        '@bower' => '@vendor/bower-asset',
+        '@npm'   => '@vendor/npm-asset',
+    ],
+    ...
+];
+```
+
+Visitez [asset-packagist.org](https://asset-packagist.org) pour savoir comment il fonctionne.
+
+#### En utilisant le fxp/composer-asset-plugin
+
+Comparé à asset-packagist, composer-asset-plugin ne nécessite aucun changement dans la configuration de l'application. Au lieu de cela, il nécessite l'installation globale d'un greffon spécifique de Composer en exécutant la commande suivante :
+
+```bash
+composer global require "fxp/composer-asset-plugin:^1.4.1"
+```
+
+Cette commande installe  [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) globalement, ce qui permet de gérer les dépendances des paquets Bower et NPM via Composer. Après l'installation du greffon, tout projet de votre ordinateur prendra en charge les paquets Bower et NPM via `composer.json`.
+
+Ajoutez les lignes suivantes au fichier `composer.json` de votre projet pour préciser les dossiers où seront installés les paquets, si vous voulez les publier en utilisant Yii :
+
+```json
+"config": {
+    "asset-installer-paths": {
+        "npm-asset-library": "vendor/npm",
+        "bower-asset-library": "vendor/bower"
+    }
+}
+```
+
+> Note: `fxp/composer-asset-plugin` ralentit significativement la commande `composer update` en comparaison avec asset-packagist.
+ 
+____
+ 
+Après avoir configuré Composer pour qu'il prenne en charge Bower et NPM :
+
+1. Modifiez le fichier the `composer.json` de votre application ou extension et listez le paquet dans l'entrée `require`.
+   Vous devez utiliser `bower-asset/PackageName` (pour les paquets Bower) ou `npm-asset/PackageName` (pour les paquets NPM) pour faire référence à la bibliothèque.
+2. Exécutez `composer update`
+3. Créez une classe de paquet de ressources et listez les fichiers JavaScript/CSS que vous envisagez d'utiliser dans votre application ou extension.
+   Vous devez spécifier la propriété [[yii\web\AssetBundle::sourcePath|sourcePath]] comme `@bower/PackageName` ou `@npm/PackageName`.
+   Cela parce que Composer installera le paquet Bower ou NPM dans le dossier correspondant à cet alias.
+
+> Note: quelques paquets peuvent placer tous leurs fichiers distribués dans un sous-dossier. Si c'est le cas, vous devez spécifier le sous-dossier en tant que valeur de [[yii\web\AssetBundle::sourcePath|sourcePath]]. Par exemple, utilisez [[yii\web\JqueryAsset]] `@bower/jquery/dist` au lieu de `@bower/jquery`.
 
 
 ## Utilisation des paquets de ressources <span id="using-asset-bundles"></span>
@@ -165,6 +296,46 @@ Si vous êtes en train d'enregistrer un paquet de ressources dans d'autres endro
 
 Lorsqu'un paquet de ressources est enregistré avec une vue, en arrière plan. Yii enregistre tous les paquets de ressources dont il dépend. Et si un paquet de ressources est situé dans un dossier inaccessible depuis le Web, il est publié dans un dossier accessible depuis le Web. Plus tard, lorsque la vue rend une page, elle génère les balises  `<link>` et `<script>` pour les fichiers  CSS et JavaScript listés dans le paquet de ressources enregistré. L'ordre des ces balises est déterminé par les dépendances entre paquets enregistrés et l'ordre des ressources listées dans les propriétés  [[yii\web\AssetBundle::css]] et [[yii\web\AssetBundle::js]].
 
+
+### Paquets de ressources dynamiques <span id="dynamic-asset-bundles"></span>
+
+Une classe PHP ordinaire de paquet de ressources peut comporter sa propre logique et peut ajuster ses paramètres internes dynamiquement.
+Par exemple : il se peut que vous utilisiez une bibliothèque JavaScript sophistiquée  qui des ressources d'internationalisation dans des fichiers séparés pour chacune des langues. En conséquence de quoi, vous devez ajouter certains fichiers '.js' particuliers à votre page pour la fonction de traduction de la bibliothèque fonctionne. Cela peut être fait en redéfinissant la méthode [[yii\web\AssetBundle::init()]] :
+
+
+```php
+namespace app\assets;
+
+use yii\web\AssetBundle;
+use Yii;
+
+class SophisticatedAssetBundle extends AssetBundle
+{
+    public $sourcePath = '/path/to/sophisticated/src';
+    public $js = [
+        'sophisticated.js' // fichier toujours utilisé
+    ];
+
+    public function init()
+    {
+        parent::init();
+        $this->js[] = 'i18n/' . Yii::$app->language . '.js'; // fichier dynamique ajouté
+    }
+}
+```
+
+Un paquet de ressources particuliers peut aussi être ajusté via son instance retourné par [[yii\web\AssetBundle::register()]].
+Par exemple :
+
+```php
+use app\assets\SophisticatedAssetBundle;
+use Yii;
+
+$bundle = SophisticatedAssetBundle::register(Yii::$app->view);
+$bundle->js[] = 'i18n/' . Yii::$app->language . '.js'; // fichier dynamique ajouté
+```
+
+> Note : bien que l'ajustement dynamique des paquets de ressources soit pris e charge, c'est une **mauvaise** pratique qui peut conduire à des effets de bord inattendus et qui devrait être évité si possible. 
 
 ### Personnalisation des paquets de ressources <span id="customizing-asset-bundles"></span>
 

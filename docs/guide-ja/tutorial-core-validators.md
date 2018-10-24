@@ -367,6 +367,13 @@ function foo($model, $attribute) {
         // 電話番号の入力値をここで正規化する
         return $value;
     }],
+    
+    // 関数 "normalizePhone" を使って "phone" の入力値を正規化する
+    ['phone', 'filter', 'filter' => [$this, 'normalizePhone']],
+    
+    public function normalizePhone($value) {
+        return $value;
+    }
 ]
 ```
 

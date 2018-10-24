@@ -353,6 +353,20 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
     }
 
+    public function testRadioList()
+    {
+        $expectedValue = <<<'EOD'
+<div class="form-group field-activefieldtestmodel-attributename">
+<label class="control-label">Attribute Name</label>
+<input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><div id="activefieldtestmodel-attributename" role="radiogroup"><label><input type="radio" name="ActiveFieldTestModel[attributeName]" value="1"> Item One</label></div>
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+        $this->activeField->radioList(['1' => 'Item One']);
+        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->render());
+    }
+
     public function testGetClientOptionsReturnEmpty()
     {
         // setup: we want the real deal here!
