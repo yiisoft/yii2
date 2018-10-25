@@ -74,10 +74,11 @@ basic/                  application base path
 وبنائا على ذلك، فإنه من الممكن الوصول إلى النوع الأول مباشرة عبر ال HTTP (أي من خلال المتصفح) ، بينما لا يمكن أن يكون ذلك للنوع الثاني.
 </p>
 
-Yii implements the [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller) architectural pattern,
-which is reflected in the above directory organization. The `models` directory contains all [model classes](structure-models.md),
-the `views` directory contains all [view scripts](structure-views.md), and the `controllers` directory contains
-all [controller classes](structure-controllers.md).
+<p dir="rtl">
+    يعتمد ال Yii على إستخدام ال MVC، وال MVC هو أحد ال Architectural Pattern، وهي اختصار ل <a href="http://wikipedia.org/wiki/Model-view-controller">model-view-controller</a>،
+هذا الأسلوب ينعكس في تنظيم المسارات الخاصة بالملفات كما في الشكل أعلاه. يحتوي المسار <code>models</code> على جميع الكلاس <a href="../guide/structure-models.md">(model classes)</a> ، ويحتوي مسار ال <code>views</code> على جميع الصفحات التي ستستخدم في العرض <a href="../guide/structure-controllers.md">(view scripts)</a>، ويحتوي مسار ال<code>controllers</code> على
+    جميع <a href="../guide/structure-views.md">(controller classes)</a> 
+</p>
 
 The following diagram shows the static structure of an application.
 
