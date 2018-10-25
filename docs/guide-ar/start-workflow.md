@@ -78,7 +78,7 @@ all [controller classes](structure-controllers.md).
 
 The following diagram shows the static structure of an application.
 
-![Static Structure of Application](images/application-structure.png)
+![Static Structure of Application](../guide/images/application-structure.png)
 
 Each application has an entry script `web/index.php` which is the only Web accessible PHP script in the application.
 The entry script takes an incoming request and creates an [application](structure-applications.md) instance to handle it.
@@ -92,7 +92,7 @@ Request Lifecycle <span id="request-lifecycle"></span>
 
 The following diagram shows how an application handles a request.
 
-![Request Lifecycle](images/request-lifecycle.png)
+![Request Lifecycle](../guide/images/request-lifecycle.png)
 
 1. A user makes a request to the [entry script](structure-entry-scripts.md) `web/index.php`.
 2. The entry script loads the application [configuration](concept-configurations.md) and creates
