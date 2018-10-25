@@ -69,8 +69,10 @@ basic/                  application base path
     yii                 the Yii console command execution script
 ```
 
-In general, the files in the application can be divided into two types: those under `basic/web` and those
-under other directories. The former can be directly accessed via HTTP (i.e., in a browser), while the latter can not and should not be.
+<p dir="rtl">
+    بشكل عام، يمكن تقسيم الملفات داخل التطبيق إلى نوعين: الاول تجده تحت المسار التالي: <code>basic/web</code والثانية تلك التي تجده بالمسارات الأخرى.<br />
+وبنائا على ذلك، يمكن الوصول إلى النوع الأول مباشرة عبر HTTP (أي من خلال المتصفح) ، بينما لا يمكن أن يكون ذلك للنوع الثاني.
+</p>
 
 Yii implements the [model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller) architectural pattern,
 which is reflected in the above directory organization. The `models` directory contains all [model classes](structure-models.md),
