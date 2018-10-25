@@ -38,9 +38,11 @@
     أيضا، يجب عليك أن تنظر الى ال toolbar الموجود في أسفل نافذة المتصفح. ال <a href="https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md">debugger tool</a> هذه تعتبر كأداة مفيدة مقدمة من ال Yii لتسجيل وعرض الكثير من المعلومات وتصحيح الأخطاء، مثل  log messages, response statuses, the database queries run وما إلى ذلك.
 </p>
 
-Additionally to the web application, there is a console script called `yii`, which is located in the applications base directory.
-This script can be used to run background and maintenance tasks for the application, which are described
-in the [Console Application Section](tutorial-console.md).
+<p dir="rtl">
+    بالإضافة إلى ال  web application، يوجد هناك "console script" يسمى ب <code>yii</code>، والذي ستجده في المسار الرئيسي للتطبيق. هذا السكربت يمكن استخدامه لتشغيل المهام التي تعمل في الخفاء (background)  أو لتنفيذ مهام الصيانة (ال maintenance). <br /> ستجد الوصف الخاص بهذا السكربت  
+    داخل هذه الصفحة <a href="tutorial-console.md">Console Application Section</a>.
+</p>
+
 
 
 Application Structure <span id="application-structure"></span>
