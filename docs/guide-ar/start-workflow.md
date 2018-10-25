@@ -45,10 +45,11 @@
 
 
 
-Application Structure <span id="application-structure"></span>
----------------------
+## <div dir="rtl">هيكلية التطبيق - Application Structure</a> <span id="application-structure"></span>
 
-The most important directories and files in your application are (assuming the application's root directory is `basic`):
+<p dir="rtl">
+    أكثر المسارات والملفات أهمية الموجودة داخل التطبيق (بافتراض أن ال application's root directory هو <code>basic</code>) هي:  
+</p>
 
 ```
 basic/                  application base path
