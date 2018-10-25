@@ -30,11 +30,14 @@
     <li>صفحة تسجيل الدخول (Login): في هذه الصفحة يتم عرض form يسمح للأعضاء بالحصول على الإذن لإستخدام الخصائص التي لا يجوز لغيرهم من الوصول اليها، قم بتجربة تسجيل الدخول من خلال استخدام <code>admin/admin</code> ولاحظ أن كلمة "Login" ستختفي من القائمة الرئيسية وستظهر محلها الكلمة "Logout"</li>
 </ul>
 
-These pages share a common header and footer. The header contains a main menu bar to allow navigation
-among different pages.
+<p dir="rtl">
+هذه الصفحات تشترك بامتلاكها common header and footer -الترويسة أعلى الصفحة، والذيل أسفل الصفحة-. ويحتوي ال header على القائمة الرئيسية (main menu) والتي بدورها تسمح لك بالتنقل بين الصفحات المختلفة.
+</p>
 
-You should also see a toolbar at the bottom of the browser window.
-This is a useful [debugger tool](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md) provided by Yii to record and display a lot of debugging information, such as log messages, response statuses, the database queries run, and so on.
+<p dir="rtl">
+    أيضا، يجب عليك أن تنظر الى ال toolbar الموجود في أسفل نافذة المتصفح.
+هذه أداة مفيدة [debugger tool] (https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md) مقدمة من Yii لتسجيل وعرض الكثير من المعلومات وتصحيح الأخطاء، مثل  log messages, response statuses, the database queries run وما إلى ذلك.
+</p>
 
 Additionally to the web application, there is a console script called `yii`, which is located in the applications base directory.
 This script can be used to run background and maintenance tasks for the application, which are described
