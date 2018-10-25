@@ -12,8 +12,9 @@
 يمكنك معرفة الضبط الخاص بال Web server من هنا:  <a href="start-installation.md">تثبيت ال Yii </a>
 </p></blockquote>
 
-Note that unlike framework itself, after project template is installed it's all yours. You're free to add or delete
-code and overall modify it as you need.
+<p dir="rtl">
+ملاحظة: بخلاف إطار العمل نفسه(Yii framework)، بعد تثبيت ال template الخاص بالمشروع، يكون كل شيء في هذا التطبيق يخصك أنت، بحيث تملك الحرية في إضافة أو حذف أو تعديل كل ما تحتاج اليه.
+</p>
 
 
 Functionality <span id="functionality"></span>
