@@ -1,16 +1,16 @@
-Running Applications
-====================
+# <div dir="rtl">تشغيل التطبيقات</div>
 
-After installing Yii, you have a working Yii application that can be accessed via
-the URL `http://hostname/basic/web/index.php` or `http://hostname/index.php`, depending
-upon your configuration. This section will introduce the application's built-in functionality,
-how the code is organized, and how the application handles requests in general.
+<p dir="rtl">
+بعد تثبيت ال Yii، سيكون لديك تطبيق Yii جاهز للعمل عليه ويمكن الوصول إليه عبر
+الرابط التالي:  <code>http://hostname/basic/web/index.php</code>  أو <code>http://hostname/index.php</code> إعتمادا على الإعدادات
+الخاصة بك(إعدادت ال web server). في هذا الجزء سنستعرض الوظائف ال built-in الموجودة في التطبيق الإفتراضي لإطار العمل Yii، وكيف يقوم بتنظيم الشيفرة البرمجية، وكيف يعالج (handling) هذا التطبيق الطلبات (requests) بشكل عام.
+</p>
 
-> Info: For simplicity, throughout this "Getting Started" tutorial, it's assumed that you have set `basic/web`
-  as the document root of your Web server, and configured the URL for accessing
-  your application to be `http://hostname/index.php` or something similar.
-  For your needs, please adjust the URLs in our descriptions accordingly.
-  
+<blockqoute><p dir="rtl">
+معلومة: من أجل تبسيط الطرح، ومن خلال هذا البرنامج التعليمي " Getting Started - البداية من هنا"، من المفترض أنك قمت بتعيين <code>basic/web</code> ك <code>document root</code> لل Web server، وقد قمت أيضا بإعداد ال Url الذي يسمح لك بالوصول الى التطبيق المثبت من خلاله ليكون على الشكل التالي: <code>http://hostname/index.php</code> أو ما شابه ذلك.
+اذا لم تقم بذلك، ولتلبية إحتياجاتك في هذه البرنامج التعليمي، يرضى ضبط ال Url كما هو في الوصف الخاص بنا في هذه الصفحة. <a href="start-installation.md">تثبيت ال Yii </a>
+</p></blockqoute>
+
 Note that unlike framework itself, after project template is installed it's all yours. You're free to add or delete
 code and overall modify it as you need.
 
