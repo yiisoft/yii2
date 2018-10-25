@@ -6,10 +6,11 @@
 الخاصة بك(إعدادت ال web server). في هذا الجزء سنستعرض الوظائف ال built-in الموجودة في التطبيق الإفتراضي لإطار العمل Yii، وكيف يقوم بتنظيم الشيفرة البرمجية، وكيف يعالج (handling) هذا التطبيق الطلبات (requests) بشكل عام.
 </p>
 
-<blockqoute><p dir="rtl">
-معلومة: من أجل تبسيط الطرح، ومن خلال هذا البرنامج التعليمي " Getting Started - البداية من هنا"، من المفترض أنك قمت بتعيين <code>basic/web</code> ك <code>document root</code> لل Web server، وقد قمت أيضا بإعداد ال Url الذي يسمح لك بالوصول الى التطبيق المثبت من خلاله ليكون على الشكل التالي: <code>http://hostname/index.php</code> أو ما شابه ذلك.
-اذا لم تقم بذلك، ولتلبية إحتياجاتك في هذه البرنامج التعليمي، يرضى ضبط ال Url كما هو في الوصف الخاص بنا في هذه الصفحة. <a href="start-installation.md">تثبيت ال Yii </a>
-</p></blockqoute>
+<blockquote><p dir="rtl">
+    معلومة: من أجل تبسيط الطرح، ومن خلال هذا البرنامج التعليمي " Getting Started - البداية من هنا"، من المفترض أنك قمت بتعيين <code>basic/web</code> ك <code>document root</code> لل Web server، وقد قمت أيضا بإعداد ال Url الذي يسمح لك بالوصول الى التطبيق المثبت من خلاله ليكون على الشكل التالي: <code>http://hostname/index.php</code> أو ما شابه ذلك.
+اذا لم تقم بذلك، ولتلبية إحتياجاتك في هذه البرنامج التعليمي، يرضى ضبط ال Url كما هو في الوصف الخاص بنا في هذه الصفحة.
+يمكنك معرفة الضبط الخاص بال Web server من هنا:  <a href="start-installation.md">تثبيت ال Yii </a>
+</p></blockquote>
 
 Note that unlike framework itself, after project template is installed it's all yours. You're free to add or delete
 code and overall modify it as you need.
