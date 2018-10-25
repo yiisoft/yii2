@@ -3,7 +3,7 @@
 <p dir="rtl">
 بعد تثبيت ال Yii، سيكون لديك تطبيق Yii جاهز للعمل عليه ويمكن الوصول إليه عبر
 الرابط التالي:  <code>http://hostname/basic/web/index.php</code>  أو <code>http://hostname/index.php</code> إعتمادا على الإعدادات
-الخاصة بك(إعدادت ال web server). في هذا الجزء سنستعرض الوظائف ال built-in الموجودة في التطبيق الإفتراضي لإطار العمل Yii، وكيف يقوم بتنظيم الشيفرة البرمجية، وكيف يعالج (handling) هذا التطبيق الطلبات (requests) بشكل عام.
+الخاصة بك (إعدادت ال web server). في هذا الجزء سنستعرض الوظائف ال built-in الموجودة في التطبيق الإفتراضي لإطار العمل Yii، وكيف يقوم بتنظيم الشيفرة البرمجية، وكيف يعالج (handling) هذا التطبيق الطلبات (requests) بشكل عام.
 </p>
 
 <blockquote><p dir="rtl">
@@ -17,16 +17,18 @@
 </p>
 
 
-Functionality <span id="functionality"></span>
--------------
+## <div dir="rtl">خصائص / وظائف التطبيق المثبت - Functionality</div> <span id="functionality"></span>
 
-The basic application installed contains four pages:
+<p dir="rtl">
+    يحتوي ال Basic ِApplication Template الذي قمنا بتثبيته على أربع صفحات:
+</p>
 
-* the homepage, displayed when you access the URL `http://hostname/index.php`,
-* the "About" page,
-* the "Contact" page, which displays a contact form that allows end users to contact you via email,
-* and the "Login" page, which displays a login form that can be used to authenticate end users. Try logging in
-  with "admin/admin", and you will find the "Login" main menu item will change to "Logout".
+<ul dir="rtl">
+    <li>الصفحة الرئيسية(Homepage): يتم عرض هذه الصفحة من خلال الرابط التالي <code>http://hostname/index.php</code> </li>
+    <li>صفحة من نحن(About)</li>
+    <li>صفحة اتصل بنا (Contact): في هذه الصفحة يتم عرض form يسمح للأعشاء بالإتصال بك من خلال البريد الإلكتروني.</li>
+    <li>صفحة تسجيل الدخول (Login): في هذه الصفحة يتم عرض form يسمح للأعضاء بالحصول على الإذن لإستخدام الخصائص التي لا يجوز لغيرهم من الوصول اليها، قم بتجربة تسجيل الدخول من خلال استخدام <code>admin/admin</code> ولاحظ أن كلمة "Login" ستختفي من القائمة الرئيسية وستظهر محلها الكلمة "Logout"</li>
+</ul>
 
 These pages share a common header and footer. The header contains a main menu bar to allow navigation
 among different pages.
