@@ -417,6 +417,7 @@ class View extends \yii\base\View
      * the supported options. The following options are specially handled and are not treated as HTML attributes:
      *
      * - `depends`: array, specifies the names of the asset bundles that this CSS file depends on.
+     * - `appendTimestamp`: bool whether to append a timestamp to the URL.
      *
      * @param string $key the key that identifies the CSS script file. If null, it will use
      * $url as the key. If two CSS files are registered with the same key, the latter
@@ -428,13 +429,18 @@ class View extends \yii\base\View
         $key = $key ?: $url;
 
         $depends = ArrayHelper::remove($options, 'depends', []);
+        $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', false);
 
         if (empty($depends)) {
+            if ($appendTimestamp && ($timestamp = @filemtime(Yii::getAlias("@webroot" . $url, false))) > 0) {
+                $url = "$url?v=$timestamp";
+            }
             $this->cssFiles[$key] = Html::cssFile($url, $options);
         } else {
             $this->getAssetManager()->bundles[$key] = Yii::createObject([
                 'class' => AssetBundle::className(),
                 'baseUrl' => '',
+                'basePath' => '@webroot',
                 'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
                 'depends' => (array) $depends,
@@ -486,6 +492,7 @@ class View extends \yii\base\View
      *     * [[POS_HEAD]]: in the head section
      *     * [[POS_BEGIN]]: at the beginning of the body section
      *     * [[POS_END]]: at the end of the body section. This is the default value.
+     * - `appendTimestamp`: bool whether to append a timestamp to the URL.
      *
      * Please refer to [[Html::jsFile()]] for other supported options.
      *
@@ -500,14 +507,19 @@ class View extends \yii\base\View
         $key = $key ?: $url;
 
         $depends = ArrayHelper::remove($options, 'depends', []);
+        $appendTimestamp = ArrayHelper::remove($options, 'appendTimestamp', false);
 
         if (empty($depends)) {
+            if ($appendTimestamp && ($timestamp = @filemtime(Yii::getAlias("@webroot" . $url, false))) > 0) {
+                $url = "$url?v=$timestamp";
+            }
             $position = ArrayHelper::remove($options, 'position', self::POS_END);
             $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
         } else {
             $this->getAssetManager()->bundles[$key] = Yii::createObject([
                 'class' => AssetBundle::className(),
                 'baseUrl' => '',
+                'basePath' => '@webroot',
                 'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,
                 'depends' => (array) $depends,
