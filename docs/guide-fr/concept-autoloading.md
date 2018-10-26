@@ -25,6 +25,10 @@ Lorsque vous utilisez le [modèle de projet *basic*](start-installation.md), vou
 
 Dans le [modèle de projet avancé](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md), chaque niveau possède son propre alias. Par exemple, le niveau « interface utilisateur » a l'alias `@frontend`, tandis que le niveau « interface d'administration » a l'alias `@backend`. En conséquence, vous pouvez mettre les classes de l'interface utilisateur sous l'espace de noms `frontend`, tandis que les classes de l'interface d'administration sont sous l'espace de noms `backend`. Cela permet à ces classes d'être chargées automatiquement par le chargeur automatique de Yii. 
 
+Pour ajouter un espace de noms personnalisé au chargeur automatique, vous devez définir un alias pour le dossier de base de l'espace de noms en utilisant  [[Yii::setAlias()]].
+Par exemple, pour charger des classes de l'espace de noms `foo` qui se trouvent dans le dossier `path/to/foo`, vous appelez `Yii::setAlias('@foo', 'path/to/foo')`.
+
+
 Table de mise en correspondance des classes <span id="class-map"></span>
 -------------------------------------------
 
@@ -47,8 +51,8 @@ Comme Yii utilise Composer comme gestionnaire de dépendances de paquets, il est
 Lors de l'utilisation conjointe du chargeur automatique de Yii et d'autres chargeurs automatiques, vous devez inclure le fichier `Yii.php` *après* que tous les autres chargeurs automatiques sont installés. Cela fait du chargeur automatique de Yii le premier à répondre à une requête de chargement automatique de classe. Par exemple, le code suivant est extrait du [script d'entrée](structure-entry-scripts.md) du [modèle de projet *basic*](start-installation.md). La première ligne installe le chargeur automatique de Composer, tandis que la seconde installe le chargeur automatique de Yii :
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 Vous pouvez utiliser le chargeur automatique de Composer seul sans celui de Yii. Néanmoins, en faisant de cette manière, la performance de chargement de vos classes est dégradée et vous devez appliquer les règles de Composer pour que vos classes puissent être chargées automatiquement. 

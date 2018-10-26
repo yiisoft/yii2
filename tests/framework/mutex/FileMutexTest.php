@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\mutex;
 
@@ -6,11 +11,9 @@ use yii\mutex\FileMutex;
 use yiiunit\TestCase;
 
 /**
- * Class FileMutexTest
+ * Class FileMutexTest.
  *
  * @group mutex
- *
- * @package yii\tests\unit\framework\mutex
  */
 class FileMutexTest extends TestCase
 {

@@ -199,15 +199,15 @@ class DateValidator extends Validator
      * @var array map of short format names to IntlDateFormatter constant values.
      */
     private $_dateFormats = [
-        'short'  => 3, // IntlDateFormatter::SHORT,
+        'short' => 3, // IntlDateFormatter::SHORT,
         'medium' => 2, // IntlDateFormatter::MEDIUM,
-        'long'   => 1, // IntlDateFormatter::LONG,
-        'full'   => 0, // IntlDateFormatter::FULL,
+        'long' => 1, // IntlDateFormatter::LONG,
+        'full' => 0, // IntlDateFormatter::FULL,
     ];
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -261,11 +261,18 @@ class DateValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
+        if ($this->isEmpty($value)) {
+            if ($this->timestampAttribute !== null) {
+                $model->{$this->timestampAttribute} = null;
+            }
+            return;
+        }
+
         $timestamp = $this->parseDateValue($value);
         if ($timestamp === false) {
             if ($this->timestampAttribute === $attribute) {
@@ -294,7 +301,7 @@ class DateValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -305,13 +312,13 @@ class DateValidator extends Validator
             return [$this->tooSmall, ['min' => $this->minString]];
         } elseif ($this->max !== null && $timestamp > $this->max) {
             return [$this->tooBig, ['max' => $this->maxString]];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
-     * Parses date string into UNIX timestamp
+     * Parses date string into UNIX timestamp.
      *
      * @param string $value string representing date
      * @return int|false a UNIX timestamp or `false` on failure.
@@ -323,7 +330,7 @@ class DateValidator extends Validator
     }
 
     /**
-     * Parses date string into UNIX timestamp
+     * Parses date string into UNIX timestamp.
      *
      * @param string $value string representing date
      * @param string $format expected date format
@@ -339,16 +346,17 @@ class DateValidator extends Validator
         } else {
             if (extension_loaded('intl')) {
                 return $this->parseDateValueIntl($value, $format);
-            } else {
-                // fallback to PHP if intl is not installed
-                $format = FormatConverter::convertDateIcuToPhp($format, 'date');
             }
+
+            // fallback to PHP if intl is not installed
+            $format = FormatConverter::convertDateIcuToPhp($format, 'date');
         }
+
         return $this->parseDateValuePHP($value, $format);
     }
 
     /**
-     * Parses a date value using the IntlDateFormatter::parse()
+     * Parses a date value using the IntlDateFormatter::parse().
      * @param string $value string representing date
      * @param string $format the expected date format
      * @return int|bool a UNIX timestamp or `false` on failure.
@@ -386,7 +394,7 @@ class DateValidator extends Validator
     }
 
     /**
-     * Parses a date value using the DateTime::createFromFormat()
+     * Parses a date value using the DateTime::createFromFormat().
      * @param string $value string representing date
      * @param string $format the expected date format
      * @return int|bool a UNIX timestamp or `false` on failure.
@@ -394,7 +402,7 @@ class DateValidator extends Validator
     private function parseDateValuePHP($value, $format)
     {
         // if no time was provided in the format string set time to 0 to get a simple date timestamp
-        $hasTimeInfo = (strpbrk($format, 'HhGgis') !== false);
+        $hasTimeInfo = (strpbrk($format, 'HhGgisU') !== false);
 
         $date = DateTime::createFromFormat($format, $value, new \DateTimeZone($hasTimeInfo ? $this->timeZone : 'UTC'));
         $errors = DateTime::getLastErrors();
@@ -405,11 +413,12 @@ class DateValidator extends Validator
         if (!$hasTimeInfo) {
             $date->setTime(0, 0, 0);
         }
+
         return $date->getTimestamp();
     }
 
     /**
-     * Formats a timestamp using the specified format
+     * Formats a timestamp using the specified format.
      * @param int $timestamp
      * @param string $format
      * @return string

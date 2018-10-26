@@ -18,7 +18,7 @@ en el entorno de un equipo de desarrollo.
   utilizar el Template de Proyecto Básico por su simplicidad pero funcionalidad suficiente.
 
 
-Installing via Composer <span id="installing-via-composer"></span>
+Instalando via Composer <span id="installing-via-composer"></span>
 -------------------------------
 
 Si aún no tienes Composer instalado, puedes hacerlo siguiendo las instrucciones que se encuentran en
@@ -40,7 +40,7 @@ ejecutando el comando `composer self-update`
 Teniendo Composer instalado, puedes instalar Yii ejecutando los siguientes comandos en un directorio accesible vía Web:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
+composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -189,7 +189,7 @@ DocumentRoot "path/to/basic/web"
 
 Para utilizar [Nginx](http://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](http://php.net/install.fpm).
 Utiliza la siguiente configuración de Nginx, reemplazando `path/to/basic/web` con la ruta real a
-`basic/web` y `mysite.local` con el hostname real a servir.
+`basic/web` y `mysite.test` con el hostname real a servir.
 
 ```
 server {
@@ -199,7 +199,7 @@ server {
     listen 80; ## listen for ipv4
     #listen [::]:80 default_server ipv6only=on; ## listen for ipv6
 
-    server_name mysite.local;
+    server_name mysite.test;
     root        /path/to/basic/web;
     index       index.php;
 

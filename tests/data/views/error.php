@@ -1,10 +1,8 @@
 <?php
 
-/**
- * @var string $name
- * @var string $message
- * @var Exception $exception
- */
+/* @var $name string */
+/* @var $message string */
+/* @var $exception Exception */
 
 ?>
 Name: <?= $name ?>

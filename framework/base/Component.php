@@ -8,12 +8,13 @@
 namespace yii\base;
 
 use Yii;
+use yii\helpers\StringHelper;
 
 /**
  * Component is the base class that implements the *property*, *event* and *behavior* features.
  *
  * Component provides the *event* and *behavior* features, in addition to the *property* feature which is implemented in
- * its parent class [[\yii\base\Object|Object]].
+ * its parent class [[\yii\base\BaseObject|BaseObject]].
  *
  * Event is a way to "inject" custom code into existing code at certain places. For example, a comment object can trigger
  * an "add" event when the user adds a comment. We can write custom code and attach it to this event so that when the event
@@ -97,12 +98,17 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends Object
+class Component extends BaseObject
 {
     /**
      * @var array the attached event handlers (event name => handlers)
      */
     private $_events = [];
+    /**
+     * @var array the event handlers attached for wildcard patterns (event name wildcard => handlers)
+     * @since 2.0.14
+     */
+    private $_eventWildcards = [];
     /**
      * @var Behavior[]|null the attached behaviors (behavior name => behavior). This is `null` when not initialized.
      */
@@ -111,6 +117,7 @@ class Component extends Object
 
     /**
      * Returns the value of a component property.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a getter: return the getter result
@@ -149,6 +156,7 @@ class Component extends Object
 
     /**
      * Sets the value of a component property.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a setter: set the property value
@@ -203,6 +211,7 @@ class Component extends Object
 
     /**
      * Checks if a property is set, i.e. defined and not null.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a setter: return whether the property is set
@@ -235,6 +244,7 @@ class Component extends Object
 
     /**
      * Sets a component property to be null.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a setter: set the property value to be null
@@ -297,11 +307,13 @@ class Component extends Object
     public function __clone()
     {
         $this->_events = [];
+        $this->_eventWildcards = [];
         $this->_behaviors = null;
     }
 
     /**
      * Returns a value indicating whether a property is defined for this component.
+     *
      * A property is defined if:
      *
      * - the class has a getter or setter method associated with the specified name
@@ -323,6 +335,7 @@ class Component extends Object
 
     /**
      * Returns a value indicating whether a property can be read.
+     *
      * A property can be read if:
      *
      * - the class has a getter method associated with the specified name
@@ -348,11 +361,13 @@ class Component extends Object
                 }
             }
         }
+
         return false;
     }
 
     /**
      * Returns a value indicating whether a property can be set.
+     *
      * A property can be written if:
      *
      * - the class has a setter method associated with the specified name
@@ -378,11 +393,13 @@ class Component extends Object
                 }
             }
         }
+
         return false;
     }
 
     /**
      * Returns a value indicating whether a method is defined.
+     *
      * A method is defined if:
      *
      * - the class has a method with the specified name
@@ -404,6 +421,7 @@ class Component extends Object
                 }
             }
         }
+
         return false;
     }
 
@@ -445,6 +463,13 @@ class Component extends Object
     public function hasEventHandlers($name)
     {
         $this->ensureBehaviors();
+
+        foreach ($this->_eventWildcards as $wildcard => $handlers) {
+            if (!empty($handlers) && StringHelper::matchWildcard($wildcard, $name)) {
+                return true;
+            }
+        }
+
         return !empty($this->_events[$name]) || Event::hasHandlers($this, $name);
     }
 
@@ -469,6 +494,14 @@ class Component extends Object
      *
      * where `$event` is an [[Event]] object which includes parameters associated with the event.
      *
+     * Since 2.0.14 you can specify event name as a wildcard pattern:
+     *
+     * ```php
+     * $component->on('event.group.*', function ($event) {
+     *     Yii::trace($event->name . ' is triggered.');
+     * });
+     * ```
+     *
      * @param string $name the event name
      * @param callable $handler the event handler
      * @param mixed $data the data to be passed to the event handler when the event is triggered.
@@ -481,6 +514,16 @@ class Component extends Object
     public function on($name, $handler, $data = null, $append = true)
     {
         $this->ensureBehaviors();
+
+        if (strpos($name, '*') !== false) {
+            if ($append || empty($this->_eventWildcards[$name])) {
+                $this->_eventWildcards[$name][] = [$handler, $data];
+            } else {
+                array_unshift($this->_eventWildcards[$name], [$handler, $data]);
+            }
+            return;
+        }
+
         if ($append || empty($this->_events[$name])) {
             $this->_events[$name][] = [$handler, $data];
         } else {
@@ -490,7 +533,12 @@ class Component extends Object
 
     /**
      * Detaches an existing event handler from this component.
+     *
      * This method is the opposite of [[on()]].
+     *
+     * Note: in case wildcard pattern is passed for event name, only the handlers registered with this
+     * wildcard will be removed, while handlers registered with plain names matching this wildcard will remain.
+     *
      * @param string $name event name
      * @param callable $handler the event handler to be removed.
      * If it is null, all handlers attached to the named event will be removed.
@@ -500,24 +548,46 @@ class Component extends Object
     public function off($name, $handler = null)
     {
         $this->ensureBehaviors();
-        if (empty($this->_events[$name])) {
+        if (empty($this->_events[$name]) && empty($this->_eventWildcards[$name])) {
             return false;
         }
         if ($handler === null) {
-            unset($this->_events[$name]);
+            unset($this->_events[$name], $this->_eventWildcards[$name]);
             return true;
         }
 
         $removed = false;
-        foreach ($this->_events[$name] as $i => $event) {
-            if ($event[0] === $handler) {
-                unset($this->_events[$name][$i]);
-                $removed = true;
+        // plain event names
+        if (isset($this->_events[$name])) {
+            foreach ($this->_events[$name] as $i => $event) {
+                if ($event[0] === $handler) {
+                    unset($this->_events[$name][$i]);
+                    $removed = true;
+                }
+            }
+            if ($removed) {
+                $this->_events[$name] = array_values($this->_events[$name]);
+                return $removed;
             }
         }
-        if ($removed) {
-            $this->_events[$name] = array_values($this->_events[$name]);
+
+        // wildcard event names
+        if (isset($this->_eventWildcards[$name])) {
+            foreach ($this->_eventWildcards[$name] as $i => $event) {
+                if ($event[0] === $handler) {
+                    unset($this->_eventWildcards[$name][$i]);
+                    $removed = true;
+                }
+            }
+            if ($removed) {
+                $this->_eventWildcards[$name] = array_values($this->_eventWildcards[$name]);
+                // remove empty wildcards to save future redundant regex checks:
+                if (empty($this->_eventWildcards[$name])) {
+                    unset($this->_eventWildcards[$name]);
+                }
+            }
         }
+
         return $removed;
     }
 
@@ -531,16 +601,28 @@ class Component extends Object
     public function trigger($name, Event $event = null)
     {
         $this->ensureBehaviors();
+
+        $eventHandlers = [];
+        foreach ($this->_eventWildcards as $wildcard => $handlers) {
+            if (StringHelper::matchWildcard($wildcard, $name)) {
+                $eventHandlers = array_merge($eventHandlers, $handlers);
+            }
+        }
+
         if (!empty($this->_events[$name])) {
+            $eventHandlers = array_merge($eventHandlers, $this->_events[$name]);
+        }
+
+        if (!empty($eventHandlers)) {
             if ($event === null) {
-                $event = new Event;
+                $event = new Event();
             }
             if ($event->sender === null) {
                 $event->sender = $this;
             }
             $event->handled = false;
             $event->name = $name;
-            foreach ($this->_events[$name] as $handler) {
+            foreach ($eventHandlers as $handler) {
                 $event->data = $handler[1];
                 call_user_func($handler[0], $event);
                 // stop further handling if the event is handled
@@ -549,6 +631,7 @@ class Component extends Object
                 }
             }
         }
+
         // invoke class-level attached handlers
         Event::trigger($this, $name, $event);
     }

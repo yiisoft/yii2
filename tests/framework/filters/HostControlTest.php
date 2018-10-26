@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\filters;
 
@@ -18,8 +23,8 @@ class HostControlTest extends TestCase
     {
         parent::setUp();
 
-        $_SERVER['SCRIPT_FILENAME'] = "/index.php";
-        $_SERVER['SCRIPT_NAME'] = "/index.php";
+        $_SERVER['SCRIPT_FILENAME'] = '/index.php';
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
 
         $this->mockWebApplication();
     }
@@ -33,46 +38,46 @@ class HostControlTest extends TestCase
             [
                 null,
                 'example.com',
-                true
+                true,
             ],
             [
                 'example.com',
                 'example.com',
-                true
+                true,
             ],
             [
                 ['example.com'],
                 'example.com',
-                true
+                true,
             ],
             [
                 ['example.com'],
                 'domain.com',
-                false
+                false,
             ],
             [
                 ['*.example.com'],
                 'en.example.com',
-                true
+                true,
             ],
             [
                 ['*.example.com'],
                 'fake.com',
-                false
+                false,
             ],
             [
                 function () {
                     return ['example.com'];
                 },
                 'example.com',
-                true
+                true,
             ],
             [
                 function () {
                     return ['example.com'];
                 },
                 'fake.com',
-                false
+                false,
             ],
         ];
     }
@@ -122,7 +127,7 @@ class HostControlTest extends TestCase
         $filter = new HostControl();
         $filter->allowedHosts = ['example.com'];
         $this->denyCallBackCalled = false;
-        $filter->denyCallback = function() {
+        $filter->denyCallback = function () {
             $this->denyCallBackCalled = true;
         };
 
@@ -137,7 +142,7 @@ class HostControlTest extends TestCase
         $filter = new HostControl();
         $filter->allowedHosts = ['example.com'];
         $filter->fallbackHostInfo = 'http://yiiframework.com';
-        $filter->denyCallback = function() {};
+        $filter->denyCallback = function () {};
 
         $controller = new Controller('test', Yii::$app);
         $action = new Action('test', $controller);
@@ -148,7 +153,8 @@ class HostControlTest extends TestCase
 
     public function testErrorHandlerWithDefaultHost()
     {
-        $this->setExpectedException('yii\web\NotFoundHttpException', 'Page not found.');
+        $this->expectException('yii\web\NotFoundHttpException');
+        $this->expectExceptionMessage('Page not found.');
 
         $filter = new HostControl();
         $filter->allowedHosts = ['example.com'];

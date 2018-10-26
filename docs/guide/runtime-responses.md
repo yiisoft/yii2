@@ -16,7 +16,7 @@ In this section, we will describe how to compose and send responses to end users
 
 One of the first things you would do when building a response is to state whether the request is successfully handled.
 This is done by setting the [[yii\web\Response::statusCode]] property which can take one of the valid
-[HTTP status codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html). For example, to indicate the request
+[HTTP status codes](https://tools.ietf.org/html/rfc2616#section-10). For example, to indicate the request
 is successfully handled, you may set the status code to be 200, like the following:
 
 ```php
