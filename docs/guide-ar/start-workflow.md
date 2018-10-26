@@ -92,24 +92,18 @@ basic/                  application base path
 </p>
 
 
-Request Lifecycle <span id="request-lifecycle"></span>
------------------
+## <div dir="rtl">دورة الحياة الخاصة بال request</a> <span id="request-lifecycle"></span>
 
-The following diagram shows how an application handles a request.
+<p dir="rtl">
+يوضح المخطط التالي كيفية معالجة التطبيق ل request معين.
+</p>
 
 ![Request Lifecycle](../guide/images/request-lifecycle.png)
 
-1. A user makes a request to the [entry script](structure-entry-scripts.md) `web/index.php`.
-2. The entry script loads the application [configuration](concept-configurations.md) and creates
-   an [application](structure-applications.md) instance to handle the request.
-3. The application resolves the requested [route](runtime-routing.md) with the help of
-   the [request](runtime-requests.md) application component.
-4. The application creates a [controller](structure-controllers.md) instance to handle the request.
-5. The controller creates an [action](structure-controllers.md) instance and performs the filters for the action.
-6. If any filter fails, the action is cancelled.
-7. If all filters pass, the action is executed.
-8. The action loads some data models, possibly from a database.
-9. The action renders a view, providing it with the data models.
-10. The rendered result is returned to the [response](runtime-responses.md) application component.
-11. The response component sends the rendered result to the user's browser.
+<ol dir="rtl">
+    <li>يقةم المستخدم بعمل request لل <a href="../guide/structure-entry-scripts.md">entry script</a> <code>web/index.php</code>.</li>
+    <li>يقوم ال entry script على جلب <a href="../guide/concept-configurations.md">الإعدادات</a> الخاصة بالتطبيق ومن ثم إنشاء ال instance الخاص بالتطبيق ليستطيع التحكم ب request وإدارتها.</li>
+    <li>يقوم التطبيق بمعالجة ال <a href="../guide/runtime-routing.md">requested route</a> بمساعدة من ال <a href="../guide/runtime-requests.md">request</a> application component.</li>
+    <li>يقوم التطبيق على إنشاء instance من ال <a href="../guide/structure-controllers.md">controller</a> للتحكم بال request.</li>
+</ol>
 
