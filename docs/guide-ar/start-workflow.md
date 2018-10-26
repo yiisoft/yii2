@@ -106,11 +106,10 @@ basic/                  application base path
     <li>يقوم التطبيق بمعالجة ال <a href="../guide/runtime-routing.md">requested route</a> بمساعدة من ال <a href="../guide/runtime-requests.md">request</a> application component.</li>
     <li>يقوم التطبيق على إنشاء instance من ال <a href="../guide/structure-controllers.md">controller</a> للتحكم بال request.</li>
     <li>يقوم ال controller على إنشاء <a href="../guide/structure-controllers.md">action</a> instance مع مجموعة من الفلاتر(المرشحات) الخاصة بهذا ال action.</li>
+    <li>في حالة فشل أي فلتر، يتم إلغاء الإجراء.</li>
+    <li>في حال نجاح جميع الفلاتر ، يتم تنفيذ الإجراء.</li>
+    <li>يقوم ال action بجلب بعض البيانات الخاصة بال models, وفي الغالب ستكون من قاعدة البيانات إن أمكن ذلك.</li>
+    <li>سيقوم ال action بجلب ال view ليقوم بتقديم البيانات التي تم جلبها لل view.</li>
+    <li>عملية الجلب السابقة ستقوم على إرجاع النتائج الى <a href="../guide/runtime-responses.md">response</a> application component</li>
+    <li>بعد ذلك سيقوم ال response component بإرسال النتيجة النهائية الى المتصفح الخاص بالمستخدم. </li>
 </ol>
-
-6. If any filter fails, the action is cancelled.
-7. If all filters pass, the action is executed.
-8. The action loads some data models, possibly from a database.
-9. The action renders a view, providing it with the data models.
-10. The rendered result is returned to the [response](runtime-responses.md) application component.
-11. The response component sends the rendered result to the user's browser.
