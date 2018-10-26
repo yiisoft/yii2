@@ -122,6 +122,8 @@ matrix:
 
   allow_failures:
     - php: nightly
+    - php: hhvm-3.21
+    - php: hhvm-3.24
 
 install:
   - |
@@ -175,6 +177,7 @@ before_script:
       php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
       psql --version
       mysql --version
+      sudo mysql_upgrade
     fi
   - |
     if [ $TASK_TESTS_JS == 1 ]; then

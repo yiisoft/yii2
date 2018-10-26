@@ -477,10 +477,14 @@ class BaseInflector
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
     {
-        $string = static::transliterate($string);
-        $string = preg_replace('/[^a-zA-Z0-9=\s—–-]+/u', '', $string);
-        $string = preg_replace('/[=\s—–-]+/u', $replacement, $string);
-        $string = trim($string, $replacement);
+        $parts = explode($replacement, static::transliterate($string));
+
+        $replaced = array_map(function ($element) use ($replacement) {
+            $element = preg_replace('/[^a-zA-Z0-9=\s—–]+/u', '', $element);
+            return preg_replace('/[=\s—–]+/u', $replacement, $element);
+        }, $parts);
+
+        $string = trim(implode($replacement, $replaced), $replacement);
 
         return $lowercase ? strtolower($string) : $string;
     }

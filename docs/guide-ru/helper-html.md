@@ -244,11 +244,11 @@ $decodedUserName = Html::decode($userName);
 Сигнатура методов для формирования радио-переключателей и чекбоксов немного отличается: 
 
 ```php
-<?= Html::radio('agree', true, ['label' => 'Я согласен']);
-<?= Html::activeRadio($model, 'agree', ['class' => 'agreement'])
+<?= Html::radio('agree', true, ['label' => 'Я согласен']) ?>
+<?= Html::activeRadio($model, 'agree', ['class' => 'agreement']) ?>
 
-<?= Html::checkbox('agree', true, ['label' => 'Я согласен']);
-<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement'])
+<?= Html::checkbox('agree', true, ['label' => 'Я согласен']) ?>
+<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement']) ?>
 ```
 
 Выпадающие и обычные списки могут быть сформированы следующим образом:
@@ -354,7 +354,7 @@ echo Html::getAttributeName('dates[0]');
 <style>.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("Привет!");', ['defer' => true]);
+<?= Html::script('alert("Привет!");', ['defer' => true]) ?>
 
 Результатом будет:
 

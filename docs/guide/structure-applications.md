@@ -365,6 +365,7 @@ By configuring this property, you are essentially calling the PHP function
 ]
 ```
 
+For more details on the implications of setting the time zone, please check the [section on date formatting](output-formatting.md#time-zones).
 
 #### [[yii\base\Application::version|version]] <span id="version"></span>
 

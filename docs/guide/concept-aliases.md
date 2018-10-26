@@ -123,6 +123,7 @@ The `@yii` alias is defined when you include the `Yii.php` file in your [entry s
 The rest of the aliases are defined in the application constructor when applying the application
 [configuration](concept-configurations.md).
 
+> Note: `@web` and `@webroot` aliases as their descriptions indicate are defined within [[yii\web\Application|Web application]] and therefore are not available for [[yii\console\Application|Console application]] by default.
 
 Extension Aliases <span id="extension-aliases"></span>
 -----------------

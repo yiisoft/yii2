@@ -9,6 +9,7 @@
   "dependencies": {},
   "devDependencies": {
     "chai": "^3.5.0",
+    "jsdom": "11.11.0",
     "leche": "^2.2.3",
     "mocha": "^3.5.3",
     "mocha-jsdom": "^2.0.0",
