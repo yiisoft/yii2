@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
-- Bug #15552: Fixed issue where console table widget throws division by zero exception when unable to determine screen height/width.
+- Bug #15552: Fixed issue where console table widget throws division by zero exception when unable to determine screen height/width. (nadar)
 - Bug #13932: Fix number validator attributes comparison (uaoleg, s1lver)
 - Bug #14039, #16636: Fixed validation for disabled inputs (s1lver, omzy83)
 - Bug #16425: Check for additional values for disabled confirm dialog (Alex-Code, s1lver)
