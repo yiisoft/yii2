@@ -157,15 +157,18 @@ EOD;
             // use master connection to get the biggest PK value
             $value = $this->db->useMaster(function (Connection $db) use ($tableSchema) {
                 return $db->createCommand(
-                    'SELECT MAX("' . $tableSchema->primaryKey[0] . '") FROM "'. $tableSchema->name . '"'
+                    'SELECT MAX([[' . $tableSchema->primaryKey[0] . ']]) FROM {{'. $tableSchema->name . '}}'
                 )->queryScalar();
             }) + 1;
         }
 
         //Oracle needs at least two queries to reset sequence (see adding transactions and/or use alter method to avoid grants' issue?)
-        $this->db->createCommand('DROP SEQUENCE "' . $tableSchema->sequenceName . '"')->execute();
-        $this->db->createCommand('CREATE SEQUENCE "' . $tableSchema->sequenceName . '" START WITH ' . $value
-            . ' INCREMENT BY 1 NOMAXVALUE NOCACHE')->execute();
+        $this->db->createCommand('DROP SEQUENCE {{' . $tableSchema->sequenceName . '}}')->execute();
+        $this->db->createCommand(
+            'CREATE SEQUENCE {{' . $tableSchema->sequenceName . '}}'
+            . ' START WITH ' . $value
+            . ' INCREMENT BY 1 NOMAXVALUE NOCACHE'
+        )->execute();
     }
 
     /**
