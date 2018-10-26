@@ -67,6 +67,12 @@ class Table extends Widget
     const CHAR_MIDDLE = 'middle';
 
     /**
+     * @var integer If under given circumstances the height can not be calculate (for example docker environments), this value will be used as fallback.
+     * @since 2.0.16
+     */
+    public $fallbackRowHeight = 15;
+
+    /**
      * @var array table headers
      */
     private $_headers = [];
@@ -292,6 +298,7 @@ class Table extends Widget
             if ($index !== 0) {
                 $separator .= $spanMid;
             }
+            $rowSize = $this->ensureRowHeight($rowSize);
             $separator .= str_repeat($spanMidMid, $rowSize);
         }
         $separator .= $spanRight . "\n";
@@ -355,6 +362,7 @@ class Table extends Widget
     protected function calculateRowHeight($row)
     {
         $rowsPerCell = array_map(function ($size, $columnWidth) {
+            $size = $this->ensureRowHeight($size);
             if (is_array($columnWidth)) {
                 $rows = 0;
                 foreach ($columnWidth as $width) {
@@ -393,5 +401,18 @@ class Table extends Widget
                 : self::DEFAULT_CONSOLE_SCREEN_WIDTH + self::CONSOLE_SCROLLBAR_OFFSET;
         }
         return $this->_screenWidth;
+    }
+
+    /**
+     * Ensure whether the given size is bigger then 0 otherwise use fallback value.
+     * 
+     * @see https://github.com/yiisoft/yii2/issues/15552
+     * @param integer $size The size to ensure in order to prevent division by zero.
+     * @return integer
+     * @since 2.0.16
+     */
+    protected function ensureRowHeight($size)
+    {
+        return ($size <= 0) ? $this->fallbackRowHeight : $size;
     }
 }

@@ -269,4 +269,18 @@ EXPECTED;
         ])->setScreenWidth(200)->run()
         );
     }
+
+    public function testEnsureRowHeight()
+    {
+        $object = new Table();
+        $reflection = new \ReflectionClass($object);
+        $method = $reflection->getMethod('ensureRowHeight');
+        $method->setAccessible(true);
+
+        $this->assertSame(123, $method->invokeArgs($object, [123]));
+        $this->assertSame(1, $method->invokeArgs($object, [1]));
+        $this->assertSame(15, $method->invokeArgs($object, [0]));
+        $this->assertSame(15, $method->invokeArgs($object, [null]));
+        $this->assertSame(15, $method->invokeArgs($object, [-1]));
+    }
 }
