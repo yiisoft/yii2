@@ -80,15 +80,16 @@ basic/                  application base path
     جميع <a href="../guide/structure-views.md">(controller classes)</a> 
 </p>
 
-The following diagram shows the static structure of an application.
+<p dir="rtl">
+    يوضح المخطط التالي ال static structure للتطبيق. 
+</p>
 
 ![Static Structure of Application](../guide/images/application-structure.png)
 
-Each application has an entry script `web/index.php` which is the only Web accessible PHP script in the application.
-The entry script takes an incoming request and creates an [application](structure-applications.md) instance to handle it.
-The [application](structure-applications.md) resolves the request with the help of its [components](concept-components.md),
-and dispatches the request to the MVC elements. [Widgets](structure-widgets.md) are used in the [views](structure-views.md)
-to help build complex and dynamic user interface elements.
+<p dir="rtl">
+    يحتوي كل تطبيق على نص برمجي يستخدم للدخول الى التطبيق (كبوابة بعدها يظهر التطبيق للناظر)، ويسمى هذا الجزء بال entry script، وهو يمثل الصفحة <code>web/index.php</code>، ويعد هذا المدخل النص البرمجي الوحيد الذي يمكن الوصول إليه من خلال ال PHP في التطبيق، ويعمل هذا ال entry script على أخذ ال request ومن ثم إنشاء instance خاص بالتطبيق ليستطيع التعامل معه (التعامل مع التطبيق ومكوناته).
+    يقوم <a href="../guide/structure-applications.md">التطبيق</a> على معالجة ال request بمساعدة من ال <a href="../guide/concept-components.md">components</a>، ومن ثم بقوم التطبيق بإرسال ال request الى عناصر ال MVC، كما يتم استخدام ال <a href="../guide/structure-widgets.md">Widgets</a> في ال <a href="../guide/structure-views.md">views</a> للمساعدة في إنشاء العناصر المعقدة والمتغيرة (Complex & Dynamic user interface) لواجهة المستخدم.
+</p>
 
 
 Request Lifecycle <span id="request-lifecycle"></span>
