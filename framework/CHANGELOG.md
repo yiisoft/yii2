@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #16183: Fixed when `yii\helpers\BaseFileHelper` sometimes returned wrong value (samdark, SilverFire, OndrejVasicek)
 - Bug #13932: Fix number validator attributes comparison (uaoleg, s1lver)
 - Bug #14039, #16636: Fixed validation for disabled inputs (s1lver, omzy83)
 - Bug #16425: Check for additional values for disabled confirm dialog (Alex-Code, s1lver)
