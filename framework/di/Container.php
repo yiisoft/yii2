@@ -505,7 +505,7 @@ class Container extends Component
      */
     public function invoke(callable $callback, $params = [])
     {
-        return call_user_func_array($callback, $this->resolveCallableDependencies($callback, $params));;
+        return call_user_func_array($callback, $this->resolveCallableDependencies($callback, $params));
     }
 
     /**
