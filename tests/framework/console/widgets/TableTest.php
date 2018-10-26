@@ -249,4 +249,24 @@ EXPECTED;
             ])->setScreenWidth(200)->run()
         );
     }
+
+    public function testEmptyHeaders()
+    {
+        $table = new Table();
+
+        $expected = <<<'EXPECTED'
+╔═══════════════╤═══════════════╗
+║ testcontent1  │ testcontent2  ║
+╟───────────────┼───────────────╢
+║ testcontent21 │ testcontent22 ║
+╚═══════════════╧═══════════════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE($expected, $table->setRows([
+            ['testcontent1', 'testcontent2'],
+            ['testcontent21', 'testcontent22']
+        ])->setScreenWidth(200)->run()
+        );
+    }
 }

@@ -184,4 +184,14 @@ class JsonResponseFormatterTest extends FormatterTest
 
         $this->assertEquals($contentTypeExpected, $contentTypeActual);
     }
+
+    /**
+     * Formatter must return 'null' string.
+     */
+    public function testFormatNull()
+    {
+        $this->response->data = null;
+        $this->formatter->format($this->response);
+        $this->assertEquals('null', $this->response->content);
+    }
 }

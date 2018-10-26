@@ -122,7 +122,7 @@ Les classes de contrôleur doivent être [auto-chargeables](concept-autoloading.
 
 ### Table de mise en correspondance des contrôleurs <span id="controller-map"></span>
 
-Vous pouvez configurer [[yii\base\Application::controllerMap|controller map (table de mise en correpondance des contrôleurs)]] pour outrepasser les contraintes concernant les identifiants de contrôleur et les noms de classe décrites plus haut. Cela est principalement utile lorsque vous utilisez des contrôleurs de tierces parties et que vous n'avez aucun contrôle sur le nommage de leur classe. 
+Vous pouvez configurer [[yii\base\Application::controllerMap|controller map (table de mise en correspondance des contrôleurs)]] pour outrepasser les contraintes concernant les identifiants de contrôleur et les noms de classe décrites plus haut. Cela est principalement utile lorsque vous utilisez des contrôleurs de tierces parties et que vous n'avez aucun contrôle sur le nommage de leur classe. 
 Vous pouvez configurer [[yii\base\Application::controllerMap|controller map]] dans la [configuration de l'application](structure-applications.md#application-configurations). Par exemple :
 
 ```php
@@ -289,7 +289,7 @@ class PostController extends Controller
 
 En fonction de la requête, les paramètres de l'action seront établis comme suit :
 
-* `http://hostname/index.php?r=post/view&id=123`: le paramètre `$id` reçoit la valeur `'123'`,  tandis que le paramètre `$version` reste *null* (sa valeur par défaut) car la requête ne contient aucun paramètre `version`.
+* `http://hostname/index.php?r=post/view&id=123`: le paramètre `$id` reçoit la valeur `'123'`,  tandis que le paramètre `$version` reste `null` (sa valeur par défaut) car la requête ne contient aucun paramètre `version`.
 * `http://hostname/index.php?r=post/view&id=123&version=2`: les paramètres `$id` et `$version` reçoivent les valeurs `'123'` et `'2'`, respectivement.
 * `http://hostname/index.php?r=post/view`: une exception [[yii\web\BadRequestHttpException]] est levée car le paramètre obligatoire `$id` n'est pas fourni par la requête.
 * `http://hostname/index.php?r=post/view&id[]=123`: une exception [[yii\web\BadRequestHttpException]] est levée car le paramètre `$id` reçoit, de manière inattendue,  un tableau (`['123']`).
@@ -343,7 +343,7 @@ Lors du traitement d'une requête, une [application](structure-applications.md) 
    * Si l'identifiant de l'action est trouvé et qu'il correspond à une méthode d'action, une action en ligne est créée.
    * Dans les autres cas, une exception [[yii\base\InvalidRouteException]] est levée.
 3. Le contrôleur appelle consécutivement la méthode `beforeAction()` de l'application, celle du module (si module si le contrôleur appartient à un module) et celle du contrôleur. 
-   * Si l'un des appels retourne *false*, les appels aux  méthodes `beforeAction()` qui devraient suivre ne sont pas effectués et l'exécution de l'action est annulée.
+   * Si l'un des appels retourne `false`, les appels aux  méthodes `beforeAction()` qui devraient suivre ne sont pas effectués et l'exécution de l'action est annulée.
    * Par défaut, chacun des appels à la méthode `beforeAction()` déclenche un événement  `beforeAction` auquel vous pouvez attacher un gestionnaire d'événement. 
 4. Le contrôleur exécute l'action.
    * Les paramètres de l'action sont analysés et définis à partir des données transmises par la requête.

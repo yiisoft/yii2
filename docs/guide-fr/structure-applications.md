@@ -13,7 +13,7 @@ Il existe deux types d'application :  [[yii\web\Application|les applications We
 
 ## Configurations d'application <span id="application-configurations"></span>
 
-Losqu'un [script d'entrée](structure-entry-scripts.md) crée une application, il charge une [configuration](concept-configurations.md) et l'applique à cette application de la manière suivante :
+Lorsqu'un [script d'entrée](structure-entry-scripts.md) crée une application, il charge une [configuration](concept-configurations.md) et l'applique à cette application de la manière suivante :
 
 ```php
 require __DIR__ . '/../vendor/autoload.php';

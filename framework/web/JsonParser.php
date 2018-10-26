@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\helpers\Json;
 
 /**
@@ -50,7 +50,7 @@ class JsonParser implements RequestParserInterface
         try {
             $parameters = Json::decode($rawBody, $this->asArray);
             return $parameters === null ? [] : $parameters;
-        } catch (InvalidParamException $e) {
+        } catch (InvalidArgumentException $e) {
             if ($this->throwException) {
                 throw new BadRequestHttpException('Invalid JSON data in request body: ' . $e->getMessage());
             }

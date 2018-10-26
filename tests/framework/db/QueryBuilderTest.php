@@ -280,7 +280,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_DATETIME . ' NOT NULL',
                 $this->dateTime()->notNull(),
                 [
-                    'mysql' => 'datetime NOT NULL',
                     'postgres' => 'timestamp(0) NOT NULL',
                     'sqlite' => 'datetime NOT NULL',
                     'oci' => 'TIMESTAMP NOT NULL',
@@ -292,7 +291,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_DATETIME,
                 $this->dateTime(),
                 [
-                    'mysql' => 'datetime',
                     'postgres' => 'timestamp(0)',
                     'sqlite' => 'datetime',
                     'oci' => 'TIMESTAMP',
@@ -871,7 +869,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_TIME . ' NOT NULL',
                 $this->time()->notNull(),
                 [
-                    'mysql' => 'time NOT NULL',
                     'postgres' => 'time(0) NOT NULL',
                     'sqlite' => 'time NOT NULL',
                     'oci' => 'TIMESTAMP NOT NULL',
@@ -883,7 +880,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_TIME,
                 $this->time(),
                 [
-                    'mysql' => 'time',
                     'postgres' => 'time(0)',
                     'sqlite' => 'time',
                     'oci' => 'TIMESTAMP',
@@ -906,7 +902,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_TIMESTAMP . ' NOT NULL',
                 $this->timestamp()->notNull(),
                 [
-                    'mysql' => 'timestamp NOT NULL',
                     'postgres' => 'timestamp(0) NOT NULL',
                     'sqlite' => 'timestamp NOT NULL',
                     'oci' => 'TIMESTAMP NOT NULL',
@@ -934,7 +929,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 Schema::TYPE_TIMESTAMP . ' NULL DEFAULT NULL',
                 $this->timestamp()->defaultValue(null),
                 [
-                    'mysql' => 'timestamp NULL DEFAULT NULL',
                     'postgres' => 'timestamp(0) NULL DEFAULT NULL',
                     'sqlite' => 'timestamp NULL DEFAULT NULL',
                     'sqlsrv' => 'timestamp NULL DEFAULT NULL',

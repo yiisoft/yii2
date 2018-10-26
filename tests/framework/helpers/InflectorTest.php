@@ -89,9 +89,9 @@ class InflectorTest extends TestCase
 
     public function testCamelize()
     {
-        $this->assertEquals('MeMySelfAndi', Inflector::camelize('me my_self-andI'));
+        $this->assertEquals('MeMySelfAndI', Inflector::camelize('me my_self-andI'));
         $this->assertEquals('QweQweEwq', Inflector::camelize('qwe qwe^ewq'));
-        $this->assertEquals('ВідомоЩоТестиЗберігатьНашіНерви', Inflector::camelize('Відомо, що тести зберігать наші НЕРВИ! 🙃'));
+        $this->assertEquals('ВідомоЩоТестиЗберігатьНашіНЕРВИ', Inflector::camelize('Відомо, що тести зберігать наші НЕРВИ! 🙃'));
     }
 
     public function testUnderscore()
@@ -138,6 +138,8 @@ class InflectorTest extends TestCase
         $this->assertEquals('PostTag', Inflector::id2camel('post_tag', '_'));
         $this->assertEquals('НевжеІЦеПрацює', Inflector::id2camel('невже_і_це_працює', '_'));
 
+        $this->assertEquals('ShouldNotBecomeLowercased', Inflector::id2camel('ShouldNotBecomeLowercased', '_'));
+
         $this->assertEquals('FooYBar', Inflector::id2camel('foo-y-bar'));
         $this->assertEquals('FooYBar', Inflector::id2camel('foo_y_bar', '_'));
     }
@@ -179,6 +181,13 @@ class InflectorTest extends TestCase
             }
             $this->assertEquals($expected, Inflector::slug($source));
         }
+    }
+
+    public function testSlugReplacements()
+    {
+        $this->assertEquals('dont_replace_replacement', Inflector::slug('dont replace_replacement', '_'));
+        $this->assertEquals('remove_trailing_replacements', Inflector::slug('_remove trailing replacements_', '_'));
+        $this->assertEquals('thisrepisrepreplacement', Inflector::slug('this is REP-lacement', 'REP'));
     }
 
     public function testSlugIntl()

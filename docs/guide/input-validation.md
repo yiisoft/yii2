@@ -294,7 +294,7 @@ which supports declaring both attributes and rules on the fly. Its usage is like
 ```php
 public function actionSearch($name, $email)
 {
-    $model = DynamicModel::validateData(['name' => $name, 'email' => $email]), [
+    $model = DynamicModel::validateData(['name' => $name, 'email' => $email], [
         [['name', 'email'], 'string', 'max' => 128],
         ['email', 'email'],
     ]);
