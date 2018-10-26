@@ -101,9 +101,16 @@ basic/                  application base path
 ![Request Lifecycle](../guide/images/request-lifecycle.png)
 
 <ol dir="rtl">
-    <li>يقةم المستخدم بعمل request لل <a href="../guide/structure-entry-scripts.md">entry script</a> <code>web/index.php</code>.</li>
+    <li>يقوم المستخدم بعمل request لل <a href="../guide/structure-entry-scripts.md">entry script</a> <code>web/index.php</code>.</li>
     <li>يقوم ال entry script على جلب <a href="../guide/concept-configurations.md">الإعدادات</a> الخاصة بالتطبيق ومن ثم إنشاء ال instance الخاص بالتطبيق ليستطيع التحكم ب request وإدارتها.</li>
     <li>يقوم التطبيق بمعالجة ال <a href="../guide/runtime-routing.md">requested route</a> بمساعدة من ال <a href="../guide/runtime-requests.md">request</a> application component.</li>
     <li>يقوم التطبيق على إنشاء instance من ال <a href="../guide/structure-controllers.md">controller</a> للتحكم بال request.</li>
+    <li>يقوم ال controller على إنشاء <a href="../guide/structure-controllers.md">action</a> instance مع مجموعة من الفلاتر(المرشحات) الخاصة بهذا ال action.</li>
 </ol>
 
+6. If any filter fails, the action is cancelled.
+7. If all filters pass, the action is executed.
+8. The action loads some data models, possibly from a database.
+9. The action renders a view, providing it with the data models.
+10. The rendered result is returned to the [response](runtime-responses.md) application component.
+11. The response component sends the rendered result to the user's browser.
