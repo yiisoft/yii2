@@ -66,7 +66,7 @@ class SiteController extends Controller
 
 <p dir="rtl">
     من خلال ال action method، يتم استدعاء ال  [[yii \ web \ Controller :: render () | render ()]] لتقديم
-الملف الخاص بال view والمسمى هنا ب <code>say</code>. أيضا فإن ال <code>message</code> يتم تمرريرها الى ال view مما يسمح لك باستخدام هذا ال parameter داخل ال view. النتيجة المرجعة لل view تتم من خلال ال action method، وهذه النتائج سيتم إستقبالها من خلال المتصفح الخاص بالمستخدم ليتم عرضها وكأنها (جزء من صفحة Html كاملة). 
+الملف الخاص بال view والمسمى هنا ب <code>say</code>. أيضا فإن ال <code>message</code> يتم تمرريرها الى ال view مما يسمح لك باستخدام هذا ال parameter داخل ال view. النتيجة المرجعة لل view تتم معالجتها وإرجاعها من خلال ال action method، وهذه النتائج سيتم إستقبالها من خلال المتصفح الخاص بالمستخدم ليتم عرضها وكأنها (جزء من صفحة Html كاملة). 
 </p>
 
 
@@ -107,7 +107,7 @@ After creating the action and the view, you may access the new page by accessing
 http://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
-![Hello World](images/start-hello-world.png)
+![Hello World](../guide/images/start-hello-world.png)
 
 This URL will result in a page displaying "Hello World". The page shares the same header and footer as the other application pages. 
 
