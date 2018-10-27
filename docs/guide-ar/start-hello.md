@@ -52,14 +52,12 @@ class SiteController extends Controller
 ```
 
 <p dir="rtl">
-    في الشيفرة البرمجية السابقة ، تم تعريف ال <code>say</code> action من خلال إنشاء الدالة <code>actionSay</code> داخل الكلاس  <code>siteController</code>. يستخدم ال Yii كلمة action ك prefix للدوال للتميز بين الدوال ال action و ال non-action في ال controller، كما يستخدم الإسم الخاص بال action مباشرة بعد ال prefix ليكون ك id خاص بال action يمكن الوصول اليه، ولا يمكن تكراره.   
+    في الشيفرة البرمجية السابقة ، تم تعريف ال <code>say</code> action من خلال إنشاء الدالة <code>actionSay</code> داخل الكلاس  <code>siteController</code>. يستخدم ال Yii كلمة action ك prefix للدوال للتميز بين الدوال ال action و ال non-action في ال controller، كما يستخدم الإسم الخاص بال action مباشرة بعد ال prefix، ويتم عمل mapping بين ال action method name وال action id ليستطيع المستخدم من الوصول للدالة المنشئة من خلال ال action id. 
 </p>
 
-When it comes to naming your actions, you should understand how Yii treats action IDs. Action IDs are always
-referenced in lower case. If an action ID requires multiple words, they will be concatenated by dashes
-(e.g., `create-comment`). Action method names are mapped to action IDs by removing any dashes from the IDs,
-capitalizing the first letter in each word, and prefixing the resulting string with `action`. For example,
-the action ID `create-comment` corresponds to the action method name `actionCreateComment`.
+<p dir="rtl">
+    عندما يتعلق الأمر بتسمية ال action الخاصة بك، يجب عليك  أن تفهم كيف يقوم ال Yii بالتعامل مع ال action id، ال action id يجب أن يكون دائما أحرف lower case، وإذا إحتوى ال action id على عدة كلمات فإن الفاصل بينهم سيكون الداش (dashes)  مثل  <code>create-comment</code>، ويتم ربط ال action id بال action method name من  خلال حذف ال dashes من ال IDs، ويتم عمل capitalizing لأول خرف من كل كلمة، وإضافة ال prefix الى الناتج السابق من التحويل. مثال: ال action id المسمى ب <code>create-comment</code> سيتم تحويله الى ال action method name التالي: <code>actionCreateComment</code>. 
+</p>
 
 The action method in our example takes a parameter `$message`, whose value defaults to `"Hello"` (in exactly
 the same way you set a default value for any function or method argument in PHP). When the application
