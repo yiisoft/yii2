@@ -19,12 +19,12 @@
     <li>و كيفية إنشاء التطبيق لل requests التي يوجهها لل <a href="../guide/structure-controllers.md#creating-actions">actions</a>. </li>
 </ol>
 
-Creating an Action <span id="creating-action"></span>
-------------------
+##  <div dir="rtl">إنشاء ال Action</div> <span id="creating-action"></span>
 
-For the "Hello" task, you will create a `say` [action](structure-controllers.md#creating-actions) that reads
-a `message` parameter from the request and displays that message back to the user. If the request
-does not provide a `message` parameter, the action will display the default "Hello" message.
+<p dir="rtl">
+    لإنشاء صفحة "Hello"، ستقوم بإنشاء <code>say</code> <a href="../guide/structure-controllers.md#creating-actions">action</a> والذي بدوره سيقوم  بقراءة ال <code>message</code> parameter من ال request، ومن ثم عرض ال <code>message</code> مرة أخرى إلى المستخدم. إذا كان ال request لا يحمل معه ال message parameter فإن ال action سيقوم بطباعة message إفتراضية وهي "Hello".
+</p>
+
 
 > Info: [Actions](structure-controllers.md#creating-actions) are the objects that end users can directly refer to for
   execution. Actions are grouped by [controllers](structure-controllers.md). The execution result of
