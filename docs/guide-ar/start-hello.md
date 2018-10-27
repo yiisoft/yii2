@@ -1,11 +1,13 @@
 # <div dir="rtl">قل مرحبا - Saying Hello</div>
 
-This section describes how to create a new "Hello" page in your application.
-To achieve this goal, you will create an [action](structure-controllers.md#creating-actions) and
-a [view](structure-views.md):
+<p dir="rtl">
+    في هذا الموضوع سنتعرف على كيفية إنشاء صفحة "Hello" جديدة في التطبيق الذي قمت بتثبيته، ولتحقيق ذلك، يجب عليك القيام بإنشاء <a href="../guide/structure-controllers.md#creating-actions">action</a> و <a href="../guide/structure-views.md">view</a> لهذه الصفحة:
+</p>
 
-* The application will dispatch the page request to the action
-* and the action will in turn render the view that shows the word "Hello" to the end user.
+<ul dir="rtl">
+    <li>سيقوم التطبيق بإرسال ال request الخاص بالصفحة إلى ال action.</li>
+    <li>وسيقوم ال action بدوره في جلب ال view التي تعرض كلمة "Hello" إلى المستخدم النهائي.</li>
+</ul>
 
 Through this tutorial, you will learn three things:
 
