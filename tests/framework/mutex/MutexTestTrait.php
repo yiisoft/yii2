@@ -46,10 +46,11 @@ trait MutexTestTrait
 
         $this->assertTrue($mutexOne->acquire($mutexName));
         $this->assertFalse($mutexTwo->acquire($mutexName));
-
-        $mutexOne->release($mutexName);
+        $this->assertTrue($mutexOne->release($mutexName));
+        $this->assertFalse($mutexTwo->release($mutexName));
 
         $this->assertTrue($mutexTwo->acquire($mutexName));
+        $this->assertTrue($mutexTwo->release($mutexName));
     }
 
     /**
