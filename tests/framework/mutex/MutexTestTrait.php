@@ -34,19 +34,6 @@ trait MutexTestTrait
         $this->assertTrue($mutex->release($mutexName));
     }
 
-    public function testTimeout() {
-        $mutex = $this->createMutex();
-        $mutexName = __FUNCTION__;
-
-        $this->assertTrue($mutex->acquire($mutexName));
-        $microtime = microtime(true);
-        $this->assertFalse($mutex->acquire($mutexName, 1));
-        $diff = microtime(true) - $microtime;
-        $this->assertTrue($diff >= 1 && $diff < 2);
-        $this->assertTrue($mutex->release($mutexName));
-        $this->assertFalse($mutex->release($mutexName));
-    }
-
     /**
      * @dataProvider mutexDataProvider()
      *
@@ -63,6 +50,21 @@ trait MutexTestTrait
         $mutexOne->release($mutexName);
 
         $this->assertTrue($mutexTwo->acquire($mutexName));
+    }
+
+    public function testTimeout()
+    {
+        $mutexName = __FUNCTION__;
+        $mutexOne = $this->createMutex();
+        $mutexTwo = $this->createMutex();
+
+        $this->assertTrue($mutexOne->acquire($mutexName));
+        $microtime = microtime(true);
+        $this->assertFalse($mutexTwo->acquire($mutexName, 1));
+        $diff = microtime(true) - $microtime;
+        $this->assertTrue($diff >= 1 && $diff < 2);
+        $this->assertTrue($mutexOne->release($mutexName));
+        $this->assertFalse($mutexTwo->release($mutexName));
     }
 
     public static function mutexDataProvider()
