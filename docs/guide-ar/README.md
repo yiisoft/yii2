@@ -21,7 +21,7 @@
 * [ماذا يجب أن تعرف عن بيئة العمل](start-prerequisites.md)
 * [تثبيت ال Yii](start-installation.md)
 * [تشغيل التطبيقات - Running Applications](start-workflow.md)
-* [قل مرحبا - المشروع الأول](../guide/start-hello.md)
+* [قل مرحبا - المشروع الأول](start-hello.md)
 * [العمل مع ال forms](../guide/start-forms.md)
 * [العمل مع قواعد البيانات](../guide/start-databases.md)
 * [إنشاء الشيفرة البرمجية من خلال ال gii](../guide/start-gii.md)
