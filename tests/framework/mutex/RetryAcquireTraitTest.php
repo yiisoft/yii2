@@ -24,7 +24,8 @@ class RetryAcquireTraitTest extends TestCase
     /**
      * @throws InvalidConfigException
      */
-    public function testRetryAcquire() {
+    public function testRetryAcquire()
+    {
         $mutexName = __FUNCTION__;
         $mutexOne = $this->createMutex();
         $mutexTwo = $this->createMutex();
