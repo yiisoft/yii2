@@ -51,9 +51,9 @@ class SiteController extends Controller
 }
 ```
 
-In the above code, the `say` action is defined as a method named `actionSay` in the `SiteController` class.
-Yii uses the prefix `action` to differentiate action methods from non-action methods in a controller class.
-The name after the `action` prefix maps to the action's ID.
+<p dir="rtl">
+    في الشيفرة البرمجية السابقة ، تم تعريف ال <code>say</code> action من خلال إنشاء الدالة <code>actionSay</code> داخل الكلاس  <code>siteController</code>. يستخدم ال Yii كلمة action ك prefix للدوال للتميز بين الدوال ال action و ال non-action في ال controller، كما يستخدم الإسم الخاص بال action مباشرة بعد ال prefix ليكون ك id خاص بال action يمكن الوصول اليه، ولا يمكن تكراره.   
+</p>
 
 When it comes to naming your actions, you should understand how Yii treats action IDs. Action IDs are always
 referenced in lower case. If an action ID requires multiple words, they will be concatenated by dashes
