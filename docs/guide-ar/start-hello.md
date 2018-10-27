@@ -59,11 +59,9 @@ class SiteController extends Controller
     عندما يتعلق الأمر بتسمية ال action الخاصة بك، يجب عليك  أن تفهم كيف يقوم ال Yii بالتعامل مع ال action id، ال action id يجب أن يكون دائما أحرف lower case، وإذا إحتوى ال action id على عدة كلمات فإن الفاصل بينهم سيكون الداش (dashes)  مثل  <code>create-comment</code>، ويتم ربط ال action id بال action method name من  خلال حذف ال dashes من ال IDs، ويتم عمل capitalizing لأول خرف من كل كلمة، وإضافة ال prefix الى الناتج السابق من التحويل. مثال: ال action id المسمى ب <code>create-comment</code> سيتم تحويله الى ال action method name التالي: <code>actionCreateComment</code>. 
 </p>
 
-The action method in our example takes a parameter `$message`, whose value defaults to `"Hello"` (in exactly
-the same way you set a default value for any function or method argument in PHP). When the application
-receives a request and determines that the `say` action is responsible for handling said request, the application will
-populate this parameter with the same named parameter found in the request. In other words, if the request includes
-a `message` parameter with a value of `"Goodbye"`, the `$message` variable within the action will be assigned that value.
+<p dir="rtl">
+    في المثال السابق، يقوم ال action method على إستقبال parameter يسمى ب <code>$message</code>، والذي يملك قيمة إفتراضية وهي <code>"Hello"</code> (وهي مشابة تماما لطريقة وضع القيم الإفتراضية لل argument في ال PHP). عندما يستقبل التطبيق ال request ويحدد أن ال action المطلوب للتعامل مع الطلب (request) هو <code>say</code>، فإن التطبيق سيقوم بإسناد القيمة الموجودة بال request الى ال parameter الموجود بال action بشرط أن يكون الإسم الموجود بال request هو نفسه الموجود في ال action. ولتبسيط الموضوع يمكن القول أن ال request اذا احتوى على كلمة <code>message</code> وقيمة هذا ال parameter هي <code>"GoodBye"</code>، فإن ال <code>$message</code> الموجودة في ال action ستصبح قيمتها <code>"GoodBye"</code>.  
+</p>
 
 Within the action method, [[yii\web\Controller::render()|render()]] is called to render
 a [view](structure-views.md) file named `say`. The `message` parameter is also passed to the view
