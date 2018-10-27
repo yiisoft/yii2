@@ -9,12 +9,15 @@
     <li>وسيقوم ال action بدوره في جلب ال view التي تعرض كلمة "Hello" إلى المستخدم النهائي.</li>
 </ul>
 
-Through this tutorial, you will learn three things:
+<p dir="rtl">
+    من خلال هذا البرنامج التعليمي ، ستتعلم ثلاثة أشياء: 
+</p>
 
-1. how to create an [action](structure-controllers.md#creating-actions) to respond to requests,
-2. how to create a [view](structure-views.md) to compose the response's content, and
-3. how an application dispatches requests to [actions](structure-controllers.md#creating-actions).
-
+<ol dir="rtl">
+    <li>كيفية إنشاء <a href="../guide/structure-controllers.md#creating-actions">action</a> ليقوم بإستقبال ال request ومن ثم الرد (respond) عليها.</li>
+    <li>كيفية إنشاء <a href="../guide/structure-views.md">view</a> وإضافة المحتوى الى ال respond.</li>
+    <li>و كيفية إنشاء التطبيق لل requests التي يوجهها لل <a href="../guide/structure-controllers.md#creating-actions">actions</a>. </li>
+</ol>
 
 Creating an Action <span id="creating-action"></span>
 ------------------
