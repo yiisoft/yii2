@@ -63,10 +63,13 @@ class SiteController extends Controller
     في المثال السابق، يقوم ال action method على إستقبال parameter يسمى ب <code>$message</code>، والذي يملك قيمة إفتراضية وهي <code>"Hello"</code> (وهي مشابة تماما لطريقة وضع القيم الإفتراضية لل argument في ال PHP). عندما يستقبل التطبيق ال request ويحدد أن ال action المطلوب للتعامل مع الطلب (request) هو <code>say</code>، فإن التطبيق سيقوم بإسناد القيمة الموجودة بال request الى ال parameter الموجود بال action بشرط أن يكون الإسم الموجود بال request هو نفسه الموجود في ال action. ولتبسيط الموضوع يمكن القول أن ال request اذا احتوى على كلمة <code>message</code> وقيمة هذا ال parameter هي <code>"GoodBye"</code>، فإن ال <code>$message</code> الموجودة في ال action ستصبح قيمتها <code>"GoodBye"</code>.  
 </p>
 
-Within the action method, [[yii\web\Controller::render()|render()]] is called to render
-a [view](structure-views.md) file named `say`. The `message` parameter is also passed to the view
-so that it can be used there. The rendering result is returned by the action method. That result will be received
-by the application and displayed to the end user in the browser (as part of a complete HTML page). 
+
+<p dir="rtl">
+    من خلال ال action method، يتم استدعاء ال  [[yii \ web \ Controller :: render () | render ()]] لتقديم
+الملف الخاص بال view والمسمى هنا ب <code>say</code>. أيضا فإن ال <code>message</code> يتم تمرريرها الى ال view مما يسمح لك باستخدام هذا ال parameter داخل ال view. النتيجة المرجعة لل view تتم من خلال ال action method، وهذه النتائج سيتم إستقبالها من خلال المتصفح الخاص بالمستخدم ليتم عرضها وكأنها (جزء من صفحة Html كاملة). 
+</p>
+
+
 
 
 Creating a View <span id="creating-view"></span>
