@@ -25,10 +25,9 @@
     لإنشاء صفحة "Hello"، ستقوم بإنشاء <code>say</code> <a href="../guide/structure-controllers.md#creating-actions">action</a> والذي بدوره سيقوم  بقراءة ال <code>message</code> parameter من ال request، ومن ثم عرض ال <code>message</code> مرة أخرى إلى المستخدم. إذا كان ال request لا يحمل معه ال message parameter فإن ال action سيقوم بطباعة message إفتراضية وهي "Hello".
 </p>
 
-
-> Info: [Actions](structure-controllers.md#creating-actions) are the objects that end users can directly refer to for
-  execution. Actions are grouped by [controllers](structure-controllers.md). The execution result of
-  an action is the response that an end user will receive.
+<blockqoute><p dir="rtl">
+    معلومة: ال <a href="../guide/structure-controllers.md#creating-actions">Actions</a> هي الكائنات(objects) التي يمكن للمستخدمين من الوصول اليها وتنفيذ ما في بداخلها بشكل مباشر.  يتم تجميع هذه ال Actions بواسطة ال <a href="../guide/structure-controllers.md">controllers</a>. ونتيجة لذلك فإن ال response الراجعة للمستخدم ستكون هي نتيجة التنفيذ الخاصة بال action. 
+</p></blockqoute>
 
 Actions must be declared in [controllers](structure-controllers.md). For simplicity, you may
 declare the `say` action in the existing  `SiteController`. This controller is defined
