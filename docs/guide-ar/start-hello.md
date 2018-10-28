@@ -65,7 +65,7 @@ class SiteController extends Controller
 
 
 <p dir="rtl">
-    من خلال ال action method، يتم استدعاء ال  [[yii \ web \ Controller :: render () | render ()]] لتقديم
+    من خلال ال action method، يتم استدعاء ال  [[yii\web\Controller::render()|render()]] لتقديم
 الملف الخاص بال view والمسمى هنا ب <code>say</code>. أيضا فإن ال <code>message</code> يتم تمرريرها الى ال view مما يسمح لك باستخدام هذا ال parameter داخل ال view. النتيجة المرجعة لل view تتم معالجتها وإرجاعها من خلال ال action method، وهذه النتائج سيتم إستقبالها من خلال المتصفح الخاص بالمستخدم ليتم عرضها وكأنها (جزء من صفحة Html كاملة). 
 </p>
 
@@ -94,7 +94,7 @@ use yii\helpers\Html;
 
 <p dir="rtl">
     وبطبيعة الحال، يمكنك وضع المزيد من المحتوى في صفحة ال <code>say</code> view. ويمكن أن يتكون هذا المحتوى من HTML tag و plain text وحتى PHP statements.
-في الواقع، تعد ال <code>say</code> view مجرد شيفرة برمجية بلغة ال PHP والتي يتم تنفيذها بواسطة [[yii \ web \ Controller :: render () | render ()]].
+في الواقع، تعد ال <code>say</code> view مجرد شيفرة برمجية بلغة ال PHP والتي يتم تنفيذها بواسطة [[yii\web\Controller::render()|render()]].
 المحتوى الذي سيتم طباعته من خلال ال view سيتم إرجاعه الى التطبيق من خلال ال response، وسيقوم التطبيق بدوره بإخراج هذه النتيجة إلى المستخدم النهائي.
 </p>
 
