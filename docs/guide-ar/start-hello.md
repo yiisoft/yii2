@@ -120,9 +120,9 @@ http://hostname/index.php?r=site%2Fsay&message=Hello+World
     إذا قمت بحذف ال <code>message</code> parameter من ال URL ، فسترى الصفحة تعرض كلمة <code>" Hello "</code> فقط. ويرجع ذلك إلى أن "message" يتم تمريرها ك parameter إلى ال  <code>actionSay()</code>، وعندما يتم حذفها، سيتم استخدام القيمة الافتراضية وهي <code>"Hello"</code> بدلاً من ذلك.
 </p>
 
-> Info: The new page shares the same header and footer as other pages because the [[yii\web\Controller::render()|render()]]
-  method will automatically embed the result of the `say` view in a so-called [layout](structure-views.md#layouts) which in this
-  case is located at `views/layouts/main.php`.
+<blockqoute><p dir="rtl">
+    معلومة: تتشارك الصفحة الجديدة مع الصفحات الأخرى بالتطبيق بنفس ال Header وال Footer وذلك بسبب الدالة  [[yii\web\Controller::render() | render ()]] والتي ستقوم بشكل تلقائي بتضمين النتيجة الخاصة بصفحة ال view <code>say</code> مع صفحة ال <a href="../guide/structure-views.md#layouts">Layout</a>، والتي يمكنك أن تجدها داخل المسار التالي: <code>views/layouts/main.php</code>
+</p></blockqoute>
 
 The `r` parameter in the above URL requires more explanation. It stands for [route](runtime-routing.md), an application wide unique ID
 that refers to an action. The route's format is `ControllerID/ActionID`. When the application receives
