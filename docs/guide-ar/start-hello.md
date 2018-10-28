@@ -134,13 +134,16 @@ http://hostname/index.php?r=site%2Fsay&message=Hello+World
 </p></blockquote>
 
 
-Summary <span id="summary"></span>
--------
+## <div dir="rtl">الخلاصة</div> <span id="summary"></span>
 
-In this section, you have touched the controller and view parts of the MVC architectural pattern.
-You created an action as part of a controller to handle a specific request. And you also created a view
-to compose the response's content. In this simple example, no model was involved as the only data used was the `message` parameter.
+<p dir="rtl">
+    في هذا الموضوع، قمنا بالتعرف على ال controller وال view كأجزاء من MVC architectural pattern، كما قمنا بإنشاء action داخل controller موجود ليستقبل  specific request ويتحكم فيه، وقمنا أيضا بإنشاء view لعرض المحتوى. في هذا المثال البسيط، لم نتطرق الى ال model، وقمنا فقط باستخدام  ال data بشكل مباشر من خلال ال <code>message</code> parameter. 
+</p>
 
-You have also learned about routes in Yii, which act as the bridge between user requests and controller actions.
+<p dir="rtl">
+    كما تعرفنا أيضا على ال routes في ال Yii، والتي تعمل بدورها كجسر بين ال user request وال controller actions. 
+</p>
 
-In the next section, you will learn how to create a model, and add a new page containing an HTML form.
+<p dir="rtl">
+    في الموضوع القادم، ستتعلم كيف يمكنك إنشاء model وكيف يمكنك إنشاء صفحة جديدة تحتوي على Html form.
+</p>
