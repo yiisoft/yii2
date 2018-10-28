@@ -92,9 +92,11 @@ use yii\helpers\Html;
     ملاحظة:  في الشيفرة البرمجية أعلاه، تكون ال <code>message</code> مضمنة داخل ال  [[yii\helpers\Html::encode()]] قبل أن يتم طباعتها، هذا الأمر ضروري لأن ال parameter التي تأتي من المستخدم النهائي لا يجب الوثوق بها،  فهي يمكن أن تحتوي على شيفرات برمجية تستغل الضعف الحاص بك بموضوع الأمان مثل <a href="http://en.wikipedia.org/wiki/Cross-site_scripting">vulnerable to XSS attack</a> عن طريق دمج JS code مع ال parameter. 
 </p>
 
-Naturally, you may put more content in the `say` view. The content can consist of HTML tags, plain text, and even PHP statements.
-In fact, the `say` view is just a PHP script that is executed by the [[yii\web\Controller::render()|render()]] method.
-The content printed by the view script will be returned to the application as the response's result. The application will in turn output this result to the end user.
+<p dir="rtl">
+    وبطبيعة الحال ، يمكنك وضع المزيد من المحتوى في صفحة ال <code>say</code> view. يمكن أن يتكون المحتوى من tag HTML وplain text وحتى PHP statements.
+في الواقع، تعد ال <code>say</code> view مجرد شيفرة برمجية بلغة ال PHP والتي يتم تنفيذها بواسطة [[yii \ web \ Controller :: render () | render ()]].
+المحتوى الذي سيتم طباعته من خلال ال view سيتم إرجاعه الى التطبيق من خلال ال response، وسيقوم التطبيق بدوره بإخراج هذه النتيجة إلى المستخدم النهائي.
+</p>
 
 
 Trying it Out <span id="trying-it-out"></span>
