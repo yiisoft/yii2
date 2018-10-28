@@ -99,10 +99,12 @@ use yii\helpers\Html;
 </p>
 
 
-Trying it Out <span id="trying-it-out"></span>
+## <div dir="rtl">تطبيق المثال</div> <span id="trying-it-out"></span>
 -------------
 
-After creating the action and the view, you may access the new page by accessing the following URL:
+<p dir="rtl">
+بعد إنشاء ال action وصفحة ال view،  يمكنك الوصول إلى الصفحة الجديدة عن طريق  عنوان URL التالي:    
+</p>
 
 ```
 http://hostname/index.php?r=site%2Fsay&message=Hello+World
@@ -110,10 +112,13 @@ http://hostname/index.php?r=site%2Fsay&message=Hello+World
 
 ![Hello World](../guide/images/start-hello-world.png)
 
-This URL will result in a page displaying "Hello World". The page shares the same header and footer as the other application pages. 
+<p dir="rtl">
+    سينتج عن هذا ال URL صفحة تعرض "Hello World". هذه الصفحة لديها نفس ال Header و ال Footer لصفحات التطبيق الأخرى.
+</p>
 
-If you omit the `message` parameter in the URL, you would see the page display just "Hello". This is because `message` is passed as a parameter to the `actionSay()` method, and when it is omitted,
-the default value of `"Hello"` will be used instead.
+<p dir="rtl">
+    إذا قمت بحذف ال <code>message</code> parameter من ال URL ، فسترى الصفحة تعرض كلمة <code>" Hello "</code> فقط. ويرجع ذلك إلى أن "message" يتم تمريرها ك parameter إلى ال  <code>actionSay()</code>، وعندما يتم حذفها، سيتم استخدام القيمة الافتراضية وهي <code>"Hello"</code> بدلاً من ذلك.
+</p>
 
 > Info: The new page shares the same header and footer as other pages because the [[yii\web\Controller::render()|render()]]
   method will automatically embed the result of the `say` view in a so-called [layout](structure-views.md#layouts) which in this
