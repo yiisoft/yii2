@@ -84,8 +84,9 @@ use yii\helpers\Html;
 <?= Html::encode($message) ?>
 ```
 
-The `say` view should be saved in the file `views/site/say.php`. When the method [[yii\web\Controller::render()|render()]]
-is called in an action, it will look for a PHP file named as `views/ControllerID/ViewName.php`.
+<p dir="rtl">
+    صفحة ال view <code>say</code> يجب أن يتم حفظها داخل المسار التالي: <code>views/site/say.php</code>. عندما يتم إستدعاء الدالة [[yii\web\Controller::render()|render()]] من قبل ال action، فإنه سينظر للمسار على الشكل التالي: <code>views/ControllerID/ViewName.php</code>، بحيث يكون في مثالنا السابق ال ContollerID هو ال <code>site</code> وال viewName هو <code>say</code>.
+</p>
 
 Note that in the above code, the `message` parameter is [[yii\helpers\Html::encode()|HTML-encoded]]
 before being printed. This is necessary as the parameter comes from an end user, making it vulnerable to
