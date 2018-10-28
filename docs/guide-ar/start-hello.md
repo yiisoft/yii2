@@ -129,11 +129,9 @@ http://hostname/index.php?r=site%2Fsay&message=Hello+World
  في المثال الخاص بنا، فإن ال route هو  <code>"site/say"</code>، وهذا ال route يتم معالجته ليستدعي ال controller class المسمى ب <code>SiteController</code> و ال action المسمى ب <code>actionSay</code> داخل هذا ال controller، ونتيجة لذلك سيتم فعليا إستدعاء الدالة  <code>SiteController::actionSay()</code> لتقوم بمعالجة ال request كما يلزم. 
 </p>
 
-> Info: Like actions, controllers also have IDs that uniquely identify them in an application.
-  Controller IDs use the same naming rules as action IDs. Controller class names are derived from
-  controller IDs by removing dashes from the IDs, capitalizing the first letter in each word,
-  and suffixing the resulting string with the word `Controller`. For example, the controller ID `post-comment` corresponds
-  to the controller class name `PostCommentController`.
+<blockquote><p dir="rtl">
+    معلومة: مثل ال actions، تحتوي ال controllers أيضًا على Uniquely IDs يتم تعريفها واستخدامها من خلال التطبيق. تستخدم ال Controllers IDs نفس قواعد التسمية الخاصة بال action IDs، ويتم ذلك من خلال حذف ال dashes و capitalizing أول حرف من كل كلمة، ثم إضافة كلمة <code>Controller</code> الى الإسم الناتج -وهنا الإختلاف عن ال action ID-. مثال: ال controller ID المسمى ب <code>"post-comment"</code> ستم معالجته ليصبح <code>PostCommentController</code>. 
+</p></blockquote>
 
 
 Summary <span id="summary"></span>
