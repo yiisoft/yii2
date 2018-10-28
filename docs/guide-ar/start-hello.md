@@ -93,7 +93,7 @@ use yii\helpers\Html;
 </p>
 
 <p dir="rtl">
-    وبطبيعة الحال ، يمكنك وضع المزيد من المحتوى في صفحة ال <code>say</code> view. يمكن أن يتكون المحتوى من tag HTML وplain text وحتى PHP statements.
+    وبطبيعة الحال، يمكنك وضع المزيد من المحتوى في صفحة ال <code>say</code> view. ويمكن أن يتكون هذا المحتوى من HTML tag و plain text وحتى PHP statements.
 في الواقع، تعد ال <code>say</code> view مجرد شيفرة برمجية بلغة ال PHP والتي يتم تنفيذها بواسطة [[yii \ web \ Controller :: render () | render ()]].
 المحتوى الذي سيتم طباعته من خلال ال view سيتم إرجاعه الى التطبيق من خلال ال response، وسيقوم التطبيق بدوره بإخراج هذه النتيجة إلى المستخدم النهائي.
 </p>
