@@ -125,7 +125,7 @@ http://hostname/index.php?r=site%2Fsay&message=Hello+World
 </p></blockquote>
 
 <p dir="rtl">
-    ال <code>r</code> الموجودة في ال URL أعلاه يتطلب الكثير من الشرح. ولكن باختصار يمكن القوم أنها اختصار ل <a href="../guide/runtime-routing.md">route</a> ، وهو معرف فريد من نوعه(unique ID) للتطبيق بحيث يقوم بالتأشير على ال action، والصيغة الخاصة بال route هي <code>ControllerID/ActionID</code>. عندما يتلقى التطبيق request، فإنه سيتم التحقق من <code>r</code> parameter، فيقوم باستخدام الجزء <code>ControllerID<ظcode> لتحديد ال controller class المطلوب ليقوم بعمل instance منه، ومن ثم يقوم ال controller باستخدام ال <code>"ActionID"</code> لتحديد ال action المطلوب والذي سيقوم بالعمل الفعلي.
+    ال <code>r</code> الموجودة في ال URL أعلاه يتطلب الكثير من الشرح. ولكن باختصار يمكن القوم أنها اختصار ل <a href="../guide/runtime-routing.md">route</a> ، وهو معرف فريد من نوعه(unique ID) للتطبيق بحيث يقوم بالتأشير على ال action، والصيغة الخاصة بال route هي <code>ControllerID/ActionID</code>. عندما يتلقى التطبيق request، فإنه سيتم التحقق من <code>r</code> parameter، فيقوم باستخدام الجزء <code>ControllerID</code> لتحديد ال controller class المطلوب ليقوم بعمل instance منه، ومن ثم يقوم ال controller باستخدام ال <code>"ActionID"</code> لتحديد ال action المطلوب والذي سيقوم بالعمل الفعلي.
  في المثال الخاص بنا، فإن ال route هو  <code>"site/say"</code>، وهذا ال route يتم معالجته ليستدعي ال controller class المسمى ب <code>SiteController</code> و ال action المسمى ب <code>actionSay</code> داخل هذا ال controller، ونتيجة لذلك سيتم فعليا إستدعاء الدالة  <code>SiteController::actionSay()</code> لتقوم بمعالجة ال request كما يلزم. 
 </p>
 
