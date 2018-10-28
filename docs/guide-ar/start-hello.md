@@ -73,7 +73,7 @@ class SiteController extends Controller
 
 <p dir="rtl">
     ال <a href="../guide/structure-views.md">Views</a> هي شيفرات برمجية كتبت ﻹنشاء المحتوى المناسب بنائا على ال response الراجع اليها من خلال ال action. 
-    بالنسبة إلى مثال "Hello" ، ستقوم بإنشاء view مسمى ب <code>say</code>، والذي سيقوم بدوره بطباعة ال <code>message</code> التي تم إستلامها من ال action, شاهد المثال: 
+    بالنسبة إلى مثال "Hello" ، الآن سنقوم بإنشاء view مسمى ب <code>say</code>، والذي سيقوم بدوره بطباعة ال <code>message</code> التي تم إستلامها من ال action، شاهد المثال: 
 </p>
 
 
