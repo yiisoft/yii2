@@ -69,14 +69,13 @@ class SiteController extends Controller
 الملف الخاص بال view والمسمى هنا ب <code>say</code>. أيضا فإن ال <code>message</code> يتم تمرريرها الى ال view مما يسمح لك باستخدام هذا ال parameter داخل ال view. النتيجة المرجعة لل view تتم معالجتها وإرجاعها من خلال ال action method، وهذه النتائج سيتم إستقبالها من خلال المتصفح الخاص بالمستخدم ليتم عرضها وكأنها (جزء من صفحة Html كاملة). 
 </p>
 
+## <div dir="rtl">إنشاء ال View</div> <span id="creating-view"></span>
 
+<p dir="rtl">
+    ال <a href="../guide/structure-views.md">Views</a> هي شيفرات برمجية كتبت ﻹنشاء المحتوى المناسب بنائا على ال response الراجع اليها من خلال ال action. 
+    بالنسبة إلى مثال "Hello" ، ستقوم بإنشاء view مسمى ب <code>say</code>، والذي سيقوم بدوره بطباعة ال <code>message</code> التي تم إستلامها من ال action, شاهد المثال: 
+</p>
 
-
-Creating a View <span id="creating-view"></span>
----------------
-
-[Views](structure-views.md) are scripts you write to generate a response's content.
-For the "Hello" task, you will create a `say` view that prints the `message` parameter received from the action method:
 
 ```php
 <?php
