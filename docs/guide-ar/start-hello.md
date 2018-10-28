@@ -124,13 +124,10 @@ http://hostname/index.php?r=site%2Fsay&message=Hello+World
     معلومة: تتشارك الصفحة الجديدة مع الصفحات الأخرى بالتطبيق بنفس ال Header وال Footer وذلك بسبب الدالة  [[yii\web\Controller::render() | render ()]] والتي ستقوم بشكل تلقائي بتضمين النتيجة الخاصة بصفحة ال view <code>say</code> مع صفحة ال <a href="../guide/structure-views.md#layouts">Layout</a>، والتي يمكنك أن تجدها داخل المسار التالي: <code>views/layouts/main.php</code>
 </p></blockquote>
 
-The `r` parameter in the above URL requires more explanation. It stands for [route](runtime-routing.md), an application wide unique ID
-that refers to an action. The route's format is `ControllerID/ActionID`. When the application receives
-a request, it will check this parameter, using the `ControllerID` part to determine which controller
-class should be instantiated to handle the request. Then, the controller will use the `ActionID` part
-to determine which action should be instantiated to do the real work. In this example case, the route `site/say`
-will be resolved to the `SiteController` controller class and the `say` action. As a result,
-the `SiteController::actionSay()` method will be called to handle the request.
+<p dir="rtl">
+    ال <code>r</code> الموجودة في ال URL أعلاه يتطلب المزيد من الشرح. ولكن بشكل مختصر، هي اختصار ل <a href="../guide/runtime-routing.md">route</a> ، وهو معرف فريد من نوعه(unique ID) للتطبيق بحيث يقوم بالتأشير على ال action، والصيغة الخاصة بال route هي <code>ControllerID/ActionID</code>. عندما يتلقى التطبيق request، فإنه سيتم التحقق من r parameter، فيقوم باستخدام الجزء `ControllerID` لتحديد ال controller class المطلوب ليقوم بعمل instance منه، ومن ثم يقوم ال controller باستخدام ال <code>"ActionID"</code> لتحديد ال action المطلوب الذي سيقوم بالعمل الفعلي.
+ في المثال الخاص بنا، فإن ال route هو  <code>"site/say"</code>، وهذا يتم معالجته ليستدعي ال controller class المسمى ب <code>SiteController</code> و ال action المسمى ب <code>actionSay</code> داخل هذا ال controller، ونتيجة لذلك سيتم فعليا إستدعاء الدالة  <code>SiteController::actionSay()</code> لتقوم بمعالجة ال request كما يلزم. 
+</p>
 
 > Info: Like actions, controllers also have IDs that uniquely identify them in an application.
   Controller IDs use the same naming rules as action IDs. Controller class names are derived from
