@@ -1,5 +1,4 @@
-Working with Forms
-==================
+# <div dir="rtl">العمل مع ال Forms</div>
 
 This section describes how to create a new page with a form for getting data from users.
 The page will display a form with a name input field and an email input field.
