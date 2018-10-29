@@ -365,6 +365,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 ]
 ```
 
+タイム・ゾーンを設定することの意味合いについては、[日付のフォーマッティングのセクション](output-formatting.md#time-zones) で詳細を参照して下さい。
 
 #### [[yii\base\Application::version|version]] <span id="version"></span>
 

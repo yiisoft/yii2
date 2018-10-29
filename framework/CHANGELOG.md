@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #16183: Fixed when `yii\helpers\BaseFileHelper` sometimes returned wrong value (samdark, SilverFire, OndrejVasicek)
 - Bug #13932: Fix number validator attributes comparison (uaoleg, s1lver)
 - Bug #14039, #16636: Fixed validation for disabled inputs (s1lver, omzy83)
 - Bug #16425: Check for additional values for disabled confirm dialog (Alex-Code, s1lver)
@@ -62,6 +63,7 @@ Yii Framework 2 Change Log
 - Bug #16301: Fixed `yii\web\User::setIdentity()` to clear access check cache while setting identity object to `null` (Izumi-kun)
 - Bug #16322: Fixed strings were not were not compared using timing attack resistant approach while CSRF token validation (samdark, Felix Wiedemann)
 - Chg #16192: `yii\db\Command::logQuery()` is now protected, extracted `getCacheKey()` from `queryInternal()` (drlibra)
+- Bug #16331: Fixed console table without headers (rhertogh)
 - Bug #16377: Fixed `yii\base\Event:off()` undefined index error when event handler does not match (razvanphp)
 - Bug #16514: Fixed `yii\di\Container::resolveCallableDependencies` to support callable object (wi1dcard)
 - Bug #15889: Fixed override `yii\helpers\Html::setActivePlaceholder` (lesha724)
@@ -70,6 +72,12 @@ Yii Framework 2 Change Log
 - Bug #16666: Fixed `yii\helpers\ArrayHelper::merge` (rustamwin)
 - Enh: `yii\helpers\UnsetArrayValue`, `yii\helpers\ReplaceArrayValue` object now can be restored after serialization using `var_export()` function (silvefire)
 - Bug #16552: Added check in `yii\db\ActiveQuery::prepare()` to prevent populating already populated relation when another relation is requested with `via` (drlibra)
+- Bug #10843: Additional hidden input rendered by `yii\helpers\BaseHtml` methods inherits `disabled` HTML option if provided and set to `true` (bizley)
+- Bug #16424: `yii\db\Transaction::begin()` throws now `NotSupportedException` for nested transaction and DBMS not supporting savepoints (bizley)
+- Bug #15204: `yii\helpers\BaseInflector::slug()` is not removing substrings matching provided replacement from given string anymore (bizley)
+- Bug #16101: Fixed Error Handler to clear registered meta tags, link tags, css/js scripts and files in error view (bizley)
+- Bug #16836: Fix `yii\mutex\MysqlMutex` to handle locks with names longer than 64 character (rob006)
+
 
 2.0.15.1 March 21, 2018
 -----------------------
