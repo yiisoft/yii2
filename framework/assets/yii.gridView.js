@@ -124,7 +124,9 @@
                 if (!(this.name in data)) {
                     data[this.name] = [];
                 }
-                data[this.name].push(this.value);
+                if (this.value) {
+                    data[this.name].push(this.value);
+                }
             });
 
             var namesInFilter = Object.keys(data);
@@ -135,11 +137,15 @@
                         value = [value];
                     }
                     if (!(name in data)) {
-                        data[name] = value;
+                        if (value) {
+                            data[name] = value;
+                        }
                     } else {
                         $.each(value, function (i, val) {
                             if ($.inArray(val, data[name])) {
-                                data[name].push(val);
+                                if (val) {
+                                    data[name].push(val);
+                                }
                             }
                         });
                     }
