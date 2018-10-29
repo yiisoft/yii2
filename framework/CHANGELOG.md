@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #16183: Fixed when `yii\helpers\BaseFileHelper` sometimes returned wrong value (samdark, SilverFire, OndrejVasicek)
 - Bug #13932: Fix number validator attributes comparison (uaoleg, s1lver)
 - Bug #14039, #16636: Fixed validation for disabled inputs (s1lver, omzy83)
 - Bug #16425: Check for additional values for disabled confirm dialog (Alex-Code, s1lver)
@@ -74,6 +75,8 @@ Yii Framework 2 Change Log
 - Bug #10843: Additional hidden input rendered by `yii\helpers\BaseHtml` methods inherits `disabled` HTML option if provided and set to `true` (bizley)
 - Bug #16424: `yii\db\Transaction::begin()` throws now `NotSupportedException` for nested transaction and DBMS not supporting savepoints (bizley)
 - Bug #15204: `yii\helpers\BaseInflector::slug()` is not removing substrings matching provided replacement from given string anymore (bizley)
+- Bug #16101: Fixed Error Handler to clear registered meta tags, link tags, css/js scripts and files in error view (bizley)
+- Bug #16836: Fix `yii\mutex\MysqlMutex` to handle locks with names longer than 64 character (rob006)
 
 
 2.0.15.1 March 21, 2018
