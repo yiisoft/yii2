@@ -304,7 +304,7 @@ class GridView extends BaseListView
         $id = $this->options['id'];
         $options = Json::htmlEncode(array_merge($this->getClientOptions(), ['filterOnFocusOut' => $this->filterOnFocusOut]));
         $baseGridViewAsset = 'yii\grid\GridViewAsset';
-        if (!($gridViewAsset = $this->gridViewAssetClass) {
+        if (!($gridViewAsset = $this->gridViewAssetClass)) {
             $gridViewAsset = $baseGridViewAsset;
         }
         if (is_subclass_of($gridViewAsset, $baseGridViewAsset) || $gridViewAsset == $baseGridViewAsset) {
