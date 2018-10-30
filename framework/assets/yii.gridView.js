@@ -25,7 +25,7 @@
         filterUrl: undefined,
         filterSelector: undefined,
         filterOnFocusOut: true,
-        filterAllowedSubmitEmpty: true
+        filterAllowedEmpty: true
     };
 
     var gridData = {};
@@ -120,12 +120,13 @@
         applyFilter: function () {
             var $grid = $(this);
             var settings = gridData[$grid.attr('id')].settings;
+            var allowedEmpty = $(settings.filterAllowedEmpty) || true;
             var data = {};
             $.each($(settings.filterSelector).serializeArray(), function () {
                 if (!(this.name in data)) {
                     data[this.name] = [];
                 }
-                if (settings.filterAllowedSubmitEmpty || (!settings.filterAllowedSubmitEmpty && this.value)) {
+                if (allowedEmpty || (!allowedEmpty && this.value)) {
                     data[this.name].push(this.value);
                 }
             });
@@ -138,13 +139,13 @@
                         value = [value];
                     }
                     if (!(name in data)) {
-                        if (settings.filterAllowedSubmitEmpty || (!settings.filterAllowedSubmitEmpty && value)) {
+                        if (allowedEmpty || (!allowedEmpty && value)) {
                             data[name] = value;
                         }
                     } else {
                         $.each(value, function (i, val) {
                             if ($.inArray(val, data[name])) {
-                                if (settings.filterAllowedSubmitEmpty || (!settings.filterAllowedSubmitEmpty && val)) {
+                                if (allowedEmpty || (!allowedEmpty && val)) {
                                     data[name].push(val);
                                 }
                             }
