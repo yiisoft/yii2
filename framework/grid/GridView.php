@@ -265,6 +265,13 @@ class GridView extends BaseListView
      */
     public $layout = "{summary}\n{items}\n{pager}";
 
+    /*
+     * To be able to override the base Asset for the GridView to your own.
+     * @see https://github.com/yiisoft/yii2/pull/16844
+     * @var string Class for GridViewAsset without leading slash
+     * Defaults to 'yii\grid\GridViewAsset'.
+     */
+    public $gridViewAssetClass;
 
     /**
      * Initializes the grid view.
@@ -294,10 +301,16 @@ class GridView extends BaseListView
     public function run()
     {
         $view = $this->getView();
-        GridViewAsset::register($view);
         $id = $this->options['id'];
         $options = Json::htmlEncode(array_merge($this->getClientOptions(), ['filterOnFocusOut' => $this->filterOnFocusOut]));
-        $view->registerJs("jQuery('#$id').yiiGridView($options);");
+        $baseGridViewAsset = 'yii\grid\GridViewAsset';
+        if (!($gridViewAsset = $this->gridViewAssetClass) {
+            $gridViewAsset = $baseGridViewAsset;
+        }
+        if (is_subclass_of($gridViewAsset, $baseGridViewAsset) || $gridViewAsset == $baseGridViewAsset) {
+            $gridViewAsset::register($view);
+            $view->registerJs("jQuery('#$id').yiiGridView($options);");
+        }
         parent::run();
     }
 
