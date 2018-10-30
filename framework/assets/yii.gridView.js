@@ -24,7 +24,8 @@
     var defaults = {
         filterUrl: undefined,
         filterSelector: undefined,
-        filterOnFocusOut: true
+        filterOnFocusOut: true,
+        filterAllowedSubmitEmpty: true
     };
 
     var gridData = {};
@@ -124,7 +125,9 @@
                 if (!(this.name in data)) {
                     data[this.name] = [];
                 }
-                data[this.name].push(this.value);
+                if (settings.filterAllowedSubmitEmpty || (!settings.filterAllowedSubmitEmpty && this.value)) {
+                    data[this.name].push(this.value);
+                }
             });
 
             var namesInFilter = Object.keys(data);
@@ -135,11 +138,15 @@
                         value = [value];
                     }
                     if (!(name in data)) {
-                        data[name] = value;
+                        if (settings.filterAllowedSubmitEmpty || (!settings.filterAllowedSubmitEmpty && value)) {
+                            data[name] = value;
+                        }
                     } else {
                         $.each(value, function (i, val) {
                             if ($.inArray(val, data[name])) {
-                                data[name].push(val);
+                                if (settings.filterAllowedSubmitEmpty || (!settings.filterAllowedSubmitEmpty && val)) {
+                                    data[name].push(val);
+                                }
                             }
                         });
                     }
