@@ -77,7 +77,9 @@ Yii Framework 2 Change Log
 - Bug #16424: `yii\db\Transaction::begin()` throws now `NotSupportedException` for nested transaction and DBMS not supporting savepoints (bizley)
 - Bug #15204: `yii\helpers\BaseInflector::slug()` is not removing substrings matching provided replacement from given string anymore (bizley)
 - Bug #16101: Fixed Error Handler to clear registered meta tags, link tags, css/js scripts and files in error view (bizley)
-- Bug #16836: Fix `yii\mutex\MysqlMutex` to handle locks with names longer than 64 character (rob006)
+- Bug #16836: Fix `yii\mutex\MysqlMutex` to handle locks with names longer than 64 characters (rob006)
+- Enh #16839: Increase frequency of lock tries for `yii\mutex\FileMutex::acquireLock()` when $timeout is provided (rob006)
+- Enh #16839: Add support for `$timeout` in  `yii\mutex\PgsqlMutex::acquire()` (rob006)
 
 
 2.0.15.1 March 21, 2018
