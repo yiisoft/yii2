@@ -93,6 +93,7 @@ class ArrayCache extends Cache
     protected function deleteValue($key)
     {
         unset($this->_cache[$key]);
+        $this->gc();
 
         return true;
     }
