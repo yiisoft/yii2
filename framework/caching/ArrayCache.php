@@ -93,7 +93,6 @@ class ArrayCache extends Cache
     protected function deleteValue($key)
     {
         unset($this->_cache[$key]);
-        $this->gc();
 
         return true;
     }
@@ -119,7 +118,7 @@ class ArrayCache extends Cache
         if ($force || mt_rand(0, 1000000) < $this->gcProbability){
             foreach($this->_cache as $key => $item){
                 if (!isset($item[0], $item[1]) || (0 !== $item[0] && $item[1] < microtime(true))){
-                    $this->deleteValue($key);
+                    unset($this->_cache[$key]);
                 }
             }
         }
