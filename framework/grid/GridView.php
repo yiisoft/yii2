@@ -265,7 +265,7 @@ class GridView extends BaseListView
      */
     public $layout = "{summary}\n{items}\n{pager}";
 
-    /*
+    /**
      * To be able to override the base Asset for the GridView to your own.
      * @see https://github.com/yiisoft/yii2/pull/16844
      * @var string Class for GridViewAsset without leading slash
