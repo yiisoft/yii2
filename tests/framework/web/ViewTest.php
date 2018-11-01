@@ -137,4 +137,41 @@ class ViewTest extends TestCase
 
         return $matches[1];
     }
+
+    public function testAppendTimestampForRegisterJsFile()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'request' => [
+                    'scriptFile' => __DIR__ . '/baseUrl/index.php',
+                    'scriptUrl' => '/baseUrl/index.php',
+                ],
+            ],
+        ]);
+
+        \Yii::setAlias('@webroot', '@app/data/web/assetSources');
+        $jsPattern = '/js\/jquery\.js\?v\=/';
+        $cssPattern = '/stub\.css\?v\=/';
+
+        $view = new View();
+        $view->registerCssFile('/css/stub.css', ['appendTimestamp' => true]); // <link href="/css/stub.css?v=1541055635" rel="stylesheet"></head>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($cssPattern, $html);
+
+        $view = new View();
+        $view->registerCssFile('/css/stub.css'); // <link href="/css/stub.css" rel="stylesheet"></head>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($cssPattern, $html);
+
+        $view = new View();
+        $view->registerJsFile('/js/jquery.js', ['appendTimestamp' => true]); // <script src="/js/jquery.js?v=1541056962"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertRegExp($jsPattern, $html);
+
+        $view = new View();
+        $view->registerJsFile('/js/jquery.js', ['appendTimestamp' => false]); // <script src="/js/jquery.js"></script>
+        $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
+        $this->assertNotRegExp($jsPattern, $html);
+
+    }
 }
