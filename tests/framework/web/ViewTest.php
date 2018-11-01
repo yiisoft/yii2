@@ -201,7 +201,7 @@ class ViewTest extends TestCase
 
         $this->setUpAliases();
 
-        $pattern = '/stub\.css\?v\=/';
+        $pattern = '/stub\.css\?v\=\d+/';
 
         $view = new View();
         $view->registerCssFile('/assetSources/css/stub.css', ['appendTimestamp' => true]); // <link href="/css/stub.css?v=1541055635" rel="stylesheet"></head>
