@@ -160,7 +160,7 @@ class ViewTest extends TestCase
 
         $this->setUpAliases();
 
-        $pattern = '/js\/jquery\.js\?v\=/';
+        $pattern = '/js\/jquery\.js\?v\=\d+"/';
 
         $view = new View();
         $view->registerJsFile('/assetSources/js/jquery.js', ['appendTimestamp' => true]); // <script src="/js/jquery.js?v=1541056962"></script>
