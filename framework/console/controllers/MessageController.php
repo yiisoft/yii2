@@ -556,8 +556,9 @@ EOD;
                     }
                 } elseif ($this->tokensEqual('(', $token)) {
                     // count beginning of function call, skipping translator beginning
-                    // Ensure that it's not the call of the static method. See https://github.com/yiisoft/yii2/issues/16828
-                    if ($tokens[$i - $matchedTokensCount - 1][0] === T_PAAMAYIM_NEKUDOTAYIM) {
+                    // Ensure that it's not the call of the object method. See https://github.com/yiisoft/yii2/issues/16828
+                    $previousTokenId = $tokens[$i - $matchedTokensCount - 1][0];
+                    if (in_array($previousTokenId, [T_OBJECT_OPERATOR, T_PAAMAYIM_NEKUDOTAYIM], true)) {
                         $matchedTokensCount = 0;
                         continue;
                     }

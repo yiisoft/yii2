@@ -567,7 +567,7 @@ abstract class BaseMessageControllerTest extends TestCase
         $sourceFileContent = "
             <?= Yii::t('{$category}', '{$negativeKey1}') ?>
             <?= t('{$category}', '{$positiveKey1}') ?>
-            <?= Yii::t('{$category}', '{$negativeKey2}', [
+            <?= \$this->t('{$category}', '{$negativeKey2}', [
                 'subString1' => Yii::t('{$category}', '{$negativeKey3}'),
                 'subString2' => t('{$category}', '{$positiveKey2}'),
             ]) ?>
