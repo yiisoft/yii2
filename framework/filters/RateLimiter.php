@@ -63,7 +63,7 @@ class RateLimiter extends ActionFilter
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -76,7 +76,7 @@ class RateLimiter extends ActionFilter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -85,7 +85,7 @@ class RateLimiter extends ActionFilter
         }
 
         if ($this->user instanceof RateLimitInterface) {
-            Yii::trace('Check rate limit', __METHOD__);
+            Yii::debug('Check rate limit', __METHOD__);
             $this->checkRateLimit($this->user, $this->request, $this->response, $action);
         } elseif ($this->user) {
             Yii::info('Rate limit skipped: "user" does not implement RateLimitInterface.', __METHOD__);

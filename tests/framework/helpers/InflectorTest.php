@@ -84,17 +84,20 @@ class InflectorTest extends TestCase
     {
         $this->assertEquals('Me my self and i', Inflector::titleize('MeMySelfAndI'));
         $this->assertEquals('Me My Self And I', Inflector::titleize('MeMySelfAndI', true));
+        $this->assertEquals('Треба Більше Тестів!', Inflector::titleize('ТребаБільшеТестів!', true));
     }
 
     public function testCamelize()
     {
         $this->assertEquals('MeMySelfAndI', Inflector::camelize('me my_self-andI'));
         $this->assertEquals('QweQweEwq', Inflector::camelize('qwe qwe^ewq'));
+        $this->assertEquals('ВідомоЩоТестиЗберігатьНашіНЕРВИ', Inflector::camelize('Відомо, що тести зберігать наші НЕРВИ! 🙃'));
     }
 
     public function testUnderscore()
     {
         $this->assertEquals('me_my_self_and_i', Inflector::underscore('MeMySelfAndI'));
+        $this->assertEquals('кожний_тест_особливий', Inflector::underscore('КожнийТестОсобливий'));
     }
 
     public function testCamel2words()
@@ -102,30 +105,40 @@ class InflectorTest extends TestCase
         $this->assertEquals('Camel Case', Inflector::camel2words('camelCase'));
         $this->assertEquals('Lower Case', Inflector::camel2words('lower_case'));
         $this->assertEquals('Tricky Stuff It Is Testing', Inflector::camel2words(' tricky_stuff.it-is testing... '));
+        $this->assertEquals('І Це Дійсно Так!', Inflector::camel2words('ІЦеДійсноТак!'));
     }
 
     public function testCamel2id()
     {
         $this->assertEquals('post-tag', Inflector::camel2id('PostTag'));
         $this->assertEquals('post_tag', Inflector::camel2id('PostTag', '_'));
+        $this->assertEquals('єдиний_код', Inflector::camel2id('ЄдинийКод', '_'));
 
         $this->assertEquals('post-tag', Inflector::camel2id('postTag'));
         $this->assertEquals('post_tag', Inflector::camel2id('postTag', '_'));
+        $this->assertEquals('єдиний_код', Inflector::camel2id('єдинийКод', '_'));
 
         $this->assertEquals('foo-ybar', Inflector::camel2id('FooYBar', '-', false));
         $this->assertEquals('foo_ybar', Inflector::camel2id('fooYBar', '_', false));
+        $this->assertEquals('невже_іце_працює', Inflector::camel2id('НевжеІЦеПрацює', '_', false));
 
         $this->assertEquals('foo-y-bar', Inflector::camel2id('FooYBar', '-', true));
         $this->assertEquals('foo_y_bar', Inflector::camel2id('fooYBar', '_', true));
+        $this->assertEquals('foo_y_bar', Inflector::camel2id('fooYBar', '_', true));
+        $this->assertEquals('невже_і_це_працює', Inflector::camel2id('НевжеІЦеПрацює', '_', true));
     }
 
     public function testId2camel()
     {
         $this->assertEquals('PostTag', Inflector::id2camel('post-tag'));
         $this->assertEquals('PostTag', Inflector::id2camel('post_tag', '_'));
+        $this->assertEquals('ЄдинийСвіт', Inflector::id2camel('єдиний_світ', '_'));
 
         $this->assertEquals('PostTag', Inflector::id2camel('post-tag'));
         $this->assertEquals('PostTag', Inflector::id2camel('post_tag', '_'));
+        $this->assertEquals('НевжеІЦеПрацює', Inflector::id2camel('невже_і_це_працює', '_'));
+
+        $this->assertEquals('ShouldNotBecomeLowercased', Inflector::id2camel('ShouldNotBecomeLowercased', '_'));
 
         $this->assertEquals('FooYBar', Inflector::id2camel('foo-y-bar'));
         $this->assertEquals('FooYBar', Inflector::id2camel('foo_y_bar', '_'));
@@ -135,11 +148,13 @@ class InflectorTest extends TestCase
     {
         $this->assertEquals('Me my self and i', Inflector::humanize('me_my_self_and_i'));
         $this->assertEquals('Me My Self And I', Inflector::humanize('me_my_self_and_i', true));
+        $this->assertEquals('Але й веселі ці ваші тести', Inflector::humanize('але_й_веселі_ці_ваші_тести'));
     }
 
     public function testVariablize()
     {
         $this->assertEquals('customerTable', Inflector::variablize('customer_table'));
+        $this->assertEquals('ひらがなHepimiz', Inflector::variablize('ひらがな_hepimiz'));
     }
 
     public function testTableize()
@@ -166,6 +181,13 @@ class InflectorTest extends TestCase
             }
             $this->assertEquals($expected, Inflector::slug($source));
         }
+    }
+
+    public function testSlugReplacements()
+    {
+        $this->assertEquals('dont_replace_replacement', Inflector::slug('dont replace_replacement', '_'));
+        $this->assertEquals('remove_trailing_replacements', Inflector::slug('_remove trailing replacements_', '_'));
+        $this->assertEquals('thisrepisrepreplacement', Inflector::slug('this is REP-lacement', 'REP'));
     }
 
     public function testSlugIntl()

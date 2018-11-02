@@ -75,8 +75,7 @@ class HelpController extends Controller
      */
     public function actionList()
     {
-        $commands = $this->getCommandDescriptions();
-        foreach ($commands as $command => $description) {
+        foreach ($this->getCommandDescriptions() as $command => $description) {
             $result = Yii::$app->createController($command);
             if ($result === false || !($result[0] instanceof Controller)) {
                 continue;
@@ -116,16 +115,14 @@ class HelpController extends Controller
             return;
         }
 
-        $arguments = $controller->getActionArgsHelp($action);
-        foreach ($arguments as $argument => $help) {
-            $description = str_replace("\n", '', addcslashes($help['comment'], ':')) ?: $argument;
+        foreach ($controller->getActionArgsHelp($action) as $argument => $help) {
+            $description = preg_replace("~\R~", '', addcslashes($help['comment'], ':')) ?: $argument;
             $this->stdout($argument . ':' . $description . "\n");
         }
 
         $this->stdout("\n");
-        $options = $controller->getActionOptionsHelp($action);
-        foreach ($options as $argument => $help) {
-            $description = str_replace("\n", '', addcslashes($help['comment'], ':'));
+        foreach ($controller->getActionOptionsHelp($action) as $argument => $help) {
+            $description = preg_replace("~\R~", '', addcslashes($help['comment'], ':'));
             $this->stdout('--' . $argument . ($description ? ':' . $description : '') . "\n");
         }
     }
@@ -158,8 +155,7 @@ class HelpController extends Controller
             $this->stdout($scriptName . ' ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW));
         }
 
-        $args = $controller->getActionArgsHelp($action);
-        foreach ($args as $name => $arg) {
+        foreach ($controller->getActionArgsHelp($action) as $name => $arg) {
             if ($arg['required']) {
                 $this->stdout(' <' . $name . '>', Console::FG_CYAN);
             } else {
@@ -215,7 +211,7 @@ class HelpController extends Controller
         $class = new \ReflectionClass($controller);
         foreach ($class->getMethods() as $method) {
             $name = $method->getName();
-            if ($name !== 'actions' && $method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0) {
+            if ($name !== 'actions' && $method->isPublic() && !$method->isStatic() && strncmp($name, 'action', 6) === 0) {
                 $actions[] = Inflector::camel2id(substr($name, 6), '-', true);
             }
         }
@@ -255,16 +251,16 @@ class HelpController extends Controller
                 $file = $matches[0];
                 $relativePath = str_replace($controllerPath, '', $file);
                 $class = strtr($relativePath, [
-                    DIRECTORY_SEPARATOR => '\\',
+                    '/' => '\\',
                     '.php' => '',
                 ]);
                 $controllerClass = $module->controllerNamespace . $class;
                 if ($this->validateControllerClass($controllerClass)) {
-                    $dir = ltrim(pathinfo($relativePath, PATHINFO_DIRNAME), DIRECTORY_SEPARATOR);
+                    $dir = ltrim(pathinfo($relativePath, PATHINFO_DIRNAME), '\\/');
 
                     $command = Inflector::camel2id(substr(basename($file), 0, -14), '-', true);
                     if (!empty($dir)) {
-                        $command = $dir . DIRECTORY_SEPARATOR . $command;
+                        $command = $dir . '/' . $command;
                     }
                     $commands[] = $prefix . $command;
                 }
@@ -535,8 +531,7 @@ class HelpController extends Controller
      */
     protected function formatOptionAliases($controller, $option)
     {
-        $aliases = $controller->optionAliases();
-        foreach ($aliases as $name => $value) {
+        foreach ($controller->optionAliases() as $name => $value) {
             if ($value === $option) {
                 return ', -' . $name;
             }

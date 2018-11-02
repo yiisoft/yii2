@@ -10,7 +10,7 @@ Its code is organized in a recommended way. Therefore, it can serve as a good st
     
 In this and the next few sections, we will describe how to install Yii with the so-called *Basic Project Template* and
 how to implement new features on top of this template. Yii also provides another template called
-the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) which is better used in a team development environment
+the [Advanced Project Template](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide) which is better used in a team development environment
 to develop applications with multiple tiers.
 
 > Info: The Basic Project Template is suitable for developing 90 percent of Web applications. It differs
@@ -28,7 +28,7 @@ If you do not already have Composer installed, you may do so by following the in
 
 ```bash
 curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
+sudo mv composer.phar /usr/local/bin/composer
 ```
 
 On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -109,6 +109,30 @@ But there are other installation options available:
   you may follow the instructions as explained in [Building Application from Scratch](tutorial-start-from-scratch.md).
 * If you want to start with a more sophisticated application, better suited to team development environments,
   you may consider installing the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
+
+
+Installing Assets <span id="installing-assets"></span>
+-----------------
+
+Yii relies on [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) packages for the asset (CSS and JavaScript) libraries installation.
+It uses Composer to obtain these libraries, allowing PHP and CSS/JavaScript package versions to resolve at the same time.
+This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
+Please refer to [Assets documentation](structure-assets.md) for more details.
+
+You may want to either manage your assets via native Bower/NPM client, use CDN or avoid assets installation entirely.
+In order to prevent assets installation via Composer, add the following lines to your 'composer.json':
+
+```json
+"replace": {
+    "bower-asset/jquery": ">=1.11.0",
+    "bower-asset/inputmask": ">=3.2.0",
+    "bower-asset/punycode": ">=1.3.0",
+    "bower-asset/yii2-pjax": ">=2.0.0"
+},
+```
+
+> Note: in case of bypassing asset installation via Composer, you are responsible for the assets installation and resolving
+> version collisions. Be prepared for possible inconsistencies among asset files from different extensions.
 
 
 Verifying the Installation <span id="verifying-installation"></span>

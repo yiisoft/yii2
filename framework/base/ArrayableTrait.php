@@ -123,7 +123,7 @@ trait ArrayableTrait
     {
         $data = [];
         foreach ($this->resolveFields($fields, $expand) as $field => $definition) {
-            $attribute = is_string($definition) ? $this->$definition : call_user_func($definition, $this, $field);
+            $attribute = is_string($definition) ? $this->$definition : $definition($this, $field);
 
             if ($recursive) {
                 $nestedFields = $this->extractFieldsFor($fields, $field);
@@ -135,9 +135,8 @@ trait ArrayableTrait
                         function ($item) use ($nestedFields, $nestedExpand) {
                             if ($item instanceof Arrayable) {
                                 return $item->toArray($nestedFields, $nestedExpand);
-                            } else {
-                                return $item;
                             }
+                            return $item;
                         },
                         $attribute
                     );
@@ -167,7 +166,7 @@ trait ArrayableTrait
         $result = [];
 
         foreach ($fields as $field) {
-            $result[] = current(explode(".", $field, 2));
+            $result[] = current(explode('.', $field, 2));
         }
 
         if (in_array('*', $result, true)) {
@@ -193,7 +192,7 @@ trait ArrayableTrait
 
         foreach ($fields as $field) {
             if (0 === strpos($field, "{$rootField}.")) {
-                $result[] = preg_replace("/^{$rootField}\./i", '', $field);
+                $result[] = preg_replace('/^' . preg_quote($rootField, '/') . '\./i', '', $field);
             }
         }
 

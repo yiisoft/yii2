@@ -97,7 +97,7 @@ class CompareValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -135,7 +135,7 @@ class CompareValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -163,7 +163,7 @@ class CompareValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -221,7 +221,7 @@ class CompareValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -232,7 +232,7 @@ class CompareValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {
@@ -248,6 +248,7 @@ class CompareValidator extends Validator
             $compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
             $compareValue = $model->getAttributeLabel($compareAttribute);
             $options['compareAttribute'] = Html::getInputId($model, $compareAttribute);
+            $options['compareAttributeName'] = Html::getInputName($model, $compareAttribute);
             $compareLabel = $compareValueOrAttribute = $model->getAttributeLabel($compareAttribute);
         }
 

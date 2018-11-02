@@ -1,12 +1,14 @@
 错误处理
 ==============
 
-处理一个 RESTful API 请求时， 如果有一个用户请求错误或服务器发生意外时， 你可以简单地抛出一个异常来通知用户出错了。
+处理一个 RESTful API 请求时， 如果有一个用户请求错误或服务器发生意外时，
+你可以简单地抛出一个异常来通知用户出错了。
 如果你能找出错误的原因 (例如，所请求的资源不存在)，你应该
-考虑抛出一个适当的HTTP状态代码的异常 (例如， [[yii\web\NotFoundHttpException]]
-意味着一个404 HTTP状态代码)。 Yii 将通过HTTP状态码和文本
-发送相应的响应。 它还将包括在响应主体异常的
-序列化表示形式。 例如，
+考虑抛出一个适当的HTTP状态代码的异常 
+(例如， [[yii\web\NotFoundHttpException]]意味着一个404 HTTP状态代码)。 
+Yii 将通过HTTP状态码和文本发送相应的响应。 
+它还将包括在响应主体异常的序列化表示形式。 
+例如，
 
 ```
 HTTP/1.1 404 Not Found
@@ -16,7 +18,6 @@ Transfer-Encoding: chunked
 Content-Type: application/json; charset=UTF-8
 
 {
-    "type": "yii\\web\\NotFoundHttpException",
     "name": "Not Found Exception",
     "message": "The requested resource was not found.",
     "code": 0,

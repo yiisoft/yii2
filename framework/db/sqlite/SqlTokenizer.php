@@ -19,7 +19,7 @@ namespace yii\db\sqlite;
 class SqlTokenizer extends \yii\db\SqlTokenizer
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function isWhitespace(&$length)
     {
@@ -36,7 +36,7 @@ class SqlTokenizer extends \yii\db\SqlTokenizer
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function isComment(&$length)
     {
@@ -60,7 +60,7 @@ class SqlTokenizer extends \yii\db\SqlTokenizer
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function isOperator(&$length, &$content)
     {
@@ -95,7 +95,7 @@ class SqlTokenizer extends \yii\db\SqlTokenizer
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function isIdentifier(&$length, &$content)
     {
@@ -127,7 +127,7 @@ class SqlTokenizer extends \yii\db\SqlTokenizer
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function isStringLiteral(&$length, &$content)
     {
@@ -148,7 +148,7 @@ class SqlTokenizer extends \yii\db\SqlTokenizer
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function isKeyword($string, &$content)
     {

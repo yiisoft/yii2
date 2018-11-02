@@ -347,8 +347,8 @@ class Command extends Component
      * @param array $values the values to be bound. This must be given in terms of an associative
      * array with array keys being the parameter names, and array values the corresponding parameter values,
      * e.g. `[':name' => 'John', ':age' => 25]`. By default, the PDO type of each value is determined
-     * by its PHP type. You may explicitly specify the PDO type by using an array: `[value, type]`,
-     * e.g. `[':name' => 'John', ':profile' => [$profile, \PDO::PARAM_LOB]]`.
+     * by its PHP type. You may explicitly specify the PDO type by using a [[yii\db\PdoValue]] class: `new PdoValue(value, type)`,
+     * e.g. `[':name' => 'John', ':profile' => new PdoValue($profile, \PDO::PARAM_LOB)]`.
      * @return $this the current command being executed
      */
     public function bindValues($values)
@@ -359,9 +359,12 @@ class Command extends Component
 
         $schema = $this->db->getSchema();
         foreach ($values as $name => $value) {
-            if (is_array($value)) {
+            if (is_array($value)) { // TODO: Drop in Yii 2.1
                 $this->_pendingParams[$name] = $value;
                 $this->params[$name] = $value[0];
+            } elseif ($value instanceof PdoValue) {
+                $this->_pendingParams[$name] = [$value->getValue(), $value->getType()];
+                $this->params[$name] = $value->getValue();
             } else {
                 $type = $schema->getPdoType($value);
                 $this->_pendingParams[$name] = [$value, $type];
@@ -500,11 +503,49 @@ class Command extends Component
             return $this->db->quoteSql($column);
         }, $columns);
 
-        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows, $params);
 
         $this->setRawSql($sql);
+        $this->bindValues($params);
 
         return $this;
+    }
+
+    /**
+     * Creates a command to insert rows into a database table if
+     * they do not already exist (matching unique constraints),
+     * or update them if they do.
+     *
+     * For example,
+     *
+     * ```php
+     * $sql = $queryBuilder->upsert('pages', [
+     *     'name' => 'Front page',
+     *     'url' => 'http://example.com/', // url is unique
+     *     'visits' => 0,
+     * ], [
+     *     'visits' => new \yii\db\Expression('visits + 1'),
+     * ], $params);
+     * ```
+     *
+     * The method will properly escape the table and column names.
+     *
+     * @param string $table the table that new rows will be inserted into/updated in.
+     * @param array|Query $insertColumns the column data (name => value) to be inserted into the table or instance
+     * of [[Query]] to perform `INSERT INTO ... SELECT` SQL statement.
+     * @param array|bool $updateColumns the column data (name => value) to be updated if they already exist.
+     * If `true` is passed, the column data will be updated to match the insert column data.
+     * If `false` is passed, no update will be performed if the column data already exists.
+     * @param array $params the parameters to be bound to the command.
+     * @return $this the command object itself.
+     * @since 2.0.14
+     */
+    public function upsert($table, $insertColumns, $updateColumns = true, $params = [])
+    {
+        $sql = $this->db->getQueryBuilder()->upsert($table, $insertColumns, $updateColumns, $params);
+
+        return $this->setSql($sql)->bindValues($params);
     }
 
     /**
@@ -890,10 +931,10 @@ class Command extends Component
     /**
      * Creates a SQL command for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
+     * will have the specified value or the maximum existing value +1.
      * @param string $table the name of the table whose primary key sequence will be reset
      * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
+     * the next new row's primary key will have the maximum existing value +1.
      * @return $this the command object itself
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
@@ -902,6 +943,22 @@ class Command extends Component
         $sql = $this->db->getQueryBuilder()->resetSequence($table, $value);
 
         return $this->setSql($sql);
+    }
+
+    /**
+     * Executes a db command resetting the sequence value of a table's primary key.
+     * Reason for execute is that some databases (Oracle) need several queries to do so.
+     * The sequence is reset such that the primary key of the next new row inserted
+     * will have the specified value or the maximum existing value +1.
+     * @param string $table the name of the table whose primary key sequence is reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have the maximum existing value +1.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS
+     * @since 2.0.16
+     */
+    public function executeResetSequence($table, $value = null)
+    {
+        return $this->db->getQueryBuilder()->executeResetSequence($table, $value);
     }
 
     /**
@@ -995,7 +1052,7 @@ class Command extends Component
 
         return $this->setSql($sql)->requireTableSchemaRefresh($viewName);
     }
-    
+
     /**
      * Drops a SQL View.
      *
@@ -1052,7 +1109,7 @@ class Command extends Component
      * @return array array of two elements, the first is boolean of whether profiling is enabled or not.
      * The second is the rawSql if it has been created.
      */
-    private function logQuery($category)
+    protected function logQuery($category)
     {
         if ($this->db->enableLogging) {
             $rawSql = $this->getRawSql();
@@ -1083,17 +1140,11 @@ class Command extends Component
             if (is_array($info)) {
                 /* @var $cache \yii\caching\CacheInterface */
                 $cache = $info[0];
-                $cacheKey = [
-                    __CLASS__,
-                    $method,
-                    $fetchMode,
-                    $this->db->dsn,
-                    $this->db->username,
-                    $rawSql ?: $rawSql = $this->getRawSql(),
-                ];
+                $rawSql = $rawSql ?: $this->getRawSql();
+                $cacheKey = $this->getCacheKey($method, $fetchMode, $rawSql);
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
-                    Yii::trace('Query result served from cache', 'yii\db\Command::query');
+                    Yii::debug('Query result served from cache', 'yii\db\Command::query');
                     return $result[0];
                 }
             }
@@ -1124,10 +1175,32 @@ class Command extends Component
 
         if (isset($cache, $cacheKey, $info)) {
             $cache->set($cacheKey, [$result], $info[1], $info[2]);
-            Yii::trace('Saved query result in cache', 'yii\db\Command::query');
+            Yii::debug('Saved query result in cache', 'yii\db\Command::query');
         }
 
         return $result;
+    }
+
+    /**
+     * Returns the cache key for the query.
+     *
+     * @param string $method method of PDOStatement to be called
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * for valid fetch modes.
+     * @param string $rawSql the raw SQL with parameter values inserted into the corresponding placeholders
+     * @return array the cache key
+     * @since 2.0.16
+     */
+    protected function getCacheKey($method, $fetchMode, $rawSql)
+    {
+        return [
+            __CLASS__,
+            $method,
+            $fetchMode,
+            $this->db->dsn,
+            $this->db->username,
+            $rawSql,
+        ];
     }
 
     /**

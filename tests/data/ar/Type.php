@@ -27,7 +27,7 @@ namespace yiiunit\data\ar;
 class Type extends ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {

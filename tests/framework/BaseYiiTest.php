@@ -13,6 +13,7 @@ use yii\di\Container;
 use yii\log\Logger;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
+use yiiunit\data\base\CallableClass;
 
 /**
  * BaseYiiTest.
@@ -91,6 +92,8 @@ class BaseYiiTest extends TestCase
         $this->assertTrue(Yii::createObject(function (Singer $singer, $a = 3) {
             return true;
         }));
+
+        $this->assertTrue(Yii::createObject(new CallableClass()));
     }
 
     public function testCreateObjectEmptyArrayException()
@@ -128,7 +131,7 @@ class BaseYiiTest extends TestCase
     /**
      * @covers \yii\BaseYii::info()
      * @covers \yii\BaseYii::warning()
-     * @covers \yii\BaseYii::trace()
+     * @covers \yii\BaseYii::debug()
      * @covers \yii\BaseYii::error()
      * @covers \yii\BaseYii::beginProfile()
      * @covers \yii\BaseYii::endProfile()
@@ -165,7 +168,7 @@ class BaseYiiTest extends TestCase
 
         BaseYii::info('info message', 'info category');
         BaseYii::warning('warning message', 'warning category');
-        BaseYii::trace('trace message', 'trace category');
+        BaseYii::debug('trace message', 'trace category');
         BaseYii::error('error message', 'error category');
         BaseYii::beginProfile('beginProfile message', 'beginProfile category');
         BaseYii::endProfile('endProfile message', 'endProfile category');

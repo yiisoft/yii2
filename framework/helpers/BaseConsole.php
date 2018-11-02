@@ -622,7 +622,7 @@ class BaseConsole
         if (static::isRunningOnWindows()) {
             $output = [];
             exec('mode con', $output);
-            if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
+            if (isset($output[1]) && strpos($output[1], 'CON') !== false) {
                 return $size = [(int) preg_replace('~\D~', '', $output[4]), (int) preg_replace('~\D~', '', $output[3])];
             }
         } else {
@@ -864,7 +864,8 @@ class BaseConsole
      * a list of options to choose from and their explanations.
      *
      * @param string $prompt the prompt message
-     * @param array $options Key-value array of options to choose from
+     * @param array $options Key-value array of options to choose from. Key is what is inputed and used, value is
+     * what's displayed to end user by help command.
      *
      * @return string An option character the user chose
      */

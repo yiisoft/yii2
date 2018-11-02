@@ -134,7 +134,9 @@
         // whether to scroll to first visible error after validation.
         scrollToError: true,
         // offset in pixels that should be added when scrolling to the first error.
-        scrollToErrorOffset: 0
+        scrollToErrorOffset: 0,
+        // where to add validation class: container or input
+        validationStateOn: 'container'
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
@@ -323,7 +325,7 @@
             // client-side validation
             $.each(data.attributes, function () {
                 this.$form = $form;
-                if (!$(this.input).is(":disabled")) {
+                if (!findInput($form, this).is(":disabled")) {
                     this.cancelled = false;
                     // perform validation only if the form is being submitted or if an attribute is pending validation
                     if (data.submitting || this.status === 2 || this.status === 3) {
@@ -441,8 +443,11 @@
                     // Without setTimeout() we would get the input values that are not reset yet.
                     this.value = getValue($form, this);
                     this.status = 0;
-                    var $container = $form.find(this.container);
-                    $container.removeClass(
+                    var $container = $form.find(this.container),
+                        $input = findInput($form, this),
+                        $errorElement = data.settings.validationStateOn === 'input' ? $input : $container;
+
+                    $errorElement.removeClass(
                         data.settings.validatingCssClass + ' ' +
                             data.settings.errorCssClass + ' ' +
                             data.settings.successCssClass
@@ -484,7 +489,6 @@
                 updateInput($(this), attribute, msg);
             }
         }
-
     };
 
     var watchAttribute = function ($form, attribute) {
@@ -620,8 +624,9 @@
 
         if (submitting) {
             var errorAttributes = [];
+            var $input = findInput($form, this);
             $.each(data.attributes, function () {
-                if (!$(this.input).is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
+                if (!$input.is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
                     errorAttributes.push(this);
                 }
             });
@@ -711,17 +716,20 @@
             var $container = $form.find(attribute.container);
             var $error = $container.find(attribute.error);
             updateAriaInvalid($form, attribute, hasError);
+
+            var $errorElement = data.settings.validationStateOn === 'input' ? $input : $container;
+
             if (hasError) {
                 if (attribute.encodeError) {
                     $error.text(messages[attribute.id][0]);
                 } else {
                     $error.html(messages[attribute.id][0]);
                 }
-                $container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
+                $errorElement.removeClass(data.settings.validatingCssClass + ' ' + data.settings.successCssClass)
                     .addClass(data.settings.errorCssClass);
             } else {
                 $error.empty();
-                $container.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
+                $errorElement.removeClass(data.settings.validatingCssClass + ' ' + data.settings.errorCssClass + ' ')
                     .addClass(data.settings.successCssClass);
             }
             attribute.value = getValue($form, attribute);

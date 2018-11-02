@@ -85,11 +85,11 @@ class DetailViewTest extends \yiiunit\TestCase
         ]);
 
         $this->assertEquals(
-            'ИдентификаторТовара:A00001',
+            'Идентификатор Товара:A00001',
             $this->detailView->renderAttribute($this->detailView->attributes[0], 0)
         );
         $this->assertEquals(
-            'το αναγνωριστικό του:A00002',
+            'Το Αναγνωριστικό Του:A00002',
             $this->detailView->renderAttribute($this->detailView->attributes[1], 1)
         );
     }
@@ -313,6 +313,26 @@ class DetailViewTest extends \yiiunit\TestCase
             $a = $this->detailView->renderAttribute($attribute, $index);
             $this->assertEquals($expectedValue, $a);
         }
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15536
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        $model = new ModelMock();
+        $model->id = 1;
+        $model->text = 'I`m an object';
+
+        $this->detailView = new DetailView([
+            'model' => $model,
+            'on init' => function () use (&$initTriggered) {
+                $initTriggered = true;
+            }
+        ]);
+
+        $this->assertTrue($initTriggered);
     }
 }
 

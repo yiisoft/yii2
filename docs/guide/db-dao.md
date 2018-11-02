@@ -9,7 +9,7 @@ When using Yii DAO, you mainly need to deal with plain SQLs and PHP arrays. As a
 way to access databases. However, because SQL syntax may vary for different databases, using Yii DAO also means 
 you have to take extra effort to create a database-agnostic application.
 
-Yii DAO supports the following databases out of box:
+In Yii 2.0, DAO supports the following databases out of the box:
 
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
@@ -18,6 +18,12 @@ Yii DAO supports the following databases out of box:
 - [CUBRID](http://www.cubrid.org/): version 9.3 or higher.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
+
+> Info: In Yii 2.1 and later, the DAO supports for CUBRID, Oracle and MSSQL are no longer provided as the built-in
+  core components of the framework. They have to be installed as the separated [extensions](structure-extensions.md).
+  There are [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) and
+  [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql) in the 
+  [official extensions](https://www.yiiframework.com/extensions/official).
 
 > Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
   [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
@@ -256,6 +262,21 @@ Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
     ['Linda', 25],
 ])->execute();
 ```
+
+Another useful method is [[yii\db\Command::upsert()|upsert()]]. Upsert is an atomic operation that inserts rows into
+a database table if they do not already exist (matching unique constraints), or update them if they do:
+
+```php
+Yii::$app->db->createCommand()->upsert('pages', [
+    'name' => 'Front page',
+    'url' => 'http://example.com/', // url is unique
+    'visits' => 0,
+], [
+    'visits' => new \yii\db\Expression('visits + 1'),
+], $params)->execute();
+```
+
+The code above will either insert a new page record or increment its visit counter atomically.
 
 Note that the aforementioned methods only create the query and you always have to call [[yii\db\Command::execute()|execute()]]
 to actually run them.

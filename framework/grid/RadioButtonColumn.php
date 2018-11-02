@@ -64,7 +64,7 @@ class RadioButtonColumn extends Column
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws \yii\base\InvalidConfigException if [[name]] is not set.
      */
     public function init()
@@ -76,10 +76,14 @@ class RadioButtonColumn extends Column
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function renderDataCellContent($model, $key, $index)
     {
+        if ($this->content !== null) {
+            return parent::renderDataCellContent($model, $key, $index);
+        }
+
         if ($this->radioOptions instanceof Closure) {
             $options = call_user_func($this->radioOptions, $model, $key, $index, $this);
         } else {

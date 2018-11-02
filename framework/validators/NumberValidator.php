@@ -58,7 +58,7 @@ class NumberValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -76,12 +76,12 @@ class NumberValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        if (is_array($value) || (is_object($value) && !method_exists($value, '__toString'))) {
+        if ($this->isNotNumber($value)) {
             $this->addError($model, $attribute, $this->message);
             return;
         }
@@ -99,11 +99,11 @@ class NumberValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
-        if (is_array($value) || is_object($value)) {
+        if ($this->isNotNumber($value)) {
             return [Yii::t('yii', '{attribute} is invalid.'), []];
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
@@ -118,8 +118,18 @@ class NumberValidator extends Validator
         return null;
     }
 
+    /*
+     * @param mixed $value the data value to be checked.
+     */
+    private function isNotNumber($value)
+    {
+        return is_array($value)
+        || (is_object($value) && !method_exists($value, '__toString'))
+        || (!is_object($value) && !is_scalar($value) && $value !== null);
+    }
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -130,7 +140,7 @@ class NumberValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {

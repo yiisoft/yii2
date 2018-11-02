@@ -32,6 +32,7 @@ env:
     - TASK_TESTS_PHP=1
     - TASK_TESTS_JS=0
     - TASK_TESTS_COVERAGE=0
+    - TRAVIS_SECOND_USER=travis_two
 
 
 services:
@@ -46,9 +47,14 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.npm
 
-# try running against postgres 9.3
+# try running against postgres 9.6
 addons:
-  postgresql: "9.3"
+  postgresql: "9.6"
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
   code_climate:
     repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
 
@@ -69,37 +75,43 @@ matrix:
 
     - php: 5.4
 
-    # Test against HHVM 3.12 LTS version by using trusty
-    - php: hhvm-3.12
+    # Test against HHVM 3.21 LTS version by using trusty
+    - php: hhvm-3.21
       sudo: true
       addons:
         code_climate:
           repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
+        postgresql: "9.6"
         apt:
+          sources:
+            - mysql-5.7-trusty
           packages:
-            - mysql-server-5.6
-            - mysql-client-core-5.6
-            - mysql-client-5.6
+            - mysql-server
       services:
         - mysql
+        - postgresql
 
-    # test against the latest HHVM version by using a newer image
-    - php: hhvm
+    # test against the latest pre 3.26 HHVM version by using a newer image.
+    # @see https://github.com/facebook/hhvm/issues/8192
+    - php: hhvm-3.24
       sudo: true
       addons:
         code_climate:
           repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
-        postgresql: "9.3"
+        postgresql: "9.6"
         apt:
+          sources:
+            - mysql-5.7-trusty
           packages:
-            - mysql-server-5.6
-            - mysql-client-core-5.6
-            - mysql-client-5.6
+            - mysql-server
       services:
         - mysql
         - postgresql
 
     - php: nightly
+      services:
+        - mysql
+        - postgresql
 
     # have a separate branch for javascript tests
     - language: node_js
@@ -110,6 +122,8 @@ matrix:
 
   allow_failures:
     - php: nightly
+    - php: hhvm-3.21
+    - php: hhvm-3.24
 
 install:
   - |
@@ -121,16 +135,11 @@ install:
   # install composer dependencies
   - travis_retry composer self-update
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - |
-    if [[ $TRAVIS_PHP_VERSION == "hhvm-3.12" ]]; then
-      # remove php-cs-fixer from composer dependencies on hhvm-3.12 - php-cs-fixer requires at least hhvm-3.18
-      composer remove friendsofphp/php-cs-fixer --dev
-    fi
   - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
 
   # setup PHP extension
   - |
-    if [ $TASK_TESTS_PHP == 1 ]; then
+    if [[ $TASK_TESTS_PHP == 1 && $TRAVIS_PHP_VERSION != nightly ]]; then
       tests/data/travis/apc-setup.sh
       tests/data/travis/memcache-setup.sh
       tests/data/travis/imagick-setup.sh
@@ -142,9 +151,22 @@ install:
       travis_retry npm install
     fi
 
+  # Needed for FileCacheTest
+  - sudo useradd $TRAVIS_SECOND_USER --gid $(id -g) -M
+
 before_script:
-  # Disable the HHVM JIT for faster Unit Testing
-  - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini; fi
+  #
+  # Disable:
+  # 1) the HHVM JIT for faster testing;
+  # 2) the session GC for testing stability.
+  #
+  # The second allows to avoid accidental unpredictable failings with message:
+  # `ps_files_cleanup_dir: opendir(/var/lib/hhvm/sessions) failed: Permission denied (13)`
+  #
+  - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
+      echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini;
+      echo 'session.gc_probability = 0' >> /etc/hhvm/php.ini;
+    fi
 
   # show some versions and env information
   - php --version
@@ -155,6 +177,7 @@ before_script:
       php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
       psql --version
       mysql --version
+      sudo mysql_upgrade
     fi
   - |
     if [ $TASK_TESTS_JS == 1 ]; then
@@ -166,6 +189,7 @@ before_script:
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
       travis_retry mysql -e 'CREATE DATABASE `yiitest`;';
+      mysql -e "SET GLOBAL sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';";
       mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
       mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
       psql -U postgres -c 'CREATE DATABASE yiitest;';
@@ -180,8 +204,8 @@ before_script:
   # Disable DEPRECATE messages during PHPUnit initialization on PHP 7.2. To fix them, PHPUnit should be updated to 6.*
   # For Yii2 tests, messages will be enabled by tests/bootstrap.php
   - |
-    if [ $TRAVIS_PHP_VERSION == 7.2 ]; then
-      echo 'Disabled DEPRECATED notifications for PHP 7.2';
+    if [[ $TRAVIS_PHP_VERSION == 7.2 || $TRAVIS_PHP_VERSION = nightly ]]; then
+      echo 'Disabled DEPRECATED notifications for PHP >= 7.2';
       echo 'error_reporting = E_ALL & ~E_DEPRECATED' >> /tmp/php-config.ini;
       phpenv config-add /tmp/php-config.ini;
     fi

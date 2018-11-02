@@ -415,10 +415,10 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     }
 
     /**
-     * Test expresssion in targetAttribute.
+     * Test expression in targetAttribute.
      * @see https://github.com/yiisoft/yii2/issues/14304
      */
-    public function testExpresionInAttributeColumnName()
+    public function testExpressionInAttributeColumnName()
     {
         $validator = new UniqueValidator([
             'targetAttribute' => [
@@ -447,11 +447,36 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model = WithCustomer::find()->one();
         try {
             $validator->validateAttribute($model, 'email');
+            $this->assertTrue(true);
         } catch (\Exception $exception) {
             $this->fail('Query is crashed because "with" relation cannot be loaded');
         }
+    }
+    
+    public function testForceMaster()
+    {
+        $connection = $this->getConnectionWithInvalidSlave();
+        ActiveRecord::$db = $connection;
 
+        $model = null;
+        $connection->useMaster(function() use (&$model) {
+            $model = WithCustomer::find()->one();
+        });
 
+        $validator = new UniqueValidator([
+            'forceMasterDb' => true,
+            'targetAttribute' => ['status', 'profile_id']
+        ]);
+        $validator->validateAttribute($model, 'email');
+
+        $this->expectException('\yii\base\InvalidConfigException');
+        $validator = new UniqueValidator([
+            'forceMasterDb' => false,
+            'targetAttribute' => ['status', 'profile_id']
+        ]);
+        $validator->validateAttribute($model, 'email');
+
+        ActiveRecord::$db = $this->getConnection();
     }
 }
 

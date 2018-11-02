@@ -298,4 +298,49 @@ class NumberValidatorTest extends TestCase
         $value = new \stdClass();
         $this->assertFalse($val->validate($value));
     }
+
+    public function testValidateResource()
+    {
+        $val = new NumberValidator();
+        $fp = fopen('php://stdin', 'r');
+        $this->assertFalse($val->validate($fp));
+
+        $model = new FakedValidationModel();
+        $model->attr_number = $fp;
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+        
+        // the check is here for HHVM that
+        // was losing handler for unknown reason
+        if (is_resource($fp)) {
+            fclose($fp);
+        }
+    }
+
+    public function testValidateToString()
+    {
+        $val = new NumberValidator();
+        $object = new TestClass('10');
+        $this->assertTrue($val->validate($object));
+
+        $model = new FakedValidationModel();
+        $model->attr_number = $object;
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertFalse($model->hasErrors('attr_number'));
+    }
+}
+
+class TestClass
+{
+    public $foo;
+
+    public function __construct($foo)
+    {
+        $this->foo = $foo;
+    }
+
+    public function __toString()
+    {
+        return $this->foo;
+    }
 }

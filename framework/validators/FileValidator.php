@@ -80,7 +80,6 @@ class FileValidator extends Validator
      * @see tooMany for the customized message when too many files are uploaded.
      */
     public $maxFiles = 1;
-
     /**
      * @var int the minimum file count the given attribute can hold.
      * Defaults to 0. Higher value means at least that number of files should be uploaded.
@@ -129,7 +128,6 @@ class FileValidator extends Validator
      * - {limit}: the value of [[maxFiles]]
      */
     public $tooMany;
-
     /**
      * @var string the error message used if the count of multiple uploads less that minFiles.
      * You may use the following tokens in the message:
@@ -140,7 +138,6 @@ class FileValidator extends Validator
      * @since 2.0.14
      */
     public $tooFew;
-
     /**
      * @var string the error message used when the uploaded file has an extension name
      * that is not listed in [[extensions]]. You may use the following tokens in the message:
@@ -163,7 +160,7 @@ class FileValidator extends Validator
 
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function init()
     {
@@ -205,7 +202,7 @@ class FileValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
@@ -268,7 +265,7 @@ class FileValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function validateValue($value)
     {
@@ -361,7 +358,7 @@ class FileValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @param bool $trim
      */
     public function isEmpty($value, $trim = false)
@@ -423,7 +420,7 @@ class FileValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
@@ -433,7 +430,7 @@ class FileValidator extends Validator
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getClientOptions($model, $attribute)
     {

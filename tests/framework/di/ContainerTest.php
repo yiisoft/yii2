@@ -170,7 +170,7 @@ class ContainerTest extends TestCase
 
 
         $myFunc = function ($a, NumberValidator $b, $c = 'default') {
-            return[$a, get_class($b), $c];
+            return[$a, \get_class($b), $c];
         };
         $result = Yii::$container->invoke($myFunc, ['a']);
         $this->assertEquals(['a', 'yii\validators\NumberValidator', 'default'], $result);
@@ -260,6 +260,7 @@ class ContainerTest extends TestCase
             'qux.using.closure' => function () {
                 return new Qux();
             },
+            'rollbar', 'baibaratsky\yii\rollbar\Rollbar'
         ]);
         $container->setDefinitions([]);
 
@@ -271,6 +272,14 @@ class ContainerTest extends TestCase
         $this->assertEquals('item1', $traversable->current());
 
         $this->assertInstanceOf('yiiunit\framework\di\stubs\Qux', $container->get('qux.using.closure'));
+
+        try {
+            $container->get('rollbar');
+            $this->fail('InvalidConfigException was not thrown');
+        } catch(\Exception $e)
+        {
+            $this->assertInstanceOf('yii\base\InvalidConfigException', $e);
+        }
     }
 
     public function testContainerSingletons()
@@ -306,7 +315,7 @@ class ContainerTest extends TestCase
      */
     public function testVariadicConstructor()
     {
-        if (defined('HHVM_VERSION')) {
+        if (\defined('HHVM_VERSION')) {
             static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
         }
 
@@ -319,7 +328,7 @@ class ContainerTest extends TestCase
      */
     public function testVariadicCallable()
     {
-        if (defined('HHVM_VERSION')) {
+        if (\defined('HHVM_VERSION')) {
             static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
         }
 

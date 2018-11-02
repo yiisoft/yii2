@@ -62,7 +62,7 @@ class PhpManagerTest extends ManagerTestCase
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function createManager()
     {
