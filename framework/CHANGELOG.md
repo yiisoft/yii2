@@ -80,6 +80,7 @@ Yii Framework 2 Change Log
 - Bug #16836: Fix `yii\mutex\MysqlMutex` to handle locks with names longer than 64 characters (rob006)
 - Enh #16839: Increase frequency of lock tries for `yii\mutex\FileMutex::acquireLock()` when $timeout is provided (rob006)
 - Enh #16839: Add support for `$timeout` in  `yii\mutex\PgsqlMutex::acquire()` (rob006)
+- Bug #16828: `yii\console\controllers\MessageController::translator` recognized object' methods and functions calls as identical sets of tokens (erickskrauch)
 
 
 2.0.15.1 March 21, 2018
