@@ -22,10 +22,10 @@ RESTful 的 API 都是关于访问和操作 *资源*，可将资源看成MVC模�
 
 ## 字段 <span id="fields"></span>
 
-当RESTful API响应中包含一个资源时，该资源需要序列化成一个字符串。
-Yii将这个过程分成两步，首先，资源会被[[yii\rest\Serializer]]转换成数组，
-然后，该数组会通过[[yii\web\ResponseFormatterInterface|response formatters]]
-根据请求格式(如JSON, XML)被序列化成字符串。
+当 RESTful API 响应中包含一个资源时，该资源需要序列化成一个字符串。
+Yii将这个过程分成两步，首先，资源会被 [[yii\rest\Serializer]] 转换成数组，
+然后，该数组会通过 [[yii\web\ResponseFormatterInterface|response formatters]]
+根据请求格式（如 JSON，XML）被序列化成字符串。
 当开发一个资源类时应重点关注第一步。
 
 通过覆盖 [[yii\base\Model::fields()|fields()]] 和/或
@@ -35,16 +35,16 @@ Yii将这个过程分成两步，首先，资源会被[[yii\rest\Serializer]]转
 后者指定由于终端用户的请求包含 `expand` 参数哪些额外的字段应被包含到展现数组，例如，
 
 ```
-// 返回fields()方法中申明的所有字段
+// 返回 fields() 方法中申明的所有字段
 http://localhost/users
 
-// 只返回fields()方法中申明的id和email字段
+// 只返回 fields() 方法中申明的 id 和 email 字段
 http://localhost/users?fields=id,email
 
-// 返回fields()方法申明的所有字段，以及extraFields()方法中的profile字段
+// 返回 fields() 方法申明的所有字段，以及 extraFields() 方法中的 profile 字段
 http://localhost/users?expand=profile
 
-// 返回fields()方法中的id, email，以及extraFields()方法中的profile字段
+// 返回 fields() 方法中的 id, email，以及 extraFields() 方法中的 profile 字段
 http://localhost/users?fields=id,email&expand=profile
 ```
 
@@ -92,8 +92,8 @@ public function fields()
 
 > Warning: 模型的所有属性默认会被包含到API结果中，
 > 应检查数据确保没包含敏感数据，如果有敏感数据，
-> 应覆盖`fields()`过滤掉，在上述例子中，我们选择过滤掉 `auth_key`, 
-> `password_hash` 和 `password_reset_token`.
+> 应覆盖 `fields()` 过滤掉，在上述例子中，我们选择过滤掉 `auth_key`，
+> `password_hash` 和 `password_reset_token`。
 
 
 ### 覆盖 `extraFields()` 方法 <span id="overriding-extra-fields"></span>
@@ -117,7 +117,7 @@ public function extraFields()
 }
 ```
 
-`http://localhost/users?fields=id,email&expand=profile` 的请求可能返回如下JSON 数据:
+`http://localhost/users?fields=id,email&expand=profile` 的请求可能返回如下 JSON 数据：
 
 ```php
 [
@@ -180,7 +180,7 @@ class UserResource extends Model implements Linkable
 }
 ```
 
-当响应中返回一个`User` 对象，
+当响应中返回一个 `User` 对象，
 它会包含一个 `_links` 单元表示和用户相关的链接，例如
 
 ```
@@ -211,10 +211,10 @@ class UserResource extends Model implements Linkable
 资源对象可以组成 *集合*，
 每个集合包含一组相同类型的资源对象。
 
-集合可被展现成数组，更多情况下展现成 [data providers](output-data-providers.md). 
-因为data providers支持资源的排序和分页，这个特性在 RESTful API 返回集合时也用到，
-例如This is because data providers support sorting and pagination
-如下操作返回post资源的data provider:
+集合可被展现成数组，更多情况下展现成 [data providers](output-data-providers.md)。
+因为 data providers 支持资源的排序和分页，这个特性在 RESTful API 返回集合时也用到，
+例如 This is because data providers support sorting and pagination
+如下操作返回 post 资源的 data provider：
 
 ```php
 namespace app\controllers;
@@ -234,15 +234,15 @@ class PostController extends Controller
 }
 ```
 
-当在RESTful API响应中发送data provider 时， 
+当在 RESTful API 响应中发送 data provider 时， 
 [[yii\rest\Serializer]] 会取出资源的当前页并组装成资源对象数组，
-[[yii\rest\Serializer]] 也通过如下HTTP头包含页码信息：
+[[yii\rest\Serializer]] 也通过如下 HTTP 头包含页码信息：
 
-* `X-Pagination-Total-Count`: 资源所有数量;
-* `X-Pagination-Page-Count`: 页数;
-* `X-Pagination-Current-Page`: 当前页(从1开始);
-* `X-Pagination-Per-Page`: 每页资源数量;
-* `Link`: 允许客户端一页一页遍历资源的导航链接集合.
+* `X-Pagination-Total-Count`：资源所有数量；
+* `X-Pagination-Page-Count`：页数；
+* `X-Pagination-Current-Page`：当前页（从 1 开始）；
+* `X-Pagination-Per-Page`：每页资源数量；
+* `Link`：允许客户端一页一页遍历资源的导航链接集合。
 
-可在[快速入门](rest-quick-start.md#trying-it-out) 一节中找到样例.
+可在[快速入门](rest-quick-start.md#trying-it-out) 一节中找到样例。
 
