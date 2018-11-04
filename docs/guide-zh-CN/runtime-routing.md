@@ -43,15 +43,15 @@ $url = Url::to(['post/view', 'id' => 100]);
 - 默认URL格式；
 - 美化URL格式。
 
-默认URL格式试用一个参数`r`表示路由，
-并且试用一般的参数格式表示请求参数。例如，`/index.php?r=post/view&id=100`表示路由为`post/view`，参数`id`为100。
+默认URL格式使用一个参数`r`表示路由，
+并且使用一般的参数格式表示请求参数。例如，`/index.php?r=post/view&id=100`表示路由为`post/view`，参数`id`为100。
 默认URL格式不需要为[[yii\web\UrlManager|URL管理器]]做任何配置，
-并且在任何Web服务器都可以正常试用。
+并且在任何Web服务器都可以正常使用。
 
 美化URL格式在脚本名称后面使用更多的路径信息表示路由和参数信息。
 例如，用适当的[[yii\web\UrlManager::rules|URL规则]]，`/index.php/post/100`中附加的路径信息`/post/100`表示
 路由为`post/view`，参数`id`为100。
-要试用美化的URL格式，你需要根据实际的需求
+要使用美化的URL格式，你需要根据实际的需求
 设计一组[[yii\web\UrlManager::rules|URL规则]]来规定URL的样式。
  
 你可以仅设置[[yii\web\UrlManager|URL管理器]]中的[[yii\web\UrlManager::enablePrettyUrl|开启美化URL]]来切换两种URL格式，
@@ -69,7 +69,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 如果使用默认URL格式，解析请求到路由只是简单的从`GET`请求中得到命名为`r`的参数。
 
 
-当试用美化URL格式时，[[yii\web\UrlManager|URL管理器]]将检查注册的[[yii\web\UrlManager::rules|URL规则]]，
+当使用用美化URL格式时，[[yii\web\UrlManager|URL管理器]]将检查注册的[[yii\web\UrlManager::rules|URL规则]]，
 找到一条可以匹配的将请求转到路由的规则。
 如果找不到任何匹配的规则，系统将抛出[[yii\web\NotFoundHttpException]]异常。
 
@@ -280,7 +280,7 @@ echo Url::previous();
 
 > Note: 如果你想在URL中隐藏入口脚本名称，除了要设置 [[yii\web\UrlManager::showScriptName|showScriptName]] 为 false，
   同时应该配置 Web 服务，处理当请求 URL 没有特殊指定入口脚本时确定要执行哪个PHP文件，
-  如果你试用 Apache Web server，你可以参考[安装](start-installation.md#recommended-apache-configuration)中推荐的配置。
+  如果你使用 Apache Web server，你可以参考[安装](start-installation.md#recommended-apache-configuration)中推荐的配置。
 
 
 
@@ -685,7 +685,7 @@ URL规范器可以针对URL管理器全局配置，也可以针对规则单独�
 在开发复杂的 Web 应用程序时，优化 URL 规则非常重要，以便解析请求和创建 URL 所需
 的时间更少。
 
-通过使用参数化路由，您可以减少 URL 规则的数量，这可以显着提高性能。
+通过使用参数化路由，您可以减少 URL 规则的数量，这可以显著提高性能。
 
 当解析或创建URL时，[[yii\web\UrlManager|URL manager]] 按照它们声明的顺序检查 URL 规则。
 因此，您可以考虑调整 URL 规则的顺序，以便在较少使用的规则之前放置更具体和/或更常用的规则。
