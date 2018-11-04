@@ -22,7 +22,7 @@
 ## <div dir="rtl">إنشاء ال Model</div> <span id="creating-model"></span>
 
 <p dir="rtl">
-    يتم تمثيل البيانات التي يتم طلبها من خلال المستخدم عن طريق ال <code>EntryForm</code> model class  كما هو موضح أدناه، ويتم حفظ هذا الملف داخل المسار models، ويكون إسم ال model ومساره في مثالنا هذا هو  <code>models/EntryForm.php</code>. يرجى الرجوع إلى صفحة ال <a href="../guide/concept-autoloading.md">Class Autoloading</a> للحصول على مزيد من التفاصيل حول طريقة التسمية الخاصة بال class. 
+    يتم تمثيل البيانات التي يتم طلبها من خلال المستخدم عن طريق ال <code>EntryForm</code> model class  كما هو موضح أدناه، ويتم حفظ هذا الملف داخل المسار models، ويكون إسم ال model ومساره في مثالنا هذا هو  <code>models/EntryForm.php</code>. يرجى الرجوع إلى صفحة ال <a href="../guide/concept-autoloading.md">Class Autoloading</a> للحصول على مزيد من التفاصيل حول طريقة التعامل مع التسمية الخاصة بال class في Yii. 
 </p>
 
 ```php
