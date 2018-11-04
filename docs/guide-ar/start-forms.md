@@ -1,18 +1,23 @@
 # <div dir="rtl">العمل مع ال Forms</div>
 
-This section describes how to create a new page with a form for getting data from users.
-The page will display a form with a name input field and an email input field.
-After getting those two pieces of information from the user, the page will echo the entered values back for confirmation.
+<p dir="rtl">
+في هذا الموضوع سنتعلم كيفية إنشاء صفحة تحتوي على form للحصول على البيانات من خلال المستخدمين، وستعرض هذه الصفحة form يحتوي على حقل لإدخال الإسم وحقل إدخال للبريد الإلكتروني.
+وبعد الحصول على المعلومات الخاصة بهذه الحقول من المستخدم، ستقوم الصفحة بطباعة القيم التي تم إدخالها. 
+</p>
 
-To achieve this goal, besides creating an [action](structure-controllers.md) and
-two [views](structure-views.md), you will also create a [model](structure-models.md).
+<p dir="rtl">
+    في هذا الشرح، ستقوم بإضافة <a href="../guide/structure-controllers.md">action</a> وصحفتين <a href="../guide/structure-views.md">views</a>، وستتعرف أيضا على طريقة إنشاء ال <a href="../guide/structure-models.md">model</a>.
+</p>
 
-Through this tutorial, you will learn how to:
+<p dir="rtl">
+من خلال هذا البرنامج التعليمي ، ستتعلم كيفية:
+</p>
 
-* create a [model](structure-models.md) to represent the data entered by a user through a form,
-* declare rules to validate the data entered,
-* build an HTML form in a [view](structure-views.md).
-
+<ul dir="rtl">
+    <li>إنشاء model لتمثيل البيانات التي تم إدخالها من خلال المستخدم عن طريق ال form.</li>
+    <li>إنشاء rules للتحقق من صحة البيانات التي تم إدخالها.</li>
+    <li>بناء html form داخل صفحة ال view.</li>
+</ul>
 
 Creating a Model <span id="creating-model"></span>
 ----------------
