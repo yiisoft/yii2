@@ -19,12 +19,11 @@
     <li>بناء html form داخل صفحة ال view.</li>
 </ul>
 
-Creating a Model <span id="creating-model"></span>
-----------------
+## <div dir="rtl">إنشاء ال Model</div> <span id="creating-model"></span>
 
-The data to be requested from the user will be represented by an `EntryForm` model class as shown below and
-saved in the file `models/EntryForm.php`. Please refer to the [Class Autoloading](concept-autoloading.md)
-section for more details about the class file naming convention.
+<p dir="rtl">
+    يتم تمثيل البيانات التي يتم طلبها من خلال المستخدم عن طريق ال <code>EntryForm</code> model class  كما هو موضح أدناه، ويتم حفظ هذا الملف داخل المسار models، ويكون إسم ال model ومساره في مثالنا هذا هو  <code>models/EntryForm.php</code>. يرجى الرجوع إلى صفحة ال <a href="../guide/concept-autoloading.md">Class Autoloading</a> للحصول على مزيد من التفاصيل حول طريقة التسمية الخاصة بال class. 
+</p>
 
 ```php
 <?php
