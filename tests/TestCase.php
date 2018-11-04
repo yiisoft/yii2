@@ -22,7 +22,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     public static function tearDownAfterClass()
     {
-        parent::tearDownAfterClass();
         $logger = Yii::getLogger();
         $logger->flush();
     }
@@ -48,7 +47,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown()
     {
-        parent::tearDown();
         $this->destroyApplication();
     }
 
