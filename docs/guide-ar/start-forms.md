@@ -48,8 +48,9 @@ class EntryForm extends Model
 }
 ```
 
-The class extends from [[yii\base\Model]], a base class provided by Yii, commonly used to
-represent form data.
+<p dir="rtl">
+    هذا ال class يرث ال [[yii\base\Model]], وهو base class تم تصميمه من خلال ال Yii, وبشكل عام وظيفته هي تثمثيل البيانات الخاصة بأي نموذج.
+</p>
 
 > Info: [[yii\base\Model]] is used as a parent for model classes *not* associated with database tables.
 [[yii\db\ActiveRecord]] is normally the parent for model classes that do correspond to database tables.
