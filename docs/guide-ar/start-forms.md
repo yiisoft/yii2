@@ -52,8 +52,9 @@ class EntryForm extends Model
     هذا ال class يرث ال [[yii\base\Model]], وهو base class تم تصميمه من خلال ال Yii, وبشكل عام وظيفته هي تثمثيل البيانات الخاصة بأي نموذج.
 </p>
 
-> Info: [[yii\base\Model]] is used as a parent for model classes *not* associated with database tables.
-[[yii\db\ActiveRecord]] is normally the parent for model classes that do correspond to database tables.
+<blockqoute><p dir="rtl">
+معلومة: يتم إستخدام ال  [[yii\base\Model]] كأصل لل model class <b>ولا</b> يرتبط بجداول قواعد البيانات. ويستخدم ال  [[yii\db\ActiveRecord]]  بالشكل الإعتيادي ليكون هو الأصل الذي من خلاله يتم الإرتباط بجداول بقواعد البيانات. 
+</p></blockqoute>
 
 The `EntryForm` class contains two public members, `name` and `email`, which are used to store
 the data entered by the user. It also contains a method named `rules()`, which returns a set
