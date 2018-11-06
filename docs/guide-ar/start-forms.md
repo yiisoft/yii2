@@ -184,26 +184,28 @@ use yii\widgets\ActiveForm;
     تستخدم ال view أسلوب مميز لبناء ال Forms، وذلك عن طريق ال <a href="../guide/structure-widgets.md">widget</a> الذي يسمى ب  [[yii\widgets\ActiveForm|ActiveForm]]. إن الأسلوب المستخدم في هذا ال widget يقوم على إستخدام كل من الدالة <code>begin()</code> و <code>end()</code>  لجلب ال opening  وال closing form tags على التوالي (فتحة ال tag، ثم الإغلاق الخاص بهذا ال tag)، وبين الفتحة والإغلاق يمكنك إنشاء الحقول عن طريق إستخدام الدالة [[yii\widgets\ActiveForm::field()|field()]]. في هذا المثال كان الحقل الأول في ال form يشير الى name data، والثاني يشير الى ال email data، وبعد هذه الحقول ستجد الدالة المستخدمة لإنشاء ال Submit button وهي [[yii\helpers\Html::submitButton()]].
 </p>
 
-Trying it Out <span id="trying-it-out"></span>
--------------
+## <div dir="rtl">لنجرب المثال</div> <span id="trying-it-out"></span>
 
-To see how it works, use your browser to access the following URL:
+<p dir="rtl"></p>
+ لتشاهد آلية العمل لهذا المثال، والنتائج المتعلقة به، يمكنك إستخدام المتصفح والدخول الى الرابط التالي:
+</p>
 
 ```
 http://hostname/index.php?r=site%2Fentry
 ```
 
-You will see a page displaying a form with two input fields. In front of each input field, a label indicates what data is to be entered. If you click the submit button without
-entering anything, or if you do not provide a valid email address, you will see an error message displayed next to each problematic input field.
+<p dir="rtl">
+عند دخولك الى الرابط السابق، سترى صفحة تعرض Html form يحتوي على حقلين لإدخال المعلومات. أمام كل حقل إدخال ستجد label يشير إلى البيانات المطلوب إدخالها. إذا قمت بالنقر فوق الزر "submit" بدون
+أي إدخال، أو إذا لم تقم بكتابة عنوان البريد الإلكتروني بشكل صحيح، فستظهر لك رسالة خطأ بجوار الحقل المقصود.
+</p>
 
 ![Form with Validation Errors](../guide/images/start-form-validation.png)
 
-After entering a valid name and email address and clicking the submit button, you will see a new page
-displaying the data that you just entered.
+<p dir="rtl">
+    بعد إدخالك لإسم وبريد الكتروني صحيح، وقيامك بالنقر على زر submit، فإنك ستشاهد صفحة جديدة تقوم بعرض البيانات التي قمت بإدخالها.
+</p>
 
 ![Confirmation of Data Entry](../guide/images/start-entry-confirmation.png)
-
-
 
 ### Magic Explained <span id="magic-explained"></span>
 
