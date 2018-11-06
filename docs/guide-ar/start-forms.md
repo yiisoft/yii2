@@ -66,10 +66,9 @@ class EntryForm extends Model
     <li>ال <code>email</code> حقل يجب أن يحتوي بداخله قيمة صحيحة تعبر عن البريد الإلكتروني (القواعد النحوية لكتابة البريد الإلكتروني).</li>
 </ul>
 
-If you have an `EntryForm` object populated with the data entered by a user, you may call
-its [[yii\base\Model::validate()|validate()]] method to trigger the data validation routines. A data validation
-failure will set the [[yii\base\Model::hasErrors|hasErrors]] property to `true`, and you may learn what validation
-errors occurred through [[yii\base\Model::getErrors|errors]].
+<p dir="rtl">
+    إذا كان لديك object من ال  <code>EntryForm</code> ويحتوي على البيانات التي أدخلها المستخدم،  فيمكنك حينها إستدعاء الدالة  [[yii\base\Model::validate()|validate()]] للتحقق من صحة البيانات. اذا فشلت عملية التحقق من صحة البيانات، فسيؤدي ذلك إلى تغيير قيمة ال  [[yii\base\Model::hasErrors|hasErrors]] إلى <code>true</code> ، بالإضافة الى ذلك يمكنك التعرف الى الأخطاء المتعلقة بهذه البيانات من خلال الدالة [[yii\base\Model::getErrors|errors]].
+</p>
 
 ```php
 <?php
