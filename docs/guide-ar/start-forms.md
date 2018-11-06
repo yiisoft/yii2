@@ -134,10 +134,9 @@ class SiteController extends Controller
     إذا كان كل شيء على ما يرام، فسوف يقوم ال action بجلب ال view التالية: <code>entry-confirm</code>، وذلك لتأكيد أن العملية قد تمت بنجاح بالنسبة للمستخدم، أما إن كانت البيانات غير صحيحة، أو لم يتم إرسال أي بيانات، فإن ال view <code>entry</code> هي التي سيتم جلبها وعرضها للمستخدم، حيث يتم عرض ال Html form، مع أي رسائل تحذير بخصوص الأخطاء التي تم العثور عليها من عملية التحقق.
 </p>
 
-> Note: In this very simple example we just render the confirmation page upon valid data submission. In practice,
-  you should consider using [[yii\web\Controller::refresh()|refresh()]] or [[yii\web\Controller::redirect()|redirect()]]
-  to avoid [form resubmission problems](http://en.wikipedia.org/wiki/Post/Redirect/Get).
-
+<blockquote><p dir="rtl">
+ملاحظة: في هذا المثال البسيط، نعرض صفحة التأكيد فقط عند إرسال البيانات بشكل صحيح. عند الممارسة العملية، يجب عليك استخدام [[yii\web\Controller::refresh()|refresh()]] أو [[yii\web\Controller::redirect()|redirect()]] لتجنب أي مشكلة تحصل عن طريق ال resubmission والتي تندرج تحت العنوان <a href="http://en.wikipedia.org/wiki/Post/Redirect/Get">form resubmission problems</a>.
+</p></blockquote>
 
 Creating Views <span id="creating-views"></span>
 --------------
