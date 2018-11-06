@@ -207,17 +207,15 @@ http://hostname/index.php?r=site%2Fentry
 
 ![Confirmation of Data Entry](../guide/images/start-entry-confirmation.png)
 
-### Magic Explained <span id="magic-explained"></span>
+## <div dir="rtl">كيف ظهر الخطأ؟ هل هو سحر؟!</div> <span id="magic-explained"></span>
 
-You may wonder how the HTML form works behind the scene, because it seems almost magical that it can
-display a label for each input field and show error messages if you do not enter the data correctly
-without reloading the page.
+<p dir="rtl">
+قد تتساءل كيف يعمل ال Html form بالخفاء، وقد يبدو ذلك سحرا للوهلة الأولى، فهو يعرض ال label لكل حقل إدخال، ويعرض رسائل الخطأ إذا لم تقم بإدخال البيانات بشكل صحيح، وكل ذلك دون الحاجة لإعادة تحميل الصفحة.
+</p>
 
-Yes, the data validation is initially done on the client-side using JavaScript, and secondarily performed on the server-side via PHP.
-[[yii\widgets\ActiveForm]] is smart enough to extract the validation rules that you have declared in `EntryForm`,
-turn them into executable JavaScript code, and use the JavaScript to perform data validation. In case you have disabled
-JavaScript on your browser, the validation will still be performed on the server-side, as shown in
-the `actionEntry()` method. This ensures data validity in all circumstances.
+<p dir="rtl">
+    إن السحر الموجود لدينا هنا، هو كيفية العمل الخاصة بالشيفرة البرمجية لل form،  والتي تعمل بالخفاء، إن إجراء التحقق عن صحة البيانات يتم في البداية من جانب العميل -client side- وذلك باستخدام الجافا سكربت، ومن ثم -بعد تجاوز التحقق الخاص بالجافا سكربت- بتم تنفيذ التحقق من جانب ال server-side عبر ال PHP. ال  [[yii\widgets\ActiveForm]] ذكية بما فيه الكفاية لاستخراج ال rule الخاصة بالتحقق والتي قمت بإنشائها وتعريفها داخل ال <code>EntryForm</code>، ومن ثم تحويل هذه القواعد إلى شيفرة برمجية بالجافا سكربت قابلة للتنفيذ، ومن ثم استخدام هذه الشيفرة من قبل الجافا سكربت لإجراء التحقق من صحة البيانات. في حال قمت بإيقاف الجافا سكربت في المتصفح الخاص بك، سوف يستمر إجراء التحقق من جانب الخادم -server side-، كما هو موضح في ال action المسمى <code>actionEntry()</code>. وهذا يضمن صحة البيانات في جميع الظروف.
+</p>
 
 > Warning: Client-side validation is a convenience that provides for a better user experience. Server-side validation
   is always required, whether or not client-side validation is in place.
