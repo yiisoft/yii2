@@ -61,8 +61,10 @@ class EntryForm extends Model
 الشروط الخاصة بالبيانات للتحقق من صحتها. والشيفرة البرمجية الموجودة داخل ال rules method تعني: 
 </p>
 
-* both the `name` and `email` values are required
-* the `email` data must be a syntactically valid email address
+<ul dir="rtl">
+    <li>كل من ال <code>name</code> وال <code>email</code> حقول الزامية (required).</li>
+    <li>ال <code>email</code> حقل يجب أن يحتوي بداخله قيمة صحيحة تعبر عن البريد الإلكتروني (القواعد النحوية لكتابة البريد الإلكتروني).</li>
+</ul>
 
 If you have an `EntryForm` object populated with the data entered by a user, you may call
 its [[yii\base\Model::validate()|validate()]] method to trigger the data validation routines. A data validation
