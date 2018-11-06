@@ -84,11 +84,11 @@ if ($model->validate()) {
 ```
 
 
-Creating an Action <span id="creating-action"></span>
-------------------
+## <div dir="rtl">إنشاء Action</div> <span id="creating-action"></span>
 
-Next, you'll need to create an `entry` action in the `site` controller that will use the new model. The process
-of creating and using actions was explained in the [Saying Hello](start-hello.md) section.
+<p dir="rtl">
+    الآن، ستحتاج إلى إنشاء <code>action</code> جديد في ال <code>site</code> controller وليكن إسمه <code>entry</code>، والذي سيقوم بدوره باستخدام ال model الجديد الذي قمنا بإنشائه. هذه العملية تم شرحها سابقا في الجزء التالي من التوثيق <a href="start-hello.md">Saying Hello - قل مرحبا</a>.
+</p>
 
 ```php
 <?php
