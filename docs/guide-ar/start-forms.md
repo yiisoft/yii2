@@ -159,8 +159,9 @@ use yii\helpers\Html;
     <li><label>Email</label>: <?= Html::encode($model->email) ?></li>
 </ul>
 ```
-
-The `entry` view displays an HTML form. It should be stored in the file `views/site/entry.php`.
+<p dir="rtl">
+   صفحة ال <code>entry</code> ستقوم بعرض ال HTML form. هذه الصفحة يجب أن يتم حفظها داخل المسار التالي: <code>views/site/entry.php</code>
+</p>
 
 ```php
 <?php
@@ -179,14 +180,9 @@ use yii\widgets\ActiveForm;
 
 <?php ActiveForm::end(); ?>
 ```
-
-The view uses a powerful [widget](structure-widgets.md) called [[yii\widgets\ActiveForm|ActiveForm]] to
-build the HTML form. The `begin()` and `end()` methods of the widget render the opening and closing
-form tags, respectively. Between the two method calls, input fields are created by the
-[[yii\widgets\ActiveForm::field()|field()]] method. The first input field is for the "name" data,
-and the second for the "email" data. After the input fields, the [[yii\helpers\Html::submitButton()]] method
-is called to generate a submit button.
-
+<p dir="rtl">
+    تستخدم ال view أسلوب مميز لبناء ال Forms، وذلك عن طريق ال widget الذي يسمى ب  [[yii\widgets\ActiveForm|ActiveForm]]. إن الأسلوب المستخدم في هذا ال widget يقوم على إستخدام كل من الدالة <code>begin()</code> و <code>end()</code>  لجلب ال opening  وال closing form tags على التوالي (فتحة ال tag، ثم الإغلاق الخاص بهذا ال tag)، وبين الفتحة والإغلاق يمكنك إنشاء الحقول عن طريق إستخدام الدالة [[yii\widgets\ActiveForm::field()|field()]]. في هذا المثال كان الحقل الأول في ال form يشير الى name data، والثاني يشير الى ال email data، وبعد هذه الحقول ستجد الدالة المستخدمة لإنشاء ال Submit button وهي [[yii\helpers\Html::submitButton()]].
+</p>
 
 Trying it Out <span id="trying-it-out"></span>
 -------------
