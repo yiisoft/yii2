@@ -127,7 +127,7 @@ class SiteController extends Controller
 
 
 <blockquote><p dir="rtl">
-    معلومة: يمثل التعبير Yii::$app ال  Application instance الذي يمكن الوصول اليه من خلال ال singleton <br />(singleton globally accessible). وهو أيضا  service locator  بحيث يوفر الدعم لل components مثل ال request, response, db..الخ، لدعم وظائف محددة. مثلا في المثال الموجود في الأعلى، فإن ال request هو component من ال application instance والذي يستخدم للوصول الى البيانات الموجودة داخل ال $_POST. 
+    معلومة: يمثل التعبير Yii::$app ال  <a href="../guide/structure-applications.md">Application</a> instance الذي يمكن الوصول اليه من خلال ال singleton <br />(singleton globally accessible). وهو أيضا  <a href="../guide/concept-service-locator.md">service locator</a>  بحيث يوفر الدعم لل components مثل ال request, response, db..الخ، لدعم وظائف محددة. مثلا في المثال الموجود في الأعلى، فإن ال request هو component من ال application instance والذي يستخدم للوصول الى البيانات الموجودة داخل ال $_POST. 
 </p></blockquote>
 
 <p dir="rtl">
