@@ -127,12 +127,12 @@ class SiteController extends Controller
 
 
 <blockquote><p dir="rtl">
-    معلومة: يمثل التعبير Yii::$app ال  Application instance الذي يمكن الوصول اليه من خلال ال singleton (singleton globally accessible). وهو أيضا  service locator  بحيث يوفر الدعم لل components مثل ال request, response, db..الخ، لدعم وظائف محددة. مثلا في المثال الموجود في الأعلى، فإن ال request هو component من ال application instance والذي يستخدم للوصول الى البيانات الموجودة داخل ال $_POST. 
+    معلومة: يمثل التعبير Yii::$app ال  Application instance الذي يمكن الوصول اليه من خلال ال singleton <br />(singleton globally accessible). وهو أيضا  service locator  بحيث يوفر الدعم لل components مثل ال request, response, db..الخ، لدعم وظائف محددة. مثلا في المثال الموجود في الأعلى، فإن ال request هو component من ال application instance والذي يستخدم للوصول الى البيانات الموجودة داخل ال $_POST. 
 </p></blockquote>
 
-If everything is fine, the action will render a view named `entry-confirm` to confirm the successful submission
-of the data to the user. If no data is submitted or the data contains errors, the `entry` view will
-be rendered, wherein the HTML form will be shown, along with any validation error messages.
+<p dir="rtl">
+    إذا كان كل شيء على ما يرام، فسوف يقوم ال action بجلب ال view التالية: <code>entry-confirm</code>، وذلك لتأكيد أن العملية قد تمت بنجاح بالنسبة للمستخدم، أما إن كانت البيانات غير صحيحة، أو لم يتم إرسال أي بيانات، فإن ال view <code>entry</code> هي التي سيتم جلبها وعرضها للمستخدم، حيث يتم عرض ال Html form، مع أي رسائل تحذير بخصوص الأخطاء التي تم العثور عليها من عملية التحقق.
+</p>
 
 > Note: In this very simple example we just render the confirmation page upon valid data submission. In practice,
   you should consider using [[yii\web\Controller::refresh()|refresh()]] or [[yii\web\Controller::redirect()|redirect()]]
