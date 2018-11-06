@@ -138,8 +138,7 @@ class SiteController extends Controller
 ملاحظة: في هذا المثال البسيط، نعرض صفحة التأكيد فقط عند إرسال البيانات بشكل صحيح. عند الممارسة العملية، يجب عليك استخدام [[yii\web\Controller::refresh()|refresh()]] أو [[yii\web\Controller::redirect()|redirect()]] لتجنب أي مشكلة تحصل عن طريق ال resubmission والتي تندرج تحت العنوان <a href="http://en.wikipedia.org/wiki/Post/Redirect/Get">form resubmission problems</a>.
 </p></blockquote>
 
-<div dir="rtl">إنشاء ال views</a> <span id="creating-views"></span>
---------------
+<div dir="rtl">إنشاء ال views</div> <span id="creating-views"></span>
 
 <p dir="rtl">
     أخيرا، سنقوم بإنشاء صفحتين لل views الأولى بإسم <code>entry-confirm</code> والثانية <code>entry</code>. وهاتين الصفحتين سيتم جلبهم من خلال ال <code>entry</code> action. 
