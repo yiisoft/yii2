@@ -200,12 +200,12 @@ http://hostname/index.php?r=site%2Fentry
 You will see a page displaying a form with two input fields. In front of each input field, a label indicates what data is to be entered. If you click the submit button without
 entering anything, or if you do not provide a valid email address, you will see an error message displayed next to each problematic input field.
 
-![Form with Validation Errors](images/start-form-validation.png)
+![Form with Validation Errors](../guide/images/start-form-validation.png)
 
 After entering a valid name and email address and clicking the submit button, you will see a new page
 displaying the data that you just entered.
 
-![Confirmation of Data Entry](images/start-entry-confirmation.png)
+![Confirmation of Data Entry](../guide/images/start-entry-confirmation.png)
 
 
 
