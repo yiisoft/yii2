@@ -186,7 +186,7 @@ use yii\widgets\ActiveForm;
 
 ## <div dir="rtl">لنجرب المثال</div> <span id="trying-it-out"></span>
 
-<p dir="rtl"></p>
+<p dir="rtl">
  لتشاهد آلية العمل لهذا المثال، والنتائج المتعلقة به، يمكنك إستخدام المتصفح والدخول الى الرابط التالي:
 </p>
 
