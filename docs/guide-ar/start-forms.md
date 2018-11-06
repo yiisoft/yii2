@@ -138,13 +138,16 @@ class SiteController extends Controller
 ملاحظة: في هذا المثال البسيط، نعرض صفحة التأكيد فقط عند إرسال البيانات بشكل صحيح. عند الممارسة العملية، يجب عليك استخدام [[yii\web\Controller::refresh()|refresh()]] أو [[yii\web\Controller::redirect()|redirect()]] لتجنب أي مشكلة تحصل عن طريق ال resubmission والتي تندرج تحت العنوان <a href="http://en.wikipedia.org/wiki/Post/Redirect/Get">form resubmission problems</a>.
 </p></blockquote>
 
-Creating Views <span id="creating-views"></span>
+<div dir="rtl">إنشاء ال views</a> <span id="creating-views"></span>
 --------------
 
-Finally, create two view files named `entry-confirm` and `entry`. These will be rendered by the `entry` action,
-as just described.
+<p dir="rtl">
+    أخيرا، سنقوم بإنشاء صفحتين لل views الأولى بإسم <code>entry-confirm</code> والثانية <code>entry</code>. وهاتين الصفحتين سيتم جلبهم من خلال ال <code>entry</code> action. 
+</p>
 
-The `entry-confirm` view simply displays the name and email data. It should be stored in the file `views/site/entry-confirm.php`.
+<p dir="rtl">
+    ال <code>entry-confirm</code> ستقوم بكل بساطة بعرض الإسم والبريد الإلكتروني الذي تم إدخالهم من قبل المستخدم. ويجب حفظ هذه الصفحة بالمسار التالي: <code>views/site/entry-confirm.php</code> 
+</p>
 
 ```php
 <?php
