@@ -181,7 +181,7 @@ use yii\widgets\ActiveForm;
 <?php ActiveForm::end(); ?>
 ```
 <p dir="rtl">
-    تستخدم ال view أسلوب مميز لبناء ال Forms، وذلك عن طريق ال widget الذي يسمى ب  [[yii\widgets\ActiveForm|ActiveForm]]. إن الأسلوب المستخدم في هذا ال widget يقوم على إستخدام كل من الدالة <code>begin()</code> و <code>end()</code>  لجلب ال opening  وال closing form tags على التوالي (فتحة ال tag، ثم الإغلاق الخاص بهذا ال tag)، وبين الفتحة والإغلاق يمكنك إنشاء الحقول عن طريق إستخدام الدالة [[yii\widgets\ActiveForm::field()|field()]]. في هذا المثال كان الحقل الأول في ال form يشير الى name data، والثاني يشير الى ال email data، وبعد هذه الحقول ستجد الدالة المستخدمة لإنشاء ال Submit button وهي [[yii\helpers\Html::submitButton()]].
+    تستخدم ال view أسلوب مميز لبناء ال Forms، وذلك عن طريق ال <a href="../guide/structure-widgets.md">widget</a> الذي يسمى ب  [[yii\widgets\ActiveForm|ActiveForm]]. إن الأسلوب المستخدم في هذا ال widget يقوم على إستخدام كل من الدالة <code>begin()</code> و <code>end()</code>  لجلب ال opening  وال closing form tags على التوالي (فتحة ال tag، ثم الإغلاق الخاص بهذا ال tag)، وبين الفتحة والإغلاق يمكنك إنشاء الحقول عن طريق إستخدام الدالة [[yii\widgets\ActiveForm::field()|field()]]. في هذا المثال كان الحقل الأول في ال form يشير الى name data، والثاني يشير الى ال email data، وبعد هذه الحقول ستجد الدالة المستخدمة لإنشاء ال Submit button وهي [[yii\helpers\Html::submitButton()]].
 </p>
 
 Trying it Out <span id="trying-it-out"></span>
