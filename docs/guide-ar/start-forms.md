@@ -56,9 +56,10 @@ class EntryForm extends Model
 معلومة: يتم إستخدام ال  [[yii\base\Model]] كأصل لل model class <b>ولا</b> يرتبط بجداول قواعد البيانات. ويستخدم ال  [[yii\db\ActiveRecord]]  بالشكل الإعتيادي ليكون هو الأصل الذي من خلاله يتم الإرتباط بجداول بقواعد البيانات. 
 </p></blockquote>
 
-The `EntryForm` class contains two public members, `name` and `email`, which are used to store
-the data entered by the user. It also contains a method named `rules()`, which returns a set
-of rules for validating the data. The validation rules declared above state that
+<p dir="rtl">
+    يحتوي class ال <code>EntryForm</code> على متغيرين إثنين من نوع Public، هما <code>name</code> و <code>email</code>، واللذان يستخدمان في تخزين البيانات التي أدخلها المستخدم. كما يحتوي أيضًا على method باسم <code>rules()</code>، والتي تُرجع مجموعة
+الشروط الخاصة بالبيانات للتحقق من صحتها. والشيفرة البرمجية الموجودة داخل ال rules method تعني: 
+</p>
 
 * both the `name` and `email` values are required
 * the `email` data must be a syntactically valid email address
