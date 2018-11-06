@@ -125,10 +125,10 @@ class SiteController extends Controller
 إذا تم ملء ال object بنجاح (على سبيل المثال، إذا قام المستخدم بإدخال البيانات داخل ال form ومن ثم قام بإرسالها(submitted html form))، فسيتم استدعاء ال [[yii\base\Model::validate()|validate()]] من خلال ال action للتأكد من صلاحية القيم المدخلة.
 </p>
 
-> Info: The expression `Yii::$app` represents the [application](structure-applications.md) instance,
-  which is a globally accessible singleton. It is also a [service locator](concept-service-locator.md) that
-  provides components such as `request`, `response`, `db`, etc. to support specific functionality.
-  In the above code, the `request` component of the application instance is used to access the `$_POST` data.
+
+<blockquote><p dir="rtl">
+    معلومة: يمثل التعبير Yii::$app ال  Application instance الذي يمكن الوصول اليه من خلال ال singleton (singleton globally accessible). وهو أيضا  service locator  بحيث يوفر الدعم لل components مثل ال request, response, db..الخ، لدعم وظائف محددة. مثلا في المثال الموجود في الأعلى، فإن ال request هو component من ال application instance والذي يستخدم للوصول الى البيانات الموجودة داخل ال $_POST. 
+</p></blockquote>
 
 If everything is fine, the action will render a view named `entry-confirm` to confirm the successful submission
 of the data to the user. If no data is submitted or the data contains errors, the `entry` view will
