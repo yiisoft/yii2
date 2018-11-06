@@ -120,11 +120,10 @@ class SiteController extends Controller
     }
 }
 ```
-
-The action first creates an `EntryForm` object. It then tries to populate the model
-with the data from `$_POST`, provided in Yii by [[yii\web\Request::post()]].
-If the model is successfully populated (i.e., if the user has submitted the HTML form), the action will call
-[[yii\base\Model::validate()|validate()]] to make sure the values entered are valid.
+<p dir="rtl">
+    أولا، يقوم ال action بإنشاء object من ال  <code>EntryForm</code>. ثم يحاول تعبئة البيانات لل object من خلال ال <code>$ _POST</code>، والتي يتم تقديمها في ال Yii من خلال ال [[yii\web\Request::post()]].
+إذا تم ملء ال object بنجاح (على سبيل المثال، إذا قام المستخدم بإدخال البيانات داخل ال form ومن ثم قام بإرسالها(submitted html form))، فسيتم استدعاء ال [[yii\base\Model::validate()|validate()]] من خلال ال action للتأكد من صلاحية القيم المدخلة.
+</p>
 
 > Info: The expression `Yii::$app` represents the [application](structure-applications.md) instance,
   which is a globally accessible singleton. It is also a [service locator](concept-service-locator.md) that
