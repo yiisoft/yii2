@@ -240,11 +240,14 @@ http://hostname/index.php?r=site%2Fentry
 
 ## <div dir="rtl">الخلاصة</div> <span id="summary"></span>
 
-In this section of the guide, you have touched every part in the MVC architectural pattern. You have learned how
-to create a model class to represent the user data and validate said data.
+<p dir="rtl">
+    في هذا الجزء من التوثيق، تحدثنا عن كل جزء في ال MVC architectural pattern, لقد تعلمت الآن كيف يمكنك إنشاء model class ليقوم بتمثيل البيانات الخاصة بالمستخدمين، ومن ثم التحقق منها.   
+</p>
 
-You have also learned how to get data from users and how to display data back in the browser. This is a task that
-could take you a lot of time when developing an application, but Yii provides powerful widgets
-to make this task very easy.
+<p dir="rtl">
+    لقد تعلمت أيضًا كيفية الحصول على البيانات من المستخدمين، وكيفية عرض البيانات مرة أخرى في المتصفح. هذه المهمة يمكن أن تأخذ الكثير من الوقت عند تطوير أي تطبيق، ولكن، يوفر ال Yii العديد من ال widgets القوية والتي تجعل من هذه المهمة أمرا سهلا للغاية.
+</p>
 
-In the next section, you will learn how to work with databases, which are needed in nearly every application.
+<p dir="rtl">
+    في الجزء القادم من هذا التوثيق، ستتعلم كيف يمكنك التعامل مع قواعد البيانات، والتي سنحتاجها مع كل تطبيق ستعمل عليه تقريبا. 
+</p>
