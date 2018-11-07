@@ -225,8 +225,9 @@ http://hostname/index.php?r=site%2Fentry
     يتم إنشاء ال labels الخاصة بحقول الإدخال بواسطة الدالة <code>field()</code>، وذلك من خلال إستخدام أسماء ال property الموجودة داخل ال model. على سبيل المثال، سيتم إنشاء ال label التالي <code>Name</code> للproperty التالية: <code>name</code>.
 </p>
 
-You may customize a label within a view using 
-the following code:
+<p dir="rtl">
+    كما يمكنك تعديل ال label الإفتراضي لأي حقل من خلال الشيفرة البرمجية التالية:
+</p>
 
 ```php
 <?= $form->field($model, 'name')->label('Your Name') ?>
