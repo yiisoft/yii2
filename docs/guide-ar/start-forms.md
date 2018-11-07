@@ -234,13 +234,11 @@ http://hostname/index.php?r=site%2Fentry
 <?= $form->field($model, 'email')->label('Your Email') ?>
 ```
 
-> Info: Yii provides many such widgets to help you quickly build complex and dynamic views.
-  As you will learn later, writing a new widget is also extremely easy. You may want to turn much of your
-  view code into reusable widgets to simplify view development in future.
+<blockquote><p dir="rtl">
+    معلومة: يوفر ال Yii العديد من ال widgets لمساعدتك في إنشاء views معقدة وديناميكية بسرعة. كما أنك ستتعلم في وقت لاحق كيف يمكنك إنشاء widget جديد، وستكتشف أن الموضوع سهل وبسيط، مما سيدفعك إلى كتابة الشيفرة البرمجية الخاصة بك داخل ال widget، والذي بدوره سيجعل من هذه الشيفرة قابلة للتطوير والإستخدام في أكثر من مكان في المستقبل. 
+</p></blockquote>
 
-
-Summary <span id="summary"></span>
--------
+## <div dir="rtl">الخلاصة</div> <span id="summary"></span>
 
 In this section of the guide, you have touched every part in the MVC architectural pattern. You have learned how
 to create a model class to represent the user data and validate said data.
