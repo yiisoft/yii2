@@ -107,6 +107,8 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asInteger(null));
+
+        $this->assertSame('87654321098765436', $this->formatter->asInteger(87654321098765436));
     }
 
     /**
@@ -207,6 +209,9 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDecimal(null));
+
+        $this->formatter->thousandSeparator = '';
+        $this->assertSame('87654321098765436.000', $this->formatter->asDecimal(87654321098765436, 3));
     }
 
     public function testIntlAsPercent()
@@ -229,6 +234,8 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asPercent(null));
+
+        $this->assertSame('87654321098765436', $this->formatter->asPercent(87654321098765436));
     }
 
     public function testIntlAsCurrency()
@@ -397,6 +404,8 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
+
+        $this->assertSame('USD 876543210987654367.00', $this->formatter->asCurrency(876543210987654367));
     }
 
     public function testIntlAsScientific()
@@ -431,6 +440,8 @@ class FormatterNumberTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asScientific(null));
+
+        $this->assertSame('8.765432E+17', $this->formatter->asScientific(876543210987654367));
     }
 
     public function testIntlAsSpellout()
