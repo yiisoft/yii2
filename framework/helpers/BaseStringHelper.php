@@ -361,7 +361,7 @@ class BaseStringHelper
      */
     public static function floatToString($number)
     {
-        return sprintf('%F', $number);
+        return str_replace(',', '.', (string) $number);
     }
 
     /**
