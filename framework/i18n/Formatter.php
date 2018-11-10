@@ -1103,14 +1103,10 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
-        if (empty($value)) {
-            $value = 0;
-        }
+        $normalizedValue = $this->normalizeNumericValue($value);
 
-        $normalizedValue = $this->normalizeNumericValue((string) $value);
-
-        if ((string) $normalizedValue !== (string) $value) {
-            return $this->numberMisrepresentationFallback((string) $value, $decimals);
+        if ($this->isNormalizedValueMispresented($value, $normalizedValue)) {
+            return $this->asDecimalStringFallback((string) $value, $decimals);
         }
 
         if ($this->_intlLoaded) {
@@ -1127,17 +1123,104 @@ class Formatter extends Component
         }
 
         return number_format($normalizedValue, $decimals, $this->decimalSeparator, $this->thousandSeparator);
-
     }
 
-    protected function numberMisrepresentationFallback($value, $decimals = null)
+    /**
+     * @param string|float|int $value
+     * @param float|int $normalizedValue
+     * @return bool
+     */
+    protected function isNormalizedValueMispresented($value, $normalizedValue)
     {
-        if (strpos((string) $value, '.') !== false) {
-            $integerPart = substr((string) $value, 0, strrpos((string) $value, '.'));
-            $fractionalPart = substr((string) $value, strrpos((string) $value, '.') + 1);
+        if (empty($value)) {
+            $value = 0;
+        }
+
+        return (string) $normalizedValue !== (string) $value;
+    }
+
+    protected function asDecimalStringFallback($value, $decimals = null)
+    {
+        if (empty($value)) {
+            $value = 0;
+        }
+
+        $value = (string) $value;
+
+        if (strpos($value, '.') !== false) {
+            $integerPart = substr($value, 0, strrpos($value, '.'));
+            $fractionalPart = substr($value, strrpos($value, '.') + 1);
         } else {
-            $integerPart = (string) $value;
+            $integerPart = $value;
             $fractionalPart = null;
+        }
+
+        $decimalOutput = '';
+
+        if ($decimals === null) {
+            $decimals = 2;
+        }
+
+        $roundIntegerPart = false;
+
+        if ($decimals > 0) {
+            $decimalSeparator = $this->decimalSeparator;
+            if ($this->decimalSeparator === null) {
+                $decimalSeparator = '.';
+            }
+
+            if ($fractionalPart === null) {
+                $fractionalPart = str_repeat('0', $decimals);
+            } elseif (strlen($fractionalPart) > $decimals) {
+                $cursor = $decimals;
+
+                if ((int) substr($fractionalPart, $cursor, 1) >= 5) {
+                    while (--$cursor >= 0) {
+                        $round = false;
+                        $newDigit = (int) substr($fractionalPart, $cursor, 1) + 1;
+
+                        if ($newDigit === 10) {
+                            $newDigit = 0;
+                            $round = true;
+                        }
+
+                        $fractionalPart = substr($fractionalPart, 0, $cursor) . $newDigit . substr($fractionalPart, $cursor + 1);
+
+                        if (!$round) {
+                            break;
+                        }
+                    }
+                    if ($round) {
+                        $roundIntegerPart = true;
+                    }
+                }
+
+                $fractionalPart = substr($fractionalPart, 0, $decimals);
+            }
+
+            $decimalOutput .= $decimalSeparator . $fractionalPart;
+        }
+
+        if ($roundIntegerPart || ($decimals === 0 && $fractionalPart !== null && (int) substr($fractionalPart, 0, 1) >= 5)) {
+            $cursor = 0;
+            while (++$cursor <= strlen($integerPart)) {
+                $round = false;
+                $newDigit = (int) substr($integerPart, -$cursor, 1) + 1;
+
+                if ($newDigit === 10) {
+                    $newDigit = 0;
+                    $round = true;
+                }
+
+                $integerPart = substr($integerPart, 0, -$cursor) . $newDigit . substr($integerPart, strlen($integerPart) - $cursor + 1);
+
+                if (!$round) {
+                    break;
+                }
+            }
+            if ((int) $integerPart === 0) {
+                $integerPart = '1' . $integerPart;
+            }
         }
 
         if (strlen($integerPart) > 3) {
@@ -1152,47 +1235,7 @@ class Formatter extends Component
             }
         }
 
-        $decimalOutput = $integerPart;
-
-        if ($decimals === null) {
-            $decimals = 2;
-        }
-        if ($decimals > 0) {
-            $decimalSeparator = $this->decimalSeparator;
-            if ($this->decimalSeparator === null) {
-                $decimalSeparator = '.';
-            }
-
-            if (empty($fractionalPart)) {
-                $fractionalPart = str_repeat('0', $decimals);
-            } elseif (strlen($fractionalPart) > $decimals) {
-                $cursor = $decimals;
-
-                if ((int) substr($value, $cursor, 1) >= 5) {
-                    while (--$cursor >= 0) {
-                        $round = false;
-                        $newDigit = (int) substr($value, $cursor, 1) + 1;
-
-                        if ($newDigit === 10) {
-                            $newDigit = 0;
-                            $round = true;
-                        }
-
-                        $fractionalPart = substr($value, 0, $cursor) . $newDigit . substr($value, $cursor + 1);
-
-                        if (!$round) {
-                            break;
-                        }
-                    }
-                }
-
-                $fractionalPart = substr($fractionalPart, 0, $decimals);
-            }
-
-            $decimalOutput .= $decimalSeparator . $fractionalPart;
-        }
-
-        return $decimalOutput;
+        return $integerPart . $decimalOutput;
     }
 
 
