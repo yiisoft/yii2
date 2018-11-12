@@ -213,8 +213,7 @@ class UserResource extends Model implements Linkable
 
 集合可被展现成数组，更多情况下展现成 [data providers](output-data-providers.md). 
 因为data providers支持资源的排序和分页，这个特性在 RESTful API 返回集合时也用到，
-例如This is because data providers support sorting and pagination
-如下操作返回post资源的data provider:
+例如如下操作返回post资源的data provider:
 
 ```php
 namespace app\controllers;
