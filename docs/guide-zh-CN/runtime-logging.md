@@ -299,7 +299,7 @@ return [
 ];
 ```
 
-> Note: 频繁的消息刷新和导出将降低你到应用性能。
+> Note: 频繁的消息刷新和导出将降低你的应用性能。
 
 
 ### 切换日志目标 <span id="toggling-log-targets"></span>
@@ -312,7 +312,7 @@ Yii::$app->log->targets['file']->enabled = false;
 ```
 
 上面的代码要求您将目标命名为 `file`，像下面展示的那样，
-在 `targets` 数组中使用使用字符串键：
+在 `targets` 数组中使用字符串键：
 
 ```php
 return [
@@ -379,6 +379,6 @@ return [
 假如你漏掉 `\Yii::endProfile('block1')` 或者切换了 `\Yii::endProfile('block1')` 和 `\Yii::endProfile('block2')` 的
 顺序，那么性能分析将不会工作。
 
-对于每个被分析的代码块，一个带有严重程度 `profile` 的日志消息被记录。
+对于每个被分析的代码块，一个带有严重程度为 `profile` 的日志消息将被记录。
 你可以配置一个 [log target](#log-targets) 去收集这些
 消息，并且导出他们。[Yii debugger](tool-debugger.md) 有一个内建的性能分析面板能够展示分析结果。
