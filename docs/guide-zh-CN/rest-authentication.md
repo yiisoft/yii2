@@ -125,4 +125,3 @@ class User extends ActiveRecord implements IdentityInterface
 如果你的控制器从 [[yii\rest\ActiveController]] 类继承，
 可覆盖 [[yii\rest\Controller::checkAccess()|checkAccess()]] 方法
 来执行授权检查，该方法会被 [[yii\rest\ActiveController]] 内置的操作调用。
-
