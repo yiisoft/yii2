@@ -259,4 +259,3 @@ Since version 2.0.13 Yii provides a facility to filter collections. An example c
 filtering could be done as described in
 [Filtering Data Providers using Data Filters](output-data-providers.md#filtering-data-providers-using-data-filters)
 section of Data Providers guide.
-
