@@ -86,8 +86,12 @@ details.
 
 ## Creating Widgets <span id="creating-widgets"></span>
 
+Widget can be created in either of two different ways depending on the requirement.
+
+### 1: Utilizing `widget()` method
+
 To create a widget, extend from [[yii\base\Widget]] and override the [[yii\base\Widget::init()]] and/or
-[[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that normalizes the widget
+[[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that initializes the widget
 properties, while the `run()` method should contain the code that generates the rendering result of the widget.
 The rendering result may be directly "echoed" or returned as a string by `run()`.
 
@@ -128,6 +132,21 @@ use app\components\HelloWidget;
 <?= HelloWidget::widget(['message' => 'Good morning']) ?>
 ```
 
+
+Sometimes, a widget may need to render a big chunk of content. While you can embed the content within the `run()`
+method, a better approach is to put it in a [view](structure-views.md) and call [[yii\base\Widget::render()]] to
+render it. For example,
+
+```php
+public function run()
+{
+    return $this->render('hello');
+}
+```
+
+### 2: Utilizing `begin()` and `end()` methods
+
+This is similar to above one with minor difference.
 Below is a variant of `HelloWidget` which takes the content enclosed within the `begin()` and `end()` calls,
 HTML-encodes it and then displays it.
 
@@ -168,20 +187,15 @@ use app\components\HelloWidget;
 ?>
 <?php HelloWidget::begin(); ?>
 
-    content that may contain <tag>'s
+    sample content that may contain one or more <strong>HTML</strong> <pre>tags</pre>
+
+    If this content grows too big, use sub views
+
+    For e.g.
+
+    <?php echo $this->render('viewfile'); // Note: here render() method is of class \yii\base\View as this part of code is within view file and not in Widget class file ?>
 
 <?php HelloWidget::end(); ?>
-```
-
-Sometimes, a widget may need to render a big chunk of content. While you can embed the content within the `run()`
-method, a better approach is to put it in a [view](structure-views.md) and call [[yii\base\Widget::render()]] to
-render it. For example,
-
-```php
-public function run()
-{
-    return $this->render('hello');
-}
 ```
 
 By default, views for a widget should be stored in files in the `WidgetPath/views` directory, where `WidgetPath`
@@ -205,3 +219,4 @@ which can be utilized to solve the problem.
 When a widget contains view code only, it is very similar to a [view](structure-views.md). In fact, in this case,
 their only difference is that a widget is a redistributable class, while a view is just a plain PHP script
 that you would prefer to keep within your application.
+

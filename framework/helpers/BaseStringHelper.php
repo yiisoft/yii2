@@ -269,7 +269,7 @@ class BaseStringHelper
     public static function explode($string, $delimiter = ',', $trim = true, $skipEmpty = false)
     {
         $result = explode($delimiter, $string);
-        if ($trim) {
+        if ($trim !== false) {
             if ($trim === true) {
                 $trim = 'trim';
             } elseif (!is_callable($trim)) {
@@ -417,5 +417,41 @@ class BaseStringHelper
         }
 
         return preg_match($pattern, $string) === 1;
+    }
+
+    /**
+     * This method provides a unicode-safe implementation of built-in PHP function `ucfirst()`.
+     *
+     * @param string $string the string to be proceeded
+     * @param string $encoding Optional, defaults to "UTF-8"
+     * @return string
+     * @see http://php.net/manual/en/function.ucfirst.php
+     * @since 2.0.16
+     */
+    public static function mb_ucfirst($string, $encoding = 'UTF-8')
+    {
+        $firstChar = mb_substr($string, 0, 1, $encoding);
+        $rest = mb_substr($string, 1, null, $encoding);
+
+        return mb_strtoupper($firstChar, $encoding) . $rest;
+    }
+
+    /**
+     * This method provides a unicode-safe implementation of built-in PHP function `ucwords()`.
+     *
+     * @param string $string the string to be proceeded
+     * @param string $encoding Optional, defaults to "UTF-8"
+     * @see http://php.net/manual/en/function.ucwords.php
+     * @return string
+     */
+    public static function mb_ucwords($string, $encoding = 'UTF-8')
+    {
+        $words = preg_split("/\s/u", $string, -1, PREG_SPLIT_NO_EMPTY);
+
+        $titelized = array_map(function ($word) use ($encoding) {
+            return static::mb_ucfirst($word, $encoding);
+        }, $words);
+
+        return implode(' ', $titelized);
     }
 }

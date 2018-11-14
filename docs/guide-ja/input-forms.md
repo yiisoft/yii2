@@ -1,7 +1,7 @@
 フォームを作成する
 ==================
 
-アクティブレコードに基づくフォーム : ActiveForm
+アクティブ・レコードに基づくフォーム : ActiveForm <span id="activerecord-based-forms-activeform"></span>
 -----------------------------------------------
 Yii においてフォームを使用するときは、主として [[yii\widgets\ActiveForm]] による方法を使います。
 フォームがモデルに基づくものである場合はこの方法を選ぶべきです。
@@ -10,7 +10,8 @@ Yii においてフォームを使用するときは、主として [[yii\widget
 フォームは、クライアント・サイドで表示されるものですが、たいていの場合、対応する [モデル](structure-models.md) を持ち、それを使ってサーバ・サイドでフォームの入力を検証します
 (入力の検証の詳細については、[入力を検証する](input-validation.md) のセクションを参照してください)。
 モデルに基づくフォームを作成する場合、最初のステップは、モデルそのものを定義することです。
-モデルは、データベースの何らかのデータを表現するために [アクティブレコード](db-active-record.md) から派生させたクラスか、あるいは、任意の入力、例えばログイン・フォームの入力を保持するための ([[yii\base\Model]] から派生させた) 汎用的な Model クラスか、どちらかにすることが出来ます。
+モデルは、データベースの何らかのデータを表現するために [アクティブ・レコード](db-active-record.md) から派生させたクラスか、
+あるいは、任意の入力、例えばログイン・フォームの入力を保持するための ([[yii\base\Model]] から派生させた) 汎用的な Model クラスか、どちらかにすることが出来ます。
 
 > Tip: フォームのフィールドがデータベースのカラムと異なっていたり、そのフォーム特有のフォーマット形式やロジックがあったりする場合は、
 > [[yii\base\Model]] を拡張した独自のモデルを作るほうを選んで下さい。
@@ -34,7 +35,8 @@ class LoginForm extends \yii\base\Model
 
 ```
 
-コントローラにおいて、このモデルのインスタンスをビューに渡し、ビューでは [[yii\widgets\ActiveForm|ActiveForm]] ウィジェットがフォームを表示するのに使われます。
+コントローラにおいて、このモデルのインスタンスをビューに渡し、ビューでは [[yii\widgets\ActiveForm|ActiveForm]]
+ウィジェットがフォームを表示するのに使われます。
 
 ```php
 <?php
@@ -58,16 +60,16 @@ $form = ActiveForm::begin([
 
 ### `begin()` と `end()` で囲む <span id="wrapping-with-begin-and-end"></span>
 上記のコードでは、[[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] がフォームのインスタンスを作成するとともに、フォームの開始をマークしています。
-[[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] と [[yii\widgets\ActiveForm::end()|ActiveForm::end()]] の間に置かれた全てのコンテントが HTML の `<form>` タグによって囲まれます。
+[[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] と [[yii\widgets\ActiveForm::end()|ActiveForm::end()]]
+の間に置かれた全てのコンテントが HTML の `<form>` タグによって囲まれます。
 どのウィジェットでも同じですが、ウィジェットをどのように構成すべきかに関するオプションを指定するために、`begin` メソッドに配列を渡すことが出来ます。
 この例では、追加の CSS クラスと要素を特定するための ID が渡されて、`<form>` の開始タグに適用されています。
 利用できるオプションの全ては [[yii\widgets\ActiveForm]] の API ドキュメントに記されていますので参照してください。
 
 ### ActiveField <span id="activefield"></span>
 フォームの中では、フォームの要素を作成するために、ActiveForm ウィジェットの [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] メソッドが呼ばれています。
-このメソッドは、フォームの要素だけでなく、そのラベルも作成し、適用できる JavaScript の検証メソッドがあれば、それも追加します。
-[[yii\widgets\ActiveForm::field()|ActiveForm::field()]] メソッドは、[[yii\widgets\ActiveField]] のインスタンスを返します。
-このメソッドの呼び出し結果を直接にエコーすると、結果は通常の (text の) インプットになります。
+このメソッドは、フォームの要素だけでなく、そのラベルも作成し、適用できる JavaScript の検証メソッドがあれば、それも追加します。[[yii\widgets\ActiveForm::field()|ActiveForm::field()]] メソッドは、
+[[yii\widgets\ActiveField]] のインスタンスを返します。このメソッドの呼び出し結果を直接にエコーすると、結果は通常の (text の) インプットになります。
 このメソッドの呼び出しに追加の [[yii\widgets\ActiveField|ActiveField]] のメソッドをチェーンして、出力結果をカスタマイズすることが出来ます。
 
 ```php
@@ -89,7 +91,8 @@ $form = ActiveForm::begin([
 > この方法を使えば、[GridView](output-data-widgets.md#grid-view) で使われるフィルター・モデルで、もっと見栄えの良い URL を生成させることが出来ます。
 
 モデルの属性を指定するために、もっと洗練された方法を使うことも出来ます。
-例えば、複数のファイルをアップロードしたり、複数の項目を選択したりする場合に、属性の名前に `[]` を付けて、属性が配列の値を取り得ることを指定することが出来ます。
+例えば、複数のファイルをアップロードしたり、複数の項目を選択したりする場合に、属性の名前に `[]` を付けて、
+属性が配列の値を取り得ることを指定することが出来ます。
 
 ```php
 // 複数のファイルのアップロードを許可する
@@ -106,10 +109,14 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 > 名前の衝突は訳の分らない失敗を生じさせることがあります。
 > 命名規則の完全なリストを知り、この問題についてあなたのマークアップをチェックするためには、[DOMLint](http://kangax.github.io/domlint/) を参照してください。
 
-フォームに HTML タグを追加するためには、素の HTML を使うか、または、上記の例の [[yii\helpers\Html::submitButton()|Html::submitButton()]] のように、[[yii\helpers\Html|Html]] ヘルパ・クラスのメソッドを使うことが出来ます。
+フォームに HTML タグを追加するためには、素の HTML を使うか、または、上記の例の [[yii\helpers\Html::submitButton()|Html::submitButton()]] のように、
+[[yii\helpers\Html|Html]] ヘルパ・クラスのメソッドを使うことが出来ます。
 
-> Tip: あなたのアプリケーションで Twitter Bootstrap CSS を使っている場合は、[[yii\widgets\ActiveForm]] の代りに [[yii\bootstrap\ActiveForm]] を使うのが良いでしょう。
+
+> Tip: あなたのアプリケーションで Twitter Bootstrap CSS を使っている場合は、[[yii\widgets\ActiveForm]] の代りに
+> [[yii\bootstrap\ActiveForm]] を使うのが良いでしょう。
 > 後者は前者の拡張であり、bootstrap CSS フレームワークで使用するための追加のスタイルをサポートしています。
+
 
 > Tip: 必須フィールドをアスタリスク付きのスタイルにするために、次の CSS を使うことが出来ます。
 >
@@ -147,7 +154,8 @@ $items = Category::find()
 ```
 
 このような `$items` が、いろんなリスト・ウィジェットによって処理されるべきものとなります。
-フォームのフィールドの値(および現在アクティブな項目)は、`$model` の属性の現在の値に従って自動的に設定されます。
+フォームのフィールドの値(および現在アクティブな項目)は、
+`$model` の属性の現在の値に従って自動的に設定されます。
 
 #### ドロップダウン・リストを作る <span id="creating-activeform-dropdownlist"></span>
 
@@ -194,11 +202,13 @@ echo $form->field($model, 'category')->checkboxList([
 Pjax を使う <span id="working-with-pjax"></span>
 -----------
 
-[[yii\widgets\Pjax|Pjax]] ウィジェットを使うと、ページ全体をリロードせずに、ページの一部分だけを更新することが出来ます。
+[[yii\widgets\Pjax|Pjax]] ウィジェットを使うと、ページ全体をリロードせずに、
+ページの一部分だけを更新することが出来ます。
 これを使うと、送信後にフォームだけを更新して、その中身を入れ替えることが出来ます。
 
 [[yii\widgets\Pjax::$formSelector|$formSelector]] を構成すると、どのフォームの送信が pjax を起動するかを指定することが出来ます。
-それが指定されていない場合は、Pjax に囲まれたコンテントの中にあって `data-pjax` 属性を持つすべてのフォームが pjax リクエストを起動することになります。
+それが指定されていない場合は、Pjax に囲まれたコンテントの中にあって
+`data-pjax` 属性を持つすべてのフォームが pjax リクエストを起動することになります。
 
 ```php
 use yii\widgets\Pjax;
@@ -229,9 +239,10 @@ Pjax::end();
 を扱うときに問題があることが知られています。
 この問題は解決される見込みがなく、関数自体も HTML5 で導入された `FormData` クラスによって置き換えられるべきものとして、廃止予定となっています。
 
-このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、ファイルと送信ボタンの値に対する唯一の公式なサポートは、
-`FormData` クラスに対する [ブラウザのサポート](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility) に依存しているということを意味します。
-
+このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、
+ファイルと送信ボタンの値に対する唯一の公式なサポートは、
+`FormData` クラスに対する [ブラウザのサポート](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
+に依存しているということを意味します。
 
 さらに読むべき文書 <span id="further-reading"></span>
 ------------------

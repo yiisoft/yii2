@@ -13,8 +13,9 @@
 - [[yii\base\Theme::pathMap]]: ビュー・ファイルの置換の規則を指定します。
   詳細は後述する項で説明します。
 
-例えば、`SiteController` で `$this->render('about')` を呼び出すと、ビュー・ファイル `@app/views/site/about.php` をレンダリングすることになります。
-しかし、下記のようにアプリケーション構成情報でテーマを有効にすると、代りに、ビュー・ファイル `@app/themes/basic/site/about.php` がレンダリングされます。
+例えば、`SiteController` で `$this->render('about')` を呼び出すと、ビュー・ファイル `@app/views/site/about.php`
+をレンダリングすることになります。しかし、下記のようにアプリケーション構成情報でテーマを有効にすると、
+代りに、ビュー・ファイル `@app/themes/basic/site/about.php` がレンダリングされます。
 
 ```php
 return [
@@ -86,10 +87,9 @@ $file = $theme->getPath('img/logo.gif');
 
 ## テーマの継承 <span id="theme-inheritance"></span>
 
-場合によっては、基本的なルック・アンド・フィールを含むアプリケーションの基本テーマを定義しておいて、現在の祝日に基づいてルック・アンド・フィールを少し変更したい、ということがあるかもしれません。
-テーマの継承を使ってこの目的を達することが出来ます。
-テーマの継承は、一つのビュー・パスを複数のターゲットに割り付けることによって設定することが出来ます。
-例えば、
+場合によっては、基本的なルック・アンド・フィールを含むアプリケーションの基本テーマを定義しておいて、
+現在の祝日に基づいてルック・アンド・フィールを少し変更したい、ということがあるかもしれません。
+テーマの継承を使ってこの目的を達することが出来ます。テーマの継承は、一つのビュー・パスを複数のターゲットに割り付けることによって設定することが出来ます。例えば、
 
 ```php
 'pathMap' => [
@@ -100,6 +100,7 @@ $file = $theme->getPath('img/logo.gif');
 ]
 ```
 
-この場合、ビュー `@app/views/site/index.php` には、どちらのテーマ・ファイルが存在するかに従って、`@app/themes/christmas/site/index.php` か `@app/themes/basic/site/index.php` か、どちらかのテーマが適用されます。
+この場合、ビュー `@app/views/site/index.php` には、どちらのテーマ・ファイルが存在するかに従って、
+`@app/themes/christmas/site/index.php` か `@app/themes/basic/site/index.php` か、どちらかのテーマが適用されます。
 テーマ・ファイルが両方とも存在する場合は、最初のものが優先されます。
 実際の場面では、ほとんどのテーマ・ビュー・ファイルを `@app/themes/basic` に保管し、その中のいくつかを `@app/themes/christmas` でカスタマイズすることになるでしょう。

@@ -77,9 +77,9 @@ All Rights Reserved.
 
 * [データベース・アクセス・オブジェクト](db-dao.md): データベースへの接続、基本的なクエリ、トランザクション、および、スキーマ操作
 * [クエリ・ビルダ](db-query-builder.md): シンプルな抽象レイヤを使ってデータベースに対してクエリを行う
-* [アクティブレコード](db-active-record.md): アクティブレコード ORM、レコードの読み出しと操作、リレーションの定義
+* [アクティブ・レコード](db-active-record.md): アクティブ・レコード ORM、レコードの読み出しと操作、リレーションの定義
 * [マイグレーション](db-migrations.md): チーム開発環境においてデータベースにバージョン・コントロールを適用
-* [Sphinx](https://yiiframework.com/extension/yiisoft/yii2-sphinx/doc/guide)
+* [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx/doc/guide)
 * [Redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis/doc/guide)
 * [MongoDB](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb/doc/guide)
 * [ElasticSearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch/doc/guide)
@@ -130,8 +130,8 @@ All Rights Reserved.
 * [HTTP キャッシュ](caching-http.md)
 
 
-RESTful ウェブサービス
-----------------------
+RESTful ウェブ・サービス
+------------------------
 
 * [クイック・スタート](rest-quick-start.md)
 * [リソース](rest-resources.md)
@@ -182,14 +182,14 @@ RESTful ウェブサービス
 ウィジェット
 ------------
 
-* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
-* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
-* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
-* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
-* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
-* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
-* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
-* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
+* [GridView](https://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](https://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](https://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](https://www.yiiframework.com/doc/guide/2.0/ja/input-forms#activerecord-based-forms-activeform)
+* [Pjax](https://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](https://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](https://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](https://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Bootstrap ウィジェット](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap/doc/guide)
 * [jQuery UI ウィジェット](https://www.yiiframework.com/extension/yiisoft/yii2-jui/doc/guide)
 

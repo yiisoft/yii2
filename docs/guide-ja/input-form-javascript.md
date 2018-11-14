@@ -34,8 +34,10 @@ function (event, messages, deferreds)
 引数は以下の通り:
 
 - `event`: イベントのオブジェクト。
-- `messages`: 連想配列で、キーは属性の ID、値は対応する属性のエラー・メッセージの配列です。
-- `deferreds`: Deferred オブジェクトの配列。`deferreds.add(callback)` を使って、新しい deferrd な検証を追加することが出来ます。
+- `messages`: 連想配列で、キーは属性の ID、
+  値は対応する属性のエラー・メッセージの配列です。
+- `deferreds`: Deferred オブジェクトの配列。`deferreds.add(callback)` を使って、
+  新しい deferrd な検証を追加することが出来ます。
 
 ハンドラが真偽値 `false` を返すと、このイベントに続くフォームの検証は中止されます。
 その結果、`afterValidate` イベントもトリガされません。
@@ -53,13 +55,14 @@ function (event, messages, errorAttributes)
 引数は以下の通り:
 
 - `event`: イベントのオブジェクト。
-- `messages`: 連想配列で、キーは属性の ID、値は対応する属性のエラー・メッセージの配列です。
-- `errorAttributes`: 検証エラーがある属性の配列。この引数の構造については `attributeDefaults` を参照して下さい。
+- `messages`: 連想配列で、キーは属性の ID、
+  値は対応する属性のエラー・メッセージの配列です。
+- `errorAttributes`: 検証エラーがある属性の配列。
+  この引数の構造については `attributeDefaults` を参照して下さい。
 
 ### `beforeValidateAttribute`
 
 `beforeValidateAttribute` イベントは、属性を検証する前にトリガされます。
-
 イベント・ハンドラのシグニチャは以下の通り:
 
 ```javascript
@@ -69,9 +72,11 @@ function (event, attribute, messages, deferreds)
 引数は以下の通り:
 
 - `event`: イベントのオブジェクト。
-- `attribute`: 検証される属性。この引数の構造については `attributeDefaults` を参照して下さい。
+- `attribute`: 検証される属性。
+  この引数の構造については `attributeDefaults` を参照して下さい。
 - `messages`: 指定された属性に対する検証エラー・メッセージを追加することが出来る配列。
-- `deferreds`: Deferred オブジェクトの配列。`deferreds.add(callback)` を使って、新しい deferrd な検証を追加することが出来ます。
+- `deferreds`: Deferred オブジェクトの配列。
+  `deferreds.add(callback)` を使って、新しい deferrd な検証を追加することが出来ます。
 
 ハンドラが真偽値 `false` を返すと、指定された属性の検証は中止されます。
 その結果、`afterValidateAttribute` イベントもトリガされません。
@@ -89,8 +94,10 @@ function (event, attribute, messages)
 引数は以下の通り:
 
 - `event`: イベントのオブジェクト。
-- `attribute`: 検証される属性。この引数の構造については `attributeDefaults` を参照して下さい。
-- `messages`: 指定された属性に対する追加の検証エラー・メッセージを追加することが出来る配列。
+- `attribute`: 検証される属性。
+  この引数の構造については `attributeDefaults` を参照して下さい。
+- `messages`: 指定された属性に対する追加の検証エラー・メッセージを追加することが
+  出来る配列。
 
 ### `beforeSubmit`
 
@@ -102,9 +109,7 @@ function (event, attribute, messages)
 function (event)
 ```
 
-引数は以下の通り:
-
-- `event`: イベントのオブジェクト。
+ここで、`event` は、イベントのオブジェクトです。
 
 ハンドラが真偽値 `false` を返すと、フォームの送信は中止されます。
 

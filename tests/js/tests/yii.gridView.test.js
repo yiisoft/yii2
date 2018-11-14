@@ -14,11 +14,13 @@ describe('yii.gridView', function () {
     var $gridView;
     var settings = {
         filterUrl: '/posts/index',
-        filterSelector: '#w0-filters input, #w0-filters select'
+        filterSelector: '#w0-filters input, #w0-filters select',
+        filterOnFocusOut: true
     };
     var commonSettings = {
         filterUrl: '/posts/index',
-        filterSelector: '#w-common-filters input, #w-common-filters select'
+        filterSelector: '#w-common-filters input, #w-common-filters select',
+        filterOnFocusOut: true
     };
     var $textInput;
     var $select;
@@ -143,7 +145,8 @@ describe('yii.gridView', function () {
     describe('init', function () {
         var customSettings = {
             filterUrl: '/posts/filter',
-            filterSelector: '#w-common-filters input'
+            filterSelector: '#w-common-filters input',
+            filterOnFocusOut: true
         };
 
         withData({
@@ -480,6 +483,39 @@ describe('yii.gridView', function () {
         describe('with filter event handlers', function () {
             beforeEach(function () {
                 $gridView = $('#w0').yiiGridView(settings);
+            });
+
+            describe('with option filterOnFocusOut', function () {
+                it('set option filterOnFocusOut off and press Enter key', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    pressEnter($textInput);
+                    assert.isTrue(jQuerySubmitStub.calledOnce);
+                });
+                it('set option filterOnFocusOut off and change value', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    changeValue($select, 1);
+                    assert.isFalse(jQuerySubmitStub.calledOnce);
+                });
+                it('set option filterOnFocusOut off and lose focus', function () {
+                    $gridView.yiiGridView({
+                        filterUrl: '/posts/index',
+                        filterSelector: '#w0-filters input, #w0-filters select',
+                        filterOnFocusOut: false
+                    });
+
+                    loseFocus($textInput);
+                    assert.isFalse(jQuerySubmitStub.calledOnce);
+                });
             });
 
             describe('with text entered in the text input', function () {

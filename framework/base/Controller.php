@@ -211,7 +211,7 @@ class Controller extends Component implements ViewContextInterface
      * The method first checks if the action ID has been declared in [[actions()]]. If so,
      * it will use the configuration declared there to create the action object.
      * If not, it will look for a controller method whose name is in the format of `actionXyz`
-     * where `Xyz` stands for the action ID. If found, an [[InlineAction]] representing that
+     * where `xyz` is the action ID. If found, an [[InlineAction]] representing that
      * method will be created and returned.
      * @param string $id the action ID.
      * @return Action|null the newly created action instance. Null if the ID doesn't resolve into any action.

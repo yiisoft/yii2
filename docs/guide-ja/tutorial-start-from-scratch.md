@@ -3,7 +3,9 @@
 
 > Note: このセクションはまだ執筆中です。
 
-[ベーシック](https://github.com/yiisoft/yii2-app-basic) と [アドバンスト](https://github.com/yiisoft/yii2-app-advanced) のプロジェクト・テンプレートは、あなたの要求をほとんどカバーする優れたものですが、あなたのプロジェクトを開始するためのあなた自身のテンプレートを作成したいこともあるでしょう。
+[ベーシック](https://github.com/yiisoft/yii2-app-basic) と [アドバンスト](https://github.com/yiisoft/yii2-app-advanced)
+のプロジェクト・テンプレートは、あなたの要求をほとんどカバーする優れたものですが、
+あなたのプロジェクトを開始するためのあなた自身のテンプレートを作成したいこともあるでしょう。
 
 Yii におけるプロジェクト・テンプレートは、`composer.json` ファイルを含み、Composer パッケージとして登録されたレポジトリであるに過ぎません。
 どのようなレポジトリでも、Composer パッケージとして特定し、`create-project` Composer コマンドによってインストール可能なものにすることが出来ます。
@@ -30,7 +32,8 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 `name`、`description`、`keywords`、`homepage`、`license` および `support` の値を、あなたの新しいテンプレートを説明するものに変更します。
 また、`require`、`require-dev`、`suggest` や、その他のオプションも、あなたのテンプレートの要求に合うように調整します。
 
-> Note: `composer.json` ファイルで、`extra` の下の `writable` パラメータを使って、アプリケーションがテンプレートを使って作成された後に設定されるべきファイル単位のアクセス権限を指定してください。
+> Note: `composer.json` ファイルで、`extra` の下の `writable` パラメータを使って、
+> アプリケーションがテンプレートを使って作成された後に設定されるべきファイル単位のアクセス権限を指定してください。
 
 次に、あなたが好むデフォルトの状態に合うように、アプリケーションの構造と内容を実際に修正します。
 最後に、あなたのテンプレートに適用できるように、README ファイルを更新します。
@@ -42,8 +45,7 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 あなたのテンプレートをオープンソース化するつもりなら、レポジトリをホストするのには [Github](http://github.com) が最適の場所です。
 テンプレートを共同作業に使わないつもりであれば、どんな Git レポジトリサイトでも構いません。
 
-次に、Composer のためにパッケージを登録する必要があります。
-パブリックなテンプレートであれば、パッケージは [Packagist](https://packagist.org/) に登録すべきです。
+次に、Composer のためにパッケージを登録する必要があります。パブリックなテンプレートであれば、パッケージは [Packagist](https://packagist.org/) に登録すべきです。
 プライベートなテンプレートは、パッケージの登録が少々トリッキーです。
 その説明については [Composer ドキュメント](https://getcomposer.org/doc/05-repositories.md#hosting-your-own) を参照してください。
 
@@ -54,6 +56,5 @@ Yii の新しいプロジェクト・テンプレートを作成するのに必�
 これで、あなたのテンプレートを使ってプロジェクトを作成することが出来ます。
 
 ```
-composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist --stability=dev mysoft/yii2-app-coolone new-project
 ```

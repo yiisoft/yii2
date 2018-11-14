@@ -112,7 +112,7 @@ class EmailValidator extends Validator
             return idn_to_ascii($idn);
         }
 
-        return idn_to_ascii($idn, 0, INTL_IDNA_VARIANT_UTS46);
+        return idn_to_ascii($idn, IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46);
     }
 
     /**

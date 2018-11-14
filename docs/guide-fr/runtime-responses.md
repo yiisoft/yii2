@@ -3,14 +3,16 @@ Réponses
 
 Quand une application a terminé la prise en charge d'une [requête](runtime-requests.md), elle génère un objet [[yii\web\Response|response]] et l'envoie à l'utilisateur final. L'objet `response` contient des informations telles que le code d'état HTTP, les entêtes HTTP et le corps. Le but ultime du développement d'applications Web est essentiellement du construire de tels objets `response` pour des requêtes variées. 
 
-Dans la plupart des cas, vous devez travailler avec le [composant d'application](structure-application-components.md) `response` qui, par défaut, est une instance de [[yii\web\Response]]. Néanmoins, Yii vous permet également de créer vos propres objets `response` et de les envoyer à l'utilisateur final comme nous l'exliquons dans ce qui suit.
+Dans la plupart des cas, vous devez travailler avec le [composant d'application](structure-application-components.md) `response` qui, par défaut, est une instance de [[yii\web\Response]]. Néanmoins, Yii vous permet également de créer vos propres objets `response` et de les envoyer à l'utilisateur final comme nous l'expliquons dans ce qui suit.
 
-Dans cette section, nous décrivons comment composer et enovoyer des réponses à l'utilisateur final. 
+Dans cette section, nous décrivons comment composer et envoyer des réponses à l'utilisateur final. 
 
 
 ## Code d'état <span id="status-code"></span>
 
-Une de première chose que vous devez faire lorsque vous construisez une réponse est de déclarer si la requête a été correctement prise en charge ou pas. Cela se fait en définissant la propriété  [[yii\web\Response::statusCode (code d'état)]] qui peut prendre un des [code d'état HTTP](https://tools.ietf.org/html/rfc2616#section-10) valides. Par exemple, pour indiquer que la requête a été prise en charge avec succès, vous pouvez définir le code à 200, comme ceci :
+Une des premières choses que vous devez faire lorsque vous construisez une réponse est de déclarer si la requête a été correctement prise en charge ou pas. Cela se fait en définissant la propriété  
+[[yii\web\Response::statusCode (code d'état)]] 
+qui peut prendre un des [codes d'état HTTP](https://tools.ietf.org/html/rfc2616#section-10) valides. Par exemple, pour indiquer que la requête a été prise en charge avec succès, vous pouvez définir le code à 200, comme ceci :
 
 ```php
 Yii::$app->response->statusCode = 200;
@@ -158,6 +160,7 @@ Dans des endroits autres que les méthodes d'action, vous devez appeler la méth
 Lorsque la requête courante est une requête AJAX, l'envoi d'un entête `Location` ne provoque pas automatiquement une redirection du navigateur. Pour pallier ce problème, la méthode [[yii\web\Response::redirect()]] définit un entête  `X-Redirect` avec l'URL de redirection comme valeur. Du côté client, vous pouvez écrire un code JavaScript pour lire l'entête et rediriger le navigateur sur l'URL transmise. 
 
 > Info: Yii est fourni avec un fichier JavaScript `yii.js` qui fournit un jeu d'utilitaires JavaScript, y compris l'utilitaire de redirection basé sur l'entête `X-Redirect`. Par conséquent, si vous utilisez ce fichier JavaScript (en enregistrant le paquet de ressources [[yii\web\YiiAsset]] ), vous n'avez rien à écrire pour prendre en charge la redirection AJAX. 
+De l'information complémentaire sur  `yii.js` est disponible à la [section Scripts client](output-client-scripts.md#yii.js).
 
 ## Envoi de fichiers <span id="sending-files"></span>
 

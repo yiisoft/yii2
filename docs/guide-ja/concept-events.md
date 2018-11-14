@@ -13,12 +13,12 @@ Yiiはイベントをサポートするために、 [[yii\base\Component]] と�
 イベント・ハンドラ <span id="event-handlers"></span>
 ------------------
 
-イベント・ハンドラとは、関連するイベントがトリガされたときに実行される、 [PHP コールバック](http://www.php.net/manual/ja/language.types.callable.php)
+イベント・ハンドラとは、アタッチされたイベントがトリガされたときに実行される [PHP コールバック](http://www.php.net/manual/ja/language.types.callable.php)
 です。次のコールバックのいずれも使用可能です:
 
 - 文字列で指定されたグローバル PHP 関数 (括弧を除く)、例えば `'trim'`。
 - オブジェクトとメソッド名文字列の配列で指定された、オブジェクトのメソッド (括弧を除く)、例えば `[$object, 'methodName']`。
-- クラス名文字列とメソッド名文字列の配列で指定された、静的なクラスメソッド (括弧を除く)、例えば `['ClassName', 'methodName']`。
+- クラス名文字列とメソッド名文字列の配列で指定された、静的なクラス・メソッド (括弧を除く)、例えば `['ClassName', 'methodName']`。
 - 無名関数、例えば `function ($event) { ... }`。
 
 イベント・ハンドラのシグネチャはこのようになります:
@@ -32,8 +32,8 @@ function ($event) {
 `$event` パラメータを介して、イベント・ハンドラは発生したイベントに関して次の情報を得ることができます:
 
 - [[yii\base\Event::name|イベント名]]
-- [[yii\base\Event::sender|イベント送信元]]: `trigger()` メソッドを呼び出したオブジェクト
-- [[yii\base\Event::data|カスタムデータ]]: イベント・ハンドラを接続するときに提供されたデータ (後述)
+- [[yii\base\Event::sender|イベント送信元]]: `trigger()` メソッドが呼ばれたオブジェクト
+- [[yii\base\Event::data|カスタム・データ]]: イベント・ハンドラをアタッチするときに提供されたデータ (次の項で説明します)
 
 
 イベント・ハンドラをアタッチする <span id="attaching-event-handlers"></span>
@@ -61,6 +61,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 
 また、 [構成情報](concept-configurations.md) を通じてイベント・ハンドラをアタッチすることもできます。詳細については
 [構成情報](concept-configurations.md) の章を参照してください。
+
 
 イベント・ハンドラをアタッチするとき、 [[yii\base\Component::on()]] の3番目のパラメータとして、付加的なデータを提供することができます。
 そのデータは、イベントがトリガされてハンドラが呼び出されるときに、ハンドラ内で利用きます。たとえば:
@@ -90,7 +91,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 
 デフォルトでは、新たに接続されたハンドラは、イベントの既存のハンドラのキューに追加されます。その結果、
 イベントがトリガされたとき、そのハンドラは一番最後に呼び出されます。もし、そのハンドラが最初に呼び出されるよう、
-ハンドラのキューの先頭に新しいハンドラを挿入したい場合は、[[yii\base\Component::on()]] を呼び出とき、4番目のパラメータ `$append` に `false` を渡します:
+ハンドラのキューの先頭に新しいハンドラを挿入したい場合は、[[yii\base\Component::on()]] を呼び出すとき、4番目のパラメータ `$append` に `false` を渡します:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -130,7 +131,8 @@ class Foo extends Component
 イベントをトリガするとき、イベント・ハンドラに追加情報を渡したいことがあります。たとえば、メーラーが `messageSent` イベントのハンドラに
 メッセージ情報を渡して、ハンドラが送信されたメッセージの詳細を知ることができるようにしたいかもしれません。
 これを行うために、 [[yii\base\Component::trigger()]] メソッドの2番目のパラメータとして、イベント・オブジェクトを与えることができます。
-イベント・オブジェクトは [[yii\base\Event]] クラスあるいはその子クラスのインスタンスでなければなりません。たとえば:
+イベント・オブジェクトは [[yii\base\Event]] クラスあるいはその子クラスのインスタンスでなければなりません。
+たとえば:
 
 ```php
 namespace app\components;
@@ -194,14 +196,15 @@ $foo->off(Foo::EVENT_HELLO);
 クラス・レベル・イベント・ハンドラ <span id="class-level-event-handlers"></span>
 ----------------------------------
 
-ここまでの項では、 *インスタンス・レベル* でのイベントにハンドラをアタッチする方法を説明してきました。
-場合によっては、特定のインスタンスだけではなく、クラスのすべてのインスタンスがトリガした
-イベントに応答したいことがあります。すべてのインスタンスにイベント・ハンドラをアタッチする代わりに、静的メソッド
-[[yii\base\Event::on()]] を呼び出すことで、 *クラス・レベル* でハンドラをアタッチすることができます。
+ここまでの項では、*インスタンス・レベル* でのイベントにハンドラをアタッチする方法を説明してきました。
+場合によっては、特定のインスタンスだけではなく、
+クラスのすべてのインスタンスがトリガしたイベントに応答したいことがあります。
+すべてのインスタンスにイベント・ハンドラをアタッチする代わりに、静的メソッド [[yii\base\Event::on()]] を呼び出すことで、
+*クラス・レベル* でハンドラをアタッチすることができます。
 
-たとえば、[アクティブレコード](db-active-record.md) オブジェクトは、データベースに新しいレコードを挿入するたびに、
+たとえば、[アクティブ・レコード](db-active-record.md) オブジェクトは、データベースに新しいレコードを挿入するたびに、
 [[yii\db\BaseActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] イベントをトリガします。 *すべての*
-[アクティブレコード](db-active-record.md) オブジェクトによって行われる挿入を追跡するには、次のコードが使えます：
+[アクティブ・レコード](db-active-record.md) オブジェクトによって行われる挿入を追跡するには、次のコードが使えます：
 
 ```php
 use Yii;
@@ -233,7 +236,7 @@ Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 ```
 
-この場合、`$event->sender` は、オブジェクト・インスタンスではなく、イベントをトリガするクラスの名前を指すことに注意してください。
+この場合、`$event->sender` は、オブジェクト・インスタンスではなく、`null` になることに注意してください。
 
 > Note: クラス・レベルのハンドラは、そのクラスのあらゆるインスタンス、またはあらゆる子クラスのインスタンスがトリガしたイベントに応答
   してしまうため、よく注意して使わなければなりません。 [[yii\base\BaseObject]] のように、クラスが低レベルの基底クラスの場合は特にそうです。
@@ -288,7 +291,8 @@ class Developer extends Component implements DanceEventInterface
 }
 ```
 
-これらのクラスのどれかによってトリガされた `EVENT_DANCE` を扱うためには、インタフェイスの名前を最初の引数にして [[yii\base\Event::on()|Event::on()]] を呼びます。
+これらのクラスのどれかによってトリガされた `EVENT_DANCE` を扱うためには、インタフェイス・クラスの名前を最初の引数にして
+[[yii\base\Event::on()|Event::on()]] を呼びます。
 
 ```php
 Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
@@ -309,12 +313,11 @@ Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
 ただし、このインタフェイスを実装する全クラスのイベントをトリガすることは出来ない、ということに注意して下さい。
 
 ```php
-// これは動かない
+// これは動かない。このインタフェイスを実装するクラスのイベントはトリガされない。
 Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
-イベント・ハンドラをデタッチするためには、[[yii\base\Event::off()|Event::off()]] を呼びます。
-例えば、
+イベント・ハンドラをデタッチするためには、[[yii\base\Event::off()|Event::off()]] を呼びます。例えば、
 
 ```php
 // $handler をデタッチ
@@ -328,7 +331,7 @@ Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANC
 グローバル・イベント <span id="global-events"></span>
 --------------------
 
-Yiiは、実際に上記のイベント・メカニズムに基づいたトリックである、いわゆる *グローバル・イベント* をサポートしています。
+Yiiは、いわゆる *グローバル・イベント* をサポートしています。これは、実際には、上記のイベント・メカニズムに基づいたトリックです。
 グローバル・イベントは、 [アプリケーション](structure-applications.md) インスタンス自身などの、グローバルにアクセス可能なシングルトンを必要とします。
 
 グローバル・イベントを作成するには、イベント送信者は、送信者の自前の `trigger()` メソッドを呼び出す代わりに、シングルトンの
@@ -352,6 +355,7 @@ Yii::$app->trigger('bar', new Event(['sender' => new Foo]));
 
 しかし、グローバル・イベントの名前空間はあらゆる部分から共有されているので、ある種の名前空間 ("frontend.mail.sent"、"backend.mail.sent" など)
 を導入するというような、賢いグローバル・イベントの名前付けをする必要があります。
+
 
 ワイルドカード・イベント <span id="wildcard-events"></span>
 ------------------------
@@ -400,8 +404,7 @@ Event::on('*', '*', function ($event) {
 ワイルドカード・パターンで指定されたイベント・ハンドラをデタッチするためには、[[yii\base\Component::off()]] または [[yii\base\Event::off()]] の呼び出しにおいて、
 同じパターンを使用しなければなりません。
 イベント・ハンドラをデタッチする際にワイルドカードを指定すると、そのワイルドカードで指定されたハンドラだけがデタッチされることに留意して下さい。
-通常のイベント名でアタッチされたハンドラは、パターンに合致する場合であっても、デタッチされません。
-例えば、
+通常のイベント名でアタッチされたハンドラは、パターンに合致する場合であっても、デタッチされません。例えば、
 
 ```php
 use Yii;
