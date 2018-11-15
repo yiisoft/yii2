@@ -2,7 +2,7 @@
 =========
 
 当一个应用在处理完一个[请求](runtime-requests.md)后, 这个应用会生成一个 [[yii\web\Response|response]] 响应对象并把这个响应对象发送给终端用户
-这个响应对象包含的信息有HTTP状态码，HTTP头和主体内容等, 
+这个响应对象包含的信息有 HTTP 状态码，HTTP 头和主体内容等, 
 从本质上说，网页应用开发最终的目标就是根据不同的请求去构建这些响应对象。
 
 在大多数实际应用情况下，你应该主要地去处理 `response` 这个 [应用组件](structure-application-components.md)，
@@ -17,7 +17,7 @@
 构建响应要做的第一件事就是声明请求是否被成功处理，我们可通过设置
 [[yii\web\Response::$statusCode]] 这个属性来做到这一点，该属性接受一个有效的
 [HTTP 状态码](https://tools.ietf.org/html/rfc2616#section-10)。例如，表明该请求已被成功处理，
-可以设置状态码为200，如下所示：
+可以设置状态码为 200，如下所示：
 
 ```php
 Yii::$app->response->statusCode = 200;
@@ -32,8 +32,8 @@ throw new \yii\web\NotFoundHttpException;
 ```
 
 当[错误处理器](runtime-handling-errors.md) 捕获到一个异常，会从异常中提取状态码并赋值到响应，
-对于上述的 [[yii\web\NotFoundHttpException]] 对应HTTP 404状态码，
-以下为Yii预定义的HTTP异常：
+对于上述的 [[yii\web\NotFoundHttpException]] 对应 HTTP 404 状态码，
+以下为 Yii 预定义的 HTTP 异常：
 
 * [[yii\web\BadRequestHttpException]]：状态码 400。
 * [[yii\web\ConflictHttpException]]：状态码 409。
@@ -73,7 +73,7 @@ $headers->set('Pragma', 'no-cache');
 $values = $headers->remove('Pragma');
 ```
 
-> Info: 头名称是大小写敏感的，在[[yii\web\Response::send()]]方法
+> Info: 头名称是大小写敏感的，在 [[yii\web\Response::send()]] 方法
   调用前新注册的头信息并不会发送给用户。
 
 
@@ -90,7 +90,7 @@ Yii::$app->response->content = 'hello world!';
 
 如果在发送给终端用户之前需要格式化，应设置
 [[yii\web\Response::format|format]] 和 [[yii\web\Response::data|data]] 属性，[[yii\web\Response::format|format]]
-属性指定[[yii\web\Response::data|data]]中数据格式化后的样式，例如：
+属性指定 [[yii\web\Response::data|data]]中数据格式化后的样式，例如：
 
 ```php
 $response = Yii::$app->response;
@@ -101,11 +101,11 @@ $response->data = ['message' => 'hello world'];
 Yii支持以下可直接使用的格式，每个实现了[[yii\web\ResponseFormatterInterface|formatter]] 类，
 可自定义这些格式器或通过配置 [[yii\web\Response::formatters]] 属性来增加格式器。
 
-* [[yii\web\Response::FORMAT_HTML|HTML]]: 通过 [[yii\web\HtmlResponseFormatter]] 来实现.
-* [[yii\web\Response::FORMAT_XML|XML]]: 通过 [[yii\web\XmlResponseFormatter]]来实现.
-* [[yii\web\Response::FORMAT_JSON|JSON]]: 通过 [[yii\web\JsonResponseFormatter]]来实现.
-* [[yii\web\Response::FORMAT_JSONP|JSONP]]: 通过 [[yii\web\JsonResponseFormatter]]来实现.
-* [[yii\web\Response::FORMAT_RAW|RAW]]: use this format if you want to send the response directly without applying any formatting.
+* [[yii\web\Response::FORMAT_HTML|HTML]]：通过 [[yii\web\HtmlResponseFormatter]] 来实现。
+* [[yii\web\Response::FORMAT_XML|XML]]：通过 [[yii\web\XmlResponseFormatter]] 来实现。
+* [[yii\web\Response::FORMAT_JSON|JSON]]：通过 [[yii\web\JsonResponseFormatter]] 来实现。
+* [[yii\web\Response::FORMAT_JSONP|JSONP]]：通过 [[yii\web\JsonResponseFormatter]] 来实现。
+* [[yii\web\Response::FORMAT_RAW|RAW]]：如果要直接发送响应而不应用任何格式，请使用此格式。
 
 上述响应主体可明确地被设置，但是在大多数情况下是通过[操作](structure-controllers.md) 
 方法的返回值隐式地设置，常用场景如下所示：
@@ -187,15 +187,14 @@ public function actionOld()
   *临时* 放在另一个 URI 地址上，可传递一个 301 状态码告知浏览器请求
   的资源已经 *永久* 重定向到新的 URId 地址。
 
-如果当前请求为 AJAX 请求，
-发送一个 `Location` 头不会自动使浏览器跳转，为解决这个问题，
+如果当前请求为 AJAX 请求，发送一个 `Location` 头不会自动使浏览器跳转，为解决这个问题，
 [[yii\web\Response::redirect()]] 方法设置一个值为要跳转的URL的 `X-Redirect` 头，
 在客户端可编写 JavaScript 
 代码读取该头部值然后让浏览器跳转对应的 URL。
 
 > Info: Yii 配备了一个 `yii.js` JavaScript 文件提供常用 JavaScript 功能，
   包括基于 `X-Redirect` 头的浏览器跳转，
-  因此，如果你使用该 JavaScript 文件(通过 [[yii\web\YiiAsset]] 资源包注册)，
+  因此，如果你使用该 JavaScript 文件（通过 [[yii\web\YiiAsset]] 资源包注册），
   就不需要编写 AJAX 跳转的代码。
 
 ## 发送文件 <span id="sending-files"></span>
@@ -240,7 +239,7 @@ Web 应用可在服务器发送文件前结束，为使用该功能，
 
 ## 发送响应 <span id="sending-response"></span>
 
-在[[yii\web\Response::send()]] 方法调用前响应中的内容不会发送给用户，
+在 [[yii\web\Response::send()]] 方法调用前响应中的内容不会发送给用户，
 该方法默认在 [[yii\base\Application::run()]]
 结尾自动调用，尽管如此，可以明确调用该方法强制立即发送响应。
 
@@ -259,4 +258,3 @@ Web 应用可在服务器发送文件前结束，为使用该功能，
 
 如你所见 [[yii\web\Response::send()]] 触发了几个实用的事件，
 通过响应这些事件可调整或包装响应。
-
