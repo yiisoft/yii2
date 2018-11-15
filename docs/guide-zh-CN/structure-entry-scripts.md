@@ -99,7 +99,7 @@ exit($exitCode);
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 ```
 
-上面的代码等同于:
+上面的代码等同于：
 
 ```php
 if (!defined('YII_DEBUG')) {
