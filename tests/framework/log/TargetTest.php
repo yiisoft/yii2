@@ -191,6 +191,8 @@ class TargetTest extends TestCase
         /** @var Target $target */
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
+        date_default_timezone_set('UTC');
+
         $text = 'message';
         $level = Logger::LEVEL_INFO;
         $category = 'application';

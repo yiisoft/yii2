@@ -35,16 +35,20 @@ Yii将这个过程分成两步，首先，资源会被 [[yii\rest\Serializer]] �
 后者指定由于终端用户的请求包含 `expand` 参数哪些额外的字段应被包含到展现数组，例如，
 
 ```
-// 返回 fields() 方法中申明的所有字段
+// 返回 fields() 方法中声明的所有字段
 http://localhost/users
 
-// 只返回 fields() 方法中申明的 id 和 email 字段
+// 只返回 fields() 方法中声明的“id”和“email”字段
 http://localhost/users?fields=id,email
 
-// 返回 fields() 方法申明的所有字段，以及 extraFields() 方法中的 profile 字段
+// 返回 fields() 方法中声明的所有字段，以及 extraFields() 方法中的“profile”字段
 http://localhost/users?expand=profile
 
-// 返回 fields() 方法中的 id, email，以及 extraFields() 方法中的 profile 字段
+// 返回 fields() 方法中声明的所有字段，以及 post 中的“author”
+// 如果它位于 post 模型的 extraFields() 中
+http://localhost/comments?expand=post.author
+
+// 返回 fields() 方法中的“id”，“email”，以及 extraFields() 方法中的“profile”字段
 http://localhost/users?fields=id,email&expand=profile
 ```
 
@@ -212,9 +216,9 @@ class UserResource extends Model implements Linkable
 每个集合包含一组相同类型的资源对象。
 
 集合可被展现成数组，更多情况下展现成 [data providers](output-data-providers.md)。
-因为 data providers 支持资源的排序和分页，这个特性在 RESTful API 返回集合时也用到，
-例如 This is because data providers support sorting and pagination
-如下操作返回 post 资源的 data provider：
+因为 data providers 支持资源的排序和分页，
+这个特性在 RESTful API 返回集合时也用到，
+例如，如下操作返回 post 资源的 data provider：
 
 ```php
 namespace app\controllers;
@@ -244,5 +248,14 @@ class PostController extends Controller
 * `X-Pagination-Per-Page`：每页资源数量；
 * `Link`：允许客户端一页一页遍历资源的导航链接集合。
 
+Since collection in REST APIs is a data provider, it shares all data provider features i.e. pagination and sorting.
+
 可在[快速入门](rest-quick-start.md#trying-it-out) 一节中找到样例。
 
+### Filtering collections <span id="filtering-collections"></span>
+
+Since version 2.0.13 Yii provides a facility to filter collections. An example can be found in the
+[Quick Start](rest-quick-start.md#trying-it-out) guide. In case you're implementing an endpoint yourself,
+filtering could be done as described in
+[Filtering Data Providers using Data Filters](output-data-providers.md#filtering-data-providers-using-data-filters)
+section of Data Providers guide.

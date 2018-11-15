@@ -53,7 +53,7 @@ class Module extends \yii\base\Module
 ```
 
 如果 `init()` 方法包含很多初始化模块属性代码，
-可将他们保存在[配置](concept-configurations.md) 并在`init()`中使用以下代码加载：
+可将他们保存在[配置](concept-configurations.md) 并在 `init()` 中使用以下代码加载：
 
 ```php
 public function init()
@@ -82,10 +82,10 @@ return [
 
 ### 模块中的控制器 <span id="controllers-in-modules"></span>
 
-创建模块的控制器时，惯例是将控制器类放在模块类命名空间的`controllers`子命名空间中，
+创建模块的控制器时，惯例是将控制器类放在模块类命名空间的 `controllers` 子命名空间中，
 也意味着要将控制器类文件放在模块
-[[yii\base\Module::basePath|base path]]目录中的`controllers`子目录中。
-例如，上小节中要在`forum`模块中创建`post`控制器，
+[[yii\base\Module::basePath|base path]] 目录中的 `controllers` 子目录中。
+例如，上小节中要在 `forum` 模块中创建 `post` 控制器，
 应像如下申明控制器类：
 
 ```php
@@ -175,6 +175,14 @@ yii <module_id>/<command>/<sub_command>
 如果路由只包含模块ID，默认为 `default` 的
 [[yii\base\Module::defaultRoute]] 属性来决定使用哪个控制器/操作，
 也就是说路由 `forum` 可能代表 `forum` 模块的 `default` 控制器。
+
+The URL manager rules for the modules should be added before [[yii\web\UrlManager::parseRequest()]] is fired. That means doing it 
+in module's `init()` won't work because module will be initialized when routes were already processed. Thus, the rules
+should be added at [bootstrap stage](structure-extensions.md#bootstrapping-classes). It is a also a good practice
+to wrap module's URL rules with [[\yii\web\GroupUrlRule]].  
+
+In case a module is used to [version API](rest-versioning.md), its URL rules should be added directly in `urlManager` 
+section of the application config.
 
 
 ### 访问模块 <span id="accessing-modules"></span>
@@ -269,6 +277,38 @@ class Module extends \yii\base\Module
 父模块。 [[yii\base\Application::loadedModules]] 保存了已加所有载模块的属性, 包括两者的子模块和
 嵌套模块，并用他们的类名进行索引。
 
+## Accessing components from within modules
+
+Since version 2.0.13 modules support [tree traversal](concept-service-locator.md#tree-traversal). This allows module 
+developers to reference (application) components via the service locator that is their module.
+This means that it is preferable to use `$module->get('db')` over `Yii::$app->get('db')`.
+The user of a module is able to specify a specific component to be used for the module in case a different component
+(configuration) is required.
+
+For example consider partial this application configuration:
+
+```php
+'components' => [
+    'db' => [
+        'tablePrefix' => 'main_',
+        'class' => Connection::class,
+        'enableQueryCache' => false
+    ],
+],
+'modules' => [
+    'mymodule' => [
+        'components' => [
+            'db' => [
+                'tablePrefix' => 'module_',
+                'class' => Connection::class
+            ],
+        ],
+    ],
+],
+```
+
+The application database tables will be prefixed with `main_`, while all module tables will be prefixed with `module_`.
+Note that configuration above is not merged; the modules' component for example will have the query cache enabled since that is the default value.
 
 ## 最佳实践 <span id="best-practices"></span>
 
@@ -279,4 +319,3 @@ class Module extends \yii\base\Module
 在特性组上，使用模块也是重用代码的好方式，
 一些常用特性，如用户管理，评论管理，可以开发成模块，
 这样在相关项目中非常容易被重用。
-

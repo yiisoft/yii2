@@ -19,6 +19,7 @@ use yii\db\QueryInterface;
  *
  * ExistValidator checks if the value being validated can be found in the table column specified by
  * the ActiveRecord class [[targetClass]] and the attribute [[targetAttribute]].
+ * Since version 2.0.14 you can use more convenient attribute [[targetRelation]]
  *
  * This validator is often used to verify that a foreign key contains a value
  * that can be found in the foreign table.
@@ -36,6 +37,10 @@ use yii\db\QueryInterface;
  * ['a1', 'exist', 'targetAttribute' => ['a1', 'a2']]
  * // a1 needs to exist by checking the existence of both a2 and a3 (using a1 value)
  * ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']]
+ * // type_id needs to exist in the column "id" in the table defined in ProductType class
+ * ['type_id', 'exist', 'targetClass' => ProductType::class, 'targetAttribute' => ['type_id' => 'id']],
+ * // the same as the previous, but using already defined relation "type"
+ * ['type_id', 'exist', 'targetRelation' => 'type'],
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

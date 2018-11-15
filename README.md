@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="http://www.yiiframework.com/" target="_blank">
+    <a href="https://www.yiiframework.com/" target="_blank">
         <img src="https://www.yiiframework.com/files/logo/yii.png" width="400" alt="Yii Framework" />
     </a>
 </p>
@@ -11,33 +11,10 @@ The framework is easy to adjust to meet your needs, because Yii has been designe
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg)](https://packagist.org/packages/yiisoft/yii2)
 [![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2.svg)](https://packagist.org/packages/yiisoft/yii2)
-[![Build Status](https://img.shields.io/travis/yiisoft/yii2.svg)](http://travis-ci.org/yiisoft/yii2)
+[![Build Status](https://img.shields.io/travis/yiisoft/yii2.svg)](https://travis-ci.org/yiisoft/yii2)
 [![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/coverage.png?s=31d80f1036099e9d6a3e4d7738f6b000b3c3d10e)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Code Climate](https://img.shields.io/codeclimate/github/yiisoft/yii2.svg)](https://codeclimate.com/github/yiisoft/yii2)
-
-分支说明
--------
-* master：主分支
-* doc：文档翻译分支
-* api：api 翻译分支
-
-## 官方新版本发布
-doc branch: 
-```
-git merge upstream/master
-```
-api branch: 
-```
-git merge upstream/master
-```
-master branch: 
-```
-git merge doc
-git merge api
-```
-> 注意：禁止提交 pull request 至 master 分支，文档修改请提交至 doc 分支，api 修改请提交至 api 分支。
-
 
 Installation
 ------------
@@ -76,7 +53,7 @@ You may join us and:
 
 - [Report an issue](docs/internals/report-an-issue.md)
 - [Translate documentation or messages](docs/internals/translation-workflow.md)
-- [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/)
+- [Give us feedback or start a design discussion](https://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/)
 - [Contribute to the core code or fix bugs](docs/internals/git-workflow.md)
 
 ### Reporting Security issues
@@ -112,5 +89,5 @@ If you are using Yii 2 as part of an OpenSource project, a way to acknowledge it
 If your code is hosted at GitHub, you can place the following in your README.md file to get the badge:
 
 ```
-[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
 ```

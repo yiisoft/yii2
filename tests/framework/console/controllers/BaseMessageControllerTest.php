@@ -551,6 +551,40 @@ abstract class BaseMessageControllerTest extends TestCase
         $this->assertEquals('test translation', $value1, "Message at $key1 should be be \"test translation\" but it is $value1. Command output:\n\n" . $out);
         $this->assertEquals('unused translation', $value2, "Message at $key2 should be \"unused translation\" but it is $value2. Command output:\n\n" . $out);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/16828
+     */
+    public function testPartialTranslator()
+    {
+        $category = 'category';
+        $negativeKey1 = 'Should not find this';
+        $negativeKey2 = 'not applicable';
+        $negativeKey3 = 'do not extract this';
+        $positiveKey1 = 'but find this';
+        $positiveKey2 = 'this substring should be extracted';
+
+        $sourceFileContent = "
+            <?= Yii::t('{$category}', '{$negativeKey1}') ?>
+            <?= t('{$category}', '{$positiveKey1}') ?>
+            <?= \$this->t('{$category}', '{$negativeKey2}', [
+                'subString1' => Yii::t('{$category}', '{$negativeKey3}'),
+                'subString2' => t('{$category}', '{$positiveKey2}'),
+            ]) ?>
+        ";
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig(['translator' => ['t']]));
+        $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $messages = $this->loadMessages($category);
+
+        $this->assertArrayNotHasKey($negativeKey1, $messages);
+        $this->assertArrayNotHasKey($negativeKey2, $messages);
+        $this->assertArrayNotHasKey($negativeKey3, $messages);
+        $this->assertArrayHasKey($positiveKey1, $messages);
+        $this->assertArrayHasKey($positiveKey2, $messages);
+    }
 }
 
 class MessageControllerMock extends MessageController
