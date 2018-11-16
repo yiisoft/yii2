@@ -163,7 +163,7 @@ $profile = $I->grabFixture('profiles', 'user1');
 在后面，你可以通过如下的语法形式来访问 Fixture 提供的数据：
 
 ```php
-// 返回对应于别名为“user1”的数据行的UserProfile模型
+// 返回对应于别名为“user1”的数据行的 UserProfile 模型
 $profile = $I->grabFixture('profiles', 'user1');
 // 遍历 fixture 中的数据
 foreach ($I->grabFixture('profiles') as $profile) ...
@@ -206,7 +206,7 @@ data\
 
 ## 使用 `yii fixture` 来管理 fixtures
 
-Yii 支持 fixtures 通过 `yii fixture` 命令行工具. 这个工具支持:
+Yii 通过 `yii fixture` 命令行工具来支持 fixtures 操作. 这个工具支持:
 
 * 将 fixtures 装载到不同的存储设备，例如：RDBMS, NoSQL 等;
 * 以不同方式卸载 fixtures（通常是清理存储）;
@@ -235,11 +235,11 @@ return [
         'password' => '$2y$13$kkgpvJ8lnjKo8RuoR30ay.RjDf15bMcHIF7Vz1zz/6viYG5xJExU6',
     ],
 ];
-```
-如果我们使用 fixture 将数据加载到数据库中，那么这些行将应用于`users`表。 如果我们使用的是 nosql fixtures，例如`mongodb` fixture然后这个数据将应用于`users` mongodb集合。 要了解有关实现各种加载策略的信息，请参阅官方[文档](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixtures.md)。
+``` 
+如果我们使用 fixture 将数据加载到数据库中，那么这些行将作用到 `users` 表。 如果我们使用的是 nosql 类型的 fixtures，例如 `mongodb` fixture然后这个数据将应用于 `users` mongodb 集合。 要了解有关实现各种加载策略的信息，请参阅官方[文档](https://github.com/yiisoft/yii2/blob/master/docs/guide/test-fixtures.md)。
 
-上面的 fixture 示例由`yii2-faker`扩展自动生成，在这些[section](#auto-generating-fixtures) 中阅读更多相关内容。
-Fixture 类名称不应为复数。.
+上面的 fixture 示例是由 `yii2-faker` 扩展自动生成的，在这些[章节](#auto-generating-fixtures)中可以了解更多相关内容。
+Fixture 类名称不应为复数。
 
 ### 加载 Fixtures
 
@@ -248,7 +248,7 @@ Fixture 类应该以 `Fixture` 类作为后缀。默认的 Fixtures 能在 `test
 
 运行如下命令去加载 Fixture：
 
-> 注意：在加载数据之前，执行卸载序列。 通常，这会导致清除先前 fixture 执行所插入的所有现有数据。
+> 注意：卸载数据事件优先执行，在加载数据之前。通常，这将会清除先前的 fixture 所插入的所有现有数据。
 
 ```
 yii fixture/load <fixture_name>
@@ -261,7 +261,7 @@ yii fixture/load <fixture_name>
 // 加载 `User` fixture
 yii fixture/load User
 
-// 与上面相同，因为“fixture”命令的默认动作是“加载”
+// 与上面相同，因为 “fixture” 命令的默认动作是“加载”
 yii fixture User
 
 // 加载几个 fixtures
@@ -273,15 +273,15 @@ yii fixture/load "*"
 // 与上面相同
 yii fixture "*"
 
-// 加载所有 fixtures 除了一些
+// 加载所有 fixtures 除了这些
 yii fixture "*" -DoNotLoadThisOne
 
-// 加载 fixtures, 但在不同的命名空间中搜索它们。 默认命名空间是： tests\unit\fixtures.
+// 加载 fixtures, 但在不同的命名空间中搜索它们。默认命名空间是：tests\unit\fixtures。
 yii fixture User --namespace='alias\my\custom\namespace'
 
 // 加载全局 fixture `some\name\space\CustomFixture` 在加载其他 fixtures 之前.
-// 默认情况下，此选项设置为 “InitDbFixture” 以禁用/启用完整性检查。 您可以指定几个
-// 全局 fixtures 用逗号分离.
+// 默认情况下，此选项设置为 `InitDbFixture` 以禁用/启用完整性检查。您可以用用逗号分离来
+// 指定几个全局 fixtures。
 yii fixture User --globalFixtures='some\name\space\Custom'
 ```
 
@@ -290,7 +290,7 @@ yii fixture User --globalFixtures='some\name\space\Custom'
 运行如下命名去卸载 Fixtures：
 
 ```
-// 卸载用户 fixture，默认情况下它将清除夹具存储（例如“用户”表或“用户”集合，如果这是 mongodb fixture）。
+// 卸载 User fixture，默认情况下它将清除 fixture 存储（例如“用户”表，或“用户”集合如果这是 mongodb fixture）。
 yii fixture/unload User
 
 // 卸载几个 fixtures
@@ -299,7 +299,7 @@ yii fixture/unload User,UserProfile
 // 卸载所有 fixtures
 yii fixture/unload "*"
 
-// 卸载所有 fixtures 除了一些
+// 卸载所有 fixtures 除了这些
 yii fixture/unload "*" -DoNotUnloadThisOne
 
 ```
