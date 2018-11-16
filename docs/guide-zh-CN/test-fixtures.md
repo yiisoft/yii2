@@ -43,8 +43,8 @@ class UserFixture extends ActiveFixture
 > Note: [[yii\test\ActiveFixture]] 仅限于 SQL 数据库，对于 NoSQL 数据库，
 > Yii 提供以下 `ActiveFixture` 类：
 >
-> - Mongo DB: [[yii\mongodb\ActiveFixture]]
-> - Elasticsearch: [[yii\elasticsearch\ActiveFixture]] (since version 2.0.2)
+> - Mongo DB：[[yii\mongodb\ActiveFixture]]
+> - Elasticsearch：[[yii\elasticsearch\ActiveFixture]]（从版本 2.0.2 开始）
 
 
 提供给 `ActiveFixture` 的 fixture data 通常放在一个路径为 `FixturePath/data/TableName.php` 的文件中，
@@ -338,7 +338,7 @@ Yii 还可以为你自动生成一些基于一些模板的 Fixtures。 你能够
 
 1. 使用 `yii migrate` 工具来让你的测试数据库更新到最新的版本；
 2. 运行一个测试：
-	- 加载 Fixture：清空所有的相关表结构，并用 Fixture 数据填充
-	- 执行真实的测试用例
-	- 卸载 Fixture
-3. 重复步骤2直到所有的测试结束。
+   - 加载 Fixture：清空所有的相关表结构，并用 Fixture 数据填充
+   - 执行真实的测试用例
+   - 卸载 Fixture
+3. 重复步骤 2 直到所有的测试结束。
