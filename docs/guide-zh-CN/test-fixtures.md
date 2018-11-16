@@ -36,7 +36,7 @@ class UserFixture extends ActiveFixture
 }
 ```
 
-> 技巧：每个 `ActiveFixture` 都会准备一个 DB 表用来测试。你可以通过设置 [[yii\test\ActiveFixture::tableName]] 
+> Tip: 每个 `ActiveFixture` 都会准备一个 DB 表用来测试。你可以通过设置 [[yii\test\ActiveFixture::tableName]] 
 > 或 [[yii\test\ActiveFixture::modelClass]] 属性来指定具体的表。如果是后者，
 > 表名会从 `modleClass` 指定的 `ActiveRecord` 中获取。
 
@@ -77,7 +77,7 @@ return [
 同样，你不需要特别的为自动增长（auto-incremental）的列指定数据，
 Yii 将会在 Fixture 被加载时自动的填充正确的列值到这些行中。
 
-> 技巧：你可以通过设置 [[yii\test\ActiveFixture::dataFile]] 属性来自定义 data 文件的位置。
+> Tip: 你可以通过设置 [[yii\test\ActiveFixture::dataFile]] 属性来自定义 data 文件的位置。
 > 同样，你可以重写 [[yii\test\ActiveFixture::getData()]] 来提供数据。
 
 如之前所述，一个 Fixture 可以依赖于其他的 Fixture 。比如一个 `UserProfileFixture` 可能需要依赖于 `UserFixture`，
@@ -248,7 +248,7 @@ Fixture 类应该以 `Fixture` 类作为后缀。默认的 Fixtures 能在 `test
 
 运行如下命令去加载 Fixture：
 
-> 注意：卸载数据事件优先执行，在加载数据之前。通常，这将会清除先前的 fixture 所插入的所有现有数据。
+> Note: 卸载数据事件优先执行，在加载数据之前。通常，这将会清除先前的 fixture 所插入的所有现有数据。
 
 ```
 yii fixture/load <fixture_name>
