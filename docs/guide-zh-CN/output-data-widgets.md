@@ -183,7 +183,7 @@ echo GridView::widget([
 ```
 
 请注意，假如配置中没有指定 [[yii\grid\GridView::columns|columns]] 属性，
-那么Yii会试图显示数据提供者的模型中所有可能的列。
+那么 Yii 会试图显示数据提供者的模型中所有可能的列。
 
 
 ### 列类
@@ -207,7 +207,7 @@ echo GridView::widget([
 
 - [[yii\grid\Column::header|header]] 允许为头部行设置内容。
 - [[yii\grid\Column::footer|footer]] 允许为尾部行设置内容。
-- [[yii\grid\Column::visible|visible]] 定义某个列是否可见
+- [[yii\grid\Column::visible|visible]] 定义某个列是否可见。
 - [[yii\grid\Column::content|content]] 允许你传递一个有效的PHP回调来为一行返回数据，格式如下：
 
   ```php
@@ -280,7 +280,7 @@ echo GridView::widget([
     'columns' => [
         [
             'class' => 'yii\grid\ActionColumn',
-            // you may configure additional properties here
+            // 您可以在此处配置其他属性
         ],
 ```
 
@@ -463,7 +463,7 @@ echo GridView::widget([
 
 ### 单独过滤表单
 
-大多数时候使用GridView标头过滤器就足够了，但是如果你需要一个单独的过滤器表单，你也可以很轻松的去添加。您可以使用以下内容创建部分视图 `_search.php`：
+大多数时候使用 GridView 标头过滤器就足够了，但是如果你需要一个单独的过滤器表单，你也可以很轻松的去添加。您可以使用以下内容创建部分视图 `_search.php`：
 
 
 ```php
@@ -597,13 +597,13 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > Info: 在上面的代码中，我们使用相同的字符串作为关联名称和表别名；
 > 然而，当你的表别名和关联名称不相同的时候，你得注意在哪使用你的别名，在哪使用你的关联名称。
 > 一个简单的规则是在每个构建数据库查询的地方使用别名，而在所有其他和定义相关的诸如：
->`attributes()` 和 `rules()` 等地方使用关联名称。
+> `attributes()` 和 `rules()` 等地方使用关联名称。
 > 
->例如，你使用 `au` 作为作者关系表的别名，那么联查语句就要写成像下面这样：
+> 例如，你使用 `au` 作为作者关系表的别名，那么联查语句就要写成像下面这样：
 > 
 > ```php
->$query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
->```
+> $query->joinWith(['author' => function($query) { $query->from(['au' => 'users']); }]);
+> ```
 >
 > 当别名已经在关联函数中定义了时，也可以只调用 `$query->joinWith(['author']);`。
 >
@@ -632,9 +632,9 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > Info: 更多关于 `joinWith` 和在后台执行查询的相关信息，
 > 可以查看 [active record docs on joining with relations](db-active-record.md#joining-with-relations)。
 
-#### SQL视图用于过滤、排序和显示数据
+#### SQL 视图用于过滤、排序和显示数据
 
-还有另外一种方法可以更快、更有用 - SQL 视图。例如，我们要在 `GridView` 
+还有另外一种方法可以更快、更有用的 SQL 视图。例如，我们要在 `GridView` 
 中显示用户和他们的简介，可以这样创建 SQL 视图：
 
 ```sql
@@ -696,8 +696,8 @@ class UserView extends ActiveRecord
 所有属性都可开箱即用。请注意，这种方法有利有弊：
 
 - 你不需要指定不同排序和过滤条件，一切都包装好了；
-- 它可以更快，因为数据的大小，SQL查询的执行（对于每个关联数据你都不需要额外的查询）都得到优化；
-- 因为在SQL视图中这仅仅是一个简单的映射UI，所以在你的实体中，它可能缺乏某方面的逻辑，所以，假如你有一些诸如 `isActive`、`isDeleted` 或者其他影响到UI的方法，
+- 它可以更快，因为数据的大小，SQL 查询的执行（对于每个关联数据你都不需要额外的查询）都得到优化；
+- 因为在 SQL 视图中这仅仅是一个简单的映射UI，所以在你的实体中，它可能缺乏某方面的逻辑，所以，假如你有一些诸如 `isActive`、`isDeleted` 或者其他影响到 UI 的方法，
   你也需要在这个类中复制他们。
 
 
@@ -771,7 +771,7 @@ yii gii/crud --controllerClass="backend\\controllers\PostController" \
 ```
 
 这会生成一个由 [[yii\widgets\Pjax|Pjax]] 小部件包含的
-[[yii\grid\GridView|GridView]] 或者 [[yii\widgets\ListView|ListView]] 。
+[[yii\grid\GridView|GridView]] 或者 [[yii\widgets\ListView|ListView]]。
 
 延伸阅读
 ---------------
