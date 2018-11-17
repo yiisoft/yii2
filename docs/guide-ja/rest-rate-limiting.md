@@ -14,7 +14,8 @@
 * `saveAllowance()`: 許可されているリクエストの残り数と現在の UNIX タイムスタンプの両方を保存します。
 
 ユーザ・テーブルに二つのカラムを追加して、許容されているリクエスト数とタイムスタンプの情報を記録するのが良いでしょう。
-それらを定義すれば、`loadAllowance()` と `saveAllowance()` は、認証された現在のユーザに対応する二つのカラムの値を読み書きするものとして実装することが出来ます。
+それらを定義すれば、`loadAllowance()` と `saveAllowance()` は、
+認証された現在のユーザに対応する二つのカラムの値を読み書きするものとして実装することが出来ます。
 パフォーマンスを向上させるために、これらの情報をキャッシュや NoSQL ストレージに保存することを検討しても構いません。
 
 `User` モデルにおける実装は次のようなものになります。
@@ -38,10 +39,12 @@ public function saveAllowance($request, $action, $allowance, $timestamp)
 }
 ```
 
-アイデンティティのクラスに必要なインタフェイスを実装すると、Yii は [[yii\rest\Controller]] のアクション・フィルタとして構成された [[yii\filters\RateLimiter]] を使って、自動的にレート制限のチェックを行うようになります。
+アイデンティティのクラスに必要なインタフェイスを実装すると、Yii は [[yii\rest\Controller]] のアクション・フィルタとして構成された
+[[yii\filters\RateLimiter]] を使って、自動的にレート制限のチェックを行うようになります。
 レート制限を超えると、レート・リミッタが [[yii\web\TooManyRequestsHttpException]] を投げます。
 
-レート・リミッタは、REST コントローラ・クラスの中で、次のようにして構成することが出来ます。
+レート・リミッタは、REST コントローラ・クラスの中で、
+次のようにして構成することが出来ます。
 
 ```php
 public function behaviors()
@@ -52,10 +55,12 @@ public function behaviors()
 }
 ```
 
-レート制限が有効にされると、デフォルトでは、送信される全てのレスポンスに、現在のレート制限の情報を含む次の HTTP ヘッダが付加されます。
+レート制限が有効にされると、デフォルトでは、送信される全てのレスポンスに、
+現在のレート制限の情報を含む次の HTTP ヘッダが付加されます。
 
 * `X-Rate-Limit-Limit` - 一定期間内に許可されるリクエストの最大数
 * `X-Rate-Limit-Remaining` - 現在の期間において残っている許可されているリクエスト数
 * `X-Rate-Limit-Reset` - 許可されているリクエストの最大数にリセットされるまで待たなければならない秒数
 
-これらのヘッダは、上記のコード例で示されているように、[[yii\filters\RateLimiter::enableRateLimitHeaders]] を `false` に設定することで無効にすることが出来ます。
+これらのヘッダは、上記のコード例で示されているように、[[yii\filters\RateLimiter::enableRateLimitHeaders]] を
+`false` に設定することで無効にすることが出来ます。

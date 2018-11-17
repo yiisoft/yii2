@@ -415,10 +415,10 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     }
 
     /**
-     * Test expresssion in targetAttribute.
+     * Test expression in targetAttribute.
      * @see https://github.com/yiisoft/yii2/issues/14304
      */
-    public function testExpresionInAttributeColumnName()
+    public function testExpressionInAttributeColumnName()
     {
         $validator = new UniqueValidator([
             'targetAttribute' => [

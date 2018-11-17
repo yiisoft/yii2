@@ -236,9 +236,13 @@ yii.validation = (function ($) {
             }
         },
 
-        trim: function ($form, attribute, options) {
+        trim: function ($form, attribute, options, value) {
             var $input = $form.find(attribute.input);
-            var value = $input.val();
+            if ($input.is(':checkbox, :radio')) {
+                return value;
+            }
+
+            value = $input.val();
             if (!options.skipOnEmpty || !pub.isEmpty(value)) {
                 value = $.trim(value);
                 $input.val(value);
@@ -274,17 +278,16 @@ yii.validation = (function ($) {
             if (options.compareAttribute === undefined) {
                 compareValue = options.compareValue;
             } else {
-                var attributes = $form.data('yiiActiveForm').attributes
-                for (var i = attributes.length - 1; i >= 0; i--) {
-                    if (attributes[i].id === options.compareAttribute) {
-                        compareValue = $(attributes[i].input).val();
-                    }
+                var $target = $('#' + options.compareAttribute);
+                if (!$target.length) {
+                    $target = $form.find('[name="' + options.compareAttributeName + '"]');
                 }
+                compareValue = $target.val();
             }
 
             if (options.type === 'number') {
-                value = parseFloat(value);
-                compareValue = parseFloat(compareValue);
+                value = value ? parseFloat(value) : 0;
+                compareValue = compareValue ? parseFloat(compareValue) : 0;
             }
             switch (options.operator) {
                 case '==':
@@ -373,7 +376,15 @@ yii.validation = (function ($) {
             return [];
         }
 
-        var files = $(attribute.input, attribute.$form).get(0).files;
+        var fileInput = $(attribute.input, attribute.$form).get(0);
+
+        // Skip validation if file input does not exist
+        // (in case file inputs are added dynamically and no file input has been added to the form)
+        if (typeof fileInput === "undefined") {
+            return [];
+        }
+
+        var files = fileInput.files;
         if (!files) {
             messages.push(options.message);
             return [];

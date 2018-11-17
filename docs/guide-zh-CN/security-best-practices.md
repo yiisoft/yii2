@@ -2,6 +2,9 @@
 =======================
 
 下面，我们将会回顾常见的安全原则，并介绍在使用 Yii 开发应用程序时，如何避免潜在安全威胁。
+大多数这些原则并非您独有，而是适用于网站或软件开发，
+因此，您还可以找到有关这些背后的一般概念的进一步阅读的链接。
+
 
 基本准则
 ----------------
@@ -28,6 +31,11 @@ if (!in_array($sortBy, ['title', 'created_at', 'status'])) {
 
 在 Yii 中，很大可能性，你会使用 [表单校验器](input-validation.md) 来执行类似的检查。
 
+Further reading on the topic:
+
+- <https://www.owasp.org/index.php/Data_Validation>
+- <https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet>
+
 
 ### 转义输出
 
@@ -35,6 +43,13 @@ if (!in_array($sortBy, ['title', 'created_at', 'status'])) {
 你需要转义 `<`，`>` 之类的特殊字符。在 JavaScript 或者 SQL 中，也有其他的特殊含义的字符串需要被转义。
 由于手动的给所用的输出转义容易出错，
 Yii 提供了大量的工具来在不同的上下文执行转义。
+
+Further reading on the topic:
+
+- <https://www.owasp.org/index.php/Command_Injection>
+- <https://www.owasp.org/index.php/Code_Injection>
+- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+
 
 避免 SQL 注入
 -----------------------
@@ -100,6 +115,10 @@ $rowCount = $connection->createCommand($sql)->queryScalar();
 
 你可以在 [Quoting Table and Column Names](db-dao.md#quoting-table-and-column-names) 中获取更多的语法细节。
 
+Further reading on the topic:
+
+- <https://www.owasp.org/index.php/SQL_Injection>
+
 
 防止 XSS 攻击
 ------------
@@ -128,7 +147,12 @@ XSS 或者跨站脚本发生在输出 HTML 到浏览器时，输出内容没有�
 <?= \yii\helpers\HtmlPurifier::process($description) ?>
 ```
 
-注意： HtmlPurifier 帮助类的处理过程较为费时，建议增加缓存：
+注意 HtmlPurifier 帮助类的处理过程较为费时，建议增加缓存。
+
+Further reading on the topic:
+
+- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+
 
 防止 CSRF 攻击
 -------------
@@ -136,16 +160,26 @@ XSS 或者跨站脚本发生在输出 HTML 到浏览器时，输出内容没有�
 CSRF 是跨站请求伪造的缩写。这个攻击思想源自许多应用程序假设来自用户的浏览器请求是由用户自己产生的，
 而事实并非如此。
 
-比如说：`an.example.com` 站点有一个 `/logout` URL，当以 GET 请求访问时，
-登出用户。如果它是由用户自己操作的，那么一切都没有问题。但是，
-有一天坏人在一个用户经常访问的论坛发了一个 `<img src="http://an.example.com/logout">` 内容的帖子。
-浏览器无法辨别请求一个图片还是一个页面，所以，当用户打开含有上述标签的页面时，他将会从 `an.example.com` 登出。
+For example, the website `an.example.com` has a `/logout` URL that, when accessed using a simple GET request, logs the user out. As long
+as it's requested by the user themselves everything is OK, but one day bad guys are somehow posting
+`<img src="http://an.example.com/logout">` on a forum the user visits frequently. The browser doesn't make any difference between
+requesting an image or requesting a page so when the user opens a page with such a manipulated `<img>` tag,
+the browser will send the GET request to that URL and the user will be logged out from `an.example.com`.
 
-上面就是最原始的思想。有人可能会说，登出用户也不是什么严重问题，然而，我们发送一些 POST 数据其实也不是很麻烦的事情。
+That's the basic idea of how a CSRF attack works. One can say that logging out a user is not a serious thing,
+however this was just an example, there are much more things one could do using this approach, for example triggering payments
+or changing data. Imagine that some website has an URL
+`http://an.example.com/purse/transfer?to=anotherUser&amount=2000`. Accessing it using GET request, causes transfer of $2000
+from authorized user account to user `anotherUser`. We know, that the browser will always send GET request to load an image,
+so we can modify code to accept only POST requests on that URL. Unfortunately, this will not save us, because an attacker
+can put some JavaScript code instead of `<img>` tag, which allows to send POST requests to that URL as well.
+
+For this reason, Yii applies additional mechanisms to protect against CSRF attacks.
 
 为了避免 CSRF 攻击，你总是需要：
 
 1. 遵循 HTTP 准则，比如 GET 不应该改变应用的状态。
+   有关详细信息，请参阅 [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)。
 2. 保证 Yii CSRF 保护开启。
 
 Sometimes you need to disable CSRF validation per controller and/or action. It could be achieved by setting its property:
@@ -185,6 +219,44 @@ class SiteController extends Controller
 }
 ```
 
+Disabling CSRF validation in [standalone actions](structure-controllers.md#standalone-actions) must be done in `init()`
+method. Do not place this code into `beforeRun()` method because it won't have effect.
+
+```php
+<?php
+
+namespace app\components;
+
+use yii\base\Action;
+
+class ContactAction extends Action
+{
+    public function init()
+    {
+        parent::init();
+        $this->controller->enableCsrfValidation = false;
+    }
+
+    public function run()
+    {
+          $model = new ContactForm();
+          $request = Yii::$app->request;
+          if ($request->referrer === 'yiipowered.com'
+              && $model->load($request->post())
+              && $model->validate()
+          ) {
+              $model->sendEmail();
+          }
+    }
+}
+```
+
+> Warning: Disabling CSRF will allow any site to send POST requests to your site. It is important to implement extra validation such as checking an IP address or a secret token in this case.
+
+Further reading on the topic:
+
+- <https://www.owasp.org/index.php/CSRF>
+
 
 防止文件暴露
 ----------------------
@@ -194,6 +266,7 @@ class SiteController extends Controller
 
 如果是这样，别忘了拒绝除了 `web` 目录以外的目录的访问权限。
 如果没法这样做，考虑将你的应用程序托管在其他地方。
+
 
 在生产环境关闭调试信息和工具
 -------------------------------------------
@@ -208,6 +281,12 @@ class SiteController extends Controller
 调试工具栏同样也应该避免在生产环境出现，除非非常有必要。它将会暴露所有的应用和配置的详情信息。
 如果你确定需要，反复确认其访问权限限定在你自己的 IP。
 
+Further reading on the topic:
+
+- <https://www.owasp.org/index.php/Exception_Handling>
+- <https://www.owasp.org/index.php/Top_10_2007-Information_Leakage>
+
+
 Using secure connection over TLS
 --------------------------------
 
@@ -221,3 +300,48 @@ provided by H5BP project:
 - [Apache](https://github.com/h5bp/server-configs-apache).
 - [IIS](https://github.com/h5bp/server-configs-iis).
 - [Lighttpd](https://github.com/h5bp/server-configs-lighttpd).
+
+
+Secure Server configuration
+---------------------------
+
+The purpose of this section is to highlight risks that need to be considered when creating a
+server configuration for serving a Yii based website. Besides the points covered here there may
+be other security related configuration options to be considered, so do not consider this section to
+be complete.
+
+### Avoiding `Host`-header attacks
+
+Classes like [[yii\web\UrlManager]] and [[yii\helpers\Url]] may use the [[yii\web\Request::getHostInfo()|currently requested host name]]
+for generating links.
+If the webserver is configured to serve the same site independent of the value of the `Host` header, this information may not be reliable
+and [may be faked by the user sending the HTTP request](https://www.acunetix.com/vulnerabilities/web/host-header-attack).
+In such situations you should either fix your webserver configuration to serve the site only for specified host names
+or explicitly set or filter the value by setting the [[yii\web\Request::setHostInfo()|hostInfo]] property of the `request` application component.
+
+For more information about the server configuration, please refer to the documentation of your webserver:
+
+- Apache 2: <http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
+- Nginx: <https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
+
+If you don't have access to the server configuration, you can setup [[yii\filters\HostControl]] filter at
+application level in order to protect against such kind of attack:
+
+```php
+// Web Application configuration file
+return [
+    'as hostControl' => [
+        'class' => 'yii\filters\HostControl',
+        'allowedHosts' => [
+            'example.com',
+            '*.example.com',
+        ],
+        'fallbackHostInfo' => 'https://example.com',
+    ],
+    // ...
+];
+```
+
+> Note: you should always prefer web server configuration for 'host header attack' protection instead of the filter usage.
+  [[yii\filters\HostControl]] should be used only if server configuration setup is unavailable.
+  

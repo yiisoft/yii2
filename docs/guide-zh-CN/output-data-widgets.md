@@ -24,13 +24,37 @@ DetailView使用 [[yii\widgets\DetailView::$attributes|$attributes]] 属性来�
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',               // title attribute (in plain text)
-        'description:html',    // description attribute formatted as HTML
-        [                      // the owner name of the model
+        'title',                                           // title attribute (in plain text)
+        'description:html',                                // description attribute formatted as HTML
+        [                                                  // the owner name of the model
             'label' => 'Owner',
-            'value' => $model->owner->name,
+            'value' => $model->owner->name,            
+            'contentOptions' => ['class' => 'bg-red'],     // HTML attributes to customize value tag
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // HTML attributes to customize label tag
         ],
-        'created_at:datetime', // creation date formatted as datetime
+        'created_at:datetime',                             // creation date formatted as datetime
+    ],
+]);
+```
+
+Remember that unlike [[yii\widgets\GridView|GridView]] which processes a set of models,
+[[yii\widgets\DetailView|DetailView]] processes just one. So most of the time there is no need for using closure since
+`$model` is the only one model for display and available in view as a variable.
+
+However some cases can make using of closure useful. For example when `visible` is specified and you want to prevent
+`value` calculations in case it evaluates to `false`:
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        [
+            'attribute' => 'owner',
+            'value' => function ($model) {
+                return $model->owner->name;
+            },
+            'visible' => \Yii::$app->user->can('posts.owner.view'),
+        ],
     ],
 ]);
 ```
@@ -219,19 +243,32 @@ echo GridView::widget([
             'attribute' => 'birthday',
             'format' => ['date', 'php:Y-m-d']
         ],
+        'created_at:datetime', // shortcut format
+        [
+            'label' => 'Education',
+            'attribute' => 'education',
+            'filter' => ['0' => 'Elementary', '1' => 'Secondary', '2' => 'Higher'],
+            'filterInputOptions' => ['prompt' => 'All educations', 'class' => 'form-control', 'id' => null]
+        ],
     ],
-]); 
+]);
 ```
 
-在上面的代码中，`text` 对应于 [[\yii\i18n\Formatter::asText()]]。列的值作为第一个参数传递。
-在第二列的定义中，`date` 对应于 [[\yii\i18n\Formatter::asDate()]]。
-同样地，列值也是通过第一个参数传递的，而 'php:Y-m-d' 用作第二个参数的值。
+In the above, `text` corresponds to [[\yii\i18n\Formatter::asText()]]. The value of the column is passed as the first
+argument. In the second column definition, `date` corresponds to [[\yii\i18n\Formatter::asDate()]]. The value of the
+column is, again, passed as the first argument while 'php:Y-m-d' is used as the second argument value.
 
-可用的格式化方法列表，请参照 [section about Data Formatting](output-formatting.md)。
+For a list of available formatters see the [section about Data Formatting](output-formatting.md).
 
-数据列配置，还有一个”快捷格式化串”的方法，详情见API文档 [[yii\grid\GridView::columns|columns]]。
-（译者注：举例说明， `"name:text:Name"` 快捷格式化串，表示列名为 `name` 格式为 `text` 显示标签是 `Name`） 
+For configuring data columns there is also a shortcut format which is described in the
+API documentation for [[yii\grid\GridView::columns|columns]].
 
+Use [[yii\grid\DataColumn::filter|filter]] and [[yii\grid\DataColumn::filterInputOptions|filterInputOptions]] to
+control HTML for the filter input.
+
+By default, column headers are rendered by [[yii\data\Sort::link]]. It could be adjusted using [[yii\grid\Column::header]].
+To change header text you should set [[yii\grid\DataColumn::$label]] like in the example above. 
+By default the label will be populated from data model. For more details see [[yii\grid\DataColumn::getHeaderCellLabel]].
 
 #### 动作列 
 

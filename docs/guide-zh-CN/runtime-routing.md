@@ -313,8 +313,8 @@ echo Url::previous();
 ```
 
 > Info: 规则中的匹配模式用来匹配URL中的路径信息。例如，
-  `/index.php/post/100?source=ad`中的路径信息为 `post/100`（开始和结尾处的 `/` 将被忽略）和模式 `post/(\d+)` 匹配。
-
+  `/index.php/post/100?source=ad` 中的路径信息为
+  `post/100`（开始和结尾处的 `/` 将被忽略）和模式 `post/(\d+)` 匹配。
 
 除了定义 URL 规则外，你还可以将规则定义为配置数组。
 每个配置数组用来配置一个单独的 URL 规则对象。如果你需要配置 URL 规则的其它参数时可以这样用。
@@ -435,11 +435,8 @@ echo Url::previous();
 
 如果不使用可选参数，你必须创建 4 条规则才可以实现相同的效果。
 
-> Note: 如果 [[yii\web\UrlRule::$pattern|pattern]] 中只存在可选参数和 `/`，只有所有参数被忽略时第一个参数才被忽略。
-
-
-> Note: If [[yii\web\UrlRule::$pattern|pattern]] contains only optional parameters and slashes, first parameter could be omitted 
-  only if all other parameters are omitted.
+> Note: 如果 [[yii\web\UrlRule::$pattern|pattern]] 中仅包含可选参数和斜杠，
+  只有所有参数被忽略时第一个参数才被忽略。
 
 
 ### 带服务名称的规则 <span id="rules-with-server-names"></span>
@@ -693,4 +690,3 @@ URL规范器可以针对URL管理器全局配置，也可以针对规则单独�
 如果多个 URL 规则使用相同的前缀，你可以考虑使用 [[yii\web\GroupUrlRule]]，
 这样作为一个组合，[[yii\web\UrlManager|URL管理器]]会更高效。
 特别是当应用程序由模块组合而成时，每个模块都有各自的 URL 规则且都有各自的模块 ID 作为前缀。
-

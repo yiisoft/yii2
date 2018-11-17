@@ -1,22 +1,19 @@
 分页
 ==========
 
-当一次要在一个页面上显示很多数据时，
-通常需要将其分成几部分，
-每个部分都包含一些数据列表并且一次只显示一部分。
-这些部分在网页上被称为 *分页*。
+当一次要在一个页面上显示很多数据时，通常需要将其分成几部分，
+每个部分都包含一些数据列表并且一次只显示一部分。这些部分在网页上被称为*分页*。
   
-Yii 使用 [[yii\data\Pagination]] 对象来代表分页方案的有关信息。
-特别地，
+Yii 使用 [[yii\data\Pagination]] 对象来代表分页方案的有关信息。特别地，
 
-* [[yii\data\Pagination::$totalCount|total count]] 指定数据条目的总数。注意，这个数字通常远远大于需要在一个页面上展示的数据条目。
-* [[yii\data\Pagination::$pageSize|page size]] 指定每页包含多少数据条目。默认值为20。
-* [[yii\data\Pagination::$page|current page]] 给出当前的页码。默认值为0，表示第一页。
+* [[yii\data\Pagination::$totalCount|total count]] 指定数据条目的总数。
+  注意，这个数字通常远远大于需要在一个页面上展示的数据条目。
+* [[yii\data\Pagination::$pageSize|page size]] 指定每页包含多少数据条目。
+  默认值为 20。
+* [[yii\data\Pagination::$page|current page]] 给出当前的页码。默认值为 0，表示第一页。
 
-通过一个已经完全明确的 [[yii\data\Pagination]] 对象，
-你可以部分地检索并且展示数据。
-比如，如果你正在从数据库取回数据，
-你可以使用分页对象提供的对应值来指定 DB 查询语句中的 `OFFSET` 和  `LIMIT` 子句。
+通过一个已经完全明确的 [[yii\data\Pagination]] 对象，你可以部分地检索并且展示数据。
+比如，如果你正在从数据库取回数据，你可以使用分页对象提供的对应值来指定 DB 查询语句中的 `OFFSET` 和  `LIMIT` 子句。
 下面是个例子，
 
 ```php
@@ -54,10 +51,8 @@ echo LinkPager::widget([
 ]);
 ```
 
-如果你想手动地创建 UI 元素，
-你可以使用 [[yii\data\Pagination::createUrl()]] 来创建指向不同页面的 URLs 。
-该方法需要一个页码来作为参数，
-并且将创建一个包含页码并且格式正确的 URL，
+如果你想手动地创建 UI 元素，你可以使用 [[yii\data\Pagination::createUrl()]] 来创建指向不同页面的 URLs 。
+该方法需要一个页码来作为参数，并且将创建一个包含页码并且格式正确的 URL，
 例如，
 
 ```php
@@ -72,4 +67,6 @@ echo $pagination->createUrl(100);
 echo $pagination->createUrl(101);
 ```
 
-> Tip: 创建分页对象时，你可以通过配置 [[yii\data\Pagination::pageParam|pageParam]] 属性来自定义查询参数 `page` 的名字。
+> Tip: 创建分页对象时，你可以通过配置 [[yii\data\Pagination::pageParam|pageParam]]
+  属性来自定义查询参数 `page` 的名字。
+ 

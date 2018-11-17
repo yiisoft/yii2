@@ -141,6 +141,11 @@ Yii 提供以下 session 类实现不同的 session 存储方式：
   需要确保session已经用[[yii\web\Session::open()]] 开启，
   这是因为在该方法中注册自定义session存储处理器。
 
+> Note: 如果使用自定义会话存储，则可能需要显式配置会话垃圾收集器。
+  一些安装的 PHP（例如 Debian）使用垃圾收集器概率为 0，并在计划任务中离线清理会话文件。
+  此过程不适用于您的自定义存储，
+  因此您需要配置 [[yii\web\Session::$GCProbability]] 以使用非零值。
+
 学习如何配置和使用这些组件类请参考它们的API文档，如下为一个示例
 显示如何在应用配置中配置[[yii\web\DbSession]]
 将数据表作为 session 存储介质。
