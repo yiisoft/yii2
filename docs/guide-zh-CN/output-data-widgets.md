@@ -37,12 +37,12 @@ echo DetailView::widget([
 ]);
 ```
 
-请记住，与处理一组模型的 [[yii \ widgets \ GridView | GridView]] 不同，[[yii\widgets\DetailView|DetailView]] 只处理一个。
-因为 `$ model` 是唯一一个用于显示的模型，并且可以作为变量在视图中使用。
+请记住，与处理一组模型的 [[yii\widgets\GridView|GridView]] 不同，
+[[yii\widgets\DetailView|DetailView]] 只处理一个。
+因为 `$model` 是唯一一个用于显示的模型，并且可以作为变量在视图中使用。
 
-
-但是有些情况下可以使闭包有用。例如指定了 `visible` ,并且你不想让　`value` 的结果为 `false`:
-
+但是有些情况下可以使闭包有用。
+例如指定了 `visible`，并且你不想让`value` 的结果为 `false`：
 
 ```php
 echo DetailView::widget([
@@ -254,21 +254,21 @@ echo GridView::widget([
 ]);
 ```
 
-在上述代码中, `text` 对应于 [[\yii\i18n\Formatter::asText()]].列的值作为第一个参数传递. 在第二列的定义中, `date` 对应于 [[\yii\i18n\Formatter::asDate()]]. 该列的值再次作为第一个参数传递
-同时 'php:Y-m-d' 被用作第二个参数.
+在上述代码中，`text` 对应于 [[\yii\i18n\Formatter::asText()]]。列的值作为第一个参数传递。
+在第二列的定义中，`date` 对应于 [[\yii\i18n\Formatter::asDate()]]。
+该列的值再次作为第一个参数传递同时 'php:Y-m-d' 被用作第二个参数。
 
+有关可用格式化程序的列表，请参阅 [关于数据格式的部分](output-formatting.md)。
 
-有关可用格式化程序的列表，请参阅 [section about Data Formatting](output-formatting.md).
+对于配置数据列，还有一种快捷方式格式，
+请参阅 API 文档 [[yii\grid\GridView::columns|columns]]。
 
-对于配置数据列，还有一种快捷方式格式，请参阅API文档 [[yii\grid\GridView::columns|columns]].
+使用 [[yii\grid\DataColumn::filter|filter]] 和 [[yii\grid\DataColumn::filterInputOptions|filterInputOptions]]
+去控制过滤器输入的 HTML。
 
-
-使用 [[yii\grid\DataColumn::filter|filter]] 和 [[yii\grid\DataColumn::filterInputOptions|filterInputOptions]] 去控制过滤器输入的HTML
-
-
-默认情况下, 列的头部有 [[yii\data\Sort::link]] 来呈现. 它还可以使用 [[yii\grid\Column::header]] 来调整.
-要更改头部文本，您应该像上面的示例中那样设置 [[yii\grid\DataColumn::$label]] . 
-默认情况下，标签应该从数据模型中填充. 更多细节请参阅 [[yii\grid\DataColumn::getHeaderCellLabel]].
+默认情况下，列的头部有 [[yii\data\Sort::link]] 来呈现。它还可以使用 [[yii\grid\Column::header]] 来调整。
+要更改头部文本，您应该像上面的示例中那样设置 [[yii\grid\DataColumn::$label]]。
+默认情况下，标签应该从数据模型中填充。更多细节请参阅 [[yii\grid\DataColumn::getHeaderCellLabel]]。
 
 #### 动作列 
 
@@ -309,7 +309,7 @@ echo GridView::widget([
   该回调的原型和 [[yii\grid\ActionColumn::createUrl()]] 是一样的。
   假如这个属性没有设置，按钮的URL将使用 [[yii\grid\ActionColumn::createUrl()]] 来创建。
 - [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] 是控制每个按钮可见性条件的数组。
-  数组键是按钮名称 (没有大括号), 值是布尔值true / false或匿名函数。
+  数组键是按钮名称 (没有大括号)，值是布尔值 true/false 或匿名函数。
   如果在数组中没有指定按钮名称，将会按照默认的来显示。
   回调必须像如下这样来使用：
 
@@ -502,12 +502,12 @@ use yii\widgets\ActiveForm;
 <?= $this->render('_search', ['model' => $searchModel]) ?>
 ```
 
-> Note: 如果使用Gii生成CRUD代码， 默认情况下会生成单独的过滤器表单（`_search.php`），但是在 `index.php` 视图中已经被注释了。取消注释就可以用了!
+> Note: 如果使用 Gii 生成 CRUD 代码， 默认情况下会生成单独的过滤器表单（`_search.php`），
+  但是在 `index.php` 视图中已经被注释了。取消注释就可以用了!
 
-
-当您需要按字段过滤时，单独的过滤器表单很有用，这些字段不会在GridView中显示，也不适用于特殊筛选条件（如日期范围）。
-对于按日期范围过滤，我们可以将非DB属性 `createdFrom` 和 `createdTo` 添加到搜索模型：
-
+当您需要按字段过滤时，单独的过滤器表单很有用，这些字段不会在 GridView 中显示，也不适用于特殊筛选条件（如日期范围）。
+对于按日期范围过滤，
+我们可以将非 DB 属性 `createdFrom` 和 `createdTo` 添加到搜索模型：
 
 ```php
 class PostSearch extends Post
@@ -531,7 +531,7 @@ $query->andFilterWhere(['>=', 'creation_date', $this->createdFrom])
       ->andFilterWhere(['<=', 'creation_date', $this->createdTo]);
 ```
 
-并将具有代表信的字段添加到过滤器表单：
+并将代表字段添加到过滤器表单：
 
 ```php
 <?= $form->field($model, 'creationFrom') ?>
@@ -734,10 +734,11 @@ echo GridView::widget([
 ]);
 ```
 
-### 在GridView使用Pjax
+### 在 GridView 使用 Pjax
 
-[[yii\widgets\Pjax|Pjax]] 小部件允许你更新页面的一部分而不是整个页面。
-[[yii\grid\GridView|GridView]] 使用 Pjax 的例子如下。
+[[yii\widgets\Pjax|Pjax]] 允许您更新页面的某个部分，
+而不是重新加载整个页面。
+使用过滤器时，可以使用它仅更新 [[yii\grid\GridView|GridView]] 内容。
 
 ```php
 use yii\widgets\Pjax;
@@ -752,18 +753,16 @@ Pjax::begin([
 Pjax::end();
 ```
 
-Pjax 也适用于 [[yii\widgets\Pjax|Pjax]] 小部件之间的链接以及 [[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]] 指定的链接。
+Pjax 也适用于 [[yii\widgets\Pjax|Pjax]] 小部件之间的链接以及
+[[yii\widgets\Pjax::$linkSelector|Pjax::$linkSelector]] 指定的链接。
 但是这可能是 [[yii\grid\ActionColumn|ActionColumn]] 链接的问题。
-要防止这种情况，请在编辑 [[yii \ grid \ ActionColumn :: $ buttons | ActionColumn :: $ buttons]] 属性时将HTML属性 `data-pjax ="0"` 添加到链接中。
+要防止这种情况，请在编辑
+[[yii\grid\ActionColumn::$buttons|ActionColumn::$buttons]] 属性时将 HTML 属性 `data-pjax="0"` 添加到链接中。
 
+#### 在 Gii 中使用 Pjax 的 GridView/ListView
 
-
-
-#### 在Gii中使用Pjax的GridView / ListView
-
-Since 2.0.5, [Gii](start-gii.md) 的CRUD生成器有一个 `$enablePjax` 选项，可以通过web界面或者命令行使用。
-
-
+从 2.0.5 开始，[Gii](start-gii.md) 的 CRUD 生成器有一个 `$enablePjax` 选项，
+可以通过 web 界面或者命令行使用。
 
 ```php
 yii gii/crud --controllerClass="backend\\controllers\PostController" \
@@ -771,10 +770,10 @@ yii gii/crud --controllerClass="backend\\controllers\PostController" \
   --enablePjax=1
 ```
 
-这会生成一个由 [[yii\widgets\Pjax|Pjax]] 小部件包含的 [[yii\grid\GridView|GridView]] 或者 [[yii\widgets\ListView|ListView]] 。
+这会生成一个由 [[yii\widgets\Pjax|Pjax]] 小部件包含的
+[[yii\grid\GridView|GridView]] 或者 [[yii\widgets\ListView|ListView]] 。
 
-
-进一步阅读
+延伸阅读
 ---------------
 
 - [Rendering Data in Yii 2 with GridView and ListView](http://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/) by Arno Slatius.
