@@ -97,6 +97,7 @@ public function rules()
 `rules()` 里的激活规则相关联才会被验证。
 
 > Note: It is handy to give names to rules i.e.
+>
 > ```php
 > public function rules()
 > {
@@ -214,7 +215,8 @@ return [
 如你所见，这些验证规则并不真的对输入数据进行任何验证。而是，对输入数据进行一些处理，
 然后把它们存回当前被验证的模型特性。
 
-下面的代码示例展示了对用户输入的完整处理，这将确保只将整数值存储在一个属性中：
+下面的代码示例展示了对用户输入的完整处理，
+这将确保只将整数值存储在一个属性中：
 
 ```php
 ['age', 'trim'],
@@ -226,9 +228,13 @@ return [
 以上代码将对输入执行以下操作：
 
 1. 从输入值中去除前后空白。
-2. 确保空输入在数据库中存储为`null`；我们区分 `未设置` 值和实际值为 `0` 之间的区别。如果值不允许为`null`，则可以在此处设置另一个默认值。
-3. 如果该值不为空，则验证该值是否为大于0的整数。大多数验证器的 [[yii\validators\Validator::$skipOnEmpty|$skipOnEmpty]] 属性都被设置为`true`。
-4. 确保该值为整数类型，例如将字符串 `'42'` 转换为整数 `42`。在这里，我们将 [[yii\validators\FilterValidator::$skipOnEmpty|$skipOnEmpty]] 设置为 `true`，默认情况下，在 [[yii\validators\FilterValidator|filter]] 验证器里这个属性是 `false`。
+2. 确保空输入在数据库中存储为 `null`；我们区分 `未设置` 值和实际值为 `0` 之间的区别。
+   如果值不允许为 `null`，则可以在此处设置另一个默认值。
+3. 如果该值不为空，则验证该值是否为大于0的整数。大多数验证器的
+   [[yii\validators\Validator::$skipOnEmpty|$skipOnEmpty]] 属性都被设置为`true`。
+4. 确保该值为整数类型，例如将字符串 `'42'` 转换为整数 `42`。在这里，我们将 
+[[yii\validators\FilterValidator::$skipOnEmpty|$skipOnEmpty]] 设置为 `true`，默认情况下，在 
+[[yii\validators\FilterValidator|filter]] 验证器里这个属性是 `false`。
 
 ### 处理空输入 <span id="handling-empty-inputs"></span>
 
@@ -345,6 +351,8 @@ public function actionSearch($name, $email)
 /**
  * @param string $attribute 当前被验证的特性
  * @param array $params 以名-值对形式提供的额外参数
+ * @param \yii\validators\InlineValidator $validator 相关的 InlineValidator 实例。
+ * 此参数自版本 2.0.11 起可用。
  */
 function ($attribute, $params)
 ```
@@ -386,6 +394,14 @@ class MyForm extends Model
 }
 ```
 
+> Note: Since version 2.0.11 you can use [[yii\validators\InlineValidator::addError()]] for adding errors instead. That way the error
+> message can be formatted using [[yii\i18n\I18N::format()]] right away. Use `{attribute}` and `{value}` in the error
+> message to refer to an attribute label (no need to get it manually) and attribute value accordingly:
+>
+> ```php
+> $validator->addError($this, $attribute, 'The value "{value}" is not acceptable for {attribute}.');
+> ```
+
 > Note: 缺省状态下，行内验证器不会在关联特性的输入值为空或该特性已经在其他验证中失败的情况下起效。
   若你想要确保该验证器始终启用的话，你可以在定义规则时，酌情将 
   [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] 以及
@@ -407,6 +423,7 @@ class MyForm extends Model
 
 
 For example the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
+In this case we can use [[yii\validators\Validator::addError()]] to set customized message for the model.
 
 ```php
 namespace app\components;
@@ -456,25 +473,138 @@ class EntryForm extends Model
 ```
 
 
-## 客户端验证器（Client-Side Validation） <span id="client-side-validation"></span>
+## Multiple Attributes Validation <span id="multiple-attributes-validation"></span>
 
-当终端用户通过 HTML 表单提供相关输入信息时，我们可能会需要用到基于 JavaScript 的客户端验证。
-因为，它可以让用户更快速的得到错误信息，也因此可以提供更好的用户体验。
-你可以使用或自己实现除服务器端验证之外，**还能额外**客户端验证功能的验证器。
+Sometimes validators involve multiple attributes. Consider the following form:
 
-> Info: 尽管客户端验证为加分项，但它不是必须项。它存在的主要意义在于给用户提供更好的客户体验。
-  正如“永远不要相信来自终端用户的输入信息”，也同样永远不要相信客户端验证。基于这个理由，
-  你应该始终如前文所描述的那样，通过调用 [[yii\base\Model::validate()]] 
-  方法执行服务器端验证。
+```php
+class MigrationForm extends \yii\base\Model
+{
+    /**
+     * Minimal funds amount for one adult person
+     */
+    const MIN_ADULT_FUNDS = 3000;
+    /**
+     * Minimal funds amount for one child
+     */
+    const MIN_CHILD_FUNDS = 1500;
+
+    public $personalSalary;
+    public $spouseSalary;
+    public $childrenCount;
+    public $description;
+
+    public function rules()
+    {
+        return [
+            [['personalSalary', 'description'], 'required'],
+            [['personalSalary', 'spouseSalary'], 'integer', 'min' => self::MIN_ADULT_FUNDS],
+            ['childrenCount', 'integer', 'min' => 0, 'max' => 5],
+            [['spouseSalary', 'childrenCount'], 'default', 'value' => 0],
+            ['description', 'string'],
+        ];
+    }
+}
+```
+
+### Creating validator <span id="multiple-attributes-validator"></span>
+
+Let's say we need to check if the family income is enough for children. We can create inline validator
+`validateChildrenFunds` for that which will run only when `childrenCount` is more than 0.
+
+Note that we can't use all validated attributes (`['personalSalary', 'spouseSalary', 'childrenCount']`) when attaching
+validator. This is because the same validator will run for each attribute (3 times in total) and we only need to run it
+once for the whole attribute set.
+
+You can use any of these attributes instead (or use what you think is the most relevant):
+
+```php
+['childrenCount', 'validateChildrenFunds', 'when' => function ($model) {
+    return $model->childrenCount > 0;
+}],
+```
+
+Implementation of `validateChildrenFunds` can be like this:
+
+```php
+public function validateChildrenFunds($attribute, $params)
+{
+    $totalSalary = $this->personalSalary + $this->spouseSalary;
+    // Double the minimal adult funds if spouse salary is specified
+    $minAdultFunds = $this->spouseSalary ? self::MIN_ADULT_FUNDS * 2 : self::MIN_ADULT_FUNDS;
+    $childFunds = $totalSalary - $minAdultFunds;
+    if ($childFunds / $this->childrenCount < self::MIN_CHILD_FUNDS) {
+        $this->addError('childrenCount', 'Your salary is not enough for children.');
+    }
+}
+```
+
+You can ignore `$attribute` parameter because validation is not related to just one attribute.
 
 
-### 使用客户端验证 <span id="using-client-side-validation"></span>
+### Adding errors <span id="multiple-attributes-errors"></span>
 
-许多[核心验证器](tutorial-core-validators.md)都支持开箱即用的客户端验证。你只需要用 [[yii\widgets\ActiveForm]] 
-的方式构建 HTML 表单即可。比如，下面的 `LoginForm`（登录表单）声明了两个规则：其一为 [required](tutorial-core-validators.md#required) 
-核心验证器，它同时支持客户端与服务器端的验证；另一个则采用
-`validatePassword` 行内验证器，它只支持服务器端。
+Adding error in case of multiple attributes can vary depending on desired form design:
 
+- Select the most relevant field in your opinion and add error to it's attribute:
+
+```php
+$this->addError('childrenCount', 'Your salary is not enough for children.');
+```
+
+- Select multiple important relevant attributes or all attributes and add the same error message to them. We can store
+message in separate variable before passing it to `addError` to keep code DRY.
+
+```php
+$message = 'Your salary is not enough for children.';
+$this->addError('personalSalary', $message);
+$this->addError('wifeSalary', $message);
+$this->addError('childrenCount', $message);
+```
+
+Or use a loop:
+
+```php
+$attributes = ['personalSalary', 'wifeSalary', 'childrenCount'];
+foreach ($attributes as $attribute) {
+    $this->addError($attribute, 'Your salary is not enough for children.');
+}
+```
+
+- Add a common error (not related to particular attribute). We can use the not existing attribute name for adding
+error, for example `*`, because attribute existence is not checked at that point.
+
+```php
+$this->addError('*', 'Your salary is not enough for children.');
+```
+
+As a result, we will not see error message near form fields. To display it, we can include the error summary in view:
+
+```php
+<?= $form->errorSummary($model) ?>
+```
+
+> Note: Creating validator which validates multiple attributes at once is well described in the [community cookbook](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-validator-multiple-attributes.md).
+
+## Client-Side Validation <span id="client-side-validation"></span>
+
+Client-side validation based on JavaScript is desirable when end users provide inputs via HTML forms, because
+it allows users to find out input errors faster and thus provides a better user experience. You may use or implement
+a validator that supports client-side validation *in addition to* server-side validation.
+
+> Info: While client-side validation is desirable, it is not a must. Its main purpose is to provide users with a better
+  experience. Similar to input data coming from end users, you should never trust client-side validation. For this reason,
+  you should always perform server-side validation by calling [[yii\base\Model::validate()]], as
+  described in the previous subsections.
+
+
+### Using Client-Side Validation <span id="using-client-side-validation"></span>
+
+Many [core validators](tutorial-core-validators.md) support client-side validation out-of-the-box. All you need to do
+is just use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
+rules: one uses the [required](tutorial-core-validators.md#required) core validator which is supported on both
+client and server-sides; the other uses the `validatePassword` inline validator which is only supported on the server
+side.
 
 ```php
 namespace app\models;
@@ -490,10 +620,10 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            // username 和 password 都是必填项
+            // username and password are both required
             [['username', 'password'], 'required'],
 
-            // 用 validatePassword() 验证 password
+            // password is validated by validatePassword()
             ['password', 'validatePassword'],
         ];
     }
@@ -509,9 +639,9 @@ class LoginForm extends Model
 }
 ```
 
-使用如下代码构建的 HTML 表单包含两个输入框 `username` 以及 `password`。
-如果你在没有输入任何东西之前提交表单，就会在没有任何与服务器端的通讯的情况下，
-立刻收到一个要求你填写空白项的错误信息。
+The HTML form built by the following code contains two input fields `username` and `password`.
+If you submit the form without entering anything, you will find the error messages requiring you
+to enter something appear right away without any communication with the server.
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
@@ -521,31 +651,47 @@ class LoginForm extends Model
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
 
-幕后的运作过程是这样的：[[yii\widgets\ActiveForm]] 会读取声明在模型类中的验证规则，
-并生成那些支持支持客户端验证的验证器所需的 JavaScript 代码。当用户修改输入框的值，
-或者提交表单时，就会触发相应的客户端验证 JS 代码。
+Behind the scene, [[yii\widgets\ActiveForm]] will read the validation rules declared in the model
+and generate appropriate JavaScript code for validators that support client-side validation. When a user
+changes the value of an input field or submit the form, the client-side validation JavaScript will be triggered.
 
-若你需要完全关闭客户端验证，你只需配置 
-[[yii\widgets\ActiveForm::enableClientValidation]] 
-属性为 false。你同样可以关闭各个输入框各自的客户端验证，
-只要把它们的 [[yii\widgets\ActiveField::enableClientValidation]] 
-属性设为 false。
+If you want to turn off client-side validation completely, you may configure the
+[[yii\widgets\ActiveForm::enableClientValidation]] property to be `false`. You may also turn off client-side
+validation of individual input fields by configuring their [[yii\widgets\ActiveField::enableClientValidation]]
+property to be false. When `enableClientValidation` is configured at both the input field level and the form level,
+the former will take precedence.
 
+> Info: Since version 2.0.11 all validators extending from [[yii\validators\Validator]] receive client-side options
+> from separate method - [[yii\validators\Validator::getClientOptions()]]. You can use it:
+>
+> - if you want to implement your own custom client-side validation but leave the synchronization with server-side
+> validator options;
+> - to extend or customize to fit your specific needs:
+>
+> ```php
+> public function getClientOptions($model, $attribute)
+> {
+>     $options = parent::getClientOptions($model, $attribute);
+>     // Modify $options here
+>
+>     return $options;
+> }
+> ```
 
-### 自己实现客户端验证 <span id="implementing-client-side-validation"></span>
+### Implementing Client-Side Validation <span id="implementing-client-side-validation"></span>
 
-要创建一个支持客户端验证的验证器，你需要实现
-[[yii\validators\Validator::clientValidateAttribute()]] 方法，
-用于返回一段用于运行客户端验证的 JavaScript 代码。
-在这段 JavaScript 代码中，你可以使用以下预定义的变量：
+To create a validator that supports client-side validation, you should implement the
+[[yii\validators\Validator::clientValidateAttribute()]] method which returns a piece of JavaScript code
+that performs the validation on the client-side. Within the JavaScript code, you may use the following
+predefined variables:
 
-- `attribute`：正在被验证的模型特性的名称。
-- `value`：进行验证的值。
-- `messages`：一个用于暂存模型特性的报错信息的数组。
+- `attribute`: the name of the attribute being validated.
+- `value`: the value being validated.
+- `messages`: an array used to hold the validation error messages for the attribute.
 - `deferred`: an array which deferred objects can be pushed into (explained in the next subsection).
 
-在下面的例子里，我们会创建一个 `StatusValidator`，它会通过比对现有的状态数据，
-验证输入值是否为一个有效的状态。该验证器同时支持客户端以及服务器端验证。
+In the following example, we create a `StatusValidator` which validates if an input is a valid status input
+against the existing status data. The validator supports both server-side and client-side validation.
 
 ```php
 namespace app\components;
@@ -558,7 +704,7 @@ class StatusValidator extends Validator
     public function init()
     {
         parent::init();
-        $this->message = '无效的状态输入。';
+        $this->message = 'Invalid status input.';
     }
 
     public function validateAttribute($model, $attribute)
@@ -572,7 +718,7 @@ class StatusValidator extends Validator
     public function clientValidateAttribute($model, $attribute, $view)
     {
         $statuses = json_encode(Status::find()->select('id')->asArray()->column());
-        $message = json_encode($this->message);
+        $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
 if ($.inArray(value, $statuses) === -1) {
     messages.push($message);
@@ -582,9 +728,9 @@ JS;
 }
 ```
 
-> Tip: 上述代码主要是演示了如何支持客户端验证。在具体实践中，
-> 你可以使用 [in](tutorial-core-validators.md#in) 核心验证器来达到同样的目的。
-> 比如这样的验证规则：
+> Tip: The above code is given mainly to demonstrate how to support client-side validation. In practice,
+> you may use the [in](tutorial-core-validators.md#in) core validator to achieve the same goal. You may
+> write the validation rule like the following:
 >
 > ```php
 > [
@@ -618,7 +764,7 @@ In the above, the `deferred` variable is provided by Yii, which is an array of D
 jQuery method creates a Deferred object which is pushed to the `deferred` array.
 
 You can also explicitly create a Deferred object and call its `resolve()` method when the asynchronous callback
-is hit. The following example shows how to validate the dimensions of an uploaded image file on the client side.
+is hit. The following example shows how to validate the dimensions of an uploaded image file on the client-side.
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -672,15 +818,15 @@ JS;
 ```
 
 
-### AJAX Validation <span id="ajax-validation"></span>
+## AJAX Validation <span id="ajax-validation"></span>
 
-Some validations can only be done on the server side, because only the server has the necessary information.
-For example, to validate if a username is unique or not, it is necessary to check the user table on the server side.
+Some validations can only be done on the server-side, because only the server has the necessary information.
+For example, to validate if a username is unique or not, it is necessary to check the user table on the server-side.
 You can use AJAX-based validation in this case. It will trigger an AJAX request in the background to validate the
 input while keeping the same user experience as the regular client-side validation.
 
 To enable AJAX validation for a single input field, configure the [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]]
-property of that field to be true and specify a unique form `id`:
+property of that field to be `true` and specify a unique form `id`:
 
 ```php
 use yii\widgets\ActiveForm;
@@ -696,8 +842,8 @@ echo $form->field($model, 'username', ['enableAjaxValidation' => true]);
 ActiveForm::end();
 ```
 
-To enable AJAX validation for the whole form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
-to be true at the form level:
+To enable AJAX validation for all inputs of the form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
+to be `true` at the form level:
 
 ```php
 $form = ActiveForm::begin([
@@ -725,5 +871,7 @@ this request by running the validation and returning the errors in JSON format.
 > Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
   However, the AJAX validation feature described here is more systematic and requires less coding effort.
 
-When both `enableClientValidation` and `enableAjaxValidation` are set to true, AJAX validation request will be triggered
-only after the successful client validation.
+When both `enableClientValidation` and `enableAjaxValidation` are set to `true`, AJAX validation request will be triggered
+only after the successful client validation. Note that in case of validating a single field that happens if either
+`validateOnChange`, `validateOnBlur` or `validateOnType` is set to `true`, AJAX request will be sent when the field in
+question alone successfully passes client validation. 
