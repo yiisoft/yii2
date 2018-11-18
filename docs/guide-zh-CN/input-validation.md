@@ -598,13 +598,13 @@ $this->addError('*', 'Your salary is not enough for children.');
   进行服务端验证。
 
 
-### Using Client-Side Validation <span id="using-client-side-validation"></span>
+### 使用客户端验证 <span id="using-client-side-validation"></span>
 
-Many [core validators](tutorial-core-validators.md) support client-side validation out-of-the-box. All you need to do
-is just use [[yii\widgets\ActiveForm]] to build your HTML forms. For example, `LoginForm` below declares two
-rules: one uses the [required](tutorial-core-validators.md#required) core validator which is supported on both
-client and server-sides; the other uses the `validatePassword` inline validator which is only supported on the server
-side.
+许多 [核心验证器](tutorial-core-validators.md) 支持开箱即用的客户端验证。你需要做的
+就是使用 [[yii\widgets\ActiveForm]] 构建你的 HTML 表单。 比如，下面的 `LoginForm` 声明了两个
+规则：一个使用 [必填](tutorial-core-validators.md#required) 核心验证器，它支持客户端的验证，也支持服务端的 
+验证；另一个使用 `validatePassword` 行内验证器，它只支持在服务端
+验证。
 
 ```php
 namespace app\models;
@@ -639,9 +639,9 @@ class LoginForm extends Model
 }
 ```
 
-The HTML form built by the following code contains two input fields `username` and `password`.
-If you submit the form without entering anything, you will find the error messages requiring you
-to enter something appear right away without any communication with the server.
+下面的代码构建了包含 `username` 和 `password` 两个表单项的 HTML 表单。
+如果不输入任何内容直接提交表单，你就会发现提示你输入内容的错误信息立刻出现，
+而这并没有和服务端交互。
 
 ```php
 <?php $form = yii\widgets\ActiveForm::begin(); ?>
@@ -651,22 +651,22 @@ to enter something appear right away without any communication with the server.
 <?php yii\widgets\ActiveForm::end(); ?>
 ```
 
-Behind the scene, [[yii\widgets\ActiveForm]] will read the validation rules declared in the model
-and generate appropriate JavaScript code for validators that support client-side validation. When a user
-changes the value of an input field or submit the form, the client-side validation JavaScript will be triggered.
+幕后的运作过程是这样的： [[yii\widgets\ActiveForm]] 读取在模型中声明的规则，然后
+生成验证器支持客户端验证对应的 JavaScript 代码。当用户
+改变表单项或者提交整个表单的时候，客户端验证的 JavaScript 就会触发。
 
-If you want to turn off client-side validation completely, you may configure the
-[[yii\widgets\ActiveForm::enableClientValidation]] property to be `false`. You may also turn off client-side
-validation of individual input fields by configuring their [[yii\widgets\ActiveField::enableClientValidation]]
-property to be false. When `enableClientValidation` is configured at both the input field level and the form level,
-the former will take precedence.
+如果你想完全关闭客户端验证，你可以设置
+[[yii\widgets\ActiveForm::enableClientValidation]] 属性为 `false` 。你也可以通过设置它们的
+[[yii\widgets\ActiveField::enableClientValidation]] 属性为 `false` 来单独关闭某一个表单项。
+当在表单项级别和表单级别都设置了 `enableClientValidation` 的时候，
+前者（表单项）的级别优先生效。
 
-> Info: Since version 2.0.11 all validators extending from [[yii\validators\Validator]] receive client-side options
-> from separate method - [[yii\validators\Validator::getClientOptions()]]. You can use it:
->
-> - if you want to implement your own custom client-side validation but leave the synchronization with server-side
-> validator options;
-> - to extend or customize to fit your specific needs:
+> Info：从 2.0.11 版本开始，所有继承 [[yii\validators\Validator]] 的验证器都可以通过
+> - [[yii\validators\Validator::getClientOptions()]] 这个单独的方法接收客户端选项。可以这样使用：
+
+> - 如果你想自己实现自定义的客户端验证但是保留服务端的
+> 验证器选项;
+> - 继承或者自定义符合你特殊的需求：
 >
 > ```php
 > public function getClientOptions($model, $attribute)
