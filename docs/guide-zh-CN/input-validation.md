@@ -602,7 +602,7 @@ $this->addError('*', 'Your salary is not enough for children.');
 
 许多 [核心验证器](tutorial-core-validators.md) 支持开箱即用的客户端验证。你需要做的
 就是使用 [[yii\widgets\ActiveForm]] 构建你的 HTML 表单。 比如，下面的 `LoginForm` 声明了两个
-规则：一个使用 [必填](tutorial-core-validators.md#required) 核心验证器，它支持客户端的验证，也支持服务端的 
+规则：一个使用 [required](tutorial-core-validators.md#required) 核心验证器，它支持客户端的验证，也支持服务端的 
 验证；另一个使用 `validatePassword` 行内验证器，它只支持在服务端
 验证。
 
@@ -678,20 +678,20 @@ class LoginForm extends Model
 > }
 > ```
 
-### Implementing Client-Side Validation <span id="implementing-client-side-validation"></span>
+### 实现客户端验证 <span id="implementing-client-side-validation"></span>
 
-To create a validator that supports client-side validation, you should implement the
-[[yii\validators\Validator::clientValidateAttribute()]] method which returns a piece of JavaScript code
-that performs the validation on the client-side. Within the JavaScript code, you may use the following
-predefined variables:
+为了创建一个支持客户端验证的验证器，你应该实现
+[[yii\validators\Validator::clientValidateAttribute()]] 方法，该方法返回一段 JavaScript 代码
+用来在客户端执行验证。在这段 JavaScript 代码里，你可以使用下面几个
+预定义的变量：
 
-- `attribute`: the name of the attribute being validated.
-- `value`: the value being validated.
-- `messages`: an array used to hold the validation error messages for the attribute.
-- `deferred`: an array which deferred objects can be pushed into (explained in the next subsection).
+- `attribute`: 被验证的属性名。
+- `value`: 被验证的值。
+- `messages`: 一个给属性保存验证错误信息的数组。
+- `deferred`: 一个支持添加 deferred 对象的数组（下一部分再说）。
 
-In the following example, we create a `StatusValidator` which validates if an input is a valid status input
-against the existing status data. The validator supports both server-side and client-side validation.
+下面的例子，我们创建了一个 `StatusValidator` 验证器，它用来验证一个输入和存在的状态相比， 
+是否是有效的状态输入。这个验证器支持服务端验证也支持客户端验证。
 
 ```php
 namespace app\components;
@@ -728,9 +728,9 @@ JS;
 }
 ```
 
-> Tip: The above code is given mainly to demonstrate how to support client-side validation. In practice,
-> you may use the [in](tutorial-core-validators.md#in) core validator to achieve the same goal. You may
-> write the validation rule like the following:
+> Tip: 上面给出的代码主要展示如何支持客户端验证。在实际使用中，
+> 你可以使用 [in](tutorial-core-validators.md#in) 核心验证器来实现同样的目标。你也可以
+> 像下面那样写验证规则：
 >
 > ```php
 > [
@@ -738,9 +738,9 @@ JS;
 > ]
 > ```
 
-> Tip: If you need to work with client validation manually i.e. dynamically add fields or do some custom UI logic, refer
-> to [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
-> in Yii 2.0 Cookbook.
+> Tip：如果你想手动调整客户端的验证，比如动态地添加表单项或者做一些自定义的 UI 逻辑，请参考
+> [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
+> 在 Yii 2.0 Cookbook.
 
 ### Deferred Validation <span id="deferred-validation"></span>
 
