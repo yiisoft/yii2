@@ -742,10 +742,10 @@ JS;
 > [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
 > 在 Yii 2.0 Cookbook.
 
-### Deferred Validation <span id="deferred-validation"></span>
+### Deferred 验证 <span id="deferred-validation"></span>
 
-If you need to perform asynchronous client-side validation, you can create [Deferred objects](http://api.jquery.com/category/deferred-object/).
-For example, to perform a custom AJAX validation, you can use the following code:
+如果你需要执行异步客户端验证，你可以创建 [Deferred objects](http://api.jquery.com/category/deferred-object/)。 
+比如要执行一段自定义的 AJAX 验证，可以使用下面的代码：
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -760,11 +760,11 @@ JS;
 }
 ```
 
-In the above, the `deferred` variable is provided by Yii, which is an array of Deferred objects. The `$.get()`
-jQuery method creates a Deferred object which is pushed to the `deferred` array.
+上面这个 `deferred` 变量是由 Yii 提供的，它是一个 Deferred 对象的数组。这个 `$.get()`
+jQuery 方法用来产生一个 Deferred 对象然后推送到 `deferred` 数组里。
 
-You can also explicitly create a Deferred object and call its `resolve()` method when the asynchronous callback
-is hit. The following example shows how to validate the dimensions of an uploaded image file on the client-side.
+你也可以明确地创建一个  `deferred` 对象，当异步回调触发的时候调用它的 `resolve()` 方法。
+下面的例子展示了如何在客户端验证一个上传图片的尺寸。
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
@@ -789,11 +789,11 @@ JS;
 }
 ```
 
-> Note: The `resolve()` method must be called after the attribute has been validated. Otherwise the main form
-  validation will not complete.
+> Note：`resolve()` 方法必须在所有属性都验证完之后调用。不然表单不会
+  完成整体的验证流程。
 
-For simplicity, the `deferred` array is equipped with a shortcut method `add()` which automatically creates a Deferred
-object and adds it to the `deferred` array. Using this method, you can simplify the above example as follows,
+为了简单起见， `deferred` 数组封装了一个快捷方法 `add()` ，它可以自动创建 Deferred 对象
+然后把它添加到 `deferred` 数组里。用这个方法，你可以简化上面的例子：
 
 ```php
 public function clientValidateAttribute($model, $attribute, $view)
