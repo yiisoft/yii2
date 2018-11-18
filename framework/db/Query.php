@@ -748,7 +748,7 @@ PATTERN;
      */
     public function from($tables)
     {
-        if ($tables instanceof Expression) {
+        if ($tables instanceof ExpressionInterface) {
             $tables = [$tables];
         }
         if (is_string($tables)) {
@@ -1001,7 +1001,7 @@ PATTERN;
 
     /**
      * Adds additional group-by columns to the existing ones.
-     * @param string|array $columns additional columns to be grouped by.
+     * @param string|array|ExpressionInterface $columns additional columns to be grouped by.
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).

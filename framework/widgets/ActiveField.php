@@ -728,6 +728,7 @@ class ActiveField extends Component
             $this->addErrorClassIfNeeded($options);
         }
 
+        $this->addRoleAttributes($options, 'radiogroup');
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->_skipLabelFor = true;
@@ -915,11 +916,22 @@ class ActiveField extends Component
             if (!isset($options['aria-required']) && $this->model->isAttributeRequired($this->attribute)) {
                 $options['aria-required'] = 'true';
             }
-            if (!isset($options['aria-invalid'])) {
-                if ($this->model->hasErrors($this->attribute)) {
-                    $options['aria-invalid'] = 'true';
-                }
+            if (!isset($options['aria-invalid']) && $this->model->hasErrors($this->attribute)) {
+                $options['aria-invalid'] = 'true';
             }
+        }
+    }
+
+    /**
+     * Add role attributes to the input options
+     * @param $options array input options
+     * @param string $role
+     * @since 2.0.16
+     */
+    protected function addRoleAttributes(&$options, $role)
+    {
+        if (!isset($options['role'])) {
+            $options['role'] = $role;
         }
     }
 

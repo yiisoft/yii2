@@ -427,6 +427,7 @@ You can flush the cache from the console by calling `yii cache/flush` as well.
  - `yii cache/flush cache1 cache2`: flushes the cache components `cache1`, `cache2` (you can pass multiple component
  names separated with space)
  - `yii cache/flush-all`: flushes all cache components in the application
+ - `yii cache/flush-schema db`: clears DB schema cache for a given connection component
 
 > Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
 components in your web and console application configs to reach the proper effect.

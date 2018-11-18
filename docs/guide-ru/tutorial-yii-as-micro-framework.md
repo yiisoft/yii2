@@ -31,7 +31,7 @@ cd micro-app
 }
 ```
 
-Сохраните файл и запустите команду `comper install`. Это установит framework со всеми его зависимостями.
+Сохраните файл и запустите команду `composer install`. Это установит framework со всеми его зависимостями.
 
 ## Создание структуры проекта
 
@@ -194,8 +194,8 @@ class PostController extends ActiveController
 - `/index.php?r=post` - список всех сообщений
 - `/index.php?r=post/view&id=1` - просмотр сообщения с ID 1
 - `/index.php?r=post/create` - создание сообщения
-- `/index.php?r=post/update&id=1` - обновление сообщения with ID 1
-- `/index.php?r=post/delete&id=1` - удаление сообщения with ID 1
+- `/index.php?r=post/update&id=1` - обновление сообщения с ID 1
+- `/index.php?r=post/delete&id=1` - удаление сообщения с ID 1
 
 Начиная с этого момента Вы можете посмотреть следующие руководства для дальнейшего развития своего приложения:
 

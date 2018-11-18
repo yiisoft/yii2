@@ -3,18 +3,19 @@
 
 このドキュメントは Yii 2 開発レポジトリの編成を説明するものです。
  
-1. 個々のコア・エクステンションとアプリケーション・テンプレートは、[yiisoft](https://github.com/yiisoft) Github オーガニゼーションの下の *独立した* 別の Github プロジェクトとして保守されます。
+1. 個々のコア・エクステンションとアプリケーション・テンプレートは、[yiisoft](https://github.com/yiisoft) Github オーガニゼーションの下の
+*独立した* 別の Github プロジェクトとして保守されます。
     
-   エクステンションのプロジェクト名は、先頭に `yii2-` を付けます。例えば、`gii` エクステンションは `yii2-gii` です。
+   エクステンションのレポジトリ名は、先頭に `yii2-` を付けます。例えば、`gii` エクステンションは `yii2-gii` です。
    Composer のパッケージ名は Github レポジトリ名と同じで、例えば `yiisoft/yii2-gii` です。
    
-   アプリケーション・テンプレートのプロジェクト名は、先頭に `yii2-app-` を付けます。例えば、`basic` アプリケーション・テンプレートは `yii2-app-basici` です。
+   アプリケーション・テンプレートのレポジトリ名は、先頭に `yii2-app-` を付けます。例えば、`basic` アプリケーション・テンプレートは `yii2-app-basici` です。
    Composer のパッケージ名は Github レポジトリ名と同じで、例えば `yiisoft/yii2-app-basic` です。
    
    各々のエクステンション/アプリケーションのプロジェクトは、
  
    * "docs" フォルダにおいてそのチュートリアル・ドキュメントを保守します。API ドキュメントは、エクステンション/アプリケーションがリリースされるときにその場で生成されます。
-   * "tests" フォルダにおいてそれ自身のテストコードを保守します。
+   * "tests" フォルダにおいてそれ自身のテスト・コードを保守します。
    * それ自身のメッセージ翻訳やその他全ての関係するメタコードを保守します。
    * 対応する Github プロジェクトによって、課題 (issue) を追跡します。
       
@@ -28,6 +29,8 @@
    コア・フレームワークのバグと機能要望は、この Github プロジェクトのイッシュー・トラッカーによって追跡されます。
    
 3. `yiisoft/yii2-framework` レポジトリは、開発プロジェクト・レポジトリの `framework` ディレクトリのリード・オンリーな git subsplit です。
-   このレポジトリが、フレームワークのインストールに使用される Composer 公式パッケージである [yiisoft/yii2](https://packagist.org/packages/yiisoft/yii2) を提供します。
+   このレポジトリが、フレームワークのインストールに使用される Composer 公式パッケージである
+   [yiisoft/yii2](https://packagist.org/packages/yiisoft/yii2) を提供します。
 
-4. 開発するときには、[build dev/app](git-workflow.md#prepare-the-test-environment) コマンドを使って、アプリケーションとエクステンションを開発プロジェクトの構成に含めることが出来ます。
+4. 開発するときには、[build dev/app](git-workflow.md#prepare-the-test-environment) コマンドを使って、
+   アプリケーションとエクステンションを開発プロジェクトの構成に含めることが出来ます。

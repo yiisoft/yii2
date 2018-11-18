@@ -1,5 +1,5 @@
-助手类
-=======
+助手类（Helpers）
+==============
 
 > Note: 这部分正在开发中。
 
@@ -20,8 +20,8 @@ echo Html::encode('Test > test');
   当使用助手类时，应该仅使用具体的类版本而不使用基类。
 
 
-核心助手类
--------------------
+核心助手类（Core Helper Classes）
+-----------------------------
 
 Yii 发布版中提供以下核心助手类：
 
@@ -30,7 +30,7 @@ Yii 发布版中提供以下核心助手类：
 - FileHelper
 - [Html](helper-html.md)
 - HtmlPurifier
-- Image
+- Imagine（由 yii2-imagine 扩展提供）
 - Inflector
 - Json
 - Markdown
@@ -40,8 +40,8 @@ Yii 发布版中提供以下核心助手类：
 - VarDumper
 
 
-自定义助手类 <span id="customizing-helper-classes"></span>
---------------------------
+自定义助手类（Customizing Helper Classes） <span id="customizing-helper-classes"></span>
+--------------------------------------
 
 如果想要自定义一个核心助手类 (例如 [[yii\helpers\ArrayHelper]])，你应该创建一个新的类继承
 helpers对应的基类 (例如 [[yii\helpers\BaseArrayHelper]]) 并同样的命

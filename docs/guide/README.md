@@ -75,11 +75,11 @@ Key Concepts
 Working with Databases
 ----------------------
 
-* [Data Access Objects](db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
+* [Database Access Objects](db-dao.md): Connecting to a database, basic queries, transactions, and schema manipulation
 * [Query Builder](db-query-builder.md): Querying the database using a simple abstraction layer
 * [Active Record](db-active-record.md): The Active Record ORM, retrieving and manipulating records, and defining relations
 * [Migrations](db-migrations.md): Apply version control to your databases in a team development environment
-* [Sphinx](https://yiiframework.com/extension/yiisoft/yii2-sphinx/doc/guide)
+* [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx/doc/guide)
 * [Redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis/doc/guide)
 * [MongoDB](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb/doc/guide)
 * [ElasticSearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch/doc/guide)
@@ -183,14 +183,14 @@ Special Topics
 Widgets
 -------
 
-* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
-* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
-* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
-* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
-* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
-* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
-* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
-* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
+* [GridView](https://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](https://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](https://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](https://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](https://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](https://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](https://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](https://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Bootstrap Widgets](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap/doc/guide)
 * [jQuery UI Widgets](https://www.yiiframework.com/extension/yiisoft/yii2-jui/doc/guide)
 

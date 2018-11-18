@@ -599,7 +599,7 @@ If the creation of role parameters is a simple operation, you may just specify a
     'allow' => true,
     'actions' => ['update'],
     'roles' => ['updatePost'],
-    'roleParams' => ['postId' => Yii::$app->request->get('id')];
+    'roleParams' => ['postId' => Yii::$app->request->get('id')],
 ],
 ```
 
@@ -617,7 +617,7 @@ assign each user to an RBAC role. Let's use an example to show how this can be d
 
 Assume in the user table, you have a `group` column which uses 1 to represent the administrator group and 2 the author group.
 You plan to have two RBAC roles `admin` and `author` to represent the permissions for these two groups, respectively.
-You can set up the RBAC data as follows,
+You can set up the RBAC data as follows, first create a class:
 
 
 ```php
@@ -646,7 +646,11 @@ class UserGroupRule extends Rule
         return false;
     }
 }
+```
 
+Then create your own command/migration as explained [in the previous section](#generating-rbac-data):
+
+```php
 $auth = Yii::$app->authManager;
 
 $rule = new \app\rbac\UserGroupRule;

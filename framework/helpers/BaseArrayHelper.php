@@ -131,7 +131,7 @@ class BaseArrayHelper
                         $res[$k] = $v;
                     }
                 } elseif (is_array($v) && isset($res[$k]) && is_array($res[$k])) {
-                    $res[$k] = self::merge($res[$k], $v);
+                    $res[$k] = static::merge($res[$k], $v);
                 } else {
                     $res[$k] = $v;
                 }
@@ -509,7 +509,7 @@ class BaseArrayHelper
      * ```
      *
      * @param array $array
-     * @param string|\Closure $name
+     * @param int|string|\Closure $name
      * @param bool $keepKeys whether to maintain the array keys. If false, the resulting array
      * will be re-indexed with integers.
      * @return array the list of column values

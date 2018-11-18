@@ -88,6 +88,7 @@ class Customer extends ActiveRecord
 ```
 
 ### Active records are called "models"
+
 Active Record instances are considered as [models](structure-models.md). For this reason, we usually put Active Record
 classes under the `app\models` namespace (or other namespaces for keeping model classes). 
 
@@ -742,9 +743,10 @@ To use optimistic locking,
 1. Create a column in the DB table associated with the Active Record class to store the version number of each row.
    The column should be of big integer type (in MySQL it would be `BIGINT DEFAULT 0`).
 2. Override the [[yii\db\ActiveRecord::optimisticLock()]] method to return the name of this column.
-3. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
-   Be sure your version attribute has input validation rules and validates successfully.
-4. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
+3. Implement [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] inside your model class to automatically parse its value from received requests.
+   Remove the version attribute from validation rules as [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] should handle it.
+4. In the Web form that takes user inputs, add a hidden field to store the current version number of the row being updated.
+5. In the controller action that updates the row using Active Record, try and catch the [[yii\db\StaleObjectException]]
    exception. Implement necessary business logic (e.g. merging the changes, prompting staled data) to resolve the conflict.
    
 For example, assume the version column is named as `version`. You can implement optimistic locking with the code like
@@ -779,7 +781,23 @@ public function actionUpdate($id)
         // logic to resolve the conflict
     }
 }
+
+// ------ model code -------
+
+use yii\behaviors\OptimisticLockBehavior;
+
+public function behaviors()
+{
+    return [
+        OptimisticLockBehavior::className(),
+    ];
+}
 ```
+> Note: Because [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] will ensure the record is only saved
+> if user submits a valid version number by directly parsing [[\yii\web\Request::getBodyParam()|getBodyParam()]], it
+> may be useful to extend your model class and do step 2 in parent model while attaching the behavior (step 3) to the child
+> class so you can have an instance dedicated to internal use while tying the other to controllers responsible of receiving 
+> end user inputs. Alternatively, you can implement your own logic by configuring its [[\yii\behaviors\OptimisticLockBehavior::$value|value]] property. 
 
 
 ## Working with Relational Data <span id="relational-data"></span>
@@ -1181,7 +1199,9 @@ the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery
 Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
 If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as `false`. 
 
-> Note: Even when using [[yii\db\ActiveQuery::joinWith()|joinWith()]] or [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] with eager loading enabled the related data will **not** be populated from the result of the `JOIN` query. So there's still an extra query for each joined relation as explained in the section on [eager loading](#lazy-eager-loading).
+> Note: Even when using [[yii\db\ActiveQuery::joinWith()|joinWith()]] or [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]]
+  with eager loading enabled the related data will **not** be populated from the result of the `JOIN` query. So there's
+  still an extra query for each joined relation as explained in the section on [eager loading](#lazy-eager-loading).
 
 Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
 queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
@@ -1493,7 +1513,8 @@ class CommentQuery extends ActiveQuery
 ```
 
 > Note: Instead of calling [[yii\db\ActiveQuery::onCondition()|onCondition()]], you usually should call
-  [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] or [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] to append additional conditions when defining new query building methods so that any existing conditions are not overwritten.
+  [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] or [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]]
+  to append additional conditions when defining new query building methods so that any existing conditions are not overwritten.
 
 This allows you to write query building code like the following:
 

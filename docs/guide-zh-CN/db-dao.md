@@ -1,5 +1,5 @@
-数据库访问 (DAO)
-========
+数据库访问对象（Database Access Objects）
+=====================================
 
 Yii 包含了一个建立在 PHP PDO 之上的数据访问层 (DAO)。DAO为不同的数据库提供了一套统一的API。
 其中 `ActiveRecord` 提供了数据库与模型(MVC 中的 M,Model) 的交互，`QueryBuilder` 用于创建动态的查询语句。
@@ -19,14 +19,13 @@ Yii DAO 支持下列现成的数据库：
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): 版本 2008 或更高。
 
-> Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
-  [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
-  to compile it or use [PDO emulation layer](https://github.com/taq/pdooci).
+> Note: 供PHP 7使用的新版pdo_oci扩展目前仅发布了源代码，如果你想编译使用请参照 
+  [社区用户提供的编译安装指引](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)。
+  或者你也可以在你的应用中使用 [PDO模拟层](https://github.com/taq/pdooci)。
 
-## 创建数据库连接 <span id="creating-db-connections"></span>
+## 创建数据库连接（Creating DB Connections） <span id="creating-db-connections"></span>
 
-想要访问数据库，
-你首先需要通过创建一个 [[yii\db\Connection]] 实例来与之建立连接。
+想要访问数据库，你首先需要通过创建一个 [[yii\db\Connection]] 实例来与之建立连接。
 
 ```php
 $db = new yii\db\Connection([
@@ -38,8 +37,7 @@ $db = new yii\db\Connection([
 ```
 
 因为数据库连接经常需要在多个地方使用到，
-一个常见的做法是以[应用组件](structure-application-components.md)的方式来配置它，
-如下:
+一个常见的做法是以[应用组件](structure-application-components.md)的方式来配置它，如下:
 
 ```php
 return [
@@ -64,8 +62,7 @@ return [
 
 配置数据库连接时， 你应该总是通过 [[yii\db\Connection::dsn|dsn]] 属性来指明它的数据源名称 (DSN) 。
 不同的数据库有着不同的 DSN 格式。
-请参考 [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) 来获得更多细节。
-下面是一些例子：
+请参考 [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) 来获得更多细节。下面是一些例子：
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
@@ -76,10 +73,8 @@ return [
 * MS SQL Server (via mssql driver): `mssql:host=localhost;dbname=mydatabase`
 * Oracle: `oci:dbname=//localhost:1521/mydatabase`
 
-请注意，如果你是通过 ODBC 来连接数据库，
-你应该配置 [[yii\db\Connection::driverName]] 属性，
-以便 Yii 能够知道实际的数据库种类。
-例如：
+请注意，如果你是通过 ODBC 来连接数据库，你应该配置 [[yii\db\Connection::driverName]] 属性，
+以便 Yii 能够知道实际的数据库种类。例如：
 
 ```php
 'db' => [
@@ -92,15 +87,14 @@ return [
 ```
 
 除了 [[yii\db\Connection::dsn|dsn]] 属性，
-你常常需要配置 [[yii\db\Connection::username|username]] 和 [[yii\db\Connection::password|password]]。
-请参考 [[yii\db\Connection]] 来获取完整的可配置属性列表。
+你常常需要配置 [[yii\db\Connection::username|username]] 和 [[yii\db\Connection::password|password]]。请参考 [[yii\db\Connection]] 来获取完整的可配置属性列表。
 
-> Info: 当你实例化一个 DB Connection 时，
-直到你第一次执行 SQL 或者你明确地调用 [[yii\db\Connection::open()|open()]] 方法时，
-才建立起实际的数据库连接。
+> Info: 当你实例化一个 DB Connection 时，直到你第一次执行 SQL 或者你明确地调用 [[yii\db\Connection::open()|open()]] 方法时，
+  才建立起实际的数据库连接。
 
 > Tip: 有时你可能想要在建立起数据库连接时立即执行一些语句来初始化一些环境变量 (比如设置时区或者字符集),
-> 你可以通过为数据库连接的 [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] 事件注册一个事件处理器来达到目的。
+> 你可以通过为数据库连接的 [[yii\db\Connection::EVENT_AFTER_OPEN|afterOpen]] 
+> 事件注册一个事件处理器来达到目的。
 > 你可以像这样直接在应用配置中注册处理器：
 >
 > ```php
@@ -114,13 +108,12 @@ return [
 > ```
 
 
-## 执行 SQL 查询 <span id="executing-sql-queries"></span>
+## 执行 SQL 查询（Executing SQL Queries） <span id="executing-sql-queries"></span>
 
-一旦你拥有了 DB Connection 实例，
-你可以按照下列步骤来执行 SQL 查询：
+一旦你拥有了 DB Connection 实例，你可以按照下列步骤来执行 SQL 查询：
  
-1. 使用纯SQL查询来创建出 [[yii\db\Command]];
-2. 绑定参数 (可选的);
+1. 使用纯SQL查询来创建出 [[yii\db\Command]]；
+2. 绑定参数 (可选的)；
 3. 调用 [[yii\db\Command]] 里 SQL 执行方法中的一个。
 
 下列例子展示了几种不同的从数据库取得数据的方法：
@@ -147,12 +140,11 @@ $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```
 
-> Note: 为了保持精度，
-> 即使对应的数据库列类型为数值型，
+> Note: 为了保持精度，即使对应的数据库列类型为数值型，
 > 所有从数据库取得的数据都被表现为字符串。
 
 
-### 绑定参数 <span id="binding-parameters"></span>
+### 绑定参数（Binding Parameters） <span id="binding-parameters"></span>
 
 当使用带参数的 SQL 来创建数据库命令时，
 你几乎总是应该使用绑定参数的方法来防止 SQL 注入攻击，例如：
@@ -164,14 +156,14 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-在 SQL 语句中，
-你可以嵌入一个或多个参数占位符(例如，上述例子中的 `:id` )。 
+在 SQL 语句中，你可以嵌入一个或多个参数占位符(例如，上述例子中的 `:id` )。 
 一个参数占位符应该是以冒号开头的字符串。
 之后你可以调用下面绑定参数的方法来绑定参数值：
 
 * [[yii\db\Command::bindValue()|bindValue()]]：绑定一个参数值
 * [[yii\db\Command::bindValues()|bindValues()]]：在一次调用中绑定多个参数值
-* [[yii\db\Command::bindParam()|bindParam()]]：与 [[yii\db\Command::bindValue()|bindValue()]] 相似，但是也支持绑定参数引用。
+* [[yii\db\Command::bindParam()|bindParam()]]：与 [[yii\db\Command::bindValue()|bindValue()]]
+  相似，但是也支持绑定参数引用。
 
 下面的例子展示了几个可供选择的绑定参数的方法：
 
@@ -187,11 +179,8 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
 ```
 
 绑定参数是通过 [预处理语句](http://php.net/manual/en/mysqli.quickstart.prepared-statements.php) 实现的。
-除了防止 SQL 注入攻击，
-它也可以通过一次预处理 SQL 语句，
-使用不同参数多次执行，
-来提升性能。
-例如：
+除了防止 SQL 注入攻击，它也可以通过一次预处理 SQL 语句，
+使用不同参数多次执行，来提升性能。例如：
 
 ```php
 $command = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id');
@@ -220,13 +209,16 @@ $post2 = $command->queryOne();
 然后在之后的每次执行前改变变量的值（这通常是用循环来完成的）。
 以这种方式执行查询比为每个不同的参数值执行一次新的查询要高效得多得多。
 
+> Info: 参数绑定仅用于需要将值插入到包含普通SQL的字符串中的地方。
+> 在 [Query Builder](db-query-builder.md) 和 [Active Record](db-active-record.md)
+> 等更高抽象层的许多地方，您经常会指定一组将被转换为 SQL 的值。
+> 在这些地方，参数绑定是由 Yii 内部完成的，因此不需要手动指定参数。
 
-### 执行非查询语句 <span id="non-select-queries"></span>
 
-上面部分中介绍的 `queryXyz()` 方法都处理的是从数据库返回数据的查询语句。
-对于那些不取回数据的语句，
-你应该调用的是 [[yii\db\Command::execute()]] 方法。
-例如，
+### 执行非查询语句（Executing Non-SELECT Queries） <span id="non-select-queries"></span>
+
+上面部分中介绍的 `queryXyz()` 方法都处理的是从数据库返回数据的查询语句。对于那些不取回数据的语句，
+你应该调用的是 [[yii\db\Command::execute()]] 方法。例如，
 
 ```php
 Yii::$app->db->createCommand('UPDATE post SET status=1 WHERE id=1')
@@ -235,14 +227,9 @@ Yii::$app->db->createCommand('UPDATE post SET status=1 WHERE id=1')
 
 [[yii\db\Command::execute()]] 方法返回执行 SQL 所影响到的行数。
 
-对于 INSERT, UPDATE 和 DELETE 语句，
-不再需要写纯SQL语句了， 
-你可以直接调用 [[yii\db\Command::insert()|insert()]]、
-[[yii\db\Command::update()|update()]]、
-[[yii\db\Command::delete()|delete()]]，
-来构建相应的 SQL 语句。
-这些方法将正确地引用表和列名称以及绑定参数值。
-例如,
+对于 INSERT, UPDATE 和 DELETE 语句，不再需要写纯SQL语句了， 
+你可以直接调用 [[yii\db\Command::insert()|insert()]]、[[yii\db\Command::update()|update()]]、[[yii\db\Command::delete()|delete()]]，
+来构建相应的 SQL 语句。这些方法将正确地引用表和列名称以及绑定参数值。例如,
 
 ```php
 // INSERT (table name, column values)
@@ -270,23 +257,36 @@ Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
 ])->execute();
 ```
 
+另一个有用的方法是 [[yii\db\Command::upsert()|upsert()]]。Upsert 是一种原子操作，如果它们不存在（匹配唯一约束），则将行插入到数据库表中，
+或者在它们执行时更新它们：
+
+```php
+Yii::$app->db->createCommand()->upsert('pages', [
+    'name' => 'Front page',
+    'url' => 'http://example.com/', // url is unique
+    'visits' => 0,
+], [
+    'visits' => new \yii\db\Expression('visits + 1'),
+], $params)->execute();
+```
+
+上面的代码将插入一个新的页面记录或自动增加访问计数器。
+
 请注意，上述的方法只是构建出语句，
 你总是需要调用 [[yii\db\Command::execute()|execute()]] 来真正地执行它们。
 
 
-## 引用表和列名称 <span id="quoting-table-and-column-names"></span>
+## 引用表和列名称（Quoting Table and Column Names） <span id="quoting-table-and-column-names"></span>
 
-当写与数据库无关的代码时，
-正确地引用表和列名称总是一件头疼的事，
-因为不同的数据库有不同的名称引用规则，
-为了克服这个问题，
+当写与数据库无关的代码时，正确地引用表和列名称总是一件头疼的事，
+因为不同的数据库有不同的名称引用规则，为了克服这个问题，
 你可以使用下面由 Yii 提出的引用语法。
-
 
 * `[[column name]]`: 使用两对方括号来将列名括起来; 
 * `{{table name}}`: 使用两对大括号来将表名括起来。
 
-Yii DAO 将自动地根据数据库的具体语法来将这些结构转化为对应的被引用的列或者表名称。
+Yii DAO 将自动地根据数据库的具体语法来将这些结构转化为对应的
+被引用的列或者表名称。
 例如，
 
 ```php
@@ -296,7 +296,7 @@ $count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{employee}}")
 ```
 
 
-### 使用表前缀 <span id="using-table-prefix"></span>
+### 使用表前缀（Using Table Prefix） <span id="using-table-prefix"></span>
 
 如果你的数据库表名大多都拥有一个共同的前缀，
 你可以使用 Yii DAO 所提供的表前缀功能。
@@ -316,10 +316,8 @@ return [
 ];
 ```
 
-接着在你的代码中，
-当你需要涉及到一张表名中包含该前缀的表时，
-应使用语法 `{{%table_name}}`。
-百分号将被自动地替换为你在配置 DB 组件时指定的表前缀。
+接着在你的代码中，当你需要涉及到一张表名中包含该前缀的表时，
+应使用语法 `{{%table_name}}`。百分号将被自动地替换为你在配置 DB 组件时指定的表前缀。
 例如，
 
 ```php
@@ -328,14 +326,10 @@ $count = Yii::$app->db->createCommand("SELECT COUNT([[id]]) FROM {{%employee}}")
             ->queryScalar();
 ```
 
-### 预处理语句
 
-为安全传递查询参数可以使用预处理语句,首先应当使用 `:placeholder` 占位，再将变量绑定到对应占位符：
+## 执行事务（Performing Transactions） <span id="performing-transactions"></span>
 
-## 执行事务 <span id="performing-transactions"></span>
-
-当顺序地执行多个相关的语句时， 
-你或许需要将它们包在一个事务中来保证数据库的完整性和一致性。
+当顺序地执行多个相关的语句时， 你或许需要将它们包在一个事务中来保证数据库的完整性和一致性。
 如果这些语句中的任何一个失败了，
 数据库将回滚到这些语句执行前的状态。
  
@@ -349,24 +343,22 @@ Yii::$app->db->transaction(function($db) {
 });
 ```
 
-上述代码等价于下面的代码，
-但是下面的代码给予了你对于错误处理代码的更多掌控：
+上述代码等价于下面的代码，但是下面的代码给予了你对于错误处理代码的更多掌控：
 
 ```php
 $db = Yii::$app->db;
 $transaction = $db->beginTransaction();
-
 try {
     $db->createCommand($sql1)->execute();
     $db->createCommand($sql2)->execute();
     // ... executing other SQL statements ...
     
     $transaction->commit();
-    
 } catch(\Exception $e) {
-
     $transaction->rollBack();
-    
+    throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
     throw $e;
 }
 ```
@@ -384,13 +376,10 @@ try {
 就好像我们没有捕获它一样，
 因此正常的错误处理程序将处理它。
 
-### 指定隔离级别 <span id="specifying-isolation-levels"></span>
+### 指定隔离级别（Specifying Isolation Levels） <span id="specifying-isolation-levels"></span>
 
-Yii 也支持为你的事务设置[隔离级别]。
-默认情况下，
-当我们开启一个新事务，
-它将使用你的数据库所设定的隔离级别。
-你也可以向下面这样重载默认的隔离级别，
+Yii 也支持为你的事务设置[隔离级别]。默认情况下，当我们开启一个新事务，
+它将使用你的数据库所设定的隔离级别。你也可以向下面这样重载默认的隔离级别，
 
 ```php
 $isolationLevel = \yii\db\Transaction::REPEATABLE_READ;
@@ -411,27 +400,16 @@ Yii 为四个最常用的隔离级别提供了常量：
 - [[\yii\db\Transaction::REPEATABLE_READ]] - 避免了脏读和不可重复读。
 - [[\yii\db\Transaction::SERIALIZABLE]] - 最强的隔离级别， 避免了上述所有的问题。
 
-> 注意: 你使用的数据库必须支持 `Savepoints` 才能正确地执行，以上代码在所有关系数据中都可以执行，但是只有支持 `Savepoints` 才能保证安全性。
-
-Yii 也支持为事务设置隔离级别 `isolation levels`，当执行事务时会使用数据库默认的隔离级别，你也可以为事务指定隔离级别.
-Yii 提供了以下常量作为常用的隔离级别
-
-除了使用上述的常量来指定隔离级别，
-你还可以使用你的数据库所支持的具有有效语法的字符串。
-比如，在 PostgreSQL 中，
-你可以使用 `SERIALIZABLE READ ONLY DEFERRABLE`。 
+除了使用上述的常量来指定隔离级别，你还可以使用你的数据库所支持的具有有效语法的字符串。
+比如，在 PostgreSQL 中，你可以使用 `SERIALIZABLE READ ONLY DEFERRABLE`。 
 
 请注意，一些数据库只允许为整个连接设置隔离级别，
-即使你之后什么也没指定，
-后来的事务都将获得与之前相同的隔离级别。
+即使你之后什么也没指定，后来的事务都将获得与之前相同的隔离级别。
 使用此功能时，你需要为所有的事务明确地设置隔离级别来避免冲突的设置。
-在本文写作之时，
-只有 MSSQL 和 SQLite 受这些限制的影响。
+在本文写作之时，只有 MSSQL 和 SQLite 受这些限制的影响。
 
-> Note: SQLite 只支持两种隔离级别，
-所以你只能使用 `READ UNCOMMITTED` 和 `SERIALIZABLE`。
+> Note: SQLite 只支持两种隔离级别，所以你只能使用 `READ UNCOMMITTED` 和 `SERIALIZABLE`。
 使用其他级别将导致异常的抛出。
-
 
 > Note: PostgreSQL 不支持在事务开启前设定隔离级别，
 因此，你不能在开启事务时直接指定隔离级别。
@@ -439,10 +417,11 @@ Yii 提供了以下常量作为常用的隔离级别
 
 [隔离级别]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
-### 嵌套事务 <span id="nesting-transactions"></span>
 
-如果你的数据库支持保存点，
-你可以像下面这样嵌套多个事务：
+### 嵌套事务（Nesting Transactions） <span id="nesting-transactions"></span>
+
+如果你的数据库支持保存点，你可以像下面这样嵌套多个事务：
+
 ```php
 Yii::$app->db->transaction(function ($db) {
     // outer transaction
@@ -468,26 +447,31 @@ try {
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
         throw $e;
+    } catch (\Throwable $e) {
+        $innerTransaction->rollBack();
+        throw $e;
     }
 
     $outerTransaction->commit();
 } catch (\Exception $e) {
     $outerTransaction->rollBack();
     throw $e;
+} catch (\Throwable $e) {
+    $outerTransaction->rollBack();
+    throw $e;
 }
 ```
 
 
-## 复制和读写分离 <span id="read-write-splitting"></span>
+## 复制和读写分离（Replication and Read-Write Splitting） <span id="read-write-splitting"></span>
 
 许多数据库支持[数据库复制](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)来获得更好的数据库可用性，
-以及更快的服务器响应时间。
-通过数据库复制功能，
-数据从所谓的主服务器被复制到从服务器。
-所有的写和更新必须发生在主服务器上，
+以及更快的服务器响应时间。通过数据库复制功能，
+数据从所谓的主服务器被复制到从服务器。所有的写和更新必须发生在主服务器上，
 而读可以发生在从服务器上。
 
-为了利用数据库复制并且完成读写分离，你可以按照下面的方法来配置 [[yii\db\Connection]] 组件：
+为了利用数据库复制并且完成读写分离，
+你可以按照下面的方法来配置 [[yii\db\Connection]] 组件：
 
 ```php
 [
@@ -519,10 +503,8 @@ try {
 ```
 
 上述的配置指定了一主多从的设置。
-这些从库其中之一将被建立起连接并执行读操作，
-而主库将被用来执行写操作。
-这样的读写分离将通过上述配置自动地完成。
-比如，
+这些从库其中之一将被建立起连接并执行读操作，而主库将被用来执行写操作。
+这样的读写分离将通过上述配置自动地完成。比如，
 
 ```php
 // 使用上述配置来创建一个 Connection 实例
@@ -540,23 +522,19 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
   你可以通过 `Yii::$app->db->slave` 来获取当前有效的从库连接。
 
 `Connection` 组件支持从库间的负载均衡和失效备援，
-当第一次执行读操作时，
-`Connection` 组件将随机地挑选出一个从库并尝试与之建立连接，
-如果这个从库被发现为”挂掉的“，
-将尝试连接另一个从库。
-如果没有一个从库是连接得上的，
-那么将试着连接到主库上。
+当第一次执行读操作时，`Connection` 组件将随机地挑选出一个从库并尝试与之建立连接，
+如果这个从库被发现为”挂掉的“，将尝试连接另一个从库。
+如果没有一个从库是连接得上的，那么将试着连接到主库上。
 通过配置 [[yii\db\Connection::serverStatusCache|server status cache]]，
-一个“挂掉的”服务器将会被记住，
-因此，在一个 yii\db\Connection::serverRetryInterval 内将不再试着连接该服务器。
+一个“挂掉的”服务器将会被记住，因此，在一个 yii\db\Connection::serverRetryInterval 内将不再试着连接该服务器。
 
 > Info: 在上面的配置中，
-  每个从库都共同地指定了 10 秒的连接超时时间，
-  这意味着，如果一个从库在 10 秒内不能被连接上，
-  它将被视为“挂掉的”。
+  每个从库都共同地指定了 10 秒的连接超时时间，这意味着，如果一个从库在 10 秒内不能被连接上，它将被视为“挂掉的”。
   你可以根据你的实际环境来调整该参数。
 
+
 你也可以配置多主多从。例如，
+
 
 ```php
 [
@@ -599,19 +577,16 @@ Yii::$app->db->createCommand("UPDATE user SET username='demo' WHERE id=1")->exec
 ```
 
 上述配置指定了两个主库和两个从库。 
-`Connection` 组件在主库之间，
-也支持如从库间般的负载均衡和失效备援。
-唯一的差别是，
-如果没有主库可用，将抛出一个异常。
+`Connection` 组件在主库之间，也支持如从库间般的负载均衡和失效备援。
+唯一的差别是，如果没有主库可用，将抛出一个异常。
 
 > Note: 当你使用 [[yii\db\Connection::masters|masters]] 属性来配置一个或多个主库时，
-  所有其他指定数据库连接的属性 (例如 `dsn`, `username`, `password`) 与 `Connection` 对象本身将被忽略。
+  所有其他指定数据库连接的属性 (例如 `dsn`, `username`, `password`) 
+  与 `Connection` 对象本身将被忽略。
 
-默认情况下，
-事务使用主库连接，
-一个事务内，
-所有的数据库操作都将使用主库连接，
-例如，
+
+默认情况下，事务使用主库连接，
+一个事务内，所有的数据库操作都将使用主库连接，例如，
 
 ```php
 $db = Yii::$app->db;
@@ -627,6 +602,9 @@ try {
 } catch(\Exception $e) {
     $transaction->rollBack();
     throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
+    throw $e;
 }
 ```
 
@@ -635,6 +613,7 @@ try {
 ```php
 $transaction = Yii::$app->db->slave->beginTransaction();
 ```
+
 有时，你或许想要强制使用主库来执行读查询。
 这可以通过 `useMaster()` 方法来完成：
 
@@ -642,11 +621,12 @@ $transaction = Yii::$app->db->slave->beginTransaction();
 $rows = Yii::$app->db->useMaster(function ($db) {
     return $db->createCommand('SELECT * FROM user LIMIT 10')->queryAll();
 });
-你也可以明确地将 `Yii::$app->db->enableSlaves` 设置为 false 来将所有的读操作指向主库连接。
 ```
 
+你也可以明确地将 `Yii::$app->db->enableSlaves` 设置为 false 来将所有的读操作指向主库连接。
 
-## 操纵数据库模式 <span id="database-schema"></span>
+
+## 操纵数据库模式（Working with Database Schema） <span id="database-schema"></span>
 
 Yii DAO 提供了一套完整的方法来让你操纵数据库模式，
 如创建表、从表中删除一列，等等。这些方法罗列如下：
@@ -677,21 +657,13 @@ Yii::$app->db->createCommand()->createTable('post', [
 ]);
 ```
 
-更多信息请参考[[yii\db\Schema]]
-
-### 修改模式
-
 上面的数组描述要创建的列的名称和类型。
-对于列的类型， 
-Yii 提供了一套抽象数据类型来允许你定义出数据库无关的模式。
-这些将根据表所在数据库的种类，
-被转换为特定的类型定义。
+对于列的类型， Yii 提供了一套抽象数据类型来允许你定义出数据库无关的模式。
+这些将根据表所在数据库的种类，被转换为特定的类型定义。
 请参考 [[yii\db\Command::createTable()|createTable()]]-method 的 API 文档来获取更多信息。
 
 除了改变数据库模式，
-你也可以通过 DB Connection 的 [[yii\db\Connection::getTableSchema()|getTableSchema()]] 方法来检索某张表的定义信息。
-例如，
-
+你也可以通过 DB Connection 的 [[yii\db\Connection::getTableSchema()|getTableSchema()]] 方法来检索某张表的定义信息。例如，
 
 ```php
 $table = Yii::$app->db->getTableSchema('post');
@@ -700,4 +672,3 @@ $table = Yii::$app->db->getTableSchema('post');
 该方法返回一个 [[yii\db\TableSchema]] 对象，
 它包含了表中的列、主键、外键，等等的信息。
 所有的这些信息主要被 [query builder](db-query-builder.md) 和 [active record](db-active-record.md) 所使用，来帮助你写出数据库无关的代码。
-

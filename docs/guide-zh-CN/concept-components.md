@@ -1,5 +1,5 @@
 组件（Component）
-==========
+==============
 
 组件是 Yii 应用的主要基石。是 [[yii\base\Component]] 类或其子类的实例。
 三个用以区分它和其它类的主要功能有：
@@ -35,10 +35,10 @@ echo DatePicker::widget([
 当继承 [[yii\base\Component]] 或 [[yii\base\Object]] 时，
 推荐你使用如下的编码风格：
 
-- 若你需要重写构造方法（Constructor），传入 `$config` 作为构造器方法**最后一个**参数，
+- 若你需要重写构造方法（Constructor），传入 `$config` 作为构造器方法*最后一个*参数，
   然后把它传递给父类的构造方法。
-- 永远在你重写的构造方法**结尾处**调用一下父类的构造方法。
-- 如果你重写了 [[yii\base\BaseObject::init()]] 方法，请确保你在 `init` 方法的**开头处**调用了父类的 `init` 方法。
+- 永远在你重写的构造方法*结尾处*调用一下父类的构造方法。
+- 如果你重写了 [[yii\base\BaseObject::init()]] 方法，请确保你在 `init` 方法的*开头处*调用了父类的 `init` 方法。
 
 例子如下：
 
@@ -56,7 +56,7 @@ class MyClass extends BaseObject
 
     public function __construct($param1, $param2, $config = [])
     {
-        // ... initialization before configuration is applied
+        // ... 在应用配置之前初始化
 
         parent::__construct($config);
     }
@@ -65,7 +65,7 @@ class MyClass extends BaseObject
     {
         parent::init();
 
-        // ... initialization after configuration is applied
+        // ... 应用配置后进行初始化
     }
 }
 ```
@@ -93,6 +93,5 @@ $component = \Yii::createObject([
 3. 在 [[yii\base\BaseObject::init()|init()]] 方法内进行初始化后的收尾工作。你可以通过重写此方法，进行一些良品检验，属性的初始化之类的工作。
 4. 对象方法调用。
 
-前三步都是在对象的构造方法内发生的。这意味着一旦你获得了一个对象实例，
+前三步都是在对象的构造方法内发生的。这意味着一旦你获得了一个对象实例（即一个对象），
 那么它就已经初始化就绪可供使用。
-

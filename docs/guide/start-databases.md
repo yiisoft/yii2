@@ -23,6 +23,8 @@ Preparing the Database <span id="preparing-database"></span>
 To begin, create a database named `yii2basic`, from which you will fetch data in your application.
 You may create an SQLite, MySQL, PostgreSQL, MSSQL or Oracle database, as Yii has built-in support for many database applications. For simplicity, MySQL will be assumed in the following description.
 
+> Info: While MariaDB used to be a drop-in replacement for MySQL this is no longer fully true. In case you wish to use advanced features like `JSON` support in MariaDB, please check the MariaDB extension listed below.
+
 Next, create a table named `country` in the database, and insert some sample data. You may run the following SQL statements to do so:
 
 ```sql
@@ -83,6 +85,7 @@ If you need to work with databases support for which isn't bundled with Yii, che
 - [Informix](https://github.com/edgardmessias/yii2-informix)
 - [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
 - [Firebird](https://github.com/edgardmessias/yii2-firebird)
+- [MariaDB](https://github.com/sam-it/yii2-mariadb)
 
 
 Creating an Active Record <span id="creating-active-record"></span>
@@ -129,7 +132,7 @@ $country->save();
 ```
 
 > Info: Active Record is a powerful way to access and manipulate database data in an object-oriented fashion.
-You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Data Access Objects](db-dao.md).
+You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Database Access Objects](db-dao.md).
 
 
 Creating an Action <span id="creating-action"></span>
@@ -175,7 +178,7 @@ class CountryController extends Controller
 
 Save the above code in the file `controllers/CountryController.php`.
 
-The `index` action calls `Country::find()`. This Active Record method builds a DB query and retrieves all of the data from the `country` table.
+The `index` action calls `Country::find()`. This Active Record method builds a DB query that can be used to retrieve all of the data from the `country` table.
 To limit the number of countries returned in each request, the query is paginated with the help of a
 [[yii\data\Pagination]] object. The `Pagination` object serves two purposes:
 
@@ -257,7 +260,7 @@ Summary <span id="summary"></span>
 In this section, you learned how to work with a database. You also learned how to fetch and display
 data in pages with the help of [[yii\data\Pagination]] and [[yii\widgets\LinkPager]].
 
-In the next section, you will learn how to use the powerful code generation tool, called [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md),
+In the next section, you will learn how to use the powerful code generation tool, called [Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide),
 to help you rapidly implement some commonly required features, such as the Create-Read-Update-Delete (CRUD)
 operations for working with the data in a database table. As a matter of fact, the code you have just written can all
 be automatically generated in Yii using the Gii tool.
