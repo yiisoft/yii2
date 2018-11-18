@@ -40,6 +40,10 @@ use yii\helpers\HtmlPurifier;
  * on 32bit systems will fall back to the PHP implementation because intl uses a 32bit UNIX timestamp internally.
  * On a 64bit system the intl formatter is used in all cases if installed.
  *
+ * > Note: The Formatter class is meant to be used for formatting values for display to users in different
+ * > languages and time zones. If you need to format a date or time in machine readable format, use the
+ * > PHP [date()](http://php.net/manual/en/function.date.php) function instead.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Enrica Ruedin <e.ruedin@guggach.com>
  * @author Carsten Brandt <mail@cebe.cc>
