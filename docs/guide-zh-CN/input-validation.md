@@ -11,15 +11,15 @@
 ```php
 $model = new \app\models\ContactForm();
 
-// populate model attributes with user inputs
+// 根据用户的输入填充到模型的属性中
 $model->load(\Yii::$app->request->post());
-// which is equivalent to the following:
+// 等效于下面这样：
 // $model->attributes = \Yii::$app->request->post('ContactForm');
 
 if ($model->validate()) {
-    // all inputs are valid
+    // 所有输入通过验证
 } else {
-    // validation failed: $errors is an array containing error messages
+    // 验证失败: $errors 是一个包含错误信息的数组
     $errors = $model->errors;
 }
 ```
@@ -49,22 +49,22 @@ public function rules()
 
 ```php
 [
-    // required, specifies which attributes should be validated by this rule.
-    // For a single attribute, you can use the attribute name directly
-    // without having it in an array
+    // 必填，指出哪个属性由这个规则验证。
+    // 如果是一个属性，可以直接写属性的名字
+    // 不必写在数组里。
     ['attribute1', 'attribute2', ...],
-
-    // required, specifies the type of this rule.
-    // It can be a class name, validator alias, or a validation method name
+    
+    // 必填，指出规则的类型。
+    // 可以是一个类名，验证器别名，或者是一个验证器方法名
     'validator',
 
-    // optional, specifies in which scenario(s) this rule should be applied
-    // if not given, it means the rule applies to all scenarios
-    // You may also configure the "except" option if you want to apply the rule
-    // to all scenarios except the listed ones
+    // 可选，指出这个规则在哪个（些）场景下生效
+    // 如果没有给出，意味着这个规则在所有场景都生效
+    // 如果你希望在所有场景下生效，但是在排除的场景里不生效。
+    //可以配置 "except" 选项
     'on' => ['scenario1', 'scenario2', ...],
 
-    // optional, specifies additional configurations for the validator object
+    // 可选，为验证器对象指定额外的配置
     'property1' => 'value1', 'property2' => 'value2', ...
 ]
 ```
@@ -373,10 +373,10 @@ class MyForm extends Model
     public function rules()
     {
         return [
-            // an inline validator defined as the model method validateCountry()
+            // 定义为模型方法validateCountry()的行内验证器
             ['country', 'validateCountry'],
 
-            // an inline validator defined as an anonymous function
+            // 定义为匿名函数的行内验证器
             ['token', function ($attribute, $params) {
                 if (!ctype_alnum($this->$attribute)) {
                     $this->addError($attribute, 'The token must contain letters or digits.');
@@ -620,10 +620,10 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            // username and password are both required
+            // username 和 password 都是必填项
             [['username', 'password'], 'required'],
 
-            // password is validated by validatePassword()
+            // password 用 validatePassword() 方法验证
             ['password', 'validatePassword'],
         ];
     }
@@ -672,7 +672,7 @@ class LoginForm extends Model
 > public function getClientOptions($model, $attribute)
 > {
 >     $options = parent::getClientOptions($model, $attribute);
->     // Modify $options here
+>     // 修改 $options 
 >
 >     return $options;
 > }
