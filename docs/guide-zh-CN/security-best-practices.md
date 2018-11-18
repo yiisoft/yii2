@@ -160,7 +160,7 @@ XSS 或者跨站脚本发生在输出 HTML 到浏览器时，输出内容没有�
 CSRF 是跨站请求伪造的缩写。这个攻击思想源自许多应用程序假设来自用户的浏览器请求是由用户自己产生的，
 而事实并非如此。
 
-例如，网站 `an.example.com` 有一个 `/logout` 网址, 当使用简单的 GET 请求访问时, 记录用户退出。
+例如，网站 `an.example.com` 有一个 `/logout` 网址，当使用简单的 GET 请求访问时, 记录用户退出。
 只要用户的请求一切正常，但是有一天坏人们故意在用户经常访问的论坛上放上 `<img src="http://an.example.com/logout">`。
 浏览器在请求图像或请求页面之间没有任何区别，
 所以当用户打开一个带有这样一个被操作过的 `<img>` 标签的页面时，
@@ -251,7 +251,7 @@ class ContactAction extends Action
 }
 ```
 
-> 警告: 禁用 CSRF 将允许任何站点向您的站点发送 POST 请求。在这种情况下，实施额外验证非常重要，例如检查 IP 地址或秘密令牌。
+> Warning: 禁用 CSRF 将允许任何站点向您的站点发送 POST 请求。在这种情况下，实施额外验证非常重要，例如检查 IP 地址或秘密令牌。
 
 进一步阅读该话题：
 
@@ -314,8 +314,8 @@ Yii 提供依赖 cookie 和/或 PHP 会话的功能。如果您的连接受到�
 
 像 [[yii\web\UrlManager]] 和 [[yii\helpers\Url]] 这样的类会使用 
 [[yii\web\Request::getHostInfo()|currently requested host name]] 来生成链接。
-如果 Web 服务器配置为独立于 `Host` 标头的值提供相同的站点,这个信息并不可靠，
-并且 [可能由发送HTTP请求的用户伪造](https://www.acunetix.com/vulnerabilities/web/host-header-attack).
+如果 Web 服务器配置为独立于 `Host` 标头的值提供相同的站点，这个信息并不可靠，
+并且 [可能由发送HTTP请求的用户伪造](https://www.acunetix.com/vulnerabilities/web/host-header-attack)。
 在这种情况下，您应该修复您的 Web 服务器配置以便仅为指定的主机名提供站点服务
 或者通过设置 `request` 应用程序组件的 [[yii\web\Request::setHostInfo()|hostInfo]] 属性来显式设置或过滤该值。
 
@@ -342,6 +342,6 @@ return [
 ];
 ```
 
-> 提示: 您应该始更倾向于使用 web 服务器配置 'host header attack' 保护而不是使用过滤器。
+> Note: 您应该始更倾向于使用 web 服务器配置 'host header attack' 保护而不是使用过滤器。
   仅当服务器配置设置不可用时 [[yii\filters\HostControl]] 才应该被使用。
   
