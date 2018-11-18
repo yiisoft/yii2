@@ -1,8 +1,8 @@
 输入验证
 ================
 
-一般说来，程序猿永远不应该信任从最终用户直接接收到的数据，
-并且使用它们之前应始终先验证其可靠性。
+根据经验，您永远不应该信任从最终用户收到的数据，
+并且应该在充分利用之前对其进行验证。
 
 要给 [model](structure-models.md) 填充其所需的用户输入数据，你可以调用 [[yii\base\Model::validate()]] 
 方法验证它们。该方法会返回一个布尔值，指明是否通过验证。若没有通过，你能通过 [[yii\base\Model::errors]] 
@@ -61,7 +61,7 @@ public function rules()
     // 可选，指出这个规则在哪个（些）场景下生效
     // 如果没有给出，意味着这个规则在所有场景都生效
     // 如果你希望在所有场景下生效，但是在排除的场景里不生效。
-    //可以配置 "except" 选项
+    // 可以配置 "except" 选项
     'on' => ['scenario1', 'scenario2', ...],
 
     // 可选，为验证器对象指定额外的配置
@@ -373,7 +373,7 @@ class MyForm extends Model
     public function rules()
     {
         return [
-            // 定义为模型方法validateCountry()的行内验证器
+            // 定义为模型方法 validateCountry() 的行内验证器
             ['country', 'validateCountry'],
 
             // 定义为匿名函数的行内验证器
@@ -588,8 +588,8 @@ $this->addError('*', 'Your salary is not enough for children.');
 
 ## 客户端验证 <span id="client-side-validation"></span>
 
-当终端用户通过 HTML 表单提供输入数据时，我们可能会需要用到基于 JavaScript 的客户端验证，因为这样 
-可以让用户更快速地发现输入错误而且因此也提供了较好的客户体验。你可以尝试使用或者自己实现一个 *除了支持服务端验证* 之外
+当终端用户通过 HTML 表单提供输入数据时，基于 JavaScript 的客户端验证是可取的，
+因为它允许用户更快地找出输入错误，从而提供更好的用户体验。你可以尝试使用或者自己实现一个 *除了支持服务端验证* 之外
 还支持客户端验证的验证器。
 
 > Info: 尽管客户端验证是值得的，但它不是必须的。客户端验证的主要目的是给终端用户提供
@@ -661,11 +661,11 @@ class LoginForm extends Model
 当在表单项级别和表单级别都设置了 `enableClientValidation` 的时候，
 前者（表单项）的级别优先生效。
 
-> Info：从 2.0.11 版本开始，所有继承 [[yii\validators\Validator]] 的验证器都可以通过
+> Info: 从 2.0.11 版本开始，所有继承 [[yii\validators\Validator]] 的验证器都可以通过
 > - [[yii\validators\Validator::getClientOptions()]] 这个单独的方法接收客户端选项。可以这样使用：
 
 > - 如果你想自己实现自定义的客户端验证但是保留服务端的
-> 验证器选项;
+> 验证器选项；
 > - 继承或者自定义符合你特殊的需求：
 >
 > ```php
@@ -685,10 +685,10 @@ class LoginForm extends Model
 用来在客户端执行验证。在这段 JavaScript 代码里，你可以使用下面几个
 预定义的变量：
 
-- `attribute`: 被验证的属性名。
-- `value`: 被验证的值。
-- `messages`: 一个给属性保存验证错误信息的数组。
-- `deferred`: 一个支持添加 deferred 对象的数组（下一部分再说）。
+- `attribute`：被验证的属性名。
+- `value`：被验证的值。
+- `messages`：一个给属性保存验证错误信息的数组。
+- `deferred`：一个支持添加 deferred 对象的数组（下一部分再说）。
 
 下面的例子，我们创建了一个 `StatusValidator` 验证器，它用来验证一个输入和存在的状态相比， 
 是否是有效的状态输入。这个验证器支持服务端验证也支持客户端验证。
@@ -738,9 +738,9 @@ JS;
 > ]
 > ```
 
-> Tip：如果你想手动调整客户端的验证，比如动态地添加表单项或者做一些自定义的 UI 逻辑，请参考
+> Tip: 如果你想手动调整客户端的验证，比如动态地添加表单项或者做一些自定义的 UI 逻辑，请参考
 > [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md)
-> 在 Yii 2.0 Cookbook.
+> 在 Yii 2.0 Cookbook。
 
 ### Deferred 验证 <span id="deferred-validation"></span>
 
@@ -763,7 +763,7 @@ JS;
 上面这个 `deferred` 变量是由 Yii 提供的，它是一个 Deferred 对象的数组。这个 `$.get()`
 jQuery 方法用来产生一个 Deferred 对象然后推送到 `deferred` 数组里。
 
-你也可以明确地创建一个  `deferred` 对象，当异步回调触发的时候调用它的 `resolve()` 方法。
+你也可以明确地创建一个 `deferred` 对象，当异步回调触发的时候调用它的 `resolve()` 方法。
 下面的例子展示了如何在客户端验证一个上传图片的尺寸。
 
 ```php
@@ -789,10 +789,10 @@ JS;
 }
 ```
 
-> Note：`resolve()` 方法必须在所有属性都验证完之后调用。不然表单不会
+> Note: `resolve()` 方法必须在所有属性都验证完之后调用。不然表单不会
   完成整体的验证流程。
 
-为了简单起见， `deferred` 数组封装了一个快捷方法 `add()` ，它可以自动创建 Deferred 对象
+为了简单起见，`deferred` 数组封装了一个快捷方法 `add()`，它可以自动创建 Deferred 对象
 然后把它添加到 `deferred` 数组里。用这个方法，你可以简化上面的例子：
 
 ```php
@@ -852,7 +852,7 @@ $form = ActiveForm::begin([
 ]);
 ```
 
-> Note：当在表单项级别和表单级别都设置了 `enableAjaxValidation` 属性的时候，
+> Note: 当在表单项级别和表单级别都设置了 `enableAjaxValidation` 属性的时候，
   前者（表单项级别）优先生效。
 
 你也需要在服务端准备处理这样的 AJAX 请求。
@@ -872,6 +872,6 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
   话说回来，这里描述的 AJAX 验证还是比较系统并且需要较少的代码开销。
 
 当 `enableClientValidation` 和 `enableAjaxValidation` 都设置为 `true` 时，只有客户端验证成功之后
-才会触发 AJAX 的验证请求。注意，如果验证某个表单项的时候凑巧 `validateOnChange`, `validateOnBlur` 或者 `validateOnType`
+才会触发 AJAX 的验证请求。注意，如果验证某个表单项的时候凑巧 `validateOnChange`，`validateOnBlur` 或者 `validateOnType`
 其中之一设置了 `true`,那么这个表单项在单独通过这样的客户端验证时，
 也会发起 AJAX 请求。
