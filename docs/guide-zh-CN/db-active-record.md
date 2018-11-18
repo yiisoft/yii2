@@ -88,6 +88,7 @@ class Customer extends ActiveRecord
 ```
 
 ### 将 Active Record 称为模型（Active records are called "models"）
+
 Active Record 实例称为[模型](structure-models.md)。因此, 我们通常将 Active Record 类
 放在 `app\models` 命名空间下（或者其他保存模型的命名空间）。
 
@@ -742,11 +743,12 @@ class Customer extends ActiveRecord
 1. 在与 Active Record 类相关联的 DB 表中创建一个列，以存储每行的版本号。
    这个列应当是长整型（在 MySQL 中是  `BIGINT DEFAULT 0`）。
 2. 重写 [[yii\db\ActiveRecord::optimisticLock()]] 方法返回这个列的命名。
-3. 在用于用户填写的 Web 表单中，添加一个隐藏字段（hidden field）来存储正在更新的行的当前版本号。
-   （Active Record 类中）版本号这个属性你要自行写进 rules() 方法并自己验证一下。
-4. 在使用 Active Record 更新数据的控制器动作中，要捕获（try/catch） [[yii\db\StaleObjectException]] 异常。
+3. 在你的 Model 类里实现 [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] 行为（注：这个行为类在 2.0.16 版本加入），以便从请求参数里自动解析这个列的值。
+   然后从验证规则中删除 version 属性，因为 [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] 已经处理它了.
+4. 在用于用户填写的 Web 表单中，添加一个隐藏字段（hidden field）来存储正在更新的行的当前版本号。
+5. 在使用 Active Record 更新数据的控制器动作中，要捕获（try/catch） [[yii\db\StaleObjectException]] 异常。
    实现一些业务逻辑来解决冲突（例如合并更改，提示陈旧的数据等等）。
-   
+   
 例如，假定版本列被命名为 `version`。您可以使用下面的代码来实现乐观锁。
 
 
@@ -779,7 +781,23 @@ public function actionUpdate($id)
         // 解决冲突的代码
     }
 }
+
+// ------ Model 代码 -------
+
+use yii\behaviors\OptimisticLockBehavior;
+
+public function behaviors()
+{
+    return [
+        OptimisticLockBehavior::className(),
+    ];
+}
 ```
+> Note：因为 [[\yii\behaviors\OptimisticLockBehavior|OptimisticLockBehavior]] 仅仅在保存记录的时候被确认，
+> 如果用户提交的有效版本号被直接解析 ：[[\yii\web\Request::getBodyParam()|getBodyParam()]]，
+> 那么你的 Model 将扩展成这样：触发在步骤 3 中子类的行为，与此同时，调用步骤 2 中的父类的定义，
+> 这样你在把 Model 绑定到负责接收用户输入的控制器的同时，有一个专门用于内部逻辑处理的实例，
+> 或者，您可以通过配置其 [[\yii\behaviors\OptimisticLockBehavior::$value|value]] 的属性来实现自己的逻辑。（注：这一堆都是在解释 Behaviors 的原理）
 
 
 ## 使用关联数据（Working with Relational Data） <span id="relational-data"></span>
@@ -1181,7 +1199,9 @@ $customers = Customer::find()
 调用 [[yii\db\ActiveQuery::joinWith()|joinWith()]] 方法会默认 [即时加载](#lazy-eager-loading) 相应的关联数据。
 如果你不需要那些关联数据，你可以指定它的第二个参数 `$eagerLoading` 为 `false`。
 
-> Note: 即使在启用即时加载的情况下使用 [[yii\db\ActiveQuery::joinWith()|joinWith()]] 或 [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]]，相应的关联数据也**不会**从这个 `JOIN` 查询的结果中填充。 因此，每个连接关系还有一个额外的查询，正如[即时加载](#lazy-eager-loading)部分所述。
+> Note: 即使在启用即时加载的情况下使用 [[yii\db\ActiveQuery::joinWith()|joinWith()]] 或 [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]]，
+  相应的关联数据也**不会**从这个 `JOIN` 查询的结果中填充。 
+  因此，每个连接关系还有一个额外的查询，正如[即时加载](#lazy-eager-loading)部分所述。
 
 和 [[yii\db\ActiveQuery::with()|with()]] 一样，你可以 join 多个关联表；你可以动态的自定义
 你的关联查询；你可以使用嵌套关联进行 join。你也可以将 [[yii\db\ActiveQuery::with()|with()]]
@@ -1493,7 +1513,8 @@ class CommentQuery extends ActiveQuery
 ```
 
 > Note: 作为 [[yii\db\ActiveQuery::onCondition()|onCondition()]] 方法的替代方案，你应当
-  调用 [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] 或 [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] 方法来附加新增的条件，不然在一个新定义的查询方法，已存在的条件可能会被覆盖。
+  调用 [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] 或 [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] 方法来附加新增的条件，
+  不然在一个新定义的查询方法，已存在的条件可能会被覆盖。
 
 然后你就可以先下面这样构建你的查询了：
 
