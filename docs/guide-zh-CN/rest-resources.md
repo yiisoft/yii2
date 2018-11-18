@@ -1,29 +1,29 @@
 资源
 =========
 
-RESTful 的 API 都是关于访问和操作 *资源*，可将资源看成MVC模式中的
+RESTful 的 API 都是关于访问和操作 *资源*，可将资源看成 MVC 模式中的
 [模型](structure-models.md)
 
-在如何代表一个资源没有固定的限定，在Yii中通常使用 
+在如何代表一个资源没有固定的限定，在 Yii 中通常使用 
 [[yii\base\Model]] 或它的子类（如 [[yii\db\ActiveRecord]]）
 代表资源，是为以下原因：
 
 * [[yii\base\Model]] 实现了 [[yii\base\Arrayable]] 接口，
-  它允许你通过RESTful API自定义你想要公开的资源数据。
+  它允许你通过 RESTful API 自定义你想要公开的资源数据。
 * [[yii\base\Model]] 支持 [输入验证](input-validation.md),
-  在你的RESTful API需要支持数据输入时非常有用。
+  在你的 RESTful API 需要支持数据输入时非常有用。
 * [[yii\db\ActiveRecord]] 提供了强大的数据库访问和操作方面的支持，
   如资源数据需要存到数据库它提供了完美的支持。
 
 本节主要描述资源类如何从 [[yii\base\Model]] (或它的子类) 继承
-并指定哪些数据可通过RESTful API返回，如果资源类没有
+并指定哪些数据可通过 RESTful API 返回，如果资源类没有
 继承 [[yii\base\Model]] 会将它所有的公开成员变量返回。
 
 
 ## 字段 <span id="fields"></span>
 
 当 RESTful API 响应中包含一个资源时，该资源需要序列化成一个字符串。
-Yii将这个过程分成两步，首先，资源会被 [[yii\rest\Serializer]] 转换成数组，
+Yii 将这个过程分成两步，首先，资源会被 [[yii\rest\Serializer]] 转换成数组，
 然后，该数组会通过 [[yii\web\ResponseFormatterInterface|response formatters]]
 根据请求格式（如 JSON，XML）被序列化成字符串。
 当开发一个资源类时应重点关注第一步。
@@ -94,7 +94,7 @@ public function fields()
 }
 ```
 
-> Warning: 模型的所有属性默认会被包含到API结果中，
+> Warning: 模型的所有属性默认会被包含到 API 结果中，
 > 应检查数据确保没包含敏感数据，如果有敏感数据，
 > 应覆盖 `fields()` 过滤掉，在上述例子中，我们选择过滤掉 `auth_key`，
 > `password_hash` 和 `password_reset_token`。
@@ -106,7 +106,7 @@ public function fields()
 [[yii\db\ActiveRecord::extraFields()]] 返回和数据表关联的属性。
 
 `extraFields()` 返回的数据格式和 `fields()` 相同，
-一般`extraFields()` 主要用于指定哪些值为对象的字段，
+一般 `extraFields()` 主要用于指定哪些值为对象的字段，
 例如，给定以下字段申明
 
 ```php
@@ -141,13 +141,13 @@ public function extraFields()
 ## 链接 <span id="links"></span>
 
 [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), 
-是Hypermedia as the Engine of Application State的缩写,
-提升RESTful API 应返回允许终端用户访问的资源操作的信息，
+是 Hypermedia as the Engine of Application State的缩写,
+提升 RESTful API 应返回允许终端用户访问的资源操作的信息，
 HATEOAS 的目的是在API中返回包含相关链接信息的资源数据。 
 
-资源类通过实现[[yii\web\Linkable]] 接口来支持HATEOAS，
+资源类通过实现 [[yii\web\Linkable]] 接口来支持 HATEOAS，
 该接口包含方法 [[yii\web\Linkable::getLinks()|getLinks()]] 来返回
-[[yii\web\Link|links]] 列表，典型情况下应返回包含代表本资源对象URL的 `self` 链接，例如
+[[yii\web\Link|links]] 列表，典型情况下应返回包含代表本资源对象 URL 的 `self` 链接，例如
 
 ```php
 use yii\base\Model;
@@ -248,14 +248,14 @@ class PostController extends Controller
 * `X-Pagination-Per-Page`：每页资源数量；
 * `Link`：允许客户端一页一页遍历资源的导航链接集合。
 
-Since collection in REST APIs is a data provider, it shares all data provider features i.e. pagination and sorting.
+由于 REST API 中的集合是 data provider，因此它共享所有 data provider 功能，即分页和排序。
 
 可在[快速入门](rest-quick-start.md#trying-it-out) 一节中找到样例。
 
-### Filtering collections <span id="filtering-collections"></span>
+### 过滤集合 <span id="filtering-collections"></span>
 
-Since version 2.0.13 Yii provides a facility to filter collections. An example can be found in the
-[Quick Start](rest-quick-start.md#trying-it-out) guide. In case you're implementing an endpoint yourself,
-filtering could be done as described in
+从 2.0.13 版本开始，Yii 提供了过滤集合的工具。一个例子可以在
+[快速入门](rest-quick-start.md#trying-it-out) 指南中找到。如果您自己实现末端，
+可以按照 Data Providers 指南的
 [Filtering Data Providers using Data Filters](output-data-providers.md#filtering-data-providers-using-data-filters)
-section of Data Providers guide.
+部分中的描述进行过滤。
