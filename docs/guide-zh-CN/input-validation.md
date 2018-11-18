@@ -285,7 +285,7 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> Note: 不是所有的验证器都支持这种形式的验证。比如 [unique（唯一性）](tutorial-core-validators.md#unique)核心验证器就就是一个例子，
+> Note: 不是所有的验证器都支持这种形式的验证。比如 [unique（唯一性）](tutorial-core-validators.md#unique) 核心验证器就就是一个例子，
   它的设计初衷就是只作用于模型类内部的。
 
 若你需要针对一系列值执行多项验证，你可以使用 [[yii\base\DynamicModel]]
@@ -309,7 +309,7 @@ public function actionSearch($name, $email)
 
 [[yii\base\DynamicModel::validateData()]] 方法会创建一个 `DynamicModel` 的实例对象，
 并通过给定数据定义模型特性（以 `name` 和 `email` 为例），
-之后用给定规则调用[[yii\base\Model::validate()]] 方法。
+之后用给定规则调用 [[yii\base\Model::validate()]] 方法。
 
 除此之外呢，你也可以用如下的更加“传统”的语法来执行临时数据验证：
 
@@ -395,8 +395,8 @@ class MyForm extends Model
 ```
 
 > Note: 从 2.0.11 版本开始，你可以用 [[yii\validators\InlineValidator::addError()]] 方法添加错误信息到模型里。用这种方法
-> 的话，错误信息可以通过 [[yii\i18n\I18N::format()]] 格式化。 你还可以在错误信息里分别用`{attribute}` 和 `{value}` 来引用
-> 属性的名字（不必手动去写）和属性的值:
+> 的话，错误信息可以通过 [[yii\i18n\I18N::format()]] 格式化。 你还可以在错误信息里分别用 `{attribute}` 和 `{value}` 来引用
+> 属性的名字（不必手动去写）和属性的值：
 
 > ```php
 > $validator->addError($this, $attribute, 'The value "{value}" is not acceptable for {attribute}.');
@@ -444,7 +444,7 @@ class CountryValidator extends Validator
 若你想要验证器支持不使用 model 的数据验证，你还应该重写[[yii\validators\Validator::validate()]] 方法。
 你也可以通过重写[[yii\validators\Validator::validateValue()]] 方法替代
 `validateAttribute()` 和 `validate()`，因为默认状态下，
-后两者的实现是通过调用`validateValue()`实现的。
+后两者的实现是通过调用 `validateValue()` 实现的。
 
 下面就是一个怎样把自定义验证器在模型中使用的例子。
 
@@ -510,7 +510,7 @@ class MigrationForm extends \yii\base\Model
 ### 创建验证器 <span id="multiple-attributes-validator"></span>
 
 比如我们需要检查下家庭收入是否足够给孩子们花销。此时我们可以创建一个行内验证器
-`validateChildrenFunds` 来解决这个问题，它仅仅在 `childrenCount` 大于0的时候才去检查。
+`validateChildrenFunds` 来解决这个问题，它仅仅在 `childrenCount` 大于 0 的时候才去检查。
 
 请注意，我们不要把所有需要验证的属性 (`['personalSalary', 'spouseSalary', 'childrenCount']`) 都附加到
 验证器上。因为这样做同一个验证器将会对每个属性都执行一遍验证（总共三次），但是实际上我们只需要对整个属性集
