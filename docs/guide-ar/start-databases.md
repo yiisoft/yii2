@@ -1,5 +1,4 @@
-Working with Databases
-======================
+# <div dir="rtl">التعامل مع قواعد البيانات</div>
 
 This section will describe how to create a new page that displays country data fetched from
 a database table named `country`. To achieve this goal, you will configure a database connection,
