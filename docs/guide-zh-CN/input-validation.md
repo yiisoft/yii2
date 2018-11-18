@@ -96,7 +96,7 @@ public function rules()
 方法里的激活特性，且它还必须与一或多个声明自
 `rules()` 里的激活规则相关联才会被验证。
 
-> Note: It is handy to give names to rules i.e.
+> Note: 可以方便地给规则命名比如：
 >
 > ```php
 > public function rules()
@@ -108,7 +108,7 @@ public function rules()
 > }
 > ```
 >
-> You can use it in a child model:
+> 你可以在子模型中使用：
 >
 > ```php
 > public function rules()
@@ -285,7 +285,7 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> Note: 不是所有的验证器都支持这种形式的验证。比如 [unique（唯一性）](tutorial-core-validators.md#unique)核心验证器就就是一个例子，
+> Note: 不是所有的验证器都支持这种形式的验证。比如 [unique（唯一性）](tutorial-core-validators.md#unique) 核心验证器就就是一个例子，
   它的设计初衷就是只作用于模型类内部的。
 
 若你需要针对一系列值执行多项验证，你可以使用 [[yii\base\DynamicModel]]
@@ -309,7 +309,7 @@ public function actionSearch($name, $email)
 
 [[yii\base\DynamicModel::validateData()]] 方法会创建一个 `DynamicModel` 的实例对象，
 并通过给定数据定义模型特性（以 `name` 和 `email` 为例），
-之后用给定规则调用[[yii\base\Model::validate()]] 方法。
+之后用给定规则调用 [[yii\base\Model::validate()]] 方法。
 
 除此之外呢，你也可以用如下的更加“传统”的语法来执行临时数据验证：
 
@@ -394,10 +394,10 @@ class MyForm extends Model
 }
 ```
 
-> Note: Since version 2.0.11 you can use [[yii\validators\InlineValidator::addError()]] for adding errors instead. That way the error
-> message can be formatted using [[yii\i18n\I18N::format()]] right away. Use `{attribute}` and `{value}` in the error
-> message to refer to an attribute label (no need to get it manually) and attribute value accordingly:
->
+> Note: 从 2.0.11 版本开始，你可以用 [[yii\validators\InlineValidator::addError()]] 方法添加错误信息到模型里。用这种方法
+> 的话，错误信息可以通过 [[yii\i18n\I18N::format()]] 格式化。 你还可以在错误信息里分别用 `{attribute}` 和 `{value}` 来引用
+> 属性的名字（不必手动去写）和属性的值：
+
 > ```php
 > $validator->addError($this, $attribute, 'The value "{value}" is not acceptable for {attribute}.');
 > ```
@@ -422,8 +422,8 @@ class MyForm extends Model
 操作与 [inline validators](#inline-validators) 所需操作完全一样。比如，
 
 
-For example the inline validator above could be moved into new [[components/validators/CountryValidator]] class.
-In this case we can use [[yii\validators\Validator::addError()]] to set customized message for the model.
+比如上述行内验证器也可以转移到新的验证类 [[components/validators/CountryValidator]]。
+这种情况下，我们可以用 [[yii\validators\Validator::addError()]] 来给模型设置自定义的错误信息。
 
 ```php
 namespace app\components;
@@ -444,9 +444,9 @@ class CountryValidator extends Validator
 若你想要验证器支持不使用 model 的数据验证，你还应该重写[[yii\validators\Validator::validate()]] 方法。
 你也可以通过重写[[yii\validators\Validator::validateValue()]] 方法替代
 `validateAttribute()` 和 `validate()`，因为默认状态下，
-后两者的实现使用过调用`validateValue()`实现的。
+后两者的实现是通过调用 `validateValue()` 实现的。
 
-Below is an example of how you could use the above validator class within your model.
+下面就是一个怎样把自定义验证器在模型中使用的例子。
 
 ```php
 namespace app\models;
@@ -473,19 +473,19 @@ class EntryForm extends Model
 ```
 
 
-## Multiple Attributes Validation <span id="multiple-attributes-validation"></span>
+## 多属性验证 <span id="multiple-attributes-validation"></span>
 
-Sometimes validators involve multiple attributes. Consider the following form:
+某些情况下验证器可以包含多个属性。考虑下面的情况：
 
 ```php
 class MigrationForm extends \yii\base\Model
 {
     /**
-     * Minimal funds amount for one adult person
+     * 一个成年人的最少花销
      */
     const MIN_ADULT_FUNDS = 3000;
     /**
-     * Minimal funds amount for one child
+     * 一个孩子的最小花销
      */
     const MIN_CHILD_FUNDS = 1500;
 
@@ -507,16 +507,16 @@ class MigrationForm extends \yii\base\Model
 }
 ```
 
-### Creating validator <span id="multiple-attributes-validator"></span>
+### 创建验证器 <span id="multiple-attributes-validator"></span>
 
-Let's say we need to check if the family income is enough for children. We can create inline validator
-`validateChildrenFunds` for that which will run only when `childrenCount` is more than 0.
+比如我们需要检查下家庭收入是否足够给孩子们花销。此时我们可以创建一个行内验证器
+`validateChildrenFunds` 来解决这个问题，它仅仅在 `childrenCount` 大于 0 的时候才去检查。
 
-Note that we can't use all validated attributes (`['personalSalary', 'spouseSalary', 'childrenCount']`) when attaching
-validator. This is because the same validator will run for each attribute (3 times in total) and we only need to run it
-once for the whole attribute set.
+请注意，我们不要把所有需要验证的属性 (`['personalSalary', 'spouseSalary', 'childrenCount']`) 都附加到
+验证器上。因为这样做同一个验证器将会对每个属性都执行一遍验证（总共三次），但是实际上我们只需要对整个属性集
+执行一次验证而已。
 
-You can use any of these attributes instead (or use what you think is the most relevant):
+你可以使用属性集合里的任何一个（或者使用你认为最相关的那个属性）：
 
 ```php
 ['childrenCount', 'validateChildrenFunds', 'when' => function ($model) {
@@ -524,7 +524,7 @@ You can use any of these attributes instead (or use what you think is the most r
 }],
 ```
 
-Implementation of `validateChildrenFunds` can be like this:
+`validateChildrenFunds` 的实现可以是下面这样的：
 
 ```php
 public function validateChildrenFunds($attribute, $params)
@@ -539,21 +539,21 @@ public function validateChildrenFunds($attribute, $params)
 }
 ```
 
-You can ignore `$attribute` parameter because validation is not related to just one attribute.
+你可以忽略 `$attribute` 参数，因为这个验证过程不仅仅关联一个属性。
 
 
-### Adding errors <span id="multiple-attributes-errors"></span>
+### 添加错误信息 <span id="multiple-attributes-errors"></span>
 
-Adding error in case of multiple attributes can vary depending on desired form design:
+在添加错误信息的时候，如果是多个属性，可以根据自己想要的格式使用多种情况：
 
-- Select the most relevant field in your opinion and add error to it's attribute:
+- 选择一个你认为最相关的字段把错误信息添加到它的属性里：
 
 ```php
 $this->addError('childrenCount', 'Your salary is not enough for children.');
 ```
 
-- Select multiple important relevant attributes or all attributes and add the same error message to them. We can store
-message in separate variable before passing it to `addError` to keep code DRY.
+- 选择多个相关的属性乃至所有属性给它们添加同样的错误信息。在使用 `addError` 之前我们可以先把错误信息存储到
+一个独立的变量里，这样可以减少代码重复性。
 
 ```php
 $message = 'Your salary is not enough for children.';
@@ -562,7 +562,7 @@ $this->addError('wifeSalary', $message);
 $this->addError('childrenCount', $message);
 ```
 
-Or use a loop:
+或者使用循环：
 
 ```php
 $attributes = ['personalSalary', 'wifeSalary', 'childrenCount'];
@@ -571,20 +571,20 @@ foreach ($attributes as $attribute) {
 }
 ```
 
-- Add a common error (not related to particular attribute). We can use the not existing attribute name for adding
-error, for example `*`, because attribute existence is not checked at that point.
+- 添加通用错误信息（不相关于特定的属性）。我们可以用一个不存在的属性名添加错误信息
+比如 `*`，因为这时是不检查属性的存在性的。
 
 ```php
 $this->addError('*', 'Your salary is not enough for children.');
 ```
 
-As a result, we will not see error message near form fields. To display it, we can include the error summary in view:
+这种情况下，我们不会在表单域里看到错误信息。为了展示这个错误信息，我们可以在视图里使用错误汇总：
 
 ```php
 <?= $form->errorSummary($model) ?>
 ```
 
-> Note: Creating validator which validates multiple attributes at once is well described in the [community cookbook](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-validator-multiple-attributes.md).
+> Note: 创建一次验证多个属性的验证器的参考说明在这里 [community cookbook](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-validator-multiple-attributes.md).
 
 ## Client-Side Validation <span id="client-side-validation"></span>
 
