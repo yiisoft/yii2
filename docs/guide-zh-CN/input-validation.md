@@ -818,15 +818,15 @@ JS;
 ```
 
 
-## AJAX Validation <span id="ajax-validation"></span>
+## AJAX 验证 <span id="ajax-validation"></span>
 
-Some validations can only be done on the server-side, because only the server has the necessary information.
-For example, to validate if a username is unique or not, it is necessary to check the user table on the server-side.
-You can use AJAX-based validation in this case. It will trigger an AJAX request in the background to validate the
-input while keeping the same user experience as the regular client-side validation.
+一些验证器只能工作在服务端，因为只有服务端才有必要的信息。
+比如，验证一个用户名是否唯一，需要在服务端检查用户表。
+这时候你可以使用基于 AJAX 的验证。它会在背后触发一个 AJAX 请求用来验证输入项而且还能
+保持和通常客户端验证一样的用户体验。
 
-To enable AJAX validation for a single input field, configure the [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]]
-property of that field to be `true` and specify a unique form `id`:
+给一个单独的表单项开启 AJAX 验证，你只需要设置 [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]]
+属性为 `true`，然后指定一个唯一的表单 `id`：
 
 ```php
 use yii\widgets\ActiveForm;
@@ -842,8 +842,8 @@ echo $form->field($model, 'username', ['enableAjaxValidation' => true]);
 ActiveForm::end();
 ```
 
-To enable AJAX validation for all inputs of the form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
-to be `true` at the form level:
+如果要给所有的表单项开启 AJAX 验证，可以在表单级别设置 [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
+属性为 `true` 就行：
 
 ```php
 $form = ActiveForm::begin([
@@ -852,11 +852,11 @@ $form = ActiveForm::begin([
 ]);
 ```
 
-> Note: When the `enableAjaxValidation` property is configured at both the input field level and the form level,
-  the former will take precedence.
+> Note：当在表单项级别和表单级别都设置了 `enableAjaxValidation` 属性的时候，
+  前者（表单项级别）优先生效。
 
-You also need to prepare the server so that it can handle the AJAX validation requests.
-This can be achieved by a code snippet like the following in the controller actions:
+你也需要在服务端准备处理这样的 AJAX 请求。
+这个可以在控制器的动作里通过如下的代码片段来实现：
 
 ```php
 if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
@@ -865,13 +865,13 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 }
 ```
 
-The above code will check whether the current request is an AJAX. If yes, it will respond to
-this request by running the validation and returning the errors in JSON format.
+上述代码将会检测当前的请求是否源自 AJAX。如果是的话，它将运行验证过程, 然后
+返回一段 JSON 格式的错误信息来响应这次请求。
 
-> Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
-  However, the AJAX validation feature described here is more systematic and requires less coding effort.
+> Info: 你也可以用 [Deferred 验证](#deferred-validation) 执行 AJAX 验证。 
+  话说回来，这里描述的 AJAX 验证还是比较系统并且需要较少的代码开销。
 
-When both `enableClientValidation` and `enableAjaxValidation` are set to `true`, AJAX validation request will be triggered
-only after the successful client validation. Note that in case of validating a single field that happens if either
-`validateOnChange`, `validateOnBlur` or `validateOnType` is set to `true`, AJAX request will be sent when the field in
-question alone successfully passes client validation. 
+当 `enableClientValidation` 和 `enableAjaxValidation` 都设置为 `true` 时，只有客户端验证成功之后
+才会触发 AJAX 的验证请求。注意，如果验证某个表单项的时候凑巧 `validateOnChange`, `validateOnBlur` 或者 `validateOnType`
+其中之一设置了 `true`,那么这个表单项在单独通过这样的客户端验证时，
+也会发起 AJAX 请求。
