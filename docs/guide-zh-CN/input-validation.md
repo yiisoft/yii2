@@ -586,16 +586,16 @@ $this->addError('*', 'Your salary is not enough for children.');
 
 > Note: 创建一次验证多个属性的验证器的参考说明在这里 [community cookbook](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-validator-multiple-attributes.md).
 
-## Client-Side Validation <span id="client-side-validation"></span>
+## 客户端验证 <span id="client-side-validation"></span>
 
-Client-side validation based on JavaScript is desirable when end users provide inputs via HTML forms, because
-it allows users to find out input errors faster and thus provides a better user experience. You may use or implement
-a validator that supports client-side validation *in addition to* server-side validation.
+当终端用户通过 HTML 表单提供输入数据时，我们可能会需要用到基于 JavaScript 的客户端验证，因为这样 
+可以让用户更快速地发现输入错误而且因此也提供了较好的客户体验。你可以尝试使用或者自己实现一个 *除了支持服务端验证* 之外
+还支持客户端验证的验证器。
 
-> Info: While client-side validation is desirable, it is not a must. Its main purpose is to provide users with a better
-  experience. Similar to input data coming from end users, you should never trust client-side validation. For this reason,
-  you should always perform server-side validation by calling [[yii\base\Model::validate()]], as
-  described in the previous subsections.
+> Info: 尽管客户端验证是值得的，但它不是必须的。客户端验证的主要目的是给终端用户提供
+  一个较好的体验。正如 “永远不用相信终端用户的输入数据” 一样，你也不能完全信任客户端验证。
+  基于这个考虑的话，正如前文描述所说，你应该永远在服务端通过调用 [[yii\base\Model::validate()]] 方法
+  进行服务端验证。
 
 
 ### Using Client-Side Validation <span id="using-client-side-validation"></span>
