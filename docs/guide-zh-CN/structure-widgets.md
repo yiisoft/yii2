@@ -80,13 +80,18 @@ use yii\helpers\Html;
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
 ```
 
-详见 [依赖注入容器“实践中的应用”一节](concept-di-container.md#practical-usage) 。
+有关详细信息，请参阅
+[依赖注入容器“实践中的应用”一节](concept-di-container.md#practical-usage) 。
 
 
 ## 创建小部件 <span id="creating-widgets"></span>
 
+可以根据需要以两种不同方式创建小部件。
+
+### 1: 使用 `widget()` 方法
+
 继承 [[yii\base\Widget]] 类并覆盖 [[yii\base\Widget::init()]] 和/或
-[[yii\base\Widget::run()]] 方法可创建小部件。通常`init()` 方法处理小部件属性，
+[[yii\base\Widget::run()]] 方法可创建小部件。通常 `init()` 方法处理小部件属性，
 `run()` 方法包含小部件生成渲染结果的代码。
 渲染结果可以直接“输出”或通过 `run()` 方法作为字符串返回。
 
@@ -127,8 +132,23 @@ use app\components\HelloWidget;
 <?= HelloWidget::widget(['message' => 'Good morning']) ?>
 ```
 
-以下是另一种可在`begin()` 和 `end()`调用中使用的`HelloWidget`，
-HTML编码内容然后显示。
+
+有时小部件需要渲染很多内容，虽然你可以在 `run()` 方法中嵌入内容，但更好的方法是将内容放入一个[视图](structure-views.md)文件，
+然后调用 [[yii\base\Widget::render()]] 方法渲染该视图文件，
+例如：
+
+```php
+public function run()
+{
+    return $this->render('hello');
+}
+```
+
+### 2: 使用 `begin()` 和 `end()` 方法
+
+这类似于上面的有细微差别。
+以下是另一种可在 `begin()` 和 `end()` 调用中使用的 `HelloWidget`，
+HTML 编码内容然后显示。
 
 ```php
 namespace app\components;
@@ -152,14 +172,14 @@ class HelloWidget extends Widget
 }
 ```
 
-如上所示，PHP输出缓冲在`init()`启动，所有在`init()` 
-和 `run()`方法之间的输出内容都会被获取，并在`run()`处理和返回。
+如上所示，PHP 输出缓冲在 `init()` 启动，所有在 `init()` 
+和 `run()` 方法之间的输出内容都会被获取，并在 `run()` 处理和返回。
 
 > Info: 当你调用 [[yii\base\Widget::begin()]] 时会创建一个新的小部件
-  实例并在构造结束时调用`init()`方法，
-  在`end()`时会调用`run()`方法并输出返回结果。
+  实例并在构造结束时调用 `init()` 方法，
+  在 `end()` 时会调用 `run()` 方法并输出返回结果。
 
-如下代码显示如何使用这种 `HelloWidget`:
+如下代码显示如何使用这种 `HelloWidget`：
 
 ```php
 <?php
@@ -167,26 +187,21 @@ use app\components\HelloWidget;
 ?>
 <?php HelloWidget::begin(); ?>
 
-    content that may contain <tag>'s
+    sample content that may contain one or more <strong>HTML</strong> <pre>tags</pre>
+
+    If this content grows too big, use sub views
+
+    For e.g.
+
+    <?php echo $this->render('viewfile'); // Note: here render() method is of class \yii\base\View as this part of code is within view file and not in Widget class file ?>
 
 <?php HelloWidget::end(); ?>
 ```
 
-有时小部件需要渲染很多内容，一种更好的办法是将内容放入一个[视图](structure-views.md)文件，
-然后调用[[yii\base\Widget::render()]]方法渲染该视图文件，
-例如：
-
-```php
-public function run()
-{
-    return $this->render('hello');
-}
-```
-
-小部件的视图文件默认存储在`WidgetPath/views`目录，`WidgetPath`代表小部件类文件所在的目录。
-假如上述示例小部件类文件在`@app/components`下，
-会渲染`@app/components/views/hello.php`视图文件。 You may override
-可以覆盖[[yii\base\Widget::getViewPath()]]方法自定义视图文件所在路径。
+默认情况下，小部件的视图应存储在 `WidgetPath/views` 目录，`WidgetPath` 代表小部件类文件所在的目录。
+假如小部件类文件在 `@app/components` 下，
+上述示例会渲染 `@app/components/views/hello.php` 视图文件。
+您可以覆盖 [[yii\base\Widget::getViewPath()]] 方法自定义视图文件所在路径。
 
 
 ## 最佳实践 <span id="best-practices"></span>
@@ -198,9 +213,10 @@ public function run()
 
 小部件设计时应是独立的，也就是说使用一个小部件时候，
 可以直接丢弃它而不需要额外的处理。
-但是当小部件需要外部资源如CSS, JavaScript, 图片等会比较棘手，
+但是当小部件需要外部资源如 CSS，JavaScript，图片等会比较棘手，
 幸运的时候Yii提供 [资源包](structure-asset-bundles.md) 来解决这个问题。
 
 当一个小部件只包含视图代码，它和[视图](structure-views.md)很相似，
 实际上，在这种情况下，唯一的区别是小部件是可以重用类，
-视图只是应用中使用的普通PHP脚本。
+视图只是应用中使用的普通 PHP 脚本。
+

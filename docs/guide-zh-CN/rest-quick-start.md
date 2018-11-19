@@ -40,7 +40,7 @@ class UserController extends ActiveController
 
 控制器类扩展自 [[yii\rest\ActiveController]]。
 通过指定 [[yii\rest\ActiveController::modelClass|modelClass]]
-作为 `app\models\User`， 控制器就能知道使用哪个模型去获取和处理数据。
+作为 `app\models\User`，控制器就能知道使用哪个模型去获取和处理数据。
 
 
 ## 配置URL规则 <span id="configuring-url-rules"></span>
@@ -61,8 +61,8 @@ class UserController extends ActiveController
 上面的配置主要是为`user`控制器增加一个 URL 规则。这样，
 用户的数据就能通过美化的 URL 和有意义的 http 动词进行访问和操作。
 
-> Note: Yii will automatically pluralize controller names for use in endpoints (see [Trying it Out](#trying-it-out) section below).
-> You can configure this using the [[yii\rest\UrlRule::$pluralize]] property.
+> Note: Yii 将自动复数控制器名称以便在端点中使用（参见下面的 [Trying it Out](#trying-it-out) 部分）。
+> 您可以使用 [[yii\rest\UrlRule::$pluralize]] 属性配置。
 
 
 ## 启用 JSON 输入 <span id="enabling-json-input"></span>
@@ -188,10 +188,10 @@ Content-Type: application/json; charset=UTF-8
 > 例如 `password_hash`, `auth_key` 你肯定不希望这些出现在你的 API 结果中。
 > 你应该在 [响应格式](rest-response-formatting.md) 部分中过滤掉这些字段。
 
-Addionally, you can sort collections like `http://localhost/users?sort=email` or
-`http://localhost/users?sort=-email`. Filtering collections like `http://localhost/users?filter[id]=10` or
-`http://localhost/users?filter[email][like]=gmail.com` could be implemented using
-data filters. See [Resources](rest-resources.md#filtering-collections) section for details.
+此外，您可以对 `http://localhost/users?sort=email` 或
+`http://localhost/users?sort=-email` 等集合进行排序。 可以使用数据过滤器来实现过滤集合 `http://localhost/users?filter[id]=10` 或
+`http://localhost/users?filter[email][like]=gmail.com`。
+有关详细信息，请参阅 [Resources](rest-resources.md#filtering-collections) 部分。
 
 
 ## 总结 <span id="summary"></span>
