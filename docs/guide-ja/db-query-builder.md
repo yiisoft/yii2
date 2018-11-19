@@ -912,22 +912,23 @@ namespace app\db\conditions;
 
 class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
 {
-    use \yii\db\Condition\ExpressionBuilderTrait; // コンストラクタと `queryBuilder` プロパティを含む。
+    use \yii\db\ExpressionBuilderTrait; // コンストラクタと `queryBuilder` プロパティを含む。
 
     /**
-     * @param AllGreaterCondition $condition ビルドすべき条件
+     * @param ExpressionInterface $condition ビルドすべき条件
      * @param array $params バインディング・パラメータ
+     * @return AllGreaterCondition
      */ 
-    public function build(ConditionInterface $condition, &$params)
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
         $value = $condition->getValue();
         
         $conditions = [];
-        foreach ($condition->getColumns() as $column) {
+        foreach ($expression->getColumns() as $column) {
             $conditions[] = new SimpleCondition($column, '>', $value);
         }
 
-        return $this->queryBuider->buildCondition(new AndCondition($conditions), $params);
+        return $this->queryBuilder->buildCondition(new AndCondition($conditions), $params);
     }
 }
 ```

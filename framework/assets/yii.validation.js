@@ -282,12 +282,12 @@ yii.validation = (function ($) {
                 if (!$target.length) {
                     $target = $form.find('[name="' + options.compareAttributeName + '"]');
                 }
-                compareValue = $target.val();                
+                compareValue = $target.val();
             }
 
             if (options.type === 'number') {
-                value = parseFloat(value);
-                compareValue = parseFloat(compareValue);
+                value = value ? parseFloat(value) : 0;
+                compareValue = compareValue ? parseFloat(compareValue) : 0;
             }
             switch (options.operator) {
                 case '==':
@@ -376,7 +376,15 @@ yii.validation = (function ($) {
             return [];
         }
 
-        var files = $(attribute.input, attribute.$form).get(0).files;
+        var fileInput = $(attribute.input, attribute.$form).get(0);
+
+        // Skip validation if file input does not exist
+        // (in case file inputs are added dynamically and no file input has been added to the form)
+        if (typeof fileInput === "undefined") {
+            return [];
+        }
+
+        var files = fileInput.files;
         if (!files) {
             messages.push(options.message);
             return [];
