@@ -6,7 +6,7 @@
 
 1. 确定可能影响响应格式的各种因素，例如媒介类型，语言，版本，等等。
    这个过程也被称为 [content negotiation](http://en.wikipedia.org/wiki/Content_negotiation)。
-2. 资源对象转换为数组， 如在 [Resources](rest-resources.md) 部分中所描述的。
+2. 资源对象转换为数组，如在 [Resources](rest-resources.md) 部分中所描述的。
    通过 [[yii\rest\Serializer]] 来完成。
 3. 通过内容协商步骤将数组转换成字符串。
    [[yii\web\ResponseFormatterInterface|response formatters]] 通过
@@ -78,7 +78,7 @@ public function behaviors()
 }
 ```
 
-`formats` 属性的keys支持 MIME 类型，而 values 必须在 [[yii\web\Response::formatters]]
+`formats` 属性的 keys 支持 MIME 类型，而 values 必须在 [[yii\web\Response::formatters]]
 中支持被响应格式名称。
 
 
@@ -86,8 +86,8 @@ public function behaviors()
 
 正如我们上面所描述的，[[yii\rest\Serializer]] 负责转换资源的中间件
 对象或集合到数组。它将对象 [[yii\base\ArrayableInterface]] 作为
-[[yii\data\DataProviderInterface]]。 前者主要由资源对象实现， 而
-后者是资源集合。
+[[yii\data\DataProviderInterface]]。前者主要由资源对象实现，
+而后者是资源集合。
 
 你可以通过设置 [[yii\rest\Controller::serializer]] 属性和一个配置数组。
 例如，有时你可能想通过直接在响应主体内包含分页信息来
@@ -107,7 +107,7 @@ class UserController extends ActiveController
 }
 ```
 
-那么你的请求可能会得到的响应如下 `http://localhost/users`:
+那么你的请求可能会得到的响应如下 `http://localhost/users`：
 
 ```
 HTTP/1.1 200 OK
