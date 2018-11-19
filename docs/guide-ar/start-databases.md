@@ -1,9 +1,8 @@
 # <div dir="rtl">التعامل مع قواعد البيانات</div>
 
-This section will describe how to create a new page that displays country data fetched from
-a database table named `country`. To achieve this goal, you will configure a database connection,
-create an [Active Record](db-active-record.md) class, define an [action](structure-controllers.md),
-and create a [view](structure-views.md).
+<p dir="rtl">
+    في هذا الجزء التعليمي ستتعلم آلية إنشاء صفحة جديدة تعرض بيانات يتم جلبها من قاعدة البيانات  -في هذا المثال، البيانات تخص ال country-، هذه البيانات سيتم جلبها من جدول موجود في قاعدة البيانات يسمى ب <code>country</code>. لتحقيق هذا المهمة، ستقوم بعمل ال config الخاص بالإتصال بقاعدة بيانات، بالإضافة لإنشاء ال <a href="../guide/db-active-record.md">Active Record</a> class، وتعريف ال <a href="../guide/structure-controllers.md">action</a>، وإنشاء <a href="../guide/structure-views.md">view</a> لهذه الصفحة. 
+</p>
 
 Through this tutorial, you will learn how to:
 
