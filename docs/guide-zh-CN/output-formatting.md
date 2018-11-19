@@ -97,32 +97,32 @@ echo Yii::$app->formatter->asDate('now', 'yyyy-MM-dd'); // 2014-10-06
 echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 ```
 
-> Info: ICU 不支持 PHP 格式语法的某些字母，并且这些 PHP intl 扩展名不能在 YII 格式化程序中使用。
-> 大多数（`w`, `t`, `L`, `B`, `u`, `I`, `Z`）对于格式化日期并不是真的有用，而是在进行数学计算时有用。
+> Info: ICU 不支持 PHP 格式语法的某些字母，并且这些 PHP intl 扩展名不能在 Yii 格式化程序中使用。
+> 大多数（`w`，`t`，`L`，`B`，`u`，`I`，`Z`）对于格式化日期并不是真的有用，而是在进行数学计算时有用。
 > 然而 `S` 和 `U` 可能是有用的。他们的行为可以通过以下方式实现：
 >
-> - 比如 `S`，这是当月的英文序数后缀（e.g. st, nd, rd or th.），可以使用以下代码来替换：
+> - 比如 `S`，这是当月的英文序数后缀（例如：st，nd，rd 或 th。），可以使用以下代码来替换：
 >
 >   ```php
 >   $f = Yii::$app->formatter;
 >   $d = $f->asOrdinal($f->asDate('2017-05-15', 'php:j'));
->   echo "On the $d day of the month.";  // prints "On the 15th day of the month."
+>   echo "On the $d day of the month.";  // 打印 "On the 15th day of the month."
 >   ```
 >
 > - 比如 `U`，Unix 纪元，你能够使用 [[yii\i18n\Formatter::asTimestamp()|timestamp]] 来格式化。
 
 当使用需要支持多种语言的应用程序时，您经常需要为不同的区域设置指定不同的日期和时间格式。
-为了简化这项操作，你可以使用格式快捷键（e.g. `long`, `short`）来代替。
+为了简化这项操作，你可以使用格式快捷键（例如：`long`，`short`）来代替。
 格式化程序将根据当前有效的地区的 [[yii\i18n\Formatter::locale|locale]] 将格式快捷方式转换为适当的程序。
 支持以下格式的快捷方式（示例是假设设置 locale 为 `en_GB` ）：
 
-- `short`: will output `06/10/2014` for date and `15:58` for time;
-- `medium`: will output `6 Oct 2014` and `15:58:42`;
-- `long`: will output `6 October 2014` and `15:58:42 GMT`;
-- `full`: will output `Monday, 6 October 2014` and `15:58:42 GMT`.
+- `short`：将输出日期 `06/10/2014` 和时间 `15:58`；
+- `medium`：将输出 `6 Oct 2014` 和 `15:58:42`；
+- `long`：将输出 `6 October 2014` 和 `15:58:42 GMT`；
+- `full`：将输出 `Monday, 6 October 2014` 和 `15:58:42 GMT`。
 
 版本 2.0.7 起，支持格式化日期为不同的系统时钟，
-请参阅格式化程序 [[yii\i18n\Formatter::$calendar|$calendar]] 的API文档 - 有关如何设置其他日历的属性。
+请参阅格式化程序 [[yii\i18n\Formatter::$calendar|$calendar]] 的 API 文档 - 有关如何设置其他日历的属性。
 
 
 ### 时区（Time Zones） <span id="time-zones"></span>
@@ -210,7 +210,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 
 ## 空值（Null Values） <span id="null-values"></span>
 
-空值（`null`）会被特殊格式化。 `fommater` 默认会将空值格式化为 `(not set)` 对应的当前的语言。
+空值（`null`）会被特殊格式化。`fommater` 默认会将空值格式化为 `(not set)` 对应的当前的语言。
 你可以配置 [[yii\i18n\Formatter::nullDisplay|nullDisplay]]
 属性来进行个性化。
 
