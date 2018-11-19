@@ -4,16 +4,21 @@
     في هذا الجزء التعليمي ستتعلم آلية إنشاء صفحة جديدة تعرض بيانات يتم جلبها من قاعدة البيانات  -في هذا المثال، البيانات تخص ال country-، هذه البيانات سيتم جلبها من جدول موجود في قاعدة البيانات يسمى ب <code>country</code>. لتحقيق هذا المهمة، ستقوم بعمل ال config الخاص بالإتصال بقاعدة بيانات، بالإضافة لإنشاء ال <a href="../guide/db-active-record.md">Active Record</a> class، وتعريف ال <a href="../guide/structure-controllers.md">action</a>، وإنشاء <a href="../guide/structure-views.md">view</a> لهذه الصفحة. 
 </p>
 
-Through this tutorial, you will learn how to:
 
-* configure a DB connection,
-* define an Active Record class,
-* query data using the Active Record class,
-* display data in a view in a paginated fashion.
+<p dir="rtl">
+ في هذا الشرح ستتعلم كيف يمكنك القيام بما يلي: 
+</p>
 
-Note that in order to finish this section, you should have basic knowledge and experience using databases.
-In particular, you should know how to create a database, and how to execute SQL statements using a DB client tool.
+<ul dir="rtl">
+    <li>إعداد ال connection الخاص بقاعدة البيانات</li>
+    <li> التعرف على ال active record.</li>
+    <li>إنشاء جمل إستعلام عن البياتات بإستخدام ال active record class</li>
+    <li>عرض البيانات داخل ال view من خلال ال paginated fashion.</li>
+</ul>
 
+<p dir="rtl">
+    ملاحظة: من أجل الانتهاء من هذا الجزء التعليمي، يجب أن يكون لديك المعرفة الأساسية والخبرة باستخدام قواعد البيانات. وعلى وجه الخصوص، يجب أن تعرف كيفية إنشاء قواعد البيانات، وكيفية تنفيذ ال statements SQL باستخدام أي DB client tool.
+</p>
 
 Preparing the Database <span id="preparing-database"></span>
 ----------------------
