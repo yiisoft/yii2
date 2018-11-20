@@ -36,7 +36,7 @@ $articles = $query->offset($pagination->offset)
 
 上述例子中，文章的哪一页将被返回？它取决于是否给出一个名为 `page` 的参数。
 默认情况下，分页对象将尝试将 [[yii\data\Pagination::$page|current page]] 设置为 `page` 参数的值。
-如果没有提供该参数，那么它将默认为0。
+如果没有提供该参数，那么它将默认为 0。
 
 为了促成创建支持分页的 UI 元素，Yii 提供了 [[yii\widgets\LinkPager]] 挂件来展示一栏页码按钮，
 用户可以通过点击它来指示应该显示哪一页的数据。
@@ -51,7 +51,7 @@ echo LinkPager::widget([
 ]);
 ```
 
-如果你想手动地创建 UI 元素，你可以使用 [[yii\data\Pagination::createUrl()]] 来创建指向不同页面的 URLs 。
+如果你想手动地创建 UI 元素，你可以使用 [[yii\data\Pagination::createUrl()]] 来创建指向不同页面的 URLs。
 该方法需要一个页码来作为参数，并且将创建一个包含页码并且格式正确的 URL，
 例如，
 
