@@ -1,7 +1,7 @@
 模块
 =======
 
-模块是独立的软件单元，由[模型](structure-models.md), [视图](structure-views.md),
+模块是独立的软件单元，由[模型](structure-models.md)，[视图](structure-views.md)，
 [控制器](structure-controllers.md)和其他支持组件组成，
 终端用户可以访问在[应用主体](structure-applications.md)中已安装的模块的控制器，
 模块被当成小应用主体来看待，和[应用主体](structure-applications.md)不同的是，
@@ -10,8 +10,8 @@
 
 ## 创建模块 <span id="creating-modules"></span>
 
-模块被组织成一个称为[[yii\base\Module::basePath|base path]]的目录，
-在该目录中有子目录如`controllers`, `models`, `views` 分别为对应控制器，模型，视图和其他代码，和应用非常类似。
+模块被组织成一个称为 [[yii\base\Module::basePath|base path]] 的目录，
+在该目录中有子目录如 `controllers`，`models`，`views` 分别为对应控制器，模型，视图和其他代码，和应用非常类似。
 如下例子显示一个模型的目录结构：
 
 ```
@@ -22,15 +22,15 @@ forum/
     models/                      包含模型类文件
     views/                       包含控制器视图文件和布局文件
         layouts/                 包含布局文件
-        default/                 包含DefaultController控制器视图文件
-            index.php            index视图文件
+        default/                 包含 DefaultController 控制器视图文件
+            index.php            index 视图文件
 ```
 
 
 ### 模块类 <span id="module-classes"></span>
 
-每个模块都有一个继承[[yii\base\Module]]的模块类，
-该类文件直接放在模块的[[yii\base\Module::basePath|base path]]目录下，
+每个模块都有一个继承 [[yii\base\Module]] 的模块类，
+该类文件直接放在模块的 [[yii\base\Module::basePath|base path]] 目录下，
 并且能被 [自动加载](concept-autoloading.md)。当一个模块被访问，
 和 [应用主体实例](structure-applications.md)
 类似会创建该模块类唯一实例，模块实例用来帮模块内代码共享数据和组件。
@@ -59,13 +59,13 @@ class Module extends \yii\base\Module
 public function init()
 {
     parent::init();
-    // 从config.php加载配置来初始化模块
+    // 从config.php 加载配置来初始化模块
     \Yii::configure($this, require __DIR__ . '/config.php');
 }
 ```
 
-`config.php`配置文件可能包含以下内容，类似
-[应用主体配置](structure-applications.md#application-configurations).
+`config.php` 配置文件可能包含以下内容，类似
+[应用主体配置](structure-applications.md#application-configurations)。
 
 ```php
 <?php
@@ -99,22 +99,22 @@ class PostController extends Controller
 }
 ```
 
-可配置[[yii\base\Module::controllerNamespace]]属性来自定义控制器类的命名空间，
-如果一些控制器不再该命名空间下，可配置[[yii\base\Module::controllerMap]]属性让它们能被访问，
+可配置 [[yii\base\Module::controllerNamespace]] 属性来自定义控制器类的命名空间，
+如果一些控制器不再该命名空间下，可配置 [[yii\base\Module::controllerMap]] 属性让它们能被访问，
 这类似于 [应用主体配置](structure-applications.md#controller-map) 所做的。
 
 
 ### 模块中的视图 <span id="views-in-modules"></span>
 
-视图应放在模块的[[yii\base\Module::basePath|base path]]对应目录下的 `views` 目录，
+视图应放在模块的 [[yii\base\Module::basePath|base path]] 对应目录下的 `views` 目录，
 对于模块中控制器对应的视图文件应放在 `views/ControllerID` 目录下，
-其中`ControllerID`对应 [控制器 ID](structure-controllers.md#routes). For example, if
-例如，假定控制器类为`PostController`，
+其中 `ControllerID` 对应 [控制器 ID](structure-controllers.md#routes)。
+例如，假定控制器类为 `PostController`，
 目录对应模块[[yii\base\Module::basePath|base path]]目录下的 `views/post` 目录。
 
 模块可指定 [布局](structure-views.md#layouts)，它用在模块的控制器视图渲染。
 布局文件默认放在 `views/layouts` 目录下，
-可配置[[yii\base\Module::layout]]属性指定布局名，
+可配置 [[yii\base\Module::layout]] 属性指定布局名，
 如果没有配置 `layout` 属性名，默认会使用应用的布局。
 
 
@@ -147,7 +147,7 @@ yii <module_id>/<command>/<sub_command>
 
 要在应用中使用模块，只需要将模块加入到应用主体配置的[[yii\base\Application::modules|modules]]属性的列表中，
 如下代码的[应用主体配置](structure-applications.md#application-configurations) 
-使用 `forum` 模块:
+使用 `forum` 模块：
 
 ```php
 [
@@ -169,7 +169,7 @@ yii <module_id>/<command>/<sub_command>
 
 和访问应用的控制器类似，[路由](structure-controllers.md#routes) 
 也用在模块中控制器的寻址，
-模块中控制器的路由必须以模块ID开始，接下来为控制器ID和操作ID。
+模块中控制器的路由必须以模块 ID 开始，接下来为控制器 ID 和操作 ID。
 例如，假定应用使用一个名为 `forum` 模块，
 路由`forum/post/index` 代表模块中 `post` 控制器的 `index` 操作，
 如果路由只包含模块ID，默认为 `default` 的
@@ -199,10 +199,10 @@ $module = MyModuleClass::getInstance();
 如果模块没有被请求，该方法会返回空，注意不需要手动创建一个模块类，
 因为手动创建的和Yii处理请求时自动创建的不同。
 
-> Info: 当开发模块时，你不能假定模块使用固定的ID，
-  因为在应用或其他没模块中，模块可能会对应到任意的ID，
-  为了获取模块ID，应使用上述代码获取模块实例，
-  然后通过`$module->id`获取模块ID。
+> Info: 当开发模块时，你不能假定模块使用固定的 ID，
+  因为在应用或其他没模块中，模块可能会对应到任意的 ID，
+  为了获取模块 ID，应使用上述代码获取模块实例，
+  然后通过 `$module->id` 获取模块 ID。
 
 也可以使用如下方式访问模块实例:
 
@@ -214,7 +214,7 @@ $module = \Yii::$app->getModule('forum');
 $module = \Yii::$app->controller->module;
 ```
 
-第一种方式仅在你知道模块ID的情况下有效，
+第一种方式仅在你知道模块 ID 的情况下有效，
 第二种方式在你知道处理请求的控制器下使用。
 
 一旦获取到模块实例，可访问注册到模块的参数和组件，例如：
@@ -226,10 +226,10 @@ $maxPostCount = $module->params['maxPostCount'];
 
 ### 引导启动模块 <span id="bootstrapping-modules"></span>
 
-有些模块在每个请求下都有运行， [[yii\debug\Module|debug]] 模块就是这种，
+有些模块在每个请求下都有运行，[[yii\debug\Module|debug]] 模块就是这种，
 为此将这种模块加入到应用主体的 [[yii\base\Application::bootstrap|bootstrap]] 属性中。
 
-例如，如下示例的应用主体配置会确保`debug`模块每次都被加载：
+例如，如下示例的应用主体配置会确保 `debug` 模块每次都被加载：
 
 ```php
 [
@@ -247,7 +247,7 @@ $maxPostCount = $module->params['maxPostCount'];
 ## 模块嵌套 <span id="nested-modules"></span>
 
 模块可无限级嵌套，也就是说，模块可以包含另一个包含模块的模块，我们称前者为*父模块*，后者为*子模块*，
-子模块必须在父模块的[[yii\base\Module::modules|modules]]属性中申明，
+子模块必须在父模块的 [[yii\base\Module::modules|modules]] 属性中申明，
 例如：
 
 ```php
@@ -274,12 +274,12 @@ class Module extends \yii\base\Module
 在模块`forum`中子模块`admin`中`dashboard`控制器的`index`操作。
 
 > Info: [[yii\base\Module::getModule()|getModule()]] 方法只返回子模块的直属的
-父模块。 [[yii\base\Application::loadedModules]] 保存了已加所有载模块的属性, 包括两者的子模块和
+父模块。[[yii\base\Application::loadedModules]] 保存了已加所有载模块的属性，包括两者的子模块和
 嵌套模块，并用他们的类名进行索引。
 
-## Accessing components from within modules
+## 从模块内部访问组件
 
-从 2.0.13 版本开始模块支持 [tree traversal](concept-service-locator.md#tree-traversal). 
+从 2.0.13 版本开始模块支持 [tree traversal](concept-service-locator.md#tree-traversal)。
 这允发模块开发人员通过作为其模块的服务定位器去引用（应用程序）组件。
 这意味着最好使用 `$module->get('db')` 而不是 `Yii::$app->get('db')`。
 在需要不同组件（配置）的情况下，
