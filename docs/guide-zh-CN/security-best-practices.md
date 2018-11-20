@@ -18,7 +18,7 @@
 ### 过滤输入
 
 过滤输入的意思是，用户输入不应该认为是安全的，你需要总是验证你获得的输入值是在允许范围内。
-比如，我们假设 sorting 只能指定为 `title`， `created_at` 和 `status` 三个值，然后，这个值是由用户输入提供的，
+比如，我们假设可以通过三个字段完成排序 `title`，`created_at` 和 `status`，然后，这个值是由用户输入提供的，
 那么，最好在我们接收参数的时候，检查一下这个值是否是指定的范围。
 对于基本的 PHP 而言，上述做法类似如下：
 
@@ -31,7 +31,7 @@ if (!in_array($sortBy, ['title', 'created_at', 'status'])) {
 
 在 Yii 中，很大可能性，你会使用 [表单校验器](input-validation.md) 来执行类似的检查。
 
-Further reading on the topic:
+进一步阅读该主题：
 
 - <https://www.owasp.org/index.php/Data_Validation>
 - <https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet>
@@ -61,8 +61,8 @@ $username = $_GET['username'];
 $sql = "SELECT * FROM user WHERE username = '$username'";
 ```
 
-除了提供正确的用户名外，攻击者可以给你的应用程序输入类似 '; DROP TABLE user; --` 的语句。
-这将会导致生成如下的 SQL ：
+除了提供正确的用户名外，攻击者可以给你的应用程序输入类似 `'; DROP TABLE user; --` 的语句。
+这将会导致生成如下的 SQL：
 
 ```sql
 SELECT * FROM user WHERE username = ''; DROP TABLE user; --'
@@ -105,7 +105,7 @@ function actionList($orderBy = null)
 }
 ```
 
-如果上述方法不行，表名或者列名应该被转义。 Yii 针对这种转义提供了一个特殊的语法，
+如果上述方法不行，表名或者列名应该被转义。Yii 针对这种转义提供了一个特殊的语法，
 这样可以在所有支持的数据库都使用一套方案。
 
 ```php
@@ -141,7 +141,7 @@ XSS 或者跨站脚本发生在输出 HTML 到浏览器时，输出内容没有�
 <?= \yii\helpers\Html::encode($username) ?>
 ```
 
-如果是 HTML ，我们可以用 HtmlPurifier 帮助类来执行：
+如果是 HTML，我们可以用 HtmlPurifier 帮助类来执行：
 
 ```php
 <?= \yii\helpers\HtmlPurifier::process($description) ?>
@@ -296,10 +296,10 @@ Yii 提供依赖 cookie 和/或 PHP 会话的功能。如果您的连接受到�
 有关如何配置它的说明，请参阅您的 Web 服务器文档。
 您还可以参考 H5BP 项目提供的示例配置：
 
-- [Nginx](https://github.com/h5bp/server-configs-nginx)
-- [Apache](https://github.com/h5bp/server-configs-apache).
-- [IIS](https://github.com/h5bp/server-configs-iis).
-- [Lighttpd](https://github.com/h5bp/server-configs-lighttpd).
+- [Nginx](https://github.com/h5bp/server-configs-nginx)。
+- [Apache](https://github.com/h5bp/server-configs-apache)。
+- [IIS](https://github.com/h5bp/server-configs-iis)。
+- [Lighttpd](https://github.com/h5bp/server-configs-lighttpd)。
 
 
 安全服务器配置
@@ -321,8 +321,8 @@ Yii 提供依赖 cookie 和/或 PHP 会话的功能。如果您的连接受到�
 
 有关于服务器配置的更多信息，请参阅您的 web 服务器的文档：
 
-- Apache 2: <http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
-- Nginx: <https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
+- Apache 2：<http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
+- Nginx：<https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
 
 如果您无权访问服务器配置，您可以在应用程序级别设置 [[yii\filters\HostControl]] 过滤器，
 以防此类的攻击。
@@ -344,4 +344,3 @@ return [
 
 > Note: 您应该始更倾向于使用 web 服务器配置 'host header attack' 保护而不是使用过滤器。
   仅当服务器配置设置不可用时 [[yii\filters\HostControl]] 才应该被使用。
-  
