@@ -13,7 +13,7 @@ Yii 使用 [[yii\data\Pagination]] 对象来代表分页方案的有关信息。
 * [[yii\data\Pagination::$page|current page]] 给出当前的页码。默认值为 0，表示第一页。
 
 通过一个已经完全明确的 [[yii\data\Pagination]] 对象，你可以部分地检索并且展示数据。
-比如，如果你正在从数据库取回数据，你可以使用分页对象提供的对应值来指定 DB 查询语句中的 `OFFSET` 和  `LIMIT` 子句。
+比如，如果你正在从数据库取回数据，你可以使用分页对象提供的对应值来指定 DB 查询语句中的 `OFFSET` 和 `LIMIT` 子句。
 下面是个例子，
 
 ```php
