@@ -176,13 +176,13 @@ yii <module_id>/<command>/<sub_command>
 [[yii\base\Module::defaultRoute]] 属性来决定使用哪个控制器/操作，
 也就是说路由 `forum` 可能代表 `forum` 模块的 `default` 控制器。
 
-The URL manager rules for the modules should be added before [[yii\web\UrlManager::parseRequest()]] is fired. That means doing it 
-in module's `init()` won't work because module will be initialized when routes were already processed. Thus, the rules
-should be added at [bootstrap stage](structure-extensions.md#bootstrapping-classes). It is a also a good practice
-to wrap module's URL rules with [[\yii\web\GroupUrlRule]].  
+在 [[yii\web\UrlManager::parseRequest()]] 被触发之前应该添加模块 URL 管理器规则。
+这就意味着在模块的 `init()` 将不会起作用，因为模块将在路由开始处理时被初始化。
+因此应该在 [bootstrap stage](structure-extensions.md#bootstrapping-classes) 添加规则。 
+使用 [[\yii\web\GroupUrlRule]] 去实现模块的 URL 规则也是一种很好的做法。  
 
-In case a module is used to [version API](rest-versioning.md), its URL rules should be added directly in `urlManager` 
-section of the application config.
+如果一个模块用于 [version API](rest-versioning.md)，
+它的 URL 规则应该直接添加到应用程序配置的 `urlManager` 中。
 
 
 ### 访问模块 <span id="accessing-modules"></span>
@@ -279,13 +279,13 @@ class Module extends \yii\base\Module
 
 ## Accessing components from within modules
 
-Since version 2.0.13 modules support [tree traversal](concept-service-locator.md#tree-traversal). This allows module 
-developers to reference (application) components via the service locator that is their module.
-This means that it is preferable to use `$module->get('db')` over `Yii::$app->get('db')`.
-The user of a module is able to specify a specific component to be used for the module in case a different component
-(configuration) is required.
+从 2.0.13 版本开始模块支持 [tree traversal](concept-service-locator.md#tree-traversal). 
+这允发模块开发人员通过作为其模块的服务定位器去引用（应用程序）组件。
+这意味着最好使用 `$module->get('db')` 而不是 `Yii::$app->get('db')`。
+在需要不同组件（配置）的情况下，
+模块开发者能够指定要用于模块的特定组件。
 
-For example consider partial this application configuration:
+例如，以下是部分应用程序的配置：
 
 ```php
 'components' => [
@@ -307,8 +307,8 @@ For example consider partial this application configuration:
 ],
 ```
 
-The application database tables will be prefixed with `main_`, while all module tables will be prefixed with `module_`.
-Note that configuration above is not merged; the modules' component for example will have the query cache enabled since that is the default value.
+应用程序数据表将会以 `main_` 作为前缀，而所有模块表都将以 `module_` 为前缀。
+注意上面的配置并未合并；例如模块的组件都将启用查询缓存，因为这是默认的设置。
 
 ## 最佳实践 <span id="best-practices"></span>
 
