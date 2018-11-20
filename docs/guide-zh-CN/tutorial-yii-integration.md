@@ -5,8 +5,8 @@
 在下面这个板块中，我们向你展示如何实现这些目标。
 
 
-## 在 Yii 中使用第三方类库（Using Third-Party Libraries in Yii） <span id="using-libs-in-yii"></span>
---------------------------------------------------------------
+在 Yii 中使用第三方类库（Using Third-Party Libraries in Yii） <span id="using-libs-in-yii"></span>
+--------------------------------------------------------
 
 要想在 Yii 应用中使用第三方类库，
 你主要需要确保这些库中的类文件都可以被正常导入或可以被自动加载。
@@ -70,7 +70,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 ```
 
 
-## 在第三方系统内使用 Yii（Using Yii in Third-Party Systems） <span id="using-yii-in-others"></span>
+在第三方系统内使用 Yii（Using Yii in Third-Party Systems） <span id="using-yii-in-others"></span>
 -----------------------------------------------------------
 
 因为 Yii 提供了很多牛逼的功能，有时，你可能会想要使用它们中的一些功能用来支持开发或完善某些第三方的系统，
@@ -118,8 +118,8 @@ new yii\web\Application($yiiConfig); // 不要在这里调用 run() 方法。
 比如，创建 AR 类，并用它们来操作数据库。
 
 
-## 配合使用 Yii 2 和 Yii 1（Using Yii 2 with Yii 1） <span id="using-both-yii2-yii1"></span>
---------------------------------------------------
+配合使用 Yii 2 和 Yii 1（Using Yii 2 with Yii 1） <span id="using-both-yii2-yii1"></span>
+----------------------------------------------
 
 如果你之前使用 Yii 1，大概你也有正在运行的 Yii 1 应用吧。
 不必用 Yii 2 重写整个应用，你也可以通过增添对哪些
