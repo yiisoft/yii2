@@ -20,11 +20,11 @@
     ملاحظة: من أجل الانتهاء من هذا الجزء التعليمي، يجب أن يكون لديك المعرفة الأساسية والخبرة باستخدام قواعد البيانات. وعلى وجه الخصوص، يجب أن تعرف كيفية إنشاء قواعد البيانات، وكيفية تنفيذ ال statements SQL باستخدام أي DB client tool.
 </p>
 
-Preparing the Database <span id="preparing-database"></span>
-----------------------
+## <div dir="rtl">إعداد قاعدة البيانات</div> <span id="preparing-database"></span>
 
-To begin, create a database named `yii2basic`, from which you will fetch data in your application.
-You may create an SQLite, MySQL, PostgreSQL, MSSQL or Oracle database, as Yii has built-in support for many database applications. For simplicity, MySQL will be assumed in the following description.
+<p dir="rtl">
+    في البداية، عليك إنشاء قاعدة بيانات تسمى ب <code>yii2basic</code>، والتي ستستخدم لجلب البيانات الخاصة بالتطبيق، ويمكنك إستخدام أي من ال SQLite, MySql, PostgreSQL, MSSQL or Oracle database, ال Yii بشكل افتراضي بدعم العديد من قواعد البيانات والتي يمكنك إستخدامها مباشرة في التطبيق الخاص بك، ولتبسيط الأمور، ال MySql هي التي سيتم إستخدامها في في هذا الشرح. 
+س</p>
 
 > Info: While MariaDB used to be a drop-in replacement for MySQL this is no longer fully true. In case you wish to use advanced features like `JSON` support in MariaDB, please check the MariaDB extension listed below.
 
