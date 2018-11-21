@@ -249,7 +249,7 @@ EOT;
 
     public function testTabularInputErrors()
     {
-        $this->activeField->attribute = '[0]' . $this->attributeName;
+        $this->activeField->attribute = '[0]'.$this->attributeName;
         $this->helperModel->addError($this->attributeName, 'Error Message');
 
         $expectedValue = '<div class="form-group field-activefieldtestmodel-0-attributename has-error">';
@@ -584,78 +584,6 @@ HTML;
         $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
     }
 
-    public function testInputOptionsAreMergedFromActiveField()
-    {
-        $this->removeLabelHintAndError();
-        $expectedValue = '<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" data-id="3">';
-        $field = $this->activeField->input('text', ['data-id' => 3])->render();
-        self::assertContains($expectedValue, $field);
-    }
-
-    public function testTextInputOptionsAreMergedFromActiveField()
-    {
-        $this->removeLabelHintAndError();
-        $expectedValue = '<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" data-id="3">';
-        $field = $this->activeField->textInput(['data-id' => 3])->render();
-        self::assertContains($expectedValue, $field);
-    }
-
-    public function testHiddenInputOptionsAreMergedFromActiveField()
-    {
-        $this->removeLabelHintAndError();
-        $expectedValue = '<input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" data-id="3">';
-        $field = $this->activeField->hiddenInput(['data-id' => 3])->render();
-        self::assertContains($expectedValue, $field);
-    }
-
-    public function testPasswordInputOptionsAreMergedFromActiveField()
-    {
-        $this->removeLabelHintAndError();
-        $expectedValue = '<input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" data-id="3">';
-        $field = $this->activeField->passwordInput(['data-id' => 3])->render();
-        self::assertContains($expectedValue, $field);
-    }
-
-    public function testTextareaInputOptionsAreMergedFromActiveField()
-    {
-        $this->removeLabelHintAndError();
-        $expectedValue = '<textarea id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" data-id="3">';
-        $field = $this->activeField->textarea(['data-id' => 3])->render();
-        self::assertContains($expectedValue, $field);
-    }
-
-    public function testRadioInputOptionsAreMergedFromActiveField()
-    {
-        $this->removeLabelHintAndError();
-        $expectedValue = '<input type="radio" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" value="1" data-id="3">';
-        $field = $this->activeField->radio(['data-id' => 3])->render();
-        self::assertContains($expectedValue, $field);
-    }
-
-    public function testCheckboxInputOptionsAreMergedFromActiveField()
-    {
-        $this->removeLabelHintAndError();
-        $expectedValue = '<input type="checkbox" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" value="1" data-id="3">';
-        $field = $this->activeField->checkbox(['data-id' => 3])->render();
-        self::assertContains($expectedValue, $field);
-    }
-
-    public function testDropdownListOptionsAreMergedFromActiveField()
-    {
-        $this->removeLabelHintAndError();
-        $expectedValue = '<select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" data-id="3">';
-        $field = $this->activeField->dropDownList([0 => 'No', 1 => 'Yes'], ['data-id' => 3])->render();
-        self::assertContains($expectedValue, $field);
-    }
-
-    public function testListboxOptionsAreMergedFromActiveField()
-    {
-        $this->removeLabelHintAndError();
-        $expectedValue = '<select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4" data-id="3">';
-        $field = $this->activeField->listBox([0 => 'No', 1 => 'Yes'], ['data-id' => 3])->render();
-        self::assertContains($expectedValue, $field);
-    }
-
     /**
      * Helper methods.
      */
@@ -668,11 +596,6 @@ HTML;
         ]));
 
         return $view;
-    }
-
-    private function removeLabelHintAndError()
-    {
-        $this->activeField->label(false)->error(false)->hint(false);
     }
 }
 

@@ -542,8 +542,6 @@ class ActiveField extends Component
      */
     public function radio($options = [], $enclosedByLabel = true)
     {
-        $options = array_merge($this->inputOptions, $options);
-
         if ($enclosedByLabel) {
             $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
@@ -596,8 +594,6 @@ class ActiveField extends Component
      */
     public function checkbox($options = [], $enclosedByLabel = true)
     {
-        $options = array_merge($this->inputOptions, $options);
-
         if ($enclosedByLabel) {
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';

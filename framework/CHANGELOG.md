@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
-- Bug #16629: ActiveField::inputOptions were not merged with options passed for radio and checkbox (paweljankowiak06)
 - Bug #16648: Html::strtolower() was corrupting UTF-8 strings (Kolyunya)
 - Bug #13977: Skip validation if file input does not exist (RobinKamps, s1lver)
 - Bug #16183: Fixed when `yii\helpers\BaseFileHelper` sometimes returned wrong value (samdark, SilverFire, OndrejVasicek)
