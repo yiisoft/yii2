@@ -14,12 +14,12 @@ Yii 提供两个控制器基类来简化创建RESTful
 [[yii\rest\Controller]] 和 [[yii\rest\ActiveController]] 提供以下功能，
 一些功能在后续章节详细描述：
 
-* HTTP 方法验证;
-* [内容协商和数据格式化](rest-response-formatting.md);
-* [认证](rest-authentication.md);
-* [频率限制](rest-rate-limiting.md).
+* HTTP 方法验证；
+* [内容协商和数据格式化](rest-response-formatting.md)；
+* [认证](rest-authentication.md)；
+* [频率限制](rest-rate-limiting.md)。
 
-[[yii\rest\ActiveController]] 额外提供以下功能:
+[[yii\rest\ActiveController]] 额外提供以下功能：
 
 * 一系列常用动作：`index`，`view`，`create`，`update`，`delete`，`options`；
 * 对动作和资源进行用户认证。
