@@ -340,12 +340,12 @@ class CsvDataProvider extends BaseDataProvider
 }
 ```
 
-## Filtering Data Providers using Data Filters <span id="filtering-data-providers-using-data-filters"></span>
+## 使用数据过滤器过滤数据提供者 <span id="filtering-data-providers-using-data-filters"></span>
 
-While you can build conditions for active data provider manually as described in
-[Filtering Data](output-data-widgets.md#filtering-data) and [Separate Filter Form](output-data-widgets.md#separate-filter-form)
-sections of data widgets guide, Yii has data filters that are very useful if you need flexible filter condtions.
-Data filters could be used as follows:
+虽然您可以手动为活动数据提供构建条件，
+例如使用 [过滤数据](output-data-widgets.md#filtering-data) 和 [单独过滤表格](output-data-widgets.md#separate-filter-form) 数据小部件，
+但如果你需要灵活的过滤条件，Yii 的数据过滤器会非常有用。
+以下是数据过滤器使用的方式：
 
 ```php
 $filter = new ActiveDataFilter([
@@ -354,7 +354,7 @@ $filter = new ActiveDataFilter([
 
 $filterCondition = null;
 
-// You may load filters from any source. For example,
+// 您可以从任何来源加载过滤器。例如：
 // if you prefer JSON in request body,
 // use Yii::$app->request->getBodyParams() below:
 if ($filter->load(\Yii::$app->request->get())) { 
@@ -375,7 +375,7 @@ return new ActiveDataProvider([
 ]);
 ```
 
-`PostSearch` model serves the purpose of defining which properties and values are allowed for filtering:
+`PostSearch` 模型用于定义允许过滤的属性和值：
 
 ```php
 use yii\base\Model;
@@ -395,5 +395,5 @@ class PostSearch extends Model
 }
 ```
 
-Data filters are quite flexible. You may customize how conditions are built and which operators are allowed.
-For details check API docs on [[\yii\data\DataFilter]].
+数据过滤器非常灵活。您可以自定义构建的条件以及允许的运算符。
+更多的细节请查看 [[\yii\data\DataFilter]] 的 API 文档。
