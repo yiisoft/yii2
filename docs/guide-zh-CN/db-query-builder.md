@@ -227,12 +227,12 @@ $userQuery = (new Query())->select('id')->from('user');
 $query->where(['id' => $userQuery]);
 ```
 
-使用哈希格式，Yii 在内部对相应的值进行参数绑定，因为与 [字符串格式](#string-format) 相比，
-此处你不需要手动添加参数。但请注意，Yii 不会帮你转义列名，所以如果你通过
-从用户端获得的变量作为列名而没有任何额外的检查，对于 SQL 注入攻击，
+使用哈希格式，Yii 在内部对相应的值进行参数绑定，与 [字符串格式](#string-format) 相比，
+此处你不需要手动添加参数绑定。但请注意，Yii 不会帮你转义列名，所以如果你
+从用户端获得的变量作为列名而没有进行任何额外的检查，对于 SQL 注入攻击，
 你的程序将变得很脆弱。为了保证应用程序的安全，请不要将变量用作列名
-或用白名单过滤变量。如果你实在需要从用户获取列名，请阅读 [过滤数据](output-data-widgets.md#filtering-data)
-指南文章。例如，以下代码易受攻击：
+或者你必须用白名单过滤变量。如果你实在需要从用户获取列名，请阅读 [过滤数据](output-data-widgets.md#filtering-data)
+章节。例如，以下代码易受攻击：
 
 ```php
 // 易受攻击的代码：
@@ -261,14 +261,14 @@ $query->where([$column => $value]);
   
 - `or`: 用法和 `and` 操作符类似，这里就不再赘述。
 
-- `not`：只需要操作数 1，它将包含在`NOT()`中。例如，`['not'，'id = 1']` 将生成 `['not', 'id=1']`。操作数 1也可以是个描述多个表达式的数组。 例如 `['not', ['status' => 'draft', 'name' => 'example']]` 将生成 `NOT ((status='draft') AND (name='example'))`。
+- `not`：只需要操作数 1，它将包含在`NOT()`中。例如，`['not'，'id = 1']` 将生成 `['not', 'id=1']`。操作数 1 也可以是个描述多个表达式的数组。 例如 `['not', ['status' => 'draft', 'name' => 'example']]` 将生成 `NOT ((status='draft') AND (name='example'))`。
 
 - `between`: 第一个操作数为字段名称，第二个和第三个操作数代表的是这个字段
   的取值范围。例如，`['between', 'id', 1, 10]` 将会生成
   `id BETWEEN 1 AND 10`。
-  如果你需要建立一个值在两列之间的条件（比如`11 BETWEEN min_id AND max_id`），
+  如果你需要建立一个值在两列之间的查询条件（比如 `11 BETWEEN min_id AND max_id`），
   你应该使用 [[yii\db\conditions\BetweenColumnsCondition|BetweenColumnsCondition]]。
-  请参阅[条件-对象格式](#object-format)一章以了解有关条件的对象定义的更多信息。
+  请参阅 [条件-对象格式](#object-format) 一章以了解有关条件的对象定义的更多信息。
 
 - `not between`：与 `between` 类似，除了 `BETWEEN` 被 `NOT BETWEEN` 替换
   在生成条件时。
@@ -317,12 +317,12 @@ $query->where([$column => $value]);
 - `>`, `<=`, 或者其他包含两个操作数的合法 DB 操作符: 第一个操作数必须为字段的名称，
   而第二个操作数则应为一个值。例如，`['>', 'age', 10]` 将会生成 `age>10`。
 
-使用操作符格式，Yii 在内部对相应的值进行参数绑定，因为与 [字符串格式](#string-format) 相比，
-此处你不需要手动添加参数。但请注意，Yii 不会帮你转义列名，所以如果你通过
-从用户端获得的变量作为列名而没有任何额外的检查，对于 SQL 注入攻击，
+使用操作符格式，Yii 在内部对相应的值进行参数绑定，因此与 [字符串格式](#string-format) 相比，
+此处你不需要手动添加参数。但请注意，Yii 不会帮你转义列名，所以如果你
+从用户端获得的变量作为列名而没有进行任何额外的检查，对于 SQL 注入攻击，
 你的程序将变得很脆弱。为了保证应用程序的安全，请不要将变量用作列名
-或用白名单过滤变量。如果你实在需要从用户获取列名，请阅读 [过滤数据](output-data-widgets.md#filtering-data)
-指南文章。例如，以下代码易受攻击：
+或者你必须用白名单过滤变量。如果你实在需要从用户获取列名，请阅读 [过滤数据](output-data-widgets.md#filtering-data)
+章节。例如，以下代码易受攻击：
 
 ```php
 // 易受攻击的代码：
@@ -353,7 +353,7 @@ $query->andWhere(new OrCondition([
 ]))
 ```
 
-操作符格式与对象格式的转换关系是在
+操作符格式与对象格式的对应关系是在
 [[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]] 属性中定义,
 这里列举一些比较有代表性的映射关系：
 
@@ -706,8 +706,8 @@ $query = (new \yii\db\Query())
 该匿名函数将带有一个包含了当前行的数据的 `$row` 参数，并且返回用作当前行索引的
 标量值（译者注：就是简单的数值或者字符串，而不是其他复杂结构，例如数组）。
 
-> Note: 与 [[yii\db\Query::groupBy()|groupBy()]] 或者 [[yii\db\Query::orderBy()|orderBy()]] 等查询方法对比起来，
-> 他们将转换为 SQL 查询语句的一部分，而这个方法（匿名函数）在从数据库取回数据后才生效执行的。
+> Note: 与 [[yii\db\Query::groupBy()|groupBy()]] 或者 [[yii\db\Query::orderBy()|orderBy()]] 等查询方法不同，
+> 他们将转换为 SQL 查询语句的一部分，而这个方法（indexBy）在从数据库取回数据后才生效执行的。
 > 这意味着只能使用那些在你的 SELECT 查询中的列名。
 > 此外，你用表名连接取列名的时候，比如 `customer.id`，结果中将只包含 `id` 列，因此你必须调用
 > `->indexBy('id')` 不要带表名前缀。
@@ -769,7 +769,7 @@ foreach ($query->each() as $username => $user) {
 }
 ```
 
-#### MySQL中批量查询的局限性 <span id="batch-query-mysql"></span>
+#### MySQL中批量查询的局限性（Limitations of batch query in MySQL） <span id="batch-query-mysql"></span>
 
 MySQL 是通过 PDO 驱动库实现批量查询的。默认情况下，MySQL 查询是 [`带缓存的`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php)，
 这违背了使用游标（cursor）获取数据的目的，
@@ -844,7 +844,7 @@ $unbufferedDb->close();
   建议您使用生产实践设计自己的代码以获取额外的海量数据，[例如，将数字键分段，使用非缓存的查询遍历](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257)。
 
 
-### 添加自定义查询条件和表达式 <span id="adding-custom-conditions-and-expressions"></span>
+### 添加自定义查询条件和表达式（Adding custom Conditions and Expressions） <span id="adding-custom-conditions-and-expressions"></span>
 
 我们在 [查询条件-对象格式](#object-format) 章节中提到过，可以创建自定义的查询条件类。
 举个栗子，我们需要创建一个查询条件，它可以检查某些字段小于特定值的情况。
