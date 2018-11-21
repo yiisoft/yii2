@@ -253,17 +253,17 @@ $query->where([$column => $value]);
 其中每个操作数可以是字符串格式、哈希格式或者嵌套的操作符格式，
 而操作符可以是如下列表中的一个：
 
-- `and`: 操作数会被 `AND` 关键字串联起来。例如，`['and', 'id=1', 'id=2']` 
+- `and`：操作数会被 `AND` 关键字串联起来。例如，`['and', 'id=1', 'id=2']` 
   将会生成 `id=1 AND id=2`。如果操作数是一个数组，它也会按上述规则转换成
   字符串。例如，`['and', 'type=1', ['or', 'id=1', 'id=2']]` 
   将会生成 `type=1 AND (id=1 OR id=2)`。
   这个方法不会自动加引号或者转义。
   
-- `or`: 用法和 `and` 操作符类似，这里就不再赘述。
+- `or`：用法和 `and` 操作符类似，这里就不再赘述。
 
-- `not`：只需要操作数 1，它将包含在`NOT()`中。例如，`['not'，'id = 1']` 将生成 `['not', 'id=1']`。操作数 1 也可以是个描述多个表达式的数组。 例如 `['not', ['status' => 'draft', 'name' => 'example']]` 将生成 `NOT ((status='draft') AND (name='example'))`。
+- `not`：只需要操作数 1，它将包含在 `NOT()` 中。例如，`['not'，'id = 1']` 将生成 `['not', 'id=1']`。操作数 1 也可以是个描述多个表达式的数组。例如 `['not', ['status' => 'draft', 'name' => 'example']]` 将生成 `NOT ((status='draft') AND (name='example'))`。
 
-- `between`: 第一个操作数为字段名称，第二个和第三个操作数代表的是这个字段
+- `between`：第一个操作数为字段名称，第二个和第三个操作数代表的是这个字段
   的取值范围。例如，`['between', 'id', 1, 10]` 将会生成
   `id BETWEEN 1 AND 10`。
   如果你需要建立一个值在两列之间的查询条件（比如 `11 BETWEEN min_id AND max_id`），
@@ -273,7 +273,7 @@ $query->where([$column => $value]);
 - `not between`：与 `between` 类似，除了 `BETWEEN` 被 `NOT BETWEEN` 替换
   在生成条件时。
 
-- `in`: 第一个操作数应为字段名称或者 DB 表达式。第二个操作符既可以是一个数组，
+- `in`：第一个操作数应为字段名称或者 DB 表达式。第二个操作符既可以是一个数组，
   也可以是一个  `Query` 对象。它会转换成`IN` 条件语句。如果第二个操作数是一个
   数组，那么它代表的是字段或 DB 表达式的取值范围。如果第二个操作数是 `Query` 
   对象，那么这个子查询的结果集将会作为第一个操作符的字段或者 DB 表达式的取值范围。
@@ -282,9 +282,9 @@ $query->where([$column => $value]);
   操作数1应该是一个字段名数组，而操作数2应该是一个数组或者 `Query` 对象，
   代表这些字段的取值范围。
 
-- `not in`: 用法和 `in` 操作符类似，这里就不再赘述。
+- `not in`：用法和 `in` 操作符类似，这里就不再赘述。
 
-- `like`: 第一个操作数应为一个字段名称或 DB 表达式，
+- `like`：第一个操作数应为一个字段名称或 DB 表达式，
   第二个操作数可以使字符串或数组，
   代表第一个操作数需要模糊查询的值。比如，`['like', 'name', 'tester']` 会生成
   `name LIKE '%tester%'`。 如果范围值是一个数组，那么将会生成用 `AND` 串联起来的
@@ -300,21 +300,21 @@ $query->where([$column => $value]);
 > Note: 当使用 PostgreSQL 的时候你还可以使用 [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)，
 > 该方法对大小写不敏感。
 
-- `or like`: 用法和 `like` 操作符类似，区别在于当第二个操作数为数组时，
+- `or like`：用法和 `like` 操作符类似，区别在于当第二个操作数为数组时，
   会使用 `OR` 来串联多个 `LIKE` 条件语句。
 
-- `not like`: 用法和 `like` 操作符类似，区别在于会使用 `NOT LIKE`
+- `not like`：用法和 `like` 操作符类似，区别在于会使用 `NOT LIKE`
   来生成条件语句。
 
-- `or not like`: 用法和 `not like` 操作符类似，区别在于会使用 `OR` 
+- `or not like`：用法和 `not like` 操作符类似，区别在于会使用 `OR` 
   来串联多个 `NOT LIKE` 条件语句。
 
-- `exists`: 需要一个操作数，该操作数必须是代表子查询 [[yii\db\Query]] 的一个实例，
+- `exists`：需要一个操作数，该操作数必须是代表子查询 [[yii\db\Query]] 的一个实例，
   它将会构建一个 `EXISTS (sub-query)` 表达式。
 
-- `not exists`: 用法和 `exists` 操作符类似，它将创建一个  `NOT EXISTS (sub-query)` 表达式。
+- `not exists`：用法和 `exists` 操作符类似，它将创建一个 `NOT EXISTS (sub-query)` 表达式。
 
-- `>`, `<=`, 或者其他包含两个操作数的合法 DB 操作符: 第一个操作数必须为字段的名称，
+- `>`，`<=` 或者其他包含两个操作数的合法 DB 操作符：第一个操作数必须为字段的名称，
   而第二个操作数则应为一个值。例如，`['>', 'age', 10]` 将会生成 `age>10`。
 
 使用操作符格式，Yii 在内部对相应的值进行参数绑定，因此与 [字符串格式](#string-format) 相比，
@@ -354,7 +354,7 @@ $query->andWhere(new OrCondition([
 ```
 
 操作符格式与对象格式的对应关系是在
-[[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]] 属性中定义,
+[[yii\db\QueryBuilder::conditionClasses|QueryBuilder::conditionClasses]] 属性中定义，
 这里列举一些比较有代表性的映射关系：
 
 - `AND`, `OR` -> `yii\db\conditions\ConjunctionCondition`
@@ -417,8 +417,8 @@ $query->filterWhere([
 你可以使用 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] 和 [[yii\db\Query::orFilterWhere()|orFilterWhere()]] 方法
 来追加额外的过滤条件。
 
-Additionally, there is [[yii\db\Query::andFilterCompare()]] that can intelligently determine operator based on what's
-in the value:
+此外，[[yii\db\Query::andFilterCompare()]]
+可以根据值中的内容智能地确定运算符：
 
 ```php
 $query->andFilterCompare('name', 'John Doe');
@@ -426,7 +426,7 @@ $query->andFilterCompare('rating', '>9');
 $query->andFilterCompare('value', '<=100');
 ```
 
-You can also specify operator explicitly:
+您还可以显式指定运算符：
 
 ```php
 $query->andFilterCompare('name', 'Doe', 'like');
@@ -547,14 +547,14 @@ $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 
 [[yii\db\Query::join()|join()]] 带有四个参数：
  
-- `$type`: 连接类型，例如：`'INNER JOIN'`, `'LEFT JOIN'`。
-- `$table`: 将要连接的表名称。
-- `$on`: optional, the join condition, i.e., the `ON` fragment. Please refer to [where()](#where) for details
-   about specifying a condition. Note, that the array syntax does **not** work for specifying a column based
-   condition, e.g. `['user.id' => 'comment.userId']` will result in a condition where the user id must be equal
-   to the string `'comment.userId'`. You should use the string syntax instead and specify the condition as
-   `'user.id = comment.userId'`.
-- `$params`: 可选参数，与连接条件绑定的参数。
+- `$type`：连接类型，例如，`'INNER JOIN'`，`'LEFT JOIN'`。
+- `$table`：将要连接的表名称。
+- `$on`：可选的，连接条件，即 `ON` 片段。有关指定条件的详细信息，请参阅 [where()](#where)。
+   请注意，数组语法 **不能** 用于指定基于列的条件，
+   例如，`['user.id' => 'comment.userId']` 将导致用户 id 必须等于字符串
+   `'comment.userId'` 的情况。您应该使用字符串语法，并将条件指定为
+   `'user.id = comment.userId'`。
+- `$params`：可选参数，与连接条件绑定的参数。
 
 你可以分别调用如下的快捷方法来指定 `INNER JOIN`, `LEFT JOIN` 和 `RIGHT JOIN`。
 
@@ -636,7 +636,7 @@ $row = (new \yii\db\Query())
   条件语句中不会加上 `LIMIT 1` 条件。如果你清楚的知道查询将会只返回一行或几行数据
   （例如， 如果你是通过某些主键来查询的），这很好也提倡这样做。但是，如果查询结果
   有机会返回大量的数据时，那么你应该显示调用 `limit(1)` 方法，以改善性能。
-  例如， `(new \yii\db\Query())->from('user')->limit(1)->one()`。
+  例如，`(new \yii\db\Query())->from('user')->limit(1)->one()`。
 
 所有的这些查询方法都有一个可选的参数 `$db`, 该参数指代的是 [[yii\db\Connection|DB connection]]，
 执行一个 DB 查询时会用到。如果你省略了这个参数，那么 `db` [application component](structure-application-components.md) 将会被用作
@@ -720,7 +720,7 @@ $query = (new \yii\db\Query())
 Yii 提供了批处理查询的支持。服务端先保存查询结果，然后客户端使用游标（cursor）
 每次迭代出固定的一批结果集回来。
 
-> Warning: MySQL 批处理查询的实现存在已知的局限性和变通方法。 见下文。
+> Warning: MySQL 批处理查询的实现存在已知的局限性和变通方法。见下文。
 
 批处理查询的用法如下：
 
@@ -1010,4 +1010,4 @@ $query->andWhere(['ALL>', ['posts', 'comments', 'reactions', 'subscriptions'], $
 
 你可以创建自己的类来实现 [[yii\db\ExpressionInterface|ExpressionInterface]] 接口，达到封装的目的：隐藏复杂的 SQL 语句拼装过程。
 想学习到更多关于表达式对象的实践
-请听 [下回分解](db-active-record.md);
+请听 [下回分解](db-active-record.md)；
