@@ -26,7 +26,9 @@
     في البداية، عليك إنشاء قاعدة بيانات تسمى ب <code>yii2basic</code>، والتي ستستخدم لجلب البيانات الخاصة بالتطبيق، ويمكنك إستخدام أي من ال SQLite, MySql, PostgreSQL, MSSQL or Oracle database, ال Yii بشكل افتراضي بدعم العديد من قواعد البيانات والتي يمكنك إستخدامها مباشرة في التطبيق الخاص بك، ولتبسيط الأمور، ال MySql هي التي سيتم إستخدامها في في هذا الشرح. 
 س</p>
 
-> Info: While MariaDB used to be a drop-in replacement for MySQL this is no longer fully true. In case you wish to use advanced features like `JSON` support in MariaDB, please check the MariaDB extension listed below.
+<blockquote><p dir="rtl">
+    معلومة: إذا كنت ترغب بالحصول على خيارات متقدمة  مثل دعم ال <code>JSON</code> الموجود داخل MariaDB، فيمكنك من إستخدام أحد ال Extension المذكوره أدناه لهذه المهمة بدلا من الإستغناء عن ال MySql، فإستخدام MariaDB بدلا عن ال MySql لم يعد صحيحا تماما. 
+</p></blockquote>
 
 Next, create a table named `country` in the database, and insert some sample data. You may run the following SQL statements to do so:
 
