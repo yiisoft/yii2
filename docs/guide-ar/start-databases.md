@@ -27,10 +27,12 @@
 س</p>
 
 <blockquote><p dir="rtl">
-    معلومة: إذا كنت ترغب بالحصول على خيارات متقدمة  مثل دعم ال <code>JSON</code> الموجود داخل MariaDB، فيمكنك من إستخدام أحد ال Extension المذكوره أدناه لهذه المهمة بدلا من الإستغناء عن ال MySql، فإستخدام MariaDB بدلا عن ال MySql لم يعد صحيحا تماما. 
+    معلومة: إذا كنت ترغب بالحصول على خيارات متقدمة  مثل دعم ال <code>JSON</code> الموجود داخل MariaDB، فيمكنك من إستخدام أحد ال Extension المذكوره بالأسفل للقيام بهذه المهمة بدلا من الإستغناء عن ال MySql، فإستخدام MariaDB بدلا عن ال MySql لم يعد صحيحا تماما. 
 </p></blockquote>
 
-Next, create a table named `country` in the database, and insert some sample data. You may run the following SQL statements to do so:
+<p dir="rtl">
+    بعد قيامك بإنشاء قاعدة البيانات، سنقوم بإنشاء جدول إسمه country، ومن ثم سنقوم بإدخال بعض البيانات كعينة للإختيار، وللقيام بذلك، قم بتنفيذ الأوامر التالية: 
+</p>
 
 ```sql
 CREATE TABLE `country` (
