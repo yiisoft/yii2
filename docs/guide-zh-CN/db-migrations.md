@@ -38,6 +38,13 @@ Yii 提供了一整套的迁移命令行工具，通过这些工具你可以：
 > Note: 迁移不仅仅只作用于数据库表，
   它同样会调整现有的数据来适应新的表单、创建 RBAC 分层、又或者是清除缓存。
 
+> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
+> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
+> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
+> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
+> existing migrations. For this reason migration code should be kept independent from other application logic such
+> as Active Record classes.
+
 
 ## 创建迁移 <span id="creating-migrations"></span>
 
@@ -189,7 +196,7 @@ If the migration name is of a special form, for example `create_xxx` or `drop_xx
 file will contain extra code, in this case for creating/dropping tables.
 In the following all variants of this feature are described.
 
-### Create Table
+### 创建表
 
 ```php
 yii migrate/create create_post
@@ -223,13 +230,13 @@ class m150811_220037_create_post extends Migration
 }
 ```
 
-To create table fields right away, specify them via `--fields` option.
+利用 `--fields` 选项指定字段参数，可以立即创建字段。
 
 ```php
 yii migrate/create create_post --fields="title:string,body:text"
 ```
 
-generates
+生成
 
 ```php
 /**
@@ -260,13 +267,13 @@ class m150811_220037_create_post extends Migration
 
 ```
 
-You can specify more field parameters.
+你可以指定更多的字段参数。
 
 ```php
 yii migrate/create create_post --fields="title:string(12):notNull:unique,body:text"
 ```
 
-generates
+生成
 
 ```php
 /**
@@ -296,18 +303,18 @@ class m150811_220037_create_post extends Migration
 }
 ```
 
-> Note: primary key is added automatically and is named `id` by default. If you want to use another name you may
-> specify it explicitly like `--fields="name:primaryKey"`.
+> Note: 主键会被自动添加同时默认名称为 `id`。
+> 如果你想使用其他名称可以使用 `--fields="name:primaryKey"` 来指定名称。
 
-#### Foreign keys
+#### 外键
 
-Since 2.0.8 the generator supports foreign keys using the `foreignKey` keyword.
+从 2.0.8 版本开始，生成器通过使用 `foreignKey` 关键字支持外键。
 
 ```php
 yii migrate/create create_post --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
 ```
 
-generates
+生成
 
 ```php
 /**
@@ -401,31 +408,36 @@ class m160328_040430_create_post extends Migration
 }
 ```
 
-The position of the `foreignKey` keyword in the column description doesn't
-change the generated code. That means:
+`foreignKey` 关键字在字段描述中的位置不会影响生成的代码。
+那意味着：
 
 - `author_id:integer:notNull:foreignKey(user)`
 - `author_id:integer:foreignKey(user):notNull`
 - `author_id:foreignKey(user):integer:notNull`
 
-All generate the same code.
+以上都会生成相同的代码。
 
-The `foreignKey` keyword can take a parameter between parenthesis which will be
-the name of the related table for the generated foreign key. If no parameter
-is passed then the table name will be deduced from the column name.
+`foreignKey` 关键字可以在圆括号中间接收一个参数，
+这个参数将会成为生成外键所需的关联表的名称。
+如果不传入任何参数，那么表名将会根据字段名来生成。
 
-In the example above `author_id:integer:notNull:foreignKey(user)` will generate a
-column named `author_id` with a foreign key to the `user` table while
-`category_id:integer:defaultValue(1):foreignKey` will generate a column
-`category_id` with a foreign key to the `category` table.
+在上面的例子中，`author_id:integer:notNull:foreignKey(user)` 会生成一个
+带有关联 `user` 表的外键，名称为 `author_id` 的字段，
+`category_id:integer:defaultValue(1):foreignKey` 会生成一个
+带有关联 `category` 表的外键，名称为 `category_id` 的字段。
 
-### Drop Table
+从 2.0.11 版本开始，`foreignKey` 接收第二个参数，跟第一个参数用空格分开。
+这个参数表示生成的外键所关联字段的名称。
+如果不传入第二个参数，字段名将从表模式（schema）中获得。
+如果模式（schema）不存在，或者未设置主键，又或者是联合主键，字段将使用 `id` 作为默认名称。
+
+### 删除表
 
 ```php
 yii migrate/create drop_post --fields="title:string(12):notNull:unique,body:text"
 ```
 
-generates
+生成
 
 ```php
 class m150811_220037_drop_post extends Migration
@@ -446,18 +458,18 @@ class m150811_220037_drop_post extends Migration
 }
 ```
 
-### Add Column
+### 添加字段
 
-If the migration name is of the form `add_xxx_to_yyy` then the file content would contain `addColumn` and `dropColumn`
-statements necessary.
+如果迁移的名称遵循 `add_xxx_to_yyy` 这样的格式，
+生成的类文件将会包含必要的 `addColumn` 和 `dropColumn`。
 
-To add column:
+添加字段：
 
 ```php
 yii migrate/create add_position_to_post --fields="position:integer"
 ```
 
-generates
+生成
 
 ```php
 class m150811_220037_add_position_to_post extends Migration
@@ -474,16 +486,22 @@ class m150811_220037_add_position_to_post extends Migration
 }
 ```
 
-### Drop Column
+你可以像如下这样指定多个字段：
 
-If the migration name is of the form `drop_xxx_from_yyy` then the file content would contain `addColumn` and `dropColumn`
-statements necessary.
+```
+yii migrate/create add_xxx_column_yyy_column_to_zzz_table --fields="xxx:integer,yyy:text"
+```
+
+### 删除字段
+
+如果迁移的名称遵循 `drop_xxx_from_yyy` 这样的格式，
+生成的类文件将会包含必要的 `addColumn` 和 `dropColumn`。
 
 ```php
 yii migrate/create drop_position_from_post --fields="position:integer"
 ```
 
-generates
+生成
 
 ```php
 class m150811_220037_drop_position_from_post extends Migration
@@ -500,16 +518,16 @@ class m150811_220037_drop_position_from_post extends Migration
 }
 ```
 
-### Add Junction Table
+### 添加连接表
 
-If the migration name is in if the form of `create_junction_xxx_and_yyy` then code necessary to create junction table
-will be generated.
+如果迁移的名称遵循 `create_junction_xxx_and_yyy` 这样的格式，
+创建连接表的必要代码将会被生成。
 
 ```php
 yii migrate/create create_junction_post_and_tag --fields="created_at:dateTime"
 ```
 
-generates
+生成
 
 ```php
 /**
@@ -602,6 +620,9 @@ class m160328_041642_create_junction_post_and_tag extends Migration
 }
 ```
 
+从 2.0.11 版本开始，连接表的外键字段名将从表模式（schema）中获得。
+如果模式（schema）不存在，或者未设置主键，又或者是联合主键，字段将使用 `id` 作为默认名称。
+
 ### 事务迁移 <span id="transactional-migrations"></span>
 
 当需要实现复杂的数据库迁移的时候，确定每一个迁移的执行是否成功或失败就变得相当重要了，
@@ -665,40 +686,41 @@ class m150101_185401_create_news_table extends Migration
 
 如下是所有这些数据库访问方法的列表：
 
-* [[yii\db\Migration::execute()|execute()]]: 执行一条 SQL 语句
-* [[yii\db\Migration::insert()|insert()]]: 插入单行数据
-* [[yii\db\Migration::batchInsert()|batchInsert()]]: 插入多行数据
-* [[yii\db\Migration::update()|update()]]: 更新数据
-* [[yii\db\Migration::delete()|delete()]]: 删除数据
-* [[yii\db\Migration::createTable()|createTable()]]: 创建表
-* [[yii\db\Migration::renameTable()|renameTable()]]: 重命名表名
-* [[yii\db\Migration::dropTable()|dropTable()]]: 删除一张表
-* [[yii\db\Migration::truncateTable()|truncateTable()]]: 清空表中的所有数据
-* [[yii\db\Migration::addColumn()|addColumn()]]: 加一个字段
-* [[yii\db\Migration::renameColumn()|renameColumn()]]: 重命名字段名称
-* [[yii\db\Migration::dropColumn()|dropColumn()]]: 删除一个字段
-* [[yii\db\Migration::alterColumn()|alterColumn()]]: 修改字段
-* [[yii\db\Migration::addPrimaryKey()|addPrimaryKey()]]: 添加一个主键
-* [[yii\db\Migration::dropPrimaryKey()|dropPrimaryKey()]]: 删除一个主键
-* [[yii\db\Migration::addForeignKey()|addForeignKey()]]: 添加一个外键
-* [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: 删除一个外键
-* [[yii\db\Migration::createIndex()|createIndex()]]: 创建一个索引
-* [[yii\db\Migration::dropIndex()|dropIndex()]]: 删除一个索引
-* [[yii\db\Migration::addCommentOnColumn()|addCommentOnColumn()]]: adding comment to column
-* [[yii\db\Migration::dropCommentFromColumn()|dropCommentFromColumn()]]: dropping comment from column
-* [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]]: adding comment to table
-* [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]]: dropping comment from table
+* [[yii\db\Migration::execute()|execute()]]：执行一条 SQL 语句
+* [[yii\db\Migration::insert()|insert()]]：插入单行数据
+* [[yii\db\Migration::batchInsert()|batchInsert()]]：插入多行数据
+* [[yii\db\Migration::update()|update()]]：更新数据
+* [[yii\db\Migration::delete()|delete()]]：删除数据
+* [[yii\db\Migration::createTable()|createTable()]]：创建表
+* [[yii\db\Migration::renameTable()|renameTable()]]：重命名表名
+* [[yii\db\Migration::dropTable()|dropTable()]]：删除一张表
+* [[yii\db\Migration::truncateTable()|truncateTable()]]：清空表中的所有数据
+* [[yii\db\Migration::addColumn()|addColumn()]]：加一个字段
+* [[yii\db\Migration::renameColumn()|renameColumn()]]：重命名字段名称
+* [[yii\db\Migration::dropColumn()|dropColumn()]]：删除一个字段
+* [[yii\db\Migration::alterColumn()|alterColumn()]]：修改字段
+* [[yii\db\Migration::addPrimaryKey()|addPrimaryKey()]]：添加一个主键
+* [[yii\db\Migration::dropPrimaryKey()|dropPrimaryKey()]]：删除一个主键
+* [[yii\db\Migration::addForeignKey()|addForeignKey()]]：添加一个外键
+* [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]：删除一个外键
+* [[yii\db\Migration::createIndex()|createIndex()]]：创建一个索引
+* [[yii\db\Migration::dropIndex()|dropIndex()]]：删除一个索引
+* [[yii\db\Migration::addCommentOnColumn()|addCommentOnColumn()]]：添加字段的注释
+* [[yii\db\Migration::dropCommentFromColumn()|dropCommentFromColumn()]]：删除字段的注释
+* [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]]：添加表的注释
+* [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]]：删除表的注释
 
 > Tip: [[yii\db\Migration]] 并没有提供数据库的查询方法。
-  这是因为通常你是不需要去数据库把数据一行一行查出来再显示出来的。
-  另外一个原因是你完全可以使用强大的 [Query Builder 查询构建器](db-query-builder.md) 来构建和查询。  
-
-> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
-> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
-> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
-> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
-> existing migrations. For this reason migration code should be kept independent from other application logic such
-> as Active Record classes.
+> 这是因为通常你是不需要去数据库把数据一行一行查出来再显示出来的。
+> 另外一个原因是你完全可以使用强大的 [Query Builder 查询构建器](db-query-builder.md) 来构建和查询。  
+> 你可以像这样在迁移中使用查询构建器：
+>
+> ```php
+> // 更新所有用户的 status 字段
+> foreach((new Query)->from('users')->each() as $user) {
+>     $this->update('users', ['status' => 1], ['id' => $user['id']]);
+> }
+> ```
 
 
 ## 提交迁移 <span id="applying-migrations"></span>
@@ -714,8 +736,8 @@ yii migrate
 如果其中任意一个迁移提交失败了，
 那么这条命令将会退出并停止剩下的那些还未执行的迁移。
 
-> Tip: In case you don't have command line at your server you may try [web shell](https://github.com/samdark/yii2-webshell)
-> extension.
+> Tip: 如果你的服务器没有命令行，
+> 你可以尝试 [web shell](https://github.com/samdark/yii2-webshell) 这个扩展。
 
 对于每一个成功提交的迁移，这条命令都会在一个叫做 `migration` 
 的数据库表中插入一条包含应用程序成功提交迁移的记录，
@@ -768,12 +790,19 @@ yii migrate/down 3   # revert the most 3 recently applied migrations 还原最�
 如下所示：
 
 ```
-yii migrate/redo        # redo the last applied migration 重做最近一次提交的迁移
-yii migrate/redo 3      # redo the last 3 applied migrations 重做最近三次提交的迁移
+yii migrate/redo        # 重做最近一次提交的迁移
+yii migrate/redo 3      # 重做最近三次提交的迁移
 ```
 
 > Note: 如果一个迁移是不能被还原的，那么你将无法对它进行重做。
 
+## 刷新迁移 <span id="refreshing-migrations"></span>
+
+从2.0.13版本开始，你可以从数据库中删除所有的表和外键，从头开始重新提交所有迁移。
+
+```
+yii migrate/fresh       # 清空数据库并从头开始应用所有迁移。
+```
 
 ## 列出迁移 <span id="listing-migrations"></span>
 
@@ -817,38 +846,39 @@ yii migrate/mark 1392853618                         # 使用 UNIX 时间戳
 
 迁移命令附带了几个命令行选项，可以用来自定义它的行为：
 
-* `interactive`: boolean (默认值为 true)，指定是否以交互模式来运行迁移。
+* `interactive`：boolean (默认值为 true)，指定是否以交互模式来运行迁移。
   当被设置为 true 时，在命令执行某些操作前，会提示用户。如果你希望在后台执行该命令，
   那么你应该把它设置成 false。
 
-* `migrationPath`: string (默认值为 `@app/migrations`)，指定存放所有迁移类文件的目录。该选项可以是一个目录的路径，
+* `migrationPath`：string (默认值为 `@app/migrations`)，指定存放所有迁移类文件的目录。该选项可以是一个目录的路径，
   也可以是 [路径别名](concept-aliases.md)。需要注意的是指定的目录必选存在，
   否则将会触发一个错误。
+  从 2.0.12 版本开始，可以用一个数组来指定从多个来源读取迁移类文件。
 
-* `migrationTable`: string (默认值为 `migration`)，指定用于存储迁移历史信息的数据库表名称。
+* `migrationTable`：string (默认值为 `migration`)，指定用于存储迁移历史信息的数据库表名称。
   如果这张表不存在，那么迁移命令将自动创建这张表。当然你也可以使用这样的字段结构：
   `version varchar(255) primary key, apply_time integer` 来手动创建这张表。
 
-* `db`: string (默认值为 `db`)，指定数据库 [application component](structure-application-components.md) 的 ID。
+* `db`：string (默认值为 `db`)，指定数据库 [application component](structure-application-components.md) 的 ID。
   它指的是将会被该命令迁移的数据库。
 
-* `templateFile`: string (defaults to `@yii/views/migration.php`)，
+* `templateFile`：string (默认值为 `@yii/views/migration.php`)，
   指定生产迁移框架代码类文件的模版文件路径。
   该选项即可以使用文件路径来指定，也可以使用路径 [别名](concept-aliases.md) 来指定。
   该模版文件是一个可以使用预定义变量 `$className` 来获取迁移类名称的 PHP 脚本。
 
-* `generatorTemplateFiles`: array (defaults to `[
+* `generatorTemplateFiles`：array (defaults to `[
         'create_table' => '@yii/views/createTableMigration.php',
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
         'create_junction' => '@yii/views/createJunctionMigration.php'
-  ]`), specifies template files for generating migration code. See "[Generating Migrations](#generating-migrations)"
-  for more details.
+  ]`)，指定生成迁移代码的模版文件，查看"[Generating Migrations](#generating-migrations)"
+  了解更多细节。
 
-* `fields`: array of column definition strings used for creating migration code. Defaults to `[]`. The format of each
-  definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. For example, `--fields=name:string(12):notNull` produces
-  a string column of size 12 which is not null.
+* `fields`：由用来创建迁移代码的多个字段定义字符串所组成的数组。默认是 `[]`。
+  字段定义的格式是 `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`。例如，`--fields=name:string(12):notNull` 会创建
+  一个长度为 12 的，非空的，字符串类型的字段。
 
 如下例子向我们展示了如何使用这些选项：
 
@@ -881,6 +911,94 @@ return [
 如上所示配置，在每次运行迁移命令的时候，
 `backend_migration` 表将会被用来记录迁移历史。
 你再也不需要通过 `migrationTable` 命令行参数来指定这张历史纪录表了。
+
+
+### Namespaced Migrations <span id="namespaced-migrations"></span>
+
+Since 2.0.10 you can use namespaces for the migration classes. You can specify the list of the migration namespaces via
+[[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]. Using of the namespaces for
+migration classes allows you usage of the several source locations for the migrations. For example:
+
+```php
+return [
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => null, // disable non-namespaced migrations if app\migrations is listed below
+            'migrationNamespaces' => [
+                'app\migrations', // Common migrations for the whole application
+                'module\migrations', // Migrations for the specific project's module
+                'some\extension\migrations', // Migrations for the specific extension
+            ],
+        ],
+    ],
+];
+```
+
+> Note: migrations applied from different namespaces will create a **single** migration history, e.g. you might be
+  unable to apply or revert migrations from particular namespace only.
+
+While operating namespaced migrations: creating new, reverting and so on, you should specify full namespace before
+migration name. Note that backslash (`\`) symbol is usually considered a special character in the shell, so you need
+to escape it properly to avoid shell errors or incorrect behavior. For example:
+
+```
+yii migrate/create 'app\\migrations\\createUserTable'
+```
+
+> Note: migrations specified via [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] can not
+  contain a namespace, namespaced migration can be applied only via [[yii\console\controllers\MigrateController::migrationNamespaces]]
+  property.
+
+Since version 2.0.12 the [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] property
+also accepts an array for specifying multiple directories that contain migrations without a namespace.
+This is mainly added to be used in existing projects which use migrations from different locations. These migrations mainly come
+from external sources, like Yii extensions developed by other developers,
+which can not be changed to use namespaces easily when starting to use the new approach.
+
+### Separated Migrations <span id="separated-migrations"></span>
+
+Sometimes using single migration history for all project migrations is not desirable. For example: you may install some
+'blog' extension, which contains fully separated functionality and contain its own migrations, which should not affect
+the ones dedicated to main project functionality.
+
+If you want several migrations to be applied and tracked down completely separated from each other, you can configure multiple
+migration commands which will use different namespaces and migration history tables:
+
+```php
+return [
+    'controllerMap' => [
+        // Common migrations for the whole application
+        'migrate-app' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['app\migrations'],
+            'migrationTable' => 'migration_app',
+            'migrationPath' => null,
+        ],
+        // Migrations for the specific project's module
+        'migrate-module' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['module\migrations'],
+            'migrationTable' => 'migration_module',
+            'migrationPath' => null,
+        ],
+        // Migrations for the specific extension
+        'migrate-rbac' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => '@yii/rbac/migrations',
+            'migrationTable' => 'migration_rbac',
+        ],
+    ],
+];
+```
+
+请注意，要同步数据库，您现在需要运行多个命令而不是一个：
+
+```
+yii migrate-app
+yii migrate-module
+yii migrate-rbac
+```
 
 
 ## 迁移多个数据库 <span id="migrating-multiple-databases"></span>
@@ -934,4 +1052,3 @@ yii migrate --migrationPath=@app/migrations/db2 --db=db2
 
 第一条命令将会把 `@app/migrations/db1` 目录下的迁移提交到 `db1` 数据库当中，
 第二条命令则会把 `@app/migrations/db2` 下的迁移提交到 `db2` 数据库当中，以此类推。
-
