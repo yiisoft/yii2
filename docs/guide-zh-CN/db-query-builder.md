@@ -89,8 +89,8 @@ $query->select(['user_id' => 'user.id', 'email']);
 $query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
 
-As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
-for table and column names when writing DB expressions in select.
+与所有涉及原始 SQL 的地方一样，当在 select 中编写 DB 表达式时，可以对表名和列名使用
+[与 DBMS 无关的引用语法](db-dao.md#quoting-table-and-column-names)。
 
 从 2.0.1 的版本开始你就可以使用子查询了。在定义每一个子查询的时候，
 你应该使用 [[yii\db\Query]] 对象。例如：
@@ -175,10 +175,10 @@ $query->from(['u' => $subQuery]);
 ```php
 $query->where('status=1');
 
-// or use parameter binding to bind dynamic parameter values
+// 或使用参数绑定来绑定动态参数值
 $query->where('status=:status', [':status' => $status]);
 
-// raw SQL using MySQL YEAR() function on a date field
+// 原生 SQL 在日期字段上使用 MySQL YEAR() 函数
 $query->where('YEAR(somedate) = 2015');
 ```
 
@@ -198,8 +198,8 @@ $query->where('status=:status')
     ->addParams([':status' => $status]);
 ```
 
-As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
-for table and column names when writing conditions in string format. 
+与涉及原生 SQL 的所有地方一样，在以字符串格式写入条件时，可以对表名和列名使用 
+[与 DBMS 无关的引用语法](db-dao.md#quoting-table-and-column-names)。
 
 #### 哈希格式 <span id="hash-format"></span>
 
