@@ -798,7 +798,7 @@ yii migrate/redo 3      # 重做最近三次提交的迁移
 
 ## 刷新迁移 <span id="refreshing-migrations"></span>
 
-从2.0.13版本开始，你可以从数据库中删除所有的表和外键，从头开始重新提交所有迁移。
+从 2.0.13 版本开始，你可以从数据库中删除所有的表和外键，从头开始重新提交所有迁移。
 
 ```
 yii migrate/fresh       # 清空数据库并从头开始应用所有迁移。
@@ -913,11 +913,11 @@ return [
 你再也不需要通过 `migrationTable` 命令行参数来指定这张历史纪录表了。
 
 
-### Namespaced Migrations <span id="namespaced-migrations"></span>
+### 使用命名空间的迁移 <span id="namespaced-migrations"></span>
 
-Since 2.0.10 you can use namespaces for the migration classes. You can specify the list of the migration namespaces via
-[[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]. Using of the namespaces for
-migration classes allows you usage of the several source locations for the migrations. For example:
+自从 2.0.10 版本开始，你可以为迁移类使用命名空间。 
+你可以通过 [[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]] 来指定迁移会用到的命名空间。
+使用命名空间将允许你利用多个源的位置进行迁移。例如：
 
 ```php
 return [
@@ -935,35 +935,35 @@ return [
 ];
 ```
 
-> Note: migrations applied from different namespaces will create a **single** migration history, e.g. you might be
-  unable to apply or revert migrations from particular namespace only.
+> Note: 从不同命名空间提交的迁移会创建出一份**单一的**迁移历史，
+  比如你不能只从某个特定的命名空间去提交或者还原迁移。
 
-While operating namespaced migrations: creating new, reverting and so on, you should specify full namespace before
-migration name. Note that backslash (`\`) symbol is usually considered a special character in the shell, so you need
-to escape it properly to avoid shell errors or incorrect behavior. For example:
+当你正在操作使用命名空间的迁移时：比如创建迁移，还原迁移等，你应当在迁移名称前指明完整的命名空间。
+要注意反斜线(`\`)在 shell 中会被当成特殊字符，你应该对反斜线进行编码，
+避免 shell 报错或者产生不正确的结果。例如：
 
 ```
 yii migrate/create 'app\\migrations\\createUserTable'
 ```
 
-> Note: migrations specified via [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] can not
-  contain a namespace, namespaced migration can be applied only via [[yii\console\controllers\MigrateController::migrationNamespaces]]
-  property.
+> Note: 通过 [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] 声明的迁移不能包含命名空间，
+  使用命名空间的迁移只能通过 [[yii\console\controllers\MigrateController::migrationNamespaces]] 
+  的属性来提交。
 
-Since version 2.0.12 the [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] property
-also accepts an array for specifying multiple directories that contain migrations without a namespace.
-This is mainly added to be used in existing projects which use migrations from different locations. These migrations mainly come
-from external sources, like Yii extensions developed by other developers,
-which can not be changed to use namespaces easily when starting to use the new approach.
+从版本 2.0.12 开始，[[yii\console\controllers\MigrateController::migrationPath|migrationPath]] 属性也接收一个数组作为参数,
+这个数组指明了没有使用命名空间的多个迁移的目录。
+这个参数主要用于已经从多个位置进行了迁移的现有项目。
+这些迁移主要来自外部资源，比如其他开发人员开发的Yii扩展，
+当使用新方法时，这些迁移很难改成使用命名空间。
 
-### Separated Migrations <span id="separated-migrations"></span>
+### 分离的迁移 <span id="separated-migrations"></span>
 
-Sometimes using single migration history for all project migrations is not desirable. For example: you may install some
-'blog' extension, which contains fully separated functionality and contain its own migrations, which should not affect
-the ones dedicated to main project functionality.
+有时候我们并不想整个项目所有的迁移都记录到同一份迁移历史中。
+例如：你可能安装了 'blog' 扩展，它有自己独立的功能和迁移，
+不会影响到用于项目主要功能的其他扩展。
 
-If you want several migrations to be applied and tracked down completely separated from each other, you can configure multiple
-migration commands which will use different namespaces and migration history tables:
+如果你想完全分开提交和追踪多个迁移，
+你可以同时配置使用不同命名空间和历史记录表的多条迁移命令：
 
 ```php
 return [
