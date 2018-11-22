@@ -14,12 +14,18 @@ Yii DAO 支持下列现成的数据库：
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): 版本 8.4 或更高
-- [CUBRID](http://www.cubrid.org/): 版本 9.3 或更高。
+- [PostgreSQL](http://www.postgresql.org/)：版本 8.4 或更高
+- [CUBRID](http://www.cubrid.org/)：版本 9.3 或更高。
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): 版本 2008 或更高。
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx)：版本 2008 或更高。
 
-> Note: 供PHP 7使用的新版pdo_oci扩展目前仅发布了源代码，如果你想编译使用请参照 
+> Info: 在Yii 2.1及更高版本中，DAO 支持 CUBRID，Oracle 和 MSSQL
+  不再作为框架的内置核心组件提供。它们必须作为独离的 [扩展](structure-extensions.md) 安装。
+  [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle) 和
+  [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql) 都属于
+  [官方扩展](https://www.yiiframework.com/extensions/official)。
+
+> Note: 供 PHP 7 使用的新版 pdo_oci 扩展目前仅发布了源代码，如果你想编译使用请参照 
   [社区用户提供的编译安装指引](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)。
   或者你也可以在你的应用中使用 [PDO模拟层](https://github.com/taq/pdooci)。
 
