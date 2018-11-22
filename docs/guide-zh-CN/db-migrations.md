@@ -2,7 +2,7 @@
 ===========
 
 在开发和维护一个数据库驱动的应用程序时，
-数据库的结构会随代码的改变而改变。
+数据库的结构会像代码一样不断演变。
 例如，在开发应用程序的过程中，会增加一张新表且必须得加进来；
 在应用程序被部署到生产环境后，需要建立一个索引来提高查询的性能等等。
 因为一个数据库结构发生改变的时候源代码也经常会需要做出改变，
@@ -11,7 +11,7 @@ Yii 提供了一个 *数据库迁移* 功能，该功能可以记录数据库的
 
 如下的步骤向我们展示了数据库迁移工具是如何为开发团队所使用的：
 
-1. Tim 创建了一个新的迁移对象（例如，创建一张新的表单，改变字段的定义等）。
+1. Tim 创建了一个新的迁移对象（例如，创建一张新表，改变字段的定义等）。
 2. Tim 将这个新的迁移对象提交到代码管理系统（例如，Git，Mercurial）。
 3. Doug 从代码管理系统当中更新版本并获取到这个新的迁移对象。
 4. Doug 把这个迁移对象提交到本地的开发数据库当中，
@@ -29,21 +29,21 @@ Yii 提供了一整套的迁移命令行工具，通过这些工具你可以：
 * 提交迁移；
 * 恢复迁移；
 * 重新提交迁移；
-* 现实迁移历史和状态。
+* 展示迁移历史和状态。
 
 所有的这些工具都可以通过 `yii migrate` 命令来进行操作。
 在这一章节，我们将详细的介绍如何使用这些工具来完成各种各样的任务。
 你也可以通过 `yii help migrate` 命令来获取每一种工具的具体使用方法。
 
-> Note: 迁移不仅仅只作用于数据库表，
+> Tip: 迁移不仅仅只作用于数据库表，
   它同样会调整现有的数据来适应新的表单、创建 RBAC 分层、又或者是清除缓存。
 
-> Note: When manipulating data using a migration you may find that using your [Active Record](db-active-record.md) classes
-> for this might be useful because some of the logic is already implemented there. Keep in mind however, that in contrast
-> to code written in the migrations, who's nature is to stay constant forever, application logic is subject to change.
-> So when using Active Record in migration code, changes to the logic in the Active Record layer may accidentally break
-> existing migrations. For this reason migration code should be kept independent from other application logic such
-> as Active Record classes.
+> Note: 当你使用迁移来操作数据时，你会发现使用 [活动记录](db-active-record.md) 类
+> 很有帮助，因为一些逻辑已经在那里实现了。
+> 然而别忘了，相比于天生保持恒定不变的迁移类中的代码，程序逻辑是随时变化的。
+> 所以当你在迁移中使用活动记录类时，活动记录层中逻辑的变化可能会意外打断现有的迁移。
+> 基于这个原因，
+> 迁移代码应该保持独立于其他程序逻辑，比如活动记录类。
 
 
 ## 创建迁移 <span id="creating-migrations"></span>
@@ -55,7 +55,7 @@ yii migrate/create <name>
 ```
 
 必填参数 `name` 的作用是对新的迁移做一个简要的描述。
-例如，如果这个迁移是用来创建一个叫做 *news* 的表单的，
+例如，如果这个迁移是用来创建一个叫做 *news* 的表，
 那么你可以使用 `create_news_table` 这个名称并运行如下命令：
 
 ```
@@ -141,11 +141,11 @@ class m150101_185401_create_news_table extends \yii\db\Migration
   因为它在恢复数据库迁移方面并不是那么的通用。在这种情况下，
   你应当在 `down()` 方法中返回 `false` 来表明这个 migration 是无法恢复的。
 
-migration 的基类 [[yii\db\Migration]] 通过 [[yii\db\Migration::db|db]] 属性来连接了数据库。
-你可以通过 [配合数据库工作](db-dao.md#working-with-database-schema-) 
-章节中所描述的那些方法来操作数据库表。
+migration 的基类 [[yii\db\Migration]] 通过 [[yii\db\Migration::db|db]] 属性来连接数据库。
+你可以通过 [操作数据库模式（schema）](db-dao.md#database-schema)
+章节中所描述的那些方法来操作数据库模式（schema）。
 
-当你通过 migration 创建一张表或者字段的时候，你应该使用 *抽象类型* 而不是 *实体类型*，
+当你创建一张表或者一个字段的时候，你应该使用 *抽象类型* 而不是 *实体类型*，
 这样一来你的迁移对象就可以从特定的 DBMS 当中抽离出来。
 [[yii\db\Schema]] 类定义了一整套可用的抽象类型常量。这些常量的格式为 `TYPE_<Name>`。
 例如，`TYPE_PK` 指代自增主键类型；`TYPE_STRING` 指代字符串类型。
@@ -159,8 +159,8 @@ migration 的基类 [[yii\db\Migration]] 通过 [[yii\db\Migration::db|db]] 属�
 > Tip: 抽象类型和实体类型之间的映射关系是由每个具体的 `QueryBuilder` 
   类当中的 [[yii\db\QueryBuilder::$typeMap|$typeMap]] 属性所指定的。
   
-Since version 2.0.6, you can make use of the newly introduced schema builder which provides more convenient way of defining column schema.
-So the migration above could be written like the following:
+从 2.0.6 版本开始，你可以使用能提供更便捷的方法定义字段模式（schema）的新模式（schema）构建器。
+这样上面的迁移就可以写成这样：
 
 ```php
 <?php
@@ -185,16 +185,16 @@ class m150101_185401_create_news_table extends Migration
 }
 ```
 
-A list of all available methods for defining the column types is available in the API documentation of [[yii\db\SchemaBuilderTrait]].
+所有用来定义字段类型的方法都可以到 [[yii\db\SchemaBuilderTrait]] 的 API 文档中查到。
 
 
-## Generating Migrations <span id="generating-migrations"></span>
+## 生成迁移 <span id="generating-migrations"></span>
 
-Since version 2.0.7 migration console provides a convenient way to create migrations.
+从 2.0.7 版本开始，迁移终端提供了一种创建迁移的便捷方法。
 
-If the migration name is of a special form, for example `create_xxx` or `drop_xxx` then the generated migration
-file will contain extra code, in this case for creating/dropping tables.
-In the following all variants of this feature are described.
+如果迁移对象的名称遵循某种特定的格式，比如 `create_xxx` 或者 `drop_xxx`，
+那么生成的迁移代码中将包含创建/删除表的额外代码。
+在下文中将描述该特型的所有变型。
 
 ### 创建表
 
@@ -202,7 +202,7 @@ In the following all variants of this feature are described.
 yii migrate/create create_post
 ```
 
-generates
+生成
 
 ```php
 /**
@@ -627,7 +627,7 @@ class m160328_041642_create_junction_post_and_tag extends Migration
 
 当需要实现复杂的数据库迁移的时候，确定每一个迁移的执行是否成功或失败就变得相当重要了，
 因为这将影响到数据库的完整性和一致性。为了达到这个目标，我们建议你把每个迁移里面的
-数据库操作都封装到一个 [transaction](db-dao.md#performing-transactions-) 里面。
+数据库操作都封装到一个 [transaction](db-dao.md#performing-transactions) 里面。
  
 实现事务迁移的一个更为简便的方法是把迁移的代码都放到 `safeUp()` 和 `safeDown()` 方法里面。
 它们与 `up()` 和 `down()` 的不同点就在于它们是被隐式的封装到事务当中的。
@@ -668,8 +668,8 @@ class m150101_185401_create_news_table extends Migration
 在上面的例子当中，我们在 `safeUp()` 方法当中首先创建了一张表，然后插入了一条数据；而在 `safeDown()` 方法当中，
 我们首先删除那一行数据，然后才删除那张表。
 
-> Note: 并不是所有的数据库都支持事务。有些数据库查询也是不能被放倒事务里面的。
-  在 [implicit commit](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html) 章节当中有相关的例子可以参考。
+> Note: 并不是所有的数据库都支持事务。有些数据库查询也是不能被放到事务里面的。
+  在 [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html) 章节当中有相关的例子可以参考。
   如果遇到这种情况的话，那么你应该使用 `up()` 和 `down()` 方法进行替代。
 
 
@@ -743,7 +743,7 @@ yii migrate
 的数据库表中插入一条包含应用程序成功提交迁移的记录，
 该记录将帮助迁移工具判断哪些迁移已经提交，哪些还没有提交。
 
-> Tip: 迁移工具将会自动在数据库当中创建 `migration` 表，
+> Info: 迁移工具将会自动在数据库当中创建 `migration` 表，
   该数据库是在该命令的 [[yii\console\controllers\MigrateController::db|db]] 选项当中指定的。
   默认情况下，是由 `db` [application component](structure-application-components.md) 指定的。
   
@@ -850,7 +850,7 @@ yii migrate/mark 1392853618                         # 使用 UNIX 时间戳
   当被设置为 true 时，在命令执行某些操作前，会提示用户。如果你希望在后台执行该命令，
   那么你应该把它设置成 false。
 
-* `migrationPath`：string (默认值为 `@app/migrations`)，指定存放所有迁移类文件的目录。该选项可以是一个目录的路径，
+* `migrationPath`：string|array (默认值为 `@app/migrations`)，指定存放所有迁移类文件的目录。该选项可以是一个目录的路径，
   也可以是 [路径别名](concept-aliases.md)。需要注意的是指定的目录必选存在，
   否则将会触发一个错误。
   从 2.0.12 版本开始，可以用一个数组来指定从多个来源读取迁移类文件。
@@ -873,7 +873,7 @@ yii migrate/mark 1392853618                         # 使用 UNIX 时间戳
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
         'create_junction' => '@yii/views/createJunctionMigration.php'
-  ]`)，指定生成迁移代码的模版文件，查看"[Generating Migrations](#generating-migrations)"
+  ]`)，指定生成迁移代码的模版文件，查看 "[Generating Migrations](#generating-migrations)"
   了解更多细节。
 
 * `fields`：由用来创建迁移代码的多个字段定义字符串所组成的数组。默认是 `[]`。
@@ -894,7 +894,7 @@ yii migrate --migrationPath=@app/modules/forum/migrations --interactive=0
 
 ### 全局配置命令 <span id="configuring-command-globally"></span>
 
-在运行迁移命令的时候每次都要重复的输入一些同样的参数会很烦人，这时候，
+为了避免运行迁移命令的时候每次都要重复的输入一些同样的参数，
 你可以选择在应用程序配置当中进行全局配置，一劳永逸：
 
 ```php
@@ -953,7 +953,7 @@ yii migrate/create 'app\\migrations\\createUserTable'
 从版本 2.0.12 开始，[[yii\console\controllers\MigrateController::migrationPath|migrationPath]] 属性也接收一个数组作为参数,
 这个数组指明了没有使用命名空间的多个迁移的目录。
 这个参数主要用于已经从多个位置进行了迁移的现有项目。
-这些迁移主要来自外部资源，比如其他开发人员开发的Yii扩展，
+这些迁移主要来自外部资源，比如其他开发人员开发的 Yii 扩展，
 当使用新方法时，这些迁移很难改成使用命名空间。
 
 ### 分离的迁移 <span id="separated-migrations"></span>
@@ -1012,7 +1012,7 @@ yii migrate --db=db2
 
 上面的命令将会把迁移提交到 `db2` 数据库当中。
 
-偶尔有限时候你需要提交 *一些* 迁移到一个数据库，而另外一些则提交到另一个数据库。
+有些时候你需要提交 *一些* 迁移到一个数据库，而另外一些则提交到另一个数据库。
 为了达到这个目的，你应该在实现一个迁移类的时候指定需要用到的数据库组件的 ID ，
 如下所示：
 
