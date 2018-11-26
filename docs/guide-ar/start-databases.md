@@ -97,9 +97,9 @@ return [
     <code>Yii::$app->db</code>
 </p>
 
-> Info: The `config/db.php` file will be included by the main application configuration `config/web.php`, 
-  which specifies how the [application](structure-applications.md) instance should be initialized.
-  For more information, please refer to the [Configurations](concept-configurations.md) section.
+<blockquote><p dir="rtl">
+    معلومة: سيتم تضمين ملف ال <code>config/db.php</code> من خلال  ال main application configuration والذي يتمثل بالملف <code>config/web.php</code>، والذي يقوم بدوره بتحديد كيف يمكن تهيئة ال instance الخاص <a href="../guide/concept-configurations.md">بالتطبيق</a>، لمزيد من المعلومات، يرجى الإطلاع على قسم ال <a href="../guide/concept-configurations.md">Configurations</a>.
+</p></blockquote>
 
 If you need to work with databases support for which isn't bundled with Yii, check the following extensions:
 
