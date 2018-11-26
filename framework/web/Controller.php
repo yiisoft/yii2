@@ -200,6 +200,7 @@ class Controller extends \yii\base\Controller
      */
     public function redirect($url, $statusCode = 302)
     {
+        // calling Url::to() here because Response::redirect() modifies route before calling Url::to()
         return Yii::$app->getResponse()->redirect(Url::to($url), $statusCode);
     }
 
