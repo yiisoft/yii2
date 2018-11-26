@@ -249,7 +249,7 @@ To see how all of the above code works, use your browser to access the following
 http://hostname/index.php?r=country%2Findex
 ```
 
-![Country List](images/start-country-list.png)
+![Country List](../guide/images/start-country-list.png)
 
 At first, you will see a page showing five countries. Below the countries, you will see a pager with four buttons.
 If you click on the button "2", you will see the page display another five countries in the database: the second page of records.
