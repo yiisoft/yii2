@@ -63,6 +63,14 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
     قبل أن تكمل الشرح، تأكد من تثبيت ال PHP <a href="http://www.php.net/manual/en/book.pdo.php">PDO</a> وال PDO driver، بالنسبة لهذا المثال، فإننا سنستخدم ال driver الخاص بال MySql وهو ال <code>pdo_mysql</code>، وهذه هي المتطلبات الأساسية لبناء أي التطبيق اذا كان التطبيق يستخدم ال relational database. 
 </p>
 
+<blockquote><p dir="rtl">
+   ملاحظة: يمكنك تقعيل ال PDO مباشرة من خلال الدخول الى php.ini ومن ثم حذف الفاصلة المنقوطة قبل السطر التالي: <code>extension=php_pdo.dll</code>
+    كما يمكنك تفعيل ال driver المطلوب عن طريق حذف الفاصلة المنقوطة قبل ال driver المقصود مثل: 
+<code>extension=php_pdo_mysql.dll</code>
+    ويمكنك الإطلاع على المزيد من هنا: 
+<a href="http://php.net/manual/en/pdo.installation.php">pdo installation</a>    
+</p></blockquote>
+
 With those installed, open the file `config/db.php` and change the parameters to be correct for your database. By default,
 the file contains the following:
 
