@@ -88,11 +88,14 @@ return [
 ];
 ```
 
-The `config/db.php` file is a typical file-based [configuration](concept-configurations.md) tool. This particular configuration file specifies the parameters
-needed to create and initialize a [[yii\db\Connection]] instance through which you can make SQL queries
-against the underlying database.
+<p dir="rtl">
+    يمثل ملف ال <code>config/db.php</code> أداة نموذجية تعتمد على الملفات للقيام بال <a href="../guide/concept-configurations.md">configuration</a>. يقوم ملف ال configuration بتحديد ال parameters المطلوبة لإنشاء وإعداد ال instance الخاص بال <code>[[yii\db\Connection]]</code>، ومن خلالها يمكنك إجراء عمليات الإستعلام على قاعدة البيانات.
+</p>
 
-The DB connection configured above can be accessed in the application code via the expression `Yii::$app->db`.
+<p dir="rtl">
+ الإعدادات الخاصة بالإتصال بقاعدة البيانات والمذكورة في الملف أعلاه يمكن الوصول اليها من خلال التطبيق عن طريق تنفيذ الأمر التالي
+    <code>Yii::$app->db</code>
+</p>
 
 > Info: The `config/db.php` file will be included by the main application configuration `config/web.php`, 
   which specifies how the [application](structure-applications.md) instance should be initialized.
