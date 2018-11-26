@@ -53,7 +53,9 @@ INSERT INTO `country` VALUES ('RU','Russia',146519759);
 INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
-At this point, you have a database named `yii2basic`, and within it a `country` table with three columns, containing ten rows of data.
+<p dir="rtl">
+    الآن، أصبح لديك قاعدة بيانات إسمها <code>yii2basic</code>، وتحوي بداخلها جدول بثلاث أعمدة يسمى ب <code>country</code>، وفيه 10 صفوف من البيانات.     
+</p>
 
 Configuring a DB Connection <span id="configuring-db-connection"></span>
 ---------------------------
