@@ -112,11 +112,11 @@ return [
 <li> <a href="https://github.com/sam-it/yii2-mariadb">MariaDB</a></li>
 </ul>
 
-Creating an Active Record <span id="creating-active-record"></span>
--------------------------
+## <div dir="rtl">إنشاء ال Active Record<span id="creating-active-record"></span>
 
-To represent and fetch the data in the `country` table, create an [Active Record](db-active-record.md)-derived
-class named `Country`, and save it in the file `models/Country.php`.
+<p dir="rtl">
+    لجلب البيانات وعرضها من جدول ال <code>country</code>، سنقوم بإضافة ال <a href="../guide/db-active-record.md">Active Record</a> الى ال class المسمى ب <code>country</code>، والموجود في المسار <code>models/Country.php</code>.
+</p>
 
 ```php
 <?php
