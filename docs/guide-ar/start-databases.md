@@ -57,12 +57,11 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
     الآن، أصبح لديك قاعدة بيانات إسمها <code>yii2basic</code>، وتحوي بداخلها جدول بثلاث أعمدة يسمى ب <code>country</code>، وفيه 10 صفوف من البيانات.     
 </p>
 
-Configuring a DB Connection <span id="configuring-db-connection"></span>
----------------------------
+## <div dir="rtl">إعدادات الإتصال الخاصة بقواعد البيانات - Configuring a DB Connection</div> <span id="configuring-db-connection"></span>
 
-Before proceeding, make sure you have installed both the [PDO](http://www.php.net/manual/en/book.pdo.php) PHP extension and
-the PDO driver for the database you are using (e.g. `pdo_mysql` for MySQL). This is a basic requirement
-if your application uses a relational database.
+<p dir="rtl">
+    قبل أن تكمل الشرح، تأكد من تثبيت ال PHP <a href="http://www.php.net/manual/en/book.pdo.php">PDO</a> وال PDO driver، بالنسبة لهذا المثال، فإننا سنستخدم ال driver الخاص بال MySql وهو ال <code>pdo_mysql</code>، وهذه هي المتطلبات الأساسية لبناء أي التطبيق اذا كان التطبيق يستخدم ال relational database. 
+</p>
 
 With those installed, open the file `config/db.php` and change the parameters to be correct for your database. By default,
 the file contains the following:
