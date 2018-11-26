@@ -53,7 +53,7 @@ class Action extends Component
      *
      * @param string $id 动作的 ID
      * @param Controller $controller 拥有此动作的控制器
-     * @param array $config 将用于初始化对象属性的 name-value 键值对
+     * @param array $config 将用于初始化对象属性的键值对
      */
     public function __construct($id, $controller, $config = [])
     {
