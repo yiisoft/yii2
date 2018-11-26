@@ -71,8 +71,10 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
 <a href="http://php.net/manual/en/pdo.installation.php">pdo installation</a>    
 </p></blockquote>
 
-With those installed, open the file `config/db.php` and change the parameters to be correct for your database. By default,
-the file contains the following:
+<p dir="rtl">
+    بعد إتمام ما سبق، قم بفتح الملف <code>config/db.php</code> ومن ثم قم بتعديل ال parameters لتكون الإعدادات الخاصة بقاعدة البيانات صحيحة -الإعدادت الخاصة بك-، بشكل افتراضي، يحتوي الملف على ما يلي: 
+</p>
+    
 
 ```php
 <?php
