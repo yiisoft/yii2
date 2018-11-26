@@ -101,13 +101,16 @@ return [
     معلومة: سيتم تضمين ملف ال <code>config/db.php</code> من خلال  ال main application configuration والذي يتمثل بالملف <code>config/web.php</code>، والذي يقوم بدوره بتحديد كيف يمكن تهيئة ال instance الخاص <a href="../guide/concept-configurations.md">بالتطبيق</a>، لمزيد من المعلومات، يرجى الإطلاع على قسم ال <a href="../guide/concept-configurations.md">Configurations</a>.
 </p></blockquote>
 
-If you need to work with databases support for which isn't bundled with Yii, check the following extensions:
+<p dir="rtl">
+    إذا كنت بحاجة إلى العمل مع إحدى قواعد البيانات الغير مدعومة بشكل إفتراضي من ال Yii، فيمكنك التحقق من الإضافات التالية:
+</p>
 
-- [Informix](https://github.com/edgardmessias/yii2-informix)
-- [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
-- [Firebird](https://github.com/edgardmessias/yii2-firebird)
-- [MariaDB](https://github.com/sam-it/yii2-mariadb)
-
+<ul dir="rtl">
+    <li><a href="https://github.com/edgardmessias/yii2-informix">Informix</a></li>
+<li> <a href="https://github.com/edgardmessias/yii2-ibm-db2">IBM DB2</a></li>
+<li> <a href="https://github.com/edgardmessias/yii2-firebird">Firebird</a></li>
+<li> <a href="https://github.com/sam-it/yii2-mariadb">MariaDB</a></li>
+</ul>
 
 Creating an Active Record <span id="creating-active-record"></span>
 -------------------------
