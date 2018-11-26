@@ -129,14 +129,17 @@ class Country extends ActiveRecord
 {
 }
 ```
+<p dir="rtl">
+    يرث ال <code>Country</code> Class ال [[yii\db\ActiveRecord]]، ولذلك، أنت لست بحاجة لكتابة أي شيفرة برمجية بداخله، فقط الشيفرة التي تشاهدها بالأعلى. سيقوم ال Yii بشكل تلقائي بالحصول على إسم الجدول في قاعدة البيانات من خلال إسم ال Class. 
+</p>
 
-The `Country` class extends from [[yii\db\ActiveRecord]]. You do not need to write any code inside of it! With just the above code, 
-Yii will guess the associated table name from the class name. 
+<blockquote><p dir="rtl">
+معلومة: إذا لم يكن من الممكن إجراء مطابقة مباشرة بين اسم ال class واسم الجدول، فيمكنك تجاوز هذه المشكلة من خلال إستخدام الدالة  [[yii\db\ActiveRecord::tableName()]] ، والتي ستقوم بعمل override على اسم الجدول. 
+</p></blockquote>
 
-> Info: If no direct match can be made from the class name to the table name, you can
-override the [[yii\db\ActiveRecord::tableName()]] method to explicitly specify the associated table name.
-
-Using the `Country` class, you can easily manipulate data in the `country` table, as shown in these snippets:
+<p dir="rtl">
+    من خلال إستخدام ال <code>Country</code> class، يمكنك التحكم بكل سهولة بالبيانات الموجودة داخل جدول ال <code>country</code>، شاهد هذه الشيفرة البرمجية لتبسيط الفكرة:  
+</p>
 
 ```php
 use app\models\Country;
