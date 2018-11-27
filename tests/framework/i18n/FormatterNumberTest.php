@@ -110,6 +110,30 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/16900
+     */
+    public function testIntlAsIntegerOptions()
+    {
+        $this->formatter->numberFormatterTextOptions = [
+            \NumberFormatter::POSITIVE_PREFIX => '+',
+        ];
+
+        $this->assertSame('+2', $this->formatter->asInteger(2));
+        $this->assertSame('+10', $this->formatter->asInteger(10));
+        $this->assertSame('+12', $this->formatter->asInteger(12));
+        $this->assertSame('+123', $this->formatter->asInteger(123));
+        $this->assertSame('+1,230', $this->formatter->asInteger(1230));
+        $this->assertSame('+123', $this->formatter->asInteger(123.23));
+        $this->assertSame('+123', $this->formatter->asInteger(123.53));
+        $this->assertSame('+0', $this->formatter->asInteger(0));
+        $this->assertSame('-123', $this->formatter->asInteger(-123.23));
+        $this->assertSame('-123', $this->formatter->asInteger(-123.53));
+
+        $this->assertSame('+123,456', $this->formatter->asInteger(123456));
+        $this->assertSame('+123,456', $this->formatter->asInteger(123456.789));
+    }
+
+    /**
      * @expectedException \yii\base\InvalidParamException
      */
     public function testAsIntegerException()
