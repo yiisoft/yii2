@@ -206,7 +206,7 @@ class CountryController extends Controller
 </p>
 
 <p dir="rtl">
-    يقوم ال <code>index<code> action باستخدام ال <code>Country::find()</code>، وهذه الدالة موجودة من ضمن ال <code>active record</code>، وتقوم هذه الدالة على بناء الإستعلام الخاص بقاعدة البيانات مما يسمح باسترجاع جميع البيانات الموجودة بداخل جدول ال country، ولتحديد الحد الأعلى المسموح إرجاعه في كل request، يمكنك إستخدام ال <code>[[yii\data\Pagination]]</code> object كوسيلة مساعدة، ويقدم هذا ال object غرضين أساسيين وهما: 
+    يقوم ال <code>index</code> action باستخدام ال <code>Country::find()</code>، وهذه الدالة موجودة من ضمن ال <code>active record</code>، وتقوم هذه الدالة على بناء الإستعلام الخاص بقاعدة البيانات مما يسمح باسترجاع جميع البيانات الموجودة بداخل جدول ال country، ولتحديد الحد الأعلى المسموح إرجاعه في كل request، يمكنك إستخدام ال <code>[[yii\data\Pagination]]</code> object كوسيلة مساعدة، ويقدم هذا ال object غرضين أساسيين وهما: 
 </p>
 
 * Sets the `offset` and `limit` clauses for the SQL statement represented by the query so that it only
