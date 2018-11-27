@@ -158,9 +158,10 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Info: Active Record is a powerful way to access and manipulate database data in an object-oriented fashion.
-You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Database Access Objects](db-dao.md).
-
+<blockquote><p dir="rtl">
+    معلومة: يعتبر ال Active Record وسيلة قوية للوصول إلى بيانات قاعدة البيانات والتعامل معها بطريقة ال object oriented.
+    ستجد معلومات أكثر تفصيلاً في الجزء الخاص بال <a href="../guide/db-active-record.md">Active Record</a>. بالإضافة الى ذلك، يمكنك التفاعل مباشرة مع قاعدة البيانات باستخدام lower-level data accessing والتي تسمى ب <a href="../guide/db-dao.md">Database Access Objects</a>.
+</p></blockquote>
 
 Creating an Action <span id="creating-action"></span>
 ------------------
