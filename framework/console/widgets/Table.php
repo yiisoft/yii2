@@ -69,15 +69,15 @@ class Table extends Widget
     /**
      * @var array table headers
      */
-    private $_headers = [];
+    protected $_headers = [];
     /**
      * @var array table rows
      */
-    private $_rows = [];
+    protected $_rows = [];
     /**
      * @var array table chars
      */
-    private $_chars = [
+    protected $_chars = [
         self::CHAR_TOP => '═',
         self::CHAR_TOP_MID => '╤',
         self::CHAR_TOP_LEFT => '╔',
@@ -97,15 +97,15 @@ class Table extends Widget
     /**
      * @var array table column widths
      */
-    private $_columnWidths = [];
+    protected $_columnWidths = [];
     /**
      * @var int screen width
      */
-    private $_screenWidth;
+    protected $_screenWidth;
     /**
      * @var string list prefix
      */
-    private $_listPrefix = '• ';
+    protected $_listPrefix = '• ';
 
 
     /**
