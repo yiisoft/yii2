@@ -24,7 +24,7 @@
 
 <p dir="rtl">
     في البداية، عليك إنشاء قاعدة بيانات تسمى ب <code>yii2basic</code>، والتي ستستخدم لجلب البيانات الخاصة بالتطبيق، ويمكنك إستخدام أي من ال SQLite, MySql, PostgreSQL, MSSQL or Oracle database, ال Yii بشكل افتراضي بدعم العديد من قواعد البيانات والتي يمكنك إستخدامها مباشرة في التطبيق الخاص بك، ولتبسيط الأمور، ال MySql هي التي سيتم إستخدامها في في هذا الشرح. 
-س</p>
+</p>
 
 <blockquote><p dir="rtl">
     معلومة: إذا كنت ترغب بالحصول على خيارات متقدمة  مثل دعم ال <code>JSON</code> الموجود داخل MariaDB، فيمكنك من إستخدام أحد ال Extension المذكوره بالأسفل للقيام بهذه المهمة بدلا من الإستغناء عن ال MySql، فإستخدام MariaDB بدلا عن ال MySql لم يعد صحيحا تماما. 
@@ -206,7 +206,7 @@ class CountryController extends Controller
 </p>
 
 <p dir="rtl">
-    يقوم ال <code>index<code> action باستخدام ال <code>Country::find()<code>، وهذه الدالة موجودة من ضمن ال <code>active record<code>، وتقوم هذه الدالة على بناء الإستعلام الخاص بقاعدة البيانات مما يسمح باسترجاع جميع البيانات الموجودة بداخل جدول ال country، ولتحديد الحد الأعلى المسموح إرجاعه في كل request، يمكنك إستخدام ال <code>[[yii\data\Pagination]]<code> object كوسيلة مساعدة، ويقدم هذا ال object غرضين أساسيين وهما: 
+    يقوم ال <code>index<code> action باستخدام ال <code>Country::find()</code>، وهذه الدالة موجودة من ضمن ال <code>active record</code>، وتقوم هذه الدالة على بناء الإستعلام الخاص بقاعدة البيانات مما يسمح باسترجاع جميع البيانات الموجودة بداخل جدول ال country، ولتحديد الحد الأعلى المسموح إرجاعه في كل request، يمكنك إستخدام ال <code>[[yii\data\Pagination]]</code> object كوسيلة مساعدة، ويقدم هذا ال object غرضين أساسيين وهما: 
 </p>
 
 * Sets the `offset` and `limit` clauses for the SQL statement represented by the query so that it only
