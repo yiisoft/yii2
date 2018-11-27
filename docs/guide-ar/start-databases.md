@@ -163,13 +163,11 @@ $country->save();
     ستجد معلومات أكثر تفصيلاً في الجزء الخاص بال <a href="../guide/db-active-record.md">Active Record</a>. بالإضافة الى ذلك، يمكنك التفاعل مباشرة مع قاعدة البيانات باستخدام lower-level data accessing والتي تسمى ب <a href="../guide/db-dao.md">Database Access Objects</a>.
 </p></blockquote>
 
-Creating an Action <span id="creating-action"></span>
-------------------
+## <div dir="rtl">إنشاء ال Action</a> <span id="creating-action"></span>
 
-To expose the country data to end users, you need to create a new action. Instead of placing the new action in the `site`
-controller, like you did in the previous sections, it makes more sense to create a new controller specifically
-for all actions related to the country data. Name this new controller  `CountryController`, and create
-an `index` action in it, as shown in the following.
+<p dir="rtl">
+لعرض بيانات ال country للمستخدمين، يلزمك إنشاء action جديد، وبدلاً من وضع ال action الجديد في ال <code>site</code> controller كما فعلنا في المرات السابقة، سنقوم بإنشاء controller جديد، ومن ثم سنقوم بوضع ال action بداخله، والسبب المنطقي لهذا العمل أنك ستقوم بتجميع الشيفرة البرمجية المسؤولة عن أداء وظائف معينة في مكان واحد، وبهذا فإن جميع الإجرائات التي تخص ال country من المنطقي أن تكون موجودة داخل ال <code>CountryController</code>، والآن لنقم بإنشاء هذا ال controller الجديد، وال action الجديد وسيكون باسم <code>index</code>، كما هو موضح أدناه: 
+</p>
 
 ```php
 <?php
