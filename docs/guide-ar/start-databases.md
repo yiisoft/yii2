@@ -201,12 +201,13 @@ class CountryController extends Controller
     }
 }
 ```
+<p dir="rtl">
+    قم بحفظ الشيفرة البرمجية التي بالأعلى داخل هذا الملف <code>controllers/CountryController.php</code>
+</p>
 
-Save the above code in the file `controllers/CountryController.php`.
-
-The `index` action calls `Country::find()`. This Active Record method builds a DB query that can be used to retrieve all of the data from the `country` table.
-To limit the number of countries returned in each request, the query is paginated with the help of a
-[[yii\data\Pagination]] object. The `Pagination` object serves two purposes:
+<p dir="rtl">
+    يقوم ال <code>index<code> action باستخدام ال <code>Country::find()<code>، وهذه الدالة موجودة من ضمن ال <code>active record<code>، وتقوم هذه الدالة على بناء الإستعلام الخاص بقاعدة البيانات مما يسمح باسترجاع جميع البيانات الموجودة بداخل جدول ال country، ولتحديد الحد الأعلى المسموح إرجاعه في كل request، يمكنك إستخدام ال <code>[[yii\data\Pagination]]<code> object كوسيلة مساعدة، ويقدم هذا ال object غرضين أساسيين وهما: 
+</p>
 
 * Sets the `offset` and `limit` clauses for the SQL statement represented by the query so that it only
   returns a single page of data at a time (at most 5 rows in a page).
