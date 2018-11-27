@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #12077, #12135, #17263: Fixed PostgreSQL version of `alterColumn()` to accept properly `ColumnSchemaBuilder` definition of column (bizley)
 - Bug #17306: Added ".mjs" extensions to mimetypes meta (samdark)
 - Bug #17313: Support jQuery 3.4 (samdark)
+- Bug #16918: Console Table widget variables visibility was changed to protected to allow extending it (samdark)
 
 2.0.18 April 23, 2019
 ---------------------

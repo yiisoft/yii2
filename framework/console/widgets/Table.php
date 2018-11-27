@@ -40,9 +40,6 @@ use yii\helpers\Console;
  *     ],
  * ]);
  *
- * @property string $listPrefix List prefix. This property is write-only.
- * @property int $screenWidth Screen width. This property is write-only.
- *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
  * @since 2.0.13
  */
@@ -68,16 +65,19 @@ class Table extends Widget
 
     /**
      * @var array table headers
+     * @since 2.0.19
      */
-    private $_headers = [];
+    protected $headers = [];
     /**
      * @var array table rows
+     * @since 2.0.19
      */
-    private $_rows = [];
+    protected $rows = [];
     /**
      * @var array table chars
+     * @since 2.0.19
      */
-    private $_chars = [
+    protected $chars = [
         self::CHAR_TOP => '═',
         self::CHAR_TOP_MID => '╤',
         self::CHAR_TOP_LEFT => '╔',
@@ -96,16 +96,19 @@ class Table extends Widget
     ];
     /**
      * @var array table column widths
+     * @since 2.0.19
      */
-    private $_columnWidths = [];
+    protected $columnWidths = [];
     /**
      * @var int screen width
+     * @since 2.0.19
      */
-    private $_screenWidth;
+    protected $screenWidth;
     /**
      * @var string list prefix
+     * @since 2.0.19
      */
-    private $_listPrefix = '• ';
+    protected $listPrefix = '• ';
 
 
     /**
@@ -116,7 +119,7 @@ class Table extends Widget
      */
     public function setHeaders(array $headers)
     {
-        $this->_headers = array_values($headers);
+        $this->headers = array_values($headers);
         return $this;
     }
 
@@ -128,7 +131,7 @@ class Table extends Widget
      */
     public function setRows(array $rows)
     {
-        $this->_rows = array_map('array_values', $rows);
+        $this->rows = array_map('array_values', $rows);
         return $this;
     }
 
@@ -140,7 +143,7 @@ class Table extends Widget
      */
     public function setChars(array $chars)
     {
-        $this->_chars = $chars;
+        $this->chars = $chars;
         return $this;
     }
 
@@ -152,7 +155,7 @@ class Table extends Widget
      */
     public function setScreenWidth($width)
     {
-        $this->_screenWidth = $width;
+        $this->screenWidth = $width;
         return $this;
     }
 
@@ -164,7 +167,7 @@ class Table extends Widget
      */
     public function setListPrefix($listPrefix)
     {
-        $this->_listPrefix = $listPrefix;
+        $this->listPrefix = $listPrefix;
         return $this;
     }
 
@@ -174,44 +177,44 @@ class Table extends Widget
     public function run()
     {
         $this->calculateRowsSize();
-        $headerCount = count($this->_headers);
+        $headerCount = count($this->headers);
 
         $buffer = $this->renderSeparator(
-            $this->_chars[self::CHAR_TOP_LEFT],
-            $this->_chars[self::CHAR_TOP_MID],
-            $this->_chars[self::CHAR_TOP],
-            $this->_chars[self::CHAR_TOP_RIGHT]
+            $this->chars[self::CHAR_TOP_LEFT],
+            $this->chars[self::CHAR_TOP_MID],
+            $this->chars[self::CHAR_TOP],
+            $this->chars[self::CHAR_TOP_RIGHT]
         );
         // Header
         if ($headerCount > 0) {
-            $buffer .= $this->renderRow($this->_headers,
-                $this->_chars[self::CHAR_LEFT],
-                $this->_chars[self::CHAR_MIDDLE],
-                $this->_chars[self::CHAR_RIGHT]
+            $buffer .= $this->renderRow($this->headers,
+                $this->chars[self::CHAR_LEFT],
+                $this->chars[self::CHAR_MIDDLE],
+                $this->chars[self::CHAR_RIGHT]
             );
         }
 
         // Content
-        foreach ($this->_rows as $i => $row) {
+        foreach ($this->rows as $i => $row) {
             if ($i > 0 || $headerCount > 0) {
                 $buffer .= $this->renderSeparator(
-                    $this->_chars[self::CHAR_LEFT_MID],
-                    $this->_chars[self::CHAR_MID_MID],
-                    $this->_chars[self::CHAR_MID],
-                    $this->_chars[self::CHAR_RIGHT_MID]
+                    $this->chars[self::CHAR_LEFT_MID],
+                    $this->chars[self::CHAR_MID_MID],
+                    $this->chars[self::CHAR_MID],
+                    $this->chars[self::CHAR_RIGHT_MID]
                 );
             }
             $buffer .= $this->renderRow($row,
-                $this->_chars[self::CHAR_LEFT],
-                $this->_chars[self::CHAR_MIDDLE],
-                $this->_chars[self::CHAR_RIGHT]);
+                $this->chars[self::CHAR_LEFT],
+                $this->chars[self::CHAR_MIDDLE],
+                $this->chars[self::CHAR_RIGHT]);
         }
 
         $buffer .= $this->renderSeparator(
-            $this->_chars[self::CHAR_BOTTOM_LEFT],
-            $this->_chars[self::CHAR_BOTTOM_MID],
-            $this->_chars[self::CHAR_BOTTOM],
-            $this->_chars[self::CHAR_BOTTOM_RIGHT]
+            $this->chars[self::CHAR_BOTTOM_LEFT],
+            $this->chars[self::CHAR_BOTTOM_MID],
+            $this->chars[self::CHAR_BOTTOM],
+            $this->chars[self::CHAR_BOTTOM_RIGHT]
         );
 
         return $buffer;
@@ -229,7 +232,7 @@ class Table extends Widget
      */
     protected function renderRow(array $row, $spanLeft, $spanMiddle, $spanRight)
     {
-        $size = $this->_columnWidths;
+        $size = $this->columnWidths;
 
         $buffer = '';
         $arrayPointer = [];
@@ -246,7 +249,7 @@ class Table extends Widget
                     if (empty($finalChunk[$index])) {
                         $finalChunk[$index] = '';
                         $start = 0;
-                        $prefix = $this->_listPrefix;
+                        $prefix = $this->listPrefix;
                         if (!isset($arrayPointer[$index])) {
                             $arrayPointer[$index] = 0;
                         }
@@ -288,7 +291,7 @@ class Table extends Widget
     protected function renderSeparator($spanLeft, $spanMid, $spanMidMid, $spanRight)
     {
         $separator = $spanLeft;
-        foreach ($this->_columnWidths as $index => $rowSize) {
+        foreach ($this->columnWidths as $index => $rowSize) {
             if ($index !== 0) {
                 $separator .= $spanMid;
             }
@@ -305,21 +308,21 @@ class Table extends Widget
      */
     protected function calculateRowsSize()
     {
-        $this->_columnWidths = $columns = [];
+        $this->columnWidths = $columns = [];
         $totalWidth = 0;
         $screenWidth = $this->getScreenWidth() - self::CONSOLE_SCROLLBAR_OFFSET;
 
-        $headerCount = count($this->_headers);
-        if (empty($this->_rows)) {
+        $headerCount = count($this->headers);
+        if (empty($this->rows)) {
             $rowColCount = 0;
         } else {
-            $rowColCount = max(array_map('count', $this->_rows));
+            $rowColCount = max(array_map('count', $this->rows));
         }
         $count = max($headerCount, $rowColCount);
         for ($i = 0; $i < $count; $i++) {
-            $columns[] = ArrayHelper::getColumn($this->_rows, $i);
+            $columns[] = ArrayHelper::getColumn($this->rows, $i);
             if ($i < $headerCount) {
-                $columns[$i][] = $this->_headers[$i];
+                $columns[$i][] = $this->headers[$i];
             }
         }
 
@@ -327,24 +330,24 @@ class Table extends Widget
             $columnWidth = max(array_map(function ($val) {
                 if (is_array($val)) {
                     $encodings = array_fill(0, count($val), Yii::$app->charset);
-                    return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
+                    return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->listPrefix, Yii::$app->charset);
                 }
 
                 return mb_strwidth($val, Yii::$app->charset);
             }, $column)) + 2;
-            $this->_columnWidths[] = $columnWidth;
+            $this->columnWidths[] = $columnWidth;
             $totalWidth += $columnWidth;
         }
 
         $relativeWidth = $screenWidth / $totalWidth;
 
         if ($totalWidth > $screenWidth) {
-            foreach ($this->_columnWidths as $j => $width) {
-                $this->_columnWidths[$j] = (int) ($width * $relativeWidth);
-                if ($j === count($this->_columnWidths)) {
-                    $this->_columnWidths = $totalWidth;
+            foreach ($this->columnWidths as $j => $width) {
+                $this->columnWidths[$j] = (int) ($width * $relativeWidth);
+                if ($j === count($this->columnWidths)) {
+                    $this->columnWidths = $totalWidth;
                 }
-                $totalWidth -= $this->_columnWidths[$j];
+                $totalWidth -= $this->columnWidths[$j];
             }
         }
     }
@@ -369,7 +372,7 @@ class Table extends Widget
             }
 
             return ceil($columnWidth / ($size - 2));
-        }, $this->_columnWidths, array_map(function ($val) {
+        }, $this->columnWidths, array_map(function ($val) {
             if (is_array($val)) {
                 $encodings = array_fill(0, count($val), Yii::$app->charset);
                 return array_map('mb_strwidth', $val, $encodings);
@@ -390,12 +393,12 @@ class Table extends Widget
      */
     protected function getScreenWidth()
     {
-        if (!$this->_screenWidth) {
+        if (!$this->screenWidth) {
             $size = Console::getScreenSize();
-            $this->_screenWidth = isset($size[0])
+            $this->screenWidth = isset($size[0])
                 ? $size[0]
                 : self::DEFAULT_CONSOLE_SCREEN_WIDTH + self::CONSOLE_SCROLLBAR_OFFSET;
         }
-        return $this->_screenWidth;
+        return $this->screenWidth;
     }
 }
