@@ -91,7 +91,7 @@ use yii\db\Query;
 $query = (new Query())->from('post')->where(['status' => 1]);
 ```
 
-> 注意：假如查询已经指定了 `orderBy` 从句，则终端用户给定的新的排序说明（通过 `sort` 来配置的）
+> Note: 假如查询已经指定了 `orderBy` 从句，则终端用户给定的新的排序说明（通过 `sort` 来配置的）
   将被添加到已经存在的从句中。任何已经存在的 `limit` 和 `offset` 从句都将被终端用户所请求的分页
   （通过 `pagination` 所配置的）所重写。
 
@@ -175,7 +175,7 @@ $provider = new ArrayDataProvider([
 $rows = $provider->getModels();
 ```
 
-> 注意：数组数据提供者与 [Active Data Provider](#active-data-provider) 和 [SQL Data Provider](#sql-data-provider) 这两者进行比较的话，
+> Note: 数组数据提供者与 [Active Data Provider](#active-data-provider) 和 [SQL Data Provider](#sql-data-provider) 这两者进行比较的话，
   会发现数组数据提供者没有后面那两个高效，这是因为数组数据提供者需要加载*所有*的数据到内存中。
 
 
@@ -339,3 +339,61 @@ class CsvDataProvider extends BaseDataProvider
     }
 }
 ```
+
+## 使用数据过滤器过滤数据提供者 <span id="filtering-data-providers-using-data-filters"></span>
+
+虽然您可以手动为活动数据提供构建条件，
+例如使用 [过滤数据](output-data-widgets.md#filtering-data) 和 [单独过滤表格](output-data-widgets.md#separate-filter-form) 数据小部件，
+但如果你需要灵活的过滤条件，Yii 的数据过滤器会非常有用。
+以下是数据过滤器使用的方式：
+
+```php
+$filter = new ActiveDataFilter([
+    'searchModel' => 'app\models\PostSearch'
+]);
+
+$filterCondition = null;
+
+// 您可以从任何来源加载过滤器。例如：
+// if you prefer JSON in request body,
+// use Yii::$app->request->getBodyParams() below:
+if ($filter->load(\Yii::$app->request->get())) { 
+    $filterCondition = $filter->build();
+    if ($filterCondition === false) {
+        // Serializer would get errors out of it
+        return $filter;
+    }
+}
+
+$query = Post::find();
+if ($filterCondition !== null) {
+    $query->andWhere($filterCondition);
+}
+
+return new ActiveDataProvider([
+    'query' => $query,
+]);
+```
+
+`PostSearch` 模型用于定义允许过滤的属性和值：
+
+```php
+use yii\base\Model;
+
+class PostSearch extends Model 
+{
+    public $id;
+    public $title;
+    
+    public function rules()
+    {
+        return [
+            ['id', 'integer'],
+            ['title', 'string', 'min' => 2, 'max' => 200],            
+        ];
+    }
+}
+```
+
+数据过滤器非常灵活。您可以自定义构建的条件以及允许的运算符。
+更多的细节请查看 [[\yii\data\DataFilter]] 的 API 文档。

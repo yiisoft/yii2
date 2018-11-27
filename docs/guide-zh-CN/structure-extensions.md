@@ -7,7 +7,7 @@
 帮助你简单地抓取页面生成的情况。
 你可以使用扩展来加速你的开发过程。
 
-> 信息：本文中我们使用的术语 "扩展" 特指 Yii 软件包。而用术语
+> Info: 本文中我们使用的术语 "扩展" 特指 Yii 软件包。而用术语
   "软件包" 和 "库" 指代非 Yii 专用的通常意义上的软件包。
 
 
@@ -47,7 +47,7 @@
 安装完成后，你应该能在 `BasePath/vendor` 目录下见到 `yiisoft/yii2-imagine` 目录。你也应该
 见到另一个 `imagine/imagine` 目录，在其中安装了所依赖的包。
 
-> 信息： `yiisoft/yii2-imagine` 是 Yii 由开发团队维护一个核心扩展，
+> Info: `yiisoft/yii2-imagine` 是 Yii 由开发团队维护一个核心扩展，
   所有核心扩展均由 [Packagist](https://packagist.org/) 集中管理，命名为
   `yiisoft/yii2-xyz`，其中的 `xyz`， 不同扩展有不同名称。
 
@@ -63,7 +63,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     ->save(Yii::getAlias('@runtime/thumb-test-image.jpg'), ['quality' => 50]);
 ```
 
-> 信息： 扩展类由 [Yii class autoloader](concept-autoloading.md) 自动加载。
+> Info: 扩展类由 [Yii class autoloader](concept-autoloading.md) 自动加载。
 
 
 ### 手动安装扩展 <span id="installing-extensions-manually"></span>
@@ -379,10 +379,10 @@ Yii 提供了测试支持，使你更容易写单元测试、验收测试和功�
   你可以参照 [Object class file](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php)
   学习如何为你的代码做文档。
 
-> 信息：你的代码注释可以写成 Markdown 格式。`yiisoft/yii2-apidoc` 扩展为你提供了一个从你的
+> Info: 你的代码注释可以写成 Markdown 格式。`yiisoft/yii2-apidoc` 扩展为你提供了一个从你的
   代码注释生成漂亮的 API 文档。
 
-> 信息：虽然不做要求，我们还是建议你的扩展遵循某个编码规范。
+> Info: 虽然不做要求，我们还是建议你的扩展遵循某个编码规范。
   你可以参照 [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style)。
 
 
@@ -392,46 +392,67 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
 [Packagist](https://packagist.org/) 中注册，并像 [Using Extensions](#using-extensions) 章节描述
 的那样容易安装。
 
-- [yiisoft/yii2-apidoc](https://github.com/yiisoft/yii2-apidoc):
+- [yiisoft/yii2-apidoc](https://github.com/yiisoft/yii2-apidoc)：
   提供了一个可扩展的、高效的 API 文档生成器。核心框架的 API 
   文档也是用它生成的。
-- [yiisoft/yii2-authclient](https://github.com/yiisoft/yii2-authclient):
+- [yiisoft/yii2-authclient](https://github.com/yiisoft/yii2-authclient)：
   提供了一套常用的认证客户端，例如 Facebook OAuth2 客户端、GitHub OAuth2 客户端。
-- [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
+- [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap)：
   提供了一套挂件，封装了 [Bootstrap](http://getbootstrap.com/) 的组件和插件。
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception):
+- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception)：
   提供了基于 [Codeception](http://codeception.com/) 的测试支持。
-- [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
+- [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug)：
   提供了对 Yii 应用的调试支持。当使用该扩展是，
   在每个页面的底部将显示一个调试工具条。
   该扩展还提供了一个独立的页面，以显示更详细的调试信息。
-- [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
+- [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch)：
   提供对 [Elasticsearch](http://www.elasticsearch.org/) 的使用支持。它包含基本的查询/搜索支持，
   并实现了 [Active Record](db-active-record.md) 模式让你可以将活动记录
   存储在 Elasticsearch 中。
-- [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker):
+- [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker)：
   提供了使用 [Faker](https://github.com/fzaninotto/Faker) 的支持，为你生成模拟数据。
-- [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
+- [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii)：
   提供了一个基于页面的代码生成器，具有高可扩展性，并能用来快速生成模型、
-  表单、模块、CRUD等。
-- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
-  provides an HTTP client.
-- [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
+  表单、模块、CRUD 等。
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient)：
+  提供 HTTP 客户端。
+- [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine)：
   提供了基于 [Imagine](http://imagine.readthedocs.org/) 的常用图像处理功能。
-- [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
+- [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui)：
   提供了一套封装 [JQuery UI](http://jqueryui.com/) 的挂件以及它们的交互。
-- [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
+- [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb)：
   提供了对 [MongoDB](http://www.mongodb.org/) 的使用支持。它包含基本
   的查询、活动记录、数据迁移、缓存、代码生成等特性。
-- [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
+- [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue)：
+  通过队列异步提供运行任务的支持。
+  它支持基于 DB，Redis，RabbitMQ，AMQP，Beanstalk 和 Gearman 的队列。
+- [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis)：
   提供了对 [redis](http://redis.io/) 的使用支持。它包含基本的
   查询、活动记录、缓存等特性。
-- [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
+- [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell)：
+  提供基于 [psysh](http://psysh.org/) 的交互式 shell。
+- [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty)：
   提供了一个基于 [Smarty](http://www.smarty.net/) 的模板引擎。
-- [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
+- [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx)：
   提供了对 [Sphinx](http://sphinxsearch.com) 的使用支持。它包含基本的
   查询、活动记录、代码生成等特性。
-- [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
+- [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer)：
   提供了基于 [swiftmailer](http://swiftmailer.org/) 的邮件发送功能。
-- [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
+- [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig)：
   提供了一个基于 [Twig](http://twig.sensiolabs.org/) 的模板引擎。
+
+以下官方扩展适用于 Yii 2.1 及以上版本。
+您不需要为 Yii 2.0 安装它们，因为它们包含在核心框架中。
+
+- [yiisoft/yii2-captcha](https://www.yiiframework.com/extension/yiisoft/yii2-captcha)：
+  提供 CAPTCHA。
+- [yiisoft/yii2-jquery](https://www.yiiframework.com/extension/yiisoft/yii2-jquery)：
+  为 [jQuery](https://jquery.com/) 提供支持。
+- [yiisoft/yii2-maskedinput](https://www.yiiframework.com/extension/yiisoft/yii2-maskedinput)：
+  提供基于 [jQuery Input Mask plugin](http://robinherbots.github.io/Inputmask/) 的格式化输入小部件。
+- [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql)：
+  提供对使用 [MSSQL](https://www.microsoft.com/sql-server/) 的支持。
+- [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle)：
+  提供对使用 [Oracle](https://www.oracle.com/) 的支持。
+- [yiisoft/yii2-rest](https://www.yiiframework.com/extension/yiisoft/yii2-rest)：
+  提供对 REST API 的支持。

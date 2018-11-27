@@ -1,12 +1,15 @@
 别名（Aliases）
-=======
+=============
 
 别名用来表示文件路径和 URL，这样就避免了在代码中硬编码一些绝对路径和 URL。
 一个别名必须以 `@` 字符开头，以区别于传统的文件路径和 URL。
-Yii 预定义了大量可用的别名。例如，别名 `@yii` 指的是 Yii 框架本身的安装目录，而 `@web` 表示的是当前运行应用的根 URL。
+没有前导 `@` 定义的别名将以 `@` 字符作为前缀。
 
-定义别名 <span id="defining-aliases"></span>
-----------------
+Yii 预定义了大量可用的别名。例如，别名 `@yii` 指的是 Yii 框架本身的安装目录，
+而 `@web` 表示的是当前运行应用的根 URL。
+
+定义别名（Defining Aliases） <span id="defining-aliases"></span>
+-------------------------
 
 你可以调用 [[Yii::setAlias()]] 来给文件路径或 URL 定义别名：
 
@@ -16,9 +19,12 @@ Yii::setAlias('@foo', '/path/to/foo');
 
 // URL 的别名
 Yii::setAlias('@bar', 'http://www.example.com');
+
+// 包含 \foo\Bar 类的具体文件的别名
+Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
 ```
 
-> 注意：别名所指向的文件路径或 URL 不一定是真实存在的文件或资源。
+> Note: 别名所指向的文件路径或 URL 不一定是真实存在的文件或资源。
 
 可以通过在一个别名后面加斜杠 `/` 和一至多个路径分段生成新别名（无需调用 [[Yii::setAlias()]]）。
 们把通过 [[Yii::setAlias()]] 定义的别名称为**根别名**，
@@ -47,8 +53,8 @@ return [
 ```
 
 
-解析别名 <span id="resolving-aliases"></span>
------------------
+解析别名（Resolving Aliases） <span id="resolving-aliases"></span>
+--------------------------
 
 你可以调用 [[Yii::getAlias()]] 命令来解析根别名到对应的文件路径或 URL。
 同样的页面也可以用于解析衍生别名。例如：
@@ -62,7 +68,7 @@ echo Yii::getAlias('@foo/bar/file.php');  // 输出：/path/to/foo/bar/file.php
 由衍生别名所解析出的文件路径和 URL 
 是通过替换掉衍生别名中的根别名部分得到的。
 
-> 注意：[[Yii::getAlias()]] 并不检查结果路径/URL 所指向的资源是否真实存在。
+> Note: [[Yii::getAlias()]] 并不检查结果路径/URL 所指向的资源是否真实存在。
 
 
 根别名可能也会包含斜杠 `/`。
@@ -79,8 +85,8 @@ echo Yii::getAlias('@foo/bar/file.php');   // 输出：/path2/bar/file.php
 若 `@foo/bar` 未被定义为根别名，最后一行语句会显示为 `/path/to/foo/bar/file.php`。
 
 
-使用别名 <span id="using-aliases"></span>
--------------
+使用别名（Using Aliases） <span id="using-aliases"></span>
+----------------------
 
 别名在 Yii 的很多地方都会被正确识别，
 无需调用 [[Yii::getAlias()]] 来把它们转换为路径/URL。
@@ -98,8 +104,8 @@ $cache = new FileCache([
 请关注 API 文档了解特定属性或方法参数是否支持别名。
 
 
-预定义的别名 <span id="predefined-aliases"></span>
-------------------
+预定义的别名（Predefined Aliases） <span id="predefined-aliases"></span>
+------------------------------
 
 Yii 预定义了一系列别名来简化常用路径和 URL 的使用：
 
@@ -117,9 +123,10 @@ Yii 预定义了一系列别名来简化常用路径和 URL 的使用：
 其他的别名都是在[配置应用](concept-configurations.md)的时候，
 于应用的构造方法内定义的。
 
+> Note: `@web` 和 `@webroot` 别名，因为它们的描述表明是在 [[yii\web\Application|Web application]] 中定义的，因此默认情况下不适用于 [[yii\console\Application|Console application]] 应用程序。
 
-扩展的别名 <span id="extension-aliases"></span>
------------------
+扩展的别名（Extension Aliases） <span id="extension-aliases"></span>
+----------------------------
 
 每一个通过 Composer 安装的 [扩展](structure-extensions.md) 都自动添加了一个别名。
 该别名会以该扩展在 `composer.json` 文件中所声明的根命名空间为名，

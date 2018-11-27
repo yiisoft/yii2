@@ -6,7 +6,7 @@
 本章节将介绍应用的内建功能，如何组织代码，
 以及一般情况下应用如何处理请求。
 
-> 信息：为简单起见，在整个“入门”板块都假定你已经把
+> Info: 为简单起见，在整个“入门”板块都假定你已经把
   `basic/web` 设为 Web 服务器根目录并配置完毕，
   你访问应用的地址会是 `http://hostname/index.php` 或类似的。
   请按需调整 URL。
@@ -74,7 +74,7 @@ Yii 实现了[模型-视图-控制器 (MVC)](http://wikipedia.org/wiki/Model-vie
 
 每个应用都有一个入口脚本 `web/index.php`，这是整个应用中唯一可以访问的 PHP 脚本。
 入口脚本接受一个 Web 请求并创建[应用](structure-application.md)实例去处理它。 
-[应用](structure-applications.md)在它的[组建](concept-components.md)辅助下解析请求，
+[应用](structure-applications.md)在它的[组件](concept-components.md)辅助下解析请求，
 并分派请求至 MVC 元素。[视图](structure-views.md)使用[小部件](structure-widgets.md)
 去创建复杂和动态的用户界面。
 

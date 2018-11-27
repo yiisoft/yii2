@@ -23,6 +23,8 @@
 首先创建一个名为 `yii2basic` 的数据库，应用将从这个数据库中读取数据。
 你可以创建 SQLite，MySQL，PostregSQL，MSSQL 或 Oracle 数据库，Yii 内置多种数据库支持。简单起见，后面的内容将以 MySQL 为例做演示。
 
+> Info: 虽然 MariaDB 曾经是 MySQL 的直接替代品，但现在已经不再完全正确。如果您希望在 MariaDB 中使用“JSON”支持等高级功能，请查看下面列出的 MariaDB 扩展。
+
 然后在数据库中创建一个名为 `country` 的表并插入简单的数据。可以执行下面的语句：
 
 ```sql
@@ -74,7 +76,7 @@ return [
 
 上面配置的数据库连接可以在应用中通过 `Yii::$app->db` 表达式访问。
 
-> 信息：`config/db.php` 将被包含在应用配置文件 `config/web.php` 中，
+> Info: `config/db.php` 将被包含在应用配置文件 `config/web.php` 中，
   后者指定了整个[应用](structure-applications.md)如何初始化。
   请参考[配置](concept-configurations.md)章节了解更多信息。
 
@@ -83,6 +85,7 @@ return [
 - [Informix](https://github.com/edgardmessias/yii2-informix)
 - [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
 - [Firebird](https://github.com/edgardmessias/yii2-firebird)
+- [MariaDB](https://github.com/sam-it/yii2-mariadb)
 
 
 创建活动记录 <span id="creating-active-record"></span>
@@ -106,7 +109,7 @@ class Country extends ActiveRecord
 这个 `Country` 类继承自 [[yii\db\ActiveRecord]]。你不用在里面写任何代码。
 只需要像现在这样，Yii 就能根据类名去猜测对应的数据表名。
 
-> 信息：如果类名和数据表名不能直接对应，
+> Info: 如果类名和数据表名不能直接对应，
   可以覆写 [[yii\db\ActiveRecord::tableName()|tableName()]] 方法去显式指定相关表名。
 
 使用 `Country` 类可以很容易地操作 `country` 表数据，就像这段代码：
@@ -128,7 +131,7 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> 信息：活动记录是面向对象、功能强大的访问和操作数据库数据的方式。你可以在[活动记录](db-active-record.md)章节了解更多信息。
+> Info: 活动记录是面向对象、功能强大的访问和操作数据库数据的方式。你可以在[活动记录](db-active-record.md)章节了解更多信息。
   除此之外你还可以使用另一种更原生的被称做[数据访问对象](db-dao)的方法操作数据库数据。
 
 

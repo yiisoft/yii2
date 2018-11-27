@@ -1,5 +1,5 @@
-配置
-=============
+配置（Configurations）
+====================
 
 在 Yii 中，创建新对象和初始化已存在对象时广泛使用配置。
 配置通常包含被创建对象的类名和一组将要赋值给对象
@@ -35,7 +35,7 @@ Yii::configure($object, $config);
 请注意，如果配置一个已存在的对象，那么配置数组中不应该包含指定类名的 `class` 元素。
 
 
-## 配置的格式 <span id="configuration-format"></span>
+## 配置的格式（Configuration Format） <span id="configuration-format"></span>
 
 一个配置的格式可以描述为以下形式：
 
@@ -78,18 +78,14 @@ Yii::configure($object, $config);
 ```
 
 
-## 使用配置
+## 使用配置（Using Configurations） <span id="using-configurations"></span>
 
-<<<<<<< HEAD
 Yii 中的配置可以用在很多场景。本章开头我们展示了如何使用 [[Yii::creatObject()]] 
 根据配置信息创建对象。本小节将介绍配置的两种
 主要用法 —— 配置应用与配置小部件。
-=======
-Yii 中的配置可以用在很多场景。本章开头我们展示了如何使用 [[Yii::createObject()]] 根据配置信息创建对象。本小节将介绍配置的两种主要用法 —— 配置应用与配置小部件。
->>>>>>> upstream/master
 
 
-### 应用的配置 <span id="application-configurations"></span>
+### 应用的配置（Application Configurations） <span id="application-configurations"></span>
 
 [应用](structure-applications.md)的配置可能是最复杂的配置之一。
 因为 [[yii\web\Application|application]] 类拥有很多可配置的属性和事件。
@@ -162,7 +158,7 @@ $config = [
 获取更多 `definitions` 和 `singletons` 配置项和实际使用的例子。
 
 
-### 小部件的配置 <span id="widget-configurations"></span>
+### 小部件的配置（Widget Configurations） <span id="widget-configurations"></span>
 
 使用[小部件](structure-widgets.md)时，常常需要配置以便自定义其属性。
 [[yii\base\Widget::widget()]] 和  [[yii\base\Widget::begin()]] 方法都可以用来创建小部件。
@@ -187,10 +183,10 @@ echo Menu::widget([
 请注意，代码中已经给出了类名 `yii\widgets\Menu`，配置数组**不应该**再包含 `class` 键。
 
 
-## 配置文件 <span id="configuration-files"></span>
+## 配置文件（Configuration Files） <span id="configuration-files"></span>
 
 当配置的内容十分复杂，通用做法是将其存储在一或多个 PHP 文件中，
-这些文件被称为**配置文件**。一个配置文件返回的是 PHP 数组。
+这些文件被称为*配置文件*。一个配置文件返回的是 PHP 数组。
 例如，像这样把应用配置信息存储在名为 `web.php` 的文件中：
 
 ```php
@@ -240,16 +236,12 @@ $config = require 'path/to/web.php';
 ```
 
 
-## 默认配置 <span id="default-configurations"></span>
+## 默认配置（Default Configurations） <span id="default-configurations"></span>
 
-<<<<<<< HEAD
 [[Yii::createObject()]] 方法基于[依赖注入容器](concept-di-container.md)实现。
 使用 [[Yii::creatObject()]] 创建对象时，可以附加一系列**默认配置**到指定类的任何实例。
 默认配置还可以在[入口脚本](runtime-bootstrapping.md)
 中调用 `Yii::$container->set()` 来定义。
-=======
-[[Yii::createObject()]] 方法基于[依赖注入容器](concept-di-container.md)实现。使用 [[Yii::createObject()]] 创建对象时，可以附加一系列**默认配置**到指定类的任何实例。默认配置还可以在[入口脚本](runtime-bootstrapping.md)中调用 `Yii::$container->set()` 来定义。
->>>>>>> upstream/master
 
 例如，如果你想自定义 [[yii\widgets\LinkPager]] 小部件，以便让分页器最多只显示 5 个翻页按钮（默认是 10 个），
 你可以用下述代码实现：
@@ -264,7 +256,7 @@ $config = require 'path/to/web.php';
 都配置 `maxButtonCount` 的值。
 
 
-## 环境常量 <span id="environment-constants"></span>
+## 环境常量（Environment Constants） <span id="environment-constants"></span>
 
 配置经常要随着应用运行的不同环境更改。例如在开发环境中，
 你可能使用名为 `mydb_dev` 的数据库，

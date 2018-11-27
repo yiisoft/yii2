@@ -141,6 +141,11 @@ session storage class without the need to modify your application code that uses
   sure that the session has already been started by [[yii\web\Session::open()]]. This is because custom session storage
   handlers are registered within this method.
 
+> Note: If you use a custom session storage you may need to configure the session garbage collector explicitly.
+  Some installations of PHP (e.g. Debian) use a garbage collector probability of 0 and clean session files
+  offline in a cronjob. This process does not apply to your custom storage so you need to configure
+  [[yii\web\Session::$GCProbability]] to use a non-zero value.
+
 To learn how to configure and use these component classes, please refer to their API documentation. Below is
 an example showing how to configure [[yii\web\DbSession]] in the application configuration to use a database table
 for session storage:

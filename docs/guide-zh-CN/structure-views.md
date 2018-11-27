@@ -44,7 +44,7 @@ $this->title = 'Login';
 这些变量代表从[控制器](structure-controllers.md)
 或其他触发[视图渲染](#rendering-views)的对象 *传入* 到视图的数据。
 
-> 提示：将预定义变量列到视图文件头部注释处，
+> Tip: 将预定义变量列到视图文件头部注释处，
   这样可被IDE编辑器识别，也是生成视图文档的好方法。
 
 
@@ -80,7 +80,7 @@ use yii\helpers\HtmlPurifier;
 </div>
 ```
 
-> 技巧：HTMLPurifier在保证输出数据安全上做的不错，但性能不佳，如果你的应用需要高性能可考虑
+> Tip: HTMLPurifier在保证输出数据安全上做的不错，但性能不佳，如果你的应用需要高性能可考虑
   [缓存](caching-overview.md) 过滤后的结果。
 
 
@@ -277,6 +277,7 @@ The controller ID is: <?= $this->context->id ?>
 推送方式让视图更少依赖上下文对象，是视图获取数据优先使用方式，
 缺点是需要手动构建数组，有些繁琐，
 在不同地方渲染时容易出错。
+
 
 ### 视图间共享数据 <span id="sharing-data-among-views"></span>
 

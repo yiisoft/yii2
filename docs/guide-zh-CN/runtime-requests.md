@@ -34,12 +34,12 @@ $name = $request->post('name', '');
 // 等价于: $name = isset($_POST['name']) ? $_POST['name'] : '';
 ```
 
-> 信息：建议你像上面那样通过 `request` 组件来获取请求参数，而不是
+> Info: 建议你像上面那样通过 `request` 组件来获取请求参数，而不是
 直接访问 `$_GET` 和 `$_POST`。
 这使你更容易编写测试用例，因为你可以伪造数据来创建一个模拟请求组件。
 
-当实现 [RESTful APIs](rest-quick-start.md) 接口的时候，你经常需要获取通过PUT， 
-PATCH或者其他的 [request methods](#request-methods) 
+当实现 [RESTful APIs](rest-quick-start.md) 接口的时候，你经常需要获取通过 PUT， 
+PATCH 或者其他的 [request methods](#request-methods) 
 请求方法提交上来的参数。你可以通过调用 [[yii\web\Request::getBodyParam()]] 方法来获取这些参数。例如，
 
 ```php
@@ -52,7 +52,7 @@ $params = $request->bodyParams;
 $param = $request->getBodyParam('id');
 ```
 
-> 信息：不同于 `GET` 参数，`POST`，`PUT`，`PATCH` 等等这些提交上来的参数是在请求体中被发送的。
+> Info: 不同于 `GET` 参数，`POST`，`PUT`，`PATCH` 等等这些提交上来的参数是在请求体中被发送的。
 当你通过上面介绍的方法访问这些参数的时候，`request` 组件会解析这些参数。
 你可以通过配置 [[yii\web\Request::parsers]] 属性来自定义怎样解析这些参数。
   
@@ -74,23 +74,23 @@ if ($request->isPut)  { /* 请求方法是 PUT */ }
 
 ## 请求URLs <span id="request-urls"></span>
 
-`request` 组件提供了许多方式来检测当前请求的URL。
+`request` 组件提供了许多方式来检测当前请求的 URL。
 
-假设被请求的URL是 `http://example.com/admin/index.php/product?id=100`，
-你可以像下面描述的那样获取URL的各个部分：
+假设被请求的 URL 是 `http://example.com/admin/index.php/product?id=100`，
+你可以像下面描述的那样获取 URL 的各个部分：
 
-* [[yii\web\Request::url|url]]：返回 `/admin/index.php/product?id=100`, 此URL不包括host info部分。
+* [[yii\web\Request::url|url]]：返回 `/admin/index.php/product?id=100`, 此 URL 不包括主机信息部分。
 * [[yii\web\Request::absoluteUrl|absoluteUrl]]：返回 `http://example.com/admin/index.php/product?id=100`,
-包含host infode的整个URL。
-* [[yii\web\Request::hostInfo|hostInfo]]：返回 `http://example.com`, 只有host info部分。
+  包含host infode的整个URL。
+* [[yii\web\Request::hostInfo|hostInfo]]：返回 `http://example.com`, 只有主机信息部分。
 * [[yii\web\Request::pathInfo|pathInfo]]：返回 `/product`，
-	这个是入口脚本之后，问号之前（查询字符串）的部分。
-* [[yii\web\Request::queryString|queryString]]：返回 `id=100`,问号之后的部分。
-* [[yii\web\Request::baseUrl|baseUrl]]：返回 `/admin`, host info之后，
-入口脚本之前的部分。
-* [[yii\web\Request::scriptUrl|scriptUrl]]：返回 `/admin/index.php`, 没有path info和查询字符串部分。
-* [[yii\web\Request::serverName|serverName]]：返回 `example.com`, URL中的host name。
-* [[yii\web\Request::serverPort|serverPort]]：返回 80, 这是web服务中使用的端口。
+  这个是入口脚本之后，问号之前（查询字符串）的部分。
+* [[yii\web\Request::queryString|queryString]]：返回 `id=100`，问号之后的部分。
+* [[yii\web\Request::baseUrl|baseUrl]]：返回 `/admin`，主机信息之后，
+  入口脚本之前的部分。
+* [[yii\web\Request::scriptUrl|scriptUrl]]：返回 `/admin/index.php`，没有路径信息和查询字符串部分。
+* [[yii\web\Request::serverName|serverName]]：返回 `example.com`，URL 中的主机名。
+* [[yii\web\Request::serverPort|serverPort]]：返回 80，这是 web 服务中使用的端口。
 
 
 ## HTTP头 <span id="http-headers"></span> 
@@ -123,14 +123,15 @@ if ($headers->has('User-Agent')) { /* 这是一个 User-Agent 头 */ }
 这个方法通过 [[yii\web\Request::acceptableLanguages|acceptableLanguages]] 
 在你的应用中所支持的语言列表里进行比较筛选，返回最适合的语言。
 
-> 提示：你也可以使用 [[yii\filters\ContentNegotiator|ContentNegotiator]] 
+> Tip: 你也可以使用 [[yii\filters\ContentNegotiator|ContentNegotiator]] 
   过滤器进行动态确定哪些内容类型和语言应该在响应中使用。
   这个过滤器实现了上面介绍的内容协商的属性和方法。
 
 
 ## 客户端信息 <span id="client-information"></span>
 
-你可以通过 [[yii\web\Request::userHost|userHost]] 和 [[yii\web\Request::userIP|userIP]] 分别获取host name和客户机的IP地址，
+你可以通过 [[yii\web\Request::userHost|userHost]]
+和 [[yii\web\Request::userIP|userIP]] 分别获取主机名和客户机的 IP 地址，
 例如，
 
 ```php
@@ -138,3 +139,64 @@ $userHost = Yii::$app->request->userHost;
 $userIP = Yii::$app->request->userIP;
 ```
 
+## 受信任的代理和报头 <span id="trusted-proxies"></span>
+
+在上一节中，您已经了解了如何获取主机和 IP 地址等用户信息。
+这将在正常设置中开箱即用，其中使用单个网络服务器为网站提供服务。
+然而，如果您的 Yii 应用程序在反向代理后面运行，则需要添加其他配置来检索此信息，
+因为直接客户端现在是代理，
+并且用户 IP 地址通过代理设置的报头传递给 Yii 应用程序。
+
+除非您明确信任代理，否则不应盲目信任代理提供的报头。
+从 2.0.13 开始，Yii 支持通过 `request` 组件的
+[[yii\web\Request::trustedHosts|trustedHosts]]，
+[[yii\web\Request::secureHeaders|secureHeaders]]，
+[[yii\web\Request::ipHeaders|ipHeaders]] 和
+[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]]
+属性配置可信代理。
+
+以下是在反向代理数组后面运行的应用程序的请求配置，
+它们位于 `10.0.2.0/24` IP 网络中：
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '10.0.2.0/24',
+    ],
+],
+```
+
+默认情况下，IP 由代理在 `X-Forwarded-For` 头中发送，协议（“http”或“https”）在 `X-Forwarded-Proto` 中发送。
+
+如果您的代理使用不同的报头，您可以使用请求配置来调整它们，例如：
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '10.0.2.0/24' => [
+            'X-ProxyUser-Ip',
+            'Front-End-Https',
+        ],
+    ],
+    'secureHeaders' => [
+        'X-Forwarded-For',
+        'X-Forwarded-Host',
+        'X-Forwarded-Proto',
+        'X-Proxy-User-Ip',
+        'Front-End-Https',
+    ],
+    'ipHeaders' => [
+        'X-Proxy-User-Ip',
+    ],
+    'secureProtocolHeaders' => [
+        'Front-End-Https' => ['on']
+    ],
+],
+```
+
+使用上面的配置，`secureHeaders` 中列出的所有报头都会从请求中过滤掉，
+除了 `X-ProxyUser-Ip` 和 `Front-End-Https` 报头，以防请求由代理发出。
+在这种情况下，前者用于检索 `ipHeaders` 中配置的用户IP，
+后者将用于确定 [[yii\web\Request::getIsSecureConnection()]] 的结果。

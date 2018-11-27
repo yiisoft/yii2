@@ -125,7 +125,7 @@ class ActiveFixture extends BaseActiveFixture
         $table = $this->getTableSchema();
         $this->db->createCommand()->delete($table->fullName)->execute();
         if ($table->sequenceName !== null) {
-            $this->db->createCommand()->resetSequence($table->fullName, 1)->execute();
+            $this->db->createCommand()->executeResetSequence($table->fullName, 1);
         }
     }
 
