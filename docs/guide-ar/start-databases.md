@@ -279,13 +279,12 @@ http://hostname/index.php?r=country%2Findex&page=2
     <li>عند قيامك بالنقر على الزر رقم 2، سينطلق request جديد الى ال <code>country/index</code> route، وحينها يقوم ال [[yii\data\Pagination|Pagination]] على قرائة ال <code>page</code> parameter من ال URL ,من ثم يقوم بتغيير رقم الصفحة الحالية الى الرقم الجديد، وهنا الرقم الجديد هو 2 بدلا من 1. كما أن جملة الإستعلام الجديدة ستحوي الشرط التالي <code>LIMIT 5 OFFSET 5</code> لتقم بذلك بجلب الصفوف الخمس الأخرى من البلدان لعرضها.</li>
 </ul>
 
-Summary <span id="summary"></span>
--------
+## <div dir="rtl">الخلاصة</div> <span id="summary"></span>
 
-In this section, you learned how to work with a database. You also learned how to fetch and display
-data in pages with the help of [[yii\data\Pagination]] and [[yii\widgets\LinkPager]].
+<p dir="rtl">
+    في هذا الجزء من التوثيق، لقد تعلمنا كيف يمكننا التعامل مع قواعد البيانات، وكيف يمكننا جلب البيانات وعرضها وتجزئتها  لصفحات من خلال إستخدام ال [[yii\data\Pagination]] وال [[yii\widgets\LinkPager]].
+</p>
 
-In the next section, you will learn how to use the powerful code generation tool, called [Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide),
-to help you rapidly implement some commonly required features, such as the Create-Read-Update-Delete (CRUD)
-operations for working with the data in a database table. As a matter of fact, the code you have just written can all
-be automatically generated in Yii using the Gii tool.
+<p dir="rtl">
+  في الجزء القادم من هذا التوثيق، ستتعلم كيف يمكنك إستخدام إخدى الوسائل المميزة والموجودة في ال Yii لإنشاء الشيفرة البرمجية الخاصة بك، والتي يطلق عليها اسم <a href="https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide">Gii</a>، هذه الأداة ستساعدك على إنشاء وتنفيذ الشيفرات البرمجية التي يكثر كتابتها وإستخدامها بشكل دوري، مثل مجموعة العمليات Create-Read-Update-Delete، والتي يتم اختصارها ب CRUD، هذه الأداة ستقوم بالتعامل مع البيانات الموجدة بقاعدة البيانات، وفي الحقيقة، الشيفرة البرمجية الذي قمت بكتابته بالأعلى، يمكنك إنشائه بسهولة من خلال ال Gii بنقرة زر، لذلك فلننطلق الى الجزء التالي بأسرع وقت.  
+</p>
