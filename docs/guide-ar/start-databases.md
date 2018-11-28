@@ -276,7 +276,7 @@ http://hostname/index.php?r=country%2Findex&page=2
 <ul dir="rtl">
     <li>في البداية، يمثل ال  [[yii\data\Pagination|Pagination]] الصفحة الأولى التي تعكس جملة الإستعلام SELECT مع الجدول country مع العبارة <code>LIMIT 5 OFFSET 0</code>. ونتيجة لذلك، سيتم جلب البلدان الخمسة الأولى وعرضها.</li>
     <li>ال [[yii\widgets\LinkPager|LinkPager]] widget يقوم على إستدعاء الأزرار الخاصة بأرقام الصفحات والتي يتم إنشاء ال Url الخاص بها من خلال ال [[yii\data\Pagination::createUrl()|Pagination]]، هذه ال Url تحتوي على parameter يسمى ب <code>page</code>، والذي يمثل بدورة مجموعة من الأرقام المختلفة والتي تمثل صفحات تعرض بيانات مختلفة كما هو في مثالنا عندما قمنا بالضغط على رقم 2.</li>
-    <li>عند قيامك بالنقر على الزر رقم 2، سينطلق request جديد الى ال <code>country/index</code> route، وحينها يقوم ال [[yii\data\Pagination|Pagination]] على قرائة ال <code>page</code> parameter من ال URL ,من ثم يقوم بتغيير رقم الصفحة الحالية الى الرقم الجديد، وهنا الرقم الجديد هو 2 بدلا من 1. كما أن جملة الإستعلام الجديدة ستحوي الشرط التالي <code>LIMIT 5 OFFSET 5</code> لتقم بذلك بجلب الصفوف الخمس الأخرى من البلدان لعرضها.</li>
+    <li>عند قيامك بالنقر على الزر رقم 2، سينطلق request جديد الى ال <code>country/index</code> route، وحينها يقوم ال [[yii\data\Pagination|Pagination]] على قرائة ال <code>page</code> parameter من ال URL ,من ثم يقوم بتغيير رقم الصفحة الحالية الى الرقم الجديد، وهنا الرقم الجديد هو 2 بدلا من 1. كما أن جملة الإستعلام الجديدة ستحوي الشرط التالي <code>LIMIT 5 OFFSET 5</code> لتقم بذلك بجلب الصفوف الخمسة الأخرى من البلدان لعرضها.</li>
 </ul>
 
 ## <div dir="rtl">الخلاصة</div> <span id="summary"></span>
