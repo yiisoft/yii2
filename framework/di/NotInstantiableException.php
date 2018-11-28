@@ -30,7 +30,7 @@ class NotInstantiableException extends InvalidConfigException
     }
 
     /**
-     * @return string 此例外用户使用的友好名称
+     * @return string 此异常的用户友好的名称
      */
     public function getName()
     {
