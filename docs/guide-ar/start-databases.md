@@ -219,7 +219,7 @@ class CountryController extends Controller
 </p>
 
 
-<div dir="rtl"> إنشاء View </div> <span id="creating-view"></span>
+## <div dir="rtl"> إنشاء View </div> <span id="creating-view"></span>
 
 <p dir="rtl">
     الآن، سنقوم بإنشاء صفحة ال view والتي ستقوم بعرض المعلومات الخاصة بال country والقادمة من ال index action، ولذلك توجه الى المسار <code>views</code>, ومن ثم قم بإنشاء مجلد جديد بداخله باسم <code>country</code>، هذا المجلد سيحوي جمع ال views التي سيتم إستدعائها من ال <code>country</code> controller>. الآن، قم بإنشاء الصفحة index.php بداخل المسار <code>views/country</code>، ومن ثم قم بكتابة هذه الشيفرة البرمجية بداخلها: 
