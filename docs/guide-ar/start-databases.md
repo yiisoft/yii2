@@ -243,11 +243,9 @@ use yii\widgets\LinkPager;
 <?= LinkPager::widget(['pagination' => $pagination]) ?>
 ```
 
-The view has two sections relative to displaying the country data. In the first part, the provided country data is traversed and rendered as an unordered HTML list.
-In the second part, a [[yii\widgets\LinkPager]] widget is rendered using the pagination information passed from the action.
-The `LinkPager` widget displays a list of page buttons. Clicking on any of them will refresh the country data
-in the corresponding page.
-
+<p dir="rtl">
+    في هذه الصفحة، هناك جزئيين رئيسيين، الجزء الأول هو المسؤول عن طباعة المعلومات الخاصة بال country داخل قائمة من نوع ul، والجزء الثاني عبارة عن widget يستخدم المعلومات الخاصة بال pagination والتي تم إرسالها من ال action، ليقوم بعد ذلك بعرض قائمة من ال page buttons، والتي بدورها ستقوم بعمل تحديث للمعلومات الموجودة بالصفحة بنائا على الصفحة المطلوبة، هذا ال widget يسمى ب <code>LinkPager -[[yii\widgets\LinkPager]]-</code>.
+</p>
 
 Trying it Out <span id="trying-it-out"></span>
 -------------
