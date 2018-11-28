@@ -129,7 +129,7 @@ class Container extends Component
      * 这些参数将在创建实例期间使用。
      *
      * 如果类实现 [[\yii\base\Configurable]]，则 `$config` 参数将作为最后一个参数
-     * 传递给构造函数； 否则，
+     * 传递给构造函数；否则，
      * 配置将在对象被实例化 *之后* 被应用。
      *
      * 注意如果通过调用 [[setSingleton()]] 将类声明为单例，
@@ -237,7 +237,7 @@ class Container extends Component
      * @param string $class 类名，接口名或别名
      * @param mixed $definition 与 `$class`相关的定义。它可以是下列之一：
      *
-     * - PHP回调：当 [[get()]] 被触发时将会执行这个回调。
+     * - PHP 回调：当 [[get()]] 被触发时将会执行这个回调。
      *   回调的方法应该是 `function ($container, $params, $config)`，其中 `$params` 表示构造函数的参数列表，
      *  `$config` 是对象的配置，`$container` 是容器对象。
      *   回调函数的返回值将由 [[get()]] 作为请求的对象实例返回。
@@ -586,9 +586,9 @@ class Container extends Component
      *
      * @param array $definitions 定义数组。有两种允许的数组格式。
      * 第一种格式：
-     *  - key: 类名，接口名或别名。
+     *  - key：类名，接口名或别名。
      *    键将作为第一个参数 `$class` 来传递给 [[set()]] 方法。
-     *  - value: 与 `$class` 相关的定义。
+     *  - value：与 `$class` 相关的定义。
      *    在 [[set()]] 文档中描述了关于 `$definition` 参数可能的值。
      *    将作为第二个参数 `$definition` 传递给 [[set()]]。
      *
@@ -609,9 +609,9 @@ class Container extends Component
      * ```
      *
      * 第二种格式：
-     *  - key: 类名，接口名或别名。
+     *  - key：类名，接口名或别名。
      *    键将作为第一个参数 `$class` 来传递给 [[set()]] 方法。
-     *  - value: 两个元素的数组。
+     *  - value：两个元素的数组。
      *    第一个元素将作为第二个参数 `$definition` 传递给 [[set()]] 方法，第二个元素 — 作为 `$params`。
      *
      * 例如：
