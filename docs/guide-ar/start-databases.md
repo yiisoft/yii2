@@ -247,10 +247,11 @@ use yii\widgets\LinkPager;
     في هذه الصفحة، هناك جزئيين رئيسيين، الجزء الأول هو المسؤول عن طباعة المعلومات الخاصة بال country داخل قائمة من نوع ul، والجزء الثاني عبارة عن widget يستخدم المعلومات الخاصة بال pagination والتي تم إرسالها من ال action، ليقوم بعد ذلك بعرض قائمة من ال page buttons، والتي بدورها ستقوم بعمل تحديث للمعلومات الموجودة بالصفحة بنائا على الصفحة المطلوبة، هذا ال widget يسمى ب <code>LinkPager -[[yii\widgets\LinkPager]]-</code>.
 </p>
 
-Trying it Out <span id="trying-it-out"></span>
--------------
+## <div dir="rtl">لنجرب المثال</div> <span id="trying-it-out"></span>
 
-To see how all of the above code works, use your browser to access the following URL:
+<p dir="rtl">
+    لتشاهد آلية العمل لهذا المثال، والنتائج المتعلقة به، يمكنك إستخدام المتصفح والدخول الى الرابط التالي:
+</p>
 
 ```
 http://hostname/index.php?r=country%2Findex
@@ -258,9 +259,11 @@ http://hostname/index.php?r=country%2Findex
 
 ![Country List](../guide/images/start-country-list.png)
 
-At first, you will see a page showing five countries. Below the countries, you will see a pager with four buttons.
-If you click on the button "2", you will see the page display another five countries in the database: the second page of records.
-Observe more carefully and you will find that the URL in the browser also changes to
+<p dir="rtl">
+في البداية، ستشاهد البيانات الخاصة بخمسة دول، وأسفل هذه الدول، ستشاهد pager فيه 4 أزرار، اذا قمت بالضغط على الزر رقم 2، فإنك ستشاهد المعلومات الخاصة بخمسة دول أخرى، والتي تمثل صفوف أخرى من البيانات تم جلبها من قاعدة البيانات. 
+<br />
+تابع بعناية أكبر وستجد أن عنوان ال URL في المتصفح قد تغير أيضًا:
+</p>
 
 ```
 http://hostname/index.php?r=country%2Findex&page=2
