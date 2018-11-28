@@ -1808,7 +1808,7 @@ class Formatter extends Component
      * @see thousandSeparator
      * @since 2.0.16
      */
-    protected function asDecimalStringFallback($value, $decimals = null)
+    protected function asDecimalStringFallback($value, $decimals = 2)
     {
         if (empty($value)) {
             $value = 0;
@@ -1816,9 +1816,11 @@ class Formatter extends Component
 
         $value = (string) $value;
 
-        if (strpos($value, '.') !== false) {
-            $integerPart = substr($value, 0, strrpos($value, '.'));
-            $fractionalPart = substr($value, strrpos($value, '.') + 1);
+        $separatorPosition = strrpos($value, '.');
+
+        if ($separatorPosition !== false) {
+            $integerPart = substr($value, 0, $separatorPosition);
+            $fractionalPart = substr($value, $separatorPosition + 1);
         } else {
             $integerPart = $value;
             $fractionalPart = null;
@@ -1830,7 +1832,7 @@ class Formatter extends Component
             $decimals = 2;
         }
 
-        $roundIntegerPart = false;
+        $carry = 0;
 
         if ($decimals > 0) {
             $decimalSeparator = $this->decimalSeparator;
@@ -1843,24 +1845,22 @@ class Formatter extends Component
             } elseif (strlen($fractionalPart) > $decimals) {
                 $cursor = $decimals;
 
+                // checking if fractional part must be rounded
                 if ((int) substr($fractionalPart, $cursor, 1) >= 5) {
                     while (--$cursor >= 0) {
-                        $round = false;
-                        $newDigit = (int) substr($fractionalPart, $cursor, 1) + 1;
+                        $carry = 0;
 
-                        if ($newDigit === 10) {
-                            $newDigit = 0;
-                            $round = true;
+                        $oneUp = (int) substr($fractionalPart, $cursor, 1) + 1;
+                        if ($oneUp === 10) {
+                            $oneUp = 0;
+                            $carry = 1;
                         }
 
-                        $fractionalPart = substr($fractionalPart, 0, $cursor) . $newDigit . substr($fractionalPart, $cursor + 1);
+                        $fractionalPart = substr($fractionalPart, 0, $cursor) . $oneUp . substr($fractionalPart, $cursor + 1);
 
-                        if (!$round) {
+                        if ($carry === 0) {
                             break;
                         }
-                    }
-                    if ($round) {
-                        $roundIntegerPart = true;
                     }
                 }
 
@@ -1872,24 +1872,27 @@ class Formatter extends Component
             $decimalOutput .= $decimalSeparator . $fractionalPart;
         }
 
-        if ($roundIntegerPart || ($decimals === 0 && $fractionalPart !== null && (int) substr($fractionalPart, 0, 1) >= 5)) {
+        // checking if integer part must be rounded
+        if ($carry || ($decimals === 0 && $fractionalPart !== null && (int) substr($fractionalPart, 0, 1) >= 5)) {
+            $integerPartLength = strlen($integerPart);
             $cursor = 0;
-            while (++$cursor <= strlen($integerPart)) {
-                $round = false;
-                $newDigit = (int) substr($integerPart, -$cursor, 1) + 1;
 
-                if ($newDigit === 10) {
-                    $newDigit = 0;
-                    $round = true;
+            while (++$cursor <= $integerPartLength) {
+                $carry = 0;
+
+                $oneUp = (int) substr($integerPart, -$cursor, 1) + 1;
+                if ($oneUp === 10) {
+                    $oneUp = 0;
+                    $carry = 1;
                 }
 
-                $integerPart = substr($integerPart, 0, -$cursor) . $newDigit . substr($integerPart, strlen($integerPart) - $cursor + 1);
+                $integerPart = substr($integerPart, 0, -$cursor) . $oneUp . substr($integerPart, $integerPartLength - $cursor + 1);
 
-                if (!$round) {
+                if ($carry === 0) {
                     break;
                 }
             }
-            if ($integerPart === str_repeat('0', strlen($integerPart))) {
+            if ($carry === 1) {
                 $integerPart = '1' . $integerPart;
             }
         }
@@ -1923,9 +1926,10 @@ class Formatter extends Component
         }
 
         $value = (string) $value;
+        $separatorPosition = strrpos($value, '.');
 
-        if (strpos($value, '.') !== false) {
-            $integerPart = substr($value, 0, strrpos($value, '.'));
+        if ($separatorPosition !== false) {
+            $integerPart = substr($value, 0, $separatorPosition);
         } else {
             $integerPart = $value;
         }
@@ -1955,12 +1959,15 @@ class Formatter extends Component
         }
 
         $value = (string) $value;
+        $separatorPosition = strrpos($value, '.');
 
-        if (strpos($value, '.') !== false) {
-            $integerPart = substr($value, 0, strrpos($value, '.'));
-            $fractionalPart = str_pad(substr($value, strrpos($value, '.') + 1), 2, '0');
+        if ($separatorPosition !== false) {
+            $integerPart = substr($value, 0, $separatorPosition);
+            $fractionalPart = str_pad(substr($value, $separatorPosition + 1), 2, '0');
+
             $integerPart .= substr($fractionalPart, 0, 2);
             $fractionalPart = substr($fractionalPart, 2);
+
             if ($fractionalPart === '') {
                 $multipliedValue = $integerPart;
             } else {
