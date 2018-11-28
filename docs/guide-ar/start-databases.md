@@ -269,10 +269,16 @@ http://hostname/index.php?r=country%2Findex
 http://hostname/index.php?r=country%2Findex&page=2
 ```
 
-Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the necessary functionality to paginate a data set:
+<p dir="rtl">
+    بالخفاء، يقوم ال <code>[[yii\data\Pagination|Pagination]]</code> بتقديم الدعم اللازم لكل الوظائف المطلوب تنفيذها لعمل الترقيم الخاص بال pagination: 
+</p>
 
-* Initially, [[yii\data\Pagination|Pagination]] represents the first page, which reflects the country SELECT query
-  with the clause `LIMIT 5 OFFSET 0`. As a result, the first five countries will be fetched and displayed.
+<ul dir="rtl">
+    <li>في البداية، يمثل ال  [[yii\data\Pagination|Pagination]] الصفحة الأولى التي تعكس جملة الإستعلام SELECT مع الجدول country مع العبارة <code>LIMIT 5 OFFSET 0</code>. ونتيجة لذلك، سيتم جلب البلدان الخمسة الأولى وعرضها.</li>
+    <li></li>
+    <li></li>
+</ul>
+
 * The [[yii\widgets\LinkPager|LinkPager]] widget renders the page buttons using the URLs
   created by [[yii\data\Pagination::createUrl()|Pagination]]. The URLs will contain the query parameter `page`, which 
   represents the different page numbers.
