@@ -219,12 +219,11 @@ class CountryController extends Controller
 </p>
 
 
-Creating a View <span id="creating-view"></span>
----------------
+<div dir="rtl"> إنشاء View </div> <span id="creating-view"></span>
 
-Under the `views` directory, first create a sub-directory named `country`. This folder will be used to hold all the
-views rendered by the `country` controller. Within the `views/country` directory, create a file named `index.php`
-containing the following:
+<p dir="rtl">
+    الآن، سنقوم بإنشاء صفحة ال view والتي ستقوم بعرض المعلومات الخاصة بال country والقادمة من ال index action، ولذلك توجه الى المسار <code>views</code>, ومن ثم قم بإنشاء مجلد جديد بداخله باسم <code>country</code>، هذا المجلد سيحوي جمع ال views التي سيتم إستدعائها من ال <code>country</code> controller>. الآن، قم بإنشاء الصفحة index.php بداخل المسار <code>views/country</code>، ومن ثم قم بكتابة هذه الشيفرة البرمجية بداخلها: 
+</p>
 
 ```php
 <?php
