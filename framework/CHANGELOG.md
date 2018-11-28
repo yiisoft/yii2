@@ -78,6 +78,7 @@ Yii Framework 2 Change Log
 - Bug #10843: Additional hidden input rendered by `yii\helpers\BaseHtml` methods inherits `disabled` HTML option if provided and set to `true` (bizley)
 - Bug #16424: `yii\db\Transaction::begin()` throws now `NotSupportedException` for nested transaction and DBMS not supporting savepoints (bizley)
 - Bug #15204: `yii\helpers\BaseInflector::slug()` is not removing substrings matching provided replacement from given string anymore (bizley)
+- Bug #15528: Fix timestamp formatting to always use decimal notation in `yii\log\Target::getTime()` (rob006)
 - Bug #16101: Fixed Error Handler to clear registered meta tags, link tags, css/js scripts and files in error view (bizley)
 - Bug #16836: Fix `yii\mutex\MysqlMutex` to handle locks with names longer than 64 characters (rob006)
 - Bug #16838: `yii\mutex\Mutex::acquire()` no longer returns `true` if lock is already acquired by the same component in the same process (rob006)
