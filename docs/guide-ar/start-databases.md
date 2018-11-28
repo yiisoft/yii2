@@ -275,18 +275,9 @@ http://hostname/index.php?r=country%2Findex&page=2
 
 <ul dir="rtl">
     <li>في البداية، يمثل ال  [[yii\data\Pagination|Pagination]] الصفحة الأولى التي تعكس جملة الإستعلام SELECT مع الجدول country مع العبارة <code>LIMIT 5 OFFSET 0</code>. ونتيجة لذلك، سيتم جلب البلدان الخمسة الأولى وعرضها.</li>
-    <li></li>
-    <li></li>
+    <li>ال [[yii\widgets\LinkPager|LinkPager]] widget يقوم على إستدعاء الأزرار الخاصة بأرقام الصفحات والتي يتم إنشاء ال Url الخاص بها من خلال ال [[yii\data\Pagination::createUrl()|Pagination]]، هذه ال Url تحتوي على parameter يسمى ب <code>page</code>، والذي يمثل بدورة مجموعة من الأرقام المختلفة والتي تمثل صفحات تعرض بيانات مختلفة كما هو في مثالنا عندما قمنا بالضغط على رقم 2.</li>
+    <li>عند قيامك بالنقر على الزر رقم 2، سينطلق request جديد الى ال <code>country/index</code> route، وحينها يقوم ال [[yii\data\Pagination|Pagination]] على قرائة ال <code>page</code> parameter من ال URL ,من ثم يقوم بتغيير رقم الصفحة الحالية الى الرقم الجديد، وهنا الرقم الجديد هو 2 بدلا من 1. كما أن جملة الإستعلام الجديدة ستحوي الشرط التالي <code>LIMIT 5 OFFSET 5</code> لتقم بذلك بجلب الصفوف الخمس الأخرى من البلدان لعرضها.</li>
 </ul>
-
-* The [[yii\widgets\LinkPager|LinkPager]] widget renders the page buttons using the URLs
-  created by [[yii\data\Pagination::createUrl()|Pagination]]. The URLs will contain the query parameter `page`, which 
-  represents the different page numbers.
-* If you click the page button "2", a new request for the route `country/index` will be triggered and handled.
-  [[yii\data\Pagination|Pagination]] reads the `page` query parameter from the URL and sets the current page number to 2.
-  The new country query will thus have the clause `LIMIT 5 OFFSET 5` and return  the next five countries
-  for display.
-
 
 Summary <span id="summary"></span>
 -------
