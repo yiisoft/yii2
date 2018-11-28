@@ -210,12 +210,13 @@ class CountryController extends Controller
 </p>
 
 <ul dir="rtl">
-    <li>لكتابة جملة استعلام محددة بعدد صفوف معين، وتبدأ من مكان معين يتم تعيين ال <code>offset</code> وال <code>limit</code>، وبهذا التعيين فأنت ستقوم بإرجاع صفحة واحدة من البيانات وفي كل مرة سيتم عرض 5 صفوف على الأكثر. </li>
+    <li>كتابة جملة استعلام محددة بعدد صفوف معين، وتبدأ من مكان معين، ويتم ذلك من خلال ال <code>offset</code> وال <code>limit</code>، وبهذا التعيين فأنت ستقوم بإرجاع صفحة واحدة من البيانات وفي كل مرة سيتم عرض 5 صفوف على الأكثر. </li>
     <li>كما يستخدم في صفحة ال view لعرض ال pager مع قائمة بال page buttons، وذلك كما ستشاهد في الجزء التالي من هذا الموضوع. </li>
 </ul>
 
-At the end of the code, the `index` action renders a view named `index`, and passes the country data as well as the pagination
-information to it.
+<p dir="rtl">
+    في نهاية الشيفرة البرمجية الموجودة في ال <code>index</code> action، نقوم باستدعاء صفحة ال view المسمية ب <code>index</code>، ومن ثم نقوم بإرسال معلومات ال country المنظمة على شكل صفحات (pagination) ومن ثم عرضها. 
+</p>
 
 
 Creating a View <span id="creating-view"></span>
