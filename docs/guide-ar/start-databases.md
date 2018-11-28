@@ -209,10 +209,10 @@ class CountryController extends Controller
     يقوم ال <code>index</code> action باستخدام ال <code>Country::find()</code>، وهذه الدالة موجودة من ضمن ال <code>active record</code>، وتقوم هذه الدالة على بناء الإستعلام الخاص بقاعدة البيانات مما يسمح باسترجاع جميع البيانات الموجودة بداخل جدول ال country، ولتحديد الحد الأعلى المسموح إرجاعه في كل request، يمكنك إستخدام ال <code>[[yii\data\Pagination]]</code> object كوسيلة مساعدة، ويقدم هذا ال object غرضين أساسيين وهما: 
 </p>
 
-* Sets the `offset` and `limit` clauses for the SQL statement represented by the query so that it only
-  returns a single page of data at a time (at most 5 rows in a page).
-* It's used in the view to display a pager consisting of a list of page buttons, as will be explained in
-  the next subsection.
+<ul dir="rtl">
+    <li>لكتابة جملة استعلام محددة بعدد صفوف معين، وتبدأ من مكان معين يتم تعيين ال <code>offset</code> وال <code>limit</code>، وبهذا التعيين فأنت ستقوم بإرجاع صفحة واحدة من البيانات وفي كل مرة سيتم عرض 5 صفوف على الأكثر. </li>
+    <li>كما يستخدم في صفحة ال view لعرض ال pager مع قائمة بال page buttons، وذلك كما ستشاهد في الجزء التالي من هذا الموضوع. </li>
+</ul>
 
 At the end of the code, the `index` action renders a view named `index`, and passes the country data as well as the pagination
 information to it.
