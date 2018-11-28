@@ -8,10 +8,10 @@
 namespace yii\base;
 
 /**
- * ArrayAccessTrait provides the implementation for [[\IteratorAggregate]], [[\ArrayAccess]] and [[\Countable]].
+ * ArrayAccessTrait 为 [[\IteratorAggregate]]，[[\ArrayAccess]] 和 [[\Countable]] 提供实现。
  *
- * Note that ArrayAccessTrait requires the class using it contain a property named `data` which should be an array.
- * The data will be exposed by ArrayAccessTrait to support accessing the class object like an array.
+ * 请注意，ArrayAccessTrait 要求使用它的类包含一个名为 `data` 的属性，该属性应该是一个数组。
+ * ArrayAccessTrait 将公开数据以支持像数组一样访问类对象。
  *
  * @property array $data
  *
@@ -21,10 +21,10 @@ namespace yii\base;
 trait ArrayAccessTrait
 {
     /**
-     * Returns an iterator for traversing the data.
-     * This method is required by the SPL interface [[\IteratorAggregate]].
-     * It will be implicitly called when you use `foreach` to traverse the collection.
-     * @return \ArrayIterator an iterator for traversing the cookies in the collection.
+     * 返回遍历数据的迭代器。
+     * SPL 接口 [[\IteratorAggregate]] 需要此方法。
+     * 当您使用 `foreach` 遍历集合时，将隐式调用它。
+     * @return \ArrayIterator 遍历集合中 cookies 的迭代器。
      */
     public function getIterator()
     {
@@ -32,9 +32,9 @@ trait ArrayAccessTrait
     }
 
     /**
-     * Returns the number of data items.
-     * This method is required by Countable interface.
-     * @return int number of data elements.
+     * 返回数据项的数量。
+     * Countable 接口需要此方法。
+     * @return int 数据元素的数量。
      */
     public function count()
     {
@@ -42,8 +42,8 @@ trait ArrayAccessTrait
     }
 
     /**
-     * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to check on
+     * 接口 [[\ArrayAccess]] 需要此方法。
+     * @param mixed $offset 要检查的偏移量
      * @return bool
      */
     public function offsetExists($offset)
@@ -52,9 +52,9 @@ trait ArrayAccessTrait
     }
 
     /**
-     * This method is required by the interface [[\ArrayAccess]].
-     * @param int $offset the offset to retrieve element.
-     * @return mixed the element at the offset, null if no element is found at the offset
+     * 接口 [[\ArrayAccess]] 需要此方法。
+     * @param int $offset 检索元素的偏移量。
+     * @return mixed 偏移处的元素，如果在偏移处找不到元素，则返回 null
      */
     public function offsetGet($offset)
     {
@@ -62,9 +62,9 @@ trait ArrayAccessTrait
     }
 
     /**
-     * This method is required by the interface [[\ArrayAccess]].
-     * @param int $offset the offset to set element
-     * @param mixed $item the element value
+     * 接口 [[\ArrayAccess]] 需要此方法。
+     * @param int $offset 设置元素的偏移量
+     * @param mixed $item 元素的值
      */
     public function offsetSet($offset, $item)
     {
@@ -72,8 +72,8 @@ trait ArrayAccessTrait
     }
 
     /**
-     * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to unset element
+     * 接口 [[\ArrayAccess]] 需要此方法。
+     * @param mixed $offset 未设置元素的偏移量
      */
     public function offsetUnset($offset)
     {
