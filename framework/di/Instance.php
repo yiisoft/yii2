@@ -93,9 +93,9 @@ class Instance
      * ```php
      * use yii\db\Connection;
      *
-     * // returns Yii::$app->db
+     * // 返回 Yii::$app->db
      * $db = Instance::ensure('db', Connection::className());
-     * // returns an instance of Connection using the given configuration
+     * // 使用给定配置返回 Connection 实例
      * $db = Instance::ensure(['dsn' => 'sqlite:path/to/my.db'], Connection::className());
      * ```
      *
