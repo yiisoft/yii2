@@ -22,8 +22,8 @@
 * [تثبيت ال Yii](start-installation.md)
 * [تشغيل التطبيقات - Running Applications](start-workflow.md)
 * [قل مرحبا - المشروع الأول](start-hello.md)
-* [العمل مع ال forms](start-forms.md)
-* [العمل مع قواعد البيانات](../guide/start-databases.md)
+* [التعامل مع ال forms](start-forms.md)
+* [التعامل مع قواعد البيانات](start-databases.md)
 * [إنشاء الشيفرة البرمجية من خلال ال gii](../guide/start-gii.md)
 * [ماذا الآن - الخطوة القادمة](../guide/start-looking-ahead.md)
 
