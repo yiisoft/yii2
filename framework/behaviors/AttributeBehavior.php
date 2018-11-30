@@ -16,10 +16,10 @@ use yii\db\ActiveRecord;
  * 当某个事件发生的时候，AttributeBehavior 可以自动地给某个或多个 ActiveRecord 对象的属性
  * 分配指定的值
  *
- * To use AttributeBehavior, configure the [[attributes]] property which should specify the list of attributes
- * that need to be updated and the corresponding events that should trigger the update. Then configure the
- * [[value]] property with a PHP callable whose return value will be used to assign to the current attribute(s).
- * For example,
+ * 在使用 AttributeBehavior的时候，需要配置 [[attributes]] 属性，这个属性应该指明需要更新的属性列表
+ * 和触发更新时对应的事件。然后配置 [[value]] 属性为一个 PHP 回调函数
+ * 该回调函数返回要分配给当前属性的值。
+ * 比如，
  *
  * ```php
  * use yii\behaviors\AttributeBehavior;
@@ -41,8 +41,8 @@ use yii\db\ActiveRecord;
  * }
  * ```
  *
- * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
- * not be validated, i.e. they should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
+ * 因为属性值是由行为自动设置的，所以通常不需要用户输入，因此
+ * 也不需要验证等。这些属性不应该出现在 [[\yii\base\Model::rules()|rules()]] 方法中。
  *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
