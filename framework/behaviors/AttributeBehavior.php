@@ -13,8 +13,8 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 /**
- * AttributeBehavior automatically assigns a specified value to one or multiple attributes of an ActiveRecord
- * object when certain events happen.
+ * 当某个事件发生的时候，AttributeBehavior 可以自动地给某个或多个 ActiveRecord 对象的属性
+ * 分配指定的值
  *
  * To use AttributeBehavior, configure the [[attributes]] property which should specify the list of attributes
  * that need to be updated and the corresponding events that should trigger the update. Then configure the
