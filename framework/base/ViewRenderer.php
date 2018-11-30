@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * ViewRenderer is the base class for view renderer classes.
+ * ViewRenderer 是视图渲染类的基类。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,15 +16,15 @@ namespace yii\base;
 abstract class ViewRenderer extends Component
 {
     /**
-     * Renders a view file.
+     * 渲染视图文件。
      *
-     * This method is invoked by [[View]] whenever it tries to render a view.
-     * Child classes must implement this method to render the given view file.
+     * 当它尝试渲染视图时，[[View]] 都会调用此方法。
+     * 子类必须实现此方法才能渲染给定的视图文件。
      *
-     * @param View $view the view object used for rendering the file.
-     * @param string $file the view file.
-     * @param array $params the parameters to be passed to the view file.
-     * @return string the rendering result
+     * @param View $view 用于渲染文件的视图对象。
+     * @param string $file 视图文件。
+     * @param array $params 要传递给视图文件的参数。
+     * @return string 渲染结果
      */
     abstract public function render($view, $file, $params);
 }
