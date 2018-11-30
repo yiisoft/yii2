@@ -22,7 +22,7 @@ class WidgetEvent extends Event
      */
     public $result;
     /**
-     * @var bool 是否继续运行窗口小部件。
+     * @var bool 是否继续运行小部件。
      * [[Widget::EVENT_BEFORE_RUN]] 的事件处理程序可以设置此属性
      * 以决定是否继续运行当前小部件。
      */
