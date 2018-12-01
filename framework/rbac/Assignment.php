@@ -11,7 +11,7 @@ use Yii;
 use yii\base\BaseObject;
 
 /**
- * Assignment，为用户分配角色。
+ * Assignment 表示为用户分配角色。
  *
  * 有关 Assignment 的更多详细信息和用法信息，请参阅 [授权指南](guide:security-authorization)。
  *
