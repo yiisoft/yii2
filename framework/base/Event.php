@@ -10,18 +10,18 @@ namespace yii\base;
 use yii\helpers\StringHelper;
 
 /**
- * Event is the base class for all event classes.
+ * Event 是所有事件类的基类。
  *
- * It encapsulates the parameters associated with an event.
- * The [[sender]] property describes who raises the event.
- * And the [[handled]] property indicates if the event is handled.
- * If an event handler sets [[handled]] to be `true`, the rest of the
- * uninvoked handlers will no longer be called to handle the event.
+ * 它封装了与事件关联的参数。
+ * [[sender]] 属性描述了谁触发了该事件。
+ * 并且 [[handled]] 属性指示是否处理了事件。
+ * 如果事件处理程序将 [[handled]] 设置为 `true`，
+ * 其余的未经处理的处理程序将不再被调用来处理该事件。
  *
- * Additionally, when attaching an event handler, extra data may be passed
- * and be available via the [[data]] property when the event handler is invoked.
+ * 此外，在附加事件处理程序时，可以传递额外的数据，
+ * 并在调用事件处理程序时通过 [[data]] 属性使用。
  *
- * For more details and usage information on Event, see the [guide article on events](guide:concept-events).
+ * 有关 Event 的更多详细信息和使用信息，请参阅 [事件的指南文章](guide:concept-events)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -121,7 +121,7 @@ class Event extends BaseObject
     }
 
     /**
-     * Detaches an event handler from a class-level event.
+     * 从类级事件中卸载事件处理程序。
      *
      * This method is the opposite of [[on()]].
      *
@@ -187,7 +187,7 @@ class Event extends BaseObject
     }
 
     /**
-     * Detaches all registered class-level event handlers.
+     * 卸载所有已注册的类级事件处理程序。
      * @see on()
      * @see off()
      * @since 2.0.10
@@ -252,7 +252,7 @@ class Event extends BaseObject
     }
 
     /**
-     * Triggers a class-level event.
+     * 触发类级事件。
      * This method will cause invocation of event handlers that are attached to the named event
      * for the specified class and all its parent classes.
      * @param string|object $class the object or the fully qualified class name specifying the class-level event.

@@ -10,9 +10,9 @@ namespace yii\base;
 use Yii;
 
 /**
- * ErrorException represents a PHP error.
+ * ErrorException 表示 PHP 错误。
  *
- * For more details and usage information on ErrorException, see the [guide article on handling errors](guide:runtime-handling-errors).
+ * 有关 ErrorException 的更多详细信息和用法信息，请参阅 [有关错误处理的指南文章](guide:runtime-handling-errors)。
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
@@ -20,10 +20,10 @@ use Yii;
 class ErrorException extends \ErrorException
 {
     /**
-     * This constant represents a fatal error in the HHVM engine.
+     * 此常量表示 HHVM 引擎中的致命错误。
      *
-     * PHP Zend runtime won't call the error handler on fatals, HHVM will, with an error code of 16777217
-     * We will handle fatal error a bit different on HHVM.
+     * PHP Zend 运行时不会调用致命错误处理程序，但是 HHVM 会，错误代码为 16777217，
+     * 我们将在 HHVM 上处理致命错误。
      * @see https://github.com/facebook/hhvm/blob/master/hphp/runtime/base/runtime-error.h#L62
      * @since 2.0.6
      */
@@ -31,7 +31,7 @@ class ErrorException extends \ErrorException
 
 
     /**
-     * Constructs the exception.
+     * 异常的构造函数
      * @link http://php.net/manual/en/errorexception.construct.php
      * @param $message [optional]
      * @param $code [optional]
@@ -45,7 +45,7 @@ class ErrorException extends \ErrorException
         parent::__construct($message, $code, $severity, $filename, $lineno, $previous);
 
         if (function_exists('xdebug_get_function_stack')) {
-            // XDebug trace can't be modified and used directly with PHP 7
+            // XDebug trace 无法修改并直接与 PHP 7 一起使用
             // @see https://github.com/yiisoft/yii2/pull/11723
             $xDebugTrace = array_slice(array_reverse(xdebug_get_function_stack()), 3, -1);
             $trace = [];
@@ -61,7 +61,7 @@ class ErrorException extends \ErrorException
                     $frame['type'] = '->';
                 }
 
-                // XDebug has a different key name
+                // XDebug 有不同的键名
                 if (isset($frame['params']) && !isset($frame['args'])) {
                     $frame['args'] = $frame['params'];
                 }
@@ -75,10 +75,10 @@ class ErrorException extends \ErrorException
     }
 
     /**
-     * Returns if error is one of fatal type.
+     * 如果错误是致命类型之一，则返回。
      *
-     * @param array $error error got from error_get_last()
-     * @return bool if error is one of fatal type
+     * @param array $error 错误来自 error_get_last()
+     * @return bool 如果错误是致命类型之一
      */
     public static function isFatalError($error)
     {
@@ -86,7 +86,7 @@ class ErrorException extends \ErrorException
     }
 
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 此异常的用户友好名称
      */
     public function getName()
     {

@@ -10,18 +10,18 @@ namespace yii\base;
 use Yii;
 
 /**
- * Object is the base class that implements the *property* feature.
+ * Object 是实现 *property* 功能的基类。
  *
- * It has been replaced by [[BaseObject]] in version 2.0.13 because `object` has become a reserved word which can not be
- * used as class name in PHP 7.2.
+ * 它已被版本 2.0.13 中的 [[BaseObject]] 取代，因为 `object`
+ * 已成为保留字，不能在 PHP 7.2 中用作类名。
  *
- * Please refer to [[BaseObject]] for detailed documentation and to the
+ * 请参阅 [[BaseObject]] 获得详细的文档，以及
  * [UPGRADE notes](https://github.com/yiisoft/yii2/blob/2.0.13/framework/UPGRADE.md#upgrade-from-yii-2012)
- * on how to migrate your application to use [[BaseObject]] class to make your application compatible with PHP 7.2.
+ * 有关如何迁移应用程序以使用 [[BaseObject]] 类使应用程序与 PHP 7.2 兼容。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- * @deprecated since 2.0.13, the class name `Object` is invalid since PHP 7.2, use [[BaseObject]] instead.
+ * @deprecated 从 2.0.13 开始，类名 `Object` 自 PHP 7.2 起无效，改为使用 [[BaseObject]]。
  * @see https://wiki.php.net/rfc/object-typehint
  * @see https://github.com/yiisoft/yii2/issues/7936#issuecomment-315384669
  */

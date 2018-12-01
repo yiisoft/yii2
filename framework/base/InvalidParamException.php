@@ -8,16 +8,16 @@
 namespace yii\base;
 
 /**
- * InvalidParamException represents an exception caused by invalid parameters passed to a method.
+ * InvalidParamException 表示由传递给方法的无效参数引起的异常。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- * @deprecated since 2.0.14. Use [[InvalidArgumentException]] instead.
+ * @deprecated since 2.0.14. 请使用 [[InvalidArgumentException]] 代替。
  */
 class InvalidParamException extends \BadMethodCallException
 {
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 此异常的用户友好名称
      */
     public function getName()
     {

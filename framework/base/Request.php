@@ -10,12 +10,12 @@ namespace yii\base;
 use Yii;
 
 /**
- * Request represents a request that is handled by an [[Application]].
+ * Request 表示由 [[Application]] 处理的请求。
  *
- * For more details and usage information on Request, see the [guide article on requests](guide:runtime-requests).
+ * 有关 Request 的更多详细信息和使用信息，请参阅 [请求的指南文章](guide:runtime-requests)。
  *
- * @property bool $isConsoleRequest The value indicating whether the current request is made via console.
- * @property string $scriptFile Entry script file path (processed w/ realpath()).
+ * @property bool $isConsoleRequest 指示当前请求是否通过控制台运行的值。
+ * @property string $scriptFile 入口脚本文件的路径（processed w/ realpath()）。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -27,14 +27,14 @@ abstract class Request extends Component
 
 
     /**
-     * Resolves the current request into a route and the associated parameters.
-     * @return array the first element is the route, and the second is the associated parameters.
+     * 将当前请求解析为路由和相关参数。
+     * @return array 第一个元素是路由，第二个元素是相关参数。
      */
     abstract public function resolve();
 
     /**
-     * Returns a value indicating whether the current request is made via command line.
-     * @return bool the value indicating whether the current request is made via console
+     * 返回一个值，该值指示当前请求是否通过命令行生成。
+     * @return bool 指示当前请求是否通过控制台运行的值
      */
     public function getIsConsoleRequest()
     {
@@ -42,8 +42,8 @@ abstract class Request extends Component
     }
 
     /**
-     * Sets the value indicating whether the current request is made via command line.
-     * @param bool $value the value indicating whether the current request is made via command line
+     * 设置指示当前请求是否通过命令行生成的值。
+     * @param bool $value 指示当前请求是否通过命令行生成的值
      */
     public function setIsConsoleRequest($value)
     {
@@ -51,9 +51,9 @@ abstract class Request extends Component
     }
 
     /**
-     * Returns entry script file path.
-     * @return string entry script file path (processed w/ realpath())
-     * @throws InvalidConfigException if the entry script file path cannot be determined automatically.
+     * 返回入口脚本文件的路径。
+     * @return string 入口脚本文件路径（processed w/ realpath()）
+     * @throws InvalidConfigException 如果无法自动确定入口脚本文件路径。
      */
     public function getScriptFile()
     {
@@ -69,12 +69,12 @@ abstract class Request extends Component
     }
 
     /**
-     * Sets the entry script file path.
-     * The entry script file path can normally be determined based on the `SCRIPT_FILENAME` SERVER variable.
-     * However, for some server configurations, this may not be correct or feasible.
-     * This setter is provided so that the entry script file path can be manually specified.
-     * @param string $value the entry script file path. This can be either a file path or a [path alias](guide:concept-aliases).
-     * @throws InvalidConfigException if the provided entry script file path is invalid.
+     * 设置入口脚本文件路径。
+     * 通常可以根据 `SCRIPT_FILENAME` SERVER 变量确定入口脚本文件路径。
+     * 但是，对于某些服务器配置，这可能不正确或不可行。
+     * 提供此 setter 以便可以手动指定入口脚本文件路径。
+     * @param string $value 入口脚本文件路径。可以是文件路径或 [路径别名](guide:concept-aliases)。
+     * @throws InvalidConfigException 如果提供的入口脚本文件路径无效。
      */
     public function setScriptFile($value)
     {

@@ -8,9 +8,9 @@
 namespace yii\base;
 
 /**
- * ViewContextInterface is the interface that should implemented by classes who want to support relative view names.
+ * ViewContextInterface 是应该由希望支持相对视图名称的类实现的接口。
  *
- * The method [[getViewPath()]] should be implemented to return the view path that may be prefixed to a relative view name.
+ * 应该实现方法 [[getViewPath()]] 以返回可以作为相对视图名称前缀的视图路径。
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -18,7 +18,7 @@ namespace yii\base;
 interface ViewContextInterface
 {
     /**
-     * @return string the view path that may be prefixed to a relative view name.
+     * @return string 可以为相对视图名称添加前缀的视图路径。
      */
     public function getViewPath();
 }

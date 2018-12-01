@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * ViewNotFoundException represents an exception caused by view file not found.
+ * ViewNotFoundException 表示由找不到视图文件引起的异常。
  *
  * @author Alexander Makarov
  * @since 2.0.10
@@ -16,7 +16,7 @@ namespace yii\base;
 class ViewNotFoundException extends InvalidArgumentException
 {
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 此异常的用户友好名称
      */
     public function getName()
     {

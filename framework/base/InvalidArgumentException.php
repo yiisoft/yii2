@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * InvalidArgumentException represents an exception caused by invalid arguments passed to a method.
+ * InvalidArgumentException 表示由传递给方法的无效参数引起的异常。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0.14
@@ -16,7 +16,7 @@ namespace yii\base;
 class InvalidArgumentException extends InvalidParamException
 {
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 此异常的用户友好名称
      */
     public function getName()
     {

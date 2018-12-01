@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * InvalidValueException represents an exception caused by a function returning a value of unexpected type.
+ * InvalidValueException 表示由返回意外类型值的方法引起的异常。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,7 +16,7 @@ namespace yii\base;
 class InvalidValueException extends \UnexpectedValueException
 {
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 此异常的用户友好名称
      */
     public function getName()
     {

@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * InvalidConfigException represents an exception caused by incorrect object configuration.
+ * InvalidConfigException 表示由不正确的对象配置导致的异常。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -16,7 +16,7 @@ namespace yii\base;
 class InvalidConfigException extends Exception
 {
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 此异常的用户友好名称
      */
     public function getName()
     {
