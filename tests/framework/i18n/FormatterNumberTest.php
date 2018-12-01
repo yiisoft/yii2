@@ -525,11 +525,6 @@ class FormatterNumberTest extends TestCase
     {
         $this->assertSame('one hundred twenty-three', $this->formatter->asSpellout(123));
 
-        $this->assertSame(
-            'eighteen quadrillion fourteen trillion three hundred ninety-eight billion five hundred nine million four hundred eighty-one thousand nine hundred eighty-four',
-            $this->formatter->asSpellout('87654321098765436')
-        );
-
         $this->formatter->locale = 'de_DE';
         $this->assertSame('ein­hundert­drei­und­zwanzig', $this->formatter->asSpellout(123));
 

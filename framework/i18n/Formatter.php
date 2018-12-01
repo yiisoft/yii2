@@ -1296,6 +1296,8 @@ class Formatter extends Component
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @throws InvalidConfigException when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available.
+     *
+     * This formatter does not work well with very big numbers.
      */
     public function asSpellout($value)
     {
