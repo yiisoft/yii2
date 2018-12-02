@@ -905,7 +905,7 @@ $conditon = new AllGreaterCondition(['col1', 'col2'], 42);
 
 但是 `QueryBuilder` 还不知道怎样从此对象生成 SQL 查询条件。
 因此我们还需要为这个条件对象创建一个构建器（Builder）。
-这个构建器必须实现 [yii\db\ExpressionBuilderInterface]] 接口和 `build()` 方法。
+这个构建器必须实现 [[yii\db\ExpressionBuilderInterface]] 接口和 `build()` 方法。
 
 ```php
 namespace app\db\conditions;
