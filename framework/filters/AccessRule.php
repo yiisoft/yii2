@@ -12,6 +12,7 @@ use yii\base\Action;
 use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
+use yii\helpers\IpHelper;
 use yii\helpers\StringHelper;
 use yii\web\Request;
 use yii\web\User;
@@ -266,7 +267,8 @@ class AccessRule extends Component
                     $ip !== null &&
                     ($pos = strpos($rule, '*')) !== false &&
                     strncmp($ip, $rule, $pos) === 0
-                )
+                ) ||
+                IpHelper::inRange($ip, $rule) === true
             ) {
                 return true;
             }

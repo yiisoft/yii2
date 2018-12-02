@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.16 under development
 ------------------------
-
+- Bug #16335: Fixed in `yii\filters\AccessRule::matchIP()` user IP validation with netmask in rule (omentes)
 - Bug #16903: Fixed 'yii\validators\NumberValidator' method 'isNotNumber' returns false for true/false value (annechko)
 - Bug #16648: Html::strtolower() was corrupting UTF-8 strings (Kolyunya)
 - Bug #13977: Skip validation if file input does not exist (RobinKamps, s1lver)
