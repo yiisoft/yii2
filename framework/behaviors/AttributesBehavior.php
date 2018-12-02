@@ -13,13 +13,13 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 /**
- * AttributesBehavior automatically assigns values specified to one or multiple attributes of an ActiveRecord
- * object when certain events happen.
+ * AttributesBehavior 是在某个事件发生的时候，
+ * 用来给 ActiveRecord 对象的一个或多个属性自动设置指定值的行为。
  *
- * To use AttributesBehavior, configure the [[attributes]] property which should specify the list of attributes
- * that need to be updated and the corresponding events that should trigger the update. Then configure the
- * value of enclosed arrays with a PHP callable whose return value will be used to assign to the current attribute.
- * For example,
+ * 要使用 AttributesBehavior，就要配置 [[attributes]] 属性，它指明了需要更新的属性列表和
+ * 触发这个更新操作对应的事件。然后再配置短数组的值为一个 PHP 匿名函数，
+ * 该函数应该返回设置给当前属性的值。
+ * 比如，
  *
  * ```php
  * use yii\behaviors\AttributesBehavior;
@@ -53,8 +53,8 @@ use yii\db\ActiveRecord;
  * }
  * ```
  *
- * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
- * not be validated, i.e. they should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
+ * 由于属性值会被这个行为自动设置，所以属性值不必用户输入也因此没有必要验证。
+ * 因此，这些属性不应该出现在 [[\yii\base\Model::rules()|rules()]] 这个模型方法中。
  *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
