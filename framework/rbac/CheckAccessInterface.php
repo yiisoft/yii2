@@ -8,7 +8,7 @@
 namespace yii\rbac;
 
 /**
- * For more details and usage information on CheckAccessInterface, see the [guide article on security authorization](guide:security-authorization).
+ * 有关 CheckAccessInterface 的更多详细信息和用法信息，请参阅 [授权指南](guide:security-authorization)。
  *
  * @author Sam Mousa <sam@mousa.nl>
  * @since 2.0.9
@@ -16,14 +16,14 @@ namespace yii\rbac;
 interface CheckAccessInterface
 {
     /**
-     * Checks if the user has the specified permission.
-     * @param string|int $userId the user ID. This should be either an integer or a string representing
-     * the unique identifier of a user. See [[\yii\web\User::id]].
-     * @param string $permissionName the name of the permission to be checked against
-     * @param array $params name-value pairs that will be passed to the rules associated
-     * with the roles and permissions assigned to the user.
-     * @return bool whether the user has the specified permission.
-     * @throws \yii\base\InvalidParamException if $permissionName does not refer to an existing permission
+     * 检查用户是否具有指定的权限。
+     * @param string|int $user 用户 ID。这应该是整数或字符串，
+     * 表示用户的唯一标识符。参阅 [[\yii\web\User::id]]。
+     * @param string $permissionName 要检查的权限名称
+     * @param array $params 键值对数组，
+     * 将传递给与用户分配的角色和权限相关的规则。
+     * @return bool 用户是否具有指定的权限。
+     * @throws \yii\base\InvalidParamException 如果 $permissionName 不是现有的权限名称
      */
     public function checkAccess($userId, $permissionName, $params = []);
 }

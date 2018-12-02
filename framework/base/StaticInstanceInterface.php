@@ -8,12 +8,12 @@
 namespace yii\base;
 
 /**
- * StaticInstanceInterface is the interface for providing static instances to classes,
- * which can be used to obtain class meta information that can not be expressed in static methods.
- * For example: adjustments made by DI or behaviors reveal only at object level, but might be needed
- * at class (static) level as well.
+ * StaticInstanceInterface 是为类提供静态实例的接口，
+ * 它可用于获取无法在静态方法中表达的类 meta 信息。
+ * 例如：DI 或行为进行的调整仅在对象级别显示，
+ * 但在类（静态）级别也可能需要。
  *
- * To implement the [[instance()]] method you may use [[StaticInstanceTrait]].
+ * 要实现 [[instance()]] 方法，可以使用 [[StaticInstanceTrait]]。
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.13
@@ -22,9 +22,9 @@ namespace yii\base;
 interface StaticInstanceInterface
 {
     /**
-     * Returns static class instance, which can be used to obtain meta information.
-     * @param bool $refresh whether to re-create static instance even, if it is already cached.
-     * @return static class instance.
+     * 返回静态类实例，可用于获取 meta 信息。
+     * @param bool $refresh 是否重新创建静态实例，如果它已经被缓存。
+     * @return static 类的实例。
      */
     public static function instance($refresh = false);
 }

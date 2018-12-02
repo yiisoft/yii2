@@ -8,9 +8,9 @@
 namespace yii\base;
 
 /**
- * WidgetEvent represents the event parameter used for a widget event.
+ * WidgetEvent 表示用于小部件事件的事件参数。
  *
- * By setting the [[isValid]] property, one may control whether to continue running the widget.
+ * 通过设置 [[isValid]] 属性，可以控制是否继续运行小部件。
  *
  * @author Petra Barus <petra.barus@gmail.com>
  * @since 2.0.11
@@ -18,13 +18,13 @@ namespace yii\base;
 class WidgetEvent extends Event
 {
     /**
-     * @var mixed the widget result. Event handlers may modify this property to change the widget result.
+     * @var mixed 小部件结果。事件处理程序可以修改此属性以更改小部件结果。
      */
     public $result;
     /**
-     * @var bool whether to continue running the widget. Event handlers of
-     * [[Widget::EVENT_BEFORE_RUN]] may set this property to decide whether
-     * to continue running the current widget.
+     * @var bool 是否继续运行小部件。
+     * [[Widget::EVENT_BEFORE_RUN]] 的事件处理程序可以设置此属性
+     * 以决定是否继续运行当前小部件。
      */
     public $isValid = true;
 }

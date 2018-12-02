@@ -10,7 +10,7 @@ namespace yii\base;
 use Yii;
 
 /**
- * StaticInstanceTrait provides methods to satisfy [[StaticInstanceInterface]] interface.
+ * StaticInstanceTrait 提供了满足 [[StaticInstanceInterface]] 接口的方法。
  *
  * @see StaticInstanceInterface
  *
@@ -20,15 +20,15 @@ use Yii;
 trait StaticInstanceTrait
 {
     /**
-     * @var static[] static instances in format: `[className => object]`
+     * @var static[] 静态实例的格式：`[className => object]`
      */
     private static $_instances = [];
 
 
     /**
-     * Returns static class instance, which can be used to obtain meta information.
-     * @param bool $refresh whether to re-create static instance even, if it is already cached.
-     * @return static class instance.
+     * 返回静态类实例，该实例可用于获取 meta 信息
+     * @param bool $refresh 是否重新创建静态实例，如果它已经被缓存。
+     * @return static 类的实例。
      */
     public static function instance($refresh = false)
     {

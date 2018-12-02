@@ -8,9 +8,9 @@
 namespace yii\base;
 
 /**
- * Response represents the response of an [[Application]] to a [[Request]].
+ * Response 表示 [[Application]] 对 [[Request]] 的响应。
  *
- * For more details and usage information on Response, see the [guide article on responses](guide:runtime-responses).
+ * 有关 Response 的更多详细信息和用法信息，请参阅 [响应指南文章](guide:runtime-responses)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -18,21 +18,21 @@ namespace yii\base;
 class Response extends Component
 {
     /**
-     * @var int the exit status. Exit statuses should be in the range 0 to 254.
-     * The status 0 means the program terminates successfully.
+     * @var int 退出状态码。 退出状态码应在 0 到 254 范围内。
+     * 状态 0 表示程序成功终止。
      */
     public $exitStatus = 0;
 
 
     /**
-     * Sends the response to client.
+     * 将响应发送给客户端。
      */
     public function send()
     {
     }
 
     /**
-     * Removes all existing output buffers.
+     * 清空所有现有输出缓冲区。
      */
     public function clearOutputBuffers()
     {

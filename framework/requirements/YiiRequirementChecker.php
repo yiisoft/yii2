@@ -11,10 +11,10 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
 }
 
 /**
- * YiiRequirementChecker allows checking, if current system meets the requirements for running the Yii application.
- * This class allows rendering of the check report for the web and console application interface.
+ * YiiRequirementChecker 允许检查，如果当前系统满足运行 Yii 应用程序的要求。
+ * 此类允许渲染 web 和控制台应用程序界面的检查报告。
  *
- * Example:
+ * 例如：
  *
  * ```php
  * require_once 'path/to/YiiRequirementChecker.php';
@@ -31,11 +31,11 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * $requirementsChecker->checkYii()->check($requirements)->render();
  * ```
  *
- * If you wish to render the report with your own representation, use [[getResult()]] instead of [[render()]]
+ * 如果您希望使用自己的表示形式渲染报告，请使用 [[getResult()]] 代替 [[render()]]
  *
- * Requirement condition could be in format "eval:PHP expression".
- * In this case specified PHP expression will be evaluated in the context of this class instance.
- * For example:
+ * 需求条件可以采用 "eval:PHP expression" 格式。
+ * 在这种情况下，将在此类实例的上下文中计算指定的 PHP 表达式。
+ * 例如：
  *
  * ```php
  * $requirements = array(
@@ -46,10 +46,10 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * );
  * ```
  *
- * Note: this class definition does not match ordinary Yii style, because it should match PHP 4.3
- * and should not use features from newer PHP versions!
+ * Note: 这个类定义与普通的 Yii 样式不匹配，因为它应该与
+ * PHP 4.3 匹配，不应该使用较新的PHP版本的功能！
  *
- * @property array|null $result the check results, this property is for internal usage only.
+ * @property array|null $result 检查结果，此属性仅供内部使用。
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
@@ -57,13 +57,13 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
 class YiiRequirementChecker
 {
     /**
-     * Check the given requirements, collecting results into internal field.
-     * This method can be invoked several times checking different requirement sets.
-     * Use [[getResult()]] or [[render()]] to get the results.
-     * @param array|string $requirements requirements to be checked.
-     * If an array, it is treated as the set of requirements;
-     * If a string, it is treated as the path of the file, which contains the requirements;
-     * @return $this self instance.
+     * 检查给定的需求，将结果收集到内部字段中。
+     * 可以多次调用此方法来检查不同的需求集。
+     * 使用 [[getResult()]] 或 [[render()]] 来获得结果
+     * @param array|string $requirements 要检查的需求。
+     * 如果是数组，则将其视为一组需求;
+     * 如果是字符串，则将其视为文件的路径，其中包含需求;
+     * @return $this 自身实例。
      */
     function check($requirements)
     {
@@ -107,8 +107,8 @@ class YiiRequirementChecker
     }
 
     /**
-     * Performs the check for the Yii core requirements.
-     * @return YiiRequirementChecker self instance.
+     * 执行 Yii 核心要求的检查。
+     * @return YiiRequirementChecker 自身实例。
      */
     function checkYii()
     {
@@ -116,8 +116,8 @@ class YiiRequirementChecker
     }
 
     /**
-     * Return the check results.
-     * @return array|null check results in format:
+     * 返回检查结果。
+     * @return array|null 检查结果格式：
      *
      * ```php
      * array(
@@ -147,8 +147,8 @@ class YiiRequirementChecker
     }
 
     /**
-     * Renders the requirements check result.
-     * The output will vary depending is a script running from web or from console.
+     * 渲染需求检查结果。
+     * 输出将根据从 web 或控制台运行的脚本而有所不同。
      */
     function render()
     {
@@ -165,11 +165,11 @@ class YiiRequirementChecker
     }
 
     /**
-     * Checks if the given PHP extension is available and its version matches the given one.
-     * @param string $extensionName PHP extension name.
-     * @param string $version required PHP extension version.
-     * @param string $compare comparison operator, by default '>='
-     * @return bool if PHP extension version matches.
+     * 检查给定的 PHP 扩展是否可用且其版本是否与给定的版本匹配。
+     * @param string $extensionName PHP 扩展名称。
+     * @param string $version 必需的 PHP 扩展版本。
+     * @param string $compare 比较运算符，默认为 '>='
+     * @return bool 如果 PHP 扩展版本匹配。
      */
     function checkPhpExtensionVersion($extensionName, $version, $compare = '>=')
     {
@@ -188,9 +188,9 @@ class YiiRequirementChecker
     }
 
     /**
-     * Checks if PHP configuration option (from php.ini) is on.
-     * @param string $name configuration option name.
-     * @return bool option is on.
+     * 检查 PHP 配置选项（来自 php.ini）是否打开。
+     * @param string $name 配置选项名称。
+     * @return bool 选项已开启。
      */
     function checkPhpIniOn($name)
     {
@@ -203,9 +203,9 @@ class YiiRequirementChecker
     }
 
     /**
-     * Checks if PHP configuration option (from php.ini) is off.
-     * @param string $name configuration option name.
-     * @return bool option is off.
+     * 检查 PHP 配置选项（来自 php.ini）是否关闭。
+     * @param string $name 配置选项名称。
+     * @return bool 选项已关闭。
      */
     function checkPhpIniOff($name)
     {
@@ -218,12 +218,12 @@ class YiiRequirementChecker
     }
 
     /**
-     * Compare byte sizes of values given in the verbose representation,
-     * like '5M', '15K' etc.
-     * @param string $a first value.
-     * @param string $b second value.
-     * @param string $compare comparison operator, by default '>='.
-     * @return bool comparison result.
+     * 比较详细表示中给出的值的字节大小，
+     * 例如：'5M'，'15K' 等。
+     * @param string $a 第一个值。
+     * @param string $b 第二个值。
+     * @param string $compare 比较运算符，默认为 '>='。
+     * @return bool 比较结果。
      */
     function compareByteSize($a, $b, $compare = '>=')
     {
@@ -233,10 +233,10 @@ class YiiRequirementChecker
     }
 
     /**
-     * Gets the size in bytes from verbose size representation.
-     * For example: '5K' => 5*1024
-     * @param string $verboseSize verbose size representation.
-     * @return int actual size in bytes.
+     * 从详细大小表示中获取大小（以字节为单位）。
+     * 例如：'5K' => 5*1024
+     * @param string $verboseSize 详细的大小表示。
+     * @return int 实际大小（字节）。
      */
     function getByteSize($verboseSize)
     {
@@ -267,10 +267,10 @@ class YiiRequirementChecker
     }
 
     /**
-     * Checks if upload max file size matches the given range.
-     * @param string|null $min verbose file size minimum required value, pass null to skip minimum check.
-     * @param string|null $max verbose file size maximum required value, pass null to skip maximum check.
-     * @return bool success.
+     * 检查上传的最大文件大小是否与给定范围匹配。
+     * @param string|null $min 上传文件大小最小要求值，传递 null 以跳过最小检查。
+     * @param string|null $max 上传文件大小最大要求值，传递 null 以跳过最大检查。
+     * @return bool 成功。
      */
     function checkUploadMaxFileSize($min = null, $max = null)
     {
@@ -291,13 +291,13 @@ class YiiRequirementChecker
     }
 
     /**
-     * Renders a view file.
-     * This method includes the view file as a PHP script
-     * and captures the display result if required.
-     * @param string $_viewFile_ view file
-     * @param array $_data_ data to be extracted and made available to the view file
-     * @param bool $_return_ whether the rendering result should be returned as a string
-     * @return string the rendering result. Null if the rendering result is not required.
+     * 渲染一个视图文件。
+     * 此方法将视图文件包含为 PHP 脚本，
+     * 并在需要时捕获显示结果。
+     * @param string $_viewFile_ 视图文件
+     * @param array $_data_ 要提取的数据并使其可用于视图文件
+     * @param bool $_return_ 是否应将渲染结果作为字符串返回
+     * @return string 渲染结果。如果不需要渲染结果，则为空。
      */
     function renderViewFile($_viewFile_, $_data_ = null, $_return_ = false)
     {
@@ -319,10 +319,10 @@ class YiiRequirementChecker
     }
 
     /**
-     * Normalizes requirement ensuring it has correct format.
-     * @param array $requirement raw requirement.
-     * @param int $requirementKey requirement key in the list.
-     * @return array normalized requirement.
+     * 规范化需求以确保其格式正确。
+     * @param array $requirement 原始需求。
+     * @param int $requirementKey 列表中的需求键。
+     * @return array 标准化需求。
      */
     function normalizeRequirement($requirement, $requirementKey = 0)
     {
@@ -359,9 +359,9 @@ class YiiRequirementChecker
     }
 
     /**
-     * Displays a usage error.
-     * This method will then terminate the execution of the current application.
-     * @param string $message the error message
+     * 显示使用错误。
+     * 然后，此方法将终止当前应用程序的执行。
+     * @param string $message 错误消息
      */
     function usageError($message)
     {
@@ -370,9 +370,9 @@ class YiiRequirementChecker
     }
 
     /**
-     * Evaluates a PHP expression under the context of this class.
-     * @param string $expression a PHP expression to be evaluated.
-     * @return mixed the expression result.
+     * 在此类的上下文中计算 PHP 表达式。
+     * @param string $expression 要计算的 PHP 表达式。
+     * @return mixed 表达式结果。
      */
     function evaluateExpression($expression)
     {
@@ -380,8 +380,8 @@ class YiiRequirementChecker
     }
 
     /**
-     * Returns the server information.
-     * @return string server information.
+     * 返回服务器信息。
+     * @return string 服务器信息。
      */
     function getServerInfo()
     {
@@ -389,8 +389,8 @@ class YiiRequirementChecker
     }
 
     /**
-     * Returns the now date if possible in string representation.
-     * @return string now date.
+     * 如果可能，以字符串表示形式返回当前时间。
+     * @return string 当前时间
      */
     function getNowDate()
     {

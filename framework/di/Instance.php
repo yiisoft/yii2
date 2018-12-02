@@ -11,17 +11,17 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * Instance represents a reference to a named object in a dependency injection (DI) container or a service locator.
+ * Instance 表示对依赖注入（DI）容器或服务定位器的命名对象的引用。
  *
- * You may use [[get()]] to obtain the actual object referenced by [[id]].
+ * 你可以使用 [[get()]] 来获取 [[id]] 引用的实际对象。
  *
- * Instance is mainly used in two places:
+ * 实例主要用于两个地方：
  *
- * - When configuring a dependency injection container, you use Instance to reference a class name, interface name
- *   or alias name. The reference can later be resolved into the actual object by the container.
- * - In classes which use service locator to obtain dependent objects.
+ * - 配置依赖注入容器时，你使用实例引用类名，接口名或别名。
+ *   接口名或别名。稍后可以通过容器将引用解析为实际对象。
+ * - 在使用服务定位器来获取依赖对象的类中。
  *
- * The following example shows how to configure a DI container with Instance:
+ * 下面的示例演示了如何通过实例配置 DI 容器：
  *
  * ```php
  * $container = new \yii\di\Container;
@@ -35,7 +35,7 @@ use yii\base\InvalidConfigException;
  * ]);
  * ```
  *
- * And the following example shows how a class retrieves a component from a service locator:
+ *下面的示例显示了类如何从服务定位器检索组件：
  *
  * ```php
  * class DbCache extends Cache
@@ -56,14 +56,14 @@ use yii\base\InvalidConfigException;
 class Instance
 {
     /**
-     * @var string the component ID, class name, interface name or alias name
+     * @var string 组件 ID，类名，接口名或别名
      */
     public $id;
 
 
     /**
      * Constructor.
-     * @param string $id the component ID
+     * @param string $id 组件 ID
      */
     protected function __construct($id)
     {
@@ -71,9 +71,9 @@ class Instance
     }
 
     /**
-     * Creates a new Instance object.
-     * @param string $id the component ID
-     * @return Instance the new Instance object.
+     * 创建一个新的实例对象。
+     * @param string $id 组件 ID
+     * @return Instance 新的实例对象。
      */
     public static function of($id)
     {
@@ -81,32 +81,32 @@ class Instance
     }
 
     /**
-     * Resolves the specified reference into the actual object and makes sure it is of the specified type.
+     * 将指定的引用解析为实际对象，并确保它具有指定的类型。
      *
-     * The reference may be specified as a string or an Instance object. If the former,
-     * it will be treated as a component ID, a class/interface name or an alias, depending on the container type.
+     * 可以将引用指定为字符串或实例对象。
+     * 如果是前者，它将会被视为组件 ID，类/接口名或别名，这将根据容器类型决定。
      *
-     * If you do not specify a container, the method will first try `Yii::$app` followed by `Yii::$container`.
+     * 如果你没有指定容器，该方法首先将会尝试 `Yii::$app` 然后是 `Yii::$container`。
      *
-     * For example,
+     * 例如，
      *
      * ```php
      * use yii\db\Connection;
      *
-     * // returns Yii::$app->db
+     * // 返回 Yii::$app->db
      * $db = Instance::ensure('db', Connection::className());
-     * // returns an instance of Connection using the given configuration
+     * // 使用给定配置返回 Connection 实例
      * $db = Instance::ensure(['dsn' => 'sqlite:path/to/my.db'], Connection::className());
      * ```
      *
-     * @param object|string|array|static $reference an object or a reference to the desired object.
-     * You may specify a reference in terms of a component ID or an Instance object.
-     * Starting from version 2.0.2, you may also pass in a configuration array for creating the object.
-     * If the "class" value is not specified in the configuration array, it will use the value of `$type`.
-     * @param string $type the class/interface name to be checked. If null, type check will not be performed.
-     * @param ServiceLocator|Container $container the container. This will be passed to [[get()]].
-     * @return object the object referenced by the Instance, or `$reference` itself if it is an object.
-     * @throws InvalidConfigException if the reference is invalid
+     * @param object|string|array|static $reference 对象或对所需对象的引用。
+     * 你可以根据组件 ID 或实例对象指定引用。
+     * 从 2.0.2 版本开始，你可以通过配置数组去创建一个对象。
+     * 如果在配置数组中没有指定 "class" 的值，将会使用 `$type` 的值。
+     * @param string $type 要检查的类/借口名称。如果为空，类型检查将不会被执行。
+     * @param ServiceLocator|Container $container 容器。将传递给 [[get()]]。
+     * @return object 实例引用的对象，如果为一个对象，则表示 `$reference` 本身。
+     * @throws InvalidConfigException 如果引用无效抛出的异常
      */
     public static function ensure($reference, $type = null, $container = null)
     {
@@ -150,10 +150,10 @@ class Instance
     }
 
     /**
-     * Returns the actual object referenced by this Instance object.
-     * @param ServiceLocator|Container $container the container used to locate the referenced object.
-     * If null, the method will first try `Yii::$app` then `Yii::$container`.
-     * @return object the actual object referenced by this Instance object.
+     * 返回实例对象引用的实际对象。
+     * @param ServiceLocator|Container $container 用于定位引用对象的容器。
+     * 如果为空，该方法首先将尝试 `Yii::$app` 然后是 `Yii::$container`。
+     * @return object 实例对象引用的实际对象。
      */
     public function get($container = null)
     {
@@ -168,11 +168,11 @@ class Instance
     }
 
     /**
-     * Restores class state after using `var_export()`.
+     * 使用 `var_export()` 之后恢复类的状态。
      *
      * @param array $state
      * @return Instance
-     * @throws InvalidConfigException when $state property does not contain `id` parameter
+     * @throws InvalidConfigException 当 $state 属性不包含 `id` 参数抛出的异常
      * @see var_export()
      * @since 2.0.12
      */
