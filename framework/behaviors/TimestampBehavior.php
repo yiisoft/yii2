@@ -26,12 +26,12 @@ use yii\db\BaseActiveRecord;
  * }
  * ```
  *
- * 默认情况下，当关联的 AR 对象执行插入操作时， TimestampBehavior 将会给 `created_at` 和 `updated_at`
+ * 默认情况下，当关联的 AR 对象执行插入操作时，TimestampBehavior 将会给 `created_at` 和 `updated_at`
  * 两个属性赋值为当前时间戳；而当 AR 对象执行更新操作时
  * 它只给 `updated_at` 属性赋值为当前时间戳。时间戳的值来自于 `time()`。
  *
  * 由于属性值是被这个行为自动设置，所以属性值不必用户输入也因此没有必要验证。
- * 因此， `created_at` 和 `updated_at` 这两个属性不应该出现在 [[\yii\base\Model::rules()|rules()]] 这个模型方法中。
+ * 因此，`created_at` 和 `updated_at` 这两个属性不应该出现在 [[\yii\base\Model::rules()|rules()]] 这个模型方法中。
  *
  * 对于应用在 MySQL 数据库的上述实现，请声明 columns(`created_at`, `updated_at`) 为整型来存储时间戳。
  *
@@ -127,7 +127,7 @@ class TimestampBehavior extends AttributeBehavior
      * $model->touch('lastVisit');
      * ```
      * @param string $attribute 要更新的属性名。
-     * @throws InvalidCallException 如果行为的拥有者（ AR 对象）是一个未更新过的对象 (since version 2.0.6).
+     * @throws InvalidCallException 如果行为的拥有者（ AR 对象）是一个未更新过的对象 (since version 2.0.6)。
      */
     public function touch($attribute)
     {
