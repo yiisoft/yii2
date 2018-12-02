@@ -54,7 +54,7 @@ use yii\validators\StringValidator;
  * }
  * ```
  *
- * Tip: 你可以把 [[attributeTypes]] 留空
+ * Tip: 你可以把 [[attributeTypes]] 留空，
  * 这时行为将通过属主组件的验证规则自动组装它的值。
  * 下面的例子展示了 [[attributeTypes]] 是根据它上面的 rules 方法里的验证规则创建了一模一样的数据类型：
  *
@@ -122,7 +122,7 @@ class AttributeTypecastBehavior extends Behavior
     public $owner;
     /**
      * @var array 属性进行类型转换的格式：attributeName => type。
-     * Type 可以是一个 PHP 匿名函数
+     * Type 可以是一个 PHP 匿名函数，
      * 它接收属性的原始值作为参数并且应该返回类型转换的结果。
      * 比如：
      *
@@ -141,54 +141,54 @@ class AttributeTypecastBehavior extends Behavior
      */
     public $attributeTypes;
     /**
-     * @var bool 是否跳过 `null` 值的类型转换
-     * 如果开启，属性值等于 `null` 时将不会执行类型转换（也就是说 `null` 还保持为 `null` ）
+     * @var bool 是否跳过 `null` 值的类型转换。
+     * 如果开启，属性值等于 `null` 时将不会执行类型转换（也就是说 `null` 还保持为 `null` ）；
      * 如果不开启，他将根据 [[attributeTypes]] 里的类型配置执行转换。
      */
     public $skipOnNull = true;
     /**
-     * @var bool 是否在通过属主模型验证之后执行类型转换
-     * 注意，类型转换只有在模型验证成功之后才执行
+     * @var bool 是否在通过属主模型验证之后执行类型转换。
+     * 注意，类型转换只有在模型验证成功之后才执行。
      * 也就是说，属主模型没有验证出错。
      * 注意，在该行为已经附加到属主模型之后再调整该选项的值不会起作用。
      */
     public $typecastAfterValidate = true;
     /**
-     * @var bool 是否在保存属主模型之前执行类型转换（插入或更新）
+     * @var bool 是否在保存属主模型之前执行类型转换（插入或更新）。
      * 为了追求较好的性能该选项可以设置为 false。
-     * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，在保存之前执行类型转换没什么意义
+     * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，在保存之前执行类型转换没什么意义，
      * 因此可以设置为 false。
      * 注意，在该行为已经附加到属主模型之后再调整该选项的值不会起作用。
      */
     public $typecastBeforeSave = false;
     /**
-     * @var bool 是否在保存属主模型之后执行类型转换（插入或更新）
+     * @var bool 是否在保存属主模型之后执行类型转换（插入或更新）。
      * 为了追求较好的性能该选项可以设置为 false。
-     * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，在保存之后执行类型转换没什么意义
+     * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，在保存之后执行类型转换没什么意义，
      * 因此可以设置为 false。
      * 注意，在该行为已经附加到属主模型之后再调整该选项的值不会起作用。
      * @since 2.0.14
      */
     public $typecastAfterSave = false;
     /**
-     * @var bool 是否在从数据库获取到属主模型数据之后
-     * 执行类型转换（获取模型或模型刷新）
+     * @var bool 是否在从数据库获取到属主模型数据之后，
+     * 执行类型转换（获取模型或模型刷新）。
      * 为了追求较好的性能该选项可以设置为 false。
-     * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，获取模型数据之后执行类型转换大多数情况下没什么意义
+     * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，获取模型数据之后执行类型转换大多数情况下没什么意义，
      * 因此可以设置为 false。
      * 注意，在该行为已经附加到属主模型之后再调整该选项的值不会起作用。
      */
     public $typecastAfterFind = false;
 
     /**
-     * @var array 自动检测 [[attributeTypes]] 时的内部静态缓存值
+     * @var array 自动检测 [[attributeTypes]] 时的内部静态缓存值。
      * 格式是： ownerClassName => attributeTypes
      */
     private static $autoDetectedAttributeTypes = [];
 
 
     /**
-     * 针对所有的属主类
+     * 针对所有的属主类，
      * 清除自动检测 [[attributeTypes]] 时的内部静态缓存值
      */
     public static function clearAutoDetectedAttributeTypes()
@@ -215,7 +215,7 @@ class AttributeTypecastBehavior extends Behavior
     /**
      * 根据 [[attributeTypes]] 执行属主属性的类型转换。
      * @param array $attributeNames 给出想要执行类型转换的属性名列表。
-     * 如果这个参数为空
+     * 如果这个参数为空，
      * 那么列在 [[attributeTypes]] 之内的任何一个属性都执行类型转换。
      */
     public function typecastAttributes($attributeNames = null)
@@ -245,8 +245,8 @@ class AttributeTypecastBehavior extends Behavior
     /**
      * 把指定的值转换为指定的数据类型。
      * @param mixed $value 将有执行类型转换的值。
-     * @param string|callable $type 类型名或者能够执行类型转换的匿名函数
-     * @return mixed 类型转换后的结果
+     * @param string|callable $type 类型名或者能够执行类型转换的匿名函数。
+     * @return mixed 类型转换后的结果。
      */
     protected function typecastValue($value, $type)
     {
