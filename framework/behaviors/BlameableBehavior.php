@@ -11,9 +11,9 @@ use Yii;
 use yii\db\BaseActiveRecord;
 
 /**
- * BlameableBehavior 用来自动地把指定属性设置为当前的用户 ID 。
+ * BlameableBehavior 用来自动地把指定属性设置为当前的用户 ID。
  *
- * 要使用 BlameableBehavior ，把下面的代码加到你的 ActiveRecord 类中：
+ * 要使用 BlameableBehavior，把下面的代码加到你的 ActiveRecord 类中：
  *
  * ```php
  * use yii\behaviors\BlameableBehavior;
@@ -26,15 +26,15 @@ use yii\db\BaseActiveRecord;
  * }
  * ```
  *
- * 默认情况下，当关联的 AR 对象执行插入操作时， BlameableBehavior 将会给 `created_by` 和 `updated_by`
- * 两个属性赋值为当前的用户 ID 。而当 AR 对象执行更新操作时
- * 它只给 `updated_by` 属性赋值为当前的用户 ID 。
+ * 默认情况下，当关联的 AR 对象执行插入操作时，BlameableBehavior 将会给 `created_by` 和 `updated_by`
+ * 两个属性赋值为当前的用户 ID。而当 AR 对象执行更新操作时
+ * 它只给 `updated_by` 属性赋值为当前的用户 ID。
  *
  * 由于属性值是被这个行为自动设置，所以属性值不必用户输入也因此没有必要验证。
- * 因此， `created_by` 和 `updated_by` 这两个属性不应该出现在 [[\yii\base\Model::rules()|rules()]] 这个模型方法中。
+ * 因此，`created_by` 和 `updated_by` 这两个属性不应该出现在 [[\yii\base\Model::rules()|rules()]] 这个模型方法中。
  *
  * 如果你的属性名不一样
- * 你可以像下面这样配置 [[createdByAttribute]] 和 [[updatedByAttribute]] 。
+ * 你可以像下面这样配置 [[createdByAttribute]] 和 [[updatedByAttribute]]。
  *
  * ```php
  * public function behaviors()
@@ -58,18 +58,18 @@ class BlameableBehavior extends AttributeBehavior
 {
     /**
      * @var string 接收当前用户 ID 值的属性
-     * 如果你不想记录当前创建者 ID 就把它设置为 false 。
+     * 如果你不想记录当前创建者 ID 就把它设置为 false。
      */
     public $createdByAttribute = 'created_by';
     /**
      * @var string 接收当前用户 ID 值的属性
-     * 如果你不想记录当前更新者 ID 就把它设置为 false 。
+     * 如果你不想记录当前更新者 ID 就把它设置为 false。
      */
     public $updatedByAttribute = 'updated_by';
     /**
      * {@inheritdoc}
      *
-     * 如果这个属性是 `null` ，那么将使用 `Yii::$app->user->id` 的值作为 $value 的值。
+     * 如果这个属性是 `null`，那么将使用 `Yii::$app->user->id` 的值作为 $value 的值。
      */
     public $value;
     /**
@@ -97,7 +97,7 @@ class BlameableBehavior extends AttributeBehavior
     /**
      * {@inheritdoc}
      *
-     * 如果 [[value]] 属性是 `null` ，那么将使用 [[defaultValue]] 的值作为 $value 的值。
+     * 如果 [[value]] 属性是 `null`，那么将使用 [[defaultValue]] 的值作为 $value 的值。
      */
     protected function getValue($event)
     {
