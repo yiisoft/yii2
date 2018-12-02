@@ -13,9 +13,9 @@ use yii\helpers\Url;
 use yii\web\ServerErrorHttpException;
 
 /**
- * CreateAction implements the API endpoint for creating a new model from the given data.
+ * CreateAction 实现一个 API 端点，用于根据给定数据创建新模型。
  *
- * For more details and usage information on CreateAction, see the [guide article on rest controllers](guide:rest-controllers).
+ * 关于 CreateAction 的更多使用参考，请查看 [Rest 控制器指南](guide:rest-controllers)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -23,19 +23,19 @@ use yii\web\ServerErrorHttpException;
 class CreateAction extends Action
 {
     /**
-     * @var string the scenario to be assigned to the new model before it is validated and saved.
+     * @var string 新建新模型所指定的场景，在验证和保存时会用到
      */
     public $scenario = Model::SCENARIO_DEFAULT;
     /**
-     * @var string the name of the view action. This property is needed to create the URL when the model is successfully created.
+     * @var string 查看操作的命名。这属性用于创建 URL，当模型创建成功。
      */
     public $viewAction = 'view';
 
 
     /**
-     * Creates a new model.
-     * @return \yii\db\ActiveRecordInterface the model newly created
-     * @throws ServerErrorHttpException if there is any error when creating the model
+     * 创建新模型。
+     * @return \yii\db\ActiveRecordInterface 新创建的模型
+     * @throws ServerErrorHttpException 创建新模型时发生的错误
      */
     public function run()
     {
