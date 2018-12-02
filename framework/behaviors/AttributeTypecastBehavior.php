@@ -56,7 +56,7 @@ use yii\validators\StringValidator;
  *
  * Tip: 你可以把 [[attributeTypes]] 留空
  * 这时行为将通过属主组件的验证规则自动组装它的值。
- * 下面的例子展示了 [[attributeTypes]] 是根据它上面的rules方法里的验证规则创建了一模一样的数据类型：
+ * 下面的例子展示了 [[attributeTypes]] 是根据它上面的 rules 方法里的验证规则创建了一模一样的数据类型：
  *
  * ```php
  * use yii\behaviors\AttributeTypecastBehavior;
@@ -78,7 +78,7 @@ use yii\validators\StringValidator;
  *         return [
  *             'typecast' => [
  *                 'class' => AttributeTypecastBehavior::className(),
- *                 // 'attributeTypes' 将会根据 `rules()` 自动组装
+ *                 // 'attributeTypes' will be composed automatically according to `rules()`
  *             ],
  *         ];
  *     }
@@ -93,7 +93,7 @@ use yii\validators\StringValidator;
  * - 在模型保存之前（插入或者更新）
  * - 在模型查找之后（通过查询语句找到模型或模型执行刷新）
  *
- * 你可以通过使用 [[typecastAfterValidate]]， [[typecastBeforeSave]] 和 [[typecastAfterFind]]
+ * 你可以通过使用 [[typecastAfterValidate]]，[[typecastBeforeSave]] 和 [[typecastAfterFind]]
  * 来控制自动转换发生在哪些指定的场景。
  * 默认情况下只在模型成功通过验证之后进行类型转换。
  *
@@ -121,7 +121,7 @@ class AttributeTypecastBehavior extends Behavior
      */
     public $owner;
     /**
-     * @var array 属性进行类型转换的格式： attributeName => type 。
+     * @var array 属性进行类型转换的格式：attributeName => type。
      * Type 可以是一个 PHP 匿名函数
      * 它接收属性的原始值作为参数并且应该返回类型转换的结果。
      * 比如：
@@ -137,7 +137,7 @@ class AttributeTypecastBehavior extends Behavior
      * ]
      * ```
      *
-     * 如果没有设置 $attributeTypes ，属性类型映射将会根据属主组件的验证规则自动组装。
+     * 如果没有设置 $attributeTypes，属性类型映射将会根据属主组件的验证规则自动组装。
      */
     public $attributeTypes;
     /**
@@ -155,17 +155,17 @@ class AttributeTypecastBehavior extends Behavior
     public $typecastAfterValidate = true;
     /**
      * @var bool 是否在保存属主模型之前执行类型转换（插入或更新）
-     * 为了追求较好的性能该选项可以设置为 false 。
+     * 为了追求较好的性能该选项可以设置为 false。
      * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，在保存之前执行类型转换没什么意义
-     * 因此可以设置为 false 。
+     * 因此可以设置为 false。
      * 注意，在该行为已经附加到属主模型之后再调整该选项的值不会起作用。
      */
     public $typecastBeforeSave = false;
     /**
      * @var bool 是否在保存属主模型之后执行类型转换（插入或更新）
-     * 为了追求较好的性能该选项可以设置为 false 。
+     * 为了追求较好的性能该选项可以设置为 false。
      * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，在保存之后执行类型转换没什么意义
-     * 因此可以设置为 false 。
+     * 因此可以设置为 false。
      * 注意，在该行为已经附加到属主模型之后再调整该选项的值不会起作用。
      * @since 2.0.14
      */
@@ -173,9 +173,9 @@ class AttributeTypecastBehavior extends Behavior
     /**
      * @var bool 是否在从数据库获取到属主模型数据之后
      * 执行类型转换（获取模型或模型刷新）
-     * 为了追求较好的性能该选项可以设置为 false 。
+     * 为了追求较好的性能该选项可以设置为 false。
      * 比如，在使用 [[\yii\db\ActiveRecord]] 的时候，获取模型数据之后执行类型转换大多数情况下没什么意义
-     * 因此可以设置为 false 。
+     * 因此可以设置为 false。
      * 注意，在该行为已经附加到属主模型之后再调整该选项的值不会起作用。
      */
     public $typecastAfterFind = false;
