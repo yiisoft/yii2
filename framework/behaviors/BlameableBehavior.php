@@ -27,13 +27,13 @@ use yii\db\BaseActiveRecord;
  * ```
  *
  * 默认情况下，当关联的 AR 对象执行插入操作时，BlameableBehavior 将会给 `created_by` 和 `updated_by`
- * 两个属性赋值为当前的用户 ID。而当 AR 对象执行更新操作时
+ * 两个属性赋值为当前的用户 ID。而当 AR 对象执行更新操作时，
  * 它只给 `updated_by` 属性赋值为当前的用户 ID。
  *
  * 由于属性值是被这个行为自动设置，所以属性值不必用户输入也因此没有必要验证。
  * 因此，`created_by` 和 `updated_by` 这两个属性不应该出现在 [[\yii\base\Model::rules()|rules()]] 这个模型方法中。
  *
- * 如果你的属性名不一样
+ * 如果你的属性名不一样，
  * 你可以像下面这样配置 [[createdByAttribute]] 和 [[updatedByAttribute]]。
  *
  * ```php
@@ -57,12 +57,12 @@ use yii\db\BaseActiveRecord;
 class BlameableBehavior extends AttributeBehavior
 {
     /**
-     * @var string 接收当前用户 ID 值的属性
+     * @var string 接收当前用户 ID 值的属性。
      * 如果你不想记录当前创建者 ID 就把它设置为 false。
      */
     public $createdByAttribute = 'created_by';
     /**
-     * @var string 接收当前用户 ID 值的属性
+     * @var string 接收当前用户 ID 值的属性。
      * 如果你不想记录当前更新者 ID 就把它设置为 false。
      */
     public $updatedByAttribute = 'updated_by';
