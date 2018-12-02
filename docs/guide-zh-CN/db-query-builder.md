@@ -538,7 +538,7 @@ $query->limit(10)->offset(20);
 
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
-[yii\db\Query::join()|join()]] 是用来指定 SQL 语句当中的 `JOIN` 子句的。例如，
+[[yii\db\Query::join()|join()]] 是用来指定 SQL 语句当中的 `JOIN` 子句的。例如，
  
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
