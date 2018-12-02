@@ -20,9 +20,9 @@ use yii\web\View;
  *
  * @see BaseMessage
  *
- * 了解更多关于 BaseMailer　的细节和用法，请参阅 [guide article on mailing](guide:tutorial-mailing)。
+ * 了解更多关于 BaseMailer 的细节和用法，请参阅 [guide article on mailing](guide:tutorial-mailing)。
  *
- * @property View $view View 实例。请注意，此属性在 getter 和 setter　中有所不同。
+ * @property View $view View 实例。请注意，此属性在 getter 和 setter 中有所不同。
  * 有关详细信息，请参阅　[[getView()]] 和 [[setView()]]。
  * @property string $viewPath 包含关于实现邮件消息的视图文件的目录默认为
  * '@app/mail'。
@@ -46,8 +46,8 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * @var string|bool HTML 布局视图名。这是用于渲染 HTML 邮件正文的布局。
      * 该属性可以使用以下值：
      *
-     * - 相对视图名：[[viewPath]] 的相对视图文件，e.g.，'layouts/html'。
-     * - [路径别名](guide:concept-aliases)：指定为路径别名的绝对视图文件路径，e.g.，'@app/mail/html'。
+     * - 相对视图名：[[viewPath]] 的相对视图文件，例如，'layouts/html'。
+     * - [路径别名](guide:concept-aliases)：指定为路径别名的绝对视图文件路径，例如，'@app/mail/html'。
      * - 布尔值 false：禁用布局。
      */
     public $htmlLayout = 'layouts/html';
@@ -59,7 +59,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     /**
      * @var array 应由 [[createMessage()]] 或 [[compose()]] 应用于任何新创建的邮件实例的配置数组。
      * 可以配置 [[MessageInterface]] 定义任何有效的属性，
-     * 例如 `发件人`，`收件人`，`主题`，`文本主体`，`html 主体`, 等等。
+     * 例如 `from`，`to`，`subject`，`textBody`，`htmlBody`, 等等。
      *
      * 例如：
      *
@@ -164,8 +164,8 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      *
      * 要渲染的视图可以使用以下格式之一指定：
      *
-     * - 路径别名（e.g. "@app/mail/contact"）：
-     * - 位于 [[viewPath]] 下的相对视图名称（e.g. "contact"）。
+     * - 路径别名（例如 "@app/mail/contact"）：
+     * - 位于 [[viewPath]] 下的相对视图名称（例如 "contact"）。
      *
      * @param array $params 将在视图文件中可用的参数（键值对）。
      * @return MessageInterface 消息实例。
