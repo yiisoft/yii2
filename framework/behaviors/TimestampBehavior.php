@@ -27,7 +27,7 @@ use yii\db\BaseActiveRecord;
  * ```
  *
  * 默认情况下，当关联的 AR 对象执行插入操作时，TimestampBehavior 将会给 `created_at` 和 `updated_at`
- * 两个属性赋值为当前时间戳；而当 AR 对象执行更新操作时
+ * 两个属性赋值为当前时间戳；而当 AR 对象执行更新操作时，
  * 它只给 `updated_at` 属性赋值为当前时间戳。时间戳的值来自于 `time()`。
  *
  * 由于属性值是被这个行为自动设置，所以属性值不必用户输入也因此没有必要验证。
@@ -35,7 +35,7 @@ use yii\db\BaseActiveRecord;
  *
  * 对于应用在 MySQL 数据库的上述实现，请声明 columns(`created_at`, `updated_at`) 为整型来存储时间戳。
  *
- * 如果你的属性名不一样或者你想用不同的方式计算时间戳
+ * 如果你的属性名不一样或者你想用不同的方式计算时间戳，
  * 那么你可以像下面这样配置 [[createdAtAttribute]]，[[updatedAtAttribute]] 和 [[value]] 来达到目的。
  *
  * ```php
@@ -58,7 +58,7 @@ use yii\db\BaseActiveRecord;
  * 属性的值将不是时间戳而是这个 Expression 对象本身。
  * 如果你随后需要这个值的话，应该先调用这个记录的 [[\yii\db\ActiveRecord::refresh()|refresh()]] 方法。
  *
- * TimestampBehavior 也提供了一个 [[touch()]] 方法
+ * TimestampBehavior 也提供了一个 [[touch()]] 方法，
  * 它可以给指定的一个或多个属性设置为当前时间戳然后保存入库。比如，
  *
  * ```php
@@ -72,19 +72,19 @@ use yii\db\BaseActiveRecord;
 class TimestampBehavior extends AttributeBehavior
 {
     /**
-     * @var string 接收时间戳的属性名
+     * @var string 接收时间戳的属性名。
      * 如果你不想记录生成时间的话把它设置为false。
      */
     public $createdAtAttribute = 'created_at';
     /**
-     * @var string 接收时间戳的属性名
+     * @var string 接收时间戳的属性名。
      * 如果你不想记录更新时间的话把它设置为false。
      */
     public $updatedAtAttribute = 'updated_at';
     /**
      * {@inheritdoc}
      *
-     * 如果这个值是 `null`
+     * 如果这个值是 `null`，
      * 那么它将用 PHP 函数 [time()](http://php.net/manual/en/function.time.php) 作为 $value 的值。
      */
     public $value;
@@ -108,7 +108,7 @@ class TimestampBehavior extends AttributeBehavior
     /**
      * {@inheritdoc}
      *
-     * 如果这个值是 `null`
+     * 如果这个值是 `null`，
      * 那么它将用 PHP 函数 [time()](http://php.net/manual/en/function.time.php) 作为 $value 的值。
      */
     protected function getValue($event)
