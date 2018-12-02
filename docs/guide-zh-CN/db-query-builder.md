@@ -462,7 +462,7 @@ $query->orderBy('id ASC, name DESC');
 
 > Note: 当 `ORDER BY` 语句包含一些 DB 表达式的时候，你应该使用数组的格式。
 
-你可以调用 [yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `ORDER BY` 片断添加额外的子句。
+你可以调用 [[yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `ORDER BY` 片断添加额外的子句。
 例如，
 
 ```php
@@ -489,7 +489,7 @@ $query->groupBy('id, status');
 
 > Note: 当 `GROUP BY` 语句包含一些 DB 表达式的时候，你应该使用数组的格式。
 
-你可以调用 [yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `GROUP BY` 
+你可以调用 [[yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `GROUP BY` 
 子句添加额外的字段。例如，
 
 ```php
