@@ -665,6 +665,10 @@ EOD;
             $this->stdout("Saving messages to $coloredFileName...\n");
             $this->saveMessagesCategoryToPHP($msgs, $file, $overwrite, $removeUnused, $sort, $category, $markUnused);
         }
+
+        if ($removeUnused) {
+            $this->checkForUnusedPhpMessageFiles($dirName, array_keys($messages));
+        }
     }
 
     /**
@@ -880,6 +884,17 @@ EOD;
             $this->stdout("Translation saved.\n", Console::FG_GREEN);
         } else {
             $this->stdout("Nothing to save.\n", Console::FG_GREEN);
+        }
+    }
+
+    private function checkForUnusedPhpMessageFiles($dirName, $existedCategories)
+    {
+        $messageFiles = FileHelper::findFiles($dirName);
+        foreach ($messageFiles as $file) {
+            $category = preg_replace('#\.php$#', '', basename($file));
+            if (!in_array($category, $existedCategories, true)) {
+                $this->stdout("File {$file} doesn't has any translations and can be deleted.\n", Console::FG_YELLOW);
+            }
         }
     }
 

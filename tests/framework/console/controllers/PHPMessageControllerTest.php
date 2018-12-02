@@ -122,4 +122,29 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
         $expected = "<?php\n/*file header*/\n/*doc block*/\n";
         $this->assertEqualsWithoutLE($expected, $head);
     }
+
+    public function testUnusedMessageFileWarning()
+    {
+        $category = 'test_delete_category';
+        $this->saveMessages(['test message' => 'test translation'], $category);
+        $filePath = $this->getMessageFilePath($category);
+
+        $this->saveConfigFile($this->getConfig([
+            'removeUnused' => true,
+        ]));
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $this->assertNotFalse(strpos($out, "File {$filePath} doesn't has any translations and can be deleted."),
+            "Controller should respond with \"File {$filePath} doesn't has any translations and can be deleted\" 
+            if there's no translation in file anymore and \"removeUnused\" option equals true. Command output:\n\n" . $out);
+
+
+        $this->saveConfigFile($this->getConfig([
+            'removeUnused' => false,
+        ]));
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $this->assertFalse(strpos($out, "File {$filePath} doesn't has any translations and can be deleted."),
+            "Controller should not respond with \"File {$filePath} doesn't has any translations and can be deleted\" 
+            if there's no translation in file anymore but \"removeUnused\" option equals false. Command output:\n\n" . $out);
+    }
 }
