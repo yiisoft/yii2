@@ -242,7 +242,7 @@ Pjax::end();
 这意味着对 ajax 或使用  [[yii\widgets\Pjax|Pjax]]
 小部件的文件和提交按钮值的唯一官方支持取决于
 `FormData` 类的
-[[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|浏览器支持]]。
+[浏览器支持](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)。
 
 延伸阅读 <span id="further-reading"></span>
 ---------------
