@@ -268,7 +268,10 @@ class AccessRule extends Component
                     ($pos = strpos($rule, '*')) !== false &&
                     strncmp($ip, $rule, $pos) === 0
                 ) ||
-                IpHelper::inRange($ip, $rule) === true
+                (
+                    ($pos = strpos($rule, '/')) !== false &&
+                    IpHelper::inRange($ip, $rule) === true
+                )
             ) {
                 return true;
             }
