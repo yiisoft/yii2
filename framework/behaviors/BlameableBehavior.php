@@ -11,9 +11,9 @@ use Yii;
 use yii\db\BaseActiveRecord;
 
 /**
- * BlameableBehavior automatically fills the specified attributes with the current user ID.
+ * BlameableBehavior 用来自动地把指定属性设置为当前的用户 ID。
  *
- * To use BlameableBehavior, insert the following code to your ActiveRecord class:
+ * 要使用 BlameableBehavior，把下面的代码加到你的 ActiveRecord 类中：
  *
  * ```php
  * use yii\behaviors\BlameableBehavior;
@@ -26,15 +26,15 @@ use yii\db\BaseActiveRecord;
  * }
  * ```
  *
- * By default, BlameableBehavior will fill the `created_by` and `updated_by` attributes with the current user ID
- * when the associated AR object is being inserted; it will fill the `updated_by` attribute
- * with the current user ID when the AR object is being updated.
+ * 默认情况下，当关联的 AR 对象执行插入操作时，BlameableBehavior 将会给 `created_by` 和 `updated_by`
+ * 两个属性赋值为当前的用户 ID。而当 AR 对象执行更新操作时，
+ * 它只给 `updated_by` 属性赋值为当前的用户 ID。
  *
- * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
- * not be validated, i.e. `created_by` and `updated_by` should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
+ * 由于属性值是被这个行为自动设置，所以属性值不必用户输入也因此没有必要验证。
+ * 因此，`created_by` 和 `updated_by` 这两个属性不应该出现在 [[\yii\base\Model::rules()|rules()]] 这个模型方法中。
  *
- * If your attribute names are different, you may configure the [[createdByAttribute]] and [[updatedByAttribute]]
- * properties like the following:
+ * 如果你的属性名不一样，
+ * 你可以像下面这样配置 [[createdByAttribute]] 和 [[updatedByAttribute]]。
  *
  * ```php
  * public function behaviors()
@@ -57,23 +57,23 @@ use yii\db\BaseActiveRecord;
 class BlameableBehavior extends AttributeBehavior
 {
     /**
-     * @var string the attribute that will receive current user ID value
-     * Set this property to false if you do not want to record the creator ID.
+     * @var string 接收当前用户 ID 值的属性。
+     * 如果你不想记录当前创建者 ID 就把它设置为 false。
      */
     public $createdByAttribute = 'created_by';
     /**
-     * @var string the attribute that will receive current user ID value
-     * Set this property to false if you do not want to record the updater ID.
+     * @var string 接收当前用户 ID 值的属性。
+     * 如果你不想记录当前更新者 ID 就把它设置为 false。
      */
     public $updatedByAttribute = 'updated_by';
     /**
      * {@inheritdoc}
      *
-     * In case, when the property is `null`, the value of `Yii::$app->user->id` will be used as the value.
+     * 如果这个属性是 `null`，那么将使用 `Yii::$app->user->id` 的值作为 $value 的值。
      */
     public $value;
     /**
-     * @var mixed Default value for cases when the user is guest
+     * @var mixed 当用户是未登录状态下的默认值。
      * @since 2.0.14
      */
     public $defaultValue;
@@ -97,7 +97,7 @@ class BlameableBehavior extends AttributeBehavior
     /**
      * {@inheritdoc}
      *
-     * In case, when the [[value]] property is `null`, the value of [[defaultValue]] will be used as the value.
+     * 如果 [[value]] 属性是 `null`，那么将使用 [[defaultValue]] 的值作为 $value 的值。
      */
     protected function getValue($event)
     {
@@ -114,7 +114,7 @@ class BlameableBehavior extends AttributeBehavior
     }
 
     /**
-     * Get default value
+     * 获得默认值。
      * @param \yii\base\Event $event
      * @return array|mixed
      * @since 2.0.14
