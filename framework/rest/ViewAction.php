@@ -10,9 +10,9 @@ namespace yii\rest;
 use Yii;
 
 /**
- * ViewAction implements the API endpoint for returning the detailed information about a model.
+ * ViewAction 实现一个 API 端点，用于返回模型的详细信息。
  *
- * For more details and usage information on ViewAction, see the [guide article on rest controllers](guide:rest-controllers).
+ * 关于 ViewAction 的更多使用参考，请查看 [Rest 控制器指南](guide:rest-controllers)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -20,9 +20,9 @@ use Yii;
 class ViewAction extends Action
 {
     /**
-     * Displays a model.
-     * @param string $id the primary key of the model.
-     * @return \yii\db\ActiveRecordInterface the model being displayed
+     * 展示一个模型
+     * @param string $id 模型的主键值
+     * @return \yii\db\ActiveRecordInterface 模型的展示
      */
     public function run($id)
     {
