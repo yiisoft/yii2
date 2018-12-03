@@ -174,26 +174,7 @@ class ActiveRecord extends BaseActiveRecord
         $query = static::find();
 
         if (!ArrayHelper::isAssociative($condition)) {
-            // query by primary key
-            $primaryKey = static::primaryKey();
-
-            if (!isset($primaryKey[0])) {
-                throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
-            }
-
-            $pk = $primaryKey[0];
-            if (!empty($query->join) || !empty($query->joinWith)) {
-                // AR-model table name or table alias if defined
-                $tableOrAlias = static::tableName();
-                foreach (array_keys($query->from ?: []) as $alias) {
-                    if (is_string($alias)) {
-                        $tableOrAlias = $alias;
-                        break;
-                    }
-                }
-
-                $pk = $tableOrAlias . '.' . $pk;
-            }
+            $pk = self::primaryKeyFieldWithAlias($query);
             // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
             $condition = [$pk => is_array($condition) ? array_values($condition) : $condition];
 
@@ -202,6 +183,36 @@ class ActiveRecord extends BaseActiveRecord
         }
 
         return $query->andWhere($condition);
+    }
+
+    /**
+     * Returns field name of primary key with alias if defined
+     *
+     * @param ActiveQuery $query
+     * @return string
+     * @throws InvalidConfigException
+     */
+    private static function primaryKeyFieldWithAlias($query)
+    {
+        $primaryKey = static::primaryKey();
+
+        if (!isset($primaryKey[0])) {
+            throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
+        }
+
+        if (empty($query->join) && empty($query->joinWith)) {
+            return $primaryKey[0];
+        }
+
+        $tableOrAlias = static::tableName();
+        foreach (array_keys($query->from ?: []) as $alias) {
+            if (is_string($alias)) {
+                $tableOrAlias = $alias;
+                break;
+            }
+        }
+
+        return $tableOrAlias . '.' . $primaryKey[0];
     }
 
     /**
