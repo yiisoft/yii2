@@ -176,25 +176,27 @@ class ActiveRecord extends BaseActiveRecord
         if (!ArrayHelper::isAssociative($condition)) {
             // query by primary key
             $primaryKey = static::primaryKey();
-            if (isset($primaryKey[0])) {
-                $pk = $primaryKey[0];
-                if (!empty($query->join) || !empty($query->joinWith)) {
-                    // AR-model table name or table alias if defined
-                    $tableOrAlias = static::tableName();
-                    foreach ($query->from as $alias => $tableName) {
-                        if (is_string($alias)) {
-                            $tableOrAlias = $alias;
-                            break;
-                        }
-                    }
 
-                    $pk = $tableOrAlias . '.' . $pk;
-                }
-                // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
-                $condition = [$pk => is_array($condition) ? array_values($condition) : $condition];
-            } else {
+            if (!isset($primaryKey[0])) {
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
+
+            $pk = $primaryKey[0];
+            if (!empty($query->join) || !empty($query->joinWith)) {
+                // AR-model table name or table alias if defined
+                $tableOrAlias = static::tableName();
+                foreach (array_keys($query->from ?: []) as $alias) {
+                    if (is_string($alias)) {
+                        $tableOrAlias = $alias;
+                        break;
+                    }
+                }
+
+                $pk = $tableOrAlias . '.' . $pk;
+            }
+            // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
+            $condition = [$pk => is_array($condition) ? array_values($condition) : $condition];
+
         } elseif (is_array($condition)) {
             $condition = static::filterCondition($condition);
         }
