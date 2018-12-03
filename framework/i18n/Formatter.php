@@ -1794,7 +1794,10 @@ class Formatter extends Component
             $value = 0;
         }
 
-        return (string) $normalizedValue !== (string) $value;
+        return !(
+            (string) $normalizedValue === (string) $value
+            || (string) $normalizedValue === (string)((int) $value)
+        );
     }
 
     /**
