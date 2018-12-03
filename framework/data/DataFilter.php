@@ -19,10 +19,10 @@ use yii\validators\DateValidator;
 use yii\validators\Validator;
 
 /**
- * DataFilter is a special [[Model]] for processing query filtering specification.
- * It allows validating and building a filter condition passed via request.
+ * DataFilter是用于处理查询过滤规范的特殊[[Model]]。
+ * 它可以通过请求验证并建立一个过滤条件。
  *
- * Filter example:
+ * 过滤器示例:
  *
  * ```json
  * {
@@ -48,8 +48,8 @@ use yii\validators\Validator;
  * }
  * ```
  *
- * In the request the filter should be specified using a key name equal to [[filterAttributeName]]. Thus actual HTTP request body
- * will look like following:
+ * 在实际请求中，过滤器要指定一个和[[filterAttributeName]]一致的键名。如，实际的HTTP请求body
+ * 如下:
  *
  * ```json
  * {
@@ -59,8 +59,8 @@ use yii\validators\Validator;
  * }
  * ```
  *
- * Raw filter value should be assigned to [[filter]] property of the model.
- * You may populate it from request data via [[load()]] method:
+ * 原始过滤器值应该被分配到model的属性[[filter]]。
+ * 可以通过 [[load()]] 方法来填充DataFilter:
  *
  * ```php
  * use yii\data\DataFilter;
@@ -69,8 +69,8 @@ use yii\validators\Validator;
  * $dataFilter->load(Yii::$app->request->getBodyParams());
  * ```
  *
- * In order to function this class requires a search model specified via [[searchModel]]. This search model should declare
- * all available search attributes and their validation rules. For example:
+ * 要使用DataFilter，我们需要通过 [[searchModel]] 来指定搜索model。 这个搜索model应该声明
+ * 所有可用的搜索属性和这些属性的验证规则。 例如:
  *
  * ```php
  * class SearchModel extends \yii\base\Model
@@ -89,8 +89,8 @@ use yii\validators\Validator;
  * }
  * ```
  *
- * In order to reduce amount of classes, you may use [[\yii\base\DynamicModel]] instance as a [[searchModel]].
- * In this case you should specify [[searchModel]] using a PHP callable:
+ * 为了减少类数量, 我们可以使用 [[\yii\base\DynamicModel]] 实例作为 [[searchModel]]。
+ * 在这里，我们可以使用PHP callable作为 [[searchModel]] :
  *
  * ```php
  * function () {
@@ -101,24 +101,24 @@ use yii\validators\Validator;
  * }
  * ```
  *
- * You can use [[validate()]] method to check if filter value is valid. If validation fails you can use
- * [[getErrors()]] to get actual error messages.
+ * 我们可以使用 [[validate()]] 方法来校验过滤值是否可用。 如果校验失败，我们可以使用
+ * [[getErrors()]] 方法来获取真实的错误信息.
  *
- * In order to acquire filter condition suitable for fetching data use [[build()]] method.
+ * 我们可以使用 [[build()]] 方法来获取合适的获取数据的过滤条件。
  *
- * > Note: This is a base class. Its implementation of [[build()]] simply returns normalized [[filter]] value.
- * In order to convert filter to particular format you should use descendant of this class that implements
- * [[buildInternal()]] method accordingly.
+ * > 注意: 该类是个基类。 该类的 [[build()]] 方法的简单实现返回了标准的 [[filter]] 值。
+ * 我们应该使用恰当的实现了 [[buildInternal()]] 方法的子类来将过滤器转化为特定的
+ * 格式。
  *
  * @see ActiveDataFilter
  *
- * @property array $errorMessages Error messages in format `[errorKey => message]`. Note that the type of this
- * property differs in getter and setter. See [[getErrorMessages()]] and [[setErrorMessages()]] for details.
- * @property mixed $filter Raw filter value.
- * @property array $searchAttributeTypes Search attribute type map. Note that the type of this property
- * differs in getter and setter. See [[getSearchAttributeTypes()]] and [[setSearchAttributeTypes()]] for details.
- * @property Model $searchModel Model instance. Note that the type of this property differs in getter and
- * setter. See [[getSearchModel()]] and [[setSearchModel()]] for details.
+ * @property array $errorMessages  `[errorKey => message]` 格式的错误信息。注意这个属性的类型
+ * 与getter和setter中的不一样。 有关详细信息，请参见 [[getErrorMessages()]] 和 [[setErrorMessages()]] 。
+ * @property mixed $filter 原始过滤器值。
+ * @property array $searchAttributeTypes 搜索属性类型映射。 注意这个属性的类型
+ * 与getter和setter中的不一样。 有关详细信息，请参见 [[getSearchAttributeTypes()]] 和 [[setSearchAttributeTypes()]] 。
+ * @property Model $searchModel Model实例。注意这个属性的类型
+ * 与getter和setter中的不一样。有关详细信息，请参见 [[getSearchModel()]] 和 [[setSearchModel()]]。
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.13
@@ -135,26 +135,26 @@ class DataFilter extends Model
     const TYPE_TIME = 'time';
 
     /**
-     * @var string name of the attribute that handles filter value.
-     * The name is used to load data via [[load()]] method.
+     * @var string 处理过滤器值的属性名称。
+     * 这个名字用于通过 [[load()]] 方法加载数据。
      */
     public $filterAttributeName = 'filter';
     /**
-     * @var string label for the filter attribute specified via [[filterAttributeName]].
-     * It will be used during error messages composition.
+     * @var string 通过 [[filterAttributeName]] 指定的过滤器属性标签.
+     * 将在错误消息合成中使用。
      */
     public $filterAttributeLabel;
     /**
-     * @var array keywords or expressions that could be used in a filter.
-     * Array keys are the expressions used in raw filter value obtained from user request.
-     * Array values are internal build keys used in this class methods.
+     * @var array 在过滤器中可能用到的关键字和表达式。
+     * 数组键是从用户请求中获取的在原始过滤器值中使用的表达式。
+     * 数组值是在该类方法中使用的内部构建的关键字。
      *
-     * Any unspecified keyword will not be recognized as a filter control and will be treated as
-     * an attribute name. Thus you should avoid conflicts between control keywords and attribute names.
-     * For example: in case you have control keyword 'like' and an attribute named 'like', specifying condition
-     * for such attribute will be impossible.
+     * 任何未指定的关键字将不被识别为过滤器控件，同时都将被视为
+     * 属性名。因此我们应该避免过滤器控件关键字和属性名称之间的冲突。
+     * 如:我们指定了过滤器控件关键字'like'，同时也有一个属性叫做'like',类似于这种属性指定条件是
+     * 不会生效的。
      *
-     * You may specify several keywords for the same filter build key, creating multiple aliases. For example:
+     * 我们可以为同一个过滤器构建关键字指定一些关键字，创建多个别名。 例如:
      *
      * ```php
      * [
@@ -166,9 +166,9 @@ class DataFilter extends Model
      * ]
      * ```
      *
-     * > Note: while specifying filter controls take actual data exchange format, which your API uses, in mind.
-     * > Make sure each specified control keyword is valid for the format. For example, in XML tag name can start
-     * > only with a letter character, thus controls like `>`, '=' or `$gt` will break the XML schema.
+     * > 注意: 在指定过滤器控件时，请记住API使用的实际数据交换格式。
+     * > 确保每一个指定的控件关键字的格式是合法的。 如, 在XML标签名字中只能
+     * > 以字母字符开头, 因此，像 `>`, '=' 或者 `$gt` 控件将破坏XML模式规范。
      */
     public $filterControls = [
         'and' => 'AND',
@@ -185,8 +185,8 @@ class DataFilter extends Model
         'like' => 'LIKE',
     ];
     /**
-     * @var array maps filter condition keywords to validation methods.
-     * These methods are used by [[validateCondition()]] to validate raw filter conditions.
+     * @var array 过滤器条件关键字和校验方法的映射。
+     * 这些方法被 [[validateCondition()]]方法使用以校验原始过滤条件。
      */
     public $conditionValidators = [
         'AND' => 'validateConjunctionCondition',
@@ -203,7 +203,7 @@ class DataFilter extends Model
         'LIKE' => 'validateOperatorCondition',
     ];
     /**
-     * @var array specifies the list of supported search attribute types per each operator.
+     * @var array 指定每个操作符支持的搜索属性类型的列表。
      * This field should be in format: 'operatorKeyword' => ['type1', 'type2' ...].
      * Supported types list can be specified as `*`, which indicates that operator supports all types available.
      * Any unspecified keyword will not be considered as a valid operator.
@@ -241,25 +241,25 @@ class DataFilter extends Model
     public $attributeMap = [];
 
     /**
-     * @var array|\Closure list of error messages responding to invalid filter structure, in format: `[errorKey => message]`.
+     * @var array|\Closure 响应无效过滤器结构的错误消息列表, 格式如：`[errorKey => message]`.
      */
     private $_errorMessages;
     /**
-     * @var mixed raw filter specification.
+     * @var mixed 原始过滤器规范。
      */
     private $_filter;
     /**
-     * @var Model|array|string|callable model to be used for filter attributes validation.
+     * @var Model|array|string|callable 用于过滤属性校验的model
      */
     private $_searchModel;
     /**
-     * @var array list of search attribute types in format: attributeName => type
+     * @var array 搜索属性类型列表，格式如：attributeName => type
      */
     private $_searchAttributeTypes;
 
 
     /**
-     * @return mixed raw filter value.
+     * @return mixed 原始过滤器值
      */
     public function getFilter()
     {
@@ -267,7 +267,7 @@ class DataFilter extends Model
     }
 
     /**
-     * @param mixed $filter raw filter value.
+     * @param mixed $filter 原始过滤器值。
      */
     public function setFilter($filter)
     {
@@ -275,8 +275,8 @@ class DataFilter extends Model
     }
 
     /**
-     * @return Model model instance.
-     * @throws InvalidConfigException on invalid configuration.
+     * @return Model model实例。
+     * @throws InvalidConfigException 在配置校验中。
      */
     public function getSearchModel()
     {
@@ -323,7 +323,7 @@ class DataFilter extends Model
 
     /**
      * Composes default value for [[searchAttributeTypes]] from the [[searchModel]] validation rules.
-     * @return array attribute type map.
+     * @return array 属性类型映射。
      */
     protected function detectSearchAttributeTypes()
     {
@@ -348,10 +348,10 @@ class DataFilter extends Model
     }
 
     /**
-     * Detect attribute type from given validator.
+     * 按照传入的validator检测属性类型
      *
-     * @param Validator validator from which to detect attribute type.
-     * @return string|null detected attribute type.
+     * @param Validator validator 从这个validator中检测属性类型
+     * @return string|null 检测出来的属性类型
      * @since 2.0.14
      */
     protected function detectSearchAttributeType(Validator $validator)
@@ -385,7 +385,7 @@ class DataFilter extends Model
     }
 
     /**
-     * @return array error messages in format `[errorKey => message]`.
+     * @return array 错误信息，格式如：`[errorKey => message]`。
      */
     public function getErrorMessages()
     {
@@ -457,7 +457,7 @@ class DataFilter extends Model
         return Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
     }
 
-    // Model specific:
+    // 指定 Model:
 
     /**
      * {@inheritdoc}
@@ -497,7 +497,7 @@ class DataFilter extends Model
         ];
     }
 
-    // Validation:
+    // 校验:
 
     /**
      * Validates filter attribute value to match filer condition specification.
@@ -738,9 +738,9 @@ class DataFilter extends Model
     }
 
     /**
-     * Normalizes complex filter recursively.
-     * @param array $filter raw filter.
-     * @return array normalized filter.
+     * 递归形式整合标准过滤器。
+     * @param array $filter 原始过滤器。
+     * @return array 标准过滤器。
      */
     private function normalizeComplexFilter(array $filter)
     {
@@ -760,7 +760,7 @@ class DataFilter extends Model
         return $result;
     }
 
-    // Property access:
+    // 属性访问:
 
     /**
      * {@inheritdoc}
