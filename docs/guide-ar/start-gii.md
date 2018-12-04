@@ -58,7 +58,7 @@ http://hostname/index.php?r=gii
 ],
 ```
 
-![Gii](images/start-gii.png)
+![Gii](../guide/images/start-gii.png)
 
 
 Generating an Active Record Class <span id="generating-ar"></span>
@@ -69,7 +69,7 @@ To use Gii to generate an Active Record class, select the "Model Generator" (by 
 * Table Name: `country`
 * Model Class: `Country`
 
-![Model Generator](images/start-gii-model.png)
+![Model Generator](../guide/images/start-gii-model.png)
 
 Next, click on the "Preview" button. You will see `models/Country.php` is listed in the resulting class file to be created. You may click on the name of the class file to preview its content.
 
@@ -77,7 +77,7 @@ When using Gii, if you have already created the same file and would be overwriti
 the `diff` button next to the file name to see the differences between the code to be generated
 and the existing version.
 
-![Model Generator Preview](images/start-gii-model-preview.png)
+![Model Generator Preview](../guide/start-gii-model-preview.png)
 
 When overwriting an existing file, check the box next to "overwrite" and then click  the "Generate" button. If creating a new file, you can just click "Generate". 
 
