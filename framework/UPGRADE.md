@@ -73,6 +73,10 @@ Upgrade from Yii 2.0.15
       }
   }
   ```
+  
+* Formatter methods `asInteger`, `asDecimal`, `asPercent`, and `asCurrency` are using now inner fallback methods to handle 
+  very big number values to counter inner PHP casting and floating point number presentation issues. Make sure to provide 
+  such values as string numbers.
 
 
 Upgrade from Yii 2.0.14
