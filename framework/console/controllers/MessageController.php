@@ -218,6 +218,8 @@ class MessageController extends \yii\console\Controller
     public function actionConfig($filePath)
     {
         $filePath = Yii::getAlias($filePath);
+        $dir = dirname($filePath);
+
         if (file_exists($filePath)) {
             if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
                 return ExitCode::OK;
@@ -241,7 +243,7 @@ return $array;
 
 EOD;
 
-        if (file_put_contents($filePath, $content, LOCK_EX) === false) {
+        if (FileHelper::createDirectory($dir) === false || file_put_contents($filePath, $content, LOCK_EX) === false) {
             $this->stdout("Configuration file was NOT created: '{$filePath}'.\n\n", Console::FG_RED);
             return ExitCode::UNSPECIFIED_ERROR;
         }
