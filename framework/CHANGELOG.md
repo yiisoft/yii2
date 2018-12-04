@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.16 under development
 ------------------------
-
+- Bug #16822: Create config dir recursively in message/config (Groonya)
 - Bug #16022: Fix UniqueValidator for PostgreSQL. Checks the uniqueness of keys in `jsonb` field (lav45)
 - Bug #16903: Fixed 'yii\validators\NumberValidator' method 'isNotNumber' returns false for true/false value (annechko)
 - Bug #16648: Html::strtolower() was corrupting UTF-8 strings (Kolyunya)
