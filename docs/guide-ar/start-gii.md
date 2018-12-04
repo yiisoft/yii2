@@ -1,8 +1,8 @@
-Generating Code with Gii
-========================
+# <div dir="rtl">إنشاء الشيفرة البرمجية من خلال ال gii</div>
 
-This section will describe how to use [Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide) to automatically generate code
-that implements some common Web site features. Using Gii to auto-generate code is simply a matter of entering the right information per the instructions shown on the Gii Web pages.
+<p dir="rtl">
+    في هذا الجزء التعليمي سنتعرف على آلية التعامل مع ال <a href="https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide">Gii</a>، والذي يستخدم لإنتاج الشيفرة البرمجية الخاصة بمعظم الميزات والخصائص المشتركة في أغلب المواقع بشكل تلقائي، بالإضافة الى ذلك، فإن استخدام ال Gii لإنشاء الشيفرة البرمجية بشكل تلقائي يمثل مجموعة من المعلومات الصحيحة التي بتم إدخالها إعتمادا على التعليمات الموجودة في ال Gii Web Pages.
+</p>
 
 Through this tutorial, you will learn how to:
 
