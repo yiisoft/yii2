@@ -90,11 +90,13 @@ http://hostname/index.php?r=gii
 
 ![Model Generator Preview](../guide/images/start-gii-model-preview.png)
 
-When overwriting an existing file, check the box next to "overwrite" and then click  the "Generate" button. If creating a new file, you can just click "Generate". 
+<p dir="rtl">
+    عند قيامك بعمل overwriting على ملف موجود، قم بالضغط على ال ckeckbox الموجودة بجانب كلمة overwrite، ومن ثم قم بالنقر على زر "Generate", اذا كان هذا الملف جديد، وغير موجود مسبقا، فيمكنك النقر مباشرة على "Generate"، بعد ذلك ستشاهد صفحة ال confirmation والتي تبين الشيفرات البرمجية التي تم إنشائها بنجاح.
+</p>
 
-Next, you will see
-a confirmation page indicating the code has been successfully generated. If you had an existing file, you'll also see a message indicating that it was overwritten with the newly generated code.
-
+<p dir="rtl">
+    بعد فيامك بالنقر على زر Generate، فإنك ستشاهد صفحة ال confirmation page، والتي تقوم بدورها بتوضيح الشيفرات البرمجية التي تم إنشائها بنجاح، واذا كان الملف موجود، فإنك ستشاهد أيضا رسالة تعلمك بأن الملف قد تم تعديله وتمت إضافة الشيفرة الجديدة مكان القديمة.
+</p>
 
 Generating CRUD Code <span id="generating-crud"></span>
 --------------------
