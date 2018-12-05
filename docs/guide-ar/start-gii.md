@@ -98,10 +98,11 @@ http://hostname/index.php?r=gii
     بعد فيامك بالنقر على زر Generate، فإنك ستشاهد صفحة ال confirmation page، والتي تقوم بدورها بتوضيح الشيفرات البرمجية التي تم إنشائها بنجاح، واذا كان الملف موجود، فإنك ستشاهد أيضا رسالة تعلمك بأن الملف قد تم تعديله وتمت إضافة الشيفرة الجديدة مكان القديمة.
 </p>
 
-Generating CRUD Code <span id="generating-crud"></span>
---------------------
+## <div dir="rtl">إنشاء ال CRUD Code</div> <span id="generating-crud"></span>
 
-CRUD stands for Create, Read, Update, and Delete, representing the four common tasks taken with data on most Web sites. To create CRUD functionality using Gii, select the "CRUD Generator" (by clicking the link on the Gii index page). For the "country" example, fill out the resulting form as follows:
+<p dir="rtl">
+    ال CRUD هي اختصار ل Create, Read, Update, And Delete (إنشاء، وقرائة، وتحديث، وحذف)، والتي تمثل أكثر المهمات المطلوبة للتعامل مع البيانات على مواقع الويب. ولإنشاء ال CRUD باستخدام ال Gii، قم باختيار ال "CRUD Generator" (من خلال النقر على الرابط الموجود بالصفحة الرئيسية لل Gii)، وهنا وبالبنسبة للمثال الخاص بال "country"، يمكنك تعبئة ال from بما يلي:
+</p>
 
 * Model Class: `app\models\Country`
 * Search Model Class: `app\models\CountrySearch`
@@ -109,7 +110,9 @@ CRUD stands for Create, Read, Update, and Delete, representing the four common t
 
 ![CRUD Generator](../guide/images/start-gii-crud.png)
 
-Next, click on the "Preview" button. You will see a list of files to be generated, as shown below.
+<p dir="rtl">
+    بعد ذلك، قم بالنقر على زر ال "Preivew"، وستشاهد قائمة بالملفات التي سيتم إنشائها كما في الصورة أدناه.
+</p>
 
 ![CRUD Generator Preview](../guide/images/start-gii-crud-preview.png)
 
