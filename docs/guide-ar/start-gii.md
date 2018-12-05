@@ -80,11 +80,13 @@ http://hostname/index.php?r=gii
 
 ![Model Generator](../guide/images/start-gii-model.png)
 
-Next, click on the "Preview" button. You will see `models/Country.php` is listed in the resulting class file to be created. You may click on the name of the class file to preview its content.
+<p dir="rtl">
+    والآن، قم بالنقر على الزر "Preview"، ستشاهد الآن <code>models/Country.php</code> قد تم إنشائها وإضافتها الى قائمة النتائج، اذا قمت بالنقر على إسم ال class، فإن المحتوى الخاص بهذا ال class سيتم عرضه.
+</p>
 
-When using Gii, if you have already created the same file and would be overwriting it, click
-the `diff` button next to the file name to see the differences between the code to be generated
-and the existing version.
+<p dir="rtl">
+    عند استخدام ال Gii، إذا كنت قد قمت بالفعل بإنشاء نفس الملف وستقوم بعمل overwriting عليه، فيمكنك النقر على زر <code>diff</code> الموجود بعد إسم ال class، لتشاهد الفرق بين الشيفرة البرمجية الحالية، والشيفرة البرمجية الجديدة. 
+</p>
 
 ![Model Generator Preview](../guide/images/start-gii-model-preview.png)
 
