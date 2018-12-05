@@ -46,20 +46,21 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 ```
 
 <p dir="rtl">
-    كل الشكر لهذا السطر البرمجي، التطبيق الخاص الآن أصبح بحالة ال development mode، وأصبح لديك ال Gii enabled بالفعل، والآن، يمكنك الوصول الى ال Gii من خلال عنوان ال URL التالي:     
+    كل الشكر لهذا السطر البرمجي، التطبيق الآن أصبح بحالة ال development mode، وأصبح لديك ال Gii enabled بالفعل، والآن، يمكنك الوصول الى ال Gii من خلال عنوان ال URL التالي:     
 </p>
 
 ```
 http://hostname/index.php?r=gii
 ```
 
-> Note: If you are accessing Gii from a machine other than localhost, the access will be denied by default
-> for security purpose. You can configure Gii to add the allowed IP addresses as follows,
->
+<blockquote><p dir="rtl">
+    ملاحظة: إذا كنت تحاول الوصول إلى Gii  من جهاز آخر غير ال localhost، فسيتم رفض الوصول افتراضيًا لأغراض أمنية، ولكن، يمكنك إعداد ال Gii لإضافة مجموعة من ال IP Addresses المسموح لها بالوصول وذلك من خلال: 
+</p></blockquote>
+
 ```php
 'gii' => [
     'class' => 'yii\gii\Module',
-    'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'] // adjust this to your needs
+    'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*', '192.168.178.20'] // عدل هذه حسب إحتياجاتك
 ],
 ```
 
