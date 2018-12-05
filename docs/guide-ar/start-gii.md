@@ -36,14 +36,18 @@ if (YII_ENV_DEV) {
     في الإعدادت الموجودة في الأعلى، فإن التطبيق سيقوم بتضمين وتفعيل ال gii في حال كانت الحالة الخاصة بالتطبيق هي <a href="../guide/concept-configurations.md#environment-constants">development enviroment</a>، بالإضافة الى ذلك، فإنه يجب تضمين واستخدام ال module <code>gii</code>، والموجود ضمن ال class التالي [[yii\gii\Module]]. 
 </p>
 
-If you check the [entry script](structure-entry-scripts.md) `web/index.php` of your application, you will
-find the following line, which essentially makes `YII_ENV_DEV` to be `true`.
+
+<p dir="rtl">
+    اذا قمت بالتحقق من ال <a href="../guide/structure-entry-scripts.md">entry script</a> وبالتحديد صفحة ال <code>web/index.php</code> في التطبيق الخاص بك، ستجد هذه الأسطر، والتي يجب أن تجعل من ال <code>YII_ENV_DEV</code> ذات قيمة <code>true</code>.
+</p>
 
 ```php
 defined('YII_ENV') or define('YII_ENV', 'dev');
 ```
 
-Thanks to that line, your application is in development mode, and will have already enabled Gii, per the above configuration. You can now access Gii via the following URL:
+<p dir="rtl">
+    كل الشكر لهذا السطر البرمجي، التطبيق الخاص الآن أصبح بحالة ال development mode، وأصبح لديك ال Gii enabled بالفعل، والآن، يمكنك الوصول الى ال Gii من خلال عنوان ال URL التالي:     
+</p>
 
 ```
 http://hostname/index.php?r=gii
