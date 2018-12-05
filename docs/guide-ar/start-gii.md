@@ -67,13 +67,16 @@ http://hostname/index.php?r=gii
 ![Gii](../guide/images/start-gii.png)
 
 
-Generating an Active Record Class <span id="generating-ar"></span>
----------------------------------
+## <div dir="rtl">إنشاء ال Active Record Class من خلال ال Gii</div> <span id="generating-ar"></span>
 
-To use Gii to generate an Active Record class, select the "Model Generator" (by clicking the link on the Gii index page). Then fill out the form as follows:
+<p dir="rtl">
+    لإستخدام ال Gii لإنشاء ال Active Record class, قم باختيار ال "Model Generator" (من خلال النقر على الرابط الموجود بالصفحة الرئيسية لل Gii)، ومن ثم قم بتعبئة ال form كما يلي: 
+</p>
 
-* Table Name: `country`
-* Model Class: `Country`
+<ul dir="rtl">
+    <li>إسم الجدول: <code>country</code></li>
+    <li><code>Country</code> :Model Class</li>
+</ul>
 
 ![Model Generator](../guide/images/start-gii-model.png)
 
