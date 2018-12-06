@@ -154,8 +154,8 @@ http://hostname/index.php?r=country%2Findex
 معلومة: تم تصميم ال Gii لتكون أداة إنشاء شيفرات برمجية قابلة للتخصيص بشكل كبير للغاية. اذا قمت باستخدامه بحكمة،فإنك ستقوم بتسريع وتيرة التطوير الخاصة بالتطبيق الخاص بك. لمزيد من التفاصيل، يرجى الذهاب إلى الجزء الخاص بال  <a href="https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide">Gii</a>. 
 </p></blockquote>
 
-Summary <span id="summary"></span>
--------
+## <div dir="rtl">الخلاصة</div> <span id="summary"></span>
 
-In this section, you have learned how to use Gii to generate the code that implements complete
-CRUD functionality for content stored in a database table.
+<p dir="rtl">
+في هذا الجزء من التوثيق، لقد تعلمنا آلية استخدام ال Gii لإنشاء الشيفرة البرمجية الخاصة بال CRUD، وتحدثنا عن الوظائف التي تقوم فيها، وكيف يمكننا من خلالها إتمام العمليات الخاصة بالبيانات من إدخال وتحديث وحذف وعرض للبيانات من قاعدة البيانات.
+</p>
