@@ -1292,6 +1292,8 @@ class Formatter extends Component
      *
      * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
      *
+     * This formatter does not work well with very big numbers.
+     *
      * @param mixed $value the value to be formatted
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
@@ -1320,12 +1322,12 @@ class Formatter extends Component
      *
      * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
      *
+     * This formatter does not work well with very big numbers.
+     *
      * @param mixed $value the value to be formatted
      * @return string the formatted result.
      * @throws InvalidArgumentException if the input value is not numeric or the formatting failed.
      * @throws InvalidConfigException when the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available.
-     *
-     * This formatter does not work well with very big numbers.
      */
     public function asOrdinal($value)
     {
@@ -1792,7 +1794,11 @@ class Formatter extends Component
             $value = 0;
         }
 
-        return (string) $normalizedValue !== (string) $value;
+        return !(
+            (string) $normalizedValue === (string) $value
+            || (string) $normalizedValue === (string)((int) $value)
+            || (string) $normalizedValue === trim((string) $value, '0')
+        );
     }
 
     /**

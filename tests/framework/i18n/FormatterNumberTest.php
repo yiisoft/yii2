@@ -92,6 +92,7 @@ class FormatterNumberTest extends TestCase
     public function testAsInteger()
     {
         $this->assertSame('123', $this->formatter->asInteger(123));
+        $this->assertSame('123', $this->formatter->asInteger(123.00));
         $this->assertSame('123', $this->formatter->asInteger(123.23));
         $this->assertSame('123', $this->formatter->asInteger(123.53));
         $this->assertSame('0', $this->formatter->asInteger(0));
@@ -267,6 +268,7 @@ class FormatterNumberTest extends TestCase
     {
         $this->assertSame('12,300%', $this->formatter->asPercent(123));
         $this->assertSame('12,300%', $this->formatter->asPercent('123'));
+        $this->assertSame('12,300%', $this->formatter->asPercent('123.0'));
         $this->assertSame('12%', $this->formatter->asPercent(0.1234));
         $this->assertSame('12%', $this->formatter->asPercent('0.1234'));
         $this->assertSame('-1%', $this->formatter->asPercent(-0.009343));
@@ -293,6 +295,8 @@ class FormatterNumberTest extends TestCase
     {
         $this->formatter->locale = 'en-US';
         $this->assertSame('$123.00', $this->formatter->asCurrency('123'));
+        $this->assertSame('$123.00', $this->formatter->asCurrency('123.00'));
+        $this->assertSame('$123.20', $this->formatter->asCurrency('123.20'));
         $this->assertSame('$123,456.00', $this->formatter->asCurrency('123456'));
         $this->assertSame('$0.00', $this->formatter->asCurrency('0'));
 
@@ -410,6 +414,7 @@ class FormatterNumberTest extends TestCase
         $this->formatter->locale = 'de-DE';
         $this->formatter->currencyCode = null;
         $this->assertSame("123\xc2\xa0€", $this->formatter->asCurrency('123'));
+        $this->assertSame("123\xc2\xa0€", $this->formatter->asCurrency('123.00'));
         $this->assertSame("123\xc2\xa0€", $this->formatter->asCurrency('123', 'EUR'));
         $this->formatter->currencyCode = 'USD';
         $this->assertSame("123\xc2\xa0$", $this->formatter->asCurrency('123'));
@@ -453,6 +458,7 @@ class FormatterNumberTest extends TestCase
     {
         $this->formatter->currencyCode = 'USD';
         $this->assertSame('USD 123.00', $this->formatter->asCurrency('123'));
+        $this->assertSame('USD 123.00', $this->formatter->asCurrency('123.00'));
         $this->assertSame('USD 0.00', $this->formatter->asCurrency('0'));
         $this->assertSame('USD -123.45', $this->formatter->asCurrency('-123.45'));
         $this->assertSame('USD -123.45', $this->formatter->asCurrency(-123.45));
@@ -524,11 +530,6 @@ class FormatterNumberTest extends TestCase
     public function testIntlAsSpellout()
     {
         $this->assertSame('one hundred twenty-three', $this->formatter->asSpellout(123));
-
-        $this->assertSame(
-            'eighteen quadrillion fourteen trillion three hundred ninety-eight billion five hundred nine million four hundred eighty-one thousand nine hundred eighty-four',
-            $this->formatter->asSpellout('87654321098765436')
-        );
 
         $this->formatter->locale = 'de_DE';
         $this->assertSame('ein­hundert­drei­und­zwanzig', $this->formatter->asSpellout(123));
