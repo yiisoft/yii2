@@ -116,14 +116,15 @@ http://hostname/index.php?r=gii
 
 ![CRUD Generator Preview](../guide/images/start-gii-crud-preview.png)
 
-If you previously created the `controllers/CountryController.php` and
-`views/country/index.php` files (in the databases section of the guide), check the "overwrite" box to replace them. (The previous versions did not have full CRUD support.)
+<p dir="rtl">
+    اذا قمت إنشاء الصفحتين <code>controllers/CountryController.php</code> و <code>views/country/index.php</code> عند حديثنا سابقا عند موضوع (التعامل مع قواعد البيانات)، فقم بالضغط على ال "overwrite" ليتم إستبدالهم. (الصفحات القديمة لا توجد فيها كل الخصائص التي سيتم إنتاجها من خلال ال Gii CRUD).
+</p>
 
+## <div dir="rtl"> لنجرب المثال </div> <span id="trying-it-out"></span>
 
-Trying it Out <span id="trying-it-out"></span>
--------------
-
-To see how it works, use your browser to access the following URL:
+<p dir="rtl">
+لتشاهد آلية العمل لهذا المثال، والنتائج المتعلقة به، يمكنك إستخدام المتصفح والدخول الى الرابط التالي:
+</p>
 
 ```
 http://hostname/index.php?r=country%2Findex
