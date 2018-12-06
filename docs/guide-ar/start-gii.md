@@ -130,11 +130,13 @@ http://hostname/index.php?r=gii
 http://hostname/index.php?r=country%2Findex
 ```
 
-You will see a data grid showing the countries from the database table. You may sort the grid,
-or filter it by entering filter conditions in the column headers.
+<p dir="rtl">
+    عند دخولك إلى الرابط أعلاه، ستشاهد مجموعة الدول التي تم إستدعائها من جدول ال country من قاعدة البيانات، ويمكنك التعامل مع هذا ال grid من حيث الترتيب أو التصفية بنائا على الشروط التي ستقوم بإدخالها في مربعات النص أعلى الأعمدة.
+</p>
 
-For each country displayed in the grid, you may choose to view its details, update it, or delete it.
-You may also click on the "Create Country" button on top of the grid to be provided with a form for creating a new country.
+<p dir="rtl">
+لكل دولة تم جلبها وعرضها داخل ال Grid، هناك مجموعة من الخيارات التي يمكنك التعامل معها بشكل إفتراضي، مثل ال view لعرض التفاصيل الخاصة بالدولة المختارة، أو تحديث المعلومات، الخاصة بالدولة، أو حذف هذه الدولة، بالإضافة إلى ذلك يمكنك النقر على "Create Country" الموجودة في أعلى ال Grid والتي ستأخذك بدورها الى صفحة تحتوي form لإنشاء ال country.
+</p>
 
 ![Data Grid of Countries](../guide/images/start-gii-country-grid.png)
 
