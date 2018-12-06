@@ -1797,6 +1797,7 @@ class Formatter extends Component
         return !(
             (string) $normalizedValue === (string) $value
             || (string) $normalizedValue === (string)((int) $value)
+            || (string) $normalizedValue === trim((string) $value, '0')
         );
     }
 
