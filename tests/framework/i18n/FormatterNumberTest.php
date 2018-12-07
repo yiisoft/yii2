@@ -296,6 +296,7 @@ class FormatterNumberTest extends TestCase
         $this->formatter->locale = 'en-US';
         $this->assertSame('$123.00', $this->formatter->asCurrency('123'));
         $this->assertSame('$123.00', $this->formatter->asCurrency('123.00'));
+        $this->assertSame('$123.20', $this->formatter->asCurrency('123.20'));
         $this->assertSame('$123,456.00', $this->formatter->asCurrency('123456'));
         $this->assertSame('$0.00', $this->formatter->asCurrency('0'));
 
