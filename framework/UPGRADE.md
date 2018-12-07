@@ -3,7 +3,7 @@ Upgrading Instructions for Yii Framework 2.0
 
 This file contains the upgrade notes for Yii 2.0. These notes highlight changes that
 could break your application when you upgrade Yii from one version to another.
-Even though we try to ensure backwards compabitilty (BC) as much as possible, sometimes
+Even though we try to ensure backwards compatibility (BC) as much as possible, sometimes
 it is not possible or very complicated to avoid it and still create a good solution to
 a problem. You may also want to check out the [versioning policy](https://github.com/yiisoft/yii2/blob/master/docs/internals/versions.md)
 for further details.
