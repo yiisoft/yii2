@@ -46,6 +46,9 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     public $id;
 
     private $_sort;
+    /**
+     * @var Pagination|false $_pagination
+     */
     private $_pagination;
     private $_keys;
     private $_models;
@@ -165,7 +168,14 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     {
         if ($this->getPagination() === false) {
             return $this->getCount();
-        } elseif ($this->_totalCount === null) {
+        }
+
+        return $this->getTotalCountWithPagination();
+    }
+
+    private function getTotalCountWithPagination()
+    {
+        if ($this->_totalCount === null) {
             $this->_totalCount = $this->prepareTotalCount();
         }
 
@@ -183,14 +193,16 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Returns the pagination object used by this data provider.
-     * Note that you should call [[prepare()]] or [[getModels()]] first to get correct values
-     * of [[Pagination::totalCount]] and [[Pagination::pageCount]].
      * @return Pagination|false the pagination object. If this is false, it means the pagination is disabled.
      */
     public function getPagination()
     {
         if ($this->_pagination === null) {
             $this->setPagination([]);
+        }
+
+        if (($this->_pagination !== false) && ($this->_pagination->totalCount == -1)) {
+            $this->_pagination->totalCount = $this->getTotalCountWithPagination();
         }
 
         return $this->_pagination;
