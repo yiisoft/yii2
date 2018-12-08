@@ -8,20 +8,18 @@
     في هذا الجزء من التوثيق سنعرض ملخص للمصادر المتاحة لل Yii، والتي ستساعدك في تحسين إنتاجيتك عند إستخدامك لبيئة العمل Yii. 
 </p>
 
-* Documentation
-    - [The Definitive Guide](http://www.yiiframework.com/doc-2.0/guide-README.html):
-      As the name indicates, the guide precisely defines how Yii should work and provides general guidance
-      about using Yii. It is the single most important Yii tutorial, and one that you should read 
-      before writing any Yii code.
-    - [The Class Reference](http://www.yiiframework.com/doc-2.0/index.html):
-      This specifies the usage of every class provided by Yii. It should be mainly used when you are writing
-      code and want to understand the usage of a particular class, method, property. Usage of the class reference is best only after a contextual understanding of the entire framework.
-    - [The Wiki Articles](http://www.yiiframework.com/wiki/?tag=yii2):
-      The wiki articles are written by Yii users based on their own experiences. Most of them are written
-      like cookbook recipes, and show how to solve particular problems using Yii. While the quality of these
-      articles may not be as good as the Definitive Guide, they are useful in that they cover broader topics
-      and can often provide ready-to-use solutions.
-    - [Books](http://www.yiiframework.com/doc/)
+<ul dir="rtl">
+    <li>
+        التوثيق
+        <ul>
+            <li><a href="http://www.yiiframework.com/doc-2.0/guide-README.html">The Definitive Guide - الدليل الشامل</a>: كما يشير الإسم، فإن هذا الدليل يحدد آلية عمل ال Yii بدقة عالية، ويوفر إرشادات حول كيفية إستخدام ال Yii، هذا الجزء الأكثر أهمية في ال Yii، والذي يجب عليك قرائته قبل كتابة أي Yii code (ملاحظة: جزء البداية من هنا، والذي قمنا بدراسته هو أحد هذه الأجزاء، ومن أهمها للبدء بإنشاء التطبيقات من خلال ال Yii).</li>
+            <li><a href="http://www.yiiframework.com/doc-2.0/index.html">The Class Reference - المرجع الخاص بال Class</a> في هذا الجزء يتم تحديد الية إستخدام كل Class يقدمه ال Yii، في العادة يتم إستخدام هذا المرجع عند كتابة شيفرة برمجية وأنت ترغب في فهم آلية العمل ل Class معين، أو Method, او فهم Proporty معينة...الخ، من الأفضل إستخدام المرجع الخاص بال Class فقط عند فهم آلية العمل لل Yii. </li>
+            <li><a href="http://www.yiiframework.com/wiki/?tag=yii2">The Wiki Articles - مقالات الويكي</a> مقالات الويكي هي مجموعة من الخبرات العملية للمستخدمين، تمت كتابتها ونشرها على شكل مقالات لمشاركة الخبرات، ومعظم هذه الكتابات تكون مثل الوصفات الخاصة بالطبخ، موجودة لخدمة هدف معين، وحل مشكلة محددة باستخدام ال Yii، وبالرغم من أن هذه الكتابات قد لا تكون بجودة ودقة الدليل الشامل، الا أنها قد تغطي مواضيع أكثر، وتطرح أيضا حلولا مباشرة للإستخدام.</li>
+            <li><a href="http://www.yiiframework.com/doc/">الكتب</a></li>
+        </ul>
+    </li>
+</ul>
+
 * [Extensions](http://www.yiiframework.com/extensions/):
   Yii boasts a library of thousands of user-contributed extensions that can be easily plugged into your applications, thereby making your application development even faster and easier.
 * Community
