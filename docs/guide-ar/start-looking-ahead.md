@@ -1,12 +1,12 @@
-Looking Ahead
-=============
+# <div dir="rtl">ماذا الآن - الخطوة القادمة</div>
 
-If you've read through the entire "Getting Started" chapter, you have now created a complete Yii application. In the process, you have learned how to implement some commonly
-needed features, such as getting data from users via an HTML form, fetching data from a database, and
-displaying data in a paginated fashion. You have also learned how to use [Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide) to generate
-code automatically. Using Gii for code generation turns the bulk of your Web development process into a task as simple as just filling out some forms. 
+<p dir="rtl">
+إذا قمت بقرائة الفصل الخاص ب "البداية من هنا"، فأنت الآن قادر على بناء تطبيق Yii متكامل، لقد تعلمت كيف يمكنك تنفيذ وإستخدام أكثر الخصائص والمميزات المشتركة، مثل جلب البيانات من قاعدة البيانات، وأخذ البيانات من المستخدمين، ومن ثم عرضها، كما تعلمت كيف يمكنك تقسيم البيانات الى صفحات، وقمنا باستخدام ال <a href="https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide">Gii</a> وتعلمنا كيف يمكننا إنشاء شيفرة برمجية من خلاله بشكل تلقائي، ومن الممارسة تعلمنا أن إنشاء الشيفرة البرمجية من خلال ال Gii يجعل من عملية تطوير المواقع والوظائف المطلوبة أمرا بسيطا وسهلا للغابة، كل ما عليك القيام به هو تعبئة ال forms.
+</p>
 
-This section will summarize the Yii resources available to help you be more productive when using the framework.
+<p dir="rtl">
+    في هذا الجزء من التوثيق سنعرض ملخص للمصادر المتاحة لل Yii، والتي ستساعدك في تحسين إنتاجيتك عند إستخدامك لبيئة العمل Yii. 
+</p>
 
 * Documentation
     - [The Definitive Guide](http://www.yiiframework.com/doc-2.0/guide-README.html):
