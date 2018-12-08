@@ -18,17 +18,19 @@
             <li><a href="http://www.yiiframework.com/doc/">الكتب</a></li>
         </ul>
     </li>
+    <li><a href="http://www.yiiframework.com/extensions/">Extensions - الملحقات</a>: تفتخر ال Yii بوجود مكتبة ضخمة من الملحقات التي تمت برمجتها وإضافتها من قبل المستخدمين المتطوعين الذين شاركوا أعمالهم وطورها لتجعل مهمة المطورين الآخرين أسهل وأسرع في تطوير التطبيفات المبنية بواسطة ال Yii.</li>
+    <li>
+        المجتمع
+        <ul>
+            <li>المنتدى: <a href="http://www.yiiframework.com/forum/">http://www.yiiframework.com/forum/</a></li>
+            <li>IRC chat: The #yii channel on the freenode network (irc://irc.freenode.net/yii)</li>
+            <li>Slack chanel: <a href="https://yii.slack.com">https://yii.slack.com</a></li>
+            <li>Gitter chat: <a href="https://gitter.im/yiisoft/yii2">https://gitter.im/yiisoft/yii2</a></li>
+            <li>GitHub: <a href="https://github.com/yiisoft/yii2">https://github.com/yiisoft/yii2</a></li>
+            <li>Facebook: <a href="https://www.facebook.com/groups/yiitalk/">https://www.facebook.com/groups/yiitalk/</a></li>
+            <li>Twitter: <a href="https://twitter.com/yiiframework">https://twitter.com/yiiframework</a></li>
+            <li>LinkedIn: <a href="https://www.linkedin.com/groups/yii-framework-1483367">https://www.linkedin.com/groups/yii-framework-1483367</a></li>
+            <li>Stackoverflow: <a href="http://stackoverflow.com/questions/tagged/yii2">http://stackoverflow.com/questions/tagged/yii2</a></li>
+        </ul>
+    </li>
 </ul>
-
-* [Extensions](http://www.yiiframework.com/extensions/):
-  Yii boasts a library of thousands of user-contributed extensions that can be easily plugged into your applications, thereby making your application development even faster and easier.
-* Community
-    - Forum: <http://www.yiiframework.com/forum/>
-    - IRC chat: The #yii channel on the freenode network (<irc://irc.freenode.net/yii>)
-    - Slack chanel: <https://yii.slack.com>
-    - Gitter chat: <https://gitter.im/yiisoft/yii2>
-    - GitHub: <https://github.com/yiisoft/yii2>
-    - Facebook: <https://www.facebook.com/groups/yiitalk/>
-    - Twitter: <https://twitter.com/yiiframework>
-    - LinkedIn: <https://www.linkedin.com/groups/yii-framework-1483367>
-    - Stackoverflow: <http://stackoverflow.com/questions/tagged/yii2>
