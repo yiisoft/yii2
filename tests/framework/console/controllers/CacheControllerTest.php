@@ -67,7 +67,7 @@ class CacheControllerTest extends TestCase
             'container' => [
                 'singletons' => [
                     'yii\caching\CacheInterface' => [
-                        'class' => 'yii\caching\DummyCache',
+                        'class' => 'yii\caching\ArrayCache',
                     ],
                 ]
             ],
