@@ -79,12 +79,14 @@ class UnknownCommandException extends Exception
             if ($result === false) {
                 continue;
             }
-            // add the command itself (default action)
-            $availableActions[] = $command;
-
             // add all actions of this controller
             /** @var $controller Controller */
             list($controller, $actionID) = $result;
+            if ($controller->createAction($controller->defaultAction)) {
+                // add the command itself (default action)
+                $availableActions[] = $command;
+            }
+
             $actions = $helpController->getActions($controller);
             if (!empty($actions)) {
                 $prefix = $controller->getUniqueId();
