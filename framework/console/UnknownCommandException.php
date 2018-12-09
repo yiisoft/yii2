@@ -82,7 +82,7 @@ class UnknownCommandException extends Exception
             // add all actions of this controller
             /** @var $controller Controller */
             list($controller, $actionID) = $result;
-            if ($controller->createAction($controller->defaultAction)) {
+            if ($controller->createAction($controller->defaultAction) !== null) {
                 // add the command itself (default action)
                 $availableActions[] = $command;
             }

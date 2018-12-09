@@ -92,7 +92,7 @@ Yii Framework 2 Change Log
 - Bug #14950: Fixed `yii\i18n\Formatter` methods `asInteger`, `asDecimal`, `asPercent`, and `asCurrency` outputs for very big numbers (bizley)
 - Bug #16897: Fixed `yii\db\sqlite\Schema` missing primary key constraint detection in case of `INTEGER PRIMARY KEY` (bizley)
 - Bug #16687: Add missing translations for `nl-NL` durations used in `yii\i18n\Formatter::asDuration()` (alexeevdv)
-- Bug #16855: Do not show console commands that have no actions (alexeevdv)
+- Bug #16855: Ignore console commands that have no actions (alexeevdv)
 
 2.0.15.1 March 21, 2018
 -----------------------
