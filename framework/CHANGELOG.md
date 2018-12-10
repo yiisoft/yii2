@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #15683: Fixed file as array uploading in MultipartFormDataParser (Groonya)
 - Bug #16822: Create config dir recursively in message/config (Groonya)
 - Bug #16580: Delete unused php message files in MessageController if `$removeUnused` option is on (Groonya)
 - Bug #16022: Fix UniqueValidator for PostgreSQL. Checks the uniqueness of keys in `jsonb` field (lav45)
