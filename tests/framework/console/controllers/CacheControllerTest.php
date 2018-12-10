@@ -53,6 +53,7 @@ class CacheControllerTest extends TestCase
                 'secondCache' => function () {
                     return new ArrayCache();
                 },
+                'thirdCache' => 'yii\caching\CacheInterface',
                 'session' => 'yii\web\CacheSession', // should be ignored at `actionFlushAll()`
                 'db' => [
                     'class' => isset($config['class']) ? $config['class'] : 'yii\db\Connection',
@@ -62,6 +63,13 @@ class CacheControllerTest extends TestCase
                     'enableSchemaCache' => true,
                     'schemaCache' => 'firstCache',
                 ],
+            ],
+            'container' => [
+                'singletons' => [
+                    'yii\caching\CacheInterface' => [
+                        'class' => 'yii\caching\ArrayCache',
+                    ],
+                ]
             ],
         ]);
 
@@ -140,11 +148,13 @@ class CacheControllerTest extends TestCase
     public function testFlushAll()
     {
         Yii::$app->firstCache->set('firstKey', 'firstValue');
-        Yii::$app->secondCache->set('thirdKey', 'secondValue');
+        Yii::$app->secondCache->set('secondKey', 'secondValue');
+        Yii::$app->thirdCache->set('thirdKey', 'thirdValue');
 
         $this->_cacheController->actionFlushAll();
 
         $this->assertFalse(Yii::$app->firstCache->get('firstKey'), 'first cache data should be flushed');
-        $this->assertFalse(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
+        $this->assertFalse(Yii::$app->secondCache->get('secondKey'), 'second cache data should be flushed');
+        $this->assertFalse(Yii::$app->thirdCache->get('thirdKey'), 'third cache data should be flushed');
     }
 }
