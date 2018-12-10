@@ -47,7 +47,7 @@ use yii\di\Instance;
 class CacheableWidgetBehavior extends Behavior
 {
     /**
-     * @var CacheInterface|string|array 缓存对象或者缓存组件的 ID。
+     * @var CacheInterface|string|array 缓存对象或者缓存组件的 ID
      * 或者是一个可以生成缓存对象的配置数组。
      * 默认是 `cache` 应用组件。
      */
@@ -62,7 +62,7 @@ class CacheableWidgetBehavior extends Behavior
      * @var Dependency|array|null 一个缓存依赖，或者是
      * 可以生成缓存依赖的配置数组，再或者 `null`，表示不需要缓存依赖。
      *
-     * 比如,
+     * 比如，
      *
      * ```php
      * [
@@ -180,7 +180,7 @@ class CacheableWidgetBehavior extends Behavior
     /**
      * 返回小部件使用片段缓存时的配置数组。
      *
-     * @return array 一个片段缓存用到的配置数组
+     * @return array 一个片段缓存用到的配置数组。
      */
     private function getFragmentCacheConfiguration()
     {
