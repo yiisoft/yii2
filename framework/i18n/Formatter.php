@@ -1053,7 +1053,7 @@ class Formatter extends Component
      *
      * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
      * without [PHP intl extension](http://php.net/manual/en/book.intl.php) support. For very big numbers it's
-     * recommended to pass them as strings otherwise the output can be wrong.
+     * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
      *
      * @param mixed $value the value to be formatted.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
@@ -1094,7 +1094,7 @@ class Formatter extends Component
      *
      * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
      * without [PHP intl extension](http://php.net/manual/en/book.intl.php) support. For very big numbers it's
-     * recommended to pass them as strings otherwise the output can be wrong.
+     * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
      *
      * @param mixed $value the value to be formatted.
      * @param int $decimals the number of digits after the decimal point.
@@ -1144,7 +1144,7 @@ class Formatter extends Component
      *
      * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
      * without [PHP intl extension](http://php.net/manual/en/book.intl.php) support. For very big numbers it's
-     * recommended to pass them as strings otherwise the output can be wrong.
+     * recommended to pass them as strings and not use scientific notation otherwise the output might be wrong.
      *
      * @param mixed $value the value to be formatted. It must be a factor e.g. `0.75` will result in `75%`.
      * @param int $decimals the number of digits after the decimal point.
@@ -1234,7 +1234,8 @@ class Formatter extends Component
      * to work, but it is highly recommended to install it to get good formatting results.
      *
      * Since 2.0.16 numbers that are mispresented after normalization are formatted as strings using fallback function
-     * without PHP intl extension support. For very big numbers it's recommended to pass them as strings otherwise the output can be wrong.
+     * without PHP intl extension support. For very big numbers it's recommended to pass them as strings and not use
+     * scientific notation otherwise the output might be wrong.
      *
      * @param mixed $value the value to be formatted.
      * @param string $currency the 3-letter ISO 4217 currency code indicating the currency to use.
@@ -1794,11 +1795,45 @@ class Formatter extends Component
             $value = 0;
         }
 
-        return !(
-            (string) $normalizedValue === (string) $value
-            || (string) $normalizedValue === (string)((int) $value)
-            || (string) $normalizedValue === trim((string) $value, '0')
-        );
+        return (string) $normalizedValue !== $this->normalizeNumericStringValue((string) $value);
+    }
+
+    /**
+     * Normalizes a numeric string value.
+     * @param string $value
+     * @return string the normalized number value as a string
+     * @since 2.0.16
+     */
+    protected function normalizeNumericStringValue($value)
+    {
+        $separatorPosition = strrpos($value, '.');
+
+        if ($separatorPosition !== false) {
+            $integerPart = substr($value, 0, $separatorPosition);
+            $fractionalPart = substr($value, $separatorPosition + 1);
+        } else {
+            $integerPart = $value;
+            $fractionalPart = null;
+        }
+
+        // truncate insignificant zeros, keep minus
+        $integerPart = preg_replace('/^\+?(-?)0*(\d+)$/', '$1$2', $integerPart);
+        // for zeros only leave one zero, keep minus
+        $integerPart = preg_replace('/^\+?(-?)0*$/', '${1}0', $integerPart);
+
+        if ($fractionalPart !== null) {
+            // truncate insignificant zeros
+            $fractionalPart = rtrim($fractionalPart, '0');
+        }
+
+        $normalizedValue = $integerPart;
+        if (!empty($fractionalPart)) {
+            $normalizedValue .= '.' . $fractionalPart;
+        } elseif ($normalizedValue === '-0') {
+            $normalizedValue = '0';
+        }
+
+        return $normalizedValue;
     }
 
     /**
@@ -1820,7 +1855,7 @@ class Formatter extends Component
             $value = 0;
         }
 
-        $value = (string) $value;
+        $value = $this->normalizeNumericStringValue((string) $value);
 
         $separatorPosition = strrpos($value, '.');
 
@@ -1931,7 +1966,7 @@ class Formatter extends Component
             $value = 0;
         }
 
-        $value = (string) $value;
+        $value = $this->normalizeNumericStringValue((string) $value);
         $separatorPosition = strrpos($value, '.');
 
         if ($separatorPosition !== false) {
@@ -1964,7 +1999,7 @@ class Formatter extends Component
             $decimals = 0;
         }
 
-        $value = (string) $value;
+        $value = $this->normalizeNumericStringValue((string) $value);
         $separatorPosition = strrpos($value, '.');
 
         if ($separatorPosition !== false) {
