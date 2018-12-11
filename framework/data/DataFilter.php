@@ -69,8 +69,8 @@ use yii\validators\Validator;
  * $dataFilter->load(Yii::$app->request->getBodyParams());
  * ```
  *
- * 要使用 DataFilter，我们需要通过 [[searchModel]] 来指定搜索 model。 这个搜索 model 应该声明
- * 所有可用的搜索属性和这些属性的验证规则。 例如:
+ * 要使用 DataFilter，我们需要通过 [[searchModel]] 来指定搜索 model。这个搜索 model 应该声明
+ * 所有可用的搜索属性和这些属性的验证规则。例如:
  *
  * ```php
  * class SearchModel extends \yii\base\Model
@@ -101,8 +101,8 @@ use yii\validators\Validator;
  * }
  * ```
  *
- * 我们可以使用 [[validate()]] 方法来校验过滤值是否可用。 如果校验失败，我们可以使用
- * [[getErrors()]] 方法来获取真实的错误信息.
+ * 我们可以使用 [[validate()]] 方法来校验过滤值是否可用。如果校验失败，我们可以使用
+ * [[getErrors()]] 方法来获取真实的错误信息。
  *
  * 我们可以使用 [[build()]] 方法来获取合适的获取数据的过滤条件。
  *
@@ -113,10 +113,10 @@ use yii\validators\Validator;
  * @see ActiveDataFilter
  *
  * @property array $errorMessages  `[errorKey => message]` 格式的错误信息。注意这个属性的类型
- * 与 getter 和 setter 中的不一样。 有关详细信息，请参见 [[getErrorMessages()]] 和 [[setErrorMessages()]] 。
+ * 与 getter 和 setter 中的不一样。 有关详细信息，请参见 [[getErrorMessages()]] 和 [[setErrorMessages()]]。
  * @property mixed $filter 原始过滤器值。
  * @property array $searchAttributeTypes 搜索属性类型映射。 注意这个属性的类型
- * 与 getter 和 setter 中的不一样。 有关详细信息，请参见 [[getSearchAttributeTypes()]] 和 [[setSearchAttributeTypes()]] 。
+ * 与 getter 和 setter 中的不一样。有关详细信息，请参见 [[getSearchAttributeTypes()]] 和 [[setSearchAttributeTypes()]]。
  * @property Model $searchModel Model 实例。注意这个属性的类型
  * 与 getter 和 setter 中的不一样。有关详细信息，请参见 [[getSearchModel()]] 和 [[setSearchModel()]]。
  *
@@ -140,7 +140,7 @@ class DataFilter extends Model
      */
     public $filterAttributeName = 'filter';
     /**
-     * @var string 通过 [[filterAttributeName]] 指定的过滤器属性标签.
+     * @var string 通过 [[filterAttributeName]] 指定的过滤器属性标签。
      * 将在错误消息合成中使用。
      */
     public $filterAttributeLabel;
@@ -154,7 +154,7 @@ class DataFilter extends Model
      * 如：我们指定了过滤器控件关键字 'like'，同时也有一个属性叫做 'like'，类似于这种属性指定条件是
      * 不会生效的。
      *
-     * 我们可以为同一个过滤器构建关键字指定一些关键字，创建多个别名。 例如:
+     * 我们可以为同一个过滤器构建关键字指定一些关键字，创建多个别名。例如:
      *
      * ```php
      * [
@@ -167,8 +167,8 @@ class DataFilter extends Model
      * ```
      *
      * > 注意: 在指定过滤器控件时，请记住API使用的实际数据交换格式。
-     * > 确保每一个指定的控件关键字的格式是合法的。 如, 在XML标签名字中只能
-     * > 以字母字符开头， 因此，像 `>`， '=' 或者 `$gt` 控件将破坏XML模式规范。
+     * > 确保每一个指定的控件关键字的格式是合法的。如，在XML标签名字中只能
+     * > 以字母字符开头，因此，像 `>`， '=' 或者 `$gt` 控件将破坏XML模式规范。
      */
     public $filterControls = [
         'and' => 'AND',
@@ -204,7 +204,7 @@ class DataFilter extends Model
     ];
     /**
      * @var array 指定每个操作符支持的搜索属性类型的列表。
-     * 这个字段应该使用这种格式： 'operatorKeyword' => ['type1', 'type2' ...]。
+     * 这个字段应该使用这种格式：'operatorKeyword' => ['type1', 'type2' ...]。
      * 支持的类型列表被指定为 `*`时，表示操作支持所有类型。
      * 任何未指定的关键字都不会被认为是验证操作符。
      */
@@ -227,7 +227,7 @@ class DataFilter extends Model
         'NOT IN',
     ];
     /**
-     * @var array 在搜索条件中实际使用的属性名称，格式如：[filterAttribute => actualAttribute].
+     * @var array 在搜索条件中实际使用的属性名称，格式如：[filterAttribute => actualAttribute]。
      * 例如，在使用表连接搜索查询的案例中，属性映射可以像下面这样：
      *
      * ```php
@@ -241,7 +241,7 @@ class DataFilter extends Model
     public $attributeMap = [];
 
     /**
-     * @var array|\Closure 响应无效过滤器结构的错误消息列表，格式如：`[errorKey => message]`.
+     * @var array|\Closure 响应无效过滤器结构的错误消息列表，格式如：`[errorKey => message]`。
      */
     private $_errorMessages;
     /**
@@ -694,7 +694,7 @@ class DataFilter extends Model
      * 从 [[filter]] 值构建实际的过滤器规范。
      * @param bool $runValidation 是否执行验证([[validate()]] 执行的时候)
      * 在构建过滤器之前，默认值是 true。如果验证失败，没有过滤器
-     * 被构建，并且这个方法将返回 `false`.
+     * 被构建，并且这个方法将返回 `false`。
      * @return mixed|false 以构建的实际过滤器值，验证失败返回 `false`。
      */
     public function build($runValidation = true)
