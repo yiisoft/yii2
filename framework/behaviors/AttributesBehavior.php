@@ -13,13 +13,13 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 /**
- * AttributesBehavior automatically assigns values specified to one or multiple attributes of an ActiveRecord
- * object when certain events happen.
+ * AttributesBehavior 是在某个事件发生的时候，
+ * 用来给 ActiveRecord 对象的一个或多个属性自动设置指定值的行为。
  *
- * To use AttributesBehavior, configure the [[attributes]] property which should specify the list of attributes
- * that need to be updated and the corresponding events that should trigger the update. Then configure the
- * value of enclosed arrays with a PHP callable whose return value will be used to assign to the current attribute.
- * For example,
+ * 要使用 AttributesBehavior，就要配置 [[attributes]] 属性，它指明了需要更新的属性列表和
+ * 触发这个更新操作对应的事件。然后再配置短数组的值为一个 PHP 匿名函数，
+ * 该函数应该返回设置给当前属性的值。
+ * 比如，
  *
  * ```php
  * use yii\behaviors\AttributesBehavior;
@@ -53,8 +53,8 @@ use yii\db\ActiveRecord;
  * }
  * ```
  *
- * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
- * not be validated, i.e. they should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
+ * 由于属性值会被这个行为自动设置，所以属性值不必用户输入也因此没有必要验证。
+ * 因此，这些属性不应该出现在 [[\yii\base\Model::rules()|rules()]] 这个模型方法中。
  *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -64,14 +64,14 @@ use yii\db\ActiveRecord;
 class AttributesBehavior extends Behavior
 {
     /**
-     * @var array list of attributes that are to be automatically filled with the values specified via enclosed arrays.
-     * The array keys are the ActiveRecord attributes upon which the events are to be updated,
-     * and the array values are the array of corresponding events(s). For this enclosed array:
-     * the array keys are the ActiveRecord events upon which the attributes are to be updated,
-     * and the array values are the value that will be assigned to the current attributes. This can be an anonymous function,
-     * callable in array format (e.g. `[$this, 'methodName']`), an [[\yii\db\Expression|Expression]] object representing a DB expression
-     * (e.g. `new Expression('NOW()')`), scalar, string or an arbitrary value. If the former, the return value of the
-     * function will be assigned to the attributes.
+     * @var array 指出将被自动更新的属性列表，而被更新的值通过短数组给出。
+     * 数组的键就是更新于事件之上的 ActiveRecord 对象的属性，
+     * 而数组的值则是对应事件的短数组。对这样的短数组而言：
+     * 数组的键就是 ActiveRecord 事件，属性就是根据这些事件更新的，
+     * 数组的值则是要设置给当前属性的值。数组的值可以是一个匿名函数，
+     * 数组格式的回调方法（比如 `[$this, 'methodName']`），一个表示 DB 表达式的 [[\yii\db\Expression|Expression]] 对象
+     * （比如 `new Expression('NOW()')`），标量，字符串或者一个任意的值。如果是前者，
+     * 那么函数的返回值将设置给这个属性
      *
      * ```php
      * [
@@ -97,11 +97,11 @@ class AttributesBehavior extends Behavior
      */
     public $attributes = [];
     /**
-     * @var array list of order of attributes that are to be automatically filled with the event.
-     * The array keys are the ActiveRecord events upon which the attributes are to be updated,
-     * and the array values are represent the order corresponding attributes.
-     * The rest of the attributes are processed at the end.
-     * If the [[attributes]] for this attribute do not specify this event, it is ignored
+     * @var array 用事件给出将被更新的属性的顺序列表。
+     * 数组的键就是属性据此完成更新的 ActiveRecord 事件，
+     * 而数组的值则是对应属性的顺序。
+     * 不在这些数组里的属性将会在最后处理。
+     * 如果 [[attributes]] 里的属性没有指明事件，那么这些属性会被忽略不被更新。
      *
      * ```php
      * [
@@ -112,11 +112,11 @@ class AttributesBehavior extends Behavior
      */
     public $order = [];
     /**
-     * @var bool whether to skip this behavior when the `$owner` has not been modified
+     * @var bool 当 `$owner` 没被更新时是否跳过该行为。
      */
     public $skipUpdateOnClean = true;
     /**
-     * @var bool whether to preserve non-empty attribute values.
+     * @var bool 是否保留非空的值不更新。
      */
     public $preserveNonEmptyValues = false;
 
@@ -135,7 +135,7 @@ class AttributesBehavior extends Behavior
     }
 
     /**
-     * Evaluates the attributes values and assigns it to the current attributes.
+     * 解析属性的值并更新到当前属性上。
      * @param Event $event
      */
     public function evaluateAttributes($event)
@@ -163,12 +163,12 @@ class AttributesBehavior extends Behavior
     }
 
     /**
-     * Returns the value for the current attributes.
-     * This method is called by [[evaluateAttributes()]]. Its return value will be assigned
-     * to the target attribute corresponding to the triggering event.
-     * @param string $attribute target attribute name
-     * @param Event $event the event that triggers the current attribute updating.
-     * @return mixed the attribute value
+     * 返回当前属性的值。
+     * 该方法是由 [[evaluateAttributes()]] 内部调用的。
+     * 它的返回值将会根据触发的事件设置到目标属性上。
+     * @param string $attribute 目标属性名
+     * @param Event $event 触发当前属性开始更新动作的事件
+     * @return mixed 属性值
      */
     protected function getValue($attribute, $event)
     {
