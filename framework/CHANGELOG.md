@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.16 under development
 ------------------------
+- Bug #16910: Fix messages sorting on extract (Groonya)
 
 - Bug #15683: Fixed file as array uploading in MultipartFormDataParser (Groonya)
 - Bug #16822: Create config dir recursively in message/config (Groonya)
