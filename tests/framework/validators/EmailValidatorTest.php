@@ -16,6 +16,11 @@ use yiiunit\TestCase;
  */
 class EmailValidatorTest extends TestCase
 {
+    protected function getEmailValidator(): EmailValidator
+    {
+        return new EmailValidator();
+    }
+
     protected function setUp()
     {
         parent::setUp();
@@ -26,7 +31,7 @@ class EmailValidatorTest extends TestCase
 
     public function testValidateValue()
     {
-        $validator = new EmailValidator();
+        $validator = $this->getEmailValidator();
 
         $this->assertTrue($validator->validate('sam@rmcreative.ru'));
         $this->assertTrue($validator->validate('5011@gmail.com'));
@@ -70,7 +75,7 @@ class EmailValidatorTest extends TestCase
 
             return;
         }
-        $validator = new EmailValidator();
+        $validator = $this->getEmailValidator();
         $validator->enableIDN = true;
 
         $this->assertTrue($validator->validate('5011@example.com'));
@@ -109,7 +114,7 @@ class EmailValidatorTest extends TestCase
 
     public function testValidateValueMx()
     {
-        $validator = new EmailValidator();
+        $validator = $this->getEmailValidator();
 
         $validator->checkDNS = true;
         $this->assertTrue($validator->validate('5011@gmail.com'));
@@ -175,7 +180,7 @@ class EmailValidatorTest extends TestCase
      */
     public function testMalformedAddressesIdnDisabled($value)
     {
-        $validator = new EmailValidator();
+        $validator = $this->getEmailValidator();
         $validator->enableIDN = false;
         $this->assertFalse($validator->validate($value));
     }
@@ -194,7 +199,7 @@ class EmailValidatorTest extends TestCase
             return;
         }
 
-        $val = new EmailValidator();
+        $val = $this->getEmailValidator();
         $val->enableIDN = true;
         $this->assertFalse($val->validate($value));
     }

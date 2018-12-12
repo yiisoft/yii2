@@ -8,8 +8,8 @@
 namespace yiiunit\framework\validators;
 
 
-use validators\FilterVarEmailValidator;
 use yii\validators\EmailValidator;
+use yii\validators\FilterVarEmailValidator;
 
 /**
  * @group validators
