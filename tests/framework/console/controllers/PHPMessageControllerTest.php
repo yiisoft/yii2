@@ -122,4 +122,27 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
         $expected = "<?php\n/*file header*/\n/*doc block*/\n";
         $this->assertEqualsWithoutLE($expected, $head);
     }
+
+    public function testDeleteUnusedMessageFiles()
+    {
+        $category = 'test_delete_category';
+        $this->saveMessages(['test message' => 'test translation'], $category);
+        $filePath = $this->getMessageFilePath($category);
+
+        $this->saveConfigFile($this->getConfig([
+            'removeUnused' => false,
+        ]));
+        $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $this->assertFileExists($filePath,
+            'File with unused translations should not be deleted if "removeUnused" option is false');
+
+
+        $this->saveConfigFile($this->getConfig([
+            'removeUnused' => true,
+        ]));
+        $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $this->assertFileNotExists($filePath,
+            'File with unused translations should be deleted if "removeUnused" option is true');
+    }
 }
