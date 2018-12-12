@@ -233,8 +233,8 @@ Pjax::end();
 
 #### 提交按钮和文件上传中的值
 
-在处理 (files)[https://github.com/jquery/jquery/issues/2321] 和
-(submit button values)[https://github.com/jquery/jquery/issues/2321] 
+在处理 [文件](https://github.com/jquery/jquery/issues/2321) 和
+[提交按钮值](https://github.com/jquery/jquery/issues/2321)
 时使用 `jQuery.serializeArray()` 
 有已知的问题，这将不会被解决，而是被弃用，
 以支持 HTML5 中引入的 FormData 类。
