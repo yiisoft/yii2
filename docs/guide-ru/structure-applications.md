@@ -276,7 +276,7 @@ if (YII_ENV_DEV) {
 
 #### [[yii\base\Application::modules|modules]] <span id="modules"></span>
 
-Данное свойство указывает [модули](structure-modules.md), которые содержаться в приложении.
+Данное свойство указывает [модули](structure-modules.md), которые содержатся в приложении.
 
 Значениями свойства могут быть массивы имен классов модулей или [конфигураций](concept-configurations.md), а ключами -
 ID модулей. Например,
