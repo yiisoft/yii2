@@ -24,8 +24,8 @@
 * [قل مرحبا - المشروع الأول](start-hello.md)
 * [التعامل مع ال forms](start-forms.md)
 * [التعامل مع قواعد البيانات](start-databases.md)
-* [إنشاء الشيفرة البرمجية من خلال ال gii](../guide/start-gii.md)
-* [ماذا الآن - الخطوة القادمة](../guide/start-looking-ahead.md)
+* [إنشاء الشيفرة البرمجية من خلال ال gii](start-gii.md)
+* [ماذا الآن - الخطوة القادمة](start-looking-ahead.md)
 
 
 الهيكلية الخاصة بالتطبيق (Application Structure)

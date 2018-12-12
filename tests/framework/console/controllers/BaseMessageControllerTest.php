@@ -153,6 +153,13 @@ abstract class BaseMessageControllerTest extends TestCase
             "Unable to create config file from template. Command output:\n\n" . $out);
     }
 
+    public function testActionConfigSubDir()
+    {
+        $configFileName = Yii::getAlias('@yiiunit/runtime/not_existing_subdir') . DIRECTORY_SEPARATOR . 'message_controller_test_config-' . md5(uniqid()) . '.php';
+        $out = $this->runMessageControllerAction('config', [$configFileName]);
+        $this->assertFileExists($configFileName, "Unable to create config file in subdirectory. Command output:\n\n" . $out);
+    }
+
     public function testConfigFileNotExist()
     {
         $this->expectException('yii\\console\\Exception');

@@ -4,6 +4,11 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 - Bug #16910: Fix messages sorting on extract (Groonya)
+
+- Bug #15683: Fixed file as array uploading in MultipartFormDataParser (Groonya)
+- Bug #16822: Create config dir recursively in message/config (Groonya)
+- Bug #16580: Delete unused php message files in MessageController if `$removeUnused` option is on (Groonya)
+- Bug #16022: Fix UniqueValidator for PostgreSQL. Checks the uniqueness of keys in `jsonb` field (lav45)
 - Bug #16903: Fixed 'yii\validators\NumberValidator' method 'isNotNumber' returns false for true/false value (annechko)
 - Bug #16648: Html::strtolower() was corrupting UTF-8 strings (Kolyunya)
 - Bug #13977: Skip validation if file input does not exist (RobinKamps, s1lver)
@@ -88,6 +93,8 @@ Yii Framework 2 Change Log
 - Bug #16858: Allow `\yii\console\widgets\Table` to render empty table when headers provided but no columns (damiandziaduch)
 - Bug #14950: Fixed `yii\i18n\Formatter` methods `asInteger`, `asDecimal`, `asPercent`, and `asCurrency` outputs for very big numbers (bizley)
 - Bug #16897: Fixed `yii\db\sqlite\Schema` missing primary key constraint detection in case of `INTEGER PRIMARY KEY` (bizley)
+- Bug #16687: Add missing translations for `nl-NL` durations used in `yii\i18n\Formatter::asDuration()` (alexeevdv)
+- Bug #16469: Allow cache to be specified as interface and to be configured in DI container (alexeevdv)
 
 2.0.15.1 March 21, 2018
 -----------------------
