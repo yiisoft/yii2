@@ -41,8 +41,10 @@ sudo mv composer.phar /usr/local/bin/composer
 
 <p dir="rtl">
     في هذا الدليل ، نفترض أنك قمت بتثبيت ال composer على مستوى جميع المشاريع (<a href="https://getcomposer.org/doc/00-intro.md#globally">globally</a>)  بحيث تكون أوامر ال composer متاحة لجميع المشاريع من أي مكان. أما إذا كنت تستخدم ال composer.phar لمسار محدد فقط(local directory)،  فيجب عليك ضبط  الأومر وفقًا لذلك.
+</p>
 
-إذا كان ال composer مثبتًا من قبل، فتأكد من استخدام إصدار حديث. يمكنك تحديث ال composer عن طريق تنفيذ الأمر التالي `composer self-update`
+<p dir="rtl">
+إذا كان ال composer مثبتًا من قبل، فتأكد من استخدام إصدار حديث. يمكنك تحديث ال composer عن طريق تنفيذ الأمر التالي <code>composer self-update</code>
 </p>
 
 <blockquote><p dir="rtl">
@@ -87,12 +89,12 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 <ol dir="rtl">
 <li> تثبت الملف من خلال الموقع الرسمي <a href="http://www.yiiframework.com/download/">yiiframework.com</a>.</li>
 <li> قم بفك ضغط الملف الذي تم تنزيله إلى مجلد يمكن الوصول إليه عبر الويب.</li>
-<li> قم بتعديل ملف `config / web.php` عن طريق إدخال secret key ل` cookieValidationKey`
+<li> قم بتعديل ملف <code>config/web.php</code> عن طريق إدخال secret key ل<code> cookieValidationKey</code>
 (يتم ذلك تلقائيًا إذا قمت بتثبيت ال Yii باستخدام Composer): </li>
 </ol>
 
    ```php
-   // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+  // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
    'cookieValidationKey' => 'enter your secret key here',
    ```
 
@@ -119,9 +121,9 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 --------------------------
 
 <p dir="rtl">
-    تعتمد ال Yii على حزم <a href="http://bower.io/">Bower</a> و / أو <a href="https://www.npmjs.org/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS / JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/francoispluchino/composer-asset-plugin/">composer asset plugin</a>، يرجى الرجوع إلى <a href="../guide/structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
+    تعتمد ال Yii على حزم <a href="http://bower.io/">Bower</a> و/أو <a href="https://www.npmjs.org/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS/JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/francoispluchino/composer-asset-plugin/">composer asset plugin</a>، يرجى الرجوع إلى <a href="../guide/structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
 <br /><br />
-قد ترغب في إدارة ال assets عبر  ال native Bower / NPM أو استخدام ال CDN أو تجنب تثبيت ال assets بالكامل من حلال ال Composer ، ويمكن ذلك من خلال إضافة الأسطر التالية إلى "composer.json":
+قد ترغب في إدارة ال assets عبر  ال native Bower/NPM أو استخدام ال CDN أو تجنب تثبيت ال assets بالكامل من حلال ال Composer ، ويمكن ذلك من خلال إضافة الأسطر التالية إلى "composer.json":
 </p>
 
 ```json
@@ -194,7 +196,7 @@ http://localhost:8080/
 
 <p dir="rtl">
     على ال production server، قد ترغب في إعداد خادم الويب الخاص بك بحيث يمكن الوصول إلى التطبيق
-الخاص بك عبر ال URL التالي <code>http: // www.example.com / index.php</code> بدلاً من <code>http: // www.example.com / basic / web / index.php</code>. هذا الكلام يتطلب إنشاء إعداد يقوم بتوجيه ال document root الموجود على ال web server الى مجلد ال basic/web، كما قد ترغب أيضا بإخفاء ال <code>index.php</code> من ال URL كما هو موضح في ال <a href="../guide/runtime-routing.md">Routing and URL Creation</a>. في هذا الموضوع ستتعلم كيف يمكنك إعداد ال Apache أو ال Nginx server لتحقيق هذه الأهداف. 
+الخاص بك عبر ال URL التالي <code>http://www.example.com/index.php</code> بدلاً من <code>http://www.example.com/basic/web/index.php</code>. هذا الكلام يتطلب إنشاء إعداد يقوم بتوجيه ال document root الموجود على ال web server الى مجلد ال basic/web، كما قد ترغب أيضا بإخفاء ال <code>index.php</code> من ال URL كما هو موضح في ال <a href="../guide/runtime-routing.md">Routing and URL Creation</a>. في هذا الموضوع ستتعلم كيف يمكنك إعداد ال Apache أو ال Nginx server لتحقيق هذه الأهداف. 
 </p>
 
 <blockquote><p dir="rtl">
@@ -214,7 +216,7 @@ http://localhost:8080/
 
 <p dir="rtl">
     استخدم الإعدادات التالية في ملف ال <code>httpd.conf</code> في Apache أو ضمن إعدادات ال virtual host.
-    ملاحظة:  يجب عليك استبدال المسار التالي <code>path / to / basic / web</code> بالمسار الفعلي للتطبيق الخاص بك وصولا الى ال <code>basic / web</code>.
+    ملاحظة:  يجب عليك استبدال المسار التالي <code>path/to/basic/web</code> بالمسار الفعلي للتطبيق الخاص بك وصولا الى ال <code>basic/web</code>.
 </p>
 
 ```apache
@@ -242,7 +244,7 @@ DocumentRoot "path/to/basic/web"
 -----------------------
 
 <p dir="rtl">
-    لاستخدام <a href="http://wiki.nginx.org/">Nginx</a>، يجب تثبيت PHP على أنه <a href="http://php.net/install.fpm">FPM SAPI</a>، ويمكنك استخدام إعدادات ال Nginx التالية، مع الإنتباه على استبدال المسار من  <code>path / to / basic / web</code> الى المسار الفعلي  وصولا إلى <code>basic / web</code> بالإضافة الى إستبدال <code>mysite.test</code> إلى ال hostname الخاص بالتطبيق.
+    لاستخدام <a href="http://wiki.nginx.org/">Nginx</a>، يجب تثبيت PHP على أنه <a href="http://php.net/install.fpm">FPM SAPI</a>، ويمكنك استخدام إعدادات ال Nginx التالية، مع الإنتباه على استبدال المسار من  <code>path/to/basic/web</code> الى المسار الفعلي  وصولا إلى <code>basic/web</code> بالإضافة الى إستبدال <code>mysite.test</code> إلى ال hostname الخاص بالتطبيق.
 </p>
 
 
