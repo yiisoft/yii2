@@ -8,7 +8,7 @@
 namespace yii\data;
 
 /**
- * ActiveDataFilter 允许以适合 [yiidbQueryInterface::where()] 的格式组合过滤条件。
+ * ActiveDataFilter 允许以适合 [[yiidbQueryInterface::where()]] 的格式组合过滤条件。
  *
  * @see DataFilter
  *
@@ -20,7 +20,7 @@ class ActiveDataFilter extends DataFilter
     /**
      * @var array 过滤条件关键字与构建方法之间的映射关系。
      * 这些方法被 [[buildCondition()]] 方法用于构建实际的过滤条件。
-     * 可以使用 PHP callback指定特定的条件生成器。 例如：
+     * 可以使用 PHP callback 指定特定的条件生成器。 例如：
      *
      * ```php
      * [
@@ -52,9 +52,9 @@ class ActiveDataFilter extends DataFilter
      * 格式：`[filterOperator => queryOperator]`。
      * 如果映射中没有出现特定的操作符关键字，则按原样使用它。
      *
-     * 通常，由于过滤器操作符名称与 [yiidbQueryInterface::where()] 中使用的名称一致，所以
+     * 通常，由于过滤器操作符名称与 [[yiidbQueryInterface::where()]] 中使用的名称一致，所以
      * 映射可以留空。然而，在某些特殊情况下，您可能需要对其进行调整。
-     * 例如，在使用PosgreSQL时，您可能希望设置以下映射：
+     * 例如，在使用 PosgreSQL 时，您可能希望设置以下映射：
      *
      * ```php
      * [
