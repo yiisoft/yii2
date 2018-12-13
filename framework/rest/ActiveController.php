@@ -17,12 +17,12 @@ use yii\web\ForbiddenHttpException;
  * ActiveRecord 类应该通过 [[modelClass]] 指定，并继承了 [[\yii\db\ActiveRecordInterface]]。
  * 默认情况下，支持以下操作：
  *
- * - `index`: 模型列表
- * - `view`: 返回模型的详细信息
- * - `create`: 创建一个新模型
- * - `update`: 更新现有模型
- * - `delete`: 删除现有模型
- * - `options`: 返回允许的 HTTP 方法
+ * - `index`： 模型列表
+ * - `view`： 返回模型的详细信息
+ * - `create`： 创建一个新模型
+ * - `update`： 更新现有模型
+ * - `delete`： 删除现有模型
+ * - `options`： 返回允许的 HTTP 方法
  *
  * 您可以通过覆盖 [[actions()]] 方法，取消其中相应的动作，来禁用其中一些操作。
  *
@@ -40,7 +40,7 @@ use yii\web\ForbiddenHttpException;
 class ActiveController extends Controller
 {
     /**
-     * @var string Model 的类名。此属性必须设置
+     * @var string 模型的类名。此属性必须设置
      */
     public $modelClass;
     /**
@@ -126,10 +126,10 @@ class ActiveController extends Controller
      * 对指定的数据模型运行指定的操作。
      * 如果用户没有访问权限，则应抛出 [[ForbiddenHttpException]] 异常
      *
-     * @param string $action the ID of the action to be executed
-     * @param object $model the model to be accessed. If null, it means no specific model is being accessed.
-     * @param array $params additional parameters
-     * @throws ForbiddenHttpException if the user does not have access
+     * @param string $action 被执行的动作类的 ID
+     * @param object $model 被访问的模型类。如果为 null，则意味着没有特别的模型对象被访问。
+     * @param array $params 额外的参数
+     * @throws ForbiddenHttpException 如果用户没有访问权限
      */
     public function checkAccess($action, $model = null, $params = [])
     {
