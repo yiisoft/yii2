@@ -12,7 +12,7 @@
     هناك Template آخر موجود بإطار العمل Yii وهو <a href="https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide">Yii2 Advanced Project Template</a>، وهو الأفضل للعمل وإنشاء المشاريع لفريق عمل برمجي، ولتطوير المشاريع متعددة الطبقات(multiple tires). 
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
 معلومة: قالب المشروع الأساسي (Basic) مناسب لتطوير 90% من تطبيقات الويب. ويختلف القالب المتقدم (Advanced Template) عن القالب الأساسي في كيفية تنظيم وهيكلة الشيفرة البرمجية.
 اذا كنت جديدا في عالم تطوير تطبيقات الويب باستخدام ال Yii، فإننا نوصيك بقوة بأن تستخدم القالب الأساسي في بناء المشروع الخاص بك.
 </p></blockquote>
@@ -47,7 +47,7 @@ sudo mv composer.phar /usr/local/bin/composer
 إذا كان ال composer مثبتًا من قبل، فتأكد من استخدام إصدار حديث. يمكنك تحديث ال composer عن طريق تنفيذ الأمر التالي <code>composer self-update</code>
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="note"><p dir="rtl">
   ملاحظة مهمة: أثناء تثبيت ال Yii ، سيحتاج ال composer إلى طلب(request) الكثير من المعلومات من ال Github Api. يعتمد عدد الطلبات على عدد dependencies التي يمتلكها التطبيق الخاص بك، وقد يكون هذا العدد أكبر من الحد المسموح به من قبل ال Github Api <b>(Github API rate limit)</b>. إذا وصلت الى الحد الأعلى المسموح به من الطلبات، فقد يطلب منك ال composer بيانات تسجيل الدخول إلى Github، وذلك للحصول على رمز (token) للدخول إلى Github Api. اذا كانت عمليات الإتصال سريعة، فقد تصل إلى هذا الحد(limit) قبل أن يتمكن ال composer من التعامل معه ، لذالك نوصي بتكوين رمز الدخول(access token) قبل تثبيت ال Yii. يرجى الرجوع إلى التوثيق الخاص بال Composer والإطلاع على التعليمات الخاصة <a href="https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens">Github API tokens</a> للحصول على الإرشادات اللازمة للقيام بذلك. 
 </p></blockquote>
 
@@ -64,19 +64,19 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
       سطر الأوامر السابق سيقوم بتثبيت أحدث نسخة مستقرة(stable) من إطار العمل Yii داخل مسار جديد اسمه basic، ويمكنك التعديل على سطر الأوامر السابق لتغيير اسم المشروع لأي اسم ترغب فيه.  
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
 معلومة: اذا واجهتك أي مشكلة عند تنفيذ السطر `composer create-project` فيمكنك الذهاب إلى <a href="https://getcomposer.org/doc/articles/troubleshooting.md">قسم استكشاف الأخطاء في ال composer</a>.
 في معظم الأخطاء الشائعة، وعند حل المشكلة أو الخطأ، يمكنك إكمال التثبيت من خلال الدخول الى المسار `basic` ومن ثم تنفيذ الأمر التالي: `composer update`.
 </p></blockquote>
 
-<blockquote><p dir="rtl">
+<blockquote class="tip"><p dir="rtl">
     تلميح: اذا كنت ترغب بتثبيت أحدث نسخة خاصة بالمطورين من ال Yii، فيمكنك ذلك من خلال إضافة الخيار <a href="https://getcomposer.org/doc/04-schema.md#minimum-stability">stability</a> وذلك من خلال سطر الأوامر التالي:
 </p></blockquote>  
 
 ```bash
     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 ```
-<blockquote><p dir="rtl">
+<blockquote class="note"><p dir="rtl">
     ملاحظة: نسخة المطورين من ال Yii يجب أن يتم إستخدامها للمواقع الإلكترونية التي لن تصدر كنسخة نهائية للمستخدم(Not for production) لأن ذلك يمكن أن يسبب بإيقاف المشروع أو الشيفرة البرمجية الخاصة بك. 
 </p></blockquote>
 
@@ -94,7 +94,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 </ol>
 
    ```php
-  // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+   // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
    'cookieValidationKey' => 'enter your secret key here',
    ```
 
@@ -135,7 +135,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 },
 ```
 
-<blockquote><p dir="rtl">
+<blockquote class="note"><p dir="rtl">
 ملاحظة: في حالة تجاوز تثبيت ال assets عبر ال Composer، فأنت المسؤول عن تثبيت ال assets وحل مشكلات التعارض بين الإصدارات والمكتبات المختلفة. وكن مستعدًا لعدم تناسق محتمل بين ملفات ال asstes والإضافات المختلفة.
 </p></blockquote>
 
@@ -150,7 +150,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 php yii serve
 ```
 
-<blockquote><p dir="rtl">
+<blockquote class="note"><p dir="rtl">
 ملاحظة: افتراضيًا ال HTTP-server يعمل على البورت 8080. ومع ذلك ، إذا كان هذا البورت قيد الاستخدام بالفعل أو كنت ترغب في تشغيل أكثر من تطبيق بهذه الطريقة، حينها سيلزمك تحديد البورت الذي يجب استخدامه. ما عليك سوى إضافة --port:
 </p></blockquote>
 
@@ -186,7 +186,7 @@ http://localhost:8080/
 ### <div dir="rtl">إعداد ال Web Servers</div> <span id="configuring-web-servers"></span>
 -----------------------
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
 معلومة: يمكنك تخطي هذا الجزء الآن إذا كنت تختبر فقط إطار العمل Yii دون أي نية لنشر هذا التطبيق على الويب(بدون رفع التطبيق على production server).
 </p></blockquote>
 
@@ -199,15 +199,15 @@ http://localhost:8080/
 الخاص بك عبر ال URL التالي <code>http://www.example.com/index.php</code> بدلاً من <code>http://www.example.com/basic/web/index.php</code>. هذا الكلام يتطلب إنشاء إعداد يقوم بتوجيه ال document root الموجود على ال web server الى مجلد ال basic/web، كما قد ترغب أيضا بإخفاء ال <code>index.php</code> من ال URL كما هو موضح في ال <a href="../guide/runtime-routing.md">Routing and URL Creation</a>. في هذا الموضوع ستتعلم كيف يمكنك إعداد ال Apache أو ال Nginx server لتحقيق هذه الأهداف. 
 </p>
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
     معلومة: من خلال تعيين ال <code>basic/web</code> ك <code>document root</code>، فإنك بذلك تمنع أيضًا المستخدمين النهائيين من الوصول الى الشيفرة البرمجية الخاصة بالتطبيق الخاص بك، وتمنعهم من الوصول الى الملفات الحساسة والمهمة والمخزنة في sibling directories من <code>basic/web</code>، ويعبر رفض الوصول الى المجلدات الأخرى تحسينا أمنيا مهما، يساعد في الحفاظ على مستوى أعلى من الحماية.
 </p></blockquote>
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
 معلومة: إذا كان سيتم تشغيل التطبيق الخاص بك في بيئة استضافة مشتركة(shared hosting) حيث ليس لديك الصلاحية لتعديل الإعدادات الخاصة بال web server، ستحتاج حينها الى تعديل في البنية الخاصة بالمشروع للحصول على أفضل أمان ممكن. يرجى الرجوع إلى <a href="../guide/tutorial-shared-hosting.md">Shared Hosting Environment</a> لمزيد من المعلومات. 
 </p></blockquote>
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
     معلومة: إذا كنت تقوم بتشغيل تطبيق ال Yii بوجود ال proxy، فقد تحتاج إلى إعداد التطبيق ليكون ضمن ال <a href="../guide/runtime-requests.md#trusted-proxies">trusted proxies and header</a>.
 </p></blockquote>
 
