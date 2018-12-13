@@ -17,12 +17,12 @@ use yii\web\ForbiddenHttpException;
  * ActiveRecord 类应该通过 [[modelClass]] 指定，并继承了 [[\yii\db\ActiveRecordInterface]]。
  * 默认情况下，支持以下操作：
  *
- * - `index`： 模型列表
- * - `view`： 返回模型的详细信息
- * - `create`： 创建一个新模型
- * - `update`： 更新现有模型
- * - `delete`： 删除现有模型
- * - `options`： 返回允许的 HTTP 方法
+ * - `index`：模型列表
+ * - `view`：返回模型的详细信息
+ * - `create`：创建一个新模型
+ * - `update`：更新现有模型
+ * - `delete`：删除现有模型
+ * - `options`：返回允许的 HTTP 方法
  *
  * 您可以通过覆盖 [[actions()]] 方法，取消其中相应的动作，来禁用其中一些操作。
  *
