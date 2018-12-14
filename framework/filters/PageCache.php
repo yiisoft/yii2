@@ -231,7 +231,6 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      */
     public function cacheResponse()
     {
-
         $this->view->popDynamicContent();
         $beforeCacheResponseResult = $this->beforeCacheResponse();
         if ($beforeCacheResponseResult === false) {
