@@ -722,7 +722,7 @@ EOD;
                     }
                 }
             }
-            $merged = array_merge($todo, $merged);
+            $merged = array_merge($merged, $todo);
             if ($sort) {
                 ksort($merged);
             }
@@ -825,7 +825,7 @@ EOD;
                     }
                 }
 
-                $merged = array_merge($todos, $merged);
+                $merged = array_merge($merged, $todos);
                 if ($sort) {
                     ksort($merged);
                 }
