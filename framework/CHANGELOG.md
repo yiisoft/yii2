@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 - Bug #16910: Fix messages sorting on extract (Groonya)
-
+- Bug #16969: Fix `yii\filters\PageCache` incorrectly storing empty data in some cases (sammousa)
 - Bug #15683: Fixed file as array uploading in MultipartFormDataParser (Groonya)
 - Bug #16822: Create config dir recursively in message/config (Groonya)
 - Bug #16580: Delete unused php message files in MessageController if `$removeUnused` option is on (Groonya)
