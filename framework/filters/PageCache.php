@@ -231,6 +231,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      */
     public function cacheResponse()
     {
+
         $this->view->popDynamicContent();
         $beforeCacheResponseResult = $this->beforeCacheResponse();
         if ($beforeCacheResponseResult === false) {
@@ -239,6 +240,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
         }
 
         $response = Yii::$app->getResponse();
+        $response->off(Response::EVENT_AFTER_SEND, [$this, 'cacheResponse']);
         $data = [
             'cacheVersion' => static::PAGE_CACHE_VERSION,
             'cacheData' => is_array($beforeCacheResponseResult) ? $beforeCacheResponseResult : null,
