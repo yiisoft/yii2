@@ -10,7 +10,7 @@ namespace yii\rbac;
 use yii\base\BaseObject;
 
 /**
- * For more details and usage information on Item, see the [guide article on security authorization](guide:security-authorization).
+ * 有关 Item 的更多详细信息和用法信息，请参阅 [授权指南](guide:security-authorization)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -21,31 +21,31 @@ class Item extends BaseObject
     const TYPE_PERMISSION = 2;
 
     /**
-     * @var int the type of the item. This should be either [[TYPE_ROLE]] or [[TYPE_PERMISSION]].
+     * @var int 项目的类型。其值为 [[TYPE_ROLE]] 或 [[TYPE_PERMISSION]]。
      */
     public $type;
     /**
-     * @var string the name of the item. This must be globally unique.
+     * @var string 项目的名称。这必须是全局都唯一。
      */
     public $name;
     /**
-     * @var string the item description
+     * @var string 项目的描述
      */
     public $description;
     /**
-     * @var string name of the rule associated with this item
+     * @var string 与此项关联的规则的名称
      */
     public $ruleName;
     /**
-     * @var mixed the additional data associated with this item
+     * @var mixed 与此项目关联的其他数据
      */
     public $data;
     /**
-     * @var int UNIX timestamp representing the item creation time
+     * @var int UNIX 时间戳，表示项目创建时间
      */
     public $createdAt;
     /**
-     * @var int UNIX timestamp representing the item updating time
+     * @var int UNIX 时间戳，表示项目更新时间
      */
     public $updatedAt;
 }
