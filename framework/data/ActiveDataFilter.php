@@ -8,7 +8,7 @@
 namespace yii\data;
 
 /**
- * ActiveDataFilter allows composing a filtering condition in a format suitable for [[\yii\db\QueryInterface::where()]].
+ * ActiveDataFilter 允许以适合 [[yiidbQueryInterface::where()]] 的格式组合过滤条件。
  *
  * @see DataFilter
  *
@@ -18,9 +18,9 @@ namespace yii\data;
 class ActiveDataFilter extends DataFilter
 {
     /**
-     * @var array maps filtering condition keywords to build methods.
-     * These methods are used by [[buildCondition()]] to build the actual filtering conditions.
-     * Particular condition builder can be specified using a PHP callback. For example:
+     * @var array 过滤条件关键字与构建方法之间的映射关系。
+     * 这些方法被 [[buildCondition()]] 方法用于构建实际的过滤条件。
+     * 可以使用 PHP callback 指定特定的条件生成器。 例如：
      *
      * ```php
      * [
@@ -48,13 +48,13 @@ class ActiveDataFilter extends DataFilter
         'LIKE' => 'buildOperatorCondition',
     ];
     /**
-     * @var array map filtering operators to operators used in [[\yii\db\QueryInterface::where()]].
-     * The format is: `[filterOperator => queryOperator]`.
-     * If particular operator keyword does not appear in the map, it will be used as is.
+     * @var array 将过滤操作符映射到 [[\yii\db\QueryInterface::where()]] 中使用的操作符。
+     * 格式：`[filterOperator => queryOperator]`。
+     * 如果映射中没有出现特定的操作符关键字，则按原样使用它。
      *
-     * Usually the map can be left empty as filter operator names are consistent with the ones
-     * used in [[\yii\db\QueryInterface::where()]]. However, you may want to adjust it in some special cases.
-     * For example, when using PosgreSQL you may want to setup the following map:
+     * 通常，由于过滤器操作符名称与 [[yiidbQueryInterface::where()]] 中使用的名称一致，所以
+     * 映射可以留空。然而，在某些特殊情况下，您可能需要对其进行调整。
+     * 例如，在使用 PosgreSQL 时，您可能希望设置以下映射：
      *
      * ```php
      * [
@@ -80,7 +80,7 @@ class ActiveDataFilter extends DataFilter
 
     /**
      * @param array $condition
-     * @return array built condition.
+     * @return array 构建的条件
      */
     protected function buildCondition($condition)
     {
@@ -111,11 +111,11 @@ class ActiveDataFilter extends DataFilter
     }
 
     /**
-     * Builds conjunction condition, which consists of multiple independent ones.
-     * It covers such operators as `and` and `or`.
-     * @param string $operator operator keyword.
-     * @param mixed $condition raw condition.
-     * @return array actual condition.
+     * 构建由多个独立条件组成的连接条件。
+     * 它包括 `and` 和 `or` 等操作符。
+     * @param string $operator 操作符关键字。
+     * @param mixed $condition 原始条件。
+     * @return array 实际条件。
      */
     protected function buildConjunctionCondition($operator, $condition)
     {
@@ -132,11 +132,11 @@ class ActiveDataFilter extends DataFilter
     }
 
     /**
-     * Builds block condition, which consists of a single condition.
-     * It covers such operators as `not`.
-     * @param string $operator operator keyword.
-     * @param mixed $condition raw condition.
-     * @return array actual condition.
+     * 构建由单个条件组成的块条件。
+     * 它包括 `not` 操作符。
+     * @param string $operator 操作符关键字。
+     * @param mixed $condition 原始条件。
+     * @return array 实际条件。
      */
     protected function buildBlockCondition($operator, $condition)
     {
@@ -150,10 +150,10 @@ class ActiveDataFilter extends DataFilter
     }
 
     /**
-     * Builds search condition for a particular attribute.
-     * @param string $attribute search attribute name.
-     * @param mixed $condition search condition.
-     * @return array actual condition.
+     * 建立一个搜索条件的特殊属性。
+     * @param string $attribute 搜索属性名称。
+     * @param mixed $condition 搜索条件。
+     * @return array 实际条件。
      */
     protected function buildAttributeCondition($attribute, $condition)
     {
@@ -187,11 +187,11 @@ class ActiveDataFilter extends DataFilter
     }
 
     /**
-     * Builds an operator condition.
-     * @param string $operator operator keyword.
-     * @param mixed $condition attribute condition.
-     * @param string $attribute attribute name.
-     * @return array actual condition.
+     * 构建一个操作符条件。
+     * @param string $operator 操作符关键字。
+     * @param mixed $condition 属性条件。
+     * @param string $attribute 属性名字。
+     * @return array 实际条件。
      */
     protected function buildOperatorCondition($operator, $condition, $attribute)
     {

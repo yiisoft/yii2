@@ -28,13 +28,13 @@ use yii\web\UrlRuleInterface;
  *
  * 上面的代码将创建一整套支持以下 RESTful API 端点的 URL 规则：
  *
- * - `'PUT,PATCH users/<id>' => 'user/update'`: 更新用户
- * - `'DELETE users/<id>' => 'user/delete'`: 删除用户
- * - `'GET,HEAD users/<id>' => 'user/view'`: 返回用户的详细信息/概述/选项
- * - `'POST users' => 'user/create'`: 创建一个新用户
- * - `'GET,HEAD users' => 'user/index'`: 返回用户的列表/概述/选项
- * - `'users/<id>' => 'user/options'`: 响应用户的所有未处理动词
- * - `'users' => 'user/options'`: 响应所有未处理的用户集合动词
+ * - `'PUT,PATCH users/<id>' => 'user/update'`：更新用户
+ * - `'DELETE users/<id>' => 'user/delete'`：删除用户
+ * - `'GET,HEAD users/<id>' => 'user/view'`：返回用户的详细信息/概述/选项
+ * - `'POST users' => 'user/create'`：创建一个新用户
+ * - `'GET,HEAD users' => 'user/index'`：返回用户的列表/概述/选项
+ * - `'users/<id>' => 'user/options'`：响应用户的所有未处理动词
+ * - `'users' => 'user/options'`：响应所有未处理的用户集合动词
  *
  * 您可以配置 [[only]] 或者 [[except]] 以禁用上述某些规则。
  * 您可以配置 [[patterns]] 以完全重新定义自己的规则列表。
@@ -54,7 +54,7 @@ use yii\web\UrlRuleInterface;
  * 使用的控制器ID将自动复数（例如 `user` 变为 `users`
  * 如上例所示）。
  *
- * 关于 UrlRule 的更多使用参考，请查看 [Rest 路由指南](guide:rest-routing).
+ * 关于 UrlRule 的更多使用参考，请查看 [Rest 路由指南](guide:rest-routing)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

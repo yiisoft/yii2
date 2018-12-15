@@ -28,7 +28,7 @@ class IndexAction extends Action
      *
      * ```php
      * function (IndexAction $action) {
-     *     // $action 当前运行的 Action 对象
+     *     // $action 当前运行的动作对象
      * }
      * ```
      *
@@ -39,7 +39,7 @@ class IndexAction extends Action
      *
      * ```php
      * function (IndexAction $action, mixed $filter) {
-     *     // $action 当前运行的 Action 对象
+     *     // $action 当前运行的动作对象
      *     // $filter 建立的过滤条件
      * }
      * ```

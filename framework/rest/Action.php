@@ -23,13 +23,13 @@ use yii\web\NotFoundHttpException;
 class Action extends \yii\base\Action
 {
     /**
-     * @var string Model 的类名，用于在这个 Action 中处理数据。
-     * 此 Model 类必须继承 [[ActiveRecordInterface]].
+     * @var string 模型的类名，用于在这个动作中处理数据。
+     * 此模型类必须继承 [[ActiveRecordInterface]]。
      * 此属性必设置
      */
     public $modelClass;
     /**
-     * @var callable PHP 回调，用于返回相应的 Model 实例，
+     * @var callable PHP 回调，用于返回相应的模型实例，
      * 基于所给的主键值。如果不设置此属性，默认是调用 [[findModel()]] 方法。
      * 这个回调的形式如下：
      *
@@ -37,22 +37,22 @@ class Action extends \yii\base\Action
      * function ($id, $action) {
      *     // $id 主键值。 如果是复合主键，
      *     // 则为逗号分隔的键值。
-     *     // $action 当前在运行的 Action 对象
+     *     // $action 当前在运行的动作对象
      * }
      * ```
      *
-     * 这个回调应当返回查找出的 Model 实例，如果找不到则抛出异常。
+     * 这个回调应当返回查找出的模型实例，如果找不到则抛出异常。
      */
     public $findModel;
     /**
-     * @var callable PHP 回调，会在此时被调用：在判断当前用户是否有此 Action
+     * @var callable PHP 回调，会在此时被调用：在判断当前用户是否有此动作
      * 的运行权限。如果不设置，默认权限检查不执行。
      * 这个回调的形式如下，
      *
      * ```php
      * function ($action, $model = null) {
-     *     // $model 请求的 Model 实例。is the requested model instance.
-     *     // 如果为 Null，意味着没有特别的 Model 对象（比如 IndexAction）
+     *     // $model 请求的模型实例。
+     *     // 如果为 Null，意味着没有特别的模型对象（比如 IndexAction）
      * }
      * ```
      */
@@ -70,14 +70,14 @@ class Action extends \yii\base\Action
     }
 
     /**
-     * 返回有数据的 Model 类，根据所给的主键值。
+     * 返回有数据的模型类，根据所给的主键值。
      * 如果数据没有找到，会抛出一个 404 HTTP 异常。
-     * @param string $id Model 将被加载的 ID 。如果 Model 有复合主键，
+     * @param string $id 模型将被加载的 ID 。如果模型有复合主键，
      * 这 ID 则是逗号分隔的键值字符串，
-     * 键值的顺序应当和 Model 类 的 `primaryKey()` 方法返回的一致。
+     * 键值的顺序应当和模型类 的 `primaryKey()` 方法返回的一致。
      *
-     * @return ActiveRecordInterface 查找出的 Model 实例
-     * @throws NotFoundHttpException 如果 Model 找不到
+     * @return ActiveRecordInterface 查找出的模型实例
+     * @throws NotFoundHttpException 如果模型找不到
      */
     public function findModel($id)
     {

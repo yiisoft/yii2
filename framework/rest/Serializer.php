@@ -64,7 +64,7 @@ class Serializer extends Component
      */
     public $perPageHeader = 'X-Pagination-Per-Page';
     /**
-     * @var string 用于返回集合中资源对象的索引名称（例如 `items`）.
+     * @var string 用于返回集合中资源对象的索引名称（例如 `items`）。
      * 在提供资源集合时使用。设置此选项并启用分页后
      * 将以以下格式返回集合：
      *
