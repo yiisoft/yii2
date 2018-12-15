@@ -15,26 +15,26 @@ use yii\helpers\FileHelper;
 use yii\helpers\Url;
 
 /**
- * AssetManager manages asset bundle configuration and loading.
+ * AssetManager 管理资源包的配置和加载。
  *
- * AssetManager is configured as an application component in [[\yii\web\Application]] by default.
- * You can access that instance via `Yii::$app->assetManager`.
+ * AssetManager 已经默认在 [[\yii\web\Application]] 里配置到了应用配置。
+ * 你可以通过 `Yii::$app->assetManager` 访问该实例
  *
- * You can modify its configuration by adding an array to your application config under `components`
- * as shown in the following example:
+ * 你仍可以修改其配置，在应用配置的 `components` 里添加数组,
+ * 就像这样：
  *
  * ```php
  * 'assetManager' => [
  *     'bundles' => [
- *         // you can override AssetBundle configs here
+ *         // 在这里重新配置资源包
  *     ],
  * ]
  * ```
  *
- * For more details and usage information on AssetManager, see the [guide article on assets](guide:structure-assets).
+ * 关于 AssetManager 的更多使用参考，请查看 [前端资源](guide:structure-assets)。
  *
- * @property AssetConverterInterface $converter The asset converter. Note that the type of this property
- * differs in getter and setter. See [[getConverter()]] and [[setConverter()]] for details.
+ * @property AssetConverterInterface $converter 资源编译器。请注意此属性的
+ * getter 和 setter 上的不同。具体细节请查看 [[getConverter()]] 和 [[setConverter()]] 方法。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -42,19 +42,19 @@ use yii\helpers\Url;
 class AssetManager extends Component
 {
     /**
-     * @var array|bool list of asset bundle configurations. This property is provided to customize asset bundles.
-     * When a bundle is being loaded by [[getBundle()]], if it has a corresponding configuration specified here,
-     * the configuration will be applied to the bundle.
+     * @var array|bool 资源包配置列表。提供此属性是为了自定义资源包。
+     * 在 [[getBundle()]] 方法里，当一个资源包被加载，如果它在此处有相应的配置，
+     * 这些配置将应用于这个资源包。
      *
-     * The array keys are the asset bundle names, which typically are asset bundle class names without leading backslash.
-     * The array values are the corresponding configurations. If a value is false, it means the corresponding asset
-     * bundle is disabled and [[getBundle()]] should return null.
+     * 数组的键是资源包名称，通常是资源包类名，没有反斜杠的那种。
+     * 数组的值是相应的配置，如果值为 false，则意味这it means the corresponding asset
+     * 这个资源包被禁用，[[getBundle()]] 返回为 null。
      *
-     * If this property is false, it means the whole asset bundle feature is disabled and [[getBundle()]]
-     * will always return null.
+     * 如果此属性为 false，则意味全部的资源包都被禁用，
+     * [[getBundle()]] 会全部返回 null。
      *
-     * The following example shows how to disable the bootstrap css file used by Bootstrap widgets
-     * (because you want to use your own styles):
+     * 以下示例显示如何禁用 Bootstrap 小部件去使用 bootstrap 的 CSS 。
+     * （由于你想使用自己的样式）：
      *
      * ```php
      * [
@@ -66,28 +66,28 @@ class AssetManager extends Component
      */
     public $bundles = [];
     /**
-     * @var string the root directory storing the published asset files.
+     * @var string 保存已发布的资源文件的根目录。
      */
     public $basePath = '@webroot/assets';
     /**
-     * @var string the base URL through which the published asset files can be accessed.
+     * @var string 已发布资源文件可以访问的基链接。
      */
     public $baseUrl = '@web/assets';
     /**
-     * @var array mapping from source asset files (keys) to target asset files (values).
+     * @var array 源资源文件（键）和目标资源文件（值）的映射。
      *
-     * This property is provided to support fixing incorrect asset file paths in some asset bundles.
-     * When an asset bundle is registered with a view, each relative asset file in its [[AssetBundle::css|css]]
-     * and [[AssetBundle::js|js]] arrays will be examined against this map. If any of the keys is found
-     * to be the last part of an asset file (which is prefixed with [[AssetBundle::sourcePath]] if available),
-     * the corresponding value will replace the asset and be registered with the view.
-     * For example, an asset file `my/path/to/jquery.js` matches a key `jquery.js`.
+     * 此属性用于支持在某些资源包中修复不正确的资源文件路径。
+     * 当资源包在视图中注册时，其 [[AssetBundle::css|css]] 和 [[AssetBundle::js|js]] 中的每个相对资源文件
+     * 都会被这个映射检查。如果找到相应的键，
+     * 将作为资源文件的最后部分（如果可用，以 [[AssetBundle::sourcePath]] 为前缀），
+     * 相应的值将替换资源，并被注册到视图中。
+     * 例如，资源文件 `my/path/to/jquery.js` 匹配了 `jquery.js`。
      *
-     * Note that the target asset files should be absolute URLs, domain relative URLs (starting from '/') or paths
-     * relative to [[baseUrl]] and [[basePath]].
+     * 请注意，目标资源文件必须为绝对 URL 、相对于域名的 URL（以“/”开头）或者是
+     * 相对于 [[baseUrl]] 和 [[basePath]] 的路径。
      *
-     * In the following example, any assets ending with `jquery.min.js` will be replaced with `jquery/dist/jquery.js`
-     * which is relative to [[baseUrl]] and [[basePath]].
+     * 在以下示例中，任何以 `jquery.min.js` 结尾的资源都会被替换成 `jquery/dist/jquery.js`，
+     * 其相对路径是 [[baseUrl]] 和 [[basePath]]。
      *
      * ```php
      * [
@@ -95,7 +95,7 @@ class AssetManager extends Component
      * ]
      * ```
      *
-     * You may also use aliases while specifying map value, for example:
+     * 你还可以用别名指定映射的值，例如：
      *
      * ```php
      * [
@@ -105,17 +105,17 @@ class AssetManager extends Component
      */
     public $assetMap = [];
     /**
-     * @var bool whether to use symbolic link to publish asset files. Defaults to false, meaning
-     * asset files are copied to [[basePath]]. Using symbolic links has the benefit that the published
-     * assets will always be consistent with the source assets and there is no copy operation required.
-     * This is especially useful during development.
+     * @var bool 是否使用符号链接发布资源文件。默认为 false，意味着
+     * 资源文件件被复制到 [[basePath]]。使用符号链接有这样的好处：发布的资源永远和
+     * 源文件一致，并且不需要复制操作。
+     * 这在开发过程中特别有用。
      *
-     * However, there are special requirements for hosting environments in order to use symbolic links.
-     * In particular, symbolic links are supported only on Linux/Unix, and Windows Vista/2008 or greater.
+     * 但是，使用符号链接对主机环境有特殊要求。
+     * 特别是，在 Linux/Unix，和 Windows Vista/2008 或更高版本上才支持符号链接。
      *
-     * Moreover, some Web servers need to be properly configured so that the linked assets are accessible
-     * to Web users. For example, for Apache Web server, the following configuration directive should be added
-     * for the Web folder:
+     * 此外，需要正确配置某些 Web 服务器，以便可以访问链接过的资源能被 Web 用户访问。
+     * 例如，对于 Apache Web 服务器，应添加以下的配置指令到 Web 文件夹：
+     *
      *
      * ```apache
      * Options FollowSymLinks
@@ -123,70 +123,70 @@ class AssetManager extends Component
      */
     public $linkAssets = false;
     /**
-     * @var int the permission to be set for newly published asset files.
-     * This value will be used by PHP chmod() function. No umask will be applied.
-     * If not set, the permission will be determined by the current environment.
+     * @var int 新发布的资源文件的权限。
+     * 此值将被 PHP 函数 chmod() 所使用。不设掩码（umask）。
+     * 如果未设置，权限将由当前环境确定。
      */
     public $fileMode;
     /**
-     * @var int the permission to be set for newly generated asset directories.
-     * This value will be used by PHP chmod() function. No umask will be applied.
-     * Defaults to 0775, meaning the directory is read-writable by owner and group,
-     * but read-only for other users.
+     * @var int 新创建的资源目录的权限。
+     * 此值将被 PHP 函数 chmod() 所使用。不设掩码（umask）。
+     * 默认值为 0775，意味着目录可以被拥有者和拥有组别读写，
+     * 但是其他用户只读。
      */
     public $dirMode = 0775;
     /**
-     * @var callback a PHP callback that is called before copying each sub-directory or file.
-     * This option is used only when publishing a directory. If the callback returns false, the copy
-     * operation for the sub-directory or file will be cancelled.
+     * @var callback PHP 回调：在复制每个子目录或文件之前调用。
+     * 此选项仅在发布目录时使用。如果回调返回 false，
+     * 则复制子目录或文件的操作将被取消。
      *
-     * The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
-     * file to be copied from, while `$to` is the copy target.
+     * 回调的形式：`function ($from, $to)`，其中 `$from` 是子目录或者
+     * 要复制的文件，而 `$to` 是复制目标。
      *
-     * This is passed as a parameter `beforeCopy` to [[\yii\helpers\FileHelper::copyDirectory()]].
+     * 这个回调作为参数 `beforeCopy` 传递给 [[\yii\helpers\FileHelper::copyDirectory()]]。
      */
     public $beforeCopy;
     /**
-     * @var callback a PHP callback that is called after a sub-directory or file is successfully copied.
-     * This option is used only when publishing a directory. The signature of the callback is the same as
-     * for [[beforeCopy]].
-     * This is passed as a parameter `afterCopy` to [[\yii\helpers\FileHelper::copyDirectory()]].
+     * @var callback PHP 回调：在复制每个子目录或文件成功之后调用。
+     * 此选项仅在发布目录时使用。回调的形式和 [[beforeCopy]] 一样。
+     *
+     * 这个回调作为参数 `afterCopy` 传递给 [[\yii\helpers\FileHelper::copyDirectory()]]。
      */
     public $afterCopy;
     /**
-     * @var bool whether the directory being published should be copied even if
-     * it is found in the target directory. This option is used only when publishing a directory.
-     * You may want to set this to be `true` during the development stage to make sure the published
-     * directory is always up-to-date. Do not set this to true on production servers as it will
-     * significantly degrade the performance.
+     * @var bool 当目标目录已存在，正发布的目录是否应发布。
+     * 此选项仅在发布目录时使用。
+     * 你可能希望在开发阶段将其设置为 `true` 以确保已发布目录始终是最新的。
+     * 不要在生产服务器设置此属性，
+     * 它会显着降低性能。
      */
     public $forceCopy = false;
     /**
-     * @var bool whether to append a timestamp to the URL of every published asset. When this is true,
-     * the URL of a published asset may look like `/path/to/asset?v=timestamp`, where `timestamp` is the
-     * last modification time of the published asset file.
-     * You normally would want to set this property to true when you have enabled HTTP caching for assets,
-     * because it allows you to bust caching when the assets are updated.
+     * @var bool 是否将时间戳附加到每个已发布资源的 URL 上。
+     * 如果为 true，已发布资源的 URL 就会像 `/path/to/asset?v=timestamp`，
+     * 其中 `timestamp` 是已发布文件的最后修改时间。
+     * 通常情况下，你为资源启用 HTTP 缓存时，可将此属性设置为 true，
+     * 因为它会在你更新资源文件时刷新缓存。
      * @since 2.0.3
      */
     public $appendTimestamp = false;
     /**
-     * @var callable a callback that will be called to produce hash for asset directory generation.
-     * The signature of the callback should be as follows:
+     * @var callable PHP 回调：该回调函数将被调用以生成资源目录的哈希值。
+     * 回调的形式如下：
      *
      * ```
      * function ($path)
      * ```
      *
-     * where `$path` is the asset path. Note that the `$path` can be either directory where the asset
-     * files reside or a single file. For a CSS file that uses relative path in `url()`, the hash
-     * implementation should use the directory path of the file instead of the file path to include
-     * the relative asset files in the copying.
+     * 其中 `$path` 资源路径。请注意，`$path` 可以是资源目录，也可以是单个文件。
+     * 对于在 `url()` 中使用的相对路径的 CSS 文件，
+     * 哈希实现应该使用文件的目录路径而不是复制中的资源文件的相对路径。
      *
-     * If this is not set, the asset manager will use the default CRC32 and filemtime in the `hash`
-     * method.
      *
-     * Example of an implementation using MD4 hash:
+     * 如果未设置，资产管理器将在 `hash` 方法中使用 CRC32 和 filemtime。
+     *
+     *
+     * 用 MD4 哈希的一个实现例子：
      *
      * ```php
      * function ($path) {
@@ -202,8 +202,8 @@ class AssetManager extends Component
 
 
     /**
-     * Initializes the component.
-     * @throws InvalidConfigException if [[basePath]] is invalid
+     * 初始化组件
+     * @throws InvalidConfigException 如果 [[basePath]] 无效
      */
     public function init()
     {
@@ -220,16 +220,16 @@ class AssetManager extends Component
     }
 
     /**
-     * Returns the named asset bundle.
+     * 返回所找的资源包对象。
      *
-     * This method will first look for the bundle in [[bundles]]. If not found,
-     * it will treat `$name` as the class of the asset bundle and create a new instance of it.
+     * 这个方法首先会在 [[bundles]] 你查找。如找不到
+     * 它会将 `$name` 当作资源包的类，并创建一个新实例。
      *
-     * @param string $name the class name of the asset bundle (without the leading backslash)
-     * @param bool $publish whether to publish the asset files in the asset bundle before it is returned.
-     * If you set this false, you must manually call `AssetBundle::publish()` to publish the asset files.
-     * @return AssetBundle the asset bundle instance
-     * @throws InvalidConfigException if $name does not refer to a valid asset bundle
+     * @param string $name 资源包的类名称（没有反斜杠前缀）
+     * @param bool $publish 是否在返回资源包之前发布资源包中的资源文件。
+     * 如果将此设置为 false，则必须手动调用 `AssetBundle::publish()` 来发布资源文件。
+     * @return AssetBundle 资源包对象实例
+     * @throws InvalidConfigException 如果 $name 没有指向任何合法资源包
      */
     public function getBundle($name, $publish = true)
     {
@@ -249,13 +249,13 @@ class AssetManager extends Component
     }
 
     /**
-     * Loads asset bundle class by name.
+     * 根据名称加载资源包。
      *
-     * @param string $name bundle name
-     * @param array $config bundle object configuration
-     * @param bool $publish if bundle should be published
+     * @param string $name 资源包名称
+     * @param array $config 资源包对象的配置
+     * @param bool $publish 是否发布资源包
      * @return AssetBundle
-     * @throws InvalidConfigException if configuration isn't valid
+     * @throws InvalidConfigException 如果配置无效
      */
     protected function loadBundle($name, $config = [], $publish = true)
     {
