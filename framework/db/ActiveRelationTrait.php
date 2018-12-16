@@ -549,7 +549,22 @@ trait ActiveRelationTrait
                 }
             }
         }
-        $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
+        $values = array_unique($values, SORT_REGULAR);
+        if (count($attributes) > 1) {
+            $orArray = [];
+            foreach ($values as $key => $value) {
+                $andArray = [];
+                foreach ($attributes as $attribute) {
+                    $andArray[] = [$attribute => $value[$attribute]];
+                }
+                array_unshift($andArray, 'and');
+                $orArray[] = $andArray;
+            }
+            array_unshift($orArray, 'or');
+            $this->andWhere($orArray);
+        } else {
+            $this->andWhere(['in', $attributes, $values]);
+        }
     }
 
     /**
