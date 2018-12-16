@@ -272,7 +272,7 @@ class AssetManager extends Component
     }
 
     /**
-     * Loads dummy bundle by name.
+     * 按名称加载虚拟资源包。
      *
      * @param string $name
      * @return AssetBundle
@@ -292,11 +292,11 @@ class AssetManager extends Component
     }
 
     /**
-     * Returns the actual URL for the specified asset.
-     * The actual URL is obtained by prepending either [[AssetBundle::$baseUrl]] or [[AssetManager::$baseUrl]] to the given asset path.
-     * @param AssetBundle $bundle the asset bundle which the asset file belongs to
-     * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
-     * @return string the actual URL for the specified asset.
+     * 返回给定资源的实际 URL。
+     * 实际的 URL 是通过将指定的资源路径，拼接上 [[AssetBundle::$baseUrl]] 或者 [[AssetManager::$baseUrl]] 前缀获得的。
+     * @param AssetBundle $bundle 资源文件所属的资源包
+     * @param string $asset 资源路径。必须是 [[AssetBundle::$js]] 或者 [[AssetBundle::$css]] 列表里的资源文件。
+     * @return string 给定资源的实际 URL。
      */
     public function getAssetUrl($bundle, $asset)
     {
@@ -327,10 +327,10 @@ class AssetManager extends Component
     }
 
     /**
-     * Returns the actual file path for the specified asset.
-     * @param AssetBundle $bundle the asset bundle which the asset file belongs to
-     * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
-     * @return string|false the actual file path, or `false` if the asset is specified as an absolute URL
+     * 返回给定资源的实际文件路径。
+     * @param AssetBundle $bundle 资源文件所属的资源包
+     * @param string $asset 资源路径。必须是 [[AssetBundle::$js]] 或者 [[AssetBundle::$css]] 列表里的资源文件。
+     * @return string|false 实际的文件路径，如果所给资源是是一个绝对 URL，则返回  `false`
      */
     public function getAssetPath($bundle, $asset)
     {
@@ -369,8 +369,8 @@ class AssetManager extends Component
     private $_converter;
 
     /**
-     * Returns the asset converter.
-     * @return AssetConverterInterface the asset converter.
+     * 返回资源编译器。
+     * @return AssetConverterInterface 资源编译器。
      */
     public function getConverter()
     {
@@ -387,10 +387,10 @@ class AssetManager extends Component
     }
 
     /**
-     * Sets the asset converter.
-     * @param array|AssetConverterInterface $value the asset converter. This can be either
-     * an object implementing the [[AssetConverterInterface]], or a configuration
-     * array that can be used to create the asset converter object.
+     * 设置资源编译器。
+     * @param array|AssetConverterInterface $value 资源编译器。可以是个
+     * 实现了 [[AssetConverterInterface]] 的对象，也可以是
+     * 用来创建编译器对象的数组配置。
      */
     public function setConverter($value)
     {
@@ -398,51 +398,51 @@ class AssetManager extends Component
     }
 
     /**
-     * @var array published assets
+     * @var array 已发布的资源
      */
     private $_published = [];
 
     /**
-     * Publishes a file or a directory.
+     * 发布文件或目录。
      *
-     * This method will copy the specified file or directory to [[basePath]] so that
-     * it can be accessed via the Web server.
+     * 此方法将指定的文件或目录复制到 [[basePath]]， so that
+     * 以便可以通过Web服务器访问它们。
      *
-     * If the asset is a file, its file modification time will be checked to avoid
-     * unnecessary file copying.
+     * 资源文件将检查其修改时间以避免不必要的文件复制。
      *
-     * If the asset is a directory, all files and subdirectories under it will be published recursively.
-     * Note, in case $forceCopy is false the method only checks the existence of the target
-     * directory to avoid repetitive copying (which is very expensive).
      *
-     * By default, when publishing a directory, subdirectories and files whose name starts with a dot "."
-     * will NOT be published. If you want to change this behavior, you may specify the "beforeCopy" option
-     * as explained in the `$options` parameter.
+     * 资源文件目录则会，其下的所有文件和子目录将以递归方式发布。
+     * 注意，如果 $forceCopy 为 false，则该方法仅检查目标文件夹是否存在，
+     * 以避免重复复制（这是非常昂贵的）。
      *
-     * Note: On rare scenario, a race condition can develop that will lead to a
-     * one-time-manifestation of a non-critical problem in the creation of the directory
-     * that holds the published assets. This problem can be avoided altogether by 'requesting'
-     * in advance all the resources that are supposed to trigger a 'publish()' call, and doing
-     * that in the application deployment phase, before system goes live. See more in the following
-     * discussion: http://code.google.com/p/yii/issues/detail?id=2579
+     * 默认情况下，以 "." 开头的目录，子目录和文件都不会被发布。
+     * 如果要更改此行为，可以设置 "beforeCopy" 选项，
+     * 如 `$options` 参数中所述。
      *
-     * @param string $path the asset (file or directory) to be published
-     * @param array $options the options to be applied when publishing a directory.
-     * The following options are supported:
+     * Note: 在极端场景下，可能会形成竞争条件，导致在创建已发布的资源文件的目录时，
+     * 产生非关键问题的一次性表现。（就是并发请求同时触发布的问题）
+     * 但可以完全避免这个问题，
+     * 先发一个 “请求”，以触发所有会调用 'publish()' 的资源的发布，
+     * 在应用程序部署阶段，在系统上线之前就先这么做。
+     * 关于此问题更多的讨论请查看: http://code.google.com/p/yii/issues/detail?id=2579
      *
-     * - only: array, list of patterns that the file paths should match if they want to be copied.
-     * - except: array, list of patterns that the files or directories should match if they want to be excluded from being copied.
-     * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
-     * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
-     *   This overrides [[beforeCopy]] if set.
-     * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
-     *   This overrides [[afterCopy]] if set.
-     * - forceCopy: boolean, whether the directory being published should be copied even if
-     *   it is found in the target directory. This option is used only when publishing a directory.
-     *   This overrides [[forceCopy]] if set.
+     * @param string $path 要发布的资源文件或目录
+     * @param array $options 发布目录时要应用的选项。
+     * 支持以下选项：
      *
-     * @return array the path (directory or file path) and the URL that the asset is published as.
-     * @throws InvalidArgumentException if the asset to be published does not exist.
+     * - only: array，允许被复制的文件路径的匹配模式列表。
+     * - except: array，不允许被复制的文件路径的匹配模式列表。
+     * - caseSensitive: boolean，指定为 “only” 或 “except” 的匹配模式是否区分大小写。默认为 true。
+     * - beforeCopy: callback, 一个在复制每个子目录或文件之前调用的 PHP 回调。
+     *   如果设置了，则覆盖 [[beforeCopy]] 属性。
+     * - afterCopy: callback, 在成功复制子目录或文件后调用的 PHP 回调。
+     *   如果设置了，则覆盖 [[afterCopy]] 属性。
+     * - forceCopy: boolean, 如果目标目录要发布的文件已存在，是否要强制复制。
+     *   此选项仅在发布目录时使用。
+     *   如果设置了，则覆盖 [[forceCopy]] 属性。
+     *
+     * @return array 已发布的目录或者文件的路径和 URL 地址。
+     * @throws InvalidArgumentException 如果要发布的资源不存在。
      */
     public function publish($path, $options = [])
     {
