@@ -346,7 +346,7 @@ public function behaviors()
 ```
 
 如果要将CORS过滤器添加到你的 API 中的 [[yii\rest\ActiveController]] 类，
-还要检查 [REST Controllers](rest-controllers.md＃cors) 中的部分。
+还要检查 [REST Controllers](rest-controllers.md#cors) 中的部分。
 
 CROS过滤器可以通过 [[yii\filters\Cors::$cors|$cors]] 属性进行调整。
 
