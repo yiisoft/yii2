@@ -81,7 +81,9 @@ class HelpController extends Controller
             list($controller, $actionID) = $result;
             $actions = $this->getActions($controller);
             $prefix = $controller->getUniqueId();
-            $this->stdout("$prefix\n");
+            if ($controller->createAction($controller->defaultAction) !== null) {
+                $this->stdout("$prefix\n");
+            }
             foreach ($actions as $action) {
                 $this->stdout("$prefix/$action\n");
             }

@@ -24,6 +24,9 @@ class UnknownCommandExceptionTest extends TestCase
                 'cache' => 'yii\console\controllers\CacheController',
                 'migrate' => 'yii\console\controllers\MigrateController',
                 'message' => 'yii\console\controllers\MessageController',
+                'whatever' => 'yiiunit\data\console\controllers\FakeController',
+                'whatever-empty' => 'yiiunit\data\console\controllers\FakeEmptyController',
+                'whatever-no-default' => 'yiiunit\data\console\controllers\FakeNoDefaultController',
             ],
         ]);
     }
@@ -49,6 +52,7 @@ class UnknownCommandExceptionTest extends TestCase
             [str_repeat('asdw1234', 31), []],
             [str_repeat('asdw1234', 32), []],
             [str_repeat('asdw1234', 33), []],
+            ['what', ['whatever', 'whatever/default', 'whatever/second', 'whatever-no-default/index']],
         ];
     }
 
