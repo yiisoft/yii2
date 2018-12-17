@@ -11,10 +11,10 @@ use Yii;
 use yii\base\Component;
 
 /**
- * Logger 如果设置了 [[dispatcher]] 他将把日志消息记在内存并且发送到所设置的日志 [[dispatcher]]。
+ * Logger 如果设置了 [[dispatcher]]，它将把日志消息记在内存并且发送到所设置的日志 [[dispatcher]]。
  *
- * 可以通过 `Yii::getLogger()` 获取Logger 实例 ，并调用当前实例的 [[log()]] 方法去记录一条日志消息。
- * 为了方便起见， [[Yii]] class 提供了一组用于记录各种级别消息的快
+ * 可以通过 `Yii::getLogger()` 获取 Logger 实例，并调用当前实例的 [[log()]] 方法去记录一条日志消息。
+ * 为了方便起见, [[Yii]] class 提供了一组用于记录各种级别消息的快
  * 捷方法。
  *
  * - [[Yii::trace()]]
@@ -26,7 +26,7 @@ use yii\base\Component;
  *
  * 有关于 Logger 的详细信息和使用方法，请参考权威指南的 Logger 章节。
  *
- * 当应用程序结束 或者 执行到 [[flushInterval]] 时  Logger 将会自动调用 [[flush()]]
+ * 当应用程序结束或者执行到 [[flushInterval]] 时 Logger 将会自动调用 [[flush()]]
  * 通过 [[dispatcher]] 可以把消息记录到如 [[FileTarget|file]]， [[EmailTarget|email]]，
  * 或者 [[DbTarget|database]] 不同的目标。
  *
@@ -34,8 +34,8 @@ use yii\base\Component;
  * 为当前 sql 所消耗的时间。该属性只读。
  * @property float $elapsedTime 当前请求的总耗时(以秒为单位)。
  * 该属性只读。
- * @property array $profiling 分析结果。每个元素都是由这些元素组成的数组:
- * `info`， `category`， `timestamp`， `trace`， `level`， `duration`， `memory`， `memoryDiff`。
+ * @property array $profiling 分析结果。每个元素都是由这些元素组成的数组：
+ * `info`，`category`，`timestamp`，`trace`，`level`，`duration`，`memory`，`memoryDiff`。
  *  从版本 2.0.11 起，添加 `memory` 和 `memoryDiff` 元素。该属性只读。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -50,7 +50,7 @@ class Logger extends Component
     const LEVEL_ERROR = 0x01;
     /**
      * Warning 消息等级。警告消息是指一些异常发生，但是
-     *应用程序能够继续运行，开发人员应该注意这个消息。
+     * 应用程序能够继续运行，开发人员应该注意这个消息。
      */
     const LEVEL_WARNING = 0x02;
     /**
@@ -79,7 +79,7 @@ class Logger extends Component
 
     /**
      * @var array 日志消息。该属性由 [[log()]] 和 [[flush()]] 操作。
-     * 下面是日志消息的结构:
+     * 下面是日志消息的结构：
      *
      * ```
      * [
@@ -95,15 +95,15 @@ class Logger extends Component
     public $messages = [];
     /**
      * @var int 在从内存刷新并发送到目标之前，应该记录多少消息。
-     * 默认值 1000, 这意味着每记录 1000 条消息，就会调用 [[flush]] 方法一次。
-     * 如果在应用程序终止之前不想刷新消息，则将此属性设置为0。
+     * 默认值 1000,这意味着每记录 1000 条消息，就会调用 [[flush]] 方法一次。
+     * 此属性设置为 0,如果在应用程序终止之前不想刷新消息。
      * 此属性主要影响日志消息将占用多少内存。
      * 较小的值意味着占用更少的内存，但是由于 [[flush()] 的开销,会增加执行时间。
      */
     public $flushInterval = 1000;
     /**
      * @var int 应该为每个消息记录多少调用堆栈信息(文件名和行号)。
-     * 如果大于0,最多记录调用堆栈的数量。 注意，只有应用程序
+     * 如果大于 0,最多记录调用堆栈的数量。注意，只有应用程序
      * 计算调用堆栈。
      */
     public $traceLevel = 0;
@@ -120,10 +120,10 @@ class Logger extends Component
     {
         parent::init();
         register_shutdown_function(function () {
-            // 在其他关闭功能之前进行定期刷新，这允许会话数据的收集等
+            //  make regular flush before other shutdown functions, which allows session data collection and so on
             $this->flush();
-            // 确保由关机函数写入的日志条目也被刷新
-            // 确保在有多个关闭函数时最后调用  "flush()"
+            // make sure log entries written by shutdown functions are also flushed
+            // ensure "flush()" is called last when there are multiple shutdown functions
             register_shutdown_function([$this, 'flush'], true);
         });
     }
@@ -134,9 +134,9 @@ class Logger extends Component
      * 其他调用堆栈信息也将被记录。
      * @param string|array $message 要被记录的消息。它可以是一个简单的字符串或者一个复杂的数据结构
      * 并使用指定的 [[Target|log target]] 进行处理.
-     * @param int $level 消息等级。 必须是以下类型之一:
-     * `Logger::LEVEL_ERROR`， `Logger::LEVEL_WARNING`， `Logger::LEVEL_INFO`， `Logger::LEVEL_TRACE`,
-     * `Logger::LEVEL_PROFILE_BEGIN`， `Logger::LEVEL_PROFILE_END`。
+     * @param int $level 消息等级。 必须是以下类型之一：
+     * `Logger::LEVEL_ERROR`，`Logger::LEVEL_WARNING`，`Logger::LEVEL_INFO`，`Logger::LEVEL_TRACE`,
+     * `Logger::LEVEL_PROFILE_BEGIN`，`Logger::LEVEL_PROFILE_END`。
      * @param string $category 当前消息类型分类。
      */
     public function log($message, $level, $category = 'application')
@@ -202,8 +202,8 @@ class Logger extends Component
      * 'yii\db\*' 将匹配以 'yii\db\' 开头的类别，
      * 例如 'yii\db\Connection'。
      * @param array $excludeCategories 要排除的类别的列表
-     * @return array 分析的结果。每个元素都是由这些元素组成的数组:
-     * `info`， `category`， `timestamp`， `trace`， `level`， `duration`， `memory`， `memoryDiff`，
+     * @return array 分析的结果。每个元素都是由这些元素组成的数组：
+     * `info`，`category`，`timestamp`，`trace`，`level`，`duration`，`memory`，`memoryDiff`，
      * 从版本 2.0.11 起， 添加 `memory` 和 `memoryDiff` 元素。
      */
     public function getProfiling($categories = [], $excludeCategories = [])
@@ -266,7 +266,7 @@ class Logger extends Component
      * 计算给定日志消息的运行时间。
      * @param array $messages 从分析中获得的日志消息
      * @return array timings. 每个元素都是由这些元素组成的数组:
-     * `info`， `category`， `timestamp`， `trace`, `level`， `duration`， `memory`， `memoryDiff`，
+     * `info`，`category`，`timestamp`，`trace`，`level`，`duration`，`memory`，`memoryDiff`，
      * 从版本 2.0.11 起，添加 `memory` 和 `memoryDiff` 元素。
      */
     public function calculateTimings($messages)
@@ -306,7 +306,7 @@ class Logger extends Component
 
     /**
      * Returns 具体的等级文字描述。
-     * @param int $level 消息等级 如 [[LEVEL_ERROR]], [[LEVEL_WARNING]]。
+     * @param int $level 消息等级 如 [[LEVEL_ERROR]]， [[LEVEL_WARNING]]。
      * @return string 返回当前等级的文字描述。
      */
     public static function getLevelName($level)
