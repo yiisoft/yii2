@@ -68,7 +68,7 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $slugAttribute = 'slug';
     /**
-     * @var string|array|null 单个属性或者属性列表，它们的值将会转译为 slug,
+     * @var string|array|null 单个属性或者属性列表，它们的值将会转译为 slug，
      * 如果是 `null` 那么将会用 $value 属性来生成 slug。
      */
     public $attribute;
