@@ -183,7 +183,7 @@ class AssetManager extends Component
      * 哈希实现应该使用文件的目录路径而不是复制中的资源文件的相对路径。
      *
      *
-     * 如果未设置，资产管理器将在 `hash` 方法中使用 CRC32 和 filemtime。
+     * 如果未设置，资源管理器将在 `hash` 方法中使用 CRC32 和 filemtime。
      *
      *
      * 用 MD4 哈希的一个实现例子：
@@ -464,10 +464,10 @@ class AssetManager extends Component
     }
 
     /**
-     * Publishes a file.
-     * @param string $src the asset file to be published
-     * @return string[] the path and the URL that the asset is published as.
-     * @throws InvalidArgumentException if the asset to be published does not exist.
+     * 发布文件。
+     * @param string $src 将要发布的资源文件
+     * @return string[] 已发布好的资源文件路径和 URL。
+     * @throws InvalidArgumentException 如果要发布的资源不存在。
      */
     protected function publishFile($src)
     {
@@ -501,24 +501,24 @@ class AssetManager extends Component
     }
 
     /**
-     * Publishes a directory.
-     * @param string $src the asset directory to be published
-     * @param array $options the options to be applied when publishing a directory.
-     * The following options are supported:
+     * 发布目录。
+     * @param string $src 将要发布的目录
+     * @param array $options 发布目录时要应用的选项。
+     * 支持以下选项：
      *
-     * - only: array, list of patterns that the file paths should match if they want to be copied.
-     * - except: array, list of patterns that the files or directories should match if they want to be excluded from being copied.
-     * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
-     * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
-     *   This overrides [[beforeCopy]] if set.
-     * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
-     *   This overrides [[afterCopy]] if set.
-     * - forceCopy: boolean, whether the directory being published should be copied even if
-     *   it is found in the target directory. This option is used only when publishing a directory.
-     *   This overrides [[forceCopy]] if set.
+     * - only: array，允许被复制的文件路径的匹配模式列表。
+     * - except: array，不允许被复制的文件路径的匹配模式列表。
+     * - caseSensitive: boolean，指定为 “only” 或 “except” 的匹配模式是否区分大小写。默认为 true。
+     * - beforeCopy: callback, 一个在复制每个子目录或文件之前调用的 PHP 回调。
+     *   如果设置了，则覆盖 [[beforeCopy]] 属性。
+     * - afterCopy: callback, 在成功复制子目录或文件后调用的 PHP 回调。
+     *   如果设置了，则覆盖 [[afterCopy]] 属性。
+     * - forceCopy: boolean, 如果目标目录要发布的文件已存在，是否要强制复制。
+     *   此选项仅在发布目录时使用。
+     *   如果设置了，则覆盖 [[forceCopy]] 属性。
      *
-     * @return string[] the path directory and the URL that the asset is published as.
-     * @throws InvalidArgumentException if the asset to be published does not exist.
+     * @return string[] 已发布的目录的路径和 URL 地址。
+     * @throws InvalidArgumentException 如果要发布的资源不存在。
      */
     protected function publishDirectory($src, $options)
     {
@@ -563,11 +563,11 @@ class AssetManager extends Component
     }
 
     /**
-     * Returns the published path of a file path.
-     * This method does not perform any publishing. It merely tells you
-     * if the file or directory is published, where it will go.
-     * @param string $path directory or file path being published
-     * @return string|false string the published file path. False if the file or directory does not exist
+     * 返回文件的发布后的路径。
+     * 这个方法没有执行任何发布动作，
+     * 它仅仅告诉你这个文件或目录是否发布了，以及它发布到了哪里。
+     * @param string $path 要发布的资源文件或目录
+     * @return string|false string：已发布的路径。False：如果文件或者目录不存在。
      */
     public function getPublishedPath($path)
     {
@@ -584,11 +584,11 @@ class AssetManager extends Component
     }
 
     /**
-     * Returns the URL of a published file path.
-     * This method does not perform any publishing. It merely tells you
-     * if the file path is published, what the URL will be to access it.
-     * @param string $path directory or file path being published
-     * @return string|false string the published URL for the file or directory. False if the file or directory does not exist.
+     * 返回文件的发布后的 URL 地址。
+     * 这个方法没有执行任何发布动作，
+     * 它仅仅告诉你这个文件或目录是否发布了，以及它发布到了哪里。
+     * @param string $path 要发布的资源文件或目录
+     * @return string|false string：已发布的 URL。False：如果文件或者目录不存在。
      */
     public function getPublishedUrl($path)
     {
@@ -605,10 +605,10 @@ class AssetManager extends Component
     }
 
     /**
-     * Generate a CRC32 hash for the directory path. Collisions are higher
-     * than MD5 but generates a much smaller hash string.
-     * @param string $path string to be hashed.
-     * @return string hashed string.
+     * 给目录生成 CRC32 哈希值。
+     * 冲突会高于 MD5，但生成的哈希字符串要小得多。
+     * @param string $path 将要被哈希的字符串。
+     * @return string 哈希字符串
      */
     protected function hash($path)
     {
