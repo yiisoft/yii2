@@ -14,8 +14,8 @@ use yii\base\Component;
  * Logger 如果设置了 [[dispatcher]]，它将把日志消息记在内存并且发送到所设置的日志 [[dispatcher]]。
  *
  * 可以通过 `Yii::getLogger()` 获取 Logger 实例，并调用当前实例的 [[log()]] 方法去记录一条日志消息。
- * 为了方便起见，[[Yii]] class 提供了一组用于记录各种级别消息的快
- * 捷方法。
+ * 为了方便起见，
+ * [[Yii]] 类提供了一组用于记录各种级别消息的快捷方法。
  *
  * - [[Yii::trace()]]
  * - [[Yii::error()]]
@@ -27,11 +27,11 @@ use yii\base\Component;
  * 有关于 Logger 的详细信息和使用方法，请参考权威指南的 Logger 章节。
  *
  * 当应用程序结束或者执行到 [[flushInterval]] 时 Logger 将会自动调用 [[flush()]]
- * 通过 [[dispatcher]] 可以把消息记录到如 [[FileTarget|file]]， [[EmailTarget|email]]，
+ * 通过 [[dispatcher]] 可以把消息记录到如 [[FileTarget|file]]，[[EmailTarget|email]]，
  * 或者 [[DbTarget|database]] 不同的目标。
  *
- * @property array $dbProfiling 该数组的第一个元素当前执行的 sql，第二个元素
- * 为当前 sql 所消耗的时间。该属性只读。
+ * @property array $dbProfiling 该数组的第一个元素当前执行的 sql，
+ * 第二个元素为当前 sql 所消耗的时间。该属性只读。
  * @property float $elapsedTime 当前请求的总耗时(以秒为单位)。
  * 该属性只读。
  * @property array $profiling 分析结果。每个元素都是由这些元素组成的数组：
@@ -49,8 +49,8 @@ class Logger extends Component
      */
     const LEVEL_ERROR = 0x01;
     /**
-     * Warning 消息等级。警告消息是指一些异常发生，但是
-     * 应用程序能够继续运行，开发人员应该注意这个消息。
+     * Warning 消息等级。警告消息是指一些异常发生，
+     * 但是应用程序能够继续运行，开发人员应该注意这个消息。
      */
     const LEVEL_WARNING = 0x02;
     /**
@@ -102,9 +102,9 @@ class Logger extends Component
      */
     public $flushInterval = 1000;
     /**
-     * @var int 应该为每个消息记录多少调用堆栈信息(文件名和行号)。
-     * 如果大于 0,最多记录调用堆栈的数量。注意，只有应用程序
-     * 计算调用堆栈。
+     * @var int 应该为每个消息记录多少调用堆栈信息（文件名和行号）。
+     * 如果大于 0,最多记录调用堆栈的数量。
+     * 注意，只计算应用程序调用的堆栈信息。
      */
     public $traceLevel = 0;
     /**
@@ -204,7 +204,7 @@ class Logger extends Component
      * @param array $excludeCategories 要排除的类别的列表
      * @return array 分析的结果。每个元素都是由这些元素组成的数组：
      * `info`，`category`，`timestamp`，`trace`，`level`，`duration`，`memory`，`memoryDiff`，
-     * 从版本 2.0.11 起， 添加 `memory` 和 `memoryDiff` 元素。
+     * 从版本 2.0.11 起，添加 `memory` 和 `memoryDiff` 元素。
      */
     public function getProfiling($categories = [], $excludeCategories = [])
     {
@@ -245,7 +245,7 @@ class Logger extends Component
 
     /**
      * 返回数据库查询的统计结果。
-     * 返回的结果包括执行的SQL语句的数量和
+     * 返回的结果包括执行的 SQL 语句的数量和
      * 花费的总时间。
      * @return array 第一个元素表示执行的 SQL 语句的数量,
      * 第二个元素是 SQL 执行花费的总时间。
