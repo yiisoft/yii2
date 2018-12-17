@@ -64,8 +64,8 @@ class DataColumn extends Column
      *
      * 如果这是一个匿名函数, 每一行都将调用它，返回值将用作为每个数据模型显示的值。
      * 函数的写法应该为：`function ($model, $key, $index, $column)`。
-     * 其中，`$model`，`$key` 和 `$index` 表示当前渲染行的模型、键和索引，
-     * `$column` 是对 [[RadioButtonColumn]] 对象的引用。
+     * 其中，`$model`，`$key` 和 `$index` 表示当前渲染行的模型，键和索引，
+     * `$column` 是对 [[DataColumn]] 对象的引用。
      *
      * 你还可以将此属性设置为表示要在此列中显示的属性名称的字符串。
      * 当要显示的属性与用于排序和过滤的 [[attribute]] 不同时，
