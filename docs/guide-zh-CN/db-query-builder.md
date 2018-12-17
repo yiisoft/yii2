@@ -31,7 +31,7 @@ WHERE `last_name` = :last_name
 LIMIT 10
 ```
 
-> Tip: 你平时更多的时候会使用 [[yii\db\Query]] 而不是 [yii\db\QueryBuilder]]。
+> Tip: 你平时更多的时候会使用 [[yii\db\Query]] 而不是 [[yii\db\QueryBuilder]]。
   当你调用其中一个查询方法时，后者将会被前者隐式的调用。[[yii\db\QueryBuilder]]主要负责将
   DBMS 不相关的 [[yii\db\Query]] 对象转换成 DBMS 相关的 SQL 语句（例如，
   以不同的方式引用表或字段名称）。
@@ -413,7 +413,7 @@ $query->filterWhere([
 
 > Tip: 当一个值为 `null`、空数组、空字符串或者一个只包含空格的字符串时，那么它将被判定为空值。
 
-类似于 [yii\db\Query::andWhere()|andWhere()]] 和 [[yii\db\Query::orWhere()|orWhere()]],
+类似于 [[yii\db\Query::andWhere()|andWhere()]] 和 [[yii\db\Query::orWhere()|orWhere()]],
 你可以使用 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] 和 [[yii\db\Query::orFilterWhere()|orFilterWhere()]] 方法
 来追加额外的过滤条件。
 
@@ -462,7 +462,7 @@ $query->orderBy('id ASC, name DESC');
 
 > Note: 当 `ORDER BY` 语句包含一些 DB 表达式的时候，你应该使用数组的格式。
 
-你可以调用 [yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `ORDER BY` 片断添加额外的子句。
+你可以调用 [[yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `ORDER BY` 片断添加额外的子句。
 例如，
 
 ```php
@@ -489,7 +489,7 @@ $query->groupBy('id, status');
 
 > Note: 当 `GROUP BY` 语句包含一些 DB 表达式的时候，你应该使用数组的格式。
 
-你可以调用 [yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `GROUP BY` 
+你可以调用 [[yii\db\Query::addOrderBy()|addOrderBy()]] 来为 `GROUP BY` 
 子句添加额外的字段。例如，
 
 ```php
@@ -538,7 +538,7 @@ $query->limit(10)->offset(20);
 
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
-[yii\db\Query::join()|join()]] 是用来指定 SQL 语句当中的 `JOIN` 子句的。例如，
+[[yii\db\Query::join()|join()]] 是用来指定 SQL 语句当中的 `JOIN` 子句的。例如，
  
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
@@ -905,7 +905,7 @@ $conditon = new AllGreaterCondition(['col1', 'col2'], 42);
 
 但是 `QueryBuilder` 还不知道怎样从此对象生成 SQL 查询条件。
 因此我们还需要为这个条件对象创建一个构建器（Builder）。
-这个构建器必须实现 [yii\db\ExpressionBuilderInterface]] 接口和 `build()` 方法。
+这个构建器必须实现 [[yii\db\ExpressionBuilderInterface]] 接口和 `build()` 方法。
 
 ```php
 namespace app\db\conditions;

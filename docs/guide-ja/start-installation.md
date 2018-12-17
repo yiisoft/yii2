@@ -218,14 +218,16 @@ DocumentRoot "path/to/basic/web"
 <Directory "path/to/basic/web">
     # 綺麗な URL をサポートするために mod_rewrite を使う
     RewriteEngine on
-    # ディレクトリかファイルが存在する場合は、リクエストをそのまま通す
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    # そうでなければ、リクエストを index.php に送付する
-    RewriteRule . index.php
 
     # UrlManager の $showScriptName が false の場合は、スクリプト名で URL にアクセスすることを許さない
     RewriteRule ^index.php/ - [L,R=404]
+
+    # ディレクトリかファイルが存在する場合は、リクエストをそのまま通す
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # そうでなければ、リクエストを index.php に送付する
+    RewriteRule . index.php
 
     # ... 他の設定 ...
 </Directory>
