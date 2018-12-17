@@ -36,7 +36,7 @@ class Column extends BaseObject
     /**
      * @var callable 这是用于生成每个单元格内容的回调函数。
      * 函数的写法如下：`function ($model, $key, $index, $column)`。
-     * 其中，`$model`，`$key` 和 `$index` 表示当前渲染行的模型、键和索引，
+     * 其中，`$model`，`$key` 和 `$index` 表示当前渲染行的模型，键和索引，
      * `$column` 是对 [[Column]] 对象的引用。
      */
     public $content;
