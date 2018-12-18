@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.16 under development
 ------------------------
-
+- Enh #14272: added `yii\grid\GridView::resetButton()` method to generate a reset button for GridView (rrmontuan)
 - Bug #15850: check basePath is writable on publish in AssetManager (Groonya)
 - Bug #16910: Fix messages sorting on extract (Groonya)
 - Bug #16969: Fix `yii\filters\PageCache` incorrectly storing empty data in some cases (sammousa)

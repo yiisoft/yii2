@@ -535,6 +535,24 @@ class GridView extends BaseListView
     }
 
     /**
+     * Generates a reset button. 
+     * The button will be generate using the current route, however, if you want to use a different 
+     * url, an option href can be specified in $options.
+     * Aditionally, by default the button uses the bootstrap classes `btn btn-default` but a different
+     * class can be specified in $options.
+     * @param string $content the content enclosed within the button tag.
+     * @param array $options the tag options in terms of name-value pairs.  
+     * @return string the generated reset button
+     */
+    public static function resetButton($content='Reset', $options=[]){
+    	
+    	$options['href'] = array_key_exists('href', $options) ? $options['href'] : Url::to([''], false);
+    	$options['class'] = array_key_exists('class', $options) ? $options['class'] : 'btn btn-default';
+    	
+    	return Html::a($content, null, $options);
+    }
+    
+    /**
      * Creates column objects and initializes them.
      */
     protected function initColumns()

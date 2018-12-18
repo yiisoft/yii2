@@ -11,6 +11,10 @@ use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
 use yii\web\View;
+use yii\web\Controller;
+use yii\base\Action;
+use yii\helpers\Url;
+use yii\base\Module;
 
 /**
  * @author Evgeniy Tkachenko <et.coder@gmail.com>
@@ -29,8 +33,39 @@ class GridViewTest extends \yiiunit\TestCase
                         'yii\web\JqueryAsset' => false,
                     ],
                 ],
+            	'urlManager' => [
+            		'class' => 'yii\web\UrlManager',
+            		'baseUrl' => '/base',
+            		'scriptUrl' => '/base/index.php',
+            		'hostInfo' => 'http://example.com/',
+            		'enablePrettyUrl' => true,
+            	],
             ],
         ]);
+    }
+    
+    /**
+     * Mocks controller action with parameters.
+     *
+     * @param string $controllerId
+     * @param string $actionID
+     * @param string $moduleID
+     * @param array  $params
+     */
+    protected function mockAction($controllerId, $actionID, $moduleID = null, $params = [])
+    {
+    	\Yii::$app->controller = $controller = new Controller($controllerId, \Yii::$app);
+    	$controller->actionParams = $params;
+    	$controller->action = new Action($actionID, $controller);
+    
+    	if ($moduleID !== null) {
+    		$controller->module = new Module($moduleID);
+    	}
+    }
+    
+    protected function removeMockedAction()
+    {
+    	\Yii::$app->controller = null;
     }
 
     /**
@@ -149,5 +184,24 @@ class GridViewTest extends \yiiunit\TestCase
 		$html = preg_replace("/\r|\n/", '', $html);
 
 		$this->assertTrue(preg_match("/<\/tbody><tfoot>/", $html) === 1);
+	}
+	
+	public function testResetButton(){
+		
+		$this->mockAction('page', 'index', null, ['id' => 10]);
+		
+		$this->assertEquals('<a class="btn btn-default" href="/base/index.php/page/index">Reset</a>', GridView::resetButton());
+		$this->assertEquals('<a class="btn btn-default" href="/base/index.php/site/grid">Clear</a>', GridView::resetButton('Clear', ['href' => Url::to(['site/grid'])]));
+		$this->assertEquals('<a class="btn btn-default" href="/base/index.php/site/grid?id=10">Clear</a>', GridView::resetButton('Clear', ['href' => Url::to(['site/grid', 'id' => 10])]));
+		$this->assertEquals('<a class="btn btn-default" href="http://example.com/base/index.php/site/grid?id=10">Clear</a>', GridView::resetButton('Clear', ['href' => Url::to(['site/grid', 'id' => 10], true)]));
+		
+		$this->mockAction('page', 'index', 'module', ['id' => 10]);
+		
+		$this->assertEquals('<a class="btn btn-default" href="/base/index.php/module/page/index">Reset</a>', GridView::resetButton());
+		$this->assertEquals('<a class="btn btn-default" href="/base/index.php/module/site/grid">Clear</a>', GridView::resetButton('Clear', ['href' => Url::to(['site/grid'])]));
+		$this->assertEquals('<a class="btn btn-default" href="/base/index.php/module/site/grid?id=10">Clear</a>', GridView::resetButton('Clear', ['href' => Url::to(['site/grid', 'id' => 10])]));
+		$this->assertEquals('<a class="btn btn-default" href="http://example.com/base/index.php/module/site/grid?id=10">Clear</a>', GridView::resetButton('Clear', ['href' => Url::to(['site/grid', 'id' => 10], true)]));
+		
+		$this->removeMockedAction();
 	}
 }
