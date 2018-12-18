@@ -27,12 +27,12 @@ use yii\base\Component;
  * 有关于 Logger 的详细信息和使用方法，请参考权威指南的 Logger 章节。
  *
  * 当应用程序结束或者执行到 [[flushInterval]] 时 Logger 将会自动调用 [[flush()]]
- * 通过 [[dispatcher]] 可以把消息记录到如 [[FileTarget|file]]，[[EmailTarget|email]]，
+ * 从而通过 [[dispatcher]] 把消息记录到如 [[FileTarget|file]]，[[EmailTarget|email]]，
  * 或者 [[DbTarget|database]] 不同的目标。
  *
  * @property array $dbProfiling 该数组的第一个元素当前执行的 sql，
  * 第二个元素为当前 sql 所消耗的时间。该属性只读。
- * @property float $elapsedTime 当前请求的总耗时(以秒为单位)。
+ * @property float $elapsedTime 当前请求的总耗时（以秒为单位）。
  * 该属性只读。
  * @property array $profiling 分析结果。每个元素都是由这些元素组成的数组：
  * `info`，`category`，`timestamp`，`trace`，`level`，`duration`，`memory`，`memoryDiff`。
@@ -96,14 +96,14 @@ class Logger extends Component
     /**
      * @var int 在从内存刷新并发送到目标之前，应该记录多少消息。
      * 默认值 1000,这意味着每记录 1000 条消息，就会调用 [[flush]] 方法一次。
-     * 此属性设置为 0,程序终止之前将不会刷新消息。
+     * 如果此属性设置为 0，程序终止之前将不会刷新消息。
      * 此属性主要影响日志消息将占用多少内存。
      * 较小的值意味着占用更少的内存，但是由于 [[flush()] 的开销,会增加执行时间。
      */
     public $flushInterval = 1000;
     /**
      * @var int 应该为每个消息记录多少调用堆栈信息（文件名和行号）。
-     * 如果大于 0,最多记录调用堆栈的数量。
+     * 如果大于 0，最多记录调用堆栈的数量。
      * 注意，只计算应用程序调用的堆栈信息。
      */
     public $traceLevel = 0;
@@ -120,7 +120,7 @@ class Logger extends Component
     {
         parent::init();
         register_shutdown_function(function () {
-            //  make regular flush before other shutdown functions, which allows session data collection and so on
+            // make regular flush before other shutdown functions, which allows session data collection and so on
             $this->flush();
             // make sure log entries written by shutdown functions are also flushed
             // ensure "flush()" is called last when there are multiple shutdown functions
@@ -132,8 +132,8 @@ class Logger extends Component
      * 使用给定的类型和类别记录消息。
      * 如果 [[traceLevel]] 是一个大于 0 的值，有关应用程序代码的
      * 其他调用堆栈信息也将被记录。
-     * @param string|array $message 要被记录的消息。它可以是一个简单的字符串或者一个复杂的数据结构
-     * 并使用指定的 [[Target|log target]] 进行处理.
+     * @param string|array $message 要被记录的消息。它可以是一个简单的字符串或者一个复杂的数据结构并使用指定的
+     * [[Target|log target]] 进行处理。
      * @param int $level 消息等级。 必须是以下类型之一：
      * `Logger::LEVEL_ERROR`，`Logger::LEVEL_WARNING`，`Logger::LEVEL_INFO`，`Logger::LEVEL_TRACE`,
      * `Logger::LEVEL_PROFILE_BEGIN`，`Logger::LEVEL_PROFILE_END`。
@@ -180,10 +180,10 @@ class Logger extends Component
 
     /**
      * 返回自当前请求开始以来经过的总时间。
-     * 该方法计算当前与在 [[\yii\BaseYii]]
-     * 类文件常量 'YII_BEGIN_TIME' 定义的时间戳之间
-     * 的差异。
-     * @return float 当前请求的总耗时(以秒为单位)。
+     * 该方法计算当前与在 [[\yii\BaseYii]] 类文件常量 `YII_BEGIN_TIME` 
+     * 定义的时间戳之间的
+     * 差异。
+     * @return float 当前请求的总耗时（以秒为单位）。
      */
     public function getElapsedTime()
     {
@@ -194,7 +194,7 @@ class Logger extends Component
      * 返回分析结果。
      *
      * 默认情况下，将返回所有分析结果。你可以提供
-     * `$categories` 和 `$exclusive decateg` 作为参数来获取
+     * `$categories` 和 `$excludeCategories` 作为参数来获取
      * 你感兴趣的结果。
      *
      * @param array $categories 您感兴趣的类别的列表。
@@ -247,7 +247,7 @@ class Logger extends Component
      * 返回数据库查询的统计结果。
      * 返回的结果包括执行的 SQL 语句的数量和
      * 花费的总时间。
-     * @return array 第一个元素表示执行的 SQL 语句的数量,
+     * @return array 第一个元素表示执行的 SQL 语句的数量，
      * 第二个元素是 SQL 执行花费的总时间。
      */
     public function getDbProfiling()
@@ -265,7 +265,7 @@ class Logger extends Component
     /**
      * 计算给定日志消息的运行时间。
      * @param array $messages 从分析中获得的日志消息
-     * @return array timings. 每个元素都是由这些元素组成的数组:
+     * @return array timings. 每个元素都是由这些元素组成的数组：
      * `info`，`category`，`timestamp`，`trace`，`level`，`duration`，`memory`，`memoryDiff`，
      * 从版本 2.0.11 起，添加 `memory` 和 `memoryDiff` 元素。
      */
@@ -306,7 +306,7 @@ class Logger extends Component
 
     /**
      * Returns 具体的等级文字描述。
-     * @param int $level 消息等级 如 [[LEVEL_ERROR]]， [[LEVEL_WARNING]]。
+     * @param int $level 消息等级， 如 [[LEVEL_ERROR]]， [[LEVEL_WARNING]]。
      * @return string 返回当前等级的文字描述。
      */
     public static function getLevelName($level)
