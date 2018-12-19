@@ -45,7 +45,7 @@ class RadioButtonColumn extends Column
      * 这可以是属性数组或返回此类数组的匿名函数（[[Closure]]）。
      *
      * 该函数的写法应该如下：`function ($model, $key, $index, $column)`
-     * 其中，`$model`，`$key` 和 `$index` 表示当前渲染行的模型、键和索引，
+     * 其中，`$model`，`$key` 和 `$index` 表示当前渲染行的模型，键和索引，
      * `$column` 是对 [[RadioButtonColumn]] 对象的引用。
      *
      * 函数可用于根据该行中的数据将不同的属性分配给不同的行。

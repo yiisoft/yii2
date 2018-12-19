@@ -13,16 +13,16 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 /**
- * AssetBundle represents a collection of asset files, such as CSS, JS, images.
+ * AssetBundle 代表的资源文件的集合，如 CSS，JS，图片。
  *
- * Each asset bundle has a unique name that globally identifies it among all asset bundles used in an application.
- * The name is the [fully qualified class name](http://php.net/manual/en/language.namespaces.rules.php)
- * of the class representing it.
+ * 每个资源包有一个唯一的名称，可以在应用中所使用的全部资源包中全局标识到它。
+ * 它的名字就是表示这个类的 [完全限定类名](http://php.net/manual/en/language.namespaces.rules.php)
  *
- * An asset bundle can depend on other asset bundles. When registering an asset bundle
- * with a view, all its dependent asset bundles will be automatically registered.
  *
- * For more details and usage information on AssetBundle, see the [guide article on assets](guide:structure-assets).
+ * 资源包可以依赖于其他资源包。当在视图中注册了某资源包，
+ * 它所依赖的资源包都会自动注册进来。
+ *
+ * 关于 AssetBundle 的更多使用参考，请查看 [前端资源指南](guide:structure-assets)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -30,41 +30,41 @@ use yii\helpers\Url;
 class AssetBundle extends BaseObject
 {
     /**
-     * @var string the directory that contains the source asset files for this asset bundle.
-     * A source asset file is a file that is part of your source code repository of your Web application.
+     * @var string 包含此资源包的源资源文件的目录。
+     * 源资源文件应是你的 Web 应用的源码仓库里的某些文件。
      *
-     * You must set this property if the directory containing the source asset files is not Web accessible.
-     * By setting this property, [[AssetManager]] will publish the source asset files
-     * to a Web-accessible directory automatically when the asset bundle is registered on a page.
+     * 如果这个包含了源资源文件的目录不能通过 Web 访问，你必须设置此属性。
+     * 这样，[[AssetManager]] 才能将源资源文件自动发布到一个可 Web 访问的目录里，
+     * 当你在页面上注册资源包时。
      *
-     * If you do not set this property, it means the source asset files are located under [[basePath]].
+     * 如果未设置此属性，则表示源资源文件位于 [[basePath]] 下。
      *
-     * You can use either a directory or an alias of the directory.
+     * 你可以使用目录或目录的别名。
      * @see $publishOptions
      */
     public $sourcePath;
     /**
-     * @var string the Web-accessible directory that contains the asset files in this bundle.
+     * @var string 此资源包里，包含着资源文件的可以 Web 访问的目录。
      *
-     * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
-     * when it publishes the asset files from [[sourcePath]].
+     * 如果设置了 [[sourcePath]]，这个属性会被 [[AssetManager]] *覆盖*
+     * 当它从 [[sourcePath]] 发布资源文件时。
      *
-     * You can use either a directory or an alias of the directory.
+     * 你可以使用目录或目录的别名。
      */
     public $basePath;
     /**
-     * @var string the base URL for the relative asset files listed in [[js]] and [[css]].
+     * @var string 属性 [[js]]、[[css]] 里定义的相对路径的资源文件的基本 URL。
      *
-     * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
-     * when it publishes the asset files from [[sourcePath]].
+     * 如果设置了 [[sourcePath]]，这个属性会被 [[AssetManager]] *覆盖*
+     * 当它从 [[sourcePath]] 发布资源文件时。
      *
      * You can use either a URL or an alias of the URL.
      */
     public $baseUrl;
     /**
-     * @var array list of bundle class names that this bundle depends on.
+     * @var array 此资源包所依赖的包的列表。
      *
-     * For example:
+     * 例如：
      *
      * ```php
      * public $depends = [
@@ -75,50 +75,50 @@ class AssetBundle extends BaseObject
      */
     public $depends = [];
     /**
-     * @var array list of JavaScript files that this bundle contains. Each JavaScript file can be
-     * specified in one of the following formats:
+     * @var array 此资源包包含的 JavaScript 文件列表。
+     * 每个 JavaScript 文件都能以下列格式指定：
      *
-     * - an absolute URL representing an external asset. For example,
-     *   `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
-     *   `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-     * - a relative path representing a local asset (e.g. `js/main.js`). The actual file path of a local
-     *   asset can be determined by prefixing [[basePath]] to the relative path, and the actual URL
-     *   of the asset can be determined by prefixing [[baseUrl]] to the relative path.
-     * - an array, with the first entry being the URL or relative path as described before, and a list of key => value pairs
-     *   that will be used to overwrite [[jsOptions]] settings for this entry.
-     *   This functionality is available since version 2.0.7.
+     * - 表示外站资源的的绝对 URL。比如：
+     *   `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` 或者
+     *   `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`。
+     * - 表示站内资源的相对路径（比如，`js/main.js`）。 本地的实际文件路径
+     *   会以 [[basePath]] 为前缀、拼接上相对路径， and the actual URL
+     *   同时真实的 URL 会以 [[baseUrl]] 为前缀、、拼接上相对路径。
+     * - 一个数组配置，第一个条目是前面描述的绝对 URL 或相对路径，接下来是键值对列表，
+     *   将用于覆盖此条目的 [[jsOptions]] 设置。
+     *   此功能自 2.0.7 版开始提供。
      *
-     * Note that only a forward slash "/" should be used as directory separator.
+     * 请注意，只能使用正斜杠“/”作为目录分隔符。
      */
     public $js = [];
     /**
-     * @var array list of CSS files that this bundle contains. Each CSS file can be specified
-     * in one of the three formats as explained in [[js]].
+     * @var array 此资源包包含的 CSS 文件列表。 Each CSS file can be specified
+     * 每个 CSS 文件都能像 [[js]] 注释里的三种格式那样指定。
      *
-     * Note that only a forward slash "/" should be used as directory separator.
+     * 请注意，只能使用正斜杠“/”作为目录分隔符。
      */
     public $css = [];
     /**
-     * @var array the options that will be passed to [[View::registerJsFile()]]
-     * when registering the JS files in this bundle.
+     * @var array 将传递给 [[View::registerJsFile()]] 方法的选项，
+     * 当此资源包注册 JS 文件时。
      */
     public $jsOptions = [];
     /**
-     * @var array the options that will be passed to [[View::registerCssFile()]]
-     * when registering the CSS files in this bundle.
+     * @var array 将传递给 [[View::registerCssFile()]] 方法的选项，
+     * 当此资源包注册 CSS 文件时。
      */
     public $cssOptions = [];
     /**
-     * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
-     * is being published. This property is used only when [[sourcePath]] is set.
+     * @var array 将传递给 [[AssetManager::publish()]] 方法的选项，
+     *  当此资源包正在发布时。仅在设置了 [[sourcePath]] 时使用此属性。
      */
     public $publishOptions = [];
 
 
     /**
-     * Registers this asset bundle with a view.
-     * @param View $view the view to be registered with
-     * @return static the registered asset bundle instance
+     * 注册资源包到某视图。
+     * @param View $view 某视图
+     * @return static 已注册的资源包实例
      */
     public static function register($view)
     {
@@ -126,7 +126,7 @@ class AssetBundle extends BaseObject
     }
 
     /**
-     * Initializes the bundle.
+     * 初始化资源包。
      * If you override this method, make sure you call the parent implementation in the last.
      */
     public function init()
@@ -143,8 +143,8 @@ class AssetBundle extends BaseObject
     }
 
     /**
-     * Registers the CSS and JS files with the given view.
-     * @param \yii\web\View $view the view that the asset files are to be registered with.
+     * 注册 CSS 和 JS 文件到所给的视图。
+     * @param \yii\web\View $view 所给的视图。
      */
     public function registerAssetFiles($view)
     {
@@ -174,10 +174,10 @@ class AssetBundle extends BaseObject
     }
 
     /**
-     * Publishes the asset bundle if its source code is not under Web-accessible directory.
-     * It will also try to convert non-CSS or JS files (e.g. LESS, Sass) into the corresponding
-     * CSS or JS files using [[AssetManager::converter|asset converter]].
-     * @param AssetManager $am the asset manager to perform the asset publishing
+     * 当源码不在 Web 可访问的目录下面时，发布资源包。
+     * 它也会用 [[AssetManager::converter|asset converter]] 去编译 非 CSS 或者 JS 的文件
+     * （比如，LESS，Sass）成为 CSS 和 JS 文件。
+     * @param AssetManager $am 用于执行发布的资源管理器
      */
     public function publish($am)
     {
