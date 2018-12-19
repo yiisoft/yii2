@@ -67,13 +67,13 @@ class Logger extends Component
      */
     const LEVEL_PROFILE = 0x40;
     /**
-     * Profiling 消息等级。这表明消息是用于分析目的的，标志着
-     * 分析块的开头。
+     * Profiling 消息等级。这表明消息是用于分析目的的，
+     * 标志着分析块的开头。
      */
     const LEVEL_PROFILE_BEGIN = 0x50;
     /**
-     * Profiling 消息等级。这表明消息是用于分析目的的，标志着
-     * 分析块的结束。
+     * Profiling 消息等级。这表明消息是用于分析目的的，
+     * 标志着分析块的结束。
      */
     const LEVEL_PROFILE_END = 0x60;
 
@@ -95,10 +95,10 @@ class Logger extends Component
     public $messages = [];
     /**
      * @var int 在从内存刷新并发送到目标之前，应该记录多少消息。
-     * 默认值 1000,这意味着每记录 1000 条消息，就会调用 [[flush]] 方法一次。
+     * 默认值 1000，这意味着每记录 1000 条消息，就会调用 [[flush]] 方法一次。
      * 如果此属性设置为 0，程序终止之前将不会刷新消息。
      * 此属性主要影响日志消息将占用多少内存。
-     * 较小的值意味着占用更少的内存，但是由于 [[flush()] 的开销,会增加执行时间。
+     * 较小的值意味着占用更少的内存，但是由于 [[flush()] 的开销，会增加执行时间。
      */
     public $flushInterval = 1000;
     /**
@@ -130,12 +130,12 @@ class Logger extends Component
 
     /**
      * 使用给定的类型和类别记录消息。
-     * 如果 [[traceLevel]] 是一个大于 0 的值，有关应用程序代码的
-     * 其他调用堆栈信息也将被记录。
+     * 如果 [[traceLevel]] 是一个大于 0 的值，
+     * 有关应用程序代码的其他调用堆栈信息也将被记录。
      * @param string|array $message 要被记录的消息。它可以是一个简单的字符串或者一个复杂的数据结构并使用指定的
      * [[Target|log target]] 进行处理。
-     * @param int $level 消息等级。 必须是以下类型之一：
-     * `Logger::LEVEL_ERROR`，`Logger::LEVEL_WARNING`，`Logger::LEVEL_INFO`，`Logger::LEVEL_TRACE`,
+     * @param int $level 消息等级。必须是以下类型之一：
+     * `Logger::LEVEL_ERROR`，`Logger::LEVEL_WARNING`，`Logger::LEVEL_INFO`，`Logger::LEVEL_TRACE`，
      * `Logger::LEVEL_PROFILE_BEGIN`，`Logger::LEVEL_PROFILE_END`。
      * @param string $category 当前消息类型分类。
      */
