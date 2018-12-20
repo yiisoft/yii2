@@ -183,7 +183,7 @@ class BaseConsole
     /**
      * 通过发送参数带有 2 的 ANSI 控制代码 ED 到终端来清除整个屏幕内容。
      * 不会改变光标位置。
-     * **注意：** ANSI.SYS 能够实现在 windows 中将坐标位置重置到屏幕左上角。
+     * **Note:** ANSI.SYS 能够实现在 windows 中将坐标位置重置到屏幕左上角。
      */
     public static function clearScreen()
     {
@@ -239,8 +239,8 @@ class BaseConsole
      * 返回 ANSI 格式代码。
      *
      * @param array $format 包含格式化值的数组。
-     * 您可以传递任何 `FG_*`，`BG_*` 和 `TEXT_*` 常量，
-     * 也可以通过 [[xtermFgColor]]] 和 [[xtermBgColor]] 来指定格式。
+     * 您可以传递任何 `FG_*`，`BG_*` 和 `TEXT_*`
+     * 常量，也可以通过 [[xtermFgColor]]] 和 [[xtermBgColor]] 来指定格式。
      * @return string ANSI 格式代码根据给定的格式化常量进行格式化。
      */
     public static function ansiFormatCode($format)
@@ -252,8 +252,8 @@ class BaseConsole
      * 输出一种 ANSI 格式代码，它影响以后打印的任何文本的格式。
      *
      * @param array $format 包含格式化值的数组。
-     * 您可以传递任何 `FG_*`，`BG_*` 和 `TEXT_*` 常量，
-     * 也可以通过 [[xtermFgColor]]] 和 [[xtermBgColor]] 来指定格式。
+     * 您可以传递任何 `FG_*`，`BG_*` 和 `TEXT_*`
+     * 常量，也可以通过 [[xtermFgColor]]] 和 [[xtermBgColor]] 来指定格式。
      * @see ansiFormatCode()
      * @see endAnsiFormat()
      */
@@ -281,8 +281,8 @@ class BaseConsole
      *
      * @param string $string 要格式化的字符串
      * @param array $format 包含格式化值的数组。
-     * 您可以传递任何 `FG_*`，`BG_*` 和 `TEXT_*` 常量，
-     * 也可以通过 [[xtermFgColor]]] 和 [[xtermBgColor]] 来指定格式。
+     * 您可以传递任何 `FG_*`，`BG_*` 和 `TEXT_*`
+     * 常量，也可以通过 [[xtermFgColor]]] 和 [[xtermBgColor]] 来指定格式。
      * @return string
      */
     public static function ansiFormat($string, $format = [])
@@ -496,7 +496,7 @@ class BaseConsole
      *      %%     A single %
      * </pre>
      * 第一个参数是要转换的字符串，
-     * 第二个参数是可选的标志是否需要使用颜色。它默认设置为真，如果设置为假，
+     * 第二个参数是可选的标志是否需要使用颜色。它默认设置为 true，如果设置为 false，
      * 颜色代码将被移除（并且 %% 将被改变为 %）
      *
      * @param string $string 转换的字符串
@@ -560,8 +560,8 @@ class BaseConsole
     }
 
     /**
-     * 当字符串被解析时如果包含转义符 % 则它们不会通过
-     * [[renderColoredString]] 解释为颜色代码。
+     * 当字符串被解析时如果包含转义符 %
+     * 则它们不会通过 [[renderColoredString]] 解释为颜色代码。
      *
      * @param string $string 转义字符串
      *
@@ -574,13 +574,13 @@ class BaseConsole
     }
 
     /**
-     * 如果流支持彩色化则返回真。如果流不支持则 ANSI 颜色被禁用。
+     * 如果流支持彩色化则返回 true。如果流不支持则 ANSI 颜色被禁用。
      *
      * - 不含 ansicon 窗口
      * - 非 tty 控制台
      *
      * @param mixed $stream
-     * @return bool 如果流支持 ANSI 颜色返回真，否则返回假。
+     * @return bool 如果流支持 ANSI 颜色返回 true，否则返回 false。
      */
     public static function streamSupportsAnsiColors($stream)
     {
@@ -590,7 +590,7 @@ class BaseConsole
     }
 
     /**
-     * 如果控制台在 windows 上运行，则返回真。
+     * 如果控制台在 windows 上运行，则返回 true。
      * @return bool
      */
     public static function isRunningOnWindows()
@@ -610,7 +610,7 @@ class BaseConsole
      * @param bool $refresh 是否强制检查而不是重用缓存的大小值。
      * 这有助于在应用程序运行时检测窗口大小的变化，
      * 但可能无法在每个终端上获得最新的值。
-     * @return array|bool 当无法确定数组中的值（$width，$height）或者返回假。
+     * @return array|bool 当无法确定数组中的值（$width，$height）或者返回 false。
      */
     public static function getScreenSize($refresh = false)
     {
@@ -661,8 +661,8 @@ class BaseConsole
      *
      * 如果无法检测到屏幕大小，或者缩进大于屏幕尺寸，则文本不会被换行。
      *
-     * 第一行将被 **not** 定义，因此 `Console::wrapText("Lorem ipsum dolor sit amet.", 4)` 会产生以下输出，
-     * 给定屏幕宽度为16个字符：
+     * 第一行将被 **not** 定义，因此 `Console::wrapText("Lorem ipsum dolor sit amet.", 4)`
+     * 会产生以下输出，给定屏幕宽度为 16 个字符：
      *
      * ```
      * Lorem ipsum
@@ -698,9 +698,9 @@ class BaseConsole
     }
 
     /**
-     * 从STDIN获取输入，并为 EOLs 返回右侧被修剪后的字符串
+     * 从 STDIN 获取输入，并为 EOLs 返回右侧被修剪后的字符串
      *
-     * @param bool $raw 如果设置真，返回的字符串不进行修剪
+     * @param bool $raw 如果设置 true，返回的字符串不进行修剪
      * @return string 从 stdin 读取的字符串
      */
     public static function stdin($raw = false)
@@ -712,7 +712,7 @@ class BaseConsole
      * 打印字符串到 STDOUT。
      *
      * @param string $string 将要打印的字符串
-     * @return int|bool 发生错误时将打印字节数或者返回假 
+     * @return int|bool 发生错误时将打印字节数或者返回 false
      */
     public static function stdout($string)
     {
@@ -723,7 +723,7 @@ class BaseConsole
      * 将字符串打印到 STDERR。
      *
      * @param string $string 要打印的字符串
-     * @return int|bool 发生错误时将打印字节数或者返回假 
+     * @return int|bool 发生错误时将打印字节数或者返回 false
      */
     public static function stderr($string)
     {
@@ -750,7 +750,7 @@ class BaseConsole
      * 打印带有回车信息的 STDOUT 文本（PHP_EOL）。
      *
      * @param string $string 打印的字符串
-     * @return int|bool 发生错误时将打印字节数或者返回假 
+     * @return int|bool 发生错误时将打印字节数或者返回 false
      */
     public static function output($string = null)
     {
@@ -761,7 +761,7 @@ class BaseConsole
      * 打印文本到 STDERR 并附加回车信息（PHP_EOL）。
      *
      * @param string $string 打印的字符串
-     * @return int|bool 发生错误时将打印字节数或者返回假。
+     * @return int|bool 发生错误时将打印字节数或者返回 false。
      */
     public static function error($string = null)
     {
@@ -926,8 +926,8 @@ class BaseConsole
      * 默认为空字符串，因此不显示前缀。
      * @param int|bool $width 可选的进度条宽度。
      * 可以通过整数来表示进度条显示的字符或者可以使用 0 到 1 之间的浮点数百分比来表示。
-     * 也可以将其设置为假以禁用只显示进度信息，
-     * 比如百分比，总数量以及预估到达时间。
+     * 也可以将其设置为 false
+     * 以禁用只显示进度信息，比如百分比，总数量以及预估到达时间。
      * 如果不设置，横条将和屏幕一样宽。屏幕大小将使用 [[getScreenSize()]] 来检测。
      * @see startProgress
      * @see updateProgress
@@ -1054,7 +1054,7 @@ class BaseConsole
      * 如果设置为 `true`，进度条的线条将被清除。
      * 这也可能是要显示的字符串不是进度条。
      * @param bool $keepPrefix 当进度条开始移除时是否保留指定的前缀。
-     * 默认设置为真。
+     * 默认设置为 true。
      * @see startProgress
      * @see updateProgress
      */
@@ -1081,9 +1081,9 @@ class BaseConsole
     /**
      * 生成验证错误的摘要。
      * @param Model|Model[] $models 这个模型将显示验证错误的信息。
-     * @param array $options 标签选项的名称-值对。以下是特殊处理的选项：
+     * @param array $options 标签选项的键-值对。以下是特殊处理的选项：
      *
-     * - showAllErrors：布尔型，如果设置为真，则每个属性的每个错误消息将以其他方式显示。
+     * - showAllErrors：布尔型，如果设置为 true，则每个属性的每个错误消息将以其他方式显示。
      *   否则将只显示每个属性的第一个错误消息。默认为 `false`。
      *
      * @return string the generated error summary
@@ -1100,7 +1100,7 @@ class BaseConsole
     /**
      * 返回验证错误数组
      * @param Model|Model[] $models 要显示其验证错误的模型。
-     * @param $showAllErrors 布尔型, 如果设置为真则每个属性的每个错误消息将以其他方式显示
+     * @param $showAllErrors 布尔型, 如果设置为 true 则每个属性的每个错误消息将以其他方式显示
      * 否则将只显示每个属性的第一个错误消息。
      * @return 验证错误数组
      * @since 2.0.14
