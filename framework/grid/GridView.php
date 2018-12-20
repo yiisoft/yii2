@@ -18,11 +18,11 @@ use yii\i18n\Formatter;
 use yii\widgets\BaseListView;
 
 /**
- * The GridView widget is used to display data in a grid.
+ * GridView 小部件用于在网格中显示数据。
  *
- * It provides features like [[sorter|sorting]], [[pager|paging]] and also [[filterModel|filtering]] the data.
+ * 它提供了诸如 [[sorter|sorting]]，[[pager|paging]] 以及 [[filterModel|filtering]] 数据的特性。
  *
- * A basic usage looks like the following:
+ * 基本的用法如下所示：
  *
  * ```php
  * <?= GridView::widget([
@@ -36,12 +36,12 @@ use yii\widgets\BaseListView;
  * ]) ?>
  * ```
  *
- * The columns of the grid table are configured in terms of [[Column]] classes,
- * which are configured via [[columns]].
+ * 网格表的列根据 [[Column]] 类进行配置，
+ * 这些类是通过 [[columns]] 配置的。
  *
- * The look and feel of a grid view can be customized using the large amount of properties.
+ * 可以使用大量的属性自定义网格视图的外表。
  *
- * For more details and usage information on GridView, see the [guide article on data widgets](guide:output-data-widgets).
+ * 关于 GridView 的更多细节和用法，请参阅 [guide article on data widgets](guide:output-data-widgets)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -53,98 +53,98 @@ class GridView extends BaseListView
     const FILTER_POS_BODY = 'body';
 
     /**
-     * @var string the default data column class if the class name is not explicitly specified when configuring a data column.
-     * Defaults to 'yii\grid\DataColumn'.
+     * @var string 如果在配置数据列时没有显示指定类名，这默认数据列的类。
+     * 默认为 'yii\grid\DataColumn'。
      */
     public $dataColumnClass;
     /**
-     * @var string the caption of the grid table
+     * @var string 网格表的标题
      * @see captionOptions
      */
     public $caption;
     /**
-     * @var array the HTML attributes for the caption element.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @var array 标题元素的 HTML 属性。
+     * @see \yii\helpers\Html::renderTagAttributes() 有关于如何渲染属性的详细信息。
      * @see caption
      */
     public $captionOptions = [];
     /**
-     * @var array the HTML attributes for the grid table element.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @var array 属性的 HTML 元素的表格。
+     * @see \yii\helpers\Html::renderTagAttributes() 有关于如何渲染属性的详细信息。
      */
     public $tableOptions = ['class' => 'table table-striped table-bordered'];
     /**
-     * @var array the HTML attributes for the container tag of the grid view.
-     * The "tag" element specifies the tag name of the container element and defaults to "div".
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @var array the 网格视图的容器标签的 HTML 属性。
+     * "tag" 元素指定容器元素的标记名称，默认为 "div"。
+     * @see \yii\helpers\Html::renderTagAttributes() 有关于如何渲染属性的详细信息。
      */
     public $options = ['class' => 'grid-view'];
     /**
-     * @var array the HTML attributes for the table header row.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @var array 表标题行的 HTML 属性。
+     * @see \yii\helpers\Html::renderTagAttributes() 有关于如何渲染属性的详细信息。
      */
     public $headerRowOptions = [];
     /**
-     * @var array the HTML attributes for the table footer row.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @var array 表格页脚行的 HTML 属性。
+     * @see \yii\helpers\Html::renderTagAttributes() 有关于如何渲染属性的详细信息。
      */
     public $footerRowOptions = [];
     /**
-     * @var array|Closure the HTML attributes for the table body rows. This can be either an array
-     * specifying the common HTML attributes for all body rows, or an anonymous function that
-     * returns an array of the HTML attributes. The anonymous function will be called once for every
-     * data model returned by [[dataProvider]]. It should have the following signature:
+     * @var array|Closure 表主题行的 HTML 属性。
+     * 这可以是指定所有主题行的公共 HTML 属性，也可以是返回 HTML 属性的数组的匿名函数。
+     * 对于 [[dataProvider]] 返回的每个数据模型，将调用匿名函数一次。
+     * 它应该像如下来实现：
      *
      * ```php
      * function ($model, $key, $index, $grid)
      * ```
      *
-     * - `$model`: the current data model being rendered
-     * - `$key`: the key value associated with the current data model
-     * - `$index`: the zero-based index of the data model in the model array returned by [[dataProvider]]
-     * - `$grid`: the GridView object
+     * - `$model`：当前渲染的数据模型
+     * - `$key`：与当前数据模型关联的键值
+     * - `$index`：[[dataProvider]] 返回的模型数组中数据模型的从零开始的索引
+     * - `$grid`：GridView 对象
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see \yii\helpers\Html::renderTagAttributes() 有关于如何渲染属性的详细信息。
      */
     public $rowOptions = [];
     /**
-     * @var Closure an anonymous function that is called once BEFORE rendering each data model.
-     * It should have the similar signature as [[rowOptions]]. The return result of the function
-     * will be rendered directly.
+     * @var Closure 在渲染每个数据模型之前调用一次的匿名函数。
+     * 它应该类似 [[rowOptions]] 的写法。
+     * 函数的返回结果将直接渲染。
      */
     public $beforeRow;
     /**
-     * @var Closure an anonymous function that is called once AFTER rendering each data model.
-     * It should have the similar signature as [[rowOptions]]. The return result of the function
-     * will be rendered directly.
+     * @var Closure 在渲染每个数据模型后调用一次的匿名函数。
+     * 它应该类似 [[rowOptions]] 的写法。
+     * 函数的返回结果将直接渲染。
      */
     public $afterRow;
     /**
-     * @var bool whether to show the header section of the grid table.
+     * @var bool 是否显示网格表的标题部分。
      */
     public $showHeader = true;
     /**
-     * @var bool whether to show the footer section of the grid table.
+     * @var bool 是否显示网格表的页脚部分。
      */
     public $showFooter = false;
     /**
-     * @var bool whether to place footer after body in DOM if $showFooter is true
+     * @var bool 如果 $showFooter 为 true，是否在 DOM 中将页脚放在 body 后面
      * @since 2.0.14
      */
     public $placeFooterAfterBody = false;
     /**
-     * @var bool whether to show the grid view if [[dataProvider]] returns no data.
+     * @var bool 如果 [[dataProvider]] 不返回数据，是否显示网格视图。
      */
     public $showOnEmpty = true;
     /**
-     * @var array|Formatter the formatter used to format model attribute values into displayable texts.
-     * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]
-     * instance. If this property is not set, the "formatter" application component will be used.
+     * @var array|Formatter 用于将模型属性格式化为可显示文本的格式化程序。
+     * 这可以是 [[Formatter]] 的实例，也可以是用于创建 [[Formatter]] 实例的配置数组。
+     * 如果为设置属性，"formatter" 程序组件将会被使用。
      */
     public $formatter;
     /**
-     * @var array grid column configuration. Each array element represents the configuration
-     * for one particular grid column. For example,
+     * @var array 网格列的配置。
+     * 每个数组元素表示一个特定的网格列的配置。例如，
      *
      * ```php
      * [
@@ -159,15 +159,15 @@ class GridView extends BaseListView
      * ]
      * ```
      *
-     * If a column is of class [[DataColumn]], the "class" element can be omitted.
+     * 如果列是 [[DataColumn]] 的类，"class" 元素将会被省略。
      *
-     * As a shortcut format, a string may be used to specify the configuration of a data column
-     * which only contains [[DataColumn::attribute|attribute]], [[DataColumn::format|format]],
-     * and/or [[DataColumn::label|label]] options: `"attribute:format:label"`.
-     * For example, the above "name" column can also be specified as: `"name:text:Name"`.
-     * Both "format" and "label" are optional. They will take default values if absent.
+     * 作为快捷方式格式，
+     * 可以使用字符串来指定包含 [[DataColumn::attribute|attribute]]，
+     * [[DataColumn::format|format]] 和/或 [[DataColumn::label|label]] 选项：`"attribute:format:label"`。
+     * 例如，上面的 "name" 列也可以指定为：`"name:text:Name"`。
+     * "format" 和 "label" 都是可选的。如果不存在，它们将采用默认值。
      *
-     * Using the shortcut format the configuration for columns in simple cases would look like this:
+     * 使用快捷方式格式，在简单情况下，列的配置如下所示：
      *
      * ```php
      * [
@@ -177,8 +177,8 @@ class GridView extends BaseListView
      * ]
      * ```
      *
-     * When using a [[dataProvider]] with active records, you can also display values from related records,
-     * e.g. the `name` attribute of the `author` relation:
+     * 将 [[dataProvider]] 与活动记录一起使用时，你可以显示相关记录中的值，
+     * 例如 `author` 关联的 `name` 属性：
      *
      * ```php
      * // shortcut syntax
@@ -192,83 +192,83 @@ class GridView extends BaseListView
      */
     public $columns = [];
     /**
-     * @var string the HTML display when the content of a cell is empty.
-     * This property is used to render cells that have no defined content,
-     * e.g. empty footer or filter cells.
+     * @var string 当单元格的内容为空时显示 HTML。
+     * 此属性用于渲染没有定义内容的单元格，
+     * 例如，空页脚或过滤单元格。
      *
-     * Note that this is not used by the [[DataColumn]] if a data item is `null`. In that case
-     * the [[\yii\i18n\Formatter::nullDisplay|nullDisplay]] property of the [[formatter]] will
-     * be used to indicate an empty data value.
+     * 注意如果数据项为 `null`，则 [[DataColumn]] 不会使用它。
+     * 在这种情况下，
+     * [[formatter]] 的 [[\yii\i18n\Formatter::nullDisplay|nullDisplay]] 属性将用于指示空数据值。
      */
     public $emptyCell = '&nbsp;';
     /**
-     * @var \yii\base\Model the model that keeps the user-entered filter data. When this property is set,
-     * the grid view will enable column-based filtering. Each data column by default will display a text field
-     * at the top that users can fill in to filter the data.
+     * @var \yii\base\Model 保留用户输入的过滤数据的模型。
+     * 设置此属性后，网格视图将启用基于列的筛选。
+     * 默认情况下，每个数据列都会在顶部显示一个文本字段，用户可以填写该字段以过滤数据。
      *
-     * Note that in order to show an input field for filtering, a column must have its [[DataColumn::attribute]]
-     * property set and the attribute should be active in the current scenario of $filterModel or have
-     * [[DataColumn::filter]] set as the HTML code for the input field.
+     * 请注意，为了用于显示用于过滤的输入字段，
+     * 列必须设置其 [[DataColumn::attribute]] 属性，
+     * 并且该属性应在 $filterModel 的当前场景中处于有效状态或具有 [[DataColumn::filter]] 设置为输入字段的 HTML 代码。
      *
-     * When this property is not set (null) the filtering feature is disabled.
+     * 如果未设置此属性（null），则禁用过滤功能。
      */
     public $filterModel;
     /**
-     * @var string|array the URL for returning the filtering result. [[Url::to()]] will be called to
-     * normalize the URL. If not set, the current controller action will be used.
-     * When the user makes change to any filter input, the current filtering inputs will be appended
-     * as GET parameters to this URL.
+     * @var string|array 返回过滤结果的 URL。
+     * 将调用 [[Url::to()]] 来规范化 URL。如果没有设置，将使用当前控制器方法。
+     * 当用户更改任何过滤输入时，
+     * 当前过滤输入将作为 GET 参数附加到此 URL。
      */
     public $filterUrl;
     /**
-     * @var string additional jQuery selector for selecting filter input fields
+     * @var string 用于选择过滤器输入字段的附加 jQuery 选择器
      */
     public $filterSelector;
     /**
-     * @var string whether the filters should be displayed in the grid view. Valid values include:
+     * @var string 过滤器是否应显示在网格视图中。有效的值包含：
      *
-     * - [[FILTER_POS_HEADER]]: the filters will be displayed on top of each column's header cell.
-     * - [[FILTER_POS_BODY]]: the filters will be displayed right below each column's header cell.
-     * - [[FILTER_POS_FOOTER]]: the filters will be displayed below each column's footer cell.
+     * - [[FILTER_POS_HEADER]]：过滤器将显示在每列的标题单元格的顶部。
+     * - [[FILTER_POS_BODY]]：过滤器将显示在每列的标题单元格的正下方。
+     * - [[FILTER_POS_FOOTER]]：过滤器将显示在每列的页脚单元格下方。
      */
     public $filterPosition = self::FILTER_POS_BODY;
     /**
-     * @var array the HTML attributes for the filter row element.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @var array 过滤器行元素的 HTML 属性。
+     * @see \yii\helpers\Html::renderTagAttributes() 有关如何渲染属性的详细信息。
      */
     public $filterRowOptions = ['class' => 'filters'];
     /**
-     * @var array the options for rendering the filter error summary.
-     * Please refer to [[Html::errorSummary()]] for more details about how to specify the options.
+     * @var array 用于渲染过滤器错误摘要的选项。
+     * 有关于如果指定选项的更多信息，请参阅 [[Html::errorSummary()]]。
      * @see renderErrors()
      */
     public $filterErrorSummaryOptions = ['class' => 'error-summary'];
     /**
-     * @var array the options for rendering every filter error message.
-     * This is mainly used by [[Html::error()]] when rendering an error message next to every filter input field.
+     * @var array 渲染每个过滤器错误消息的选项。
+     * 当在每个过滤器输入字段旁边渲染错误消息时，这主要由 [[Html::error()]] 使用。
      */
     public $filterErrorOptions = ['class' => 'help-block'];
     /**
-     * @var bool whatever to apply filters on losing focus. Leaves an ability to manage filters via yiiGridView JS
+     * @var bool 无论如何应用过滤器失去焦点。能够通过 yiiGridView JS 管理过滤器
      * @since 2.0.16
      */
     public $filterOnFocusOut = true;
     /**
-     * @var string the layout that determines how different sections of the grid view should be organized.
-     * The following tokens will be replaced with the corresponding section contents:
+     * @var string 确定应如何组织网格视图的不同部分的布局。
+     * 以下标记将替换为相应的部分内容：
      *
-     * - `{summary}`: the summary section. See [[renderSummary()]].
-     * - `{errors}`: the filter model error summary. See [[renderErrors()]].
-     * - `{items}`: the list items. See [[renderItems()]].
-     * - `{sorter}`: the sorter. See [[renderSorter()]].
-     * - `{pager}`: the pager. See [[renderPager()]].
+     * - `{summary}`：摘要部分。参阅 [[renderSummary()]]。
+     * - `{errors}`：过滤器模型错误摘要。参阅 [[renderErrors()]]。
+     * - `{items}`：列表项。参阅 [[renderItems()]]。
+     * - `{sorter}`：排序。参阅 [[renderSorter()]]。
+     * - `{pager}`：分页。参阅 [[renderPager()]]。
      */
     public $layout = "{summary}\n{items}\n{pager}";
 
 
     /**
-     * Initializes the grid view.
-     * This method will initialize required property values and instantiate [[columns]] objects.
+     * 初始化网格视图。
+     * 此方法将初始化所需的属性值并实例化 [[columns]] 对象。
      */
     public function init()
     {
@@ -289,7 +289,7 @@ class GridView extends BaseListView
     }
 
     /**
-     * Runs the widget.
+     * 运行小部件。
      */
     public function run()
     {
@@ -302,8 +302,8 @@ class GridView extends BaseListView
     }
 
     /**
-     * Renders validator errors of filter model.
-     * @return string the rendering result.
+     * 渲染过滤器模型的验证器错误。
+     * @return string 渲染结果。
      */
     public function renderErrors()
     {
@@ -328,8 +328,8 @@ class GridView extends BaseListView
     }
 
     /**
-     * Returns the options for the grid view JS widget.
-     * @return array the options
+     * 返回网格视图 JS 小部件的选项。
+     * @return array 选项
      */
     protected function getClientOptions()
     {
@@ -347,8 +347,8 @@ class GridView extends BaseListView
     }
 
     /**
-     * Renders the data models for the grid view.
-     * @return string the HTML code of table
+     * 渲染网格视图的数据模型。
+     * @return string 表的 HTML 代码
      */
     public function renderItems()
     {
@@ -381,8 +381,8 @@ class GridView extends BaseListView
     }
 
     /**
-     * Renders the caption element.
-     * @return bool|string the rendered caption element or `false` if no caption element should be rendered.
+     * 渲染标题元素。
+     * @return bool|string 渲染的标题元素或者如果没有渲染就返回 `false`。
      */
     public function renderCaption()
     {
@@ -394,8 +394,8 @@ class GridView extends BaseListView
     }
 
     /**
-     * Renders the column group HTML.
-     * @return bool|string the column group HTML or `false` if no column group should be rendered.
+     * 渲染列组 HTML。
+     * @return bool|string 列组的 HTML 或者没有渲染列组就返回 `false`。
      */
     public function renderColumnGroup()
     {
@@ -415,8 +415,8 @@ class GridView extends BaseListView
     }
 
     /**
-     * Renders the table header.
-     * @return string the rendering result.
+     * 渲染表头。
+     * @return string 渲染结果。
      */
     public function renderTableHeader()
     {
@@ -436,8 +436,8 @@ class GridView extends BaseListView
     }
 
     /**
-     * Renders the table footer.
-     * @return string the rendering result.
+     * 渲染表尾。
+     * @return string 渲染结果。
      */
     public function renderTableFooter()
     {
@@ -455,8 +455,8 @@ class GridView extends BaseListView
     }
 
     /**
-     * Renders the filter.
-     * @return string the rendering result.
+     * 渲染过滤器。
+     * @return string 渲染结果。
      */
     public function renderFilters()
     {
@@ -474,8 +474,8 @@ class GridView extends BaseListView
     }
 
     /**
-     * Renders the table body.
-     * @return string the rendering result.
+     * 渲染表主体。
+     * @return string 渲染结果。
      */
     public function renderTableBody()
     {
@@ -511,11 +511,11 @@ class GridView extends BaseListView
     }
 
     /**
-     * Renders a table row with the given data model and key.
-     * @param mixed $model the data model to be rendered
-     * @param mixed $key the key associated with the data model
-     * @param int $index the zero-based index of the data model among the model array returned by [[dataProvider]].
-     * @return string the rendering result
+     * 使用给定的数据模型和键渲染表行。
+     * @param mixed $model 渲染的数据模型
+     * @param mixed $key 与数据模型相关联的键
+     * @param int $index [[dataProvider]] 返回的模型数组中数据模型的从零开始的索引。
+     * @return string 渲染结果
      */
     public function renderTableRow($model, $key, $index)
     {
@@ -535,7 +535,7 @@ class GridView extends BaseListView
     }
 
     /**
-     * Creates column objects and initializes them.
+     * 创建列对象并初始化它们。
      */
     protected function initColumns()
     {
@@ -560,10 +560,10 @@ class GridView extends BaseListView
     }
 
     /**
-     * Creates a [[DataColumn]] object based on a string in the format of "attribute:format:label".
-     * @param string $text the column specification string
-     * @return DataColumn the column instance
-     * @throws InvalidConfigException if the column specification is invalid
+     * 基于格式为 "attribute:format:label" 的字符串创建 [[DataColumn]] 对象。
+     * @param string $text 列规范字符串
+     * @return DataColumn 列实例
+     * @throws InvalidConfigException 如果列的规范无效抛出的异常
      */
     protected function createDataColumn($text)
     {
@@ -581,8 +581,8 @@ class GridView extends BaseListView
     }
 
     /**
-     * This function tries to guess the columns to show from the given data
-     * if [[columns]] are not explicitly specified.
+     * 此函数尝试从给定数据中猜测要显示的列
+     * 如果没有明确指定 [[columns]]。
      */
     protected function guessColumns()
     {
