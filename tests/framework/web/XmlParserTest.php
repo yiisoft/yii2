@@ -12,6 +12,12 @@ use yiiunit\TestCase;
 
 class XmlParserTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->mockApplication();
+    }
+
     public function testParse()
     {
         $parser = new XmlParser();
