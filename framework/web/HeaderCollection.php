@@ -66,8 +66,10 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * @param mixed $default the value to return in case the named header does not exist
      * @param boolean $first whether to only return the first header of the specified name.
      * If false, all headers of the specified name will be returned.
-     * @return string|array the named header(s). If `$first` is true, a string will be returned;
+     * @return mixed
+     * string|array the named header(s). If `$first` is true, a string will be returned;
      * If `$first` is false, an array will be returned.
+     * returns $default if named header does not exist
      */
     public function get($name, $default = null, $first = true)
     {
