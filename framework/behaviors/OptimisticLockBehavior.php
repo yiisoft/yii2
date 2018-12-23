@@ -45,10 +45,10 @@ use yii\helpers\ArrayHelper;
 
  * 该行为一旦附加到模型类中，如果 [[\yii\web\Request::getBodyParam()|getBodyParam()]] 中没有携带版本值，
  * 那么模型类的内部操作比如在保存记录时就会失败。它在扩展模型类上非常有用，
- * enable optimistic lock in parent class by overriding [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]], 
- * then attach the behavior to the child class so you can tie the parent model to internal use while linking the child model 
- * holding this behavior to the controllers responsible of receiving end user inputs.
- * 或者你也可以配置 [[value]] 属性为 PHP 回调函数来实现不同的逻辑。
+ * 通过覆盖父类的 [[\yii\db\BaseActiveRecord::optimisticLock()|optimisticLock()]] 方法来开启乐观锁，
+ * 然后附加行为到子类中，这样可以把携带行为的子类关联到接收并处理终端用户输入数据的控制器的同时，
+ * 也可以把子类绑定到父类的内部逻辑处理中，
+ * 或者你也可以把 [[value]] 属性配置为 PHP 回调函数来实现不同的逻辑。
  * 
  * OptimisticLockBehavior 也提供了一个名为 [[upgrade()]] 的方法来给模型的版本值加一，
  * 当多个客户端连接出现的情况下，你需要主动标记某实体为脏数据时该方法将非常有用。
