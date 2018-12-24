@@ -143,7 +143,8 @@ class BaseArrayHelper
 
     /**
      * Retrieves the value of an array element or object property with the given key or property name.
-     * If the key does not exist in the array or object, the default value will be returned instead.
+     * If the key does not exist in the array, the default value will be returned instead.
+     * Not used when getting value from an object.
      *
      * The key may be specified in a dot format to retrieve the value of a sub-array or the property
      * of an embedded object. In particular, if the key is `x.y.z`, then the returned value would

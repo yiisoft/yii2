@@ -4,6 +4,17 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #15850: check basePath is writable on publish in AssetManager (Groonya)
+- Bug #16910: Fix messages sorting on extract (Groonya)
+- Bug #16969: Fix `yii\filters\PageCache` incorrectly storing empty data in some cases (sammousa)
+- Bug #15683: Fixed file as array uploading in MultipartFormDataParser (Groonya)
+- Bug #16822: Create config dir recursively in message/config (Groonya)
+- Bug #16580: Delete unused php message files in MessageController if `$removeUnused` option is on (Groonya)
+- Bug #16022: Fix UniqueValidator for PostgreSQL. Checks the uniqueness of keys in `jsonb` field (lav45)
+- Bug #16903: Fixed 'yii\validators\NumberValidator' method 'isNotNumber' returns false for true/false value (annechko)
+- Bug #16648: Html::strtolower() was corrupting UTF-8 strings (Kolyunya)
+- Bug #13977: Skip validation if file input does not exist (RobinKamps, s1lver)
+- Bug #16183: Fixed when `yii\helpers\BaseFileHelper` sometimes returned wrong value (samdark, SilverFire, OndrejVasicek)
 - Bug #13932: Fix number validator attributes comparison (uaoleg, s1lver)
 - Bug #14039, #16636: Fixed validation for disabled inputs (s1lver, omzy83)
 - Bug #16425: Check for additional values for disabled confirm dialog (Alex-Code, s1lver)
@@ -62,6 +73,7 @@ Yii Framework 2 Change Log
 - Bug #16301: Fixed `yii\web\User::setIdentity()` to clear access check cache while setting identity object to `null` (Izumi-kun)
 - Bug #16322: Fixed strings were not were not compared using timing attack resistant approach while CSRF token validation (samdark, Felix Wiedemann)
 - Chg #16192: `yii\db\Command::logQuery()` is now protected, extracted `getCacheKey()` from `queryInternal()` (drlibra)
+- Bug #16331: Fixed console table without headers (rhertogh)
 - Bug #16377: Fixed `yii\base\Event:off()` undefined index error when event handler does not match (razvanphp)
 - Bug #16514: Fixed `yii\di\Container::resolveCallableDependencies` to support callable object (wi1dcard)
 - Bug #15889: Fixed override `yii\helpers\Html::setActivePlaceholder` (lesha724)
@@ -73,7 +85,18 @@ Yii Framework 2 Change Log
 - Bug #10843: Additional hidden input rendered by `yii\helpers\BaseHtml` methods inherits `disabled` HTML option if provided and set to `true` (bizley)
 - Bug #16424: `yii\db\Transaction::begin()` throws now `NotSupportedException` for nested transaction and DBMS not supporting savepoints (bizley)
 - Bug #15204: `yii\helpers\BaseInflector::slug()` is not removing substrings matching provided replacement from given string anymore (bizley)
-
+- Bug #15528: Fix timestamp formatting to always use decimal notation in `yii\log\Target::getTime()` (rob006)
+- Bug #16101: Fixed Error Handler to clear registered meta tags, link tags, css/js scripts and files in error view (bizley)
+- Bug #16836: Fix `yii\mutex\MysqlMutex` to handle locks with names longer than 64 characters (rob006)
+- Bug #16838: `yii\mutex\Mutex::acquire()` no longer returns `true` if lock is already acquired by the same component in the same process (rob006)
+- Enh #16839: Increase frequency of lock tries for `yii\mutex\FileMutex::acquireLock()` when $timeout is provided (rob006)
+- Enh #16839: Add support for `$timeout` in  `yii\mutex\PgsqlMutex::acquire()` (rob006)
+- Bug #16828: `yii\console\controllers\MessageController::translator` recognized object' methods and functions calls as identical sets of tokens (erickskrauch)
+- Bug #16858: Allow `\yii\console\widgets\Table` to render empty table when headers provided but no columns (damiandziaduch)
+- Bug #14950: Fixed `yii\i18n\Formatter` methods `asInteger`, `asDecimal`, `asPercent`, and `asCurrency` outputs for very big numbers (bizley)
+- Bug #16897: Fixed `yii\db\sqlite\Schema` missing primary key constraint detection in case of `INTEGER PRIMARY KEY` (bizley)
+- Bug #16687: Add missing translations for `nl-NL` durations used in `yii\i18n\Formatter::asDuration()` (alexeevdv)
+- Bug #16469: Allow cache to be specified as interface and to be configured in DI container (alexeevdv)
 
 2.0.15.1 March 21, 2018
 -----------------------

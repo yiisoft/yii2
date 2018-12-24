@@ -21,6 +21,7 @@ class ErrorHandlerTest extends TestCase
                 'errorHandler' => [
                     'class' => 'yiiunit\framework\web\ErrorHandler',
                     'errorView' => '@yiiunit/data/views/errorHandler.php',
+                    'exceptionView' => '@yiiunit/data/views/errorHandlerForAssetFiles.php',
                 ],
             ],
         ]);
@@ -37,6 +38,19 @@ class ErrorHandlerTest extends TestCase
         $this->assertEquals('Code: 404
 Message: This message is displayed to end user
 Exception: yii\web\NotFoundHttpException', $out);
+    }
+
+    public function testClearAssetFilesInErrorView()
+    {
+        Yii::$app->getView()->registerJsFile('somefile.js');
+        /** @var ErrorHandler $handler */
+        $handler = Yii::$app->getErrorHandler();
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [new \Exception('Some Exception')]);
+        ob_get_clean();
+        $out = Yii::$app->response->data;
+        $this->assertEquals('Exception View
+', $out);
     }
 
     public function testRenderCallStackItem()
