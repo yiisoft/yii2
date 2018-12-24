@@ -750,7 +750,7 @@ class BaseConsole
      * 打印带有回车信息的 STDOUT 文本（PHP_EOL）。
      *
      * @param string $string 打印的字符串
-     * @return int|bool 发生错误时将打印字节数或者返回 false
+     * @return int|bool 发生错误时将打印字节数或者返回 false。
      */
     public static function output($string = null)
     {
