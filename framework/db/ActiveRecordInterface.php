@@ -168,7 +168,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * 该方法将自动调用 `one()` 方法并且返回 [[ActiveRecordInterface|ActiveRecord]]
      * 实例。
      *
-     * > Note：因为只是一种简单的方法，所以使用更复杂的条件，比如 ['!=', 'id', 1] 将不起作用。
+     * > Note: 因为只是一种简单的方法，所以使用更复杂的条件，比如 ['!=', 'id', 1] 将不起作用。
      * > 如果需要指定更复杂的条件，请将 [[find()]] 与 [[ActiveQuery::where()|where()]] 组合使用。
      *
      * 有关用法的示例，请参阅以下代码：
