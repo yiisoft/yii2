@@ -346,7 +346,7 @@ class BaseConsole
     /**
      * 将 ANSI 格式的字符串转换为 HTML。
      *
-     * 注意：目前不支持 xTerm 256 位颜色。
+     * Note：目前不支持 xTerm 256 位颜色。
      *
      * @param string $string 要转换的字符串。
      * @param array $styleMap ANSI 控件代码的可选映射，
@@ -500,7 +500,7 @@ class BaseConsole
      * 颜色代码将被移除（并且 %% 将被改变为 %）
      *
      * @param string $string 转换的字符串
-     * @param bool $colored 是否需要上色？
+     * @param bool $colored 是否应该为字符串设定颜色？
      * @return string
      */
     public static function renderColoredString($string, $colored = true)
@@ -698,9 +698,9 @@ class BaseConsole
     }
 
     /**
-     * 从 STDIN 获取输入，并为 EOLs 返回右侧被修剪后的字符串
+     * 从 STDIN 获取输入，并为 EOL 返回右侧被截取后的字符串
      *
-     * @param bool $raw 如果设置 true，返回的字符串不进行修剪
+     * @param bool $raw 如果设置 true，返回的字符串不进行删除
      * @return string 从 stdin 读取的字符串
      */
     public static function stdin($raw = false)
@@ -1100,7 +1100,7 @@ class BaseConsole
     /**
      * 返回验证错误数组
      * @param Model|Model[] $models 要显示其验证错误的模型。
-     * @param $showAllErrors 布尔型, 如果设置为 true 则每个属性的每个错误消息将以其他方式显示
+     * @param $showAllErrors 布尔型，如果设置为 true 则每个属性的每个错误消息将以其他方式显示
      * 否则将只显示每个属性的第一个错误消息。
      * @return 验证错误数组
      * @since 2.0.14
