@@ -85,9 +85,9 @@ class BaseFileHelper
      * 基于指定的语言代码进行搜索。
      * 特别是，将在子目录下查找同名的文件
      * 它的名字与语言代码一样。比如说，找到某个文件 "path/to/view.php"
-     * 包含语言代码 "zh-CN"，本地化文件将被查找为 "path/to/zh-CN/view.php"。
-     * 如果这个文件没有被找到，它将尝试使用语言代码进行回退
-     * "zh" i.e。"path/to/zh/view.php"。如果没有找到，将返回原始文件。
+     * 包含语言代码 "zh-CN"，本地化文件将在 "path/to/zh-CN/view.php" 这里被查找。
+     * 如果这个文件没有被找到，它将尝试使用 "zh" 下的语言代码进行回滚
+     * 例如 "path/to/zh/view.php"。如果找不到，将返回原始文件。
      *
      * 如果目标语言代码和源语言代码相同，
      * 原始文件将被返回。
@@ -233,7 +233,7 @@ class BaseFileHelper
     /**
      * 从指定文件加载 MIME 别名。
      * @param string $aliasesFile 包含 MIME 类型别名的文件的路径（或别名）。
-     * 如果没有设置，将使用 [[mimeMagicFile]] 指定的文件。
+     * 如果没有设置，将使用 [[mimeAliasesFile]] 指定的文件。
      * @return array 从文件扩展名到 MIME 类型的映射
      * @since 2.0.14
      */
@@ -257,7 +257,7 @@ class BaseFileHelper
      * @param string $dst 目标目录
      * @param array $options 目录复制选项。有效的选项是：
      *
-     * - dirMode：整型，为新复制的目录设置的权限。默认为0775。
+     * - dirMode：整型，为新复制的目录设置的权限。默认为 0775。
      * - fileMode：整型，为新复制的文件设置的权限。默认设置为当前环境设置。
      * - filter：回调方法，为每个目录或文件调用的PHP回调。
      *   回调的签名应该是：`function ($path)`，`$path` 表示要过滤的完整路径。
@@ -612,7 +612,7 @@ class BaseFileHelper
      * @param int $mode 为创建的目录设置的权限。
      * @param bool $recursive 如果父目录不存在是否需要创建它们。
      * @return bool whether 目录创建成功
-     * @throws \yii\base\Exception 如果无法创建目录（i.e. php 错误导致并行修改）
+     * @throws \yii\base\Exception 如果无法创建目录（例如 php 错误导致并行修改）
      */
     public static function createDirectory($path, $mode = 0775, $recursive = true)
     {
@@ -731,7 +731,7 @@ class BaseFileHelper
 
     /**
      * 扫描非排除列表以便查看路径名是否被忽略。
-     * 第一个匹配（i.e. 列表内的最后一个），如果有任何可能性，
+     * 第一个匹配（例如 列表内的最后一个），如果有任何可能性，
      * 决定不同的结果。返回匹配的元素，
      * 或者返回 null。
      *
