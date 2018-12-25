@@ -103,10 +103,10 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * 以返回填充的 ActiveRecord 实例。例如，
      *
      * ```php
-     * // find the customer whose ID is 1
+     * // 找到 ID 为 1 的客户
      * $customer = Customer::find()->where(['id' => 1])->one();
      *
-     * // find all active customers and order them by their age:
+     * // 查找所有活跃客户并按其年龄排序
      * $customers = Customer::find()
      *     ->where(['status' => 1])
      *     ->orderBy('age')
@@ -140,11 +140,11 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *     }
      * }
      *
-     * // Use andWhere()/orWhere() to apply the default condition
+     * // 使用 andWhere()/orWhere() 应用默认条件
      * // SELECT FROM customer WHERE `deleted`=:deleted AND age>30
      * $customers = Customer::find()->andWhere('age>30')->all();
      *
-     * // Use where() to ignore the default condition
+     * // 使用 where() 忽略默认条件
      * // SELECT FROM customer WHERE age>30
      * $customers = Customer::find()->where('age>30')->all();
      *
@@ -174,22 +174,22 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * 有关用法的示例，请参阅以下代码：
      *
      * ```php
-     * // find a single customer whose primary key value is 10
+     * // 找到主键值为 10 的单个客户
      * $customer = Customer::findOne(10);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customer = Customer::find()->where(['id' => 10])->one();
      *
-     * // find the customers whose primary key value is 10, 11 or 12.
+     * // 找到主键值为 10，11 或 12 的客户。
      * $customers = Customer::findOne([10, 11, 12]);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customers = Customer::find()->where(['id' => [10, 11, 12]])->one();
      *
-     * // find the first customer whose age is 30 and whose status is 1
+     * // 找到第一个年龄为 30 岁且状态为 1 的客户
      * $customer = Customer::findOne(['age' => 30, 'status' => 1]);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customer = Customer::find()->where(['age' => 30, 'status' => 1])->one();
      * ```
      *
@@ -241,22 +241,22 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * 有关于用法示例，请参阅以下代码：
      *
      * ```php
-     * // find the customers whose primary key value is 10
+     * // 找到主键值为 10 的客户
      * $customers = Customer::findAll(10);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customers = Customer::find()->where(['id' => 10])->all();
      *
-     * // find the customers whose primary key value is 10, 11 or 12.
+     * // 找到主键值为 10，11 或 12 的客户。
      * $customers = Customer::findAll([10, 11, 12]);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customers = Customer::find()->where(['id' => [10, 11, 12]])->all();
      *
-     * // find customers whose age is 30 and whose status is 1
+     * // 找到年龄为 30 岁且状态为 1 的客户
      * $customers = Customer::findAll(['age' => 30, 'status' => 1]);
      *
-     * // the above code is equivalent to:
+     * // 上面的代码相当于：
      * $customers = Customer::find()->where(['age' => 30, 'status' => 1])->all();
      * ```
      *
