@@ -346,7 +346,7 @@ class BaseConsole
     /**
      * 将 ANSI 格式的字符串转换为 HTML。
      *
-     * Note：目前不支持 xTerm 256 位颜色。
+     * Note: 目前不支持 xTerm 256 位颜色。
      *
      * @param string $string 要转换的字符串。
      * @param array $styleMap ANSI 控件代码的可选映射，
