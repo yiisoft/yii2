@@ -23,7 +23,7 @@ class Exception extends \yii\base\Exception
 
 
     /**
-     * 构造器。
+     * 构造函数。
      * @param string $message PDO 错误消息
      * @param array $errorInfo PDO 错误信息
      * @param int $code PDO 错误代码
