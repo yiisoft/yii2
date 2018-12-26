@@ -10,7 +10,7 @@ namespace yii\db;
 use yii\base\BaseObject;
 
 /**
- * Constraint represents the metadata of a table constraint.
+ * Constraint 表示表约束的元数据。
  *
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
@@ -18,11 +18,11 @@ use yii\base\BaseObject;
 class Constraint extends BaseObject
 {
     /**
-     * @var string[]|null list of column names the constraint belongs to.
+     * @var string[]|null 约束所属的列名列表。
      */
     public $columnNames;
     /**
-     * @var string|null the constraint name.
+     * @var string|null 约束名。
      */
     public $name;
 }
