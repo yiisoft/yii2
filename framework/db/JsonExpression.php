@@ -41,7 +41,7 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
 
 
     /**
-     * JsonExpression 构造器。
+     * JsonExpression 构造函数。
      *
      * @param mixed $value 要编码为 JSON 的值。
      * 该值必须与 [\yii\helpers\Json::encode()|Json::encode()]] 要求兼容。
