@@ -103,7 +103,7 @@ class BaseArrayHelper
      * 递归合并 2 个及以上的数组。
      * 如果每个数组元素有相同的字符串键值对，
      * 后者将会覆盖前者（不同于 array_merge_recursive）。
-     * 如果两个数组都有数组类型的元素并且具有相同的键
+     * 如果两个数组都有数组类型的元素并且具有相同的键，
      * 那么将进行递归合并。
      * 对于整型键类型元素，后面数组中的元素将
      * 会被追加到前面的数组中去。
@@ -837,7 +837,7 @@ class BaseArrayHelper
     /**
      * 检查变量是数组还是 [[\Traversable]]。
      *
-     * 该方法与 PHP 函数 [is_array()](http://php.net/manual/en/function.is-array.php) 相同
+     * 该方法与 PHP 函数 [is_array()](http://php.net/manual/en/function.is-array.php) 相同，
      * 但是，它还可以用于实现 [[\Traversable]] 接口。
      * @param mixed $var 被评估的变量。
      * @return bool 变量 $var 是否是一个数组
