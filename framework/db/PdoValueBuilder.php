@@ -8,7 +8,7 @@
 namespace yii\db;
 
 /**
- * PdoValueBuilder 类构建 [[PdoValue]] 表达式类的对象。
+ * 类 PdoValueBuilder 构建 [[PdoValue]] 表达式类的对象。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
