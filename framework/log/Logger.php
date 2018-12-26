@@ -36,7 +36,7 @@ use yii\base\Component;
  * 该属性只读。
  * @property array $profiling 分析结果。每个元素都是由这些元素组成的数组：
  * `info`，`category`，`timestamp`，`trace`，`level`，`duration`，`memory`，`memoryDiff`。
- *  从版本 2.0.11 起，添加 `memory` 和 `memoryDiff` 元素。该属性只读。
+ * 从版本 2.0.11 起，添加 `memory` 和 `memoryDiff` 元素。该属性只读。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -180,9 +180,9 @@ class Logger extends Component
 
     /**
      * 返回自当前请求开始以来经过的总时间。
-     * 该方法计算当前与在 [[\yii\BaseYii]] 类文件常量 `YII_BEGIN_TIME` 
-     * 定义的时间戳之间的
-     * 差异。
+     * 该方法计算当前与在 [[\yii\BaseYii]] 类文件常量
+     * `YII_BEGIN_TIME`
+     * 定义的时间戳之间的差异。
      * @return float 当前请求的总耗时（以秒为单位）。
      */
     public function getElapsedTime()
@@ -195,7 +195,7 @@ class Logger extends Component
      *
      * 默认情况下，将返回所有分析结果。你可以提供
      * `$categories` 和 `$excludeCategories` 作为参数来获取
-     * 你感兴趣的结果。
+     * 你需要关注的结果。
      *
      * @param array $categories 您感兴趣的类别的列表。
      * 您可以在类别的末尾使用星号来匹配前缀。
@@ -245,8 +245,8 @@ class Logger extends Component
 
     /**
      * 返回数据库查询的统计结果。
-     * 返回的结果包括执行的 SQL 语句的数量和
-     * 花费的总时间。
+     * 返回的结果包括执行的 SQL
+     * 语句的数量和花费的总时间。
      * @return array 第一个元素表示执行的 SQL 语句的数量，
      * 第二个元素是 SQL 执行花费的总时间。
      */
@@ -265,7 +265,7 @@ class Logger extends Component
     /**
      * 计算给定日志消息的运行时间。
      * @param array $messages 从分析中获得的日志消息
-     * @return array timings. 每个元素都是由这些元素组成的数组：
+     * @return array timings。每个元素都是由这些元素组成的数组：
      * `info`，`category`，`timestamp`，`trace`，`level`，`duration`，`memory`，`memoryDiff`，
      * 从版本 2.0.11 起，添加 `memory` 和 `memoryDiff` 元素。
      */
@@ -306,7 +306,7 @@ class Logger extends Component
 
     /**
      * Returns 具体的等级文字描述。
-     * @param int $level 消息等级， 如 [[LEVEL_ERROR]]， [[LEVEL_WARNING]]。
+     * @param int $level 消息等级，如 [[LEVEL_ERROR]]，[[LEVEL_WARNING]]。
      * @return string 返回当前等级的文字描述。
      */
     public static function getLevelName($level)
