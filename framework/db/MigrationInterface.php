@@ -8,10 +8,10 @@
 namespace yii\db;
 
 /**
- * The MigrationInterface defines the minimum set of methods to be implemented by a database migration.
+ * The MigrationInterface 定义了要求数据库前已实现的最小方案集。
  *
- * Each migration class should provide the [[up()]] method containing the logic for "upgrading" the database
- * and the [[down()]] method for the "downgrading" logic.
+ * 每个迁移类都应该提供 [[up()]] 方法用于 "upgrading" 数据库的逻辑，
+ * 以及用于 "downgrading" 逻辑的 [[down()]] 方法。
  *
  * @author Klimov Paul <klimov@zfort.com>
  * @since 2.0
@@ -19,17 +19,17 @@ namespace yii\db;
 interface MigrationInterface
 {
     /**
-     * This method contains the logic to be executed when applying this migration.
-     * @return bool return a false value to indicate the migration fails
-     * and should not proceed further. All other return values mean the migration succeeds.
+     * 此方法包含应用此迁移时要执行的逻辑。
+     * @return bool 迁移失败返回 false，并且不应该继续执行。
+     * 所有其他返回值表示迁移成功。
      */
     public function up();
 
     /**
-     * This method contains the logic to be executed when removing this migration.
-     * The default implementation throws an exception indicating the migration cannot be removed.
-     * @return bool return a false value to indicate the migration fails
-     * and should not proceed further. All other return values mean the migration succeeds.
+     * 此方法包含删除此迁移时要执行的逻辑。
+     * 默认实现会引发异常，指示无法删除迁移。
+     * @return bool 迁移失败返回 false，并且不应该继续执行。
+     * 所有其他返回值表示迁移成功。
      */
     public function down();
 }
