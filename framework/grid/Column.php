@@ -12,9 +12,9 @@ use yii\base\BaseObject;
 use yii\helpers\Html;
 
 /**
- * Column is the base class of all [[GridView]] column classes.
+ * Column 是所有 [[GridView]] 列类的基类。
  *
- * For more details and usage information on Column, see the [guide article on data widgets](guide:output-data-widgets).
+ * 有关 Column 的更多细节和用法，请参阅 [guide article on data widgets](guide:output-data-widgets)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -22,57 +22,57 @@ use yii\helpers\Html;
 class Column extends BaseObject
 {
     /**
-     * @var GridView the grid view object that owns this column.
+     * @var GridView 拥有此列的网格视图对象。
      */
     public $grid;
     /**
-     * @var string the header cell content. Note that it will not be HTML-encoded.
+     * @var string 标题单元格内容。注意，它不是 HTML 编码的。
      */
     public $header;
     /**
-     * @var string the footer cell content. Note that it will not be HTML-encoded.
+     * @var string 页脚单元格内容。注意，它不是 HTML 编码的。
      */
     public $footer;
     /**
-     * @var callable This is a callable that will be used to generate the content of each cell.
-     * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
-     * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
-     * and `$column` is a reference to the [[Column]] object.
+     * @var callable 这是用于生成每个单元格内容的回调函数。
+     * 函数的写法如下：`function ($model, $key, $index, $column)`。
+     * 其中，`$model`，`$key` 和 `$index` 表示当前渲染行的模型，键和索引，
+     * `$column` 是对 [[Column]] 对象的引用。
      */
     public $content;
     /**
-     * @var bool whether this column is visible. Defaults to true.
+     * @var bool 列是否可见。默认为 true。
      */
     public $visible = true;
     /**
-     * @var array the HTML attributes for the column group tag.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @var array 列组标签的 HTML 属性。
+     * @see \yii\helpers\Html::renderTagAttributes() 有关如何渲染属性的详细信息。
      */
     public $options = [];
     /**
-     * @var array the HTML attributes for the header cell tag.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @var array 标题单元格标签的 HTML 属性。
+     * @see \yii\helpers\Html::renderTagAttributes() 有关如何渲染属性的详细信息。
      */
     public $headerOptions = [];
     /**
-     * @var array|\Closure the HTML attributes for the data cell tag. This can either be an array of
-     * attributes or an anonymous function ([[Closure]]) that returns such an array.
-     * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
-     * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
-     * and `$column` is a reference to the [[Column]] object.
-     * A function may be used to assign different attributes to different rows based on the data in that row.
+     * @var array|\Closure 数据单元标签的 HTML 属性。
+     * 这可以是属性数组或返回此类数组的匿名函数（[[Closure]]）。
+     * 函数的写法应该如下：`function ($model, $key, $index, $column)`。
+     * 其中，`$model`，`$key` 和 `$index` 表示当前渲染行的模型、键和索引，
+     * `$column` 是对 [[Column]] 对象的引用。
+     * 函数可用于根据该行中的数据将不同的属性分配给不同的行。
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see \yii\helpers\Html::renderTagAttributes() 有关如何渲染属性的详细信息。
      */
     public $contentOptions = [];
     /**
-     * @var array the HTML attributes for the footer cell tag.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @var array the 页脚单元格标签的 HTML 属性。
+     * @see \yii\helpers\Html::renderTagAttributes() 有关如何渲染属性的详细信息。
      */
     public $footerOptions = [];
     /**
-     * @var array the HTML attributes for the filter cell tag.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @var array 筛选单元格标签的 HTML 属性。
+     * @see \yii\helpers\Html::renderTagAttributes() 有关如何渲染属性的详细信息。
      */
     public $filterOptions = [];
 
@@ -86,7 +86,7 @@ class Column extends BaseObject
     }
 
     /**
-     * Renders the footer cell.
+     * 渲染标题单元格。
      */
     public function renderFooterCell()
     {
@@ -94,11 +94,11 @@ class Column extends BaseObject
     }
 
     /**
-     * Renders a data cell.
-     * @param mixed $model the data model being rendered
-     * @param mixed $key the key associated with the data model
-     * @param int $index the zero-based index of the data item among the item array returned by [[GridView::dataProvider]].
-     * @return string the rendering result
+     * 渲染数据单元格。
+     * @param mixed $model 数据模型
+     * @param mixed $key 与数据模型相关的键
+     * @param int $index 由 [[GridView::dataProvider]] 返回的模型数组中的数据模型的从零开始的索引。
+     * @return string 渲染结果
      */
     public function renderDataCell($model, $key, $index)
     {
@@ -120,10 +120,10 @@ class Column extends BaseObject
     }
 
     /**
-     * Renders the header cell content.
-     * The default implementation simply renders [[header]].
-     * This method may be overridden to customize the rendering of the header cell.
-     * @return string the rendering result
+     * 渲染过滤单元格。
+     * 默认实现只是渲染 [[header]]。
+     * 可以重写此方法以自定义标题单元格的渲染。
+     * @return string 渲染结果
      */
     protected function renderHeaderCellContent()
     {
@@ -131,8 +131,8 @@ class Column extends BaseObject
     }
 
     /**
-     * Returns header cell label.
-     * This method may be overridden to customize the label of the header cell.
+     * 返回标题单元格标签。
+     * 可以重写此方法以自定义标题单元格的标签。
      * @return string label
      * @since 2.0.8
      */
@@ -142,10 +142,10 @@ class Column extends BaseObject
     }
 
     /**
-     * Renders the footer cell content.
-     * The default implementation simply renders [[footer]].
-     * This method may be overridden to customize the rendering of the footer cell.
-     * @return string the rendering result
+     * 渲染页脚单元格内容。
+     * 默认实现只是渲染 [[footer]]。
+     * 可以重写此方法以自定义页脚单元格的渲染。
+     * @return string 渲染结果
      */
     protected function renderFooterCellContent()
     {
@@ -153,11 +153,11 @@ class Column extends BaseObject
     }
 
     /**
-     * Renders the data cell content.
-     * @param mixed $model the data model
-     * @param mixed $key the key associated with the data model
-     * @param int $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
-     * @return string the rendering result
+     * 渲染数据单元格内容。
+     * @param mixed $model 数据模型
+     * @param mixed $key 与数据模型相关的键
+     * @param int $index 由 [[GridView::dataProvider]] 返回的模型数组中的数据模型的从零开始的索引。
+     * @return string 渲染结果
      */
     protected function renderDataCellContent($model, $key, $index)
     {
@@ -169,10 +169,10 @@ class Column extends BaseObject
     }
 
     /**
-     * Renders the filter cell content.
-     * The default implementation simply renders a space.
-     * This method may be overridden to customize the rendering of the filter cell (if any).
-     * @return string the rendering result
+     * 渲染过滤单元格内容。
+     * 默认实现只是渲染一个空格。
+     * 可以重写此方法以自定义过滤器单元的渲染（如果有）。
+     * @return string 渲染结果
      */
     protected function renderFilterCellContent()
     {

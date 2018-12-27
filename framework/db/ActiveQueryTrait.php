@@ -8,7 +8,7 @@
 namespace yii\db;
 
 /**
- * ActiveQueryTrait implements the common methods and properties for active record query classes.
+ * ActiveQueryTrait 实现了活动记录查询类的通用方法和属性。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -17,24 +17,24 @@ namespace yii\db;
 trait ActiveQueryTrait
 {
     /**
-     * @var string the name of the ActiveRecord class.
+     * @var string ActiveRecord 类的名称。
      */
     public $modelClass;
     /**
-     * @var array a list of relations that this query should be performed with
+     * @var array 此查询应使用的关系列表。
      */
     public $with;
     /**
-     * @var bool whether to return each record as an array. If false (default), an object
-     * of [[modelClass]] will be created to represent each record.
+     * @var bool 是否将每个记录作为数组返回。如果为 false（默认值），
+     * 将创建 [[modelClass]] 的对象来表示每个记录。
      */
     public $asArray;
 
 
     /**
-     * Sets the [[asArray]] property.
-     * @param bool $value whether to return the query results in terms of arrays instead of Active Records.
-     * @return $this the query object itself
+     * 设置 [[asArray]] 属性。
+     * @param bool $value 是否按数组而不是活动记录返回查询结果。
+     * @return $this 查询对象本身
      */
     public function asArray($value = true)
     {
@@ -43,17 +43,17 @@ trait ActiveQueryTrait
     }
 
     /**
-     * Specifies the relations with which this query should be performed.
+     * 指定应该执行此查询的关系。
      *
-     * The parameters to this method can be either one or multiple strings, or a single array
-     * of relation names and the optional callbacks to customize the relations.
+     * 此方法的参数可以是一个或多个字符串，
+     * 也可以是单个关系名称数组和自定义关系的可选回调。
      *
-     * A relation name can refer to a relation defined in [[modelClass]]
-     * or a sub-relation that stands for a relation of a related record.
-     * For example, `orders.address` means the `address` relation defined
-     * in the model class corresponding to the `orders` relation.
+     * 关系名称可以指在 [[modelClass]]
+     * 中定义的关系或代表相关记录关系的子关系。
+     * 例如，`orders.address` 是指模型类中定义的对应于
+     * `orders` 关系的 `address` 关系。
      *
-     * The following are some usage examples:
+     * 以下是一些用法示例：
      *
      * ```php
      * // find customers together with their orders and country
@@ -69,15 +69,15 @@ trait ActiveQueryTrait
      * ])->all();
      * ```
      *
-     * You can call `with()` multiple times. Each call will add relations to the existing ones.
-     * For example, the following two statements are equivalent:
+     * 你可以多次调用 `with()`。每次调用都将在现有基础上增加新的关系。
+     * 例如，以下两个语句是等效的：
      *
      * ```php
      * Customer::find()->with('orders', 'country')->all();
      * Customer::find()->with('orders')->with('country')->all();
      * ```
      *
-     * @return $this the query object itself
+     * @return $this 查询对象本身
      */
     public function with()
     {
@@ -104,7 +104,7 @@ trait ActiveQueryTrait
     }
 
     /**
-     * Converts found rows into model instances.
+     * 将找到的行转换为模型实例。
      * @param array $rows
      * @return array|ActiveRecord[]
      * @since 2.0.11
@@ -128,10 +128,10 @@ trait ActiveQueryTrait
     }
 
     /**
-     * Finds records corresponding to one or multiple relations and populates them into the primary models.
-     * @param array $with a list of relations that this query should be performed with. Please
-     * refer to [[with()]] for details about specifying this parameter.
-     * @param array|ActiveRecord[] $models the primary models (can be either AR instances or arrays)
+     * 查找对应于一个或多个关系的记录，并将它们填充到主模型中。
+     * @param array $with 这个查询应该使用的关系列表。
+     * 有关指定此参数的详细信息，请参考 [[with()]]。
+     * @param array|ActiveRecord[] $models 主要模型（可以是 AR 实例或数组）。
      */
     public function findWith($with, &$models)
     {

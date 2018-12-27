@@ -13,9 +13,9 @@ use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 
 /**
- * BaseFileHelper provides concrete implementation for [[FileHelper]].
+ * BaseFileHelper 为 [[FileHelper]] 提供了具体的实现方法。
  *
- * Do not use BaseFileHelper. Use [[FileHelper]] instead.
+ * 不要使用 BaseFileHelper 类。使用 [[FileHelper]] 类来代替。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>
@@ -30,29 +30,29 @@ class BaseFileHelper
     const PATTERN_CASE_INSENSITIVE = 32;
 
     /**
-     * @var string the path (or alias) of a PHP file containing MIME type information.
+     * @var string 包含 MIME 类型信息的 PHP 文件的路径（或别名）。
      */
     public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
     /**
-     * @var string the path (or alias) of a PHP file containing MIME aliases.
+     * @var string 包含 MIME 别名的 PHP 文件的路径（或别名）。
      * @since 2.0.14
      */
     public static $mimeAliasesFile = '@yii/helpers/mimeAliases.php';
 
 
     /**
-     * Normalizes a file/directory path.
+     * 规范化文件/目录路径。
      *
-     * The normalization does the following work:
+     * 规范化做了以下工作：
      *
-     * - Convert all directory separators into `DIRECTORY_SEPARATOR` (e.g. "\a/b\c" becomes "/a/b/c")
-     * - Remove trailing directory separators (e.g. "/a/b/c/" becomes "/a/b/c")
-     * - Turn multiple consecutive slashes into a single one (e.g. "/a///b/c" becomes "/a/b/c")
-     * - Remove ".." and "." based on their meanings (e.g. "/a/./b/../c" becomes "/a/c")
+     * - 将所有目录分隔符转换为 `DIRECTORY_SEPARATOR`（e.g. "\a/b\c" becomes "/a/b/c"）
+     * - 删除末尾的目录分隔符（e.g. "/a/b/c/" becomes "/a/b/c"）
+     * - 将多个连续斜杠转换为单个斜杠（e.g. "/a///b/c" becomes "/a/b/c"）
+     * - 移除 ".." 和 "." 基于它们的定义（e.g. "/a/./b/../c" becomes "/a/c"）
      *
-     * @param string $path the file/directory path to be normalized
-     * @param string $ds the directory separator to be used in the normalized result. Defaults to `DIRECTORY_SEPARATOR`.
-     * @return string the normalized file/directory path
+     * @param string $path 要标准化的文件/目录路径
+     * @param string $ds 要在规范化结果中使用的目录分隔符。默认是 `DIRECTORY_SEPARATOR`。
+     * @return string 规范化文件/目录路径
      */
     public static function normalizePath($path, $ds = DIRECTORY_SEPARATOR)
     {
@@ -80,25 +80,25 @@ class BaseFileHelper
     }
 
     /**
-     * Returns the localized version of a specified file.
+     * 返回指定文件的本地化版本。
      *
-     * The searching is based on the specified language code. In particular,
-     * a file with the same name will be looked for under the subdirectory
-     * whose name is the same as the language code. For example, given the file "path/to/view.php"
-     * and language code "zh-CN", the localized file will be looked for as
-     * "path/to/zh-CN/view.php". If the file is not found, it will try a fallback with just a language code that is
-     * "zh" i.e. "path/to/zh/view.php". If it is not found as well the original file will be returned.
+     * 基于指定的语言代码进行搜索。
+     * 特别是，将在子目录下查找同名的文件
+     * 它的名字与语言代码一样。比如说，找到某个文件 "path/to/view.php"
+     * 包含语言代码 "zh-CN"，本地化文件将在 "path/to/zh-CN/view.php" 这里被查找。
+     * 如果这个文件没有被找到，它将尝试使用 "zh" 下的语言代码进行备用，
+     * 例如 "path/to/zh/view.php"。如果找不到，将返回原始文件。
      *
-     * If the target and the source language codes are the same,
-     * the original file will be returned.
+     * 如果目标语言代码和源语言代码相同，
+     * 原始文件将被返回。
      *
-     * @param string $file the original file
-     * @param string $language the target language that the file should be localized to.
-     * If not set, the value of [[\yii\base\Application::language]] will be used.
-     * @param string $sourceLanguage the language that the original file is in.
-     * If not set, the value of [[\yii\base\Application::sourceLanguage]] will be used.
-     * @return string the matching localized file, or the original file if the localized version is not found.
-     * If the target and the source language codes are the same, the original file will be returned.
+     * @param string $file 原始文件
+     * @param string $language 文件应该本地化到的目标语言。
+     * 如果没有去设置，将使用 [[\yii\base\Application::language]] 的值。
+     * @param string $sourceLanguage 原始文件所包含的语言。
+     * 如果没有去设置，将使用 [[\yii\base\Application::sourceLanguage]] 的值。
+     * @return string 匹配的本地化文件，如果本地文件未找到可以使用原始文件。
+     * 如果目标语言代码和源语言代码相同，将返回原始文件。
      */
     public static function localize($file, $language = null, $sourceLanguage = null)
     {
@@ -126,19 +126,19 @@ class BaseFileHelper
     }
 
     /**
-     * Determines the MIME type of the specified file.
-     * This method will first try to determine the MIME type based on
-     * [finfo_open](http://php.net/manual/en/function.finfo-open.php). If the `fileinfo` extension is not installed,
-     * it will fall back to [[getMimeTypeByExtension()]] when `$checkExtension` is true.
-     * @param string $file the file name.
-     * @param string $magicFile name of the optional magic database file (or alias), usually something like `/path/to/magic.mime`.
-     * This will be passed as the second parameter to [finfo_open()](http://php.net/manual/en/function.finfo-open.php)
-     * when the `fileinfo` extension is installed. If the MIME type is being determined based via [[getMimeTypeByExtension()]]
-     * and this is null, it will use the file specified by [[mimeMagicFile]].
-     * @param bool $checkExtension whether to use the file extension to determine the MIME type in case
-     * `finfo_open()` cannot determine it.
-     * @return string the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
-     * @throws InvalidConfigException when the `fileinfo` PHP extension is not installed and `$checkExtension` is `false`.
+     * 确定指定文件的 MIME 类型。
+     * 此方法首先尝试基于 [finfo_open](http://php.net/manual/en/function.finfo-open.php) 确定 MIME 类型。
+     * 如果 `fileinfo` 扩展未安装，
+     * 当 `$checkExtension` 设置 true 的时候它将基于 [[getMimeTypeByExtension()]]。
+     * @param string $file 文件名称。
+     * @param string $magicFile 可选的魔术数据库文件名（或别名），通常类似 `/path/to/magic.mime`。
+     * 这将作为第二个参数传递给 [finfo_open()](http://php.net/manual/en/function.finfo-open.php)
+     * 当 `fileinfo` 扩展被安装时。如果 MIME 类型是基于 [[getMimeTypeByExtension()]]
+     * 并且为 null，它将通过 [[mimeMagicFile]] 使用指定的文件。
+     * @param bool $checkExtension 在 `finfo_open()` 无法确定 MIME 类型的情况下，
+     * 是否使用文件扩展名来确定 MIME 类型。
+     * @return string MIME 类型（e.g. `text/plain`）。如果无法确定MIME类型，则返回 Null。
+     * @throws InvalidConfigException 当 `fileinfo` PHP 扩展没有被安装并且 `$checkExtension` 设置 `false`。
      */
     public static function getMimeType($file, $magicFile = null, $checkExtension = true)
     {
@@ -167,12 +167,12 @@ class BaseFileHelper
     }
 
     /**
-     * Determines the MIME type based on the extension name of the specified file.
-     * This method will use a local map between extension names and MIME types.
-     * @param string $file the file name.
-     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
-     * If this is not set, the file specified by [[mimeMagicFile]] will be used.
-     * @return string|null the MIME type. Null is returned if the MIME type cannot be determined.
+     * 根据指定文件的扩展名确定 MIME 类型。
+     * 该方法将使用扩展名和 MIME 类型之间的本地映射。
+     * @param string $file 文件的名字。
+     * @param string $magicFile 包含所有可用 MIME 类型信息的文件的路径（或别名）。
+     * 如果没有设置，将使用 [[mimeMagicFile]] 指定的文件。
+     * @return string|null MIME 类型。如果无法确定 MIME 类型，则返回 Null。
      */
     public static function getMimeTypeByExtension($file, $magicFile = null)
     {
@@ -189,12 +189,12 @@ class BaseFileHelper
     }
 
     /**
-     * Determines the extensions by given MIME type.
-     * This method will use a local map between extension names and MIME types.
-     * @param string $mimeType file MIME type.
-     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
-     * If this is not set, the file specified by [[mimeMagicFile]] will be used.
-     * @return array the extensions corresponding to the specified MIME type
+     * 根据给定 MIME 类型确定扩展。
+     * 该方法将使用扩展名和 MIME 类型之间的本地映射。
+     * @param string $mimeType 文件的 MIME 类型。
+     * @param string $magicFile 包含所有可用 MIME 类型信息的文件的路径（或别名）。
+     * 如果没有设置，将使用 [[mimeMagicFile]] 指定的文件。
+     * @return array 对应于指定 MIME 类型的扩展
      */
     public static function getExtensionsByMimeType($mimeType, $magicFile = null)
     {
@@ -210,10 +210,10 @@ class BaseFileHelper
     private static $_mimeTypes = [];
 
     /**
-     * Loads MIME types from the specified file.
-     * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
-     * If this is not set, the file specified by [[mimeMagicFile]] will be used.
-     * @return array the mapping from file extensions to MIME types
+     * 从指定的文件加载 MIME 类型。
+     * @param string $magicFile 包含所有可用 MIME 类型信息的文件的路径（或别名）。
+     * 如果没有设置，将使用 [[mimeMagicFile]] 指定的文件。
+     * @return array 从文件扩展名到 MIME 类型的映射
      */
     protected static function loadMimeTypes($magicFile)
     {
@@ -231,10 +231,10 @@ class BaseFileHelper
     private static $_mimeAliases = [];
 
     /**
-     * Loads MIME aliases from the specified file.
-     * @param string $aliasesFile the path (or alias) of the file that contains MIME type aliases.
-     * If this is not set, the file specified by [[mimeAliasesFile]] will be used.
-     * @return array the mapping from file extensions to MIME types
+     * 从指定文件加载 MIME 别名。
+     * @param string $aliasesFile 包含 MIME 类型别名的文件的路径（或别名）。
+     * 如果没有设置，将使用 [[mimeAliasesFile]] 指定的文件。
+     * @return array 从文件扩展名到 MIME 类型的映射
      * @since 2.0.14
      */
     protected static function loadMimeAliases($aliasesFile)
@@ -251,47 +251,47 @@ class BaseFileHelper
     }
 
     /**
-     * Copies a whole directory as another one.
-     * The files and sub-directories will also be copied over.
-     * @param string $src the source directory
-     * @param string $dst the destination directory
-     * @param array $options options for directory copy. Valid options are:
+     * 将整个目录复制为另一个目录。
+     * 文件和子目录也将被复制。
+     * @param string $src 源目录
+     * @param string $dst 目标目录
+     * @param array $options 目录复制选项。有效的选项是：
      *
-     * - dirMode: integer, the permission to be set for newly copied directories. Defaults to 0775.
-     * - fileMode:  integer, the permission to be set for newly copied files. Defaults to the current environment setting.
-     * - filter: callback, a PHP callback that is called for each directory or file.
-     *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
-     *   The callback can return one of the following values:
+     * - dirMode：整型，为新复制的目录设置的权限。默认为 0775。
+     * - fileMode：整型，为新复制的文件设置的权限。默认设置为当前环境设置。
+     * - filter：回调方法，为每个目录或文件调用的PHP回调。
+     *   回调的签名应该是：`function ($path)`，`$path` 表示要过滤的完整路径。
+     *   回调可以返回以下值：
      *
-     *   * true: the directory or file will be copied (the "only" and "except" options will be ignored)
-     *   * false: the directory or file will NOT be copied (the "only" and "except" options will be ignored)
-     *   * null: the "only" and "except" options will determine whether the directory or file should be copied
+     *   * true：目录或文件将被复制（"only" 和 "except" 选项将被忽略）
+     *   * false：目录或文件不会被复制（"only" 和 "except" 选项将被忽略）
+     *   * null："only" 和 "except" 选项将决定是否复制目录或文件
      *
-     * - only: array, list of patterns that the file paths should match if they want to be copied.
-     *   A path matches a pattern if it contains the pattern string at its end.
-     *   For example, '.php' matches all file paths ending with '.php'.
-     *   Note, the '/' characters in a pattern matches both '/' and '\' in the paths.
-     *   If a file path matches a pattern in both "only" and "except", it will NOT be copied.
-     * - except: array, list of patterns that the files or directories should match if they want to be excluded from being copied.
-     *   A path matches a pattern if it contains the pattern string at its end.
-     *   Patterns ending with '/' apply to directory paths only, and patterns not ending with '/'
-     *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
-     *   and '.svn/' matches directory paths ending with '.svn'. Note, the '/' characters in a pattern matches
-     *   both '/' and '\' in the paths.
-     * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
-     * - recursive: boolean, whether the files under the subdirectories should also be copied. Defaults to true.
-     * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
-     *   If the callback returns false, the copy operation for the sub-directory or file will be cancelled.
-     *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
-     *   file to be copied from, while `$to` is the copy target.
-     * - afterCopy: callback, a PHP callback that is called after each sub-directory or file is successfully copied.
-     *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
-     *   file copied from, while `$to` is the copy target.
-     * - copyEmptyDirectories: boolean, whether to copy empty directories. Set this to false to avoid creating directories
-     *   that do not contain files. This affects directories that do not contain files initially as well as directories that
-     *   do not contain files at the target destination because files have been filtered via `only` or `except`.
-     *   Defaults to true. This option is available since version 2.0.12. Before 2.0.12 empty directories are always copied.
-     * @throws InvalidArgumentException if unable to open directory
+     * - only：数组，如果文件路径想要被复制，它们应该匹配的模式列表。
+     *   如果路径末尾包含模式字符串，则路径与模式匹配。
+     *   比如说，'.php' 匹配所有以 '.php' 结尾的文件路径。
+     *   注意，'/' 模式中的字符在路径中同时匹配 '/' 和 '\'。
+     *   如果文件路径与两者中的模式匹配 "only" 和 "except"，它不会被复制。
+     * - except：数组，如果文件或目录希望不被复制，它们应该匹配的模式的列表。
+     *   如果路径末尾包含模式字符串，则路径与模式匹配。
+     *   模式以 '/' 仅适用于目录路径，以及不以 '/' 结尾的模式适用于文件路径。
+     *   比如，'/a/b' 匹配以 '/a/b' 结尾的所有文件路径；
+     *   以及 '.svn/' 匹配以 '.svn' 结尾的目录路径。
+     *   注意，模式中的 '/' 字符匹配路径中的 '/' 和 '\' 匹配。
+     * - caseSensitive：布尔类型，"only" 或 "except" 模式指定是否应该区分大小写。默认设置 true。
+     * - recursive：布尔类型，子目录下的文件是否也应该被复制。默认值为 true。
+     * - beforeCopy：回调类型，在复制每个子目录或文件之前调用的 PHP 回调。
+     *   如果回调返回 false，子目录或文件的复制操作将被取消。
+     *   回调的签名应该是：`function ($from, $to)`，`$from` 要复制的子目录或文件，
+     *   而 `$to` 是复制目标。
+     * - afterCopy：回调类型，成功复制每个子目录或文件后调用的 PHP 回调。
+     *   回调的签名应该是：`function ($from, $to)`，`$from` 要复制的子目录或文件，
+     *   而 `$to` 是复制目标。
+     * - copyEmptyDirectories：布尔类型，是否复制空目录。设置为 false 以避免创建不包含文件的目录。
+     *   这将影响最初不包含文件的目录和包含文件的目录
+     *   以及目标目的地不包含文件的目录，因为文件是通过 `only` 和 `except` 筛选的。
+     *   默认设置为 true。此选项从版本 2.0.12 开始可用。2.0.12 之前版本空目录依然可以复制。
+     * @throws InvalidArgumentException 如果无法打开目录抛出异常
      */
     public static function copyDirectory($src, $dst, $options = [])
     {
@@ -351,16 +351,16 @@ class BaseFileHelper
     }
 
     /**
-     * Removes a directory (and all its content) recursively.
+     * 递归地删除一个目录（及其所有内容）。
      *
-     * @param string $dir the directory to be deleted recursively.
-     * @param array $options options for directory remove. Valid options are:
+     * @param string $dir 递归删除的目录。
+     * @param array $options 目录删除选项。有效的选项是：
      *
-     * - traverseSymlinks: boolean, whether symlinks to the directories should be traversed too.
-     *   Defaults to `false`, meaning the content of the symlinked directory would not be deleted.
-     *   Only symlink would be removed in that default case.
+     * - traverseSymlinks：布尔型，是否遍历符号链接的目录。
+     *   默认设置 `false`，这意味着符号链接目录的内容不会被删除。
+     *   默认情况下只有符号链接会被删除。
      *
-     * @throws ErrorException in case of failure
+     * @throws ErrorException 失败时抛出的异常
      */
     public static function removeDirectory($dir, $options = [])
     {
@@ -392,7 +392,7 @@ class BaseFileHelper
     }
 
     /**
-     * Removes a file or symlink in a cross-platform way
+     * 以跨平台的方式删除文件或符号链接
      *
      * @param string $path
      * @return bool
@@ -426,39 +426,39 @@ class BaseFileHelper
     }
 
     /**
-     * Returns the files found under the specified directory and subdirectories.
-     * @param string $dir the directory under which the files will be looked for.
-     * @param array $options options for file searching. Valid options are:
+     * 返回在指定目录和子目录下找到的文件。
+     * @param string $dir 将在其中查找文件的目录。
+     * @param array $options 目录搜索选项。有效选项是：
      *
-     * - `filter`: callback, a PHP callback that is called for each directory or file.
-     *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
-     *   The callback can return one of the following values:
+     * - `filter`：回调类型，为每个目录或文件调用的 PHP 回调。
+     *   回调的签名应该是：`function ($path)`，`$path` 指的是要过滤的完整路径。
+     *   回调可以返回以下值之一：
      *
-     *   * `true`: the directory or file will be returned (the `only` and `except` options will be ignored)
-     *   * `false`: the directory or file will NOT be returned (the `only` and `except` options will be ignored)
-     *   * `null`: the `only` and `except` options will determine whether the directory or file should be returned
+     *   * `true`：将返回的文件或目录（`only` 和 `except` 选项将被忽略）
+     *   * `false`：不会返回目录或文件（`only` 和 `except` 选项将被忽略）
+     *   * `null`：`only` 和 `except` 选项将决定文件或目录是否被返回
      *
-     * - `except`: array, list of patterns excluding from the results matching file or directory paths.
-     *   Patterns ending with slash ('/') apply to directory paths only, and patterns not ending with '/'
-     *   apply to file paths only. For example, '/a/b' matches all file paths ending with '/a/b';
-     *   and `.svn/` matches directory paths ending with `.svn`.
-     *   If the pattern does not contain a slash (`/`), it is treated as a shell glob pattern
-     *   and checked for a match against the pathname relative to `$dir`.
-     *   Otherwise, the pattern is treated as a shell glob suitable for consumption by `fnmatch(3)`
-     *   with the `FNM_PATHNAME` flag: wildcards in the pattern will not match a `/` in the pathname.
-     *   For example, `views/*.php` matches `views/index.php` but not `views/controller/index.php`.
-     *   A leading slash matches the beginning of the pathname. For example, `/*.php` matches `index.php` but not `views/start/index.php`.
-     *   An optional prefix `!` which negates the pattern; any matching file excluded by a previous pattern will become included again.
-     *   If a negated pattern matches, this will override lower precedence patterns sources. Put a backslash (`\`) in front of the first `!`
-     *   for patterns that begin with a literal `!`, for example, `\!important!.txt`.
-     *   Note, the '/' characters in a pattern matches both '/' and '\' in the paths.
-     * - `only`: array, list of patterns that the file paths should match if they are to be returned. Directory paths
-     *   are not checked against them. Same pattern matching rules as in the `except` option are used.
-     *   If a file path matches a pattern in both `only` and `except`, it will NOT be returned.
-     * - `caseSensitive`: boolean, whether patterns specified at `only` or `except` should be case sensitive. Defaults to `true`.
-     * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
-     * @return array files found under the directory, in no particular order. Ordering depends on the files system used.
-     * @throws InvalidArgumentException if the dir is invalid.
+     * - `except`：数组，从结果匹配文件或目录路径中排除的模式列表。
+     *   以斜杠 ('/') 结尾的模式仅适用于目录路径, 
+     *   模式不以 '/' 结尾仅适用于文件路径。
+     *   例如，'/a/b' 匹配所有以 '/a/b' 结尾的文件路径；以及 `.svn/` 匹配以 `.svn` 结尾的目录路径。
+     *   如果模式不包含斜杠（`/`），则将其视为 shell glob 模式
+     *   并检查相对于 `$dir` 的路径名的匹配。
+     *   否则，该模式被视为适合由 `fnmatch(3)` 使用的 shell glob 
+     *   使用 `FNM_PATHNAME` 标志：模式中的通配符与路径名中的 `/` 不匹配。
+     *   例如，`views/*.php` 匹配 `views/index.php` 但不匹配 `views/controller/index.php`。
+     *   前导斜杠与路径名的开头匹配。例如，`/*.php` 匹配 `index.php` 但不匹配 `views/start/index.php`。
+     *   一个可选的前缀 `!` 它否定了模式；之前模式排除的任何匹配文件将再次包含在内。
+     *   如果否定模式匹配，则将覆盖较低优先级模式源。在第一个 `!` 前放一个反斜杠 (`\`) 
+     *   对于以文字 `!` 开头的模式，例如，`\!important!.txt`。
+     *   注意，模式中的 '/' 字符与路径中的 '/' 和 '\' 匹配。
+     * - `only`：数组，文件路径在返回时应匹配的模式列表。
+     *   目录路径未经过检查。使用与 `except` 选项中相同的模式匹配规则。
+     *   如果文件路径与 `only` 和 `except`，中的模式匹配，则不会返回。
+     * - `caseSensitive`：布尔型，在 `only` 或 `except` 指定的模式下是否应区分大小写。默认为 `true`。
+     * - `recursive`：布尔型，是否需要查找子目录下的文件。默认为 `true`。
+     * @return array 在目录下找到的数组文件，没有特别的顺序。排序取决于使用的文件系统。
+     * @throws InvalidArgumentException 如果目录无效则抛出异常。
      */
     public static function findFiles($dir, $options = [])
     {
@@ -485,20 +485,20 @@ class BaseFileHelper
     }
 
     /**
-     * Returns the directories found under the specified directory and subdirectories.
-     * @param string $dir the directory under which the files will be looked for.
-     * @param array $options options for directory searching. Valid options are:
+     * 返回在指定目录和子目录下找到的目录。
+     * @param string $dir 将在其中查找文件的目录。
+     * @param array $options 目录搜索选项。有效选项是：
      *
-     * - `filter`: callback, a PHP callback that is called for each directory or file.
-     *   The signature of the callback should be: `function ($path)`, where `$path` refers the full path to be filtered.
-     *   The callback can return one of the following values:
+     * - `filter`：回调，为每个目录或文件调用的 PHP 回调。
+     *   回调的签名应该是：`function ($path)`，`$path` 表示要过滤的完整路径。
+     *   回调可以返回以下值之一：
      *
-     *   * `true`: the directory will be returned
-     *   * `false`: the directory will NOT be returned
+     *   * `true`：目录将被返回
+     *   * `false`：该目录将不会被返回
      *
-     * - `recursive`: boolean, whether the files under the subdirectories should also be looked for. Defaults to `true`.
-     * @return array directories found under the directory, in no particular order. Ordering depends on the files system used.
-     * @throws InvalidArgumentException if the dir is invalid.
+     * - `recursive`：布尔型，是否还应该查找子目录下的文件。默认 `true`。
+     * @return array 目录下找到的目录，没有特别的顺序。排序取决于所使用的文件系统。
+     * @throws InvalidArgumentException 如果目录无效抛出异常。
      * @since 2.0.14
      */
     public static function findDirectories($dir, $options = [])
@@ -562,11 +562,11 @@ class BaseFileHelper
     }
 
     /**
-     * Checks if the given file path satisfies the filtering options.
-     * @param string $path the path of the file or directory to be checked
-     * @param array $options the filtering options. See [[findFiles()]] for explanations of
-     * the supported options.
-     * @return bool whether the file or directory satisfies the filtering options.
+     * 检查给定的文件路径是否满足过滤选项。
+     * @param string $path 要检查的文件或目录的路径
+     * @param array $options 过滤选项。
+     * 有关支持的选项的解释请参考 [[findFiles()]]。
+     * @return bool 文件或目录是否满足筛选选项。
      */
     public static function filterPath($path, $options)
     {
@@ -602,17 +602,17 @@ class BaseFileHelper
     }
 
     /**
-     * Creates a new directory.
+     * 创建一个新目录。
      *
-     * This method is similar to the PHP `mkdir()` function except that
-     * it uses `chmod()` to set the permission of the created directory
-     * in order to avoid the impact of the `umask` setting.
+     * 这个方法类似于 PHP `mkdir()` 函数，
+     * 只不过它使用 `chmod()` 来设置创建目录的权限，
+     * 以避免 `umask` 设置的影响。
      *
-     * @param string $path path of the directory to be created.
-     * @param int $mode the permission to be set for the created directory.
-     * @param bool $recursive whether to create parent directories if they do not exist.
-     * @return bool whether the directory is created successfully
-     * @throws \yii\base\Exception if the directory could not be created (i.e. php error due to parallel changes)
+     * @param string $path 要创建的目录的路径。
+     * @param int $mode 为创建的目录设置的权限。
+     * @param bool $recursive 如果父目录不存在是否需要创建它们。
+     * @return bool whether 目录创建成功
+     * @throws \yii\base\Exception 如果无法创建目录（例如 php 错误导致并行修改）
      */
     public static function createDirectory($path, $mode = 0775, $recursive = true)
     {
@@ -641,15 +641,15 @@ class BaseFileHelper
     }
 
     /**
-     * Performs a simple comparison of file or directory names.
+     * 执行文件或目录名称的简单比较。
      *
-     * Based on match_basename() from dir.c of git 1.8.5.3 sources.
+     * 基于 git 1.8.5.3 源代码的 dir.c 中的 match_basename()。
      *
-     * @param string $baseName file or directory name to compare with the pattern
-     * @param string $pattern the pattern that $baseName will be compared against
-     * @param int|bool $firstWildcard location of first wildcard character in the $pattern
-     * @param int $flags pattern flags
-     * @return bool whether the name matches against pattern
+     * @param string $baseName 文件或目录名称与模式进行比较
+     * @param string $pattern 将与 $baseName 进行比较的模式
+     * @param int|bool $firstWildcard 在 $pattern 中第一个通配符的位置
+     * @param int $flags 匹配标识
+     * @return bool whether 名称与模式匹配
      */
     private static function matchBasename($baseName, $pattern, $firstWildcard, $flags)
     {
@@ -674,16 +674,16 @@ class BaseFileHelper
     }
 
     /**
-     * Compares a path part against a pattern with optional wildcards.
+     * 将路径部分与带有可选通配符的模式进行比较。
      *
-     * Based on match_pathname() from dir.c of git 1.8.5.3 sources.
+     * 基于 git 1.8.5.3 源代码的 dir.c 中的 match_basename()。
      *
-     * @param string $path full path to compare
-     * @param string $basePath base of path that will not be compared
-     * @param string $pattern the pattern that path part will be compared against
-     * @param int|bool $firstWildcard location of first wildcard character in the $pattern
-     * @param int $flags pattern flags
-     * @return bool whether the path part matches against pattern
+     * @param string $path 比较的完整路径
+     * @param string $basePath 基础路径将不进行比较
+     * @param string $pattern 将针对一部分路径进行匹配模式比较
+     * @param int|bool $firstWildcard 在 $pattern 第一个通配符的位置
+     * @param int $flags 匹配标识
+     * @return bool 是否针对部分路径进行模式匹配
      */
     private static function matchPathname($path, $basePath, $pattern, $firstWildcard, $flags)
     {
@@ -730,18 +730,18 @@ class BaseFileHelper
     }
 
     /**
-     * Scan the given exclude list in reverse to see whether pathname
-     * should be ignored.  The first match (i.e. the last on the list), if
-     * any, determines the fate.  Returns the element which
-     * matched, or null for undecided.
+     * 扫描非排除列表以便查看路径名是否被忽略。
+     * 第一个匹配（例如 列表内的最后一个），如果有任何可能性，
+     * 决定不同的结果。返回匹配的元素，
+     * 或者返回 null。
      *
-     * Based on last_exclude_matching_from_list() from dir.c of git 1.8.5.3 sources.
+     * 基于 git 1.8.5.3 源代码的 dir.c 中的 last_exclude_matching_from_list()。
      *
      * @param string $basePath
      * @param string $path
-     * @param array $excludes list of patterns to match $path against
-     * @return array|null null or one of $excludes item as an array with keys: 'pattern', 'flags'
-     * @throws InvalidArgumentException if any of the exclude patterns is not a string or an array with keys: pattern, flags, firstWildcard.
+     * @param array $excludes 列出要与 $path 对应的模式
+     * @return array|null null 或者 $excludes 中的一个作为键数组排除项：'pattern'，'flags'
+     * @throws InvalidArgumentException 如果任何排除模式不是带有键的字符串或者数组：模式，标志，firstWildcard。
      */
     private static function lastExcludeMatchingFromList($basePath, $path, $excludes)
     {
@@ -772,11 +772,11 @@ class BaseFileHelper
     }
 
     /**
-     * Processes the pattern, stripping special characters like / and ! from the beginning and settings flags instead.
+     * 处理模式，剥离特殊字符，如 / 和 ! 从开头和设置标志代替。
      * @param string $pattern
      * @param bool $caseSensitive
      * @throws InvalidArgumentException
-     * @return array with keys: (string) pattern, (int) flags, (int|bool) firstWildcard
+     * @return array 使用键：(string) 模式，(int) 标志，(int|bool) firstWildcard
      */
     private static function parseExcludePattern($pattern, $caseSensitive)
     {
@@ -819,9 +819,9 @@ class BaseFileHelper
     }
 
     /**
-     * Searches for the first wildcard character in the pattern.
-     * @param string $pattern the pattern to search in
-     * @return int|bool position of first wildcard character or false if not found
+     * 搜索模式中的第一个通配符。
+     * @param string $pattern 搜索的模式
+     * @return int|bool 返回第一个通配符的位置，没找到则返回 false
      */
     private static function firstWildcardInPattern($pattern)
     {
@@ -836,8 +836,8 @@ class BaseFileHelper
     }
 
     /**
-     * @param array $options raw options
-     * @return array normalized options
+     * @param array $options 原始选项
+     * @return array 标准化选项
      * @since 2.0.12
      */
     protected static function normalizeOptions(array $options)

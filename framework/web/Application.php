@@ -12,16 +12,16 @@ use yii\base\InvalidRouteException;
 use yii\helpers\Url;
 
 /**
- * Application is the base class for all web application classes.
+ * Application 是所有 Web 应用程序类的基类。
  *
- * For more details and usage information on Application, see the [guide article on applications](guide:structure-applications).
+ * 关于 Application 的更多使用参考，请查看 [应用主体指南](guide:structure-applications)。
  *
- * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
- * @property string $homeUrl The homepage URL.
- * @property Request $request The request component. This property is read-only.
- * @property Response $response The response component. This property is read-only.
- * @property Session $session The session component. This property is read-only.
- * @property User $user The user component. This property is read-only.
+ * @property ErrorHandler $errorHandler 错误处理组件。此属性是只读的。
+ * @property string $homeUrl 主页的 URL.
+ * @property Request $request 请求组件。此属性是只读的。
+ * @property Response $response 响应组件。此属性是只读的。
+ * @property Session $session 会话组件。此属性是只读的。
+ * @property User $user 用户组件。此属性是只读的。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -29,16 +29,16 @@ use yii\helpers\Url;
 class Application extends \yii\base\Application
 {
     /**
-     * @var string the default route of this application. Defaults to 'site'.
+     * @var string 此 Application 的默认路由。默认为 'site'.
      */
     public $defaultRoute = 'site';
     /**
-     * @var array the configuration specifying a controller action which should handle
-     * all user requests. This is mainly used when the application is in maintenance mode
-     * and needs to handle all incoming requests via a single action.
-     * The configuration is an array whose first element specifies the route of the action.
-     * The rest of the array elements (key-value pairs) specify the parameters to be bound
-     * to the action. For example,
+     * @var array 配置：指定控制器来处理所有的用户请求。
+     * 这主要在应用程序处于维护模式时使用，
+     * 通过一个控制器动作来处理所有传入的请求。
+     * 此配置是一个数组，其第一个元素指定控制器动作的路径。
+     * 其余的数组元素（键值对）指定此动作要绑定的参数
+     * 例如，
      *
      * ```php
      * [
@@ -48,11 +48,11 @@ class Application extends \yii\base\Application
      * ]
      * ```
      *
-     * Defaults to null, meaning catch-all is not used.
+     * 默认为 null，表示不使用 catch-all 功能。
      */
     public $catchAll;
     /**
-     * @var Controller the currently active controller instance
+     * @var Controller 当前活动的控制器实例
      */
     public $controller;
 
@@ -70,10 +70,10 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Handles the specified request.
-     * @param Request $request the request to be handled
-     * @return Response the resulting response
-     * @throws NotFoundHttpException if the requested route is invalid
+     * 处理特定的请求。
+     * @param Request $request 处理的请求
+     * @return Response 生成的响应
+     * @throws NotFoundHttpException 如果请求的路由无效
      */
     public function handleRequest($request)
     {
@@ -119,7 +119,7 @@ class Application extends \yii\base\Application
     private $_homeUrl;
 
     /**
-     * @return string the homepage URL
+     * @return string 返回主页的 URL
      */
     public function getHomeUrl()
     {
@@ -135,7 +135,7 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * @param string $value the homepage URL
+     * @param string $value 设置的主页 URL
      */
     public function setHomeUrl($value)
     {
@@ -143,8 +143,8 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the error handler component.
-     * @return ErrorHandler the error handler application component.
+     * 返回错误处理组件。
+     * @return ErrorHandler 错误处理组件。
      */
     public function getErrorHandler()
     {
@@ -152,8 +152,8 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the request component.
-     * @return Request the request component.
+     * 返回请求组件。
+     * @return Request 请求组件。
      */
     public function getRequest()
     {
@@ -161,8 +161,8 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the response component.
-     * @return Response the response component.
+     * 返回响应组件。
+     * @return Response 响应组件。
      */
     public function getResponse()
     {
@@ -170,8 +170,8 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the session component.
-     * @return Session the session component.
+     * 返回会话组件。
+     * @return Session 会话组件。
      */
     public function getSession()
     {
@@ -179,8 +179,8 @@ class Application extends \yii\base\Application
     }
 
     /**
-     * Returns the user component.
-     * @return User the user component.
+     * 返回用户组件。
+     * @return User 用户组件。
      */
     public function getUser()
     {
