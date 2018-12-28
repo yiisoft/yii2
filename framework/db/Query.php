@@ -463,7 +463,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             return $command->queryScalar();
         }
 
-        $command = (new self())
+        $command = (new static())
             ->select([$selectExpression])
             ->from(['c' => $this])
             ->createCommand($db);
@@ -1282,7 +1282,7 @@ PATTERN;
      */
     public static function create($from)
     {
-        return new self([
+        return new static([
             'where' => $from->where,
             'limit' => $from->limit,
             'offset' => $from->offset,
