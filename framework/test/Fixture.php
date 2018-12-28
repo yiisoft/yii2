@@ -10,21 +10,17 @@ namespace yii\test;
 use yii\base\Component;
 
 /**
- * Fixture represents a fixed state of a test environment.
+ * 夹具指代的是测试环境的一个固定的数据状态。
  *
- * Each fixture instance represents a particular aspect of a test environment. For example,
- * you may use `UserFixture` to initialize the user database table with a set of known data. You may
- * load the fixture when running every test method so that the user table always contains the fixed data
- * and thus allows your test predictable and repeatable.
+ * 每个夹具实例代表测试环境的一个特定的方面。比如，你可以通过 `UserFixture` 来用一系列已知数据初始化用户数据表。
+ * 你可以在运行每个测试方法的时候，都加载夹具，这样，用户数据表始终包含固定的数据，这样你的测试就是确定的，可重复的。
  *
- * A fixture may depend on other fixtures, specified via the [[depends]] property. When a fixture is being loaded,
- * its dependent fixtures will be automatically loaded BEFORE the fixture; and when the fixture is being unloaded,
- * its dependent fixtures will be unloaded AFTER the fixture.
+ * 一个夹具可能会依赖其他的夹具，你可以通过 [[depends]] 属性指定这个依赖关系。当一个夹具被加载之前，它的依赖夹具会被自动的加载；当一个夹具被卸载之后，
+ * 它的依赖夹具也会被自动的卸载。
  *
- * You should normally override [[load()]] to specify how to set up a fixture; and override [[unload()]]
- * for clearing up a fixture.
+ * 你通常可以重写 [[load()]] 方法来自定义初始化夹具流程；也可以通过重写 [[unload()]] 方法来自定义清理夹具的流程。
  *
- * For more details and usage information on Fixture, see the [guide article on fixtures](guide:test-fixtures).
+ * 关于夹具的更多使用信息详情，参考 [guide article on fixtures](guide:test-fixtures)
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -32,53 +28,52 @@ use yii\base\Component;
 class Fixture extends Component
 {
     /**
-     * @var array the fixtures that this fixture depends on. This must be a list of the dependent
-     * fixture class names.
+     * @var array 这个夹具依赖的夹具类。这个属性必须是一个依赖夹具类名列表。
      */
     public $depends = [];
 
 
     /**
-     * Loads the fixture.
-     * This method is called before performing every test method.
-     * You should override this method with concrete implementation about how to set up the fixture.
+     * 加载夹具。
+     * 这个方法会在执行每个测试方法之前调用。
+     * 你需要用具体实现重写这个方法来初始化夹具。
      */
     public function load()
     {
     }
 
     /**
-     * This method is called BEFORE any fixture data is loaded for the current test.
+     * 这个方法会在当前测试用例的夹具数据被加载前调用。
      */
     public function beforeLoad()
     {
     }
 
     /**
-     * This method is called AFTER all fixture data have been loaded for the current test.
+     * 这个方法会在当前测试用例的所有夹具数据都会被加载后调用。
      */
     public function afterLoad()
     {
     }
 
     /**
-     * Unloads the fixture.
-     * This method is called after every test method finishes.
-     * You may override this method to perform necessary cleanup work for the fixture.
+     * 卸载夹具。
+     * 这个方法会在每个测试方法结束时调用。
+     * 你可以重写这个方法以执行一些夹具必要的清理工作。
      */
     public function unload()
     {
     }
 
     /**
-     * This method is called BEFORE any fixture data is unloaded for the current test.
+     * 这个方法会在当前测试的任意夹具数据被卸载前调用。
      */
     public function beforeUnload()
     {
     }
 
     /**
-     * This method is called AFTER all fixture data have been unloaded for the current test.
+     * 这个方法会在当前测试的所有的夹具数据都被卸载后调用。
      */
     public function afterUnload()
     {
