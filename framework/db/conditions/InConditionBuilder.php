@@ -50,7 +50,8 @@ class InConditionBuilder implements ExpressionBuilderInterface
             // ensure values is an array
             $values = (array) $values;
         }
-        if ($column instanceof \Traversable || ((is_array($column) || $column instanceof \Countable) && count($column) > 1)) {
+
+        if (is_array($column) || $column instanceof \Traversable) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
         }
 
