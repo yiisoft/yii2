@@ -98,7 +98,7 @@ class MessageController extends \yii\console\Controller
         '.hgignore',
         '.hgkeep',
         '/messages',
-        '/BaseYii.php', // contains examples about Yii:t()
+        '/BaseYii.php', // contains examples about Yii::t()
     ];
     /**
      * @var array list of patterns that specify which files (not directories) should be processed.
