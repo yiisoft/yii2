@@ -1132,7 +1132,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ],
             'composite in (just one column)' => [
                 ['in', ['id'], [['id' => 1, 'name' => 'Name1'], ['id' => 2, 'name' => 'Name2']]],
-                '([[id]]) IN ((:qp0), (:qp1))',
+                '[[id]] IN (:qp0, :qp1)',
                 [':qp0' => 1, ':qp1' => 2],
             ],
             'composite in using array objects (just one column)' => [
@@ -1140,7 +1140,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     ['id' => 1, 'name' => 'Name1'],
                     ['id' => 2, 'name' => 'Name2'],
                 ])],
-                '([[id]]) IN ((:qp0), (:qp1))',
+                '[[id]] IN (:qp0, :qp1)',
                 [':qp0' => 1, ':qp1' => 2],
             ],
 

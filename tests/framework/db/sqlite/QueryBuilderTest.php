@@ -48,19 +48,6 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 '(([[id]] = :qp0 AND [[name]] = :qp1))',
                 [':qp0' => 1, ':qp1' => 'oy'],
             ],
-            'composite in (just one column)' => [
-                ['in', ['id'], [['id' => 1, 'name' => 'Name1'], ['id' => 2, 'name' => 'Name2']]],
-                '(([[id]] = :qp0) OR ([[id]] = :qp1))',
-                [':qp0' => 1, ':qp1' => 2],
-            ],
-            'composite in using array objects (just one column)' => [
-                ['in', new TraversableObject(['id']), new TraversableObject([
-                    ['id' => 1, 'name' => 'Name1'],
-                    ['id' => 2, 'name' => 'Name2'],
-                ])],
-                '(([[id]] = :qp0) OR ([[id]] = :qp1))',
-                [':qp0' => 1, ':qp1' => 2],
-            ],
         ]);
     }
 
