@@ -98,7 +98,7 @@ class MessageController extends \yii\console\Controller
         '.hgignore',
         '.hgkeep',
         '/messages',
-        '/BaseYii.php', // contains examples about Yii:t()
+        '/BaseYii.php', // contains examples about Yii::t()
     ];
     /**
      * @var array list of patterns that specify which files (not directories) should be processed.
@@ -722,7 +722,7 @@ EOD;
                     }
                 }
             }
-            $merged = array_merge($todo, $merged);
+            $merged = array_merge($merged, $todo);
             if ($sort) {
                 ksort($merged);
             }
@@ -825,7 +825,7 @@ EOD;
                     }
                 }
 
-                $merged = array_merge($todos, $merged);
+                $merged = array_merge($merged, $todos);
                 if ($sort) {
                     ksort($merged);
                 }
