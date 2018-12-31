@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #16926: Fix shell autocompletion (GHopperMSK)
 - Bug #15850: check basePath is writable on publish in AssetManager (Groonya)
 - Bug #16910: Fix messages sorting on extract (Groonya)
 - Bug #16969: Fix `yii\filters\PageCache` incorrectly storing empty data in some cases (sammousa)
