@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #16081: Fixed composite IN using just one column (rugabarbo)
 - Bug #16926: Fix shell autocompletion (GHopperMSK)
 - Bug #15850: check basePath is writable on publish in AssetManager (Groonya)
 - Bug #16910: Fix messages sorting on extract (Groonya)
