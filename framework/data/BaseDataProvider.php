@@ -168,14 +168,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     {
         if ($this->getPagination() === false) {
             return $this->getCount();
-        }
-
-        return $this->getTotalCountWithPagination();
-    }
-
-    private function getTotalCountWithPagination()
-    {
-        if ($this->_totalCount === null) {
+        } elseif ($this->_totalCount === null) {
             $this->_totalCount = $this->prepareTotalCount();
         }
 
@@ -202,7 +195,10 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
         }
 
         if (($this->_pagination !== false) && ($this->_pagination->totalCount === null)) {
-            $this->_pagination->totalCount = $this->getTotalCountWithPagination();
+            if ($this->_totalCount === null) {
+                $this->setTotalCount($this->prepareTotalCount());
+            }
+            $this->_pagination->totalCount = $this->_totalCount;
         }
 
         return $this->_pagination;
