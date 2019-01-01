@@ -11,13 +11,13 @@ Pull requests and maintainers are very welcome.
 
 We can tag additional releases in case someone will take the role of release manager. Otherwise we'll focus on 3.0.
 
-## 2.0.17 (4th quarter of 2018)
+## 2.0.17 (2nd quarter of 2019)
 
 - Bugfixes.
 - Announce bugfixes EOL (a year more?).
 - Security fixes only.
 
-## 2.0.16 (3rd quarter of 2018)
+## 2.0.16 (1st quarter of 2019)
 
 - Bugfixes.
 
