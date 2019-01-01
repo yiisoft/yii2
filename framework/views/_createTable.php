@@ -7,7 +7,7 @@
 /* @var $fields array the fields */
 /* @var $foreignKeys array the foreign keys */
 
-?>        $this->createTable('<?= $table ?>', [
+?>        $this->createTable('{{%<?= $table ?>}}', [
 <?php foreach ($fields as $field):
     if (empty($field['decorators'])): ?>
             '<?= $field['property'] ?>',

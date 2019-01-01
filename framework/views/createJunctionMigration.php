@@ -21,7 +21,7 @@ if (!empty($namespace)) {
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `<?= $table ?>` which is a junction between
+ * Handles the creation of table `{{%<?= $table ?>}}` which is a junction between
  * table `<?= $field_first ?>` and table `<?= $field_second ?>`.
  */
 class <?= $className ?> extends Migration
@@ -31,7 +31,7 @@ class <?= $className ?> extends Migration
      */
     public function safeUp()
     {
-        $this->createTable('<?= $table ?>', [
+        $this->createTable('{{%<?= $table ?>}}', [
             '<?= $field_first ?>_id' => $this->integer(),
             '<?= $field_second ?>_id' => $this->integer(),
             'PRIMARY KEY(<?= $field_first ?>_id, <?= $field_second ?>_id)',
@@ -39,19 +39,19 @@ class <?= $className ?> extends Migration
 
         $this->createIndex(
             'idx-<?= $table . '-' . $field_first ?>_id',
-            '<?= $table ?>',
+            '{{%<?= $table ?>}}',
             '<?= $field_first ?>_id'
         );
 
         $this->createIndex(
             'idx-<?= $table . '-' . $field_second ?>_id',
-            '<?= $table ?>',
+            '{{%<?= $table ?>}}',
             '<?= $field_second ?>_id'
         );
 
         $this->addForeignKey(
             'fk-<?= $table . '-' . $field_first ?>_id',
-            '<?= $table ?>',
+            '{{%<?= $table ?>}}',
             '<?= $field_first ?>_id',
             '<?= $field_first ?>',
             'id',
@@ -60,7 +60,7 @@ class <?= $className ?> extends Migration
 
         $this->addForeignKey(
             'fk-<?= $table . '-' . $field_second ?>_id',
-            '<?= $table ?>',
+            '{{%<?= $table ?>}}',
             '<?= $field_second ?>_id',
             '<?= $field_second ?>',
             'id',
@@ -73,6 +73,6 @@ class <?= $className ?> extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('<?= $table ?>');
+        $this->dropTable('{{%<?= $table ?>}}');
     }
 }

@@ -4,4 +4,4 @@
  */
 /* @var $table string the name table */
 /* @var $tableComment string the comment table */
-?>        $this->addCommentOnTable('<?= $table ?>', '<?= $tableComment ?>');
+?>        $this->addCommentOnTable('{{%<?= $table ?>}}', '<?= $tableComment ?>');

@@ -2,13 +2,13 @@
         // drops foreign key for table `<?= $fkData['relatedTable'] ?>`
         $this->dropForeignKey(
             '<?= $fkData['fk'] ?>',
-            '<?= $table ?>'
+            '{{%<?= $table ?>}}'
         );
 
         // drops index for column `<?= $column ?>`
         $this->dropIndex(
             '<?= $fkData['idx'] ?>',
-            '<?= $table ?>'
+            '{{%<?= $table ?>}}'
         );
 
 <?php endforeach;
