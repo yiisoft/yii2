@@ -9,7 +9,6 @@ Yii Framework 2 Change Log
 - Bug #16028: Fix serialization of complex cache keys that contain non-UTF sequences (rugabarbo)
 - Bug #16945: Fixed RBAC DbManager ruleName fetching on the case of PDO::ATTR_ORACLE_NULLS => PDO::NULL_TO_STRING (razonyang)
 - Bug #16081: Fixed composite IN using just one column (rugabarbo)
-- Bug #16926: Fix shell autocompletion (GHopperMSK)
 - Bug #15850: check basePath is writable on publish in AssetManager (Groonya)
 - Bug #16910: Fix messages sorting on extract (Groonya)
 - Bug #16969: Fix `yii\filters\PageCache` incorrectly storing empty data in some cases (sammousa)
