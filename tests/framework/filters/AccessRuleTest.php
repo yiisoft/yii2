@@ -524,6 +524,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         $rule->allow = false;
         $this->assertNull($rule->allows($action, $user, $request));
     }
+    
     public function testMatchIPMask()
     {
         $action = $this->mockAction();
