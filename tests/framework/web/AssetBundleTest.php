@@ -28,9 +28,6 @@ class AssetBundleTest extends \yiiunit\TestCase
         Yii::setAlias('@testAssetsPath', '@webroot/assets');
         Yii::setAlias('@testAssetsUrl', '@web/assets');
         Yii::setAlias('@testSourcePath', '@webroot/assetSources');
-        Yii::setAlias('@testReadOnlyAssetPath', '@webroot/readOnlyAssets');
-
-        mkdir(Yii::getAlias('@testReadOnlyAssetPath'), 0555);
 
         // clean up assets directory
         $handle = opendir($dir = Yii::getAlias('@testAssetsPath'));
@@ -49,11 +46,6 @@ class AssetBundleTest extends \yiiunit\TestCase
             }
         }
         closedir($handle);
-    }
-
-    protected function tearDown()
-    {
-        rmdir(Yii::getAlias('@testReadOnlyAssetPath'));
     }
 
     /**
@@ -183,11 +175,24 @@ class AssetBundleTest extends \yiiunit\TestCase
 
     public function testBasePathIsWritableOnPublish()
     {
+        Yii::setAlias('@testReadOnlyAssetPath', '@webroot/readOnlyAssets');
+        $path = Yii::getAlias('@testReadOnlyAssetPath');
+
+        // Deleting a directory that could remain after a previous unsuccessful test run
+        FileHelper::removeDirectory($path);
+
+        mkdir($path, 0555);
+        if (is_writable($path)) {
+            $this->markTestSkipped("This test can only be performed with reliable chmod. It's unreliable on your system.");
+        }
+
         $view = $this->getView(['basePath' => '@testReadOnlyAssetPath']);
         $bundle = new TestSourceAsset();
 
         $this->setExpectedException('yii\base\InvalidConfigException', 'The directory is not writable by the Web process');
         $bundle->publish($view->getAssetManager());
+
+        FileHelper::removeDirectory($path);
     }
 
     /**
