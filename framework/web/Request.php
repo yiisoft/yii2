@@ -947,7 +947,7 @@ class Request extends \yii\base\Request
     /**
      * Encodes an ISO-8859-1 string to UTF-8
      * @param string $s
-     * @return string the UTF-8 translation of <i>s</i>.
+     * @return string the UTF-8 translation of `s`.
      */
     private function utf8Encode($s)
     {
