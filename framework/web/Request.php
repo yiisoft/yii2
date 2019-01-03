@@ -948,6 +948,7 @@ class Request extends \yii\base\Request
      * Encodes an ISO-8859-1 string to UTF-8
      * @param string $s
      * @return string the UTF-8 translation of `s`.
+     * @see https://github.com/symfony/polyfill-php72/blob/master/Php72.php#L24
      */
     private function utf8Encode($s)
     {
