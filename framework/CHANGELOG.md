@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 3.0.0 under development
 -----------------------
 
-- Bug #16008: DB table "log" had the column "level" incorrectly set to "string" through a migration. Now it's back to integer
+- Bug #16008: DB table "log" had the column "level" incorrectly set to "string" through a migration. Now it's back to integer (Dzhuneyt)
 - Bug #12895: Use custom error action when provided, regardless of the response format (erikverheij)
 - Enh #16285: Modified yii\web\XmlResponseFormatter to accept attributes for XML elements (codespede)
 - Bug #16327: Fix getComposer() yii\BaseYii::createObject(null) BaseMailer (cjtterabyte)
