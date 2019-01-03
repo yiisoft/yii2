@@ -767,7 +767,7 @@ class ActiveField extends Component
         if (!isset($config['options'])) {
             $config['options'] = [];
         }
-        foreach($this->inputOptions as $key => $value) {
+        foreach ($this->inputOptions as $key => $value) {
             if (!isset($config['options'][$key])) {
                 $config['options'][$key] = $value;
             }
