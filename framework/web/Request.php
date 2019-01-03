@@ -923,7 +923,7 @@ class Request extends \yii\base\Request
             | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
             )*$%xs', $pathInfo)
         ) {
-            $pathInfo =  Php72::utf8_encode($pathInfo);
+            $pathInfo =  Php72::utf8Encode($pathInfo);
         }
 
         $scriptUrl = $this->getScriptUrl();

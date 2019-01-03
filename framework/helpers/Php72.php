@@ -14,7 +14,7 @@ namespace yii\helpers;
  */
 class Php72 extends BaseUrl
 {
-    public static function utf8_encode($s)
+    public static function utf8Encode($s)
     {
         $s .= $s;
         $len = \strlen($s);
@@ -28,7 +28,7 @@ class Php72 extends BaseUrl
         return substr($s, 0, $j);
     }
 
-    public static function utf8_decode($s)
+    public static function utf8Decode($s)
     {
         $s = (string) $s;
         $len = \strlen($s);
