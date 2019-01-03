@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #16991: Replace `utf8_encode()` by `Php72::utf8_encode()` (GHopperMSK)
 - Bug #16966: Fix ArrayExpression support in related tables (GHopperMSK)
 - Bug #16891: Fixed Pagination::totalCount initialized incorrectly (taobig)
 - Bug #16028: Fix serialization of complex cache keys that contain non-UTF sequences (rugabarbo)

@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\validators\IpValidator;
+use yii\helpers\Php72;
 
 /**
  * The web Request class represents an HTTP request.
@@ -922,7 +923,7 @@ class Request extends \yii\base\Request
             | \xF4[\x80-\x8F][\x80-\xBF]{2}      # plane 16
             )*$%xs', $pathInfo)
         ) {
-            $pathInfo = utf8_encode($pathInfo);
+            $pathInfo =  Php72::utf8_encode($pathInfo);
         }
 
         $scriptUrl = $this->getScriptUrl();
@@ -942,6 +943,20 @@ class Request extends \yii\base\Request
         }
 
         return (string) $pathInfo;
+    }
+
+    public static function utf8_encode_gh($s)
+    {
+        $s .= $s;
+        $len = \strlen($s);
+        for ($i = $len >> 1, $j = 0; $i < $len; ++$i, ++$j) {
+            switch (true) {
+                case $s[$i] < "\x80": $s[$j] = $s[$i]; break;
+                case $s[$i] < "\xC0": $s[$j] = "\xC2"; $s[++$j] = $s[$i]; break;
+                default: $s[$j] = "\xC3"; $s[++$j] = \chr(\ord($s[$i]) - 64); break;
+            }
+        }
+        return substr($s, 0, $j);
     }
 
     /**
