@@ -112,7 +112,7 @@ class MigrateController extends BaseMigrateController
      * name is `post` the generator wil return `{{%post}}`.
      * @since 2.0.8
      */
-    public $useTablePrefix = false;
+    public $useTablePrefix = true;
     /**
      * @var array column definition strings used for creating migration code.
      *

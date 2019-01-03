@@ -11,7 +11,7 @@ return <<<CODE
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{table}`.
+ * Handles the creation of table `{{%{table}}}`.
  */
 class {$class} extends Migration
 {
@@ -20,7 +20,7 @@ class {$class} extends Migration
      */
     public function safeUp()
     {
-        \$this->createTable('{table}', [
+        \$this->createTable('{{%{table}}}', [
             'brand_id' => \$this->bigPrimaryKey()->unsigned(),
         ]);
     }
@@ -30,7 +30,7 @@ class {$class} extends Migration
      */
     public function safeDown()
     {
-        \$this->dropTable('{table}');
+        \$this->dropTable('{{%{table}}}');
     }
 }
 

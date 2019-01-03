@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Chg #16941: Set `yii\console\controllers\MigrateController::useTablePrefix` to true as default value (GHopperMSK)
 - Bug #16966: Fix ArrayExpression support in related tables (GHopperMSK)
 - Bug #16891: Fixed Pagination::totalCount initialized incorrectly (taobig)
 - Bug #16028: Fix serialization of complex cache keys that contain non-UTF sequences (rugabarbo)
