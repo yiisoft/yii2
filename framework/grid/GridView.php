@@ -544,7 +544,9 @@ class GridView extends BaseListView
      * @param array $options the tag options in terms of name-value pairs.  
      * @return string the generated reset button
      */
-    public static function resetButton($content='Reset', $options=[]){
+    public static function resetButton($content='', $options=[]){
+    	
+    	$content = empty($content) ? Yii::t('yii', 'Reset') : $content;
     	
     	$options['href'] = array_key_exists('href', $options) ? $options['href'] : Url::to([''], false);
     	$options['class'] = array_key_exists('class', $options) ? $options['class'] : 'btn btn-default';
