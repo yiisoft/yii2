@@ -1460,11 +1460,11 @@ SQL;
             ->select('bar')
             ->from('testCreateViewTable')
             ->where(['>', 'bar', '5']);
+        if ($db->getSchema()->getTableSchema('testCreateView')) {
+            $db->createCommand()->dropView('testCreateView')->execute();
+        }
         if ($db->getSchema()->getTableSchema('testCreateViewTable')) {
             $db->createCommand()->dropTable('testCreateViewTable')->execute();
-        }
-        if ($db->getSchema()->getTableSchema('testCreateView') !== null) {
-            $db->createCommand()->dropView('testCreateView')->execute();
         }
         $db->createCommand()->createTable('testCreateViewTable', [
             'id' => Schema::TYPE_PK,
