@@ -24,7 +24,7 @@ class m141106_185632_log_init extends Migration
     /**
      * @var DbTarget[] Targets to create log table for
      */
-    protected $dbTargets = [];
+    private $dbTargets = [];
 
     /**
      * @throws InvalidConfigException

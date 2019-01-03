@@ -13,8 +13,48 @@ use yii\log\DbTarget;
  *
  * @author Dzhuneyt Ahmed <dzhuneyt@dzhuneyt.com>
  */
-class m180103_040100_log_change_level_to_int extends m141106_185632_log_init
+class m180103_040100_log_change_level_to_int extends Migration
 {
+
+    /**
+     * @var DbTarget[] Targets to create log table for
+     */
+    protected $dbTargets = [];
+
+    /**
+     * @throws InvalidConfigException
+     * @return DbTarget[]
+     */
+    protected function getDbTargets()
+    {
+        if ($this->dbTargets === []) {
+            $logger = Yii::getLogger();
+            if (!$logger instanceof \yii\log\Logger) {
+                throw new InvalidConfigException('You should configure "logger" to be instance of "\yii\log\Logger" before executing this migration.');
+            }
+
+            $usedTargets = [];
+            foreach ($logger->targets as $target) {
+                if ($target instanceof DbTarget) {
+                    $currentTarget = [
+                        $target->db,
+                        $target->logTable,
+                    ];
+                    if (!in_array($currentTarget, $usedTargets, true)) {
+                        // do not create same table twice
+                        $usedTargets[] = $currentTarget;
+                        $this->dbTargets[] = $target;
+                    }
+                }
+            }
+
+            if ($this->dbTargets === []) {
+                throw new InvalidConfigException('You should configure "log" component to use one or more database targets before executing this migration.');
+            }
+        }
+
+        return $this->dbTargets;
+    }
 
     public function up()
     {
