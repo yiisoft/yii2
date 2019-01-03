@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 - Bug #16335: Fixed in `yii\filters\AccessRule::matchIP()` user IP validation with netmask in rule (omentes)
-
 - Chg #16941: Set `yii\console\controllers\MigrateController::useTablePrefix` to true as default value (GHopperMSK)
 - Bug #16966: Fix ArrayExpression support in related tables (GHopperMSK)
 - Bug #16891: Fixed Pagination::totalCount initialized incorrectly (taobig)
