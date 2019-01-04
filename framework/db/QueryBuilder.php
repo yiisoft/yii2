@@ -225,7 +225,6 @@ class QueryBuilder extends \yii\base\BaseObject
     public function build($query, $params = [])
     {
         $query = $query->prepare($this);
-
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
         $clauses = [
@@ -1249,7 +1248,7 @@ class QueryBuilder extends \yii\base\BaseObject
                 $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
             } elseif (is_string($i)) {
                 if (strpos($column, '(') === false) {
-                    $column = $this->db->quoteColumnName($column);
+                    $column = $this->db->quoteColumnName($column, true);
                 }
                 $columns[$i] = "$column AS " . $this->db->quoteColumnName($i);
             } elseif (strpos($column, '(') === false) {

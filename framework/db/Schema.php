@@ -499,15 +499,16 @@ abstract class Schema extends BaseObject
      * If the column name is already quoted or contains '(', '[[' or '{{',
      * then this method will do nothing.
      * @param string $name column name
+     * @param boolean $alias is it an alias name or not
      * @return string the properly quoted column name
      * @see quoteSimpleColumnName()
      */
-    public function quoteColumnName($name)
+    public function quoteColumnName($name, $alias)
     {
         if (strpos($name, '(') !== false || strpos($name, '[[') !== false) {
             return $name;
         }
-        if (($pos = strrpos($name, '.')) !== false) {
+        if (!$alias && (($pos = strrpos($name, '.')) !== false)) {
             $prefix = $this->quoteTableName(substr($name, 0, $pos)) . '.';
             $name = substr($name, $pos + 1);
         } else {
