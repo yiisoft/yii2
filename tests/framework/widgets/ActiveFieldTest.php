@@ -14,6 +14,7 @@ use yii\web\View;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 use yii\widgets\InputWidget;
+use yii\widgets\MaskedInput;
 
 /**
  * @author Nelson J Morais <njmorais@gmail.com>
@@ -582,6 +583,31 @@ HTML;
 HTML;
         $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
         $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+    }
+
+    public function testInputOptionsTransferToWidget()
+    {
+        // set options direct to widget
+        $widget = $this->activeField->widget(MaskedInput::className(), [
+            'mask' => '999-999-9999',
+            'options' => ['placeholder' => 'pholder_direct'],
+        ]);
+        $this->assertContains('placeholder="pholder_direct"', (string) $widget);
+
+        // transfer options from ActiveField to widget
+        $this->activeField->inputOptions = ['placeholder' => 'pholder_input'];
+        $widget = $this->activeField->widget(MaskedInput::className(), [
+            'mask' => '999-999-9999',
+        ]);
+        $this->assertContains('placeholder="pholder_input"', (string) $widget);
+
+        // set both AF and widget options (second one takes precedence)
+        $this->activeField->inputOptions = ['placeholder' => 'pholder_both_input'];
+        $widget = $this->activeField->widget(MaskedInput::className(), [
+            'mask' => '999-999-9999',
+            'options' => ['placeholder' => 'pholder_both_direct']
+        ]);
+        $this->assertContains('placeholder="pholder_both_direct"', (string) $widget);
     }
 
     /**
