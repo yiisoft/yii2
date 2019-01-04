@@ -305,7 +305,7 @@ class DateValidatorTest extends TestCase
     {
         // prepare data for specific ICU version, see https://github.com/yiisoft/yii2/issues/15140
         switch (true) {
-            case (version_compare(INTL_ICU_VERSION, '57.1', '>=')):
+            case (version_compare(INTL_ICU_VERSION, '55.1', '>=')):
                 $enGB_dateTime_valid = '31/05/2017, 12:30';
                 $enGB_dateTime_invalid = '05/31/2017, 12:30';
                 $deDE_dateTime_valid = '31.05.2017, 12:30';
