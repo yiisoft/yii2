@@ -763,10 +763,6 @@ class ActiveField extends Component
      */
     public function widget($class, $config = [])
     {
-
-        if (!isset($config['options'])) {
-            $config['options'] = [];
-        }
         foreach($this->inputOptions as $key => $value) {
             if (!isset($config['options'][$key])) {
                 $config['options'][$key] = $value;
