@@ -900,12 +900,11 @@ class Connection extends Component
      * If the column name is already quoted or contains special characters including '(', '[[' and '{{',
      * then this method will do nothing.
      * @param string $name column name
-     * @param boolean $alias is it an alias name or not
      * @return string the properly quoted column name
      */
     public function quoteColumnName($name, $alias = false)
     {
-        return $this->getSchema()->quoteColumnName($name, $alias);
+        return $this->getSchema()->quoteColumnName($name);
     }
 
     /**

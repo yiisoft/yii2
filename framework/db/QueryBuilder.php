@@ -1248,7 +1248,7 @@ class QueryBuilder extends \yii\base\BaseObject
                 $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
             } elseif (is_string($i)) {
                 if (strpos($column, '(') === false) {
-                    $column = $this->db->quoteColumnName($column, true);
+                    $column = $this->db->quoteColumnName($column);
                 }
                 $columns[$i] = "$column AS " . $this->db->quoteColumnName($i);
             } elseif (strpos($column, '(') === false) {
