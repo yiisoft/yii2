@@ -902,7 +902,7 @@ class Connection extends Component
      * @param string $name column name
      * @return string the properly quoted column name
      */
-    public function quoteColumnName($name, $alias = false)
+    public function quoteColumnName($name)
     {
         return $this->getSchema()->quoteColumnName($name);
     }
