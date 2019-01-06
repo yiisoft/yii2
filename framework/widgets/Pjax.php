@@ -98,6 +98,20 @@ class Pjax extends Widget
      */
     public $clientOptions;
     /**
+     * @var array the event handlers for the underlying Pjax widget.
+     * Keys are the event names and values are javascript code that is passed to the `.on()` function
+     * as the event handler.
+     *
+     * For example you could write the following in your widget configuration:
+     *
+     * ```php
+     * 'clientEvents' => [
+     *     'pjax:end' => "function() { $.pjax.reload({container: '#pjax-second-container', timeout: 10000}); }",
+     * ],
+     * ```
+     */
+    public $clientEvents = [];
+    /**
      * {@inheritdoc}
      * @internal
      */
@@ -213,5 +227,24 @@ class Pjax extends Widget
         if ($js !== '') {
             $view->registerJs($js);
         }
+
+        $this->registerClientEvents($id);
+    }
+
+    /**
+     * Registers a specific Pjax widget events
+     * @param string $id the ID of the widget
+     */
+    protected function registerClientEvents($id)
+    {
+        if (empty($this->clientEvents)) {
+            return;
+        }
+
+        $js = [];
+        foreach ($this->clientEvents as $event => $handler) {
+            $js[] = "jQuery('#$id').on('$event', $handler);";
+        }
+        $this->getView()->registerJs(implode("\n", $js));
     }
 }
