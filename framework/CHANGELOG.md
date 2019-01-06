@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.16 under development
 ------------------------
-
+- Enh #17020: allow to add pjax event listeners to a `\yii\widgets\Pjax` widget (albertborsos)
 - Bug #16991: Removed usage of `utf8_encode()` from `Request::resolvePathInfo()` (GHopperMSK)
 - Bug #16974: Regular Expression Validator to include support for 'u' (UTF-8) modifier (Dzhuneyt)
 - Chg #16941: Set `yii\console\controllers\MigrateController::useTablePrefix` to true as default value (GHopperMSK)
