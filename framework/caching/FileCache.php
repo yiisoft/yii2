@@ -72,7 +72,7 @@ class FileCache extends Cache
 
 
     /**
-     * Initializes this component by ensuring the existence of the cache path.
+     * 初始化组件，确保缓存目录的存在。
      */
     public function init()
     {
@@ -84,14 +84,14 @@ class FileCache extends Cache
     }
 
     /**
-     * Checks whether a specified key exists in the cache.
-     * This can be faster than getting the value from the cache if the data is big.
-     * Note that this method does not check whether the dependency associated
-     * with the cached data, if there is any, has changed. So a call to [[get]]
-     * may return false while exists returns true.
-     * @param mixed $key a key identifying the cached value. This can be a simple string or
-     * a complex data structure consisting of factors representing the key.
-     * @return bool true if a value exists in cache, false if the value is not in the cache or expired.
+     * 检测指定的建是否存在缓存中。
+     * 如果缓存数据量大的话，这比从缓存中直接获取值稍快些。
+     * 注意，如果缓存数据有缓存依赖,
+     * 该方法不会检测缓存依赖是否发生变化。所以有可能调用 [[get]] 方法返回 false,
+     * 而调用该方法返回 true。
+     * @param mixed $key 指明缓存值的键。可以是一个简单的字符串，
+     * 或者是一个包含着缓存键的复杂数据结构。
+     * @return bool 如果缓存值存在返回 true，如果缓存值不存在或者已经过期则返回 false。
      */
     public function exists($key)
     {
@@ -101,10 +101,10 @@ class FileCache extends Cache
     }
 
     /**
-     * Retrieves a value from cache with a specified key.
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key a unique key identifying the cached value
-     * @return string|false the value stored in cache, false if the value is not in the cache or expired.
+     * 根据指定的键从缓存中获取缓存数据。
+     * 该方法从父类中声明，在子类这里实现。
+     * @param string $key 指明缓存数据的唯一键。
+     * @return string|false 缓存中的值，如果缓存值不存在或者已经过期则返回 false。
      */
     protected function getValue($key)
     {
@@ -125,14 +125,14 @@ class FileCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key in cache.
-     * This is the implementation of the method declared in the parent class.
+     * 根据指定的键把数据存入缓存中。
+     * 该方法从父类中声明，在子类这里实现。
      *
-     * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached. Other types (If you have disabled [[serializer]]) unable to get is
-     * correct in [[getValue()]].
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * @param string $key 指明缓存值的键。
+     * @param string #value 要缓存的值。如果是其它的数据类型（如果禁用了 [[serializer]] 方法），
+     * 那么在后续 [[getValue()]] 方法中不能正确地获取到值。
+     * @param int $duration 缓存值过期的秒数。0 表示永不过期。
+     * @return bool 如果成功存入缓存返回 true，否则返回 false。
      */
     protected function setValue($key, $value, $duration)
     {
@@ -164,14 +164,14 @@ class FileCache extends Cache
     }
 
     /**
-     * Stores a value identified by a key into cache if the cache does not contain this key.
-     * This is the implementation of the method declared in the parent class.
+     * 在指定的键不存在的情况下，才存入指定的缓存值。
+     * 该方法从父类中声明，在子类里实现。
      *
-     * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached. Other types (if you have disabled [[serializer]]) unable to get is
-     * correct in [[getValue()]].
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
+     * @param string $key 指明缓存值的键。
+     * @param string #value 要缓存的值。如果是其它的数据类型（如果禁用了 [[serializer]] 方法），
+     * 那么在后续 [[getValue()]] 方法中不能正确地获取到值。
+     * @param int $duration 缓存值过期的秒数。0 表示永不过期。
+     * @return bool 如果成功存入缓存返回 true，否则返回 false。
      */
     protected function addValue($key, $value, $duration)
     {
@@ -184,10 +184,10 @@ class FileCache extends Cache
     }
 
     /**
-     * Deletes a value with the specified key from cache
-     * This is the implementation of the method declared in the parent class.
-     * @param string $key the key of the value to be deleted
-     * @return bool if no error happens during deletion
+     * 根据指定的键把数据从缓存中删除。
+     * 该方法从父类中声明，在子类这里实现。
+     * @param string $key 指明要删除缓存的键。
+     * @return bool 如果删除过程没有发生错误。
      */
     protected function deleteValue($key)
     {
@@ -197,9 +197,9 @@ class FileCache extends Cache
     }
 
     /**
-     * Returns the cache file path given the cache key.
-     * @param string $key cache key
-     * @return string the cache file path
+     * 根据缓存键返回缓存文件。
+     * @param string $key 缓存键。
+     * @return string 缓存文件的路径。
      */
     protected function getCacheFile($key)
     {
@@ -218,9 +218,9 @@ class FileCache extends Cache
     }
 
     /**
-     * Deletes all values from cache.
-     * This is the implementation of the method declared in the parent class.
-     * @return bool whether the flush operation was successful.
+     * 从缓存中删除所有值。
+     * 该方法从父类中声明，在子类这里实现。
+     * @return bool 是否成功执行了删除操作。
      */
     protected function flushValues()
     {
@@ -230,11 +230,11 @@ class FileCache extends Cache
     }
 
     /**
-     * Removes expired cache files.
-     * @param bool $force whether to enforce the garbage collection regardless of [[gcProbability]].
-     * Defaults to false, meaning the actual deletion happens with the probability as specified by [[gcProbability]].
-     * @param bool $expiredOnly whether to removed expired cache files only.
-     * If false, all cache files under [[cachePath]] will be removed.
+     * 删除过期的缓存文件。
+     * @param bool $force 是否强制执行垃圾回收，不论 [[gcProbability]] 概率。
+     * 默认是 false，意味着是否发生垃圾回收还得参考由 [[gcProbability]] 指明的可能性概率。
+     * @param bool $expiredOnly 是否只删除过期的缓存文件。
+     * 如果是 false，所有 [[cachePath]] 下的缓存文件都将被删除。
      */
     public function gc($force = false, $expiredOnly = true)
     {
@@ -244,11 +244,11 @@ class FileCache extends Cache
     }
 
     /**
-     * Recursively removing expired cache files under a directory.
-     * This method is mainly used by [[gc()]].
-     * @param string $path the directory under which expired cache files are removed.
-     * @param bool $expiredOnly whether to only remove expired cache files. If false, all files
-     * under `$path` will be removed.
+     * 递归地在指定目录下删除过期的缓存文件。
+     * 该方法主要在 [[gc()]] 中调用。
+     * @param string $path 该目录下所有过期的缓存文件都会被删除。
+     * @param bool $expiredOnly 是否只删除过期的缓存文件。
+     * 如果是 false，所有 $path 下的缓存文件都将被删除。
      */
     protected function gcRecursive($path, $expiredOnly)
     {
