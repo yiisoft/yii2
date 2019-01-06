@@ -551,7 +551,7 @@ trait ActiveRelationTrait
                 }
             }
         }
-        $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
+        $this->andWhere(['in', $attributes, array_unique($values)]);
     }
 
     /**

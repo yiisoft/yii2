@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #15482: AR::find()->with() missing data when using string identifiers for relations (rugabarbo)
 - Bug #16991: Removed usage of `utf8_encode()` from `Request::resolvePathInfo()` (GHopperMSK)
 - Bug #16974: Regular Expression Validator to include support for 'u' (UTF-8) modifier (Dzhuneyt)
 - Chg #16941: Set `yii\console\controllers\MigrateController::useTablePrefix` to true as default value (GHopperMSK)
