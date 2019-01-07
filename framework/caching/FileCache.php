@@ -35,7 +35,7 @@ class FileCache extends Cache
      */
     public $keyPrefix = '';
     /**
-     * @var string 存储缓存文件的目录。这里可以使用 [path alias](guide:concept-aliases) 。
+     * @var string 存储缓存文件的目录。这里可以使用 [path alias](guide:concept-aliases)。
      * 如果没有设置，默认就是应用 runtime 目录的 "cache" 子目录。
      */
     public $cachePath = '@runtime/cache';
@@ -86,8 +86,8 @@ class FileCache extends Cache
     /**
      * 检测指定的建是否存在缓存中。
      * 如果缓存数据量大的话，这比从缓存中直接获取值稍快些。
-     * 注意，如果缓存数据有缓存依赖,
-     * 该方法不会检测缓存依赖是否发生变化。所以有可能调用 [[get]] 方法返回 false,
+     * 注意，如果缓存数据有缓存依赖，
+     * 该方法不会检测缓存依赖是否发生变化。所以有可能调用 [[get]] 方法返回 false，
      * 而调用该方法返回 true。
      * @param mixed $key 指明缓存值的键。可以是一个简单的字符串，
      * 或者是一个包含着缓存键的复杂数据结构。
@@ -248,7 +248,7 @@ class FileCache extends Cache
      * 该方法主要在 [[gc()]] 中调用。
      * @param string $path 该目录下所有过期的缓存文件都会被删除。
      * @param bool $expiredOnly 是否只删除过期的缓存文件。
-     * 如果是 false，所有 $path 下的缓存文件都将被删除。
+     * 如果是 false，所有 `$path` 下的缓存文件都将被删除。
      */
     protected function gcRecursive($path, $expiredOnly)
     {
