@@ -669,7 +669,7 @@ EOD;
         }
 
         if ($removeUnused) {
-            $this->deleteUnusedPhpMessageFiles($dirName, array_keys($messages));
+            $this->deleteUnusedPhpMessageFiles(array_keys($messages), $dirName);
         }
     }
 
@@ -889,13 +889,16 @@ EOD;
         }
     }
 
-    private function deleteUnusedPhpMessageFiles($dirName, $existingCategories)
+    private function deleteUnusedPhpMessageFiles($existingCategories, $dirName)
     {
         $messageFiles = FileHelper::findFiles($dirName);
-        foreach ($messageFiles as $file) {
-            $category = preg_replace('#\.php$#', '', basename($file));
+        foreach ($messageFiles as $messageFile) {
+            $categoryFileName = str_replace($dirName, '', $messageFile);
+            $categoryFileName = ltrim($categoryFileName, DIRECTORY_SEPARATOR);
+            $category = preg_replace('#\.php$#', '', $categoryFileName);
+
             if (!in_array($category, $existingCategories, true)) {
-                unlink($file);
+                unlink($messageFile);
             }
         }
     }
