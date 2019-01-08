@@ -92,6 +92,10 @@ class ServiceLocatorTest extends TestCase
      */
     public function testModulePropertyIsset()
     {
+        if (getenv('TRAVIS_PHP_VERSION') === 'nightly') {
+            $this->markTestSkipped("In 'nightly' PHP version there are no graphical extensions that are necessary for Captcha component.");
+        }
+
         $config = [
             'components' => [
                 'captcha' => [
