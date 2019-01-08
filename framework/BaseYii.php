@@ -14,45 +14,45 @@ use yii\di\Container;
 use yii\log\Logger;
 
 /**
- * Gets the application start timestamp.
+ * 获取应用程序开始的时间戳。
  */
 defined('YII_BEGIN_TIME') or define('YII_BEGIN_TIME', microtime(true));
 /**
- * This constant defines the framework installation directory.
+ * 此常量定义框架安装目录。
  */
 defined('YII2_PATH') or define('YII2_PATH', __DIR__);
 /**
- * This constant defines whether the application should be in debug mode or not. Defaults to false.
+ * 此常量定义应用程序是否应处于调试模式。默认为 false。
  */
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 /**
- * This constant defines in which environment the application is running. Defaults to 'prod', meaning production environment.
- * You may define this constant in the bootstrap script. The value could be 'prod' (production), 'dev' (development), 'test', 'staging', etc.
+ * 此常量定义应用程序在哪个环境中运行。默认为 'prod'，表示生产环境。
+ * 您可以在引导脚本中定义此常量。值可以是 'prod'（生产），'dev'（开发），'test'，'staging' 等。
  */
 defined('YII_ENV') or define('YII_ENV', 'prod');
 /**
- * Whether the the application is running in production environment.
+ * 应用程序是否在生产环境中运行。
  */
 defined('YII_ENV_PROD') or define('YII_ENV_PROD', YII_ENV === 'prod');
 /**
- * Whether the the application is running in development environment.
+ * 应用程序是否在开发环境中运行。
  */
 defined('YII_ENV_DEV') or define('YII_ENV_DEV', YII_ENV === 'dev');
 /**
- * Whether the the application is running in testing environment.
+ * 应用程序是否在测试环境中运行。
  */
 defined('YII_ENV_TEST') or define('YII_ENV_TEST', YII_ENV === 'test');
 
 /**
- * This constant defines whether error handling should be enabled. Defaults to true.
+ * 此常量定义是否应启用错误处理。默认为 true。
  */
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 
 /**
- * BaseYii is the core helper class for the Yii framework.
+ * BaseYii 是 Yii 框架的核心助手类。
  *
- * Do not use BaseYii directly. Instead, use its child class [[\Yii]] which you can replace to
- * customize methods of BaseYii.
+ * 不要直接使用 BaseYii。
+ * 相反，使用它的子类 [[\Yii]] 来自定义 BaseYii 的方法。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -68,19 +68,19 @@ class BaseYii
      */
     public static $classMap = [];
     /**
-     * @var \yii\console\Application|\yii\web\Application the application instance
+     * @var \yii\console\Application|\yii\web\Application 应用程序实例
      */
     public static $app;
     /**
-     * @var array registered path aliases
+     * @var array 注册路径别名
      * @see getAlias()
      * @see setAlias()
      */
     public static $aliases = ['@yii' => __DIR__];
     /**
-     * @var Container the dependency injection (DI) container used by [[createObject()]].
-     * You may use [[Container::set()]] to set up the needed dependencies of classes and
-     * their initial property values.
+     * @var Container [[createObject()]] 使用的依赖注入（DI）容器。
+     * 您可以使用 [[Container::set()]]
+     * 来设置类及其初始属性值所需的依赖项。
      * @see createObject()
      * @see Container
      */
@@ -88,8 +88,8 @@ class BaseYii
 
 
     /**
-     * Returns a string representing the current version of the Yii framework.
-     * @return string the version of Yii framework
+     * 返回表示 Yii 框架当前版本的字符串。
+     * @return string Yii 框架的版本
      */
     public static function getVersion()
     {
@@ -97,9 +97,9 @@ class BaseYii
     }
 
     /**
-     * Translates a path alias into an actual path.
+     * 将路径别名转换为实际路径。
      *
-     * The translation is done according to the following procedure:
+     * 翻译按照以下步骤完成：
      *
      * 1. If the given alias does not start with '@', it is returned back without change;
      * 2. Otherwise, look for the longest registered alias that matches the beginning part
@@ -117,15 +117,15 @@ class BaseYii
      * However, if the alias to be translated is '@foo/barbar/config', then '@foo' will be replaced
      * instead of '@foo/bar', because '/' serves as the boundary character.
      *
-     * Note, this method does not check if the returned path exists or not.
+     * 注意，此方法不检查返回的路径是否存在。
      *
      * See the [guide article on aliases](guide:concept-aliases) for more information.
      *
-     * @param string $alias the alias to be translated.
-     * @param bool $throwException whether to throw an exception if the given alias is invalid.
-     * If this is false and an invalid alias is given, false will be returned by this method.
-     * @return string|bool the path corresponding to the alias, false if the root alias is not previously registered.
-     * @throws InvalidArgumentException if the alias is invalid while $throwException is true.
+     * @param string $alias 要翻译的别名。
+     * @param bool $throwException 如果给定的别名无效，是否抛出异常。
+     * 如果为 false 并且给出了无效的别名，则此方法将返回 false。
+     * @return string|bool 与别名对应的路径，如果先前未注册根别名，则为 false。
+     * @throws InvalidArgumentException 如果 $throwException 为 true 时别名无效。
      * @see setAlias()
      */
     public static function getAlias($alias, $throwException = true)
@@ -158,11 +158,11 @@ class BaseYii
     }
 
     /**
-     * Returns the root alias part of a given alias.
-     * A root alias is an alias that has been registered via [[setAlias()]] previously.
-     * If a given alias matches multiple root aliases, the longest one will be returned.
-     * @param string $alias the alias
-     * @return string|bool the root alias, or false if no root alias is found
+     * 返回给定别名的根别名部分。
+     * 根别名是先前通过 [[setAlias()]] 注册的别名。
+     * 如果给定的别名与多个根别名匹配，则将返回最长的别名。
+     * @param string $alias 别名
+     * @return string|bool 根别名，如果没有找到根别名则为 false
      */
     public static function getRootAlias($alias)
     {
@@ -185,10 +185,10 @@ class BaseYii
     }
 
     /**
-     * Registers a path alias.
+     * 注册路径别名。
      *
-     * A path alias is a short name representing a long path (a file path, a URL, etc.)
-     * For example, we use '@yii' as the alias of the path to the Yii framework directory.
+     * 路径别名是表示长路径的短名称（文件路径，URL 等）
+     * 例如，我们使用 '@yii' 作为 Yii 框架目录路径的别名。
      *
      * A path alias must start with the character '@' so that it can be easily differentiated
      * from non-alias paths.
@@ -252,10 +252,10 @@ class BaseYii
     }
 
     /**
-     * Class autoload loader.
+     * 类自动加载器。
      *
-     * This method is invoked automatically when PHP sees an unknown class.
-     * The method will attempt to include the class file according to the following procedure:
+     * 当 PHP 发现一个未知类时，会自动调用此方法。
+     * 该方法将尝试根据以下过程包含类文件：
      *
      * 1. Search in [[classMap]];
      * 2. If the class is namespaced (e.g. `yii\base\Component`), it will attempt
@@ -483,7 +483,7 @@ class BaseYii
     }
 
     /**
-     * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
+     * 返回可显示在网页上的 HTML 超链接，其中显示 “Powered by Yii Framework” 的信息。
      * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
      * @deprecated since 2.0.14, this method will be removed in 2.1.0.
      */
@@ -496,29 +496,29 @@ class BaseYii
     }
 
     /**
-     * Translates a message to the specified language.
+     * 将信息转换为指定的语言。
      *
-     * This is a shortcut method of [[\yii\i18n\I18N::translate()]].
+     * 这是 [[\yii\i18n\I18N::translate()]] 的快捷方法。
      *
-     * The translation will be conducted according to the message category and the target language will be used.
+     * 翻译将根据消息类别进行，并将使用目标语言。
      *
-     * You can add parameters to a translation message that will be substituted with the corresponding value after
-     * translation. The format for this is to use curly brackets around the parameter name as you can see in the following example:
+     * 您可以将参数添加到翻译消息中，该翻译消息将在翻译后替换为相应的值。
+     * 这种格式是在参数名称前后使用大括号，如下例所示：
      *
      * ```php
      * $username = 'Alexander';
      * echo \Yii::t('app', 'Hello, {username}!', ['username' => $username]);
      * ```
      *
-     * Further formatting of message parameters is supported using the [PHP intl extensions](http://www.php.net/manual/en/intro.intl.php)
-     * message formatter. See [[\yii\i18n\I18N::translate()]] for more details.
+     * 使用 [PHP intl 扩展](http://www.php.net/manual/en/intro.intl.php) 消息格式化程序支持进一步格式化消息参数。
+     * 有关详细信息，请参见 [[\yii\i18n\I18N::translate()]]。
      *
-     * @param string $category the message category.
-     * @param string $message the message to be translated.
-     * @param array $params the parameters that will be used to replace the corresponding placeholders in the message.
-     * @param string $language the language code (e.g. `en-US`, `en`). If this is null, the current
-     * [[\yii\base\Application::language|application language]] will be used.
-     * @return string the translated message.
+     * @param string $category 消息类别。
+     * @param string $message 要翻译的信息。
+     * @param array $params 将用于替换消息中相应占位符的参数。
+     * @param string $language 语言代码（例如 `en-US`，`en`）。
+     * 如果为 null，则将使用当前 [[\yii\base\Application::language|application language]]。
+     * @return string 翻译的消息。
      */
     public static function t($category, $message, $params = [], $language = null)
     {
@@ -535,10 +535,10 @@ class BaseYii
     }
 
     /**
-     * Configures an object with the initial property values.
-     * @param object $object the object to be configured
-     * @param array $properties the property initial values given in terms of name-value pairs.
-     * @return object the object itself
+     * 使用初始属性值配置对象。
+     * @param object $object 要配置的对象
+     * @param array $properties 以键值对的形式给出属性的初始值。
+     * @return object 对象本身
      */
     public static function configure($object, $properties)
     {
@@ -550,12 +550,12 @@ class BaseYii
     }
 
     /**
-     * Returns the public member variables of an object.
-     * This method is provided such that we can get the public member variables of an object.
-     * It is different from "get_object_vars()" because the latter will return private
-     * and protected variables if it is called within the object itself.
-     * @param object $object the object to be handled
-     * @return array the public member variables of the object
+     * 返回对象的公共成员变量。
+     * 提供此方法使得我们可以获取对象的公共成员变量。
+     * 它与“get_object_vars()”
+     * 不同，因为如果在对象本身内调用它，后者将返回 private 和 protected 变量。
+     * @param object $object 要处理的对象
+     * @return array 对象的公共成员变量
      */
     public static function getObjectVars($object)
     {
