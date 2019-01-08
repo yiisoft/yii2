@@ -19,7 +19,7 @@ class DumbMutex extends Mutex
 {
     use RetryAcquireTrait;
 
-    public $attemptsCounter = 0;
+    public $attemptsTime = [];
     public static $locked = false;
 
     /**
@@ -28,7 +28,7 @@ class DumbMutex extends Mutex
     protected function acquireLock($name, $timeout = 0)
     {
         return $this->retryAcquire($timeout, function () {
-            $this->attemptsCounter++;
+            $this->attemptsTime[] = \microtime(true);
             if (!static::$locked) {
                 static::$locked = true;
 
