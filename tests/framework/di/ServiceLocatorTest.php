@@ -92,27 +92,23 @@ class ServiceLocatorTest extends TestCase
      */
     public function testModulePropertyIsset()
     {
-        if (getenv('TRAVIS_PHP_VERSION') === 'nightly') {
-            $this->markTestSkipped("In 'nightly' PHP version there are no graphical extensions that are necessary for Captcha component.");
-        }
-
         $config = [
             'components' => [
-                'captcha' => [
+                'inputWidget' => [
                     'name' => 'foo bar',
-                    'class' => 'yii\captcha\Captcha',
+                    'class' => 'yii\widgets\InputWidget',
                 ],
             ],
         ];
 
         $app = new ServiceLocator($config);
 
-        $this->assertTrue(isset($app->captcha->name));
-        $this->assertNotEmpty($app->captcha->name);
+        $this->assertTrue(isset($app->inputWidget->name));
+        $this->assertNotEmpty($app->inputWidget->name);
 
-        $this->assertEquals('foo bar', $app->captcha->name);
+        $this->assertEquals('foo bar', $app->inputWidget->name);
 
-        $this->assertTrue(isset($app->captcha->name));
-        $this->assertNotEmpty($app->captcha->name);
+        $this->assertTrue(isset($app->inputWidget->name));
+        $this->assertNotEmpty($app->inputWidget->name);
     }
 }
