@@ -40,7 +40,7 @@ class BaseHtmlPurifier
      *   });
      * ```
      *
-     * @return string 需要过滤的HTML内容。
+     * @return string 需要过滤的 HTML 内容。
      */
     public static function process($content, $config = null)
     {
