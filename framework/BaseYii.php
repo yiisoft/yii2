@@ -101,11 +101,11 @@ class BaseYii
      *
      * 翻译按照以下步骤完成：
      *
-     * 1. If the given alias does not start with '@', it is returned back without change;
-     * 2. Otherwise, look for the longest registered alias that matches the beginning part
-     *    of the given alias. If it exists, replace the matching part of the given alias with
-     *    the corresponding registered path.
-     * 3. Throw an exception or return false, depending on the `$throwException` parameter.
+     * 1. 如果给定的别名不以 '@' 开头，则返回时不做更改；
+     * 2. 否则，查找与给定别名的开头部分匹配的最长注册别名。
+     *    如果存在，
+     *    请将给定别名的匹配部分替换为相应的注册路径。
+     * 3. 抛出异常或返回 false，具体取决于 `$throwException` 参数。
      *
      * For example, by default '@yii' is registered as the alias to the Yii framework directory,
      * say '/path/to/yii'. The alias '@yii/web' would then be translated into '/path/to/yii/web'.
@@ -114,8 +114,8 @@ class BaseYii
      * would replace the part '@foo/bar' (instead of '@foo') with the corresponding registered path.
      * This is because the longest alias takes precedence.
      *
-     * However, if the alias to be translated is '@foo/barbar/config', then '@foo' will be replaced
-     * instead of '@foo/bar', because '/' serves as the boundary character.
+     * 但是，如果要翻译的别名是 '@foo/barbar/config'，那么 '@foo' 将被替换而不是 '@foo/bar'，
+     * 因为 '/' 用作边界字符。
      *
      * 注意，此方法不检查返回的路径是否存在。
      *
@@ -190,11 +190,11 @@ class BaseYii
      * 路径别名是表示长路径的短名称（文件路径，URL 等）
      * 例如，我们使用 '@yii' 作为 Yii 框架目录路径的别名。
      *
-     * A path alias must start with the character '@' so that it can be easily differentiated
-     * from non-alias paths.
+     * 路径别名必须以字符“@”开头，
+     * 以便可以轻松区分非别名路径。
      *
-     * Note that this method does not check if the given path exists or not. All it does is
-     * to associate the alias with the path.
+     * 请注意，此方法不检查给定路径是否存在。
+     * 它所做的只是将别名与路径相关联。
      *
      * Any trailing '/' and '\' characters in the given path will be trimmed.
      *
@@ -211,7 +211,7 @@ class BaseYii
      * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
      *   actual path first by calling [[getAlias()]].
      *
-     * @throws InvalidArgumentException if $path is an invalid alias.
+     * @throws InvalidArgumentException 如果 $path 是无效的别名。
      * @see getAlias()
      */
     public static function setAlias($alias, $path)
@@ -257,10 +257,10 @@ class BaseYii
      * 当 PHP 发现一个未知类时，会自动调用此方法。
      * 该方法将尝试根据以下过程包含类文件：
      *
-     * 1. Search in [[classMap]];
-     * 2. If the class is namespaced (e.g. `yii\base\Component`), it will attempt
-     *    to include the file associated with the corresponding path alias
-     *    (e.g. `@yii/base/Component.php`);
+     * 1. 在 [[classMap]] 中搜索；
+     * 2. 如果是带命名空间的类（例如 `yii\base\Component`），
+     *    它将尝试包含与相应路径别名相关联的文件
+     *    （例如 `@yii/base/Component.php`）；
      *
      * This autoloader allows loading classes that follow the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/)
      * and have its top-level namespace or sub-namespaces defined as path aliases.
@@ -271,8 +271,8 @@ class BaseYii
      *
      * Also the [guide section on autoloading](guide:concept-autoloading).
      *
-     * @param string $className the fully qualified class name without a leading backslash "\"
-     * @throws UnknownClassException if the class does not exist in the class file
+     * @param string $className 没有前导反斜杠“\”的完全限定类名
+     * @throws UnknownClassException 如果类文件中不存在该类
      */
     public static function autoload($className)
     {
@@ -298,19 +298,19 @@ class BaseYii
     }
 
     /**
-     * Creates a new object using the given configuration.
+     * 使用给定配置创建新对象。
      *
-     * You may view this method as an enhanced version of the `new` operator.
-     * The method supports creating an object based on a class name, a configuration array or
-     * an anonymous function.
+     * 您可以将此方法视为 `new` 运算符的增强版本。
+     * 该方法支持基于类名，
+     * 配置数组或匿名函数创建对象。
      *
-     * Below are some usage examples:
+     * 以下是一些使用示例：
      *
      * ```php
-     * // create an object using a class name
+     * // 使用类名创建对象
      * $object = Yii::createObject('yii\db\Connection');
      *
-     * // create an object using a configuration array
+     * // 使用配置数组创建对象
      * $object = Yii::createObject([
      *     'class' => 'yii\db\Connection',
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
@@ -319,14 +319,14 @@ class BaseYii
      *     'charset' => 'utf8',
      * ]);
      *
-     * // create an object with two constructor parameters
+     * // 使用两个构造函数参数创建一个对象
      * $object = \Yii::createObject('MyClass', [$param1, $param2]);
      * ```
      *
      * Using [[\yii\di\Container|dependency injection container]], this method can also identify
      * dependent objects, instantiate them and inject them into the newly created object.
      *
-     * @param string|array|callable $type the object type. This can be specified in one of the following forms:
+     * @param string|array|callable $type 对象类型。可以使用以下形式之一指定：
      *
      * - a string: representing the class name of the object to be created
      * - a configuration array: the array must contain a `class` element which is treated as the object class,
@@ -334,9 +334,9 @@ class BaseYii
      * - a PHP callable: either an anonymous function or an array representing a class method (`[$class or $object, $method]`).
      *   The callable should return a new instance of the object being created.
      *
-     * @param array $params the constructor parameters
-     * @return object the created object
-     * @throws InvalidConfigException if the configuration is invalid.
+     * @param array $params 构造函数参数
+     * @return object 创建的对象
+     * @throws InvalidConfigException 如果配置无效。
      * @see \yii\di\Container
      */
     public static function createObject($type, array $params = [])
@@ -359,7 +359,7 @@ class BaseYii
     private static $_logger;
 
     /**
-     * @return Logger message logger
+     * @return Logger 消息记录器
      */
     public static function getLogger()
     {
@@ -371,8 +371,8 @@ class BaseYii
     }
 
     /**
-     * Sets the logger object.
-     * @param Logger $logger the logger object.
+     * 设置记录器对象。
+     * @param Logger $logger 记录器对象。
      */
     public static function setLogger($logger)
     {
@@ -380,13 +380,13 @@ class BaseYii
     }
 
     /**
-     * Logs a debug message.
-     * Trace messages are logged mainly for development purpose to see
-     * the execution work flow of some code. This method will only log
-     * a message when the application is in debug mode.
-     * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
-     * @param string $category the category of the message.
+     * 记录调试消息。
+     * 跟踪消息主要用于开发目的，
+     * 以查看某些代码的执行工作流程。
+     * 此方法仅在应用程序处于调试模式时记录消息。
+     * @param string|array $message 要记录的消息。
+     * 这可以是简单的字符串或更复杂的数据结构，例如数组。
+     * @param string $category 消息的类别。
      * @since 2.0.14
      */
     public static function debug($message, $category = 'application')
@@ -397,10 +397,10 @@ class BaseYii
     }
 
     /**
-     * Alias of [[debug()]].
-     * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
-     * @param string $category the category of the message.
+     * [[debug()]] 的别名。
+     * @param string|array $message 要记录的消息。
+     * 这可以是简单的字符串或更复杂的数据结构，例如数组。
+     * @param string $category 消息的类别。
      * @deprecated since 2.0.14. Use [[debug()]] instead.
      */
     public static function trace($message, $category = 'application')
@@ -409,12 +409,12 @@ class BaseYii
     }
 
     /**
-     * Logs an error message.
-     * An error message is typically logged when an unrecoverable error occurs
-     * during the execution of an application.
-     * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
-     * @param string $category the category of the message.
+     * 记录错误消息。
+     * 在执行应用程序期间发生不可恢复的错误时，
+     * 通常会记录错误消息。
+     * @param string|array $message 要记录的消息。
+     * 这可以是简单的字符串或更复杂的数据结构，例如数组。
+     * @param string $category 消息的类别。
      */
     public static function error($message, $category = 'application')
     {
@@ -422,12 +422,12 @@ class BaseYii
     }
 
     /**
-     * Logs a warning message.
-     * A warning message is typically logged when an error occurs while the execution
-     * can still continue.
-     * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
-     * @param string $category the category of the message.
+     * 记录警告消息。
+     * 当执行仍然可以继续时发生错误时，
+     * 通常会记录警告消息。
+     * @param string|array $message 要记录的消息。
+     * 这可以是简单的字符串或更复杂的数据结构，例如数组。
+     * @param string $category 消息的类别。
      */
     public static function warning($message, $category = 'application')
     {
@@ -435,12 +435,12 @@ class BaseYii
     }
 
     /**
-     * Logs an informative message.
-     * An informative message is typically logged by an application to keep record of
-     * something important (e.g. an administrator logs in).
-     * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
-     * @param string $category the category of the message.
+     * 记录信息性消息。
+     * 通常由应用程序记录信息性消息以保持重要事件的记录
+     * （例如，管理员登录）。
+     * @param string|array $message 要记录的消息。
+     * 这可以是简单的字符串或更复杂的数据结构，例如数组。
+     * @param string $category 消息的类别。
      */
     public static function info($message, $category = 'application')
     {
@@ -448,10 +448,10 @@ class BaseYii
     }
 
     /**
-     * Marks the beginning of a code block for profiling.
+     * 标记代码块的开头以进行性能分析。
      *
-     * This has to be matched with a call to [[endProfile]] with the same category name.
-     * The begin- and end- calls must also be properly nested. For example,
+     * 这必须与具有相同类别名称的 [[endProfile]] 调用相匹配。
+     * 开始和结束调用也必须正确嵌套。例如，
      *
      * ```php
      * \Yii::beginProfile('block1');
@@ -461,8 +461,8 @@ class BaseYii
      *     \Yii::endProfile('block2');
      * \Yii::endProfile('block1');
      * ```
-     * @param string $token token for the code block
-     * @param string $category the category of this log message
+     * @param string $token 代码块的标记
+     * @param string $category 此日志消息的类别
      * @see endProfile()
      */
     public static function beginProfile($token, $category = 'application')
@@ -471,10 +471,10 @@ class BaseYii
     }
 
     /**
-     * Marks the end of a code block for profiling.
-     * This has to be matched with a previous call to [[beginProfile]] with the same category name.
-     * @param string $token token for the code block
-     * @param string $category the category of this log message
+     * 标记代码块的结尾以进行性能分析。
+     * 这必须与先前使用相同类别名称的 [[beginProfile]] 调用相匹配。
+     * @param string $token 代码块的标记
+     * @param string $category 此日志消息的类别
      * @see beginProfile()
      */
     public static function endProfile($token, $category = 'application')
@@ -483,9 +483,9 @@ class BaseYii
     }
 
     /**
-     * 返回可显示在网页上的 HTML 超链接，其中显示 “Powered by Yii Framework” 的信息。
-     * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
-     * @deprecated since 2.0.14, this method will be removed in 2.1.0.
+     * 返回可显示在网页上的 HTML 超链接，其中显示“Powered by Yii Framework”的信息。
+     * @return string 可以在网页上显示“Powered by Yii Framework”信息的 HTML 超链接
+     * @deprecated 从 2.0.14 开始，此方法将在 2.1.0 中删除。
      */
     public static function powered()
     {
