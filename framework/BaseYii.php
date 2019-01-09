@@ -402,7 +402,7 @@ class BaseYii
      * @param string|array $message 要记录的消息。
      * 这可以是简单的字符串或更复杂的数据结构，例如数组。
      * @param string $category 消息的类别。
-     * @deprecated since 2.0.14. Use [[debug()]] instead.
+     * @deprecated 从 2.0.14 开始。请改用 [[debug()]]。
      */
     public static function trace($message, $category = 'application')
     {
