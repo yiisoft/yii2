@@ -288,6 +288,8 @@ if ($validator->validate($email, $error)) {
 > Note: Not all validators support this type of validation. An example is the [unique](tutorial-core-validators.md#unique)
   core validator which is designed to work with a model only.
 
+> Note: The [[yii\base\Validator::skipOnEmpty]] property is used only in [[yii\base\Model]].
+
 If you need to perform multiple validations against several values, you can use [[yii\base\DynamicModel]]
 which supports declaring both attributes and rules on the fly. Its usage is like the following:
 
