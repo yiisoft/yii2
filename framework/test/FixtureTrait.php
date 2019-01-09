@@ -11,34 +11,30 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * FixtureTrait provides functionalities for loading, unloading and accessing fixtures for a test case.
+ * FixtureTrait 提供一系列用于加载，卸载和访问测试用例中的夹具的函数能力。
  *
- * By using FixtureTrait, a test class will be able to specify which fixtures to load by overriding
- * the [[fixtures()]] method. It can then load and unload the fixtures using [[loadFixtures()]] and [[unloadFixtures()]].
- * Once a fixture is loaded, it can be accessed like an object property, thanks to the PHP `__get()` magic method.
- * Also, if the fixture is an instance of [[ActiveFixture]], you will be able to access AR models
- * through the syntax `$this->fixtureName('model name')`.
+ * 通过使用 FixtureTrait ，一个测试类可以通过改写  [[fixtures()]] 方法来指定哪些夹具被加载。然后，可以通过使用 [[loadFixtures()]] 和
+ *  [[unloadFixtures()]] 方法来加载卸载夹具。当一个夹具被加载后，因为 PHP `__get()` 魔术方法的缘故，它可以以一个对象属性的方式被访问。
+ * 同样，如果夹具是 [[ActiveFixture]] 的实例，你可以通过 `$this->fixtureName('model name')` 类似的语法访问一个 AR 模型。
  *
- * For more details and usage information on FixtureTrait, see the [guide article on fixtures](guide:test-fixtures).
- *
+ * 关于 FixtureTrait 更多的使用详情，参考 [guide article on fixtures](guide:test-fixtures)
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 trait FixtureTrait
 {
     /**
-     * @var array the list of fixture objects available for the current test.
-     * The array keys are the corresponding fixture class names.
-     * The fixtures are listed in their dependency order. That is, fixture A is listed before B
-     * if B depends on A.
+     * @var array 当前测试可用的夹具对象列表。
+     * 这个数组的键是对应的夹具类名。
+     * 这个夹具以它们的依赖顺序排列。即，如果夹具B依赖A，那么A排列在B的前面。
      */
     private $_fixtures;
 
 
     /**
-     * Declares the fixtures that are needed by the current test case.
+     * 声明当前测试用例需要的夹具。
      *
-     * The return value of this method must be an array of fixture configurations. For example,
+     * 这个方法的返回值必须是夹具配置数组，例如：
      *
      * ```php
      * [
@@ -54,10 +50,9 @@ trait FixtureTrait
      * ]
      * ```
      *
-     * Note that the actual fixtures used for a test case will include both [[globalFixtures()]]
-     * and [[fixtures()]].
+     * 注意：一个测试用例实际使用的夹具包括 [[globalFixtures()]] 和 [[fixtures()]] 中声明的夹具。
      *
-     * @return array the fixtures needed by the current test case
+     * @return array 当前测试用例需要的夹具。
      */
     public function fixtures()
     {
@@ -65,10 +60,11 @@ trait FixtureTrait
     }
 
     /**
-     * Declares the fixtures shared required by different test cases.
-     * The return value should be similar to that of [[fixtures()]].
-     * You should usually override this method in a base class.
-     * @return array the fixtures shared and required by different test cases.
+     * 声明被所有测试用例都需要的共享夹具。
+     * 它的返回值类似 [[fixtures()]]。
+     * 你应该在基类中重写这个方法。
+     *
+     * @return array 不同的测试用例所共享的夹具。
      * @see fixtures()
      */
     public function globalFixtures()
@@ -77,10 +73,11 @@ trait FixtureTrait
     }
 
     /**
-     * Loads the specified fixtures.
-     * This method will call [[Fixture::load()]] for every fixture object.
-     * @param Fixture[] $fixtures the fixtures to be loaded. If this parameter is not specified,
-     * the return value of [[getFixtures()]] will be used.
+     * 加载特定的夹具。
+     *
+     * 这个方法会调用每个夹具对象的 [[Fixture::load()]] 方法。
+     *
+     * @param Fixture[] $fixtures 被加载的夹具。如果这个参数未指定，将会默认使用 [[getFixtures()]] 的返回值。
      */
     public function loadFixtures($fixtures = null)
     {
@@ -101,10 +98,9 @@ trait FixtureTrait
     }
 
     /**
-     * Unloads the specified fixtures.
-     * This method will call [[Fixture::unload()]] for every fixture object.
-     * @param Fixture[] $fixtures the fixtures to be loaded. If this parameter is not specified,
-     * the return value of [[getFixtures()]] will be used.
+     * 卸载指定的夹具。
+     * 这个方法将会调用每个夹具对象的 [[Fixture::unload()]] 方法。
+     * @param Fixture[] $fixtures 将被卸载的夹具。如果这个参数未指定，将会默认使用 [[getFixtures()]] 的返回值。
      */
     public function unloadFixtures($fixtures = null)
     {
@@ -126,7 +122,7 @@ trait FixtureTrait
     }
 
     /**
-     * Initialize the fixtures.
+     * 初始化夹具
      * @since 2.0.12
      */
     public function initFixtures()
@@ -136,8 +132,8 @@ trait FixtureTrait
     }
 
     /**
-     * Returns the fixture objects as specified in [[globalFixtures()]] and [[fixtures()]].
-     * @return Fixture[] the loaded fixtures for the current test case
+     * 返回 [[globalFixtures()]] 和 [[fixtures()]] 指定的夹具对象。
+     * @return Fixture[] 当前测试用例加载的夹具对象。
      */
     public function getFixtures()
     {
@@ -149,9 +145,9 @@ trait FixtureTrait
     }
 
     /**
-     * Returns the named fixture.
-     * @param string $name the fixture name. This can be either the fixture alias name, or the class name if the alias is not used.
-     * @return Fixture the fixture object, or null if the named fixture does not exist.
+     * 方法指定的夹具。
+     * @param string $name 夹具名称。可以是夹具别名，如果没有使用的话，也可以是类名。
+     * @return Fixture 夹具对象，如果指定的对象不存在，返回null。
      */
     public function getFixture($name)
     {
@@ -164,13 +160,12 @@ trait FixtureTrait
     }
 
     /**
-     * Creates the specified fixture instances.
-     * All dependent fixtures will also be created.
-     * @param array $fixtures the fixtures to be created. You may provide fixture names or fixture configurations.
-     * If this parameter is not provided, the fixtures specified in [[globalFixtures()]] and [[fixtures()]] will be created.
-     * @return Fixture[] the created fixture instances
-     * @throws InvalidConfigException if fixtures are not properly configured or if a circular dependency among
-     * the fixtures is detected.
+     * 创建指定的夹具实例。
+     * 所有的依赖夹具也会被创建。
+     * @param array $fixtures 将要被创建的夹具。你可以提供夹具名称或者夹具配置数组。
+     * 如果未提供这个参数，那么 [[globalFixtures()]] 和 [[fixtures()]] 中指定的夹具将会被创建。
+     * @return Fixture[] 创建的夹具实例。
+     * @throws InvalidConfigException 如果夹具没有正确的配置，或者检测到循环依赖。
      */
     protected function createFixtures(array $fixtures)
     {
