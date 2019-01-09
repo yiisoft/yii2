@@ -60,10 +60,10 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 class BaseYii
 {
     /**
-     * @var array class map used by the Yii autoloading mechanism.
-     * The array keys are the class names (without leading backslashes), and the array values
-     * are the corresponding class file paths (or [path aliases](guide:concept-aliases)). This property mainly affects
-     * how [[autoload()]] works.
+     * @var array Yii 自动加载机制使用的类映射。
+     * 数组键是类名（没有前导反斜杠），
+     * 数组值是相应的类文件路径（或 [路径别名](guide:concept-aliases))。
+     * 此属性主要影响 [[autoload()]] 的工作方式。
      * @see autoload()
      */
     public static $classMap = [];
@@ -107,19 +107,19 @@ class BaseYii
      *    请将给定别名的匹配部分替换为相应的注册路径。
      * 3. 抛出异常或返回 false，具体取决于 `$throwException` 参数。
      *
-     * For example, by default '@yii' is registered as the alias to the Yii framework directory,
-     * say '/path/to/yii'. The alias '@yii/web' would then be translated into '/path/to/yii/web'.
+     * 例如，默认情况下，'@yii' 被注册为 Yii 框架目录的别名，例如 '/path/to/yii'。
+     * 别名 '@yii/web' 将被翻译成 '/path/to/yii/web'。
      *
-     * If you have registered two aliases '@foo' and '@foo/bar'. Then translating '@foo/bar/config'
-     * would replace the part '@foo/bar' (instead of '@foo') with the corresponding registered path.
-     * This is because the longest alias takes precedence.
+     * 如果你已经注册了两个别名 '@foo' 和 '@foo/bar'。然后翻译 '@foo/bar/config'
+     * 会将部分 '@foo/bar'（而不是 '@foo'）替换为相应的注册路径。
+     * 这是因为最长的别名优先。
      *
      * 但是，如果要翻译的别名是 '@foo/barbar/config'，那么 '@foo' 将被替换而不是 '@foo/bar'，
      * 因为 '/' 用作边界字符。
      *
      * 注意，此方法不检查返回的路径是否存在。
      *
-     * See the [guide article on aliases](guide:concept-aliases) for more information.
+     * 有关详细信息，请参阅[别名的指南文章](guide:concept-aliases)。
      *
      * @param string $alias 要翻译的别名。
      * @param bool $throwException 如果给定的别名无效，是否抛出异常。
@@ -196,20 +196,20 @@ class BaseYii
      * 请注意，此方法不检查给定路径是否存在。
      * 它所做的只是将别名与路径相关联。
      *
-     * Any trailing '/' and '\' characters in the given path will be trimmed.
+     * 给定路径中的任何结尾的 '/' 和 '\' 字符都将被截取。
      *
-     * See the [guide article on aliases](guide:concept-aliases) for more information.
+     * 有关详细信息，请参阅[别名的指南文章](guide:concept-aliases)。
      *
-     * @param string $alias the alias name (e.g. "@yii"). It must start with a '@' character.
-     * It may contain the forward slash '/' which serves as boundary character when performing
-     * alias translation by [[getAlias()]].
-     * @param string $path the path corresponding to the alias. If this is null, the alias will
-     * be removed. Trailing '/' and '\' characters will be trimmed. This can be
+     * @param string $alias 别名（例如“@yii”）。它必须以 '@' 字符开头。
+     * 它可能包含正斜杠 '/'，
+     * 它在 [[getAlias()]] 执行别名转换时用作边界字符。
+     * @param string $path 别名对应的路径。如果为 null，则将删除别名。
+     * 结尾的 '/' 和 '\' 字符将被截取。可以是
      *
-     * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
-     * - a URL (e.g. `http://www.yiiframework.com`)
-     * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
-     *   actual path first by calling [[getAlias()]].
+     * - 目录或文件路径（例如 `/tmp`，`/tmp/main.txt`）
+     * - 一个URL（例如 `http://www.yiiframework.com`）
+     * - 路径别名（例如 `@yii/base`）。 
+     *   在这种情况下，路径别名将首先通过调用 [[getAlias()]] 转换为实际路径。
      *
      * @throws InvalidArgumentException 如果 $path 是无效的别名。
      * @see getAlias()
@@ -262,14 +262,15 @@ class BaseYii
      *    它将尝试包含与相应路径别名相关联的文件
      *    （例如 `@yii/base/Component.php`）；
      *
-     * This autoloader allows loading classes that follow the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/)
-     * and have its top-level namespace or sub-namespaces defined as path aliases.
+     * 此自动加载器允许加载遵循 [PSR-4 标准](http://www.php-fig.org/psr/psr-4/)
+     * 的类，并将其顶级命名空间或子命名空间定义为路径别名。
      *
-     * Example: When aliases `@yii` and `@yii/bootstrap` are defined, classes in the `yii\bootstrap` namespace
-     * will be loaded using the `@yii/bootstrap` alias which points to the directory where bootstrap extension
-     * files are installed and all classes from other `yii` namespaces will be loaded from the yii framework directory.
+     * 示例：当定义别名 `@yii` 和 `@yii/bootstrap` 时，将使用 `yii\bootstrap`
+     * 别名加载 `@yii/bootstrap` 命名空间中的类，
+     * 该别名指向安装引导程序扩展文件的目录 并且将从 yii 框架目录加载来自其他 `yii` 命名空间的所有类。
+
      *
-     * Also the [guide section on autoloading](guide:concept-autoloading).
+     * 还有[自动加载指南](guide:concept-autoloading)。
      *
      * @param string $className 没有前导反斜杠“\”的完全限定类名
      * @throws UnknownClassException 如果类文件中不存在该类
@@ -323,16 +324,16 @@ class BaseYii
      * $object = \Yii::createObject('MyClass', [$param1, $param2]);
      * ```
      *
-     * Using [[\yii\di\Container|dependency injection container]], this method can also identify
-     * dependent objects, instantiate them and inject them into the newly created object.
+     * 使用 [[\yii\di\Container|依赖注入容器]]，此方法还可以识别依赖对象，
+     * 实例化它们并将它们注入新创建的对象。
      *
      * @param string|array|callable $type 对象类型。可以使用以下形式之一指定：
      *
-     * - a string: representing the class name of the object to be created
-     * - a configuration array: the array must contain a `class` element which is treated as the object class,
-     *   and the rest of the name-value pairs will be used to initialize the corresponding object properties
-     * - a PHP callable: either an anonymous function or an array representing a class method (`[$class or $object, $method]`).
-     *   The callable should return a new instance of the object being created.
+     * - 一个字符串：表示要创建的对象的类名
+     * - 配置数组：数组必须包含一个被视为对象类的 `class` 元素，
+     *   其余的键值对将用于初始化相应的对象属性
+     * - PHP可调用：要么是匿名函数，要么是表示类方法的数组（`[$class 或 $object, $method]`）。
+     *   callable 应返回正在创建的对象的新实例。
      *
      * @param array $params 构造函数参数
      * @return object 创建的对象
@@ -455,9 +456,9 @@ class BaseYii
      *
      * ```php
      * \Yii::beginProfile('block1');
-     * // some code to be profiled
+     * // 一些要分析的代码
      *     \Yii::beginProfile('block2');
-     *     // some other code to be profiled
+     *     // 一些其他要分析的代码
      *     \Yii::endProfile('block2');
      * \Yii::endProfile('block1');
      * ```
