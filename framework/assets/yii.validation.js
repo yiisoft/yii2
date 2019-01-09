@@ -23,11 +23,13 @@ yii.validation = (function ($) {
         required: function (value, messages, options) {
             var valid = false;
             if (options.requiredValue === undefined) {
-                var isString = typeof value == 'string' || value instanceof String;
-                if (options.strict && value !== undefined || !options.strict && !pub.isEmpty(isString ? $.trim(value) : value)) {
+                var isString = typeof value === 'string' || value instanceof String;
+                if (options.strict && value !== undefined) {
+                    valid = true;
+                } else if (!options.strict && !pub.isEmpty(isString ? $.trim(value) : value)) {
                     valid = true;
                 }
-            } else if (!options.strict && value == options.requiredValue || options.strict && value === options.requiredValue) {
+            } else if (!options.strict && value === options.requiredValue || options.strict && value === options.requiredValue) {
                 valid = true;
             }
 
