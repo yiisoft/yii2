@@ -142,9 +142,9 @@ class ActionColumn extends Column
      */
     protected function initDefaultButtons()
     {
-        $this->initDefaultButton('view', 'eye-open');
-        $this->initDefaultButton('update', 'pencil');
-        $this->initDefaultButton('delete', 'trash', [
+        $this->initDefaultButton('view', '👁');
+        $this->initDefaultButton('update', '✏');
+        $this->initDefaultButton('delete', '🗑', [
             'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
             'data-method' => 'post',
         ]);
@@ -153,14 +153,14 @@ class ActionColumn extends Column
     /**
      * Initializes the default button rendering callback for single button.
      * @param string $name Button name as it's written in template
-     * @param string $iconName The part of Bootstrap glyphicon class that makes it unique
+     * @param string $icon
      * @param array $additionalOptions Array of additional options
      * @since 2.0.11
      */
-    protected function initDefaultButton($name, $iconName, $additionalOptions = [])
+    protected function initDefaultButton($name, $icon, $additionalOptions = [])
     {
         if (!isset($this->buttons[$name]) && strpos($this->template, '{' . $name . '}') !== false) {
-            $this->buttons[$name] = function ($url, $model, $key) use ($name, $iconName, $additionalOptions) {
+            $this->buttons[$name] = function ($url, $model, $key) use ($name, $icon, $additionalOptions) {
                 switch ($name) {
                     case 'view':
                         $title = Yii::t('yii', 'View');
@@ -179,7 +179,7 @@ class ActionColumn extends Column
                     'aria-label' => $title,
                     'data-pjax' => '0',
                 ], $additionalOptions, $this->buttonOptions);
-                $icon = Html::tag('span', '', ['class' => "glyphicon glyphicon-$iconName"]);
+                $icon = Html::tag('span', $icon, ['class' => 'emoji']);
                 return Html::a($icon, $url, $options);
             };
         }

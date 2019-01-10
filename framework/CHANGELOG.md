@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Chg #16359: Use emoji in ActionColumn (GHopperMSK)
 - Bug #16253: Fixed empty checkboxlist validation (GHopperMSK)
 - Bug #15286: Fixed incorrect formatting of time with timezone information (rugabarbo)
 - Bug #17021: Fix to do not remove existing message category files in a subfolder (albertborsos)
