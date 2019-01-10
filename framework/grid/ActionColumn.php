@@ -143,7 +143,7 @@ class ActionColumn extends Column
     protected function initDefaultButtons()
     {
         $this->initDefaultButton('view', '👁');
-        $this->initDefaultButton('update', '✏');
+        $this->initDefaultButton('update', '✎');
         $this->initDefaultButton('delete', '🗑', [
             'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
             'data-method' => 'post',
