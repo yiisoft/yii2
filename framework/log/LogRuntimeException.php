@@ -8,7 +8,7 @@
 namespace yii\log;
 
 /**
- * LogRuntimeException represents an exception caused by problems with log delivery.
+ * LogRuntimeException 表示由日志传递问题引起的异常。
  *
  * @author Bizley <pawel@positive.codes>
  * @since 2.0.14
@@ -16,7 +16,7 @@ namespace yii\log;
 class LogRuntimeException extends \yii\base\Exception
 {
     /**
-     * @return string the user-friendly name of this exception
+     * @return string 容易理解的异常名称
      */
     public function getName()
     {
