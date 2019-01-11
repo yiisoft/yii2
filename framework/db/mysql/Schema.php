@@ -293,7 +293,7 @@ SQL;
              *
              * See details here: https://mariadb.com/kb/en/library/now/#description
              */
-            if (($column->type === 'timestamp' || $column->type ==='datetime') &&
+            if (($column->type === 'timestamp' || $column->type === 'datetime') &&
                 ($info['default'] === 'CURRENT_TIMESTAMP' || $info['default'] === 'current_timestamp()')) {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } elseif (isset($type) && $type === 'bit') {
