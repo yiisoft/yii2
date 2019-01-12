@@ -15,8 +15,10 @@ use yii\web\JsExpression;
 
 /**
  * RegularExpressionValidator validates that the attribute value matches the specified [[pattern]].
+ * RegularExpressionValidator 校验属性值是否符合指定的模式 [[pattern]]。
  *
  * If the [[not]] property is set true, the validator will ensure the attribute value do NOT match the [[pattern]].
+ * 如果 [[not]] 被设置为 true，校验器会确保属性值不符合指定的模式 [[pattern]]。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -16,10 +16,13 @@ use yii\web\JsExpression;
 
 /**
  * The validator checks if the attribute value is a valid IPv4/IPv6 address or subnet.
+ * 这个校验器校验属性值是否是一个合法的 IPv4/IPv6 地址或者子网。
  *
  * It also may change attribute's value if normalization of IPv6 expansion is enabled.
+ * 如果启用 IPv6 扩展标准化，它同样会改变属性值。
  *
  * The following are examples of validation rules using this validator:
+ * 如下是使用这个校验器的校验规则示例：
  *
  * ```php
  * ['ip_address', 'ip'], // IPv4 or IPv6 address

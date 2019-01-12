@@ -14,10 +14,13 @@ use yii\web\JsExpression;
 
 /**
  * NumberValidator validates that the attribute value is a number.
+ * NumberValidator 校验属性的值是否是数字。
  *
  * The format of the number must match the regular expression specified in [[integerPattern]] or [[numberPattern]].
  * Optionally, you may configure the [[max]] and [[min]] properties to ensure the number
  * is within certain range.
+ * 数字的格式必须符合 [[integerPattern]] 或者 [[numberPattern]] 所指定的正则表达式。
+ * 另外，你可以配置 [[max]] 和 [[min]] 属性来确保数值是在指定的区间内。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

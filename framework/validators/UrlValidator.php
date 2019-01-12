@@ -14,9 +14,11 @@ use yii\web\JsExpression;
 
 /**
  * UrlValidator validates that the attribute value is a valid http or https URL.
+ * UrlValidator 校验指定的属性值是否是一个合法的 http 或者 https URL。
  *
  * Note that this validator only checks if the URL scheme and host part are correct.
  * It does not check the remaining parts of a URL.
+ * 注意：这个校验器只确保 URL 的协议和主机名部分是否正确，它并不会校验其余部分。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -11,6 +11,7 @@ use Yii;
 
 /**
  * RequiredValidator validates that the specified attribute does not have null or empty value.
+ * RequiredValidator 校验指定的属性不为null值或者空值。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

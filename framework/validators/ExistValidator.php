@@ -16,15 +16,20 @@ use yii\db\QueryInterface;
 
 /**
  * ExistValidator validates that the attribute value exists in a table.
+ * ExistValidator 校验指定的属性值是否在数据表中存在。
  *
  * ExistValidator checks if the value being validated can be found in the table column specified by
  * the ActiveRecord class [[targetClass]] and the attribute [[targetAttribute]].
  * Since version 2.0.14 you can use more convenient attribute [[targetRelation]]
+ * ExistValidator 检测待校验的值能否在某个数据库表的某列中被找到，这个数据库表列由 [[targetClass]] 对应的AR类 和 [[targetAttribute]] 对应的属性名所指定。
+ * 从2.0.14起，你可以使用更方便的属性 [[targetRelation]] 来实现类似的目的（译注：见示例）。
  *
  * This validator is often used to verify that a foreign key contains a value
  * that can be found in the foreign table.
+ * 这个校验器通常用于校验一个外键包含的某个值能否在外表中被找到。
  *
  * The following are examples of validation rules using this validator:
+ * 以下是使用这个校验器的校验规则示例：
  *
  * ```php
  * // a1 needs to exist
@@ -52,6 +57,7 @@ class ExistValidator extends Validator
      * @var string the name of the ActiveRecord class that should be used to validate the existence
      * of the current attribute value. If not set, it will use the ActiveRecord class of the attribute being validated.
      * @see targetAttribute
+     * @var string 用于校验属性值是否存在的 AR 类的名字。如果没有设置，它默认使用被校验属性所在的 AR 类。
      */
     public $targetClass;
     /**
@@ -60,11 +66,15 @@ class ExistValidator extends Validator
      * of the attribute currently being validated. You may use an array to validate the existence
      * of multiple columns at the same time. The array key is the name of the attribute with the value to validate,
      * the array value is the name of the database field to search.
+     * @var string|array 用于校验属性值是否存在的 AR 属性的名字。如果没有设置，它默认使用被校验属性的名字。你可以用一个数组来同时校验多列。
+     * 数组的键是校验的属性名字，数组的值是搜索的数据库字段。
      */
     public $targetAttribute;
     /**
      * @var string the name of the relation that should be used to validate the existence of the current attribute value
      * This param overwrites $targetClass and $targetAttribute
+     * @var string 用于校验当前属性值存在性的关系名称。
+     * 这个参数会覆盖 $targetClass 和 $targetAttribute
      * @since 2.0.14
      */
     public $targetRelation;
@@ -73,6 +83,9 @@ class ExistValidator extends Validator
      * This can be a string or an array representing the additional query condition (refer to [[\yii\db\Query::where()]]
      * on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
      * is the [[\yii\db\Query|Query]] object that you can modify in the function.
+     * @var string|array|\Closure 一个额外的过滤器作用于数据库查询，这个数据库查询用于校验属性值的存在性。
+     * 它可以是一个字符串或者数组代表额外的查询条件（查询条件格式参考 [[\yii\db\Query::where()]]），或者一个匿名函数，声明形式为 `function ($query)`，
+     * 其中 `$query` 是类 [[\yii\db\Query|Query]] 对象，你可以在函数中修改这个对象。
      */
     public $filter;
     /**
@@ -116,6 +129,7 @@ class ExistValidator extends Validator
 
     /**
      * Validates existence of the current attribute based on relation name
+     * 基于关系名称来校验属性值的存在性
      * @param \yii\db\ActiveRecord $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated.
      */
@@ -147,6 +161,7 @@ class ExistValidator extends Validator
 
     /**
      * Validates existence of the current attribute based on targetAttribute
+     * 基于目标属性来校验当前属性值的存在性
      * @param \yii\base\Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated.
      */
@@ -180,6 +195,8 @@ class ExistValidator extends Validator
     /**
      * Processes attributes' relations described in $targetAttribute parameter into conditions, compatible with
      * [[\yii\db\Query::where()|Query::where()]] key-value format.
+     * 根据 $targetAttribute 参数的描述将关系属性处理为 conditions 的方式，符合 [[\yii\db\Query::where()|Query::where()]] 要求
+     * 的 k-v 格式。
      *
      * @param $targetAttribute array|string $attribute the name of the ActiveRecord attribute that should be used to
      * validate the existence of the current attribute value. If not set, it will use the name
@@ -187,6 +204,9 @@ class ExistValidator extends Validator
      * of multiple columns at the same time. The array key is the name of the attribute with the value to validate,
      * the array value is the name of the database field to search.
      * If the key and the value are the same, you can just specify the value.
+     * @param $targetAttribute array|string $attribute 用于校验当前属性值存在性的 AR 属性名。如果没有设置，它会使用当前被校验的属性。
+     * 你可以使用数组来同时校验多列。数组的键是校验的属性名字，数组的值是搜索的数据库字段。
+     * 如果键和值是一样的，你可以只指定值。
      * @param \yii\base\Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated in the $model
      * @return array conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.

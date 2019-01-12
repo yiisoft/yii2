@@ -13,13 +13,17 @@ use yii\base\NotSupportedException;
 
 /**
  * Validator is the base class for all validators.
+ * Validator 是所有校验器的基类。
  *
  * Child classes should override the [[validateValue()]] and/or [[validateAttribute()]] methods to provide the actual
  * logic of performing data validation. Child classes may also override [[clientValidateAttribute()]]
  * to provide client-side validation support.
+ * 子类需要重写 [[validateValue()]] 或者/和 [[validateAttribute()]] 方法，来提供实际的数据校验逻辑。
+ * 子类也可以重写 [[clientValidateAttribute()]] 方法来提供客户端校验功能支持。
  *
  * Validator declares a set of [[builtInValidators|built-in validators]] which can
  * be referenced using short names. They are listed as follows:
+ * Validator 声明了一系列内建校验器 [[builtInValidators|built-in validators]] 可以使用短名称来引用。它们列表如下：
  *
  * - `boolean`: [[BooleanValidator]]
  * - `captcha`: [[\yii\captcha\CaptchaValidator]]
@@ -47,6 +51,7 @@ use yii\base\NotSupportedException;
  * - `ip`: [[IpValidator]]
  *
  * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
+ * 关于校验器的更多细节和使用详情，参阅 [guide article on validators](guide:input-validation)。
  *
  * @property array $attributeNames Attribute names. This property is read-only.
  *

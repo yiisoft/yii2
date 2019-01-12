@@ -13,6 +13,7 @@ use yii\base\Model;
 
 /**
  * EachValidator validates an array by checking each of its elements against an embedded validation rule.
+ * EachValidator 用于通过指定的校验规则来校验一个数组的每一个元素。
  *
  * ```php
  * class MyModel extends Model
@@ -31,9 +32,11 @@ use yii\base\Model;
  *
  * > Note: This validator will not work with inline validation rules in case of usage outside the model scope,
  *   e.g. via [[validate()]] method.
+ * > 注意：这个校验器在模型外使用时，不支持行内校验规则。例如：通过 [[validate()]] 方法进行校验。
  *
  * > Note: EachValidator is meant to be used only in basic cases, you should consider usage of tabular input,
  *   using several models for the more complex case.
+ * > 注意：EachValidator 通常只在一些基本场景下使用，在更复杂的表格输入场景下，你需要考虑使用多个模型。
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.4
@@ -45,6 +48,8 @@ class EachValidator extends Validator
      * It should be specified in the same format as at [[\yii\base\Model::rules()]], except it should not
      * contain attribute list as the first element.
      * For example:
+     * @var array|Validator 作用于数组值的校验规则定义。
+     * 它的格式应该类似于 [[\yii\base\Model::rules()]] ，只是它的第一个元素不包含属性列表。
      *
      * ```php
      * ['integer']
@@ -52,12 +57,16 @@ class EachValidator extends Validator
      * ```
      *
      * Please refer to [[\yii\base\Model::rules()]] for more details.
+     * 更多详情，参阅 [[\yii\base\Model::rules()]]。
      */
     public $rule;
     /**
      * @var bool whether to use error message composed by validator declared via [[rule]] if its validation fails.
      * If enabled, error message specified for this validator itself will appear only if attribute value is not an array.
      * If disabled, own error message value will be used always.
+     * @var bool 是否应该使用通过 [[rule]] 定义的校验器中组装的错误消息。
+     * 如果启用，这个校验器指定的错误消息只有在属性值不是一个数组时候才出现。
+     * 如果禁用，将使用校验器自带的错误消息。
      */
     public $allowMessageFromRule = true;
     /**
@@ -66,6 +75,9 @@ class EachValidator extends Validator
      * error messages mya appear: one per each invalid value.
      * Note that this option will affect only [[validateAttribute()]] value, while [[validateValue()]] will
      * not be affected.
+     * @var bool 是否在检测到第一个错误时就停止。
+     * 当启用时，校验器最多只会产生一个关于属性的校验错误消息，如果禁用，将会产生多个错误消息：每个异常值一个。
+     * 这个开关只会影响 [[validateAttribute()]] 的值，而 [[validateValue()]] 将不会受影响。
      * @since 2.0.11
      */
     public $stopOnFirstError = true;
@@ -89,7 +101,8 @@ class EachValidator extends Validator
 
     /**
      * Returns the validator declared in [[rule]].
-     * @param Model|null $model model in which context validator should be created.
+     * 返回 [[rule]] 中定义的校验器。
+     * @param Model|null $model 校验器创建的model上下文。
      * @return Validator the declared validator.
      */
     private function getValidator($model = null)
@@ -102,7 +115,7 @@ class EachValidator extends Validator
     }
 
     /**
-     * Creates validator object based on the validation rule specified in [[rule]].
+     * 基于 [[rule]] 中指定的校验规则创建校验器对象。
      * @param Model|null $model model in which context validator should be created.
      * @throws \yii\base\InvalidConfigException
      * @return Validator validator instance

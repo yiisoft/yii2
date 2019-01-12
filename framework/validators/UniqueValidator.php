@@ -17,11 +17,14 @@ use yii\helpers\Inflector;
 
 /**
  * UniqueValidator validates that the attribute value is unique in the specified database table.
+ * UniqueValidator 校验指定的属性值在数据库表中是唯一的。
  *
  * UniqueValidator checks if the value being validated is unique in the table column specified by
  * the ActiveRecord class [[targetClass]] and the attribute [[targetAttribute]].
+ * UniqueValidator 检查指定的值是否在由 AR 类 [[targetClass]] 和 [[targetAttribute]] 属性指定的数据库表列中唯一。
  *
  * The following are examples of validation rules using this validator:
+ * 如下是使用这个校验器的校验规则示例：
  *
  * ```php
  * // a1 needs to be unique

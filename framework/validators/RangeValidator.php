@@ -13,10 +13,13 @@ use yii\helpers\ArrayHelper;
 
 /**
  * RangeValidator validates that the attribute value is among a list of values.
- *
+ * RangeValidator 校验属性值是否在指定列表区间内。
+ * 
  * The range can be specified via the [[range]] property.
  * If the [[not]] property is set true, the validator will ensure the attribute value
  * is NOT among the specified range.
+ * 你可以通过 [[range]] 属性指定区间。
+ * 如果 [[not]] 属性被设置为 true ，校验器会确保属性值不在指定区间内。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

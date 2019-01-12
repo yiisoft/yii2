@@ -12,6 +12,7 @@ use yii\web\UploadedFile;
 
 /**
  * ImageValidator verifies if an attribute is receiving a valid image.
+ * ImageValidator 校验一个属性是否在接受一个合法的图片。
  *
  * @author Taras Gudz <gudz.taras@gmail.com>
  * @since 2.0
@@ -21,15 +22,17 @@ class ImageValidator extends FileValidator
     /**
      * @var string the error message used when the uploaded file is not an image.
      * You may use the following tokens in the message:
+     * @var string 当上传文件不是一个图片的时候的错误消息
+     * 你可以在消息中使用如下 token ：
      *
      * - {attribute}: the attribute name
      * - {file}: the uploaded file name
      */
     public $notImage;
     /**
-     * @var int the minimum width in pixels.
-     * Defaults to null, meaning no limit.
-     * @see underWidth for the customized message used when image width is too small.
+     * @var int 最小的像素宽度。
+     * 默认为 null，代表无限制。
+     * @see underWidth 当图片宽度小于指定像素时的自定义错误消息参考 underWidth
      */
     public $minWidth;
     /**
@@ -39,8 +42,8 @@ class ImageValidator extends FileValidator
      */
     public $maxWidth;
     /**
-     * @var int the minimum height in pixels.
-     * Defaults to null, meaning no limit.
+     * @var int the 最小的像素高度。
+     * 默认为 null，代表无限制。
      * @see underHeight for the customized message used when image height is too small.
      */
     public $minHeight;

@@ -11,8 +11,10 @@ use Yii;
 
 /**
  * StringValidator validates that the attribute value is of certain length.
+ * StringValidator 校验属性值是否满足规定的长度。
  *
  * Note, this validator should only be used with string-typed attributes.
+ * 注意，这个校验器只用于字符串类型的属性。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
