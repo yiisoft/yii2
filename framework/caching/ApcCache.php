@@ -69,7 +69,7 @@ class ApcCache extends Cache
      * 根据指定的键从缓存中获取缓存数据。
      * 该方法从父类中声明，在子类这里实现。
      * @param string $key 指明缓存数据的唯一键。
-     * @return string|false 缓存中的值，如果缓存值不存在或者已经过期则返回 false。
+     * @return mixed|false 缓存中的值，如果缓存值不存在或者已经过期则返回 false。
      */
     protected function getValue($key)
     {
