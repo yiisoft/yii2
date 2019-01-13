@@ -17,20 +17,20 @@ use yii\db\Query;
 use yii\di\Instance;
 
 /**
- * DbManager represents an authorization manager that stores authorization information in database.
+ * DbManager 表示将授权信息存储在数据库中的授权管理器。
  *
- * The database connection is specified by [[db]]. The database schema could be initialized by applying migration:
+ * 数据库连接由 [[db]] 指定。可以使用迁移工具来初始化数据库模式：
  *
  * ```
  * yii migrate --migrationPath=@yii/rbac/migrations/
  * ```
  *
- * If you don't want to use migration and need SQL instead, files for all databases are in migrations directory.
+ * 如果你不想使用迁移工具而是需要 SQL，所有数据库的文件都位于 migrations 目录中。
  *
- * You may change the names of the tables used to store the authorization and rule data by setting [[itemTable]],
- * [[itemChildTable]], [[assignmentTable]] and [[ruleTable]].
+ * 你可以通过设置 [[itemTable]]，[[itemChildTable]]，[[assignmentTable]] 和 [[ruleTable]]
+ * 来更改用于存储授权和规则数据的表的名称。
  *
- * For more details and usage information on DbManager, see the [guide article on security authorization](guide:security-authorization).
+ * 有关 DbManager 的更多详细信息和用法信息，请参阅 [授权指南](guide:security-authorization)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
@@ -39,72 +39,72 @@ use yii\di\Instance;
 class DbManager extends BaseManager
 {
     /**
-     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
-     * After the DbManager object is created, if you want to change this property, you should only assign it
-     * with a DB connection object.
-     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * @var Connection|array|string 数据库连接对象或数据库连接的应用程序组件 ID。
+     * 创建 DbManager 对象后，如果要更改此属性，
+     * 你应该只为它分配一个 DB 连接对象。
+     * 从版本 2.0.2 开始，这也可以通过配置数组来创建。
      */
     public $db = 'db';
     /**
-     * @var string the name of the table storing authorization items. Defaults to "auth_item".
+     * @var string 存储授权项的表的名称。默认为 “auth_item”。
      */
     public $itemTable = '{{%auth_item}}';
     /**
-     * @var string the name of the table storing authorization item hierarchy. Defaults to "auth_item_child".
+     * @var string 存储授权项层次结构下的表的名称。默认为 “auth_item_child”。
      */
     public $itemChildTable = '{{%auth_item_child}}';
     /**
-     * @var string the name of the table storing authorization item assignments. Defaults to "auth_assignment".
+     * @var string 存储授权项目分配的表的名称。默认为 “auth_assignment”。
      */
     public $assignmentTable = '{{%auth_assignment}}';
     /**
-     * @var string the name of the table storing rules. Defaults to "auth_rule".
+     * @var string 存储规则的表的名称。默认为 “auth_rule”。
      */
     public $ruleTable = '{{%auth_rule}}';
     /**
-     * @var CacheInterface|array|string the cache used to improve RBAC performance. This can be one of the following:
+     * @var CacheInterface|array|string 用于提高 RBAC 性能的缓存。这可以是以下之一：
      *
-     * - an application component ID (e.g. `cache`)
-     * - a configuration array
-     * - a [[\yii\caching\Cache]] object
+     * - 一个应用程序组件 ID（例如 `cache`）
+     * - 一个配置数组
+     * - 一个 [[\yii\caching\Cache]] 对象
      *
-     * When this is not set, it means caching is not enabled.
+     * 如果未设置，则表示未启用缓存。
      *
-     * Note that by enabling RBAC cache, all auth items, rules and auth item parent-child relationships will
-     * be cached and loaded into memory. This will improve the performance of RBAC permission check. However,
-     * it does require extra memory and as a result may not be appropriate if your RBAC system contains too many
-     * auth items. You should seek other RBAC implementations (e.g. RBAC based on Redis storage) in this case.
+     * 请注意，通过启用 RBAC 缓存，所有认证项，规则和认证的父子关系项将被缓存并加载到内存中。
+     * 这将提高 RBAC 权限检查的性能。 
+     * 但是，它也会需要额外的内存，因此如果你的 RBAC 系统包含太多认证项，则可能不合适。
+     * 在这种情况下，你应该寻求其他 RBAC 实现（例如，基于 Redis 存储的 RBAC）。
      *
-     * Also note that if you modify RBAC items, rules or parent-child relationships from outside of this component,
-     * you have to manually call [[invalidateCache()]] to ensure data consistency.
+     * 另请注意，如果你从此组件外部修改 RBAC 项目，规则或父子关系，
+     * 你必须手动调用 [[invalidateCache()]] 以确保数据一致性。
      *
      * @since 2.0.3
      */
     public $cache;
     /**
-     * @var string the key used to store RBAC data in cache
+     * @var string 用于在缓存中存储 RBAC 数据的键
      * @see cache
      * @since 2.0.3
      */
     public $cacheKey = 'rbac';
 
     /**
-     * @var Item[] all auth items (name => Item)
+     * @var Item[] 所有认证项目（name => Item）
      */
     protected $items;
     /**
-     * @var Rule[] all auth rules (name => Rule)
+     * @var Rule[] 所有认证规则（name => Rule）
      */
     protected $rules;
     /**
-     * @var array auth item parent-child relationships (childName => list of parents)
+     * @var array 认证项的父子关系（childName => list of parents）
      */
     protected $parents;
 
 
     /**
-     * Initializes the application component.
-     * This method overrides the parent implementation by establishing the database connection.
+     * 初始化应用程序组件。
+     * 此方法通过建立数据库连接来覆盖父实现。
      */
     public function init()
     {
@@ -142,16 +142,16 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Performs access check for the specified user based on the data loaded from cache.
-     * This method is internally called by [[checkAccess()]] when [[cache]] is enabled.
-     * @param string|int $user the user ID. This should can be either an integer or a string representing
-     * the unique identifier of a user. See [[\yii\web\User::id]].
-     * @param string $itemName the name of the operation that need access check
-     * @param array $params name-value pairs that would be passed to rules associated
-     * with the tasks and roles assigned to the user. A param with name 'user' is added to this array,
-     * which holds the value of `$userId`.
-     * @param Assignment[] $assignments the assignments to the specified user
-     * @return bool whether the operations can be performed by the user.
+     * 根据从缓存加载的数据对指定用户执行访问检查。
+     * 启用 [[cache]] 时，[[checkAccess()]] 在内部调用此方法。
+     * @param string|int $user 用户 ID。这应该是整数或字符串，
+     * 表示用户的唯一标识符。参阅 [[\yii\web\User::id]]。
+     * @param string $itemName 需要访问检查的操作的名称
+     * @param array $params 一个键值对，用于传递给与分配给用户任务和角色关联的规则。
+     * 名为 'user' 的参数将添加到此数组中，
+     * 该数组包含 `$userId` 的值。
+     * @param Assignment[] $assignments 指定用户的分配
+     * @return bool 用户是否可以执行操作。
      * @since 2.0.3
      */
     protected function checkAccessFromCache($user, $itemName, $params, $assignments)
@@ -184,16 +184,16 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Performs access check for the specified user.
-     * This method is internally called by [[checkAccess()]].
-     * @param string|int $user the user ID. This should can be either an integer or a string representing
-     * the unique identifier of a user. See [[\yii\web\User::id]].
-     * @param string $itemName the name of the operation that need access check
-     * @param array $params name-value pairs that would be passed to rules associated
-     * with the tasks and roles assigned to the user. A param with name 'user' is added to this array,
-     * which holds the value of `$userId`.
-     * @param Assignment[] $assignments the assignments to the specified user
-     * @return bool whether the operations can be performed by the user.
+     * 对指定用户执行访问检查。
+     * 此方法由 [[checkAccess()]] 在内部调用。
+     * @param string|int $user 用户 ID。这应该是整数或字符串，
+     * 表示用户的唯一标识符。参阅 [[\yii\web\User::id]]。
+     * @param string $itemName 需要访问检查的操作的名称
+     * @param array $params 一个键值对，用于传递给与分配给用户任务和角色关联的规则。
+     * 名为 'user' 的参数将添加到此数组中，
+     * 该数组包含 `$userId` 的值。
+     * @param Assignment[] $assignments 指定用户的分配
+     * @return bool 用户是否可以执行操作。
      */
     protected function checkAccessRecursive($user, $itemName, $params, $assignments)
     {
@@ -250,9 +250,9 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Returns a value indicating whether the database supports cascading update and delete.
-     * The default implementation will return false for SQLite database and true for all other databases.
-     * @return bool whether the database supports cascading update and delete.
+     * 返回一个值，指示数据库是否支持级联更新和删除。
+     * 对于 SQLite 数据库，默认实现将返回 false，对于所有其他数据库，则返回 true。
+     * @return bool 数据库是否支持级联更新和删除。
      */
     protected function supportsCascadeUpdate()
     {
@@ -435,9 +435,9 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Populates an auth item with the data fetched from database.
-     * @param array $row the data from the auth item table
-     * @return Item the populated auth item instance (either Role or Permission)
+     * 从数据库获取数据以填充认证项。
+     * @param array $row 来自认证项目表的数据
+     * @return Item 填充的认证项目实例（角色或权限）
      */
     protected function populateItem($row)
     {
@@ -460,7 +460,7 @@ class DbManager extends BaseManager
 
     /**
      * {@inheritdoc}
-     * The roles returned by this method include the roles assigned via [[$defaultRoles]].
+     * 此方法返回的角色包括通过 [[$defaultRoles]] 分配的角色。
      */
     public function getRolesByUser($userId)
     {
@@ -544,9 +544,9 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Returns all permissions that are directly assigned to user.
-     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
-     * @return Permission[] all direct permissions that the user has. The array is indexed by the permission names.
+     * 返回直接分配给用户的所有权限。
+     * @param string|int $userId 用户 ID（详见 [[\yii\web\User::id]]）
+     * @return Permission[] 用户拥有的所有直接权限。该数组由权限名称索引。
      * @since 2.0.7
      */
     protected function getDirectPermissionsByUser($userId)
@@ -566,9 +566,9 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Returns all permissions that the user inherits from the roles assigned to him.
-     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
-     * @return Permission[] all inherited permissions that the user has. The array is indexed by the permission names.
+     * 返回用户从分配给他的角色继承的所有权限。
+     * @param string|int $userId 用户 ID（详见 [[\yii\web\User::id]]）
+     * @return Permission[] 用户拥有的所有继承权限。该数组由权限名称索引。
      * @since 2.0.7
      */
     protected function getInheritedPermissionsByUser($userId)
@@ -600,9 +600,9 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Returns the children for every parent.
-     * @return array the children list. Each array key is a parent item name,
-     * and the corresponding array value is a list of child item names.
+     * 返回每个父项的子项。
+     * @return array 孩子们的名单。每个数组键都是父项名称，
+     * 相应的数组值是子项名称列表。
      */
     protected function getChildrenList()
     {
@@ -616,10 +616,10 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Recursively finds all children and grand children of the specified item.
-     * @param string $name the name of the item whose children are to be looked for.
-     * @param array $childrenList the child list built via [[getChildrenList()]]
-     * @param array $result the children and grand children (in array keys)
+     * 递归查找指定项的所有子项及子孙项。
+     * @param string $name 要查找其子项的项的名称。
+     * @param array $childrenList 通过 [[getChildrenList()]] 构建的孩子项列表
+     * @param array $result 子项和子孙项（在数组键中）
      */
     protected function getChildrenRecursive($name, $childrenList, &$result)
     {
@@ -820,10 +820,10 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Checks whether there is a loop in the authorization item hierarchy.
-     * @param Item $parent the parent item
-     * @param Item $child the child item to be added to the hierarchy
-     * @return bool whether a loop exists
+     * 检查授权项层次结构中是否存在循环。
+     * @param Item $parent 父项目
+     * @param Item $child 要添加到层次结构的子项
+     * @return bool 是否存在循环
      */
     protected function detectLoop($parent, $child)
     {
@@ -920,8 +920,8 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Removes all auth items of the specified type.
-     * @param int $type the auth item type (either Item::TYPE_PERMISSION or Item::TYPE_ROLE)
+     * 删除指定类型的所有认证项。
+     * @param int $type 认证项目类型（该值为 Item::TYPE_PERMISSION 或者 Item::TYPE_ROLE）
      */
     protected function removeAllItems($type)
     {
@@ -1025,10 +1025,10 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Returns all role assignment information for the specified role.
+     * 返回指定角色的所有角色分配信息。
      * @param string $roleName
-     * @return string[] the ids. An empty array will be
-     * returned if role is not assigned to any user.
+     * @return string[] 用户 ID 数组。如果未将角色分配给任何用户，
+     * 则将返回空数组。
      * @since 2.0.7
      */
     public function getUserIdsByRole($roleName)
@@ -1043,7 +1043,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Check whether $userId is empty.
+     * 检查 $userId 是否为空。
      * @param mixed $userId
      * @return bool
      */
