@@ -127,8 +127,13 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
          * Different pdo_oci8 versions may or may not implement PDO::quote(), so
          * yii\db\Schema::quoteValue() may or may not quote \.
          */
-        $encodedBackslash = substr($this->getDb()->quoteValue('\\'), 1, -1);
-        $this->likeParameterReplacements[$encodedBackslash] = '\\';
+        try {
+            $encodedBackslash = substr($this->getDb()->quoteValue('\\'), 1, -1);
+            $this->likeParameterReplacements[$encodedBackslash] = '\\';
+        } catch (\Exception $e) {
+            $this->markTestSkipped('Could not execute Connection::quoteValue() method: ' . $e->getMessage());
+        }
+
         return parent::likeConditionProvider();
     }
 

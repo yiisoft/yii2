@@ -364,8 +364,8 @@ abstract class Target extends Component
      */
     protected function getTime($timestamp)
     {
-        $parts = explode('.', StringHelper::floatToString($timestamp));
+        $parts = explode('.', sprintf('%F', $timestamp));
 
-        return date('Y-m-d H:i:s', $parts[0]) . ($this->microtime && isset($parts[1]) ? ('.' . $parts[1]) : '');
+        return date('Y-m-d H:i:s', $parts[0]) . ($this->microtime ? ('.' . $parts[1]) : '');
     }
 }

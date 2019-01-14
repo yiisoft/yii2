@@ -281,6 +281,7 @@ the operator can be one of the following:
   The method will properly quote the column name and escape values in the range.
   The `in` operator also supports composite columns. In this case, operand 1 should be an array of the columns,
   while operand 2 should be an array of arrays or a `Query` object representing the range of the columns.
+  For example, `['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]]` will generate `(id, name) IN ((1, 'oy'))`.
 
 - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
 

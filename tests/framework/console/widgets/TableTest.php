@@ -270,6 +270,7 @@ EXPECTED;
         );
     }
 
+
     public function testEnsureRowHeight()
     {
         $object = new Table();
@@ -282,5 +283,21 @@ EXPECTED;
         $this->assertSame(15, $method->invokeArgs($object, [0]));
         $this->assertSame(15, $method->invokeArgs($object, [null]));
         $this->assertSame(15, $method->invokeArgs($object, [-1]));
+    }
+  
+    public function testEmptyTable()
+    {
+        $table = new Table();
+
+        $expected = <<<'EXPECTED'
+╔═══════╤═══════╤═══════╗
+║ test1 │ test2 │ test3 ║
+╚═══════╧═══════╧═══════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+            ->setRows([])->setScreenWidth(200)->run()
+        );
     }
 }

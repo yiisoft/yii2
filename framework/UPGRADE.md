@@ -3,7 +3,7 @@ Upgrading Instructions for Yii Framework 2.0
 
 This file contains the upgrade notes for Yii 2.0. These notes highlight changes that
 could break your application when you upgrade Yii from one version to another.
-Even though we try to ensure backwards compabitilty (BC) as much as possible, sometimes
+Even though we try to ensure backwards compatibility (BC) as much as possible, sometimes
 it is not possible or very complicated to avoid it and still create a good solution to
 a problem. You may also want to check out the [versioning policy](https://github.com/yiisoft/yii2/blob/master/docs/internals/versions.md)
 for further details.
@@ -62,6 +62,21 @@ Upgrade from Yii 2.0.15
   ```json
   "cebe/markdown": "~1.1.0",
   ```
+  
+* `yii\mutex\Mutex::acquire()` no longer returns `true` if lock is already acquired by the same component in the same process.
+  Make sure that you're not trying to acquire the same lock multiple times in a way that may create infinite loops, for example:
+    
+  ```php
+  if (Yii::$app->mutex->acquire('test')) {
+       while (!Yii::$app->mutex->acquire('test')) {
+           // `Yii::$app->mutex->acquire('test')` will always return `false` here, since lock is already acquired
+      }
+  }
+  ```
+  
+* Formatter methods `asInteger`, `asDecimal`, `asPercent`, and `asCurrency` are using now inner fallback methods to handle 
+  very big number values to counter inner PHP casting and floating point number presentation issues. Make sure to provide 
+  such values as string numbers.
 
 
 Upgrade from Yii 2.0.14

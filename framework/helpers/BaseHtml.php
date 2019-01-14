@@ -2295,7 +2295,8 @@ class BaseHtml
      */
     public static function getInputId($model, $attribute)
     {
-        $name = strtolower(static::getInputName($model, $attribute));
+        $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        $name = mb_strtolower(static::getInputName($model, $attribute), $charset);
         return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
     }
 
@@ -2317,7 +2318,7 @@ class BaseHtml
             $pattern = substr($pattern, 0, $pos + 1);
         }
         if (!empty($flag)) {
-            $pattern .= preg_replace('/[^igm]/', '', $flag);
+            $pattern .= preg_replace('/[^igmu]/', '', $flag);
         }
 
         return $pattern;

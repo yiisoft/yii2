@@ -525,6 +525,8 @@ trait ActiveRelationTrait
                 if (($value = $model[$attribute]) !== null) {
                     if (is_array($value)) {
                         $values = array_merge($values, $value);
+                    } elseif ($value instanceof ArrayExpression && $value->getDimension() === 1) {
+                        $values = array_merge($values, $value->getValue());
                     } else {
                         $values[] = $value;
                     }

@@ -239,7 +239,7 @@ interface DanceEventInterface
 }
 ```
 
-И два класса, которые его реализовывают:
+И два класса, которые его реализуют:
 
 ```php
 class Dog extends Component implements DanceEventInterface

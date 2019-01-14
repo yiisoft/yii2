@@ -98,7 +98,7 @@ class MessageController extends \yii\console\Controller
         '.hgignore',
         '.hgkeep',
         '/messages',
-        '/BaseYii.php', // contains examples about Yii:t()
+        '/BaseYii.php', // contains examples about Yii::t()
     ];
     /**
      * @var array list of patterns that specify which files (not directories) should be processed.
@@ -218,6 +218,8 @@ class MessageController extends \yii\console\Controller
     public function actionConfig($filePath)
     {
         $filePath = Yii::getAlias($filePath);
+        $dir = dirname($filePath);
+
         if (file_exists($filePath)) {
             if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
                 return ExitCode::OK;
@@ -241,7 +243,7 @@ return $array;
 
 EOD;
 
-        if (file_put_contents($filePath, $content, LOCK_EX) === false) {
+        if (FileHelper::createDirectory($dir) === false || file_put_contents($filePath, $content, LOCK_EX) === false) {
             $this->stdout("Configuration file was NOT created: '{$filePath}'.\n\n", Console::FG_RED);
             return ExitCode::UNSPECIFIED_ERROR;
         }
@@ -501,7 +503,7 @@ EOD;
         $buffer = [];
         $pendingParenthesisCount = 0;
 
-        foreach ($tokens as $token) {
+        foreach ($tokens as $i => $token) {
             // finding out translator call
             if ($matchedTokensCount < $translatorTokensCount) {
                 if ($this->tokensEqual($token, $translatorTokens[$matchedTokensCount])) {
@@ -556,6 +558,13 @@ EOD;
                     }
                 } elseif ($this->tokensEqual('(', $token)) {
                     // count beginning of function call, skipping translator beginning
+                    // Ensure that it's not the call of the object method. See https://github.com/yiisoft/yii2/issues/16828
+                    $previousTokenId = $tokens[$i - $matchedTokensCount - 1][0];
+                    if (in_array($previousTokenId, [T_OBJECT_OPERATOR, T_PAAMAYIM_NEKUDOTAYIM], true)) {
+                        $matchedTokensCount = 0;
+                        continue;
+                    }
+
                     if ($pendingParenthesisCount > 0) {
                         $buffer[] = $token;
                     }
@@ -658,6 +667,10 @@ EOD;
             $this->stdout("Saving messages to $coloredFileName...\n");
             $this->saveMessagesCategoryToPHP($msgs, $file, $overwrite, $removeUnused, $sort, $category, $markUnused);
         }
+
+        if ($removeUnused) {
+            $this->deleteUnusedPhpMessageFiles(array_keys($messages), $dirName);
+        }
     }
 
     /**
@@ -709,7 +722,7 @@ EOD;
                     }
                 }
             }
-            $merged = array_merge($todo, $merged);
+            $merged = array_merge($merged, $todo);
             if ($sort) {
                 ksort($merged);
             }
@@ -812,7 +825,7 @@ EOD;
                     }
                 }
 
-                $merged = array_merge($todos, $merged);
+                $merged = array_merge($merged, $todos);
                 if ($sort) {
                     ksort($merged);
                 }
@@ -873,6 +886,20 @@ EOD;
             $this->stdout("Translation saved.\n", Console::FG_GREEN);
         } else {
             $this->stdout("Nothing to save.\n", Console::FG_GREEN);
+        }
+    }
+
+    private function deleteUnusedPhpMessageFiles($existingCategories, $dirName)
+    {
+        $messageFiles = FileHelper::findFiles($dirName);
+        foreach ($messageFiles as $messageFile) {
+            $categoryFileName = str_replace($dirName, '', $messageFile);
+            $categoryFileName = ltrim($categoryFileName, DIRECTORY_SEPARATOR);
+            $category = preg_replace('#\.php$#', '', $categoryFileName);
+
+            if (!in_array($category, $existingCategories, true)) {
+                unlink($messageFile);
+            }
         }
     }
 
