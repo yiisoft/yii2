@@ -464,6 +464,9 @@ class View extends \yii\base\View
     public function registerJs($js, $position = self::POS_READY, $key = null)
     {
         $key = $key ?: md5($js);
+        if (!isset($this->js[$position])) {
+            $this->js[$position] = [];
+        }
         $this->js[$position][$key] = $js;
         if ($position === self::POS_READY || $position === self::POS_LOAD) {
             JqueryAsset::register($this);
