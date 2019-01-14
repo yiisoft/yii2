@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #15482: AR::find()->with() missing data when using string identifiers for relations (rugabarbo)
 - Bug #15167: Fixed loading of default value `current_timestamp()` for MariaDB >= 10.2.3 (rugabarbo, bloodrain777, Skinka)
 - Bug #16253: Fixed empty checkboxlist validation (GHopperMSK)
 - Bug #15286: Fixed incorrect formatting of time with timezone information (rugabarbo)

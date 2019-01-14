@@ -12,6 +12,7 @@ use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Animal;
+use yiiunit\data\ar\Beta;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
@@ -1814,5 +1815,29 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $cat = new Cat();
         $this->assertFalse(isset($cat->throwable));
 
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15482
+     */
+    public function testEagerLoadingUsingStringIdentifiers()
+    {
+        if (!in_array($this->driverName, ['mysql', 'pgsql', 'sqlite'])) {
+            $this->markTestSkipped('This test has fixtures only for databases MySQL, PostgreSQL and SQLite.');
+        }
+
+        $betas = Beta::find()->with('alpha')->all();
+        $this->assertNotEmpty($betas);
+
+        $alphaIdentifiers = [];
+
+        /** @var Beta[] $betas */
+        foreach ($betas as $beta) {
+            $this->assertNotNull($beta->alpha);
+            $this->assertEquals($beta->alpha_string_identifier, $beta->alpha->string_identifier);
+            $alphaIdentifiers[] = $beta->alpha->string_identifier;
+        }
+
+        $this->assertEquals(['1', '01', '001', '001', '2', '2b', '2b', '02'], $alphaIdentifiers);
     }
 }
