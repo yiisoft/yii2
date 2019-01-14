@@ -4,6 +4,21 @@ Yii Framework 2 Change Log
 2.0.16 under development
 ------------------------
 
+- Bug #15167: Fixed loading of default value `current_timestamp()` for MariaDB >= 10.2.3 (rugabarbo, bloodrain777, Skinka)
+- Bug #16253: Fixed empty checkboxlist validation (GHopperMSK)
+- Bug #15286: Fixed incorrect formatting of time with timezone information (rugabarbo)
+- Bug #17021: Fix to do not remove existing message category files in a subfolder (albertborsos)
+- Bug #16991: Removed usage of `utf8_encode()` from `Request::resolvePathInfo()` (GHopperMSK)
+- Bug #16974: Regular Expression Validator to include support for 'u' (UTF-8) modifier (Dzhuneyt)
+- Chg #16941: Set `yii\console\controllers\MigrateController::useTablePrefix` to true as default value (GHopperMSK)
+- Bug #16966: Fix ArrayExpression support in related tables (GHopperMSK)
+- Bug #16891: Fixed Pagination::totalCount initialized incorrectly (taobig)
+- Bug #16028: Fix serialization of complex cache keys that contain non-UTF sequences (rugabarbo)
+- Bug #16945: Fixed RBAC DbManager ruleName fetching on the case of PDO::ATTR_ORACLE_NULLS => PDO::NULL_TO_STRING (razonyang)
+- Bug #16081: Fixed composite IN using just one column (rugabarbo)
+- Bug #15850: check basePath is writable on publish in AssetManager (Groonya)
+- Bug #16910: Fix messages sorting on extract (Groonya)
+- Bug #16969: Fix `yii\filters\PageCache` incorrectly storing empty data in some cases (sammousa)
 - Bug #15683: Fixed file as array uploading in MultipartFormDataParser (Groonya)
 - Bug #16822: Create config dir recursively in message/config (Groonya)
 - Bug #16580: Delete unused php message files in MessageController if `$removeUnused` option is on (Groonya)

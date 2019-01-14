@@ -325,27 +325,39 @@
             // client-side validation
             $.each(data.attributes, function () {
                 this.$form = $form;
-                if (!findInput($form, this).is(":disabled")) {
-                    this.cancelled = false;
-                    // perform validation only if the form is being submitted or if an attribute is pending validation
-                    if (data.submitting || this.status === 2 || this.status === 3) {
-                        var msg = messages[this.id];
-                        if (msg === undefined) {
-                            msg = [];
-                            messages[this.id] = msg;
+                let $input = findInput($form, this);
+
+                if ($input.is(":disabled")) {
+                    return true;
+                }
+                // pass SELECT without options
+                if ($input.length && $input[0].tagName.toLowerCase() === 'select') {
+                    if (!$input[0].options.length) {
+                        return true;
+                    } else if (($input[0].options.length === 1) && ($input[0].options[0].value === '')) {
+                        return true;
+                    }
+                }
+                this.cancelled = false;
+                // perform validation only if the form is being submitted or if an attribute is pending validation
+                if (data.submitting || this.status === 2 || this.status === 3) {
+                    var msg = messages[this.id];
+                    if (msg === undefined) {
+                        msg = [];
+                        messages[this.id] = msg;
+                    }
+
+                    var event = $.Event(events.beforeValidateAttribute);
+                    $form.trigger(event, [this, msg, deferreds]);
+                    if (event.result !== false) {
+                        if (this.validate) {
+                            this.validate(this, getValue($form, this), msg, deferreds, $form);
                         }
-                        var event = $.Event(events.beforeValidateAttribute);
-                        $form.trigger(event, [this, msg, deferreds]);
-                        if (event.result !== false) {
-                            if (this.validate) {
-                                this.validate(this, getValue($form, this), msg, deferreds, $form);
-                            }
-                            if (this.enableAjaxValidation) {
-                                needAjaxValidation = true;
-                            }
-                        } else {
-                            this.cancelled = true;
+                        if (this.enableAjaxValidation) {
+                            needAjaxValidation = true;
                         }
+                    } else {
+                        this.cancelled = true;
                     }
                 }
             });
@@ -406,7 +418,6 @@
         submitForm: function () {
             var $form = $(this),
                 data = $form.data('yiiActiveForm');
-
             if (data.validated) {
                 // Second submit's call (from validate/updateInputs)
                 data.submitting = false;
