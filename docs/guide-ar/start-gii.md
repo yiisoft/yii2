@@ -53,7 +53,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 http://hostname/index.php?r=gii
 ```
 
-<blockquote><p dir="rtl">
+<blockquote class="note"><p dir="rtl">
     ملاحظة: إذا كنت تحاول الوصول إلى Gii  من جهاز آخر غير ال localhost، فسيتم رفض الوصول افتراضيًا لأغراض أمنية، ولكن، يمكنك إعداد ال Gii لإضافة مجموعة من ال IP Addresses المسموح لها بالوصول وذلك من خلال: 
 </p></blockquote>
 
@@ -150,7 +150,7 @@ http://hostname/index.php?r=country%2Findex
 * Models: `models/Country.php` and `models/CountrySearch.php`
 * Views: `views/country/*.php`
 
-<blockquote><p dir="rtl">
+<blockquote class="info"><p dir="rtl">
 معلومة: تم تصميم ال Gii لتكون أداة إنشاء شيفرات برمجية قابلة للتخصيص بشكل كبير للغاية. اذا قمت باستخدامه بحكمة،فإنك ستقوم بتسريع وتيرة التطوير الخاصة بالتطبيق الخاص بك. لمزيد من التفاصيل، يرجى الذهاب إلى الجزء الخاص بال  <a href="https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide">Gii</a>. 
 </p></blockquote>
 
