@@ -110,6 +110,7 @@ Yii Framework 2 Change Log
 - Bug #16897: Fixed `yii\db\sqlite\Schema` missing primary key constraint detection in case of `INTEGER PRIMARY KEY` (bizley)
 - Bug #16687: Add missing translations for `nl-NL` durations used in `yii\i18n\Formatter::asDuration()` (alexeevdv)
 - Bug #16469: Allow cache to be specified as interface and to be configured in DI container (alexeevdv)
+- Bug #16959: Fixed typo in if condition inside `yii\web\DbSession::typecastFields()` that caused problems with session overwriting (silverfire)
 
 2.0.15.1 March 21, 2018
 -----------------------
