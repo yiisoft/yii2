@@ -22,8 +22,10 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
- * @property string[] $expressionBuilders Array of builders that should be merged with the pre-defined ones
- * in [[expressionBuilders]] property. This property is write-only.
+ * @property string[] $conditionClasses Map of condition aliases to condition classes. For example: ```php
+ * ['LIKE' => yii\db\condition\LikeCondition::class] ``` . This property is write-only.
+ * @property string[] $expressionBuilders Array of builders that should be merged with the pre-defined ones in
+ * [[expressionBuilders]] property. This property is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -191,6 +193,23 @@ class QueryBuilder extends \yii\base\BaseObject
     public function setExpressionBuilders($builders)
     {
         $this->expressionBuilders = array_merge($this->expressionBuilders, $builders);
+    }
+
+    /**
+     * Setter for [[conditionClasses]] property.
+     *
+     * @param string[] $classes map of condition aliases to condition classes. For example:
+     *
+     * ```php
+     * ['LIKE' => yii\db\condition\LikeCondition::class]
+     * ```
+     *
+     * @since 2.0.14.2
+     * @see conditionClasses
+     */
+    public function setConditionClasses($classes)
+    {
+        $this->conditionClasses = array_merge($this->conditionClasses, $classes);
     }
 
     /**
@@ -624,15 +643,15 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $sets = [];
         foreach ($columns as $name => $value) {
+
+            $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             if ($value instanceof ExpressionInterface) {
-                $sets[] = $this->db->quoteColumnName($name) . '=' . $this->buildExpression($value, $params);
+                $placeholder = $this->buildExpression($value, $params);
             } else {
-                $phName = $this->bindParam(
-                    isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value,
-                    $params
-                );
-                $sets[] = $this->db->quoteColumnName($name) . '=' . $phName;
+                $placeholder = $this->bindParam($value, $params);
             }
+
+            $sets[] = $this->db->quoteColumnName($name) . '=' . $placeholder;
         }
         return [$sets, $params];
     }
@@ -1009,16 +1028,32 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
+     * will have the specified value or the maximum existing value +1.
      * @param string $table the name of the table whose primary key sequence will be reset
      * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
+     * the next new row's primary key will have the maximum existing value +1.
      * @return string the SQL statement for resetting sequence
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
     public function resetSequence($table, $value = null)
     {
         throw new NotSupportedException($this->db->getDriverName() . ' does not support resetting sequence.');
+    }
+
+    /**
+     * Execute a SQL statement for resetting the sequence value of a table's primary key.
+     * Reason for execute is that some databases (Oracle) need several queries to do so.
+     * The sequence is reset such that the primary key of the next new row inserted
+     * will have the specified value or the maximum existing value +1.
+     * @param string $table the name of the table whose primary key sequence is reset
+     * @param array|string $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have the maximum existing value +1.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS
+     * @since 2.0.16
+     */
+    public function executeResetSequence($table, $value = null)
+    {
+        $this->db->createCommand()->resetSequence($table, $value)->execute();
     }
 
     /**

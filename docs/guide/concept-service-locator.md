@@ -126,5 +126,6 @@ Since each of these modules is a service locator it makes sense for children to 
 This allows modules to use `$this->get('db')` instead of referencing the root service locator `Yii::$app->get('db')`.
 Added benefit is the option for a developer to override configuration in a module.
 
-Any request for a service to be retrieved from a Module will be passed on to its parent in case the module is not able to satisfy it.
- 
+Any request for a service to be retrieved from a module will be passed on to its parent in case the module is not able to satisfy it.
+
+Note that configuration from components in a module is never merged with configuration from a component in a parent module. The Service Locator pattern allows us to define named services but one cannot assume servicees with the same name use the same configuration parameters.

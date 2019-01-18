@@ -12,7 +12,7 @@ use yii\db\ExpressionInterface;
 use yii\db\JsonExpression;
 
 /**
- * Class ColumnSchema
+ * Class ColumnSchema for PostgreSQL database.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  */
@@ -22,6 +22,33 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * @var int the dimension of array. Defaults to 0, means this column is not an array.
      */
     public $dimension = 0;
+    /**
+     * @var bool whether the column schema should OMIT using JSON support feature.
+     * You can use this property to make upgrade to Yii 2.0.14 easier.
+     * Default to `false`, meaning JSON support is enabled.
+     *
+     * @since 2.0.14.1
+     * @deprecated Since 2.0.14.1 and will be removed in 2.1.
+     */
+    public $disableJsonSupport = false;
+    /**
+     * @var bool whether the column schema should OMIT using PgSQL Arrays support feature.
+     * You can use this property to make upgrade to Yii 2.0.14 easier.
+     * Default to `false`, meaning Arrays support is enabled.
+     *
+     * @since 2.0.14.1
+     * @deprecated Since 2.0.14.1 and will be removed in 2.1.
+     */
+    public $disableArraySupport = false;
+    /**
+     * @var bool whether the Array column value should be unserialized to an [[ArrayExpression]] object.
+     * You can use this property to make upgrade to Yii 2.0.14 easier.
+     * Default to `true`, meaning arrays are unserialized to [[ArrayExpression]] objects.
+     *
+     * @since 2.0.14.1
+     * @deprecated Since 2.0.14.1 and will be removed in 2.1.
+     */
+    public $deserializeArrayColumnToArrayExpression = true;
 
 
     /**
@@ -29,15 +56,21 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public function dbTypecast($value)
     {
+        if ($value === null) {
+            return $value;
+        }
+
         if ($value instanceof ExpressionInterface) {
             return $value;
         }
 
         if ($this->dimension > 0) {
-            return new ArrayExpression($value, $this->dbType, $this->dimension);
+            return $this->disableArraySupport
+                ? (string) $value
+                : new ArrayExpression($value, $this->dbType, $this->dimension);
         }
-        if (in_array($this->dbType, [Schema::TYPE_JSON, Schema::TYPE_JSONB], true)) {
-            return new JsonExpression($value, $this->type);
+        if (!$this->disableJsonSupport && in_array($this->dbType, [Schema::TYPE_JSON, Schema::TYPE_JSONB], true)) {
+            return new JsonExpression($value, $this->dbType);
         }
 
         return $this->typecast($value);
@@ -49,6 +82,9 @@ class ColumnSchema extends \yii\db\ColumnSchema
     public function phpTypecast($value)
     {
         if ($this->dimension > 0) {
+            if ($this->disableArraySupport) {
+                return $value;
+            }
             if (!is_array($value)) {
                 $value = $this->getArrayParser()->parse($value);
             }
@@ -56,9 +92,13 @@ class ColumnSchema extends \yii\db\ColumnSchema
                 array_walk_recursive($value, function (&$val, $key) {
                     $val = $this->phpTypecastValue($val);
                 });
+            } elseif ($value === null) {
+                return null;
             }
 
-            return new ArrayExpression($value, $this->dbType, $this->dimension);
+            return $this->deserializeArrayColumnToArrayExpression
+                ? new ArrayExpression($value, $this->dbType, $this->dimension)
+                : $value;
         }
 
         return $this->phpTypecastValue($value);
@@ -88,7 +128,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
                 }
                 return (bool) $value;
             case Schema::TYPE_JSON:
-                return json_decode($value, true);
+                return $this->disableJsonSupport ? $value : json_decode($value, true);
         }
 
         return parent::phpTypecast($value);

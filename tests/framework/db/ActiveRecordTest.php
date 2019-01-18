@@ -8,9 +8,11 @@
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
+use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Animal;
+use yiiunit\data\ar\Beta;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
@@ -1647,6 +1649,48 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         CustomerQuery::$joinWithProfile = false;
     }
 
+    public function testFindOneByColumnName()
+    {
+        $model = Customer::findOne(['id' => 1]);
+        $this->assertEquals(1, $model->id);
+
+        CustomerQuery::$joinWithProfile = true;
+        $model = Customer::findOne(['customer.id' => 1]);
+        $this->assertEquals(1, $model->id);
+        CustomerQuery::$joinWithProfile = false;
+    }
+
+    public function illegalValuesForFindByCondition()
+    {
+        return [
+            [['id' => ['`id`=`id` and 1' => 1]]],
+            [['id' => [
+                'legal' => 1,
+                '`id`=`id` and 1' => 1,
+            ]]],
+            [['id' => [
+                'nested_illegal' => [
+                    'false or 1=' => 1
+                ]
+            ]]],
+            [
+                [['true--' => 1]]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider illegalValuesForFindByCondition
+     */
+    public function testValueEscapingInFindByCondition($filterWithInjection)
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessageRegExp('/^Key "(.+)?" is not a column name and can not be used as a filter$/');
+        /** @var Query $query */
+        $query = $this->invokeMethod(new Customer(), 'findByCondition', $filterWithInjection);
+        Customer::getDb()->queryBuilder->build($query);
+    }
+
     /**
      * Ensure no ambiguous column error occurs on indexBy with JOIN.
      *
@@ -1730,5 +1774,70 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         $orderItem = OrderItem::findOne(1);
         $this->assertInstanceOf(Order::className(), $orderItem->custom);
+    }
+
+
+    public function testRefresh_querySetAlias_findRecord()
+    {
+        $customer = new \yiiunit\data\ar\CustomerWithAlias();
+        $customer->id = 1;
+
+        $customer->refresh();
+
+        $this->assertEquals(1, $customer->id);
+    }
+
+    public function testResetNotSavedRelation()
+    {
+        $order = new Order();
+        $order->customer_id = 1;
+        $order->total = 0;
+
+        $orderItem = new OrderItem();
+        $order->orderItems;
+        $order->populateRelation('orderItems', [$orderItem]);
+        $order->save();
+
+        $this->assertEquals(1, sizeof($order->orderItems));
+    }
+
+    public function testIssetException()
+    {
+        $cat = new Cat();
+        $this->assertFalse(isset($cat->exception));
+    }
+
+    /**
+     * @requires PHP 7
+     */
+    public function testIssetThrowable()
+    {
+        $cat = new Cat();
+        $this->assertFalse(isset($cat->throwable));
+
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/15482
+     */
+    public function testEagerLoadingUsingStringIdentifiers()
+    {
+        if (!in_array($this->driverName, ['mysql', 'pgsql', 'sqlite'])) {
+            $this->markTestSkipped('This test has fixtures only for databases MySQL, PostgreSQL and SQLite.');
+        }
+
+        $betas = Beta::find()->with('alpha')->all();
+        $this->assertNotEmpty($betas);
+
+        $alphaIdentifiers = [];
+
+        /** @var Beta[] $betas */
+        foreach ($betas as $beta) {
+            $this->assertNotNull($beta->alpha);
+            $this->assertEquals($beta->alpha_string_identifier, $beta->alpha->string_identifier);
+            $alphaIdentifiers[] = $beta->alpha->string_identifier;
+        }
+
+        $this->assertEquals(['1', '01', '001', '001', '2', '2b', '2b', '02'], $alphaIdentifiers);
     }
 }

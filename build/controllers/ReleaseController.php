@@ -68,6 +68,8 @@ class ReleaseController extends Controller
         if ($actionID === 'release') {
             $options[] = 'dryRun';
             $options[] = 'version';
+        } elseif ($actionID === 'sort-changelog') {
+            $options[] = 'version';
         } elseif ($actionID === 'info') {
             $options[] = 'update';
         }
@@ -321,7 +323,7 @@ class ReleaseController extends Controller
         }
         $this->validateWhat($what, ['framework', 'ext'], false);
 
-        $version = array_values($this->getNextVersions($this->getCurrentVersions($what), self::PATCH))[0];
+        $version = $this->version ?: array_values($this->getNextVersions($this->getCurrentVersions($what), self::PATCH))[0];
         $this->stdout('sorting CHANGELOG of ');
         $this->stdout(reset($what), Console::BOLD);
         $this->stdout(' for version ');
@@ -820,7 +822,7 @@ class ReleaseController extends Controller
         $v = str_replace('\\-', '[\\- ]', preg_quote($version, '/'));
         $headline = $version . ' ' . date('F d, Y');
         $this->sed(
-            '/' . $v . ' under development\n(-+?)\n/',
+            '/' . $v . ' under development\R(-+?)\R/',
             $headline . "\n" . str_repeat('-', \strlen($headline)) . "\n",
             $this->getChangelogs($what)
         );
@@ -985,7 +987,7 @@ class ReleaseController extends Controller
     protected function updateYiiVersion($frameworkPath, $version)
     {
         $this->sed(
-            '/function getVersion\(\)\n    \{\n        return \'(.+?)\';/',
+            '/function getVersion\(\)\R    \{\R        return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
             $frameworkPath . '/BaseYii.php');
     }

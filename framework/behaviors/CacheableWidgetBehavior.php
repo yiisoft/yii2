@@ -41,8 +41,6 @@ use yii\di\Instance;
  * }
  * ```
  *
- * @property Widget $owner
- *
  * @author Nikolay Oleynikov <oleynikovny@mail.ru>
  * @since 2.0.14
  */

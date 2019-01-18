@@ -21,7 +21,7 @@ use yii\base\NotSupportedException;
 trait QueryTrait
 {
     /**
-     * @var string|array query condition. This refers to the WHERE clause in a SQL statement.
+     * @var string|array|ExpressionInterface query condition. This refers to the WHERE clause in a SQL statement.
      * For example, `['age' => 31, 'team' => 1]`.
      * @see where() for valid syntax on specifying this value.
      */
@@ -85,7 +85,7 @@ trait QueryTrait
      *
      * See [[QueryInterface::where()]] for detailed documentation.
      *
-     * @param array $condition the conditions that should be put in the WHERE part.
+     * @param string|array|ExpressionInterface $condition the conditions that should be put in the WHERE part.
      * @return $this the query object itself
      * @see andWhere()
      * @see orWhere()
@@ -99,7 +99,7 @@ trait QueryTrait
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param string|array|ExpressionInterface $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return $this the query object itself
      * @see where()
@@ -119,7 +119,7 @@ trait QueryTrait
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param array $condition the new WHERE condition. Please refer to [[where()]]
+     * @param string|array|ExpressionInterface $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @return $this the query object itself
      * @see where()

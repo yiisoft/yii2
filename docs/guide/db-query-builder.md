@@ -190,7 +190,7 @@ end user inputs, because this will make your application subject to SQL injectio
 $query->where("status=$status");
 ```
 
-When using parameter binding, you may call [[yii\db\Query::params()|params()]] or [[yii\db\Query::addParams()|addParams()]]
+When using `parameter binding`, you may call [[yii\db\Query::params()|params()]] or [[yii\db\Query::addParams()|addParams()]]
 to specify parameters separately.
 
 ```php
@@ -227,9 +227,20 @@ $userQuery = (new Query())->select('id')->from('user');
 $query->where(['id' => $userQuery]);
 ```
 
-Using the Hash Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
-you do not have to add parameters manually.
+Using the Hash Format, Yii internally applies parameter binding for values, so in contrast to the [string format](#string-format),
+here you do not have to add parameters manually. However, note that Yii never escapes column names, so if you pass
+a variable obtained from user side as a column name without any additional checks, the application will become vulnerable
+to SQL injection attack. In order to keep the application secure, either do not use variables as column names or
+filter variable against white list. In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
+guide article. For example the following code is vulnerable:
 
+```php
+// Vulnerable code:
+$column = $request->get('column');
+$value = $request->get('value');
+$query->where([$column => $value]);
+// $value is safe, but $column name won't be encoded!
+```
 
 #### Operator Format <span id="operator-format"></span>
 
@@ -270,6 +281,7 @@ the operator can be one of the following:
   The method will properly quote the column name and escape values in the range.
   The `in` operator also supports composite columns. In this case, operand 1 should be an array of the columns,
   while operand 2 should be an array of arrays or a `Query` object representing the range of the columns.
+  For example, `['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]]` will generate `(id, name) IN ((1, 'oy'))`.
 
 - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
 
@@ -306,8 +318,20 @@ the operator can be one of the following:
 - `>`, `<=`, or any other valid DB operator that takes two operands: the first operand must be a column name
   while the second operand a value. For example, `['>', 'age', 10]` will generate `age>10`.
 
-Using the Operator Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
-you do not have to add parameters manually.
+Using the Operator Format, Yii internally uses parameter binding for values, so in contrast to the [string format](#string-format),
+here you do not have to add parameters manually. However, note that Yii never escapes column names, so if you pass
+a variable as a column name, the application will likely become vulnerable to SQL injection attack. In order to keep
+application secure, either do not use variables as column names or filter variable against white list.
+In case you need to get column name from user, read the [Filtering Data](output-data-widgets.md#filtering-data)
+guide article. For example the following code is vulnerable:
+
+```php
+// Vulnerable code:
+$column = $request->get('column');
+$value = $request->get('value);
+$query->where(['=', $column, $value]);
+// $value is safe, but $column name won't be encoded!
+```
 
 #### Object Format <span id="object-format"></span>
 
@@ -692,7 +716,10 @@ value which will be used as the index value for the current row.
 
 ### Batch Query <span id="batch-query"></span>
 
-When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable because they require loading the whole query result into the client's memory. To solve this issue Yii provides batch query support. The server holds the query result, and the client uses a cursor to iterate over the result set one batch at a time.
+When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable
+because they require loading the whole query result into the client's memory. To solve this issue
+Yii provides batch query support. The server holds the query result, and the client uses a cursor
+to iterate over the result set one batch at a time.
 
 > Warning: There are known limitations and workarounds for the MySQL implementation of batch queries. See below.
 
@@ -716,14 +743,16 @@ foreach ($query->each() as $user) {
 }
 ```
 
-The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object which implements the `Iterator` interface and thus can be used in the `foreach` construct.
+The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] 
+object which implements the `Iterator` interface and thus can be used in the `foreach` construct.
 During the first iteration, a SQL query is made to the database. Data is then fetched in batches
 in the remaining iterations. By default, the batch size is 100, meaning 100 rows of data are being fetched in each batch.
 You can change the batch size by passing the first parameter to the `batch()` or `each()` method.
 
 Compared to the [[yii\db\Query::all()]], the batch query only loads 100 rows of data at a time into the memory.
 
-If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], the batch query will still keep the proper index.
+If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], 
+the batch query will still keep the proper index.
 
 For example:
 
@@ -743,11 +772,21 @@ foreach ($query->each() as $username => $user) {
 
 #### Limitations of batch query in MySQL <span id="batch-query-mysql"></span>
 
-MySQL implementation of batch queries relies on the PDO driver library. By default, MySQL queries are [`buffered`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php). This defeats the purpose of using the cursor to get the data, because it doesn't prevent the whole result set from being loaded into the client's memory by the driver.
+MySQL implementation of batch queries relies on the PDO driver library. By default, MySQL queries are 
+[`buffered`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php). This defeats the purpose 
+of using the cursor to get the data, because it doesn't prevent the whole result set from being 
+loaded into the client's memory by the driver.
 
-> Note: When `libmysqlclient` is used (typical of PHP5), PHP's memory limit won't count the memory used for result sets. It may seem that batch queries work correctly, but in reality the whole dataset is loaded into client's memory, and has the potential of using it up.
+> Note: When `libmysqlclient` is used (typical of PHP5), PHP's memory limit won't count the memory 
+  used for result sets. It may seem that batch queries work correctly, but in reality the whole 
+  dataset is loaded into client's memory, and has the potential of using it up.
 
-To disable buffering and reduce client memory requirements, PDO connection property `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` must be set to `false`. However, until the whole dataset has been retrieved, no other query can be made through the same connection. This may prevent `ActiveRecord` from making a query to get the table schema when it needs to. If this is not a problem (the table schema is cached already), it is possible to switch the original connection into unbuffered mode, and then roll back when the batch query is done.
+To disable buffering and reduce client memory requirements, PDO connection property 
+`PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` must be set to `false`. However, until the whole dataset has 
+been retrieved, no other query can be made through the same connection. This may prevent `ActiveRecord` 
+from making a query to get the table schema when it needs to. If this is not a problem 
+(the table schema is cached already), it is possible to switch the original connection into 
+unbuffered mode, and then roll back when the batch query is done.
 
 ```php
 Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
@@ -757,9 +796,12 @@ Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 ```
 
-> Note: In the case of MyISAM, for the duration of the batch query, the table may become locked, delaying or denying write access for other connections. When using unbuffered queries, try to keep the cursor open for as little time as possible.
+> Note: In the case of MyISAM, for the duration of the batch query, the table may become locked, 
+  delaying or denying write access for other connections. When using unbuffered queries, 
+  try to keep the cursor open for as little time as possible.
 
-If the schema is not cached, or it is necessary to run other queries while the batch query is being processed, you can create a separate unbuffered connection to the database:
+If the schema is not cached, or it is necessary to run other queries while the batch query is 
+being processed, you can create a separate unbuffered connection to the database:
 
 ```php
 $unbufferedDb = new \yii\db\Connection([
@@ -772,9 +814,13 @@ $unbufferedDb->open();
 $unbufferedDb->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 ```
 
-If you want to ensure that the `$unbufferedDb` has exactly the same PDO attributes like the original buffered `$db` but the `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` is `false`, [consider a deep copy of `$db`](https://github.com/yiisoft/yii2/issues/8420#issuecomment-301423833), set it to false manually.
+If you want to ensure that the `$unbufferedDb` has exactly the same PDO attributes like the original 
+buffered `$db` but the `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` is `false`, 
+[consider a deep copy of `$db`](https://github.com/yiisoft/yii2/issues/8420#issuecomment-301423833), 
+set it to false manually.
 
-Then, queries are created normally. The new connection is used to run batch queries and retrieve results either in batches or one by one:
+Then, queries are created normally. The new connection is used to run batch queries and retrieve 
+results either in batches or one by one:
 
 ```php
 // getting data in batches of 1000
@@ -795,11 +841,13 @@ When the connection is no longer necessary and the result set has been retrieved
 $unbufferedDb->close();
 ```
 
-> Note: unbuffered query uses less memory on the PHP-side, but can increase the load on the MySQL server. It is recommended to design your own code with your production practice for extra massive data, [for example, divide the range for integer keys, loop them with Unbuffered Queries](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257).
+> Note: unbuffered query uses less memory on the PHP-side, but can increase the load on the MySQL server. 
+It is recommended to design your own code with your production practice for extra massive data,
+[for example, divide the range for integer keys, loop them with Unbuffered Queries](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257).
 
 ### Adding custom Conditions and Expressions <span id="adding-custom-conditions-and-expressions"></span>
 
-As it was mentioned in [Conditions – Object Format](#object-format) chapter, is is possible to create custom condition
+As it was mentioned in [Conditions – Object Format](#object-format) chapter, it is possible to create custom condition
 classes. For example, let's create a condition that will check that specific columns are less than some value.
 Using the operator format, it would look like the following:
 
@@ -856,7 +904,7 @@ So we can create a condition object:
 $conditon = new AllGreaterCondition(['col1', 'col2'], 42);
 ```
 
-But `QueryBuilder` still does not know, to to make an SQL condition out of this object.
+But `QueryBuilder` still does not know, to make an SQL condition out of this object.
 Now we need to create a builder for this condition. It must implement [[yii\db\ExpressionBuilderInterface]]
 that requires us to implement a `build()` method. 
 
@@ -865,22 +913,23 @@ namespace app\db\conditions;
 
 class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
 {
-    use \yii\db\Condition\ExpressionBuilderTrait; // Contains constructor and `queryBuilder` property.
+    use \yii\db\ExpressionBuilderTrait; // Contains constructor and `queryBuilder` property.
 
     /**
-     * @param AllGreaterCondition $condition the condition to be built
+     * @param ExpressionInterface $condition the condition to be built
      * @param array $params the binding parameters.
+     * @return AllGreaterCondition
      */ 
-    public function build(ConditionInterface $condition, &$params)
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
         $value = $condition->getValue();
         
         $conditions = [];
-        foreach ($condition->getColumns() as $column) {
+        foreach ($expression->getColumns() as $column) {
             $conditions[] = new SimpleCondition($column, '>', $value);
         }
 
-        return $this->queryBuider->buildCondition(new AndCondition($conditions), $params);
+        return $this->queryBuilder->buildCondition(new AndCondition($conditions), $params);
     }
 }
 ```

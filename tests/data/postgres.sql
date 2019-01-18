@@ -25,6 +25,8 @@ DROP TABLE IF EXISTS "comment" CASCADE;
 DROP TABLE IF EXISTS "dossier";
 DROP TABLE IF EXISTS "employee";
 DROP TABLE IF EXISTS "department";
+DROP TABLE IF EXISTS "alpha";
+DROP TABLE IF EXISTS "beta";
 DROP VIEW IF EXISTS "animal_view";
 DROP TABLE IF EXISTS "T_constraints_4";
 DROP TABLE IF EXISTS "T_constraints_3";
@@ -177,7 +179,7 @@ CREATE TABLE "default_pk" (
 CREATE TABLE "document" (
   id serial primary key,
   title varchar(255) not null,
-  content text not null,
+  content text,
   version integer not null default 0
 );
 
@@ -205,6 +207,18 @@ CREATE TABLE "dossier" (
   department_id INTEGER NOT NULL,
   employee_id INTEGER NOT NULL,
   summary VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE "alpha" (
+  id INTEGER NOT NULL,
+  string_identifier VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE "beta" (
+  id INTEGER NOT NULL,
+  alpha_string_identifier VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
 );
 
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
@@ -267,6 +281,24 @@ INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (1, 1, 1,
 INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (2, 2, 1, 'Brilliant employee.');
 INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (3, 2, 2, 'Good employee.');
 
+INSERT INTO "alpha" (id, string_identifier) VALUES (1, '1');
+INSERT INTO "alpha" (id, string_identifier) VALUES (2, '1a');
+INSERT INTO "alpha" (id, string_identifier) VALUES (3, '01');
+INSERT INTO "alpha" (id, string_identifier) VALUES (4, '001');
+INSERT INTO "alpha" (id, string_identifier) VALUES (5, '2');
+INSERT INTO "alpha" (id, string_identifier) VALUES (6, '2b');
+INSERT INTO "alpha" (id, string_identifier) VALUES (7, '02');
+INSERT INTO "alpha" (id, string_identifier) VALUES (8, '002');
+
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (1, '1');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (2, '01');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (3, '001');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (4, '001');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (5, '2');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (6, '2b');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (7, '2b');
+INSERT INTO "beta" (id, alpha_string_identifier) VALUES (8, '02');
+
 /**
  * (Postgres-)Database Schema for validator tests
  */
@@ -325,6 +357,7 @@ INSERT INTO "bit_values" (id, val) VALUES (1, '0'), (2, '1');
 
 DROP TABLE IF EXISTS "array_and_json_types" CASCADE;
 CREATE TABLE "array_and_json_types" (
+  id SERIAL NOT NULL PRIMARY KEY,
   intarray_col INT[],
   textarray2_col TEXT[][],
   json_col JSON,

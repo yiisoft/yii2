@@ -12,6 +12,7 @@ namespace yiiunit\data\ar;
  * @property string $title
  * @property string $content
  * @property int $version
+ * @property array $properties
  */
 class Document extends ActiveRecord
 {

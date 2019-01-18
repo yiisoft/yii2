@@ -18,7 +18,7 @@ en el entorno de un equipo de desarrollo.
   utilizar el Template de Proyecto Básico por su simplicidad pero funcionalidad suficiente.
 
 
-Installing via Composer <span id="installing-via-composer"></span>
+Instalando via Composer <span id="installing-via-composer"></span>
 -------------------------------
 
 Si aún no tienes Composer instalado, puedes hacerlo siguiendo las instrucciones que se encuentran en

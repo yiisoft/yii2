@@ -320,6 +320,19 @@ class RequestTest extends TestCase
                     'example3.com',
                 ]
             ],
+            // forwarded from trusted proxy
+            [
+                [
+                    'HTTP_X_FORWARDED_HOST' => 'example3.com, example2.com',
+                    'HTTP_HOST' => 'example1.com',
+                    'SERVER_NAME' => 'example2.com',
+                    'REMOTE_ADDR' => '192.168.0.1',
+                ],
+                [
+                    'http://example3.com',
+                    'example3.com',
+                ]
+            ],
         ];
     }
 

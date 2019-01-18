@@ -12,7 +12,9 @@ use yii\db\ActiveQuery;
 use yii\db\Connection;
 use yii\db\QueryBuilder;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Profile;
 
 /**
@@ -260,5 +262,34 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($query->from, null);
         $query->getTablesUsedInFrom();
         $this->assertEquals($query->from, null);
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/5341
+     *
+     * Issue:     Plan     1 -- * Account * -- * User
+     * Our Tests: Category 1 -- * Item    * -- * Order
+     */
+    public function testDeeplyNestedTableRelationWith()
+    {
+        /* @var $category Category */
+        $categories = Category::find()->with('orders')->indexBy('id')->all();
+
+        $category = $categories[1];
+        $this->assertNotNull($category);
+        $orders = $category->orders;
+        $this->assertEquals(2, count($orders));
+        $this->assertInstanceOf(Order::className(), $orders[0]);
+        $this->assertInstanceOf(Order::className(), $orders[1]);
+        $ids = [$orders[0]->id, $orders[1]->id];
+        sort($ids);
+        $this->assertEquals([1, 3], $ids);
+
+        $category = $categories[2];
+        $this->assertNotNull($category);
+        $orders = $category->orders;
+        $this->assertEquals(1, count($orders));
+        $this->assertInstanceOf(Order::className(), $orders[0]);
+        $this->assertEquals(2, $orders[0]->id);
     }
 }

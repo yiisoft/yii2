@@ -16,7 +16,7 @@ namespace yiiunit\data\base;
  */
 class TraversableObject implements \Iterator, \Countable
 {
-    private $data;
+    protected $data;
     private $position = 0;
 
     public function __construct(array $array)

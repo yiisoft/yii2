@@ -305,7 +305,7 @@ SQL;
             $table->name = $parts[1];
         } else {
             $table->schemaName = $this->defaultSchema;
-            $table->name = $name;
+            $table->name = $parts[0];
         }
 
         $table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
@@ -438,8 +438,7 @@ SQL;
     {
         $uniqueIndexes = [];
 
-        $rows = $this->getUniqueIndexInformation($table);
-        foreach ($rows as $row) {
+        foreach ($this->getUniqueIndexInformation($table) as $row) {
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
                 $row = array_change_key_case($row, CASE_LOWER);
             }
@@ -546,7 +545,7 @@ SQL;
                     $column->defaultValue = new Expression($column->defaultValue);
                 } elseif ($column->type === 'boolean') {
                     $column->defaultValue = ($column->defaultValue === 'true');
-                } elseif (stripos($column->dbType, 'bit') === 0 || stripos($column->dbType, 'varbit') === 0) {
+                } elseif (strncasecmp($column->dbType, 'bit', 3) === 0 || strncasecmp($column->dbType, 'varbit', 6) === 0) {
                     $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $column->phpTypecast($matches[1]);

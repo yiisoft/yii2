@@ -288,13 +288,15 @@ if ($validator->validate($email, $error)) {
 > Note: Not all validators support this type of validation. An example is the [unique](tutorial-core-validators.md#unique)
   core validator which is designed to work with a model only.
 
+> Note: The [[yii\base\Validator::skipOnEmpty]] property is used for [[yii\base\Model]] validation only. Using it without a model has no effect.
+
 If you need to perform multiple validations against several values, you can use [[yii\base\DynamicModel]]
 which supports declaring both attributes and rules on the fly. Its usage is like the following:
 
 ```php
 public function actionSearch($name, $email)
 {
-    $model = DynamicModel::validateData(compact('name', 'email'), [
+    $model = DynamicModel::validateData(['name' => $name, 'email' => $email], [
         [['name', 'email'], 'string', 'max' => 128],
         ['email', 'email'],
     ]);
@@ -316,7 +318,7 @@ Alternatively, you may use the following more "classic" syntax to perform ad hoc
 ```php
 public function actionSearch($name, $email)
 {
-    $model = new DynamicModel(compact('name', 'email'));
+    $model = new DynamicModel(['name' => $name, 'email' => $email]);
     $model->addRule(['name', 'email'], 'string', ['max' => 128])
         ->addRule('email', 'email')
         ->validate();

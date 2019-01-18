@@ -78,7 +78,7 @@ para renderizar um arquivo de [visão](structure-views.md) chamado `say`. O
 parâmetro `message` também é passado para a visão de modo que ele possa ser usado
 ali. O resultado da renderização é retornado pelo método da ação. Esse resultado
 será recebido pela aplicação, e exibido para o usuário final no navegador (como
-parte de uma págian HTML completa).
+parte de uma página HTML completa).
 
 
 Criando uma Visão <span id="creating-view"></span>

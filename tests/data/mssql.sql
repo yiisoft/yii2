@@ -231,16 +231,20 @@ INSERT INTO [dbo].[order_item_with_null_fk] ([order_id], [item_id], [quantity], 
 
 INSERT INTO [dbo].[document] ([title], [content], [version]) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
 
+SET IDENTITY_INSERT [dbo].[department] ON;
 INSERT INTO [dbo].[department] (id, title) VALUES (1, 'IT');
 INSERT INTO [dbo].[department] (id, title) VALUES (2, 'accounting');
+SET IDENTITY_INSERT [dbo].[department] OFF;
 
 INSERT INTO [dbo].[employee] (id, department_id, first_name, last_name) VALUES (1, 1, 'John', 'Doe');
 INSERT INTO [dbo].[employee] (id, department_id, first_name, last_name) VALUES (1, 2, 'Ann', 'Smith');
 INSERT INTO [dbo].[employee] (id, department_id, first_name, last_name) VALUES (2, 2, 'Will', 'Smith');
 
+SET IDENTITY_INSERT [dbo].[dossier] ON;
 INSERT INTO [dbo].[dossier] (id, department_id, employee_id, summary) VALUES (1, 1, 1, 'Excellent employee.');
 INSERT INTO [dbo].[dossier] (id, department_id, employee_id, summary) VALUES (2, 2, 1, 'Brilliant employee.');
 INSERT INTO [dbo].[dossier] (id, department_id, employee_id, summary) VALUES (3, 2, 2, 'Good employee.');
+SET IDENTITY_INSERT [dbo].[dossier] OFF;
 
 /* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
 

@@ -77,6 +77,8 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate(-20));
         $this->assertTrue($val->validate('20'));
         $this->assertTrue($val->validate(25.45));
+        $this->assertFalse($val->validate(false));
+        $this->assertFalse($val->validate(true));
 
         $this->setPointDecimalLocale();
         $this->assertFalse($val->validate('25,45'));
@@ -94,6 +96,8 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate('020'));
         $this->assertTrue($val->validate(0x14));
         $this->assertFalse($val->validate('0x14')); // todo check this
+        $this->assertFalse($val->validate(false));
+        $this->assertFalse($val->validate(true));
     }
 
     public function testValidateValueAdvanced()
@@ -309,8 +313,12 @@ class NumberValidatorTest extends TestCase
         $model->attr_number = $fp;
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
-
-        fclose($fp);
+        
+        // the check is here for HHVM that
+        // was losing handler for unknown reason
+        if (is_resource($fp)) {
+            fclose($fp);
+        }
     }
 
     public function testValidateToString()
