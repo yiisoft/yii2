@@ -84,7 +84,7 @@ interface CacheInterface extends \ArrayAccess
      * 该方法也会尝试模拟实现。
      * @param string[] $keys 指明多个缓存数据的字符串键列表。
      * @return array 对应缓存键列表的缓存数据，返回的数组格式是
-     * （key,value）键值对儿。
+     * （key, value）键值对。
      * 如果缓存值不存在或者缓存过期，那么对应的缓存值将会是 false。
      */
     public function multiGet($keys);
@@ -111,7 +111,7 @@ interface CacheInterface extends \ArrayAccess
      * 如果相同的键已经存在缓存中，那么之前的缓存数据和过期时间，
      * 将会被新的缓存数据和缓存时间分别替换。
      *
-     * @param array $items 要缓存的数据项，以 key-value 键值对。
+     * @param array $items 要缓存的数据项，作为键值对。
      * @param int $duration 缓存数据过期的秒数，0 意味着永不过期。
      * @param Dependency $dependency 缓存数据的依赖。如果依赖发生变化，
      * 那么使用 [[get()]] 方法获取对应的缓存数据时将是无效的。
@@ -138,7 +138,7 @@ interface CacheInterface extends \ArrayAccess
      * 存入多个数据到缓存中。每个数据项都包含缓存键和对应的缓存值。
      * 如果缓存中已经存在了对应的键，那么这个存在的缓存值和过期时间将会继续保留。
      *
-     * @param array $items 要缓存的数据项，以 key-value 键值对。
+     * @param array $items 要缓存的数据项，作为键值对。
      * @param int $duration 缓存数据过期的秒数，0 意味着永不过期。
      * @param Dependency $dependency 缓存数据的依赖。如果依赖发生变化，
      * 那么使用 [[get()]] 方法获取对应的缓存数据时将是无效的。
