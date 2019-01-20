@@ -221,15 +221,6 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertInstanceOf('yii\db\ActiveQuery', $result->via);
     }
 
-    public function testViaTableOnWronglyConfiguredQuery()
-    {
-        $query = new ActiveQuery(Customer::className());
-
-        $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('The "primaryModel" property is not set.');
-        $query->viaTable(Profile::className(), ['id' => 'item_id']);
-    }
-
     public function testAlias_not_set()
     {
         $query = new ActiveQuery(Customer::className());
