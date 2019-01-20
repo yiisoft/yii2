@@ -767,12 +767,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return $this the query object itself
+     * @throws InvalidConfigException when query is not initialized properly
      * @see via()
      */
     public function viaTable($tableName, $link, callable $callable = null)
     {
-        $modelClass = $this->primaryModel !== null ? get_class($this->primaryModel) : __CLASS__;
+        if ($this->primaryModel === null) {
+            throw new InvalidConfigException('The "primaryModel" property is not set. The query must be a relation to use junction tables. You probably need to call hasOne() or hasMany() method first.');
+        }
 
+        $modelClass = get_class($this->primaryModel);
         $relation = new self($modelClass, [
             'from' => [$tableName],
             'link' => $link,
