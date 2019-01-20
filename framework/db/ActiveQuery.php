@@ -772,11 +772,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function viaTable($tableName, $link, callable $callable = null)
     {
-        if ($this->primaryModel === null) {
-            throw new InvalidConfigException('The "primaryModel" property is not set. The query must be a relation to use junction tables. You probably need to call hasOne() or hasMany() method first.');
-        }
-
-        $modelClass = get_class($this->primaryModel);
+        $modelClass = $this->primaryModel ? get_class($this->primaryModel) : $this->modelClass;
         $relation = new self($modelClass, [
             'from' => [$tableName],
             'link' => $link,
