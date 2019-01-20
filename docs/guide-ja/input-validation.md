@@ -288,6 +288,8 @@ if ($validator->validate($email, $error)) {
 > Note: 全てのバリデータがこの種の検証をサポートしている訳ではありません。
   その一例が [unique](tutorial-core-validators.md#unique) コア・バリデータであり、これはモデルとともに使用されることだけを前提にして設計されています。
 
+> Note: [[yii\base\Validator::skipOnEmpty]] プロパティは [[yii\base\Model]] の検証の場合にのみ使用されます。モデル無しで使っても効果はありません。
+
 いくつかの値に対して複数の検証を実行する必要がある場合は、属性と規則の両方をその場で宣言することが出来る [[yii\base\DynamicModel]] を使うことが出来ます。
 これは、次のような使い方をします。
 
