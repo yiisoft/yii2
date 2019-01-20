@@ -207,14 +207,20 @@ class ActiveRecord extends BaseActiveRecord
     protected static function filterCondition(array $condition)
     {
         $result = [];
+        $db = static::getDb();
         // valid column names are table column names or column names prefixed with table name
-        $columnNames = static::getTableSchema()->getColumnNames();
+        $columnNames = [];
         $tableName = static::tableName();
-        $columnNames = array_merge($columnNames, array_map(function($columnName) use ($tableName) {
-            return "$tableName.$columnName";
-        }, $columnNames));
+        $quotedTableName = $db->quoteTableName($tableName);
+
+        foreach (static::getTableSchema()->getColumnNames() as $columnName) {
+            $columnNames[] = $columnName;
+            $columnNames[] = $db->quoteColumnName($columnName);
+            $columnNames[] = "$tableName.$columnName";
+            $columnNames[] = $db->quoteSql("$quotedTableName.[[$columnName]]");
+        }
         foreach ($condition as $key => $value) {
-            if (is_string($key) && !in_array($key, $columnNames, true)) {
+            if (is_string($key) && !in_array($db->quoteSql($key), $columnNames, true)) {
                 throw new InvalidArgumentException('Key "' . $key . '" is not a column name and can not be used as a filter');
             }
             $result[$key] = is_array($value) ? array_values($value) : $value;

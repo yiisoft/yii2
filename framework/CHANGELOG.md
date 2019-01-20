@@ -112,6 +112,7 @@ Yii Framework 2 Change Log
 - Bug #16469: Allow cache to be specified as interface and to be configured in DI container (alexeevdv)
 - Bug #16959: Fixed typo in if condition inside `yii\web\DbSession::typecastFields()` that caused problems with session overwriting (silverfire)
 - Bug #15876: `yii\db\ActiveQuery::viaTable()` now throws `InvalidConfigException`, if query is not prepared correctly (silverfire)
+- Bug #15931: `yii\db\ActiveRecord::findOne()` now accepts quoted table and column names using curly and square braces respectively (silverfire)
 
 2.0.15.1 March 21, 2018
 -----------------------
