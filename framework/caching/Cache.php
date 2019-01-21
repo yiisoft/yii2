@@ -12,15 +12,15 @@ use yii\base\Component;
 use yii\helpers\StringHelper;
 
 /**
- * Cache is the base class for cache classes supporting different cache storage implementations.
+ * Cache 是所有缓存类的基类，这些缓存类支持不同的缓存驱动。
  *
- * A data item can be stored in the cache by calling [[set()]] and be retrieved back
- * later (in the same or different request) by [[get()]]. In both operations,
- * a key identifying the data item is required. An expiration time and/or a [[Dependency|dependency]]
- * can also be specified when calling [[set()]]. If the data item expires or the dependency
- * changes at the time of calling [[get()]], the cache will return no data.
+ * 数据可以通过调用 [[set()]] 方法存入缓存中，而后（在同一个请求或不同的请求）可以调用 [[get()]]
+ * 方法再次获得这个数据。在这两个操作中，
+ * 需要一个指明缓存数据的键。调用 [[set()]] 方法时还可以传递过期时间和 [[Dependency|dependency]]
+ * 缓存依赖。如果在调用 [[get()]] 方法时缓存时间过期或者缓存依赖发生变化，
+ * 那么缓存不会返回数据。
  *
- * A typical usage pattern of cache is like the following:
+ * 典型的缓存使用模式就像下面这样：
  *
  * ```php
  * $key = 'demo';
@@ -31,22 +31,22 @@ use yii\helpers\StringHelper;
  * }
  * ```
  *
- * Because Cache implements the [[\ArrayAccess]] interface, it can be used like an array. For example,
+ * 因为 Cache 实现了 [[\ArrayAccess]] 接口，可以像数组那样使用它。比如，
  *
  * ```php
  * $cache['foo'] = 'some data';
  * echo $cache['foo'];
  * ```
  *
- * Derived classes should implement the following methods which do the actual cache storage operations:
+ * 具体的驱动类应该实现如下的方法来做实际的缓存操作：
  *
- * - [[getValue()]]: retrieve the value with a key (if any) from cache
- * - [[setValue()]]: store the value with a key into cache
- * - [[addValue()]]: store the value only if the cache does not have this key before
- * - [[deleteValue()]]: delete the value with the specified key from cache
- * - [[flushValues()]]: delete all values from cache
+ * - [[getValue()]]: 根据键（如果有）从缓存中获取值
+ * - [[setValue()]]: 根据键把值存入缓存中
+ * - [[addValue()]]: 只有缓存中没有这个键时才把值存入缓存中
+ * - [[deleteValue()]]: 根据键从缓存中删除值
+ * - [[flushValues()]]: 从缓存中删除所有值
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -54,27 +54,27 @@ use yii\helpers\StringHelper;
 abstract class Cache extends Component implements CacheInterface
 {
     /**
-     * @var string a string prefixed to every cache key so that it is unique globally in the whole cache storage.
-     * It is recommended that you set a unique cache key prefix for each application if the same cache
-     * storage is being used by different applications.
+     * @var string 每个缓存键的一个字符串前缀，据此可以保证在整个缓存系统层面上它都是全局唯一的。
+     * 如果出现相同的缓存驱动在多个不同的应用环境下使用，建议你为每个应用环境里的这个缓存系统
+     * 设置一个唯一的缓存键前缀。
      *
-     * To ensure interoperability, only alphanumeric characters should be used.
+     * 为保证系统的共用性，你应该只使用由字母和数字组成的字符串。
      */
     public $keyPrefix;
     /**
-     * @var null|array|false the functions used to serialize and unserialize cached data. Defaults to null, meaning
-     * using the default PHP `serialize()` and `unserialize()` functions. If you want to use some more efficient
-     * serializer (e.g. [igbinary](http://pecl.php.net/package/igbinary)), you may configure this property with
-     * a two-element array. The first element specifies the serialization function, and the second the deserialization
-     * function. If this property is set false, data will be directly sent to and retrieved from the underlying
-     * cache component without any serialization or deserialization. You should not turn off serialization if
-     * you are using [[Dependency|cache dependency]], because it relies on data serialization. Also, some
-     * implementations of the cache can not correctly save and retrieve data different from a string type.
+     * @var null|array|false 用来序列化和反序列化缓存数据的函数。默认是 null，这意味着
+     * 默认使用 PHP 的 `serialize()` 和 `unserialize()` 两个函数。如果你想使用更高效的序列化功能
+     * （比如 [igbinary](http://pecl.php.net/package/igbinary)），可以配置该属性为两个元素的数组。
+     * 第一个元素指明序列化的函数而第二个元素则指明反序列化的函数。
+     * 如果该属性设置为 false，那么数据将直接在当前缓存组件下存入缓存，无需序列化过程，
+     * 获取数据时同样不需要反序列化。如果你正使用 [[Dependency|cache dependency]] 缓存依赖，
+     * 那么请你不要关闭序列化功能，因为缓存依赖的实现有赖于数据序列化功能。还有，
+     * 一些缓存的实现类在保存和获取非字符串数据时并不都是完全合适的。
      */
     public $serializer;
     /**
-     * @var int default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
-     * This value is used by [[set()]] if the duration is not explicitly given.
+     * @var int 以秒为单位的默认的缓存持续时间。默认是 0，意味着永不过期。
+     * 在使用 [[set()]] 时并且没有明确传递时间参数时才会使用这个属性。
      * @since 2.0.11
      */
     public $defaultDuration = 0;
