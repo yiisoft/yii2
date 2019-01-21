@@ -187,7 +187,8 @@ class InflectorTest extends TestCase
     {
         $this->assertEquals('dont_replace_replacement', Inflector::slug('dont replace_replacement', '_'));
         $this->assertEquals('remove_trailing_replacements', Inflector::slug('_remove trailing replacements_', '_'));
-        $this->assertEquals('thisrepisrepreplacement', Inflector::slug('this is REP-lacement', 'REP'));
+        $this->assertEquals('thisrepisreprepreplacement', Inflector::slug('this is REP-lacement', 'REP'));
+        $this->assertEquals('0_100_kmh', Inflector::slug('0-100 Km/h', '_'));
     }
 
     public function testSlugIntl()
