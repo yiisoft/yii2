@@ -325,7 +325,7 @@
             // client-side validation
             $.each(data.attributes, function () {
                 this.$form = $form;
-                let $input = findInput($form, this);
+                var $input = findInput($form, this);
 
                 if ($input.is(":disabled")) {
                     return true;
