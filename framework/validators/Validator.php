@@ -133,7 +133,7 @@ class Validator extends Component
     public $skipOnError = true;
     /**
      * @var bool whether this validation rule should be skipped if the attribute value
-     * is null or an empty string.
+     * is null or an empty string. This property is used only when validating [[yii\base\Model]].
      */
     public $skipOnEmpty = true;
     /**

@@ -217,6 +217,17 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('123', $this->formatter->asDecimal($value, 0));
         $value = 123;
         $this->assertSame('123.00', $this->formatter->asDecimal($value));
+
+        $this->assertSame('123.00', $this->formatter->asDecimal('123.00'));
+        $this->assertSame('-123.00', $this->formatter->asDecimal('-123.00'));
+        $this->assertSame('123.00', $this->formatter->asDecimal('+123.00'));
+        $this->assertSame('10.00', $this->formatter->asDecimal('10.00'));
+        $this->assertSame('0.01', $this->formatter->asDecimal(0.01));
+        $this->assertSame('0.00', $this->formatter->asDecimal('0.00'));
+        $this->assertSame('0.01', $this->formatter->asDecimal('00000000000000.0100000000000'));
+
+        $this->assertSame('2,000.00', $this->formatter->asDecimal(2e3));
+
         $this->formatter->decimalSeparator = ',';
         $this->formatter->thousandSeparator = '.';
         $value = 123.12;
