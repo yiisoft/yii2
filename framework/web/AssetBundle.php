@@ -136,6 +136,8 @@ class AssetBundle extends BaseObject
         }
         if ($this->basePath !== null) {
             $this->basePath = rtrim(Yii::getAlias($this->basePath), '/\\');
+        } else {
+            $this->basePath = rtrim(Yii::getAlias('@webroot'), DIRECTORY_SEPARATOR);
         }
         if ($this->baseUrl !== null) {
             $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
