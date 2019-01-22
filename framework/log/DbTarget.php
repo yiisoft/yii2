@@ -23,7 +23,7 @@ use yii\helpers\VarDumper;
  * yii migrate --migrationPath=@yii/log/migrations/
  * ```
  *
- * 如果您不想使用迁移并且需要SQL，则所有数据库的文件都位于迁移目录中。
+ * 如果您不想使用迁移并且需要 SQL ，则所有数据库的文件都位于迁移目录中。
  *
  * 您可以通过设置 [[logTable]] 来更改用于存储数据的表的名称。
  *
@@ -33,10 +33,10 @@ use yii\helpers\VarDumper;
 class DbTarget extends Target
 {
     /**
-     * @var Connection|array|string 数据库连接对象或数据库连接的应用程序组件ID。
+     * @var Connection|array|string 数据库连接对象或数据库连接的应用程序组件 ID
      * 创建 DbTarget
      * 对象后，只有当它是数据库连接对象时，才可以更改属性。
-     * 从2.0.2版开始，这也可以是用于创建对象的配置数组。
+     * 从 2.0.2 版开始，这也可以是用于创建对象的配置数组。
      */
     public $db = 'db';
     /**
@@ -48,7 +48,7 @@ class DbTarget extends Target
     /**
      * 初始化 DbTarget 组件。
      * 此方法将初始化 [[db]] 属性以确保它引用有效的数据库连接。
-     * @throws InvalidConfigException  如果 [[db]] 无效，将抛出异常 InvalidConfigException 。
+     * @throws InvalidConfigException 如果 [[db]] 无效，将抛出异常 InvalidConfigException 。
      */
     public function init()
     {
@@ -58,7 +58,7 @@ class DbTarget extends Target
 
     /**
      * 将日志消息存储到数据库。
-     * 从版本2.0.14开始，如果无法导出日志，此方法将抛出 LogRuntimeException 。
+     * 从版本 2.0.14 开始，如果无法导出日志，此方法将抛出 LogRuntimeException 。
      * @throws Exception
      * @throws LogRuntimeException
      */
@@ -66,7 +66,7 @@ class DbTarget extends Target
     {
         if ($this->db->getTransaction()) {
             //创建新的数据库连接，
-            //如果存在打开的事务，则确保insert语句不受回滚的影响
+            //如果存在打开的事务，则确保 insert 语句不受回滚的影响
             $this->db = clone $this->db;
         }
 

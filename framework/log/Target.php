@@ -26,13 +26,13 @@ use yii\web\Request;
  * 即，仅处理满足两个过滤条件的消息。
  * 此外，您可以指定 [[except]] 以排除某些类别的消息。
  *
- * @property bool $enabled 指示是否启用此日志目标。默认为true。
- * 请注意，此属性的类型在getter和setter中有所不同。有关详细信息，请参见 [[getEnabled()]] 和 [[setEnabled()]] 。
- * @property int $levels 需要记录的消息级别。默认为0，表示所有可用级别。
- * 请注意，此属性的类型在getter和setter中有所不同。
+ * @property bool $enabled 指示是否启用此日志目标。默认为 true。
+ * 请注意，此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getEnabled()]] 和 [[setEnabled()]] 。
+ * @property int $levels 需要记录的消息级别。默认为 0，表示所有可用级别。
+ * 请注意，此属性的类型在 getter 和 setter 中有所不同。
  * 有关详细信息，请参见 [[getLevels()]] 和 [[setLevels()]] 。
  *
- * 有关Target的更多详细信息和使用信息，请参阅[有关日志记录和目标的指南文章]（指南：运行时日志记录）。
+ * 有关 Target 的更多详细信息和使用信息，请参阅[有关日志记录和目标的指南文章]（指南：运行时日志记录）。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -43,7 +43,7 @@ abstract class Target extends Component
      * @var array 需要记录的消息类别列表。
      * 默认为空，表示所有类别。
      * 您可以在类别末尾使用星号，以便可以使用该类别来匹配共享相同公共前缀的类别。
-     * 例如，'yii\db\*'将匹配以'yii\db\'开头的类别，例如'yii\db\Connection'。
+     * 例如， 'yii\db\*' 将匹配以 'yii\db\' 开头的类别，例如 'yii\db\Connection' 。
      */
     public $categories = [];
     /**
@@ -51,7 +51,7 @@ abstract class Target extends Component
      * 默认为空，表示没有需要排除的消息。
      * 如果此属性不为空，则此处列出的任何类别都将从 [[categories]] 中排除。
      * 您可以在类别末尾使用星号，以便该类别可用于匹配共享相同公共前缀的类别。
-     * 例如，'yii\db\*'将匹配以'yii\db\'开头的类别，例如'yii\db\Connection'。
+     * 例如， 'yii\db\*' 将匹配以 'yii\db\' 开头的类别，例如 'yii\db\Connection' 。
      * @see categories
      */
     public $except = [];
@@ -59,9 +59,9 @@ abstract class Target extends Component
      * @var array 需要记录在消息中的PHP预定义变量的列表。
      * 请注意，必须可以通过 `$ GLOBALS` 访问变量。 否则将不会记录。
      *
-     * 默认是 `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`.
+     * 默认是 `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`。
      *
-     * 从版本2.0.9开始，可以使用其他语法：
+     * 从版本 2.0.9 开始，可以使用其他语法：
      * 每个元素都可以指定为以下之一：
      *
      * - `var` 会记录 `var` 。
@@ -80,13 +80,13 @@ abstract class Target extends Component
      * 如果未设置，将使用 [[getMessagePrefix()]] ，该消息在消息前面加上上下文信息。
      * 例如用户IP，用户ID和会话ID。
      *
-     * 可调用的函数应该是 `function ($message)`.
+     * 可调用的函数应该是 `function ($message)` 。
      */
     public $prefix;
     /**
-     * @var int 累积多少条消息后才导出。 默认值为1000。
+     * @var int 累积多少条消息后才导出。 默认值为 1000。
      * 请注意，应用程序终止时将始终会导出消息。
-     * 如果将此属性设置为0，则只会在应用程序终止之时导出消息。
+     * 如果将此属性设置为 0，则只会在应用程序终止之时导出消息。
      */
     public $exportInterval = 1000;
     /**
@@ -96,7 +96,7 @@ abstract class Target extends Component
     public $messages = [];
     /**
      * @var bool 是否以微秒记录时间。
-     * 默认是 false.
+     * 默认是 false 。
      * @since 2.0.13
      */
     public $microtime = false;
@@ -127,7 +127,7 @@ abstract class Target extends Component
             if (($context = $this->getContextMessage()) !== '') {
                 $this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME];
             }
-            // 将 exportInterval 设置为0以避免在导出时再次触发导出
+            // 将 exportInterval 设置为 0 以避免在导出时再次触发导出
             $oldExportInterval = $this->exportInterval;
             $this->exportInterval = 0;
             $this->export();
@@ -155,7 +155,7 @@ abstract class Target extends Component
 
     /**
      * @return int 需要记录的消息级别。
-     * 默认为0，表示所有可用级别。
+     * 默认为 0，表示所有可用级别。
      */
     public function getLevels()
     {
@@ -166,10 +166,10 @@ abstract class Target extends Component
      * 设置此目标需要记录的消息级别。
      *
      * 参数可以是消息级别名称的数组，
-     * 也可以是表示消息级别值的 bitmap 的整数。
-     * 有效级别名称包括： 'error'，'warning'， 'info'， 'trace' 和 'profile';
-     * 有效级别值包括：[[Logger::LEVEL_ERROR]]， [[Logger::LEVEL_WARNING]]， [[Logger::LEVEL_INFO]]，
-     * [[Logger::LEVEL_TRACE]] 和 [[Logger::LEVEL_PROFILE]]。
+     * 也可以是表示消息级别值的整数。
+     * 有效级别名称包括： 'error' ，'warning' ， 'info' ， 'trace' 和 'profile' ;
+     * 有效级别值包括： [[Logger::LEVEL_ERROR]] ， [[Logger::LEVEL_WARNING]] ， [[Logger::LEVEL_INFO]] ，
+     * [[Logger::LEVEL_TRACE]] 和 [[Logger::LEVEL_PROFILE]] 。
      *
      * 举个例子，
      *
@@ -216,7 +216,7 @@ abstract class Target extends Component
      * @param array $messages 要过滤的消息。
      * 消息结构遵循 [[Logger::messages]] 中的消息结构。
      * @param int $levels 要过滤的消息级别。
-     * 值0表示允许所有级别。
+     * 值 0 表示允许所有级别。
      * @param array $categories 要过滤的消息类别。 如果为空，则表示允许所有类别。
      * @param array $except 要排除的消息类别。 如果为空，则表示允许所有类别。
      * @return array 过滤后的消息。
@@ -343,7 +343,7 @@ abstract class Target extends Component
 
     /**
      * 检查日志目标是否已启用。
-     * @property bool 指示是否启用此日志目标。 默认为true。
+     * @property bool 指示是否启用此日志目标。 默认为 true 。
      * @return bool 一个指示是否启用此日志目标的布尔值。
      */
     public function getEnabled()

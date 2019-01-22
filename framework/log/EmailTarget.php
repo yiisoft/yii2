@@ -37,7 +37,7 @@ use yii\mail\MailerInterface;
  * ],
  * ```
  *
- * 在上面的 `mailer` 中，是发送电子邮件的组件的ID，应该已经配置好了。
+ * 在上面的 `mailer` 中，是发送电子邮件的组件的 ID，应该已经配置好了。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -50,10 +50,10 @@ class EmailTarget extends Target
      */
     public $message = [];
     /**
-     * @var MailerInterface|array|string 邮件程序对象或邮件程序对象的应用程序组件ID。
+     * @var MailerInterface|array|string 邮件程序对象或邮件程序对象的应用程序组件 ID。
      * 创建 EmailTarget 对象后， 只有它是邮件程序对象时，才可以更改它的属性。
      *
-     * 从2.0.2版开始，这也可以是用于创建对象的配置数组。
+     * 从 2.0.2 版开始，这也可以是用于创建对象的配置数组。
      */
     public $mailer = 'mailer';
 
@@ -72,7 +72,7 @@ class EmailTarget extends Target
 
     /**
      * 将日志消息发送到指定的电子邮件地址。
-     * 从版本2.0.14开始，如果无法导出日志，此方法将抛出 LogRuntimeException 异常。
+     * 从版本 2.0.14 开始，如果无法导出日志，此方法将抛出 LogRuntimeException 异常。
      * @throws LogRuntimeException
      */
     public function export()

@@ -17,7 +17,7 @@ use yii\base\ErrorHandler;
  * Dispatcher 实现方法 [[dispatch()]] 将日志消息从 [[Logger]]
  * 转发到 [[targets]]。
  *
- * Dispatcher 的一个实例被注册为核心应用程序组件，可以使用  `Yii::$app->log` 进行访问。
+ * Dispatcher 的一个实例被注册为核心应用程序组件，可以使用 `Yii::$app->log` 进行访问。
  *
  * 您可以在应用程序配置中配置目标，如下所示：
  *
@@ -44,7 +44,7 @@ use yii\base\ErrorHandler;
  * ]
  * ```
  *
- * 每个日志目标都可以有一个名称，可以通过[[targets]]属性引用，如下所示：
+ * 每个日志目标都可以有一个名称，可以通过 [[targets]] 属性引用，如下所示：
  *
  * ```php
  * Yii::$app->log->targets['file']->enabled = false;
@@ -53,9 +53,9 @@ use yii\base\ErrorHandler;
  * @property int $flushInterval 在将消息发送到目标之前应记录多少条消息。
  * 此方法返回 [[Logger::flushInterval]] 的值。
  * @property Logger $logger 记录器。 如果未设置，将使用 [[\Yii::getLogger()]] 。
- * 请注意，此属性的类型在getter和setter中有所不同。 有关详细信息，请参见 [[getLogger()]] 和 [[setLogger()]] 。
+ * 请注意，此属性的类型在 getter 和 setter 中有所不同。 有关详细信息，请参见 [[getLogger()]] 和 [[setLogger()]] 。
  * @property int $traceLevel 每个消息应记录多少应用程序调用堆栈。
- * 此方法返回 [[Logger::traceLevel]] 的值。 默认为0。
+ * 此方法返回 [[Logger::traceLevel]] 的值。 默认为 0。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -135,7 +135,7 @@ class Dispatcher extends Component
 
     /**
      * @return int 每个消息应记录多少应用程序调用堆栈。
-     * 此方法返回 [[Logger::traceLevel]] 的值。 默认为0。
+     * 此方法返回 [[Logger::traceLevel]] 的值。 默认为 0。
      */
     public function getTraceLevel()
     {
@@ -144,9 +144,9 @@ class Dispatcher extends Component
 
     /**
      * @param int $value 每个消息应记录多少应用程序调用堆栈。
-     * 此方法将设置 [[Logger::traceLevel]] 的值。 如果该值大于0，表示将记录该调用堆栈的最大数量。
+     * 此方法将设置 [[Logger::traceLevel]] 的值。 如果该值大于 0，表示将记录该调用堆栈的最大数量。
      * 请注意，只计算应用程序调用堆栈。
-     * 默认为0。
+     * 默认为 0。
      */
     public function setTraceLevel($value)
     {
@@ -165,8 +165,8 @@ class Dispatcher extends Component
     /**
      * @param int $value 记录多少消息后才将消息发送到目标。
      * 此方法设置 [[Logger::flushInterval]] 的值。
-     * 默认为1000，表示每1000条消息执行一次 [[Logger::flush()]] 方法。
-     * 如果您不希望在应用程序终止之前发送消息，请将此属性设置为0。
+     * 默认为 1000，表示每 1000 条消息执行一次 [[Logger::flush()]] 方法。
+     * 如果您不希望在应用程序终止之前发送消息，请将此属性设置为 0。
      * 此属性主要影响记录消息占用的内存量。
      * 值越小意味着内存越少，但由于更加频繁的执行 [[Logger::flush()]] ，会增加执行时间。
      */
