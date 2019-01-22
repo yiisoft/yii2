@@ -317,7 +317,7 @@ class AssetManager extends Component
             return $asset;
         }
 
-        $timestamp = @filemtime(Url::isRelative($asset) ? $asset : "$basePath/$asset");
+        $timestamp = @filemtime(empty($basePath) ? $asset : "$basePath/$asset");
 
         if ($this->appendTimestamp && ($timestamp > 0)) {
             return "$baseUrl/$asset?v=$timestamp";
