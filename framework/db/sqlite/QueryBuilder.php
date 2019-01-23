@@ -113,13 +113,26 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * {@inheritdoc}
      */
     protected function constructInsertQueryString($tableName, $columns, $values) {
-        $schema = $this->db->getSchema();
-        foreach ($columns as $i => $name) {
-            $columns[$i] = $schema->quoteColumnName($name);
-        }
+        // SQLite supports batch insert natively since 3.7.11
+        // http://www.sqlite.org/releaselog/3_7_11.html
+        $this->db->open(); // ensure pdo is not null
+        if (version_compare($this->db->getServerVersion(), '3.7.11', '>=')) {
+            return parent::constructInsertQueryString($tableName, $columns, $values);
+        } else {
+            $schema = $this->db->getSchema();
+            foreach ($columns as $i => $name) {
+                $columns[$i] = $schema->quoteColumnName($name);
+            }
 
-        return 'INSERT INTO ' . $schema->quoteTableName($tableName)
-            . ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION SELECT ', $values);
+            $rows = [];
+            foreach($values as $value) {
+                $rows[] = trim($value, '()');
+            }
+
+            return 'INSERT INTO ' . $schema->quoteTableName($tableName)
+                . ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION SELECT ', $rows);
+
+        }
     }
 
 
