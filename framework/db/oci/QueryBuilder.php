@@ -336,12 +336,17 @@ EOD;
             return '';
         }
 
+        return $this->constructInsertQueryString($table, $columns, $values);
+    }
+
+    private function constructInsertQueryString($tableName, $columns, $values) {
+        $schema = $this->db->getSchema();
         foreach ($columns as $i => $name) {
             $columns[$i] = $schema->quoteColumnName($name);
         }
 
-        $tableAndColumns = ' INTO ' . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $columns) . ') VALUES ';
+        $tableAndColumns = ' INTO ' . $schema->quoteTableName($tableName)
+            . ' (' . implode(', ', $columns) . ') VALUES ';
 
         return 'INSERT ALL ' . $tableAndColumns . implode($tableAndColumns, $values) . ' SELECT 1 FROM SYS.DUAL';
     }

@@ -486,11 +486,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return '';
         }
 
-        foreach ($columns as $i => $name) {
-            $columns[$i] = $schema->quoteColumnName($name);
-        }
-
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
+        return $this->constructInsertQueryString($table, $columns, $values);
     }
 }

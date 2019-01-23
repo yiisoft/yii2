@@ -486,12 +486,25 @@ class QueryBuilder extends \yii\base\BaseObject
             return '';
         }
 
+        return $this->constructInsertQueryString($table, $columns, $values);
+    }
+
+    /**
+     * Creates INSERT SQL statement
+     * @param $tableName
+     * @param $columns
+     * @param $values
+     * @return string
+     * @throws NotSupportedException
+     */
+    private function constructInsertQueryString($tableName, $columns, $values) {
+        $schema = $this->db->getSchema();
         foreach ($columns as $i => $name) {
             $columns[$i] = $schema->quoteColumnName($name);
         }
 
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
+        return 'INSERT INTO ' . $schema->quoteTableName($tableName)
+            . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
 
     /**

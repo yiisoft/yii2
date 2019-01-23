@@ -179,13 +179,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return '';
         }
 
+        return $this->constructInsertQueryString($table, $columns, $values);
+    }
+
+    private function constructInsertQueryString($tableName, $columns, $values) {
+        $schema = $this->db->getSchema();
         foreach ($columns as $i => $name) {
             $columns[$i] = $schema->quoteColumnName($name);
         }
 
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION SELECT ', $values);
+        return 'INSERT INTO ' . $schema->quoteTableName($tableName)
+            . ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION SELECT ', $values);
     }
+
 
     /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
