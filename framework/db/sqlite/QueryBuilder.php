@@ -110,79 +110,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Generates a batch INSERT SQL statement.
-     *
-     * For example,
-     *
-     * ```php
-     * $connection->createCommand()->batchInsert('user', ['name', 'age'], [
-     *     ['Tom', 30],
-     *     ['Jane', 20],
-     *     ['Linda', 25],
-     * ])->execute();
-     * ```
-     *
-     * Note that the values in each row must match the corresponding column names.
-     *
-     * @param string $table the table that new rows will be inserted into.
-     * @param array $columns the column names
-     * @param array|\Generator $rows the rows to be batch inserted into the table
-     * @return string the batch INSERT SQL statement
+     * {@inheritdoc}
      */
-    public function batchInsert($table, $columns, $rows, &$params = [])
-    {
-        if (empty($rows)) {
-            return '';
-        }
-
-        // SQLite supports batch insert natively since 3.7.11
-        // http://www.sqlite.org/releaselog/3_7_11.html
-        $this->db->open(); // ensure pdo is not null
-        if (version_compare($this->db->getServerVersion(), '3.7.11', '>=')) {
-            return parent::batchInsert($table, $columns, $rows, $params);
-        }
-
-        $schema = $this->db->getSchema();
-        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
-            $columnSchemas = $tableSchema->columns;
-        } else {
-            $columnSchemas = [];
-        }
-
-        $values = [];
-        foreach ($rows as $row) {
-            $vs = [];
-            foreach ($row as $i => $value) {
-                if (!is_int($i)) {
-                    throw new InvalidArgumentException("Batch inserting doesn't support associative arrays.");
-                }
-                if (isset($columnSchemas[$columns[$i]])) {
-                    $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
-                }
-                if (is_string($value)) {
-                    $value = $schema->quoteValue($value);
-                } elseif (is_float($value)) {
-                    // ensure type cast always has . as decimal separator in all locales
-                    $value = StringHelper::floatToString($value);
-                } elseif ($value === false) {
-                    $value = 0;
-                } elseif ($value === null) {
-                    $value = 'NULL';
-                } elseif ($value instanceof ExpressionInterface) {
-                    $value = $this->buildExpression($value, $params);
-                }
-                $vs[] = $value;
-            }
-            $values[] = implode(', ', $vs);
-        }
-        if (empty($values)) {
-            return '';
-        }
-
-        return $this->constructInsertQueryString($table, $columns, $values);
-    }
-
-    private function constructInsertQueryString($tableName, $columns, $values) {
+    protected function constructInsertQueryString($tableName, $columns, $values) {
         $schema = $this->db->getSchema();
         foreach ($columns as $i => $name) {
             $columns[$i] = $schema->quoteColumnName($name);
