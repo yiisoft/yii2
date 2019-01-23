@@ -565,8 +565,35 @@
         }, validationDelay ? validationDelay : 200);
     };
 
+    /**
+     * Compares two value whatever it objects, arrays or simple types
+     * @param val1
+     * @param val2
+     * @returns boolean
+     */
     var isEqual = function(val1, val2) {
-        // TODO: add objects comparing
+        // objects
+        if (val1 instanceof Object) {
+            if (!(val2 instanceof Object)) {
+                return false;
+            }
+            var keys1 = Object.keys(val1);
+            var keys2 = Object.keys(val2);
+            if (keys1.length !== keys2.length) {
+                return false;
+            }
+
+            for (var i = 0; i < keys1.length; i += 1) {
+                if (!val2.hasOwnProperty(keys1[i])) {
+                    return false;
+                }
+                if (val1[keys1[i]] !== val2[keys1[i]]) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         // arrays
         if (Array.isArray(val1)) {
