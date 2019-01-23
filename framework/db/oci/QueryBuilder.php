@@ -310,6 +310,9 @@ EOD;
         foreach ($rows as $row) {
             $vs = [];
             foreach ($row as $i => $value) {
+                if (!is_int($i)) {
+                    throw new InvalidArgumentException("Batch inserting doesn't support associative arrays.");
+                }
                 if (isset($columns[$i], $columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
