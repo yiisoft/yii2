@@ -539,7 +539,7 @@
             attribute.status = 2;
         }
         $.each(data.attributes, function () {
-            if (this.value !== getValue($form, this)) {
+            if (!isEqual(this.value, getValue($form, this))) {
                 this.status = 2;
                 forceValidate = true;
             }
@@ -563,6 +563,29 @@
             });
             methods.validate.call($form);
         }, validationDelay ? validationDelay : 200);
+    };
+
+    var isEqual = function(val1, val2) {
+        // TODO: add objects comparing
+
+        // arrays
+        if (Array.isArray(val1)) {
+            if (!Array.isArray(val2)) {
+                return false;
+            }
+            if (val1.length !== val2.length) {
+                return false;
+            }
+            for (var i = 0; i < val1.length; i += 1) {
+                if (val1[i] !== val2[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // simple types
+        return val1 === val2;
     };
 
     /**
