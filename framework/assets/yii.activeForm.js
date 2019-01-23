@@ -574,45 +574,59 @@
     var isEqual = function(val1, val2) {
         // objects
         if (val1 instanceof Object) {
-            if (!(val2 instanceof Object)) {
-                return false;
-            }
-            var keys1 = Object.keys(val1);
-            var keys2 = Object.keys(val2);
-            if (keys1.length !== keys2.length) {
-                return false;
-            }
-
-            for (var i = 0; i < keys1.length; i += 1) {
-                if (!val2.hasOwnProperty(keys1[i])) {
-                    return false;
-                }
-                if (val1[keys1[i]] !== val2[keys1[i]]) {
-                    return false;
-                }
-            }
-
-            return true;
+            return isObjectsEqual(val1, val2)
         }
 
         // arrays
         if (Array.isArray(val1)) {
-            if (!Array.isArray(val2)) {
-                return false;
-            }
-            if (val1.length !== val2.length) {
-                return false;
-            }
-            for (var i = 0; i < val1.length; i += 1) {
-                if (val1[i] !== val2[i]) {
-                    return false;
-                }
-            }
-            return true;
+            return isArraysEqual(val1, val2);
         }
 
         // simple types
         return val1 === val2;
+    };
+
+    var isObjectsEqual = function(obj1, obj2) {
+        if (!(obj1 instanceof Object)) {
+            return false;
+        }
+        if (!(obj2 instanceof Object)) {
+            return false;
+        }
+        var keys1 = Object.keys(obj1);
+        var keys2 = Object.keys(obj2);
+        if (keys1.length !== keys2.length) {
+            return false;
+        }
+
+        for (var i = 0; i < keys1.length; i += 1) {
+            if (!obj2.hasOwnProperty(keys1[i])) {
+                return false;
+            }
+            if (obj1[keys1[i]] !== obj2[keys1[i]]) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    var isArraysEqual = function(arr1, arr2) {
+        if (!Array.isArray(arr1)) {
+            return false;
+        }
+        if (!Array.isArray(arr2)) {
+            return false;
+        }
+        if (arr1.length !== arr2.length) {
+            return false;
+        }
+        for (var i = 0; i < arr1.length; i += 1) {
+            if (arr1[i] !== arr2[i]) {
+                return false;
+            }
+        }
+        return true;
     };
 
     /**
