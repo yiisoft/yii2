@@ -587,8 +587,7 @@ HTML;
 
     public function testInputOptionsTransferToWidget()
     {
-        // set options direct to widget
-        $widget = $this->activeField->widget(MaskedInput::className(), [
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
             'mask' => '999-999-9999',
             'options' => ['placeholder' => 'pholder_direct'],
         ]);
@@ -596,14 +595,14 @@ HTML;
 
         // transfer options from ActiveField to widget
         $this->activeField->inputOptions = ['placeholder' => 'pholder_input'];
-        $widget = $this->activeField->widget(MaskedInput::className(), [
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
             'mask' => '999-999-9999',
         ]);
         $this->assertContains('placeholder="pholder_input"', (string) $widget);
 
         // set both AF and widget options (second one takes precedence)
         $this->activeField->inputOptions = ['placeholder' => 'pholder_both_input'];
-        $widget = $this->activeField->widget(MaskedInput::className(), [
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
             'mask' => '999-999-9999',
             'options' => ['placeholder' => 'pholder_both_direct']
         ]);
@@ -693,3 +692,31 @@ class TestInputWidget extends InputWidget
         return 'Render: ' . get_class($this);
     }
 }
+
+class TestMaskedInput extends MaskedInput
+{
+    /**
+     * @var static
+     */
+    public static $lastInstance;
+
+    public function init()
+    {
+        parent::init();
+        self::$lastInstance = $this;
+    }
+
+    public function getOptions() {
+        return $this->options;
+    }
+
+    public function run()
+    {
+        return 'Options: ' . implode(', ', array_map(
+            function ($v, $k) { return sprintf('%s="%s"', $k, $v); },
+            $this->options,
+            array_keys($this->options)
+        ));
+    }
+}
+
