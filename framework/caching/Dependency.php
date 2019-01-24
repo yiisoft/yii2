@@ -8,12 +8,12 @@
 namespace yii\caching;
 
 /**
- * Dependency is the base class for cache dependency classes.
+ * Dependency 是缓存依赖类的基类。
  *
- * Child classes should override its [[generateDependencyData()]] for generating
- * the actual dependency data.
+ * 子类应该覆盖它的 [[generateDependencyData()]] 方法，
+ * 用来产生实际具体的依赖数据
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
