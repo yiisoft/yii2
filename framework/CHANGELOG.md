@@ -5,6 +5,11 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #16681: Pass `ActiveField::inputOptions` to widget (GHopperMSK)
+- Bug #15482: AR::find()->with() missing data when using string identifiers for relations (rugabarbo)
+- Bug #15167: Fixed loading of default value `current_timestamp()` for MariaDB >= 10.2.3 (rugabarbo, bloodrain777, Skinka)
+- Bug #16253: Fixed empty checkboxlist validation (GHopperMSK)
+- Bug #15286: Fixed incorrect formatting of time with timezone information (rugabarbo)
+- Bug #17021: Fix to do not remove existing message category files in a subfolder (albertborsos)
 - Bug #16991: Removed usage of `utf8_encode()` from `Request::resolvePathInfo()` (GHopperMSK)
 - Bug #16974: Regular Expression Validator to include support for 'u' (UTF-8) modifier (Dzhuneyt)
 - Chg #16941: Set `yii\console\controllers\MigrateController::useTablePrefix` to true as default value (GHopperMSK)
@@ -106,6 +111,9 @@ Yii Framework 2 Change Log
 - Bug #16897: Fixed `yii\db\sqlite\Schema` missing primary key constraint detection in case of `INTEGER PRIMARY KEY` (bizley)
 - Bug #16687: Add missing translations for `nl-NL` durations used in `yii\i18n\Formatter::asDuration()` (alexeevdv)
 - Bug #16469: Allow cache to be specified as interface and to be configured in DI container (alexeevdv)
+- Bug #16959: Fixed typo in if condition inside `yii\web\DbSession::typecastFields()` that caused problems with session overwriting (silverfire)
+- Bug #15876: `yii\db\ActiveQuery::viaTable()` now throws `InvalidConfigException`, if query is not prepared correctly (silverfire)
+- Bug #15931: `yii\db\ActiveRecord::findOne()` now accepts quoted table and column names using curly and square braces respectively (silverfire)
 
 2.0.15.1 March 21, 2018
 -----------------------

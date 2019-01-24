@@ -480,8 +480,8 @@ class BaseInflector
         $parts = explode($replacement, static::transliterate($string));
 
         $replaced = array_map(function ($element) use ($replacement) {
-            $element = preg_replace('/[^a-zA-Z0-9=\s—–]+/u', '', $element);
-            return preg_replace('/[=\s—–]+/u', $replacement, $element);
+            $element = preg_replace('/[^a-zA-Z0-9=\s—–-]+/u', '', $element);
+            return preg_replace('/[=\s—–-]+/u', $replacement, $element);
         }, $parts);
 
         $string = trim(implode($replacement, $replaced), $replacement);
