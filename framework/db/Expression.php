@@ -8,11 +8,11 @@
 namespace yii\db;
 
 /**
- * Expression represents a DB expression that does not need escaping or quoting.
+ * Expression 表示不需要转义或引用的 DB 表达式。
  *
- * When an Expression object is embedded within a SQL statement or fragment,
- * it will be replaced with the [[expression]] property value without any
- * DB escaping or quoting. For example,
+ * 当表达式对象嵌入到 SQL 语句或片段时，
+ * 它将替换为 [[expression]] 属性值，而不进行任何的 DB 转义或引用。
+ * 例如，
  *
  * ```php
  * $expression = new Expression('NOW()');
@@ -20,10 +20,10 @@ namespace yii\db;
  * echo $now; // prints the current date
  * ```
  *
- * Expression objects are mainly created for passing raw SQL expressions to methods of
- * [[Query]], [[ActiveQuery]], and related classes.
+ * 表达式对象主要用于将原始 SQL 表达式传递给[[Query]]，
+ * [[ActiveQuery]] 和相关类的方法。
  *
- * An expression can also be bound with parameters specified via [[params]].
+ * 表达式还可以通过 [[params]] 指定的参数绑定。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -31,22 +31,22 @@ namespace yii\db;
 class Expression extends \yii\base\BaseObject implements ExpressionInterface
 {
     /**
-     * @var string the DB expression
+     * @var string DB 表达式
      */
     public $expression;
     /**
-     * @var array list of parameters that should be bound for this expression.
-     * The keys are placeholders appearing in [[expression]] and the values
-     * are the corresponding parameter values.
+     * @var array 应为此表达式绑定的参数列表。
+     * 键是出现在 [[expression]] 中的占位符，
+     * 值是相应的参数值。
      */
     public $params = [];
 
 
     /**
-     * Constructor.
-     * @param string $expression the DB expression
-     * @param array $params parameters
-     * @param array $config name-value pairs that will be used to initialize the object properties
+     * 构造函数。
+     * @param string $expression DB 表达式
+     * @param array $params 参数
+     * @param array $config 将用于初始化对象属性的键值对
      */
     public function __construct($expression, $params = [], $config = [])
     {
@@ -56,8 +56,8 @@ class Expression extends \yii\base\BaseObject implements ExpressionInterface
     }
 
     /**
-     * String magic method.
-     * @return string the DB expression.
+     * String 魔术方法。
+     * @return string DB 表达式。
      */
     public function __toString()
     {
