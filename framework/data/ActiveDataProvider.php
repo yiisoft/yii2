@@ -99,7 +99,8 @@ class ActiveDataProvider extends BaseDataProvider
     protected function prepareModels()
     {
         $query = $this->prepareQuery();
-        return $query->all($this->db);
+
+        return $query ? $query->all($this->db) : [];
     }
 
     /**
@@ -117,7 +118,7 @@ class ActiveDataProvider extends BaseDataProvider
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
             if ($pagination->totalCount === 0) {
-                return [];
+                return false;
             }
             $query->limit($pagination->getLimit())->offset($pagination->getOffset());
         }
