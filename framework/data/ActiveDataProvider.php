@@ -119,9 +119,8 @@ class ActiveDataProvider extends BaseDataProvider
             $pagination->totalCount = $this->getTotalCount();
             if ($pagination->totalCount === 0) {
                 $query->emulateExecution();
-            } else {
-                $query->limit($pagination->getLimit())->offset($pagination->getOffset());
             }
+            $query->limit($pagination->getLimit())->offset($pagination->getOffset());
         }
         if (($sort = $this->getSort()) !== false) {
             $query->addOrderBy($sort->getOrders());
