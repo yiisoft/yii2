@@ -105,7 +105,7 @@ class ActiveDataProvider extends BaseDataProvider
 
     /**
      * Prepares the sql-query that will get the data for current page.
-     * @return array|QueryInterface
+     * @return QueryInterface
      * @throws InvalidConfigException
      */
     public function prepareQuery()
@@ -118,9 +118,10 @@ class ActiveDataProvider extends BaseDataProvider
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
             if ($pagination->totalCount === 0) {
-                return false;
+                $query->emulateExecution();
+            } else {
+                $query->limit($pagination->getLimit())->offset($pagination->getOffset());
             }
-            $query->limit($pagination->getLimit())->offset($pagination->getOffset());
         }
         if (($sort = $this->getSort()) !== false) {
             $query->addOrderBy($sort->getOrders());
