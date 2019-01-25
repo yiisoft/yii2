@@ -100,7 +100,7 @@ class ActiveDataProvider extends BaseDataProvider
     {
         $query = $this->prepareQuery();
 
-        return $query ? $query->all($this->db) : [];
+        return $query->all($this->db);
     }
 
     /**
