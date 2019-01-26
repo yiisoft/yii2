@@ -8,10 +8,10 @@
 namespace yii\helpers;
 
 /**
- * Class IpHelper provides a set of IP-related static methods.
+ * IpHelper 类提供了一组与 IP-related 相关的静态方法。
  *
- * Methods expect correct IP addresses.
- * To validate IP addresses use [[\yii\validators\IpValidator|IpValidator]].
+ * 方法需要正确的 IP 地址。
+ * 验证 IP 地址请使用类 [[\yii\validators\IpValidator|IpValidator]]。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
