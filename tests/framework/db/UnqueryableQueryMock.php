@@ -17,7 +17,11 @@ class UnqueryableQueryMock extends Query
      */
     public function one($db = null)
     {
-        throw new InvalidCallException();
+        if (!$this->emulateExecution) {
+            throw new InvalidCallException();
+        }
+
+        return true;
     }
 
     /**
@@ -25,6 +29,10 @@ class UnqueryableQueryMock extends Query
      */
     public function all($db = null)
     {
-        throw new InvalidCallException();
+        if (!$this->emulateExecution) {
+            throw new InvalidCallException();
+        }
+
+        return [];
     }
 }

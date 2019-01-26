@@ -180,11 +180,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         $this->assertCount(2, $provider->getModels());
     }
 
-    /**
-     * Turned off due to it have no sense when emulateExecution is true.
-     * Unfortunately there isn't way to check emulateExecution value duting test.
-     */
-    public function turnoff_testDoesNotPerformQueryWhenHasNoModels()
+    public function testDoesNotPerformQueryWhenHasNoModels()
     {
         $query = new UnqueryableQueryMock();
         $provider = new ActiveDataProvider([
@@ -193,7 +189,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         ]);
         $pagination = $provider->getPagination();
         $this->assertEquals(0, $pagination->getPageCount());
-
         try {
             $this->assertCount(0, $provider->getModels());
         } catch (InvalidCallException $exception) {
