@@ -8,7 +8,7 @@
 namespace yii\helpers;
 
 /**
- * Html 提供了一组用于生产常用 HTML 标记的静态方法。
+ * Html 提供了一组用于生成常用 HTML 标记的静态方法。
  *
  * 这个类中的几乎所有方法都允许为它们生成的 html 标记设置额外的 html 属性。 
  * 你能够指定，例如，html 元素中的 `class`，`style` 或者 `id` 作为 `$options` 中的参数来使用 。
