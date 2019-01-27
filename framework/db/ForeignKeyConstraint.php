@@ -8,7 +8,7 @@
 namespace yii\db;
 
 /**
- * ForeignKeyConstraint represents the metadata of a table `FOREIGN KEY` constraint.
+ * ForeignKeyConstraint 表示表 `FOREIGN KEY` 约束的元数据。
  *
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
@@ -16,23 +16,23 @@ namespace yii\db;
 class ForeignKeyConstraint extends Constraint
 {
     /**
-     * @var string|null referenced table schema name.
+     * @var string|null 引用的表结构名称。
      */
     public $foreignSchemaName;
     /**
-     * @var string referenced table name.
+     * @var string 引用的表名。
      */
     public $foreignTableName;
     /**
-     * @var string[] list of referenced table column names.
+     * @var string[] 引用的表列名列表。
      */
     public $foreignColumnNames;
     /**
-     * @var string|null referential action if rows in a referenced table are to be updated.
+     * @var string|null 如果要更新被引用表中的行，则执行引用操作。
      */
     public $onUpdate;
     /**
-     * @var string|null referential action if rows in a referenced table are to be deleted.
+     * @var string|null 如果要删除被引用表中的行，则执行引用操作。
      */
     public $onDelete;
 }
