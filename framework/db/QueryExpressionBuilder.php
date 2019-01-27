@@ -25,7 +25,7 @@ class QueryExpressionBuilder implements ExpressionBuilderInterface
      *
      * @param ExpressionInterface|Query $expression 要构建的表达式。
      * @param array $params 绑定参数。
-     * @return string 不会被转译或引用的原始 SQL。
+     * @return string 不会被转义或引用的原始 SQL。
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
