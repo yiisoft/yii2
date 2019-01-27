@@ -21,14 +21,14 @@ namespace yii\caching;
 abstract class Dependency extends \yii\base\BaseObject
 {
     /**
-     * @var mixed 存储在缓存中的依赖数据，将来会取出来和最新的依赖数据
-     * 进行比较
+     * @var mixed 存储在缓存中的依赖数据，
+     * 将来会取出来和最新的依赖数据进行比较。
      */
     public $data;
     /**
      * @var bool 依赖是否重用。True 表示当前依赖对象的依赖数据只在每个请求里生成一次。
      * 这允许你在多个单独的缓存调用中使用相同的缓存依赖对象，
-     * 这样就会生成相同的数据页但是减少了每次生成缓存数据的开销，
+     * 这样就会生成相同的数据页但是减少了每次生成缓存数据的开销。
      * 默认是 false。
      */
     public $reusable = false;
