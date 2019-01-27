@@ -1187,13 +1187,13 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $columns = array_flip($record->attributes());
         foreach ($row as $name => $value) {
             if (isset($columns[$name])) {
-                $record->_attributes[$name] = is_scalar($value) ? $value : clone $value;
+                $record->_attributes[$name] = $value instanceof ArrayExpression ? clone $value : $value;
             } elseif ($record->canSetProperty($name)) {
                 $record->$name = $value;
             }
         }
         foreach ($record->_attributes as $key => $value) {
-            $record->_oldAttributes[$key] = is_scalar($value) ? $value : clone $value;
+            $record->_oldAttributes[$key] = $value instanceof ArrayExpression ? clone $value : $value;
         }
         $record->_related = [];
         $record->_relationsDependencies = [];
