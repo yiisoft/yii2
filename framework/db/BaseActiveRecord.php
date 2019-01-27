@@ -641,13 +641,60 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         } else {
             foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
+                if (
+                    isset($names[$name]) &&
+                    (!array_key_exists($name, $this->_oldAttributes) ||
+                        !$this->isEqual($value, $this->_oldAttributes[$name])
+                    )
+                ) {
                     $attributes[$name] = $value;
                 }
             }
         }
 
         return $attributes;
+    }
+
+
+    /**
+     * Compares two values
+     * @param mixed $val1
+     * @param mixed $val2
+     * @return bool
+     */
+    protected function isEqual($val1, $val2)
+    {
+        if (gettype($val1) !== gettype($val2)) {
+            return false;
+        }
+
+        switch (gettype($val1)) {
+            case 'object':
+                return $this->isObjectsEqual($val1, $val2);
+                break;
+            default:
+                return $val1 === $val2;
+        }
+    }
+
+    /**
+     * Compares two objects
+     * @param mixed $obj1
+     * @param mixed $obj2
+     * @return bool
+     */
+    protected function isObjectsEqual($obj1, $obj2)
+    {
+        if (get_class($obj1) !== get_class($obj2)) {
+            return false;
+        }
+
+        switch (get_class($obj1)) {
+            case 'yii\db\ArrayExpression':
+                return $obj1->getValue() === $obj2->getValue();
+            default:
+                throw new InvalidArgumentException('Unsupported object class ' . get_class($obj1));
+        }
     }
 
     /**
