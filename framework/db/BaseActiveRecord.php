@@ -599,12 +599,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Returns a value indicating whether the named attribute has been changed.
      * @param string $name the name of the attribute.
-     * @param bool $identical whether the comparison of new and old value is made for
-     * identical values using `===`, defaults to `true`. Otherwise `==` is used for comparison.
-     * This parameter is available since version 2.0.4.
      * @return bool whether the attribute has been changed
      */
-    public function isAttributeChanged($name, $identical = true)
+    public function isAttributeChanged($name)
     {
         if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
             return $this->isEqual($this->_attributes[$name], $this->_oldAttributes[$name]);
@@ -615,9 +612,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns the attribute values that have been modified since they are loaded or saved most recently.
-     *
-     * The comparison of new and old values is made for identical values using `===`.
-     *
      * @param string[]|null $names the names of the attributes whose values may be returned if they are
      * changed recently. If null, [[attributes()]] will be used.
      * @return array the changed attribute values (name-value pairs)
@@ -667,7 +661,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         switch (gettype($val1)) {
             case 'object':
                 return $this->isObjectsEqual($val1, $val2);
-                break;
             default:
                 return $val1 === $val2;
         }
