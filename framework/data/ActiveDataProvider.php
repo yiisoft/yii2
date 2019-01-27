@@ -98,14 +98,27 @@ class ActiveDataProvider extends BaseDataProvider
      */
     protected function prepareModels()
     {
+        $query = $this->prepareQuery();
+
+        return $query->all($this->db);
+    }
+
+    /**
+     * Prepares the sql-query that will get the data for current page.
+     * @return QueryInterface
+     * @throws InvalidConfigException
+     */
+    public function prepareQuery()
+    {
         if (!$this->query instanceof QueryInterface) {
             throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
         }
+
         $query = clone $this->query;
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
             if ($pagination->totalCount === 0) {
-                return [];
+                $query->emulateExecution();
             }
             $query->limit($pagination->getLimit())->offset($pagination->getOffset());
         }
@@ -113,7 +126,7 @@ class ActiveDataProvider extends BaseDataProvider
             $query->addOrderBy($sort->getOrders());
         }
 
-        return $query->all($this->db);
+        return $query;
     }
 
     /**

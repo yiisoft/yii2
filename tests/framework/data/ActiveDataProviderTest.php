@@ -189,7 +189,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         ]);
         $pagination = $provider->getPagination();
         $this->assertEquals(0, $pagination->getPageCount());
-
         try {
             $this->assertCount(0, $provider->getModels());
         } catch (InvalidCallException $exception) {
