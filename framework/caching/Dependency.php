@@ -11,7 +11,7 @@ namespace yii\caching;
  * Dependency 是缓存依赖类的基类。
  *
  * 子类应该覆盖它的 [[generateDependencyData()]] 方法，
- * 用来产生实际具体的依赖数据
+ * 用来产生实际具体的依赖数据。
  *
  * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
