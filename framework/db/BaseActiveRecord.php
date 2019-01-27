@@ -607,11 +607,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function isAttributeChanged($name, $identical = true)
     {
         if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
-            if ($identical) {
-                return $this->_attributes[$name] !== $this->_oldAttributes[$name];
-            }
-
-            return $this->_attributes[$name] != $this->_oldAttributes[$name];
+            return $this->isEqual($this->_attributes[$name], $this->_oldAttributes[$name]);
         }
 
         return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
@@ -692,6 +688,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         switch (get_class($obj1)) {
             case 'yii\db\ArrayExpression':
                 return $obj1->getValue() === $obj2->getValue();
+            case 'yii\db\Expression':
+                return (string) $obj1 === (string) $obj2;
             default:
                 throw new InvalidArgumentException('Unsupported object class ' . get_class($obj1));
         }
