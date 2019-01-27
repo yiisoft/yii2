@@ -59,7 +59,7 @@ abstract class Dependency extends \yii\base\BaseObject
 
     /**
      * 返回表明依赖是否发生变化的值。
-     * @deprecated 从 2.0.11 版本可用，将要从 2.1 版本移除，请用 [[isChanged()]] 方法代替。
+     * @deprecated 从 2.0.11 版本可用，将要从 2.1 版本移除。请用 [[isChanged()]] 方法代替。
      * @param CacheInterface $cache 正在计算缓存依赖的缓存组件。
      * @return bool 当前依赖是否发生了变化。
      */
