@@ -11,7 +11,7 @@ namespace yii\db;
  * 接口 ExpressionInterface 应用于标记类，
  * 这些类应以特殊方式构建。
  *
- * YII 框架的数据库抽象层支持实现此接口的对象，
+ * Yii 框架的数据库抽象层支持实现此接口的对象，
  * 并将使用 [[ExpressionBuilderInterface]] 来构建它们。
  *
  * 默认实现是一个类 [[Expression]]。
