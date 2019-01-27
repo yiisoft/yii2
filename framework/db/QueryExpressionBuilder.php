@@ -8,8 +8,8 @@
 namespace yii\db;
 
 /**
- * Class QueryExpressionBuilder is used internally to build [[Query]] object
- * using unified [[QueryBuilder]] expression building interface.
+ * 类 QueryExpressionBuilder 在内部用于使用统一的
+ * [[QueryBuilder]] 表达式生成接口构建 [[Query]] 对象。
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
@@ -20,12 +20,12 @@ class QueryExpressionBuilder implements ExpressionBuilderInterface
 
 
     /**
-     * Method builds the raw SQL from the $expression that will not be additionally
-     * escaped or quoted.
+     * 通过 $expression 构建的原始 SQL，
+     * 将不会被转译或引用。
      *
-     * @param ExpressionInterface|Query $expression the expression to be built.
-     * @param array $params the binding parameters.
-     * @return string the raw SQL that will not be additionally escaped or quoted.
+     * @param ExpressionInterface|Query $expression 要构建的表达式。
+     * @param array $params 绑定参数。
+     * @return string 不会被转义或引用的原始 SQL。
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
