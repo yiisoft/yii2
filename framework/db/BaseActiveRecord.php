@@ -683,16 +683,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         // strict comparison
         $arrProperties1 = (new \ReflectionObject($obj1))->getProperties(\ReflectionProperty::IS_PUBLIC);
-        $arrProperties2 = (new \ReflectionObject($obj2))->getProperties(\ReflectionProperty::IS_PUBLIC);
-        foreach ($arrProperties1 as $key => $prop) {
+        foreach ($arrProperties1 as $prop) {
             if (is_scalar($prop)) {
                 if (!$this->isEqual($obj1->$prop, $obj2->$prop)) {
                     return false;
                 }
             } else {
-                $name1 = $prop->name;
-                $name2 = $arrProperties2[$key]->name;
-                if (!$this->isEqual($obj1->$name1, $obj2->$name2)) {
+                $name = $prop->name;
+                if (!$this->isEqual($obj1->$name, $obj2->$name)) {
                     return false;
                 }
             }
