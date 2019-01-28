@@ -11,9 +11,9 @@ use yii\base\BaseObject;
 use yii\base\InvalidArgumentException;
 
 /**
- * TableSchema represents the metadata of a database table.
+ * TableSchema 表示数据库表的元数据。
  *
- * @property array $columnNames List of column names. This property is read-only.
+ * @property array $columnNames 列名列表。此属性是只读的。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -21,29 +21,29 @@ use yii\base\InvalidArgumentException;
 class TableSchema extends BaseObject
 {
     /**
-     * @var string the name of the schema that this table belongs to.
+     * @var string 此表所属的结构的名称。
      */
     public $schemaName;
     /**
-     * @var string the name of this table. The schema name is not included. Use [[fullName]] to get the name with schema name prefix.
+     * @var string the 表名。结构名称不包括在内。使用 [[fullName]] 获取带有结构名称前缀的名称。
      */
     public $name;
     /**
-     * @var string the full name of this table, which includes the schema name prefix, if any.
-     * Note that if the schema name is the same as the [[Schema::defaultSchema|default schema name]],
-     * the schema name will not be included.
+     * @var string 表的全名，包含结构名称前缀（如果有）。
+     * 请注意，如果结构名称与 [[Schema::defaultSchema|default schema name]] 相同，
+     * 则不包括结构名称。
      */
     public $fullName;
     /**
-     * @var string[] primary keys of this table.
+     * @var string[] 表的主键。
      */
     public $primaryKey = [];
     /**
-     * @var string sequence name for the primary key. Null if no sequence.
+     * @var string 主键的序列名称。如果没有序列则为空。
      */
     public $sequenceName;
     /**
-     * @var array foreign keys of this table. Each array element is of the following structure:
+     * @var array 表的外键。每个数组元素具有以下结构：
      *
      * ```php
      * [
@@ -55,16 +55,16 @@ class TableSchema extends BaseObject
      */
     public $foreignKeys = [];
     /**
-     * @var ColumnSchema[] column metadata of this table. Each array element is a [[ColumnSchema]] object, indexed by column names.
+     * @var ColumnSchema[] 表的列元数据。每个元素都是 [[ColumnSchema]] 对象，由列名索引。
      */
     public $columns = [];
 
 
     /**
-     * Gets the named column metadata.
-     * This is a convenient method for retrieving a named column even if it does not exist.
-     * @param string $name column name
-     * @return ColumnSchema metadata of the named column. Null if the named column does not exist.
+     * 获取指定的列元数据。
+     * 这是一种检索命名列的便捷方法，即使它不存在也是如此。
+     * @param string $name 列名
+     * @return ColumnSchema 指定列的元数据。如果指定列不存在，则为空。
      */
     public function getColumn($name)
     {
@@ -72,8 +72,8 @@ class TableSchema extends BaseObject
     }
 
     /**
-     * Returns the names of all columns in this table.
-     * @return array list of column names
+     * 返回此表中所有列的名称。
+     * @return array 列名列表
      */
     public function getColumnNames()
     {
@@ -81,9 +81,9 @@ class TableSchema extends BaseObject
     }
 
     /**
-     * Manually specifies the primary key for this table.
-     * @param string|array $keys the primary key (can be composite)
-     * @throws InvalidArgumentException if the specified key cannot be found in the table.
+     * 手动指定此表的主键。
+     * @param string|array $keys 主键（可以是复合键）
+     * @throws InvalidArgumentException 如果在表中找不到指定的键抛出的异常。
      */
     public function fixPrimaryKey($keys)
     {
