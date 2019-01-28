@@ -82,7 +82,12 @@ interface IdentityInterface
      *
      * The space of such keys should be big enough to defeat potential identity attacks.
      *
-     * This is required if [[User::enableAutoLogin]] is enabled.
+     * This is required if [[User::enableAutoLogin]] is enabled. The returned key will be stored on the
+     * client side as a cookie and will be used to authenticate user even if PHP session has been expired.
+     *
+     * Make sure to invalidate earlier issued authKeys when you implement force user logout, password change and
+     * other scenarios, that require forceful access revocation for old sessions.
+     *
      * @return string a key that is used to check the validity of a given identity ID.
      * @see validateAuthKey()
      */

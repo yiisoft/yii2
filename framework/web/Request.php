@@ -371,7 +371,12 @@ class Request extends \yii\base\Request
      */
     public function getMethod()
     {
-        if (isset($_POST[$this->methodParam])) {
+        if (
+            isset($_POST[$this->methodParam])
+            // Never allow to downgrade request from WRITE methods (POST, PATCH, DELETE, etc)
+            // to read methods (GET, HEAD, OPTIONS) for security reasons.
+            && !in_array(strtoupper($_POST[$this->methodParam]), ['GET', 'HEAD', 'OPTIONS'], true)
+        ) {
             return strtoupper($_POST[$this->methodParam]);
         }
 

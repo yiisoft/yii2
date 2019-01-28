@@ -113,6 +113,9 @@ Yii Framework 2 Change Log
 - Bug #16959: Fixed typo in if condition inside `yii\web\DbSession::typecastFields()` that caused problems with session overwriting (silverfire)
 - Bug #15876: `yii\db\ActiveQuery::viaTable()` now throws `InvalidConfigException`, if query is not prepared correctly (silverfire)
 - Bug #15931: `yii\db\ActiveRecord::findOne()` now accepts quoted table and column names using curly and square braces respectively (silverfire)
+- Bug: (CVE-2018-14578): Fixed CSRF token check bypassing in `\yii\web\Request::getMethod()` (silverfire)
+- Bug: (CVE-2018-19454): Fixed excess logging of sensitive information in `\yii\log\Target` (silverfire)
+
 
 2.0.15.1 March 21, 2018
 -----------------------
