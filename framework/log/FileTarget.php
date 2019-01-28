@@ -115,9 +115,9 @@ class FileTarget extends Target
             clearstatcache();
         }
         if ($this->enableRotation && @filesize($this->logFile) > $this->maxFileSize * 1024) {
-            $this->rotateFiles();
             @flock($fp, LOCK_UN);
             @fclose($fp);
+            $this->rotateFiles();
             $writeResult = @file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
             if ($writeResult === false) {
                 $error = error_get_last();

@@ -117,6 +117,8 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
                 $options |= JSON_PRETTY_PRINT;
             }
             $response->content = Json::encode($response->data, $options);
+        } elseif ($response->content === null) {
+            $response->content = 'null';
         }
     }
 

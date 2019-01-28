@@ -403,7 +403,7 @@ public function rules()
 }
 ```
 
-In this case attributes `username`, `password` and `secret` are required, but `secret` must be assigned explicitly.
+在这种情况下，属性 `username`, `password` 和 `secret` 是必须的，但是 `secret`必须被明确指定。
 
 
 ## 数据导出 <span id="data-exporting"></span>

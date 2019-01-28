@@ -131,7 +131,7 @@ class BaseArrayHelper
                         $res[$k] = $v;
                     }
                 } elseif (is_array($v) && isset($res[$k]) && is_array($res[$k])) {
-                    $res[$k] = self::merge($res[$k], $v);
+                    $res[$k] = static::merge($res[$k], $v);
                 } else {
                     $res[$k] = $v;
                 }
@@ -143,7 +143,8 @@ class BaseArrayHelper
 
     /**
      * Retrieves the value of an array element or object property with the given key or property name.
-     * If the key does not exist in the array or object, the default value will be returned instead.
+     * If the key does not exist in the array, the default value will be returned instead.
+     * Not used when getting value from an object.
      *
      * The key may be specified in a dot format to retrieve the value of a sub-array or the property
      * of an embedded object. In particular, if the key is `x.y.z`, then the returned value would
@@ -509,7 +510,7 @@ class BaseArrayHelper
      * ```
      *
      * @param array $array
-     * @param string|\Closure $name
+     * @param int|string|\Closure $name
      * @param bool $keepKeys whether to maintain the array keys. If false, the resulting array
      * will be re-indexed with integers.
      * @return array the list of column values

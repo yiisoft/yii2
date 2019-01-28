@@ -54,7 +54,7 @@ $redis = Yii::$app->redis;
 
 // 判断 key 为 username 的是否有值，有则打印，没有则赋值
 $key = 'username';
-if ($val = $redis->get($key);) {
+if ($val = $redis->get($key)) {
     var_dump($val);
 } else {
     $redis->set($key, 'marko');
@@ -223,16 +223,19 @@ redis ActiveRecord 的一般用法与权威指南中数据库的 ActiveRecord �
 ## 直接使用命令
 
 直接使用 redis 连接，就可以使用 redis 提供的很多有用的命令。配置好 redis 后，用以下方式获取 redis 组件：
+
 ```php
 $redis = Yii::$app->redis;
 ```
 
 然后就可以执行命令了，最通用的方法是使用 executeCommand 方法：
+
 ```php
 $result = $redis->executeCommand('hmset', ['test_collection', 'key1', 'val1', 'key2', 'val2']);
 ```
 
 支持的每个命令都有一些快捷方式，可以按照如下方式使用：
+
 ```php
 $result = $redis->hmset('test_collection', 'key1', 'val1', 'key2', 'val2');
 ```

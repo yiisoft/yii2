@@ -281,6 +281,7 @@ the operator can be one of the following:
   The method will properly quote the column name and escape values in the range.
   The `in` operator also supports composite columns. In this case, operand 1 should be an array of the columns,
   while operand 2 should be an array of arrays or a `Query` object representing the range of the columns.
+  For example, `['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]]` will generate `(id, name) IN ((1, 'oy'))`.
 
 - `not in`: similar to the `in` operator except that `IN` is replaced with `NOT IN` in the generated condition.
 
@@ -912,22 +913,23 @@ namespace app\db\conditions;
 
 class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
 {
-    use \yii\db\Condition\ExpressionBuilderTrait; // Contains constructor and `queryBuilder` property.
+    use \yii\db\ExpressionBuilderTrait; // Contains constructor and `queryBuilder` property.
 
     /**
-     * @param AllGreaterCondition $condition the condition to be built
+     * @param ExpressionInterface $condition the condition to be built
      * @param array $params the binding parameters.
+     * @return AllGreaterCondition
      */ 
-    public function build(ConditionInterface $condition, &$params)
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
         $value = $condition->getValue();
         
         $conditions = [];
-        foreach ($condition->getColumns() as $column) {
+        foreach ($expression->getColumns() as $column) {
             $conditions[] = new SimpleCondition($column, '>', $value);
         }
 
-        return $this->queryBuider->buildCondition(new AndCondition($conditions), $params);
+        return $this->queryBuilder->buildCondition(new AndCondition($conditions), $params);
     }
 }
 ```

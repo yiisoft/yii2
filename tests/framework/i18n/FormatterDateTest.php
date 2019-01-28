@@ -754,6 +754,28 @@ class FormatterDateTest extends TestCase
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/15286
+     */
+    public function testTimeWithTimezoneInfo()
+    {
+        $this->formatter->defaultTimeZone = 'UTC';
+        $this->formatter->timeZone = 'Etc/GMT-3';
+
+        $time = '16:22:00.44297+03';
+
+        $this->formatter->timeFormat = 'php:H:i:s';
+        $this->assertSame('16:22:00', $this->formatter->asTime($time));
+
+        $this->formatter->timeFormat = 'HH:mm:ss';
+        $this->assertSame('16:22:00', $this->formatter->asTime($time));
+    }
+
+    public function testIntlTimeWithTimezoneInfo()
+    {
+        $this->testTimeWithTimezoneInfo();
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/6263.
      *
      * it is a PHP bug: https://bugs.php.net/bug.php?id=45543

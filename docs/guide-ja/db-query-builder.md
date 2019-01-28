@@ -281,6 +281,7 @@ $query->where([$column => $value]);
   このメソッドは、カラム名を適切に引用符で囲み、値域の値をエスケープします。
   `in` 演算子はまた複合カラムをもサポートしています。
   その場合、オペランド 1 はカラム名の配列とし、オペランド 2 は配列の配列、または、複合カラムの値域を表す `Query` オブジェクトでなければなりません。
+  例えば、`['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]]` は `(id, name) IN ((1, 'oy'))` を生成します。
 
 - `not in`: 生成される条件において `IN` が `NOT IN` に置き換えられる以外は、`in` と同じです。
 
@@ -912,22 +913,23 @@ namespace app\db\conditions;
 
 class AllGreaterConditionBuilder implements \yii\db\ExpressionBuilderInterface
 {
-    use \yii\db\Condition\ExpressionBuilderTrait; // コンストラクタと `queryBuilder` プロパティを含む。
+    use \yii\db\ExpressionBuilderTrait; // コンストラクタと `queryBuilder` プロパティを含む。
 
     /**
-     * @param AllGreaterCondition $condition ビルドすべき条件
+     * @param ExpressionInterface $condition ビルドすべき条件
      * @param array $params バインディング・パラメータ
+     * @return AllGreaterCondition
      */ 
-    public function build(ConditionInterface $condition, &$params)
+    public function build(ExpressionInterface $expression, array &$params = [])
     {
         $value = $condition->getValue();
         
         $conditions = [];
-        foreach ($condition->getColumns() as $column) {
+        foreach ($expression->getColumns() as $column) {
             $conditions[] = new SimpleCondition($column, '>', $value);
         }
 
-        return $this->queryBuider->buildCondition(new AndCondition($conditions), $params);
+        return $this->queryBuilder->buildCondition(new AndCondition($conditions), $params);
     }
 }
 ```

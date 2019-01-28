@@ -10,7 +10,7 @@ Yii の標準的なインストールを実行すると、フレームワーク�
 
 ここから続くいくつかのセクションにおいては、いわゆる *ベーシック・プロジェクト・テンプレート* とともに Yii をインストールする方法、
 および、このテンプレートの上に新しい機能を実装する方法を説明します。
-Yii はもう一つ、[アドバンスト・プロジェクト・テンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) と呼ばれるテンプレートも提供しています。
+Yii はもう一つ、[アドバンスト・プロジェクト・テンプレート](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide) と呼ばれるテンプレートも提供しています。
 こちらは、チーム開発環境において多層構造のアプリケーションを開発するときに使用する方が望ましいものです。
 
 > Info: ベーシック・プロジェクト・テンプレートは、ウェブ・アプリケーションの 90 パーセントを開発するのに適したものです。
@@ -28,7 +28,7 @@ Linux や Mac OS X では、次のコマンドを実行します。
 
 ```bash
 curl -sS https://getcomposer.org/installer | php
-mv composer.phar /usr/local/bin/composer
+sudo mv composer.phar /usr/local/bin/composer
 ```
 
 Windows では、[Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe) をダウンロードして実行します。
@@ -218,14 +218,16 @@ DocumentRoot "path/to/basic/web"
 <Directory "path/to/basic/web">
     # 綺麗な URL をサポートするために mod_rewrite を使う
     RewriteEngine on
-    # ディレクトリかファイルが存在する場合は、リクエストをそのまま通す
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    # そうでなければ、リクエストを index.php に送付する
-    RewriteRule . index.php
 
     # UrlManager の $showScriptName が false の場合は、スクリプト名で URL にアクセスすることを許さない
     RewriteRule ^index.php/ - [L,R=404]
+
+    # ディレクトリかファイルが存在する場合は、リクエストをそのまま通す
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # そうでなければ、リクエストを index.php に送付する
+    RewriteRule . index.php
 
     # ... 他の設定 ...
 </Directory>
