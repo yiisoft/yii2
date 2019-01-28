@@ -674,18 +674,22 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     protected function isObjectsEqual($obj1, $obj2)
     {
-        if (get_class($obj1) !== get_class($obj2)) {
+        /** check if objects have the same attributes and values (values are compared with ==),
+         * and are instances of the same class *
+         */
+        if ($obj1 != $obj2) {
             return false;
         }
 
-        switch (get_class($obj1)) {
-            case 'yii\db\ArrayExpression':
-                return $obj1->getValue() === $obj2->getValue();
-            case 'yii\db\Expression':
-                return (string) $obj1 === (string) $obj2;
-            default:
-                throw new InvalidArgumentException('Unsupported object class ' . get_class($obj1));
+        // strict comparison
+        $arrProperties = (new \ReflectionObject($obj1))->getProperties(\ReflectionProperty::IS_PUBLIC);
+        foreach ($arrProperties as $key => $propName) {
+            if (!$this->isEqual($obj1->$propName, $obj2->$propName)) {
+                return false;
+            }
         }
+
+        return true;
     }
 
     /**
