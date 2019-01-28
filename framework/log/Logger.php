@@ -120,10 +120,10 @@ class Logger extends Component
     {
         parent::init();
         register_shutdown_function(function () {
-            // make regular flush before other shutdown functions, which allows session data collection and so on
+            // 在其他关闭函数之前进行常规刷新，允许收集会话数据等
             $this->flush();
-            // make sure log entries written by shutdown functions are also flushed
-            // ensure "flush()" is called last when there are multiple shutdown functions
+            // 确保关闭函数写入的日志条目也被刷新
+            // 确保在有多个关闭函数时最后调用 “flush()”
             register_shutdown_function([$this, 'flush'], true);
         });
     }
@@ -146,7 +146,7 @@ class Logger extends Component
         if ($this->traceLevel > 0) {
             $count = 0;
             $ts = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            array_pop($ts); // remove the last trace since it would be the entry script, not very useful
+            array_pop($ts); // 删除最后一个跟踪，因为它是入口脚本，不太有用
             foreach ($ts as $trace) {
                 if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII2_PATH) !== 0) {
                     unset($trace['object'], $trace['args']);
@@ -171,7 +171,7 @@ class Logger extends Component
     {
         $messages = $this->messages;
         // https://github.com/yiisoft/yii2/issues/5619
-        // new messages could be logged while the existing ones are being handled by targets
+        // 当目标正在处理现有消息时，可以记录新消息。
         $this->messages = [];
         if ($this->dispatcher instanceof Dispatcher) {
             $this->dispatcher->dispatch($messages, $final);

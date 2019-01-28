@@ -26,7 +26,7 @@ use yii\helpers\FileHelper;
 class FileTarget extends Target
 {
     /**
-     * @var string 日志文件路径或[路径别名]（概念别名）。 如果未设置，它将使用 "@runtime/logs/app.log" 文件。
+     * @var string 日志文件路径或[路径别名]（概念别名）。 如果未设置，它将使用 “@runtime/logs/app.log” 文件。
      * 如果不存在，将自动创建包含日志文件的目录。
      */
     public $logFile;
@@ -40,7 +40,7 @@ class FileTarget extends Target
     /**
      * @var int 最大日志文件大小，以千字节为单位。 默认为 10240，表示 10MB。
      */
-    public $maxFileSize = 10240; // in KB
+    public $maxFileSize = 10240; // 以KB为单位
     /**
      * @var int 用于轮换的日志文件数。 默认为 5。
      */

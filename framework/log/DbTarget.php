@@ -40,7 +40,7 @@ class DbTarget extends Target
      */
     public $db = 'db';
     /**
-     * @var string 用于存储缓存内容的表的名称。 默认为 "log" 。
+     * @var string 用于存储缓存内容的表的名称。 默认为 “log”。
      */
     public $logTable = '{{%log}}';
 
@@ -48,7 +48,7 @@ class DbTarget extends Target
     /**
      * 初始化 DbTarget 组件。
      * 此方法将初始化 [[db]] 属性以确保它引用有效的数据库连接。
-     * @throws InvalidConfigException 如果 [[db]] 无效，将抛出异常 InvalidConfigException 。
+     * @throws InvalidConfigException 如果 [[db]] 无效，将抛出异常 InvalidConfigException。
      */
     public function init()
     {
@@ -58,15 +58,15 @@ class DbTarget extends Target
 
     /**
      * 将日志消息存储到数据库。
-     * 从版本 2.0.14 开始，如果无法导出日志，此方法将抛出 LogRuntimeException 。
+     * 从版本 2.0.14 开始，如果无法导出日志，此方法将抛出 LogRuntimeException。
      * @throws Exception
      * @throws LogRuntimeException
      */
     public function export()
     {
         if ($this->db->getTransaction()) {
-            //创建新的数据库连接，
-            //如果存在打开的事务，则确保 insert 语句不受回滚的影响
+            // 创建新的数据库连接，
+            // 如果存在打开的事务，则确保 insert 语句不受回滚的影响
             $this->db = clone $this->db;
         }
 
@@ -77,7 +77,7 @@ class DbTarget extends Target
         foreach ($this->messages as $message) {
             list($text, $level, $category, $timestamp) = $message;
             if (!is_string($text)) {
-                //如果某个闭包调用了堆栈，则异常可能无法序列化。
+                // 如果某个闭包调用了堆栈，则异常可能无法序列化。
                 if ($text instanceof \Throwable || $text instanceof \Exception) {
                     $text = (string) $text;
                 } else {

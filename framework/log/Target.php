@@ -27,10 +27,10 @@ use yii\web\Request;
  * 此外，您可以指定 [[except]] 以排除某些类别的消息。
  *
  * @property bool $enabled 指示是否启用此日志目标。默认为 true。
- * 请注意，此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getEnabled()]] 和 [[setEnabled()]] 。
+ * 请注意，此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getEnabled()]] 和 [[setEnabled()]]。
  * @property int $levels 需要记录的消息级别。默认为 0，表示所有可用级别。
  * 请注意，此属性的类型在 getter 和 setter 中有所不同。
- * 有关详细信息，请参见 [[getLevels()]] 和 [[setLevels()]] 。
+ * 有关详细信息，请参见 [[getLevels()]] 和 [[setLevels()]]。
  *
  * 有关 Target 的更多详细信息和使用信息，请参阅[有关日志记录和目标的指南文章]（指南：运行时日志记录）。
  *
@@ -43,7 +43,7 @@ abstract class Target extends Component
      * @var array 需要记录的消息类别列表。
      * 默认为空，表示所有类别。
      * 您可以在类别末尾使用星号，以便可以使用该类别来匹配共享相同公共前缀的类别。
-     * 例如， 'yii\db\*' 将匹配以 'yii\db\' 开头的类别，例如 'yii\db\Connection' 。
+     * 例如， 'yii\db\*' 将匹配以 'yii\db\' 开头的类别，例如 'yii\db\Connection'。
      */
     public $categories = [];
     /**
@@ -51,7 +51,7 @@ abstract class Target extends Component
      * 默认为空，表示没有需要排除的消息。
      * 如果此属性不为空，则此处列出的任何类别都将从 [[categories]] 中排除。
      * 您可以在类别末尾使用星号，以便该类别可用于匹配共享相同公共前缀的类别。
-     * 例如， 'yii\db\*' 将匹配以 'yii\db\' 开头的类别，例如 'yii\db\Connection' 。
+     * 例如， 'yii\db\*' 将匹配以 'yii\db\' 开头的类别，例如 'yii\db\Connection'。
      * @see categories
      */
     public $except = [];
@@ -64,9 +64,9 @@ abstract class Target extends Component
      * 从版本 2.0.9 开始，可以使用其他语法：
      * 每个元素都可以指定为以下之一：
      *
-     * - `var` 会记录 `var` 。
-     * - `var.key` 只会记录 `var[key]` 。
-     * - `!var.key` 会排除 `var[key]` 。
+     * - `var` 会记录 `var`。
+     * - `var.key` 只会记录 `var[key]`。
+     * - `!var.key` 会排除 `var[key]`。
      *
      * 请注意，如果您需要记录 $_SESSION ，无论是否使用了会话，
      * 您都必须在请求开始时立即打开它。
@@ -80,7 +80,7 @@ abstract class Target extends Component
      * 如果未设置，将使用 [[getMessagePrefix()]] ，该消息在消息前面加上上下文信息。
      * 例如用户IP，用户ID和会话ID。
      *
-     * 可调用的函数应该是 `function ($message)` 。
+     * 可调用的函数应该是 `function ($message)`。
      */
     public $prefix;
     /**
@@ -96,7 +96,7 @@ abstract class Target extends Component
     public $messages = [];
     /**
      * @var bool 是否以微秒记录时间。
-     * 默认是 false 。
+     * 默认是 false。
      * @since 2.0.13
      */
     public $microtime = false;
@@ -116,7 +116,7 @@ abstract class Target extends Component
      * 此方法将使用 [[levels]] 和 [[categories]] 过滤给定的消息。
      * 如果需要，它还会将过滤结果导出到特定介质（例如电子邮件）。
      * @param array $messages 记录要处理的消息。
-     * 有关每条消息的结构，请参见 [[Logger::messages]] 。
+     * 有关每条消息的结构，请参见 [[Logger::messages]]。
      * @param bool $final 是否在当前应用程序结束时调用此方法。
      */
     public function collect($messages, $final)
@@ -169,7 +169,7 @@ abstract class Target extends Component
      * 也可以是表示消息级别值的整数。
      * 有效级别名称包括： 'error' ，'warning' ， 'info' ， 'trace' 和 'profile' ;
      * 有效级别值包括： [[Logger::LEVEL_ERROR]] ， [[Logger::LEVEL_WARNING]] ， [[Logger::LEVEL_INFO]] ，
-     * [[Logger::LEVEL_TRACE]] 和 [[Logger::LEVEL_PROFILE]] 。
+     * [[Logger::LEVEL_TRACE]] 和 [[Logger::LEVEL_PROFILE]]。
      *
      * 举个例子，
      *
@@ -266,7 +266,7 @@ abstract class Target extends Component
         list($text, $level, $category, $timestamp) = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
-            //如果某个闭包调用了堆栈，则异常可能无法序列化。
+            // 如果某个闭包调用了堆栈，则异常可能无法序列化。
             if ($text instanceof \Throwable || $text instanceof \Exception) {
                 $text = (string) $text;
             } else {
@@ -343,7 +343,7 @@ abstract class Target extends Component
 
     /**
      * 检查日志目标是否已启用。
-     * @property bool 指示是否启用此日志目标。 默认为 true 。
+     * @property bool 指示是否启用此日志目标。 默认为 true。
      * @return bool 一个指示是否启用此日志目标的布尔值。
      */
     public function getEnabled()
@@ -356,8 +356,8 @@ abstract class Target extends Component
     }
 
     /**
-     * 返回格式化以后的消息时间戳，格式为： 'Y-m-d H:i:s' 。
-     * 如果 [[microtime]] 配置为 true ，则格式为 'Y-m-d H:i:s.u' 。
+     * 返回格式化以后的消息时间戳，格式为： 'Y-m-d H:i:s'。
+     * 如果 [[microtime]] 配置为 true ，则格式为 'Y-m-d H:i:s.u'。
      * @param float $timestamp
      * @return string
      * @since 2.0.13

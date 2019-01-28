@@ -61,7 +61,7 @@ class SyslogTarget extends Target
 
     /**
      * 将日志消息写入系统日志（ syslog ）中。
-     * 从版本 2.0.14 开始，如果日志无法导出，将抛出异常 LogRuntimeException 。
+     * 从版本 2.0.14 开始，如果日志无法导出，将抛出异常 LogRuntimeException。
      * @throws LogRuntimeException
      */
     public function export()
@@ -83,7 +83,7 @@ class SyslogTarget extends Target
         list($text, $level, $category, $timestamp) = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
-            //如果某个闭包调用了堆栈，则异常可能无法序列化。
+            // 如果某个闭包调用了堆栈，则异常可能无法序列化。
             if ($text instanceof \Throwable || $text instanceof \Exception) {
                 $text = (string) $text;
             } else {

@@ -12,7 +12,7 @@ use yii\base\Component;
 use yii\base\ErrorHandler;
 
 /**
- * Dispatcher 管理一组 [[Target|log targets]] 。
+ * Dispatcher 管理一组 [[Target|log targets]]。
  *
  * Dispatcher 实现方法 [[dispatch()]] 将日志消息从 [[Logger]]
  * 转发到 [[targets]]。
@@ -52,8 +52,8 @@ use yii\base\ErrorHandler;
  *
  * @property int $flushInterval 在将消息发送到目标之前应记录多少条消息。
  * 此方法返回 [[Logger::flushInterval]] 的值。
- * @property Logger $logger 记录器。 如果未设置，将使用 [[\Yii::getLogger()]] 。
- * 请注意，此属性的类型在 getter 和 setter 中有所不同。 有关详细信息，请参见 [[getLogger()]] 和 [[setLogger()]] 。
+ * @property Logger $logger 记录器。 如果未设置，将使用 [[\Yii::getLogger()]]。
+ * 请注意，此属性的类型在 getter 和 setter 中有所不同。 有关详细信息，请参见 [[getLogger()]] 和 [[setLogger()]]。
  * @property int $traceLevel 每个消息应记录多少应用程序调用堆栈。
  * 此方法返回 [[Logger::traceLevel]] 的值。 默认为 0。
  *
@@ -106,8 +106,8 @@ class Dispatcher extends Component
 
     /**
      * 获取连接的记录器。
-     * 如果未设置，将使用 [[\Yii::getLogger()]] 。
-     * @property Logger 记录器。 如果未设置，将使用 [[\Yii::getLogger()]] 。
+     * 如果未设置，将使用 [[\Yii::getLogger()]]。
+     * @property Logger 记录器。 如果未设置，将使用 [[\Yii::getLogger()]]。
      * @return Logger 记录器
      */
     public function getLogger()
@@ -176,7 +176,7 @@ class Dispatcher extends Component
     }
 
     /**
-     * 将记录的消息调度到 [[targets]] 。
+     * 将记录的消息调度到 [[targets]]。
      * @param array $messages 记录的消息
      * @param bool $final 是否在当前应用程序结束时调用此方法
      */
