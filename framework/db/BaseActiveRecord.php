@@ -645,7 +645,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         return $attributes;
     }
 
-
     /**
      * Compares two values
      * @param mixed $val1
@@ -674,8 +673,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     protected function isObjectsEqual($obj1, $obj2)
     {
-        /** check if objects have the same attributes and values (values are compared with ==),
-         * and are instances of the same class *
+        /**
+         * Сheck if objects have the same attributes and values (values are compared with ==),
+         * and are instances of the same class
          */
         if ($obj1 != $obj2) {
             return false;
