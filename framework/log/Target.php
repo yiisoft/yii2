@@ -57,7 +57,7 @@ abstract class Target extends Component
     public $except = [];
     /**
      * @var array 需要记录在消息中的PHP预定义变量的列表。
-     * 请注意，必须可以通过 `$ GLOBALS` 访问变量。 否则将不会记录。
+     * 请注意，必须可以通过 `$ GLOBALS` 访问变量。否则将不会记录。
      *
      * 默认是 `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`。
      *
@@ -84,7 +84,7 @@ abstract class Target extends Component
      */
     public $prefix;
     /**
-     * @var int 累积多少条消息后才导出。 默认值为 1000。
+     * @var int 累积多少条消息后才导出。默认值为 1000。
      * 请注意，应用程序终止时将始终会导出消息。
      * 如果将此属性设置为 0，则只会在应用程序终止之时导出消息。
      */
@@ -140,7 +140,7 @@ abstract class Target extends Component
     /**
      * 生成要记录的上下文信息。
      * 默认会存储用户信息，系统变量等。
-     * @return string 上下文信息。 如果是空字符串，则表示没有上下文信息。
+     * @return string 上下文信息。如果是空字符串，则表示没有上下文信息。
      */
     protected function getContextMessage()
     {
@@ -217,8 +217,8 @@ abstract class Target extends Component
      * 消息结构遵循 [[Logger::messages]] 中的消息结构。
      * @param int $levels 要过滤的消息级别。
      * 值 0 表示允许所有级别。
-     * @param array $categories 要过滤的消息类别。 如果为空，则表示允许所有类别。
-     * @param array $except 要排除的消息类别。 如果为空，则表示允许所有类别。
+     * @param array $categories 要过滤的消息类别。如果为空，则表示允许所有类别。
+     * @param array $except 要排除的消息类别。如果为空，则表示允许所有类别。
      * @return array 过滤后的消息。
      */
     public static function filterMessages($messages, $levels = 0, $categories = [], $except = [])
@@ -343,7 +343,7 @@ abstract class Target extends Component
 
     /**
      * 检查日志目标是否已启用。
-     * @property bool 指示是否启用此日志目标。 默认为 true。
+     * @property bool 指示是否启用此日志目标。默认为 true。
      * @return bool 一个指示是否启用此日志目标的布尔值。
      */
     public function getEnabled()

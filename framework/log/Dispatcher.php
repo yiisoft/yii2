@@ -52,10 +52,10 @@ use yii\base\ErrorHandler;
  *
  * @property int $flushInterval 在将消息发送到目标之前应记录多少条消息。
  * 此方法返回 [[Logger::flushInterval]] 的值。
- * @property Logger $logger 记录器。 如果未设置，将使用 [[\Yii::getLogger()]]。
- * 请注意，此属性的类型在 getter 和 setter 中有所不同。 有关详细信息，请参见 [[getLogger()]] 和 [[setLogger()]]。
+ * @property Logger $logger 记录器。如果未设置，将使用 [[\Yii::getLogger()]]。
+ * 请注意，此属性的类型在 getter 和 setter 中有所不同。有关详细信息，请参见 [[getLogger()]] 和 [[setLogger()]]。
  * @property int $traceLevel 每个消息应记录多少应用程序调用堆栈。
- * 此方法返回 [[Logger::traceLevel]] 的值。 默认为 0。
+ * 此方法返回 [[Logger::traceLevel]] 的值。默认为 0。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -107,7 +107,7 @@ class Dispatcher extends Component
     /**
      * 获取连接的记录器。
      * 如果未设置，将使用 [[\Yii::getLogger()]]。
-     * @property Logger 记录器。 如果未设置，将使用 [[\Yii::getLogger()]]。
+     * @property Logger 记录器。如果未设置，将使用 [[\Yii::getLogger()]]。
      * @return Logger 记录器
      */
     public function getLogger()
@@ -135,7 +135,7 @@ class Dispatcher extends Component
 
     /**
      * @return int 每个消息应记录多少应用程序调用堆栈。
-     * 此方法返回 [[Logger::traceLevel]] 的值。 默认为 0。
+     * 此方法返回 [[Logger::traceLevel]] 的值。默认为 0。
      */
     public function getTraceLevel()
     {
@@ -144,7 +144,7 @@ class Dispatcher extends Component
 
     /**
      * @param int $value 每个消息应记录多少应用程序调用堆栈。
-     * 此方法将设置 [[Logger::traceLevel]] 的值。 如果该值大于 0，表示将记录该调用堆栈的最大数量。
+     * 此方法将设置 [[Logger::traceLevel]] 的值。如果该值大于 0，表示将记录该调用堆栈的最大数量。
      * 请注意，只计算应用程序调用堆栈。
      * 默认为 0。
      */

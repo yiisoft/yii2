@@ -40,7 +40,7 @@ class DbTarget extends Target
      */
     public $db = 'db';
     /**
-     * @var string 用于存储缓存内容的表的名称。 默认为 “log”。
+     * @var string 用于存储缓存内容的表的名称。默认为 “log”。
      */
     public $logTable = '{{%log}}';
 
