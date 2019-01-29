@@ -40,7 +40,7 @@ Extension is a set of classes, asset bundles and configurations that adds more f
 
 ## installation
 
-Installation is a process of preparing something to work either by following a readme file or by executing specially prepared script. In case of Yii it's setting permissions and fullfilling software requirements.
+Installation is a process of preparing something to work either by following a readme file or by executing specially prepared script. In case of Yii it's setting permissions and fulfilling software requirements.
 
 # M
 
