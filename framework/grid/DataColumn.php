@@ -17,21 +17,21 @@ use yii\helpers\Html;
 use yii\helpers\Inflector;
 
 /**
- * DataColumn is the default column type for the [[GridView]] widget.
+ * DataColumn 是 [[GridView]] 小部件的默认列类型。
  *
- * It is used to show data columns and allows [[enableSorting|sorting]] and [[filter|filtering]] them.
+ * 它用于显示数据列并且可以使用 [[enableSorting|sorting]] 和 [[filter|filtering]]。
  *
- * A simple data column definition refers to an attribute in the data model of the
- * GridView's data provider. The name of the attribute is specified by [[attribute]].
+ * 简单的数据列定义是指 GridView 数据提供者的数据模型中的属性。
+ * 属性的名称由 [[attribute]] 来指定。
  *
- * By setting [[value]] and [[label]], the header and cell content can be customized.
+ * 通过设置 [[value]] 和 [[label]]，标题和单元格内容可以自定义。
  *
- * A data column differentiates between the [[getDataCellValue|data cell value]] and the
- * [[renderDataCellContent|data cell content]]. The cell value is an un-formatted value that
- * may be used for calculation, while the actual cell content is a [[format|formatted]] version of that
- * value which may contain HTML markup.
+ * 数据列区分 [[getDataCellValue|data cell value]] 和 [[renderDataCellContent|data cell content]]。
+ * 单元格值是可以用于计算的未格式化的值，
+ * 但实际单元格内容是该值的 [[format|formatted]] 版本，
+ * 其可以包含 HTML 标签。
  *
- * For more details and usage information on DataColumn, see the [guide article on data widgets](guide:output-data-widgets).
+ * 有关于 DataColumn 更多的细节和用法，请参阅 [guide article on data widgets](guide:output-data-widgets)。
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -39,82 +39,82 @@ use yii\helpers\Inflector;
 class DataColumn extends Column
 {
     /**
-     * @var string the attribute name associated with this column. When neither [[content]] nor [[value]]
-     * is specified, the value of the specified attribute will be retrieved from each data model and displayed.
+     * @var string 与此列关联的属性名称。
+     * 如果没有指定 [[content]] 也没有指定 [[value]]，则将从每个数据模型中检索并显示指定属性的值。
      *
-     * Also, if [[label]] is not specified, the label associated with the attribute will be displayed.
+     * 此外，如果 [[label]] 没有指定，将显示与该属性关联的标签。
      */
     public $attribute;
     /**
-     * @var string label to be displayed in the [[header|header cell]] and also to be used as the sorting
-     * link label when sorting is enabled for this column.
-     * If it is not set and the models provided by the GridViews data provider are instances
-     * of [[\yii\db\ActiveRecord]], the label will be determined using [[\yii\db\ActiveRecord::getAttributeLabel()]].
-     * Otherwise [[\yii\helpers\Inflector::camel2words()]] will be used to get a label.
+     * @var string label 在 [[header|header cell]] 中显示，
+     * 并且未在此列启用排序时用作排序链接的标签。
+     * 如果没有设置，并且 GridView 数据提供器是 [[\yii\db\ActiveRecord]] 的实例，
+     * 标签将使用 [[\yii\db\ActiveRecord::getAttributeLabel()]] 来确定。
+     * 否则 [[\yii\helpers\Inflector::camel2words()]] 将用于获取标签。
      */
     public $label;
     /**
-     * @var bool whether the header label should be HTML-encoded.
+     * @var bool 标题标签是否是 HTML 编码的。
      * @see label
      * @since 2.0.1
      */
     public $encodeLabel = true;
     /**
-     * @var string|Closure an anonymous function or a string that is used to determine the value to display in the current column.
+     * @var string|Closure 匿名函数或用于确定要在当前列中显示的值的字符串。
      *
-     * If this is an anonymous function, it will be called for each row and the return value will be used as the value to
-     * display for every data model. The signature of this function should be: `function ($model, $key, $index, $column)`.
-     * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
-     * and `$column` is a reference to the [[DataColumn]] object.
+     * 如果这是一个匿名函数, 每一行都将调用它，返回值将用作为每个数据模型显示的值。
+     * 函数的写法应该为：`function ($model, $key, $index, $column)`。
+     * 其中，`$model`，`$key` 和 `$index` 表示当前渲染行的模型，键和索引，
+     * `$column` 是对 [[DataColumn]] 对象的引用。
      *
-     * You may also set this property to a string representing the attribute name to be displayed in this column.
-     * This can be used when the attribute to be displayed is different from the [[attribute]] that is used for
-     * sorting and filtering.
+     * 你还可以将此属性设置为表示要在此列中显示的属性名称的字符串。
+     * 当要显示的属性与用于排序和过滤的 [[attribute]] 不同时，
+     * 可以使用此选项。
      *
-     * If this is not set, `$model[$attribute]` will be used to obtain the value, where `$attribute` is the value of [[attribute]].
+     * 如果没有设置，将使用 `$model[$attribute]` 来获取值，其中 `$attribute` 是 [[attribute]] 的值。
      */
     public $value;
     /**
-     * @var string|array|Closure in which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
-     * `['date', 'php:Y-m-d']`). Supported formats are determined by the [[GridView::formatter|formatter]] used by
-     * the [[GridView]]. Default format is "text" which will format the value as an HTML-encoded plain text when
-     * [[\yii\i18n\Formatter]] is used as the [[GridView::$formatter|formatter]] of the GridView.
+     * @var string|array|Closure 每个数据模型的值应该以何种格式显示（e.g. `"raw"`，`"text"`，`"html"`，`['date', 'php:Y-m-d']`）。
+     * 支持的格式由 [[GridView]] 使用的 [[GridView::formatter|formatter]] 来确定。
+     * 默认的格式是 "text"，当 GridView 的 [[\yii\i18n\Formatter]] 用作 [[GridView::$formatter|formatter]] 时，
+     * 该值将格式化为 HTML 编码的纯文本。
      * @see \yii\i18n\Formatter::format()
      */
     public $format = 'text';
     /**
-     * @var bool whether to allow sorting by this column. If true and [[attribute]] is found in
-     * the sort definition of [[GridView::dataProvider]], then the header cell of this column
-     * will contain a link that may trigger the sorting when being clicked.
+     * @var bool 是否允许按此列排序。如果为 true，
+     * 并且在 [[GridView::dataProvider]] 的排序定义中找到 [[attribute]]，
+     * 则此列的标题单元格将包含可能在单击时触发排序的链接。
      */
     public $enableSorting = true;
     /**
-     * @var array the HTML attributes for the link tag in the header cell
-     * generated by [[\yii\data\Sort::link]] when sorting is enabled for this column.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @var array 当此列启用排序时，
+     * 由 [[\yii\data\Sort::link]] 生成的标题单元格中的链接标记的 HMTL 属性。
+     * @see \yii\helpers\Html::renderTagAttributes() 有关如何渲染属性的详细信息。
      */
     public $sortLinkOptions = [];
     /**
-     * @var string|array|null|false the HTML code representing a filter input (e.g. a text field, a dropdown list)
-     * that is used for this data column. This property is effective only when [[GridView::filterModel]] is set.
+     * @var string|array|null|false HTML 代码表示用于此数据列的过滤器输入（e.g. 文本字段，下拉列表）。
+     * 仅当 [[GridView::filterModel]] 设置时，此属性才有效。
      *
-     * - If this property is not set, a text field will be generated as the filter input with attributes defined
-     *   with [[filterInputOptions]]. See [[\yii\helpers\BaseHtml::activeInput]] for details on how an active
-     *   input tag is generated.
-     * - If this property is an array, a dropdown list will be generated that uses this property value as
-     *   the list options.
-     * - If you don't want a filter for this data column, set this value to be false.
+     * - 如果未设置此属性，将生成一个文本字段作为过滤器输入，
+     *   其属性由 [[filterInputOptions]] 来定义。
+     *   有关于如何生成输入标记的详细信息，请参阅 [[\yii\helpers\BaseHtml::activeInput]]。
+     * - 如果属性是一个数组，
+     *   将生成一个下拉列表，该列表使用此属性值作为列表选项。
+     * - 如果你不想要此数据列的过滤器，请将此值设置为false。
      */
     public $filter;
     /**
-     * @var array the HTML attributes for the filter input fields. This property is used in combination with
-     * the [[filter]] property. When [[filter]] is not set or is an array, this property will be used to
-     * render the HTML attributes for the generated filter input fields.
+     * @var array 过滤器输入字段的 HTML 属性。
+     * 此属性与 [[filter]] 属性结合使用。当 [[filter]] 没有设置或者是一个数组，
+     * 此属性将用于渲染生成的过滤器输入字段的 HTML 属性。
      *
      * Empty `id` in the default value ensures that id would not be obtained from the model attribute thus
      * providing better performance.
      *
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see \yii\helpers\Html::renderTagAttributes() 有关如何渲染属性的详细信息。
      */
     public $filterInputOptions = ['class' => 'form-control', 'id' => null];
 
@@ -214,11 +214,11 @@ class DataColumn extends Column
     }
 
     /**
-     * Returns the data cell value.
-     * @param mixed $model the data model
-     * @param mixed $key the key associated with the data model
-     * @param int $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
-     * @return string the data cell value
+     * 返回数据单元格值。
+     * @param mixed $model 数据模型
+     * @param mixed $key 与数据模型相关的键
+     * @param int $index 由 [[GridView::dataProvider]] 返回的模型数组中的数据模型的从零开始的索引。
+     * @return string 数据单元格值
      */
     public function getDataCellValue($model, $key, $index)
     {

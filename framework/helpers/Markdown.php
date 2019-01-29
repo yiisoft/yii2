@@ -8,9 +8,9 @@
 namespace yii\helpers;
 
 /**
- * Markdown provides an ability to transform markdown into HTML.
+ * Markdown 类提供了将 markdown 转换为 HTML 的功能。
  *
- * Basic usage is the following:
+ * 基本用法如下：
  *
  * ```php
  * $myHtml = Markdown::process($myText); // use original markdown flavor
@@ -18,12 +18,12 @@ namespace yii\helpers;
  * $myHtml = Markdown::process($myText, 'extra'); // use markdown extra
  * ```
  *
- * You can configure multiple flavors using the [[$flavors]] property.
+ * 您可以使用 [[$flavors]] 属性配置多种风格。
  *
- * For more details please refer to the [Markdown library documentation](https://github.com/cebe/markdown#readme).
+ * 获取更多详情信息请参阅 [Markdown library documentation](https://github.com/cebe/markdown#readme)。
  *
- * > Note: The Markdown library works with PHPDoc annotations so if you use it together with
- * > PHP `opcache` make sure [it does not strip comments](http://php.net/manual/en/opcache.configuration.php#ini.opcache.save-comments).
+ * > 注意：Markdown 库可以与 PHPDoc 注释一起使用，如果你同时使用它们的话。
+ * > PHP `opcache` 确保 [it does not strip comments](http://php.net/manual/en/opcache.configuration.php#ini.opcache.save-comments)。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0

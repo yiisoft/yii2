@@ -11,9 +11,9 @@ use IntlDateFormatter;
 use Yii;
 
 /**
- * BaseFormatConverter provides concrete implementation for [[FormatConverter]].
+ * BaseFormatConverter 为 [[FormatConverter]] 提供了具体的实现方法。
  *
- * Do not use BaseFormatConverter. Use [[FormatConverter]] instead.
+ * 不要使用 BaseFormatConverter 类。使用 [[FormatConverter]] 来代替。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @author Enrica Ruedin <e.ruedin@guggach.com>
@@ -22,8 +22,8 @@ use Yii;
 class BaseFormatConverter
 {
     /**
-     * @var array the php fallback definition to use for the ICU short patterns `short`, `medium`, `long` and `full`.
-     * This is used as fallback when the intl extension is not installed.
+     * @var array php 的回退定义适用于 ICU 短模式 `short`，`medium`，`long` 和 `full`。
+     * 当 intl 扩展未安装时适用于该回退。
      */
     public static $phpFallbackDatePatterns = [
         'short' => [
@@ -48,8 +48,8 @@ class BaseFormatConverter
         ],
     ];
     /**
-     * @var array the jQuery UI fallback definition to use for the ICU short patterns `short`, `medium`, `long` and `full`.
-     * This is used as fallback when the intl extension is not installed.
+     * @var array jQuery UI 回退定义适用于 ICU 短模式 `short`，`medium`，`long` 和 `full`。
+     * 当 intl 扩展未安装时适用于该回退。
      */
     public static $juiFallbackDatePatterns = [
         'short' => [
@@ -83,22 +83,22 @@ class BaseFormatConverter
 
 
     /**
-     * Converts a date format pattern from [ICU format][] to [php date() function format][].
+     * 将 [ICU format][] 日期模式转换成 [php date() function format][]。
      *
-     * The conversion is limited to date patterns that do not use escaped characters.
-     * Patterns like `d 'of' MMMM yyyy` which will result in a date like `1 of December 2014` may not be converted correctly
-     * because of the use of escaped characters.
+     * 转换仅限于不使用转义字符的日期模式。
+     * 像 `d 'of' MMMM yyyy` 这样的日期样式可能会导致 `1 of December 2014` 这样的日期不能正确转换，
+     * 因为使用了转义字符。
      *
-     * Pattern constructs that are not supported by the PHP format will be removed.
+     * PHP 格式不支持的模式结构将被删除。
      *
      * [php date() function format]: http://php.net/manual/en/function.date.php
      * [ICU format]: http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
      *
-     * @param string $pattern date format pattern in ICU format.
-     * @param string $type 'date', 'time', or 'datetime'.
-     * @param string $locale the locale to use for converting ICU short patterns `short`, `medium`, `long` and `full`.
-     * If not given, `Yii::$app->language` will be used.
-     * @return string The converted date format pattern.
+     * @param string $pattern ICU 格式的日期格式。
+     * @param string $type 'date'，'time'，或者 'datetime'。
+     * @param string $locale 用于转换 ICU 短模式的区域设置 `short`，`medium`，`long` 和 `full`。
+     * 如果未设置，将使用 `Yii::$app->language` 来设置。 
+     * @return string 转换后的格式化日期样式。
      */
     public static function convertDateIcuToPhp($pattern, $type = 'date', $locale = null)
     {
@@ -234,17 +234,17 @@ class BaseFormatConverter
     }
 
     /**
-     * Converts a date format pattern from [php date() function format][] to [ICU format][].
+     * 日期格式转换将 [php date() function format][] 转换成 [ICU format][]。
      *
-     * Pattern constructs that are not supported by the ICU format will be removed.
+     * ICU 格式不支持的模式结构将被删除。
      *
      * [php date() function format]: http://php.net/manual/en/function.date.php
      * [ICU format]: http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
      *
-     * Since 2.0.13 it handles escaped characters correctly.
+     * 2.0.13 版本后能正确的处理转义字符。
      *
-     * @param string $pattern date format pattern in php date()-function format.
-     * @return string The converted date format pattern.
+     * @param string $pattern 在 php date() 函数里对日期进行格式化的样式。
+     * @return string 返回格式化后的日期格式。
      */
     public static function convertDatePhpToIcu($pattern)
     {
@@ -344,18 +344,18 @@ class BaseFormatConverter
     }
 
     /**
-     * Converts a date format pattern from [ICU format][] to [jQuery UI date format][].
+     * 将一种日期格式从 [ICU format][] 转换为 [jQuery UI date format][]。
      *
-     * Pattern constructs that are not supported by the jQuery UI format will be removed.
+     * jQuery UI 格式不支持的模式结构将被移除。
      *
      * [jQuery UI date format]: http://api.jqueryui.com/datepicker/#utility-formatDate
      * [ICU format]: http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax
      *
-     * @param string $pattern date format pattern in ICU format.
-     * @param string $type 'date', 'time', or 'datetime'.
-     * @param string $locale the locale to use for converting ICU short patterns `short`, `medium`, `long` and `full`.
-     * If not given, `Yii::$app->language` will be used.
-     * @return string The converted date format pattern.
+     * @param string $pattern 在 ICU 格式下进行日期格式化模式操作。
+     * @param string $type 'date'，'time'，或者 'datetime'。
+     * @param string $locale 区域设置适用于 ICU 短模式中 `short`，`medium`，`long` 和 `full` 的转换。
+     * 如果未设置，将使用 `Yii::$app->language` 来获取该设置。
+     * @return string 返回已经进行日期格式化的样式。
      */
     public static function convertDateIcuToJui($pattern, $type = 'date', $locale = null)
     {
@@ -489,19 +489,19 @@ class BaseFormatConverter
     }
 
     /**
-     * Converts a date format pattern from [php date() function format][] to [jQuery UI date format][].
+     * 将 [php date() function format][] 这种日期的模式转换为 [jQuery UI date format][]。
      *
-     * The conversion is limited to date patterns that do not use escaped characters.
-     * Patterns like `jS \o\f F Y` which will result in a date like `1st of December 2014` may not be converted correctly
-     * because of the use of escaped characters.
+     * 这种日期转换被限制不能使用转义字符的日期格式。
+     * 像 `jS \o\f F Y` 这样的模式可能会导致 `1st of December 2014` 这样的日期不能正确转换，
+     * 因为使用了转义字符。
      *
-     * Pattern constructs that are not supported by the jQuery UI format will be removed.
+     * 不能被 jQuery UI 支持的模式结构将被移除。
      *
      * [php date() function format]: http://php.net/manual/en/function.date.php
      * [jQuery UI date format]: http://api.jqueryui.com/datepicker/#utility-formatDate
      *
-     * @param string $pattern date format pattern in php date()-function format.
-     * @return string The converted date format pattern.
+     * @param string $pattern 在 php date() 函数里进行格式化的日期格式字符串。
+     * @return string 返回已格式化的日期。
      */
     public static function convertDatePhpToJui($pattern)
     {

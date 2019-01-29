@@ -8,16 +8,16 @@
 namespace yii\caching;
 
 /**
- * ArrayCache provides caching for the current request only by storing the values in an array.
+ * ArrayCache 通过把值存入数组来提供缓存，只对当前请求有效。
  *
- * See [[Cache]] for common cache operations that ArrayCache supports.
+ * 参考 [[Cache]] 查看 ArrayCache 支持的通用的缓存操作方法。
  *
- * Unlike the [[Cache]], ArrayCache allows the expire parameter of [[set]], [[add]], [[multiSet]] and [[multiAdd]] to
- * be a floating point number, so you may specify the time in milliseconds (e.g. 0.1 will be 100 milliseconds).
+ * 不像 [[Cache]] 那样，ArrayCache 允许 [[set]]，[[add]]，[[multiSet]] 和 [[multiAdd]] 方法的过期参数
+ * 可以是浮点数，你可以以毫秒为单位指定过期时间（比如，0.1 表示 100 毫秒）。
  *
- * For enhanced performance of ArrayCache, you can disable serialization of the stored data by setting [[$serializer]] to `false`.
+ * 为了增强 ArrayCache 的性能，你可以把 [[$serializer]] 设置为 `false` 来禁用缓存数据的序列化过程。
  *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 更多缓存的详情和使用信息，请参考 [guide article on caching](guide:caching-overview)。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
