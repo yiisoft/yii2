@@ -35,4 +35,13 @@ class Type extends ActiveRecord
     {
         return 'type';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function primaryKey()
+    {
+        return ['int_col'];
+    }
+
 }

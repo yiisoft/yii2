@@ -18,6 +18,7 @@ use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\DefaultPk;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\TestCase;
+use yiiunit\data\ar\Type;
 
 /**
  * @group db
@@ -211,6 +212,34 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         }
         $this->assertSame(1, $type->update(), 'The record got updated');
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17071
+     */
+    public function testObjectsComaprison()
+    {
+        Type::deleteAll();
+
+        $type = new Type();
+        $type->setAttributes([
+            // whatever just to satisfy NOT NULL columns
+            'int_col' => 1, 'char_col' => 'a', 'float_col' => 0.1, 'bool_col' => true,
+        ], false);
+        $type->intarray_col = new ArrayExpression([1, 2, 3], 'int');
+        $type->save(false);
+        unset($type);
+
+        $type = Type::find()->where(['int_col' => 1])->one();
+        $this->assertSame([1, 2, 3], $type->intarray_col->getValue());
+        $type->intarray_col->offsetSet(2, '4'); // typecasting check
+        $type->save(false);
+        unset($type);
+
+        $type = Type::find()->where(['int_col' => 1])->one();
+        $this->assertSame([1, 2, 4], $type->intarray_col->getValue());
+
+    }
+
 
     public function arrayValuesProvider()
     {
