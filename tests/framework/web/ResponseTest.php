@@ -12,6 +12,7 @@ use Exception;
 use RuntimeException;
 use yii\helpers\StringHelper;
 use yii\web\HttpException;
+use yii\web\Response;
 
 /**
  * @group web
@@ -184,5 +185,30 @@ class ResponseTest extends \yiiunit\TestCase
         }
 
         return $data;
+    }
+
+    public function formatDataProvider()
+    {
+        return [
+            [Response::FORMAT_JSON, '{"value":1}'],
+            [Response::FORMAT_HTML, '<html><head><title>Test</title></head><body>Test Body</body></html>'],
+            [Response::FORMAT_XML, '<?xml ?><test></test>'],
+            [Response::FORMAT_RAW, 'Something'],
+        ];
+    }
+
+    /**
+     * @dataProvider formatDataProvider
+     */
+    public function testSkipFormatter($format, $content)
+    {
+        $response = new Response();
+        $response->format = $format;
+        $response->content = $content;
+        ob_start();
+        $response->send();
+        $actualContent = ob_get_clean();
+
+        $this->assertSame($content, $actualContent);
     }
 }
