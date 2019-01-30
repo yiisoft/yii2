@@ -203,7 +203,7 @@ class AssetManager extends Component
 
     /**
      * Initializes the component.
-     * @throws InvalidConfigException if [[basePath]] is invalid
+     * @throws InvalidConfigException if [[basePath]] does not exist.
      */
     public function init()
     {
@@ -441,7 +441,7 @@ class AssetManager extends Component
      *
      * @return array the path (directory or file path) and the URL that the asset is published as.
      * @throws InvalidArgumentException if the asset to be published does not exist.
-     * @throws InvalidConfigException
+     * @throws InvalidConfigException if the target directory [[basePath]] is not writeable.
      */
     public function publish($path, $options = [])
     {

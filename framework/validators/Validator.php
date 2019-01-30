@@ -259,6 +259,17 @@ class Validator extends Component
         }
     }
 
+    /**
+     * Returns a list of attributes this validator applies to.
+     * @param array|string|null $attributes the list of attributes to be validated.
+     *
+     * - If this is `null`, the result will be equal to [[getAttributeNames()]].
+     * - If this is a string or an array, the intersection of [[getAttributeNames()]]
+     *   and the specified attributes will be returned.
+     *
+     * @return array list of attribute names.
+     * @since 2.0.16
+     */
     public function getValidationAttributes($attributes = null)
     {
         if ($attributes === null) {
