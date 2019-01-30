@@ -179,7 +179,13 @@ class ActiveRecord extends BaseActiveRecord
             if (isset($primaryKey[0])) {
                 $pk = $primaryKey[0];
                 if (!empty($query->join) || !empty($query->joinWith)) {
-                    $pk = static::tableName() . '.' . $pk;
+                    $from = $query->from;
+                    // if the query has alias, than use it instead of table name
+                    if (!$from || isset($from[0])) {
+                        $pk = static::tableName() . '.' . $pk;
+                    } else {
+                        $pk = key($from) . '.' . $pk;
+                    }
                 }
                 // if condition is scalar, search for a single primary key, if it is array, search for multiple primary key values
                 $condition = [$pk => is_array($condition) ? array_values($condition) : $condition];
