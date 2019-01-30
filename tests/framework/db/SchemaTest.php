@@ -494,9 +494,10 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testColumnSchema()
     {
+        $connection = $this->getConnection(false);
         $columns = $this->getExpectedColumns();
 
-        $table = $this->getConnection(false)->schema->getTableSchema('type', true);
+        $table = $connection->schema->getTableSchema('type', true);
 
         $expectedColNames = array_keys($columns);
         sort($expectedColNames);
@@ -516,8 +517,21 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->assertSame($expected['precision'], $column->precision, "precision of column $name does not match.");
             $this->assertSame($expected['scale'], $column->scale, "scale of column $name does not match.");
             if (\is_object($expected['defaultValue'])) {
-                $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
-                $this->assertEquals((string) $expected['defaultValue'], (string) $column->defaultValue, "defaultValue of column $name does not match.");
+                if ($connection->getDriverName() !== 'pgsql') {
+                    $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
+                    $this->assertEquals((string)$expected['defaultValue'], (string) $column->defaultValue, "defaultValue of column $name does not match.");
+                } else {
+                    $this->assertInternalType(
+                        'string',
+                        $column->defaultValue,
+                        "defaultValue of column $name is expected to be an object but it is not."
+                    );
+                    $this->assertEquals(
+                        'CURRENT_TIMESTAMP',
+                        (string)$column->defaultValue,
+                        "defaultValue of column $name does not match."
+                    );
+                }
             } else {
                 $this->assertEquals($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
             }
@@ -568,7 +582,7 @@ abstract class SchemaTest extends DatabaseTestCase
             'somecolUnique' => ['somecol'],
             'someCol2Unique' => ['someCol2'],
         ], $uniqueIndexes);
-        
+
         // see https://github.com/yiisoft/yii2/issues/13814
         $db->createCommand()->createIndex('another unique index', 'uniqueIndex', 'someCol2', true)->execute();
 

@@ -126,7 +126,7 @@ CREATE TABLE "null_values" (
 );
 
 CREATE TABLE "type" (
-  int_col integer NOT NULL,
+  int_col integer NOT NULL PRIMARY KEY,
   int_col2 integer DEFAULT '1',
   tinyint_col smallint DEFAULT '1',
   smallint_col smallint DEFAULT '1',

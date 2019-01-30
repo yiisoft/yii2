@@ -599,19 +599,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Returns a value indicating whether the named attribute has been changed.
      * @param string $name the name of the attribute.
-     * @param bool $identical whether the comparison of new and old value is made for
-     * identical values using `===`, defaults to `true`. Otherwise `==` is used for comparison.
-     * This parameter is available since version 2.0.4.
      * @return bool whether the attribute has been changed
      */
-    public function isAttributeChanged($name, $identical = true)
+    public function isAttributeChanged($name)
     {
         if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
-            if ($identical) {
-                return $this->_attributes[$name] !== $this->_oldAttributes[$name];
-            }
-
-            return $this->_attributes[$name] != $this->_oldAttributes[$name];
+            return $this->isEqual($this->_attributes[$name], $this->_oldAttributes[$name]);
         }
 
         return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
@@ -619,9 +612,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns the attribute values that have been modified since they are loaded or saved most recently.
-     *
-     * The comparison of new and old values is made for identical values using `===`.
-     *
      * @param string[]|null $names the names of the attributes whose values may be returned if they are
      * changed recently. If null, [[attributes()]] will be used.
      * @return array the changed attribute values (name-value pairs)
@@ -641,13 +631,72 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         } else {
             foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
+                if (
+                    isset($names[$name]) &&
+                    (!array_key_exists($name, $this->_oldAttributes) ||
+                        !$this->isEqual($value, $this->_oldAttributes[$name])
+                    )
+                ) {
                     $attributes[$name] = $value;
                 }
             }
         }
 
         return $attributes;
+    }
+
+    /**
+     * Compares two values
+     * @param mixed $val1
+     * @param mixed $val2
+     * @return bool
+     */
+    protected function isEqual($val1, $val2)
+    {
+        if (gettype($val1) !== gettype($val2)) {
+            return false;
+        }
+
+        switch (gettype($val1)) {
+            case 'object':
+                return $this->isObjectsEqual($val1, $val2);
+            default:
+                return $val1 === $val2;
+        }
+    }
+
+    /**
+     * Compares two objects
+     * @param mixed $obj1
+     * @param mixed $obj2
+     * @return bool
+     */
+    protected function isObjectsEqual($obj1, $obj2)
+    {
+        /**
+         * Сheck if objects have the same attributes and values (values are compared with ==),
+         * and are instances of the same class
+         */
+        if ($obj1 != $obj2) {
+            return false;
+        }
+
+        // strict comparison
+        $arrProperties1 = (new \ReflectionObject($obj1))->getProperties(\ReflectionProperty::IS_PUBLIC);
+        foreach ($arrProperties1 as $prop) {
+            if (is_scalar($prop)) {
+                if (!$this->isEqual($obj1->$prop, $obj2->$prop)) {
+                    return false;
+                }
+            } else {
+                $name = $prop->name;
+                if (!$this->isEqual($obj1->$name, $obj2->$name)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -1187,12 +1236,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $columns = array_flip($record->attributes());
         foreach ($row as $name => $value) {
             if (isset($columns[$name])) {
-                $record->_attributes[$name] = $value;
+                $record->_attributes[$name] = $value instanceof ArrayExpression ? clone $value : $value;
             } elseif ($record->canSetProperty($name)) {
                 $record->$name = $value;
             }
         }
-        $record->_oldAttributes = $record->_attributes;
+        foreach ($record->_attributes as $key => $value) {
+            $record->_oldAttributes[$key] = $value instanceof ArrayExpression ? clone $value : $value;
+        }
         $record->_related = [];
         $record->_relationsDependencies = [];
     }
