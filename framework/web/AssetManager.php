@@ -425,7 +425,7 @@ class AssetManager extends Component
      * discussion: http://code.google.com/p/yii/issues/detail?id=2579
      *
      * @param string $path the asset (file or directory) to be published
-     * @param array  $options the options to be applied when publishing a directory.
+     * @param array $options the options to be applied when publishing a directory.
      * The following options are supported:
      *
      * - only: array, list of patterns that the file paths should match if they want to be copied.

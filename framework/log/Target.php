@@ -81,7 +81,6 @@ abstract class Target extends Component
         '_SESSION',
         '_SERVER',
     ];
-
     /**
      * @var array list of the PHP predefined variables that should NOT be logged "as is" and should always be replaced
      * with a mask `***` before logging, when exist.
@@ -100,7 +99,6 @@ abstract class Target extends Component
         '_SERVER.PHP_AUTH_USER',
         '_SERVER.PHP_AUTH_PW',
     ];
-
     /**
      * @var callable a PHP callable that returns a string to be prefixed to every exported message.
      *
