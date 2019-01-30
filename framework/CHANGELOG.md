@@ -115,7 +115,7 @@ Yii Framework 2 Change Log
 - Bug #15931: `yii\db\ActiveRecord::findOne()` now accepts quoted table and column names using curly and square braces respectively (silverfire)
 - Bug: (CVE-2018-14578): Fixed CSRF token check bypassing in `\yii\web\Request::getMethod()` (silverfire)
 - Bug: (CVE-2018-19454): Fixed excess logging of sensitive information in `\yii\log\Target` (silverfire)
-
+- Bug: #17083: Fix `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150) 
 
 2.0.15.1 March 21, 2018
 -----------------------
