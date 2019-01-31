@@ -32,6 +32,17 @@ use yii\base\InvalidConfigException;
  */
 class UrlRule extends BaseObject implements UrlRuleInterface
 {
+
+    /**
+     * @var string contains pattern which will be redirected
+     */
+    public $redirect;
+
+    /**
+     * @var string the redirect type
+     */
+    public $statusCode = 301;
+
     /**
      * Set [[mode]] with this value to mark that this rule is for URL parsing only.
      */
@@ -191,8 +202,8 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         if ($this->pattern === null) {
             throw new InvalidConfigException('UrlRule::pattern must be set.');
         }
-        if ($this->route === null) {
-            throw new InvalidConfigException('UrlRule::route must be set.');
+        if (($this->route === null) && ($this->redirect === null)) {
+            throw new InvalidConfigException('UrlRule::route or UrlRule::redirect must be set.');
         }
         if (is_array($this->normalizer)) {
             $normalizerConfig = array_merge(['class' => UrlNormalizer::className()], $this->normalizer);
