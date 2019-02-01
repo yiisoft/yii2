@@ -163,6 +163,10 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     private $_routeRule;
     /**
+     * @var string the regex for matching the redirect part. This is used in generating URL.
+     */
+    private $_redirectRule;
+    /**
      * @var array list of regex for matching parameters. This is used in generating URL.
      */
     private $_paramRules = [];
@@ -174,7 +178,6 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      * @var array list of parameters used in the redirect.
      */
     private $_redirectParams = [];
-
 
     /**
      * @return string
@@ -367,8 +370,9 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         }
 
         if (!empty($this->_redirectParams)) {
-            $this->_redirectParams = '#^' . strtr($this->redirect, $tr2) . '$#u';
+            $this->_redirectRule = '#^' . strtr($this->redirect, $tr2) . '$#u';
         }
+
     }
 
     /**
@@ -458,10 +462,11 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 $params[$name] = $value;
             }
         }
+        $route = null;
         $redirect = null;
         if ($this->_routeRule !== null) {
             $route = strtr($this->route, $tr);
-        } elseif ($this->_redirectParams !== null) {
+        } elseif ($this->_redirectRule !== null) {
             $redirect = strtr($this->redirect, $tr);
         } else {
             $route = $this->route;
@@ -474,6 +479,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
         }
 
+        print_r($this);exit;
         if (!empty($redirect)) {
             throw new UrlNormalizerRedirectException($redirect, $this->statusCode);
         }
