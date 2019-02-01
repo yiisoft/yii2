@@ -163,10 +163,6 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     private $_routeRule;
     /**
-     * @var string the regex for matching the redirect part. This is used in generating URL.
-     */
-    private $_redirectRule;
-    /**
      * @var array list of regex for matching parameters. This is used in generating URL.
      */
     private $_paramRules = [];
@@ -174,10 +170,6 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      * @var array list of parameters used in the route.
      */
     private $_routeParams = [];
-    /**
-     * @var array list of parameters used in the redirect.
-     */
-    private $_redirectParams = [];
 
     /**
      * @return string
@@ -206,10 +198,14 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      */
     public function init()
     {
+        if ($this->redirect) {
+            $this->route = $this->redirect;
+            $this->redirect = true;
+        }
         if ($this->pattern === null) {
             throw new InvalidConfigException('UrlRule::pattern must be set.');
         }
-        if (($this->route === null) && ($this->redirect === null)) {
+        if ($this->route === null) {
             throw new InvalidConfigException('UrlRule::route or UrlRule::redirect must be set.');
         }
         if (is_array($this->normalizer)) {
@@ -270,12 +266,6 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         if (strpos($this->route, '<') !== false && preg_match_all('/<([\w._-]+)>/', $this->route, $matches)) {
             foreach ($matches[1] as $name) {
                 $this->_routeParams[$name] = "<$name>";
-            }
-        }
-
-        if (strpos($this->redirect, '<') !== false && preg_match_all('/<([\w._-]+)>/', $this->redirect, $matches)) {
-            foreach ($matches[1] as $name) {
-                $this->_redirectParams[$name] = "<$name>";
             }
         }
 
@@ -342,7 +332,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                     $tr["<$name>"] = "(?P<$placeholder>$pattern)";
                 }
 
-                if (isset($this->_routeParams[$name]) || isset($this->_redirectParams[$name])) {
+                if (isset($this->_routeParams[$name])) {
                     $tr2["<$name>"] = "(?P<$placeholder>$pattern)";
                 } else {
                     $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#u";
@@ -367,10 +357,6 @@ class UrlRule extends BaseObject implements UrlRuleInterface
 
         if (!empty($this->_routeParams)) {
             $this->_routeRule = '#^' . strtr($this->route, $tr2) . '$#u';
-        }
-
-        if (!empty($this->_redirectParams)) {
-            $this->_redirectRule = '#^' . strtr($this->redirect, $tr2) . '$#u';
         }
 
     }
@@ -455,19 +441,12 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             if (isset($this->_routeParams[$name])) {
                 $tr[$this->_routeParams[$name]] = $value;
                 unset($params[$name]);
-            } elseif (isset($this->_redirectParams[$name])) {
-                $tr[$this->_redirectParams[$name]] = $value;
-                unset($params[$name]);
             } elseif (isset($this->_paramRules[$name])) {
                 $params[$name] = $value;
             }
         }
-        $route = null;
-        $redirect = null;
         if ($this->_routeRule !== null) {
             $route = strtr($this->route, $tr);
-        } elseif ($this->_redirectRule !== null) {
-            $redirect = strtr($this->redirect, $tr);
         } else {
             $route = $this->route;
         }
@@ -479,9 +458,8 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
         }
 
-        print_r($this);exit;
-        if (!empty($redirect)) {
-            throw new UrlNormalizerRedirectException($redirect, $this->statusCode);
+        if ($this->redirect) {
+            throw new UrlNormalizerRedirectException('/' . $route, $this->statusCode);
         }
 
         return [$route, $params];
