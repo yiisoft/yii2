@@ -244,6 +244,7 @@ class Pagination extends BaseObject implements Linkable
             }
             $this->_pageSize = $value;
         }
+        $this->totalCount = null;
     }
 
     /**
