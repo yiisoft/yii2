@@ -195,7 +195,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
         }
 
         if (($this->_pagination !== false) && ($this->_pagination->totalCount === null)) {
-            if ($this->_totalCount === null) {
+            if ($this->_totalCount !== $this->_pagination->totalCount) {
                 $this->setTotalCount($this->prepareTotalCount());
             }
             $this->_pagination->totalCount = $this->_totalCount;
