@@ -170,6 +170,10 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      * @var array list of parameters used in the route.
      */
     private $_routeParams = [];
+    /**
+     * @var array list of parameters used in the redirect.
+     */
+    private $_redirectParams = [];
 
 
     /**
@@ -266,6 +270,12 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             }
         }
 
+        if (strpos($this->redirect, '<') !== false && preg_match_all('/<([\w._-]+)>/', $this->redirect, $matches)) {
+            foreach ($matches[1] as $name) {
+                $this->_redirectParams[$name] = "<$name>";
+            }
+        }
+
         $this->translatePattern(true);
     }
 
@@ -329,11 +339,12 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                     $tr["<$name>"] = "(?P<$placeholder>$pattern)";
                 }
 
-                if (isset($this->_routeParams[$name])) {
+                if (isset($this->_routeParams[$name]) || isset($this->_redirectParams[$name])) {
                     $tr2["<$name>"] = "(?P<$placeholder>$pattern)";
                 } else {
                     $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#u";
                 }
+
             }
         }
 
@@ -353,6 +364,10 @@ class UrlRule extends BaseObject implements UrlRuleInterface
 
         if (!empty($this->_routeParams)) {
             $this->_routeRule = '#^' . strtr($this->route, $tr2) . '$#u';
+        }
+
+        if (!empty($this->_redirectParams)) {
+            $this->_redirectParams = '#^' . strtr($this->redirect, $tr2) . '$#u';
         }
     }
 
@@ -436,12 +451,18 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             if (isset($this->_routeParams[$name])) {
                 $tr[$this->_routeParams[$name]] = $value;
                 unset($params[$name]);
+            } elseif (isset($this->_redirectParams[$name])) {
+                $tr[$this->_redirectParams[$name]] = $value;
+                unset($params[$name]);
             } elseif (isset($this->_paramRules[$name])) {
                 $params[$name] = $value;
             }
         }
+        $redirect = null;
         if ($this->_routeRule !== null) {
             $route = strtr($this->route, $tr);
+        } elseif ($this->_redirectParams !== null) {
+            $redirect = strtr($this->redirect, $tr);
         } else {
             $route = $this->route;
         }
@@ -451,6 +472,10 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         if ($normalized) {
             // pathInfo was changed by normalizer - we need also normalize route
             return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
+        }
+
+        if (!empty($redirect)) {
+            throw new UrlNormalizerRedirectException($redirect, $this->statusCode);
         }
 
         return [$route, $params];
