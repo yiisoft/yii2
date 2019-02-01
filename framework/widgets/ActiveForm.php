@@ -183,6 +183,11 @@ class ActiveForm extends Widget
      */
     public $scrollToErrorOffset = 0;
     /**
+     * @var bool whether to validate SELECT without OPTION
+     * @since 2.0.17
+     */
+    public $validateEmptySelects = false;
+    /**
      * @var array the client validation options for individual attributes. Each element of the array
      * represents the validation options for a particular attribute.
      * @internal
@@ -264,6 +269,7 @@ class ActiveForm extends Widget
             'scrollToError' => $this->scrollToError,
             'scrollToErrorOffset' => $this->scrollToErrorOffset,
             'validationStateOn' => $this->validationStateOn,
+            'validateEmptySelects' => $this->validateEmptySelects,
         ];
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);
@@ -282,6 +288,7 @@ class ActiveForm extends Widget
             'scrollToError' => true,
             'scrollToErrorOffset' => 0,
             'validationStateOn' => self::VALIDATION_STATE_ON_CONTAINER,
+            'validateEmptySelects' => false,
         ]);
     }
 

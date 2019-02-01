@@ -136,7 +136,9 @@
         // offset in pixels that should be added when scrolling to the first error.
         scrollToErrorOffset: 0,
         // where to add validation class: container or input
-        validationStateOn: 'container'
+        validationStateOn: 'container',
+        // whether to validate SELECT without OPTION
+        validateEmptySelects: false
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
@@ -331,7 +333,7 @@
                     return true;
                 }
                 // pass SELECT without options
-                if ($input.length && $input[0].tagName.toLowerCase() === 'select') {
+                if ($input.length && $input[0].tagName.toLowerCase() === 'select' && data.settings.validateEmptySelects === false) {
                     if (!$input[0].options.length) {
                         return true;
                     } else if (($input[0].options.length === 1) && ($input[0].options[0].value === '')) {

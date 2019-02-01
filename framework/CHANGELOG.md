@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.17 under development
 ------------------------
 
-- no changes in this release.
+- Enh: Added `yii\widgets\ActiveForm::validateEmptySelects` and the same attribute to `yii.activeForm.js` which determines whether to validate SELECT without OPTION
 
 
 2.0.16 January 30, 2019
