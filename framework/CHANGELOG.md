@@ -1,10 +1,10 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.17 under development
+2.0.16.1 under development
 ------------------------
 
-- no changes in this release.
+- Bug #17094: Fixed response on 204 status. Now it is empty (GHopperMSK)
 
 
 2.0.16 January 30, 2019
