@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 2.0.16 January 30, 2019
 -----------------------
 
+- Bug #17094: Fixed response on 204 status. Now it is empty (GHopperMSK)
 - Bug #5341: HasMany via two relations (shirase, cebe)
 - Bug #10843: Additional hidden input rendered by `yii\helpers\BaseHtml` methods inherits `disabled` HTML option if provided and set to `true` (bizley)
 - Bug #11960: Fixed `checked` option ignore in `yii\helpers\BaseHtml::checkbox()` (misantron)

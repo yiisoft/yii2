@@ -211,4 +211,19 @@ class ResponseTest extends \yiiunit\TestCase
 
         $this->assertSame($content, $actualContent);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17094
+     */
+    public function testEmptyContentOn204()
+    {
+        $response = new Response();
+        $response->setStatusCode(204);
+        $response->content = 'not empty content';
+
+        ob_start();
+        $response->send();
+        $content = ob_get_clean();
+        $this->assertSame($content, '');
+    }
 }
