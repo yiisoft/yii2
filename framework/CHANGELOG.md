@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.17 under development
 ------------------------
 
-- Enh: Added `yii\widgets\ActiveForm::validateEmptySelects` and the same attribute to `yii.activeForm.js` which determines whether to validate SELECT without OPTION
+- Bug #17092: Added `yii\widgets\ActiveForm::validateEmptySelects` property to fix validation of SELECT inputs without any OPTIONs (tofid)
 
 
 2.0.16 January 30, 2019
