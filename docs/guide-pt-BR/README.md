@@ -21,7 +21,7 @@ Primeiros Passos
 * [O que você precisa saber](start-prerequisites.md)
 * [Instalando o Yii](start-installation.md)
 * [Executando Aplicações](start-workflow.md)
-* [Fazendo um Hello-World](start-hello.md)
+* [Dizendo "Olá!"](start-hello.md)
 * [Trabalhando com Formulários](start-forms.md)
 * [Trabalhando com Bancos de Dados](start-databases.md)
 * [Gerando Código com Gii](start-gii.md)
