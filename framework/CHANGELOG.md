@@ -1,11 +1,12 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.17 under development
+2.0.16.1 under development
 ------------------------
 
 - Bug #17092: Added `yii\widgets\ActiveForm::validateEmptySelects` property to fix validation of SELECT inputs without any OPTIONs (tofid)
-
+- Bug #17094: Fixed response on 204 status. Now it is empty (GHopperMSK)
+- Bug #17098: Fixed message/extract when using message params returned from method calls (rugabarbo)
 
 2.0.16 January 30, 2019
 -----------------------
