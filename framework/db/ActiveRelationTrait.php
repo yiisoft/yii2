@@ -552,7 +552,7 @@ trait ActiveRelationTrait
                 }
             }
         }
-        
+
         if (!empty($values)) {
             $scalarValues = [];
             $nonScalarValues = [];
