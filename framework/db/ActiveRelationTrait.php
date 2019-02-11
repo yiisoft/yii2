@@ -525,6 +525,8 @@ trait ActiveRelationTrait
                 if (($value = $model[$attribute]) !== null) {
                     if (is_array($value)) {
                         $values = array_merge($values, $value);
+                    } elseif ($value instanceof ArrayExpression && $value->getDimension() === 1) {
+                        $values = array_merge($values, $value->getValue());
                     } else {
                         $values[] = $value;
                     }
@@ -533,6 +535,22 @@ trait ActiveRelationTrait
             if (empty($values)) {
                 $this->emulateExecution();
             }
+             
+            if (!empty($values)) {
+                $scalarValues = [];
+                $nonScalarValues = [];
+                foreach ($values as $value) {
+                    if (is_scalar($value)) {
+                        $scalarValues[] = $value;
+                    } else {
+                        $nonScalarValues[] = $value;
+                    }
+                }
+
+                $scalarValues = array_unique($scalarValues);
+                $values = array_merge($scalarValues, $nonScalarValues);
+            }
+          
             $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
         } else {
             // composite keys

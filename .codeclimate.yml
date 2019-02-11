@@ -22,3 +22,11 @@ exclude_paths:
 - build/
 - docs/
 - framework/messages/
+
+checks:
+  file-lines:
+    enabled: false
+  method-count:
+    enabled: false
+  method-lines:
+    enabled: false

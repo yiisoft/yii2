@@ -57,4 +57,4 @@ _yii()
 
 # register completion for the ./yii command
 # you may adjust this line if your command file is named differently
-complete -F _yii ./yii yii
+complete -o default -F _yii ./yii yii

@@ -310,7 +310,11 @@ class Table extends Widget
         $screenWidth = $this->getScreenWidth() - self::CONSOLE_SCROLLBAR_OFFSET;
 
         $headerCount = count($this->_headers);
-        $rowColCount = max(array_map('count', $this->_rows));
+        if (empty($this->_rows)) {
+            $rowColCount = 0;
+        } else {
+            $rowColCount = max(array_map('count', $this->_rows));
+        }
         $count = max($headerCount, $rowColCount);
         for ($i = 0; $i < $count; $i++) {
             $columns[] = ArrayHelper::getColumn($this->_rows, $i);

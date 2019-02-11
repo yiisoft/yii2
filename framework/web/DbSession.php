@@ -221,7 +221,7 @@ class DbSession extends MultiFieldSession
      */
     protected function typecastFields($fields)
     {
-        if (isset($fields['data']) && is_array($fields['data'] && is_object($fields['data']))) {
+        if (isset($fields['data']) && !is_array($fields['data']) && !is_object($fields['data'])) {
             $fields['data'] = new PdoValue($fields['data'], \PDO::PARAM_LOB);
         }
 

@@ -1778,6 +1778,19 @@ EOD;
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * @dataProvider testGetInputIdDataProvider
+     */
+    public function testGetInputId($attributeName, $inputIdExpected)
+    {
+        $model = new DynamicModel();
+        $model->defineAttribute($attributeName);
+
+        $inputIdActual = Html::getInputId($model, $attributeName);
+
+        $this->assertSame($inputIdExpected, $inputIdActual);
+    }
+
     public function testEscapeJsRegularExpression()
     {
         $expected = '/[a-z0-9-]+/';
@@ -1786,6 +1799,11 @@ EOD;
 
         $expected = '/([a-z0-9-]+)/gim';
         $actual = Html::escapeJsRegularExpression('/([a-z0-9-]+)/Ugimex');
+        $this->assertSame($expected, $actual);
+
+        // Make sure that just allowed REGEX modifiers remain after the escaping
+        $expected = '/([a-z0-9-]+)/ugim';
+        $actual = Html::escapeJsRegularExpression('/([a-z0-9-]+)/dugimex');
         $this->assertSame($expected, $actual);
     }
 
@@ -1857,6 +1875,45 @@ HTML;
         $html = MyHtml::activeTextInput($model, 'name', ['placeholder' => true]);
 
         $this->assertContains('placeholder="My placeholder: Name"', $html);
+    }
+
+    public function testGetInputIdDataProvider()
+    {
+        return [
+            [
+                'foo',
+                'dynamicmodel-foo',
+            ],
+            [
+                'FooBar',
+                'dynamicmodel-foobar',
+            ],
+            [
+                'Foo_Bar',
+                'dynamicmodel-foo_bar',
+            ],
+            [
+                'foo[]',
+                'dynamicmodel-foo',
+            ],
+            [
+                'foo[bar][baz]',
+                'dynamicmodel-foo-bar-baz',
+            ],
+
+            [
+                'foo.bar',
+                'dynamicmodel-foo-bar',
+            ],
+            [
+                'bild_groß_dateiname',
+                'dynamicmodel-bild_groß_dateiname',
+            ],
+            [
+                'ФуБарБаз',
+                'dynamicmodel-фубарбаз',
+            ],
+        ];
     }
 }
 

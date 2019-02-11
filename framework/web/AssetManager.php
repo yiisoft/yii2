@@ -203,7 +203,7 @@ class AssetManager extends Component
 
     /**
      * Initializes the component.
-     * @throws InvalidConfigException if [[basePath]] is invalid
+     * @throws InvalidConfigException if [[basePath]] does not exist.
      */
     public function init()
     {
@@ -211,8 +211,6 @@ class AssetManager extends Component
         $this->basePath = Yii::getAlias($this->basePath);
         if (!is_dir($this->basePath)) {
             throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
-        } elseif (!is_writable($this->basePath)) {
-            throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
         }
 
         $this->basePath = realpath($this->basePath);
@@ -443,6 +441,7 @@ class AssetManager extends Component
      *
      * @return array the path (directory or file path) and the URL that the asset is published as.
      * @throws InvalidArgumentException if the asset to be published does not exist.
+     * @throws InvalidConfigException if the target directory [[basePath]] is not writeable.
      */
     public function publish($path, $options = [])
     {
@@ -454,6 +453,10 @@ class AssetManager extends Component
 
         if (!is_string($path) || ($src = realpath($path)) === false) {
             throw new InvalidArgumentException("The file or directory to be published does not exist: $path");
+        }
+
+        if (!is_writable($this->basePath)) {
+            throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
         }
 
         if (is_file($src)) {

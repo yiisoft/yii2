@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db;
 
+use ArrayObject;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
@@ -403,7 +404,14 @@ SQL;
                 [[new Expression(':qp1', [':qp1' => 42])]], // This example is completely useless. This feature of batchInsert is intended to be used with complex expression objects, such as JsonExpression.
                 'expected' => "INSERT INTO `type` (`int_col`) VALUES (:qp1)",
                 'expectedParams' => [':qp1' => 42]
-            ]
+            ],
+            'batchIsert empty rows represented by ArrayObject' => [
+                '{{%type}}',
+                ['col'],
+                new ArrayObject(), // See: https://github.com/yiisoft/yii2/issues/14609
+                'expected' => '',
+                'expectedParams' => [],
+            ],
         ];
     }
 
@@ -1452,11 +1460,11 @@ SQL;
             ->select('bar')
             ->from('testCreateViewTable')
             ->where(['>', 'bar', '5']);
+        if ($db->getSchema()->getTableSchema('testCreateView')) {
+            $db->createCommand()->dropView('testCreateView')->execute();
+        }
         if ($db->getSchema()->getTableSchema('testCreateViewTable')) {
             $db->createCommand()->dropTable('testCreateViewTable')->execute();
-        }
-        if ($db->getSchema()->getTableSchema('testCreateView') !== null) {
-            $db->createCommand()->dropView('testCreateView')->execute();
         }
         $db->createCommand()->createTable('testCreateViewTable', [
             'id' => Schema::TYPE_PK,

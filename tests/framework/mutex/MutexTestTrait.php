@@ -41,15 +41,47 @@ trait MutexTestTrait
      */
     public function testThatMutexLockIsWorking($mutexName)
     {
-        $mutexOne = $this->createMutex($mutexName);
-        $mutexTwo = $this->createMutex($mutexName);
+        $mutexOne = $this->createMutex();
+        $mutexTwo = $this->createMutex();
 
         $this->assertTrue($mutexOne->acquire($mutexName));
         $this->assertFalse($mutexTwo->acquire($mutexName));
-
-        $mutexOne->release($mutexName);
+        $this->assertTrue($mutexOne->release($mutexName));
+        $this->assertFalse($mutexTwo->release($mutexName));
 
         $this->assertTrue($mutexTwo->acquire($mutexName));
+        $this->assertTrue($mutexTwo->release($mutexName));
+    }
+
+    /**
+     * @dataProvider mutexDataProvider()
+     *
+     * @param string $mutexName
+     */
+    public function testThatMutexLockIsWorkingOnTheSameComponent($mutexName)
+    {
+        $mutex = $this->createMutex();
+
+        $this->assertTrue($mutex->acquire($mutexName));
+        $this->assertFalse($mutex->acquire($mutexName));
+
+        $this->assertTrue($mutex->release($mutexName));
+        $this->assertFalse($mutex->release($mutexName));
+    }
+
+    public function testTimeout()
+    {
+        $mutexName = __FUNCTION__;
+        $mutexOne = $this->createMutex();
+        $mutexTwo = $this->createMutex();
+
+        $this->assertTrue($mutexOne->acquire($mutexName));
+        $microtime = microtime(true);
+        $this->assertFalse($mutexTwo->acquire($mutexName, 1));
+        $diff = microtime(true) - $microtime;
+        $this->assertTrue($diff >= 1 && $diff < 2);
+        $this->assertTrue($mutexOne->release($mutexName));
+        $this->assertFalse($mutexTwo->release($mutexName));
     }
 
     public static function mutexDataProvider()

@@ -215,7 +215,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
      */
     public function testViaTable()
     {
-        $query = new ActiveQuery(Customer::className());
+        $query = new ActiveQuery(Customer::className(), ['primaryModel' => new Order()]);
         $result = $query->viaTable(Profile::className(), ['id' => 'item_id']);
         $this->assertInstanceOf('yii\db\ActiveQuery', $result);
         $this->assertInstanceOf('yii\db\ActiveQuery', $result->via);
