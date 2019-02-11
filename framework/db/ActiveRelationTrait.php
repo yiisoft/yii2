@@ -533,6 +533,7 @@ trait ActiveRelationTrait
             if (empty($values)) {
                 $this->emulateExecution();
             }
+            $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
         } else {
             // composite keys
 
@@ -548,8 +549,8 @@ trait ActiveRelationTrait
                     $this->emulateExecution();
                 }
             }
+            $this->andWhere(array_merge(['OR'], array_unique($values, SORT_REGULAR)));
         }
-        $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
     }
 
     /**
