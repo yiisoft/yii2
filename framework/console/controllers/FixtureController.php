@@ -108,12 +108,7 @@ class FixtureController extends Controller
      */
     public function actionLoad(array $fixturesInput = [])
     {
-        if ($fixturesInput === []) {
-            $this->stdout($this->getHelpSummary() . "\n");
-
-            $helpCommand = Console::ansiFormat('yii help fixture', [Console::FG_CYAN]);
-            $this->stdout("Use $helpCommand to get usage info.\n");
-
+        if ($this->exitWhenNoArguments($fixturesInput)) {
             return ExitCode::OK;
         }
 
@@ -188,6 +183,10 @@ class FixtureController extends Controller
      */
     public function actionUnload(array $fixturesInput = [])
     {
+        if ($this->exitWhenNoArguments($fixturesInput)) {
+            return ExitCode::OK;
+        }
+
         $filtered = $this->filterFixtures($fixturesInput);
         $except = $filtered['except'];
 
@@ -230,6 +229,23 @@ class FixtureController extends Controller
 
         $this->unloadFixtures($this->createFixtures($fixtures));
         $this->notifyUnloaded($fixtures);
+    }
+
+    /**
+     * Show informational message and exits when $fixturesInput == 0.
+     * @param array $fixturesInput
+     */
+    private function exitWhenNoArguments(array $fixturesInput)
+    {
+        if ($fixturesInput === []) {
+            $this->stdout($this->getHelpSummary() . "\n");
+
+            $helpCommand = Console::ansiFormat('yii help fixture', [Console::FG_CYAN]);
+            $this->stdout("Use $helpCommand to get usage info.\n");
+
+            return true;
+        }
+        return false;
     }
 
     /**
