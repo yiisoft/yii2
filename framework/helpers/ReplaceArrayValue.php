@@ -10,9 +10,9 @@ namespace yii\helpers;
 use yii\base\InvalidConfigException;
 
 /**
- * Object that represents the replacement of array value while performing [[ArrayHelper::merge()]].
+ * 调用对象执行 [[ArrayHelper::merge()]] 方法后对数组中的值进行替换操作。
  *
- * Usage example:
+ * 例如：
  *
  * ```php
  * $array1 = [
@@ -38,7 +38,7 @@ use yii\base\InvalidConfigException;
  * $result = \yii\helpers\ArrayHelper::merge($array1, $array2);
  * ```
  *
- * The result will be
+ * 结果如下
  *
  * ```php
  * [
@@ -59,14 +59,14 @@ use yii\base\InvalidConfigException;
 class ReplaceArrayValue
 {
     /**
-     * @var mixed value used as replacement.
+     * @var 用作替代的值。
      */
     public $value;
 
 
     /**
-     * Constructor.
-     * @param mixed $value value used as replacement.
+     * 构造函数。
+     * @param 将 $value 值用作替换值。
      */
     public function __construct($value)
     {
@@ -74,11 +74,11 @@ class ReplaceArrayValue
     }
 
     /**
-     * Restores class state after using `var_export()`.
+     * 使用 `var_export()` 后进行实例化。
      *
      * @param array $state
      * @return ReplaceArrayValue
-     * @throws InvalidConfigException when $state property does not contain `value` parameter
+     * @throws InvalidConfigException 当 $state 数组中不包含 `value` 元素时，抛出异常
      * @see var_export()
      * @since 2.0.16
      */

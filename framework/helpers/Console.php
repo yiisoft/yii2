@@ -8,8 +8,8 @@
 namespace yii\helpers;
 
 /**
- * Console helper provides useful methods for command line related tasks such as getting input or formatting and coloring
- * output.
+ * 控制台帮助程序为与命令行相关的任务提供了有用的方法，
+ * 例如获取输入、格式化和着色输出。
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
