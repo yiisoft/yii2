@@ -514,11 +514,12 @@ trait ActiveRelationTrait
     private function filterByModels($models)
     {
         $attributes = array_keys($this->link);
-
         $attributes = $this->prefixKeyColumns($attributes);
 
+        $singleKey = (count($attributes) === 1);
+
         $values = [];
-        if (count($attributes) === 1) {
+        if ($singleKey) {
             // single key
             $attribute = reset($this->link);
             foreach ($models as $model) {
@@ -535,23 +536,6 @@ trait ActiveRelationTrait
             if (empty($values)) {
                 $this->emulateExecution();
             }
-             
-            if (!empty($values)) {
-                $scalarValues = [];
-                $nonScalarValues = [];
-                foreach ($values as $value) {
-                    if (is_scalar($value)) {
-                        $scalarValues[] = $value;
-                    } else {
-                        $nonScalarValues[] = $value;
-                    }
-                }
-
-                $scalarValues = array_unique($scalarValues);
-                $values = array_merge($scalarValues, $nonScalarValues);
-            }
-          
-            $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
         } else {
             // composite keys
 
@@ -567,9 +551,27 @@ trait ActiveRelationTrait
                     $this->emulateExecution();
                 }
             }
-            if (!empty($values)) {
-                $this->andWhere(array_merge(['OR'], array_unique($values, SORT_REGULAR)));
+        }
+        
+        if (!empty($values)) {
+            $scalarValues = [];
+            $nonScalarValues = [];
+            foreach ($values as $value) {
+                if (is_scalar($value)) {
+                    $scalarValues[] = $value;
+                } else {
+                    $nonScalarValues[] = $value;
+                }
             }
+
+            $scalarValues = array_unique($scalarValues);
+            $values = array_merge($scalarValues, $nonScalarValues);
+        }
+        
+        if ($singleKey) {
+            $this->andWhere(['in', $attributes, $values]);
+        } else {
+            $this->andWhere(array_merge(['OR'], $values)); // fix bug with slow SQL
         }
     }
 
