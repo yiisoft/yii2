@@ -567,7 +567,9 @@ trait ActiveRelationTrait
                     $this->emulateExecution();
                 }
             }
-            $this->andWhere(array_merge(['OR'], array_unique($values, SORT_REGULAR)));
+            if (!empty($values)) {
+                $this->andWhere(array_merge(['OR'], array_unique($values, SORT_REGULAR)));
+            }
         }
     }
 
