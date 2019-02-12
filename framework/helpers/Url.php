@@ -8,7 +8,7 @@
 namespace yii\helpers;
 
 /**
- * Url 提供了一组静态方法用户管理 URLs。
+ * Url 提供了一组静态方法用于管理 URLs。
  *
  * 有关 Url 的详细信息和用法，请参考 [guide article on url helpers](guide:helper-url)。
  *
