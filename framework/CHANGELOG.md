@@ -6,7 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #17094: Fixed response on 204 status. Now it is empty (GHopperMSK)
 - Bug #17098: Fixed message/extract when using message params returned from method calls (rugabarbo)
-
+- Bug #17089: Fixed caching of related records when `via()` using with callable (rugabarbo)
 
 2.0.16 January 30, 2019
 -----------------------
