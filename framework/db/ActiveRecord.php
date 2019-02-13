@@ -211,7 +211,28 @@ class ActiveRecord extends BaseActiveRecord
     {
         $result = [];
         $db = static::getDb();
-        // valid column names are table column names or column names prefixed with table name or table alias
+        $columnNames = static::validFilterColumnNames($db, $aliases);
+
+        foreach ($condition as $key => $value) {
+            if (is_string($key) && !in_array($db->quoteSql($key), $columnNames, true)) {
+                throw new InvalidArgumentException('Key "' . $key . '" is not a column name and can not be used as a filter');
+            }
+            $result[$key] = is_array($value) ? array_values($value) : $value;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Valid column names are table column names or column names prefixed with table name or table alias
+     *
+     * @param Connection $db
+     * @param array $aliases
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public static function validFilterColumnNames($db, array $aliases)
+    {
         $columnNames = [];
         $tableName = static::tableName();
         $quotedTableName = $db->quoteTableName($tableName);
@@ -227,14 +248,8 @@ class ActiveRecord extends BaseActiveRecord
                 $columnNames[] = $db->quoteSql("$tableAlias.[[$columnName]]");
             }
         }
-        foreach ($condition as $key => $value) {
-            if (is_string($key) && !in_array($db->quoteSql($key), $columnNames, true)) {
-                throw new InvalidArgumentException('Key "' . $key . '" is not a column name and can not be used as a filter');
-            }
-            $result[$key] = is_array($value) ? array_values($value) : $value;
-        }
 
-        return $result;
+        return $columnNames;
     }
 
     /**
