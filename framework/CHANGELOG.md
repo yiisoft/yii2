@@ -6,7 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #17094: Fixed response on 204 status. Now it is empty (GHopperMSK)
 - Bug #17098: Fixed message/extract when using message params returned from method calls (rugabarbo)
-- Bug #17083: Fix `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
+- Bug #17083: Fixed `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
 
 
 2.0.16 January 30, 2019
