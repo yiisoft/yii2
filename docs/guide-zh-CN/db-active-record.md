@@ -462,7 +462,7 @@ $post->updateCounters(['view_count' => 1]);
 
 Active Record 自动维护脏属性列表。 它保存所有属性的旧值，
 并其与最新的属性值进行比较，就是酱紫个道理。你可以调用 [[yii\db\ActiveRecord::getDirtyAttributes()]] 
-获取当前的脏属性。你也可以调用 [[yii\db\ActiveRecord::getDirtyAttributes()]] 
+获取当前的脏属性。你也可以调用 [[yii\db\ActiveRecord::markAttributeDirty()]] 
 将属性显式标记为脏。
 
 如果你有需要获取属性原先的值，你可以调用
