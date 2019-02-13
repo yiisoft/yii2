@@ -47,7 +47,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     private $_sort;
     /**
-     * @var Pagination|false $_pagination
+     * @var Pagination|false
      */
     private $_pagination;
     private $_keys;

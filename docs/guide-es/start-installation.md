@@ -115,7 +115,7 @@ Puedes utilizar tu navegador para acceder a la aplicación instalada de Yii en l
 
 ```
 http://localhost:8080/.
-
+```
 
 ![Instalación Correcta de Yii](images/start-app-installed.png)
 

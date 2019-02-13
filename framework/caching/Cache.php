@@ -84,6 +84,7 @@ abstract class Cache extends Component implements CacheInterface
      */
     private $_igbinaryAvailable = false;
 
+
     /**
      * {@inheritdoc}
      */
