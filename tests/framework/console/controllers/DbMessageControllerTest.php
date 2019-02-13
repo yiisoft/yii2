@@ -77,6 +77,11 @@ class DbMessageControllerTest extends BaseMessageControllerTest
 
     public function tearDown()
     {
+        static::$db->createCommand()->checkIntegrity(false, '', 'message')->execute();
+        static::$db->createCommand()->truncateTable('message')->execute();
+        static::$db->createCommand()->truncateTable('source_message')->execute();
+        static::$db->createCommand()->checkIntegrity(true, '', 'message')->execute();
+
         parent::tearDown();
         Yii::$app = null;
     }
@@ -127,10 +132,6 @@ class DbMessageControllerTest extends BaseMessageControllerTest
      */
     protected function saveMessages($messages, $category)
     {
-        static::$db->createCommand()->checkIntegrity(false, '', 'message')->execute();
-        static::$db->createCommand()->truncateTable('message')->execute();
-        static::$db->createCommand()->truncateTable('source_message')->execute();
-        static::$db->createCommand()->checkIntegrity(true, '', 'message')->execute();
         foreach ($messages as $source => $translation) {
             $lastPk = static::$db->schema->insert('source_message', [
                 'category' => $category,

@@ -640,7 +640,7 @@ abstract class BaseMessageControllerTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/17098#issuecomment-463324939
+     * @see https://github.com/yiisoft/yii2/issues/17098#issuecomment-463324939
      */
     public function testIssue17098Comment463324939()
     {
