@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #17098: Fixed message/extract when using message params returned from method calls (rugabarbo)
 - Bug #17083: Fix `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
 
+
 2.0.16 January 30, 2019
 -----------------------
 
@@ -122,6 +123,7 @@ Yii Framework 2 Change Log
 - Enh: `yii\helpers\UnsetArrayValue`, `yii\helpers\ReplaceArrayValue` object now can be restored after serialization using `var_export()` function (silvefire)
 - Chg #16192: `yii\db\Command::logQuery()` is now protected, extracted `getCacheKey()` from `queryInternal()` (drlibra)
 - Chg #16941: Set `yii\console\controllers\MigrateController::useTablePrefix` to true as default value (GHopperMSK)
+
 
 2.0.15.1 March 21, 2018
 -----------------------
