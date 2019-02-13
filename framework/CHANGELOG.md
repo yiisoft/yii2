@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17156: Fixes PHP 7.2 warning when a data provider has no data as a parameter for a GridView (evilito)
+- Bug #17127: `yii\db\ActiveRecord::findOne()` now accepts table aliases (albertborsos)
 
 
 2.0.16.1 February 28, 2019
