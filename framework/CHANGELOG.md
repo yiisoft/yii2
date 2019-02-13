@@ -6,7 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #17094: Fixed response on 204 status. Now it is empty (GHopperMSK)
 - Bug #17098: Fixed message/extract when using message params returned from method calls (rugabarbo)
-
+- Bug #17083: Fix `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
 
 2.0.16 January 30, 2019
 -----------------------
@@ -108,7 +108,6 @@ Yii Framework 2 Change Log
 - Bug: Fixed bad instanceof check in `yii\db\Schema::getTableMetadata()` (samdark)
 - Bug: (CVE-2018-14578): Fixed CSRF token check bypassing in `\yii\web\Request::getMethod()` (silverfire)
 - Bug: (CVE-2018-19454): Fixed excess logging of sensitive information in `\yii\log\Target` (silverfire)
-- Bug #17083: Fix `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
 - Enh #9133: Added `yii\behaviors\OptimisticLockBehavior` (tunecino)
 - Enh #14289: Added `yii\db\Command::executeResetSequence()` to work with Oracle (CedricYii)
 - Enh #14367: In `yii\db\mysql\QueryBuilder` added support fractional seconds for time types for MySQL >= 5.6.4 (konstantin-vl)
