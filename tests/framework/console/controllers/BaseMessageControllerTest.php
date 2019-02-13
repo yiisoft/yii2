@@ -639,6 +639,28 @@ abstract class BaseMessageControllerTest extends TestCase
         ], $messages);
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/issues/17098#issuecomment-463324939
+     */
+    public function testIssue17098Comment463324939()
+    {
+        $sourceFileContent = "
+            echo Html::tag('div', Yii::t('app', 'Theoretically the subscription with {licences} would approximately expire on {date}.', ['licences' => Html::tag('strong', Yii::t('app', '{delta, plural, =1{# license} other{# licenses}}', ['delta' => \$flash['count']])), 'date' => Html::tag('strong', Yii::\$app->formatter->asDate(\$flash['date'], 'long'))]));
+        ";
+
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig(['translator' => ['Yii::t']]));
+        $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $messages = $this->loadMessages('app');
+
+        $this->assertEquals([
+            'Theoretically the subscription with {licences} would approximately expire on {date}.' => '',
+            '{delta, plural, =1{# license} other{# licenses}}' => '',
+        ], $messages);
+    }
+
     public function testMessagesSorting()
     {
         $category = 'test_order_category';
