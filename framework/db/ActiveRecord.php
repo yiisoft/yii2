@@ -187,7 +187,8 @@ class ActiveRecord extends BaseActiveRecord
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
         } elseif (is_array($condition)) {
-            $condition = static::filterCondition($condition);
+            $aliases = !empty($query->from) ? $query->from : [];
+            $condition = static::filterCondition($condition, $aliases);
         }
 
         return $query->andWhere($condition);
@@ -199,25 +200,32 @@ class ActiveRecord extends BaseActiveRecord
      * This method will ensure that an array condition only filters on existing table columns.
      *
      * @param array $condition condition to filter.
+     * @param array $aliases
      * @return array filtered condition.
      * @throws InvalidArgumentException in case array contains unsafe values.
+     * @throws InvalidConfigException
      * @since 2.0.15
      * @internal
      */
-    protected static function filterCondition(array $condition)
+    protected static function filterCondition(array $condition, array $aliases)
     {
         $result = [];
         $db = static::getDb();
-        // valid column names are table column names or column names prefixed with table name
+        // valid column names are table column names or column names prefixed with table name or table alias
         $columnNames = [];
         $tableName = static::tableName();
         $quotedTableName = $db->quoteTableName($tableName);
+        $tableAliases = array_keys(ArrayHelper::removeValue($aliases, $tableName, []));
 
         foreach (static::getTableSchema()->getColumnNames() as $columnName) {
             $columnNames[] = $columnName;
             $columnNames[] = $db->quoteColumnName($columnName);
             $columnNames[] = "$tableName.$columnName";
             $columnNames[] = $db->quoteSql("$quotedTableName.[[$columnName]]");
+            foreach ($tableAliases as $tableAlias) {
+                $columnNames[] = "$tableAlias.$columnName";
+                $columnNames[] = $db->quoteSql("$tableAlias.[[$columnName]]");
+            }
         }
         foreach ($condition as $key => $value) {
             if (is_string($key) && !in_array($db->quoteSql($key), $columnNames, true)) {
