@@ -577,7 +577,6 @@ abstract class Cache extends Component implements CacheInterface
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param callable|\Closure $callable the callable or closure that will be used to generate a value to be cached.
-     * In case $callable returns `false`, the value will not be cached.
      * @param int $duration default duration in seconds before the cache will expire. If not set,
      * [[defaultDuration]] value will be used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
