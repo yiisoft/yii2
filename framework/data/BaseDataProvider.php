@@ -54,6 +54,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     private $_models;
     private $_totalCount;
 
+    private $_previousPagination;
+    private $_previousSort;
 
     /**
      * {@inheritdoc}
@@ -114,6 +116,11 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      */
     public function getModels()
     {
+        if(($this->_previousPagination != $this->_pagination)||($this->_previousSort != $this->_sort))
+        {
+            $this->refresh();
+        }
+
         $this->prepare();
 
         return $this->_models;
@@ -194,12 +201,20 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
             $this->setPagination([]);
         }
 
+        if(($this->_previousPagination != null)&&($this->_previousPagination != $this->_pagination))
+        {
+            $this->refresh();
+        }
+
         if (($this->_pagination !== false) && ($this->_pagination->totalCount === null)) {
             if ($this->_totalCount === null) {
                 $this->setTotalCount($this->prepareTotalCount());
             }
             $this->_pagination->totalCount = $this->_totalCount;
         }
+
+        // Update previous pagination with current value
+        $this->_previousPagination = is_object($this->_pagination) ? clone $this->_pagination : $this->_pagination;
 
         return $this->_pagination;
     }
@@ -230,6 +245,16 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
         } else {
             throw new InvalidArgumentException('Only Pagination instance, configuration array or false is allowed.');
         }
+
+        // If pagination is changed, a refresh of models, keys and total count is forced
+        if(($this->_previousPagination != null)&&($this->_previousPagination != $this->_pagination))
+        {
+            $this->refresh();
+        }        
+        
+        // Update previous pagination with current value
+        $this->_previousPagination = is_object($this->_pagination) ? clone $this->_pagination : $this->_pagination;
+
     }
 
     /**
@@ -241,6 +266,18 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
         if ($this->_sort === null) {
             $this->setSort([]);
         }
+
+        if(($this->_previousSort != null)&&($this->_previousSort != $this->_sort))
+        {
+            if(is_object($this->_sort))
+            {
+                $this->_sort->resetAttributeOrders();
+            }
+            $this->refresh();
+        }
+
+        // Update previous sort with current value
+        $this->_previousSort = is_object($this->_sort) ? clone $this->_sort : $this->_sort;
 
         return $this->_sort;
     }
@@ -270,6 +307,16 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
         } else {
             throw new InvalidArgumentException('Only Sort instance, configuration array or false is allowed.');
         }
+
+        // If sort is changed, a refresh of models, keys and total count is forced
+        if(($this->_previousSort != null)&&($this->_previousSort != $this->_sort))
+        {
+            $this->refresh();
+        }
+        
+        // Update previous sort with current value
+        $this->_previousSort = is_object($this->_sort) ? clone $this->_sort : $this->_sort;
+
     }
 
     /**

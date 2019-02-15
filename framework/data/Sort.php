@@ -242,6 +242,14 @@ class Sort extends BaseObject
     private $_attributeOrders;
 
     /**
+     * Force reset of attribute orders. Called by yii\data\BaseDataProvider when Sort instance is changed
+     */
+    public function resetAttributeOrders()
+    {
+        $this->_attributeOrders = null;
+    }
+
+    /**
      * Returns the currently requested sort information.
      * @param bool $recalculate whether to recalculate the sort directions
      * @return array sort directions indexed by attribute names.

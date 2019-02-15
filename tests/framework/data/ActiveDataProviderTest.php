@@ -157,7 +157,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         $this->assertCount(3, $provider->getModels());
 
         $provider->getPagination()->pageSize = 2;
-        $this->assertCount(3, $provider->getModels());
         $provider->refresh();
         $this->assertCount(2, $provider->getModels());
     }
@@ -175,7 +174,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         $this->assertEquals(1, $pagination->getPageCount());
 
         $provider->getPagination()->pageSize = 2;
-        $this->assertCount(3, $provider->getModels());
         $provider->refresh();
         $this->assertCount(2, $provider->getModels());
     }
@@ -239,4 +237,46 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
     }
 
+    public function testPaginationChangeWithoutRefresh()
+    {
+        $query = new Query();
+        $provider = new ActiveDataProvider([
+            'db' => $this->getConnection(),
+            'query' => $query->from('order')->orderBy('id'),
+        ]);
+        $this->assertCount(3, $provider->getModels());
+
+        $provider->getPagination()->pageSize = 2;
+        $this->assertCount(2, $provider->getModels());
+        $provider->getPagination()->pageSize = 1;
+        $this->assertCount(1, $provider->getModels());
+        $provider->setPagination(['pageSize' => 3]);
+        $this->assertCount(3, $provider->getModels());
+    }    
+
+    public function testSortChangeWithoutRefresh()
+    {
+        $query = new Query();
+        $provider = new ActiveDataProvider([
+            'db' => $this->getConnection(),
+            'query' => $query->from('order'),
+            'sort' => [ 
+                'attributes' => [ 
+                    'id' => [ 
+                        'asc' => [ 'id' => SORT_ASC ], 
+                        'desc' => [ 'id' => SORT_DESC ]  
+                    ] 
+                ] 
+            ]
+        ]);
+        $this->assertCount(3, $provider->getModels());
+
+        $provider->getSort()->defaultOrder = [ 'id' => SORT_ASC ];
+        $models = $provider->getModels();
+        $this->assertEquals(1, $models[0]['id']);
+
+        $provider->getSort()->defaultOrder = [ 'id' => SORT_DESC ];
+        $models = $provider->getModels();
+        $this->assertEquals(3, $models[0]['id']);        
+    }     
 }
