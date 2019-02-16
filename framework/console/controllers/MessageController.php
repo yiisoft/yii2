@@ -545,39 +545,39 @@ EOD;
 
                             if (!$this->isCategoryIgnored($category, $ignoreCategories)) {
                                 $fullMessage = mb_substr($buffer[2][1], 1, -1);
-                                $i = 3;
-                                while ($i < count($buffer) - 1 && !is_array($buffer[$i]) && $buffer[$i] === '.') {
-                                    $fullMessage .= mb_substr($buffer[$i + 1][1], 1, -1);
-                                    $i += 2;
+                                $tokenIndex = 3;
+                                while ($tokenIndex < count($buffer) - 1 && !is_array($buffer[$tokenIndex]) && $buffer[$tokenIndex] === '.') {
+                                    $fullMessage .= mb_substr($buffer[$tokenIndex + 1][1], 1, -1);
+                                    $tokenIndex += 2;
                                 }
 
                                 if (!isset($messages[$category][stripcslashes($fullMessage)])) {
                                     $messages[$category][stripcslashes($fullMessage)] = [];
                                 }
 
-                                if (!$extractContext) {
+                                if ($extractContext) {
                                     $context = ['context' => '', 'params' => [], 'file' => $fileName];
                                     // extract parameters
-                                    if (isset($buffer[$i], $buffer[$i + 1]) && $buffer[$i] === ','
-                                        && ($buffer[$i + 1] === '[' || (isset($buffer[$i + 1][0]) && $buffer[$i + 1][0] == T_ARRAY))
+                                    if (isset($buffer[$tokenIndex], $buffer[$tokenIndex + 1]) && $buffer[$tokenIndex] === ','
+                                        && ($buffer[$tokenIndex + 1] === '[' || (isset($buffer[$tokenIndex + 1][0]) && $buffer[$tokenIndex + 1][0] == T_ARRAY))
                                     ) {
-                                        $i += 1;
+                                        $tokenIndex += 1;
                                         $params = [];
-                                        while ($buffer[$i] != ']' && $buffer[$i] != ')') {
-                                            if (in_array($buffer[$i + 1][0], array(T_CONSTANT_ENCAPSED_STRING, T_LNUMBER, T_VARIABLE))) {
+                                        while ($buffer[$tokenIndex] != ']' && $buffer[$tokenIndex] != ')') {
+                                            if (in_array($buffer[$tokenIndex + 1][0], array(T_CONSTANT_ENCAPSED_STRING, T_LNUMBER, T_VARIABLE))) {
                                                 $paramContext = '';
                                                 $foundContext = 0;
-                                                if ($buffer[$i + 2][0] === T_COMMENT) {
-                                                    $paramContext = trim(mb_substr($buffer[$i + 2][1], 3, -3));
-                                                    unset($buffer[$i + 2]);
+                                                if ($buffer[$tokenIndex + 2][0] === T_COMMENT) {
+                                                    $paramContext = trim(mb_substr($buffer[$tokenIndex + 2][1], 3, -3));
+                                                    unset($buffer[$tokenIndex + 2]);
                                                     $foundContext = 1;
                                                 }
-                                                $isNamedParameter = ($buffer[$i + 2 + $foundContext][0] === T_DOUBLE_ARROW);
+                                                $isNamedParameter = ($buffer[$tokenIndex + 2 + $foundContext][0] === T_DOUBLE_ARROW);
                                                 if ($isNamedParameter) {
-                                                    if ($buffer[$i + 1][0] === T_CONSTANT_ENCAPSED_STRING) {
-                                                        $name = mb_substr($buffer[$i + 1][1], 1, -1);
-                                                    } elseif ($buffer[$i + 1][0] === T_LNUMBER) {
-                                                        $name = $buffer[$i + 1][1];
+                                                    if ($buffer[$tokenIndex + 1][0] === T_CONSTANT_ENCAPSED_STRING) {
+                                                        $name = mb_substr($buffer[$tokenIndex + 1][1], 1, -1);
+                                                    } elseif ($buffer[$tokenIndex + 1][0] === T_LNUMBER) {
+                                                        $name = $buffer[$tokenIndex + 1][1];
                                                     }
                                                     $params[$name] = $paramContext;
 
@@ -585,18 +585,18 @@ EOD;
                                                     $j = 1;
                                                     $stop = false;
                                                     while (!$stop) {
-                                                        if ($buffer[$i + $j + 4 + $foundContext] == '(') {
+                                                        if ($buffer[$tokenIndex + $j + 4 + $foundContext] == '(') {
                                                             $openParenthesisCount ++;
-                                                        }  elseif ($buffer[$i + $j + 4 + $foundContext] == ')') {
+                                                        }  elseif ($buffer[$tokenIndex + $j + 4 + $foundContext] == ')') {
                                                             $openParenthesisCount --;
                                                         }
-                                                        if (!$openParenthesisCount && (in_array($buffer[$i + $j + 4 + $foundContext], [',', ']', ')']))) {
+                                                        if (!$openParenthesisCount && (in_array($buffer[$tokenIndex + $j + 4 + $foundContext], [',', ']', ')']))) {
                                                             $stop = true;
                                                         }
                                                         $j ++;
                                                     }
 
-                                                    $i += 3 + $j + $foundContext;
+                                                    $tokenIndex += 3 + $j + $foundContext;
                                                 } else {
                                                     $params[] = $paramContext;
 
@@ -604,17 +604,17 @@ EOD;
                                                     $j = 1;
                                                     $stop = false;
                                                     while (!$stop) {
-                                                        if ($buffer[$i + $j + 2 + $foundContext] === '(') {
+                                                        if ($buffer[$tokenIndex + $j + 2 + $foundContext] === '(') {
                                                             $openParenthesisCount ++;
-                                                        }  elseif ($buffer[$i + $j + 2 + $foundContext] === ')') {
+                                                        }  elseif ($buffer[$tokenIndex + $j + 2 + $foundContext] === ')') {
                                                             $openParenthesisCount --;
                                                         }
-                                                        if (!$openParenthesisCount && (in_array($buffer[$i + $j + 4 + $foundContext], [',', ']', ')']))) {
+                                                        if (!$openParenthesisCount && (in_array($buffer[$tokenIndex + $j + 4 + $foundContext], [',', ']', ')']))) {
                                                             $stop = true;
                                                         }
                                                         $j ++;
                                                     }
-                                                    $i += 1 + $j + $foundContext;
+                                                    $tokenIndex += 1 + $j + $foundContext;
                                                 }
                                             }
                                         }
@@ -959,7 +959,7 @@ EOD;
         $poFile = new GettextPoFile();
 
         $merged = [];
-        $todo = [];
+        $todos = [];
         $hasSomethingToWrite = false;
         foreach ($messages as $category => $msgs) {
 
@@ -989,18 +989,18 @@ EOD;
                     if (array_key_exists($message, $existingMessages) && $existingMessages[$message] !== '') {
                         $merged[$category . chr(4) . $message] = array_merge(['text' => $existingMessages[$message]], $extractContext ? $messageData : []);
                     } else {
-                        $todo[$category . chr(4) . $message] = array_merge(['text' => ''], $extractContext ? $messageData : []);
+                        $todos[$category . chr(4) . $message] = array_merge(['text' => ''], $extractContext ? $messageData : []);
                     }
                 }
                 ksort($merged);
 
                 // add obsolete unused messages
                 foreach ($existingMessages as $message => $translation) {
-                    if (!$removeUnused && !isset($merged[$category . chr(4) . $message]) && !isset($todo[$category . chr(4) . $message])) {
+                    if (!$removeUnused && !isset($merged[$category . chr(4) . $message]) && !isset($todos[$category . chr(4) . $message])) {
                         if (!$markUnused || (!empty($translation) && (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@'))) {
-                            $todo[$category . chr(4) . $message] = ['text' => $translation];
+                            $todos[$category . chr(4) . $message] = ['text' => $translation];
                         } else {
-                            $todo[$category . chr(4) . $message] = ['text' => '@@' . $translation . '@@'];
+                            $todos[$category . chr(4) . $message] = ['text' => '@@' . $translation . '@@'];
                         }
                     }
                 }

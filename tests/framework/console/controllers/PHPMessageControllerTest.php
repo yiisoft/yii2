@@ -44,6 +44,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
             'overwrite' => true,
             'phpFileHeader' => "/*file header*/\n",
             'phpDocBlock' => '/*doc block*/',
+            'extractContext' => true
         ];
     }
 
