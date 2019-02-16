@@ -66,7 +66,7 @@ class POMessageControllerTest extends BaseMessageControllerTest
 
         $data = [];
         foreach ($messages as $message => $translation) {
-            $data[$category . chr(4) . $message] = $translation;
+            $data[$category . chr(4) . $message]['text'] = $translation;
         }
 
         $gettext->save($messageFilePath, $data);

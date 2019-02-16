@@ -560,6 +560,22 @@ abstract class BaseMessageControllerTest extends TestCase
     }
 
     /**
+     * @depends testCreateTranslation
+     */
+    public function textExtractMessageContext()
+    {
+
+    }
+
+    /**
+     * @depends testCreateTranslation
+     */
+    public function textExtractMessageParametersContext()
+    {
+
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/16828
      */
     public function testPartialTranslator()

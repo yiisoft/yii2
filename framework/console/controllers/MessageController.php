@@ -85,6 +85,14 @@ class MessageController extends \yii\console\Controller
      */
     public $markUnused = true;
     /**
+     * @var bool whether command should extract messages context, useful for translators.
+     * Context will be extracted from multi-line comments written in [[$translator]] calls.
+     * Message context should be written: Yii::t('category', 'message' /* message context * /);
+     * Parameters context should be written: Yii::t('category', 'message {param}', ['param' /* parameter context * / => 'value']);
+     * @since 2.0.13
+     */
+    public $extractContext = false;
+    /**
      * @var array list of patterns that specify which files/directories should NOT be processed.
      * If empty or not set, all files/directories will be processed.
      * See helpers/FileHelper::findFiles() description for pattern matching rules.
@@ -167,6 +175,7 @@ class MessageController extends \yii\console\Controller
             'overwrite',
             'removeUnused',
             'markUnused',
+            'extractContext',
             'except',
             'only',
             'format',
@@ -193,6 +202,7 @@ class MessageController extends \yii\console\Controller
             'i' => 'ignoreCategories',
             'l' => 'languages',
             'u' => 'markUnused',
+            'C' => 'extractContext',
             'p' => 'messagePath',
             'o' => 'only',
             'w' => 'overwrite',
@@ -301,7 +311,11 @@ EOD;
 
         $messages = [];
         foreach ($files as $file) {
-            $messages = array_merge_recursive($messages, $this->extractMessages($file, $this->config['translator'], $this->config['ignoreCategories']));
+            $messages = array_merge_recursive($messages, $this->extractMessages($file, $this->config['translator'], $this->config['ignoreCategories'], $this->config['extractContext']));
+        }
+        if (!$this->validateMessages($messages)) {
+            $this->stdout("...messages not saved due to validation errors!\n", Console::FG_RED);
+            return ExitCode::UNSPECIFIED_ERROR;
         }
 
         $catalog = isset($this->config['catalog']) ? $this->config['catalog'] : 'messages';
@@ -313,9 +327,9 @@ EOD;
                     throw new Exception("Directory '{$dir}' can not be created.");
                 }
                 if ($this->config['format'] === 'po') {
-                    $this->saveMessagesToPO($messages, $dir, $this->config['overwrite'], $this->config['removeUnused'], $this->config['sort'], $catalog, $this->config['markUnused']);
+                    $this->saveMessagesToPO($messages, $dir, $this->config['overwrite'], $this->config['removeUnused'], $this->config['sort'], $catalog, $this->config['markUnused'], $this->config['extractContext']);
                 } else {
-                    $this->saveMessagesToPHP($messages, $dir, $this->config['overwrite'], $this->config['removeUnused'], $this->config['sort'], $this->config['markUnused']);
+                    $this->saveMessagesToPHP($messages, $dir, $this->config['overwrite'], $this->config['removeUnused'], $this->config['sort'], $this->config['markUnused'], $this->config['extractContext']);
                 }
             }
         } elseif ($this->config['format'] === 'db') {
@@ -466,9 +480,10 @@ EOD;
      * @param string $translator name of the function used to translate messages
      * @param array $ignoreCategories message categories to ignore.
      * This parameter is available since version 2.0.4.
+     * @param bool $extractContext whether to extract also translation context from comments
      * @return array
      */
-    protected function extractMessages($fileName, $translator, $ignoreCategories = [])
+    protected function extractMessages($fileName, $translator, $ignoreCategories = [], $extractContext = false)
     {
         $this->stdout('Extracting messages from ');
         $this->stdout($fileName, Console::FG_CYAN);
@@ -480,7 +495,7 @@ EOD;
         foreach ((array) $translator as $currentTranslator) {
             $translatorTokens = token_get_all('<?php ' . $currentTranslator);
             array_shift($translatorTokens);
-            $messages = array_merge_recursive($messages, $this->extractMessagesFromTokens($tokens, $translatorTokens, $ignoreCategories));
+            $messages = array_merge_recursive($messages, $this->extractMessagesFromTokens($tokens, $translatorTokens, $ignoreCategories, $extractContext, $fileName));
         }
 
         $this->stdout("\n");
@@ -490,12 +505,15 @@ EOD;
 
     /**
      * Extracts messages from a parsed PHP tokens list.
+     *
      * @param array $tokens tokens to be processed.
      * @param array $translatorTokens translator tokens.
      * @param array $ignoreCategories message categories to ignore.
+     * @param bool $extractContext whether to extract also translation context from comments
+     * @param bool $fileName file name of currently processed file. This variable is necessary only in [[$extractContext]] is true
      * @return array messages.
      */
-    protected function extractMessagesFromTokens(array $tokens, array $translatorTokens, array $ignoreCategories)
+    protected function extractMessagesFromTokens(array $tokens, array $translatorTokens, array $ignoreCategories, $extractContext, $fileName)
     {
         $messages = [];
         $translatorTokensCount = count($translatorTokens);
@@ -533,14 +551,95 @@ EOD;
                                     $i += 2;
                                 }
 
-                                $message = stripcslashes($fullMessage);
-                                $messages[$category][] = $message;
+                                if (!isset($messages[$category][stripcslashes($fullMessage)])) {
+                                    $messages[$category][stripcslashes($fullMessage)] = [];
+                                }
+
+                                if (!$extractContext) {
+                                    $context = ['context' => '', 'params' => [], 'file' => $fileName];
+                                    // extract parameters
+                                    if (isset($buffer[$i], $buffer[$i + 1]) && $buffer[$i] === ','
+                                        && ($buffer[$i + 1] === '[' || (isset($buffer[$i + 1][0]) && $buffer[$i + 1][0] == T_ARRAY))
+                                    ) {
+                                        $i += 1;
+                                        $params = [];
+                                        while ($buffer[$i] != ']' && $buffer[$i] != ')') {
+                                            if (in_array($buffer[$i + 1][0], array(T_CONSTANT_ENCAPSED_STRING, T_LNUMBER, T_VARIABLE))) {
+                                                $paramContext = '';
+                                                $foundContext = 0;
+                                                if ($buffer[$i + 2][0] === T_COMMENT) {
+                                                    $paramContext = trim(mb_substr($buffer[$i + 2][1], 3, -3));
+                                                    unset($buffer[$i + 2]);
+                                                    $foundContext = 1;
+                                                }
+                                                $isNamedParameter = ($buffer[$i + 2 + $foundContext][0] === T_DOUBLE_ARROW);
+                                                if ($isNamedParameter) {
+                                                    if ($buffer[$i + 1][0] === T_CONSTANT_ENCAPSED_STRING) {
+                                                        $name = mb_substr($buffer[$i + 1][1], 1, -1);
+                                                    } elseif ($buffer[$i + 1][0] === T_LNUMBER) {
+                                                        $name = $buffer[$i + 1][1];
+                                                    }
+                                                    $params[$name] = $paramContext;
+
+                                                    $openParenthesisCount = 0;
+                                                    $j = 1;
+                                                    $stop = false;
+                                                    while (!$stop) {
+                                                        if ($buffer[$i + $j + 4 + $foundContext] == '(') {
+                                                            $openParenthesisCount ++;
+                                                        }  elseif ($buffer[$i + $j + 4 + $foundContext] == ')') {
+                                                            $openParenthesisCount --;
+                                                        }
+                                                        if (!$openParenthesisCount && (in_array($buffer[$i + $j + 4 + $foundContext], [',', ']', ')']))) {
+                                                            $stop = true;
+                                                        }
+                                                        $j ++;
+                                                    }
+
+                                                    $i += 3 + $j + $foundContext;
+                                                } else {
+                                                    $params[] = $paramContext;
+
+                                                    $openParenthesisCount = 0;
+                                                    $j = 1;
+                                                    $stop = false;
+                                                    while (!$stop) {
+                                                        if ($buffer[$i + $j + 2 + $foundContext] === '(') {
+                                                            $openParenthesisCount ++;
+                                                        }  elseif ($buffer[$i + $j + 2 + $foundContext] === ')') {
+                                                            $openParenthesisCount --;
+                                                        }
+                                                        if (!$openParenthesisCount && (in_array($buffer[$i + $j + 4 + $foundContext], [',', ']', ')']))) {
+                                                            $stop = true;
+                                                        }
+                                                        $j ++;
+                                                    }
+                                                    $i += 1 + $j + $foundContext;
+                                                }
+                                            }
+                                        }
+                                        $context['params'] = $params;
+                                    }
+
+
+                                    // extract context
+                                    foreach ($buffer as $translatorToken) {
+                                        if (isset($translatorToken[0])
+                                            && $translatorToken[0] === T_COMMENT
+                                        ) {
+                                            $message['context'] = trim(mb_substr($translatorToken[1], 3, -3));
+                                            break;
+                                        }
+                                    }
+
+                                    $messages[$category][stripcslashes($fullMessage)][] = $context;
+                                }
                             }
 
                             $nestedTokens = array_slice($buffer, 3);
                             if (count($nestedTokens) > $translatorTokensCount) {
                                 // search for possible nested translator calls
-                                $messages = array_merge_recursive($messages, $this->extractMessagesFromTokens($nestedTokens, $translatorTokens, $ignoreCategories));
+                                $messages = array_merge_recursive($messages, $this->extractMessagesFromTokens($nestedTokens, $translatorTokens, $ignoreCategories, $extractContext, $fileName));
                             }
                         } else {
                             // invalid call or dynamic call we can't extract
@@ -576,14 +675,55 @@ EOD;
                         $buffer[] = $token;
                     }
                     $pendingParenthesisCount++;
-                } elseif (isset($token[0]) && !in_array($token[0], [T_WHITESPACE, T_COMMENT])) {
-                    // ignore comments and whitespaces
+                } elseif (isset($token[0]) && !in_array($token[0], [T_WHITESPACE])) {
+                    // ignore whitespaces
                     $buffer[] = $token;
                 }
             }
         }
 
         return $messages;
+    }
+
+    /**
+     * Method validates extracted messages and prints out found errors.
+     * It checks, if all calls have same parameters.
+     *
+     * @param array $messages
+     * @return bool whether messages are valid or not
+     */
+    protected function validateMessages(array $messages)
+    {
+        $valid = true;
+        foreach ($messages as $category => $categoryMessages) {
+            foreach ($categoryMessages as $message => $messageData) {
+                $firsMessageContext = array_shift($messageData);
+                if (!isset($firsMessageContext['params'])) {
+                    $params = [];
+                } else {
+                    $params = array_keys($firsMessageContext['params']);
+                }
+                sort($params);
+                foreach ($messageData as $messageContext) {
+                    $messageContextParams = array_keys($messageContext['params']);
+                    sort($messageContextParams);
+                    if ($messageContextParams != $params) {
+                        $valid = false;
+                        $this->stdout(
+                            "Error: Parameters doesn't match! ({$category}:{$message})\n",
+                            Console::FG_RED
+                        );
+                        $this->stdout("\tOccurence in file ", Console::FG_RED);
+                        $this->stdout($firsMessageContext['file'], Console::FG_CYAN);
+                        $this->stdout(": " . json_encode($params) . "\n", Console::FG_RED);
+                        $this->stdout("\tOccurence in file ", Console::FG_RED);
+                        $this->stdout($messageContext['file'], Console::FG_CYAN);
+                        $this->stdout(": " . json_encode($messageContextParams) . "\n\n", Console::FG_RED);
+                    }
+                }
+            }
+        }
+        return $valid;
     }
 
     /**
@@ -662,17 +802,17 @@ EOD;
      * @param bool $removeUnused if obsolete translations should be removed
      * @param bool $sort if translations should be sorted
      * @param bool $markUnused if obsolete translations should be marked
+     * @param bool $extractContext whether to save extracted context
      */
-    protected function saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)
+    protected function saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused, $extractContext)
     {
         foreach ($messages as $category => $msgs) {
             $file = str_replace('\\', '/', "$dirName/$category.php");
             $path = dirname($file);
             FileHelper::createDirectory($path);
-            $msgs = array_values(array_unique($msgs));
             $coloredFileName = Console::ansiFormat($file, [Console::FG_CYAN]);
             $this->stdout("Saving messages to $coloredFileName...\n");
-            $this->saveMessagesCategoryToPHP($msgs, $file, $overwrite, $removeUnused, $sort, $category, $markUnused);
+            $this->saveMessagesCategoryToPHP($msgs, $file, $overwrite, $removeUnused, $sort, $category, $markUnused, $extractContext);
         }
 
         if ($removeUnused) {
@@ -690,45 +830,49 @@ EOD;
      * @param bool $sort if translations should be sorted
      * @param string $category message category
      * @param bool $markUnused if obsolete translations should be marked
+     * @param bool $extractContext whether to save extracted context
      * @return int exit code
      */
-    protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)
+    protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused, $extractContext)
     {
         if (is_file($fileName)) {
-            $rawExistingMessages = require $fileName;
-            $existingMessages = $rawExistingMessages;
-            sort($messages);
-            ksort($existingMessages);
-            if (array_keys($existingMessages) === $messages && (!$sort || array_keys($rawExistingMessages) === $messages)) {
-                $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n", Console::FG_GREEN);
-                return ExitCode::OK;
-            }
-            unset($rawExistingMessages);
+            $existingMessages = require $fileName;
+
             $merged = [];
-            $untranslated = [];
-            foreach ($messages as $message) {
-                if (array_key_exists($message, $existingMessages) && $existingMessages[$message] !== '') {
-                    $merged[$message] = $existingMessages[$message];
+            $todo = [];
+
+            ksort($messages);
+            ksort($existingMessages);
+            if (array_keys($existingMessages) == array_keys($messages)) {
+                if ($extractContext) {
+                    $this->stdout("Nothing new in \"$category\" category, validating and updating only context...\n");
                 } else {
-                    $untranslated[] = $message;
+                    $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n", Console::FG_GREEN);
+                    return ExitCode::OK;
+                }
+            }
+
+            foreach ($messages as $message => $messageData) {
+                if (array_key_exists($message, $existingMessages) && $existingMessages[$message] !== '') {
+                    $merged[$message] = array_merge(['text' => $existingMessages[$message]], $messageData);
+                } else {
+                    $todo[$message] = array_merge(['text' => ''], $messageData);
                 }
             }
             ksort($merged);
-            sort($untranslated);
-            $todo = [];
-            foreach ($untranslated as $message) {
-                $todo[$message] = '';
-            }
-            ksort($existingMessages);
+            ksort($todo);
+
+            // add obsolete unused messages
             foreach ($existingMessages as $message => $translation) {
                 if (!$removeUnused && !isset($merged[$message]) && !isset($todo[$message])) {
-                    if (!$markUnused || (!empty($translation) && (strncmp($translation, '@@', 2) === 0 && substr_compare($translation, '@@', -2, 2) === 0))) {
-                        $todo[$message] = $translation;
+                    if (!$markUnused || (!empty($translation) && (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@'))) {
+                        $todo[$message] = ['text' => $translation];
                     } else {
-                        $todo[$message] = '@@' . $translation . '@@';
+                        $todo[$message] = ['text' => '@@' . $translation . '@@'];
                     }
                 }
             }
+
             $merged = array_merge($merged, $todo);
             if ($sort) {
                 ksort($merged);
@@ -739,13 +883,17 @@ EOD;
             $this->stdout("Translation merged.\n");
         } else {
             $merged = [];
-            foreach ($messages as $message) {
-                $merged[$message] = '';
+            foreach ($messages as $message => $messageData) {
+                $merged[$message] = array_merge(['text' => ''], $messageData);
             }
             ksort($merged);
         }
-
-        $array = VarDumper::export($merged);
+        $array = "[\n";
+        foreach ($merged as $message => $messageData) {
+            $array .= $this->exportContextToPHP($messageData);
+            $array .= "    " . VarDumper::export($message) . " => " . VarDumper::export($messageData['text']) . ",\n";
+        }
+        $array .= "]";
         $content = <<<EOD
 <?php
 {$this->config['phpFileHeader']}{$this->config['phpDocBlock']}
@@ -763,6 +911,34 @@ EOD;
     }
 
     /**
+     * Method converts message context to multi-line comment format.
+     *
+     * @param array $context
+     * @return string context exported in multi-line comment format
+     */
+    protected function exportContextToPHP(array $context)
+    {
+        $return = '';
+        foreach ($context as $occurence) {
+            if (!empty($occurence['file'])) {
+                $return .= "     * {$occurence['file']}\n";
+            }
+            if (!empty($occurence['context'])) {
+                $return .= "     *  " . str_replace("\n", "\n#. ", $occurence['context']) . "\n";
+            }
+            if (!empty($occurence['params'])) {
+                foreach ($occurence['params'] as $parameter => $description) {
+                    $return .= "     *  {{$parameter}} {$description}\n";
+                }
+            }
+        }
+        if (!empty($return)) {
+            $return = "    /*\n{$return}    */\n";
+        }
+        return $return;
+    }
+
+    /**
      * Writes messages into PO file.
      *
      * @param array $messages
@@ -772,8 +948,9 @@ EOD;
      * @param bool $sort if translations should be sorted
      * @param string $catalog message catalog
      * @param bool $markUnused if obsolete translations should be marked
+     * @param bool $extractContext whether to save extracted context
      */
-    protected function saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused)
+    protected function saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused, $extractContext)
     {
         $file = str_replace('\\', '/', "$dirName/$catalog.po");
         FileHelper::createDirectory(dirname($file));
@@ -782,52 +959,48 @@ EOD;
         $poFile = new GettextPoFile();
 
         $merged = [];
-        $todos = [];
-
+        $todo = [];
         $hasSomethingToWrite = false;
         foreach ($messages as $category => $msgs) {
-            $notTranslatedYet = [];
-            $msgs = array_values(array_unique($msgs));
 
             if (is_file($file)) {
                 $existingMessages = $poFile->load($file, $category);
 
-                sort($msgs);
+                ksort($msgs);
                 ksort($existingMessages);
-                if (array_keys($existingMessages) == $msgs) {
-                    $this->stdout("Nothing new in \"$category\" category...\n");
+                if (array_keys($existingMessages) == array_keys($msgs)) {
+                    if ($extractContext) {
+                        $this->stdout("Nothing new in \"$category\" category, validating and updating only context...\n");
+                        $hasSomethingToWrite = true;
+                    } else {
+                        $this->stdout("Nothing new in \"$category\" category...\n", Console::FG_GREEN);
+                    }
 
-                    sort($msgs);
-                    foreach ($msgs as $message) {
-                        $merged[$category . chr(4) . $message] = $existingMessages[$message];
+                    foreach ($msgs as $message => $messageData) {
+                        $merged[$category . chr(4) . $message] = array_merge(['text' => $existingMessages[$message]], $extractContext ? $messageData : []);
                     }
                     ksort($merged);
                     continue;
                 }
+                $hasSomethingToWrite = true;
 
                 // merge existing message translations with new message translations
-                foreach ($msgs as $message) {
+                foreach ($msgs as $message => $messageData) {
                     if (array_key_exists($message, $existingMessages) && $existingMessages[$message] !== '') {
-                        $merged[$category . chr(4) . $message] = $existingMessages[$message];
+                        $merged[$category . chr(4) . $message] = array_merge(['text' => $existingMessages[$message]], $extractContext ? $messageData : []);
                     } else {
-                        $notTranslatedYet[] = $message;
+                        $todo[$category . chr(4) . $message] = array_merge(['text' => ''], $extractContext ? $messageData : []);
                     }
                 }
                 ksort($merged);
-                sort($notTranslatedYet);
-
-                // collect not yet translated messages
-                foreach ($notTranslatedYet as $message) {
-                    $todos[$category . chr(4) . $message] = '';
-                }
 
                 // add obsolete unused messages
                 foreach ($existingMessages as $message => $translation) {
-                    if (!$removeUnused && !isset($merged[$category . chr(4) . $message]) && !isset($todos[$category . chr(4) . $message])) {
+                    if (!$removeUnused && !isset($merged[$category . chr(4) . $message]) && !isset($todo[$category . chr(4) . $message])) {
                         if (!$markUnused || (!empty($translation) && (substr($translation, 0, 2) === '@@' && substr($translation, -2) === '@@'))) {
-                            $todos[$category . chr(4) . $message] = $translation;
+                            $todo[$category . chr(4) . $message] = ['text' => $translation];
                         } else {
-                            $todos[$category . chr(4) . $message] = '@@' . $translation . '@@';
+                            $todo[$category . chr(4) . $message] = ['text' => '@@' . $translation . '@@'];
                         }
                     }
                 }
@@ -841,14 +1014,13 @@ EOD;
                     $file .= '.merged';
                 }
             } else {
-                sort($msgs);
-                foreach ($msgs as $message) {
-                    $merged[$category . chr(4) . $message] = '';
+                $hasSomethingToWrite = true;
+                foreach ($msgs as $message => $messageData) {
+                    $merged[$category . chr(4) . $message] = array_merge(['text' => ''], $extractContext ? $messageData : []);
                 }
                 ksort($merged);
             }
             $this->stdout("Category \"$category\" merged.\n");
-            $hasSomethingToWrite = true;
         }
         if ($hasSomethingToWrite) {
             $poFile->save($file, $merged);
@@ -864,9 +1036,10 @@ EOD;
      * @param array $messages
      * @param string $dirName name of the directory to write to
      * @param string $catalog message catalog
+     * @param bool $extractContext whether to save extracted context
      * @since 2.0.6
      */
-    protected function saveMessagesToPOT($messages, $dirName, $catalog)
+    protected function saveMessagesToPOT($messages, $dirName, $catalog, $extractContext)
     {
         $file = str_replace('\\', '/', "$dirName/$catalog.pot");
         FileHelper::createDirectory(dirname($file));
@@ -878,11 +1051,8 @@ EOD;
 
         $hasSomethingToWrite = false;
         foreach ($messages as $category => $msgs) {
-            $msgs = array_values(array_unique($msgs));
-
-            sort($msgs);
-            foreach ($msgs as $message) {
-                $merged[$category . chr(4) . $message] = '';
+            foreach ($msgs as $message => $messageData) {
+                $merged[$category . chr(4) . $message] = array_merge(['text' => ''], $extractContext ? $messageData : []);
             }
             $this->stdout("Category \"$category\" merged.\n");
             $hasSomethingToWrite = true;

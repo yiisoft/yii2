@@ -69,16 +69,45 @@ class GettextPoFile extends GettextFile
             '"Content-Transfer-Encoding: 8bit\n"',
         ];
         $content = implode("\n", $headers) . "\n\n";
-        foreach ($messages as $id => $message) {
+
+        foreach ($messages as $id => $messageData) {
+            $text = $messageData['text'];
+            unset($messageData['text']);
+            $content .= $this->exportContext($messageData);
             $separatorPosition = strpos($id, chr(4));
             if ($separatorPosition !== false) {
                 $content .= 'msgctxt "' . substr($id, 0, $separatorPosition) . "\"\n";
                 $id = substr($id, $separatorPosition + 1);
             }
             $content .= 'msgid "' . $this->encode($id) . "\"\n";
-            $content .= 'msgstr "' . $this->encode($message) . "\"\n\n";
+            $content .= 'msgstr "' . $this->encode($text) . "\"\n\n";
         }
         file_put_contents($filePath, $content);
+    }
+
+    /**
+     * Method generates context for given translation.
+     *
+     * @param array $context context data for each message occurrence
+     * @return string message context
+     */
+    protected function exportContext($context)
+    {
+        $return = '';
+        foreach ($context as $occurence) {
+            if (!empty($occurence['file'])) {
+                $return .= "#: {$occurence['file']}\n";
+            }
+            if (!empty($occurence['context'])) {
+                $return .= "#. " . str_replace("\n", "\n#. ", $occurence['context']) . "\n";
+            }
+            if (!empty($occurence['params'])) {
+                foreach ($occurence['params'] as $parameter => $description) {
+                    $return .= "#. {{$parameter}} {$description}\n";
+                }
+            }
+        }
+        return $return;
     }
 
     /**
