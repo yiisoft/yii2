@@ -43,8 +43,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
             'messagePath' => $this->messagePath,
             'overwrite' => true,
             'phpFileHeader' => "/*file header*/\n",
-            'phpDocBlock' => '/*doc block*/',
-            'extractContext' => true
+            'phpDocBlock' => '/*doc block*/'
         ];
     }
 
@@ -94,6 +93,28 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
         }
 
         return require $messageFilePath;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function messageContainsDescription($category, $message, $description)
+    {
+        $fileData = file_get_contents($this->getMessageFilePath($category));
+        $messagePosition = strpos($fileData, $message);
+        $descriptionPosition = strpos($fileData, '@description ' . $description);
+        return $messagePosition !== false && $descriptionPosition !== false && $messagePosition > $descriptionPosition;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function messageParameterContainsDescription($category, $message, $parameter, $description)
+    {
+        $fileData = file_get_contents($this->getMessageFilePath($category));
+        $messagePosition = strpos($fileData, $message);
+        $parameterPosition = strpos($fileData, '@param {' . $parameter . '} ' . $description);
+        return $messagePosition !== false && $parameterPosition !== false && $messagePosition > $parameterPosition;
     }
 
     // By default phpunit runs inherited test after inline tests, so `testCreateTranslation()` would be run after

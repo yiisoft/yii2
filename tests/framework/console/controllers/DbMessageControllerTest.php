@@ -159,6 +159,22 @@ class DbMessageControllerTest extends BaseMessageControllerTest
             ])->all(static::$db), 'message', 'translation');
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function messageContainsDescription($category, $message, $description)
+    {
+       return true; // DB message does not support message context
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function messageParameterContainsDescription($category, $message, $parameter, $description)
+    {
+        return true; // DB message does not support message context
+    }
+
     // DbMessage tests variants:
 
     /**

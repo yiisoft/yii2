@@ -133,6 +133,26 @@ abstract class BaseMessageControllerTest extends TestCase
     abstract protected function getDefaultConfig();
 
     /**
+     * Check if specified message in category contains description
+     *
+     * @param string $category
+     * @param string $message
+     * @param string $description
+     * @return bool
+     */
+    abstract protected function messageContainsDescription($category, $message, $description);
+
+    /**
+     * Check if specified parameter contains description
+     * @param string $category
+     * @param string $message
+     * @param string $parameter
+     * @param string $description parameter description
+     * @return bool
+     */
+    abstract protected function messageParameterContainsDescription($category, $message, $parameter, $description);
+
+    /**
      * Returns config.
      *
      * @param array $additionalConfig
@@ -562,17 +582,33 @@ abstract class BaseMessageControllerTest extends TestCase
     /**
      * @depends testCreateTranslation
      */
-    public function textExtractMessageContext()
+    public function testExtractMessageContext()
     {
+        $sourceFileContent = "
+            echo PHP_EOL, Yii::t('app', 'Message with main context' /* message description */);
+        ";
+        $this->createSourceFile($sourceFileContent);
 
+        $this->saveConfigFile($this->getConfig(['extractContext' => true]));
+        $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $this->assertTrue($this->messageContainsDescription('app', 'Message with main context', 'message description'));
     }
 
     /**
      * @depends testCreateTranslation
      */
-    public function textExtractMessageParametersContext()
+    public function testExtractMessageParametersContext()
     {
+        $sourceFileContent = "
+            echo PHP_EOL, Yii::t('app', 'Message with {param} description', ['param' /* parameter description */ => '']);
+        ";
+        $this->createSourceFile($sourceFileContent);
 
+        $this->saveConfigFile($this->getConfig(['extractContext' => true]));
+        $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $this->assertTrue($this->messageParameterContainsDescription('app', 'Message with {param} description', 'param','parameter description'));
     }
 
     /**

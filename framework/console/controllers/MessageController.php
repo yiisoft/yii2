@@ -635,7 +635,7 @@ EOD;
                                         if (isset($translatorToken[0])
                                             && $translatorToken[0] === T_COMMENT
                                         ) {
-                                            $message['context'] = trim(mb_substr($translatorToken[1], 3, -3));
+                                            $context['context'] = trim(mb_substr($translatorToken[1], 3, -3));
                                             break;
                                         }
                                     }
@@ -929,14 +929,14 @@ EOD;
         $return = '';
         foreach ($context as $occurence) {
             if (!empty($occurence['file'])) {
-                $return .= "     * {$occurence['file']}\n";
+                $return .= "     * @file {$occurence['file']}\n";
             }
             if (!empty($occurence['context'])) {
-                $return .= "     *  " . str_replace("\n", "\n#. ", $occurence['context']) . "\n";
+                $return .= "     * @description " . str_replace("\n", "\n#. ", $occurence['context']) . "\n";
             }
             if (!empty($occurence['params'])) {
                 foreach ($occurence['params'] as $parameter => $description) {
-                    $return .= "     *  {{$parameter}} {$description}\n";
+                    $return .= "     * @param {{$parameter}} {$description}\n";
                 }
             }
         }
