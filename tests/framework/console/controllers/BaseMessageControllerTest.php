@@ -194,8 +194,8 @@ abstract class BaseMessageControllerTest extends TestCase
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
         $out .= $this->runMessageControllerAction('extract', [$this->configFileName]);
 
-        $this->assertNotFalse(strpos($out, 'Nothing to save'),
-            "Controller should respond with \"Nothing to save\" if there's nothing to update. Command output:\n\n" . $out);
+        $this->assertNotFalse(strpos($out, 'Nothing new in'),
+            "Controller should respond with \"Nothing new in\" if there's nothing to update. Command output:\n\n" . $out);
     }
 
     /**

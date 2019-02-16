@@ -585,18 +585,22 @@ EOD;
                                                     $j = 1;
                                                     $stop = false;
                                                     while (!$stop) {
-                                                        if ($buffer[$tokenIndex + $j + 4 + $foundContext] == '(') {
+                                                        $currentIndex = $tokenIndex + $j + 2 + $foundContext;
+                                                        if ($buffer[$currentIndex] == '(') {
                                                             $openParenthesisCount ++;
-                                                        }  elseif ($buffer[$tokenIndex + $j + 4 + $foundContext] == ')') {
+                                                        }  elseif ($buffer[$currentIndex] == ')') {
                                                             $openParenthesisCount --;
                                                         }
-                                                        if (!$openParenthesisCount && (in_array($buffer[$tokenIndex + $j + 4 + $foundContext], [',', ']', ')']))) {
+                                                        if (!$openParenthesisCount && (in_array($buffer[$currentIndex], [',', ']', ')']))) {
+                                                            if ($buffer[$currentIndex] != ',') {
+                                                                $j --;
+                                                            }
                                                             $stop = true;
                                                         }
                                                         $j ++;
                                                     }
 
-                                                    $tokenIndex += 3 + $j + $foundContext;
+                                                    $tokenIndex += 2 + $j + $foundContext;
                                                 } else {
                                                     $params[] = $paramContext;
 
@@ -604,17 +608,21 @@ EOD;
                                                     $j = 1;
                                                     $stop = false;
                                                     while (!$stop) {
-                                                        if ($buffer[$tokenIndex + $j + 2 + $foundContext] === '(') {
+                                                        $currentIndex = $tokenIndex + $j + $foundContext;
+                                                        if ($buffer[$currentIndex] === '(') {
                                                             $openParenthesisCount ++;
-                                                        }  elseif ($buffer[$tokenIndex + $j + 2 + $foundContext] === ')') {
+                                                        }  elseif ($buffer[$currentIndex] === ')') {
                                                             $openParenthesisCount --;
                                                         }
-                                                        if (!$openParenthesisCount && (in_array($buffer[$tokenIndex + $j + 4 + $foundContext], [',', ']', ')']))) {
+                                                        if (!$openParenthesisCount && (in_array($buffer[$currentIndex], [',', ']', ')']))) {
+                                                            if ($buffer[$currentIndex] != ',') {
+                                                                $j --;
+                                                            }
                                                             $stop = true;
                                                         }
                                                         $j ++;
                                                     }
-                                                    $tokenIndex += 1 + $j + $foundContext;
+                                                    $tokenIndex += $j + $foundContext;
                                                 }
                                             }
                                         }
