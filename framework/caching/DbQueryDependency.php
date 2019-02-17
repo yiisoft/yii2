@@ -44,7 +44,7 @@ class DbQueryDependency extends Dependency
      * @var string|callable 使用 [[query]] 对象作为参数调用的方法。
      *
      * 如果它是字符串，这表示一个自有的查询方法名，那么传递 [[db]] 属性作为第一个参数直接调用。
-     * 比如 'exists'，'all' 方法名。
+     * 比如 `exists`，`all` 方法名。
      *
      * 该属性也可以是如下签名的 PHP 回调函数：
      *
