@@ -557,52 +557,7 @@ EOD;
                                 }
 
                                 if ($extractContext) {
-                                    $context = ['context' => '', 'params' => [], 'file' => $fileName];
-                                    // extract parameters
-                                    if (isset($buffer[$tokenIndex], $buffer[$tokenIndex + 1]) && $buffer[$tokenIndex] === ','
-                                        && ($buffer[$tokenIndex + 1] === '[' || (isset($buffer[$tokenIndex + 1][0]) && $buffer[$tokenIndex + 1][0] == T_ARRAY))
-                                    ) {
-                                        $tokenIndex += 1;
-                                        $params = [];
-                                        while ($buffer[$tokenIndex] != ']' && $buffer[$tokenIndex] != ')') {
-                                            if (in_array($buffer[$tokenIndex + 1][0], array(T_CONSTANT_ENCAPSED_STRING, T_LNUMBER, T_VARIABLE))) {
-                                                // Try to extract parameter context
-                                                $paramContext = '';
-                                                $foundContext = 0;
-                                                if ($buffer[$tokenIndex + 2][0] === T_COMMENT) {
-                                                    $paramContext = $this->getMessageFromComment($buffer[$tokenIndex + 2][1]);
-                                                    $foundContext = 1;
-                                                }
-
-                                                $isNamedParameter = ($buffer[$tokenIndex + 2 + $foundContext][0] === T_DOUBLE_ARROW);
-                                                if ($isNamedParameter) {
-                                                    // Extract parameter name. It can be either string or integer
-                                                    if ($buffer[$tokenIndex + 1][0] === T_CONSTANT_ENCAPSED_STRING) {
-                                                        $name = mb_substr($buffer[$tokenIndex + 1][1], 1, -1);
-                                                    } elseif ($buffer[$tokenIndex + 1][0] === T_LNUMBER) {
-                                                        $name = $buffer[$tokenIndex + 1][1];
-                                                    }
-                                                    $params[$name] = $paramContext;
-                                                    $tokenIndex = $this->seekToParametersEnd($tokenIndex + 3 + $foundContext, $buffer);
-                                                } else {
-                                                    $params[] = $paramContext;
-                                                    $tokenIndex = $this->seekToParametersEnd($tokenIndex + 1 + $foundContext, $buffer);
-                                                }
-                                            }
-                                        }
-                                        $context['params'] = $params;
-                                    }
-
-
-                                    // extract message context
-                                    foreach ($buffer as $translatorToken) {
-                                        if (isset($translatorToken[0]) && $translatorToken[0] === T_COMMENT) {
-                                            $context['context'] = $this->getMessageFromComment($translatorToken[1]);
-                                            break;
-                                        }
-                                    }
-
-                                    $messages[$category][stripcslashes($fullMessage)][] = $context;
+                                    $messages[$category][stripcslashes($fullMessage)][] = $this->extractMessageContext($tokenIndex, $buffer, $fileName);
                                 }
                             }
 
@@ -653,6 +608,67 @@ EOD;
         }
 
         return $messages;
+    }
+
+    /**
+     * @param $tokenIndex
+     * @param $buffer
+     * @param $fileName
+     * @return array ['context' => '', 'params' => [], 'file' => '']
+     * @throws \Exception
+     */
+    private function extractMessageContext($tokenIndex, $buffer, $fileName)
+    {
+        $context = ['context' => '', 'params' => [], 'file' => $fileName];
+
+        // extract message context
+        for ($i = 2; $i < count($buffer); $i++) {
+            if (in_array($buffer[$i], [',', ')'])) {
+                break;
+            }
+            if (isset($buffer[$i][0]) && $buffer[$i][0] === T_COMMENT) {
+                $tokenIndex++;
+                $context['context'] = $this->getMessageFromComment($buffer[$i][1]);
+                break;
+            }
+        }
+
+        // extract parameters
+        if (isset($buffer[$tokenIndex], $buffer[$tokenIndex + 1]) && $buffer[$tokenIndex] === ','
+            && ($buffer[$tokenIndex + 1] === '[' || (isset($buffer[$tokenIndex + 1][0]) && $buffer[$tokenIndex + 1][0] == T_ARRAY))
+        ) {
+            $tokenIndex += 1;
+            $params = [];
+            while ($buffer[$tokenIndex] != ']' && $buffer[$tokenIndex] != ')') {
+                if (in_array($buffer[$tokenIndex + 1][0], array(T_CONSTANT_ENCAPSED_STRING, T_LNUMBER, T_VARIABLE))) {
+                    // Try to extract parameter context
+                    $paramContext = '';
+                    $foundContext = 0;
+                    if ($buffer[$tokenIndex + 2][0] === T_COMMENT) {
+                        $paramContext = $this->getMessageFromComment($buffer[$tokenIndex + 2][1]);
+                        $foundContext = 1;
+                    }
+
+                    $isNamedParameter = ($buffer[$tokenIndex + 2 + $foundContext][0] === T_DOUBLE_ARROW);
+                    if ($isNamedParameter) {
+                        // Extract parameter name. It can be either string or integer
+                        if ($buffer[$tokenIndex + 1][0] === T_CONSTANT_ENCAPSED_STRING) {
+                            $name = mb_substr($buffer[$tokenIndex + 1][1], 1, -1);
+                        } elseif ($buffer[$tokenIndex + 1][0] === T_LNUMBER) {
+                            $name = $buffer[$tokenIndex + 1][1];
+                        }
+                        $params[$name] = $paramContext;
+                        $tokenIndex = $this->seekToParametersEnd($tokenIndex + 3 + $foundContext, $buffer);
+                    } else {
+                        $params[] = $paramContext;
+                        $tokenIndex = $this->seekToParametersEnd($tokenIndex + 1 + $foundContext, $buffer);
+                    }
+                }
+            }
+            $context['params'] = $params;
+        }
+
+        return $context;
     }
 
     /**

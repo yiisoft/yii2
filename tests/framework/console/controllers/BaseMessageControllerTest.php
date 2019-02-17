@@ -612,6 +612,23 @@ abstract class BaseMessageControllerTest extends TestCase
     }
 
     /**
+     * @depends testCreateTranslation
+     */
+    public function testExtractMessageContextAndParametersContext()
+    {
+        $sourceFileContent = "
+            echo PHP_EOL, Yii::t('app', 'Message with main context and {param} description' /* message description */, ['param' /* parameter description */ => '']);
+        ";
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig(['extractContext' => true]));
+        $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $this->assertTrue($this->messageContainsDescription('app', 'Message with main context and {param} description', 'message description'));
+        $this->assertTrue($this->messageParameterContainsDescription('app', 'Message with main context and {param} description', 'param','parameter description'));
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/16828
      */
     public function testPartialTranslator()
