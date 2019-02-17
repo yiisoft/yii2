@@ -634,9 +634,7 @@ EOD;
         }
 
         // extract parameters
-        if (isset($buffer[$tokenIndex], $buffer[$tokenIndex + 1]) && $buffer[$tokenIndex] === ','
-            && ($buffer[$tokenIndex + 1] === '[' || (isset($buffer[$tokenIndex + 1][0]) && $buffer[$tokenIndex + 1][0] == T_ARRAY))
-        ) {
+        if (isset($buffer[$tokenIndex], $buffer[$tokenIndex + 1]) && $buffer[$tokenIndex] === ',' && $this->tokenIsBeginningOfAnArray($buffer[$tokenIndex + 1])) {
             $tokenIndex += 1;
             $params = [];
             while ($buffer[$tokenIndex] != ']' && $buffer[$tokenIndex] != ')') {
@@ -672,6 +670,16 @@ EOD;
     }
 
     /**
+     * Method checks if token stand for beginning of an array
+     * @param $token
+     * @return bool
+     */
+    private function tokenIsBeginningOfAnArray($token)
+    {
+        return $token === '[' || (isset($token[0]) && $token[0] == T_ARRAY);
+    }
+
+    /**
      * @param $currentIndex
      * @param $buffer
      * @return mixed
@@ -686,7 +694,7 @@ EOD;
             }  elseif ($buffer[$currentIndex] == ')') {
                 $openParenthesisCount --;
             }
-            if (!$openParenthesisCount && (in_array($buffer[$currentIndex], [',', ']', ')']))) {
+            if (!$openParenthesisCount && in_array($buffer[$currentIndex], [',', ']', ')'])) {
                 if ($buffer[$currentIndex] != ',') {
                     return $currentIndex;
                 }
