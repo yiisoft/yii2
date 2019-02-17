@@ -15,7 +15,7 @@ use yii\di\Instance;
 /**
  * DbDependency 是基于 SQL 语句的查询结果实现的依赖类。
  *
- * 如果查询结果有变化，那么依赖就认为发生了变化。
+ * 如果查询结果有变化，那么就认为依赖发生了变化。
  * 查询语句由 [[sql]] 属性指定。
  *
  * 在 Cache 上更多的详情和详细的使用信息，请参考 [guide article on caching](guide:caching-overview)。
