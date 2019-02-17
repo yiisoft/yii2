@@ -21,20 +21,15 @@ use Yii;
 class BooleanValidator extends Validator
 {
     /**
-     * @var mixed the value representing true status. Defaults to '1'.
      * @var mixed 代表真状态的值，默认是 '1'
      */
     public $trueValue = '1';
     /**
-     * @var mixed the value representing false status. Defaults to '0'.
      * @var mixed 代表假状态的值，默认是 '0'
      */
     public $falseValue = '0';
     /**
-     * @var bool whether the comparison to [[trueValue]] and [[falseValue]] is strict.
-     * When this is true, the attribute value and type must both match those of [[trueValue]] or [[falseValue]].
-     * Defaults to false, meaning only the value needs to be matched.
-     * @var bool 和真假值比较时是否是严格模式。
+     * @var bool 和真 [[trueValue]] 假 [[falseValue]] 值比较时是否是严格模式。
      * 当设置为 true 时，属性的值和类型必须严格和 [[trueValue]] 或者 [[falseValue]] 相等。
      * 默认是 false，意味着只要求值符合条件。
      */
