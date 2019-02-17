@@ -8,7 +8,7 @@
 namespace yii\db;
 
 /**
- * IndexConstraint represents the metadata of a table `INDEX` constraint.
+ * IndexConstraint 表示表 `INDEX` 约束的元数据。
  *
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
@@ -16,11 +16,11 @@ namespace yii\db;
 class IndexConstraint extends Constraint
 {
     /**
-     * @var bool whether the index is unique.
+     * @var bool 索引是否唯一。
      */
     public $isUnique;
     /**
-     * @var bool whether the index was created for a primary key.
+     * @var bool 是否为主键创建了索引。
      */
     public $isPrimary;
 }

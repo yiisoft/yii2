@@ -84,7 +84,7 @@ class FileCache extends Cache
     }
 
     /**
-     * 检测指定的建是否存在缓存中。
+     * 检测指定的键是否存在缓存中。
      * 如果缓存数据量大的话，这比从缓存中直接获取值稍快些。
      * 注意，如果缓存数据有缓存依赖，
      * 该方法不会检测缓存依赖是否发生变化。所以有可能调用 [[get]] 方法返回 false，
@@ -129,7 +129,7 @@ class FileCache extends Cache
      * 该方法从父类中声明，在子类这里实现。
      *
      * @param string $key 指明缓存值的键。
-     * @param string #value 要缓存的值。如果是其它的数据类型（如果禁用了 [[serializer]] 方法），
+     * @param string $value 要缓存的值。如果是其它的数据类型（如果禁用了 [[serializer]] 方法），
      * 那么在后续 [[getValue()]] 方法中不能正确地获取到值。
      * @param int $duration 缓存值过期的秒数。0 表示永不过期。
      * @return bool 如果成功存入缓存返回 true，否则返回 false。
@@ -168,7 +168,7 @@ class FileCache extends Cache
      * 该方法从父类中声明，在子类里实现。
      *
      * @param string $key 指明缓存值的键。
-     * @param string #value 要缓存的值。如果是其它的数据类型（如果禁用了 [[serializer]] 方法），
+     * @param string $value 要缓存的值。如果是其它的数据类型（如果禁用了 [[serializer]] 方法），
      * 那么在后续 [[getValue()]] 方法中不能正确地获取到值。
      * @param int $duration 缓存值过期的秒数。0 表示永不过期。
      * @return bool 如果成功存入缓存返回 true，否则返回 false。
