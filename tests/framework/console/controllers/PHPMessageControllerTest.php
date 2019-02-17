@@ -43,7 +43,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
             'messagePath' => $this->messagePath,
             'overwrite' => true,
             'phpFileHeader' => "/*file header*/\n",
-            'phpDocBlock' => '/*doc block*/'
+            'phpDocBlock' => '/*doc block*/',
         ];
     }
 

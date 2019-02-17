@@ -551,6 +551,7 @@ EOD;
                                     $tokenIndex += 2;
                                 }
 
+                                // initialize new category, if it does not exists
                                 if (!isset($messages[$category][stripcslashes($fullMessage)])) {
                                     $messages[$category][stripcslashes($fullMessage)] = [];
                                 }
@@ -565,64 +566,27 @@ EOD;
                                         $params = [];
                                         while ($buffer[$tokenIndex] != ']' && $buffer[$tokenIndex] != ')') {
                                             if (in_array($buffer[$tokenIndex + 1][0], array(T_CONSTANT_ENCAPSED_STRING, T_LNUMBER, T_VARIABLE))) {
+                                                // Try to extract parameter context
                                                 $paramContext = '';
                                                 $foundContext = 0;
                                                 if ($buffer[$tokenIndex + 2][0] === T_COMMENT) {
-                                                    $paramContext = trim(mb_substr($buffer[$tokenIndex + 2][1], 3, -3));
-                                                    unset($buffer[$tokenIndex + 2]);
+                                                    $paramContext = $this->getMessageFromComment($buffer[$tokenIndex + 2][1]);
                                                     $foundContext = 1;
                                                 }
+
                                                 $isNamedParameter = ($buffer[$tokenIndex + 2 + $foundContext][0] === T_DOUBLE_ARROW);
                                                 if ($isNamedParameter) {
+                                                    // Extract parameter name. It can be either string or integer
                                                     if ($buffer[$tokenIndex + 1][0] === T_CONSTANT_ENCAPSED_STRING) {
                                                         $name = mb_substr($buffer[$tokenIndex + 1][1], 1, -1);
                                                     } elseif ($buffer[$tokenIndex + 1][0] === T_LNUMBER) {
                                                         $name = $buffer[$tokenIndex + 1][1];
                                                     }
                                                     $params[$name] = $paramContext;
-
-                                                    $openParenthesisCount = 0;
-                                                    $j = 1;
-                                                    $stop = false;
-                                                    while (!$stop) {
-                                                        $currentIndex = $tokenIndex + $j + 2 + $foundContext;
-                                                        if ($buffer[$currentIndex] == '(') {
-                                                            $openParenthesisCount ++;
-                                                        }  elseif ($buffer[$currentIndex] == ')') {
-                                                            $openParenthesisCount --;
-                                                        }
-                                                        if (!$openParenthesisCount && (in_array($buffer[$currentIndex], [',', ']', ')']))) {
-                                                            if ($buffer[$currentIndex] != ',') {
-                                                                $j --;
-                                                            }
-                                                            $stop = true;
-                                                        }
-                                                        $j ++;
-                                                    }
-
-                                                    $tokenIndex += 2 + $j + $foundContext;
+                                                    $tokenIndex = $this->seekToParametersEnd($tokenIndex + 3 + $foundContext, $buffer);
                                                 } else {
                                                     $params[] = $paramContext;
-
-                                                    $openParenthesisCount = 0;
-                                                    $j = 1;
-                                                    $stop = false;
-                                                    while (!$stop) {
-                                                        $currentIndex = $tokenIndex + $j + $foundContext;
-                                                        if ($buffer[$currentIndex] === '(') {
-                                                            $openParenthesisCount ++;
-                                                        }  elseif ($buffer[$currentIndex] === ')') {
-                                                            $openParenthesisCount --;
-                                                        }
-                                                        if (!$openParenthesisCount && (in_array($buffer[$currentIndex], [',', ']', ')']))) {
-                                                            if ($buffer[$currentIndex] != ',') {
-                                                                $j --;
-                                                            }
-                                                            $stop = true;
-                                                        }
-                                                        $j ++;
-                                                    }
-                                                    $tokenIndex += $j + $foundContext;
+                                                    $tokenIndex = $this->seekToParametersEnd($tokenIndex + 1 + $foundContext, $buffer);
                                                 }
                                             }
                                         }
@@ -630,12 +594,10 @@ EOD;
                                     }
 
 
-                                    // extract context
+                                    // extract message context
                                     foreach ($buffer as $translatorToken) {
-                                        if (isset($translatorToken[0])
-                                            && $translatorToken[0] === T_COMMENT
-                                        ) {
-                                            $context['context'] = trim(mb_substr($translatorToken[1], 3, -3));
+                                        if (isset($translatorToken[0]) && $translatorToken[0] === T_COMMENT) {
+                                            $context['context'] = $this->getMessageFromComment($translatorToken[1]);
                                             break;
                                         }
                                     }
@@ -691,6 +653,41 @@ EOD;
         }
 
         return $messages;
+    }
+
+    /**
+     * @param $currentIndex
+     * @param $buffer
+     * @return mixed
+     * @throws \Exception
+     */
+    private function seekToParametersEnd($currentIndex, $buffer)
+    {
+        $openParenthesisCount = 0;
+        for ( ; $currentIndex < count($buffer); $currentIndex++) {
+            if ($buffer[$currentIndex] == '(') {
+                $openParenthesisCount ++;
+            }  elseif ($buffer[$currentIndex] == ')') {
+                $openParenthesisCount --;
+            }
+            if (!$openParenthesisCount && (in_array($buffer[$currentIndex], [',', ']', ')']))) {
+                if ($buffer[$currentIndex] != ',') {
+                    return $currentIndex;
+                }
+                return ++$currentIndex;
+            }
+        }
+
+        throw new \Exception('Cannot seek to the end of parameter.');
+    }
+
+    /**
+     * @param $comment
+     * @return string
+     */
+    private function getMessageFromComment($comment)
+    {
+        return trim(mb_substr($comment, 3, -3));
     }
 
     /**
