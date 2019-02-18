@@ -1292,6 +1292,37 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, $model->status);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17103
+     */
+    public function testIssue17103()
+    {
+        // Add new Category
+        $category = new Category;
+        $category->name = 'Games';
+        $category->save(false);
+
+        // There must be 0 order items in the category
+        $this->assertEquals(0, $category->orderItemsCount);
+
+        // Add new item
+        $item = new Item;
+        $item->name = 'Monopoly';
+        $item->category_id = $category->id;
+        $item->save(false);
+
+        // Add new item (from new category) to order with id = 2
+        $orderItem = new OrderItem();
+        $orderItem->order_id = 2;
+        $orderItem->item_id = $item->id;
+        $orderItem->quantity = 2;
+        $orderItem->subtotal = 119.0;
+        $orderItem->save(false);
+
+        // Now there must be 1 order item in the category
+        $this->assertEquals(1, $category->orderItemsCount);
+    }
+
     public function testPopulateRecordCallWhenQueryingOnParentClass()
     {
         (new Cat())->save(false);

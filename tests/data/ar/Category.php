@@ -12,6 +12,8 @@ namespace yiiunit\data\ar;
  *
  * @property int $id
  * @property string $name
+ *
+ * @property-read int $orderItemsCount
  */
 class Category extends ActiveRecord
 {
@@ -22,7 +24,7 @@ class Category extends ActiveRecord
 
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['category_id' => 'id']);
+        return $this->hasMany(Item::className(), ['category_id' => 'id'])->inverseOf('category');
     }
 
     public function getLimitedItems()
@@ -34,6 +36,11 @@ class Category extends ActiveRecord
     public function getOrderItems()
     {
         return $this->hasMany(OrderItem::className(), ['item_id' => 'id'])->via('items');
+    }
+
+    public function getOrderItemsCount()
+    {
+        return $this->hasMany(OrderItem::className(), ['item_id' => 'id'])->via('items')->count();
     }
 
     public function getOrders()
