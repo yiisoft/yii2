@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.16.1 under development
 ------------------------
 
+- Bug #17133: Fixed aliases rendering during help generation for a console command (GHopperMSK)
 - Bug #17094: Fixed response on 204 status. Now it is empty (GHopperMSK)
 - Bug #17098: Fixed message/extract when using message params returned from method calls (rugabarbo)
 - Bug #17089: Fixed caching of related records when `via()` using with callable (rugabarbo)
