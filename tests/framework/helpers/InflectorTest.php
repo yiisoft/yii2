@@ -105,7 +105,7 @@ class InflectorTest extends TestCase
         $this->assertEquals('Camel Case', Inflector::camel2words('camelCase'));
         $this->assertEquals('Lower Case', Inflector::camel2words('lower_case'));
         $this->assertEquals('Tricky Stuff It Is Testing', Inflector::camel2words(' tricky_stuff.it-is testing... '));
-        $this->assertEquals('І Це Дійсно Так!', Inflector::camel2words('ІЦеДійсноТак!'));
+        $this->assertEquals('Іце Дійсно Так!', Inflector::camel2words('ІЦеДійсноТак!'));
         $this->assertEquals('Test', Inflector::camel2words('TEST'));
     }
 
