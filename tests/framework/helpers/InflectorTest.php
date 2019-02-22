@@ -109,6 +109,9 @@ class InflectorTest extends TestCase
         $this->assertEquals('Test', Inflector::camel2words('TEST'));
         $this->assertEquals('X Foo', Inflector::camel2words('XFoo'));
         $this->assertEquals('Foo Bar Baz', Inflector::camel2words('FooBARBaz'));
+        $this->assertEquals('Generate Csrf', Inflector::camel2words('generateCsrf'));
+        $this->assertEquals('Generate Csrf Token', Inflector::camel2words('generateCsrfToken'));
+        $this->assertEquals('Csrf Token Generator', Inflector::camel2words('CsrfTokenGenerator'));
     }
 
     public function testCamel2id()
