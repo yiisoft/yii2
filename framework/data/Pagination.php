@@ -124,9 +124,9 @@ class Pagination extends BaseObject implements Linkable
      */
     public $validatePage = true;
     /**
-     * @var int|null total number of items.
+     * @var int total number of items.
      */
-    public $totalCount;
+    public $totalCount = 0;
     /**
      * @var int the default page size. This property will be returned by [[pageSize]] when page size
      * cannot be determined by [[pageSizeParam]] from [[params]].
