@@ -7,7 +7,7 @@ Yii предоставляет набор [виджетов](structure-widgets.m
 таблицы с возможностью сортировки, фильтрации и разбивки данных постранично.
 
 
-DetailView <a name="detail-view"></a>
+DetailView <span id="detail-view"></span>
 ----------
 
 Виджет [[yii\widgets\DetailView|DetailView]] отображает детали по данным для одной [[yii\widgets\DetailView::$model|model]].
@@ -39,7 +39,7 @@ echo DetailView::widget([
 ]);
 ```
 
-ListView <a name="list-view"></a>
+ListView <span id="list-view"></span>
 --------
 
 Виджет [[yii\widgets\ListView|ListView]] использует для отображения информации [провайдера данных](output-data-providers.md).
@@ -104,7 +104,7 @@ echo ListView::widget([
 Они также станут доступны в виде в качестве переменных.
 
 
-GridView <a name="grid-view"></a>
+GridView <span id="grid-view"></span>
 --------
 
 Таблица данных или GridView - это один из сверхмощных Yii виджетов. Он может быть полезен, если необходимо быстро создать

@@ -679,7 +679,7 @@ class TranslationEventHandler
 > 你应该给它们每一个消息源指定相应的事件处理程序。
 
 
-### 使用 `message` 命令（Using the `message` command） <a name="message-command"></a>
+### 使用 `message` 命令（Using the `message` command） <span id="message-command"></span>
 
 翻译储存在 [[yii\i18n\PhpMessageSource|php 文件]]，[[yii\i18n\GettextMessageSource|.po 文件] 或者 [[yii\i18n\DbMessageSource|数据库]]。具体见类的附加选项。
 
