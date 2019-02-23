@@ -492,7 +492,7 @@ class TranslationEventHandler
 > обработчик события для каждого источника.
 
 
-Использование команды `message` <a name="message-command"></a>
+Использование команды `message` <span id="message-command"></span>
 --------------------------------------------------------------
 
 Переводы могут храниться в [[yii\i18n\PhpMessageSource|PHP-файлах]], [[yii\i18n\GettextMessageSource|файлах .po]] или в [[yii\i18n\DbMessageSource|базе данных]]. См. соответствующие классы для дополнительных опций.

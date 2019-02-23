@@ -1154,7 +1154,7 @@ $customers = Customer::find()->with([
 > ```
 
 
-### リレーションを使ってテーブルを結合する <a name="joining-with-relations">
+### リレーションを使ってテーブルを結合する <span id="joining-with-relations"></span>
 
 > Note: この項で説明されていることは、MySQL、PostgreSQL など、
   リレーショナル・データベースに対してのみ適用されます。
