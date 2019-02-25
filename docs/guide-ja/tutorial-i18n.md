@@ -739,7 +739,7 @@ class TranslationEventHandler
 > Note: 全てのメッセージ・ソースは、欠落した翻訳をそれぞれ独自に処理します。
 > いくつかのメッセージ・ソースを使っていて、それらが同じ方法で欠落した翻訳を取り扱うようにしたい場合は、対応するイベント・ハンドラを全てのメッセージ・ソースそれぞれに割り当てなければなりません。
 
-### `message` コマンドを使う <a name="message-command"></a>
+### `message` コマンドを使う <span id="message-command"></span>
 
 翻訳は [[yii\i18n\PhpMessageSource|php ファイル]]、[[yii\i18n\GettextMessageSource|.po ファイル]]、または [[yii\i18n\DbMessageSource|database]] に保存することが出来ます。追加のオプションについてはそれぞれのクラスを参照してください。
 

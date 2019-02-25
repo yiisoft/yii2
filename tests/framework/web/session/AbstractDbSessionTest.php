@@ -169,7 +169,13 @@ abstract class AbstractDbSessionTest extends TestCase
     {
         $session = new DbSession();
 
-        $serializedObject = serialize($this->buildObjectForSerialization());
+        $object = $this->buildObjectForSerialization();
+        $serializedObject = serialize($object);
+        $session->writeSession('test', $serializedObject);
+        $this->assertSame($serializedObject, $session->readSession('test'));
+
+        $object->foo = 'modification checked';
+        $serializedObject = serialize($object);
         $session->writeSession('test', $serializedObject);
         $this->assertSame($serializedObject, $session->readSession('test'));
     }

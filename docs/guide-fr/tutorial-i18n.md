@@ -582,7 +582,7 @@ Si [[yii\i18n\MissingTranslationEvent::translatedMessage]] est défini par le ge
 > Note: chacune des sources de messages gère ses traductions manquantes séparément. Si vous avez recours à plusieurs sources de messages et que vous voulez qu'elles gèrent les messages manquants de la même manière, vous devez assigner le gestionnaire d'événement correspondant à chacune d'entre-elles. 
 
 
-### Utilisation de la commande `message`<a name="message-command"></a>
+### Utilisation de la commande `message`<span id="message-command"></span>
 
 Les traductions peuvent être stockées dans des [[yii\i18n\PhpMessageSource|fichiers php]], des [[yii\i18n\GettextMessageSource|fichiers .po ]] ou dans une [[yii\i18n\DbMessageSource|bases de données]]. Reportez-vous aux classes spécifiques pour connaître les options supplémentaires. 
 

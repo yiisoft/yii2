@@ -79,6 +79,20 @@ abstract class Cache extends Component implements CacheInterface
      */
     public $defaultDuration = 0;
 
+    /**
+     * @var bool whether [igbinary serialization](http://pecl.php.net/package/igbinary) is available or not.
+     */
+    private $_igbinaryAvailable = false;
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+        $this->_igbinaryAvailable = \extension_loaded('igbinary');
+    }
 
     /**
      * Builds a normalized cache key from a given key.
@@ -95,7 +109,13 @@ abstract class Cache extends Component implements CacheInterface
         if (is_string($key)) {
             $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
         } else {
-            $key = md5(json_encode($key));
+            if ($this->_igbinaryAvailable) {
+                $serializedKey = igbinary_serialize($key);
+            } else {
+                $serializedKey = serialize($key);
+            }
+
+            $key = md5($serializedKey);
         }
 
         return $this->keyPrefix . $key;
@@ -557,7 +577,9 @@ abstract class Cache extends Component implements CacheInterface
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param callable|\Closure $callable the callable or closure that will be used to generate a value to be cached.
-     * In case $callable returns `false`, the value will not be cached.
+     * If you use $callable that can return `false`, then keep in mind that [[getOrSet()]] may work inefficiently
+     * because the [[yii\caching\Cache::get()]] method uses `false` return value to indicate the data item is not found
+     * in the cache. Thus, caching of `false` value will lead to unnecessary internal calls.
      * @param int $duration default duration in seconds before the cache will expire. If not set,
      * [[defaultDuration]] value will be used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
