@@ -98,8 +98,8 @@ class EmailValidator extends Validator
                 if ($valid && $this->checkDNS) {
                     // Fix for https://github.com/yiisoft/yii2/issues/17083
                     $valid = (
-                        (checkdnsrr($matches['domain'] . '.', 'MX') && !empty(dns_get_record($matches['domain'] . '.', DNS_MX))) ||
-                        (checkdnsrr($matches['domain'] . '.', 'A') && !empty(dns_get_record($matches['domain'] . '.', DNS_A)))
+                        (checkdnsrr($matches['domain'] . '.', 'MX') && count(dns_get_record($matches['domain'] . '.', DNS_MX)) > 0) ||
+                        (checkdnsrr($matches['domain'] . '.', 'A') && count(dns_get_record($matches['domain'] . '.', DNS_A)) > 0)
                     );
                 }
             }
