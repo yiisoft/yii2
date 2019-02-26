@@ -77,12 +77,12 @@ class MemCache extends Cache
      * By default the Memcached instances are destroyed at the end of the request. To create an instance that
      * persists between requests, you may specify a unique ID for the instance. All instances created with the
      * same ID will share the same connection.
-     * @see http://ca2.php.net/manual/en/memcached.construct.php
+     * @see http://php.net/manual/en/memcached.construct.php
      */
     public $persistentId;
     /**
      * @var array options for Memcached. This property is used only when [[useMemcached]] is true.
-     * @see http://ca2.php.net/manual/en/memcached.setoptions.php
+     * @see http://php.net/manual/en/memcached.setoptions.php
      */
     public $options;
     /**
