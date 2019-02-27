@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #17098: Fixed message/extract when using message params returned from method calls (rugabarbo)
 - Bug #17083: Fixed `yii\validators\EmailValidator::$checkDNS` tells that every domain is correct on alpine linux (mikk150)
 - Bug #17089: Fixed caching of related records when `via()` using with callable (rugabarbo)
+- Bug #17150: Fixed `yii\helpers\BaseInflector::camel2words()` splitting `ALLCAPS` words on each letter (brandonkelly)
 
 2.0.16 January 30, 2019
 -----------------------
