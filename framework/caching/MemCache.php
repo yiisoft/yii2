@@ -11,11 +11,11 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * MemCache implements a cache application component based on [memcache](http://pecl.php.net/package/memcache)
- * and [memcached](http://pecl.php.net/package/memcached).
+ * MemCache implements a cache application component based on [memcache](https://pecl.php.net/package/memcache)
+ * and [memcached](https://pecl.php.net/package/memcached).
  *
- * MemCache supports both [memcache](http://pecl.php.net/package/memcache) and
- * [memcached](http://pecl.php.net/package/memcached). By setting [[useMemcached]] to be true or false,
+ * MemCache supports both [memcache](https://pecl.php.net/package/memcache) and
+ * [memcached](https://pecl.php.net/package/memcached). By setting [[useMemcached]] to be true or false,
  * one can let MemCache to use either memcached or memcache, respectively.
  *
  * MemCache can be configured with a list of memcache servers by settings its [[servers]] property.
@@ -67,8 +67,8 @@ class MemCache extends Cache
 {
     /**
      * @var bool whether to use memcached or memcache as the underlying caching extension.
-     * If true, [memcached](http://pecl.php.net/package/memcached) will be used.
-     * If false, [memcache](http://pecl.php.net/package/memcache) will be used.
+     * If true, [memcached](https://pecl.php.net/package/memcached) will be used.
+     * If false, [memcache](https://pecl.php.net/package/memcache) will be used.
      * Defaults to false.
      */
     public $useMemcached = false;
