@@ -9,7 +9,7 @@ Se sua classe precisar disparar eventos, ela deverá estender de [[yii\base\Comp
 Manipuladores de Evento <span id="event-handlers"></span>
 --------------
 
-Um manipulador de evento é uma função [Callback do PHP] (http://www.php.net/manual/en/language.types.callable.php) que é executada quando o evento é disparado. Você pode usar qualquer um dos seguintes callbacks:
+Um manipulador de evento é uma função [Callback do PHP] (https://secure.php.net/manual/en/language.types.callable.php) que é executada quando o evento é disparado. Você pode usar qualquer um dos seguintes callbacks:
 - uma função global do PHP especificada como uma string (sem parênteses), por exemplo, `'trim'`;
 - Um método do objeto especificado como um array, informando o objeto e um nome do método como uma string (sem parênteses), por exemplo `[$object, 'methodName']`;
 - Um método estático da classe especificado como um array informando o nome da classe e nome do método como string (sem parênteses), por exemplo, `['ClassName', 'methodName']`; 

@@ -337,7 +337,7 @@ Poniżej znajdziesz kilka behaviorów wbudowanych lub też dostępnych w zewnęt
 Różnice pomiędzy behaviorami a traitami <span id="comparison-with-traits"></span>
 ---------------------------------------
 
-Pomimo że behaviory są podobne do [traitów](http://www.php.net/traits) w taki sposób, że również "wstrzykują" swoje 
+Pomimo że behaviory są podobne do [traitów](https://secure.php.net/traits) w taki sposób, że również "wstrzykują" swoje 
 właściwości i metody do klasy, struktury te różnią się w wielu aspektach. Obie mają swoje wady i zalety, jak opisano to 
 poniżej, i powinny być raczej traktowane jako swoje uzupełnienia, a nie alternatywy.
 
