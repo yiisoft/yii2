@@ -679,7 +679,7 @@ If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event h
 > and wish them to treat the missing translations in the same way, you should assign the corresponding event handler to each of them.
 
 
-### Using the `message` command <a name="message-command"></a>
+### Using the `message` command <span id="message-command"></span>
 
 Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files]] or in a [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
 

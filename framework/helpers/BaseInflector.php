@@ -373,7 +373,7 @@ class BaseInflector
             '-',
             '_',
             '.',
-        ], ' ', preg_replace('/(\p{Lu})/u', ' \0', $name))), self::encoding());
+        ], ' ', preg_replace('/(?<!\p{Lu})(\p{Lu})|(\p{Lu})(?=\p{Ll})/u', ' \0', $name))), self::encoding());
 
         return $ucwords ? StringHelper::mb_ucwords($label, self::encoding()) : $label;
     }
@@ -480,8 +480,8 @@ class BaseInflector
         $parts = explode($replacement, static::transliterate($string));
 
         $replaced = array_map(function ($element) use ($replacement) {
-            $element = preg_replace('/[^a-zA-Z0-9=\s—–]+/u', '', $element);
-            return preg_replace('/[=\s—–]+/u', $replacement, $element);
+            $element = preg_replace('/[^a-zA-Z0-9=\s—–-]+/u', '', $element);
+            return preg_replace('/[=\s—–-]+/u', $replacement, $element);
         }, $parts);
 
         $string = trim(implode($replacement, $replaced), $replacement);

@@ -89,7 +89,7 @@ class UrlManager extends Component
      * [
      *     'dashboard' => 'site/index',
      *
-     *     'POST <controller:[\w-]+>s' => '<controller>/create',
+     *     'POST <controller:[\w-]+>' => '<controller>/create',
      *     '<controller:[\w-]+>s' => '<controller>/index',
      *
      *     'PUT <controller:[\w-]+>/<id:\d+>'    => '<controller>/update',

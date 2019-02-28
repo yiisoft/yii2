@@ -441,8 +441,9 @@ class BaseStringHelper
      *
      * @param string $string the string to be proceeded
      * @param string $encoding Optional, defaults to "UTF-8"
-     * @see http://php.net/manual/en/function.ucwords.php
      * @return string
+     * @see http://php.net/manual/en/function.ucwords.php
+     * @since 2.0.16
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
