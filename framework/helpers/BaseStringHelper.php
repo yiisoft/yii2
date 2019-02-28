@@ -241,7 +241,7 @@ class BaseStringHelper
             return true;
         }
         if ($caseSensitive) {
-            // Warning check, see http://php.net/manual/en/function.substr-compare.php#refsect1-function.substr-compare-returnvalues
+            // Warning check, see https://secure.php.net/manual/en/function.substr-compare.php#refsect1-function.substr-compare-returnvalues
             if (static::byteLength($string) < $bytes) {
                 return false;
             }
@@ -425,7 +425,7 @@ class BaseStringHelper
      * @param string $string the string to be proceeded
      * @param string $encoding Optional, defaults to "UTF-8"
      * @return string
-     * @see http://php.net/manual/en/function.ucfirst.php
+     * @see https://secure.php.net/manual/en/function.ucfirst.php
      * @since 2.0.16
      */
     public static function mb_ucfirst($string, $encoding = 'UTF-8')
@@ -442,7 +442,7 @@ class BaseStringHelper
      * @param string $string the string to be proceeded
      * @param string $encoding Optional, defaults to "UTF-8"
      * @return string
-     * @see http://php.net/manual/en/function.ucwords.php
+     * @see https://secure.php.net/manual/en/function.ucwords.php
      * @since 2.0.16
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')

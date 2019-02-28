@@ -77,22 +77,22 @@ class MemCache extends Cache
      * By default the Memcached instances are destroyed at the end of the request. To create an instance that
      * persists between requests, you may specify a unique ID for the instance. All instances created with the
      * same ID will share the same connection.
-     * @see http://php.net/manual/en/memcached.construct.php
+     * @see https://secure.php.net/manual/en/memcached.construct.php
      */
     public $persistentId;
     /**
      * @var array options for Memcached. This property is used only when [[useMemcached]] is true.
-     * @see http://php.net/manual/en/memcached.setoptions.php
+     * @see https://secure.php.net/manual/en/memcached.setoptions.php
      */
     public $options;
     /**
      * @var string memcached sasl username. This property is used only when [[useMemcached]] is true.
-     * @see http://php.net/manual/en/memcached.setsaslauthdata.php
+     * @see https://secure.php.net/manual/en/memcached.setsaslauthdata.php
      */
     public $username;
     /**
      * @var string memcached sasl password. This property is used only when [[useMemcached]] is true.
-     * @see http://php.net/manual/en/memcached.setsaslauthdata.php
+     * @see https://secure.php.net/manual/en/memcached.setsaslauthdata.php
      */
     public $password;
 
@@ -249,8 +249,8 @@ class MemCache extends Cache
     /**
      * @param array $config list of memcache or memcached server configurations. Each element must be an array
      * with the following keys: host, port, persistent, weight, timeout, retryInterval, status.
-     * @see http://php.net/manual/en/memcache.addserver.php
-     * @see http://php.net/manual/en/memcached.addserver.php
+     * @see https://secure.php.net/manual/en/memcache.addserver.php
+     * @see https://secure.php.net/manual/en/memcached.addserver.php
      */
     public function setServers($config)
     {
@@ -286,15 +286,15 @@ class MemCache extends Cache
      *
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached.
-     * @see [Memcache::set()](http://php.net/manual/en/memcache.set.php)
+     * @see [Memcache::set()](https://secure.php.net/manual/en/memcache.set.php)
      * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function setValue($key, $value, $duration)
     {
         // Use UNIX timestamp since it doesn't have any limitation
-        // @see http://php.net/manual/en/memcache.set.php
-        // @see http://php.net/manual/en/memcached.expiration.php
+        // @see https://secure.php.net/manual/en/memcache.set.php
+        // @see https://secure.php.net/manual/en/memcached.expiration.php
         $expire = $duration > 0 ? $duration + time() : 0;
 
         return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
@@ -310,12 +310,12 @@ class MemCache extends Cache
     {
         if ($this->useMemcached) {
             // Use UNIX timestamp since it doesn't have any limitation
-            // @see http://php.net/manual/en/memcache.set.php
-            // @see http://php.net/manual/en/memcached.expiration.php
+            // @see https://secure.php.net/manual/en/memcache.set.php
+            // @see https://secure.php.net/manual/en/memcached.expiration.php
             $expire = $duration > 0 ? $duration + time() : 0;
 
             // Memcached::setMulti() returns boolean
-            // @see http://php.net/manual/en/memcached.setmulti.php
+            // @see https://secure.php.net/manual/en/memcached.setmulti.php
             return $this->_cache->setMulti($data, $expire) ? [] : array_keys($data);
         }
 
@@ -328,15 +328,15 @@ class MemCache extends Cache
      *
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached
-     * @see [Memcache::set()](http://php.net/manual/en/memcache.set.php)
+     * @see [Memcache::set()](https://secure.php.net/manual/en/memcache.set.php)
      * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function addValue($key, $value, $duration)
     {
         // Use UNIX timestamp since it doesn't have any limitation
-        // @see http://php.net/manual/en/memcache.set.php
-        // @see http://php.net/manual/en/memcached.expiration.php
+        // @see https://secure.php.net/manual/en/memcache.set.php
+        // @see https://secure.php.net/manual/en/memcached.expiration.php
         $expire = $duration > 0 ? $duration + time() : 0;
 
         return $this->useMemcached ? $this->_cache->add($key, $value, $expire) : $this->_cache->add($key, $value, 0, $expire);
