@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #17156: Fixes PHP 7.2 warning when a data provider has no data as a parameter for a GridView (evilito)
-
+- Bug #17152: Fixed error page when using traceline option (asamats)
 
 2.0.16.1 February 28, 2019
 --------------------------
