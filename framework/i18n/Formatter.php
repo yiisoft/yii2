@@ -99,9 +99,9 @@ class Formatter extends Component
     /**
      * @var string the time zone to use for formatting time and date values.
      *
-     * This can be any value that may be passed to [date_default_timezone_set()](http://www.php.net/manual/en/function.date-default-timezone-set.php)
+     * This can be any value that may be passed to [date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php)
      * e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
-     * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available time zones.
+     * Refer to the [php manual](https://secure.php.net/manual/en/timezones.php) for available time zones.
      * If this property is not set, [[\yii\base\Application::timeZone]] will be used.
      *
      * Note that the default time zone for input data is assumed to be UTC by default if no time zone is included in the input date value.
@@ -112,7 +112,7 @@ class Formatter extends Component
      * @var string the time zone that is assumed for input values if they do not include a time zone explicitly.
      *
      * The value must be a valid time zone identifier, e.g. `UTC`, `Europe/Berlin` or `America/Chicago`.
-     * Please refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available time zones.
+     * Please refer to the [php manual](https://secure.php.net/manual/en/timezones.php) for available time zones.
      *
      * It defaults to `UTC` so you only have to adjust this value if you store datetime values in another time zone in your database.
      *

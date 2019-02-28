@@ -481,7 +481,7 @@ abstract class Application extends Module
     /**
      * Sets the time zone used by this application.
      * This is a simple wrapper of PHP function date_default_timezone_set().
-     * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
+     * Refer to the [php manual](https://secure.php.net/manual/en/timezones.php) for available timezones.
      * @param string $value the time zone used by this application.
      * @see https://secure.php.net/manual/en/function.date-default-timezone-set.php
      */

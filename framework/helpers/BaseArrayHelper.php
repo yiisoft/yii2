@@ -676,7 +676,7 @@ class BaseArrayHelper
      * @param string $charset the charset that the data is using. If not set,
      * [[\yii\base\Application::charset]] will be used.
      * @return array the encoded data
-     * @see http://www.php.net/manual/en/function.htmlspecialchars.php
+     * @see https://secure.php.net/manual/en/function.htmlspecialchars.php
      */
     public static function htmlEncode($data, $valuesOnly = true, $charset = null)
     {
@@ -709,7 +709,7 @@ class BaseArrayHelper
      * @param bool $valuesOnly whether to decode array values only. If false,
      * both the array keys and array values will be decoded.
      * @return array the decoded data
-     * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
+     * @see https://secure.php.net/manual/en/function.htmlspecialchars-decode.php
      */
     public static function htmlDecode($data, $valuesOnly = true)
     {

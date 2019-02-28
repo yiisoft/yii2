@@ -32,7 +32,7 @@ use yii\base\NotSupportedException;
  *   - simple parameters
  *   - integer number parameters
  *
- *   The fallback implementation does NOT support the ['apostrophe-friendly' syntax](http://www.php.net/manual/en/messageformatter.formatmessage.php).
+ *   The fallback implementation does NOT support the ['apostrophe-friendly' syntax](https://secure.php.net/manual/en/messageformatter.formatmessage.php).
  *   Also messages that are working with the fallback implementation are not necessarily compatible with the
  *   PHP intl MessageFormatter so do not rely on the fallback if you are able to install intl extension somehow.
  *
@@ -72,7 +72,7 @@ class MessageFormatter extends Component
     /**
      * Formats a message via [ICU message format](http://userguide.icu-project.org/formatparse/messages).
      *
-     * It uses the PHP intl extension's [MessageFormatter](http://www.php.net/manual/en/class.messageformatter.php)
+     * It uses the PHP intl extension's [MessageFormatter](https://secure.php.net/manual/en/class.messageformatter.php)
      * and works around some issues.
      * If PHP intl is not installed a fallback will be used that supports a subset of the ICU message format.
      *
@@ -134,7 +134,7 @@ class MessageFormatter extends Component
     /**
      * Parses an input string according to an [ICU message format](http://userguide.icu-project.org/formatparse/messages) pattern.
      *
-     * It uses the PHP intl extension's [MessageFormatter::parse()](http://www.php.net/manual/en/messageformatter.parsemessage.php)
+     * It uses the PHP intl extension's [MessageFormatter::parse()](https://secure.php.net/manual/en/messageformatter.parsemessage.php)
      * and adds support for named arguments.
      * Usage of this method requires PHP intl extension to be installed.
      *
