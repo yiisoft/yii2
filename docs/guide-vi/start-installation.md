@@ -161,7 +161,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Các khuyến nghị khi cấu hình Nginx <span id="recommended-nginx-configuration"></span>
 
-Để sử dụng [Nginx](http://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](http://php.net/install.fpm).
+Để sử dụng [Nginx](http://wiki.nginx.org/), bạn cần phải cài đặt [FPM SAPI](https://secure.php.net/install.fpm).
 Bạn có thể cấu hình Nginx như sau, thay thế đường dẫn `path/to/basic/web` với đường dẫn thực tế ở
 `basic/web` và  `mysite.test` thay thế bằng tên máy chủ thực tế để cung cấp dịch vụ.
 

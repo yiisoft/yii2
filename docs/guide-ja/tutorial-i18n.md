@@ -804,12 +804,12 @@ class TranslationEventHandler
 
 ## PHP 環境をセットアップする <span id="setup-environment"></span>
 
-Yii は、[[yii\i18n\Formatter]] クラスの数値や日付の書式設定や、[[yii\i18n\MessageFormatter]] を使うメッセージのフォーマッティングなど、ほとんどの国際化機能を提供するために [PHP intl 拡張](http://php.net/manual/ja/book.intl.php) を使います。
+Yii は、[[yii\i18n\Formatter]] クラスの数値や日付の書式設定や、[[yii\i18n\MessageFormatter]] を使うメッセージのフォーマッティングなど、ほとんどの国際化機能を提供するために [PHP intl 拡張](https://secure.php.net/manual/ja/book.intl.php) を使います。
 この二つのクラスは、`intl` がインストールされていない場合に備えて基本的な機能を提供するフォールバックを実装しています。
 だだし、このフォールバックの実装は、英語がターゲット言語である場合にのみ十分に機能するものす。
 従って、国際化機能が必要とされる場合は、`intl` をインストールすることが強く推奨されます。
 
-[PHP intl 拡張](http://php.net/manual/ja/book.intl.php) は、さまざまに異なる全てのロケールについて知識と書式の規則を提供する
+[PHP intl 拡張](https://secure.php.net/manual/ja/book.intl.php) は、さまざまに異なる全てのロケールについて知識と書式の規則を提供する
 [ICU ライブラリ](http://site.icu-project.org/) に基礎を置いています。
 ICU のバージョンが異なると、日付や数値のフォーマットの結果も異なる場合があります。
 あなたのウェブ・サイトが全ての環境で同じ出力をすることを保証するためには、

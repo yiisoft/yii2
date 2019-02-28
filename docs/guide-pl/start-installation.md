@@ -201,7 +201,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Zalecane ustawienia Nginx <span id="recommended-nginx-configuration"></span>
 
-Aby użyć [Nginx](http://wiki.nginx.org/) powinienieś zainstalować PHP jako [FPM SAPI](http://php.net/install.fpm).
+Aby użyć [Nginx](http://wiki.nginx.org/) powinienieś zainstalować PHP jako [FPM SAPI](https://secure.php.net/install.fpm).
 Możesz użyć przedstawionej poniżej konfiguracji Nginx, zastępując jedynie ścieżkę `path/to/basic/web` aktualną ścieżką do `basic/web` Twojej aplikacji oraz 
 `mysite.test` aktualną nazwą hosta.
 

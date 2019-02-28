@@ -184,7 +184,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-パラメータ・バインディングは [プリペアド・ステートメント](http://php.net/manual/ja/mysqli.quickstart.prepared-statements.php) によって実装されています。
+パラメータ・バインディングは [プリペアド・ステートメント](https://secure.php.net/manual/ja/mysqli.quickstart.prepared-statements.php) によって実装されています。
 パラメータ・バインディングには、SQL インジェクション攻撃を防止する以外にも、SQL 文を一度だけ準備して異なるパラメータで複数回実行することにより、
 パフォーマンスを向上させる効果もあります。例えば、
 
@@ -378,7 +378,7 @@ try {
 そして、`throw $e` が、まるでそれをキャッチしなかったかのように、例外を再スローしますので、通常のエラー処理プロセスがその例外の面倒を見ることになります。
 
 > Note: 上記のコードでは、PHP 5.x と PHP 7.x との互換性のために、二つのcatch ブロックを持っています。
-> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](http://php.net/manual/ja/class.throwable.php) を実装しています。
+> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](https://secure.php.net/manual/ja/class.throwable.php) を実装しています。
 > 従って、あなたのアプリケーションが PHP 7.0 以上しか使わない場合は、`\Exception` の部分を省略することが出来ます。
 
 

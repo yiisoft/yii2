@@ -139,7 +139,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Tavsiya etilgan Nginx sozlamalari <span id="recommended-nginx-configuration"></span>
 
-PHP Nginx uchun [FPM SAPI](http://php.net/manual/ru/install.fpm.php) sifatida o'rnatilishi kerak. Quyidagi [Nginx](http://wiki.nginx.org/) sozlamalaridan foydalaning va `basic/web` va `mysite.test` to'g'ri manzilini hostname-ga almashtirishni  va `path/to/basic/web` ni almashtirishni unutmang. 
+PHP Nginx uchun [FPM SAPI](https://secure.php.net/manual/ru/install.fpm.php) sifatida o'rnatilishi kerak. Quyidagi [Nginx](http://wiki.nginx.org/) sozlamalaridan foydalaning va `basic/web` va `mysite.test` to'g'ri manzilini hostname-ga almashtirishni  va `path/to/basic/web` ni almashtirishni unutmang. 
 
 ```
 server {

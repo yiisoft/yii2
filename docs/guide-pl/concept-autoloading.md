@@ -15,7 +15,7 @@ Korzystanie z autoloadera Yii <span id="using-yii-autoloader"></span>
 
 Aby skorzystać z autoloadera klas Yii, powinieneś przestrzegać dwóch prostych zasad tworzenia i nazywania własnych klas:
 
-* Każda klasa musi znajdować się w [przestrzeni nazw](http://php.net/manual/pl/language.namespaces.php) (np. `foo\bar\MyClass`)
+* Każda klasa musi znajdować się w [przestrzeni nazw](https://secure.php.net/manual/pl/language.namespaces.php) (np. `foo\bar\MyClass`)
 * Każda klasa musi być zapisana jako oddzielny plik, do którego ścieżka określona jest poniższym algorytmem:
 
 ```php

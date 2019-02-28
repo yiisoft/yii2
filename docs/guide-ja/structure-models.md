@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 また、配列の要素にアクセスするようして、属性にアクセスすることも出来ます。
-これは、[[yii\base\Model]] が [ArrayAccess インタフェイス](http://php.net/manual/ja/class.arrayaccess.php) と
+これは、[[yii\base\Model]] が [ArrayAccess インタフェイス](https://secure.php.net/manual/ja/class.arrayaccess.php) と
 [Traversable インタフェイス](http://jp2.php.net/manual/ja/class.traversable.php) をサポートしている恩恵です。
 
 ```php

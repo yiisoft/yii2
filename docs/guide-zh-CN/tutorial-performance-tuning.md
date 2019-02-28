@@ -11,7 +11,7 @@
 一个好的 PHP 环境是非常重要的。为了得到最大的性能，
 
 - 使用最新稳定版本的 PHP。 PHP 的主要版本可能带来显著的性能提升。
-- 启用字节码缓存 [Opcache](http://php.net/opcache)（PHP 5.5或更高版本）
+- 启用字节码缓存 [Opcache](https://secure.php.net/opcache)（PHP 5.5或更高版本）
   或 [APC](http://ru2.php.net/apc)
   （PHP 5.4或更早版本）。字节码缓存省去了每次解析和加载 PHP 脚本所带来的开销。
 - [Tune `realpath()` cache](https://github.com/samdark/realpath_cache_tuner).

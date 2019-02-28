@@ -191,7 +191,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Рекомендовані налаштування Nginx <span id="recommended-nginx-configuration"></span>
 
-Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](http://php.net/install.fpm).
+Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](https://secure.php.net/install.fpm).
 Використовуйте наступні параметри Nginx, замінивши `path/to/basic/web` на коректний шлях до
 `basic/web`, а `mysite.test` на актуальний домен.
 

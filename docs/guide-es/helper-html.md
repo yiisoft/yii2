@@ -3,7 +3,7 @@ Clase auxiliar Html (Html helper)
 
 Todas las aplicaciones web generan grandes cantidades de marcado HTML (HTML markup). Si el marcado es estático, se
 puede realizar de forma efectiva
-[mezclando PHP y HTML en un mismo archivo](http://php.net/manual/es/language.basic-syntax.phpmode.php) pero cuando se
+[mezclando PHP y HTML en un mismo archivo](https://secure.php.net/manual/es/language.basic-syntax.phpmode.php) pero cuando se
 generan dinámicamente empieza a complicarse su gestión sin ayuda extra. Yii ofrece esta ayuda en forma de una clase auxiliar Html
 que proporciona un conjunto de métodos estáticos para gestionar las etiquetas HTML más comúnmente usadas, sus opciones y contenidos.
 

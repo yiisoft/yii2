@@ -15,7 +15,7 @@ Yii オートローダを使用する <span id="using-yii-autoloader"></span>
 
 Yii のクラス・オートローダを使用するには、クラスを作成して名前を付けるとき、次の二つの単純なルールに従わなければなりません:
 
-* 各クラスは [名前空間](http://php.net/manual/ja/language.namespaces.php) の下になければなりません (例 `foo\bar\MyClass`)
+* 各クラスは [名前空間](https://secure.php.net/manual/ja/language.namespaces.php) の下になければなりません (例 `foo\bar\MyClass`)
 * 各クラスは次のアルゴリズムで決定される個別のファイルに保存されなければなりません:
 
 ```php

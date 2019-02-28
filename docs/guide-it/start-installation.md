@@ -160,7 +160,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Configurazione consigliata di Nginx <span id="recommended-nginx-configuration"></span>
 
-Devi aver installato PHP con il demone [FPM](http://php.net/install.fpm) per usare [Nginx](http://wiki.nginx.org/).
+Devi aver installato PHP con il demone [FPM](https://secure.php.net/install.fpm) per usare [Nginx](http://wiki.nginx.org/).
 Usa questa configurazione per Nginx, sostituendo `path/to/basic/web` con il percorso reale di `basic/web` e `mysite.test` con
 il nome reale del server web.
 

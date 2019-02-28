@@ -234,7 +234,7 @@ DocumentRoot "path/to/basic/web"
 
 ### 推荐使用的 Nginx 配置 <span id="recommended-nginx-configuration"></span>
 
-为了使用 [Nginx](http://wiki.nginx.org/)，你应该已经将 PHP 安装为 [FPM SAPI](http://php.net/install.fpm) 了。
+为了使用 [Nginx](http://wiki.nginx.org/)，你应该已经将 PHP 安装为 [FPM SAPI](https://secure.php.net/install.fpm) 了。
 你可以使用如下 Nginx 配置，将 `path/to/basic/web` 替换为实际的 `basic/web` 目录，
 `mysite.local` 替换为实际的主机名以提供服务。
 

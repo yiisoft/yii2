@@ -52,7 +52,7 @@ Bundle, известный как пакет в Yii 1.1, относится к �
 
 ## namespace
 
-Пространство имен ссылка на [PHP language feature](http://php.net/manual/en/language.namespaces.php) который активно используется в Yii 2.
+Пространство имен ссылка на [PHP language feature](https://secure.php.net/manual/en/language.namespaces.php) который активно используется в Yii 2.
 
 # P
 

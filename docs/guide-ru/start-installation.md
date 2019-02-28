@@ -174,7 +174,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Рекомендуемые настройки Nginx <span id="recommended-nginx-configuration"></span>
 
-PHP должен быть установлен как [FPM SAPI](http://php.net/manual/ru/install.fpm.php) для [Nginx](http://wiki.nginx.org/).
+PHP должен быть установлен как [FPM SAPI](https://secure.php.net/manual/ru/install.fpm.php) для [Nginx](http://wiki.nginx.org/).
 Используйте следующие параметры Nginx и не забудьте заменить `path/to/basic/web` на корректный путь к `basic/web` и
 `mysite.test` на ваше имя хоста.
 

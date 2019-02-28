@@ -37,8 +37,8 @@ echo $model->name;
 ```
 
 也可像访问数组单元项一样访问属性，这要感谢[[yii\base\Model]]支持 
-[ArrayAccess 数组访问](http://php.net/manual/en/class.arrayaccess.php) 
-和 [ArrayIterator 数组迭代器](http://php.net/manual/en/class.arrayiterator.php):
+[ArrayAccess 数组访问](https://secure.php.net/manual/en/class.arrayaccess.php) 
+和 [ArrayIterator 数组迭代器](https://secure.php.net/manual/en/class.arrayiterator.php):
 
 ```php
 $model = new \app\models\ContactForm;
